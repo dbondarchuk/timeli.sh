@@ -840,10 +840,11 @@ export class OutlookConnectedApp
     logger.debug({ appId }, "Access token expired, refreshing");
 
     const client = this.getMsalClient();
+    const refreshToken = decrypt(currentTokens.refreshToken);
 
     const tokenRequest = {
       ...(await this.getAuthParams(appId)),
-      refreshToken: decrypt(currentTokens.refreshToken),
+      refreshToken,
     };
 
     try {
@@ -861,6 +862,7 @@ export class OutlookConnectedApp
           username,
         },
         token: {
+          refreshToken: currentTokens.refreshToken,
           ...tokens,
           accessToken: encrypt(tokens.accessToken!),
         },
