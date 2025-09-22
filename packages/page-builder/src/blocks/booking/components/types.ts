@@ -5,11 +5,11 @@ export type BookingProps = {
   className?: string;
 };
 
-export type CheckCloseAppointmentsResponse =
+export type CheckDuplicateAppointmentsResponse =
   | {
-      hasCloseAppointments: false;
+      hasDuplicateAppointments: false;
     }
   | {
-      hasCloseAppointments: true;
+      hasDuplicateAppointments: true;
       closestAppointment: DateTime;
     };

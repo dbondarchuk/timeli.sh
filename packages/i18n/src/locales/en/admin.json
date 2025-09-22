@@ -805,15 +805,21 @@
         "selectOption": "Select option",
         "fields": "Fields",
         "addons": "Add-ons",
-        "askForConfirmationIfHasCloseAppointments": {
-          "title": "Same service appointments around same date and time",
-          "enabled": "Ask to confirm",
-          "enabledTooltip": "Whether to ask customer to confirm if they have appointments of same service in future around selected date and time",
-          "days": "Days before or after",
+        "duplicateAppointmentCheck": {
+          "title": "Duplicate bookings for same service",
+          "enabled": "Ask for confirmation",
+          "enabledTooltip": "Ask customers to confirm if they already have a future appointment for the same service near the selected date/time",
+          "days": "Days range",
           "daysSuffix": "days",
-          "daysTooltip": "Amount of days to check for closest appointment before or after the selected date and time to ask for confirmation",
-          "message": "Custom confirmation message",
-          "messageTooltip": "Message to show to the user.<br></br>You can use following placeholders:<br></br>- '{{days'}} to show the amount of days,<br></br>- '{{name'}} to show customers name,<br></br>- '{{serviceName'}} to show the service name,<br></br>- '{{date'}} to show the date of the closest appointment"
+          "daysTooltip": "Number of days before or after the selected date/time to check for an existing appointment",
+          "message": "Confirmation message",
+          "messageTooltip": "Message shown to the customer.<br></br>Placeholders:<br></br>- <i>'{{days}}'</i>: days range<br></br>- <i>'{{name}}'</i>: customer name<br></br>- <i>'{{service}}'</i>: service name<br></br>- <i>'{{date}}'</i>: date of the existing appointment",
+          "messageExamples": {
+            "label": "Examples <chevron></chevron>",
+            "friendly": "Hi '{{name}}', you already have '{{service}}' booked on '{{date}}' within '{{days}}' days. Do you want to create another booking for this service?",
+            "neutral": "You already have '{{service}}' scheduled on '{{date}}' (within '{{days}}' days). Would you like to book the same service again?",
+            "formal": "Hello '{{name}}', our records show you have '{{service}}' on '{{date}}'. Are you sure you want to make another booking for the same service within '{{days}}' days?"
+          }
         },
         "validation": {
           "nameUnique": "Option name must be unique"

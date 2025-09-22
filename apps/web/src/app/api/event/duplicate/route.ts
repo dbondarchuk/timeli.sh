@@ -6,14 +6,14 @@ import { DateTime } from "luxon";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
-  const logger = getLoggerFactory("API/event-closest")("POST");
+  const logger = getLoggerFactory("API/event-duplicate")("POST");
 
   logger.debug(
     {
       url: request.url,
       method: request.method,
     },
-    "Processing event closest API request",
+    "Processing event duplicate API request",
   );
 
   const body = await request.json();
@@ -60,16 +60,16 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  if (!eventOrError.option.askForConfirmationIfHasCloseAppointments?.enabled) {
+  if (!eventOrError.option.duplicateAppointmentCheck?.enabled) {
     logger.debug(
       {
         optionId: appointmentRequest.optionId,
       },
-      "Option does not need close appointments confirmation",
+      "Option does not need duplicate appointments confirmation",
     );
 
     return NextResponse.json({
-      hasCloseAppointments: false,
+      hasDuplicateAppointments: false,
     });
   }
 
@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
     );
 
     return NextResponse.json({
-      hasCloseAppointments: false,
+      hasDuplicateAppointments: false,
     });
   }
 
@@ -91,13 +91,13 @@ export async function POST(request: NextRequest) {
     start: DateTime.max(
       DateTime.now(),
       eventDateTime.startOf("day").minus({
-        days: eventOrError.option.askForConfirmationIfHasCloseAppointments.days,
+        days: eventOrError.option.duplicateAppointmentCheck.days,
       }),
     ).toJSDate(),
     end: eventDateTime
       .endOf("day")
       .plus({
-        days: eventOrError.option.askForConfirmationIfHasCloseAppointments.days,
+        days: eventOrError.option.duplicateAppointmentCheck.days,
       })
       .toJSDate(),
   };
@@ -120,7 +120,7 @@ export async function POST(request: NextRequest) {
     )[0];
 
     return NextResponse.json({
-      hasCloseAppointments: closestAppointments.total > 0,
+      hasDuplicateAppointments: closestAppointments.total > 0,
       closestAppointment: closestAppointment?.toJSDate(),
     });
   } catch (error: any) {
@@ -132,7 +132,7 @@ export async function POST(request: NextRequest) {
         status: ["pending", "confirmed"],
         error: error?.message || error?.toString(),
       },
-      "Error getting closest appointment",
+      "Error getting duplicate appointment",
     );
     throw error;
   }

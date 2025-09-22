@@ -11,7 +11,7 @@ import {
 } from "@vivid/types";
 import { DateTime as LuxonDateTime } from "luxon";
 import { createContext, FC, ReactNode, useContext } from "react";
-import { CheckCloseAppointmentsResponse } from "./types";
+import { CheckDuplicateAppointmentsResponse } from "./types";
 
 export type StepType =
   | "duration"
@@ -20,7 +20,7 @@ export type StepType =
   | "form"
   | "payment"
   | "confirmation"
-  | "close-appointments-confirmation";
+  | "duplicate-appointments-confirmation";
 
 export type StepDirectionButton = {
   action: (ctx: ScheduleContextProps) => void | Promise<void>;
@@ -56,12 +56,14 @@ export type ScheduleContextProps = {
   availability: Availability;
   fetchAvailability: () => Promise<void>;
 
-  checkCloseAppointments: () => Promise<CheckCloseAppointmentsResponse>;
-  closestAppointment?: LuxonDateTime;
-  setClosestAppointment: (closestAppointment?: LuxonDateTime) => void;
+  checkDuplicateAppointments: () => Promise<CheckDuplicateAppointmentsResponse>;
+  closestDuplicateAppointment?: LuxonDateTime;
+  setClosestDuplicateAppointment: (closestAppointment?: LuxonDateTime) => void;
 
-  confirmClosestAppointment: boolean;
-  setConfirmClosestAppointment: (confirmClosestAppointment: boolean) => void;
+  confirmDuplicateAppointment: boolean;
+  setConfirmDuplicateAppointment: (
+    confirmDuplicateAppointment: boolean,
+  ) => void;
 
   showPromoCode?: boolean;
   discount?: ApplyDiscountResponse;

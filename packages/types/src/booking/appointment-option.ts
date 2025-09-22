@@ -48,37 +48,30 @@ export const appointmentOptionSchema = z
       (field) => field.id,
       "appointments.option.fields.id.unique",
     ).optional(),
-    askForConfirmationIfHasCloseAppointments: z
+    duplicateAppointmentCheck: z
       .object({
         enabled: z.literal(true, {
           message:
-            "appointments.option.askForConfirmationIfHasCloseAppointments.enabled.required",
+            "appointments.option.duplicateAppointmentCheck.enabled.required",
           required_error:
-            "appointments.option.askForConfirmationIfHasCloseAppointments.enabled.required",
+            "appointments.option.duplicateAppointmentCheck.enabled.required",
           invalid_type_error:
-            "appointments.option.askForConfirmationIfHasCloseAppointments.enabled.required",
+            "appointments.option.duplicateAppointmentCheck.enabled.required",
         }),
         message: z
           .string()
           .min(
             1,
-            "appointments.option.askForConfirmationIfHasCloseAppointments.message.required",
+            "appointments.option.duplicateAppointmentCheck.message.required",
           ),
         days: z.coerce
           .number({
             required_error:
-              "appointments.option.askForConfirmationIfHasCloseAppointments.days.min",
-            message:
-              "appointments.option.askForConfirmationIfHasCloseAppointments.days.min",
+              "appointments.option.duplicateAppointmentCheck.days.min",
+            message: "appointments.option.duplicateAppointmentCheck.days.min",
           })
-          .min(
-            1,
-            "appointments.option.askForConfirmationIfHasCloseAppointments.days.min",
-          )
-          .max(
-            30,
-            "appointments.option.askForConfirmationIfHasCloseAppointments.days.max",
-          ),
+          .min(1, "appointments.option.duplicateAppointmentCheck.days.min")
+          .max(30, "appointments.option.duplicateAppointmentCheck.days.max"),
       })
       .or(
         z.object({
@@ -86,7 +79,7 @@ export const appointmentOptionSchema = z
             .literal(false, {
               errorMap: () => ({
                 message:
-                  "appointments.option.askForConfirmationIfHasCloseAppointments.enabled.required",
+                  "appointments.option.duplicateAppointmentCheck.enabled.required",
               }),
             })
             .default(false)

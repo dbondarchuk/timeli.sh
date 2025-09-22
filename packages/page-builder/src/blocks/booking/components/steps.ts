@@ -1,8 +1,8 @@
 import { AddonsCard } from "./addons-card";
 import { CalendarCard } from "./calendar-card";
-import { ClosestAppointmentConfirmationCard } from "./closest-appointment-confirmation-card";
 import { ConfirmationCard } from "./confirmation-card";
 import { ScheduleContextProps, Step, StepType } from "./context";
+import { DuplicateAppointmentConfirmationCard } from "./duplicate-appointment-confirmation-card";
 import { DurationCard } from "./duration-card";
 import { FormCard } from "./form-card";
 import { PaymentCard } from "./payment-card";
@@ -95,14 +95,15 @@ export const ScheduleSteps: Record<StepType, Step> = {
       show: () => true,
       isEnabled: ({ isFormValid, isEditor }) => isFormValid && !isEditor,
       action: async (ctx) => {
-        const optionNeedsCloseAppointmentsConfirmation =
-          ctx.appointmentOption.askForConfirmationIfHasCloseAppointments
-            ?.enabled;
-        if (optionNeedsCloseAppointmentsConfirmation) {
-          const closeAppointments = await ctx.checkCloseAppointments();
-          if (closeAppointments.hasCloseAppointments) {
-            ctx.setClosestAppointment(closeAppointments.closestAppointment);
-            ctx.setStep("close-appointments-confirmation");
+        const optionNeedsDuplicateAppointmentsConfirmation =
+          ctx.appointmentOption.duplicateAppointmentCheck?.enabled;
+        if (optionNeedsDuplicateAppointmentsConfirmation) {
+          const closeAppointments = await ctx.checkDuplicateAppointments();
+          if (closeAppointments.hasDuplicateAppointments) {
+            ctx.setClosestDuplicateAppointment(
+              closeAppointments.closestAppointment,
+            );
+            ctx.setStep("duplicate-appointments-confirmation");
             return;
           }
         }
@@ -138,7 +139,7 @@ export const ScheduleSteps: Record<StepType, Step> = {
     },
     Content: ConfirmationCard,
   },
-  "close-appointments-confirmation": {
+  "duplicate-appointments-confirmation": {
     prev: {
       show: () => true,
       isEnabled: () => true,
@@ -146,9 +147,9 @@ export const ScheduleSteps: Record<StepType, Step> = {
     },
     next: {
       show: () => true,
-      isEnabled: (ctx) => ctx.confirmClosestAppointment,
+      isEnabled: (ctx) => ctx.confirmDuplicateAppointment,
       action: (ctx) => handleGoToPayment(ctx),
     },
-    Content: ClosestAppointmentConfirmationCard,
+    Content: DuplicateAppointmentConfirmationCard,
   },
 };

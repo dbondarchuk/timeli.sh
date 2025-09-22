@@ -57,8 +57,8 @@
   "payment_form_full_payment_required_title": "Full payment is required",
   "payment_form_full_payment_required_description": "In order to book this appointment, full paymant of ${amount} is required. Please pay by using the form below",
 
-  "closest_appointment_confirmation_title": "Are you sure?",
-  "closest_appointment_checkbox_label": "I confirm that I understand and want to book this appointment",
+  "duplicate_appointment_confirmation_title": "Are you sure?",
+  "duplicate_appointment_checkbox_label": "I confirm that I understand and want to book this appointment",
 
   "footer": {
     "contactUsLabel": "Contact us",

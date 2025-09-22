@@ -18,7 +18,7 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { ScheduleContext, StepType } from "./context";
 import { StepCard } from "./step-card";
-import { CheckCloseAppointmentsResponse } from "./types";
+import { CheckDuplicateAppointmentsResponse } from "./types";
 
 export type ScheduleProps = {
   appointmentOption: AppointmentChoice;
@@ -74,9 +74,8 @@ export const Schedule: React.FC<
     appointmentOptionDuration,
   );
 
-  const [closestAppointment, setClosestAppointment] = React.useState<
-    LuxonDateTime | undefined
-  >(undefined);
+  const [closestDuplicateAppointment, setClosestDuplicateAppointment] =
+    React.useState<LuxonDateTime | undefined>(undefined);
 
   const [promoCode, setPromoCode] = React.useState<ApplyDiscountResponse>();
   const [paymentInformation, setPaymentInformation] =
@@ -127,7 +126,7 @@ export const Schedule: React.FC<
   });
 
   const [isFormValid, setIsFormValid] = React.useState(false);
-  const [confirmClosestAppointment, setConfirmClosestAppointment] =
+  const [confirmDuplicateAppointment, setConfirmDuplicateAppointment] =
     React.useState(false);
 
   const router = useRouter();
@@ -171,30 +170,31 @@ export const Schedule: React.FC<
     }
   };
 
-  const checkCloseAppointments =
-    async (): Promise<CheckCloseAppointmentsResponse> => {
+  const checkDuplicateAppointments =
+    async (): Promise<CheckDuplicateAppointmentsResponse> => {
       const request = getAppointmentRequest();
       if (!request) throw new Error("Failed to build appointment request");
 
       setIsLoading(true);
 
       try {
-        const response = await fetch("/api/event/closest", {
+        const response = await fetch("/api/event/duplicate", {
           method: "POST",
           body: JSON.stringify(request),
         });
 
         if (response.status >= 400) throw new Error(response.statusText);
-        const data = (await response.json()) as CheckCloseAppointmentsResponse;
+        const data =
+          (await response.json()) as CheckDuplicateAppointmentsResponse;
         return {
           ...data,
           closestAppointment:
-            data.hasCloseAppointments && data.closestAppointment
+            data.hasDuplicateAppointments && data.closestAppointment
               ? LuxonDateTime.fromISO(
                   data.closestAppointment as any as string,
                 ).setZone(timeZone)
               : undefined,
-        } as CheckCloseAppointmentsResponse;
+        } as CheckDuplicateAppointmentsResponse;
       } catch (e) {
         console.error(e);
         toast.error(errors.fetchTitle, {
@@ -379,11 +379,11 @@ export const Schedule: React.FC<
           paymentInformation,
           setPaymentInformation,
           fetchPaymentInformation,
-          checkCloseAppointments,
-          confirmClosestAppointment,
-          setConfirmClosestAppointment,
-          closestAppointment,
-          setClosestAppointment,
+          checkDuplicateAppointments,
+          confirmDuplicateAppointment,
+          setConfirmDuplicateAppointment,
+          closestDuplicateAppointment,
+          setClosestDuplicateAppointment,
           isFormValid,
           setIsFormValid,
           className,

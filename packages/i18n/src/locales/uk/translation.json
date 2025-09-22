@@ -53,8 +53,8 @@
   "payment_form_deposit_required_description": "Для бронювання цього запису потрібен депозит {percentage}% (${amount}). Будь ласка, оплатіть, використовуючи форму нижче",
   "payment_form_full_payment_required_title": "Потрібна повна оплата",
   "payment_form_full_payment_required_description": "Для бронювання цього запису потрібна повна оплата ${amount}. Будь ласка, оплатіть, використовуючи форму нижче",
-  "closest_appointment_confirmation_title": "Ви впевнені?",
-  "closest_appointment_checkbox_label": "Я підтверджую, що розумію та хочу забронювати цей запис",
+  "duplicate_appointment_confirmation_title": "Ви впевнені?",
+  "duplicate_appointment_checkbox_label": "Я підтверджую, що розумію та хочу забронювати цей запис",
   "footer": {
     "contactUsLabel": "Зв'яжіться з нами",
     "phone": "Телефон",

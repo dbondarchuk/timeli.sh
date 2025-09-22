@@ -16,10 +16,14 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
   Combobox,
   DurationInput,
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -35,6 +39,7 @@ import {
   Sortable,
   toastPromise,
 } from "@vivid/ui";
+import { ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useFieldArray, useForm } from "react-hook-form";
@@ -71,15 +76,15 @@ export const OptionForm: React.FC<{
     reValidateMode: "onChange",
     defaultValues: initialData || {
       requireDeposit: "inherit",
-      askForConfirmationIfHasCloseAppointments: {
+      duplicateAppointmentCheck: {
         enabled: false,
       },
     },
   });
 
   const requireDeposit = form.watch("requireDeposit");
-  const askForConfirmationIfHasCloseAppointments = form.watch(
-    "askForConfirmationIfHasCloseAppointments.enabled",
+  const duplicateAppointmentCheck = form.watch(
+    "duplicateAppointmentCheck.enabled",
   );
 
   const onSubmit = async (data: FormValues) => {
@@ -368,24 +373,22 @@ export const OptionForm: React.FC<{
             <Card>
               <CardHeader>
                 <CardTitle className="text-base font-medium">
-                  {t(
-                    "services.options.form.askForConfirmationIfHasCloseAppointments.title",
-                  )}
+                  {t("services.options.form.duplicateAppointmentCheck.title")}
                 </CardTitle>
               </CardHeader>
               <CardContent className="flex flex-col gap-4">
                 <FormField
                   control={form.control}
-                  name="askForConfirmationIfHasCloseAppointments.enabled"
+                  name="duplicateAppointmentCheck.enabled"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
                         {t(
-                          "services.options.form.askForConfirmationIfHasCloseAppointments.enabled",
+                          "services.options.form.duplicateAppointmentCheck.enabled",
                         )}{" "}
                         <InfoTooltip>
                           {t(
-                            "services.options.form.askForConfirmationIfHasCloseAppointments.enabledTooltip",
+                            "services.options.form.duplicateAppointmentCheck.enabledTooltip",
                           )}
                         </InfoTooltip>
                       </FormLabel>
@@ -402,20 +405,20 @@ export const OptionForm: React.FC<{
                     </FormItem>
                   )}
                 />
-                {askForConfirmationIfHasCloseAppointments && (
+                {duplicateAppointmentCheck && (
                   <>
                     <FormField
                       control={form.control}
-                      name="askForConfirmationIfHasCloseAppointments.days"
+                      name="duplicateAppointmentCheck.days"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>
                             {t(
-                              "services.options.form.askForConfirmationIfHasCloseAppointments.days",
+                              "services.options.form.duplicateAppointmentCheck.days",
                             )}{" "}
                             <InfoTooltip>
                               {t(
-                                "services.options.form.askForConfirmationIfHasCloseAppointments.daysTooltip",
+                                "services.options.form.duplicateAppointmentCheck.daysTooltip",
                               )}
                             </InfoTooltip>
                           </FormLabel>
@@ -433,13 +436,13 @@ export const OptionForm: React.FC<{
                                   onChange={(e) => {
                                     field.onChange(e);
                                     form.trigger(
-                                      "askForConfirmationIfHasCloseAppointments.enabled",
+                                      "duplicateAppointmentCheck.enabled",
                                     );
                                   }}
                                   onBlur={() => {
                                     field.onBlur();
                                     form.trigger(
-                                      "askForConfirmationIfHasCloseAppointments.enabled",
+                                      "duplicateAppointmentCheck.enabled",
                                     );
                                   }}
                                 />
@@ -450,7 +453,7 @@ export const OptionForm: React.FC<{
                                 })}
                               >
                                 {t(
-                                  "services.options.form.askForConfirmationIfHasCloseAppointments.daysSuffix",
+                                  "services.options.form.duplicateAppointmentCheck.daysSuffix",
                                 )}
                               </InputSuffix>
                             </InputGroup>
@@ -461,16 +464,16 @@ export const OptionForm: React.FC<{
                     />
                     <FormField
                       control={form.control}
-                      name="askForConfirmationIfHasCloseAppointments.message"
+                      name="duplicateAppointmentCheck.message"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>
                             {t(
-                              "services.options.form.askForConfirmationIfHasCloseAppointments.message",
+                              "services.options.form.duplicateAppointmentCheck.message",
                             )}{" "}
                             <InfoTooltip>
                               {t.rich(
-                                "services.options.form.askForConfirmationIfHasCloseAppointments.messageTooltip",
+                                "services.options.form.duplicateAppointmentCheck.messageTooltip",
                                 {
                                   p: (chunks: any) => <p>{chunks}</p>,
                                   br: () => <br />,
@@ -491,6 +494,39 @@ export const OptionForm: React.FC<{
                             />
                           </FormControl>
                           <FormMessage />
+                          <FormDescription>
+                            <Collapsible>
+                              <CollapsibleTrigger className="flex items-center gap-2 [&[data-state=open]_svg]:rotate-90">
+                                {t.rich(
+                                  "services.options.form.duplicateAppointmentCheck.messageExamples.label",
+                                  {
+                                    chevron: () => (
+                                      <ChevronRight className="w-4 h-4 transition-transform duration-200" />
+                                    ),
+                                  },
+                                )}
+                              </CollapsibleTrigger>
+                              <CollapsibleContent>
+                                <ul className="list-disc list-inside space-y-2 pt-2 pl-4 italic">
+                                  <li>
+                                    {t(
+                                      "services.options.form.duplicateAppointmentCheck.messageExamples.friendly",
+                                    )}
+                                  </li>
+                                  <li>
+                                    {t(
+                                      "services.options.form.duplicateAppointmentCheck.messageExamples.neutral",
+                                    )}
+                                  </li>
+                                  <li>
+                                    {t(
+                                      "services.options.form.duplicateAppointmentCheck.messageExamples.formal",
+                                    )}
+                                  </li>
+                                </ul>
+                              </CollapsibleContent>
+                            </Collapsible>
+                          </FormDescription>
                         </FormItem>
                       )}
                     />

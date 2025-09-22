@@ -324,7 +324,7 @@
       "depositPercentage": {
         "required": "Deposit percentage must be an integer number between 10 and 100"
       },
-      "askForConfirmationIfHasCloseAppointments": {
+      "duplicateAppointmentCheck": {
         "enabled": {
           "required": "Amount of days before or after the appointment to ask for confirmation is required"
         },

@@ -4,19 +4,19 @@ import { template } from "@vivid/utils";
 import { DateTime } from "luxon";
 import { useScheduleContext } from "./context";
 
-export const ClosestAppointmentConfirmationCard: React.FC = () => {
+export const DuplicateAppointmentConfirmationCard: React.FC = () => {
   const i18n = useI18n("translation");
   const {
-    closestAppointment,
+    closestDuplicateAppointment,
     fields,
     appointmentOption,
-    confirmClosestAppointment,
-    setConfirmClosestAppointment,
+    confirmDuplicateAppointment,
+    setConfirmDuplicateAppointment,
   } = useScheduleContext();
 
   if (
-    !appointmentOption.askForConfirmationIfHasCloseAppointments?.enabled ||
-    !closestAppointment
+    !appointmentOption.duplicateAppointmentCheck?.enabled ||
+    !closestDuplicateAppointment
   ) {
     return null;
   }
@@ -24,26 +24,29 @@ export const ClosestAppointmentConfirmationCard: React.FC = () => {
   return (
     <div className="relative">
       <div className="mb-3 text-center">
-        <h2>{i18n("closest_appointment_confirmation_title")}</h2>
+        <h2>{i18n("duplicate_appointment_confirmation_title")}</h2>
       </div>
       <div className="flex flex-col gap-4 flex-wrap">
         <Markdown
           markdown={template(
-            appointmentOption.askForConfirmationIfHasCloseAppointments.message,
+            appointmentOption.duplicateAppointmentCheck.message,
             {
-              date: closestAppointment.toLocaleString(DateTime.DATE_HUGE),
+              date: closestDuplicateAppointment.toLocaleString(
+                DateTime.DATE_HUGE,
+              ),
               name: fields.name,
               service: appointmentOption.name,
+              days: appointmentOption.duplicateAppointmentCheck.days,
             },
           )}
           prose="simple"
         />
         <Label className="flex flex-row gap-2 items-center text-base">
           <Checkbox
-            checked={confirmClosestAppointment}
-            onCheckedChange={(e) => setConfirmClosestAppointment(!!e)}
+            checked={confirmDuplicateAppointment}
+            onCheckedChange={(e) => setConfirmDuplicateAppointment(!!e)}
           />
-          <div>{i18n("closest_appointment_checkbox_label")}</div>
+          <div>{i18n("duplicate_appointment_checkbox_label")}</div>
         </Label>
       </div>
     </div>

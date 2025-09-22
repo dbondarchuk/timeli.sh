@@ -324,7 +324,7 @@
       "depositPercentage": {
         "required": "Відсоток депозиту повинен бути цілим числом між 10 і 100"
       },
-      "askForConfirmationIfHasCloseAppointments": {
+      "duplicateAppointmentCheck": {
         "enabled": {
           "required": "Кількість днів перед або після запису для запиту підтвердження повинна бути вказана"
         },
