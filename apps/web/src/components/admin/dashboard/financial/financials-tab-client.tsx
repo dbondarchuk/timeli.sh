@@ -565,17 +565,25 @@ export const FinancialsTabClient: React.FC<FinancialsTabProps> = ({
           {t("dashboard.financials.recentPayments")}
         </h3>
         <div className="grid grid-col-1 @2xl/recent-payments:grid-cols-2 @4xl/recent-payments:grid-cols-3 gap-4">
-          {loading
-            ? Array.from({ length: 12 }).map((_, index) => (
-                <Skeleton className="w-full h-80" key={index} />
-              ))
-            : recentPayments.map((payment) => (
-                <PaymentCard
-                  key={payment._id}
-                  payment={payment}
-                  className="max-w-full"
-                />
-              ))}
+          {loading ? (
+            Array.from({ length: 12 }).map((_, index) => (
+              <Skeleton className="w-full h-80" key={index} />
+            ))
+          ) : recentPayments?.length > 0 ? (
+            recentPayments.map((payment) => (
+              <PaymentCard
+                key={payment._id}
+                payment={payment}
+                className="max-w-full"
+              />
+            ))
+          ) : (
+            <div className="w-full p-4 border rounded-md bg-card text-card-foreground flex items-center justify-center">
+              <span className="text-foreground">
+                {t("dashboard.financials.noPayments")}
+              </span>
+            </div>
+          )}
         </div>
       </div>
     </div>
