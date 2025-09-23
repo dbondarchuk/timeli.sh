@@ -1573,7 +1573,48 @@
     },
     "tabs": {
       "overview": "Overview",
-      "pendingAppointments": "Pending Appointments"
+      "pendingAppointments": "Pending Appointments",
+      "financials": "Financials"
+    },
+    "financials": {
+      "title": "Financial Overview",
+      "estimatedRevenue": "Estimated Revenue",
+      "totalPayments": "Total Payments",
+      "netPayments": "Net Payments",
+      "activeAppointments": "Active Appointments",
+      "declinedAppointments": "Declined Appointments",
+      "recentPayments": "Recent Payments",
+      "paymentMethods": "Payment Methods",
+      "noPayments": "No payments found",
+      "amount": "Amount",
+      "status": "Status",
+      "date": "Date",
+      "customer": "Customer",
+      "service": "Service",
+      "dateRange": "Date Range",
+      "thisMonth": "This Month",
+      "lastMonth": "Last Month",
+      "thisWeek": "This Week",
+      "lastWeek": "Last Week",
+      "thisYear": "This Year",
+      "lastYear": "Last Year",
+      "allTime": "All Time",
+      "custom": "Custom Range",
+      "refunded": "Refunded",
+      "refundDate": "Refund Date",
+      "refundAmount": "Refund Amount",
+      "viewAppointment": "View Appointment",
+      "revenueAndPayments": "Revenue and Payments",
+      "appointmentStatusDistribution": "Appointment Status",
+      "serviceDistribution": "Options",
+      "appointmentsCount": "{count, plural, =1 {1 appointment} other {# appointments}}",
+      "estimatedRevenueFormat": "Estimated revenue: {revenue}",
+      "financialOverview": "Financial Overview",
+      "customerAcquisitionVsRetention": "New vs Returning Customers",
+      "timeGrouping": "Time Grouping",
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "monthly": "Monthly"
     }
   },
   "install": {
@@ -1798,7 +1839,9 @@
       "totalRefunded": "Total Refunded",
       "refundAmount": "Refund Amount",
       "cancel": "Cancel",
-      "confirmRefundButton": "Confirm refund ${amount}"
+      "confirmRefundButton": "Confirm refund ${amount}",
+      "customerName": "Customer",
+      "appointment": "Appointment"
     },
     "toasts": {
       "refundSuccess": "Payment was refunded",

@@ -1,3 +1,4 @@
+import { FinancialsTabClient } from "@/components/admin/dashboard/financial/financials-tab-client";
 import PageContainer from "@/components/admin/layout/page-container";
 import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
@@ -12,6 +13,7 @@ import {
 } from "@vivid/ui";
 import { Metadata } from "next";
 import { Suspense } from "react";
+import { FinancialsTab } from "../../../components/admin/dashboard/financial/financials-tab";
 import { EventsCalendar } from "./events-calendar";
 import { NextAppointmentsCards } from "./next-appointments-cards";
 import { PendingAppointmentsTab } from "./pending-appointments-tab";
@@ -65,13 +67,16 @@ export default async function Page({ searchParams }: Params) {
         </div>
         <Suspense>
           <TabsViaUrl defaultValue={defaultTab} className="space-y-4">
-            <TabsList className="w-full">
+            <TabsList className="w-full flex flex-col h-auto md:flex-row gap-2">
               <TabsLinkTrigger value="overview">
                 {t("dashboard.tabs.overview")}
               </TabsLinkTrigger>
               <TabsLinkTrigger value="appointments">
                 {t("dashboard.tabs.pendingAppointments")}{" "}
                 <PendingAppointmentsBadge />
+              </TabsLinkTrigger>
+              <TabsLinkTrigger value="financials">
+                {t("dashboard.tabs.financials")}
               </TabsLinkTrigger>
             </TabsList>
             {activeTab === "overview" && (
@@ -116,6 +121,16 @@ export default async function Page({ searchParams }: Params) {
                   }
                 >
                   <PendingAppointmentsTab />
+                </Suspense>
+              </TabsContent>
+            )}
+            {activeTab === "financials" && (
+              <TabsContent value="financials" className="space-y-4 flex-1">
+                <Suspense
+                  key={key}
+                  fallback={<FinancialsTabClient loading={true} />}
+                >
+                  <FinancialsTab searchParams={searchParams} />
                 </Suspense>
               </TabsContent>
             )}

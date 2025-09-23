@@ -1573,7 +1573,48 @@
     },
     "tabs": {
       "overview": "Огляд",
-      "pendingAppointments": "Очікуючі записи"
+      "pendingAppointments": "Очікуючі записи",
+      "financials": "Фінанси"
+    },
+    "financials": {
+      "title": "Фінансовий огляд",
+      "estimatedRevenue": "Очікуваний дохід",
+      "totalPayments": "Загальні платежі",
+      "netPayments": "Чисті платежі",
+      "activeAppointments": "Активні записи",
+      "declinedAppointments": "Відхилені записи",
+      "recentPayments": "Останні платежі",
+      "paymentMethods": "Способи оплати",
+      "noPayments": "Платежів не знайдено",
+      "amount": "Сума",
+      "status": "Статус",
+      "date": "Дата",
+      "customer": "Клієнт",
+      "service": "Послуга",
+      "dateRange": "Період",
+      "thisMonth": "Цей місяць",
+      "lastMonth": "Минулий місяць",
+      "thisWeek": "Цей тиждень",
+      "lastWeek": "Минулий тиждень",
+      "thisYear": "Цей рік",
+      "lastYear": "Минулий рік",
+      "allTime": "За весь час",
+      "custom": "Власний період",
+      "refunded": "Повернено",
+      "refundDate": "Дата повернення",
+      "refundAmount": "Сума повернення",
+      "viewAppointment": "Переглянути запис",
+      "revenueAndPayments": "Дохід та платежі",
+      "appointmentStatusDistribution": "Розподіл статусів записів",
+      "serviceDistribution": "Послуги",
+      "appointmentsCount": "{count, plural, =1 {1 запис}, few {# записи}, other {# записів}}",
+      "estimatedRevenueFormat": "Очікуваний дохід: {revenue}",
+      "financialOverview": "Фінансовий огляд",
+      "customerAcquisitionVsRetention": "Нові та існуючі клієнти",
+      "timeGrouping": "Групування за часом",
+      "daily": "Щоденно",
+      "weekly": "Щотижнево",
+      "monthly": "Щомісячно"
     }
   },
   "install": {
@@ -1798,7 +1839,9 @@
       "totalRefunded": "Повернена сума",
       "refundAmount": "Сума повернення",
       "cancel": "Скасувати",
-      "confirmRefundButton": "Підтвердити повернення ${amount}"
+      "confirmRefundButton": "Підтвердити повернення ${amount}",
+      "customerName": "Клієнт",
+      "appointment": "Запис"
     },
     "toasts": {
       "refundSuccess": "Оплату повернено",

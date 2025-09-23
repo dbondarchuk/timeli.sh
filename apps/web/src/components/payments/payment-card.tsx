@@ -1,6 +1,11 @@
 import { AvailableApps } from "@vivid/app-store";
 import { AdminKeys, AllKeys, useI18n, useLocale } from "@vivid/i18n";
-import { Payment, PaymentStatus, PaymentType } from "@vivid/types";
+import {
+  Payment,
+  PaymentStatus,
+  PaymentSummary,
+  PaymentType,
+} from "@vivid/types";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -26,6 +31,7 @@ import {
   toast,
   Tooltip,
   TooltipContent,
+  TooltipPortal,
   TooltipProvider,
   TooltipTrigger,
 } from "@vivid/ui";
@@ -42,7 +48,8 @@ import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
 
 export type PaymentCardProps = {
-  payment: Payment;
+  payment: Payment | PaymentSummary;
+  className?: string;
 };
 
 export const getPaymentStatusIcon = (status: PaymentStatus) => {
@@ -279,7 +286,10 @@ const RefundDialog = ({
   );
 };
 
-export const PaymentCard: React.FC<PaymentCardProps> = ({ payment }) => {
+export const PaymentCard: React.FC<PaymentCardProps> = ({
+  payment,
+  className,
+}) => {
   const { _id, amount, paidAt, description, status, type, refunds, ...rest } =
     payment;
 
@@ -343,6 +353,24 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({ payment }) => {
           description: t("admin.payment.toasts.refundSuccessDescription"),
         });
 
+        result.payment.paidAt = result.payment.paidAt
+          ? DateTime.fromISO(
+              result.payment.paidAt as unknown as string,
+            ).toJSDate()
+          : result.payment.paidAt;
+        result.payment.updatedAt = result.payment.updatedAt
+          ? DateTime.fromISO(
+              result.payment.updatedAt as unknown as string,
+            ).toJSDate()
+          : result.payment.updatedAt;
+        result.payment.refunds?.forEach((refund) => {
+          refund.refundedAt = refund.refundedAt
+            ? DateTime.fromISO(
+                refund.refundedAt as unknown as string,
+              ).toJSDate()
+            : refund.refundedAt;
+        });
+
         Object.assign(payment, result.payment);
 
         setIsRefundDialogOpen(false);
@@ -360,8 +388,8 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({ payment }) => {
   );
 
   return (
-    <Card className="w-full max-w-md">
-      <CardContent className="p-6">
+    <Card className={cn("w-full max-w-md", className)}>
+      <CardContent className="p-6 h-full flex flex-col">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center space-x-3">
             {getPaymentMethodIcon(
@@ -397,95 +425,161 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({ payment }) => {
 
         <Separator className="my-4" />
 
-        <div className="space-y-3">
-          <div className="flex justify-between items-center">
-            <span className="text-foreground/80">
-              {t("admin.payment.card.amount")}
-            </span>
-            <span className="font-semibold text-lg">
-              ${formatAmountString(amount)}
-            </span>
-          </div>
+        <div className="flex flex-col flex-1 justify-between">
+          <div className="flex flex-col gap-3">
+            <div className="flex justify-between items-center">
+              <span className="text-foreground/80">
+                {t("admin.payment.card.amount")}
+              </span>
+              <span className="font-semibold text-lg">
+                ${formatAmountString(amount)}
+              </span>
+            </div>
 
-          {/* {fee && (
+            {/* {fee && (
             <div className="flex justify-between items-center text-sm">
               <span className="text-gray-600">Processing Fee</span>
               <span className="text-gray-800">${fee.toFixed(2)}</span>
             </div>
           )} */}
 
-          {"externalId" in rest && (
+            {"externalId" in rest && (
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-foreground/80">
+                  {t("admin.payment.card.transactionId")}
+                </span>
+                <span className="font-mono text-xs bg-muted px-2 py-1 rounded">
+                  {rest.externalId}
+                </span>
+              </div>
+            )}
+
+            {"customerName" in rest && rest.customerId && (
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-foreground/80">
+                  {t("admin.payment.card.customerName")}
+                </span>
+                <span className="font-semibold">
+                  <a
+                    className="font-semibold underline"
+                    href={`/admin/dashboard/customers/${rest.customerId}`}
+                  >
+                    {rest.customerName}
+                  </a>
+                </span>
+              </div>
+            )}
+
+            {"serviceName" in rest && rest.appointmentId && (
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-foreground/80">
+                  {t("admin.payment.card.appointment")}
+                </span>
+                <a
+                  className="font-semibold underline"
+                  href={`/admin/dashboard/appointments/${rest.appointmentId}`}
+                >
+                  {rest.serviceName}
+                </a>
+              </div>
+            )}
+
             <div className="flex justify-between items-center text-sm">
               <span className="text-foreground/80">
-                {t("admin.payment.card.transactionId")}
-              </span>
-              <span className="font-mono text-xs bg-muted px-2 py-1 rounded">
-                {rest.externalId}
-              </span>
-            </div>
-          )}
-
-          <div className="flex justify-between items-center text-sm">
-            <span className="text-foreground/80">
-              {t("admin.payment.card.timePaid")}
-            </span>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <span className="text-sm text-foreground/60 underline decoration-dashed cursor-help">
-                    {dateTime.setLocale(locale).toRelative()}
-                  </span>
-                </TooltipTrigger>
-                <TooltipContent>
-                  {dateTime.toLocaleString(DateTime.DATETIME_MED, { locale })}
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
-
-          {refundedDateTime?.isValid && (
-            <div className="flex justify-between items-center text-sm">
-              <span className="text-foreground/80">
-                {t("admin.payment.card.timeRefunded")}
+                {t("admin.payment.card.timePaid")}
               </span>
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <span className="text-sm text-foreground/60 underline decoration-dashed cursor-help">
-                      {refundedDateTime.setLocale(locale).toRelative()}
+                      {dateTime.setLocale(locale).toRelative()}
                     </span>
                   </TooltipTrigger>
-                  <TooltipContent side="left">
-                    {refundedDateTime.toLocaleString(DateTime.DATETIME_MED, {
-                      locale,
-                    })}
-                  </TooltipContent>
+                  <TooltipPortal>
+                    <TooltipContent>
+                      {dateTime.toLocaleString(DateTime.DATETIME_MED, {
+                        locale,
+                      })}
+                    </TooltipContent>
+                  </TooltipPortal>
                 </Tooltip>
               </TooltipProvider>
             </div>
-          )}
 
-          {totalRefunded > 0 && (
-            <>
+            {refundedDateTime?.isValid && (
               <div className="flex justify-between items-center text-sm">
                 <span className="text-foreground/80">
-                  {t("admin.payment.card.refunded")}
+                  {t("admin.payment.card.timeRefunded")}
                 </span>
-                <span className="text-sm text-foreground/60">
-                  ${formatAmountString(totalRefunded)}
-                </span>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span className="text-sm text-foreground/60 underline decoration-dashed cursor-help">
+                        {refundedDateTime.setLocale(locale).toRelative()}
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipPortal>
+                      <TooltipContent side="left">
+                        {refundedDateTime.toLocaleString(
+                          DateTime.DATETIME_MED,
+                          {
+                            locale,
+                          },
+                        )}
+                      </TooltipContent>
+                    </TooltipPortal>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
-              <Separator className="my-4" />
-              <div className="flex justify-between items-center">
-                <span className="text-foreground/80">
-                  {t("admin.payment.card.amountLeft")}
-                </span>
-                <span className="font-semibold">
-                  ${formatAmountString(amount - totalRefunded)}
-                </span>
-              </div>
-            </>
-          )}
+            )}
+
+            {totalRefunded > 0 && (
+              <>
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-foreground/80">
+                    {t("admin.payment.card.refunded")}
+                  </span>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span className="text-sm text-foreground/60 underline decoration-dashed cursor-help">
+                          -${formatAmountString(totalRefunded)}
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipPortal>
+                        <TooltipContent className="flex flex-col gap-2">
+                          {refunds?.map((refund) => (
+                            <div
+                              key={refund.refundedAt?.toISOString()}
+                              className="flex flex-row gap-2"
+                            >
+                              <span>
+                                {DateTime.fromJSDate(
+                                  refund.refundedAt,
+                                ).toLocaleString(DateTime.DATETIME_MED, {
+                                  locale,
+                                })}
+                              </span>
+                              <span>-${formatAmountString(refund.amount)}</span>
+                            </div>
+                          ))}
+                        </TooltipContent>
+                      </TooltipPortal>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
+                <Separator className="my-4" />
+                <div className="flex justify-between items-center">
+                  <span className="text-foreground/80">
+                    {t("admin.payment.card.amountLeft")}
+                  </span>
+                  <span className="font-semibold">
+                    ${formatAmountString(amount - totalRefunded)}
+                  </span>
+                </div>
+              </>
+            )}
+          </div>
 
           {(status === "paid" ||
             (status === "refunded" && totalRefunded < amount)) &&

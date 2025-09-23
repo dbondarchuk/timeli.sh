@@ -9,15 +9,24 @@ import { Button } from "./button";
 import { Calendar } from "./calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
-export type CalendarDateRangePickerProps =
-  React.HTMLAttributes<HTMLDivElement> & {
-    range?: DateRange;
-    onChange?: (range?: DateRange) => void;
-  };
+export type RangeOption = {
+  label: string;
+  name: string;
+  value: DateRange | undefined;
+};
+
+export type CalendarDateRangePickerProps = Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "onChange"
+> & {
+  range?: DateRange;
+  onChange?: (range?: DateRange) => void;
+  rangeOptions?: RangeOption[];
+};
 
 export const CalendarDateRangePicker: React.FC<
   CalendarDateRangePickerProps
-> = ({ className, range, onChange }) => {
+> = ({ className, range, onChange, rangeOptions }) => {
   const t = useI18n("ui");
   const [date, setDate] = React.useState<DateRange | undefined>(range);
   React.useEffect(() => {
@@ -58,7 +67,24 @@ export const CalendarDateRangePicker: React.FC<
             )}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="end">
+        <PopoverContent
+          className="w-auto p-0 flex flex-col md:flex-row gap-2"
+          align="end"
+        >
+          {!!rangeOptions?.length && (
+            <div className="flex flex-col gap-1 px-2 py-4">
+              {rangeOptions?.map((option) => (
+                <Button
+                  key={option.name}
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => onSelect(option.value)}
+                >
+                  {option.label}
+                </Button>
+              ))}
+            </div>
+          )}
           <Calendar
             autoFocus
             mode="range"
