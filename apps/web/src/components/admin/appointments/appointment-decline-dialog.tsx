@@ -139,7 +139,11 @@ const PaymentRefundCard = ({
                 )}
               </h3>
               <p className="text-sm text-gray-600">
-                {t(`admin.${getPaymentDescription(payment.description)}`)}
+                {payment.description
+                  ? t.has(`admin.${getPaymentDescription(payment.description)}`)
+                    ? t(`admin.${getPaymentDescription(payment.description)}`)
+                    : payment.description
+                  : ""}
               </p>
             </div>
           </div>

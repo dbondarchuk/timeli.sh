@@ -34,6 +34,8 @@ export interface IPaymentsService {
     update: Partial<PaymentUpdateModel>,
   ): Promise<Payment>;
 
+  deletePayment(id: string): Promise<Payment | null>;
+
   refundPayment(
     id: string,
     amount: number,

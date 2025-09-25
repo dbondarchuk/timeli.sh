@@ -296,6 +296,26 @@ export class PaymentsService implements IPaymentsService {
     return updatedPayment;
   }
 
+  public async deletePayment(id: string): Promise<Payment | null> {
+    const logger = this.loggerFactory("deletePayment");
+    logger.debug({ paymentId: id }, "Deleting payment");
+
+    const db = await getDbConnection();
+    const payments = db.collection<Payment>(PAYMENTS_COLLECTION_NAME);
+
+    const payment = await payments.findOne({ _id: id });
+    if (!payment) {
+      logger.warn({ paymentId: id }, "Payment not found");
+      return null;
+    }
+
+    await payments.deleteOne({ _id: id });
+
+    logger.debug({ paymentId: id }, "Successfully deleted payment");
+
+    return payment;
+  }
+
   public async refundPayment(
     id: string,
     amount: number,

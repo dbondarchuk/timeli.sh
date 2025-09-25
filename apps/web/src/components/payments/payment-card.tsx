@@ -42,14 +42,18 @@ import {
   CircleDollarSign,
   Clock,
   CreditCard,
+  Pencil,
 } from "lucide-react";
 import { DateTime } from "luxon";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
+import { AddUpdatePaymentDialog } from "./add-update-payment-dialog";
+import { PaymentDeleteConfirmationModal } from "./payment-delete-confirmation-modal";
 
 export type PaymentCardProps = {
   payment: Payment | PaymentSummary;
   className?: string;
+  onDelete?: (payment: Payment) => void;
 };
 
 export const getPaymentStatusIcon = (status: PaymentStatus) => {
@@ -289,6 +293,7 @@ const RefundDialog = ({
 export const PaymentCard: React.FC<PaymentCardProps> = ({
   payment,
   className,
+  onDelete,
 }) => {
   const { _id, amount, paidAt, description, status, type, refunds, ...rest } =
     payment;
@@ -387,8 +392,16 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
     [totalRefunded, _id, t],
   );
 
+  const onUpdate = useCallback(
+    (updatedPayment: Payment) => {
+      Object.assign(payment, updatedPayment);
+      router.refresh();
+    },
+    [router],
+  );
+
   return (
-    <Card className={cn("w-full max-w-md", className)}>
+    <Card className={cn("w-full", className)}>
       <CardContent className="p-6 h-full flex flex-col">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center space-x-3">
@@ -406,7 +419,11 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
                 )}
               </h3>
               <p className="text-sm text-gray-600">
-                {t(`admin.${getPaymentDescription(description)}`)}
+                {description
+                  ? t.has(`admin.${getPaymentDescription(description)}`)
+                    ? t(`admin.${getPaymentDescription(description)}`)
+                    : description
+                  : ""}
               </p>
             </div>
           </div>
@@ -431,7 +448,7 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
               <span className="text-foreground/80">
                 {t("admin.payment.card.amount")}
               </span>
-              <span className="font-semibold text-lg">
+              <span className="font-semibold text-lg text-right">
                 ${formatAmountString(amount)}
               </span>
             </div>
@@ -448,7 +465,7 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
                 <span className="text-foreground/80">
                   {t("admin.payment.card.transactionId")}
                 </span>
-                <span className="font-mono text-xs bg-muted px-2 py-1 rounded">
+                <span className="font-mono text-xs bg-muted px-2 py-1 rounded text-right">
                   {rest.externalId}
                 </span>
               </div>
@@ -461,7 +478,7 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
                 </span>
                 <span className="font-semibold">
                   <a
-                    className="font-semibold underline"
+                    className="font-semibold underline text-right"
                     href={`/admin/dashboard/customers/${rest.customerId}`}
                   >
                     {rest.customerName}
@@ -476,7 +493,7 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
                   {t("admin.payment.card.appointment")}
                 </span>
                 <a
-                  className="font-semibold underline"
+                  className="font-semibold underline text-right"
                   href={`/admin/dashboard/appointments/${rest.appointmentId}`}
                 >
                   {rest.serviceName}
@@ -491,7 +508,7 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <span className="text-sm text-foreground/60 underline decoration-dashed cursor-help">
+                    <span className="text-sm text-foreground/60 underline decoration-dashed cursor-help text-right">
                       {dateTime.setLocale(locale).toRelative()}
                     </span>
                   </TooltipTrigger>
@@ -514,7 +531,7 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <span className="text-sm text-foreground/60 underline decoration-dashed cursor-help">
+                      <span className="text-sm text-foreground/60 underline decoration-dashed cursor-help text-right">
                         {refundedDateTime.setLocale(locale).toRelative()}
                       </span>
                     </TooltipTrigger>
@@ -592,6 +609,25 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
                 refund={refund}
               />
             )}
+
+          {type !== "online" && (
+            <div className="mt-4 flex flex-row gap-2 w-full">
+              <AddUpdatePaymentDialog
+                paymentId={payment._id}
+                payment={payment}
+                onSuccess={onUpdate}
+              >
+                <Button variant="primary" className="w-full">
+                  <Pencil /> {t("admin.payment.card.update")}
+                </Button>
+              </AddUpdatePaymentDialog>
+
+              <PaymentDeleteConfirmationModal
+                payment={payment}
+                onDelete={onDelete}
+              />
+            </div>
+          )}
 
           {status === "refunded" && totalRefunded >= amount && (
             <div className="mt-4">

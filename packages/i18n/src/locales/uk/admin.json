@@ -64,7 +64,8 @@
       "delete": "Видалити",
       "cancel": "Скасувати",
       "close": "Закрити",
-      "addNew": "Додати новий"
+      "addNew": "Додати новий",
+      "update": "Оновити"
     },
     "optional": "Опціонально",
     "timeDuration": "{hours, plural, =0 {{minutes} хв} other {# год, {minutes} хв}}",
@@ -279,8 +280,11 @@
       "payments": "Платежі",
       "communications": "Комунікації",
       "history": "Історія",
-      "details": "Деталі",
-      "noPayments": "Немає платежів"
+      "details": "Деталі"
+    },
+    "payments": {
+      "noPayments": "Немає платежів",
+      "addPayment": "Додати платіж"
     },
     "detail": {
       "by": "Від {name}"
@@ -1841,7 +1845,28 @@
       "cancel": "Скасувати",
       "confirmRefundButton": "Підтвердити повернення ${amount}",
       "customerName": "Клієнт",
-      "appointment": "Запис"
+      "appointment": "Запис",
+      "delete": "Видалити",
+      "deleteConfirmTitle": "Ви абсолютно впевнені?",
+      "deleteConfirmDescription": "Ви впевнені, що хочете видалити цей платіж на суму ${amount}, оплачений о {date}?",
+      "deleteSuccess": "Платіж був видалений",
+      "update": "Оновити"
+    },
+    "addUpdatePayment": {
+      "addPayment": "Додати платіж",
+      "updatePayment": "Оновити платіж",
+      "addPaymentDescription": "Додати вхідний платіж до запису",
+      "updatePaymentDescription": "Оновити вхідний платіж для запису",
+      "form": {
+        "amount": "Сума",
+        "description": "Опис",
+        "paidAt": "Дата та час оплати",
+        "type": {
+          "label": "Тип",
+          "cash": "Готівка",
+          "in-person-card": "Картка"
+        }
+      }
     },
     "toasts": {
       "refundSuccess": "Оплату повернено",

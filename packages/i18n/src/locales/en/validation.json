@@ -677,5 +677,17 @@
     "value": {
       "required": "Template value is required"
     }
+  },
+  "payments": {
+    "amount": {
+      "required": "Amount is required",
+      "min": "Amount must be at least 1"
+    },
+    "paidAt": {
+      "required": "Paid at is required"
+    },
+    "type": {
+      "required": "Type is required"
+    }
   }
 }

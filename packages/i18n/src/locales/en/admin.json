@@ -64,7 +64,8 @@
       "delete": "Delete",
       "cancel": "Cancel",
       "close": "Close",
-      "addNew": "Add new"
+      "addNew": "Add new",
+      "update": "Update"
     },
     "optional": "Optional",
     "timeDuration": "{hours, plural, =0 {{minutes} min} other {# hr, {minutes} min}}",
@@ -279,8 +280,7 @@
       "payments": "Payments",
       "communications": "Communications",
       "history": "History",
-      "details": "Details",
-      "noPayments": "No payments"
+      "details": "Details"
     },
     "detail": {
       "by": "By {name}"
@@ -335,6 +335,10 @@
       "doNotNotifyCustomerDescription": "If checked, the customer will not be notified about the appointment change",
       "updateAppointment": "Update appointment",
       "updatedSuccess": "Appointment was successfully updated"
+    },
+    "payments": {
+      "addPayment": "Add payment",
+      "noPayments": "No payments"
     },
     "actionButton": {
       "changesSaved": "Your changes were saved.",
@@ -1841,7 +1845,28 @@
       "cancel": "Cancel",
       "confirmRefundButton": "Confirm refund ${amount}",
       "customerName": "Customer",
-      "appointment": "Appointment"
+      "appointment": "Appointment",
+      "delete": "Delete",
+      "deleteConfirmTitle": "Are you absolutely sure?",
+      "deleteConfirmDescription": "Are you sure that you want to delete this payment for ${amount}, paid on {date}?",
+      "deleteSuccess": "Payment was deleted",
+      "update": "Update"
+    },
+    "addUpdatePayment": {
+      "addPayment": "Add payment",
+      "updatePayment": "Update payment",
+      "addPaymentDescription": "Add an in-store payment to the appointment",
+      "updatePaymentDescription": "Update an in-store payment for the appointment",
+      "form": {
+        "amount": "Amount",
+        "description": "Description",
+        "paidAt": "Paid at",
+        "type": {
+          "label": "Type",
+          "cash": "Cash",
+          "in-person-card": "Card"
+        }
+      }
     },
     "toasts": {
       "refundSuccess": "Payment was refunded",

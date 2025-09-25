@@ -154,6 +154,11 @@ export const FinancialsTabClient: React.FC<FinancialsTabProps> = ({
     searchParams.end.withOptions({ shallow: false }),
   );
 
+  const [key, setKey] = useQueryState("key", {
+    history: "replace",
+    shallow: false,
+  });
+
   const [timeGrouping, setTimeGrouping] = useQueryState(
     "timeGrouping",
     searchParams.timeGrouping.withOptions({ shallow: false }),
@@ -574,7 +579,9 @@ export const FinancialsTabClient: React.FC<FinancialsTabProps> = ({
               <PaymentCard
                 key={payment._id}
                 payment={payment}
-                className="max-w-full"
+                onDelete={() => {
+                  setKey(`${new Date().valueOf()}`);
+                }}
               />
             ))
           ) : (
