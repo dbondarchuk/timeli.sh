@@ -258,7 +258,7 @@ export const AppointmentFiles = ({ appointment }: AppointmentFilesProps) => {
             <Carousel className="w-full" setApi={setApi}>
               <CarouselContent>
                 {galleryItems.map((file, index) => (
-                  <CarouselItem key={index}>
+                  <CarouselItem key={`${file._id}-${index}`}>
                     <div className="flex flex-col gap-2 justify-center h-full max-h-lvh">
                       <div className="w-full flex justify-center max-h-[80%]">
                         <Image

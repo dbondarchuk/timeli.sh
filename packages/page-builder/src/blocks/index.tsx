@@ -5,6 +5,7 @@ import {
   TEditorBlock,
 } from "@vivid/builder";
 import {
+  ArrowBigRightDash,
   Calendar,
   ChevronDown,
   Code,
@@ -152,6 +153,11 @@ import {
   PopupPropsDefaults,
   PopupToolbar,
 } from "./popup";
+import {
+  RedirectConfiguration,
+  RedirectEditor,
+  RedirectPropsDefaults,
+} from "./redirect";
 import { EditorBlocksSchema } from "./schema";
 import {
   SpacerConfiguration,
@@ -422,6 +428,14 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     Configuration: LightboxConfiguration,
     defaultValue: LightboxPropsDefaults,
     category: "pageBuilder.blocks.categories.content",
+  },
+  Redirect: {
+    displayName: "pageBuilder.blocks.redirect.displayName",
+    icon: <ArrowBigRightDash />,
+    Editor: RedirectEditor,
+    Configuration: RedirectConfiguration,
+    defaultValue: RedirectPropsDefaults,
+    category: "pageBuilder.blocks.categories.navigation",
   },
 };
 

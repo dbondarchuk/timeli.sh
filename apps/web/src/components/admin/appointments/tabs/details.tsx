@@ -384,7 +384,7 @@ export const AppointmentDetails = ({
                       <AccordionContent>
                         <ul>
                           {appointment.addons.map((addon, index) => (
-                            <li key={index}>
+                            <li key={`${addon._id}-${index}`}>
                               <Link
                                 href={`/admin/dashboard/services/addons/${addon._id}`}
                                 variant="default"

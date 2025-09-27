@@ -265,7 +265,7 @@ export const StylingsConfigurationForm: React.FC<{
                   ).length > 1;
 
                 return (
-                  <Card key={index}>
+                  <Card key={color.fields_id}>
                     <CardHeader className="justify-between relative flex flex-row items-center border-b-2 border-secondary px-3 py-3 w-full">
                       <div className="hidden md:block">&nbsp;</div>
                       <div

@@ -1,4 +1,3 @@
-import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
 import { Styling } from "@vivid/page-builder";
 import { Header, PageReader } from "@vivid/page-builder/reader";
@@ -236,6 +235,7 @@ export default async function Page(props: Props) {
       general: settings,
       social: social,
       now: new Date(),
+      ...rest,
     };
 
     const cookieStore = await cookies();
@@ -262,8 +262,10 @@ export default async function Page(props: Props) {
       ? await ServicesContainer.PagesService().getPageFooter(page.footerId)
       : undefined;
 
-    const t = await getI18nAsync("translation");
-    const formattedArgs = formatArguments(args, settings.language);
+    const formattedArgs = formatArguments(
+      args,
+      rest.language || settings.language,
+    );
 
     return (
       <>

@@ -19,6 +19,7 @@ import { LinkPropsSchema } from "./link/schema";
 import { PageHeroPropsSchema } from "./page-hero/schema";
 import { PageLayoutPropsSchema } from "./page-layout/schema";
 import { PopupPropsSchema } from "./popup/schema";
+import { RedirectPropsSchema } from "./redirect/schema";
 import { SpacerPropsSchema } from "./spacer/schema";
 import { TextPropsSchema } from "./text/schema";
 import { VideoPropsSchema } from "./video/schema";
@@ -51,6 +52,7 @@ export const EditorBlocksSchema = {
   CustomHTML: CustomHTMLPropsSchema,
   BeforeAfter: BeforeAfterPropsSchema,
   Lightbox: LightboxPropsSchema,
+  Redirect: RedirectPropsSchema,
 } as {
   Image: typeof ImagePropsSchema;
   Button: typeof ButtonPropsSchema;
@@ -77,4 +79,5 @@ export const EditorBlocksSchema = {
   CustomHTML: typeof CustomHTMLPropsSchema;
   BeforeAfter: typeof BeforeAfterPropsSchema;
   Lightbox: typeof LightboxPropsSchema;
+  Redirect: typeof RedirectPropsSchema;
 };

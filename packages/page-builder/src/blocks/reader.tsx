@@ -20,6 +20,7 @@ import { Link } from "./link/reader";
 import { PageHeroReader } from "./page-hero/reader";
 import { PageLayoutReader } from "./page-layout/reader";
 import { PopupReader } from "./popup/reader";
+import { RedirectReader } from "./redirect/reader";
 import { EditorBlocksSchema } from "./schema";
 import { SpacerReader } from "./spacer/reader";
 import { TextReader } from "./text/reader";
@@ -103,5 +104,8 @@ export const ReaderBlocks: ReaderDocumentBlocksDictionary<
   },
   Lightbox: {
     Reader: LightboxReader,
+  },
+  Redirect: {
+    Reader: RedirectReader,
   },
 };

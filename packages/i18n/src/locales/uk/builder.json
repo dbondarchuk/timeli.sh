@@ -726,7 +726,8 @@
         "buttons": "Кнопки",
         "objects": "Об'єкти",
         "booking": "Форма бронювання",
-        "content": "Контент"
+        "content": "Контент",
+        "navigation": "Навігація"
       },
       "heading": {
         "displayName": "Заголовок",
@@ -1317,6 +1318,15 @@
             "horizontal": "Горизонтально",
             "vertical": "Вертикально"
           }
+        }
+      },
+      "redirect": {
+        "displayName": "Перенаправлення",
+        "url": "URL",
+        "permanent": "Постійне перенаправлення (HTTP 308)",
+        "editorRedirectText": "Ви будете перенаправлені до {url}",
+        "errors": {
+          "url": "URL є обов'язковим"
         }
       }
     },

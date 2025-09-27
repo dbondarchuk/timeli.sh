@@ -726,7 +726,8 @@
         "buttons": "Buttons",
         "objects": "Objects",
         "booking": "Booking",
-        "content": "Content"
+        "content": "Content",
+        "navigation": "Navigation"
       },
       "heading": {
         "displayName": "Heading",
@@ -1317,6 +1318,15 @@
             "horizontal": "Horizontal",
             "vertical": "Vertical"
           }
+        }
+      },
+      "redirect": {
+        "displayName": "Redirect",
+        "url": "URL",
+        "permanent": "Permanent redirect (HTTP 308)",
+        "editorRedirectText": "You will be redirected to {url}",
+        "errors": {
+          "url": "URL is required"
         }
       }
     },
