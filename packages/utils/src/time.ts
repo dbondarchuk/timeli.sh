@@ -56,6 +56,39 @@ export const timeToDuration = (
   return time.hours * 60 + time.minutes;
 };
 
+export const weeks = {
+  durationToTime: (minutes: number) => {
+    const duration = Duration.fromObject({ minutes }).shiftTo(
+      "weeks",
+      "days",
+      "hours",
+      "minutes",
+    );
+    return {
+      weeks: duration.weeks,
+      days: duration.days,
+      hours: duration.hours,
+      minutes: duration.minutes,
+    };
+  },
+  timeToDuration: (
+    time: {
+      weeks: number;
+      days: number;
+      hours: number;
+      minutes: number;
+    } | null,
+  ) => {
+    if (!time) return undefined;
+    return (
+      time.weeks * 7 * 24 * 60 +
+      time.days * 24 * 60 +
+      time.hours * 60 +
+      time.minutes
+    );
+  },
+};
+
 export const areTimesEqual = (
   timeA: Time | undefined | null,
   timeB: Time | undefined | null,

@@ -12,6 +12,7 @@ import {
   CustomerUpdateModel,
   IPaymentsService,
   IServicesService,
+  ModifyAppointmentInformationRequest,
   Payment,
   PaymentHistory,
   TimeSlot,
@@ -187,46 +188,20 @@ export class EventsService implements IEventsService {
       await this.configurationService.getConfigurations("booking", "general");
 
     if (!force) {
-      const eventTime = DateTime.fromJSDate(event.dateTime, {
-        zone: "utc",
-      }).setZone(generalConfig.timeZone);
-
-      if (eventTime < DateTime.now()) {
-        logger.error(
-          { eventTime, now: DateTime.now() },
-          "Event time is in the past",
-        );
-
-        throw new AppointmentTimeNotAvaialbleError("Time is not available");
-      }
-
-      const start = eventTime.startOf("day");
-      const end = start.endOf("day");
-
-      const events = await this.getBusyTimes(start, end, config, generalConfig);
-
-      const schedule = await this.scheduleService.getSchedule(
-        start.toJSDate(),
-        end.toJSDate(),
-      );
-
-      const availability = await this.getAvailableTimes(
-        start,
-        end,
+      const isAvailable = await this.verifyTimeAvailability(
+        event.dateTime,
         event.totalDuration,
-        events,
         config,
         generalConfig,
-        schedule,
       );
 
-      if (!availability.find((time) => time === eventTime.toMillis())) {
+      if (!isAvailable) {
         logger.error(
-          { eventTime, availability, start, end },
+          { dateTime: event.dateTime, duration: event.totalDuration },
           "Event time is not available",
         );
 
-        throw new Error("Time is not available");
+        throw new AppointmentTimeNotAvaialbleError("Time is not available");
       }
     }
 
@@ -354,10 +329,12 @@ export class EventsService implements IEventsService {
       event,
       confirmed: propsConfirmed,
       files,
+      doNotNotifyCustomer,
     }: {
       event: AppointmentEvent;
       confirmed?: boolean;
       files?: Record<string, File>;
+      doNotNotifyCustomer?: boolean;
     },
   ): Promise<Appointment> {
     const logger = this.loggerFactory("updateEvent");
@@ -373,6 +350,7 @@ export class EventsService implements IEventsService {
         },
         confirmed: propsConfirmed,
         fileCount: files ? Object.keys(files).length : 0,
+        doNotNotifyCustomer,
       },
       "Updating event",
     );
@@ -461,6 +439,7 @@ export class EventsService implements IEventsService {
             hookName: hook.name,
             confirmed,
             hookId: hook._id,
+            doNotNotifyCustomer,
           },
           "Executing appointment hook",
         );
@@ -472,6 +451,7 @@ export class EventsService implements IEventsService {
           event.totalDuration,
           updatedAppointment.dateTime,
           updatedAppointment.totalDuration,
+          doNotNotifyCustomer,
         );
 
         // if (confirmed) {
@@ -488,6 +468,7 @@ export class EventsService implements IEventsService {
             hookId: hook._id,
             appointmentId,
             confirmed,
+            doNotNotifyCustomer,
             error,
           },
           "Hook execution failed",
@@ -916,9 +897,74 @@ export class EventsService implements IEventsService {
     return result as Appointment | null;
   }
 
+  public async findAppointment(
+    fields: ModifyAppointmentInformationRequest["fields"],
+    status?: AppointmentStatus[],
+  ): Promise<Appointment | null> {
+    const logger = this.loggerFactory("findAppointment");
+    logger.debug({ fields }, "Finding appointment");
+
+    const db = await getDbConnection();
+    const appointments = db.collection<AppointmentEntity>(
+      APPOINTMENTS_COLLECTION_NAME,
+    );
+
+    const dateTime = DateTime.fromJSDate(fields.dateTime);
+
+    const filter: Filter<Appointment>[] = [
+      {
+        dateTime: {
+          $gte: dateTime.startOf("minute").toJSDate(),
+          $lte: dateTime.endOf("minute").toJSDate(),
+        },
+      },
+    ];
+
+    if (status && status.length) {
+      filter.push({
+        status: {
+          $in: status,
+        },
+      });
+    }
+
+    if (fields.type === "email") {
+      filter.push({ "fields.email": fields.email });
+    } else if (fields.type === "phone") {
+      filter.push({ "fields.phone": fields.phone });
+    }
+
+    const result = await appointments
+      .aggregate([
+        {
+          $match: {
+            $and: filter,
+          },
+        },
+        ...this.aggregateJoin,
+      ])
+      .next();
+
+    if (!result) {
+      logger.warn({ fields }, "Appointment not found");
+    } else {
+      logger.debug(
+        {
+          appointmentId: result._id,
+          customerName: result.customer?.name,
+          status: result.status,
+        },
+        "Appointment found",
+      );
+    }
+
+    return result as Appointment | null;
+  }
+
   public async changeAppointmentStatus(
     id: string,
     newStatus: AppointmentStatus,
+    by: "customer" | "user" = "user",
   ) {
     const logger = this.loggerFactory("changeAppointmentStatus");
     logger.debug(
@@ -972,6 +1018,7 @@ export class EventsService implements IEventsService {
       data: {
         oldStatus,
         newStatus,
+        by,
       },
     });
 
@@ -1005,6 +1052,7 @@ export class EventsService implements IEventsService {
           appointment,
           newStatus,
           oldStatus,
+          by,
         );
 
         logger.debug(
@@ -1126,6 +1174,7 @@ export class EventsService implements IEventsService {
     newTime: Date,
     newDuration: number,
     doNotNotifyCustomer?: boolean,
+    by: "customer" | "user" = "user",
   ) {
     const logger = this.loggerFactory("rescheduleAppointment");
     logger.debug(
@@ -1167,6 +1216,7 @@ export class EventsService implements IEventsService {
       data: {
         oldDateTime: oldTime,
         newDateTime: newTime,
+        by,
       },
     });
 
@@ -1347,6 +1397,67 @@ export class EventsService implements IEventsService {
     logger.debug({ historyEntry }, "Appointment history added");
 
     return historyEntry._id;
+  }
+
+  public async verifyTimeAvailability(
+    dateTime: Date,
+    duration: number,
+    propConfig?: BookingConfiguration,
+    propGeneralConfig?: GeneralConfiguration,
+  ): Promise<boolean> {
+    const logger = this.loggerFactory("verifyTimeAvailability");
+    logger.debug({ dateTime, duration }, "Verifying time availability");
+
+    const config =
+      propConfig ||
+      (await this.configurationService.getConfiguration("booking"));
+    const generalConfig =
+      propGeneralConfig ||
+      (await this.configurationService.getConfiguration("general"));
+
+    const eventTime = DateTime.fromJSDate(dateTime, {
+      zone: "utc",
+    }).setZone(generalConfig.timeZone);
+
+    if (eventTime < DateTime.now()) {
+      logger.warn(
+        { eventTime, now: DateTime.now() },
+        "Event time is in the past",
+      );
+
+      return false;
+    }
+
+    const start = eventTime.startOf("day");
+    const end = start.endOf("day");
+
+    const events = await this.getBusyTimes(start, end, config, generalConfig);
+
+    const schedule = await this.scheduleService.getSchedule(
+      start.toJSDate(),
+      end.toJSDate(),
+    );
+
+    const availability = await this.getAvailableTimes(
+      start,
+      end,
+      duration,
+      events,
+      config,
+      generalConfig,
+      schedule,
+    );
+
+    if (!availability.find((time) => time === eventTime.toMillis())) {
+      logger.warn(
+        { eventTime, availability, start, end },
+        "Event time is not available",
+      );
+
+      return false;
+    }
+
+    return true;
   }
 
   private async getAvailableTimes(
@@ -1633,6 +1744,9 @@ export class EventsService implements IEventsService {
         const dbEvent: AppointmentEntity = {
           _id: id,
           ...event,
+          dateTime: DateTime.fromJSDate(event.dateTime)
+            .startOf("minute")
+            .toJSDate(),
           status,
           createdAt: DateTime.now().toJSDate(),
           customerId: customer._id,
@@ -1655,6 +1769,7 @@ export class EventsService implements IEventsService {
             paidAt,
             externalId,
             status,
+            fees,
           } = await this.paymentsService.updateIntent(paymentIntentId, {
             appointmentId: id,
             customerId: customer._id,
@@ -1676,8 +1791,10 @@ export class EventsService implements IEventsService {
               description:
                 amount === event.totalPrice ? "full_payment" : "deposit",
               status: "paid",
-              type: "online",
+              method: "online",
+              type: "deposit",
               externalId: externalId,
+              fees,
             });
 
             payments.push(payment);
@@ -1716,6 +1833,7 @@ export class EventsService implements IEventsService {
               id: payments[0]._id,
               amount: payments[0].amount,
               status: payments[0].status,
+              method: payments[0].method,
               type: payments[0].type,
               intentId:
                 "intentId" in payments[0] ? payments[0].intentId : undefined,
@@ -1786,6 +1904,9 @@ export class EventsService implements IEventsService {
 
         const dbEvent: Partial<AppointmentEntity> = {
           ...event,
+          dateTime: DateTime.fromJSDate(event.dateTime)
+            .startOf("minute")
+            .toJSDate(),
           status,
         };
 
@@ -1809,8 +1930,8 @@ export class EventsService implements IEventsService {
             newDateTime: event.dateTime,
             oldDuration: oldEvent.totalDuration,
             newDuration: event.totalDuration,
-            oldTotalPrice: oldEvent.totalPrice,
-            newTotalPrice: event.totalPrice,
+            oldTotalPrice: oldEvent.totalPrice ?? 0,
+            newTotalPrice: event.totalPrice ?? 0,
             oldTotalDuration: oldEvent.totalDuration,
             newTotalDuration: event.totalDuration,
             oldStatus: oldEvent.status,

@@ -50,7 +50,7 @@ export async function POST(
         id: result.updatedPayment._id,
         amount: result.updatedPayment.amount,
         status: result.updatedPayment.status,
-        type: result.updatedPayment.type,
+        method: result.updatedPayment.method,
         appName:
           "appName" in result.updatedPayment
             ? result.updatedPayment.appName

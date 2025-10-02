@@ -145,18 +145,24 @@ export class EmailNotificationConnectedApp
     appData: ConnectedAppData,
     appointment: Appointment,
     newStatus: AppointmentStatus,
+    oldStatus?: AppointmentStatus,
+    by?: "customer" | "user",
   ): Promise<void> {
     const logger = this.loggerFactory("onAppointmentStatusChanged");
     logger.debug(
-      { appId: appData._id, appointmentId: appointment._id, newStatus },
+      { appId: appData._id, appointmentId: appointment._id, newStatus, by },
       "Appointment status changed, sending email notification",
     );
 
+    const status =
+      by === "customer" && newStatus === "declined"
+        ? "cancelledByCustomer"
+        : newStatus;
     try {
-      await this.sendNotification(appData, appointment, newStatus, newStatus);
+      await this.sendNotification(appData, appointment, status, newStatus);
 
       logger.info(
-        { appId: appData._id, appointmentId: appointment._id, newStatus },
+        { appId: appData._id, appointmentId: appointment._id, newStatus, by },
         "Successfully sent email notification for status change",
       );
     } catch (error: any) {
@@ -185,6 +191,10 @@ export class EmailNotificationConnectedApp
     appointment: Appointment,
     newTime: Date,
     newDuration: number,
+    oldTime?: Date,
+    oldDuration?: number,
+    doNotNotifyCustomer?: boolean,
+    by?: "customer" | "user",
   ): Promise<void> {
     const logger = this.loggerFactory("onAppointmentRescheduled");
     logger.debug(
@@ -207,7 +217,7 @@ export class EmailNotificationConnectedApp
       await this.sendNotification(
         appData,
         newAppointment,
-        "rescheduled",
+        by === "customer" ? "rescheduledByCustomer" : "rescheduled",
         "rescheduled",
       );
 
@@ -245,7 +255,11 @@ export class EmailNotificationConnectedApp
   private async sendNotification(
     appData: ConnectedAppData,
     appointment: Appointment,
-    status: keyof typeof AppointmentStatusToICalMethodMap | "auto-confirmed",
+    status:
+      | keyof typeof AppointmentStatusToICalMethodMap
+      | "auto-confirmed"
+      | "cancelledByCustomer"
+      | "rescheduledByCustomer",
     initiator: keyof typeof AppointmentStatusToICalMethodMap | "newRequest",
   ) {
     const logger = this.loggerFactory("sendNotification");
@@ -301,7 +315,16 @@ export class EmailNotificationConnectedApp
         "Generated email description from template",
       );
 
-      const newStatus = status === "auto-confirmed" ? "confirmed" : status;
+      let newStatus: keyof typeof AppointmentStatusToICalMethodMap;
+      if (status === "rescheduledByCustomer") {
+        newStatus = "rescheduled";
+      } else if (status === "cancelledByCustomer") {
+        newStatus = "declined";
+      } else if (status === "auto-confirmed") {
+        newStatus = "confirmed";
+      } else {
+        newStatus = status;
+      }
 
       const eventContent = getEventCalendarContent(
         config.general,
@@ -344,7 +367,7 @@ export class EmailNotificationConnectedApp
             method:
               status === "auto-confirmed"
                 ? "REQUEST"
-                : AppointmentStatusToICalMethodMap[status],
+                : AppointmentStatusToICalMethodMap[newStatus],
             content: eventContent,
           },
         },

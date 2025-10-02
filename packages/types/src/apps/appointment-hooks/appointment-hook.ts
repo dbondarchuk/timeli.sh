@@ -12,6 +12,7 @@ export interface IAppointmentHook {
     appointment: Appointment,
     newStatus: AppointmentStatus,
     oldStatus?: AppointmentStatus,
+    by?: "customer" | "user",
   ): Promise<void>;
   onAppointmentRescheduled(
     appData: ConnectedAppData,

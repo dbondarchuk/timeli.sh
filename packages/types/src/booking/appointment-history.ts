@@ -2,12 +2,13 @@ import { WithDatabaseId } from "../database";
 import { Prettify } from "../utils/helpers";
 import { Appointment, AppointmentStatus } from "./appointment";
 import { AppointmentDiscount } from "./appointment-event";
-import { PaymentStatus, PaymentType } from "./payment";
+import { PaymentMethod, PaymentStatus, PaymentType } from "./payment";
 
 export type PaymentHistory = {
   id: string;
   amount: number;
   status: PaymentStatus;
+  method: PaymentMethod;
   type: PaymentType;
   intentId?: string;
   externalId?: string;
@@ -24,10 +25,12 @@ type AppointmentHistoryTypes = {
   statusChanged: {
     oldStatus: AppointmentStatus;
     newStatus: AppointmentStatus;
+    by: "customer" | "user";
   };
   rescheduled: {
     oldDateTime: Date;
     newDateTime: Date;
+    by: "customer" | "user";
   };
   paymentAdded: {
     payment: PaymentHistory;

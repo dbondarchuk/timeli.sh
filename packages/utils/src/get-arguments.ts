@@ -57,13 +57,23 @@ type ArgsProps = {
   declined: boolean;
   pending: boolean;
   totalAmountPaid?: number;
+  totalAmountLeft?: number;
+  totalRefunded?: number;
+  totalAmountLeftToPay?: number;
   payments?: (Payment & {
     amountLeft: number;
     totalRefunded: number;
+    isOnline: boolean;
+    isCash: boolean;
+    isInPersonCard: boolean;
+    isTips: boolean;
+    isOther: boolean;
+    isDeposit: boolean;
+    isRescheduleFee: boolean;
+    isCancellationFee: boolean;
+    isPayment: boolean;
   })[];
   files: AssetEntity[];
-  totalAmountLeft?: number;
-  totalRefunded?: number;
   restFields: {
     name: string;
     value: any;
@@ -124,6 +134,15 @@ export const getArguments = <
           : (undefined as any as string),
       amountLeft,
       totalRefunded,
+      isOnline: payment.method === "online",
+      isCash: payment.method === "cash",
+      isInPersonCard: payment.method === "in-person-card",
+      isTips: payment.type === "tips",
+      isOther: payment.type === "other",
+      isDeposit: payment.type === "deposit",
+      isRescheduleFee: payment.type === "rescheduleFee",
+      isCancellationFee: payment.type === "cancellationFee",
+      isPayment: payment.type === "payment",
     };
   });
 
@@ -142,11 +161,24 @@ export const getArguments = <
     0,
   );
 
+  const totalAmountLeftToPay = appointment?.totalPrice
+    ? appointment.totalPrice -
+      (payments
+        ?.filter(
+          (payment) =>
+            payment.type !== "rescheduleFee" &&
+            payment.type !== "cancellationFee" &&
+            payment.type !== "tips",
+        )
+        .reduce((sum, payment) => sum + payment.amountLeft, 0) || 0)
+    : undefined;
+
   const extendedArgs: ArgsProps = {
     payments: payments || [],
     totalAmountLeft,
     totalRefunded,
     totalAmountPaid,
+    totalAmountLeftToPay,
     restFields: Object.entries(restFields).map(([name, value]) => ({
       name,
       value,

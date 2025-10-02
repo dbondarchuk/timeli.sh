@@ -192,13 +192,16 @@
       "amount": "Amount",
       "transactionId": "Transaction ID",
       "timePaid": "Time paid",
+      "fees": "Fees",
       "cancel": "Cancel",
       "declineAndRefund": "Decline and refund {count, plural, =1 {payment} other {# payments}}{amount, plural, =0 {} other { for $#}}",
       "decline": "Decline",
       "refunded": "Refunded",
       "refundableAmount": "Refundable amount",
       "refundAmount": "Refund amount",
-      "refundError": "One or more refund requests have failed."
+      "refundError": "One or more refund requests have failed.",
+      "requestedByCustomer": "Requested by customer",
+      "refundFees": "Refund fees"
     },
     "rescheduleDialog": {
       "title": "Reschedule the appointment",
@@ -286,9 +289,10 @@
       "by": "By {name}"
     },
     "history": {
-      "byUser": "Created by user",
-      "byCustomer": "Created by customer",
+      "byUser": "By user",
+      "byCustomer": "By customer",
       "payment": "Payment ${amount} via {appName}",
+      "paymentType": "{type} via {appName}",
       "oldStatus": "Old status: {oldStatus}",
       "newStatus": "New status: {newStatus}",
       "oldDateTime": "Old date and time: {oldDateTime}",
@@ -811,8 +815,16 @@
         "addons": "Add-ons",
         "duplicateAppointmentCheck": {
           "title": "Duplicate bookings for same service",
-          "enabled": "Ask for confirmation",
-          "enabledTooltip": "Ask customers to confirm if they already have a future appointment for the same service near the selected date/time",
+          "enabled": "Check for duplicate bookings",
+          "enabledTooltip": "Whether to ask for confirmation / not allow scheduling if customer already has a future appointment for the same service near the selected date/time",
+          "doNotAllowScheduling": {
+            "label": "Action to take",
+            "tooltip": "What to do if the customer already has a future appointment for the same service near the selected date/time",
+            "labels": {
+              "false": "Ask customer to confirm",
+              "true": "Do not allow scheduling"
+            }
+          },
           "days": "Days range",
           "daysSuffix": "days",
           "daysTooltip": "Number of days before or after the selected date/time to check for an existing appointment",
@@ -1364,7 +1376,8 @@
           "calendarSources": "Calendar sources",
           "options": "Options",
           "smartSchedule": "SmartSchedule",
-          "payments": "Payments"
+          "payments": "Payments",
+          "cancellationsAndReschedules": "Cancellations and Reschedules"
         },
         "main": {
           "add": "Add",
@@ -1447,6 +1460,62 @@
           "dontRequireIfCompletedMinNumberOfAppointments": "Min amount of appointments to not require deposit",
           "dontRequireIfCompletedMinNumberOfAppointmentsTooltip": "<p>Do not require deposit for customers who have at least specified amount of appointments completed</p><p><strong>Example:</strong> If set to 3, customers who are booking their first, second, or third appointment will be required to pay a deposit. While customers who are making their 4th or later appointmens will not be required to pay deposit unless it is specifically required for the customer</p><p><strong>Optional</strong></p>"
         },
+        "cancellationsAndReschedules": {
+          "title": "Cancellations and Reschedules",
+          "cancellations": {
+            "title": "Cancellations",
+            "enabledTooltip": "Enables ability for customers to cancel an appointment on their own",
+            "doNotAllowIfRescheduled": {
+              "label": "Do not allow if rescheduled",
+              "tooltip": "Configure if a customer can cancel an appointment if it has been rescheduled",
+              "labels": {
+                "true": "Do not allow",
+                "false": "Allow"
+              }
+            }
+          },
+          "reschedules": {
+            "title": "Reschedules",
+            "enabledTooltip": "Enables ability for customers to reschedule an appointment on their own",
+            "minutesToAppointment": {
+              "label": "Minimum time to appointment",
+              "tooltip": "Configure minimum time before appointment to allow rescheduling"
+            },
+            "maxReschedules": {
+              "label": "Max reschedules",
+              "tooltip": "Configure how many times a customer can reschedule an appointment"
+            }
+          },
+          "enabled": {
+            "label": "Enabled",
+            "selectPlaceholder": "Select option",
+            "labels": {
+              "disabled": "Disabled",
+              "enabled": "Enabled",
+              "notAllowedWithoutDeposit": "Not allowed without deposit"
+            }
+          },
+          "cancellationPolicy": {
+            "default": {
+              "title": "Default Policy",
+              "tooltip": "Configure default policy that will be applied if no other policy is applicable"
+            },
+            "policies": {
+              "title": "Policies",
+              "add": "Add policy"
+            }
+          },
+          "reschedulePolicy": {
+            "default": {
+              "title": "Default Policy",
+              "tooltip": "Configure default policy that will be applied if no other policy is applicable"
+            },
+            "policies": {
+              "title": "Policies",
+              "add": "Add policy"
+            }
+          }
+        },
         "cards": {
           "calendarSource": {
             "app": "App",
@@ -1471,6 +1540,61 @@
             "requestFailed": "Request failed.",
             "loadingOptions": "Loading options...",
             "selectOption": "Select option"
+          },
+          "cancellationPolicy": {
+            "action": {
+              "label": "Action",
+              "tooltip": "Configure action to be taken when a cancellation is requested",
+              "placeholder": "Select action",
+              "labels": {
+                "notAllowed": "Not allowed",
+                "forfeitDeposit": "Forfeit deposit",
+                "partialRefund": "Partial refund",
+                "fullRefund": "Full refund"
+              }
+            },
+            "refundFees": {
+              "label": "Refund fees",
+              "tooltip": "Configure if fees should be refunded when a cancellation is requested"
+            },
+            "refundPercentage": {
+              "label": "Refund percentage",
+              "tooltip": "Configure percentage of the deposit that will be refunded when a cancellation is requested"
+            },
+            "minutesToAppointment": {
+              "label": "Minimum time to appointment",
+              "tooltip": "Configure minimum time until appointment to apply this policy"
+            },
+            "remove": "Remove",
+            "deleteConfirmTitle": "Are you absolutely sure?",
+            "deleteCancellationPolicyConfirmDescription": "Are you sure you want to remove this cancellation policy?",
+            "cancel": "Cancel",
+            "delete": "Delete"
+          },
+          "reschedulePolicy": {
+            "action": {
+              "label": "Action",
+              "tooltip": "Configure action to be taken when a reschedule is requested",
+              "placeholder": "Select action",
+              "labels": {
+                "notAllowed": "Not allowed",
+                "allowed": "Allowed",
+                "paymentRequired": "Payment required"
+              }
+            },
+            "paymentPercentage": {
+              "label": "Payment percentage",
+              "tooltip": "Configure percentage of the appointment price that will be required to be paid when a reschedule is requested"
+            },
+            "minutesToAppointment": {
+              "label": "Minimum time to appointment",
+              "tooltip": "Configure minimum time until appointment to apply this policy"
+            },
+            "remove": "Remove",
+            "deleteConfirmTitle": "Are you absolutely sure?",
+            "deleteReschedulePolicyConfirmDescription": "Are you sure you want to remove this reschedule policy?",
+            "cancel": "Cancel",
+            "delete": "Delete"
           }
         },
         "toasts": {
@@ -1850,7 +1974,11 @@
       "deleteConfirmTitle": "Are you absolutely sure?",
       "deleteConfirmDescription": "Are you sure that you want to delete this payment for ${amount}, paid on {date}?",
       "deleteSuccess": "Payment was deleted",
-      "update": "Update"
+      "update": "Update",
+      "description": "Description",
+      "fees": "Fees",
+      "netAmount": "Net amount",
+      "refundFees": "Refund fees"
     },
     "addUpdatePayment": {
       "addPayment": "Add payment",
@@ -1861,10 +1989,13 @@
         "amount": "Amount",
         "description": "Description",
         "paidAt": "Paid at",
-        "type": {
-          "label": "Type",
+        "method": {
+          "label": "Method",
           "cash": "Cash",
           "in-person-card": "Card"
+        },
+        "type": {
+          "label": "Type"
         }
       }
     },
@@ -1876,11 +2007,25 @@
     },
     "descriptions": {
       "fullPayment": "Full payment",
-      "deposit": "Deposit"
+      "deposit": "Deposit",
+      "rescheduleFee": "Reschedule fee"
+    },
+    "types": {
+      "deposit": "Deposit",
+      "rescheduleFee": "Reschedule fee",
+      "cancellationFee": "Cancellation fee",
+      "payment": "Payment",
+      "tips": "Tips",
+      "other": "Other"
     },
     "methods": {
       "cash": "Cash",
       "card": "Card"
+    },
+    "feeTypes": {
+      "transaction": "Transaction fee",
+      "platform": "Platform fee",
+      "other": "Other"
     }
   }
 }

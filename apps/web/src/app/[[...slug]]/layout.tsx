@@ -1,50 +1,17 @@
-import { SonnerToaster, Toaster } from "@vivid/ui";
+import { ConfigProvider, SonnerToaster, Toaster } from "@vivid/ui";
 
-import { fontsOptions, Resource } from "@vivid/types";
+import { Resource } from "@vivid/types";
 
 import NextScript from "next/script";
 
 import { CookiesProvider } from "@/components/cookies-provider";
 import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
-import { getColorsCss } from "@vivid/utils";
+import { buildGoogleFontsUrl, getColorsCss } from "@vivid/utils";
 import "../globals.css";
 
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale } from "next-intl/server";
-
-const buildGoogleFontsUrl = (...fonts: (string | undefined)[]): string => {
-  const families = fonts
-    .filter(
-      (fontName): fontName is string => !!fontName && fontName in fontsOptions,
-    )
-    .map((fontName) => {
-      const font = fontsOptions[fontName];
-      const family = fontName.replace(/ /g, "+");
-
-      const variantParams = font.variants
-        .map((v) => {
-          if (v === "regular") return "0,400";
-          if (v === "italic") return "1,400";
-          const match = v.match(/^(\d+)(italic)?$/);
-          if (match) {
-            const weight = match[1];
-            const isItalic = !!match[2];
-            return `${isItalic ? 1 : 0},${weight}`;
-          }
-          return null;
-        })
-        .filter(Boolean)
-        .join(";");
-
-      if (variantParams) {
-        return `family=${family}:ital,wght@${variantParams}`;
-      }
-      return `family=${family}`;
-    });
-
-  return `https://fonts.googleapis.com/css2?${families.join("&")}&display=swap`;
-};
 
 const ScriptRenderer = ({
   resource,
@@ -179,14 +146,16 @@ export default async function RootLayout({
         </head>
         {/* <TwLoad /> */}
         <body className="font-primary">
-          <NextIntlClientProvider>
-            <main className="min-h-screen max-w-none">{children}</main>
-            {scripts?.footer?.map((resource, index) => (
-              <ScriptRenderer resource={resource} id={index} key={index} />
-            ))}
-            <Toaster />
-            <SonnerToaster />
-          </NextIntlClientProvider>
+          <ConfigProvider config={general}>
+            <NextIntlClientProvider>
+              <main className="min-h-screen max-w-none">{children}</main>
+              {scripts?.footer?.map((resource, index) => (
+                <ScriptRenderer resource={resource} id={index} key={index} />
+              ))}
+              <Toaster />
+              <SonnerToaster />
+            </NextIntlClientProvider>
+          </ConfigProvider>
         </body>
       </html>
     </CookiesProvider>

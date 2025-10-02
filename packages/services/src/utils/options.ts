@@ -81,6 +81,12 @@ export const getOptions = async () => {
     fieldsSchema: configFields,
     timeZone: timeZone,
     showPromoCode: showPromoCode,
+    allowReschedules:
+      config.cancellationsAndReschedules.reschedules.enabled &&
+      config.cancellationsAndReschedules.reschedules.enabled !== "disabled",
+    allowCancellations:
+      config.cancellationsAndReschedules.cancellations.enabled &&
+      config.cancellationsAndReschedules.cancellations.enabled !== "disabled",
   };
 
   return response;

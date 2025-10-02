@@ -1,9 +1,4 @@
-import {
-  ApplyDiscountResponse,
-  AppointmentRequest,
-  Payment,
-  PaymentIntent,
-} from "../../booking";
+import { Payment, PaymentIntent } from "../../booking";
 import { ConnectedAppData } from "../connected-app.data";
 
 export interface IPaymentProcessor {
@@ -15,13 +10,7 @@ export interface IPaymentProcessor {
   ) => Promise<{ success: boolean; error?: string }>;
 }
 
-export type PaymentAppFormProps<T extends Record<string, any>> = Pick<
-  AppointmentRequest,
-  "addonsIds" | "fields" | "optionId"
-> & {
-  fields: AppointmentRequest["fields"];
-  totalPrice: number;
-  discount?: ApplyDiscountResponse;
+export type PaymentAppFormProps<T extends Record<string, any>> = {
   intent: PaymentIntent;
   onSubmit: () => void;
 } & T;

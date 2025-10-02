@@ -15,6 +15,7 @@ export const changeStatus = async (
   refresh: () => void,
   onSuccess?: (newStatus: AppointmentStatus) => void,
   beforeRequest?: () => Promise<void> | void,
+  requestedByCustomer?: boolean,
 ) => {
   setIsLoading(true);
 
@@ -24,7 +25,7 @@ export const changeStatus = async (
       if (result instanceof Promise) await result;
     }
 
-    const res = await changeAppointmentStatus(_id, status);
+    const res = await changeAppointmentStatus(_id, status, requestedByCustomer);
     if (res !== okStatus) throw new Error("Request failed");
   };
 
@@ -47,6 +48,7 @@ export const AppointmentActionButton = React.forwardRef<
   ButtonProps & {
     _id: string;
     status: AppointmentStatus;
+    requestedByCustomer?: boolean;
     onSuccess?: (newStatus: AppointmentStatus) => void;
     beforeRequest?: () => Promise<void> | void;
     setIsLoading?: (isLoading: boolean) => void;
@@ -56,6 +58,7 @@ export const AppointmentActionButton = React.forwardRef<
     {
       _id,
       status,
+      requestedByCustomer,
       onSuccess,
       beforeRequest,
       onClick: originalOnClick,
@@ -86,6 +89,7 @@ export const AppointmentActionButton = React.forwardRef<
           originalOnClick?.(e);
         },
         beforeRequest,
+        requestedByCustomer,
       );
     };
 

@@ -146,18 +146,36 @@ export class CalendarWriterConnectedApp
     appData: ConnectedAppData,
     appointment: Appointment,
     newStatus: AppointmentStatus,
+    oldStatus?: AppointmentStatus,
+    by?: "customer" | "user",
   ): Promise<void> {
     const logger = this.loggerFactory("onAppointmentStatusChanged");
     logger.debug(
-      { appId: appData._id, appointmentId: appointment._id, newStatus },
+      {
+        appId: appData._id,
+        appointmentId: appointment._id,
+        newStatus,
+        oldStatus,
+        by,
+      },
       "Appointment status changed, updating calendar event",
     );
 
     try {
-      await this.makeEvent(appData, appointment, newStatus, newStatus);
+      const status =
+        by === "customer" && newStatus === "declined"
+          ? "cancelledByCustomer"
+          : newStatus;
+      await this.makeEvent(appData, appointment, status, newStatus);
 
       logger.info(
-        { appId: appData._id, appointmentId: appointment._id, newStatus },
+        {
+          appId: appData._id,
+          appointmentId: appointment._id,
+          newStatus,
+          oldStatus,
+          by,
+        },
         "Successfully updated calendar event for status change",
       );
     } catch (error: any) {
@@ -186,6 +204,10 @@ export class CalendarWriterConnectedApp
     appointment: Appointment,
     newTime: Date,
     newDuration: number,
+    oldTime?: Date,
+    oldDuration?: number,
+    doNotNotifyCustomer?: boolean,
+    by?: "customer" | "user",
   ): Promise<void> {
     const logger = this.loggerFactory("onAppointmentRescheduled");
     logger.debug(
@@ -199,7 +221,12 @@ export class CalendarWriterConnectedApp
     );
 
     try {
-      await this.makeEvent(appData, appointment, "rescheduled", "Rescheduled");
+      await this.makeEvent(
+        appData,
+        appointment,
+        by === "customer" ? "rescheduledByCustomer" : "rescheduled",
+        "Rescheduled",
+      );
 
       logger.info(
         {
@@ -235,7 +262,11 @@ export class CalendarWriterConnectedApp
   private async makeEvent(
     appData: ConnectedAppData,
     appointment: Appointment,
-    status: keyof typeof AppointmentStatusToICalMethodMap | "auto-confirmed",
+    status:
+      | keyof typeof AppointmentStatusToICalMethodMap
+      | "auto-confirmed"
+      | "cancelledByCustomer"
+      | "rescheduledByCustomer",
     initiator: string,
   ) {
     const logger = this.loggerFactory("makeEvent");
@@ -286,12 +317,16 @@ export class CalendarWriterConnectedApp
         .getAppService<ICalendarWriter>(data.appId);
 
       const uid = getIcsEventUid(appointment._id, config.general.url);
-      const newStatus =
-        status === "rescheduled"
-          ? appointment.status
-          : status === "auto-confirmed"
-            ? "confirmed"
-            : status;
+      let newStatus: AppointmentStatus;
+      if (status === "rescheduled" || status === "rescheduledByCustomer") {
+        newStatus = appointment.status;
+      } else if (status === "auto-confirmed") {
+        newStatus = "confirmed";
+      } else if (status === "cancelledByCustomer") {
+        newStatus = "declined";
+      } else {
+        newStatus = status;
+      }
 
       const event: CalendarEvent = {
         id: appointment._id,

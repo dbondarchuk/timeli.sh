@@ -12,6 +12,6 @@ Respond{{#confirmed}} Y to confirm,{{/confirmed}} N to decline`,
 Appointment {{customer.name}} for {{option.name}} on {{dateTime.full}} was confirmed.
 Thank you`,
     appointmentDeclined: `Hi {{config.name}},
-Appointment {{customer.name}} for {{option.name}} on {{dateTime.full}} was declined.
+Appointment {{customer.name}} for {{option.name}} on {{dateTime.full}} was declined/cancelled.
 Thank you`,
   };

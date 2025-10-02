@@ -32,6 +32,7 @@
   "form_email_label": "Електронна пошта",
   "form_phone_label": "Телефон",
   "form_promo_code": "Промокод",
+  "form_select_option": "Виберіть опцію",
   "apply": "Застосувати",
   "promo_code_success": "Промокод {code} (-${discount}) успішно застосовано.",
   "promo_code_error": "Промокод недійсний.",
@@ -40,7 +41,8 @@
   "search_country_code_label": "Пошук країни...",
   "search_timezone_label": "Пошук для зміни часового поясу",
   "confirmation_success_title": "Ваш запит отримано!",
-  "confirmation_success_message": "Дякуємо, {name}! Ваш запит отримано, і ви незабаром отримаєте підтвердження на електронну пошту.",
+  "confirmation_success_message": "Дякуємо, {name}! Ваш запит на {service} отримано, і ви незабаром отримаєте підтвердження на електронну пошту.",
+  "confirmation_fetch_failed_title": "Ми не можемо знайти ваш запис",
   "availability_fetch_failed_title": "Ой! Щось пішло не так.",
   "availability_fetch_failed_description": "Щось пішло не так під час отримання доступного часу",
   "submit_event_failed_title": "Ой! Щось пішло не так.",
@@ -55,6 +57,48 @@
   "payment_form_full_payment_required_description": "Для бронювання цього запису потрібна повна оплата ${amount}. Будь ласка, оплатіть, використовуючи форму нижче",
   "duplicate_appointment_confirmation_title": "Ви впевнені?",
   "duplicate_appointment_checkbox_label": "Я підтверджую, що розумію та хочу забронювати цей запис",
+
+  "modify_appointment_title": "Змінити запис",
+  "modify_appointment_form_type_label": "Електронна пошта або телефон",
+
+  "cancel_appointment_title": "Скасувати запис",
+  "reschedule_appointment_title": "Перенести запис",
+
+  "cancel_appointment_form_title": "Давайте знайдемо ваш запис. Будь ласка, надайте деталі запису, який ви хочете скасувати",
+  "reschedule_appointment_form_title": "Давайте знайдемо ваш запис. Будь ласка, надайте деталі запису, який ви хочете перенести",
+
+  "cancel_appointment_confirmation_success_title": "Ваш запис був скасований",
+  "cancel_appointment_confirmation_success_message": "Дякуємо, {name}! Ваш запис для {service} був скасований і ви отримаєте підтвердження електронною поштою в найближчому часі.",
+
+  "reschedule_appointment_confirmation_success_title": "Ваш запис був перенесений",
+  "reschedule_appointment_confirmation_success_message": "Дякуємо, {name}! Ваш запис для {service} був перенесений на {newDateTime} і ви отримаєте підтвердження електронною поштою в найближчому часі.",
+
+  "cancel_appointment_not_allowed_title": "Скасування не дозволено для цього запису",
+  "cancel_appointment_not_allowed_message": "Привіт {name}, на жаль, ми не можемо скасувати цей запис в цей час. Будь ласка, зв'яжіться з нами, щоб скасувати.",
+
+  "reschedule_appointment_not_allowed_title": "Перенесення не дозволено для цього запису",
+  "reschedule_appointment_not_allowed_message": "Привіт {name}, на жаль, ми не можемо перенести цей запис в цей час. Будь ласка, зв'яжіться з нами, щоб перенести.",
+
+  "appointment_fetch_failed_title": "Ми не можемо знайти ваш запис",
+  "appointment_fetch_failed_description": "Ми не можемо знайти ваш запис. Переконайтеся, що Ви ввели правильну дату та час, а також електронну пошту чи номер телефону, та спробуйте знову. Або зв'яжіться з нами, щоб змінити ваш запис.",
+
+  "cancel_appointment_confirmation_title": "Ви впевнені?",
+  "cancel_appointment_confirmation_forfeitDeposit_description": "Привіт {name}, ви впевнені, що хочете скасувати ваш запис для <b>{service}</b> на <i>{dateTime}</i>?<br></br>Якщо ви це зробите, ваш депозит не буде повернений.",
+  "cancel_appointment_confirmation_partialRefund_description": "Привіт {name}, ви впевнені, що хочете скасувати ваш запис для <b>{service}</b> на <i>{dateTime}</i>?<br></br>Якщо ви це зробите, <b>{refundPercentage}%</b> вашого депозиту{refundFees, plural, =1 {} other {{feesAmount, plural, =0 {} other { (окрім <b>${feesAmount} комісій</b>)}}}} буде повернено (<b>${refundAmount}</b>).",
+  "cancel_appointment_confirmation_fullRefund_description": "Привіт {name}, ви впевнені, що хочете скасувати ваш запис для <b>{service}</b> на <i>{dateTime}</i>?<br></br>Якщо ви це зробите, ваш депозит{refundFees, plural, =1 {} other {{feesAmount, plural, =0 {} other { (окрім <b>${feesAmount} комісій</b>)}}}} буде повернений <b>в повному обсязі</b> (<b>${refundAmount}</b>).",
+  "cancel_appointment_confirmation_checkbox_label": "Я підтверджую, що розумію та хочу скасувати цей запис",
+
+  "reschedule_appointment_confirmation_title": "Ви впевнені?",
+  "reschedule_appointment_confirmation_description": "Привіт {name}, ви впевнені, що хочете Ваш запис на <b>{service}</b> на <i>{dateTime}</i> перенести на <i>{newDateTime}</i>?",
+  "reschedule_appointment_confirmation_checkbox_label": "Я підтверджую, що розумію та хочу перенести цей запис",
+
+  "cancel_submit_failed_title": "Ой! Щось пішло не так.",
+  "cancel_submit_failed_description": "Щось пішло не так під час спроби скасувати ваш запис. Будь ласка, зв'яжіться з нами",
+  "reschedule_submit_failed_title": "Ой! Щось пішло не так.",
+  "reschedule_submit_failed_description": "Щось пішло не так під час спроби перенести ваш запис. Будь ласка, зв'яжіться з нами",
+  "reschedule_fee_required_title": "Потрібна плата за перенос запису",
+  "reschedule_fee_required_description": "Для перенесення цього запису потрібна плата {percentage}% (${amount}) від загальної ціни ${totalPrice}. Будь ласка, оплатіть, використовуючи форму нижче",
+
   "footer": {
     "contactUsLabel": "Зв'яжіться з нами",
     "phone": "Телефон",

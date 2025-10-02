@@ -122,7 +122,9 @@
   "durationInput": {
     "hr": "hr",
     "min": "min",
-    "sec": "sec"
+    "sec": "sec",
+    "weeks": "weeks",
+    "days": "days"
   },
   "dataTable": {
     "searchPlaceholder": "Search...",
@@ -170,5 +172,9 @@
     "am": "AM",
     "pm": "PM",
     "format": "MM/dd/yyyy hh:mm a"
+  },
+  "currencyInput": {
+    "amount": "Amount: ${amount}",
+    "max": "Max: ${max}"
   }
 }

@@ -1,7 +1,30 @@
 import { z } from "zod";
 import { WithDatabaseId } from "../database";
 import { Prettify } from "../utils/helpers";
-import { AppointmentRequest } from "./appointment-event";
+import {
+  AppointmentRequest,
+  ModifyAppointmentRequest,
+} from "./appointment-event";
+
+export const paymentType = [
+  "deposit",
+  "rescheduleFee",
+  "cancellationFee",
+  "payment",
+  "tips",
+  "other",
+] as const;
+
+export type PaymentType = (typeof paymentType)[number];
+export const paymentTypeSchema = z.enum(paymentType);
+
+export const paymentFeeType = ["transaction", "platform", "other"] as const;
+export type PaymentFeeType = (typeof paymentFeeType)[number];
+
+export type PaymentFee = {
+  type: PaymentFeeType;
+  amount: number;
+};
 
 export type PaymentIntentStatus = "created" | "failed" | "paid";
 export type PaymentIntentUpdateModel = {
@@ -12,10 +35,19 @@ export type PaymentIntentUpdateModel = {
   appName: string;
   status: PaymentIntentStatus;
   appointmentId?: string;
-  request: AppointmentRequest;
   externalId?: string;
   error?: string;
-};
+  fees?: PaymentFee[];
+} & (
+  | {
+      type: Exclude<PaymentType, "rescheduleFee">;
+      request: AppointmentRequest;
+    }
+  | {
+      type: Extract<PaymentType, "rescheduleFee">;
+      request: ModifyAppointmentRequest;
+    }
+);
 
 export type PaymentIntent = WithDatabaseId<
   PaymentIntentUpdateModel & {
@@ -30,13 +62,13 @@ export type CollectPayment = {
   intent: Omit<PaymentIntent, "request">;
 };
 
-export const inPersonPaymentType = ["cash", "in-person-card"] as const;
+export const inPersonPaymentMethod = ["cash", "in-person-card"] as const;
 
 export type PaymentStatus = "paid" | "refunded";
-export type OnlinePaymentType = "online";
-export type InPersonPaymentType = (typeof inPersonPaymentType)[number];
+export type OnlinePaymentMethod = "online";
+export type InPersonPaymentMethod = (typeof inPersonPaymentMethod)[number];
 
-export type PaymentType = OnlinePaymentType | InPersonPaymentType;
+export type PaymentMethod = OnlinePaymentMethod | InPersonPaymentMethod;
 
 export type PaymentUpdateModel = {
   amount: number;
@@ -45,16 +77,18 @@ export type PaymentUpdateModel = {
   appointmentId: string;
   customerId: string;
   description: string;
+  type: PaymentType;
+  fees?: PaymentFee[];
   refunds?: {
     amount: number;
     refundedAt: Date;
   }[];
 } & (
   | {
-      type: InPersonPaymentType;
+      method: InPersonPaymentMethod;
     }
   | {
-      type: OnlinePaymentType;
+      method: OnlinePaymentMethod;
       intentId: string;
       externalId?: string;
       appName: string;
@@ -70,6 +104,12 @@ export type Payment = Prettify<
   >
 >;
 
+export type OnlinePayment = Extract<Payment, { method: OnlinePaymentMethod }>;
+export type InStorePayment = Extract<
+  Payment,
+  { method: InPersonPaymentMethod }
+>;
+
 export const inStorePaymentUpdateModelSchema = z.object({
   amount: z.coerce
     .number({ message: "payments.amount.min" })
@@ -77,7 +117,10 @@ export const inStorePaymentUpdateModelSchema = z.object({
   paidAt: z.coerce.date({ message: "payments.paidAt.required" }),
   appointmentId: z.string(),
   description: z.string(),
-  type: z.enum(inPersonPaymentType, { message: "payments.type.required" }),
+  method: z.enum(inPersonPaymentMethod, {
+    message: "payments.method.required",
+  }),
+  type: z.enum(paymentType, { message: "payments.type.required" }),
 });
 
 export type InStorePaymentUpdateModel = z.infer<

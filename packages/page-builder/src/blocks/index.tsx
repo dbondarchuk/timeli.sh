@@ -7,6 +7,8 @@ import {
 import {
   ArrowBigRightDash,
   Calendar,
+  CalendarCheck,
+  CalendarSync,
   ChevronDown,
   Code,
   Columns3,
@@ -68,6 +70,11 @@ import {
   BookingToolbar,
 } from "./booking";
 import {
+  BookingConfirmationConfiguration,
+  BookingConfirmationEditor,
+  BookingConfirmationPropsDefaults,
+} from "./booking-confirmation";
+import {
   CarouselConfiguration,
   CarouselEditor,
   CarouselPropsDefaults,
@@ -119,10 +126,12 @@ import {
   ImagePropsDefaults,
   ImageToolbar,
 } from "./image";
-import { InlineContainerConfiguration } from "./inline-container/configuration";
-import { InlineContainerEditor } from "./inline-container/editor";
-import { InlineContainerPropsDefaults } from "./inline-container/schema";
-import { InlineContainerToolbar } from "./inline-container/toolbar";
+import {
+  InlineContainerConfiguration,
+  InlineContainerEditor,
+  InlineContainerPropsDefaults,
+  InlineContainerToolbar,
+} from "./inline-container";
 import {
   InlineTextConfiguration,
   InlineTextEditor,
@@ -134,6 +143,11 @@ import {
   LightboxEditor,
   LightboxPropsDefaults,
 } from "./lightbox";
+import {
+  ModifyAppointmentFormConfiguration,
+  ModifyAppointmentFormEditor,
+  ModifyAppointmentFormPropsDefaults,
+} from "./modify-appointment-form";
 import {
   PageHeroConfiguration,
   PageHeroEditor,
@@ -436,6 +450,22 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     Configuration: RedirectConfiguration,
     defaultValue: RedirectPropsDefaults,
     category: "pageBuilder.blocks.categories.navigation",
+  },
+  ModifyAppointmentForm: {
+    displayName: "pageBuilder.blocks.modifyAppointmentForm.displayName",
+    icon: <CalendarSync />,
+    Editor: ModifyAppointmentFormEditor,
+    Configuration: ModifyAppointmentFormConfiguration,
+    defaultValue: ModifyAppointmentFormPropsDefaults,
+    category: "pageBuilder.blocks.categories.booking",
+  },
+  BookingConfirmation: {
+    displayName: "pageBuilder.blocks.bookingConfirmation.displayName",
+    icon: <CalendarCheck />,
+    Editor: BookingConfirmationEditor,
+    Configuration: BookingConfirmationConfiguration,
+    defaultValue: BookingConfirmationPropsDefaults,
+    category: "pageBuilder.blocks.categories.booking",
   },
 };
 

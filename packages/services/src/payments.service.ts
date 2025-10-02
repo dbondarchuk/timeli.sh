@@ -39,6 +39,7 @@ export class PaymentsService implements IPaymentsService {
           appointmentId: intent.appointmentId,
           customerId: intent.customerId,
           appName: intent.appName,
+          type: intent.type,
         },
       },
       "Creating payment intent",
@@ -49,13 +50,13 @@ export class PaymentsService implements IPaymentsService {
       PAYMENT_INTENTS_COLLECTION_NAME,
     );
 
-    const dbIntent: PaymentIntent = {
+    const dbIntent = {
       ...intent,
       _id: new ObjectId().toString(),
       status: "created",
       createdAt: new Date(),
       updatedAt: new Date(),
-    };
+    } as PaymentIntent;
 
     await intents.insertOne(dbIntent);
 
@@ -67,6 +68,7 @@ export class PaymentsService implements IPaymentsService {
         appointmentId: dbIntent.appointmentId,
         customerId: dbIntent.customerId,
         appName: dbIntent.appName,
+        type: dbIntent.type,
       },
       "Successfully created payment intent",
     );
@@ -132,6 +134,7 @@ export class PaymentsService implements IPaymentsService {
           status: intent.status,
           amount: intent.amount,
           appId: intent.appId,
+          type: intent.type,
         },
         "Payment intent found by external id",
       );
@@ -193,6 +196,7 @@ export class PaymentsService implements IPaymentsService {
       {
         payment: {
           amount: payment.amount,
+          method: payment.method,
           type: payment.type,
           appId: "appId" in payment ? payment.appId : undefined,
           appName: "appName" in payment ? payment.appName : undefined,
@@ -241,6 +245,7 @@ export class PaymentsService implements IPaymentsService {
           paymentId: id,
           status: payment.status,
           amount: payment.amount,
+          method: payment.method,
           type: payment.type,
           appId: "appId" in payment ? payment.appId : undefined,
           appName: "appName" in payment ? payment.appName : undefined,
@@ -252,6 +257,29 @@ export class PaymentsService implements IPaymentsService {
     }
 
     return payment;
+  }
+
+  public async getAppointmentPayments(
+    appointmentId: string,
+  ): Promise<Payment[]> {
+    const logger = this.loggerFactory("getAppointmentPayments");
+    logger.debug({ appointmentId }, "Getting appointment payments");
+
+    const db = await getDbConnection();
+
+    const paymentsCollection = db.collection<Payment>(PAYMENTS_COLLECTION_NAME);
+    const payments = await paymentsCollection.find({ appointmentId }).toArray();
+
+    if (payments.length === 0) {
+      logger.warn({ appointmentId }, "No payments found for appointment");
+    } else {
+      logger.debug(
+        { appointmentId, count: payments.length },
+        "Successfully retrieved appointment payments",
+      );
+    }
+
+    return payments;
   }
 
   public async updatePayment(
@@ -332,9 +360,9 @@ export class PaymentsService implements IPaymentsService {
       return { success: false, error: "payment_not_found", status: 404 };
     }
 
-    if (payment.type !== "online") {
+    if (payment.method !== "online") {
       logger.error(
-        { paymentId: id, type: payment.type, amount },
+        { paymentId: id, method: payment.method, amount },
         "Only online payments supported for refund",
       );
 
@@ -509,13 +537,26 @@ export class PaymentsService implements IPaymentsService {
                   $subtract: [
                     "$$payment.amount",
                     {
-                      $sum: {
-                        $map: {
-                          input: { $ifNull: ["$$payment.refunds", []] },
-                          as: "refund",
-                          in: "$$refund.amount",
+                      $add: [
+                        {
+                          $sum: {
+                            $map: {
+                              input: { $ifNull: ["$$payment.refunds", []] },
+                              as: "refund",
+                              in: "$$refund.amount",
+                            },
+                          },
                         },
-                      },
+                        {
+                          $sum: {
+                            $map: {
+                              input: { $ifNull: ["$$payment.fees", []] },
+                              as: "fee",
+                              in: "$$fee.amount",
+                            },
+                          },
+                        },
+                      ],
                     },
                   ],
                 },
@@ -755,13 +796,26 @@ export class PaymentsService implements IPaymentsService {
                   $subtract: [
                     "$$payment.amount",
                     {
-                      $sum: {
-                        $map: {
-                          input: { $ifNull: ["$$payment.refunds", []] },
-                          as: "refund",
-                          in: "$$refund.amount",
+                      $add: [
+                        {
+                          $sum: {
+                            $map: {
+                              input: { $ifNull: ["$$payment.refunds", []] },
+                              as: "refund",
+                              in: "$$refund.amount",
+                            },
+                          },
                         },
-                      },
+                        {
+                          $sum: {
+                            $map: {
+                              input: { $ifNull: ["$$payment.fees", []] },
+                              as: "fee",
+                              in: "$$fee.amount",
+                            },
+                          },
+                        },
+                      ],
                     },
                   ],
                 },
@@ -902,13 +956,26 @@ export class PaymentsService implements IPaymentsService {
                   $subtract: [
                     "$$payment.amount",
                     {
-                      $sum: {
-                        $map: {
-                          input: { $ifNull: ["$$payment.refunds", []] },
-                          as: "refund",
-                          in: "$$refund.amount",
+                      $add: [
+                        {
+                          $sum: {
+                            $map: {
+                              input: { $ifNull: ["$$payment.refunds", []] },
+                              as: "refund",
+                              in: "$$refund.amount",
+                            },
+                          },
                         },
-                      },
+                        {
+                          $sum: {
+                            $map: {
+                              input: { $ifNull: ["$$payment.fees", []] },
+                              as: "fee",
+                              in: "$$fee.amount",
+                            },
+                          },
+                        },
+                      ],
                     },
                   ],
                 },

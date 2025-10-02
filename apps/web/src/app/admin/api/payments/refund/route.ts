@@ -67,6 +67,7 @@ export async function POST(request: NextRequest) {
                 id: result.updatedPayment._id,
                 amount: result.updatedPayment.amount,
                 status: result.updatedPayment.status,
+                method: result.updatedPayment.method,
                 type: result.updatedPayment.type,
                 appName:
                   "appName" in result.updatedPayment

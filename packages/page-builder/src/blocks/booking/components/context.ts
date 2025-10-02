@@ -58,7 +58,11 @@ export type ScheduleContextProps = {
 
   checkDuplicateAppointments: () => Promise<CheckDuplicateAppointmentsResponse>;
   closestDuplicateAppointment?: LuxonDateTime;
+  duplicateAppointmentDoNotAllowScheduling?: boolean;
   setClosestDuplicateAppointment: (closestAppointment?: LuxonDateTime) => void;
+  setDuplicateAppointmentDoNotAllowScheduling: (
+    doNotAllowScheduling: boolean,
+  ) => void;
 
   confirmDuplicateAppointment: boolean;
   setConfirmDuplicateAppointment: (

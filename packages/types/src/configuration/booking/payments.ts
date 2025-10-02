@@ -6,7 +6,7 @@ export const paymentsConfigurationSchema = z
     paymentAppId: z
       .string()
       .min(1, "configuration.booking.payments.paymentAppId.required"),
-    enable: z.literal(true, {
+    enabled: z.literal(true, {
       message: "configuration.booking.payments.paymentAppId.required",
     }),
   })
@@ -50,7 +50,7 @@ export const paymentsConfigurationSchema = z
   )
   .or(
     z.object({
-      enable: z
+      enabled: z
         .literal(false, {
           message: "configuration.booking.payments.paymentAppId.required",
         })

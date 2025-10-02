@@ -281,6 +281,9 @@
         "email": {
           "required": "Valid email is required"
         },
+        "phone": {
+          "required": "Phone is required"
+        },
         "name": {
           "required": "Name is required"
         }
@@ -290,6 +293,9 @@
       },
       "paymentIntentId": {
         "min": "Payment Intent ID should be undefined or at least one character long"
+      },
+      "appointmentId": {
+        "required": "Appointment ID is required"
       }
     },
     "option": {
@@ -686,8 +692,38 @@
     "paidAt": {
       "required": "Paid at is required"
     },
+    "method": {
+      "required": "Method is required"
+    },
     "type": {
-      "required": "Type is required"
+      "required": "Payment type is required"
+    }
+  },
+  "cancellation": {
+    "policy": {
+      "enabled": {
+        "required": "Enabled is required"
+      },
+      "minutesToAppointment": {
+        "required": "Time to appointment must be a positive integer"
+      },
+      "action": {
+        "required": "Action is required"
+      },
+      "refundPercentage": {
+        "required": "Refund percentage must be an integer number between 0 and 100"
+      },
+      "paymentPercentage": {
+        "required": "Payment percentage must be an integer number between 0 and 100"
+      },
+      "note": {
+        "max": "Note must be at most 500 characters long"
+      },
+      "min": "At least one cancellation policy must be added",
+      "increasing": "Each policy's time must be strictly larger than the previous one.",
+      "maxReschedules": {
+        "required": "Max reschedules must be a positive integer"
+      }
     }
   }
 }

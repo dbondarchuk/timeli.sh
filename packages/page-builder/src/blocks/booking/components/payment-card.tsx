@@ -10,15 +10,7 @@ import { useScheduleContext } from "./context";
 
 export const PaymentCard: React.FC = () => {
   const i18n = useI18n("translation");
-  const {
-    appointmentOption,
-    selectedAddons,
-    price,
-    discount,
-    paymentInformation: paymentForm,
-    fields,
-    onSubmit,
-  } = useScheduleContext();
+  const { paymentInformation: paymentForm, onSubmit } = useScheduleContext();
   if (!paymentForm) return null;
 
   const Form = PaymentAppForms[paymentForm.intent.appName];
@@ -45,11 +37,6 @@ export const PaymentCard: React.FC = () => {
         )}
       </div>
       <Form
-        optionId={appointmentOption._id}
-        addonsIds={selectedAddons?.map((a) => a._id)}
-        totalPrice={price}
-        discount={discount}
-        fields={fields}
         {...paymentForm.formProps}
         intent={paymentForm.intent}
         onSubmit={onSubmit}

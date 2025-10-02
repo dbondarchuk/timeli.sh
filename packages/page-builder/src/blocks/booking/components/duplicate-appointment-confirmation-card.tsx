@@ -12,6 +12,7 @@ export const DuplicateAppointmentConfirmationCard: React.FC = () => {
     appointmentOption,
     confirmDuplicateAppointment,
     setConfirmDuplicateAppointment,
+    duplicateAppointmentDoNotAllowScheduling,
   } = useScheduleContext();
 
   if (
@@ -32,7 +33,7 @@ export const DuplicateAppointmentConfirmationCard: React.FC = () => {
             appointmentOption.duplicateAppointmentCheck.message,
             {
               date: closestDuplicateAppointment.toLocaleString(
-                DateTime.DATE_HUGE,
+                DateTime.DATE_FULL,
               ),
               name: fields.name,
               service: appointmentOption.name,
@@ -41,13 +42,17 @@ export const DuplicateAppointmentConfirmationCard: React.FC = () => {
           )}
           prose="simple"
         />
-        <Label className="flex flex-row gap-2 items-center text-base">
-          <Checkbox
-            checked={confirmDuplicateAppointment}
-            onCheckedChange={(e) => setConfirmDuplicateAppointment(!!e)}
-          />
-          <div>{i18n("duplicate_appointment_checkbox_label")}</div>
-        </Label>
+        {!duplicateAppointmentDoNotAllowScheduling && (
+          <Label className="flex flex-row gap-2 items-center text-base">
+            <Checkbox
+              checked={confirmDuplicateAppointment}
+              onCheckedChange={(e) => setConfirmDuplicateAppointment(!!e)}
+            />
+            <div className="cursor-pointer">
+              {i18n("duplicate_appointment_checkbox_label")}
+            </div>
+          </Label>
+        )}
       </div>
     </div>
   );

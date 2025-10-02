@@ -24,12 +24,8 @@ import {
   CardContent,
   Checkbox,
   cn,
-  Input,
-  InputGroup,
-  InputGroupInput,
-  InputGroupInputClasses,
-  InputGroupSuffixClasses,
-  InputSuffix,
+  CurrencyPercentageInput,
+  Label,
   ScrollArea,
   Separator,
   Tooltip,
@@ -40,7 +36,7 @@ import {
 import { formatAmount, formatAmountString } from "@vivid/utils";
 import { CalendarX2 } from "lucide-react";
 import { DateTime } from "luxon";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useId } from "react";
 import { AppointmentActionButton } from "./action-button";
 
 const PaymentRefundCard = ({
@@ -52,12 +48,14 @@ const PaymentRefundCard = ({
   paymentState?: {
     amount: number;
     selected: boolean;
+    refundFees: boolean;
   };
   setSelected: (
     id: string,
     defaultAmount: number,
     selected?: boolean,
     amount?: number,
+    refundFees?: boolean,
   ) => void;
 }) => {
   const t = useI18n();
@@ -75,35 +73,49 @@ const PaymentRefundCard = ({
 
   const isSelected = !!paymentState?.selected;
 
+  const [refundFees, setRefundFees] = React.useState(
+    paymentState?.refundFees ?? false,
+  );
+
   const isRefundable =
     payment.status === "paid" ||
     (payment.status === "refunded" && totalRefunded < payment.amount);
 
   const refundableAmount =
-    payment.status === "paid" ? payment.amount : payment.amount - totalRefunded;
+    payment.amount -
+    totalRefunded -
+    (!refundFees
+      ? payment.fees?.reduce((acc, fee) => acc + fee.amount, 0) || 0
+      : 0);
 
   const refundAmount = paymentState?.amount ?? refundableAmount;
+  const refundFeesId = useId();
 
-  const [value, setValue] = useState(refundAmount.toFixed(2));
-  useEffect(() => {
-    setValue(refundAmount.toFixed(2));
-  }, [refundAmount]);
-
-  const commitValue = useCallback(() => {
-    setSelected(
+  const commitValue = useCallback(
+    (amount: number) => {
+      setSelected(
+        payment._id,
+        refundableAmount,
+        true,
+        Math.min(refundableAmount, formatAmount(amount)),
+        refundFees,
+      );
+    },
+    [
       payment._id,
       refundableAmount,
-      true,
-      Math.min(payment.amount - totalRefunded, formatAmount(parseFloat(value))),
-    );
-  }, [
-    payment._id,
-    refundableAmount,
-    payment.amount,
-    totalRefunded,
-    value,
-    setSelected,
-  ]);
+      payment.amount,
+      totalRefunded,
+      setSelected,
+      refundFees,
+    ],
+  );
+
+  useEffect(() => {
+    if (refundAmount > refundableAmount) {
+      commitValue(refundableAmount);
+    }
+  }, [refundAmount, refundableAmount, commitValue]);
 
   return (
     <Card
@@ -126,14 +138,14 @@ const PaymentRefundCard = ({
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center space-x-3">
             {getPaymentMethodIcon(
-              payment.type,
+              payment.method,
               "appName" in payment ? payment.appName : undefined,
             )}
             <div>
               <h3 className="font-semibold text-lg">
                 {t(
                   getPaymentMethod(
-                    payment.type,
+                    payment.method,
                     "appName" in payment ? payment.appName : undefined,
                   ),
                 )}
@@ -168,6 +180,29 @@ const PaymentRefundCard = ({
               ${formatAmountString(payment.amount)}
             </span>
           </div>
+          {payment.fees && payment.fees.length > 0 && (
+            <>
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-foreground/80">
+                  {t("admin.appointments.declineDialog.fees")}
+                </span>
+              </div>
+              {payment.fees.map((fee, index) => (
+                <div
+                  className="flex justify-between items-center text-sm pl-4"
+                  key={fee.type + index + fee.amount}
+                >
+                  <span className="text-gray-600">
+                    {t(`admin.payment.feeTypes.${fee.type}`)}
+                  </span>
+                  <span className="font-semibold">
+                    ${formatAmountString(fee.amount)}
+                  </span>
+                </div>
+              ))}
+            </>
+          )}
+
           {"externalId" in payment && (
             <div className="flex justify-between items-center text-sm">
               <span className="text-foreground/80">
@@ -211,48 +246,33 @@ const PaymentRefundCard = ({
             className="flex justify-between items-center text-sm"
             onClick={(e) => isSelected && e.stopPropagation()}
           >
-            <span className="text-foreground/80">
-              {t(
-                isSelected
-                  ? "admin.appointments.declineDialog.refundAmount"
-                  : "admin.appointments.declineDialog.refundableAmount",
-              )}
-            </span>
-            {isSelected ? (
-              <InputGroup>
-                <InputSuffix
-                  className={InputGroupSuffixClasses({
-                    variant: "prefix",
-                  })}
-                >
-                  $
-                </InputSuffix>
-                <InputGroupInput>
-                  <Input
-                    placeholder={value}
-                    value={value}
-                    onChange={(e) => setValue(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        commitValue();
-                        e.currentTarget.blur();
-                      }
-                    }}
-                    onBlur={commitValue}
-                    type="number"
-                    min={0}
-                    inputMode="decimal"
-                    step={1}
-                    max={refundableAmount}
-                    className={cn(
-                      InputGroupInputClasses({
-                        variant: "prefix",
-                      }),
-                      "text-right w-24",
-                    )}
+            <div className="flex flex-col gap-2">
+              <span className="text-foreground/80">
+                {t(
+                  isSelected
+                    ? "admin.appointments.declineDialog.refundAmount"
+                    : "admin.appointments.declineDialog.refundableAmount",
+                )}
+              </span>
+              {isSelected && (
+                <div className="flex flex-row gap-2">
+                  <Checkbox
+                    id={refundFeesId}
+                    checked={refundFees}
+                    onCheckedChange={(checked) => setRefundFees(!!checked)}
                   />
-                </InputGroupInput>
-              </InputGroup>
+                  <Label htmlFor={refundFeesId}>
+                    {t("admin.appointments.declineDialog.refundFees")}
+                  </Label>
+                </div>
+              )}
+            </div>
+            {isSelected ? (
+              <CurrencyPercentageInput
+                maxAmount={refundableAmount}
+                value={refundAmount}
+                onChange={commitValue}
+              />
             ) : (
               <span className="text-foreground/60">
                 ${formatAmountString(refundableAmount)}
@@ -276,6 +296,7 @@ export const AppointmentDeclineDialog: React.FC<{
 
   const locale = useLocale();
   const [isLoading, setIsLoading] = React.useState(false);
+  const [requestedByCustomer, setRequestedByCustomer] = React.useState(false);
 
   const onOpenChange = (open: boolean) => {
     if (!open) {
@@ -291,6 +312,7 @@ export const AppointmentDeclineDialog: React.FC<{
         {
           amount: number;
           selected: boolean;
+          refundFees: boolean;
         }
       >
     >({});
@@ -304,6 +326,7 @@ export const AppointmentDeclineDialog: React.FC<{
     defaultAmount: number,
     selected?: boolean,
     amount?: number,
+    refundFees?: boolean,
   ) => {
     setPaymentsIdsSelectionState((prev) => {
       return {
@@ -315,6 +338,10 @@ export const AppointmentDeclineDialog: React.FC<{
               : amount,
           selected:
             typeof selected === "undefined" ? !prev[id]?.selected : selected,
+          refundFees:
+            typeof refundFees === "undefined"
+              ? !prev[id]?.refundFees
+              : refundFees,
         },
       };
     });
@@ -324,7 +351,7 @@ export const AppointmentDeclineDialog: React.FC<{
     () =>
       appointment.payments?.filter(
         (payment) =>
-          payment.type === "online" &&
+          payment.method === "online" &&
           (payment.status === "paid" ||
             (payment.status === "refunded" &&
               (payment.refunds?.reduce(
@@ -367,7 +394,7 @@ export const AppointmentDeclineDialog: React.FC<{
       const defaultAmount = payment.amount - totalRefunded;
 
       Object.assign(payment, updated);
-      setSelected(id, defaultAmount, false, defaultAmount);
+      setSelected(id, defaultAmount, false, defaultAmount, false);
     }
 
     if (!result.success) {
@@ -394,7 +421,7 @@ export const AppointmentDeclineDialog: React.FC<{
           </AlertDialogDescription>
         </AlertDialogHeader>
         <ScrollArea className="max-h-[60vh]">
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-4">
             <div className="bg-muted text-foreground font-light rounded-lg p-4 flex flex-col gap-2">
               <h4 className="font-semibold mb-3">
                 {t("admin.appointments.declineDialog.appointmentDetails")}
@@ -429,6 +456,16 @@ export const AppointmentDeclineDialog: React.FC<{
                 </div>
               </div>
             </div>
+            <div className="flex flex-row gap-2">
+              <Checkbox
+                id="requestedByCustomer"
+                checked={requestedByCustomer}
+                onCheckedChange={(checked) => setRequestedByCustomer(!!checked)}
+              />
+              <Label htmlFor="requestedByCustomer">
+                {t("admin.appointments.declineDialog.requestedByCustomer")}
+              </Label>
+            </div>
             {!!paymentsAvailableToRefund.length && (
               <div className="flex flex-col gap-2">
                 <div className="font-semibold">
@@ -458,6 +495,7 @@ export const AppointmentDeclineDialog: React.FC<{
               <AppointmentActionButton
                 _id={appointment._id}
                 status="declined"
+                requestedByCustomer={requestedByCustomer}
                 disabled={!selectedPayments.length || isLoading}
                 className="mt-2 sm:mt-0"
                 beforeRequest={() => refundSelected()}
@@ -481,6 +519,7 @@ export const AppointmentDeclineDialog: React.FC<{
             <AppointmentActionButton
               _id={appointment._id}
               status="declined"
+              requestedByCustomer={requestedByCustomer}
               disabled={isLoading}
               setIsLoading={setIsLoading}
               onSuccess={onSuccess}

@@ -5,6 +5,8 @@ Hi {{config.name}},
 
 ${customText}
 
+Requested on {{ createdAt.full }}
+
 Customer: [{{ customer.name }}]({{ config.url }}/admin/dashboard/customers/{{customerId}})
 
 Name: {{ fields.name }}
@@ -48,7 +50,9 @@ Duration: {{#duration.hours}}{{.}} hr {{/duration.hours}}{{#duration.minutes}}{{
 
 Promo code: {{code}} (-\${{discountAmountFormatted}}) ([{{name}}]({{ config.url }}/admin/dashboard/services/discounts/{{id}}))
 
-{{/discount}} {{#totalPriceFormatted}}
+{{/discount}}
+
+{{#totalPriceFormatted}}
 
 Price: \${{.}}
 
@@ -58,7 +62,7 @@ Price: \${{.}}
 Payments:
 
 {{#payments}}
- 1. {{appName}} on {{paidAt.full}}: \${{amountFormatted}} {{#totalRefundedFormatted}} (-\${{totalRefundedFormatted}} refunded, \${{amountLeftFormatted}} left) {{/totalRefundedFormatted}}
+ 1. {{#appName}}{{.}}{{/appName}}{{^appName}}{{#isOnline}}Online{{/isOnline}}{{#isCash}}Cash{{/isCash}}{{#isInPersonCard}}Card{{/isInPersonCard}}{{/appName}} ({{#isTips}}Tips{{/isTips}}{{#isOther}}Other{{/isOther}}{{#isDeposit}}Deposit{{/isDeposit}}{{#isRescheduleFee}}Reschedule fee{{/isRescheduleFee}}{{#isCancellationFee}}Cancellation fee{{/isCancellationFee}}{{#isPayment}}Payment{{/isPayment}}) on {{paidAt.full}}: \${{amountFormatted}} {{#totalRefundedFormatted}} (-\${{totalRefundedFormatted}} refunded, \${{amountLeftFormatted}} left) {{/totalRefundedFormatted}}
 {{/payments}}
 {{^payments}}
 - None
@@ -66,6 +70,9 @@ Payments:
 
 Total amount currently paid: \${{totalAmountLeftFormatted}}
 {{/totalAmountLeft}}
+{{#totalAmountLeftToPay}}
+Total amount left to pay: \${{totalAmountLeftToPayFormatted}}
+{{/totalAmountLeftToPay}}
 `;
 
 export const EnEmailTemplates: EmailTemplates = {
@@ -76,6 +83,16 @@ export const EnEmailTemplates: EmailTemplates = {
   declined: {
     title: "Appointment for {{option.name}} was declined.",
     text: getText("The appointment was declined by you."),
+  },
+  cancelledByCustomer: {
+    title: "Appointment for {{option.name}} was cancelled.",
+    text: getText("The appointment was cancelled by the customer."),
+  },
+  rescheduledByCustomer: {
+    title: "Appointment for {{option.name}} was rescheduled.",
+    text: getText(
+      "The appointment for {{option.name}} by {{fields.name}} was rescheduled by the customer for {{dateTime.full}}, duration {{#duration.hours}}{{.}} hr {{/duration.hours}}{{#duration.minutes}}{{.}} min{{/duration.minutes}}",
+    ),
   },
   rescheduled: {
     title: "Appointment was rescheduled for {{dateTime.full}}",

@@ -122,7 +122,9 @@
   "durationInput": {
     "hr": "год",
     "min": "хв",
-    "sec": "сек"
+    "sec": "сек",
+    "weeks": "тижнів",
+    "days": "днів"
   },
   "dataTable": {
     "searchPlaceholder": "Пошук...",
@@ -170,5 +172,9 @@
     "am": "ДП",
     "pm": "ПП",
     "format": "dd/MM/yyyy HH:mm"
+  },
+  "currencyInput": {
+    "amount": "Сума: ${amount}",
+    "max": "Максимум: ${max}"
   }
 }

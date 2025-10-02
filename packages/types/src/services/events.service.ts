@@ -6,6 +6,7 @@ import {
   AppointmentStatus,
   Availability,
   Event,
+  ModifyAppointmentInformationRequest,
   Period,
 } from "../booking";
 import { Query, WithTotal } from "../database";
@@ -29,6 +30,7 @@ export interface IEventsService {
       event: AppointmentEvent;
       confirmed?: boolean;
       files?: Record<string, File>;
+      doNotNotifyCustomer?: boolean;
     },
   ): Promise<Appointment>;
   getPendingAppointmentsCount(after?: Date): Promise<number>;
@@ -53,9 +55,14 @@ export interface IEventsService {
     status: AppointmentStatus[],
   ): Promise<Event[]>;
   getAppointment(id: string): Promise<Appointment | null>;
+  findAppointment(
+    fields: ModifyAppointmentInformationRequest["fields"],
+    status?: AppointmentStatus[],
+  ): Promise<Appointment | null>;
   changeAppointmentStatus(
     id: string,
     newStatus: AppointmentStatus,
+    by?: "customer" | "user",
   ): Promise<void>;
   updateAppointmentNote(id: string, note?: string): Promise<void>;
   addAppointmentFiles(id: string, files: File[]): Promise<AssetEntity[]>;
@@ -64,6 +71,7 @@ export interface IEventsService {
     newTime: Date,
     newDuration: number,
     doNotNotifyCustomer?: boolean,
+    by?: "customer" | "user",
   ): Promise<void>;
 
   getAppointmentHistory(
@@ -75,4 +83,6 @@ export interface IEventsService {
   addAppointmentHistory(
     entry: Omit<AppointmentHistoryEntry, "_id" | "dateTime">,
   ): Promise<string>;
+
+  verifyTimeAvailability(dateTime: Date, duration: number): Promise<boolean>;
 }

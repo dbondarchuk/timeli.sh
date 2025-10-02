@@ -72,6 +72,7 @@ export const appointmentOptionSchema = z
           })
           .min(1, "appointments.option.duplicateAppointmentCheck.days.min")
           .max(30, "appointments.option.duplicateAppointmentCheck.days.max"),
+        doNotAllowScheduling: z.coerce.boolean().optional(),
       })
       .or(
         z.object({
@@ -206,4 +207,6 @@ export type GetAppointmentOptionsResponse = {
   fieldsSchema: Record<string, FieldSchema>;
   timeZone: string;
   showPromoCode: boolean;
+  allowReschedules: boolean;
+  allowCancellations: boolean;
 };

@@ -1,4 +1,8 @@
 import { z } from "zod";
+import {
+  AppointmentCancellationPolicyAction,
+  AppointmentReschedulePolicyAction,
+} from "../configuration/booking/cancellation";
 import { zOptionalOrMinLengthString, zPhone, zUniqueArray } from "../utils";
 import { Prettify } from "../utils/helpers";
 import { zTimeZone } from "../utils/zTimeZone";
@@ -80,3 +84,105 @@ export const appointmentRequestSchema = z.object({
 export type AppointmentRequest = z.infer<typeof appointmentRequestSchema>;
 
 export class AppointmentTimeNotAvaialbleError extends Error {}
+
+export const baseModifyAppointmentRequestSchema = z.object({
+  fields: z.discriminatedUnion("type", [
+    z.object({
+      type: z.literal("email"),
+      email: z.string().email("appointments.request.fields.email.required"),
+      dateTime: z.coerce.date({
+        message: "appointments.request.dateTime.required",
+      }),
+    }),
+    z.object({
+      type: z.literal("phone"),
+      phone: z.string().min(1, "appointments.request.fields.phone.required"),
+      dateTime: z.coerce.date({
+        message: "appointments.request.dateTime.required",
+      }),
+    }),
+  ]),
+});
+
+export const modifyAppointmentType = ["cancel", "reschedule"] as const;
+export type ModifyAppointmentType = (typeof modifyAppointmentType)[number];
+export const modifyAppointmentTypeSchema = z.enum(modifyAppointmentType);
+
+export const modifyAppointmentInformationRequestSchema =
+  baseModifyAppointmentRequestSchema.merge(
+    z.object({
+      type: modifyAppointmentTypeSchema,
+    }),
+  );
+
+export type ModifyAppointmentInformationRequest = z.infer<
+  typeof modifyAppointmentInformationRequestSchema
+>;
+
+export const modifyAppointmentRequestSchema = z.discriminatedUnion("type", [
+  z.object({
+    type: modifyAppointmentTypeSchema.extract(["cancel"]),
+    ...baseModifyAppointmentRequestSchema.shape,
+  }),
+  z.object({
+    type: modifyAppointmentTypeSchema.extract(["reschedule"]),
+    dateTime: z.coerce.date({
+      message: "appointments.request.dateTime.required",
+    }),
+    paymentIntentId: zOptionalOrMinLengthString(
+      1,
+      "appointments.request.intentId.min",
+    ),
+    ...baseModifyAppointmentRequestSchema.shape,
+  }),
+]);
+
+export type ModifyAppointmentRequest = z.infer<
+  typeof modifyAppointmentRequestSchema
+>;
+
+export type ModifyAppointmentInformation = {
+  id: string;
+  name: string;
+  optionName: string;
+  addonsNames?: string[];
+  dateTime: Date;
+  timeZone: string;
+  duration: number;
+  price?: number;
+} & (
+  | {
+      allowed: true;
+      type: "cancel";
+      refundPolicy: Exclude<AppointmentCancellationPolicyAction, "notAllowed">;
+      refundPercentage: number;
+      refundAmount: number;
+      refundFees: boolean;
+      feesAmount: number;
+    }
+  | ({
+      allowed: true;
+      type: "reschedule";
+      timeZone: string;
+    } & (
+      | {
+          reschedulePolicy: Extract<
+            AppointmentReschedulePolicyAction,
+            "allowed"
+          >;
+        }
+      | {
+          reschedulePolicy: Extract<
+            AppointmentReschedulePolicyAction,
+            "paymentRequired"
+          >;
+          paymentPercentage: number;
+          paymentAmount: number;
+        }
+    ))
+  | {
+      type: ModifyAppointmentType;
+      allowed: false;
+      reason: string;
+    }
+);

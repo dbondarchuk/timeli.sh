@@ -18,6 +18,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { updateBookingConfiguration } from "./actions";
 import { CalendarSourcesTab } from "./tabs/calendar-sources";
+import { CancellationsAndReschedulesTab } from "./tabs/cancellations";
 import { MainTab } from "./tabs/main";
 import { OptionsTab } from "./tabs/options";
 import { PaymentsTab } from "./tabs/payments";
@@ -63,6 +64,7 @@ export const AppointmentsSettingsForm: React.FC<{
     form.trigger("options");
     form.trigger("smartSchedule");
     form.trigger("payments");
+    form.trigger("cancellationsAndReschedules");
   };
 
   React.useEffect(triggerValidation, []);
@@ -124,6 +126,16 @@ export const AppointmentsSettingsForm: React.FC<{
             >
               {t("settings.appointments.form.tabs.payments")}
             </TabsTrigger>
+            <TabsTrigger
+              value="cancellationsAndReschedules"
+              className={cn(
+                form.getFieldState("cancellationsAndReschedules").invalid
+                  ? "text-destructive"
+                  : "",
+              )}
+            >
+              {t("settings.appointments.form.tabs.cancellationsAndReschedules")}
+            </TabsTrigger>
           </TabsList>
           <TabsContent value="main">
             <MainTab form={form} />
@@ -139,6 +151,9 @@ export const AppointmentsSettingsForm: React.FC<{
           </TabsContent>
           <TabsContent value="payments">
             <PaymentsTab form={form} />
+          </TabsContent>
+          <TabsContent value="cancellationsAndReschedules">
+            <CancellationsAndReschedulesTab form={form} />
           </TabsContent>
         </Tabs>
         <SaveButton form={form} disabled={loading} />

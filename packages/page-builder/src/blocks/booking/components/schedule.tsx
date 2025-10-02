@@ -77,6 +77,11 @@ export const Schedule: React.FC<
   const [closestDuplicateAppointment, setClosestDuplicateAppointment] =
     React.useState<LuxonDateTime | undefined>(undefined);
 
+  const [
+    duplicateAppointmentDoNotAllowScheduling,
+    setDuplicateAppointmentDoNotAllowScheduling,
+  ] = React.useState<boolean | undefined>(undefined);
+
   const [promoCode, setPromoCode] = React.useState<ApplyDiscountResponse>();
   const [paymentInformation, setPaymentInformation] =
     React.useState<CollectPayment | null>();
@@ -259,7 +264,7 @@ export const Schedule: React.FC<
         {
           method: intentId ? "POST" : "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(request),
+          body: JSON.stringify({ ...request, paymentType: "deposit" }),
         },
       );
 
@@ -384,6 +389,8 @@ export const Schedule: React.FC<
           setConfirmDuplicateAppointment,
           closestDuplicateAppointment,
           setClosestDuplicateAppointment,
+          duplicateAppointmentDoNotAllowScheduling,
+          setDuplicateAppointmentDoNotAllowScheduling,
           isFormValid,
           setIsFormValid,
           className,

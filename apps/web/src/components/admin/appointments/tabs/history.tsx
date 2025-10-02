@@ -183,6 +183,11 @@ const HistoryEntry: React.FC<{ entry: AppointmentHistoryEntry }> = ({
                   ),
                 })}
               </Badge>
+              <Badge variant="secondary" className="text-xs">
+                {entry.data.by === "customer"
+                  ? t("admin.appointments.history.byCustomer")
+                  : t("admin.appointments.history.byUser")}
+              </Badge>
             </>
           )}
           {entry.type === "rescheduled" && (
@@ -205,6 +210,11 @@ const HistoryEntry: React.FC<{ entry: AppointmentHistoryEntry }> = ({
                     .toLocaleString(DateTime.DATETIME_MED, { locale }),
                 })}
               </Badge>
+              <Badge variant="secondary" className="text-xs">
+                {entry.data.by === "customer"
+                  ? t("admin.appointments.history.byCustomer")
+                  : t("admin.appointments.history.byUser")}
+              </Badge>
             </>
           )}
           {entry.type === "paymentAdded" && (
@@ -213,13 +223,16 @@ const HistoryEntry: React.FC<{ entry: AppointmentHistoryEntry }> = ({
                 ${formatAmountString(entry.data.payment.amount)}
               </Badge>
               <Badge variant="outline" className="text-xs">
-                {entry.data.payment.appName
-                  ? t(
-                      `apps.${AvailableApps[entry.data.payment.appName].displayName}`,
-                    )
-                  : entry.data.payment.type === "cash"
-                    ? t("admin.payment.methods.cash")
-                    : t("admin.payment.methods.card")}
+                {t("admin.appointments.history.paymentType", {
+                  type: t(`admin.payment.types.${entry.data.payment.type}`),
+                  appName: entry.data.payment.appName
+                    ? t(
+                        `apps.${AvailableApps[entry.data.payment.appName].displayName}`,
+                      )
+                    : entry.data.payment.method === "cash"
+                      ? t("admin.payment.methods.cash")
+                      : t("admin.payment.methods.card"),
+                })}
               </Badge>
             </>
           )}
@@ -240,7 +253,7 @@ const HistoryEntry: React.FC<{ entry: AppointmentHistoryEntry }> = ({
                   ? t(
                       `apps.${AvailableApps[entry.data.payment.appName].displayName}`,
                     )
-                  : entry.data.payment.type === "cash"
+                  : entry.data.payment.method === "cash"
                     ? t("admin.payment.methods.cash")
                     : t("admin.payment.methods.card")}
               </Badge>

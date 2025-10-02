@@ -1,10 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useI18n } from "@vivid/i18n";
 import {
-  inPersonPaymentType,
+  inPersonPaymentMethod,
   InStorePaymentUpdateModel,
   inStorePaymentUpdateModelSchema,
   Payment,
+  paymentType,
 } from "@vivid/types";
 import {
   Button,
@@ -77,13 +78,15 @@ export const AddUpdatePaymentDialog = ({
           amount: 0,
           description: "",
           paidAt: new Date(),
-          type: "cash",
+          method: "cash",
+          type: "payment",
         }
       : {
           appointmentId: props.payment.appointmentId,
           amount: props.payment.amount,
           description: props.payment.description,
           paidAt: props.payment.paidAt,
+          method: props.payment.method,
           type: props.payment.type,
         };
 
@@ -188,6 +191,45 @@ export const AddUpdatePaymentDialog = ({
               />
               <FormField
                 control={form.control}
+                name="method"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      {t("payment.addUpdatePayment.form.method.label")}
+                    </FormLabel>
+                    <FormControl>
+                      <Select
+                        value={field.value}
+                        onValueChange={(value) => {
+                          field.onChange(value);
+                          field.onBlur();
+                        }}
+                        disabled={loading}
+                      >
+                        <SelectTrigger>
+                          <SelectValue
+                            placeholder={t(
+                              "payment.addUpdatePayment.form.method.label",
+                            )}
+                          />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {inPersonPaymentMethod.map((type) => (
+                            <SelectItem value={type} key={type}>
+                              {t(
+                                `payment.addUpdatePayment.form.method.${type}`,
+                              )}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
                 name="type"
                 render={({ field }) => (
                   <FormItem>
@@ -211,9 +253,9 @@ export const AddUpdatePaymentDialog = ({
                           />
                         </SelectTrigger>
                         <SelectContent>
-                          {inPersonPaymentType.map((type) => (
+                          {paymentType.map((type) => (
                             <SelectItem value={type} key={type}>
-                              {t(`payment.addUpdatePayment.form.type.${type}`)}
+                              {t(`payment.types.${type}`)}
                             </SelectItem>
                           ))}
                         </SelectContent>

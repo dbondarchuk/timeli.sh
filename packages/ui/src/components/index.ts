@@ -27,6 +27,7 @@ export * from "./command";
 export * from "./connected-app-properties";
 export * from "./content-editable-mention";
 export * from "./context-menu";
+export * from "./currency-percentage-input";
 export * from "./customer-selector";
 export * from "./data-table";
 export * from "./data-table-component";

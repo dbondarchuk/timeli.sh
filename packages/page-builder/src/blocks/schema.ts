@@ -1,6 +1,7 @@
 import { AccordionItemPropsSchema } from "./accordion-item/schema";
 import { AccordionPropsSchema } from "./accordion/schema";
 import { BeforeAfterPropsSchema } from "./before-after/schema";
+import { BookingConfirmationPropsSchema } from "./booking-confirmation/schema";
 import { BookingPropsSchema } from "./booking/schema";
 import { ButtonPropsSchema } from "./button/schema";
 import { CarouselPropsSchema } from "./carousel/schema";
@@ -16,6 +17,7 @@ import { InlineContainerPropsSchema } from "./inline-container/schema";
 import { InlineTextPropsSchema } from "./inline-text/schema";
 import { LightboxPropsSchema } from "./lightbox/schema";
 import { LinkPropsSchema } from "./link/schema";
+import { ModifyAppointmentFormPropsSchema } from "./modify-appointment-form/schema";
 import { PageHeroPropsSchema } from "./page-hero/schema";
 import { PageLayoutPropsSchema } from "./page-layout/schema";
 import { PopupPropsSchema } from "./popup/schema";
@@ -53,6 +55,8 @@ export const EditorBlocksSchema = {
   BeforeAfter: BeforeAfterPropsSchema,
   Lightbox: LightboxPropsSchema,
   Redirect: RedirectPropsSchema,
+  ModifyAppointmentForm: ModifyAppointmentFormPropsSchema,
+  BookingConfirmation: BookingConfirmationPropsSchema,
 } as {
   Image: typeof ImagePropsSchema;
   Button: typeof ButtonPropsSchema;
@@ -80,4 +84,6 @@ export const EditorBlocksSchema = {
   BeforeAfter: typeof BeforeAfterPropsSchema;
   Lightbox: typeof LightboxPropsSchema;
   Redirect: typeof RedirectPropsSchema;
+  ModifyAppointmentForm: typeof ModifyAppointmentFormPropsSchema;
+  BookingConfirmation: typeof BookingConfirmationPropsSchema;
 };

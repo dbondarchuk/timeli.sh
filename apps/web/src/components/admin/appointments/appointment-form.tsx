@@ -354,7 +354,13 @@ export const AppointmentScheduleForm: React.FC<
       let appointmentId = id;
       if (isEdit) {
         await toastPromise(
-          updateAppointment(id, appointmentEvent, files, data.confirmed),
+          updateAppointment(
+            id,
+            appointmentEvent,
+            files,
+            data.confirmed,
+            data.doNotNotifyCustomer,
+          ),
           {
             success: t("appointments.form.updatedSuccess"),
             error: t("appointments.form.requestError"),

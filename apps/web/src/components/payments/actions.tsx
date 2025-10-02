@@ -16,7 +16,7 @@ export const deletePayment = async (id: string) => {
     throw new Error("Payment not found");
   }
 
-  if (payment.type === "online") {
+  if (payment.method === "online") {
     logger.error({ paymentId: id }, "Cannot delete online payment");
     throw new Error("Cannot delete online payment");
   }
@@ -82,7 +82,7 @@ export const updateAppointmentPayment = async (
     throw new Error("Payment not found");
   }
 
-  if (payment.type === "online") {
+  if (payment.method === "online") {
     actionLogger.error({ paymentId: id }, "Cannot update online payment");
     throw new Error("Cannot update online payment");
   }

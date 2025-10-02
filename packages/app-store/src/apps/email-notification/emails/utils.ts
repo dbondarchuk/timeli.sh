@@ -5,7 +5,11 @@ import { AppointmentStatusToICalMethodMap, template } from "@vivid/utils";
 import { UserEmailTemplates } from ".";
 
 export const getEmailTemplate = async (
-  status: keyof typeof AppointmentStatusToICalMethodMap | "auto-confirmed",
+  status:
+    | keyof typeof AppointmentStatusToICalMethodMap
+    | "auto-confirmed"
+    | "cancelledByCustomer"
+    | "rescheduledByCustomer",
   language: Language,
   url: string,
   appointment: Appointment,

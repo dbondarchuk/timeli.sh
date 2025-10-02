@@ -19,14 +19,14 @@ import { TabProps } from "./types";
 
 export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
   const t = useI18n("admin");
-  const enablePayments = form.watch("payments.enable");
+  const enablePayments = form.watch("payments.enabled");
   const requireDeposit = form.watch("payments.requireDeposit");
   return (
     <div className="gap-2 grid grid-cols-1 md:grid-cols-2 md:gap-4 w-full">
       {/* <div className="flex flex-col gap-2"> */}
       <FormField
         control={form.control}
-        name="payments.enable"
+        name="payments.enabled"
         render={({ field }) => (
           <FormItem>
             <FormLabel>
@@ -79,7 +79,7 @@ export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
                     onItemSelect={(val) => {
                       field.onChange(val);
                       field.onBlur();
-                      form.trigger("payments.enable");
+                      form.trigger("payments.enabled");
                     }}
                   />
                 </FormControl>

@@ -1,0 +1,105 @@
+import { GetAppointmentOptionsResponse } from "@vivid/types";
+
+export const demoBookingOptionsResponse: GetAppointmentOptionsResponse = {
+  options: [
+    {
+      _id: "option-1",
+      name: "[DEMO] Standard Consultation",
+      description: "A 30-minute consultation session.",
+      duration: 30,
+      price: 50,
+      addons: [
+        {
+          _id: "addon-1",
+          name: "Extra 15 Minutes",
+          description: "Extend your session by 15 minutes.",
+          price: 20,
+          updatedAt: new Date(),
+        },
+        {
+          _id: "addon-2",
+          name: "Priority Booking",
+          description: "Get priority scheduling for your appointment.",
+          price: 10,
+          updatedAt: new Date(),
+        },
+        {
+          _id: "addon-3",
+          name: "Session Recording",
+          description: "Receive a recording of your session.",
+          price: 15,
+          updatedAt: new Date(),
+        },
+      ],
+      requireDeposit: "inherit",
+      updatedAt: new Date(),
+    },
+    {
+      _id: "option-2",
+      name: "[DEMO] Premium Consultation",
+      description: "A 60-minute in-depth consultation.",
+      duration: 60,
+      price: 90,
+      addons: [
+        {
+          _id: "addon-1",
+          name: "Extra 15 Minutes",
+          description: "Extend your session by 15 minutes.",
+          price: 20,
+          updatedAt: new Date(),
+        },
+        {
+          _id: "addon-2",
+          name: "Priority Booking",
+          description: "Get priority scheduling for your appointment.",
+          price: 10,
+          updatedAt: new Date(),
+        },
+        {
+          _id: "addon-3",
+          name: "Session Recording",
+          description: "Receive a recording of your session.",
+          price: 15,
+          updatedAt: new Date(),
+        },
+      ],
+      requireDeposit: "inherit",
+      updatedAt: new Date(),
+    },
+    {
+      _id: "option-3",
+      name: "[DEMO] Follow-up Session",
+      description: "A 20-minute follow-up appointment.",
+      duration: 20,
+      price: 30,
+      addons: [
+        {
+          _id: "addon-1",
+          name: "Extra 15 Minutes",
+          description: "Extend your session by 15 minutes.",
+          price: 20,
+          updatedAt: new Date(),
+        },
+        {
+          _id: "addon-2",
+          name: "Priority Booking",
+          description: "Get priority scheduling for your appointment.",
+          price: 10,
+          updatedAt: new Date(),
+        },
+        {
+          _id: "addon-3",
+          name: "Session Recording",
+          description: "Receive a recording of your session.",
+          price: 15,
+          updatedAt: new Date(),
+        },
+      ],
+      requireDeposit: "inherit",
+      updatedAt: new Date(),
+    },
+  ],
+  fieldsSchema: {},
+  timeZone: "America/New_York",
+  showPromoCode: true,
+};

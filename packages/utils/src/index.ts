@@ -1,4 +1,5 @@
 export * from "./assets";
+export * from "./cancellation-policy";
 export * from "./colors";
 export * from "./currency";
 export * from "./deep-equal";
@@ -6,6 +7,7 @@ export * from "./email";
 export * from "./encryption";
 export * from "./file";
 export * from "./fixtures";
+export * from "./fonts";
 export * from "./format-arguments";
 export * from "./get-arguments";
 export * from "./ics-uid";
@@ -21,3 +23,4 @@ export * from "./strip-object";
 export * from "./time";
 export * from "./time-slot";
 export * from "./time-slot-with-priority";
+

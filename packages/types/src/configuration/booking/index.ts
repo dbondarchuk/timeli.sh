@@ -1,10 +1,12 @@
 import { z } from "zod";
 import { asOptinalNumberField, asOptionalField } from "../../utils";
 import { calendarSourcesConfigurationSchema } from "./calendar-source";
+import { appointmentCancellationRescheduleSchema } from "./cancellation";
 import { paymentsConfigurationSchema } from "./payments";
 
 export * from "../../booking/field";
 export * from "./calendar-source";
+export * from "./cancellation";
 export * from "./payments";
 
 export const customTimeSlotSchema = z
@@ -83,6 +85,7 @@ export const generalBookingConfigurationSchema = z.object({
       }),
     ),
   payments: paymentsConfigurationSchema,
+  cancellationsAndReschedules: appointmentCancellationRescheduleSchema,
 });
 
 export const appointOptionsSchema = z.array(

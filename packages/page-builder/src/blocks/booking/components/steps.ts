@@ -103,6 +103,9 @@ export const ScheduleSteps: Record<StepType, Step> = {
             ctx.setClosestDuplicateAppointment(
               closeAppointments.closestAppointment,
             );
+            ctx.setDuplicateAppointmentDoNotAllowScheduling(
+              closeAppointments.doNotAllowScheduling,
+            );
             ctx.setStep("duplicate-appointments-confirmation");
             return;
           }
@@ -147,7 +150,12 @@ export const ScheduleSteps: Record<StepType, Step> = {
     },
     next: {
       show: () => true,
-      isEnabled: (ctx) => ctx.confirmDuplicateAppointment,
+      isEnabled: ({
+        duplicateAppointmentDoNotAllowScheduling,
+        confirmDuplicateAppointment,
+      }) =>
+        !duplicateAppointmentDoNotAllowScheduling &&
+        confirmDuplicateAppointment,
       action: (ctx) => handleGoToPayment(ctx),
     },
     Content: DuplicateAppointmentConfirmationCard,

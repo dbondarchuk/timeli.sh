@@ -409,6 +409,40 @@ export const OptionForm: React.FC<{
                   <>
                     <FormField
                       control={form.control}
+                      name="duplicateAppointmentCheck.doNotAllowScheduling"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>
+                            {t(
+                              "services.options.form.duplicateAppointmentCheck.doNotAllowScheduling.label",
+                            )}{" "}
+                            <InfoTooltip>
+                              {t(
+                                "services.options.form.duplicateAppointmentCheck.doNotAllowScheduling.tooltip",
+                              )}
+                            </InfoTooltip>
+                          </FormLabel>
+                          <FormControl>
+                            <BooleanSelect
+                              value={field.value ?? false}
+                              onValueChange={(item) => {
+                                field.onChange(item);
+                                field.onBlur();
+                              }}
+                              trueLabel={t(
+                                "services.options.form.duplicateAppointmentCheck.doNotAllowScheduling.labels.true",
+                              )}
+                              falseLabel={t(
+                                "services.options.form.duplicateAppointmentCheck.doNotAllowScheduling.labels.false",
+                              )}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
                       name="duplicateAppointmentCheck.days"
                       render={({ field }) => (
                         <FormItem>

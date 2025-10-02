@@ -28,9 +28,3 @@ export type Appointment = Prettify<
     endAt: Date;
   }
 >;
-
-// export const StatusText: Record<AppointmentStatus, string> = {
-//   pending: "Pending",
-//   confirmed: "Confirmed",
-//   declined: "Declined",
-// };

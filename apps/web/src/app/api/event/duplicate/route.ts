@@ -122,6 +122,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       hasDuplicateAppointments: closestAppointments.total > 0,
       closestAppointment: closestAppointment?.toJSDate(),
+      doNotAllowScheduling:
+        eventOrError.option.duplicateAppointmentCheck.doNotAllowScheduling,
     });
   } catch (error: any) {
     logger.error(

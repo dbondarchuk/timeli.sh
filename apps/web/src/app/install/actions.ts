@@ -57,7 +57,15 @@ export async function install(data: InstallFormData) {
         allowSmartSchedule: false,
       },
       payments: {
-        enable: false,
+        enabled: false,
+      },
+      cancellationsAndReschedules: {
+        cancellations: {
+          enabled: "disabled",
+        },
+        reschedules: {
+          enabled: "disabled",
+        },
       },
     });
 

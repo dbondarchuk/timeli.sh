@@ -130,27 +130,27 @@ export const getAppointmentEventAndIsPaymentRequired = async (
   logger.debug(
     {
       customersPriorAppointmentsCount,
-      paymentsEnabled: config.payments?.enable,
-      paymentAppId: config.payments?.enable
+      paymentsEnabled: config.payments?.enabled,
+      paymentAppId: config.payments?.enabled
         ? config.payments.paymentAppId
         : undefined,
       requireDeposit:
-        config.payments?.enable && "requireDeposit" in config.payments
+        config.payments?.enabled && "requireDeposit" in config.payments
           ? config.payments.requireDeposit
           : undefined,
       depositPercentage:
-        config.payments?.enable && "depositPercentage" in config.payments
+        config.payments?.enabled && "depositPercentage" in config.payments
           ? config.payments.depositPercentage
           : undefined,
       dontRequireIfCompletedMinNumberOfAppointments:
-        config.payments?.enable && config.payments.requireDeposit
+        config.payments?.enabled && config.payments.requireDeposit
           ? config.payments.dontRequireIfCompletedMinNumberOfAppointments
           : undefined,
     },
     "Retrieved booking configuration",
   );
 
-  if (config.payments?.enable && config.payments.paymentAppId) {
+  if (config.payments?.enabled && config.payments.paymentAppId) {
     logger.debug(
       { paymentAppId: config.payments.paymentAppId },
       "Payments enabled, determining deposit requirement",
@@ -282,9 +282,9 @@ export const getAppointmentEventAndIsPaymentRequired = async (
   } else {
     logger.debug(
       {
-        paymentsEnabled: config.payments?.enable,
+        paymentsEnabled: config.payments?.enabled,
         hasPaymentAppId: !!(
-          config.payments?.enable && config.payments.paymentAppId
+          config.payments?.enabled && config.payments.paymentAppId
         ),
         reason: "payments_disabled_or_no_app_id",
       },

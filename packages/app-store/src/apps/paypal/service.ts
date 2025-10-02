@@ -10,6 +10,7 @@ import {
   IConnectedAppProps,
   IPaymentProcessor,
   Payment,
+  PaymentFee,
 } from "@vivid/types";
 import { decrypt, encrypt, maskify } from "@vivid/utils";
 import { PaypalClient } from "./client";
@@ -460,8 +461,33 @@ class PaypalConnectedApp
         "Successfully captured PayPal order, updating payment intent status",
       );
 
+      const platformFees: PaymentFee[] =
+        order.purchase_units?.[0].payments?.captures?.[0]?.seller_receivable_breakdown?.platform_fees?.map(
+          (fee) => ({
+            type: "platform",
+            amount: parseFloat(fee.amount.value) || 0,
+          }),
+        ) || [];
+
+      const paypalFees: PaymentFee[] = order.purchase_units?.[0].payments
+        ?.captures?.[0]?.seller_receivable_breakdown?.paypal_fee
+        ? [
+            {
+              type: "transaction",
+              amount:
+                parseFloat(
+                  order.purchase_units?.[0].payments?.captures?.[0]
+                    ?.seller_receivable_breakdown?.paypal_fee.value,
+                ) || 0,
+            },
+          ]
+        : [];
+
+      const fees = [...platformFees, ...paypalFees];
+
       await this.props.services.PaymentsService().updateIntent(intent._id, {
         status: "paid",
+        fees,
       });
 
       logger.info(
@@ -499,8 +525,9 @@ class PaypalConnectedApp
         appId: appData._id,
         paymentId: payment._id,
         paymentType: payment.type,
+        paymentMethod: payment.method,
         amount,
-        ...(payment.type === "online" && {
+        ...(payment.method === "online" && {
           appName: (payment as any).appName,
           externalId: (payment as any).externalId,
         }),
@@ -509,7 +536,7 @@ class PaypalConnectedApp
     );
 
     if (
-      payment.type !== "online" ||
+      payment.method !== "online" ||
       (payment as any).appName !== PAYPAL_APP_NAME ||
       !(payment as any).externalId
     ) {

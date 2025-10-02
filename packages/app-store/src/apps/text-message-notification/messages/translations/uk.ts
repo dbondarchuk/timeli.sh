@@ -12,6 +12,6 @@ export const UkTextMessageNotificationMessages: TextMessageNotificationMessage =
 Запис {{customer.name}} для {{option.name}} на {{dateTime.full}} був підтверджений.
 Дякуємо`,
     appointmentDeclined: `Привіт {{config.name}},
-Запис {{customer.name}} для {{option.name}} на {{dateTime.full}} був відхилений.
+Запис {{customer.name}} для {{option.name}} на {{dateTime.full}} був відхилений/скасований.
 Дякуємо`,
   };

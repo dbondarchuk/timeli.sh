@@ -1328,6 +1328,12 @@
         "errors": {
           "url": "URL is required"
         }
+      },
+      "modifyAppointmentForm": {
+        "displayName": "Modify Appointment Form"
+      },
+      "bookingConfirmation": {
+        "displayName": "Booking Confirmation"
       }
     },
     "shortcuts": {

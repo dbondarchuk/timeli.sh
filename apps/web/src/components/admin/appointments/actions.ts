@@ -14,6 +14,7 @@ const loggerFactory = getLoggerFactory("AppointmentsActions");
 export async function changeAppointmentStatus(
   id: string,
   newStatus: AppointmentStatus,
+  requestedByCustomer?: boolean,
 ) {
   const actionLogger = loggerFactory("changeAppointmentStatus");
 
@@ -29,12 +30,14 @@ export async function changeAppointmentStatus(
     await ServicesContainer.EventsService().changeAppointmentStatus(
       id,
       newStatus,
+      requestedByCustomer ? "customer" : "user",
     );
 
     actionLogger.debug(
       {
         appointmentId: id,
         newStatus,
+        requestedByCustomer,
       },
       "Appointment status changed successfully",
     );
@@ -45,6 +48,7 @@ export async function changeAppointmentStatus(
       {
         appointmentId: id,
         newStatus,
+        requestedByCustomer,
         error: error instanceof Error ? error.message : String(error),
       },
       "Failed to change appointment status",
@@ -319,6 +323,7 @@ export const updateAppointment = async (
   appointment: Omit<AppointmentEvent, "timeZone">,
   files: Record<string, File> | undefined,
   confirmed: boolean = false,
+  doNotNotifyCustomer: boolean = false,
 ) => {
   const actionLogger = loggerFactory("updateAppointment");
 
@@ -330,6 +335,7 @@ export const updateAppointment = async (
       duration: appointment.totalDuration,
       filesCount: files ? Object.keys(files).length : 0,
       confirmed,
+      doNotNotifyCustomer,
       fieldsCount: Object.keys(appointment.fields).length,
     },
     "Updating appointment",
@@ -368,6 +374,7 @@ export const updateAppointment = async (
       event: appointmentEvent,
       confirmed,
       files,
+      doNotNotifyCustomer,
     });
 
     actionLogger.debug(
@@ -377,6 +384,7 @@ export const updateAppointment = async (
         dateTime: appointment.dateTime.toISOString(),
         duration: appointment.totalDuration,
         confirmed,
+        doNotNotifyCustomer,
       },
       "Appointment updated successfully",
     );

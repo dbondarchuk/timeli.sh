@@ -1328,6 +1328,12 @@
         "errors": {
           "url": "URL є обов'язковим"
         }
+      },
+      "modifyAppointmentForm": {
+        "displayName": "Форма перенесення або скасування прийому"
+      },
+      "bookingConfirmation": {
+        "displayName": "Підтвердження бронювання"
       }
     },
     "shortcuts": {

@@ -1,6 +1,6 @@
 import { StylingConfiguration } from "@vivid/types";
 import { genericMemo } from "@vivid/ui";
-import { deepEqual, getColorsCss } from "@vivid/utils";
+import { buildGoogleFontsUrl, deepEqual, getColorsCss } from "@vivid/utils";
 import React from "react";
 import {
   BaseStyleDictionary,
@@ -57,12 +57,11 @@ export const Styling: React.FC<Props> = ({ styling: propsStyling }) => {
   const secondaryFont = styling?.fonts?.secondary!;
   const tertiaryFont = styling?.fonts?.tertiary!;
 
-  const weights = `:wght@100..900`;
-  const fontsCssUrl = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(
+  const fontsCssUrl = buildGoogleFontsUrl(
     primaryFont,
-  )}${weights}&family=${encodeURIComponent(
     secondaryFont,
-  )}${weights}&family=${encodeURIComponent(tertiaryFont)}${weights}&display=swap`;
+    tertiaryFont,
+  );
 
   //   const fonts = await fontsRes.text();
   const colors = getColorsCss(styling?.colors, "value");

@@ -67,9 +67,9 @@ export const PageSelectorInput: React.FC<PageSelectorInputProps> = ({
       <Button
         type="button"
         variant="outline"
-        size={rest.h}
         disabled={disabled}
-        className={InputGroupSuffixClasses()}
+        size={rest.h}
+        className={InputGroupSuffixClasses({ h: rest.h })}
         onClick={openDialog}
       >
         {t("form.select")}

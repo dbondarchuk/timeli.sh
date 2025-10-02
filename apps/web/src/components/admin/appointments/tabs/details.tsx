@@ -52,7 +52,25 @@ export const AppointmentDetails = ({
   );
 
   const totalPaid =
-    paidPayments?.reduce((sum, payment) => sum + payment.amount, 0) || 0;
+    appointment.payments?.reduce(
+      (sum, payment) =>
+        sum +
+        payment.amount -
+        (payment.refunds?.reduce((sum, refund) => sum + refund.amount, 0) || 0),
+      0,
+    ) || 0;
+
+  const totalAmountLeft = appointment.totalPrice
+    ? appointment.totalPrice -
+      (paidPayments
+        ?.filter(
+          (payment) =>
+            payment.type !== "rescheduleFee" &&
+            payment.type !== "cancellationFee" &&
+            payment.type !== "tips",
+        )
+        .reduce((sum, payment) => sum + payment.amount, 0) || 0)
+    : 0;
 
   const { name, email, phone, ...restFields } = appointment.fields;
 
@@ -196,12 +214,12 @@ export const AppointmentDetails = ({
                   </dd>
                 </div>
                 {!!appointment.totalPrice &&
-                  appointment.totalPrice - totalPaid > 0 && (
+                  totalAmountLeft > 0 &&
+                  appointment.status !== "declined" && (
                     <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                       <dt>{t("appointments.view.amountLeftToPay")}:</dt>
                       <dd className="col-span-2">
-                        $
-                        {formatAmountString(appointment.totalPrice - totalPaid)}
+                        ${formatAmountString(totalAmountLeft)}
                       </dd>
                     </div>
                   )}

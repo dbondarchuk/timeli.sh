@@ -28,6 +28,7 @@ export interface IPaymentsService {
   createPayment(payment: PaymentUpdateModel): Promise<Payment>;
 
   getPayment(id: string): Promise<Payment | null>;
+  getAppointmentPayments(appointmentId: string): Promise<Payment[]>;
 
   updatePayment(
     id: string,

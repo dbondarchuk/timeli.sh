@@ -5,6 +5,8 @@ const getText = (customText: string) => `
 
 ${customText}
 
+Запитаний {{ requestedAt.full }}
+
 Клієнт: [{{ customer.name }}]({{ config.url }}/admin/dashboard/customers/{{customerId}})
 
 Ім'я: {{ fields.name }}
@@ -59,7 +61,7 @@ Email: {{ fields.email }}
 Платежі:
 
 {{#payments}}
- 1. {{appName}} {{paidAt.full}}: \${{amountFormatted}} {{#totalRefundedFormatted}} (-\${{totalRefundedFormatted}} повернено, \${{amountLeftFormatted}} залишилок) {{/totalRefundedFormatted}}
+ 1. {{#appName}}{{.}}{{/appName}}{{^appName}}{{#isOnline}}Онлайн{{/isOnline}}{{#isCash}}Готівка{{/isCash}}{{#isInPersonCard}}Картка{{/isInPersonCard}}{{/appName}} ({{#isTips}}Чаєві{{/isTips}}{{#isOther}}Інше{{/isOther}}{{#isDeposit}}Депозит{{/isDeposit}}{{#isRescheduleFee}}Плата за перенос{{/isRescheduleFee}}{{#isCancellationFee}}Плата за відміну{{/isCancellationFee}}{{#isPayment}}Платіж{{/isPayment}}) {{paidAt.full}}: \${{amountFormatted}} {{#totalRefundedFormatted}} (-\${{totalRefundedFormatted}} повернено, \${{amountLeftFormatted}} залишилок) {{/totalRefundedFormatted}}
 {{/payments}}
 {{^payments}}
 - Жодного
@@ -67,6 +69,9 @@ Email: {{ fields.email }}
 
 Зараз сплачено: \${{totalAmountLeftFormatted}}
 {{/totalAmountLeft}}
+{{#totalAmountLeftToPay}}
+Залишок до сплати: \${{totalAmountLeftToPayFormatted}}
+{{/totalAmountLeftToPay}}
 `;
 
 export const UkEmailTemplates: EmailTemplates = {
@@ -77,6 +82,16 @@ export const UkEmailTemplates: EmailTemplates = {
   declined: {
     title: "Запис на {{option.name}} був відхилений.",
     text: getText("Запис був відхилений вами."),
+  },
+  cancelledByCustomer: {
+    title: "Запис на {{option.name}} був скасований.",
+    text: getText("Запис був скасований клієнтом."),
+  },
+  rescheduledByCustomer: {
+    title: "Запис на {{option.name}} був перенесений.",
+    text: getText(
+      "Запис на {{option.name}} від {{fields.name}} був перенесений клієнтом на {{dateTime.full}}, тривалість {{#duration.hours}}{{.}} год {{/duration.hours}}{{#duration.minutes}}{{.}} хв{{/duration.minutes}}",
+    ),
   },
   rescheduled: {
     title: "Запис був перенесений на {{dateTime.full}}",

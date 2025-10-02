@@ -2,9 +2,9 @@ import { AvailableApps } from "@vivid/app-store";
 import { AdminKeys, AllKeys, useI18n, useLocale } from "@vivid/i18n";
 import {
   Payment,
+  PaymentMethod,
   PaymentStatus,
   PaymentSummary,
-  PaymentType,
 } from "@vivid/types";
 import {
   AlertDialog,
@@ -19,13 +19,10 @@ import {
   Button,
   Card,
   CardContent,
+  Checkbox,
   cn,
-  Input,
-  InputGroup,
-  InputGroupInput,
-  InputGroupInputClasses,
-  InputGroupSuffixClasses,
-  InputSuffix,
+  CurrencyPercentageInput,
+  Label,
   Separator,
   Spinner,
   toast,
@@ -92,27 +89,33 @@ export const getPaymentDescription = (description: string): AdminKeys => {
     case "deposit":
       return "payment.descriptions.deposit";
 
+    case "rescheduleFee":
+      return "payment.descriptions.rescheduleFee";
+
     default:
       return description as AdminKeys;
   }
 };
 
 export const getPaymentMethod = (
-  type: PaymentType,
+  method: PaymentMethod,
   appName?: string,
 ): AllKeys => {
-  return type === "online" && appName
+  return method === "online" && appName
     ? `apps.${AvailableApps[appName]?.displayName}`
-    : type === "cash"
+    : method === "cash"
       ? "admin.payment.methods.cash"
       : "admin.payment.methods.card";
 };
 
-export const getPaymentMethodIcon = (type: PaymentType, appName?: string) => {
+export const getPaymentMethodIcon = (
+  method: PaymentMethod,
+  appName?: string,
+) => {
   const Icon =
-    type === "online" && appName
+    method === "online" && appName
       ? AvailableApps[appName]?.Logo
-      : type === "cash"
+      : method === "cash"
         ? CircleDollarSign
         : CreditCard;
 
@@ -133,29 +136,37 @@ const RefundDialog = ({
   refund: (amount: number) => void;
 }) => {
   const t = useI18n();
-  const { type, ...rest } = payment;
+  const { method, ...rest } = payment;
 
   const totalRefunded =
     payment.refunds?.reduce((acc, refund) => acc + refund.amount, 0) || 0;
 
   const [amount, setAmount] = useState(payment.amount - totalRefunded);
-  const [value, setValue] = useState(amount.toFixed(2));
+  const [refundFees, setRefundFees] = useState(false);
+  const commitValue = useCallback(
+    (value: number) => {
+      const newAmount = Math.min(
+        payment.amount - totalRefunded,
+        formatAmount(value),
+      );
+
+      setAmount(newAmount);
+    },
+    [payment.amount, totalRefunded],
+  );
+
+  const refundableAmount =
+    payment.amount -
+    totalRefunded -
+    (!refundFees
+      ? payment.fees?.reduce((acc, fee) => acc + fee.amount, 0) || 0
+      : 0);
 
   useEffect(() => {
-    const amount = payment.amount - totalRefunded;
-    setAmount(amount);
-    setValue(amount.toFixed(2));
-  }, [payment.amount, totalRefunded]);
-
-  const commitValue = useCallback(() => {
-    const newAmount = Math.min(
-      payment.amount - totalRefunded,
-      formatAmount(parseFloat(value)),
-    );
-
-    setAmount(newAmount);
-    setValue(newAmount.toFixed(2));
-  }, [value, payment.amount, totalRefunded]);
+    if (amount > refundableAmount) {
+      commitValue(refundableAmount);
+    }
+  }, [amount, refundableAmount, commitValue]);
 
   const onOpenChange = useCallback(
     (open: boolean) => {
@@ -163,7 +174,6 @@ const RefundDialog = ({
       if (open) {
         const amount = payment.amount - totalRefunded;
         setAmount(amount);
-        setValue(amount.toFixed(2));
       }
     },
     [setIsRefundDialogOpen, payment.amount, totalRefunded],
@@ -202,7 +212,7 @@ const RefundDialog = ({
                 <span className="font-semibold">
                   {t(
                     getPaymentMethod(
-                      type,
+                      method,
                       "appName" in rest ? rest.appName : undefined,
                     ),
                   )}
@@ -226,41 +236,28 @@ const RefundDialog = ({
               </div>
               <div className="border-t pt-2 mt-2">
                 <div className="flex justify-between items-center font-semibold">
-                  <span>{t("admin.payment.card.refundAmount")}</span>
-                  <InputGroup>
-                    <InputSuffix
-                      className={InputGroupSuffixClasses({
-                        variant: "prefix",
-                      })}
-                    >
-                      $
-                    </InputSuffix>
-                    <InputGroupInput>
-                      <Input
-                        disabled={isRefundInProgress}
-                        value={value}
-                        onChange={(e) => setValue(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") {
-                            commitValue();
-                            e.currentTarget.blur();
+                  <div className="flex flex-col gap-2">
+                    <span>{t("admin.payment.card.refundAmount")}</span>
+                    {payment.fees?.length && payment.fees.length > 0 && (
+                      <div className="flex flex-row gap-2">
+                        <Checkbox
+                          id="refundFees"
+                          checked={refundFees}
+                          onCheckedChange={(checked) =>
+                            setRefundFees(!!checked)
                           }
-                        }}
-                        onBlur={commitValue}
-                        type="number"
-                        min={0}
-                        inputMode="decimal"
-                        step={1}
-                        max={payment.amount - totalRefunded}
-                        className={cn(
-                          InputGroupInputClasses({
-                            variant: "prefix",
-                          }),
-                          "text-right w-24",
-                        )}
-                      />
-                    </InputGroupInput>
-                  </InputGroup>
+                        />
+                        <Label htmlFor="refundFees">
+                          {t("admin.payment.card.refundFees")}
+                        </Label>
+                      </div>
+                    )}
+                  </div>
+                  <CurrencyPercentageInput
+                    maxAmount={refundableAmount}
+                    value={amount}
+                    onChange={commitValue}
+                  />
                 </div>
               </div>
             </div>
@@ -295,8 +292,17 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
   className,
   onDelete,
 }) => {
-  const { _id, amount, paidAt, description, status, type, refunds, ...rest } =
-    payment;
+  const {
+    _id,
+    amount,
+    paidAt,
+    description,
+    status,
+    method,
+    refunds,
+    fees,
+    ...rest
+  } = payment;
 
   const [isRefundInProgress, setIsRefundInProgress] = React.useState(false);
   const [isRefundDialogOpen, setIsRefundDialogOpen] = React.useState(false);
@@ -406,31 +412,27 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center space-x-3">
             {getPaymentMethodIcon(
-              type,
+              method,
               "appName" in rest ? rest.appName : undefined,
             )}
             <div>
               <h3 className="font-semibold text-lg">
                 {t(
                   getPaymentMethod(
-                    type,
+                    method,
                     "appName" in rest ? rest.appName : undefined,
                   ),
                 )}
               </h3>
               <p className="text-sm text-gray-600">
-                {description
-                  ? t.has(`admin.${getPaymentDescription(description)}`)
-                    ? t(`admin.${getPaymentDescription(description)}`)
-                    : description
-                  : ""}
+                {t(`admin.payment.types.${payment.type}`)}
               </p>
             </div>
           </div>
           <Badge className={getPaymentStatusColor(status)}>
             <div className="flex items-center space-x-1">
               {getPaymentMethodIcon(
-                type,
+                method,
                 "appName" in rest ? rest.appName : undefined,
               )}
               <span>
@@ -453,12 +455,28 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
               </span>
             </div>
 
-            {/* {fee && (
-            <div className="flex justify-between items-center text-sm">
-              <span className="text-gray-600">Processing Fee</span>
-              <span className="text-gray-800">${fee.toFixed(2)}</span>
-            </div>
-          )} */}
+            {fees && fees.length > 0 && (
+              <>
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-foreground/80">
+                    {t("admin.payment.card.fees")}
+                  </span>
+                </div>
+                {fees.map((fee, index) => (
+                  <div
+                    className="flex justify-between items-center text-sm pl-4"
+                    key={fee.type + index + fee.amount}
+                  >
+                    <span className="text-foreground/80">
+                      {t(`admin.payment.feeTypes.${fee.type}`)}
+                    </span>
+                    <span className="text-foreground/60">
+                      -${formatAmountString(fee.amount)}
+                    </span>
+                  </div>
+                ))}
+              </>
+            )}
 
             {"externalId" in rest && (
               <div className="flex justify-between items-center text-sm">
@@ -522,6 +540,20 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
                 </Tooltip>
               </TooltipProvider>
             </div>
+
+            {description && (
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-foreground/80">
+                  {t("admin.payment.card.description")}
+                </span>
+                <span className="font-semibold">
+                  {" "}
+                  {t.has(`admin.${getPaymentDescription(description)}`)
+                    ? t(`admin.${getPaymentDescription(description)}`)
+                    : description}
+                </span>
+              </div>
+            )}
 
             {refundedDateTime?.isValid && (
               <div className="flex justify-between items-center text-sm">
@@ -600,7 +632,7 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
 
           {(status === "paid" ||
             (status === "refunded" && totalRefunded < amount)) &&
-            type === "online" && (
+            method === "online" && (
               <RefundDialog
                 isRefundInProgress={isRefundInProgress}
                 setIsRefundDialogOpen={setIsRefundDialogOpen}
@@ -610,7 +642,7 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
               />
             )}
 
-          {type !== "online" && (
+          {method !== "online" && (
             <div className="mt-4 flex flex-row gap-2 w-full">
               <AddUpdatePaymentDialog
                 paymentId={payment._id}
@@ -638,15 +670,18 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
           )}
         </div>
 
-        {/* {fee && (
-          <>
-            <Separator className="my-4" />
-            <div className="flex justify-between items-center font-semibold">
-              <span>Total Charged</span>
-              <span className="text-lg">${(amount + fee).toFixed(2)}</span>
-            </div>
-          </>
-        )} */}
+        <Separator className="my-4" />
+        <div className="flex justify-between items-center font-semibold">
+          <span>{t("admin.payment.card.netAmount")}</span>
+          <span className="text-lg">
+            $
+            {(
+              amount -
+              (fees?.reduce((acc, fee) => acc + fee.amount, 0) || 0) -
+              totalRefunded
+            ).toFixed(2)}
+          </span>
+        </div>
       </CardContent>
     </Card>
   );

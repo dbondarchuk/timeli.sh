@@ -175,7 +175,10 @@ export const PaypalForm: React.FC<PaymentAppFormProps<PaypalFormProps>> = ({
   };
 
   function onError(error: any) {
-    // Do something with the error from the SDK
+    console.error(`Payment has failed`, error);
+    toast.error(t("paypal.toast.payment_failed"), {
+      description: t("paypal.toast.payment_failed_description"),
+    });
   }
 
   return (

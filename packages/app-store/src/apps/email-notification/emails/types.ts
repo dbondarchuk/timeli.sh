@@ -9,6 +9,8 @@ export type EmailTemplate = {
 export type EmailTemplates = {
   [key in
     | keyof typeof AppointmentStatusToICalMethodMap
+    | "cancelledByCustomer"
+    | "rescheduledByCustomer"
     | "auto-confirmed"]: EmailTemplate;
 } & {
   subject: string;

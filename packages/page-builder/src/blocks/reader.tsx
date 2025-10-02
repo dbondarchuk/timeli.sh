@@ -2,6 +2,7 @@ import { ReaderDocumentBlocksDictionary } from "@vivid/builder";
 import { AccordionItem } from "./accordion-item/reader";
 import { Accordion } from "./accordion/reader";
 import { BeforeAfterReader } from "./before-after/reader";
+import { BookingConfirmationReader } from "./booking-confirmation/reader";
 import { BookingReader } from "./booking/reader";
 import { ButtonReader } from "./button/reader";
 import { CarouselReader } from "./carousel/reader";
@@ -17,6 +18,7 @@ import { InlineContainerReader } from "./inline-container/reader";
 import { InlineText } from "./inline-text/reader";
 import { LightboxReader } from "./lightbox/reader";
 import { Link } from "./link/reader";
+import { ModifyAppointmentFormReader } from "./modify-appointment-form/reader";
 import { PageHeroReader } from "./page-hero/reader";
 import { PageLayoutReader } from "./page-layout/reader";
 import { PopupReader } from "./popup/reader";
@@ -72,6 +74,9 @@ export const ReaderBlocks: ReaderDocumentBlocksDictionary<
   Booking: {
     Reader: BookingReader,
   },
+  BookingConfirmation: {
+    Reader: BookingConfirmationReader,
+  },
   Carousel: {
     Reader: CarouselReader,
   },
@@ -107,5 +112,8 @@ export const ReaderBlocks: ReaderDocumentBlocksDictionary<
   },
   Redirect: {
     Reader: RedirectReader,
+  },
+  ModifyAppointmentForm: {
+    Reader: ModifyAppointmentFormReader,
   },
 };
