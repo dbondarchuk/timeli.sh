@@ -18,8 +18,10 @@ export type PlateEditorProps = {
   disabled?: boolean;
   placeholder?: string;
   singleLine?: boolean;
+  noToolbar?: boolean;
   document?: Document;
   id?: string;
+  usesAbsoluteUrl?: boolean;
 };
 
 export const PlateEditor = forwardRef<HTMLDivElement, PlateEditorProps>(
@@ -32,12 +34,14 @@ export const PlateEditor = forwardRef<HTMLDivElement, PlateEditorProps>(
       disabled,
       placeholder,
       singleLine,
+      noToolbar,
       id,
       document,
+      usesAbsoluteUrl,
     },
     ref,
   ) => {
-    const editor = useCreateEditor(value, { singleLine });
+    const editor = useCreateEditor(value, { singleLine, noToolbar });
 
     React.useEffect(() => {
       editor.tf.focus({ edge: "endEditor" });
@@ -46,7 +50,10 @@ export const PlateEditor = forwardRef<HTMLDivElement, PlateEditorProps>(
     return (
       <DndProvider backend={HTML5Backend} context={document?.defaultView}>
         <Plate editor={editor} onChange={({ value }) => onChange?.(value)}>
-          <EditorContainer context={document?.defaultView}>
+          <EditorContainer
+            context={document?.defaultView}
+            usesAbsoluteUrl={usesAbsoluteUrl}
+          >
             <Editor
               ref={ref}
               variant="fullWidth"

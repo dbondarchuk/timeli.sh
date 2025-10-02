@@ -1,5 +1,6 @@
 "use client";
 
+import { UploadedFile } from "@vivid/types";
 import { cn, SidebarInset, SidebarProvider, useSidebar } from "@vivid/ui";
 import { useEffect } from "react";
 import { useCookies } from "react-cookie";
@@ -37,6 +38,7 @@ export type BuilderProps<T extends BaseZodDictionary> = {
   sidebarWidth?: number;
   header?: React.ReactNode;
   footer?: React.ReactNode;
+  getImageBlock?: (file: UploadedFile) => TEditorBlock;
 };
 
 const SIDEBAR_COOKIE_NAME = "builder-sidebar-open";
@@ -154,6 +156,7 @@ export const Builder = <T extends BaseZodDictionary>({
   defaultValue,
   editorBlocks,
   rootBlock,
+  getImageBlock,
   schemas,
   ...rest
 }: BuilderProps<T>) => {
@@ -164,6 +167,7 @@ export const Builder = <T extends BaseZodDictionary>({
       rootBlock={rootBlock}
       document={defaultValue}
       schemas={schemas}
+      getImageBlock={getImageBlock}
     >
       <EditorArgsContext.Provider value={args || {}}>
         <BuilderInternal args={args} defaultValue={defaultValue} {...rest} />

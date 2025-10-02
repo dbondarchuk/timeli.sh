@@ -31,6 +31,8 @@ import {
   triggerFloatingLinkInsert,
   useVirtualFloatingLink,
 } from "@udecode/plate-link/react";
+import { PageListModelWithUrl } from "@vivid/types";
+import { useAbsoluteUrl } from "./absolute-url-context";
 import { useWindow } from "./window-context";
 
 export const getDOMSelectionBoundingClientRect = (
@@ -64,6 +66,8 @@ export const useFloatingLinkInsertState = ({
 
   const window = useWindow();
 
+  const [isPageSelectorOpen, setIsPageSelectorOpen] = React.useState(false);
+
   const floating = useVirtualFloatingLink({
     editorId: editor.id,
     getBoundingClientRect: () => getDOMSelectionBoundingClientRect(window),
@@ -78,6 +82,10 @@ export const useFloatingLinkInsertState = ({
     isOpen,
     readOnly,
     triggerFloatingLinkHotkeys,
+    pageSelector: {
+      isOpen: isPageSelectorOpen,
+      setIsOpen: setIsPageSelectorOpen,
+    },
   };
 };
 
@@ -87,6 +95,7 @@ export const useFloatingLinkInsert = ({
   isOpen,
   readOnly,
   triggerFloatingLinkHotkeys,
+  pageSelector,
 }: ReturnType<typeof useFloatingLinkInsertState>) => {
   const { api, editor, getOptions, setOption } = useEditorPlugin(LinkPlugin);
 
@@ -106,6 +115,7 @@ export const useFloatingLinkInsert = ({
   );
 
   const window = useWindow();
+  const usesAbsoluteUrl = useAbsoluteUrl();
 
   const ref = useOnClickOutside(
     () => {
@@ -115,7 +125,7 @@ export const useFloatingLinkInsert = ({
       }
     },
     {
-      disabled: !isOpen,
+      disabled: !isOpen || pageSelector.isOpen,
       detectIFrame: true,
     },
   );
@@ -127,6 +137,7 @@ export const useFloatingLinkInsert = ({
       setOption("updated", true);
     } else {
       setOption("updated", false);
+      pageSelector.setIsOpen(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, floating.update]);
@@ -171,6 +182,14 @@ export const useFloatingLinkInsert = ({
     submitFloatingLink(editor);
   }, [editor]);
 
+  const setUrl = React.useCallback(
+    (url: string) => {
+      setOption("url", url);
+      setOption("updated", true);
+    },
+    [setOption],
+  );
+
   return {
     hidden: readOnly || !isOpen,
     props: {
@@ -191,6 +210,17 @@ export const useFloatingLinkInsert = ({
       ref: updatedNewTabValue,
     },
     apply,
+    setUrl,
+    onPageSelectorSelected: (page: PageListModelWithUrl) => {
+      const value = encodeUrlIfNeeded(
+        usesAbsoluteUrl ? page.url : `/${page.slug}`,
+      );
+      setOption("url", value);
+      setOption("updated", true);
+      pageSelector.setIsOpen(false);
+
+      return value;
+    },
   };
 };
 
@@ -244,12 +274,15 @@ export const useFloatingLinkEditState = ({
   };
 };
 
-export const useFloatingLinkEdit = ({
-  editor,
-  floating,
-  triggerFloatingLinkHotkeys,
-  versionEditor,
-}: ReturnType<typeof useFloatingLinkEditState>) => {
+export const useFloatingLinkEdit = (
+  {
+    editor,
+    floating,
+    triggerFloatingLinkHotkeys,
+    versionEditor,
+  }: ReturnType<typeof useFloatingLinkEditState>,
+  isPageSelectorOpen?: boolean,
+) => {
   const { api, getOptions } = useEditorPlugin(LinkPlugin);
   const window = useWindow();
 
@@ -289,11 +322,17 @@ export const useFloatingLinkEdit = ({
 
   useFloatingLinkEscape();
 
-  const clickOutsideRef = useOnClickOutside(() => {
-    if (!getOptions().isEditing) return;
+  const clickOutsideRef = useOnClickOutside(
+    () => {
+      if (!getOptions().isEditing) return;
 
-    api.floatingLink.hide();
-  });
+      api.floatingLink.hide();
+    },
+    {
+      detectIFrame: true,
+      disabled: isPageSelectorOpen,
+    },
+  );
 
   return {
     editButtonProps: {

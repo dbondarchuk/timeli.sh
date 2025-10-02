@@ -73,7 +73,6 @@ export const TextEditor = ({ props, style }: TextProps) => {
               className,
               base?.className,
             )}
-            id={base?.id}
             document={document}
           />
         ) : (

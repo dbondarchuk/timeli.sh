@@ -19,6 +19,7 @@ import { cn, useUploadFile } from "@vivid/ui";
 import { AudioLines, FileUp, Film, ImageIcon } from "lucide-react";
 import { useFilePicker } from "use-file-picker";
 
+import { useAbsoluteUrl } from "./absolute-url-context";
 import { PlateElement } from "./plate-element";
 import { Spinner } from "./spinner";
 
@@ -60,6 +61,7 @@ export const MediaPlaceholderElement = withHOC(
       const element = props.element as TPlaceholderElement;
 
       const { api } = useEditorPlugin(PlaceholderPlugin);
+      const usesAbsoluteUrl = useAbsoluteUrl();
 
       const {
         isUploading,
@@ -117,7 +119,9 @@ export const MediaPlaceholderElement = withHOC(
                 : "",
             placeholderId: element.id as string,
             type: element.mediaType!,
-            url: uploadedFiles[0].url,
+            url: usesAbsoluteUrl
+              ? uploadedFiles[0].url
+              : `/assets/${uploadedFiles[0].filename}`,
           };
 
           editor.tf.insertNodes(node, { at: path });
@@ -127,7 +131,7 @@ export const MediaPlaceholderElement = withHOC(
 
         api.placeholder.removeUploadingFile(element.id as string);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, [uploadedFiles, element.id]);
+      }, [uploadedFiles, element.id, usesAbsoluteUrl]);
 
       // React dev mode will call useEffect twice
       const isReplaced = useRef(false);

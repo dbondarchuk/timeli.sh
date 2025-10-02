@@ -14,6 +14,7 @@ import {
 import { buildSearchQuery, escapeRegex } from "@vivid/utils";
 
 import { getLoggerFactory } from "@vivid/logger";
+import { createHash } from "crypto";
 import { DateTime } from "luxon";
 import { Filter, ObjectId, Sort } from "mongodb";
 import { Readable } from "stream";
@@ -21,6 +22,18 @@ import { CUSTOMERS_COLLECTION_NAME } from "./customers.service";
 import { APPOINTMENTS_COLLECTION_NAME } from "./events.service";
 
 export const ASSETS_COLLECTION_NAME = "assets";
+async function getFileHash(file: File): Promise<string> {
+  const hash = createHash("sha256");
+
+  // Convert the file.stream() (Web ReadableStream) into a Node stream
+  const nodeStream = Readable.fromWeb(file.stream() as any);
+
+  return new Promise<string>((resolve, reject) => {
+    nodeStream.on("data", (chunk) => hash.update(chunk));
+    nodeStream.on("end", () => resolve(hash.digest("hex")));
+    nodeStream.on("error", reject);
+  });
+}
 
 export class AssetsService implements IAssetsService {
   protected readonly loggerFactory = getLoggerFactory("AssetsService");
@@ -181,11 +194,16 @@ export class AssetsService implements IAssetsService {
   }
 
   public async createAsset(
-    asset: Omit<Asset, "_id" | "uploadedAt">,
+    asset: Omit<Asset, "_id" | "uploadedAt" | "size" | "hash">,
     file: File,
   ): Promise<AssetEntity> {
     const storage = await this.getAssetsStorage();
-    const args = { fileName: asset.filename, size: asset.size };
+    const args = {
+      fileName: asset.filename,
+      mimeType: asset.mimeType,
+      size: file.size,
+      hash: undefined as string | undefined,
+    };
 
     const logger = this.loggerFactory("createAsset");
     logger.debug(args, "Creating new asset");
@@ -207,6 +225,19 @@ export class AssetsService implements IAssetsService {
           throw new Error(`File '${asset.filename}' already exists`);
         }
 
+        const hash = await getFileHash(file);
+        args.hash = hash;
+        const existingWithSameHash = await assets.findOne({
+          hash,
+          appointmentId: asset.appointmentId,
+          customerId: asset.customerId,
+        });
+
+        if (!!existingWithSameHash) {
+          logger.info(args, "Asset with such hash already exists");
+          return existingWithSameHash;
+        }
+
         logger.debug(args, "Uploading new asset");
 
         await storage.service.saveFile(
@@ -223,6 +254,7 @@ export class AssetsService implements IAssetsService {
           _id: new ObjectId().toString(),
           uploadedAt: DateTime.utc().toJSDate(),
           size: file.size,
+          hash,
         };
 
         await assets.insertOne(dbAsset);

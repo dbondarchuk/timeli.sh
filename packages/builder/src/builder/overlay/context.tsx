@@ -254,7 +254,7 @@ export function OverlayProvider({ children }: { children: ReactNode }) {
     const onScroll = () => updateActiveBlocks();
     document.defaultView?.addEventListener("scroll", onScroll, true);
 
-    const intervalId = setInterval(() => updateActiveBlocks(), 20);
+    const intervalId = setInterval(() => updateActiveBlocks(), 10);
 
     return () => {
       document.defaultView?.removeEventListener("scroll", onScroll, true);

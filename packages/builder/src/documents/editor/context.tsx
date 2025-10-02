@@ -3,7 +3,7 @@
 import z from "zod";
 import { create, StoreApi, UseBoundStore, useStore } from "zustand";
 
-import { DeepOmit } from "@vivid/types";
+import { DeepOmit, UploadedFile } from "@vivid/types";
 import { deepEqual } from "@vivid/utils";
 import {
   createContext,
@@ -84,6 +84,8 @@ type EditorState = {
   selectedScreenSize: ViewportSize;
   fullScreen: boolean;
 
+  getImageBlock?: (file: UploadedFile) => TEditorBlock;
+
   toggleInspectorDrawer: () => void;
   activeOverBlockContextId: string | null;
   activeDragBlockId: string | null;
@@ -157,6 +159,7 @@ const createEditorStateStore = ({
   schemas,
   defaultScreenSize,
   persistScreenSize,
+  getImageBlock,
 }: {
   blocks: EditorDocumentBlocksDictionary<any>;
   readerBlocks: ReaderDocumentBlocksDictionary<any>;
@@ -165,6 +168,7 @@ const createEditorStateStore = ({
   document?: TEditorConfiguration;
   defaultScreenSize?: ViewportSize;
   persistScreenSize?: (screenSize: ViewportSize) => void;
+  getImageBlock?: (file: UploadedFile) => TEditorBlock;
 }) => {
   const defaultDocument = document || rootBlock;
   const defaultRootBlock = defaultDocument || rootBlock;
@@ -195,6 +199,7 @@ const createEditorStateStore = ({
       ],
       index: 0,
     },
+    getImageBlock,
     selectedBlockId: null,
     showBlocksPanel: false,
     selectedSidebarTab: "styles",
@@ -727,6 +732,7 @@ export const EditorStateProvider: FC<
     rootBlock: TEditorBlock;
     document?: TEditorConfiguration;
     schemas: BuilderSchema;
+    getImageBlock?: (file: UploadedFile) => TEditorBlock;
   }>
 > = ({ children, ...props }) => {
   const storeRef = useRef<EditorStateStore | null>(null);
@@ -739,6 +745,7 @@ export const EditorStateProvider: FC<
       persistScreenSize: (screenSize) => {
         setCookies(SCREEN_SIZE_STORAGE_KEY, screenSize);
       },
+      getImageBlock: props.getImageBlock,
     });
   }
 

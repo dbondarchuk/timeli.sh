@@ -44,6 +44,7 @@ export const TextEditor = ({ props, style }: TextProps) => {
           onChange={onChange}
           document={document}
           className="w-full bg-transparent border-0 focus-visible:ring-0 rounded-none h-auto p-0 sm:px-0 border-none leading-normal md:leading-normal"
+          usesAbsoluteUrl
         />
       ) : (
         <PlateStaticEditor value={props?.value} />

@@ -45,6 +45,7 @@ import {
   ToolbarSplitButtonSecondary,
   useOpenState,
 } from "@vivid/ui";
+import { useAbsoluteUrl } from "./absolute-url-context";
 
 const MEDIA_CONFIG: Record<
   string,
@@ -92,6 +93,7 @@ export function MediaToolbarButton({
   const openState = useOpenState();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [assetSelectDialogOpen, setAssetSelectDialogOpen] = useState(false);
+  const usesAbsoluteUrl = useAbsoluteUrl();
 
   const { openFilePicker } = useFilePicker({
     accept: currentConfig.accept,
@@ -107,7 +109,7 @@ export function MediaToolbarButton({
       name:
         nodeType === FilePlugin.key ? asset.url.split("/").pop() : undefined,
       type: nodeType,
-      url: asset.url,
+      url: usesAbsoluteUrl ? asset.url : `/assets/${asset.filename}`,
       isUpload: true,
     });
   };
@@ -116,7 +118,8 @@ export function MediaToolbarButton({
     <>
       <ToolbarSplitButton
         onClick={() => {
-          openFilePicker();
+          // openFilePicker();
+          setAssetSelectDialogOpen(true);
         }}
         onKeyDown={(e) => {
           if (e.key === "ArrowDown") {

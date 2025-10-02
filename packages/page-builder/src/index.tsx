@@ -3,13 +3,15 @@
 import {
   Builder,
   EditorDocumentBlocksDictionary,
+  generateId,
   SidebarTab,
   TEditorConfiguration,
 } from "@vivid/builder";
-import { PageHeader } from "@vivid/types";
+import { PageHeader, UploadedFile } from "@vivid/types";
 import { deepMemo } from "@vivid/ui";
 import { useMemo } from "react";
 import { EditorBlocks, RootBlock } from "./blocks";
+import { ImagePropsDefaults } from "./blocks/image";
 import { ReaderBlocks } from "./blocks/reader";
 import { EditorBlocksSchema } from "./blocks/schema";
 import { Header } from "./header";
@@ -28,6 +30,21 @@ type PageBuilderProps = {
   };
   footer?: React.ReactNode;
   notAllowedBlocks?: (keyof typeof EditorBlocks)[];
+};
+
+const getImageBlock = (file: UploadedFile) => {
+  return {
+    type: "Image",
+    id: generateId(),
+    data: {
+      ...ImagePropsDefaults,
+      props: {
+        ...ImagePropsDefaults.props,
+        src: `/assets/${file.filename}`,
+        alt: file.description,
+      },
+    },
+  };
 };
 
 export const PageBuilder = deepMemo(
@@ -84,6 +101,7 @@ export const PageBuilder = deepMemo(
         sidebarWidth={28}
         header={headerComponent}
         footer={footer}
+        getImageBlock={getImageBlock}
       />
     );
   },

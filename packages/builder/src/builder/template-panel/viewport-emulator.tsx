@@ -95,6 +95,14 @@ export const ViewportEmulator: React.FC<ViewportEmulatorProps> = memo(
         }
       `;
 
+        iframeDoc.defaultView?.addEventListener("beforeunload", (event) => {
+          // Recommended
+          event.preventDefault();
+
+          // Included for legacy support, e.g. Chrome/Edge < 119
+          event.returnValue = true;
+        });
+
         const baseStyleElement = iframeDoc.createElement("style");
         baseStyleElement.textContent = baseStyles;
         iframeHead.appendChild(baseStyleElement);

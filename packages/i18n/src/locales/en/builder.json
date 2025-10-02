@@ -20,6 +20,11 @@
       "delete": "Delete selected block",
       "copy": "Copy selected block",
       "paste": "Paste block",
+      "imageUpload": {
+        "loading": "Uploading image...",
+        "success": "Image uploaded successfully",
+        "error": "Failed to upload image"
+      },
       "view": {
         "title": "Viewport size",
         "original": "Original",

@@ -12,6 +12,7 @@ import {
 } from "@udecode/plate/react";
 import { cn } from "@vivid/ui";
 import { cva } from "class-variance-authority";
+import { AbsoluteUrlContext } from "./absolute-url-context";
 import { WindowContext } from "./window-context";
 
 const editorContainerVariants = cva(
@@ -37,26 +38,30 @@ export const EditorContainer = ({
   className,
   variant,
   context,
+  usesAbsoluteUrl,
   ...props
 }: React.HTMLAttributes<HTMLDivElement> &
   VariantProps<typeof editorContainerVariants> & {
     context?: Window | null;
+    usesAbsoluteUrl?: boolean;
   }) => {
   const editor = useEditorRef();
   const containerRef = useEditorContainerRef();
 
   return (
     <WindowContext.Provider value={context}>
-      <div
-        id={editor.uid}
-        ref={containerRef}
-        className={cn(
-          "ignore-click-outside/toolbar",
-          editorContainerVariants({ variant }),
-          className,
-        )}
-        {...props}
-      />
+      <AbsoluteUrlContext.Provider value={usesAbsoluteUrl ?? false}>
+        <div
+          id={editor.uid}
+          ref={containerRef}
+          className={cn(
+            "ignore-click-outside/toolbar",
+            editorContainerVariants({ variant }),
+            className,
+          )}
+          {...props}
+        />
+      </AbsoluteUrlContext.Provider>
     </WindowContext.Provider>
   );
 };

@@ -10,6 +10,7 @@ export type AssetEntity = {
   description?: string;
   appointmentId?: string;
   customerId?: string;
+  hash: string;
 };
 
 export type Asset = AssetEntity & {
@@ -21,7 +22,7 @@ export type Asset = AssetEntity & {
 
 export type AssetUpdate = Omit<
   AssetEntity,
-  "_id" | "filename" | "mimeType" | "uploadedAt" | "size"
+  "_id" | "filename" | "mimeType" | "uploadedAt" | "size" | "hash"
 >;
 
 export type UploadedFile = Asset & {

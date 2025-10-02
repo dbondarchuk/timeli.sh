@@ -15,6 +15,7 @@ export type PageSelectorProps = {
   onSelected: (page: PageListModelWithUrl) => void;
   isOpen: boolean;
   close: () => void;
+  portalContainer?: React.ComponentProps<typeof Modal>["portalContainer"];
 };
 
 const Loader: React.FC<{ className?: string }> = ({ className }) => (
@@ -48,6 +49,7 @@ export const PageSelectorDialog: React.FC<PageSelectorProps> = ({
   onSelected,
   close,
   isOpen,
+  portalContainer,
 }) => {
   const t = useI18n("ui");
   const [selected, setSelected] = React.useState<
@@ -158,6 +160,7 @@ export const PageSelectorDialog: React.FC<PageSelectorProps> = ({
       isOpen={isOpen}
       onClose={onClose}
       // className="sm:max-w-[80%]"
+      portalContainer={portalContainer}
     >
       <div className="flex flex-col gap-4">
         <div className="w-full">

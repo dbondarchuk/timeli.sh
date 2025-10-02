@@ -26,7 +26,7 @@ export async function createAsset(formData: FormData) {
     "Creating new asset",
   );
 
-  const asset: Omit<AssetEntity, "_id" | "uploadedAt" | "size"> = {
+  const asset: Omit<AssetEntity, "_id" | "uploadedAt" | "size" | "hash"> = {
     filename,
     mimeType,
     description,

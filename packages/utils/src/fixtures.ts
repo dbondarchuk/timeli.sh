@@ -39,6 +39,7 @@ export const demoAppointment: Appointment = {
       uploadedAt: new Date(2024, 10, 20, 9, 0, 0),
       appointmentId,
       description: "Image 1",
+      hash: "hash1",
     },
     {
       _id: v4(),
@@ -48,6 +49,7 @@ export const demoAppointment: Appointment = {
       uploadedAt: new Date(2024, 10, 20, 9, 0, 0),
       appointmentId,
       description: "Image 2",
+      hash: "hash2",
     },
     {
       _id: v4(),
@@ -57,6 +59,7 @@ export const demoAppointment: Appointment = {
       uploadedAt: new Date(2024, 10, 20, 9, 0, 0),
       appointmentId,
       description: "Video 1",
+      hash: "hash3",
     },
     {
       _id: v4(),
@@ -66,6 +69,7 @@ export const demoAppointment: Appointment = {
       uploadedAt: new Date(2024, 10, 20, 9, 0, 0),
       appointmentId,
       description: "Video 2",
+      hash: "hash4",
     },
   ],
   addons: [

@@ -1,7 +1,9 @@
 "use client";
 
-import { Builder, TEditorConfiguration } from "@vivid/builder";
+import { Builder, generateId, TEditorConfiguration } from "@vivid/builder";
+import { UploadedFile } from "@vivid/types";
 import { EditorBlocks, RootBlock } from "./blocks";
+import { ImagePropsDefaults } from "./blocks/image";
 import { ReaderBlocks } from "./blocks/reader";
 import { EditorBlocksSchema } from "./blocks/schema";
 
@@ -10,6 +12,21 @@ type EmailBuilderProps = {
   onChange?: (value: TEditorConfiguration) => void;
   onIsValidChange?: (isValid: boolean) => void;
   args?: Record<string, any>;
+};
+
+const getImageBlock = (file: UploadedFile) => {
+  return {
+    type: "Image",
+    id: generateId(),
+    data: {
+      ...ImagePropsDefaults,
+      props: {
+        ...ImagePropsDefaults.props,
+        url: file.url,
+        alt: file.description,
+      },
+    },
+  };
 };
 
 export const EmailBuilder = ({
@@ -28,6 +45,7 @@ export const EmailBuilder = ({
       editorBlocks={EditorBlocks}
       readerBlocks={ReaderBlocks}
       rootBlock={RootBlock}
+      getImageBlock={getImageBlock}
     />
   );
 };

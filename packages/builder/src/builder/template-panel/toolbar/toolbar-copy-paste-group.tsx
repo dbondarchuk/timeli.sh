@@ -1,5 +1,5 @@
 import { useI18n } from "@vivid/i18n";
-import { ToolbarButton, ToolbarGroup } from "@vivid/ui";
+import { toast, ToolbarButton, ToolbarGroup, useUploadFile } from "@vivid/ui";
 import { ClipboardCopy, ClipboardPaste } from "lucide-react";
 import { useCallback, useEffect, useMemo } from "react";
 import {
@@ -58,6 +58,18 @@ export const ToolbarCopyPasteGroup = ({
   const parentData = useParentData(selectedBlockId);
 
   const isPreview = useSelectedView() === "preview";
+
+  const { uploadFile, isUploading: isUploadingImage } = useUploadFile({
+    onFileUploaded: (file) => {
+      const imageBlock = store.getState().getImageBlock?.(file);
+      if (!imageBlock) return;
+
+      handlePasteBlock(imageBlock);
+    },
+    onUploadError: (file, error) => {
+      console.error("Failed to upload pasted image:", error);
+    },
+  });
 
   const handlePasteBlock = useCallback(
     (block: TEditorBlock | null | undefined) => {
@@ -120,6 +132,59 @@ export const ToolbarCopyPasteGroup = ({
         event.stopPropagation();
         const block = JSON.parse(text.slice(6)) as TEditorBlock;
         handlePasteBlock(block);
+      } else {
+        // Check if it's an image in clipboard
+        const items = event.clipboardData?.items;
+        const imageItems = Array.from(items || []).filter((item) =>
+          item.type.startsWith("image/"),
+        );
+
+        if (imageItems.length > 0 && parentData?.parentBlockType) {
+          //event.preventDefault();
+          // event.stopPropagation();
+
+          const active = portalDocument.activeElement;
+          if (active && active.closest(".slate-editor")) {
+            return; // let Plate handle its paste
+          }
+
+          // // Check if the current block parent can accept image blocks
+          // const allowedParents = store.getState().blocks["Image"]?.allowedIn;
+          // if (
+          //   allowedParents &&
+          //   !allowedParents.includes(parentData.parentBlockType)
+          // ) {
+          //   return; // Can't add image block here
+          // }
+
+          // // Check if image is allowed in the parent property
+          // const allowedBlockTypes =
+          //   store.getState().allowedBlockTypes[
+          //     `${parentData.parentBlockId}/${parentData.parentProperty}`
+          //   ];
+          // if (
+          //   allowedBlockTypes?.length &&
+          //   !allowedBlockTypes.includes("Image")
+          // ) {
+          //   return; // Image not allowed in this parent property
+          // }
+
+          if (isUploadingImage) return; // Prevent multiple uploads
+
+          const imageFile = imageItems[0].getAsFile();
+          if (imageFile && imageFile.size > 0) {
+            if (!store.getState().getImageBlock) {
+              return;
+            }
+
+            const promise = uploadFile([{ file: imageFile }]);
+            toast.promise(promise, {
+              loading: t("baseBuilder.builderToolbar.imageUpload.loading"),
+              success: t("baseBuilder.builderToolbar.imageUpload.success"),
+              error: t("baseBuilder.builderToolbar.imageUpload.error"),
+            });
+          }
+        }
       }
     };
 
@@ -130,7 +195,17 @@ export const ToolbarCopyPasteGroup = ({
       portalDocument.removeEventListener("copy", handleCopy);
       portalDocument.removeEventListener("paste", handlePaste);
     };
-  }, [portalDocument, selectedBlockId, store, handlePasteBlock, isPreview]);
+  }, [
+    portalDocument,
+    selectedBlockId,
+    store,
+    handlePasteBlock,
+    isPreview,
+    parentData,
+    uploadFile,
+    isUploadingImage,
+    t,
+  ]);
 
   return (
     <ToolbarGroup>

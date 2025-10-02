@@ -13,7 +13,7 @@ import {
 } from "@udecode/plate-link/react";
 
 import { useFormInputProps } from "@udecode/plate/react";
-import { ExternalLink, Link, Text, Unlink } from "lucide-react";
+import { ExternalLink, Globe, Link, Text, Unlink } from "lucide-react";
 
 import {
   FloatingLinkUrlInput,
@@ -29,10 +29,12 @@ import {
   Checkbox,
   inputVariants,
   Label,
+  PageSelectorDialog,
   popoverVariants,
   Separator,
 } from "@vivid/ui";
 import { useRef } from "react";
+import { useWindow } from "./window-context";
 
 const floatingOptions: UseVirtualFloatingOptions = {
   middleware: [
@@ -64,6 +66,7 @@ export function LinkFloatingToolbar({ state }: LinkFloatingToolbarProps) {
     textInputProps,
     openInNewTabInputProps,
     apply,
+    onPageSelectorSelected,
   } = useFloatingLinkInsert(insertState);
 
   const editState = useFloatingLinkEditState({
@@ -73,18 +76,24 @@ export function LinkFloatingToolbar({ state }: LinkFloatingToolbarProps) {
       ...state?.floatingOptions,
     },
   });
+
+  const { pageSelector } = insertState;
+
   const {
     editButtonProps,
     props: editProps,
     ref: editRef,
     unlinkButtonProps,
-  } = useFloatingLinkEdit(editState);
+  } = useFloatingLinkEdit(editState, pageSelector.isOpen);
   const inputProps = useFormInputProps({
     preventDefaultOnEnterKeydown: true,
   });
 
+  const inputRef = useRef<HTMLInputElement>(null);
+
   const newTabId = useId();
   const newTabRef = useRef<HTMLButtonElement>(null);
+  const window = useWindow();
 
   if (hidden) return null;
 
@@ -99,7 +108,28 @@ export function LinkFloatingToolbar({ state }: LinkFloatingToolbarProps) {
           className={inputVariants({ h: "sm", variant: "ghost" })}
           placeholder="Paste link"
           data-plate-focus
+          ref={inputRef}
         />
+
+        <PageSelectorDialog
+          portalContainer={window.document.body}
+          isOpen={pageSelector.isOpen}
+          close={() => pageSelector.setIsOpen(false)}
+          onSelected={(page) => {
+            const value = onPageSelectorSelected(page);
+            if (inputRef.current) {
+              inputRef.current.value = value;
+            }
+          }}
+        />
+
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => pageSelector.setIsOpen(true)}
+        >
+          <Globe className="size-4" />
+        </Button>
       </div>
       <Separator className="my-1" />
       <div className="flex flex-row gap-1 items-center">
