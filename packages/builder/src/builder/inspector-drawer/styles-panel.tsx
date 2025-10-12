@@ -13,10 +13,11 @@ export const StylesPanelTab = "styles";
 export const StylesPanel: React.FC = () => {
   const block = useRootBlock();
   const dispatchAction = useDispatchAction();
-  const t = useI18n("builder");
+  const tBuilder = useI18n("builder");
+  const t = useI18n();
 
   if (!block) {
-    return <p>{t("baseBuilder.inspector.stylesPanel.blockNotFound")}</p>;
+    return <p>{tBuilder("baseBuilder.inspector.stylesPanel.blockNotFound")}</p>;
   }
 
   const { data, type, base } = block;

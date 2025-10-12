@@ -17,6 +17,11 @@ import {
 import { formatAmountString, getArguments, template } from "@vivid/utils";
 import { TextMessageNotificationMessages } from "./messages";
 import { TextMessageNotificationConfiguration } from "./models";
+import {
+  TextMessageNotificationAdminAllKeys,
+  TextMessageNotificationAdminKeys,
+  TextMessageNotificationAdminNamespace,
+} from "./translations/types";
 
 export class TextMessageNotificationConnectedApp
   implements IConnectedApp, IAppointmentHook, ITextMessageResponder
@@ -30,7 +35,12 @@ export class TextMessageNotificationConnectedApp
   public async processRequest(
     appData: ConnectedAppData,
     data: TextMessageNotificationConfiguration,
-  ): Promise<ConnectedAppStatusWithText> {
+  ): Promise<
+    ConnectedAppStatusWithText<
+      TextMessageNotificationAdminNamespace,
+      TextMessageNotificationAdminKeys
+    >
+  > {
     const logger = this.loggerFactory("processRequest");
     logger.debug(
       { appId: appData._id, phone: data?.phone },
@@ -71,13 +81,17 @@ export class TextMessageNotificationConnectedApp
         return {
           status: "failed",
           statusText:
-            "textMessageNotification.statusText.text_message_app_not_configured",
+            "app_text-message-notification_admin.statusText.text_message_app_not_configured",
         };
       }
 
-      const status: ConnectedAppStatusWithText = {
+      const status: ConnectedAppStatusWithText<
+        TextMessageNotificationAdminNamespace,
+        TextMessageNotificationAdminKeys
+      > = {
         status: "connected",
-        statusText: "textMessageNotification.statusText.successfully_set_up",
+        statusText:
+          "app_text-message-notification_admin.statusText.successfully_set_up",
       };
 
       this.props.update({
@@ -100,7 +114,7 @@ export class TextMessageNotificationConnectedApp
       this.props.update({
         status: "failed",
         statusText:
-          "textMessageNotification.statusText.error_processing_configuration",
+          "app_text-message-notification_admin.statusText.error_processing_configuration" satisfies TextMessageNotificationAdminAllKeys,
       });
 
       throw error;
@@ -179,7 +193,8 @@ export class TextMessageNotificationConnectedApp
         },
         appointmentId: appointment._id,
         participantType: "user",
-        handledBy: "textMessageNotification.handlers.newRequest",
+        handledBy:
+          "app_text-message-notification_admin.handlers.newRequest" satisfies TextMessageNotificationAdminAllKeys,
       });
 
       logger.info(
@@ -195,7 +210,7 @@ export class TextMessageNotificationConnectedApp
       this.props.update({
         status: "failed",
         statusText:
-          "textMessageNotification.statusText.error_sending_owner_text_message_notification_for_new_appointment",
+          "app_text-message-notification_admin.statusText.error_sending_owner_text_message_notification_for_new_appointment" satisfies TextMessageNotificationAdminAllKeys,
       });
 
       throw error;
@@ -291,12 +306,14 @@ export class TextMessageNotificationConnectedApp
           body,
           webhookData: reply.data,
           participantType: "user",
-          handledBy: "textMessageNotification.handlers.autoReply",
+          handledBy:
+            "app_text-message-notification_admin.handlers.autoReply" satisfies TextMessageNotificationAdminAllKeys,
         });
 
         return {
           participantType: "user",
-          handledBy: "textMessageNotification.handlers.autoReply",
+          handledBy:
+            "app_text-message-notification_admin.handlers.autoReply" satisfies TextMessageNotificationAdminAllKeys,
         };
       }
 
@@ -362,12 +379,14 @@ export class TextMessageNotificationConnectedApp
           body,
           webhookData: reply.data,
           participantType: "user",
-          handledBy: "textMessageNotification.handlers.autoReply",
+          handledBy:
+            "app_text-message-notification_admin.handlers.autoReply" satisfies TextMessageNotificationAdminAllKeys,
         });
 
         return {
           participantType: "user",
-          handledBy: "textMessageNotification.handlers.autoReply",
+          handledBy:
+            "app_text-message-notification_admin.handlers.autoReply" satisfies TextMessageNotificationAdminAllKeys,
         };
       }
     } catch (error: any) {
@@ -383,7 +402,7 @@ export class TextMessageNotificationConnectedApp
       this.props.update({
         status: "failed",
         statusText:
-          "textMessageNotification.statusText.error_processing_text_message_reply",
+          "app_text-message-notification_admin.statusText.error_processing_text_message_reply" satisfies TextMessageNotificationAdminAllKeys,
       });
 
       throw error;
@@ -453,7 +472,8 @@ export class TextMessageNotificationConnectedApp
         body: responseBody,
         webhookData: reply.data,
         participantType: "user",
-        handledBy: "textMessageNotification.handlers.autoReply",
+        handledBy:
+          "app_text-message-notification_admin.handlers.autoReply" satisfies TextMessageNotificationAdminAllKeys,
       });
 
       logger.info(
@@ -463,7 +483,8 @@ export class TextMessageNotificationConnectedApp
 
       return {
         participantType: "user",
-        handledBy: "textMessageNotification.handlers.autoReply",
+        handledBy:
+          "app_text-message-notification_admin.handlers.autoReply" satisfies TextMessageNotificationAdminAllKeys,
       };
     } catch (error: any) {
       logger.error(

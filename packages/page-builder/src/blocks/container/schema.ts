@@ -1,6 +1,6 @@
 import { BaseReaderBlockProps } from "@vivid/builder";
+import { ALL_STYLES, getStylesSchema } from "@vivid/page-builder-base/style";
 import { z } from "zod";
-import { ALL_STYLES, getStylesSchema } from "../../style";
 
 export const styles = ALL_STYLES;
 export const zStyles = getStylesSchema(styles);

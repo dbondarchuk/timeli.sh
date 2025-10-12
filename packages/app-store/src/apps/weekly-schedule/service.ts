@@ -14,6 +14,11 @@ import {
 import { eachOfInterval, getWeekIdentifier } from "@vivid/utils";
 import { AnyBulkWriteOperation, ObjectId } from "mongodb";
 import { RequestAction } from "./models";
+import {
+  WeeklyScheduleAdminAllKeys,
+  WeeklyScheduleAdminKeys,
+  WeeklyScheduleAdminNamespace,
+} from "./translations/types";
 
 export const SCHEDULE_COLLECTION_NAME = "weekly-schedules";
 
@@ -86,9 +91,13 @@ export default class WeeklyScheduleConnectedApp
             "Processing default action - app installation",
           );
 
-          const status: ConnectedAppStatusWithText = {
+          const status: ConnectedAppStatusWithText<
+            WeeklyScheduleAdminNamespace,
+            WeeklyScheduleAdminKeys
+          > = {
             status: "connected",
-            statusText: "weeklySchedule.statusText.successfully_installed",
+            statusText:
+              "app_weekly-schedule_admin.statusText.successfully_installed",
           };
 
           this.props.update({
@@ -111,7 +120,8 @@ export default class WeeklyScheduleConnectedApp
 
       this.props.update({
         status: "failed",
-        statusText: "weeklySchedule.statusText.error_processing_request",
+        statusText:
+          "app_weekly-schedule_admin.statusText.error_processing_request" satisfies WeeklyScheduleAdminAllKeys,
       });
 
       throw error;

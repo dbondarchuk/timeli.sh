@@ -11,6 +11,11 @@ import {
 } from "@vivid/types";
 import { getArguments, template } from "@vivid/utils";
 import { TextMessageAutoReplyConfiguration } from "./models";
+import {
+  TextMessageAutoReplyAdminAllKeys,
+  TextMessageAutoReplyAdminKeys,
+  TextMessageAutoReplyAdminNamespace,
+} from "./translations/types";
 
 export default class TextMessageAutoReplyConnectedApp
   implements IConnectedApp, ITextMessageResponder
@@ -49,9 +54,10 @@ export default class TextMessageAutoReplyConnectedApp
           { appId: appData._id, templateId: data.autoReplyTemplateId },
           "Auto reply template not found",
         );
-        throw new ConnectedAppError(
-          "textMessageAutoReply.statusText.template_not_found",
-        );
+        throw new ConnectedAppError<
+          TextMessageAutoReplyAdminNamespace,
+          TextMessageAutoReplyAdminKeys
+        >("app_text-message-auto-reply_admin.statusText.template_not_found");
       }
 
       logger.debug(
@@ -63,9 +69,13 @@ export default class TextMessageAutoReplyConnectedApp
         "Auto reply template validated successfully",
       );
 
-      const status: ConnectedAppStatusWithText = {
+      const status: ConnectedAppStatusWithText<
+        TextMessageAutoReplyAdminNamespace,
+        TextMessageAutoReplyAdminKeys
+      > = {
         status: "connected",
-        statusText: "textMessageAutoReply.statusText.successfully_set_up",
+        statusText:
+          "app_text-message-auto-reply_admin.statusText.successfully_set_up",
       };
 
       this.props.update({
@@ -97,7 +107,7 @@ export default class TextMessageAutoReplyConnectedApp
                 key: e.key,
                 args: e.args,
               }
-            : "textMessageAutoReply.statusText.error_processing_configuration",
+            : ("app_text-message-auto-reply_admin.statusText.error_processing_configuration" satisfies TextMessageAutoReplyAdminAllKeys),
       };
 
       this.props.update({
@@ -197,7 +207,8 @@ export default class TextMessageAutoReplyConnectedApp
           );
 
           return {
-            handledBy: "textMessageAutoReply.handler",
+            handledBy:
+              "app_text-message-auto-reply_admin.handler" satisfies TextMessageAutoReplyAdminAllKeys,
             participantType: "customer",
           };
         } else {
@@ -211,7 +222,8 @@ export default class TextMessageAutoReplyConnectedApp
 
           this.props.update({
             status: "failed",
-            statusText: "textMessageAutoReply.statusText.template_not_found",
+            statusText:
+              "app_text-message-auto-reply_admin.statusText.template_not_found" satisfies TextMessageAutoReplyAdminAllKeys,
           });
         }
       } else {
@@ -222,7 +234,8 @@ export default class TextMessageAutoReplyConnectedApp
 
         this.props.update({
           status: "failed",
-          statusText: "textMessageAutoReply.statusText.template_not_found",
+          statusText:
+            "app_text-message-auto-reply_admin.statusText.template_not_found" satisfies TextMessageAutoReplyAdminAllKeys,
         });
       }
 

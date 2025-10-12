@@ -1,0 +1,54 @@
+import { renderUserEmailTemplate } from "@vivid/email-builder/static";
+import { Language } from "@vivid/i18n";
+import { template } from "@vivid/utils";
+import { UserEmailTemplates } from ".";
+import { WaitlistEntry } from "../models/waitlist";
+
+export const getEmailTemplate = async (
+  status: "newWaitlistEntry",
+  language: Language,
+  url: string,
+  entry: WaitlistEntry,
+  args: Record<string, any>,
+) => {
+  const templateContent =
+    UserEmailTemplates[language]?.[status] ?? UserEmailTemplates["en"][status];
+
+  const subjectTemplate = templateContent.title;
+
+  const buttonTexts =
+    UserEmailTemplates[language]?.buttonTexts ??
+    UserEmailTemplates["en"].buttonTexts;
+
+  const subject = template(subjectTemplate, args);
+
+  const description = await renderUserEmailTemplate(
+    {
+      ...templateContent,
+      topButtons: [
+        {
+          text: buttonTexts.viewWaitlist,
+          url: `${url}/admin/dashboard/waitlist`,
+        },
+      ],
+      bottomButtons: [
+        {
+          text: buttonTexts.dismiss,
+          url: `${url}/admin/dashboard/waitlist/dismiss?id=${entry._id}`,
+          backgroundColor: "#FF0000",
+        },
+        {
+          text: buttonTexts.createAppointment,
+          url: `${url}/admin/dashboard/waitlist/appointment/new?id=${entry._id}`,
+          backgroundColor: "#0008FF",
+        },
+      ],
+    },
+    args,
+  );
+
+  return {
+    template: description,
+    subject,
+  };
+};

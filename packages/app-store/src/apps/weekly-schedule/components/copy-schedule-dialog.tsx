@@ -29,6 +29,11 @@ import { getWeekIdentifier } from "@vivid/utils";
 import { Copy } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
+import {
+  WeeklyScheduleAdminKeys,
+  WeeklyScheduleAdminNamespace,
+  weeklyScheduleAdminNamespace,
+} from "../translations/types";
 import { copyWeeklySchedule } from "./actions";
 import { getWeekDisplay } from "./utils";
 
@@ -45,7 +50,9 @@ export const CopyScheduleDialog: React.FC<CopyScheduleDialogProps> = ({
   disabled,
   className,
 }) => {
-  const t = useI18n("apps");
+  const t = useI18n<WeeklyScheduleAdminNamespace, WeeklyScheduleAdminKeys>(
+    weeklyScheduleAdminNamespace,
+  );
   const [openDialog, setOpenDialog] = React.useState(false);
   const [openConfirmDialog, setOpenConfirmDialog] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
@@ -59,8 +66,8 @@ export const CopyScheduleDialog: React.FC<CopyScheduleDialogProps> = ({
     try {
       setLoading(true);
       await toastPromise(copyWeeklySchedule(appId, week, newWeek), {
-        success: t("weeklySchedule.dialogs.copy.success"),
-        error: t("weeklySchedule.statusText.request_error"),
+        success: t("dialogs.copy.success"),
+        error: t("statusText.request_error"),
       });
 
       setOpenConfirmDialog(false);
@@ -80,16 +87,19 @@ export const CopyScheduleDialog: React.FC<CopyScheduleDialogProps> = ({
     <Dialog onOpenChange={setOpenDialog} open={openDialog}>
       <DialogTrigger asChild>
         <Button variant="primary" disabled={disabled} className={className}>
-          <Copy /> {t("weeklySchedule.dialogs.copy.copySchedule")}
+          <Copy /> {t("dialogs.copy.copySchedule")}
         </Button>
       </DialogTrigger>
-      <DialogContent className="flex flex-col max-h-[100%] translate-y-[-100%]">
+      <DialogContent
+        className="flex flex-col max-h-[100%] translate-y-[-100%]"
+        overlayVariant="blur"
+      >
         <DialogHeader>
           <DialogTitle className="w-full flex flex-row justify-between items-center mt-2">
-            {t("weeklySchedule.dialogs.copy.title")}
+            {t("dialogs.copy.title")}
           </DialogTitle>
           <DialogDescription>
-            {t("weeklySchedule.dialogs.copy.description", {
+            {t("dialogs.copy.description", {
               week: getWeekDisplay(week),
             })}
           </DialogDescription>
@@ -112,31 +122,28 @@ export const CopyScheduleDialog: React.FC<CopyScheduleDialogProps> = ({
           >
             <AlertDialogTrigger asChild>
               <Button variant="default" disabled={week === newWeek}>
-                {t("weeklySchedule.dialogs.copy.copy")}
+                {t("dialogs.copy.copy")}
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>
-                  {t("weeklySchedule.dialogs.copy.title")}
-                </AlertDialogTitle>
+                <AlertDialogTitle>{t("dialogs.copy.title")}</AlertDialogTitle>
                 <AlertDialogDescription>
-                  {t("weeklySchedule.dialogs.copy.description", {
+                  {t("dialogs.copy.description", {
                     week: getWeekDisplay(newWeek),
                   })}
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>
-                  {t("weeklySchedule.dialogs.copy.cancel")}
+                  {t("dialogs.copy.cancel")}
                 </AlertDialogCancel>
                 <Button
                   disabled={loading}
                   className="flex flex-row gap-1 items-center"
                   onClick={onConfirm}
                 >
-                  {loading && <Spinner />}{" "}
-                  <span>{t("weeklySchedule.dialogs.copy.copy")}</span>
+                  {loading && <Spinner />} <span>{t("dialogs.copy.copy")}</span>
                 </Button>
               </AlertDialogFooter>
             </AlertDialogContent>

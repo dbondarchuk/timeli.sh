@@ -30,7 +30,8 @@ const MOBILE_DISPLAY_LAST_ELEMENTS = 2;
 export const NavMenu: React.FC<Props> = memo(({ blockId, disable }) => {
   const setSelectedBlockId = useSetSelectedBlockId();
   const dispatchAction = useDispatchAction();
-  const t = useI18n("builder");
+  const tBuilder = useI18n("builder");
+  const t = useI18n();
 
   const { document: documentElement } = usePortalContext();
   const isMobile = useIsMobile(documentElement?.defaultView);
@@ -93,7 +94,7 @@ export const NavMenu: React.FC<Props> = memo(({ blockId, disable }) => {
         {!disable?.move && (
           <ToolbarGroup>
             <ToolbarButton
-              tooltip={t("baseBuilder.navMenu.moveUp")}
+              tooltip={tBuilder("baseBuilder.navMenu.moveUp")}
               onClick={(e) => {
                 e.stopPropagation();
                 handleMoveClick("up");
@@ -106,7 +107,7 @@ export const NavMenu: React.FC<Props> = memo(({ blockId, disable }) => {
                 e.stopPropagation();
                 handleMoveClick("down");
               }}
-              tooltip={t("baseBuilder.navMenu.moveDown")}
+              tooltip={tBuilder("baseBuilder.navMenu.moveDown")}
             >
               <ArrowDown fontSize="small" />
             </ToolbarButton>
@@ -120,7 +121,7 @@ export const NavMenu: React.FC<Props> = memo(({ blockId, disable }) => {
                   e.stopPropagation();
                   handleCloneClick();
                 }}
-                tooltip={t("baseBuilder.navMenu.clone")}
+                tooltip={tBuilder("baseBuilder.navMenu.clone")}
               >
                 <Copy fontSize="small" />
               </ToolbarButton>
@@ -131,7 +132,7 @@ export const NavMenu: React.FC<Props> = memo(({ blockId, disable }) => {
                   e.stopPropagation();
                   handleDeleteClick();
                 }}
-                tooltip={t("baseBuilder.navMenu.delete")}
+                tooltip={tBuilder("baseBuilder.navMenu.delete")}
               >
                 <Trash fontSize="small" />
               </ToolbarButton>

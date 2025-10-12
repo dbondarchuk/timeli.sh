@@ -10,6 +10,11 @@ import {
 import { DateTime } from "luxon";
 import { reminderChannelLabels, reminderTypeLabels } from "../const";
 import { Reminder } from "../models";
+import {
+  RemindersAdminKeys,
+  RemindersAdminNamespace,
+  remindersAdminNamespace,
+} from "../translations/types";
 import { CellAction } from "./cell-action";
 
 export const columns: ColumnDef<Reminder>[] = [
@@ -48,28 +53,40 @@ export const columns: ColumnDef<Reminder>[] = [
       </Link>
     ),
     id: "name",
-    header: tableSortHeader("reminders.table.columns.name", "string", "apps"),
+    header: tableSortHeader<RemindersAdminNamespace, RemindersAdminKeys>(
+      "table.columns.name",
+      "string",
+      remindersAdminNamespace,
+    ),
     sortingFn: tableSortNoopFunction,
   },
   {
     cell: ({ row }) => {
-      const t = useI18n("apps");
+      const t = useI18n<RemindersAdminNamespace, RemindersAdminKeys>(
+        remindersAdminNamespace,
+      );
       return t(reminderTypeLabels[row.original.type]);
     },
     id: "type",
-    header: tableSortHeader("reminders.table.columns.type", "string", "apps"),
+    header: tableSortHeader<RemindersAdminNamespace, RemindersAdminKeys>(
+      "table.columns.type",
+      "string",
+      remindersAdminNamespace,
+    ),
     sortingFn: tableSortNoopFunction,
   },
   {
     cell: ({ row }) => {
-      const t = useI18n("apps");
+      const t = useI18n<RemindersAdminNamespace, RemindersAdminKeys>(
+        remindersAdminNamespace,
+      );
       return t(reminderChannelLabels[row.original.channel]);
     },
     id: "channel",
-    header: tableSortHeader(
-      "reminders.table.columns.channel",
+    header: tableSortHeader<RemindersAdminNamespace, RemindersAdminKeys>(
+      "table.columns.channel",
       "string",
-      "apps",
+      remindersAdminNamespace,
     ),
     sortingFn: tableSortNoopFunction,
   },
@@ -82,10 +99,10 @@ export const columns: ColumnDef<Reminder>[] = [
       );
     },
     id: "updatedAt",
-    header: tableSortHeader(
-      "reminders.table.columns.updatedAt",
+    header: tableSortHeader<RemindersAdminNamespace, RemindersAdminKeys>(
+      "table.columns.updatedAt",
       "date",
-      "apps",
+      remindersAdminNamespace,
     ),
     sortingFn: tableSortNoopFunction,
   },

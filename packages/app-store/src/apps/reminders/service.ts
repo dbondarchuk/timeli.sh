@@ -29,6 +29,11 @@ import {
   ReminderUpdateModel,
   RequestAction,
 } from "./models";
+import {
+  RemindersAdminAllKeys,
+  RemindersAdminKeys,
+  RemindersAdminNamespace,
+} from "./translations/types";
 
 const REMINDERS_COLLECTION_NAME = "reminders";
 
@@ -124,13 +129,17 @@ export default class RemindersConnectedApp
             );
             return {
               status: "failed",
-              statusText: "reminders.statusText.email_app_not_configured",
+              statusText:
+                "app_reminders_admin.statusText.email_app_not_configured" satisfies RemindersAdminAllKeys,
             };
           }
 
-          const status: ConnectedAppStatusWithText = {
+          const status: ConnectedAppStatusWithText<
+            RemindersAdminNamespace,
+            RemindersAdminKeys
+          > = {
             status: "connected",
-            statusText: "reminders.statusText.successfully_set_up",
+            statusText: "app_reminders_admin.statusText.successfully_set_up",
           };
 
           this.props.update({
@@ -355,7 +364,9 @@ export default class RemindersConnectedApp
           { appId, reminderName: reminder.name },
           "Reminder name already exists",
         );
-        throw new ConnectedAppError("reminders.form.name.validation.unique");
+        throw new ConnectedAppError(
+          "app_reminders_admin.form.name.validation.unique" satisfies RemindersAdminAllKeys,
+        );
       }
 
       const db = await this.props.getDbConnection();
@@ -405,7 +416,9 @@ export default class RemindersConnectedApp
           { appId, reminderId: id, reminderName: update.name },
           "Reminder name already exists",
         );
-        throw new ConnectedAppError("reminders.form.name.validation.unique");
+        throw new ConnectedAppError(
+          "app_reminders_admin.form.name.validation.unique" satisfies RemindersAdminAllKeys,
+        );
       }
 
       updateObj.updatedAt = DateTime.utc().toJSDate();

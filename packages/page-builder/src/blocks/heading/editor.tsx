@@ -7,9 +7,8 @@ import {
   useBlockEditor,
   useCurrentBlockId,
 } from "@vivid/builder";
+import { BlockStyle, useClassName } from "@vivid/page-builder-base";
 import { cn } from "@vivid/ui";
-import { BlockStyle } from "../../helpers/styling";
-import { useClassName } from "../../helpers/use-class-name";
 import { DefaultHeadingLevel, HeadingProps } from "./schema";
 import { getDefaults, styles } from "./styles";
 

@@ -6,10 +6,9 @@ import {
   useBlockEditor,
   useCurrentBlock,
 } from "@vivid/builder";
+import { BlockStyle, useClassName } from "@vivid/page-builder-base";
 import { cn, DialogFooter, DialogHeader } from "@vivid/ui";
 import { X } from "lucide-react";
-import { BlockStyle } from "../../helpers/styling";
-import { useClassName } from "../../helpers/use-class-name";
 import { PopupProps } from "./schema";
 import { styles } from "./styles";
 

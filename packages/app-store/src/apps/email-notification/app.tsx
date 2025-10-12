@@ -2,11 +2,18 @@ import { App } from "@vivid/types";
 import { Mailbox } from "lucide-react";
 import { EMAIL_NOTIFICATION_APP_NAME } from "./const";
 import { EmailNotificationAppSetup } from "./setup";
+import {
+  EmailNotificationAdminKeys,
+  EmailNotificationAdminNamespace,
+} from "./translations/types";
 
-export const EmailNotificationApp: App = {
+export const EmailNotificationApp: App<
+  EmailNotificationAdminNamespace,
+  EmailNotificationAdminKeys
+> = {
   name: EMAIL_NOTIFICATION_APP_NAME,
-  displayName: "emailNotification.displayName",
-  category: ["categories.notifications"],
+  displayName: "app_email-notification_admin.app.displayName",
+  category: ["apps.categories.notifications"],
   scope: ["appointment-hook"],
   type: "basic",
   Logo: ({ className }) => <Mailbox className={className} />,
@@ -15,6 +22,6 @@ export const EmailNotificationApp: App = {
   isHidden: false,
   dontAllowMultiple: true,
   description: {
-    text: "emailNotification.description",
+    text: "app_email-notification_admin.app.description",
   },
 };

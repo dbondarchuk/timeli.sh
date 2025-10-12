@@ -20,6 +20,11 @@ import {
   LogCleanupConfiguration,
   logCleanupConfigurationSchema,
 } from "./models";
+import {
+  LogCleanupAdminKeys,
+  LogCleanupAdminNamespace,
+  logCleanupAdminNamespace,
+} from "./translations/types";
 
 import {
   Input,
@@ -37,12 +42,14 @@ export const LogCleanupAppSetup: React.FC<AppSetupProps> = ({
   onError,
   appId: existingAppId,
 }) => {
-  const t = useI18n("apps");
+  const t = useI18n<LogCleanupAdminNamespace, LogCleanupAdminKeys>(
+    logCleanupAdminNamespace,
+  );
 
   const intervalTypeLabels: Record<CleanUpIntervalType, string> = {
-    days: t("logCleanup.intervals.days"),
-    weeks: t("logCleanup.intervals.weeks"),
-    months: t("logCleanup.intervals.months"),
+    days: t("intervals.days"),
+    weeks: t("intervals.weeks"),
+    months: t("intervals.months"),
   };
 
   const { appStatus, form, isLoading, isValid, onSubmit } =
@@ -65,12 +72,12 @@ export const LogCleanupAppSetup: React.FC<AppSetupProps> = ({
                 name="amount"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("logCleanup.form.amount.label")}</FormLabel>
+                    <FormLabel>{t("form.amount.label")}</FormLabel>
                     <FormControl>
                       <Input
                         disabled={isLoading}
                         type="number"
-                        placeholder={t("logCleanup.form.amount.placeholder")}
+                        placeholder={t("form.amount.placeholder")}
                         {...field}
                       />
                     </FormControl>
@@ -83,7 +90,7 @@ export const LogCleanupAppSetup: React.FC<AppSetupProps> = ({
                 name="type"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("logCleanup.form.type.label")}</FormLabel>
+                    <FormLabel>{t("form.type.label")}</FormLabel>
                     <FormControl>
                       <Select
                         disabled={isLoading}
@@ -95,7 +102,7 @@ export const LogCleanupAppSetup: React.FC<AppSetupProps> = ({
                       >
                         <SelectTrigger className="w-full">
                           <SelectValue
-                            placeholder={t("logCleanup.form.type.placeholder")}
+                            placeholder={t("form.type.placeholder")}
                           />
                         </SelectTrigger>
                         <SelectContent>
@@ -121,12 +128,13 @@ export const LogCleanupAppSetup: React.FC<AppSetupProps> = ({
               className="inline-flex gap-2 items-center w-full"
             >
               {isLoading && <Spinner />}
-              <span>
-                {existingAppId
-                  ? t("logCleanup.form.update")
-                  : t("logCleanup.form.add")}
+              <span className="inline-flex gap-2 items-center">
+                {t.rich(existingAppId ? "form.update" : "form.add", {
+                  app: () => (
+                    <ConnectedAppNameAndLogo appName={LogCleanupApp.name} />
+                  ),
+                })}
               </span>
-              <ConnectedAppNameAndLogo appName={LogCleanupApp.name} />
             </Button>
           </div>
         </form>

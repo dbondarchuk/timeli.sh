@@ -1,6 +1,6 @@
 "use client";
 
-import { BuilderKeys, useI18n } from "@vivid/i18n";
+import { AllKeys, BuilderKeys, useI18n } from "@vivid/i18n";
 import {
   Popover,
   PopoverContent,
@@ -21,7 +21,9 @@ import {
 export const ToolbarErrorGroup = () => {
   const editorErrors = useEditorStateErrors();
   const blocks = useBlocks();
-  const t = useI18n("builder");
+  const tBuilder = useI18n("builder");
+  const t = useI18n();
+
   const setSelectedBlockId = useSetSelectedBlockId();
 
   const errors = useMemo(
@@ -52,7 +54,7 @@ export const ToolbarErrorGroup = () => {
         <Popover>
           <PopoverTrigger asChild>
             <ToolbarButton
-              tooltip={t("baseBuilder.builderToolbar.errors", {
+              tooltip={tBuilder("baseBuilder.builderToolbar.errors", {
                 count: errorsCount,
               })}
             >
@@ -76,8 +78,10 @@ export const ToolbarErrorGroup = () => {
                           {property}:
                         </em>{" "}
                         {t.has(error as BuilderKeys)
-                          ? t(error as BuilderKeys)
-                          : error}
+                          ? tBuilder(error as BuilderKeys)
+                          : t.has(error as AllKeys)
+                            ? t(error as AllKeys)
+                            : error}
                       </div>
                       {index < flattendErrors.length - 1 && <Separator />}
                     </Fragment>
@@ -88,7 +92,9 @@ export const ToolbarErrorGroup = () => {
           </PopoverContent>
         </Popover>
       ) : (
-        <ToolbarButton tooltip={t("baseBuilder.builderToolbar.noErrors")}>
+        <ToolbarButton
+          tooltip={tBuilder("baseBuilder.builderToolbar.noErrors")}
+        >
           <Check className="text-green-600" />
         </ToolbarButton>
       )}

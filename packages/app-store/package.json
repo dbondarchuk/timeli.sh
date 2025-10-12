@@ -12,7 +12,12 @@
   "main": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts",
-    "./services": "./src/services/index.ts"
+    "./services": "./src/services/index.ts",
+    "./injectors/dashboard-tab": "./src/injectors/dashboard-tab.ts",
+    "./blocks/editors": "./src/blocks/editors.ts",
+    "./blocks/readers": "./src/blocks/readers.ts",
+    "./translations": "./src/translations.ts",
+    "./menu-items": "./src/menu-items.ts"
   },
   "devDependencies": {
     "@microsoft/microsoft-graph-types": "^2.40.0",
@@ -32,6 +37,7 @@
     "@paypal/react-paypal-js": "^8.8.3",
     "@ts-ics/schema-zod": "2.0.4",
     "@vivid/email-builder": "*",
+    "@vivid/page-builder-base": "*",
     "@vivid/types": "*",
     "@vivid/logger": "*",
     "@vivid/i18n": "*",

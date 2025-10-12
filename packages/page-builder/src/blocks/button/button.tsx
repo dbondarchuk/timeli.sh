@@ -1,7 +1,9 @@
 "use client";
 
-import { useCurrentPopup } from "../../context/popupContext";
-import { useReaderContext } from "../../context/readerContext";
+import {
+  useCurrentPopup,
+  useReaderContext,
+} from "@vivid/page-builder-base/reader";
 import { ButtonProps } from "./schema";
 
 type Props = Omit<NonNullable<ButtonProps["props"]>, "children"> & {

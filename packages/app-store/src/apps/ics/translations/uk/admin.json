@@ -1,0 +1,36 @@
+{
+  "title": "ICS Фід",
+  "app": {
+    "displayName": "ICS Фід",
+    "description": "Імпортувати події з ICS Фіду"
+  },
+  "form": {
+    "link": {
+      "label": "ICS посилання",
+      "placeholder": "https://",
+      "tooltip": "URL до ICS календаря"
+    },
+    "connect": "Підключитися з",
+    "validation": {}
+  },
+  "statusText": {
+    "successfully_set_up": "Успішно отримано календар",
+    "error_processing_configuration": "Помилка обробки конфігурації ICS",
+    "successfully_fetched_events": "Успішно отримано події",
+    "error_fetching_calendar": "Помилка отримання календаря",
+    "error_parsing_calendar": "Помилка парсингу ICS календаря",
+    "error_getting_busy_times": "Помилка отримання зайнятого часу з ICS календаря",
+    "http_error": "Не вдалося отримати url. Код статусу: {statusCode}",
+    "calendar_fetch_error": "Не вдалося отримати ICS календар. Код статусу: {statusCode}",
+    "invalid_url": "Недійсний ICS URL",
+    "connection_failed": "Підключення до ICS календаря не вдалося"
+  },
+  "toast": {
+    "connection_success": "Успішно підключено до ICS календаря",
+    "connection_error": "Не вдалося підключитися до ICS календаря",
+    "fetch_error": "Помилка отримання даних ICS календаря"
+  },
+  "validation": {
+    "invalidUrl": "ICS повинен бути дійсним URL до вашого календаря"
+  }
+}

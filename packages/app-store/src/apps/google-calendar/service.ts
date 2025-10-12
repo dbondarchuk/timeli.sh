@@ -30,6 +30,8 @@ import {
   RequestAction,
 } from "./models";
 
+import { GoogleCalendarAdminAllKeys } from "./translations/types";
+
 const accessType = "offline";
 
 // Redirect request won't contain offline access
@@ -210,7 +212,7 @@ class GoogleCalendarConnectedApp
         );
 
         throw new ConnectedAppError(
-          "googleCalendar.statusText.redirect_request_does_not_contain_app_id",
+          "app_google-calendar_admin.statusText.redirect_request_does_not_contain_app_id" satisfies GoogleCalendarAdminAllKeys,
         );
       }
 
@@ -220,7 +222,7 @@ class GoogleCalendarConnectedApp
           "Redirect request does not contain authorization code",
         );
         throw new ConnectedAppError(
-          "googleCalendar.statusText.redirect_request_does_not_contain_authorization_code",
+          "app_google-calendar_admin.statusText.redirect_request_does_not_contain_authorization_code" satisfies GoogleCalendarAdminAllKeys,
         );
       }
 
@@ -241,7 +243,7 @@ class GoogleCalendarConnectedApp
         );
 
         throw new ConnectedAppError(
-          "googleCalendar.statusText.app_was_not_authorized_properly",
+          "app_google-calendar_admin.statusText.app_was_not_authorized_properly" satisfies GoogleCalendarAdminAllKeys,
         );
       }
 
@@ -256,7 +258,7 @@ class GoogleCalendarConnectedApp
           "App was not given required scopes",
         );
         throw new ConnectedAppError(
-          "googleCalendar.statusText.app_was_not_given_required_scopes",
+          "app_google-calendar_admin.statusText.app_was_not_given_required_scopes" satisfies GoogleCalendarAdminAllKeys,
         );
       }
 
@@ -268,7 +270,7 @@ class GoogleCalendarConnectedApp
       if (!email) {
         logger.error({ appId }, "Failed to get user email from ID token");
         throw new ConnectedAppError(
-          "googleCalendar.statusText.failed_to_get_user_email",
+          "app_google-calendar_admin.statusText.failed_to_get_user_email" satisfies GoogleCalendarAdminAllKeys,
         );
       }
 
@@ -378,7 +380,8 @@ class GoogleCalendarConnectedApp
 
       await this.props.update({
         status: "connected",
-        statusText: "googleCalendar.statusText.successfully_set_up",
+        statusText:
+          "app_google-calendar_admin.statusText.successfully_set_up" satisfies GoogleCalendarAdminAllKeys,
       });
 
       return result;
@@ -390,7 +393,8 @@ class GoogleCalendarConnectedApp
 
       await this.props.update({
         status: "failed",
-        statusText: "googleCalendar.statusText.error_getting_busy_times",
+        statusText:
+          "app_google-calendar_admin.statusText.error_getting_busy_times" satisfies GoogleCalendarAdminAllKeys,
       });
 
       throw e;

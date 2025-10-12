@@ -1,5 +1,5 @@
-import { fileURLToPath } from "url";
 import { dirname, join } from "path";
+import { fileURLToPath } from "url";
 
 import createNextIntlPlugin from "next-intl/plugin";
 

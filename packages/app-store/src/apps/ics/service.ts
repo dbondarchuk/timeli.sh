@@ -11,6 +11,11 @@ import {
 } from "@vivid/types";
 import { DateTime } from "luxon";
 import { IcsLinkCalendarSource } from "./models";
+import {
+  IcsAdminAllKeys,
+  IcsAdminKeys,
+  IcsAdminNamespace,
+} from "./translations/types";
 
 export default class IcsConnectedApp
   implements IConnectedApp, ICalendarBusyTimeProvider
@@ -22,7 +27,7 @@ export default class IcsConnectedApp
   public async processRequest(
     appData: ConnectedAppData,
     data: IcsLinkCalendarSource,
-  ): Promise<ConnectedAppStatusWithText> {
+  ): Promise<ConnectedAppStatusWithText<IcsAdminNamespace, IcsAdminKeys>> {
     const logger = this.loggerFactory("processRequest");
     logger.debug(
       { appId: appData._id, icsLink: data.link },
@@ -48,14 +53,20 @@ export default class IcsConnectedApp
           "Failed to fetch ICS calendar - HTTP error",
         );
 
-        throw new ConnectedAppError("ics.statusText.http_error", {
-          statusCode: response.status,
-        });
+        throw new ConnectedAppError<IcsAdminNamespace, IcsAdminKeys>(
+          "app_ics_admin.statusText.http_error",
+          {
+            statusCode: response.status,
+          },
+        );
       }
 
-      const status: ConnectedAppStatusWithText = {
+      const status: ConnectedAppStatusWithText<
+        IcsAdminNamespace,
+        IcsAdminKeys
+      > = {
         status: "connected",
-        statusText: "ics.statusText.successfully_set_up",
+        statusText: "app_ics_admin.statusText.successfully_set_up",
       };
 
       this.props.update({
@@ -78,7 +89,10 @@ export default class IcsConnectedApp
         "Error processing ICS calendar connection request",
       );
 
-      const status: ConnectedAppStatusWithText = {
+      const status: ConnectedAppStatusWithText<
+        IcsAdminNamespace,
+        IcsAdminKeys
+      > = {
         status: "failed",
         statusText:
           error instanceof ConnectedAppError
@@ -205,7 +219,8 @@ export default class IcsConnectedApp
 
       this.props.update({
         status: "connected",
-        statusText: "ics.statusText.successfully_fetched_events",
+        statusText:
+          "app_ics_admin.statusText.successfully_fetched_events" satisfies IcsAdminAllKeys,
       });
 
       return icsEvents;
@@ -215,7 +230,10 @@ export default class IcsConnectedApp
         "Error getting busy times from ICS calendar",
       );
 
-      const status: ConnectedAppStatusWithText = {
+      const status: ConnectedAppStatusWithText<
+        IcsAdminNamespace,
+        IcsAdminKeys
+      > = {
         status: "failed",
         statusText:
           error instanceof ConnectedAppError

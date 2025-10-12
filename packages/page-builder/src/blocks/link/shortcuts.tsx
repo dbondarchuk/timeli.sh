@@ -1,9 +1,11 @@
+import {
+  backgroundColorShortcut,
+  colorShortcut,
+  fontFamilyShortcut,
+  Shortcut,
+} from "@vivid/page-builder-base";
+import { AllStylesSchemas, COLORS } from "@vivid/page-builder-base/style";
 import { Link } from "lucide-react";
-import { Shortcut } from "../../shortcuts";
-import { backgroundColorShortcut } from "../../shortcuts/common/background-color";
-import { colorShortcut } from "../../shortcuts/common/color";
-import { fontFamilyShortcut } from "../../shortcuts/common/font-family";
-import { AllStylesSchemas, COLORS } from "../../style";
 
 export const linkShortcuts: Shortcut<AllStylesSchemas>[] = [
   {

@@ -38,8 +38,9 @@ import React from "react";
 const CommunicationEntry: React.FC<{ entry: CommunicationLog }> = ({
   entry,
 }) => {
-  const t = useI18n("admin");
+  const tAdmin = useI18n("admin");
   const tApps = useI18n("apps");
+  const t = useI18n();
   const dateTime = DateTime.fromISO(entry.dateTime as any as string);
   const locale = useLocale();
   return (
@@ -57,7 +58,7 @@ const CommunicationEntry: React.FC<{ entry: CommunicationLog }> = ({
         <div className="flex items-center justify-between">
           <p className="font-medium">
             {entry.subject ??
-              tApps(
+              t(
                 typeof entry.handledBy === "string"
                   ? entry.handledBy
                   : entry.handledBy.key,
@@ -86,13 +87,13 @@ const CommunicationEntry: React.FC<{ entry: CommunicationLog }> = ({
           <Dialog>
             <DialogTrigger asChild>
               <Button variant="link-dashed" className="px-0">
-                {t("communications.viewMore")}
+                {tAdmin("communications.viewMore")}
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[80%] flex flex-col max-h-[100%]">
               <DialogHeader>
                 <DialogTitle className="w-full flex flex-row justify-between items-center mt-2">
-                  {t("communications.logContent")}
+                  {tAdmin("communications.logContent")}
                 </DialogTitle>
               </DialogHeader>
               <div className="flex-1 w-full overflow-auto">
@@ -107,7 +108,7 @@ const CommunicationEntry: React.FC<{ entry: CommunicationLog }> = ({
               <DialogFooter className="flex-row !justify-between gap-2">
                 <DialogClose asChild>
                   <Button variant="secondary">
-                    {t("common.buttons.close")}
+                    {tAdmin("common.buttons.close")}
                   </Button>
                 </DialogClose>
               </DialogFooter>
@@ -116,14 +117,14 @@ const CommunicationEntry: React.FC<{ entry: CommunicationLog }> = ({
         </div>
         <div className="flex items-center gap-2 mt-2 flex-wrap">
           <Badge variant="outline" className="text-xs">
-            {t(`common.labels.channel.${entry.channel}`)}
+            {tAdmin(`common.labels.channel.${entry.channel}`)}
           </Badge>
           <Badge variant="secondary" className="text-xs">
-            {t(`common.labels.direction.${entry.direction}`)}
+            {tAdmin(`common.labels.direction.${entry.direction}`)}
           </Badge>
           <Badge variant="outline" className="text-xs">
-            {t("communications.handler", {
-              handler: tApps(
+            {tAdmin("communications.handler", {
+              handler: t(
                 typeof entry.handledBy === "string"
                   ? entry.handledBy
                   : entry.handledBy.key,
@@ -137,12 +138,14 @@ const CommunicationEntry: React.FC<{ entry: CommunicationLog }> = ({
             <div className="flex flex-col gap-1">
               <Dialog>
                 <DialogTrigger>
-                  <Badge variant="default">{t("communications.data")}</Badge>
+                  <Badge variant="default">
+                    {tAdmin("communications.data")}
+                  </Badge>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[80%] flex flex-col max-h-[100%]">
                   <DialogHeader>
                     <DialogTitle className="w-full flex flex-row justify-between items-center mt-2">
-                      {t("communications.logData")}
+                      {tAdmin("communications.logData")}
                     </DialogTitle>
                   </DialogHeader>
                   <div className="flex-1 w-full overflow-auto">
@@ -151,7 +154,7 @@ const CommunicationEntry: React.FC<{ entry: CommunicationLog }> = ({
                   <DialogFooter className="flex-row !justify-between gap-2">
                     <DialogClose asChild>
                       <Button variant="secondary">
-                        {t("common.buttons.close")}
+                        {tAdmin("common.buttons.close")}
                       </Button>
                     </DialogClose>
                   </DialogFooter>

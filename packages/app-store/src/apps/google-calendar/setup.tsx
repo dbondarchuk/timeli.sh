@@ -20,13 +20,21 @@ import {
 } from "../../actions";
 import { GoogleCalendarApp } from "./app";
 import { CalendarListItem, RequestAction } from "./models";
+import {
+  GoogleCalendarAdminAllKeys,
+  GoogleCalendarAdminKeys,
+  GoogleCalendarAdminNamespace,
+  googleCalendarAdminNamespace,
+} from "./translations/types";
 
 export const GoogleAppSetup: React.FC<AppSetupProps> = ({
   onSuccess,
   onError,
   appId: existingAppId,
 }) => {
-  const t = useI18n("apps");
+  const t = useI18n<GoogleCalendarAdminNamespace, GoogleCalendarAdminKeys>(
+    googleCalendarAdminNamespace,
+  );
   const [isLoading, setIsLoading] = React.useState(false);
 
   const [app, setApp] = React.useState<ConnectedApp | undefined>(undefined);
@@ -36,7 +44,7 @@ export const GoogleAppSetup: React.FC<AppSetupProps> = ({
 
   const primaryCalendar: CalendarListItem = {
     id: "primary",
-    name: t("googleCalendar.primaryCalendar"),
+    name: t("primaryCalendar"),
   };
 
   const [calendars, setCalendars] = React.useState<CalendarListItem[]>([
@@ -85,8 +93,8 @@ export const GoogleAppSetup: React.FC<AppSetupProps> = ({
           calendar,
         } as RequestAction),
         {
-          success: t("googleCalendar.toast.changes_saved"),
-          error: t("googleCalendar.toast.request_error"),
+          success: t("toast.changes_saved"),
+          error: t("toast.request_error"),
         },
       );
     } catch (e: any) {
@@ -135,7 +143,8 @@ export const GoogleAppSetup: React.FC<AppSetupProps> = ({
         appId = (app?._id || existingAppId)!;
         await setAppStatus(appId, {
           status: "pending",
-          statusText: "googleCalendar.form.pendingAuthorization",
+          statusText:
+            "app_google-calendar_admin.form.pendingAuthorization" satisfies GoogleCalendarAdminAllKeys,
         });
       } else {
         appId = await addNewApp(GoogleCalendarApp.name);
@@ -165,12 +174,12 @@ export const GoogleAppSetup: React.FC<AppSetupProps> = ({
     <>
       {appId && (
         <div className="flex flex-col gap-2">
-          <Label>{t("googleCalendar.form.selectCalendar.label")}</Label>
+          <Label>{t("form.selectCalendar.label")}</Label>
           <Combobox
             values={calendarListValues}
             disabled={isLoading}
             className="flex w-full font-normal text-base"
-            searchLabel={t("googleCalendar.form.selectCalendar.searchLabel")}
+            searchLabel={t("form.selectCalendar.searchLabel")}
             value={selectedCalendar}
             onItemSelect={(value) => {
               setSelectedCalendar(value);
@@ -188,12 +197,13 @@ export const GoogleAppSetup: React.FC<AppSetupProps> = ({
           className="inline-flex gap-2 items-center w-full"
         >
           {isLoading && <Spinner />}
-          <span>
-            {appId
-              ? t("googleCalendar.form.reconnect")
-              : t("googleCalendar.form.connect")}
+          <span className="inline-flex gap-2 items-center">
+            {t.rich(appId ? "form.reconnect" : "form.connect", {
+              app: () => (
+                <ConnectedAppNameAndLogo appName={GoogleCalendarApp.name} />
+              ),
+            })}
           </span>
-          <ConnectedAppNameAndLogo appName={GoogleCalendarApp.name} />
         </Button>
       </div>
       {app && (

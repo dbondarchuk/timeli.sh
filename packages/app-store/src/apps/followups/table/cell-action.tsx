@@ -17,6 +17,11 @@ import { useState } from "react";
 import { useI18n } from "@vivid/i18n";
 import { deleteFollowUps } from "../actions";
 import { FollowUp } from "../models";
+import {
+  FollowUpsAdminKeys,
+  FollowUpsAdminNamespace,
+  followUpsAdminNamespace,
+} from "../translations/types";
 
 interface CellActionProps {
   followUp: FollowUp;
@@ -26,7 +31,9 @@ interface CellActionProps {
 export const CellAction: React.FC<CellActionProps> = ({ followUp, appId }) => {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
-  const t = useI18n("apps");
+  const t = useI18n<FollowUpsAdminNamespace, FollowUpsAdminKeys>(
+    followUpsAdminNamespace,
+  );
   const tUi = useI18n("ui");
 
   const [_, reload] = useQueryState("ts", { history: "replace" });
@@ -36,10 +43,10 @@ export const CellAction: React.FC<CellActionProps> = ({ followUp, appId }) => {
       setLoading(true);
 
       await toastPromise(deleteFollowUps(appId, [followUp._id]), {
-        success: t("followUps.statusText.follow_up_deleted", {
+        success: t("statusText.follow_up_deleted", {
           name: followUp.name,
         }),
-        error: t("followUps.statusText.error_deleting_follow_up"),
+        error: t("statusText.error_deleting_follow_up"),
       });
 
       setOpen(false);
@@ -59,9 +66,9 @@ export const CellAction: React.FC<CellActionProps> = ({ followUp, appId }) => {
         onClose={() => setOpen(false)}
         onConfirm={onConfirm}
         loading={loading}
-        title={t("followUps.table.delete.title")}
-        description={t("followUps.table.delete.description")}
-        continueButton={t("followUps.table.delete.confirm")}
+        title={t("table.delete.title")}
+        description={t("table.delete.description")}
+        continueButton={t("table.delete.confirm")}
       />
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>

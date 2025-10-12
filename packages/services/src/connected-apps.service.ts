@@ -15,6 +15,7 @@ import {
   IOAuthConnectedApp,
 } from "@vivid/types";
 import { ObjectId } from "mongodb";
+import pLimit from "p-limit";
 import { ServicesContainer } from ".";
 import { getDbConnection } from "./database";
 
@@ -35,7 +36,7 @@ export class ConnectedAppsService implements IConnectedAppsService {
     const app: ConnectedAppData = {
       _id: new ObjectId().toString(),
       status: "pending",
-      statusText: "common.statusText.pending",
+      statusText: "apps.common.statusText.pending",
       name,
     };
 
@@ -209,7 +210,7 @@ export class ConnectedAppsService implements IConnectedAppsService {
         {
           $set: {
             status: "connected",
-            statusText: "common.statusText.connected",
+            statusText: "apps.common.statusText.connected",
             ...result,
           },
         },
@@ -554,5 +555,59 @@ export class ConnectedAppsService implements IConnectedAppsService {
       );
       throw error;
     }
+  }
+
+  public async executeHooks<T>(
+    scope: AppScope,
+    hook: (app: ConnectedAppData, service: T) => Promise<void>,
+    options?: {
+      concurrencyLimit?: number;
+      ignoreErrors?: boolean;
+    },
+  ): Promise<void> {
+    const logger = this.loggerFactory("executeHooks");
+    logger.debug({ scope }, "Executing hooks");
+
+    const { concurrencyLimit = 10, ignoreErrors = false } = options ?? {};
+    const limit = pLimit(concurrencyLimit);
+
+    const hooks = await this.getAppsByScopeWithData(scope);
+
+    logger.debug({ scope, count: hooks.length }, "Retrieved hooks");
+
+    const promises = hooks.map(async (hookData) => {
+      logger.debug(
+        { appName: hookData.name, appId: hookData._id },
+        "Executing hook",
+      );
+      const service = AvailableAppServices[hook.name](
+        this.getAppServiceProps(hookData._id),
+      ) as any as T;
+
+      try {
+        await hook(hookData, service);
+        logger.debug(
+          { appName: hookData.name, appId: hookData._id },
+          "Hook executed",
+        );
+      } catch (error) {
+        if (!ignoreErrors) {
+          logger.error(
+            { appName: hookData.name, appId: hookData._id, error },
+            "Error executing hook",
+          );
+          throw error;
+        } else {
+          logger.warn(
+            { appName: hookData.name, appId: hookData._id, error },
+            "Error executing hook, ignoring",
+          );
+        }
+      }
+    });
+
+    await Promise.all(promises.map((p) => limit(() => p)));
+
+    logger.debug({ scope }, "Hooks executed");
   }
 }

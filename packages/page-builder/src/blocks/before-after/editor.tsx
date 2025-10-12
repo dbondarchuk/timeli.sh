@@ -9,10 +9,9 @@ import {
   useDispatchAction,
   usePortalContext,
 } from "@vivid/builder";
+import { BlockStyle, useClassName } from "@vivid/page-builder-base";
 import { cn } from "@vivid/ui";
 import { useCallback } from "react";
-import { BlockStyle } from "../../helpers/styling";
-import { useClassName } from "../../helpers/use-class-name";
 import { ImageProvider } from "../image/context";
 import { BeforeAfterSlider } from "./before-after-slider";
 import { NoImagesMessage } from "./no-images-message";

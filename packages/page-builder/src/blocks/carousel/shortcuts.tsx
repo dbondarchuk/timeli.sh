@@ -1,7 +1,9 @@
+import {
+  colorShortcut,
+  fontFamilyShortcut,
+  Shortcut,
+} from "@vivid/page-builder-base";
 import { AlignHorizontalJustifyCenter, GalleryHorizontal } from "lucide-react";
-import { Shortcut } from "../../shortcuts";
-import { colorShortcut } from "../../shortcuts/common/color";
-import { fontFamilyShortcut } from "../../shortcuts/common/font-family";
 import { CarouselStylesSchema } from "./schema";
 
 export const carouselShortcuts: Shortcut<CarouselStylesSchema>[] = [

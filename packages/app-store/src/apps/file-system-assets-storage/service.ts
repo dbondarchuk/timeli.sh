@@ -11,6 +11,7 @@ import {
   IConnectedApp,
   IConnectedAppProps,
 } from "@vivid/types";
+import { FileSystemAssetsStorageAdminAllKeys } from "./translations/types";
 
 export default class FileSystemAssetsStorageConnectedApp
   implements IConnectedApp, IAssetsStorage
@@ -52,7 +53,7 @@ export default class FileSystemAssetsStorageConnectedApp
         );
 
         throw new ConnectedAppError(
-          "fileSystemAssetsStorage.statusText.file_not_found",
+          "app_file-system-assets-storage_admin.statusText.file_not_found" satisfies FileSystemAssetsStorageAdminAllKeys,
           { filename },
         );
       }
@@ -114,7 +115,7 @@ export default class FileSystemAssetsStorageConnectedApp
       );
 
       throw new ConnectedAppError(
-        "fileSystemAssetsStorage.statusText.error_saving_file",
+        "app_file-system-assets-storage_admin.statusText.error_saving_file" satisfies FileSystemAssetsStorageAdminAllKeys,
         { filename },
       );
     }
@@ -159,7 +160,7 @@ export default class FileSystemAssetsStorageConnectedApp
       );
 
       throw new ConnectedAppError(
-        "fileSystemAssetsStorage.statusText.error_deleting_file",
+        "app_file-system-assets-storage_admin.statusText.error_deleting_file" satisfies FileSystemAssetsStorageAdminAllKeys,
         { filename },
       );
     }
@@ -221,7 +222,7 @@ export default class FileSystemAssetsStorageConnectedApp
       );
 
       throw new ConnectedAppError(
-        "fileSystemAssetsStorage.statusText.error_deleting_file",
+        "app_file-system-assets-storage_admin.statusText.error_deleting_file" satisfies FileSystemAssetsStorageAdminAllKeys,
         { filename: filenames.join(", ") },
       );
     }

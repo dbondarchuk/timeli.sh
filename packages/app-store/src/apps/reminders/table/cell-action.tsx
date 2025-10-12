@@ -17,6 +17,11 @@ import { useState } from "react";
 
 import { deleteReminder } from "../actions";
 import { Reminder } from "../models";
+import {
+  RemindersAdminKeys,
+  remindersAdminNamespace,
+  RemindersAdminNamespace,
+} from "../translations/types";
 
 interface CellActionProps {
   reminder: Reminder;
@@ -26,7 +31,10 @@ interface CellActionProps {
 export const CellAction: React.FC<CellActionProps> = ({ reminder, appId }) => {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
-  const t = useI18n("apps");
+  const t = useI18n<RemindersAdminNamespace, RemindersAdminKeys>(
+    remindersAdminNamespace,
+  );
+
   const tAdmin = useI18n("admin");
 
   const [_, reload] = useQueryState("ts", { history: "replace" });
@@ -36,7 +44,7 @@ export const CellAction: React.FC<CellActionProps> = ({ reminder, appId }) => {
       setLoading(true);
 
       await toastPromise(deleteReminder(appId, reminder._id), {
-        success: t("reminders.statusText.reminder_deleted"),
+        success: t("statusText.reminder_deleted"),
         error: tAdmin("common.toasts.error"),
       });
 
@@ -66,18 +74,16 @@ export const CellAction: React.FC<CellActionProps> = ({ reminder, appId }) => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuLabel>
-            {t("reminders.table.actions.label")}
-          </DropdownMenuLabel>
+          <DropdownMenuLabel>{t("table.actions.label")}</DropdownMenuLabel>
           <DropdownMenuItem asChild>
             <Link
               href={`/admin/dashboard/communications/reminders/edit?id=${reminder._id}`}
             >
-              <Edit className="h-4 w-4" /> {t("reminders.table.actions.edit")}
+              <Edit className="h-4 w-4" /> {t("table.actions.edit")}
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setOpen(true)}>
-            <Trash className="h-4 w-4" /> {t("reminders.table.actions.delete")}
+            <Trash className="h-4 w-4" /> {t("table.actions.delete")}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

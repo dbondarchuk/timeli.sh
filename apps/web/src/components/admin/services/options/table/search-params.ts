@@ -1,4 +1,9 @@
-import { createSearchParamsCache, createSerializer } from "nuqs/server";
+import {
+  createSearchParamsCache,
+  createSerializer,
+  parseAsArrayOf,
+  parseAsString,
+} from "nuqs/server";
 
 import { baseSearchParams } from "@vivid/ui";
 
@@ -10,6 +15,7 @@ export const searchParams = {
       desc: true,
     },
   ]),
+  priorityId: parseAsArrayOf(parseAsString),
 };
 
 export const searchParamsCache = createSearchParamsCache(searchParams);

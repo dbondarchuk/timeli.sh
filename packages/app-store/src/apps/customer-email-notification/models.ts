@@ -4,14 +4,22 @@ import { z } from "zod";
 export const eventConfigurationSchema = z.object({
   summary: z
     .string({
-      message: "customerEmailNotification.eventTemplate.summary.required",
+      message:
+        "app_customer-email-notification_admin.validation.eventTemplate.summary.required",
     })
-    .min(1, "customerEmailNotification.eventTemplate.summary.required"),
+    .min(
+      1,
+      "app_customer-email-notification_admin.validation.eventTemplate.summary.required",
+    ),
   templateId: z
     .string({
-      message: "customerEmailNotification.eventTemplate.templateId.required",
+      message:
+        "app_customer-email-notification_admin.validation.eventTemplate.templateId.required",
     })
-    .min(1, "customerEmailNotification.eventTemplate.templateId.required"),
+    .min(
+      1,
+      "app_customer-email-notification_admin.validation.eventTemplate.templateId.required",
+    ),
 });
 
 export type EventConfiguration = z.infer<typeof eventConfigurationSchema>;
@@ -19,14 +27,22 @@ export type EventConfiguration = z.infer<typeof eventConfigurationSchema>;
 const emailTemplateSchema = z.object({
   subject: z
     .string({
-      message: "customerEmailNotification.emailTemplate.subject.required",
+      message:
+        "app_customer-email-notification_admin.validation.emailTemplate.subject.required",
     })
-    .min(1, "customerEmailNotification.emailTemplate.subject.required"),
+    .min(
+      1,
+      "app_customer-email-notification_admin.validation.emailTemplate.subject.required",
+    ),
   templateId: z
     .string({
-      message: "customerEmailNotification.emailTemplate.templateId.required",
+      message:
+        "app_customer-email-notification_admin.validation.emailTemplate.templateId.required",
     })
-    .min(1, "customerEmailNotification.emailTemplate.templateId.required"),
+    .min(
+      1,
+      "app_customer-email-notification_admin.validation.emailTemplate.templateId.required",
+    ),
 });
 
 export type EmailTemplateConfiguration = z.infer<typeof emailTemplateSchema>;

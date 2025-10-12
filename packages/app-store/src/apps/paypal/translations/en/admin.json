@@ -1,0 +1,106 @@
+{
+  "title": "PayPal",
+  "app": {
+    "displayName": "PayPal",
+    "description": "Accept PayPal payments for your appointments."
+  },
+  "form": {
+    "clientId": {
+      "label": "Client ID",
+      "placeholder": "Client ID"
+    },
+    "secretKey": {
+      "label": "Secret key",
+      "placeholder": "Secret key"
+    },
+    "buttonStyle": {
+      "color": {
+        "label": "PayPal button color",
+        "values": {
+          "blue": "Blue",
+          "black": "Black",
+          "white": "White",
+          "silver": "Silver",
+          "gold": "Gold"
+        }
+      },
+      "shape": {
+        "label": "PayPal button shape",
+        "values": {
+          "rect": "Rectangular",
+          "pill": "Pill",
+          "circle": "Circle",
+          "sharp": "Sharp"
+        }
+      },
+      "layout": {
+        "label": "PayPal button layout",
+        "values": {
+          "horizontal": "Horizontal",
+          "vertical": "Vertical"
+        }
+      },
+      "label": {
+        "label": "PayPal button label",
+        "values": {
+          "pay": "Pay with PayPal",
+          "paypal": "PayPal"
+        }
+      }
+    },
+    "selectPlaceholder": "Select view",
+    "connectWith": "Connect with <app></app>"
+  },
+  "statusText": {
+    "successfully_set_up": "Successfully connected to PayPal",
+    "error_processing_configuration": "Error processing PayPal configuration",
+    "invalid_configuration_data": "Invalid PayPal configuration data",
+    "connection_failed": "Failed to connect to PayPal",
+    "successfully_connected": "Successfully connected to PayPal",
+    "error_creating_order": "Error creating PayPal order",
+    "order_created": "PayPal order created successfully",
+    "error_capturing_order": "Error capturing PayPal order",
+    "order_captured": "PayPal order captured successfully",
+    "error_refunding_payment": "Error refunding PayPal payment",
+    "payment_refunded": "PayPal payment refunded successfully",
+    "app_not_configured": "PayPal app is not configured",
+    "no_data": "No PayPal configuration data provided"
+  },
+  "toast": {
+    "configuration_saved": "PayPal configuration saved successfully",
+    "configuration_error": "Error saving PayPal configuration",
+    "order_created": "Order created successfully",
+    "order_capture_failed": "Failed to capture order",
+    "order_captured": "Order captured successfully",
+    "refund_success": "Payment refunded successfully",
+    "refund_error": "Error refunding payment"
+  },
+  "validation": {
+    "clientId": {
+      "required": "PayPal Client ID is required"
+    },
+    "secretKey": {
+      "required": "PayPal API key is required"
+    },
+    "buttonStyle": {
+      "shape": {
+        "invalid": "Unknown shape"
+      },
+      "layout": {
+        "invalid": "Unknown layout"
+      },
+      "color": {
+        "invalid": "Unknown color"
+      },
+      "label": {
+        "invalid": "Unknown label"
+      }
+    },
+    "paymentIntentId": {
+      "required": "Payment intent ID is required"
+    },
+    "orderId": {
+      "required": "Order ID is required"
+    }
+  }
+}

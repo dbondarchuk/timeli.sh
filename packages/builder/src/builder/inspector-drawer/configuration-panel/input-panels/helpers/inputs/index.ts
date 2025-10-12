@@ -1,3 +1,4 @@
+export * from "./app-selector-input";
 export * from "./boolean-input";
 export * from "./color-input";
 export * from "./file-input";

@@ -1,0 +1,39 @@
+{
+  "title": "Outlook",
+  "app": {
+    "displayName": "Outlook",
+    "description": "Microsoft Office 365 - це набір додатків, який допомагає вам залишатися на зв'язку з іншими та виконувати завдання. Він включає, але не обмежується Microsoft Word, PowerPoint, Excel, Teams, OneNote та OneDrive. Office 365 дозволяє працювати віддалено з іншими в команді та співпрацювати в онлайн середовищі. Доступні як веб-версії, так і настільні/мобільні додатки."
+  },
+  "form": {
+    "connectWith": "Підключитися з <app></app>",
+    "pendingAuthorization": "Очікує авторизації"
+  },
+  "statusText": {
+    "successfully_set_up": "Успішно підключено до Outlook",
+    "error_processing_configuration": "Помилка обробки конфігурації Outlook",
+    "redirect_request_does_not_contain_app_id": "Запит перенаправлення не містить app ID",
+    "redirect_request_does_not_contain_authorization_code": "Запит перенаправлення не містить код авторизації",
+    "app_was_not_authorized_properly": "Додаток не було правильно авторизовано",
+    "app_was_not_given_required_scopes": "Додатку не було надано необхідні області",
+    "failed_to_get_user_email": "Не вдалося отримати email користувача",
+    "error_creating_calendar_event": "Помилка створення події календаря",
+    "error_updating_calendar_event": "Помилка оновлення події календаря",
+    "error_deleting_calendar_event": "Помилка видалення події календаря",
+    "error_getting_busy_times": "Помилка отримання зайнятого часу з Outlook",
+    "error_sending_email": "Помилка надсилання email",
+    "error_refreshing_access_token": "Помилка оновлення access token",
+    "failed_to_find_event_id_for_uid": "Не вдалося знайти Outlook Event ID для UID {uid}",
+    "event_created": "Подію календаря успішно створено",
+    "event_updated": "Подію календаря успішно оновлено",
+    "event_deleted": "Подію календаря успішно видалено",
+    "email_sent": "Email успішно надіслано",
+    "authorization_result_no_access_token": "Результат авторизації не містить access token",
+    "authorization_result_no_account_info": "Результат авторизації не містить інформації про обліковий запис",
+    "authorization_result_not_enough_scopes": "Результат авторизації не містить достатньо областей",
+    "authorization_result_no_refresh_token": "Результат авторизації не містить refresh token"
+  },
+  "toast": {
+    "changes_saved": "Ваші зміни були збережені.",
+    "request_error": "Виникла проблема з вашим запитом."
+  }
+}

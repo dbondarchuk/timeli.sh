@@ -2,9 +2,9 @@
 
 import { ConfigurationProps, PageInput } from "@vivid/builder";
 import { useI18n } from "@vivid/i18n";
+import { StylesConfigurationPanel } from "@vivid/page-builder-base";
 import { deepMemo } from "@vivid/ui";
 import { useCallback } from "react";
-import { StylesConfigurationPanel } from "../../configuration-panel/styles-configuration-panel";
 import { BookingProps } from "./schema";
 import { bookingShortcuts } from "./shortcuts";
 import { styles } from "./styles";

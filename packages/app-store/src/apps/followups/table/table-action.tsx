@@ -15,6 +15,11 @@ import {
 } from "@vivid/ui";
 import { Plus, Settings2 } from "lucide-react";
 import React from "react";
+import {
+  FollowUpsAdminKeys,
+  FollowUpsAdminNamespace,
+  followUpsAdminNamespace,
+} from "../translations/types";
 import { DeleteSelectedFollowUpsButton } from "./delete-selected";
 import { useFollowUpsTableFilters } from "./use-table-filters";
 
@@ -31,7 +36,9 @@ export const FollowUpsTableAction: React.FC<{ appId: string }> = ({
     setSearchQuery,
   } = useFollowUpsTableFilters();
   const { rowSelection } = useSelectedRowsStore();
-  const t = useI18n("apps");
+  const t = useI18n<FollowUpsAdminNamespace, FollowUpsAdminKeys>(
+    followUpsAdminNamespace,
+  );
   const tAdmin = useI18n("admin");
   const tUi = useI18n("ui");
 
@@ -39,7 +46,7 @@ export const FollowUpsTableAction: React.FC<{ appId: string }> = ({
     <>
       <DataTableFilterBox
         filterKey="channel"
-        title={t("followUps.table.columns.channel")}
+        title={t("table.columns.channel")}
         options={communicationChannels.map((channel) => ({
           value: channel,
           label: tAdmin(`common.labels.channel.${channel}`),
@@ -87,9 +94,7 @@ export const FollowUpsTableAction: React.FC<{ appId: string }> = ({
           href="/admin/dashboard/communications/follow-ups/new"
         >
           <Plus size={16} />{" "}
-          <span className="max-md:hidden">
-            {t("followUps.table.actions.add")}
-          </span>
+          <span className="max-md:hidden">{t("table.actions.add")}</span>
         </Link>
       </div>
     </div>

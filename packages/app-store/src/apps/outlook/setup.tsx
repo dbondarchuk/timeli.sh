@@ -14,13 +14,21 @@ import {
   setAppStatus,
 } from "../../actions";
 import { OutlookApp } from "./app";
+import {
+  OutlookAdminAllKeys,
+  OutlookAdminKeys,
+  OutlookAdminNamespace,
+  outlookAdminNamespace,
+} from "./translations/types";
 
 export const OutlookAppSetup: React.FC<AppSetupProps> = ({
   onSuccess,
   onError,
   appId: existingAppId,
 }) => {
-  const t = useI18n("apps");
+  const t = useI18n<OutlookAdminNamespace, OutlookAdminKeys>(
+    outlookAdminNamespace,
+  );
   const [isLoading, setIsLoading] = React.useState(false);
 
   const [app, setApp] = React.useState<ConnectedApp | undefined>(undefined);
@@ -65,7 +73,8 @@ export const OutlookAppSetup: React.FC<AppSetupProps> = ({
         appId = (app?._id || existingAppId)!;
         await setAppStatus(appId, {
           status: "pending",
-          statusText: "outlook.form.pendingAuthorization",
+          statusText:
+            "app_outlook_admin.form.pendingAuthorization" satisfies OutlookAdminAllKeys,
         });
       } else {
         appId = await addNewApp(OutlookApp.name);
@@ -93,8 +102,11 @@ export const OutlookAppSetup: React.FC<AppSetupProps> = ({
           className="inline-flex gap-2 items-center w-full"
         >
           {isLoading && <Spinner />}
-          <span>{t("outlook.form.connectWith")}</span>
-          <ConnectedAppNameAndLogo appName={OutlookApp.name} />
+          <span className="inline-flex gap-2 items-center">
+            {t.rich("form.connectWith", {
+              app: () => <ConnectedAppNameAndLogo appName={OutlookApp.name} />,
+            })}
+          </span>
         </Button>
       </div>
       {app && (

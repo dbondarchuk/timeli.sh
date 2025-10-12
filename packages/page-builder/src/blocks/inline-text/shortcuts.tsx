@@ -1,8 +1,10 @@
-import { Shortcut } from "../../shortcuts";
-import { backgroundColorShortcut } from "../../shortcuts/common/background-color";
-import { colorShortcut } from "../../shortcuts/common/color";
-import { fontFamilyShortcut } from "../../shortcuts/common/font-family";
-import { AllStylesSchemas } from "../../style";
+import {
+  backgroundColorShortcut,
+  colorShortcut,
+  fontFamilyShortcut,
+  Shortcut,
+} from "@vivid/page-builder-base";
+import { AllStylesSchemas } from "@vivid/page-builder-base/style";
 
 export const inlineTextShortcuts: Shortcut<AllStylesSchemas>[] = [
   backgroundColorShortcut,

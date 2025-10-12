@@ -2,19 +2,19 @@ import { Appointment, AppointmentStatus } from "../../booking";
 import { ConnectedAppData } from "../connected-app.data";
 
 export interface IAppointmentHook {
-  onAppointmentCreated(
+  onAppointmentCreated?: (
     appData: ConnectedAppData,
     appointment: Appointment,
     confirmed: boolean,
-  ): Promise<void>;
-  onAppointmentStatusChanged(
+  ) => Promise<void>;
+  onAppointmentStatusChanged?: (
     appData: ConnectedAppData,
     appointment: Appointment,
     newStatus: AppointmentStatus,
     oldStatus?: AppointmentStatus,
     by?: "customer" | "user",
-  ): Promise<void>;
-  onAppointmentRescheduled(
+  ) => Promise<void>;
+  onAppointmentRescheduled?: (
     appData: ConnectedAppData,
     appointment: Appointment,
     newTime: Date,
@@ -22,5 +22,5 @@ export interface IAppointmentHook {
     oldTime?: Date,
     oldDuration?: number,
     doNotNotifyCustomer?: boolean,
-  ): Promise<void>;
+  ) => Promise<void>;
 }

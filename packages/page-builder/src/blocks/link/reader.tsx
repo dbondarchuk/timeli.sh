@@ -1,7 +1,6 @@
 import { ReaderBlock } from "@vivid/builder";
+import { BlockStyle, generateClassName } from "@vivid/page-builder-base/reader";
 import { cn } from "@vivid/ui";
-import { generateClassName } from "../../helpers/class-name-generator";
-import { BlockStyle } from "../../helpers/styling";
 import { LinkDefaultUrl, LinkReaderProps } from "./schema";
 import { getDefaults, styles } from "./styles";
 

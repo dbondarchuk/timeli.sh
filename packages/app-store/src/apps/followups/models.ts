@@ -1,3 +1,4 @@
+import { AllKeys } from "@vivid/i18n";
 import {
   asOptinalNumberField,
   CommunicationChannel,
@@ -6,6 +7,7 @@ import {
   WithDatabaseId,
 } from "@vivid/types";
 import { z } from "zod";
+import { FollowUpsAdminAllKeys } from "./translations/types";
 
 export const timeAfterFollowUpType = "timeAfter" as const;
 export const atTimeFollowUpType = "atTime" as const;
@@ -24,30 +26,54 @@ export const followUpTimeAfterSchema = z.object({
   weeks: asOptinalNumberField(
     z.coerce
       .number()
-      .int("common.number.integer")
-      .min(0, "followUps.form.weeks.min")
-      .max(10, "followUps.form.weeks.max"),
+      .int("validation.common.number.integer" satisfies AllKeys)
+      .min(
+        0,
+        "app_follow-ups_admin.validation.form.weeks.min" satisfies FollowUpsAdminAllKeys,
+      )
+      .max(
+        10,
+        "app_follow-ups_admin.validation.form.weeks.max" satisfies FollowUpsAdminAllKeys,
+      ),
   ),
   days: asOptinalNumberField(
     z.coerce
       .number()
-      .int("common.number.integer")
-      .min(0, "followUps.form.days.min")
-      .max(31, "followUps.form.days.max"),
+      .int("validation.common.number.integer" satisfies AllKeys)
+      .min(
+        0,
+        "app_follow-ups_admin.validation.form.days.min" satisfies FollowUpsAdminAllKeys,
+      )
+      .max(
+        31,
+        "app_follow-ups_admin.validation.form.days.max" satisfies FollowUpsAdminAllKeys,
+      ),
   ),
   hours: asOptinalNumberField(
     z.coerce
       .number()
-      .int("common.number.integer")
-      .min(0, "followUps.form.hours.min")
-      .max(24 * 5, "followUps.form.hours.max"),
+      .int("validation.common.number.integer" satisfies AllKeys)
+      .min(
+        0,
+        "app_follow-ups_admin.validation.form.hours.min" satisfies FollowUpsAdminAllKeys,
+      )
+      .max(
+        24 * 5,
+        "app_follow-ups_admin.validation.form.hours.max" satisfies FollowUpsAdminAllKeys,
+      ),
   ),
   minutes: asOptinalNumberField(
     z.coerce
       .number()
-      .int("common.number.integer")
-      .min(0, "followUps.form.minutes.min")
-      .max(60 * 10, "followUps.form.minutes.max"),
+      .int("validation.common.number.integer" satisfies AllKeys)
+      .min(
+        0,
+        "app_follow-ups_admin.validation.form.minutes.min" satisfies FollowUpsAdminAllKeys,
+      )
+      .max(
+        60 * 10,
+        "app_follow-ups_admin.validation.form.minutes.max" satisfies FollowUpsAdminAllKeys,
+      ),
   ),
 });
 
@@ -56,39 +82,74 @@ export const followUpAtTimeSchema = z.object({
   weeks: asOptinalNumberField(
     z.coerce
       .number()
-      .int("common.number.integer")
-      .min(0, "followUps.form.weeks.min")
-      .max(10, "followUps.form.weeks.max"),
+      .int("validation.common.number.integer" satisfies AllKeys)
+      .min(
+        0,
+        "app_follow-ups_admin.validation.form.weeks.min" satisfies FollowUpsAdminAllKeys,
+      )
+      .max(
+        10,
+        "app_follow-ups_admin.validation.form.weeks.max" satisfies FollowUpsAdminAllKeys,
+      ),
   ),
   days: z.coerce
     .number()
-    .int("common.number.integer")
-    .min(0, "followUps.form.days.min")
-    .max(31, "followUps.form.days.max"),
+    .int("validation.common.number.integer" satisfies AllKeys)
+    .min(
+      0,
+      "app_follow-ups_admin.validation.form.days.min" satisfies FollowUpsAdminAllKeys,
+    )
+    .max(
+      31,
+      "app_follow-ups_admin.validation.form.days.max" satisfies FollowUpsAdminAllKeys,
+    ),
   time: z.object({
     hour: z.coerce
       .number()
-      .int("common.number.integer")
-      .min(0, "followUps.form.time.hour.min")
-      .max(23, "followUps.form.time.hour.max"),
+      .int("validation.common.number.integer" satisfies AllKeys)
+      .min(
+        0,
+        "app_follow-ups_admin.validation.form.time.hour.min" satisfies FollowUpsAdminAllKeys,
+      )
+      .max(
+        23,
+        "app_follow-ups_admin.validation.form.time.hour.max" satisfies FollowUpsAdminAllKeys,
+      ),
     minute: z.coerce
       .number()
-      .int("common.number.integer")
-      .min(0, "followUps.form.time.minute.min")
-      .max(59, "followUps.form.time.minute.max"),
+      .int("validation.common.number.integer" satisfies AllKeys)
+      .min(
+        0,
+        "app_follow-ups_admin.validation.form.time.minute.min" satisfies FollowUpsAdminAllKeys,
+      )
+      .max(
+        59,
+        "app_follow-ups_admin.validation.form.time.minute.max" satisfies FollowUpsAdminAllKeys,
+      ),
   }),
 });
 
 export const baseFollowUpChannelSchema = z.object({
   templateId: z
-    .string({ message: "followUps.form.templateId.required" })
-    .min(1, "followUps.form.templateId.required"),
+    .string({
+      message:
+        "app_follow-ups_admin.validation.form.templateId.required" satisfies FollowUpsAdminAllKeys,
+    })
+    .min(
+      1,
+      "app_follow-ups_admin.validation.form.templateId.required" satisfies FollowUpsAdminAllKeys,
+    ),
 });
 
 export const followUpEmailSchema = z
   .object({
     channel: followUpChannelsEnum.extract(["email"]),
-    subject: z.string().min(1, "followUps.form.subject.required"),
+    subject: z
+      .string()
+      .min(
+        1,
+        "app_follow-ups_admin.validation.form.subject.required" satisfies FollowUpsAdminAllKeys,
+      ),
   })
   .merge(baseFollowUpChannelSchema);
 
@@ -109,14 +170,25 @@ export const followUpChannelSchema = z.discriminatedUnion("channel", [
 ]);
 
 export const followUpGeneralSchema = z.object({
-  name: z.string().min(2, "followUps.form.name.min"),
+  name: z
+    .string()
+    .min(
+      2,
+      "app_follow-ups_admin.validation.form.name.min" satisfies FollowUpsAdminAllKeys,
+    ),
   // Optional setting to send follow-up after specific number of customer appointments
   afterAppointmentCount: asOptinalNumberField(
     z.coerce
       .number()
-      .int("common.number.integer")
-      .min(1, "followUps.form.afterAppointmentCount.min")
-      .max(100, "followUps.form.afterAppointmentCount.max"),
+      .int("validation.common.number.integer" satisfies AllKeys)
+      .min(
+        1,
+        "app_follow-ups_admin.validation.form.afterAppointmentCount.min" satisfies FollowUpsAdminAllKeys,
+      )
+      .max(
+        100,
+        "app_follow-ups_admin.validation.form.afterAppointmentCount.max" satisfies FollowUpsAdminAllKeys,
+      ),
   ),
 });
 
@@ -130,7 +202,8 @@ export const followUpSchema = z
       ctx.addIssue({
         code: "custom",
         path: ["days"],
-        message: "followUps.form.atTime.days.min",
+        message:
+          "app_follow-ups_admin.validation.form.atTime.days.min" satisfies FollowUpsAdminAllKeys,
       });
     } else if (
       arg.type === "timeAfter" &&
@@ -142,7 +215,8 @@ export const followUpSchema = z
       ctx.addIssue({
         code: "custom",
         path: ["minutes"],
-        message: "followUps.form.atTime.minutes.min",
+        message:
+          "app_follow-ups_admin.validation.form.atTime.minutes.min" satisfies FollowUpsAdminAllKeys,
       });
     }
   });

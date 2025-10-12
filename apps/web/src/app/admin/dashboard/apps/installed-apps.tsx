@@ -14,11 +14,11 @@ export const InstalledApps: React.FC = async () => {
   );
 
   return (
-    <>
+    <div className="grid grid-cols-1 gap-4">
       {apps.map((app) => (
         <ConnectedAppRow app={app} key={app._id} />
       ))}
       {apps.length === 0 && <div className="">{t("apps.noConnectedApps")}</div>}
-    </>
+    </div>
   );
 };

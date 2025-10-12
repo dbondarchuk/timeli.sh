@@ -24,6 +24,11 @@ import {
   paypalConfigurationSchema,
   PaypalFormProps,
 } from "./models";
+import {
+  PaypalAdminAllKeys,
+  PaypalAdminKeys,
+  PaypalAdminNamespace,
+} from "./translations/types";
 
 export const MASKED_SECRET_KEY = "this-is-a-masked-secret-key";
 
@@ -47,7 +52,9 @@ class PaypalConnectedApp
   public async processRequest(
     appData: ConnectedAppData,
     data: PaypalConfiguration,
-  ): Promise<ConnectedAppStatusWithText> {
+  ): Promise<
+    ConnectedAppStatusWithText<PaypalAdminNamespace, PaypalAdminKeys>
+  > {
     const logger = this.loggerFactory("processRequest");
     logger.debug(
       { appId: appData._id },
@@ -73,7 +80,7 @@ class PaypalConnectedApp
           "Invalid PayPal configuration data",
         );
         throw new ConnectedAppError(
-          "paypal.statusText.invalid_configuration_data",
+          "app_paypal_admin.statusText.invalid_configuration_data" satisfies PaypalAdminAllKeys,
         );
       }
 
@@ -87,9 +94,12 @@ class PaypalConnectedApp
         "Successfully obtained PayPal access token",
       );
 
-      const status: ConnectedAppStatusWithText = {
+      const status: ConnectedAppStatusWithText<
+        PaypalAdminNamespace,
+        PaypalAdminKeys
+      > = {
         status: "connected",
-        statusText: "paypal.statusText.successfully_connected",
+        statusText: "app_paypal_admin.statusText.successfully_connected",
       };
 
       const decryptedClientId = decrypt(data.clientId);
@@ -114,12 +124,15 @@ class PaypalConnectedApp
         "Error processing PayPal configuration request",
       );
 
-      const status: ConnectedAppStatusWithText = {
+      const status: ConnectedAppStatusWithText<
+        PaypalAdminNamespace,
+        PaypalAdminKeys
+      > = {
         status: "failed",
         statusText:
           e instanceof ConnectedAppError
-            ? e.key
-            : "paypal.statusText.error_processing_configuration",
+            ? (e.key as PaypalAdminAllKeys)
+            : ("app_paypal_admin.statusText.error_processing_configuration" satisfies PaypalAdminAllKeys),
       };
 
       this.props.update({
@@ -258,7 +271,9 @@ class PaypalConnectedApp
     appData: ConnectedAppData<PaypalConfiguration>,
   ): PaypalFormProps {
     if (!appData.data)
-      throw new ConnectedAppError("paypal.statusText.app_not_configured");
+      throw new ConnectedAppError(
+        "app_paypal_admin.statusText.app_not_configured" satisfies PaypalAdminAllKeys,
+      );
     const { secretKey, clientId, ...rest } = appData.data;
 
     return {
@@ -662,7 +677,9 @@ class PaypalConnectedApp
 
     if (!data || !clientId || !secretKey) {
       logger.error("No PayPal configuration data provided");
-      throw new ConnectedAppError("paypal.statusText.no_data");
+      throw new ConnectedAppError(
+        "app_paypal_admin.statusText.no_data" satisfies PaypalAdminAllKeys,
+      );
     }
 
     try {

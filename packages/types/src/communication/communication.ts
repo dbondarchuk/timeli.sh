@@ -1,4 +1,4 @@
-import { AppsKeys } from "@vivid/i18n";
+import { AllKeys } from "@vivid/i18n";
 import { AppointmentEntity } from "../booking";
 import { Customer } from "../customers";
 
@@ -26,9 +26,9 @@ export type CommunicationLogEntity = {
   participant: string;
   participantType: CommunicationParticipantType;
   handledBy:
-    | AppsKeys
+    | AllKeys
     | {
-        key: AppsKeys;
+        key: AllKeys;
         args: Record<string, string>;
       };
   text: string;

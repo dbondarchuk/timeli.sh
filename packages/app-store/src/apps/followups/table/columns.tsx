@@ -9,6 +9,11 @@ import {
 } from "@vivid/ui";
 import { DateTime } from "luxon";
 import { FollowUp } from "../models";
+import {
+  FollowUpsAdminKeys,
+  FollowUpsAdminNamespace,
+  followUpsAdminNamespace,
+} from "../translations/types";
 import { CellAction } from "./cell-action";
 
 export const columns: ColumnDef<FollowUp>[] = [
@@ -47,41 +52,55 @@ export const columns: ColumnDef<FollowUp>[] = [
       </Link>
     ),
     id: "name",
-    header: tableSortHeader("followUps.table.columns.name", "string", "apps"),
-    sortingFn: tableSortNoopFunction,
-  },
-  {
-    cell: ({ row }) => {
-      const t = useI18n("apps");
-      return t(`followUps.triggers.${row.original.type}`);
-    },
-    id: "type",
-    header: tableSortHeader("followUps.table.columns.type", "string", "apps"),
-    sortingFn: tableSortNoopFunction,
-  },
-  {
-    cell: ({ row }) => {
-      const t = useI18n("apps");
-      return t(`followUps.channels.${row.original.channel}`);
-    },
-    id: "channel",
-    header: tableSortHeader(
-      "followUps.table.columns.channel",
+    header: tableSortHeader<FollowUpsAdminNamespace, FollowUpsAdminKeys>(
+      "table.columns.name",
       "string",
-      "apps",
+      followUpsAdminNamespace,
     ),
     sortingFn: tableSortNoopFunction,
   },
   {
     cell: ({ row }) => {
-      const t = useI18n("apps");
-      return row.original.afterAppointmentCount || t("followUps.table.all");
+      const t = useI18n<FollowUpsAdminNamespace, FollowUpsAdminKeys>(
+        followUpsAdminNamespace,
+      );
+      return t(`triggers.${row.original.type}`);
+    },
+    id: "type",
+    header: tableSortHeader<FollowUpsAdminNamespace, FollowUpsAdminKeys>(
+      "table.columns.type",
+      "string",
+      followUpsAdminNamespace,
+    ),
+    sortingFn: tableSortNoopFunction,
+  },
+  {
+    cell: ({ row }) => {
+      const t = useI18n<FollowUpsAdminNamespace, FollowUpsAdminKeys>(
+        followUpsAdminNamespace,
+      );
+      return t(`channels.${row.original.channel}`);
+    },
+    id: "channel",
+    header: tableSortHeader<FollowUpsAdminNamespace, FollowUpsAdminKeys>(
+      "table.columns.channel",
+      "string",
+      followUpsAdminNamespace,
+    ),
+    sortingFn: tableSortNoopFunction,
+  },
+  {
+    cell: ({ row }) => {
+      const t = useI18n<FollowUpsAdminNamespace, FollowUpsAdminKeys>(
+        followUpsAdminNamespace,
+      );
+      return row.original.afterAppointmentCount || t("table.all");
     },
     id: "afterAppointmentCount",
-    header: tableSortHeader(
-      "followUps.table.columns.afterAppointmentCount",
+    header: tableSortHeader<FollowUpsAdminNamespace, FollowUpsAdminKeys>(
+      "table.columns.afterAppointmentCount",
       "number",
-      "apps",
+      followUpsAdminNamespace,
     ),
     sortingFn: tableSortNoopFunction,
   },
@@ -94,10 +113,10 @@ export const columns: ColumnDef<FollowUp>[] = [
       );
     },
     id: "updatedAt",
-    header: tableSortHeader(
-      "followUps.table.columns.updatedAt",
+    header: tableSortHeader<FollowUpsAdminNamespace, FollowUpsAdminKeys>(
+      "table.columns.updatedAt",
       "date",
-      "apps",
+      followUpsAdminNamespace,
     ),
     sortingFn: tableSortNoopFunction,
   },

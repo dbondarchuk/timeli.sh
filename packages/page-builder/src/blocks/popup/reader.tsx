@@ -3,6 +3,11 @@ import { PopupReaderProps } from "./schema";
 
 import { ReaderBlock } from "@vivid/builder";
 import {
+  BlockStyle,
+  generateClassName,
+  ReplaceOriginalColors,
+} from "@vivid/page-builder-base/reader";
+import {
   cn,
   DialogDescription,
   DialogFooter,
@@ -10,9 +15,6 @@ import {
   DialogTitle,
   ScrollArea,
 } from "@vivid/ui";
-import { generateClassName } from "../../helpers/class-name-generator";
-import { ReplaceOriginalColors } from "../../helpers/replace-original-colors";
-import { BlockStyle } from "../../helpers/styling";
 import { styles } from "./styles";
 
 export const PopupReader = ({

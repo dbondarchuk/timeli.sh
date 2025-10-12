@@ -6,10 +6,12 @@ import {
   useBlockEditor,
   useCurrentBlock,
 } from "@vivid/builder";
+import {
+  BlockStyle,
+  useClassName,
+  useResizeBlockStyles,
+} from "@vivid/page-builder-base";
 import { cn } from "@vivid/ui";
-import { BlockStyle } from "../../helpers/styling";
-import { useClassName } from "../../helpers/use-class-name";
-import { useResizeBlockStyles } from "../../helpers/use-resize-block-styles";
 import { ButtonProps } from "./schema";
 import { getDefaults, styles } from "./styles";
 

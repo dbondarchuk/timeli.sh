@@ -28,6 +28,7 @@ import {
   GetFollowUpsAction,
   RequestAction,
 } from "./models";
+import { FollowUpsAdminAllKeys } from "./translations/types";
 
 const FOLLOW_UPS_COLLECTION_NAME = "follow-ups";
 
@@ -72,13 +73,15 @@ export default class FollowUpsConnectedApp
         } catch {
           return {
             status: "failed",
-            statusText: "followUps.statusText.email_app_not_configured",
+            statusText:
+              "app_follow-ups_admin.statusText.email_app_not_configured" satisfies FollowUpsAdminAllKeys,
           };
         }
 
         const status: ConnectedAppStatusWithText = {
           status: "connected",
-          statusText: "followUps.statusText.successfully_set_up",
+          statusText:
+            "app_follow-ups_admin.statusText.successfully_set_up" satisfies FollowUpsAdminAllKeys,
         };
 
         this.props.update({

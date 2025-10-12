@@ -1,0 +1,42 @@
+{
+  "title": "Logs clean up",
+  "app": {
+    "displayName": "Communication logs clean up",
+    "description": "Remove old communication logs on schedule."
+  },
+  "form": {
+    "amount": {
+      "label": "Interval amount",
+      "placeholder": "1",
+      "tooltip": "How many time units to keep logs for"
+    },
+    "type": {
+      "label": "Interval type",
+      "placeholder": "Interval type",
+      "tooltip": "The time unit for the cleanup interval"
+    },
+    "update": "Update <app></app>",
+    "add": "Add <app></app>"
+  },
+  "intervals": {
+    "days": "Days",
+    "weeks": "Weeks",
+    "months": "Months"
+  },
+  "statusText": {
+    "successfully_set_up": "Successfully set up",
+    "error_processing_configuration": "Error processing log cleanup configuration",
+    "error_during_cleanup": "Error during log cleanup scheduled task",
+    "cleanup_completed": "Successfully completed log cleanup",
+    "cleanup_skipped": "Not cleanup time, skipping",
+    "cleanup_running": "Running log cleanup for logs older than {date}"
+  },
+  "toast": {
+    "configuration_saved": "Log cleanup configuration saved successfully",
+    "configuration_error": "Error saving log cleanup configuration"
+  },
+  "validation": {
+    "amountMin": "Amount must be at least 1",
+    "amountInteger": "Should be the integer value"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "app": {
+    "displayName": "Email notification",
+    "description": "Email Notifications keeps you informed about your appointments with automatic emails for new bookings, updates, and cancellations — each including a calendar event attachment for easy scheduling."
+  },
+  "navigation": {
+    "title": "Email notification"
+  },
+  "form": {
+    "email": {
+      "label": "Send to email",
+      "tooltip": "Email address to which email notification should be send. Leave empty to use your default email address.",
+      "placeholder": "john@example.com"
+    },
+    "update": "Update <app></app>",
+    "add": "Add <app></app>"
+  },
+  "statusText": {
+    "email_app_not_configured": "Email sender default is not configured",
+    "successfully_set_up": "Successfully set up",
+    "error_processing_configuration": "Error processing email notification configuration",
+    "error_sending_email_notification_for_new_appointment": "Error sending email notification for new appointment",
+    "error_sending_email_notification_for_status_change": "Error sending email notification for status change",
+    "error_sending_email_notification_for_rescheduled_appointment": "Error sending email notification for rescheduled appointment"
+  },
+  "handlers": {
+    "newRequest": "Email Notification - New Request",
+    "pending": "Email Notification - Pending",
+    "confirmed": "Email Notification - Confirmed",
+    "declined": "Email Notification - Declined",
+    "rescheduled": "Email Notification - Rescheduled"
+  }
+}

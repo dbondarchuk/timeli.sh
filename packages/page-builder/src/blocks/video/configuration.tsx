@@ -2,9 +2,9 @@
 
 import { ConfigurationProps, FileInput, SelectInput } from "@vivid/builder";
 import { useI18n } from "@vivid/i18n";
+import { StylesConfigurationPanel } from "@vivid/page-builder-base";
 import { Checkbox, deepMemo, Label } from "@vivid/ui";
 import { useCallback } from "react";
-import { StylesConfigurationPanel } from "../../configuration-panel/styles-configuration-panel";
 import { VideoProps } from "./schema";
 import { videoShortcuts } from "./shortcuts";
 import { styles } from "./styles";

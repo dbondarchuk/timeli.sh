@@ -23,6 +23,11 @@ import {
   CalendarWriterConfiguration,
   calendarWriterConfigurationSchema,
 } from "./models";
+import {
+  CalendarWriterAdminKeys,
+  calendarWriterAdminNamespace,
+  CalendarWriterAdminNamespace,
+} from "./translations/types";
 
 export const CalendarWriterAppSetup: React.FC<AppSetupProps> = ({
   onSuccess,
@@ -38,7 +43,9 @@ export const CalendarWriterAppSetup: React.FC<AppSetupProps> = ({
       onError,
     });
 
-  const t = useI18n("apps");
+  const t = useI18n<CalendarWriterAdminNamespace, CalendarWriterAdminKeys>(
+    calendarWriterAdminNamespace,
+  );
 
   return (
     <>
@@ -51,9 +58,9 @@ export const CalendarWriterAppSetup: React.FC<AppSetupProps> = ({
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel>
-                    {t("calendarWriter.form.calendarStorage.label")}
+                    {t("form.calendarStorage.label")}
                     <InfoTooltip>
-                      {t("calendarWriter.form.calendarStorage.tooltip")}
+                      {t("form.calendarStorage.tooltip")}
                     </InfoTooltip>
                   </FormLabel>
                   <FormControl>
@@ -79,12 +86,13 @@ export const CalendarWriterAppSetup: React.FC<AppSetupProps> = ({
               className="inline-flex gap-2 items-center w-full"
             >
               {isLoading && <Spinner />}
-              <span>
-                {existingAppId
-                  ? t("calendarWriter.form.update")
-                  : t("calendarWriter.form.add")}
+              <span className="inline-flex gap-2 items-center">
+                {t.rich(existingAppId ? "form.update" : "form.add", {
+                  app: () => (
+                    <ConnectedAppNameAndLogo appName={CalendarWriterApp.name} />
+                  ),
+                })}
               </span>
-              <ConnectedAppNameAndLogo appName={CalendarWriterApp.name} />
             </Button>
           </div>
         </form>

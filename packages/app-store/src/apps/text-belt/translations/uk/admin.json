@@ -1,0 +1,39 @@
+{
+  "title": "TextBelt SMS",
+  "app": {
+    "displayName": "TextBelt SMS",
+    "description": "Textbelt - це простий SMS API, створений для розробників, які просто хочуть надсилати SMS. Тисячі клієнтів обирають Textbelt замість інших SMS провайдерів за нашу простоту налаштування, прості, передбачувані пакети цін та особисту підтримку"
+  },
+  "form": {
+    "apiKey": {
+      "label": "API ключ",
+      "placeholder": "API ключ",
+      "tooltip": "TextBelt auth token"
+    },
+    "textMessageResponderAppId": {
+      "label": "Резервний відповідач текстових повідомлень",
+      "tooltip": "Якщо не обробляється відправником, буде використовуватися як додаток за замовчуванням для відповіді на текстові повідомлення (тобто автовідповідь). Додатково"
+    },
+    "connect": "Підключитися з <app></app>"
+  },
+  "statusText": {
+    "successfully_connected": "Успішно підключено до TextBelt",
+    "error_processing_configuration": "Помилка обробки запиту конфігурації TextBelt",
+    "invalid_responder_app": "Наданий додаток не існує або не підтримує відповідь на текстові повідомлення",
+    "failed_to_fetch_quota": "Не вдалося отримати url. Код статусу: {statusCode}",
+    "failed_to_get_quota": "Не вдалося отримати залишкову квоту або квота дорівнює нулю",
+    "remaining_quota": "Залишкова квота: {quota}",
+    "error_sending_sms": "Помилка надсилання текстового повідомлення через TextBelt",
+    "failed_to_send_sms": "Не вдалося надіслати SMS: {error}",
+    "something_went_wrong": "Щось пішло не так"
+  },
+  "webhookHandler": "TextBelt Webhook",
+  "webhookHandlerUser": "TextBelt Webhook - повідомити користувача",
+  "lowQuotaHandler": "TextBelt - повідомити про низьку квоту",
+  "validation": {
+    "apiKey": {
+      "required": "TextBelt API ключ обов'язковий",
+      "min": "TextBelt API ключ обов'язковий"
+    }
+  }
+}

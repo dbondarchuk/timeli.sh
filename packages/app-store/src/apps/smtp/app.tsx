@@ -1,29 +1,19 @@
 import { App } from "@vivid/types";
 import { SMTP_APP_NAME } from "./const";
 import { SmtpLogo } from "./logo";
-import { SmtpAppSetup } from "./setup";
+import { SmtpAdminKeys, SmtpAdminNamespace } from "./translations/types";
 
-export const SmtpApp: App = {
+export const SmtpApp: App<SmtpAdminNamespace, SmtpAdminKeys> = {
   name: SMTP_APP_NAME,
-  displayName: "smtp.displayName",
+  displayName: "app_smtp_admin.app.displayName",
   scope: ["mail-send"],
   type: "complex",
-  category: ["categories.communications"],
+  category: ["apps.categories.communications"],
   Logo: ({ className }) => <SmtpLogo className={className} />,
   isFeatured: true,
   dontAllowMultiple: true,
   description: {
-    text: "smtp.description",
+    text: "app_smtp_admin.app.description",
   },
-  menuItems: [
-    {
-      href: "settings/smtp",
-      parent: "settings",
-      id: "settings-smtp",
-      label: "navigation.smtp",
-      icon: <SmtpLogo />,
-      Page: (props) => <SmtpAppSetup {...props} />,
-    },
-  ],
   settingsHref: "settings/smtp",
 };

@@ -1,0 +1,46 @@
+{
+  "title": "CalDAV Календар",
+  "app": {
+    "displayName": "CalDAV Календар",
+    "description": "CalDAV - це протокол, який дозволяє різним клієнтам/серверам отримувати доступ до інформації про планування на віддалених серверах, а також планувати зустрічі з іншими користувачами на тому ж сервері або інших серверах.\nВін розширює специфікацію WebDAV та використовує формат iCalendar для даних."
+  },
+  "statusText": {
+    "successfullySetUp": "Успішно отримано календар {calendarName}",
+    "calendarNotFound": "Календар '{calendarName}' не знайдено",
+    "calendarNotSet": "Назва календаря не встановлена",
+    "failedToFetchCalendars": "Не вдалося отримати календарі з {serverUrl}",
+    "successfullyFetchedCalendars": "Успішно отримано календарі з сервера {serverUrl}"
+  },
+  "toast": {
+    "failedToFetchCalendars": "Не вдалося отримати календарі з {serverUrl}",
+    "failedToFetchCalendarsDescription": "Не вдалося отримати календарі з {serverUrl}. Будь ласка, перевірте, чи правильна URL сервера та чи доступний сервер."
+  },
+  "form": {
+    "serverUrl": {
+      "label": "CalDAV Сервер",
+      "tooltip": "URL до CalDAV сервера"
+    },
+    "username": {
+      "label": "Ім'я користувача",
+      "tooltip": "Додаткове ім'я користувача"
+    },
+    "password": {
+      "label": "Пароль",
+      "tooltip": "Додатковий пароль"
+    },
+    "calendar": {
+      "label": "Календар",
+      "placeholder": "Вибрати календар"
+    },
+    "fetch": "Отримати",
+    "connect": "Підключитися з <app></app>"
+  },
+  "validation": {
+    "calendarName": {
+      "required": "Назва календаря обов'язкова"
+    },
+    "serverUrl": {
+      "url": "URL сервера повинен бути дійсним URL"
+    }
+  }
+}

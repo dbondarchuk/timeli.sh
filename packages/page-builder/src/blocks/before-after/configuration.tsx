@@ -2,11 +2,13 @@
 
 import { ConfigurationProps, SelectInput } from "@vivid/builder";
 import { useI18n } from "@vivid/i18n";
+import {
+  RawNumberInputWithUnit,
+  StylesConfigurationPanel,
+} from "@vivid/page-builder-base";
 import { Checkbox, Label } from "@vivid/ui";
 import { Percent } from "lucide-react";
 import { useCallback } from "react";
-import { StylesConfigurationPanel } from "../../configuration-panel/styles-configuration-panel";
-import { RawNumberInputWithUnit } from "../../style-inputs/base/raw-number-input-with-units";
 import { BeforeAfterProps } from "./schema";
 import { beforeAfterShortcuts } from "./shortcuts";
 import { styles } from "./styles";

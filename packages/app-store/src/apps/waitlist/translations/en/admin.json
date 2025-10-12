@@ -1,0 +1,115 @@
+{
+  "pageTitle": "Wait list (from app)",
+  "table": {
+    "columns": {
+      "status": "Status",
+      "createdAt": "Created at",
+      "dateAndTime": "Date and time",
+      "createAppointment": "Create appointment",
+      "customer": "Customer",
+      "option": "Service"
+    },
+    "actions": {
+      "createAppointment": "Create appointment"
+    },
+    "dismiss": {
+      "label": "Dismiss {count, plural, =1 {waitlist entry} other {# waitlist entries}}",
+      "title": "Are you absolutely sure?",
+      "description": "This action cannot be undone. This will dismiss the waitlist entry",
+      "confirm": "Dismiss",
+      "cancel": "Cancel",
+      "action": "Dismiss"
+    },
+    "toast": {
+      "waitlist_entry_dismissed": "Wait list entry dismissed successfully",
+      "error_deleting_waitlist_entry": "Error dismissing wait list entry",
+      "waitlist_entries_dismissed": "Wait list entries dismissed successfully",
+      "error_deleting_waitlist_entries": "Error dismissing wait list entries",
+      "error_loading_waitlist_entries": "Error loading wait list entries"
+    }
+  },
+  "statuses": {
+    "active": "Active",
+    "dismissed": "Dismissed"
+  },
+  "view": {
+    "asSoonAsPossible": "As soon as possible",
+    "dateTimeTitle": "Date and time",
+    "duration": "Duration",
+    "addons": "Addons",
+    "unknown": "Unknown",
+    "submitted": "Submitted {date}",
+    "dismiss": "Dismiss",
+    "createAppointment": "Create appointment",
+    "viewAll": "View all",
+    "dates": "Dates",
+    "toast": {
+      "dismissed": "Waitlist entry dismissed"
+    },
+    "times": {
+      "descriptions": {
+        "morning": "Morning (before 12:00PM)",
+        "afternoon": "Afternoon (12:00PM - 4:00PM)",
+        "evening": "Evening (after 4:00PM)"
+      }
+    }
+  },
+  "settings": {
+    "tooltip": "Settings",
+    "title": "Settings",
+    "description": "Configure wait list notification settings"
+  },
+  "tab": {
+    "title": "Wait list",
+    "noWaitlistEntries": "No waitlist entries",
+    "caughtUp": "You've caught up on all requests. Good job!"
+  },
+  "app": {
+    "displayName": "Wait list",
+    "description": "Wait list helps you capture and manage customer demand when your schedule is full.\nEasily allow clients to join a waiting list for specific services, dates, or times",
+    "pages": {
+      "main": {
+        "label": "Wait list",
+        "title": "Wait list",
+        "description": "Manage wait list entries"
+      }
+    }
+  },
+  "setup": {
+    "update": "Update <app></app>",
+    "form": {
+      "email": {
+        "label": "Email",
+        "placeholder": "Email",
+        "tooltip": "Email address to send notifications to"
+      },
+      "notifyOnNewEntry": {
+        "label": "Send yourself email on new entry",
+        "tooltip": "Send notification to yourself when a new entry is added to the wait list"
+      },
+      "notifyCustomerOnNewEntry": {
+        "label": "Send customer email on new entry",
+        "tooltip": "Send notification to customer when a new entry is added to the wait list"
+      },
+      "customerNewEntrySubject": {
+        "label": "Customer new entry email subject",
+        "tooltip": "Subject of the email, that your customers will see when a new entry is added to the wait list"
+      },
+      "customerNewEntryTemplateId": {
+        "label": "Customer new entry email template",
+        "tooltip": "Template of the email, that your customers will see when a new entry is added to the wait list"
+      }
+    }
+  },
+  "handlers": {
+    "newWaitlistEntry": "Waitlist Notification - New Entry"
+  },
+  "statusText": {
+    "successfully_set_up": "Successfully set up wait list",
+    "error_processing_configuration": "Error processing wait list configuration",
+    "email_app_not_configured": "Email sender default app is not configured"
+  },
+  "block": {
+    "displayName": "Wait list"
+  }
+}

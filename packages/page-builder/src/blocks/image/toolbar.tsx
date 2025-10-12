@@ -1,11 +1,11 @@
 "use client";
 import { ConfigurationProps } from "@vivid/builder";
 import { useI18n } from "@vivid/i18n";
+import { ShortcutsToolbar } from "@vivid/page-builder-base";
 import { UploadedFile } from "@vivid/types";
 import { AssetSelectorDialog, ToolbarButton } from "@vivid/ui";
 import { Image } from "lucide-react";
 import { useState } from "react";
-import { ShortcutsToolbar } from "../../toolbars/shortucts";
 import { ImageProps } from "./schema";
 import { imageShortcuts } from "./shortcuts";
 

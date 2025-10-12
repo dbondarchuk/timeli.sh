@@ -21,6 +21,11 @@ import React from "react";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
 import { TextBeltApp } from "./app";
 import { TextBeltConfiguration, textBeltConfigurationSchema } from "./models";
+import {
+  TextBeltAdminKeys,
+  textBeltAdminNamespace,
+  TextBeltAdminNamespace,
+} from "./translations/types";
 
 export const TextBeltAppSetup: React.FC<AppSetupProps> = ({
   onSuccess,
@@ -29,7 +34,9 @@ export const TextBeltAppSetup: React.FC<AppSetupProps> = ({
 
   appId,
 }) => {
-  const t = useI18n("apps");
+  const t = useI18n<TextBeltAdminNamespace, TextBeltAdminKeys>(
+    textBeltAdminNamespace,
+  );
   const { appStatus, form, isLoading, isValid, onSubmit } =
     useConnectedAppSetup<TextBeltConfiguration>({
       appId,
@@ -50,16 +57,14 @@ export const TextBeltAppSetup: React.FC<AppSetupProps> = ({
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel>
-                    {t("textBelt.form.apiKey.label")}{" "}
-                    <InfoTooltip>
-                      {t("textBelt.form.apiKey.tooltip")}
-                    </InfoTooltip>
+                    {t("form.apiKey.label")}{" "}
+                    <InfoTooltip>{t("form.apiKey.tooltip")}</InfoTooltip>
                   </FormLabel>
                   <FormControl>
                     <Input
                       type="password"
                       autoComplete="off"
-                      placeholder={t("textBelt.form.apiKey.placeholder")}
+                      placeholder={t("form.apiKey.placeholder")}
                       {...field}
                     />
                   </FormControl>
@@ -73,9 +78,9 @@ export const TextBeltAppSetup: React.FC<AppSetupProps> = ({
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel>
-                    {t("textBelt.form.textMessageResponderAppId.label")}
+                    {t("form.textMessageResponderAppId.label")}
                     <InfoTooltip>
-                      {t("textBelt.form.textMessageResponderAppId.tooltip")}
+                      {t("form.textMessageResponderAppId.tooltip")}
                     </InfoTooltip>
                   </FormLabel>
                   <FormControl>
@@ -98,8 +103,13 @@ export const TextBeltAppSetup: React.FC<AppSetupProps> = ({
               className="inline-flex gap-2 items-center w-full"
             >
               {isLoading && <Spinner />}
-              <span>{t("textBelt.form.connect")}</span>
-              <ConnectedAppNameAndLogo appName={TextBeltApp.name} />
+              <span className="inline-flex gap-2 items-center">
+                {t.rich("form.connect", {
+                  app: () => (
+                    <ConnectedAppNameAndLogo appName={TextBeltApp.name} />
+                  ),
+                })}
+              </span>
             </Button>
           </div>
         </form>

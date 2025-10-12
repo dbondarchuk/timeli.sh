@@ -6,6 +6,7 @@ import { ArrowDown, ArrowUp, Copy, Trash } from "lucide-react";
 import { useCallback, useEffect, useMemo } from "react";
 import {
   useBlockDisableOptions,
+  useBlockEditorDisableOptions,
   useDispatchAction,
   useRootBlockId,
   useSelectedBlockId,
@@ -20,6 +21,7 @@ export const ToolbarBlockGroups = () => {
   const rootBlockId = useRootBlockId();
   const disable = useBlockDisableOptions(selectedBlockId);
   const canDoBlockActions = selectedBlockId && selectedBlockId !== rootBlockId;
+  const editorDisableOptions = useBlockEditorDisableOptions(selectedBlockId);
 
   const isMac = useMemo(() => {
     return navigator.userAgent?.toLocaleLowerCase().includes("mac");
@@ -42,6 +44,7 @@ export const ToolbarBlockGroups = () => {
         e.key === "ArrowUp" &&
         canDoBlockActions &&
         !disable?.move &&
+        !editorDisableOptions?.keyboardShortcuts?.moveUp &&
         isMoveModifierKey(e)
       ) {
         dispatchAction({
@@ -56,6 +59,7 @@ export const ToolbarBlockGroups = () => {
         e.key === "ArrowDown" &&
         canDoBlockActions &&
         !disable?.move &&
+        !editorDisableOptions?.keyboardShortcuts?.moveDown &&
         isMoveModifierKey(e)
       ) {
         dispatchAction({
@@ -70,6 +74,7 @@ export const ToolbarBlockGroups = () => {
         e.key === "Delete" &&
         canDoBlockActions &&
         !disable?.delete &&
+        !editorDisableOptions?.keyboardShortcuts?.delete &&
         isMoveModifierKey(e)
       ) {
         dispatchAction({
@@ -88,6 +93,7 @@ export const ToolbarBlockGroups = () => {
       disable,
       isMoveModifierKey,
       selectedBlockId,
+      editorDisableOptions,
     ],
   );
 

@@ -1,16 +1,9 @@
 import {
-  CustomerDataPoint,
-  FinancialMetrics,
   Payment,
   PaymentIntent,
   PaymentIntentUpdateModel,
-  PaymentSummary,
   PaymentUpdateModel,
-  RevenueDataPoint,
-  ServiceDataPoint,
-  TimeGrouping,
 } from "../booking";
-import { DateRange } from "../general";
 
 export interface IPaymentsService {
   createIntent(
@@ -44,21 +37,4 @@ export interface IPaymentsService {
     | { success: false; error: string; status: number }
     | { success: true; updatedPayment: Payment }
   >;
-
-  // Financials
-
-  getFinancialMetrics(dateRange?: DateRange): Promise<FinancialMetrics>;
-  getRecentPayments(
-    limit?: number,
-    dateRange?: DateRange,
-  ): Promise<PaymentSummary[]>;
-  getRevenueOverTime(
-    dateRange?: DateRange,
-    timeGrouping?: TimeGrouping,
-  ): Promise<RevenueDataPoint[]>;
-  getServiceDistribution(dateRange?: DateRange): Promise<ServiceDataPoint[]>;
-  getCustomerData(
-    dateRange?: DateRange,
-    timeGrouping?: TimeGrouping,
-  ): Promise<CustomerDataPoint[]>;
 }

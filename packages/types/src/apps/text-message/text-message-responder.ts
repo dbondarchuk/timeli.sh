@@ -1,4 +1,4 @@
-import { AppsKeys } from "@vivid/i18n";
+import { AllKeys, I18nNamespaces } from "@vivid/i18n";
 import { Appointment } from "../../booking";
 import { CommunicationParticipantType } from "../../communication";
 import { Customer } from "../../customers";
@@ -14,8 +14,11 @@ export type TextMessageReply = {
   messageId?: string;
 };
 
-export type RespondResult = {
-  handledBy: AppsKeys;
+export type RespondResult<
+  T extends I18nNamespaces = I18nNamespaces,
+  CustomKeys extends string | undefined = undefined,
+> = {
+  handledBy: AllKeys<T, CustomKeys>;
   participantType: CommunicationParticipantType;
 };
 

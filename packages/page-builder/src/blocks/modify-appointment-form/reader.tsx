@@ -1,7 +1,9 @@
+import {
+  BlockStyle,
+  generateClassName,
+  ReplaceOriginalColors,
+} from "@vivid/page-builder-base/reader";
 import { cn } from "@vivid/ui";
-import { generateClassName } from "../../helpers/class-name-generator";
-import { ReplaceOriginalColors } from "../../helpers/replace-original-colors";
-import { BlockStyle } from "../../helpers/styling";
 import { ModifyAppointmentForm } from "./components/modify-appointment-form";
 import { ModifyAppointmentFormReaderProps } from "./schema";
 import { styles } from "./styles";

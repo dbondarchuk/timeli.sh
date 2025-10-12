@@ -30,9 +30,22 @@ export const CoreEditorBlock: React.FC<{
       [blocks, block.type],
     );
 
-    if (rootBlockType === block.type) return <Component {...block.data} />;
+    const staticProps = useMemo(
+      () => blocks[block.type].staticProps,
+      [blocks, block.type],
+    );
 
-    return <Component {...block.data} base={block.base} {...additionalProps} />;
+    if (rootBlockType === block.type)
+      return <Component {...staticProps} {...block.data} />;
+
+    return (
+      <Component
+        {...staticProps}
+        {...block.data}
+        base={block.base}
+        {...additionalProps}
+      />
+    );
   },
 );
 

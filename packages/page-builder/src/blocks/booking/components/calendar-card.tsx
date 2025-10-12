@@ -68,6 +68,7 @@ export const CalendarCard: React.FC = () => {
     setDiscount: setPromoCode,
     timeZone: propsTimeZone,
     availability,
+    setStep,
   } = useScheduleContext();
 
   const [date, setDate] = React.useState<Date | undefined>(dateTime?.date);

@@ -9,10 +9,16 @@ export type TReaderBlockProps = BaseReaderBlockProps<any> & {
 };
 
 export function ReaderBlock({ block, ...rest }: TReaderBlockProps) {
-  const Component = rest.blocks[block.type].Reader;
+  const Component = rest.blocks[block.type]?.Reader;
+  const staticProps = rest.blocks[block.type]?.staticProps;
+  if (!Component) {
+    return null;
+  }
+
   return (
     <Component
       {...rest}
+      {...staticProps}
       {...templateProps(block.data, rest.args)}
       block={block}
       key={block.id}

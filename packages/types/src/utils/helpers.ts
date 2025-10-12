@@ -38,3 +38,5 @@ export type DeepOmit<T, K extends keyof any> = {
     ? DeepOmit<T[P], K>
     : T[P];
 };
+
+export type Extandable<T extends string> = T | (string & {});

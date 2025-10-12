@@ -131,7 +131,7 @@ import { SimpleTimePicker } from "./simple-time-picker";
 
 export type DateTimeCalendarProps = Omit<
   React.ComponentProps<typeof DayPicker>,
-  "mode"
+  "mode" | "disabled"
 >;
 
 const AM_VALUE = 0;
@@ -173,6 +173,11 @@ export type DateTimePickerProps = {
    * @default false
    */
   disabled?: boolean;
+  /**
+   * Whether the datetime picker is disabled.
+   * @default false
+   */
+  disabledDays?: (date: Date) => boolean;
   /**
    * Whether to show the time picker.
    * @default false
@@ -239,6 +244,7 @@ export function DateTimePicker({
   modal = true,
   commitOnChange = false,
   minutesDivisibleBy,
+  disabledDays,
   ...props
 }: DateTimePickerProps & DateTimeCalendarProps) {
   const locale = useLocale();
@@ -456,10 +462,12 @@ export function DateTimePicker({
             month={month.toJSDate()}
             endMonth={endMonth.toJSDate()}
             disabled={
-              [
-                max ? { after: max } : null,
-                min ? { before: min } : null,
-              ].filter(Boolean) as Matcher[]
+              disabledDays
+                ? disabledDays
+                : ([
+                    max ? { after: max } : null,
+                    min ? { before: min } : null,
+                  ].filter(Boolean) as Matcher[])
             }
             onMonthChange={(d) =>
               setMonth(DateTime.fromJSDate(d).setZone(timeZone))

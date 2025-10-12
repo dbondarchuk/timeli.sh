@@ -26,14 +26,13 @@
   },
   "dependencies": {
     "@vivid/builder": "*",
+    "@vivid/page-builder-base": "*",
+    "@vivid/types": "*",
     "@vivid/rte": "*",
     "@vivid/ui": "*",
     "@vivid/i18n": "*",
-    "highlight.js": "^11.9.0",
     "lucide-react": "^0.525.0",
-    "react-contenteditable": "^3.3.7",
     "react-dom": "19.0.0",
-    "react-style-stringify": "^1.1.0",
     "sanitize-html": "^2.14.0"
   }
 }

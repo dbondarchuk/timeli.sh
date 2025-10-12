@@ -1,4 +1,12 @@
 import {
+  backgroundColorShortcut,
+  backgroundImageShortcut,
+  colorShortcut,
+  fontFamilyShortcut,
+  Shortcut,
+} from "@vivid/page-builder-base";
+import { AllStylesSchemas } from "@vivid/page-builder-base/style";
+import {
   AlignCenterHorizontal,
   AlignCenterVertical,
   AlignVerticalSpaceBetween,
@@ -6,12 +14,6 @@ import {
   Grid3X3,
   Move,
 } from "lucide-react";
-import { Shortcut } from "../../shortcuts";
-import { backgroundColorShortcut } from "../../shortcuts/common/background-color";
-import { backgroundImageShortcut } from "../../shortcuts/common/background-image";
-import { colorShortcut } from "../../shortcuts/common/color";
-import { fontFamilyShortcut } from "../../shortcuts/common/font-family";
-import { AllStylesSchemas } from "../../style";
 
 export const gridContainerShortcuts: Shortcut<AllStylesSchemas>[] = [
   {

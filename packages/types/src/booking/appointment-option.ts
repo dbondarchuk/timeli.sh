@@ -207,6 +207,4 @@ export type GetAppointmentOptionsResponse = {
   fieldsSchema: Record<string, FieldSchema>;
   timeZone: string;
   showPromoCode: boolean;
-  allowReschedules: boolean;
-  allowCancellations: boolean;
 };

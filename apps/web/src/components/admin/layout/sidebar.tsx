@@ -67,7 +67,7 @@ export const AppSidebar: React.FC<SidebarProps> = ({
 }) => {
   const path = usePathname();
   const { open, isMobile, setOpenMobile } = useSidebar();
-  const t = useI18n("admin");
+  const t = useI18n();
   React.useEffect(() => {
     setOpenMobile(false);
   }, [path, setOpenMobile]);

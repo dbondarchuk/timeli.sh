@@ -76,6 +76,12 @@ RUN chown nextjs:nodejs .next
 COPY --from=builder /app/packages/i18n ./packages/i18n
 COPY --from=builder /app/packages/types ./packages/types
 
+# Copy apps translation JSONs (preserving directory structure)
+COPY --from=builder /app/packages/app-store/src/apps ./packages/app-store/src/apps
+RUN find ./packages/app-store/src/apps -type f ! -path "*/translations/*" -delete && \
+    find ./packages/app-store/src/apps -type f ! -name "*.json" -delete && \
+    find ./packages/app-store/src/apps -type d -empty -delete
+
 # Copy node modules for scheduler
 COPY --from=builder /app/node_modules/uuid ./node_modules/uuid
 COPY --from=builder /app/node_modules/node-cron ./node_modules/node-cron 

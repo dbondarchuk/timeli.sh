@@ -14,6 +14,11 @@ import { createEvent } from "ics";
 import nodemailer from "nodemailer";
 import Mail from "nodemailer/lib/mailer";
 import { SmtpConfiguration } from "./models";
+import {
+  SmtpAdminAllKeys,
+  SmtpAdminKeys,
+  SmtpAdminNamespace,
+} from "./translations/types";
 
 const MASKED_PASSWORD = "********";
 
@@ -80,8 +85,8 @@ export default class SmtpConnectedApp
           "SMTP connection verification failed",
         );
 
-        throw new ConnectedAppError(
-          "smtp.statusText.connection_verification_failed",
+        throw new ConnectedAppError<SmtpAdminNamespace, SmtpAdminKeys>(
+          "app_smtp_admin.statusText.connection_verification_failed",
         );
       }
 
@@ -90,9 +95,12 @@ export default class SmtpConnectedApp
         "SMTP connection verified successfully",
       );
 
-      const status: ConnectedAppStatusWithText = {
+      const status: ConnectedAppStatusWithText<
+        SmtpAdminNamespace,
+        SmtpAdminKeys
+      > = {
         status: "connected",
-        statusText: "smtp.statusText.successfully_connected",
+        statusText: "app_smtp_admin.statusText.successfully_connected",
       };
 
       this.props.update({
@@ -133,7 +141,7 @@ export default class SmtpConnectedApp
                 key: e.key,
                 args: e.args,
               }
-            : "smtp.statusText.error_processing_configuration",
+            : ("app_smtp_admin.statusText.error_processing_configuration" satisfies SmtpAdminAllKeys),
       };
 
       this.props.update({
@@ -185,7 +193,7 @@ export default class SmtpConnectedApp
             "Failed to parse iCal event",
           );
           throw new ConnectedAppError(
-            "smtp.statusText.error_parsing_ical_event",
+            "app_smtp_admin.statusText.error_parsing_ical_event" satisfies SmtpAdminAllKeys,
           );
         }
 
@@ -263,7 +271,7 @@ export default class SmtpConnectedApp
                 key: e.key,
                 args: e.args,
               }
-            : "smtp.statusText.error_sending_email",
+            : ("app_smtp_admin.statusText.error_sending_email" satisfies SmtpAdminAllKeys),
       };
 
       this.props.update({

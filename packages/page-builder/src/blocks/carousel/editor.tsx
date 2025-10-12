@@ -3,6 +3,7 @@ import {
   useBlockEditor,
   useCurrentBlock,
 } from "@vivid/builder";
+import { BlockStyle, useClassName } from "@vivid/page-builder-base";
 import {
   Carousel,
   CarouselContent,
@@ -12,8 +13,6 @@ import {
   cn,
 } from "@vivid/ui";
 import { memo } from "react";
-import { BlockStyle } from "../../helpers/styling";
-import { useClassName } from "../../helpers/use-class-name";
 import { CarouselProps, styles } from "./schema";
 
 const CarouselItemWrapper = memo(

@@ -9,6 +9,7 @@ import {
   AppointmentChoice,
   AppointmentDiscount,
   AppointmentEvent,
+  AppointmentFields,
   asOptionalField,
   Customer,
   CustomerListModel,
@@ -16,6 +17,7 @@ import {
   Event,
   Field,
   getFields,
+  Prettify,
   WithLabelFieldData,
 } from "@vivid/types";
 import {
@@ -57,29 +59,51 @@ import { useForm, useFormState } from "react-hook-form";
 import { z } from "zod";
 import { createAppointment, updateAppointment } from "./actions";
 
-export type AppointmentScheduleFormProps = {
-  options: AppointmentChoice[];
-  knownFields: (Field<WithLabelFieldData> & { _id: string })[];
-  customer?: Customer | null;
-} & (
-  | ({
-      from: Appointment;
-    } & (
-      | {
-          isEdit: true;
-          id: string;
-        }
-      | {
-          isEdit?: false;
-          id?: never;
-        }
-    ))
-  | {
-      from?: null;
-      isEdit?: false;
-      id?: never;
-    }
-);
+export const appointmentFromSchema = z.object({
+  optionId: z.string().optional(),
+  addonsIds: z.array(z.string()).optional(),
+  customerId: z.string().optional(),
+  fields: z.record(z.string(), z.any()).optional(),
+  dateTime: z.date().optional(),
+  totalDuration: z.number().optional(),
+  totalPrice: z.number().optional(),
+  note: z.string().optional(),
+  status: z.string().optional(),
+  discount: z
+    .object({
+      code: z.string(),
+    })
+    .optional(),
+  data: z.record(z.string(), z.any()).optional(),
+});
+
+export type AppointmentScheduleFormFrom = z.infer<typeof appointmentFromSchema>;
+
+export type AppointmentScheduleFormProps = Prettify<
+  {
+    options: AppointmentChoice[];
+    knownFields: (Field<WithLabelFieldData> & { _id: string })[];
+    customer?: Customer | null;
+  } & (
+    | ({
+        from: AppointmentScheduleFormFrom;
+      } & (
+        | {
+            isEdit: true;
+            id: string;
+          }
+        | {
+            isEdit?: false;
+            id?: never;
+          }
+      ))
+    | {
+        from?: null;
+        isEdit?: false;
+        id?: never;
+      }
+  )
+>;
 
 const getSelectedFields = (
   selectedOption: AppointmentChoice | undefined,
@@ -190,22 +214,44 @@ export const AppointmentScheduleForm: React.FC<
 
   type FormValues = z.infer<typeof formSchema>;
 
+  const fromOption = from
+    ? options.find((o) => o._id === from.optionId)
+    : undefined;
+  const fromAddons =
+    from && fromOption
+      ? from.addonsIds?.map((a) => fromOption.addons?.find((o) => o._id === a))
+      : undefined;
+
+  const fromDuration = from
+    ? from?.totalDuration
+      ? (fromOption?.duration || 0) +
+        (fromAddons?.reduce((sum, addon) => sum + (addon?.duration || 0), 0) ||
+          0)
+      : undefined
+    : undefined;
+
+  const fromPrice = from
+    ? (fromOption?.price || 0) +
+      (fromAddons?.reduce((sum, addon) => sum + (addon?.price || 0), 0) || 0)
+    : undefined;
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     mode: "all",
     reValidateMode: "onChange",
     values: {
-      dateTime: isEdit ? from.dateTime : now,
-      totalDuration: from?.totalDuration || options[0].duration || 0,
-      totalPrice: from?.totalPrice || undefined,
-      addons: from?.addons?.map(({ _id }) => ({ id: _id })) || [],
-      fields: from?.fields || {
-        name: propsCustomer?.name ?? "",
-        email: propsCustomer?.email ?? "",
-        phone: propsCustomer?.phone ?? "",
+      dateTime: isEdit ? (from.dateTime ?? now) : now,
+      totalDuration:
+        from?.totalDuration || fromDuration || options[0]?.duration || 0,
+      totalPrice: from?.totalPrice || fromPrice || undefined,
+      addons: from?.addonsIds?.map((id) => ({ id })) || [],
+      fields: (from?.fields as AppointmentFields) || {
+        name: propsCustomer?.name ?? from?.fields?.name ?? "",
+        email: propsCustomer?.email ?? from?.fields?.email ?? "",
+        phone: propsCustomer?.phone ?? from?.fields?.phone ?? "",
       },
-      customerId: from?.customerId ?? propsCustomer?._id,
-      option: from?.option?._id || options[0]._id,
+      customerId: from?.customerId ?? propsCustomer?._id ?? "",
+      option: from?.optionId ?? options[0]?._id ?? "",
       confirmed: true,
       note: isEdit ? from?.note || "" : "",
       promoCode: isEdit ? from?.discount?.code : undefined,
@@ -349,6 +395,7 @@ export const AppointmentScheduleForm: React.FC<
         })),
         note: data.note,
         discount: appointmentDiscount,
+        data: from?.data,
       };
 
       let appointmentId = id;
@@ -431,16 +478,15 @@ export const AppointmentScheduleForm: React.FC<
       addons: selectedAddonIds,
       createdAt: now,
       customerId: from?.customerId ?? "unknown",
-      customer: customer ??
-        from?.customer ?? {
-          _id: "unknown",
-          name,
-          email,
-          phone,
-          knownEmails: [],
-          knownNames: [],
-          knownPhones: [],
-        },
+      customer: (customer as unknown as Customer) ?? {
+        _id: "unknown",
+        name,
+        email,
+        phone,
+        knownEmails: [],
+        knownNames: [],
+        knownPhones: [],
+      },
     } as Appointment;
   }, [
     dateTime,

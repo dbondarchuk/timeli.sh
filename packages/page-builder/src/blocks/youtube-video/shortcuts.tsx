@@ -1,5 +1,5 @@
+import { Shortcut } from "@vivid/page-builder-base";
 import { AlignLeft, Film, Play, Volume2 } from "lucide-react";
-import { Shortcut } from "../../shortcuts";
 import { YouTubeVideoStylesSchema } from "./styles";
 
 export const youtubeVideoShortcuts: Shortcut<YouTubeVideoStylesSchema>[] = [

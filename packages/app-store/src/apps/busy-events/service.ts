@@ -15,6 +15,11 @@ import {
 import { eachOfInterval, getWeekIdentifier, parseTime } from "@vivid/utils";
 import { ObjectId } from "mongodb";
 import { RequestAction } from "./models";
+import {
+  BusyEventsAdminKeys,
+  busyEventsAdminNamespace,
+  BusyEventsAdminNamespace,
+} from "./translations/types";
 
 export const BUSY_EVENTS_COLLECTION_NAME = "busy-events";
 
@@ -114,9 +119,12 @@ export default class BusyEventsConnectedApp
         default: {
           logger.debug({ appId: appData._id }, "Processing default request");
 
-          const status: ConnectedAppStatusWithText = {
+          const status: ConnectedAppStatusWithText<
+            BusyEventsAdminNamespace,
+            BusyEventsAdminKeys
+          > = {
             status: "connected",
-            statusText: "common.statusText.successfully_set_up",
+            statusText: "app_busy-events_admin.statusText.successfully_set_up",
           };
 
           this.props.update({
@@ -227,7 +235,9 @@ export default class BusyEventsConnectedApp
     end: Date,
   ): Promise<CalendarBusyTime[]> {
     const logger = this.loggerFactory("getBusyTimes");
-    const t = await getI18nAsync("apps");
+    const t = await getI18nAsync<BusyEventsAdminNamespace, BusyEventsAdminKeys>(
+      busyEventsAdminNamespace,
+    );
     logger.debug(
       { appId, start: start.toISOString(), end: end.toISOString() },
       "Getting busy times",
@@ -297,7 +307,7 @@ export default class BusyEventsConnectedApp
           endAt: day.set(parseTime(event.end)).toJSDate(),
           startAt: day.set(parseTime(event.start)).toJSDate(),
           uid: `busy-event-${day.toISODate()}-${index}`,
-          title: t("busyEvents.eventTitle"),
+          title: t("eventTitle"),
         }));
       });
 

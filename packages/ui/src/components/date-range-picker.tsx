@@ -6,7 +6,7 @@ import { DateTime } from "luxon";
 import * as React from "react";
 import { cn } from "../utils";
 import { Button } from "./button";
-import { Calendar } from "./calendar";
+import { Calendar, CalendarProps } from "./calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
 export type RangeOption = {
@@ -18,15 +18,19 @@ export type RangeOption = {
 export type CalendarDateRangePickerProps = Omit<
   React.HTMLAttributes<HTMLDivElement>,
   "onChange"
-> & {
-  range?: DateRange;
-  onChange?: (range?: DateRange) => void;
-  rangeOptions?: RangeOption[];
-};
+> &
+  Omit<
+    Extract<CalendarProps, { mode: "range" }>,
+    "mode" | "defaultMonth" | "selected" | "onSelect" | "numberOfMonths"
+  > & {
+    range?: DateRange;
+    onChange?: (range?: DateRange) => void;
+    rangeOptions?: RangeOption[];
+  };
 
 export const CalendarDateRangePicker: React.FC<
   CalendarDateRangePickerProps
-> = ({ className, range, onChange, rangeOptions }) => {
+> = ({ className, range, onChange, rangeOptions, ...rest }) => {
   const t = useI18n("ui");
   const [date, setDate] = React.useState<DateRange | undefined>(range);
   React.useEffect(() => {
@@ -87,6 +91,7 @@ export const CalendarDateRangePicker: React.FC<
           )}
           <Calendar
             autoFocus
+            {...rest}
             mode="range"
             defaultMonth={date?.start}
             selected={{

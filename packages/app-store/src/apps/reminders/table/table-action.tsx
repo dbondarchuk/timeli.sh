@@ -15,13 +15,20 @@ import {
 } from "@vivid/ui";
 import { Plus, Settings2 } from "lucide-react";
 import React from "react";
+import {
+  RemindersAdminKeys,
+  RemindersAdminNamespace,
+  remindersAdminNamespace,
+} from "../translations/types";
 import { DeleteSelectedRemindersButton } from "./delete-selected";
 import { useRemindersTableFilters } from "./use-table-filters";
 
 export const RemindersTableAction: React.FC<{ appId: string }> = ({
   appId,
 }) => {
-  const t = useI18n("apps");
+  const t = useI18n<RemindersAdminNamespace, RemindersAdminKeys>(
+    remindersAdminNamespace,
+  );
   const tUi = useI18n("ui");
   const tAdmin = useI18n("admin");
 
@@ -40,7 +47,7 @@ export const RemindersTableAction: React.FC<{ appId: string }> = ({
     <>
       <DataTableFilterBox
         filterKey="channel"
-        title={t("reminders.table.columns.channel")}
+        title={t("table.columns.channel")}
         options={communicationChannels.map((value) => ({
           value,
           label: tAdmin(`common.labels.channel.${value}`),
@@ -88,9 +95,7 @@ export const RemindersTableAction: React.FC<{ appId: string }> = ({
           href="/admin/dashboard/communications/reminders/new"
         >
           <Plus size={16} />{" "}
-          <span className="max-md:hidden">
-            {t("reminders.table.actions.add")}
-          </span>
+          <span className="max-md:hidden">{t("table.actions.add")}</span>
         </Link>
       </div>
     </div>

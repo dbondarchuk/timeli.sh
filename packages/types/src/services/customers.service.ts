@@ -22,6 +22,12 @@ export interface ICustomersService {
   createCustomer(customer: CustomerUpdateModel): Promise<string>;
   updateCustomer(id: string, update: CustomerUpdateModel): Promise<void>;
 
+  getOrUpsertCustomer(fields: {
+    name: string;
+    email: string;
+    phone: string;
+  }): Promise<Customer>;
+
   deleteCustomer(id: string): Promise<Customer | null>;
   deleteCustomers(ids: string[]): Promise<void>;
 

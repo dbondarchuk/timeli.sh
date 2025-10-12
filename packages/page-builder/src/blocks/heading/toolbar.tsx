@@ -1,5 +1,6 @@
 import { ConfigurationProps, ToolbarDropdownMenu } from "@vivid/builder";
 import { useI18n } from "@vivid/i18n";
+import { ShortcutsToolbar } from "@vivid/page-builder-base";
 import {
   Heading1,
   Heading2,
@@ -8,7 +9,6 @@ import {
   Heading5,
   Heading6,
 } from "lucide-react";
-import { ShortcutsToolbar } from "../../toolbars/shortucts";
 import { DefaultHeadingLevel, HeadingProps } from "./schema";
 import { headingShortcuts } from "./shortcuts";
 

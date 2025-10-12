@@ -1,10 +1,12 @@
 "use client";
 
 import { useBlockEditor, useCurrentBlock } from "@vivid/builder";
+import {
+  BlockStyle,
+  ReplaceOriginalColors,
+  useClassName,
+} from "@vivid/page-builder-base";
 import { cn } from "@vivid/ui";
-import { ReplaceOriginalColors } from "../../helpers/replace-original-colors";
-import { BlockStyle } from "../../helpers/styling";
-import { useClassName } from "../../helpers/use-class-name";
 import { ModifyAppointmentForm } from "./components/modify-appointment-form";
 import { ModifyAppointmentFormProps } from "./schema";
 import { styles } from "./styles";

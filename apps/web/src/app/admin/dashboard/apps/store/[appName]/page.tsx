@@ -11,7 +11,7 @@ type Params = {
 };
 
 export async function generateMetadata(props: Params): Promise<Metadata> {
-  const t = await getI18nAsync("apps");
+  const t = await getI18nAsync();
   const { appName } = await props.params;
   const app = AvailableApps[appName];
   return {
@@ -22,8 +22,8 @@ export async function generateMetadata(props: Params): Promise<Metadata> {
 
 export default async function AppsStorePage(props: Params) {
   const logger = getLoggerFactory("AdminPages")("app-store-details");
-  const t = await getI18nAsync("admin");
-  const tApps = await getI18nAsync("apps");
+  const tAdmin = await getI18nAsync("admin");
+  const t = await getI18nAsync();
   const { appName } = await props.params;
 
   logger.debug(
@@ -34,11 +34,11 @@ export default async function AppsStorePage(props: Params) {
   );
 
   const breadcrumbItems = [
-    { title: t("navigation.dashboard"), link: "/admin/dashboard" },
-    { title: t("navigation.apps"), link: "/admin/dashboard/apps" },
-    { title: t("apps.appStore"), link: "/admin/dashboard/apps/store" },
+    { title: tAdmin("navigation.dashboard"), link: "/admin/dashboard" },
+    { title: tAdmin("navigation.apps"), link: "/admin/dashboard/apps" },
+    { title: tAdmin("apps.appStore"), link: "/admin/dashboard/apps/store" },
     {
-      title: tApps(AvailableApps[appName].displayName),
+      title: t(AvailableApps[appName].displayName),
       link: `/admin/dashboard/apps/store/${appName}`,
     },
   ];

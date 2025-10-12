@@ -1,5 +1,5 @@
+import { Shortcut } from "@vivid/page-builder-base";
 import { AlignLeft, ImageDown, ImageUp, ImageUpscale } from "lucide-react";
-import { Shortcut } from "../../shortcuts";
 import { ImageStylesSchema } from "./styles";
 
 export const imageShortcuts: Shortcut<ImageStylesSchema>[] = [

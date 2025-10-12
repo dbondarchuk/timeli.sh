@@ -16,6 +16,7 @@ export type UseConnectedAppSetupProps<T extends FieldValues> = {
   onSuccess?: () => void;
   onError?: (error: string) => void;
   processDataForSubmit?: (data: T) => any;
+  initialData?: T;
 };
 
 export function useConnectedAppSetup<T extends FieldValues>({
@@ -27,6 +28,7 @@ export function useConnectedAppSetup<T extends FieldValues>({
   onSuccess,
   onError,
   processDataForSubmit,
+  initialData,
 }: UseConnectedAppSetupProps<T>) {
   const t = useI18n("apps");
   const [appId, setAppId] = React.useState<string>();
@@ -35,7 +37,9 @@ export function useConnectedAppSetup<T extends FieldValues>({
   const [appStatus, setAppStatus] =
     React.useState<ConnectedAppStatusWithText>();
 
-  const [initialAppData, setInitialAppData] = React.useState<T>();
+  const [initialAppData, setInitialAppData] = React.useState<T>(
+    initialData as any,
+  );
   React.useEffect(() => {
     if (!existingAppId) return;
 

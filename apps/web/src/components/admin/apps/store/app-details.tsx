@@ -26,7 +26,7 @@ export type AppDetailsProps = {
 export const AppDetails: React.FC<AppDetailsProps> = async ({ appName }) => {
   const app = AvailableApps[appName];
   const installed = await getInstalledApps(appName);
-  const t = await getI18nAsync("apps");
+  const t = await getI18nAsync();
   //if (app.isHidden) return null;
 
   return (
@@ -40,7 +40,7 @@ export const AppDetails: React.FC<AppDetailsProps> = async ({ appName }) => {
         >
           <ArrowLeft />
         </Link>
-        <Heading title={t("common.appStore")} />
+        <Heading title={t("apps.common.appStore")} />
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
         <div className="flex flex-col w-full gap-8">
@@ -51,14 +51,16 @@ export const AppDetails: React.FC<AppDetailsProps> = async ({ appName }) => {
           />
           <div className="flex flex-row flex-wrap gap-4 items-center">
             {app.isFeatured && (
-              <span className="text-emphasis">{t("common.featured")}</span>
+              <span className="text-emphasis">{t("apps.common.featured")}</span>
             )}
             {app.scope.map((scope) => (
               <span
                 className="bg-secondary text-secondary-foreground text-emphasis rounded-md p-2 text-xs capitalize"
                 key={scope}
               >
-                {t(`scopes.${scope}`)}
+                {t.has(`apps.scopes.${scope}` as any)
+                  ? t(`apps.scopes.${scope}` as any)
+                  : scope}
               </span>
             ))}
           </div>
@@ -70,8 +72,8 @@ export const AppDetails: React.FC<AppDetailsProps> = async ({ appName }) => {
                   disabled={app.dontAllowMultiple && installed.length > 0}
                 >
                   {app.dontAllowMultiple && installed.length > 0
-                    ? t("common.alreadyInstalled")
-                    : t("common.addApp")}
+                    ? t("apps.common.alreadyInstalled")
+                    : t("apps.common.addApp")}
                 </Button>
               </AddOrUpdateAppButton>
             ) : (

@@ -2,7 +2,7 @@ import PageContainer from "@/components/admin/layout/page-container";
 import { PageForm } from "@/components/admin/pages/form";
 import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
-import { Styling } from "@vivid/page-builder";
+import { Styling } from "@vivid/page-builder/reader";
 import { ServicesContainer } from "@vivid/services";
 import { Metadata } from "next";
 

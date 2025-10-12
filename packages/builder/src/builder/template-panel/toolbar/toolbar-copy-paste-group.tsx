@@ -3,6 +3,7 @@ import { toast, ToolbarButton, ToolbarGroup, useUploadFile } from "@vivid/ui";
 import { ClipboardCopy, ClipboardPaste } from "lucide-react";
 import { useCallback, useEffect, useMemo } from "react";
 import {
+  useBlockEditorDisableOptions,
   useBlockParentData,
   useBlockType,
   useDispatchAction,
@@ -49,6 +50,7 @@ export const ToolbarCopyPasteGroup = ({
   const { document: portalDocument } = usePortalContext();
 
   const selectedBlockId = useSelectedBlockId();
+  const editorDisableOptions = useBlockEditorDisableOptions(selectedBlockId);
   const { hasBlockClipboard, copyToClipboard, clipboardBlock } =
     useBlockClipboard();
 
@@ -143,31 +145,9 @@ export const ToolbarCopyPasteGroup = ({
           //event.preventDefault();
           // event.stopPropagation();
 
-          const active = portalDocument.activeElement;
-          if (active && active.closest(".slate-editor")) {
-            return; // let Plate handle its paste
+          if (editorDisableOptions?.keyboardShortcuts?.pasteImage) {
+            return;
           }
-
-          // // Check if the current block parent can accept image blocks
-          // const allowedParents = store.getState().blocks["Image"]?.allowedIn;
-          // if (
-          //   allowedParents &&
-          //   !allowedParents.includes(parentData.parentBlockType)
-          // ) {
-          //   return; // Can't add image block here
-          // }
-
-          // // Check if image is allowed in the parent property
-          // const allowedBlockTypes =
-          //   store.getState().allowedBlockTypes[
-          //     `${parentData.parentBlockId}/${parentData.parentProperty}`
-          //   ];
-          // if (
-          //   allowedBlockTypes?.length &&
-          //   !allowedBlockTypes.includes("Image")
-          // ) {
-          //   return; // Image not allowed in this parent property
-          // }
 
           if (isUploadingImage) return; // Prevent multiple uploads
 
@@ -204,6 +184,7 @@ export const ToolbarCopyPasteGroup = ({
     parentData,
     uploadFile,
     isUploadingImage,
+    editorDisableOptions,
     t,
   ]);
 

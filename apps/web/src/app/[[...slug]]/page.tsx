@@ -1,6 +1,6 @@
+import { AppsBlocksReaders } from "@vivid/app-store/blocks/readers";
 import { getLoggerFactory } from "@vivid/logger";
-import { Styling } from "@vivid/page-builder";
-import { Header, PageReader } from "@vivid/page-builder/reader";
+import { Header, PageReader, Styling } from "@vivid/page-builder/reader";
 import { ServicesContainer } from "@vivid/services";
 import { formatArguments, setPageData } from "@vivid/utils";
 import { DateTime } from "luxon";
@@ -267,15 +267,54 @@ export default async function Page(props: Props) {
       rest.language || settings.language,
     );
 
+    const apps =
+      await ServicesContainer.ConnectedAppsService().getAppsByScope(
+        "ui-components",
+      );
+
+    const additionalBlocks = apps?.reduce(
+      (acc, app) => {
+        acc.readers = {
+          ...acc.readers,
+          ...Object.fromEntries(
+            Object.entries(AppsBlocksReaders[app.name]).map(
+              ([blockName, value]) => [
+                `${blockName}-${app._id}`,
+                {
+                  ...value,
+                  staticProps: {
+                    ...value.staticProps,
+                    appId: app._id,
+                    appName: app.name,
+                  },
+                },
+              ],
+            ),
+          ),
+        };
+
+        return acc;
+      },
+      { readers: {} },
+    );
+
     return (
       <>
         <Styling styling={styling} />
         {header && (
           <Header name={settings.name} logo={settings.logo} config={header} />
         )}
-        <PageReader document={content} args={formattedArgs} />
+        <PageReader
+          document={content}
+          args={formattedArgs}
+          additionalBlocks={additionalBlocks?.readers}
+        />
         {footer?.content && (
-          <PageReader document={footer.content} args={formattedArgs} />
+          <PageReader
+            document={footer.content}
+            args={formattedArgs}
+            additionalBlocks={additionalBlocks?.readers}
+          />
         )}
       </>
     );

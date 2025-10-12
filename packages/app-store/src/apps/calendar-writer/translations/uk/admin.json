@@ -1,0 +1,27 @@
+{
+  "title": "Записувач календаря",
+  "app": {
+    "displayName": "Записувач календаря",
+    "description": "Додавати події записів безпосередньо у ваш календар."
+  },
+  "statusText": {
+    "successfully_set_up": "Успішно налаштовано",
+    "calendar_app_not_found": "Додаток календаря не знайдено або не підтримує запис",
+    "error_creating_calendar_event_for_new_appointment": "Помилка створення події календаря для нового запису",
+    "error_updating_calendar_event_for_status_change": "Помилка оновлення події календаря для зміни статусу",
+    "error_updating_calendar_event_for_rescheduled_appointment": "Помилка оновлення події календаря для перенесеного запису"
+  },
+  "form": {
+    "calendarStorage": {
+      "label": "Сховище календаря",
+      "tooltip": "Вибрати календар, який ви хотіли б використовувати як цільове сховище для ваших подій записів."
+    },
+    "update": "Оновити з <app></app>",
+    "add": "Додати <app></app>"
+  },
+  "validation": {
+    "appId": {
+      "required": "Додаток календаря обов'язковий"
+    }
+  }
+}

@@ -1,6 +1,9 @@
 import { BaseReaderBlockProps, generateId } from "@vivid/builder";
+import {
+  getAllStylesWithAdditionalStyles,
+  getStylesSchema,
+} from "@vivid/page-builder-base/style";
 import { z } from "zod";
-import { getAllStylesWithAdditionalStyles, getStylesSchema } from "../../style";
 import { carouselChildrenAlignStyle } from "./carousel-children-align";
 import { carouselChildrenItemsPerSlideStyle } from "./carousel-children-items-per-slide";
 

@@ -5,12 +5,11 @@ import {
   useEditorArgs,
   usePortalContext,
 } from "@vivid/builder";
+import { BlockStyle, useClassName } from "@vivid/page-builder-base";
 import { cn, useDebounce } from "@vivid/ui";
 import { mergeRefs } from "@vivid/ui/src/utils/merge-refs";
 import { template } from "@vivid/utils";
 import { forwardRef, useCallback, useEffect, useRef, useState } from "react";
-import { BlockStyle } from "../../helpers/styling";
-import { useClassName } from "../../helpers/use-class-name";
 import { ImageProps } from "./schema";
 import { getDefaults, styles } from "./styles";
 // import Image from "next/image";

@@ -1,0 +1,67 @@
+{
+  "title": "S3 Assets Storage",
+  "app": {
+    "displayName": "S3 Assets Storage",
+    "description": "Amazon Simple Storage Service (S3) is a service offered by Amazon Web Services (AWS) that provides object storage through a web service interface. Also supports any S3 Compatible Storage - a storage solution that allows access to and management of the data it stores over an S3 compliant interface."
+  },
+  "form": {
+    "region": {
+      "label": "S3 region",
+      "placeholder": "us-east-1",
+      "tooltip": "Example: us-east-1"
+    },
+    "accessKeyId": {
+      "label": "Access key ID",
+      "placeholder": "Enter your access key ID"
+    },
+    "secretAccessKey": {
+      "label": "Secret access key",
+      "placeholder": "Enter your secret access key"
+    },
+    "endpoint": {
+      "label": "S3 endpoint",
+      "placeholder": "Enter endpoint URL",
+      "tooltip": "Optional. Provide the endpoint URL if you are using non-AWS S3 compatible storage"
+    },
+    "bucket": {
+      "label": "S3 bucket",
+      "placeholder": "assets",
+      "tooltip": "Optional. Provide name of the S3 bucket. Default: assets"
+    },
+    "forcePathStyle": {
+      "label": "Force path style",
+      "tooltip": "Select this option if your S3 provider requires the path style for objects."
+    },
+    "connect": "Connect with <app></app>"
+  },
+  "statusText": {
+    "bucket_successfully_created": "Bucket successfully created",
+    "successfully_connected": "Successfully connected to S3 storage",
+    "error_processing_configuration": "Error processing S3 configuration request",
+    "error_checking_bucket": "Error checking S3 bucket",
+    "error_creating_bucket": "Error creating S3 bucket",
+    "file_not_found": "File {filename} was not found",
+    "no_body_present": "No body present",
+    "error_getting_file": "Error getting file from S3",
+    "error_saving_file": "Error saving file to S3",
+    "error_deleting_file": "Error deleting file from S3",
+    "error_deleting_files": "Error deleting files from S3",
+    "error_checking_file_exists": "Error checking if file exists in S3"
+  },
+  "validation": {
+    "form": {
+      "region": {
+        "required": "S3 region is required"
+      },
+      "accessKeyId": {
+        "required": "Access key ID is required"
+      },
+      "secretAccessKey": {
+        "required": "Secret access key is required"
+      },
+      "endpoint": {
+        "url": "Should be a valid URL"
+      }
+    }
+  }
+}

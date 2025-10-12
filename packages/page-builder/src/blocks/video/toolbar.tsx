@@ -1,7 +1,7 @@
 "use client";
 
 import { ConfigurationProps } from "@vivid/builder";
-import { ShortcutsToolbar } from "../../toolbars/shortucts";
+import { ShortcutsToolbar } from "@vivid/page-builder-base";
 import { VideoProps } from "./schema";
 import { videoShortcuts } from "./shortcuts";
 

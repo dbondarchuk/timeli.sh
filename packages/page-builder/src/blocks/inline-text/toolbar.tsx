@@ -1,6 +1,6 @@
 import { ConfigurationProps } from "@vivid/builder";
 import { useI18n } from "@vivid/i18n";
-import { ShortcutsToolbar } from "../../toolbars/shortucts";
+import { ShortcutsToolbar } from "@vivid/page-builder-base";
 import { InlineTextProps } from "./schema";
 import { inlineTextShortcuts } from "./shortcuts";
 

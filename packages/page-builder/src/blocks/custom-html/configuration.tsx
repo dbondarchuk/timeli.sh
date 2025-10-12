@@ -2,9 +2,9 @@
 
 import { ConfigurationProps } from "@vivid/builder";
 import { useI18n } from "@vivid/i18n";
+import { StylesConfigurationPanel } from "@vivid/page-builder-base";
 import { deepMemo, Label, Textarea } from "@vivid/ui";
 import { useCallback } from "react";
-import { StylesConfigurationPanel } from "../../configuration-panel/styles-configuration-panel";
 import { CustomHTMLProps } from "./schema";
 import { styles } from "./styles";
 

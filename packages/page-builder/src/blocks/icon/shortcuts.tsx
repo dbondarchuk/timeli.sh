@@ -1,7 +1,6 @@
+import { colorShortcut, Shortcut } from "@vivid/page-builder-base";
+import { AllStylesSchemas } from "@vivid/page-builder-base/style";
 import { MoveDiagonal2 } from "lucide-react";
-import { Shortcut } from "../../shortcuts";
-import { colorShortcut } from "../../shortcuts/common/color";
-import { AllStylesSchemas } from "../../style";
 
 export const iconShortcuts: Shortcut<AllStylesSchemas>[] = [
   {

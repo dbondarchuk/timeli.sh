@@ -1,9 +1,9 @@
 "use client";
 
 import { ConfigurationProps } from "@vivid/builder";
+import { StylesConfigurationPanel } from "@vivid/page-builder-base";
 import { deepMemo } from "@vivid/ui";
 import { useCallback } from "react";
-import { StylesConfigurationPanel } from "../../configuration-panel/styles-configuration-panel";
 import { InlineTextProps } from "./schema";
 import { inlineTextShortcuts } from "./shortcuts";
 import { styles } from "./styles";

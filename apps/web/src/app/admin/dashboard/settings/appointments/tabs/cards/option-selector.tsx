@@ -1,5 +1,5 @@
 import { useI18n } from "@vivid/i18n";
-import { AppointmentOption } from "@vivid/types";
+import { AppointmentOption, WithTotal } from "@vivid/types";
 import { cn, Combobox, IComboboxItem, toast } from "@vivid/ui";
 import { durationToTime } from "@vivid/utils";
 import { Clock, DollarSign } from "lucide-react";
@@ -27,7 +27,7 @@ const OptionLabel: React.FC<{ option: AppointmentOption }> = ({ option }) => {
 };
 
 const getOptions = async () => {
-  const url = `/admin/api/services/options`;
+  const url = `/admin/api/services/options?limit=0`;
   const response = await fetch(url, {
     method: "GET",
     cache: "default",
@@ -40,7 +40,8 @@ const getOptions = async () => {
     throw new Error(message);
   }
 
-  return (await response.json()) as AppointmentOption[];
+  const res = (await response.json()) as WithTotal<AppointmentOption>;
+  return res.items;
 };
 
 const checkOptionSearch = (option: AppointmentOption, query: string) => {

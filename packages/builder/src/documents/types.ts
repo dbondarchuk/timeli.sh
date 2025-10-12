@@ -1,4 +1,4 @@
-import { BuilderKeys } from "@vivid/i18n";
+import { AllKeys } from "@vivid/i18n";
 import z from "zod";
 import { TReaderBlock } from "./reader/core";
 
@@ -27,16 +27,28 @@ export type ReaderProps<T> = T & {
 
 export type BuilderSchema = BaseZodDictionary;
 
+export type BlockEditorDisableOptions = {
+  keyboardShortcuts?: {
+    moveUp?: boolean;
+    moveDown?: boolean;
+    delete?: boolean;
+    pasteImage?: boolean;
+    undoRedo?: boolean;
+  };
+};
+
 export type EditorDocumentBlocksDictionary<T extends BuilderSchema = any> = {
   [K in keyof T]: {
-    displayName: BuilderKeys;
+    displayName: AllKeys;
     icon: React.ReactNode;
     Editor: React.ComponentType<EditorProps<z.infer<T[K]>>>;
     Configuration: React.ComponentType<ConfigurationProps<z.infer<T[K]>>>;
     Toolbar?: React.ComponentType<ConfigurationProps<z.infer<T[K]>>>;
     defaultValue: z.infer<T[K]> | (() => z.infer<T[K]>);
-    category: BuilderKeys;
+    category: AllKeys;
     allowedIn?: (keyof T)[];
+    disable?: BlockEditorDisableOptions;
+    staticProps?: Record<string, any>;
   };
 };
 
@@ -49,6 +61,7 @@ export type ReaderDocumentBlocksDictionary<T extends BuilderSchema = any> = {
         }
       >
     >;
+    staticProps?: Record<string, any>;
   };
 };
 

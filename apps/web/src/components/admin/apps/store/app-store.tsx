@@ -22,7 +22,7 @@ import React from "react";
 export type AppStoreProps = {};
 
 const AppCard: React.FC<{ app: App }> = ({ app }) => {
-  const t = useI18n("apps");
+  const t = useI18n();
   return (
     <Card className="pt-4 h-full">
       <CardContent className="flex flex-col gap-4 h-full">
@@ -35,7 +35,7 @@ const AppCard: React.FC<{ app: App }> = ({ app }) => {
           button
           variant="outline"
         >
-          {t("common.details")}
+          {t("apps.common.details")}
         </Link>
       </CardContent>
     </Card>
@@ -43,7 +43,8 @@ const AppCard: React.FC<{ app: App }> = ({ app }) => {
 };
 
 export const AppStore: React.FC<AppStoreProps> = ({}) => {
-  const t = useI18n("apps");
+  const tApps = useI18n("apps");
+  const t = useI18n();
   const apps = React.useMemo(
     () => Object.values(AvailableApps).filter((app) => !app.isHidden),
     [],
@@ -85,11 +86,11 @@ export const AppStore: React.FC<AppStoreProps> = ({}) => {
     <div className="flex flex-col w-full gap-8">
       <div className="flex flex-col md:flex-row justify-between gap-2">
         <Heading
-          title={t("common.appStore")}
-          description={t("common.addNewApps")}
+          title={tApps("common.appStore")}
+          description={tApps("common.addNewApps")}
         />
         <Input
-          placeholder={t("common.search")}
+          placeholder={tApps("common.search")}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="max-w-96"
@@ -106,7 +107,7 @@ export const AppStore: React.FC<AppStoreProps> = ({}) => {
           <div className="flex flex-row justify-between items-center">
             <div>
               <h2 className="text-emphasis mt-0 text-base font-semibold leading-none">
-                {t("common.mostPopular")}
+                {tApps("common.mostPopular")}
               </h2>
             </div>
             <div className="flex flex-row gap-2 justify-end">
@@ -132,7 +133,7 @@ export const AppStore: React.FC<AppStoreProps> = ({}) => {
         <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
           <div>
             <h2 className="text-emphasis mt-0 text-base font-semibold leading-none">
-              {t("common.allApps")}
+              {tApps("common.allApps")}
             </h2>
           </div>
           <div className="flex flex-row flex-wrap gap-2 md:justify-end">
@@ -140,7 +141,7 @@ export const AppStore: React.FC<AppStoreProps> = ({}) => {
               variant={!!category ? "secondary" : "default"}
               onClick={() => setCategory(undefined)}
             >
-              {t("common.all")}
+              {tApps("common.all")}
             </Button>
             {categories.map((cat) => (
               <Button

@@ -23,6 +23,11 @@ import {
   TextMessageAutoReplyConfiguration,
   textMessageAutoReplyConfigurationSchema,
 } from "./models";
+import {
+  TextMessageAutoReplyAdminKeys,
+  TextMessageAutoReplyAdminNamespace,
+  textMessageAutoReplyAdminNamespace,
+} from "./translations/types";
 
 export const TextMessageAutoReplyAppSetup: React.FC<AppSetupProps> = ({
   onSuccess,
@@ -40,7 +45,10 @@ export const TextMessageAutoReplyAppSetup: React.FC<AppSetupProps> = ({
       onError,
     });
 
-  const t = useI18n("apps");
+  const t = useI18n<
+    TextMessageAutoReplyAdminNamespace,
+    TextMessageAutoReplyAdminKeys
+  >(textMessageAutoReplyAdminNamespace);
 
   return (
     <>
@@ -53,9 +61,9 @@ export const TextMessageAutoReplyAppSetup: React.FC<AppSetupProps> = ({
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel>
-                    {t("textMessageAutoReply.form.autoReplyTemplate.label")}
+                    {t("form.autoReplyTemplate.label")}
                     <InfoTooltip>
-                      {t("textMessageAutoReply.form.autoReplyTemplate.tooltip")}
+                      {t("form.autoReplyTemplate.tooltip")}
                     </InfoTooltip>
                   </FormLabel>
                   <FormControl>
@@ -78,8 +86,15 @@ export const TextMessageAutoReplyAppSetup: React.FC<AppSetupProps> = ({
               className="inline-flex gap-2 items-center w-full"
             >
               {isLoading && <Spinner />}
-              <span>{t("textMessageAutoReply.form.connectWith")}</span>
-              <ConnectedAppNameAndLogo appName={TextMessageAutoReplyApp.name} />
+              <span className="inline-flex gap-2 items-center">
+                {t.rich("form.connectWith", {
+                  app: () => (
+                    <ConnectedAppNameAndLogo
+                      appName={TextMessageAutoReplyApp.name}
+                    />
+                  ),
+                })}
+              </span>
             </Button>
           </div>
         </form>

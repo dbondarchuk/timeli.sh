@@ -1,5 +1,5 @@
 import { useDraggable } from "@dnd-kit/react";
-import { BuilderKeys, useI18n } from "@vivid/i18n";
+import { AllKeys, useI18n } from "@vivid/i18n";
 import {
   Button,
   cn,
@@ -55,7 +55,7 @@ const DraggableBlockItem: React.FC<DraggableBlockItemProps> = memo(
     //    },
     //  });
 
-    const t = useI18n("builder");
+    const t = useI18n();
 
     return (
       <>
@@ -71,10 +71,10 @@ const DraggableBlockItem: React.FC<DraggableBlockItemProps> = memo(
           </div>
           <div className="flex-1 min-w-0">
             <div className="text-sm font-medium truncate">
-              {t(blockConfig.displayName as BuilderKeys)}
+              {t(blockConfig.displayName)}
             </div>
             <div className="text-xs text-muted-foreground truncate">
-              {t(blockConfig.category as BuilderKeys)}
+              {t(blockConfig.category)}
             </div>
           </div>
           <div className="flex-shrink-0 text-muted-foreground">
@@ -92,7 +92,8 @@ const BlocksPanelContent = memo(
   }: {
     filteredBlocks: Record<string, Array<{ type: string; config: any }>>;
   }) => {
-    const t = useI18n("builder");
+    const tBuilder = useI18n("builder");
+    const t = useI18n();
 
     return (
       <ScrollArea className="py-2 pr-2 h-[calc(100vh-400px)] min-h-60">
@@ -100,7 +101,7 @@ const BlocksPanelContent = memo(
           <div className="flex flex-col items-center justify-center py-8 text-center">
             <Search className="h-12 w-12 text-muted-foreground mb-3" />
             <p className="text-sm text-muted-foreground">
-              {t("baseBuilder.blocks.noResultsFound")}
+              {tBuilder("baseBuilder.blocks.noResultsFound")}
             </p>
           </div>
         ) : (
@@ -108,7 +109,7 @@ const BlocksPanelContent = memo(
             {Object.entries(filteredBlocks).map(([category, blockList]) => (
               <div key={category} className="space-y-3">
                 <h4 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
-                  {t(category as BuilderKeys)}
+                  {t(category as AllKeys)}
                 </h4>
                 <div className="grid grid-cols-1 gap-2">
                   {blockList.map(({ type, config }) => (
@@ -130,7 +131,8 @@ const BlocksPanelContent = memo(
 
 export const BlocksPanel = genericMemo(
   <T extends BaseZodDictionary = any>({ allowOnly }: BlocksPanelProps<T>) => {
-    const t = useI18n("builder");
+    const tBuilder = useI18n("builder");
+    const t = useI18n();
     const [searchQuery, setSearchQuery] = useState("");
     const debouncedSearchQuery = useDebounce(searchQuery, 300);
     const blocks = useBlocks();
@@ -153,12 +155,8 @@ export const BlocksPanel = genericMemo(
           if (debouncedSearchQuery.trim()) {
             const query = debouncedSearchQuery.trim();
             const name = config.displayName.toLocaleLowerCase();
-            const displayName = t(
-              config.displayName as BuilderKeys,
-            ).toLocaleLowerCase();
-            const category = t(
-              config.category as BuilderKeys,
-            ).toLocaleLowerCase();
+            const displayName = t(config.displayName).toLocaleLowerCase();
+            const category = t(config.category).toLocaleLowerCase();
             const typeLower = type.toLocaleLowerCase();
 
             if (
@@ -184,17 +182,17 @@ export const BlocksPanel = genericMemo(
           },
           {} as Record<string, Array<{ type: string; config: any }>>,
         );
-    }, [blocks, allowOnly, rootBlockType, t, debouncedSearchQuery]);
+    }, [blocks, allowOnly, rootBlockType, tBuilder, debouncedSearchQuery]);
 
     return (
       <>
         <p className="text-xs text-muted-foreground mb-3">
-          {t("baseBuilder.blocks.panel.subtitle")}
+          {tBuilder("baseBuilder.blocks.panel.subtitle")}
         </p>
         <div className="relative mb-2">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder={t("baseBuilder.blocks.search")}
+            placeholder={tBuilder("baseBuilder.blocks.search")}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-10 pr-10"

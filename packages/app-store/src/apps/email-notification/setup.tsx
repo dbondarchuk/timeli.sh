@@ -23,6 +23,11 @@ import {
   EmailNotificationConfiguration,
   emailNotificationConfigurationSchema,
 } from "./models";
+import {
+  EmailNotificationAdminKeys,
+  EmailNotificationAdminNamespace,
+  emailNotificationAdminNamespace,
+} from "./translations/types";
 
 export const EmailNotificationAppSetup: React.FC<AppSetupProps> = ({
   onSuccess,
@@ -38,7 +43,10 @@ export const EmailNotificationAppSetup: React.FC<AppSetupProps> = ({
       onError,
     });
 
-  const t = useI18n("apps");
+  const t = useI18n<
+    EmailNotificationAdminNamespace,
+    EmailNotificationAdminKeys
+  >(emailNotificationAdminNamespace);
 
   return (
     <>
@@ -51,18 +59,14 @@ export const EmailNotificationAppSetup: React.FC<AppSetupProps> = ({
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel>
-                    {t("emailNotification.form.email.label")}
-                    <InfoTooltip>
-                      {t("emailNotification.form.email.tooltip")}
-                    </InfoTooltip>
+                    {t("form.email.label")}
+                    <InfoTooltip>{t("form.email.tooltip")}</InfoTooltip>
                   </FormLabel>
                   <FormControl>
                     <Input
                       disabled={isLoading}
                       type="email"
-                      placeholder={t(
-                        "emailNotification.form.email.placeholder",
-                      )}
+                      placeholder={t("form.email.placeholder")}
                       {...field}
                     />
                   </FormControl>
@@ -77,12 +81,15 @@ export const EmailNotificationAppSetup: React.FC<AppSetupProps> = ({
               className="inline-flex gap-2 items-center w-full"
             >
               {isLoading && <Spinner />}
-              <span>
-                {existingAppId
-                  ? t("emailNotification.form.update")
-                  : t("emailNotification.form.add")}
+              <span className="inline-flex gap-2 items-center">
+                {t.rich(existingAppId ? "form.update" : "form.add", {
+                  app: () => (
+                    <ConnectedAppNameAndLogo
+                      appName={EmailNotificationApp.name}
+                    />
+                  ),
+                })}
               </span>
-              <ConnectedAppNameAndLogo appName={EmailNotificationApp.name} />
             </Button>
           </div>
         </form>

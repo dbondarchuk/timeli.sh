@@ -3,17 +3,21 @@ import { TEXTBELT_APP_NAME } from "./const";
 import image from "./images/image.png";
 import { TextBeltLogo } from "./logo";
 import { TextBeltAppSetup } from "./setup";
+import {
+  TextBeltAdminKeys,
+  TextBeltAdminNamespace,
+} from "./translations/types";
 
-export const TextBeltApp: App = {
+export const TextBeltApp: App<TextBeltAdminNamespace, TextBeltAdminKeys> = {
   name: TEXTBELT_APP_NAME,
-  displayName: "textBelt.displayName",
+  displayName: "app_text-belt_admin.app.displayName",
   scope: ["text-message-send"],
-  category: ["categories.communications"],
+  category: ["apps.categories.communications"],
   type: "basic",
   Logo: ({ className }) => <TextBeltLogo className={className} />,
   SetUp: (props) => <TextBeltAppSetup {...props} />,
   description: {
-    text: "textBelt.description",
+    text: "app_text-belt_admin.app.description",
     images: [image.src],
   },
 };

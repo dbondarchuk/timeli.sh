@@ -5,9 +5,11 @@ import { ToolbarButton, ToolbarGroup } from "@vivid/ui";
 import { Redo2, Undo2 } from "lucide-react";
 import { useCallback, useEffect } from "react";
 import {
+  useBlockEditorDisableOptions,
   useCanRedoHistory,
   useCanUndoHistory,
   useRedoHistory,
+  useSelectedBlockId,
   useUndoHistory,
 } from "../../../documents/editor/context";
 import { isUndoRedo } from "../../../documents/helpers/is-undo-redo";
@@ -21,8 +23,15 @@ export const ToolbarHistoryGroup = () => {
   const redoHistory = useRedoHistory();
   const { document: portalDocument } = usePortalContext();
 
+  const selectedBlockId = useSelectedBlockId();
+  const editorDisableOptions = useBlockEditorDisableOptions(selectedBlockId);
+
   const undoRedo = useCallback(
     (e: KeyboardEvent) => {
+      if (editorDisableOptions?.keyboardShortcuts?.undoRedo) {
+        return;
+      }
+
       if (isUndoRedo(e) === "undo" && canUndo) {
         undoHistory();
         e.preventDefault();
@@ -33,7 +42,7 @@ export const ToolbarHistoryGroup = () => {
         e.stopPropagation();
       }
     },
-    [canUndo, canRedo, undoHistory, redoHistory],
+    [canUndo, canRedo, undoHistory, redoHistory, editorDisableOptions],
   );
 
   useEffect(() => {

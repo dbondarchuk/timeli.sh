@@ -8,9 +8,9 @@ import {
   useEditorArgs,
   useIsSelectedBlock,
 } from "@vivid/builder";
+import { useResizeBlockStyles } from "@vivid/page-builder-base";
 import { template } from "@vivid/utils";
 import { Ref, useCallback } from "react";
-import { useResizeBlockStyles } from "../../helpers/use-resize-block-styles";
 import { useAllowImageResize } from "./context";
 import { Image } from "./reader";
 import { ImagePositionEditor } from "./resizable-image";

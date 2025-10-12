@@ -45,26 +45,19 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = async ({
         <CardTitle className="w-full flex flex-row justify-between items-center">
           <Heading
             title={appointment.option.name}
-            description={
-              <>
-                {t("appointments.card.by")}{" "}
+            description={t.rich("appointments.card.by", {
+              name: appointment.customer?.name ?? appointment.fields.name,
+              link: (chunks: any) => (
                 <Link
                   href={`/admin/dashboard/customers/${appointment.customerId}`}
                   variant="underline"
                 >
-                  {appointment.customer?.name ?? appointment.fields.name}
+                  {chunks}
                 </Link>
-              </>
-            }
+              ),
+            })}
             href={`/admin/dashboard/appointments/${appointment._id}`}
           />
-          {/* <Link
-            variant="ghost"
-            title="View full appointment information"
-            href={`/admin/dashboard/appointments/${appointment._id}`}
-          >
-            <SquareArrowOutUpRight size={20} />
-          </Link> */}
         </CardTitle>
       </CardHeader>
       <CardContent className="text-sm flex flex-col w-full @container [contain:layout]">
@@ -98,16 +91,9 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = async ({
               <Clock size={16} /> {t("appointments.card.duration")}:
             </dt>
             <dd className="col-span-2">
-              {duration.hours > 0 && (
-                <>
-                  {duration.hours} {t("appointments.card.hours")}
-                </>
-              )}
-              {duration.hours > 0 && duration.minutes > 0 && <> </>}
-              {duration.minutes > 0 && (
-                <>
-                  {duration.minutes} {t("appointments.card.minutes")}
-                </>
+              {t(
+                "common.timeDuration",
+                durationToTime(appointment.totalDuration),
               )}
             </dd>
           </div>

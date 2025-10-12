@@ -1,19 +1,25 @@
 "use client";
 
 import { useI18n } from "@vivid/i18n";
-import { ComplexAppSetupProps } from "@vivid/types";
 import { Skeleton, toast } from "@vivid/ui";
 import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 import { getReminder } from "./actions";
 import { ReminderForm } from "./form";
 import { Reminder } from "./models";
+import {
+  RemindersAdminKeys,
+  RemindersAdminNamespace,
+  remindersAdminNamespace,
+} from "./translations/types";
 
-export const EditReminderPage: React.FC<ComplexAppSetupProps> = ({ appId }) => {
+export const EditReminderPage: React.FC<{ appId: string }> = ({ appId }) => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const id = searchParams.get("id");
-  const t = useI18n("apps");
+  const t = useI18n<RemindersAdminNamespace, RemindersAdminKeys>(
+    remindersAdminNamespace,
+  );
 
   const [loading, setLoading] = React.useState(true);
   const [reminder, setReminder] = React.useState<Reminder>();
@@ -37,7 +43,7 @@ export const EditReminderPage: React.FC<ComplexAppSetupProps> = ({ appId }) => {
         setLoading(false);
       } catch (e: any) {
         console.error(e);
-        toast.error(t("reminders.statusText.error_loading_reminder"));
+        toast.error(t("statusText.error_loading_reminder"));
       } finally {
       }
     };

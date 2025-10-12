@@ -2,9 +2,9 @@
 
 import { ConfigurationProps, TextInput } from "@vivid/builder";
 import { useI18n } from "@vivid/i18n";
+import { StylesConfigurationPanel } from "@vivid/page-builder-base";
 import { Checkbox, DurationInput, Label, deepMemo } from "@vivid/ui";
 import { useCallback } from "react";
-import { StylesConfigurationPanel } from "../../configuration-panel/styles-configuration-panel";
 import { YouTubeVideoProps } from "./schema";
 import { youtubeVideoShortcuts } from "./shortcuts";
 import { styles } from "./styles";

@@ -13,6 +13,8 @@ import { EMAIL_NOTIFICATION_APP_NAME } from "../apps/email-notification/const";
 import { EmailNotificationConnectedApp } from "../apps/email-notification/service";
 import { FILE_SYSTEM_ASSETS_STORAGE_APP_NAME } from "../apps/file-system-assets-storage/const";
 import FileSystemAssetsStorageConnectedApp from "../apps/file-system-assets-storage/service";
+import { FINANCIAL_OVERVIEW_APP_NAME } from "../apps/financial-overview/const";
+import FinancialOverviewService from "../apps/financial-overview/service";
 import { FOLLOW_UPS_APP_NAME } from "../apps/followups/const";
 import FollowUpsConnectedApp from "../apps/followups/service";
 import { GOOGLE_CALENDAR_APP_NAME } from "../apps/google-calendar/const";
@@ -39,6 +41,8 @@ import { TEXT_MESSAGE_NOTIFICATION_APP_NAME } from "../apps/text-message-notific
 import { TextMessageNotificationConnectedApp } from "../apps/text-message-notification/service";
 import { TEXT_MESSAGE_RESENDER_APP_NAME } from "../apps/text-message-resender/const";
 import TextMessageResenderConnectedApp from "../apps/text-message-resender/service";
+import { WAITLIST_APP_NAME } from "../apps/waitlist/const";
+import { WaitlistConnectedApp } from "../apps/waitlist/service/service";
 import { WEEKLY_SCHEDULE_APP_NAME } from "../apps/weekly-schedule/const";
 import WeeklyScheduleConnectedApp from "../apps/weekly-schedule/service";
 
@@ -75,4 +79,6 @@ export const AvailableAppServices: Record<
   [S3_ASSETS_STORAGE_APP_NAME]: (props) =>
     new S3AssetsStorageConnectedApp(props),
   [PAYPAL_APP_NAME]: (props) => new PaypalConnectedApp(props),
+  [WAITLIST_APP_NAME]: (props) => new WaitlistConnectedApp(props),
+  [FINANCIAL_OVERVIEW_APP_NAME]: (props) => new FinancialOverviewService(props),
 };

@@ -1,3 +1,4 @@
+import { AllKeys } from "@vivid/i18n";
 import {
   asOptinalNumberField,
   CommunicationChannel,
@@ -6,6 +7,7 @@ import {
   WithDatabaseId,
 } from "@vivid/types";
 import { z } from "zod";
+import { RemindersAdminAllKeys } from "./translations/types";
 
 export const timeBeforeReminderType = "timeBefore" as const;
 export const atTimeReminderType = "atTime" as const;
@@ -24,30 +26,54 @@ export const reminderTimeBeforeSchema = z.object({
   weeks: asOptinalNumberField(
     z.coerce
       .number()
-      .int("common.number.integer")
-      .min(0, "reminders.form.weeks.min")
-      .max(10, "reminders.form.weeks.max"),
+      .int("validation.common.number.integer" satisfies AllKeys)
+      .min(
+        0,
+        "app_reminders_admin.validation.form.weeks.min" satisfies RemindersAdminAllKeys,
+      )
+      .max(
+        10,
+        "app_reminders_admin.validation.form.weeks.max" satisfies RemindersAdminAllKeys,
+      ),
   ),
   days: asOptinalNumberField(
     z.coerce
       .number()
-      .int("common.number.integer")
-      .min(0, "reminders.form.days.min")
-      .max(31, "reminders.form.days.max"),
+      .int("validation.common.number.integer" satisfies AllKeys)
+      .min(
+        0,
+        "app_reminders_admin.validation.form.days.min" satisfies RemindersAdminAllKeys,
+      )
+      .max(
+        31,
+        "app_reminders_admin.validation.form.days.max" satisfies RemindersAdminAllKeys,
+      ),
   ),
   hours: asOptinalNumberField(
     z.coerce
       .number()
-      .int("common.number.integer")
-      .min(0, "reminders.form.hours.min")
-      .max(24 * 5, "reminders.form.hours.max"),
+      .int("validation.common.number.integer" satisfies AllKeys)
+      .min(
+        0,
+        "app_reminders_admin.validation.form.hours.min" satisfies RemindersAdminAllKeys,
+      )
+      .max(
+        24 * 5,
+        "app_reminders_admin.validation.form.hours.max" satisfies RemindersAdminAllKeys,
+      ),
   ),
   minutes: asOptinalNumberField(
     z.coerce
       .number()
-      .int("common.number.integer")
-      .min(0, "reminders.form.minutes.min")
-      .max(60 * 10, "reminders.form.minutes.max"),
+      .int("validation.common.number.integer" satisfies AllKeys)
+      .min(
+        0,
+        "app_reminders_admin.validation.form.minutes.min" satisfies RemindersAdminAllKeys,
+      )
+      .max(
+        60 * 10,
+        "app_reminders_admin.validation.form.minutes.max" satisfies RemindersAdminAllKeys,
+      ),
   ),
 });
 
@@ -56,39 +82,74 @@ export const reminderAtTimeSchema = z.object({
   weeks: asOptinalNumberField(
     z.coerce
       .number()
-      .int("common.number.integer")
-      .min(0, "reminders.form.weeks.min")
-      .max(10, "reminders.form.weeks.max"),
+      .int("validation.common.number.integer" satisfies AllKeys)
+      .min(
+        0,
+        "app_reminders_admin.validation.form.weeks.min" satisfies RemindersAdminAllKeys,
+      )
+      .max(
+        10,
+        "app_reminders_admin.validation.form.weeks.max" satisfies RemindersAdminAllKeys,
+      ),
   ),
   days: z.coerce
     .number()
     .int("common.number.integer")
-    .min(0, "reminders.form.days.min")
-    .max(31, "reminders.form.days.max"),
+    .min(
+      0,
+      "app_reminders_admin.validation.form.days.min" satisfies RemindersAdminAllKeys,
+    )
+    .max(
+      31,
+      "app_reminders_admin.validation.form.days.max" satisfies RemindersAdminAllKeys,
+    ),
   time: z.object({
     hour: z.coerce
       .number()
-      .int("common.number.integer")
-      .min(0, "reminders.form.time.hour.min")
-      .max(23, "reminders.form.time.hour.max"),
+      .int("validation.common.number.integer" satisfies AllKeys)
+      .min(
+        0,
+        "app_reminders_admin.validation.form.time.hour.min" satisfies RemindersAdminAllKeys,
+      )
+      .max(
+        23,
+        "app_reminders_admin.validation.form.time.hour.max" satisfies RemindersAdminAllKeys,
+      ),
     minute: z.coerce
       .number()
-      .int("common.number.integer")
-      .min(0, "reminders.form.time.minute.min")
-      .max(59, "reminders.form.time.minute.max"),
+      .int("validation.common.number.integer" satisfies AllKeys)
+      .min(
+        0,
+        "app_reminders_admin.validation.form.time.minute.min" satisfies RemindersAdminAllKeys,
+      )
+      .max(
+        59,
+        "app_reminders_admin.validation.form.time.minute.max" satisfies RemindersAdminAllKeys,
+      ),
   }),
 });
 
 export const baseReminderChannelSchema = z.object({
   templateId: z
-    .string({ message: "reminders.form.templateId.required" })
-    .min(1, "reminders.form.templateId.required"),
+    .string({
+      message:
+        "app_reminders_admin.validation.form.templateId.required" satisfies RemindersAdminAllKeys,
+    })
+    .min(
+      1,
+      "app_reminders_admin.validation.form.templateId.required" satisfies RemindersAdminAllKeys,
+    ),
 });
 
 export const reminderEmailSchema = z
   .object({
     channel: reminderChannelesEnum.extract(["email"]),
-    subject: z.string().min(1, "reminders.form.subject.required"),
+    subject: z
+      .string()
+      .min(
+        1,
+        "app_reminders_admin.validation.form.subject.required" satisfies RemindersAdminAllKeys,
+      ),
   })
   .merge(baseReminderChannelSchema);
 
@@ -109,7 +170,12 @@ export const reminderChannelSchema = z.discriminatedUnion("channel", [
 ]);
 
 export const reminderGeneralSchema = z.object({
-  name: z.string().min(2, "reminders.form.name.min"),
+  name: z
+    .string()
+    .min(
+      2,
+      "app_reminders_admin.validation.form.name.min" satisfies RemindersAdminAllKeys,
+    ),
 });
 
 export const reminderSchema = z
@@ -122,7 +188,8 @@ export const reminderSchema = z
       ctx.addIssue({
         code: "custom",
         path: ["days"],
-        message: "reminders.form.atTime.days.min",
+        message:
+          "app_reminders_admin.validation.form.atTime.days.min" satisfies RemindersAdminAllKeys,
       });
     } else if (
       arg.type === "timeBefore" &&
@@ -134,7 +201,8 @@ export const reminderSchema = z
       ctx.addIssue({
         code: "custom",
         path: ["minutes"],
-        message: "reminders.form.atTime.minutes.min",
+        message:
+          "app_reminders_admin.validation.form.atTime.minutes.min" satisfies RemindersAdminAllKeys,
       });
     }
   });

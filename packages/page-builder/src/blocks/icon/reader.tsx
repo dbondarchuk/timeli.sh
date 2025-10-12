@@ -1,7 +1,6 @@
+import { BlockStyle, generateClassName } from "@vivid/page-builder-base/reader";
 import { cn } from "@vivid/ui";
 import { icons } from "lucide-react";
-import { generateClassName } from "../../helpers/class-name-generator";
-import { BlockStyle } from "../../helpers/styling";
 import { IconPropsDefaults, IconReaderProps } from "./schema";
 import { getDefaults, styles } from "./styles";
 

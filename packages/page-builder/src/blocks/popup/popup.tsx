@@ -1,11 +1,11 @@
 "use client";
 
 import { usePortalContext } from "@vivid/builder";
+import { PopupProvider } from "@vivid/page-builder-base";
 import { Dialog, DialogContent } from "@vivid/ui";
 import { DateTime } from "luxon";
 import { useState } from "react";
 import { useCookies } from "react-cookie";
-import { PopupProvider } from "../../context/popupContext";
 import { overlayType, showPopupType } from "./schema";
 
 const shownCookieValue = "shown";

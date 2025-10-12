@@ -7,6 +7,7 @@ import {
   useBlockEditor,
   useCurrentBlock,
 } from "@vivid/builder";
+import { BlockStyle, useClassName } from "@vivid/page-builder-base";
 import { cn } from "@vivid/ui";
 import {
   ArrowDown,
@@ -17,8 +18,6 @@ import {
   Plus,
 } from "lucide-react";
 import { useState } from "react";
-import { BlockStyle } from "../../helpers/styling";
-import { useClassName } from "../../helpers/use-class-name";
 import { AccordionItemProps } from "./schema";
 import { styles } from "./styles";
 

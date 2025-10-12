@@ -12,7 +12,7 @@ import {
   useFormContext,
 } from "react-hook-form";
 
-import { useI18n, ValidationKeys } from "@vivid/i18n";
+import { AllKeys, useI18n, ValidationKeys } from "@vivid/i18n";
 import { cn } from "../utils";
 import { Label } from "./label";
 
@@ -151,12 +151,18 @@ const FormMessage = React.forwardRef<
   const { error, formMessageId } = useFormField();
   const body = error && error?.message ? String(error?.message) : children;
 
-  const t = useI18n("validation");
-  const hasKey = t.has(body as ValidationKeys);
+  const tValidation = useI18n("validation");
+  const t = useI18n();
 
   if (!body) {
     return null;
   }
+
+  const message = tValidation.has(body as ValidationKeys)
+    ? tValidation(body as ValidationKeys)
+    : t.has(body as AllKeys)
+      ? t(body as AllKeys)
+      : body;
 
   return (
     <p
@@ -165,7 +171,7 @@ const FormMessage = React.forwardRef<
       className={cn("text-sm font-medium text-destructive", className)}
       {...props}
     >
-      {hasKey ? t(body as ValidationKeys) : body}
+      {message}
     </p>
   );
 });

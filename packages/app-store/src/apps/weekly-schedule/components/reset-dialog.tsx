@@ -15,6 +15,11 @@ import {
 } from "@vivid/ui";
 import { UndoDot } from "lucide-react";
 import React from "react";
+import {
+  WeeklyScheduleAdminKeys,
+  WeeklyScheduleAdminNamespace,
+  weeklyScheduleAdminNamespace,
+} from "../translations/types";
 import { resetWeeklySchedule } from "./actions";
 import { getWeekDisplay } from "./utils";
 
@@ -35,7 +40,9 @@ export const ResetDialog: React.FC<ResetDialogProps> = ({
   className,
   onConfirm: onReset,
 }) => {
-  const t = useI18n("apps");
+  const t = useI18n<WeeklyScheduleAdminNamespace, WeeklyScheduleAdminKeys>(
+    weeklyScheduleAdminNamespace,
+  );
   const [openConfirmDialog, setOpenConfirmDialog] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
 
@@ -43,10 +50,10 @@ export const ResetDialog: React.FC<ResetDialogProps> = ({
     try {
       setLoading(true);
       await toastPromise(resetWeeklySchedule(appId, week), {
-        success: t("weeklySchedule.dialogs.reset.success", {
+        success: t("dialogs.reset.success", {
           week: getWeekDisplay(week),
         }),
-        error: t("weeklySchedule.statusText.request_error"),
+        error: t("statusText.request_error"),
       });
 
       setOpenConfirmDialog(false);
@@ -68,35 +75,30 @@ export const ResetDialog: React.FC<ResetDialogProps> = ({
         >
           {!isDefault ? (
             <>
-              <UndoDot /> {t("weeklySchedule.dialogs.reset.resetToDefault")}
+              <UndoDot /> {t("dialogs.reset.resetToDefault")}
             </>
           ) : (
-            t("weeklySchedule.dialogs.reset.defaultSchedule")
+            t("dialogs.reset.defaultSchedule")
           )}
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>
-            {t("weeklySchedule.dialogs.reset.title")}
-          </AlertDialogTitle>
+          <AlertDialogTitle>{t("dialogs.reset.title")}</AlertDialogTitle>
           <AlertDialogDescription>
-            {t("weeklySchedule.dialogs.reset.description", {
+            {t("dialogs.reset.description", {
               week: getWeekDisplay(week),
             })}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>
-            {t("weeklySchedule.dialogs.reset.cancel")}
-          </AlertDialogCancel>
+          <AlertDialogCancel>{t("dialogs.reset.cancel")}</AlertDialogCancel>
           <Button
             disabled={loading}
             className="flex flex-row gap-1 items-center"
             onClick={onConfirm}
           >
-            {loading && <Spinner />}{" "}
-            <span>{t("weeklySchedule.dialogs.reset.reset")}</span>
+            {loading && <Spinner />} <span>{t("dialogs.reset.reset")}</span>
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>

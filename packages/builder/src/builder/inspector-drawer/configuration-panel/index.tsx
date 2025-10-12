@@ -27,7 +27,8 @@ export const ConfigurationPanel: React.FC = () => {
   const dispatchAction = useDispatchAction();
 
   const blocks = useBlocks();
-  const t = useI18n("builder");
+  const tBuilder = useI18n("builder");
+  const t = useI18n();
 
   const setBlock = useCallback(
     (data: any) => {
@@ -58,7 +59,9 @@ export const ConfigurationPanel: React.FC = () => {
 
   if (!selectedBlockId || !Panel) {
     return renderMessage(
-      t("baseBuilder.inspector.configurationPanel.clickOnBlockToInspect"),
+      tBuilder(
+        "baseBuilder.inspector.configurationPanel.clickOnBlockToInspect",
+      ),
     );
   }
 

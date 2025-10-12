@@ -1,8 +1,11 @@
-import { type SpacerProps } from "./schema";
+import {
+  ALL_STYLES,
+  AllStylesSchemas,
+  DefaultCSSProperties,
+  getStylesSchema,
+} from "@vivid/page-builder-base/style";
 
-import { DefaultCSSProperties } from "../../style/css-renderer";
-import { ALL_STYLES, AllStylesSchemas } from "../../style/styles";
-import { getStylesSchema } from "../../style/utils";
+import { type SpacerProps } from "./schema";
 
 export const styles = ALL_STYLES;
 export const zStyles = getStylesSchema(styles);

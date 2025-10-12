@@ -28,6 +28,7 @@
     "@vivid/utils": "*",
     "@vivid/app-store": "*",
     "html-to-text": "^9.0.5",
+    "p-limit": "^6.2.0",
     "mongodb": "^6.8.0"
   }
 }

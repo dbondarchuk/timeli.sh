@@ -9,7 +9,12 @@ type Options<T extends I18nNamespaces | undefined = undefined> =
 type GetI18nAsyncArgsFn = ((
   args: LanguageOptions,
 ) => Promise<I18nFn<undefined>>) &
-  (<T extends I18nNamespaces>(args: T | Options<T>) => Promise<I18nFn<T>>) &
+  (<
+    T extends I18nNamespaces,
+    CustomKeys extends string | undefined = undefined,
+  >(
+    args: T | Options<T>,
+  ) => Promise<I18nFn<T, CustomKeys>>) &
   ((args?: undefined | Options) => Promise<I18nFn<undefined>>);
 
 export const getI18nAsync = getTranslations as GetI18nAsyncArgsFn;

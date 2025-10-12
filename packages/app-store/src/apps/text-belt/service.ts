@@ -19,6 +19,7 @@ import { decrypt, encrypt, getArguments, maskify } from "@vivid/utils";
 import crypto from "crypto";
 import { getEmailTemplate } from "./emails/utils";
 import { TextBeltConfiguration } from "./models";
+import { TextBeltAdminAllKeys } from "./translations/types";
 
 const MASKED_API_KEY = "this-is-a-masked-api-key";
 
@@ -160,9 +161,12 @@ export default class TextBeltConnectedApp
           },
           "Failed to send SMS via TextBelt",
         );
-        throw new ConnectedAppError("textBelt.statusText.failed_to_send_sms", {
-          error: response.error || "unknown error",
-        });
+        throw new ConnectedAppError(
+          "app_text-belt_admin.statusText.failed_to_send_sms" satisfies TextBeltAdminAllKeys,
+          {
+            error: response.error || "unknown error",
+          },
+        );
       }
 
       logger.info(
@@ -178,7 +182,7 @@ export default class TextBeltConnectedApp
       this.props.update({
         status: "connected",
         statusText: {
-          key: "textBelt.statusText.remaining_quota",
+          key: "app_text-belt_admin.statusText.remaining_quota" satisfies TextBeltAdminAllKeys,
           args: { quota: response.quotaRemaining },
         },
       });
@@ -200,7 +204,8 @@ export default class TextBeltConnectedApp
             subject,
             body: description,
           },
-          handledBy: "textBelt.lowQuotaHandler",
+          handledBy:
+            "app_text-belt_admin.lowQuotaHandler" satisfies TextBeltAdminAllKeys,
           participantType: "user",
         });
       }
@@ -231,7 +236,7 @@ export default class TextBeltConnectedApp
                 key: e.key,
                 args: e.args,
               }
-            : "textBelt.statusText.error_sending_sms",
+            : ("app_text-belt_admin.statusText.error_sending_sms" satisfies TextBeltAdminAllKeys),
       });
 
       throw e;
@@ -410,7 +415,7 @@ export default class TextBeltConnectedApp
             "Provided app does not exist or does not support responding to text messages",
           );
           throw new ConnectedAppError(
-            "textBelt.statusText.invalid_responder_app",
+            "app_text-belt_admin.statusText.invalid_responder_app" satisfies TextBeltAdminAllKeys,
           );
         }
 
@@ -430,7 +435,7 @@ export default class TextBeltConnectedApp
           "Failed to fetch TextBelt quota",
         );
         throw new ConnectedAppError(
-          "textBelt.statusText.failed_to_fetch_quota",
+          "app_text-belt_admin.statusText.failed_to_fetch_quota" satisfies TextBeltAdminAllKeys,
           {
             statusCode: response.status,
           },
@@ -448,7 +453,9 @@ export default class TextBeltConnectedApp
           },
           "Failed to get remaining quota or quota is zero",
         );
-        throw new ConnectedAppError("textBelt.statusText.failed_to_get_quota");
+        throw new ConnectedAppError(
+          "app_text-belt_admin.statusText.failed_to_get_quota" satisfies TextBeltAdminAllKeys,
+        );
       }
 
       logger.debug(
@@ -459,7 +466,7 @@ export default class TextBeltConnectedApp
       const status: ConnectedAppStatusWithText = {
         status: "connected",
         statusText: {
-          key: "textBelt.statusText.remaining_quota",
+          key: "app_text-belt_admin.statusText.remaining_quota" satisfies TextBeltAdminAllKeys,
           args: { quota: json.quotaRemaining },
         },
       };
@@ -492,7 +499,7 @@ export default class TextBeltConnectedApp
                 key: e.key,
                 args: e.args,
               }
-            : "textBelt.statusText.error_processing_configuration",
+            : ("app_text-belt_admin.statusText.error_processing_configuration" satisfies TextBeltAdminAllKeys),
       };
 
       this.props.update({
@@ -556,7 +563,8 @@ export default class TextBeltConnectedApp
         subject,
         body: description,
       },
-      handledBy: "textBelt.webhookHandlerUser",
+      handledBy:
+        "app_text-belt_admin.webhookHandlerUser" satisfies TextBeltAdminAllKeys,
       participantType: "user",
       appointmentId: appointment?._id,
       customerId: customer?._id,
@@ -609,7 +617,8 @@ export default class TextBeltConnectedApp
         );
 
         result = {
-          handledBy: "textBelt.webhookHandler",
+          handledBy:
+            "app_text-belt_admin.webhookHandler" satisfies TextBeltAdminAllKeys,
           participantType: "customer",
         };
       }

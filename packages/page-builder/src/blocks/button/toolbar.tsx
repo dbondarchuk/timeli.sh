@@ -1,5 +1,5 @@
 import { ConfigurationProps } from "@vivid/builder";
-import { ShortcutsToolbar } from "../../toolbars/shortucts";
+import { ShortcutsToolbar } from "@vivid/page-builder-base";
 import { ButtonProps } from "./schema";
 import { buttonShortcuts } from "./shortcuts";
 

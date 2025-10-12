@@ -1,13 +1,11 @@
+import { searchParams } from "@/components/admin/services/options/table/search-params";
 import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
 import { NextRequest, NextResponse } from "next/server";
-
-export const dynamic = "force-dynamic";
-export const fetchCache = "force-cache";
-export const revalidate = 3;
+import { createLoader } from "nuqs/server";
 
 export async function GET(request: NextRequest) {
-  const logger = getLoggerFactory("AdminAPI/services-options")("GET");
+  const logger = getLoggerFactory("AdminAPI/services/options")("GET");
 
   logger.debug(
     {
@@ -15,21 +13,50 @@ export async function GET(request: NextRequest) {
       method: request.method,
       searchParams: Object.fromEntries(request.nextUrl.searchParams.entries()),
     },
-    "Processing services options API request",
+    "Processing options API request",
   );
 
-  const options = await ServicesContainer.ServicesService().getOptions({});
+  const loader = createLoader(searchParams);
+  const params = loader(request.nextUrl.searchParams);
+
+  const page = params.page;
+  const search = params.search ?? undefined;
+  const limit = params.limit;
+  const sort = params.sort;
+
+  const offset = (page - 1) * limit;
+  const priorityIds = params.priorityId ?? undefined;
 
   logger.debug(
     {
-      total: options.total,
-      count: options.items.length,
+      page,
+      search,
+      limit,
+      sort,
+      offset,
+      priorityIds,
     },
-    "Successfully retrieved service options",
+    "Fetching options with parameters",
+  );
+
+  const res = await ServicesContainer.ServicesService().getOptions({
+    offset,
+    limit,
+    search,
+    sort,
+    priorityIds,
+  });
+
+  logger.debug(
+    {
+      total: res.total,
+      count: res.items.length,
+    },
+    "Successfully retrieved options",
   );
 
   const headers = new Headers();
   headers.append("Cache-Control", "max-age=3");
 
-  return NextResponse.json(options.items, { headers });
+  return NextResponse.json(res, { headers });
 }

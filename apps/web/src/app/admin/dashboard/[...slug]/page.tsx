@@ -1,5 +1,6 @@
 import PageContainer from "@/components/admin/layout/page-container";
 import { AvailableApps } from "@vivid/app-store";
+import { AppMenuItems } from "@vivid/app-store/menu-items";
 import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
@@ -11,14 +12,14 @@ import { cache } from "react";
 type Props = {
   params: Promise<{ slug: string[] }>;
   searchParams?: Promise<{
-    preview?: boolean;
+    [key: string]: string | string[] | undefined;
   }>;
 };
 
 const getAppPage = cache(async (path: string) => {
   const logger = getLoggerFactory("AdminDashboardPage")("getAppPage");
-  const t = await getI18nAsync("admin");
-  const tApps = await getI18nAsync("apps");
+  const tAdmin = await getI18nAsync("admin");
+  const t = await getI18nAsync();
 
   logger.debug(
     {
@@ -27,11 +28,16 @@ const getAppPage = cache(async (path: string) => {
     "Processing dashboard page request",
   );
 
-  const app = Object.values(AvailableApps).find(
-    (app) =>
-      app.type === "complex" &&
-      app.menuItems?.some(({ href }) => href.toLocaleLowerCase() === path),
-  );
+  const app = Object.entries(AppMenuItems)
+    .map(([appName, menuItems]) => ({
+      app: AvailableApps[appName],
+      menuItems,
+    }))
+    .find(
+      ({ app, menuItems }) =>
+        app.type === "complex" &&
+        menuItems?.some(({ href }) => href.toLocaleLowerCase() === path),
+    );
 
   if (!app) {
     logger.warn({ path }, "No app found for path");
@@ -39,7 +45,7 @@ const getAppPage = cache(async (path: string) => {
   }
 
   const appId = (
-    await ServicesContainer.ConnectedAppsService().getAppsByApp(app.name)
+    await ServicesContainer.ConnectedAppsService().getAppsByApp(app.app.name)
   )[0]?._id;
   if (!appId) {
     logger.warn({ appId }, "No app ID found for app");
@@ -56,15 +62,15 @@ const getAppPage = cache(async (path: string) => {
   }
 
   const breadcrumbItems = [
-    { title: t("navigation.dashboard"), link: "/admin/dashboard" },
-    { title: t("navigation.apps"), link: "/admin/dashboard/apps" },
+    { title: tAdmin("navigation.dashboard"), link: "/admin/dashboard" },
+    { title: tAdmin("navigation.apps"), link: "/admin/dashboard/apps" },
     ...(menuItem.pageBreadcrumbs?.map((b) => ({
       ...b,
-      title: tApps(b.title, { appName: tApps(app.displayName) }),
+      title: t(b.title, { appName: t(app.app.displayName) }),
     })) || [
       {
-        title: tApps(menuItem.pageTitle || app.displayName, {
-          appName: tApps(app.displayName),
+        title: t(menuItem.pageTitle || app.app.displayName, {
+          appName: t(app.app.displayName),
         }),
         link: `/admin/dashboard/${path}`,
       },
@@ -72,11 +78,11 @@ const getAppPage = cache(async (path: string) => {
   ];
 
   return {
-    title: tApps(menuItem.pageTitle || app.displayName),
-    description: tApps(
-      menuItem.pageDescription || "common.defaultDescription",
+    title: t(menuItem.pageTitle || app.app.displayName),
+    description: t(
+      menuItem.pageDescription || "apps.common.defaultDescription",
       {
-        appName: tApps(app.displayName),
+        appName: t(app.app.displayName),
       },
     ),
     breadcrumbItems,

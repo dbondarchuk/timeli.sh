@@ -21,6 +21,11 @@ import { CalendarWriterConfiguration } from "./models";
 
 import { AvailableApps } from "../../apps";
 import { getEmailTemplate } from "../email-notification/emails/utils";
+import {
+  CalendarWriterAdminAllKeys,
+  CalendarWriterAdminKeys,
+  CalendarWriterAdminNamespace,
+} from "./translations/types";
 
 export class CalendarWriterConnectedApp
   implements IConnectedApp, IAppointmentHook
@@ -34,7 +39,12 @@ export class CalendarWriterConnectedApp
   public async processRequest(
     appData: ConnectedAppData,
     data: CalendarWriterConfiguration,
-  ): Promise<ConnectedAppStatusWithText> {
+  ): Promise<
+    ConnectedAppStatusWithText<
+      CalendarWriterAdminNamespace,
+      CalendarWriterAdminKeys
+    >
+  > {
     const logger = this.loggerFactory("processRequest");
     logger.debug(
       { appId: appData._id, targetAppId: data.appId },
@@ -64,9 +74,10 @@ export class CalendarWriterConnectedApp
           "Target app does not support calendar-write scope",
         );
 
-        throw new ConnectedAppError(
-          "calendarWriter.statusText.calendar_app_not_found",
-        );
+        throw new ConnectedAppError<
+          CalendarWriterAdminNamespace,
+          CalendarWriterAdminKeys
+        >("app_calendar-writer_admin.statusText.calendar_app_not_found");
       }
 
       logger.debug(
@@ -81,13 +92,17 @@ export class CalendarWriterConnectedApp
 
       return {
         status: "failed",
-        statusText: "calendarWriter.statusText.calendar_app_not_found",
+        statusText:
+          "app_calendar-writer_admin.statusText.calendar_app_not_found",
       };
     }
 
-    const status: ConnectedAppStatusWithText = {
+    const status: ConnectedAppStatusWithText<
+      CalendarWriterAdminNamespace,
+      CalendarWriterAdminKeys
+    > = {
       status: "connected",
-      statusText: "calendarWriter.statusText.successfully_set_up",
+      statusText: "app_calendar-writer_admin.statusText.successfully_set_up",
     };
 
     this.props.update({
@@ -135,7 +150,7 @@ export class CalendarWriterConnectedApp
       this.props.update({
         status: "failed",
         statusText:
-          "calendarWriter.statusText.error_creating_calendar_event_for_new_appointment",
+          "app_calendar-writer_admin.statusText.error_creating_calendar_event_for_new_appointment" satisfies CalendarWriterAdminAllKeys,
       });
 
       throw error;
@@ -192,7 +207,7 @@ export class CalendarWriterConnectedApp
       this.props.update({
         status: "failed",
         statusText:
-          "calendarWriter.statusText.error_updating_calendar_event_for_status_change",
+          "app_calendar-writer_admin.statusText.error_updating_calendar_event_for_status_change" satisfies CalendarWriterAdminAllKeys,
       });
 
       throw error;
@@ -252,7 +267,7 @@ export class CalendarWriterConnectedApp
       this.props.update({
         status: "failed",
         statusText:
-          "calendarWriter.statusText.error_updating_calendar_event_for_rescheduled_appointment",
+          "app_calendar-writer_admin.statusText.error_updating_calendar_event_for_rescheduled_appointment" satisfies CalendarWriterAdminAllKeys,
       });
 
       throw error;

@@ -1,10 +1,10 @@
 "use client";
 
-import { ComplexAppSetupProps } from "@vivid/types";
+import { ComplexAppPageProps } from "@vivid/types";
 import React from "react";
 import { WeeklyScheduleForm } from "./components/form";
 
-export const WeeklyScheduleAppSetup: React.FC<ComplexAppSetupProps> = ({
+export const WeeklyScheduleAppSetup: React.FC<ComplexAppPageProps> = ({
   appId,
 }) => {
   return <WeeklyScheduleForm appId={appId} />;

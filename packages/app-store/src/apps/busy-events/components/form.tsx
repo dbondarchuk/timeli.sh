@@ -15,6 +15,11 @@ import { getDateFromWeekIdentifier, getWeekIdentifier } from "@vivid/utils";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";
+import {
+  BusyEventsAdminKeys,
+  busyEventsAdminNamespace,
+  BusyEventsAdminNamespace,
+} from "../translations/types";
 import { getWeeklyEvents, setEvents } from "./actions";
 
 type WeeklySchedule = ScheduleOverride["schedule"];
@@ -24,7 +29,9 @@ type BusyEventsFormProps = {
 
 export const BusyEventsForm: React.FC<BusyEventsFormProps> = ({ appId }) => {
   const [loading, setLoading] = React.useState(true);
-  const t = useI18n("apps");
+  const t = useI18n<BusyEventsAdminNamespace, BusyEventsAdminKeys>(
+    busyEventsAdminNamespace,
+  );
   const tAdmin = useI18n("admin");
 
   const weekStr = useSearchParams().get("week");
@@ -51,7 +58,7 @@ export const BusyEventsForm: React.FC<BusyEventsFormProps> = ({ appId }) => {
       setLoading(false);
     } catch (e: any) {
       console.error(e);
-      toast.error(t("busyEvents.errors.failed_to_load_schedule"));
+      toast.error(t("errors.failed_to_load_schedule"));
     }
   };
 
@@ -100,13 +107,13 @@ export const BusyEventsForm: React.FC<BusyEventsFormProps> = ({ appId }) => {
           disabled={week === todayWeek || loading}
           onClick={() => onWeekChange(todayWeek)}
         >
-          {t("busyEvents.thisWeek")}
+          {t("thisWeek")}
         </Button>
         <div className="flex flex-row gap-1 max-lg:w-full">
           <Button
             variant="outline"
             size="icon"
-            title={t("busyEvents.previousWeek")}
+            title={t("previousWeek")}
             disabled={loading}
             onClick={() => onWeekChange(week - 1)}
           >
@@ -121,7 +128,7 @@ export const BusyEventsForm: React.FC<BusyEventsFormProps> = ({ appId }) => {
           <Button
             variant="outline"
             size="icon"
-            title={t("busyEvents.nextWeek")}
+            title={t("nextWeek")}
             disabled={loading}
             onClick={() => onWeekChange(week + 1)}
           >
@@ -138,7 +145,7 @@ export const BusyEventsForm: React.FC<BusyEventsFormProps> = ({ appId }) => {
           disabled={week < todayWeek}
           weekDate={weekDate}
           shiftsLabel={"apps.busyEvents.shifts"}
-          addShiftLabel={t("busyEvents.addShift")}
+          addShiftLabel={t("addShift")}
         />
       )}
     </div>

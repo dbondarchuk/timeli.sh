@@ -1,0 +1,17 @@
+{
+  "title": "File system assets storage",
+  "app": {
+    "displayName": "File system assets storage",
+    "description": "Store assets in the file system."
+  },
+  "statusText": {
+    "successfully_set_up": "Successfully set up",
+    "error_processing_configuration": "Error processing file system assets storage configuration",
+    "file_not_found": "File {filename} does not exist",
+    "file_saved": "File {filename} saved successfully",
+    "file_deleted": "File {filename} deleted successfully",
+    "error_getting_file": "Error getting file {filename}",
+    "error_saving_file": "Error saving file {filename}",
+    "error_deleting_file": "Error deleting file {filename}"
+  }
+}

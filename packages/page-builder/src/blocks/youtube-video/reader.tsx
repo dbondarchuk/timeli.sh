@@ -1,7 +1,6 @@
+import { BlockStyle, generateClassName } from "@vivid/page-builder-base/reader";
 import { cn } from "@vivid/ui";
 import React, { forwardRef, HTMLAttributes, useCallback } from "react";
-import { generateClassName } from "../../helpers/class-name-generator";
-import { BlockStyle } from "../../helpers/styling";
 import { YouTubeVideoPropsDefaults, YouTubeVideoReaderProps } from "./schema";
 import { getDefaults, styles } from "./styles";
 import { extractYouTubeVideoId } from "./utils";

@@ -1,0 +1,70 @@
+{
+  "title": "Weekly schedule",
+  "app": {
+    "displayName": "Weekly schedule",
+    "description": "Weekly Schedule gives you full control over your availability by letting you set your work hours on a week-by-week basis.\nEasily adjust your schedule for special events, holidays, or changing routines — keeping your bookings accurate and flexible."
+  },
+  "navigation": {
+    "main": {
+      "title": "Weekly schedule",
+      "description": "Manage your weekly schedule"
+    }
+  },
+  "form": {
+    "thisWeek": "This week",
+    "previousWeek": "Previous week",
+    "nextWeek": "Next week",
+    "setCustomWeeklySchedule": "Set custom weekly schedule"
+  },
+  "dialogs": {
+    "reset": {
+      "title": "Are you absolutely sure?",
+      "description": "This action cannot be undone. This will reset the schedule for the week of {week} to the default one.",
+      "success": "Weekly schedule for the week of {week} was successfully reset to the default",
+      "cancel": "Cancel",
+      "reset": "Reset",
+      "resetToDefault": "Reset to default",
+      "defaultSchedule": "Default schedule"
+    },
+    "resetAll": {
+      "title": "Are you absolutely sure?",
+      "description": "This action cannot be undone. This will reset all schedules from the week of {week} to the default one.",
+      "success": "All schedules from the week of {week} were successfully reset to the default",
+      "cancel": "Cancel",
+      "reset": "Reset",
+      "resetAllToDefault": "Reset all to default"
+    },
+    "copy": {
+      "title": "Copy schedule",
+      "description": "Copy the schedule from the week of {week} to another week.",
+      "success": "Schedule was successfully copied",
+      "cancel": "Cancel",
+      "copy": "Copy",
+      "copySchedule": "Copy schedule"
+    },
+    "repeat": {
+      "title": "Repeat schedule",
+      "description": "Copy this weekly schedule with interval",
+      "success": "Schedule for week of {week} was successfully copied for every {interval}-nd week until {maxWeek}",
+      "cancel": "Cancel",
+      "copy": "Copy",
+      "repeatSchedule": "Repeat schedule",
+      "repeatEvery": "Repeat every",
+      "repeatUntil": "Repeat until",
+      "repeatUntilTooltip": "The latest week (including) up to which to repeat the schedule",
+      "weeks": "weeks",
+      "replaceExisting": "Replace existing",
+      "replaceExistingDescription": "If checked, this will replace existing schedules for weeks that fall into the repeated weeks",
+      "close": "Close",
+      "confirmTitle": "Are you absolutely sure?",
+      "confirmDescription": "This action cannot be undone. This will repeat the schedule for the week {week} ever {interval} weeks until the week of {maxWeek}."
+    }
+  },
+  "statusText": {
+    "successfully_installed": "Successfully installed the app",
+    "error_processing_request": "Error processing weekly schedule request",
+    "failed_to_load_schedule": "Failed to load the schedule",
+    "saved": "Saved!",
+    "request_error": "There was a problem with your request."
+  }
+}

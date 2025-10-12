@@ -23,10 +23,16 @@ const CustomerShortLabel: React.FC<{
         height={20}
         alt={customer.name}
       />
-      <div className="flex gap-0.5 flex-col">
-        <span>{customer.name}</span>
-        <span className="text-xs italic">{customer.email}</span>
-        <span className="text-xs italic">{customer.phone}</span>
+      <div className="flex gap-0.5 flex-col w-full overflow-hidden">
+        <span className="overflow-hidden text-ellipsis whitespace-nowrap">
+          {customer.name}
+        </span>
+        <span className="text-xs italic overflow-hidden text-ellipsis whitespace-nowrap">
+          {customer.email}
+        </span>
+        <span className="text-xs italic overflow-hidden text-ellipsis whitespace-nowrap">
+          {customer.phone}
+        </span>
       </div>
     </div>
   );

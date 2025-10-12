@@ -2,9 +2,9 @@
 
 import { ConfigurationProps, SelectInput } from "@vivid/builder";
 import { useI18n } from "@vivid/i18n";
+import { StylesConfigurationPanel } from "@vivid/page-builder-base";
 import { Checkbox, deepMemo, Label } from "@vivid/ui";
 import { useCallback, useMemo } from "react";
-import { StylesConfigurationPanel } from "../../configuration-panel/styles-configuration-panel";
 import { overlayType, PopupProps, showPopupType } from "./schema";
 import { popupShortcuts } from "./shortcuts";
 import { styles } from "./styles";

@@ -2,10 +2,10 @@
 
 import { ConfigurationProps, SliderInput } from "@vivid/builder";
 import { useI18n } from "@vivid/i18n";
+import { StylesConfigurationPanel } from "@vivid/page-builder-base";
 import { Checkbox, deepMemo, Label } from "@vivid/ui";
 import { Repeat1 } from "lucide-react";
 import { useCallback } from "react";
-import { StylesConfigurationPanel } from "../../configuration-panel/styles-configuration-panel";
 import { CarouselProps, styles } from "./schema";
 import { carouselShortcuts } from "./shortcuts";
 

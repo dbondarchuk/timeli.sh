@@ -1,12 +1,14 @@
 "use client";
 
 import { useBlockEditor, useCurrentBlock, useEditorArgs } from "@vivid/builder";
+import {
+  BlockStyle,
+  ReplaceOriginalColors,
+  useClassName,
+} from "@vivid/page-builder-base";
 import { Appointment } from "@vivid/types";
 import { cn } from "@vivid/ui";
 import { useMemo } from "react";
-import { ReplaceOriginalColors } from "../../helpers/replace-original-colors";
-import { BlockStyle } from "../../helpers/styling";
-import { useClassName } from "../../helpers/use-class-name";
 import { ConfirmationCard } from "./confirmation-card";
 import { BookingConfirmationProps } from "./schema";
 import { styles } from "./styles";

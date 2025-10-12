@@ -1,5 +1,5 @@
-import { getOptions } from "@vivid/services";
 import { NextRequest, NextResponse } from "next/server";
+import { getOptions } from "./utils";
 
 export const dynamic = "force-dynamic";
 

@@ -3,8 +3,7 @@ import {
   useBlockEditor,
   useCurrentBlock,
 } from "@vivid/builder";
-import { BlockStyle } from "../../helpers/styling";
-import { useClassName } from "../../helpers/use-class-name";
+import { BlockStyle, useClassName } from "@vivid/page-builder-base";
 import { GridContainerProps, styles } from "./schema";
 
 export const GridContainerEditor = ({ style, props }: GridContainerProps) => {

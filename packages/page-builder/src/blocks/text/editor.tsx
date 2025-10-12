@@ -8,10 +8,9 @@ import {
   useIsSelectedBlock,
   usePortalContext,
 } from "@vivid/builder";
+import { BlockStyle, useClassName } from "@vivid/page-builder-base";
 import { PlateEditor, PlateStaticEditor } from "@vivid/rte";
 import { cn, useDebounceCallback } from "@vivid/ui";
-import { BlockStyle } from "../../helpers/styling";
-import { useClassName } from "../../helpers/use-class-name";
 import { TextProps } from "./schema";
 import { getDefaults, styles } from "./styles";
 

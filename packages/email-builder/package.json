@@ -29,9 +29,7 @@
     "@vivid/builder": "*",
     "@vivid/ui": "*",
     "@vivid/rte": "*",
-    "highlight.js": "^11.9.0",
     "lucide-react": "^0.525.0",
-    "react-contenteditable": "^3.3.7",
     "sanitize-html": "^2.14.0"
   }
 }

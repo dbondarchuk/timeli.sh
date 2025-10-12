@@ -8,9 +8,9 @@ import {
   useCurrentBlock,
   useSetSelectedBlockId,
 } from "@vivid/builder";
+import { getFontFamily } from "@vivid/page-builder-base";
+import { COLORS, getColorStyle } from "@vivid/page-builder-base/style";
 import { cn } from "@vivid/ui";
-import { getFontFamily } from "../../style-inputs/helpers/styles";
-import { COLORS, getColorStyle } from "../../style/helpers/colors";
 import { PageLayoutProps } from "./schema";
 
 export const PageLayoutEditor = () => {

@@ -43,13 +43,16 @@ const buttons: Record<
   },
 };
 
-export const tableSortHeader = <T extends I18nNamespaces>(
-  title: I18nKey<T>,
+export const tableSortHeader = <
+  T extends I18nNamespaces,
+  CustomKeys extends string | undefined = undefined,
+>(
+  title: I18nKey<T, CustomKeys>,
   type: SortingFieldType = "default",
   i18nNamespace: T = "ui" as T,
 ) => {
   const TableHeader = ({ column }: HeaderContext<any, any>) => {
-    const t = useI18n(i18nNamespace);
+    const t = useI18n<T, CustomKeys>(i18nNamespace);
     return (
       <Button
         variant="ghost"

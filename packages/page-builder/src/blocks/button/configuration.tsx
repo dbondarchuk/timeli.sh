@@ -7,9 +7,9 @@ import {
   TextInput,
 } from "@vivid/builder";
 import { useI18n } from "@vivid/i18n";
+import { StylesConfigurationPanel } from "@vivid/page-builder-base";
 import { Combobox, deepMemo, Label } from "@vivid/ui";
 import { useCallback } from "react";
-import { StylesConfigurationPanel } from "../../configuration-panel/styles-configuration-panel";
 import {
   ButtonDefaultAction,
   ButtonDefaultTarget,

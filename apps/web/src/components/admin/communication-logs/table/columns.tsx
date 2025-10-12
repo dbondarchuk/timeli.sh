@@ -98,7 +98,7 @@ export const columns: ColumnDef<CommunicationLog>[] = [
   },
   {
     cell: ({ row }) => {
-      const t = useI18n("apps");
+      const t = useI18n();
       return t(
         typeof row.original.handledBy === "string"
           ? row.original.handledBy

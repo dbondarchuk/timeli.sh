@@ -11,6 +11,11 @@ import {
 import { getArguments, template } from "@vivid/utils";
 import { TextMessageResenderMessages } from "./messages";
 import { TextMessageResenderConfiguration } from "./models";
+import {
+  TextMessageResenderAdminAllKeys,
+  TextMessageResenderAdminKeys,
+  TextMessageResenderAdminNamespace,
+} from "./translations/types";
 
 export default class TextMessageResenderConnectedApp
   implements IConnectedApp, ITextMessageResponder
@@ -24,7 +29,12 @@ export default class TextMessageResenderConnectedApp
   public async processRequest(
     appData: ConnectedAppData,
     data: TextMessageResenderConfiguration,
-  ): Promise<ConnectedAppStatusWithText> {
+  ): Promise<
+    ConnectedAppStatusWithText<
+      TextMessageResenderAdminNamespace,
+      TextMessageResenderAdminKeys
+    >
+  > {
     const logger = this.loggerFactory("processRequest");
     logger.debug(
       { appId: appData._id, phone: data?.phone },
@@ -32,9 +42,13 @@ export default class TextMessageResenderConnectedApp
     );
 
     try {
-      const status: ConnectedAppStatusWithText = {
+      const status: ConnectedAppStatusWithText<
+        TextMessageResenderAdminNamespace,
+        TextMessageResenderAdminKeys
+      > = {
         status: "connected",
-        statusText: "textMessageResender.statusText.successfully_set_up",
+        statusText:
+          "app_text-message-resender_admin.statusText.successfully_set_up",
       };
 
       this.props.update({
@@ -54,10 +68,13 @@ export default class TextMessageResenderConnectedApp
         "Error processing text message resender configuration",
       );
 
-      const status: ConnectedAppStatusWithText = {
+      const status: ConnectedAppStatusWithText<
+        TextMessageResenderAdminNamespace,
+        TextMessageResenderAdminKeys
+      > = {
         status: "failed",
         statusText:
-          "textMessageResender.statusText.error_processing_configuration",
+          "app_text-message-resender_admin.statusText.error_processing_configuration",
       };
 
       this.props.update({
@@ -71,7 +88,10 @@ export default class TextMessageResenderConnectedApp
   public async respond(
     appData: ConnectedAppData<TextMessageResenderConfiguration>,
     textMessageReply: TextMessageReply,
-  ): Promise<RespondResult | null> {
+  ): Promise<RespondResult<
+    TextMessageResenderAdminNamespace,
+    TextMessageResenderAdminKeys
+  > | null> {
     const logger = this.loggerFactory("respond");
     logger.debug(
       {
@@ -115,7 +135,8 @@ export default class TextMessageResenderConnectedApp
           appointmentId: reply.data.appointmentId,
           customerId: reply.data.customerId,
           participantType: "customer",
-          handledBy: "textMessageResender.handlers.resendToCustomer",
+          handledBy:
+            "app_text-message-resender_admin.handlers.resendToCustomer" satisfies TextMessageResenderAdminAllKeys,
         });
 
         logger.info(
@@ -124,7 +145,8 @@ export default class TextMessageResenderConnectedApp
         );
 
         return {
-          handledBy: "textMessageResender.handlers.processUserReply",
+          handledBy:
+            "app_text-message-resender_admin.handlers.processUserReply" satisfies TextMessageResenderAdminAllKeys,
           participantType: "user",
         };
       }
@@ -186,7 +208,8 @@ export default class TextMessageResenderConnectedApp
         appointmentId: reply.data.appointmentId,
         customerId: reply.data.customerId,
         participantType: "user",
-        handledBy: "textMessageResender.handlers.resendToUser",
+        handledBy:
+          "app_text-message-resender_admin.handlers.resendToUser" satisfies TextMessageResenderAdminAllKeys,
       });
 
       logger.info(
@@ -195,7 +218,8 @@ export default class TextMessageResenderConnectedApp
       );
 
       return {
-        handledBy: "textMessageResender.handlers.processCustomerReply",
+        handledBy:
+          "app_text-message-resender_admin.handlers.processCustomerReply" satisfies TextMessageResenderAdminAllKeys,
         participantType: "customer",
       };
     } catch (error: any) {
@@ -210,7 +234,8 @@ export default class TextMessageResenderConnectedApp
 
       this.props.update({
         status: "failed",
-        statusText: "textMessageResender.statusText.error_processing_reply",
+        statusText:
+          "app_text-message-resender_admin.statusText.error_processing_reply" satisfies TextMessageResenderAdminAllKeys,
       });
 
       throw error;

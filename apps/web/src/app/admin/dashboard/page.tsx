@@ -1,5 +1,5 @@
-import { FinancialsTabClient } from "@/components/admin/dashboard/financial/financials-tab-client";
 import PageContainer from "@/components/admin/layout/page-container";
+import { DashboardTabInjectorApps } from "@vivid/app-store/injectors/dashboard-tab";
 import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
@@ -13,7 +13,6 @@ import {
 } from "@vivid/ui";
 import { Metadata } from "next";
 import { Suspense } from "react";
-import { FinancialsTab } from "../../../components/admin/dashboard/financial/financials-tab";
 import { EventsCalendar } from "./events-calendar";
 import { NextAppointmentsCards } from "./next-appointments-cards";
 import { PendingAppointmentsTab } from "./pending-appointments-tab";
@@ -32,12 +31,14 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function Page({ searchParams }: Params) {
+export default async function Page(params: Params) {
   const logger = getLoggerFactory("AdminPages")("dashboard");
-  const { activeTab = defaultTab, key } = await searchParams;
-  const t = await getI18nAsync("admin");
+  const searchParams = await params.searchParams;
+  const { activeTab = defaultTab, key } = searchParams;
+  const tAdmin = await getI18nAsync("admin");
+  const t = await getI18nAsync();
   const breadcrumbItems = [
-    { title: t("navigation.dashboard"), link: "/admin/dashboard" },
+    { title: tAdmin("navigation.dashboard"), link: "/admin/dashboard" },
   ];
 
   logger.debug(
@@ -46,6 +47,23 @@ export default async function Page({ searchParams }: Params) {
       key,
     },
     "Loading dashboard page",
+  );
+
+  const dashboardTabApps =
+    await ServicesContainer.ConnectedAppsService().getAppsByScope(
+      "dashboard-tab",
+    );
+
+  const dashboardTabAppsMap = dashboardTabApps.flatMap(
+    (app) =>
+      DashboardTabInjectorApps[app.name]?.items?.map((item) => ({
+        ...item,
+        appId: app._id,
+        props: ServicesContainer.ConnectedAppsService().getAppServiceProps(
+          app._id,
+        ),
+        label: t(item.label),
+      })) || [],
   );
 
   return (
@@ -69,15 +87,17 @@ export default async function Page({ searchParams }: Params) {
           <TabsViaUrl defaultValue={defaultTab} className="space-y-4">
             <TabsList className="w-full flex flex-col h-auto md:flex-row gap-2">
               <TabsLinkTrigger value="overview">
-                {t("dashboard.tabs.overview")}
+                {tAdmin("dashboard.tabs.overview")}
               </TabsLinkTrigger>
               <TabsLinkTrigger value="appointments">
-                {t("dashboard.tabs.pendingAppointments")}{" "}
+                {tAdmin("dashboard.tabs.pendingAppointments")}{" "}
                 <PendingAppointmentsBadge />
               </TabsLinkTrigger>
-              <TabsLinkTrigger value="financials">
-                {t("dashboard.tabs.financials")}
-              </TabsLinkTrigger>
+              {dashboardTabAppsMap.map((item) => (
+                <TabsLinkTrigger value={item.href} key={item.href}>
+                  {item.label}
+                </TabsLinkTrigger>
+              ))}
             </TabsList>
             {activeTab === "overview" && (
               <TabsContent
@@ -90,7 +110,7 @@ export default async function Page({ searchParams }: Params) {
                   </div>
                   <div className="@lg:basis-1/3 flex flex-col gap-2 ">
                     <h2 className="tracking-tight text-lg font-medium">
-                      {t("dashboard.appointments.nextAppointments")}
+                      {tAdmin("dashboard.appointments.nextAppointments")}
                     </h2>
                     <Suspense
                       key={key}
@@ -124,16 +144,26 @@ export default async function Page({ searchParams }: Params) {
                 </Suspense>
               </TabsContent>
             )}
-            {activeTab === "financials" && (
-              <TabsContent value="financials" className="space-y-4 flex-1">
-                <Suspense
-                  key={key}
-                  fallback={<FinancialsTabClient loading={true} />}
+            {dashboardTabAppsMap
+              .filter((item) => item.href === activeTab)
+              .map((item) => (
+                <TabsContent
+                  value={item.href}
+                  className="space-y-4 flex-1"
+                  key={item.href}
                 >
-                  <FinancialsTab searchParams={searchParams} />
-                </Suspense>
-              </TabsContent>
-            )}
+                  <Suspense
+                    key={key}
+                    fallback={<Skeleton className="w-full h-72" />}
+                  >
+                    <item.view
+                      appId={item.appId}
+                      props={item.props}
+                      searchParams={searchParams}
+                    />
+                  </Suspense>
+                </TabsContent>
+              ))}
           </TabsViaUrl>
         </Suspense>
       </div>

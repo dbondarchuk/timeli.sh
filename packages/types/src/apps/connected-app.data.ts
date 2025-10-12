@@ -1,8 +1,11 @@
-import { AppsKeys } from "@vivid/i18n";
+import { AllKeys, I18nNamespaces } from "@vivid/i18n";
 
 export type ConnectedAppStatus = "pending" | "connected" | "failed";
 
-export type ConnectedAppResponse = {
+export type ConnectedAppResponse<
+  T extends I18nNamespaces = I18nNamespaces,
+  CustomKeys extends string | undefined = undefined,
+> = {
   appId: string;
 } & (
   | {
@@ -11,7 +14,7 @@ export type ConnectedAppResponse = {
       account: ConnectedAppAccount;
     }
   | {
-      error: AppsKeys;
+      error: AllKeys<T, CustomKeys>;
       errorArgs?: Record<string, any>;
     }
 );
@@ -34,9 +37,12 @@ export type ConnectedAppAccount = (
   additional?: string;
 };
 
-export class ConnectedAppError extends Error {
+export class ConnectedAppError<
+  T extends I18nNamespaces = I18nNamespaces,
+  CustomKeys extends string | undefined = undefined,
+> extends Error {
   constructor(
-    public readonly key: AppsKeys,
+    public readonly key: AllKeys<T, CustomKeys>,
     public readonly args?: Record<string, any>,
     message?: string,
   ) {
@@ -44,12 +50,15 @@ export class ConnectedAppError extends Error {
   }
 }
 
-export type ConnectedAppStatusWithText = {
+export type ConnectedAppStatusWithText<
+  T extends I18nNamespaces = I18nNamespaces,
+  CustomKeys extends string | undefined = undefined,
+> = {
   status: ConnectedAppStatus;
   statusText:
-    | AppsKeys
+    | AllKeys<T, CustomKeys>
     | {
-        key: AppsKeys;
+        key: AllKeys<T, CustomKeys>;
         args?: Record<string, any>;
       };
 };

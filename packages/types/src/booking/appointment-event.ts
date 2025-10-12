@@ -41,6 +41,7 @@ export type AppointmentEvent = {
   addons?: AppointmentEventAddon[];
   note?: string;
   discount?: AppointmentDiscount;
+  data?: Record<string, any>;
 };
 
 export const appointmentRequestSchema = z.object({
@@ -57,7 +58,9 @@ export const appointmentRequestSchema = z.object({
   duration: z.coerce
     .number({ message: "appointments.request.duration.required" })
     .int("appointments.request.duration.positive")
-    .min(1, "appointments.request.duration.positive"),
+    .min(1, "appointments.request.duration.positive")
+    .max(60 * 24 * 1, "appointments.request.duration.max")
+    .optional(),
   fields: z
     .object({
       email: z

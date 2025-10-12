@@ -1,0 +1,47 @@
+{
+  "title": "Google Calendar",
+  "app": {
+    "displayName": "Google Calendar",
+    "description": "Google Calendar is a time management and scheduling service developed by Google. Allows users to create and edit events, with options available for type and time. Available to anyone that has a Gmail account on both mobile and web versions."
+  },
+  "primaryCalendar": "Primary",
+  "form": {
+    "selectCalendar": {
+      "label": "Select calendar",
+      "searchLabel": "Select calendar",
+      "tooltip": "Choose which Google Calendar to use for your appointments"
+    },
+    "connect": "Connect with <app></app>",
+    "reconnect": "Reconnect <app></app>",
+    "pendingAuthorization": "Pending authorization"
+  },
+  "statusText": {
+    "successfully_set_up": "Successfully connected to Google Calendar",
+    "error_processing_configuration": "Error processing Google Calendar configuration",
+    "failed_to_retrieve_calendar_list": "Failed to retrieve calendar list",
+    "calendar_list_retrieved": "Calendar list retrieved successfully",
+    "calendar_set": "Calendar set successfully",
+    "error_retrieving_calendar_list": "Error retrieving calendar list",
+    "error_setting_calendar": "Error setting calendar",
+    "error_creating_calendar_event": "Error creating calendar event",
+    "error_updating_calendar_event": "Error updating calendar event",
+    "error_deleting_calendar_event": "Error deleting calendar event",
+    "error_getting_busy_times": "Error getting busy times from Google Calendar",
+    "oauth_error": "OAuth authentication error",
+    "invalid_credentials": "Invalid credentials",
+    "calendar_not_found": "Calendar not found",
+    "event_created": "Calendar event created successfully",
+    "event_updated": "Calendar event updated successfully",
+    "event_deleted": "Calendar event deleted successfully",
+    "redirect_request_does_not_contain_app_id": "Redirect request does not contain app ID",
+    "redirect_request_does_not_contain_authorization_code": "Redirect request does not contain authorization code",
+    "app_was_not_authorized_properly": "App was not authorized properly",
+    "app_was_not_given_required_scopes": "App was not given required scopes",
+    "failed_to_get_user_email": "Failed to get user email"
+  },
+  "toast": {
+    "changes_saved": "Your changes were saved.",
+    "request_error": "There was a problem with your request.",
+    "calendar_list_error": "Failed to retrieve calendar list"
+  }
+}

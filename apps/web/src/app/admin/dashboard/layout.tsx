@@ -2,7 +2,7 @@ import Header from "@/components/admin/layout/header";
 import { AppSidebar } from "@/components/admin/layout/sidebar";
 
 import { navItems } from "@/constants/data";
-import { AvailableApps } from "@vivid/app-store";
+import { AppMenuItems } from "@vivid/app-store/menu-items";
 import { ServicesContainer } from "@vivid/services";
 import { NavItemGroup } from "@vivid/types";
 import {
@@ -46,7 +46,7 @@ export default async function DashboardLayout({
 
   const appsWithMenu = await ServicesContainer.ConnectedAppsService().getApps();
   const appsMenus = appsWithMenu
-    .map(({ name }) => AvailableApps[name]?.menuItems || [])
+    .map(({ name }) => AppMenuItems[name] || [])
     .filter((menus) => menus && menus.length > 0)
     .flatMap((item) => item);
 
@@ -68,7 +68,21 @@ export default async function DashboardLayout({
       const parent = menuItems.find((parent) => item.parent === parent.id);
       if (!parent) return;
 
-      parent.items = parent.items || [];
+      if (!parent.items?.length) {
+        parent.items = [];
+        if (!parent.removeIfBecameParent) {
+          parent.items.push({
+            id: parent.id,
+            title: parent.title,
+            href: parent.href,
+            disabled: parent.disabled,
+            external: parent.external,
+            icon: parent.icon,
+            label: parent.label,
+            description: parent.description,
+          });
+        }
+      }
 
       parent.items.push({
         ...item,

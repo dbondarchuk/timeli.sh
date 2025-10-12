@@ -3,9 +3,11 @@ import {
   useBlockEditor,
   useCurrentBlock,
 } from "@vivid/builder";
-import { BlockStyle } from "../../helpers/styling";
-import { useClassName } from "../../helpers/use-class-name";
-import { useResizeBlockStyles } from "../../helpers/use-resize-block-styles";
+import {
+  BlockStyle,
+  useClassName,
+  useResizeBlockStyles,
+} from "@vivid/page-builder-base";
 import { InlineContainerProps, styles } from "./schema";
 
 const allowOnly = ["InlineText", "Icon", "Link"];

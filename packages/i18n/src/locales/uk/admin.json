@@ -69,6 +69,7 @@
     },
     "optional": "Опціонально",
     "timeDuration": "{hours, plural, =0 {{minutes} хв} other {# год, {minutes} хв}}",
+    "custom": "Власний",
     "navigationGuard": {
       "title": "Ви впевнені, що хочете покинути цю сторінку?",
       "description": "У вас є незбережені зміни. Ви впевнені, що хочете покинути цю сторінку?",
@@ -111,15 +112,7 @@
     "store": "Магазин",
     "defaultApps": "Додатки за замовчуванням",
     "logout": "Вийти",
-    "follow-ups": "Додаткові дії",
-    "reminders": "Нагадування",
-    "customerEmailNotification": "Email повідомлення клієнту",
-    "customerTextMessageNotification": "Текстове повідомлення клієнту",
-    "busyEvents": "Зайняті події",
-    "smtp": "SMTP",
-    "textBelt": "TextBelt SMS",
-    "weeklySchedule": "Тижневий розклад",
-    "viewWebsite": "Переглянути сайт"
+    "viewWebsite": "Переглянути веб-сайт"
   },
   "themeToggle": {
     "toggleTheme": "Переключити тему",
@@ -168,7 +161,7 @@
       "close": "Закрити"
     },
     "card": {
-      "by": "Від",
+      "by": "Від <link>{name}</link>",
       "appointment": "Запис",
       "status": "Статус",
       "dateTime": "Дата та час",
@@ -232,7 +225,9 @@
     },
     "new": {
       "title": "Новий запис",
-      "description": "Створити новий запис від імені клієнта"
+      "description": "Створити новий запис від імені клієнта",
+      "waitlistEntry": "Запис списку очікування",
+      "waitlistEntryDescription": "Переглянути інформацію про запис списку очікування"
     },
     "edit": {
       "title": "Редагувати запис",
@@ -1701,48 +1696,7 @@
     },
     "tabs": {
       "overview": "Огляд",
-      "pendingAppointments": "Очікуючі записи",
-      "financials": "Фінанси"
-    },
-    "financials": {
-      "title": "Фінансовий огляд",
-      "estimatedRevenue": "Очікуваний дохід",
-      "totalPayments": "Загальні платежі",
-      "netPayments": "Чисті платежі",
-      "activeAppointments": "Активні записи",
-      "declinedAppointments": "Відхилені записи",
-      "recentPayments": "Останні платежі",
-      "paymentMethods": "Способи оплати",
-      "noPayments": "Платежів не знайдено",
-      "amount": "Сума",
-      "status": "Статус",
-      "date": "Дата",
-      "customer": "Клієнт",
-      "service": "Послуга",
-      "dateRange": "Період",
-      "thisMonth": "Цей місяць",
-      "lastMonth": "Минулий місяць",
-      "thisWeek": "Цей тиждень",
-      "lastWeek": "Минулий тиждень",
-      "thisYear": "Цей рік",
-      "lastYear": "Минулий рік",
-      "allTime": "За весь час",
-      "custom": "Власний період",
-      "refunded": "Повернено",
-      "refundDate": "Дата повернення",
-      "refundAmount": "Сума повернення",
-      "viewAppointment": "Переглянути запис",
-      "revenueAndPayments": "Дохід та платежі",
-      "appointmentStatusDistribution": "Розподіл статусів записів",
-      "serviceDistribution": "Послуги",
-      "appointmentsCount": "{count, plural, =1 {1 запис}, few {# записи}, other {# записів}}",
-      "estimatedRevenueFormat": "Очікуваний дохід: {revenue}",
-      "financialOverview": "Фінансовий огляд",
-      "customerAcquisitionVsRetention": "Нові та існуючі клієнти",
-      "timeGrouping": "Групування за часом",
-      "daily": "Щоденно",
-      "weekly": "Щотижнево",
-      "monthly": "Щомісячно"
+      "pendingAppointments": "Очікуючі записи"
     }
   },
   "install": {

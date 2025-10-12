@@ -4,16 +4,22 @@ export const getConfig = (
   getLocale: (
     baseLocale: string | undefined,
   ) => Promise<{ locale: string; includeAdmin: boolean }>,
+  getMessages?: () => Promise<{
+    public: (locale: string) => Promise<Record<string, Record<string, any>>>;
+    admin: (locale: string) => Promise<Record<string, Record<string, any>>>;
+  }>,
 ) =>
   getRequestConfig(async ({ locale: baseLocale }) => {
     const { locale, includeAdmin } = await getLocale(baseLocale);
 
-    const messages: Record<string, any> = {
+    const externalMessages = await getMessages?.();
+    const publicMessages = await externalMessages?.public(locale);
+    let messages: Record<string, any> = {
       translation: (await import(`./locales/${locale}/translation.json`))
         .default,
       ui: (await import(`./locales/${locale}/ui.json`)).default,
       validation: (await import(`./locales/${locale}/validation.json`)).default,
-      apps: (await import(`./locales/${locale}/apps.json`)).default,
+      ...(publicMessages || {}),
     };
 
     if (includeAdmin) {
@@ -21,6 +27,13 @@ export const getConfig = (
       messages.builder = (
         await import(`./locales/${locale}/builder.json`)
       ).default;
+      messages.apps = (await import(`./locales/${locale}/apps.json`)).default;
+
+      const adminMessages = await externalMessages?.admin(locale);
+      messages = {
+        ...messages,
+        ...(adminMessages || {}),
+      };
     }
 
     return {

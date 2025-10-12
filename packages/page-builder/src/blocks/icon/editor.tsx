@@ -1,12 +1,14 @@
 "use client";
 
 import { useBlockEditor, useCurrentBlock } from "@vivid/builder";
+import {
+  BlockStyle,
+  useClassName,
+  useResizeBlockStyles,
+} from "@vivid/page-builder-base";
 import { cn } from "@vivid/ui";
 import { icons } from "lucide-react";
 import { Ref } from "react";
-import { BlockStyle } from "../../helpers/styling";
-import { useClassName } from "../../helpers/use-class-name";
-import { useResizeBlockStyles } from "../../helpers/use-resize-block-styles";
 import { IconProps } from "./schema";
 import { getDefaults, styles } from "./styles";
 

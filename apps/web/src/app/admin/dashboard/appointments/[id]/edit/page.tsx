@@ -1,4 +1,7 @@
-import { AppointmentScheduleForm } from "@/components/admin/appointments/appointment-form";
+import {
+  AppointmentScheduleForm,
+  AppointmentScheduleFormFrom,
+} from "@/components/admin/appointments/appointment-form";
 import PageContainer from "@/components/admin/layout/page-container";
 import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
@@ -85,6 +88,19 @@ export default async function NewAssetsPage(props: Props) {
     "Edit appointment page loaded",
   );
 
+  const from: AppointmentScheduleFormFrom = {
+    optionId: appointment.option._id,
+    addonsIds: appointment.addons?.map((addon) => addon._id),
+    customerId: appointment.customer._id,
+    fields: appointment.fields,
+    dateTime: appointment.dateTime,
+    totalDuration: appointment.totalDuration,
+    totalPrice: appointment.totalPrice,
+    note: appointment.note,
+    status: appointment.status,
+    discount: appointment.discount,
+  };
+
   return (
     <PageContainer scrollable>
       <div className="flex flex-1 flex-col gap-4">
@@ -98,7 +114,7 @@ export default async function NewAssetsPage(props: Props) {
         <AppointmentScheduleForm
           options={choices}
           knownFields={fields.items || []}
-          from={appointment}
+          from={from}
           isEdit={true}
           id={id}
           customer={appointment.customer}

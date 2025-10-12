@@ -7,11 +7,18 @@ import { WithTotal } from "@vivid/types";
 import { DataTable, DataTableSkeleton, toast, useDebounce } from "@vivid/ui";
 import { getReminders } from "../actions";
 import { Reminder } from "../models";
+import {
+  RemindersAdminKeys,
+  RemindersAdminNamespace,
+  remindersAdminNamespace,
+} from "../translations/types";
 import { columns } from "./columns";
 
 export const RemindersTable: React.FC<{ appId: string }> = ({ appId }) => {
   const [query] = useQueryStates(searchParams);
-  const t = useI18n("apps");
+  const t = useI18n<RemindersAdminNamespace, RemindersAdminKeys>(
+    remindersAdminNamespace,
+  );
 
   const delayedQuery = useDebounce(query, 100);
 
@@ -44,7 +51,7 @@ export const RemindersTable: React.FC<{ appId: string }> = ({ appId }) => {
       setResponse(res);
     } catch (e: any) {
       console.error(e);
-      toast.error(t("reminders.statusText.error_loading_reminders"));
+      toast.error(t("statusText.error_loading_reminders"));
     } finally {
       setLoading(false);
     }

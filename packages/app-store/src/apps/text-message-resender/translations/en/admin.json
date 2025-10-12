@@ -1,0 +1,26 @@
+{
+  "title": "Text message resender",
+  "app": {
+    "displayName": "Text message resender",
+    "description": "Ensure you never miss a customer response. When a customer replies to a text message, their reply is automatically forwarded to your phone number — keeping communication seamless and personal, no matter where you are."
+  },
+  "form": {
+    "phone": {
+      "label": "Phone number",
+      "tooltip": "Optional phone number override to use for notifications. Your phone is used by default",
+      "placeholder": "Phone"
+    },
+    "connectWith": "Connect with <app></app>"
+  },
+  "statusText": {
+    "successfully_set_up": "Successfully set up",
+    "error_processing_configuration": "Error processing text message resender configuration",
+    "error_processing_reply": "Error processing text message resender reply"
+  },
+  "handlers": {
+    "resendToCustomer": "Text Message Resender - Resend to customer",
+    "processUserReply": "Text Message Resender - Process user reply",
+    "resendToUser": "Text Message Resender - Resend to user",
+    "processCustomerReply": "Text Message Resender - Process customer reply"
+  }
+}

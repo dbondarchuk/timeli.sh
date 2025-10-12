@@ -2,10 +2,10 @@
 
 import { ConfigurationProps } from "@vivid/builder";
 import { useI18n } from "@vivid/i18n";
+import { StylesConfigurationPanel } from "@vivid/page-builder-base";
 import { ComboboxAsync, deepMemo, IComboboxItem, Label } from "@vivid/ui";
 import { icons } from "lucide-react";
 import { createElement, useCallback } from "react";
-import { StylesConfigurationPanel } from "../../configuration-panel/styles-configuration-panel";
 import { IconProps, IconPropsDefaults } from "./schema";
 import { iconShortcuts } from "./shortcuts";
 import { styles } from "./styles";

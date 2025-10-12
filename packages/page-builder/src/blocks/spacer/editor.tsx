@@ -1,7 +1,7 @@
 "use client";
 
 import { useBlockEditor, useCurrentBlock } from "@vivid/builder";
-import { useResizeBlockStyles } from "../../helpers/use-resize-block-styles";
+import { useResizeBlockStyles } from "@vivid/page-builder-base";
 import { SpacerProps } from "./schema";
 import { Spacer } from "./spacer";
 

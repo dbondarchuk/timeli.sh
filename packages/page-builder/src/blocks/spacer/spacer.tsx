@@ -1,7 +1,6 @@
+import { BlockStyle, generateClassName } from "@vivid/page-builder-base/reader";
 import { cn } from "@vivid/ui";
 import { forwardRef } from "react";
-import { generateClassName } from "../../helpers/class-name-generator";
-import { BlockStyle } from "../../helpers/styling";
 import { SpacerReaderProps } from "./schema";
 import { getDefaults, styles } from "./styles";
 

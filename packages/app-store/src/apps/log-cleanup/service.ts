@@ -8,6 +8,11 @@ import {
 } from "@vivid/types";
 import { DateTime } from "luxon";
 import { LogCleanupConfiguration } from "./models";
+import {
+  LogCleanupAdminAllKeys,
+  LogCleanupAdminKeys,
+  LogCleanupAdminNamespace,
+} from "./translations/types";
 
 export default class LogCleanupConnectedApp
   implements IConnectedApp, IScheduled
@@ -19,7 +24,9 @@ export default class LogCleanupConnectedApp
   public async processRequest(
     appData: ConnectedAppData,
     data: LogCleanupConfiguration,
-  ): Promise<ConnectedAppStatusWithText> {
+  ): Promise<
+    ConnectedAppStatusWithText<LogCleanupAdminNamespace, LogCleanupAdminKeys>
+  > {
     const logger = this.loggerFactory("processRequest");
     logger.debug(
       { appId: appData._id, amount: data.amount, type: data.type },
@@ -27,9 +34,12 @@ export default class LogCleanupConnectedApp
     );
 
     try {
-      const status: ConnectedAppStatusWithText = {
+      const status: ConnectedAppStatusWithText<
+        LogCleanupAdminNamespace,
+        LogCleanupAdminKeys
+      > = {
         status: "connected",
-        statusText: "logCleanup.statusText.successfully_set_up",
+        statusText: "app_log-cleanup_admin.statusText.successfully_set_up",
       };
 
       this.props.update({
@@ -56,7 +66,8 @@ export default class LogCleanupConnectedApp
 
       this.props.update({
         status: "failed",
-        statusText: "logCleanup.statusText.error_processing_configuration",
+        statusText:
+          "app_log-cleanup_admin.statusText.error_processing_configuration" satisfies LogCleanupAdminAllKeys,
       });
 
       throw error;
@@ -172,7 +183,8 @@ export default class LogCleanupConnectedApp
 
       this.props.update({
         status: "failed",
-        statusText: "logCleanup.statusText.error_during_cleanup",
+        statusText:
+          "app_log-cleanup_admin.statusText.error_during_cleanup" satisfies LogCleanupAdminAllKeys,
       });
 
       throw error;

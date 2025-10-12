@@ -1,10 +1,12 @@
 import { type ImageProps } from "./schema";
 
-import { DefaultCSSProperties } from "../../style/css-renderer";
-import { getAllStylesWithAdditionalStyles } from "../../style/styles";
-import { objectFitStyle } from "../../style/styles/layout/object-fit";
-import { objectPositionStyle } from "../../style/styles/layout/object-position";
-import { getStylesSchema } from "../../style/utils";
+import {
+  DefaultCSSProperties,
+  getAllStylesWithAdditionalStyles,
+  getStylesSchema,
+  objectFitStyle,
+  objectPositionStyle,
+} from "@vivid/page-builder-base/style";
 
 export const styles = getAllStylesWithAdditionalStyles({
   objectFit: objectFitStyle,

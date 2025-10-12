@@ -1,4 +1,5 @@
 import { ReaderBlock } from "@vivid/builder";
+import { BlockStyle, generateClassName } from "@vivid/page-builder-base/reader";
 import {
   Carousel,
   CarouselContent,
@@ -7,8 +8,6 @@ import {
   CarouselPrevious,
   cn,
 } from "@vivid/ui";
-import { generateClassName } from "../../helpers/class-name-generator";
-import { BlockStyle } from "../../helpers/styling";
 import { CarouselReaderProps, styles } from "./schema";
 
 export const CarouselReader = ({

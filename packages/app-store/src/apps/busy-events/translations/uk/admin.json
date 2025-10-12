@@ -1,0 +1,29 @@
+{
+  "app": {
+    "displayName": "Зайняті події",
+    "description": "Блокувати конкретні дати та час у вашому розкладі"
+  },
+  "navigation": {
+    "busyEvents": {
+      "label": "Зайняті події",
+      "title": "Зайняті події",
+      "description": "Блокувати конкретні дати та час у вашому розкладі"
+    }
+  },
+  "new": "Нова зайнята подія",
+  "edit": "Редагувати зайняту подію",
+  "newDescription": "Створити нову зайняту подію",
+  "editDescription": "Оновити зайняту подію",
+  "errors": {
+    "failed_to_load_schedule": "Не вдалося завантажити розклад"
+  },
+  "thisWeek": "Цей тиждень",
+  "previousWeek": "Попередній тиждень",
+  "nextWeek": "Наступний тиждень",
+  "eventTitle": "Зайнято",
+  "addShift": "Додати подію",
+  "shifts": "{count, plural, =1 {1 подія} other {# подій}}",
+  "statusText": {
+    "successfully_set_up": "Успішно налаштовано"
+  }
+}

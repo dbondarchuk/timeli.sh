@@ -7,6 +7,11 @@ import { useQueryState } from "nuqs";
 import React from "react";
 import { deleteFollowUps } from "../actions";
 import { FollowUp } from "../models";
+import {
+  FollowUpsAdminKeys,
+  FollowUpsAdminNamespace,
+  followUpsAdminNamespace,
+} from "../translations/types";
 
 export const DeleteSelectedFollowUpsButton: React.FC<{
   appId: string;
@@ -15,7 +20,9 @@ export const DeleteSelectedFollowUpsButton: React.FC<{
   const [isLoading, setIsLoading] = React.useState(false);
   const [isOpen, setIsOpen] = React.useState(false);
 
-  const t = useI18n("apps");
+  const t = useI18n<FollowUpsAdminNamespace, FollowUpsAdminKeys>(
+    followUpsAdminNamespace,
+  );
 
   const [_, reload] = useQueryState("ts", { history: "replace" });
   const action = async () => {
@@ -28,10 +35,10 @@ export const DeleteSelectedFollowUpsButton: React.FC<{
           selected.map((r) => r._id),
         ),
         {
-          success: t("followUps.statusText.follow_ups_deleted", {
+          success: t("statusText.follow_ups_deleted", {
             count: selected.length,
           }),
-          error: t("followUps.statusText.error_deleting_follow_ups"),
+          error: t("statusText.error_deleting_follow_ups"),
         },
       );
 
@@ -54,7 +61,7 @@ export const DeleteSelectedFollowUpsButton: React.FC<{
         {isLoading && <Spinner />}
         <Trash className="mr-2 h-4 w-4" />
         <span>
-          {t("followUps.table.deleteSelected.label", {
+          {t("table.deleteSelected.label", {
             count: selected.length,
           })}
         </span>
@@ -64,13 +71,13 @@ export const DeleteSelectedFollowUpsButton: React.FC<{
         loading={isLoading}
         onClose={() => setIsOpen(false)}
         onConfirm={action}
-        description={t("followUps.table.deleteSelected.description", {
+        description={t("table.deleteSelected.description", {
           count: selected.length,
         })}
-        title={t("followUps.table.deleteSelected.label", {
+        title={t("table.deleteSelected.label", {
           count: selected.length,
         })}
-        continueButton={t("followUps.table.deleteSelected.confirm", {
+        continueButton={t("table.deleteSelected.confirm", {
           count: selected.length,
         })}
       />

@@ -1,12 +1,15 @@
 "use client";
 
 import {
+  BaseZodDictionary,
   Builder,
   EditorDocumentBlocksDictionary,
   generateId,
+  ReaderDocumentBlocksDictionary,
   SidebarTab,
   TEditorConfiguration,
 } from "@vivid/builder";
+import { Header } from "@vivid/page-builder-base";
 import { PageHeader, UploadedFile } from "@vivid/types";
 import { deepMemo } from "@vivid/ui";
 import { useMemo } from "react";
@@ -14,8 +17,6 @@ import { EditorBlocks, RootBlock } from "./blocks";
 import { ImagePropsDefaults } from "./blocks/image";
 import { ReaderBlocks } from "./blocks/reader";
 import { EditorBlocksSchema } from "./blocks/schema";
-import { Header } from "./header";
-export { Styling } from "./helpers/styling";
 
 type PageBuilderProps = {
   value?: TEditorConfiguration;
@@ -30,6 +31,11 @@ type PageBuilderProps = {
   };
   footer?: React.ReactNode;
   notAllowedBlocks?: (keyof typeof EditorBlocks)[];
+  additionalBlocks?: {
+    schemas: BaseZodDictionary;
+    editors: EditorDocumentBlocksDictionary<any>;
+    readers: ReaderDocumentBlocksDictionary<any>;
+  };
 };
 
 const getImageBlock = (file: UploadedFile) => {
@@ -57,6 +63,7 @@ export const PageBuilder = deepMemo(
     header,
     footer,
     notAllowedBlocks,
+    additionalBlocks,
   }: PageBuilderProps) => {
     const headerComponent = useMemo(
       () =>
@@ -89,13 +96,14 @@ export const PageBuilder = deepMemo(
         onChange={onChange}
         onIsValidChange={onIsValidChange}
         args={args}
-        schemas={EditorBlocksSchema}
+        schemas={{ ...EditorBlocksSchema, ...additionalBlocks?.schemas }}
         editorBlocks={
-          editorBlocks as EditorDocumentBlocksDictionary<
-            typeof EditorBlocksSchema
-          >
+          {
+            ...editorBlocks,
+            ...additionalBlocks?.editors,
+          } as EditorDocumentBlocksDictionary<typeof EditorBlocksSchema>
         }
-        readerBlocks={ReaderBlocks}
+        readerBlocks={{ ...ReaderBlocks, ...additionalBlocks?.readers }}
         rootBlock={RootBlock}
         extraTabs={extraTabs}
         sidebarWidth={28}

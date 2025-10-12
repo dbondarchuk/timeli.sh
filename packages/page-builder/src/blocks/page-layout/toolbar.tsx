@@ -5,13 +5,15 @@ import {
   ToolbarToggle,
 } from "@vivid/builder";
 import { BuilderKeys, useI18n } from "@vivid/i18n";
+import {
+  backgroundColorShortcut,
+  colorShortcut,
+  ColorShortcutToolbar,
+  FONT_FAMILIES,
+  fontFamilyItems,
+} from "@vivid/page-builder-base";
+import { FontFamily } from "@vivid/page-builder-base/style";
 import { AlignHorizontalSpaceAround } from "lucide-react";
-import { backgroundColorShortcut } from "../../shortcuts/common/background-color";
-import { colorShortcut } from "../../shortcuts/common/color";
-import { FontFamily } from "../../style";
-import { FONT_FAMILIES } from "../../style-inputs/helpers/font-family";
-import { fontFamilyItems } from "../../toolbars/font-family";
-import { ColorShortcutToolbar } from "../../toolbars/shortucts/color-shortcut-toolbar";
 import { PageLayoutDefaultProps, PageLayoutProps } from "./schema";
 
 const LayoutFontFamilyDropdownMenu = (

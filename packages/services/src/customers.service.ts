@@ -377,6 +377,114 @@ export class CustomersService implements ICustomersService {
     logger.debug({ customerId: id }, "Successfully updated customer");
   }
 
+  public async getOrUpsertCustomer({
+    name,
+    email,
+    phone,
+  }: {
+    name: string;
+    email: string;
+    phone: string;
+  }): Promise<Customer> {
+    const logger = this.loggerFactory("getOrUpsertCustomer");
+
+    logger.debug(
+      { customerName: name, customerEmail: email },
+      "Getting or creating/updating customer",
+    );
+
+    const existingCustomer = await this.findCustomer(
+      email.trim(),
+      phone.trim(),
+    );
+
+    if (existingCustomer) {
+      logger.debug(
+        {
+          customerId: existingCustomer._id,
+          customerName: existingCustomer.name,
+        },
+        "Found existing customer",
+      );
+
+      await this.updateCustomerIfNeeded(existingCustomer, {
+        name,
+        email,
+        phone,
+      });
+
+      return existingCustomer;
+    }
+
+    logger.debug(
+      { customerName: name, customerEmail: email },
+      "Creating new customer",
+    );
+
+    const customer: CustomerUpdateModel = {
+      email: email.trim(),
+      name: name.trim(),
+      phone: phone.trim(),
+      knownEmails: [],
+      knownNames: [],
+      knownPhones: [],
+      requireDeposit: "inherit",
+    };
+
+    const customerId = await this.createCustomer(customer);
+    const newCustomer = {
+      _id: customerId,
+      ...customer,
+    };
+
+    logger.debug(
+      { customerId, customerName: newCustomer.name },
+      "New customer created",
+    );
+    return newCustomer;
+  }
+
+  private async updateCustomerIfNeeded(
+    customer: Customer,
+    updatedFields: { name: string; email: string; phone: string },
+  ): Promise<void> {
+    const logger = this.loggerFactory("updateCustomerIfNeeded");
+
+    logger.debug(
+      { customerId: customer._id, customerName: customer.name, updatedFields },
+      "Checking if customer update is needed",
+    );
+
+    let needsUpdate = false;
+    const name = updatedFields.name.trim();
+    if (customer.name !== name && !customer.knownNames.includes(name)) {
+      customer.knownNames.push(name);
+      needsUpdate = true;
+    }
+
+    const email = updatedFields.email.trim();
+    if (customer.email !== email && !customer.knownEmails.includes(email)) {
+      customer.knownEmails.push(email);
+      needsUpdate = true;
+    }
+
+    const phone = updatedFields.phone.trim();
+    if (customer.phone !== phone && !customer.knownPhones.includes(phone)) {
+      customer.knownPhones.push(phone);
+      needsUpdate = true;
+    }
+
+    if (needsUpdate) {
+      logger.debug(
+        { customerId: customer._id, updatedFields: { name, email, phone } },
+        "Updating customer with new information",
+      );
+      await this.updateCustomer(customer._id, customer);
+    } else {
+      logger.debug({ customerId: customer._id }, "No customer update needed");
+    }
+  }
+
   public async deleteCustomer(id: string): Promise<Customer | null> {
     const logger = this.loggerFactory("deleteCustomer");
     logger.debug({ customerId: id }, "Deleting customer");

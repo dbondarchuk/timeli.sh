@@ -18,7 +18,9 @@ type DocumentOutlineItemProps = {
 
 const DocumentOutlineItem: React.FC<DocumentOutlineItemProps> = memo(
   ({ blockId, depth, searchQuery }) => {
-    const t = useI18n("builder");
+    const tBuilder = useI18n("builder");
+    const t = useI18n();
+
     const setSelectedBlockId = useSetSelectedBlockId();
     const block = useBlockSchema(blockId);
     const isSelected = useIsSelectedBlock(blockId);
@@ -59,7 +61,7 @@ const DocumentOutlineItem: React.FC<DocumentOutlineItemProps> = memo(
           .includes(searchQuery.toLocaleLowerCase()) ||
         block.type.toLocaleLowerCase().includes(searchQuery.toLocaleLowerCase())
       );
-    }, [block, searchQuery, t]);
+    }, [block, searchQuery, tBuilder]);
 
     return !block ? null : (
       <>

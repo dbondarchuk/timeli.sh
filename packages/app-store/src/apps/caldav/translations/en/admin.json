@@ -1,0 +1,46 @@
+{
+  "title": "CalDAV Calendar",
+  "app": {
+    "displayName": "CalDAV Calendar",
+    "description": "Caldav is a protocol that allows different clients/servers to access scheduling information on remote servers as well as schedule meetings with other users on the same server or other servers.\nIt extends WebDAV specification and uses iCalendar format for the data."
+  },
+  "statusText": {
+    "successfullySetUp": "Successfully fetched {calendarName} calendar",
+    "calendarNotFound": "Calendar '{calendarName}' was not found",
+    "calendarNotSet": "Calendar name was not set",
+    "failedToFetchCalendars": "Failed to fetch calendars from {serverUrl}",
+    "successfullyFetchedCalendars": "Successfully fetched calendars from server{serverUrl}"
+  },
+  "toast": {
+    "failedToFetchCalendars": "Failed to fetch calendars from {serverUrl}",
+    "failedToFetchCalendarsDescription": "Failed to fetch calendars from {serverUrl}. Please check if the server URL is correct and if the server is reachable."
+  },
+  "form": {
+    "serverUrl": {
+      "label": "CalDAV Server",
+      "tooltip": "URL to CalDAV server"
+    },
+    "username": {
+      "label": "Username",
+      "tooltip": "Optional username"
+    },
+    "password": {
+      "label": "Password",
+      "tooltip": "Optional password"
+    },
+    "calendar": {
+      "label": "Calendar",
+      "placeholder": "Select calendar"
+    },
+    "fetch": "Fetch",
+    "connect": "Connect with <app></app>"
+  },
+  "validation": {
+    "calendarName": {
+      "required": "Calendar name is required"
+    },
+    "serverUrl": {
+      "url": "Server URL must be a valid URL"
+    }
+  }
+}

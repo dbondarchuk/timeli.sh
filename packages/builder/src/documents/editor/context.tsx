@@ -1300,6 +1300,19 @@ export function useBlockChildrenIds(blockId: string | null) {
   );
 }
 
+export function useBlockEditorDisableOptions(blockId: string | null) {
+  const store = useEditorStateStore();
+  return useStore(
+    store,
+    useDeep((s) => {
+      if (!blockId) return null;
+      const blockType = s.indexes[blockId]?.blockType;
+      if (!blockType) return null;
+      return s.blocks[blockType]?.disable;
+    }),
+  );
+}
+
 export const EditorArgsContext = createContext<Record<string, any>>({});
 export function useEditorArgs() {
   return useContext(EditorArgsContext);

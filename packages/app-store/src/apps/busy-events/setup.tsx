@@ -1,10 +1,8 @@
-"use client";
-
-import { ComplexAppSetupProps } from "@vivid/types";
+import { ComplexAppPageProps } from "@vivid/types";
 import React from "react";
 import { BusyEventsForm } from "./components/form";
 
-export const BusyEventsAppSetup: React.FC<ComplexAppSetupProps> = ({
+export const BusyEventsAppSetup: React.FC<ComplexAppPageProps> = ({
   appId,
 }) => {
   return <BusyEventsForm appId={appId} />;

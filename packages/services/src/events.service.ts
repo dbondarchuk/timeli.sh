@@ -8,8 +8,6 @@ import {
   AppointmentEntity,
   AppointmentHistoryEntry,
   AppointmentTimeNotAvaialbleError,
-  Customer,
-  CustomerUpdateModel,
   IPaymentsService,
   IServicesService,
   ModifyAppointmentInformationRequest,
@@ -56,6 +54,7 @@ import { PAYMENTS_COLLECTION_NAME } from "./payments.service";
 
 export const APPOINTMENTS_COLLECTION_NAME = "appointments";
 export const APPOINTMENTS_HISTORY_COLLECTION_NAME = "appointments-history";
+export const WAITLIST_COLLECTION_NAME = "waitlist";
 
 export class EventsService implements IEventsService {
   protected readonly loggerFactory = getLoggerFactory("EventsService");
@@ -254,61 +253,18 @@ export class EventsService implements IEventsService {
 
     logger.debug(
       { appointmentId, confirmed, force, paymentIntentId },
-      "Event saved",
+      "Event saved, executing hooks",
     );
 
-    const hooks =
-      await this.appsService.getAppsByScopeWithData("appointment-hook");
-
-    logger.debug(
-      { appointmentId, hookCount: hooks.length },
-      "Executing appointment hooks",
+    await this.appsService.executeHooks<IAppointmentHook>(
+      "appointment-hook",
+      async (hook, service) => {
+        await service.onAppointmentCreated?.(hook, appointment, confirmed);
+      },
+      {
+        ignoreErrors: true,
+      },
     );
-
-    const promises = hooks.map(async (hook) => {
-      const service = AvailableAppServices[hook.name](
-        this.appsService.getAppServiceProps(hook._id),
-      ) as any as IAppointmentHook;
-
-      try {
-        logger.debug(
-          {
-            appointmentId,
-            hookName: hook.name,
-            confirmed,
-            force,
-            paymentIntentId,
-            hookId: hook._id,
-          },
-          "Executing appointment hook",
-        );
-
-        await service.onAppointmentCreated(hook, appointment, confirmed);
-
-        // if (confirmed) {
-        //   await service.onAppointmentStatusChanged(
-        //     hook,
-        //     appointment,
-        //     "confirmed"
-        //   );
-        // }
-      } catch (error: any) {
-        logger.error(
-          {
-            hookName: hook.name,
-            hookId: hook._id,
-            appointmentId,
-            confirmed,
-            force,
-            paymentIntentId,
-            error,
-          },
-          "Hook execution failed",
-        );
-      }
-    });
-
-    await Promise.all(promises);
 
     logger.debug(
       {
@@ -419,32 +375,11 @@ export class EventsService implements IEventsService {
       throw new Error("Something went wrong - updated appointment not found");
     }
 
-    const hooks =
-      await this.appsService.getAppsByScopeWithData("appointment-hook");
-
-    logger.debug(
-      { appointmentId, hookCount: hooks.length },
-      "Executing appointment hooks",
-    );
-
-    const promises = hooks.map(async (hook) => {
-      const service = AvailableAppServices[hook.name](
-        this.appsService.getAppServiceProps(hook._id),
-      ) as any as IAppointmentHook;
-
-      try {
-        logger.debug(
-          {
-            appointmentId,
-            hookName: hook.name,
-            confirmed,
-            hookId: hook._id,
-            doNotNotifyCustomer,
-          },
-          "Executing appointment hook",
-        );
-
-        await service.onAppointmentRescheduled(
+    logger.debug({ appointmentId }, "Event saved, executing hooks");
+    await this.appsService.executeHooks<IAppointmentHook>(
+      "appointment-hook",
+      async (hook, service) => {
+        await service.onAppointmentRescheduled?.(
           hook,
           updatedAppointment,
           event.dateTime,
@@ -453,30 +388,11 @@ export class EventsService implements IEventsService {
           updatedAppointment.totalDuration,
           doNotNotifyCustomer,
         );
-
-        // if (confirmed) {
-        //   await service.onAppointmentStatusChanged(
-        //     hook,
-        //     appointment,
-        //     "confirmed"
-        //   );
-        // }
-      } catch (error: any) {
-        logger.error(
-          {
-            hookName: hook.name,
-            hookId: hook._id,
-            appointmentId,
-            confirmed,
-            doNotNotifyCustomer,
-            error,
-          },
-          "Hook execution failed",
-        );
-      }
-    });
-
-    await Promise.all(promises);
+      },
+      {
+        ignoreErrors: true,
+      },
+    );
 
     logger.debug(
       {
@@ -1022,58 +938,21 @@ export class EventsService implements IEventsService {
       },
     });
 
-    const hooks =
-      await this.appsService.getAppsByScopeWithData("appointment-hook");
-
-    logger.debug(
-      { appointmentId: id, hookCount: hooks.length },
-      "Executing status change hooks",
-    );
-
-    const promises = hooks.map(async (hook) => {
-      const service = AvailableAppServices[hook.name](
-        this.appsService.getAppServiceProps(hook._id),
-      ) as any as IAppointmentHook;
-
-      try {
-        logger.debug(
-          {
-            appointmentId: id,
-            hookName: hook.name,
-            hookId: hook._id,
-            newStatus,
-            oldStatus,
-          },
-          "Executing status change hook",
-        );
-
-        await service.onAppointmentStatusChanged(
+    await this.appsService.executeHooks<IAppointmentHook>(
+      "appointment-hook",
+      async (hook, service) => {
+        await service.onAppointmentStatusChanged?.(
           hook,
           appointment,
           newStatus,
           oldStatus,
           by,
         );
-
-        logger.debug(
-          {
-            appointmentId: id,
-            hookName: hook.name,
-            hookId: hook._id,
-            newStatus,
-            oldStatus,
-          },
-          "Status change hook executed",
-        );
-      } catch (error: any) {
-        logger.error(
-          { hookName: hook.name, hookId: hook._id, appointmentId: id, error },
-          "Status change hook execution failed",
-        );
-      }
-    });
-
-    await Promise.all(promises);
+      },
+      {
+        ignoreErrors: true,
+      },
+    );
 
     logger.debug(
       { appointmentId: id, oldStatus, newStatus },
@@ -1225,35 +1104,15 @@ export class EventsService implements IEventsService {
       "Appointment rescheduled in db",
     );
 
-    const hooks =
-      await this.appsService.getAppsByScopeWithData("appointment-hook");
-
     logger.debug(
-      { appointmentId: id, hookCount: hooks.length },
-      "Executing reschedule hooks",
+      { appointmentId: id, newTime, newDuration },
+      "Appointment rescheduled in db",
     );
 
-    const promises = hooks.map(async (hook) => {
-      const service = AvailableAppServices[hook.name](
-        this.appsService.getAppServiceProps(hook._id),
-      ) as any as IAppointmentHook;
-
-      try {
-        logger.debug(
-          {
-            appointmentId: id,
-            hookName: hook.name,
-            hookId: hook._id,
-            newTime,
-            newDuration,
-            oldTime,
-            oldDuration,
-            doNotNotifyCustomer,
-          },
-          "Executing reschedule hook",
-        );
-
-        await service.onAppointmentRescheduled(
+    await this.appsService.executeHooks<IAppointmentHook>(
+      "appointment-hook",
+      async (hook, service) => {
+        await service.onAppointmentRescheduled?.(
           hook,
           appointment,
           newTime,
@@ -1262,29 +1121,11 @@ export class EventsService implements IEventsService {
           oldDuration,
           doNotNotifyCustomer,
         );
-
-        logger.debug(
-          {
-            appointmentId: id,
-            hookName: hook.name,
-            hookId: hook._id,
-            newTime,
-            newDuration,
-            oldTime,
-            oldDuration,
-            doNotNotifyCustomer,
-          },
-          "Reschedule hook executed",
-        );
-      } catch (error: any) {
-        logger.error(
-          { hookName: hook.name, appointmentId: id, error },
-          "Reschedule hook execution failed",
-        );
-      }
-    });
-
-    await Promise.all(promises);
+      },
+      {
+        ignoreErrors: true,
+      },
+    );
 
     logger.debug(
       {
@@ -1725,8 +1566,9 @@ export class EventsService implements IEventsService {
           APPOINTMENTS_COLLECTION_NAME,
         );
 
-        const customer = await this.getCustomer(event);
-        await this.updateCustomerIfNeeded(customer, event);
+        const customer = await this.customersService.getOrUpsertCustomer(
+          event.fields,
+        );
 
         if (customer.dontAllowBookings && !force) {
           logger.error(
@@ -1946,99 +1788,6 @@ export class EventsService implements IEventsService {
       });
     } finally {
       await session.endSession();
-    }
-  }
-
-  private async getCustomer(event: AppointmentEvent): Promise<Customer> {
-    const logger = this.loggerFactory("getCustomer");
-
-    logger.debug(
-      { customerName: event.fields.name, customerEmail: event.fields.email },
-      "Getting or creating customer",
-    );
-
-    const existingCustomer = await this.customersService.findCustomer(
-      event.fields.email.trim(),
-      event.fields.phone.trim(),
-    );
-
-    if (existingCustomer) {
-      logger.debug(
-        {
-          customerId: existingCustomer._id,
-          customerName: existingCustomer.name,
-        },
-        "Found existing customer",
-      );
-      return existingCustomer;
-    }
-
-    logger.debug(
-      { customerName: event.fields.name, customerEmail: event.fields.email },
-      "Creating new customer",
-    );
-
-    const customer: CustomerUpdateModel = {
-      email: event.fields.email.trim(),
-      name: event.fields.name.trim(),
-      phone: event.fields.phone.trim(),
-      knownEmails: [],
-      knownNames: [],
-      knownPhones: [],
-      requireDeposit: "inherit",
-    };
-
-    const customerId = await this.customersService.createCustomer(customer);
-    const newCustomer = {
-      _id: customerId,
-      ...customer,
-    };
-
-    logger.debug(
-      { customerId, customerName: newCustomer.name },
-      "New customer created",
-    );
-    return newCustomer;
-  }
-
-  private async updateCustomerIfNeeded(
-    customer: Customer,
-    event: AppointmentEvent,
-  ): Promise<void> {
-    const logger = this.loggerFactory("updateCustomerIfNeeded");
-
-    logger.debug(
-      { customerId: customer._id, customerName: customer.name },
-      "Checking if customer update is needed",
-    );
-
-    let needsUpdate = false;
-    const name = event.fields.name.trim();
-    if (customer.name !== name && !customer.knownNames.includes(name)) {
-      customer.knownNames.push(name);
-      needsUpdate = true;
-    }
-
-    const email = event.fields.email.trim();
-    if (customer.email !== email && !customer.knownEmails.includes(email)) {
-      customer.knownEmails.push(email);
-      needsUpdate = true;
-    }
-
-    const phone = event.fields.phone.trim();
-    if (customer.phone !== phone && !customer.knownPhones.includes(phone)) {
-      customer.knownPhones.push(phone);
-      needsUpdate = true;
-    }
-
-    if (needsUpdate) {
-      logger.debug(
-        { customerId: customer._id, updatedFields: { name, email, phone } },
-        "Updating customer with new information",
-      );
-      await this.customersService.updateCustomer(customer._id, customer);
-    } else {
-      logger.debug({ customerId: customer._id }, "No customer update needed");
     }
   }
 

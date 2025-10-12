@@ -741,7 +741,9 @@ export class ServicesService implements IServicesService {
     return option;
   }
 
-  public async getOptions(query: Query): Promise<WithTotal<AppointmentOption>> {
+  public async getOptions(
+    query: Query & { priorityIds?: string[] },
+  ): Promise<WithTotal<AppointmentOption>> {
     const logger = this.loggerFactory("getOptions");
     logger.debug({ query }, "Getting options");
     const db = await getDbConnection();
@@ -769,15 +771,65 @@ export class ServicesService implements IServicesService {
       filter.$or = queries;
     }
 
+    const priorityStages = query.priorityIds
+      ? [
+          {
+            $facet: {
+              priority: [
+                {
+                  $match: {
+                    _id: {
+                      $in: query.priorityIds,
+                    },
+                  },
+                },
+              ],
+              other: [
+                {
+                  $match: {
+                    ...filter,
+                    _id: {
+                      $nin: query.priorityIds,
+                    },
+                  },
+                },
+                {
+                  $sort: sort,
+                },
+              ],
+            },
+          },
+          {
+            $project: {
+              values: {
+                $concatArrays: ["$priority", "$other"],
+              },
+            },
+          },
+          {
+            $unwind: {
+              path: "$values",
+            },
+          },
+          {
+            $replaceRoot: {
+              newRoot: "$values",
+            },
+          },
+        ]
+      : [
+          {
+            $match: filter,
+          },
+          {
+            $sort: sort,
+          },
+        ];
+
     const [result] = await db
       .collection<AppointmentOption>(OPTIONS_COLLECTION_NAME)
       .aggregate([
-        {
-          $sort: sort,
-        },
-        {
-          $match: filter,
-        },
+        ...priorityStages,
         {
           $facet: {
             paginatedResults:

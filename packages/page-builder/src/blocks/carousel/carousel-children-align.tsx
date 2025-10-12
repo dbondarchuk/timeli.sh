@@ -1,9 +1,11 @@
 import { useI18n } from "@vivid/i18n";
+import {
+  justifyItemsStyle,
+  StyleDefinition,
+} from "@vivid/page-builder-base/style";
 import { Combobox } from "@vivid/ui";
 import { AlignLeft } from "lucide-react";
 import { z } from "zod";
-import { justifyItemsStyle } from "../../style/styles/layout/justify-items";
-import { StyleDefinition } from "../../style/types";
 
 const carouselChildrenAlignKeys = [
   "left",

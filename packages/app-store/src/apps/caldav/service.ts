@@ -23,6 +23,7 @@ import {
 } from "ts-ics";
 import { DAVClient } from "tsdav";
 import { CaldavAction, CaldavCalendarSource } from "./models";
+import { CaldavAdminKeys, CaldavAdminNamespace } from "./translations/types";
 
 const attendeeStatusToPartStatusMap: Record<
   CalendarEventAttendee["status"],
@@ -67,7 +68,9 @@ export default class CaldavConnectedApp
   public async processRequest(
     appData: ConnectedAppData,
     action: CaldavAction,
-  ): Promise<ConnectedAppStatusWithText | string[]> {
+  ): Promise<
+    ConnectedAppStatusWithText<CaldavAdminNamespace, CaldavAdminKeys> | string[]
+  > {
     const logger = this.loggerFactory("processRequest");
     const { type, data } = action;
     logger.debug(
@@ -133,15 +136,21 @@ export default class CaldavConnectedApp
           "Target calendar not found",
         );
 
-        throw new ConnectedAppError("calDav.statusText.calendar_not_found", {
-          calendarName: data.calendarName,
-        });
+        throw new ConnectedAppError<CaldavAdminNamespace, CaldavAdminKeys>(
+          "app_caldav_admin.statusText.calendarNotFound",
+          {
+            calendarName: data.calendarName,
+          },
+        );
       }
 
-      const status: ConnectedAppStatusWithText = {
+      const status: ConnectedAppStatusWithText<
+        CaldavAdminNamespace,
+        CaldavAdminKeys
+      > = {
         status: "connected",
         statusText: {
-          key: "calDav.statusText.successfully_set_up",
+          key: "app_caldav_admin.statusText.successfullySetUp",
           args: {
             calendarName: data.calendarName,
           },
@@ -177,7 +186,10 @@ export default class CaldavConnectedApp
         "Failed to connect to CalDAV server",
       );
 
-      const status: ConnectedAppStatusWithText = {
+      const status: ConnectedAppStatusWithText<
+        CaldavAdminNamespace,
+        CaldavAdminKeys
+      > = {
         status: "failed",
         statusText:
           error instanceof ConnectedAppError
@@ -185,7 +197,9 @@ export default class CaldavConnectedApp
                 key: error.key,
                 args: error.args,
               }
-            : error?.message || error?.toString() || "common.statusText.error",
+            : error?.message ||
+              error?.toString() ||
+              "apps.common.statusText.error",
       };
 
       this.props.update({
@@ -252,8 +266,8 @@ export default class CaldavConnectedApp
         "Failed to fetch calendars",
       );
 
-      throw new ConnectedAppError(
-        "calDav.statusText.failed_to_fetch_calendars",
+      throw new ConnectedAppError<CaldavAdminNamespace, CaldavAdminKeys>(
+        "app_caldav_admin.statusText.failedToFetchCalendars",
         {
           serverUrl: data.serverUrl,
         },
@@ -381,7 +395,9 @@ export default class CaldavConnectedApp
                 key: error.key,
                 args: error.args,
               }
-            : error?.message || error?.toString() || "common.statusText.error",
+            : error?.message ||
+              error?.toString() ||
+              "apps.common.statusText.error",
       };
 
       this.props.update({
@@ -449,7 +465,9 @@ export default class CaldavConnectedApp
                 key: error.key,
                 args: error.args,
               }
-            : error?.message || error?.toString() || "common.statusText.error",
+            : error?.message ||
+              error?.toString() ||
+              "apps.common.statusText.error",
       });
 
       throw error;
@@ -512,7 +530,9 @@ export default class CaldavConnectedApp
                 key: error.key,
                 args: error.args,
               }
-            : error?.message || error?.toString() || "common.statusText.error",
+            : error?.message ||
+              error?.toString() ||
+              "apps.common.statusText.error",
       });
 
       throw error;
@@ -568,7 +588,9 @@ export default class CaldavConnectedApp
                 key: error.key,
                 args: error.args,
               }
-            : error?.message || error?.toString() || "common.statusText.error",
+            : error?.message ||
+              error?.toString() ||
+              "apps.common.statusText.error",
       });
 
       throw error;
@@ -664,7 +686,10 @@ export default class CaldavConnectedApp
           { serverUrl: config.serverUrl },
           "Calendar name is not set",
         );
-        throw new Error("Calendar name is not set");
+
+        throw new ConnectedAppError<CaldavAdminNamespace, CaldavAdminKeys>(
+          "app_caldav_admin.statusText.calendarNotSet",
+        );
       }
 
       logger.debug(
@@ -700,7 +725,13 @@ export default class CaldavConnectedApp
           },
           "Target calendar not found",
         );
-        throw new Error(`Can't find calendar '${calendarName}'`);
+
+        throw new ConnectedAppError<CaldavAdminNamespace, CaldavAdminKeys>(
+          "app_caldav_admin.statusText.calendarNotFound",
+          {
+            calendarName,
+          },
+        );
       }
 
       logger.debug(
@@ -730,7 +761,9 @@ export default class CaldavConnectedApp
                 key: error.key,
                 args: error.args,
               }
-            : error?.message || error?.toString() || "common.statusText.error",
+            : error?.message ||
+              error?.toString() ||
+              "apps.common.statusText.error",
       });
 
       throw error;

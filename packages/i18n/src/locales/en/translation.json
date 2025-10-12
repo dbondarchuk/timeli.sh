@@ -113,5 +113,11 @@
   "header": {
     "menu": "Menu",
     "close": "Close"
+  },
+  "common": {
+    "buttons": {
+      "close": "Close",
+      "add": "Add"
+    }
   }
 }

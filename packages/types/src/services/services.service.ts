@@ -62,7 +62,9 @@ export interface IServicesService {
 
   /** Options */
   getOption(id: string): Promise<AppointmentOption | null>;
-  getOptions(query: Query): Promise<WithTotal<AppointmentOption>>;
+  getOptions(
+    query: Query & { priorityIds?: string[] },
+  ): Promise<WithTotal<AppointmentOption>>;
   createOption(addon: AppointmentOptionUpdateModel): Promise<AppointmentOption>;
   updateOption(id: string, update: AppointmentOptionUpdateModel): Promise<void>;
   deleteOption(id: string): Promise<AppointmentOption | null>;

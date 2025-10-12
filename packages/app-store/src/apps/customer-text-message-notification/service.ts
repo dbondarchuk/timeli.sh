@@ -9,6 +9,11 @@ import {
   IConnectedAppProps,
 } from "@vivid/types";
 import { CustomerTextMessageNotificationConfiguration } from "./models";
+import {
+  CustomerTextMessageNotificationAdminAllKeys,
+  CustomerTextMessageNotificationAdminKeys,
+  CustomerTextMessageNotificationAdminNamespace,
+} from "./translations/types";
 
 import {
   getArguments,
@@ -28,7 +33,12 @@ export default class CustomerTextMessageNotificationConnectedApp
   public async processRequest(
     appData: ConnectedAppData,
     data: CustomerTextMessageNotificationConfiguration,
-  ): Promise<ConnectedAppStatusWithText> {
+  ): Promise<
+    ConnectedAppStatusWithText<
+      CustomerTextMessageNotificationAdminNamespace,
+      CustomerTextMessageNotificationAdminKeys
+    >
+  > {
     const logger = this.loggerFactory("processRequest");
     logger.debug(
       { appId: appData._id },
@@ -68,14 +78,17 @@ export default class CustomerTextMessageNotificationConnectedApp
         return {
           status: "failed",
           statusText:
-            "customerTextMessageNotification.statusText.text_message_app_not_configured",
+            "app_customer-text-message-notification_admin.statusText.text_message_app_not_configured",
         };
       }
 
-      const status: ConnectedAppStatusWithText = {
+      const status: ConnectedAppStatusWithText<
+        CustomerTextMessageNotificationAdminNamespace,
+        CustomerTextMessageNotificationAdminKeys
+      > = {
         status: "connected",
         statusText:
-          "customerTextMessageNotification.statusText.successfully_set_up",
+          "app_customer-text-message-notification_admin.statusText.successfully_set_up",
       };
 
       this.props.update({
@@ -98,7 +111,7 @@ export default class CustomerTextMessageNotificationConnectedApp
       this.props.update({
         status: "failed",
         statusText:
-          "customerTextMessageNotification.statusText.error_processing_configuration",
+          "app_customer-text-message-notification_admin.statusText.error_processing_configuration" satisfies CustomerTextMessageNotificationAdminAllKeys,
       });
 
       throw error;
@@ -137,7 +150,7 @@ export default class CustomerTextMessageNotificationConnectedApp
       this.props.update({
         status: "failed",
         statusText:
-          "customerTextMessageNotification.statusText.error_sending_customer_text_message_notification_for_new_appointment",
+          "app_customer-text-message-notification_admin.statusText.error_sending_customer_text_message_notification_for_new_appointment" satisfies CustomerTextMessageNotificationAdminAllKeys,
       });
 
       throw error;
@@ -176,7 +189,7 @@ export default class CustomerTextMessageNotificationConnectedApp
       this.props.update({
         status: "failed",
         statusText:
-          "customerTextMessageNotification.statusText.error_sending_customer_text_message_notification_for_status_change",
+          "app_customer-text-message-notification_admin.statusText.error_sending_customer_text_message_notification_for_status_change" satisfies CustomerTextMessageNotificationAdminAllKeys,
       });
 
       throw error;
@@ -256,7 +269,7 @@ export default class CustomerTextMessageNotificationConnectedApp
       this.props.update({
         status: "failed",
         statusText:
-          "customerTextMessageNotification.statusText.error_sending_customer_text_message_notification_for_rescheduled_appointment",
+          "app_customer-text-message-notification_admin.statusText.error_sending_customer_text_message_notification_for_rescheduled_appointment" satisfies CustomerTextMessageNotificationAdminAllKeys,
       });
 
       throw error;
@@ -395,7 +408,8 @@ export default class CustomerTextMessageNotificationConnectedApp
         },
         appointmentId: appointment._id,
         participantType: "customer",
-        handledBy: `customerTextMessageNotification.handlers.${initiator}`,
+        handledBy:
+          `app_customer-text-message-notification_admin.handlers.${initiator}` satisfies CustomerTextMessageNotificationAdminAllKeys,
       });
 
       logger.info(

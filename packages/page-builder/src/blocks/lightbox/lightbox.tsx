@@ -1,4 +1,5 @@
 "use client";
+import { ReplaceOriginalColors } from "@vivid/page-builder-base";
 import {
   Carousel,
   CarouselApi,
@@ -10,7 +11,6 @@ import {
   DialogContent,
 } from "@vivid/ui";
 import { useContext, useEffect, useState } from "react";
-import { ReplaceOriginalColors } from "../../helpers/replace-original-colors";
 import { LightboxInternalContext } from "./context";
 import { LightboxProps } from "./schema";
 

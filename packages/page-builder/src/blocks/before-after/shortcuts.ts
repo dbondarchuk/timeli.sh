@@ -1,6 +1,6 @@
+import { Shortcut } from "@vivid/page-builder-base";
+import { AllStylesSchemas } from "@vivid/page-builder-base/style";
 import { Proportions, RotateCcw } from "lucide-react";
-import { Shortcut } from "../../shortcuts";
-import { AllStylesSchemas } from "../../style";
 
 export const beforeAfterShortcuts: Shortcut<AllStylesSchemas>[] = [
   {

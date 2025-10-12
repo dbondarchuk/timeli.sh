@@ -8,5 +8,6 @@ export * from "./data-table-search";
 export * from "./data-table-skeleton";
 export * from "./data-table-sort-header";
 export * from "./discounts-data-table-async-filter-box";
+export * from "./options-data-table-async-filter-box";
 export * from "./search-params";
 export * from "./use-data-table-context";

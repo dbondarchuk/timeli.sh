@@ -37,6 +37,7 @@ import { createEvent } from "ics";
 import { DateTime } from "luxon";
 import { env } from "process";
 import { v4 } from "uuid";
+import { OutlookAdminAllKeys } from "./translations/types";
 
 const offlineAccessScope = "offline_access";
 
@@ -285,7 +286,8 @@ export class OutlookConnectedApp
 
       this.props.update({
         status: "connected",
-        statusText: "outlook.statusText.successfully_set_up",
+        statusText:
+          "app_outlook_admin.statusText.successfully_set_up" satisfies OutlookAdminAllKeys,
       });
 
       return result;
@@ -300,7 +302,7 @@ export class OutlookConnectedApp
         statusText:
           e instanceof ConnectedAppError
             ? e.key
-            : "outlook.statusText.error_getting_busy_times",
+            : ("app_outlook_admin.statusText.error_getting_busy_times" satisfies OutlookAdminAllKeys),
       });
 
       throw e;
@@ -438,7 +440,8 @@ export class OutlookConnectedApp
 
       this.props.update({
         status: "connected",
-        statusText: "outlook.statusText.successfully_set_up",
+        statusText:
+          "app_outlook_admin.statusText.successfully_set_up" satisfies OutlookAdminAllKeys,
       });
 
       return {
@@ -459,7 +462,7 @@ export class OutlookConnectedApp
         statusText:
           e instanceof ConnectedAppError
             ? e.key
-            : "outlook.statusText.error_sending_email",
+            : ("app_outlook_admin.statusText.error_sending_email" satisfies OutlookAdminAllKeys),
       });
 
       throw e;
@@ -484,7 +487,7 @@ export class OutlookConnectedApp
     if (!tokens?.accessToken) {
       logger.error({ appId: app._id }, "No token provided");
       throw new ConnectedAppError(
-        "outlook.statusText.error_processing_configuration",
+        "app_outlook_admin.statusText.error_processing_configuration" satisfies OutlookAdminAllKeys,
       );
     }
 
@@ -524,7 +527,7 @@ export class OutlookConnectedApp
         statusText:
           error instanceof ConnectedAppError
             ? error.key
-            : "outlook.statusText.error_creating_calendar_event",
+            : ("app_outlook_admin.statusText.error_creating_calendar_event" satisfies OutlookAdminAllKeys),
       });
 
       throw error;
@@ -551,7 +554,7 @@ export class OutlookConnectedApp
     if (!tokens?.accessToken) {
       logger.error({ appId: app._id }, "No token provided");
       throw new ConnectedAppError(
-        "outlook.statusText.error_processing_configuration",
+        "app_outlook_admin.statusText.error_processing_configuration" satisfies OutlookAdminAllKeys,
       );
     }
 
@@ -593,7 +596,7 @@ export class OutlookConnectedApp
         statusText:
           error instanceof ConnectedAppError
             ? error.key
-            : "outlook.statusText.error_updating_calendar_event",
+            : ("app_outlook_admin.statusText.error_updating_calendar_event" satisfies OutlookAdminAllKeys),
       });
 
       throw error;
@@ -639,7 +642,7 @@ export class OutlookConnectedApp
         statusText:
           error instanceof ConnectedAppError
             ? error.key
-            : "outlook.statusText.error_deleting_calendar_event",
+            : ("app_outlook_admin.statusText.error_deleting_calendar_event" satisfies OutlookAdminAllKeys),
       });
 
       throw error;
@@ -878,7 +881,8 @@ export class OutlookConnectedApp
 
       this.props.update({
         status: "failed",
-        statusText: "outlook.statusText.error_refreshing_access_token",
+        statusText:
+          "app_outlook_admin.statusText.error_refreshing_access_token" satisfies OutlookAdminAllKeys,
       });
 
       throw e;
@@ -910,7 +914,7 @@ export class OutlookConnectedApp
     if (!username) {
       logger.error("Authorization result does not contain account information");
       throw new ConnectedAppError(
-        "outlook.statusText.authorization_result_no_account_info",
+        "app_outlook_admin.statusText.authorization_result_no_account_info" satisfies OutlookAdminAllKeys,
       );
     }
 
@@ -920,7 +924,7 @@ export class OutlookConnectedApp
         "Authorization result does not contain enough scopes",
       );
       throw new ConnectedAppError(
-        "outlook.statusText.authorization_result_not_enough_scopes",
+        "app_outlook_admin.statusText.authorization_result_not_enough_scopes" satisfies OutlookAdminAllKeys,
       );
     }
 
@@ -938,7 +942,7 @@ export class OutlookConnectedApp
       if (!refreshToken) {
         logger.error("Authorization result does not contain refresh token");
         throw new ConnectedAppError(
-          "outlook.statusText.authorization_result_no_refresh_token",
+          "app_outlook_admin.statusText.authorization_result_no_refresh_token" satisfies OutlookAdminAllKeys,
         );
       }
 

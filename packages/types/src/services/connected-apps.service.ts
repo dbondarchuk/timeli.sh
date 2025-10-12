@@ -39,4 +39,13 @@ export interface IConnectedAppsService {
     appId: string,
   ): Promise<{ service: IConnectedApp & T; app: ConnectedAppData }>;
   getAppServiceProps(appId: string): IConnectedAppProps;
+
+  executeHooks<T>(
+    scope: AppScope,
+    hook: (app: ConnectedAppData, service: T) => Promise<void>,
+    options?: {
+      concurrencyLimit?: number;
+      ignoreErrors?: boolean;
+    },
+  ): Promise<void>;
 }

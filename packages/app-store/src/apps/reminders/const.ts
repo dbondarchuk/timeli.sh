@@ -1,15 +1,18 @@
-import { AppsKeys } from "@vivid/i18n";
 import { CommunicationChannel } from "@vivid/types";
 import { ReminderType } from "./models";
+import { RemindersAdminKeys } from "./translations/types";
 
 export const REMINDERS_APP_NAME = "reminders";
 
-export const reminderChannelLabels: Record<CommunicationChannel, AppsKeys> = {
-  email: "reminders.channels.email",
-  "text-message": "reminders.channels.text-message",
+export const reminderChannelLabels: Record<
+  CommunicationChannel,
+  RemindersAdminKeys
+> = {
+  email: "channels.email",
+  "text-message": "channels.text-message",
 };
 
-export const reminderTypeLabels: Record<ReminderType, AppsKeys> = {
-  timeBefore: "reminders.triggers.timeBefore",
-  atTime: "reminders.triggers.atTime",
+export const reminderTypeLabels: Record<ReminderType, RemindersAdminKeys> = {
+  timeBefore: "triggers.timeBefore",
+  atTime: "triggers.atTime",
 };

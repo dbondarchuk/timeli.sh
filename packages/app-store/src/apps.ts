@@ -13,6 +13,8 @@ import { EmailNotificationApp } from "./apps/email-notification/app";
 import { EMAIL_NOTIFICATION_APP_NAME } from "./apps/email-notification/const";
 import { FileSystemAssetsStorageApp } from "./apps/file-system-assets-storage/app";
 import { FILE_SYSTEM_ASSETS_STORAGE_APP_NAME } from "./apps/file-system-assets-storage/const";
+import { FinancialOverviewApp } from "./apps/financial-overview/app";
+import { FINANCIAL_OVERVIEW_APP_NAME } from "./apps/financial-overview/const";
 import { FollowUpsApp } from "./apps/followups/app";
 import { FOLLOW_UPS_APP_NAME } from "./apps/followups/const";
 import { GoogleCalendarApp } from "./apps/google-calendar/app";
@@ -37,6 +39,8 @@ import { TextMessageNotificationApp } from "./apps/text-message-notification/app
 import { TEXT_MESSAGE_NOTIFICATION_APP_NAME } from "./apps/text-message-notification/const";
 import { TextMessageResenderApp } from "./apps/text-message-resender/app";
 import { TEXT_MESSAGE_RESENDER_APP_NAME } from "./apps/text-message-resender/const";
+import { WaitlistApp } from "./apps/waitlist/app";
+import { WAITLIST_APP_NAME } from "./apps/waitlist/const";
 import { WeeklyScheduleApp } from "./apps/weekly-schedule/app";
 import { WEEKLY_SCHEDULE_APP_NAME } from "./apps/weekly-schedule/const";
 
@@ -63,6 +67,8 @@ export const AvailableApps: Record<string, App> = {
   [TEXT_MESSAGE_AUTO_REPLY_APP_NAME]: TextMessageAutoReplyApp,
   [TEXT_MESSAGE_RESENDER_APP_NAME]: TextMessageResenderApp,
   [PAYPAL_APP_NAME]: PaypalApp,
+  [WAITLIST_APP_NAME]: WaitlistApp,
+  [FINANCIAL_OVERVIEW_APP_NAME]: FinancialOverviewApp,
 };
 
 export { BUSY_EVENTS_APP_NAME } from "./apps/busy-events/const";
@@ -72,6 +78,7 @@ export { CUSTOMER_EMAIL_NOTIFICATION_APP_NAME } from "./apps/customer-email-noti
 export { CUSTOMER_TEXT_MESSAGE_NOTIFICATION_APP_NAME } from "./apps/customer-text-message-notification/const";
 export { EMAIL_NOTIFICATION_APP_NAME } from "./apps/email-notification/const";
 export { FILE_SYSTEM_ASSETS_STORAGE_APP_NAME } from "./apps/file-system-assets-storage/const";
+export { FINANCIAL_OVERVIEW_APP_NAME } from "./apps/financial-overview/const";
 export { FOLLOW_UPS_APP_NAME } from "./apps/followups/const";
 export { GOOGLE_CALENDAR_APP_NAME } from "./apps/google-calendar/const";
 export { ICS_APP_NAME } from "./apps/ics/const";
@@ -85,4 +92,5 @@ export { TEXTBELT_APP_NAME } from "./apps/text-belt/const";
 export { TEXT_MESSAGE_AUTO_REPLY_APP_NAME } from "./apps/text-message-auto-reply/const";
 export { TEXT_MESSAGE_NOTIFICATION_APP_NAME } from "./apps/text-message-notification/const";
 export { TEXT_MESSAGE_RESENDER_APP_NAME } from "./apps/text-message-resender/const";
+export { WAITLIST_APP_NAME as WAITLIST_NOTIFICATION_APP_NAME } from "./apps/waitlist/const";
 export { WEEKLY_SCHEDULE_APP_NAME } from "./apps/weekly-schedule/const";

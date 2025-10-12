@@ -37,27 +37,32 @@ import {
   FollowUpUpdateModel,
   getFollowUpSchemaWithUniqueCheck,
 } from "./models";
+import {
+  FollowUpsAdminKeys,
+  FollowUpsAdminNamespace,
+  followUpsAdminNamespace,
+} from "./translations/types";
 
 export const FollowUpForm: React.FC<{
   initialData?: FollowUpUpdateModel & Partial<DatabaseId>;
   appId: string;
 }> = ({ initialData, appId }) => {
-  const t = useI18n("apps");
+  const t = useI18n<FollowUpsAdminNamespace, FollowUpsAdminKeys>(
+    followUpsAdminNamespace,
+  );
   const uses12HourFormat = use12HourFormat();
 
   const followUpTypeValues = followUpTypes.map(
-    (value) =>
-      ({ value, label: t(`followUps.triggers.${value}`) }) as IComboboxItem,
+    (value) => ({ value, label: t(`triggers.${value}`) }) as IComboboxItem,
   );
 
   const followUpChannelValues = communicationChannels.map(
-    (value) =>
-      ({ value, label: t(`followUps.channels.${value}`) }) as IComboboxItem,
+    (value) => ({ value, label: t(`channels.${value}`) }) as IComboboxItem,
   );
 
   const formSchema = getFollowUpSchemaWithUniqueCheck(
     (name) => checkUniqueFollowUpName(appId, name, initialData?._id),
-    t("followUps.form.name.validation.unique"),
+    t("form.name.validation.unique"),
   );
 
   type FormValues = z.infer<typeof formSchema>;
@@ -92,13 +97,13 @@ export const FollowUpForm: React.FC<{
       await toastPromise(fn(), {
         success: t(
           initialData?._id
-            ? "followUps.statusText.follow_up_updated"
-            : "followUps.statusText.follow_up_created",
+            ? "statusText.follow_up_updated"
+            : "statusText.follow_up_created",
         ),
         error: t(
           initialData?._id
-            ? "followUps.statusText.error_updating_follow_up"
-            : "followUps.statusText.error_creating_follow_up",
+            ? "statusText.error_updating_follow_up"
+            : "statusText.error_creating_follow_up",
         ),
       });
     } catch (error: any) {
@@ -120,12 +125,12 @@ export const FollowUpForm: React.FC<{
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t("followUps.form.name.label")}</FormLabel>
+                <FormLabel>{t("form.name.label")}</FormLabel>
 
                 <FormControl>
                   <Input
                     disabled={loading}
-                    placeholder={t("followUps.form.name.placeholder")}
+                    placeholder={t("form.name.placeholder")}
                     {...field}
                   />
                 </FormControl>
@@ -139,9 +144,9 @@ export const FollowUpForm: React.FC<{
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  {t("followUps.form.afterAppointmentCount.label")}{" "}
+                  {t("form.afterAppointmentCount.label")}{" "}
                   <InfoTooltip>
-                    {t("followUps.form.afterAppointmentCount.tooltip")}
+                    {t("form.afterAppointmentCount.tooltip")}
                   </InfoTooltip>
                 </FormLabel>
 
@@ -149,9 +154,7 @@ export const FollowUpForm: React.FC<{
                   <Input
                     type="number"
                     disabled={loading}
-                    placeholder={t(
-                      "followUps.form.afterAppointmentCount.placeholder",
-                    )}
+                    placeholder={t("form.afterAppointmentCount.placeholder")}
                     {...field}
                   />
                 </FormControl>
@@ -164,13 +167,13 @@ export const FollowUpForm: React.FC<{
             name="type"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t("followUps.form.type.label")}</FormLabel>
+                <FormLabel>{t("form.type.label")}</FormLabel>
                 <FormControl>
                   <Combobox
                     disabled={loading}
                     className="flex w-full font-normal text-base"
                     values={followUpTypeValues}
-                    searchLabel={t("followUps.form.type.searchLabel")}
+                    searchLabel={t("form.type.searchLabel")}
                     value={field.value}
                     onItemSelect={(value) => {
                       field.onChange(value);
@@ -189,10 +192,8 @@ export const FollowUpForm: React.FC<{
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      {t("followUps.form.weeks.label")}{" "}
-                      <InfoTooltip>
-                        {t("followUps.form.weeks.tooltip")}
-                      </InfoTooltip>
+                      {t("form.weeks.label")}{" "}
+                      <InfoTooltip>{t("form.weeks.tooltip")}</InfoTooltip>
                     </FormLabel>
 
                     <FormControl>
@@ -213,10 +214,8 @@ export const FollowUpForm: React.FC<{
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      {t("followUps.form.days.label")}{" "}
-                      <InfoTooltip>
-                        {t("followUps.form.days.tooltip")}
-                      </InfoTooltip>
+                      {t("form.days.label")}{" "}
+                      <InfoTooltip>{t("form.days.tooltip")}</InfoTooltip>
                     </FormLabel>
 
                     <FormControl>
@@ -238,10 +237,8 @@ export const FollowUpForm: React.FC<{
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      {t("followUps.form.hours.label")}{" "}
-                      <InfoTooltip>
-                        {t("followUps.form.hours.tooltip")}
-                      </InfoTooltip>
+                      {t("form.hours.label")}{" "}
+                      <InfoTooltip>{t("form.hours.tooltip")}</InfoTooltip>
                     </FormLabel>
 
                     <FormControl>
@@ -262,10 +259,8 @@ export const FollowUpForm: React.FC<{
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      {t("followUps.form.minutes.label")}{" "}
-                      <InfoTooltip>
-                        {t("followUps.form.minutes.tooltip")}
-                      </InfoTooltip>
+                      {t("form.minutes.label")}{" "}
+                      <InfoTooltip>{t("form.minutes.tooltip")}</InfoTooltip>
                     </FormLabel>
 
                     <FormControl>
@@ -290,10 +285,8 @@ export const FollowUpForm: React.FC<{
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      {t("followUps.form.weeks.label")}{" "}
-                      <InfoTooltip>
-                        {t("followUps.form.weeks.tooltip")}
-                      </InfoTooltip>
+                      {t("form.weeks.label")}{" "}
+                      <InfoTooltip>{t("form.weeks.tooltip")}</InfoTooltip>
                     </FormLabel>
 
                     <FormControl>
@@ -318,10 +311,8 @@ export const FollowUpForm: React.FC<{
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      {t("followUps.form.days.label")}{" "}
-                      <InfoTooltip>
-                        {t("followUps.form.days.tooltip")}
-                      </InfoTooltip>
+                      {t("form.days.label")}{" "}
+                      <InfoTooltip>{t("form.days.tooltip")}</InfoTooltip>
                     </FormLabel>
 
                     <FormControl>
@@ -343,10 +334,8 @@ export const FollowUpForm: React.FC<{
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      {t("followUps.form.time.label")}{" "}
-                      <InfoTooltip>
-                        {t("followUps.form.time.tooltip")}
-                      </InfoTooltip>
+                      {t("form.time.label")}{" "}
+                      <InfoTooltip>{t("form.time.tooltip")}</InfoTooltip>
                     </FormLabel>
 
                     <FormControl>
@@ -383,17 +372,15 @@ export const FollowUpForm: React.FC<{
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  {t("followUps.form.channel.label")}{" "}
-                  <InfoTooltip>
-                    {t("followUps.form.channel.tooltip")}
-                  </InfoTooltip>
+                  {t("form.channel.label")}{" "}
+                  <InfoTooltip>{t("form.channel.tooltip")}</InfoTooltip>
                 </FormLabel>
                 <FormControl>
                   <Combobox
                     disabled={loading}
                     className="flex w-full font-normal text-base"
                     values={followUpChannelValues}
-                    searchLabel={t("followUps.form.channel.searchLabel")}
+                    searchLabel={t("form.channel.searchLabel")}
                     value={field.value}
                     onItemSelect={(value) => {
                       field.onChange(value);
@@ -412,10 +399,10 @@ export const FollowUpForm: React.FC<{
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      {t("followUps.form.subject.label")}
+                      {t("form.subject.label")}
                       <InfoTooltip>
-                        <p>{t("followUps.form.subject.tooltip")}</p>
-                        <p>{t("followUps.form.subject.templatedValues")}</p>
+                        <p>{t("form.subject.tooltip")}</p>
+                        <p>{t("form.subject.templatedValues")}</p>
                       </InfoTooltip>
                     </FormLabel>
                     <FormControl>
@@ -425,7 +412,7 @@ export const FollowUpForm: React.FC<{
                         value={field.value}
                         onChange={(value) => field.onChange(value)}
                         disabled={loading}
-                        placeholder={t("followUps.form.subject.placeholder")}
+                        placeholder={t("form.subject.placeholder")}
                       />
                     </FormControl>
                     <FormMessage />
@@ -440,10 +427,8 @@ export const FollowUpForm: React.FC<{
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  {t("followUps.form.template.label")}
-                  <InfoTooltip>
-                    {t("followUps.form.template.tooltip")}
-                  </InfoTooltip>
+                  {t("form.template.label")}
+                  <InfoTooltip>{t("form.template.tooltip")}</InfoTooltip>
                 </FormLabel>
                 <FormControl>
                   <TemplateSelector

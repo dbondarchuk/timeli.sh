@@ -2,9 +2,9 @@
 
 import { ConfigurationProps, PageInput, SelectInput } from "@vivid/builder";
 import { useI18n } from "@vivid/i18n";
+import { StylesConfigurationPanel } from "@vivid/page-builder-base";
 import { deepMemo } from "@vivid/ui";
 import { useCallback } from "react";
-import { StylesConfigurationPanel } from "../../configuration-panel/styles-configuration-panel";
 import { LinkDefaultTarget, LinkDefaultUrl, LinkProps } from "./schema";
 import { linkShortcuts } from "./shortcuts";
 import { styles } from "./styles";

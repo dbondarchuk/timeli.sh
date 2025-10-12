@@ -23,22 +23,30 @@ import {
   TextMessageNotificationConfiguration,
   textMessageNotificationConfigurationSchema,
 } from "./models";
+import {
+  TextMessageNotificationAdminKeys,
+  textMessageNotificationAdminNamespace,
+  TextMessageNotificationAdminNamespace,
+} from "./translations/types";
 
 export const TextMessageNotificationAppSetup: React.FC<AppSetupProps> = ({
   onSuccess,
   onError,
-  appId,
+  appId: existingAppId,
 }) => {
   const { appStatus, form, isLoading, isValid, onSubmit } =
     useConnectedAppSetup<TextMessageNotificationConfiguration>({
-      appId,
+      appId: existingAppId,
       appName: TextMessageNotificationApp.name,
       schema: textMessageNotificationConfigurationSchema,
       onSuccess,
       onError,
     });
 
-  const t = useI18n("apps");
+  const t = useI18n<
+    TextMessageNotificationAdminNamespace,
+    TextMessageNotificationAdminKeys
+  >(textMessageNotificationAdminNamespace);
 
   return (
     <>
@@ -51,17 +59,13 @@ export const TextMessageNotificationAppSetup: React.FC<AppSetupProps> = ({
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel>
-                    {t("textMessageNotification.form.phone.label")}
-                    <InfoTooltip>
-                      {t("textMessageNotification.form.phone.tooltip")}
-                    </InfoTooltip>
+                    {t("form.phone.label")}
+                    <InfoTooltip>{t("form.phone.tooltip")}</InfoTooltip>
                   </FormLabel>
                   <FormControl>
                     <PhoneInput
                       {...field}
-                      label={t(
-                        "textMessageNotification.form.phone.placeholder",
-                      )}
+                      label={t("form.phone.placeholder")}
                     />
                   </FormControl>
                   <FormMessage />
@@ -75,14 +79,15 @@ export const TextMessageNotificationAppSetup: React.FC<AppSetupProps> = ({
               className="inline-flex gap-2 items-center w-full"
             >
               {isLoading && <Spinner />}
-              <span>
-                {isLoading
-                  ? t("textMessageNotification.form.update")
-                  : t("textMessageNotification.form.add")}
+              <span className="inline-flex gap-2 items-center">
+                {t.rich(existingAppId ? "form.update" : "form.add", {
+                  app: () => (
+                    <ConnectedAppNameAndLogo
+                      appName={TextMessageNotificationApp.name}
+                    />
+                  ),
+                })}
               </span>
-              <ConnectedAppNameAndLogo
-                appName={TextMessageNotificationApp.name}
-              />
             </Button>
           </div>
         </form>

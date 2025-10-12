@@ -1,7 +1,7 @@
+import { StyleDefinition } from "@vivid/page-builder-base/style";
+import { RawNumberInput } from "@vivid/page-builder-base/style-inputs";
 import { Percent } from "lucide-react";
 import { z } from "zod";
-import { RawNumberInput } from "../../style-inputs/base/raw-number-input";
-import { StyleDefinition } from "../../style/types";
 
 const CarouselChildrenItemsPerSlideSchema = z.coerce
   .number()

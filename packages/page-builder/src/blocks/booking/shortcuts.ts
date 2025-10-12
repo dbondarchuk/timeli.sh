@@ -1,8 +1,10 @@
+import {
+  colorShortcut,
+  fontFamilyShortcut,
+  Shortcut,
+} from "@vivid/page-builder-base";
+import { AllStylesSchemas } from "@vivid/page-builder-base/style";
 import { Move } from "lucide-react";
-import { Shortcut } from "../../shortcuts";
-import { colorShortcut } from "../../shortcuts/common/color";
-import { fontFamilyShortcut } from "../../shortcuts/common/font-family";
-import { AllStylesSchemas } from "../../style";
 
 export const bookingShortcuts: Shortcut<AllStylesSchemas>[] = [
   {

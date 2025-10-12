@@ -14,12 +14,8 @@ type Leaves<T> = T extends object
   : never;
 
 export type I18nNamespaces =
-  | "translation"
-  | "admin"
-  | "ui"
-  | "apps"
-  | "validation"
-  | "builder";
+  | ("translation" | "admin" | "ui" | "apps" | "validation" | "builder")
+  | (string & {});
 
 export type TranslationKeys = Leaves<typeof translation>;
 export type AdminKeys = Leaves<typeof admin>;
@@ -36,7 +32,10 @@ export type I18nKeys =
   | ValidationKeys
   | BuilderKeys;
 
-type _I18nKey<T extends I18nNamespaces> = T extends "translation"
+type _I18nKey<
+  T extends I18nNamespaces,
+  CustomKeys extends string | undefined = undefined,
+> = T extends "translation"
   ? TranslationKeys
   : T extends "admin"
     ? AdminKeys
@@ -46,33 +45,41 @@ type _I18nKey<T extends I18nNamespaces> = T extends "translation"
         ? AppsKeys
         : T extends "validation"
           ? ValidationKeys
-          : // : T extends "builder"
-            //   ? BuilderKeys
-            //   : never;
-            BuilderKeys;
+          : T extends "builder"
+            ? BuilderKeys
+            : NonNullable<CustomKeys> extends never
+              ? string
+              : NonNullable<CustomKeys>;
 
-export type AllKeys = {
-  [K in I18nNamespaces]: `${K}.${_I18nKey<K>}`;
-}[I18nNamespaces];
+export type AllKeys<
+  T extends I18nNamespaces = I18nNamespaces,
+  CustomKeys extends string | undefined = undefined,
+> = {
+  [K in T]: `${K}.${_I18nKey<K, CustomKeys>}`;
+}[T];
 
-export type I18nKey<T extends I18nNamespaces | undefined> = T extends undefined
-  ? AllKeys
-  : _I18nKey<NonNullable<T>>;
+export type I18nKey<
+  T extends I18nNamespaces | undefined,
+  CustomKeys extends string | undefined = undefined,
+> = T extends undefined ? AllKeys : _I18nKey<NonNullable<T>, CustomKeys>;
 
-type I18nBaseFn<T extends I18nNamespaces | undefined> = (
-  key: I18nKey<T>,
-  args?: Record<string, any>,
-) => string;
+type I18nBaseFn<
+  T extends I18nNamespaces | undefined,
+  CustomKeys extends string | undefined = undefined,
+> = (key: I18nKey<T, CustomKeys>, args?: Record<string, any>) => string;
 
 export type ChangeReturnType<T extends (...args: any[]) => any, NewReturn> = (
   ...args: Parameters<T>
 ) => NewReturn;
 
-export type I18nFn<T extends I18nNamespaces | undefined> = I18nBaseFn<T> & {
-  rich: ChangeReturnType<I18nBaseFn<T>, React.ReactNode>;
-  markup: I18nBaseFn<T>;
-  raw: ChangeReturnType<I18nBaseFn<T>, any>;
-  has: (key: I18nKey<T>) => boolean;
+export type I18nFn<
+  T extends I18nNamespaces | undefined,
+  CustomKeys extends string | undefined = undefined,
+> = I18nBaseFn<T, CustomKeys> & {
+  rich: ChangeReturnType<I18nBaseFn<T, CustomKeys>, React.ReactNode>;
+  markup: I18nBaseFn<T, CustomKeys>;
+  raw: ChangeReturnType<I18nBaseFn<T, CustomKeys>, any>;
+  has: (key: I18nKey<T, CustomKeys>) => boolean;
 };
 
 // export type Translations = {

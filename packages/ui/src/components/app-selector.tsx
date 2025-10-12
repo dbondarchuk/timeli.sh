@@ -2,7 +2,7 @@
 
 import { useI18n } from "@vivid/i18n";
 import { AppScope, ConnectedApp } from "@vivid/types";
-import { cn, Combobox, IComboboxItem, toast } from "@vivid/ui";
+import { cn, Combobox, ComboboxProps, IComboboxItem, toast } from "@vivid/ui";
 import React from "react";
 import {
   ConnectedAppAccount,
@@ -54,6 +54,7 @@ type BaseAppSelectorProps = {
   className?: string;
   excludeIds?: string[];
   setAppName?: (appName?: string) => void;
+  size?: ComboboxProps["size"];
 };
 
 type ClearableAppSelectorProps = {
@@ -78,6 +79,7 @@ export const AppSelector: React.FC<AppSelectorProps> = ({
   onItemSelect,
   allowClear,
   setAppName,
+  size,
 }) => {
   const [apps, setApps] = React.useState<ConnectedApp[]>([]);
   const [isLoading, setIsLoading] = React.useState(false);
@@ -128,6 +130,7 @@ export const AppSelector: React.FC<AppSelectorProps> = ({
     // @ts-ignore Allow clear passthrough
     <Combobox
       allowClear={allowClear}
+      size={size}
       disabled={disabled || isLoading}
       className={cn("flex font-normal text-base max-w-full", className)}
       values={appValues(apps)}

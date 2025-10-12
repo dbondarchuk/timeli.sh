@@ -17,6 +17,11 @@ import { Button, Spinner, toast } from "@vivid/ui";
 import React from "react";
 import { PaypalLogo } from "./logo";
 import { PaypalFormProps } from "./models";
+import {
+  PaypalPublicKeys,
+  PaypalPublicNamespace,
+  paypalPublicNamespace,
+} from "./translations/types";
 import { PaypalOrder } from "./types";
 
 const SubmitPayment: React.FC<{
@@ -25,11 +30,13 @@ const SubmitPayment: React.FC<{
   billingAddress: any;
 }> = ({ isPaying, setIsPaying, billingAddress }) => {
   const { cardFieldsForm } = usePayPalCardFields();
-  const t = useI18n("apps");
+  const t = useI18n<PaypalPublicNamespace, PaypalPublicKeys>(
+    paypalPublicNamespace,
+  );
 
   const handleClick = async () => {
     if (!cardFieldsForm) {
-      const childErrorMessage = t("paypal.form.cardFieldsProviderError");
+      const childErrorMessage = t("form.cardFieldsProviderError");
       throw new Error(childErrorMessage);
     }
 
@@ -55,7 +62,7 @@ const SubmitPayment: React.FC<{
         onClick={handleClick}
         disabled={isPaying}
       >
-        {isPaying && <Spinner />} <PaypalLogo /> {t("paypal.ui.payButton")}
+        {isPaying && <Spinner />} <PaypalLogo /> {t("form.ui.payButton")}
       </Button>
       {}
     </div>
@@ -69,7 +76,10 @@ export const PaypalForm: React.FC<PaymentAppFormProps<PaypalFormProps>> = ({
   onSubmit,
   isSandbox,
 }) => {
-  const t = useI18n("apps");
+  const t = useI18n<PaypalPublicNamespace, PaypalPublicKeys>(
+    paypalPublicNamespace,
+  );
+
   const [isPaying, setIsPaying] = React.useState(false);
 
   const initialOptions: ReactPayPalScriptOptions = {
@@ -168,16 +178,16 @@ export const PaypalForm: React.FC<PaymentAppFormProps<PaypalFormProps>> = ({
       }
     } catch (error) {
       console.error(`Payment has failed`, error);
-      toast.error(t("paypal.toast.payment_failed"), {
-        description: t("paypal.toast.payment_failed_description"),
+      toast.error(t("toast.payment_failed"), {
+        description: t("toast.payment_failed_description"),
       });
     }
   };
 
   function onError(error: any) {
     console.error(`Payment has failed`, error);
-    toast.error(t("paypal.toast.payment_failed"), {
-      description: t("paypal.toast.payment_failed_description"),
+    toast.error(t("toast.payment_failed"), {
+      description: t("toast.payment_failed_description"),
     });
   }
 
@@ -197,7 +207,7 @@ export const PaypalForm: React.FC<PaymentAppFormProps<PaypalFormProps>> = ({
         <div className="items-center flex my-px text-center">
           <div className="bg-muted flex-1 h-px mx-2" />
           <span className="text-sm text-muted-foreground uppercase">
-            {t("paypal.ui.or")}
+            {t("form.ui.or")}
           </span>
           <div className="bg-muted flex-1 h-px mx-2" />
         </div>

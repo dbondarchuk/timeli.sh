@@ -89,6 +89,7 @@ export * from "./textarea-mention";
 export * from "./time-picker";
 export * from "./toaster";
 export * from "./toggle";
+export * from "./toggle-group";
 export * from "./toolbar";
 export * from "./tooltip";
 export * from "./week-selector";

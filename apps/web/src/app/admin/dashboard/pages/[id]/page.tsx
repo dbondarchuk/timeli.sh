@@ -3,7 +3,7 @@ import { PageForm } from "../../../../../components/admin/pages/form";
 
 import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
-import { Styling } from "@vivid/page-builder";
+import { Styling } from "@vivid/page-builder/reader";
 import { ServicesContainer } from "@vivid/services";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -51,6 +51,18 @@ export default async function EditPagesPage(props: Props) {
     return notFound();
   }
 
+  const connectedApps =
+    await ServicesContainer.ConnectedAppsService().getAppsByScope(
+      "ui-components",
+    );
+
+  const apps = connectedApps.map((app) => ({
+    appId: app._id,
+    appName: app.name,
+  }));
+
+  logger.debug({ apps }, "Connected apps");
+
   logger.debug(
     {
       pageId: params.id,
@@ -65,7 +77,7 @@ export default async function EditPagesPage(props: Props) {
     <PageContainer scrollable>
       <div className="flex flex-1 flex-col gap-4">
         <Styling styling={styling} />
-        <PageForm initialData={page} config={{ general, social }} />
+        <PageForm initialData={page} config={{ general, social }} apps={apps} />
       </div>
     </PageContainer>
   );

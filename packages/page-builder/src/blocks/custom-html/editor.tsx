@@ -1,9 +1,8 @@
 "use client";
 
 import { useBlockEditor, useCurrentBlock } from "@vivid/builder";
+import { BlockStyle, useClassName } from "@vivid/page-builder-base";
 import { cn } from "@vivid/ui";
-import { BlockStyle } from "../../helpers/styling";
-import { useClassName } from "../../helpers/use-class-name";
 import { CustomHTMLProps } from "./schema";
 import { getDefaults, styles } from "./styles";
 

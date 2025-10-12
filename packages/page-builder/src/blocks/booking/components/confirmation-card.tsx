@@ -3,7 +3,7 @@ import { useScheduleContext } from "./context";
 
 export const ConfirmationCard: React.FC = () => {
   const i18n = useI18n("translation");
-  const { fields } = useScheduleContext();
+  const { fields, appointmentOption } = useScheduleContext();
 
   return (
     <div className="relative text-center">
@@ -15,6 +15,7 @@ export const ConfirmationCard: React.FC = () => {
       <div className="flex flex-row gap-2 justify-around flex-wrap">
         {i18n("confirmation_success_message", {
           name: fields.name,
+          service: appointmentOption.name,
         })}
       </div>
     </div>

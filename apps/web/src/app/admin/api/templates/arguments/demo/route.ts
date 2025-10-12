@@ -1,6 +1,6 @@
 import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
-import { demoAppointment, getArguments } from "@vivid/utils";
+import { demoAppointment, demoWaitlistEntry, getArguments } from "@vivid/utils";
 import { NextRequest, NextResponse } from "next/server";
 
 export const fetchCache = "force-cache";
@@ -36,6 +36,12 @@ export async function GET(request: NextRequest) {
     config,
     customer: demoAppointment.customer,
     locale: config.general.language,
+    additionalProperties: {
+      waitlistEntry:
+        searchParams.get("waitlistEntry") === "true"
+          ? demoWaitlistEntry
+          : undefined,
+    },
   });
 
   logger.debug({}, "Successfully retrieved demo template arguments");

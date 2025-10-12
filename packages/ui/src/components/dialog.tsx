@@ -22,11 +22,11 @@ const dialogOverlayVariants = cva(
     variants: {
       variant: {
         blur: "bg-black/30 backdrop-blur-sm",
-        default: " bg-black/80",
+        default: "bg-black/80",
       },
     },
     defaultVariants: {
-      variant: "default",
+      variant: "blur",
     },
   },
 );

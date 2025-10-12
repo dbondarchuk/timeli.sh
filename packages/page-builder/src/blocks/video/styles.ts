@@ -1,8 +1,11 @@
 import { type VideoProps } from "./schema";
 
-import { getStylesSchema } from "../../style";
-import { DefaultCSSProperties } from "../../style/css-renderer";
-import { ALL_STYLES, AllStylesSchemas } from "../../style/styles";
+import {
+  ALL_STYLES,
+  AllStylesSchemas,
+  DefaultCSSProperties,
+  getStylesSchema,
+} from "@vivid/page-builder-base/style";
 
 export const styles = ALL_STYLES;
 export const zStyles = getStylesSchema(styles);

@@ -19,6 +19,11 @@ import {
 import { decrypt, encrypt, maskify } from "@vivid/utils";
 import { Readable } from "stream";
 import { S3Configuration } from "./models";
+import {
+  S3AssetsStorageAdminAllKeys,
+  S3AssetsStorageAdminKeys,
+  S3AssetsStorageAdminNamespace,
+} from "./translations/types";
 
 const DEFAULT_BUCKET_NAME = "assets";
 const MASKED_SECRET_ACCESS_KEY = "this-is-a-masked-secret-access-key";
@@ -44,7 +49,12 @@ export default class S3AssetsStorageConnectedApp
   public async processRequest(
     appData: ConnectedAppData,
     data: S3Configuration,
-  ): Promise<ConnectedAppStatusWithText> {
+  ): Promise<
+    ConnectedAppStatusWithText<
+      S3AssetsStorageAdminNamespace,
+      S3AssetsStorageAdminKeys
+    >
+  > {
     const logger = this.loggerFactory("processRequest");
     logger.debug(
       {
@@ -106,14 +116,18 @@ export default class S3AssetsStorageConnectedApp
             "Error checking S3 bucket",
           );
           throw new ConnectedAppError(
-            "s3AssetsStorage.statusText.error_checking_bucket",
+            "app_s3-assets-storage_admin.statusText.error_checking_bucket" satisfies S3AssetsStorageAdminAllKeys,
           );
         }
       }
 
-      const status: ConnectedAppStatusWithText = {
+      const status: ConnectedAppStatusWithText<
+        S3AssetsStorageAdminNamespace,
+        S3AssetsStorageAdminKeys
+      > = {
         status: "connected",
-        statusText: "s3AssetsStorage.statusText.bucket_successfully_created",
+        statusText:
+          "app_s3-assets-storage_admin.statusText.bucket_successfully_created" satisfies S3AssetsStorageAdminAllKeys,
       };
 
       this.props.update({
@@ -137,15 +151,18 @@ export default class S3AssetsStorageConnectedApp
         "Error processing S3 configuration request",
       );
 
-      const status: ConnectedAppStatusWithText = {
+      const status: ConnectedAppStatusWithText<
+        S3AssetsStorageAdminNamespace,
+        S3AssetsStorageAdminKeys
+      > = {
         status: "failed",
         statusText:
           e instanceof ConnectedAppError
             ? {
-                key: e.key,
+                key: e.key as S3AssetsStorageAdminAllKeys,
                 args: e.args,
               }
-            : "s3AssetsStorage.statusText.error_processing_configuration",
+            : ("app_s3-assets-storage_admin.statusText.error_processing_configuration" satisfies S3AssetsStorageAdminAllKeys),
       };
 
       this.props.update({
@@ -185,8 +202,11 @@ export default class S3AssetsStorageConnectedApp
           { appId: appData._id, filename },
           "S3 response has no body",
         );
-        throw new ConnectedAppError(
-          "s3AssetsStorage.statusText.no_body_present",
+        throw new ConnectedAppError<
+          S3AssetsStorageAdminNamespace,
+          S3AssetsStorageAdminKeys
+        >(
+          "app_s3-assets-storage_admin.statusText.no_body_present" satisfies S3AssetsStorageAdminAllKeys,
         );
       }
 
@@ -199,8 +219,11 @@ export default class S3AssetsStorageConnectedApp
     } catch (error: any) {
       if (error?.name === "NotFound") {
         logger.warn({ appId: appData._id, filename }, "File not found in S3");
-        throw new ConnectedAppError(
-          "s3AssetsStorage.statusText.file_not_found",
+        throw new ConnectedAppError<
+          S3AssetsStorageAdminNamespace,
+          S3AssetsStorageAdminKeys
+        >(
+          "app_s3-assets-storage_admin.statusText.file_not_found" satisfies S3AssetsStorageAdminAllKeys,
           { filename },
         );
       }
@@ -213,8 +236,11 @@ export default class S3AssetsStorageConnectedApp
         },
         "Error getting file from S3",
       );
-      throw new ConnectedAppError(
-        "s3AssetsStorage.statusText.error_getting_file",
+      throw new ConnectedAppError<
+        S3AssetsStorageAdminNamespace,
+        S3AssetsStorageAdminKeys
+      >(
+        "app_s3-assets-storage_admin.statusText.error_getting_file" satisfies S3AssetsStorageAdminAllKeys,
       );
     }
   }
@@ -262,8 +288,11 @@ export default class S3AssetsStorageConnectedApp
         },
         "Error saving file to S3",
       );
-      throw new ConnectedAppError(
-        "s3AssetsStorage.statusText.error_saving_file",
+      throw new ConnectedAppError<
+        S3AssetsStorageAdminNamespace,
+        S3AssetsStorageAdminKeys
+      >(
+        "app_s3-assets-storage_admin.statusText.error_saving_file" satisfies S3AssetsStorageAdminAllKeys,
       );
     }
   }
@@ -314,8 +343,11 @@ export default class S3AssetsStorageConnectedApp
         },
         "Error deleting file from S3",
       );
-      throw new ConnectedAppError(
-        "s3AssetsStorage.statusText.error_deleting_file",
+      throw new ConnectedAppError<
+        S3AssetsStorageAdminNamespace,
+        S3AssetsStorageAdminKeys
+      >(
+        "app_s3-assets-storage_admin.statusText.error_deleting_file" satisfies S3AssetsStorageAdminAllKeys,
       );
     }
   }
@@ -348,8 +380,11 @@ export default class S3AssetsStorageConnectedApp
         },
         "Error deleting files from S3",
       );
-      throw new ConnectedAppError(
-        "s3AssetsStorage.statusText.error_deleting_files",
+      throw new ConnectedAppError<
+        S3AssetsStorageAdminNamespace,
+        S3AssetsStorageAdminKeys
+      >(
+        "app_s3-assets-storage_admin.statusText.error_deleting_files" satisfies S3AssetsStorageAdminAllKeys,
       );
     }
   }
@@ -398,8 +433,12 @@ export default class S3AssetsStorageConnectedApp
         },
         "Error checking if file exists in S3",
       );
-      throw new ConnectedAppError(
-        "s3AssetsStorage.statusText.error_checking_file_exists",
+
+      throw new ConnectedAppError<
+        S3AssetsStorageAdminNamespace,
+        S3AssetsStorageAdminKeys
+      >(
+        "app_s3-assets-storage_admin.statusText.error_checking_file_exists" satisfies S3AssetsStorageAdminAllKeys,
       );
     }
   }
@@ -430,8 +469,11 @@ export default class S3AssetsStorageConnectedApp
         },
         "Invalid S3 configuration",
       );
-      throw new ConnectedAppError(
-        "s3AssetsStorage.statusText.error_processing_configuration",
+      throw new ConnectedAppError<
+        S3AssetsStorageAdminNamespace,
+        S3AssetsStorageAdminKeys
+      >(
+        "app_s3-assets-storage_admin.statusText.error_processing_configuration" satisfies S3AssetsStorageAdminAllKeys,
       );
     }
 

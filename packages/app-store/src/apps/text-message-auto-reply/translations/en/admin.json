@@ -1,0 +1,26 @@
+{
+  "title": "Text message auto reply",
+  "app": {
+    "displayName": "Text message auto reply",
+    "description": "Automatically reply to incoming text messages."
+  },
+  "form": {
+    "autoReplyTemplate": {
+      "label": "Auto reply template",
+      "tooltip": "The template that will be used to send reply."
+    },
+    "connectWith": "Connect with <app></app>"
+  },
+  "statusText": {
+    "successfully_set_up": "Successfully set up",
+    "error_processing_configuration": "Error processing text message auto reply configuration",
+    "template_not_found": "Template not found"
+  },
+  "handler": "Text Message Auto Reply",
+  "validation": {
+    "autoReplyTemplateId": {
+      "required": "Template is required",
+      "min": "Template is required"
+    }
+  }
+}

@@ -1,7 +1,7 @@
 "use client";
 
 import { ConfigurationProps } from "@vivid/builder";
-import { StylesConfigurationPanel } from "../../configuration-panel/styles-configuration-panel";
+import { StylesConfigurationPanel } from "@vivid/page-builder-base";
 
 import { deepMemo } from "@vivid/ui";
 import { useCallback } from "react";

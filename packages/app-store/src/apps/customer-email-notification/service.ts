@@ -16,6 +16,11 @@ import {
   templateSafeWithError,
 } from "@vivid/utils";
 import { CustomerEmailNotificationConfiguration } from "./models";
+import {
+  CustomerEmailNotificationAdminAllKeys,
+  CustomerEmailNotificationAdminKeys,
+  CustomerEmailNotificationAdminNamespace,
+} from "./translations/types";
 
 export default class CustomerEmailNotificationConnectedApp
   implements IConnectedApp, IAppointmentHook
@@ -29,7 +34,12 @@ export default class CustomerEmailNotificationConnectedApp
   public async processRequest(
     appData: ConnectedAppData,
     data: CustomerEmailNotificationConfiguration,
-  ): Promise<ConnectedAppStatusWithText> {
+  ): Promise<
+    ConnectedAppStatusWithText<
+      CustomerEmailNotificationAdminNamespace,
+      CustomerEmailNotificationAdminKeys
+    >
+  > {
     const logger = this.loggerFactory("processRequest");
 
     logger.debug(
@@ -62,13 +72,16 @@ export default class CustomerEmailNotificationConnectedApp
         return {
           status: "failed",
           statusText:
-            "customerEmailNotification.statusText.email_app_not_configured",
+            "app_customer-email-notification_admin.statusText.email_app_not_configured",
         };
       }
 
-      const status: ConnectedAppStatusWithText = {
+      const status: ConnectedAppStatusWithText<
+        CustomerEmailNotificationAdminNamespace,
+        CustomerEmailNotificationAdminKeys
+      > = {
         status: "connected",
-        statusText: `customerEmailNotification.statusText.successfully_set_up`,
+        statusText: `app_customer-email-notification_admin.statusText.successfully_set_up`,
       };
 
       this.props.update({
@@ -91,7 +104,7 @@ export default class CustomerEmailNotificationConnectedApp
       this.props.update({
         status: "failed",
         statusText:
-          "customerEmailNotification.statusText.error_processing_configuration",
+          "app_customer-email-notification_admin.statusText.error_processing_configuration",
       });
 
       throw error;
@@ -131,7 +144,7 @@ export default class CustomerEmailNotificationConnectedApp
       this.props.update({
         status: "failed",
         statusText:
-          "customerEmailNotification.statusText.error_sending_customer_email_notification_for_new_appointment",
+          "app_customer-email-notification_admin.statusText.error_sending_customer_email_notification_for_new_appointment" satisfies CustomerEmailNotificationAdminAllKeys,
       });
 
       throw error;
@@ -170,7 +183,7 @@ export default class CustomerEmailNotificationConnectedApp
       this.props.update({
         status: "failed",
         statusText:
-          "customerEmailNotification.statusText.error_sending_customer_email_notification_for_status_change",
+          "app_customer-email-notification_admin.statusText.error_sending_customer_email_notification_for_status_change" satisfies CustomerEmailNotificationAdminAllKeys,
       });
 
       throw error;
@@ -249,7 +262,7 @@ export default class CustomerEmailNotificationConnectedApp
       this.props.update({
         status: "failed",
         statusText:
-          "customerEmailNotification.statusText.error_sending_customer_email_notification_for_rescheduled_appointment",
+          "app_customer-email-notification_admin.statusText.error_sending_customer_email_notification_for_rescheduled_appointment" satisfies CustomerEmailNotificationAdminAllKeys,
       });
 
       throw error;
@@ -413,7 +426,8 @@ export default class CustomerEmailNotificationConnectedApp
             content: eventContent,
           },
         },
-        handledBy: `customerEmailNotification.handlers.${initiator}`,
+        handledBy:
+          `app_customer-email-notification_admin.handlers.${initiator}` satisfies CustomerEmailNotificationAdminAllKeys,
         participantType: "customer",
         appointmentId: appointment._id,
       });

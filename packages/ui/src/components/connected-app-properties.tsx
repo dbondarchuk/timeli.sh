@@ -28,11 +28,12 @@ export const ConnectedAppStatusMessage: React.FC<{
   statusText: ConnectedApp["statusText"];
   className?: string;
 }> = ({ status, statusText, className }) => {
-  const t = useI18n("apps");
+  const tApps = useI18n("apps");
+  const t = useI18n();
   return (
     <div className={cn("break-all", appStatusTextClasses[status], className)}>
-      {t("common.statusMessage", {
-        status: t(`status.${status}`),
+      {tApps("common.statusMessage", {
+        status: tApps(`status.${status}`),
         statusText:
           typeof statusText === "string"
             ? t.has(statusText)
@@ -51,10 +52,10 @@ export const ConnectedAppNameAndLogo: React.FC<{
   nameClassName?: string;
 }> = ({ appName, className, logoClassName, nameClassName }) => {
   const App = AvailableApps[appName];
-  const t = useI18n("apps");
+  const t = useI18n();
   return (
     <div className={cn("inline-flex items-center gap-2", className)}>
-      <App.Logo className={cn("w-6 y-6", logoClassName)} />
+      <App.Logo className={cn("size-4", logoClassName)} />
       <span className={nameClassName}>{t(App.displayName)}</span>
     </div>
   );

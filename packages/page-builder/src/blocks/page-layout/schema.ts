@@ -1,6 +1,6 @@
 import { BaseReaderBlockProps } from "@vivid/builder";
+import { zColorNullable, zFontFamily } from "@vivid/page-builder-base/style";
 import { z } from "zod";
-import { zColorNullable, zFontFamily } from "../../style/zod";
 
 export const PageLayoutPropsSchema = z.object({
   backgroundColor: zColorNullable,

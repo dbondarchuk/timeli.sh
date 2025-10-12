@@ -23,12 +23,12 @@ export const ConnectedAppRow: React.FC<ConnectedAppRowProps> = async ({
   const t = await getI18nAsync("apps");
   return (
     <div className="border rounded-md px-2 md:px-4 lg:px-6 py-2 md:py-4 lg:py-6 grid lg:grid-cols-4 gap-4 items-center bg-card">
-      <ConnectedAppNameAndLogo appName={app.name} className="break-words" />
-      <ConnectedAppAccount account={app.account} className="break-words" />
+      <ConnectedAppNameAndLogo appName={app.name} className="break-all" />
+      <ConnectedAppAccount account={app.account} className="break-all" />
       <ConnectedAppStatusMessage
         status={app.status}
         statusText={app.statusText}
-        className="flex-grow break-words"
+        className="flex-grow break-all"
       />
       <div className="flex flex-col gap-2 md:flex-row flex-wrap justify-end">
         {appDescriptor.type === "complex" && appDescriptor.settingsHref ? (

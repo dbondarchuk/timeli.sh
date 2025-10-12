@@ -1,0 +1,62 @@
+{
+  "title": "SMTP",
+  "app": {
+    "displayName": "SMTP",
+    "description": "SMTP (Simple Mail Transfer Protocol) is an internet standard for email supported by most email processing servers. Connect to SMTP to send email."
+  },
+  "navigation": {
+    "title": "SMTP",
+    "description": "Configure SMTP to send email."
+  },
+  "form": {
+    "host": {
+      "label": "SMTP Host",
+      "placeholder": "smtp.email.com"
+    },
+    "port": {
+      "label": "SMTP port",
+      "placeholder": "465"
+    },
+    "secure": {
+      "label": "SMTP SSL",
+      "yes": "Enabled",
+      "no": "Disabled"
+    },
+    "email": {
+      "label": "Sender email",
+      "placeholder": "john@exampl.com",
+      "tooltip": "Email address from which all emails will be sent"
+    },
+    "authUser": {
+      "label": "SMTP authentication user",
+      "placeholder": "john",
+      "tooltip": "Username to log in into SMTP server"
+    },
+    "authPass": {
+      "label": "SMTP authentication password",
+      "tooltip": "Password to log in into SMTP server"
+    }
+  },
+  "statusText": {
+    "successfully_connected": "Successfully connected to server",
+    "error_processing_configuration": "Error processing SMTP configuration request",
+    "connection_verification_failed": "Failed to connect",
+    "error_sending_email": "Error sending email via SMTP",
+    "error_parsing_ical_event": "Failed to parse iCal event",
+    "something_went_wrong": "Something went wrong"
+  },
+  "validation": {
+    "host": {
+      "required": "SMTP host is required",
+      "min": "SMTP host is required"
+    },
+    "port": {
+      "integer": "Should be the integer value",
+      "min": "SMTP port number must be between 1 and 99999",
+      "max": "SMTP port number must be between 1 and 99999"
+    },
+    "email": {
+      "invalid": "Email must be a correct email address"
+    }
+  }
+}

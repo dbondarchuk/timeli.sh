@@ -1,6 +1,11 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  AppsBlocksEditors,
+  AppsBlocksSchemas,
+} from "@vivid/app-store/blocks/editors";
+import { AppsBlocksReaders } from "@vivid/app-store/blocks/readers";
 import { Language, useI18n } from "@vivid/i18n";
 import { PageBuilder } from "@vivid/page-builder";
 import { PageReader } from "@vivid/page-builder/reader";
@@ -59,10 +64,65 @@ export const PageForm: React.FC<{
     general: GeneralConfiguration;
     social: SocialConfiguration;
   };
-}> = ({ initialData, config }) => {
+  apps?: { appId: string; appName: string }[];
+}> = ({ initialData, config, apps }) => {
   const t = useI18n("admin");
 
   const cachedUniqueSlugCheck = useDebounceCacheFn(checkUniqueSlug, 300);
+
+  const additionalBlocks = useMemo(() => {
+    return apps?.reduce(
+      (acc, app) => {
+        acc.schemas = {
+          ...acc.schemas,
+          ...Object.fromEntries(
+            Object.entries(AppsBlocksSchemas[app.appName]).map(
+              ([blockName, value]) => [`${blockName}-${app.appId}`, value],
+            ),
+          ),
+        };
+        acc.editors = {
+          ...acc.editors,
+          ...Object.fromEntries(
+            Object.entries(AppsBlocksEditors[app.appName]).map(
+              ([blockName, value]) => [
+                `${blockName}-${app.appId}`,
+                {
+                  ...value,
+                  staticProps: {
+                    ...value.staticProps,
+                    appId: app.appId,
+                    appName: app.appName,
+                  },
+                },
+              ],
+            ),
+          ),
+        };
+        acc.readers = {
+          ...acc.readers,
+          ...Object.fromEntries(
+            Object.entries(AppsBlocksReaders[app.appName]).map(
+              ([blockName, value]) => [
+                `${blockName}-${app.appId}`,
+                {
+                  ...value,
+                  staticProps: {
+                    ...value.staticProps,
+                    appId: app.appId,
+                    appName: app.appName,
+                  },
+                },
+              ],
+            ),
+          ),
+        };
+
+        return acc;
+      },
+      { schemas: {}, editors: {}, readers: {} },
+    );
+  }, [apps]);
 
   const formSchema = React.useMemo(
     () =>
@@ -392,6 +452,7 @@ export const PageForm: React.FC<{
                       header={pageHeader}
                       footer={pageFooter}
                       extraTabs={extraTabs}
+                      additionalBlocks={additionalBlocks}
                     />
                   </FormControl>
                   <FormMessage />

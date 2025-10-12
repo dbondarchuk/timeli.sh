@@ -13,10 +13,12 @@ import {
   useSetSelectedBlockId,
 } from "@vivid/builder";
 import { useI18n } from "@vivid/i18n";
+import {
+  BlockStyle,
+  useClassName,
+  useResizeBlockStyles,
+} from "@vivid/page-builder-base";
 import { ArgumentsAutocomplete, cn, useDebounceCallback } from "@vivid/ui";
-import { BlockStyle } from "../../helpers/styling";
-import { useClassName } from "../../helpers/use-class-name";
-import { useResizeBlockStyles } from "../../helpers/use-resize-block-styles";
 import { InlineTextProps } from "./schema";
 import { getDefaults, styles } from "./styles";
 

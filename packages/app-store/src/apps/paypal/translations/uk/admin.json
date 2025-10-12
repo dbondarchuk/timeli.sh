@@ -1,0 +1,106 @@
+{
+  "title": "PayPal",
+  "app": {
+    "displayName": "PayPal",
+    "description": "Приймати PayPal платежі за ваші записи."
+  },
+  "form": {
+    "clientId": {
+      "label": "Client ID",
+      "placeholder": "Client ID"
+    },
+    "secretKey": {
+      "label": "Секретний ключ",
+      "placeholder": "Секретний ключ"
+    },
+    "buttonStyle": {
+      "color": {
+        "label": "Колір кнопки PayPal",
+        "values": {
+          "blue": "Синій",
+          "black": "Чорний",
+          "white": "Білий",
+          "silver": "Срібний",
+          "gold": "Золотий"
+        }
+      },
+      "shape": {
+        "label": "Форма кнопки PayPal",
+        "values": {
+          "rect": "Прямокутна",
+          "pill": "Пілюля",
+          "circle": "Коло",
+          "sharp": "Гостра"
+        }
+      },
+      "layout": {
+        "label": "Макет кнопки PayPal",
+        "values": {
+          "horizontal": "Горизонтальний",
+          "vertical": "Вертикальний"
+        }
+      },
+      "label": {
+        "label": "Підпис кнопки PayPal",
+        "values": {
+          "pay": "Оплатити через PayPal",
+          "paypal": "PayPal"
+        }
+      }
+    },
+    "selectPlaceholder": "Вибрати вигляд",
+    "connectWith": "Підключитися з <app></app>"
+  },
+  "statusText": {
+    "successfully_set_up": "Успішно підключено до PayPal",
+    "error_processing_configuration": "Помилка обробки конфігурації PayPal",
+    "invalid_configuration_data": "Недійсні дані конфігурації PayPal",
+    "connection_failed": "Не вдалося підключитися до PayPal",
+    "successfully_connected": "Успішно підключено до PayPal",
+    "error_creating_order": "Помилка створення замовлення PayPal",
+    "order_created": "Замовлення PayPal успішно створено",
+    "error_capturing_order": "Помилка захоплення замовлення PayPal",
+    "order_captured": "Замовлення PayPal успішно захоплено",
+    "error_refunding_payment": "Помилка повернення платежу PayPal",
+    "payment_refunded": "Платіж PayPal успішно повернено",
+    "app_not_configured": "Додаток PayPal не налаштований",
+    "no_data": "Не надано даних конфігурації PayPal"
+  },
+  "toast": {
+    "configuration_saved": "Конфігурацію PayPal успішно збережено",
+    "configuration_error": "Помилка збереження конфігурації PayPal",
+    "order_created": "Замовлення успішно створено",
+    "order_capture_failed": "Не вдалося захопити замовлення",
+    "order_captured": "Замовлення успішно захоплено",
+    "refund_success": "Платіж успішно повернено",
+    "refund_error": "Помилка повернення платежу"
+  },
+  "validation": {
+    "clientId": {
+      "required": "PayPal Client ID обов'язковий"
+    },
+    "secretKey": {
+      "required": "PayPal API ключ обов'язковий"
+    },
+    "buttonStyle": {
+      "shape": {
+        "invalid": "Невідома форма"
+      },
+      "layout": {
+        "invalid": "Невідомий макет"
+      },
+      "color": {
+        "invalid": "Невідомий колір"
+      },
+      "label": {
+        "invalid": "Невідомий підпис"
+      }
+    },
+    "paymentIntentId": {
+      "required": "ID платежного наміру обов'язковий"
+    },
+    "orderId": {
+      "required": "ID замовлення обов'язковий"
+    }
+  }
+}

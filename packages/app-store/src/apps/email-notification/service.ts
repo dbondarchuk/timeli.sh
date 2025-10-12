@@ -16,6 +16,11 @@ import {
 import { EmailNotificationConfiguration } from "./models";
 
 import { getEmailTemplate } from "./emails/utils";
+import {
+  EmailNotificationAdminAllKeys,
+  EmailNotificationAdminKeys,
+  EmailNotificationAdminNamespace,
+} from "./translations/types";
 
 export class EmailNotificationConnectedApp
   implements IConnectedApp, IAppointmentHook
@@ -29,7 +34,12 @@ export class EmailNotificationConnectedApp
   public async processRequest(
     appData: ConnectedAppData,
     data: EmailNotificationConfiguration,
-  ): Promise<ConnectedAppStatusWithText> {
+  ): Promise<
+    ConnectedAppStatusWithText<
+      EmailNotificationAdminNamespace,
+      EmailNotificationAdminKeys
+    >
+  > {
     const logger = this.loggerFactory("processRequest");
     logger.debug(
       { appId: appData._id },
@@ -66,13 +76,18 @@ export class EmailNotificationConnectedApp
         );
         return {
           status: "failed",
-          statusText: "emailNotification.statusText.email_app_not_configured",
+          statusText:
+            "app_email-notification_admin.statusText.email_app_not_configured" satisfies EmailNotificationAdminAllKeys,
         };
       }
 
-      const status: ConnectedAppStatusWithText = {
+      const status: ConnectedAppStatusWithText<
+        EmailNotificationAdminNamespace,
+        EmailNotificationAdminKeys
+      > = {
         status: "connected",
-        statusText: "emailNotification.statusText.successfully_set_up",
+        statusText:
+          "app_email-notification_admin.statusText.successfully_set_up",
       };
 
       this.props.update({
@@ -95,7 +110,7 @@ export class EmailNotificationConnectedApp
       this.props.update({
         status: "failed",
         statusText:
-          "emailNotification.statusText.error_processing_configuration",
+          "app_email-notification_admin.statusText.error_processing_configuration" satisfies EmailNotificationAdminAllKeys,
       });
 
       throw error;
@@ -134,7 +149,7 @@ export class EmailNotificationConnectedApp
       this.props.update({
         status: "failed",
         statusText:
-          "emailNotification.statusText.error_sending_email_notification_for_new_appointment",
+          "app_email-notification_admin.statusText.error_sending_email_notification_for_new_appointment" satisfies EmailNotificationAdminAllKeys,
       });
 
       throw error;
@@ -179,7 +194,7 @@ export class EmailNotificationConnectedApp
       this.props.update({
         status: "failed",
         statusText:
-          "emailNotification.statusText.error_sending_email_notification_for_status_change",
+          "app_email-notification_admin.statusText.error_sending_email_notification_for_status_change" satisfies EmailNotificationAdminAllKeys,
       });
 
       throw error;
@@ -245,7 +260,7 @@ export class EmailNotificationConnectedApp
       this.props.update({
         status: "failed",
         statusText:
-          "emailNotification.statusText.error_sending_email_notification_for_rescheduled_appointment",
+          "app_email-notification_admin.statusText.error_sending_email_notification_for_rescheduled_appointment" satisfies EmailNotificationAdminAllKeys,
       });
 
       throw error;
@@ -372,7 +387,8 @@ export class EmailNotificationConnectedApp
           },
         },
         participantType: "user",
-        handledBy: `emailNotification.handlers.${initiator}`,
+        handledBy:
+          `app_email-notification_admin.handlers.${initiator}` satisfies EmailNotificationAdminAllKeys,
         appointmentId: appointment._id,
       });
 

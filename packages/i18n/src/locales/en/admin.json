@@ -69,6 +69,7 @@
     },
     "optional": "Optional",
     "timeDuration": "{hours, plural, =0 {{minutes} min} other {# hr, {minutes} min}}",
+    "custom": "Custom",
     "navigationGuard": {
       "title": "Are you sure you want to leave this page?",
       "description": "You have unsaved changes. Are you sure you want to leave this page?",
@@ -111,14 +112,6 @@
     "store": "Store",
     "defaultApps": "Default apps",
     "logout": "Log out",
-    "follow-ups": "Follow-ups",
-    "reminders": "Reminders",
-    "customerEmailNotification": "Customer email notification",
-    "customerTextMessageNotification": "Customer text message notification",
-    "busyEvents": "Busy events",
-    "smtp": "SMTP",
-    "textBelt": "TextBelt SMS",
-    "weeklySchedule": "Weekly schedule",
     "viewWebsite": "View website"
   },
   "themeToggle": {
@@ -168,7 +161,7 @@
       "close": "Close"
     },
     "card": {
-      "by": "By",
+      "by": "By <link>{name}</link>",
       "appointment": "Appointment",
       "status": "Status",
       "dateTime": "Date & Time",
@@ -232,7 +225,9 @@
     },
     "new": {
       "title": "New appointment",
-      "description": "Schedule a new appointment on behalf of the customer"
+      "description": "Schedule a new appointment on behalf of the customer",
+      "waitlistEntry": "Wait list entry",
+      "waitlistEntryDescription": "Look up wait list entry information"
     },
     "edit": {
       "title": "Edit appointment",
@@ -1388,7 +1383,7 @@
           "autoConfirmTooltip1": "Select this option if you want to auto confirm all appointments created by customers.",
           "autoConfirmTooltip2": "By default, you will need to manually confirm each appointment.",
           "showPromoCodeField": "Show promo code field",
-          "showPromoCodeTooltip": "Configure should the promo code field be shown during the booking",
+          "showPromoCodeTooltip": "Configure whether the promo code field should be shown during the booking",
           "maxWeeksInFuture": "Maximum number of weeks into the future",
           "maxWeeksInFutureTooltip1": "Specifies the maximum number of weeks into the future that a user can schedule appointments.",
           "maxWeeksInFutureTooltip2": "If set to 6, users can only schedule events up to 6 weeks from the current date.",
@@ -1701,48 +1696,7 @@
     },
     "tabs": {
       "overview": "Overview",
-      "pendingAppointments": "Pending Appointments",
-      "financials": "Financials"
-    },
-    "financials": {
-      "title": "Financial Overview",
-      "estimatedRevenue": "Estimated Revenue",
-      "totalPayments": "Total Payments",
-      "netPayments": "Net Payments",
-      "activeAppointments": "Active Appointments",
-      "declinedAppointments": "Declined Appointments",
-      "recentPayments": "Recent Payments",
-      "paymentMethods": "Payment Methods",
-      "noPayments": "No payments found",
-      "amount": "Amount",
-      "status": "Status",
-      "date": "Date",
-      "customer": "Customer",
-      "service": "Service",
-      "dateRange": "Date Range",
-      "thisMonth": "This Month",
-      "lastMonth": "Last Month",
-      "thisWeek": "This Week",
-      "lastWeek": "Last Week",
-      "thisYear": "This Year",
-      "lastYear": "Last Year",
-      "allTime": "All Time",
-      "custom": "Custom Range",
-      "refunded": "Refunded",
-      "refundDate": "Refund Date",
-      "refundAmount": "Refund Amount",
-      "viewAppointment": "View Appointment",
-      "revenueAndPayments": "Revenue and Payments",
-      "appointmentStatusDistribution": "Appointment Status",
-      "serviceDistribution": "Options",
-      "appointmentsCount": "{count, plural, =1 {1 appointment} other {# appointments}}",
-      "estimatedRevenueFormat": "Estimated revenue: {revenue}",
-      "financialOverview": "Financial Overview",
-      "customerAcquisitionVsRetention": "New vs Returning Customers",
-      "timeGrouping": "Time Grouping",
-      "daily": "Daily",
-      "weekly": "Weekly",
-      "monthly": "Monthly"
+      "pendingAppointments": "Pending Appointments"
     }
   },
   "install": {

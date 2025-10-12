@@ -7,6 +7,11 @@ import { useQueryState } from "nuqs";
 import React from "react";
 import { deleteSelectedReminders } from "../actions";
 import { Reminder } from "../models";
+import {
+  RemindersAdminKeys,
+  RemindersAdminNamespace,
+  remindersAdminNamespace,
+} from "../translations/types";
 
 export const DeleteSelectedRemindersButton: React.FC<{
   appId: string;
@@ -14,7 +19,9 @@ export const DeleteSelectedRemindersButton: React.FC<{
 }> = ({ selected, appId }) => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [isOpen, setIsOpen] = React.useState(false);
-  const t = useI18n("apps");
+  const t = useI18n<RemindersAdminNamespace, RemindersAdminKeys>(
+    remindersAdminNamespace,
+  );
   const tAdmin = useI18n("admin");
 
   const [_, reload] = useQueryState("ts", { history: "replace" });
@@ -28,7 +35,7 @@ export const DeleteSelectedRemindersButton: React.FC<{
           selected.map((r) => r._id),
         ),
         {
-          success: t("reminders.statusText.reminders_deleted", {
+          success: t("statusText.reminders_deleted", {
             count: selected.length,
           }),
           error: tAdmin("common.toasts.error"),
@@ -54,7 +61,7 @@ export const DeleteSelectedRemindersButton: React.FC<{
         {isLoading && <Spinner />}
         <Trash className="mr-2 h-4 w-4" />
         <span>
-          {t("reminders.table.deleteSelected.label", {
+          {t("table.deleteSelected.label", {
             count: selected.length,
           })}
         </span>
@@ -64,7 +71,7 @@ export const DeleteSelectedRemindersButton: React.FC<{
         loading={isLoading}
         onClose={() => setIsOpen(false)}
         onConfirm={action}
-        description={t("reminders.table.deleteSelected.description", {
+        description={t("table.deleteSelected.description", {
           count: selected.length,
         })}
       />
