@@ -124,6 +124,15 @@ export class WaitlistConnectedApp implements IConnectedApp, IAppointmentHook {
     confirmed: boolean,
   ): Promise<void> {
     const logger = this.loggerFactory("onAppointmentCreated");
+    if (appData.data?.dontDismissWaitlistOnAppointmentCreate) {
+      logger.debug(
+        { appId: appData._id },
+        "Don't dismiss waitlist on appointment create is enabled, skipping appointment created hook",
+      );
+
+      return;
+    }
+
     if (!appData.data?.waitlistId) {
       logger.debug(
         { appId: appData._id },

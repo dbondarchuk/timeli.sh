@@ -41,6 +41,8 @@ const config = getConfig(
       ),
     );
 
+    const allApps = Object.keys(AppsTranslations);
+
     const messages = {
       public: async (locale: string) => {
         const promises = installedApps
@@ -54,7 +56,8 @@ const config = getConfig(
         return Object.fromEntries(entries);
       },
       admin: async (locale: string) => {
-        const promises = installedApps
+        // Include all apps, not just installed apps to display in store / set up forms
+        const promises = allApps
           .filter((app) => AppsTranslations[app]?.admin)
           .map(async (app) => [
             `app_${app}_admin`,

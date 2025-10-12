@@ -98,6 +98,10 @@
       "customerNewEntryTemplateId": {
         "label": "Customer new entry email template",
         "tooltip": "Template of the email, that your customers will see when a new entry is added to the wait list"
+      },
+      "dontDismissWaitlistOnAppointmentCreate": {
+        "label": "Don't dismiss waitlist on appointment create",
+        "tooltip": "Whether to disable dismissing waitlist entry when appointment was created from it"
       }
     }
   },

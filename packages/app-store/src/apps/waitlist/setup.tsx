@@ -70,6 +70,32 @@ export const WaitlistAppSetup: React.FC<AppSetupProps> = ({
           <div className="flex flex-col items-center gap-4 w-full">
             <FormField
               control={form.control}
+              name="dontDismissWaitlistOnAppointmentCreate"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>
+                    {t(
+                      "setup.form.dontDismissWaitlistOnAppointmentCreate.label",
+                    )}
+                    <InfoTooltip>
+                      {t(
+                        "setup.form.dontDismissWaitlistOnAppointmentCreate.tooltip",
+                      )}
+                    </InfoTooltip>
+                  </FormLabel>
+                  <FormControl>
+                    <BooleanSelect
+                      disabled={isLoading}
+                      value={field.value}
+                      onValueChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="notifyOnNewEntry"
               render={({ field }) => (
                 <FormItem className="w-full">

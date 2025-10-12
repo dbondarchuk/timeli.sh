@@ -5,6 +5,7 @@ import { WaitlistStatus } from "./waitlist";
 
 export const waitlistConfigurationSchema = z
   .object({
+    dontDismissWaitlistOnAppointmentCreate: z.coerce.boolean().optional(),
     email: asOptionalField(zEmail),
     notifyOnNewEntry: z.coerce.boolean().optional(),
   })
