@@ -233,8 +233,8 @@ export class WaitlistConnectedApp implements IConnectedApp, IAppointmentHook {
   ): Promise<void> {
     const logger = this.loggerFactory("onWaitlistEntryCreated");
     if (
-      !appData.data?.notifyOnNewEntry ||
-      !appData.data.notifyCustomerOnNewEntry
+      !appData.data?.notifyOnNewEntry &&
+      !appData.data?.notifyCustomerOnNewEntry
     ) {
       logger.debug(
         {
