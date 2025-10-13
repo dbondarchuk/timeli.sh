@@ -93,7 +93,10 @@ export default async function NewAppointmentPage(props: Props) {
         discount: appointment.discount,
         data: searchParams.data as Record<string, any>,
       }
-    : (searchParams.fromValue ?? undefined);
+    : {
+        ...(searchParams.fromValue ?? {}),
+        data: searchParams.data as Record<string, any>,
+      };
 
   const customer =
     !from && searchParams.customer

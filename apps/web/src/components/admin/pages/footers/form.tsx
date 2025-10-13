@@ -1,6 +1,8 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { AppsBlocksEditors } from "@vivid/app-store/blocks/editors";
+import { AppsBlocksReaders } from "@vivid/app-store/blocks/readers";
 import { useI18n } from "@vivid/i18n";
 import { PageBuilder } from "@vivid/page-builder";
 import {
@@ -35,11 +37,77 @@ import {
   updatePageFooter,
 } from "./actions";
 
+const baseNotAllowedBlocks = [
+  "Booking",
+  "Popup",
+  "ModifyAppointmentForm",
+  "BookingConfirmation",
+  "Redirect",
+];
+
 export const PageFooterForm: React.FC<{
   initialData?: PageFooter;
   args: Record<string, any>;
-}> = ({ initialData, args }) => {
+  apps?: { appId: string; appName: string }[];
+}> = ({ initialData, args, apps }) => {
   const t = useI18n("admin");
+
+  const additionalBlocks = useMemo(() => {
+    return apps?.reduce(
+      (acc, app) => {
+        acc.schemas = {
+          ...acc.schemas,
+          ...Object.fromEntries(
+            Object.entries(AppsBlocksEditors[app.appName])
+              .filter(([_, value]) => value.allowedInFooter)
+              .map(([blockName, value]) => [
+                `${blockName}-${app.appId}`,
+                value.schema,
+              ]),
+          ),
+        };
+        acc.editors = {
+          ...acc.editors,
+          ...Object.fromEntries(
+            Object.entries(AppsBlocksEditors[app.appName])
+              .filter(([_, value]) => value.allowedInFooter)
+              .map(([blockName, value]) => [
+                `${blockName}-${app.appId}`,
+                {
+                  ...value.editor,
+                  staticProps: {
+                    ...value.editor.staticProps,
+                    appId: app.appId,
+                    appName: app.appName,
+                  },
+                },
+              ]),
+          ),
+        };
+        acc.readers = {
+          ...acc.readers,
+          ...Object.fromEntries(
+            Object.entries(AppsBlocksReaders[app.appName]).map(
+              ([blockName, value]) => [
+                `${blockName}-${app.appId}`,
+                {
+                  ...value,
+                  staticProps: {
+                    ...value.staticProps,
+                    appId: app.appId,
+                    appName: app.appName,
+                  },
+                },
+              ],
+            ),
+          ),
+        };
+
+        return acc;
+      },
+      { schemas: {}, editors: {}, readers: {} },
+    );
+  }, [apps]);
 
   const cachedUniqueNameCheck = useDebounceCacheFn(
     checkUniquePageFooterName,
@@ -174,10 +242,11 @@ export const PageFooterForm: React.FC<{
                 <FormControl>
                   <PageBuilder
                     args={args}
-                    notAllowedBlocks={["Booking", "Popup"]}
+                    notAllowedBlocks={baseNotAllowedBlocks}
                     value={field.value}
                     onIsValidChange={onPageBuilderValidChange}
                     onChange={field.onChange}
+                    additionalBlocks={additionalBlocks}
                   />
                 </FormControl>
                 <FormMessage />

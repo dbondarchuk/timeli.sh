@@ -26,6 +26,18 @@ export default async function NewPageFooterPage() {
       "styling",
     );
 
+  const connectedApps =
+    await ServicesContainer.ConnectedAppsService().getAppsByScope(
+      "ui-components",
+    );
+
+  const apps = connectedApps.map((app) => ({
+    appId: app._id,
+    appName: app.name,
+  }));
+
+  logger.debug({ apps }, "Connected apps");
+
   const args = formatArguments(
     {
       general,
@@ -38,7 +50,7 @@ export default async function NewPageFooterPage() {
   return (
     <PageContainer scrollable>
       <Styling styling={styling} />
-      <PageFooterForm args={args} />
+      <PageFooterForm args={args} apps={apps} />
     </PageContainer>
   );
 }

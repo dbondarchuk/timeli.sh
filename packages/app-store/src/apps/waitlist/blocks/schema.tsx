@@ -1,8 +1,7 @@
 import { EditorDocumentBlocksDictionary } from "@vivid/builder";
-import { WaitlistBlocksSchema } from "./schema";
 import { WaitlistConfiguration } from "./waitlist/configuration";
 import { WaitlistEditor } from "./waitlist/editor";
-import { WaitlistPropsDefaults } from "./waitlist/schema";
+import { WaitlistPropsDefaults, WaitlistPropsSchema } from "./waitlist/schema";
 import { WaitlistToolbar } from "./waitlist/toolbar";
 
 import { AllKeys, BuilderKeys } from "@vivid/i18n";
@@ -11,6 +10,14 @@ import {
   WaitlistAdminKeys,
   WaitlistAdminNamespace,
 } from "../translations/types";
+
+export const WaitlistBlocksSchema = {
+  Waitlist: WaitlistPropsSchema,
+};
+
+export const WaitlistBlocksAllowedInFooter = {
+  Waitlist: false,
+};
 
 export const WaitlistEditors: EditorDocumentBlocksDictionary<
   typeof WaitlistBlocksSchema
@@ -31,3 +38,15 @@ export const WaitlistEditors: EditorDocumentBlocksDictionary<
     >,
   },
 };
+
+export const WaitlistBlocks = Object.fromEntries(
+  Object.entries(WaitlistBlocksSchema).map(([key, schema]) => [
+    key,
+    {
+      schema,
+      editor: WaitlistEditors[key as keyof typeof WaitlistBlocksSchema],
+      allowedInFooter:
+        WaitlistBlocksAllowedInFooter[key as keyof typeof WaitlistBlocksSchema],
+    },
+  ]),
+);

@@ -174,6 +174,7 @@ export class EventsService implements IEventsService {
           customerEmail: event.fields.email,
           customerPhone: event.fields.phone,
           optionName: event.option.name,
+          data: event.data,
         },
         confirmed: propsConfirmed,
         force,

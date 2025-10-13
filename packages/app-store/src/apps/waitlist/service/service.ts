@@ -133,7 +133,7 @@ export class WaitlistConnectedApp implements IConnectedApp, IAppointmentHook {
       return;
     }
 
-    if (!appData.data?.waitlistId) {
+    if (!appointment.data?.waitlistId) {
       logger.debug(
         { appId: appData._id },
         "Waitlist ID not found in app data, skipping appointment created hook",
@@ -146,32 +146,32 @@ export class WaitlistConnectedApp implements IConnectedApp, IAppointmentHook {
       {
         appId: appData._id,
         appointmentId: appointment._id,
-        waitlistId: appData.data.waitlistId,
+        waitlistId: appointment.data.waitlistId,
       },
       "Appointment created, creating waitlist entry",
     );
 
     const repositoryService = this.getRepositoryService(appData._id);
     const result = await repositoryService.getWaitlistEntry(
-      appData.data.waitlistId,
+      appointment.data.waitlistId,
     );
     if (!result) {
       logger.debug(
-        { appId: appData._id, waitlistId: appData.data.waitlistId },
+        { appId: appData._id, waitlistId: appointment.data.waitlistId },
         "Waitlist entry not found, skipping appointment created hook",
       );
       return;
     }
 
     logger.debug(
-      { appId: appData._id, waitlistId: appData.data.waitlistId },
+      { appId: appData._id, waitlistId: appointment.data.waitlistId },
       "Waitlist entry found, dismissing waitlist entry",
     );
 
     await repositoryService.dismissWaitlistEntry(result._id);
 
     logger.debug(
-      { appId: appData._id, waitlistId: appData.data.waitlistId },
+      { appId: appData._id, waitlistId: appointment.data.waitlistId },
       "Waitlist entry dismissed",
     );
   }

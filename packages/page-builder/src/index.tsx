@@ -30,7 +30,7 @@ type PageBuilderProps = {
     logo?: string;
   };
   footer?: React.ReactNode;
-  notAllowedBlocks?: (keyof typeof EditorBlocks)[];
+  notAllowedBlocks?: (keyof typeof EditorBlocks | string)[];
   additionalBlocks?: {
     schemas: BaseZodDictionary;
     editors: EditorDocumentBlocksDictionary<any>;

@@ -26,10 +26,22 @@ export default async function NewPagesPage() {
       "social",
     );
 
+  const connectedApps =
+    await ServicesContainer.ConnectedAppsService().getAppsByScope(
+      "ui-components",
+    );
+
+  const apps = connectedApps.map((app) => ({
+    appId: app._id,
+    appName: app.name,
+  }));
+
+  logger.debug({ apps }, "Connected apps");
+
   return (
     <PageContainer scrollable>
       <Styling styling={styling} />
-      <PageForm config={{ general, social }} />
+      <PageForm config={{ general, social }} apps={apps} />
     </PageContainer>
   );
 }

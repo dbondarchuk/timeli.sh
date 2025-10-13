@@ -1,10 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  AppsBlocksEditors,
-  AppsBlocksSchemas,
-} from "@vivid/app-store/blocks/editors";
+import { AppsBlocksEditors } from "@vivid/app-store/blocks/editors";
 import { AppsBlocksReaders } from "@vivid/app-store/blocks/readers";
 import { Language, useI18n } from "@vivid/i18n";
 import { PageBuilder } from "@vivid/page-builder";
@@ -76,8 +73,11 @@ export const PageForm: React.FC<{
         acc.schemas = {
           ...acc.schemas,
           ...Object.fromEntries(
-            Object.entries(AppsBlocksSchemas[app.appName]).map(
-              ([blockName, value]) => [`${blockName}-${app.appId}`, value],
+            Object.entries(AppsBlocksEditors[app.appName]).map(
+              ([blockName, value]) => [
+                `${blockName}-${app.appId}`,
+                value.schema,
+              ],
             ),
           ),
         };
@@ -88,9 +88,9 @@ export const PageForm: React.FC<{
               ([blockName, value]) => [
                 `${blockName}-${app.appId}`,
                 {
-                  ...value,
+                  ...value.editor,
                   staticProps: {
-                    ...value.staticProps,
+                    ...value.editor.staticProps,
                     appId: app.appId,
                     appName: app.appName,
                   },

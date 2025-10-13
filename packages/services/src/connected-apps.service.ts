@@ -580,7 +580,8 @@ export class ConnectedAppsService implements IConnectedAppsService {
         { appName: hookData.name, appId: hookData._id },
         "Executing hook",
       );
-      const service = AvailableAppServices[hook.name](
+
+      const service = AvailableAppServices[hookData.name](
         this.getAppServiceProps(hookData._id),
       ) as any as T;
 
