@@ -1,6 +1,7 @@
 import { getLoggerFactory } from "@vivid/logger";
 import {
   IConnectedAppsService,
+  IPaymentHook,
   IPaymentProcessor,
   IPaymentsService,
   Payment,
@@ -213,7 +214,18 @@ export class PaymentsService implements IPaymentsService {
 
     logger.debug(
       { paymentId: dbPayment._id, amount: dbPayment.amount },
-      "Successfully created payment",
+      "Successfully created payment, executing hooks",
+    );
+
+    // Execute payment hooks
+    await this.connectedAppsService.executeHooks<IPaymentHook>(
+      "payment-hook",
+      async (hook, service) => {
+        await service.onPaymentCreated?.(hook, dbPayment);
+      },
+      {
+        ignoreErrors: true,
+      },
     );
 
     return dbPayment;
@@ -311,7 +323,18 @@ export class PaymentsService implements IPaymentsService {
 
     logger.debug(
       { paymentId: id, status: updatedPayment.status },
-      "Successfully updated payment",
+      "Successfully updated payment, executing hooks",
+    );
+
+    // Execute payment hooks
+    await this.connectedAppsService.executeHooks<IPaymentHook>(
+      "payment-hook",
+      async (hook, service) => {
+        await service.onPaymentUpdated?.(hook, updatedPayment, update);
+      },
+      {
+        ignoreErrors: true,
+      },
     );
 
     return updatedPayment;
@@ -332,7 +355,21 @@ export class PaymentsService implements IPaymentsService {
 
     await payments.deleteOne({ _id: id });
 
-    logger.debug({ paymentId: id }, "Successfully deleted payment");
+    logger.debug(
+      { paymentId: id },
+      "Successfully deleted payment, executing hooks",
+    );
+
+    // Execute payment hooks
+    await this.connectedAppsService.executeHooks<IPaymentHook>(
+      "payment-hook",
+      async (hook, service) => {
+        await service.onPaymentDeleted?.(hook, payment);
+      },
+      {
+        ignoreErrors: true,
+      },
+    );
 
     return payment;
   }
@@ -426,7 +463,18 @@ export class PaymentsService implements IPaymentsService {
 
         logger.debug(
           { paymentId: id, amount },
-          "Successfully processed payment refund",
+          "Successfully processed payment refund, executing hooks",
+        );
+
+        // Execute payment hooks
+        await this.connectedAppsService.executeHooks<IPaymentHook>(
+          "payment-hook",
+          async (hook, service) => {
+            await service.onPaymentRefunded?.(hook, updatedPayment, amount);
+          },
+          {
+            ignoreErrors: true,
+          },
         );
 
         return { success: true, updatedPayment };

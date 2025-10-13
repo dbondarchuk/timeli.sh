@@ -3,7 +3,7 @@ import { cache } from "react";
 import { AssetsService } from "./assets.service";
 import { CommunicationLogsService } from "./communication-logs.service";
 import { CachedConfigurationService } from "./configuration.service";
-import { ConnectedAppsService } from "./connected-apps.service";
+import { CachedConnectedAppsService } from "./connected-apps.service";
 import { CustomersService } from "./customers.service";
 import { EventsService } from "./events.service";
 import { NotificationService } from "./notifications.service";
@@ -46,7 +46,9 @@ export const ServicesContainer: IServicesContainer = {
       ),
   ),
   PagesService: cache(() => new PagesService()),
-  CustomersService: cache(() => new CustomersService()),
+  CustomersService: cache(
+    () => new CustomersService(ServicesContainer.ConnectedAppsService()),
+  ),
   ServicesService: cache(
     () => new ServicesService(ServicesContainer.ConfigurationService()),
   ),
@@ -59,7 +61,7 @@ export const ServicesContainer: IServicesContainer = {
   ),
   TemplatesService: cache(() => new TemplatesService()),
   CommunicationLogsService: cache(() => new CommunicationLogsService()),
-  ConnectedAppsService: cache(() => new ConnectedAppsService()),
+  ConnectedAppsService: cache(() => new CachedConnectedAppsService()),
   PaymentsService: cache(
     () => new PaymentsService(ServicesContainer.ConnectedAppsService()),
   ),

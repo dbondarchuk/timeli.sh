@@ -16,6 +16,7 @@ import {
 } from "@vivid/types";
 import { ObjectId } from "mongodb";
 import pLimit from "p-limit";
+import { cache } from "react";
 import { ServicesContainer } from ".";
 import { getDbConnection } from "./database";
 
@@ -362,7 +363,7 @@ export class ConnectedAppsService implements IConnectedAppsService {
     const result = await collection.find().toArray();
 
     logger.debug({ count: result.length }, "Returning all apps");
-    return result.map(({ data: __, ...app }) => app);
+    return result.map(({ data: __, token: ___, ...app }) => app);
   }
 
   public async getAppsByScope(...scope: AppScope[]): Promise<ConnectedApp[]> {
@@ -371,7 +372,7 @@ export class ConnectedAppsService implements IConnectedAppsService {
     const result = await this.getAppsByScopeWithData(...scope);
 
     logger.debug({ scope, count: result.length }, "Returning apps by scope");
-    return result.map(({ data: __, ...app }) => app);
+    return result.map(({ data: __, token: ___, ...app }) => app);
   }
 
   public async getAppsByApp(appName: string): Promise<ConnectedApp[]> {
@@ -610,5 +611,61 @@ export class ConnectedAppsService implements IConnectedAppsService {
     await Promise.all(promises.map((p) => limit(() => p)));
 
     logger.debug({ scope }, "Hooks executed");
+  }
+}
+
+export class CachedConnectedAppsService extends ConnectedAppsService {
+  private cachedGetApps = cache(async () => {
+    const logger = this.loggerFactory("cachedGetApps");
+    logger.debug({}, "Getting apps");
+    const db = await getDbConnection();
+    const collection = db.collection<ConnectedAppData>(
+      CONNECTED_APPS_COLLECTION_NAME,
+    );
+    const apps = await collection.find().toArray();
+    logger.debug({ count: apps.length }, "Returning apps");
+
+    return apps;
+  });
+
+  public async getApps(): Promise<ConnectedApp[]> {
+    const apps = await this.cachedGetApps();
+    return apps.map(({ data: __, ...app }) => app);
+  }
+
+  public async getAppsByScopeWithData(
+    ...scope: AppScope[]
+  ): Promise<ConnectedAppData[]> {
+    const apps = await this.cachedGetApps();
+    return apps.filter((app) =>
+      scope.some((s) => (AvailableApps[app.name]?.scope ?? []).includes(s)),
+    );
+  }
+
+  public async getAppsByScope(...scope: AppScope[]): Promise<ConnectedApp[]> {
+    const apps = await this.cachedGetApps();
+    return apps
+      .filter((app) =>
+        scope.some((s) => (AvailableApps[app.name]?.scope ?? []).includes(s)),
+      )
+      .map(({ data: __, token: ___, ...app }) => app);
+  }
+
+  public async getAppsByApp(appName: string): Promise<ConnectedApp[]> {
+    const apps = await this.cachedGetApps();
+    return apps
+      .filter((app) => app.name === appName)
+      .map(({ data: __, token: ___, ...app }) => app);
+  }
+
+  public async getApp(appId: string): Promise<ConnectedAppData> {
+    const apps = await this.cachedGetApps();
+    const app = apps.find((app) => app._id === appId);
+
+    if (!app) {
+      throw new Error(`App ${appId} not found`);
+    }
+
+    return app;
   }
 }

@@ -5,6 +5,8 @@ import {
   CustomerListModel,
   CustomerSearchField,
   CustomerUpdateModel,
+  IConnectedAppsService,
+  ICustomerHook,
   Leaves,
   Query,
   WithTotal,
@@ -19,6 +21,8 @@ export const CUSTOMERS_COLLECTION_NAME = "customers";
 
 export class CustomersService implements ICustomersService {
   protected readonly loggerFactory = getLoggerFactory("CustomersService");
+
+  constructor(private readonly appsService: IConnectedAppsService) {}
 
   public async getCustomer(id: string): Promise<Customer | null> {
     const logger = this.loggerFactory("getCustomer");
@@ -338,9 +342,25 @@ export class CustomersService implements ICustomersService {
       _id: id,
     });
 
+    const createdCustomer: Customer = {
+      ...customer,
+      _id: id,
+    };
+
     logger.debug(
       { customerId: id, name: customer.name },
-      "Successfully created customer",
+      "Successfully created customer, executing hooks",
+    );
+
+    // Execute customer hooks
+    await this.appsService.executeHooks<ICustomerHook>(
+      "customer-hook",
+      async (hook, service) => {
+        await service.onCustomerCreated?.(hook, createdCustomer);
+      },
+      {
+        ignoreErrors: true,
+      },
     );
 
     return id;
@@ -374,7 +394,28 @@ export class CustomersService implements ICustomersService {
       },
     );
 
-    logger.debug({ customerId: id }, "Successfully updated customer");
+    // Get the updated customer for hooks
+    const updatedCustomer = await collection.findOne({ _id: id });
+    if (!updatedCustomer) {
+      logger.warn({ customerId: id }, "Customer not found after update");
+      return;
+    }
+
+    logger.debug(
+      { customerId: id },
+      "Successfully updated customer, executing hooks",
+    );
+
+    // Execute customer hooks
+    await this.appsService.executeHooks<ICustomerHook>(
+      "customer-hook",
+      async (hook, service) => {
+        await service.onCustomerUpdated?.(hook, updatedCustomer, update);
+      },
+      {
+        ignoreErrors: true,
+      },
+    );
   }
 
   public async getOrUpsertCustomer({
@@ -520,7 +561,18 @@ export class CustomersService implements ICustomersService {
 
     logger.debug(
       { customerId: id, name: customer.name },
-      "Successfully deleted customer",
+      "Successfully deleted customer, executing hooks",
+    );
+
+    // Execute customer hooks
+    await this.appsService.executeHooks<ICustomerHook>(
+      "customer-hook",
+      async (hook, service) => {
+        await service.onCustomersDeleted?.(hook, [customer]);
+      },
+      {
+        ignoreErrors: true,
+      },
     );
 
     return customer;
@@ -571,6 +623,13 @@ export class CustomersService implements ICustomersService {
       );
     }
 
+    // Get customers before deletion for hooks
+    const customersToDelete = await collection
+      .find({
+        _id: { $in: ids },
+      })
+      .toArray();
+
     await collection.deleteMany({
       _id: {
         $in: ids,
@@ -579,7 +638,18 @@ export class CustomersService implements ICustomersService {
 
     logger.debug(
       { customerIds: ids, count: ids.length },
-      "Successfully deleted multiple customers",
+      "Successfully deleted multiple customers, executing hooks",
+    );
+
+    // Execute customer hooks
+    await this.appsService.executeHooks<ICustomerHook>(
+      "customer-hook",
+      async (hook, service) => {
+        await service.onCustomersDeleted?.(hook, customersToDelete);
+      },
+      {
+        ignoreErrors: true,
+      },
     );
   }
 

@@ -41,6 +41,8 @@ import { TextMessageResenderApp } from "./apps/text-message-resender/app";
 import { TEXT_MESSAGE_RESENDER_APP_NAME } from "./apps/text-message-resender/const";
 import { WaitlistApp } from "./apps/waitlist/app";
 import { WAITLIST_APP_NAME } from "./apps/waitlist/const";
+import { webhooksApp } from "./apps/webhooks/app";
+import { WEBHOOKS_APP_NAME } from "./apps/webhooks/const";
 import { WeeklyScheduleApp } from "./apps/weekly-schedule/app";
 import { WEEKLY_SCHEDULE_APP_NAME } from "./apps/weekly-schedule/const";
 
@@ -68,6 +70,7 @@ export const AvailableApps: Record<string, App> = {
   [TEXT_MESSAGE_RESENDER_APP_NAME]: TextMessageResenderApp,
   [PAYPAL_APP_NAME]: PaypalApp,
   [WAITLIST_APP_NAME]: WaitlistApp,
+  [WEBHOOKS_APP_NAME]: webhooksApp,
   [FINANCIAL_OVERVIEW_APP_NAME]: FinancialOverviewApp,
 };
 
@@ -93,4 +96,5 @@ export { TEXT_MESSAGE_AUTO_REPLY_APP_NAME } from "./apps/text-message-auto-reply
 export { TEXT_MESSAGE_NOTIFICATION_APP_NAME } from "./apps/text-message-notification/const";
 export { TEXT_MESSAGE_RESENDER_APP_NAME } from "./apps/text-message-resender/const";
 export { WAITLIST_APP_NAME as WAITLIST_NOTIFICATION_APP_NAME } from "./apps/waitlist/const";
+export { WEBHOOKS_APP_NAME } from "./apps/webhooks/const";
 export { WEEKLY_SCHEDULE_APP_NAME } from "./apps/weekly-schedule/const";

@@ -102,7 +102,7 @@ export const getPaymentMethod = (
   appName?: string,
 ): AllKeys => {
   return method === "online" && appName
-    ? `apps.${AvailableApps[appName]?.displayName}`
+    ? AvailableApps[appName]?.displayName
     : method === "cash"
       ? "admin.payment.methods.cash"
       : "admin.payment.methods.card";

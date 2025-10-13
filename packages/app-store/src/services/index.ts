@@ -43,6 +43,8 @@ import { TEXT_MESSAGE_RESENDER_APP_NAME } from "../apps/text-message-resender/co
 import TextMessageResenderConnectedApp from "../apps/text-message-resender/service";
 import { WAITLIST_APP_NAME } from "../apps/waitlist/const";
 import { WaitlistConnectedApp } from "../apps/waitlist/service/service";
+import { WEBHOOKS_APP_NAME } from "../apps/webhooks/const";
+import { WebhooksConnectedApp } from "../apps/webhooks/service";
 import { WEEKLY_SCHEDULE_APP_NAME } from "../apps/weekly-schedule/const";
 import WeeklyScheduleConnectedApp from "../apps/weekly-schedule/service";
 
@@ -81,4 +83,5 @@ export const AvailableAppServices: Record<
   [PAYPAL_APP_NAME]: (props) => new PaypalConnectedApp(props),
   [WAITLIST_APP_NAME]: (props) => new WaitlistConnectedApp(props),
   [FINANCIAL_OVERVIEW_APP_NAME]: (props) => new FinancialOverviewService(props),
+  [WEBHOOKS_APP_NAME]: (props) => new WebhooksConnectedApp(props),
 };

@@ -59,6 +59,8 @@
     "text-message-send": "Текстове повідомлення",
     "text-message-respond": "Відповідач текстових повідомлень",
     "appointment-hook": "Хуки записів",
+    "customer-hook": "Хуки клієнтів",
+    "payment-hook": "Хуки платежів",
     "scheduled": "Заплановані",
     "schedule": "Постачальник розкладу",
     "assets-storage": "Сховище ресурсів",

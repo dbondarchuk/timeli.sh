@@ -42,6 +42,8 @@ import { TEXT_MESSAGE_RESENDER_APP_NAME } from "./apps/text-message-resender/con
 import { TextMessageResenderTranslations } from "./apps/text-message-resender/translations";
 import { WAITLIST_APP_NAME } from "./apps/waitlist/const";
 import { WaitlistTranslations } from "./apps/waitlist/translations";
+import { WEBHOOKS_APP_NAME } from "./apps/webhooks/const";
+import { WebhooksTranslations } from "./apps/webhooks/translations";
 import { WEEKLY_SCHEDULE_APP_NAME } from "./apps/weekly-schedule/const";
 import { WeeklyScheduleTranslations } from "./apps/weekly-schedule/translations";
 
@@ -76,4 +78,5 @@ export const AppsTranslations: Record<
   [TEXT_MESSAGE_NOTIFICATION_APP_NAME]: TextMessageNotificationTranslations,
   [TEXT_MESSAGE_RESENDER_APP_NAME]: TextMessageResenderTranslations,
   [WEEKLY_SCHEDULE_APP_NAME]: WeeklyScheduleTranslations,
+  [WEBHOOKS_APP_NAME]: WebhooksTranslations,
 };

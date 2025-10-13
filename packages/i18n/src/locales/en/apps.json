@@ -59,6 +59,8 @@
     "text-message-send": "Text message",
     "text-message-respond": "Text message responder",
     "appointment-hook": "Appointment hooks",
+    "customer-hook": "Customer hooks",
+    "payment-hook": "Payment hooks",
     "scheduled": "Scheduled",
     "schedule": "Schedule provider",
     "assets-storage": "Assets storage",

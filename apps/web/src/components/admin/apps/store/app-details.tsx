@@ -87,7 +87,7 @@ export const AppDetails: React.FC<AppDetailsProps> = async ({ appName }) => {
           <Markdown markdown={t(app.description.text)} className="max-w-full" />
         </div>
 
-        {app.description.images?.length && (
+        {!!app.description.images?.length && (
           <Carousel
             opts={{
               align: "start",

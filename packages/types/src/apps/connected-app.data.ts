@@ -78,4 +78,4 @@ export type ConnectedAppUpdateModel = Partial<
   Omit<ConnectedAppData, "_id" | "name">
 >;
 
-export type ConnectedApp = Omit<ConnectedAppData, "data">;
+export type ConnectedApp = Omit<ConnectedAppData, "data" | "token">;
