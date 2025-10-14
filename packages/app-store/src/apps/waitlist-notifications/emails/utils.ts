@@ -2,7 +2,7 @@ import { renderUserEmailTemplate } from "@vivid/email-builder/static";
 import { Language } from "@vivid/i18n";
 import { template } from "@vivid/utils";
 import { UserEmailTemplates } from ".";
-import { WaitlistEntry } from "../models/waitlist";
+import { WaitlistEntry } from "../../waitlist/models/waitlist";
 
 export const getEmailTemplate = async (
   status: "newWaitlistEntry",

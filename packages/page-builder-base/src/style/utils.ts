@@ -1,6 +1,11 @@
 import { z } from "zod";
 import { ALL_STYLES, allStyles, AllStylesNames } from "./styles";
-import { BaseStyleDictionary, StyleDictionary, StyleSupport } from "./types";
+import {
+  BaseStyleDictionary,
+  StyleDefinition,
+  StyleDictionary,
+  StyleSupport,
+} from "./types";
 import {
   FourSideValues,
   NumberValueWithUnit,
@@ -54,7 +59,13 @@ export function filterStyleDefinitions<
   }
 
   const result = Object.fromEntries(
-    keys.map((k) => [k, allStyles.find((s) => s.name === k)!]),
+    keys.map(
+      (k) =>
+        [k, allStyles.find((s) => s.name === k)!] as [
+          AllStylesNames,
+          StyleDefinition<any>,
+        ],
+    ),
   ) as Pick<typeof ALL_STYLES, FinalKeys>;
 
   return result;

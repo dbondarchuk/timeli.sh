@@ -8,7 +8,7 @@ const BorderColorSchema = zColor;
 
 export const borderColorStyle = {
   name: "borderColor",
-  label: "pageBuilder.styles.properties.borderColor",
+  label: "builder.pageBuilder.styles.properties.borderColor",
   icon: ({ className }) => <Brush className={className} />,
   category: "border",
   schema: BorderColorSchema,

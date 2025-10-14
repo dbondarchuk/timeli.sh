@@ -5,42 +5,49 @@ import {
 } from "@vivid/page-builder-base";
 import { AllStylesSchemas } from "@vivid/page-builder-base/style";
 import { Move } from "lucide-react";
+import { WaitlistAdminAllKeys } from "../../translations/types";
 
 export const waitlistShortcuts: Shortcut<AllStylesSchemas>[] = [
   {
-    label: "pageBuilder.blocks.container.shortcuts.gap",
+    label:
+      "app_waitlist_admin.block.shortcuts.gap.label" satisfies WaitlistAdminAllKeys,
     icon: Move,
     options: [
       {
-        label: "pageBuilder.blocks.container.gaps.none",
+        label:
+          "app_waitlist_admin.block.shortcuts.gap.gaps.none" satisfies WaitlistAdminAllKeys,
         value: "none",
         targetStyles: {
           gap: { value: 0, unit: "rem" },
         },
       },
       {
-        label: "pageBuilder.blocks.container.gaps.small",
+        label:
+          "app_waitlist_admin.block.shortcuts.gap.gaps.small" satisfies WaitlistAdminAllKeys,
         value: "small",
         targetStyles: {
           gap: { value: 0.25, unit: "rem" },
         },
       },
       {
-        label: "pageBuilder.blocks.container.gaps.medium",
+        label:
+          "app_waitlist_admin.block.shortcuts.gap.gaps.medium" satisfies WaitlistAdminAllKeys,
         value: "medium",
         targetStyles: {
           gap: { value: 1, unit: "rem" },
         },
       },
       {
-        label: "pageBuilder.blocks.container.gaps.large",
+        label:
+          "app_waitlist_admin.block.shortcuts.gap.gaps.large" satisfies WaitlistAdminAllKeys,
         value: "large",
         targetStyles: {
           gap: { value: 2, unit: "rem" },
         },
       },
       {
-        label: "pageBuilder.blocks.container.gaps.x-large",
+        label:
+          "app_waitlist_admin.block.shortcuts.gap.gaps.x-large" satisfies WaitlistAdminAllKeys,
         value: "x-large",
         targetStyles: {
           gap: { value: 4, unit: "rem" },

@@ -4,7 +4,7 @@ import { YouTubeVideoStylesSchema } from "./styles";
 
 export const youtubeVideoShortcuts: Shortcut<YouTubeVideoStylesSchema>[] = [
   {
-    label: "pageBuilder.blocks.youtubeVideo.aspectRatio",
+    label: "builder.pageBuilder.blocks.youtubeVideo.aspectRatio",
     icon: ({ className }) => <Film className={className} />,
     options: [
       {
@@ -106,11 +106,11 @@ export const youtubeVideoShortcuts: Shortcut<YouTubeVideoStylesSchema>[] = [
     ],
   },
   {
-    label: "pageBuilder.blocks.youtubeVideo.alignment",
+    label: "builder.pageBuilder.blocks.youtubeVideo.alignment",
     icon: ({ className }) => <AlignLeft className={className} />,
     options: [
       {
-        label: "pageBuilder.blocks.video.alignments.standard",
+        label: "builder.pageBuilder.blocks.video.alignments.standard",
         value: "standard",
         targetStyles: {
           display: "inline-block",
@@ -129,7 +129,7 @@ export const youtubeVideoShortcuts: Shortcut<YouTubeVideoStylesSchema>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.video.alignments.center",
+        label: "builder.pageBuilder.blocks.video.alignments.center",
         value: "center",
         targetStyles: {
           display: "block",
@@ -144,11 +144,11 @@ export const youtubeVideoShortcuts: Shortcut<YouTubeVideoStylesSchema>[] = [
     ],
   },
   {
-    label: "pageBuilder.blocks.youtubeVideo.playback",
+    label: "builder.pageBuilder.blocks.youtubeVideo.playback",
     icon: ({ className }) => <Play className={className} />,
     options: [
       {
-        label: "pageBuilder.blocks.video.playbackOptions.standard",
+        label: "builder.pageBuilder.blocks.video.playbackOptions.standard",
         value: "standard",
         targetStyles: {},
         targetProps: {
@@ -159,7 +159,7 @@ export const youtubeVideoShortcuts: Shortcut<YouTubeVideoStylesSchema>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.video.playbackOptions.autoplay",
+        label: "builder.pageBuilder.blocks.video.playbackOptions.autoplay",
         value: "autoplay",
         targetStyles: {},
         targetProps: {
@@ -170,7 +170,7 @@ export const youtubeVideoShortcuts: Shortcut<YouTubeVideoStylesSchema>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.video.playbackOptions.loop",
+        label: "builder.pageBuilder.blocks.video.playbackOptions.loop",
         value: "loop",
         targetStyles: {},
         targetProps: {
@@ -181,7 +181,7 @@ export const youtubeVideoShortcuts: Shortcut<YouTubeVideoStylesSchema>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.video.playbackOptions.background",
+        label: "builder.pageBuilder.blocks.video.playbackOptions.background",
         value: "background",
         targetStyles: {},
         targetProps: {
@@ -194,11 +194,11 @@ export const youtubeVideoShortcuts: Shortcut<YouTubeVideoStylesSchema>[] = [
     ],
   },
   {
-    label: "pageBuilder.blocks.youtubeVideo.audio",
+    label: "builder.pageBuilder.blocks.youtubeVideo.audio",
     icon: ({ className }) => <Volume2 className={className} />,
     options: [
       {
-        label: "pageBuilder.blocks.video.audioOptions.withSound",
+        label: "builder.pageBuilder.blocks.video.audioOptions.withSound",
         value: "withSound",
         targetStyles: {},
         targetProps: {
@@ -206,7 +206,7 @@ export const youtubeVideoShortcuts: Shortcut<YouTubeVideoStylesSchema>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.video.audioOptions.muted",
+        label: "builder.pageBuilder.blocks.video.audioOptions.muted",
         value: "muted",
         targetStyles: {},
         targetProps: {

@@ -14,10 +14,11 @@ export type AppointmentsProps = {
   fieldsSchema: Record<string, FieldSchema>;
   timeZone: string;
   showPromoCode?: boolean;
-  waitlistAppId: string;
   className?: string;
   id?: string;
   isEditor?: boolean;
+  appId: string;
+  isOnlyWaitlist: boolean;
 };
 
 export const Appointments: React.FC<
@@ -27,12 +28,12 @@ export const Appointments: React.FC<
   optionsClassName,
   successPage,
   fieldsSchema,
-  timeZone,
   showPromoCode,
-  waitlistAppId,
   className,
   id,
   isEditor,
+  appId,
+  isOnlyWaitlist,
   ...props
 }) => {
   const fromQuery = useSearchParams().get("option");
@@ -56,11 +57,11 @@ export const Appointments: React.FC<
           successPage={successPage}
           goBack={() => setOption(null)}
           fieldsSchema={fieldsSchema}
-          timeZone={timeZone}
           showPromoCode={showPromoCode}
-          waitlistAppId={waitlistAppId}
           id={id}
+          waitlistAppId={appId}
           isEditor={isEditor}
+          isOnlyWaitlist={isOnlyWaitlist}
           {...props}
         />
       )}

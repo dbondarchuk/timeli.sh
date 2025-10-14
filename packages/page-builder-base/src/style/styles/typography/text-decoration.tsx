@@ -15,7 +15,7 @@ const TextDecorationSchema = z.enum(textDecorationKeys);
 
 export const textDecorationStyle = {
   name: "textDecoration",
-  label: "pageBuilder.styles.properties.textDecoration",
+  label: "builder.pageBuilder.styles.properties.textDecoration",
   category: "typography",
   icon: ({ className }) => <Underline className={className} />,
   schema: TextDecorationSchema,

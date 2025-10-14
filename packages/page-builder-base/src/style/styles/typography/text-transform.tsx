@@ -17,7 +17,7 @@ const TextTransformSchema = z.enum(textTransformKeys);
 
 export const textTransformStyle = {
   name: "textTransform",
-  label: "pageBuilder.styles.properties.textTransform",
+  label: "builder.pageBuilder.styles.properties.textTransform",
   category: "typography",
   icon: ({ className }) => <Type className={className} />,
   schema: TextTransformSchema,

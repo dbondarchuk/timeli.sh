@@ -8,7 +8,7 @@ const LetterSpacingSchema = zNumberValueWithUnit;
 
 export const letterSpacingStyle = {
   name: "letterSpacing",
-  label: "pageBuilder.styles.properties.letterSpacing",
+  label: "builder.pageBuilder.styles.properties.letterSpacing",
   category: "typography",
   icon: ({ className }) => <TextCursor className={className} />,
   schema: LetterSpacingSchema,

@@ -1,6 +1,6 @@
 "use client";
 
-import { BuilderKeys, useI18n } from "@vivid/i18n";
+import { AllKeys, useI18n } from "@vivid/i18n";
 import {
   cn,
   DropdownMenu,
@@ -28,7 +28,7 @@ export interface NumberWithUnitShortcutToolbarItem {
   shortcut: ShortcutWithNumberWithUnit<BaseStyleDictionary>;
   currentNumericValue: NumberValueWithUnit | null;
   onValueChange: (value: NumberValueWithUnit) => void;
-  tooltip: BuilderKeys;
+  tooltip: AllKeys;
 }
 
 export const NumberInputWithUnitsToolbarMenu = ({
@@ -42,7 +42,7 @@ export const NumberInputWithUnitsToolbarMenu = ({
 }) => {
   const [isFocused, setIsFocused] = useState(false);
   const openState = useOpenState();
-  const t = useI18n("builder");
+  const t = useI18n();
 
   const config = shortcut.shortcut.numberWithUnitConfig;
 

@@ -10,7 +10,7 @@ const fontStyleKeys = ["normal", "italic", "oblique"] as const;
 
 export const fontStyleStyle = {
   name: "fontStyle",
-  label: "pageBuilder.styles.properties.fontStyle",
+  label: "builder.pageBuilder.styles.properties.fontStyle",
   category: "typography",
   schema: FontStyleSchema,
   icon: ({ className }) => <Italic className={className} />,

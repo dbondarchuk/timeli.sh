@@ -2,7 +2,7 @@
   "block": {
     "selectAddonsLabel": "Вибрати додатки",
     "durationFormat": "Тривалість: {hours, plural, =0 {{minutes} хв} other {# год, {minutes} хв}}",
-    "durationHourMinFormat": "{hours, plural, =0 {{minutes} хв} other {# год, {minutes} хв}}}",
+    "durationHourMinFormat": "{hours, plural, =0 {{minutes} хв} other {# год, {minutes} хв}}",
     "priceFormat": "Ціна: ${price}",
     "customDurationLabel": "Тривалість: довільна",
     "customDuration": "Довільна",
@@ -65,6 +65,9 @@
     "asSoonAsPossible": {
       "label": "Якнайшвидше",
       "required": "Якнайшвидше обов'язкове"
+    },
+    "calendar": {
+      "waitlistLink": "Не бачите часу, який вам підходить? Натисніть <link>тут</link>, щоб приєднатися до списку очікування"
     }
   }
 }

@@ -11,7 +11,8 @@ const CarouselChildrenItemsPerSlideSchema = z.coerce
 
 export const carouselChildrenItemsPerSlideStyle = {
   name: "carouselChildrenItemsPerSlide",
-  label: "pageBuilder.blocks.carousel.styles.carouselChildrenItemsPerSlide",
+  label:
+    "builder.pageBuilder.blocks.carousel.styles.carouselChildrenItemsPerSlide",
   category: "layout",
   schema: CarouselChildrenItemsPerSlideSchema,
   icon: ({ className }: { className?: string }) => (

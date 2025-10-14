@@ -78,27 +78,6 @@
   "setup": {
     "update": "Update <app></app>",
     "form": {
-      "email": {
-        "label": "Email",
-        "placeholder": "Email",
-        "tooltip": "Email address to send notifications to"
-      },
-      "notifyOnNewEntry": {
-        "label": "Send yourself email on new entry",
-        "tooltip": "Send notification to yourself when a new entry is added to the wait list"
-      },
-      "notifyCustomerOnNewEntry": {
-        "label": "Send customer email on new entry",
-        "tooltip": "Send notification to customer when a new entry is added to the wait list"
-      },
-      "customerNewEntrySubject": {
-        "label": "Customer new entry email subject",
-        "tooltip": "Subject of the email, that your customers will see when a new entry is added to the wait list"
-      },
-      "customerNewEntryTemplateId": {
-        "label": "Customer new entry email template",
-        "tooltip": "Template of the email, that your customers will see when a new entry is added to the wait list"
-      },
       "dontDismissWaitlistOnAppointmentCreate": {
         "label": "Don't dismiss waitlist on appointment create",
         "tooltip": "Whether to disable dismissing waitlist entry when appointment was created from it"
@@ -109,11 +88,26 @@
     "newWaitlistEntry": "Waitlist Notification - New Entry"
   },
   "statusText": {
-    "successfully_set_up": "Successfully set up wait list",
-    "error_processing_configuration": "Error processing wait list configuration",
-    "email_app_not_configured": "Email sender default app is not configured"
+    "successfully_set_up": "Successfully set up wait list"
   },
   "block": {
-    "displayName": "Wait list"
+    "waitlist": {
+      "displayName": "Wait list"
+    },
+    "bookingWithWaitlist": {
+      "displayName": "Booking with wait list"
+    },
+    "shortcuts": {
+      "gap": {
+        "label": "Gap",
+        "gaps": {
+          "none": "None",
+          "small": "Small",
+          "medium": "Medium",
+          "large": "Large",
+          "x-large": "Extra Large"
+        }
+      }
+    }
   }
 }

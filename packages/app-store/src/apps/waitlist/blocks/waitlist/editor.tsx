@@ -7,7 +7,7 @@ import {
   useClassName,
 } from "@vivid/page-builder-base";
 import { cn } from "@vivid/ui";
-import { Waitlist } from "./components/waitlist";
+import { BookingWithWaitlist } from "../booking-with-waitlist/components/booking";
 import { WaitlistProps } from "./schema";
 import { styles } from "./styles";
 
@@ -26,11 +26,12 @@ export const WaitlistEditor = ({
     <>
       <BlockStyle name={className} styleDefinitions={styles} styles={style} />
       <ReplaceOriginalColors />
-      <Waitlist
+      <BookingWithWaitlist
         className={cn(className, base?.className)}
         id={base?.id}
         isEditor
         appId={appId}
+        isOnlyWaitlist={true}
         {...overlayProps}
       />
     </>

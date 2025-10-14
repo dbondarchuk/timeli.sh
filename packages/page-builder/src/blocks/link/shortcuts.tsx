@@ -9,11 +9,11 @@ import { Link } from "lucide-react";
 
 export const linkShortcuts: Shortcut<AllStylesSchemas>[] = [
   {
-    label: "pageBuilder.blocks.link.style",
+    label: "builder.pageBuilder.blocks.link.style",
     icon: ({ className }) => <Link className={className} />,
     options: [
       {
-        label: "pageBuilder.blocks.link.styles.default",
+        label: "builder.pageBuilder.blocks.link.styles.default",
         value: "default",
         targetStyles: {
           backgroundColor: undefined,
@@ -30,7 +30,7 @@ export const linkShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.link.styles.button",
+        label: "builder.pageBuilder.blocks.link.styles.button",
         value: "button",
         targetStyles: {
           color: {
@@ -61,7 +61,7 @@ export const linkShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.link.styles.minimal",
+        label: "builder.pageBuilder.blocks.link.styles.minimal",
         value: "minimal",
         targetStyles: {
           color: undefined,

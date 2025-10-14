@@ -46,7 +46,7 @@ const FilterSchema = z.enum(filterKeys);
 
 export const filterStyle = {
   name: "filter",
-  label: "pageBuilder.styles.properties.filter",
+  label: "builder.pageBuilder.styles.properties.filter",
   category: "effects",
   schema: FilterSchema,
   icon: ({ className }) => <Sparkles className={className} />,

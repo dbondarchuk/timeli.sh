@@ -1,4 +1,4 @@
-import { BuilderKeys, useI18n } from "@vivid/i18n";
+import { AllKeys, useI18n } from "@vivid/i18n";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,7 +23,7 @@ export interface ShortcutDropdownToolbarItem {
 
   currentValue: string;
   onValueChange: (value: string) => void;
-  tooltip: BuilderKeys;
+  tooltip: AllKeys;
 }
 
 // Get current value for this shortcut
@@ -73,7 +73,7 @@ export const DropdownToolbar = ({
 }: {
   shortcut: ShortcutDropdownToolbarItem;
 }) => {
-  const t = useI18n("builder");
+  const t = useI18n();
   const openState = useOpenState();
 
   return (

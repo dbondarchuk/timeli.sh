@@ -8,7 +8,7 @@ const MarginSchema = zFourSideValues;
 
 export const marginStyle = {
   name: "margin",
-  label: "pageBuilder.styles.properties.margin",
+  label: "builder.pageBuilder.styles.properties.margin",
   category: "spacing",
   schema: MarginSchema,
   icon: ({ className }) => <PanelRightOpen className={className} />,

@@ -11,7 +11,7 @@ export const backgroundImageShortcut: ShortcutWithAssetSelector<
     | "backgroundRepeat"
   >
 > = {
-  label: "pageBuilder.shortcuts.backgroundImage",
+  label: "builder.pageBuilder.shortcuts.backgroundImage",
   icon: Image,
   inputType: "asset-selector",
   targetStyle: "backgroundImage",

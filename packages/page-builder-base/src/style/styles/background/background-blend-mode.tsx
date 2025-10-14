@@ -28,7 +28,7 @@ const BackgroundBlendModeSchema = z.enum(options);
 
 export const backgroundBlendModeStyle = {
   name: "backgroundBlendMode",
-  label: "pageBuilder.styles.properties.backgroundBlendMode",
+  label: "builder.pageBuilder.styles.properties.backgroundBlendMode",
   category: "background",
   icon: ({ className }) => <Palette className={className} />,
   schema: BackgroundBlendModeSchema,

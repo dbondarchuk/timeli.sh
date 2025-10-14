@@ -4,12 +4,12 @@ import { MoveDiagonal2 } from "lucide-react";
 
 export const iconShortcuts: Shortcut<AllStylesSchemas>[] = [
   {
-    label: "pageBuilder.blocks.icon.size",
+    label: "builder.pageBuilder.blocks.icon.size",
     icon: ({ className }) => <MoveDiagonal2 className={className} />,
     inputType: "combobox",
     options: [
       {
-        label: "pageBuilder.blocks.icon.sizes.small",
+        label: "builder.pageBuilder.blocks.icon.sizes.small",
         value: "small",
         targetStyles: {
           width: { value: 1, unit: "rem" },
@@ -17,7 +17,7 @@ export const iconShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.icon.sizes.medium",
+        label: "builder.pageBuilder.blocks.icon.sizes.medium",
         value: "medium",
         targetStyles: {
           width: { value: 1.5, unit: "rem" },
@@ -25,7 +25,7 @@ export const iconShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.icon.sizes.large",
+        label: "builder.pageBuilder.blocks.icon.sizes.large",
         value: "large",
         targetStyles: {
           width: { value: 2, unit: "rem" },
@@ -33,7 +33,7 @@ export const iconShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.icon.sizes.xlarge",
+        label: "builder.pageBuilder.blocks.icon.sizes.xlarge",
         value: "xlarge",
         targetStyles: {
           width: { value: 3, unit: "rem" },
@@ -41,7 +41,7 @@ export const iconShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.icon.sizes.xxlarge",
+        label: "builder.pageBuilder.blocks.icon.sizes.xxlarge",
         value: "xxlarge",
         targetStyles: {
           width: { value: 4, unit: "rem" },

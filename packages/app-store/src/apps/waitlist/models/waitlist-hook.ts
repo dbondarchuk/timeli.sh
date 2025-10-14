@@ -2,12 +2,12 @@ import { ConnectedAppData } from "@vivid/types";
 import { WaitlistEntry } from "./waitlist";
 
 export interface IWaitlistHook {
-  onWaitlistEntryCreated(
+  onWaitlistEntryCreated?: (
     appData: ConnectedAppData,
     waitlistEntry: WaitlistEntry,
-  ): Promise<void>;
-  onWaitlistEntryDismissed(
+  ) => Promise<void>;
+  onWaitlistEntryDismissed?: (
     appData: ConnectedAppData,
     waitlistEntries: WaitlistEntry[],
-  ): Promise<void>;
+  ) => Promise<void>;
 }

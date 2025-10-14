@@ -4,15 +4,14 @@ import {
   ToolbarDropdownPropsValues,
   ToolbarToggle,
 } from "@vivid/builder";
-import { BuilderKeys, useI18n } from "@vivid/i18n";
+import { AllKeys, useI18n } from "@vivid/i18n";
 import {
   backgroundColorShortcut,
   colorShortcut,
   ColorShortcutToolbar,
   FONT_FAMILIES,
-  fontFamilyItems,
+  FONT_FAMILIES_LIST,
 } from "@vivid/page-builder-base";
-import { FontFamily } from "@vivid/page-builder-base/style";
 import { AlignHorizontalSpaceAround } from "lucide-react";
 import { PageLayoutDefaultProps, PageLayoutProps } from "./schema";
 
@@ -23,28 +22,29 @@ const LayoutFontFamilyDropdownMenu = (
     ? FONT_FAMILIES[props.data?.fontFamily]
     : null;
 
-  const t = useI18n("builder");
+  const t = useI18n();
 
   return (
     <ToolbarDropdownMenu
       icon={
         <span className="text-xs" style={{ fontFamily: selectedFont?.value }}>
           {selectedFont?.label
-            ? t.has(selectedFont?.label as BuilderKeys)
-              ? t(selectedFont?.label as BuilderKeys)
+            ? t.has(selectedFont?.label as AllKeys)
+              ? t(selectedFont?.label as AllKeys)
               : selectedFont?.label
-            : t("pageBuilder.styles.fontFamily.inherit")}
+            : t("builder.pageBuilder.styles.fontFamily.inherit")}
         </span>
       }
-      items={fontFamilyItems.map((item) => ({
+      items={FONT_FAMILIES_LIST.map((item) => ({
         ...item,
-        style: { fontFamily: item.value as FontFamily },
-        label: t.has(item.label as BuilderKeys)
-          ? t(item.label as BuilderKeys)
+        value: item.key,
+        style: { fontFamily: item.value },
+        label: t.has(item.label as AllKeys)
+          ? t(item.label as AllKeys)
           : item.label,
       }))}
       property="fontFamily"
-      tooltip={t("pageBuilder.styles.properties.fontFamily")}
+      tooltip={t("builder.pageBuilder.styles.properties.fontFamily")}
       {...props}
     />
   );
@@ -57,7 +57,7 @@ export const PageLayoutToolbar = (
   return (
     <>
       <ToolbarToggle
-        tooltip="Full width"
+        tooltip={t("pageBuilder.blocks.pageLayout.fullWidth")}
         property="fullWidth"
         {...props}
         icon={<AlignHorizontalSpaceAround />}
@@ -72,7 +72,7 @@ export const PageLayoutToolbar = (
           currentColorValue: props.data.textColor ?? null,
           onValueChange: (value) =>
             props.setData({ ...props.data, textColor: value }),
-          tooltip: "pageBuilder.styles.properties.color",
+          tooltip: "builder.pageBuilder.styles.properties.color",
         }}
       />
       <ColorShortcutToolbar
@@ -81,7 +81,7 @@ export const PageLayoutToolbar = (
           currentColorValue: props.data.backgroundColor ?? null,
           onValueChange: (value) =>
             props.setData({ ...props.data, backgroundColor: value }),
-          tooltip: "pageBuilder.styles.properties.backgroundColor",
+          tooltip: "builder.pageBuilder.styles.properties.backgroundColor",
         }}
       />
     </>

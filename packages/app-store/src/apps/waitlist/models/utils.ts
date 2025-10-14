@@ -1,11 +1,5 @@
-import { durationToTime } from "@vivid/utils";
 import { DateTime } from "luxon";
-import {
-  WaitlistDate,
-  WaitlistEntry,
-  WaitlistTime,
-  waitlistTime,
-} from "./waitlist";
+import { WaitlistDate, WaitlistTime, waitlistTime } from "./waitlist";
 
 export const waitlistTimeSort = (a: WaitlistTime, b: WaitlistTime) =>
   waitlistTime.indexOf(a) - waitlistTime.indexOf(b);
@@ -96,23 +90,5 @@ const createGroup = (
           index === 0 ||
           isSequentialDate(sortedDates[index - 1].date, date.date),
       ),
-  };
-};
-
-export const getWaitlistEntryArgs = (entry: WaitlistEntry) => {
-  return {
-    ...entry,
-    duration: entry.duration ? durationToTime(entry.duration) : undefined,
-    dates:
-      entry.dates?.map((date) => ({
-        date: DateTime.fromISO(date.date).toJSDate(),
-        time: date.time || [],
-        isMorning: date.time?.includes("morning"),
-        isAfternoon: date.time?.includes("afternoon"),
-        isEvening: date.time?.includes("evening"),
-        isAllDay: waitlistTime.every((time) =>
-          date.time?.some((t) => t === time),
-        ),
-      })) || [],
   };
 };

@@ -1,6 +1,6 @@
 "use client";
 
-import { BuilderKeys, useI18n } from "@vivid/i18n";
+import { useI18n } from "@vivid/i18n";
 import {
   Button,
   Command,
@@ -36,7 +36,7 @@ export const AddVariantButton = <T extends BaseStyleDictionary>({
   category: onlyCategory,
   children: trigger,
 }: AddVariantButtonProps<T>) => {
-  const t = useI18n("builder");
+  const t = useI18n();
   const tUi = useI18n("ui");
   const [open, setOpen] = useState(false);
 
@@ -45,13 +45,15 @@ export const AddVariantButton = <T extends BaseStyleDictionary>({
       <PopoverTrigger asChild>
         {trigger || (
           <Button variant="ghost">
-            <Plus size={16} /> {t("pageBuilder.styles.addVariant")}
+            <Plus size={16} /> {t("builder.pageBuilder.styles.addVariant")}
           </Button>
         )}
       </PopoverTrigger>
       <PopoverContent className="sm:w-fit">
         <Command>
-          <CommandInput placeholder={t("pageBuilder.styles.searchStyles")} />
+          <CommandInput
+            placeholder={t("builder.pageBuilder.styles.searchStyles")}
+          />
           <CommandList>
             <CommandEmpty>{tUi("common.noResults")}</CommandEmpty>
             {Object.entries(
@@ -76,7 +78,7 @@ export const AddVariantButton = <T extends BaseStyleDictionary>({
                 <Fragment key={category}>
                   <CommandGroup
                     heading={t(
-                      `pageBuilder.styles.categories.${category}` as BuilderKeys,
+                      `builder.pageBuilder.styles.categories.${category}`,
                     )}
                   >
                     {values.map((value) => (

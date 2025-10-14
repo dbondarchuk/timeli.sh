@@ -21,7 +21,7 @@ const BorderStyleSchema = z.enum(borderStyleKeys);
 
 export const borderStyleStyle = {
   name: "borderStyle",
-  label: "pageBuilder.styles.properties.borderStyle",
+  label: "builder.pageBuilder.styles.properties.borderStyle",
   category: "border",
   icon: ({ className }) => <Square className={className} />,
   schema: BorderStyleSchema,

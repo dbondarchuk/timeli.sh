@@ -13,7 +13,7 @@ cron.schedule("* * * * *", (arg) => {
         process.env.PORT || 3000
       }/api/scheduler?date=${encodeURIComponent(date.toISOString())}&key=${
         process.env.SCHEDULER_KEY
-      }`
+      }`,
     );
   } catch (e) {
     console.error(e);

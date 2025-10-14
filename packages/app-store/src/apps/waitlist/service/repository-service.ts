@@ -59,7 +59,7 @@ export class WaitlistRepositoryService {
     await this.services.ConnectedAppsService().executeHooks<IWaitlistHook>(
       "waitlist-hook",
       async (hook, service) => {
-        await service.onWaitlistEntryCreated(hook, entity!);
+        await service.onWaitlistEntryCreated?.(hook, entity!);
       },
       {
         ignoreErrors: true,
@@ -289,7 +289,7 @@ export class WaitlistRepositoryService {
     await this.services.ConnectedAppsService().executeHooks<IWaitlistHook>(
       "waitlist-hook",
       async (hook, service) => {
-        await service.onWaitlistEntryDismissed(hook, waitlistEntries.items);
+        await service.onWaitlistEntryDismissed?.(hook, waitlistEntries.items);
       },
       {
         ignoreErrors: true,

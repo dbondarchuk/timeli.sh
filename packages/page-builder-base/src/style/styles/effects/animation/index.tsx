@@ -5,7 +5,7 @@ import { AnimationSchema } from "./schema";
 
 export const animationStyle = {
   name: "animation",
-  label: "pageBuilder.styles.properties.animation",
+  label: "builder.pageBuilder.styles.properties.animation",
   category: "effects",
   schema: AnimationSchema,
   icon: ({ className }) => <Play className={className} />,

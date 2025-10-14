@@ -9,11 +9,11 @@ import { TypeOutline } from "lucide-react";
 
 export const headingShortcuts: Shortcut<AllStylesSchemas>[] = [
   {
-    label: "pageBuilder.blocks.heading.style",
+    label: "builder.pageBuilder.blocks.heading.style",
     icon: ({ className }) => <TypeOutline className={className} />,
     options: [
       {
-        label: "pageBuilder.blocks.heading.styles.display",
+        label: "builder.pageBuilder.blocks.heading.styles.display",
         value: "display",
         targetStyles: {
           fontSize: {
@@ -37,7 +37,7 @@ export const headingShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.heading.styles.title",
+        label: "builder.pageBuilder.blocks.heading.styles.title",
         value: "title",
         targetStyles: {
           fontSize: {
@@ -61,7 +61,7 @@ export const headingShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.heading.styles.subtitle",
+        label: "builder.pageBuilder.blocks.heading.styles.subtitle",
         value: "subtitle",
         targetStyles: {
           fontSize: {
@@ -85,7 +85,7 @@ export const headingShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.heading.styles.caption",
+        label: "builder.pageBuilder.blocks.heading.styles.caption",
         value: "caption",
         targetStyles: {
           fontSize: {

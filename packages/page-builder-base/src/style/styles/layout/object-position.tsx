@@ -11,7 +11,7 @@ const ObjectPositionSchema = z.object({
 
 export const objectPositionStyle = {
   name: "objectPosition",
-  label: "pageBuilder.styles.properties.objectPosition",
+  label: "builder.pageBuilder.styles.properties.objectPosition",
   icon: ({ className }: { className?: string }) => (
     <Move className={className} />
   ),

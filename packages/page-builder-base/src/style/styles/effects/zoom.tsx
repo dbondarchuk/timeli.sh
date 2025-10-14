@@ -7,7 +7,7 @@ const ZoomSchema = z.coerce.number().min(0);
 
 export const zoomStyle = {
   name: "zoom",
-  label: "pageBuilder.styles.properties.zoom",
+  label: "builder.pageBuilder.styles.properties.zoom",
   category: "effects",
   schema: ZoomSchema,
   icon: ({ className }) => <ZoomIn className={className} />,

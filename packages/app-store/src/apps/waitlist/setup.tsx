@@ -3,7 +3,6 @@
 import { useI18n } from "@vivid/i18n";
 import { AppSetupProps } from "@vivid/types";
 import {
-  ArgumentsAutocomplete,
   BooleanSelect,
   Button,
   ConnectedAppNameAndLogo,
@@ -15,10 +14,7 @@ import {
   FormLabel,
   FormMessage,
   InfoTooltip,
-  Input,
   Spinner,
-  TemplateSelector,
-  useDemoArguments,
 } from "@vivid/ui";
 import React from "react";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
@@ -42,26 +38,16 @@ export const WaitlistAppSetup: React.FC<AppSetupProps> = ({
       schema: waitlistConfigurationSchema,
       onSuccess,
       onError,
-      initialData: {
-        notifyOnNewEntry: true,
-        notifyCustomerOnNewEntry: false,
-      },
+      initialData: {},
       processDataForSubmit: (data) => ({
         type: "set-configuration",
         configuration: data,
       }),
     });
 
-  const demoArguments = useDemoArguments({
-    waitlistEntry: true,
-    noAppointment: true,
-  });
-
   const t = useI18n<WaitlistAdminNamespace, WaitlistAdminKeys>(
     waitlistAdminNamespace,
   );
-  const enableCustomerNotification = form.watch("notifyCustomerOnNewEntry");
-  const enableNewEntryNotification = form.watch("notifyOnNewEntry");
 
   return (
     <>
@@ -94,138 +80,6 @@ export const WaitlistAppSetup: React.FC<AppSetupProps> = ({
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="notifyOnNewEntry"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>
-                    {t("setup.form.notifyOnNewEntry.label")}
-                    <InfoTooltip>
-                      {t("setup.form.notifyOnNewEntry.tooltip")}
-                    </InfoTooltip>
-                  </FormLabel>
-                  <FormControl>
-                    <BooleanSelect
-                      disabled={isLoading}
-                      value={field.value}
-                      onValueChange={field.onChange}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            {enableNewEntryNotification && (
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>
-                      {t("setup.form.email.label")}
-                      <InfoTooltip>{t("setup.form.email.tooltip")}</InfoTooltip>
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        disabled={isLoading}
-                        type="email"
-                        placeholder={t("setup.form.email.placeholder")}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
-            <FormField
-              control={form.control}
-              name="notifyCustomerOnNewEntry"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>
-                    {t("setup.form.notifyCustomerOnNewEntry.label")}
-                    <InfoTooltip>
-                      {t("setup.form.notifyCustomerOnNewEntry.tooltip")}
-                    </InfoTooltip>
-                  </FormLabel>
-                  <FormControl>
-                    <BooleanSelect
-                      disabled={isLoading}
-                      value={field.value}
-                      onValueChange={(val) => {
-                        field.onChange(val);
-                        field.onBlur();
-
-                        form.trigger("customerNewEntrySubject");
-                        form.trigger("customerNewEntryTemplateId");
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            {enableCustomerNotification && (
-              <>
-                <FormField
-                  control={form.control}
-                  name="customerNewEntrySubject"
-                  render={({ field }) => (
-                    <FormItem className="w-full">
-                      <FormLabel>
-                        {t("setup.form.customerNewEntrySubject.label")}
-                        <InfoTooltip>
-                          {t("setup.form.customerNewEntrySubject.tooltip")}
-                        </InfoTooltip>
-                      </FormLabel>
-                      <FormControl>
-                        <ArgumentsAutocomplete
-                          asInput
-                          args={demoArguments}
-                          disabled={isLoading}
-                          value={field.value}
-                          onChange={(value) => {
-                            field.onChange(value);
-                            field.onBlur();
-                            form.trigger("notifyCustomerOnNewEntry");
-                          }}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="customerNewEntryTemplateId"
-                  render={({ field }) => (
-                    <FormItem className="w-full">
-                      <FormLabel>
-                        {t("setup.form.customerNewEntryTemplateId.label")}
-                        <InfoTooltip>
-                          {t("setup.form.customerNewEntryTemplateId.tooltip")}
-                        </InfoTooltip>
-                      </FormLabel>
-                      <FormControl>
-                        <TemplateSelector
-                          type="email"
-                          disabled={isLoading}
-                          value={field.value}
-                          onItemSelect={(value) => {
-                            field.onChange(value);
-                            field.onBlur();
-                            form.trigger("notifyCustomerOnNewEntry");
-                          }}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </>
-            )}
             <Button
               type="submit"
               variant="default"

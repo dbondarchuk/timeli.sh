@@ -45,7 +45,7 @@ export const StyleCategoryStyle = <T extends BaseStyleDictionary>({
   onUpdateStyle,
   onDeleteVariant,
 }: StyleCategoryStyleProps<T>) => {
-  const t = useI18n("builder");
+  const t = useI18n();
   const [isStyleOpen, setIsStyleOpen] = useState(searchTerm ? true : false);
   const previousVariantsCountRef = useRef(styleVariants.length);
 

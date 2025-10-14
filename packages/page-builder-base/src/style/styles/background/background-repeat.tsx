@@ -30,7 +30,7 @@ const BackgroundRepeatSchema = z.enum(options);
 
 export const backgroundRepeatStyle = {
   name: "backgroundRepeat",
-  label: "pageBuilder.styles.properties.backgroundRepeat",
+  label: "builder.pageBuilder.styles.properties.backgroundRepeat",
   category: "background",
   icon: ({ className }) => <Repeat className={className} />,
   schema: BackgroundRepeatSchema,

@@ -5,7 +5,7 @@ import { TransformSchema } from "./schema";
 
 export const transformStyle = {
   name: "transform",
-  label: "pageBuilder.styles.properties.transform",
+  label: "builder.pageBuilder.styles.properties.transform",
   category: "effects",
   schema: TransformSchema,
   icon: ({ className }) => <Move className={className} />,

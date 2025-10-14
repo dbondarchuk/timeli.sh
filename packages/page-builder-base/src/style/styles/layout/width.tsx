@@ -12,7 +12,7 @@ const WidthSchema = getZNumberValueWithUnitOrKeyword(
 
 export const widthStyle = {
   name: "width",
-  label: "pageBuilder.styles.properties.width",
+  label: "builder.pageBuilder.styles.properties.width",
   category: "layout",
   schema: WidthSchema,
   icon: ({ className }) => <RulerDimensionLine className={className} />,

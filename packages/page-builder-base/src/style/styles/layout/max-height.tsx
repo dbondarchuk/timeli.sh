@@ -11,7 +11,7 @@ const MaxHeightSchema = getZNumberValueWithUnitOrKeyword(
 
 export const maxHeightStyle = {
   name: "maxHeight",
-  label: "pageBuilder.styles.properties.maxHeight",
+  label: "builder.pageBuilder.styles.properties.maxHeight",
   category: "layout",
   schema: MaxHeightSchema,
   icon: ({ className }) => <RulerDimensionLine className={className} />,

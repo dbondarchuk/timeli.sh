@@ -12,7 +12,7 @@ export const RadioGroupShortcut = <T extends BaseStyleDictionary>({
   currentValue: string;
   applyShortcut: (option: ShortcutOption<T>) => void;
 }) => {
-  const t = useI18n("builder");
+  const t = useI18n();
   return (
     <RadioGroup
       value={currentValue || ""}

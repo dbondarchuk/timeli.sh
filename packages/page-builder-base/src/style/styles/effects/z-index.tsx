@@ -7,7 +7,7 @@ const ZIndexSchema = z.coerce.number().int();
 
 export const zIndexStyle = {
   name: "zIndex",
-  label: "pageBuilder.styles.properties.zIndex",
+  label: "builder.pageBuilder.styles.properties.zIndex",
   category: "layout",
   icon: ({ className }) => <Layers className={className} />,
   schema: ZIndexSchema,

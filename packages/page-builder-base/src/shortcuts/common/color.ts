@@ -4,7 +4,7 @@ import { ShortcutWithColor } from "../types";
 
 export const colorShortcut: ShortcutWithColor<Pick<AllStylesSchemas, "color">> =
   {
-    label: "pageBuilder.shortcuts.color",
+    label: "builder.pageBuilder.shortcuts.color",
     icon: Paintbrush,
     inputType: "color",
     targetStyle: "color",

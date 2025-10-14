@@ -8,7 +8,7 @@ const BorderRadiusSchema = zNumberValueWithUnit;
 
 export const borderRadiusStyle = {
   name: "borderRadius",
-  label: "pageBuilder.styles.properties.borderRadius",
+  label: "builder.pageBuilder.styles.properties.borderRadius",
   icon: ({ className }) => <SquareRoundCorner className={className} />,
   category: "border",
   schema: BorderRadiusSchema,

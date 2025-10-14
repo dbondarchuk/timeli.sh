@@ -1,4 +1,4 @@
-import { BuilderKeys, useI18n } from "@vivid/i18n";
+import { useI18n } from "@vivid/i18n";
 import { Button, Label } from "@vivid/ui";
 import { Trash } from "lucide-react";
 import { z } from "zod";
@@ -44,16 +44,16 @@ export const StyleVariantComponent = <T extends BaseStyleDictionary>({
   onUpdateStyle,
   onDeleteVariant,
 }: StyleVariantProps<T>) => {
-  const t = useI18n("builder");
+  const t = useI18n();
 
   const getVariantLabel = (variant: StyleVariant<T[keyof T]>) => {
     const parts = [];
     if (variant.breakpoint?.length) {
       const breakpointLabels = variant.breakpoint.map((bp) =>
-        t(`pageBuilder.styles.breakpoints.${bp}`),
+        t(`builder.pageBuilder.styles.breakpoints.${bp}`),
       );
       parts.push(
-        breakpointLabels.join(t("pageBuilder.styles.breakpoints.and")),
+        breakpointLabels.join(t("builder.pageBuilder.styles.breakpoints.and")),
       );
     }
     if (variant.state?.length) {
@@ -62,12 +62,12 @@ export const StyleVariantComponent = <T extends BaseStyleDictionary>({
           const stateLabel = (
             stateWithParent.state === "default"
               ? ""
-              : `:${t(`pageBuilder.styles.states.${stateWithParent.state}` as BuilderKeys)}`
+              : `:${t(`builder.pageBuilder.styles.states.${stateWithParent.state}`)}`
           ).toLocaleLowerCase();
 
           if (isSelfTarget(stateWithParent)) {
             return stateWithParent.state === "default"
-              ? t("pageBuilder.styles.states.default")
+              ? t("builder.pageBuilder.styles.states.default")
               : stateLabel;
           }
 
@@ -75,7 +75,7 @@ export const StyleVariantComponent = <T extends BaseStyleDictionary>({
             const level = stateWithParent.target?.data
               ?.level as (typeof parentLevelKeys)[number];
             const parentLabel = t(
-              `pageBuilder.styles.states.parentLevels.${level}`,
+              `builder.pageBuilder.styles.states.parentLevels.${level}`,
             );
 
             return `${parentLabel}${stateLabel}`;
@@ -94,7 +94,9 @@ export const StyleVariantComponent = <T extends BaseStyleDictionary>({
       );
       parts.push(stateLabels.join(", "));
     }
-    return parts.length > 0 ? parts.join(" - ") : t("pageBuilder.styles.base");
+    return parts.length > 0
+      ? parts.join(" - ")
+      : t("builder.pageBuilder.styles.base");
   };
 
   return (
@@ -141,8 +143,8 @@ export const StyleVariantComponent = <T extends BaseStyleDictionary>({
       {/* Style component */}
       <div className="flex flex-col gap-2">
         <Label className="text-xs font-medium">
-          {t.has(`pageBuilder.styles.properties.${style.name}` as BuilderKeys)
-            ? t(`pageBuilder.styles.properties.${style.name}` as BuilderKeys)
+          {t.has(`builder.pageBuilder.styles.properties.${style.name}`)
+            ? t(`builder.pageBuilder.styles.properties.${style.name}`)
             : t(style.label)}
         </Label>
         <style.component

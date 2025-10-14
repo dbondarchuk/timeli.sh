@@ -37,7 +37,7 @@ const BackgroundImageSchema = z.object({
 
 export const backgroundImageStyle = {
   name: "backgroundImage",
-  label: "pageBuilder.styles.properties.backgroundImage",
+  label: "builder.pageBuilder.styles.properties.backgroundImage",
   category: "background",
   icon: ({ className }) => <Image className={className} />,
   schema: BackgroundImageSchema,

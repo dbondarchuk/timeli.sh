@@ -12,20 +12,17 @@ import {
 import { durationToTime } from "@vivid/utils";
 import { DollarSign, Timer } from "lucide-react";
 import React from "react";
-import {
-  WaitlistPublicKeys,
-  WaitlistPublicNamespace,
-  waitlistPublicNamespace,
-} from "../../../translations/types";
 import { useScheduleContext } from "./context";
 
 export const AddonsCard: React.FC = () => {
-  const t = useI18n<WaitlistPublicNamespace, WaitlistPublicKeys>(
-    waitlistPublicNamespace,
-  );
-
-  const { appointmentOption, setSelectedAddons, selectedAddons, className } =
-    useScheduleContext();
+  const i18n = useI18n("translation");
+  const {
+    appointmentOption,
+    setSelectedAddons,
+    selectedAddons,
+    setDiscount,
+    className,
+  } = useScheduleContext();
 
   const onClick = (option: AppointmentAddon): void => {
     const index = (selectedAddons || []).findIndex(
@@ -40,12 +37,14 @@ export const AddonsCard: React.FC = () => {
         ...(selectedAddons || []).slice(index + 1),
       ]);
     }
+
+    setDiscount(undefined);
   };
 
   return (
     <div className="flex flex-col gap-2">
       <div className="text-center">
-        <h2 className="text-xl">{t("block.selectAddonsLabel")}</h2>
+        <h2 className="text-xl">{i18n("select_addons_label")}</h2>
       </div>
       <div className={className}>
         {(appointmentOption.addons || []).map((addon) => {
@@ -65,14 +64,14 @@ export const AddonsCard: React.FC = () => {
                     {addon.duration && (
                       <div
                         className="flex flex-row items-center"
-                        aria-label={t(
-                          "block.durationFormat",
+                        aria-label={i18n(
+                          "form_duration_hour_minutes_label_format",
                           durationToTime(addon.duration),
                         )}
                       >
                         <Timer className="mr-1" />
-                        {t(
-                          "block.durationHourMinFormat",
+                        {i18n(
+                          "duration_hour_min_format",
                           durationToTime(addon.duration),
                         )}
                       </div>
@@ -80,7 +79,7 @@ export const AddonsCard: React.FC = () => {
                     {addon.price && (
                       <div
                         className="flex flex-row items-center"
-                        aria-label={t("block.priceFormat", {
+                        aria-label={i18n("form_price_label_format", {
                           price: addon.price.toFixed(2).replace(/\.00$/, ""),
                         })}
                       >

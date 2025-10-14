@@ -1,4 +1,4 @@
-import { BuilderKeys } from "@vivid/i18n";
+import { AllKeys } from "@vivid/i18n";
 import { z } from "zod";
 import { RawNumberInputWithUnitsProps } from "../style-inputs/base/raw-number-input-with-units";
 import { BaseStyleDictionary } from "../style/types";
@@ -27,7 +27,7 @@ export interface ShortcutTargetStyleVariants<
 }
 
 export interface ShortcutOption<T extends BaseStyleDictionary> {
-  label: BuilderKeys;
+  label: AllKeys;
   labelStyle?: React.CSSProperties;
   value: string;
   targetStyles: {
@@ -42,7 +42,7 @@ export interface ShortcutOption<T extends BaseStyleDictionary> {
    *
    * @example
    * {
-   *   label: "pageBuilder.blocks.video.playbackOptions.autoplay",
+   *   label: "builder.pageBuilder.blocks.video.playbackOptions.autoplay",
    *   value: "autoplay",
    *   targetProps: {
    *     controls: true,
@@ -65,7 +65,7 @@ export type ShortcutInputType =
 
 // Base shortcut interface without specific configs
 export interface BaseShortcut<T extends BaseStyleDictionary> {
-  label: BuilderKeys;
+  label: AllKeys;
   icon: (props: { className?: string }) => React.ReactNode;
 }
 

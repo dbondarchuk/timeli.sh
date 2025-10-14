@@ -9,7 +9,7 @@ const TextAlignSchema = z.enum(textAlignKeys);
 
 export const textAlignStyle = {
   name: "textAlign",
-  label: "pageBuilder.styles.properties.textAlign",
+  label: "builder.pageBuilder.styles.properties.textAlign",
   category: "typography",
   schema: TextAlignSchema,
   icon: ({ className }) => <AlignLeft className={className} />,

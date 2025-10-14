@@ -4,7 +4,8 @@ import { Proportions, RotateCcw } from "lucide-react";
 
 export const beforeAfterShortcuts: Shortcut<AllStylesSchemas>[] = [
   {
-    label: "pageBuilder.blocks.beforeAfterSlider.shortcuts.aspectRatio.label",
+    label:
+      "builder.pageBuilder.blocks.beforeAfterSlider.shortcuts.aspectRatio.label",
     icon: Proportions,
     options: [
       {
@@ -50,7 +51,8 @@ export const beforeAfterShortcuts: Shortcut<AllStylesSchemas>[] = [
     ],
   },
   {
-    label: "pageBuilder.blocks.beforeAfterSlider.shortcuts.orientation.label",
+    label:
+      "builder.pageBuilder.blocks.beforeAfterSlider.shortcuts.orientation.label",
     icon: RotateCcw,
     options: [
       {

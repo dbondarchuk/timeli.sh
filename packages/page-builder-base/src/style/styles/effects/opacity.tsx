@@ -7,7 +7,7 @@ const OpacitySchema = z.coerce.number().min(0).max(100).int();
 
 export const opacityStyle = {
   name: "opacity",
-  label: "pageBuilder.styles.properties.opacity",
+  label: "builder.pageBuilder.styles.properties.opacity",
   category: "effects",
   schema: OpacitySchema,
   icon: ({ className }) => <Blend className={className} />,

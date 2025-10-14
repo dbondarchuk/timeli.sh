@@ -8,11 +8,12 @@ import { Maximize } from "lucide-react";
 
 export const popupShortcuts: Shortcut<AllStylesSchemas>[] = [
   {
-    label: "pageBuilder.blocks.popup.shortcuts.maxWidth.label",
+    label: "builder.pageBuilder.blocks.popup.shortcuts.maxWidth.label",
     icon: Maximize,
     options: [
       {
-        label: "pageBuilder.blocks.popup.shortcuts.maxWidth.variants.small",
+        label:
+          "builder.pageBuilder.blocks.popup.shortcuts.maxWidth.variants.small",
         value: "small",
         targetStyles: {
           maxWidth: {
@@ -28,7 +29,8 @@ export const popupShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.popup.shortcuts.maxWidth.variants.medium",
+        label:
+          "builder.pageBuilder.blocks.popup.shortcuts.maxWidth.variants.medium",
         value: "medium",
         targetStyles: {
           maxWidth: {
@@ -44,7 +46,8 @@ export const popupShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.popup.shortcuts.maxWidth.variants.large",
+        label:
+          "builder.pageBuilder.blocks.popup.shortcuts.maxWidth.variants.large",
         value: "large",
         targetStyles: {
           maxWidth: {
@@ -60,7 +63,8 @@ export const popupShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.popup.shortcuts.maxWidth.variants.full",
+        label:
+          "builder.pageBuilder.blocks.popup.shortcuts.maxWidth.variants.full",
         value: "full",
         targetStyles: {
           maxWidth: {

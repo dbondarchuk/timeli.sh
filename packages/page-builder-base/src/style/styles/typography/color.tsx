@@ -8,7 +8,7 @@ const ColorSchema = zColor;
 
 export const colorStyle = {
   name: "color",
-  label: "pageBuilder.styles.properties.color",
+  label: "builder.pageBuilder.styles.properties.color",
   category: "typography",
   icon: ({ className }) => <Paintbrush className={className} />,
   schema: ColorSchema,

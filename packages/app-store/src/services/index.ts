@@ -41,6 +41,8 @@ import { TEXT_MESSAGE_NOTIFICATION_APP_NAME } from "../apps/text-message-notific
 import { TextMessageNotificationConnectedApp } from "../apps/text-message-notification/service";
 import { TEXT_MESSAGE_RESENDER_APP_NAME } from "../apps/text-message-resender/const";
 import TextMessageResenderConnectedApp from "../apps/text-message-resender/service";
+import { WAITLIST_NOTIFICATIONS_APP_NAME } from "../apps/waitlist-notifications/const";
+import { WaitlistNotificationsConnectedApp } from "../apps/waitlist-notifications/service";
 import { WAITLIST_APP_NAME } from "../apps/waitlist/const";
 import { WaitlistConnectedApp } from "../apps/waitlist/service/service";
 import { WEBHOOKS_APP_NAME } from "../apps/webhooks/const";
@@ -82,6 +84,8 @@ export const AvailableAppServices: Record<
     new S3AssetsStorageConnectedApp(props),
   [PAYPAL_APP_NAME]: (props) => new PaypalConnectedApp(props),
   [WAITLIST_APP_NAME]: (props) => new WaitlistConnectedApp(props),
+  [WAITLIST_NOTIFICATIONS_APP_NAME]: (props) =>
+    new WaitlistNotificationsConnectedApp(props),
   [FINANCIAL_OVERVIEW_APP_NAME]: (props) => new FinancialOverviewService(props),
   [WEBHOOKS_APP_NAME]: (props) => new WebhooksConnectedApp(props),
 };

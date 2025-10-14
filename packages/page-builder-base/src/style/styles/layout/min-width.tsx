@@ -11,7 +11,7 @@ const MinWidthSchema = getZNumberValueWithUnitOrKeyword(
 
 export const minWidthStyle = {
   name: "minWidth",
-  label: "pageBuilder.styles.properties.minWidth",
+  label: "builder.pageBuilder.styles.properties.minWidth",
   category: "layout",
   schema: MinWidthSchema,
   icon: ({ className }) => <RulerDimensionLine className={className} />,

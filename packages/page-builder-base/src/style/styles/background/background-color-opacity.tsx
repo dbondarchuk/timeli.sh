@@ -8,7 +8,7 @@ export const BackgroundColorOpacityVar = "background-color-opacity";
 
 export const backgroundColorOpacityStyle = {
   name: "backgroundColorOpacity",
-  label: "pageBuilder.styles.properties.backgroundColorOpacity",
+  label: "builder.pageBuilder.styles.properties.backgroundColorOpacity",
   category: "background",
   schema: BackgroundColorOpacitySchema,
   icon: ({ className }) => <Blend className={className} />,

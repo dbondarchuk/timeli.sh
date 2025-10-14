@@ -5,7 +5,7 @@ import { TransitionSchema } from "./schema";
 
 export const transitionStyle = {
   name: "transition",
-  label: "pageBuilder.styles.properties.transition",
+  label: "builder.pageBuilder.styles.properties.transition",
   category: "effects",
   schema: TransitionSchema,
   icon: ({ className }) => <Clock className={className} />,

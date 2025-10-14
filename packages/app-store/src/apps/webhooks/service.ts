@@ -18,6 +18,8 @@ import {
 } from "@vivid/types";
 import { decrypt, encrypt } from "@vivid/utils";
 import crypto from "crypto";
+import { WaitlistEntry } from "../waitlist/models/waitlist";
+import type { IWaitlistHook } from "../waitlist/models/waitlist-hook";
 import { MASKED_SECRET, WebhooksConfiguration } from "./models";
 import {
   WebhooksAdminAllKeys,
@@ -26,7 +28,12 @@ import {
 } from "./translations/types";
 
 export class WebhooksConnectedApp
-  implements IConnectedApp, IAppointmentHook, ICustomerHook, IPaymentHook
+  implements
+    IConnectedApp,
+    IAppointmentHook,
+    ICustomerHook,
+    IPaymentHook,
+    IWaitlistHook
 {
   protected readonly loggerFactory = getLoggerFactory("WebhooksConnectedApp");
 
@@ -208,6 +215,25 @@ export class WebhooksConnectedApp
     });
   }
 
+  // Waitlist Hooks
+  public async onWaitlistEntryCreated(
+    appData: ConnectedAppData,
+    waitlistEntry: WaitlistEntry,
+  ): Promise<void> {
+    await this.sendWebhook(appData, "waitlist-entry.created", {
+      waitlistEntry,
+    });
+  }
+
+  public async onWaitlistEntryDismissed(
+    appData: ConnectedAppData,
+    waitlistEntries: WaitlistEntry[],
+  ): Promise<void> {
+    await this.sendWebhook(appData, "waitlist-entries.dismissed", {
+      waitlistEntries,
+    });
+  }
+
   private async sendWebhook(
     appData: ConnectedAppData<WebhooksConfiguration>,
     eventType: string,
@@ -217,7 +243,10 @@ export class WebhooksConnectedApp
     const config = appData.data;
 
     if (!config) {
-      logger.warn({ appId: appData._id }, "No webhooks configuration found");
+      logger.warn(
+        { appId: appData._id, eventType },
+        "No webhooks configuration found",
+      );
       return;
     }
 

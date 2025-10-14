@@ -16,7 +16,7 @@ const ObjectFitSchema = z.enum(objectFitKeys);
 
 export const objectFitStyle = {
   name: "objectFit",
-  label: "pageBuilder.styles.properties.objectFit",
+  label: "builder.pageBuilder.styles.properties.objectFit",
   icon: ({ className }: { className?: string }) => (
     <ImageIcon className={className} />
   ),

@@ -50,7 +50,7 @@ export const Shortcuts = <T extends BaseStyleDictionary>({
   props,
   onPropsChange,
 }: ShortcutsProps<T>) => {
-  const t = useI18n("builder");
+  const t = useI18n();
   const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
 
   const applyShortcut = (option: ShortcutOption<T>) => {
@@ -151,7 +151,7 @@ export const Shortcuts = <T extends BaseStyleDictionary>({
       <CollapsibleTrigger className="flex flex-row justify-between w-full items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
         <div className="flex items-center gap-2">
           <Settings className="h-4 w-4" />
-          {t("pageBuilder.styles.shortcuts")}
+          {t("builder.pageBuilder.styles.shortcuts")}
         </div>
         <ChevronRight
           className={cn(

@@ -1,4 +1,4 @@
-import { BuilderKeys, useI18n } from "@vivid/i18n";
+import { AllKeys, useI18n } from "@vivid/i18n";
 import { UploadedFile } from "@vivid/types";
 import { AssetSelectorDialog, ToolbarButton } from "@vivid/ui";
 import React from "react";
@@ -9,7 +9,7 @@ export interface AssetSelectorShortcutToolbarItem {
   shortcut: ShortcutWithAssetSelector<BaseStyleDictionary>;
   currentAssetValue: string | null;
   onValueChange: (value: string) => void;
-  tooltip: BuilderKeys;
+  tooltip: AllKeys;
 }
 
 export const AssetSelectorShortcutToolbar = ({
@@ -17,7 +17,7 @@ export const AssetSelectorShortcutToolbar = ({
 }: {
   shortcut: AssetSelectorShortcutToolbarItem;
 }) => {
-  const t = useI18n("builder");
+  const t = useI18n();
   const [isOpen, setIsOpen] = React.useState(false);
 
   const handleAssetSelected = (asset: UploadedFile) => {

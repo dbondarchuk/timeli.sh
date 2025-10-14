@@ -5,19 +5,22 @@ import { useCallback, useMemo } from "react";
 import {
   useBlocks,
   useDispatchAction,
+  useRootBlock,
   useRootBlockId,
   useRootBlockType,
   useSelectedBlock,
 } from "../../../documents/editor/context";
 
 export const ToolbarBlockToolbarGroup = () => {
-  const selectedBlock = useSelectedBlock();
+  const _selectedBlock = useSelectedBlock();
+  const rootBlockId = useRootBlockId();
+  const rootBlock = useRootBlock();
+  const selectedBlock = _selectedBlock ?? rootBlock;
   const dispatchAction = useDispatchAction();
   const rootBlockType = useRootBlockType();
-  const rootBlockId = useRootBlockId();
   const blocks = useBlocks();
 
-  const blockType = selectedBlock?.type || rootBlockType;
+  const blockType = selectedBlock.type || rootBlockType;
   const blockId = selectedBlock?.id || rootBlockId;
 
   const BlockToolbar = useMemo(

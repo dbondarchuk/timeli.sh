@@ -12,26 +12,18 @@ import {
 import { durationToTime, formatAmountString } from "@vivid/utils";
 import { DollarSign, Timer } from "lucide-react";
 import React from "react";
-import {
-  WaitlistPublicKeys,
-  waitlistPublicNamespace,
-  WaitlistPublicNamespace,
-} from "../../../translations/types";
 import { useScheduleContext } from "./context";
-import { WaitlistSteps } from "./steps";
+import { ScheduleSteps } from "./steps";
 
 export const StepCard: React.FC = () => {
-  const t = useI18n<WaitlistPublicNamespace, WaitlistPublicKeys>(
-    waitlistPublicNamespace,
-  );
-
+  const i18n = useI18n("translation");
   const ctx = useScheduleContext();
   const { duration, price, appointmentOption, step: stepType } = ctx;
 
   const [isPrevLoading, setIsPrevLoading] = React.useState(false);
   const [isNextLoading, setIsNextLoading] = React.useState(false);
 
-  const step = WaitlistSteps[stepType];
+  const step = ScheduleSteps[stepType];
 
   const isLoading = isPrevLoading || isNextLoading;
 
@@ -51,7 +43,7 @@ export const StepCard: React.FC = () => {
     [step, ctx],
   );
 
-  const StepContent = WaitlistSteps[stepType].Content;
+  const StepContent = ScheduleSteps[stepType].Content;
 
   return (
     <Card className="sm:min-w-min md:w-full bg-transparent text-foreground">
@@ -62,7 +54,7 @@ export const StepCard: React.FC = () => {
             {duration && (
               <div className="flex flex-row items-center">
                 <Timer className="mr-1" />
-                {t("block.durationHourMinFormat", durationToTime(duration))}
+                {i18n("duration_hour_min_format", durationToTime(duration))}
               </div>
             )}
             {!!price && (
@@ -86,7 +78,7 @@ export const StepCard: React.FC = () => {
               onClick={() => onClick("prev")}
             >
               {isPrevLoading && <Spinner />}
-              {t("block.buttons.steps.back")}
+              {i18n("back_button")}
             </Button>
           )}
         </div>
@@ -98,7 +90,7 @@ export const StepCard: React.FC = () => {
               onClick={() => onClick("next")}
             >
               {isNextLoading && <Spinner />}
-              {t("block.buttons.steps.next")}
+              {i18n("next_button")}
             </Button>
           )}
         </div>

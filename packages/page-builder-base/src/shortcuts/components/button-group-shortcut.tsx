@@ -12,7 +12,7 @@ export const ButtonGroupShortcut = <T extends BaseStyleDictionary>({
   currentValue: string;
   applyShortcut: (option: ShortcutOption<T>) => void;
 }) => {
-  const t = useI18n("builder");
+  const t = useI18n();
   return (
     <div className="flex flex-wrap gap-1">
       {shortcut.options.map((option) => {

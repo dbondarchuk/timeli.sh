@@ -4,11 +4,11 @@ import { ImageStylesSchema } from "./styles";
 
 export const imageShortcuts: Shortcut<ImageStylesSchema>[] = [
   {
-    label: "pageBuilder.blocks.image.size",
+    label: "builder.pageBuilder.blocks.image.size",
     icon: ({ className }) => <ImageUpscale className={className} />,
     options: [
       {
-        label: "pageBuilder.blocks.image.sizes.small",
+        label: "builder.pageBuilder.blocks.image.sizes.small",
         value: "small",
         targetStyles: {
           width: {
@@ -18,7 +18,7 @@ export const imageShortcuts: Shortcut<ImageStylesSchema>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.image.sizes.medium",
+        label: "builder.pageBuilder.blocks.image.sizes.medium",
         value: "medium",
         targetStyles: {
           width: {
@@ -28,7 +28,7 @@ export const imageShortcuts: Shortcut<ImageStylesSchema>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.image.sizes.large",
+        label: "builder.pageBuilder.blocks.image.sizes.large",
         value: "large",
         targetStyles: {
           width: {
@@ -38,7 +38,7 @@ export const imageShortcuts: Shortcut<ImageStylesSchema>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.image.sizes.full",
+        label: "builder.pageBuilder.blocks.image.sizes.full",
         value: "full",
         targetStyles: {
           width: {
@@ -48,7 +48,7 @@ export const imageShortcuts: Shortcut<ImageStylesSchema>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.image.sizes.avatar",
+        label: "builder.pageBuilder.blocks.image.sizes.avatar",
         value: "avatar",
         targetStyles: {
           width: {
@@ -68,32 +68,32 @@ export const imageShortcuts: Shortcut<ImageStylesSchema>[] = [
     ],
   },
   {
-    label: "pageBuilder.blocks.image.fit",
+    label: "builder.pageBuilder.blocks.image.fit",
     icon: ({ className }) => <ImageUp className={className} />,
     options: [
       {
-        label: "pageBuilder.blocks.image.fits.cover",
+        label: "builder.pageBuilder.blocks.image.fits.cover",
         value: "cover",
         targetStyles: {
           objectFit: "cover",
         },
       },
       {
-        label: "pageBuilder.blocks.image.fits.contain",
+        label: "builder.pageBuilder.blocks.image.fits.contain",
         value: "contain",
         targetStyles: {
           objectFit: "contain",
         },
       },
       {
-        label: "pageBuilder.blocks.image.fits.fill",
+        label: "builder.pageBuilder.blocks.image.fits.fill",
         value: "fill",
         targetStyles: {
           objectFit: "fill",
         },
       },
       {
-        label: "pageBuilder.blocks.image.fits.none",
+        label: "builder.pageBuilder.blocks.image.fits.none",
         value: "none",
         targetStyles: {
           objectFit: "none",
@@ -102,11 +102,11 @@ export const imageShortcuts: Shortcut<ImageStylesSchema>[] = [
     ],
   },
   {
-    label: "pageBuilder.blocks.image.position",
+    label: "builder.pageBuilder.blocks.image.position",
     icon: ({ className }) => <ImageDown className={className} />,
     options: [
       {
-        label: "pageBuilder.blocks.image.positions.center",
+        label: "builder.pageBuilder.blocks.image.positions.center",
         value: "center",
         targetStyles: {
           objectPosition: {
@@ -116,7 +116,7 @@ export const imageShortcuts: Shortcut<ImageStylesSchema>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.image.positions.top",
+        label: "builder.pageBuilder.blocks.image.positions.top",
         value: "top",
         targetStyles: {
           objectPosition: {
@@ -126,7 +126,7 @@ export const imageShortcuts: Shortcut<ImageStylesSchema>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.image.positions.bottom",
+        label: "builder.pageBuilder.blocks.image.positions.bottom",
         value: "bottom",
         targetStyles: {
           objectPosition: {
@@ -136,7 +136,7 @@ export const imageShortcuts: Shortcut<ImageStylesSchema>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.image.positions.left",
+        label: "builder.pageBuilder.blocks.image.positions.left",
         value: "left",
         targetStyles: {
           objectPosition: {
@@ -146,7 +146,7 @@ export const imageShortcuts: Shortcut<ImageStylesSchema>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.image.positions.right",
+        label: "builder.pageBuilder.blocks.image.positions.right",
         value: "right",
         targetStyles: {
           objectPosition: {
@@ -156,7 +156,7 @@ export const imageShortcuts: Shortcut<ImageStylesSchema>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.image.positions.top-left",
+        label: "builder.pageBuilder.blocks.image.positions.top-left",
         value: "top-left",
         targetStyles: {
           objectPosition: {
@@ -166,7 +166,7 @@ export const imageShortcuts: Shortcut<ImageStylesSchema>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.image.positions.top-right",
+        label: "builder.pageBuilder.blocks.image.positions.top-right",
         value: "top-right",
         targetStyles: {
           objectPosition: {
@@ -176,7 +176,7 @@ export const imageShortcuts: Shortcut<ImageStylesSchema>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.image.positions.bottom-left",
+        label: "builder.pageBuilder.blocks.image.positions.bottom-left",
         value: "bottom-left",
         targetStyles: {
           objectPosition: {
@@ -186,7 +186,7 @@ export const imageShortcuts: Shortcut<ImageStylesSchema>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.image.positions.bottom-right",
+        label: "builder.pageBuilder.blocks.image.positions.bottom-right",
         value: "bottom-right",
         targetStyles: {
           objectPosition: {
@@ -198,11 +198,11 @@ export const imageShortcuts: Shortcut<ImageStylesSchema>[] = [
     ],
   },
   {
-    label: "pageBuilder.blocks.image.alignment",
+    label: "builder.pageBuilder.blocks.image.alignment",
     icon: ({ className }) => <AlignLeft className={className} />,
     options: [
       {
-        label: "pageBuilder.blocks.image.alignments.standard",
+        label: "builder.pageBuilder.blocks.image.alignments.standard",
         value: "standard",
         targetStyles: {
           display: "inline-block",
@@ -221,7 +221,7 @@ export const imageShortcuts: Shortcut<ImageStylesSchema>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.image.alignments.center",
+        label: "builder.pageBuilder.blocks.image.alignments.center",
         value: "center",
         targetStyles: {
           display: "block",

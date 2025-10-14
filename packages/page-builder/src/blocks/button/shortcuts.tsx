@@ -15,11 +15,11 @@ import {
 
 export const buttonShortcuts: Shortcut<AllStylesSchemas>[] = [
   {
-    label: "pageBuilder.blocks.button.variant",
+    label: "builder.pageBuilder.blocks.button.variant",
     icon: ({ className }) => <Palette className={className} />,
     options: [
       {
-        label: "pageBuilder.blocks.button.variants.primary",
+        label: "builder.pageBuilder.blocks.button.variants.primary",
         value: "primary",
         targetStyles: {
           backgroundColor: COLORS["primary"].value,
@@ -40,7 +40,7 @@ export const buttonShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.button.variants.secondary",
+        label: "builder.pageBuilder.blocks.button.variants.secondary",
         value: "secondary",
         targetStyles: {
           backgroundColor: COLORS["secondary"].value,
@@ -61,7 +61,7 @@ export const buttonShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.button.variants.destructive",
+        label: "builder.pageBuilder.blocks.button.variants.destructive",
         value: "destructive",
         targetStyles: {
           backgroundColor: COLORS["destructive"].value,
@@ -82,7 +82,7 @@ export const buttonShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.button.variants.muted",
+        label: "builder.pageBuilder.blocks.button.variants.muted",
         value: "muted",
         targetStyles: {
           backgroundColor: COLORS["muted"].value,
@@ -103,7 +103,7 @@ export const buttonShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.button.variants.ghost",
+        label: "builder.pageBuilder.blocks.button.variants.ghost",
         value: "ghost",
         targetStyles: {
           backgroundColor: {
@@ -154,18 +154,18 @@ export const buttonShortcuts: Shortcut<AllStylesSchemas>[] = [
     ],
   },
   {
-    label: "pageBuilder.blocks.button.width",
+    label: "builder.pageBuilder.blocks.button.width",
     icon: ({ className }) => <MoveHorizontal className={className} />,
     options: [
       {
-        label: "pageBuilder.blocks.button.widths.auto",
+        label: "builder.pageBuilder.blocks.button.widths.auto",
         value: "auto",
         targetStyles: {
           width: "max-content",
         },
       },
       {
-        label: "pageBuilder.blocks.button.widths.full",
+        label: "builder.pageBuilder.blocks.button.widths.full",
         value: "full",
         targetStyles: {
           width: {
@@ -177,11 +177,11 @@ export const buttonShortcuts: Shortcut<AllStylesSchemas>[] = [
     ],
   },
   {
-    label: "pageBuilder.blocks.button.size",
+    label: "builder.pageBuilder.blocks.button.size",
     icon: ({ className }) => <MoveDiagonal2 className={className} />,
     options: [
       {
-        label: "pageBuilder.blocks.button.sizes.x-small",
+        label: "builder.pageBuilder.blocks.button.sizes.x-small",
         value: "x-small",
         targetStyles: {
           padding: {
@@ -193,7 +193,7 @@ export const buttonShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.button.sizes.small",
+        label: "builder.pageBuilder.blocks.button.sizes.small",
         value: "small",
         targetStyles: {
           padding: {
@@ -205,7 +205,7 @@ export const buttonShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.button.sizes.medium",
+        label: "builder.pageBuilder.blocks.button.sizes.medium",
         value: "medium",
         targetStyles: {
           padding: {
@@ -217,7 +217,7 @@ export const buttonShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.button.sizes.large",
+        label: "builder.pageBuilder.blocks.button.sizes.large",
         value: "large",
         targetStyles: {
           padding: {
@@ -231,11 +231,11 @@ export const buttonShortcuts: Shortcut<AllStylesSchemas>[] = [
     ],
   },
   {
-    label: "pageBuilder.blocks.button.style",
+    label: "builder.pageBuilder.blocks.button.style",
     icon: ({ className }) => <SquareRoundCorner className={className} />,
     options: [
       {
-        label: "pageBuilder.blocks.button.styles.rectangle",
+        label: "builder.pageBuilder.blocks.button.styles.rectangle",
         value: "rectangle",
         targetStyles: {
           borderRadius: {
@@ -245,7 +245,7 @@ export const buttonShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.button.styles.rounded",
+        label: "builder.pageBuilder.blocks.button.styles.rounded",
         value: "rounded",
         targetStyles: {
           borderRadius: {
@@ -255,7 +255,7 @@ export const buttonShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.button.styles.pill",
+        label: "builder.pageBuilder.blocks.button.styles.pill",
         value: "pill",
         targetStyles: {
           borderRadius: {
@@ -267,11 +267,11 @@ export const buttonShortcuts: Shortcut<AllStylesSchemas>[] = [
     ],
   },
   {
-    label: "pageBuilder.blocks.button.alignment",
+    label: "builder.pageBuilder.blocks.button.alignment",
     icon: ({ className }) => <AlignLeft className={className} />,
     options: [
       {
-        label: "pageBuilder.blocks.button.alignments.left",
+        label: "builder.pageBuilder.blocks.button.alignments.left",
         value: "left",
         targetStyles: {
           display: "inline",
@@ -290,7 +290,7 @@ export const buttonShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.button.alignments.center",
+        label: "builder.pageBuilder.blocks.button.alignments.center",
         value: "center",
         targetStyles: {
           display: "block",

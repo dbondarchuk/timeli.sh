@@ -1,4 +1,4 @@
-import { BuilderKeys } from "@vivid/i18n";
+import { AllKeys } from "@vivid/i18n";
 import { z } from "zod";
 import { AllStylesNames } from "./styles";
 import { Breakpoint, StateWithTarget } from "./zod";
@@ -20,7 +20,7 @@ export type BaseStyleDictionary = {
 // Style definition interface
 export interface StyleDefinition<T extends z.ZodTypeAny> {
   name: string;
-  label: BuilderKeys;
+  label: AllKeys;
   icon: (props: { className?: string }) => React.ReactNode;
   category: StyleCategory;
   schema: T;

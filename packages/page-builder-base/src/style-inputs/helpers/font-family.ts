@@ -1,4 +1,4 @@
-import { BuilderKeys } from "@vivid/i18n";
+import { AllKeys } from "@vivid/i18n";
 import { ValueLabel } from "../../style/helpers/types";
 
 export const FONT_FAMILY_NAMES = [
@@ -22,19 +22,19 @@ export const FONT_FAMILIES: Record<
   ValueLabel
 > = {
   INHERIT: {
-    label: "pageBuilder.styles.fontFamily.inherit",
+    label: "builder.pageBuilder.styles.fontFamily.inherit",
     value: "inherit",
   },
   PRIMARY: {
-    label: "pageBuilder.styles.fontFamily.primary",
+    label: "builder.pageBuilder.styles.fontFamily.primary",
     value: "var(--font-primary-value)",
   },
   SECONDARY: {
-    label: "pageBuilder.styles.fontFamily.secondary",
+    label: "builder.pageBuilder.styles.fontFamily.secondary",
     value: "var(--font-secondary-value)",
   },
   TERTIARY: {
-    label: "pageBuilder.styles.fontFamily.tertiary",
+    label: "builder.pageBuilder.styles.fontFamily.tertiary",
     value: "var(--font-tertiary-value)",
   },
   MODERN_SANS: {
@@ -87,6 +87,6 @@ export const FONT_FAMILIES_LIST = Object.entries(FONT_FAMILIES).map(
   }),
 ) as {
   key: (typeof FONT_FAMILY_NAMES)[number];
-  label: BuilderKeys | string;
+  label: AllKeys | string;
   value: string;
 }[];

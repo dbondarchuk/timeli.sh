@@ -18,7 +18,7 @@ const DisplaySchema = z.enum(displayKeys);
 
 export const displayStyle = {
   name: "display",
-  label: "pageBuilder.styles.properties.display",
+  label: "builder.pageBuilder.styles.properties.display",
   icon: ({ className }) => <LayoutGrid className={className} />,
   category: "layout",
   schema: DisplaySchema,

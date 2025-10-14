@@ -2,7 +2,7 @@
   "block": {
     "selectAddonsLabel": "Select addons",
     "durationFormat": "Duration: {hours, plural, =0 {{minutes} min} other {# hr, {minutes} min}}",
-    "durationHourMinFormat": "{hours, plural, =0 {{minutes} min} other {# hr, {minutes} min}}}",
+    "durationHourMinFormat": "{hours, plural, =0 {{minutes} min} other {# hr, {minutes} min}}",
     "priceFormat": "Price: ${price}",
     "customDurationLabel": "Duration: custom",
     "customDuration": "Custom",
@@ -26,7 +26,7 @@
       "title": "Your request has been received!",
       "message": "Thank you, {name}. Your request to join the waitlist for {service} has been received. We’ll contact you once a time slot opens up."
     },
-    "title": "Wait list",
+    "title": "Join our wait list",
     "description": "Please provide your details to be added to the wait list",
     "times": {
       "label": "Time slots",
@@ -65,6 +65,9 @@
     "asSoonAsPossible": {
       "label": "As soon as possible",
       "required": "As soon as possible is required"
+    },
+    "calendar": {
+      "waitlistLink": "Do not see a time you like? Click <link>here</link> to join our wait list."
     }
   }
 }

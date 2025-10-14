@@ -1,4 +1,4 @@
-import { BuilderKeys, useI18n } from "@vivid/i18n";
+import { AllKeys, useI18n } from "@vivid/i18n";
 import { ToolbarButton } from "@vivid/ui";
 import { Shortcut } from "../../shortcuts";
 import {
@@ -11,7 +11,7 @@ export interface ShortcutToggleToolbarItem {
   shortcut: Extract<Shortcut<BaseStyleDictionary>, { inputType: "toggle" }>;
   currentValue: string;
   onValueChange: (value: string) => void;
-  tooltip: BuilderKeys;
+  tooltip: AllKeys;
 }
 
 export const createToggleToolbarItem = <T extends BaseStyleDictionary>(
@@ -59,7 +59,7 @@ export const ToggleToolbar = ({
 }: {
   shortcut: ShortcutToggleToolbarItem;
 }) => {
-  const t = useI18n("builder");
+  const t = useI18n();
 
   return (
     <ToolbarButton

@@ -8,13 +8,14 @@ import { CarouselStylesSchema } from "./schema";
 
 export const carouselShortcuts: Shortcut<CarouselStylesSchema>[] = [
   {
-    label: "pageBuilder.blocks.carousel.shortcuts.itemsPerSlide.label",
+    label: "builder.pageBuilder.blocks.carousel.shortcuts.itemsPerSlide.label",
     icon: ({ className }: { className?: string }) => (
       <GalleryHorizontal className={className} />
     ),
     options: [
       {
-        label: "pageBuilder.blocks.carousel.shortcuts.itemsPerSlide.mobile",
+        label:
+          "builder.pageBuilder.blocks.carousel.shortcuts.itemsPerSlide.mobile",
         value: "mobile",
         targetStyles: {
           carouselChildrenItemsPerSlide: {
@@ -28,7 +29,8 @@ export const carouselShortcuts: Shortcut<CarouselStylesSchema>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.carousel.shortcuts.itemsPerSlide.tablet",
+        label:
+          "builder.pageBuilder.blocks.carousel.shortcuts.itemsPerSlide.tablet",
         value: "tablet",
         targetStyles: {
           carouselChildrenItemsPerSlide: {
@@ -43,7 +45,8 @@ export const carouselShortcuts: Shortcut<CarouselStylesSchema>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.carousel.shortcuts.itemsPerSlide.desktop",
+        label:
+          "builder.pageBuilder.blocks.carousel.shortcuts.itemsPerSlide.desktop",
         value: "desktop",
         targetStyles: {
           carouselChildrenItemsPerSlide: {
@@ -59,34 +62,39 @@ export const carouselShortcuts: Shortcut<CarouselStylesSchema>[] = [
     ],
   },
   {
-    label: "pageBuilder.blocks.carousel.shortcuts.childrenPosition.label",
+    label:
+      "builder.pageBuilder.blocks.carousel.shortcuts.childrenPosition.label",
     icon: ({ className }: { className?: string }) => (
       <AlignHorizontalJustifyCenter className={className} />
     ),
     options: [
       {
-        label: "pageBuilder.blocks.carousel.shortcuts.childrenPosition.start",
+        label:
+          "builder.pageBuilder.blocks.carousel.shortcuts.childrenPosition.start",
         value: "start",
         targetStyles: {
           carouselChildrenAlign: "left",
         },
       },
       {
-        label: "pageBuilder.blocks.carousel.shortcuts.childrenPosition.center",
+        label:
+          "builder.pageBuilder.blocks.carousel.shortcuts.childrenPosition.center",
         value: "center",
         targetStyles: {
           carouselChildrenAlign: "center",
         },
       },
       {
-        label: "pageBuilder.blocks.carousel.shortcuts.childrenPosition.end",
+        label:
+          "builder.pageBuilder.blocks.carousel.shortcuts.childrenPosition.end",
         value: "end",
         targetStyles: {
           carouselChildrenAlign: "right",
         },
       },
       {
-        label: "pageBuilder.blocks.carousel.shortcuts.childrenPosition.stretch",
+        label:
+          "builder.pageBuilder.blocks.carousel.shortcuts.childrenPosition.stretch",
         value: "stretch",
         targetStyles: {
           carouselChildrenAlign: "justify",

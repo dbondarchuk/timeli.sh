@@ -12,6 +12,8 @@ export const webhookEventTypes = [
   "payment.updated",
   "payment.deleted",
   "payment.refunded",
+  "waitlist-entry.created",
+  "waitlist-entries.dismissed",
 ] as const;
 
 export type WebhookEventType = (typeof webhookEventTypes)[number];

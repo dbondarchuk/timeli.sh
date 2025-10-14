@@ -78,27 +78,6 @@
   "setup": {
     "update": "Оновити <app></app>",
     "form": {
-      "email": {
-        "label": "Email",
-        "placeholder": "Email",
-        "tooltip": "Email адреса для надсилання сповіщень"
-      },
-      "notifyOnNewEntry": {
-        "label": "Надіслати собі email про новий запис",
-        "tooltip": "Надіслати сповіщення собі, коли новий запис додано до списку очікування"
-      },
-      "notifyCustomerOnNewEntry": {
-        "label": "Надіслати клієнту email про новий запис",
-        "tooltip": "Надіслати сповіщення клієнту, коли новий запис додано до списку очікування"
-      },
-      "customerNewEntrySubject": {
-        "label": "Тема email клієнту про новий запис",
-        "tooltip": "Тема email, яку побачать ваші клієнти, коли новий запис додано до списку очікування"
-      },
-      "customerNewEntryTemplateId": {
-        "label": "Шаблон email клієнту про новий запис",
-        "tooltip": "Шаблон email, який побачать ваші клієнти, коли новий запис додано до списку очікування"
-      },
       "dontDismissWaitlistOnAppointmentCreate": {
         "label": "Не відхиляти список очікування при створенні запису",
         "tooltip": "Чи відхиляти список очікування при створенні запису з нього"
@@ -114,6 +93,23 @@
     "email_app_not_configured": "Додаток відправника email за замовчуванням не налаштований"
   },
   "block": {
-    "displayName": "Список очікування"
+    "waitlist": {
+      "displayName": "Список очікування"
+    },
+    "bookingWithWaitlist": {
+      "displayName": "Книжка зі списком очікування"
+    },
+    "shortcuts": {
+      "gap": {
+        "label": "Відступ",
+        "gaps": {
+          "none": "Немає",
+          "small": "Малий",
+          "medium": "Середній",
+          "large": "Великий",
+          "x-large": "Дуже великий"
+        }
+      }
+    }
   }
 }

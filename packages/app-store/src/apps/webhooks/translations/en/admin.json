@@ -70,6 +70,18 @@
         "label": "Payment Refunded",
         "description": "Triggered when a payment is refunded"
       }
+    },
+    "waitlist-entry": {
+      "created": {
+        "label": "Waitlist Entry Created",
+        "description": "Triggered when a waitlist entry is created (Waitlist app is required)"
+      }
+    },
+    "waitlist-entries": {
+      "dismissed": {
+        "label": "Waitlist Entries Dismissed",
+        "description": "Triggered when a waitlist entries are dismissed (Waitlist app is required)"
+      }
     }
   },
   "statusText": {

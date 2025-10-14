@@ -22,7 +22,7 @@ import { VariantProps } from "class-variance-authority";
 import { ChevronDown } from "lucide-react";
 import React from "react";
 import { useI18n } from "../../../../i18n/src/client";
-import { BuilderKeys } from "../../../../i18n/src/types";
+import { AllKeys } from "../../../../i18n/src/types";
 import { ShortcutWithColor } from "../../shortcuts";
 import { BaseStyleDictionary, COLORS_LIST, getColorStyle } from "../../style";
 
@@ -30,7 +30,7 @@ export interface ColorShortcutToolbarItem {
   shortcut: ShortcutWithColor<BaseStyleDictionary>;
   currentColorValue: string | null;
   onValueChange: (value: string) => void;
-  tooltip: BuilderKeys;
+  tooltip: AllKeys;
 }
 
 const ColorToolbarButton = React.forwardRef<
@@ -60,7 +60,7 @@ const ColorToolbarButton = React.forwardRef<
     },
     ref,
   ) => {
-    const t = useI18n("builder");
+    const t = useI18n();
     return (
       <Popover
         open={isColorPickerOpen}
@@ -102,7 +102,7 @@ const ColorToolbarButton = React.forwardRef<
                   </span>
                 </TooltipTrigger>
                 <TooltipContent>
-                  {t("pageBuilder.styleInputs.color.presets")}
+                  {t("builder.pageBuilder.styleInputs.color.presets")}
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -141,7 +141,7 @@ export const ColorShortcutToolbar = ({
 }: {
   shortcut: ColorShortcutToolbarItem;
 }) => {
-  const t = useI18n("builder");
+  const t = useI18n();
   const [isColorPickerOpen, setIsColorPickerOpen] = React.useState(false);
   const [isPresetOpen, setIsPresetOpen] = React.useState(false);
 
@@ -184,7 +184,9 @@ export const ColorShortcutToolbar = ({
                       className="w-3 h-3 rounded border"
                       style={{ backgroundColor: getColorStyle(color.value) }}
                     />
-                    {t(`pageBuilder.styles.colors.${color.key}` as BuilderKeys)}
+                    {t(
+                      `builder.pageBuilder.styles.colors.${color.key}` as AllKeys,
+                    )}
                   </div>
                 </DropdownMenuRadioItem>
               ))}

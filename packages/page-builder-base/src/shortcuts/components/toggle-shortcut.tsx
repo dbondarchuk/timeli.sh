@@ -12,7 +12,7 @@ export const ToggleShortcut = <T extends BaseStyleDictionary>({
   currentValue: string;
   applyShortcut: (option: ShortcutOption<T>) => void;
 }) => {
-  const t = useI18n("builder");
+  const t = useI18n();
 
   if (shortcut.options.length !== 2) {
     console.warn("Toggle input type requires exactly 2 options");

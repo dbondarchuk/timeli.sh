@@ -1,7 +1,7 @@
 "use client";
 
 import { BaseBlockProps as BaseBlockPropsType } from "@vivid/builder";
-import { BuilderKeys, useI18n } from "@vivid/i18n";
+import { AllKeys, useI18n } from "@vivid/i18n";
 import React, { useCallback, useMemo, useState } from "react";
 import { z } from "zod";
 import { Shortcuts } from "../shortcuts";
@@ -42,13 +42,13 @@ export const StylesConfigurationPanel = <T extends BaseStyleDictionary>({
   base,
   onBaseChange,
 }: StylesConfigurationPanelProps<T>) => {
-  const t = useI18n("builder");
+  const t = useI18n();
   const [searchTerm, setSearchTerm] = useState("");
 
   // Helper function to safely translate categories
   const getCategoryLabel = (category: StyleCategory) => {
     const categoryLabel =
-      `pageBuilder.styles.categories.${category}` as BuilderKeys;
+      `builder.pageBuilder.styles.categories.${category}` as AllKeys;
     return t.has(categoryLabel) ? t(categoryLabel) : category;
   };
 

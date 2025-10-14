@@ -9,7 +9,7 @@ const BackgroundColorSchema = zColor;
 
 export const backgroundColorStyle = {
   name: "backgroundColor",
-  label: "pageBuilder.styles.properties.backgroundColor",
+  label: "builder.pageBuilder.styles.properties.backgroundColor",
   icon: ({ className }) => <PaintBucket className={className} />,
   category: "background",
   schema: BackgroundColorSchema,

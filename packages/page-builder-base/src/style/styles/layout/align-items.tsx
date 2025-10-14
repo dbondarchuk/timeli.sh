@@ -16,7 +16,7 @@ const AlignItemsSchema = z.enum(alignItemsKeys);
 
 export const alignItemsStyle = {
   name: "alignItems",
-  label: "pageBuilder.styles.properties.alignItems",
+  label: "builder.pageBuilder.styles.properties.alignItems",
   category: "layout",
   schema: AlignItemsSchema,
   icon: ({ className }) => <AlignVerticalJustifyCenter className={className} />,

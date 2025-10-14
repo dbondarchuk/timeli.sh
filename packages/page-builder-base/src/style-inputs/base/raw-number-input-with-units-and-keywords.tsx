@@ -19,22 +19,22 @@ import { CSSValueOption } from "./types";
 const globalKeywords = [
   {
     value: "auto",
-    label: "pageBuilder.styles.keywords.auto",
+    label: "builder.pageBuilder.styles.keywords.auto",
     isKeyword: false,
   },
   {
     value: "inherit",
-    label: "pageBuilder.styles.keywords.inherit",
+    label: "builder.pageBuilder.styles.keywords.inherit",
     isKeyword: false,
   },
   {
     value: "initial",
-    label: "pageBuilder.styles.keywords.initial",
+    label: "builder.pageBuilder.styles.keywords.initial",
     isKeyword: false,
   },
   {
     value: "unset",
-    label: "pageBuilder.styles.keywords.unset",
+    label: "builder.pageBuilder.styles.keywords.unset",
     isKeyword: false,
   },
 ] as const satisfies CSSValueOption<string>[];
@@ -78,13 +78,13 @@ type RawNumberInputWithUnitsAndKeywordsProps<T extends string> =
 
 const customKeyword = {
   value: "custom",
-  label: "pageBuilder.styles.keywords.custom",
+  label: "builder.pageBuilder.styles.keywords.custom",
   isKeyword: false,
 };
 
 const nullKeyword = {
   value: "null",
-  label: "pageBuilder.styles.keywords.notSet",
+  label: "builder.pageBuilder.styles.keywords.notSet",
   isKeyword: false,
 };
 

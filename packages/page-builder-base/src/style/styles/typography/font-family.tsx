@@ -1,4 +1,4 @@
-import { BuilderKeys, useI18n } from "@vivid/i18n";
+import { AllKeys, useI18n } from "@vivid/i18n";
 import { Combobox } from "@vivid/ui";
 import { Type } from "lucide-react";
 import { z } from "zod";
@@ -18,7 +18,7 @@ const fontFamilies = FONT_FAMILIES_LIST.map((font) => ({
 
 export const fontFamilyStyle = {
   name: "fontFamily",
-  label: "pageBuilder.styles.properties.fontFamily",
+  label: "builder.pageBuilder.styles.properties.fontFamily",
   category: "typography",
   icon: ({ className }) => <Type className={className} />,
   schema: FontFamilySchema,
@@ -28,15 +28,15 @@ export const fontFamilyStyle = {
     return `font-family: ${FONT_FAMILIES[value].value};`;
   },
   component: ({ value, onChange }) => {
-    const t = useI18n("builder");
+    const t = useI18n();
     return (
       <Combobox
         values={fontFamilies.map((font) => ({
           value: font.value,
           label: (
             <span style={{ fontFamily: font.value }}>
-              {t.has(font.label as BuilderKeys)
-                ? t(font.label as BuilderKeys)
+              {t.has(font.label as AllKeys)
+                ? t(font.label as AllKeys)
                 : font.label}
             </span>
           ),

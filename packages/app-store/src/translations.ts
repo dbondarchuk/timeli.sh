@@ -40,6 +40,8 @@ import { TEXT_MESSAGE_NOTIFICATION_APP_NAME } from "./apps/text-message-notifica
 import { TextMessageNotificationTranslations } from "./apps/text-message-notification/translations";
 import { TEXT_MESSAGE_RESENDER_APP_NAME } from "./apps/text-message-resender/const";
 import { TextMessageResenderTranslations } from "./apps/text-message-resender/translations";
+import { WAITLIST_NOTIFICATIONS_APP_NAME } from "./apps/waitlist-notifications/const";
+import { WaitlistNotificationsTranslations } from "./apps/waitlist-notifications/translations";
 import { WAITLIST_APP_NAME } from "./apps/waitlist/const";
 import { WaitlistTranslations } from "./apps/waitlist/translations";
 import { WEBHOOKS_APP_NAME } from "./apps/webhooks/const";
@@ -55,6 +57,7 @@ export const AppsTranslations: Record<
   }
 > = {
   [WAITLIST_APP_NAME]: WaitlistTranslations,
+  [WAITLIST_NOTIFICATIONS_APP_NAME]: WaitlistNotificationsTranslations,
   [FINANCIAL_OVERVIEW_APP_NAME]: FinancialOverviewTranslations,
   [BUSY_EVENTS_APP_NAME]: BusyEventsTranslations,
   [CALDAV_APP_NAME]: CaldavTranslations,

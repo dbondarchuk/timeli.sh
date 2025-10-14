@@ -5,7 +5,7 @@ import { applyShortcutOption, getShortcutCurrentValue } from "./utils";
 const mockShortcutOptions: ShortcutOption<any>[] = [
   {
     value: "full",
-    label: "pageBuilder.blocks.container.widths.full" as any,
+    label: "builder.pageBuilder.blocks.container.widths.full" as any,
     targetStyles: {
       width: { value: 100, unit: "%" },
       margin: {
@@ -18,7 +18,7 @@ const mockShortcutOptions: ShortcutOption<any>[] = [
   },
   {
     value: "contained",
-    label: "pageBuilder.blocks.container.widths.contained" as any,
+    label: "builder.pageBuilder.blocks.container.widths.contained" as any,
     targetStyles: {
       width: { value: 100, unit: "%" },
       maxWidth: {
@@ -41,7 +41,7 @@ const mockShortcutOptions: ShortcutOption<any>[] = [
   },
   {
     value: "dynamic",
-    label: "pageBuilder.blocks.container.widths.large" as any,
+    label: "builder.pageBuilder.blocks.container.widths.large" as any,
     targetStyles: {
       width: { value: 100, unit: "%" },
       maxWidth: {

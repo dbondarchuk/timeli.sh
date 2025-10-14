@@ -15,32 +15,32 @@ import {
 
 export const textShortcuts: Shortcut<AllStylesSchemas>[] = [
   {
-    label: "pageBuilder.blocks.text.shortcuts.size",
+    label: "builder.pageBuilder.blocks.text.shortcuts.size",
     icon: ({ className }) => <CaseSensitive className={className} />,
     options: [
       {
-        label: "pageBuilder.blocks.text.sizes.small",
+        label: "builder.pageBuilder.blocks.text.sizes.small",
         value: "small",
         targetStyles: {
           fontSize: { value: 0.875, unit: "rem" },
         },
       },
       {
-        label: "pageBuilder.blocks.text.sizes.medium",
+        label: "builder.pageBuilder.blocks.text.sizes.medium",
         value: "medium",
         targetStyles: {
           fontSize: { value: 1, unit: "rem" },
         },
       },
       {
-        label: "pageBuilder.blocks.text.sizes.large",
+        label: "builder.pageBuilder.blocks.text.sizes.large",
         value: "large",
         targetStyles: {
           fontSize: { value: 1.125, unit: "rem" },
         },
       },
       {
-        label: "pageBuilder.blocks.text.sizes.x-large",
+        label: "builder.pageBuilder.blocks.text.sizes.x-large",
         value: "x-large",
         targetStyles: {
           fontSize: { value: 1.25, unit: "rem" },
@@ -49,32 +49,32 @@ export const textShortcuts: Shortcut<AllStylesSchemas>[] = [
     ],
   },
   {
-    label: "pageBuilder.blocks.text.shortcuts.weight",
+    label: "builder.pageBuilder.blocks.text.shortcuts.weight",
     icon: ({ className }) => <Bold className={className} />,
     options: [
       {
-        label: "pageBuilder.blocks.text.weights.light",
+        label: "builder.pageBuilder.blocks.text.weights.light",
         value: "light",
         targetStyles: {
           fontWeight: "300",
         },
       },
       {
-        label: "pageBuilder.blocks.text.weights.normal",
+        label: "builder.pageBuilder.blocks.text.weights.normal",
         value: "normal",
         targetStyles: {
           fontWeight: "normal",
         },
       },
       {
-        label: "pageBuilder.blocks.text.weights.medium",
+        label: "builder.pageBuilder.blocks.text.weights.medium",
         value: "medium",
         targetStyles: {
           fontWeight: "500",
         },
       },
       {
-        label: "pageBuilder.blocks.text.weights.bold",
+        label: "builder.pageBuilder.blocks.text.weights.bold",
         value: "bold",
         targetStyles: {
           fontWeight: "bold",
@@ -83,32 +83,32 @@ export const textShortcuts: Shortcut<AllStylesSchemas>[] = [
     ],
   },
   {
-    label: "pageBuilder.blocks.text.shortcuts.alignment",
+    label: "builder.pageBuilder.blocks.text.shortcuts.alignment",
     icon: ({ className }) => <AlignLeft className={className} />,
     options: [
       {
-        label: "pageBuilder.blocks.text.alignments.left",
+        label: "builder.pageBuilder.blocks.text.alignments.left",
         value: "left",
         targetStyles: {
           textAlign: "left",
         },
       },
       {
-        label: "pageBuilder.blocks.text.alignments.center",
+        label: "builder.pageBuilder.blocks.text.alignments.center",
         value: "center",
         targetStyles: {
           textAlign: "center",
         },
       },
       {
-        label: "pageBuilder.blocks.text.alignments.right",
+        label: "builder.pageBuilder.blocks.text.alignments.right",
         value: "right",
         targetStyles: {
           textAlign: "right",
         },
       },
       {
-        label: "pageBuilder.blocks.text.alignments.justify",
+        label: "builder.pageBuilder.blocks.text.alignments.justify",
         value: "justify",
         targetStyles: {
           textAlign: "justify",
@@ -117,11 +117,11 @@ export const textShortcuts: Shortcut<AllStylesSchemas>[] = [
     ],
   },
   {
-    label: "pageBuilder.blocks.text.shortcuts.style",
+    label: "builder.pageBuilder.blocks.text.shortcuts.style",
     icon: ({ className }) => <TypeOutline className={className} />,
     options: [
       {
-        label: "pageBuilder.blocks.text.styles.body",
+        label: "builder.pageBuilder.blocks.text.styles.body",
         value: "body",
         targetStyles: {
           fontSize: { value: 1, unit: "rem" },
@@ -131,7 +131,7 @@ export const textShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.text.styles.lead",
+        label: "builder.pageBuilder.blocks.text.styles.lead",
         value: "lead",
         targetStyles: {
           fontSize: { value: 1.125, unit: "rem" },
@@ -141,7 +141,7 @@ export const textShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.text.styles.caption",
+        label: "builder.pageBuilder.blocks.text.styles.caption",
         value: "caption",
         targetStyles: {
           fontSize: { value: 0.875, unit: "rem" },
@@ -153,7 +153,7 @@ export const textShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.text.styles.quote",
+        label: "builder.pageBuilder.blocks.text.styles.quote",
         value: "quote",
         targetStyles: {
           fontSize: { value: 1.125, unit: "rem" },
@@ -173,11 +173,11 @@ export const textShortcuts: Shortcut<AllStylesSchemas>[] = [
     ],
   },
   {
-    label: "pageBuilder.blocks.text.shortcuts.spacing",
+    label: "builder.pageBuilder.blocks.text.shortcuts.spacing",
     icon: ({ className }) => <Space className={className} />,
     options: [
       {
-        label: "pageBuilder.blocks.text.spacings.compact",
+        label: "builder.pageBuilder.blocks.text.spacings.compact",
         value: "compact",
         targetStyles: {
           padding: {
@@ -195,7 +195,7 @@ export const textShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.text.spacings.comfortable",
+        label: "builder.pageBuilder.blocks.text.spacings.comfortable",
         value: "comfortable",
         targetStyles: {
           padding: {
@@ -213,7 +213,7 @@ export const textShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.text.spacings.loose",
+        label: "builder.pageBuilder.blocks.text.spacings.loose",
         value: "loose",
         targetStyles: {
           padding: {

@@ -16,7 +16,7 @@ const PositionSchema = z.enum(positionKeys);
 
 export const positionStyle = {
   name: "position",
-  label: "pageBuilder.styles.properties.position",
+  label: "builder.pageBuilder.styles.properties.position",
   icon: ({ className }) => <Pin className={className} />,
   category: "layout",
   schema: PositionSchema,

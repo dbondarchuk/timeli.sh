@@ -22,7 +22,7 @@ export const COLORS_LIST = [
   })),
   {
     key: "transparent",
-    label: "pageBuilder.styles.colors.transparent",
+    label: "builder.pageBuilder.styles.colors.transparent",
     value: "transparent",
   },
 ];

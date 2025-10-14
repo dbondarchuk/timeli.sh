@@ -1,19 +1,27 @@
 "use client";
-
 import { GetAppointmentOptionsResponse } from "@vivid/types";
 import { Skeleton } from "@vivid/ui";
 import React from "react";
 import { Appointments } from "./appointments";
 import { demoBookingOptionsResponse } from "./fixtures";
-import { WaitlistProps } from "./types";
+import { BookingWithWaitlistProps } from "./types";
 
-export const Waitlist: React.FC<
-  WaitlistProps & {
+export const BookingWithWaitlist: React.FC<
+  BookingWithWaitlistProps & {
     id?: string;
     isEditor?: boolean;
     appId?: string;
+    isOnlyWaitlist?: boolean;
   } & React.HTMLAttributes<HTMLDivElement>
-> = ({ className, id, isEditor, appId, ...props }) => {
+> = ({
+  successPage,
+  className,
+  id,
+  isEditor,
+  appId,
+  isOnlyWaitlist,
+  ...props
+}) => {
   const [response, setResponse] =
     React.useState<GetAppointmentOptionsResponse | null>(null);
 
@@ -46,11 +54,13 @@ export const Waitlist: React.FC<
       {...props}
       className={className}
       options={response.options}
+      successPage={successPage ?? undefined}
       fieldsSchema={response.fieldsSchema}
       timeZone={response.timeZone}
       showPromoCode={response.showPromoCode}
-      waitlistAppId={appId}
       isEditor={isEditor}
+      appId={appId}
+      isOnlyWaitlist={isOnlyWaitlist ?? false}
     />
   );
 };

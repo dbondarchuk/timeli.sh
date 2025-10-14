@@ -17,11 +17,11 @@ import {
 
 export const gridContainerShortcuts: Shortcut<AllStylesSchemas>[] = [
   {
-    label: "pageBuilder.blocks.gridContainer.shortcuts.padding",
+    label: "builder.pageBuilder.blocks.gridContainer.shortcuts.padding",
     icon: AlignVerticalSpaceBetween,
     options: [
       {
-        label: "pageBuilder.blocks.gridContainer.paddings.none",
+        label: "builder.pageBuilder.blocks.gridContainer.paddings.none",
         value: "none",
         targetStyles: {
           padding: {
@@ -33,7 +33,7 @@ export const gridContainerShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.gridContainer.paddings.small",
+        label: "builder.pageBuilder.blocks.gridContainer.paddings.small",
         value: "small",
         targetStyles: {
           padding: {
@@ -45,7 +45,7 @@ export const gridContainerShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.gridContainer.paddings.medium",
+        label: "builder.pageBuilder.blocks.gridContainer.paddings.medium",
         value: "medium",
         targetStyles: {
           padding: {
@@ -57,7 +57,7 @@ export const gridContainerShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.gridContainer.paddings.large",
+        label: "builder.pageBuilder.blocks.gridContainer.paddings.large",
         value: "large",
         targetStyles: {
           padding: {
@@ -69,7 +69,7 @@ export const gridContainerShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.gridContainer.paddings.x-large",
+        label: "builder.pageBuilder.blocks.gridContainer.paddings.x-large",
         value: "x-large",
         targetStyles: {
           padding: {
@@ -83,48 +83,48 @@ export const gridContainerShortcuts: Shortcut<AllStylesSchemas>[] = [
     ],
   },
   {
-    label: "pageBuilder.blocks.gridContainer.shortcuts.gap",
+    label: "builder.pageBuilder.blocks.gridContainer.shortcuts.gap",
     icon: Move,
     inputType: "number-with-unit",
     targetStyle: "gap",
     // options: [
     //   {
-    //     label: "pageBuilder.blocks.gridContainer.gaps.none",
+    //     label: "builder.pageBuilder.blocks.gridContainer.gaps.none",
     //     value: "none",
     //     targetStyles: {
     //       gap: { value: 0, unit: "px" },
     //     },
     //   },
     //   {
-    //     label: "pageBuilder.blocks.gridContainer.gaps.small",
+    //     label: "builder.pageBuilder.blocks.gridContainer.gaps.small",
     //     value: "small",
     //     targetStyles: {
     //       gap: { value: 8, unit: "px" },
     //     },
     //   },
     //   {
-    //     label: "pageBuilder.blocks.gridContainer.gaps.medium",
+    //     label: "builder.pageBuilder.blocks.gridContainer.gaps.medium",
     //     value: "medium",
     //     targetStyles: {
     //       gap: { value: 16, unit: "px" },
     //     },
     //   },
     //   {
-    //     label: "pageBuilder.blocks.gridContainer.gaps.large",
+    //     label: "builder.pageBuilder.blocks.gridContainer.gaps.large",
     //     value: "large",
     //     targetStyles: {
     //       gap: { value: 24, unit: "px" },
     //     },
     //   },
     //   {
-    //     label: "pageBuilder.blocks.gridContainer.gaps.xlarge",
+    //     label: "builder.pageBuilder.blocks.gridContainer.gaps.xlarge",
     //     value: "xlarge",
     //     targetStyles: {
     //       gap: { value: 32, unit: "px" },
     //     },
     //   },
     //   {
-    //     label: "pageBuilder.blocks.gridContainer.gaps.xxlarge",
+    //     label: "builder.pageBuilder.blocks.gridContainer.gaps.xxlarge",
     //     value: "xxlarge",
     //     targetStyles: {
     //       gap: { value: 48, unit: "px" },
@@ -133,116 +133,128 @@ export const gridContainerShortcuts: Shortcut<AllStylesSchemas>[] = [
     // ],
   },
   {
-    label: "pageBuilder.blocks.gridContainer.shortcuts.gridTemplateColumns",
+    label:
+      "builder.pageBuilder.blocks.gridContainer.shortcuts.gridTemplateColumns",
     icon: Grid3X3,
     options: [
       {
-        label: "pageBuilder.blocks.gridContainer.gridTemplates.autoFit",
+        label: "builder.pageBuilder.blocks.gridContainer.gridTemplates.autoFit",
         value: "autoFit",
         targetStyles: {
           gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
         },
       },
       {
-        label: "pageBuilder.blocks.gridContainer.gridTemplates.autoFill",
+        label:
+          "builder.pageBuilder.blocks.gridContainer.gridTemplates.autoFill",
         value: "autoFill",
         targetStyles: {
           gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
         },
       },
       {
-        label: "pageBuilder.blocks.gridContainer.gridTemplates.twoColumns",
+        label:
+          "builder.pageBuilder.blocks.gridContainer.gridTemplates.twoColumns",
         value: "twoColumns",
         targetStyles: {
           gridTemplateColumns: "repeat(2, 1fr)",
         },
       },
       {
-        label: "pageBuilder.blocks.gridContainer.gridTemplates.threeColumns",
+        label:
+          "builder.pageBuilder.blocks.gridContainer.gridTemplates.threeColumns",
         value: "threeColumns",
         targetStyles: {
           gridTemplateColumns: "repeat(3, 1fr)",
         },
       },
       {
-        label: "pageBuilder.blocks.gridContainer.gridTemplates.fourColumns",
+        label:
+          "builder.pageBuilder.blocks.gridContainer.gridTemplates.fourColumns",
         value: "fourColumns",
         targetStyles: {
           gridTemplateColumns: "repeat(4, 1fr)",
         },
       },
       {
-        label: "pageBuilder.blocks.gridContainer.gridTemplates.sidebar",
+        label: "builder.pageBuilder.blocks.gridContainer.gridTemplates.sidebar",
         value: "sidebar",
         targetStyles: {
           gridTemplateColumns: "250px 1fr",
         },
       },
       {
-        label: "pageBuilder.blocks.gridContainer.gridTemplates.hero",
+        label: "builder.pageBuilder.blocks.gridContainer.gridTemplates.hero",
         value: "hero",
         targetStyles: {
           gridTemplateColumns: "1fr",
         },
       },
       {
-        label: "pageBuilder.blocks.gridContainer.gridTemplates.asymmetric",
+        label:
+          "builder.pageBuilder.blocks.gridContainer.gridTemplates.asymmetric",
         value: "asymmetric",
         targetStyles: {
           gridTemplateColumns: "1fr 2fr 1fr",
         },
       },
       {
-        label: "pageBuilder.blocks.gridContainer.gridTemplates.mixed",
+        label: "builder.pageBuilder.blocks.gridContainer.gridTemplates.mixed",
         value: "mixed",
         targetStyles: {
           gridTemplateColumns: "200px 1fr 150px",
         },
       },
       {
-        label: "pageBuilder.blocks.gridContainer.gridTemplates.magazine",
+        label:
+          "builder.pageBuilder.blocks.gridContainer.gridTemplates.magazine",
         value: "magazine",
         targetStyles: {
           gridTemplateColumns: "2fr 1fr 1fr",
         },
       },
       {
-        label: "pageBuilder.blocks.gridContainer.gridTemplates.gallery",
+        label: "builder.pageBuilder.blocks.gridContainer.gridTemplates.gallery",
         value: "gallery",
         targetStyles: {
           gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
         },
       },
       {
-        label: "pageBuilder.blocks.gridContainer.gridTemplates.dashboard",
+        label:
+          "builder.pageBuilder.blocks.gridContainer.gridTemplates.dashboard",
         value: "dashboard",
         targetStyles: {
           gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
         },
       },
       {
-        label: "pageBuilder.blocks.gridContainer.gridTemplates.threeColumnWide",
+        label:
+          "builder.pageBuilder.blocks.gridContainer.gridTemplates.threeColumnWide",
         value: "threeColumnWide",
         targetStyles: {
           gridTemplateColumns: "1fr 2fr 1fr",
         },
       },
       {
-        label: "pageBuilder.blocks.gridContainer.gridTemplates.fiveColumns",
+        label:
+          "builder.pageBuilder.blocks.gridContainer.gridTemplates.fiveColumns",
         value: "fiveColumns",
         targetStyles: {
           gridTemplateColumns: "repeat(5, 1fr)",
         },
       },
       {
-        label: "pageBuilder.blocks.gridContainer.gridTemplates.sixColumns",
+        label:
+          "builder.pageBuilder.blocks.gridContainer.gridTemplates.sixColumns",
         value: "sixColumns",
         targetStyles: {
           gridTemplateColumns: "repeat(6, 1fr)",
         },
       },
       {
-        label: "pageBuilder.blocks.gridContainer.gridTemplates.twelveColumns",
+        label:
+          "builder.pageBuilder.blocks.gridContainer.gridTemplates.twelveColumns",
         value: "twelveColumns",
         targetStyles: {
           gridTemplateColumns: "repeat(12, 1fr)",
@@ -251,46 +263,50 @@ export const gridContainerShortcuts: Shortcut<AllStylesSchemas>[] = [
     ],
   },
   {
-    label: "pageBuilder.blocks.gridContainer.shortcuts.justifyContent",
+    label: "builder.pageBuilder.blocks.gridContainer.shortcuts.justifyContent",
     icon: AlignCenterHorizontal,
     options: [
       {
-        label: "pageBuilder.blocks.gridContainer.justifyContents.start",
+        label: "builder.pageBuilder.blocks.gridContainer.justifyContents.start",
         value: "start",
         targetStyles: {
           justifyContent: "flex-start",
         },
       },
       {
-        label: "pageBuilder.blocks.gridContainer.justifyContents.center",
+        label:
+          "builder.pageBuilder.blocks.gridContainer.justifyContents.center",
         value: "center",
         targetStyles: {
           justifyContent: "center",
         },
       },
       {
-        label: "pageBuilder.blocks.gridContainer.justifyContents.end",
+        label: "builder.pageBuilder.blocks.gridContainer.justifyContents.end",
         value: "end",
         targetStyles: {
           justifyContent: "flex-end",
         },
       },
       {
-        label: "pageBuilder.blocks.gridContainer.justifyContents.spaceBetween",
+        label:
+          "builder.pageBuilder.blocks.gridContainer.justifyContents.spaceBetween",
         value: "spaceBetween",
         targetStyles: {
           justifyContent: "space-between",
         },
       },
       {
-        label: "pageBuilder.blocks.gridContainer.justifyContents.spaceAround",
+        label:
+          "builder.pageBuilder.blocks.gridContainer.justifyContents.spaceAround",
         value: "spaceAround",
         targetStyles: {
           justifyContent: "space-around",
         },
       },
       {
-        label: "pageBuilder.blocks.gridContainer.justifyContents.spaceEvenly",
+        label:
+          "builder.pageBuilder.blocks.gridContainer.justifyContents.spaceEvenly",
         value: "spaceEvenly",
         targetStyles: {
           justifyContent: "space-evenly",
@@ -299,39 +315,39 @@ export const gridContainerShortcuts: Shortcut<AllStylesSchemas>[] = [
     ],
   },
   {
-    label: "pageBuilder.blocks.gridContainer.shortcuts.alignItems",
+    label: "builder.pageBuilder.blocks.gridContainer.shortcuts.alignItems",
     icon: AlignCenterVertical,
     options: [
       {
-        label: "pageBuilder.blocks.gridContainer.alignItemses.start",
+        label: "builder.pageBuilder.blocks.gridContainer.alignItemses.start",
         value: "start",
         targetStyles: {
           alignItems: "flex-start",
         },
       },
       {
-        label: "pageBuilder.blocks.gridContainer.alignItemses.center",
+        label: "builder.pageBuilder.blocks.gridContainer.alignItemses.center",
         value: "center",
         targetStyles: {
           alignItems: "center",
         },
       },
       {
-        label: "pageBuilder.blocks.gridContainer.alignItemses.end",
+        label: "builder.pageBuilder.blocks.gridContainer.alignItemses.end",
         value: "end",
         targetStyles: {
           alignItems: "flex-end",
         },
       },
       {
-        label: "pageBuilder.blocks.gridContainer.alignItemses.stretch",
+        label: "builder.pageBuilder.blocks.gridContainer.alignItemses.stretch",
         value: "stretch",
         targetStyles: {
           alignItems: "stretch",
         },
       },
       {
-        label: "pageBuilder.blocks.gridContainer.alignItemses.baseline",
+        label: "builder.pageBuilder.blocks.gridContainer.alignItemses.baseline",
         value: "baseline",
         targetStyles: {
           alignItems: "baseline",
@@ -340,11 +356,11 @@ export const gridContainerShortcuts: Shortcut<AllStylesSchemas>[] = [
     ],
   },
   {
-    label: "pageBuilder.blocks.gridContainer.shortcuts.style",
+    label: "builder.pageBuilder.blocks.gridContainer.shortcuts.style",
     icon: Box,
     options: [
       {
-        label: "pageBuilder.blocks.gridContainer.styles.plain",
+        label: "builder.pageBuilder.blocks.gridContainer.styles.plain",
         value: "plain",
         targetStyles: {
           backgroundColor: undefined,
@@ -353,7 +369,7 @@ export const gridContainerShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.gridContainer.styles.card",
+        label: "builder.pageBuilder.blocks.gridContainer.styles.card",
         value: "card",
         targetStyles: {
           backgroundColor: "var(--value-card-color)",
@@ -362,7 +378,7 @@ export const gridContainerShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.gridContainer.styles.paper",
+        label: "builder.pageBuilder.blocks.gridContainer.styles.paper",
         value: "paper",
         targetStyles: {
           backgroundColor: "var(--value-background-color)",
@@ -371,7 +387,7 @@ export const gridContainerShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.gridContainer.styles.rounded",
+        label: "builder.pageBuilder.blocks.gridContainer.styles.rounded",
         value: "rounded",
         targetStyles: {
           backgroundColor: "var(--value-muted-color)",
@@ -380,7 +396,7 @@ export const gridContainerShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.gridContainer.styles.bordered",
+        label: "builder.pageBuilder.blocks.gridContainer.styles.bordered",
         value: "bordered",
         targetStyles: {
           backgroundColor: undefined,

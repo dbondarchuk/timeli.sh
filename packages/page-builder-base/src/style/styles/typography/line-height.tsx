@@ -8,7 +8,7 @@ const LineHeightSchema = zNumberValueWithUnit;
 
 export const lineHeightStyle = {
   name: "lineHeight",
-  label: "pageBuilder.styles.properties.lineHeight",
+  label: "builder.pageBuilder.styles.properties.lineHeight",
   category: "typography",
   schema: LineHeightSchema,
   icon: ({ className }) => <TextCursor className={className} />,

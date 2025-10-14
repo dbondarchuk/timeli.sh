@@ -17,7 +17,7 @@ const JustifyContentSchema = z.enum(justifyContentKeys);
 
 export const justifyContentStyle = {
   name: "justifyContent",
-  label: "pageBuilder.styles.properties.justifyContent",
+  label: "builder.pageBuilder.styles.properties.justifyContent",
   category: "layout",
   schema: JustifyContentSchema,
   icon: ({ className }) => (

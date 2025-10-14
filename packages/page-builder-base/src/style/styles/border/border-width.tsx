@@ -8,7 +8,7 @@ const BorderWidthSchema = zNumberValueWithUnit;
 
 export const borderWidthStyle = {
   name: "borderWidth",
-  label: "pageBuilder.styles.properties.borderWidth",
+  label: "builder.pageBuilder.styles.properties.borderWidth",
   icon: ({ className }) => <Square className={className} />,
   category: "border",
   schema: BorderWidthSchema,

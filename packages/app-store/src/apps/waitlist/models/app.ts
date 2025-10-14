@@ -1,39 +1,11 @@
-import { asOptionalField, DateRange, Query, zEmail } from "@vivid/types";
+import { DateRange, Query } from "@vivid/types";
 import { z } from "zod";
 
 import { WaitlistStatus } from "./waitlist";
 
-export const waitlistConfigurationSchema = z
-  .object({
-    dontDismissWaitlistOnAppointmentCreate: z.coerce.boolean().optional(),
-    email: asOptionalField(zEmail),
-    notifyOnNewEntry: z.coerce.boolean().optional(),
-  })
-  .and(
-    z
-      .object({
-        notifyCustomerOnNewEntry: z.literal(true, {
-          errorMap: () => ({
-            message: "waitlist.notifyCustomerOnNewEntry.required",
-          }),
-        }),
-        customerNewEntrySubject: z.string().min(1, {
-          message: "waitlist.customerNewEntrySubject.required",
-        }),
-        customerNewEntryTemplateId: z.string().min(1, {
-          message: "waitlist.customerNewEntryTemplateId.required",
-        }),
-      })
-      .or(
-        z.object({
-          notifyCustomerOnNewEntry: z.literal(false, {
-            errorMap: () => ({
-              message: "waitlist.notifyCustomerOnNewEntry.required",
-            }),
-          }),
-        }),
-      ),
-  );
+export const waitlistConfigurationSchema = z.object({
+  dontDismissWaitlistOnAppointmentCreate: z.coerce.boolean().optional(),
+});
 
 export type WaitlistConfiguration = z.infer<typeof waitlistConfigurationSchema>;
 

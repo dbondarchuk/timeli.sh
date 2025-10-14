@@ -4,11 +4,11 @@ import { VideoStylesSchema } from "./styles";
 
 export const videoShortcuts: Shortcut<VideoStylesSchema>[] = [
   {
-    label: "pageBuilder.blocks.video.size",
+    label: "builder.pageBuilder.blocks.video.size",
     icon: ({ className }) => <Film className={className} />,
     options: [
       {
-        label: "pageBuilder.blocks.video.sizes.small",
+        label: "builder.pageBuilder.blocks.video.sizes.small",
         value: "small",
         targetStyles: {
           width: {
@@ -18,7 +18,7 @@ export const videoShortcuts: Shortcut<VideoStylesSchema>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.video.sizes.medium",
+        label: "builder.pageBuilder.blocks.video.sizes.medium",
         value: "medium",
         targetStyles: {
           width: {
@@ -28,7 +28,7 @@ export const videoShortcuts: Shortcut<VideoStylesSchema>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.video.sizes.large",
+        label: "builder.pageBuilder.blocks.video.sizes.large",
         value: "large",
         targetStyles: {
           width: {
@@ -38,7 +38,7 @@ export const videoShortcuts: Shortcut<VideoStylesSchema>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.video.sizes.full",
+        label: "builder.pageBuilder.blocks.video.sizes.full",
         value: "full",
         targetStyles: {
           width: {
@@ -48,7 +48,7 @@ export const videoShortcuts: Shortcut<VideoStylesSchema>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.video.sizes.wide",
+        label: "builder.pageBuilder.blocks.video.sizes.wide",
         value: "wide",
         targetStyles: {
           width: {
@@ -60,11 +60,11 @@ export const videoShortcuts: Shortcut<VideoStylesSchema>[] = [
     ],
   },
   {
-    label: "pageBuilder.blocks.video.alignment",
+    label: "builder.pageBuilder.blocks.video.alignment",
     icon: ({ className }) => <AlignLeft className={className} />,
     options: [
       {
-        label: "pageBuilder.blocks.video.alignments.standard",
+        label: "builder.pageBuilder.blocks.video.alignments.standard",
         value: "standard",
         targetStyles: {
           display: "inline-block",
@@ -83,7 +83,7 @@ export const videoShortcuts: Shortcut<VideoStylesSchema>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.video.alignments.center",
+        label: "builder.pageBuilder.blocks.video.alignments.center",
         value: "center",
         targetStyles: {
           display: "block",
@@ -98,11 +98,11 @@ export const videoShortcuts: Shortcut<VideoStylesSchema>[] = [
     ],
   },
   {
-    label: "pageBuilder.blocks.video.playback",
+    label: "builder.pageBuilder.blocks.video.playback",
     icon: ({ className }) => <Play className={className} />,
     options: [
       {
-        label: "pageBuilder.blocks.video.playbackOptions.standard",
+        label: "builder.pageBuilder.blocks.video.playbackOptions.standard",
         value: "standard",
         targetStyles: {},
         targetProps: {
@@ -113,7 +113,7 @@ export const videoShortcuts: Shortcut<VideoStylesSchema>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.video.playbackOptions.autoplay",
+        label: "builder.pageBuilder.blocks.video.playbackOptions.autoplay",
         value: "autoplay",
         targetStyles: {},
         targetProps: {
@@ -124,7 +124,7 @@ export const videoShortcuts: Shortcut<VideoStylesSchema>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.video.playbackOptions.loop",
+        label: "builder.pageBuilder.blocks.video.playbackOptions.loop",
         value: "loop",
         targetStyles: {},
         targetProps: {
@@ -135,7 +135,7 @@ export const videoShortcuts: Shortcut<VideoStylesSchema>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.video.playbackOptions.background",
+        label: "builder.pageBuilder.blocks.video.playbackOptions.background",
         value: "background",
         targetStyles: {},
         targetProps: {
@@ -148,11 +148,11 @@ export const videoShortcuts: Shortcut<VideoStylesSchema>[] = [
     ],
   },
   {
-    label: "pageBuilder.blocks.video.audio",
+    label: "builder.pageBuilder.blocks.video.audio",
     icon: ({ className }) => <Volume2 className={className} />,
     options: [
       {
-        label: "pageBuilder.blocks.video.audioOptions.withSound",
+        label: "builder.pageBuilder.blocks.video.audioOptions.withSound",
         value: "withSound",
         targetStyles: {},
         targetProps: {
@@ -160,7 +160,7 @@ export const videoShortcuts: Shortcut<VideoStylesSchema>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.video.audioOptions.muted",
+        label: "builder.pageBuilder.blocks.video.audioOptions.muted",
         value: "muted",
         targetStyles: {},
         targetProps: {

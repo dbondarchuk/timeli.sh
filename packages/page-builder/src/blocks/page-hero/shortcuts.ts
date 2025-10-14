@@ -17,11 +17,11 @@ import {
 
 export const pageHeroShortcuts: Shortcut<AllStylesSchemas>[] = [
   {
-    label: "pageBuilder.blocks.container.shortcuts.padding",
+    label: "builder.pageBuilder.blocks.container.shortcuts.padding",
     icon: AlignVerticalSpaceBetween,
     options: [
       {
-        label: "pageBuilder.blocks.container.paddings.none",
+        label: "builder.pageBuilder.blocks.container.paddings.none",
         value: "none",
         targetStyles: {
           padding: {
@@ -33,7 +33,7 @@ export const pageHeroShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.container.paddings.small",
+        label: "builder.pageBuilder.blocks.container.paddings.small",
         value: "small",
         targetStyles: {
           padding: {
@@ -45,7 +45,7 @@ export const pageHeroShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.container.paddings.medium",
+        label: "builder.pageBuilder.blocks.container.paddings.medium",
         value: "medium",
         targetStyles: {
           padding: {
@@ -57,7 +57,7 @@ export const pageHeroShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.container.paddings.large",
+        label: "builder.pageBuilder.blocks.container.paddings.large",
         value: "large",
         targetStyles: {
           padding: {
@@ -69,7 +69,7 @@ export const pageHeroShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.container.paddings.x-large",
+        label: "builder.pageBuilder.blocks.container.paddings.x-large",
         value: "x-large",
         targetStyles: {
           padding: {
@@ -83,39 +83,39 @@ export const pageHeroShortcuts: Shortcut<AllStylesSchemas>[] = [
     ],
   },
   {
-    label: "pageBuilder.blocks.container.shortcuts.gap",
+    label: "builder.pageBuilder.blocks.container.shortcuts.gap",
     icon: Move,
     options: [
       {
-        label: "pageBuilder.blocks.container.gaps.none",
+        label: "builder.pageBuilder.blocks.container.gaps.none",
         value: "none",
         targetStyles: {
           gap: { value: 0, unit: "rem" },
         },
       },
       {
-        label: "pageBuilder.blocks.container.gaps.small",
+        label: "builder.pageBuilder.blocks.container.gaps.small",
         value: "small",
         targetStyles: {
           gap: { value: 0.25, unit: "rem" },
         },
       },
       {
-        label: "pageBuilder.blocks.container.gaps.medium",
+        label: "builder.pageBuilder.blocks.container.gaps.medium",
         value: "medium",
         targetStyles: {
           gap: { value: 0.5, unit: "rem" },
         },
       },
       {
-        label: "pageBuilder.blocks.container.gaps.large",
+        label: "builder.pageBuilder.blocks.container.gaps.large",
         value: "large",
         targetStyles: {
           gap: { value: 1, unit: "rem" },
         },
       },
       {
-        label: "pageBuilder.blocks.container.gaps.x-large",
+        label: "builder.pageBuilder.blocks.container.gaps.x-large",
         value: "x-large",
         targetStyles: {
           gap: { value: 1.5, unit: "rem" },
@@ -124,32 +124,33 @@ export const pageHeroShortcuts: Shortcut<AllStylesSchemas>[] = [
     ],
   },
   {
-    label: "pageBuilder.blocks.container.shortcuts.flexDirection",
+    label: "builder.pageBuilder.blocks.container.shortcuts.flexDirection",
     icon: ArrowRight,
     options: [
       {
-        label: "pageBuilder.blocks.container.flexDirections.row",
+        label: "builder.pageBuilder.blocks.container.flexDirections.row",
         value: "row",
         targetStyles: {
           flexDirection: "row",
         },
       },
       {
-        label: "pageBuilder.blocks.container.flexDirections.column",
+        label: "builder.pageBuilder.blocks.container.flexDirections.column",
         value: "column",
         targetStyles: {
           flexDirection: "column",
         },
       },
       {
-        label: "pageBuilder.blocks.container.flexDirections.rowReverse",
+        label: "builder.pageBuilder.blocks.container.flexDirections.rowReverse",
         value: "row-reverse",
         targetStyles: {
           flexDirection: "row-reverse",
         },
       },
       {
-        label: "pageBuilder.blocks.container.flexDirections.columnReverse",
+        label:
+          "builder.pageBuilder.blocks.container.flexDirections.columnReverse",
         value: "column-reverse",
         targetStyles: {
           flexDirection: "column-reverse",
@@ -158,11 +159,11 @@ export const pageHeroShortcuts: Shortcut<AllStylesSchemas>[] = [
     ],
   },
   {
-    label: "pageBuilder.blocks.container.shortcuts.flexWrap",
+    label: "builder.pageBuilder.blocks.container.shortcuts.flexWrap",
     icon: WrapText,
     options: [
       {
-        label: "pageBuilder.blocks.container.flexWraps.nowrap",
+        label: "builder.pageBuilder.blocks.container.flexWraps.nowrap",
         value: "nowrap",
         targetStyles: {
           flexWrap: "nowrap",
@@ -170,7 +171,7 @@ export const pageHeroShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.container.flexWraps.wrap",
+        label: "builder.pageBuilder.blocks.container.flexWraps.wrap",
         value: "wrap",
         targetStyles: {
           flexWrap: "wrap",
@@ -178,7 +179,7 @@ export const pageHeroShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.container.flexWraps.wrapReverse",
+        label: "builder.pageBuilder.blocks.container.flexWraps.wrapReverse",
         value: "wrap-reverse",
         targetStyles: {
           flexWrap: "wrap-reverse",
@@ -188,11 +189,11 @@ export const pageHeroShortcuts: Shortcut<AllStylesSchemas>[] = [
     ],
   },
   {
-    label: "pageBuilder.blocks.container.shortcuts.justifyContent",
+    label: "builder.pageBuilder.blocks.container.shortcuts.justifyContent",
     icon: AlignCenterHorizontal,
     options: [
       {
-        label: "pageBuilder.blocks.container.justifyContents.start",
+        label: "builder.pageBuilder.blocks.container.justifyContents.start",
         value: "flex-start",
         targetStyles: {
           justifyContent: "flex-start",
@@ -200,7 +201,7 @@ export const pageHeroShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.container.justifyContents.center",
+        label: "builder.pageBuilder.blocks.container.justifyContents.center",
         value: "center",
         targetStyles: {
           justifyContent: "center",
@@ -208,7 +209,7 @@ export const pageHeroShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.container.justifyContents.end",
+        label: "builder.pageBuilder.blocks.container.justifyContents.end",
         value: "flex-end",
         targetStyles: {
           justifyContent: "flex-end",
@@ -216,7 +217,8 @@ export const pageHeroShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.container.justifyContents.spaceBetween",
+        label:
+          "builder.pageBuilder.blocks.container.justifyContents.spaceBetween",
         value: "space-between",
         targetStyles: {
           justifyContent: "space-between",
@@ -224,7 +226,8 @@ export const pageHeroShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.container.justifyContents.spaceAround",
+        label:
+          "builder.pageBuilder.blocks.container.justifyContents.spaceAround",
         value: "space-around",
         targetStyles: {
           justifyContent: "space-around",
@@ -232,7 +235,8 @@ export const pageHeroShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.container.justifyContents.spaceEvenly",
+        label:
+          "builder.pageBuilder.blocks.container.justifyContents.spaceEvenly",
         value: "space-evenly",
         targetStyles: {
           justifyContent: "space-evenly",
@@ -242,11 +246,11 @@ export const pageHeroShortcuts: Shortcut<AllStylesSchemas>[] = [
     ],
   },
   {
-    label: "pageBuilder.blocks.container.shortcuts.alignItems",
+    label: "builder.pageBuilder.blocks.container.shortcuts.alignItems",
     icon: AlignCenterVertical,
     options: [
       {
-        label: "pageBuilder.blocks.container.alignItemses.start",
+        label: "builder.pageBuilder.blocks.container.alignItemses.start",
         value: "flex-start",
         targetStyles: {
           alignItems: "flex-start",
@@ -254,7 +258,7 @@ export const pageHeroShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.container.alignItemses.center",
+        label: "builder.pageBuilder.blocks.container.alignItemses.center",
         value: "center",
         targetStyles: {
           alignItems: "center",
@@ -262,7 +266,7 @@ export const pageHeroShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.container.alignItemses.end",
+        label: "builder.pageBuilder.blocks.container.alignItemses.end",
         value: "flex-end",
         targetStyles: {
           alignItems: "flex-end",
@@ -270,7 +274,7 @@ export const pageHeroShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.container.alignItemses.stretch",
+        label: "builder.pageBuilder.blocks.container.alignItemses.stretch",
         value: "stretch",
         targetStyles: {
           alignItems: "stretch",
@@ -278,7 +282,7 @@ export const pageHeroShortcuts: Shortcut<AllStylesSchemas>[] = [
         },
       },
       {
-        label: "pageBuilder.blocks.container.alignItemses.baseline",
+        label: "builder.pageBuilder.blocks.container.alignItemses.baseline",
         value: "baseline",
         targetStyles: {
           alignItems: "baseline",

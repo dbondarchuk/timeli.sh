@@ -11,7 +11,7 @@ const MinHeightSchema = getZNumberValueWithUnitOrKeyword(
 
 export const minHeightStyle = {
   name: "minHeight",
-  label: "pageBuilder.styles.properties.minHeight",
+  label: "builder.pageBuilder.styles.properties.minHeight",
   category: "layout",
   schema: MinHeightSchema,
   icon: ({ className }) => <RulerDimensionLine className={className} />,

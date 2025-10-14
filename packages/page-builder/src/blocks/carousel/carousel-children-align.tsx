@@ -27,7 +27,7 @@ const carouselChildrenAlignToJustifyItemsMap: Record<
 
 export const carouselChildrenAlignStyle = {
   name: "carouselChildrenAlign",
-  label: "pageBuilder.blocks.carousel.styles.carouselChildrenAlign",
+  label: "builder.pageBuilder.blocks.carousel.styles.carouselChildrenAlign",
   category: "layout",
   schema: CarouselChildrenAlignSchema,
   icon: ({ className }: { className?: string }) => (

@@ -4,7 +4,7 @@ import {
   ReplaceOriginalColors,
 } from "@vivid/page-builder-base/reader";
 import { cn } from "@vivid/ui";
-import { Waitlist } from "./components/waitlist";
+import { BookingWithWaitlist } from "../booking-with-waitlist/components/booking";
 import { WaitlistReaderProps } from "./schema";
 import { styles } from "./styles";
 
@@ -23,10 +23,11 @@ export const WaitlistReader = ({
     <>
       <BlockStyle name={className} styleDefinitions={styles} styles={style} />
       {isEditor && <ReplaceOriginalColors />}
-      <Waitlist
+      <BookingWithWaitlist
         className={cn(className, base?.className)}
         id={base?.id}
         appId={appId}
+        isOnlyWaitlist={true}
       />
     </>
   );

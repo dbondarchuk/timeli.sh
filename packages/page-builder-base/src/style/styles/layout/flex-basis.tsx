@@ -7,7 +7,7 @@ const FlexBasisSchema = z.coerce.number().min(0).max(100).int();
 
 export const flexBasisStyle = {
   name: "flexBasis",
-  label: "pageBuilder.styles.properties.flexBasis",
+  label: "builder.pageBuilder.styles.properties.flexBasis",
   category: "effects",
   schema: FlexBasisSchema,
   icon: ({ className }) => <Percent className={className} />,

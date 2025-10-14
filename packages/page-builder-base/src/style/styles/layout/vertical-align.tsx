@@ -19,7 +19,7 @@ const VerticalAlignSchema = z.enum(verticalAlignKeys);
 
 export const verticalAlignStyle = {
   name: "verticalAlign",
-  label: "pageBuilder.styles.properties.verticalAlign",
+  label: "builder.pageBuilder.styles.properties.verticalAlign",
   icon: ({ className }: { className?: string }) => (
     <AlignVerticalJustifyCenter className={className} />
   ),

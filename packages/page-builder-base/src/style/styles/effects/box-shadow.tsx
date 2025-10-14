@@ -18,7 +18,7 @@ const BoxShadowSchema = z.object({
 
 export const boxShadowStyle = {
   name: "boxShadow",
-  label: "pageBuilder.styles.properties.boxShadow",
+  label: "builder.pageBuilder.styles.properties.boxShadow",
   category: "effects",
   icon: ({ className }) => <Box className={className} />,
   schema: BoxShadowSchema,
