@@ -22,7 +22,6 @@ import { CancellationsAndReschedulesTab } from "./tabs/cancellations";
 import { MainTab } from "./tabs/main";
 import { OptionsTab } from "./tabs/options";
 import { PaymentsTab } from "./tabs/payments";
-import { SmartScheduleTab } from "./tabs/smart-schedule";
 
 export const AppointmentsSettingsForm: React.FC<{
   values: BookingConfiguration;
@@ -62,7 +61,6 @@ export const AppointmentsSettingsForm: React.FC<{
     form.trigger();
     form.trigger("calendarSources");
     form.trigger("options");
-    form.trigger("smartSchedule");
     form.trigger("payments");
     form.trigger("cancellationsAndReschedules");
   };
@@ -107,16 +105,6 @@ export const AppointmentsSettingsForm: React.FC<{
               {t("settings.appointments.form.tabs.options")}
             </TabsTrigger>
             <TabsTrigger
-              value="smartSchedule"
-              className={cn(
-                form.getFieldState("smartSchedule").invalid
-                  ? "text-destructive"
-                  : "",
-              )}
-            >
-              {t("settings.appointments.form.tabs.smartSchedule")}
-            </TabsTrigger>
-            <TabsTrigger
               value="payments"
               className={cn(
                 form.getFieldState("payments").invalid
@@ -145,9 +133,6 @@ export const AppointmentsSettingsForm: React.FC<{
           </TabsContent>
           <TabsContent value="options">
             <OptionsTab form={form} />
-          </TabsContent>
-          <TabsContent value="smartSchedule">
-            <SmartScheduleTab form={form} />
           </TabsContent>
           <TabsContent value="payments">
             <PaymentsTab form={form} />

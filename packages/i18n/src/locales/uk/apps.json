@@ -65,9 +65,9 @@
     "schedule": "Постачальник розкладу",
     "assets-storage": "Сховище ресурсів",
     "payment": "Платежі",
-    "waitlist-hook": "Хуки черги",
     "dashboard-tab": "Вкладка панелі керування",
-    "ui-components": "UI компоненти"
+    "ui-components": "UI компоненти",
+    "availability-provider": "Постачальник доступності"
   },
   "status": {
     "connected": "Підключено",

@@ -12,7 +12,6 @@ export type AppointmentsProps = {
   optionsClassName?: string;
   successPage?: string;
   fieldsSchema: Record<string, FieldSchema>;
-  timeZone: string;
   showPromoCode?: boolean;
   className?: string;
   id?: string;

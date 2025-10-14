@@ -5,9 +5,13 @@ import { AvailableAppServices } from "@vivid/app-store/services";
 import { getLoggerFactory } from "@vivid/logger";
 import {
   Appointment,
+  AppointmentChoice,
   AppointmentEntity,
   AppointmentHistoryEntry,
   AppointmentTimeNotAvaialbleError,
+  FieldSchema,
+  GetAppointmentOptionsResponse,
+  IAvailabilityProvider,
   IPaymentsService,
   IServicesService,
   ModifyAppointmentInformationRequest,
@@ -40,7 +44,6 @@ import {
   escapeRegex,
   getAppointmentBucket,
   getAvailableTimeSlotsInCalendar,
-  getAvailableTimeSlotsWithPriority,
   getIcsEventUid,
   parseTime,
 } from "@vivid/utils";
@@ -1302,6 +1305,82 @@ export class EventsService implements IEventsService {
     return true;
   }
 
+  public async getAppointmentOptions(): Promise<GetAppointmentOptionsResponse> {
+    const logger = this.loggerFactory("getAppointmentOptions");
+
+    logger.debug("Processing getting booking options API request");
+
+    const config = await this.configurationService.getConfiguration("booking");
+
+    logger.debug({ config }, "Booking configuration");
+
+    const [fields, addons, options] = await Promise.all([
+      this.servicesService.getFields({}),
+      this.servicesService.getAddons({}),
+      this.servicesService.getOptions({}),
+    ]);
+
+    const configFields = (fields?.items || []).reduce(
+      (map, field) => ({
+        ...map,
+        [field._id]: field,
+      }),
+      {} as Record<string, FieldSchema>,
+    );
+
+    const optionsChoices = (config.options || [])
+      .map((o) => options.items?.find(({ _id }) => o.id == _id))
+      .filter((o) => !!o);
+
+    const choices: AppointmentChoice[] = optionsChoices.map((option) => {
+      const addonsFiltered =
+        option.addons
+          ?.map((o) => addons.items?.find((x) => x._id === o.id))
+          .filter((f) => !!f) || [];
+
+      const optionFields = option.fields || [];
+
+      const fieldsIdsRequired = [...optionFields].reduce(
+        (map, field) => ({
+          ...map,
+          [field.id]: !!map[field.id] || !!field.required,
+        }),
+        {} as Record<string, boolean>,
+      );
+
+      const fields = Object.entries(fieldsIdsRequired)
+        .filter(([id]) => !!configFields[id])
+        .map(([id, required]) => ({
+          ...configFields[id],
+          required: !!configFields[id].required || required,
+          id: id,
+        }));
+
+      return {
+        ...option,
+        addons: addonsFiltered,
+        fields,
+      };
+    });
+
+    let showPromoCode = false;
+    if (config.allowPromoCode === "always") showPromoCode = true;
+    else if (config.allowPromoCode === "allow-if-has-active") {
+      const hasActiveDiscounts = await this.servicesService.hasActiveDiscounts(
+        new Date(),
+      );
+      if (hasActiveDiscounts) showPromoCode = true;
+    }
+
+    const response: GetAppointmentOptionsResponse = {
+      options: choices,
+      fieldsSchema: configFields,
+      showPromoCode: showPromoCode,
+    };
+
+    return response;
+  }
+
   private async getAvailableTimes(
     start: DateTime,
     end: DateTime,
@@ -1312,14 +1391,39 @@ export class EventsService implements IEventsService {
     schedule: Record<string, DaySchedule>,
   ) {
     const logger = this.loggerFactory("getAvailableTimes");
-
-    const customSlots = config.customSlotTimes?.map((x) => parseTime(x));
-
     let results: TimeSlot[];
-    if (!config.smartSchedule?.allowSmartSchedule) {
+
+    if (config.availabilityProviderAppId) {
+      logger.debug(
+        { availabilityProviderAppId: config.availabilityProviderAppId },
+        "Getting available time slots from availability provider",
+      );
+
+      const { service, app } =
+        await this.appsService.getAppService<IAvailabilityProvider>(
+          config.availabilityProviderAppId,
+        );
+
+      const availability = await service.getAvailability(
+        app,
+        start.toJSDate(),
+        end.toJSDate(),
+        duration,
+        events,
+        schedule,
+      );
+      logger.debug(
+        { availability: availability.length },
+        "Availability retrieved from availability provider",
+      );
+
+      results = availability;
+    } else {
+      const customSlots = config.customSlotTimes?.map((x) => parseTime(x));
+
       logger.debug(
         { start, end, duration, events, config, schedule },
-        "Getting available time slots in calendar",
+        "Getting available time slots in calendar using default method",
       );
 
       results = getAvailableTimeSlotsInCalendar({
@@ -1339,47 +1443,6 @@ export class EventsService implements IEventsService {
         },
         from: start.toJSDate(),
         to: end.toJSDate(),
-      });
-    } else {
-      // Smart schedule
-      logger.debug(
-        { start, end, duration, events, config, schedule },
-        "Getting available time slots with priority",
-      );
-
-      let servicesDurations: number[] | undefined = undefined;
-      if (config.smartSchedule?.maximizeForOption) {
-        const service = await this.servicesService.getOption(
-          config.smartSchedule.maximizeForOption,
-        );
-        if (service?.duration) {
-          servicesDurations = [service.duration];
-        }
-      }
-
-      results = getAvailableTimeSlotsWithPriority({
-        events: events.map((event) => ({
-          ...event,
-          startAt: DateTime.fromJSDate(event.startAt),
-          endAt: DateTime.fromJSDate(event.endAt),
-        })),
-        duration,
-        schedule,
-        configuration: {
-          timeZone: generalConfig.timeZone || DateTime.now().zoneName!,
-          breakDuration: config.breakDuration ?? 0,
-          slotStart: config.slotStart ?? 15,
-          allowSkipBreak: config.smartSchedule?.allowSkipBreak,
-          filterLowPrioritySlots: true,
-          lowerPriorityIfNoFollowingBooking: true,
-          discourageLargeGaps: true,
-          allowSmartSlotStarts: config.smartSchedule?.allowSmartSlotStarts,
-          preferBackToBack: config.smartSchedule?.preferBackToBack,
-          customSlots,
-        },
-        start,
-        end,
-        allServiceDurations: servicesDurations, //  servicesDurations
       });
     }
 

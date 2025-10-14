@@ -65,9 +65,9 @@
     "schedule": "Schedule provider",
     "assets-storage": "Assets storage",
     "payment": "Payments",
-    "waitlist-hook": "Waitlist hook",
     "dashboard-tab": "Dashboard tab",
-    "ui-components": "UI components"
+    "ui-components": "UI components",
+    "availability-provider": "Availability provider"
   },
   "status": {
     "connected": "Connected",

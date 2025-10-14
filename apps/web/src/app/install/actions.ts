@@ -53,9 +53,6 @@ export async function install(data: InstallFormData) {
     await ServicesContainer.ConfigurationService().setConfiguration("booking", {
       options: [],
       allowPromoCode: "allow-if-has-active",
-      smartSchedule: {
-        allowSmartSchedule: false,
-      },
       payments: {
         enabled: false,
       },

@@ -40,6 +40,10 @@
     "placeholder": "Select customer",
     "requestFailed": "Request to fetch customers has failed"
   },
+  "optionSelector": {
+    "placeholder": "Select option",
+    "requestFailed": "Request to fetch options has failed"
+  },
   "assetSelector": {
     "title": "Select asset",
     "upload": "Upload"

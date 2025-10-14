@@ -1,0 +1,24 @@
+{
+  "title": "Smart Schedule",
+  "app": {
+    "displayName": "Smart Schedule",
+    "description": "Smart Schedule intelligently optimizes your availability to help you book more appointments."
+  },
+  "form": {
+    "allowSkipBreak": "Allow skipping break",
+    "allowSkipBreakTooltip": "Allows skipping break when no other has been found",
+    "preferBackToBack": "Prefer back-to-back appointments",
+    "preferBackToBackTooltip": "Will give higher preference for time slots, that will allow back-to-back appointments",
+    "allowSmartSlotStarts": "Allow smart slot start times",
+    "allowSmartSlotStartsTooltip": "If no allowed slot start times were found, will try to find unconventional time slot",
+    "preferredService": "Preferred service",
+    "preferredServiceTooltip": "If selected, will prioritize time slots that will produce maximum number of appointments of the selected service",
+    "add": "Add <app></app>",
+    "update": "Update <app></app>"
+  },
+  "statusText": {
+    "successfully_connected": "Successfully configured Smart Schedule",
+    "error_processing_configuration": "Error processing Smart Schedule configuration request",
+    "something_went_wrong": "Something went wrong"
+  }
+}

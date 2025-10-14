@@ -31,6 +31,8 @@ import { REMINDERS_APP_NAME } from "../apps/reminders/const";
 import RemindersConnectedApp from "../apps/reminders/service";
 import { S3_ASSETS_STORAGE_APP_NAME } from "../apps/s3-assets-storage/const";
 import S3AssetsStorageConnectedApp from "../apps/s3-assets-storage/service";
+import { SMART_SCHEDULE_APP_NAME } from "../apps/smart-schedule/const";
+import SmartScheduleConnectedApp from "../apps/smart-schedule/service";
 import { SMTP_APP_NAME } from "../apps/smtp/const";
 import SmtpConnectedApp from "../apps/smtp/service";
 import { TEXTBELT_APP_NAME } from "../apps/text-belt/const";
@@ -88,4 +90,5 @@ export const AvailableAppServices: Record<
     new WaitlistNotificationsConnectedApp(props),
   [FINANCIAL_OVERVIEW_APP_NAME]: (props) => new FinancialOverviewService(props),
   [WEBHOOKS_APP_NAME]: (props) => new WebhooksConnectedApp(props),
+  [SMART_SCHEDULE_APP_NAME]: (props) => new SmartScheduleConnectedApp(props),
 };

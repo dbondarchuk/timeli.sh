@@ -67,6 +67,14 @@ const config = getConfig(
         const entries = await Promise.all(promises);
         return Object.fromEntries(entries);
       },
+      overrides: async (locale: string) => {
+        const promises = installedApps
+          .filter((app) => AppsTranslations[app]?.overrides)
+          .map(async (app) => await AppsTranslations[app]?.overrides?.(locale));
+        const overrides = await Promise.all(promises);
+
+        return overrides;
+      },
     };
 
     return messages;

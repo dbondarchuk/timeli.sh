@@ -100,6 +100,5 @@ export const demoBookingOptionsResponse: GetAppointmentOptionsResponse = {
     },
   ],
   fieldsSchema: {},
-  timeZone: "America/New_York",
   showPromoCode: true,
 };

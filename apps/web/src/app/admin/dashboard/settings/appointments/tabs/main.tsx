@@ -86,6 +86,8 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
     30: t("settings.appointments.form.main.stepLabels.thirty"),
   };
 
+  const slotStart = form.watch("slotStart");
+
   return (
     <div className="gap-2 flex flex-col md:grid md:grid-cols-2 md:gap-4 w-full">
       <FormField
@@ -96,21 +98,48 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
             <FormLabel>
               {t("settings.appointments.form.main.scheduleProviderApp")}
               <InfoTooltip>
-                <p>
-                  {t(
-                    "settings.appointments.form.main.scheduleProviderAppTooltip1",
-                  )}
-                </p>
-                <p>
-                  {t(
-                    "settings.appointments.form.main.scheduleProviderAppTooltip2",
-                  )}
-                </p>
+                {t.rich(
+                  "settings.appointments.form.main.scheduleProviderAppTooltip",
+                  {
+                    br: () => <br />,
+                    p: (chunks: any) => <p>{chunks}</p>,
+                  },
+                )}
               </InfoTooltip>
             </FormLabel>
             <FormControl>
               <AppSelector
                 scope="schedule"
+                allowClear
+                disabled={disabled}
+                value={field.value}
+                onItemSelect={(value) => field.onChange(value)}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={form.control}
+        name="availabilityProviderAppId"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>
+              {t("settings.appointments.form.main.availabilityProviderApp")}
+              <InfoTooltip>
+                {t.rich(
+                  "settings.appointments.form.main.availabilityProviderAppTooltip",
+                  {
+                    br: () => <br />,
+                    p: (chunks: any) => <p>{chunks}</p>,
+                  },
+                )}
+              </InfoTooltip>
+            </FormLabel>
+            <FormControl>
+              <AppSelector
+                scope="availability-provider"
                 allowClear
                 disabled={disabled}
                 value={field.value}
@@ -129,12 +158,13 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
             <FormLabel>
               {t("settings.appointments.form.main.autoConfirmAppointments")}{" "}
               <InfoTooltip>
-                <p>
-                  {t("settings.appointments.form.main.autoConfirmTooltip1")}
-                </p>
-                <p>
-                  {t("settings.appointments.form.main.autoConfirmTooltip2")}
-                </p>
+                {t.rich("settings.appointments.form.main.autoConfirmTooltip", {
+                  br: () => <br />,
+                  p: (chunks: any) => <p>{chunks}</p>,
+                  b: (chunks: any) => (
+                    <span className="font-semibold">{chunks}</span>
+                  ),
+                })}
               </InfoTooltip>
             </FormLabel>
             <FormControl>
@@ -182,27 +212,16 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
             <FormLabel>
               {t("settings.appointments.form.main.maxWeeksInFuture")}
               <InfoTooltip>
-                <p>
-                  {t(
-                    "settings.appointments.form.main.maxWeeksInFutureTooltip1",
-                  )}
-                </p>
-                <p>
-                  <span className="font-semibold">
-                    {t("settings.appointments.form.main.example")}:
-                  </span>{" "}
-                  {t(
-                    "settings.appointments.form.main.maxWeeksInFutureTooltip2",
-                  )}
-                </p>
-                <p>
-                  <span className="font-semibold">
-                    {t("settings.appointments.form.main.default")}:
-                  </span>{" "}
-                  {t(
-                    "settings.appointments.form.main.maxWeeksInFutureTooltip3",
-                  )}
-                </p>
+                {t.rich(
+                  "settings.appointments.form.main.maxWeeksInFutureTooltip",
+                  {
+                    br: () => <br />,
+                    p: (chunks: any) => <p>{chunks}</p>,
+                    b: (chunks: any) => (
+                      <span className="font-semibold">{chunks}</span>
+                    ),
+                  },
+                )}
               </InfoTooltip>
             </FormLabel>
             <FormControl>
@@ -227,73 +246,22 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
       />
       <FormField
         control={form.control}
-        name="breakDuration"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>
-              {t("settings.appointments.form.main.minBreakTime")}
-              <InfoTooltip>
-                <p>
-                  {t("settings.appointments.form.main.minBreakTimeTooltip1")}
-                </p>
-                <p>
-                  {t("settings.appointments.form.main.minBreakTimeTooltip2")}
-                </p>
-                <p>
-                  <span className="font-semibold">
-                    {t("settings.appointments.form.main.example")}:
-                  </span>{" "}
-                  {t("settings.appointments.form.main.minBreakTimeTooltip3")}
-                </p>
-                <p>
-                  <span className="font-semibold">
-                    {t("settings.appointments.form.main.default")}:
-                  </span>{" "}
-                  {t("settings.appointments.form.main.minBreakTimeTooltip4")}
-                </p>
-              </InfoTooltip>
-            </FormLabel>
-            <FormControl>
-              <InputGroup>
-                <InputGroupInput>
-                  <Input
-                    disabled={disabled}
-                    placeholder="0"
-                    type="number"
-                    className={InputGroupInputClasses()}
-                    {...field}
-                  />
-                </InputGroupInput>
-                <InputSuffix className={InputGroupSuffixClasses()}>
-                  {t("settings.appointments.form.main.minutes")}
-                </InputSuffix>
-              </InputGroup>
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
         name="minHoursBeforeBooking"
         render={({ field }) => (
           <FormItem>
             <FormLabel>
               {t("settings.appointments.form.main.minHoursBeforeBooking")}
               <InfoTooltip>
-                <p>
-                  {t(
-                    "settings.appointments.form.main.minHoursBeforeBookingTooltip1",
-                  )}
-                </p>
-                <p>
-                  <span className="font-semibold">
-                    {t("settings.appointments.form.main.example")}:
-                  </span>{" "}
-                  {t(
-                    "settings.appointments.form.main.minHoursBeforeBookingTooltip2",
-                  )}
-                </p>
+                {t.rich(
+                  "settings.appointments.form.main.minHoursBeforeBookingTooltip",
+                  {
+                    br: () => <br />,
+                    p: (chunks: any) => <p>{chunks}</p>,
+                    b: (chunks: any) => (
+                      <span className="font-semibold">{chunks}</span>
+                    ),
+                  },
+                )}
               </InfoTooltip>
             </FormLabel>
             <FormControl>
@@ -309,6 +277,43 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
                 </InputGroupInput>
                 <InputSuffix className={InputGroupSuffixClasses()}>
                   {t("settings.appointments.form.main.hours")}
+                </InputSuffix>
+              </InputGroup>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={form.control}
+        name="breakDuration"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>
+              {t("settings.appointments.form.main.minBreakTime")}
+              <InfoTooltip>
+                {t.rich("settings.appointments.form.main.minBreakTimeTooltip", {
+                  br: () => <br />,
+                  p: (chunks: any) => <p>{chunks}</p>,
+                  b: (chunks: any) => (
+                    <span className="font-semibold">{chunks}</span>
+                  ),
+                })}
+              </InfoTooltip>
+            </FormLabel>
+            <FormControl>
+              <InputGroup>
+                <InputGroupInput>
+                  <Input
+                    disabled={disabled}
+                    placeholder="0"
+                    type="number"
+                    className={InputGroupInputClasses()}
+                    {...field}
+                  />
+                </InputGroupInput>
+                <InputSuffix className={InputGroupSuffixClasses()}>
+                  {t("settings.appointments.form.main.minutes")}
                 </InputSuffix>
               </InputGroup>
             </FormControl>
@@ -362,7 +367,7 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
           </FormItem>
         )}
       />
-      {form.getValues("slotStart") === "custom" && (
+      {slotStart === "custom" && (
         <FormField
           control={form.control}
           name="customSlotTimes"

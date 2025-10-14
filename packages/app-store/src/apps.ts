@@ -29,6 +29,8 @@ import { RemindersApp } from "./apps/reminders/app";
 import { REMINDERS_APP_NAME } from "./apps/reminders/const";
 import { S3AssetsStorageApp } from "./apps/s3-assets-storage/app";
 import { S3_ASSETS_STORAGE_APP_NAME } from "./apps/s3-assets-storage/const";
+import { SmartScheduleApp } from "./apps/smart-schedule/app";
+import { SMART_SCHEDULE_APP_NAME } from "./apps/smart-schedule/const";
 import { SmtpApp } from "./apps/smtp/app";
 import { SMTP_APP_NAME } from "./apps/smtp/const";
 import { TextBeltApp } from "./apps/text-belt/app";
@@ -75,6 +77,7 @@ export const AvailableApps: Record<string, App> = {
   [WAITLIST_NOTIFICATIONS_APP_NAME]: WaitlistNotificationsApp,
   [WEBHOOKS_APP_NAME]: webhooksApp,
   [FINANCIAL_OVERVIEW_APP_NAME]: FinancialOverviewApp,
+  [SMART_SCHEDULE_APP_NAME]: SmartScheduleApp,
 };
 
 export { BUSY_EVENTS_APP_NAME } from "./apps/busy-events/const";
@@ -93,6 +96,7 @@ export { OUTLOOK_APP_NAME } from "./apps/outlook/const";
 export { PAYPAL_APP_NAME } from "./apps/paypal/const";
 export { REMINDERS_APP_NAME } from "./apps/reminders/const";
 export { S3_ASSETS_STORAGE_APP_NAME } from "./apps/s3-assets-storage/const";
+export { SMART_SCHEDULE_APP_NAME } from "./apps/smart-schedule/const";
 export { SMTP_APP_NAME } from "./apps/smtp/const";
 export { TEXTBELT_APP_NAME } from "./apps/text-belt/const";
 export { TEXT_MESSAGE_AUTO_REPLY_APP_NAME } from "./apps/text-message-auto-reply/const";

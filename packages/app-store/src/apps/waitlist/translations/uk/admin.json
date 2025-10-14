@@ -89,8 +89,7 @@
   },
   "statusText": {
     "successfully_set_up": "Сповіщення списку очікування успішно налаштовано",
-    "error_processing_configuration": "Помилка обробки конфігурації сповіщень списку очікування",
-    "email_app_not_configured": "Додаток відправника email за замовчуванням не налаштований"
+    "error_processing_configuration": "Помилка обробки конфігурації сповіщень списку очікування"
   },
   "block": {
     "waitlist": {

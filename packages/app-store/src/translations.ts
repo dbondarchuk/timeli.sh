@@ -30,6 +30,8 @@ import { REMINDERS_APP_NAME } from "./apps/reminders/const";
 import { RemindersTranslations } from "./apps/reminders/translations";
 import { S3_ASSETS_STORAGE_APP_NAME } from "./apps/s3-assets-storage/const";
 import { S3AssetsStorageTranslations } from "./apps/s3-assets-storage/translations";
+import { SMART_SCHEDULE_APP_NAME } from "./apps/smart-schedule/const";
+import { SmartScheduleTranslations } from "./apps/smart-schedule/translations";
 import { SMTP_APP_NAME } from "./apps/smtp/const";
 import { SmtpTranslations } from "./apps/smtp/translations";
 import { TEXTBELT_APP_NAME } from "./apps/text-belt/const";
@@ -54,6 +56,7 @@ export const AppsTranslations: Record<
   {
     admin?: (locale: string) => Promise<Record<string, any>>;
     public?: (locale: string) => Promise<Record<string, any>>;
+    overrides?: (locale: string) => Promise<Record<string, any>>;
   }
 > = {
   [WAITLIST_APP_NAME]: WaitlistTranslations,
@@ -82,4 +85,5 @@ export const AppsTranslations: Record<
   [TEXT_MESSAGE_RESENDER_APP_NAME]: TextMessageResenderTranslations,
   [WEEKLY_SCHEDULE_APP_NAME]: WeeklyScheduleTranslations,
   [WEBHOOKS_APP_NAME]: WebhooksTranslations,
+  [SMART_SCHEDULE_APP_NAME]: SmartScheduleTranslations,
 };

@@ -1,6 +1,7 @@
 export * from "./app";
 export * from "./appointment-hooks";
 export * from "./assets";
+export * from "./availability-provider";
 export * from "./calendars";
 export * from "./connected-app.data";
 export * from "./connected-app.service";

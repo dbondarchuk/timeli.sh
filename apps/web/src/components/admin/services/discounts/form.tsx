@@ -1,6 +1,5 @@
 "use client";
 
-import { OptionSelector } from "@/app/admin/dashboard/settings/appointments/tabs/cards/option-selector";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useI18n } from "@vivid/i18n";
 import {
@@ -39,6 +38,7 @@ import {
   InputSuffix,
   Label,
   NonSortable,
+  OptionSelector,
   SaveButton,
   toastPromise,
   use12HourFormat,

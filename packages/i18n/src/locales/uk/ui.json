@@ -40,6 +40,10 @@
     "placeholder": "Вибрати клієнта",
     "requestFailed": "Запит на отримання клієнтів не вдався"
   },
+  "optionSelector": {
+    "placeholder": "Вибрати опцію",
+    "requestFailed": "Запит на отримання опцій не вдався"
+  },
   "assetSelector": {
     "title": "Вибрати ресурс",
     "upload": "Завантажити"

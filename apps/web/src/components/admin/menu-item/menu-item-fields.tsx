@@ -37,10 +37,10 @@ const linkVariantsValues = LinkVariants.map(
   (variant) =>
     ({
       value: variant,
-      shortLabel: <I18nText key={`admin.menuItem.linkVariants.${variant}`} />,
+      shortLabel: <I18nText text={`admin.menuItem.linkVariants.${variant}`} />,
       label: (
         <Link href="#" variant={variant} onClick={(e) => e.preventDefault()}>
-          <I18nText key={`admin.menuItem.linkVariants.${variant}`} />
+          <I18nText text={`admin.menuItem.linkVariants.${variant}`} />
         </Link>
       ),
     }) as IComboboxItem,
@@ -50,7 +50,9 @@ const buttonVariantsValues = ButtonVariants.map(
   (variant) =>
     ({
       value: variant,
-      shortLabel: <I18nText key={`admin.menuItem.buttonVariants.${variant}`} />,
+      shortLabel: (
+        <I18nText text={`admin.menuItem.buttonVariants.${variant}`} />
+      ),
       label: (
         <Link
           button
@@ -59,7 +61,7 @@ const buttonVariantsValues = ButtonVariants.map(
           size="sm"
           onClick={(e) => e.preventDefault()}
         >
-          <I18nText key={`admin.menuItem.buttonVariants.${variant}`} />
+          <I18nText text={`admin.menuItem.buttonVariants.${variant}`} />
         </Link>
       ),
     }) as IComboboxItem,
@@ -69,7 +71,7 @@ const linkSizesValues = LinkSizes.map(
   (size) =>
     ({
       value: size,
-      shortLabel: <I18nText key={`admin.menuItem.sizes.${size}`} />,
+      shortLabel: <I18nText text={`admin.menuItem.sizes.${size}`} />,
       label: (
         <Link
           href="#"
@@ -77,7 +79,7 @@ const linkSizesValues = LinkSizes.map(
           variant="default"
           onClick={(e) => e.preventDefault()}
         >
-          <I18nText key={`admin.menuItem.sizes.${size}`} />
+          <I18nText text={`admin.menuItem.sizes.${size}`} />
         </Link>
       ),
     }) as IComboboxItem,
@@ -87,7 +89,7 @@ const buttonSizesValues = ButtonSizes.map(
   (size) =>
     ({
       value: size,
-      shortLabel: <I18nText key={`admin.menuItem.sizes.${size}`} />,
+      shortLabel: <I18nText text={`admin.menuItem.sizes.${size}`} />,
       label: (
         <Link
           button
@@ -96,7 +98,7 @@ const buttonSizesValues = ButtonSizes.map(
           variant="secondary"
           onClick={(e) => e.preventDefault()}
         >
-          <I18nText key={`admin.menuItem.sizes.${size}`} />
+          <I18nText text={`admin.menuItem.sizes.${size}`} />
         </Link>
       ),
     }) as IComboboxItem,
@@ -106,7 +108,7 @@ const textFontValues = TextFonts.map(
   (variant) =>
     ({
       value: variant,
-      shortLabel: <I18nText key={`admin.menuItem.fonts.${variant}`} />,
+      shortLabel: <I18nText text={`admin.menuItem.fonts.${variant}`} />,
       label: (
         <Link
           button
@@ -115,7 +117,7 @@ const textFontValues = TextFonts.map(
           variant="secondary"
           onClick={(e) => e.preventDefault()}
         >
-          <I18nText key={`admin.menuItem.fonts.${variant}`} />
+          <I18nText text={`admin.menuItem.fonts.${variant}`} />
         </Link>
       ),
     }) as IComboboxItem,
@@ -125,7 +127,7 @@ const textSizesValues = TextSizes.map(
   (variant) =>
     ({
       value: variant,
-      shortLabel: <I18nText key={`admin.menuItem.sizes.${variant}`} />,
+      shortLabel: <I18nText text={`admin.menuItem.sizes.${variant}`} />,
       label: (
         <Link
           button
@@ -134,7 +136,7 @@ const textSizesValues = TextSizes.map(
           variant="secondary"
           onClick={(e) => e.preventDefault()}
         >
-          <I18nText key={`admin.menuItem.sizes.${variant}`} />
+          <I18nText text={`admin.menuItem.sizes.${variant}`} />
         </Link>
       ),
     }) as IComboboxItem,
@@ -144,7 +146,7 @@ const textWeightsValues = TextWeights.map(
   (variant) =>
     ({
       value: variant,
-      shortLabel: <I18nText key={`admin.menuItem.weights.${variant}`} />,
+      shortLabel: <I18nText text={`admin.menuItem.weights.${variant}`} />,
       label: (
         <Link
           button
@@ -153,7 +155,7 @@ const textWeightsValues = TextWeights.map(
           variant="secondary"
           onClick={(e) => e.preventDefault()}
         >
-          <I18nText key={`admin.menuItem.weights.${variant}`} />
+          <I18nText text={`admin.menuItem.weights.${variant}`} />
         </Link>
       ),
     }) as IComboboxItem,

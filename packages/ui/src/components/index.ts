@@ -54,6 +54,7 @@ export * from "./modal";
 export * from "./multi-select";
 export * from "./navigation-menu";
 export * from "./non-sortable";
+export * from "./option-selector";
 export * from "./page-selector-dialog";
 export * from "./page-selector-input";
 export * from "./phone-input";

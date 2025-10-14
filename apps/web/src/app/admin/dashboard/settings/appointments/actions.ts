@@ -12,7 +12,6 @@ export async function updateBookingConfiguration(data: BookingConfiguration) {
   actionLogger.debug(
     {
       optionsCount: data.options.length,
-      smartSchedule: !!data.smartSchedule?.allowSmartSchedule,
     },
     "Updating booking configuration",
   );
@@ -26,7 +25,6 @@ export async function updateBookingConfiguration(data: BookingConfiguration) {
     actionLogger.debug(
       {
         optionsCount: data.options.length,
-        smartSchedule: !!data.smartSchedule?.allowSmartSchedule,
       },
       "Booking configuration updated successfully",
     );
@@ -34,7 +32,6 @@ export async function updateBookingConfiguration(data: BookingConfiguration) {
     actionLogger.error(
       {
         optionsCount: data.options.length,
-        smartSchedule: !!data.smartSchedule?.allowSmartSchedule,
         error: error instanceof Error ? error.message : String(error),
       },
       "Failed to update booking configuration",

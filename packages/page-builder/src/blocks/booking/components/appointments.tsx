@@ -12,7 +12,6 @@ export type AppointmentsProps = {
   optionsClassName?: string;
   successPage?: string;
   fieldsSchema: Record<string, FieldSchema>;
-  timeZone: string;
   showPromoCode?: boolean;
   className?: string;
   id?: string;
@@ -26,7 +25,6 @@ export const Appointments: React.FC<
   optionsClassName,
   successPage,
   fieldsSchema,
-  timeZone,
   showPromoCode,
   className,
   id,
@@ -54,7 +52,6 @@ export const Appointments: React.FC<
           successPage={successPage}
           goBack={() => setOption(null)}
           fieldsSchema={fieldsSchema}
-          timeZone={timeZone}
           showPromoCode={showPromoCode}
           id={id}
           isEditor={isEditor}

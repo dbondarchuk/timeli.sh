@@ -6,6 +6,7 @@ import {
   AppointmentStatus,
   Availability,
   Event,
+  GetAppointmentOptionsResponse,
   ModifyAppointmentInformationRequest,
   Period,
 } from "../booking";
@@ -85,4 +86,5 @@ export interface IEventsService {
   ): Promise<string>;
 
   verifyTimeAvailability(dateTime: Date, duration: number): Promise<boolean>;
+  getAppointmentOptions(): Promise<GetAppointmentOptionsResponse>;
 }

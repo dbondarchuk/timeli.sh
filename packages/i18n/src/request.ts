@@ -1,4 +1,5 @@
 import { getRequestConfig } from "next-intl/server";
+import { mergeObjects } from "./utils";
 
 export const getConfig = (
   getLocale: (
@@ -7,6 +8,7 @@ export const getConfig = (
   getMessages?: () => Promise<{
     public: (locale: string) => Promise<Record<string, Record<string, any>>>;
     admin: (locale: string) => Promise<Record<string, Record<string, any>>>;
+    overrides: (locale: string) => Promise<(Record<string, any> | undefined)[]>;
   }>,
 ) =>
   getRequestConfig(async ({ locale: baseLocale }) => {
@@ -35,6 +37,17 @@ export const getConfig = (
         ...(adminMessages || {}),
       };
     }
+
+    const overrideEntries = await externalMessages?.overrides(locale);
+    const overrides =
+      overrideEntries?.filter(Boolean).reduce(
+        (acc, entry) => {
+          return mergeObjects(acc as {}, entry ?? {});
+        },
+        {} as Record<string, any>,
+      ) ?? {};
+
+    messages = mergeObjects(messages, overrides);
 
     return {
       locale,

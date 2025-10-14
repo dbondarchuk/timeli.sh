@@ -205,6 +205,5 @@ export type AppointmentChoice = Prettify<
 export type GetAppointmentOptionsResponse = {
   options: AppointmentChoice[];
   fieldsSchema: Record<string, FieldSchema>;
-  timeZone: string;
   showPromoCode: boolean;
 };

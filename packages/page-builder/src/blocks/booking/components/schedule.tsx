@@ -12,7 +12,7 @@ import type {
   WithDatabaseId,
 } from "@vivid/types";
 import { ApplyDiscountResponse, Availability } from "@vivid/types";
-import { Spinner, toast } from "@vivid/ui";
+import { Spinner, toast, useTimeZone } from "@vivid/ui";
 import { DateTime as LuxonDateTime } from "luxon";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -25,7 +25,6 @@ export type ScheduleProps = {
   goBack?: () => void;
   successPage?: string;
   fieldsSchema: Record<string, FieldSchema>;
-  timeZone: string;
   showPromoCode?: boolean;
   className?: string;
   id?: string;
@@ -39,7 +38,6 @@ export const Schedule: React.FC<
   goBack,
   successPage,
   fieldsSchema,
-  timeZone,
   showPromoCode,
   className,
   id,
@@ -47,6 +45,7 @@ export const Schedule: React.FC<
   ...props
 }) => {
   const i18n = useI18n("translation");
+  const timeZone = useTimeZone();
 
   const errors = React.useMemo(
     () => ({

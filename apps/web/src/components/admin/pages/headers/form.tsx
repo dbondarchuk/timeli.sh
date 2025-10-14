@@ -24,7 +24,6 @@ import {
   SaveButton,
   Sortable,
   toastPromise,
-  use12HourFormat,
   useDebounceCacheFn,
 } from "@vivid/ui";
 import { useRouter } from "next/navigation";
@@ -42,7 +41,6 @@ export const PageHeaderForm: React.FC<{ initialData?: PageHeader }> = ({
   initialData,
 }) => {
   const t = useI18n("admin");
-  const uses12HourFormat = use12HourFormat();
 
   const headerShadowValues = pageHeaderShadowType.map((value) => ({
     value,

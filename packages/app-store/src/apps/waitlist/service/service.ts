@@ -27,6 +27,7 @@ import {
 } from "../models";
 
 import {
+  WaitlistAdminAllKeys,
   WaitlistAdminKeys,
   WaitlistAdminNamespace,
 } from "../translations/types";
@@ -189,6 +190,31 @@ export class WaitlistConnectedApp implements IConnectedApp, IAppointmentHook {
       return Response.json({ success: false, error }, { status: 400 });
     }
 
+    logger.debug({ data }, "Creating waitlist entry");
+
+    const options = await this.props.services
+      .EventsService()
+      .getAppointmentOptions();
+    const option = options.options.find((o) => o._id === data.optionId);
+    if (!option) {
+      logger.error({ data }, "Option not found");
+      return Response.json(
+        { success: false, error: "Option not found", code: "option_not_found" },
+        { status: 400 },
+      );
+    }
+
+    if (
+      data.addonsIds?.length &&
+      !data.addonsIds.every((id) => option.addons?.some((a) => a._id === id))
+    ) {
+      logger.error({ data }, "Addons not found");
+      return Response.json(
+        { success: false, error: "Addons not found", code: "addons_not_found" },
+        { status: 400 },
+      );
+    }
+
     try {
       const result = await this.createWaitlistEntry(appData, data);
       logger.debug({ result }, "Waitlist entry created");
@@ -320,7 +346,8 @@ export class WaitlistConnectedApp implements IConnectedApp, IAppointmentHook {
         WaitlistAdminKeys
       > = {
         status: "connected",
-        statusText: "app_waitlist_admin.statusText.successfully_set_up",
+        statusText:
+          "app_waitlist_admin.statusText.successfully_set_up" satisfies WaitlistAdminAllKeys,
       };
 
       this.props.update({
@@ -343,7 +370,7 @@ export class WaitlistConnectedApp implements IConnectedApp, IAppointmentHook {
       this.props.update({
         status: "failed",
         statusText:
-          "app_waitlist_admin.statusText.error_processing_configuration",
+          "app_waitlist_admin.statusText.error_processing_configuration" satisfies WaitlistAdminAllKeys,
       });
 
       throw error;

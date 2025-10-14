@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { asOptinalNumberField, asOptionalField } from "../../utils";
+import { asOptinalNumberField } from "../../utils";
 import { calendarSourcesConfigurationSchema } from "./calendar-source";
 import { appointmentCancellationRescheduleSchema } from "./cancellation";
 import { paymentsConfigurationSchema } from "./payments";
@@ -22,6 +22,19 @@ export const customTimeSlotSchema = z
       split[1] >= 60
     );
   }, "Invalid time");
+
+export const slotStartSchema = z.union(
+  [
+    z.literal(5),
+    z.literal(10),
+    z.literal(15),
+    z.literal(20),
+    z.literal(30),
+    z.literal("every-hour"), // every hour at start
+    z.literal("custom"), // custom
+  ],
+  { message: "configuration.booking.slotStart.unknown" },
+);
 
 export const allowPromoCodeType = [
   "never",
@@ -53,37 +66,12 @@ export const generalBookingConfigurationSchema = z.object({
       .min(0, "configuration.booking.breakDuration.min")
       .max(120, "configuration.booking.breakDuration.max"),
   ),
-  slotStart: z
-    .union(
-      [
-        z.literal(5),
-        z.literal(10),
-        z.literal(15),
-        z.literal(20),
-        z.literal(30),
-        z.literal("every-hour"), // every hour at start
-        z.literal("custom"), // custom
-      ],
-      { message: "configuration.booking.slotStart.unknown" },
-    )
-    .optional(),
+  slotStart: slotStartSchema.optional(),
   customSlotTimes: z.array(customTimeSlotSchema).optional(),
   scheduleAppId: z.string().optional(),
+  availabilityProviderAppId: z.string().optional(),
   autoConfirm: z.coerce.boolean().optional(),
   allowPromoCode: z.enum(allowPromoCodeType).default("allow-if-has-active"),
-  smartSchedule: z
-    .object({
-      allowSmartSchedule: z.literal(true),
-      allowSkipBreak: z.coerce.boolean().optional(),
-      preferBackToBack: z.coerce.boolean().optional(),
-      allowSmartSlotStarts: z.coerce.boolean().optional(),
-      maximizeForOption: asOptionalField(z.string()),
-    })
-    .or(
-      z.object({
-        allowSmartSchedule: z.literal(false).optional(),
-      }),
-    ),
   payments: paymentsConfigurationSchema,
   cancellationsAndReschedules: appointmentCancellationRescheduleSchema,
 });

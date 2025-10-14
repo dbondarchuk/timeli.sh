@@ -17,6 +17,7 @@ export type AppScope = Extandable<
   | "dashboard-tab"
   | "payment"
   | "ui-components"
+  | "availability-provider"
 >;
 
 export type AppSetupProps = {
