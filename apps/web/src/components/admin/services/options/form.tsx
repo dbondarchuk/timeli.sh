@@ -7,10 +7,11 @@ import {
   AppointmentOptionUpdateModel,
   DatabaseId,
   getAppointmentOptionSchemaWithUniqueCheck,
-  isPaymentRequiredForOptionTypes,
+  isRequiredOptionTypes,
   WithDatabaseId,
 } from "@vivid/types";
 import {
+  AppSelector,
   BooleanSelect,
   Card,
   CardContent,
@@ -36,6 +37,11 @@ import {
   InputGroupSuffixClasses,
   InputSuffix,
   SaveButton,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
   Sortable,
   toastPromise,
 } from "@vivid/ui";
@@ -47,15 +53,6 @@ import { z } from "zod";
 import { FieldSelectCard } from "../field-select-card";
 import { checkUniqueName, create, update } from "./actions";
 import { AddonSelectCard } from "./addon-select-card";
-
-const IsPaymentRequiredForOptionTypesLabels: Record<
-  (typeof isPaymentRequiredForOptionTypes)[number],
-  string
-> = {
-  always: "Always, unless not required for customer",
-  never: "Never, unless required for customer",
-  inherit: "Same as general configuration, or configured for customer",
-};
 
 export const OptionForm: React.FC<{
   initialData?: AppointmentOptionUpdateModel & Partial<DatabaseId>;
@@ -76,6 +73,8 @@ export const OptionForm: React.FC<{
     reValidateMode: "onChange",
     defaultValues: initialData || {
       requireDeposit: "inherit",
+      isOnline: false,
+      isAutoConfirm: "inherit",
       duplicateAppointmentCheck: {
         enabled: false,
       },
@@ -173,6 +172,8 @@ export const OptionForm: React.FC<{
     });
   };
 
+  const isOnline = form.watch("isOnline");
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-8">
@@ -253,7 +254,7 @@ export const OptionForm: React.FC<{
                       <InputGroupInput>
                         <Input
                           disabled={loading}
-                          placeholder="20"
+                          placeholder="0.00"
                           type="number"
                           className={InputGroupInputClasses({
                             variant: "prefix",
@@ -267,10 +268,104 @@ export const OptionForm: React.FC<{
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="isAutoConfirm"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    {t("services.options.form.isAutoConfirm.label")}{" "}
+                    <InfoTooltip>
+                      {t("services.options.form.isAutoConfirm.tooltip")}
+                    </InfoTooltip>
+                  </FormLabel>
+                  <FormControl>
+                    <Select
+                      value={field.value}
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        field.onBlur();
+                      }}
+                      disabled={loading}
+                    >
+                      <SelectTrigger>
+                        <SelectValue
+                          placeholder={t("services.options.form.selectOption")}
+                        />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="always">
+                          {t("services.options.form.isAutoConfirm.always")}
+                        </SelectItem>
+                        <SelectItem value="never">
+                          {t("services.options.form.isAutoConfirm.never")}
+                        </SelectItem>
+                        <SelectItem value="inherit">
+                          {t("services.options.form.isAutoConfirm.inherit")}
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="isOnline"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    {t("services.options.form.isOnline.label")}{" "}
+                    <InfoTooltip>
+                      {t("services.options.form.isOnline.tooltip")}
+                    </InfoTooltip>
+                  </FormLabel>
+                  <FormControl>
+                    <BooleanSelect
+                      value={field.value}
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        field.onBlur();
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {isOnline && (
+              <FormField
+                control={form.control}
+                name="meetingUrlProviderAppId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      {t("services.options.form.meetingUrlProviderAppId.label")}{" "}
+                      <InfoTooltip>
+                        {t(
+                          "services.options.form.meetingUrlProviderAppId.tooltip",
+                        )}
+                      </InfoTooltip>
+                    </FormLabel>
+                    <FormControl>
+                      <AppSelector
+                        scope="meeting-url-provider"
+                        disabled={loading}
+                        value={field.value}
+                        onItemSelect={(value) => field.onChange(value)}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            )}
+          </div>
+          <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
             <Card>
               <CardHeader>
                 <CardTitle className="text-base font-medium">
-                  {t("services.options.form.requireDeposit")}
+                  {t("services.options.form.requireDeposit.label")}
                 </CardTitle>
               </CardHeader>
               <CardContent className="flex flex-col gap-4">
@@ -280,27 +375,27 @@ export const OptionForm: React.FC<{
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
-                        {t("services.options.form.requireDeposit")}{" "}
+                        {t("services.options.form.requireDeposit.label")}{" "}
                         <InfoTooltip>
-                          <p>
-                            {t("services.options.form.requireDepositTooltip1")}
-                          </p>
-                          <p className="font-semibold">
-                            {t("services.options.form.requireDepositTooltip2")}
-                          </p>
+                          {t.rich(
+                            "services.options.form.requireDeposit.tooltip",
+                            {
+                              p: (chunks: any) => <p>{chunks}</p>,
+                              br: () => <br />,
+                            },
+                          )}
                         </InfoTooltip>
                       </FormLabel>
                       <FormControl>
                         <Combobox
                           disabled={loading}
                           className="flex w-full font-normal text-base"
-                          values={isPaymentRequiredForOptionTypes.map(
-                            (value) => ({
-                              value,
-                              label:
-                                IsPaymentRequiredForOptionTypesLabels[value],
-                            }),
-                          )}
+                          values={isRequiredOptionTypes.map((value) => ({
+                            value,
+                            label: t(
+                              `services.options.form.requireDeposit.${value}`,
+                            ),
+                          }))}
                           searchLabel={t("services.options.form.selectOption")}
                           value={field.value || "inherit"}
                           onItemSelect={(item) => {
@@ -323,21 +418,13 @@ export const OptionForm: React.FC<{
                           <FormLabel>
                             {t("services.options.form.depositAmount")}{" "}
                             <InfoTooltip>
-                              <p>
-                                {t(
-                                  "services.options.form.depositAmountTooltip1",
-                                )}
-                              </p>
-                              <p>
-                                {t(
-                                  "services.options.form.depositAmountTooltip2",
-                                )}
-                              </p>
-                              <p>
-                                {t(
-                                  "services.options.form.depositAmountTooltip3",
-                                )}
-                              </p>
+                              {t.rich(
+                                "services.options.form.depositAmountTooltip",
+                                {
+                                  p: (chunks: any) => <p>{chunks}</p>,
+                                  br: () => <br />,
+                                },
+                              )}
                             </InfoTooltip>
                           </FormLabel>
                           <FormControl>

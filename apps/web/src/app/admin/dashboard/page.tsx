@@ -15,8 +15,11 @@ import { Metadata } from "next";
 import { Suspense } from "react";
 import { EventsCalendar } from "./events-calendar";
 import { NextAppointmentsCards } from "./next-appointments-cards";
+import {
+  DashboardTabNotificationsBadge,
+  PendingAppointmentsBadge,
+} from "./notifications-toast-stream";
 import { PendingAppointmentsTab } from "./pending-appointments-tab";
-import { PendingAppointmentsBadge } from "./pending-appointments-toast-stream";
 
 type Params = {
   searchParams: Promise<{ activeTab?: string; key?: string }>;
@@ -95,7 +98,12 @@ export default async function Page(params: Params) {
               </TabsLinkTrigger>
               {dashboardTabAppsMap.map((item) => (
                 <TabsLinkTrigger value={item.href} key={item.href}>
-                  {item.label}
+                  {item.label}{" "}
+                  {item.notificationsCountKey ? (
+                    <DashboardTabNotificationsBadge
+                      notificationsCountKey={item.notificationsCountKey}
+                    />
+                  ) : null}
                 </TabsLinkTrigger>
               ))}
             </TabsList>

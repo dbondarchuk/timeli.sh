@@ -1,4 +1,8 @@
-import { AppointmentEvent, Payment } from ".";
+import {
+  AppointmentEvent,
+  AppointmentOnlineMeetingInformation,
+  Payment,
+} from ".";
 import { AssetEntity } from "../assets";
 import { Customer } from "../customers";
 import { Prettify } from "../utils/helpers";
@@ -17,6 +21,7 @@ export type AppointmentEntity = Prettify<
     status: AppointmentStatus;
     createdAt: Date;
     customerId: string;
+    meetingInformation?: AppointmentOnlineMeetingInformation;
   }
 >;
 

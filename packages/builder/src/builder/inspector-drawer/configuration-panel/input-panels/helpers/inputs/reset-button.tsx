@@ -11,10 +11,9 @@ export const ResetButton: React.FC<{
       size={size}
       onClick={() => {
         onClick(null);
-        onClick(null);
       }}
     >
-      <X size={16} />
+      <X />
     </Button>
   );
 };

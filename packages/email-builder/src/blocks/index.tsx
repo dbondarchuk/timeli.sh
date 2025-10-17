@@ -17,6 +17,7 @@ import {
   SquareMousePointer,
   SquareSplitVertical,
   Text,
+  Video,
 } from "lucide-react";
 import {
   AvatarConfiguration,
@@ -85,6 +86,11 @@ import {
   ImagePropsDefaults,
   ImageToolbar,
 } from "./image";
+import {
+  OnlineMeetingConfiguration,
+  OnlineMeetingEditor,
+  OnlineMeetingPropsDefaults,
+} from "./online-meeting";
 import { EditorBlocksSchema } from "./schema";
 import {
   SpacerConfiguration,
@@ -92,8 +98,12 @@ import {
   SpacerPropsDefaults,
   SpacerToolbar,
 } from "./spacer";
-import { TextConfiguration, TextEditor, TextToolbar } from "./text";
-import { TextPropsDefaults } from "./text/schema";
+import {
+  TextConfiguration,
+  TextEditor,
+  TextPropsDefaults,
+  TextToolbar,
+} from "./text";
 
 export const EditorBlocks: EditorDocumentBlocksDictionary<
   typeof EditorBlocksSchema
@@ -228,6 +238,14 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     Toolbar: CustomHTMLToolbar,
     defaultValue: CustomHTMLPropsDefaults,
     category: "builder.emailBuilder.blocks.categories.layout",
+  },
+  OnlineMeeting: {
+    displayName: "builder.emailBuilder.blocks.onlineMeeting.displayName",
+    icon: <Video />,
+    Editor: OnlineMeetingEditor,
+    Configuration: OnlineMeetingConfiguration,
+    defaultValue: OnlineMeetingPropsDefaults,
+    category: "builder.emailBuilder.blocks.categories.onlineMeeting",
   },
 };
 

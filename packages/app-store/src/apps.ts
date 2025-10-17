@@ -49,6 +49,8 @@ import { webhooksApp } from "./apps/webhooks/app";
 import { WEBHOOKS_APP_NAME } from "./apps/webhooks/const";
 import { WeeklyScheduleApp } from "./apps/weekly-schedule/app";
 import { WEEKLY_SCHEDULE_APP_NAME } from "./apps/weekly-schedule/const";
+import { ZoomApp } from "./apps/zoom/app";
+import { ZOOM_APP_NAME } from "./apps/zoom/const";
 
 export const AvailableApps: Record<string, App> = {
   [OUTLOOK_APP_NAME]: OutlookApp,
@@ -78,6 +80,7 @@ export const AvailableApps: Record<string, App> = {
   [WEBHOOKS_APP_NAME]: webhooksApp,
   [FINANCIAL_OVERVIEW_APP_NAME]: FinancialOverviewApp,
   [SMART_SCHEDULE_APP_NAME]: SmartScheduleApp,
+  [ZOOM_APP_NAME]: ZoomApp,
 };
 
 export { BUSY_EVENTS_APP_NAME } from "./apps/busy-events/const";
@@ -106,3 +109,4 @@ export { WAITLIST_NOTIFICATIONS_APP_NAME } from "./apps/waitlist-notifications/c
 export { WAITLIST_APP_NAME } from "./apps/waitlist/const";
 export { WEBHOOKS_APP_NAME } from "./apps/webhooks/const";
 export { WEEKLY_SCHEDULE_APP_NAME } from "./apps/weekly-schedule/const";
+export { ZOOM_APP_NAME } from "./apps/zoom/const";

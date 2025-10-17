@@ -30,7 +30,8 @@
     "authorization_result_no_access_token": "Результат авторизації не містить access token",
     "authorization_result_no_account_info": "Результат авторизації не містить інформації про обліковий запис",
     "authorization_result_not_enough_scopes": "Результат авторизації не містить достатньо областей",
-    "authorization_result_no_refresh_token": "Результат авторизації не містить refresh token"
+    "authorization_result_no_refresh_token": "Результат авторизації не містить refresh token",
+    "failed_to_get_meeting_url_for_appointment": "Не вдалося отримати URL зустрічі для події"
   },
   "toast": {
     "changes_saved": "Ваші зміни були збережені.",

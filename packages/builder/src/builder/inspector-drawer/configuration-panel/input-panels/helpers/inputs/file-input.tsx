@@ -58,6 +58,7 @@ export const FileInput: React.FC<Props> = ({
         />
         {nullable && (
           <ResetButton
+            size={rest.h ?? "sm"}
             onClick={() => {
               setValue(null);
               onChange(null);

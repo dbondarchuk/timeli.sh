@@ -71,9 +71,8 @@ export const AssetSelectorInput: React.FC<AssetSelectorInputProps> = ({
         type="button"
         variant="outline"
         disabled={disabled}
-        className={InputGroupSuffixClasses()}
+        className={InputGroupSuffixClasses({ h: rest.h })}
         onClick={openDialog}
-        size={rest.h}
       >
         {t("form.select")}
       </Button>

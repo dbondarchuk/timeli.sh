@@ -558,14 +558,14 @@ export class ConnectedAppsService implements IConnectedAppsService {
     }
   }
 
-  public async executeHooks<T>(
+  public async executeHooks<T, TReturn = void>(
     scope: AppScope,
-    hook: (app: ConnectedAppData, service: T) => Promise<void>,
+    hook: (app: ConnectedAppData, service: T) => Promise<TReturn>,
     options?: {
       concurrencyLimit?: number;
       ignoreErrors?: boolean;
     },
-  ): Promise<void> {
+  ): Promise<(TReturn | undefined)[]> {
     const logger = this.loggerFactory("executeHooks");
     logger.debug({ scope }, "Executing hooks");
 
@@ -587,11 +587,13 @@ export class ConnectedAppsService implements IConnectedAppsService {
       ) as any as T;
 
       try {
-        await hook(hookData, service);
+        const result = await hook(hookData, service);
         logger.debug(
           { appName: hookData.name, appId: hookData._id },
           "Hook executed",
         );
+
+        return result;
       } catch (error) {
         if (!ignoreErrors) {
           logger.error(
@@ -608,9 +610,10 @@ export class ConnectedAppsService implements IConnectedAppsService {
       }
     });
 
-    await Promise.all(promises.map((p) => limit(() => p)));
+    const results = await Promise.all(promises.map((p) => limit(() => p)));
 
     logger.debug({ scope }, "Hooks executed");
+    return results;
   }
 }
 

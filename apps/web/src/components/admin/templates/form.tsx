@@ -20,6 +20,7 @@ import {
   SaveButton,
   toast,
   toastPromise,
+  useDebounceCacheFn,
 } from "@vivid/ui";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -63,8 +64,9 @@ export const TemplateForm: React.FC<
   const type = initialData?.type || ("type" in rest ? rest.type : "email");
   const template = "template" in rest ? rest.template : undefined;
 
+  const cachedUniqueNameCheck = useDebounceCacheFn(checkUniqueName, 300);
   const formSchema = getTemplateSchemaWithUniqueCheck(
-    (name) => checkUniqueName(name, initialData?._id),
+    (name) => cachedUniqueNameCheck(name, initialData?._id),
     "templates.nameMustBeUnique",
   );
 

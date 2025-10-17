@@ -70,7 +70,9 @@ export const getEventCalendarContent = (
     title: summary,
     description: description,
     htmlContent: description,
-    location: config.address,
+    location: event.option.isOnline
+      ? event.meetingInformation?.url
+      : config.address,
     sequence: getIcsSequence(),
     attendees: [
       {

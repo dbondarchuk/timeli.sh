@@ -14,7 +14,7 @@ import {
 import { cookies } from "next/headers";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { CookiesProvider } from "../../../components/cookies-provider";
-import { PendingAppointmentsToastStream } from "./pending-appointments-toast-stream";
+import { NotificationsToastStream } from "./notifications-toast-stream";
 
 const SIDEBAR_COOKIE_NAME = "admin-sidebar-open";
 
@@ -105,7 +105,7 @@ export default async function DashboardLayout({
             <CookiesProvider>
               <NuqsAdapter>
                 <AppSidebar menuItems={groups} name={name} logo={logo} />
-                <PendingAppointmentsToastStream />
+                <NotificationsToastStream />
 
                 <SidebarInset>
                   {/* <main className="w-full flex-1 overflow-hidden"> */}

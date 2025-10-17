@@ -1,0 +1,31 @@
+{
+  "title": "Zoom",
+  "app": {
+    "displayName": "Zoom",
+    "description": "Zoom - це безпечний та надійний відеоплатформа, яка підтримує всі ваші онлайн-комунікаційні потреби. Він може забезпечити все від одноосібних зустрічей, чатів, телефонних дзвінків, вебінарів та великих онлайн-подій. Доступний з версіями для комп'ютера, вебінтерфейсу та мобільних пристроїв."
+  },
+  "form": {
+    "connect": "Підключитися до <app></app>",
+    "reconnect": "Перепідключитися до <app></app>",
+    "pendingAuthorization": "Очікування авторизації"
+  },
+  "statusText": {
+    "successfully_set_up": "Успішно підключено до Zoom",
+    "error_processing_configuration": "Помилка обробки конфігурації Zoom",
+    "oauth_error": "Помилка авторизації OAuth",
+    "refresh_token_not_set": "Не встановлено refresh token",
+    "invalid_credentials": "Неправильні облікові дані",
+    "redirect_request_does_not_contain_app_id": "Запит перенаправлення не містить app ID",
+    "redirect_request_does_not_contain_authorization_code": "Запит перенаправлення не містить код авторизації",
+    "app_was_not_authorized_properly": "Додаток не було правильно авторизовано",
+    "failed_to_get_user_email": "Не вдалося отримати email користувача",
+    "error_getting_busy_times": "Помилка отримання зайнятого часу з Zoom: {error}",
+    "error_getting_meeting_url": "Помилка отримання URL зустрічі з Zoom: {error}",
+    "error_rescheduling_zoom_meeting": "Помилка перенесення зустрічі з Zoom: {error}",
+    "error_deleting_zoom_meeting": "Помилка видалення зустрічі з Zoom: {error}"
+  },
+  "toast": {
+    "changes_saved": "Ваші зміни були збережені.",
+    "request_error": "Виникла проблема з вашим запитом."
+  }
+}

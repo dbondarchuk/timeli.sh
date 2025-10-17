@@ -34,7 +34,10 @@ export interface IEventsService {
       doNotNotifyCustomer?: boolean;
     },
   ): Promise<Appointment>;
-  getPendingAppointmentsCount(after?: Date): Promise<number>;
+  getPendingAppointmentsCount(
+    minimumDate?: Date,
+    createdAfter?: Date,
+  ): Promise<{ totalCount: number; newCount: number }>;
   getPendingAppointments(
     limit?: number,
     after?: Date,

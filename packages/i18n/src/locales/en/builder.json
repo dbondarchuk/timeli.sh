@@ -1416,7 +1416,8 @@
         "text": "Text",
         "dividers": "Dividers",
         "containers": "Containers",
-        "layout": "Layout"
+        "layout": "Layout",
+        "onlineMeeting": "Online Meeting"
       },
       "avatar": {
         "displayName": "Avatar",
@@ -1564,6 +1565,19 @@
         "displayName": "Text",
         "textColor": "Text color",
         "backgroundColor": "Background color"
+      },
+      "onlineMeeting": {
+        "displayName": "Online Meeting",
+        "title": "Title",
+        "whenText": "When Text",
+        "codeText": "Code Text",
+        "passwordText": "Password Text",
+        "buttonText": "Button Text",
+        "linkText": "Link Text",
+        "buttonTextColor": "Button Text Color",
+        "buttonBackgroundColor": "Button Background Color",
+        "type": "Type",
+        "logoUrl": "Logo URL"
       }
     }
   }

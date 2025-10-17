@@ -8,10 +8,12 @@ import {
   AppointmentChoice,
   AppointmentEntity,
   AppointmentHistoryEntry,
+  AppointmentOnlineMeetingInformation,
   AppointmentTimeNotAvaialbleError,
   FieldSchema,
   GetAppointmentOptionsResponse,
   IAvailabilityProvider,
+  IMeetingUrlProvider,
   IPaymentsService,
   IServicesService,
   ModifyAppointmentInformationRequest,
@@ -177,6 +179,7 @@ export class EventsService implements IEventsService {
           customerEmail: event.fields.email,
           customerPhone: event.fields.phone,
           optionName: event.option.name,
+          optionIsOnline: event.option.isOnline,
           data: event.data,
         },
         confirmed: propsConfirmed,
@@ -238,7 +241,61 @@ export class EventsService implements IEventsService {
       }
     }
 
-    const confirmed = propsConfirmed ?? config.autoConfirm ?? false;
+    const option = await this.servicesService.getOption(event.option._id);
+    const isAutoConfirm = option?.isAutoConfirm ?? config.autoConfirm;
+    logger.debug(
+      {
+        isAutoConfirm,
+        isOptionAutoConfirm: option?.isAutoConfirm,
+        autoConfirm: config.autoConfirm,
+      },
+      "Service option auto confirm",
+    );
+
+    const confirmed =
+      propsConfirmed ??
+      (option?.isAutoConfirm === "always" ||
+        (option?.isAutoConfirm === "inherit" && config.autoConfirm)) ??
+      false;
+
+    let meetingInformation: AppointmentOnlineMeetingInformation | undefined =
+      undefined;
+    if (option?.isOnline && option?.meetingUrlProviderAppId) {
+      logger.debug(
+        { appointmentId, meetingProviderAppId: option.meetingUrlProviderAppId },
+        "This is an online option with meeting URL provider set up. Creating meeting link",
+      );
+
+      try {
+        const { app, service } =
+          await this.appsService.getAppService<IMeetingUrlProvider>(
+            option.meetingUrlProviderAppId,
+          );
+
+        meetingInformation = await service.getMeetingUrl(app, {
+          ...event,
+          _id: appointmentId,
+        });
+
+        logger.debug(
+          {
+            appointmentId,
+            meetingProviderAppId: option.meetingUrlProviderAppId,
+            meetingInformation,
+          },
+          "Successfully created meeting information",
+        );
+      } catch (error: any) {
+        logger.error(
+          {
+            appointmentId,
+            meetingProviderAppId: option.meetingUrlProviderAppId,
+            error,
+          },
+          "Meeting URL creation has failed",
+        );
+      }
+    }
 
     logger.debug(
       { appointmentId, confirmed, force, paymentIntentId },
@@ -251,6 +308,7 @@ export class EventsService implements IEventsService {
       by,
       assets.length ? assets : undefined,
       paymentIntentId,
+      meetingInformation,
       confirmed ? "confirmed" : "pending",
       force,
     );
@@ -307,6 +365,7 @@ export class EventsService implements IEventsService {
           customerEmail: event.fields.email,
           customerPhone: event.fields.phone,
           optionName: event.option.name,
+          optionIsOnline: event.option.isOnline,
         },
         confirmed: propsConfirmed,
         fileCount: files ? Object.keys(files).length : 0,
@@ -411,29 +470,72 @@ export class EventsService implements IEventsService {
     return updatedAppointment;
   }
 
-  public async getPendingAppointmentsCount(after?: Date): Promise<number> {
+  public async getPendingAppointmentsCount(
+    minimumDate?: Date,
+    createdAfter?: Date,
+  ): Promise<{ totalCount: number; newCount: number }> {
     const logger = this.loggerFactory("getPendingAppointmentsCount");
-    logger.debug({ after }, "Getting pending appointments count");
+    logger.debug(
+      { minimumDate, createdAfter },
+      "Getting pending appointments count",
+    );
 
     const db = await getDbConnection();
     const filter: Filter<AppointmentEntity> = {
       status: "pending",
-      dateTime: after
-        ? {
-            $gte: after,
-          }
-        : undefined,
+      dateTime: minimumDate ? { $gte: minimumDate } : undefined,
     };
 
     const collection = db.collection<AppointmentEntity>(
       APPOINTMENTS_COLLECTION_NAME,
     );
 
-    const count = await collection.countDocuments(filter);
+    const dateMatch = createdAfter
+      ? [
+          {
+            $match: {
+              createdAt: {
+                $gte: createdAfter,
+              },
+            },
+          },
+        ]
+      : [];
 
-    logger.debug({ after, count }, "Pending appointments count retrieved");
+    const [result] = await collection
+      .aggregate([
+        {
+          $match: filter,
+        },
+        {
+          $facet: {
+            totalCount: [
+              {
+                $count: "count",
+              },
+            ],
+            newCount: [
+              ...dateMatch,
+              {
+                $count: "count",
+              },
+            ],
+          },
+        },
+      ])
+      .toArray();
 
-    return count;
+    const response = {
+      totalCount: result.totalCount?.[0]?.count || 0,
+      newCount: result.newCount?.[0]?.count || 0,
+    };
+
+    logger.debug(
+      { minimumDate, createdAfter, response },
+      "Pending appointments count retrieved",
+    );
+
+    return response;
   }
 
   public async getPendingAppointments(
@@ -1604,6 +1706,7 @@ export class EventsService implements IEventsService {
     by: "customer" | "user",
     files?: Asset[],
     paymentIntentId?: string,
+    meetingInformation?: AppointmentOnlineMeetingInformation,
     status: AppointmentStatus = "pending",
     force?: boolean,
   ): Promise<Appointment> {
@@ -1650,6 +1753,7 @@ export class EventsService implements IEventsService {
         const dbEvent: AppointmentEntity = {
           _id: id,
           ...event,
+          meetingInformation,
           dateTime: DateTime.fromJSDate(event.dateTime)
             .startOf("minute")
             .toJSDate(),

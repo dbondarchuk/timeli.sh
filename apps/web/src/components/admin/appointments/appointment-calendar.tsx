@@ -89,7 +89,9 @@ export const AppointmentCalendar: React.FC<
             }),
             variant:
               app._id === appointment._id
-                ? "primary"
+                ? app.status === "declined"
+                  ? "destructive"
+                  : "primary"
                 : app.status === "confirmed"
                   ? "tertiary"
                   : "secondary",

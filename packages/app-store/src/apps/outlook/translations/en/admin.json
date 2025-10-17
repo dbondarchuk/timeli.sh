@@ -30,7 +30,8 @@
     "authorization_result_no_access_token": "Authorization result does not contain access token",
     "authorization_result_no_account_info": "Authorization result does not contain account information",
     "authorization_result_not_enough_scopes": "Authorization result does not contain enough scopes",
-    "authorization_result_no_refresh_token": "Authorization result does not contain refresh token"
+    "authorization_result_no_refresh_token": "Authorization result does not contain refresh token",
+    "failed_to_get_meeting_url_for_appointment": "Failed to get meeting URL for appointment"
   },
   "toast": {
     "changes_saved": "Your changes were saved.",

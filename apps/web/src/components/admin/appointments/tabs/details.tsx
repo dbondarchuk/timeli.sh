@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useI18n, useLocale } from "@vivid/i18n";
+import { AdminKeys, useI18n, useLocale } from "@vivid/i18n";
 import { Appointment, timeZones } from "@vivid/types";
 import {
   Accordion,
@@ -432,6 +432,62 @@ export const AppointmentDetails = ({
                       </AccordionContent>
                     </AccordionItem>
                   </Accordion>
+                </dd>
+              </div>
+            )}
+            {appointment.meetingInformation && (
+              <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                <dt className="flex self-center">
+                  {t("appointments.view.meetingInformation.label")}
+                </dt>
+                <dd className="col-span-2">
+                  <dd className="col-span-2">
+                    <div className="grid grid-cols-3 gap-1 text-sm">
+                      <div>
+                        {t("appointments.view.meetingInformation.url")}:
+                      </div>
+                      <div className="col-span-2">
+                        <Link
+                          variant="default"
+                          target="_blank"
+                          href={appointment.meetingInformation.url}
+                        >
+                          {appointment.meetingInformation.url}
+                        </Link>
+                      </div>
+                      <div>
+                        {t("appointments.view.meetingInformation.type")}:
+                      </div>
+                      <div className="col-span-2">
+                        {t.has(
+                          `onlineMeeting.types.${appointment.meetingInformation.type}` as AdminKeys,
+                        )
+                          ? t(
+                              `onlineMeeting.types.${appointment.meetingInformation.type}` as AdminKeys,
+                            )
+                          : appointment.meetingInformation.type}
+                      </div>
+                      <div>
+                        {t("appointments.view.meetingInformation.meetingId")}:
+                      </div>
+                      <div className="col-span-2">
+                        {appointment.meetingInformation.meetingId}
+                      </div>
+                      {!!appointment.meetingInformation.meetingPassword && (
+                        <>
+                          <div>
+                            {t(
+                              "appointments.view.meetingInformation.meetingPassword",
+                            )}
+                            :
+                          </div>
+                          <div className="col-span-2">
+                            {appointment.meetingInformation.meetingPassword}
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </dd>
                 </dd>
               </div>
             )}

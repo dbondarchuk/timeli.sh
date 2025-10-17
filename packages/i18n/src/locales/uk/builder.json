@@ -1416,7 +1416,8 @@
         "text": "Текст",
         "dividers": "Розділювачі",
         "containers": "Контейнери",
-        "layout": "Макет"
+        "layout": "Макет",
+        "onlineMeeting": "Онлайн зустріч"
       },
       "avatar": {
         "displayName": "Аватар",
@@ -1564,6 +1565,19 @@
         "displayName": "Текст",
         "textColor": "Колір тексту",
         "backgroundColor": "Колір фону"
+      },
+      "onlineMeeting": {
+        "displayName": "Онлайн зустріч",
+        "title": "Заголовок",
+        "whenText": "Текст часу",
+        "codeText": "Текст коду",
+        "passwordText": "Текст пароля",
+        "buttonText": "Текст кнопки",
+        "linkText": "Текст посилання",
+        "buttonTextColor": "Колір тексту кнопки",
+        "buttonBackgroundColor": "Колір фону кнопки",
+        "type": "Тип",
+        "logoUrl": "URL логотипу"
       }
     }
   }

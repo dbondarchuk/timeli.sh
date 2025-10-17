@@ -67,7 +67,9 @@
     "payment": "Платежі",
     "dashboard-tab": "Вкладка панелі керування",
     "ui-components": "UI компоненти",
-    "availability-provider": "Постачальник доступності"
+    "availability-provider": "Постачальник доступності",
+    "meeting-url-provider": "Постачальник URL зустрічі",
+    "dashboard-notifier": "Сповіщувач панелі керування"
   },
   "status": {
     "connected": "Підключено",

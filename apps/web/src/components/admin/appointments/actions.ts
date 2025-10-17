@@ -248,6 +248,7 @@ export const createAppointment = async (
       optionId: appointment.option._id,
       dateTime: appointment.dateTime.toISOString(),
       duration: appointment.totalDuration,
+      isOnline: appointment.option.isOnline,
       filesCount: files ? Object.keys(files).length : 0,
       confirmed,
       fieldsCount: Object.keys(appointment.fields).length,

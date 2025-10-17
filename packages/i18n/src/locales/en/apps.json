@@ -67,7 +67,9 @@
     "payment": "Payments",
     "dashboard-tab": "Dashboard tab",
     "ui-components": "UI components",
-    "availability-provider": "Availability provider"
+    "availability-provider": "Availability provider",
+    "meeting-url-provider": "Meeting URL provider",
+    "dashboard-notifier": "Dashboard notifier"
   },
   "status": {
     "connected": "Connected",

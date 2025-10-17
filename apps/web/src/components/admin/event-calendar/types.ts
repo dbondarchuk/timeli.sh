@@ -7,7 +7,11 @@ declare module "react" {
   }
 }
 
-export type CalendarEventVariant = "primary" | "secondary" | "tertiary";
+export type CalendarEventVariant =
+  | "primary"
+  | "secondary"
+  | "tertiary"
+  | "destructive";
 
 export type CalendarEvent = {
   id?: string;

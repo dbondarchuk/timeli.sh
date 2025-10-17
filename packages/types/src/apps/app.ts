@@ -18,6 +18,8 @@ export type AppScope = Extandable<
   | "payment"
   | "ui-components"
   | "availability-provider"
+  | "meeting-url-provider"
+  | "dashboard-notifier"
 >;
 
 export type AppSetupProps = {

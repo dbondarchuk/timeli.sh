@@ -5,9 +5,11 @@ import {
   Appointment,
   ConnectedAppData,
   ConnectedAppStatusWithText,
+  DashboardNotification,
   IAppointmentHook,
   IConnectedApp,
   IConnectedAppProps,
+  IDashboardNotifierApp,
 } from "@vivid/types";
 import {
   DismissWaitlistEntriesAction,
@@ -36,7 +38,9 @@ import {
   WaitlistRepositoryService,
 } from "./repository-service";
 
-export class WaitlistConnectedApp implements IConnectedApp, IAppointmentHook {
+export class WaitlistConnectedApp
+  implements IConnectedApp, IAppointmentHook, IDashboardNotifierApp
+{
   protected readonly loggerFactory = getLoggerFactory("WaitlistConnectedApp");
 
   public constructor(protected readonly props: IConnectedAppProps) {}
@@ -167,6 +171,46 @@ export class WaitlistConnectedApp implements IConnectedApp, IAppointmentHook {
       { appId: appData._id, waitlistId: appointment.data.waitlistId },
       "Waitlist entry dismissed",
     );
+  }
+
+  public async getNotifications(
+    appData: ConnectedAppData,
+    date?: Date,
+  ): Promise<DashboardNotification[]> {
+    const logger = this.loggerFactory("getNotifications");
+    logger.debug({ date }, "Getting waitlist notifications");
+
+    const repositoryService = this.getRepositoryService(appData._id);
+    const result = await repositoryService.getWaitlistEntriesCount(date);
+
+    logger.debug({ result }, "Waitlist entries count retrieved");
+
+    return [
+      {
+        key: "waitlist.entries",
+        count: result.totalCount,
+        toast:
+          result.newCount > 0
+            ? {
+                title: {
+                  key: "app_waitlist_admin.notifications.newEntries" satisfies WaitlistAdminAllKeys,
+                },
+                message: {
+                  key: "app_waitlist_admin.notifications.message" satisfies WaitlistAdminAllKeys,
+                  args: {
+                    count: result.newCount,
+                  },
+                },
+                action: {
+                  label: {
+                    key: "app_waitlist_admin.notifications.viewWaitlist" satisfies WaitlistAdminAllKeys,
+                  },
+                  href: `/admin/dashboard?activeTab=waitlist&key=${Date.now()}`,
+                },
+              }
+            : undefined,
+      },
+    ];
   }
 
   protected getRepositoryService(appId: string) {

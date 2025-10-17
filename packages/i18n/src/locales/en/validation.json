@@ -111,6 +111,12 @@
           "unique": "Field IDs should be unique"
         }
       },
+      "isOnline": {
+        "required": "If selected, meeting URL provider app is required"
+      },
+      "meetingUrlProviderAppId": {
+        "required": "Meeting URL provider app is required if selected"
+      },
       "requireDeposit": {
         "required": "Deposit amount is required if set to always"
       },

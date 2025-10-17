@@ -16,7 +16,7 @@ export const GoogleCalendarApp: App<
 > = {
   name: GOOGLE_CALENDAR_APP_NAME,
   displayName: "app_google-calendar_admin.app.displayName",
-  scope: ["calendar-read", "calendar-write"],
+  scope: ["calendar-read", "calendar-write", "meeting-url-provider"],
   type: "oauth",
   category: ["apps.categories.calendar", "apps.categories.communications"],
   Logo: ({ className }) => <GoogleCalendarLogo className={className} />,

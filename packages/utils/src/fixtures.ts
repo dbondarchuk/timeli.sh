@@ -28,7 +28,14 @@ export const demoAppointment: Appointment = {
     // description: "This is a demo option",
     duration: 100,
     price: 50,
+    isOnline: false,
     // requireDeposit: "inherit",
+  },
+  meetingInformation: {
+    type: "google_meet",
+    meetingId: "1234567890",
+    meetingPassword: "1234567890",
+    url: "https://meet.google.com/1234567890",
   },
   files: [
     {

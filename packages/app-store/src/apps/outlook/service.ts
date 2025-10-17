@@ -9,6 +9,7 @@ import { Client } from "@microsoft/microsoft-graph-client";
 import {
   Attachment,
   FileAttachment,
+  OnlineMeeting,
   Event as OutlookEvent,
   Message as OutlookMessage,
   ResponseType,
@@ -16,6 +17,8 @@ import {
 import { getLoggerFactory } from "@vivid/logger";
 import {
   ApiRequest,
+  AppointmentEvent,
+  AppointmentOnlineMeetingInformation,
   CalendarBusyTime,
   CalendarEvent,
   CalendarEventAttendee,
@@ -30,7 +33,9 @@ import {
   ICalendarWriter,
   IConnectedAppProps,
   IMailSender,
+  IMeetingUrlProvider,
   IOAuthConnectedApp,
+  WithDatabaseId,
 } from "@vivid/types";
 import { decrypt, encrypt } from "@vivid/utils";
 import { createEvent } from "ics";
@@ -61,14 +66,20 @@ const attendeeStatusToResponseStatusMap: Record<
   organizer: "organizer",
 };
 
-const scopes = [...requiredScopes, offlineAccessScope];
+const scopes = [
+  ...requiredScopes,
+  // This scope is only supported for business accounts, we should not fail if it's not present
+  "OnlineMeetings.ReadWrite",
+  offlineAccessScope,
+];
 
 export class OutlookConnectedApp
   implements
     IOAuthConnectedApp,
     ICalendarBusyTimeProvider,
     IMailSender,
-    ICalendarWriter
+    ICalendarWriter,
+    IMeetingUrlProvider
 {
   protected readonly loggerFactory = getLoggerFactory("OutlookConnectedApp");
 
@@ -645,6 +656,60 @@ export class OutlookConnectedApp
             : ("app_outlook_admin.statusText.error_deleting_calendar_event" satisfies OutlookAdminAllKeys),
       });
 
+      throw error;
+    }
+  }
+
+  public async getMeetingUrl(
+    app: ConnectedAppData,
+    appointment: WithDatabaseId<AppointmentEvent>,
+  ): Promise<AppointmentOnlineMeetingInformation> {
+    const logger = this.loggerFactory("getMeetingUrl");
+    logger.debug(
+      { appointmentId: appointment._id },
+      "Getting meeting URL for appointment",
+    );
+
+    const tokens = app.token as ConnectedOauthAppTokens;
+    if (!tokens?.accessToken) {
+      logger.error({ appId: app._id }, "No token provided");
+      throw new ConnectedAppError(
+        "app_outlook_admin.statusText.error_processing_configuration" satisfies OutlookAdminAllKeys,
+      );
+    }
+    try {
+      const client = await this.getClient(app._id, tokens);
+      const startDateTime = DateTime.fromJSDate(appointment.dateTime)
+        .setZone(appointment.timeZone)
+        .toUTC();
+      const response = (await client.api(`/me/onlineMeetings`).post({
+        subject: appointment.option.name,
+        startDateTime: startDateTime.toISO(),
+        endDateTime: startDateTime
+          .plus({ minutes: appointment.totalDuration })
+          .toISO(),
+      } satisfies OnlineMeeting)) as OnlineMeeting;
+
+      if (
+        !response.joinWebUrl ||
+        !response.joinMeetingIdSettings?.joinMeetingId
+      ) {
+        throw new ConnectedAppError(
+          "app_outlook_admin.statusText.failed_to_get_meeting_url_for_appointment" satisfies OutlookAdminAllKeys,
+        );
+      }
+
+      return {
+        url: response.joinWebUrl,
+        meetingId: response.joinMeetingIdSettings.joinMeetingId,
+        meetingPassword: response.joinMeetingIdSettings?.passcode ?? undefined,
+        type: "microsoft_teams",
+      };
+    } catch (error: any) {
+      logger.error(
+        { appointmentId: appointment._id, error },
+        "Error getting meeting URL for appointment",
+      );
       throw error;
     }
   }

@@ -51,6 +51,8 @@ import { WEBHOOKS_APP_NAME } from "../apps/webhooks/const";
 import { WebhooksConnectedApp } from "../apps/webhooks/service";
 import { WEEKLY_SCHEDULE_APP_NAME } from "../apps/weekly-schedule/const";
 import WeeklyScheduleConnectedApp from "../apps/weekly-schedule/service";
+import { ZOOM_APP_NAME } from "../apps/zoom/const";
+import { ZoomConnectedApp } from "../apps/zoom/service";
 
 export const AvailableAppServices: Record<
   string,
@@ -91,4 +93,5 @@ export const AvailableAppServices: Record<
   [FINANCIAL_OVERVIEW_APP_NAME]: (props) => new FinancialOverviewService(props),
   [WEBHOOKS_APP_NAME]: (props) => new WebhooksConnectedApp(props),
   [SMART_SCHEDULE_APP_NAME]: (props) => new SmartScheduleConnectedApp(props),
+  [ZOOM_APP_NAME]: (props) => new ZoomConnectedApp(props),
 };

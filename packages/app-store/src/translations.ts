@@ -50,6 +50,8 @@ import { WEBHOOKS_APP_NAME } from "./apps/webhooks/const";
 import { WebhooksTranslations } from "./apps/webhooks/translations";
 import { WEEKLY_SCHEDULE_APP_NAME } from "./apps/weekly-schedule/const";
 import { WeeklyScheduleTranslations } from "./apps/weekly-schedule/translations";
+import { ZOOM_APP_NAME } from "./apps/zoom/const";
+import { ZoomTranslations } from "./apps/zoom/translations";
 
 export const AppsTranslations: Record<
   string,
@@ -86,4 +88,5 @@ export const AppsTranslations: Record<
   [WEEKLY_SCHEDULE_APP_NAME]: WeeklyScheduleTranslations,
   [WEBHOOKS_APP_NAME]: WebhooksTranslations,
   [SMART_SCHEDULE_APP_NAME]: SmartScheduleTranslations,
+  [ZOOM_APP_NAME]: ZoomTranslations,
 };

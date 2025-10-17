@@ -12,7 +12,12 @@ import image4 from "./images/4.jpg";
 export const OutlookApp: App<OutlookAdminNamespace, OutlookAdminKeys> = {
   name: OUTLOOK_APP_NAME,
   displayName: "app_outlook_admin.app.displayName",
-  scope: ["calendar-read", "calendar-write", "mail-send"],
+  scope: [
+    "calendar-read",
+    "calendar-write",
+    "mail-send",
+    "meeting-url-provider",
+  ],
   type: "oauth",
   category: ["apps.categories.calendar", "apps.categories.communications"],
   Logo: ({ className }) => <OutlookLogo className={className} />,

@@ -4,15 +4,9 @@ import { asOptinalNumberField, zUniqueArray } from "../utils";
 import { Prettify } from "../utils/helpers";
 import { FieldSchema } from "./field";
 
-export const isPaymentRequiredForOptionTypes = [
-  "inherit",
-  "always",
-  "never",
-] as const;
+export const isRequiredOptionTypes = ["inherit", "always", "never"] as const;
 
-const isPaymentRequiredForOptionSchema = z.enum(
-  isPaymentRequiredForOptionTypes,
-);
+const isRequiredOptionSchema = z.enum(isRequiredOptionTypes);
 
 export const appointmentOptionSchema = z
   .object({
@@ -48,6 +42,7 @@ export const appointmentOptionSchema = z
       (field) => field.id,
       "appointments.option.fields.id.unique",
     ).optional(),
+    isAutoConfirm: isRequiredOptionSchema,
     duplicateAppointmentCheck: z
       .object({
         enabled: z.literal(true, {
@@ -93,7 +88,7 @@ export const appointmentOptionSchema = z
   .and(
     z
       .object({
-        requireDeposit: isPaymentRequiredForOptionSchema
+        requireDeposit: isRequiredOptionSchema
           .exclude(["always"], {
             message: "appointments.option.requireDeposit.required",
           })
@@ -102,7 +97,7 @@ export const appointmentOptionSchema = z
       })
       .or(
         z.object({
-          requireDeposit: isPaymentRequiredForOptionSchema.extract(["always"], {
+          requireDeposit: isRequiredOptionSchema.extract(["always"], {
             message: "appointments.option.requireDeposit.required",
           }),
           depositPercentage: z.coerce
@@ -112,6 +107,26 @@ export const appointmentOptionSchema = z
             .int("appointments.option.depositPercentage.required")
             .min(10, "appointments.option.depositPercentage.required")
             .max(100, "appointments.option.depositPercentage.required"),
+        }),
+      ),
+  )
+  .and(
+    z
+      .object({
+        isOnline: z.literal(false, {
+          errorMap: () => ({
+            message: "appointments.option.isOnline.required",
+          }),
+        }),
+      })
+      .or(
+        z.object({
+          isOnline: z.literal(true, {
+            errorMap: () => ({
+              message: "appointments.option.isOnline.required",
+            }),
+          }),
+          meetingUrlProviderAppId: z.string().optional(),
         }),
       ),
   );

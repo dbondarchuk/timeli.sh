@@ -8,6 +8,8 @@ export const demoBookingOptionsResponse: GetAppointmentOptionsResponse = {
       description: "A 30-minute consultation session.",
       duration: 30,
       price: 50,
+      isAutoConfirm: "inherit",
+      isOnline: false,
       addons: [
         {
           _id: "addon-1",
@@ -40,6 +42,8 @@ export const demoBookingOptionsResponse: GetAppointmentOptionsResponse = {
       description: "A 60-minute in-depth consultation.",
       duration: 60,
       price: 90,
+      isAutoConfirm: "inherit",
+      isOnline: false,
       addons: [
         {
           _id: "addon-1",
@@ -72,6 +76,8 @@ export const demoBookingOptionsResponse: GetAppointmentOptionsResponse = {
       description: "A 20-minute follow-up appointment.",
       duration: 20,
       price: 30,
+      isAutoConfirm: "inherit",
+      isOnline: false,
       addons: [
         {
           _id: "addon-1",

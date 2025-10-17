@@ -24,11 +24,19 @@ export type AppointmentDiscount = {
 };
 
 export type AppointmentEventOption = Prettify<
-  Pick<AppointmentOption, "_id" | "name" | "price" | "duration">
+  Pick<AppointmentOption, "_id" | "name" | "price" | "duration" | "isOnline">
 >;
 export type AppointmentEventAddon = Prettify<
   Pick<AppointmentAddon, "_id" | "name" | "price" | "duration">
 >;
+
+export type AppointmentOnlineMeetingInformation = {
+  url: string;
+  type: string;
+  meetingId: string;
+  meetingPassword?: string;
+  data?: Record<string, any>;
+};
 
 export type AppointmentEvent = {
   totalDuration: number;

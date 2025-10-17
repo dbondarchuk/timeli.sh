@@ -11,6 +11,7 @@ export type DashboardTabInjectorApp<
       order: number;
       href: string;
       label: AllKeys<T, CustomKeys>;
+      notificationsCountKey?: string;
       view: (props: {
         props: IConnectedAppProps;
         appId: string;

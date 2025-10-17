@@ -9,6 +9,7 @@ import EmailLayoutPropsSchema from "./email-layout/schema";
 import { ForeachContainerPropsSchema } from "./foreach-container";
 import { HeadingPropsSchema } from "./heading";
 import { ImagePropsSchema } from "./image";
+import { OnlineMeetingPropsSchema } from "./online-meeting/schema";
 import { SpacerPropsSchema } from "./spacer";
 import { TextPropsSchema } from "./text";
 
@@ -26,4 +27,5 @@ export const EditorBlocksSchema = {
   ConditionalContainer: ConditionalContainerPropsSchema,
   ForeachContainer: ForeachContainerPropsSchema,
   CustomHTML: CustomHTMLPropsSchema,
+  OnlineMeeting: OnlineMeetingPropsSchema,
 };

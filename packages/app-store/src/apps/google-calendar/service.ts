@@ -1,6 +1,8 @@
 import { getLoggerFactory } from "@vivid/logger";
 import {
   ApiRequest,
+  AppointmentEvent,
+  AppointmentOnlineMeetingInformation,
   CalendarBusyTime,
   CalendarEvent,
   CalendarEventAttendee,
@@ -11,8 +13,10 @@ import {
   ICalendarBusyTimeProvider,
   ICalendarWriter,
   IConnectedAppProps,
+  IMeetingUrlProvider,
   IOAuthConnectedApp,
   okStatus,
+  WithDatabaseId,
 } from "@vivid/types";
 import { DateTime } from "luxon";
 import { env } from "process";
@@ -22,6 +26,7 @@ import {
   auth as googleAuth,
   calendar as googleCalendar,
 } from "@googleapis/calendar";
+import { meet as googleMeet } from "@googleapis/meet";
 import { decrypt, encrypt } from "@vivid/utils";
 import { Credentials, OAuth2Client } from "google-auth-library";
 import {
@@ -30,7 +35,11 @@ import {
   RequestAction,
 } from "./models";
 
-import { GoogleCalendarAdminAllKeys } from "./translations/types";
+import {
+  GoogleCalendarAdminAllKeys,
+  GoogleCalendarAdminKeys,
+  GoogleCalendarAdminNamespace,
+} from "./translations/types";
 
 const accessType = "offline";
 
@@ -38,6 +47,7 @@ const accessType = "offline";
 const requiredScopes = [
   "https://www.googleapis.com/auth/userinfo.email",
   "https://www.googleapis.com/auth/calendar",
+  "https://www.googleapis.com/auth/meetings.space.created",
 ];
 
 const attendeeStatusToResponseStatusMap: Record<
@@ -75,7 +85,11 @@ const base32hexEncode = (str: string): string => {
 };
 
 class GoogleCalendarConnectedApp
-  implements IOAuthConnectedApp, ICalendarBusyTimeProvider, ICalendarWriter
+  implements
+    IOAuthConnectedApp,
+    ICalendarBusyTimeProvider,
+    ICalendarWriter,
+    IMeetingUrlProvider
 {
   protected readonly loggerFactory = getLoggerFactory(
     "GoogleCalendarConnectedApp",
@@ -170,6 +184,7 @@ class GoogleCalendarConnectedApp
         scope: requiredScopes,
         state: appId,
         prompt: "consent",
+        include_granted_scopes: true,
       });
 
       logger.debug({ appId, url }, "Generated Google Calendar login URL");
@@ -567,6 +582,57 @@ class GoogleCalendarConnectedApp
     }
   }
 
+  public async getMeetingUrl(
+    app: ConnectedAppData<GoogleCalendarConfiguration>,
+    appointment: WithDatabaseId<AppointmentEvent>,
+  ): Promise<AppointmentOnlineMeetingInformation> {
+    const logger = this.loggerFactory("getMeetingUrl");
+    logger.debug(
+      { appId: app._id, appointmentId: appointment._id },
+      "Getting meeting URL from Google Calendar",
+    );
+
+    try {
+      const client = await this.getOAuthClientWithCredentials(app);
+      const meetClient = googleMeet({
+        version: "v2",
+        auth: client,
+      });
+
+      const result = await meetClient.spaces.create({
+        requestBody: {},
+      });
+
+      if (!result.ok || !result.data.meetingUri) {
+        throw new ConnectedAppError<
+          GoogleCalendarAdminNamespace,
+          GoogleCalendarAdminKeys
+        >(
+          "app_google-calendar_admin.statusText.app_was_not_authorized_properly",
+        );
+      }
+
+      return {
+        url: result.data.meetingUri,
+        meetingId: result.data.meetingCode!,
+        type: "google_meet",
+      };
+    } catch (e: any) {
+      logger.error(
+        { appId: app._id, error: e?.message || e?.toString() },
+        "Error getting busy times from Google Calendar",
+      );
+
+      await this.props.update({
+        status: "failed",
+        statusText:
+          "app_google-calendar_admin.statusText.error_getting_busy_times" satisfies GoogleCalendarAdminAllKeys,
+      });
+
+      throw e;
+    }
+  }
+
   private async getCalendarList(app: ConnectedAppData) {
     const logger = this.loggerFactory("getCalendarList");
     logger.debug({ appId: app._id }, "Getting Google Calendar list");
@@ -810,7 +876,7 @@ class GoogleCalendarConnectedApp
 
     try {
       const client = await this.getOAuthClient();
-      const credentials = appData.token as Credentials;
+      const credentials = { ...appData.token } as Credentials;
 
       if (!credentials) {
         logger.error({ appId: appData._id }, "App is not authorized");
@@ -826,13 +892,19 @@ class GoogleCalendarConnectedApp
           { appId: appData._id },
           "Received new tokens from Google OAuth",
         );
+
+        const token = {
+          ...appData.token,
+          ...tokens,
+          access_token: encrypt(tokens.access_token),
+        } as Credentials;
+
+        if (tokens.refresh_token) {
+          token.refresh_token = encrypt(tokens.refresh_token);
+        }
+
         await this.props.update({
-          token: {
-            ...credentials,
-            ...tokens,
-            access_token: encrypt(tokens.access_token),
-            refresh_token: encrypt(tokens.refresh_token),
-          } as Credentials,
+          token,
         });
       });
 

@@ -12,6 +12,7 @@ export * from "./format-arguments";
 export * from "./get-arguments";
 export * from "./ics-uid";
 export * from "./incoming-message";
+export * from "./markdown";
 export * from "./object";
 export * from "./page-data-cache";
 export * from "./phone";

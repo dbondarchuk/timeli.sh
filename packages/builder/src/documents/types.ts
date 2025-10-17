@@ -23,6 +23,7 @@ export type ReaderProps<T> = T & {
   document: TReaderBlock;
   args: Record<string, any>;
   block: TReaderBlock;
+  isEditor?: boolean;
 };
 
 export type BuilderSchema = BaseZodDictionary;

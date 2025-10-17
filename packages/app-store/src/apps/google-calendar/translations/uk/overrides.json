@@ -1,0 +1,9 @@
+{
+  "admin": {
+    "onlineMeeting": {
+      "types": {
+        "google_meet": "Google Meet"
+      }
+    }
+  }
+}

@@ -8,6 +8,7 @@ export * from "./connected-app.service";
 export * from "./customer-hooks";
 export * from "./injectors";
 export * from "./mail";
+export * from "./notifications";
 export * from "./payment";
 export * from "./payment-hooks";
 export * from "./schedule";

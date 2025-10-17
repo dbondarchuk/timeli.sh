@@ -376,6 +376,7 @@ export const AppointmentScheduleForm: React.FC<
           name: eventOption.name,
           price: eventOption.price,
           duration: eventOption.duration,
+          isOnline: eventOption.isOnline,
         },
         fields,
         fieldsLabels: selectedFields.reduce(

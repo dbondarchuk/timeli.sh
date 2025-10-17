@@ -442,6 +442,32 @@ export const renderUserEmailTemplate = async (
         //       ]
         //     : []),
         {
+          id: "block-16a45380-afc4-4a5f-ab8b-3eb5c32fc99c",
+          type: "OnlineMeeting",
+          data: {
+            props: {
+              title: "{{option.name}}",
+              whenText: "When:",
+              codeText: "Code:",
+              passwordText: "Password:",
+              buttonText: "Join Meeting",
+              linkText:
+                "Trouble joining? Copy & paste this link into your browser:",
+              buttonTextColor: "#FFFFFF",
+              buttonBackgroundColor: "#0b5cff",
+              type: "{{meetingInformation.type}}",
+            },
+            style: {
+              padding: {
+                top: 16,
+                bottom: 16,
+                left: 24,
+                right: 24,
+              },
+            },
+          },
+        },
+        {
           type: "Text",
           id: "block-1740258119442",
           data: {

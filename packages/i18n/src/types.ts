@@ -13,9 +13,15 @@ type Leaves<T> = T extends object
     }[keyof T]
   : never;
 
-export type I18nNamespaces =
-  | ("translation" | "admin" | "ui" | "apps" | "validation" | "builder")
-  | (string & {});
+export type BaseI18nNamespaces =
+  | "translation"
+  | "admin"
+  | "ui"
+  | "apps"
+  | "validation"
+  | "builder";
+
+export type I18nNamespaces = BaseI18nNamespaces | (string & {});
 
 export type TranslationKeys = Leaves<typeof translation>;
 export type AdminKeys = Leaves<typeof admin>;
@@ -57,6 +63,10 @@ export type AllKeys<
 > = {
   [K in T]: `${K}.${_I18nKey<K, CustomKeys>}`;
 }[T];
+
+export type BaseAllKeys = {
+  [K in BaseI18nNamespaces]: `${K}.${_I18nKey<K>}`;
+}[BaseI18nNamespaces];
 
 export type I18nKey<
   T extends I18nNamespaces | undefined,

@@ -40,12 +40,12 @@ export interface IConnectedAppsService {
   ): Promise<{ service: IConnectedApp & T; app: ConnectedAppData }>;
   getAppServiceProps(appId: string): IConnectedAppProps;
 
-  executeHooks<T>(
+  executeHooks<T, TReturn = void>(
     scope: AppScope,
-    hook: (app: ConnectedAppData, service: T) => Promise<void>,
+    hook: (app: ConnectedAppData, service: T) => Promise<TReturn>,
     options?: {
       concurrencyLimit?: number;
       ignoreErrors?: boolean;
     },
-  ): Promise<void>;
+  ): Promise<(TReturn | undefined)[]>;
 }

@@ -34,8 +34,14 @@ export const ScheduleSteps: Record<StepType, Step> = {
     next: {
       show: () => true,
       isEnabled: ({ duration: optionDuration }) => !!optionDuration,
-      action: ({ setStep, appointmentOption }) => {
-        setStep(appointmentOption.addons?.length ? "addons" : "calendar");
+      action: async ({ setStep, appointmentOption, fetchAvailability }) => {
+        if (appointmentOption.addons?.length) {
+          setStep("addons");
+          return;
+        }
+
+        await fetchAvailability();
+        setStep("calendar");
       },
     },
     Content: DurationCard,

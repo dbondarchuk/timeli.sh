@@ -307,6 +307,23 @@ export const columns: ColumnDef<Appointment>[] = [
     sortingFn: tableSortNoopFunction,
   },
   {
+    cell: ({ row }) => {
+      const t = useI18n("admin");
+      return row.original.meetingInformation?.url ? (
+        <Link href={row.original.meetingInformation.url} variant="underline">
+          {t("appointments.table.columns.meetingLink")}
+        </Link>
+      ) : null;
+    },
+    id: "meetingInformation.url",
+    header: tableSortHeader(
+      "appointments.table.columns.online",
+      "string",
+      "admin",
+    ),
+    sortingFn: tableSortNoopFunction,
+  },
+  {
     cell: ({ row }) =>
       row.original.discount ? (
         <TooltipProvider>

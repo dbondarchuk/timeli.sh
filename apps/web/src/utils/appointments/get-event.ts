@@ -65,6 +65,7 @@ export const getAppointmentEventFromRequest = async (
       optionName: selectedOption.name,
       optionDuration: selectedOption.duration,
       optionPrice: selectedOption.price,
+      optionIsOnline: selectedOption.isOnline,
     },
     "Retrieved selected option",
   );
@@ -304,6 +305,7 @@ export const getAppointmentEventFromRequest = async (
       name: selectedOption.name,
       price: selectedOption.price,
       duration: selectedOption.duration,
+      isOnline: selectedOption.isOnline,
     },
     timeZone: request.timeZone,
     totalDuration,

@@ -10,6 +10,7 @@ import { EmailLayoutReader } from "./email-layout";
 import { ForeachContainerReader } from "./foreach-container";
 import { Heading } from "./heading";
 import { ImageReader } from "./image";
+import { OnlineMeetingReader } from "./online-meeting/reader";
 import { EditorBlocksSchema } from "./schema";
 import { SpacerReader } from "./spacer";
 import { TextReader } from "./text";
@@ -55,5 +56,8 @@ export const ReaderBlocks: ReaderDocumentBlocksDictionary<
   },
   CustomHTML: {
     Reader: CustomHTML,
+  },
+  OnlineMeeting: {
+    Reader: OnlineMeetingReader,
   },
 };

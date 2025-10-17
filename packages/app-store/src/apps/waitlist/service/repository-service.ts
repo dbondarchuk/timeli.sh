@@ -69,6 +69,76 @@ export class WaitlistRepositoryService {
     return entity!;
   }
 
+  public async getWaitlistEntriesCount(
+    date?: Date,
+  ): Promise<{ newCount: number; totalCount: number }> {
+    const logger = this.loggerFactory("getWaitlistEntriesCount");
+    logger.debug({ date }, "Getting waitlist entries count");
+
+    const db = await this.getDbConnection();
+    const collection = db.collection<WaitlistEntryEntity>(
+      WAITLIST_COLLECTION_NAME,
+    );
+
+    const $and: Filter<WaitlistEntryEntity>[] = [
+      {
+        status: "active",
+      },
+      {
+        $or: [
+          { asSoonAsPossible: { $eq: true } },
+          { "dates.date": { $gte: new Date().toISOString().split("T")[0] } },
+        ],
+      },
+    ];
+
+    const dateMatch = date
+      ? [
+          {
+            $match: {
+              createdAt: {
+                $gte: date,
+              },
+            },
+          },
+        ]
+      : [];
+
+    const [result] = await collection
+      .aggregate([
+        {
+          $match: {
+            $and,
+          },
+        },
+        {
+          $facet: {
+            newCount: [
+              ...dateMatch,
+              {
+                $count: "count",
+              },
+            ],
+            totalCount: [
+              {
+                $count: "count",
+              },
+            ],
+          },
+        },
+      ])
+      .toArray();
+
+    const response = {
+      newCount: result.newCount?.[0]?.count || 0,
+      totalCount: result.totalCount?.[0]?.count || 0,
+    };
+
+    logger.debug({ date, response }, "Waitlist entries count retrieved");
+
+    return response;
+  }
+
   public async getWaitlistEntries(
     query: Query & {
       optionId?: string | string[];
