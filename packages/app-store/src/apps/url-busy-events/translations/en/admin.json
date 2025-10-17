@@ -1,0 +1,47 @@
+{
+  "app": {
+    "displayName": "URL Busy Events",
+    "description": "Connect to an external URL to fetch busy events data for calendar integration."
+  },
+  "form": {
+    "url": {
+      "label": "URL",
+      "placeholder": "https://example.com/api/busy-events",
+      "tooltip": "The URL endpoint that provides busy events data. Start and end times will be passed as query parameters in ISO format."
+    },
+    "headers": {
+      "label": "Headers",
+      "addButton": "Add Header",
+      "keyLabel": "Header Name",
+      "keyPlaceholder": "Authorization",
+      "valueLabel": "Header Value",
+      "valuePlaceholder": "Bearer token",
+      "removeButton": "Remove",
+      "tooltip": "Optional HTTP headers to include with requests"
+    },
+    "connect": "Connect with <app></app>"
+  },
+  "validation": {
+    "form": {
+      "url": {
+        "required": "URL is required",
+        "url": "Please enter a valid URL"
+      },
+      "headers": {
+        "key": {
+          "required": "Header name is required",
+          "unique": "Header name must be unique"
+        },
+        "value": {
+          "required": "Header value is required"
+        }
+      }
+    }
+  },
+  "statusText": {
+    "successfully_connected": "Successfully connected to URL busy events provider",
+    "error_processing_configuration": "Error processing configuration",
+    "error_fetching_busy_times": "Error fetching busy times from URL",
+    "invalid_response_format": "Invalid response format from URL"
+  }
+}

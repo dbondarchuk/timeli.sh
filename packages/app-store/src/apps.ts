@@ -41,6 +41,10 @@ import { TextMessageNotificationApp } from "./apps/text-message-notification/app
 import { TEXT_MESSAGE_NOTIFICATION_APP_NAME } from "./apps/text-message-notification/const";
 import { TextMessageResenderApp } from "./apps/text-message-resender/app";
 import { TEXT_MESSAGE_RESENDER_APP_NAME } from "./apps/text-message-resender/const";
+import { UrlBusyEventsApp } from "./apps/url-busy-events/app";
+import { URL_BUSY_EVENTS_APP_NAME } from "./apps/url-busy-events/const";
+import { UrlScheduleProviderApp } from "./apps/url-schedule-provider/app";
+import { URL_SCHEDULE_PROVIDER_APP_NAME } from "./apps/url-schedule-provider/const";
 import { WaitlistNotificationsApp } from "./apps/waitlist-notifications/app";
 import { WAITLIST_NOTIFICATIONS_APP_NAME } from "./apps/waitlist-notifications/const";
 import { WaitlistApp } from "./apps/waitlist/app";
@@ -80,6 +84,8 @@ export const AvailableApps: Record<string, App> = {
   [WEBHOOKS_APP_NAME]: webhooksApp,
   [FINANCIAL_OVERVIEW_APP_NAME]: FinancialOverviewApp,
   [SMART_SCHEDULE_APP_NAME]: SmartScheduleApp,
+  [URL_BUSY_EVENTS_APP_NAME]: UrlBusyEventsApp,
+  [URL_SCHEDULE_PROVIDER_APP_NAME]: UrlScheduleProviderApp,
   [ZOOM_APP_NAME]: ZoomApp,
 };
 
@@ -105,6 +111,8 @@ export { TEXTBELT_APP_NAME } from "./apps/text-belt/const";
 export { TEXT_MESSAGE_AUTO_REPLY_APP_NAME } from "./apps/text-message-auto-reply/const";
 export { TEXT_MESSAGE_NOTIFICATION_APP_NAME } from "./apps/text-message-notification/const";
 export { TEXT_MESSAGE_RESENDER_APP_NAME } from "./apps/text-message-resender/const";
+export { URL_BUSY_EVENTS_APP_NAME } from "./apps/url-busy-events/const";
+export { URL_SCHEDULE_PROVIDER_APP_NAME } from "./apps/url-schedule-provider/const";
 export { WAITLIST_NOTIFICATIONS_APP_NAME } from "./apps/waitlist-notifications/const";
 export { WAITLIST_APP_NAME } from "./apps/waitlist/const";
 export { WEBHOOKS_APP_NAME } from "./apps/webhooks/const";

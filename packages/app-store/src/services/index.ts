@@ -43,6 +43,10 @@ import { TEXT_MESSAGE_NOTIFICATION_APP_NAME } from "../apps/text-message-notific
 import { TextMessageNotificationConnectedApp } from "../apps/text-message-notification/service";
 import { TEXT_MESSAGE_RESENDER_APP_NAME } from "../apps/text-message-resender/const";
 import TextMessageResenderConnectedApp from "../apps/text-message-resender/service";
+import { URL_BUSY_EVENTS_APP_NAME } from "../apps/url-busy-events/const";
+import UrlBusyEventsConnectedApp from "../apps/url-busy-events/service";
+import { URL_SCHEDULE_PROVIDER_APP_NAME } from "../apps/url-schedule-provider/const";
+import UrlScheduleProviderConnectedApp from "../apps/url-schedule-provider/service";
 import { WAITLIST_NOTIFICATIONS_APP_NAME } from "../apps/waitlist-notifications/const";
 import { WaitlistNotificationsConnectedApp } from "../apps/waitlist-notifications/service";
 import { WAITLIST_APP_NAME } from "../apps/waitlist/const";
@@ -93,5 +97,8 @@ export const AvailableAppServices: Record<
   [FINANCIAL_OVERVIEW_APP_NAME]: (props) => new FinancialOverviewService(props),
   [WEBHOOKS_APP_NAME]: (props) => new WebhooksConnectedApp(props),
   [SMART_SCHEDULE_APP_NAME]: (props) => new SmartScheduleConnectedApp(props),
+  [URL_BUSY_EVENTS_APP_NAME]: (props) => new UrlBusyEventsConnectedApp(props),
+  [URL_SCHEDULE_PROVIDER_APP_NAME]: (props) =>
+    new UrlScheduleProviderConnectedApp(props),
   [ZOOM_APP_NAME]: (props) => new ZoomConnectedApp(props),
 };

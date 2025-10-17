@@ -42,6 +42,10 @@ import { TEXT_MESSAGE_NOTIFICATION_APP_NAME } from "./apps/text-message-notifica
 import { TextMessageNotificationTranslations } from "./apps/text-message-notification/translations";
 import { TEXT_MESSAGE_RESENDER_APP_NAME } from "./apps/text-message-resender/const";
 import { TextMessageResenderTranslations } from "./apps/text-message-resender/translations";
+import { URL_BUSY_EVENTS_APP_NAME } from "./apps/url-busy-events/const";
+import { UrlBusyEventsTranslations } from "./apps/url-busy-events/translations";
+import { URL_SCHEDULE_PROVIDER_APP_NAME } from "./apps/url-schedule-provider/const";
+import { UrlScheduleProviderTranslations } from "./apps/url-schedule-provider/translations";
 import { WAITLIST_NOTIFICATIONS_APP_NAME } from "./apps/waitlist-notifications/const";
 import { WaitlistNotificationsTranslations } from "./apps/waitlist-notifications/translations";
 import { WAITLIST_APP_NAME } from "./apps/waitlist/const";
@@ -88,5 +92,7 @@ export const AppsTranslations: Record<
   [WEEKLY_SCHEDULE_APP_NAME]: WeeklyScheduleTranslations,
   [WEBHOOKS_APP_NAME]: WebhooksTranslations,
   [SMART_SCHEDULE_APP_NAME]: SmartScheduleTranslations,
+  [URL_BUSY_EVENTS_APP_NAME]: UrlBusyEventsTranslations,
+  [URL_SCHEDULE_PROVIDER_APP_NAME]: UrlScheduleProviderTranslations,
   [ZOOM_APP_NAME]: ZoomTranslations,
 };
