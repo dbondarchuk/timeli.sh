@@ -33,7 +33,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AssetSelectorDialog,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
@@ -45,6 +44,7 @@ import {
   ToolbarSplitButtonSecondary,
   useOpenState,
 } from "@vivid/ui";
+import { AssetSelectorDialog } from "@vivid/ui-admin";
 import { useAbsoluteUrl } from "./absolute-url-context";
 
 const MEDIA_CONFIG: Record<

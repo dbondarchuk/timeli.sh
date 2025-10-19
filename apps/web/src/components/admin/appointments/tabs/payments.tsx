@@ -1,10 +1,9 @@
 "use client";
 
-import { AddUpdatePaymentDialog } from "@/components/payments/add-update-payment-dialog";
-import { PaymentCard } from "@/components/payments/payment-card";
 import { useI18n } from "@vivid/i18n";
 import { Appointment } from "@vivid/types";
 import { Button } from "@vivid/ui";
+import { AddUpdatePaymentDialog, PaymentCard } from "@vivid/ui-admin";
 import { BanknoteArrowUp } from "lucide-react";
 
 type PaymentsTabProps = {

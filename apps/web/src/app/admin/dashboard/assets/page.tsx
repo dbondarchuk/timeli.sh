@@ -8,7 +8,8 @@ import { AssetsTableAction } from "@/components/admin/assets/table/table-action"
 import PageContainer from "@/components/admin/layout/page-container";
 import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
-import { Breadcrumbs, DataTableSkeleton, Heading, Link } from "@vivid/ui";
+import { Breadcrumbs, Heading, Link } from "@vivid/ui";
+import { DataTableSkeleton } from "@vivid/ui-admin";
 import { Upload } from "lucide-react";
 import { Metadata } from "next";
 import { Suspense } from "react";

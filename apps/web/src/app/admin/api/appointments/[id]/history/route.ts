@@ -1,6 +1,6 @@
 import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
-import { baseSearchParams } from "@vivid/ui";
+import { baseSearchParams } from "@vivid/ui-admin";
 import { NextRequest, NextResponse } from "next/server";
 import { createLoader } from "nuqs/server";
 

@@ -1,7 +1,6 @@
 import { useI18n } from "@vivid/i18n";
 import { AssetsMigrateRequest } from "@vivid/types";
 import {
-  AppSelector,
   Button,
   Dialog,
   DialogContent,
@@ -15,6 +14,7 @@ import {
   Spinner,
   toast,
 } from "@vivid/ui";
+import { AppSelector } from "@vivid/ui-admin";
 import React from "react";
 
 export const MigrateAssetsDialog: React.FC<{

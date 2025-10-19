@@ -3,11 +3,8 @@
 import { useI18n } from "@vivid/i18n";
 import { AppSetupProps } from "@vivid/types";
 import {
-  ArgumentsAutocomplete,
   BooleanSelect,
   Button,
-  ConnectedAppNameAndLogo,
-  ConnectedAppStatusMessage,
   Form,
   FormControl,
   FormField,
@@ -17,9 +14,14 @@ import {
   InfoTooltip,
   Input,
   Spinner,
+} from "@vivid/ui";
+import {
+  ArgumentsAutocomplete,
+  ConnectedAppNameAndLogo,
+  ConnectedAppStatusMessage,
   TemplateSelector,
   useDemoArguments,
-} from "@vivid/ui";
+} from "@vivid/ui-admin";
 import React from "react";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
 import { WaitlistNotificationsApp } from "./app";

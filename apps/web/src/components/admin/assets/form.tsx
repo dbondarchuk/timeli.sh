@@ -11,10 +11,10 @@ import {
   FormLabel,
   FormMessage,
   Input,
-  SaveButton,
   Textarea,
   toastPromise,
 } from "@vivid/ui";
+import { SaveButton } from "@vivid/ui-admin";
 import mimeType from "mime-type/with-db";
 import { useRouter } from "next/navigation";
 import React from "react";

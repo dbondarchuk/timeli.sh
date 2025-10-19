@@ -3,16 +3,18 @@ import { ColumnDef } from "@tanstack/react-table";
 import { useI18n, useLocale } from "@vivid/i18n";
 import { Asset } from "@vivid/types";
 import {
-  AssetPreview,
   Checkbox,
   Link,
-  tableSortHeader,
-  tableSortNoopFunction,
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@vivid/ui";
+import {
+  AssetPreview,
+  tableSortHeader,
+  tableSortNoopFunction,
+} from "@vivid/ui-admin";
 import { humanFileSize } from "@vivid/utils";
 import { DateTime } from "luxon";
 import { CellAction } from "./cell-action";

@@ -3,7 +3,6 @@
 import { useI18n } from "@vivid/i18n";
 import {
   BooleanSelect,
-  ConnectedAppStatusMessage,
   Form,
   FormControl,
   FormField,
@@ -12,8 +11,8 @@ import {
   FormMessage,
   InfoTooltip,
   Input,
-  SaveButton,
 } from "@vivid/ui";
+import { ConnectedAppStatusMessage, SaveButton } from "@vivid/ui-admin";
 import React from "react";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
 import { SmtpApp } from "./app";

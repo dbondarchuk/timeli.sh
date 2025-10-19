@@ -6,13 +6,13 @@ import { BookingConfiguration, bookingConfigurationSchema } from "@vivid/types";
 import {
   cn,
   Form,
-  SaveButton,
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
   toastPromise,
 } from "@vivid/ui";
+import { SaveButton } from "@vivid/ui-admin";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";

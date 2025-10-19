@@ -10,7 +10,8 @@ import {
   useSetSelectedBlockId,
 } from "@vivid/builder";
 import { useI18n } from "@vivid/i18n";
-import { ArgumentsAutocomplete, cn } from "@vivid/ui";
+import { cn } from "@vivid/ui";
+import { ArgumentsAutocomplete } from "@vivid/ui-admin";
 import { useRef } from "react";
 import sanitizeHtml from "sanitize-html";
 import { ButtonProps } from "./schema";

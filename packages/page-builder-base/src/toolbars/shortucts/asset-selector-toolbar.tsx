@@ -1,6 +1,7 @@
 import { AllKeys, useI18n } from "@vivid/i18n";
 import { UploadedFile } from "@vivid/types";
-import { AssetSelectorDialog, ToolbarButton } from "@vivid/ui";
+import { ToolbarButton } from "@vivid/ui";
+import { AssetSelectorDialog } from "@vivid/ui-admin";
 import React from "react";
 import { ShortcutWithAssetSelector } from "../../shortcuts";
 import { BaseStyleDictionary } from "../../style/types";

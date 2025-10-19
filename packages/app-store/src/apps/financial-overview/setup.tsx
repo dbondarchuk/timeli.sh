@@ -2,12 +2,11 @@
 
 import { useI18n } from "@vivid/i18n";
 import { AppSetupProps } from "@vivid/types";
+import { Button, Spinner } from "@vivid/ui";
 import {
-  Button,
   ConnectedAppNameAndLogo,
   ConnectedAppStatusMessage,
-  Spinner,
-} from "@vivid/ui";
+} from "@vivid/ui-admin";
 import React from "react";
 import { z } from "zod";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";

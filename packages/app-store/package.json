@@ -43,6 +43,7 @@
     "@vivid/page-builder-base": "*",
     "@vivid/types": "*",
     "@vivid/ui": "*",
+    "@vivid/ui-admin": "*",
     "@vivid/utils": "*",
     "html-to-text": "^9.0.5",
     "ics": "^3.7.6",

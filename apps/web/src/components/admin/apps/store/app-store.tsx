@@ -11,12 +11,12 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-  ConnectedAppNameAndLogo,
   Heading,
   Input,
   Link,
   Markdown,
 } from "@vivid/ui";
+import { ConnectedAppNameAndLogo } from "@vivid/ui-admin";
 import React from "react";
 
 export type AppStoreProps = {};

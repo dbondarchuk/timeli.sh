@@ -1,13 +1,12 @@
 import { AvailableApps } from "@vivid/app-store";
 import { getI18nAsync } from "@vivid/i18n/server";
 import { ConnectedApp } from "@vivid/types";
+import { Button, Link } from "@vivid/ui";
 import {
-  Button,
   ConnectedAppAccount,
   ConnectedAppNameAndLogo,
   ConnectedAppStatusMessage,
-  Link,
-} from "@vivid/ui";
+} from "@vivid/ui-admin";
 import { RefreshCcw } from "lucide-react";
 import { AddOrUpdateAppButton } from "./add-or-update-app-dialog";
 import { DeleteAppButton } from "./delete-app-button";

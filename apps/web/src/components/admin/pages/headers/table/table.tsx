@@ -1,5 +1,5 @@
 import { ServicesContainer } from "@vivid/services";
-import { DataTable } from "@vivid/ui";
+import { DataTable } from "@vivid/ui-admin";
 import { columns } from "./columns";
 import { searchParams, searchParamsCache } from "./search-params";
 

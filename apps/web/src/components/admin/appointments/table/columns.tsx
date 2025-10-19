@@ -5,14 +5,13 @@ import { Appointment } from "@vivid/types";
 import {
   Button,
   Link,
-  tableSortHeader,
-  tableSortNoopFunction,
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
   useTimeZone,
 } from "@vivid/ui";
+import { tableSortHeader, tableSortNoopFunction } from "@vivid/ui-admin";
 import { durationToTime, formatAmountString } from "@vivid/utils";
 import {
   CalendarCheck,

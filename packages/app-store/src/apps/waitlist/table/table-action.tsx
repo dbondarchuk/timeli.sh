@@ -1,19 +1,16 @@
 "use client";
 
 import { useI18n } from "@vivid/i18n";
+import { Button, Popover, PopoverContent, PopoverTrigger } from "@vivid/ui";
 import {
-  Button,
   CustomersDataTableAsyncFilterBox,
   DataTableFilterBox,
   DataTableRangeBox,
   DataTableResetFilter,
   DataTableSearch,
   OptionsDataTableAsyncFilterBox,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
   useSelectedRowsStore,
-} from "@vivid/ui";
+} from "@vivid/ui-admin";
 import { Settings2 } from "lucide-react";
 import React from "react";
 import { waitlistStatus } from "../models";

@@ -1,8 +1,7 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
 import {
-  ArgumentsAutocomplete,
-  ConnectedAppStatusMessage,
   Form,
   FormControl,
   FormField,
@@ -11,20 +10,22 @@ import {
   FormMessage,
   InfoTooltip,
   Skeleton,
-  TemplateSelector,
 } from "@vivid/ui";
-import React from "react";
+import {
+  ArgumentsAutocomplete,
+  ConnectedAppStatusMessage,
+  SaveButton,
+  TemplateSelector,
+  useDemoArguments,
+} from "@vivid/ui-admin";
 import { UseFormReturn } from "react-hook-form";
+import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
 import { CustomerEmailNotificationApp } from "./app";
 import {
   CustomerEmailNotificationConfiguration,
   customerEmailNotificationConfigurationSchema,
   EmailTemplateKeys,
 } from "./models";
-
-import { useI18n } from "@vivid/i18n";
-import { SaveButton, useDemoArguments } from "@vivid/ui";
-import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
 import {
   CustomerEmailNotificationAdminKeys,
   CustomerEmailNotificationAdminNamespace,

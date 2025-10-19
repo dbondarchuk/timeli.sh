@@ -1,5 +1,6 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
 import {
   Form,
   FormControl,
@@ -9,20 +10,16 @@ import {
   FormMessage,
   InfoTooltip,
   Skeleton,
-  TemplateSelector,
 } from "@vivid/ui";
-import React from "react";
+import { SaveButton, TemplateSelector } from "@vivid/ui-admin";
 import { UseFormReturn } from "react-hook-form";
+import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
 import { CustomerTextMessageNotificationApp } from "./app";
 import {
   CustomerTextMessageNotificationConfiguration,
   customerTextMessageNotificationConfigurationSchema,
   TextMessagesTemplateKeys,
 } from "./models";
-
-import { useI18n } from "@vivid/i18n";
-import { SaveButton } from "@vivid/ui";
-import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
 import {
   CustomerTextMessageNotificationAdminKeys,
   CustomerTextMessageNotificationAdminNamespace,

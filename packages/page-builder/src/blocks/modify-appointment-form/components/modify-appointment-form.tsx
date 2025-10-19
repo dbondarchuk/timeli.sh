@@ -4,6 +4,7 @@ import { useI18n } from "@vivid/i18n";
 import type { CollectPayment, DateTime } from "@vivid/types";
 import { Availability, ModifyAppointmentInformation } from "@vivid/types";
 import { Spinner, toast } from "@vivid/ui";
+import { fetchWithJson } from "@vivid/utils";
 import { DateTime as LuxonDateTime } from "luxon";
 import React, { useMemo } from "react";
 import { ModifyAppointmentFormContext, StepType } from "./context";
@@ -88,7 +89,7 @@ export const ModifyAppointmentForm: React.FC<
   const fetchAppointment = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/event/modify`, {
+      const response = await fetchWithJson(`/api/event/modify`, {
         method: "POST",
         body: JSON.stringify({
           type,
@@ -100,11 +101,9 @@ export const ModifyAppointmentForm: React.FC<
         throw { response };
       }
 
-      const data = (await response.json()) as ModifyAppointmentInformation;
-
-      data.dateTime = LuxonDateTime.fromISO(
-        data.dateTime as unknown as string,
-      ).toJSDate();
+      const data = (await response.json({
+        parseDates: true,
+      })) as ModifyAppointmentInformation;
 
       setAppointment(data);
 

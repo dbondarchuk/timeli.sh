@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useI18n } from "@vivid/i18n";
 import { AssetEntity } from "@vivid/types";
 import {
-  AssetPreview,
   Form,
   FormControl,
   FormField,
@@ -12,10 +11,10 @@ import {
   FormLabel,
   FormMessage,
   Input,
-  SaveButton,
   Textarea,
   toastPromise,
 } from "@vivid/ui";
+import { AssetPreview, SaveButton } from "@vivid/ui-admin";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";

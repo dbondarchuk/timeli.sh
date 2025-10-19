@@ -4,7 +4,6 @@ import { useI18n } from "@vivid/i18n";
 import { CustomerListModel } from "@vivid/types";
 import {
   Button,
-  CustomerSelector,
   Dialog,
   DialogClose,
   DialogContent,
@@ -17,6 +16,7 @@ import {
   Spinner,
   toastPromise,
 } from "@vivid/ui";
+import { CustomerSelector } from "@vivid/ui-admin";
 import { Merge } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";

@@ -13,9 +13,8 @@ import {
   DialogTrigger,
   Link,
   ScrollArea,
-  tableSortHeader,
-  tableSortNoopFunction,
 } from "@vivid/ui";
+import { tableSortHeader, tableSortNoopFunction } from "@vivid/ui-admin";
 import { DateTime } from "luxon";
 import { CellAction } from "./cell-action";
 

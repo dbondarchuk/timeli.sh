@@ -2,24 +2,19 @@
 
 import { useI18n } from "@vivid/i18n";
 import {
-  Button,
-  cn,
+  communicationChannels,
+  communicationDirectionSchema,
+  communicationParticipantTypeSchema,
+} from "@vivid/types";
+import { Button, cn, Popover, PopoverContent, PopoverTrigger } from "@vivid/ui";
+import {
   CustomersDataTableAsyncFilterBox,
   DataTableFilterBox,
   DataTableRangeBox,
   DataTableResetFilter,
   DataTableSearch,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
   useSelectedRowsStore,
-} from "@vivid/ui";
-
-import {
-  communicationChannels,
-  communicationDirectionSchema,
-  communicationParticipantTypeSchema,
-} from "@vivid/types";
+} from "@vivid/ui-admin";
 import { Settings2 } from "lucide-react";
 import React from "react";
 import { ClearAllCommunicationLogsButton } from "./clear-all";

@@ -6,7 +6,6 @@ import {
   Time,
 } from "@vivid/types";
 import {
-  AppSelector,
   BooleanSelect,
   Button,
   Combobox,
@@ -31,6 +30,7 @@ import {
   TagInput,
   use12HourFormat,
 } from "@vivid/ui";
+import { AppSelector } from "@vivid/ui-admin";
 import { formatTime, formatTimeLocale, parseTime } from "@vivid/utils";
 import React from "react";
 import { TabProps } from "./types";

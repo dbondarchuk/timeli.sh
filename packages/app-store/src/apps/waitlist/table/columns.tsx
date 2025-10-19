@@ -1,12 +1,8 @@
 "use client";
 import { ColumnDef } from "@tanstack/react-table";
 import { useI18n, useLocale } from "@vivid/i18n";
-import {
-  Checkbox,
-  Link,
-  tableSortHeader,
-  tableSortNoopFunction,
-} from "@vivid/ui";
+import { Checkbox, Link } from "@vivid/ui";
+import { tableSortHeader, tableSortNoopFunction } from "@vivid/ui-admin";
 import { CalendarPlus } from "lucide-react";
 import { DateTime } from "luxon";
 import { WaitlistEntry } from "../models";

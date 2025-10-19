@@ -4,8 +4,6 @@ import { useI18n } from "@vivid/i18n";
 import { AppSetupProps } from "@vivid/types";
 import {
   Button,
-  ConnectedAppNameAndLogo,
-  ConnectedAppStatusMessage,
   Form,
   FormControl,
   FormField,
@@ -14,8 +12,12 @@ import {
   FormMessage,
   InfoTooltip,
   Spinner,
-  TemplateSelector,
 } from "@vivid/ui";
+import {
+  ConnectedAppNameAndLogo,
+  ConnectedAppStatusMessage,
+  TemplateSelector,
+} from "@vivid/ui-admin";
 import React from "react";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
 import { TextMessageAutoReplyApp } from "./app";

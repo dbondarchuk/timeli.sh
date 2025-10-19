@@ -1,6 +1,6 @@
 import { useI18n } from "@vivid/i18n";
 import { CalendarSourceConfiguration } from "@vivid/types";
-import { NonSortable } from "@vivid/ui";
+import { NonSortable } from "@vivid/ui-admin";
 import React from "react";
 import { useFieldArray } from "react-hook-form";
 import { CalendarSourceCard } from "./cards/calendar-source-card";

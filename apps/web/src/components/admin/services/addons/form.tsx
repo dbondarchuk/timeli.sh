@@ -24,10 +24,9 @@ import {
   InputGroupInputClasses,
   InputGroupSuffixClasses,
   InputSuffix,
-  SaveButton,
-  Sortable,
   toastPromise,
 } from "@vivid/ui";
+import { SaveButton, Sortable } from "@vivid/ui-admin";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useFieldArray, useForm } from "react-hook-form";

@@ -2,19 +2,15 @@
 
 import { useI18n } from "@vivid/i18n";
 import { appointmentStatuses } from "@vivid/types";
+import { Button, cn, Popover, PopoverContent, PopoverTrigger } from "@vivid/ui";
 import {
-  Button,
-  cn,
   CustomersDataTableAsyncFilterBox,
   DataTableFilterBox,
   DataTableRangeBox,
   DataTableResetFilter,
   DataTableSearch,
   DiscountsDataTableAsyncFilterBox,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@vivid/ui";
+} from "@vivid/ui-admin";
 import { Settings2 } from "lucide-react";
 import React from "react";
 import { useAppointmentsTableFilters } from "./use-table-filters";

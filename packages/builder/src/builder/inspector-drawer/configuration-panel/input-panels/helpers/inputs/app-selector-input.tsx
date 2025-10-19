@@ -1,12 +1,7 @@
 import React from "react";
 
-import {
-  AppSelector,
-  AppSelectorProps,
-  cn,
-  FormDescription,
-  Label,
-} from "@vivid/ui";
+import { cn, FormDescription, Label } from "@vivid/ui";
+import { AppSelector, AppSelectorProps } from "@vivid/ui-admin";
 import { ResetButton } from "./reset-button";
 
 type Props = Omit<

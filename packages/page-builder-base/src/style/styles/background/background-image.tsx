@@ -1,6 +1,5 @@
 import { useI18n } from "@vivid/i18n";
 import {
-  AssetSelectorInput,
   Button,
   Label,
   Select,
@@ -9,6 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@vivid/ui";
+import { AssetSelectorInput } from "@vivid/ui-admin";
 import { Image, Plus, Trash2 } from "lucide-react";
 import { z } from "zod";
 import { ColorExtendedInput } from "../../../style-inputs/base/color-exteneded-input";

@@ -42,6 +42,7 @@ import {
 } from "recharts";
 
 // import { PaymentCard } from "@/components/payments/payment-card";
+import { PaymentCard } from "@vivid/ui-admin";
 import {
   FinancialOverviewAdminKeys,
   FinancialOverviewAdminNamespace,
@@ -562,11 +563,11 @@ export const FinancialsTabClient: React.FC<FinancialsTabProps> = ({
         </div>
       </div>
 
-      {/* <div className="flex flex-col gap-4 @container/recent-payments">
+      <div className="flex flex-col gap-4 @container/recent-payments">
         <h3 className="text-2xl font-semibold leading-none tracking-tight wrap-anywhere">
-          {t("dashboard.financials.recentPayments")}
+          {t("view.recentPayments")}
         </h3>
-        <div className="grid grid-col-1 @2xl/recent-payments:grid-cols-2 @4xl/recent-payments:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 @2xl/recent-payments:grid-cols-2 @4xl/recent-payments:grid-cols-3 gap-4">
           {loading ? (
             Array.from({ length: 12 }).map((_, index) => (
               <Skeleton className="w-full h-80" key={index} />
@@ -583,13 +584,11 @@ export const FinancialsTabClient: React.FC<FinancialsTabProps> = ({
             ))
           ) : (
             <div className="w-full p-4 border rounded-md bg-card text-card-foreground flex items-center justify-center">
-              <span className="text-foreground">
-                {t("dashboard.financials.noPayments")}
-              </span>
+              <span className="text-foreground">{t("view.noPayments")}</span>
             </div>
           )}
         </div>
-      </div> */}
+      </div>
     </div>
   );
 };

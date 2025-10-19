@@ -27,7 +27,6 @@ import {
   CardContent,
   CardHeader,
   cn,
-  ColorPickerInput,
   Combobox,
   Form,
   FormControl,
@@ -37,10 +36,9 @@ import {
   FormMessage,
   IComboboxItem,
   InfoTooltip,
-  NonSortable,
-  SaveButton,
   toastPromise,
 } from "@vivid/ui";
+import { ColorPickerInput, NonSortable, SaveButton } from "@vivid/ui-admin";
 import { Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";

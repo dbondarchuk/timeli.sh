@@ -23,8 +23,8 @@ import {
   Label,
   Spinner,
   toastPromise,
-  WeekSelector,
 } from "@vivid/ui";
+import { WeekSelector } from "@vivid/ui-admin";
 import { getWeekIdentifier } from "@vivid/utils";
 import { Copy } from "lucide-react";
 import { useRouter } from "next/navigation";

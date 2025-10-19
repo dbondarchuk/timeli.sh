@@ -4,7 +4,8 @@ import React from "react";
 import { searchParams } from "./search-params";
 
 import { WithTotal } from "@vivid/types";
-import { DataTable, DataTableSkeleton, toast, useDebounce } from "@vivid/ui";
+import { toast, useDebounce } from "@vivid/ui";
+import { DataTable, DataTableSkeleton } from "@vivid/ui-admin";
 import { getReminders } from "../actions";
 import { Reminder } from "../models";
 import {

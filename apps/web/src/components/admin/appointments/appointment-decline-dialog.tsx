@@ -1,12 +1,5 @@
 "use client";
 
-import {
-  getPaymentDescription,
-  getPaymentMethod,
-  getPaymentMethodIcon,
-  getPaymentStatusColor,
-  getPaymentStatusIcon,
-} from "@/components/payments/payment-card";
 import { useI18n, useLocale } from "@vivid/i18n";
 import { Appointment, AppointmentStatus, Payment } from "@vivid/types";
 import {
@@ -33,6 +26,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@vivid/ui";
+import {
+  getPaymentDescription,
+  getPaymentMethod,
+  getPaymentMethodIcon,
+  getPaymentStatusColor,
+  getPaymentStatusIcon,
+} from "@vivid/ui-admin";
 import { formatAmount, formatAmountString } from "@vivid/utils";
 import { CalendarX2 } from "lucide-react";
 import { DateTime } from "luxon";

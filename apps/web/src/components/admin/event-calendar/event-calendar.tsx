@@ -3,6 +3,7 @@
 import { useI18n } from "@vivid/i18n";
 import { Appointment, DaySchedule, Event } from "@vivid/types";
 import { useTimeZone } from "@vivid/ui";
+import { fetchWithJson } from "@vivid/utils";
 import {
   CheckCircle,
   DollarSign,
@@ -35,11 +36,11 @@ export const EventCalendar: React.FC<EventCalendarProps> = (props) => {
     setLoading(true);
     setEvents([]);
 
-    const response = await fetch(
+    const response = await fetchWithJson(
       `/admin/api/calendar?start=${encodeURIComponent(DateTime.fromJSDate(start).startOf("day").toISO()!)}&end=${encodeURIComponent(DateTime.fromJSDate(end).endOf("day").toISO()!)}`,
     );
 
-    const body = (await response.json()) as {
+    const body = (await response.json({ parseDates: true, timeZone })) as {
       events: Event[];
       schedule: Record<string, DaySchedule>;
     };
@@ -47,24 +48,7 @@ export const EventCalendar: React.FC<EventCalendarProps> = (props) => {
     setLoading(false);
 
     setSchedule(body.schedule);
-    setEvents(
-      (body.events || []).map((a) => {
-        if ("createdAt" in a) {
-          a.createdAt = DateTime.fromISO(a.createdAt as unknown as string)
-            .setZone(timeZone)
-            .toJSDate();
-        }
-
-        const dateTime = DateTime.fromISO(a.dateTime as unknown as string)
-          .setZone(timeZone)
-          .toJSDate();
-
-        return {
-          ...a,
-          dateTime: dateTime,
-        };
-      }),
-    );
+    setEvents(body.events || []);
   };
 
   const calendarEvents: CalendarEvent[] = React.useMemo(

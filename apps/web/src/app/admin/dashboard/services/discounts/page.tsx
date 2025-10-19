@@ -8,7 +8,8 @@ import { DiscountsTable } from "@/components/admin/services/discounts/table/tabl
 import { DiscountsTableAction } from "@/components/admin/services/discounts/table/table-action";
 import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
-import { Breadcrumbs, DataTableSkeleton, Heading, Link } from "@vivid/ui";
+import { Breadcrumbs, Heading, Link } from "@vivid/ui";
+import { DataTableSkeleton } from "@vivid/ui-admin";
 import { Plus } from "lucide-react";
 import { Metadata } from "next";
 import { Suspense } from "react";

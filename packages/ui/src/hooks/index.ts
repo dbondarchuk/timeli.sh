@@ -7,7 +7,6 @@ export * from "./use-clipboard";
 export * from "./use-debounce";
 export * from "./use-debounce-cache-fn";
 export * from "./use-debounce-callback";
-export * from "./use-demo-arguments";
 export * from "./use-did-update-effect";
 export * from "./use-effect-debugger";
 export * from "./use-is-touch-device";

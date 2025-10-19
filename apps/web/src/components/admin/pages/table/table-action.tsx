@@ -1,16 +1,13 @@
 "use client";
 
 import { useI18n } from "@vivid/i18n";
+import { Button, Popover, PopoverContent, PopoverTrigger } from "@vivid/ui";
 import {
-  Button,
   DataTableFilterBox,
   DataTableResetFilter,
   DataTableSearch,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
   useSelectedRowsStore,
-} from "@vivid/ui";
+} from "@vivid/ui-admin";
 import { Settings2 } from "lucide-react";
 import { DeleteSelectedPagesButton } from "./delete-selected";
 import { usePagesTableFilters } from "./use-table-filters";

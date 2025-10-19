@@ -6,7 +6,6 @@ import { lightTheme } from "@uiw/react-json-view/light";
 
 import { useI18n } from "@vivid/i18n";
 import {
-  ArgumentsAutocomplete,
   Button,
   cn,
   Dialog,
@@ -27,6 +26,7 @@ import {
   TooltipTrigger,
   useTheme,
 } from "@vivid/ui";
+import { ArgumentsAutocomplete } from "@vivid/ui-admin";
 import { templateSafeWithError } from "@vivid/utils";
 import { Braces, ClipboardCopy } from "lucide-react";
 import React from "react";

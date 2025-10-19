@@ -9,7 +9,6 @@ import {
   isPaymentRequiredForCustomerTypes,
 } from "@vivid/types";
 import {
-  AssetSelectorDialog,
   Button,
   Card,
   CardContent,
@@ -34,10 +33,10 @@ import {
   InputSuffix,
   Label,
   PhoneInput,
-  SaveButton,
   Textarea,
   toastPromise,
 } from "@vivid/ui";
+import { AssetSelectorDialog, SaveButton } from "@vivid/ui-admin";
 import { PlusCircle, Trash } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -45,15 +44,6 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { checkUniqueEmailAndPhone, create, update } from "./actions";
-
-const IsPaymentRequiredForCustomerTypesLabels: Record<
-  (typeof isPaymentRequiredForCustomerTypes)[number],
-  string
-> = {
-  always: "Always",
-  never: "Never",
-  inherit: "Same as selected option or general configuration",
-};
 
 export const CustomerForm: React.FC<{
   initialData?: CustomerUpdateModel & Partial<DatabaseId>;

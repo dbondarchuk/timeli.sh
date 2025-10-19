@@ -38,8 +38,8 @@ import {
   InputSuffix,
   Spinner,
   toastPromise,
-  WeekSelector,
 } from "@vivid/ui";
+import { WeekSelector } from "@vivid/ui-admin";
 import { getWeekIdentifier } from "@vivid/utils";
 import { Repeat2 } from "lucide-react";
 import { useRouter } from "next/navigation";

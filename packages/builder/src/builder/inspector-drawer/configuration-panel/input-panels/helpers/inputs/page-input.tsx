@@ -1,12 +1,7 @@
 import React from "react";
 
-import {
-  cn,
-  FormDescription,
-  Label,
-  PageSelectorInput,
-  PageSelectorInputProps,
-} from "@vivid/ui";
+import { cn, FormDescription, Label } from "@vivid/ui";
+import { PageSelectorInput, PageSelectorInputProps } from "@vivid/ui-admin";
 import { ResetButton } from "./reset-button";
 
 type Props = Omit<PageSelectorInputProps, "value" | "onChange" | "onBlur"> & {

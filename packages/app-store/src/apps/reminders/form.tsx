@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useI18n } from "@vivid/i18n";
 import { DatabaseId } from "@vivid/types";
 import {
-  ArgumentsAutocomplete,
   Combobox,
   Form,
   FormControl,
@@ -15,13 +14,16 @@ import {
   IComboboxItem,
   InfoTooltip,
   Input,
-  SaveButton,
   SimpleTimePicker,
-  TemplateSelector,
   toastPromise,
   use12HourFormat,
-  useDemoArguments,
 } from "@vivid/ui";
+import {
+  ArgumentsAutocomplete,
+  SaveButton,
+  TemplateSelector,
+  useDemoArguments,
+} from "@vivid/ui-admin";
 import { DateTime } from "luxon";
 import { useRouter } from "next/navigation";
 import React from "react";

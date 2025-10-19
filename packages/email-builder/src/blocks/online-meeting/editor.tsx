@@ -9,7 +9,7 @@ import {
   useDispatchAction,
   useEditorArgs,
 } from "@vivid/builder";
-import { ArgumentsAutocomplete } from "@vivid/ui";
+import { ArgumentsAutocomplete } from "@vivid/ui-admin";
 import { OnlineMeetingProps, OnlineMeetingPropsDefaults } from "./schema";
 import { getLogoUrl, getStyles } from "./styles";
 

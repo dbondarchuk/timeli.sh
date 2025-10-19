@@ -17,13 +17,13 @@ import {
   FormMessage,
   InfoTooltip,
   Input,
-  NonSortable,
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@vivid/ui";
+import { NonSortable } from "@vivid/ui-admin";
 import React from "react";
 import { useFieldArray } from "react-hook-form";
 import {

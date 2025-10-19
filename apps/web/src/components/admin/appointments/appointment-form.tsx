@@ -24,7 +24,6 @@ import {
   Button,
   Checkbox,
   Combobox,
-  CustomerSelector,
   DateTimePicker,
   DurationInput,
   fieldSchemaMapper,
@@ -43,13 +42,13 @@ import {
   InputGroupSuffixClasses,
   InputSuffix,
   MultiSelect,
-  PromoCodeSelector,
   Spinner,
   Textarea,
   toastPromise,
   use12HourFormat,
   useTimeZone,
 } from "@vivid/ui";
+import { CustomerSelector, PromoCodeSelector } from "@vivid/ui-admin";
 import { formatAmount, getDiscountAmount } from "@vivid/utils";
 import { CalendarClock, Clock, DollarSign } from "lucide-react";
 import { DateTime } from "luxon";

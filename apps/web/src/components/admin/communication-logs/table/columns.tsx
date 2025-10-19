@@ -16,9 +16,8 @@ import {
   IFrame,
   Link,
   Markdown,
-  tableSortHeader,
-  tableSortNoopFunction,
 } from "@vivid/ui";
+import { tableSortHeader, tableSortNoopFunction } from "@vivid/ui-admin";
 import { DateTime } from "luxon";
 
 export const columns: ColumnDef<CommunicationLog>[] = [

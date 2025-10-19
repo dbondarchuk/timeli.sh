@@ -6,13 +6,8 @@ import {
   ScheduleConfiguration,
   scheduleConfigurationSchema,
 } from "@vivid/types";
-import {
-  Form,
-  FormField,
-  SaveButton,
-  Scheduler,
-  toastPromise,
-} from "@vivid/ui";
+import { Form, FormField, toastPromise } from "@vivid/ui";
+import { SaveButton, Scheduler } from "@vivid/ui-admin";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";

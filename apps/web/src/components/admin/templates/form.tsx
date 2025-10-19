@@ -17,11 +17,11 @@ import {
   FormMessage,
   InfoTooltip,
   Input,
-  SaveButton,
   toast,
   toastPromise,
   useDebounceCacheFn,
 } from "@vivid/ui";
+import { SaveButton } from "@vivid/ui-admin";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";

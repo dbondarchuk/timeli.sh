@@ -9,7 +9,6 @@ import {
 } from "@vivid/types";
 import {
   AlertModal,
-  ArgumentsAutocomplete,
   Button,
   cn,
   Combobox,
@@ -32,11 +31,11 @@ import {
   Label,
   ScrollArea,
   Spinner,
-  TemplateSelector,
   toast,
   toastPromise,
   useArguments,
 } from "@vivid/ui";
+import { ArgumentsAutocomplete, TemplateSelector } from "@vivid/ui-admin";
 import { Send } from "lucide-react";
 import React from "react";
 import { useForm } from "react-hook-form";

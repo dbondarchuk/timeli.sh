@@ -1,6 +1,5 @@
 import { useI18n } from "@vivid/i18n";
 import {
-  AppSelector,
   BooleanSelect,
   FormControl,
   FormField,
@@ -15,6 +14,7 @@ import {
   InputGroupSuffixClasses,
   InputSuffix,
 } from "@vivid/ui";
+import { AppSelector } from "@vivid/ui-admin";
 import { TabProps } from "./types";
 
 export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {

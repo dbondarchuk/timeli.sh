@@ -26,17 +26,16 @@ import {
   InputGroupInputClasses,
   InputGroupSuffixClasses,
   InputSuffix,
-  SaveButton,
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-  Sortable,
   Switch,
   TagInput,
   toastPromise,
 } from "@vivid/ui";
+import { SaveButton, Sortable } from "@vivid/ui-admin";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useFieldArray, useForm } from "react-hook-form";

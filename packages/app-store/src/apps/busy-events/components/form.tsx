@@ -2,15 +2,8 @@
 
 import { useI18n } from "@vivid/i18n";
 import { Schedule, ScheduleOverride, WeekIdentifier } from "@vivid/types";
-import {
-  Button,
-  Scheduler,
-  Skeleton,
-  toast,
-  toastPromise,
-  useDebounce,
-  WeekSelector,
-} from "@vivid/ui";
+import { Button, Skeleton, toast, toastPromise, useDebounce } from "@vivid/ui";
+import { Scheduler, WeekSelector } from "@vivid/ui-admin";
 import { getDateFromWeekIdentifier, getWeekIdentifier } from "@vivid/utils";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";

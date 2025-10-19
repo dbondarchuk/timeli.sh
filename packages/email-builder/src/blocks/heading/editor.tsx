@@ -11,7 +11,7 @@ import {
   usePortalContext,
   useSetSelectedBlockId,
 } from "@vivid/builder";
-import { ArgumentsAutocomplete } from "@vivid/ui";
+import { ArgumentsAutocomplete } from "@vivid/ui-admin";
 import { mergeRefs } from "@vivid/ui/src/utils/merge-refs";
 import { HeadingProps } from "./schema";
 import { getStyles } from "./styles";

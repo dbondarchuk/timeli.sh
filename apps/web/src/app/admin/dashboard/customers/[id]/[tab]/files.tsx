@@ -6,7 +6,6 @@ import { useInView } from "react-intersection-observer";
 import { AssetsTableAction } from "@/components/admin/assets/table/table-action";
 import { useI18n } from "@vivid/i18n";
 import {
-  AssetPreview,
   Button,
   Checkbox,
   Dialog,
@@ -24,9 +23,9 @@ import {
   Textarea,
   cn,
   toast,
-  useSelectedRowsStore,
   useUploadFile,
 } from "@vivid/ui";
+import { AssetPreview, useSelectedRowsStore } from "@vivid/ui-admin";
 import { Upload } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useCallback } from "react";

@@ -1,6 +1,6 @@
 import { createSearchParamsCache, createSerializer } from "nuqs/server";
 
-import { baseSearchParams } from "@vivid/ui";
+import { baseSearchParams } from "@vivid/ui-admin";
 
 export const searchParams = {
   ...baseSearchParams,

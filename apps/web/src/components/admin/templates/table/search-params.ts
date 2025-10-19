@@ -6,7 +6,7 @@ import {
 } from "nuqs/server";
 
 import { communicationChannels } from "@vivid/types";
-import { baseSearchParams } from "@vivid/ui";
+import { baseSearchParams } from "@vivid/ui-admin";
 
 export const searchParams = {
   ...baseSearchParams,

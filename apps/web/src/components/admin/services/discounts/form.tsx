@@ -37,13 +37,10 @@ import {
   InputGroupSuffixClasses,
   InputSuffix,
   Label,
-  NonSortable,
-  OptionSelector,
-  SaveButton,
   toastPromise,
   use12HourFormat,
 } from "@vivid/ui";
-
+import { NonSortable, OptionSelector, SaveButton } from "@vivid/ui-admin";
 import { PlusCircle, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";

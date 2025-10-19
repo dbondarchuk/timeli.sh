@@ -11,7 +11,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-  AppSelector,
   Button,
   FormControl,
   FormField,
@@ -20,6 +19,7 @@ import {
   FormMessage,
   InfoTooltip,
 } from "@vivid/ui";
+import { AppSelector } from "@vivid/ui-admin";
 import { Trash } from "lucide-react";
 import React from "react";
 import { UseFormReturn } from "react-hook-form";

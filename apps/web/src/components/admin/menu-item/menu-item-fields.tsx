@@ -16,11 +16,11 @@ import {
   Link,
   LinkSizes,
   LinkVariants,
-  Sortable,
   TextFonts,
   TextSizes,
   TextWeights,
 } from "@vivid/ui";
+import { Sortable } from "@vivid/ui-admin";
 import { useMemo } from "react";
 import { useFieldArray, UseFormReturn } from "react-hook-form";
 import { IconSelect } from "./icon-select";

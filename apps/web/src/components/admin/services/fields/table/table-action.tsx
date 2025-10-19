@@ -2,16 +2,13 @@
 
 import { useI18n } from "@vivid/i18n";
 import { fieldTypes } from "@vivid/types";
+import { Button, Popover, PopoverContent, PopoverTrigger } from "@vivid/ui";
 import {
-  Button,
   DataTableFilterBox,
   DataTableResetFilter,
   DataTableSearch,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
   useSelectedRowsStore,
-} from "@vivid/ui";
+} from "@vivid/ui-admin";
 import { Settings2 } from "lucide-react";
 import { DeleteSelectedFieldsButton } from "./delete-selected";
 import { useFieldsTableFilters } from "./use-table-filters";

@@ -3,6 +3,7 @@
 import { useI18n } from "@vivid/i18n";
 import { Appointment, DaySchedule, Event } from "@vivid/types";
 import { cn, useTimeZone } from "@vivid/ui";
+import { fetchWithJson } from "@vivid/utils";
 import { DateTime, HourNumbers } from "luxon";
 import React from "react";
 import {
@@ -35,21 +36,16 @@ export const AppointmentCalendar: React.FC<
 
   const getData = async (start: DateTime, end: DateTime) => {
     setLoading(true);
-    const response = await fetch(
+    const response = await fetchWithJson(
       `/admin/api/calendar?start=${encodeURIComponent(start.toISO()!)}&end=${encodeURIComponent(end.toISO()!)}`,
     );
 
-    const body = (await response.json()) as {
+    const body = (await response.json({ parseDates: true, timeZone })) as {
       events: Event[];
       schedule: Record<string, DaySchedule>;
     };
 
-    const apiEvents = (body.events || []).map((a) => ({
-      ...a,
-      dateTime: DateTime.fromISO(a.dateTime as unknown as string)
-        .setZone(timeZone)
-        .toJSDate(),
-    }));
+    const apiEvents = body.events || [];
 
     setLoading(false);
     setApiEvents(apiEvents);

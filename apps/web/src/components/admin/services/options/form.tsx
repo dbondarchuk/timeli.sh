@@ -11,7 +11,6 @@ import {
   WithDatabaseId,
 } from "@vivid/types";
 import {
-  AppSelector,
   BooleanSelect,
   Card,
   CardContent,
@@ -36,15 +35,14 @@ import {
   InputGroupInputClasses,
   InputGroupSuffixClasses,
   InputSuffix,
-  SaveButton,
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-  Sortable,
   toastPromise,
 } from "@vivid/ui";
+import { AppSelector, SaveButton, Sortable } from "@vivid/ui-admin";
 import { ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";

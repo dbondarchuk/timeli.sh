@@ -7,16 +7,15 @@ import {
   defaultAppsConfigurationSchema,
 } from "@vivid/types";
 import {
-  AppSelector,
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-  SaveButton,
   toastPromise,
 } from "@vivid/ui";
+import { AppSelector, SaveButton } from "@vivid/ui-admin";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";

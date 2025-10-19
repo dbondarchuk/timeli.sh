@@ -30,6 +30,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@vivid/ui";
+import { fetchWithJson } from "@vivid/utils";
 import { Mail, MailQuestion, MessageSquare, Send } from "lucide-react";
 import { DateTime } from "luxon";
 import { useRouter } from "next/navigation";
@@ -41,7 +42,7 @@ const CommunicationEntry: React.FC<{ entry: CommunicationLog }> = ({
   const tAdmin = useI18n("admin");
   const tApps = useI18n("apps");
   const t = useI18n();
-  const dateTime = DateTime.fromISO(entry.dateTime as any as string);
+  const dateTime = DateTime.fromJSDate(entry.dateTime);
   const locale = useLocale();
   return (
     <div className="flex flex-row w-full bg-card items-start space-x-4 p-4 border rounded-lg">
@@ -272,7 +273,7 @@ export const RecentCommunications: React.FC<RecentCommunicationsProps> = ({
       if (end) url += `&end=${end.toISOString()}`;
       if (search) url += `&search=${encodeURIComponent(search)}`;
 
-      const response = await fetch(url, {
+      const response = await fetchWithJson(url, {
         method: "GET",
         cache: "default",
       });

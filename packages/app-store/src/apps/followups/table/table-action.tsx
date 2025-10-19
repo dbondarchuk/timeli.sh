@@ -4,15 +4,17 @@ import { useI18n } from "@vivid/i18n";
 import { communicationChannels } from "@vivid/types";
 import {
   Button,
-  DataTableFilterBox,
-  DataTableResetFilter,
-  DataTableSearch,
   Link,
   Popover,
   PopoverContent,
   PopoverTrigger,
-  useSelectedRowsStore,
 } from "@vivid/ui";
+import {
+  DataTableFilterBox,
+  DataTableResetFilter,
+  DataTableSearch,
+  useSelectedRowsStore,
+} from "@vivid/ui-admin";
 import { Plus, Settings2 } from "lucide-react";
 import React from "react";
 import {

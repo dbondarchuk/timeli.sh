@@ -29,10 +29,10 @@ import {
   Checkbox,
   inputVariants,
   Label,
-  PageSelectorDialog,
   popoverVariants,
   Separator,
 } from "@vivid/ui";
+import { PageSelectorDialog } from "@vivid/ui-admin";
 import { useRef } from "react";
 import { useWindow } from "./window-context";
 

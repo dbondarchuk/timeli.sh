@@ -4,7 +4,8 @@ import { searchParams } from "./search-params";
 
 import { useI18n } from "@vivid/i18n";
 import { WithTotal } from "@vivid/types";
-import { DataTable, DataTableSkeleton, toast, useDebounce } from "@vivid/ui";
+import { toast, useDebounce } from "@vivid/ui";
+import { DataTable, DataTableSkeleton } from "@vivid/ui-admin";
 import { getFollowUps } from "../actions";
 import { FollowUp } from "../models";
 import {

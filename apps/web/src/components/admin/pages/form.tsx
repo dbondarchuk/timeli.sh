@@ -29,11 +29,10 @@ import {
   InputGroupSuffixClasses,
   InputSuffix,
   Link,
-  SaveButton,
   toastPromise,
   useDebounceCacheFn,
-  useDemoArguments,
 } from "@vivid/ui";
+import { SaveButton, useDemoArguments } from "@vivid/ui-admin";
 import { formatArguments } from "@vivid/utils";
 import { Globe, Settings as SettingsIcon } from "lucide-react";
 import { useRouter } from "next/navigation";

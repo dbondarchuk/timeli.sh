@@ -1,13 +1,8 @@
 import React from "react";
 
 import { Prettify } from "@vivid/types";
-import {
-  AssetSelectorInput,
-  AssetSelectorInputProps,
-  cn,
-  FormDescription,
-  Label,
-} from "@vivid/ui";
+import { cn, FormDescription, Label } from "@vivid/ui";
+import { AssetSelectorInput, AssetSelectorInputProps } from "@vivid/ui-admin";
 import { ResetButton } from "./reset-button";
 
 type Props = Prettify<

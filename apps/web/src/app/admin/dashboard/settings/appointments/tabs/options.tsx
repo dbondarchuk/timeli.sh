@@ -1,6 +1,6 @@
 import { useI18n } from "@vivid/i18n";
 import { Id } from "@vivid/types";
-import { Sortable } from "@vivid/ui";
+import { Sortable } from "@vivid/ui-admin";
 import React from "react";
 import { useFieldArray } from "react-hook-form";
 import { OptionSelectCard } from "./cards/option-select-card";

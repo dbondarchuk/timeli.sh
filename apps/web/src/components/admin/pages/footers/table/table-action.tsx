@@ -5,7 +5,7 @@ import {
   DataTableResetFilter,
   DataTableSearch,
   useSelectedRowsStore,
-} from "@vivid/ui";
+} from "@vivid/ui-admin";
 import { DeleteSelectedPageFootersButton } from "./delete-selected";
 import { usePageFootersTableFilters } from "./use-table-filters";
 

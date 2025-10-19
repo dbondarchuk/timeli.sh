@@ -5,8 +5,6 @@ import { AppSetupProps } from "@vivid/types";
 import {
   BooleanSelect,
   Button,
-  ConnectedAppNameAndLogo,
-  ConnectedAppStatusMessage,
   Form,
   FormControl,
   FormField,
@@ -14,9 +12,13 @@ import {
   FormLabel,
   FormMessage,
   InfoTooltip,
-  OptionSelector,
   Spinner,
 } from "@vivid/ui";
+import {
+  ConnectedAppNameAndLogo,
+  ConnectedAppStatusMessage,
+  OptionSelector,
+} from "@vivid/ui-admin";
 import React from "react";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
 import { SmartScheduleApp } from "./app";

@@ -21,11 +21,10 @@ import {
   FormMessage,
   Heading,
   Input,
-  SaveButton,
-  Sortable,
   toastPromise,
   useDebounceCacheFn,
 } from "@vivid/ui";
+import { SaveButton, Sortable } from "@vivid/ui-admin";
 import { useRouter } from "next/navigation";
 import React, { useMemo } from "react";
 import { useFieldArray, useForm } from "react-hook-form";

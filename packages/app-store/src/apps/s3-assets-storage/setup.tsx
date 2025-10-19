@@ -5,8 +5,6 @@ import { AppSetupProps } from "@vivid/types";
 import {
   Button,
   Checkbox,
-  ConnectedAppNameAndLogo,
-  ConnectedAppStatusMessage,
   Form,
   FormControl,
   FormField,
@@ -17,6 +15,10 @@ import {
   Input,
   Spinner,
 } from "@vivid/ui";
+import {
+  ConnectedAppNameAndLogo,
+  ConnectedAppStatusMessage,
+} from "@vivid/ui-admin";
 import React from "react";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
 import { S3AssetsStorageApp } from "./app";

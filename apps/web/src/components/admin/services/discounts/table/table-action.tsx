@@ -2,17 +2,14 @@
 
 import { useI18n } from "@vivid/i18n";
 import { discountTypes } from "@vivid/types";
+import { Button, Popover, PopoverContent, PopoverTrigger } from "@vivid/ui";
 import {
-  Button,
   DataTableFilterBox,
   DataTableRangeBox,
   DataTableResetFilter,
   DataTableSearch,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
   useSelectedRowsStore,
-} from "@vivid/ui";
+} from "@vivid/ui-admin";
 import { Settings2 } from "lucide-react";
 import { DeleteSelectedDiscountsButton } from "./delete-selected";
 import { useFieldsTableFilters } from "./use-table-filters";

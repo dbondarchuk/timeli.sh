@@ -7,11 +7,11 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-  ConnectedAppNameAndLogo,
   Heading,
   Link,
   Markdown,
 } from "@vivid/ui";
+import { ConnectedAppNameAndLogo } from "@vivid/ui-admin";
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import React from "react";

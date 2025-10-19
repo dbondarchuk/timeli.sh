@@ -1,17 +1,3 @@
-import PageContainer from "@/components/admin/layout/page-container";
-import { getI18nAsync } from "@vivid/i18n/server";
-import { getLoggerFactory } from "@vivid/logger";
-import {
-  Breadcrumbs,
-  DataTableSkeleton,
-  Heading,
-  Link,
-  Tabs,
-  TabsContent,
-  TabsLinkTrigger,
-  TabsList,
-} from "@vivid/ui";
-
 import { AppointmentsTableColumnsCount } from "@/components/admin/appointments/table/columns";
 import {
   searchParamsCache as appointmentsSearchParamsCache,
@@ -29,7 +15,20 @@ import {
 } from "@/components/admin/communication-logs/table/search-params";
 import { CommunicationLogsTableAction } from "@/components/admin/communication-logs/table/table-action";
 import { CustomerForm } from "@/components/admin/customers/form";
+import PageContainer from "@/components/admin/layout/page-container";
+import { getI18nAsync } from "@vivid/i18n/server";
+import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
+import {
+  Breadcrumbs,
+  Heading,
+  Link,
+  Tabs,
+  TabsContent,
+  TabsLinkTrigger,
+  TabsList,
+} from "@vivid/ui";
+import { DataTableSkeleton } from "@vivid/ui-admin";
 import { CalendarClock } from "lucide-react";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";

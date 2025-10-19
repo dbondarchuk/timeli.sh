@@ -1,6 +1,7 @@
 import { JSX, useCallback, useId } from "react";
 
-import { ArgumentsAutocomplete, cn, FormDescription, Label } from "@vivid/ui";
+import { cn, FormDescription, Label } from "@vivid/ui";
+import { ArgumentsAutocomplete } from "@vivid/ui-admin";
 import React from "react";
 import { useEditorArgs } from "../../../../../../documents/editor/context";
 import { ResetButton } from "./reset-button";

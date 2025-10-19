@@ -18,8 +18,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  OptionSelector,
 } from "@vivid/ui";
+import { OptionSelector } from "@vivid/ui-admin";
 import { cva } from "class-variance-authority";
 import { GripVertical, Trash } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";

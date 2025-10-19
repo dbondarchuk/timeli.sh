@@ -18,7 +18,8 @@ import {
   useClassName,
   useResizeBlockStyles,
 } from "@vivid/page-builder-base";
-import { ArgumentsAutocomplete, cn, useDebounceCallback } from "@vivid/ui";
+import { cn, useDebounceCallback } from "@vivid/ui";
+import { ArgumentsAutocomplete } from "@vivid/ui-admin";
 import { InlineTextProps } from "./schema";
 import { getDefaults, styles } from "./styles";
 

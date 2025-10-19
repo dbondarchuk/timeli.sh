@@ -2,12 +2,8 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { useI18n, useLocale } from "@vivid/i18n";
 import { PageFooterListModel } from "@vivid/types";
-import {
-  Checkbox,
-  Link,
-  tableSortHeader,
-  tableSortNoopFunction,
-} from "@vivid/ui";
+import { Checkbox, Link } from "@vivid/ui";
+import { tableSortHeader, tableSortNoopFunction } from "@vivid/ui-admin";
 import { DateTime } from "luxon";
 import { CellAction } from "./cell-action";
 

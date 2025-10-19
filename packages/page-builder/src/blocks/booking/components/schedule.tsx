@@ -13,6 +13,7 @@ import type {
 } from "@vivid/types";
 import { ApplyDiscountResponse, Availability } from "@vivid/types";
 import { Spinner, toast, useTimeZone } from "@vivid/ui";
+import { fetchWithJson } from "@vivid/utils";
 import { DateTime as LuxonDateTime } from "luxon";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -182,21 +183,21 @@ export const Schedule: React.FC<
       setIsLoading(true);
 
       try {
-        const response = await fetch("/api/event/duplicate", {
+        const response = await fetchWithJson("/api/event/duplicate", {
           method: "POST",
           body: JSON.stringify(request),
         });
 
         if (response.status >= 400) throw new Error(response.statusText);
-        const data =
-          (await response.json()) as CheckDuplicateAppointmentsResponse;
+        const data = (await response.json({
+          parseDates: "luxon",
+          timeZone,
+        })) as CheckDuplicateAppointmentsResponse;
         return {
           ...data,
           closestAppointment:
             data.hasDuplicateAppointments && data.closestAppointment
-              ? LuxonDateTime.fromISO(
-                  data.closestAppointment as any as string,
-                ).setZone(timeZone)
+              ? data.closestAppointment
               : undefined,
         } as CheckDuplicateAppointmentsResponse;
       } catch (e) {

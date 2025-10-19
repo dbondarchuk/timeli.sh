@@ -1,0 +1,36 @@
+{
+  "name": "@vivid/ui-admin",
+  "version": "0.0.1",
+  "private": true,
+  "sideEffects": false,
+  "scripts": {
+    "type-check": "tsc --pretty --noEmit",
+    "type-check:ci": "tsc-absolute --pretty --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "main": "./src/index.ts",
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "19.0.2",
+    "@types/react-big-calendar": "^1.8.10",
+    "@types/react-dom": "19.0.2",
+    "@types/react-window": "^1.8.8",
+    "@vivid/eslint-config": "*",
+    "@vivid/tailwind-config": "*",
+    "@vivid/typescript-config": "*",
+    "typescript": "5.5.4"
+  },
+  "dependencies": {
+    "@vivid/ui": "*",
+    "@vivid/types": "*",
+    "@vivid/utils": "*",
+    "lucide-react": "^0.525.0",
+    "@monaco-editor/react": "^4.6.0",
+    "react": "19.0.0",
+    "zustand": "^4.5.5"
+  },
+  "peerDependencies": {
+    "next": "15.2.1"
+  }
+}

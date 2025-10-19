@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { languages, useI18n } from "@vivid/i18n";
 import { GeneralConfiguration, generalConfigurationSchema } from "@vivid/types";
 import {
-  AssetSelectorInput,
   Combobox,
   Form,
   FormControl,
@@ -16,11 +15,11 @@ import {
   InfoTooltip,
   Input,
   PhoneInput,
-  SaveButton,
   TagInput,
   Textarea,
   toastPromise,
 } from "@vivid/ui";
+import { AssetSelectorInput, SaveButton } from "@vivid/ui-admin";
 import { getTimeZones } from "@vvo/tzdb";
 import { useRouter } from "next/navigation";
 import React from "react";

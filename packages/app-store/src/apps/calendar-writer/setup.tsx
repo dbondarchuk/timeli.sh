@@ -3,10 +3,7 @@
 import { useI18n } from "@vivid/i18n";
 import { AppSetupProps } from "@vivid/types";
 import {
-  AppSelector,
   Button,
-  ConnectedAppNameAndLogo,
-  ConnectedAppStatusMessage,
   Form,
   FormControl,
   FormField,
@@ -16,6 +13,11 @@ import {
   InfoTooltip,
   Spinner,
 } from "@vivid/ui";
+import {
+  AppSelector,
+  ConnectedAppNameAndLogo,
+  ConnectedAppStatusMessage,
+} from "@vivid/ui-admin";
 import React from "react";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
 import { CalendarWriterApp } from "./app";

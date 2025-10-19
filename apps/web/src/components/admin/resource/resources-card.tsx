@@ -1,4 +1,4 @@
-import { Sortable } from "@vivid/ui";
+import { Sortable } from "@vivid/ui-admin";
 import { useMemo } from "react";
 import {
   ArrayPath,

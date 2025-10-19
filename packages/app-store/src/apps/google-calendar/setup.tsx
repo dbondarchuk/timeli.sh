@@ -3,13 +3,15 @@ import { AppSetupProps, ConnectedApp } from "@vivid/types";
 import {
   Button,
   Combobox,
-  ConnectedAppNameAndLogo,
-  ConnectedAppStatusMessage,
   Label,
   Spinner,
   toast,
   toastPromise,
 } from "@vivid/ui";
+import {
+  ConnectedAppNameAndLogo,
+  ConnectedAppStatusMessage,
+} from "@vivid/ui-admin";
 import React from "react";
 import {
   addNewApp,

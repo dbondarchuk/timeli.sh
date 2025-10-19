@@ -16,7 +16,7 @@ import {
   TooltipTrigger,
   useTimeZone,
 } from "@vivid/ui";
-import { formatAmountString } from "@vivid/utils";
+import { fetchWithJson, formatAmountString } from "@vivid/utils";
 import {
   Banknote,
   BanknoteX,
@@ -60,7 +60,7 @@ const HistoryEntry: React.FC<{ entry: AppointmentHistoryEntry }> = ({
   entry,
 }) => {
   const t = useI18n();
-  const dateTime = DateTime.fromISO(entry.dateTime as any as string);
+  const dateTime = DateTime.fromJSDate(entry.dateTime);
   const locale = useLocale();
   const timeZone = useTimeZone();
 
@@ -194,18 +194,14 @@ const HistoryEntry: React.FC<{ entry: AppointmentHistoryEntry }> = ({
             <>
               <Badge variant="outline" className="text-xs">
                 {t("admin.appointments.history.oldDateTime", {
-                  oldDateTime: DateTime.fromISO(
-                    entry.data.oldDateTime as any as string,
-                  )
+                  oldDateTime: DateTime.fromJSDate(entry.data.oldDateTime)
                     .setZone(timeZone)
                     .toLocaleString(DateTime.DATETIME_MED, { locale }),
                 })}
               </Badge>
               <Badge variant="default" className="text-xs">
                 {t("admin.appointments.history.newDateTime", {
-                  newDateTime: DateTime.fromISO(
-                    entry.data.newDateTime as any as string,
-                  )
+                  newDateTime: DateTime.fromJSDate(entry.data.newDateTime)
                     .setZone(timeZone)
                     .toLocaleString(DateTime.DATETIME_MED, { locale }),
                 })}
@@ -273,18 +269,14 @@ const HistoryEntry: React.FC<{ entry: AppointmentHistoryEntry }> = ({
               </Badge>
               <Badge variant="outline" className="text-xs">
                 {t("admin.appointments.history.oldDateTime", {
-                  oldDateTime: DateTime.fromISO(
-                    entry.data.oldDateTime as any as string,
-                  )
+                  oldDateTime: DateTime.fromJSDate(entry.data.oldDateTime)
                     .setZone(timeZone)
                     .toLocaleString(DateTime.DATETIME_MED, { locale }),
                 })}
               </Badge>
               <Badge variant="default" className="text-xs">
                 {t("admin.appointments.history.newDateTime", {
-                  newDateTime: DateTime.fromISO(
-                    entry.data.newDateTime as any as string,
-                  )
+                  newDateTime: DateTime.fromJSDate(entry.data.newDateTime)
                     .setZone(timeZone)
                     .toLocaleString(DateTime.DATETIME_MED, { locale }),
                 })}
@@ -352,7 +344,7 @@ export const AppointmentHistory: React.FC<AppointmentHistoryProps> = ({
     async (page: number) => {
       let url = `/admin/api/appointments/${appointmentId}/history?page=${page}&limit=${toLoad}`;
 
-      const response = await fetch(url, {
+      const response = await fetchWithJson(url, {
         method: "GET",
         cache: "default",
       });
