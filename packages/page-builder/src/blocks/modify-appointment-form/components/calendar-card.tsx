@@ -83,7 +83,7 @@ export const CalendarCard: React.FC = () => {
   const adjustedAvailability = React.useMemo(
     () =>
       availability.map((time) =>
-        Luxon.fromMillis(time, { zone: "utc" }).setZone(timeZone),
+        Luxon.fromJSDate(time, { zone: "utc" }).setZone(timeZone),
       ),
     [availability, timeZone],
   );

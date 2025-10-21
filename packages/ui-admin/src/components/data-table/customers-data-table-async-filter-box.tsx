@@ -3,9 +3,10 @@
 import Image from "next/image";
 import React from "react";
 
+import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
-import { CustomerListModel, WithTotal } from "@vivid/types";
-import { Skeleton, toast } from "@vivid/ui";
+import { CustomerListModel } from "@vivid/types";
+import { Skeleton } from "@vivid/ui";
 import {
   AsyncFilterBoxOption,
   AsyncFilterBoxProps,
@@ -62,40 +63,20 @@ export const CustomersDataTableAsyncFilterBox: React.FC<
 
   const getCustomers = async (page: number, search?: string) => {
     const limit = 10;
-    let url = `/admin/api/customers?page=${page}&limit=${limit}`;
-    if (rest.filterValue) {
-      url += `&priorityId=${rest.filterValue.map((id) => encodeURIComponent(id)).join(",")}`;
-    }
-
-    if (search) url += `&search=${encodeURIComponent(search)}`;
-
-    const response = await fetch(url, {
-      method: "GET",
-      cache: "default",
+    const result = await adminApi.customers.getCustomers({
+      page,
+      limit,
+      search,
+      priorityId: rest.filterValue ?? undefined,
     });
 
-    if (response.status >= 400) {
-      toast.error(t("common.toasts.error"));
-      const text = await response.text();
-      console.error(
-        `Request to fetch customers failed: ${response.status}; ${text}`,
-      );
-
-      return {
-        items: [],
-        hasMore: false,
-      };
-    }
-
-    const res = (await response.json()) as WithTotal<CustomerListModel>;
-
     return {
-      items: res.items.map((customer) => ({
+      items: result.items.map((customer) => ({
         label: <CustomerShortLabel customer={customer} />,
         shortLabel: customer.name,
         value: customer._id,
       })) satisfies AsyncFilterBoxOption[],
-      hasMore: page * limit < res.total,
+      hasMore: page * limit < result.total,
     };
   };
 

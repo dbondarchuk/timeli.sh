@@ -1,13 +1,13 @@
-import {
-  AppointmentScheduleForm,
-  AppointmentScheduleFormFrom,
-} from "@/components/admin/appointments/appointment-form";
 import PageContainer from "@/components/admin/layout/page-container";
 import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
 import { AppointmentChoice } from "@vivid/types";
 import { Breadcrumbs, Heading } from "@vivid/ui";
+import {
+  AppointmentScheduleForm,
+  AppointmentScheduleFormFrom,
+} from "@vivid/ui-admin-kit";
 import { Metadata } from "next";
 import { searchParamsCache } from "./search-params";
 

@@ -1,13 +1,16 @@
+import {
+  serviceAddonsSearchParams,
+  serviceAddonsSearchParamsCache,
+} from "@vivid/api-sdk";
 import { ServicesContainer } from "@vivid/services";
 import { DataTable } from "@vivid/ui-admin";
 import { columns } from "./columns";
-import { searchParams, searchParamsCache } from "./search-params";
 
 export const AddonsTable: React.FC = async () => {
-  const page = searchParamsCache.get("page");
-  const search = searchParamsCache.get("search") || undefined;
-  const limit = searchParamsCache.get("limit");
-  const sort = searchParamsCache.get("sort");
+  const page = serviceAddonsSearchParamsCache.get("page");
+  const search = serviceAddonsSearchParamsCache.get("search") || undefined;
+  const limit = serviceAddonsSearchParamsCache.get("limit");
+  const sort = serviceAddonsSearchParamsCache.get("sort");
 
   const offset = (page - 1) * limit;
 
@@ -26,7 +29,7 @@ export const AddonsTable: React.FC = async () => {
       columns={columns}
       data={res.items}
       totalItems={res.total}
-      sortSchemaDefault={searchParams.sort.defaultValue}
+      sortSchemaDefault={serviceAddonsSearchParams.sort.defaultValue}
     />
   );
 };

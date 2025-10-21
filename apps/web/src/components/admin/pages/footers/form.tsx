@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { adminApi } from "@vivid/api-sdk";
 import { AppsBlocksEditors } from "@vivid/app-store/blocks/editors";
 import { AppsBlocksReaders } from "@vivid/app-store/blocks/readers";
 import { useI18n } from "@vivid/i18n";
@@ -31,11 +32,6 @@ import {
   NavigationGuardDialog,
   useIsDirty,
 } from "../../navigation-guard/dialog";
-import {
-  checkUniquePageFooterName,
-  createPageFooter,
-  updatePageFooter,
-} from "./actions";
 
 const baseNotAllowedBlocks = [
   "Booking",
@@ -110,7 +106,7 @@ export const PageFooterForm: React.FC<{
   }, [apps]);
 
   const cachedUniqueNameCheck = useDebounceCacheFn(
-    checkUniquePageFooterName,
+    adminApi.pageFooters.checkUniquePageFooterName,
     300,
   );
 
@@ -170,7 +166,7 @@ export const PageFooterForm: React.FC<{
 
       const fn = async () => {
         if (!initialData) {
-          const { _id } = await createPageFooter(data);
+          const { _id } = await adminApi.pageFooters.createPageFooter(data);
 
           onFormSubmit();
 
@@ -178,7 +174,7 @@ export const PageFooterForm: React.FC<{
             router.push(`/admin/dashboard/pages/footers/${_id}`);
           }, 100);
         } else {
-          await updatePageFooter(initialData._id, data);
+          await adminApi.pageFooters.updatePageFooter(initialData._id, data);
           onFormSubmit();
 
           setTimeout(() => {

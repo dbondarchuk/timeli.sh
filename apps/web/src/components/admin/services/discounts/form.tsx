@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
 import {
   DatabaseId,
@@ -39,15 +40,19 @@ import {
   Label,
   toastPromise,
   use12HourFormat,
+  useDebounceCacheFn,
 } from "@vivid/ui";
-import { NonSortable, OptionSelector, SaveButton } from "@vivid/ui-admin";
+import {
+  AddonSelector,
+  NonSortable,
+  OptionSelector,
+  SaveButton,
+} from "@vivid/ui-admin";
 import { PlusCircle, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useFieldArray, useForm, UseFormReturn } from "react-hook-form";
 import { z } from "zod";
-import { AddonSelector } from "../options/addon-selector";
-import { checkUniqueNameAndCode, create, update } from "./actions";
 
 const DiscountLimitCard: React.FC<{
   disabled?: boolean;
@@ -213,9 +218,15 @@ export const DiscountForm: React.FC<{
   const t = useI18n();
   const timeFormat = t("ui.timePicker.format");
   const uses12HourFormat = use12HourFormat();
+
+  const cachedDiscountNameAndCodeCheck = useDebounceCacheFn(
+    adminApi.discounts.checkDiscountNameAndCode,
+    300,
+  );
+
   const formSchema = getDiscountSchemaWithUniqueCheck(
     (name, codes) =>
-      checkUniqueNameAndCode(
+      cachedDiscountNameAndCodeCheck(
         name,
         codes?.filter((code) => !!code) ?? [],
         initialData?._id,
@@ -235,6 +246,7 @@ export const DiscountForm: React.FC<{
     defaultValues: initialData || {
       type: "percentage",
       enabled: true,
+      codes: [],
     },
   });
 
@@ -244,10 +256,10 @@ export const DiscountForm: React.FC<{
 
       const fn = async () => {
         if (!initialData?._id) {
-          const { _id } = await create(data);
+          const { _id } = await adminApi.discounts.createDiscount(data);
           router.push(`/admin/dashboard/services/discounts/${_id}`);
         } else {
-          await update(initialData._id, data);
+          await adminApi.discounts.updateDiscount(initialData._id, data);
 
           router.refresh();
         }
@@ -272,7 +284,7 @@ export const DiscountForm: React.FC<{
   const [discountType, codes] = form.watch(["type", "codes"]);
 
   const onAddCode = () => {
-    if (codes.length >= 10) return;
+    if (codes && codes.length >= 10) return;
     form.setValue("codes", [...(codes ?? []), ""]);
     form.trigger("codes");
   };
@@ -600,10 +612,10 @@ export const DiscountForm: React.FC<{
                     {t("admin.services.discounts.form.codes")}
                   </span>
                 }
-                ids={codes}
+                ids={codes || []}
                 onAdd={() => onAddCode()}
                 disabled={loading}
-                disabledAdd={codes.length >= 10}
+                disabledAdd={codes && codes.length >= 10}
               >
                 <div className="flex flex-col px-2 py-2 gap-4">
                   {(codes || []).map((code, index) => (
@@ -667,7 +679,7 @@ export const DiscountForm: React.FC<{
                   remove={() => limitTo.remove(index)}
                 />
               ))}
-              {!limitTo.fields.length && (
+              {!limitTo.fields?.length && (
                 <div className="flex flex-col gap-4 px-2 py-4 border rounded bg-card">
                   {t("admin.services.discounts.form.anyOptionOrAddon")}
                 </div>

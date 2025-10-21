@@ -1,5 +1,6 @@
 "use client";
 
+import { BASE_ADMIN_API_URL } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
 import { DashboardNotification } from "@vivid/types";
 import { Badge, toast } from "@vivid/ui";
@@ -47,9 +48,21 @@ export const NotificationsToastStream: React.FC = () => {
   const router = useRouter();
   const t = useI18n();
 
+  const lastDate = React.useRef<Date | undefined>(undefined);
+
   React.useEffect(() => {
+    const dateQueryParam = lastDate.current
+      ? `?date=${lastDate.current.toISOString()}`
+      : "";
     // Create an EventSource to listen to SSE events
-    const eventSource = new EventSource("/admin/api/notifications");
+    const eventSource = new EventSource(
+      `${BASE_ADMIN_API_URL}/notifications${dateQueryParam}`,
+    );
+
+    eventSource.onopen = () => {
+      lastDate.current = new Date();
+    };
+
     // Handle incoming messages
     eventSource.onmessage = (event) => {
       const data = JSON.parse(event.data) as DashboardNotification[];

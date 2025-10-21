@@ -1,5 +1,6 @@
 "use client";
 
+import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
 import { ServiceField } from "@vivid/types";
 import {
@@ -18,7 +19,6 @@ import {
 import { Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { deleteSelected } from "../actions";
 
 export const DeleteSelectedFieldsButton: React.FC<{
   selected: ServiceField[];
@@ -32,12 +32,17 @@ export const DeleteSelectedFieldsButton: React.FC<{
     try {
       setIsLoading(true);
 
-      await toastPromise(deleteSelected(selected.map((page) => page._id)), {
-        success: t("services.fields.deleteSelected.success", {
-          count: selected.length,
-        }),
-        error: t("services.fields.deleteSelected.error"),
-      });
+      await toastPromise(
+        adminApi.serviceFields.deleteServiceFields(
+          selected.map((page) => page._id),
+        ),
+        {
+          success: t("services.fields.deleteSelected.success", {
+            count: selected.length,
+          }),
+          error: t("services.fields.deleteSelected.error"),
+        },
+      );
 
       router.refresh();
       setIsOpen(false);

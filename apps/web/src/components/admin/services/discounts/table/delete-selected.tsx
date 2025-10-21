@@ -1,5 +1,6 @@
 "use client";
 
+import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
 import { Discount } from "@vivid/types";
 import {
@@ -18,7 +19,6 @@ import {
 import { Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { deleteSelected } from "../actions";
 
 export const DeleteSelectedDiscountsButton: React.FC<{
   selected: Discount[];
@@ -32,12 +32,15 @@ export const DeleteSelectedDiscountsButton: React.FC<{
     try {
       setIsLoading(true);
 
-      await toastPromise(deleteSelected(selected.map((page) => page._id)), {
-        success: t("services.discounts.deleteSelected.success", {
-          count: selected.length,
-        }),
-        error: t("services.discounts.deleteSelected.error"),
-      });
+      await toastPromise(
+        adminApi.discounts.deleteDiscounts(selected.map((page) => page._id)),
+        {
+          success: t("services.discounts.deleteSelected.success", {
+            count: selected.length,
+          }),
+          error: t("services.discounts.deleteSelected.error"),
+        },
+      );
 
       router.refresh();
       setIsOpen(false);

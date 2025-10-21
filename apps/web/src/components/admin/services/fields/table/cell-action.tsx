@@ -1,4 +1,5 @@
 "use client";
+import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
 import { ServiceField } from "@vivid/types";
 import {
@@ -15,7 +16,6 @@ import {
 import { Copy, Edit, MoreHorizontal, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { deleteField } from "../actions";
 
 import Link from "next/link";
 
@@ -33,7 +33,7 @@ export const CellAction: React.FC<CellActionProps> = ({ field }) => {
     try {
       setLoading(true);
 
-      await toastPromise(deleteField(field._id), {
+      await toastPromise(adminApi.serviceFields.deleteServiceField(field._id), {
         success: t("services.fields.table.cellAction.fieldDeleted", {
           label: field.data.label,
         }),

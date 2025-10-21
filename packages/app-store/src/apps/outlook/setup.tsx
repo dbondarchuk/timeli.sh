@@ -1,3 +1,4 @@
+import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
 import { AppSetupProps, ConnectedApp } from "@vivid/types";
 import { Button, Spinner } from "@vivid/ui";
@@ -6,12 +7,6 @@ import {
   ConnectedAppStatusMessage,
 } from "@vivid/ui-admin";
 import React from "react";
-import {
-  addNewApp,
-  getAppLoginUrl,
-  getAppStatus,
-  setAppStatus,
-} from "../../actions";
 import { OutlookApp } from "./app";
 import {
   OutlookAdminAllKeys,
@@ -34,7 +29,7 @@ export const OutlookAppSetup: React.FC<AppSetupProps> = ({
   const [timer, setTimer] = React.useState<NodeJS.Timeout>();
 
   const getStatus = async (appId: string) => {
-    const status = await getAppStatus(appId);
+    const status = await adminApi.apps.getAppStatus(appId);
     setApp(() => status);
 
     if (status.status === "pending") {
@@ -70,16 +65,16 @@ export const OutlookAppSetup: React.FC<AppSetupProps> = ({
       let appId: string;
       if (app?._id || existingAppId) {
         appId = (app?._id || existingAppId)!;
-        await setAppStatus(appId, {
+        await adminApi.apps.setAppStatus(appId, {
           status: "pending",
           statusText:
             "app_outlook_admin.form.pendingAuthorization" satisfies OutlookAdminAllKeys,
         });
       } else {
-        appId = await addNewApp(OutlookApp.name);
+        appId = await adminApi.apps.addNewApp(OutlookApp.name);
       }
 
-      const loginUrl = await getAppLoginUrl(appId);
+      const loginUrl = await adminApi.apps.getAppLoginUrl(appId);
 
       getStatus(appId);
       window.open(loginUrl, "_blank", "popup=true");

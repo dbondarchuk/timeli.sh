@@ -1,5 +1,6 @@
 "use client";
 
+import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
 import { Template } from "@vivid/types";
 import {
@@ -18,7 +19,6 @@ import {
 import { Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { deleteSelectedTemplates } from "../actions";
 
 export const DeleteSelectedTemplatesButton: React.FC<{
   selected: Template[];
@@ -33,7 +33,7 @@ export const DeleteSelectedTemplatesButton: React.FC<{
       setIsLoading(true);
 
       await toastPromise(
-        deleteSelectedTemplates(selected.map((page) => page._id)),
+        adminApi.templates.deleteTemplates(selected.map((page) => page._id)),
         {
           success: t("templates.table.deleteSelected.success"),
           error: t("templates.table.deleteSelected.error"),

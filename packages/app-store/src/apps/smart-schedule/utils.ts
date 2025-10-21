@@ -371,8 +371,8 @@ export function getAvailableTimeSlotsWithPriority({
           }
 
           gapSlots.push({
-            startAt: slotStart.toMillis(),
-            endAt: slotEnd.toMillis(),
+            startAt: slotStart.toJSDate(),
+            endAt: slotEnd.toJSDate(),
             duration,
             priority,
             possibleAppointments,

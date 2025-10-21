@@ -1,18 +1,18 @@
 "use client";
 
+import { serviceAddonsSearchParams } from "@vivid/api-sdk";
 import { useQueryState } from "nuqs";
 import { useCallback, useMemo } from "react";
-import { searchParams } from "./search-params";
 
 export function useAddonsTableFilters() {
   const [searchQuery, setSearchQuery] = useQueryState(
     "search",
-    searchParams.search
+    serviceAddonsSearchParams.search
       .withOptions({ shallow: false, throttleMs: 1000 })
       .withDefault(""),
   );
 
-  const [page, setPage] = useQueryState("page", searchParams.page);
+  const [page, setPage] = useQueryState("page", serviceAddonsSearchParams.page);
 
   const resetFilters = useCallback(() => {
     setSearchQuery(null);

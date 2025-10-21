@@ -1,9 +1,10 @@
 "use client";
 
-import { Asset, WithTotal } from "@vivid/types";
+import { Asset } from "@vivid/types";
 import { useInView } from "react-intersection-observer";
 
 import { AssetsTableAction } from "@/components/admin/assets/table/table-action";
+import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
 import {
   Button,
@@ -217,19 +218,16 @@ export const CustomerFiles: React.FC<{
 
   const loadAssets = React.useCallback(
     async (page: number) => {
-      let url = `/admin/api/assets?customer=${customerId}&page=${page}&limit=${toLoad}`;
-      if (search) url += `&search=${encodeURIComponent(search)}`;
-
-      const response = await fetch(url, {
-        method: "GET",
-        cache: "default",
+      const result = await adminApi.assets.getAssets({
+        customerId: [customerId],
+        search,
+        page,
+        limit: toLoad,
       });
 
-      const res = (await response.json()) as WithTotal<Asset>;
-
       return {
-        items: res.items,
-        hasMore: page * toLoad < res.total,
+        items: result.items,
+        hasMore: page * toLoad < result.total,
       };
     },
     [customerId, search],

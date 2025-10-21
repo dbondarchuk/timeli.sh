@@ -21,10 +21,10 @@ import {
   InfoTooltip,
   Switch,
 } from "@vivid/ui";
+import { FieldSelector } from "@vivid/ui-admin";
 import { cva } from "class-variance-authority";
 import { GripVertical, Trash } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";
-import { FieldSelector } from "./field-selector";
 
 export type FieldSelectProps = {
   item: {

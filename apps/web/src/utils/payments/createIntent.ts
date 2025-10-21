@@ -2,20 +2,20 @@ import { getAppointmentEventAndIsPaymentRequired } from "@/utils/appointments/ge
 import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
 import {
-  appointmentRequestSchema,
+  AppointmentRequest,
   CollectPayment,
+  createOrUpdatePaymentIntentRequestSchema,
   IPaymentProcessor,
-  modifyAppointmentRequestSchema,
+  ModifyAppointmentRequest,
   PaymentIntentUpdateModel,
   PaymentType,
-  paymentTypeSchema,
 } from "@vivid/types";
 import { NextRequest, NextResponse } from "next/server";
 import { getModifyAppointmentInformationRequestResult } from "../appointments/get-modify-appointment-request";
 
 const createOrUpdateAppointmentRequestIntent = async (
-  body: any,
-  type: Exclude<PaymentType, "rescheduleFee">,
+  appointmentRequest: AppointmentRequest,
+  type: Exclude<PaymentType, "rescheduleFee" | "cancellationFee">,
   intentId?: string,
 ): Promise<NextResponse> => {
   const logger = getLoggerFactory("PaymentsUtils")(
@@ -23,25 +23,6 @@ const createOrUpdateAppointmentRequestIntent = async (
   );
 
   logger.debug({ type }, "Creating or updating appointment request intent");
-
-  const {
-    data: appointmentRequest,
-    error,
-    success,
-  } = appointmentRequestSchema.safeParse(body);
-
-  if (!success) {
-    logger.error(
-      {
-        error,
-        success,
-        body,
-      },
-      "Failed to parse request",
-    );
-
-    return NextResponse.json(error, { status: 400 });
-  }
 
   const isPaymentRequired = await getAppointmentEventAndIsPaymentRequired(
     appointmentRequest,
@@ -125,7 +106,8 @@ const createOrUpdateAppointmentRequestIntent = async (
 };
 
 const createOrUpdateModifyAppointmentRequestIntent = async (
-  body: any,
+  modifyAppointmentRequest: ModifyAppointmentRequest,
+  type: Extract<PaymentType, "rescheduleFee" | "cancellationFee">,
   intentId?: string,
 ) => {
   const logger = getLoggerFactory("PaymentsUtils")(
@@ -134,26 +116,45 @@ const createOrUpdateModifyAppointmentRequestIntent = async (
 
   logger.debug({ intentId }, "Creating or updating intent");
 
-  const {
-    data: modifyAppointmentRequest,
-    error,
-    success,
-  } = modifyAppointmentRequestSchema.safeParse(body);
-
-  if (!success) {
+  if (
+    type === "rescheduleFee" &&
+    modifyAppointmentRequest.type !== "reschedule"
+  ) {
     logger.error(
-      {
-        error,
-        success,
-        body,
-      },
-      "Failed to parse request",
+      { modifyAppointmentRequest, type },
+      "Modify appointment request is not a reschedule",
     );
 
-    return NextResponse.json(error, { status: 400 });
+    return NextResponse.json(
+      {
+        error: {
+          code: "modify_appointment_request_not_a_reschedule",
+          message: "Modify appointment request is not a reschedule",
+        },
+      },
+      { status: 400 },
+    );
   }
 
-  logger.debug({ modifyAppointmentRequest }, "Modify appointment request");
+  if (
+    type === "cancellationFee" &&
+    modifyAppointmentRequest.type !== "cancel"
+  ) {
+    logger.error(
+      { modifyAppointmentRequest, type },
+      "Modify appointment request is not a cancellation",
+    );
+
+    return NextResponse.json(
+      {
+        error: {
+          code: "modify_appointment_request_not_a_cancellation",
+          message: "Modify appointment request is not a cancellation",
+        },
+      },
+      { status: 400 },
+    );
+  }
 
   const modifyAppointmentRequestResult =
     await getModifyAppointmentInformationRequestResult(
@@ -257,21 +258,46 @@ export const createOrUpdateIntent = async (
   logger.debug({ intentId }, "Creating or updating intent");
 
   const {
-    success: typeSuccess,
-    data: paymentType,
-    error: typeError,
-  } = paymentTypeSchema.safeParse(body?.paymentType);
+    success: createOrUpdatePaymentIntentRequestSuccess,
+    data: createOrUpdatePaymentIntentRequest,
+    error: createOrUpdatePaymentIntentRequestError,
+  } = createOrUpdatePaymentIntentRequestSchema.safeParse(body);
 
-  if (!typeSuccess) {
-    logger.error({ typeError }, "Invalid payment type");
-    return NextResponse.json(typeError, { status: 400 });
+  if (!createOrUpdatePaymentIntentRequestSuccess) {
+    logger.error(
+      { createOrUpdatePaymentIntentRequestError },
+      "Invalid payment type",
+    );
+
+    return NextResponse.json(
+      {
+        error: createOrUpdatePaymentIntentRequestError,
+        code: "invalid_request_format",
+        success: false,
+      },
+      { status: 400 },
+    );
   }
 
-  logger.debug({ type: paymentType, intentId }, "Type");
+  logger.debug(
+    { type: createOrUpdatePaymentIntentRequest.type, intentId },
+    "Type",
+  );
 
-  if (paymentType !== "rescheduleFee") {
-    return createOrUpdateAppointmentRequestIntent(body, paymentType, intentId);
+  if (
+    createOrUpdatePaymentIntentRequest.type !== "rescheduleFee" &&
+    createOrUpdatePaymentIntentRequest.type !== "cancellationFee"
+  ) {
+    return createOrUpdateAppointmentRequestIntent(
+      createOrUpdatePaymentIntentRequest.request as AppointmentRequest,
+      createOrUpdatePaymentIntentRequest.type,
+      intentId,
+    );
   }
 
-  return createOrUpdateModifyAppointmentRequestIntent(body, intentId);
+  return createOrUpdateModifyAppointmentRequestIntent(
+    createOrUpdatePaymentIntentRequest.request,
+    createOrUpdatePaymentIntentRequest.type,
+    intentId,
+  );
 };

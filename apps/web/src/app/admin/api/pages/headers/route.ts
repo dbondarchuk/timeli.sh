@@ -1,8 +1,8 @@
-import { searchParams } from "@/components/admin/pages/headers/table/search-params";
+import { pageHeadersSearchParamsLoader } from "@vivid/api-sdk";
 import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
+import { pageHeaderSchema } from "@vivid/types";
 import { NextRequest, NextResponse } from "next/server";
-import { createLoader } from "nuqs/server";
 
 export async function GET(request: NextRequest) {
   const logger = getLoggerFactory("AdminAPI/pages/headers")("GET");
@@ -16,8 +16,7 @@ export async function GET(request: NextRequest) {
     "Processing pages headers API request",
   );
 
-  const loader = createLoader(searchParams);
-  const params = loader(request.nextUrl.searchParams);
+  const params = pageHeadersSearchParamsLoader(request.nextUrl.searchParams);
 
   const page = params.page;
   const search = params.search || undefined;
@@ -56,4 +55,65 @@ export async function GET(request: NextRequest) {
   );
 
   return NextResponse.json(response);
+}
+
+export async function POST(request: NextRequest) {
+  const logger = getLoggerFactory("AdminAPI/pages/headers")("POST");
+
+  logger.debug(
+    {
+      url: request.url,
+      method: request.method,
+    },
+    "Processing page headers API request",
+  );
+
+  const body = await request.json();
+
+  const { data, error, success } = pageHeaderSchema.safeParse(body);
+  if (!success) {
+    logger.warn({ error }, "Invalid page header update model format");
+    return NextResponse.json(
+      { error, success: false, code: "invalid_request_format" },
+      { status: 400 },
+    );
+  }
+
+  logger.debug(
+    {
+      pageHeaderName: data.name,
+    },
+    "Creating new page header",
+  );
+
+  try {
+    const result =
+      await ServicesContainer.PagesService().createPageHeader(data);
+
+    logger.debug(
+      {
+        pageHeaderId: result._id,
+        pageHeaderName: data.name,
+      },
+      "Page header created successfully",
+    );
+
+    return NextResponse.json(result, { status: 201 });
+  } catch (error: any) {
+    logger.error(
+      {
+        pageHeaderName: data.name,
+        error: error?.message || error?.toString(),
+      },
+      "Failed to create page header",
+    );
+    return NextResponse.json(
+      {
+        success: false,
+        error: error?.message || "Failed to create page header",
+        code: "create_page_header_failed",
+      },
+      { status: 500 },
+    );
+  }
 }

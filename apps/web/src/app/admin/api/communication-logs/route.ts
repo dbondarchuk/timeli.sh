@@ -1,8 +1,8 @@
-import { searchParams } from "@/components/admin/communication-logs/table/search-params";
+import { communicationLogsSearchParamsLoader } from "@vivid/api-sdk";
 import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
+import { okStatus } from "@vivid/types";
 import { NextRequest, NextResponse } from "next/server";
-import { createLoader } from "nuqs/server";
 
 export async function GET(request: NextRequest) {
   const logger = getLoggerFactory("AdminAPI/communication-logs")("GET");
@@ -16,15 +16,16 @@ export async function GET(request: NextRequest) {
     "Processing communication logs API request",
   );
 
-  const loader = createLoader(searchParams);
-  const params = loader(request.nextUrl.searchParams);
+  const params = communicationLogsSearchParamsLoader(
+    request.nextUrl.searchParams,
+  );
 
   const page = params.page;
   const search = params.search ?? undefined;
   const limit = params.limit;
   const sort = params.sort;
-  const customerId = params.customer ?? undefined;
-  const appointmentId = params.appointment ?? undefined;
+  const customerId = params.customerId ?? undefined;
+  const appointmentId = params.appointmentId ?? undefined;
   const direction = params.direction;
   const channel = params.channel;
   const start = params.start ?? undefined;
@@ -71,4 +72,23 @@ export async function GET(request: NextRequest) {
   );
 
   return NextResponse.json(res);
+}
+
+export async function DELETE(request: NextRequest) {
+  const logger = getLoggerFactory("AdminAPI/communication-logs")("DELETE");
+
+  logger.debug(
+    {
+      url: request.url,
+      method: request.method,
+      searchParams: Object.fromEntries(request.nextUrl.searchParams.entries()),
+    },
+    "Processing deleting all communication logs API request",
+  );
+
+  await ServicesContainer.CommunicationLogsService().clearAllLogs();
+
+  logger.debug("All communication logs deleted successfully");
+
+  return NextResponse.json(okStatus, { status: 200 });
 }

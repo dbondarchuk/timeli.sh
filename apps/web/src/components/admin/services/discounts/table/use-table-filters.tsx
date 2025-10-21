@@ -1,42 +1,42 @@
 "use client";
 
+import { discountsSearchParams } from "@vivid/api-sdk";
 import { useQueryState } from "nuqs";
 import { useCallback, useMemo } from "react";
-import { searchParams } from "./search-params";
 
 export function useFieldsTableFilters() {
   const [searchQuery, setSearchQuery] = useQueryState(
     "search",
-    searchParams.search
+    discountsSearchParams.search
       .withOptions({ shallow: false, throttleMs: 1000 })
       .withDefault(""),
   );
 
   const [typeFilter, setTypeFilter] = useQueryState(
     "type",
-    searchParams.type
+    discountsSearchParams.type
       .withOptions({ shallow: false })
-      .withDefault(searchParams.type.defaultValue),
+      .withDefault(discountsSearchParams.type.defaultValue),
   );
 
   const [enabledFilter, setEnabledFilter] = useQueryState(
     "enabled",
-    searchParams.enabled
+    discountsSearchParams.enabled
       .withOptions({ shallow: false })
-      .withDefault(searchParams.enabled.defaultValue),
+      .withDefault(discountsSearchParams.enabled.defaultValue),
   );
 
   const [start, setStartValue] = useQueryState(
     "start",
-    searchParams.start.withOptions({ shallow: false }),
+    discountsSearchParams.start.withOptions({ shallow: false }),
   );
 
   const [end, setEndValue] = useQueryState(
     "end",
-    searchParams.end.withOptions({ shallow: false }),
+    discountsSearchParams.end.withOptions({ shallow: false }),
   );
 
-  const [page, setPage] = useQueryState("page", searchParams.page);
+  const [page, setPage] = useQueryState("page", discountsSearchParams.page);
 
   const resetFilters = useCallback(() => {
     setSearchQuery(null);
@@ -56,7 +56,9 @@ export function useFieldsTableFilters() {
   ]);
 
   const isAnyFilterActive = useMemo(() => {
-    return !!searchQuery || typeFilter !== searchParams.type.defaultValue;
+    return (
+      !!searchQuery || typeFilter !== discountsSearchParams.type.defaultValue
+    );
   }, [searchQuery, typeFilter]);
 
   return {

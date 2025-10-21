@@ -1,6 +1,5 @@
 export { useTheme } from "next-themes";
 export * from "./use-12-hour-format";
-export * from "./use-arguments";
 export * from "./use-attribute-observer";
 export * from "./use-auto-resize-textarea";
 export * from "./use-clipboard";

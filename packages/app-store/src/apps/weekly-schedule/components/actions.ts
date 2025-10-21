@@ -1,13 +1,13 @@
+import { adminApi } from "@vivid/api-sdk";
 import { Schedule, WeekIdentifier } from "@vivid/types";
 import { getWeekIdentifier } from "@vivid/utils";
-import { processRequest } from "../../..";
 import { RequestAction } from "../models";
 
 export const getWeeklySchedule = async (
   appId: string,
   weekIdentifier: WeekIdentifier,
 ) => {
-  return (await processRequest(appId, {
+  return (await adminApi.apps.processRequest(appId, {
     type: "get-weekly-schedule",
     week: weekIdentifier,
   } as RequestAction)) as {
@@ -21,7 +21,7 @@ export const updateWeeklySchedule = async (
   weekIdentifier: WeekIdentifier,
   schedule: Schedule,
 ) => {
-  await processRequest(appId, {
+  await adminApi.apps.processRequest(appId, {
     type: "set-schedules",
     schedules: {
       [weekIdentifier]: schedule,
@@ -34,7 +34,7 @@ export const resetWeeklySchedule = async (
   appId: string,
   week: WeekIdentifier,
 ) => {
-  await processRequest(appId, {
+  await adminApi.apps.processRequest(appId, {
     type: "remove-schedule",
     week,
   } as RequestAction);
@@ -44,7 +44,7 @@ export const resetAllWeeklySchedule = async (
   appId: string,
   week: WeekIdentifier,
 ) => {
-  await processRequest(appId, {
+  await adminApi.apps.processRequest(appId, {
     type: "remove-all-schedules",
     week,
   } as RequestAction);
@@ -59,7 +59,7 @@ export const copyWeeklySchedule = async (
   if (fromSchedule.isDefault)
     throw new Error(`Week ${fromWeek} does not have custom schedule`);
 
-  await processRequest(appId, {
+  await adminApi.apps.processRequest(appId, {
     type: "set-schedules",
     schedules: {
       [toWeek]: fromSchedule.schedule,
@@ -87,7 +87,7 @@ export const repeatWeeklySchedule = async (
     weeks[w] = fromSchedule.schedule;
   }
 
-  await processRequest(appId, {
+  await adminApi.apps.processRequest(appId, {
     type: "set-schedules",
     schedules: weeks,
     replaceExisting,

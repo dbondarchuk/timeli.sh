@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
 import {
   getPageHeaderSchemaWithUniqueNameCheck,
@@ -30,11 +31,6 @@ import React, { useMemo } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import { MenuItemCard } from "../../menu-item/menu-item-card";
-import {
-  checkUniquePageHeaderName,
-  createPageHeader,
-  updatePageHeader,
-} from "./actions";
 
 export const PageHeaderForm: React.FC<{ initialData?: PageHeader }> = ({
   initialData,
@@ -47,7 +43,7 @@ export const PageHeaderForm: React.FC<{ initialData?: PageHeader }> = ({
   }));
 
   const cachedUniqueSlugCheck = useDebounceCacheFn(
-    checkUniquePageHeaderName,
+    adminApi.pageHeaders.checkUniquePageHeaderName,
     300,
   );
 
@@ -85,10 +81,10 @@ export const PageHeaderForm: React.FC<{ initialData?: PageHeader }> = ({
 
       const fn = async () => {
         if (!initialData) {
-          const { _id } = await createPageHeader(data);
+          const { _id } = await adminApi.pageHeaders.createPageHeader(data);
           router.push(`/admin/dashboard/pages/headers/${_id}`);
         } else {
-          await updatePageHeader(initialData._id, data);
+          await adminApi.pageHeaders.updatePageHeader(initialData._id, data);
 
           router.refresh();
         }

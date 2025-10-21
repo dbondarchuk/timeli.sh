@@ -1,11 +1,11 @@
 import { CustomersTableColumnLength } from "@/components/admin/customers/table/columns";
-import {
-  searchParamsCache,
-  serialize,
-} from "@/components/admin/customers/table/search-params";
 import { CustomersTable } from "@/components/admin/customers/table/table";
 import { CustomersTableAction } from "@/components/admin/customers/table/table-action";
 import PageContainer from "@/components/admin/layout/page-container";
+import {
+  customersSearchParamsCache,
+  customersSearchParamsSerializer,
+} from "@vivid/api-sdk";
 import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
 import { Breadcrumbs, Heading, Link } from "@vivid/ui";
@@ -29,9 +29,8 @@ export default async function CustomersPage(props: Params) {
   const logger = getLoggerFactory("AdminPages")("customers");
   const t = await getI18nAsync("admin");
   const searchParams = await props.searchParams;
-  const parsed = searchParamsCache.parse(searchParams);
-
-  const key = serialize({ ...parsed });
+  const parsed = customersSearchParamsCache.parse(searchParams);
+  const key = customersSearchParamsSerializer({ ...parsed });
 
   logger.debug(
     {

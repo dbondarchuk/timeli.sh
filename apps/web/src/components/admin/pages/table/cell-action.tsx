@@ -1,4 +1,5 @@
 "use client";
+import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
 import { Page } from "@vivid/types";
 import {
@@ -13,13 +14,11 @@ import {
   toast,
   toastPromise,
 } from "@vivid/ui";
+import copy from "copy-text-to-clipboard";
 import { Copy, Edit, MoreHorizontal, Trash } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { deletePage } from "../actions";
-
-import copy from "copy-text-to-clipboard";
-import Link from "next/link";
 
 interface CellActionProps {
   page: Page;
@@ -55,7 +54,7 @@ export const CellAction: React.FC<CellActionProps> = ({ page: page }) => {
     try {
       setLoading(true);
 
-      await toastPromise(deletePage(page._id), {
+      await toastPromise(adminApi.pages.deletePage(page._id), {
         success: t("pages.toasts.pageDeleted", { title: page.title }),
         error: t("pages.table.delete.error"),
       });

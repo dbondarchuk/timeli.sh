@@ -1,6 +1,7 @@
+import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
-import { CustomerListModel, WithTotal } from "@vivid/types";
-import { cn, ComboboxAsync, IComboboxItem, Skeleton, toast } from "@vivid/ui";
+import { CustomerListModel } from "@vivid/types";
+import { cn, ComboboxAsync, IComboboxItem, Skeleton } from "@vivid/ui";
 import Image from "next/image";
 import React from "react";
 
@@ -75,33 +76,16 @@ export const CustomerSelector: React.FC<CustomerSelectorProps> = ({
   const getCustomers = React.useCallback(
     async (page: number, search?: string) => {
       const limit = 10;
-      let url = `/admin/api/customers?page=${page}&limit=${limit}`;
-      if (value) url += `&priorityId=${encodeURIComponent(value)}`;
-      if (search) url += `&search=${encodeURIComponent(search)}`;
-
-      const response = await fetch(url, {
-        method: "GET",
-        cache: "default",
+      const result = await adminApi.customers.getCustomers({
+        page,
+        limit,
+        search,
+        priorityId: value ? [value] : undefined,
       });
-
-      if (response.status >= 400) {
-        const text = await response.text();
-        const message = `Request to fetch customers failed: ${response.status}; ${text}`;
-        console.error(message);
-
-        toast.error(t("customerSelector.requestFailed"));
-
-        return {
-          items: [],
-          hasMore: false,
-        };
-      }
-
-      const res = (await response.json()) as WithTotal<CustomerListModel>;
 
       setItemsCache((prev) => ({
         ...prev,
-        ...res.items.reduce(
+        ...result.items.reduce(
           (map, cur) => ({
             ...map,
             [cur._id]: cur,
@@ -111,12 +95,12 @@ export const CustomerSelector: React.FC<CustomerSelectorProps> = ({
       }));
 
       return {
-        items: res.items.map((customer) => ({
+        items: result.items.map((customer) => ({
           label: <CustomerShortLabel customer={customer} />,
           shortLabel: <CustomerShortLabel customer={customer} row />,
           value: customer._id,
         })) satisfies IComboboxItem[],
-        hasMore: page * limit < res.total,
+        hasMore: page * limit < result.total,
       };
     },
     [value, setItemsCache, t],

@@ -1395,7 +1395,7 @@ export class EventsService implements IEventsService {
       schedule,
     );
 
-    if (!availability.find((time) => time === eventTime.toMillis())) {
+    if (!availability.find((time) => time.getTime() === eventTime.toMillis())) {
       logger.warn(
         { eventTime, availability, start, end },
         "Event time is not available",

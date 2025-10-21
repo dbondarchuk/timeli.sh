@@ -1,25 +1,17 @@
+import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
 import { CommunicationChannel, TemplateListModel } from "@vivid/types";
 import { cn, Combobox, IComboboxItem } from "@vivid/ui";
 import React from "react";
 import { toast } from "sonner";
 
-const getTemplates = async (type: string) => {
-  const url = `/admin/api/templates?type=${encodeURIComponent(type)}&limit=10000000`;
-  const response = await fetch(url, {
-    method: "GET",
-    cache: "default",
+const getTemplates = async (type: CommunicationChannel) => {
+  const { items } = await adminApi.templates.getTemplates({
+    type: [type],
+    limit: 10000000,
   });
 
-  if (response.status >= 400) {
-    const text = await response.text();
-    const message = `Request to fetch templates failed: ${response.status}; ${text}`;
-    console.error(message);
-
-    throw new Error(message);
-  }
-
-  return (await response.json()) as TemplateListModel[];
+  return items;
 };
 
 const checkTemplateSearch = (template: TemplateListModel, query: string) => {

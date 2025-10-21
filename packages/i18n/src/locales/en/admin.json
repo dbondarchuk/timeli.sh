@@ -255,6 +255,7 @@
       "requestedAt": "Requested at",
       "status": "Status",
       "price": "Price",
+      "discount": "Discount",
       "amountPaid": "Amount paid",
       "amountLeftToPay": "Amount left to pay",
       "customer": "Customer",

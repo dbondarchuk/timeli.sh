@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
 import {
   CustomerUpdateModel,
@@ -43,7 +44,6 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { checkUniqueEmailAndPhone, create, update } from "./actions";
 
 export const CustomerForm: React.FC<{
   initialData?: CustomerUpdateModel & Partial<DatabaseId>;
@@ -52,7 +52,11 @@ export const CustomerForm: React.FC<{
 
   const formSchema = getCustomerSchemaWithUniqueCheck(
     (emails, phones) =>
-      checkUniqueEmailAndPhone(emails, phones, initialData?._id),
+      adminApi.customers.checkCustomerUniqueEmailAndPhone(
+        emails,
+        phones,
+        initialData?._id,
+      ),
     "customers.emailAlreadyExists",
     "customers.phoneAlreadyExists",
   );
@@ -89,10 +93,10 @@ export const CustomerForm: React.FC<{
 
       const fn = async () => {
         if (!initialData?._id) {
-          const _id = await create(data);
+          const _id = await adminApi.customers.createCustomer(data);
           router.push(`/admin/dashboard/customers/${_id}`);
         } else {
-          await update(initialData._id, data);
+          await adminApi.customers.updateCustomer(initialData._id, data);
 
           router.refresh();
         }

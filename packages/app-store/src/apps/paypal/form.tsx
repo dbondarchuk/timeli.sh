@@ -11,6 +11,7 @@ import {
   ReactPayPalScriptOptions,
   usePayPalCardFields,
 } from "@paypal/react-paypal-js";
+import { clientApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
 import { PaymentAppFormProps } from "@vivid/types";
 import { Button, Spinner, toast } from "@vivid/ui";
@@ -109,17 +110,21 @@ export const PaypalForm: React.FC<PaymentAppFormProps<PaypalFormProps>> = ({
 
   const createOrder = async () => {
     try {
-      const response = await fetch(`/api/apps/${intent.appId}/orders`, {
+      const orderData = await clientApi.apps.callAppApi<{
+        id: string;
+        debug_id?: string;
+        details?: {
+          issue: string;
+          description: string;
+        }[];
+      }>({
+        appId: intent.appId,
+        path: "orders",
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+        body: {
           paymentIntentId: intent._id,
-        }),
+        },
       });
-
-      const orderData = await response.json();
 
       if (orderData.id) {
         return orderData.id;
@@ -143,18 +148,15 @@ export const PaypalForm: React.FC<PaymentAppFormProps<PaypalFormProps>> = ({
     >[0],
   ) => {
     try {
-      const response = await fetch(`/api/apps/${intent.appId}/orders/capture`, {
+      const orderData = await clientApi.apps.callAppApi<PaypalOrder>({
+        appId: intent.appId,
+        path: "orders/capture",
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+        body: {
           orderId: data.orderID,
           paymentIntentId: intent._id,
-        }),
+        },
       });
-
-      const orderData = (await response.json()) as PaypalOrder;
 
       // Three cases to handle:
       //   (1) Recoverable INSTRUMENT_DECLINED -> call actions.restart()

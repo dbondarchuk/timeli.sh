@@ -1,11 +1,11 @@
 import PageContainer from "@/components/admin/layout/page-container";
 import { AddNewTemplateButton } from "@/components/admin/templates/add-new-template-button";
-import {
-  searchParamsCache,
-  serialize,
-} from "@/components/admin/templates/table/search-params";
 import { TemplatesTable } from "@/components/admin/templates/table/table";
 import { TemplatesTableAction } from "@/components/admin/templates/table/table-action";
+import {
+  templateSearchParamsLoader,
+  templateSearchParamsSerializer,
+} from "@vivid/api-sdk";
 import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
 import { Breadcrumbs, Heading } from "@vivid/ui";
@@ -40,9 +40,8 @@ export default async function EmailTemplatesPage(props: Params) {
     { title: t("navigation.templates"), link: "/admin/dashboard/templates" },
   ];
 
-  const parsed = searchParamsCache.parse(searchParams);
-
-  const key = serialize({ ...parsed });
+  const parsed = templateSearchParamsLoader(searchParams);
+  const key = templateSearchParamsSerializer({ ...parsed });
 
   return (
     <PageContainer scrollable={false}>

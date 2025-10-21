@@ -1,7 +1,8 @@
 "use client";
 
+import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
-import { PageListModelWithUrl, WithTotal } from "@vivid/types";
+import { PageListModelWithUrl } from "@vivid/types";
 import {
   Button,
   cn,
@@ -82,19 +83,15 @@ export const PageSelectorDialog: React.FC<PageSelectorProps> = ({
   }, [debouncedSearch]);
 
   const loadPages = React.useCallback(async (page: number, search?: string) => {
-    let url = `/admin/api/pages?page=${page}&limit=${toLoad}`;
-    if (search) url += `&search=${encodeURIComponent(search)}`;
-
-    const response = await fetch(url, {
-      method: "GET",
-      cache: "default",
+    const result = await adminApi.pages.getPages({
+      page,
+      limit: toLoad,
+      search,
     });
 
-    const res = (await response.json()) as WithTotal<PageListModelWithUrl>;
-
     return {
-      items: res.items,
-      hasMore: page * toLoad < res.total,
+      items: result.items,
+      hasMore: page * toLoad < result.total,
     };
   }, []);
 

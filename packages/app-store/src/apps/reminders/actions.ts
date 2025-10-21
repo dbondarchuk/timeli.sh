@@ -1,5 +1,5 @@
+import { adminApi } from "@vivid/api-sdk";
 import { WithTotal } from "@vivid/types";
-import { processRequest } from "../..";
 import {
   GetRemindersAction,
   Reminder,
@@ -24,7 +24,7 @@ export const deleteReminder = async (appId: string, reminderId: string) => {
   const actionLogger = logger("deleteReminder");
   actionLogger.debug({ appId, reminderId }, "Deleting reminder");
   try {
-    const result = await processRequest(appId, {
+    const result = await adminApi.apps.processRequest(appId, {
       type: "delete-reminders",
       ids: [reminderId],
     } as RequestAction);
@@ -50,7 +50,7 @@ export const deleteSelectedReminders = async (appId: string, ids: string[]) => {
     "Deleting selected reminders",
   );
   try {
-    const result = await processRequest(appId, {
+    const result = await adminApi.apps.processRequest(appId, {
       type: "delete-reminders",
       ids: ids,
     } as RequestAction);
@@ -80,7 +80,7 @@ export const getReminders = async (
   const actionLogger = logger("getReminders");
   actionLogger.debug({ appId, hasQuery: !!query }, "Getting reminders");
   try {
-    const result = (await processRequest(appId, {
+    const result = (await adminApi.apps.processRequest(appId, {
       type: "get-reminders",
       query,
     } as RequestAction)) as WithTotal<Reminder>;
@@ -106,7 +106,7 @@ export const getReminder = async (appId: string, id: string) => {
   const actionLogger = logger("getReminder");
   actionLogger.debug({ appId, id }, "Getting reminder");
   try {
-    const result = (await processRequest(appId, {
+    const result = (await adminApi.apps.processRequest(appId, {
       type: "get-reminder",
       id,
     } as RequestAction)) as Reminder;
@@ -132,7 +132,7 @@ export const getAppData = async (appId: string) => {
   const actionLogger = logger("getAppData");
   actionLogger.debug({ appId }, "Getting app data");
   try {
-    const result = (await processRequest(appId, {
+    const result = (await adminApi.apps.processRequest(appId, {
       type: "get-app-data",
     } as RequestAction)) as RemindersAppData;
     actionLogger.debug({ appId, hasData: !!result }, "App data retrieved");
@@ -150,7 +150,7 @@ export const setAppData = async (appId: string, data: RemindersAppData) => {
   const actionLogger = logger("setAppData");
   actionLogger.debug({ appId, hasData: !!data }, "Setting app data");
   try {
-    const result = await processRequest(appId, {
+    const result = await adminApi.apps.processRequest(appId, {
       type: "set-app-data",
       data,
     } as RequestAction);
@@ -177,7 +177,7 @@ export const checkUniqueName = async (
   const actionLogger = logger("checkUniqueName");
   actionLogger.debug({ appId, name, id }, "Checking unique name");
   try {
-    const result = (await processRequest(appId, {
+    const result = (await adminApi.apps.processRequest(appId, {
       type: "check-unique-name",
       name,
       id,
@@ -205,7 +205,7 @@ export const create = async (appId: string, reminder: ReminderUpdateModel) => {
   const actionLogger = logger("create");
   actionLogger.debug({ appId, hasReminder: !!reminder }, "Creating reminder");
   try {
-    const result = await processRequest(appId, {
+    const result = await adminApi.apps.processRequest(appId, {
       type: "create-reminder",
       reminder,
     } as RequestAction);
@@ -232,7 +232,7 @@ export const update = async (
   const actionLogger = logger("update");
   actionLogger.debug({ appId, id, hasUpdate: !!update }, "Updating reminder");
   try {
-    const result = await processRequest(appId, {
+    const result = await adminApi.apps.processRequest(appId, {
       type: "update-reminder",
       update,
       id,

@@ -4,6 +4,7 @@ import {
   AppointmentChoice,
   AppointmentFields,
   Availability,
+  CheckDuplicateAppointmentsResponse,
   CollectPayment,
   DateTime,
   Fields,
@@ -12,7 +13,6 @@ import {
 import { DateTime as LuxonDateTime } from "luxon";
 import { createContext, FC, ReactNode, useContext } from "react";
 import { WaitlistDate } from "../../../models/waitlist";
-import { CheckDuplicateAppointmentsResponse } from "./types";
 
 export type StepType =
   | "duration"
@@ -68,7 +68,7 @@ export type ScheduleContextProps = {
   checkDuplicateAppointments: () => Promise<CheckDuplicateAppointmentsResponse>;
   closestDuplicateAppointment?: LuxonDateTime;
   duplicateAppointmentDoNotAllowScheduling?: boolean;
-  setClosestDuplicateAppointment: (closestAppointment?: LuxonDateTime) => void;
+  setClosestDuplicateAppointment: (closestAppointment?: Date) => void;
   setDuplicateAppointmentDoNotAllowScheduling: (
     doNotAllowScheduling: boolean,
   ) => void;

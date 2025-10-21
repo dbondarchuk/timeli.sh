@@ -1,5 +1,10 @@
 export function containsAdminDashboard(value: string) {
-  const regex = /^\/admin\/(api|dashboard)/i;
+  const regex = /^\/admin\/dashboard/i;
+  return regex.test(value);
+}
+
+export function containsAdminApi(value: string) {
+  const regex = /^\/admin\/api/i;
   return regex.test(value);
 }
 

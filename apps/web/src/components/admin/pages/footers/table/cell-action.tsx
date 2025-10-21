@@ -1,4 +1,5 @@
 "use client";
+import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
 import { PageFooterListModel } from "@vivid/types";
 import {
@@ -15,7 +16,6 @@ import {
 import { Edit, MoreHorizontal, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { deletePageFooter } from "../actions";
 
 import Link from "next/link";
 
@@ -33,12 +33,15 @@ export const CellAction: React.FC<CellActionProps> = ({ pageFooter }) => {
     try {
       setLoading(true);
 
-      await toastPromise(deletePageFooter(pageFooter._id), {
-        success: t("pages.footers.toasts.pageFooterDeleted", {
-          name: pageFooter.name,
-        }),
-        error: t("pages.footers.table.delete.error"),
-      });
+      await toastPromise(
+        adminApi.pageFooters.deletePageFooter(pageFooter._id),
+        {
+          success: t("pages.footers.toasts.pageFooterDeleted", {
+            name: pageFooter.name,
+          }),
+          error: t("pages.footers.table.delete.error"),
+        },
+      );
 
       setOpen(false);
       router.refresh();

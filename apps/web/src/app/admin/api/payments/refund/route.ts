@@ -1,21 +1,9 @@
+import { refundPaymentsSchema } from "@vivid/api-sdk";
 import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
-import { Payment, zUniqueArray } from "@vivid/types";
+import { Payment } from "@vivid/types";
 import { NextRequest, NextResponse } from "next/server";
 import pLimit from "p-limit";
-import z from "zod";
-
-const refundPaymentsSchema = z.object({
-  refunds: zUniqueArray(
-    z.array(
-      z.object({
-        id: z.string().min(1),
-        amount: z.number().min(0.01),
-      }),
-    ),
-    (s) => s.id,
-  ),
-});
 
 export async function POST(request: NextRequest) {
   const logger = getLoggerFactory("AdminAPI/payments-refund")("POST");

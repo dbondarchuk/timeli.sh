@@ -1,11 +1,11 @@
 import PageContainer from "@/components/admin/layout/page-container";
 import { PageFootersTableColumnsCount } from "@/components/admin/pages/footers/table/columns";
-import {
-  searchParamsCache,
-  serialize,
-} from "@/components/admin/pages/footers/table/search-params";
 import { PageFootersTable } from "@/components/admin/pages/footers/table/table";
 import { PageFootersTableAction } from "@/components/admin/pages/footers/table/table-action";
+import {
+  pageFootersSearchParamsCache,
+  pageFootersSearchParamsSerializer,
+} from "@vivid/api-sdk";
 import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
 import { Breadcrumbs, Heading, Link } from "@vivid/ui";
@@ -31,9 +31,9 @@ export default async function PageFootersPage(props: Params) {
 
   logger.debug("Loading page footers page");
   const searchParams = await props.searchParams;
-  const parsed = searchParamsCache.parse(searchParams);
+  const parsed = pageFootersSearchParamsCache.parse(searchParams);
 
-  const key = serialize({ ...parsed });
+  const key = pageFootersSearchParamsSerializer({ ...parsed });
 
   const breadcrumbItems = [
     { title: t("assets.dashboard"), link: "/admin/dashboard" },

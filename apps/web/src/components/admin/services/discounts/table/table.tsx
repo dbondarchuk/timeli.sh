@@ -1,17 +1,20 @@
+import {
+  discountsSearchParams,
+  discountsSearchParamsCache,
+} from "@vivid/api-sdk";
 import { ServicesContainer } from "@vivid/services";
 import { DataTable } from "@vivid/ui-admin";
 import { columns } from "./columns";
-import { searchParams, searchParamsCache } from "./search-params";
 
 export const DiscountsTable: React.FC = async () => {
-  const page = searchParamsCache.get("page");
-  const search = searchParamsCache.get("search") || undefined;
-  const start = searchParamsCache.get("start") || undefined;
-  const end = searchParamsCache.get("end") || undefined;
-  const limit = searchParamsCache.get("limit");
-  const type = searchParamsCache.get("type");
-  const enabled = searchParamsCache.get("enabled");
-  const sort = searchParamsCache.get("sort");
+  const page = discountsSearchParamsCache.get("page");
+  const search = discountsSearchParamsCache.get("search") || undefined;
+  const start = discountsSearchParamsCache.get("start") || undefined;
+  const end = discountsSearchParamsCache.get("end") || undefined;
+  const limit = discountsSearchParamsCache.get("limit");
+  const type = discountsSearchParamsCache.get("type");
+  const enabled = discountsSearchParamsCache.get("enabled");
+  const sort = discountsSearchParamsCache.get("sort");
 
   const offset = (page - 1) * limit;
 
@@ -30,7 +33,7 @@ export const DiscountsTable: React.FC = async () => {
       columns={columns}
       data={res.items}
       totalItems={res.total}
-      sortSchemaDefault={searchParams.sort.defaultValue}
+      sortSchemaDefault={discountsSearchParams.sort.defaultValue}
     />
   );
 };

@@ -12,10 +12,7 @@
     "next.config.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts",
-    "../../packages/ui/src/hooks/use-mounted.ts",
-    "../../packages/ui/src/hooks/use-is-touch-device.ts",
-    "../../packages/ui/src/hooks/use-debounce.ts"
+    ".next/types/**/*.ts"
   ],
   "exclude": ["node_modules"]
 }

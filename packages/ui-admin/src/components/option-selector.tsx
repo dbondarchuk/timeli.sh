@@ -1,6 +1,7 @@
+import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
-import { AppointmentOption, WithTotal } from "@vivid/types";
-import { cn, ComboboxAsync, IComboboxItem, Skeleton, toast } from "@vivid/ui";
+import { AppointmentOption } from "@vivid/types";
+import { cn, ComboboxAsync, IComboboxItem, Skeleton } from "@vivid/ui";
 import { durationToTime } from "@vivid/utils";
 import { Clock, DollarSign } from "lucide-react";
 import React from "react";
@@ -61,33 +62,16 @@ export const OptionSelector: React.FC<OptionSelectorProps> = ({
   const getOptions = React.useCallback(
     async (page: number, search?: string) => {
       const limit = 10;
-      let url = `/admin/api/services/options?page=${page}&limit=${limit}`;
-      if (value) url += `&priorityId=${encodeURIComponent(value)}`;
-      if (search) url += `&search=${encodeURIComponent(search)}`;
-
-      const response = await fetch(url, {
-        method: "GET",
-        cache: "default",
+      const result = await adminApi.serviceOptions.getServiceOptions({
+        page,
+        limit,
+        search,
+        priorityId: value ? [value] : undefined,
       });
-
-      if (response.status >= 400) {
-        const text = await response.text();
-        const message = `Request to fetch options failed: ${response.status}; ${text}`;
-        console.error(message);
-
-        toast.error(t("optionSelector.requestFailed"));
-
-        return {
-          items: [],
-          hasMore: false,
-        };
-      }
-
-      const res = (await response.json()) as WithTotal<AppointmentOption>;
 
       setItemsCache((prev) => ({
         ...prev,
-        ...res.items.reduce(
+        ...result.items.reduce(
           (map, cur) => ({
             ...map,
             [cur._id]: cur,
@@ -97,7 +81,7 @@ export const OptionSelector: React.FC<OptionSelectorProps> = ({
       }));
 
       return {
-        items: res.items
+        items: result.items
           .filter((option) => !excludeIds?.find((id) => id === option._id))
           .map((option) => ({
             label: <OptionLabel option={option} />,
@@ -108,7 +92,7 @@ export const OptionSelector: React.FC<OptionSelectorProps> = ({
             ),
             value: option._id,
           })) satisfies IComboboxItem[],
-        hasMore: page * limit < res.total,
+        hasMore: page * limit < result.total,
       };
     },
     [value, setItemsCache, t, excludeIds],

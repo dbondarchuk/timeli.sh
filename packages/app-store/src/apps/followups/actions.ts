@@ -1,5 +1,5 @@
+import { adminApi } from "@vivid/api-sdk";
 import { WithTotal } from "@vivid/types";
-import { processRequest } from "../..";
 import {
   CheckUniqueFollowUpNameActionType,
   CreateNewFollowUpActionType,
@@ -32,7 +32,7 @@ export async function getFollowUps(
   logger.debug({ appId, query }, "Getting follow-ups");
 
   try {
-    const result = (await processRequest(appId, {
+    const result = (await adminApi.apps.processRequest(appId, {
       type: GetFollowUpsActionType,
       query,
     })) as WithTotal<FollowUp>;
@@ -56,7 +56,7 @@ export async function getFollowUp(appId: string, id: string) {
   logger.debug({ appId, followUpId: id }, "Getting follow-up");
 
   try {
-    const result = (await processRequest(appId, {
+    const result = (await adminApi.apps.processRequest(appId, {
       type: GetFollowUpActionType,
       id,
     })) as FollowUp;
@@ -83,7 +83,7 @@ export async function createFollowUp(
   logger.debug({ appId, followUpName: followUp.name }, "Creating follow-up");
 
   try {
-    const result = (await processRequest(appId, {
+    const result = (await adminApi.apps.processRequest(appId, {
       type: CreateNewFollowUpActionType,
       followUp,
     })) as FollowUp;
@@ -118,7 +118,7 @@ export async function updateFollowUp(
   );
 
   try {
-    const result = await processRequest(appId, {
+    const result = await adminApi.apps.processRequest(appId, {
       type: UpdateFollowUpActionType,
       id,
       update,
@@ -148,7 +148,7 @@ export async function deleteFollowUps(appId: string, ids: string[]) {
   logger.debug({ appId, followUpIds: ids }, "Deleting follow-ups");
 
   try {
-    const result = await processRequest(appId, {
+    const result = await adminApi.apps.processRequest(appId, {
       type: DeleteFollowUpsActionType,
       ids,
     });
@@ -176,7 +176,7 @@ export async function checkUniqueFollowUpName(
   );
 
   try {
-    const result = await processRequest(appId, {
+    const result = await adminApi.apps.processRequest(appId, {
       type: CheckUniqueFollowUpNameActionType,
       name,
       id,

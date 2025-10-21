@@ -1,5 +1,6 @@
 "use client";
 
+import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
 import { CustomerListModel } from "@vivid/types";
 import {
@@ -18,7 +19,6 @@ import {
 import { Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { deleteSelected } from "../actions";
 
 export const DeleteSelectedCustomersButton: React.FC<{
   selected: CustomerListModel[];
@@ -32,10 +32,13 @@ export const DeleteSelectedCustomersButton: React.FC<{
     try {
       setIsLoading(true);
 
-      await toastPromise(deleteSelected(selected.map((page) => page._id)), {
-        success: t("customers.table.delete.success"),
-        error: t("customers.table.delete.error"),
-      });
+      await toastPromise(
+        adminApi.customers.deleteCustomers(selected.map((page) => page._id)),
+        {
+          success: t("customers.table.delete.success"),
+          error: t("customers.table.delete.error"),
+        },
+      );
 
       router.refresh();
       setIsOpen(false);

@@ -52,6 +52,29 @@ export type AppointmentEvent = {
   data?: Record<string, any>;
 };
 
+export const appointmentEventSchema = z.object({
+  totalDuration: z.coerce.number().int().min(1),
+  totalPrice: z.coerce.number().optional(),
+  dateTime: z.coerce.date(),
+  fields: z.record(z.string(), z.any()),
+  optionId: z.string().min(1, "appointments.event.optionId.required"),
+  addonsIds: zUniqueArray(
+    z.array(z.string().min(1, "appointments.event.addonsIds.required")),
+    (x) => x,
+    "appointments.event.addonsIds.unique",
+  ).optional(),
+  note: z.string().optional(),
+  discount: z
+    .object({
+      code: z.string().min(1, "appointments.event.discount.code.required"),
+      discountAmount: z.coerce.number().min(1),
+    })
+    .optional(),
+  data: z.record(z.string(), z.any()).optional(),
+});
+
+export type AppointmentEventRequest = z.infer<typeof appointmentEventSchema>;
+
 export const appointmentRequestSchema = z.object({
   optionId: z.string().min(1, "appointments.request.optionId.required"),
   addonsIds: zUniqueArray(
@@ -197,3 +220,9 @@ export type ModifyAppointmentInformation = {
       reason: string;
     }
 );
+
+export type CheckDuplicateAppointmentsResponse = {
+  hasDuplicateAppointments: boolean;
+  closestAppointment?: Date;
+  doNotAllowScheduling: boolean;
+};

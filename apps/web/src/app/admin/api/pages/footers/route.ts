@@ -1,8 +1,8 @@
-import { searchParams } from "@/components/admin/pages/footers/table/search-params";
+import { pageFootersSearchParamsLoader } from "@vivid/api-sdk";
 import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
+import { pageFooterSchema } from "@vivid/types";
 import { NextRequest, NextResponse } from "next/server";
-import { createLoader } from "nuqs/server";
 
 export async function GET(request: NextRequest) {
   const logger = getLoggerFactory("AdminAPI/pages/footers")("GET");
@@ -16,8 +16,7 @@ export async function GET(request: NextRequest) {
     "Processing pages footers API request",
   );
 
-  const loader = createLoader(searchParams);
-  const params = loader(request.nextUrl.searchParams);
+  const params = pageFootersSearchParamsLoader(request.nextUrl.searchParams);
 
   const page = params.page;
   const search = params.search || undefined;
@@ -56,4 +55,65 @@ export async function GET(request: NextRequest) {
   );
 
   return NextResponse.json(response);
+}
+
+export async function POST(request: NextRequest) {
+  const logger = getLoggerFactory("AdminAPI/pages/footers")("POST");
+
+  logger.debug(
+    {
+      url: request.url,
+      method: request.method,
+    },
+    "Processing page footers API request",
+  );
+
+  const body = await request.json();
+
+  const { data, error, success } = pageFooterSchema.safeParse(body);
+  if (!success) {
+    logger.warn({ error }, "Invalid page footer update model format");
+    return NextResponse.json(
+      { error, success: false, code: "invalid_request_format" },
+      { status: 400 },
+    );
+  }
+
+  logger.debug(
+    {
+      pageFooterName: data.name,
+    },
+    "Creating new page footer",
+  );
+
+  try {
+    const result =
+      await ServicesContainer.PagesService().createPageFooter(data);
+
+    logger.debug(
+      {
+        pageFooterId: result._id,
+        pageFooterName: data.name,
+      },
+      "Page footer created successfully",
+    );
+
+    return NextResponse.json(result, { status: 201 });
+  } catch (error: any) {
+    logger.error(
+      {
+        pageFooterName: data.name,
+        error: error?.message || error?.toString(),
+      },
+      "Failed to create page footer",
+    );
+    return NextResponse.json(
+      {
+        success: false,
+        error: error?.message || "Failed to create page footer",
+        code: "create_page_footer_failed",
+      },
+      { status: 500 },
+    );
+  }
 }

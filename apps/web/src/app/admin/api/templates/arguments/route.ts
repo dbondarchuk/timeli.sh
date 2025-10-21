@@ -8,7 +8,7 @@ export const fetchCache = "force-cache";
 export const revalidate = 10;
 
 export async function GET(request: NextRequest) {
-  const logger = getLoggerFactory("AdminAPI/templates-arguments")("GET");
+  const logger = getLoggerFactory("AdminAPI/templates/arguments")("GET");
 
   logger.debug(
     {
@@ -25,12 +25,26 @@ export async function GET(request: NextRequest) {
 
   if (!appointmentId && !customerId) {
     logger.warn("Neither appointmentId nor customerId provided");
-    return NextResponse.json({ error: "id_not_provided" }, { status: 400 });
+    return NextResponse.json(
+      {
+        code: "id_not_provided",
+        error: "Neither appointmentId nor customerId provided",
+        success: false,
+      },
+      { status: 400 },
+    );
   }
 
   if (appointmentId && customerId) {
     logger.warn("Both appointmentId and customerId provided");
-    return NextResponse.json({ error: "both_ids_provided" }, { status: 400 });
+    return NextResponse.json(
+      {
+        code: "both_ids_provided",
+        error: "Both appointmentId and customerId provided",
+        success: false,
+      },
+      { status: 400 },
+    );
   }
 
   logger.debug({ appointmentId, customerId }, "Fetching template arguments");

@@ -1,3 +1,4 @@
+import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
 import { AppSetupProps, ConnectedApp } from "@vivid/types";
 import {
@@ -13,13 +14,6 @@ import {
   ConnectedAppStatusMessage,
 } from "@vivid/ui-admin";
 import React from "react";
-import {
-  addNewApp,
-  getAppLoginUrl,
-  getAppStatus,
-  processRequest,
-  setAppStatus,
-} from "../../actions";
 import { GoogleCalendarApp } from "./app";
 import { CalendarListItem, RequestAction } from "./models";
 import {
@@ -63,10 +57,10 @@ export const GoogleAppSetup: React.FC<AppSetupProps> = ({
       setIsLoading(true);
       try {
         const [calendarList, selected] = await Promise.all([
-          processRequest(appId, {
+          adminApi.apps.processRequest(appId, {
             type: "get-calendar-list",
           } as RequestAction),
-          processRequest(appId, {
+          adminApi.apps.processRequest(appId, {
             type: "get-selected-calendar",
           } as RequestAction),
         ]);
@@ -90,7 +84,7 @@ export const GoogleAppSetup: React.FC<AppSetupProps> = ({
     setIsLoading(true);
     try {
       await toastPromise(
-        processRequest(appId, {
+        adminApi.apps.processRequest(appId, {
           type: "set-calendar",
           calendar,
         } as RequestAction),
@@ -107,7 +101,7 @@ export const GoogleAppSetup: React.FC<AppSetupProps> = ({
   };
 
   const getStatus = async (appId: string) => {
-    const status = await getAppStatus(appId);
+    const status = await adminApi.apps.getAppStatus(appId);
     setApp(() => status);
 
     if (status.status === "pending") {
@@ -143,16 +137,16 @@ export const GoogleAppSetup: React.FC<AppSetupProps> = ({
       let appId: string;
       if (app?._id || existingAppId) {
         appId = (app?._id || existingAppId)!;
-        await setAppStatus(appId, {
+        await adminApi.apps.setAppStatus(appId, {
           status: "pending",
           statusText:
             "app_google-calendar_admin.form.pendingAuthorization" satisfies GoogleCalendarAdminAllKeys,
         });
       } else {
-        appId = await addNewApp(GoogleCalendarApp.name);
+        appId = await adminApi.apps.addNewApp(GoogleCalendarApp.name);
       }
 
-      const loginUrl = await getAppLoginUrl(appId);
+      const loginUrl = await adminApi.apps.getAppLoginUrl(appId);
 
       getStatus(appId);
       window.open(loginUrl, "_blank", "popup=true");

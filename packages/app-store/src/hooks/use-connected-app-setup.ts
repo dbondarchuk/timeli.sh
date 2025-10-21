@@ -1,11 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
 import { ConnectedAppStatusWithText } from "@vivid/types";
 import { toastPromise } from "@vivid/ui";
 import React from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import { ZodType } from "zod";
-import { addNewApp, getAppData, processRequest } from "../actions";
 
 export type UseConnectedAppSetupProps<T extends FieldValues> = {
   appId?: string;
@@ -47,7 +47,7 @@ export function useConnectedAppSetup<T extends FieldValues>({
       setIsDataLoading(true);
       setIsLoading(true);
 
-      const data = await getAppData(existingAppId);
+      const data = await adminApi.apps.getAppData(existingAppId);
       setInitialAppData(data);
 
       setIsDataLoading(false);
@@ -70,12 +70,12 @@ export function useConnectedAppSetup<T extends FieldValues>({
 
       const promise = new Promise<ConnectedAppStatusWithText>(
         async (resolve, reject) => {
-          const _appId = appId || (await addNewApp(appName));
+          const _appId = appId || (await adminApi.apps.addNewApp(appName));
           setAppId(_appId);
 
           const processedData = processDataForSubmit?.(data) || data;
 
-          const status = (await processRequest(
+          const status = (await adminApi.apps.processRequest(
             _appId,
             processedData,
           )) as ConnectedAppStatusWithText;

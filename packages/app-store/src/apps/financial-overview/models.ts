@@ -1,10 +1,3 @@
-import { Payment } from "@vivid/types";
-
-export type PaymentSummary = Payment & {
-  customerName?: string;
-  serviceName?: string;
-};
-
 export type FinancialMetrics = {
   estimatedRevenue: number;
   totalPayments: number;

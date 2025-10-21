@@ -1,6 +1,7 @@
+import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
-import { PageHeaderListModel, WithTotal } from "@vivid/types";
-import { cn, ComboboxAsync, IComboboxItem, Skeleton, toast } from "@vivid/ui";
+import { PageHeaderListModel } from "@vivid/types";
+import { cn, ComboboxAsync, IComboboxItem, Skeleton } from "@vivid/ui";
 import React from "react";
 
 const HeaderShortLabel: React.FC<{
@@ -73,29 +74,12 @@ export const HeaderSelector: React.FC<HeaderSelectorProps> = ({
   const getHeaders = React.useCallback(
     async (page: number, search?: string) => {
       const limit = 10;
-      let url = `/admin/api/pages/headers?page=${page}&limit=${limit}`;
-      if (value) url += `&headerId=${encodeURIComponent(value)}`;
-      if (search) url += `&search=${encodeURIComponent(search)}`;
-
-      const response = await fetch(url, {
-        method: "GET",
-        cache: "default",
+      const res = await adminApi.pageHeaders.getPageHeaders({
+        page,
+        limit,
+        search,
+        priorityId: value ? [value] : undefined,
       });
-
-      if (response.status >= 400) {
-        const text = await response.text();
-        const message = `Request to fetch headers failed: ${response.status}; ${text}`;
-        console.error(message);
-
-        toast.error(t("common.toasts.error"));
-
-        return {
-          items: [],
-          hasMore: false,
-        };
-      }
-
-      const res = (await response.json()) as WithTotal<PageHeaderListModel>;
 
       setItemsCache((prev) => ({
         ...prev,

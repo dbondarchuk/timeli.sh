@@ -1,7 +1,6 @@
 "use client";
 import {
   ApplyDiscountRequest,
-  ApplyDiscountResponse,
   AppointmentFields,
   getFields,
 } from "@vivid/types";
@@ -23,6 +22,7 @@ import {
   usePrevious,
 } from "@vivid/ui";
 
+import { clientApi } from "@vivid/api-sdk";
 import { TranslationKeys, useI18n } from "@vivid/i18n";
 import { fieldSchemaMapper, fieldsComponentMap } from "@vivid/ui";
 import { deepEqual, formatAmountString } from "@vivid/utils";
@@ -93,40 +93,31 @@ export const FormCard: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch("/api/discounts", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          code: promoCode,
-          optionId: appointmentOption._id,
-          addons: selectedAddons?.map((addon) => addon._id),
-          dateTime: Luxon.fromObject(
-            {
-              year: dateTime.date.getFullYear(),
-              month: dateTime.date.getMonth() + 1,
-              day: dateTime.date.getDate(),
-              hour: dateTime.time.hour,
-              minute: dateTime.time.minute,
-              second: 0,
-            },
-            { zone: dateTime.timeZone },
-          )
-            .toUTC()
-            .toJSDate(),
-          name: form.getValues("name") || "",
-          email: form.getValues("email") || "",
-          phone: form.getValues("phone") || "",
-        } satisfies ApplyDiscountRequest),
-      });
+      const request = {
+        code: promoCode,
+        optionId: appointmentOption._id,
+        addons: selectedAddons?.map((addon) => addon._id),
+        dateTime: Luxon.fromObject(
+          {
+            year: dateTime.date.getFullYear(),
+            month: dateTime.date.getMonth() + 1,
+            day: dateTime.date.getDate(),
+            hour: dateTime.time.hour,
+            minute: dateTime.time.minute,
+            second: 0,
+          },
+          { zone: dateTime.timeZone },
+        )
+          .toUTC()
+          .toJSDate(),
+        name: form.getValues("name") || "",
+        email: form.getValues("email") || "",
+        phone: form.getValues("phone") || "",
+      } satisfies ApplyDiscountRequest;
 
-      if (response.status >= 400) {
-        throw new Error(
-          `Failed to apply promo code: ${response.status}: ${await response.text()}`,
-        );
-      }
+      const data = await clientApi.discounts.applyDiscount(request);
 
-      const result = (await response.json()) as ApplyDiscountResponse;
-      setDiscount(result);
+      setDiscount(data);
       setPromoCodeError(undefined);
     } catch (e) {
       console.error(e);

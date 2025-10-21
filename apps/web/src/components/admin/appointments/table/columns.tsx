@@ -12,6 +12,7 @@ import {
   useTimeZone,
 } from "@vivid/ui";
 import { tableSortHeader, tableSortNoopFunction } from "@vivid/ui-admin";
+import { AppointmentDialog } from "@vivid/ui-admin-kit";
 import { durationToTime, formatAmountString } from "@vivid/utils";
 import {
   CalendarCheck,
@@ -21,7 +22,6 @@ import {
 } from "lucide-react";
 import { DateTime } from "luxon";
 import React from "react";
-import { AppointmentDialog } from "../appointment-dialog";
 
 const StatusCell: React.FC<{ appointment: Appointment } & LucideProps> = ({
   appointment,

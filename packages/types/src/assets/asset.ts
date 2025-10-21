@@ -1,3 +1,4 @@
+import z from "zod";
 import { AppointmentEntity } from "../booking";
 import { Customer } from "../customers";
 
@@ -20,10 +21,13 @@ export type Asset = AssetEntity & {
   customer?: Customer;
 };
 
-export type AssetUpdate = Omit<
-  AssetEntity,
-  "_id" | "filename" | "mimeType" | "uploadedAt" | "size" | "hash"
->;
+export const assetUpdateSchema = z.object({
+  description: z.string().optional(),
+  appointmentId: z.string().optional(),
+  customerId: z.string().optional(),
+});
+
+export type AssetUpdate = z.infer<typeof assetUpdateSchema>;
 
 export type UploadedFile = Asset & {
   url: string;

@@ -44,6 +44,7 @@
     "@vivid/types": "*",
     "@vivid/ui": "*",
     "@vivid/ui-admin": "*",
+    "@vivid/ui-admin-kit": "*",
     "@vivid/utils": "*",
     "html-to-text": "^9.0.5",
     "ics": "^3.7.6",

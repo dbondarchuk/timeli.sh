@@ -1,6 +1,6 @@
 "use client";
 
-import { deleteApp } from "@vivid/app-store";
+import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
 import {
   AlertDialog,
@@ -33,7 +33,7 @@ export const DeleteAppButton: React.FC<DeleteAppButtonProps> = ({ appId }) => {
   const disconnectApp = async () => {
     setIsLoading(true);
     try {
-      await toastPromise(deleteApp(appId), {
+      await toastPromise(adminApi.apps.deleteApp(appId), {
         success: t("common.appDisconnected"),
         error: t("common.disconnectError"),
       });

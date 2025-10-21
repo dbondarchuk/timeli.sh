@@ -1,5 +1,6 @@
 "use client";
 
+import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
 import { PageHeaderListModel } from "@vivid/types";
 import {
@@ -18,7 +19,6 @@ import {
 import { Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { deleteSelectedPageHeaders } from "../actions";
 
 export const DeleteSelectedPageHeadersButton: React.FC<{
   selected: PageHeaderListModel[];
@@ -33,7 +33,9 @@ export const DeleteSelectedPageHeadersButton: React.FC<{
       setIsLoading(true);
 
       await toastPromise(
-        deleteSelectedPageHeaders(selected.map((pageHeader) => pageHeader._id)),
+        adminApi.pageHeaders.deletePageHeaders(
+          selected.map((pageHeader) => pageHeader._id),
+        ),
         {
           success: t("pages.headers.table.delete.success"),
           error: t("pages.headers.table.delete.error"),

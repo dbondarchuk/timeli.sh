@@ -186,6 +186,26 @@ export class ServicesService implements IServicesService {
     return response;
   }
 
+  public async getFieldsByNames(names: string[]): Promise<ServiceField[]> {
+    const logger = this.loggerFactory("getFieldsByNames");
+    logger.debug({ names }, "Getting fields by names");
+
+    const db = await getDbConnection();
+    const fields = db.collection<ServiceField>(FIELDS_COLLECTION_NAME);
+
+    const result = await fields
+      .find({
+        name: {
+          $in: names,
+        },
+      })
+      .toArray();
+
+    logger.debug({ names, count: result.length }, "Fields found");
+
+    return result;
+  }
+
   public async getFieldsById(ids: string[]): Promise<ServiceField[]> {
     const logger = this.loggerFactory("getFieldsById");
     logger.debug({ ids }, "Getting fields by ids");

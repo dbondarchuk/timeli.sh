@@ -5,8 +5,8 @@ import {
   parseAsStringEnum,
 } from "nuqs";
 
+import { baseSearchParams } from "@vivid/api-sdk";
 import { communicationChannels } from "@vivid/types";
-import { baseSearchParams } from "@vivid/ui-admin";
 
 export const searchParams = {
   ...baseSearchParams,

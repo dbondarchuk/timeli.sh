@@ -41,6 +41,7 @@ export interface IServicesService {
     includeUsage?: T,
   ): Promise<WithTotal<FieldsType<T>>>;
   getFieldsById(ids: string[]): Promise<ServiceField[]>;
+  getFieldsByNames(names: string[]): Promise<ServiceField[]>;
   createField(field: ServiceFieldUpdateModel): Promise<ServiceField>;
   updateField(id: string, update: ServiceFieldUpdateModel): Promise<void>;
   deleteField(id: string): Promise<ServiceField | null>;

@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
 import { PlateMarkdownEditor } from "@vivid/rte";
 import {
@@ -34,13 +35,13 @@ import {
   Switch,
   TagInput,
   toastPromise,
+  useDebounceCacheFn,
 } from "@vivid/ui";
 import { SaveButton, Sortable } from "@vivid/ui-admin";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
-import { checkUniqueName, create, update } from "./actions";
 import { SelectFieldOptionCard } from "./select-field-option-card";
 
 const fileTypes = {
@@ -99,8 +100,14 @@ export const ServiceFieldForm: React.FC<{
   initialData?: ServiceFieldUpdateModel & Partial<DatabaseId>;
 }> = ({ initialData }) => {
   const t = useI18n("admin");
+
+  const cachedUniqueNameCheck = useDebounceCacheFn(
+    adminApi.serviceFields.checkServiceFieldUniqueName,
+    300,
+  );
+
   const formSchema = getFieldSchemaWithUniqueCheck(
-    (slug) => checkUniqueName(slug, initialData?._id),
+    (name) => cachedUniqueNameCheck(name, initialData?._id),
     "services.fields.nameUnique",
   );
 
@@ -121,10 +128,13 @@ export const ServiceFieldForm: React.FC<{
 
       const fn = async () => {
         if (!initialData?._id) {
-          const { _id } = await create(data);
+          const { _id } = await adminApi.serviceFields.createServiceField(data);
           router.push(`/admin/dashboard/services/fields//${_id}`);
         } else {
-          await update(initialData._id, data);
+          await adminApi.serviceFields.updateServiceField(
+            initialData._id,
+            data,
+          );
 
           router.refresh();
         }

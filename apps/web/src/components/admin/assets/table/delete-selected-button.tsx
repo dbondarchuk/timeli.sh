@@ -1,5 +1,6 @@
 "use client";
 
+import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
 import { Asset } from "@vivid/types";
 import {
@@ -18,7 +19,6 @@ import {
 import { Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { deleteSelectedAssets } from "../actions";
 
 export const DeleteSelectedAssetsButton: React.FC<{
   selected: Asset[];
@@ -34,7 +34,7 @@ export const DeleteSelectedAssetsButton: React.FC<{
       setIsLoading(true);
 
       await toastPromise(
-        deleteSelectedAssets(selected.map((asset) => asset._id)),
+        adminApi.assets.deleteAssets(selected.map((asset) => asset._id)),
         {
           success: t("assets.table.delete.success"),
           error: t("assets.table.delete.error"),

@@ -1,22 +1,22 @@
 "use client";
 
+import { assetsSearchParams } from "@vivid/api-sdk";
 import { useQueryState } from "nuqs";
 import { useCallback, useMemo } from "react";
-import { searchParams } from "./search-params";
 
 export function useAssetsTableFilters() {
   const [searchQuery, setSearchQuery] = useQueryState(
     "search",
-    searchParams.search
+    assetsSearchParams.search
       .withOptions({ shallow: false, throttleMs: 1000 })
       .withDefault(""),
   );
 
-  const [page, setPage] = useQueryState("page", searchParams.page);
+  const [page, setPage] = useQueryState("page", assetsSearchParams.page);
 
   const [customerFilter, setCustomerFilter] = useQueryState(
-    "customer",
-    searchParams.customer.withOptions({ shallow: false }),
+    "customerId",
+    assetsSearchParams.customerId.withOptions({ shallow: false }),
   );
 
   const resetFilters = useCallback(() => {

@@ -2,6 +2,8 @@ import { BaseAllKeys } from "@vivid/i18n";
 import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
 import { DashboardNotification, IDashboardNotifierApp } from "@vivid/types";
+import { DateTime } from "luxon";
+import { NextRequest } from "next/server";
 
 const NOTIFICATION_INTERVAL = 5000;
 
@@ -41,7 +43,7 @@ const getPendingAppointmentsNotifications = async (date?: Date) => {
   } satisfies DashboardNotification;
 };
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   const logger = getLoggerFactory("AdminAPI/notifications")("GET");
 
   logger.debug("Starting notifications SSE stream");
@@ -50,6 +52,13 @@ export async function GET() {
   let id: any = null;
 
   let lastDate: Date | undefined = undefined;
+  const paramsDateStr = request.nextUrl.searchParams.get("date");
+  if (paramsDateStr) {
+    const paramsDate = DateTime.fromISO(paramsDateStr);
+    if (paramsDate.isValid) {
+      lastDate = paramsDate.toJSDate();
+    }
+  }
 
   const fn = async (
     callback: (notifications: DashboardNotification[]) => void,

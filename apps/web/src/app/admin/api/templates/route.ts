@@ -1,8 +1,8 @@
-import { searchParams } from "@/components/admin/templates/table/search-params";
+import { templateSearchParamsLoader } from "@vivid/api-sdk";
 import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
+import { templateSchema } from "@vivid/types";
 import { NextRequest, NextResponse } from "next/server";
-import { createLoader } from "nuqs/server";
 
 export const fetchCache = "force-cache";
 export const revalidate = 10;
@@ -19,8 +19,7 @@ export async function GET(request: NextRequest) {
     "Processing templates API request",
   );
 
-  const loader = createLoader(searchParams);
-  const params = loader(request.nextUrl.searchParams);
+  const params = templateSearchParamsLoader(request.nextUrl.searchParams);
 
   const page = params.page;
   const search = params.search ?? undefined;
@@ -61,5 +60,32 @@ export async function GET(request: NextRequest) {
   const headers = new Headers();
   headers.append("Cache-Control", "max-age=10");
 
-  return NextResponse.json(res.items, { headers });
+  return NextResponse.json(res, { headers });
+}
+
+export async function POST(request: NextRequest) {
+  const logger = getLoggerFactory("AdminAPI/templates")("POST");
+
+  logger.debug(
+    {
+      url: request.url,
+      method: request.method,
+    },
+    "Processing create template API request",
+  );
+
+  const body = await request.json();
+  const { data, success, error } = templateSchema.safeParse(body);
+
+  if (!success) {
+    return NextResponse.json(
+      { error: error.message, code: "invalid_request", success: false },
+      { status: 400 },
+    );
+  }
+
+  const template =
+    await ServicesContainer.TemplatesService().createTemplate(data);
+
+  return NextResponse.json(template);
 }

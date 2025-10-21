@@ -1,4 +1,5 @@
 "use client";
+import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
 import { AppointmentAddon } from "@vivid/types";
 import {
@@ -15,7 +16,6 @@ import {
 import { Copy, Edit, MoreHorizontal, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { deleteAddon } from "../actions";
 
 import Link from "next/link";
 
@@ -33,7 +33,7 @@ export const CellAction: React.FC<CellActionProps> = ({ addon }) => {
     try {
       setLoading(true);
 
-      await toastPromise(deleteAddon(addon._id), {
+      await toastPromise(adminApi.serviceAddons.deleteServiceAddon(addon._id), {
         success: t("services.addons.table.cellAction.addonDeleted", {
           name: addon.name,
         }),

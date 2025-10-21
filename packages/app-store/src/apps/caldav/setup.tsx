@@ -1,5 +1,6 @@
 "use client";
 
+import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
 import { AppSetupProps } from "@vivid/types";
 import {
@@ -25,7 +26,6 @@ import {
   ConnectedAppStatusMessage,
 } from "@vivid/ui-admin";
 import React from "react";
-import { processRequest, processStaticRequest } from "../../actions";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
 import { CaldavApp } from "./app";
 import { CALDAV_APP_NAME } from "./const";
@@ -72,11 +72,11 @@ export const CaldavAppSetup: React.FC<AppSetupProps> = ({
     setFetchingCalendars(true);
     try {
       const result = existingAppId
-        ? await processRequest(existingAppId, {
+        ? await adminApi.apps.processRequest(existingAppId, {
             type: "fetchCalendars",
             data: form.getValues(),
           })
-        : await processStaticRequest(CALDAV_APP_NAME, {
+        : await adminApi.apps.processStaticRequest(CALDAV_APP_NAME, {
             ...form.getValues(),
             fetchCalendars: true,
           });

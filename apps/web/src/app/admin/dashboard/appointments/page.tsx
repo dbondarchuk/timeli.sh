@@ -1,11 +1,11 @@
 import { AppointmentsTableColumnsCount } from "@/components/admin/appointments/table/columns";
-import {
-  searchParamsCache,
-  serialize,
-} from "@/components/admin/appointments/table/search-params";
 import { AppointmentsTable } from "@/components/admin/appointments/table/table";
 import { AppointmentsTableAction } from "@/components/admin/appointments/table/table-action";
 import PageContainer from "@/components/admin/layout/page-container";
+import {
+  appointmentsSearchParamsCache,
+  serializeAppointmentsSearchParams,
+} from "@vivid/api-sdk";
 import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
 import { Breadcrumbs, Heading, Link } from "@vivid/ui";
@@ -29,9 +29,8 @@ export default async function AppointmentsPage(props: Params) {
   const logger = getLoggerFactory("AdminPages")("appointments");
   const t = await getI18nAsync("admin");
   const searchParams = await props.searchParams;
-  const parsed = searchParamsCache.parse(searchParams);
-
-  const key = serialize({ ...parsed });
+  const parsed = appointmentsSearchParamsCache.parse(searchParams);
+  const key = serializeAppointmentsSearchParams({ ...parsed });
 
   const breadcrumbItems = [
     { title: t("navigation.dashboard"), link: "/admin/dashboard" },

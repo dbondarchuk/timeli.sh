@@ -33,7 +33,7 @@ export const DuplicateAppointmentConfirmationCard: React.FC = () => {
             appointmentOption.duplicateAppointmentCheck.message,
             {
               date: closestDuplicateAppointment.toLocaleString(
-                DateTime.DATE_FULL,
+                DateTime.DATETIME_FULL,
               ),
               name: fields.name,
               service: appointmentOption.name,

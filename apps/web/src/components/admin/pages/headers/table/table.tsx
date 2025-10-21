@@ -1,13 +1,16 @@
+import {
+  pageHeadersSearchParams,
+  pageHeadersSearchParamsCache,
+} from "@vivid/api-sdk";
 import { ServicesContainer } from "@vivid/services";
 import { DataTable } from "@vivid/ui-admin";
 import { columns } from "./columns";
-import { searchParams, searchParamsCache } from "./search-params";
 
 export const PageHeadersTable: React.FC = async () => {
-  const page = searchParamsCache.get("page");
-  const search = searchParamsCache.get("search") || undefined;
-  const limit = searchParamsCache.get("limit");
-  const sort = searchParamsCache.get("sort");
+  const page = pageHeadersSearchParamsCache.get("page");
+  const search = pageHeadersSearchParamsCache.get("search") || undefined;
+  const limit = pageHeadersSearchParamsCache.get("limit");
+  const sort = pageHeadersSearchParamsCache.get("sort");
 
   const offset = (page - 1) * limit;
 
@@ -23,7 +26,7 @@ export const PageHeadersTable: React.FC = async () => {
       columns={columns}
       data={res.items}
       totalItems={res.total}
-      sortSchemaDefault={searchParams.sort.defaultValue}
+      sortSchemaDefault={pageHeadersSearchParams.sort.defaultValue}
     />
   );
 };

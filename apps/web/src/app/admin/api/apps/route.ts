@@ -1,10 +1,11 @@
 import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
-import { AppScope } from "@vivid/types";
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 
-export const fetchCache = "force-cache";
-export const revalidate = 10;
+const createAppSchema = z.object({
+  type: z.string().min(1, "App type is required"),
+});
 
 export async function GET(request: NextRequest) {
   const logger = getLoggerFactory("AdminAPI/apps")("GET");
@@ -13,29 +14,88 @@ export async function GET(request: NextRequest) {
     {
       url: request.url,
       method: request.method,
-      searchParams: Object.fromEntries(request.nextUrl.searchParams.entries()),
     },
     "Processing apps API request",
   );
 
-  const params = request.nextUrl.searchParams;
-  const scope = params.get("scope") as AppScope;
+  try {
+    const apps = await ServicesContainer.ConnectedAppsService().getApps();
 
-  logger.debug({ scope }, "Fetching apps by scope");
+    logger.debug(
+      {
+        count: apps.length,
+      },
+      "Successfully retrieved apps",
+    );
 
-  const result =
-    await ServicesContainer.ConnectedAppsService().getAppsByScope(scope);
+    return NextResponse.json(apps);
+  } catch (error: any) {
+    logger.error(
+      {
+        error: error?.message || error?.toString(),
+      },
+      "Failed to get apps",
+    );
+    return NextResponse.json(
+      {
+        success: false,
+        error: error?.message || "Failed to get apps",
+        code: "get_apps_failed",
+      },
+      { status: 500 },
+    );
+  }
+}
+
+export async function POST(request: NextRequest) {
+  const logger = getLoggerFactory("AdminAPI/apps")("POST");
+  const body = await request.json();
 
   logger.debug(
     {
-      scope,
-      appCount: result.length,
+      appType: body.type,
     },
-    "Successfully retrieved apps by scope",
+    "Creating new app",
   );
 
-  const headers = new Headers();
-  headers.append("Cache-Control", "max-age=10");
+  const { data, error, success } = createAppSchema.safeParse(body);
+  if (!success) {
+    logger.warn({ error }, "Invalid app creation request format");
+    return NextResponse.json(
+      { error, success: false, code: "invalid_request_format" },
+      { status: 400 },
+    );
+  }
 
-  return NextResponse.json(result, { headers });
+  try {
+    const appId = await ServicesContainer.ConnectedAppsService().createNewApp(
+      data.type,
+    );
+
+    logger.debug(
+      {
+        appType: data.type,
+        appId,
+      },
+      "New app created successfully",
+    );
+
+    return NextResponse.json(appId, { status: 201 });
+  } catch (error: any) {
+    logger.error(
+      {
+        appType: data.type,
+        error: error?.message || error?.toString(),
+      },
+      "Failed to create app",
+    );
+    return NextResponse.json(
+      {
+        success: false,
+        error: error?.message || "Failed to create app",
+        code: "create_app_failed",
+      },
+      { status: 500 },
+    );
+  }
 }

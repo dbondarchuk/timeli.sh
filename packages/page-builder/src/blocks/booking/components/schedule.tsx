@@ -1,5 +1,6 @@
 "use client";
 
+import { clientApi, ClientApiError } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
 import type {
   AppointmentAddon,
@@ -7,19 +8,21 @@ import type {
   AppointmentFields,
   AppointmentRequest,
   CollectPayment,
+  CreateOrUpdatePaymentIntentRequest,
   DateTime,
   FieldSchema,
-  WithDatabaseId,
 } from "@vivid/types";
-import { ApplyDiscountResponse, Availability } from "@vivid/types";
+import {
+  ApplyDiscountResponse,
+  Availability,
+  CheckDuplicateAppointmentsResponse,
+} from "@vivid/types";
 import { Spinner, toast, useTimeZone } from "@vivid/ui";
-import { fetchWithJson } from "@vivid/utils";
 import { DateTime as LuxonDateTime } from "luxon";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { ScheduleContext, StepType } from "./context";
 import { StepCard } from "./step-card";
-import { CheckDuplicateAppointmentsResponse } from "./types";
 
 export type ScheduleProps = {
   appointmentOption: AppointmentChoice;
@@ -74,8 +77,19 @@ export const Schedule: React.FC<
     appointmentOptionDuration,
   );
 
-  const [closestDuplicateAppointment, setClosestDuplicateAppointment] =
+  const [closestDuplicateAppointment, _setClosestDuplicateAppointment] =
     React.useState<LuxonDateTime | undefined>(undefined);
+
+  const setClosestDuplicateAppointment = React.useCallback(
+    (closestAppointment?: Date) => {
+      _setClosestDuplicateAppointment(
+        closestAppointment
+          ? LuxonDateTime.fromJSDate(closestAppointment).setZone(timeZone)
+          : undefined,
+      );
+    },
+    [timeZone],
+  );
 
   const [
     duplicateAppointmentDoNotAllowScheduling,
@@ -156,12 +170,10 @@ export const Schedule: React.FC<
     setIsLoading(true);
 
     try {
-      const response = await fetch(
-        `/api/availability?duration=${getTotalDuration()}`,
-      );
+      const data = await clientApi.availability.getAvailability({
+        duration: totalDuration,
+      });
 
-      if (response.status >= 400) throw new Error(response.statusText);
-      const data = (await response.json()) as Availability;
       setAvailability(data);
     } catch (e) {
       console.error(e);
@@ -183,23 +195,8 @@ export const Schedule: React.FC<
       setIsLoading(true);
 
       try {
-        const response = await fetchWithJson("/api/event/duplicate", {
-          method: "POST",
-          body: JSON.stringify(request),
-        });
-
-        if (response.status >= 400) throw new Error(response.statusText);
-        const data = (await response.json({
-          parseDates: "luxon",
-          timeZone,
-        })) as CheckDuplicateAppointmentsResponse;
-        return {
-          ...data,
-          closestAppointment:
-            data.hasDuplicateAppointments && data.closestAppointment
-              ? data.closestAppointment
-              : undefined,
-        } as CheckDuplicateAppointmentsResponse;
+        const data = await clientApi.events.checkDuplicateAppointments(request);
+        return data;
       } catch (e) {
         console.error(e);
         toast.error(errors.fetchTitle, {
@@ -257,24 +254,18 @@ export const Schedule: React.FC<
     if (!request) throw new Error("Failed to build appointment request");
 
     const intentId = paymentInformation?.intent?._id;
+    const body = {
+      request,
+      type: "deposit",
+    } satisfies CreateOrUpdatePaymentIntentRequest;
+
     try {
       setIsLoading(true);
-      const response = await fetch(
-        `/api/payments${intentId ? `/${intentId}` : ""}`,
-        {
-          method: intentId ? "POST" : "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...request, paymentType: "deposit" }),
-        },
-      );
+      const data = await (intentId
+        ? clientApi.payments.updatePaymentIntent(intentId, body)
+        : clientApi.payments.createPaymentIntent(body));
 
-      if (response.status >= 400) {
-        throw new Error(
-          `Failed to get payment information: ${response.status}: ${await response.text()}`,
-        );
-      }
-
-      return (await response.json()) as CollectPayment | null;
+      return data;
     } catch (e) {
       toast.error(errors.fetchPaymentInformationTitle, {
         description: errors.fetchPaymentInformationDescription,
@@ -293,44 +284,13 @@ export const Schedule: React.FC<
       const eventBody = getAppointmentRequest();
       if (!eventBody) return;
 
-      const formData = new FormData();
-      formData.append("json", JSON.stringify(eventBody));
-
-      const files = Object.entries(fields).filter(
-        ([_, value]) => (value as any) instanceof File,
+      const files = Object.fromEntries(
+        Object.entries(fields).filter(
+          ([_, value]) => (value as any) instanceof File,
+        ),
       );
 
-      for (const [fileField, file] of files) {
-        formData.append("fileField", fileField);
-        formData.append(`file_${fileField}`, file as any as File);
-      }
-
-      const response = await fetch("/api/event", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (response.status === 400) {
-        const error = await response.json();
-        if (error.error === "time_not_available") {
-          toast.error(errors.submitTitle, {
-            description: errors.timeNotAvailableDescription,
-          });
-        } else {
-          toast.error(errors.submitTitle, {
-            description: errors.submitDescription,
-          });
-        }
-
-        fetchAvailability();
-        setDateTime(undefined);
-        setStep("calendar");
-        return;
-      } else if (response.status > 400) {
-        throw new Error(response.statusText);
-      }
-
-      const { id } = (await response.json()) as WithDatabaseId<any>;
+      const { id } = await clientApi.events.createEvent(eventBody, files);
 
       if (successPage) {
         const expireDate = LuxonDateTime.now().plus({ minutes: 1 });
@@ -343,7 +303,26 @@ export const Schedule: React.FC<
       } else {
         setStep("confirmation");
       }
-    } catch (e) {
+    } catch (e: any) {
+      if (e instanceof ClientApiError && e.status === 400) {
+        const error = await e.response.json();
+        if (error.error === "time_not_available") {
+          toast.error(errors.submitTitle, {
+            description: errors.timeNotAvailableDescription,
+          });
+        } else {
+          toast.error(errors.submitTitle, {
+            description: errors.submitDescription,
+          });
+        }
+
+        setDateTime(undefined);
+        setStep("calendar");
+
+        await fetchAvailability();
+        return;
+      }
+
       toast.error(errors.submitTitle, {
         description: errors.submitDescription,
       });

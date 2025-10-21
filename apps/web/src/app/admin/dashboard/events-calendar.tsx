@@ -1,9 +1,5 @@
 "use client";
 
-import {
-  EventCalendar,
-  EventCalendarType,
-} from "@/components/admin/event-calendar";
 import { useI18n } from "@vivid/i18n";
 import {
   Button,
@@ -14,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@vivid/ui";
+import { EventCalendar, EventCalendarType } from "@vivid/ui-admin-kit";
 import { DateTime } from "luxon";
 import React from "react";
 import { useCookies } from "react-cookie";

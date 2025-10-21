@@ -1,5 +1,6 @@
 "use client";
 
+import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
 import { Page } from "@vivid/types";
 import {
@@ -18,7 +19,6 @@ import {
 import { Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { deleteSelectedPages } from "../actions";
 
 export const DeleteSelectedPagesButton: React.FC<{
   selected: Page[];
@@ -33,7 +33,7 @@ export const DeleteSelectedPagesButton: React.FC<{
       setIsLoading(true);
 
       await toastPromise(
-        deleteSelectedPages(selected.map((page) => page._id)),
+        adminApi.pages.deletePages(selected.map((page) => page._id)),
         {
           success: t("pages.table.delete.success"),
           error: t("pages.table.delete.error"),

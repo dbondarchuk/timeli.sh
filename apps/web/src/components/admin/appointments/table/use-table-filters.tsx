@@ -1,44 +1,44 @@
 "use client";
 
+import { appointmentsSearchParams } from "@vivid/api-sdk";
 import { useQueryState } from "nuqs";
 import { useCallback, useMemo } from "react";
-import { searchParams } from "./search-params";
 
 export function useAppointmentsTableFilters() {
   const [searchQuery, setSearchQuery] = useQueryState(
     "search",
-    searchParams.search
+    appointmentsSearchParams.search
       .withOptions({ shallow: false, throttleMs: 1000 })
       .withDefault(""),
   );
 
   const [statusFilter, setStatusFilter] = useQueryState(
     "status",
-    searchParams.status
+    appointmentsSearchParams.status
       .withOptions({ shallow: false })
-      .withDefault(searchParams.status.defaultValue),
+      .withDefault(appointmentsSearchParams.status.defaultValue),
   );
 
   const [customerFilter, setCustomerFilter] = useQueryState(
     "customer",
-    searchParams.customer.withOptions({ shallow: false }),
+    appointmentsSearchParams.customer.withOptions({ shallow: false }),
   );
 
   const [discountFilter, setDiscountFilter] = useQueryState(
     "discount",
-    searchParams.discount.withOptions({ shallow: false }),
+    appointmentsSearchParams.discount.withOptions({ shallow: false }),
   );
 
-  const [page, setPage] = useQueryState("page", searchParams.page);
+  const [page, setPage] = useQueryState("page", appointmentsSearchParams.page);
 
   const [start, setStartValue] = useQueryState(
     "start",
-    searchParams.start.withOptions({ shallow: false }),
+    appointmentsSearchParams.start.withOptions({ shallow: false }),
   );
 
   const [end, setEndValue] = useQueryState(
     "end",
-    searchParams.end.withOptions({ shallow: false }),
+    appointmentsSearchParams.end.withOptions({ shallow: false }),
   );
 
   const resetFilters = useCallback(() => {
@@ -63,7 +63,7 @@ export function useAppointmentsTableFilters() {
   const isAnyFilterActive = useMemo(() => {
     return (
       !!searchQuery ||
-      statusFilter !== searchParams.status.defaultValue ||
+      statusFilter !== appointmentsSearchParams.status.defaultValue ||
       !!start ||
       !!end ||
       !!customerFilter ||

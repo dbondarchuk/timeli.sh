@@ -1,10 +1,10 @@
 import PageContainer from "@/components/admin/layout/page-container";
-import {
-  searchParamsCache,
-  serialize,
-} from "@/components/admin/services/fields/table/search-params";
 import { FieldsTable } from "@/components/admin/services/fields/table/table";
 import { FieldsTableAction } from "@/components/admin/services/fields/table/table-action";
+import {
+  serviceFieldsSearchParamsCache,
+  serviceFieldsSearchParamsSerializer,
+} from "@vivid/api-sdk";
 import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
 import { Breadcrumbs, Heading, Link } from "@vivid/ui";
@@ -30,9 +30,9 @@ export default async function FieldsPage(props: Params) {
 
   logger.debug("Loading fields page");
   const searchParams = await props.searchParams;
-  const parsed = searchParamsCache.parse(searchParams);
+  const parsed = serviceFieldsSearchParamsCache.parse(searchParams);
 
-  const key = serialize({ ...parsed });
+  const key = serviceFieldsSearchParamsSerializer({ ...parsed });
 
   const breadcrumbItems = [
     { title: t("navigation.dashboard"), link: "/admin/dashboard" },

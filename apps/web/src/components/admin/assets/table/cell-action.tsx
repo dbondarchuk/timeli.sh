@@ -1,4 +1,5 @@
 "use client";
+import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
 import { Asset } from "@vivid/types";
 import {
@@ -13,13 +14,11 @@ import {
   toast,
   toastPromise,
 } from "@vivid/ui";
+import copy from "copy-text-to-clipboard";
 import { Copy, Download, Edit, MoreHorizontal, Trash } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { deleteAsset } from "../actions";
-
-import copy from "copy-text-to-clipboard";
-import Link from "next/link";
 
 interface CellActionProps {
   asset: Asset;
@@ -55,7 +54,7 @@ export const CellAction: React.FC<CellActionProps> = ({ asset }) => {
     try {
       setLoading(true);
 
-      await toastPromise(deleteAsset(asset._id), {
+      await toastPromise(adminApi.assets.deleteAsset(asset._id), {
         success: t("assets.toasts.assetDeleted", { filename: asset.filename }),
         error: t("common.toasts.error"),
       });

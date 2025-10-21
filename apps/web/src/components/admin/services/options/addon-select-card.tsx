@@ -19,10 +19,10 @@ import {
   FormLabel,
   FormMessage,
 } from "@vivid/ui";
+import { AddonSelector } from "@vivid/ui-admin";
 import { cva } from "class-variance-authority";
 import { GripVertical, Trash } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";
-import { AddonSelector } from "./addon-selector";
 
 export type AddonSelectProps = {
   item: {

@@ -1,4 +1,5 @@
 "use client";
+import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
 import { TemplateListModel } from "@vivid/types";
 import {
@@ -16,7 +17,6 @@ import { Copy, Edit, MoreHorizontal, Trash } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { deleteTemplate } from "../actions";
 
 interface CellActionProps {
   template: TemplateListModel;
@@ -32,7 +32,7 @@ export const CellAction: React.FC<CellActionProps> = ({ template }) => {
     try {
       setLoading(true);
 
-      await toastPromise(deleteTemplate(template._id), {
+      await toastPromise(adminApi.templates.deleteTemplate(template._id), {
         success: t("templates.table.cellAction.templateDeleted", {
           name: template.name,
         }),

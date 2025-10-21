@@ -1,6 +1,5 @@
 "use client";
 
-import { useI18n } from "@vivid/i18n";
 import {
   DataTableResetFilter,
   DataTableSearch,
@@ -10,7 +9,6 @@ import { DeleteSelectedPageFootersButton } from "./delete-selected";
 import { usePageFootersTableFilters } from "./use-table-filters";
 
 export function PageFootersTableAction() {
-  const t = useI18n("admin");
   const {
     isAnyFilterActive,
     resetFilters,

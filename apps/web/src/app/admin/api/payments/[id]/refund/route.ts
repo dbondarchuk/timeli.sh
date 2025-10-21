@@ -1,3 +1,4 @@
+import { refundPaymentSchema } from "@vivid/api-sdk";
 import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
 import { NextRequest, NextResponse } from "next/server";
@@ -10,7 +11,14 @@ export async function POST(
   const { id: paymentId } = await params;
 
   const body = await request.json();
-  const amount = body.amount;
+  const { success, error, data } = refundPaymentSchema.safeParse(body);
+
+  if (!success) {
+    logger.warn("Invalid request format");
+    return NextResponse.json({ success: false, error }, { status: 400 });
+  }
+
+  const { amount } = data;
 
   logger.debug(
     {

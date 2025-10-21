@@ -1,21 +1,24 @@
+import {
+  appointmentsSearchParams,
+  appointmentsSearchParamsCache,
+} from "@vivid/api-sdk";
 import { ServicesContainer } from "@vivid/services";
 import { DataTable } from "@vivid/ui-admin";
 import { columns } from "./columns";
-import { searchParams, searchParamsCache } from "./search-params";
 
 export const AppointmentsTable: React.FC<{ customerId?: string }> = async ({
   customerId,
 }) => {
-  const page = searchParamsCache.get("page");
-  const search = searchParamsCache.get("search") || undefined;
-  const limit = searchParamsCache.get("limit");
-  const status = searchParamsCache.get("status");
-  const start = searchParamsCache.get("start") || undefined;
-  const end = searchParamsCache.get("end") || undefined;
-  const sort = searchParamsCache.get("sort");
+  const page = appointmentsSearchParamsCache.get("page");
+  const search = appointmentsSearchParamsCache.get("search") || undefined;
+  const limit = appointmentsSearchParamsCache.get("limit");
+  const status = appointmentsSearchParamsCache.get("status");
+  const start = appointmentsSearchParamsCache.get("start") || undefined;
+  const end = appointmentsSearchParamsCache.get("end") || undefined;
+  const sort = appointmentsSearchParamsCache.get("sort");
 
-  const customerIds = searchParamsCache.get("customer");
-  const discountIds = searchParamsCache.get("discount");
+  const customerIds = appointmentsSearchParamsCache.get("customer");
+  const discountIds = appointmentsSearchParamsCache.get("discount");
 
   const offset = (page - 1) * limit;
 
@@ -35,7 +38,7 @@ export const AppointmentsTable: React.FC<{ customerId?: string }> = async ({
       columns={columns}
       data={res.items}
       totalItems={res.total}
-      sortSchemaDefault={searchParams.sort.defaultValue}
+      sortSchemaDefault={appointmentsSearchParams.sort.defaultValue}
     />
   );
 };

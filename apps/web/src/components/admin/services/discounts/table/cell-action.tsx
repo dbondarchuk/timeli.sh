@@ -1,4 +1,5 @@
 "use client";
+import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
 import { Discount } from "@vivid/types";
 import {
@@ -15,7 +16,6 @@ import {
 import { Copy, Edit, MoreHorizontal, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { deleteDiscount } from "../actions";
 
 import Link from "next/link";
 
@@ -33,7 +33,7 @@ export const CellAction: React.FC<CellActionProps> = ({ discount }) => {
     try {
       setLoading(true);
 
-      await toastPromise(deleteDiscount(discount._id), {
+      await toastPromise(adminApi.discounts.deleteDiscount(discount._id), {
         success: t("services.discounts.table.cellAction.discountDeleted", {
           name: discount.name,
         }),

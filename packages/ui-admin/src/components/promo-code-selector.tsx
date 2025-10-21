@@ -1,5 +1,6 @@
+import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
-import { Discount, WithTotal } from "@vivid/types";
+import { Discount } from "@vivid/types";
 import { cn, ComboboxAsync, IComboboxItem, Skeleton, toast } from "@vivid/ui";
 import { DateTime } from "luxon";
 import React from "react";
@@ -97,56 +98,49 @@ export const PromoCodeSelector: React.FC<PromoCodeSelectorProps> = ({
   const getDiscounts = React.useCallback(
     async (page: number, search?: string) => {
       const limit = 10;
-      let url = `/admin/api/discounts?page=${page}&limit=${limit}`;
-      if (value) url += `&priorityId=${encodeURIComponent(value)}`;
-      if (search) url += `&search=${encodeURIComponent(search)}`;
 
-      const response = await fetch(url, {
-        method: "GET",
-        cache: "default",
-      });
+      try {
+        const result = await adminApi.discounts.getDiscounts({
+          page,
+          limit,
+          priorityId: value ? [value] : undefined,
+          search,
+        });
 
-      if (response.status >= 400) {
-        toast.error(t("promoCodeSelector.requestFailed"));
-        const text = await response.text();
-        console.error(
-          `Request to fetch discounts failed: ${response.status}; ${text}`,
+        const codes: PromoCode[] = result.items.flatMap((discount) =>
+          discount.codes.map((code) => ({
+            ...discount,
+            code,
+          })),
         );
 
+        setItemsCache((prev) => ({
+          ...prev,
+          ...codes.reduce(
+            (map, cur) => ({
+              ...map,
+              [cur.code]: cur,
+            }),
+            {} as typeof itemsCache,
+          ),
+        }));
+
+        return {
+          items: codes.map((promoCode) => ({
+            label: <PromoCodeShortLabel promoCode={promoCode} />,
+            shortLabel: <PromoCodeShortLabel promoCode={promoCode} row />,
+            value: promoCode.code,
+          })) satisfies IComboboxItem[],
+          hasMore: page * limit < result.total,
+        };
+      } catch (error) {
+        toast.error(t("promoCodeSelector.requestFailed"));
+        console.error(error);
         return {
           items: [],
           hasMore: false,
         };
       }
-
-      const res = (await response.json()) as WithTotal<Discount>;
-
-      const codes: PromoCode[] = res.items.flatMap((discount) =>
-        discount.codes.map((code) => ({
-          ...discount,
-          code,
-        })),
-      );
-
-      setItemsCache((prev) => ({
-        ...prev,
-        ...codes.reduce(
-          (map, cur) => ({
-            ...map,
-            [cur.code]: cur,
-          }),
-          {} as typeof itemsCache,
-        ),
-      }));
-
-      return {
-        items: codes.map((promoCode) => ({
-          label: <PromoCodeShortLabel promoCode={promoCode} />,
-          shortLabel: <PromoCodeShortLabel promoCode={promoCode} row />,
-          value: promoCode.code,
-        })) satisfies IComboboxItem[],
-        hasMore: page * limit < res.total,
-      };
     },
     [value, setItemsCache, t],
   );

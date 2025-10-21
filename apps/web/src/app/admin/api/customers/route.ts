@@ -1,8 +1,8 @@
-import { searchParams } from "@/components/admin/customers/table/search-params";
+import { customersSearchParamsLoader } from "@vivid/api-sdk";
 import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
+import { customerSchema } from "@vivid/types";
 import { NextRequest, NextResponse } from "next/server";
-import { createLoader } from "nuqs/server";
 
 export async function GET(request: NextRequest) {
   const logger = getLoggerFactory("AdminAPI/customers")("GET");
@@ -16,16 +16,21 @@ export async function GET(request: NextRequest) {
     "Processing customers API request",
   );
 
-  const loader = createLoader(searchParams);
-  const params = loader(request.nextUrl.searchParams);
+  const searchParams = await customersSearchParamsLoader(request);
 
-  const page = params.page;
-  const search = params.search ?? undefined;
-  const limit = params.limit;
-  const sort = params.sort;
+  logger.debug(
+    {
+      searchParams,
+    },
+    "Parsed search params for customers",
+  );
 
+  const page = searchParams.page;
+  const search = searchParams.search ?? undefined;
+  const limit = searchParams.limit;
+  const sort = searchParams.sort;
   const offset = (page - 1) * limit;
-  const priorityIds = params.priorityId ?? undefined;
+  const priorityIds = searchParams.priorityId ?? undefined;
 
   logger.debug(
     {
@@ -56,4 +61,31 @@ export async function GET(request: NextRequest) {
   );
 
   return NextResponse.json(res);
+}
+
+export async function POST(request: NextRequest) {
+  const logger = getLoggerFactory("AdminAPI/customers")("POST");
+  const body = await request.json();
+  const { data, error, success } = customerSchema.safeParse(body);
+  if (!success) {
+    logger.warn({ error }, "Invalid customer update model format");
+    return NextResponse.json(
+      { error, success: false, code: "invalid_request_format" },
+      { status: 400 },
+    );
+  }
+  try {
+    const result =
+      await ServicesContainer.CustomersService().createCustomer(data);
+    return NextResponse.json(result, { status: 201 });
+  } catch (error: any) {
+    return NextResponse.json(
+      {
+        success: false,
+        error: error?.message || "Failed to create customer",
+        code: "create_customer_failed",
+      },
+      { status: 500 },
+    );
+  }
 }

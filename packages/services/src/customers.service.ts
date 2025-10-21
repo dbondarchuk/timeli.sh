@@ -319,7 +319,9 @@ export class CustomersService implements ICustomersService {
     return customer;
   }
 
-  public async createCustomer(customer: CustomerUpdateModel): Promise<string> {
+  public async createCustomer(
+    customer: CustomerUpdateModel,
+  ): Promise<Customer> {
     const logger = this.loggerFactory("createCustomer");
     logger.debug(
       {
@@ -363,7 +365,7 @@ export class CustomersService implements ICustomersService {
       },
     );
 
-    return id;
+    return createdCustomer;
   }
 
   public async updateCustomer(
@@ -472,16 +474,13 @@ export class CustomersService implements ICustomersService {
       requireDeposit: "inherit",
     };
 
-    const customerId = await this.createCustomer(customer);
-    const newCustomer = {
-      _id: customerId,
-      ...customer,
-    };
+    const newCustomer = await this.createCustomer(customer);
 
     logger.debug(
-      { customerId, customerName: newCustomer.name },
+      { customerId: newCustomer._id, customerName: newCustomer.name },
       "New customer created",
     );
+
     return newCustomer;
   }
 

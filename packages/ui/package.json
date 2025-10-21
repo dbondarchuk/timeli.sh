@@ -55,6 +55,7 @@
     "@uiw/react-color": "^2.4.1",
     "@vivid/types": "*",
     "@vivid/utils": "*",
+    "@vivid/i18n": "*",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "1.0.0",

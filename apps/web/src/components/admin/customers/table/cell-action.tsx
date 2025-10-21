@@ -1,4 +1,5 @@
 "use client";
+import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
 import { CustomerListModel } from "@vivid/types";
 import {
@@ -14,7 +15,6 @@ import {
 import { Edit, MoreHorizontal, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { deleteCustomer } from "../actions";
 
 import Link from "next/link";
 
@@ -32,7 +32,7 @@ export const CellAction: React.FC<CellActionProps> = ({ customer }) => {
     try {
       setLoading(true);
 
-      await toastPromise(deleteCustomer(customer._id), {
+      await toastPromise(adminApi.customers.deleteCustomer(customer._id), {
         success: t("customers.toasts.customerDeleted", { name: customer.name }),
         error: t("customers.table.delete.error"),
       });

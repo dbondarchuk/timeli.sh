@@ -4,6 +4,7 @@ import {
   AppointmentChoice,
   AppointmentFields,
   Availability,
+  CheckDuplicateAppointmentsResponse,
   CollectPayment,
   DateTime,
   Fields,
@@ -11,7 +12,6 @@ import {
 } from "@vivid/types";
 import { DateTime as LuxonDateTime } from "luxon";
 import { createContext, FC, ReactNode, useContext } from "react";
-import { CheckDuplicateAppointmentsResponse } from "./types";
 
 export type StepType =
   | "duration"
@@ -59,7 +59,7 @@ export type ScheduleContextProps = {
   checkDuplicateAppointments: () => Promise<CheckDuplicateAppointmentsResponse>;
   closestDuplicateAppointment?: LuxonDateTime;
   duplicateAppointmentDoNotAllowScheduling?: boolean;
-  setClosestDuplicateAppointment: (closestAppointment?: LuxonDateTime) => void;
+  setClosestDuplicateAppointment: (closestAppointment?: Date) => void;
   setDuplicateAppointmentDoNotAllowScheduling: (
     doNotAllowScheduling: boolean,
   ) => void;

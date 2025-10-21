@@ -1,7 +1,7 @@
 "use client";
 
-import { AppointmentDeclineDialog } from "@/components/admin/appointments/appointment-decline-dialog";
 import { Appointment } from "@vivid/types";
+import { AppointmentDeclineDialog } from "@vivid/ui-admin-kit";
 
 export const AppointmentDeclineDialogWrapper: React.FC<{
   appointment: Appointment;

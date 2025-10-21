@@ -1,14 +1,7 @@
 "use client";
 
 import { useI18n } from "@vivid/i18n";
-import type {
-  CustomerDataPoint,
-  DateRange,
-  FinancialMetrics,
-  PaymentSummary,
-  RevenueDataPoint,
-  ServiceDataPoint,
-} from "@vivid/types";
+import type { DateRange, PaymentSummary } from "@vivid/types";
 import {
   CalendarDateRangePicker,
   Card,
@@ -22,6 +15,7 @@ import {
   SelectValue,
   Skeleton,
 } from "@vivid/ui";
+import { PaymentCard } from "@vivid/ui-admin-kit";
 import { DateTime } from "luxon";
 import { useQueryState } from "nuqs";
 import React from "react";
@@ -40,9 +34,12 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-
-// import { PaymentCard } from "@/components/payments/payment-card";
-import { PaymentCard } from "@vivid/ui-admin";
+import {
+  CustomerDataPoint,
+  FinancialMetrics,
+  RevenueDataPoint,
+  ServiceDataPoint,
+} from "../models";
 import {
   FinancialOverviewAdminKeys,
   FinancialOverviewAdminNamespace,

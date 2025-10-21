@@ -1,53 +1,56 @@
 "use client";
 
+import { communicationLogsSearchParams } from "@vivid/api-sdk";
 import { useQueryState } from "nuqs";
 import { useCallback, useMemo } from "react";
-import { searchParams } from "./search-params";
 
 export function useCommunicationLogsTableFilters() {
   const [searchQuery, setSearchQuery] = useQueryState(
     "search",
-    searchParams.search
+    communicationLogsSearchParams.search
       .withOptions({ shallow: false, throttleMs: 1000 })
       .withDefault(""),
   );
 
   const [directionFilter, setDirectionFilter] = useQueryState(
     "direction",
-    searchParams.direction
+    communicationLogsSearchParams.direction
       .withOptions({ shallow: false })
-      .withDefault(searchParams.direction.defaultValue),
+      .withDefault(communicationLogsSearchParams.direction.defaultValue),
   );
 
   const [channelFilter, setChannelFilter] = useQueryState(
     "channel",
-    searchParams.channel
+    communicationLogsSearchParams.channel
       .withOptions({ shallow: false })
-      .withDefault(searchParams.channel.defaultValue),
+      .withDefault(communicationLogsSearchParams.channel.defaultValue),
   );
 
   const [participantTypeFilter, setParticipantTypeFilter] = useQueryState(
     "participantType",
-    searchParams.participantType
+    communicationLogsSearchParams.participantType
       .withOptions({ shallow: false })
-      .withDefault(searchParams.participantType.defaultValue),
+      .withDefault(communicationLogsSearchParams.participantType.defaultValue),
   );
 
   const [customerFilter, setCustomerFilter] = useQueryState(
     "customer",
-    searchParams.customer.withOptions({ shallow: false }),
+    communicationLogsSearchParams.customerId.withOptions({ shallow: false }),
   );
 
-  const [page, setPage] = useQueryState("page", searchParams.page);
+  const [page, setPage] = useQueryState(
+    "page",
+    communicationLogsSearchParams.page,
+  );
 
   const [start, setStartValue] = useQueryState(
     "start",
-    searchParams.start.withOptions({ shallow: false }),
+    communicationLogsSearchParams.start.withOptions({ shallow: false }),
   );
 
   const [end, setEndValue] = useQueryState(
     "end",
-    searchParams.end.withOptions({ shallow: false }),
+    communicationLogsSearchParams.end.withOptions({ shallow: false }),
   );
 
   const resetFilters = useCallback(() => {
@@ -74,9 +77,11 @@ export function useCommunicationLogsTableFilters() {
   const isAnyFilterActive = useMemo(() => {
     return (
       !!searchQuery ||
-      directionFilter !== searchParams.direction.defaultValue ||
-      channelFilter !== searchParams.channel.defaultValue ||
-      participantTypeFilter !== searchParams.participantType.defaultValue ||
+      directionFilter !==
+        communicationLogsSearchParams.direction.defaultValue ||
+      channelFilter !== communicationLogsSearchParams.channel.defaultValue ||
+      participantTypeFilter !==
+        communicationLogsSearchParams.participantType.defaultValue ||
       !!start ||
       !!end
     );

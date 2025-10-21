@@ -6,7 +6,7 @@ export const fetchCache = "force-cache";
 export const revalidate = 10;
 
 export async function GET(request: NextRequest) {
-  const logger = getLoggerFactory("AdminAPI/templates-check")("GET");
+  const logger = getLoggerFactory("AdminAPI/templates/check")("GET");
 
   logger.debug(
     {
@@ -22,9 +22,13 @@ export async function GET(request: NextRequest) {
   const id = searchParams.get("id");
 
   if (!name) {
-    logger.warn("Missing required name parameter");
+    logger.warn({ name, id }, "Missing required name parameter");
     return NextResponse.json(
-      { error: "Name parameter is required" },
+      {
+        error: "Name parameter is required",
+        code: "missing_required_parameter",
+        success: false,
+      },
       { status: 400 },
     );
   }

@@ -1,5 +1,6 @@
 "use client";
 
+import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
 import { AppScope, ConnectedApp } from "@vivid/types";
 import { cn, Combobox, ComboboxProps, IComboboxItem, toast } from "@vivid/ui";
@@ -17,24 +18,6 @@ const AppShortLabel: React.FC<{ app: ConnectedApp }> = ({ app }) => {
       <ConnectedAppAccount account={app.account} />
     </span>
   );
-};
-
-const getApps = async (scope: string) => {
-  const url = `/admin/api/apps?scope=${encodeURIComponent(scope)}&limit=10000000`;
-  const response = await fetch(url, {
-    method: "GET",
-    cache: "default",
-  });
-
-  if (response.status >= 400) {
-    const text = await response.text();
-    const message = `Request to fetch apps failed: ${response.status}; ${text}`;
-
-    console.error(message);
-    throw new Error(message);
-  }
-
-  return (await response.json()) as ConnectedApp[];
 };
 
 const checkAppSearch = (app: ConnectedApp, query: string) => {
@@ -89,7 +72,7 @@ export const AppSelector: React.FC<AppSelectorProps> = ({
     const fn = async () => {
       try {
         setIsLoading(true);
-        const apps = await getApps(scope);
+        const apps = await adminApi.apps.getAppsByScope(scope);
         setApps(apps);
       } catch (e) {
         toast.error(t("common.requestFailed"));

@@ -2,7 +2,7 @@ import { getLoggerFactory } from "@vivid/logger";
 import { NextRequest } from "next/server";
 import { createOrUpdateIntent } from "../../../../utils/payments/createIntent";
 
-export async function POST(
+export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ intentId: string }> },
 ) {

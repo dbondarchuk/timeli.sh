@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { adminApi } from "@vivid/api-sdk";
 import { AppsBlocksEditors } from "@vivid/app-store/blocks/editors";
 import { AppsBlocksReaders } from "@vivid/app-store/blocks/readers";
 import { Language, useI18n } from "@vivid/i18n";
@@ -40,7 +41,6 @@ import React, { useMemo } from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { z } from "zod";
 import { NavigationGuardDialog, useIsDirty } from "../navigation-guard/dialog";
-import { checkUniqueSlug, createPage, updatePage } from "./actions";
 import { PageSettingsPanel } from "./page-settings-panel";
 
 // Helper function to generate slug from title
@@ -64,7 +64,10 @@ export const PageForm: React.FC<{
 }> = ({ initialData, config, apps }) => {
   const t = useI18n("admin");
 
-  const cachedUniqueSlugCheck = useDebounceCacheFn(checkUniqueSlug, 300);
+  const cachedUniqueSlugCheck = useDebounceCacheFn(
+    adminApi.pages.checkUniqueSlug,
+    300,
+  );
 
   const additionalBlocks = useMemo(() => {
     return apps?.reduce(
@@ -204,14 +207,14 @@ export const PageForm: React.FC<{
         }
 
         if (!initialData) {
-          const { _id } = await createPage(data);
+          const { _id } = await adminApi.pages.createPage(data);
           onFormSubmit();
 
           setTimeout(() => {
             router.push(`/admin/dashboard/pages/${_id}`);
           }, 100);
         } else {
-          await updatePage(initialData._id, data);
+          await adminApi.pages.updatePage(initialData._id, data);
           onFormSubmit();
 
           setTimeout(() => {
@@ -286,8 +289,8 @@ export const PageForm: React.FC<{
   const [header, setHeader] = React.useState<PageHeader | null>(null);
   React.useEffect(() => {
     const fetchHeader = async () => {
-      const response = await fetch(`/admin/api/pages/headers/${headerId}`);
-      const data = await response.json();
+      if (!headerId) return;
+      const data = await adminApi.pageHeaders.getPageHeader(headerId);
       setHeader(data);
     };
 
@@ -301,8 +304,8 @@ export const PageForm: React.FC<{
   const [footer, setFooter] = React.useState<PageFooter | null>(null);
   React.useEffect(() => {
     const fetchFooter = async () => {
-      const response = await fetch(`/admin/api/pages/footers/${footerId}`);
-      const data = await response.json();
+      if (!footerId) return;
+      const data = await adminApi.pageFooters.getPageFooter(footerId);
       setFooter(data);
     };
 

@@ -1,25 +1,25 @@
 "use client";
 
+import { templateSearchParams } from "@vivid/api-sdk";
 import { useQueryState } from "nuqs";
 import { useCallback, useMemo } from "react";
-import { searchParams } from "./search-params";
 
 export function useTemplatesTableFilters() {
   const [searchQuery, setSearchQuery] = useQueryState(
     "search",
-    searchParams.search
+    templateSearchParams.search
       .withOptions({ shallow: false, throttleMs: 1000 })
       .withDefault(""),
   );
 
   const [typeFilter, setTypeFilter] = useQueryState(
     "type",
-    searchParams.type
+    templateSearchParams.type
       .withOptions({ shallow: false })
-      .withDefault(searchParams.type.defaultValue),
+      .withDefault(templateSearchParams.type.defaultValue),
   );
 
-  const [page, setPage] = useQueryState("page", searchParams.page);
+  const [page, setPage] = useQueryState("page", templateSearchParams.page);
 
   const resetFilters = useCallback(() => {
     setSearchQuery(null);
@@ -29,7 +29,9 @@ export function useTemplatesTableFilters() {
   }, [setSearchQuery, setPage, setTypeFilter]);
 
   const isAnyFilterActive = useMemo(() => {
-    return !!searchQuery || typeFilter !== searchParams.type.defaultValue;
+    return (
+      !!searchQuery || typeFilter !== templateSearchParams.type.defaultValue
+    );
   }, [searchQuery, typeFilter]);
 
   return {

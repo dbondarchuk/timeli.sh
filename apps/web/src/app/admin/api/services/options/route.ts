@@ -1,8 +1,8 @@
-import { searchParams } from "@/components/admin/services/options/table/search-params";
+import { serviceOptionsSearchParamsLoader } from "@vivid/api-sdk";
 import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
+import { appointmentOptionSchema } from "@vivid/types";
 import { NextRequest, NextResponse } from "next/server";
-import { createLoader } from "nuqs/server";
 
 export async function GET(request: NextRequest) {
   const logger = getLoggerFactory("AdminAPI/services/options")("GET");
@@ -16,8 +16,7 @@ export async function GET(request: NextRequest) {
     "Processing options API request",
   );
 
-  const loader = createLoader(searchParams);
-  const params = loader(request.nextUrl.searchParams);
+  const params = serviceOptionsSearchParamsLoader(request.nextUrl.searchParams);
 
   const page = params.page;
   const search = params.search ?? undefined;
@@ -59,4 +58,66 @@ export async function GET(request: NextRequest) {
   headers.append("Cache-Control", "max-age=3");
 
   return NextResponse.json(res, { headers });
+}
+
+export async function POST(request: NextRequest) {
+  const logger = getLoggerFactory("AdminAPI/services/options")("POST");
+
+  logger.debug(
+    {
+      url: request.url,
+      method: request.method,
+    },
+    "Processing service options API request",
+  );
+
+  const body = await request.json();
+
+  const { data, error, success } = appointmentOptionSchema.safeParse(body);
+  if (!success) {
+    logger.warn({ error }, "Invalid service option update model format");
+    return NextResponse.json(
+      { error, success: false, code: "invalid_request_format" },
+      { status: 400 },
+    );
+  }
+
+  logger.debug(
+    {
+      optionName: data.name,
+      optionDuration: data.duration,
+      optionPrice: data.price,
+    },
+    "Creating new service option",
+  );
+
+  try {
+    const result = await ServicesContainer.ServicesService().createOption(data);
+
+    logger.debug(
+      {
+        optionId: result._id,
+        optionName: data.name,
+      },
+      "Service option created successfully",
+    );
+
+    return NextResponse.json(result, { status: 201 });
+  } catch (error: any) {
+    logger.error(
+      {
+        optionName: data.name,
+        error: error?.message || error?.toString(),
+      },
+      "Failed to create service option",
+    );
+    return NextResponse.json(
+      {
+        success: false,
+        error: error?.message || "Failed to create service option",
+        code: "create_service_option_failed",
+      },
+      { status: 500 },
+    );
+  }
 }

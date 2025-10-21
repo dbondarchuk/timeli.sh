@@ -15,7 +15,7 @@ export interface IAssetsService {
     asset: Omit<AssetEntity, "_id" | "uploadedAt" | "size" | "hash">,
     file: File,
   ): Promise<AssetEntity>;
-  updateAsset(id: string, update: AssetUpdate): Promise<void>;
+  updateAsset(id: string, update: Partial<AssetUpdate>): Promise<void>;
   deleteAsset(id: string): Promise<AssetEntity | null>;
   deleteAssets(ids: string[]): Promise<AssetEntity[]>;
   checkUniqueFileName(filename: string, _id?: string): Promise<boolean>;

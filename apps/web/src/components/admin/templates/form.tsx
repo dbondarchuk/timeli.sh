@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { adminApi } from "@vivid/api-sdk";
 import { EmailBuilder } from "@vivid/email-builder";
 import { useI18n } from "@vivid/i18n";
 import {
@@ -17,39 +18,17 @@ import {
   FormMessage,
   InfoTooltip,
   Input,
-  toast,
   toastPromise,
   useDebounceCacheFn,
 } from "@vivid/ui";
 import { SaveButton } from "@vivid/ui-admin";
+import { TextMessageBuilder } from "@vivid/ui-admin-kit";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { NavigationGuardDialog, useIsDirty } from "../navigation-guard/dialog";
-import { createTemplate, updateTemplate } from "./actions";
 import { TemplatesTemplate } from "./templates/type";
-import { TextMessageBuilder } from "./text-message-builder";
-
-const checkUniqueName = async (name: string, id?: string) => {
-  const url = `/admin/api/templates/check?name=${encodeURIComponent(name)}${id ? `&id=${encodeURIComponent(id)}` : ""}`;
-  const response = await fetch(url, {
-    method: "GET",
-    cache: "default",
-  });
-
-  if (response.status >= 400) {
-    toast.error("Request failed.");
-    const text = await response.text();
-    console.error(
-      `Request to validate template name failed: ${response.status}; ${text}`,
-    );
-
-    return false;
-  }
-
-  return (await response.json()) as boolean;
-};
 
 export const TemplateForm: React.FC<
   {
@@ -64,7 +43,10 @@ export const TemplateForm: React.FC<
   const type = initialData?.type || ("type" in rest ? rest.type : "email");
   const template = "template" in rest ? rest.template : undefined;
 
-  const cachedUniqueNameCheck = useDebounceCacheFn(checkUniqueName, 300);
+  const cachedUniqueNameCheck = useDebounceCacheFn(
+    adminApi.templates.checkUniqueName,
+    300,
+  );
   const formSchema = getTemplateSchemaWithUniqueCheck(
     (name) => cachedUniqueNameCheck(name, initialData?._id),
     "templates.nameMustBeUnique",
@@ -92,14 +74,14 @@ export const TemplateForm: React.FC<
 
       const fn = async () => {
         if (!initialData) {
-          const { _id } = await createTemplate(data);
+          const { _id } = await adminApi.templates.createTemplate(data);
           onFormSubmit();
 
           setTimeout(() => {
             router.push(`/admin/dashboard/templates/${_id}`);
           }, 100);
         } else {
-          await updateTemplate(initialData._id, data);
+          await adminApi.templates.updateTemplate(initialData._id, data);
           onFormSubmit();
 
           setTimeout(() => {

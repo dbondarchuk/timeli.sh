@@ -1,21 +1,26 @@
+import {
+  communicationLogsSearchParams,
+  communicationLogsSearchParamsCache,
+} from "@vivid/api-sdk";
 import { ServicesContainer } from "@vivid/services";
 import { DataTable } from "@vivid/ui-admin";
 import { columns } from "./columns";
-import { searchParams, searchParamsCache } from "./search-params";
 
 export const CommunicationLogsTable: React.FC<{
   customerId?: string;
 }> = async ({ customerId }) => {
-  const page = searchParamsCache.get("page");
-  const search = searchParamsCache.get("search") || undefined;
-  const limit = searchParamsCache.get("limit");
-  const direction = searchParamsCache.get("direction");
-  const participantType = searchParamsCache.get("participantType");
-  const channel = searchParamsCache.get("channel");
-  const start = searchParamsCache.get("start") || undefined;
-  const end = searchParamsCache.get("end") || undefined;
-  const sort = searchParamsCache.get("sort");
-  const customerIds = searchParamsCache.get("customer") || undefined;
+  const page = communicationLogsSearchParamsCache.get("page");
+  const search = communicationLogsSearchParamsCache.get("search") || undefined;
+  const limit = communicationLogsSearchParamsCache.get("limit");
+  const direction = communicationLogsSearchParamsCache.get("direction");
+  const participantType =
+    communicationLogsSearchParamsCache.get("participantType");
+  const channel = communicationLogsSearchParamsCache.get("channel");
+  const start = communicationLogsSearchParamsCache.get("start") || undefined;
+  const end = communicationLogsSearchParamsCache.get("end") || undefined;
+  const sort = communicationLogsSearchParamsCache.get("sort");
+  const customerIds =
+    communicationLogsSearchParamsCache.get("customerId") || undefined;
 
   const offset = (page - 1) * limit;
 
@@ -37,7 +42,7 @@ export const CommunicationLogsTable: React.FC<{
       columns={columns}
       data={res.items}
       totalItems={res.total}
-      sortSchemaDefault={searchParams.sort.defaultValue}
+      sortSchemaDefault={communicationLogsSearchParams.sort.defaultValue}
     />
   );
 };

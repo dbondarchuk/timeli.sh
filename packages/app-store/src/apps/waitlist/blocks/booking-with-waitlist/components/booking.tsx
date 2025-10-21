@@ -1,4 +1,5 @@
 "use client";
+import { clientApi } from "@vivid/api-sdk";
 import { GetAppointmentOptionsResponse } from "@vivid/types";
 import { Skeleton } from "@vivid/ui";
 import React from "react";
@@ -27,8 +28,7 @@ export const BookingWithWaitlist: React.FC<
 
   React.useEffect(() => {
     const loadOptions = async () => {
-      const response = await fetch("/api/booking/options");
-      const data = await response.json();
+      const data = await clientApi.booking.getBookingOptions();
       setResponse(data);
     };
 

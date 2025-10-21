@@ -1,5 +1,5 @@
+import { adminApi } from "@vivid/api-sdk";
 import { WithTotal } from "@vivid/types";
-import { processRequest } from "../..";
 import {
   DismissWaitlistEntriesActionType,
   GetWaitlistEntriesAction,
@@ -28,7 +28,7 @@ export async function getWaitlistEntries(
   logger.debug({ appId, query }, "Getting waitlist entries");
 
   try {
-    const result = (await processRequest(appId, {
+    const result = (await adminApi.apps.processRequest(appId, {
       type: GetWaitlistEntriesActionType,
       query,
     })) as WithTotal<WaitlistEntry>;
@@ -52,7 +52,7 @@ export async function getWaitlistEntry(appId: string, id: string) {
   logger.debug({ appId, id }, "Getting waitlist entry");
 
   try {
-    const result = (await processRequest(appId, {
+    const result = (await adminApi.apps.processRequest(appId, {
       type: GetWaitlistEntryActionType,
       id,
     })) as WaitlistEntry;
@@ -73,7 +73,7 @@ export async function dismissWaitlistEntries(appId: string, ids: string[]) {
   logger.debug({ appId, waitlistEntryIds: ids }, "Dismissing waitlist entries");
 
   try {
-    const result = await processRequest(appId, {
+    const result = await adminApi.apps.processRequest(appId, {
       type: DismissWaitlistEntriesActionType,
       ids,
     });

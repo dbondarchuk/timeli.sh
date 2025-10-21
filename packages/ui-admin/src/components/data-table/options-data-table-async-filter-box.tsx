@@ -2,9 +2,10 @@
 
 import React from "react";
 
+import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
-import { AppointmentOption, WithTotal } from "@vivid/types";
-import { Skeleton, toast } from "@vivid/ui";
+import { AppointmentOption } from "@vivid/types";
+import { Skeleton } from "@vivid/ui";
 import { durationToTime } from "@vivid/utils";
 import {
   AsyncFilterBoxOption,
@@ -52,40 +53,20 @@ export const OptionsDataTableAsyncFilterBox: React.FC<
 
   const getOptions = async (page: number, search?: string) => {
     const limit = 10;
-    let url = `/admin/api/services/options?page=${page}&limit=${limit}`;
-    if (rest.filterValue) {
-      url += `&priorityId=${rest.filterValue.map((id) => encodeURIComponent(id)).join(",")}`;
-    }
-
-    if (search) url += `&search=${encodeURIComponent(search)}`;
-
-    const response = await fetch(url, {
-      method: "GET",
-      cache: "default",
+    const result = await adminApi.serviceOptions.getServiceOptions({
+      page,
+      limit,
+      search,
+      priorityId: rest.filterValue ?? undefined,
     });
 
-    if (response.status >= 400) {
-      toast.error(t("common.toasts.error"));
-      const text = await response.text();
-      console.error(
-        `Request to fetch options failed: ${response.status}; ${text}`,
-      );
-
-      return {
-        items: [],
-        hasMore: false,
-      };
-    }
-
-    const res = (await response.json()) as WithTotal<AppointmentOption>;
-
     return {
-      items: res.items.map((option) => ({
+      items: result.items.map((option) => ({
         label: <OptionShortLabel option={option} />,
         shortLabel: option.name,
         value: option._id,
       })) satisfies AsyncFilterBoxOption[],
-      hasMore: page * limit < res.total,
+      hasMore: page * limit < result.total,
     };
   };
 

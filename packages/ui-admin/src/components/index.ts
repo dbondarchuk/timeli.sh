@@ -1,3 +1,4 @@
+export * from "./addon-selector";
 export * from "./app-selector";
 export * from "./arguments-autocomplete";
 export * from "./asset-preview";
@@ -8,6 +9,7 @@ export * from "./connected-app-properties";
 export * from "./content-editable-mention";
 export * from "./customer-selector";
 export * from "./data-table";
+export * from "./field-selector";
 export * from "./non-sortable";
 export * from "./option-selector";
 export * from "./page-selector-dialog";

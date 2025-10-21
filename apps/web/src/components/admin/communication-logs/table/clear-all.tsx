@@ -1,5 +1,6 @@
 "use client";
 
+import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
 import {
   AlertDialog,
@@ -17,7 +18,6 @@ import {
 import { Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { clearAllCommunicationLogs } from "../actions";
 
 export const ClearAllCommunicationLogsButton: React.FC = () => {
   const [isLoading, setIsLoading] = React.useState(false);
@@ -29,10 +29,13 @@ export const ClearAllCommunicationLogsButton: React.FC = () => {
     try {
       setIsLoading(true);
 
-      await toastPromise(clearAllCommunicationLogs(), {
-        success: t("communicationLogs.logsCleared"),
-        error: t("common.toasts.error"),
-      });
+      await toastPromise(
+        adminApi.communicationLogs.clearAllCommunicationLogs(),
+        {
+          success: t("communicationLogs.logsCleared"),
+          error: t("common.toasts.error"),
+        },
+      );
 
       router.refresh();
       setIsOpen(false);

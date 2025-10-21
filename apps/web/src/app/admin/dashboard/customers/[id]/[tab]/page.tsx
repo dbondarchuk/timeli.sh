@@ -1,21 +1,17 @@
 import { AppointmentsTableColumnsCount } from "@/components/admin/appointments/table/columns";
-import {
-  searchParamsCache as appointmentsSearchParamsCache,
-  serialize as appointmentsSerialize,
-} from "@/components/admin/appointments/table/search-params";
 import { AppointmentsTable } from "@/components/admin/appointments/table/table";
 import { AppointmentsTableAction } from "@/components/admin/appointments/table/table-action";
-import {
-  searchParamsCache as assetsSearchParamsCache,
-  serialize as assetsSerialize,
-} from "@/components/admin/assets/table/search-params";
-import {
-  searchParamsCache as communicationsSearchParamsCache,
-  serialize as communicationsSerialize,
-} from "@/components/admin/communication-logs/table/search-params";
 import { CommunicationLogsTableAction } from "@/components/admin/communication-logs/table/table-action";
 import { CustomerForm } from "@/components/admin/customers/form";
 import PageContainer from "@/components/admin/layout/page-container";
+import {
+  appointmentsSearchParamsCache,
+  assetsSearchParamsCache,
+  communicationLogsSearchParamsCache,
+  serializeAppointmentsSearchParams,
+  serializeAssetsSearchParams,
+  serializeCommunicationLogsSearchParams,
+} from "@vivid/api-sdk";
 import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
@@ -29,14 +25,14 @@ import {
   TabsList,
 } from "@vivid/ui";
 import { DataTableSkeleton } from "@vivid/ui-admin";
+import {
+  RecentCommunications,
+  SendCommunicationButton,
+} from "@vivid/ui-admin-kit";
 import { CalendarClock } from "lucide-react";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { cache, Suspense } from "react";
-import {
-  RecentCommunications,
-  SendCommunicationButton,
-} from "../../../../../../components/admin/communications/communications";
 import {
   CustomerFiles,
   CustomerFilesTableAction,
@@ -103,13 +99,13 @@ export default async function CustomerPage(props: Props) {
   let key: string = "";
   if (activeTab === appointmentsTab) {
     const parsed = appointmentsSearchParamsCache.parse(searchParams);
-    key = appointmentsSerialize({ ...parsed });
+    key = serializeAppointmentsSearchParams({ ...parsed });
   } else if (activeTab === filesTab) {
     const parsed = assetsSearchParamsCache.parse(searchParams);
-    key = assetsSerialize({ ...parsed });
+    key = serializeAssetsSearchParams({ ...parsed });
   } else if (activeTab === communicationsTab) {
-    const parsed = communicationsSearchParamsCache.parse(searchParams);
-    key = communicationsSerialize({ ...parsed });
+    const parsed = communicationLogsSearchParamsCache.parse(searchParams);
+    key = serializeCommunicationLogsSearchParams({ ...parsed });
   }
 
   if (searchParams.key) {
@@ -235,7 +231,9 @@ export default async function CustomerPage(props: Props) {
                 >
                   <CustomerFiles
                     customerId={params.id}
-                    search={assetsSearchParamsCache.get("search")}
+                    search={serializeAssetsSearchParams({
+                      search: assetsSearchParamsCache.get("search"),
+                    })}
                   />
                 </Suspense>
               </TabsContent>

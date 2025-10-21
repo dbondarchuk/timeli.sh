@@ -1,7 +1,7 @@
+import { calendarSearchParamsLoader } from "@vivid/api-sdk";
 import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
 import { AppointmentStatus, appointmentStatuses } from "@vivid/types";
-import { DateTime } from "luxon";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -16,13 +16,10 @@ export async function GET(request: NextRequest) {
     "Processing calendar API request",
   );
 
-  const searchParams = request.nextUrl.searchParams;
-  const startStr = searchParams.get("start");
-  const endStr = searchParams.get("end");
-  const includeDeclined =
-    searchParams.get("includeDeclined")?.toLowerCase() === "true";
-  if (!startStr || !endStr) {
-    logger.warn({ startStr, endStr }, "Missing required date range parameters");
+  const searchParams = calendarSearchParamsLoader(request.nextUrl.searchParams);
+  const { start, end, includeDeclined } = searchParams;
+  if (!start || !end) {
+    logger.warn("Missing required date range parameters");
     return NextResponse.json(
       { error: "Start and end dates are required" },
       { status: 400 },
@@ -31,40 +28,27 @@ export async function GET(request: NextRequest) {
 
   logger.debug(
     {
-      start: startStr,
-      end: endStr,
+      start,
+      end,
+      includeDeclined,
     },
     "Fetching calendar data",
   );
-
-  const start = DateTime.fromISO(startStr);
-  const end = DateTime.fromISO(endStr);
-  if (!start.isValid || !end.isValid)
-    return NextResponse.json(
-      { error: "Start and End must be dates in ISO format" },
-      { status: 400 },
-    );
 
   const statuses: AppointmentStatus[] = appointmentStatuses.filter(
     (s) => includeDeclined || s !== "declined",
   );
 
   const [events, schedule] = await Promise.all([
-    ServicesContainer.EventsService().getEvents(
-      start.toJSDate(),
-      end.toJSDate(),
-      statuses,
-    ),
-    ServicesContainer.ScheduleService().getSchedule(
-      start.toJSDate(),
-      end.toJSDate(),
-    ),
+    ServicesContainer.EventsService().getEvents(start, end, statuses),
+    ServicesContainer.ScheduleService().getSchedule(start, end),
   ]);
 
   logger.debug(
     {
-      start: startStr,
-      end: endStr,
+      start,
+      end,
+      includeDeclined,
     },
     "Successfully retrieved calendar data",
   );

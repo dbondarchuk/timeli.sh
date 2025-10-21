@@ -1,8 +1,8 @@
-import { searchParams } from "@/components/admin/services/discounts/table/search-params";
+import { discountsSearchParamsLoader } from "@vivid/api-sdk";
 import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
+import { discountSchema } from "@vivid/types";
 import { NextRequest, NextResponse } from "next/server";
-import { createLoader } from "nuqs/server";
 
 export async function GET(request: NextRequest) {
   const logger = getLoggerFactory("AdminAPI/discounts")("GET");
@@ -16,8 +16,7 @@ export async function GET(request: NextRequest) {
     "Processing discounts API request",
   );
 
-  const loader = createLoader(searchParams);
-  const params = loader(request.nextUrl.searchParams);
+  const params = discountsSearchParamsLoader(request.nextUrl.searchParams);
 
   const page = params.page;
   const search = params.search ?? undefined;
@@ -54,4 +53,34 @@ export async function GET(request: NextRequest) {
   );
 
   return NextResponse.json(res);
+}
+
+export async function POST(request: NextRequest) {
+  const logger = getLoggerFactory("AdminAPI/discounts")("POST");
+
+  logger.debug(
+    {
+      url: request.url,
+      method: request.method,
+    },
+    "Processing create discount API request",
+  );
+
+  const body = await request.json();
+
+  const { data, error, success } = discountSchema.safeParse(body);
+  if (!success) {
+    logger.warn({ error }, "Invalid discount update model format");
+    return NextResponse.json(
+      { error, success: false, code: "invalid_request_format" },
+      { status: 400 },
+    );
+  }
+
+  logger.debug({ discount: data }, "Creating discount");
+  const discount =
+    await ServicesContainer.ServicesService().createDiscount(data);
+
+  logger.debug({ discountId: discount._id }, "Discount created successfully");
+  return NextResponse.json(discount, { status: 201 });
 }

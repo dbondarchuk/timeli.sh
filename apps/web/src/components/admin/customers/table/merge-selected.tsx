@@ -1,5 +1,6 @@
 "use client";
 
+import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
 import { CustomerListModel } from "@vivid/types";
 import {
@@ -20,7 +21,6 @@ import { CustomerSelector } from "@vivid/ui-admin";
 import { Merge } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { mergeSelected } from "../actions";
 
 export const MergeSelectedCustomersButton: React.FC<{
   selected: CustomerListModel[];
@@ -38,7 +38,7 @@ export const MergeSelectedCustomersButton: React.FC<{
       setIsLoading(true);
 
       await toastPromise(
-        mergeSelected(
+        adminApi.customers.mergeCustomers(
           targetCustomerId,
           selected.map((customer) => customer._id),
         ),

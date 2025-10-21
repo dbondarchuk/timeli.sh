@@ -1,5 +1,7 @@
+import { serviceFieldsSearchParamsLoader } from "@vivid/api-sdk";
 import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
+import { fieldSchema } from "@vivid/types";
 import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
@@ -18,7 +20,30 @@ export async function GET(request: NextRequest) {
     "Processing services fields API request",
   );
 
-  const fields = await ServicesContainer.ServicesService().getFields({});
+  const searchParams = serviceFieldsSearchParamsLoader(request);
+  const includeUsage = searchParams.includeUsage ?? false;
+  const search = searchParams.search ?? undefined;
+  const sort = searchParams.sort ?? undefined;
+  const page = searchParams.page;
+  const limit = searchParams.limit;
+  const offset = (page - 1) * limit;
+
+  logger.debug(
+    {
+      searchParams,
+    },
+    "Parsed search params for service fields",
+  );
+
+  const fields = await ServicesContainer.ServicesService().getFields(
+    {
+      search,
+      sort,
+      offset,
+      limit,
+    },
+    includeUsage,
+  );
 
   logger.debug(
     {
@@ -31,5 +56,31 @@ export async function GET(request: NextRequest) {
   const headers = new Headers();
   headers.append("Cache-Control", "max-age=3");
 
-  return NextResponse.json(fields.items, { headers });
+  return NextResponse.json(fields, { headers });
+}
+
+export async function POST(request: NextRequest) {
+  const logger = getLoggerFactory("AdminAPI/services/fields")("POST");
+  const body = await request.json();
+  const { data, error, success } = fieldSchema.safeParse(body);
+  if (!success) {
+    logger.warn({ error }, "Invalid service field update model format");
+    return NextResponse.json(
+      { error, success: false, code: "invalid_request_format" },
+      { status: 400 },
+    );
+  }
+  try {
+    const result = await ServicesContainer.ServicesService().createField(data);
+    return NextResponse.json(result, { status: 201 });
+  } catch (error: any) {
+    return NextResponse.json(
+      {
+        success: false,
+        error: error?.message || "Failed to create service field",
+        code: "create_service_field_failed",
+      },
+      { status: 500 },
+    );
+  }
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
 import { AssetEntity } from "@vivid/types";
 import {
@@ -19,7 +20,6 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { updateAsset } from "./actions";
 
 const formSchema = z.object({
   description: z.coerce.string().optional(),
@@ -44,7 +44,7 @@ export const AssetEditForm: React.FC<{ asset: AssetEntity }> = ({ asset }) => {
     try {
       setLoading(true);
 
-      await toastPromise(updateAsset(asset._id, data), {
+      await toastPromise(adminApi.assets.updateAsset(asset._id, data), {
         success: t("assets.toasts.changesSaved"),
         error: t("common.toasts.error"),
       });

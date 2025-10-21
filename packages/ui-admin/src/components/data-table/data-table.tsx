@@ -13,6 +13,7 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
+import { baseSearchParams } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
 import { Sort } from "@vivid/types";
 import {
@@ -35,7 +36,6 @@ import {
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { parseAsInteger, useQueryState } from "nuqs";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { baseSearchParams } from "./search-params";
 import { useSelectedRowsStore } from "./use-data-table-context";
 
 // function getSize(size = 100, max = Number.MAX_SAFE_INTEGER, min = 40) {

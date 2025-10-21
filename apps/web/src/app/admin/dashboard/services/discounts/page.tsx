@@ -1,11 +1,11 @@
 import PageContainer from "@/components/admin/layout/page-container";
 import { DiscountsTableColumnsCount } from "@/components/admin/services/discounts/table/columns";
-import {
-  searchParamsCache,
-  serialize,
-} from "@/components/admin/services/discounts/table/search-params";
 import { DiscountsTable } from "@/components/admin/services/discounts/table/table";
 import { DiscountsTableAction } from "@/components/admin/services/discounts/table/table-action";
+import {
+  discountsSearchParamsCache,
+  discountsSearchParamsSerializer,
+} from "@vivid/api-sdk";
 import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
 import { Breadcrumbs, Heading, Link } from "@vivid/ui";
@@ -31,9 +31,8 @@ export default async function DiscountsPage(props: Params) {
 
   logger.debug("Loading discounts page");
   const searchParams = await props.searchParams;
-  const parsed = searchParamsCache.parse(searchParams);
-
-  const key = serialize({ ...parsed });
+  const parsed = discountsSearchParamsCache.parse(searchParams);
+  const key = discountsSearchParamsSerializer({ ...parsed });
 
   const breadcrumbItems = [
     { title: t("navigation.dashboard"), link: "/admin/dashboard" },

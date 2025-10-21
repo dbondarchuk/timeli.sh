@@ -1,11 +1,11 @@
 import { AssetsTableColumnsCount } from "@/components/admin/assets/table/columns";
-import {
-  searchParamsCache,
-  serialize,
-} from "@/components/admin/assets/table/search-params";
 import { AssetsTable } from "@/components/admin/assets/table/table";
 import { AssetsTableAction } from "@/components/admin/assets/table/table-action";
 import PageContainer from "@/components/admin/layout/page-container";
+import {
+  assetsSearchParamsCache,
+  serializeAssetsSearchParams,
+} from "@vivid/api-sdk";
 import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
 import { Breadcrumbs, Heading, Link } from "@vivid/ui";
@@ -31,9 +31,8 @@ export default async function AssetsPage(props: Params) {
 
   logger.debug("Loading assets page");
   const searchParams = await props.searchParams;
-  const parsed = searchParamsCache.parse(searchParams);
-
-  const key = serialize({ ...parsed });
+  const parsed = assetsSearchParamsCache.parse(searchParams);
+  const key = serializeAssetsSearchParams({ ...parsed });
 
   const breadcrumbItems = [
     { title: t("assets.dashboard"), link: "/admin/dashboard" },

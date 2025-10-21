@@ -1,10 +1,10 @@
 import PageContainer from "@/components/admin/layout/page-container";
-import {
-  searchParamsCache,
-  serialize,
-} from "@/components/admin/services/addons/table/search-params";
 import { AddonsTable } from "@/components/admin/services/addons/table/table";
 import { AddonsTableAction } from "@/components/admin/services/addons/table/table-action";
+import {
+  serviceAddonsSearchParamsCache,
+  serviceAddonsSearchParamsSerializer,
+} from "@vivid/api-sdk";
 import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
 import { Breadcrumbs, Heading, Link } from "@vivid/ui";
@@ -30,9 +30,8 @@ export default async function AddonsPage(props: Params) {
 
   logger.debug("Loading addons page");
   const searchParams = await props.searchParams;
-  const parsed = searchParamsCache.parse(searchParams);
-
-  const key = serialize({ ...parsed });
+  const parsed = serviceAddonsSearchParamsCache.parse(searchParams);
+  const key = serviceAddonsSearchParamsSerializer({ ...parsed });
 
   const breadcrumbItems = [
     { title: t("navigation.dashboard"), link: "/admin/dashboard" },

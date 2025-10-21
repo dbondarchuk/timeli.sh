@@ -1,7 +1,8 @@
 "use client";
 
+import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
-import { UploadedFile, WithTotal } from "@vivid/types";
+import { UploadedFile } from "@vivid/types";
 import {
   Button,
   cn,
@@ -92,25 +93,16 @@ export const AssetSelectorDialog: React.FC<AssetSelectorProps> = ({
 
   const loadAssets = React.useCallback(
     async (page: number, search?: string) => {
-      let url = `/admin/api/assets?page=${page}&limit=${toLoad}`;
-      if (search) url += `&search=${encodeURIComponent(search)}`;
-      if (accept?.length) {
-        const acceptQuery = accept.map(
-          (type) => `accept=${encodeURIComponent(type)}`,
-        );
-        url += `&${acceptQuery.join("&")}`;
-      }
-
-      const response = await fetch(url, {
-        method: "GET",
-        cache: "default",
+      const result = await adminApi.assets.getAssets({
+        page,
+        limit: toLoad,
+        search,
+        accept: accept ?? undefined,
       });
 
-      const res = (await response.json()) as WithTotal<UploadedFile>;
-
       return {
-        items: res.items,
-        hasMore: page * toLoad < res.total,
+        items: result.items,
+        hasMore: page * toLoad < result.total,
       };
     },
     [accept],

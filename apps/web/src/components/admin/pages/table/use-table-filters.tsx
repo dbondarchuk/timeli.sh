@@ -1,9 +1,9 @@
 "use client";
 
+import { pagesSearchParams } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
 import { useQueryState } from "nuqs";
 import { useCallback, useMemo } from "react";
-import { searchParams } from "./search-params";
 
 export function usePagesTableFilters() {
   const t = useI18n("admin");
@@ -17,19 +17,19 @@ export function usePagesTableFilters() {
 
   const [searchQuery, setSearchQuery] = useQueryState(
     "search",
-    searchParams.search
+    pagesSearchParams.search
       .withOptions({ shallow: false, throttleMs: 1000 })
       .withDefault(""),
   );
 
   const [statusFilter, setStatusFilter] = useQueryState(
     "published",
-    searchParams.published
+    pagesSearchParams.published
       .withOptions({ shallow: false })
-      .withDefault(searchParams.published.defaultValue),
+      .withDefault(pagesSearchParams.published.defaultValue),
   );
 
-  const [page, setPage] = useQueryState("page", searchParams.page);
+  const [page, setPage] = useQueryState("page", pagesSearchParams.page);
 
   const resetFilters = useCallback(() => {
     setSearchQuery(null);
@@ -40,7 +40,7 @@ export function usePagesTableFilters() {
 
   const isAnyFilterActive = useMemo(() => {
     return (
-      !!searchQuery || statusFilter !== searchParams.published.defaultValue
+      !!searchQuery || statusFilter !== pagesSearchParams.published.defaultValue
     );
   }, [searchQuery, statusFilter]);
 

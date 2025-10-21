@@ -1,5 +1,6 @@
 "use client";
 
+import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
 import { PageFooterListModel } from "@vivid/types";
 import {
@@ -18,7 +19,6 @@ import {
 import { Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { deleteSelectedPageFooters } from "../actions";
 
 export const DeleteSelectedPageFootersButton: React.FC<{
   selected: PageFooterListModel[];
@@ -33,7 +33,9 @@ export const DeleteSelectedPageFootersButton: React.FC<{
       setIsLoading(true);
 
       await toastPromise(
-        deleteSelectedPageFooters(selected.map((pageFooter) => pageFooter._id)),
+        adminApi.pageFooters.deletePageFooters(
+          selected.map((pageFooter) => pageFooter._id),
+        ),
         {
           success: t("pages.footers.table.delete.success"),
           error: t("pages.footers.table.delete.error"),

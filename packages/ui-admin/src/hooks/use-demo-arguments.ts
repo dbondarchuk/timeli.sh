@@ -1,3 +1,4 @@
+import { adminApi } from "@vivid/api-sdk";
 import React from "react";
 
 export const useDemoArguments = (options?: {
@@ -6,27 +7,10 @@ export const useDemoArguments = (options?: {
 }) => {
   const [demoArguments, setDemoArguments] = React.useState<any>({});
 
-  const searchParams: Record<string, string> = {};
-  if (options?.noAppointment) {
-    searchParams.noAppointment = "true";
-  }
-  if (options?.waitlistEntry) {
-    searchParams.waitlistEntry = "true";
-  }
-
-  const searchParamsString = Object.entries(searchParams)
-    .map(([key, value]) => `${key}=${value}`)
-    .join("&");
-
-  const getDemoArguments = async () => {
-    const response = await fetch(
-      `/admin/api/templates/arguments/demo${searchParamsString ? `?${searchParamsString}` : ""}`,
-    );
-    return await response.json();
-  };
-
   React.useEffect(() => {
-    getDemoArguments().then((args) => setDemoArguments(args));
+    adminApi.templates
+      .getDemoTemplateArguments(options)
+      .then((args) => setDemoArguments(args));
   }, []);
 
   return demoArguments;

@@ -2,11 +2,11 @@
 
 import React from "react";
 
+import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
-import { Discount, WithTotal } from "@vivid/types";
+import { Discount } from "@vivid/types";
 import {
   Skeleton,
-  toast,
   Tooltip,
   TooltipContent,
   TooltipProvider,
@@ -58,40 +58,20 @@ export const DiscountsDataTableAsyncFilterBox: React.FC<
 
   const getDiscounts = async (page: number, search?: string) => {
     const limit = 10;
-    let url = `/admin/api/discounts?page=${page}&limit=${limit}`;
-    if (rest.filterValue) {
-      url += `&priorityId=${rest.filterValue.map((id) => encodeURIComponent(id)).join(",")}`;
-    }
-
-    if (search) url += `&search=${encodeURIComponent(search)}`;
-
-    const response = await fetch(url, {
-      method: "GET",
-      cache: "default",
+    const result = await adminApi.discounts.getDiscounts({
+      page,
+      limit,
+      search,
+      priorityId: rest.filterValue ?? undefined,
     });
 
-    if (response.status >= 400) {
-      toast.error(t("common.toasts.error"));
-      const text = await response.text();
-      console.error(
-        `Request to fetch disconts failed: ${response.status}; ${text}`,
-      );
-
-      return {
-        items: [],
-        hasMore: false,
-      };
-    }
-
-    const res = (await response.json()) as WithTotal<Discount>;
-
     return {
-      items: res.items.map((discount) => ({
+      items: result.items.map((discount) => ({
         label: <DiscountShortLabel discount={discount} />,
         shortLabel: discount.name,
         value: discount._id,
       })) satisfies AsyncFilterBoxOption[],
-      hasMore: page * limit < res.total,
+      hasMore: page * limit < result.total,
     };
   };
 

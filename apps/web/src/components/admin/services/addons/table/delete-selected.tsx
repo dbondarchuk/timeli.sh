@@ -1,5 +1,6 @@
 "use client";
 
+import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
 import { AppointmentAddon } from "@vivid/types";
 import {
@@ -18,7 +19,6 @@ import {
 import { Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { deleteSelected } from "../actions";
 
 export const DeleteSelectedAddonsButton: React.FC<{
   selected: AppointmentAddon[];
@@ -32,12 +32,17 @@ export const DeleteSelectedAddonsButton: React.FC<{
     try {
       setIsLoading(true);
 
-      await toastPromise(deleteSelected(selected.map((page) => page._id)), {
-        success: t("services.addons.deleteSelected.success", {
-          count: selected.length,
-        }),
-        error: t("services.addons.deleteSelected.error"),
-      });
+      await toastPromise(
+        adminApi.serviceAddons.deleteServiceAddons(
+          selected.map((page) => page._id),
+        ),
+        {
+          success: t("services.addons.deleteSelected.success", {
+            count: selected.length,
+          }),
+          error: t("services.addons.deleteSelected.error"),
+        },
+      );
 
       router.refresh();
       setIsOpen(false);

@@ -1,5 +1,6 @@
 "use client";
 
+import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
 import { CommunicationLog } from "@vivid/types";
 import {
@@ -18,7 +19,6 @@ import {
 import { Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { clearSelectedCommunicationLogs } from "../actions";
 
 export const ClearSelectedCommunicationLogsButton: React.FC<{
   selected: CommunicationLog[];
@@ -33,7 +33,9 @@ export const ClearSelectedCommunicationLogsButton: React.FC<{
       setIsLoading(true);
 
       await toastPromise(
-        clearSelectedCommunicationLogs(selected.map((log) => log._id)),
+        adminApi.communicationLogs.clearSelectedCommunicationLogs(
+          selected.map((log) => log._id),
+        ),
         {
           success: t("communicationLogs.selectedLogsCleared"),
           error: t("common.toasts.error"),

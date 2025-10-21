@@ -1,13 +1,16 @@
+import {
+  customersSearchParams,
+  customersSearchParamsCache,
+} from "@vivid/api-sdk";
 import { ServicesContainer } from "@vivid/services";
 import { DataTable } from "@vivid/ui-admin";
 import { columns } from "./columns";
-import { searchParams, searchParamsCache } from "./search-params";
 
 export const CustomersTable: React.FC = async () => {
-  const page = searchParamsCache.get("page");
-  const search = searchParamsCache.get("search") || undefined;
-  const limit = searchParamsCache.get("limit");
-  const sort = searchParamsCache.get("sort");
+  const page = customersSearchParamsCache.get("page");
+  const search = customersSearchParamsCache.get("search") || undefined;
+  const limit = customersSearchParamsCache.get("limit");
+  const sort = customersSearchParamsCache.get("sort");
 
   const offset = (page - 1) * limit;
 
@@ -23,7 +26,7 @@ export const CustomersTable: React.FC = async () => {
       columns={columns}
       data={res.items}
       totalItems={res.total}
-      sortSchemaDefault={searchParams.sort.defaultValue}
+      sortSchemaDefault={customersSearchParams.sort.defaultValue}
     />
   );
 };

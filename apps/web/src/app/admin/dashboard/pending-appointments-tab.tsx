@@ -1,7 +1,7 @@
-import { AppointmentCard } from "@/components/admin/appointments/appointment-card";
 import { getI18nAsync } from "@vivid/i18n/server";
 import { ServicesContainer } from "@vivid/services";
 import { Card, CardContent, CardHeader } from "@vivid/ui";
+import { AppointmentCard } from "@vivid/ui-admin-kit";
 import { DateTime } from "luxon";
 import React from "react";
 

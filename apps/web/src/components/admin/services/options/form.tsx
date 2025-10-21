@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
 import { PlateMarkdownEditor } from "@vivid/rte";
 import {
@@ -41,6 +42,7 @@ import {
   SelectTrigger,
   SelectValue,
   toastPromise,
+  useDebounceCacheFn,
 } from "@vivid/ui";
 import { AppSelector, SaveButton, Sortable } from "@vivid/ui-admin";
 import { ChevronRight } from "lucide-react";
@@ -49,15 +51,20 @@ import React from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import { FieldSelectCard } from "../field-select-card";
-import { checkUniqueName, create, update } from "./actions";
 import { AddonSelectCard } from "./addon-select-card";
 
 export const OptionForm: React.FC<{
   initialData?: AppointmentOptionUpdateModel & Partial<DatabaseId>;
 }> = ({ initialData }) => {
   const t = useI18n("admin");
+
+  const cachedUniqueNameCheck = useDebounceCacheFn(
+    adminApi.serviceOptions.checkServiceOptionUniqueName,
+    300,
+  );
+
   const formSchema = getAppointmentOptionSchemaWithUniqueCheck(
-    (slug) => checkUniqueName(slug, initialData?._id),
+    (name) => cachedUniqueNameCheck(name, initialData?._id),
     "services.options.nameUnique",
   );
 
@@ -90,10 +97,14 @@ export const OptionForm: React.FC<{
 
       const fn = async () => {
         if (!initialData?._id) {
-          const { _id } = await create(data);
+          const { _id } =
+            await adminApi.serviceOptions.createServiceOption(data);
           router.push(`/admin/dashboard/services/options/${_id}`);
         } else {
-          await update(initialData._id, data);
+          await adminApi.serviceOptions.updateServiceOption(
+            initialData._id,
+            data,
+          );
 
           router.refresh();
         }

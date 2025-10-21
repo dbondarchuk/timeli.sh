@@ -1,10 +1,15 @@
 "use client";
 
+import { clientApi, ClientApiError } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
-import type { CollectPayment, DateTime } from "@vivid/types";
+import type {
+  CollectPayment,
+  CreateOrUpdatePaymentIntentRequest,
+  DateTime,
+  ModifyAppointmentRequest,
+} from "@vivid/types";
 import { Availability, ModifyAppointmentInformation } from "@vivid/types";
 import { Spinner, toast } from "@vivid/ui";
-import { fetchWithJson } from "@vivid/utils";
 import { DateTime as LuxonDateTime } from "luxon";
 import React, { useMemo } from "react";
 import { ModifyAppointmentFormContext, StepType } from "./context";
@@ -89,21 +94,14 @@ export const ModifyAppointmentForm: React.FC<
   const fetchAppointment = async () => {
     setIsLoading(true);
     try {
-      const response = await fetchWithJson(`/api/event/modify`, {
-        method: "POST",
-        body: JSON.stringify({
-          type,
-          fields,
-        }),
-      });
-
-      if (response.status >= 400) {
-        throw { response };
+      if (!type) {
+        throw new Error("Type is required");
       }
 
-      const data = (await response.json({
-        parseDates: true,
-      })) as ModifyAppointmentInformation;
+      const data = await clientApi.events.getModifyAppointmentInformation({
+        type,
+        fields,
+      });
 
       setAppointment(data);
 
@@ -139,31 +137,41 @@ export const ModifyAppointmentForm: React.FC<
   };
 
   const fetchPaymentInformation = async (): Promise<CollectPayment | null> => {
-    const body = {
-      dateTime: newDateTime?.toUTC().toJSDate(),
-      type,
-      fields,
-    };
-
     const intentId = paymentInformation?.intent?._id;
     try {
-      setIsLoading(true);
-      const response = await fetch(
-        `/api/payments${intentId ? `/${intentId}` : ""}`,
-        {
-          method: intentId ? "POST" : "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...body, paymentType: "rescheduleFee" }),
-        },
-      );
-
-      if (response.status >= 400) {
-        throw new Error(
-          `Failed to get payment information: ${response.status}: ${await response.text()}`,
-        );
+      let request: ModifyAppointmentRequest;
+      if (!type) {
+        throw new Error("Type is required");
       }
 
-      return (await response.json()) as CollectPayment | null;
+      if (type === "reschedule") {
+        if (!newDateTime) {
+          throw new Error("Date time is required");
+        }
+
+        request = {
+          dateTime: newDateTime.toUTC().toJSDate(),
+          type,
+          fields,
+        } satisfies ModifyAppointmentRequest;
+      } else {
+        request = {
+          type,
+          fields,
+        } satisfies ModifyAppointmentRequest;
+      }
+
+      const body = {
+        request,
+        type: type === "reschedule" ? "rescheduleFee" : "cancellationFee",
+      } satisfies CreateOrUpdatePaymentIntentRequest;
+
+      setIsLoading(true);
+      const response = await (intentId
+        ? clientApi.payments.updatePaymentIntent(intentId, body)
+        : clientApi.payments.createPaymentIntent(body));
+
+      return response;
     } catch (e) {
       toast.error(errors.fetchPaymentInformationTitle, {
         description: errors.fetchPaymentInformationDescription,
@@ -185,12 +193,10 @@ export const ModifyAppointmentForm: React.FC<
     setIsLoading(true);
 
     try {
-      const response = await fetch(
-        `/api/availability?duration=${appointment.duration}`,
-      );
+      const data = await clientApi.availability.getAvailability({
+        duration: appointment.duration,
+      });
 
-      if (response.status >= 400) throw new Error(response.statusText);
-      const data = (await response.json()) as Availability;
       setAvailability(data);
     } catch (e) {
       console.error(e);
@@ -209,42 +215,39 @@ export const ModifyAppointmentForm: React.FC<
     if (!appointment || !appointment.allowed) return;
 
     try {
-      const body = {
-        dateTime: newDateTime?.toUTC().toJSDate(),
+      if (!type) {
+        throw new Error("Type is required");
+      }
+
+      if (type === "reschedule" && !newDateTime) {
+        throw new Error("Date time is required");
+      }
+
+      await clientApi.events.modifyAppointment(appointment.id, {
         type,
+        dateTime: newDateTime?.toUTC().toJSDate() as Date,
         fields,
-      };
+        paymentIntentId: paymentInformation?.intent?._id,
+      } satisfies ModifyAppointmentRequest);
 
-      const response = await fetch(`/api/event/${appointment.id}/modify`, {
-        method: "POST",
-        body: JSON.stringify({
-          ...body,
-          paymentIntentId: paymentInformation?.intent?._id,
-        }),
-      });
-
-      if (response.status === 400) {
-        const error = await response.json();
+      setStep("success");
+    } catch (e: any) {
+      if (e instanceof ClientApiError && e.status === 400) {
+        const error = await e.response.json();
         if (error.error === "time_not_available") {
           toast.error(errors.submitTitle, {
             description: errors.timeNotAvailableDescription,
           });
-        } else {
-          toast.error(errors.submitTitle, {
-            description: errors.submitDescription,
-          });
-        }
 
-        await fetchAvailability(appointment);
-        setDateTime(undefined);
-        setStep(type === "reschedule" ? "calendar" : "type");
-        return;
-      } else if (response.status > 400) {
-        throw new Error(response.statusText);
+          await fetchAvailability(appointment);
+          setDateTime(undefined);
+          setStep(type === "reschedule" ? "calendar" : "type");
+          return;
+        }
       }
 
-      setStep("success");
-    } catch (e) {
+      console.error(e);
+
       toast.error(errors.submitTitle, {
         description: errors.submitDescription,
       });

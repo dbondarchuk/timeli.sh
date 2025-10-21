@@ -1,3 +1,4 @@
+import { availabilitySearchParamsLoader } from "@vivid/api-sdk";
 import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
 import { NextRequest, NextResponse } from "next/server";
@@ -14,22 +15,17 @@ export async function GET(request: NextRequest) {
     "Processing availability API request",
   );
 
-  const searchParams = request.nextUrl.searchParams;
-  const durationStr = searchParams.get("duration");
+  const params = availabilitySearchParamsLoader(request.nextUrl.searchParams);
+  const duration = params.duration;
 
-  if (!durationStr) {
-    logger.warn("Missing required duration parameter");
-    return NextResponse.json(
-      { error: "Duration is required" },
-      { status: 400 },
-    );
-  }
-
-  const duration = parseInt(durationStr);
   if (!duration || duration <= 0) {
-    logger.warn({ duration, durationStr }, "Invalid duration parameter");
+    logger.warn({ duration }, "Invalid duration parameter");
     return NextResponse.json(
-      { error: "Duration should be positive number" },
+      {
+        error: "Duration should be positive number",
+        code: "invalid_duration",
+        success: false,
+      },
       { status: 400 },
     );
   }

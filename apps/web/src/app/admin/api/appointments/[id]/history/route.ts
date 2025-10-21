@@ -1,8 +1,7 @@
+import { appointmentHistorySearchParamsLoader } from "@vivid/api-sdk";
 import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
-import { baseSearchParams } from "@vivid/ui-admin";
 import { NextRequest, NextResponse } from "next/server";
-import { createLoader } from "nuqs/server";
 
 export async function GET(
   request: NextRequest,
@@ -20,8 +19,9 @@ export async function GET(
     "Processing appointment history API request",
   );
 
-  const loader = createLoader(baseSearchParams);
-  const searchParams = loader(request.nextUrl.searchParams);
+  const searchParams = appointmentHistorySearchParamsLoader(
+    request.nextUrl.searchParams,
+  );
 
   const page = searchParams.page;
   const search = searchParams.search ?? undefined;

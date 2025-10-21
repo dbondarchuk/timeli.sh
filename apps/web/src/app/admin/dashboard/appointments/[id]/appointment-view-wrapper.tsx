@@ -1,6 +1,6 @@
-import { AppointmentView } from "@/components/admin/appointments/appoitment-view";
 import { getI18nAsync } from "@vivid/i18n/server";
 import { Breadcrumbs, Heading } from "@vivid/ui";
+import { AppointmentView } from "@vivid/ui-admin-kit";
 import { notFound } from "next/navigation";
 import React from "react";
 import { AppointmentDeclineDialogWrapper } from "./appointment-decline-dialog";

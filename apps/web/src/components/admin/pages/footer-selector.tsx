@@ -1,6 +1,7 @@
+import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
-import { PageFooterListModel, WithTotal } from "@vivid/types";
-import { cn, ComboboxAsync, IComboboxItem, Skeleton, toast } from "@vivid/ui";
+import { PageFooterListModel } from "@vivid/types";
+import { cn, ComboboxAsync, IComboboxItem, Skeleton } from "@vivid/ui";
 import React from "react";
 
 const FooterShortLabel: React.FC<{
@@ -73,29 +74,12 @@ export const FooterSelector: React.FC<FooterSelectorProps> = ({
   const getFooters = React.useCallback(
     async (page: number, search?: string) => {
       const limit = 10;
-      let url = `/admin/api/pages/footers?page=${page}&limit=${limit}`;
-      if (value) url += `&footerId=${encodeURIComponent(value)}`;
-      if (search) url += `&search=${encodeURIComponent(search)}`;
-
-      const response = await fetch(url, {
-        method: "GET",
-        cache: "default",
+      const res = await adminApi.pageFooters.getPageFooters({
+        page,
+        limit,
+        search,
+        priorityId: value ? [value] : undefined,
       });
-
-      if (response.status >= 400) {
-        const text = await response.text();
-        const message = `Request to fetch footers failed: ${response.status}; ${text}`;
-        console.error(message);
-
-        toast.error(t("common.toasts.error"));
-
-        return {
-          items: [],
-          hasMore: false,
-        };
-      }
-
-      const res = (await response.json()) as WithTotal<PageFooterListModel>;
 
       setItemsCache((prev) => ({
         ...prev,

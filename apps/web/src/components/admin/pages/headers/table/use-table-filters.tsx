@@ -1,21 +1,21 @@
 "use client";
 
+import { pageHeadersSearchParams } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
 import { useQueryState } from "nuqs";
 import { useCallback, useMemo } from "react";
-import { searchParams } from "./search-params";
 
 export function usePageHeadersTableFilters() {
   const t = useI18n("admin");
 
   const [searchQuery, setSearchQuery] = useQueryState(
     "search",
-    searchParams.search
+    pageHeadersSearchParams.search
       .withOptions({ shallow: false, throttleMs: 1000 })
       .withDefault(""),
   );
 
-  const [page, setPage] = useQueryState("page", searchParams.page);
+  const [page, setPage] = useQueryState("page", pageHeadersSearchParams.page);
 
   const resetFilters = useCallback(() => {
     setSearchQuery(null);

@@ -1,10 +1,14 @@
 import { getLoggerFactory } from "@vivid/logger";
-import { DateRange, IConnectedAppProps, Payment } from "@vivid/types";
+import {
+  DateRange,
+  IConnectedAppProps,
+  Payment,
+  PaymentSummary,
+} from "@vivid/types";
 import { Filter } from "mongodb";
 import {
   CustomerDataPoint,
   FinancialMetrics,
-  PaymentSummary,
   RevenueDataPoint,
   ServiceDataPoint,
   TimeGrouping,

@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
 import { PlateMarkdownEditor } from "@vivid/rte";
 import {
@@ -25,6 +26,7 @@ import {
   InputGroupSuffixClasses,
   InputSuffix,
   toastPromise,
+  useDebounceCacheFn,
 } from "@vivid/ui";
 import { SaveButton, Sortable } from "@vivid/ui-admin";
 import { useRouter } from "next/navigation";
@@ -32,14 +34,19 @@ import React from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import { FieldSelectCard } from "../field-select-card";
-import { checkUniqueName, create, update } from "./actions";
 
 export const AddonForm: React.FC<{
   initialData?: AppointmentAddonUpdateModel & Partial<DatabaseId>;
 }> = ({ initialData }) => {
   const t = useI18n("admin");
+
+  const cachedUniqueNameCheck = useDebounceCacheFn(
+    adminApi.serviceAddons.checkServiceAddonUniqueName,
+    300,
+  );
+
   const formSchema = getAppointmentAddonSchemaWithUniqueCheck(
-    (slug) => checkUniqueName(slug, initialData?._id),
+    (name) => cachedUniqueNameCheck(name, initialData?._id),
     "services.addons.nameUnique",
   );
 
@@ -60,10 +67,13 @@ export const AddonForm: React.FC<{
 
       const fn = async () => {
         if (!initialData?._id) {
-          const { _id } = await create(data);
+          const { _id } = await adminApi.serviceAddons.createServiceAddon(data);
           router.push(`/admin/dashboard/services/addons/${_id}`);
         } else {
-          await update(initialData._id, data);
+          await adminApi.serviceAddons.updateServiceAddon(
+            initialData._id,
+            data,
+          );
 
           router.refresh();
         }

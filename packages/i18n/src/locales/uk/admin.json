@@ -255,6 +255,7 @@
       "requestedAt": "Затребувано",
       "status": "Статус",
       "price": "Ціна",
+      "discount": "Знижка",
       "amountPaid": "Сума оплачена",
       "amountLeftToPay": "Сума, що залишилася до оплати",
       "customer": "Клієнт",

@@ -1,4 +1,5 @@
 "use client";
+import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
 import { AppointmentOption } from "@vivid/types";
 import {
@@ -15,7 +16,6 @@ import {
 import { Copy, Edit, MoreHorizontal, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { deleteOption } from "../actions";
 
 import Link from "next/link";
 
@@ -33,12 +33,18 @@ export const CellAction: React.FC<CellActionProps> = ({ option }) => {
     try {
       setLoading(true);
 
-      await toastPromise(deleteOption(option._id), {
-        success: t("services.options.table.columns.cellAction.optionDeleted", {
-          name: option.name,
-        }),
-        error: t("services.options.table.columns.cellAction.deleteError"),
-      });
+      await toastPromise(
+        adminApi.serviceOptions.deleteServiceOption(option._id),
+        {
+          success: t(
+            "services.options.table.columns.cellAction.optionDeleted",
+            {
+              name: option.name,
+            },
+          ),
+          error: t("services.options.table.columns.cellAction.deleteError"),
+        },
+      );
 
       setOpen(false);
       router.refresh();

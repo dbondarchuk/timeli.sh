@@ -3,7 +3,9 @@ import { WithDatabaseId } from "../database";
 import { Prettify } from "../utils/helpers";
 import {
   AppointmentRequest,
+  appointmentRequestSchema,
   ModifyAppointmentRequest,
+  modifyAppointmentRequestSchema,
 } from "./appointment-event";
 
 export const paymentType = [
@@ -48,6 +50,24 @@ export type PaymentIntentUpdateModel = {
       request: ModifyAppointmentRequest;
     }
 );
+
+export const createOrUpdatePaymentIntentRequestSchema = z.discriminatedUnion(
+  "type",
+  [
+    z.object({
+      type: paymentTypeSchema.exclude(["rescheduleFee", "cancellationFee"]),
+      request: appointmentRequestSchema,
+    }),
+    z.object({
+      type: paymentTypeSchema.extract(["rescheduleFee", "cancellationFee"]),
+      request: modifyAppointmentRequestSchema,
+    }),
+  ],
+);
+
+export type CreateOrUpdatePaymentIntentRequest = z.infer<
+  typeof createOrUpdatePaymentIntentRequestSchema
+>;
 
 export type PaymentIntent = WithDatabaseId<
   PaymentIntentUpdateModel & {
@@ -131,35 +151,3 @@ export type PaymentSummary = Payment & {
   customerName?: string;
   serviceName?: string;
 };
-
-export type FinancialMetrics = {
-  estimatedRevenue: number;
-  totalPayments: number;
-  netPayments: number;
-  activeAppointments: number;
-  declinedAppointments: number;
-};
-
-export type RevenueDataPoint = {
-  date: string;
-  estimatedRevenue: number;
-  totalPayments: number;
-  netPayments: number;
-  activeAppointments: number;
-  declinedAppointments: number;
-};
-
-export type ServiceDataPoint = {
-  serviceName: string;
-  count: number;
-  revenue: number;
-};
-
-export type CustomerDataPoint = {
-  date: string;
-  newCustomers: number;
-  returningCustomers: number;
-  totalCustomers: number;
-};
-
-export type TimeGrouping = "day" | "week" | "month";
