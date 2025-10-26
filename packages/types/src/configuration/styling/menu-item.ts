@@ -1,16 +1,43 @@
-import {
-  ButtonSizes,
-  ButtonVariants,
-  LinkSizes,
-  LinkVariants,
-  TextFonts,
-  TextSizes,
-  TextWeights,
-} from "@vivid/ui";
-
 import { z } from "zod";
 
 import { icons } from "lucide-react";
+
+const ButtonSizes = [
+  "none",
+  "default",
+  "xs",
+  "sm",
+  "md",
+  "lg",
+  "icon",
+] as const;
+const ButtonVariants = [
+  "default",
+  "primary",
+  "secondary",
+  "destructive",
+  "outline",
+  "ghost",
+  "link",
+  "link-underline",
+  "link-dashed",
+] as const;
+const LinkSizes = ["sm", "md", "lg"] as const;
+const LinkVariants = ["default", "underline", "standalone", "dashed"] as const;
+const TextFonts = ["default", "primary", "secondary", "tertiary"] as const;
+const TextSizes = ["sm", "md", "lg"] as const;
+const TextWeights = [
+  "default",
+  "light",
+  "thin",
+  "normal",
+  "medium",
+  "semibold",
+  "bold",
+  "extrabold",
+  "black",
+  "extralight",
+] as const;
 
 const [firstIcon, ...restIcons] = Object.keys(icons);
 const iconsEnum = z.enum([firstIcon, ...restIcons], {

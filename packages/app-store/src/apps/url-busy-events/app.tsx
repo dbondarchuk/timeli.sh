@@ -1,7 +1,6 @@
 import { App } from "@vivid/types";
 import { URL_BUSY_EVENTS_APP_NAME } from "./const";
 import { UrlBusyEventsLogo } from "./logo";
-import { UrlBusyEventsAppSetup } from "./setup";
 import {
   UrlBusyEventsAdminKeys,
   UrlBusyEventsAdminNamespace,
@@ -17,7 +16,6 @@ export const UrlBusyEventsApp: App<
   category: ["apps.categories.calendar"],
   type: "basic",
   Logo: ({ className }) => <UrlBusyEventsLogo className={className} />,
-  SetUp: (props) => <UrlBusyEventsAppSetup {...props} />,
   description: {
     text: "app_url-busy-events_admin.app.description",
   },

@@ -2,6 +2,10 @@ import base from "@vivid/tailwind-config";
 /** @type {import('tailwindcss').Config} */
 export default {
   ...base,
-  content: [...base.content, "../../node_modules/@vivid/**/*.{js,ts,jsx,tsx}"],
+  content: [
+    ...base.content,
+    "../../packages/*/src/**/*.{js,ts,jsx,tsx}",
+    // Exclude notification-sender as it's a backend service
+  ],
   plugins: [...base.plugins],
 };

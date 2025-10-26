@@ -7,8 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "lint:fix": "next lint --fix",
-    "scheduler": "node scheduler.js"
+    "lint:fix": "next lint --fix"
   },
   "dependencies": {
     "@mdx-js/react": "^3.0.1",
@@ -44,7 +43,6 @@
     "next-logger": "^5.0.1",
     "next-navigation-guard": "^0.2.0",
     "nextjs-toploader": "^1.6.12",
-    "node-cron": "^3.0.3",
     "npm": "^10.8.2",
     "p-limit": "^6.2.0",
     "pino-http": "^10.5.0",
@@ -58,7 +56,6 @@
   "devDependencies": {
     "@types/color": "^4.2.0",
     "@types/node": "^20",
-    "@types/node-cron": "^3.0.11",
     "@types/react": "19.0.2",
     "@types/react-file-icon": "^1.0.4",
     "@vivid/eslint-config": "*",

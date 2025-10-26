@@ -56,15 +56,12 @@ export class WaitlistRepositoryService {
 
     logger.debug({ waitlistEntry }, "Waitlist entry created, executing hooks");
 
-    await this.services.ConnectedAppsService().executeHooks<IWaitlistHook>(
-      "waitlist-hook",
-      async (hook, service) => {
-        await service.onWaitlistEntryCreated?.(hook, entity!);
-      },
-      {
-        ignoreErrors: true,
-      },
-    );
+    await this.services
+      .JobService()
+      .enqueueHook<
+        IWaitlistHook,
+        "onWaitlistEntryCreated"
+      >("waitlist-hook", "onWaitlistEntryCreated", entity!);
 
     return entity!;
   }
@@ -356,15 +353,12 @@ export class WaitlistRepositoryService {
       "Waitlist entries dismissed, executing hooks",
     );
 
-    await this.services.ConnectedAppsService().executeHooks<IWaitlistHook>(
-      "waitlist-hook",
-      async (hook, service) => {
-        await service.onWaitlistEntryDismissed?.(hook, waitlistEntries.items);
-      },
-      {
-        ignoreErrors: true,
-      },
-    );
+    await this.services
+      .JobService()
+      .enqueueHook<
+        IWaitlistHook,
+        "onWaitlistEntryDismissed"
+      >("waitlist-hook", "onWaitlistEntryDismissed", waitlistEntries.items);
   }
 
   private get waitlistAggregateJoin() {

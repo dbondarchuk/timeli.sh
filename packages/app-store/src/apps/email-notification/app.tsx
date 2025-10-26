@@ -1,7 +1,6 @@
 import { App } from "@vivid/types";
 import { Mailbox } from "lucide-react";
 import { EMAIL_NOTIFICATION_APP_NAME } from "./const";
-import { EmailNotificationAppSetup } from "./setup";
 import {
   EmailNotificationAdminKeys,
   EmailNotificationAdminNamespace,
@@ -17,7 +16,6 @@ export const EmailNotificationApp: App<
   scope: ["appointment-hook"],
   type: "basic",
   Logo: ({ className }) => <Mailbox className={className} />,
-  SetUp: (props) => <EmailNotificationAppSetup {...props} />,
   isFeatured: false,
   isHidden: false,
   dontAllowMultiple: true,

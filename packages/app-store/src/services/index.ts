@@ -15,22 +15,18 @@ import { FILE_SYSTEM_ASSETS_STORAGE_APP_NAME } from "../apps/file-system-assets-
 import FileSystemAssetsStorageConnectedApp from "../apps/file-system-assets-storage/service";
 import { FINANCIAL_OVERVIEW_APP_NAME } from "../apps/financial-overview/const";
 import FinancialOverviewService from "../apps/financial-overview/service";
-import { FOLLOW_UPS_APP_NAME } from "../apps/followups/const";
-import FollowUpsConnectedApp from "../apps/followups/service";
 import { GOOGLE_CALENDAR_APP_NAME } from "../apps/google-calendar/const";
 import GoogleCalendarConnectedApp from "../apps/google-calendar/service";
 import { ICS_APP_NAME } from "../apps/ics/const";
 import IcsConnectedApp from "../apps/ics/service";
-import { LOG_CLEANUP_APP_NAME } from "../apps/log-cleanup/const";
-import LogCleanupConnectedApp from "../apps/log-cleanup/service";
 import { OUTLOOK_APP_NAME } from "../apps/outlook/const";
 import OutlookConnectedApp from "../apps/outlook/service";
 import { PAYPAL_APP_NAME } from "../apps/paypal/const";
 import PaypalConnectedApp from "../apps/paypal/service";
-import { REMINDERS_APP_NAME } from "../apps/reminders/const";
-import RemindersConnectedApp from "../apps/reminders/service";
 import { S3_ASSETS_STORAGE_APP_NAME } from "../apps/s3-assets-storage/const";
 import S3AssetsStorageConnectedApp from "../apps/s3-assets-storage/service";
+import { SCHEDULED_NOTIFICATIONS_APP_NAME } from "../apps/scheduled-notifications/const";
+import ScheduledNotificationsConnectedApp from "../apps/scheduled-notifications/service";
 import { SMART_SCHEDULE_APP_NAME } from "../apps/smart-schedule/const";
 import SmartScheduleConnectedApp from "../apps/smart-schedule/service";
 import { SMTP_APP_NAME } from "../apps/smtp/const";
@@ -83,9 +79,8 @@ export const AvailableAppServices: Record<
     new TextMessageAutoReplyConnectedApp(props),
   [TEXT_MESSAGE_RESENDER_APP_NAME]: (props) =>
     new TextMessageResenderConnectedApp(props),
-  [REMINDERS_APP_NAME]: (props) => new RemindersConnectedApp(props),
-  [FOLLOW_UPS_APP_NAME]: (props) => new FollowUpsConnectedApp(props),
-  [LOG_CLEANUP_APP_NAME]: (props) => new LogCleanupConnectedApp(props),
+  [SCHEDULED_NOTIFICATIONS_APP_NAME]: (props) =>
+    new ScheduledNotificationsConnectedApp(props),
   [FILE_SYSTEM_ASSETS_STORAGE_APP_NAME]: (props) =>
     new FileSystemAssetsStorageConnectedApp(props),
   [S3_ASSETS_STORAGE_APP_NAME]: (props) =>
@@ -102,3 +97,4 @@ export const AvailableAppServices: Record<
     new UrlScheduleProviderConnectedApp(props),
   [ZOOM_APP_NAME]: (props) => new ZoomConnectedApp(props),
 };
+export { AvailableApps as ServiceAvailableApps } from "../apps";

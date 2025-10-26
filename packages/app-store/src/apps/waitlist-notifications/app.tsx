@@ -1,7 +1,6 @@
 import { App } from "@vivid/types";
 import { Bell } from "lucide-react";
 import { WAITLIST_NOTIFICATIONS_APP_NAME } from "./const";
-import { WaitlistNotificationsAppSetup } from "./setup";
 import {
   WaitlistNotificationsAdminKeys,
   WaitlistNotificationsAdminNamespace,
@@ -17,7 +16,6 @@ export const WaitlistNotificationsApp: App<
   scope: ["waitlist-hook"],
   type: "basic",
   Logo: ({ className }) => <Bell className={className} />,
-  SetUp: (props) => <WaitlistNotificationsAppSetup {...props} />,
   isFeatured: false,
   isHidden: false,
   dontAllowMultiple: true,

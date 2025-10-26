@@ -6,6 +6,7 @@ export * from "./communication";
 export * from "./customers";
 export * from "./database";
 export * from "./general";
+export * from "./jobs";
 export * from "./pages";
 export * from "./templates";
 

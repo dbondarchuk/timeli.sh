@@ -30,7 +30,7 @@ export async function POST(
       "App request processed",
     );
 
-    return NextResponse.json(result);
+    return NextResponse.json(result ?? null);
   } catch (error: any) {
     logger.error(
       {

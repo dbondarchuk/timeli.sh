@@ -118,9 +118,6 @@ AUTH_PASSWORD=your-admin-password
 AUTH_TRUST_HOST=http://localhost:3000
 AUTH_URL=http://localhost:3000
 
-# Scheduler
-SCHEDULER_KEY=your-scheduler-key
-
 # Timezone
 TZ=America/New_York
 ```
@@ -218,7 +215,6 @@ environment:
   - MONGODB_URI=mongodb://your-mongodb-host:27017/vivid
   - AUTH_SECRET=your-auth-secret
   - AUTH_PASSWORD=your-admin-password
-  - SCHEDULER_KEY=your-scheduler-key
 ```
 
 ## 📚 Development Guide
@@ -387,7 +383,6 @@ NODE_ENV=production
 MONGODB_URI=mongodb://your-production-mongodb
 AUTH_SECRET=your-production-secret
 AUTH_PASSWORD=your-production-password
-SCHEDULER_KEY=your-production-scheduler-key
 ```
 
 ### Performance Optimization

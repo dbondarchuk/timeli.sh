@@ -1,4 +1,5 @@
 import { AvailableApps } from "@vivid/app-store";
+import { AppImages } from "@vivid/app-store/images";
 import { getI18nAsync } from "@vivid/i18n/server";
 import {
   Button,
@@ -87,7 +88,7 @@ export const AppDetails: React.FC<AppDetailsProps> = async ({ appName }) => {
           <Markdown markdown={t(app.description.text)} className="max-w-full" />
         </div>
 
-        {!!app.description.images?.length && (
+        {!!AppImages[app.name]?.length && (
           <Carousel
             opts={{
               align: "start",
@@ -103,7 +104,7 @@ export const AppDetails: React.FC<AppDetailsProps> = async ({ appName }) => {
                 </div>
               </div> */}
             <CarouselContent className="h-full">
-              {app.description.images.map((image, index) => (
+              {AppImages[app.name].map((image, index) => (
                 <CarouselItem
                   key={index}
                   className="items-center flex justify-center h-full"

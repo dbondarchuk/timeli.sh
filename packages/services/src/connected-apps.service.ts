@@ -1,5 +1,7 @@
-import { AvailableApps } from "@vivid/app-store";
-import { AvailableAppServices } from "@vivid/app-store/services";
+import {
+  AvailableAppServices,
+  ServiceAvailableApps,
+} from "@vivid/app-store/services";
 import { getLoggerFactory } from "@vivid/logger";
 import {
   ApiRequest,
@@ -29,7 +31,7 @@ export class ConnectedAppsService implements IConnectedAppsService {
     const logger = this.loggerFactory("createNewApp");
     logger.debug({ name }, "Creating new app");
 
-    if (!AvailableApps[name]) {
+    if (!ServiceAvailableApps[name]) {
       logger.error({ name }, "Unknown app type");
       throw new Error("Unknown app type");
     }
@@ -125,7 +127,7 @@ export class ConnectedAppsService implements IConnectedAppsService {
       throw new Error(message);
     }
 
-    const appService = AvailableApps[app.name];
+    const appService = ServiceAvailableApps[app.name];
     if (!appService || appService.type !== "oauth") {
       const message = "App type is not supported";
       logger.error(
@@ -155,7 +157,7 @@ export class ConnectedAppsService implements IConnectedAppsService {
       "Processing OAuth redirect",
     );
 
-    const appService = AvailableApps[name];
+    const appService = ServiceAvailableApps[name];
     if (!appService || appService.type !== "oauth") {
       logger.error({ name }, "App type is not supported");
       throw new Error("App type is not supported");
@@ -406,8 +408,9 @@ export class ConnectedAppsService implements IConnectedAppsService {
       CONNECTED_APPS_COLLECTION_NAME,
     );
 
-    const possibleAppNames = Object.keys(AvailableApps).filter((appName) =>
-      AvailableApps[appName].scope.some((s) => scope.includes(s)),
+    const possibleAppNames = Object.keys(ServiceAvailableApps).filter(
+      (appName) =>
+        ServiceAvailableApps[appName].scope.some((s) => scope.includes(s)),
     );
 
     const result = await collection
@@ -433,8 +436,8 @@ export class ConnectedAppsService implements IConnectedAppsService {
       CONNECTED_APPS_COLLECTION_NAME,
     );
 
-    const possibleAppNames = Object.keys(AvailableApps).filter(
-      (appName) => AvailableApps[appName].type === type,
+    const possibleAppNames = Object.keys(ServiceAvailableApps).filter(
+      (appName) => ServiceAvailableApps[appName].type === type,
     );
 
     const result = await collection
@@ -641,7 +644,9 @@ export class CachedConnectedAppsService extends ConnectedAppsService {
   ): Promise<ConnectedAppData[]> {
     const apps = await this.cachedGetApps();
     return apps.filter((app) =>
-      scope.some((s) => (AvailableApps[app.name]?.scope ?? []).includes(s)),
+      scope.some((s) =>
+        (ServiceAvailableApps[app.name]?.scope ?? []).includes(s),
+      ),
     );
   }
 
@@ -649,7 +654,9 @@ export class CachedConnectedAppsService extends ConnectedAppsService {
     const apps = await this.cachedGetApps();
     return apps
       .filter((app) =>
-        scope.some((s) => (AvailableApps[app.name]?.scope ?? []).includes(s)),
+        scope.some((s) =>
+          (ServiceAvailableApps[app.name]?.scope ?? []).includes(s),
+        ),
       )
       .map(({ data: __, token: ___, ...app }) => app);
   }

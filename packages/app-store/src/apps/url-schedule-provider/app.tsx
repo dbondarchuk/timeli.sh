@@ -16,10 +16,6 @@ export const UrlScheduleProviderApp: App<
   category: ["apps.categories.schedule"],
   type: "basic",
   Logo: ({ className }) => <UrlScheduleProviderLogo className={className} />,
-  SetUp: (props) => {
-    const { UrlScheduleProviderAppSetup } = require("./setup");
-    return <UrlScheduleProviderAppSetup {...props} />;
-  },
   description: {
     text: "app_url-schedule-provider_admin.app.description",
   },

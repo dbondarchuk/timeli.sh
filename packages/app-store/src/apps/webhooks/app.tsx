@@ -1,6 +1,5 @@
 import { App } from "@vivid/types";
 import { WebhooksLogo } from "./logo";
-import { WebhooksAppSetup } from "./setup";
 import {
   WebhooksAdminKeys,
   WebhooksAdminNamespace,
@@ -13,11 +12,9 @@ export const webhooksApp: App<WebhooksAdminNamespace, WebhooksAdminKeys> = {
   scope: ["appointment-hook", "customer-hook", "payment-hook", "waitlist-hook"],
   description: {
     text: "app_webhooks_admin.app.description",
-    images: [],
   },
   Logo: WebhooksLogo,
   isFeatured: false,
   type: "basic",
   dontAllowMultiple: false,
-  SetUp: (props) => <WebhooksAppSetup {...props} />,
 };

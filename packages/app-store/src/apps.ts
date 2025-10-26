@@ -15,8 +15,6 @@ import { FileSystemAssetsStorageApp } from "./apps/file-system-assets-storage/ap
 import { FILE_SYSTEM_ASSETS_STORAGE_APP_NAME } from "./apps/file-system-assets-storage/const";
 import { FinancialOverviewApp } from "./apps/financial-overview/app";
 import { FINANCIAL_OVERVIEW_APP_NAME } from "./apps/financial-overview/const";
-import { FollowUpsApp } from "./apps/followups/app";
-import { FOLLOW_UPS_APP_NAME } from "./apps/followups/const";
 import { GoogleCalendarApp } from "./apps/google-calendar/app";
 import { GOOGLE_CALENDAR_APP_NAME } from "./apps/google-calendar/const";
 import { IcsApp } from "./apps/ics/app";
@@ -25,10 +23,10 @@ import { OutlookApp } from "./apps/outlook/app";
 import { OUTLOOK_APP_NAME } from "./apps/outlook/const";
 import { PaypalApp } from "./apps/paypal/app";
 import { PAYPAL_APP_NAME } from "./apps/paypal/const";
-import { RemindersApp } from "./apps/reminders/app";
-import { REMINDERS_APP_NAME } from "./apps/reminders/const";
 import { S3AssetsStorageApp } from "./apps/s3-assets-storage/app";
 import { S3_ASSETS_STORAGE_APP_NAME } from "./apps/s3-assets-storage/const";
+import { ScheduledNotificationsApp } from "./apps/scheduled-notifications/app";
+import { SCHEDULED_NOTIFICATIONS_APP_NAME } from "./apps/scheduled-notifications/const";
 import { SmartScheduleApp } from "./apps/smart-schedule/app";
 import { SMART_SCHEDULE_APP_NAME } from "./apps/smart-schedule/const";
 import { SmtpApp } from "./apps/smtp/app";
@@ -71,9 +69,7 @@ export const AvailableApps: Record<string, App> = {
   [CUSTOMER_TEXT_MESSAGE_NOTIFICATION_APP_NAME]:
     CustomerTextMessageNotificationApp,
   [TEXT_MESSAGE_NOTIFICATION_APP_NAME]: TextMessageNotificationApp,
-  [REMINDERS_APP_NAME]: RemindersApp,
-  [FOLLOW_UPS_APP_NAME]: FollowUpsApp,
-  // [LOG_CLEANUP_APP_NAME]: LogCleanupApp,
+  [SCHEDULED_NOTIFICATIONS_APP_NAME]: ScheduledNotificationsApp,
   [FILE_SYSTEM_ASSETS_STORAGE_APP_NAME]: FileSystemAssetsStorageApp,
   [S3_ASSETS_STORAGE_APP_NAME]: S3AssetsStorageApp,
   [TEXT_MESSAGE_AUTO_REPLY_APP_NAME]: TextMessageAutoReplyApp,
@@ -97,14 +93,12 @@ export { CUSTOMER_TEXT_MESSAGE_NOTIFICATION_APP_NAME } from "./apps/customer-tex
 export { EMAIL_NOTIFICATION_APP_NAME } from "./apps/email-notification/const";
 export { FILE_SYSTEM_ASSETS_STORAGE_APP_NAME } from "./apps/file-system-assets-storage/const";
 export { FINANCIAL_OVERVIEW_APP_NAME } from "./apps/financial-overview/const";
-export { FOLLOW_UPS_APP_NAME } from "./apps/followups/const";
 export { GOOGLE_CALENDAR_APP_NAME } from "./apps/google-calendar/const";
 export { ICS_APP_NAME } from "./apps/ics/const";
-export { LOG_CLEANUP_APP_NAME } from "./apps/log-cleanup/const";
 export { OUTLOOK_APP_NAME } from "./apps/outlook/const";
 export { PAYPAL_APP_NAME } from "./apps/paypal/const";
-export { REMINDERS_APP_NAME } from "./apps/reminders/const";
 export { S3_ASSETS_STORAGE_APP_NAME } from "./apps/s3-assets-storage/const";
+export { SCHEDULED_NOTIFICATIONS_APP_NAME } from "./apps/scheduled-notifications/const";
 export { SMART_SCHEDULE_APP_NAME } from "./apps/smart-schedule/const";
 export { SMTP_APP_NAME } from "./apps/smtp/const";
 export { TEXTBELT_APP_NAME } from "./apps/text-belt/const";

@@ -5,8 +5,8 @@ import {
   CustomerListModel,
   CustomerSearchField,
   CustomerUpdateModel,
-  IConnectedAppsService,
   ICustomerHook,
+  IJobService,
   Leaves,
   Query,
   WithTotal,
@@ -22,7 +22,7 @@ export const CUSTOMERS_COLLECTION_NAME = "customers";
 export class CustomersService implements ICustomersService {
   protected readonly loggerFactory = getLoggerFactory("CustomersService");
 
-  constructor(private readonly appsService: IConnectedAppsService) {}
+  constructor(private readonly jobService: IJobService) {}
 
   public async getCustomer(id: string): Promise<Customer | null> {
     const logger = this.loggerFactory("getCustomer");
@@ -355,14 +355,10 @@ export class CustomersService implements ICustomersService {
     );
 
     // Execute customer hooks
-    await this.appsService.executeHooks<ICustomerHook>(
+    await this.jobService.enqueueHook<ICustomerHook, "onCustomerCreated">(
       "customer-hook",
-      async (hook, service) => {
-        await service.onCustomerCreated?.(hook, createdCustomer);
-      },
-      {
-        ignoreErrors: true,
-      },
+      "onCustomerCreated",
+      createdCustomer,
     );
 
     return createdCustomer;
@@ -409,14 +405,11 @@ export class CustomersService implements ICustomersService {
     );
 
     // Execute customer hooks
-    await this.appsService.executeHooks<ICustomerHook>(
+    await this.jobService.enqueueHook<ICustomerHook, "onCustomerUpdated">(
       "customer-hook",
-      async (hook, service) => {
-        await service.onCustomerUpdated?.(hook, updatedCustomer, update);
-      },
-      {
-        ignoreErrors: true,
-      },
+      "onCustomerUpdated",
+      updatedCustomer,
+      update,
     );
   }
 
@@ -564,14 +557,10 @@ export class CustomersService implements ICustomersService {
     );
 
     // Execute customer hooks
-    await this.appsService.executeHooks<ICustomerHook>(
+    await this.jobService.enqueueHook<ICustomerHook, "onCustomersDeleted">(
       "customer-hook",
-      async (hook, service) => {
-        await service.onCustomersDeleted?.(hook, [customer]);
-      },
-      {
-        ignoreErrors: true,
-      },
+      "onCustomersDeleted",
+      [customer],
     );
 
     return customer;
@@ -641,14 +630,10 @@ export class CustomersService implements ICustomersService {
     );
 
     // Execute customer hooks
-    await this.appsService.executeHooks<ICustomerHook>(
+    await this.jobService.enqueueHook<ICustomerHook, "onCustomersDeleted">(
       "customer-hook",
-      async (hook, service) => {
-        await service.onCustomersDeleted?.(hook, customersToDelete);
-      },
-      {
-        ignoreErrors: true,
-      },
+      "onCustomersDeleted",
+      customersToDelete,
     );
   }
 

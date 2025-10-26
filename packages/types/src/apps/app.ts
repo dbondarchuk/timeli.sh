@@ -48,7 +48,6 @@ type BaseApp<
   scope: AppScope[];
   description: {
     text: AllKeys<T, CustomKeys>;
-    images?: string[];
   };
   Logo: (props: AppLogoProps) => ReactNode;
   isFeatured?: boolean;
@@ -80,7 +79,6 @@ export type OAuthApp<
   CustomKeys extends string | undefined = undefined,
 > = BaseApp<T, CustomKeys> & {
   type: "oauth";
-  SetUp: (props: AppSetupProps) => ReactNode;
   dontAllowMultiple?: false;
   isHidden?: false;
 };
@@ -90,10 +88,12 @@ export type BasicApp<
   CustomKeys extends string | undefined = undefined,
 > = BaseApp<T, CustomKeys> & {
   type: "basic";
-  SetUp: (props: AppSetupProps) => ReactNode;
   dontAllowMultiple?: boolean;
   isHidden?: boolean;
 };
+
+export type BasicAppSetup = (props: AppSetupProps) => ReactNode;
+export type ComplexAppSetup = (props: ComplexAppPageProps) => ReactNode;
 
 export type ComplexApp<
   T extends I18nNamespaces = I18nNamespaces,

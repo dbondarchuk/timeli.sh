@@ -14,22 +14,18 @@ import { FILE_SYSTEM_ASSETS_STORAGE_APP_NAME } from "./apps/file-system-assets-s
 import { FileSystemAssetsStorageTranslations } from "./apps/file-system-assets-storage/translations";
 import { FINANCIAL_OVERVIEW_APP_NAME } from "./apps/financial-overview/const";
 import { FinancialOverviewTranslations } from "./apps/financial-overview/translations";
-import { FOLLOW_UPS_APP_NAME } from "./apps/followups/const";
-import { FollowUpsTranslations } from "./apps/followups/translations";
 import { GOOGLE_CALENDAR_APP_NAME } from "./apps/google-calendar/const";
 import { GoogleCalendarTranslations } from "./apps/google-calendar/translations";
 import { ICS_APP_NAME } from "./apps/ics/const";
 import { IcsTranslations } from "./apps/ics/translations";
-import { LOG_CLEANUP_APP_NAME } from "./apps/log-cleanup/const";
-import { LogCleanupTranslations } from "./apps/log-cleanup/translations";
 import { OUTLOOK_APP_NAME } from "./apps/outlook/const";
 import { OutlookTranslations } from "./apps/outlook/translations";
 import { PAYPAL_APP_NAME } from "./apps/paypal/const";
 import { PaypalTranslations } from "./apps/paypal/translations";
-import { REMINDERS_APP_NAME } from "./apps/reminders/const";
-import { RemindersTranslations } from "./apps/reminders/translations";
 import { S3_ASSETS_STORAGE_APP_NAME } from "./apps/s3-assets-storage/const";
 import { S3AssetsStorageTranslations } from "./apps/s3-assets-storage/translations";
+import { SCHEDULED_NOTIFICATIONS_APP_NAME } from "./apps/scheduled-notifications/const";
+import { ScheduledNotificationsTranslations } from "./apps/scheduled-notifications/translations";
 import { SMART_SCHEDULE_APP_NAME } from "./apps/smart-schedule/const";
 import { SmartScheduleTranslations } from "./apps/smart-schedule/translations";
 import { SMTP_APP_NAME } from "./apps/smtp/const";
@@ -76,14 +72,12 @@ export const AppsTranslations: Record<
     CustomerTextMessageNotificationTranslations,
   [EMAIL_NOTIFICATION_APP_NAME]: EmailNotificationTranslations,
   [FILE_SYSTEM_ASSETS_STORAGE_APP_NAME]: FileSystemAssetsStorageTranslations,
-  [FOLLOW_UPS_APP_NAME]: FollowUpsTranslations,
   [GOOGLE_CALENDAR_APP_NAME]: GoogleCalendarTranslations,
   [ICS_APP_NAME]: IcsTranslations,
-  [LOG_CLEANUP_APP_NAME]: LogCleanupTranslations,
   [OUTLOOK_APP_NAME]: OutlookTranslations,
   [PAYPAL_APP_NAME]: PaypalTranslations,
-  [REMINDERS_APP_NAME]: RemindersTranslations,
   [S3_ASSETS_STORAGE_APP_NAME]: S3AssetsStorageTranslations,
+  [SCHEDULED_NOTIFICATIONS_APP_NAME]: ScheduledNotificationsTranslations,
   [SMTP_APP_NAME]: SmtpTranslations,
   [TEXTBELT_APP_NAME]: TextBeltTranslations,
   [TEXT_MESSAGE_AUTO_REPLY_APP_NAME]: TextMessageAutoReplyTranslations,

@@ -17,7 +17,10 @@
     "./blocks/editors": "./src/blocks/editors.ts",
     "./blocks/readers": "./src/blocks/readers.ts",
     "./translations": "./src/translations.ts",
-    "./menu-items": "./src/menu-items.ts"
+    "./menu-items": "./src/menu-items.ts",
+    "./setup": "./src/setup.tsx",
+    "./images": "./src/images.ts",
+    "./payment-forms": "./src/payment-forms.tsx"
   },
   "devDependencies": {
     "@microsoft/microsoft-graph-types": "^2.40.0",

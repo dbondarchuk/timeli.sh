@@ -13,6 +13,7 @@ import {
   FieldSchema,
   GetAppointmentOptionsResponse,
   IAvailabilityProvider,
+  IJobService,
   IMeetingUrlProvider,
   IPaymentsService,
   IServicesService,
@@ -72,6 +73,7 @@ export class EventsService implements IEventsService {
     private readonly scheduleService: IScheduleService,
     private readonly servicesService: IServicesService,
     private readonly paymentsService: IPaymentsService,
+    private readonly jobService: IJobService,
   ) {}
 
   public async getAvailability(duration: number): Promise<Availability> {
@@ -318,14 +320,11 @@ export class EventsService implements IEventsService {
       "Event saved, executing hooks",
     );
 
-    await this.appsService.executeHooks<IAppointmentHook>(
+    await this.jobService.enqueueHook<IAppointmentHook, "onAppointmentCreated">(
       "appointment-hook",
-      async (hook, service) => {
-        await service.onAppointmentCreated?.(hook, appointment, confirmed);
-      },
-      {
-        ignoreErrors: true,
-      },
+      "onAppointmentCreated",
+      appointment,
+      confirmed,
     );
 
     logger.debug(
@@ -439,22 +438,18 @@ export class EventsService implements IEventsService {
     }
 
     logger.debug({ appointmentId }, "Event saved, executing hooks");
-    await this.appsService.executeHooks<IAppointmentHook>(
+    await this.jobService.enqueueHook<
+      IAppointmentHook,
+      "onAppointmentRescheduled"
+    >(
       "appointment-hook",
-      async (hook, service) => {
-        await service.onAppointmentRescheduled?.(
-          hook,
-          updatedAppointment,
-          event.dateTime,
-          event.totalDuration,
-          updatedAppointment.dateTime,
-          updatedAppointment.totalDuration,
-          doNotNotifyCustomer,
-        );
-      },
-      {
-        ignoreErrors: true,
-      },
+      "onAppointmentRescheduled",
+      updatedAppointment,
+      event.dateTime,
+      event.totalDuration,
+      updatedAppointment.dateTime,
+      updatedAppointment.totalDuration,
+      doNotNotifyCustomer,
     );
 
     logger.debug(
@@ -1044,20 +1039,16 @@ export class EventsService implements IEventsService {
       },
     });
 
-    await this.appsService.executeHooks<IAppointmentHook>(
+    await this.jobService.enqueueHook<
+      IAppointmentHook,
+      "onAppointmentStatusChanged"
+    >(
       "appointment-hook",
-      async (hook, service) => {
-        await service.onAppointmentStatusChanged?.(
-          hook,
-          appointment,
-          newStatus,
-          oldStatus,
-          by,
-        );
-      },
-      {
-        ignoreErrors: true,
-      },
+      "onAppointmentStatusChanged",
+      appointment,
+      newStatus,
+      oldStatus,
+      by,
     );
 
     logger.debug(
@@ -1215,22 +1206,18 @@ export class EventsService implements IEventsService {
       "Appointment rescheduled in db",
     );
 
-    await this.appsService.executeHooks<IAppointmentHook>(
+    await this.jobService.enqueueHook<
+      IAppointmentHook,
+      "onAppointmentRescheduled"
+    >(
       "appointment-hook",
-      async (hook, service) => {
-        await service.onAppointmentRescheduled?.(
-          hook,
-          appointment,
-          newTime,
-          newDuration,
-          oldTime,
-          oldDuration,
-          doNotNotifyCustomer,
-        );
-      },
-      {
-        ignoreErrors: true,
-      },
+      "onAppointmentRescheduled",
+      appointment,
+      newTime,
+      newDuration,
+      oldTime,
+      oldDuration,
+      doNotNotifyCustomer,
     );
 
     logger.debug(

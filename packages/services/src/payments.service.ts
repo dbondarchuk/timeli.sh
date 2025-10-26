@@ -1,6 +1,7 @@
 import { getLoggerFactory } from "@vivid/logger";
 import {
   IConnectedAppsService,
+  IJobService,
   IPaymentHook,
   IPaymentProcessor,
   IPaymentsService,
@@ -20,6 +21,7 @@ export class PaymentsService implements IPaymentsService {
 
   public constructor(
     protected readonly connectedAppsService: IConnectedAppsService,
+    protected readonly jobService: IJobService,
   ) {}
   public async createIntent(
     intent: Omit<PaymentIntentUpdateModel, "status">,
@@ -218,14 +220,10 @@ export class PaymentsService implements IPaymentsService {
     );
 
     // Execute payment hooks
-    await this.connectedAppsService.executeHooks<IPaymentHook>(
+    await this.jobService.enqueueHook<IPaymentHook, "onPaymentCreated">(
       "payment-hook",
-      async (hook, service) => {
-        await service.onPaymentCreated?.(hook, dbPayment);
-      },
-      {
-        ignoreErrors: true,
-      },
+      "onPaymentCreated",
+      dbPayment,
     );
 
     return dbPayment;
@@ -327,14 +325,11 @@ export class PaymentsService implements IPaymentsService {
     );
 
     // Execute payment hooks
-    await this.connectedAppsService.executeHooks<IPaymentHook>(
+    await this.jobService.enqueueHook<IPaymentHook, "onPaymentUpdated">(
       "payment-hook",
-      async (hook, service) => {
-        await service.onPaymentUpdated?.(hook, updatedPayment, update);
-      },
-      {
-        ignoreErrors: true,
-      },
+      "onPaymentUpdated",
+      updatedPayment,
+      update,
     );
 
     return updatedPayment;
@@ -361,14 +356,10 @@ export class PaymentsService implements IPaymentsService {
     );
 
     // Execute payment hooks
-    await this.connectedAppsService.executeHooks<IPaymentHook>(
+    await this.jobService.enqueueHook<IPaymentHook, "onPaymentDeleted">(
       "payment-hook",
-      async (hook, service) => {
-        await service.onPaymentDeleted?.(hook, payment);
-      },
-      {
-        ignoreErrors: true,
-      },
+      "onPaymentDeleted",
+      payment,
     );
 
     return payment;
@@ -467,14 +458,11 @@ export class PaymentsService implements IPaymentsService {
         );
 
         // Execute payment hooks
-        await this.connectedAppsService.executeHooks<IPaymentHook>(
+        await this.jobService.enqueueHook<IPaymentHook, "onPaymentRefunded">(
           "payment-hook",
-          async (hook, service) => {
-            await service.onPaymentRefunded?.(hook, updatedPayment, amount);
-          },
-          {
-            ignoreErrors: true,
-          },
+          "onPaymentRefunded",
+          updatedPayment,
+          amount,
         );
 
         return { success: true, updatedPayment };

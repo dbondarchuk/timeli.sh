@@ -1,6 +1,7 @@
 "use client";
 
 import { AvailableApps } from "@vivid/app-store";
+import { AppSetups } from "@vivid/app-store/setup";
 import { useI18n } from "@vivid/i18n";
 import { AppSetupProps, ConnectedApp } from "@vivid/types";
 import {
@@ -83,7 +84,7 @@ export const AddOrUpdateAppButton: React.FC<AddOrUpdateAppButtonProps> = ({
     const app = AvailableApps[appType];
     if (app.type === "complex" || app.type === "system") return null;
 
-    return app.SetUp(setupProps);
+    return AppSetups[appType](setupProps);
   }, [appType]);
 
   const onDialogOpenChange = (open: boolean) => {

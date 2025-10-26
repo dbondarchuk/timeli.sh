@@ -2,7 +2,7 @@
 
 import React from "react";
 
-import { PaymentAppForms } from "@vivid/app-store";
+import { PaymentAppForms } from "@vivid/app-store/payment-forms";
 import { useI18n } from "@vivid/i18n";
 import { formatAmountString } from "@vivid/utils";
 import { useModifyAppointmentFormContext } from "./context";

@@ -1,7 +1,6 @@
 import { App } from "@vivid/types";
 import { SendHorizonal } from "lucide-react";
 import { TEXT_MESSAGE_NOTIFICATION_APP_NAME } from "./const";
-import { TextMessageNotificationAppSetup } from "./setup";
 import {
   TextMessageNotificationAdminKeys,
   TextMessageNotificationAdminNamespace,
@@ -17,7 +16,6 @@ export const TextMessageNotificationApp: App<
   category: ["apps.categories.notifications"],
   type: "basic",
   Logo: ({ className }) => <SendHorizonal className={className} />,
-  SetUp: (props) => <TextMessageNotificationAppSetup {...props} />,
   isFeatured: true,
   dontAllowMultiple: true,
   description: {

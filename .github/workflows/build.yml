@@ -1,5 +1,5 @@
 #
-name: Create and publish a Docker image
+name: Create and publish Docker images
 
 # Configures this workflow to run every time a change is pushed to the branch called `release`.
 on:
@@ -7,14 +7,16 @@ on:
     branches:
       - "**"
 
-# Defines two custom environment variables for the workflow. These are used for the Container registry domain, and a name for the Docker image that this workflow builds.
+# Defines custom environment variables for the workflow. These are used for the Container registry domain, and names for the Docker images that this workflow builds.
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  WEB_IMAGE_NAME: ${{ github.repository }}-web
+  NOTIFICATION_SENDER_IMAGE_NAME: ${{ github.repository }}-notification-sender
+  JOB_PROCESSOR_IMAGE_NAME: ${{ github.repository }}-job-processor
 
-# There is a single job in this workflow. It's configured to run on the latest available version of Ubuntu.
+# There are two jobs in this workflow. They're configured to run on the latest available version of Ubuntu.
 jobs:
-  build-and-push-image:
+  build-and-push-web-image:
     runs-on: ubuntu-latest
     # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
     permissions:
@@ -33,33 +35,132 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      # This step uses [docker/metadata-action](https://github.com/docker/metadata-action#about) to extract tags and labels that will be applied to the specified image. The `id` "meta" allows the output of this step to be referenced in a subsequent step. The `images` value provides the base name for the tags and labels.
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
+      # This step uses [docker/metadata-action](https://github.com/docker/metadata-action#about) to extract tags and labels that will be applied to the web image. The `id` "web-meta" allows the output of this step to be referenced in a subsequent step. The `images` value provides the base name for the tags and labels.
+      - name: Extract metadata (tags, labels) for Web Docker image
+        id: web-meta
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/${{ env.WEB_IMAGE_NAME }}
           # set latest tag for master branch
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
             type=raw,value={{branch}}-{{date 'YYYYMMDD-HHmmss'}}
             type=sha
-      # This step uses the `docker/build-push-action` action to build the image, based on your repository's `Dockerfile`. If the build succeeds, it pushes the image to GitHub Packages.
+      # This step uses the `docker/build-push-action` action to build the web image, based on your repository's `Dockerfile`. If the build succeeds, it pushes the image to GitHub Packages.
       # It uses the `context` parameter to define the build's context as the set of files located in the specified path. For more information, see "[Usage](https://github.com/docker/build-push-action#usage)" in the README of the `docker/build-push-action` repository.
-      # It uses the `tags` and `labels` parameters to tag and label the image with the output from the "meta" step.
-      - name: Build and push Docker image
-        id: push
+      # It uses the `tags` and `labels` parameters to tag and label the image with the output from the "web-meta" step.
+      - name: Build and push Web Docker image
+        id: web-push
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
         with:
           context: .
+          dockerfile: apps/web/Dockerfile
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.web-meta.outputs.tags }}
+          labels: ${{ steps.web-meta.outputs.labels }}
 
-      # This step generates an artifact attestation for the image, which is an unforgeable statement about where and how it was built. It increases supply chain security for people who consume the image. For more information, see "[AUTOTITLE](/actions/security-guides/using-artifact-attestations-to-establish-provenance-for-builds)."
-      - name: Generate artifact attestation
+      # This step generates an artifact attestation for the web image, which is an unforgeable statement about where and how it was built. It increases supply chain security for people who consume the image. For more information, see "[AUTOTITLE](/actions/security-guides/using-artifact-attestations-to-establish-provenance-for-builds)."
+      - name: Generate artifact attestation for Web image
         uses: actions/attest-build-provenance@v1
         with:
-          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
-          subject-digest: ${{ steps.push.outputs.digest }}
+          subject-name: ${{ env.REGISTRY }}/${{ env.WEB_IMAGE_NAME}}
+          subject-digest: ${{ steps.web-push.outputs.digest }}
+          push-to-registry: true
+
+  build-and-push-notification-sender-image:
+    runs-on: ubuntu-latest
+    # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      # Uses the `docker/login-action` action to log in to the Container registry registry using the account and password that will publish the packages. Once published, the packages are scoped to the account defined here.
+      - name: Log in to the Container registry
+        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      # This step uses [docker/metadata-action](https://github.com/docker/metadata-action#about) to extract tags and labels that will be applied to the notification-sender image. The `id` "notification-sender-meta" allows the output of this step to be referenced in a subsequent step. The `images` value provides the base name for the tags and labels.
+      - name: Extract metadata (tags, labels) for Notification Sender Docker image
+        id: notification-sender-meta
+        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.NOTIFICATION_SENDER_IMAGE_NAME }}
+          # set latest tag for master branch
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value={{branch}}-{{date 'YYYYMMDD-HHmmss'}}
+            type=sha
+      # This step uses the `docker/build-push-action` action to build the notification-sender image, based on the notification-sender Dockerfile. If the build succeeds, it pushes the image to GitHub Packages.
+      # It uses the `context` parameter to define the build's context as the set of files located in the specified path. For more information, see "[Usage](https://github.com/docker/build-push-action#usage)" in the README of the `docker/build-push-action` repository.
+      # It uses the `tags` and `labels` parameters to tag and label the image with the output from the "notification-sender-meta" step.
+      - name: Build and push Notification Sender Docker image
+        id: notification-sender-push
+        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+        with:
+          context: .
+          dockerfile: apps/notification-sender/Dockerfile
+          push: true
+          tags: ${{ steps.notification-sender-meta.outputs.tags }}
+          labels: ${{ steps.notification-sender-meta.outputs.labels }}
+      # This step generates an artifact attestation for the notification-sender image, which is an unforgeable statement about where and how it was built. It increases supply chain security for people who consume the image. For more information, see "[AUTOTITLE](/actions/security-guides/using-artifact-attestations-to-establish-provenance-for-builds)."
+      - name: Generate artifact attestation for Notification Sender image
+        uses: actions/attest-build-provenance@v1
+        with:
+          subject-name: ${{ env.REGISTRY }}/${{ env.NOTIFICATION_SENDER_IMAGE_NAME}}
+          subject-digest: ${{ steps.notification-sender-push.outputs.digest }}
+          push-to-registry: true
+
+  build-and-push-job-processor-image:
+    runs-on: ubuntu-latest
+    # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      # Uses the `docker/login-action` action to log in to the Container registry registry using the account and password that will publish the packages. Once published, the packages are scoped to the account defined here.
+      - name: Log in to the Container registry
+        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      # This step uses [docker/metadata-action](https://github.com/docker/metadata-action#about) to extract tags and labels that will be applied to the job-processor image. The `id` "job-processor-meta" allows the output of this step to be referenced in a subsequent step. The `images` value provides the base name for the tags and labels.
+      - name: Extract metadata (tags, labels) for Job Processor Docker image
+        id: job-processor-meta
+        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.JOB_PROCESSOR_IMAGE_NAME }}
+          # set latest tag for master branch
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value={{branch}}-{{date 'YYYYMMDD-HHmmss'}}
+            type=sha
+      # This step uses the `docker/build-push-action` action to build the job-processor image, based on the job-processor Dockerfile. If the build succeeds, it pushes the image to GitHub Packages.
+      # It uses the `context` parameter to define the build's context as the set of files located in the specified path. For more information, see "[Usage](https://github.com/docker/build-push-action#usage)" in the README of the `docker/build-push-action` repository.
+      # It uses the `tags` and `labels` parameters to tag and label the image with the output from the "notification-sender-meta" step.
+      - name: Build and push Job Processor Docker image
+        id: job-processor-push
+        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+        with:
+          context: .
+          dockerfile: apps/job-processor/Dockerfile
+          push: true
+          tags: ${{ steps.job-processor-meta.outputs.tags }}
+          labels: ${{ steps.job-processor-meta.outputs.labels }}
+      # This step generates an artifact attestation for the job-processor image, which is an unforgeable statement about where and how it was built. It increases supply chain security for people who consume the image. For more information, see "[AUTOTITLE](/actions/security-guides/using-artifact-attestations-to-establish-provenance-for-builds)."
+      - name: Generate artifact attestation for Job Processor image
+        uses: actions/attest-build-provenance@v1
+        with:
+          subject-name: ${{ env.REGISTRY }}/${{ env.JOB_PROCESSOR_IMAGE_NAME}}
+          subject-digest: ${{ steps.job-processor-push.outputs.digest }}
           push-to-registry: true

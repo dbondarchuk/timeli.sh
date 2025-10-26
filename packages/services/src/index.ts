@@ -1,17 +1,25 @@
 import { IServicesContainer } from "@vivid/types";
 import { cache } from "react";
 import { AssetsService } from "./assets.service";
+import {
+  BullMQJobService,
+  BullMQNotificationService,
+  getBullMQJobConfig,
+  getBullMQNotificationConfig,
+} from "./bullmq";
 import { CommunicationLogsService } from "./communication-logs.service";
 import { CachedConfigurationService } from "./configuration.service";
 import { CachedConnectedAppsService } from "./connected-apps.service";
 import { CustomersService } from "./customers.service";
 import { EventsService } from "./events.service";
-import { NotificationService } from "./notifications.service";
 import { PagesService } from "./pages.service";
 import { PaymentsService } from "./payments.service";
 import { ScheduleService } from "./schedule.service";
 import { ServicesService } from "./services.service";
 import { TemplatesService } from "./templates.service";
+
+// BullMQ exports
+export * from "./bullmq";
 
 export * from "./assets.service";
 export * from "./communication-logs.service";
@@ -43,11 +51,12 @@ export const ServicesContainer: IServicesContainer = {
         ServicesContainer.ScheduleService(),
         ServicesContainer.ServicesService(),
         ServicesContainer.PaymentsService(),
+        ServicesContainer.JobService(),
       ),
   ),
   PagesService: cache(() => new PagesService()),
   CustomersService: cache(
-    () => new CustomersService(ServicesContainer.ConnectedAppsService()),
+    () => new CustomersService(ServicesContainer.JobService()),
   ),
   ServicesService: cache(
     () => new ServicesService(ServicesContainer.ConfigurationService()),
@@ -63,14 +72,14 @@ export const ServicesContainer: IServicesContainer = {
   CommunicationLogsService: cache(() => new CommunicationLogsService()),
   ConnectedAppsService: cache(() => new CachedConnectedAppsService()),
   PaymentsService: cache(
-    () => new PaymentsService(ServicesContainer.ConnectedAppsService()),
-  ),
-  NotificationService: cache(
     () =>
-      new NotificationService(
-        ServicesContainer.ConfigurationService(),
+      new PaymentsService(
         ServicesContainer.ConnectedAppsService(),
-        ServicesContainer.CommunicationLogsService(),
+        ServicesContainer.JobService(),
       ),
   ),
+  NotificationService: cache(
+    () => new BullMQNotificationService(getBullMQNotificationConfig()),
+  ),
+  JobService: cache(() => new BullMQJobService(getBullMQJobConfig())),
 };

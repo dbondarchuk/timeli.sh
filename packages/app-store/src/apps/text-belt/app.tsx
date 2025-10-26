@@ -1,8 +1,6 @@
 import { App } from "@vivid/types";
 import { TEXTBELT_APP_NAME } from "./const";
-import image from "./images/image.png";
 import { TextBeltLogo } from "./logo";
-import { TextBeltAppSetup } from "./setup";
 import {
   TextBeltAdminKeys,
   TextBeltAdminNamespace,
@@ -15,9 +13,7 @@ export const TextBeltApp: App<TextBeltAdminNamespace, TextBeltAdminKeys> = {
   category: ["apps.categories.communications"],
   type: "basic",
   Logo: ({ className }) => <TextBeltLogo className={className} />,
-  SetUp: (props) => <TextBeltAppSetup {...props} />,
   description: {
     text: "app_text-belt_admin.app.description",
-    images: [image.src],
   },
 };

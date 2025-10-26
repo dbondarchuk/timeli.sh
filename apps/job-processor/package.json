@@ -1,0 +1,30 @@
+{
+  "name": "@vivid/job-processor",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "node esbuild.config.js --dev",
+    "build": "node esbuild.config.js",
+    "start": "node dist/index.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@vivid/logger": "*",
+    "@vivid/types": "*",
+    "@vivid/services": "*",
+    "bullmq": "^5.0.0",
+    "ioredis": "^5.3.2",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@vivid/eslint-config": "*",
+    "@vivid/typescript-config": "*",
+    "esbuild": "^0.19.0",
+    "eslint": "^9.34.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5"
+  }
+}

@@ -3,7 +3,7 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**"]
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
     },
     "start": {
       "dependsOn": ["^start"]
@@ -22,7 +22,8 @@
       "dependsOn": ["^lint:fix"]
     },
     "check-translations": {
-      "dependsOn": ["^check-translations"]
+      "dependsOn": ["^check-translations"],
+      "cache": false
     }
   }
 }

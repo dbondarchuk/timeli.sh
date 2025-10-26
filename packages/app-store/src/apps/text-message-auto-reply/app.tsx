@@ -1,7 +1,6 @@
 import { App } from "@vivid/types";
 import { MessageSquareReply } from "lucide-react";
 import { TEXT_MESSAGE_AUTO_REPLY_APP_NAME } from "./const";
-import { TextMessageAutoReplyAppSetup } from "./setup";
 import {
   TextMessageAutoReplyAdminKeys,
   TextMessageAutoReplyAdminNamespace,
@@ -17,7 +16,6 @@ export const TextMessageAutoReplyApp: App<
   category: ["apps.categories.communications"],
   type: "basic",
   Logo: ({ className }) => <MessageSquareReply className={className} />,
-  SetUp: (props) => <TextMessageAutoReplyAppSetup {...props} />,
   description: {
     text: "app_text-message-auto-reply_admin.app.description",
   },

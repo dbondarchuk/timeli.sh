@@ -25,6 +25,9 @@ module.exports = [
       },
     },
     files: ["*.js?(x)", "*.ts?(x)"],
+  },
+  // Should use global ignore config to apply to all rules
+  {
     ignores: [
       // Ignore dotfiles
       ".*.js",
