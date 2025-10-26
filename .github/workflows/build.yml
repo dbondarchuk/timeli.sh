@@ -54,7 +54,7 @@ jobs:
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
         with:
           context: .
-          file apps/web/Dockerfile
+          file: apps/web/Dockerfile
           push: true
           tags: ${{ steps.web-meta.outputs.tags }}
           labels: ${{ steps.web-meta.outputs.labels }}
@@ -104,7 +104,7 @@ jobs:
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
         with:
           context: .
-          file apps/notification-sender/Dockerfile
+          file: apps/notification-sender/Dockerfile
           push: true
           tags: ${{ steps.notification-sender-meta.outputs.tags }}
           labels: ${{ steps.notification-sender-meta.outputs.labels }}
@@ -153,7 +153,7 @@ jobs:
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
         with:
           context: .
-          file apps/job-processor/Dockerfile
+          file: apps/job-processor/Dockerfile
           push: true
           tags: ${{ steps.job-processor-meta.outputs.tags }}
           labels: ${{ steps.job-processor-meta.outputs.labels }}
