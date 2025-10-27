@@ -15,7 +15,7 @@ export const pageSchema = z.object({
   description: z.string().min(1, "page.description.required"),
   keywords: z.string().min(1, "page.keywords.required"),
   published: z.coerce.boolean().default(false),
-  publishDate: z.date({ required_error: "page.publishDate.required" }),
+  publishDate: z.coerce.date({ required_error: "page.publishDate.required" }),
   tags: z.array(pageTagSchema).optional(),
   language: z.enum(languages).optional().nullable(),
   doNotCombine: z
