@@ -3,7 +3,7 @@ import { AddNewTemplateButton } from "@/components/admin/templates/add-new-templ
 import { TemplatesTable } from "@/components/admin/templates/table/table";
 import { TemplatesTableAction } from "@/components/admin/templates/table/table-action";
 import {
-  templateSearchParamsLoader,
+  templateSearchParamsCache,
   templateSearchParamsSerializer,
 } from "@vivid/api-sdk";
 import { getI18nAsync } from "@vivid/i18n/server";
@@ -40,7 +40,7 @@ export default async function EmailTemplatesPage(props: Params) {
     { title: t("navigation.templates"), link: "/admin/dashboard/templates" },
   ];
 
-  const parsed = templateSearchParamsLoader(searchParams);
+  const parsed = templateSearchParamsCache.parse(searchParams);
   const key = templateSearchParamsSerializer({ ...parsed });
 
   return (
