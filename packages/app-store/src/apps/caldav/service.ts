@@ -1,5 +1,5 @@
 import { parseIcsCalendar, parseIcsEvent } from "@ts-ics/schema-zod";
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
 import {
   CalendarBusyTime,
   CalendarEvent,
@@ -16,10 +16,11 @@ import {
 import { decrypt, encrypt } from "@vivid/utils";
 import { DateTime } from "luxon";
 import {
+  createGetRegex,
   generateIcsCalendar,
-  getEventRegex,
   IcsAttendeePartStatusType,
-  IcsStatusType,
+  IcsEventStatusType,
+  VEVENT_OBJECT_KEY,
 } from "ts-ics";
 import { DAVClient } from "tsdav";
 import { CaldavAction, CaldavCalendarSource } from "./models";
@@ -37,7 +38,7 @@ const attendeeStatusToPartStatusMap: Record<
 
 const evetStatusToIcsEventStatus: Record<
   CalendarEvent["status"],
-  IcsStatusType
+  IcsEventStatusType
 > = {
   confirmed: "CONFIRMED",
   declined: "CANCELLED",
@@ -52,9 +53,14 @@ export default class CaldavConnectedApp
     ICalendarBusyTimeProvider,
     ICalendarWriter
 {
-  protected readonly loggerFactory = getLoggerFactory("CaldavConnectedApp");
+  protected readonly loggerFactory: LoggerFactory;
 
-  public constructor(protected readonly props: IConnectedAppProps) {}
+  public constructor(protected readonly props: IConnectedAppProps) {
+    this.loggerFactory = getLoggerFactory(
+      "CaldavConnectedApp",
+      props.companyId,
+    );
+  }
 
   public async processAppData(
     appData: CaldavCalendarSource,
@@ -339,7 +345,9 @@ export default class CaldavConnectedApp
       const events = objects
         .map((obj) => {
           const dataStr = obj.data as string;
-          const eventStr = dataStr.match(getEventRegex)?.[0];
+          const eventStr = dataStr.match(
+            createGetRegex(VEVENT_OBJECT_KEY),
+          )?.[0];
           if (!eventStr) return null;
 
           return parseIcsEvent(eventStr, { timezones });

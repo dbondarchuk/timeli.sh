@@ -1,4 +1,4 @@
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
 import { ConnectedAppError, IConnectedAppProps, WithTotal } from "@vivid/types";
 import { buildSearchQuery, escapeRegex } from "@vivid/utils";
 import { DateTime } from "luxon";
@@ -13,16 +13,19 @@ import { ScheduledNotificationsAdminAllKeys } from "./translations/types";
 const SCHEDULED_NOTIFICATIONS_COLLECTION_NAME = "scheduled-notifications";
 
 export class ScheduledNotificationsRepository {
-  protected readonly loggerFactory = getLoggerFactory(
-    "ScheduledNotificationsRepository",
-  );
+  protected readonly loggerFactory: LoggerFactory;
 
-  public constructor(protected readonly props: IConnectedAppProps) {}
+  public constructor(protected readonly props: IConnectedAppProps) {
+    this.loggerFactory = getLoggerFactory(
+      "ScheduledNotificationsRepository",
+      props.companyId,
+    );
+  }
 
   public async getScheduledNotification(appId: string, id: string) {
     const logger = this.loggerFactory("getScheduledNotification");
     logger.debug(
-      { appId, scheduledNotificationId: id },
+      { appId, companyId: this.props.companyId, scheduledNotificationId: id },
       "Getting scheduled notification",
     );
 
@@ -35,6 +38,7 @@ export class ScheduledNotificationsRepository {
         )
         .findOne({
           appId,
+          companyId: this.props.companyId,
           _id: id,
         });
 

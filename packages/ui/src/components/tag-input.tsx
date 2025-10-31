@@ -13,10 +13,7 @@ import { Button } from "./button";
 import type { InputProps } from "./input";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
-const parseTagOpt = (params: {
-  tags: string[];
-  tagValidator: z.ZodString | z.ZodEffects<z.ZodString, string, string>;
-}) => {
+const parseTagOpt = (params: { tags: string[]; tagValidator: z.ZodString }) => {
   const { tags, tagValidator } = params;
 
   const parsedTags = tags.map((tag) => tagValidator.safeParse(tag));
@@ -52,7 +49,7 @@ const tagInputVariant = cva(
 type TagInputProps = Omit<InputProps, "value" | "onChange"> & {
   value?: ReadonlyArray<string>;
   onChange: (value: ReadonlyArray<string>) => void;
-  tagValidator?: z.ZodString | z.ZodEffects<z.ZodString, string, string>;
+  tagValidator?: z.ZodString;
   addItemTemplate?: (props: {
     onAdd: (value: string | string[]) => void;
   }) => ReactElement;

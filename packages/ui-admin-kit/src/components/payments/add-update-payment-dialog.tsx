@@ -46,7 +46,7 @@ import {
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import * as z from "zod";
 
 type AddUpdatePaymentDialogProps = {
   onSuccess?: (payment: Payment) => void;

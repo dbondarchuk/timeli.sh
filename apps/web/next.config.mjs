@@ -13,6 +13,7 @@ const nextConfig = {
   output: "standalone",
   outputFileTracingRoot: join(__dirname, "../../"),
   experimental: {
+    turbopackScopeHoisting: true,
     useCache: true,
     webpackMemoryOptimizations: true,
     serverActions: {

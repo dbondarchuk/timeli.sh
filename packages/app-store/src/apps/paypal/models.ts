@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as z from "zod";
 import { PaypalAdminAllKeys } from "./translations/types";
 
 export const paypalButtonsShape = ["rect", "pill", "sharp"] as const;

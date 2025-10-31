@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as z from "zod";
 import { parseTime, zUniqueArray } from "../../utils";
 
 export const timeSchema = z.string().refine((x) => {

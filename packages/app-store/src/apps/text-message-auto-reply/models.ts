@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as z from "zod";
 import { TextMessageAutoReplyAdminAllKeys } from "./translations/types";
 
 export const textMessageAutoReplyConfigurationSchema = z.object({

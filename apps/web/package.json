@@ -3,26 +3,19 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbo",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "lint:fix": "next lint --fix"
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "@mdx-js/react": "^3.0.1",
-    "@schedule-x/calendar": "^1.60.1",
-    "@schedule-x/react": "^1.59.1",
-    "@schedule-x/theme-default": "^1.60.1",
-    "@vivid/app-store": "*",
-    "@vivid/ui-admin": "*",
-    "@vivid/ui-admin-kit": "*",
     "@vivid/api-sdk": "*",
-    "@vivid/email-builder": "*",
+    "@vivid/app-store": "*",
     "@vivid/i18n": "*",
     "@vivid/logger": "*",
     "@vivid/page-builder": "*",
-    "@vivid/rte": "*",
     "@vivid/services": "*",
     "@vivid/types": "*",
     "@vivid/ui": "*",
@@ -38,15 +31,14 @@
     "luxon": "^3.5.0",
     "mdx-bundler": "^10.0.2",
     "mongodb": "^6.8.0",
-    "next": "15.2.1",
-    "next-auth": "^5.0.0-beta.25",
+    "next": "16.0.2-canary.1",
     "next-logger": "^5.0.1",
     "next-navigation-guard": "^0.2.0",
     "nextjs-toploader": "^1.6.12",
     "npm": "^10.8.2",
     "p-limit": "^6.2.0",
     "pino-http": "^10.5.0",
-    "react": "19.0.0",
+    "react": "19.2.0",
     "react-window": "^1.8.10",
     "rehype-pretty-code": "^0.14.0",
     "rehype-starry-night": "^2.2.0",
@@ -56,7 +48,7 @@
   "devDependencies": {
     "@types/color": "^4.2.0",
     "@types/node": "^20",
-    "@types/react": "19.0.2",
+    "@types/react": "19.2.0",
     "@types/react-file-icon": "^1.0.4",
     "@vivid/eslint-config": "*",
     "@vivid/tailwind-config": "*",
@@ -68,7 +60,7 @@
     "typescript": "^5"
   },
   "resolutions": {
-    "@types/react": "19.0.2",
-    "@types/react-dom": "19.0.2"
+    "@types/react": "19.2.0",
+    "@types/react-dom": "19.2.0"
   }
 }

@@ -82,7 +82,7 @@ export const renderUserEmailTemplate = async (
                       props: {
                         size: 83,
                         shape: "circle",
-                        imageUrl: "{{config.url}}{{config.logo}}",
+                        imageUrl: "{{websiteUrl}}{{config.logo}}",
                       },
                     },
                   },

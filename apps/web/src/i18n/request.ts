@@ -1,6 +1,6 @@
+import { getServicesContainer } from "@/utils/utils";
 import { AppsTranslations } from "@vivid/app-store/translations";
 import { getConfig } from "@vivid/i18n/request";
-import { ServicesContainer } from "@vivid/services";
 import { headers } from "next/headers";
 
 const config = getConfig(
@@ -8,22 +8,20 @@ const config = getConfig(
     const headersList = await headers();
 
     const isAdminPath = headersList.get("x-is-admin-path") === "true";
+    const servicesContainer = await getServicesContainer();
 
     let locale =
       baseLocale ||
       headersList.get("x-locale") ||
-      (
-        await ServicesContainer.ConfigurationService().getConfiguration(
-          "general",
-        )
-      ).language ||
+      (await servicesContainer.configurationService.getConfiguration("general"))
+        .language ||
       "en";
 
     const pathname = headersList.get("x-pathname");
     if (pathname && !isAdminPath) {
       const trimmedPathname = pathname.replace(/^\//, "");
       const page =
-        await ServicesContainer.PagesService().getPageBySlug(trimmedPathname);
+        await servicesContainer.pagesService.getPageBySlug(trimmedPathname);
 
       if (page?.language) {
         locale = page.language;
@@ -33,9 +31,10 @@ const config = getConfig(
     return { locale, includeAdmin: isAdminPath };
   },
   async () => {
+    const servicesContainer = await getServicesContainer();
     const installedApps = Array.from(
       new Set(
-        (await ServicesContainer.ConnectedAppsService().getApps()).map(
+        (await servicesContainer.connectedAppsService.getApps()).map(
           (app) => app.name,
         ),
       ),

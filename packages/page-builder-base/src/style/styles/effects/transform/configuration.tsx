@@ -4,7 +4,7 @@ import { useI18n } from "@vivid/i18n";
 import { Button, Combobox } from "@vivid/ui";
 import { Move, Plus, Trash2 } from "lucide-react";
 import { useCallback, useState } from "react";
-import { z } from "zod";
+import * as z from "zod";
 import { RawNumberInput } from "../../../../style-inputs/base/raw-number-input";
 import {
   TransformSchema,

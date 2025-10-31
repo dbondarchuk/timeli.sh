@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as z from "zod";
 import {
   emailCommunicationChannel,
   textMessageCommunicationChannel,
@@ -25,19 +25,16 @@ export const sendTextMessageCommunicationRequestSchema = z.object({
 export const sendEmailCommunicationRequestSchema = z.object({
   channel: z.literal(emailCommunicationChannel),
   subject: z.string().min(1, "communication.email.subject.required"),
-  content: z
-    .object(
-      {
-        type: z.string().min(1),
-        data: z.custom<Required<any>>((d) => d !== undefined),
-        id: z.string().min(1),
-      },
-      {
-        required_error: "communication.email.content.required",
-        message: "communication.email.content.required",
-      },
-    )
-    .passthrough(),
+  content: z.looseObject(
+    {
+      type: z.string().min(1),
+      data: z.custom<Required<any>>((d) => d !== undefined),
+      id: z.string().min(1),
+    },
+    {
+      error: "communication.email.content.required",
+    },
+  ),
 });
 
 export const sendCommunicationRequestSchema = z

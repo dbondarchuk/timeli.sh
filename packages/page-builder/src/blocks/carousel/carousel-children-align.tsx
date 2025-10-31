@@ -5,7 +5,7 @@ import {
 } from "@vivid/page-builder-base/style";
 import { Combobox } from "@vivid/ui";
 import { AlignLeft } from "lucide-react";
-import { z } from "zod";
+import * as z from "zod";
 
 const carouselChildrenAlignKeys = [
   "left",

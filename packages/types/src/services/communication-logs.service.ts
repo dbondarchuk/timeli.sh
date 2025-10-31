@@ -9,7 +9,9 @@ import { Query, WithTotal } from "../database";
 import { DateRange } from "../general";
 
 export interface ICommunicationLogsService {
-  log(log: Omit<CommunicationLogEntity, "dateTime" | "_id">): Promise<void>;
+  log(
+    log: Omit<CommunicationLogEntity, "dateTime" | "_id" | "companyId">,
+  ): Promise<void>;
   getCommunicationLogs(
     query: Query & {
       direction?: CommunicationDirection[];

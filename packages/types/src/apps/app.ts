@@ -1,6 +1,6 @@
 import type { AllKeys, I18nNamespaces } from "@vivid/i18n";
-import type { Extandable } from "@vivid/types";
 import type { ReactElement, ReactNode } from "react";
+import type { Extandable } from "../utils/helpers";
 
 export type AppScope = Extandable<
   | "calendar-read"
@@ -11,7 +11,7 @@ export type AppScope = Extandable<
   | "appointment-hook"
   | "customer-hook"
   | "payment-hook"
-  | "assets-storage"
+  // | "assets-storage"
   | "scheduled"
   | "schedule"
   | "dashboard-tab"

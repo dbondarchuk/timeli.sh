@@ -1,9 +1,10 @@
-import { z } from "zod";
-import { WithDatabaseId } from "../database";
+import * as z from "zod";
+import { WithCompanyId, WithDatabaseId } from "../database";
+import { Prettify } from "../utils";
 
 export const pageFooterSchema = z.object({
   name: z
-    .string({ required_error: "page.footers.name.required" })
+    .string({ error: "page.footers.name.required" })
     .min(2, "page.footers.name.min"),
   content: z.any().optional(),
 });
@@ -20,9 +21,11 @@ export const getPageFooterSchemaWithUniqueNameCheck = (
 
 export type PageFooterUpdateModel = z.infer<typeof pageFooterSchema>;
 
-export type PageFooter = WithDatabaseId<PageFooterUpdateModel> & {
-  updatedAt: Date;
-};
+export type PageFooter = Prettify<
+  WithCompanyId<WithDatabaseId<PageFooterUpdateModel>> & {
+    updatedAt: Date;
+  }
+>;
 
 export type PageFooterListModel = Omit<PageFooter, "content"> & {
   usedCount: number;

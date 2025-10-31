@@ -14,13 +14,13 @@ export const WaitlistDismissPage: React.FC<ComplexAppPageProps> = ({
   const router = useRouter();
   useEffect(() => {
     if (!id) {
-      router.replace("/admin/dashboard/waitlist");
+      router.replace("/dashboard/waitlist");
       return;
     }
 
     const fn = async () => {
       await dismissWaitlistEntry(appId, id);
-      router.replace("/admin/dashboard/waitlist");
+      router.replace("/dashboard/waitlist");
     };
 
     fn();

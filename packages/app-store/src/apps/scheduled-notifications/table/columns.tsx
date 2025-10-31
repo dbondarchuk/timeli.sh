@@ -41,7 +41,7 @@ export const columns: ColumnDef<ScheduledNotification>[] = [
   {
     cell: ({ row }) => (
       <Link
-        href={`/admin/dashboard/communications/scheduled-notifications/edit?id=${row.original._id}`}
+        href={`/dashboard/communications/scheduled-notifications/edit?id=${row.original._id}`}
         variant="underline"
       >
         {row.original.name}

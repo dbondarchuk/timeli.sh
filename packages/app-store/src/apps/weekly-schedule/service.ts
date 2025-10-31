@@ -1,4 +1,4 @@
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
 import {
   ConnectedAppData,
   ConnectedAppStatusWithText,
@@ -29,11 +29,13 @@ type ScheduleOverrideEntity = WithDatabaseId<ScheduleOverride> & {
 export default class WeeklyScheduleConnectedApp
   implements IConnectedApp, IScheduleProvider
 {
-  protected readonly loggerFactory = getLoggerFactory(
-    "WeeklyScheduleConnectedApp",
-  );
-
-  public constructor(protected readonly props: IConnectedAppProps) {}
+  protected readonly loggerFactory: LoggerFactory;
+  public constructor(protected readonly props: IConnectedAppProps) {
+    this.loggerFactory = getLoggerFactory(
+      "WeeklyScheduleConnectedApp",
+      props.companyId,
+    );
+  }
 
   public async processRequest(
     appData: ConnectedAppData,
@@ -368,9 +370,9 @@ export default class WeeklyScheduleConnectedApp
           }
         : {
             schedule: (
-              await this.props.services
-                .ConfigurationService()
-                .getConfiguration("schedule")
+              await this.props.services.configurationService.getConfiguration(
+                "schedule",
+              )
             ).schedule,
             isDefault: true,
           };

@@ -1,12 +1,10 @@
-import { z } from "zod";
+import * as z from "zod";
 import { CaldavAdminAllKeys } from "./translations/types";
 
 export const caldavCalendarSourceSchema = z.object({
-  serverUrl: z
-    .string()
-    .url(
-      "app_caldav_admin.validation.serverUrl.url" satisfies CaldavAdminAllKeys,
-    ),
+  serverUrl: z.url(
+    "app_caldav_admin.validation.serverUrl.url" satisfies CaldavAdminAllKeys,
+  ),
   calendarName: z
     .string({
       message:

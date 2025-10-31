@@ -1,5 +1,39 @@
 version: "3.9"
 services:
+  vivid-admin:
+    build:
+      context: .
+      dockerfile: apps/admin/Dockerfile
+    image: ghcr.io/dbondarchuk/vivid-admin:latest
+    environment:
+      # - MONGODB_URI=mongodb://192.168.0.162:27017/vivid?retryWrites=true&w=majority
+      - MONGODB_URI=mongodb://host.docker.internal:27017/vivid?retryWrites=true&w=majority
+      - TZ=America/New_York
+      - AUTH_PASSWORD=password
+      - AUTH_SECRET="n6WKAuaUVdOYMRReNYXEd/sHLF/Ddfams+FAGMe7vzk="
+      - AUTH_TRUST_HOST=http://localhost:3000
+      - AUTH_URL=http://localhost:3000
+      - PUBLIC_DOMAIN=vividnail.studio
+      - ADMIN_DOMAIN=app-dev.vividnail.studio
+      - SECRET_KEY=${SECRET_KEY:-uw8iDFHFNjbIU8gPGMByTLiFfXJex7E1}
+      - REDIS_HOST=${REDIS_HOST:-redis}
+      - REDIS_PORT=${REDIS_PORT:-6379}
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-}
+      - REDIS_DB=${REDIS_DB:-0}
+      - LOG_LEVEL=${LOG_LEVEL:-debug}
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - "./apps/admin/public/upload:/app/public/upload"
+    networks:
+      - vivid-network
+    depends_on:
+      - mongodb
+      - redis
+      - vivid-job-processor
+      - vivid-notification-sender
+
   vivid-web:
     build:
       context: .
@@ -10,6 +44,7 @@ services:
       - MONGODB_URI=mongodb://host.docker.internal:27017/vivid?retryWrites=true&w=majority
       - TZ=America/New_York
       - AUTH_PASSWORD=password
+      - PUBLIC_DOMAIN=vividnail.studio
       - AUTH_SECRET="n6WKAuaUVdOYMRReNYXEd/sHLF/Ddfams+FAGMe7vzk="
       - AUTH_TRUST_HOST=http://localhost:3000
       - AUTH_URL=http://localhost:3000
@@ -21,7 +56,7 @@ services:
       - LOG_LEVEL=${LOG_LEVEL:-debug}
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "3001:3001"
     volumes:
       - "./apps/web/public/upload:/app/public/upload"
     networks:
@@ -31,6 +66,7 @@ services:
       - redis
       - vivid-job-processor
       - vivid-notification-sender
+      - vivid-admin
 
   vivid-notification-sender:
     build:

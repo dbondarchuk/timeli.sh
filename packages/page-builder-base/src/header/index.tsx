@@ -19,7 +19,7 @@ import {
   Link,
   Logo,
 } from "@vivid/ui";
-import { ChevronDown, icons } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import React from "react";
 import { ReplaceOriginalColors } from "../helpers/replace-original-colors";
 import {
@@ -42,7 +42,7 @@ const LinkRender: React.FC<{
   <>
     {item.prefixIcon && (
       <Icon
-        name={item.prefixIcon as keyof typeof icons}
+        name={item.prefixIcon as any}
         className="w-6 h-6"
         aria-label={item.label}
       />
@@ -50,7 +50,7 @@ const LinkRender: React.FC<{
     {item.label}
     {item.suffixIcon && (
       <Icon
-        name={item.suffixIcon as keyof typeof icons}
+        name={item.suffixIcon as any}
         className="w-6 h-6"
         aria-label={item.label}
       />
@@ -74,7 +74,7 @@ const HeaderBase: React.FC<HeaderProps> = ({
             key={item.url}
           >
             <Icon
-              name={item.icon as keyof typeof icons}
+              name={item.icon as any}
               className="w-6 h-6"
               aria-label={item.label}
             />

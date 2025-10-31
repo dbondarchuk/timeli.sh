@@ -2,7 +2,7 @@
 
 import * as RadioGroupPrimitive from "@radix-ui/react-radio-group";
 import { cva } from "class-variance-authority";
-import * as React from "react";
+import React from "react";
 import { useAttributeObserver } from "../hooks";
 import { cn } from "../utils";
 import { ButtonProps, ButtonSize, buttonVariants } from "./button";

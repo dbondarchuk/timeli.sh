@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as z from "zod";
 import { CalendarWriterAdminAllKeys } from "./translations/types";
 
 export const calendarWriterConfigurationSchema = z.object({

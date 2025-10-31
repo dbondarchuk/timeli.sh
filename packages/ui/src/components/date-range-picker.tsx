@@ -3,7 +3,7 @@ import { CalendarIcon } from "@radix-ui/react-icons";
 import { useI18n } from "@vivid/i18n";
 import { DateRange } from "@vivid/types";
 import { DateTime } from "luxon";
-import * as React from "react";
+import React from "react";
 import { cn } from "../utils";
 import { Button } from "./button";
 import { Calendar, CalendarProps } from "./calendar";

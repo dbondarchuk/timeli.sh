@@ -8,6 +8,7 @@ import {
 } from "@vivid/types";
 import { DateTime } from "luxon";
 import { getIcsEventUid } from "./ics-uid";
+import { getAdminUrl } from "./website";
 
 export type CalendarEventOptions = {
   from: string;
@@ -33,7 +34,9 @@ export const getEventCalendarContent = (
   description: string,
   method: IcalEventMethod = "REQUEST",
 ) => {
-  const { address, name, url, email } = generalConfig;
+  const { address, name, email } = generalConfig;
+  // const url = getWebsiteUrl(organizationSlug, domain);
+  const url = getAdminUrl();
 
   const config: CalendarEventOptions = {
     from: email,
@@ -66,7 +69,7 @@ export const getEventCalendarContent = (
       email: config.from,
       name: config.name,
     },
-    url: `${config.url}/admin/dashboard/appointments/${event._id}`,
+    url: `${config.url}/dashboard/appointments/${event._id}`,
     title: summary,
     description: description,
     htmlContent: description,

@@ -1,6 +1,6 @@
 import { getAppointmentEventFromRequest } from "@/utils/appointments/get-event";
+import { getServicesContainer } from "@/utils/utils";
 import { getLoggerFactory } from "@vivid/logger";
-import { ServicesContainer } from "@vivid/services";
 import {
   appointmentRequestSchema,
   CheckDuplicateAppointmentsResponse,
@@ -10,7 +10,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   const logger = getLoggerFactory("API/event-duplicate")("POST");
-
+  const servicesContainer = await getServicesContainer();
   logger.debug(
     {
       url: request.url,
@@ -107,7 +107,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const closestAppointments =
-      await ServicesContainer.EventsService().getAppointments({
+      await servicesContainer.eventsService.getAppointments({
         optionId: appointmentRequest.optionId,
         customerId: eventOrError.customer._id,
         range,

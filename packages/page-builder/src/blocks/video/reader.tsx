@@ -2,7 +2,8 @@ import { BlockStyle, generateClassName } from "@vivid/page-builder-base/reader";
 import { cn } from "@vivid/ui";
 import { forwardRef, HTMLAttributes } from "react";
 import { VideoPropsDefaults, VideoReaderProps } from "./schema";
-import { getDefaults, styles } from "./styles";
+import { styles } from "./styles";
+import { getDefaults } from "./styles.default";
 
 // Define the shape for the video props
 interface VideoInnerProps {

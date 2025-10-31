@@ -1,7 +1,7 @@
 import { BaseReaderBlockProps } from "@vivid/builder";
 import { Prettify } from "@vivid/types";
 import { icons } from "lucide-react";
-import z from "zod";
+import * as z from "zod";
 import { zStyles } from "./styles";
 
 const [firstIcon, ...restIcons] = Object.keys(icons);

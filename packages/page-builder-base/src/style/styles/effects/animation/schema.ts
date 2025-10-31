@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as z from "zod";
 
 // Animation name options
 export const animationNameKeys = [

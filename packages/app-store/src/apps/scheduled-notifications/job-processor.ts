@@ -1,12 +1,17 @@
 import { renderToStaticMarkup } from "@vivid/email-builder/static";
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
 import {
   AppJobRequest,
   Appointment,
   ConnectedAppData,
   IConnectedAppProps,
 } from "@vivid/types";
-import { getArguments, templateSafeWithError } from "@vivid/utils";
+import {
+  getAdminUrl,
+  getArguments,
+  getWebsiteUrl,
+  templateSafeWithError,
+} from "@vivid/utils";
 import { DateTime } from "luxon";
 import pLimit from "p-limit";
 import {
@@ -27,13 +32,15 @@ const getJobKey = (scheduledNotificationId: string, appointmentId: string) => {
 };
 
 export class ScheduledNotificationsJobProcessor {
-  protected readonly loggerFactory = getLoggerFactory(
-    "ScheduledNotificationsJobProcessor",
-  );
+  protected readonly loggerFactory: LoggerFactory;
   protected readonly repository: ScheduledNotificationsRepository;
 
   public constructor(protected readonly props: IConnectedAppProps) {
     this.repository = new ScheduledNotificationsRepository(props);
+    this.loggerFactory = getLoggerFactory(
+      "ScheduledNotificationsJobProcessor",
+      props.companyId,
+    );
   }
 
   public async processJob(
@@ -93,9 +100,8 @@ export class ScheduledNotificationsJobProcessor {
     );
 
     try {
-      const appointment = await this.props.services
-        .EventsService()
-        .getAppointment(appointmentId);
+      const appointment =
+        await this.props.services.eventsService.getAppointment(appointmentId);
       const scheduledNotification =
         await this.repository.getScheduledNotification(
           appData._id,
@@ -126,21 +132,43 @@ export class ScheduledNotificationsJobProcessor {
         return;
       }
 
-      const config = await this.props.services
-        .ConfigurationService()
-        .getConfigurations("booking", "general", "social");
+      const config =
+        await this.props.services.configurationService.getConfigurations(
+          "booking",
+          "general",
+          "social",
+        );
+
+      const organization =
+        await this.props.services.organizationService.getOrganization();
+      if (!organization) {
+        logger.error(
+          { appId: appData._id, appointmentId: appointment._id },
+          "Organization not found",
+        );
+        return;
+      }
+
+      const adminUrl = getAdminUrl();
+      const websiteUrl = getWebsiteUrl(
+        organization.slug,
+        config.general.domain,
+      );
+
       const args = getArguments({
         appointment,
         config,
         customer: appointment.customer,
         useAppointmentTimezone: true,
         locale: config.general.language,
+        adminUrl,
+        websiteUrl,
       });
 
       const channel = scheduledNotification.channel;
-      const template = await this.props.services
-        .TemplatesService()
-        .getTemplate(scheduledNotification.templateId);
+      const template = await this.props.services.templatesService.getTemplate(
+        scheduledNotification.templateId,
+      );
 
       if (!template) {
         logger.warn(
@@ -166,9 +194,8 @@ export class ScheduledNotificationsJobProcessor {
           "Checking if enough appointments for scheduled notification",
         );
 
-        const appointments = await this.props.services
-          .EventsService()
-          .getAppointments({
+        const appointments =
+          await this.props.services.eventsService.getAppointments({
             customerId: appointment.customer._id,
             status: ["confirmed"],
             limit: 0,
@@ -218,7 +245,7 @@ export class ScheduledNotificationsJobProcessor {
             "Sending email scheduled notification",
           );
 
-          await this.props.services.NotificationService().sendEmail({
+          await this.props.services.notificationService.sendEmail({
             email: {
               body: await renderToStaticMarkup({
                 args: args,
@@ -276,7 +303,7 @@ export class ScheduledNotificationsJobProcessor {
             "Sending text message scheduled notification",
           );
 
-          await this.props.services.NotificationService().sendTextMessage({
+          await this.props.services.notificationService.sendTextMessage({
             phone,
             sender: config.general.name,
             body: templateSafeWithError(template.value, args),
@@ -358,6 +385,7 @@ export class ScheduledNotificationsJobProcessor {
       let offset = 0;
       do {
         const appointments = await this.getAppointmentsBatch(
+          appData,
           start,
           offset,
           BATCH_SIZE,
@@ -404,7 +432,7 @@ export class ScheduledNotificationsJobProcessor {
                 }
 
                 await this.scheduleScheduledNotification(
-                  appData._id,
+                  appData,
                   appointment,
                   scheduledNotification,
                 );
@@ -463,6 +491,7 @@ export class ScheduledNotificationsJobProcessor {
       let offset = 0;
       do {
         const appointments = await this.getAppointmentsBatch(
+          appData,
           start,
           offset,
           BATCH_SIZE,
@@ -572,9 +601,8 @@ export class ScheduledNotificationsJobProcessor {
     logger.debug({ appId: appData._id, appointmentId }, "Updating appointment");
 
     try {
-      const appointment = await this.props.services
-        .EventsService()
-        .getAppointment(appointmentId);
+      const appointment =
+        await this.props.services.eventsService.getAppointment(appointmentId);
 
       if (!appointment) {
         logger.warn(
@@ -639,7 +667,7 @@ export class ScheduledNotificationsJobProcessor {
                 }
 
                 await this.scheduleScheduledNotification(
-                  appData._id,
+                  appData,
                   appointment,
                   scheduledNotification,
                 );
@@ -686,6 +714,7 @@ export class ScheduledNotificationsJobProcessor {
   }
 
   private async getAppointmentsBatch(
+    appData: ConnectedAppData,
     date: Date,
     offset: number,
     limit: number,
@@ -693,9 +722,8 @@ export class ScheduledNotificationsJobProcessor {
     const logger = this.loggerFactory("getAppointmentsBatch");
     logger.debug({ offset, limit, date }, "Getting appointments batch");
 
-    const appointments = await this.props.services
-      .EventsService()
-      .getAppointments({
+    const appointments =
+      await this.props.services.eventsService.getAppointments({
         status: ["confirmed"],
         range: {
           start: date,
@@ -740,7 +768,7 @@ export class ScheduledNotificationsJobProcessor {
     );
 
     const jobKey = getJobKey(scheduledNotificationId, appointmentId);
-    await this.props.services.JobService().cancelJob(jobKey);
+    await this.props.services.jobService.cancelJob(jobKey);
 
     logger.debug(
       { scheduledNotificationId, appointmentId },
@@ -749,7 +777,7 @@ export class ScheduledNotificationsJobProcessor {
   }
 
   private async scheduleScheduledNotification(
-    appId: string,
+    appData: ConnectedAppData,
     appointment: Appointment,
     scheduledNotification: ScheduledNotification,
   ): Promise<void> {
@@ -763,7 +791,7 @@ export class ScheduledNotificationsJobProcessor {
     if (executeAt < DateTime.now()) {
       logger.debug(
         {
-          appId,
+          appId: appData._id,
           scheduledNotificationId: scheduledNotification._id,
           appointmentId: appointment._id,
           jobKey,
@@ -777,7 +805,7 @@ export class ScheduledNotificationsJobProcessor {
 
     logger.debug(
       {
-        appId,
+        appId: appData._id,
         scheduledNotificationId: scheduledNotification._id,
         appointmentId: appointment._id,
         jobKey,
@@ -786,11 +814,11 @@ export class ScheduledNotificationsJobProcessor {
       "Scheduling scheduled notification",
     );
 
-    await this.props.services.JobService().scheduleJob({
+    await this.props.services.jobService.scheduleJob({
       type: "app",
       id: jobKey,
       executeAt: executeAt.toJSDate(),
-      appId,
+      appId: appData._id,
       payload: {
         type: "send-scheduled-notification",
         appointmentId: appointment._id,
@@ -800,7 +828,7 @@ export class ScheduledNotificationsJobProcessor {
 
     logger.debug(
       {
-        appId,
+        appId: appData._id,
         scheduledNotificationId: scheduledNotification._id,
         appointmentId: appointment._id,
         jobKey,

@@ -1,5 +1,5 @@
+import { getServicesContainer } from "@/utils/utils";
 import { getLoggerFactory } from "@vivid/logger";
-import { ServicesContainer } from "@vivid/services";
 import {
   applyDiscountRequestSchema,
   ApplyDiscountResponse,
@@ -8,7 +8,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   const logger = getLoggerFactory("API/discounts")("POST");
-
+  const servicesContainer = await getServicesContainer();
   logger.debug(
     {
       url: request.url,
@@ -35,12 +35,12 @@ export async function POST(request: NextRequest) {
     "Applying discount",
   );
 
-  const customer = await ServicesContainer.CustomersService().findCustomer(
+  const customer = await servicesContainer.customersService.findCustomer(
     data.email,
     data.phone,
   );
 
-  const discount = await ServicesContainer.ServicesService().applyDiscount({
+  const discount = await servicesContainer.servicesService.applyDiscount({
     code: data.code,
     optionId: data.optionId,
     addons: data.addons,

@@ -1,7 +1,7 @@
 import { ChevronRightIcon, DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { Slot } from "@radix-ui/react-slot";
 import { useI18n } from "@vivid/i18n";
-import * as React from "react";
+import React from "react";
 
 import { cn } from "../utils";
 

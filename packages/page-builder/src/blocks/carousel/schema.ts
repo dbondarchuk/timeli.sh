@@ -3,7 +3,7 @@ import {
   getAllStylesWithAdditionalStyles,
   getStylesSchema,
 } from "@vivid/page-builder-base/style";
-import { z } from "zod";
+import * as z from "zod";
 import { carouselChildrenAlignStyle } from "./carousel-children-align";
 import { carouselChildrenItemsPerSlideStyle } from "./carousel-children-items-per-slide";
 
@@ -21,9 +21,15 @@ export const CarouselPropsSchema = z.object({
   style: zStyles,
   props: z.object({
     orientation: z.enum(["horizontal", "vertical"]).optional().nullable(),
-    navigation: z.coerce.boolean().optional().nullable(),
-    loop: z.coerce.boolean().optional().nullable(),
-    autoPlay: z.number().positive().min(1).max(30).optional().nullable(),
+    navigation: z.coerce.boolean<boolean>().optional().nullable(),
+    loop: z.coerce.boolean<boolean>().optional().nullable(),
+    autoPlay: z.coerce
+      .number<number>()
+      .positive()
+      .min(1)
+      .max(30)
+      .optional()
+      .nullable(),
     children: z.array(z.any()),
   }),
 });

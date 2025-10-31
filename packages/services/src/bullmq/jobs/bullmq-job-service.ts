@@ -1,6 +1,7 @@
 import { getLoggerFactory } from "@vivid/logger";
 import {
   AppScope,
+  CompanyJobRequest,
   HookJobRequest,
   IJobService,
   Job,
@@ -11,14 +12,13 @@ import { BullMQJobConfig } from "./types";
 import { serializeJobData } from "./utils";
 
 export class BullMQJobService extends BaseBullMQClient implements IJobService {
-  protected readonly loggerFactory = getLoggerFactory(
-    "BullMQNotificationService",
-  );
-
   protected readonly config: BullMQJobConfig;
 
-  constructor(config: BullMQJobConfig) {
-    super(config);
+  constructor(
+    protected readonly companyId: string,
+    config: BullMQJobConfig,
+  ) {
+    super(config, getLoggerFactory("BullMQJobService", companyId));
     this.config = config;
     this.initializeQueues();
   }
@@ -28,7 +28,7 @@ export class BullMQJobService extends BaseBullMQClient implements IJobService {
 
     // Create job queue
     const jobQueue = this.createQueue(this.config.queues.job.name);
-    this.createQueueEvents(this.config.queues.job.name);
+    // this.createQueueEvents(this.config.queues.job.name);
 
     // Create job queue
     logger.info("BullMQ job queues initialized");
@@ -41,14 +41,21 @@ export class BullMQJobService extends BaseBullMQClient implements IJobService {
       logger.info({ jobRequest }, "Scheduling job");
 
       const queue = this.getQueue(this.config.queues.job.name);
-      const job = await queue.add("job", serializeJobData(jobRequest), {
-        jobId: jobRequest.id,
-        priority: 0,
-        delay:
-          jobRequest.executeAt === "now"
-            ? 0
-            : jobRequest.executeAt.getTime() - new Date().getTime(),
-      });
+      const job = await queue.add(
+        "job",
+        serializeJobData({
+          ...jobRequest,
+          companyId: this.companyId,
+        } satisfies CompanyJobRequest),
+        {
+          jobId: jobRequest.id,
+          priority: 0,
+          delay:
+            jobRequest.executeAt === "now"
+              ? 0
+              : jobRequest.executeAt.getTime() - new Date().getTime(),
+        },
+      );
 
       logger.info(
         {
@@ -98,11 +105,13 @@ export class BullMQJobService extends BaseBullMQClient implements IJobService {
       logger.info("Getting jobs");
       const queue = this.getQueue(this.config.queues.job.name);
       const jobs = await queue.getJobs();
-      return jobs.map((job) => ({
-        ...job.data,
-        id: job.id!,
-        createdAt: new Date(),
-      }));
+      return jobs
+        .map((job) => ({
+          ...job.data,
+          id: job.id!,
+          createdAt: new Date(),
+        }))
+        .filter((job) => job.companyId === this.companyId);
     } catch (error) {
       logger.error({ error }, "Failed to get jobs");
       throw error;

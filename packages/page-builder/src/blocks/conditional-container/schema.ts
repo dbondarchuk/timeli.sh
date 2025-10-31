@@ -1,5 +1,5 @@
 import { BaseReaderBlockProps } from "@vivid/builder";
-import { z } from "zod";
+import * as z from "zod";
 
 export const ConditionalContainerPropsSchema = z.object({
   props: z.object({

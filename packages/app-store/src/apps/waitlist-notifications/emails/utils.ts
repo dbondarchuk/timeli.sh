@@ -28,18 +28,18 @@ export const getEmailTemplate = async (
       topButtons: [
         {
           text: buttonTexts.viewWaitlist,
-          url: `${url}/admin/dashboard/waitlist`,
+          url: `${url}/dashboard/waitlist`,
         },
       ],
       bottomButtons: [
         {
           text: buttonTexts.dismiss,
-          url: `${url}/admin/dashboard/waitlist/dismiss?id=${entry._id}`,
+          url: `${url}/dashboard/waitlist/dismiss?id=${entry._id}`,
           backgroundColor: "#FF0000",
         },
         {
           text: buttonTexts.createAppointment,
-          url: `${url}/admin/dashboard/waitlist/appointment/new?id=${entry._id}`,
+          url: `${url}/dashboard/waitlist/appointment/new?id=${entry._id}`,
           backgroundColor: "#0008FF",
         },
       ],

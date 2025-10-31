@@ -1,7 +1,7 @@
 import { AllKeys, useI18n } from "@vivid/i18n";
 import { Combobox } from "@vivid/ui";
 import { Type } from "lucide-react";
-import { z } from "zod";
+import * as z from "zod";
 import {
   FONT_FAMILIES,
   FONT_FAMILIES_LIST,

@@ -42,7 +42,7 @@ import { DateTime } from "luxon";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm, useFormState } from "react-hook-form";
-import { z } from "zod";
+import * as z from "zod";
 import { AppointmentCalendar } from "./appointment-calendar";
 
 export type AppointmentRescheduleDialogProps = DialogProps & {
@@ -52,13 +52,13 @@ export type AppointmentRescheduleDialogProps = DialogProps & {
 };
 
 const formSchema = z.object({
-  dateTime: z.date({ message: "New date and time are required" }),
+  dateTime: z.coerce.date<Date>({ error: "New date and time are required" }),
   duration: z.coerce
-    .number({ message: "New duration is required" })
+    .number<number>({ error: "New duration is required" })
     .int("Should be the integer value")
     .min(1, "Minimum duration is 1")
     .max(60 * 24 * 10, "Maximum duration is 10 days"),
-  doNotNotifyCustomer: z.coerce.boolean().optional(),
+  doNotNotifyCustomer: z.coerce.boolean<boolean>().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;

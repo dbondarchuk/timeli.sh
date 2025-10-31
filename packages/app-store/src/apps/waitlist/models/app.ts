@@ -1,10 +1,12 @@
 import { DateRange, Query } from "@vivid/types";
-import { z } from "zod";
+import * as z from "zod";
 
 import { WaitlistStatus } from "./waitlist";
 
 export const waitlistConfigurationSchema = z.object({
-  dontDismissWaitlistOnAppointmentCreate: z.coerce.boolean().optional(),
+  dontDismissWaitlistOnAppointmentCreate: z.coerce
+    .boolean<boolean>()
+    .optional(),
 });
 
 export type WaitlistConfiguration = z.infer<typeof waitlistConfigurationSchema>;

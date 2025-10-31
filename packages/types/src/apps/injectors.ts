@@ -1,6 +1,6 @@
 import { AllKeys, I18nNamespaces } from "@vivid/i18n";
-import { IConnectedAppProps } from "@vivid/types";
 import type { ReactNode } from "react";
+import { IConnectedAppProps } from "./connected-app.props";
 
 export type DashboardTabInjectorApp<
   T extends I18nNamespaces = I18nNamespaces,

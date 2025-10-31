@@ -1,4 +1,4 @@
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
 import {
   ApiRequest,
   ApiResponse,
@@ -15,7 +15,14 @@ import {
   TextMessageReply,
   TextMessageResponse,
 } from "@vivid/types";
-import { decrypt, encrypt, getArguments, maskify } from "@vivid/utils";
+import {
+  decrypt,
+  encrypt,
+  getAdminUrl,
+  getArguments,
+  getWebsiteUrl,
+  maskify,
+} from "@vivid/utils";
 import crypto from "crypto";
 import { getEmailTemplate } from "./emails/utils";
 import { TextBeltConfiguration } from "./models";
@@ -88,9 +95,14 @@ export default class TextBeltConnectedApp
     IConnectedAppWithWebhook,
     ITextMessageSender
 {
-  protected readonly loggerFactory = getLoggerFactory("TextBeltConnectedApp");
+  protected readonly loggerFactory: LoggerFactory;
 
-  public constructor(protected readonly props: IConnectedAppProps) {}
+  public constructor(protected readonly props: IConnectedAppProps) {
+    this.loggerFactory = getLoggerFactory(
+      "TextBeltConnectedApp",
+      props.companyId,
+    );
+  }
 
   public async processAppData(
     appData: TextBeltConfiguration,
@@ -118,18 +130,20 @@ export default class TextBeltConnectedApp
     );
 
     try {
-      const config = await this.props.services
-        .ConfigurationService()
-        .getConfiguration("general");
+      const config =
+        await this.props.services.configurationService.getConfiguration(
+          "general",
+        );
 
       const apiKey = decrypt(app.data.apiKey);
+      const url = getAdminUrl();
 
       const request: SmsRequest = {
         message: message.message,
         key: apiKey,
         phone: message.phone,
         sender: message.sender,
-        replyWebhookUrl: `${config.url}/api/apps/${app._id}/webhook`,
+        replyWebhookUrl: `${url}/apps/${this.props.companyId}/${app._id}/webhook`,
         webhookData: message.data
           ? `${message.data.appId ?? ""}|${message.data.appointmentId ?? ""}|${message.data.customerId ?? ""}|${message.data.data ?? ""}`
           : undefined,
@@ -191,14 +205,14 @@ export default class TextBeltConnectedApp
         const { template: description, subject } = await getEmailTemplate(
           "user-notify-low-quota",
           config.language,
-          config.url,
+          url,
           {
             quotaRemaining: response.quotaRemaining,
             config,
           },
         );
 
-        await this.props.services.NotificationService().sendEmail({
+        await this.props.services.notificationService.sendEmail({
           email: {
             to: config.email,
             subject,
@@ -326,13 +340,11 @@ export default class TextBeltConnectedApp
       );
 
       const appointment = appointmentId
-        ? await this.props.services
-            .EventsService()
-            .getAppointment(appointmentId)
+        ? await this.props.services.eventsService.getAppointment(appointmentId)
         : null;
 
       const customer = customerId
-        ? await this.props.services.CustomersService().getCustomer(customerId)
+        ? await this.props.services.customersService.getCustomer(customerId)
         : (appointment?.customer ?? null);
 
       const replyData: TextMessageReply = {
@@ -402,9 +414,10 @@ export default class TextBeltConnectedApp
           "Validating text message responder app",
         );
 
-        const { app, service } = await this.props.services
-          .ConnectedAppsService()
-          .getAppService<ITextMessageResponder>(data.textMessageResponderAppId);
+        const { app, service } =
+          await this.props.services.connectedAppsService.getAppService<ITextMessageResponder>(
+            data.textMessageResponderAppId,
+          );
 
         if (!app || !service || !service.respond) {
           logger.error(
@@ -526,11 +539,27 @@ export default class TextBeltConnectedApp
       "Processing text message reply",
     );
 
-    const config = await this.props.services
-      .ConfigurationService()
-      .getConfigurations("booking", "general", "social");
+    const config =
+      await this.props.services.configurationService.getConfigurations(
+        "booking",
+        "general",
+        "social",
+      );
 
     const { appointment, customer, ...reply } = textMessageReply;
+
+    const organization =
+      await this.props.services.organizationService.getOrganization();
+    if (!organization) {
+      logger.error(
+        { appId: appData._id, appointmentId: appointment?._id },
+        "Organization not found",
+      );
+      return;
+    }
+
+    const adminUrl = getAdminUrl();
+    const websiteUrl = getWebsiteUrl(organization.slug, config.general.domain);
 
     const args = getArguments({
       appointment,
@@ -541,12 +570,15 @@ export default class TextBeltConnectedApp
         reply,
       },
       locale: config.general.language,
+      adminUrl,
+      websiteUrl,
     });
 
+    const url = getAdminUrl();
     const { template: description, subject } = await getEmailTemplate(
       "user-notify-reply",
       config.general.language,
-      config.general.url,
+      url,
       args,
       appointment?._id,
       customer?._id,
@@ -557,7 +589,7 @@ export default class TextBeltConnectedApp
       "Sending email to owner about incoming message",
     );
 
-    await this.props.services.NotificationService().sendEmail({
+    await this.props.services.notificationService.sendEmail({
       email: {
         to: config.general.email,
         subject,
@@ -579,9 +611,10 @@ export default class TextBeltConnectedApp
             "Processing message with responder app",
           );
 
-          const { app, service } = await this.props.services
-            .ConnectedAppsService()
-            .getAppService<ITextMessageResponder>(reply.data.appId);
+          const { app, service } =
+            await this.props.services.connectedAppsService.getAppService<ITextMessageResponder>(
+              reply.data.appId,
+            );
 
           if (!!service?.respond) {
             logger.debug(
@@ -599,9 +632,8 @@ export default class TextBeltConnectedApp
             "No service has processed the incoming text message. Will try to use responder app",
           );
           if (appData.data?.textMessageResponderAppId) {
-            const { app, service } = await this.props.services
-              .ConnectedAppsService()
-              .getAppService<ITextMessageResponder>(
+            const { app, service } =
+              await this.props.services.connectedAppsService.getAppService<ITextMessageResponder>(
                 appData.data.textMessageResponderAppId,
               );
 
@@ -632,7 +664,7 @@ export default class TextBeltConnectedApp
         "Logging communication",
       );
 
-      await this.props.services.CommunicationLogsService().log({
+      await this.props.services.communicationLogsService.log({
         channel: "text-message",
         direction: "inbound",
         participant: reply.from,

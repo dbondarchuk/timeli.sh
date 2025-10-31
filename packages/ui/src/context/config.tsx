@@ -11,7 +11,7 @@ export const ConfigContext = createContext<{
     description: "",
     keywords: "",
     email: "",
-    url: "",
+    domain: "",
     language: "en",
     timeZone: "local",
   },

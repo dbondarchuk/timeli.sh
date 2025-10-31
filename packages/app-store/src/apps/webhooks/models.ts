@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as z from "zod";
 import { WebhooksAdminAllKeys } from "./translations/types";
 
 export const webhookEventTypes = [

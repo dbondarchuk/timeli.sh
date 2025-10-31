@@ -4,7 +4,8 @@ import { useBlockEditor, useCurrentBlock } from "@vivid/builder";
 import { BlockStyle, useClassName } from "@vivid/page-builder-base";
 import { cn } from "@vivid/ui";
 import { CustomHTMLProps } from "./schema";
-import { getDefaults, styles } from "./styles";
+import { styles } from "./styles";
+import { getDefaults } from "./styles.default";
 
 export const CustomHTMLEditor = ({ props, style }: CustomHTMLProps) => {
   const currentBlock = useCurrentBlock<CustomHTMLProps>();

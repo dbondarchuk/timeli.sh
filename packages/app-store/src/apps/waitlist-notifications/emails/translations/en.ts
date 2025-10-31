@@ -7,7 +7,7 @@ ${customText}
 
 Requested on {{ waitlistEntry.createdAt.full }}
 
-Customer: [{{ customer.name }}]({{ config.url }}/admin/dashboard/customers/{{customerId}})
+Customer: [{{ customer.name }}]({{ adminUrl }}/dashboard/customers/{{customerId}})
 
 Name: {{ waitlistEntry.name }}
 

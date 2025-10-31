@@ -12,7 +12,8 @@ import { BlockStyle, useClassName } from "@vivid/page-builder-base";
 import { PlateEditor, PlateStaticEditor } from "@vivid/rte";
 import { cn, useDebounceCallback } from "@vivid/ui";
 import { TextProps } from "./schema";
-import { getDefaults, styles } from "./styles";
+import { styles } from "./styles";
+import { getDefaults } from "./styles.default";
 
 export const TextEditor = ({ props, style }: TextProps) => {
   const currentBlock = useCurrentBlock<TextProps>();

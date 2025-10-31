@@ -1,7 +1,7 @@
 import { getLoggerFactory } from "@vivid/logger";
 import { formatAmountString } from "@vivid/utils";
 import { v4 as uuidv4 } from "uuid";
-import z from "zod";
+import * as z from "zod";
 import { PaypalOrder } from "./types";
 
 export class PaypalClient {

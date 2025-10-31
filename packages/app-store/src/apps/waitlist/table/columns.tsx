@@ -43,7 +43,7 @@ export const columns: ColumnDef<WaitlistEntry & { appId: string }>[] = [
   {
     cell: ({ row }) => (
       <Link
-        href={`/admin/dashboard/services/options/${row.original.optionId}`}
+        href={`/dashboard/services/options/${row.original.optionId}`}
         variant="underline"
       >
         {row.original.option?.name}
@@ -60,7 +60,7 @@ export const columns: ColumnDef<WaitlistEntry & { appId: string }>[] = [
   {
     cell: ({ row }) => (
       <Link
-        href={`/admin/dashboard/customers/${row.original.customerId}`}
+        href={`/dashboard/customers/${row.original.customerId}`}
         variant="underline"
       >
         {row.original.customer?.name || row.original.name}
@@ -133,7 +133,7 @@ export const columns: ColumnDef<WaitlistEntry & { appId: string }>[] = [
       );
       return (
         <Link
-          href={`/admin/dashboard/waitlist/appointment/new?id=${row.original._id}`}
+          href={`/dashboard/waitlist/appointment/new?id=${row.original._id}`}
           variant="primary"
           button
         >

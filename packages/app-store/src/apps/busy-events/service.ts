@@ -1,5 +1,5 @@
 import { getI18nAsync } from "@vivid/i18n/server";
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
 import {
   CalendarBusyTime,
   ConnectedAppData,
@@ -30,9 +30,14 @@ type BusyEventsEntity = WithDatabaseId<ScheduleOverride> & {
 export default class BusyEventsConnectedApp
   implements IConnectedApp, ICalendarBusyTimeProvider
 {
-  protected readonly loggerFactory = getLoggerFactory("BusyEventsConnectedApp");
+  protected readonly loggerFactory: LoggerFactory;
 
-  public constructor(protected readonly props: IConnectedAppProps) {}
+  public constructor(protected readonly props: IConnectedAppProps) {
+    this.loggerFactory = getLoggerFactory(
+      "BusyEventsConnectedApp",
+      props.companyId,
+    );
+  }
 
   public async unInstall(appData: ConnectedAppData): Promise<void> {
     const logger = this.loggerFactory("unInstall");
@@ -47,6 +52,7 @@ export default class BusyEventsConnectedApp
       logger.debug({ appId: appData._id }, "Deleting busy events");
       const deleteResult = await collection.deleteMany({
         appId: appData._id,
+        companyId: appData.companyId,
       });
 
       logger.info(
@@ -162,6 +168,7 @@ export default class BusyEventsConnectedApp
       const result = await collection.findOne({
         appId,
         week: weekIdentifier,
+        companyId: this.props.companyId,
       });
 
       const schedule = result?.schedule || [];
@@ -199,7 +206,7 @@ export default class BusyEventsConnectedApp
       );
 
       const updateResult = await events.updateOne(
-        { week, appId },
+        { week, appId, companyId: this.props.companyId },
         {
           $set: {
             schedule,
@@ -276,6 +283,7 @@ export default class BusyEventsConnectedApp
           week: {
             $in: weeks,
           },
+          companyId: this.props.companyId,
         })
         .toArray();
 

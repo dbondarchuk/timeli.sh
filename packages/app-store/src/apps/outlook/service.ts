@@ -14,7 +14,7 @@ import {
   Message as OutlookMessage,
   ResponseType,
 } from "@microsoft/microsoft-graph-types";
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
 import {
   ApiRequest,
   AppointmentEvent,
@@ -37,7 +37,7 @@ import {
   IOAuthConnectedApp,
   WithDatabaseId,
 } from "@vivid/types";
-import { decrypt, encrypt } from "@vivid/utils";
+import { decrypt, encrypt, getAdminUrl } from "@vivid/utils";
 import { createEvent } from "ics";
 import { DateTime } from "luxon";
 import { env } from "process";
@@ -81,9 +81,14 @@ export class OutlookConnectedApp
     ICalendarWriter,
     IMeetingUrlProvider
 {
-  protected readonly loggerFactory = getLoggerFactory("OutlookConnectedApp");
+  protected readonly loggerFactory: LoggerFactory;
 
-  public constructor(protected readonly props: IConnectedAppProps) {}
+  public constructor(protected readonly props: IConnectedAppProps) {
+    this.loggerFactory = getLoggerFactory(
+      "OutlookConnectedApp",
+      props.companyId,
+    );
+  }
 
   processRequest?:
     | ((appData: ConnectedAppData, data: any) => Promise<any>)
@@ -1024,11 +1029,8 @@ export class OutlookConnectedApp
   }
 
   private async getAuthParams(appId: string): Promise<AuthorizationUrlRequest> {
-    const { url } = await this.props.services
-      .ConfigurationService()
-      .getConfiguration("general");
-
-    const redirectUri = `${url}/api/apps/oauth/outlook/redirect`;
+    const url = getAdminUrl();
+    const redirectUri = `${url}/apps/${this.props.companyId}/oauth/outlook/redirect`;
     return {
       scopes,
       redirectUri,

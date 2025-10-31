@@ -1,5 +1,6 @@
-import { z } from "zod";
-import { WithDatabaseId } from "../database";
+import { ValidationKeys } from "@vivid/i18n";
+import * as z from "zod";
+import { WithCompanyId, WithDatabaseId } from "../database";
 import { asOptinalNumberField, zUniqueArray } from "../utils";
 import { Prettify } from "../utils/helpers";
 import { FieldSchema } from "./field";
@@ -15,13 +16,13 @@ export const appointmentOptionSchema = z
     description: z.string().min(2, "appointments.option.description.required"),
     duration: asOptinalNumberField(
       z.coerce
-        .number()
+        .number<number>()
         .int("appointments.option.duration.positive")
         .min(1, "appointments.option.duration.positive"),
     ),
 
     price: asOptinalNumberField(
-      z.coerce.number().min(1, "appointments.option.price.min"),
+      z.coerce.number<number>().min(1, "appointments.option.price.min"),
     ),
     addons: zUniqueArray(
       z.array(
@@ -36,7 +37,7 @@ export const appointmentOptionSchema = z
       z.array(
         z.object({
           id: z.string().min(1, "appointments.option.fields.id.required"),
-          required: z.coerce.boolean().optional(),
+          required: z.coerce.boolean<boolean>().optional(),
         }),
       ),
       (field) => field.id,
@@ -46,11 +47,7 @@ export const appointmentOptionSchema = z
     duplicateAppointmentCheck: z
       .object({
         enabled: z.literal(true, {
-          message:
-            "appointments.option.duplicateAppointmentCheck.enabled.required",
-          required_error:
-            "appointments.option.duplicateAppointmentCheck.enabled.required",
-          invalid_type_error:
+          error:
             "appointments.option.duplicateAppointmentCheck.enabled.required",
         }),
         message: z
@@ -60,23 +57,20 @@ export const appointmentOptionSchema = z
             "appointments.option.duplicateAppointmentCheck.message.required",
           ),
         days: z.coerce
-          .number({
-            required_error:
-              "appointments.option.duplicateAppointmentCheck.days.min",
-            message: "appointments.option.duplicateAppointmentCheck.days.min",
+          .number<number>({
+            error: "appointments.option.duplicateAppointmentCheck.days.min",
           })
+          .int("appointments.option.duplicateAppointmentCheck.days.min")
           .min(1, "appointments.option.duplicateAppointmentCheck.days.min")
           .max(30, "appointments.option.duplicateAppointmentCheck.days.max"),
-        doNotAllowScheduling: z.coerce.boolean().optional(),
+        doNotAllowScheduling: z.coerce.boolean<boolean>().optional(),
       })
       .or(
         z.object({
           enabled: z
             .literal(false, {
-              errorMap: () => ({
-                message:
-                  "appointments.option.duplicateAppointmentCheck.enabled.required",
-              }),
+              error:
+                "appointments.option.duplicateAppointmentCheck.enabled.required" satisfies ValidationKeys,
             })
             .default(false)
             .optional()
@@ -90,7 +84,7 @@ export const appointmentOptionSchema = z
       .object({
         requireDeposit: isRequiredOptionSchema
           .exclude(["always"], {
-            message: "appointments.option.requireDeposit.required",
+            error: "appointments.option.requireDeposit.required",
           })
           .optional()
           .nullable(),
@@ -98,11 +92,11 @@ export const appointmentOptionSchema = z
       .or(
         z.object({
           requireDeposit: isRequiredOptionSchema.extract(["always"], {
-            message: "appointments.option.requireDeposit.required",
+            error: "appointments.option.requireDeposit.required",
           }),
           depositPercentage: z.coerce
-            .number({
-              message: "appointments.option.depositPercentage.required",
+            .number<number>({
+              error: "appointments.option.depositPercentage.required",
             })
             .int("appointments.option.depositPercentage.required")
             .min(10, "appointments.option.depositPercentage.required")
@@ -114,17 +108,15 @@ export const appointmentOptionSchema = z
     z
       .object({
         isOnline: z.literal(false, {
-          errorMap: () => ({
-            message: "appointments.option.isOnline.required",
-          }),
+          error:
+            "appointments.option.isOnline.required" satisfies ValidationKeys,
         }),
       })
       .or(
         z.object({
           isOnline: z.literal(true, {
-            errorMap: () => ({
-              message: "appointments.option.isOnline.required",
-            }),
+            error:
+              "appointments.option.isOnline.required" satisfies ValidationKeys,
           }),
           meetingUrlProviderAppId: z.string().optional(),
         }),
@@ -136,10 +128,14 @@ export type AppointmentOptionUpdateModel = z.infer<
 >;
 
 export type AppointmentOption = Prettify<
-  WithDatabaseId<AppointmentOptionUpdateModel>
-> & {
-  updatedAt: Date;
-};
+  WithCompanyId<
+    WithDatabaseId<
+      AppointmentOptionUpdateModel & {
+        updatedAt: Date;
+      }
+    >
+  >
+>;
 
 export const getAppointmentOptionSchemaWithUniqueCheck = (
   uniqueNameCheckFn: (name: string) => Promise<boolean>,
@@ -163,16 +159,18 @@ export const appointmentAddonSchema = z.object({
   description: z.string().min(2, "addons.description.required"),
   duration: asOptinalNumberField(
     z.coerce
-      .number()
+      .number<number>()
       .int("addons.duration.positive")
       .min(1, "addons.duration.positive"),
   ),
-  price: asOptinalNumberField(z.coerce.number().min(1, "addons.price.min")),
+  price: asOptinalNumberField(
+    z.coerce.number<number>().min(1, "addons.price.min"),
+  ),
   fields: zUniqueArray(
     z.array(
       z.object({
         id: z.string().min(1, "appointments.option.fields.id.required"),
-        required: z.coerce.boolean().optional(),
+        required: z.coerce.boolean<boolean>().optional(),
       }),
     ),
     (field) => field.id,
@@ -201,10 +199,14 @@ export type AppointmentAddonUpdateModel = z.infer<
 >;
 
 export type AppointmentAddon = Prettify<
-  WithDatabaseId<AppointmentAddonUpdateModel>
-> & {
-  updatedAt: Date;
-};
+  WithCompanyId<
+    WithDatabaseId<
+      AppointmentAddonUpdateModel & {
+        updatedAt: Date;
+      }
+    >
+  >
+>;
 
 export const appointmentAddonsSchema = z
   .array(appointmentAddonSchema)

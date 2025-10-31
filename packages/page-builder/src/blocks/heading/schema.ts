@@ -1,6 +1,6 @@
 import { BaseReaderBlockProps, generateId } from "@vivid/builder";
 import { Prettify } from "@vivid/types";
-import z from "zod";
+import * as z from "zod";
 import { InlineContainerPropsDefaults } from "../inline-container";
 import { zStyles } from "./styles";
 

@@ -11,8 +11,8 @@ import { mergeRefs } from "@vivid/ui/src/utils/merge-refs";
 import { template } from "@vivid/utils";
 import { forwardRef, useCallback, useEffect, useRef, useState } from "react";
 import { ImageProps } from "./schema";
-import { getDefaults, styles } from "./styles";
-// import Image from "next/image";
+import { styles } from "./styles";
+import { getDefaults } from "./styles.default";
 
 type ImagePositionEditorProps = {
   props: ImageProps;

@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 
 import { useAutoResizeTextarea } from "../hooks/use-auto-resize-textarea";
 import { cn } from "../utils";

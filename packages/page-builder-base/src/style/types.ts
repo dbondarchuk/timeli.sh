@@ -1,5 +1,5 @@
 import { AllKeys } from "@vivid/i18n";
-import { z } from "zod";
+import * as z from "zod";
 import { AllStylesNames } from "./styles";
 import { Breakpoint, StateWithTarget } from "./zod";
 
@@ -14,11 +14,11 @@ export type StyleCategory =
   | "misc";
 
 export type BaseStyleDictionary = {
-  [name: string]: z.ZodTypeAny;
+  [name: string]: z.ZodType<any, any>;
 };
 
 // Style definition interface
-export interface StyleDefinition<T extends z.ZodTypeAny> {
+export interface StyleDefinition<T extends z.ZodType<any, any>> {
   name: string;
   label: AllKeys;
   icon: (props: { className?: string }) => React.ReactNode;
@@ -38,7 +38,7 @@ export interface StyleDefinition<T extends z.ZodTypeAny> {
 }
 
 // Style variant interface
-export interface StyleVariant<T extends z.ZodTypeAny> {
+export interface StyleVariant<T extends z.ZodType> {
   breakpoint?: Breakpoint[] | null;
   state?: StateWithTarget[] | null;
   value: z.infer<T>;

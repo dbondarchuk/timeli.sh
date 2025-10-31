@@ -1,4 +1,4 @@
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
 import {
   ConnectedAppData,
   ConnectedAppError,
@@ -9,7 +9,12 @@ import {
   RespondResult,
   TextMessageReply,
 } from "@vivid/types";
-import { getArguments, template } from "@vivid/utils";
+import {
+  getAdminUrl,
+  getArguments,
+  getWebsiteUrl,
+  template,
+} from "@vivid/utils";
 import { TextMessageAutoReplyConfiguration } from "./models";
 import {
   TextMessageAutoReplyAdminAllKeys,
@@ -20,11 +25,14 @@ import {
 export default class TextMessageAutoReplyConnectedApp
   implements IConnectedApp, ITextMessageResponder
 {
-  protected readonly loggerFactory = getLoggerFactory(
-    "TextMessageAutoReplyConnectedApp",
-  );
+  protected readonly loggerFactory: LoggerFactory;
 
-  public constructor(protected readonly props: IConnectedAppProps) {}
+  public constructor(protected readonly props: IConnectedAppProps) {
+    this.loggerFactory = getLoggerFactory(
+      "TextMessageAutoReplyConnectedApp",
+      props.companyId,
+    );
+  }
 
   public async processRequest(
     appData: ConnectedAppData,
@@ -45,9 +53,9 @@ export default class TextMessageAutoReplyConnectedApp
         "Validating auto reply template",
       );
 
-      const template = await this.props.services
-        .TemplatesService()
-        .getTemplate(data.autoReplyTemplateId);
+      const template = await this.props.services.templatesService.getTemplate(
+        data.autoReplyTemplateId,
+      );
 
       if (!template) {
         logger.error(
@@ -136,11 +144,30 @@ export default class TextMessageAutoReplyConnectedApp
     );
 
     try {
-      const config = await this.props.services
-        .ConfigurationService()
-        .getConfigurations("booking", "general", "social");
+      const config =
+        await this.props.services.configurationService.getConfigurations(
+          "booking",
+          "general",
+          "social",
+        );
 
       const { appointment, customer, ...reply } = textMessageReply;
+
+      const organization =
+        await this.props.services.organizationService.getOrganization();
+      if (!organization) {
+        logger.error(
+          { appId: appData._id, appointmentId: appointment?._id },
+          "Organization not found",
+        );
+        return null;
+      }
+
+      const adminUrl = getAdminUrl();
+      const websiteUrl = getWebsiteUrl(
+        organization.slug,
+        config.general.domain,
+      );
 
       const args = getArguments({
         appointment,
@@ -151,6 +178,8 @@ export default class TextMessageAutoReplyConnectedApp
           reply,
         },
         locale: config.general.language,
+        adminUrl,
+        websiteUrl,
       });
 
       if (appData.data?.autoReplyTemplateId) {
@@ -159,9 +188,10 @@ export default class TextMessageAutoReplyConnectedApp
           "Retrieving auto reply template",
         );
 
-        const autoReplyTemplate = await this.props.services
-          .TemplatesService()
-          .getTemplate(appData.data.autoReplyTemplateId);
+        const autoReplyTemplate =
+          await this.props.services.templatesService.getTemplate(
+            appData.data.autoReplyTemplateId,
+          );
 
         if (autoReplyTemplate) {
           logger.info(
@@ -186,7 +216,7 @@ export default class TextMessageAutoReplyConnectedApp
             "Sending auto reply text message",
           );
 
-          await this.props.services.NotificationService().sendTextMessage({
+          await this.props.services.notificationService.sendTextMessage({
             body: message,
             handledBy: "textMessageAutoReply.handler",
             phone: reply.from,

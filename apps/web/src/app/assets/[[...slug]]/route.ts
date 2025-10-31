@@ -1,4 +1,4 @@
-import { ServicesContainer } from "@vivid/services";
+import { getServicesContainer } from "@/utils/utils";
 import { notFound } from "next/navigation";
 import { NextRequest, NextResponse } from "next/server";
 import { Readable, ReadableOptions } from "stream";
@@ -33,9 +33,7 @@ function streamFile(
   });
 }
 
-type Props = {
-  params: Promise<{ slug: string[] }>;
-};
+type Props = RouteContext<"/assets/[[...slug]]">;
 
 export async function GET(
   request: NextRequest,
@@ -43,9 +41,13 @@ export async function GET(
 ): Promise<NextResponse> {
   const params = await props.params;
 
-  const filename = params.slug.join("/");
+  const filename = params?.slug?.join("/");
+  if (!filename) {
+    return notFound();
+  }
 
-  const result = await ServicesContainer.AssetsService().streamAsset(filename);
+  const servicesContainer = await getServicesContainer();
+  const result = await servicesContainer.assetsService.streamAsset(filename);
   if (!result) {
     return notFound();
   }

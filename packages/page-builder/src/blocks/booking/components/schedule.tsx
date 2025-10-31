@@ -323,6 +323,10 @@ export const Schedule: React.FC<
         return;
       }
 
+      if (step === "payment") {
+        setStep("form");
+      }
+
       toast.error(errors.submitTitle, {
         description: errors.submitDescription,
       });

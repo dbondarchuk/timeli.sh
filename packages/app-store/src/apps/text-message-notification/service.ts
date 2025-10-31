@@ -1,4 +1,4 @@
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
 import {
   Appointment,
   AppointmentStatus,
@@ -14,7 +14,13 @@ import {
   SocialConfiguration,
   TextMessageReply,
 } from "@vivid/types";
-import { formatAmountString, getArguments, template } from "@vivid/utils";
+import {
+  formatAmountString,
+  getAdminUrl,
+  getArguments,
+  getWebsiteUrl,
+  template,
+} from "@vivid/utils";
 import { TextMessageNotificationMessages } from "./messages";
 import { TextMessageNotificationConfiguration } from "./models";
 import {
@@ -26,11 +32,14 @@ import {
 export class TextMessageNotificationConnectedApp
   implements IConnectedApp, IAppointmentHook, ITextMessageResponder
 {
-  protected readonly loggerFactory = getLoggerFactory(
-    "TextMessageNotificationConnectedApp",
-  );
+  protected readonly loggerFactory: LoggerFactory;
 
-  public constructor(protected readonly props: IConnectedAppProps) {}
+  public constructor(protected readonly props: IConnectedAppProps) {
+    this.loggerFactory = getLoggerFactory(
+      "TextMessageNotificationConnectedApp",
+      props.companyId,
+    );
+  }
 
   public async processRequest(
     appData: ConnectedAppData,
@@ -48,9 +57,10 @@ export class TextMessageNotificationConnectedApp
     );
 
     try {
-      const defaultApps = await this.props.services
-        .ConfigurationService()
-        .getConfiguration("defaultApps");
+      const defaultApps =
+        await this.props.services.configurationService.getConfiguration(
+          "defaultApps",
+        );
 
       logger.debug(
         { appId: appData._id },
@@ -64,9 +74,9 @@ export class TextMessageNotificationConnectedApp
           "Retrieved text message app ID",
         );
 
-        await this.props.services
-          .ConnectedAppsService()
-          .getApp(textMessageAppId!);
+        await this.props.services.connectedAppsService.getApp(
+          textMessageAppId!,
+        );
 
         logger.debug(
           { appId: appData._id, textMessageAppId },
@@ -134,9 +144,12 @@ export class TextMessageNotificationConnectedApp
 
     try {
       const data = appData.data as TextMessageNotificationConfiguration;
-      const config = await this.props.services
-        .ConfigurationService()
-        .getConfigurations("booking", "general", "social");
+      const config =
+        await this.props.services.configurationService.getConfigurations(
+          "booking",
+          "general",
+          "social",
+        );
 
       const totalAmountPaid = appointment.payments
         ?.filter((payment) => payment.status === "paid")
@@ -145,6 +158,22 @@ export class TextMessageNotificationConnectedApp
       const totalAmountPaidFormatted = totalAmountPaid
         ? formatAmountString(totalAmountPaid)
         : undefined;
+
+      const organization =
+        await this.props.services.organizationService.getOrganization();
+      if (!organization) {
+        logger.error(
+          { appId: appData._id, appointmentId: appointment._id },
+          "Organization not found",
+        );
+        return;
+      }
+
+      const adminUrl = getAdminUrl();
+      const websiteUrl = getWebsiteUrl(
+        organization.slug,
+        config.general.domain,
+      );
 
       const args = getArguments({
         appointment,
@@ -155,6 +184,8 @@ export class TextMessageNotificationConnectedApp
           confirmed,
           totalAmountPaidFormatted,
         },
+        adminUrl,
+        websiteUrl,
       });
 
       const body = template(
@@ -184,7 +215,7 @@ export class TextMessageNotificationConnectedApp
         "Sending appointment created notification",
       );
 
-      this.props.services.NotificationService().sendTextMessage({
+      this.props.services.notificationService.sendTextMessage({
         phone,
         body,
         webhookData: {
@@ -273,13 +304,17 @@ export class TextMessageNotificationConnectedApp
         throw new Error(`Appointment Id is missing`);
       }
 
-      const appointment = await this.props.services
-        .EventsService()
-        .getAppointment(reply.data.appointmentId);
+      const appointment =
+        await this.props.services.eventsService.getAppointment(
+          reply.data.appointmentId,
+        );
 
-      const config = await this.props.services
-        .ConfigurationService()
-        .getConfigurations("general", "booking", "social");
+      const config =
+        await this.props.services.configurationService.getConfigurations(
+          "general",
+          "booking",
+          "social",
+        );
 
       if (!appointment) {
         logger.warn(
@@ -300,7 +335,7 @@ export class TextMessageNotificationConnectedApp
           },
         );
 
-        await this.props.services.NotificationService().sendTextMessage({
+        await this.props.services.notificationService.sendTextMessage({
           phone: reply.from,
           sender: config.general.name,
           body,
@@ -360,10 +395,29 @@ export class TextMessageNotificationConnectedApp
           "Unknown reply message",
         );
 
+        const organization =
+          await this.props.services.organizationService.getOrganization();
+        if (!organization) {
+          logger.error(
+            { appId: appData._id, appointmentId: appointment._id },
+            "Organization not found",
+          );
+
+          throw new Error("Organization not found");
+        }
+
+        const adminUrl = getAdminUrl();
+        const websiteUrl = getWebsiteUrl(
+          organization.slug,
+          config.general.domain,
+        );
+
         const args = getArguments({
           appointment,
           config,
           locale: config.general.language,
+          adminUrl,
+          websiteUrl,
         });
 
         const body = template(
@@ -373,7 +427,7 @@ export class TextMessageNotificationConnectedApp
           args,
         );
 
-        await this.props.services.NotificationService().sendTextMessage({
+        await this.props.services.notificationService.sendTextMessage({
           phone: reply.from,
           sender: config.general.name,
           body,
@@ -431,14 +485,33 @@ export class TextMessageNotificationConnectedApp
     );
 
     try {
-      await this.props.services
-        .EventsService()
-        .changeAppointmentStatus(appointment._id, newStatus);
+      await this.props.services.eventsService.changeAppointmentStatus(
+        appointment._id,
+        newStatus,
+      );
+
+      const organization =
+        await this.props.services.organizationService.getOrganization();
+      if (!organization) {
+        logger.error(
+          { appointmentId: appointment._id },
+          "Organization not found",
+        );
+        throw new Error("Organization not found");
+      }
+
+      const adminUrl = getAdminUrl();
+      const websiteUrl = getWebsiteUrl(
+        organization.slug,
+        config.general.domain,
+      );
 
       const args = getArguments({
         appointment,
         config,
         locale: config.general.language,
+        adminUrl,
+        websiteUrl,
       });
 
       const responseBody = template(
@@ -466,7 +539,7 @@ export class TextMessageNotificationConnectedApp
         "Sending status change confirmation",
       );
 
-      await this.props.services.NotificationService().sendTextMessage({
+      await this.props.services.notificationService.sendTextMessage({
         phone: reply.from,
         sender: config.general.name,
         body: responseBody,

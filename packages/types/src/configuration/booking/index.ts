@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as z from "zod";
 import { asOptinalNumberField } from "../../utils";
 import { calendarSourcesConfigurationSchema } from "./calendar-source";
 import { appointmentCancellationRescheduleSchema } from "./cancellation";
@@ -44,24 +44,30 @@ export const allowPromoCodeType = [
 
 export type AllowPromoCodeType = (typeof allowPromoCodeType)[number];
 
+export const appointOptionsSchema = z.array(
+  z.object({
+    id: z.string().min(1, "configuration.booking.options.id.required"),
+  }),
+);
+
 export const generalBookingConfigurationSchema = z.object({
   maxWeeksInFuture: asOptinalNumberField(
     z.coerce
-      .number()
+      .number<number>()
       .int("configuration.booking.maxWeeksInFuture.integer")
       .min(2, "configuration.booking.maxWeeksInFuture.min")
       .max(20, "configuration.booking.maxWeeksInFuture.max"),
   ),
   minHoursBeforeBooking: asOptinalNumberField(
     z.coerce
-      .number()
+      .number<number>()
       .int("configuration.booking.minHoursBeforeBooking.integer")
       .min(0, "configuration.booking.minHoursBeforeBooking.min")
       .max(72, "configuration.booking.minHoursBeforeBooking.max"),
   ),
   breakDuration: asOptinalNumberField(
     z.coerce
-      .number()
+      .number<number>()
       .int("configuration.booking.breakDuration.integer")
       .min(0, "configuration.booking.breakDuration.min")
       .max(120, "configuration.booking.breakDuration.max"),
@@ -70,26 +76,16 @@ export const generalBookingConfigurationSchema = z.object({
   customSlotTimes: z.array(customTimeSlotSchema).optional(),
   scheduleAppId: z.string().optional(),
   availabilityProviderAppId: z.string().optional(),
-  autoConfirm: z.coerce.boolean().optional(),
-  allowPromoCode: z.enum(allowPromoCodeType).default("allow-if-has-active"),
+  autoConfirm: z.coerce.boolean<boolean>().optional(),
+  allowPromoCode: z.enum(allowPromoCodeType),
   payments: paymentsConfigurationSchema,
   cancellationsAndReschedules: appointmentCancellationRescheduleSchema,
+  calendarSources: calendarSourcesConfigurationSchema,
+  options: appointOptionsSchema,
 });
 
-export const appointOptionsSchema = z.array(
-  z.object({
-    id: z.string().min(1, "configuration.booking.options.id.required"),
-  }),
-);
-
-export const bookingConfigurationSchema = generalBookingConfigurationSchema
-  .merge(
-    z.object({
-      calendarSources: calendarSourcesConfigurationSchema,
-      options: appointOptionsSchema,
-    }),
-  )
-  .superRefine((arg, ctx) => {
+export const bookingConfigurationSchema =
+  generalBookingConfigurationSchema.superRefine((arg, ctx) => {
     if (arg.slotStart === "custom" && !arg.customSlotTimes?.length) {
       ctx.addIssue({
         path: ["specifiedSlotTimes"],

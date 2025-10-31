@@ -92,7 +92,7 @@ export const AppointmentView: React.FC<{
           className="inline-flex flex-row gap-2 items-center"
           variant="outline"
           button
-          href={`/admin/dashboard/appointments/new?from=${appointment._id}`}
+          href={`/dashboard/appointments/new?from=${appointment._id}`}
         >
           <CalendarSync size={20} /> {t("appointments.view.scheduleAgain")}
         </Link>
@@ -116,7 +116,7 @@ export const AppointmentView: React.FC<{
               className="inline-flex flex-row gap-2 items-center"
               variant="outline"
               button
-              href={`/admin/dashboard/appointments/${appointment._id}/edit`}
+              href={`/dashboard/appointments/${appointment._id}/edit`}
             >
               <CalendarCog size={20} /> {t("appointments.view.edit")}
             </Link>

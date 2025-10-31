@@ -45,6 +45,8 @@ type Props<
     general: GeneralConfiguration;
     social: SocialConfiguration;
   };
+  adminUrl: string;
+  websiteUrl: string;
   locale?: Language;
   useAppointmentTimezone?: boolean;
   additionalProperties?: T;
@@ -89,6 +91,8 @@ type ArgsProps = {
     url: string;
   }[];
   locale: Language;
+  websiteUrl: string;
+  adminUrl: string;
 };
 
 type BaseArgs<TAppointment extends Appointment | null | undefined> =
@@ -115,6 +119,8 @@ export const getArguments = <
   locale = config.general.language,
   useAppointmentTimezone = false,
   additionalProperties,
+  adminUrl,
+  websiteUrl,
 }: Props<TAppointment, TAdditional>): FormattedArguments<
   Args<TAppointment, TAdditional>
 > => {
@@ -208,9 +214,11 @@ export const getArguments = <
     config: {
       ...config.general,
     },
+    adminUrl,
+    websiteUrl,
     socials:
       config.social?.links?.map((link) =>
-        Object.keys(socialType.Values).reduce(
+        Object.keys(socialType).reduce(
           (acc, cur) => ({
             ...acc,
             [`is_${cur}`]: link.type === cur,

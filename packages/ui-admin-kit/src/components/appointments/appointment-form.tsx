@@ -9,7 +9,7 @@ import {
   AppointmentChoice,
   AppointmentEventRequest,
   AppointmentFields,
-  asOptionalField,
+  asOptinalNumberField,
   Customer,
   CustomerListModel,
   Discount,
@@ -54,7 +54,7 @@ import { DateTime } from "luxon";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm, useFormState } from "react-hook-form";
-import { z } from "zod";
+import * as z from "zod";
 import { AppointmentCalendar } from "./appointment-calendar";
 
 export const appointmentFromSchema = z.object({
@@ -146,38 +146,38 @@ export const AppointmentScheduleForm: React.FC<
 
   const formSchema = z
     .object({
-      dateTime: z.date({ message: t("appointments.form.dateTimeRequired") }),
+      dateTime: z.coerce.date<Date>({
+        error: t("appointments.form.dateTimeRequired"),
+      }),
       totalDuration: z.coerce
-        .number({ message: t("appointments.form.durationRequired") })
+        .number<number>({ error: t("appointments.form.durationRequired") })
         .int(t("appointments.form.durationInteger"))
         .min(1, t("appointments.form.durationMin"))
         .max(60 * 24 * 10, t("appointments.form.durationMax")),
-      totalPrice: asOptionalField(
+      totalPrice: asOptinalNumberField(
         z.coerce
-          .number({ message: t("appointments.form.priceNumber") })
+          .number<number>({ error: t("appointments.form.priceNumber") })
           .min(0, t("appointments.form.priceMin")),
-      ).transform((e) => (e === 0 ? undefined : e)),
-      option: z.string({ message: t("appointments.form.optionRequired") }),
+      ),
+      option: z.string().min(1, t("appointments.form.optionRequired")),
       addons: z
         .array(
           z.object({
-            id: z.string({ message: t("appointments.form.addonRequired") }),
+            id: z.string().min(1, t("appointments.form.addonRequired")),
           }),
         )
         .optional(),
-      fields: z
-        .object({
-          name: z.string().trim(),
-          email: z.string().trim(),
-          phone: z.string().trim(),
-        })
-        .passthrough(),
+      fields: z.looseObject({
+        name: z.string().trim(),
+        email: z.string().trim(),
+        phone: z.string().trim(),
+      }),
 
       note: z.string().optional(),
-      confirmed: z.coerce.boolean().optional(),
+      confirmed: z.coerce.boolean<boolean>().optional(),
       customerId: z.string().optional(),
       promoCode: z.string().optional().nullable(),
-      doNotNotifyCustomer: z.coerce.boolean().optional(),
+      doNotNotifyCustomer: z.coerce.boolean<boolean>().optional(),
     })
     .superRefine((args, ctx) => {
       const option = options.find((x) => x._id === args.option);
@@ -409,7 +409,7 @@ export const AppointmentScheduleForm: React.FC<
         appointmentId = result._id;
       }
 
-      router.push(`/admin/dashboard/appointments/${appointmentId}`);
+      router.push(`/dashboard/appointments/${appointmentId}`);
     } catch (error: any) {
       console.error(error);
     } finally {
@@ -435,7 +435,7 @@ export const AppointmentScheduleForm: React.FC<
 
     return {
       _id: id || "",
-      date: dt.startOf("day").toISODate(),
+      date: dt.startOf("day").toJSDate(),
       time: {
         hour: dt.hour,
         minute: dt.minute,
@@ -473,7 +473,8 @@ export const AppointmentScheduleForm: React.FC<
         knownNames: [],
         knownPhones: [],
       },
-    } as Appointment;
+      companyId: "unknown",
+    } as unknown as Appointment;
   }, [
     dateTime,
     duration,

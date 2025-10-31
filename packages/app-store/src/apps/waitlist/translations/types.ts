@@ -17,3 +17,8 @@ export type WaitlistAdminAllKeys = AllKeys<
   WaitlistAdminNamespace,
   WaitlistAdminKeys
 >;
+
+export type WaitlistPublicAllKeys = AllKeys<
+  WaitlistPublicNamespace,
+  WaitlistPublicKeys
+>;

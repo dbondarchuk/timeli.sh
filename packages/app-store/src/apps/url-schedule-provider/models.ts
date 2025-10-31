@@ -1,5 +1,5 @@
 import { zUniqueArray } from "@vivid/types";
-import { z } from "zod";
+import * as z from "zod";
 import { UrlScheduleProviderAdminAllKeys } from "./translations/types";
 
 export const urlScheduleProviderConfigurationSchema = z.object({

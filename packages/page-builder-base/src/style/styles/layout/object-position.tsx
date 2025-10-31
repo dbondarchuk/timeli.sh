@@ -1,7 +1,7 @@
 import { RawDoubleNumberInput } from "@vivid/builder";
 import { useI18n } from "@vivid/i18n";
 import { Move } from "lucide-react";
-import { z } from "zod";
+import * as z from "zod";
 import { StyleDefinition } from "../../types";
 
 const ObjectPositionSchema = z.object({

@@ -1,4 +1,4 @@
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
 import {
   ApiRequest,
   ApiResponse,
@@ -35,9 +35,14 @@ export class WebhooksConnectedApp
     IPaymentHook,
     IWaitlistHook
 {
-  protected readonly loggerFactory = getLoggerFactory("WebhooksConnectedApp");
+  protected readonly loggerFactory: LoggerFactory;
 
-  public constructor(protected readonly props: IConnectedAppProps) {}
+  public constructor(protected readonly props: IConnectedAppProps) {
+    this.loggerFactory = getLoggerFactory(
+      "WebhooksConnectedApp",
+      props.companyId,
+    );
+  }
 
   public async processAppData(
     appData: WebhooksConfiguration,

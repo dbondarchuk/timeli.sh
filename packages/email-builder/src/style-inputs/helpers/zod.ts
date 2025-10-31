@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as z from "zod";
 
 import { FONT_FAMILY_NAMES } from "./font-family";
 
@@ -9,7 +9,7 @@ export const zFontFamily = z.enum(FONT_FAMILY_NAMES).optional().nullable();
 export type FontFamily = z.infer<typeof zFontFamily>;
 
 export const zFontSize = z.coerce
-  .number()
+  .number<number>()
   .min(0, "emailBuilder.common.validation.fontSize")
   .int("emailBuilder.common.validation.fontSize")
   .optional()

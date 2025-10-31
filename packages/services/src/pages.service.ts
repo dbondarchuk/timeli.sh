@@ -1,4 +1,3 @@
-import { getLoggerFactory } from "@vivid/logger";
 import {
   IPagesService,
   Page,
@@ -16,14 +15,18 @@ import {
 import { buildSearchQuery, escapeRegex } from "@vivid/utils";
 import { DateTime } from "luxon";
 import { Filter, ObjectId, Sort } from "mongodb";
+import {
+  PAGES_COLLECTION_NAME,
+  PAGE_FOOTERS_COLLECTION_NAME,
+  PAGE_HEADERS_COLLECTION_NAME,
+} from "./collections";
 import { getDbConnection } from "./database";
+import { BaseService } from "./services/base.service";
 
-export const PAGES_COLLECTION_NAME = "pages";
-export const PAGE_HEADERS_COLLECTION_NAME = "page-headers";
-export const PAGE_FOOTERS_COLLECTION_NAME = "page-footers";
-
-export class PagesService implements IPagesService {
-  protected readonly loggerFactory = getLoggerFactory("PagesService");
+export class PagesService extends BaseService implements IPagesService {
+  public constructor(companyId: string) {
+    super("PagesService", companyId);
+  }
 
   public async getPage(id: string): Promise<Page | null> {
     const logger = this.loggerFactory("getPage");
@@ -34,6 +37,7 @@ export class PagesService implements IPagesService {
 
     const page = await pages.findOne({
       _id: id,
+      companyId: this.companyId,
     });
 
     if (!page) {
@@ -62,6 +66,7 @@ export class PagesService implements IPagesService {
 
     const page = await pages.findOne({
       slug,
+      companyId: this.companyId,
     });
 
     if (!page) {
@@ -101,7 +106,9 @@ export class PagesService implements IPagesService {
       {},
     ) || { updatedAt: -1 };
 
-    const filter: Filter<Page> = {};
+    const filter: Filter<Page> = {
+      companyId: this.companyId,
+    };
 
     if (query.publishStatus) {
       filter.published = {
@@ -138,10 +145,10 @@ export class PagesService implements IPagesService {
       .collection<Page>(PAGES_COLLECTION_NAME)
       .aggregate([
         {
-          $sort: sort,
+          $match: filter,
         },
         {
-          $match: filter,
+          $sort: sort,
         },
         {
           $project: {
@@ -196,6 +203,7 @@ export class PagesService implements IPagesService {
 
     const dbPage: Page = {
       ...page,
+      companyId: this.companyId,
       _id: new ObjectId().toString(),
       updatedAt: DateTime.utc().toJSDate(),
       createdAt: DateTime.utc().toJSDate(),
@@ -229,7 +237,7 @@ export class PagesService implements IPagesService {
     const db = await getDbConnection();
     const pages = db.collection<Page>(PAGES_COLLECTION_NAME);
 
-    const { _id, ...updateObj } = update as Page; // Remove fields in case it slips here
+    const { _id, companyId, ...updateObj } = update as Page; // Remove fields in case it slips here
 
     if (!this.checkUniqueSlug(update.slug, id)) {
       logger.error({ pageId: id, slug: update.slug }, "Slug already exists");
@@ -241,6 +249,7 @@ export class PagesService implements IPagesService {
     await pages.updateOne(
       {
         _id: id,
+        companyId: this.companyId,
       },
       {
         $set: updateObj,
@@ -269,6 +278,7 @@ export class PagesService implements IPagesService {
 
     await pages.deleteOne({
       _id: id,
+      companyId: this.companyId,
     });
 
     logger.debug({ pageId: id, slug: page.slug }, "Successfully deleted page");
@@ -288,6 +298,7 @@ export class PagesService implements IPagesService {
         $in: ids,
       },
       slug: "home",
+      companyId: this.companyId,
     });
 
     if (homePage) {
@@ -299,6 +310,7 @@ export class PagesService implements IPagesService {
       _id: {
         $in: ids,
       },
+      companyId: this.companyId,
     });
 
     logger.debug(
@@ -315,6 +327,7 @@ export class PagesService implements IPagesService {
 
     const filter: Filter<Page> = {
       slug,
+      companyId: this.companyId,
     };
 
     if (id) {
@@ -338,7 +351,10 @@ export class PagesService implements IPagesService {
     const db = await getDbConnection();
     const pageHeaders = db.collection<PageHeader>(PAGE_HEADERS_COLLECTION_NAME);
 
-    const pageHeader = await pageHeaders.findOne({ _id: id });
+    const pageHeader = await pageHeaders.findOne({
+      _id: id,
+      companyId: this.companyId,
+    });
 
     if (!pageHeader) {
       logger.warn({ pageHeaderId: id }, "Page header not found");
@@ -440,12 +456,22 @@ export class PagesService implements IPagesService {
           },
         },
         {
+          $match: {
+            companyId: this.companyId,
+          },
+        },
+        {
           $lookup: {
             from: PAGES_COLLECTION_NAME,
             localField: "_id",
             foreignField: "headerId",
             as: "usedCount",
             pipeline: [
+              {
+                $match: {
+                  companyId: this.companyId,
+                },
+              },
               {
                 $group: {
                   _id: null,
@@ -519,6 +545,7 @@ export class PagesService implements IPagesService {
 
     const dbPageHeader: PageHeader = {
       ...pageHeader,
+      companyId: this.companyId,
       _id: new ObjectId().toString(),
       updatedAt: DateTime.utc().toJSDate(),
     };
@@ -549,13 +576,14 @@ export class PagesService implements IPagesService {
     const db = await getDbConnection();
     const pageHeaders = db.collection<PageHeader>(PAGE_HEADERS_COLLECTION_NAME);
 
-    const { _id, ...updateObj } = update as PageHeader; // Remove fields in case it slips here
+    const { _id, companyId, ...updateObj } = update as PageHeader; // Remove fields in case it slips here
 
     updateObj.updatedAt = DateTime.utc().toJSDate();
 
     await pageHeaders.updateOne(
       {
         _id: id,
+        companyId: this.companyId,
       },
       {
         $set: updateObj,
@@ -572,18 +600,16 @@ export class PagesService implements IPagesService {
     const db = await getDbConnection();
     const pageHeaders = db.collection<PageHeader>(PAGE_HEADERS_COLLECTION_NAME);
 
-    const pageHeader = await pageHeaders.findOne({ _id: id });
+    const pageHeader = await pageHeaders.findOneAndDelete({
+      _id: id,
+      companyId: this.companyId,
+    });
     if (!pageHeader) {
       logger.warn({ pageHeaderId: id }, "Page header not found for deletion");
       return null;
     }
 
-    await pageHeaders.deleteOne({
-      _id: id,
-    });
-
     logger.debug({ pageHeaderId: id }, "Successfully deleted page header");
-
     return pageHeader;
   }
 
@@ -598,6 +624,7 @@ export class PagesService implements IPagesService {
       _id: {
         $in: ids,
       },
+      companyId: this.companyId,
     });
 
     logger.debug(
@@ -617,6 +644,7 @@ export class PagesService implements IPagesService {
 
     const filter: Filter<PageHeader> = {
       name,
+      companyId: this.companyId,
     };
 
     if (id) {
@@ -640,7 +668,10 @@ export class PagesService implements IPagesService {
     const db = await getDbConnection();
     const pageFooters = db.collection<PageFooter>(PAGE_FOOTERS_COLLECTION_NAME);
 
-    const pageFooter = await pageFooters.findOne({ _id: id });
+    const pageFooter = await pageFooters.findOne({
+      _id: id,
+      companyId: this.companyId,
+    });
 
     if (!pageFooter) {
       logger.warn({ pageFooterId: id }, "Page footer not found");
@@ -670,7 +701,10 @@ export class PagesService implements IPagesService {
 
     const db = await getDbConnection();
 
-    const filter: Filter<PageFooter> = {};
+    const filter: Filter<PageFooter> = {
+      companyId: this.companyId,
+    };
+
     if (query.search) {
       const $regex = new RegExp(escapeRegex(query.search), "i");
       const queries = buildSearchQuery<PageFooter>({ $regex }, "name");
@@ -742,12 +776,22 @@ export class PagesService implements IPagesService {
           },
         },
         {
+          $match: {
+            companyId: this.companyId,
+          },
+        },
+        {
           $lookup: {
             from: PAGES_COLLECTION_NAME,
             localField: "_id",
             foreignField: "footerId",
             as: "usedCount",
             pipeline: [
+              {
+                $match: {
+                  companyId: this.companyId,
+                },
+              },
               {
                 $group: {
                   _id: null,
@@ -821,6 +865,7 @@ export class PagesService implements IPagesService {
 
     const dbPageFooter: PageFooter = {
       ...pageFooter,
+      companyId: this.companyId,
       _id: new ObjectId().toString(),
       updatedAt: DateTime.utc().toJSDate(),
     };
@@ -844,20 +889,25 @@ export class PagesService implements IPagesService {
   ): Promise<void> {
     const logger = this.loggerFactory("updatePageFooter");
     logger.debug(
-      { pageFooterId: id, update: { name: update.name } },
+      {
+        pageFooterId: id,
+        update: { name: update.name },
+        companyId: this.companyId,
+      },
       "Updating page footer",
     );
 
     const db = await getDbConnection();
     const pageFooters = db.collection<PageFooter>(PAGE_FOOTERS_COLLECTION_NAME);
 
-    const { _id, ...updateObj } = update as PageFooter; // Remove fields in case it slips here
+    const { _id, companyId, ...updateObj } = update as PageFooter; // Remove fields in case it slips here
 
     updateObj.updatedAt = DateTime.utc().toJSDate();
 
     await pageFooters.updateOne(
       {
         _id: id,
+        companyId: this.companyId,
       },
       {
         $set: updateObj,
@@ -874,15 +924,14 @@ export class PagesService implements IPagesService {
     const db = await getDbConnection();
     const pageFooters = db.collection<PageFooter>(PAGE_FOOTERS_COLLECTION_NAME);
 
-    const pageFooter = await pageFooters.findOne({ _id: id });
+    const pageFooter = await pageFooters.findOneAndDelete({
+      _id: id,
+      companyId: this.companyId,
+    });
     if (!pageFooter) {
       logger.warn({ pageFooterId: id }, "Page footer not found for deletion");
       return null;
     }
-
-    await pageFooters.deleteOne({
-      _id: id,
-    });
 
     logger.debug({ pageFooterId: id }, "Successfully deleted page footer");
 
@@ -900,6 +949,7 @@ export class PagesService implements IPagesService {
       _id: {
         $in: ids,
       },
+      companyId: this.companyId,
     });
 
     logger.debug(
@@ -919,6 +969,7 @@ export class PagesService implements IPagesService {
 
     const filter: Filter<PageFooter> = {
       name,
+      companyId: this.companyId,
     };
 
     if (id) {

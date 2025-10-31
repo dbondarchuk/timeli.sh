@@ -14,7 +14,7 @@ const waitlistBreadcrumb: {
   link: string;
 } = {
   title: "app_waitlist_admin.app.pages.main.label",
-  link: "/admin/dashboard/waitlist",
+  link: "/dashboard/waitlist",
 };
 
 export const WaitlistMenuItems: AppMenuItem<

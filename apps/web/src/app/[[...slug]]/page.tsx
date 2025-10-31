@@ -1,7 +1,7 @@
+import { getServicesContainer } from "@/utils/utils";
 import { AppsBlocksReaders } from "@vivid/app-store/blocks/readers";
 import { getLoggerFactory } from "@vivid/logger";
 import { Header, PageReader, Styling } from "@vivid/page-builder/reader";
-import { ServicesContainer } from "@vivid/services";
 import { formatArguments, setPageData } from "@vivid/utils";
 import { DateTime } from "luxon";
 import { Metadata, ResolvingMetadata } from "next";
@@ -9,12 +9,7 @@ import { cookies, headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 import { cache } from "react";
 
-type Props = {
-  params: Promise<{ slug: string[] }>;
-  searchParams?: Promise<{
-    preview?: boolean;
-  }>;
-};
+type Props = PageProps<"/[[...slug]]">;
 
 export const dynamicParams = true;
 export const revalidate = 60;
@@ -28,6 +23,7 @@ class NotFoundError extends Error {
 
 const getSource = cache(async (slug?: string, preview = false) => {
   const logger = getLoggerFactory("PageComponent")("getSource");
+  const servicesContainer = await getServicesContainer();
 
   logger.debug({ slug, preview }, "Getting page source");
 
@@ -41,7 +37,7 @@ const getSource = cache(async (slug?: string, preview = false) => {
 
   logger.debug({ slug, preview }, "Retrieving page by slug");
 
-  const page = await ServicesContainer.PagesService().getPageBySlug(slug);
+  const page = await servicesContainer.pagesService.getPageBySlug(slug);
 
   if (slug.length === 1 && slug[0] === "home" && !page) {
     logger.info({ slug }, "Home page not found, redirecting to install");
@@ -72,7 +68,7 @@ const getSource = cache(async (slug?: string, preview = false) => {
 
   // read route params
   const settings =
-    await ServicesContainer.ConfigurationService().getConfiguration("general");
+    await servicesContainer.configurationService.getConfiguration("general");
 
   logger.debug(
     {
@@ -110,7 +106,7 @@ export async function generateMetadata(
 
     const { page, settings } = await getSource(
       params.slug?.join("/"),
-      searchParams?.preview,
+      !!searchParams?.preview,
     );
 
     logger.debug(
@@ -182,8 +178,9 @@ export default async function Page(props: Props) {
     const searchParams = await props.searchParams;
     const params = await props.params;
 
+    const servicesContainer = await getServicesContainer();
     const { styling, social } =
-      await ServicesContainer.ConfigurationService().getConfigurations(
+      await servicesContainer.configurationService.getConfigurations(
         "styling",
         "social",
       );
@@ -199,7 +196,7 @@ export default async function Page(props: Props) {
 
     const { page, settings } = await getSource(
       params.slug?.join("/"),
-      searchParams?.preview,
+      !!searchParams?.preview,
     );
 
     logger.debug(
@@ -242,7 +239,7 @@ export default async function Page(props: Props) {
     const appointmentId = cookieStore.get("appointment_id")?.value;
     if (appointmentId) {
       const appointment =
-        await ServicesContainer.EventsService().getAppointment(appointmentId);
+        await servicesContainer.eventsService.getAppointment(appointmentId);
       if (
         appointment &&
         DateTime.fromJSDate(appointment.createdAt).diffNow().toMillis() <
@@ -255,11 +252,11 @@ export default async function Page(props: Props) {
     }
 
     const header = page.headerId
-      ? await ServicesContainer.PagesService().getPageHeader(page.headerId)
+      ? await servicesContainer.pagesService.getPageHeader(page.headerId)
       : undefined;
 
     const footer = page.footerId
-      ? await ServicesContainer.PagesService().getPageFooter(page.footerId)
+      ? await servicesContainer.pagesService.getPageFooter(page.footerId)
       : undefined;
 
     const formattedArgs = formatArguments(
@@ -268,7 +265,7 @@ export default async function Page(props: Props) {
     );
 
     const apps =
-      await ServicesContainer.ConnectedAppsService().getAppsByScope(
+      await servicesContainer.connectedAppsService.getAppsByScope(
         "ui-components",
       );
 

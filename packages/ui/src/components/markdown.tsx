@@ -1,6 +1,6 @@
-import { cn } from "@vivid/ui";
 import ReactMarkdown from "react-markdown";
 import remarkBreaks from "remark-breaks";
+import { cn } from "../utils/cn";
 
 export type MarkdownProps = {
   markdown: string;

@@ -11,12 +11,13 @@
   },
   "exports": {
     ".": "./src/index.ts",
-    "./static": "./src/documents/reader/static-render.tsx"
+    "./static": "./src/documents/reader/static-render.tsx",
+    "./reader": "./src/reader.ts"
   },
   "devDependencies": {
     "@types/node": "^20",
-    "@types/react": "19.0.2",
-    "@types/react-dom": "19.0.2",
+    "@types/react": "19.2.0",
+    "@types/react-dom": "19.2.0",
     "@types/react-window": "^1.8.8",
     "@vivid/eslint-config": "*",
     "@vivid/tailwind-config": "*",

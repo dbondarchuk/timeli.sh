@@ -1,7 +1,7 @@
 import { BaseReaderBlockProps, generateId } from "@vivid/builder";
 import { COLORS } from "@vivid/page-builder-base/style";
 import { Prettify } from "@vivid/types";
-import z from "zod";
+import * as z from "zod";
 import { ImagePropsDefaults } from "../image/schema";
 import { InlineContainerPropsDefaults } from "../inline-container/schema";
 import { zStyles } from "./styles";

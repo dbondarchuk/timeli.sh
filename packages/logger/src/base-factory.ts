@@ -4,6 +4,7 @@ import { format } from "util";
 export const getBaseLoggerFactory = (
   correlationId?: string | null,
   sessionId?: string | null,
+  companyId?: string | null,
 ) => {
   const logger = pino({
     level: process.env.LOG_LEVEL || "info",
@@ -30,6 +31,7 @@ export const getBaseLoggerFactory = (
         ...obj,
         correlationId,
         sessionId,
+        companyId,
       }),
     },
     timestamp: pino.stdTimeFunctions.isoTime,

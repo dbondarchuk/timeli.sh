@@ -20,6 +20,7 @@ import {
   ConnectedAppStatusMessage,
 } from "@vivid/ui-admin";
 import React, { useState } from "react";
+import * as z from "zod";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
 import { webhooksApp } from "./app";
 import {
@@ -45,7 +46,7 @@ export const WebhooksAppSetup: React.FC<AppSetupProps> = ({
   const [isEditingSecret, setIsEditingSecret] = useState(false);
 
   const { appStatus, form, isLoading, isValid, onSubmit } =
-    useConnectedAppSetup<typeof webhooksConfigurationSchema._type>({
+    useConnectedAppSetup<z.infer<typeof webhooksConfigurationSchema>>({
       appId,
       appName: webhooksApp.name,
       schema: webhooksConfigurationSchema,

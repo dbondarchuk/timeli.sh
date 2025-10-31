@@ -1,5 +1,7 @@
 import { AllKeys, I18nNamespaces } from "@vivid/i18n";
-import { Email, TextMessageData, TextMessageResponse } from "../apps";
+import { Email } from "../apps/mail";
+import { TextMessageData } from "../apps/text-message";
+import { TextMessageResponse } from "../apps/text-message/text-message-sender";
 import { CommunicationParticipantType } from "../communication";
 
 export type EmailNotificationRequest<

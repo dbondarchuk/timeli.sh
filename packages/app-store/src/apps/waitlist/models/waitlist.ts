@@ -3,17 +3,20 @@ import {
   AppointmentEventOption,
   Customer,
   Prettify,
+  WithCompanyId,
   WithDatabaseId,
   zPhone,
   zUniqueArray,
 } from "@vivid/types";
-import z from "zod";
+import * as z from "zod";
+import { WaitlistPublicAllKeys } from "../translations/types";
 
 export const waitlistTime = ["morning", "afternoon", "evening"] as const;
 export type WaitlistTime = (typeof waitlistTime)[number];
 
 export const waitlistTimeSchema = z.enum(waitlistTime, {
-  errorMap: () => ({ message: "waitlist.times.required" }),
+  error:
+    "app_waitlist_public.block.times.required" satisfies WaitlistPublicAllKeys,
 });
 
 export const waitlistDateSchema = z.object({
@@ -28,7 +31,7 @@ export const waitlistDateSchema = z.object({
 export type WaitlistDate = z.infer<typeof waitlistDateSchema>;
 
 export const waitlistRequestFormSchemaBase = z.object({
-  email: z.string().email("waitlist.email.required").trim(),
+  email: z.email({ error: "waitlist.email.required" }),
   name: z.string().min(1, "waitlist.name.required").trim(),
   phone: zPhone,
 });
@@ -41,21 +44,23 @@ export const waitlistRequestDates = zUniqueArray(
     .min(1, "waitlist.dates.required")
     .max(MAX_WAITLIST_DATES, "waitlist.dates.max"),
   (x) => x.date,
-  "waitlist.dates.required",
+  "app_waitlist_public.block.dates.required" satisfies WaitlistPublicAllKeys,
 );
 
 export const waitlistRequestFormSchema = waitlistRequestFormSchemaBase.and(
   z
     .object({
       asSoonAsPossible: z.literal(false, {
-        errorMap: () => ({ message: "waitlist.asSoonAsPossible.required" }),
+        error:
+          "app_waitlist_public.block.asSoonAsPossible.required" satisfies WaitlistPublicAllKeys,
       }),
       dates: waitlistRequestDates,
     })
     .or(
       z.object({
         asSoonAsPossible: z.literal(true, {
-          errorMap: () => ({ message: "waitlist.asSoonAsPossible.required" }),
+          error:
+            "app_waitlist_public.block.asSoonAsPossible.required" satisfies WaitlistPublicAllKeys,
         }),
         dates: z.never().optional(),
       }),
@@ -75,7 +80,7 @@ export const waitlistRequestSchema = waitlistRequestFormSchema.and(
       "appointments.request.addonsIds.unique",
     ).optional(),
     duration: z.coerce
-      .number({ message: "appointments.request.duration.required" })
+      .number<number>({ error: "appointments.request.duration.required" })
       .int("appointments.request.duration.positive")
       .min(1, "appointments.request.duration.positive")
       .max(60 * 24 * 1, "appointments.request.duration.max")
@@ -88,7 +93,9 @@ export type WaitlistRequest = Prettify<z.infer<typeof waitlistRequestSchema>>;
 export const waitlistStatus = ["active", "dismissed"] as const;
 export type WaitlistStatus = (typeof waitlistStatus)[number];
 
-export type WaitlistEntryEntity = WithDatabaseId<WaitlistRequest> & {
+export type WaitlistEntryEntity = WithCompanyId<
+  WithDatabaseId<WaitlistRequest>
+> & {
   createdAt: Date;
   updatedAt: Date;
   customerId: string;

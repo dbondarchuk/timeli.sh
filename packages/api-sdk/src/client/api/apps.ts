@@ -1,4 +1,4 @@
-import { fetchClientApi } from "../..";
+import { fetchClientApi } from "./utils";
 
 type CallAppApiParams = {
   appId: string;

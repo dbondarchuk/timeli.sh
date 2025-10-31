@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.7-labs
 
-FROM node:21-alpine AS base
+FROM node:22-alpine AS base
 RUN apk add --no-cache libc6-compat tzdata
 
 # Install dependencies only when needed

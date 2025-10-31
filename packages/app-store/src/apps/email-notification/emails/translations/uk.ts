@@ -7,7 +7,7 @@ ${customText}
 
 Запитаний {{ requestedAt.full }}
 
-Клієнт: [{{ customer.name }}]({{ config.url }}/admin/dashboard/customers/{{customerId}})
+Клієнт: [{{ customer.name }}]({{ adminUrl }}/dashboard/customers/{{customerId}})
 
 Ім'я: {{ fields.name }}
 
@@ -21,13 +21,13 @@ Email: {{ fields.email }}
 
 {{/restFields}} {{#images}}
 
-![{{description}}]({{ config.url }}/assets/{{filename}})
+![{{description}}]({{ websiteUrl }}/assets/{{filename}})
 
 {{filename}}
 
 {{/images}} {{#files}}
 
-Файл: [{{filename}}]({{ config.url }}/assets/{{filename}})
+Файл: [{{filename}}]({{ websiteUrl }}/assets/{{filename}})
 
 {{/files}}
 
@@ -48,7 +48,7 @@ Email: {{ fields.email }}
 
 {{#discount}}
 
-Промокод: {{code}} (-\${{discountAmountFormatted}}) ([{{name}}]({{ config.url }}/admin/dashboard/services/discounts/{{id}}))
+Промокод: {{code}} (-\${{discountAmountFormatted}}) ([{{name}}]({{ adminUrl }}/dashboard/services/discounts/{{id}}))
 
 {{/discount}} {{#totalPriceFormatted}}
 

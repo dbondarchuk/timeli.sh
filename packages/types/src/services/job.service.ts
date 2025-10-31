@@ -1,4 +1,4 @@
-import { AppScope } from "../apps";
+import { AppScope } from "../apps/app";
 import { Job, JobRequest } from "../jobs";
 
 type FunctionKeys<T> = {

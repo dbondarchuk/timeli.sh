@@ -1,5 +1,5 @@
 import { BaseReaderBlockProps } from "@vivid/builder";
-import { z } from "zod";
+import * as z from "zod";
 import {
   zColor,
   zColorNullable,
@@ -10,7 +10,7 @@ const EmailLayoutPropsSchema = z.object({
   backdropColor: zColor,
   borderColor: zColorNullable,
   borderRadius: z.coerce
-    .number()
+    .number<number>()
     .int("emailBuilder.common.validation.borderRadius")
     .optional()
     .nullable(),

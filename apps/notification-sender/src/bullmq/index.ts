@@ -3,6 +3,7 @@ import {
   BullMQNotificationConfig,
   BullMQNotificationWorker,
   getBullMQNotificationConfig,
+  ServicesContainer,
 } from "@vivid/services";
 import dotenv from "dotenv";
 
@@ -33,7 +34,9 @@ export async function startBullMQNotificationSenderApp(): Promise<void> {
     logger.info({ config }, "BullMQ configuration loaded");
 
     // Create and start the worker
-    const worker = new BullMQNotificationWorker(config);
+    const worker = new BullMQNotificationWorker(config, (companyId) =>
+      ServicesContainer(companyId),
+    );
 
     // Set up graceful shutdown handlers
     const gracefulShutdown = async (signal: string) => {

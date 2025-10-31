@@ -1,4 +1,4 @@
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
 import {
   ConnectedAppData,
   ConnectedAppStatusWithText,
@@ -8,7 +8,12 @@ import {
   RespondResult,
   TextMessageReply,
 } from "@vivid/types";
-import { getArguments, template } from "@vivid/utils";
+import {
+  getAdminUrl,
+  getArguments,
+  getWebsiteUrl,
+  template,
+} from "@vivid/utils";
 import { TextMessageResenderMessages } from "./messages";
 import { TextMessageResenderConfiguration } from "./models";
 import {
@@ -20,11 +25,14 @@ import {
 export default class TextMessageResenderConnectedApp
   implements IConnectedApp, ITextMessageResponder
 {
-  protected readonly loggerFactory = getLoggerFactory(
-    "TextMessageResenderConnectedApp",
-  );
+  protected readonly loggerFactory: LoggerFactory;
 
-  public constructor(protected readonly props: IConnectedAppProps) {}
+  public constructor(protected readonly props: IConnectedAppProps) {
+    this.loggerFactory = getLoggerFactory(
+      "TextMessageResenderConnectedApp",
+      props.companyId,
+    );
+  }
 
   public async processRequest(
     appData: ConnectedAppData,
@@ -105,9 +113,12 @@ export default class TextMessageResenderConnectedApp
     );
 
     try {
-      const config = await this.props.services
-        .ConfigurationService()
-        .getConfigurations("booking", "general", "social");
+      const config =
+        await this.props.services.configurationService.getConfigurations(
+          "booking",
+          "general",
+          "social",
+        );
 
       const { appointment, customer, ...reply } = textMessageReply;
 
@@ -125,7 +136,7 @@ export default class TextMessageResenderConnectedApp
           "Processing reply from user - resending to customer",
         );
 
-        this.props.services.NotificationService().sendTextMessage({
+        this.props.services.notificationService.sendTextMessage({
           phone: textMessageReply.data.data,
           body: reply.message,
           webhookData: {
@@ -161,6 +172,21 @@ export default class TextMessageResenderConnectedApp
         "Processing reply from customer - resending to user",
       );
 
+      const organization =
+        await this.props.services.organizationService.getOrganization();
+      if (!organization) {
+        logger.error(
+          { appointmentId: reply.data.appointmentId },
+          "Organization not found",
+        );
+        throw new Error("Organization not found");
+      }
+
+      const adminUrl = getAdminUrl();
+      const websiteUrl = getWebsiteUrl(
+        organization.slug,
+        config.general.domain,
+      );
       const args = getArguments({
         appointment,
         config,
@@ -169,6 +195,8 @@ export default class TextMessageResenderConnectedApp
         additionalProperties: {
           reply,
         },
+        adminUrl,
+        websiteUrl,
       });
 
       const body = template(
@@ -198,7 +226,7 @@ export default class TextMessageResenderConnectedApp
         "Sending customer reply to user",
       );
 
-      this.props.services.NotificationService().sendTextMessage({
+      this.props.services.notificationService.sendTextMessage({
         phone,
         body,
         webhookData: {

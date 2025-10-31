@@ -2,7 +2,7 @@ import { AssetEntity } from "@vivid/types";
 import { cn, Dialog, DialogContent, DialogTrigger, Link } from "@vivid/ui";
 import { mimeTypeToExtension } from "@vivid/utils";
 import { FileIcon, Play } from "lucide-react";
-import Image from "next/image";
+// import Image from "next/image";
 import React from "react";
 import { DefaultExtensionType, defaultStyles } from "react-file-icon";
 
@@ -59,7 +59,7 @@ export const AssetPreview: React.FC<AssetPreviewProps> = ({
         <Dialog>
           <DialogTrigger asChild>
             <div className="w-full flex justify-center">
-              <Image
+              <img
                 alt={asset.description || ""}
                 src={`/assets/${asset.filename}`}
                 width={AssetPreviewSizes[size].image.width}
@@ -73,9 +73,8 @@ export const AssetPreview: React.FC<AssetPreviewProps> = ({
             closeClassName="bg-background"
           >
             <div className="relative h-[calc(100vh-220px)] w-full overflow-clip rounded-md bg-transparent shadow-none">
-              <Image
+              <img
                 src={`/assets/${asset.filename}`}
-                fill
                 alt={asset.description || asset.filename}
                 className="h-full w-full object-contain"
               />

@@ -1,5 +1,5 @@
 import { AllKeys } from "@vivid/i18n";
-import { z } from "zod";
+import * as z from "zod";
 import { RawNumberInputWithUnitsProps } from "../style-inputs/base/raw-number-input-with-units";
 import { BaseStyleDictionary } from "../style/types";
 import { StateWithTarget } from "../style/zod";

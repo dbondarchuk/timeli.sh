@@ -19,14 +19,10 @@ import { SelectField } from "./select";
 export const fieldsSchemaMap: Record<FieldType, (field: Field) => ZodSchema> = {
   name: (field: Field) =>
     z.string().min(2, {
-      message: "name_required_error",
+      error: "name_required_error",
     }),
 
-  email: (field: Field) =>
-    z
-      .string()
-      .min(field.required ? 1 : 0, "email_required_error")
-      .email("invalid_email_error"),
+  email: (field: Field) => z.email("invalid_email_error"),
   phone: (field: Field) =>
     z
       .string()

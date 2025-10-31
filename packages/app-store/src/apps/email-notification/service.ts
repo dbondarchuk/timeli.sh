@@ -1,4 +1,4 @@
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
 import {
   Appointment,
   AppointmentStatus,
@@ -10,8 +10,10 @@ import {
 } from "@vivid/types";
 import {
   AppointmentStatusToICalMethodMap,
+  getAdminUrl,
   getArguments,
   getEventCalendarContent,
+  getWebsiteUrl,
 } from "@vivid/utils";
 import { EmailNotificationConfiguration } from "./models";
 
@@ -25,11 +27,14 @@ import {
 export class EmailNotificationConnectedApp
   implements IConnectedApp, IAppointmentHook
 {
-  protected readonly loggerFactory = getLoggerFactory(
-    "EmailNotificationConnectedApp",
-  );
+  protected readonly loggerFactory: LoggerFactory;
 
-  public constructor(protected readonly props: IConnectedAppProps) {}
+  public constructor(protected readonly props: IConnectedAppProps) {
+    this.loggerFactory = getLoggerFactory(
+      "EmailNotificationConnectedApp",
+      props.companyId,
+    );
+  }
 
   public async processRequest(
     appData: ConnectedAppData,
@@ -47,9 +52,10 @@ export class EmailNotificationConnectedApp
     );
 
     try {
-      const defaultApps = await this.props.services
-        .ConfigurationService()
-        .getConfiguration("defaultApps");
+      const defaultApps =
+        await this.props.services.configurationService.getConfiguration(
+          "defaultApps",
+        );
 
       logger.debug(
         { appId: appData._id },
@@ -64,7 +70,7 @@ export class EmailNotificationConnectedApp
       );
 
       try {
-        await this.props.services.ConnectedAppsService().getApp(emailAppId);
+        await this.props.services.connectedAppsService.getApp(emailAppId);
         logger.debug(
           { appId: appData._id, emailAppId },
           "Email app is properly configured",
@@ -284,9 +290,22 @@ export class EmailNotificationConnectedApp
     );
 
     try {
-      const config = await this.props.services
-        .ConfigurationService()
-        .getConfigurations("booking", "general", "social");
+      const organization =
+        await this.props.services.organizationService.getOrganization();
+      if (!organization) {
+        logger.error(
+          { appId: appData._id, appointmentId: appointment._id },
+          "Organization not found",
+        );
+        return;
+      }
+
+      const config =
+        await this.props.services.configurationService.getConfigurations(
+          "booking",
+          "general",
+          "social",
+        );
 
       logger.debug(
         { appId: appData._id, appointmentId: appointment._id },
@@ -296,6 +315,8 @@ export class EmailNotificationConnectedApp
       const args = getArguments({
         appointment,
         config,
+        adminUrl: getAdminUrl(),
+        websiteUrl: getWebsiteUrl(organization.slug, config.general.domain),
         customer: appointment.customer,
         useAppointmentTimezone: true,
         locale: config.general.language,
@@ -315,7 +336,7 @@ export class EmailNotificationConnectedApp
       } = await getEmailTemplate(
         status,
         config.general.language,
-        config.general.url,
+        getAdminUrl(),
         appointment,
         args,
       );
@@ -373,7 +394,7 @@ export class EmailNotificationConnectedApp
         "Sending email notification",
       );
 
-      await this.props.services.NotificationService().sendEmail({
+      await this.props.services.notificationService.sendEmail({
         email: {
           to: recipientEmail,
           subject: subject,

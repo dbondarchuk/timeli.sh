@@ -1,6 +1,6 @@
 "use client";
 
-// import * as React from "react";
+// import React from "react";
 // import { Calendar as CalendarIcon } from "lucide-react";
 
 // import { cn } from "../../utils";
@@ -117,8 +117,13 @@ import {
   ChevronUpIcon,
   XCircle,
 } from "lucide-react";
-import * as React from "react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { DayPicker, Matcher } from "react-day-picker";
 
 import { useLocale } from "@vivid/i18n";

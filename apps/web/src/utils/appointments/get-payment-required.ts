@@ -1,12 +1,13 @@
 import { getLoggerFactory } from "@vivid/logger";
-import { ServicesContainer } from "@vivid/services";
 import {
   AppointmentEvent,
   AppointmentOption,
   AppointmentRequest,
   Customer,
+  IServicesContainer,
 } from "@vivid/types";
 import { formatAmount } from "@vivid/utils";
+import { getServicesContainer } from "../utils";
 import { getAppointmentEventFromRequest } from "./get-event";
 
 type GetIsPaymentRequiredReturnType =
@@ -121,11 +122,12 @@ export const getAppointmentEventAndIsPaymentRequired = async (
     };
   }
 
+  const servicesContainer = await getServicesContainer();
   const config =
-    await ServicesContainer.ConfigurationService().getConfiguration("booking");
+    await servicesContainer.configurationService.getConfiguration("booking");
 
   const customersPriorAppointmentsCount =
-    await getCustomerCompletedAppointments(customer?._id);
+    await getCustomerCompletedAppointments(servicesContainer, customer?._id);
 
   logger.debug(
     {
@@ -309,9 +311,12 @@ export const getAppointmentEventAndIsPaymentRequired = async (
   };
 };
 
-const getCustomerCompletedAppointments = async (customerId?: string) => {
+const getCustomerCompletedAppointments = async (
+  servicesContainer: IServicesContainer,
+  customerId?: string,
+) => {
   if (!customerId) return 0;
-  const result = await ServicesContainer.EventsService().getAppointments({
+  const result = await servicesContainer.eventsService.getAppointments({
     customerId: customerId,
     limit: 0,
     status: ["confirmed"],

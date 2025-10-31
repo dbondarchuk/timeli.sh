@@ -1,5 +1,5 @@
 import { renderToStaticMarkup } from "@vivid/email-builder/static";
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
 import {
   Appointment,
   AppointmentStatus,
@@ -11,8 +11,10 @@ import {
 } from "@vivid/types";
 import {
   AppointmentStatusToICalMethodMap,
+  getAdminUrl,
   getArguments,
   getEventCalendarContent,
+  getWebsiteUrl,
   templateSafeWithError,
 } from "@vivid/utils";
 import { CustomerEmailNotificationConfiguration } from "./models";
@@ -25,11 +27,14 @@ import {
 export default class CustomerEmailNotificationConnectedApp
   implements IConnectedApp, IAppointmentHook
 {
-  protected readonly loggerFactory = getLoggerFactory(
-    "CustomerEmailNotificationConnectedApp",
-  );
+  protected readonly loggerFactory: LoggerFactory;
 
-  public constructor(protected readonly props: IConnectedAppProps) {}
+  public constructor(protected readonly props: IConnectedAppProps) {
+    this.loggerFactory = getLoggerFactory(
+      "CustomerEmailNotificationConnectedApp",
+      props.companyId,
+    );
+  }
 
   public async processRequest(
     appData: ConnectedAppData,
@@ -48,9 +53,10 @@ export default class CustomerEmailNotificationConnectedApp
     );
 
     try {
-      const defaultApps = await this.props.services
-        .ConfigurationService()
-        .getConfiguration("defaultApps");
+      const defaultApps =
+        await this.props.services.configurationService.getConfiguration(
+          "defaultApps",
+        );
       const emailAppId = defaultApps.email.appId;
 
       logger.debug(
@@ -59,7 +65,7 @@ export default class CustomerEmailNotificationConnectedApp
       );
 
       try {
-        await this.props.services.ConnectedAppsService().getApp(emailAppId);
+        await this.props.services.connectedAppsService.getApp(emailAppId);
         logger.debug(
           { appId: appData._id, emailAppId },
           "Email app is properly configured",
@@ -291,18 +297,33 @@ export default class CustomerEmailNotificationConnectedApp
     );
 
     try {
-      const config = await this.props.services
-        .ConfigurationService()
-        .getConfigurations("booking", "general", "social");
+      const config =
+        await this.props.services.configurationService.getConfigurations(
+          "booking",
+          "general",
+          "social",
+        );
 
       logger.debug(
         { appId: appData._id, appointmentId: appointment._id },
         "Retrieved configuration for email notification",
       );
 
+      const organization =
+        await this.props.services.organizationService.getOrganization();
+      if (!organization) {
+        logger.error(
+          { appId: appData._id, appointmentId: appointment._id },
+          "Organization not found",
+        );
+        return;
+      }
+
       const args = getArguments({
         appointment,
         config,
+        adminUrl: getAdminUrl(),
+        websiteUrl: getWebsiteUrl(organization.slug, config.general.domain),
         customer: appointment.customer,
         useAppointmentTimezone: true,
         locale: config.general.language,
@@ -327,9 +348,10 @@ export default class CustomerEmailNotificationConnectedApp
         "Getting event template",
       );
 
-      const eventTemplate = await this.props.services
-        .TemplatesService()
-        .getTemplate(data.event.templateId);
+      const eventTemplate =
+        await this.props.services.templatesService.getTemplate(
+          data.event.templateId,
+        );
       if (!eventTemplate) {
         logger.error(
           {
@@ -384,9 +406,8 @@ export default class CustomerEmailNotificationConnectedApp
         "Getting email template",
       );
 
-      const template = await this.props.services
-        .TemplatesService()
-        .getTemplate(templateId);
+      const template =
+        await this.props.services.templatesService.getTemplate(templateId);
       if (!template) {
         logger.error(
           { appId: appData._id, appointmentId: appointment._id, templateId },
@@ -414,7 +435,7 @@ export default class CustomerEmailNotificationConnectedApp
         "Sending email notification",
       );
 
-      await this.props.services.NotificationService().sendEmail({
+      await this.props.services.notificationService.sendEmail({
         email: {
           to: appointment.fields.email,
           subject: templateSafeWithError(subject, args),

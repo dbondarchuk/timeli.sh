@@ -1,7 +1,7 @@
 "use client";
 
 import { useI18n } from "@vivid/i18n";
-import * as React from "react";
+import React from "react";
 import { Label } from "../label";
 import {
   Select,

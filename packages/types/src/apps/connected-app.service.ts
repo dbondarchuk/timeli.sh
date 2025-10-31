@@ -1,11 +1,4 @@
-import { IServicesContainer } from "../services";
-import {
-  ConnectedAppData,
-  ConnectedAppResponse,
-  ConnectedAppUpdateModel,
-} from "./connected-app.data";
-
-import type { Db } from "mongodb";
+import { ConnectedAppData, ConnectedAppResponse } from "./connected-app.data";
 
 export interface ApiRequest extends Request {
   // query: Partial<{
@@ -60,9 +53,3 @@ export interface IOAuthConnectedApp<TData = any, TToken = any>
     data?: any,
   ) => Promise<ConnectedAppResponse>;
 }
-
-export type IConnectedAppProps = {
-  update: (updateMode: ConnectedAppUpdateModel) => Promise<void>;
-  services: IServicesContainer;
-  getDbConnection: () => Promise<Db>;
-};

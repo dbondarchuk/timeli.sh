@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 
 import { cn } from "@vivid/ui";
 import { Check } from "lucide-react";

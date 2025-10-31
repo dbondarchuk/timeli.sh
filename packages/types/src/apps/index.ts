@@ -4,6 +4,7 @@ export * from "./assets";
 export * from "./availability-provider";
 export * from "./calendars";
 export * from "./connected-app.data";
+export * from "./connected-app.props";
 export * from "./connected-app.service";
 export * from "./customer-hooks";
 export * from "./injectors";

@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { AppointmentFields } from "@vivid/types";
 import React, { useMemo } from "react";
 import { useForm } from "react-hook-form";
-import z from "zod";
+import * as z from "zod";
 
 import {
   EmailField,
@@ -28,6 +28,7 @@ import { useI18n } from "@vivid/i18n";
 import { deepEqual } from "@vivid/utils";
 import { DateTime as LuxonDateTime } from "luxon";
 import {
+  WaitlistPublicAllKeys,
   WaitlistPublicKeys,
   waitlistPublicNamespace,
   WaitlistPublicNamespace,
@@ -39,14 +40,16 @@ const formSchema = waitlistRequestFormSchemaBase.and(
   z
     .object({
       asSoonAsPossible: z.literal(false, {
-        errorMap: () => ({ message: "waitlist.asSoonAsPossible.required" }),
+        error:
+          "app_waitlist_public.block.asSoonAsPossible.required" satisfies WaitlistPublicAllKeys,
       }),
       dates: waitlistRequestDates,
     })
     .or(
       z.object({
         asSoonAsPossible: z.literal(true, {
-          errorMap: () => ({ message: "waitlist.asSoonAsPossible.required" }),
+          error:
+            "app_waitlist_public.block.asSoonAsPossible.required" satisfies WaitlistPublicAllKeys,
         }),
         dates: z.any().optional(),
       }),

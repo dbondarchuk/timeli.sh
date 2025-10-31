@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as z from "zod";
 
 export const modifyEnabledType = [
   "disabled",
@@ -56,9 +56,9 @@ export type AppointmentReschedulePolicyAction = z.infer<
 
 const baseAppointmentCancellationPolicyRowSchema = z.object({
   action: appointmentCancellationPolicyAction,
-  refundFees: z.coerce.boolean().optional(),
+  refundFees: z.coerce.boolean<boolean>().optional(),
   refundPercentage: z.coerce
-    .number({ message: "cancellation.policy.refundPercentage.required" })
+    .number<number>("cancellation.policy.refundPercentage.required")
     .min(0, { message: "cancellation.policy.refundPercentage.min" })
     .max(100, { message: "cancellation.policy.refundPercentage.max" })
     .optional(),
@@ -72,7 +72,7 @@ const baseAppointmentCancellationPolicyRowSchema = z.object({
 const baseAppointmentReschedulePolicyRowSchema = z.object({
   action: appointmentReschedulePolicyAction,
   paymentPercentage: z.coerce
-    .number({ message: "cancellation.policy.paymentPercentage.required" })
+    .number<number>("cancellation.policy.paymentPercentage.required")
     .min(0, { message: "cancellation.policy.paymentPercentage.min" })
     .max(100, { message: "cancellation.policy.paymentPercentage.max" })
     .optional(),
@@ -128,12 +128,12 @@ const baseAppointmentReschedulePolicyRowSuperRefineFunction = (
 export const appointmentCancellationPolicyRowSchema = z
   .object({
     minutesToAppointment: z.coerce
-      .number()
+      .number<number>()
       .int({
-        message: "cancellation.policy.minutesToAppointment.required",
+        error: "cancellation.policy.minutesToAppointment.required",
       })
       .positive({
-        message: "cancellation.policy.minutesToAppointment.required",
+        error: "cancellation.policy.minutesToAppointment.required",
       }),
     ...baseAppointmentCancellationPolicyRowSchema.shape,
   })
@@ -189,12 +189,12 @@ export type AppointmentCancellationPolicyList = z.infer<
 export const appointmentReschedulePolicyRowSchema = z
   .object({
     minutesToAppointment: z.coerce
-      .number()
+      .number<number>()
       .int({
-        message: "cancellation.policy.minutesToAppointment.required",
+        error: "cancellation.policy.minutesToAppointment.required",
       })
       .positive({
-        message: "cancellation.policy.minutesToAppointment.required",
+        error: "cancellation.policy.minutesToAppointment.required",
       }),
     ...baseAppointmentReschedulePolicyRowSchema.shape,
   })
@@ -250,7 +250,7 @@ export const appointmentCancellationSchema = z.discriminatedUnion("enabled", [
   }),
   z.object({
     enabled: enabledSchema.exclude(["disabled"]),
-    doNotAllowIfRescheduled: z.coerce.boolean().optional(),
+    doNotAllowIfRescheduled: z.coerce.boolean<boolean>().optional(),
     policies: appointmentCancellationPolicyListSchema,
     defaultPolicy: defaultAppointmentCancellationPolicyRowSchema,
   }),
@@ -267,12 +267,12 @@ export const appointmentRescheduleSchema = z.discriminatedUnion("enabled", [
   z.object({
     enabled: enabledSchema.exclude(["disabled"]),
     maxReschedules: z.coerce
-      .number()
+      .number<number>()
       .int({
-        message: "cancellation.policy.maxReschedules.required",
+        error: "cancellation.policy.maxReschedules.required",
       })
       .min(0, {
-        message: "cancellation.policy.maxReschedules.required",
+        error: "cancellation.policy.maxReschedules.required",
       })
       .optional(),
     policies: appointmentReschedulePolicyListSchema.optional(),

@@ -1,6 +1,6 @@
 import { getModifyAppointmentInformationRequestResult } from "@/utils/appointments/get-modify-appointment-request";
+import { getServicesContainer } from "@/utils/utils";
 import { getLoggerFactory } from "@vivid/logger";
-import { ServicesContainer } from "@vivid/services";
 import {
   ModifyAppointmentInformation,
   ModifyAppointmentRequest,
@@ -21,7 +21,7 @@ const processRescheduleRequest = async (
   const logger = getLoggerFactory("API/event/[appointmentId]/modify")(
     "processRescheduleRequest",
   );
-
+  const servicesContainer = await getServicesContainer();
   const appointmentId = information.id;
   logger.debug(
     {
@@ -34,7 +34,7 @@ const processRescheduleRequest = async (
   );
 
   const isAvailable =
-    await ServicesContainer.EventsService().verifyTimeAvailability(
+    await servicesContainer.eventsService.verifyTimeAvailability(
       request.dateTime,
       information.duration,
     );
@@ -52,7 +52,7 @@ const processRescheduleRequest = async (
 
   let paymentIntentId = request.paymentIntentId;
   const config =
-    await ServicesContainer.ConfigurationService().getConfiguration("booking");
+    await servicesContainer.configurationService.getConfiguration("booking");
 
   if (
     information.reschedulePolicy === "paymentRequired" &&
@@ -68,7 +68,7 @@ const processRescheduleRequest = async (
     }
 
     const paymentIntent =
-      await ServicesContainer.PaymentsService().getIntent(paymentIntentId);
+      await servicesContainer.paymentsService.getIntent(paymentIntentId);
     if (!paymentIntent) {
       logger.warn({ paymentIntentId }, "Payment intent not found");
       return NextResponse.json(
@@ -104,13 +104,13 @@ const processRescheduleRequest = async (
     }
 
     const { name: appName } =
-      await ServicesContainer.ConnectedAppsService().getApp(
+      await servicesContainer.connectedAppsService.getApp(
         config.payments?.paymentAppId,
       );
 
     logger.debug({ appName, paymentIntentId }, "Creating payment");
 
-    const payment = (await ServicesContainer.PaymentsService().createPayment({
+    const payment = (await servicesContainer.paymentsService.createPayment({
       amount: information.paymentAmount,
       status: "paid",
       paidAt: new Date(),
@@ -125,7 +125,7 @@ const processRescheduleRequest = async (
       fees: paymentIntent.fees,
     })) as OnlinePayment;
 
-    await ServicesContainer.EventsService().addAppointmentHistory({
+    await servicesContainer.eventsService.addAppointmentHistory({
       appointmentId,
       type: "paymentAdded",
       data: {
@@ -146,7 +146,7 @@ const processRescheduleRequest = async (
     logger.warn("Payment not required but payment intent provided");
 
     const paymentIntent =
-      await ServicesContainer.PaymentsService().getIntent(paymentIntentId);
+      await servicesContainer.paymentsService.getIntent(paymentIntentId);
 
     if (!paymentIntent) {
       logger.warn({ paymentIntentId }, "Payment intent not found");
@@ -160,7 +160,7 @@ const processRescheduleRequest = async (
     }
   }
 
-  await ServicesContainer.EventsService().rescheduleAppointment(
+  await servicesContainer.eventsService.rescheduleAppointment(
     appointmentId,
     request.dateTime,
     information.duration,
@@ -192,7 +192,7 @@ const processCancelRequest = async (
   const logger = getLoggerFactory("API/event/[appointmentId]/modify")(
     "processCancelRequest",
   );
-
+  const servicesContainer = await getServicesContainer();
   const appointmentId = information.id;
 
   logger.debug({ appointmentId }, "Processing cancel request");
@@ -205,7 +205,7 @@ const processCancelRequest = async (
     logger.debug({ appointmentId }, "Refunding payments");
 
     const allPayments =
-      await ServicesContainer.PaymentsService().getAppointmentPayments(
+      await servicesContainer.paymentsService.getAppointmentPayments(
         appointmentId,
       );
     const paymentsToRefund = allPayments.filter(
@@ -246,7 +246,7 @@ const processCancelRequest = async (
         "Refunding payment",
       );
 
-      const result = await ServicesContainer.PaymentsService().refundPayment(
+      const result = await servicesContainer.paymentsService.refundPayment(
         payment._id,
         amountToRefund,
       );
@@ -281,7 +281,7 @@ const processCancelRequest = async (
     );
   }
 
-  await ServicesContainer.EventsService().changeAppointmentStatus(
+  await servicesContainer.eventsService.changeAppointmentStatus(
     appointmentId,
     "declined",
   );
@@ -297,7 +297,7 @@ const processCancelRequest = async (
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ appointmentId: string }> },
+  { params }: RouteContext<"/api/events/[appointmentId]/modify">,
 ) {
   const logger = getLoggerFactory("API/event/[appointmentId]/modify")("POST");
   const { appointmentId } = await params;

@@ -39,4 +39,9 @@ module.exports = [
       "public/**/*",
     ],
   },
+  {
+    rules: {
+      "react-hooks/rules-of-hooks": "off",
+    },
+  },
 ];

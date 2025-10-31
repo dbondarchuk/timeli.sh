@@ -1,6 +1,6 @@
 import { renderToStaticMarkup } from "@vivid/email-builder/static";
 import { AllKeys } from "@vivid/i18n";
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
 import {
   BookingConfiguration,
   ConnectedAppData,
@@ -12,7 +12,9 @@ import {
 } from "@vivid/types";
 import {
   durationToTime,
+  getAdminUrl,
   getArguments,
+  getWebsiteUrl,
   templateSafeWithError,
 } from "@vivid/utils";
 import { DateTime } from "luxon";
@@ -31,11 +33,14 @@ import {
 export class WaitlistNotificationsConnectedApp
   implements IConnectedApp, IWaitlistHook
 {
-  protected readonly loggerFactory = getLoggerFactory(
-    "WaitlistNotificationsConnectedApp",
-  );
+  protected readonly loggerFactory: LoggerFactory;
 
-  public constructor(protected readonly props: IConnectedAppProps) {}
+  public constructor(protected readonly props: IConnectedAppProps) {
+    this.loggerFactory = getLoggerFactory(
+      "WaitlistNotificationsConnectedApp",
+      props.companyId,
+    );
+  }
 
   public async processRequest(
     appData: ConnectedAppData,
@@ -144,9 +149,12 @@ export class WaitlistNotificationsConnectedApp
     );
 
     try {
-      const config = await this.props.services
-        .ConfigurationService()
-        .getConfigurations("booking", "general", "social");
+      const config =
+        await this.props.services.configurationService.getConfigurations(
+          "booking",
+          "general",
+          "social",
+        );
 
       if (data.notifyOnNewEntry) {
         await this.sendUserNotification(
@@ -201,6 +209,21 @@ export class WaitlistNotificationsConnectedApp
         "Retrieved configuration for email notification",
       );
 
+      const organization =
+        await this.props.services.organizationService.getOrganization();
+      if (!organization) {
+        logger.error(
+          { appId: appData._id, entryId: entry._id },
+          "Organization not found",
+        );
+        throw new Error("Organization not found");
+      }
+
+      const adminUrl = getAdminUrl();
+      const websiteUrl = getWebsiteUrl(
+        organization.slug,
+        config.general.domain,
+      );
       const args = getArguments({
         appointment: null,
         config,
@@ -210,6 +233,8 @@ export class WaitlistNotificationsConnectedApp
         additionalProperties: {
           waitlistEntry: getWaitlistEntryArgs(entry),
         },
+        adminUrl,
+        websiteUrl,
       });
 
       logger.debug(
@@ -219,10 +244,11 @@ export class WaitlistNotificationsConnectedApp
 
       const data = appData.data as WaitlistNotificationsConfiguration;
 
+      const url = getAdminUrl();
       const { template: description, subject } = await getEmailTemplate(
         initiator,
         config.general.language,
-        config.general.url,
+        url,
         entry,
         args,
       );
@@ -244,7 +270,7 @@ export class WaitlistNotificationsConnectedApp
         "Sending email notification",
       );
 
-      await this.props.services.NotificationService().sendEmail({
+      await this.props.services.notificationService.sendEmail({
         email: {
           to: recipientEmail,
           subject: subject,
@@ -299,6 +325,21 @@ export class WaitlistNotificationsConnectedApp
         "Retrieved configuration for email notification",
       );
 
+      const organization =
+        await this.props.services.organizationService.getOrganization();
+      if (!organization) {
+        logger.error(
+          { appId: appData._id, entryId: entry._id },
+          "Organization not found",
+        );
+        throw new Error("Organization not found");
+      }
+
+      const adminUrl = getAdminUrl();
+      const websiteUrl = getWebsiteUrl(
+        organization.slug,
+        config.general.domain,
+      );
       const args = getArguments({
         appointment: null,
         config,
@@ -308,6 +349,8 @@ export class WaitlistNotificationsConnectedApp
         additionalProperties: {
           waitlistEntry: getWaitlistEntryArgs(entry),
         },
+        adminUrl,
+        websiteUrl,
       });
 
       logger.debug(
@@ -338,9 +381,9 @@ export class WaitlistNotificationsConnectedApp
 
       const subject = templateSafeWithError(data.customerNewEntrySubject, args);
 
-      const template = await this.props.services
-        .TemplatesService()
-        .getTemplate(data.customerNewEntryTemplateId);
+      const template = await this.props.services.templatesService.getTemplate(
+        data.customerNewEntryTemplateId,
+      );
 
       if (!template) {
         logger.warn(
@@ -368,7 +411,7 @@ export class WaitlistNotificationsConnectedApp
         "Sending email notification",
       );
 
-      await this.props.services.NotificationService().sendEmail({
+      await this.props.services.notificationService.sendEmail({
         email: {
           to: recipientEmail,
           subject: subject,

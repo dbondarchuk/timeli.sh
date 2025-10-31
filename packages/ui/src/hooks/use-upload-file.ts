@@ -1,8 +1,8 @@
 import { UploadedFile } from "@vivid/types";
-import * as React from "react";
+import React from "react";
 
 import { toast } from "sonner";
-import { z } from "zod";
+import { ZodError } from "zod";
 
 import pLimit from "p-limit";
 
@@ -30,7 +30,7 @@ const uploadFilesWithProgress = ({
   status: number;
   body: string;
 }> => {
-  const url = `/admin/api/assets`;
+  const url = `/api/assets`;
 
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
@@ -155,7 +155,7 @@ export function useUploadFile({
 export function getErrorMessage(err: unknown) {
   const unknownError = "Something went wrong, please try again later.";
 
-  if (err instanceof z.ZodError) {
+  if (err instanceof ZodError) {
     const errors = err.issues.map((issue) => {
       return issue.message;
     });

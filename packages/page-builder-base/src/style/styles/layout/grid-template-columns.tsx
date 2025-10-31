@@ -8,7 +8,7 @@ import {
   InputGroupSuffixClasses,
 } from "@vivid/ui";
 import { Grid3X3 } from "lucide-react";
-import { z } from "zod";
+import * as z from "zod";
 import { StyleDefinition } from "../../types";
 import { GridTemplateColumnsDialog } from "./grid-template-columns-dialog";
 

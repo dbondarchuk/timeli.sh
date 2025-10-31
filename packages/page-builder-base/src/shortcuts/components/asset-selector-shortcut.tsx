@@ -63,7 +63,7 @@ export const AssetSelectorShortcut = <T extends BaseStyleDictionary>({
               ...variant,
               value: setStyleValue(value, variant.value),
             }));
-            newStyles[styleName] = updatedVariants;
+            newStyles[styleName] = updatedVariants as StyleValue<T>[keyof T];
           }
         } else {
           // Create new style variant
@@ -73,7 +73,7 @@ export const AssetSelectorShortcut = <T extends BaseStyleDictionary>({
               state: [],
               value: setStyleValue(value, null),
             },
-          ];
+          ] as unknown as StyleValue<T>[keyof T];
         }
       });
     } else {
@@ -85,7 +85,8 @@ export const AssetSelectorShortcut = <T extends BaseStyleDictionary>({
             ...variant,
             value,
           }));
-          newStyles[shortcut.targetStyle] = updatedVariants;
+          newStyles[shortcut.targetStyle] =
+            updatedVariants as StyleValue<T>[keyof T];
         }
       } else {
         // Create new style variant
@@ -95,7 +96,7 @@ export const AssetSelectorShortcut = <T extends BaseStyleDictionary>({
             state: [],
             value,
           },
-        ];
+        ] as unknown as StyleValue<T>[keyof T];
       }
     }
 

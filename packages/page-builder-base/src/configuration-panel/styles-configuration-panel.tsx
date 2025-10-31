@@ -3,7 +3,7 @@
 import { BaseBlockProps as BaseBlockPropsType } from "@vivid/builder";
 import { AllKeys, useI18n } from "@vivid/i18n";
 import React, { useCallback, useMemo, useState } from "react";
-import { z } from "zod";
+import * as z from "zod";
 import { Shortcuts } from "../shortcuts";
 import { Shortcut } from "../shortcuts/types";
 import { DefaultCSSProperties, StyleValue } from "../style/css-renderer";

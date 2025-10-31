@@ -1,4 +1,4 @@
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
 import {
   AppJobRequest,
   Appointment,
@@ -26,15 +26,17 @@ import {
 export default class ScheduledNotificationsConnectedApp
   implements IConnectedApp, IScheduled, IAppointmentHook
 {
-  protected readonly loggerFactory = getLoggerFactory(
-    "ScheduledNotificationsConnectedApp",
-  );
+  protected readonly loggerFactory: LoggerFactory;
   protected readonly repository: ScheduledNotificationsRepository;
   protected readonly jobProcessor: ScheduledNotificationsJobProcessor;
 
   public constructor(protected readonly props: IConnectedAppProps) {
     this.repository = new ScheduledNotificationsRepository(props);
     this.jobProcessor = new ScheduledNotificationsJobProcessor(props);
+    this.loggerFactory = getLoggerFactory(
+      "ScheduledNotificationsConnectedApp",
+      props.companyId,
+    );
   }
 
   public async processRequest(
@@ -128,15 +130,14 @@ export default class ScheduledNotificationsConnectedApp
             "Processing default request - setting up scheduled notifications app",
           );
 
-          const defaultApps = await this.props.services
-            .ConfigurationService()
-            .getConfiguration("defaultApps");
+          const defaultApps =
+            await this.props.services.configurationService.getConfiguration(
+              "defaultApps",
+            );
 
           try {
             const emailAppId = defaultApps.email?.appId;
-            await this.props.services
-              .ConnectedAppsService()
-              .getApp(emailAppId!);
+            await this.props.services.connectedAppsService.getApp(emailAppId);
 
             logger.debug(
               { appId: appData._id, emailAppId },
@@ -239,7 +240,7 @@ export default class ScheduledNotificationsConnectedApp
       return;
     }
 
-    await this.props.services.JobService().scheduleJob({
+    await this.props.services.jobService.scheduleJob({
       type: "app",
       executeAt: "now",
       appId: appData._id,
@@ -257,7 +258,7 @@ export default class ScheduledNotificationsConnectedApp
     const logger = this.loggerFactory("onAppointmentStatusChanged");
     logger.debug({ appId: appData._id, appointment }, "On appointment updated");
 
-    await this.props.services.JobService().scheduleJob({
+    await this.props.services.jobService.scheduleJob({
       type: "app",
       executeAt: "now",
       appId: appData._id,
@@ -283,7 +284,7 @@ export default class ScheduledNotificationsConnectedApp
       "On appointment rescheduled",
     );
 
-    await this.props.services.JobService().scheduleJob({
+    await this.props.services.jobService.scheduleJob({
       type: "app",
       executeAt: "now",
       appId: appData._id,
@@ -323,7 +324,7 @@ export default class ScheduledNotificationsConnectedApp
       "Successfully created scheduled notification, scheduling update scheduled notification job",
     );
 
-    await this.props.services.JobService().scheduleJob({
+    await this.props.services.jobService.scheduleJob({
       type: "app",
       executeAt: "now",
       appId: appData._id,
@@ -366,7 +367,7 @@ export default class ScheduledNotificationsConnectedApp
       "Successfully updated scheduled notification, scheduling update scheduled notification job",
     );
 
-    await this.props.services.JobService().scheduleJob({
+    await this.props.services.jobService.scheduleJob({
       type: "app",
       executeAt: "now",
       appId: appData._id,
@@ -402,7 +403,7 @@ export default class ScheduledNotificationsConnectedApp
       "Successfully deleted scheduled notifications, deleting scheduled notification jobs",
     );
 
-    await this.props.services.JobService().scheduleJob({
+    await this.props.services.jobService.scheduleJob({
       type: "app",
       appId: appData._id,
       executeAt: "now",

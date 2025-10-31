@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as z from "zod";
 
 export const socialType = z.enum(
   [
@@ -15,13 +15,14 @@ export const socialType = z.enum(
 
 export type SocialLinkType = z.infer<typeof socialType>;
 
-export const socialTypeLabels = Object.keys(socialType.Values).reduce(
-  (acc, cur) => ({
-    ...acc,
-    [cur]: `${cur[0].toUpperCase()}${cur.substring(1)}`,
-  }),
-  {} as Record<SocialLinkType, string>,
-);
+export const socialTypeLabels: Record<SocialLinkType, string> =
+  socialType.options.reduce(
+    (acc, cur) => ({
+      ...acc,
+      [cur]: `${cur[0].toUpperCase()}${cur.substring(1)}`,
+    }),
+    {} as Record<SocialLinkType, string>,
+  );
 
 export const socialLinkSchema = z.object({
   url: z.string().min(3, "common.url.invalid"),

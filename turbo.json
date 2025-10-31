@@ -1,5 +1,11 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "globalEnv": [
+    "NEXT_RUNTIME",
+    "PUBLIC_DOMAIN",
+    "ADMIN_DOMAIN",
+    "ORGANIZATION_SLUG"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],

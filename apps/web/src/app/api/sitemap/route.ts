@@ -1,5 +1,5 @@
+import { getServicesContainer, getWebsiteUrl } from "@/utils/utils";
 import { getLoggerFactory } from "@vivid/logger";
-import { ServicesContainer } from "@vivid/services";
 import { NextRequest } from "next/server";
 
 type Sitemap = {
@@ -37,10 +37,10 @@ export async function GET(req: NextRequest) {
     "Processing sitemap.xml request",
   );
 
-  const { url } =
-    await ServicesContainer.ConfigurationService().getConfiguration("general");
+  const url = await getWebsiteUrl();
+  const servicesContainer = await getServicesContainer();
 
-  const pages = await ServicesContainer.PagesService().getPages({
+  const pages = await servicesContainer.pagesService.getPages({
     publishStatus: [true],
   });
 

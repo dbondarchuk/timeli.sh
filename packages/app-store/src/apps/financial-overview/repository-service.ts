@@ -1,4 +1,4 @@
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
 import {
   DateRange,
   IConnectedAppProps,
@@ -17,14 +17,18 @@ import {
 const PAYMENTS_COLLECTION_NAME = "payments";
 
 export default class FinancialOverviewService {
-  protected readonly loggerFactory = getLoggerFactory(
-    "FinancialOverviewService",
-  );
+  protected readonly loggerFactory: LoggerFactory;
 
   public constructor(
+    protected readonly companyId: string,
     protected readonly getDbConnection: IConnectedAppProps["getDbConnection"],
     protected readonly services: IConnectedAppProps["services"],
-  ) {}
+  ) {
+    this.loggerFactory = getLoggerFactory(
+      "FinancialOverviewService",
+      companyId,
+    );
+  }
 
   public async getFinancialMetrics(
     dateRange?: DateRange,
@@ -36,7 +40,11 @@ export default class FinancialOverviewService {
     const appointments = db.collection("appointments");
 
     // Build match criteria for date filtering
-    const $and: any[] = [];
+    const $and: any[] = [
+      {
+        companyId: this.companyId,
+      },
+    ];
 
     if (dateRange?.start || dateRange?.end) {
       if (dateRange.start) {
@@ -56,7 +64,7 @@ export default class FinancialOverviewService {
     }
 
     const pipeline = [
-      ...($and.length > 0 ? [{ $match: { $and } }] : []),
+      { $match: { $and } },
       {
         $lookup: {
           from: "payments",
@@ -206,7 +214,11 @@ export default class FinancialOverviewService {
     const payments = db.collection<Payment>(PAYMENTS_COLLECTION_NAME);
 
     // Build match criteria for date filtering
-    const $and: Filter<Payment>[] = [];
+    const $and: Filter<Payment>[] = [
+      {
+        companyId: this.companyId,
+      },
+    ];
 
     if (dateRange?.start || dateRange?.end) {
       if (dateRange.start) {
@@ -226,7 +238,7 @@ export default class FinancialOverviewService {
     }
 
     const pipeline = [
-      ...($and.length > 0 ? [{ $match: { $and } }] : []),
+      { $match: { $and } },
       {
         $lookup: {
           from: "appointments",
@@ -295,7 +307,11 @@ export default class FinancialOverviewService {
     const appointments = db.collection("appointments");
 
     // Build match criteria for date filtering
-    const $and: any[] = [];
+    const $and: any[] = [
+      {
+        companyId: this.companyId,
+      },
+    ];
 
     if (dateRange?.start || dateRange?.end) {
       if (dateRange.start) {
@@ -315,7 +331,7 @@ export default class FinancialOverviewService {
     }
 
     const pipeline = [
-      ...($and.length > 0 ? [{ $match: { $and } }] : []),
+      { $match: { $and } },
       {
         $lookup: {
           from: "payments",
@@ -470,7 +486,11 @@ export default class FinancialOverviewService {
     const appointments = db.collection("appointments");
 
     // Build match criteria for date filtering
-    const $and: any[] = [];
+    const $and: any[] = [
+      {
+        companyId: this.companyId,
+      },
+    ];
 
     if (dateRange?.start || dateRange?.end) {
       if (dateRange.start) {
@@ -490,7 +510,7 @@ export default class FinancialOverviewService {
     }
 
     const pipeline = [
-      ...($and.length > 0 ? [{ $match: { $and } }] : []),
+      { $match: { $and } },
       {
         $lookup: {
           from: "payments",
@@ -618,7 +638,11 @@ export default class FinancialOverviewService {
     const appointments = db.collection("appointments");
 
     // Build match criteria for date filtering
-    const $and: any[] = [];
+    const $and: any[] = [
+      {
+        companyId: this.companyId,
+      },
+    ];
 
     if (dateRange?.start || dateRange?.end) {
       if (dateRange.start) {
@@ -638,7 +662,7 @@ export default class FinancialOverviewService {
     }
 
     const pipeline = [
-      ...($and.length > 0 ? [{ $match: { $and } }] : []),
+      { $match: { $and } },
       {
         $lookup: {
           from: "appointments",

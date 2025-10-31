@@ -1,7 +1,7 @@
 import { useI18n } from "@vivid/i18n";
 import { Combobox } from "@vivid/ui";
 import { Crop } from "lucide-react";
-import { z } from "zod";
+import * as z from "zod";
 import { StyleDefinition } from "../../types";
 
 const overflowKeys = ["visible", "hidden", "scroll", "auto", "clip"] as const;

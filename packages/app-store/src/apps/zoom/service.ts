@@ -1,4 +1,4 @@
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
 import {
   ApiRequest,
   Appointment,
@@ -17,7 +17,7 @@ import {
   IOAuthConnectedApp,
   WithDatabaseId,
 } from "@vivid/types";
-import { encrypt, stripMarkdown } from "@vivid/utils";
+import { encrypt, getAdminUrl, stripMarkdown } from "@vivid/utils";
 import { DateTime } from "luxon";
 import { env } from "process";
 import {
@@ -44,9 +44,11 @@ export class ZoomConnectedApp
     ICalendarBusyTimeProvider,
     IAppointmentHook
 {
-  protected readonly loggerFactory = getLoggerFactory("ZoomConnectedApp");
+  protected readonly loggerFactory: LoggerFactory;
 
-  public constructor(protected readonly props: IConnectedAppProps) {}
+  public constructor(protected readonly props: IConnectedAppProps) {
+    this.loggerFactory = getLoggerFactory("ZoomConnectedApp", props.companyId);
+  }
 
   processRequest?:
     | ((appData: ConnectedAppData, data: any) => Promise<any>)
@@ -58,11 +60,8 @@ export class ZoomConnectedApp
 
     try {
       const clientId = env.ZOOM_APP_CLIENT_ID!;
-      const { url } = await this.props.services
-        .ConfigurationService()
-        .getConfiguration("general");
-
-      const redirectUri = `${url}/api/apps/oauth/zoom/redirect`;
+      const url = getAdminUrl();
+      const redirectUri = `${url}/apps/${this.props.companyId}/oauth/zoom/redirect`;
 
       const params = {
         response_type: "code",
@@ -126,14 +125,11 @@ export class ZoomConnectedApp
 
       logger.debug({ appId }, "Exchanging authorization code for tokens");
 
-      const { url: webappUrl } = await this.props.services
-        .ConfigurationService()
-        .getConfiguration("general");
-
+      const webAdminUrl = getAdminUrl();
       const clientId = env.ZOOM_APP_CLIENT_ID!;
       const clientSecret = env.ZOOM_APP_CLIENT_SECRET!;
 
-      const redirectUri = `${webappUrl}/api/apps/oauth/zoom/redirect`;
+      const redirectUri = `${webAdminUrl}/apps/${this.props.companyId}/oauth/zoom/redirect`;
       const authHeader = `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString("base64")}`;
       const result = await fetch(
         `${ZOOM_OAUTH_TOKEN_URL}?grant_type=authorization_code&code=${code}&redirect_uri=${redirectUri}`,
@@ -337,9 +333,10 @@ export class ZoomConnectedApp
       this.props.update,
     );
 
-    const { timeZone } = await this.props.services
-      .ConfigurationService()
-      .getConfiguration("general");
+    const { timeZone } =
+      await this.props.services.configurationService.getConfiguration(
+        "general",
+      );
 
     const results: ZoomMeeting[] = [];
     let nextPageToken: string | undefined = undefined;
@@ -681,9 +678,9 @@ export class ZoomConnectedApp
     client: ZoomApiClient,
     appointment: AppointmentEvent,
   ) {
-    const option = await this.props.services
-      .ServicesService()
-      .getOption(appointment.option._id);
+    const option = await this.props.services.servicesService.getOption(
+      appointment.option._id,
+    );
     const description = option?.description;
 
     const userSettings = await this.getUserSettings(client);

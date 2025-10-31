@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as z from "zod";
 import {
   AppointmentCancellationPolicyAction,
   AppointmentReschedulePolicyAction,
@@ -53,9 +53,9 @@ export type AppointmentEvent = {
 };
 
 export const appointmentEventSchema = z.object({
-  totalDuration: z.coerce.number().int().min(1),
-  totalPrice: z.coerce.number().optional(),
-  dateTime: z.coerce.date(),
+  totalDuration: z.coerce.number<number>().int().min(1),
+  totalPrice: z.coerce.number<number>().optional(),
+  dateTime: z.coerce.date<Date>(),
   fields: z.record(z.string(), z.any()),
   optionId: z.string().min(1, "appointments.event.optionId.required"),
   addonsIds: zUniqueArray(
@@ -67,7 +67,7 @@ export const appointmentEventSchema = z.object({
   discount: z
     .object({
       code: z.string().min(1, "appointments.event.discount.code.required"),
-      discountAmount: z.coerce.number().min(1),
+      discountAmount: z.coerce.number<number>().min(1),
     })
     .optional(),
   data: z.record(z.string(), z.any()).optional(),
@@ -82,29 +82,21 @@ export const appointmentRequestSchema = z.object({
     (x) => x,
     "appointments.request.addonsIds.unique",
   ).optional(),
-  dateTime: z.coerce.date({
-    message: "appointments.request.dateTime.required",
+  dateTime: z.coerce.date<Date>({
+    error: "appointments.request.dateTime.required",
   }),
   timeZone: zTimeZone,
   duration: z.coerce
-    .number({ message: "appointments.request.duration.required" })
+    .number<number>({ error: "appointments.request.duration.required" })
     .int("appointments.request.duration.positive")
     .min(1, "appointments.request.duration.positive")
     .max(60 * 24 * 1, "appointments.request.duration.max")
     .optional(),
-  fields: z
-    .object({
-      email: z
-        .string()
-        .email("appointments.request.fields.email.required")
-        .trim(),
-      name: z
-        .string()
-        .min(1, "appointments.request.fields.name.required")
-        .trim(),
-      phone: zPhone,
-    })
-    .passthrough(),
+  fields: z.looseObject({
+    email: z.email("appointments.request.fields.email.required").trim(),
+    name: z.string().min(1, "appointments.request.fields.name.required").trim(),
+    phone: zPhone,
+  }),
   promoCode: zOptionalOrMinLengthString(
     1,
     "appointments.request.promoCode.min",
@@ -123,16 +115,16 @@ export const baseModifyAppointmentRequestSchema = z.object({
   fields: z.discriminatedUnion("type", [
     z.object({
       type: z.literal("email"),
-      email: z.string().email("appointments.request.fields.email.required"),
-      dateTime: z.coerce.date({
-        message: "appointments.request.dateTime.required",
+      email: z.email({ error: "appointments.request.fields.email.required" }),
+      dateTime: z.coerce.date<Date>({
+        error: "appointments.request.dateTime.required",
       }),
     }),
     z.object({
       type: z.literal("phone"),
       phone: z.string().min(1, "appointments.request.fields.phone.required"),
-      dateTime: z.coerce.date({
-        message: "appointments.request.dateTime.required",
+      dateTime: z.coerce.date<Date>({
+        error: "appointments.request.dateTime.required",
       }),
     }),
   ]),
@@ -142,12 +134,10 @@ export const modifyAppointmentType = ["cancel", "reschedule"] as const;
 export type ModifyAppointmentType = (typeof modifyAppointmentType)[number];
 export const modifyAppointmentTypeSchema = z.enum(modifyAppointmentType);
 
-export const modifyAppointmentInformationRequestSchema =
-  baseModifyAppointmentRequestSchema.merge(
-    z.object({
-      type: modifyAppointmentTypeSchema,
-    }),
-  );
+export const modifyAppointmentInformationRequestSchema = z.object({
+  ...baseModifyAppointmentRequestSchema.shape,
+  type: modifyAppointmentTypeSchema,
+});
 
 export type ModifyAppointmentInformationRequest = z.infer<
   typeof modifyAppointmentInformationRequestSchema
@@ -160,8 +150,8 @@ export const modifyAppointmentRequestSchema = z.discriminatedUnion("type", [
   }),
   z.object({
     type: modifyAppointmentTypeSchema.extract(["reschedule"]),
-    dateTime: z.coerce.date({
-      message: "appointments.request.dateTime.required",
+    dateTime: z.coerce.date<Date>({
+      error: "appointments.request.dateTime.required",
     }),
     paymentIntentId: zOptionalOrMinLengthString(
       1,

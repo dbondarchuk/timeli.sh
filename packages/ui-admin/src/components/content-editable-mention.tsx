@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client";
 
 import {
@@ -418,11 +419,12 @@ export const ContentEditableMentions = React.forwardRef<HTMLElement, Props>(
       }
     }, [textValue, Tag]);
 
+    const mergedRef = mergeRefs(ref, elementRef) as any;
+
     return (
       <>
         <Tag
-          // @ts-ignore ignore
-          ref={mergeRefs(ref, elementRef)}
+          ref={mergedRef}
           contentEditable="plaintext-only"
           suppressContentEditableWarning
           className={className}

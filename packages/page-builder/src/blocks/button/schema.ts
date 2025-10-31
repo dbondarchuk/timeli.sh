@@ -1,7 +1,7 @@
 import { BaseReaderBlockProps, generateId } from "@vivid/builder";
 import { COLORS } from "@vivid/page-builder-base/style";
 import { Prettify } from "@vivid/types";
-import z from "zod";
+import * as z from "zod";
 import { InlineContainerPropsDefaults } from "../inline-container";
 import { zStyles } from "./styles";
 
@@ -13,7 +13,7 @@ export const ButtonPropsSchema = z.object({
       z.object({
         type: z.literal("action"),
         action: z.string({
-          required_error: "pageBuilder.blocks.button.errors.action",
+          error: "pageBuilder.blocks.button.errors.action",
         }),
         actionData: z.any().optional().nullable(),
         children: z.array(z.any()).length(1),

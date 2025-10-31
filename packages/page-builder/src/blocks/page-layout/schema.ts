@@ -1,12 +1,12 @@
 import { BaseReaderBlockProps } from "@vivid/builder";
 import { zColorNullable, zFontFamily } from "@vivid/page-builder-base/style";
-import { z } from "zod";
+import * as z from "zod";
 
 export const PageLayoutPropsSchema = z.object({
   backgroundColor: zColorNullable,
   textColor: zColorNullable,
   fontFamily: zFontFamily,
-  fullWidth: z.coerce.boolean(),
+  fullWidth: z.coerce.boolean<boolean>(),
   children: z.array(z.any()),
 });
 

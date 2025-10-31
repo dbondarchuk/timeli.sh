@@ -10,6 +10,7 @@ export const FinancialsTab: React.FC<{
 }> = async ({ searchParams, props }) => {
   // Get financial metrics and recent payments for initial load
   const paymentsService = new FinancialOverviewService(
+    props.companyId,
     props.getDbConnection,
     props.services,
   );

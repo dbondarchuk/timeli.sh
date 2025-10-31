@@ -85,7 +85,7 @@ export interface IEventsService {
     },
   ): Promise<WithTotal<AppointmentHistoryEntry>>;
   addAppointmentHistory(
-    entry: Omit<AppointmentHistoryEntry, "_id" | "dateTime">,
+    entry: Omit<AppointmentHistoryEntry, "_id" | "dateTime" | "companyId">,
   ): Promise<string>;
 
   verifyTimeAvailability(dateTime: Date, duration: number): Promise<boolean>;

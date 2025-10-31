@@ -1,7 +1,7 @@
 import { BuilderKeys, useI18n } from "@vivid/i18n";
 import { Combobox } from "@vivid/ui";
 import { Repeat } from "lucide-react";
-import { z } from "zod";
+import * as z from "zod";
 import { StyleDefinition } from "../../types";
 
 const options = [

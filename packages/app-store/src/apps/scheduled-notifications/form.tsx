@@ -32,7 +32,7 @@ import { DateTime } from "luxon";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import * as z from "zod";
 import { checkUniqueName, create, update } from "./actions";
 import {
   getScheduledNotificationSchemaWithUniqueCheck,
@@ -88,7 +88,7 @@ export const ScheduledNotificationForm: React.FC<{
         if (!initialData?._id) {
           const { _id } = await create(appId, data);
           router.push(
-            `/admin/dashboard/communications/scheduled-notifications/edit?id=${_id}`,
+            `/dashboard/communications/scheduled-notifications/edit?id=${_id}`,
           );
         } else {
           await update(appId, initialData._id, data);

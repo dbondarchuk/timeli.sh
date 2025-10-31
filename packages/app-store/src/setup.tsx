@@ -9,7 +9,6 @@ import { GoogleAppSetup } from "./apps/google-calendar/setup";
 import { IcsAppSetup } from "./apps/ics/setup";
 import { OutlookAppSetup } from "./apps/outlook/setup";
 import { PaypalAppSetup } from "./apps/paypal/setup";
-import { S3AssetsStorageAppSetup } from "./apps/s3-assets-storage/setup";
 import { SmartScheduleAppSetup } from "./apps/smart-schedule/setup";
 import { TextBeltAppSetup } from "./apps/text-belt/setup";
 import { TextMessageAutoReplyAppSetup } from "./apps/text-message-auto-reply/setup";
@@ -30,7 +29,6 @@ import { GOOGLE_CALENDAR_APP_NAME } from "./apps/google-calendar/const";
 import { ICS_APP_NAME } from "./apps/ics/const";
 import { OUTLOOK_APP_NAME } from "./apps/outlook/const";
 import { PAYPAL_APP_NAME } from "./apps/paypal/const";
-import { S3_ASSETS_STORAGE_APP_NAME } from "./apps/s3-assets-storage/const";
 import { SMART_SCHEDULE_APP_NAME } from "./apps/smart-schedule/const";
 import { TEXTBELT_APP_NAME } from "./apps/text-belt/const";
 import { TEXT_MESSAGE_AUTO_REPLY_APP_NAME } from "./apps/text-message-auto-reply/const";
@@ -55,9 +53,6 @@ export const AppSetups: Record<string, BasicAppSetup> = {
   [ICS_APP_NAME]: (props) => <IcsAppSetup {...props} />,
   [OUTLOOK_APP_NAME]: (props) => <OutlookAppSetup {...props} />,
   [PAYPAL_APP_NAME]: (props) => <PaypalAppSetup {...props} />,
-  [S3_ASSETS_STORAGE_APP_NAME]: (props) => (
-    <S3AssetsStorageAppSetup {...props} />
-  ),
   [SMART_SCHEDULE_APP_NAME]: (props) => <SmartScheduleAppSetup {...props} />,
   [TEXTBELT_APP_NAME]: (props) => <TextBeltAppSetup {...props} />,
   [TEXT_MESSAGE_AUTO_REPLY_APP_NAME]: (props) => (

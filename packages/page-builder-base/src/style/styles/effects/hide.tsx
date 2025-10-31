@@ -2,10 +2,10 @@ import { useI18n } from "@vivid/i18n";
 import { Checkbox, Label } from "@vivid/ui";
 import { EyeOff } from "lucide-react";
 import { useId } from "react";
-import { z } from "zod";
+import * as z from "zod";
 import { StyleDefinition } from "../../types";
 
-const HideSchema = z.coerce.boolean();
+const HideSchema = z.coerce.boolean<boolean>();
 
 export const hideStyle = {
   name: "hide",

@@ -1369,8 +1369,8 @@
         "phone": "Phone number",
         "email": "Email address",
         "emailPlaceholder": "Your email address",
-        "url": "Website base URL",
-        "urlPlaceholder": "Website url",
+        "domain": "Custom domain",
+        "domainPlaceholder": "example.com",
         "address": "Address",
         "addressTooltip": "Physical office address",
         "addressPlaceholder": "Physical office address",
@@ -1795,9 +1795,38 @@
     "password": "Password",
     "email_or_password_incorrect": "Email or password is incorrect",
     "signIn": "Sign in",
+    "sign_in_sign_up_link": "Don't have an account? <link>Sign up</link> now!",
     "signInDescription": "Enter your email below to sign into your account",
+    "signUp": "Sign up",
+    "signUpDescription": "Create an account to get started",
     "quote": "I love it!",
-    "quoteAuthor": "Olesia Bondarchuk"
+    "quoteAuthor": "Olesia Bondarchuk",
+    "confirmPassword": "Confirm password",
+    "name": "Your name",
+    "organizationName": "Business name",
+    "organizationSlug": "Subdomain",
+    "sign_up_error": "There was a problem with your request. Please try again.",
+    "validation": {
+      "name": {
+        "required": "Name is required"
+      },
+      "confirmPassword": {
+        "required": "Passwords do not match"
+      },
+      "password": {
+        "required": "Password is required",
+        "minLength": "Password must be at least 8 characters long"
+      },
+      "organizationName": {
+        "required": "Business name is required"
+      },
+      "organizationSlug": {
+        "required": "Subdomain is required",
+        "regex": "Subdomain must contain only latin lower case letters and digits",
+        "unique": "Subdomain is already taken",
+        "length": "Subdomain must be between 3 and 20 characters long"
+      }
+    }
   },
   "menuItem": {
     "labels": {

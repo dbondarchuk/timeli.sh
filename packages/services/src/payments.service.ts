@@ -1,4 +1,3 @@
-import { getLoggerFactory } from "@vivid/logger";
 import {
   IConnectedAppsService,
   IJobService,
@@ -11,18 +10,22 @@ import {
   PaymentUpdateModel,
 } from "@vivid/types";
 import { ObjectId } from "mongodb";
+import {
+  PAYMENT_INTENTS_COLLECTION_NAME,
+  PAYMENTS_COLLECTION_NAME,
+} from "./collections";
 import { getDbConnection } from "./database";
+import { BaseService } from "./services/base.service";
 
-export const PAYMENT_INTENTS_COLLECTION_NAME = "payment-intents";
-export const PAYMENTS_COLLECTION_NAME = "payments";
-
-export class PaymentsService implements IPaymentsService {
-  protected readonly loggerFactory = getLoggerFactory("PaymentsService");
-
+export class PaymentsService extends BaseService implements IPaymentsService {
   public constructor(
+    companyId: string,
     protected readonly connectedAppsService: IConnectedAppsService,
     protected readonly jobService: IJobService,
-  ) {}
+  ) {
+    super("PaymentsService", companyId);
+  }
+
   public async createIntent(
     intent: Omit<PaymentIntentUpdateModel, "status">,
   ): Promise<PaymentIntent> {
@@ -48,6 +51,7 @@ export class PaymentsService implements IPaymentsService {
 
     const dbIntent = {
       ...intent,
+      companyId: this.companyId,
       _id: new ObjectId().toString(),
       status: "created",
       createdAt: new Date(),
@@ -83,6 +87,7 @@ export class PaymentsService implements IPaymentsService {
 
     const intent = await intents.findOne({
       _id: id,
+      companyId: this.companyId,
     });
 
     if (!intent) {
@@ -118,6 +123,7 @@ export class PaymentsService implements IPaymentsService {
 
     const intent = await intents.findOne({
       externalId,
+      companyId: this.companyId,
     });
 
     if (!intent) {
@@ -146,7 +152,12 @@ export class PaymentsService implements IPaymentsService {
     const logger = this.loggerFactory("updateIntent");
     logger.debug({ intentId: id, update }, "Updating payment intent");
 
-    const { _id: _, paidAt, ...updateObj } = update as PaymentIntent; // Remove fields in case it slips here
+    const {
+      _id: _,
+      companyId: __,
+      paidAt,
+      ...updateObj
+    } = update as PaymentIntent; // Remove fields in case it slips here
     const db = await getDbConnection();
     const intents = db.collection<PaymentIntent>(
       PAYMENT_INTENTS_COLLECTION_NAME,
@@ -164,6 +175,7 @@ export class PaymentsService implements IPaymentsService {
     await intents.updateOne(
       {
         _id: id,
+        companyId: this.companyId,
       },
       {
         $set,
@@ -172,6 +184,7 @@ export class PaymentsService implements IPaymentsService {
 
     const updatedIntent = await intents.findOne({
       _id: id,
+      companyId: this.companyId,
     });
 
     if (!updatedIntent) {
@@ -208,6 +221,7 @@ export class PaymentsService implements IPaymentsService {
 
     const dbPayment: Payment = {
       ...payment,
+      companyId: this.companyId,
       _id: new ObjectId().toString(),
       updatedAt: new Date(),
     };
@@ -238,6 +252,7 @@ export class PaymentsService implements IPaymentsService {
 
     const payment = await payments.findOne({
       _id: id,
+      companyId: this.companyId,
     });
 
     if (!payment) {
@@ -271,7 +286,9 @@ export class PaymentsService implements IPaymentsService {
     const db = await getDbConnection();
 
     const paymentsCollection = db.collection<Payment>(PAYMENTS_COLLECTION_NAME);
-    const payments = await paymentsCollection.find({ appointmentId }).toArray();
+    const payments = await paymentsCollection
+      .find({ appointmentId, companyId: this.companyId })
+      .toArray();
 
     if (payments.length === 0) {
       logger.warn({ appointmentId }, "No payments found for appointment");
@@ -292,7 +309,7 @@ export class PaymentsService implements IPaymentsService {
     const logger = this.loggerFactory("updatePayment");
     logger.debug({ paymentId: id, update }, "Updating payment");
 
-    const { _id: _, ...updateObj } = update as Payment; // Remove fields in case it slips here
+    const { _id: _, companyId: __, ...updateObj } = update as Payment; // Remove fields in case it slips here
     const db = await getDbConnection();
     const payments = db.collection<Payment>(PAYMENTS_COLLECTION_NAME);
 
@@ -304,6 +321,7 @@ export class PaymentsService implements IPaymentsService {
     await payments.updateOne(
       {
         _id: id,
+        companyId: this.companyId,
       },
       {
         $set,
@@ -312,6 +330,7 @@ export class PaymentsService implements IPaymentsService {
 
     const updatedPayment = await payments.findOne({
       _id: id,
+      companyId: this.companyId,
     });
 
     if (!updatedPayment) {
@@ -342,13 +361,14 @@ export class PaymentsService implements IPaymentsService {
     const db = await getDbConnection();
     const payments = db.collection<Payment>(PAYMENTS_COLLECTION_NAME);
 
-    const payment = await payments.findOne({ _id: id });
+    const payment = await payments.findOneAndDelete({
+      _id: id,
+      companyId: this.companyId,
+    });
     if (!payment) {
       logger.warn({ paymentId: id }, "Payment not found");
       return null;
     }
-
-    await payments.deleteOne({ _id: id });
 
     logger.debug(
       { paymentId: id },

@@ -30,7 +30,7 @@ export const EditScheduledNotificationPage: React.FC<{ appId: string }> = ({
 
   React.useEffect(() => {
     if (!id) {
-      router.replace("/admin/dashboard/communications/scheduled-notifications");
+      router.replace("/dashboard/communications/scheduled-notifications");
       return;
     }
 
@@ -39,9 +39,7 @@ export const EditScheduledNotificationPage: React.FC<{ appId: string }> = ({
       try {
         const result = await getScheduledNotification(appId, id);
         if (!result) {
-          router.replace(
-            "/admin/dashboard/communications/scheduled-notifications",
-          );
+          router.replace("/dashboard/communications/scheduled-notifications");
           return;
         }
 

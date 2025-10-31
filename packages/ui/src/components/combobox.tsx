@@ -2,7 +2,7 @@
 
 import { useI18n } from "@vivid/i18n";
 import { Check, ChevronsUpDown, X } from "lucide-react";
-import * as React from "react";
+import React from "react";
 
 import InfiniteScroll from "react-infinite-scroll-component";
 

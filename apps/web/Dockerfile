@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.7-labs
 
-FROM node:21-alpine AS base
+FROM node:22-alpine AS base
 RUN apk add --no-cache fontconfig ttf-dejavu font-opensans tzdata && \
         fc-cache -f
 
@@ -15,15 +15,6 @@ WORKDIR /app
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
 COPY --parents apps/web/package.json .
 COPY --parents packages/*/package.json .
-# COPY apps/web/package.json ./apps/web/package.json
-# COPY packages/appStore/package.json ./packages/appStore/package.json
-# COPY packages/eslint-config/package.json ./packages/eslint-config/package.json
-# COPY packages/services/package.json ./packages/services/package.json
-# COPY packages/tailwind-config/package.json ./packages/tailwind-config/package.json
-# COPY packages/types/package.json ./packages/types/package.json
-# COPY packages/typescript-config/package.json ./packages/typescript-config/package.json
-# COPY packages/ui/package.json ./packages/ui/package.json
-# COPY packages/utils/package.json ./packages/utils/package.json
 
 COPY patches/ ./patches
 
@@ -83,16 +74,11 @@ RUN find ./packages/app-store/src/apps -type f ! -path "*/translations/*" -delet
     find ./packages/app-store/src/apps -type d -empty -delete
 
 
-# Install migrate-mongo
-RUN npm install -g migrate-mongo 
-
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
-COPY --from=builder --chown=nextjs:nodejs /app/migrations ./migrations
-COPY --from=builder --chown=nextjs:nodejs /app/migrate-mongo-config.js ./migrate-mongo-config.js
 
 USER nextjs
 

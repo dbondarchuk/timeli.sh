@@ -16,7 +16,6 @@ import {
   Button,
   Tooltip,
   TooltipContent,
-  TooltipPortal,
   TooltipProvider,
   TooltipTrigger,
 } from "@vivid/ui";
@@ -98,9 +97,7 @@ const ColumnDragHandle = React.memo(() => {
             />
           </Button>
         </TooltipTrigger>
-        <TooltipPortal>
-          <TooltipContent>Drag to move column</TooltipContent>
-        </TooltipPortal>
+        <TooltipContent>Drag to move column</TooltipContent>
       </Tooltip>
     </TooltipProvider>
   );

@@ -1,13 +1,15 @@
 "use client";
 
-import * as React from "react";
+import React from "react";
 
 import * as ToolbarPrimitive from "@radix-ui/react-toolbar";
-import { cn, withCn, withRef, withVariants } from "@udecode/cn";
+import { withCn, withRef, withVariants } from "@udecode/cn";
 import { type VariantProps, cva } from "class-variance-authority";
 import { ChevronDown } from "lucide-react";
 
-import { Separator, withTooltip } from "@vivid/ui";
+import { cn } from "../utils/cn";
+import { Separator } from "./separator";
+import { withTooltip } from "./tooltip";
 
 export const Toolbar = withCn(
   ToolbarPrimitive.Root,

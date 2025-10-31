@@ -45,7 +45,7 @@ import { Repeat2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
-import z from "zod";
+import * as z from "zod";
 import {
   WeeklyScheduleAdminKeys,
   WeeklyScheduleAdminNamespace,
@@ -78,11 +78,13 @@ export const RepeatScheduleDialog: React.FC<RepeatScheduleDialogProps> = ({
 
   const repeatScheduleFormSchema = z.object({
     interval: z.coerce
-      .number()
+      .number<number>()
       .int("Should be the integer value")
       .min(1, "Schedule must be repeated with at least one week interval"),
-    maxWeek: z.coerce.number().min(todayWeek, "Should be past current week"),
-    replaceExisting: z.coerce.boolean().optional().nullable(),
+    maxWeek: z.coerce
+      .number<number>()
+      .min(todayWeek, "Should be past current week"),
+    replaceExisting: z.coerce.boolean<boolean>().optional().nullable(),
   });
 
   type RepeatScheduleForm = z.infer<typeof repeatScheduleFormSchema>;

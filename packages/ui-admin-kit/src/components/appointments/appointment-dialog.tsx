@@ -37,7 +37,7 @@ export const AppointmentDialog: React.FC<AppointmentDialogProps> = ({
             <Link
               variant="ghost"
               title={t("appointments.dialog.viewFullInfo")}
-              href={`/admin/dashboard/appointments/${appointment._id}`}
+              href={`/dashboard/appointments/${appointment._id}`}
             >
               <SquareArrowOutUpRight size={20} />
             </Link>

@@ -2,7 +2,8 @@ import { BlockStyle, generateClassName } from "@vivid/page-builder-base/reader";
 import { cn } from "@vivid/ui";
 import React, { forwardRef, HTMLAttributes, useCallback } from "react";
 import { YouTubeVideoPropsDefaults, YouTubeVideoReaderProps } from "./schema";
-import { getDefaults, styles } from "./styles";
+import { styles } from "./styles";
+import { getDefaults } from "./styles.default";
 import { extractYouTubeVideoId } from "./utils";
 
 // Define the shape for the YouTube video props

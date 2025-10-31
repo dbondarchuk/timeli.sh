@@ -1,4 +1,4 @@
-import z from "zod";
+import * as z from "zod";
 import { zPadding, zTextAlign } from "../../style-inputs/helpers/zod";
 
 export const shape = z.enum(["circle", "square", "rounded"]);
@@ -15,7 +15,7 @@ export const AvatarPropsSchema = z.object({
   props: z
     .object({
       size: z.coerce
-        .number()
+        .number<number>()
         .gt(0)
         .int("emailBuilder.blocks.avatar.validation.size")
         .optional()

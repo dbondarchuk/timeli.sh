@@ -1,11 +1,11 @@
+import { getServicesContainer } from "@/utils/utils";
 import { availabilitySearchParamsLoader } from "@vivid/api-sdk";
 import { getLoggerFactory } from "@vivid/logger";
-import { ServicesContainer } from "@vivid/services";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
   const logger = getLoggerFactory("API/availability")("GET");
-
+  const servicesContainer = await getServicesContainer();
   logger.debug(
     {
       url: request.url,
@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
   logger.debug({ duration }, "Fetching availability");
 
   const availability =
-    await ServicesContainer.EventsService().getAvailability(duration);
+    await servicesContainer.eventsService.getAvailability(duration);
 
   logger.debug(
     {

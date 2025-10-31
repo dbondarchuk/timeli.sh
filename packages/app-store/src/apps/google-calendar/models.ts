@@ -1,5 +1,5 @@
 import { ConnectedOauthAppTokens } from "@vivid/types";
-import { z } from "zod";
+import * as z from "zod";
 
 export const googleCalendarConfigurationSchema = z.object({
   calendar: z

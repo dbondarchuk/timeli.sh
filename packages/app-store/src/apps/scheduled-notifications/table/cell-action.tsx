@@ -84,7 +84,7 @@ export const CellAction: React.FC<CellActionProps> = ({
           <DropdownMenuLabel>{t("table.actions.label")}</DropdownMenuLabel>
           <DropdownMenuItem asChild>
             <Link
-              href={`/admin/dashboard/communications/scheduled-notifications/edit?id=${scheduledNotification._id}`}
+              href={`/dashboard/communications/scheduled-notifications/edit?id=${scheduledNotification._id}`}
             >
               <Edit className="h-4 w-4" /> {t("table.actions.edit")}
             </Link>

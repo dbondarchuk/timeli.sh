@@ -1,5 +1,5 @@
-import { appointmentStatuses, zStrictRecord } from "@vivid/types";
-import { z } from "zod";
+import { appointmentStatuses } from "@vivid/types";
+import * as z from "zod";
 
 export const eventConfigurationSchema = z.object({
   summary: z
@@ -54,7 +54,7 @@ export const emailTemplateKeys = z.enum([
 
 export type EmailTemplateKeys = z.infer<typeof emailTemplateKeys>;
 
-export const emailTemplatesSchema = zStrictRecord(
+export const emailTemplatesSchema = z.record(
   emailTemplateKeys,
   emailTemplateSchema,
 );

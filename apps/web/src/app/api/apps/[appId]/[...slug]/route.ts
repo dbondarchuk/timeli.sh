@@ -1,13 +1,14 @@
+import { getServicesContainer } from "@/utils/utils";
 import { getLoggerFactory } from "@vivid/logger";
-import { ServicesContainer } from "@vivid/services";
 import { NextRequest, NextResponse } from "next/server";
 
 const processAppCall = async (
   request: NextRequest,
-  { params }: { params: Promise<{ appId: string; slug: string[] }> },
+  { params }: RouteContext<"/api/apps/[appId]/[...slug]">,
 ) => {
   const logger = getLoggerFactory("API/apps-call")("processAppCall");
   const { appId, slug } = await params;
+  const servicesContainer = await getServicesContainer();
 
   logger.debug(
     {
@@ -24,10 +25,12 @@ const processAppCall = async (
     return NextResponse.json({ error: "AppId is required" }, { status: 400 });
   }
 
-  const service = ServicesContainer.ConnectedAppsService();
-
   try {
-    const result = await service.processAppCall(appId, slug, request);
+    const result = await servicesContainer.connectedAppsService.processAppCall(
+      appId,
+      slug,
+      request,
+    );
 
     if (result) {
       logger.debug(

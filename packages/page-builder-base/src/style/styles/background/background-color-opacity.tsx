@@ -1,9 +1,13 @@
 import { Blend } from "lucide-react";
-import { z } from "zod";
+import * as z from "zod";
 import { RawNumberInputWithUnit } from "../../../style-inputs/base/raw-number-input-with-units";
 import { StyleDefinition } from "../../types";
 
-const BackgroundColorOpacitySchema = z.coerce.number().min(0).max(100).int();
+const BackgroundColorOpacitySchema = z.coerce
+  .number<number>()
+  .min(0)
+  .max(100)
+  .int();
 export const BackgroundColorOpacityVar = "background-color-opacity";
 
 export const backgroundColorOpacityStyle = {

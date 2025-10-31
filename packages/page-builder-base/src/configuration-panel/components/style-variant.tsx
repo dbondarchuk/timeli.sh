@@ -1,7 +1,7 @@
 import { useI18n } from "@vivid/i18n";
 import { Button, Label } from "@vivid/ui";
 import { Trash } from "lucide-react";
-import { z } from "zod";
+import * as z from "zod";
 import {
   BaseStyleDictionary,
   StyleDefinition,

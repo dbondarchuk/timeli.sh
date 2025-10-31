@@ -9,7 +9,8 @@ import {
 import { BlockStyle, useClassName } from "@vivid/page-builder-base";
 import { cn } from "@vivid/ui";
 import { LinkProps } from "./schema";
-import { getDefaults, styles } from "./styles";
+import { styles } from "./styles";
+import { getDefaults } from "./styles.default";
 
 const disable = {
   disableMove: true,

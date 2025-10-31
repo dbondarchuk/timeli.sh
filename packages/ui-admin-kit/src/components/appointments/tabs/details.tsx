@@ -24,7 +24,7 @@ import { DateTime } from "luxon";
 import { useRouter } from "next/navigation";
 import { Fragment, useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import * as z from "zod";
 import { AppointmentCalendar } from "../appointment-calendar";
 
 const noteFormSchema = z.object({
@@ -262,7 +262,7 @@ export const AppointmentDetails = ({
                         <div className="col-span-2">
                           <Link
                             variant="default"
-                            href={`/admin/dashboard/customers/${appointment.customerId}`}
+                            href={`/dashboard/customers/${appointment.customerId}`}
                           >
                             {appointment.customer.name}
                           </Link>
@@ -335,7 +335,7 @@ export const AppointmentDetails = ({
                         <div>{t("appointments.view.option")}:</div>
                         <div className="col-span-2">
                           <Link
-                            href={`/admin/dashboard/services/options/${appointment.option._id}`}
+                            href={`/dashboard/services/options/${appointment.option._id}`}
                             variant="default"
                           >
                             {appointment.option.name}
@@ -382,7 +382,7 @@ export const AppointmentDetails = ({
                           {appointment.addons.map((addon, index) => (
                             <li key={`${addon._id}-${index}`}>
                               <Link
-                                href={`/admin/dashboard/services/addons/${addon._id}`}
+                                href={`/dashboard/services/addons/${addon._id}`}
                                 variant="default"
                               >
                                 {addon.name}

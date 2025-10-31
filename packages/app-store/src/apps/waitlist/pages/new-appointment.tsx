@@ -20,14 +20,14 @@ export const WaitlistNewAppointmentPage: React.FC<ComplexAppPageProps> = ({
   const router = useRouter();
   useEffect(() => {
     if (!id) {
-      router.replace("/admin/dashboard/waitlist");
+      router.replace("/dashboard/waitlist");
       return;
     }
 
     const fn = async () => {
       const entry = await getWaitlistEntry(appId, id);
       if (!entry) {
-        router.replace("/admin/dashboard/waitlist");
+        router.replace("/dashboard/waitlist");
         return;
       }
 
@@ -48,7 +48,7 @@ export const WaitlistNewAppointmentPage: React.FC<ComplexAppPageProps> = ({
         data: { waitlistId: id },
       });
 
-      router.replace(`/admin/dashboard/appointments/new${serialized}`);
+      router.replace(`/dashboard/appointments/new${serialized}`);
     };
 
     fn();

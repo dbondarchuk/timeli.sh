@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as z from "zod";
 
 import { FONT_FAMILY_NAMES } from "../style-inputs/helpers/font-family";
 import { COLOR_NAMES } from "./helpers/colors";
@@ -35,7 +35,7 @@ export const zFontFamily = z.enum(FONT_FAMILY_NAMES, {
 export type FontFamily = z.infer<typeof zFontFamily>;
 
 export const zNumberValueWithUnit = z.object({
-  value: z.coerce.number(),
+  value: z.coerce.number<number>(),
   unit: zUnit,
 });
 
@@ -127,7 +127,7 @@ export const parentLevelKeys = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as const;
 export const zStateTarget = z.discriminatedUnion("type", [
   z.object({
     type: z.literal("self"),
-    data: z.undefined(),
+    data: z.undefined().optional(),
   }),
   z.object({
     type: z.literal("parent"),
@@ -218,7 +218,7 @@ export function convertParentLevelToStateTarget(
   parentLevel: number,
 ): StateTarget {
   if (parentLevel === 0) {
-    return { type: "self" };
+    return { type: "self", data: undefined };
   }
   return {
     type: "parent",

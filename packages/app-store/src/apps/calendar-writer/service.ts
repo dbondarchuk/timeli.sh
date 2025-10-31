@@ -1,4 +1,4 @@
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
 import {
   Appointment,
   AppointmentStatus,
@@ -13,8 +13,10 @@ import {
 } from "@vivid/types";
 import {
   AppointmentStatusToICalMethodMap,
+  getAdminUrl,
   getArguments,
   getIcsEventUid,
+  getWebsiteUrl,
 } from "@vivid/utils";
 import { convert } from "html-to-text";
 import { CalendarWriterConfiguration } from "./models";
@@ -30,11 +32,14 @@ import {
 export class CalendarWriterConnectedApp
   implements IConnectedApp, IAppointmentHook
 {
-  protected readonly loggerFactory = getLoggerFactory(
-    "CalendarWriterConnectedApp",
-  );
+  protected readonly loggerFactory: LoggerFactory;
 
-  public constructor(protected readonly props: IConnectedAppProps) {}
+  public constructor(protected readonly props: IConnectedAppProps) {
+    this.loggerFactory = getLoggerFactory(
+      "CalendarWriterConnectedApp",
+      props.companyId,
+    );
+  }
 
   public async processRequest(
     appData: ConnectedAppData,
@@ -52,9 +57,8 @@ export class CalendarWriterConnectedApp
     );
 
     try {
-      const { name: appName } = await this.props.services
-        .ConnectedAppsService()
-        .getApp(data.appId);
+      const { name: appName } =
+        await this.props.services.connectedAppsService.getApp(data.appId);
 
       logger.debug(
         { appId: appData._id, targetAppId: data.appId, appName },
@@ -291,13 +295,31 @@ export class CalendarWriterConnectedApp
     );
 
     try {
-      const config = await this.props.services
-        .ConfigurationService()
-        .getConfigurations("booking", "general", "social");
-
+      const config =
+        await this.props.services.configurationService.getConfigurations(
+          "booking",
+          "general",
+          "social",
+        );
       logger.debug(
         { appId: appData._id, appointmentId: appointment._id },
         "Retrieved configuration for calendar event",
+      );
+
+      const organization =
+        await this.props.services.organizationService.getOrganization();
+      if (!organization) {
+        logger.error(
+          { appId: appData._id, appointmentId: appointment._id },
+          "Organization not found",
+        );
+        return;
+      }
+
+      const adminUrl = getAdminUrl();
+      const websiteUrl = getWebsiteUrl(
+        organization.slug,
+        config.general.domain,
       );
 
       const args = getArguments({
@@ -306,14 +328,17 @@ export class CalendarWriterConnectedApp
         customer: appointment.customer,
         useAppointmentTimezone: true,
         locale: config.general.language,
+        adminUrl,
+        websiteUrl,
       });
 
       const data = appData.data as CalendarWriterConfiguration;
 
+      const url = getAdminUrl();
       const { template: description, subject } = await getEmailTemplate(
         status,
         config.general.language,
-        config.general.url,
+        url,
         appointment,
         args,
       );
@@ -327,11 +352,12 @@ export class CalendarWriterConnectedApp
         "Getting calendar writer service",
       );
 
-      const { app, service } = await this.props.services
-        .ConnectedAppsService()
-        .getAppService<ICalendarWriter>(data.appId);
+      const { app, service } =
+        await this.props.services.connectedAppsService.getAppService<ICalendarWriter>(
+          data.appId,
+        );
 
-      const uid = getIcsEventUid(appointment._id, config.general.url);
+      const uid = getIcsEventUid(appointment._id, url);
       let newStatus: AppointmentStatus;
       if (status === "rescheduled" || status === "rescheduledByCustomer") {
         newStatus = appointment.status;
@@ -351,7 +377,7 @@ export class CalendarWriterConnectedApp
           plainText: convert(description, { wordwrap: 130 })
             .trim()
             .replace(/(\r\n|\r|\n)+/g, "\n"),
-          url: `${config.general.url}/admin/dashboard/appointments/${appointment._id}`,
+          url: `${url}/dashboard/appointments/${appointment._id}`,
         },
         location: {
           name: config.general.name,

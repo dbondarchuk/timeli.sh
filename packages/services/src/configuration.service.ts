@@ -4,15 +4,18 @@ import {
   ConfigurationOption,
   IConfigurationService,
 } from "@vivid/types";
-import { getDbConnection } from "./database";
-
-import { getLoggerFactory } from "@vivid/logger";
 import { cache } from "react";
+import { CONFIGURATION_COLLECTION_NAME } from "./collections";
+import { getDbConnection } from "./database";
+import { BaseService } from "./services/base.service";
 
-export const CONFIGURATION_COLLECTION_NAME = "configuration";
-
-export class ConfigurationService implements IConfigurationService {
-  protected readonly loggerFactory = getLoggerFactory("ConfigurationService");
+export class ConfigurationService
+  extends BaseService
+  implements IConfigurationService
+{
+  public constructor(companyId: string) {
+    super("ConfigurationService", companyId);
+  }
 
   public async getConfiguration<T extends ConfigurationKey>(
     key: T,
@@ -27,6 +30,7 @@ export class ConfigurationService implements IConfigurationService {
     const value = await configurations.findOne({
       // @ts-ignore Correct key
       key,
+      companyId: this.companyId,
     });
 
     if (!value?.value) {
@@ -53,12 +57,16 @@ export class ConfigurationService implements IConfigurationService {
         key: {
           $in: keys,
         },
+        companyId: this.companyId,
       })
       .toArray();
 
     if (values.length !== keys.length) {
       logger.error(
-        { keys, foundKeys: values?.map((v) => v.key) },
+        {
+          keys,
+          foundKeys: values?.map((v) => v.key),
+        },
         "Can't find configuration for all keys",
       );
     }
@@ -91,10 +99,12 @@ export class ConfigurationService implements IConfigurationService {
       {
         // @ts-ignore Correct key
         key,
+        companyId: this.companyId,
       },
       {
         $set: {
           key,
+          companyId: this.companyId,
           value: configuration,
         },
       },

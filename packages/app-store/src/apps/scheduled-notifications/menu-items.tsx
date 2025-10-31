@@ -12,7 +12,7 @@ import {
 const scheduledNotificationBreadcrumb = {
   title:
     "app_scheduled-notifications_admin.navigation.main.title" as ScheduledNotificationsAdminAllKeys,
-  link: "/admin/dashboard/communications/scheduled-notifications",
+  link: "/dashboard/communications/scheduled-notifications",
 };
 
 export const ScheduledNotificationsMenuItems: AppMenuItem<
@@ -45,7 +45,7 @@ export const ScheduledNotificationsMenuItems: AppMenuItem<
       scheduledNotificationBreadcrumb,
       {
         title: "app_scheduled-notifications_admin.navigation.new.title",
-        link: "/admin/dashboard/communications/scheduled-notifications/new",
+        link: "/dashboard/communications/scheduled-notifications/new",
       },
     ],
     pageTitle: "app_scheduled-notifications_admin.navigation.new.title",
@@ -64,7 +64,7 @@ export const ScheduledNotificationsMenuItems: AppMenuItem<
       scheduledNotificationBreadcrumb,
       {
         title: "app_scheduled-notifications_admin.navigation.edit.title",
-        link: "/admin/dashboard/communications/scheduled-notifications/edit",
+        link: "/dashboard/communications/scheduled-notifications/edit",
       },
     ],
     pageTitle: "app_scheduled-notifications_admin.navigation.edit.title",

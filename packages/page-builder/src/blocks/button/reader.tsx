@@ -3,7 +3,8 @@ import { BlockStyle, generateClassName } from "@vivid/page-builder-base/reader";
 import { cn } from "@vivid/ui";
 import { Button } from "./button";
 import { ButtonReaderProps } from "./schema";
-import { getDefaults, styles } from "./styles";
+import { styles } from "./styles";
+import { getDefaults } from "./styles.default";
 
 export const ButtonReader = ({
   props,

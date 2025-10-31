@@ -1,6 +1,6 @@
-import { z } from "zod";
+import * as z from "zod";
 
-import { icons } from "lucide-react";
+// import { icons } from "lucide-react";
 
 const ButtonSizes = [
   "none",
@@ -39,10 +39,10 @@ const TextWeights = [
   "extralight",
 ] as const;
 
-const [firstIcon, ...restIcons] = Object.keys(icons);
-const iconsEnum = z.enum([firstIcon, ...restIcons], {
-  required_error: "configuration.styling.menuItem.icon.required",
-});
+// const [firstIcon, ...restIcons] = Object.keys(icons);
+// const iconsEnum = z.enum([firstIcon, ...restIcons], {
+//   error: "configuration.styling.menuItem.icon.required",
+// });
 
 export const menuItemTypes = ["icon", "link", "button", "submenu"] as const;
 export const menuItemTypesEnum = z.enum(menuItemTypes);
@@ -57,76 +57,71 @@ const [firstTextSize, ...restTextSizes] = TextSizes;
 const [firstTextWeight, ...restTextWeights] = TextWeights;
 
 export const baseMenuItemSchema = z.object({
-  url: z
-    .string({ required_error: "common.url.invalid" })
-    .min(1, "common.url.invalid"),
+  url: z.string({ error: "common.url.invalid" }).min(1, "common.url.invalid"),
   label: z
-    .string({ required_error: "configuration.styling.menuItem.label.required" })
+    .string({ error: "configuration.styling.menuItem.label.required" })
     .min(1, "configuration.styling.menuItem.label.required"),
   className: z.string().optional(),
 });
 
 export type BaseMenuItem = z.infer<typeof baseMenuItemSchema>;
 
-export const iconMenuItemSchema = baseMenuItemSchema.merge(
-  z.object({
-    icon: iconsEnum,
-    type: menuItemTypesEnum.extract(["icon"]),
-  }),
-);
+export const iconMenuItemSchema = z.object({
+  ...baseMenuItemSchema.shape,
+  // icon: iconsEnum,
+  icon: z.string(),
+  type: menuItemTypesEnum.extract(["icon"]),
+});
 
 export type IconMenuItem = z.infer<typeof iconMenuItemSchema>;
 
-const textStyleSchema = baseMenuItemSchema.merge(
-  z.object({
-    font: z
-      .enum([firstFont, ...restFonts])
-      .nullable()
-      .optional(),
-    fontSize: z
-      .enum([firstTextSize, ...restTextSizes])
-      .nullable()
-      .optional(),
-    fontWeight: z
-      .enum([firstTextWeight, ...restTextWeights])
-      .nullable()
-      .optional(),
-  }),
-);
+const textStyleSchema = z.object({
+  ...baseMenuItemSchema.shape,
+  font: z
+    .enum([firstFont, ...restFonts])
+    .nullable()
+    .optional(),
+  fontSize: z
+    .enum([firstTextSize, ...restTextSizes])
+    .nullable()
+    .optional(),
+  fontWeight: z
+    .enum([firstTextWeight, ...restTextWeights])
+    .nullable()
+    .optional(),
+});
 
 export type TextStyle = z.infer<typeof textStyleSchema>;
 
-export const linkMenuItemSchema = textStyleSchema.merge(
-  z.object({
-    prefixIcon: iconsEnum.optional(),
-    suffixIcon: iconsEnum.optional(),
-    variant: z
-      .enum([firstLinkVariant, ...restLinkVariants])
-      .nullable()
-      .optional(),
-    size: z
-      .enum([firstLinkSize, ...restLinkSizes])
-      .nullable()
-      .optional(),
-    type: menuItemTypesEnum.extract(["link"]),
-  }),
-);
+export const linkMenuItemSchema = z.object({
+  ...textStyleSchema.shape,
+  prefixIcon: z.string().optional(),
+  suffixIcon: z.string().optional(),
+  variant: z
+    .enum([firstLinkVariant, ...restLinkVariants])
+    .nullable()
+    .optional(),
+  size: z
+    .enum([firstLinkSize, ...restLinkSizes])
+    .nullable()
+    .optional(),
+  type: menuItemTypesEnum.extract(["link"]),
+});
 
 export type LinkMenuItem = z.infer<typeof linkMenuItemSchema>;
 
-export const buttonMenuItemSchema = linkMenuItemSchema.merge(
-  z.object({
-    variant: z
-      .enum([firstButtonVariant, ...restButtonVariants])
-      .nullable()
-      .optional(),
-    size: z
-      .enum([firstButtonSize, ...restButtonSizes])
-      .nullable()
-      .optional(),
-    type: menuItemTypesEnum.extract(["button"]),
-  }),
-);
+export const buttonMenuItemSchema = z.object({
+  ...linkMenuItemSchema.shape,
+  variant: z
+    .enum([firstButtonVariant, ...restButtonVariants])
+    .nullable()
+    .optional(),
+  size: z
+    .enum([firstButtonSize, ...restButtonSizes])
+    .nullable()
+    .optional(),
+  type: menuItemTypesEnum.extract(["button"]),
+});
 
 export type ButtonMenuItem = z.infer<typeof buttonMenuItemSchema>;
 
@@ -134,16 +129,13 @@ export const subMenuItemSchema = linkMenuItemSchema;
 
 export type SubMenuItem = z.infer<typeof subMenuItemSchema>;
 
-export const subMenuMenuItemSchema = linkMenuItemSchema
-  .omit({ url: true })
-  .merge(
-    z.object({
-      children: subMenuItemSchema
-        .array()
-        .min(1, "configuration.styling.menuItem.submenu.min"),
-      type: menuItemTypesEnum.extract(["submenu"]),
-    }),
-  );
+export const subMenuMenuItemSchema = z.object({
+  ...linkMenuItemSchema.omit({ url: true }).shape,
+  children: subMenuItemSchema
+    .array()
+    .min(1, "configuration.styling.menuItem.submenu.min"),
+  type: menuItemTypesEnum.extract(["submenu"]),
+});
 
 export type SubMenuMenuItem = z.infer<typeof subMenuMenuItemSchema>;
 

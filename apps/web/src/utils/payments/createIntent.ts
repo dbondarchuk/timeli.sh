@@ -1,6 +1,5 @@
 import { getAppointmentEventAndIsPaymentRequired } from "@/utils/appointments/get-payment-required";
 import { getLoggerFactory } from "@vivid/logger";
-import { ServicesContainer } from "@vivid/services";
 import {
   AppointmentRequest,
   CollectPayment,
@@ -10,8 +9,10 @@ import {
   PaymentIntentUpdateModel,
   PaymentType,
 } from "@vivid/types";
+import { deepEqual } from "@vivid/utils";
 import { NextRequest, NextResponse } from "next/server";
 import { getModifyAppointmentInformationRequestResult } from "../appointments/get-modify-appointment-request";
+import { getServicesContainer } from "../utils";
 
 const createOrUpdateAppointmentRequestIntent = async (
   appointmentRequest: AppointmentRequest,
@@ -21,6 +22,7 @@ const createOrUpdateAppointmentRequestIntent = async (
   const logger = getLoggerFactory("PaymentsUtils")(
     "createOrUpdateAppointmentRequestIntent",
   );
+  const servicesContainer = await getServicesContainer();
 
   logger.debug({ type }, "Creating or updating appointment request intent");
 
@@ -64,11 +66,55 @@ const createOrUpdateAppointmentRequestIntent = async (
   const { amount, percentage, appId, customer } = isPaymentRequired;
 
   const { app, service } =
-    await ServicesContainer.ConnectedAppsService().getAppService<IPaymentProcessor>(
+    await servicesContainer.connectedAppsService.getAppService<IPaymentProcessor>(
       appId,
     );
 
   const formProps = service.getFormProps(app);
+
+  if (intentId) {
+    const intent = await servicesContainer.paymentsService.getIntent(intentId);
+    if (!intent) {
+      logger.warn({ intentId }, "Intent not found");
+      return NextResponse.json(
+        {
+          error: "intent_not_found",
+          message: "Intent not found",
+          code: "intent_not_found",
+          success: false,
+        },
+        { status: 404 },
+      );
+    }
+
+    if (intent.status === "paid") {
+      logger.debug({ intentId }, "Intent is already paid");
+
+      if (
+        intent.amount !== amount ||
+        intent.appId !== appId ||
+        intent.customerId !== customer?._id ||
+        intent.type !== type ||
+        !deepEqual(intent.request, appointmentRequest)
+      ) {
+        logger.warn({ intentId }, "Intent does not match the request");
+        return NextResponse.json(
+          {
+            error: "intent_does_not_match_the_request",
+            message: "Intent does not match the request",
+            code: "intent_does_not_match_the_request",
+            success: false,
+          },
+          { status: 400 },
+        );
+      }
+
+      return NextResponse.json({
+        formProps,
+        intent,
+      } satisfies CollectPayment);
+    }
+  }
 
   const intentUpdate = {
     amount,
@@ -86,11 +132,11 @@ const createOrUpdateAppointmentRequestIntent = async (
   );
 
   const intentResult = intentId
-    ? await ServicesContainer.PaymentsService().updateIntent(intentId, {
+    ? await servicesContainer.paymentsService.updateIntent(intentId, {
         ...intentUpdate,
         status: "created",
       })
-    : await ServicesContainer.PaymentsService().createIntent(intentUpdate);
+    : await servicesContainer.paymentsService.createIntent(intentUpdate);
 
   const { request: _, ...intent } = intentResult;
 
@@ -113,6 +159,7 @@ const createOrUpdateModifyAppointmentRequestIntent = async (
   const logger = getLoggerFactory("PaymentsUtils")(
     "createOrUpdateModifyAppointmentRequestIntent",
   );
+  const servicesContainer = await getServicesContainer();
 
   logger.debug({ intentId }, "Creating or updating intent");
 
@@ -200,14 +247,14 @@ const createOrUpdateModifyAppointmentRequestIntent = async (
   const { paymentPercentage, paymentAmount } = information;
 
   const config =
-    await ServicesContainer.ConfigurationService().getConfiguration("booking");
+    await servicesContainer.configurationService.getConfiguration("booking");
   if (!config.payments?.enabled || !config.payments.paymentAppId) {
     logger.debug({ config }, "Payments are not enabled");
     return NextResponse.json(null);
   }
 
   const { app, service } =
-    await ServicesContainer.ConnectedAppsService().getAppService<IPaymentProcessor>(
+    await servicesContainer.connectedAppsService.getAppService<IPaymentProcessor>(
       config.payments.paymentAppId,
     );
 
@@ -229,11 +276,11 @@ const createOrUpdateModifyAppointmentRequestIntent = async (
   );
 
   const intentResult = intentId
-    ? await ServicesContainer.PaymentsService().updateIntent(intentId, {
+    ? await servicesContainer.paymentsService.updateIntent(intentId, {
         ...intentUpdate,
         status: "created",
       })
-    : await ServicesContainer.PaymentsService().createIntent(intentUpdate);
+    : await servicesContainer.paymentsService.createIntent(intentUpdate);
 
   const { request: _, ...intent } = intentResult;
 

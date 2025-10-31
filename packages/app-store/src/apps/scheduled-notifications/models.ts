@@ -6,7 +6,7 @@ import {
   Query,
   WithDatabaseId,
 } from "@vivid/types";
-import { z } from "zod";
+import * as z from "zod";
 import { ScheduledNotificationsAdminAllKeys } from "./translations/types";
 
 export const timeBeforeScheduledNotificationType = "timeBefore" as const;
@@ -33,7 +33,7 @@ export const scheduledNotificationTimeBeforeAfterSchema = z.object({
   type: scheduledNotificationTypesEnum.extract(["timeBefore", "timeAfter"]),
   weeks: asOptinalNumberField(
     z.coerce
-      .number()
+      .number<number>()
       .int("validation.common.number.integer" satisfies AllKeys)
       .min(
         0,
@@ -46,7 +46,7 @@ export const scheduledNotificationTimeBeforeAfterSchema = z.object({
   ),
   days: asOptinalNumberField(
     z.coerce
-      .number()
+      .number<number>()
       .int("validation.common.number.integer" satisfies AllKeys)
       .min(
         0,
@@ -59,7 +59,7 @@ export const scheduledNotificationTimeBeforeAfterSchema = z.object({
   ),
   hours: asOptinalNumberField(
     z.coerce
-      .number()
+      .number<number>()
       .int("validation.common.number.integer" satisfies AllKeys)
       .min(
         0,
@@ -72,7 +72,7 @@ export const scheduledNotificationTimeBeforeAfterSchema = z.object({
   ),
   minutes: asOptinalNumberField(
     z.coerce
-      .number()
+      .number<number>()
       .int("validation.common.number.integer" satisfies AllKeys)
       .min(
         0,
@@ -89,7 +89,7 @@ export const scheduledNotificationAtTimeSchema = z.object({
   type: scheduledNotificationTypesEnum.extract(["atTimeBefore", "atTimeAfter"]),
   weeks: asOptinalNumberField(
     z.coerce
-      .number()
+      .number<number>()
       .int("validation.common.number.integer" satisfies AllKeys)
       .min(
         0,
@@ -101,7 +101,7 @@ export const scheduledNotificationAtTimeSchema = z.object({
       ),
   ),
   days: z.coerce
-    .number()
+    .number<number>()
     .int("common.number.integer")
     .min(
       0,
@@ -113,7 +113,7 @@ export const scheduledNotificationAtTimeSchema = z.object({
     ),
   time: z.object({
     hour: z.coerce
-      .number()
+      .number<number>()
       .int("validation.common.number.integer" satisfies AllKeys)
       .min(
         0,
@@ -124,7 +124,7 @@ export const scheduledNotificationAtTimeSchema = z.object({
         "app_scheduled-notifications_admin.validation.form.time.hour.max" satisfies ScheduledNotificationsAdminAllKeys,
       ),
     minute: z.coerce
-      .number()
+      .number<number>()
       .int("validation.common.number.integer" satisfies AllKeys)
       .min(
         0,
@@ -140,7 +140,7 @@ export const scheduledNotificationAtTimeSchema = z.object({
 export const baseScheduledNotificationChannelSchema = z.object({
   templateId: z
     .string({
-      message:
+      error:
         "app_scheduled-notifications_admin.validation.form.templateId.required" satisfies ScheduledNotificationsAdminAllKeys,
     })
     .min(
@@ -149,23 +149,21 @@ export const baseScheduledNotificationChannelSchema = z.object({
     ),
 });
 
-export const scheduledNotificationEmailSchema = z
-  .object({
-    channel: scheduledNotificationChannelsEnum.extract(["email"]),
-    subject: z
-      .string()
-      .min(
-        1,
-        "app_scheduled-notifications_admin.validation.form.subject.required" satisfies ScheduledNotificationsAdminAllKeys,
-      ),
-  })
-  .merge(baseScheduledNotificationChannelSchema);
+export const scheduledNotificationEmailSchema = z.object({
+  ...baseScheduledNotificationChannelSchema.shape,
+  channel: scheduledNotificationChannelsEnum.extract(["email"]),
+  subject: z
+    .string()
+    .min(
+      1,
+      "app_scheduled-notifications_admin.validation.form.subject.required" satisfies ScheduledNotificationsAdminAllKeys,
+    ),
+});
 
-export const scheduledNotificationTextMessageSchema = z
-  .object({
-    channel: scheduledNotificationChannelsEnum.extract(["text-message"]),
-  })
-  .merge(baseScheduledNotificationChannelSchema);
+export const scheduledNotificationTextMessageSchema = z.object({
+  ...baseScheduledNotificationChannelSchema.shape,
+  channel: scheduledNotificationChannelsEnum.extract(["text-message"]),
+});
 
 export const scheduledNotificationTypeSchema = z.discriminatedUnion("type", [
   scheduledNotificationTimeBeforeAfterSchema,
@@ -188,20 +186,16 @@ export const scheduledNotificationAppointmentCountType = [
 export const scheduledNotificationAppointmentCountTypeEnum = z.enum(
   scheduledNotificationAppointmentCountType,
   {
-    errorMap: (issue, _ctx) => {
-      return {
-        message:
-          "app_scheduled-notifications_admin.validation.form.appointmentCount.type" satisfies ScheduledNotificationsAdminAllKeys,
-      };
-    },
+    error:
+      "app_scheduled-notifications_admin.validation.form.appointmentCount.type" satisfies ScheduledNotificationsAdminAllKeys,
   },
 );
 
 export const scheduledNotificationAppointmentCountSchema = z.object({
   type: scheduledNotificationAppointmentCountTypeEnum,
   count: z.coerce
-    .number({
-      message:
+    .number<number>({
+      error:
         "app_scheduled-notifications_admin.validation.form.appointmentCount.min" satisfies ScheduledNotificationsAdminAllKeys,
     })
     .int("validation.common.number.integer" satisfies AllKeys)

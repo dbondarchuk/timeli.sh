@@ -4,20 +4,21 @@ import {
   INotificationService,
   TextMessageNotificationRequest,
   TextMessageResponse,
+  WithCompanyId,
 } from "@vivid/types";
 import { Job } from "bullmq";
 import { BaseBullMQClient } from "../base-bullmq-client";
 import { BullMQNotificationConfig } from "./types";
 
-export interface EmailJobData {
+export type EmailJobData = WithCompanyId<{
   type: "email";
   data: EmailNotificationRequest;
-}
+}>;
 
-export interface TextMessageJobData {
+export type TextMessageJobData = WithCompanyId<{
   type: "text-message";
   data: TextMessageNotificationRequest;
-}
+}>;
 
 export type NotificationJobData = EmailJobData | TextMessageJobData;
 
@@ -25,14 +26,14 @@ export class BullMQNotificationService
   extends BaseBullMQClient
   implements INotificationService
 {
-  protected readonly loggerFactory = getLoggerFactory(
-    "BullMQNotificationService",
-  );
-
   protected readonly config: BullMQNotificationConfig;
 
-  constructor(config: BullMQNotificationConfig) {
-    super(config);
+  constructor(
+    protected readonly companyId: string,
+    config: BullMQNotificationConfig,
+  ) {
+    super(config, getLoggerFactory("BullMQNotificationService", companyId));
+
     this.config = config;
     this.initializeQueues();
   }
@@ -42,14 +43,14 @@ export class BullMQNotificationService
 
     // Create email queue
     const emailQueue = this.createQueue(this.config.queues.email.name);
-    this.createQueueEvents(this.config.queues.email.name);
+    // this.createQueueEvents(this.config.queues.email.name);
 
     // Create text message queue
     const textMessageQueue = this.createQueue(
       this.config.queues.textMessage.name,
     );
 
-    this.createQueueEvents(this.config.queues.textMessage.name);
+    // this.createQueueEvents(this.config.queues.textMessage.name);
 
     logger.info("BullMQ notification queues initialized");
   }
@@ -60,6 +61,7 @@ export class BullMQNotificationService
     const jobData: EmailJobData = {
       type: "email",
       data,
+      companyId: this.companyId,
     };
 
     try {
@@ -98,6 +100,7 @@ export class BullMQNotificationService
     const jobData: TextMessageJobData = {
       type: "text-message",
       data,
+      companyId: this.companyId,
     };
 
     try {
@@ -189,6 +192,7 @@ export class BullMQNotificationService
     const jobData: EmailJobData = {
       type: "email",
       data,
+      companyId: this.companyId,
     };
 
     const queue = this.getQueue(this.config.queues.email.name);
@@ -228,6 +232,7 @@ export class BullMQNotificationService
     const jobData: TextMessageJobData = {
       type: "text-message",
       data,
+      companyId: this.companyId,
     };
 
     const queue = this.getQueue(this.config.queues.textMessage.name);

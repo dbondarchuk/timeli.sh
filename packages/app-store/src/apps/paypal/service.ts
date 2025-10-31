@@ -1,5 +1,5 @@
 import { Environment } from "@paypal/paypal-server-sdk";
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
 import {
   ApiRequest,
   ApiResponse,
@@ -35,9 +35,14 @@ export const MASKED_SECRET_KEY = "this-is-a-masked-secret-key";
 class PaypalConnectedApp
   implements IConnectedApp<PaypalConfiguration>, IPaymentProcessor
 {
-  protected readonly loggerFactory = getLoggerFactory("PaypalConnectedApp");
+  protected readonly loggerFactory: LoggerFactory;
 
-  public constructor(protected readonly props: IConnectedAppProps) {}
+  public constructor(protected readonly props: IConnectedAppProps) {
+    this.loggerFactory = getLoggerFactory(
+      "PaypalConnectedApp",
+      props.companyId,
+    );
+  }
 
   public async processAppData(
     appData: PaypalConfiguration,
@@ -294,9 +299,9 @@ class PaypalConnectedApp
     );
 
     try {
-      const intent = await this.props.services
-        .PaymentsService()
-        .getIntent(request.paymentIntentId);
+      const intent = await this.props.services.paymentsService.getIntent(
+        request.paymentIntentId,
+      );
 
       if (!intent) {
         logger.error(
@@ -362,7 +367,7 @@ class PaypalConnectedApp
         "Successfully created PayPal order, updating payment intent",
       );
 
-      await this.props.services.PaymentsService().updateIntent(intent._id, {
+      await this.props.services.paymentsService.updateIntent(intent._id, {
         externalId: order.id,
       });
 
@@ -404,9 +409,10 @@ class PaypalConnectedApp
     );
 
     try {
-      const intent = await this.props.services
-        .PaymentsService()
-        .getIntentByExternalId(request.orderId);
+      const intent =
+        await this.props.services.paymentsService.getIntentByExternalId(
+          request.orderId,
+        );
 
       if (!intent) {
         logger.error(
@@ -457,7 +463,7 @@ class PaypalConnectedApp
           "Failed to capture PayPal order",
         );
 
-        await this.props.services.PaymentsService().updateIntent(intent._id, {
+        await this.props.services.paymentsService.updateIntent(intent._id, {
           status: "failed",
         });
 
@@ -500,7 +506,7 @@ class PaypalConnectedApp
 
       const fees = [...platformFees, ...paypalFees];
 
-      await this.props.services.PaymentsService().updateIntent(intent._id, {
+      await this.props.services.paymentsService.updateIntent(intent._id, {
         status: "paid",
         fees,
       });

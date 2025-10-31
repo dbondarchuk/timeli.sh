@@ -22,6 +22,7 @@ export const WaitlistTab: React.FC<{
   const beforeNow = DateTime.now().toJSDate();
   const repositoryService = new WaitlistRepositoryService(
     appId,
+    props.companyId,
     props.getDbConnection,
     props.services,
   );

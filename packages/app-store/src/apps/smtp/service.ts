@@ -1,4 +1,4 @@
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
 import {
   ConnectedAppData,
   ConnectedAppError,
@@ -25,9 +25,11 @@ const MASKED_PASSWORD = "********";
 export default class SmtpConnectedApp
   implements IConnectedApp<SmtpConfiguration>, IMailSender
 {
-  protected readonly loggerFactory = getLoggerFactory("SmtpConnectedApp");
+  protected readonly loggerFactory: LoggerFactory;
 
-  public constructor(protected readonly props: IConnectedAppProps) {}
+  public constructor(protected readonly props: IConnectedAppProps) {
+    this.loggerFactory = getLoggerFactory("SmtpConnectedApp", props.companyId);
+  }
 
   public async processAppData(
     appData: SmtpConfiguration,

@@ -2,7 +2,7 @@
 
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
 import { Check, ChevronRight } from "lucide-react";
-import * as React from "react";
+import React from "react";
 
 import { cva } from "class-variance-authority";
 import { withVariants } from "../cn";

@@ -1,6 +1,6 @@
 "use client";
 
-import z from "zod";
+import * as z from "zod";
 import { create, StoreApi, UseBoundStore, useStore } from "zustand";
 
 import { DeepOmit, UploadedFile } from "@vivid/types";
@@ -14,11 +14,8 @@ import {
 } from "react";
 import { useCookies } from "react-cookie";
 import { cloneBlock, validateBlocks } from "../helpers/blocks";
-import {
-  BuilderSchema,
-  EditorDocumentBlocksDictionary,
-  ReaderDocumentBlocksDictionary,
-} from "../types";
+import { ReaderDocumentBlocksDictionary } from "../reader/core";
+import { BuilderSchema, EditorDocumentBlocksDictionary } from "../types";
 import {
   BlockDisableOptions,
   TEditorBlock,

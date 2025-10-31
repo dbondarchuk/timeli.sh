@@ -1,6 +1,6 @@
 import { BaseReaderBlockProps, generateId } from "@vivid/builder";
 import { COLORS } from "@vivid/page-builder-base/style";
-import z from "zod";
+import * as z from "zod";
 import { ButtonPropsDefaults } from "../button";
 import { InlineContainerPropsDefaults } from "../inline-container/schema";
 import { zStyles } from "./styles";

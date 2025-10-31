@@ -1,5 +1,5 @@
 import { BaseReaderBlockProps } from "@vivid/builder";
-import z from "zod";
+import * as z from "zod";
 import { zStyles } from "./styles";
 
 export const ModifyAppointmentFormPropsSchema = z.object({

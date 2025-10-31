@@ -29,7 +29,7 @@ import {
 } from "@vivid/ui";
 import { mimeTypeToExtension } from "@vivid/utils";
 import { FileIcon, Trash } from "lucide-react";
-import Image from "next/image";
+// import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { DefaultExtensionType, defaultStyles } from "react-file-icon";
@@ -218,9 +218,9 @@ export const AppointmentFiles = ({ appointment }: AppointmentFilesProps) => {
             </AlertDialog>
             {file.mimeType?.startsWith("image/") ? (
               <div className="relative w-20 h-20">
-                <Image
+                <img
                   src={`/assets/${file.filename}`}
-                  fill
+                  // fill
                   alt={file.description || file.filename}
                   className="cursor-pointer object-cover"
                   onClick={() => onFileClick(file._id)}
@@ -261,7 +261,7 @@ export const AppointmentFiles = ({ appointment }: AppointmentFilesProps) => {
                   <CarouselItem key={`${file._id}-${index}`}>
                     <div className="flex flex-col gap-2 justify-center h-full max-h-lvh">
                       <div className="w-full flex justify-center max-h-[80%]">
-                        <Image
+                        <img
                           src={`/assets/${file.filename}`}
                           width={800}
                           height={800}

@@ -1,7 +1,7 @@
 "use client";
 
 import { Check } from "lucide-react";
-import * as React from "react";
+import React from "react";
 
 import { useI18n } from "@vivid/i18n";
 import { useInView } from "react-intersection-observer";

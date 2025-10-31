@@ -11,8 +11,6 @@ import { CustomerTextMessageNotificationApp } from "./apps/customer-text-message
 import { CUSTOMER_TEXT_MESSAGE_NOTIFICATION_APP_NAME } from "./apps/customer-text-message-notification/const";
 import { EmailNotificationApp } from "./apps/email-notification/app";
 import { EMAIL_NOTIFICATION_APP_NAME } from "./apps/email-notification/const";
-import { FileSystemAssetsStorageApp } from "./apps/file-system-assets-storage/app";
-import { FILE_SYSTEM_ASSETS_STORAGE_APP_NAME } from "./apps/file-system-assets-storage/const";
 import { FinancialOverviewApp } from "./apps/financial-overview/app";
 import { FINANCIAL_OVERVIEW_APP_NAME } from "./apps/financial-overview/const";
 import { GoogleCalendarApp } from "./apps/google-calendar/app";
@@ -23,8 +21,6 @@ import { OutlookApp } from "./apps/outlook/app";
 import { OUTLOOK_APP_NAME } from "./apps/outlook/const";
 import { PaypalApp } from "./apps/paypal/app";
 import { PAYPAL_APP_NAME } from "./apps/paypal/const";
-import { S3AssetsStorageApp } from "./apps/s3-assets-storage/app";
-import { S3_ASSETS_STORAGE_APP_NAME } from "./apps/s3-assets-storage/const";
 import { ScheduledNotificationsApp } from "./apps/scheduled-notifications/app";
 import { SCHEDULED_NOTIFICATIONS_APP_NAME } from "./apps/scheduled-notifications/const";
 import { SmartScheduleApp } from "./apps/smart-schedule/app";
@@ -70,8 +66,8 @@ export const AvailableApps: Record<string, App> = {
     CustomerTextMessageNotificationApp,
   [TEXT_MESSAGE_NOTIFICATION_APP_NAME]: TextMessageNotificationApp,
   [SCHEDULED_NOTIFICATIONS_APP_NAME]: ScheduledNotificationsApp,
-  [FILE_SYSTEM_ASSETS_STORAGE_APP_NAME]: FileSystemAssetsStorageApp,
-  [S3_ASSETS_STORAGE_APP_NAME]: S3AssetsStorageApp,
+  // [FILE_SYSTEM_ASSETS_STORAGE_APP_NAME]: FileSystemAssetsStorageApp,
+  // [S3_ASSETS_STORAGE_APP_NAME]: S3AssetsStorageApp,
   [TEXT_MESSAGE_AUTO_REPLY_APP_NAME]: TextMessageAutoReplyApp,
   [TEXT_MESSAGE_RESENDER_APP_NAME]: TextMessageResenderApp,
   [PAYPAL_APP_NAME]: PaypalApp,
@@ -91,13 +87,13 @@ export { CALENDAR_WRITER_APP_NAME } from "./apps/calendar-writer/const";
 export { CUSTOMER_EMAIL_NOTIFICATION_APP_NAME } from "./apps/customer-email-notification/const";
 export { CUSTOMER_TEXT_MESSAGE_NOTIFICATION_APP_NAME } from "./apps/customer-text-message-notification/const";
 export { EMAIL_NOTIFICATION_APP_NAME } from "./apps/email-notification/const";
-export { FILE_SYSTEM_ASSETS_STORAGE_APP_NAME } from "./apps/file-system-assets-storage/const";
+// export { FILE_SYSTEM_ASSETS_STORAGE_APP_NAME } from "./apps/file-system-assets-storage/const";
 export { FINANCIAL_OVERVIEW_APP_NAME } from "./apps/financial-overview/const";
 export { GOOGLE_CALENDAR_APP_NAME } from "./apps/google-calendar/const";
 export { ICS_APP_NAME } from "./apps/ics/const";
 export { OUTLOOK_APP_NAME } from "./apps/outlook/const";
 export { PAYPAL_APP_NAME } from "./apps/paypal/const";
-export { S3_ASSETS_STORAGE_APP_NAME } from "./apps/s3-assets-storage/const";
+// export { S3_ASSETS_STORAGE_APP_NAME } from "./apps/s3-assets-storage/const";
 export { SCHEDULED_NOTIFICATIONS_APP_NAME } from "./apps/scheduled-notifications/const";
 export { SMART_SCHEDULE_APP_NAME } from "./apps/smart-schedule/const";
 export { SMTP_APP_NAME } from "./apps/smtp/const";

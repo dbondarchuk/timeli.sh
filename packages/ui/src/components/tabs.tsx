@@ -1,7 +1,7 @@
 "use client";
 
 import * as TabsPrimitive from "@radix-ui/react-tabs";
-import * as React from "react";
+import React from "react";
 
 import { useSearchParams } from "next/navigation";
 import { cn } from "../utils";

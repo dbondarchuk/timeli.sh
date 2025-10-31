@@ -7,7 +7,7 @@ ${customText}
 
 Requested on {{ createdAt.full }}
 
-Customer: [{{ customer.name }}]({{ config.url }}/admin/dashboard/customers/{{customerId}})
+Customer: [{{ customer.name }}]({{ adminUrl }}/dashboard/customers/{{customerId}})
 
 Name: {{ fields.name }}
 
@@ -21,13 +21,13 @@ Phone: {{ fields.phone }}
 
 {{/restFields}} {{#images}}
 
-![{{description}}]({{ config.url }}/assets/{{filename}})
+![{{description}}]({{ websiteUrl }}/assets/{{filename}})
 
 {{filename}}
 
 {{/images}} {{#files}}
 
-File: [{{filename}}]({{ config.url }}/assets/{{filename}})
+File: [{{filename}}]({{ websiteUrl }}/assets/{{filename}})
 
 {{/files}}
 
@@ -48,7 +48,7 @@ Duration: {{#duration.hours}}{{.}} hr {{/duration.hours}}{{#duration.minutes}}{{
 
 {{#discount}}
 
-Promo code: {{code}} (-\${{discountAmountFormatted}}) ([{{name}}]({{ config.url }}/admin/dashboard/services/discounts/{{id}}))
+Promo code: {{code}} (-\${{discountAmountFormatted}}) ([{{name}}]({{ adminUrl }}/dashboard/services/discounts/{{id}}))
 
 {{/discount}}
 

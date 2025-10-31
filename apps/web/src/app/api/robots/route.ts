@@ -1,10 +1,10 @@
+import { getWebsiteUrl } from "@/utils/utils";
 import { getLoggerFactory } from "@vivid/logger";
-import { ServicesContainer } from "@vivid/services";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
   const logger = getLoggerFactory("API/robots")("GET");
-
+  const url = await getWebsiteUrl();
   logger.debug(
     {
       url: req.url,
@@ -12,9 +12,6 @@ export async function GET(req: NextRequest) {
     },
     "Processing robots.txt request",
   );
-
-  const { url } =
-    await ServicesContainer.ConfigurationService().getConfiguration("general");
 
   const robots = `User-Agent: *
 Allow: /

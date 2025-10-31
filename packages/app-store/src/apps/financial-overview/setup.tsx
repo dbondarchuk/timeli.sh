@@ -8,7 +8,7 @@ import {
   ConnectedAppStatusMessage,
 } from "@vivid/ui-admin";
 import React from "react";
-import { z } from "zod";
+import * as z from "zod";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
 import { FinancialOverviewApp } from "./app";
 import {

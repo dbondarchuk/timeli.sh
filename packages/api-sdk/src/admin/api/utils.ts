@@ -1,6 +1,6 @@
 import { fetchWithJson } from "@vivid/utils";
 
-export const BASE_ADMIN_API_URL = "/admin/api";
+export const BASE_ADMIN_API_URL = "/api";
 
 export const fetchAdminApi = async (url: string, options?: RequestInit) => {
   const fullUrl = `${BASE_ADMIN_API_URL}${url.startsWith("/") ? url : `/${url}`}`;

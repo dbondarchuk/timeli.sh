@@ -20,7 +20,7 @@ export const BusyEventsMenuItems: AppMenuItem<
     pageBreadcrumbs: [
       {
         title: "app_busy-events_admin.navigation.busyEvents.label",
-        link: "/admin/dashboard/settings/schedule/busy-events",
+        link: "/dashboard/settings/schedule/busy-events",
       },
     ],
     icon: <CalendarX2 />,

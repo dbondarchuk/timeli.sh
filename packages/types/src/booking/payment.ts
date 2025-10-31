@@ -1,5 +1,5 @@
-import { z } from "zod";
-import { WithDatabaseId } from "../database";
+import * as z from "zod";
+import { WithCompanyId, WithDatabaseId } from "../database";
 import { Prettify } from "../utils/helpers";
 import {
   AppointmentRequest,
@@ -69,12 +69,16 @@ export type CreateOrUpdatePaymentIntentRequest = z.infer<
   typeof createOrUpdatePaymentIntentRequestSchema
 >;
 
-export type PaymentIntent = WithDatabaseId<
-  PaymentIntentUpdateModel & {
-    createdAt: Date;
-    updatedAt: Date;
-    paidAt?: Date;
-  }
+export type PaymentIntent = Prettify<
+  WithCompanyId<
+    WithDatabaseId<
+      PaymentIntentUpdateModel & {
+        createdAt: Date;
+        updatedAt: Date;
+        paidAt?: Date;
+      }
+    >
+  >
 >;
 
 export type CollectPayment = {
@@ -117,10 +121,12 @@ export type PaymentUpdateModel = {
 );
 
 export type Payment = Prettify<
-  WithDatabaseId<
-    PaymentUpdateModel & {
-      updatedAt: Date;
-    }
+  WithCompanyId<
+    WithDatabaseId<
+      PaymentUpdateModel & {
+        updatedAt: Date;
+      }
+    >
   >
 >;
 
@@ -132,15 +138,15 @@ export type InStorePayment = Extract<
 
 export const inStorePaymentUpdateModelSchema = z.object({
   amount: z.coerce
-    .number({ message: "payments.amount.min" })
+    .number<number>({ error: "payments.amount.min" })
     .min(1, "payments.amount.min"),
-  paidAt: z.coerce.date({ message: "payments.paidAt.required" }),
+  paidAt: z.coerce.date<Date>({ error: "payments.paidAt.required" }),
   appointmentId: z.string(),
   description: z.string(),
   method: z.enum(inPersonPaymentMethod, {
-    message: "payments.method.required",
+    error: "payments.method.required",
   }),
-  type: z.enum(paymentType, { message: "payments.type.required" }),
+  type: z.enum(paymentType, { error: "payments.type.required" }),
 });
 
 export type InStorePaymentUpdateModel = z.infer<

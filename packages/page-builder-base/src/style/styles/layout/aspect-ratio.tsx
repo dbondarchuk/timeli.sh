@@ -2,7 +2,7 @@ import { RawDoubleNumberInput } from "@vivid/builder";
 import { useI18n } from "@vivid/i18n";
 import { Combobox } from "@vivid/ui";
 import { Proportions } from "lucide-react";
-import { z } from "zod";
+import * as z from "zod";
 import { StyleDefinition } from "../../types";
 
 const predefinedOptions = ["initial", "inherit", "unset"] as const;

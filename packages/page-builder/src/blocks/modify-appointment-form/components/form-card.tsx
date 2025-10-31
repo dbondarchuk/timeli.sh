@@ -5,7 +5,7 @@ import React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DateTime as LuxonDateTime } from "luxon";
 import { useForm } from "react-hook-form";
-import z from "zod";
+import * as z from "zod";
 
 import {
   DateTimePicker,
@@ -35,7 +35,7 @@ import { ModifyAppointmentFields } from "./types";
 const formSchema = z.discriminatedUnion("type", [
   z.object({
     type: z.literal("email"),
-    email: z.string().email(),
+    email: z.email(),
     dateTime: z.date(),
   }),
   z.object({

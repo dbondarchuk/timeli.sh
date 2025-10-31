@@ -16,6 +16,7 @@ export const Logo: React.FC<{
         "flex title-font font-medium items-center gap-2",
         className,
       )}
+      data-testid="logo"
     >
       {logo && showLogo && (
         // eslint-disable-next-line @next/next/no-img-element

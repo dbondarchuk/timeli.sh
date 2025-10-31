@@ -1,3 +1,4 @@
+import { getAdminUrl } from "@vivid/utils";
 import type { CSSProperties } from "react";
 import { getFontFamily, getPadding } from "../../style-inputs/helpers/styles";
 import { type OnlineMeetingProps } from "./schema";
@@ -17,17 +18,19 @@ export const getLogoUrl = (props: OnlineMeetingProps["props"]): string => {
     return props.logoUrl;
   }
 
+  const adminUrl = getAdminUrl();
+
   if (props?.type === "teams") {
-    return "{{config.url}}/logos/microsoft_teams.svg";
+    return `${adminUrl}/logos/microsoft_teams.svg`;
   }
 
   if (props?.type === "zoom") {
-    return "{{config.url}}/logos/zoom.svg";
+    return `${adminUrl}/logos/zoom.svg`;
   }
 
   if (props?.type === "google_meet") {
-    return "{{config.url}}/logos/google_meet.svg";
+    return `${adminUrl}/logos/google_meet.svg`;
   }
 
-  return "{{config.url}}/logos/video_call.svg";
+  return `${adminUrl}/logos/video_call.svg`;
 };

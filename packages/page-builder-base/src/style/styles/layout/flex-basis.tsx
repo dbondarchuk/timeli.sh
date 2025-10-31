@@ -1,9 +1,9 @@
 import { Percent } from "lucide-react";
-import { z } from "zod";
+import * as z from "zod";
 import { RawNumberInputWithUnit } from "../../../style-inputs/base/raw-number-input-with-units";
 import { StyleDefinition } from "../../types";
 
-const FlexBasisSchema = z.coerce.number().min(0).max(100).int();
+const FlexBasisSchema = z.coerce.number<number>().min(0).max(100).int();
 
 export const flexBasisStyle = {
   name: "flexBasis",

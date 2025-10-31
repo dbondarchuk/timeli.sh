@@ -1,14 +1,15 @@
+import type { App, AppScope } from "../apps/app";
 import {
-  ApiRequest,
-  ApiResponse,
-  App,
-  AppScope,
   ConnectedApp,
   ConnectedAppData,
   ConnectedAppUpdateModel,
+} from "../apps/connected-app.data";
+import type { IConnectedAppProps } from "../apps/connected-app.props";
+import {
+  ApiRequest,
+  ApiResponse,
   IConnectedApp,
-  IConnectedAppProps,
-} from "../apps";
+} from "../apps/connected-app.service";
 
 export interface IConnectedAppsService {
   createNewApp(name: string): Promise<string>;

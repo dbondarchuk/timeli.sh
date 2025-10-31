@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as z from "zod";
 import { asOptinalNumberField } from "../../utils";
 
 export const paymentsConfigurationSchema = z
@@ -7,7 +7,7 @@ export const paymentsConfigurationSchema = z
       .string()
       .min(1, "configuration.booking.payments.paymentAppId.required"),
     enabled: z.literal(true, {
-      message: "configuration.booking.payments.paymentAppId.required",
+      error: "configuration.booking.payments.paymentAppId.required",
     }),
   })
   .and(
@@ -15,26 +15,25 @@ export const paymentsConfigurationSchema = z
       z.object({
         requireDeposit: z
           .literal(false, {
-            message: "configuration.booking.payments.requireDeposit.required",
+            error: "configuration.booking.payments.requireDeposit.required",
           })
           .optional(),
       }),
       z.object({
         requireDeposit: z.literal(true, {
-          message: "configuration.booking.payments.requireDeposit.required",
+          error: "configuration.booking.payments.requireDeposit.required",
         }),
         depositPercentage: z.coerce
-          .number({
-            message:
-              "configuration.booking.payments.depositPercentage.required",
+          .number<number>({
+            error: "configuration.booking.payments.depositPercentage.required",
           })
           .int("configuration.booking.payments.depositPercentage.integer")
           .min(10, "configuration.booking.payments.depositPercentage.min")
           .max(100, "configuration.booking.payments.depositPercentage.max"),
         dontRequireIfCompletedMinNumberOfAppointments: asOptinalNumberField(
           z.coerce
-            .number({
-              message:
+            .number<number>({
+              error:
                 "configuration.booking.payments.dontRequireIfCompletedMinNumberOfAppointments.min",
             })
             .int(
@@ -52,7 +51,7 @@ export const paymentsConfigurationSchema = z
     z.object({
       enabled: z
         .literal(false, {
-          message: "configuration.booking.payments.paymentAppId.required",
+          error: "configuration.booking.payments.paymentAppId.required",
         })
         .optional(),
     }),

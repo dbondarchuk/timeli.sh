@@ -59,7 +59,8 @@ export const NumberWithUnitShortcut = <T extends BaseStyleDictionary>({
             ...variant,
             value,
           }));
-          newStyles[shortcut.targetStyle] = updatedVariants;
+          newStyles[shortcut.targetStyle] =
+            updatedVariants as StyleValue<T>[keyof T];
         }
       } else {
         // Create new style variant
@@ -69,7 +70,7 @@ export const NumberWithUnitShortcut = <T extends BaseStyleDictionary>({
             state: [],
             value,
           },
-        ];
+        ] as unknown as StyleValue<T>[keyof T];
       }
 
       onStylesChange(newStyles);

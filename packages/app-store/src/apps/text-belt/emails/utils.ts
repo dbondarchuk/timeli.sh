@@ -30,13 +30,13 @@ export const getEmailTemplate = async (
         appointmentId
           ? {
               text: buttonTexts.viewAppointment,
-              url: `${url}/admin/dashboard/appointments/${appointmentId}`,
+              url: `${url}/dashboard/appointments/${appointmentId}`,
             }
           : undefined,
         customerId
           ? {
               text: buttonTexts.viewCustomer,
-              url: `${url}/admin/dashboard/customers/${customerId}`,
+              url: `${url}/dashboard/customers/${customerId}`,
             }
           : undefined,
       ],

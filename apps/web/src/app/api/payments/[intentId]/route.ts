@@ -4,7 +4,7 @@ import { createOrUpdateIntent } from "../../../../utils/payments/createIntent";
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ intentId: string }> },
+  { params }: RouteContext<"/api/payments/[intentId]">,
 ) {
   const logger = getLoggerFactory("API/payments-intent")("POST");
   const { intentId } = await params;

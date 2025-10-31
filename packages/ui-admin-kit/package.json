@@ -12,9 +12,9 @@
   "main": "./src/index.ts",
   "devDependencies": {
     "@types/node": "^20",
-    "@types/react": "19.0.2",
+    "@types/react": "19.2.0",
     "@types/react-big-calendar": "^1.8.10",
-    "@types/react-dom": "19.0.2",
+    "@types/react-dom": "19.2.0",
     "@types/react-window": "^1.8.8",
     "@vivid/eslint-config": "*",
     "@vivid/tailwind-config": "*",
@@ -35,11 +35,11 @@
     "@monaco-editor/react": "^4.6.0",
     "@uiw/react-json-view": "2.0.0-alpha.30",
     "lucide-react": "^0.525.0",
-    "react": "19.0.0",
+    "react": "19.2.0",
     "nuqs": "^2.7.1",
     "zustand": "^4.5.5"
   },
   "peerDependencies": {
-    "next": "15.2.1"
+    "next": "16.0.2-canary.1"
   }
 }

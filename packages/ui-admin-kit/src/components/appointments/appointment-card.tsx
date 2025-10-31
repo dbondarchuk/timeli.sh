@@ -50,14 +50,14 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
               name: appointment.customer?.name ?? appointment.fields.name,
               link: (chunks: any) => (
                 <Link
-                  href={`/admin/dashboard/customers/${appointment.customerId}`}
+                  href={`/dashboard/customers/${appointment.customerId}`}
                   variant="underline"
                 >
                   {chunks}
                 </Link>
               ),
             })}
-            href={`/admin/dashboard/appointments/${appointment._id}`}
+            href={`/dashboard/appointments/${appointment._id}`}
           />
         </CardTitle>
       </CardHeader>

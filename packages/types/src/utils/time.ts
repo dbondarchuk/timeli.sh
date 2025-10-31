@@ -1,4 +1,4 @@
-import { HourNumbers, MinuteNumbers, Time } from "../booking";
+import { HourNumbers, MinuteNumbers, Time } from "../booking/date-time";
 
 export const parseTime = (time: string): Time => {
   const parts = time?.split(":");

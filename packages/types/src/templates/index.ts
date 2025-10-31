@@ -1,11 +1,12 @@
-import { z } from "zod";
+import * as z from "zod";
 import { communicationChannels } from "../communication";
-import { WithDatabaseId } from "../database";
+import { WithCompanyId, WithDatabaseId } from "../database";
+import { Prettify } from "../utils";
 
 export const templateSchema = z.object({
   name: z.string().min(3, "template.name.required"),
   type: z.enum(communicationChannels, { message: "template.type.invalid" }),
-  value: z.any({ message: "template.value.required" }),
+  value: z.any(),
 });
 
 export const getTemplateSchemaWithUniqueCheck = (
@@ -19,8 +20,10 @@ export const getTemplateSchemaWithUniqueCheck = (
 };
 
 export type TemplateUpdateModel = z.infer<typeof templateSchema>;
-export type Template = WithDatabaseId<TemplateUpdateModel> & {
-  updatedAt: Date;
-};
+export type Template = Prettify<
+  WithCompanyId<WithDatabaseId<TemplateUpdateModel>> & {
+    updatedAt: Date;
+  }
+>;
 
 export type TemplateListModel = Omit<Template, "value">;

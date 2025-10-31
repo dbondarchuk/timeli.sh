@@ -31,7 +31,6 @@ import {
   toast,
   Tooltip,
   TooltipContent,
-  TooltipPortal,
   TooltipProvider,
   TooltipTrigger,
 } from "@vivid/ui";
@@ -462,7 +461,7 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
                 <span className="font-semibold">
                   <a
                     className="font-semibold underline text-right"
-                    href={`/admin/dashboard/customers/${rest.customerId}`}
+                    href={`/dashboard/customers/${rest.customerId}`}
                   >
                     {rest.customerName}
                   </a>
@@ -477,7 +476,7 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
                 </span>
                 <a
                   className="font-semibold underline text-right"
-                  href={`/admin/dashboard/appointments/${rest.appointmentId}`}
+                  href={`/dashboard/appointments/${rest.appointmentId}`}
                 >
                   {rest.serviceName}
                 </a>
@@ -495,13 +494,11 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
                       {dateTime.setLocale(locale).toRelative()}
                     </span>
                   </TooltipTrigger>
-                  <TooltipPortal>
-                    <TooltipContent>
-                      {dateTime.toLocaleString(DateTime.DATETIME_MED, {
-                        locale,
-                      })}
-                    </TooltipContent>
-                  </TooltipPortal>
+                  <TooltipContent>
+                    {dateTime.toLocaleString(DateTime.DATETIME_MED, {
+                      locale,
+                    })}
+                  </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
             </div>
@@ -532,16 +529,11 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
                         {refundedDateTime.setLocale(locale).toRelative()}
                       </span>
                     </TooltipTrigger>
-                    <TooltipPortal>
-                      <TooltipContent side="left">
-                        {refundedDateTime.toLocaleString(
-                          DateTime.DATETIME_MED,
-                          {
-                            locale,
-                          },
-                        )}
-                      </TooltipContent>
-                    </TooltipPortal>
+                    <TooltipContent side="left">
+                      {refundedDateTime.toLocaleString(DateTime.DATETIME_MED, {
+                        locale,
+                      })}
+                    </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
               </div>
@@ -560,25 +552,23 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
                           -${formatAmountString(totalRefunded)}
                         </span>
                       </TooltipTrigger>
-                      <TooltipPortal>
-                        <TooltipContent className="flex flex-col gap-2">
-                          {refunds?.map((refund) => (
-                            <div
-                              key={refund.refundedAt?.toISOString()}
-                              className="flex flex-row gap-2"
-                            >
-                              <span>
-                                {DateTime.fromJSDate(
-                                  refund.refundedAt,
-                                ).toLocaleString(DateTime.DATETIME_MED, {
-                                  locale,
-                                })}
-                              </span>
-                              <span>-${formatAmountString(refund.amount)}</span>
-                            </div>
-                          ))}
-                        </TooltipContent>
-                      </TooltipPortal>
+                      <TooltipContent className="flex flex-col gap-2">
+                        {refunds?.map((refund) => (
+                          <div
+                            key={refund.refundedAt?.toISOString()}
+                            className="flex flex-row gap-2"
+                          >
+                            <span>
+                              {DateTime.fromJSDate(
+                                refund.refundedAt,
+                              ).toLocaleString(DateTime.DATETIME_MED, {
+                                locale,
+                              })}
+                            </span>
+                            <span>-${formatAmountString(refund.amount)}</span>
+                          </div>
+                        ))}
+                      </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
                 </div>

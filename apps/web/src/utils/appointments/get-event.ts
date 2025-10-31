@@ -1,5 +1,4 @@
 import { getLoggerFactory } from "@vivid/logger";
-import { ServicesContainer } from "@vivid/services";
 import {
   AppointmentAddon,
   AppointmentDiscount,
@@ -9,6 +8,7 @@ import {
   Customer,
 } from "@vivid/types";
 import { formatAmount, getDiscountAmount } from "@vivid/utils";
+import { getServicesContainer } from "../utils";
 
 export const getAppointmentEventFromRequest = async (
   request: AppointmentRequest,
@@ -30,6 +30,7 @@ export const getAppointmentEventFromRequest = async (
     }
 > => {
   const logger = getLoggerFactory("AppointmentsUtils")("getEvent");
+  const servicesContainer = await getServicesContainer();
 
   logger.debug(
     {
@@ -43,7 +44,7 @@ export const getAppointmentEventFromRequest = async (
     "Processing appointment event from request",
   );
 
-  const selectedOption = await ServicesContainer.ServicesService().getOption(
+  const selectedOption = await servicesContainer.servicesService.getOption(
     request.optionId,
   );
 
@@ -92,7 +93,7 @@ export const getAppointmentEventFromRequest = async (
       "Retrieving selected addons",
     );
 
-    selectedAddons = await ServicesContainer.ServicesService().getAddonsById(
+    selectedAddons = await servicesContainer.servicesService.getAddonsById(
       request.addonsIds,
     );
 
@@ -148,7 +149,7 @@ export const getAppointmentEventFromRequest = async (
   );
 
   const serviceFields =
-    await ServicesContainer.ServicesService().getFieldsById(fieldsIds);
+    await servicesContainer.servicesService.getFieldsById(fieldsIds);
 
   if (!ignoreFieldValidation) {
     logger.debug(
@@ -227,7 +228,7 @@ export const getAppointmentEventFromRequest = async (
     "Looking up customer",
   );
 
-  const customer = await ServicesContainer.CustomersService().findCustomer(
+  const customer = await servicesContainer.customersService.findCustomer(
     request.fields.email,
     request.fields.phone,
   );
@@ -254,7 +255,7 @@ export const getAppointmentEventFromRequest = async (
       "Applying promo code discount",
     );
 
-    const discount = await ServicesContainer.ServicesService().applyDiscount({
+    const discount = await servicesContainer.servicesService.applyDiscount({
       code: request.promoCode,
       dateTime: request.dateTime,
       optionId: request.optionId,

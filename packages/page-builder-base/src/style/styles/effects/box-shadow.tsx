@@ -1,7 +1,7 @@
 import { useI18n } from "@vivid/i18n";
 import { Input, Label } from "@vivid/ui";
 import { Box } from "lucide-react";
-import { z } from "zod";
+import * as z from "zod";
 import { ColorExtendedInput } from "../../../style-inputs/base/color-exteneded-input";
 import { getColorStyle } from "../../helpers/colors";
 import { StyleDefinition } from "../../types";

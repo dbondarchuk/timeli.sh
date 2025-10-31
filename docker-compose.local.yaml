@@ -1,0 +1,151 @@
+version: "3.9"
+services:
+  vivid-admin:
+    build:
+      context: .
+      dockerfile: apps/admin/Dockerfile
+    image: ghcr.io/dbondarchuk/vivid-admin:latest
+    environment:
+      # - MONGODB_URI=mongodb://192.168.0.162:27017/vivid?retryWrites=true&w=majority
+      - MONGODB_URI=mongodb://host.docker.internal:27017/vivid?retryWrites=true&w=majority
+      - TZ=America/New_York
+      - AUTH_PASSWORD=password
+      - AUTH_SECRET="n6WKAuaUVdOYMRReNYXEd/sHLF/Ddfams+FAGMe7vzk="
+      - AUTH_TRUST_HOST=http://localhost:3000
+      - AUTH_URL=http://localhost:3000
+      - PUBLIC_DOMAIN=vividnail.studio
+      - ADMIN_DOMAIN=app-dev.vividnail.studio
+      - SECRET_KEY=${SECRET_KEY:-uw8iDFHFNjbIU8gPGMByTLiFfXJex7E1}
+      - REDIS_HOST=${REDIS_HOST:-redis}
+      - REDIS_PORT=${REDIS_PORT:-6379}
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-}
+      - REDIS_DB=${REDIS_DB:-0}
+      - LOG_LEVEL=${LOG_LEVEL:-debug}
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - "./apps/admin/public/upload:/app/public/upload"
+    networks:
+      - vivid-network
+    depends_on:
+      - mongodb
+      - redis
+      - vivid-job-processor
+      - vivid-notification-sender
+
+  vivid-web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    image: ghcr.io/dbondarchuk/vivid-web:latest
+    environment:
+      # - MONGODB_URI=mongodb://192.168.0.162:27017/vivid?retryWrites=true&w=majority
+      - MONGODB_URI=mongodb://host.docker.internal:27017/vivid?retryWrites=true&w=majority
+      - TZ=America/New_York
+      - AUTH_PASSWORD=password
+      - PUBLIC_DOMAIN=vividnail.studio
+      - AUTH_SECRET="n6WKAuaUVdOYMRReNYXEd/sHLF/Ddfams+FAGMe7vzk="
+      - AUTH_TRUST_HOST=http://localhost:3000
+      - AUTH_URL=http://localhost:3000
+      - SECRET_KEY=${SECRET_KEY:-uw8iDFHFNjbIU8gPGMByTLiFfXJex7E1}
+      - REDIS_HOST=${REDIS_HOST:-redis}
+      - REDIS_PORT=${REDIS_PORT:-6379}
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-}
+      - REDIS_DB=${REDIS_DB:-0}
+      - LOG_LEVEL=${LOG_LEVEL:-debug}
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    volumes:
+      - "./apps/web/public/upload:/app/public/upload"
+    networks:
+      - vivid-network
+    depends_on:
+      - mongodb
+      - redis
+      - vivid-job-processor
+      - vivid-notification-sender
+      - vivid-admin
+
+  vivid-notification-sender:
+    build:
+      context: .
+      dockerfile: apps/notification-sender/Dockerfile
+    image: ghcr.io/dbondarchuk/vivid-notification-sender:latest
+    environment:
+      - REDIS_HOST=${REDIS_HOST:-redis}
+      - REDIS_PORT=${REDIS_PORT:-6379}
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-}
+      - REDIS_DB=${REDIS_DB:-0}
+      - MONGODB_URI=${MONGODB_URI:-mongodb://host.docker.internal:27017/vivid?retryWrites=true&w=majority}
+      - SECRET_KEY=${SECRET_KEY:-uw8iDFHFNjbIU8gPGMByTLiFfXJex7E1}
+      - LOG_LEVEL=${LOG_LEVEL:-debug}
+    restart: unless-stopped
+    networks:
+      - vivid-network
+    depends_on:
+      - mongodb
+      - redis
+
+  vivid-job-processor:
+    build:
+      context: .
+      dockerfile: apps/job-processor/Dockerfile
+    image: ghcr.io/dbondarchuk/vivid-job-processor:latest
+    environment:
+      - REDIS_HOST=${REDIS_HOST:-redis}
+      - REDIS_PORT=${REDIS_PORT:-6379}
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-}
+      - REDIS_DB=${REDIS_DB:-0}
+      - MONGODB_URI=${MONGODB_URI:-mongodb://host.docker.internal:27017/vivid?retryWrites=true&w=majority}
+      - SECRET_KEY=${SECRET_KEY:-uw8iDFHFNjbIU8gPGMByTLiFfXJex7E1}
+      - LOG_LEVEL=${LOG_LEVEL:-debug}
+    restart: unless-stopped
+    networks:
+      - vivid-network
+    depends_on:
+      - mongodb
+      - redis
+
+  mongodb:
+    image: mongo:latest
+    restart: unless-stopped
+    #command: mongod --replSet rs0
+    # healthcheck:
+    #   test: |
+    #     mongosh --eval "try { rs.status().ok } catch (e) { rs.initiate({ _id: 'rs0', members: [{ _id: 0, host: 'localhost:27017' }] }).ok }"
+    #   start_period: 0s
+    #   interval: 500ms
+    #   timeout: 5s
+    #   retries: 5
+    ports:
+      - "27017:27017"
+    networks:
+      - vivid-network
+  redis:
+    image: redis:latest
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - vivid-network
+    volumes:
+      - redis-data:/data
+
+  s3:
+    image: luofuxiang/local-s3
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    networks:
+      - vivid-network
+    volumes:
+      - s3-data:/data
+
+networks:
+  vivid-network:
+    driver: bridge
+volumes:
+  redis-data:
+  s3-data:

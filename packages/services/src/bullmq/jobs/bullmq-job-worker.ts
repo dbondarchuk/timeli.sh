@@ -1,22 +1,25 @@
 import { getLoggerFactory } from "@vivid/logger";
 import {
   AppJobRequest,
+  CompanyJobRequest,
   HookJobRequest,
   IScheduled,
-  JobRequest,
+  IServicesContainer,
+  WithCompanyId,
 } from "@vivid/types";
 import { Job } from "bullmq";
-import { ServicesContainer } from "../..";
 import { BaseBullMQClient } from "../base-bullmq-client";
 import { BullMQJobConfig } from "./types";
 import { reviveJobData } from "./utils";
 
 export class BullMQJobWorker extends BaseBullMQClient {
-  protected readonly loggerFactory = getLoggerFactory("BullMQJobWorker");
   protected readonly config: BullMQJobConfig;
 
-  constructor(config: BullMQJobConfig) {
-    super(config);
+  constructor(
+    config: BullMQJobConfig,
+    protected readonly getServices: (companyId: string) => IServicesContainer,
+  ) {
+    super(config, getLoggerFactory("BullMQJobWorker"));
     this.config = config;
     this.initializeWorkers();
   }
@@ -37,7 +40,7 @@ export class BullMQJobWorker extends BaseBullMQClient {
     logger.info("BullMQ job workers initialized");
   }
 
-  private async processJob(job: Job<JobRequest>): Promise<void> {
+  private async processJob(job: Job<CompanyJobRequest>): Promise<void> {
     const logger = this.loggerFactory("processJob");
     const jobData = reviveJobData(job.data);
 
@@ -224,16 +227,19 @@ export class BullMQJobWorker extends BaseBullMQClient {
 
   private async processAppJob(
     jobId: string,
-    jobData: AppJobRequest,
+    jobData: WithCompanyId<AppJobRequest>,
   ): Promise<void> {
     const logger = this.loggerFactory("processAppJob");
 
     try {
       logger.info({ jobId, jobData }, "Processing app job");
-      const { app, service } =
-        await ServicesContainer.ConnectedAppsService().getAppService<IScheduled>(
-          jobData.appId,
-        );
+      const companyId = jobData.companyId;
+      if (!companyId) {
+        throw new Error("companyId is required in job data");
+      }
+      const { app, service } = await this.getServices(
+        companyId,
+      ).connectedAppsService.getAppService<IScheduled>(jobData.appId);
 
       if (service.processJob) {
         await service.processJob(app, jobData);
@@ -249,32 +255,37 @@ export class BullMQJobWorker extends BaseBullMQClient {
 
   private async processHookJob(
     jobId: string,
-    jobData: HookJobRequest,
+    jobData: WithCompanyId<HookJobRequest>,
   ): Promise<void> {
     const logger = this.loggerFactory("processHookJob");
 
     try {
       logger.info({ jobId, jobData }, "Processing hook job");
-      await ServicesContainer.ConnectedAppsService().executeHooks<any, void>(
-        jobData.scope,
-        async (app, service) => {
-          try {
-            const method = service[jobData.method];
-            if (!method) {
-              logger.error({ jobId, jobData }, "Method not found");
-              return;
-            }
+      const companyId = jobData.companyId;
+      if (!companyId) {
+        throw new Error("companyId is required in job data");
+      }
 
-            logger.info(
-              { jobId, jobData, method, type: service.constructor.name },
-              "Executing method",
-            );
-            return await method.apply(service, [app, ...jobData.args]);
-          } catch (error) {
-            logger.error({ error, jobId, jobData }, "Failed to execute method");
+      await this.getServices(companyId).connectedAppsService.executeHooks<
+        any,
+        void
+      >(jobData.scope, async (app, service) => {
+        try {
+          const method = service[jobData.method];
+          if (!method) {
+            logger.error({ jobId, jobData }, "Method not found");
+            return;
           }
-        },
-      );
+
+          logger.info(
+            { jobId, jobData, method, type: service.constructor.name },
+            "Executing method",
+          );
+          return await method.apply(service, [app, ...jobData.args]);
+        } catch (error) {
+          logger.error({ error, jobId, jobData }, "Failed to execute method");
+        }
+      });
 
       logger.info({ jobId }, "Job completed successfully");
     } catch (error) {

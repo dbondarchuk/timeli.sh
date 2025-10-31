@@ -14,7 +14,7 @@ import {
   TabsTrigger,
 } from "@vivid/ui";
 import { Paintbrush, SquareDashedMousePointer } from "lucide-react";
-import React, { memo, useEffect } from "react";
+import React, { memo, useEffect, useMemo } from "react";
 import {
   ConfigurationPanel,
   ConfigurationPanelTab,
@@ -49,23 +49,24 @@ export const InspectorDrawer: React.FC<{ extraTabs?: SidebarTab[] }> = ({
   const setSidebarTab = useSetSidebarTab();
   const t = useI18n("builder");
 
-  // Default tabs
-  const defaultTabs: SidebarTab[] = [
-    {
-      value: StylesPanelTab,
-      label: t("baseBuilder.inspector.styles"),
-      icon: <Paintbrush size={16} />,
-      content: <StylesPanel />,
-    },
-    {
-      value: ConfigurationPanelTab,
-      label: t("baseBuilder.inspector.inspect"),
-      icon: <SquareDashedMousePointer size={16} />,
-      content: <ConfigurationPanel />,
-    },
-  ];
-
-  const allTabs = [...defaultTabs, ...extraTabs];
+  const allTabs = useMemo(
+    () => [
+      {
+        value: StylesPanelTab,
+        label: t("baseBuilder.inspector.styles"),
+        icon: <Paintbrush size={16} />,
+        content: <StylesPanel />,
+      },
+      {
+        value: ConfigurationPanelTab,
+        label: t("baseBuilder.inspector.inspect"),
+        icon: <SquareDashedMousePointer size={16} />,
+        content: <ConfigurationPanel />,
+      },
+      ...extraTabs,
+    ],
+    [t, extraTabs],
+  );
 
   return (
     <Sidebar

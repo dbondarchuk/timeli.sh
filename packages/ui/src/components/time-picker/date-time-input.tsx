@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import React from "react";
 
 import { useI18n } from "@vivid/i18n";
 import { CalendarIcon, CircleAlert, CircleCheck, X } from "lucide-react";

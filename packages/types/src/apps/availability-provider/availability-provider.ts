@@ -1,4 +1,6 @@
-import { DaySchedule, Period, TimeSlot } from "../..";
+import { Period } from "../../booking/period";
+import { TimeSlot } from "../../booking/time-slot";
+import { DaySchedule } from "../../configuration/schedule";
 import { ConnectedAppData } from "../connected-app.data";
 
 export interface IAvailabilityProvider {

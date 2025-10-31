@@ -2,7 +2,7 @@
 
 import { useClipboard } from "@vivid/ui";
 import { useCallback, useMemo } from "react";
-import { TEditorBlock } from "../..";
+import { TEditorBlock } from "./core";
 
 export const useBlockClipboard = (document?: Document) => {
   const { clipboardText, copyToClipboard: copyToClipboardBase } =

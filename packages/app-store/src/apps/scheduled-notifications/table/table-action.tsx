@@ -111,7 +111,7 @@ export const ScheduledNotificationsTableAction: React.FC<{ appId: string }> = ({
         <Link
           button
           variant="primary"
-          href="/admin/dashboard/communications/scheduled-notifications/new"
+          href="/dashboard/communications/scheduled-notifications/new"
         >
           <Plus size={16} />{" "}
           <span className="max-md:hidden">{t("table.actions.add")}</span>

@@ -1,15 +1,12 @@
-import { z } from "zod";
+import * as z from "zod";
 
-export const zEmail = z.string().email("common.email.invalid");
+export const zEmail = z.email("common.email.invalid");
 export const zPhone = z
   .string()
   .min(1, "common.phone.required")
   .refine((s) => !s?.includes("_"), "common.phone.invalid");
 
-export function zUniqueArray<
-  ArrSchema extends z.ZodArray<z.ZodTypeAny, "many">,
-  UniqueVal,
->(
+export function zUniqueArray<ArrSchema extends z.ZodArray, UniqueVal>(
   schema: ArrSchema,
   uniqueBy: (item: z.infer<ArrSchema>[number]) => UniqueVal,
   errorMessage?: string,
@@ -45,8 +42,8 @@ export function isPlainObject(
 }
 
 export function zStrictRecord<
-  K extends z.ZodType<string | number | symbol>,
-  V extends z.ZodTypeAny,
+  K extends z.ZodType<string | number | symbol, string | number | symbol>,
+  V extends z.ZodType<any, any>,
 >(zKey: K, zValue: V) {
   return z.custom<Record<z.infer<K>, z.infer<V>>>((input: unknown) => {
     return (
@@ -68,13 +65,13 @@ export function zOptionalOrMinLengthString(
       z.string().min(minLength, { message: minLengthErrorMessage }),
       z.string().length(0),
     ])
-    .optional()
-    .transform((e) => (e === "" ? undefined : e));
+    .transform((e) => (e === "" ? undefined : e))
+    .optional();
 }
 
 const emptyStringToUndefined = z.literal("").transform(() => undefined);
 
-export function asOptionalField<T extends z.ZodTypeAny>(schema: T) {
+export function asOptionalField<T extends z.ZodType>(schema: T) {
   return schema.optional().or(emptyStringToUndefined);
 }
 

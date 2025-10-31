@@ -1,4 +1,4 @@
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
 import {
   ConnectedAppData,
   ConnectedAppError,
@@ -19,11 +19,14 @@ import { getAvailableTimeSlotsWithPriority } from "./utils";
 export default class SmartScheduleConnectedApp
   implements IConnectedApp<SmartScheduleConfiguration>, IAvailabilityProvider
 {
-  protected readonly loggerFactory = getLoggerFactory(
-    "SmartScheduleConnectedApp",
-  );
+  protected readonly loggerFactory: LoggerFactory;
 
-  public constructor(protected readonly props: IConnectedAppProps) {}
+  public constructor(protected readonly props: IConnectedAppProps) {
+    this.loggerFactory = getLoggerFactory(
+      "SmartScheduleConnectedApp",
+      props.companyId,
+    );
+  }
 
   public async processRequest(
     appData: ConnectedAppData,
@@ -98,9 +101,10 @@ export default class SmartScheduleConnectedApp
     );
 
     const { general: generalConfig, booking: bookingConfig } =
-      await this.props.services
-        .ConfigurationService()
-        .getConfigurations("general", "booking");
+      await this.props.services.configurationService.getConfigurations(
+        "general",
+        "booking",
+      );
 
     const config = appData.data;
     const customSlots = bookingConfig?.customSlotTimes?.map((x) =>
@@ -109,9 +113,9 @@ export default class SmartScheduleConnectedApp
 
     let servicesDurations: number[] | undefined = undefined;
     if (config?.maximizeForOption) {
-      const service = await this.props.services
-        .ServicesService()
-        .getOption(config.maximizeForOption);
+      const service = await this.props.services.servicesService.getOption(
+        config.maximizeForOption,
+      );
       if (service?.duration) {
         servicesDurations = [service.duration];
       }

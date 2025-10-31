@@ -20,7 +20,7 @@ export const WeeklyScheduleMenuItems: AppMenuItem<
     pageBreadcrumbs: [
       {
         title: "app_weekly-schedule_admin.navigation.main.title",
-        link: "/admin/dashboard/settings/schedule/weekly",
+        link: "/dashboard/settings/schedule/weekly",
       },
     ],
     icon: <CalendarDays />,

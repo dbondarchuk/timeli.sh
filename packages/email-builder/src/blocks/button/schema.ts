@@ -1,4 +1,4 @@
-import z from "zod";
+import * as z from "zod";
 import { zColorNullable, zStyles } from "../../style-inputs/helpers/zod";
 
 export const ButtonPropsSchema = z.object({

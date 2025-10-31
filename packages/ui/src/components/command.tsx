@@ -3,7 +3,7 @@
 import { type DialogProps } from "@radix-ui/react-dialog";
 import { Command as CommandPrimitive } from "cmdk";
 import { Search } from "lucide-react";
-import * as React from "react";
+import React from "react";
 
 import { withVariants } from "../cn";
 import { cn } from "../utils";

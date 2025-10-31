@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as z from "zod";
 
 export function zColor() {
   return z.string().regex(/^#[0-9a-fA-F]{6}$/);

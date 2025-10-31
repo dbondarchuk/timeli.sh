@@ -1,4 +1,4 @@
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
 import { DateRange, IConnectedAppProps, Query, WithTotal } from "@vivid/types";
 import { buildSearchQuery, escapeRegex } from "@vivid/utils";
 import { ObjectId, type Filter, type Sort } from "mongodb";
@@ -13,15 +13,19 @@ import { IWaitlistHook } from "../models/waitlist-hook";
 export const WAITLIST_COLLECTION_NAME = "waitlist";
 
 export class WaitlistRepositoryService {
-  protected readonly loggerFactory = getLoggerFactory(
-    "WaitlistRepositoryService",
-  );
+  protected readonly loggerFactory: LoggerFactory;
 
   public constructor(
     protected readonly appId: string,
+    protected readonly companyId: string,
     protected readonly getDbConnection: IConnectedAppProps["getDbConnection"],
     protected readonly services: IConnectedAppProps["services"],
-  ) {}
+  ) {
+    this.loggerFactory = getLoggerFactory(
+      "WaitlistRepositoryService",
+      this.companyId,
+    );
+  }
 
   public async createWaitlistEntry(
     entry: WaitlistRequest,
@@ -29,9 +33,8 @@ export class WaitlistRepositoryService {
     const logger = this.loggerFactory("createWaitlistEntry");
     logger.debug({ entry }, "Creating waitlist entry");
 
-    const customer = await this.services
-      .CustomersService()
-      .getOrUpsertCustomer(entry);
+    const customer =
+      await this.services.customersService.getOrUpsertCustomer(entry);
 
     const db = await this.getDbConnection();
     const waitlistEntry = {
@@ -41,6 +44,7 @@ export class WaitlistRepositoryService {
       createdAt: new Date(),
       updatedAt: new Date(),
       status: "active",
+      companyId: this.companyId,
     } satisfies WaitlistEntryEntity;
 
     await db
@@ -56,12 +60,10 @@ export class WaitlistRepositoryService {
 
     logger.debug({ waitlistEntry }, "Waitlist entry created, executing hooks");
 
-    await this.services
-      .JobService()
-      .enqueueHook<
-        IWaitlistHook,
-        "onWaitlistEntryCreated"
-      >("waitlist-hook", "onWaitlistEntryCreated", entity!);
+    await this.services.jobService.enqueueHook<
+      IWaitlistHook,
+      "onWaitlistEntryCreated"
+    >("waitlist-hook", "onWaitlistEntryCreated", entity!);
 
     return entity!;
   }
@@ -78,6 +80,9 @@ export class WaitlistRepositoryService {
     );
 
     const $and: Filter<WaitlistEntryEntity>[] = [
+      {
+        companyId: this.companyId,
+      },
       {
         status: "active",
       },
@@ -158,7 +163,11 @@ export class WaitlistRepositoryService {
       {},
     ) || { createdAt: 1 };
 
-    const $and: Filter<WaitlistEntry>[] = [];
+    const $and: Filter<WaitlistEntry>[] = [
+      {
+        companyId: this.companyId,
+      },
+    ];
     if (query.range?.start || query.range?.end) {
       const dateConditions: Record<string, any> = {};
 
@@ -290,7 +299,7 @@ export class WaitlistRepositoryService {
       .aggregate([
         ...this.waitlistAggregateJoin,
         {
-          $match: { _id: id },
+          $match: { _id: id, companyId: this.companyId },
         },
       ])
       .next();
@@ -333,7 +342,7 @@ export class WaitlistRepositoryService {
     const { modifiedCount } = await db
       .collection<WaitlistEntryEntity>(WAITLIST_COLLECTION_NAME)
       .updateMany(
-        { _id: { $in: ids } },
+        { _id: { $in: ids }, companyId: this.companyId },
         { $set: { status: "dismissed", updatedAt: new Date() } },
       );
 
@@ -353,12 +362,10 @@ export class WaitlistRepositoryService {
       "Waitlist entries dismissed, executing hooks",
     );
 
-    await this.services
-      .JobService()
-      .enqueueHook<
-        IWaitlistHook,
-        "onWaitlistEntryDismissed"
-      >("waitlist-hook", "onWaitlistEntryDismissed", waitlistEntries.items);
+    await this.services.jobService.enqueueHook<
+      IWaitlistHook,
+      "onWaitlistEntryDismissed"
+    >("waitlist-hook", "onWaitlistEntryDismissed", waitlistEntries.items);
   }
 
   private get waitlistAggregateJoin() {

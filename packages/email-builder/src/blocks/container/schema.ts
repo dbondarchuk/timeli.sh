@@ -1,20 +1,18 @@
 import { BaseReaderBlockProps } from "@vivid/builder";
-import { z } from "zod";
+import * as z from "zod";
 import { zColorNullable, zStylesBase } from "../../style-inputs/helpers/zod";
 
 export const ContainerPropsSchema = z.object({
-  style: zStylesBase
-    .pick({ backgroundColor: true, padding: true })
-    .merge(
-      z.object({
-        borderColor: zColorNullable,
-        borderRadius: z.coerce
-          .number()
-          .int("emailBuilder.common.container.validation.borderRadius")
-          .optional()
-          .nullable(),
-      }),
-    )
+  style: z
+    .object({
+      ...zStylesBase.pick({ backgroundColor: true, padding: true }).shape,
+      borderColor: zColorNullable,
+      borderRadius: z.coerce
+        .number<number>()
+        .int("emailBuilder.common.container.validation.borderRadius")
+        .optional()
+        .nullable(),
+    })
     .optional()
     .nullable(),
   props: z.object({

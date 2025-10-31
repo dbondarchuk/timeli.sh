@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+// import Image from "next/image";
 import React from "react";
 
 import { adminApi } from "@vivid/api-sdk";
@@ -18,7 +18,7 @@ const CustomerShortLabel: React.FC<{
 }> = ({ customer }) => {
   return (
     <div className="flex flex-row items-center gap-2 shrink overflow-hidden text-nowrap">
-      <Image
+      <img
         src={customer.avatar ?? "/unknown-person.png"}
         width={20}
         height={20}

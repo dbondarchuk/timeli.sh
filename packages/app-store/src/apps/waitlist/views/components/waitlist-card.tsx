@@ -152,7 +152,7 @@ export const WaitlistCard: React.FC<WaitlistCardProps> = ({ entry, appId }) => {
               name: entry.customer?.name ?? entry.name,
               link: (chunks: any) => (
                 <Link
-                  href={`/admin/dashboard/customers/${entry.customerId}`}
+                  href={`/dashboard/customers/${entry.customerId}`}
                   variant="underline"
                 >
                   {chunks}
@@ -173,7 +173,7 @@ export const WaitlistCard: React.FC<WaitlistCardProps> = ({ entry, appId }) => {
           {t("view.dismiss")}
         </Button>
         <Link
-          href={`/admin/dashboard/waitlist/appointment/new?id=${entry._id}`}
+          href={`/dashboard/waitlist/appointment/new?id=${entry._id}`}
           button
           variant="primary"
         >

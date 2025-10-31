@@ -1,4 +1,4 @@
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
 import {
   ConnectedAppData,
   ConnectedAppStatusWithText,
@@ -7,11 +7,14 @@ import {
 } from "@vivid/types";
 
 export default class FinancialOverviewService implements IConnectedApp {
-  protected readonly loggerFactory = getLoggerFactory(
-    "FinancialOverviewService",
-  );
+  protected readonly loggerFactory: LoggerFactory;
 
-  public constructor(protected readonly props: IConnectedAppProps) {}
+  public constructor(protected readonly props: IConnectedAppProps) {
+    this.loggerFactory = getLoggerFactory(
+      "FinancialOverviewService",
+      props.companyId,
+    );
+  }
 
   public async processRequest(
     appData: ConnectedAppData,

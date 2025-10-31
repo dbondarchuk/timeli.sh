@@ -6,10 +6,10 @@ import NextScript from "next/script";
 
 import { CookiesProvider } from "@/components/cookies-provider";
 import { getLoggerFactory } from "@vivid/logger";
-import { ServicesContainer } from "@vivid/services";
 import { buildGoogleFontsUrl, getColorsCss } from "@vivid/utils";
 import "../globals.css";
 
+import { getServicesContainer } from "@/utils/utils";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale } from "next-intl/server";
 
@@ -52,20 +52,9 @@ export default async function RootLayout({
   const logger = getLoggerFactory("RootLayout")("RootLayout");
   logger.debug("Starting root layout render");
 
-  // const scripts = await Services.ConfigurationService().getConfiguration(
-  //   "scripts"
-  // );
-
-  // const { favicon } = await Services.ConfigurationService().getConfiguration(
-  //   "general"
-  // );
-
-  // const styling = await Services.ConfigurationService().getConfiguration(
-  //   "styling"
-  // );
-
+  const servicesContainer = await getServicesContainer();
   const { general, scripts, styling } =
-    await ServicesContainer.ConfigurationService().getConfigurations(
+    await servicesContainer.configurationService.getConfigurations(
       "general",
       "scripts",
       "styling",

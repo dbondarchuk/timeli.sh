@@ -3,7 +3,8 @@ import { cn } from "@vivid/ui";
 import { forwardRef } from "react";
 import { ImageLightbox } from "./image-lightbox";
 import { ImageReaderProps } from "./schema";
-import { getDefaults, styles } from "./styles";
+import { styles } from "./styles";
+import { getDefaults } from "./styles.default";
 
 export const Image = forwardRef<
   HTMLImageElement | HTMLAnchorElement,

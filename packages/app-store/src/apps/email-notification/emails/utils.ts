@@ -38,21 +38,21 @@ export const getEmailTemplate = async (
       topButtons: [
         {
           text: buttonTexts.viewAppointment,
-          url: `${url}/admin/dashboard/appointments/${appointment._id}`,
+          url: `${url}/dashboard/appointments/${appointment._id}`,
         },
       ],
       bottomButtons: [
         appointment.status != "declined"
           ? {
               text: buttonTexts.decline,
-              url: `${url}/admin/dashboard/appointments/${appointment._id}/decline`,
+              url: `${url}/dashboard/appointments/${appointment._id}/decline`,
               backgroundColor: "#FF0000",
             }
           : undefined,
         appointment.status === "pending"
           ? {
               text: buttonTexts.confirm,
-              url: `${url}/admin/dashboard/appointments/${appointment._id}/confirm`,
+              url: `${url}/dashboard/appointments/${appointment._id}/confirm`,
               backgroundColor: "#0008FF",
             }
           : undefined,

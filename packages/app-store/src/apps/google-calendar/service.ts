@@ -1,4 +1,4 @@
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
 import {
   ApiRequest,
   AppointmentEvent,
@@ -27,7 +27,7 @@ import {
   calendar as googleCalendar,
 } from "@googleapis/calendar";
 import { meet as googleMeet } from "@googleapis/meet";
-import { decrypt, encrypt } from "@vivid/utils";
+import { decrypt, encrypt, getAdminUrl } from "@vivid/utils";
 import { Credentials, OAuth2Client } from "google-auth-library";
 import {
   CalendarListItem,
@@ -91,11 +91,13 @@ class GoogleCalendarConnectedApp
     ICalendarWriter,
     IMeetingUrlProvider
 {
-  protected readonly loggerFactory = getLoggerFactory(
-    "GoogleCalendarConnectedApp",
-  );
-
-  public constructor(protected readonly props: IConnectedAppProps) {}
+  protected readonly loggerFactory: LoggerFactory;
+  public constructor(protected readonly props: IConnectedAppProps) {
+    this.loggerFactory = getLoggerFactory(
+      "GoogleCalendarConnectedApp",
+      props.companyId,
+    );
+  }
 
   public async processRequest(
     appData: ConnectedAppData<GoogleCalendarConfiguration>,
@@ -848,11 +850,8 @@ class GoogleCalendarConnectedApp
     logger.debug("Creating Google OAuth client");
 
     try {
-      const { url } = await this.props.services
-        .ConfigurationService()
-        .getConfiguration("general");
-
-      const redirectUri = `${url}/api/apps/oauth/google-calendar/redirect`;
+      const url = getAdminUrl();
+      const redirectUri = `${url}/apps/${this.props.companyId}/oauth/google-calendar/redirect`;
 
       logger.debug({ redirectUri }, "Created Google OAuth client");
 

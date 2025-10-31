@@ -1,9 +1,8 @@
 import { AllKeys } from "@vivid/i18n";
-import z from "zod";
-import { TReaderBlock } from "./reader/core";
+import * as z from "zod";
 
 export type BaseZodDictionary = {
-  [name: string]: z.AnyZodObject;
+  [name: string]: z.ZodTypeAny;
 };
 
 export type ConfigurationProps<T> = {
@@ -19,12 +18,6 @@ export type BaseBlockProps = {
 };
 
 export type EditorProps<T> = T;
-export type ReaderProps<T> = T & {
-  document: TReaderBlock;
-  args: Record<string, any>;
-  block: TReaderBlock;
-  isEditor?: boolean;
-};
 
 export type BuilderSchema = BaseZodDictionary;
 
@@ -53,19 +46,6 @@ export type EditorDocumentBlocksDictionary<T extends BuilderSchema = any> = {
   };
 };
 
-export type ReaderDocumentBlocksDictionary<T extends BuilderSchema = any> = {
-  [K in keyof T]: {
-    Reader: React.ComponentType<
-      ReaderProps<
-        z.infer<T[K]> & {
-          blocks: ReaderDocumentBlocksDictionary<T>;
-        }
-      >
-    >;
-    staticProps?: Record<string, any>;
-  };
-};
-
 export type BlockConfiguration<T extends BuilderSchema> = {
   [TType in keyof T]: {
     type: TType;
@@ -88,12 +68,6 @@ export type BlockConfiguration<T extends BuilderSchema> = {
 //     .discriminatedUnion("type", blockObjects as any)
 //     .transform((v) => v as BlockConfiguration<T>);
 // }
-
-export function buildReaderBlockConfigurationDictionary<
-  T extends BaseZodDictionary,
->(blocks: ReaderDocumentBlocksDictionary<T>) {
-  return blocks;
-}
 
 export function buildBlockConfigurationDictionary<T extends BaseZodDictionary>(
   blocks: EditorDocumentBlocksDictionary<T>,

@@ -1,4 +1,4 @@
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
 import {
   ConnectedAppData,
   ConnectedAppError,
@@ -19,11 +19,13 @@ import {
 export default class UrlScheduleProviderConnectedApp
   implements IConnectedApp<UrlScheduleProviderConfiguration>, IScheduleProvider
 {
-  protected readonly loggerFactory = getLoggerFactory(
-    "UrlScheduleProviderConnectedApp",
-  );
-
-  public constructor(protected readonly props: IConnectedAppProps) {}
+  protected readonly loggerFactory: LoggerFactory;
+  public constructor(protected readonly props: IConnectedAppProps) {
+    this.loggerFactory = getLoggerFactory(
+      "UrlScheduleProviderConnectedApp",
+      props.companyId,
+    );
+  }
 
   public async processRequest(
     appData: ConnectedAppData,

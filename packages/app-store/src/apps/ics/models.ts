@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as z from "zod";
 import { IcsAdminAllKeys } from "./translations/types";
 
 export const icsLinkCalendarSourceSchema = z.object({

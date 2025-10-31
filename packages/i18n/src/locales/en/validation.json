@@ -337,6 +337,9 @@
       "url": {
         "invalid": "Website URL should be valid URL address",
         "min": "Website URL must be at least 3 characters long"
+      },
+      "domain": {
+        "invalid": "Domain must be a valid domain name"
       }
     },
     "resources": {

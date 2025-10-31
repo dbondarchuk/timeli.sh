@@ -4,6 +4,7 @@ import * as assets from "./assets";
 import * as calendar from "./calendar";
 import * as communicationLogs from "./communication-logs";
 import * as communications from "./communications";
+import * as configuration from "./configuration";
 import * as customers from "./customers";
 import * as discounts from "./discounts";
 import * as pageFooters from "./page-footers";
@@ -34,6 +35,7 @@ export const adminApi = {
   serviceOptions,
   schedule,
   apps,
+  configuration,
 };
 
 export * from "./utils";

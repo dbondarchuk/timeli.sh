@@ -11,7 +11,7 @@ import {
 } from "@vivid/ui";
 import { ChevronRight, Plus } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { z } from "zod";
+import * as z from "zod";
 import { StyleValue } from "../../style/css-renderer";
 import {
   BaseStyleDictionary,

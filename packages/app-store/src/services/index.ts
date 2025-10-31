@@ -11,8 +11,6 @@ import { CUSTOMER_TEXT_MESSAGE_NOTIFICATION_APP_NAME } from "../apps/customer-te
 import CustomerTextMessageNotificationConnectedApp from "../apps/customer-text-message-notification/service";
 import { EMAIL_NOTIFICATION_APP_NAME } from "../apps/email-notification/const";
 import { EmailNotificationConnectedApp } from "../apps/email-notification/service";
-import { FILE_SYSTEM_ASSETS_STORAGE_APP_NAME } from "../apps/file-system-assets-storage/const";
-import FileSystemAssetsStorageConnectedApp from "../apps/file-system-assets-storage/service";
 import { FINANCIAL_OVERVIEW_APP_NAME } from "../apps/financial-overview/const";
 import FinancialOverviewService from "../apps/financial-overview/service";
 import { GOOGLE_CALENDAR_APP_NAME } from "../apps/google-calendar/const";
@@ -23,8 +21,6 @@ import { OUTLOOK_APP_NAME } from "../apps/outlook/const";
 import OutlookConnectedApp from "../apps/outlook/service";
 import { PAYPAL_APP_NAME } from "../apps/paypal/const";
 import PaypalConnectedApp from "../apps/paypal/service";
-import { S3_ASSETS_STORAGE_APP_NAME } from "../apps/s3-assets-storage/const";
-import S3AssetsStorageConnectedApp from "../apps/s3-assets-storage/service";
 import { SCHEDULED_NOTIFICATIONS_APP_NAME } from "../apps/scheduled-notifications/const";
 import ScheduledNotificationsConnectedApp from "../apps/scheduled-notifications/service";
 import { SMART_SCHEDULE_APP_NAME } from "../apps/smart-schedule/const";
@@ -81,10 +77,6 @@ export const AvailableAppServices: Record<
     new TextMessageResenderConnectedApp(props),
   [SCHEDULED_NOTIFICATIONS_APP_NAME]: (props) =>
     new ScheduledNotificationsConnectedApp(props),
-  [FILE_SYSTEM_ASSETS_STORAGE_APP_NAME]: (props) =>
-    new FileSystemAssetsStorageConnectedApp(props),
-  [S3_ASSETS_STORAGE_APP_NAME]: (props) =>
-    new S3AssetsStorageConnectedApp(props),
   [PAYPAL_APP_NAME]: (props) => new PaypalConnectedApp(props),
   [WAITLIST_APP_NAME]: (props) => new WaitlistConnectedApp(props),
   [WAITLIST_NOTIFICATIONS_APP_NAME]: (props) =>

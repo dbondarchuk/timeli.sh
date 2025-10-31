@@ -1,4 +1,4 @@
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
 import {
   CalendarBusyTime,
   ConnectedAppData,
@@ -21,11 +21,14 @@ export default class UrlBusyEventsConnectedApp
     IConnectedApp<UrlBusyEventsConfiguration>,
     ICalendarBusyTimeProvider
 {
-  protected readonly loggerFactory = getLoggerFactory(
-    "UrlBusyEventsConnectedApp",
-  );
+  protected readonly loggerFactory: LoggerFactory;
 
-  public constructor(protected readonly props: IConnectedAppProps) {}
+  public constructor(protected readonly props: IConnectedAppProps) {
+    this.loggerFactory = getLoggerFactory(
+      "UrlBusyEventsConnectedApp",
+      props.companyId,
+    );
+  }
 
   public async processRequest(
     appData: ConnectedAppData,

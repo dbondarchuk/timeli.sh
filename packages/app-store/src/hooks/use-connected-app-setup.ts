@@ -10,7 +10,7 @@ import { ZodType } from "zod";
 export type UseConnectedAppSetupProps<T extends FieldValues> = {
   appId?: string;
   appName: string;
-  schema: ZodType<T>;
+  schema: ZodType<T, T>;
   successText?: string;
   errorText?: string;
   onSuccess?: () => void;

@@ -1,8 +1,5 @@
-import {
-  BaseBlockProps,
-  BuilderSchema,
-  ReaderDocumentBlocksDictionary,
-} from "../types";
+import * as z from "zod";
+import { BaseBlockProps, BaseZodDictionary, BuilderSchema } from "../types";
 
 export type TReaderBlock = {
   type: string;
@@ -20,3 +17,29 @@ export type BaseReaderBlockProps<T extends BuilderSchema> = {
   block: TReaderBlock;
   isEditor?: boolean;
 };
+
+export type ReaderProps<T> = T & {
+  document: TReaderBlock;
+  args: Record<string, any>;
+  block: TReaderBlock;
+  isEditor?: boolean;
+};
+
+export type ReaderDocumentBlocksDictionary<T extends BuilderSchema = any> = {
+  [K in keyof T]: {
+    Reader: React.ComponentType<
+      ReaderProps<
+        z.infer<T[K]> & {
+          blocks: ReaderDocumentBlocksDictionary<T>;
+        }
+      >
+    >;
+    staticProps?: Record<string, any>;
+  };
+};
+
+export function buildReaderBlockConfigurationDictionary<
+  T extends BaseZodDictionary,
+>(blocks: ReaderDocumentBlocksDictionary<T>) {
+  return blocks;
+}

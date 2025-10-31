@@ -2,7 +2,8 @@ import { BlockStyle, generateClassName } from "@vivid/page-builder-base/reader";
 import { PlateStaticEditor } from "@vivid/rte";
 import { cn } from "@vivid/ui";
 import { TextPropsDefaults, TextReaderProps } from "./schema";
-import { getDefaults, styles } from "./styles";
+import { styles } from "./styles";
+import { getDefaults } from "./styles.default";
 
 export const TextReader = ({ props, style, block }: TextReaderProps) => {
   const value = props?.value ?? TextPropsDefaults.props.value;

@@ -11,7 +11,6 @@ import {
   useRef,
   useState,
 } from "react";
-// import Image from "next/image";
 
 type ResizableImageProps = {
   src: string;

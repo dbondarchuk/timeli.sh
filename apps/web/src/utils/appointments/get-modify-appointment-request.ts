@@ -1,11 +1,11 @@
 import { getLoggerFactory } from "@vivid/logger";
-import { ServicesContainer } from "@vivid/services";
 import {
   ModifyAppointmentInformation,
   ModifyAppointmentInformationRequest,
 } from "@vivid/types";
 import { formatAmount, getPolicyForRequest } from "@vivid/utils";
 import { DateTime } from "luxon";
+import { getServicesContainer } from "../utils";
 
 export const getModifyAppointmentInformationRequestResult = async (
   request: ModifyAppointmentInformationRequest,
@@ -19,7 +19,8 @@ export const getModifyAppointmentInformationRequestResult = async (
 
   logger.debug({ request }, "Finding appointment");
 
-  const appointment = await ServicesContainer.EventsService().findAppointment(
+  const servicesContainer = await getServicesContainer();
+  const appointment = await servicesContainer.eventsService.findAppointment(
     request.fields,
     ["confirmed", "pending"],
   );
@@ -41,7 +42,7 @@ export const getModifyAppointmentInformationRequestResult = async (
   logger.debug({ request }, "Appointment found");
 
   const config =
-    await ServicesContainer.ConfigurationService().getConfiguration("booking");
+    await servicesContainer.configurationService.getConfiguration("booking");
 
   const appointmentInformation = {
     type: request.type,
@@ -86,7 +87,7 @@ export const getModifyAppointmentInformationRequestResult = async (
 
     if (featureConfig.doNotAllowIfRescheduled) {
       const appointmentHistory =
-        await ServicesContainer.EventsService().getAppointmentHistory({
+        await servicesContainer.eventsService.getAppointmentHistory({
           appointmentId: appointment._id,
           type: "rescheduled",
           limit: 0, // we don't need to get history entries, we only need to check the total number of reschedules
@@ -198,7 +199,7 @@ export const getModifyAppointmentInformationRequestResult = async (
 
     if (featureConfig.maxReschedules) {
       const appointmentHistory =
-        await ServicesContainer.EventsService().getAppointmentHistory({
+        await servicesContainer.eventsService.getAppointmentHistory({
           appointmentId: appointment._id,
           type: "rescheduled",
           limit: 0, // we don't need to get history entries, we only need to check the total number of reschedules

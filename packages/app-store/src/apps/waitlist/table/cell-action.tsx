@@ -85,7 +85,7 @@ export const CellAction: React.FC<CellActionProps> = ({
           <DropdownMenuLabel>{tUi("actions.label")}</DropdownMenuLabel>
           <DropdownMenuItem asChild>
             <Link
-              href={`/admin/dashboard/waitlist/appointment/new?id=${waitlistEntry._id}`}
+              href={`/dashboard/waitlist/appointment/new?id=${waitlistEntry._id}`}
             >
               <CalendarPlus className="h-4 w-4" />{" "}
               {t("table.actions.createAppointment")}

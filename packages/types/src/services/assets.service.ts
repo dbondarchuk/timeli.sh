@@ -12,7 +12,10 @@ export interface IAssetsService {
     },
   ): Promise<WithTotal<Asset>>;
   createAsset(
-    asset: Omit<AssetEntity, "_id" | "uploadedAt" | "size" | "hash">,
+    asset: Omit<
+      AssetEntity,
+      "_id" | "uploadedAt" | "size" | "hash" | "companyId"
+    >,
     file: File,
   ): Promise<AssetEntity>;
   updateAsset(id: string, update: Partial<AssetUpdate>): Promise<void>;

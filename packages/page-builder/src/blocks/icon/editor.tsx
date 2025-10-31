@@ -10,7 +10,8 @@ import { cn } from "@vivid/ui";
 import { icons } from "lucide-react";
 import { Ref } from "react";
 import { IconProps } from "./schema";
-import { getDefaults, styles } from "./styles";
+import { styles } from "./styles";
+import { getDefaults } from "./styles.default";
 
 export const IconEditor = ({ props, style }: IconProps) => {
   const currentBlock = useCurrentBlock<IconProps>();

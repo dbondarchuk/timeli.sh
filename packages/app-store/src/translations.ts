@@ -10,8 +10,6 @@ import { CUSTOMER_TEXT_MESSAGE_NOTIFICATION_APP_NAME } from "./apps/customer-tex
 import { CustomerTextMessageNotificationTranslations } from "./apps/customer-text-message-notification/translations";
 import { EMAIL_NOTIFICATION_APP_NAME } from "./apps/email-notification/const";
 import { EmailNotificationTranslations } from "./apps/email-notification/translations";
-import { FILE_SYSTEM_ASSETS_STORAGE_APP_NAME } from "./apps/file-system-assets-storage/const";
-import { FileSystemAssetsStorageTranslations } from "./apps/file-system-assets-storage/translations";
 import { FINANCIAL_OVERVIEW_APP_NAME } from "./apps/financial-overview/const";
 import { FinancialOverviewTranslations } from "./apps/financial-overview/translations";
 import { GOOGLE_CALENDAR_APP_NAME } from "./apps/google-calendar/const";
@@ -22,8 +20,6 @@ import { OUTLOOK_APP_NAME } from "./apps/outlook/const";
 import { OutlookTranslations } from "./apps/outlook/translations";
 import { PAYPAL_APP_NAME } from "./apps/paypal/const";
 import { PaypalTranslations } from "./apps/paypal/translations";
-import { S3_ASSETS_STORAGE_APP_NAME } from "./apps/s3-assets-storage/const";
-import { S3AssetsStorageTranslations } from "./apps/s3-assets-storage/translations";
 import { SCHEDULED_NOTIFICATIONS_APP_NAME } from "./apps/scheduled-notifications/const";
 import { ScheduledNotificationsTranslations } from "./apps/scheduled-notifications/translations";
 import { SMART_SCHEDULE_APP_NAME } from "./apps/smart-schedule/const";
@@ -71,12 +67,10 @@ export const AppsTranslations: Record<
   [CUSTOMER_TEXT_MESSAGE_NOTIFICATION_APP_NAME]:
     CustomerTextMessageNotificationTranslations,
   [EMAIL_NOTIFICATION_APP_NAME]: EmailNotificationTranslations,
-  [FILE_SYSTEM_ASSETS_STORAGE_APP_NAME]: FileSystemAssetsStorageTranslations,
   [GOOGLE_CALENDAR_APP_NAME]: GoogleCalendarTranslations,
   [ICS_APP_NAME]: IcsTranslations,
   [OUTLOOK_APP_NAME]: OutlookTranslations,
   [PAYPAL_APP_NAME]: PaypalTranslations,
-  [S3_ASSETS_STORAGE_APP_NAME]: S3AssetsStorageTranslations,
   [SCHEDULED_NOTIFICATIONS_APP_NAME]: ScheduledNotificationsTranslations,
   [SMTP_APP_NAME]: SmtpTranslations,
   [TEXTBELT_APP_NAME]: TextBeltTranslations,

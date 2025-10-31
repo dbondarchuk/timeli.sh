@@ -1,25 +1,22 @@
-import z from "zod";
-import { AppointmentEntity } from "../booking";
-import { Customer } from "../customers";
+import * as z from "zod";
+import { AppointmentEntity } from "../booking/appointment";
+import { Customer } from "../customers/customer";
+import { WithCompanyId, WithDatabaseId } from "../database";
+import { Prettify } from "../utils";
+import { AssetEntity } from "./entity";
 
-export type AssetEntity = {
-  _id: string;
-  filename: string;
-  size: number;
-  mimeType: string;
-  uploadedAt: Date;
-  description?: string;
-  appointmentId?: string;
-  customerId?: string;
-  hash: string;
-};
-
-export type Asset = AssetEntity & {
-  appointment?: AppointmentEntity & {
-    customer?: Customer;
-  };
-  customer?: Customer;
-};
+export type Asset = Prettify<
+  WithCompanyId<
+    WithDatabaseId<
+      AssetEntity & {
+        appointment?: AppointmentEntity & {
+          customer?: Customer;
+        };
+        customer?: Customer;
+      }
+    >
+  >
+>;
 
 export const assetUpdateSchema = z.object({
   description: z.string().optional(),

@@ -2,7 +2,6 @@ import {
   AvailableAppServices,
   ServiceAvailableApps,
 } from "@vivid/app-store/services";
-import { getLoggerFactory } from "@vivid/logger";
 import {
   ApiRequest,
   App,
@@ -15,17 +14,25 @@ import {
   IConnectedAppsService,
   IConnectedAppWithWebhook,
   IOAuthConnectedApp,
+  IServicesContainer,
 } from "@vivid/types";
 import { ObjectId } from "mongodb";
 import pLimit from "p-limit";
 import { cache } from "react";
-import { ServicesContainer } from ".";
+import { CONNECTED_APPS_COLLECTION_NAME } from "./collections";
 import { getDbConnection } from "./database";
+import { BaseService } from "./services/base.service";
 
-export const CONNECTED_APPS_COLLECTION_NAME = "connected-apps";
-
-export class ConnectedAppsService implements IConnectedAppsService {
-  protected readonly loggerFactory = getLoggerFactory("ConnectedAppsService");
+export class ConnectedAppsService
+  extends BaseService
+  implements IConnectedAppsService
+{
+  public constructor(
+    companyId: string,
+    protected readonly getServices: () => IServicesContainer,
+  ) {
+    super("ConnectedAppsService", companyId);
+  }
 
   public async createNewApp(name: string): Promise<string> {
     const logger = this.loggerFactory("createNewApp");
@@ -38,6 +45,7 @@ export class ConnectedAppsService implements IConnectedAppsService {
 
     const app: ConnectedAppData = {
       _id: new ObjectId().toString(),
+      companyId: this.companyId,
       status: "pending",
       statusText: "apps.common.statusText.pending",
       name,
@@ -71,6 +79,7 @@ export class ConnectedAppsService implements IConnectedAppsService {
 
     await collection.deleteOne({
       _id: appId,
+      companyId: this.companyId,
     });
 
     logger.debug({ appId, appName: app.name }, "Successfully deleted app");
@@ -87,6 +96,7 @@ export class ConnectedAppsService implements IConnectedAppsService {
 
     const app = await collection.findOne({
       _id: appId,
+      companyId: this.companyId,
     });
 
     if (!app) {
@@ -97,6 +107,7 @@ export class ConnectedAppsService implements IConnectedAppsService {
     await collection.updateOne(
       {
         _id: appId,
+        companyId: this.companyId,
       },
       {
         $set: {
@@ -119,6 +130,7 @@ export class ConnectedAppsService implements IConnectedAppsService {
 
     const app = await collection.findOne({
       _id: appId,
+      companyId: this.companyId,
     });
 
     if (!app) {
@@ -177,6 +189,7 @@ export class ConnectedAppsService implements IConnectedAppsService {
 
     const app = await collection.findOne({
       _id: result.appId,
+      companyId: this.companyId,
     });
 
     if (!app) {
@@ -193,6 +206,7 @@ export class ConnectedAppsService implements IConnectedAppsService {
       await collection.updateOne(
         {
           _id: result.appId,
+          companyId: this.companyId,
         },
         {
           $set: {
@@ -209,6 +223,7 @@ export class ConnectedAppsService implements IConnectedAppsService {
       await collection.updateOne(
         {
           _id: result.appId,
+          companyId: this.companyId,
         },
         {
           $set: {
@@ -341,6 +356,7 @@ export class ConnectedAppsService implements IConnectedAppsService {
 
     const result = await collection.findOne({
       _id: appId,
+      companyId: this.companyId,
     });
 
     if (!result) {
@@ -362,7 +378,9 @@ export class ConnectedAppsService implements IConnectedAppsService {
       CONNECTED_APPS_COLLECTION_NAME,
     );
 
-    const result = await collection.find().toArray();
+    const result = await collection
+      .find({ companyId: this.companyId })
+      .toArray();
 
     logger.debug({ count: result.length }, "Returning all apps");
     return result.map(({ data: __, token: ___, ...app }) => app);
@@ -388,6 +406,7 @@ export class ConnectedAppsService implements IConnectedAppsService {
     const result = await collection
       .find({
         name: appName,
+        companyId: this.companyId,
       })
       .toArray();
 
@@ -418,6 +437,7 @@ export class ConnectedAppsService implements IConnectedAppsService {
         name: {
           $in: possibleAppNames,
         },
+        companyId: this.companyId,
       })
       .toArray();
 
@@ -445,6 +465,7 @@ export class ConnectedAppsService implements IConnectedAppsService {
         name: {
           $in: possibleAppNames,
         },
+        companyId: this.companyId,
       })
       .map((app) => ({ id: app._id, name: app.name }))
       .toArray();
@@ -463,6 +484,7 @@ export class ConnectedAppsService implements IConnectedAppsService {
 
     const result = await collection.findOne({
       _id: appId,
+      companyId: this.companyId,
     });
 
     if (!result) {
@@ -487,6 +509,7 @@ export class ConnectedAppsService implements IConnectedAppsService {
         _id: {
           $in: appIds,
         },
+        companyId: this.companyId,
       })
       .toArray();
 
@@ -506,6 +529,7 @@ export class ConnectedAppsService implements IConnectedAppsService {
 
     const app = await collection.findOne({
       _id: appId,
+      companyId: this.companyId,
     });
 
     if (!app) {
@@ -524,8 +548,9 @@ export class ConnectedAppsService implements IConnectedAppsService {
   public getAppServiceProps(appId: string): IConnectedAppProps {
     return {
       update: (updateModel) => this.updateApp(appId, updateModel),
-      services: ServicesContainer,
+      services: this.getServices(),
       getDbConnection: getDbConnection,
+      companyId: this.companyId,
     };
   }
 
@@ -540,6 +565,7 @@ export class ConnectedAppsService implements IConnectedAppsService {
       }
 
       return {
+        companyId: this.companyId,
         update: async (updateModel) => {
           logger.error(
             { appName },
@@ -549,7 +575,7 @@ export class ConnectedAppsService implements IConnectedAppsService {
             `App ${appName} called update method from static request`,
           );
         },
-        services: ServicesContainer,
+        services: this.getServices(),
         getDbConnection: getDbConnection,
       };
     } catch (error) {
@@ -628,7 +654,7 @@ export class CachedConnectedAppsService extends ConnectedAppsService {
     const collection = db.collection<ConnectedAppData>(
       CONNECTED_APPS_COLLECTION_NAME,
     );
-    const apps = await collection.find().toArray();
+    const apps = await collection.find({ companyId: this.companyId }).toArray();
     logger.debug({ count: apps.length }, "Returning apps");
 
     return apps;

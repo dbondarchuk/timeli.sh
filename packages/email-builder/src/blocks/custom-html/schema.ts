@@ -1,13 +1,13 @@
 import { BaseReaderBlockProps } from "@vivid/builder";
 import { Prettify } from "@vivid/types";
-import z from "zod";
+import * as z from "zod";
 
 export const CustomHTMLPropsSchema = z.object({
   props: z
     .object({
       html: z
         .string({
-          required_error: "emailBuilder.blocks.customHtml.errors.required",
+          error: "emailBuilder.blocks.customHtml.errors.required",
         })
         .min(1, {
           message: "emailBuilder.blocks.customHtml.errors.required",

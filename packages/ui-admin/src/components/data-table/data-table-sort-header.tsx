@@ -60,7 +60,7 @@ export const tableSortHeader = <
       >
         {t(title)}
         <Icon
-          name={buttons[type][column.getIsSorted() || "false"]}
+          name={buttons[type][column.getIsSorted() || "false"] as any}
           className="ml-2 h-4 w-4"
         />
       </Button>

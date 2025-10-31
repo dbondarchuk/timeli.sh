@@ -14,12 +14,12 @@
     "@vivid/eslint-config": "*",
     "@vivid/typescript-config": "*",
     "@vivid/i18n": "*",
-    "@types/react": "19.0.2",
+    "@types/react": "19.2.0",
     "typescript": "5.5.4",
     "mongodb": "^6.8.0"
   },
   "dependencies": {
-    "zod": "^3.23.8",
+    "zod": "4.1.12",
     "@vvo/tzdb": "^6.142.0"
   }
 }

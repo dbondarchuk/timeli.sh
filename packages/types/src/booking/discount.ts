@@ -1,5 +1,5 @@
-import { z } from "zod";
-import { WithDatabaseId } from "../database";
+import * as z from "zod";
+import { WithCompanyId, WithDatabaseId } from "../database";
 import { asOptinalNumberField, zUniqueArray } from "../utils";
 import { Prettify } from "../utils/helpers";
 
@@ -14,20 +14,20 @@ export const discountTypes = [
 export const discountSchema = z
   .object({
     name: z.string().min(2, "discount.name.required"),
-    enabled: z.coerce.boolean(),
-    startDate: z.coerce.date().optional(),
-    endDate: z.coerce.date().optional(),
-    appointmentStartDate: z.coerce.date().optional(),
-    appointmentEndDate: z.coerce.date().optional(),
+    enabled: z.coerce.boolean<boolean>(),
+    startDate: z.coerce.date<Date>().optional(),
+    endDate: z.coerce.date<Date>().optional(),
+    appointmentStartDate: z.coerce.date<Date>().optional(),
+    appointmentEndDate: z.coerce.date<Date>().optional(),
     maxUsage: asOptinalNumberField(
       z.coerce
-        .number({ message: "discount.maxUsage.min" })
+        .number<number>({ error: "discount.maxUsage.min" })
         .int("discount.maxUsage.min")
         .min(1, "discount.maxUsage.min"),
     ),
     maxUsagePerCustomer: asOptinalNumberField(
       z.coerce
-        .number({ message: "discount.maxUsagePerCustomer.min" })
+        .number<number>({ error: "discount.maxUsagePerCustomer.min" })
         .int("discount.maxUsagePerCustomer.min")
         .min(1, "discount.maxUsagePerCustomer.min"),
     ),
@@ -64,7 +64,7 @@ export const discountSchema = z
       )
       .optional(),
     value: z.coerce
-      .number({ message: "discount.value.required" })
+      .number<number>({ error: "discount.value.required" })
       .int("discount.value.required"),
     codes: zUniqueArray(
       z
@@ -93,9 +93,13 @@ export const discountSchema = z
   });
 
 export type DiscountUpdateModel = z.infer<typeof discountSchema>;
-export type Discount = WithDatabaseId<DiscountUpdateModel> & {
-  updatedAt: Date;
-};
+export type Discount = Prettify<
+  WithCompanyId<
+    WithDatabaseId<DiscountUpdateModel> & {
+      updatedAt: Date;
+    }
+  >
+>;
 
 export type DiscountType = Discount["type"];
 
@@ -139,8 +143,8 @@ export const applyDiscountRequestSchema = z.object({
   email: z.string(),
   phone: z.string(),
   optionId: z.string().min(1, "discount.applyRequest.optionId.required"),
-  dateTime: z.coerce.date({
-    message: "discount.applyRequest.dateTime.required",
+  dateTime: z.coerce.date<Date>({
+    error: "discount.applyRequest.dateTime.required",
   }),
   addons: zUniqueArray(
     z.array(z.string().min(1, "discount.applyRequest.addons.required")),

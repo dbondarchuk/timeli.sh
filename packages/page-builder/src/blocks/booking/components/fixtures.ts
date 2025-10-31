@@ -17,6 +17,7 @@ export const demoBookingOptionsResponse: GetAppointmentOptionsResponse = {
           description: "Extend your session by 15 minutes.",
           price: 20,
           updatedAt: new Date(),
+          companyId: "company-1",
         },
         {
           _id: "addon-2",
@@ -24,6 +25,7 @@ export const demoBookingOptionsResponse: GetAppointmentOptionsResponse = {
           description: "Get priority scheduling for your appointment.",
           price: 10,
           updatedAt: new Date(),
+          companyId: "company-1",
         },
         {
           _id: "addon-3",
@@ -31,10 +33,12 @@ export const demoBookingOptionsResponse: GetAppointmentOptionsResponse = {
           description: "Receive a recording of your session.",
           price: 15,
           updatedAt: new Date(),
+          companyId: "company-1",
         },
       ],
       requireDeposit: "inherit",
       updatedAt: new Date(),
+      companyId: "company-1",
     },
     {
       _id: "option-2",
@@ -51,6 +55,7 @@ export const demoBookingOptionsResponse: GetAppointmentOptionsResponse = {
           description: "Extend your session by 15 minutes.",
           price: 20,
           updatedAt: new Date(),
+          companyId: "company-1",
         },
         {
           _id: "addon-2",
@@ -58,6 +63,7 @@ export const demoBookingOptionsResponse: GetAppointmentOptionsResponse = {
           description: "Get priority scheduling for your appointment.",
           price: 10,
           updatedAt: new Date(),
+          companyId: "company-1",
         },
         {
           _id: "addon-3",
@@ -65,10 +71,12 @@ export const demoBookingOptionsResponse: GetAppointmentOptionsResponse = {
           description: "Receive a recording of your session.",
           price: 15,
           updatedAt: new Date(),
+          companyId: "company-1",
         },
       ],
       requireDeposit: "inherit",
       updatedAt: new Date(),
+      companyId: "company-1",
     },
     {
       _id: "option-3",
@@ -85,6 +93,7 @@ export const demoBookingOptionsResponse: GetAppointmentOptionsResponse = {
           description: "Extend your session by 15 minutes.",
           price: 20,
           updatedAt: new Date(),
+          companyId: "company-1",
         },
         {
           _id: "addon-2",
@@ -92,6 +101,7 @@ export const demoBookingOptionsResponse: GetAppointmentOptionsResponse = {
           description: "Get priority scheduling for your appointment.",
           price: 10,
           updatedAt: new Date(),
+          companyId: "company-1",
         },
         {
           _id: "addon-3",
@@ -99,10 +109,12 @@ export const demoBookingOptionsResponse: GetAppointmentOptionsResponse = {
           description: "Receive a recording of your session.",
           price: 15,
           updatedAt: new Date(),
+          companyId: "company-1",
         },
       ],
       requireDeposit: "inherit",
       updatedAt: new Date(),
+      companyId: "company-1",
     },
   ],
   fieldsSchema: {},

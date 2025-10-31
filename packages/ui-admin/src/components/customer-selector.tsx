@@ -2,7 +2,7 @@ import { adminApi } from "@vivid/api-sdk";
 import { useI18n } from "@vivid/i18n";
 import { CustomerListModel } from "@vivid/types";
 import { cn, ComboboxAsync, IComboboxItem, Skeleton } from "@vivid/ui";
-import Image from "next/image";
+// import Image from "next/image";
 import React from "react";
 
 const CustomerShortLabel: React.FC<{
@@ -11,7 +11,7 @@ const CustomerShortLabel: React.FC<{
 }> = ({ customer, row }) => {
   return (
     <div className="flex flex-row items-center gap-2 shrink overflow-hidden text-nowrap min-w-0 max-w-[var(--radix-popover-trigger-width)]">
-      <Image
+      <img
         src={customer.avatar ?? "/unknown-person.png"}
         width={20}
         height={20}

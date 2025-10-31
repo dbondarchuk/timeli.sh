@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as z from "zod";
 
 export const calendarSourceConfigurationSchema = z.object({
   appId: z.string().min(1, "configuration.booking.calendarSource.required"),

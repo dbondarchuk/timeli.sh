@@ -1,4 +1,3 @@
-import { getLoggerFactory } from "@vivid/logger";
 import {
   CommunicationChannel,
   ITemplatesService,
@@ -11,12 +10,14 @@ import {
 import { buildSearchQuery, escapeRegex } from "@vivid/utils";
 import { DateTime } from "luxon";
 import { Filter, ObjectId, Sort } from "mongodb";
+import { TEMPLATES_COLLECTION_NAME } from "./collections";
 import { getDbConnection } from "./database";
+import { BaseService } from "./services/base.service";
 
-export const TEMPLATES_COLLECTION_NAME = "templates";
-
-export class TemplatesService implements ITemplatesService {
-  protected readonly loggerFactory = getLoggerFactory("TemplatesService");
+export class TemplatesService extends BaseService implements ITemplatesService {
+  constructor(companyId: string) {
+    super("TemplatesService", companyId);
+  }
 
   public async getTemplate(_id: string): Promise<Template | null> {
     const logger = this.loggerFactory("getTemplate");
@@ -26,6 +27,7 @@ export class TemplatesService implements ITemplatesService {
 
     const template = await templates.findOne({
       _id,
+      companyId: this.companyId,
     });
 
     logger.debug({ _id, template }, "Template found");
@@ -50,7 +52,9 @@ export class TemplatesService implements ITemplatesService {
       {},
     ) || { updatedAt: -1 };
 
-    const filter: Filter<Template> = {};
+    const filter: Filter<Template> = {
+      companyId: this.companyId,
+    };
 
     if (query.type) {
       filter.type = {
@@ -69,10 +73,10 @@ export class TemplatesService implements ITemplatesService {
       .collection<Template>(TEMPLATES_COLLECTION_NAME)
       .aggregate([
         {
-          $sort: sort,
+          $match: filter,
         },
         {
-          $match: filter,
+          $sort: sort,
         },
         {
           $project: {
@@ -125,6 +129,7 @@ export class TemplatesService implements ITemplatesService {
     logger.debug({ template }, "Creating template");
     const dbTemplate: Template = {
       ...template,
+      companyId: this.companyId,
       _id: new ObjectId().toString(),
       updatedAt: DateTime.utc().toJSDate(),
     };
@@ -158,7 +163,7 @@ export class TemplatesService implements ITemplatesService {
     const db = await getDbConnection();
     const templates = db.collection<Template>(TEMPLATES_COLLECTION_NAME);
 
-    const { _id, ...updateObj } = update as Template; // Remove fields in case it slips here
+    const { _id, companyId, ...updateObj } = update as Template; // Remove fields in case it slips here
 
     if (!this.checkUniqueName(update.name, id)) {
       logger.error(
@@ -173,6 +178,7 @@ export class TemplatesService implements ITemplatesService {
     await templates.updateOne(
       {
         _id: id,
+        companyId: this.companyId,
       },
       {
         $set: updateObj,
@@ -190,6 +196,7 @@ export class TemplatesService implements ITemplatesService {
 
     const template = await templates.findOneAndDelete({
       _id: id,
+      companyId: this.companyId,
     });
 
     logger.debug({ id, templateDeleted: !!template }, "Template delete result");
@@ -207,6 +214,7 @@ export class TemplatesService implements ITemplatesService {
       _id: {
         $in: ids,
       },
+      companyId: this.companyId,
     });
 
     logger.debug({ ids, deletedCount }, "Templates deleted");
@@ -220,6 +228,7 @@ export class TemplatesService implements ITemplatesService {
 
     const filter: Filter<Template> = {
       name,
+      companyId: this.companyId,
     };
 
     if (id) {

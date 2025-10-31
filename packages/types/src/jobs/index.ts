@@ -1,4 +1,5 @@
-import { AppScope } from "../apps";
+import { AppScope } from "../apps/app";
+import { WithCompanyId } from "../database";
 
 export type BaseJobRequest = {
   id?: string;
@@ -19,6 +20,7 @@ export type HookJobRequest = BaseJobRequest & {
 };
 
 export type JobRequest = AppJobRequest | HookJobRequest;
+export type CompanyJobRequest = WithCompanyId<JobRequest>;
 
 export type Job = JobRequest & {
   id: string;

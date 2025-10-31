@@ -1,6 +1,6 @@
 import { BaseReaderBlockProps } from "@vivid/builder";
 import { Prettify } from "@vivid/types";
-import z from "zod";
+import * as z from "zod";
 
 export const RedirectPropsSchema = z.object({
   props: z

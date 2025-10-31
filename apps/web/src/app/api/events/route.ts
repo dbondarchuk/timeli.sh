@@ -1,6 +1,6 @@
 import { getAppointmentEventAndIsPaymentRequired } from "@/utils/appointments/get-payment-required";
+import { getServicesContainer } from "@/utils/utils";
 import { getLoggerFactory } from "@vivid/logger";
-import { ServicesContainer } from "@vivid/services";
 import {
   appointmentRequestSchema,
   AppointmentTimeNotAvaialbleError,
@@ -9,7 +9,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   const logger = getLoggerFactory("API/event")("POST");
-
+  console.log("Reached here");
+  const servicesContainer = await getServicesContainer();
   logger.debug(
     {
       url: request.url,
@@ -18,8 +19,10 @@ export async function POST(request: NextRequest) {
     "Processing event API request",
   );
 
+  console.log("Reached here2");
   const formData = await request.formData();
 
+  console.log("Reached here3");
   const json = formData.get("json") as string;
   if (!json) {
     logger.warn("Missing JSON data in form");
@@ -125,7 +128,7 @@ export async function POST(request: NextRequest) {
     }
 
     const paymentIntent =
-      await ServicesContainer.PaymentsService().getIntent(paymentIntentId);
+      await servicesContainer.paymentsService.getIntent(paymentIntentId);
     if (!paymentIntent) {
       logger.warn({ paymentIntentId }, "Payment intent not found");
       return NextResponse.json(
@@ -163,7 +166,7 @@ export async function POST(request: NextRequest) {
     logger.warn("Payment not required but payment intent provided");
 
     const paymentIntent =
-      await ServicesContainer.PaymentsService().getIntent(paymentIntentId);
+      await servicesContainer.paymentsService.getIntent(paymentIntentId);
 
     if (!paymentIntent) {
       logger.warn({ paymentIntentId }, "Payment intent not found");
@@ -177,7 +180,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const { _id } = await ServicesContainer.EventsService().createEvent({
+    const { _id } = await servicesContainer.eventsService.createEvent({
       event: eventOrError.event,
       paymentIntentId,
       files,

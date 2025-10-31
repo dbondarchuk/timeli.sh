@@ -1,5 +1,5 @@
 import { parseIcsCalendar } from "@ts-ics/schema-zod";
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
 import {
   CalendarBusyTime,
   ConnectedAppData,
@@ -20,9 +20,11 @@ import {
 export default class IcsConnectedApp
   implements IConnectedApp, ICalendarBusyTimeProvider
 {
-  protected readonly loggerFactory = getLoggerFactory("IcsConnectedApp");
+  protected readonly loggerFactory: LoggerFactory;
 
-  public constructor(protected readonly props: IConnectedAppProps) {}
+  public constructor(protected readonly props: IConnectedAppProps) {
+    this.loggerFactory = getLoggerFactory("IcsConnectedApp", props.companyId);
+  }
 
   public async processRequest(
     appData: ConnectedAppData,

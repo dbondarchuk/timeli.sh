@@ -1,9 +1,9 @@
 import { Layers } from "lucide-react";
-import { z } from "zod";
+import * as z from "zod";
 import { RawNumberInput } from "../../../style-inputs/base/raw-number-input";
 import { StyleDefinition } from "../../types";
 
-const ZIndexSchema = z.coerce.number().int();
+const ZIndexSchema = z.coerce.number<number>().int();
 
 export const zIndexStyle = {
   name: "zIndex",

@@ -1,5 +1,5 @@
 import { BaseReaderBlockProps, generateId } from "@vivid/builder";
-import z from "zod";
+import * as z from "zod";
 import { AccordionProps } from "../accordion/schema";
 import { InlineContainerPropsDefaults } from "../inline-container/schema";
 import { zStyles } from "./styles";

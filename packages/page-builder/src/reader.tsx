@@ -1,8 +1,6 @@
-import { Reader, ReaderDocumentBlocksDictionary } from "@vivid/builder";
+import { Reader, ReaderDocumentBlocksDictionary } from "@vivid/builder/reader";
 import { ReaderBlocks } from "./blocks/reader";
-export { Header } from "@vivid/page-builder-base";
-
-export { Styling } from "@vivid/page-builder-base/reader";
+export { Header, Styling } from "@vivid/page-builder-base/reader";
 
 export const PageReader = ({
   document,

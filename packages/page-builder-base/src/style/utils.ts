@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as z from "zod";
 import { ALL_STYLES, allStyles, AllStylesNames } from "./styles";
 import {
   BaseStyleDictionary,

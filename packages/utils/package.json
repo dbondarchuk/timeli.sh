@@ -28,10 +28,12 @@
     "luxon": "^3.5.0",
     "mime-type": "^5.0.0",
     "mustache": "^4.2.0",
-    "next": "15.2.1",
     "raw-body": "2.4.1",
-    "react": "19.0.0",
-    "react-dom": "19.0.0",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
     "uuid": "^10.0.0"
+  },
+  "peerDependencies": {
+    "next": "16.0.2-canary.1"
   }
 }

@@ -5,11 +5,11 @@ import {
   getFields,
 } from "@vivid/types";
 
-import React from "react";
+import React, { useMemo } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import z from "zod";
+import * as z from "zod";
 
 import {
   Button,
@@ -54,14 +54,18 @@ export const FormCard: React.FC = () => {
 
   const fields = getFields(formFields);
 
-  const formSchema = z.object(
-    fields.reduce(
-      (prev, field) => {
-        prev[field.name] = fieldSchemaMapper(field);
-        return prev;
-      },
-      {} as { [field: string]: z.ZodType },
-    ),
+  const formSchema = useMemo(
+    () =>
+      z.object(
+        fields.reduce(
+          (prev, field) => {
+            prev[field.name] = fieldSchemaMapper(field);
+            return prev;
+          },
+          {} as { [field: string]: z.ZodType<any, any> },
+        ),
+      ),
+    [fields],
   );
 
   const form = useForm<z.infer<typeof formSchema>>({

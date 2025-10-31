@@ -1,31 +1,25 @@
 import { getLoggerFactory } from "@vivid/logger";
 import {
   EmailNotificationRequest,
+  IServicesContainer,
   TextMessageNotificationRequest,
 } from "@vivid/types";
 import { Job } from "bullmq";
-import { ServicesContainer } from "../..";
 import { NotificationService } from "../../notifications.service";
 import { BaseBullMQClient } from "../base-bullmq-client";
 import { NotificationJobData } from "./bullmq-notification-service";
 import { BullMQNotificationConfig } from "./types";
 
 export class BullMQNotificationWorker extends BaseBullMQClient {
-  protected readonly loggerFactory = getLoggerFactory(
-    "BullMQNotificationWorker",
-  );
   protected readonly config: BullMQNotificationConfig;
-  protected readonly notificationService: NotificationService;
 
-  constructor(config: BullMQNotificationConfig) {
-    super(config);
+  constructor(
+    config: BullMQNotificationConfig,
+    protected readonly getServices: (companyId: string) => IServicesContainer,
+  ) {
+    super(config, getLoggerFactory("BullMQNotificationWorker"));
     this.config = config;
     this.initializeWorkers();
-    this.notificationService = new NotificationService(
-      ServicesContainer.ConfigurationService(),
-      ServicesContainer.ConnectedAppsService(),
-      ServicesContainer.CommunicationLogsService(),
-    );
   }
 
   private initializeWorkers(): void {
@@ -66,6 +60,12 @@ export class BullMQNotificationWorker extends BaseBullMQClient {
     }
 
     const emailData = jobData.data as EmailNotificationRequest;
+    const companyId = jobData.companyId;
+    if (!companyId) {
+      throw new Error("companyId is required in job data");
+    }
+
+    const notificationService = this.getNotificationService(companyId);
 
     try {
       logger.info(
@@ -79,11 +79,12 @@ export class BullMQNotificationWorker extends BaseBullMQClient {
           subject: emailData.email.subject,
           appointmentId: emailData.appointmentId,
           customerId: emailData.customerId,
+          companyId,
         },
         "Processing email notification job",
       );
 
-      await this.notificationService.sendEmail(emailData);
+      await notificationService.sendEmail(emailData);
 
       logger.info(
         { jobId: job.id },
@@ -114,6 +115,11 @@ export class BullMQNotificationWorker extends BaseBullMQClient {
     }
 
     const textData = jobData.data as TextMessageNotificationRequest;
+    const companyId = jobData.companyId;
+    if (!companyId) {
+      throw new Error("companyId is required in job data");
+    }
+    const notificationService = this.getNotificationService(companyId);
 
     try {
       logger.info(
@@ -125,11 +131,12 @@ export class BullMQNotificationWorker extends BaseBullMQClient {
           sender: textData.sender,
           appointmentId: textData.appointmentId,
           customerId: textData.customerId,
+          companyId,
         },
         "Processing text message notification job",
       );
 
-      await this.notificationService.sendTextMessage(textData);
+      await notificationService.sendTextMessage(textData);
 
       logger.info(
         { jobId: job.id },
@@ -302,5 +309,14 @@ export class BullMQNotificationWorker extends BaseBullMQClient {
         await new Promise((resolve) => setTimeout(resolve, delay));
       }
     }
+  }
+
+  private getNotificationService(companyId: string): NotificationService {
+    const services = this.getServices(companyId);
+    return new NotificationService(
+      services.configurationService,
+      services.connectedAppsService,
+      services.communicationLogsService,
+    );
   }
 }

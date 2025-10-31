@@ -1,15 +1,11 @@
+import { getRedisClient } from "./redis-client";
 import { BullMQConfig } from "./types";
 
 export const getBullMQBaseConfig = (
   overrides?: Partial<BullMQConfig>,
 ): BullMQConfig => {
   return {
-    redis: {
-      host: process.env.REDIS_HOST!,
-      port: parseInt(process.env.REDIS_PORT || "6379"),
-      password: process.env.REDIS_PASSWORD,
-      db: parseInt(process.env.REDIS_DB || "0"),
-    },
+    redis: getRedisClient(),
     defaultJobOptions: {
       removeOnComplete: parseInt(
         process.env.BULLMQ_REMOVE_ON_COMPLETE || "100",

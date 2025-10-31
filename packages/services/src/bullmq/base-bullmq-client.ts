@@ -1,4 +1,4 @@
-import { getLoggerFactory } from "@vivid/logger";
+import { LoggerFactory } from "@vivid/logger";
 import { Job, Queue, QueueEvents, Worker } from "bullmq";
 import { Redis } from "ioredis";
 import { BullMQConfig } from "./types";
@@ -8,25 +8,30 @@ export interface QueueJobData {
 }
 
 export abstract class BaseBullMQClient {
-  protected readonly loggerFactory = getLoggerFactory("BaseBullMQClient");
   protected readonly redis: Redis;
   protected readonly config: BullMQConfig;
   protected readonly queues: Map<string, Queue> = new Map();
   protected readonly workers: Map<string, Worker> = new Map();
   protected readonly queueEvents: Map<string, QueueEvents> = new Map();
 
-  constructor(config: BullMQConfig) {
+  constructor(
+    config: BullMQConfig,
+    protected readonly loggerFactory: LoggerFactory,
+  ) {
     this.config = config;
 
     // Initialize Redis connection
-    this.redis = new Redis({
-      host: this.config.redis.host,
-      port: this.config.redis.port,
-      password: this.config.redis.password,
-      db: this.config.redis.db,
-      maxRetriesPerRequest: null,
-      lazyConnect: true,
-    });
+    this.redis =
+      typeof this.config.redis === "object" && "host" in this.config.redis
+        ? new Redis({
+            host: this.config.redis.host,
+            port: this.config.redis.port,
+            password: this.config.redis.password,
+            db: this.config.redis.db,
+            maxRetriesPerRequest: null,
+            lazyConnect: true,
+          })
+        : this.config.redis;
   }
 
   /**

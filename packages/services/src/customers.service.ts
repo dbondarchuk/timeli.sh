@@ -1,4 +1,3 @@
-import { getLoggerFactory } from "@vivid/logger";
 import {
   Appointment,
   Customer,
@@ -14,15 +13,20 @@ import {
 } from "@vivid/types";
 import { buildSearchQuery, escapeRegex } from "@vivid/utils";
 import { Filter, ObjectId, Sort } from "mongodb";
+import {
+  APPOINTMENTS_COLLECTION_NAME,
+  CUSTOMERS_COLLECTION_NAME,
+} from "./collections";
 import { getDbConnection } from "./database";
-import { APPOINTMENTS_COLLECTION_NAME } from "./events.service";
+import { BaseService } from "./services/base.service";
 
-export const CUSTOMERS_COLLECTION_NAME = "customers";
-
-export class CustomersService implements ICustomersService {
-  protected readonly loggerFactory = getLoggerFactory("CustomersService");
-
-  constructor(private readonly jobService: IJobService) {}
+export class CustomersService extends BaseService implements ICustomersService {
+  public constructor(
+    companyId: string,
+    private readonly jobService: IJobService,
+  ) {
+    super("CustomersService", companyId);
+  }
 
   public async getCustomer(id: string): Promise<Customer | null> {
     const logger = this.loggerFactory("getCustomer");
@@ -34,6 +38,7 @@ export class CustomersService implements ICustomersService {
 
     const customer = await collection.findOne({
       _id: id,
+      companyId: this.companyId,
     });
 
     if (!customer) {
@@ -67,7 +72,9 @@ export class CustomersService implements ICustomersService {
       {},
     ) || { "lastAppointment.dateTime": -1 };
 
-    const filter: Filter<Customer> = {};
+    const filter: Filter<Customer> = {
+      companyId: this.companyId,
+    };
 
     if (query.search) {
       const $regex = new RegExp(escapeRegex(query.search), "i");
@@ -144,6 +151,12 @@ export class CustomersService implements ICustomersService {
       .collection<Customer>(CUSTOMERS_COLLECTION_NAME)
       .aggregate([
         {
+          $match: {
+            companyId: this.companyId,
+          },
+        },
+        ...priorityStages,
+        {
           $lookup: {
             from: APPOINTMENTS_COLLECTION_NAME,
             localField: "_id",
@@ -153,6 +166,7 @@ export class CustomersService implements ICustomersService {
               {
                 $match: {
                   status: { $ne: "declined" },
+                  companyId: this.companyId,
                 },
               },
             ],
@@ -305,6 +319,7 @@ export class CustomersService implements ICustomersService {
 
     const customer = await collection.findOne({
       $or: queries,
+      companyId: this.companyId,
     });
 
     if (customer) {
@@ -339,15 +354,13 @@ export class CustomersService implements ICustomersService {
 
     const collection = db.collection<Customer>(CUSTOMERS_COLLECTION_NAME);
 
-    await collection.insertOne({
-      ...customer,
-      _id: id,
-    });
-
     const createdCustomer: Customer = {
       ...customer,
+      companyId: this.companyId,
       _id: id,
     };
+
+    await collection.insertOne(createdCustomer);
 
     logger.debug(
       { customerId: id, name: customer.name },
@@ -386,6 +399,7 @@ export class CustomersService implements ICustomersService {
     await collection.updateOne(
       {
         _id: id,
+        companyId: this.companyId,
       },
       {
         $set: updateObj,
@@ -393,7 +407,10 @@ export class CustomersService implements ICustomersService {
     );
 
     // Get the updated customer for hooks
-    const updatedCustomer = await collection.findOne({ _id: id });
+    const updatedCustomer = await collection.findOne({
+      _id: id,
+      companyId: this.companyId,
+    });
     if (!updatedCustomer) {
       logger.warn({ customerId: id }, "Customer not found after update");
       return;
@@ -526,7 +543,10 @@ export class CustomersService implements ICustomersService {
 
     const collection = db.collection<Customer>(CUSTOMERS_COLLECTION_NAME);
 
-    const customer = await collection.findOne({ _id: id });
+    const customer = await collection.findOne({
+      _id: id,
+      companyId: this.companyId,
+    });
     if (!customer) {
       logger.warn({ customerId: id }, "Customer not found for deletion");
       return null;
@@ -584,6 +604,7 @@ export class CustomersService implements ICustomersService {
             customerId: {
               $in: ids,
             },
+            companyId: this.companyId,
           },
         },
         {
@@ -615,6 +636,7 @@ export class CustomersService implements ICustomersService {
     const customersToDelete = await collection
       .find({
         _id: { $in: ids },
+        companyId: this.companyId,
       })
       .toArray();
 
@@ -622,6 +644,7 @@ export class CustomersService implements ICustomersService {
       _id: {
         $in: ids,
       },
+      companyId: this.companyId,
     });
 
     logger.debug(
@@ -649,6 +672,7 @@ export class CustomersService implements ICustomersService {
 
     const target = await collection.findOne({
       _id: targetId,
+      companyId: this.companyId,
     });
 
     if (!target) {
@@ -668,6 +692,7 @@ export class CustomersService implements ICustomersService {
         _id: {
           $in: ids,
         },
+        companyId: this.companyId,
       })
       .toArray();
 
@@ -730,6 +755,7 @@ export class CustomersService implements ICustomersService {
     await collection.updateOne(
       {
         _id: targetId,
+        companyId: this.companyId,
       },
       {
         $set: update,
@@ -779,6 +805,7 @@ export class CustomersService implements ICustomersService {
     const customers = db.collection<Customer>(CUSTOMERS_COLLECTION_NAME);
 
     const emailFilter: Filter<Customer> = {
+      companyId: this.companyId,
       $or: [
         {
           email: { $in: emails },
@@ -793,6 +820,7 @@ export class CustomersService implements ICustomersService {
     };
 
     const phoneFilter: Filter<Customer> = {
+      companyId: this.companyId,
       $or: [
         {
           phone: { $in: phones },

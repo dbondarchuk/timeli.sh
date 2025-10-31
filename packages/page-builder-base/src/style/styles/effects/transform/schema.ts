@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as z from "zod";
 
 // Predefined transform options
 export const transformKeys = [

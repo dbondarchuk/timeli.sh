@@ -1,7 +1,7 @@
 import { useI18n } from "@vivid/i18n";
 import { Combobox } from "@vivid/ui";
 import { AlignLeft } from "lucide-react";
-import { z } from "zod";
+import * as z from "zod";
 import { StyleDefinition } from "../../types";
 
 const textAlignKeys = ["left", "center", "right", "justify"] as const;

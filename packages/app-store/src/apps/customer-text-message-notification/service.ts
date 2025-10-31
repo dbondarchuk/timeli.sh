@@ -1,4 +1,4 @@
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
 import {
   Appointment,
   AppointmentStatus,
@@ -16,19 +16,24 @@ import {
 } from "./translations/types";
 
 import {
+  getAdminUrl,
   getArguments,
   getPhoneField,
+  getWebsiteUrl,
   templateSafeWithError,
 } from "@vivid/utils";
 
 export default class CustomerTextMessageNotificationConnectedApp
   implements IConnectedApp, IAppointmentHook
 {
-  protected readonly loggerFactory = getLoggerFactory(
-    "CustomerTextMessageNotificationConnectedApp",
-  );
+  protected readonly loggerFactory: LoggerFactory;
 
-  public constructor(protected readonly props: IConnectedAppProps) {}
+  public constructor(protected readonly props: IConnectedAppProps) {
+    this.loggerFactory = getLoggerFactory(
+      "CustomerTextMessageNotificationConnectedApp",
+      props.companyId,
+    );
+  }
 
   public async processRequest(
     appData: ConnectedAppData,
@@ -46,9 +51,10 @@ export default class CustomerTextMessageNotificationConnectedApp
     );
 
     try {
-      const defaultApps = await this.props.services
-        .ConfigurationService()
-        .getConfiguration("defaultApps");
+      const defaultApps =
+        await this.props.services.configurationService.getConfiguration(
+          "defaultApps",
+        );
 
       logger.debug(
         { appId: appData._id },
@@ -62,9 +68,9 @@ export default class CustomerTextMessageNotificationConnectedApp
           "Retrieved text message app ID",
         );
 
-        await this.props.services
-          .ConnectedAppsService()
-          .getApp(textMessageAppId!);
+        await this.props.services.connectedAppsService.getApp(
+          textMessageAppId!,
+        );
 
         logger.debug(
           { appId: appData._id, textMessageAppId },
@@ -307,9 +313,8 @@ export default class CustomerTextMessageNotificationConnectedApp
         "Getting text message template",
       );
 
-      const template = await this.props.services
-        .TemplatesService()
-        .getTemplate(templateId);
+      const template =
+        await this.props.services.templatesService.getTemplate(templateId);
       if (!template) {
         logger.error(
           { appId: appData._id, appointmentId: appointment._id, templateId },
@@ -324,9 +329,12 @@ export default class CustomerTextMessageNotificationConnectedApp
         "Retrieved text message template",
       );
 
-      const config = await this.props.services
-        .ConfigurationService()
-        .getConfigurations("booking", "general", "social");
+      const config =
+        await this.props.services.configurationService.getConfigurations(
+          "booking",
+          "general",
+          "social",
+        );
 
       logger.debug(
         { appId: appData._id, appointmentId: appointment._id },
@@ -334,7 +342,7 @@ export default class CustomerTextMessageNotificationConnectedApp
       );
 
       const phoneFields = (
-        await this.props.services.ServicesService().getFields({
+        await this.props.services.servicesService.getFields({
           type: ["phone"],
         })
       ).items;
@@ -366,12 +374,30 @@ export default class CustomerTextMessageNotificationConnectedApp
         "Found phone number for customer",
       );
 
+      const organization =
+        await this.props.services.organizationService.getOrganization();
+      if (!organization) {
+        logger.error(
+          { appId: appData._id, appointmentId: appointment._id },
+          "Organization not found",
+        );
+        return;
+      }
+
+      const adminUrl = getAdminUrl();
+      const websiteUrl = getWebsiteUrl(
+        organization.slug,
+        config.general.domain,
+      );
+
       const args = getArguments({
         appointment,
         config,
         customer: appointment.customer,
         useAppointmentTimezone: true,
         locale: config.general.language,
+        adminUrl,
+        websiteUrl,
       });
 
       logger.debug(
@@ -399,7 +425,7 @@ export default class CustomerTextMessageNotificationConnectedApp
         "Sending text message notification",
       );
 
-      await this.props.services.NotificationService().sendTextMessage({
+      await this.props.services.notificationService.sendTextMessage({
         phone,
         body: templatedBody,
         webhookData: {

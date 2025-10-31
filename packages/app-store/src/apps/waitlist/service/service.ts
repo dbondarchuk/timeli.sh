@@ -1,4 +1,4 @@
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
 import {
   ApiRequest,
   ApiResponse,
@@ -41,9 +41,14 @@ import {
 export class WaitlistConnectedApp
   implements IConnectedApp, IAppointmentHook, IDashboardNotifierApp
 {
-  protected readonly loggerFactory = getLoggerFactory("WaitlistConnectedApp");
+  protected readonly loggerFactory: LoggerFactory;
 
-  public constructor(protected readonly props: IConnectedAppProps) {}
+  public constructor(protected readonly props: IConnectedAppProps) {
+    this.loggerFactory = getLoggerFactory(
+      "WaitlistConnectedApp",
+      props.companyId,
+    );
+  }
 
   public async processRequest(
     appData: ConnectedAppData,
@@ -148,7 +153,10 @@ export class WaitlistConnectedApp
       "Appointment created, creating waitlist entry",
     );
 
-    const repositoryService = this.getRepositoryService(appData._id);
+    const repositoryService = this.getRepositoryService(
+      appData._id,
+      appData.companyId,
+    );
     const result = await repositoryService.getWaitlistEntry(
       appointment.data.waitlistId,
     );
@@ -180,7 +188,10 @@ export class WaitlistConnectedApp
     const logger = this.loggerFactory("getNotifications");
     logger.debug({ date }, "Getting waitlist notifications");
 
-    const repositoryService = this.getRepositoryService(appData._id);
+    const repositoryService = this.getRepositoryService(
+      appData._id,
+      appData.companyId,
+    );
     const result = await repositoryService.getWaitlistEntriesCount(date);
 
     logger.debug({ result }, "Waitlist entries count retrieved");
@@ -205,7 +216,7 @@ export class WaitlistConnectedApp
                   label: {
                     key: "app_waitlist_admin.notifications.viewWaitlist" satisfies WaitlistAdminAllKeys,
                   },
-                  href: `/admin/dashboard?activeTab=waitlist&key=${Date.now()}`,
+                  href: `/dashboard?activeTab=waitlist&key=${Date.now()}`,
                 },
               }
             : undefined,
@@ -213,9 +224,10 @@ export class WaitlistConnectedApp
     ];
   }
 
-  protected getRepositoryService(appId: string) {
+  protected getRepositoryService(appId: string, companyId: string) {
     return new WaitlistRepositoryService(
       appId,
+      companyId,
       this.props.getDbConnection,
       this.props.services,
     );
@@ -236,9 +248,8 @@ export class WaitlistConnectedApp
 
     logger.debug({ data }, "Creating waitlist entry");
 
-    const options = await this.props.services
-      .EventsService()
-      .getAppointmentOptions();
+    const options =
+      await this.props.services.eventsService.getAppointmentOptions();
     const option = options.options.find((o) => o._id === data.optionId);
     if (!option) {
       logger.error({ data }, "Option not found");
@@ -276,7 +287,10 @@ export class WaitlistConnectedApp
     const logger = this.loggerFactory("createWaitlistEntry");
     logger.debug({ entry }, "Creating waitlist entry");
 
-    const repositoryService = this.getRepositoryService(appData._id);
+    const repositoryService = this.getRepositoryService(
+      appData._id,
+      appData.companyId,
+    );
     const result = await repositoryService.createWaitlistEntry(entry);
     logger.debug({ result }, "Waitlist entry created");
 
@@ -294,7 +308,10 @@ export class WaitlistConnectedApp
     );
 
     try {
-      const repositoryService = this.getRepositoryService(appData._id);
+      const repositoryService = this.getRepositoryService(
+        appData._id,
+        appData.companyId,
+      );
       const result = await repositoryService.dismissWaitlistEntries(data.ids);
       logger.debug(
         { appId: appData._id },
@@ -321,7 +338,10 @@ export class WaitlistConnectedApp
     );
 
     try {
-      const repositoryService = this.getRepositoryService(appData._id);
+      const repositoryService = this.getRepositoryService(
+        appData._id,
+        appData.companyId,
+      );
       const result = await repositoryService.getWaitlistEntry(data.id);
       logger.debug(
         { appId: appData._id },
@@ -348,7 +368,10 @@ export class WaitlistConnectedApp
     );
 
     try {
-      const repositoryService = this.getRepositoryService(appData._id);
+      const repositoryService = this.getRepositoryService(
+        appData._id,
+        appData.companyId,
+      );
       const result = await repositoryService.getWaitlistEntries(data.query);
       logger.debug(
         { appId: appData._id },

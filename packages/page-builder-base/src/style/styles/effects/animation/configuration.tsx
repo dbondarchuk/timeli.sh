@@ -4,7 +4,7 @@ import { useI18n } from "@vivid/i18n";
 import { Combobox } from "@vivid/ui";
 import { Clock, Timer } from "lucide-react";
 import { useState } from "react";
-import { z } from "zod";
+import * as z from "zod";
 import { RawNumberInput } from "../../../../style-inputs/base/raw-number-input";
 import {
   AnimationSchema,

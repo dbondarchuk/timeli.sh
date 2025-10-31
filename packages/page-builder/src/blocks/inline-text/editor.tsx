@@ -21,7 +21,7 @@ import {
 import { cn, useDebounceCallback } from "@vivid/ui";
 import { ArgumentsAutocomplete } from "@vivid/ui-admin";
 import { InlineTextProps } from "./schema";
-import { getDefaults, styles } from "./styles";
+import { styles } from "./styles";
 
 export function InlineTextEditor({ props, style }: InlineTextProps) {
   const t = useI18n("builder");
@@ -74,7 +74,6 @@ export function InlineTextEditor({ props, style }: InlineTextProps) {
   }, []);
 
   const className = useClassName();
-  const defaults = getDefaults({ props, style }, true);
   const base = currentBlock.base;
 
   return (
@@ -83,7 +82,6 @@ export function InlineTextEditor({ props, style }: InlineTextProps) {
         name={className}
         styleDefinitions={styles}
         styles={style}
-        defaults={defaults}
         isEditor
       />
       <ArgumentsAutocomplete

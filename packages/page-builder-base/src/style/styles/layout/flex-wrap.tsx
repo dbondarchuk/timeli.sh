@@ -1,7 +1,7 @@
 import { useI18n } from "@vivid/i18n";
 import { Combobox } from "@vivid/ui";
 import { WrapText } from "lucide-react";
-import { z } from "zod";
+import * as z from "zod";
 import { StyleDefinition } from "../../types";
 
 const flexWrapKeys = ["nowrap", "wrap", "wrap-reverse"] as const;

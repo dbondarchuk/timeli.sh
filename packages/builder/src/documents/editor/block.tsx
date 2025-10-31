@@ -10,7 +10,8 @@ import {
 } from "react";
 
 import { useBlock, useSetBlockDisableOptions } from "./context";
-import { BlockDisableOptions, CoreEditorBlock, TEditorBlock } from "./core";
+import { BlockDisableOptions, TEditorBlock } from "./core";
+import { CoreEditorBlock } from "./core.block";
 
 const EditorBlockContext = createContext<{
   blockId: string;

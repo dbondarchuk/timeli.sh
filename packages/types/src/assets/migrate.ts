@@ -1,4 +1,4 @@
-import z from "zod";
+import * as z from "zod";
 
 export const assetsMigrateRequestSchema = z.object({
   fromAppId: z.string().min(1, "App ID for source is required"),

@@ -1,6 +1,6 @@
 import { Textarea } from "@vivid/ui";
 import { Code } from "lucide-react";
-import { z } from "zod";
+import * as z from "zod";
 import { StyleDefinition } from "../../types";
 
 const CustomCSSSchema = z.string().default("");

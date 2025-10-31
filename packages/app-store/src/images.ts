@@ -8,8 +8,6 @@ import { OUTLOOK_APP_NAME } from "./apps/outlook/const";
 import { OutlookImages } from "./apps/outlook/images";
 import { PAYPAL_APP_NAME } from "./apps/paypal/const";
 import { PaypalImages } from "./apps/paypal/images";
-import { S3_ASSETS_STORAGE_APP_NAME } from "./apps/s3-assets-storage/const";
-import { S3AssetsStorageImages } from "./apps/s3-assets-storage/images";
 import { TEXTBELT_APP_NAME } from "./apps/text-belt/const";
 import { TextBeltImages } from "./apps/text-belt/images";
 import { WAITLIST_APP_NAME } from "./apps/waitlist/const";
@@ -23,7 +21,6 @@ export const AppImages: Record<string, string[]> = {
   [GOOGLE_CALENDAR_APP_NAME]: GoogleCalendarImages,
   [OUTLOOK_APP_NAME]: OutlookImages,
   [PAYPAL_APP_NAME]: PaypalImages,
-  [S3_ASSETS_STORAGE_APP_NAME]: S3AssetsStorageImages,
   [TEXTBELT_APP_NAME]: TextBeltImages,
   [WAITLIST_APP_NAME]: WaitlistImages,
   [ZOOM_APP_NAME]: ZoomImages,

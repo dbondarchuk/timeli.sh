@@ -1,5 +1,6 @@
 import { AllKeys, I18nNamespaces } from "@vivid/i18n";
-
+import { WithCompanyId, WithDatabaseId } from "../database";
+import { Prettify } from "../utils";
 export type ConnectedAppStatus = "pending" | "connected" | "failed";
 
 export type ConnectedAppResponse<
@@ -63,16 +64,18 @@ export type ConnectedAppStatusWithText<
       };
 };
 
-export type ConnectedAppData<
-  TData = any,
-  TToken = any,
-> = ConnectedAppStatusWithText & {
-  _id: string;
-  name: string;
-  account?: ConnectedAppAccount;
-  token?: TToken;
-  data?: TData;
-};
+export type ConnectedAppData<TData = any, TToken = any> = Prettify<
+  WithCompanyId<
+    WithDatabaseId<
+      ConnectedAppStatusWithText & {
+        name: string;
+        account?: ConnectedAppAccount;
+        token?: TToken;
+        data?: TData;
+      }
+    >
+  >
+>;
 
 export type ConnectedAppUpdateModel = Partial<
   Omit<ConnectedAppData, "_id" | "name">

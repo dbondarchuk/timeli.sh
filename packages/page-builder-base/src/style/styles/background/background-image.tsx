@@ -10,7 +10,7 @@ import {
 } from "@vivid/ui";
 import { AssetSelectorInput } from "@vivid/ui-admin";
 import { Image, Plus, Trash2 } from "lucide-react";
-import { z } from "zod";
+import * as z from "zod";
 import { ColorExtendedInput } from "../../../style-inputs/base/color-exteneded-input";
 import { COLORS, getColorStyle } from "../../helpers/colors";
 import { StyleDefinition } from "../../types";

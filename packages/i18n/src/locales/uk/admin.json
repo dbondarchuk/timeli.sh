@@ -1369,8 +1369,8 @@
         "phone": "Номер телефону",
         "email": "Email адреса",
         "emailPlaceholder": "Ваша email адреса",
-        "url": "Базова URL веб-сайту",
-        "urlPlaceholder": "URL веб-сайту",
+        "domain": "Власний домен",
+        "domainPlaceholder": "example.com",
         "address": "Адреса",
         "addressTooltip": "Фізична адреса офісу",
         "addressPlaceholder": "Фізична адреса офісу",
@@ -1793,11 +1793,40 @@
   "auth": {
     "email": "Email",
     "password": "Пароль",
+    "signUp": "Зареєструватися",
+    "signUpDescription": "Створити обліковий запис для початку",
+    "sign_up_error": "Виникла проблема з вашим запитом.",
     "email_or_password_incorrect": "Email або пароль неправильний",
     "signIn": "Увійти",
+    "sign_in_sign_up_link": "Немає облікового запису? <link>Зареєструватися</link> зараз!",
     "signInDescription": "Введіть ваш email нижче, щоб увійти в ваш обліковий запис",
     "quote": "Я люблю це!",
-    "quoteAuthor": "Олеся Бондарчук"
+    "quoteAuthor": "Олеся Бондарчук",
+    "confirmPassword": "Підтвердити пароль",
+    "name": "Ваше ім'я",
+    "organizationName": "Назва бізнесу",
+    "organizationSlug": "Піддомен",
+    "validation": {
+      "name": {
+        "required": "Ім'я обов'язкове"
+      },
+      "confirmPassword": {
+        "required": "Паролі не збігаються"
+      },
+      "password": {
+        "required": "Пароль обов'язковий",
+        "minLength": "Пароль повинен бути не менше 8 символів"
+      },
+      "organizationName": {
+        "required": "Назва бізнесу обов'язкова"
+      },
+      "organizationSlug": {
+        "required": "Піддомен обов'язковий",
+        "regex": "Піддомен повинен містити лише латинські маленькі букви та цифри",
+        "unique": "Піддомен вже зайнятий",
+        "length": "Піддомен повинен бути між 3 і 20 символами"
+      }
+    }
   },
   "menuItem": {
     "labels": {
