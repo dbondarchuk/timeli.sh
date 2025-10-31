@@ -28,7 +28,6 @@ export class BullMQJobService extends BaseBullMQClient implements IJobService {
 
     // Create job queue
     const jobQueue = this.createQueue(this.config.queues.job.name);
-    this.createQueueEvents(this.config.queues.job.name);
 
     // Create job queue
     logger.info("BullMQ job queues initialized");

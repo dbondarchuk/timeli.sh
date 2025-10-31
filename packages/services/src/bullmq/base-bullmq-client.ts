@@ -19,14 +19,17 @@ export abstract class BaseBullMQClient {
     this.config = config;
 
     // Initialize Redis connection
-    this.redis = new Redis({
-      host: this.config.redis.host,
-      port: this.config.redis.port,
-      password: this.config.redis.password,
-      db: this.config.redis.db,
-      maxRetriesPerRequest: null,
-      lazyConnect: true,
-    });
+    this.redis =
+      typeof this.config.redis === "object" && "host" in this.config.redis
+        ? new Redis({
+            host: this.config.redis.host,
+            port: this.config.redis.port,
+            password: this.config.redis.password,
+            db: this.config.redis.db,
+            maxRetriesPerRequest: null,
+            lazyConnect: true,
+          })
+        : this.config.redis;
   }
 
   /**

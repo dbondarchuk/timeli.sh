@@ -42,14 +42,11 @@ export class BullMQNotificationService
 
     // Create email queue
     const emailQueue = this.createQueue(this.config.queues.email.name);
-    this.createQueueEvents(this.config.queues.email.name);
 
     // Create text message queue
     const textMessageQueue = this.createQueue(
       this.config.queues.textMessage.name,
     );
-
-    this.createQueueEvents(this.config.queues.textMessage.name);
 
     logger.info("BullMQ notification queues initialized");
   }
