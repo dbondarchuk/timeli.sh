@@ -10,13 +10,18 @@ const __dirname = dirname(__filename);
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  logging: {
+    fetches: {
+      fullUrl: true,
+    },
+  },
   output: "standalone",
   outputFileTracingRoot: join(__dirname, "../../"),
+  serverExternalPackages: ["pino", "pino-pretty", "bullmq"],
   experimental: {
-    useCache: true,
     webpackMemoryOptimizations: true,
+    turbopackFileSystemCacheForDev: true,
     serverActions: {
-      serverComponentsExternalPackages: ["pino", "pino-pretty", "bullmq"],
       bodySizeLimit: "150mb",
     },
     // turbo: {

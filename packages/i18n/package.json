@@ -21,6 +21,6 @@
     "typescript": "5.5.4"
   },
   "dependencies": {
-    "next-intl": "^4.3.9"
+    "next-intl": "^4.4.0"
   }
 }
