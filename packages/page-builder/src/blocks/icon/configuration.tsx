@@ -3,14 +3,27 @@
 import { ConfigurationProps } from "@vivid/builder";
 import { useI18n } from "@vivid/i18n";
 import { StylesConfigurationPanel } from "@vivid/page-builder-base";
-import { ComboboxAsync, deepMemo, IComboboxItem, Label } from "@vivid/ui";
-import { icons } from "lucide-react";
-import { createElement, useCallback } from "react";
+import {
+  ComboboxAsync,
+  deepMemo,
+  IComboboxItem,
+  Icon,
+  iconNames,
+  Label,
+  type IconName,
+} from "@vivid/ui";
+import { capitalize } from "@vivid/utils";
+import { useCallback } from "react";
 import { IconProps, IconPropsDefaults } from "./schema";
 import { iconShortcuts } from "./shortcuts";
 import { styles } from "./styles";
 
-const allIconNames = Object.keys(icons);
+function transformIconName(iconName: IconName): string {
+  return iconName
+    .split("-")
+    .map((word) => capitalize(word))
+    .join(" ");
+}
 
 export const IconConfiguration = deepMemo(
   ({ data, setData, base, onBaseChange }: ConfigurationProps<IconProps>) => {
@@ -29,30 +42,28 @@ export const IconConfiguration = deepMemo(
     const getIcons = useCallback(
       async (page: number, search?: string) => {
         const limit = 20;
-        let iconNames = [...allIconNames];
-        const valueIndex = iconNames.indexOf(icon);
+        let filteredIcons: IconName[] = [...iconNames];
+        const valueIndex = filteredIcons.indexOf(icon);
         if (valueIndex !== -1) {
-          const currentIcon = iconNames[valueIndex];
-          iconNames.splice(valueIndex, 1);
-          iconNames.unshift(currentIcon);
+          const currentIcon = filteredIcons[valueIndex];
+          filteredIcons.splice(valueIndex, 1);
+          filteredIcons.unshift(currentIcon);
         }
 
         if (search) {
-          iconNames = iconNames.filter((iconName) =>
+          filteredIcons = filteredIcons.filter((iconName) =>
             iconName.toLowerCase().includes(search.toLowerCase()),
           );
         }
 
-        const items: IComboboxItem[] = iconNames
+        const items: IComboboxItem[] = filteredIcons
           .slice((page - 1) * limit, page * limit)
           .map((iconName) => ({
-            value: iconName as string,
+            value: iconName,
             label: (
               <div className="flex flex-row gap-2 items-center">
-                {createElement(icons[iconName as keyof typeof icons], {
-                  size: 16,
-                })}
-                <span>{iconName}</span>
+                <Icon name={iconName} size={16} />
+                <span>{transformIconName(iconName)}</span>
               </div>
             ),
           }));

@@ -1,11 +1,10 @@
 import { BaseReaderBlockProps } from "@vivid/builder";
 import { Prettify } from "@vivid/types";
-import { icons } from "lucide-react";
+import { iconNames } from "@vivid/ui";
 import * as z from "zod";
 import { zStyles } from "./styles";
 
-const [firstIcon, ...restIcons] = Object.keys(icons);
-const iconsEnum = z.enum([firstIcon, ...restIcons]);
+const iconsEnum = z.enum(iconNames);
 
 export const IconPropsSchema = z.object({
   props: z
@@ -22,7 +21,7 @@ export type IconReaderProps = BaseReaderBlockProps<any> & IconProps;
 
 export const IconPropsDefaults = {
   props: {
-    icon: "Star",
+    icon: "star",
   },
   style: {
     display: [

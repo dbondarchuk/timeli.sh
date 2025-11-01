@@ -1,7 +1,11 @@
 import { useI18n } from "@vivid/i18n";
-import { Combobox, IComboboxItem, Icon } from "@vivid/ui";
-// import { icons } from "lucide-react";
-import { icons } from "@vivid/ui";
+import {
+  Combobox,
+  IComboboxItem,
+  Icon,
+  iconNames,
+  type IconName,
+} from "@vivid/ui";
 import { ControllerRenderProps } from "react-hook-form";
 
 export type IconSelectProps = {
@@ -10,13 +14,13 @@ export type IconSelectProps = {
   allowClear?: boolean;
 };
 
-const iconValues = Object.keys(icons).map(
+const iconValues = iconNames.map(
   (icon) =>
     ({
       value: icon,
       label: (
         <div className="flex flex-row gap-1 items-center">
-          <Icon name={icon as keyof typeof icons} size={20} /> {icon}
+          <Icon name={icon as IconName} size={20} /> {icon}
         </div>
       ),
     }) as IComboboxItem,

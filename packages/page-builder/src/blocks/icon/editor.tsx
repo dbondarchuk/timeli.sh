@@ -6,8 +6,7 @@ import {
   useClassName,
   useResizeBlockStyles,
 } from "@vivid/page-builder-base";
-import { cn } from "@vivid/ui";
-import { icons } from "lucide-react";
+import { cn, Icon } from "@vivid/ui";
 import { Ref } from "react";
 import { IconProps } from "./schema";
 import { styles } from "./styles";
@@ -18,14 +17,11 @@ export const IconEditor = ({ props, style }: IconProps) => {
   const onResize = useResizeBlockStyles();
   const overlayProps = useBlockEditor(currentBlock.id, onResize);
 
-  const iconName = (currentBlock?.data?.props as any)?.icon ?? "Star";
+  const iconName = (currentBlock?.data?.props as any)?.icon ?? "star";
   const base = currentBlock?.base;
 
   const className = useClassName();
   const defaults = getDefaults({ props, style }, true);
-
-  // Get the icon component from Lucide
-  const IconComponent = icons[iconName as keyof typeof icons];
 
   return (
     <>
@@ -37,7 +33,8 @@ export const IconEditor = ({ props, style }: IconProps) => {
         isEditor
       />
 
-      <IconComponent
+      <Icon
+        name={iconName}
         className={cn(className, base?.className)}
         id={base?.id}
         onClick={overlayProps.onClick}

@@ -10,6 +10,7 @@
     "prebuild": "turbo run check-translations && turbo run lint",
     "start": "turbo run start",
     "dev": "turbo run dev",
+    "typegen": "turbo run typegen",
     "lint": "turbo run lint --",
     "lint:fix": "turbo run lint:fix --",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",

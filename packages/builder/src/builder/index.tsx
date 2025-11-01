@@ -14,10 +14,10 @@ import {
   useSetToggleInspectorDrawer,
 } from "../documents/editor/context";
 import { TEditorBlock, TEditorConfiguration } from "../documents/editor/core";
+import { ReaderDocumentBlocksDictionary } from "../documents/reader/core";
 import {
   BaseZodDictionary,
   EditorDocumentBlocksDictionary,
-  ReaderDocumentBlocksDictionary,
 } from "../documents/types";
 import { InspectorDrawer, SidebarTab } from "./inspector-drawer";
 import { TemplatePanel } from "./template-panel";

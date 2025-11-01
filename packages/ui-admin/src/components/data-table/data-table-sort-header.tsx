@@ -1,7 +1,20 @@
 import { HeaderContext, Row, SortDirection } from "@tanstack/react-table";
 import { I18nKey, I18nNamespaces, useI18n } from "@vivid/i18n";
-import { Button, Icon } from "@vivid/ui";
-import { icons } from "lucide-react";
+import { Button } from "@vivid/ui";
+import {
+  ArrowDown10,
+  ArrowDownWideNarrow,
+  ArrowDownZA,
+  ArrowUp01,
+  ArrowUpAZ,
+  ArrowUpDown,
+  ArrowUpWideNarrow,
+  CalendarArrowDown,
+  CalendarArrowUp,
+  ClockArrowDown,
+  ClockArrowUp,
+  type LucideIcon,
+} from "lucide-react";
 
 export type SortingFieldType =
   | "number"
@@ -11,34 +24,31 @@ export type SortingFieldType =
   | "default";
 type SortingState = "false" | SortDirection;
 
-const buttons: Record<
-  SortingFieldType,
-  Record<SortingState, keyof typeof icons>
-> = {
+const buttons: Record<SortingFieldType, Record<SortingState, LucideIcon>> = {
   default: {
-    asc: "ArrowUpWideNarrow",
-    desc: "ArrowDownWideNarrow",
-    false: "ArrowUpDown",
+    asc: ArrowUpWideNarrow,
+    desc: ArrowDownWideNarrow,
+    false: ArrowUpDown,
   },
   number: {
-    asc: "ArrowUp01",
-    desc: "ArrowDown10",
-    false: "ArrowUpDown",
+    asc: ArrowUp01,
+    desc: ArrowDown10,
+    false: ArrowUpDown,
   },
   string: {
-    asc: "ArrowUpAZ",
-    desc: "ArrowDownZA",
-    false: "ArrowUpDown",
+    asc: ArrowUpAZ,
+    desc: ArrowDownZA,
+    false: ArrowUpDown,
   },
   date: {
-    asc: "CalendarArrowUp",
-    desc: "CalendarArrowDown",
-    false: "ArrowUpDown",
+    asc: CalendarArrowUp,
+    desc: CalendarArrowDown,
+    false: ArrowUpDown,
   },
   time: {
-    asc: "ClockArrowUp",
-    desc: "ClockArrowDown",
-    false: "ArrowUpDown",
+    asc: ClockArrowUp,
+    desc: ClockArrowDown,
+    false: ArrowUpDown,
   },
 };
 
@@ -52,6 +62,7 @@ export const tableSortHeader = <
 ) => {
   const TableHeader = ({ column }: HeaderContext<any, any>) => {
     const t = useI18n<T, CustomKeys>(i18nNamespace);
+    const ButtonIcon = buttons[type][column.getIsSorted() || "false"];
     return (
       <Button
         variant="ghost"
@@ -59,10 +70,7 @@ export const tableSortHeader = <
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         {t(title)}
-        <Icon
-          name={buttons[type][column.getIsSorted() || "false"] as any}
-          className="ml-2 h-4 w-4"
-        />
+        <ButtonIcon className="ml-2 h-4 w-4" />
       </Button>
     );
   };

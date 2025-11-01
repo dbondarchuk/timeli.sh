@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "typegen": "next typegen",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },

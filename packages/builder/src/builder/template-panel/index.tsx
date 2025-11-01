@@ -21,7 +21,7 @@ import {
 } from "../../documents/editor/context";
 import { TEditorBlock } from "../../documents/editor/core";
 import { generateId } from "../../documents/helpers/block-id";
-import { ReaderDocumentBlocksDictionary } from "../../documents/types";
+import { ReaderDocumentBlocksDictionary } from "../../documents/reader/core";
 import { DndContext } from "../../types/dndContext";
 import { BlocksSidebar } from "./blocks-sidebar";
 import { BlockDragOverlay, Editor } from "./editor";
