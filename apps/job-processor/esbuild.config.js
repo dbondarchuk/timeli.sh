@@ -6,7 +6,7 @@ const buildConfig = {
   entryPoints: ["src/index.ts"],
   bundle: true,
   platform: "node",
-  target: "node18",
+  target: "node21",
   format: "cjs",
   outdir: "dist",
   sourcemap: true,
@@ -20,6 +20,7 @@ const buildConfig = {
     ".styl": "empty",
   },
   absWorkingDir: process.cwd(),
+  external: ["lucide-react/dynamic"],
 };
 
 // Build function

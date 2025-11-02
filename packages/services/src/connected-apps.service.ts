@@ -189,7 +189,8 @@ export class ConnectedAppsService
 
     const app = await collection.findOne({
       _id: result.appId,
-      companyId: this.companyId,
+      // WARNING: This is a workaround to allow OAuth redirects to be processed without a companyId
+      //companyId: this.companyId,
     });
 
     if (!app) {
@@ -206,7 +207,8 @@ export class ConnectedAppsService
       await collection.updateOne(
         {
           _id: result.appId,
-          companyId: this.companyId,
+          // WARNING: This is a workaround to allow OAuth redirects to be processed without a companyId
+          //companyId: this.companyId,
         },
         {
           $set: {
@@ -223,7 +225,8 @@ export class ConnectedAppsService
       await collection.updateOne(
         {
           _id: result.appId,
-          companyId: this.companyId,
+          // WARNING: This is a workaround to allow OAuth redirects to be processed without a companyId
+          //companyId: this.companyId,
         },
         {
           $set: {

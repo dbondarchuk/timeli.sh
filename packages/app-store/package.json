@@ -25,7 +25,7 @@
   "devDependencies": {
     "@microsoft/microsoft-graph-types": "^2.40.0",
     "@types/nodemailer": "^6.4.15",
-    "@types/react": "19.2.0",
+    "@types/react": "19.0.2",
     "@vivid/eslint-config": "*",
     "@vivid/tailwind-config": "*",
     "@vivid/typescript-config": "*",
@@ -55,6 +55,6 @@
     "nodemailer": "^6.9.14",
     "ts-ics": "2.4.0",
     "tsdav": "2.1.2",
-    "react": "19.2.0"
+    "react": "19.0.0"
   }
 }

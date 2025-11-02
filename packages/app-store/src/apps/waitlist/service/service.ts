@@ -181,7 +181,7 @@ export class WaitlistConnectedApp
     );
   }
 
-  public async getNotifications(
+  public async getInitialNotifications(
     appData: ConnectedAppData,
     date?: Date,
   ): Promise<DashboardNotification[]> {
@@ -198,11 +198,17 @@ export class WaitlistConnectedApp
 
     return [
       {
-        key: "waitlist.entries",
-        count: result.totalCount,
+        type: "waitlist-entries",
+        badges: [
+          {
+            key: "waitlist_entries",
+            count: result.totalCount,
+          },
+        ],
         toast:
           result.newCount > 0
             ? {
+                type: "info",
                 title: {
                   key: "app_waitlist_admin.notifications.newEntries" satisfies WaitlistAdminAllKeys,
                 },

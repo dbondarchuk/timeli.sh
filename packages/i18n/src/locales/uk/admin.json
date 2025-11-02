@@ -352,6 +352,13 @@
       "totalRefunded": "Всього повернено ${amount}",
       "oldOption": "Стара опція: {oldOption}",
       "newOption": "Нова опція: {newOption}"
+    },
+    "notifications": {
+      "appointmentCreated": {
+        "title": "Запис створений",
+        "message": "Запис створений для {name} на {service} {dateTime} {durationHours, plural, =0 {{durationMinutes} хв} other {# год, {durationMinutes} хв}}",
+        "action": "Переглянути"
+      }
     }
   },
   "assets": {

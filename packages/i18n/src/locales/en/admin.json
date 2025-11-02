@@ -352,6 +352,13 @@
     "actionButton": {
       "changesSaved": "Your changes were saved.",
       "requestError": "There was a problem with your request."
+    },
+    "notifications": {
+      "appointmentCreated": {
+        "title": "New appointment requested",
+        "message": "A new appointment has been requested by {name} for {service} on {dateTime} for {durationHours, plural, =0 {{durationMinutes} min} other {# hr, {durationMinutes} min}}",
+        "action": "View"
+      }
     }
   },
   "assets": {

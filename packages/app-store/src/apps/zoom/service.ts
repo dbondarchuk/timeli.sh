@@ -61,7 +61,7 @@ export class ZoomConnectedApp
     try {
       const clientId = env.ZOOM_APP_CLIENT_ID!;
       const url = getAdminUrl();
-      const redirectUri = `${url}/apps/${this.props.companyId}/oauth/zoom/redirect`;
+      const redirectUri = `${url}/apps/oauth/zoom/redirect`;
 
       const params = {
         response_type: "code",
@@ -129,7 +129,7 @@ export class ZoomConnectedApp
       const clientId = env.ZOOM_APP_CLIENT_ID!;
       const clientSecret = env.ZOOM_APP_CLIENT_SECRET!;
 
-      const redirectUri = `${webAdminUrl}/apps/${this.props.companyId}/oauth/zoom/redirect`;
+      const redirectUri = `${webAdminUrl}/apps/oauth/zoom/redirect`;
       const authHeader = `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString("base64")}`;
       const result = await fetch(
         `${ZOOM_OAUTH_TOKEN_URL}?grant_type=authorization_code&code=${code}&redirect_uri=${redirectUri}`,

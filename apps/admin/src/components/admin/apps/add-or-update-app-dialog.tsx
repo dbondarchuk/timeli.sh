@@ -16,22 +16,21 @@ import {
   Spinner,
   toast,
 } from "@vivid/ui";
+import { RefreshCcw } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useMemo } from "react";
 
-export type AddOrUpdateAppButtonProps = {
-  children: React.ReactNode;
-} & (
+export type AddOrUpdateAppButtonProps = {} & (
   | {
       app: ConnectedApp;
     }
   | {
+      children: React.ReactNode;
       appType: string;
     }
 );
 
 export const AddOrUpdateAppButton: React.FC<AddOrUpdateAppButtonProps> = ({
-  children,
   ...props
 }) => {
   const router = useRouter();
@@ -39,12 +38,24 @@ export const AddOrUpdateAppButton: React.FC<AddOrUpdateAppButtonProps> = ({
 
   let app: ConnectedApp | undefined = undefined;
   let appType: string;
+
   if ("app" in props) {
     app = props.app;
     appType = props.app.name;
   } else {
     appType = props.appType;
   }
+
+  // TODO: For some reason, sometimes on installed app list passed children are not rendered
+  // This is a workaround to ensure the button is rendered
+  const children =
+    "app" in props ? (
+      <Button variant="secondary">
+        <RefreshCcw /> {t("common.updateApp")}
+      </Button>
+    ) : (
+      props.children
+    );
 
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
@@ -101,6 +112,8 @@ export const AddOrUpdateAppButton: React.FC<AddOrUpdateAppButtonProps> = ({
   };
 
   const title = app ? t("common.updateApp") : t("common.connectNewApp");
+
+  console.log(appType);
 
   return (
     <Dialog open={isOpen} onOpenChange={onDialogOpenChange}>

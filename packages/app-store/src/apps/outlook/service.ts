@@ -1030,7 +1030,7 @@ export class OutlookConnectedApp
 
   private async getAuthParams(appId: string): Promise<AuthorizationUrlRequest> {
     const url = getAdminUrl();
-    const redirectUri = `${url}/apps/${this.props.companyId}/oauth/outlook/redirect`;
+    const redirectUri = `${url}/apps/oauth/outlook/redirect`;
     return {
       scopes,
       redirectUri,

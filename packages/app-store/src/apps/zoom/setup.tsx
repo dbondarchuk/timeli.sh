@@ -46,15 +46,11 @@ export const ZoomAppSetup: React.FC<AppSetupProps> = ({
     onError(status.statusText);
   };
 
-  const clearTimer = () => {
-    if (timer) clearTimeout(timer);
-  };
-
   React.useEffect(() => {
     return () => {
-      clearTimer();
+      if (timer) clearTimeout(timer);
     };
-  }, []);
+  }, [timer]);
 
   const connectApp = async () => {
     try {

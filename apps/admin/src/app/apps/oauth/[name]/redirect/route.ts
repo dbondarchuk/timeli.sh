@@ -4,10 +4,10 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   request: NextRequest,
-  { params }: RouteContext<"/apps/[companyId]/oauth/[name]/redirect">,
+  { params }: RouteContext<"/apps/oauth/[name]/redirect">,
 ) {
   const logger = getLoggerFactory("API/apps-oauth-redirect")("GET");
-  const { name, companyId } = await params;
+  const { name } = await params;
 
   logger.debug(
     {
@@ -18,7 +18,7 @@ export async function GET(
     "Processing OAuth redirect request",
   );
 
-  const service = ServicesContainer(companyId).connectedAppsService;
+  const service = ServicesContainer("").connectedAppsService;
   try {
     await service.processRedirect(name, request);
 

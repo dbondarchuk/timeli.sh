@@ -18,7 +18,7 @@
     "@vivid/typescript-config": "*",
     "@types/node": "^20",
     "@types/content-type": "1.1.5",
-    "@types/react": "19.2.0",
+    "@types/react": "19.0.2",
     "@types/html-to-text": "^9.0.4",
     "typescript": "5.5.4"
   },

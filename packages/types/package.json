@@ -14,7 +14,7 @@
     "@vivid/eslint-config": "*",
     "@vivid/typescript-config": "*",
     "@vivid/i18n": "*",
-    "@types/react": "19.2.0",
+    "@types/react": "19.0.2",
     "typescript": "5.5.4",
     "mongodb": "^6.8.0"
   },

@@ -4,7 +4,7 @@ const http = require("http");
 const url = require("url");
 
 // Configuration
-const PORT = 3001;
+const PORT = 3003;
 const HOST = "localhost";
 
 // Helper function to generate random busy events

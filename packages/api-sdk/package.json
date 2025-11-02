@@ -12,9 +12,9 @@
   "main": "./src/index.ts",
   "devDependencies": {
     "@types/node": "^20",
-    "@types/react": "19.2.0",
+    "@types/react": "19.0.2",
     "@types/react-big-calendar": "^1.8.10",
-    "@types/react-dom": "19.2.0",
+    "@types/react-dom": "19.0.2",
     "@types/react-window": "^1.8.8",
     "@vivid/eslint-config": "*",
     "@vivid/tailwind-config": "*",

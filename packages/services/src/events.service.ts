@@ -2,6 +2,7 @@ import { getDbClient, getDbConnection } from "./database";
 
 import { AvailableAppServices } from "@vivid/app-store/services";
 
+import { BaseAllKeys } from "@vivid/i18n";
 import {
   Appointment,
   AppointmentChoice,
@@ -12,6 +13,7 @@ import {
   FieldSchema,
   GetAppointmentOptionsResponse,
   IAvailabilityProvider,
+  IDashboardNotificationsService,
   IJobService,
   IMeetingUrlProvider,
   IPaymentsService,
@@ -43,6 +45,7 @@ import {
 } from "@vivid/types";
 import {
   buildSearchQuery,
+  durationToTime,
   escapeRegex,
   getAdminUrl,
   getAppointmentBucket,
@@ -74,6 +77,7 @@ export class EventsService extends BaseService implements IEventsService {
     private readonly servicesService: IServicesService,
     private readonly paymentsService: IPaymentsService,
     private readonly jobService: IJobService,
+    private readonly dashboardNotificationsService: IDashboardNotificationsService,
   ) {
     super("EventsService", companyId);
   }
@@ -326,6 +330,46 @@ export class EventsService extends BaseService implements IEventsService {
       confirmed,
     );
 
+    const pendingAppointments = await this.getPendingAppointmentsCount(
+      new Date(),
+    );
+
+    const duration = durationToTime(appointment.totalDuration);
+    await this.dashboardNotificationsService.publishNotification({
+      type: "appointment-created",
+      badges: [
+        {
+          key: "pending_appointments",
+          count: pendingAppointments.totalCount,
+        },
+      ],
+      toast: {
+        type: "info",
+        title: {
+          key: "admin.appointments.notifications.appointmentCreated.title" satisfies BaseAllKeys,
+        },
+        message: {
+          key: "admin.appointments.notifications.appointmentCreated.message" satisfies BaseAllKeys,
+          args: {
+            name: appointment.customer.name,
+            service: appointment.option.name,
+            dateTime: DateTime.fromJSDate(appointment.dateTime)
+              .setLocale(generalConfig.language)
+              .setZone(generalConfig.timeZone)
+              .toLocaleString(DateTime.DATETIME_HUGE),
+            durationHours: duration.hours,
+            durationMinutes: duration.minutes,
+          },
+        },
+        action: {
+          label: {
+            key: "admin.appointments.notifications.appointmentCreated.action" satisfies BaseAllKeys,
+          },
+          href: `/dashboard/appointments/${appointment._id}`,
+        },
+      },
+    });
+
     logger.debug(
       {
         appointmentId,
@@ -450,6 +494,20 @@ export class EventsService extends BaseService implements IEventsService {
       updatedAppointment.totalDuration,
       doNotNotifyCustomer,
     );
+
+    const pendingAppointments = await this.getPendingAppointmentsCount(
+      new Date(),
+    );
+
+    await this.dashboardNotificationsService.publishNotification({
+      type: "appointment-updated",
+      badges: [
+        {
+          key: "pending_appointments",
+          count: pendingAppointments.totalCount,
+        },
+      ],
+    });
 
     logger.debug(
       {
@@ -1053,6 +1111,20 @@ export class EventsService extends BaseService implements IEventsService {
       oldStatus,
       by,
     );
+
+    const pendingAppointments = await this.getPendingAppointmentsCount(
+      new Date(),
+    );
+
+    await this.dashboardNotificationsService.publishNotification({
+      type: "appointment-status-changed",
+      badges: [
+        {
+          key: "pending_appointments",
+          count: pendingAppointments.totalCount,
+        },
+      ],
+    });
 
     logger.debug(
       { appointmentId: id, oldStatus, newStatus },

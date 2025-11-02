@@ -6,7 +6,9 @@ import {
   BullMQNotificationService,
   getBullMQJobConfig,
   getBullMQNotificationConfig,
+  RedisDashboardNotificationPublisher,
 } from "./bullmq";
+import { getRedisClient } from "./bullmq/redis-client";
 import { CommunicationLogsService } from "./communication-logs.service";
 import { CachedConfigurationService } from "./configuration.service";
 import { CachedConnectedAppsService } from "./connected-apps.service";
@@ -44,6 +46,8 @@ export const ServicesContainer: (companyId: string) => IServicesContainer =
     const configurationService = new CachedConfigurationService(companyId);
     const assetsService = new AssetsService(companyId, configurationService);
     const jobService = new BullMQJobService(companyId, getBullMQJobConfig());
+    const dashboardNotificationsService =
+      new RedisDashboardNotificationPublisher(companyId, getRedisClient());
     const organizationService = new OrganizationService(companyId);
     const customersService = new CustomersService(companyId, jobService);
     const connectedAppsService = new CachedConnectedAppsService(
@@ -73,6 +77,7 @@ export const ServicesContainer: (companyId: string) => IServicesContainer =
       servicesService,
       paymentsService,
       jobService,
+      dashboardNotificationsService,
     );
 
     const pagesService = new PagesService(companyId);
@@ -99,6 +104,7 @@ export const ServicesContainer: (companyId: string) => IServicesContainer =
       jobService,
       notificationService,
       organizationService,
+      dashboardNotificationsService,
     };
 
     return services;

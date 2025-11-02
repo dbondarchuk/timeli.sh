@@ -85,9 +85,11 @@
     }
   },
   "notifications": {
-    "newEntries": "New waitlist entries",
-    "viewWaitlist": "View waitlist",
-    "message": "You have {count, plural, =1 {one new waitlist entry} other {# new waitlist entries}}"
+    "newEntries": "New wait list entries",
+    "viewWaitlist": "View wait list",
+    "message": "You have {count, plural, =1 {one new wait list entry} other {# new wait list entries}}",
+    "newEntry": "New wait list request",
+    "newEntryMessage": "You have a new wait list request"
   },
   "handlers": {
     "newWaitlistEntry": "Waitlist Notification - New Entry"

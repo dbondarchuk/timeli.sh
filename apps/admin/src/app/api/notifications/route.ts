@@ -1,11 +1,11 @@
-import { getServicesContainer } from "@/app/utils";
+import { getCompanyId, getServicesContainer } from "@/app/utils";
 import { BaseAllKeys } from "@vivid/i18n";
 import { getLoggerFactory } from "@vivid/logger";
+import { getDashboardNotificationRealtimeBroker } from "@vivid/services";
 import { DashboardNotification, IDashboardNotifierApp } from "@vivid/types";
 import { DateTime } from "luxon";
 import { NextRequest } from "next/server";
-
-const NOTIFICATION_INTERVAL = 5000;
+import { v4 } from "uuid";
 
 const getPendingAppointmentsNotifications = async (date?: Date) => {
   const servicesContainer = await getServicesContainer();
@@ -16,11 +16,17 @@ const getPendingAppointmentsNotifications = async (date?: Date) => {
     );
 
   return {
-    key: "pending_appointments",
-    count: totalCount,
+    type: "pending-appointments",
+    badges: [
+      {
+        key: "pending_appointments",
+        count: totalCount,
+      },
+    ],
     toast:
       newCount > 0
         ? {
+            type: "info",
             title: {
               key: "admin.dashboard.appointments.pendingToast" satisfies BaseAllKeys,
               args: {
@@ -47,11 +53,11 @@ const getPendingAppointmentsNotifications = async (date?: Date) => {
 export async function GET(request: NextRequest) {
   const logger = getLoggerFactory("AdminAPI/notifications")("GET");
   const servicesContainer = await getServicesContainer();
+  const companyId = await getCompanyId();
 
   logger.debug("Starting notifications SSE stream");
 
   const encoder = new TextEncoder();
-  let id: any = null;
 
   let lastDate: Date | undefined = undefined;
   const paramsDateStr = request.nextUrl.searchParams.get("date");
@@ -77,7 +83,7 @@ export async function GET(request: NextRequest) {
     >(
       "dashboard-notifier",
       async (app, service) => {
-        return await service.getNotifications(app, lastDate);
+        return await service.getInitialNotifications(app, lastDate);
       },
       {
         concurrencyLimit: 10,
@@ -96,21 +102,39 @@ export async function GET(request: NextRequest) {
     lastDate = new Date();
 
     callback(notifications);
-    id = setTimeout(() => fn(callback), NOTIFICATION_INTERVAL);
   };
+
+  const broker = getDashboardNotificationRealtimeBroker();
 
   const customReadable = new ReadableStream({
     start: async (controller) => {
       logger.debug("Initializing SSE stream");
-      fn((count) =>
-        controller.enqueue(
-          encoder.encode(`data: ${JSON.stringify(count)}\n\n`),
-        ),
-      );
+      fn((count) => {
+        count.forEach((notification) => {
+          controller.enqueue(
+            encoder.encode(`data: ${JSON.stringify(notification)}\n\n`),
+          );
+        });
+      });
+
+      const client = {
+        id: v4(),
+        companyId,
+        send: (data: DashboardNotification) => {
+          controller.enqueue(`data: ${JSON.stringify(data)}\n\n`);
+        },
+      };
+
+      broker.registerClient(companyId, client);
+
+      request.signal.addEventListener("abort", () => {
+        logger.debug("SSE stream aborted by client");
+        broker.unregisterClient(companyId, client);
+        controller.close();
+      });
     },
     cancel: () => {
       logger.debug("SSE stream cancelled");
-      if (!!id) clearTimeout(id);
     },
   });
 

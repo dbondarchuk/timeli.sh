@@ -9,16 +9,18 @@ import React from "react";
 import { create } from "zustand";
 
 export type NotificationsContextProps = {
-  notifications: DashboardNotification[];
-  setNotifications: (notifications: DashboardNotification[]) => void;
+  badges: Record<string, number>;
+  setBadges: (
+    setter: (prev: Record<string, number>) => Record<string, number>,
+  ) => void;
 };
 
 export const useNotificationsStore = create<NotificationsContextProps>(
   (set) => ({
-    notifications: [],
-    setNotifications: (notifications) => {
-      return set(() => ({
-        notifications,
+    badges: {} as Record<string, number>,
+    setBadges: (setter) => {
+      return set((state) => ({
+        badges: setter(state.badges),
       }));
     },
   }),
@@ -33,10 +35,9 @@ export const PendingAppointmentsBadge: React.FC = () => {
 export const DashboardTabNotificationsBadge: React.FC<{
   notificationsCountKey: string;
 }> = ({ notificationsCountKey }) => {
-  const { notifications } = useNotificationsStore();
-  const count =
-    notifications.find((n) => n.key === notificationsCountKey)?.count ?? 0;
-  return count > 0 ? (
+  const { badges } = useNotificationsStore();
+  const count = badges[notificationsCountKey];
+  return typeof count === "number" ? (
     <Badge variant="default" className="ml-1 px-2 scale-75 -translate-y-1">
       {count > 9 ? `9+` : count}
     </Badge>
@@ -44,7 +45,7 @@ export const DashboardTabNotificationsBadge: React.FC<{
 };
 
 export const NotificationsToastStream: React.FC = () => {
-  const { setNotifications } = useNotificationsStore();
+  const { setBadges } = useNotificationsStore();
   const router = useRouter();
   const t = useI18n();
 
@@ -65,30 +66,34 @@ export const NotificationsToastStream: React.FC = () => {
 
     // Handle incoming messages
     eventSource.onmessage = (event) => {
-      const data = JSON.parse(event.data) as DashboardNotification[];
-      setNotifications(data);
+      const data = JSON.parse(event.data) as DashboardNotification;
+      if (data.badges) {
+        setBadges((prev) => {
+          return (
+            data.badges?.reduce((acc, badge) => {
+              acc[badge.key] = badge.count;
+              return acc;
+            }, prev) || prev
+          );
+        });
+      }
 
-      const toasts = data.filter((n) => !!n.toast);
-      toasts.forEach((notification) => {
-        toast(
-          t(notification.toast!.title.key, notification.toast!.title.args),
-          {
-            description: t(
-              notification.toast!.message.key,
-              notification.toast!.message.args,
-            ),
-            action: {
-              label: t(
-                notification.toast!.action.label.key,
-                notification.toast!.action.label.args,
-              ),
-              onClick: () => {
-                router.push(notification.toast!.action.href);
-              },
-            },
-          },
-        );
-      });
+      if (data.toast) {
+        toast(t(data.toast.title.key, data.toast.title.args), {
+          description: t(data.toast.message.key, data.toast.message.args),
+          action: data.toast.action
+            ? {
+                label: t(
+                  data.toast.action.label.key,
+                  data.toast.action.label.args,
+                ),
+                onClick: () => {
+                  router.push(data.toast!.action!.href);
+                },
+              }
+            : undefined,
+        });
+      }
     };
 
     // Handle errors
@@ -101,7 +106,7 @@ export const NotificationsToastStream: React.FC = () => {
     return () => {
       eventSource.close();
     };
-  }, [t, setNotifications, router]);
+  }, [t, setBadges, router]);
 
   return null;
 };

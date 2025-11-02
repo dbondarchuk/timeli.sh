@@ -9,6 +9,7 @@ import {
   WaitlistStatus,
 } from "../models";
 import { IWaitlistHook } from "../models/waitlist-hook";
+import { WaitlistAdminAllKeys } from "../translations/types";
 
 export const WAITLIST_COLLECTION_NAME = "waitlist";
 
@@ -64,6 +65,32 @@ export class WaitlistRepositoryService {
       IWaitlistHook,
       "onWaitlistEntryCreated"
     >("waitlist-hook", "onWaitlistEntryCreated", entity!);
+
+    const waitlistEntriesCount = await this.getWaitlistEntriesCount(new Date());
+    await this.services.dashboardNotificationsService.publishNotification({
+      type: "waitlist-entry-created",
+      badges: [
+        {
+          key: "waitlist_entries",
+          count: waitlistEntriesCount.totalCount,
+        },
+      ],
+      toast: {
+        type: "info",
+        title: {
+          key: "app_waitlist_admin.notifications.newEntry" satisfies WaitlistAdminAllKeys,
+        },
+        message: {
+          key: "app_waitlist_admin.notifications.newEntryMessage" satisfies WaitlistAdminAllKeys,
+        },
+        action: {
+          label: {
+            key: "app_waitlist_admin.notifications.viewWaitlist" satisfies WaitlistAdminAllKeys,
+          },
+          href: `/dashboard?activeTab=waitlist&key=${Date.now()}`,
+        },
+      },
+    });
 
     return entity!;
   }
@@ -366,6 +393,17 @@ export class WaitlistRepositoryService {
       IWaitlistHook,
       "onWaitlistEntryDismissed"
     >("waitlist-hook", "onWaitlistEntryDismissed", waitlistEntries.items);
+
+    const waitlistEntriesCount = await this.getWaitlistEntriesCount(new Date());
+    await this.services.dashboardNotificationsService.publishNotification({
+      type: "waitlist-entries",
+      badges: [
+        {
+          key: "waitlist_entries",
+          count: waitlistEntriesCount.totalCount,
+        },
+      ],
+    });
   }
 
   private get waitlistAggregateJoin() {

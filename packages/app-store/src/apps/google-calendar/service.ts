@@ -851,7 +851,7 @@ class GoogleCalendarConnectedApp
 
     try {
       const url = getAdminUrl();
-      const redirectUri = `${url}/apps/${this.props.companyId}/oauth/google-calendar/redirect`;
+      const redirectUri = `${url}/apps/oauth/google-calendar/redirect`;
 
       logger.debug({ redirectUri }, "Created Google OAuth client");
 

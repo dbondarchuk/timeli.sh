@@ -47,6 +47,11 @@ export const getServicesContainer = cache(async () => {
   return servicesContainer;
 });
 
+export const getCompanyId = cache(async () => {
+  const { organizationId } = await getOrganizationIdAndSlug();
+  return organizationId;
+});
+
 export const getWebsiteUrl = cache(async () => {
   const { organizationSlug, organizationId } = await getOrganizationIdAndSlug();
 

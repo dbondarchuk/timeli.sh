@@ -3,12 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "next dev --turbo",
+    "build": "next build --turbo",
     "start": "next start",
     "typegen": "next typegen",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint": "next lint",
+    "lint:fix": "next lint --fix"
   },
   "dependencies": {
     "@mdx-js/react": "^3.0.1",
@@ -32,14 +32,14 @@
     "luxon": "^3.5.0",
     "mdx-bundler": "^10.0.2",
     "mongodb": "^6.8.0",
-    "next": "16.0.2-canary.1",
+    "next": "15.5.6",
     "next-logger": "^5.0.1",
     "next-navigation-guard": "^0.2.0",
     "nextjs-toploader": "^1.6.12",
     "npm": "^10.8.2",
     "p-limit": "^6.2.0",
     "pino-http": "^10.5.0",
-    "react": "19.2.0",
+    "react": "19.0.0",
     "react-window": "^1.8.10",
     "rehype-pretty-code": "^0.14.0",
     "rehype-starry-night": "^2.2.0",
@@ -49,7 +49,7 @@
   "devDependencies": {
     "@types/color": "^4.2.0",
     "@types/node": "^20",
-    "@types/react": "19.2.0",
+    "@types/react": "19.0.2",
     "@types/react-file-icon": "^1.0.4",
     "@vivid/eslint-config": "*",
     "@vivid/tailwind-config": "*",
@@ -61,7 +61,7 @@
     "typescript": "^5"
   },
   "resolutions": {
-    "@types/react": "19.2.0",
-    "@types/react-dom": "19.2.0"
+    "@types/react": "19.0.2",
+    "@types/react-dom": "19.0.2"
   }
 }

@@ -1,7 +1,7 @@
 import { AvailableApps } from "@vivid/app-store";
 import { getI18nAsync } from "@vivid/i18n/server";
 import { ConnectedApp } from "@vivid/types";
-import { Button, Link } from "@vivid/ui";
+import { Link } from "@vivid/ui";
 import {
   ConnectedAppAccount,
   ConnectedAppNameAndLogo,
@@ -20,6 +20,8 @@ export const ConnectedAppRow: React.FC<ConnectedAppRowProps> = async ({
 }) => {
   const appDescriptor = AvailableApps[app.name];
   const t = await getI18nAsync("apps");
+  const updateText = t("common.updateApp");
+
   return (
     <div className="border rounded-md px-2 md:px-4 lg:px-6 py-2 md:py-4 lg:py-6 grid lg:grid-cols-4 gap-4 items-center bg-card">
       <ConnectedAppNameAndLogo appName={app.name} className="break-all" />
@@ -36,14 +38,10 @@ export const ConnectedAppRow: React.FC<ConnectedAppRowProps> = async ({
             href={`/dashboard/${appDescriptor.settingsHref}`}
             variant="secondary"
           >
-            <RefreshCcw /> {t("common.updateApp")}
+            <RefreshCcw /> {updateText}
           </Link>
         ) : (
-          <AddOrUpdateAppButton app={app}>
-            <Button variant="secondary">
-              <RefreshCcw /> {t("common.updateApp")}
-            </Button>
-          </AddOrUpdateAppButton>
+          <AddOrUpdateAppButton app={app} />
         )}
         <DeleteAppButton appId={app._id} />
       </div>
