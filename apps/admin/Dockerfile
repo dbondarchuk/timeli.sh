@@ -36,6 +36,7 @@ COPY --from=deps /app/node_modules ./node_modules
 # Copy everything except other apps
 COPY --parents apps/admin ./
 COPY --parents packages ./
+COPY --parents migrations ./
 COPY --parents *.* ./
 
 # Next.js collects completely anonymous telemetry data about general usage.
