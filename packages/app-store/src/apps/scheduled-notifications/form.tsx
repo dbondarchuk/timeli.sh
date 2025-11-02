@@ -72,9 +72,14 @@ export const ScheduledNotificationForm: React.FC<{
     mode: "all",
     reValidateMode: "onChange",
     defaultValues: initialData || {
+      name: "",
+      type: "timeBefore",
+      weeks: 0,
+      days: 1,
+      hours: 0,
+      minutes: 0,
       appointmentCount: {
         type: "none",
-        count: 0,
       },
       channel: "email",
     },

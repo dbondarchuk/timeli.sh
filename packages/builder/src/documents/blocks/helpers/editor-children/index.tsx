@@ -58,7 +58,7 @@ const Placeholder = ({
     <div
       ref={ref}
       className={cn(
-        "w-full min-h-10 min-w-10 bg-opacity-50 border-2 border-dashed border-blue-400 bg-blue-400/10",
+        "w-full min-h-10 min-w-10 border-2 border-dashed border-blue-400 bg-blue-400/20",
         hasActiveDragBlock && "bg-blue-400/60",
       )}
     >

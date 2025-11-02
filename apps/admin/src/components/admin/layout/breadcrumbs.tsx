@@ -15,6 +15,7 @@ import {
   Link,
 } from "@vivid/ui";
 import { ChevronDownIcon } from "lucide-react";
+import NextLink from "next/link";
 import { usePathname } from "next/navigation";
 import React, { Fragment } from "react";
 
@@ -55,7 +56,9 @@ export const BreadcrumbsRender = () => {
             <Fragment key={item.title}>
               {index !== items.length - 1 && (
                 <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href={item.link}>{item.title}</BreadcrumbLink>
+                  <BreadcrumbLink asChild>
+                    <NextLink href={item.link}>{item.title}</NextLink>
+                  </BreadcrumbLink>
                 </BreadcrumbItem>
               )}
               {index < items.length - 1 && (

@@ -4,6 +4,7 @@ import {
   CommunicationChannel,
   communicationChannels,
   Query,
+  WithCompanyId,
   WithDatabaseId,
 } from "@vivid/types";
 import * as z from "zod";
@@ -33,7 +34,7 @@ export const scheduledNotificationTimeBeforeAfterSchema = z.object({
   type: scheduledNotificationTypesEnum.extract(["timeBefore", "timeAfter"]),
   weeks: asOptinalNumberField(
     z.coerce
-      .number<number>()
+      .number<number>("validation.common.number.integer")
       .int("validation.common.number.integer" satisfies AllKeys)
       .min(
         0,
@@ -46,7 +47,7 @@ export const scheduledNotificationTimeBeforeAfterSchema = z.object({
   ),
   days: asOptinalNumberField(
     z.coerce
-      .number<number>()
+      .number<number>("validation.common.number.integer")
       .int("validation.common.number.integer" satisfies AllKeys)
       .min(
         0,
@@ -59,7 +60,7 @@ export const scheduledNotificationTimeBeforeAfterSchema = z.object({
   ),
   hours: asOptinalNumberField(
     z.coerce
-      .number<number>()
+      .number<number>("validation.common.number.integer")
       .int("validation.common.number.integer" satisfies AllKeys)
       .min(
         0,
@@ -72,7 +73,7 @@ export const scheduledNotificationTimeBeforeAfterSchema = z.object({
   ),
   minutes: asOptinalNumberField(
     z.coerce
-      .number<number>()
+      .number<number>("validation.common.number.integer")
       .int("validation.common.number.integer" satisfies AllKeys)
       .min(
         0,
@@ -89,7 +90,7 @@ export const scheduledNotificationAtTimeSchema = z.object({
   type: scheduledNotificationTypesEnum.extract(["atTimeBefore", "atTimeAfter"]),
   weeks: asOptinalNumberField(
     z.coerce
-      .number<number>()
+      .number<number>("validation.common.number.integer")
       .int("validation.common.number.integer" satisfies AllKeys)
       .min(
         0,
@@ -101,7 +102,7 @@ export const scheduledNotificationAtTimeSchema = z.object({
       ),
   ),
   days: z.coerce
-    .number<number>()
+    .number<number>("validation.common.number.integer")
     .int("common.number.integer")
     .min(
       0,
@@ -113,7 +114,7 @@ export const scheduledNotificationAtTimeSchema = z.object({
     ),
   time: z.object({
     hour: z.coerce
-      .number<number>()
+      .number<number>("validation.common.number.integer")
       .int("validation.common.number.integer" satisfies AllKeys)
       .min(
         0,
@@ -124,7 +125,7 @@ export const scheduledNotificationAtTimeSchema = z.object({
         "app_scheduled-notifications_admin.validation.form.time.hour.max" satisfies ScheduledNotificationsAdminAllKeys,
       ),
     minute: z.coerce
-      .number<number>()
+      .number<number>("validation.common.number.integer")
       .int("validation.common.number.integer" satisfies AllKeys)
       .min(
         0,
@@ -153,7 +154,9 @@ export const scheduledNotificationEmailSchema = z.object({
   ...baseScheduledNotificationChannelSchema.shape,
   channel: scheduledNotificationChannelsEnum.extract(["email"]),
   subject: z
-    .string()
+    .string(
+      "app_scheduled-notifications_admin.validation.form.subject.required" satisfies ScheduledNotificationsAdminAllKeys,
+    )
     .min(
       1,
       "app_scheduled-notifications_admin.validation.form.subject.required" satisfies ScheduledNotificationsAdminAllKeys,
@@ -193,22 +196,25 @@ export const scheduledNotificationAppointmentCountTypeEnum = z.enum(
 
 export const scheduledNotificationAppointmentCountSchema = z.object({
   type: scheduledNotificationAppointmentCountTypeEnum,
-  count: z.coerce
-    .number<number>({
-      error:
+  count: asOptinalNumberField(
+    z.coerce
+      .number<number>({
+        error:
+          "app_scheduled-notifications_admin.validation.form.appointmentCount.min" satisfies ScheduledNotificationsAdminAllKeys,
+      })
+      .int("validation.common.number.integer" satisfies AllKeys)
+      .min(
+        1,
         "app_scheduled-notifications_admin.validation.form.appointmentCount.min" satisfies ScheduledNotificationsAdminAllKeys,
-    })
-    .int("validation.common.number.integer" satisfies AllKeys)
-    .min(
-      1,
-      "app_scheduled-notifications_admin.validation.form.appointmentCount.min" satisfies ScheduledNotificationsAdminAllKeys,
-    )
-    .optional(),
+      ),
+  ),
 });
 
 export const scheduledNotificationGeneralSchema = z.object({
   name: z
-    .string()
+    .string(
+      "app_scheduled-notifications_admin.validation.form.name.min" satisfies ScheduledNotificationsAdminAllKeys,
+    )
     .min(
       2,
       "app_scheduled-notifications_admin.validation.form.name.min" satisfies ScheduledNotificationsAdminAllKeys,
@@ -317,11 +323,12 @@ export type ScheduledNotificationUpdateModel = z.infer<
   typeof scheduledNotificationSchema
 >;
 
-export type ScheduledNotification =
-  WithDatabaseId<ScheduledNotificationUpdateModel> & {
-    appId: string;
-    updatedAt: Date;
-  };
+export type ScheduledNotification = WithCompanyId<
+  WithDatabaseId<ScheduledNotificationUpdateModel>
+> & {
+  appId: string;
+  updatedAt: Date;
+};
 
 export type GetScheduledNotificationsAction = {
   query: Query & {

@@ -202,6 +202,7 @@ export class ScheduledNotificationsRepository {
         ...scheduledNotification,
         appId,
         _id: new ObjectId().toString(),
+        companyId: this.props.companyId,
         updatedAt: DateTime.utc().toJSDate(),
       };
 
@@ -338,6 +339,7 @@ export class ScheduledNotificationsRepository {
 
       await scheduledNotifications.deleteMany({
         appId,
+        companyId: this.props.companyId,
         _id: {
           $in: ids,
         },

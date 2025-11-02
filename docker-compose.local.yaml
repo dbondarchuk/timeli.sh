@@ -5,25 +5,38 @@ services:
       context: .
       dockerfile: apps/admin/Dockerfile
     image: ghcr.io/dbondarchuk/vivid-admin:latest
+    env_file: ".env"
     environment:
       # - MONGODB_URI=mongodb://192.168.0.162:27017/vivid?retryWrites=true&w=majority
       - MONGODB_URI=mongodb://host.docker.internal:27017/vivid?retryWrites=true&w=majority
       - TZ=America/New_York
-      - AUTH_PASSWORD=password
       - AUTH_SECRET="n6WKAuaUVdOYMRReNYXEd/sHLF/Ddfams+FAGMe7vzk="
-      - AUTH_TRUST_HOST=http://localhost:3000
-      - AUTH_URL=http://localhost:3000
-      - PUBLIC_DOMAIN=vividnail.studio
-      - ADMIN_DOMAIN=app-dev.vividnail.studio
+      - AUTH_TRUST_HOST=http://localhost:3001
+      - AUTH_URL=http://localhost:3001
+      - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-localhost:3000}
+      - ADMIN_DOMAIN=${ADMIN_DOMAIN:-localhost:3001}
       - SECRET_KEY=${SECRET_KEY:-uw8iDFHFNjbIU8gPGMByTLiFfXJex7E1}
       - REDIS_HOST=${REDIS_HOST:-redis}
       - REDIS_PORT=${REDIS_PORT:-6379}
       - REDIS_PASSWORD=${REDIS_PASSWORD:-}
       - REDIS_DB=${REDIS_DB:-0}
       - LOG_LEVEL=${LOG_LEVEL:-debug}
+      - OUTLOOK_APP_CLIENT_ID=${OUTLOOK_APP_CLIENT_ID}
+      - OUTLOOK_APP_CLIENT_SECRET=${OUTLOOK_APP_CLIENT_SECRET}
+      - GOOGLE_CALENDAR_APP_CLIENT_ID=${GOOGLE_CALENDAR_APP_CLIENT_ID}
+      - GOOGLE_CALENDAR_APP_CLIENT_SECRET=${GOOGLE_CALENDAR_APP_CLIENT_SECRET}
+      - ZOOM_APP_CLIENT_ID=${ZOOM_APP_CLIENT_ID}
+      - ZOOM_APP_CLIENT_SECRET=${ZOOM_APP_CLIENT_SECRET}
+      - PAYPAL_ENVIRONMENT=${PAYPAL_ENVIRONMENT:-sandbox}
+      - S3_REGION=${S3_REGION:-local}
+      - S3_ACCESS_KEY=${S3_ACCESS_KEY:-}
+      - S3_SECRET_ACCESS_KEY=${S3_SECRET_ACCESS_KEY:-}
+      - S3_ENDPOINT=${S3_ENDPOINT:-http://s3:8080}
+      - S3_BUCKET=${S3_BUCKET:-assets}
+      - S3_FORCE_PATH_STYLE=${S3_FORCE_PATH_STYLE:-true}
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "3001:3001"
     volumes:
       - "./apps/admin/public/upload:/app/public/upload"
     networks:
@@ -39,12 +52,13 @@ services:
       context: .
       dockerfile: apps/web/Dockerfile
     image: ghcr.io/dbondarchuk/vivid-web:latest
+    env_file: ".env"
     environment:
       # - MONGODB_URI=mongodb://192.168.0.162:27017/vivid?retryWrites=true&w=majority
       - MONGODB_URI=mongodb://host.docker.internal:27017/vivid?retryWrites=true&w=majority
       - TZ=America/New_York
       - AUTH_PASSWORD=password
-      - PUBLIC_DOMAIN=vividnail.studio
+      - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-localhost:3000}
       - AUTH_SECRET="n6WKAuaUVdOYMRReNYXEd/sHLF/Ddfams+FAGMe7vzk="
       - AUTH_TRUST_HOST=http://localhost:3000
       - AUTH_URL=http://localhost:3000
@@ -54,9 +68,23 @@ services:
       - REDIS_PASSWORD=${REDIS_PASSWORD:-}
       - REDIS_DB=${REDIS_DB:-0}
       - LOG_LEVEL=${LOG_LEVEL:-debug}
+      - OUTLOOK_APP_CLIENT_ID=${OUTLOOK_APP_CLIENT_ID}
+      - OUTLOOK_APP_CLIENT_SECRET=${OUTLOOK_APP_CLIENT_SECRET}
+      - GOOGLE_CALENDAR_APP_CLIENT_ID=${GOOGLE_CALENDAR_APP_CLIENT_ID}
+      - GOOGLE_CALENDAR_APP_CLIENT_SECRET=${GOOGLE_CALENDAR_APP_CLIENT_SECRET}
+      - ZOOM_APP_CLIENT_ID=${ZOOM_APP_CLIENT_ID}
+      - ZOOM_APP_CLIENT_SECRET=${ZOOM_APP_CLIENT_SECRET}
+      - PAYPAL_ENVIRONMENT=${PAYPAL_ENVIRONMENT:-sandbox}
+      - S3_REGION=${S3_REGION:-local}
+      - S3_ACCESS_KEY=${S3_ACCESS_KEY:-}
+      - S3_SECRET_ACCESS_KEY=${S3_SECRET_ACCESS_KEY:-}
+      - S3_ENDPOINT=${S3_ENDPOINT:-http://s3:8080}
+      - S3_BUCKET=${S3_BUCKET:-assets}
+      - S3_FORCE_PATH_STYLE=${S3_FORCE_PATH_STYLE:-true}
+      - ORGANIZATION_SLUG=${ORGANIZATION_SLUG:-vivid}
     restart: unless-stopped
     ports:
-      - "3001:3001"
+      - "3000:3000"
     volumes:
       - "./apps/web/public/upload:/app/public/upload"
     networks:
@@ -73,14 +101,30 @@ services:
       context: .
       dockerfile: apps/notification-sender/Dockerfile
     image: ghcr.io/dbondarchuk/vivid-notification-sender:latest
+    env_file: ".env"
     environment:
       - REDIS_HOST=${REDIS_HOST:-redis}
       - REDIS_PORT=${REDIS_PORT:-6379}
       - REDIS_PASSWORD=${REDIS_PASSWORD:-}
       - REDIS_DB=${REDIS_DB:-0}
-      - MONGODB_URI=${MONGODB_URI:-mongodb://host.docker.internal:27017/vivid?retryWrites=true&w=majority}
+      - MONGODB_URI=${MONGODB_URI:-mongodb://mongodb:27017/vivid?retryWrites=true&w=majority}
       - SECRET_KEY=${SECRET_KEY:-uw8iDFHFNjbIU8gPGMByTLiFfXJex7E1}
       - LOG_LEVEL=${LOG_LEVEL:-debug}
+      - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-localhost:3000}
+      - ADMIN_DOMAIN=${ADMIN_DOMAIN:-localhost:3001}
+      - OUTLOOK_APP_CLIENT_ID=${OUTLOOK_APP_CLIENT_ID}
+      - OUTLOOK_APP_CLIENT_SECRET=${OUTLOOK_APP_CLIENT_SECRET}
+      - GOOGLE_CALENDAR_APP_CLIENT_ID=${GOOGLE_CALENDAR_APP_CLIENT_ID}
+      - GOOGLE_CALENDAR_APP_CLIENT_SECRET=${GOOGLE_CALENDAR_APP_CLIENT_SECRET}
+      - ZOOM_APP_CLIENT_ID=${ZOOM_APP_CLIENT_ID}
+      - ZOOM_APP_CLIENT_SECRET=${ZOOM_APP_CLIENT_SECRET}
+      - PAYPAL_ENVIRONMENT=${PAYPAL_ENVIRONMENT:-sandbox}
+      - S3_REGION=${S3_REGION:-local}
+      - S3_ACCESS_KEY=${S3_ACCESS_KEY:-}
+      - S3_SECRET_ACCESS_KEY=${S3_SECRET_ACCESS_KEY:-}
+      - S3_ENDPOINT=${S3_ENDPOINT:-http://s3:8080}
+      - S3_BUCKET=${S3_BUCKET:-assets}
+      - S3_FORCE_PATH_STYLE=${S3_FORCE_PATH_STYLE:-true}
     restart: unless-stopped
     networks:
       - vivid-network
@@ -93,14 +137,30 @@ services:
       context: .
       dockerfile: apps/job-processor/Dockerfile
     image: ghcr.io/dbondarchuk/vivid-job-processor:latest
+    env_file: ".env"
     environment:
       - REDIS_HOST=${REDIS_HOST:-redis}
       - REDIS_PORT=${REDIS_PORT:-6379}
       - REDIS_PASSWORD=${REDIS_PASSWORD:-}
       - REDIS_DB=${REDIS_DB:-0}
-      - MONGODB_URI=${MONGODB_URI:-mongodb://host.docker.internal:27017/vivid?retryWrites=true&w=majority}
+      - MONGODB_URI=${MONGODB_URI:-mongodb://mongodb:27017/vivid?retryWrites=true&w=majority}
       - SECRET_KEY=${SECRET_KEY:-uw8iDFHFNjbIU8gPGMByTLiFfXJex7E1}
       - LOG_LEVEL=${LOG_LEVEL:-debug}
+      - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-localhost:3000}
+      - ADMIN_DOMAIN=${ADMIN_DOMAIN:-localhost:3001}
+      - OUTLOOK_APP_CLIENT_ID=${OUTLOOK_APP_CLIENT_ID}
+      - OUTLOOK_APP_CLIENT_SECRET=${OUTLOOK_APP_CLIENT_SECRET}
+      - GOOGLE_CALENDAR_APP_CLIENT_ID=${GOOGLE_CALENDAR_APP_CLIENT_ID}
+      - GOOGLE_CALENDAR_APP_CLIENT_SECRET=${GOOGLE_CALENDAR_APP_CLIENT_SECRET}
+      - ZOOM_APP_CLIENT_ID=${ZOOM_APP_CLIENT_ID}
+      - ZOOM_APP_CLIENT_SECRET=${ZOOM_APP_CLIENT_SECRET}
+      - PAYPAL_ENVIRONMENT=${PAYPAL_ENVIRONMENT:-sandbox}
+      - S3_REGION=${S3_REGION:-local}
+      - S3_ACCESS_KEY=${S3_ACCESS_KEY:-}
+      - S3_SECRET_ACCESS_KEY=${S3_SECRET_ACCESS_KEY:-}
+      - S3_ENDPOINT=${S3_ENDPOINT:-http://s3:8080}
+      - S3_BUCKET=${S3_BUCKET:-assets}
+      - S3_FORCE_PATH_STYLE=${S3_FORCE_PATH_STYLE:-true}
     restart: unless-stopped
     networks:
       - vivid-network
