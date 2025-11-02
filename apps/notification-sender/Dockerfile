@@ -23,7 +23,11 @@ RUN \
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
-COPY . .
+
+# Copy everything except other apps
+COPY --parents apps/notification-sender ./
+COPY --parents packages ./
+COPY --parents *.* ./
 
 # Build the notification sender app
 RUN \

@@ -59,17 +59,20 @@ export default async function Page(params: Params) {
       "dashboard-tab",
     );
 
-  const dashboardTabAppsMap = dashboardTabApps.flatMap(
-    (app) =>
-      DashboardTabInjectorApps[app.name]?.items?.map((item) => ({
-        ...item,
-        appId: app._id,
-        props: servicesContainer.connectedAppsService.getAppServiceProps(
-          app._id,
-        ),
-        label: t(item.label),
-      })) || [],
-  );
+  const dashboardTabAppsMap = dashboardTabApps
+    .flatMap(
+      (app) =>
+        DashboardTabInjectorApps[app.name]?.items?.map((item) => ({
+          ...item,
+          appId: app._id,
+          props: servicesContainer.connectedAppsService.getAppServiceProps(
+            app._id,
+          ),
+          label: t(item.label),
+        })) || [],
+    )
+    // Sort by order descending to show the highest order first
+    .sort((a, b) => b.order - a.order);
 
   return (
     <PageContainer scrollable>

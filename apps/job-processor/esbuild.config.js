@@ -20,7 +20,12 @@ const buildConfig = {
     ".styl": "empty",
   },
   absWorkingDir: process.cwd(),
-  external: ["lucide-react/dynamic"],
+  external: [
+    "lucide-react/dynamic",
+    "next/navigation",
+    "next/image",
+    "next/link",
+  ],
 };
 
 // Build function
