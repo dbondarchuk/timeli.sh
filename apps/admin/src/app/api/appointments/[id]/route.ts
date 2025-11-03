@@ -3,6 +3,49 @@ import { getLoggerFactory } from "@vivid/logger";
 import { AppointmentEvent, appointmentEventSchema } from "@vivid/types";
 import { NextRequest, NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+
+export async function GET(
+  request: NextRequest,
+  { params }: RouteContext<"/api/appointments/[id]">,
+) {
+  const logger = getLoggerFactory("AdminAPI/appointments/[id]")("GET");
+  const servicesContainer = await getServicesContainer();
+  const { id } = await params;
+
+  logger.debug(
+    {
+      url: request.url,
+      method: request.method,
+      id,
+    },
+    "Processing get appointment API request",
+  );
+
+  const appointment = await servicesContainer.eventsService.getAppointment(id);
+
+  if (!appointment) {
+    logger.warn({ id }, "Appointment not found");
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Appointment not found",
+        code: "appointment_not_found",
+      },
+      { status: 404 },
+    );
+  }
+
+  logger.debug(
+    {
+      appointmentId: appointment._id,
+    },
+    "Appointment retrieved successfully",
+  );
+
+  return NextResponse.json(appointment, { status: 200 });
+}
+
 export async function PUT(
   request: NextRequest,
   { params }: RouteContext<"/api/appointments/[id]">,
@@ -151,47 +194,6 @@ export async function PUT(
       appointmentId: appointment._id,
     },
     "Appointment updated successfully",
-  );
-
-  return NextResponse.json(appointment, { status: 200 });
-}
-
-export async function GET(
-  request: NextRequest,
-  { params }: RouteContext<"/api/appointments/[id]">,
-) {
-  const logger = getLoggerFactory("AdminAPI/appointments/[id]")("GET");
-  const servicesContainer = await getServicesContainer();
-  const { id } = await params;
-
-  logger.debug(
-    {
-      url: request.url,
-      method: request.method,
-      id,
-    },
-    "Processing get appointment API request",
-  );
-
-  const appointment = await servicesContainer.eventsService.getAppointment(id);
-
-  if (!appointment) {
-    logger.warn({ id }, "Appointment not found");
-    return NextResponse.json(
-      {
-        success: false,
-        error: "Appointment not found",
-        code: "appointment_not_found",
-      },
-      { status: 404 },
-    );
-  }
-
-  logger.debug(
-    {
-      appointmentId: appointment._id,
-    },
-    "Appointment retrieved successfully",
   );
 
   return NextResponse.json(appointment, { status: 200 });
