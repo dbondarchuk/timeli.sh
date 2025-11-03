@@ -4,6 +4,8 @@ import { okStatus } from "@vivid/types";
 import { NextRequest, NextResponse } from "next/server";
 import * as z from "zod";
 
+export const dynamic = "force-dynamic";
+
 const mergeCustomersSchema = z.object({
   targetId: z.string().min(1, "Target ID is required"),
   ids: z.array(z.string().min(1)).min(1, "At least one ID is required"),

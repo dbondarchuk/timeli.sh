@@ -4,6 +4,8 @@ import { getLoggerFactory } from "@vivid/logger";
 import { okStatus } from "@vivid/types";
 import { NextRequest, NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(request: NextRequest) {
   const logger = getLoggerFactory("AdminAPI/services/options/delete")("POST");
   const servicesContainer = await getServicesContainer();

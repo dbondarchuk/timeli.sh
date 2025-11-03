@@ -7,6 +7,8 @@ import { DateTime } from "luxon";
 import { NextRequest } from "next/server";
 import { v4 } from "uuid";
 
+export const dynamic = "force-dynamic";
+
 const getPendingAppointmentsNotifications = async (date?: Date) => {
   const servicesContainer = await getServicesContainer();
   const { totalCount, newCount } =

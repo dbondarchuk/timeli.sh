@@ -5,6 +5,8 @@ import { Payment } from "@vivid/types";
 import { NextRequest, NextResponse } from "next/server";
 import pLimit from "p-limit";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(request: NextRequest) {
   const logger = getLoggerFactory("AdminAPI/payments-refund")("POST");
   const servicesContainer = await getServicesContainer();
