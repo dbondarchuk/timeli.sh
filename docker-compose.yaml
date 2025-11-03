@@ -6,14 +6,21 @@ services:
       dockerfile: apps/admin/Dockerfile
     image: ghcr.io/dbondarchuk/vivid-admin:latest
     environment:
-      - MONGODB_URI=mongodb://mongodb:27017/vivid?retryWrites=true&w=majority
-      - TZ=America/New_York
-      - AUTH_SECRET="n6WKAuaUVdOYMRReNYXEd/sHLF/Ddfams+FAGMe7vzk="
-      - AUTH_TRUST_HOST=http://localhost:3001
-      - AUTH_URL=http://localhost:3001
-      - PUBLIC_DOMAIN=vividnail.studio
-      - ADMIN_DOMAIN=app-dev.vividnail.studio
+      - MONGODB_URI=${MONGODB_URI:-mongodb://mongodb:27017/vivid?retryWrites=true&w=majority}
+      - TZ=${TZ:-America/New_York}
+      - AUTH_SECRET=${AUTH_SECRET:-n6WKAuaUVdOYMRReNYXEd/sHLF/Ddfams+FAGMe7vzk=}
+      - AUTH_TRUST_HOST=${ADMIN_DOMAIN:-app-dev.vividnail.studio}
+      - BETTER_AUTH_URL=https://${ADMIN_DOMAIN:-app-dev.vividnail.studio}
+      - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-vividnail.studio}
+      - ADMIN_DOMAIN=${ADMIN_DOMAIN:-app-dev.vividnail.studio}
       - SECRET_KEY=${SECRET_KEY:-uw8iDFHFNjbIU8gPGMByTLiFfXJex7E1}
+      - OUTLOOK_APP_CLIENT_ID=${OUTLOOK_APP_CLIENT_ID}
+      - OUTLOOK_APP_CLIENT_SECRET=${OUTLOOK_APP_CLIENT_SECRET}
+      - GOOGLE_CALENDAR_APP_CLIENT_ID=${GOOGLE_CALENDAR_APP_CLIENT_ID}
+      - GOOGLE_CALENDAR_APP_CLIENT_SECRET=${GOOGLE_CALENDAR_APP_CLIENT_SECRET}
+      - ZOOM_APP_CLIENT_ID=${ZOOM_APP_CLIENT_ID}
+      - ZOOM_APP_CLIENT_SECRET=${ZOOM_APP_CLIENT_SECRET}
+      - PAYPAL_ENVIRONMENT=${PAYPAL_ENVIRONMENT:-sandbox}
       - REDIS_HOST=${REDIS_HOST:-redis}
       - REDIS_PORT=${REDIS_PORT:-6379}
       - REDIS_PASSWORD=${REDIS_PASSWORD:-}
@@ -44,11 +51,17 @@ services:
       dockerfile: apps/web/Dockerfile
     image: ghcr.io/dbondarchuk/vivid-web:latest
     environment:
-      - MONGODB_URI=mongodb://mongodb:27017/vivid?retryWrites=true&w=majority
-      - TZ=America/New_York
-      - AUTH_PASSWORD=password
-      - PUBLIC_DOMAIN=vividnail.studio
+      - MONGODB_URI=${MONGODB_URI:-mongodb://mongodb:27017/vivid?retryWrites=true&w=majority}
+      - TZ=${TZ:-America/New_York}
+      - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-vividnail.studio}
       - SECRET_KEY=${SECRET_KEY:-uw8iDFHFNjbIU8gPGMByTLiFfXJex7E1}
+      - OUTLOOK_APP_CLIENT_ID=${OUTLOOK_APP_CLIENT_ID}
+      - OUTLOOK_APP_CLIENT_SECRET=${OUTLOOK_APP_CLIENT_SECRET}
+      - GOOGLE_CALENDAR_APP_CLIENT_ID=${GOOGLE_CALENDAR_APP_CLIENT_ID}
+      - GOOGLE_CALENDAR_APP_CLIENT_SECRET=${GOOGLE_CALENDAR_APP_CLIENT_SECRET}
+      - ZOOM_APP_CLIENT_ID=${ZOOM_APP_CLIENT_ID}
+      - ZOOM_APP_CLIENT_SECRET=${ZOOM_APP_CLIENT_SECRET}
+      - PAYPAL_ENVIRONMENT=${PAYPAL_ENVIRONMENT:-sandbox}
       - REDIS_HOST=${REDIS_HOST:-redis}
       - REDIS_PORT=${REDIS_PORT:-6379}
       - REDIS_PASSWORD=${REDIS_PASSWORD:-}
@@ -80,6 +93,7 @@ services:
       dockerfile: apps/notification-sender/Dockerfile
     image: ghcr.io/dbondarchuk/vivid-notification-sender:latest
     environment:
+      - TZ=${TZ:-America/New_York}
       - REDIS_HOST=${REDIS_HOST:-redis}
       - REDIS_PORT=${REDIS_PORT:-6379}
       - REDIS_PASSWORD=${REDIS_PASSWORD:-}
@@ -87,8 +101,15 @@ services:
       - MONGODB_URI=${MONGODB_URI:-mongodb://mongodb:27017/vivid?retryWrites=true&w=majority}
       - SECRET_KEY=${SECRET_KEY:-uw8iDFHFNjbIU8gPGMByTLiFfXJex7E1}
       - LOG_LEVEL=${LOG_LEVEL:-debug}
-      - PUBLIC_DOMAIN=vividnail.studio
-      - ADMIN_DOMAIN=app-dev.vividnail.studio
+      - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-vividnail.studio}
+      - ADMIN_DOMAIN=${ADMIN_DOMAIN:-app-dev.vividnail.studio}
+      - OUTLOOK_APP_CLIENT_ID=${OUTLOOK_APP_CLIENT_ID}
+      - OUTLOOK_APP_CLIENT_SECRET=${OUTLOOK_APP_CLIENT_SECRET}
+      - GOOGLE_CALENDAR_APP_CLIENT_ID=${GOOGLE_CALENDAR_APP_CLIENT_ID}
+      - GOOGLE_CALENDAR_APP_CLIENT_SECRET=${GOOGLE_CALENDAR_APP_CLIENT_SECRET}
+      - ZOOM_APP_CLIENT_ID=${ZOOM_APP_CLIENT_ID}
+      - ZOOM_APP_CLIENT_SECRET=${ZOOM_APP_CLIENT_SECRET}
+      - PAYPAL_ENVIRONMENT=${PAYPAL_ENVIRONMENT:-sandbox}
       - S3_REGION=${S3_REGION:-local}
       - S3_ACCESS_KEY=${S3_ACCESS_KEY:-}
       - S3_SECRET_ACCESS_KEY=${S3_SECRET_ACCESS_KEY:-}
@@ -108,6 +129,7 @@ services:
       dockerfile: apps/job-processor/Dockerfile
     image: ghcr.io/dbondarchuk/vivid-job-processor:latest
     environment:
+      - TZ=${TZ:-America/New_York}
       - REDIS_HOST=${REDIS_HOST:-redis}
       - REDIS_PORT=${REDIS_PORT:-6379}
       - REDIS_PASSWORD=${REDIS_PASSWORD:-}
@@ -115,8 +137,15 @@ services:
       - MONGODB_URI=${MONGODB_URI:-mongodb://mongodb:27017/vivid?retryWrites=true&w=majority}
       - SECRET_KEY=${SECRET_KEY:-uw8iDFHFNjbIU8gPGMByTLiFfXJex7E1}
       - LOG_LEVEL=${LOG_LEVEL:-debug}
-      - PUBLIC_DOMAIN=vividnail.studio
-      - ADMIN_DOMAIN=app-dev.vividnail.studio
+      - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-vividnail.studio}
+      - ADMIN_DOMAIN=${ADMIN_DOMAIN:-app-dev.vividnail.studio}
+      - OUTLOOK_APP_CLIENT_ID=${OUTLOOK_APP_CLIENT_ID}
+      - OUTLOOK_APP_CLIENT_SECRET=${OUTLOOK_APP_CLIENT_SECRET}
+      - GOOGLE_CALENDAR_APP_CLIENT_ID=${GOOGLE_CALENDAR_APP_CLIENT_ID}
+      - GOOGLE_CALENDAR_APP_CLIENT_SECRET=${GOOGLE_CALENDAR_APP_CLIENT_SECRET}
+      - ZOOM_APP_CLIENT_ID=${ZOOM_APP_CLIENT_ID}
+      - ZOOM_APP_CLIENT_SECRET=${ZOOM_APP_CLIENT_SECRET}
+      - PAYPAL_ENVIRONMENT=${PAYPAL_ENVIRONMENT:-sandbox}
       - S3_REGION=${S3_REGION:-local}
       - S3_ACCESS_KEY=${S3_ACCESS_KEY:-}
       - S3_SECRET_ACCESS_KEY=${S3_SECRET_ACCESS_KEY:-}

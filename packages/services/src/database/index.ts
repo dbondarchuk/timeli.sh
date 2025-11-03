@@ -1,4 +1,4 @@
-import { Db, MongoClient } from "mongodb";
+import { MongoClient } from "mongodb";
 
 let client: MongoClient;
 
@@ -31,13 +31,6 @@ export const getDbConnection = async () => {
 };
 
 export const getDbConnectionSync = () => {
-  // If we are in a docker build, use a mock database so static page generation won't fail
-  // NEXT_PUBLIC_IS_DOCKER_BUILD is set in the admin app Dockerfile
-  // It has to be NEXT_PUBLIC_ because it will be accessed via static page generation which is like "client-side"
-  if (process.env.NEXT_PUBLIC_IS_DOCKER_BUILD === "true") {
-    return {} as Db;
-  }
-
   if (!client) getClient();
   return client.db(undefined, { ignoreUndefined: true });
 };

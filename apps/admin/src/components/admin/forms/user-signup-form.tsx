@@ -18,8 +18,7 @@ import {
   InputSuffix,
   useDebounceCacheFn,
 } from "@vivid/ui";
-import { useSearchParams } from "next/navigation";
-import { useRouter } from "next/router";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";

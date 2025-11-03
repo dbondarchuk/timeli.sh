@@ -7,12 +7,11 @@ services:
     image: ghcr.io/dbondarchuk/vivid-admin:latest
     env_file: ".env"
     environment:
-      # - MONGODB_URI=mongodb://192.168.0.162:27017/vivid?retryWrites=true&w=majority
-      - MONGODB_URI=mongodb://host.docker.internal:27017/vivid?retryWrites=true&w=majority
+      - MONGODB_URI=${MONGODB_URI:-mongodb://host.docker.internal:27017/vivid?retryWrites=true&w=majority}
       - TZ=America/New_York
-      - AUTH_SECRET="n6WKAuaUVdOYMRReNYXEd/sHLF/Ddfams+FAGMe7vzk="
+      - AUTH_SECRET=${AUTH_SECRET:-n6WKAuaUVdOYMRReNYXEd/sHLF/Ddfams+FAGMe7vzk=}
       - AUTH_TRUST_HOST=http://localhost:3001
-      - AUTH_URL=http://localhost:3001
+      - BETTER_AUTH_URL=http://localhost:3001
       - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-localhost:3000}
       - ADMIN_DOMAIN=${ADMIN_DOMAIN:-localhost:3001}
       - SECRET_KEY=${SECRET_KEY:-uw8iDFHFNjbIU8gPGMByTLiFfXJex7E1}
@@ -54,14 +53,10 @@ services:
     image: ghcr.io/dbondarchuk/vivid-web:latest
     env_file: ".env"
     environment:
-      # - MONGODB_URI=mongodb://192.168.0.162:27017/vivid?retryWrites=true&w=majority
-      - MONGODB_URI=mongodb://host.docker.internal:27017/vivid?retryWrites=true&w=majority
+      - MONGODB_URI=${MONGODB_URI:-mongodb://host.docker.internal:27017/vivid?retryWrites=true&w=majority}
       - TZ=America/New_York
       - AUTH_PASSWORD=password
       - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-localhost:3000}
-      - AUTH_SECRET="n6WKAuaUVdOYMRReNYXEd/sHLF/Ddfams+FAGMe7vzk="
-      - AUTH_TRUST_HOST=http://localhost:3000
-      - AUTH_URL=http://localhost:3000
       - SECRET_KEY=${SECRET_KEY:-uw8iDFHFNjbIU8gPGMByTLiFfXJex7E1}
       - REDIS_HOST=${REDIS_HOST:-redis}
       - REDIS_PORT=${REDIS_PORT:-6379}

@@ -45,9 +45,9 @@ COPY --parents *.* ./
 
 ARG MONGODB_URI=mongodb://mongodb:27017/vivid?retryWrites=true&w=majority
 RUN \
-  if [ -f yarn.lock ]; then NODE_OPTIONS="--max-old-space-size=4096" NEXT_PUBLIC_IS_DOCKER_BUILD="true" yarn run build --filter=@vivid/admin; \
-  elif [ -f package-lock.json ]; then NODE_OPTIONS="--max-old-space-size=4096" NEXT_PUBLIC_IS_DOCKER_BUILD="true" npm run build --filter=@vivid/admin; \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && NODE_OPTIONS="--max-old-space-size=4096" NEXT_PUBLIC_IS_DOCKER_BUILD="true" pnpm run build --filter=@vivid/admin; \
+  if [ -f yarn.lock ]; then NODE_OPTIONS="--max-old-space-size=4096" yarn run build --filter=@vivid/admin; \
+  elif [ -f package-lock.json ]; then NODE_OPTIONS="--max-old-space-size=4096" npm run build --filter=@vivid/admin; \
+  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && NODE_OPTIONS="--max-old-space-size=4096" pnpm run build --filter=@vivid/admin; \
   else echo "Lockfile not found." && exit 1; \
   fi
 

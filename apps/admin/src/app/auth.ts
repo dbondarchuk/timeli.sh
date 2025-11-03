@@ -8,9 +8,11 @@ import { ObjectId } from "mongodb";
 import { ApiError } from "next/dist/server/api-utils";
 
 export const auth = betterAuth({
-  database: mongodbAdapter(getDbConnectionSync(), {
-    usePlural: true,
-  }),
+  database: (options: any) => {
+    return mongodbAdapter(getDbConnectionSync(), {
+      usePlural: true,
+    })(options);
+  },
   secondaryStorage: {
     get: async (key: string) => {
       return await getRedisClient().get(key);
