@@ -4,6 +4,8 @@ import { AppointmentStatus, appointmentStatuses } from "@vivid/types";
 import { DateTime } from "luxon";
 import { NextRequest, NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(request: NextRequest) {
   const logger = getLoggerFactory("AdminAPI/events")("GET");
   const servicesContainer = await getServicesContainer();

@@ -4,6 +4,8 @@ import { getLoggerFactory } from "@vivid/logger";
 import { pageFooterSchema } from "@vivid/types";
 import { NextRequest, NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(request: NextRequest) {
   const logger = getLoggerFactory("AdminAPI/pages/footers")("GET");
   const servicesContainer = await getServicesContainer();

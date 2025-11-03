@@ -2,6 +2,8 @@ import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
 import { NextRequest, NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+
 const processWebhook = async (
   request: NextRequest,
   { params }: RouteContext<"/apps/[companyId]/[appId]/webhook">,

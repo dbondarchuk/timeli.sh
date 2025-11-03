@@ -7,6 +7,8 @@ import mimeType from "mime-type/with-db";
 import { NextRequest, NextResponse } from "next/server";
 import { v4 } from "uuid";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(request: NextRequest) {
   const logger = getLoggerFactory("AdminAPI/assets")("GET");
   const servicesContainer = await getServicesContainer();

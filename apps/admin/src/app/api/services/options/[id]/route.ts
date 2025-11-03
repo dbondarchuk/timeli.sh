@@ -3,6 +3,48 @@ import { getLoggerFactory } from "@vivid/logger";
 import { appointmentOptionSchema, okStatus } from "@vivid/types";
 import { NextRequest, NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+
+export async function GET(
+  request: NextRequest,
+  { params }: RouteContext<"/api/services/options/[id]">,
+) {
+  const logger = getLoggerFactory("AdminAPI/services/options/[id]")("GET");
+  const servicesContainer = await getServicesContainer();
+  const { id } = await params;
+
+  logger.debug(
+    {
+      optionId: id,
+    },
+    "Getting service option",
+  );
+
+  const option = await servicesContainer.servicesService.getOption(id);
+
+  if (!option) {
+    logger.warn({ optionId: id }, "Service option not found");
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Service option not found",
+        code: "service_option_not_found",
+      },
+      { status: 404 },
+    );
+  }
+
+  logger.debug(
+    {
+      optionId: id,
+      optionName: option.name,
+    },
+    "Service option found",
+  );
+
+  return NextResponse.json(option);
+}
+
 export async function PUT(
   request: NextRequest,
   { params }: RouteContext<"/api/services/options/[id]">,

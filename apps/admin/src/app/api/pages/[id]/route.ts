@@ -3,6 +3,49 @@ import { getLoggerFactory } from "@vivid/logger";
 import { okStatus, pageSchema } from "@vivid/types";
 import { NextRequest, NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+
+export async function GET(
+  request: NextRequest,
+  { params }: RouteContext<"/api/pages/[id]">,
+) {
+  const logger = getLoggerFactory("AdminAPI/pages/[id]")("GET");
+  const servicesContainer = await getServicesContainer();
+  const { id } = await params;
+
+  logger.debug(
+    {
+      pageId: id,
+    },
+    "Getting page",
+  );
+
+  const page = await servicesContainer.pagesService.getPage(id);
+
+  if (!page) {
+    logger.warn({ pageId: id }, "Page not found");
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Page not found",
+        code: "page_not_found",
+      },
+      { status: 404 },
+    );
+  }
+
+  logger.debug(
+    {
+      pageId: id,
+      pageTitle: page.title,
+      pageSlug: page.slug,
+    },
+    "Page found",
+  );
+
+  return NextResponse.json(page);
+}
+
 export async function PUT(
   request: NextRequest,
   { params }: RouteContext<"/api/pages/[id]">,

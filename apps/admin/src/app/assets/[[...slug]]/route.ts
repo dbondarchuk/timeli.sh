@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { NextRequest, NextResponse } from "next/server";
 import { Readable, ReadableOptions } from "stream";
 
+export const dynamic = "force-dynamic";
+
 /**
  * Return a stream from the disk
  * @param {string} path - The location of the file

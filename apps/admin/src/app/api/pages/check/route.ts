@@ -2,6 +2,8 @@ import { getServicesContainer } from "@/app/utils";
 import { getLoggerFactory } from "@vivid/logger";
 import { NextRequest, NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(request: NextRequest) {
   const logger = getLoggerFactory("AdminAPI/pages/check")("GET");
   const servicesContainer = await getServicesContainer();

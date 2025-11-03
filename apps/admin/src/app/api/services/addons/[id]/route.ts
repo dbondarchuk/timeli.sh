@@ -3,6 +3,8 @@ import { getLoggerFactory } from "@vivid/logger";
 import { appointmentAddonSchema, okStatus } from "@vivid/types";
 import { NextRequest, NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(
   request: NextRequest,
   { params }: RouteContext<"/api/services/addons/[id]">,

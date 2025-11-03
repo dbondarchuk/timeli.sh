@@ -3,6 +3,8 @@ import { getLoggerFactory } from "@vivid/logger";
 import { NextRequest, NextResponse } from "next/server";
 import * as z from "zod";
 
+export const dynamic = "force-dynamic";
+
 const createAppSchema = z.object({
   type: z.string().min(1, "App type is required"),
 });

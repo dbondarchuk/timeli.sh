@@ -3,6 +3,8 @@ import { checkDiscountNameAndCodeParamsLoader } from "@vivid/api-sdk";
 import { getLoggerFactory } from "@vivid/logger";
 import { NextRequest, NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(request: NextRequest) {
   const logger = getLoggerFactory("AdminAPI/discounts/check")("GET");
   const servicesContainer = await getServicesContainer();

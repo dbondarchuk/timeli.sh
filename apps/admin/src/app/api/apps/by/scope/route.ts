@@ -3,6 +3,10 @@ import { getLoggerFactory } from "@vivid/logger";
 import { AppScope } from "@vivid/types";
 import { NextRequest, NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+export const fetchCache = "force-cache";
+export const revalidate = 3;
+
 export async function GET(request: NextRequest) {
   const logger = getLoggerFactory("AdminAPI/apps/by/scope")("GET");
   const servicesContainer = await getServicesContainer();

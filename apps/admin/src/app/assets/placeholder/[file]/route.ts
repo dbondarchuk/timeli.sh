@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { NextRequest, NextResponse } from "next/server";
 import sharp from "sharp";
+
 const generatePlaceholderImage = async ({
   width,
   height,
@@ -39,6 +40,8 @@ const generatePlaceholderImage = async ({
     [format === "jpg" ? "jpeg" : "png"]()
     .toBuffer();
 };
+
+export const dynamic = "force-dynamic";
 
 export async function GET(
   request: NextRequest,
