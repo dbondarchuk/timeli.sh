@@ -44,7 +44,6 @@ COPY --parents *.* ./
 # ENV NEXT_TELEMETRY_DISABLED 1
 
 ARG MONGODB_URI=mongodb://mongodb:27017/vivid?retryWrites=true&w=majority
-ENV MONGODB_URI=${MONGODB_URI}
 RUN \
   if [ -f yarn.lock ]; then NODE_OPTIONS="--max-old-space-size=4096" yarn run build --filter=@vivid/admin; \
   elif [ -f package-lock.json ]; then NODE_OPTIONS="--max-old-space-size=4096" npm run build --filter=@vivid/admin; \

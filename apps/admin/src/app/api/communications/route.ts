@@ -10,8 +10,6 @@ import {
 import { getAdminUrl, getArguments, template } from "@vivid/utils";
 import { NextRequest, NextResponse } from "next/server";
 
-export const dynamic = "force-dynamic";
-
 export async function POST(request: NextRequest) {
   const logger = getLoggerFactory("AdminAPI/communications")("POST");
   const servicesContainer = await getServicesContainer();

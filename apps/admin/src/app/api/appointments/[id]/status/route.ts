@@ -4,8 +4,6 @@ import { appointmentStatuses, okStatus } from "@vivid/types";
 import { NextRequest, NextResponse } from "next/server";
 import * as z from "zod";
 
-export const dynamic = "force-dynamic";
-
 const schema = z.object({
   status: z.enum(appointmentStatuses).exclude(["pending"]),
   by: z.enum(["customer", "user"]),
