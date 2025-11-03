@@ -27,6 +27,9 @@
     "lint:fix": {
       "dependsOn": ["^lint:fix"]
     },
+    "typegen": {
+      "dependsOn": ["^typegen"]
+    },
     "check-translations": {
       "dependsOn": ["^check-translations"],
       "cache": false

@@ -7,4 +7,5 @@ export * from "./dashboard";
 export * from "./jobs";
 export * from "./notifications";
 
+export { getRedisClient } from "./redis-client";
 export { getBullMQBaseConfig } from "./utils";

@@ -1,3 +1,4 @@
+import { getRedisClient } from "@vivid/services";
 import { getDbConnection, getDbConnectionSync } from "@vivid/services/database";
 import type { WithDatabaseId } from "@vivid/types";
 import { betterAuth } from "better-auth";
@@ -10,6 +11,21 @@ export const auth = betterAuth({
   database: mongodbAdapter(getDbConnectionSync(), {
     usePlural: true,
   }),
+  secondaryStorage: {
+    get: async (key: string) => {
+      return await getRedisClient().get(key);
+    },
+    set: async (key: string, value: any, ttl: number | undefined) => {
+      if (ttl) {
+        await getRedisClient().set(key, value, "EX", ttl);
+      } else {
+        await getRedisClient().set(key, value);
+      }
+    },
+    delete: async (key: string) => {
+      await getRedisClient().del(key);
+    },
+  },
   advanced: {
     database: {
       generateId: () => new ObjectId().toString(),

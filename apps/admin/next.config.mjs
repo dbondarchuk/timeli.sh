@@ -14,27 +14,11 @@ const nextConfig = {
   outputFileTracingRoot: join(__dirname, "../../"),
   serverExternalPackages: ["pino", "pino-pretty", "bullmq"],
   experimental: {
-    useCache: true,
     webpackMemoryOptimizations: true,
     serverActions: {
       bodySizeLimit: "150mb",
     },
-    // turbo: {
-    //   rules: {
-    //     "*.html": {
-    //       loaders: ["raw-loader"],
-    //       as: "*.js",
-    //     },
-    //   },
-    // },
   },
-  // webpack: (config) => {
-  //   config.module.rules.push({
-  //     test: /\.html$/,
-  //     use: "raw-loader",
-  //   });
-  //   return config;
-  // },
 };
 
 export default withNextIntl(nextConfig);
