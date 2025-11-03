@@ -6,8 +6,6 @@ import type {
 } from "@vivid/types";
 import type { Redis } from "ioredis";
 
-const MAX_LEN = 1000;
-
 export class RedisDashboardNotificationPublisher
   implements IDashboardNotificationsService
 {

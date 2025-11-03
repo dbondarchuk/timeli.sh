@@ -90,6 +90,9 @@ COPY --from=builder --chown=nextjs:nodejs /app/apps/admin/.next/static ./.next/s
 COPY --from=builder --chown=nextjs:nodejs /app/apps/admin/.next/static ./apps/admin/.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/migrations ./migrations
 COPY --from=builder --chown=nextjs:nodejs /app/migrate-mongo-config.js ./migrate-mongo-config.js
+COPY --from=builder --chown=nextjs:nodejs /app/entrypoint.sh ./entrypoint.sh
+
+RUN chmod +x entrypoint.sh
 
 USER nextjs
 
@@ -100,4 +103,4 @@ ENV AUTH_PASSWORD=passwd
 
 # server.js is created by next build from the standalone output
 # https://nextjs.org/docs/pages/api-reference/next-config-js/output
-CMD HOSTNAME="0.0.0.0" node apps/admin/server.js
+CMD HOSTNAME="0.0.0.0" ./entrypoint.sh

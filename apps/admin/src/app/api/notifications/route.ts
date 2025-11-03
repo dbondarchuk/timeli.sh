@@ -121,6 +121,7 @@ export async function GET(request: NextRequest) {
         id: v4(),
         companyId,
         send: (data: DashboardNotification) => {
+          logger.debug({ data }, "Received notification");
           controller.enqueue(`data: ${JSON.stringify(data)}\n\n`);
         },
       };

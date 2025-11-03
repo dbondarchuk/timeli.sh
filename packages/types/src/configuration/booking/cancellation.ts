@@ -158,8 +158,12 @@ export type DefaultAppointmentCancellationPolicyRow = z.infer<
  */
 export const appointmentCancellationPolicyListSchema = z
   .array(appointmentCancellationPolicyRowSchema)
-  .min(1, { message: "cancellation.policy.min" })
+  .optional()
   .superRefine((rows, ctx) => {
+    if (!rows) {
+      return;
+    }
+
     for (let i = 1; i < rows.length; i++) {
       const prev = rows[i - 1].minutesToAppointment;
       const cur = rows[i].minutesToAppointment;
@@ -219,8 +223,12 @@ export type DefaultAppointmentReschedulePolicyRow = z.infer<
  */
 export const appointmentReschedulePolicyListSchema = z
   .array(appointmentReschedulePolicyRowSchema)
-  .min(1, { message: "cancellation.policy.min" })
+  .optional()
   .superRefine((rows, ctx) => {
+    if (!rows) {
+      return;
+    }
+
     for (let i = 1; i < rows.length; i++) {
       const prev = rows[i - 1].minutesToAppointment;
       const cur = rows[i].minutesToAppointment;

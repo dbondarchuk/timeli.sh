@@ -10,7 +10,30 @@ module.exports = {
     const session = client.startSession();
     try {
       await session.withTransaction(async () => {
+        if (
+          !(await db
+            .listCollections({
+              name: "reminders",
+            })
+            .hasNext())
+        ) {
+          console.log("Creating reminders collection");
+          await db.createCollection("reminders");
+        }
+
+        if (
+          !(await db
+            .listCollections({
+              name: "follow-ups",
+            })
+            .hasNext())
+        ) {
+          console.log("Creating follow-ups collection");
+          await db.createCollection("follow-ups");
+        }
+
         const reminders = db.collection("reminders");
+
         const followups = db.collection("follow-ups");
         const connectedApps = db.collection("connected-apps");
 
@@ -85,7 +108,17 @@ module.exports = {
     const session = client.startSession();
     try {
       await session.withTransaction(async () => {
-        const notifications = db.collection("scheduled-notifications");
+        if (
+          !(await db
+            .listCollections({
+              name: "scheduled-notifications",
+            })
+            .hasNext())
+        ) {
+          console.log("Creating scheduled-notifications collection");
+          await db.createCollection("scheduled-notifications");
+        }
+
         const connectedApps = db.collection("connected-apps");
 
         // Step 1: Rename notifications collection back to reminders
