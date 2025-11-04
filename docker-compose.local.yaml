@@ -8,6 +8,7 @@ services:
     env_file: ".env"
     environment:
       - MONGODB_URI=${MONGODB_URI:-mongodb://host.docker.internal:27017/vivid?retryWrites=true&w=majority}
+      - MONGODB_DB=${MONGODB_DB}
       - TZ=America/New_York
       - AUTH_SECRET=${AUTH_SECRET:-n6WKAuaUVdOYMRReNYXEd/sHLF/Ddfams+FAGMe7vzk=}
       - AUTH_TRUST_HOST=http://localhost:3001
@@ -55,6 +56,7 @@ services:
     env_file: ".env"
     environment:
       - MONGODB_URI=${MONGODB_URI:-mongodb://host.docker.internal:27017/vivid?retryWrites=true&w=majority}
+      - MONGODB_DB=${MONGODB_DB}
       - TZ=America/New_York
       - AUTH_PASSWORD=password
       - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-localhost:3000}
@@ -106,6 +108,7 @@ services:
       - REDIS_PASSWORD=${REDIS_PASSWORD:-}
       - REDIS_DB=${REDIS_DB:-0}
       - MONGODB_URI=${MONGODB_URI:-mongodb://mongodb:27017/vivid?retryWrites=true&w=majority}
+      - MONGODB_DB=${MONGODB_DB}
       - SECRET_KEY=${SECRET_KEY:-uw8iDFHFNjbIU8gPGMByTLiFfXJex7E1}
       - LOG_LEVEL=${LOG_LEVEL:-debug}
       - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-localhost:3000}
@@ -143,6 +146,7 @@ services:
       - REDIS_PASSWORD=${REDIS_PASSWORD:-}
       - REDIS_DB=${REDIS_DB:-0}
       - MONGODB_URI=${MONGODB_URI:-mongodb://mongodb:27017/vivid?retryWrites=true&w=majority}
+      - MONGODB_DB=${MONGODB_DB}
       - SECRET_KEY=${SECRET_KEY:-uw8iDFHFNjbIU8gPGMByTLiFfXJex7E1}
       - LOG_LEVEL=${LOG_LEVEL:-debug}
       - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-localhost:3000}
@@ -176,6 +180,7 @@ services:
     environment:
       - TZ=${TZ:-America/New_York}
       - MONGODB_URI=${MONGODB_URI:-mongodb://mongodb:27017/vivid?retryWrites=true&w=majority}
+      - MONGODB_DB=${MONGODB_DB}
       - LOG_LEVEL=${LOG_LEVEL:-debug}
       - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-localhost:3000}
     restart: unless-stopped

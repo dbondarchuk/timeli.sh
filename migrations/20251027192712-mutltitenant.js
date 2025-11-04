@@ -73,6 +73,7 @@ module.exports = {
       }
     } else {
       for (const collectionName of collections) {
+        const collection = db.collection(collectionName);
         // Create index for performance
         const indexExists = await collection.indexExists("companyId_1");
         if (!indexExists) {

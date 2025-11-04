@@ -27,12 +27,14 @@ const getClient = () => {
 };
 
 export const getDbConnection = async () => {
-  return (await getDbClient()).db(undefined, { ignoreUndefined: true });
+  const dbName = process.env.MONGODB_DB;
+  return (await getDbClient()).db(dbName, { ignoreUndefined: true });
 };
 
 export const getDbConnectionSync = () => {
   if (!client) getClient();
-  return client.db(undefined, { ignoreUndefined: true });
+  const dbName = process.env.MONGODB_DB;
+  return client.db(dbName, { ignoreUndefined: true });
 };
 
 export const getDbClient = async () => {

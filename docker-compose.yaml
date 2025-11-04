@@ -7,6 +7,7 @@ services:
     image: ghcr.io/dbondarchuk/vivid-admin:latest
     environment:
       - MONGODB_URI=${MONGODB_URI:-mongodb://mongodb:27017/vivid?retryWrites=true&w=majority}
+      - MONGODB_DB=${MONGODB_DB}
       - TZ=${TZ:-America/New_York}
       - AUTH_SECRET=${AUTH_SECRET:-n6WKAuaUVdOYMRReNYXEd/sHLF/Ddfams+FAGMe7vzk=}
       - AUTH_TRUST_HOST=${ADMIN_DOMAIN:-app-dev.vividnail.studio}
@@ -53,6 +54,7 @@ services:
     image: ghcr.io/dbondarchuk/vivid-web:latest
     environment:
       - MONGODB_URI=${MONGODB_URI:-mongodb://mongodb:27017/vivid?retryWrites=true&w=majority}
+      - MONGODB_DB=${MONGODB_DB}
       - TZ=${TZ:-America/New_York}
       - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-vividnail.studio}
       - SECRET_KEY=${SECRET_KEY:-uw8iDFHFNjbIU8gPGMByTLiFfXJex7E1}
@@ -102,6 +104,7 @@ services:
       - REDIS_PASSWORD=${REDIS_PASSWORD:-}
       - REDIS_DB=${REDIS_DB:-0}
       - MONGODB_URI=${MONGODB_URI:-mongodb://mongodb:27017/vivid?retryWrites=true&w=majority}
+      - MONGODB_DB=${MONGODB_DB}
       - SECRET_KEY=${SECRET_KEY:-uw8iDFHFNjbIU8gPGMByTLiFfXJex7E1}
       - LOG_LEVEL=${LOG_LEVEL:-debug}
       - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-vividnail.studio}
@@ -139,6 +142,7 @@ services:
       - REDIS_PASSWORD=${REDIS_PASSWORD:-}
       - REDIS_DB=${REDIS_DB:-0}
       - MONGODB_URI=${MONGODB_URI:-mongodb://mongodb:27017/vivid?retryWrites=true&w=majority}
+      - MONGODB_DB=${MONGODB_DB}
       - SECRET_KEY=${SECRET_KEY:-uw8iDFHFNjbIU8gPGMByTLiFfXJex7E1}
       - LOG_LEVEL=${LOG_LEVEL:-debug}
       - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-vividnail.studio}
@@ -171,6 +175,7 @@ services:
     environment:
       - TZ=${TZ:-America/New_York}
       - MONGODB_URI=${MONGODB_URI:-mongodb://mongodb:27017/vivid?retryWrites=true&w=majority}
+      - MONGODB_DB=${MONGODB_DB}
       - LOG_LEVEL=${LOG_LEVEL:-debug}
       - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-vividnail.studio}
     restart: unless-stopped
