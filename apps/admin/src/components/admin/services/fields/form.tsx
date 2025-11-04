@@ -120,7 +120,7 @@ export const ServiceFieldForm: React.FC<{
     mode: "all",
     reValidateMode: "onChange",
     defaultValues: initialData || {
-      type: "text",
+      type: "oneLine",
     },
   });
 

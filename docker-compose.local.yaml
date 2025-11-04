@@ -167,6 +167,25 @@ services:
       - mongodb
       - redis
 
+  vivid-domain-checker:
+    build:
+      context: .
+      dockerfile: apps/domain-checker/Dockerfile
+    image: ghcr.io/dbondarchuk/vivid-domain-checker:latest
+    env_file: ".env"
+    environment:
+      - TZ=${TZ:-America/New_York}
+      - MONGODB_URI=${MONGODB_URI:-mongodb://mongodb:27017/vivid?retryWrites=true&w=majority}
+      - LOG_LEVEL=${LOG_LEVEL:-debug}
+      - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-localhost:3000}
+    restart: unless-stopped
+    ports:
+      - "5555:5555"
+    networks:
+      - vivid-network
+    depends_on:
+      - mongodb
+
   mongodb:
     image: mongo:latest
     restart: unless-stopped
