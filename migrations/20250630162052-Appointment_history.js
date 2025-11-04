@@ -17,7 +17,7 @@ module.exports = {
           },
           {
             name: "appointmentId",
-          }
+          },
         );
 
         const appointments = await db
@@ -25,22 +25,24 @@ module.exports = {
           .find({})
           .toArray();
 
-        await history.bulkWrite(
-          appointments.map((appointment) => ({
-            insertOne: {
-              document: {
-                _id: new ObjectId().toString(),
-                appointmentId: appointment._id,
-                dateTime: appointment.createdAt,
-                type: "created",
-                data: {
-                  by: "customer",
-                  confirmed: false,
+        if (appointments.length) {
+          await history.bulkWrite(
+            appointments.map((appointment) => ({
+              insertOne: {
+                document: {
+                  _id: new ObjectId().toString(),
+                  appointmentId: appointment._id,
+                  dateTime: appointment.createdAt,
+                  type: "created",
+                  data: {
+                    by: "customer",
+                    confirmed: false,
+                  },
                 },
               },
-            },
-          }))
-        );
+            })),
+          );
+        }
       });
     } finally {
       await session.endSession();

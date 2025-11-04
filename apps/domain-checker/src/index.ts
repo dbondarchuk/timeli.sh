@@ -69,19 +69,32 @@ async function startServer(): Promise<void> {
 
         try {
           let organization = null;
-
           // Check if domain matches {organizationSlug}.{PUBLIC_DOMAIN} pattern
           const publicDomain = process.env.PUBLIC_DOMAIN;
           if (publicDomain && domain.endsWith(`.${publicDomain}`)) {
+            logger.debug(
+              { domain, publicDomain },
+              "Checking domain against slug pattern",
+            );
             const slug = domain.replace(`.${publicDomain}`, "");
+            logger.debug({ slug }, "Slug extracted");
             organization =
               await organizationService.getOrganizationBySlug(slug);
+            logger.debug(
+              { organization },
+              `Organization ${organization ? "" : "not "}found by slug`,
+            );
           }
 
           // Also check custom domains
           if (!organization) {
+            logger.debug({ domain }, "Checking domain against custom domains");
             organization =
               await organizationService.getOrganizationByDomain(domain);
+            logger.debug(
+              { organization },
+              `Organization ${organization ? "" : "not "}found by domain`,
+            );
           }
 
           const isInUse = organization !== null;
