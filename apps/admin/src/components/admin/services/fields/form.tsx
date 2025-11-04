@@ -119,7 +119,9 @@ export const ServiceFieldForm: React.FC<{
     resolver: zodResolver(formSchema),
     mode: "all",
     reValidateMode: "onChange",
-    defaultValues: initialData || {},
+    defaultValues: initialData || {
+      type: "text",
+    },
   });
 
   const onSubmit = async (data: FormValues) => {
@@ -252,7 +254,10 @@ export const ServiceFieldForm: React.FC<{
                       }))}
                       searchLabel={t("services.fields.form.typePlaceholder")}
                       value={field.value}
-                      onItemSelect={field.onChange}
+                      onItemSelect={(item) => {
+                        field.onChange(item);
+                        field.onBlur();
+                      }}
                     />
                   </FormControl>
                   <FormMessage />
