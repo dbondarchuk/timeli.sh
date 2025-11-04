@@ -36,10 +36,6 @@ services:
     restart: unless-stopped
     ports:
       - "3001:3001"
-    volumes:
-      - "./apps/admin/public/upload:/app/public/upload"
-    networks:
-      - vivid-network
     depends_on:
       - vivid-job-processor
       - vivid-notification-sender
@@ -76,10 +72,6 @@ services:
     restart: unless-stopped
     ports:
       - "3000:3000"
-    volumes:
-      - "./apps/web/public/upload:/app/public/upload"
-    networks:
-      - vivid-network
     depends_on:
       - vivid-job-processor
       - vivid-notification-sender
@@ -116,8 +108,6 @@ services:
       - S3_BUCKET=${S3_BUCKET:-assets}
       - S3_FORCE_PATH_STYLE=${S3_FORCE_PATH_STYLE:-true}
     restart: unless-stopped
-    networks:
-      - vivid-network
 
   vivid-job-processor:
     build:
@@ -150,8 +140,6 @@ services:
       - S3_BUCKET=${S3_BUCKET:-assets}
       - S3_FORCE_PATH_STYLE=${S3_FORCE_PATH_STYLE:-true}
     restart: unless-stopped
-    networks:
-      - vivid-network
 
   vivid-domain-checker:
     build:
@@ -166,9 +154,3 @@ services:
     restart: unless-stopped
     ports:
       - "5555:5555"
-    networks:
-      - vivid-network
-
-networks:
-  vivid-network:
-    driver: bridge
