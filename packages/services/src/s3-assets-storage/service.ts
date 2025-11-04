@@ -55,7 +55,7 @@ export class S3AssetsStorageService implements IAssetsStorage {
 
       return response.Body as Readable;
     } catch (error: any) {
-      if (error?.name === "NoSuchKey") {
+      if (error?.name === "NoSuchKey" || error?.name === "NotFound") {
         logger.error({ filename, fileKey }, "File not found in S3");
         return null;
       }
@@ -131,8 +131,6 @@ export class S3AssetsStorageService implements IAssetsStorage {
 
     const fileKey = this.getKey(filename);
     try {
-      const client = this.getClient();
-
       const exists = await this.checkExists(filename);
       if (!exists) {
         logger.debug(
@@ -142,6 +140,7 @@ export class S3AssetsStorageService implements IAssetsStorage {
         return;
       }
 
+      const client = this.getClient();
       await client.send(
         new DeleteObjectCommand({
           Bucket: this.getBucketName(),
@@ -214,7 +213,7 @@ export class S3AssetsStorageService implements IAssetsStorage {
 
       return true;
     } catch (error: any) {
-      if (error?.name === "NotFound") {
+      if (error?.name === "NoSuchKey" || error?.name === "NotFound") {
         logger.debug({ filename, fileKey }, "File does not exist in S3");
         return false;
       }
@@ -223,6 +222,8 @@ export class S3AssetsStorageService implements IAssetsStorage {
         {
           filename,
           fileKey,
+          errorName: error?.name,
+          errorCode: error?.code,
           error: error?.message || error?.toString(),
         },
         "Error checking if file exists in S3",

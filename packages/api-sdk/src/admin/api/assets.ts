@@ -154,20 +154,21 @@ export const checkAssetUniqueFileName = async (
     id,
   });
 
-  const url = new URL("/assets/check", window.location.origin);
-  url.searchParams.set("filename", filename);
+  const searchParams = new URLSearchParams();
+  searchParams.set("filename", filename);
   if (id) {
-    url.searchParams.set("id", id);
+    searchParams.set("id", id);
   }
 
-  const response = await fetchAdminApi(url.pathname + url.search, {
-    method: "GET",
-  });
+  const response = await fetchAdminApi(
+    `/assets/check?${searchParams.toString()}`,
+    {
+      method: "GET",
+    },
+  );
 
   const data = await response.json<{ isUnique: boolean }>();
-  console.debug("Asset filename uniqueness check completed", {
-    data,
-  });
+  console.debug("Asset filename uniqueness check completed", { data });
 
   return data.isUnique;
 };

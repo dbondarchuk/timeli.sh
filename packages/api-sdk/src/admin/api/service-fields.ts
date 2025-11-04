@@ -135,15 +135,18 @@ export const checkServiceFieldUniqueName = async (
     id,
   });
 
-  const url = new URL("/services/fields/check", window.location.origin);
-  url.searchParams.set("name", name);
+  const searchParams = new URLSearchParams();
+  searchParams.set("name", name);
   if (id) {
-    url.searchParams.set("id", id);
+    searchParams.set("id", id);
   }
 
-  const response = await fetchAdminApi(url.toString(), {
-    method: "GET",
-  });
+  const response = await fetchAdminApi(
+    `/services/fields/check?${searchParams.toString()}`,
+    {
+      method: "GET",
+    },
+  );
 
   const data = await response.json<{ isUnique: boolean }>();
   console.debug("Service field name uniqueness check completed", {

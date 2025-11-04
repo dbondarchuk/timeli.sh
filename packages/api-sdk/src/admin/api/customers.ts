@@ -149,16 +149,19 @@ export const checkCustomerUniqueEmailAndPhone = async (
     id,
   });
 
-  const url = new URL("/customers/check", window.location.origin);
-  emails.forEach((email) => url.searchParams.append("emails", email));
-  phones.forEach((phone) => url.searchParams.append("phones", phone));
+  const searchParams = new URLSearchParams();
+  emails.forEach((email) => searchParams.append("emails", email));
+  phones.forEach((phone) => searchParams.append("phones", phone));
   if (id) {
-    url.searchParams.set("id", id);
+    searchParams.set("id", id);
   }
 
-  const response = await fetchAdminApi(url.toString(), {
-    method: "GET",
-  });
+  const response = await fetchAdminApi(
+    `/customers/check?${searchParams.toString()}`,
+    {
+      method: "GET",
+    },
+  );
 
   const data = await response.json<{ email: boolean; phone: boolean }>();
   console.debug("Customer email and phone uniqueness check completed", {
