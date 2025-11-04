@@ -71,7 +71,7 @@ module.exports = {
           names: new Set(),
           emails: new Set(),
           phones: new Set(),
-        }
+        },
       );
 
       const [name, ...knownNames] = known.names;
@@ -100,11 +100,13 @@ module.exports = {
           $set: {
             customerId: customer._id,
           },
-        }
+        },
       );
     }
 
-    await collection.insertMany(customers);
+    if (customers.length) {
+      await collection.insertMany(customers);
+    }
   },
 
   async down(db) {
@@ -116,7 +118,7 @@ module.exports = {
         $unset: {
           customerId: 1,
         },
-      }
+      },
     );
   },
 };

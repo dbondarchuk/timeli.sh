@@ -81,7 +81,7 @@ RUN find ./packages/app-store/src/apps -type f ! -path "*/translations/*" -delet
 
 
 # Install migrate-mongo
-RUN npm install -g migrate-mongo 
+# RUN npm install -g migrate-mongo 
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
