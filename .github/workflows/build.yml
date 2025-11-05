@@ -284,4 +284,4 @@ jobs:
       - name: Deploy to Coolify
         if: github.event_name == 'push' && github.ref == 'refs/heads/multi-tenant'
         run: |
-          curl --request GET '${{ secrets.COOLIFY_WEBHOOK }}' --header 'Authorization: Bearer ${{ secrets.COOLIFY_TOKEN }}
+          curl --request GET '${{ secrets.COOLIFY_WEBHOOK }}' --header 'Authorization: Bearer ${{ secrets.COOLIFY_TOKEN }}'
