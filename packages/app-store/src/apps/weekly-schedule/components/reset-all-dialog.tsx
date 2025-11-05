@@ -1,5 +1,5 @@
-import { useI18n } from "@vivid/i18n";
-import { WeekIdentifier } from "@vivid/types";
+import { useI18n } from "@timelish/i18n";
+import { WeekIdentifier } from "@timelish/types";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -12,7 +12,7 @@ import {
   Button,
   Spinner,
   toastPromise,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { RotateCcw } from "lucide-react";
 import React from "react";
 import {

@@ -2,6 +2,7 @@
 
 import React from "react";
 
+import { cn } from "@timelish/ui";
 import { HEADING_KEYS } from "@udecode/plate-heading";
 import {
   ParagraphPlugin,
@@ -10,7 +11,6 @@ import {
   createNodesHOC,
   usePlaceholderState,
 } from "@udecode/plate/react";
-import { cn } from "@vivid/ui";
 
 export const Placeholder = (props: PlaceholderProps) => {
   const { children, nodeProps, placeholder } = props;

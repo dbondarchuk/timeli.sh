@@ -4,7 +4,7 @@ import {
   CustomerUpdateModel,
   okStatus,
   WithTotal,
-} from "@vivid/types";
+} from "@timelish/types";
 import {
   CustomersSearchParams,
   customersSearchParamsSerializer,

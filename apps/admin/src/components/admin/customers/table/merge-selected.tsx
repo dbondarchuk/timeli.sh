@@ -1,8 +1,8 @@
 "use client";
 
-import { adminApi } from "@vivid/api-sdk";
-import { useI18n } from "@vivid/i18n";
-import { CustomerListModel } from "@vivid/types";
+import { adminApi } from "@timelish/api-sdk";
+import { useI18n } from "@timelish/i18n";
+import { CustomerListModel } from "@timelish/types";
 import {
   Button,
   Dialog,
@@ -16,8 +16,8 @@ import {
   Label,
   Spinner,
   toastPromise,
-} from "@vivid/ui";
-import { CustomerSelector } from "@vivid/ui-admin";
+} from "@timelish/ui";
+import { CustomerSelector } from "@timelish/ui-admin";
 import { Merge } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";

@@ -8,8 +8,8 @@ import {
   SelectInput,
   SliderInput,
   TextAlignInput,
-} from "@vivid/builder";
-import { useI18n } from "@vivid/i18n";
+} from "@timelish/builder";
+import { useI18n } from "@timelish/i18n";
 import { DraftingCompass } from "lucide-react";
 import { FONT_FAMILIES } from "./helpers/font-family";
 import { TStyle } from "./helpers/TStyle";

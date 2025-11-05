@@ -2,8 +2,8 @@ import {
   EditorChildren,
   useBlockEditor,
   useCurrentBlock,
-} from "@vivid/builder";
-import { BlockStyle, useClassName } from "@vivid/page-builder-base";
+} from "@timelish/builder";
+import { BlockStyle, useClassName } from "@timelish/page-builder-base";
 import {
   Carousel,
   CarouselContent,
@@ -11,7 +11,7 @@ import {
   CarouselNext,
   CarouselPrevious,
   cn,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { memo } from "react";
 import { CarouselProps, styles } from "./schema";
 

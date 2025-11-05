@@ -5,6 +5,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import type { TPlaceholderElement } from "@udecode/plate-media";
 
+import { cn, useUploadFile } from "@timelish/ui";
 import {
   AudioPlugin,
   FilePlugin,
@@ -15,7 +16,6 @@ import {
   VideoPlugin,
 } from "@udecode/plate-media/react";
 import { useEditorPlugin, withHOC, withRef } from "@udecode/plate/react";
-import { cn, useUploadFile } from "@vivid/ui";
 import { AudioLines, FileUp, Film, ImageIcon } from "lucide-react";
 import { useFilePicker } from "use-file-picker";
 

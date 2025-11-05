@@ -5,11 +5,11 @@ import PageContainer from "@/components/admin/layout/page-container";
 import {
   assetsSearchParamsCache,
   serializeAssetsSearchParams,
-} from "@vivid/api-sdk";
-import { getI18nAsync } from "@vivid/i18n/server";
-import { getLoggerFactory } from "@vivid/logger";
-import { Breadcrumbs, Heading, Link } from "@vivid/ui";
-import { DataTableSkeleton } from "@vivid/ui-admin";
+} from "@timelish/api-sdk";
+import { getI18nAsync } from "@timelish/i18n/server";
+import { getLoggerFactory } from "@timelish/logger";
+import { Breadcrumbs, Heading, Link } from "@timelish/ui";
+import { DataTableSkeleton } from "@timelish/ui-admin";
 import { Upload } from "lucide-react";
 import { Metadata } from "next";
 import { Suspense } from "react";

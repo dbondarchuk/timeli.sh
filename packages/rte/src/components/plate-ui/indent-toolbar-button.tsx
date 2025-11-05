@@ -1,8 +1,8 @@
 "use client";
 
+import { ToolbarButton } from "@timelish/ui";
 import { withRef } from "@udecode/cn";
 import { useIndentButton } from "@udecode/plate-indent/react";
-import { ToolbarButton } from "@vivid/ui";
 import { Indent } from "lucide-react";
 
 export const IndentToolbarButton = withRef<typeof ToolbarButton>(

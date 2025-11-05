@@ -4,10 +4,10 @@ import { useQueryStates } from "nuqs";
 import React from "react";
 import { searchParams } from "./search-params";
 
-import { useI18n } from "@vivid/i18n";
-import { WithTotal } from "@vivid/types";
-import { toast, useDebounce } from "@vivid/ui";
-import { DataTable, DataTableSkeleton } from "@vivid/ui-admin";
+import { useI18n } from "@timelish/i18n";
+import { WithTotal } from "@timelish/types";
+import { toast, useDebounce } from "@timelish/ui";
+import { DataTable, DataTableSkeleton } from "@timelish/ui-admin";
 import { getWaitlistEntries } from "../actions";
 import { WaitlistEntry } from "../models";
 import {

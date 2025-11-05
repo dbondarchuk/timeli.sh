@@ -1,7 +1,7 @@
 "use client";
 
-import { BuilderKeys, useI18n } from "@vivid/i18n";
-import { Button, cn, Combobox } from "@vivid/ui";
+import { BuilderKeys, useI18n } from "@timelish/i18n";
+import { Button, cn, Combobox } from "@timelish/ui";
 import { X } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 import {

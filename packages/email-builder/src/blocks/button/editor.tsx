@@ -8,10 +8,10 @@ import {
   useEditorArgs,
   usePortalContext,
   useSetSelectedBlockId,
-} from "@vivid/builder";
-import { useI18n } from "@vivid/i18n";
-import { cn } from "@vivid/ui";
-import { ArgumentsAutocomplete } from "@vivid/ui-admin";
+} from "@timelish/builder";
+import { useI18n } from "@timelish/i18n";
+import { cn } from "@timelish/ui";
+import { ArgumentsAutocomplete } from "@timelish/ui-admin";
 import { useRef } from "react";
 import sanitizeHtml from "sanitize-html";
 import { ButtonProps } from "./schema";

@@ -1,4 +1,4 @@
-import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
 import {
   Appointment,
   AppointmentStatus,
@@ -10,14 +10,14 @@ import {
   ICalendarWriter,
   IConnectedApp,
   IConnectedAppProps,
-} from "@vivid/types";
+} from "@timelish/types";
 import {
   AppointmentStatusToICalMethodMap,
   getAdminUrl,
   getArguments,
   getIcsEventUid,
   getWebsiteUrl,
-} from "@vivid/utils";
+} from "@timelish/utils";
 import { convert } from "html-to-text";
 import { CalendarWriterConfiguration } from "./models";
 

@@ -1,4 +1,4 @@
-import { colors } from "@vivid/types";
+import { colors } from "@timelish/types";
 
 export const ReplaceOriginalColors = () => {
   const values = colors

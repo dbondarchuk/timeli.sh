@@ -11,7 +11,7 @@ import {
   mergeRefs,
   Textarea,
   TextareaProps,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
 // https://github.com/component/textarea-caret-position

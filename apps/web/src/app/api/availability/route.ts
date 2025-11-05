@@ -1,6 +1,6 @@
 import { getServicesContainer } from "@/utils/utils";
-import { availabilitySearchParamsLoader } from "@vivid/api-sdk";
-import { getLoggerFactory } from "@vivid/logger";
+import { availabilitySearchParamsLoader } from "@timelish/api-sdk";
+import { getLoggerFactory } from "@timelish/logger";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {

@@ -1,4 +1,4 @@
-import { Shortcut } from "@vivid/page-builder-base";
+import { Shortcut } from "@timelish/page-builder-base";
 import { AlignLeft, ImageDown, ImageUp, ImageUpscale } from "lucide-react";
 import { ImageStylesSchema } from "./styles";
 

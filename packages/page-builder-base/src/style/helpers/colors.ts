@@ -1,4 +1,4 @@
-import { colors, colorsLabels } from "@vivid/types";
+import { colors, colorsLabels } from "@timelish/types";
 import { ValueLabel } from "./types";
 
 export const COLOR_NAMES = colors;

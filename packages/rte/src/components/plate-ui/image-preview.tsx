@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@timelish/ui";
 import {
   PreviewImage,
   useImagePreview,
@@ -7,7 +8,6 @@ import {
   useScaleInput,
 } from "@udecode/plate-media/react";
 import { useEditorRef } from "@udecode/plate/react";
-import { cn } from "@vivid/ui";
 import { cva } from "class-variance-authority";
 import { ArrowLeft, ArrowRight, Download, Minus, Plus, X } from "lucide-react";
 

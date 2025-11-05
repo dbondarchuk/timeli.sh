@@ -1,7 +1,7 @@
-import { adminApi } from "@vivid/api-sdk";
-import { useI18n } from "@vivid/i18n";
-import { CustomerListModel } from "@vivid/types";
-import { cn, ComboboxAsync, IComboboxItem, Skeleton } from "@vivid/ui";
+import { adminApi } from "@timelish/api-sdk";
+import { useI18n } from "@timelish/i18n";
+import { CustomerListModel } from "@timelish/types";
+import { cn, ComboboxAsync, IComboboxItem, Skeleton } from "@timelish/ui";
 // import Image from "next/image";
 import React from "react";
 

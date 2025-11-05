@@ -1,4 +1,4 @@
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory } from "@timelish/logger";
 import {
   AppointmentAddon,
   AppointmentDiscount,
@@ -6,8 +6,8 @@ import {
   AppointmentOption,
   AppointmentRequest,
   Customer,
-} from "@vivid/types";
-import { formatAmount, getDiscountAmount } from "@vivid/utils";
+} from "@timelish/types";
+import { formatAmount, getDiscountAmount } from "@timelish/utils";
 import { getServicesContainer } from "../utils";
 
 export const getAppointmentEventFromRequest = async (

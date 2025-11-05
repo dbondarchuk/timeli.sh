@@ -1,12 +1,12 @@
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory } from "@timelish/logger";
 import {
   DaySchedule,
   IConfigurationService,
   IConnectedAppsService,
   IScheduleProvider,
   IScheduleService,
-} from "@vivid/types";
-import { eachOfInterval } from "@vivid/utils";
+} from "@timelish/types";
+import { eachOfInterval } from "@timelish/utils";
 
 export class ScheduleService implements IScheduleService {
   protected readonly loggerFactory = getLoggerFactory("ScheduleService");

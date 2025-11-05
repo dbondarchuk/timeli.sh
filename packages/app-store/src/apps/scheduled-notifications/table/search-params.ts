@@ -5,8 +5,8 @@ import {
   parseAsStringEnum,
 } from "nuqs";
 
-import { baseSearchParams } from "@vivid/api-sdk";
-import { communicationChannels } from "@vivid/types";
+import { baseSearchParams } from "@timelish/api-sdk";
+import { communicationChannels } from "@timelish/types";
 import { scheduledNotificationTypes } from "../models";
 
 export const searchParams = {

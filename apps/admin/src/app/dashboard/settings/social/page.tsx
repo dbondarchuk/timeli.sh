@@ -1,8 +1,8 @@
 import { getServicesContainer } from "@/app/utils";
 import PageContainer from "@/components/admin/layout/page-container";
-import { getI18nAsync } from "@vivid/i18n/server";
-import { getLoggerFactory } from "@vivid/logger";
-import { Breadcrumbs, Heading } from "@vivid/ui";
+import { getI18nAsync } from "@timelish/i18n/server";
+import { getLoggerFactory } from "@timelish/logger";
+import { Breadcrumbs, Heading } from "@timelish/ui";
 import { Metadata } from "next";
 import { SocialSettingsForm } from "./form";
 

@@ -1,10 +1,10 @@
-import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
 import {
   ConnectedAppData,
   ConnectedAppStatusWithText,
   IConnectedApp,
   IConnectedAppProps,
-} from "@vivid/types";
+} from "@timelish/types";
 
 export default class FinancialOverviewService implements IConnectedApp {
   protected readonly loggerFactory: LoggerFactory;

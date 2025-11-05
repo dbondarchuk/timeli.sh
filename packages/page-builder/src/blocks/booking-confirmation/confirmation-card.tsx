@@ -1,7 +1,7 @@
 "use client";
 
-import { useI18n } from "@vivid/i18n";
-import { Appointment } from "@vivid/types";
+import { useI18n } from "@timelish/i18n";
+import { Appointment } from "@timelish/types";
 import {
   Card,
   CardContent,
@@ -9,8 +9,8 @@ import {
   CardHeader,
   CardTitle,
   cn,
-} from "@vivid/ui";
-import { durationToTime } from "@vivid/utils";
+} from "@timelish/ui";
+import { durationToTime } from "@timelish/utils";
 import { DollarSign, Timer } from "lucide-react";
 import { forwardRef } from "react";
 

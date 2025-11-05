@@ -1,4 +1,4 @@
-import { cn, Slider, Text } from "@vivid/ui";
+import { cn, Slider, Text } from "@timelish/ui";
 import React, { JSX } from "react";
 
 type SliderInputProps = {

@@ -1,8 +1,8 @@
 "use client";
 
-import { AvailableApps } from "@vivid/app-store";
-import { useI18n } from "@vivid/i18n";
-import { Button, toastPromise } from "@vivid/ui";
+import { AvailableApps } from "@timelish/app-store";
+import { useI18n } from "@timelish/i18n";
+import { Button, toastPromise } from "@timelish/ui";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { installComplexApp, setAppStatus } from "./actions";

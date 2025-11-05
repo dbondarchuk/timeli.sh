@@ -8,7 +8,7 @@ import { cn, withRef } from "@udecode/cn";
 import { getHandler, IS_APPLE } from "@udecode/plate";
 import { useFocused, useReadOnly, useSelected } from "@udecode/plate/react";
 
-import { useMounted } from "@vivid/ui";
+import { useMounted } from "@timelish/ui";
 
 import { PlateElement } from "./plate-element";
 

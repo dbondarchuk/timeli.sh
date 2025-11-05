@@ -1,4 +1,4 @@
-import type { Language } from "@vivid/i18n";
+import type { Language } from "@timelish/i18n";
 
 import {
   Appointment,
@@ -11,7 +11,7 @@ import {
   SocialConfiguration,
   SocialLinkType,
   socialType,
-} from "@vivid/types";
+} from "@timelish/types";
 import { formatArguments, FormattedArguments } from "./format-arguments";
 import { capitalize } from "./string";
 import { durationToTime } from "./time";

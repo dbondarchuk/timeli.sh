@@ -1,8 +1,8 @@
 import { getServicesContainer } from "@/utils/utils";
-import { AppsBlocksReaders } from "@vivid/app-store/blocks/readers";
-import { getLoggerFactory } from "@vivid/logger";
-import { Header, PageReader, Styling } from "@vivid/page-builder/reader";
-import { formatArguments, setPageData } from "@vivid/utils";
+import { AppsBlocksReaders } from "@timelish/app-store/blocks/readers";
+import { getLoggerFactory } from "@timelish/logger";
+import { Header, PageReader, Styling } from "@timelish/page-builder/reader";
+import { formatArguments, setPageData } from "@timelish/utils";
 import { DateTime } from "luxon";
 import { Metadata, ResolvingMetadata } from "next";
 import { cookies, headers } from "next/headers";

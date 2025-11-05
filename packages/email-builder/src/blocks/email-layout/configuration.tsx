@@ -6,8 +6,8 @@ import {
   FontFamilyInput,
   SliderInput,
   TextInput,
-} from "@vivid/builder";
-import { useI18n } from "@vivid/i18n";
+} from "@timelish/builder";
+import { useI18n } from "@timelish/i18n";
 import { SquareRoundCorner } from "lucide-react";
 import { FONT_FAMILIES } from "../../style-inputs/helpers/font-family";
 import { EmailLayoutProps } from "./schema";

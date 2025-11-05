@@ -1,7 +1,7 @@
 "use client";
 
-import { useI18n } from "@vivid/i18n";
-import { Button, Combobox } from "@vivid/ui";
+import { useI18n } from "@timelish/i18n";
+import { Button, Combobox } from "@timelish/ui";
 import { Move, Plus, Trash2 } from "lucide-react";
 import { useCallback, useState } from "react";
 import * as z from "zod";

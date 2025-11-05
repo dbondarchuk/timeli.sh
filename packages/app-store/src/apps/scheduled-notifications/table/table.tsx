@@ -1,11 +1,11 @@
-import { useI18n } from "@vivid/i18n";
+import { useI18n } from "@timelish/i18n";
 import { useQueryStates } from "nuqs";
 import React from "react";
 import { searchParams } from "./search-params";
 
-import { WithTotal } from "@vivid/types";
-import { toast, useDebounce } from "@vivid/ui";
-import { DataTable, DataTableSkeleton } from "@vivid/ui-admin";
+import { WithTotal } from "@timelish/types";
+import { toast, useDebounce } from "@timelish/ui";
+import { DataTable, DataTableSkeleton } from "@timelish/ui-admin";
 import { getScheduledNotifications } from "../actions";
 import { ScheduledNotification } from "../models";
 import {

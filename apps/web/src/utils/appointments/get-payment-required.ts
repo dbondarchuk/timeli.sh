@@ -1,12 +1,12 @@
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory } from "@timelish/logger";
 import {
   AppointmentEvent,
   AppointmentOption,
   AppointmentRequest,
   Customer,
   IServicesContainer,
-} from "@vivid/types";
-import { formatAmount } from "@vivid/utils";
+} from "@timelish/types";
+import { formatAmount } from "@timelish/utils";
 import { getServicesContainer } from "../utils";
 import { getAppointmentEventFromRequest } from "./get-event";
 

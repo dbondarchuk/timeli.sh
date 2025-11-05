@@ -1,4 +1,4 @@
-import { DaySchedule } from "@vivid/types";
+import { DaySchedule } from "@timelish/types";
 import {
   ScheduleSearchParams,
   serializeScheduleSearchParams,

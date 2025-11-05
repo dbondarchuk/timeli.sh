@@ -1,14 +1,14 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { adminApi } from "@vivid/api-sdk";
-import { useI18n } from "@vivid/i18n";
+import { adminApi } from "@timelish/api-sdk";
+import { useI18n } from "@timelish/i18n";
 import {
   CustomerUpdateModel,
   DatabaseId,
   getCustomerSchemaWithUniqueCheck,
   isPaymentRequiredForCustomerTypes,
-} from "@vivid/types";
+} from "@timelish/types";
 import {
   Button,
   Card,
@@ -36,8 +36,8 @@ import {
   PhoneInput,
   Textarea,
   toastPromise,
-} from "@vivid/ui";
-import { AssetSelectorDialog, SaveButton } from "@vivid/ui-admin";
+} from "@timelish/ui";
+import { AssetSelectorDialog, SaveButton } from "@timelish/ui-admin";
 import { PlusCircle, Trash } from "lucide-react";
 // import Image from "next/image";
 import { useRouter } from "next/navigation";

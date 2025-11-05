@@ -1,9 +1,9 @@
 "use client";
 
-import { BASE_ADMIN_API_URL } from "@vivid/api-sdk";
-import { useI18n } from "@vivid/i18n";
-import { DashboardNotification } from "@vivid/types";
-import { Badge, toast } from "@vivid/ui";
+import { BASE_ADMIN_API_URL } from "@timelish/api-sdk";
+import { useI18n } from "@timelish/i18n";
+import { DashboardNotification } from "@timelish/types";
+import { Badge, toast } from "@timelish/ui";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { create } from "zustand";

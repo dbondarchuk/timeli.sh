@@ -1,6 +1,6 @@
 "use client";
-import { useI18n } from "@vivid/i18n";
-import { Button } from "@vivid/ui";
+import { useI18n } from "@timelish/i18n";
+import { Button } from "@timelish/ui";
 import { FilterX } from "lucide-react";
 
 type DataTableResetFilterProps = {

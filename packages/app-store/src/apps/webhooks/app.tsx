@@ -1,4 +1,4 @@
-import { App } from "@vivid/types";
+import { App } from "@timelish/types";
 import { WebhooksLogo } from "./logo";
 import {
   WebhooksAdminKeys,

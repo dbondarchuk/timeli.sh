@@ -1,6 +1,6 @@
 "use server";
 
-import { getDbConnection } from "@vivid/services/database";
+import { getDbConnection } from "@timelish/services/database";
 import { Organization } from "better-auth/plugins/organization";
 
 export async function checkOrganizationSlug(slug: string) {

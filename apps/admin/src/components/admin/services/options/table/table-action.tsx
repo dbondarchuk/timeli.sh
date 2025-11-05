@@ -4,7 +4,7 @@ import {
   DataTableResetFilter,
   DataTableSearch,
   useSelectedRowsStore,
-} from "@vivid/ui-admin";
+} from "@timelish/ui-admin";
 import { DeleteSelectedOptionsButton } from "./delete-selected";
 import { useAddonsTableFilters } from "./use-table-filters";
 

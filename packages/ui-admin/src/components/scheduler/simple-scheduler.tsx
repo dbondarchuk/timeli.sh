@@ -1,7 +1,7 @@
 "use client";
 
-import { AllKeys, useI18n } from "@vivid/i18n";
-import { AvailablePeriod } from "@vivid/types";
+import { AllKeys, useI18n } from "@timelish/i18n";
+import { AvailablePeriod } from "@timelish/types";
 import {
   Accordion,
   AccordionContent,
@@ -12,8 +12,8 @@ import {
   CardContent,
   SimpleTimePicker,
   use12HourFormat,
-} from "@vivid/ui";
-import { parseTime } from "@vivid/utils";
+} from "@timelish/ui";
+import { parseTime } from "@timelish/utils";
 import { Clock, Plus, X } from "lucide-react";
 import { DateTime } from "luxon";
 import React, { useMemo, useState } from "react";

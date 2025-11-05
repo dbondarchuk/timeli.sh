@@ -1,8 +1,8 @@
 "use client";
 
-import { usePortalContext } from "@vivid/builder";
-import { cn, useDebounce } from "@vivid/ui";
-import { mergeRefs } from "@vivid/ui/src/utils/merge-refs";
+import { usePortalContext } from "@timelish/builder";
+import { cn, useDebounce } from "@timelish/ui";
+import { mergeRefs } from "@timelish/ui/src/utils/merge-refs";
 import {
   CSSProperties,
   forwardRef,

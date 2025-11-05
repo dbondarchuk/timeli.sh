@@ -1,6 +1,6 @@
-import { getI18nAsync } from "@vivid/i18n/server";
-import { Breadcrumbs, Heading } from "@vivid/ui";
-import { AppointmentView } from "@vivid/ui-admin-kit";
+import { getI18nAsync } from "@timelish/i18n/server";
+import { Breadcrumbs, Heading } from "@timelish/ui";
+import { AppointmentView } from "@timelish/ui-admin-kit";
 import { notFound } from "next/navigation";
 import React from "react";
 import { AppointmentDeclineDialogWrapper } from "./appointment-decline-dialog";

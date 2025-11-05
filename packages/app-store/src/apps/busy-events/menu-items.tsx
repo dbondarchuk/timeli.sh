@@ -1,4 +1,4 @@
-import { AppMenuItem } from "@vivid/types";
+import { AppMenuItem } from "@timelish/types";
 import { CalendarX2 } from "lucide-react";
 import { BusyEventsAppSetup } from "./setup";
 import {

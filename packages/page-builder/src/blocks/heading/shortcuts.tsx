@@ -3,8 +3,8 @@ import {
   colorShortcut,
   fontFamilyShortcut,
   Shortcut,
-} from "@vivid/page-builder-base";
-import { AllStylesSchemas } from "@vivid/page-builder-base/style";
+} from "@timelish/page-builder-base";
+import { AllStylesSchemas } from "@timelish/page-builder-base/style";
 import { TypeOutline } from "lucide-react";
 
 export const headingShortcuts: Shortcut<AllStylesSchemas>[] = [

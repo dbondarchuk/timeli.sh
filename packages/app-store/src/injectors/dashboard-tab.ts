@@ -1,4 +1,4 @@
-import { DashboardTabInjectorApp } from "@vivid/types";
+import { DashboardTabInjectorApp } from "@timelish/types";
 import { FINANCIAL_OVERVIEW_APP_NAME } from "../apps/financial-overview/const";
 import { FinancialOverviewDashboardTabInjector } from "../apps/financial-overview/injectorts";
 import { WAITLIST_APP_NAME } from "../apps/waitlist/const";

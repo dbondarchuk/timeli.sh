@@ -1,7 +1,7 @@
 "use client";
-import { adminApi } from "@vivid/api-sdk";
-import { useI18n } from "@vivid/i18n";
-import { Asset } from "@vivid/types";
+import { adminApi } from "@timelish/api-sdk";
+import { useI18n } from "@timelish/i18n";
+import { Asset } from "@timelish/types";
 import {
   AlertModal,
   Button,
@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
   toast,
   toastPromise,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import copy from "copy-text-to-clipboard";
 import { Copy, Download, Edit, MoreHorizontal, Trash } from "lucide-react";
 import Link from "next/link";

@@ -59,7 +59,7 @@ import {
   DropdownMenuTrigger,
   ToolbarButton,
   useOpenState,
-} from "@vivid/ui";
+} from "@timelish/ui";
 
 type Group = {
   group: string;

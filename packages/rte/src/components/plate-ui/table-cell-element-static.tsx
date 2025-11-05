@@ -2,9 +2,9 @@ import React from "react";
 
 import type { SlateElementProps } from "@udecode/plate";
 
+import { cn } from "@timelish/ui";
 import { SlateElement } from "@udecode/plate";
 import { type TTableCellElement, BaseTablePlugin } from "@udecode/plate-table";
-import { cn } from "@vivid/ui";
 
 export function TableCellElementStatic({
   children,

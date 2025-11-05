@@ -1,4 +1,4 @@
-import { useI18n, useLocale } from "@vivid/i18n";
+import { useI18n, useLocale } from "@timelish/i18n";
 import {
   Button,
   cn,
@@ -6,8 +6,8 @@ import {
   TooltipContent,
   TooltipTrigger,
   useTimeZone,
-} from "@vivid/ui";
-import { formatTimeLocale, hasSame, parseTime } from "@vivid/utils";
+} from "@timelish/ui";
+import { formatTimeLocale, hasSame, parseTime } from "@timelish/utils";
 
 import { ChevronLeft, ChevronRight, Clock } from "lucide-react";
 import { DateTime } from "luxon";

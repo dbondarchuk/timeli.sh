@@ -1,9 +1,9 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { adminApi } from "@vivid/api-sdk";
-import { useI18n } from "@vivid/i18n";
-import { AssetEntity } from "@vivid/types";
+import { adminApi } from "@timelish/api-sdk";
+import { useI18n } from "@timelish/i18n";
+import { AssetEntity } from "@timelish/types";
 import {
   Form,
   FormControl,
@@ -14,8 +14,8 @@ import {
   Input,
   Textarea,
   toastPromise,
-} from "@vivid/ui";
-import { AssetPreview, SaveButton } from "@vivid/ui-admin";
+} from "@timelish/ui";
+import { AssetPreview, SaveButton } from "@timelish/ui-admin";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";

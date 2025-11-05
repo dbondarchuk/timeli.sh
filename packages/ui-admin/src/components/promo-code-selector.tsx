@@ -1,7 +1,13 @@
-import { adminApi } from "@vivid/api-sdk";
-import { useI18n } from "@vivid/i18n";
-import { Discount } from "@vivid/types";
-import { cn, ComboboxAsync, IComboboxItem, Skeleton, toast } from "@vivid/ui";
+import { adminApi } from "@timelish/api-sdk";
+import { useI18n } from "@timelish/i18n";
+import { Discount } from "@timelish/types";
+import {
+  cn,
+  ComboboxAsync,
+  IComboboxItem,
+  Skeleton,
+  toast,
+} from "@timelish/ui";
 import { DateTime } from "luxon";
 import React from "react";
 

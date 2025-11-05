@@ -7,7 +7,7 @@ import {
   SelectValue,
 } from "../select";
 
-import { FieldOptionsData, WithLabelFieldData } from "@vivid/types";
+import { FieldOptionsData, WithLabelFieldData } from "@timelish/types";
 import { FieldValues } from "react-hook-form";
 import { getFieldName, IFormFieldProps } from "./form-fiel.types";
 import { FormFieldLabel } from "./form-field-label";

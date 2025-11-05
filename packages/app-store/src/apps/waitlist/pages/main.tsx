@@ -1,4 +1,4 @@
-import { ComplexAppPageProps } from "@vivid/types";
+import { ComplexAppPageProps } from "@timelish/types";
 import { WaitlistTable } from "../table/table";
 import { WaitlistTableAction } from "../table/table-action";
 

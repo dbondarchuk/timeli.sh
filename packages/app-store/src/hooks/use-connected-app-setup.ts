@@ -1,8 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { adminApi } from "@vivid/api-sdk";
-import { useI18n } from "@vivid/i18n";
-import { ConnectedAppStatusWithText } from "@vivid/types";
-import { toastPromise } from "@vivid/ui";
+import { adminApi } from "@timelish/api-sdk";
+import { useI18n } from "@timelish/i18n";
+import { ConnectedAppStatusWithText } from "@timelish/types";
+import { toastPromise } from "@timelish/ui";
 import React from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import { ZodType } from "zod";

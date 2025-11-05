@@ -1,4 +1,4 @@
-import { okStatus } from "@vivid/types";
+import { okStatus } from "@timelish/types";
 import {
   dismissWaitlistEntries,
   getWaitlistEntry as getWaitlistEntryAction,

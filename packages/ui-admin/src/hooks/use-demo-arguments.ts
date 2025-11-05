@@ -1,4 +1,4 @@
-import { adminApi } from "@vivid/api-sdk";
+import { adminApi } from "@timelish/api-sdk";
 import React from "react";
 
 export const useDemoArguments = (options?: {

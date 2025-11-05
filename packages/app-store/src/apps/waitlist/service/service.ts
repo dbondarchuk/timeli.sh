@@ -1,4 +1,4 @@
-import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
 import {
   ApiRequest,
   ApiResponse,
@@ -10,7 +10,7 @@ import {
   IConnectedApp,
   IConnectedAppProps,
   IDashboardNotifierApp,
-} from "@vivid/types";
+} from "@timelish/types";
 import {
   DismissWaitlistEntriesAction,
   DismissWaitlistEntriesActionType,

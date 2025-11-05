@@ -1,4 +1,4 @@
-import { FieldData } from "@vivid/types";
+import { FieldData } from "@timelish/types";
 import { Control, FieldPath, FieldValues } from "react-hook-form";
 
 export type IFormFieldProps<

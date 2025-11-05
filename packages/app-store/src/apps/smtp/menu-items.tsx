@@ -1,4 +1,4 @@
-import { AppMenuItem } from "@vivid/types";
+import { AppMenuItem } from "@timelish/types";
 import { SmtpLogo } from "./logo";
 import { SmtpAppSetup } from "./setup";
 import { SmtpAdminKeys, SmtpAdminNamespace } from "./translations/types";

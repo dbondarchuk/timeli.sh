@@ -1,4 +1,4 @@
-import { GetAppointmentOptionsResponse } from "@vivid/types";
+import { GetAppointmentOptionsResponse } from "@timelish/types";
 import { fetchClientApi } from "./utils";
 
 export const getBookingOptions = async () => {

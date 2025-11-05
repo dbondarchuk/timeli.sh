@@ -1,7 +1,7 @@
 "use client";
 
+import { ToolbarButton } from "@timelish/ui";
 import { useEditorRef, useEditorSelector, withRef } from "@udecode/plate/react";
-import { ToolbarButton } from "@vivid/ui";
 import { Redo2Icon, Undo2Icon } from "lucide-react";
 
 export const RedoToolbarButton = withRef<typeof ToolbarButton>((props, ref) => {

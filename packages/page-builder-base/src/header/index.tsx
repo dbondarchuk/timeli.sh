@@ -3,7 +3,7 @@ import {
   LinkMenuItem,
   MenuItem,
   PageHeader,
-} from "@vivid/types";
+} from "@timelish/types";
 import {
   Accordion,
   AccordionContent,
@@ -18,7 +18,7 @@ import {
   Icon,
   Link,
   Logo,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { ChevronDown } from "lucide-react";
 import React from "react";
 import { ReplaceOriginalColors } from "../helpers/replace-original-colors";

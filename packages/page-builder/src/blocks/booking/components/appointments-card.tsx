@@ -1,5 +1,5 @@
-import { useI18n } from "@vivid/i18n";
-import { AppointmentChoice } from "@vivid/types";
+import { useI18n } from "@timelish/i18n";
+import { AppointmentChoice } from "@timelish/types";
 import {
   Card,
   CardContent,
@@ -7,8 +7,8 @@ import {
   CardHeader,
   CardTitle,
   Markdown,
-} from "@vivid/ui";
-import { durationToTime } from "@vivid/utils";
+} from "@timelish/ui";
+import { durationToTime } from "@timelish/utils";
 import { DollarSign, Timer } from "lucide-react";
 import React from "react";
 

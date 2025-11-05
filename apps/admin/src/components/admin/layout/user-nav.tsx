@@ -1,6 +1,6 @@
 "use client";
 import { authClient } from "@/app/auth-client";
-import { useI18n } from "@vivid/i18n";
+import { useI18n } from "@timelish/i18n";
 import {
   Avatar,
   AvatarFallback,
@@ -15,7 +15,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { ChevronsUpDown } from "lucide-react";
 export function UserNav() {
   const { data: session } = authClient.useSession();

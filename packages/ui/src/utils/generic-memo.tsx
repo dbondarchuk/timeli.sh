@@ -1,4 +1,4 @@
-import { deepEqual } from "@vivid/utils";
+import { deepEqual } from "@timelish/utils";
 import { ComponentProps, ComponentType, memo } from "react";
 
 export const genericMemo: <T extends ComponentType<any>>(

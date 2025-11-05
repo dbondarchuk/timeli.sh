@@ -1,5 +1,4 @@
-import { parseIcsCalendar, parseIcsEvent } from "@ts-ics/schema-zod";
-import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
 import {
   CalendarBusyTime,
   CalendarEvent,
@@ -12,8 +11,9 @@ import {
   ICalendarWriter,
   IConnectedApp,
   IConnectedAppProps,
-} from "@vivid/types";
-import { decrypt, encrypt } from "@vivid/utils";
+} from "@timelish/types";
+import { decrypt, encrypt } from "@timelish/utils";
+import { parseIcsCalendar, parseIcsEvent } from "@ts-ics/schema-zod";
 import { DateTime } from "luxon";
 import {
   createGetRegex,
@@ -621,7 +621,7 @@ export default class CaldavConnectedApp
 
     const ics = generateIcsCalendar({
       version: "2.0",
-      prodId: "-//vivid-caldav//EN",
+      prodId: "-//timelish-caldav//EN",
       events: [
         {
           start: {

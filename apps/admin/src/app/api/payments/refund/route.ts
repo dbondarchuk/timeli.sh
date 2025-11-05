@@ -1,7 +1,7 @@
 import { getServicesContainer } from "@/app/utils";
-import { refundPaymentsSchema } from "@vivid/api-sdk";
-import { getLoggerFactory } from "@vivid/logger";
-import { Payment } from "@vivid/types";
+import { refundPaymentsSchema } from "@timelish/api-sdk";
+import { getLoggerFactory } from "@timelish/logger";
+import { Payment } from "@timelish/types";
 import { NextRequest, NextResponse } from "next/server";
 import pLimit from "p-limit";
 

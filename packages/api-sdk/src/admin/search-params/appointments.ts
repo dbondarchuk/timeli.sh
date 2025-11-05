@@ -10,7 +10,7 @@ import {
   type inferParserType,
 } from "nuqs/server";
 
-import { appointmentStatuses } from "@vivid/types";
+import { appointmentStatuses } from "@timelish/types";
 import { baseSearchParams } from "./base";
 
 export const appointmentsSearchParams = {

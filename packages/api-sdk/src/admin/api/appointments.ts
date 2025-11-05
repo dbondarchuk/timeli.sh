@@ -9,7 +9,7 @@ import {
   okStatus,
   Payment,
   WithTotal,
-} from "@vivid/types";
+} from "@timelish/types";
 import {
   AppointmentHistorySearchParams,
   serializeAppointmentHistorySearchParams,

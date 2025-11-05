@@ -9,7 +9,13 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import { SortableContext } from "@dnd-kit/sortable";
-import { Button, Card, CardContent, CardHeader, ScrollArea } from "@vivid/ui";
+import {
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  ScrollArea,
+} from "@timelish/ui";
 import { cva } from "class-variance-authority";
 import { ChevronsUpDown, Plus } from "lucide-react";
 import React from "react";

@@ -10,8 +10,8 @@ import {
   Query,
   WithTotal,
   type ICustomersService,
-} from "@vivid/types";
-import { buildSearchQuery, escapeRegex } from "@vivid/utils";
+} from "@timelish/types";
+import { buildSearchQuery, escapeRegex } from "@timelish/utils";
 import { Filter, ObjectId, Sort } from "mongodb";
 import {
   APPOINTMENTS_COLLECTION_NAME,

@@ -1,4 +1,4 @@
-import { ReaderDocumentBlocksDictionary } from "@vivid/builder";
+import { ReaderDocumentBlocksDictionary } from "@timelish/builder";
 import { BookingWithWaitlistReader } from "./booking-with-waitlist/reader";
 import { WaitlistBlocksSchema } from "./schema";
 import { WaitlistReader } from "./waitlist/reader";

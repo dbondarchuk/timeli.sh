@@ -1,12 +1,12 @@
 "use client";
-import { useI18n } from "@vivid/i18n";
+import { useI18n } from "@timelish/i18n";
 import {
   cn,
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
   Label,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { ChevronRight, Settings } from "lucide-react";
 import { useState } from "react";
 import { StyleValue } from "../style/css-renderer";

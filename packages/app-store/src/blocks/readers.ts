@@ -1,4 +1,4 @@
-import { ReaderDocumentBlocksDictionary } from "@vivid/builder";
+import { ReaderDocumentBlocksDictionary } from "@timelish/builder";
 import { WaitlistReaders } from "../apps/waitlist/blocks/readers";
 import { WAITLIST_APP_NAME } from "../apps/waitlist/const";
 

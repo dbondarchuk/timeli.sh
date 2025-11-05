@@ -1,11 +1,11 @@
 import { getServicesContainer, getWebsiteUrl } from "@/app/utils";
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory } from "@timelish/logger";
 import {
   demoAppointment,
   demoWaitlistEntry,
   getAdminUrl,
   getArguments,
-} from "@vivid/utils";
+} from "@timelish/utils";
 import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";

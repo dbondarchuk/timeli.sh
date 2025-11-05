@@ -1,5 +1,5 @@
 "use client";
-import type { Time } from "@vivid/types";
+import type { Time } from "@timelish/types";
 
 import React from "react";
 
@@ -15,14 +15,14 @@ import {
   TooltipProvider,
   TooltipTrigger,
   useTimeZone,
-} from "@vivid/ui";
+} from "@timelish/ui";
 
-import { Combobox, IComboboxItem } from "@vivid/ui";
+import { Combobox, IComboboxItem } from "@timelish/ui";
 import { Globe2Icon } from "lucide-react";
 import { DateTime, HourNumbers, DateTime as Luxon, MinuteNumbers } from "luxon";
 
-import { useI18n, useLocale } from "@vivid/i18n";
-import { areTimesEqual, formatTimeLocale } from "@vivid/utils";
+import { useI18n, useLocale } from "@timelish/i18n";
+import { areTimesEqual, formatTimeLocale } from "@timelish/utils";
 import * as Locales from "date-fns/locale";
 import {
   WaitlistPublicKeys,

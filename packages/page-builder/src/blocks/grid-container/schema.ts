@@ -1,5 +1,5 @@
-import { BaseReaderBlockProps } from "@vivid/builder";
-import { ALL_STYLES, getStylesSchema } from "@vivid/page-builder-base/style";
+import { BaseReaderBlockProps } from "@timelish/builder";
+import { ALL_STYLES, getStylesSchema } from "@timelish/page-builder-base/style";
 import * as z from "zod";
 
 export const styles = ALL_STYLES;

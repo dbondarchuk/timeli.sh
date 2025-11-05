@@ -1,6 +1,6 @@
-import { adminApi } from "@vivid/api-sdk";
-import { useI18n } from "@vivid/i18n";
-import { AppSetupProps, ConnectedApp } from "@vivid/types";
+import { adminApi } from "@timelish/api-sdk";
+import { useI18n } from "@timelish/i18n";
+import { AppSetupProps, ConnectedApp } from "@timelish/types";
 import {
   Button,
   Combobox,
@@ -8,11 +8,11 @@ import {
   Spinner,
   toast,
   toastPromise,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import {
   ConnectedAppNameAndLogo,
   ConnectedAppStatusMessage,
-} from "@vivid/ui-admin";
+} from "@timelish/ui-admin";
 import React from "react";
 import { GoogleCalendarApp } from "./app";
 import { CalendarListItem, RequestAction } from "./models";

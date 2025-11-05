@@ -1,7 +1,7 @@
 "use client";
 
-import { useI18n, useLocale } from "@vivid/i18n";
-import type { Appointment } from "@vivid/types";
+import { useI18n, useLocale } from "@timelish/i18n";
+import type { Appointment } from "@timelish/types";
 import {
   Button,
   Card,
@@ -11,8 +11,8 @@ import {
   CardTitle,
   Heading,
   Link,
-} from "@vivid/ui";
-import { durationToTime } from "@vivid/utils";
+} from "@timelish/ui";
+import { durationToTime } from "@timelish/utils";
 import {
   Calendar,
   CalendarCheck2,

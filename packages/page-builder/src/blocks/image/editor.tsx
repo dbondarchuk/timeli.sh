@@ -7,9 +7,9 @@ import {
   useDispatchAction,
   useEditorArgs,
   useIsSelectedBlock,
-} from "@vivid/builder";
-import { useResizeBlockStyles } from "@vivid/page-builder-base";
-import { template } from "@vivid/utils";
+} from "@timelish/builder";
+import { useResizeBlockStyles } from "@timelish/page-builder-base";
+import { template } from "@timelish/utils";
 import { Ref, useCallback } from "react";
 import { useAllowImageResize } from "./context";
 import { Image } from "./reader";

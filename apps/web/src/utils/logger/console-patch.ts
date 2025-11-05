@@ -1,4 +1,4 @@
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory } from "@timelish/logger";
 
 const getLogMethod = (consoleMethod: string) => {
   return function () {

@@ -5,8 +5,8 @@ import {
   useDispatchAction,
   useIsSelectedBlock,
   usePortalContext,
-} from "@vivid/builder";
-import { PlateEditor, PlateStaticEditor } from "@vivid/rte";
+} from "@timelish/builder";
+import { PlateEditor, PlateStaticEditor } from "@timelish/rte";
 import { TextProps } from "./schema";
 import { getStyles } from "./styles";
 

@@ -1,7 +1,7 @@
 "use client";
 import { ColumnDef } from "@tanstack/react-table";
-import { useI18n, useLocale } from "@vivid/i18n";
-import { AppointmentAddon, IdName } from "@vivid/types";
+import { useI18n, useLocale } from "@timelish/i18n";
+import { AppointmentAddon, IdName } from "@timelish/types";
 import {
   Button,
   Checkbox,
@@ -13,8 +13,8 @@ import {
   DialogTrigger,
   Link,
   ScrollArea,
-} from "@vivid/ui";
-import { tableSortHeader, tableSortNoopFunction } from "@vivid/ui-admin";
+} from "@timelish/ui";
+import { tableSortHeader, tableSortNoopFunction } from "@timelish/ui-admin";
 import { DateTime } from "luxon";
 import { CellAction } from "./cell-action";
 

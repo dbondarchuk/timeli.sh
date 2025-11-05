@@ -1,7 +1,7 @@
 "use client";
 
-import { useI18n } from "@vivid/i18n";
-import { Skeleton, toast } from "@vivid/ui";
+import { useI18n } from "@timelish/i18n";
+import { Skeleton, toast } from "@timelish/ui";
 import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 import { getScheduledNotification } from "./actions";

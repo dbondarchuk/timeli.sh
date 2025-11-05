@@ -1,4 +1,4 @@
-import { useBlockEditor, useCurrentBlock } from "@vivid/builder";
+import { useBlockEditor, useCurrentBlock } from "@timelish/builder";
 import { Ref } from "react";
 import { YouTubeVideoReader } from "./reader";
 import { YouTubeVideoProps } from "./schema";

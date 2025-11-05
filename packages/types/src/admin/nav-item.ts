@@ -1,4 +1,4 @@
-import type { AllKeys } from "@vivid/i18n";
+import type { AllKeys } from "@timelish/i18n";
 import type { ReactElement } from "react";
 
 export interface NavItem {

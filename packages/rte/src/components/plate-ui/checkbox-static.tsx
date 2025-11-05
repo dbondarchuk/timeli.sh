@@ -1,6 +1,6 @@
 import React from "react";
 
-import { cn } from "@vivid/ui";
+import { cn } from "@timelish/ui";
 import { Check } from "lucide-react";
 
 export function CheckboxStatic({

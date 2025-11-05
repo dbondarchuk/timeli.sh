@@ -4,7 +4,7 @@ import {
   ConnectedAppData,
   ConnectedAppStatusWithText,
   okStatus,
-} from "@vivid/types";
+} from "@timelish/types";
 import { fetchAdminApi } from "./utils";
 
 export const addNewApp = async (type: string) => {

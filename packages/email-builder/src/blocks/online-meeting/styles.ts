@@ -1,4 +1,4 @@
-import { getAdminUrl } from "@vivid/utils";
+import { getAdminUrl } from "@timelish/utils";
 import type { CSSProperties } from "react";
 import { getFontFamily, getPadding } from "../../style-inputs/helpers/styles";
 import { type OnlineMeetingProps } from "./schema";

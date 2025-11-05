@@ -1,12 +1,12 @@
 "use client";
 
+import { buttonVariants, cn, inputVariants } from "@timelish/ui";
 import {
   CommentNewSubmitButton,
   CommentNewTextarea,
   CommentsPlugin,
 } from "@udecode/plate-comments/react";
 import { usePluginOption } from "@udecode/plate/react";
-import { buttonVariants, cn, inputVariants } from "@vivid/ui";
 
 import { CommentAvatar } from "./comment-avatar";
 

@@ -1,4 +1,4 @@
-import { deepEqual } from "@vivid/utils";
+import { deepEqual } from "@timelish/utils";
 import { BaseStyleDictionary } from "../style/types";
 import { StateWithTarget } from "../style/zod";
 import { Shortcut, ShortcutOption } from "./types";

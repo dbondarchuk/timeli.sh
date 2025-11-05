@@ -1,6 +1,6 @@
-import { adminApi } from "@vivid/api-sdk";
-import { Schedule, WeekIdentifier } from "@vivid/types";
-import { getWeekIdentifier } from "@vivid/utils";
+import { adminApi } from "@timelish/api-sdk";
+import { Schedule, WeekIdentifier } from "@timelish/types";
+import { getWeekIdentifier } from "@timelish/utils";
 import { RequestAction } from "../models";
 
 export const getWeeklySchedule = async (

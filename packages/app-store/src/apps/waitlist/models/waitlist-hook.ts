@@ -1,4 +1,4 @@
-import { ConnectedAppData } from "@vivid/types";
+import { ConnectedAppData } from "@timelish/types";
 import { WaitlistEntry } from "./waitlist";
 
 export interface IWaitlistHook {

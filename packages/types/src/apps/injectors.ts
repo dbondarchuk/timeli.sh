@@ -1,4 +1,4 @@
-import { AllKeys, I18nNamespaces } from "@vivid/i18n";
+import { AllKeys, I18nNamespaces } from "@timelish/i18n";
 import type { ReactNode } from "react";
 import { IConnectedAppProps } from "./connected-app.props";
 

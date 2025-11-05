@@ -1,8 +1,8 @@
 "use client";
 
-import { useI18n } from "@vivid/i18n";
+import { useI18n } from "@timelish/i18n";
 
-import { Appointment, AppointmentStatus } from "@vivid/types";
+import { Appointment, AppointmentStatus } from "@timelish/types";
 import {
   Button,
   Link,
@@ -10,7 +10,7 @@ import {
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import {
   CalendarCheck2,
   CalendarCog,

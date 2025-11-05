@@ -1,11 +1,11 @@
-import { useI18n } from "@vivid/i18n";
+import { useI18n } from "@timelish/i18n";
 import {
   Link,
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { CodeSquare } from "lucide-react";
 import React from "react";
 

@@ -2,8 +2,8 @@ import {
   BlockStyle,
   generateClassName,
   ReplaceOriginalColors,
-} from "@vivid/page-builder-base/reader";
-import { cn } from "@vivid/ui";
+} from "@timelish/page-builder-base/reader";
+import { cn } from "@timelish/ui";
 import { Booking } from "./components/booking";
 import { BookingReaderProps } from "./schema";
 import { styles } from "./styles";

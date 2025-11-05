@@ -1,13 +1,19 @@
 "use client";
 
-import { useI18n } from "@vivid/i18n";
-import { Button, cn, Popover, PopoverContent, PopoverTrigger } from "@vivid/ui";
+import { useI18n } from "@timelish/i18n";
+import {
+  Button,
+  cn,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@timelish/ui";
 import {
   CustomersDataTableAsyncFilterBox,
   DataTableResetFilter,
   DataTableSearch,
   useSelectedRowsStore,
-} from "@vivid/ui-admin";
+} from "@timelish/ui-admin";
 import { Settings2 } from "lucide-react";
 import React from "react";
 import { DeleteSelectedAssetsButton } from "./delete-selected-button";

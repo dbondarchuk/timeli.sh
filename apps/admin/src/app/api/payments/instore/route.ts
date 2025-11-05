@@ -1,10 +1,10 @@
 import { getServicesContainer } from "@/app/utils";
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory } from "@timelish/logger";
 import {
   inStorePaymentUpdateModelSchema,
   PaymentUpdateModel,
   zNonEmptyString,
-} from "@vivid/types";
+} from "@timelish/types";
 import { NextRequest, NextResponse } from "next/server";
 import * as z from "zod";
 

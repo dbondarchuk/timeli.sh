@@ -4,11 +4,11 @@ import {
   BaseBlockProps,
   useEditorArgs,
   usePortalContext,
-} from "@vivid/builder";
-import { BlockStyle, useClassName } from "@vivid/page-builder-base";
-import { cn, useDebounce } from "@vivid/ui";
-import { mergeRefs } from "@vivid/ui/src/utils/merge-refs";
-import { template } from "@vivid/utils";
+} from "@timelish/builder";
+import { BlockStyle, useClassName } from "@timelish/page-builder-base";
+import { cn, useDebounce } from "@timelish/ui";
+import { mergeRefs } from "@timelish/ui/src/utils/merge-refs";
+import { template } from "@timelish/utils";
 import { forwardRef, useCallback, useEffect, useRef, useState } from "react";
 import { ImageProps } from "./schema";
 import { styles } from "./styles";

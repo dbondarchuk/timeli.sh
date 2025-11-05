@@ -7,10 +7,10 @@ import {
   useIsCurrentBlockOverlay,
   useIsSelectedBlock,
   usePortalContext,
-} from "@vivid/builder";
-import { BlockStyle, useClassName } from "@vivid/page-builder-base";
-import { PlateEditor, PlateStaticEditor } from "@vivid/rte";
-import { cn, useDebounceCallback } from "@vivid/ui";
+} from "@timelish/builder";
+import { BlockStyle, useClassName } from "@timelish/page-builder-base";
+import { PlateEditor, PlateStaticEditor } from "@timelish/rte";
+import { cn, useDebounceCallback } from "@timelish/ui";
 import { TextProps } from "./schema";
 import { styles } from "./styles";
 import { getDefaults } from "./styles.default";

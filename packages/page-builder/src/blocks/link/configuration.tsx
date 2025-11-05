@@ -1,9 +1,9 @@
 "use client";
 
-import { ConfigurationProps, PageInput, SelectInput } from "@vivid/builder";
-import { useI18n } from "@vivid/i18n";
-import { StylesConfigurationPanel } from "@vivid/page-builder-base";
-import { deepMemo } from "@vivid/ui";
+import { ConfigurationProps, PageInput, SelectInput } from "@timelish/builder";
+import { useI18n } from "@timelish/i18n";
+import { StylesConfigurationPanel } from "@timelish/page-builder-base";
+import { deepMemo } from "@timelish/ui";
 import { useCallback } from "react";
 import { LinkDefaultTarget, LinkDefaultUrl, LinkProps } from "./schema";
 import { linkShortcuts } from "./shortcuts";

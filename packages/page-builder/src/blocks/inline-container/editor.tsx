@@ -2,12 +2,12 @@ import {
   EditorChildren,
   useBlockEditor,
   useCurrentBlock,
-} from "@vivid/builder";
+} from "@timelish/builder";
 import {
   BlockStyle,
   useClassName,
   useResizeBlockStyles,
-} from "@vivid/page-builder-base";
+} from "@timelish/page-builder-base";
 import { InlineContainerProps, styles } from "./schema";
 
 const allowOnly = ["InlineText", "Icon", "Link"];

@@ -1,6 +1,6 @@
 import { getServicesContainer } from "@/app/utils";
-import { getLoggerFactory } from "@vivid/logger";
-import { appointmentAddonSchema, okStatus } from "@vivid/types";
+import { getLoggerFactory } from "@timelish/logger";
+import { appointmentAddonSchema, okStatus } from "@timelish/types";
 import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";

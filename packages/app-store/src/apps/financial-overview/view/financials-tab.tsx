@@ -1,4 +1,4 @@
-import { IConnectedAppProps } from "@vivid/types";
+import { IConnectedAppProps } from "@timelish/types";
 import React from "react";
 import FinancialOverviewService from "../repository-service";
 import { FinancialsTabClient } from "./financials-tab-client";

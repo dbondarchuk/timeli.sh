@@ -1,9 +1,6 @@
 "use client";
 
-import JsonView from "@uiw/react-json-view";
-import { darkTheme } from "@uiw/react-json-view/dark";
-import { lightTheme } from "@uiw/react-json-view/light";
-import { useI18n } from "@vivid/i18n";
+import { useI18n } from "@timelish/i18n";
 import {
   Button,
   cn,
@@ -24,9 +21,12 @@ import {
   TooltipContent,
   TooltipTrigger,
   useTheme,
-} from "@vivid/ui";
-import { ArgumentsAutocomplete } from "@vivid/ui-admin";
-import { templateSafeWithError } from "@vivid/utils";
+} from "@timelish/ui";
+import { ArgumentsAutocomplete } from "@timelish/ui-admin";
+import { templateSafeWithError } from "@timelish/utils";
+import JsonView from "@uiw/react-json-view";
+import { darkTheme } from "@uiw/react-json-view/dark";
+import { lightTheme } from "@uiw/react-json-view/light";
 import { Braces, ClipboardCopy } from "lucide-react";
 import React from "react";
 import { ControllerRenderProps } from "react-hook-form";

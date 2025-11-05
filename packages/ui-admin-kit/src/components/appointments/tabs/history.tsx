@@ -1,11 +1,11 @@
 "use client";
 
-import { useI18n, useLocale } from "@vivid/i18n";
-import { AppointmentHistoryEntry } from "@vivid/types";
+import { useI18n, useLocale } from "@timelish/i18n";
+import { AppointmentHistoryEntry } from "@timelish/types";
 import { useInView } from "react-intersection-observer";
 
-import { adminApi } from "@vivid/api-sdk";
-import { AvailableApps } from "@vivid/app-store";
+import { adminApi } from "@timelish/api-sdk";
+import { AvailableApps } from "@timelish/app-store";
 import {
   Badge,
   cn,
@@ -16,8 +16,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
   useTimeZone,
-} from "@vivid/ui";
-import { formatAmountString } from "@vivid/utils";
+} from "@timelish/ui";
+import { formatAmountString } from "@timelish/utils";
 import {
   Banknote,
   BanknoteX,

@@ -1,11 +1,11 @@
 "use client";
 
+import { ToolbarButton } from "@timelish/ui";
 import { withRef } from "@udecode/cn";
 import {
   useLinkToolbarButton,
   useLinkToolbarButtonState,
 } from "@udecode/plate-link/react";
-import { ToolbarButton } from "@vivid/ui";
 import { Link } from "lucide-react";
 
 export const LinkToolbarButton = withRef<typeof ToolbarButton>((rest, ref) => {

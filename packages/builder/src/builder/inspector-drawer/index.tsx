@@ -4,7 +4,7 @@ import {
   useSetSidebarTab,
 } from "../../documents/editor/context";
 
-import { useI18n } from "@vivid/i18n";
+import { useI18n } from "@timelish/i18n";
 import {
   Sidebar,
   SidebarContent,
@@ -12,7 +12,7 @@ import {
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { Paintbrush, SquareDashedMousePointer } from "lucide-react";
 import React, { memo, useEffect, useMemo } from "react";
 import {

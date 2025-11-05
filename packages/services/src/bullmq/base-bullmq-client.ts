@@ -1,4 +1,4 @@
-import { LoggerFactory } from "@vivid/logger";
+import { LoggerFactory } from "@timelish/logger";
 import { Job, Queue, QueueEvents, Worker } from "bullmq";
 import { Redis } from "ioredis";
 import { BullMQConfig } from "./types";

@@ -1,5 +1,8 @@
-import { BlockStyle, generateClassName } from "@vivid/page-builder-base/reader";
-import { cn } from "@vivid/ui";
+import {
+  BlockStyle,
+  generateClassName,
+} from "@timelish/page-builder-base/reader";
+import { cn } from "@timelish/ui";
 import { InlineTextPropsDefaults, InlineTextReaderProps } from "./schema";
 import { styles } from "./styles";
 

@@ -1,5 +1,6 @@
 "use client";
 
+import { Toolbar } from "@timelish/ui";
 import { cn, withRef } from "@udecode/cn";
 import {
   type FloatingToolbarState,
@@ -14,7 +15,6 @@ import {
   useEventEditorValue,
   usePluginOption,
 } from "@udecode/plate/react";
-import { Toolbar } from "@vivid/ui";
 
 export const FloatingToolbar = withRef<
   typeof Toolbar,

@@ -1,8 +1,7 @@
 "use client";
 import { ColumnDef } from "@tanstack/react-table";
-import JsonView from "@uiw/react-json-view";
-import { useI18n, useLocale } from "@vivid/i18n";
-import { CommunicationLog } from "@vivid/types";
+import { useI18n, useLocale } from "@timelish/i18n";
+import { CommunicationLog } from "@timelish/types";
 import {
   Button,
   Checkbox,
@@ -16,8 +15,9 @@ import {
   IFrame,
   Link,
   Markdown,
-} from "@vivid/ui";
-import { tableSortHeader, tableSortNoopFunction } from "@vivid/ui-admin";
+} from "@timelish/ui";
+import { tableSortHeader, tableSortNoopFunction } from "@timelish/ui-admin";
+import JsonView from "@uiw/react-json-view";
 import { DateTime } from "luxon";
 
 export const columns: ColumnDef<CommunicationLog>[] = [

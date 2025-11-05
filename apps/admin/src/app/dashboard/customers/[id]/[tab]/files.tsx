@@ -1,11 +1,11 @@
 "use client";
 
-import { Asset } from "@vivid/types";
+import { Asset } from "@timelish/types";
 import { useInView } from "react-intersection-observer";
 
 import { AssetsTableAction } from "@/components/admin/assets/table/table-action";
-import { adminApi } from "@vivid/api-sdk";
-import { useI18n } from "@vivid/i18n";
+import { adminApi } from "@timelish/api-sdk";
+import { useI18n } from "@timelish/i18n";
 import {
   Button,
   Checkbox,
@@ -25,8 +25,8 @@ import {
   cn,
   toast,
   useUploadFile,
-} from "@vivid/ui";
-import { AssetPreview, useSelectedRowsStore } from "@vivid/ui-admin";
+} from "@timelish/ui";
+import { AssetPreview, useSelectedRowsStore } from "@timelish/ui-admin";
 import { Upload } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useCallback } from "react";

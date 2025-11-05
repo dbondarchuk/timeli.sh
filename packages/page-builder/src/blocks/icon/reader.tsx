@@ -1,5 +1,8 @@
-import { BlockStyle, generateClassName } from "@vivid/page-builder-base/reader";
-import { cn, Icon as IconComponent } from "@vivid/ui";
+import {
+  BlockStyle,
+  generateClassName,
+} from "@timelish/page-builder-base/reader";
+import { cn, Icon as IconComponent } from "@timelish/ui";
 import { IconPropsDefaults, IconReaderProps } from "./schema";
 import { styles } from "./styles";
 import { getDefaults } from "./styles.default";

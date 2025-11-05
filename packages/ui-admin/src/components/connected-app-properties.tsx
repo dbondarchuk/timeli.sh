@@ -1,8 +1,8 @@
 "use client";
-import { appStatusTextClasses, AvailableApps } from "@vivid/app-store";
-import { useI18n } from "@vivid/i18n";
-import { ConnectedApp } from "@vivid/types";
-import { cn } from "@vivid/ui";
+import { appStatusTextClasses, AvailableApps } from "@timelish/app-store";
+import { useI18n } from "@timelish/i18n";
+import { ConnectedApp } from "@timelish/types";
+import { cn } from "@timelish/ui";
 
 export const ConnectedAppAccount: React.FC<{
   account: ConnectedApp["account"];

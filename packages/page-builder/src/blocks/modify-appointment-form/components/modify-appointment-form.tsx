@@ -1,15 +1,15 @@
 "use client";
 
-import { clientApi, ClientApiError } from "@vivid/api-sdk";
-import { useI18n } from "@vivid/i18n";
+import { clientApi, ClientApiError } from "@timelish/api-sdk";
+import { useI18n } from "@timelish/i18n";
 import type {
   CollectPayment,
   CreateOrUpdatePaymentIntentRequest,
   DateTime,
   ModifyAppointmentRequest,
-} from "@vivid/types";
-import { Availability, ModifyAppointmentInformation } from "@vivid/types";
-import { Spinner, toast } from "@vivid/ui";
+} from "@timelish/types";
+import { Availability, ModifyAppointmentInformation } from "@timelish/types";
+import { Spinner, toast } from "@timelish/ui";
 import { DateTime as LuxonDateTime } from "luxon";
 import React, { useMemo } from "react";
 import { ModifyAppointmentFormContext, StepType } from "./context";

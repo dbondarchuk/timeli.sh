@@ -1,6 +1,6 @@
 "use client";
 
-import { useI18n, useLocale } from "@vivid/i18n";
+import { useI18n, useLocale } from "@timelish/i18n";
 import {
   Badge,
   Button,
@@ -15,8 +15,8 @@ import {
   Spinner,
   toastPromise,
   useTimeZone,
-} from "@vivid/ui";
-import { durationToTime } from "@vivid/utils";
+} from "@timelish/ui";
+import { durationToTime } from "@timelish/utils";
 import { Calendar, CalendarCheck, Clock, Grid2X2Plus, X } from "lucide-react";
 import { DateTime } from "luxon";
 import { useRouter } from "next/navigation";

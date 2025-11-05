@@ -1,7 +1,7 @@
 import { JSX, useCallback, useId } from "react";
 
-import { cn, FormDescription, Label } from "@vivid/ui";
-import { ArgumentsAutocomplete } from "@vivid/ui-admin";
+import { cn, FormDescription, Label } from "@timelish/ui";
+import { ArgumentsAutocomplete } from "@timelish/ui-admin";
 import React from "react";
 import { useEditorArgs } from "../../../../../../documents/editor/context";
 import { ResetButton } from "./reset-button";

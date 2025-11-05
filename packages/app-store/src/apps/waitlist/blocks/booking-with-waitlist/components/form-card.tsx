@@ -3,7 +3,7 @@ import {
   ApplyDiscountRequest,
   AppointmentFields,
   getFields,
-} from "@vivid/types";
+} from "@timelish/types";
 
 import React, { useMemo } from "react";
 
@@ -20,12 +20,12 @@ import {
   Spinner,
   cn,
   usePrevious,
-} from "@vivid/ui";
+} from "@timelish/ui";
 
-import { clientApi } from "@vivid/api-sdk";
-import { TranslationKeys, useI18n } from "@vivid/i18n";
-import { fieldSchemaMapper, fieldsComponentMap } from "@vivid/ui";
-import { deepEqual, formatAmountString } from "@vivid/utils";
+import { clientApi } from "@timelish/api-sdk";
+import { TranslationKeys, useI18n } from "@timelish/i18n";
+import { fieldSchemaMapper, fieldsComponentMap } from "@timelish/ui";
+import { deepEqual, formatAmountString } from "@timelish/utils";
 import { DateTime as Luxon } from "luxon";
 import { CardWithAppointmentInformation } from "./card-with-info";
 import { useScheduleContext } from "./context";

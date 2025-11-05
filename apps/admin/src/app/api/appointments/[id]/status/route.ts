@@ -1,6 +1,6 @@
 import { getServicesContainer } from "@/app/utils";
-import { getLoggerFactory } from "@vivid/logger";
-import { appointmentStatuses, okStatus } from "@vivid/types";
+import { getLoggerFactory } from "@timelish/logger";
+import { appointmentStatuses, okStatus } from "@timelish/types";
 import { NextRequest, NextResponse } from "next/server";
 import * as z from "zod";
 

@@ -2,8 +2,8 @@ import {
   EditorChildren,
   useBlockEditor,
   useCurrentBlock,
-} from "@vivid/builder";
-import { useI18n } from "@vivid/i18n";
+} from "@timelish/builder";
+import { useI18n } from "@timelish/i18n";
 import { ConditionalContainerProps } from "./schema";
 
 export const ConditionalContainerEditor = ({

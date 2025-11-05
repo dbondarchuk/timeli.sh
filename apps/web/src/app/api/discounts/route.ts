@@ -1,9 +1,9 @@
 import { getServicesContainer } from "@/utils/utils";
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory } from "@timelish/logger";
 import {
   applyDiscountRequestSchema,
   ApplyDiscountResponse,
-} from "@vivid/types";
+} from "@timelish/types";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {

@@ -1,7 +1,7 @@
 "use client";
 
-import { useI18n } from "@vivid/i18n";
-import { Schedule, ScheduleOverride, WeekIdentifier } from "@vivid/types";
+import { useI18n } from "@timelish/i18n";
+import { Schedule, ScheduleOverride, WeekIdentifier } from "@timelish/types";
 import {
   Button,
   Separator,
@@ -9,9 +9,9 @@ import {
   toast,
   toastPromise,
   useDebounce,
-} from "@vivid/ui";
-import { Scheduler, WeekSelector } from "@vivid/ui-admin";
-import { getDateFromWeekIdentifier, getWeekIdentifier } from "@vivid/utils";
+} from "@timelish/ui";
+import { Scheduler, WeekSelector } from "@timelish/ui-admin";
+import { getDateFromWeekIdentifier, getWeekIdentifier } from "@timelish/utils";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";

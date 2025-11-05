@@ -1,4 +1,4 @@
-import { Discount } from "@vivid/types";
+import { Discount } from "@timelish/types";
 
 export const formatAmountString = (value: number): string =>
   value.toFixed(2).replace(/\.00$/, "");

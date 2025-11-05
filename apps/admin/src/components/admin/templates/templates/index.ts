@@ -1,4 +1,4 @@
-import { CommunicationChannel } from "@vivid/types";
+import { CommunicationChannel } from "@timelish/types";
 import { appointmentConfirmedEmailTemplate } from "./email/appointment-confirmed";
 import { appointmentCreatedEmailTemplate } from "./email/appointment-created";
 import { appointmentDeclinedEmailTemplate } from "./email/appointment-declined";

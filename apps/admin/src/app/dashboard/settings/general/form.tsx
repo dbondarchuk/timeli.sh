@@ -1,12 +1,12 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { languages, useI18n } from "@vivid/i18n";
+import { languages, useI18n } from "@timelish/i18n";
 import {
   GeneralConfiguration,
   generalConfigurationSchema,
   zNonEmptyString,
-} from "@vivid/types";
+} from "@timelish/types";
 import {
   Combobox,
   Form,
@@ -22,15 +22,15 @@ import {
   TagInput,
   Textarea,
   toastPromise,
-} from "@vivid/ui";
-import { AssetSelectorInput, SaveButton } from "@vivid/ui-admin";
+} from "@timelish/ui";
+import { AssetSelectorInput, SaveButton } from "@timelish/ui-admin";
 import { getTimeZones } from "@vvo/tzdb";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
 
 import { LanguageOptions } from "@/constants/texts";
-import { adminApi } from "@vivid/api-sdk";
+import { adminApi } from "@timelish/api-sdk";
 
 const timeZones = getTimeZones();
 const timeZoneValues: IComboboxItem[] = timeZones.map((zone) => ({

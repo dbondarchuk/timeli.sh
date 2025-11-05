@@ -6,7 +6,7 @@ import {
   InputGroupInput,
   InputGroupInputClasses,
   InputGroupSuffixClasses,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { Grid3X3 } from "lucide-react";
 import * as z from "zod";
 import { StyleDefinition } from "../../types";

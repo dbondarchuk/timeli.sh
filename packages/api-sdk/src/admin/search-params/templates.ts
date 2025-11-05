@@ -8,7 +8,7 @@ import {
   parseAsStringLiteral,
 } from "nuqs/server";
 
-import { communicationChannels } from "@vivid/types";
+import { communicationChannels } from "@timelish/types";
 import { baseSearchParams } from "./base";
 
 export const templateSearchParams = {

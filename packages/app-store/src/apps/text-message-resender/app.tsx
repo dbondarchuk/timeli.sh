@@ -1,4 +1,4 @@
-import { App } from "@vivid/types";
+import { App } from "@timelish/types";
 import { MessageCircleReply } from "lucide-react";
 import { TEXT_MESSAGE_RESENDER_APP_NAME } from "./const";
 import {

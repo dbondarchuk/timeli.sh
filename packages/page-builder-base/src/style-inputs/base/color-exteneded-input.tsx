@@ -1,16 +1,16 @@
 "use client";
 
-import { Sketch } from "@uiw/react-color";
-import { ResetButton, type ColorInput } from "@vivid/builder";
-import { BuilderKeys, useI18n } from "@vivid/i18n";
-import { DistributiveOmit } from "@vivid/types";
+import { ResetButton, type ColorInput } from "@timelish/builder";
+import { BuilderKeys, useI18n } from "@timelish/i18n";
+import { DistributiveOmit } from "@timelish/types";
 import {
   Button,
   Combobox,
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@vivid/ui";
+} from "@timelish/ui";
+import { Sketch } from "@uiw/react-color";
 import { Plus } from "lucide-react";
 import React from "react";
 import { COLORS_LIST } from "../../style/helpers/colors";

@@ -1,10 +1,10 @@
 import { getServicesContainer } from "@/app/utils";
 import PageContainer from "@/components/admin/layout/page-container";
 import { OptionForm } from "@/components/admin/services/options/form";
-import { getI18nAsync } from "@vivid/i18n/server";
-import { getLoggerFactory } from "@vivid/logger";
-import { AppointmentOptionUpdateModel } from "@vivid/types";
-import { Breadcrumbs, Heading } from "@vivid/ui";
+import { getI18nAsync } from "@timelish/i18n/server";
+import { getLoggerFactory } from "@timelish/logger";
+import { AppointmentOptionUpdateModel } from "@timelish/types";
+import { Breadcrumbs, Heading } from "@timelish/ui";
 import { notFound } from "next/navigation";
 import { Metadata } from "next/types";
 

@@ -1,4 +1,4 @@
-import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
 import {
   ApiRequest,
   AppointmentEvent,
@@ -17,7 +17,7 @@ import {
   IOAuthConnectedApp,
   okStatus,
   WithDatabaseId,
-} from "@vivid/types";
+} from "@timelish/types";
 import { DateTime } from "luxon";
 import { env } from "process";
 
@@ -27,7 +27,7 @@ import {
   calendar as googleCalendar,
 } from "@googleapis/calendar";
 import { meet as googleMeet } from "@googleapis/meet";
-import { decrypt, encrypt, getAdminUrl } from "@vivid/utils";
+import { decrypt, encrypt, getAdminUrl } from "@timelish/utils";
 import { Credentials, OAuth2Client } from "google-auth-library";
 import {
   CalendarListItem,

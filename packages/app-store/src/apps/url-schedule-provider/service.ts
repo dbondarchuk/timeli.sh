@@ -1,4 +1,4 @@
-import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
 import {
   ConnectedAppData,
   ConnectedAppError,
@@ -7,7 +7,7 @@ import {
   IConnectedApp,
   IConnectedAppProps,
   IScheduleProvider,
-} from "@vivid/types";
+} from "@timelish/types";
 import { DateTime } from "luxon";
 import { UrlScheduleProviderConfiguration } from "./models";
 import {

@@ -1,8 +1,8 @@
 "use client";
 
-import { useI18n } from "@vivid/i18n";
-import { Appointment } from "@vivid/types";
-import { Button } from "@vivid/ui";
+import { useI18n } from "@timelish/i18n";
+import { Appointment } from "@timelish/types";
+import { Button } from "@timelish/ui";
 import { BanknoteArrowUp } from "lucide-react";
 import { AddUpdatePaymentDialog, PaymentCard } from "../../payments";
 

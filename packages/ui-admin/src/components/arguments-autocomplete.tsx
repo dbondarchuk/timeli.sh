@@ -1,5 +1,5 @@
-import { InputProps, TextareaProps } from "@vivid/ui";
-import { propertiesToArray } from "@vivid/utils";
+import { InputProps, TextareaProps } from "@timelish/ui";
+import { propertiesToArray } from "@timelish/utils";
 import React from "react";
 import { ContentEditableMentions } from "./content-editable-mention";
 import { MentionData, TextareaMentions } from "./textarea-mention";

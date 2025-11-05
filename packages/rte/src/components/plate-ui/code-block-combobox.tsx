@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 
+import { cn } from "@timelish/ui";
 import {
   useCodeBlockCombobox,
   useCodeBlockComboboxState,
 } from "@udecode/plate-code-block/react";
-import { cn } from "@vivid/ui";
 import { Check, ChevronsUpDown } from "lucide-react";
 // Prism must be imported before all language files
 import Prism from "prismjs";
@@ -21,7 +21,7 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@vivid/ui";
+} from "@timelish/ui";
 
 import "prismjs/components/prism-antlr4.js";
 import "prismjs/components/prism-bash.js";

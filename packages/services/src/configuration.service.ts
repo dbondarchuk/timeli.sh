@@ -3,7 +3,7 @@ import {
   ConfigurationKey,
   ConfigurationOption,
   IConfigurationService,
-} from "@vivid/types";
+} from "@timelish/types";
 import { cache } from "react";
 import { CONFIGURATION_COLLECTION_NAME } from "./collections";
 import { getDbConnection } from "./database";

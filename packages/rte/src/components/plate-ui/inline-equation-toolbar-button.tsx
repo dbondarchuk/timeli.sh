@@ -1,8 +1,8 @@
 "use client";
 
+import { ToolbarButton } from "@timelish/ui";
 import { insertInlineEquation } from "@udecode/plate-math";
 import { useEditorRef, withRef } from "@udecode/plate/react";
-import { ToolbarButton } from "@vivid/ui";
 import { RadicalIcon } from "lucide-react";
 
 export const InlineEquationToolbarButton = withRef<typeof ToolbarButton>(

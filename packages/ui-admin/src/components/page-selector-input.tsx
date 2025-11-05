@@ -1,7 +1,7 @@
 "use client";
 
-import { useI18n } from "@vivid/i18n";
-import { PageListModelWithUrl } from "@vivid/types";
+import { useI18n } from "@timelish/i18n";
+import { PageListModelWithUrl } from "@timelish/types";
 import {
   Button,
   Input,
@@ -10,7 +10,7 @@ import {
   InputGroupInputClasses,
   InputGroupSuffixClasses,
   inputVariants,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { VariantProps } from "class-variance-authority";
 import React from "react";
 import { PageSelectorDialog } from "./page-selector-dialog";

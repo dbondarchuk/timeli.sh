@@ -1,4 +1,4 @@
-import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
 import {
   ApiRequest,
   Appointment,
@@ -16,8 +16,8 @@ import {
   IMeetingUrlProvider,
   IOAuthConnectedApp,
   WithDatabaseId,
-} from "@vivid/types";
-import { encrypt, getAdminUrl, stripMarkdown } from "@vivid/utils";
+} from "@timelish/types";
+import { encrypt, getAdminUrl, stripMarkdown } from "@timelish/utils";
 import { DateTime } from "luxon";
 import { env } from "process";
 import {

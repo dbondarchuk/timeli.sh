@@ -5,8 +5,8 @@ import {
   TemplateListModel,
   TemplateUpdateModel,
   WithTotal,
-} from "@vivid/types";
-import { FormattedArguments } from "@vivid/utils";
+} from "@timelish/types";
+import { FormattedArguments } from "@timelish/utils";
 import {
   TemplateSearchParams,
   templateSearchParamsSerializer,

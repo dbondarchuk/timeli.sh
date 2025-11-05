@@ -1,7 +1,7 @@
 "use client";
 
-import { ComplexAppPageProps } from "@vivid/types";
-import { Skeleton } from "@vivid/ui";
+import { ComplexAppPageProps } from "@timelish/types";
+import { Skeleton } from "@timelish/ui";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { dismissWaitlistEntry } from "../views/components/actions";

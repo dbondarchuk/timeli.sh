@@ -1,6 +1,6 @@
 "use client";
 
-import { appointmentsSearchParams } from "@vivid/api-sdk";
+import { appointmentsSearchParams } from "@timelish/api-sdk";
 import { useQueryState } from "nuqs";
 import { useCallback, useMemo } from "react";
 

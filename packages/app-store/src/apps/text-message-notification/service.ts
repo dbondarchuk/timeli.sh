@@ -1,4 +1,4 @@
-import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
 import {
   Appointment,
   AppointmentStatus,
@@ -13,14 +13,14 @@ import {
   RespondResult,
   SocialConfiguration,
   TextMessageReply,
-} from "@vivid/types";
+} from "@timelish/types";
 import {
   formatAmountString,
   getAdminUrl,
   getArguments,
   getWebsiteUrl,
   template,
-} from "@vivid/utils";
+} from "@timelish/utils";
 import { TextMessageNotificationMessages } from "./messages";
 import { TextMessageNotificationConfiguration } from "./models";
 import {

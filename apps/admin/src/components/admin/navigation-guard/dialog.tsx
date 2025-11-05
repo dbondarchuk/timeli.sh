@@ -1,5 +1,5 @@
 "use client";
-import { useI18n } from "@vivid/i18n";
+import { useI18n } from "@timelish/i18n";
 import {
   Button,
   Dialog,
@@ -7,7 +7,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { useNavigationGuard } from "next-navigation-guard";
 import { useCallback } from "react";
 import { UseFormReturn, useFormState } from "react-hook-form";

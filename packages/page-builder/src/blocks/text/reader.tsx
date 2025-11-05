@@ -1,6 +1,9 @@
-import { BlockStyle, generateClassName } from "@vivid/page-builder-base/reader";
-import { PlateStaticEditor } from "@vivid/rte";
-import { cn } from "@vivid/ui";
+import {
+  BlockStyle,
+  generateClassName,
+} from "@timelish/page-builder-base/reader";
+import { PlateStaticEditor } from "@timelish/rte";
+import { cn } from "@timelish/ui";
 import { TextPropsDefaults, TextReaderProps } from "./schema";
 import { styles } from "./styles";
 import { getDefaults } from "./styles.default";

@@ -1,4 +1,4 @@
-import { App } from "@vivid/types";
+import { App } from "@timelish/types";
 import { CalendarDays } from "lucide-react";
 import { WEEKLY_SCHEDULE_APP_NAME } from "./const";
 import {

@@ -19,7 +19,7 @@ import {
   PopoverAnchor,
   PopoverContent,
   Separator,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { PlateElement } from "./plate-element";
 
 export const ColumnGroupElement = withRef<typeof PlateElement>(

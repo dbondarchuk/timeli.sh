@@ -1,6 +1,6 @@
-import { renderToStaticMarkup } from "@vivid/email-builder/static";
-import { AllKeys } from "@vivid/i18n";
-import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
+import { renderToStaticMarkup } from "@timelish/email-builder/static";
+import { AllKeys } from "@timelish/i18n";
+import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
 import {
   BookingConfiguration,
   ConnectedAppData,
@@ -9,14 +9,14 @@ import {
   IConnectedApp,
   IConnectedAppProps,
   SocialConfiguration,
-} from "@vivid/types";
+} from "@timelish/types";
 import {
   durationToTime,
   getAdminUrl,
   getArguments,
   getWebsiteUrl,
   templateSafeWithError,
-} from "@vivid/utils";
+} from "@timelish/utils";
 import { DateTime } from "luxon";
 import { WaitlistEntry, waitlistTime } from "../waitlist/models/waitlist";
 import { IWaitlistHook } from "../waitlist/models/waitlist-hook";

@@ -3,7 +3,7 @@ import {
   AppointmentOptionUpdateModel,
   okStatus,
   WithTotal,
-} from "@vivid/types";
+} from "@timelish/types";
 import {
   ServiceOptionsSearchParams,
   serviceOptionsSearchParamsSerializer,

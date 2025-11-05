@@ -1,6 +1,6 @@
 import type { SlateRenderElementProps } from "@udecode/plate";
 
-import { cn } from "@vivid/ui";
+import { cn } from "@timelish/ui";
 
 import { CheckboxStatic } from "./checkbox-static";
 

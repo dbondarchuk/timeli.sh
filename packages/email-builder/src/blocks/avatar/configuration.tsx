@@ -7,8 +7,8 @@ import {
   RadioGroupInputItem,
   SliderInput,
   TextInput,
-} from "@vivid/builder";
-import { useI18n } from "@vivid/i18n";
+} from "@timelish/builder";
+import { useI18n } from "@timelish/i18n";
 import { Proportions } from "lucide-react";
 import { MultiStylePropertyPanel } from "../../style-inputs/multi-style-property-panel";
 import { AvatarProps, AvatarPropsDefaults } from "./schema";

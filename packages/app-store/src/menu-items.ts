@@ -1,4 +1,4 @@
-import { AppMenuItem } from "@vivid/types";
+import { AppMenuItem } from "@timelish/types";
 import { BUSY_EVENTS_APP_NAME } from "./apps/busy-events/const";
 import { BusyEventsMenuItems } from "./apps/busy-events/menu-items";
 import { CUSTOMER_EMAIL_NOTIFICATION_APP_NAME } from "./apps/customer-email-notification/const";

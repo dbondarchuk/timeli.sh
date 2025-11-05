@@ -1,10 +1,10 @@
-import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
 import {
   DateRange,
   IConnectedAppProps,
   Payment,
   PaymentSummary,
-} from "@vivid/types";
+} from "@timelish/types";
 import { Filter } from "mongodb";
 import {
   CustomerDataPoint,

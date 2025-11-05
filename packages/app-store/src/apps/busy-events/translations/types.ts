@@ -1,4 +1,4 @@
-import { Leaves } from "@vivid/types";
+import { Leaves } from "@timelish/types";
 import { BUSY_EVENTS_APP_NAME } from "../const";
 import type adminKeys from "./en/admin.json";
 

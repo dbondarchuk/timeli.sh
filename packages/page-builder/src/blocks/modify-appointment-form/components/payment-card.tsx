@@ -2,9 +2,9 @@
 
 import React from "react";
 
-import { PaymentAppForms } from "@vivid/app-store/payment-forms";
-import { useI18n } from "@vivid/i18n";
-import { formatAmountString } from "@vivid/utils";
+import { PaymentAppForms } from "@timelish/app-store/payment-forms";
+import { useI18n } from "@timelish/i18n";
+import { formatAmountString } from "@timelish/utils";
 import { useModifyAppointmentFormContext } from "./context";
 
 export const PaymentCard: React.FC = () => {

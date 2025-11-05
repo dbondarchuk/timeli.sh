@@ -1,11 +1,11 @@
-import { BuilderKeys, useI18n } from "@vivid/i18n";
+import { BuilderKeys, useI18n } from "@timelish/i18n";
 import {
   Button,
   Label,
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import React from "react";
 import { Breakpoint, breakpoints } from "../../style/zod";
 

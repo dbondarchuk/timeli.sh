@@ -1,9 +1,9 @@
-import { useI18n } from "@vivid/i18n";
+import { useI18n } from "@timelish/i18n";
 import {
   AppointmentCancellationPolicyRow,
   AppointmentReschedulePolicyRow,
   modifyEnabledType,
-} from "@vivid/types";
+} from "@timelish/types";
 import {
   BooleanSelect,
   Card,
@@ -22,8 +22,8 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@vivid/ui";
-import { NonSortable } from "@vivid/ui-admin";
+} from "@timelish/ui";
+import { NonSortable } from "@timelish/ui-admin";
 import React from "react";
 import { useFieldArray } from "react-hook-form";
 import {

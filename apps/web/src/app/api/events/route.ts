@@ -1,10 +1,10 @@
 import { getAppointmentEventAndIsPaymentRequired } from "@/utils/appointments/get-payment-required";
 import { getServicesContainer } from "@/utils/utils";
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory } from "@timelish/logger";
 import {
   appointmentRequestSchema,
   AppointmentTimeNotAvaialbleError,
-} from "@vivid/types";
+} from "@timelish/types";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {

@@ -1,5 +1,5 @@
-import { WeekIdentifier } from "@vivid/types";
-import { getDateFromWeekIdentifier } from "@vivid/utils";
+import { WeekIdentifier } from "@timelish/types";
+import { getDateFromWeekIdentifier } from "@timelish/utils";
 import { DateTime } from "luxon";
 
 export const getWeekDisplay = (week: WeekIdentifier) => {

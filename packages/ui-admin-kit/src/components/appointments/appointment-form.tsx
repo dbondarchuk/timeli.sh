@@ -1,8 +1,8 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { adminApi } from "@vivid/api-sdk";
-import { useI18n } from "@vivid/i18n";
+import { adminApi } from "@timelish/api-sdk";
+import { useI18n } from "@timelish/i18n";
 import {
   Appointment,
   AppointmentAddon,
@@ -19,7 +19,7 @@ import {
   Prettify,
   WithLabelFieldData,
   zNonEmptyString,
-} from "@vivid/types";
+} from "@timelish/types";
 import {
   Button,
   Checkbox,
@@ -47,9 +47,9 @@ import {
   toastPromise,
   use12HourFormat,
   useTimeZone,
-} from "@vivid/ui";
-import { CustomerSelector, PromoCodeSelector } from "@vivid/ui-admin";
-import { formatAmount, getDiscountAmount } from "@vivid/utils";
+} from "@timelish/ui";
+import { CustomerSelector, PromoCodeSelector } from "@timelish/ui-admin";
+import { formatAmount, getDiscountAmount } from "@timelish/utils";
 import { CalendarClock, Clock, DollarSign } from "lucide-react";
 import { DateTime } from "luxon";
 import { useRouter } from "next/navigation";

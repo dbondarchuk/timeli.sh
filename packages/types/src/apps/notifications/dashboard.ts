@@ -1,4 +1,4 @@
-import { AllKeys } from "@vivid/i18n";
+import { AllKeys } from "@timelish/i18n";
 import { ConnectedAppData } from "../connected-app.data";
 
 export type DashboardNotificationBadge = {

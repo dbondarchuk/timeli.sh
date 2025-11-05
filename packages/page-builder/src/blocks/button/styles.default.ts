@@ -1,7 +1,7 @@
 import type {
   AllStylesSchemas,
   DefaultCSSProperties,
-} from "@vivid/page-builder-base/style";
+} from "@timelish/page-builder-base/style";
 import type { ButtonProps } from "./schema";
 
 export function getRoundedCorners(

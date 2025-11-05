@@ -1,6 +1,6 @@
 "use client";
 
-import { Toolbar, withCn } from "@vivid/ui";
+import { Toolbar, withCn } from "@timelish/ui";
 
 export const FixedToolbar = withCn(
   Toolbar,

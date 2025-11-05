@@ -2,7 +2,7 @@ import {
   useBlockEditor,
   useCurrentBlock,
   useDispatchAction,
-} from "@vivid/builder";
+} from "@timelish/builder";
 import { useCallback } from "react";
 import { SpacerProps } from "./schema";
 import { Spacer } from "./spacer";

@@ -3,8 +3,8 @@ import {
   ToolbarColorMenu,
   ToolbarDropdownMenu,
   ToolbarDropdownPropsValues,
-} from "@vivid/builder";
-import { useI18n } from "@vivid/i18n";
+} from "@timelish/builder";
+import { useI18n } from "@timelish/i18n";
 import { Baseline, Brush, PaintBucket, PaintRoller } from "lucide-react";
 import { FONT_FAMILIES } from "../../style-inputs/helpers/font-family";
 import { fontFamilyItems } from "../../toolbars/font-family";

@@ -1,4 +1,4 @@
-import { Language } from "@vivid/i18n";
+import { Language } from "@timelish/i18n";
 import { DateTime } from "luxon";
 import { formatAmountString } from "./currency";
 

@@ -1,4 +1,4 @@
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory } from "@timelish/logger";
 import { NextRequest } from "next/server";
 import { createOrUpdateIntent } from "../../../utils/payments/createIntent";
 

@@ -1,4 +1,4 @@
-import { IServicesContainer } from "@vivid/types";
+import { IServicesContainer } from "@timelish/types";
 import { cache } from "react";
 import { AssetsService } from "./assets.service";
 import {

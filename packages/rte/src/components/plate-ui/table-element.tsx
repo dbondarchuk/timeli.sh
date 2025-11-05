@@ -48,7 +48,7 @@ import {
   Toolbar,
   ToolbarButton,
   ToolbarGroup,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { PlateElement } from "./plate-element";
 import {
   BorderAll,

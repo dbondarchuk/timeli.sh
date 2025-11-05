@@ -1,12 +1,12 @@
 "use client";
 
-import { ConfigurationProps, SelectInput } from "@vivid/builder";
-import { useI18n } from "@vivid/i18n";
+import { ConfigurationProps, SelectInput } from "@timelish/builder";
+import { useI18n } from "@timelish/i18n";
 import {
   RawNumberInputWithUnit,
   StylesConfigurationPanel,
-} from "@vivid/page-builder-base";
-import { Checkbox, Label } from "@vivid/ui";
+} from "@timelish/page-builder-base";
+import { Checkbox, Label } from "@timelish/ui";
 import { Percent } from "lucide-react";
 import { useCallback } from "react";
 import { BeforeAfterProps } from "./schema";

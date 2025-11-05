@@ -5,8 +5,8 @@ import { PhoneInput } from "../phone-input";
 import { FieldValues } from "react-hook-form";
 import { getFieldName, IFormFieldProps } from "./form-fiel.types";
 
-import { useI18n } from "@vivid/i18n";
-import { WithLabelFieldData } from "@vivid/types";
+import { useI18n } from "@timelish/i18n";
+import { WithLabelFieldData } from "@timelish/types";
 import { FormFieldDescription } from "./form-field-description";
 import { FormFieldErrorMessage } from "./form-field-error-message";
 import { FormFieldLabel } from "./form-field-label";

@@ -1,11 +1,11 @@
 "use client";
 
-import { useI18n } from "@vivid/i18n";
+import { useI18n } from "@timelish/i18n";
 import {
   DataTableResetFilter,
   DataTableSearch,
   useSelectedRowsStore,
-} from "@vivid/ui-admin";
+} from "@timelish/ui-admin";
 import { DeleteSelectedPageHeadersButton } from "./delete-selected";
 import { usePageHeadersTableFilters } from "./use-table-filters";
 

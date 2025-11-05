@@ -1,6 +1,6 @@
 import { FormControl, FormField } from "../form";
 
-import { WithLabelFieldData } from "@vivid/types";
+import { WithLabelFieldData } from "@timelish/types";
 import { FieldValues } from "react-hook-form";
 import { Checkbox } from "../checkbox";
 import { getFieldName, IFormFieldProps } from "./form-fiel.types";

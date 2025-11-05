@@ -1,12 +1,12 @@
 import { LanguageOptions } from "@/constants/texts";
-import { BaseSidebarPanel } from "@vivid/builder";
-import { languages, useI18n } from "@vivid/i18n";
+import { BaseSidebarPanel } from "@timelish/builder";
+import { languages, useI18n } from "@timelish/i18n";
 import {
   PageFooterListModel,
   PageHeaderListModel,
   pageTagSchema,
   zNonEmptyString,
-} from "@vivid/types";
+} from "@timelish/types";
 import {
   Checkbox,
   Combobox,
@@ -20,7 +20,7 @@ import {
   TagInput,
   Textarea,
   use12HourFormat,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { memo, useCallback } from "react";
 import { ControllerRenderProps, FieldValues } from "react-hook-form";
 import { FooterSelector } from "./footer-selector";

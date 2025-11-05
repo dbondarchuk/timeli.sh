@@ -8,7 +8,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@vivid/ui";
+} from "@timelish/ui";
 
 export function DataTableSkeleton({
   columnCount = 1,

@@ -1,6 +1,6 @@
 import { getServicesContainer } from "@/app/utils";
-import { pagesSearchParams, pagesSearchParamsCache } from "@vivid/api-sdk";
-import { DataTable } from "@vivid/ui-admin";
+import { pagesSearchParams, pagesSearchParamsCache } from "@timelish/api-sdk";
+import { DataTable } from "@timelish/ui-admin";
 import { columns } from "./columns";
 
 export const PagesTable: React.FC = async () => {

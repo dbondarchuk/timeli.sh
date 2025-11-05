@@ -1,4 +1,4 @@
-import { CommunicationLog, okStatus, WithTotal } from "@vivid/types";
+import { CommunicationLog, okStatus, WithTotal } from "@timelish/types";
 import {
   CommunicationLogsSearchParams,
   serializeCommunicationLogsSearchParams,

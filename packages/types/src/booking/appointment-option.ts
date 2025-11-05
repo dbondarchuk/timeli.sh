@@ -1,4 +1,4 @@
-import { ValidationKeys } from "@vivid/i18n";
+import { ValidationKeys } from "@timelish/i18n";
 import * as z from "zod";
 import { WithCompanyId, WithDatabaseId } from "../database";
 import { asOptinalNumberField, zNonEmptyString, zUniqueArray } from "../utils";

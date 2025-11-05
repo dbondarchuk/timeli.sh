@@ -1,4 +1,4 @@
-import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
 import {
   AppJobRequest,
   Appointment,
@@ -8,7 +8,7 @@ import {
   IConnectedApp,
   IConnectedAppProps,
   IScheduled,
-} from "@vivid/types";
+} from "@timelish/types";
 import { ScheduledNotificationsJobProcessor } from "./job-processor";
 import {
   RequestAction,

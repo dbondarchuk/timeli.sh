@@ -1,7 +1,7 @@
 "use client";
 
-import { ReplaceOriginalColors } from "@vivid/page-builder-base";
-import { cn } from "@vivid/ui";
+import { ReplaceOriginalColors } from "@timelish/page-builder-base";
+import { cn } from "@timelish/ui";
 import { GripVertical } from "lucide-react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 

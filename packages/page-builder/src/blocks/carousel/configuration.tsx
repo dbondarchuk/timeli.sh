@@ -1,9 +1,9 @@
 "use client";
 
-import { ConfigurationProps, SliderInput } from "@vivid/builder";
-import { useI18n } from "@vivid/i18n";
-import { StylesConfigurationPanel } from "@vivid/page-builder-base";
-import { Checkbox, deepMemo, Label } from "@vivid/ui";
+import { ConfigurationProps, SliderInput } from "@timelish/builder";
+import { useI18n } from "@timelish/i18n";
+import { StylesConfigurationPanel } from "@timelish/page-builder-base";
+import { Checkbox, deepMemo, Label } from "@timelish/ui";
 import { Repeat1 } from "lucide-react";
 import { useCallback } from "react";
 import { CarouselProps, styles } from "./schema";

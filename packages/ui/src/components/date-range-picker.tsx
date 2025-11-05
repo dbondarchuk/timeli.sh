@@ -1,7 +1,7 @@
 "use client";
 import { CalendarIcon } from "@radix-ui/react-icons";
-import { useI18n } from "@vivid/i18n";
-import { DateRange } from "@vivid/types";
+import { useI18n } from "@timelish/i18n";
+import { DateRange } from "@timelish/types";
 import { DateTime } from "luxon";
 import React from "react";
 import { cn } from "../utils";

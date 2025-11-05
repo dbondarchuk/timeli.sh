@@ -1,12 +1,18 @@
 "use client";
 
-import { useI18n } from "@vivid/i18n";
+import { useI18n } from "@timelish/i18n";
 import {
   communicationChannels,
   communicationDirectionSchema,
   communicationParticipantTypeSchema,
-} from "@vivid/types";
-import { Button, cn, Popover, PopoverContent, PopoverTrigger } from "@vivid/ui";
+} from "@timelish/types";
+import {
+  Button,
+  cn,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@timelish/ui";
 import {
   CustomersDataTableAsyncFilterBox,
   DataTableFilterBox,
@@ -14,7 +20,7 @@ import {
   DataTableResetFilter,
   DataTableSearch,
   useSelectedRowsStore,
-} from "@vivid/ui-admin";
+} from "@timelish/ui-admin";
 import { Settings2 } from "lucide-react";
 import React from "react";
 import { ClearAllCommunicationLogsButton } from "./clear-all";

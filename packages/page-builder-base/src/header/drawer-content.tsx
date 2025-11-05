@@ -1,7 +1,7 @@
 "use client";
 
-import { usePortalContext } from "@vivid/builder";
-import { useI18n } from "@vivid/i18n";
+import { usePortalContext } from "@timelish/builder";
+import { useI18n } from "@timelish/i18n";
 import {
   Button,
   DrawerClose,
@@ -9,7 +9,7 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { Menu, X } from "lucide-react";
 import { ReplaceOriginalColors } from "../helpers/replace-original-colors";
 

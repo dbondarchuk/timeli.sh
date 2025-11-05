@@ -1,6 +1,6 @@
-import { getI18nAsync } from "@vivid/i18n/server";
-import { IConnectedAppProps } from "@vivid/types";
-import { Card, CardContent, CardHeader } from "@vivid/ui";
+import { getI18nAsync } from "@timelish/i18n/server";
+import { IConnectedAppProps } from "@timelish/types";
+import { Card, CardContent, CardHeader } from "@timelish/ui";
 import { DateTime } from "luxon";
 import React from "react";
 import { WaitlistRepositoryService } from "../service/repository-service";

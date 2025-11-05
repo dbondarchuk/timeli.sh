@@ -1,4 +1,4 @@
-import { asOptionalField, zNonEmptyString } from "@vivid/types";
+import { asOptionalField, zNonEmptyString } from "@timelish/types";
 import * as z from "zod";
 import { SmtpAdminAllKeys } from "./translations/types";
 

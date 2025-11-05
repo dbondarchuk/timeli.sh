@@ -1,14 +1,14 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { adminApi } from "@vivid/api-sdk";
-import { useI18n } from "@vivid/i18n";
+import { adminApi } from "@timelish/api-sdk";
+import { useI18n } from "@timelish/i18n";
 import {
   ScheduleConfiguration,
   scheduleConfigurationSchema,
-} from "@vivid/types";
-import { Form, FormField, toastPromise } from "@vivid/ui";
-import { SaveButton, Scheduler } from "@vivid/ui-admin";
+} from "@timelish/types";
+import { Form, FormField, toastPromise } from "@timelish/ui";
+import { SaveButton, Scheduler } from "@timelish/ui-admin";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";

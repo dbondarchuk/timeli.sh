@@ -2,7 +2,7 @@
 
 import { ResourcesCard } from "@/components/admin/resource/resources-card";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useFormatter, useI18n } from "@vivid/i18n";
+import { useFormatter, useI18n } from "@timelish/i18n";
 import {
   colors as colorOverrides,
   ColorOverrideSchema,
@@ -11,7 +11,7 @@ import {
   fontsOptions,
   StylingConfiguration,
   stylingConfigurationSchema,
-} from "@vivid/types";
+} from "@timelish/types";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -37,8 +37,8 @@ import {
   IComboboxItem,
   InfoTooltip,
   toastPromise,
-} from "@vivid/ui";
-import { ColorPickerInput, NonSortable, SaveButton } from "@vivid/ui-admin";
+} from "@timelish/ui";
+import { ColorPickerInput, NonSortable, SaveButton } from "@timelish/ui-admin";
 import { Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";

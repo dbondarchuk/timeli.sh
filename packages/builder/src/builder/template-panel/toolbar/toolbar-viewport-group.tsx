@@ -1,6 +1,6 @@
 "use client";
 
-import { useI18n } from "@vivid/i18n";
+import { useI18n } from "@timelish/i18n";
 import {
   cn,
   DropdownMenu,
@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
   ToolbarButton,
   ToolbarGroup,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { Laptop, Monitor, Smartphone, Tablet, Tv } from "lucide-react";
 import { useCallback } from "react";
 import {

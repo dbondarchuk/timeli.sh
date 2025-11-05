@@ -1,4 +1,4 @@
-import { App } from "@vivid/types";
+import { App } from "@timelish/types";
 import { BusyEventsApp } from "./apps/busy-events/app";
 import { BUSY_EVENTS_APP_NAME } from "./apps/busy-events/const";
 import { CaldavApp } from "./apps/caldav/app";

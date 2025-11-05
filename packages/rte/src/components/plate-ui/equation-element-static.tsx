@@ -1,8 +1,8 @@
 import type { TEquationElement } from "@udecode/plate-math";
 
+import { cn } from "@timelish/ui";
 import { type SlateElementProps, SlateElement } from "@udecode/plate";
 import { getEquationHtml } from "@udecode/plate-math";
-import { cn } from "@vivid/ui";
 import { RadicalIcon } from "lucide-react";
 
 export function EquationElementStatic({

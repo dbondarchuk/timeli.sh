@@ -1,20 +1,20 @@
 "use client";
 
-import { useI18n } from "@vivid/i18n";
-import { communicationChannels } from "@vivid/types";
+import { useI18n } from "@timelish/i18n";
+import { communicationChannels } from "@timelish/types";
 import {
   Button,
   Link,
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import {
   DataTableFilterBox,
   DataTableResetFilter,
   DataTableSearch,
   useSelectedRowsStore,
-} from "@vivid/ui-admin";
+} from "@timelish/ui-admin";
 import { Plus, Settings2 } from "lucide-react";
 import React from "react";
 import { scheduledNotificationTypes } from "../models";

@@ -1,4 +1,4 @@
-// import { IServicesContainer } from "@vivid/types";
+// import { IServicesContainer } from "@timelish/types";
 // import { AssetsService } from "./assets.service";
 // import {
 //   BullMQJobService,
@@ -33,7 +33,7 @@
 //   IScheduleService,
 //   IServicesService,
 //   ITemplatesService,
-// } from "@vivid/types";
+// } from "@timelish/types";
 
 // export class ServicesContainer implements IServicesContainer {
 //   private _configurationService?: CachedConfigurationService;

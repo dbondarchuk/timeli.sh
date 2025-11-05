@@ -1,7 +1,7 @@
 import type { SlateElementProps } from "@udecode/plate";
 
+import { cn } from "@timelish/ui";
 import { SlateElement } from "@udecode/plate";
-import { cn } from "@vivid/ui";
 import { cva } from "class-variance-authority";
 
 interface HeadingElementViewProps extends SlateElementProps {

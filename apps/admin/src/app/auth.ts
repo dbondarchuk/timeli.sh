@@ -1,6 +1,9 @@
-import { getRedisClient } from "@vivid/services";
-import { getDbConnection, getDbConnectionSync } from "@vivid/services/database";
-import type { WithDatabaseId } from "@vivid/types";
+import { getRedisClient } from "@timelish/services";
+import {
+  getDbConnection,
+  getDbConnectionSync,
+} from "@timelish/services/database";
+import type { WithDatabaseId } from "@timelish/types";
 import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { customSession, Organization, organization } from "better-auth/plugins";

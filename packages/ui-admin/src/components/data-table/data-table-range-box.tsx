@@ -1,7 +1,7 @@
 "use client";
 
-import { DateRange } from "@vivid/types";
-import { CalendarDateRangePicker } from "@vivid/ui";
+import { DateRange } from "@timelish/types";
+import { CalendarDateRangePicker } from "@timelish/ui";
 import { Options } from "nuqs";
 
 interface FilterBoxProps {

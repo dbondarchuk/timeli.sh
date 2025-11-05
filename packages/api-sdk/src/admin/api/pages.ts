@@ -4,7 +4,7 @@ import {
   PageListModelWithUrl,
   PageUpdateModel,
   WithTotal,
-} from "@vivid/types";
+} from "@timelish/types";
 import {
   PagesSearchParams,
   pagesSearchParamsSerializer,

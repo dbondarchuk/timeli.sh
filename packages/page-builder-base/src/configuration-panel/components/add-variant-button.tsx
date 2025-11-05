@@ -1,6 +1,6 @@
 "use client";
 
-import { useI18n } from "@vivid/i18n";
+import { useI18n } from "@timelish/i18n";
 import {
   Button,
   Command,
@@ -13,7 +13,7 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { Plus } from "lucide-react";
 import React, { Fragment, useState } from "react";
 import {

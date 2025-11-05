@@ -1,6 +1,6 @@
 import * as z from "zod";
 
-import { resolve } from "@vivid/utils";
+import { resolve } from "@timelish/utils";
 import { TEditorBlock, TEditorConfiguration } from "../editor/core";
 import { BuilderSchema } from "../types";
 import { generateId } from "./block-id";

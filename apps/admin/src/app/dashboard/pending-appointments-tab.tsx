@@ -1,6 +1,6 @@
-import { getI18nAsync } from "@vivid/i18n/server";
-import { Card, CardContent, CardHeader } from "@vivid/ui";
-import { AppointmentCard } from "@vivid/ui-admin-kit";
+import { getI18nAsync } from "@timelish/i18n/server";
+import { Card, CardContent, CardHeader } from "@timelish/ui";
+import { AppointmentCard } from "@timelish/ui-admin-kit";
 import { DateTime } from "luxon";
 import React from "react";
 import { getServicesContainer } from "../utils";

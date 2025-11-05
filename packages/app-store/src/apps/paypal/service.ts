@@ -1,5 +1,5 @@
 import { Environment } from "@paypal/paypal-server-sdk";
-import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
 import {
   ApiRequest,
   ApiResponse,
@@ -11,8 +11,8 @@ import {
   IPaymentProcessor,
   Payment,
   PaymentFee,
-} from "@vivid/types";
-import { decrypt, encrypt, maskify } from "@vivid/utils";
+} from "@timelish/types";
+import { decrypt, encrypt, maskify } from "@timelish/utils";
 import { PaypalClient } from "./client";
 import { PAYPAL_APP_NAME } from "./const";
 import {

@@ -1,4 +1,4 @@
-import { BookingConfiguration } from "@vivid/types";
+import { BookingConfiguration } from "@timelish/types";
 import { UseFormReturn } from "react-hook-form";
 
 export type TabProps = {

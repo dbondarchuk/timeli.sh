@@ -11,15 +11,15 @@ import {
   useIsSelectedBlock,
   usePortalContext,
   useSetSelectedBlockId,
-} from "@vivid/builder";
-import { useI18n } from "@vivid/i18n";
+} from "@timelish/builder";
+import { useI18n } from "@timelish/i18n";
 import {
   BlockStyle,
   useClassName,
   useResizeBlockStyles,
-} from "@vivid/page-builder-base";
-import { cn, useDebounceCallback } from "@vivid/ui";
-import { ArgumentsAutocomplete } from "@vivid/ui-admin";
+} from "@timelish/page-builder-base";
+import { cn, useDebounceCallback } from "@timelish/ui";
+import { ArgumentsAutocomplete } from "@timelish/ui-admin";
 import { InlineTextProps } from "./schema";
 import { styles } from "./styles";
 

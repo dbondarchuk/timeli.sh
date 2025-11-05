@@ -8,7 +8,7 @@ import {
 
 import { DateTime } from "luxon";
 
-import { baseSearchParams } from "@vivid/api-sdk";
+import { baseSearchParams } from "@timelish/api-sdk";
 import { waitlistStatus } from "../models";
 
 export const searchParams = {

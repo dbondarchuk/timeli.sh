@@ -7,8 +7,8 @@ import {
   useDispatchAction,
   useEditorArgs,
   useIsSelectedBlock,
-} from "@vivid/builder";
-import { templateSafeWithError } from "@vivid/utils";
+} from "@timelish/builder";
+import { templateSafeWithError } from "@timelish/utils";
 import { Ref, useCallback } from "react";
 import { Image } from "./image";
 import { ResizableImage } from "./resizable-image";

@@ -2,8 +2,8 @@ import {
   EditorChildren,
   useBlockEditor,
   useCurrentBlock,
-} from "@vivid/builder";
-import { BlockStyle, useClassName } from "@vivid/page-builder-base";
+} from "@timelish/builder";
+import { BlockStyle, useClassName } from "@timelish/page-builder-base";
 import { GridContainerProps, styles } from "./schema";
 
 export const GridContainerEditor = ({ style, props }: GridContainerProps) => {

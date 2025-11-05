@@ -1,4 +1,4 @@
-import { Schedule, WeekIdentifier } from "@vivid/types";
+import { Schedule, WeekIdentifier } from "@timelish/types";
 
 export type SetSchedulesAction = {
   schedules: Record<WeekIdentifier, Schedule>;

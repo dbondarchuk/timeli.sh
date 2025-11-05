@@ -1,8 +1,8 @@
 import {
   ConfigurationOptionWithCompanyId,
   IOrganizationService,
-} from "@vivid/types";
-import { Organization } from "@vivid/types/src/users/organization";
+} from "@timelish/types";
+import { Organization } from "@timelish/types/src/users/organization";
 import {
   CONFIGURATION_COLLECTION_NAME,
   ORGANIZATIONS_COLLECTION_NAME,

@@ -19,6 +19,7 @@ import {
   usePluginOption,
 } from "@udecode/plate/react";
 
+import { PageListModelWithUrl } from "@timelish/types";
 import {
   encodeUrlIfNeeded,
   safeDecodeUrl,
@@ -31,7 +32,6 @@ import {
   triggerFloatingLinkInsert,
   useVirtualFloatingLink,
 } from "@udecode/plate-link/react";
-import { PageListModelWithUrl } from "@vivid/types";
 import { useAbsoluteUrl } from "./absolute-url-context";
 import { useWindow } from "./window-context";
 

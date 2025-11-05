@@ -1,4 +1,4 @@
-import { getBaseLoggerFactory } from "@vivid/logger";
+import { getBaseLoggerFactory } from "@timelish/logger";
 import { NextFetchEvent, NextRequest } from "next/server";
 import { MiddlewareProxy } from "./types";
 

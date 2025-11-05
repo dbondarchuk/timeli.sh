@@ -1,4 +1,4 @@
-import { App } from "@vivid/types";
+import { App } from "@timelish/types";
 import { ZOOM_APP_NAME } from "./const";
 import { ZoomLogo } from "./logo";
 import { ZoomAdminKeys, ZoomAdminNamespace } from "./translations/types";

@@ -1,5 +1,4 @@
-import { parseIcsCalendar } from "@ts-ics/schema-zod";
-import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
 import {
   CalendarBusyTime,
   ConnectedAppData,
@@ -8,7 +7,8 @@ import {
   ICalendarBusyTimeProvider,
   IConnectedApp,
   IConnectedAppProps,
-} from "@vivid/types";
+} from "@timelish/types";
+import { parseIcsCalendar } from "@ts-ics/schema-zod";
 import { DateTime } from "luxon";
 import { IcsLinkCalendarSource } from "./models";
 import {

@@ -1,5 +1,5 @@
-import { getI18nAsync } from "@vivid/i18n/server";
-import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
+import { getI18nAsync } from "@timelish/i18n/server";
+import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
 import {
   CalendarBusyTime,
   ConnectedAppData,
@@ -11,8 +11,8 @@ import {
   ScheduleOverride,
   WeekIdentifier,
   WithDatabaseId,
-} from "@vivid/types";
-import { eachOfInterval, getWeekIdentifier, parseTime } from "@vivid/utils";
+} from "@timelish/types";
+import { eachOfInterval, getWeekIdentifier, parseTime } from "@timelish/utils";
 import { ObjectId } from "mongodb";
 import { RequestAction } from "./models";
 import {

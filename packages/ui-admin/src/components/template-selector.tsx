@@ -1,7 +1,7 @@
-import { adminApi } from "@vivid/api-sdk";
-import { useI18n } from "@vivid/i18n";
-import { CommunicationChannel, TemplateListModel } from "@vivid/types";
-import { cn, Combobox, IComboboxItem } from "@vivid/ui";
+import { adminApi } from "@timelish/api-sdk";
+import { useI18n } from "@timelish/i18n";
+import { CommunicationChannel, TemplateListModel } from "@timelish/types";
+import { cn, Combobox, IComboboxItem } from "@timelish/ui";
 import React from "react";
 import { toast } from "sonner";
 

@@ -1,9 +1,15 @@
 "use client";
 
-import { adminApi } from "@vivid/api-sdk";
-import { useI18n } from "@vivid/i18n";
-import { AppScope, ConnectedApp } from "@vivid/types";
-import { cn, Combobox, ComboboxProps, IComboboxItem, toast } from "@vivid/ui";
+import { adminApi } from "@timelish/api-sdk";
+import { useI18n } from "@timelish/i18n";
+import { AppScope, ConnectedApp } from "@timelish/types";
+import {
+  cn,
+  Combobox,
+  ComboboxProps,
+  IComboboxItem,
+  toast,
+} from "@timelish/ui";
 import React from "react";
 import {
   ConnectedAppAccount,

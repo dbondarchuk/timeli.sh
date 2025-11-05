@@ -1,9 +1,9 @@
 "use client";
 
-import { adminApi } from "@vivid/api-sdk";
-import { I18nFn, useI18n } from "@vivid/i18n";
-import { AppointmentStatus, okStatus } from "@vivid/types";
-import { Button, ButtonProps, cn, Spinner, toastPromise } from "@vivid/ui";
+import { adminApi } from "@timelish/api-sdk";
+import { I18nFn, useI18n } from "@timelish/i18n";
+import { AppointmentStatus, okStatus } from "@timelish/types";
+import { Button, ButtonProps, cn, Spinner, toastPromise } from "@timelish/ui";
 import { useRouter } from "next/navigation";
 import React from "react";
 

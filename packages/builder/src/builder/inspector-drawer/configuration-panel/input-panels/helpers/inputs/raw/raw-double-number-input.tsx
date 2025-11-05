@@ -9,7 +9,7 @@ import {
   InputGroupSuffixClasses,
   InputProps,
   InputSuffix,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { ResetButton } from "../reset-button";
 
 export type RawDoubleNumberInputProps = {

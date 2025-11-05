@@ -3,12 +3,12 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Editor } from "@monaco-editor/react";
-import { useI18n } from "@vivid/i18n";
+import { useI18n } from "@timelish/i18n";
 import {
   Resource,
   resourceSchema,
   resourceSourceTypeLabels,
-} from "@vivid/types";
+} from "@timelish/types";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -33,8 +33,8 @@ import {
   IComboboxItem,
   Input,
   useTheme,
-} from "@vivid/ui";
-import { stripObject } from "@vivid/utils";
+} from "@timelish/ui";
+import { stripObject } from "@timelish/utils";
 import { cva } from "class-variance-authority";
 import { GripVertical, Trash } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";

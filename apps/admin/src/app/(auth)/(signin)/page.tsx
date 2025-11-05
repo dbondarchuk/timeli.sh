@@ -1,7 +1,7 @@
 import { UserAuthForm } from "@/components/admin/forms/user-auth-form";
-import { getI18nAsync } from "@vivid/i18n/server";
-import { getLoggerFactory } from "@vivid/logger";
-import { buttonVariants, cn } from "@vivid/ui";
+import { getI18nAsync } from "@timelish/i18n/server";
+import { getLoggerFactory } from "@timelish/logger";
+import { buttonVariants, cn } from "@timelish/ui";
 import { Metadata } from "next";
 import { headers } from "next/headers";
 import Link from "next/link";
@@ -59,7 +59,7 @@ export default async function AuthenticationPage() {
           >
             <path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3" />
           </svg>
-          Vivid
+          Timeli.sh
         </div>
         <div className="relative z-20 mt-auto">
           <blockquote className="space-y-2">

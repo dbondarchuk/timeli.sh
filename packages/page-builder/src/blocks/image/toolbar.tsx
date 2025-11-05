@@ -1,10 +1,10 @@
 "use client";
-import { ConfigurationProps } from "@vivid/builder";
-import { useI18n } from "@vivid/i18n";
-import { ShortcutsToolbar } from "@vivid/page-builder-base";
-import { UploadedFile } from "@vivid/types";
-import { ToolbarButton } from "@vivid/ui";
-import { AssetSelectorDialog } from "@vivid/ui-admin";
+import { ConfigurationProps } from "@timelish/builder";
+import { useI18n } from "@timelish/i18n";
+import { ShortcutsToolbar } from "@timelish/page-builder-base";
+import { UploadedFile } from "@timelish/types";
+import { ToolbarButton } from "@timelish/ui";
+import { AssetSelectorDialog } from "@timelish/ui-admin";
 import { Image } from "lucide-react";
 import { useState } from "react";
 import { ImageProps } from "./schema";

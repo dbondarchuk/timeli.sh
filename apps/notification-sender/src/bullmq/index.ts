@@ -1,10 +1,10 @@
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory } from "@timelish/logger";
 import {
   BullMQNotificationConfig,
   BullMQNotificationWorker,
   getBullMQNotificationConfig,
   ServicesContainer,
-} from "@vivid/services";
+} from "@timelish/services";
 import dotenv from "dotenv";
 
 // Load environment variables

@@ -1,13 +1,12 @@
 "use client";
 
-import JsonView from "@uiw/react-json-view";
-import { adminApi } from "@vivid/api-sdk";
-import { useI18n, useLocale } from "@vivid/i18n";
+import { adminApi } from "@timelish/api-sdk";
+import { useI18n, useLocale } from "@timelish/i18n";
 import {
   CommunicationChannel,
   CommunicationDirection,
   CommunicationLog,
-} from "@vivid/types";
+} from "@timelish/types";
 import {
   Badge,
   Button,
@@ -26,7 +25,8 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@vivid/ui";
+} from "@timelish/ui";
+import JsonView from "@uiw/react-json-view";
 import { Mail, MailQuestion, MessageSquare, Send } from "lucide-react";
 import { DateTime } from "luxon";
 import { useRouter } from "next/navigation";

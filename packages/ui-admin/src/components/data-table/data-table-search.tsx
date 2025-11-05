@@ -1,7 +1,7 @@
 "use client";
 
-import { useI18n } from "@vivid/i18n";
-import { cn, Input } from "@vivid/ui";
+import { useI18n } from "@timelish/i18n";
+import { cn, Input } from "@timelish/ui";
 import { Options } from "nuqs";
 import { useTransition } from "react";
 

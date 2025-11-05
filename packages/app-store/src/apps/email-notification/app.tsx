@@ -1,4 +1,4 @@
-import { App } from "@vivid/types";
+import { App } from "@timelish/types";
 import { Mailbox } from "lucide-react";
 import { EMAIL_NOTIFICATION_APP_NAME } from "./const";
 import {

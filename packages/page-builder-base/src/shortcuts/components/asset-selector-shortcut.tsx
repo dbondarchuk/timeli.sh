@@ -1,5 +1,5 @@
-import { BuilderKeys } from "@vivid/i18n";
-import { AssetSelectorInput } from "@vivid/ui-admin";
+import { BuilderKeys } from "@timelish/i18n";
+import { AssetSelectorInput } from "@timelish/ui-admin";
 import { StyleValue } from "../../style/css-renderer";
 import { BaseStyleDictionary } from "../../style/types";
 import { ShortcutWithAssetSelector } from "../types";

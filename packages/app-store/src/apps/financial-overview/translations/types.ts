@@ -1,4 +1,4 @@
-import { Leaves } from "@vivid/types";
+import { Leaves } from "@timelish/types";
 import type admin from "./en/admin.json";
 
 export type FinancialOverviewAdminKeys = Leaves<typeof admin>;

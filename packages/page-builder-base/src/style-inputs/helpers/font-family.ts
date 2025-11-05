@@ -1,4 +1,4 @@
-import { AllKeys } from "@vivid/i18n";
+import { AllKeys } from "@timelish/i18n";
 import { ValueLabel } from "../../style/helpers/types";
 
 export const FONT_FAMILY_NAMES = [

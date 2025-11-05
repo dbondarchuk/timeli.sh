@@ -1,8 +1,8 @@
 "use client";
 
-import { adminApi } from "@vivid/api-sdk";
-import { useI18n } from "@vivid/i18n";
-import { PageListModelWithUrl } from "@vivid/types";
+import { adminApi } from "@timelish/api-sdk";
+import { useI18n } from "@timelish/i18n";
+import { PageListModelWithUrl } from "@timelish/types";
 import {
   Button,
   cn,
@@ -14,7 +14,7 @@ import {
   Skeleton,
   toast,
   useDebounce,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import React from "react";
 import { useInView } from "react-intersection-observer";
 

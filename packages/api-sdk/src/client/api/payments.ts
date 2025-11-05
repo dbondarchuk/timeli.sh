@@ -1,7 +1,7 @@
 import {
   CollectPayment,
   CreateOrUpdatePaymentIntentRequest,
-} from "@vivid/types";
+} from "@timelish/types";
 import { fetchClientApi } from "./utils";
 
 export const createPaymentIntent = async (

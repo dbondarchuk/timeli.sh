@@ -1,4 +1,4 @@
-import { ConnectedAppStatus } from "@vivid/types";
+import { ConnectedAppStatus } from "@timelish/types";
 
 export const appStatusTextClasses: Record<ConnectedAppStatus, string> = {
   connected: "text-green-500",

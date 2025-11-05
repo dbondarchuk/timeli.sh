@@ -1,12 +1,12 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { useI18n } from "@vivid/i18n";
+import { useI18n } from "@timelish/i18n";
 import {
   SocialConfiguration,
   SocialLink,
   SocialLinkType,
   socialTypeLabels,
-} from "@vivid/types";
+} from "@timelish/types";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -30,7 +30,7 @@ import {
   FormMessage,
   InfoTooltip,
   Input,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { cva } from "class-variance-authority";
 import { GripVertical, Trash } from "lucide-react";
 import { FieldPath, UseFormReturn } from "react-hook-form";

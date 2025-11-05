@@ -1,8 +1,8 @@
 "use client";
 
-import { ConfigurationProps, TextInput } from "@vivid/builder";
-import { useI18n } from "@vivid/i18n";
-import { deepMemo } from "@vivid/ui";
+import { ConfigurationProps, TextInput } from "@timelish/builder";
+import { useI18n } from "@timelish/i18n";
+import { deepMemo } from "@timelish/ui";
 import { useCallback } from "react";
 import { ConditionalContainerProps } from "./schema";
 

@@ -1,4 +1,4 @@
-import { IConnectedApp, IConnectedAppProps } from "@vivid/types";
+import { IConnectedApp, IConnectedAppProps } from "@timelish/types";
 import { BUSY_EVENTS_APP_NAME } from "../apps/busy-events/const";
 import BusyEventsConnectedApp from "../apps/busy-events/service";
 import { CALDAV_APP_NAME } from "../apps/caldav/const";

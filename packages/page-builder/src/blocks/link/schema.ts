@@ -1,6 +1,6 @@
-import { BaseReaderBlockProps, generateId } from "@vivid/builder";
-import { COLORS } from "@vivid/page-builder-base/style";
-import { Prettify } from "@vivid/types";
+import { BaseReaderBlockProps, generateId } from "@timelish/builder";
+import { COLORS } from "@timelish/page-builder-base/style";
+import { Prettify } from "@timelish/types";
 import * as z from "zod";
 import { InlineContainerPropsDefaults } from "../inline-container";
 import { zStyles } from "./styles";

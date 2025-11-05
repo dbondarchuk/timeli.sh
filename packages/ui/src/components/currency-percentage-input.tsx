@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useI18n } from "@vivid/i18n";
+import { useI18n } from "@timelish/i18n";
 import { DollarSign, Percent } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "./button";

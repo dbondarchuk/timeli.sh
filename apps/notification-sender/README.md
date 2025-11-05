@@ -18,7 +18,7 @@ The app consists of:
 
 1. **BullMQ Worker**: Redis-based workers for processing notifications
 2. **Message Processors**: Handles notification processing with retry logic
-3. **Service Integration**: Uses existing Vivid services for actual notification sending
+3. **Service Integration**: Uses existing Timeli.sh services for actual notification sending
 4. **Queue Management**: Handles job retry, failure, and completion
 5. **Crash Recovery**: Automatic restart capabilities with exponential backoff
 
@@ -86,7 +86,7 @@ cp env.bullmq.example .env
 # Update .env with BullMQ configuration
 # REDIS_HOST=localhost
 # REDIS_PORT=6379
-# MONGODB_URI=mongodb://localhost:27017/vivid
+# MONGODB_URI=mongodb://localhost:27017/timelish
 
 # Start Redis (if using Docker Compose)
 docker-compose up redis -d
@@ -98,7 +98,7 @@ yarn test-connection
 yarn dev
 
 # Or use Turborepo from project root
-yarn turbo dev --filter=@vivid/notification-sender
+yarn turbo dev --filter=@timelish/notification-sender
 ```
 
 ### Production
@@ -108,7 +108,7 @@ yarn turbo dev --filter=@vivid/notification-sender
 yarn build
 
 # Or use Turborepo from project root
-yarn turbo build --filter=@vivid/notification-sender
+yarn turbo build --filter=@timelish/notification-sender
 
 # Start the application
 yarn start
@@ -121,11 +121,11 @@ yarn start
 docker-compose up -d
 
 # Or build and run manually
-docker build -t vivid-notification-sender .
+docker build -t timelish-notification-sender .
 docker run -d \
   --name notification-sender \
   --env-file .env \
-  vivid-notification-sender
+  timelish-notification-sender
 ```
 
 ## Run Modes
@@ -198,7 +198,7 @@ module.exports = {
     env: {
       REDIS_HOST: 'localhost',
       REDIS_PORT: '6379',
-      MONGODB_URI: 'mongodb://localhost:27017/vivid',
+      MONGODB_URI: 'mongodb://localhost:27017/timelish',
       BULLMQ_RUN_MODE: 'crash',
     },
     restart_delay: 5000,
@@ -242,7 +242,7 @@ RestartSec=5
 Environment=NODE_ENV=production
 Environment=REDIS_HOST=localhost
 Environment=REDIS_PORT=6379
-Environment=MONGODB_URI=mongodb://localhost:27017/vivid
+Environment=MONGODB_URI=mongodb://localhost:27017/timelish
 Environment=BULLMQ_RUN_MODE=crash
 
 [Install]
@@ -251,7 +251,7 @@ WantedBy=multi-user.target
 
 ## Integration with Main App
 
-To integrate this with your main Vivid application:
+To integrate this with your main Timeli.sh application:
 
 1. **Environment Setup**: Add Redis environment variables to your main app
 2. **Service Integration**: Use `BullMQNotificationService` instead of the regular notification service
@@ -267,7 +267,7 @@ Instead of calling the notification service directly:
 await ServicesContainer.NotificationService().sendEmail(emailData);
 
 // After - use BullMQ-based notification service
-import { BullMQNotificationService, getBullMQConfig } from "@vivid/services";
+import { BullMQNotificationService, getBullMQConfig } from "@timelish/services";
 
 const notificationService = new BullMQNotificationService(getBullMQConfig());
 await notificationService.start();
@@ -281,22 +281,22 @@ The notification sender app is fully integrated with Turborepo. You can run comm
 
 ```bash
 # Development
-yarn turbo dev --filter=@vivid/notification-sender
+yarn turbo dev --filter=@timelish/notification-sender
 
 # Build
-yarn turbo build --filter=@vivid/notification-sender
+yarn turbo build --filter=@timelish/notification-sender
 
 # Test BullMQ
-yarn turbo test-bullmq --filter=@vivid/notification-sender
+yarn turbo test-bullmq --filter=@timelish/notification-sender
 
 # Lint
-yarn turbo lint --filter=@vivid/notification-sender
+yarn turbo lint --filter=@timelish/notification-sender
 
 # Type checking
-yarn turbo check-types --filter=@vivid/notification-sender
+yarn turbo check-types --filter=@timelish/notification-sender
 
 # Run all tasks for this app
-yarn turbo run build,lint,check-types --filter=@vivid/notification-sender
+yarn turbo run build,lint,check-types --filter=@timelish/notification-sender
 ```
 
 ## Troubleshooting

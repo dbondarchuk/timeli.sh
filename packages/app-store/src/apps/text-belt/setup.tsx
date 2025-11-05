@@ -1,7 +1,7 @@
 "use client";
 
-import { useI18n } from "@vivid/i18n";
-import { AppSetupProps } from "@vivid/types";
+import { useI18n } from "@timelish/i18n";
+import { AppSetupProps } from "@timelish/types";
 import {
   Button,
   Form,
@@ -13,12 +13,12 @@ import {
   InfoTooltip,
   Input,
   Spinner,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import {
   AppSelector,
   ConnectedAppNameAndLogo,
   ConnectedAppStatusMessage,
-} from "@vivid/ui-admin";
+} from "@timelish/ui-admin";
 import React from "react";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
 import { TextBeltApp } from "./app";

@@ -1,5 +1,5 @@
-import { getLoggerFactory } from "@vivid/logger";
-import { formatAmountString } from "@vivid/utils";
+import { getLoggerFactory } from "@timelish/logger";
+import { formatAmountString } from "@timelish/utils";
 import { v4 as uuidv4 } from "uuid";
 import * as z from "zod";
 import { PaypalOrder } from "./types";

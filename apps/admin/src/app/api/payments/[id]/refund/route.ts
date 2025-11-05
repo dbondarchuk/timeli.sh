@@ -1,6 +1,6 @@
 import { getServicesContainer } from "@/app/utils";
-import { refundPaymentSchema } from "@vivid/api-sdk";
-import { getLoggerFactory } from "@vivid/logger";
+import { refundPaymentSchema } from "@timelish/api-sdk";
+import { getLoggerFactory } from "@timelish/logger";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(

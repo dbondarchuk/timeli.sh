@@ -1,4 +1,4 @@
-import { evaluate, ReaderBlock } from "@vivid/builder";
+import { evaluate, ReaderBlock } from "@timelish/builder";
 import { ConditionalContainerReaderProps } from "./schema";
 
 export const ConditionalContainerReader = ({

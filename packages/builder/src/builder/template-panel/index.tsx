@@ -6,7 +6,7 @@ import {
   PointerSensor,
 } from "@dnd-kit/react";
 import { effect } from "@dnd-kit/state";
-import { Tabs, useThrottleCallback } from "@vivid/ui";
+import { Tabs, useThrottleCallback } from "@timelish/ui";
 import { ComponentProps, memo } from "react";
 import {
   getActiveOverBlockContext,

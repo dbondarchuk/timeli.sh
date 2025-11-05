@@ -3,7 +3,7 @@ import {
   DiscountUpdateModel,
   okStatus,
   WithTotal,
-} from "@vivid/types";
+} from "@timelish/types";
 import {
   checkDiscountNameAndCodeParamsSerializer,
   DiscountsSearchParams,

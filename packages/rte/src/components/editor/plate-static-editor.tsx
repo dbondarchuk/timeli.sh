@@ -1,6 +1,7 @@
 import type { VariantProps } from "class-variance-authority";
 import React from "react";
 
+import { cn } from "@timelish/ui";
 import { withProps } from "@udecode/cn";
 import {
   BaseParagraphPlugin,
@@ -68,7 +69,6 @@ import {
   BaseTableRowPlugin,
 } from "@udecode/plate-table";
 import { BaseTogglePlugin } from "@udecode/plate-toggle";
-import { cn } from "@vivid/ui";
 import Prism from "prismjs";
 import { BlockquoteElementStatic } from "../plate-ui/blockquote-element-static";
 import { CodeBlockElementStatic } from "../plate-ui/code-block-element-static";

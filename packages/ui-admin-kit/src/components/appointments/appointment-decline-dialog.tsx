@@ -1,8 +1,8 @@
 "use client";
 
-import { adminApi } from "@vivid/api-sdk";
-import { useI18n, useLocale } from "@vivid/i18n";
-import { Appointment, AppointmentStatus, Payment } from "@vivid/types";
+import { adminApi } from "@timelish/api-sdk";
+import { useI18n, useLocale } from "@timelish/i18n";
+import { Appointment, AppointmentStatus, Payment } from "@timelish/types";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -26,8 +26,8 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@vivid/ui";
-import { formatAmount, formatAmountString } from "@vivid/utils";
+} from "@timelish/ui";
+import { formatAmount, formatAmountString } from "@timelish/utils";
 import { CalendarX2 } from "lucide-react";
 import { DateTime } from "luxon";
 import React, { useCallback, useEffect, useId } from "react";

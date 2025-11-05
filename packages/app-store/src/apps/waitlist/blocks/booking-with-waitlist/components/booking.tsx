@@ -1,7 +1,7 @@
 "use client";
-import { clientApi } from "@vivid/api-sdk";
-import { GetAppointmentOptionsResponse } from "@vivid/types";
-import { Skeleton } from "@vivid/ui";
+import { clientApi } from "@timelish/api-sdk";
+import { GetAppointmentOptionsResponse } from "@timelish/types";
+import { Skeleton } from "@timelish/ui";
 import React from "react";
 import { Appointments } from "./appointments";
 import { demoBookingOptionsResponse } from "./fixtures";

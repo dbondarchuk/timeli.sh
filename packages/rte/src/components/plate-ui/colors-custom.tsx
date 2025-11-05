@@ -2,11 +2,11 @@
 
 import { type ComponentPropsWithoutRef } from "react";
 
+import { buttonVariants, cn } from "@timelish/ui";
 import {
   useColorsCustom,
   useColorsCustomState,
 } from "@udecode/plate-font/react";
-import { buttonVariants, cn } from "@vivid/ui";
 import { PlusIcon } from "lucide-react";
 
 import {
@@ -15,7 +15,7 @@ import {
 } from "./color-dropdown-menu-items";
 import { ColorInput } from "./color-input";
 // import { ColorInput } from './color-input';
-import { DropdownMenuItem } from "@vivid/ui";
+import { DropdownMenuItem } from "@timelish/ui";
 
 type ColorCustomProps = {
   colors: TColor[];

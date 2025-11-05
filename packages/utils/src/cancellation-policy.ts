@@ -1,7 +1,7 @@
 import {
   AppointmentCancellationConfiguration,
   AppointmentRescheduleConfiguration,
-} from "@vivid/types";
+} from "@timelish/types";
 import { DateTime } from "luxon";
 
 /**

@@ -1,5 +1,5 @@
 {
-  "name": "@vivid/ui",
+  "name": "@timelish/ui",
   "version": "0.0.1",
   "private": true,
   "sideEffects": false,
@@ -16,9 +16,9 @@
     "@types/react-big-calendar": "^1.8.10",
     "@types/react-dom": "19.0.2",
     "@types/react-window": "^1.8.8",
-    "@vivid/eslint-config": "*",
-    "@vivid/tailwind-config": "*",
-    "@vivid/typescript-config": "*",
+    "@timelish/eslint-config": "*",
+    "@timelish/tailwind-config": "*",
+    "@timelish/typescript-config": "*",
     "typescript": "5.5.4"
   },
   "dependencies": {
@@ -54,9 +54,9 @@
     "@radix-ui/react-tooltip": "^1.2.8",
     "@tanstack/react-table": "^8.20.5",
     "@uiw/react-color": "^2.4.1",
-    "@vivid/types": "*",
-    "@vivid/utils": "*",
-    "@vivid/i18n": "*",
+    "@timelish/types": "*",
+    "@timelish/utils": "*",
+    "@timelish/i18n": "*",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "1.1.1",

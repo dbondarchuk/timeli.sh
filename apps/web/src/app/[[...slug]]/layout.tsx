@@ -1,12 +1,12 @@
-import { ConfigProvider, SonnerToaster, Toaster } from "@vivid/ui";
+import { ConfigProvider, SonnerToaster, Toaster } from "@timelish/ui";
 
-import { Resource } from "@vivid/types";
+import { Resource } from "@timelish/types";
 
 import NextScript from "next/script";
 
 import { CookiesProvider } from "@/components/cookies-provider";
-import { getLoggerFactory } from "@vivid/logger";
-import { buildGoogleFontsUrl, getColorsCss } from "@vivid/utils";
+import { getLoggerFactory } from "@timelish/logger";
+import { buildGoogleFontsUrl, getColorsCss } from "@timelish/utils";
 import "../globals.css";
 
 import { getServicesContainer } from "@/utils/utils";

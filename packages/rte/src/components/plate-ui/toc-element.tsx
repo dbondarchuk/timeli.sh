@@ -7,7 +7,7 @@ import {
 } from "@udecode/plate-heading/react";
 import { cva } from "class-variance-authority";
 
-import { Button } from "@vivid/ui";
+import { Button } from "@timelish/ui";
 import { PlateElement } from "./plate-element";
 
 const headingItemVariants = cva(

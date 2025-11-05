@@ -1,5 +1,5 @@
-import { backgroundColorShortcut, Shortcut } from "@vivid/page-builder-base";
-import { AllStylesSchemas } from "@vivid/page-builder-base/style";
+import { backgroundColorShortcut, Shortcut } from "@timelish/page-builder-base";
+import { AllStylesSchemas } from "@timelish/page-builder-base/style";
 import { Ruler } from "lucide-react";
 
 export const spacerShortcuts: Shortcut<AllStylesSchemas>[] = [

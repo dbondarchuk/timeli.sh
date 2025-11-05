@@ -109,7 +109,7 @@ import {
   DropdownMenuTrigger,
   ToolbarButton,
   useOpenState,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { EditorStatic } from "./editor-static";
 import { EquationElementStatic } from "./equation-element-static";
 import { InlineEquationElementStatic } from "./inline-equation-element-static";

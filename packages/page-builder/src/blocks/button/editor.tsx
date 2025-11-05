@@ -5,13 +5,13 @@ import {
   useBlockChildrenBlockIds,
   useBlockEditor,
   useCurrentBlock,
-} from "@vivid/builder";
+} from "@timelish/builder";
 import {
   BlockStyle,
   useClassName,
   useResizeBlockStyles,
-} from "@vivid/page-builder-base";
-import { cn } from "@vivid/ui";
+} from "@timelish/page-builder-base";
+import { cn } from "@timelish/ui";
 import { ButtonProps } from "./schema";
 import { styles } from "./styles";
 import { getDefaults } from "./styles.default";

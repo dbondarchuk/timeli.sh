@@ -1,7 +1,7 @@
 "use client";
 
-import { useI18n } from "@vivid/i18n";
-import { AlertModal, Button, Spinner, toastPromise } from "@vivid/ui";
+import { useI18n } from "@timelish/i18n";
+import { AlertModal, Button, Spinner, toastPromise } from "@timelish/ui";
 import { Trash } from "lucide-react";
 import { useQueryState } from "nuqs";
 import React from "react";

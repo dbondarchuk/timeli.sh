@@ -1,8 +1,8 @@
 "use client";
 
-import { usePortalContext } from "@vivid/builder";
-import { PopupProvider } from "@vivid/page-builder-base";
-import { Dialog, DialogContent } from "@vivid/ui";
+import { usePortalContext } from "@timelish/builder";
+import { PopupProvider } from "@timelish/page-builder-base";
+import { Dialog, DialogContent } from "@timelish/ui";
 import { DateTime } from "luxon";
 import { useState } from "react";
 import { useCookies } from "react-cookie";

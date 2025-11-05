@@ -1,10 +1,10 @@
 import { getAppointmentEventFromRequest } from "@/utils/appointments/get-event";
 import { getServicesContainer } from "@/utils/utils";
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory } from "@timelish/logger";
 import {
   appointmentRequestSchema,
   CheckDuplicateAppointmentsResponse,
-} from "@vivid/types";
+} from "@timelish/types";
 import { DateTime } from "luxon";
 import { NextRequest, NextResponse } from "next/server";
 

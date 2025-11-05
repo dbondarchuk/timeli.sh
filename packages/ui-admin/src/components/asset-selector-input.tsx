@@ -1,7 +1,7 @@
 "use client";
 
-import { useI18n } from "@vivid/i18n";
-import { UploadedFile } from "@vivid/types";
+import { useI18n } from "@timelish/i18n";
+import { UploadedFile } from "@timelish/types";
 import {
   Button,
   Input,
@@ -10,7 +10,7 @@ import {
   InputGroupInputClasses,
   InputGroupSuffixClasses,
   inputVariants,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { VariantProps } from "class-variance-authority";
 import React from "react";
 import { AssetSelectorDialog } from "./assets-selector-dialog";

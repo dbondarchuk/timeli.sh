@@ -1,6 +1,12 @@
 "use client";
 
-import { Button, cn, Popover, PopoverContent, PopoverTrigger } from "@vivid/ui";
+import {
+  Button,
+  cn,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@timelish/ui";
 import { Minus, Plus } from "lucide-react";
 import React from "react";
 

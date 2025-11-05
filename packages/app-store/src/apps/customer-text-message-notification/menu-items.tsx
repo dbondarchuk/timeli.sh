@@ -1,4 +1,4 @@
-import { AppMenuItem } from "@vivid/types";
+import { AppMenuItem } from "@timelish/types";
 import { Send } from "lucide-react";
 import { CustomerTextMessageNotificationAppSetup } from "./setup";
 import {

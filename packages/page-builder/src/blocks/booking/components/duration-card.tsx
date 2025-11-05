@@ -1,6 +1,6 @@
-import { useI18n } from "@vivid/i18n";
-import { Button } from "@vivid/ui";
-import { durationToTime } from "@vivid/utils";
+import { useI18n } from "@timelish/i18n";
+import { Button } from "@timelish/ui";
+import { durationToTime } from "@timelish/utils";
 import React from "react";
 import { useScheduleContext } from "./context";
 

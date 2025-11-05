@@ -1,10 +1,10 @@
 import PageContainer from "@/components/admin/layout/page-container";
 import { TemplateTemplates } from "@/components/admin/templates/templates";
 import { TemplatesTemplate } from "@/components/admin/templates/templates/type";
-import { getI18nAsync } from "@vivid/i18n/server";
-import { getLoggerFactory } from "@vivid/logger";
-import { CommunicationChannel } from "@vivid/types";
-import { Heading, Skeleton } from "@vivid/ui";
+import { getI18nAsync } from "@timelish/i18n/server";
+import { getLoggerFactory } from "@timelish/logger";
+import { CommunicationChannel } from "@timelish/types";
+import { Heading, Skeleton } from "@timelish/ui";
 import { Metadata } from "next";
 import { Suspense } from "react";
 import { TemplateFormPage } from "../../form-page";

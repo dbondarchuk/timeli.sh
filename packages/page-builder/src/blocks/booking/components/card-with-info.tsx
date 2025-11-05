@@ -1,11 +1,11 @@
-import { TranslationKeys, useI18n, useLocale } from "@vivid/i18n";
-import { Time } from "@vivid/types";
-import { timeZones } from "@vivid/types/src/utils/zTimeZone";
+import { TranslationKeys, useI18n, useLocale } from "@timelish/i18n";
+import { Time } from "@timelish/types";
+import { timeZones } from "@timelish/types/src/utils/zTimeZone";
 import {
   durationToTime,
   formatAmountString,
   formatTimeLocale,
-} from "@vivid/utils";
+} from "@timelish/utils";
 import { TimeZone } from "@vvo/tzdb";
 import { Calendar, Clock, DollarSign, Globe2, Timer } from "lucide-react";
 import { HourNumbers, DateTime as Luxon, MinuteNumbers } from "luxon";

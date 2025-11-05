@@ -1,4 +1,4 @@
-import { App } from "@vivid/types";
+import { App } from "@timelish/types";
 import { SendHorizonal } from "lucide-react";
 import { TEXT_MESSAGE_NOTIFICATION_APP_NAME } from "./const";
 import {

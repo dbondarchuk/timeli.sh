@@ -1,14 +1,14 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { adminApi } from "@vivid/api-sdk";
-import { EmailBuilder } from "@vivid/email-builder";
-import { useI18n } from "@vivid/i18n";
+import { adminApi } from "@timelish/api-sdk";
+import { EmailBuilder } from "@timelish/email-builder";
+import { useI18n } from "@timelish/i18n";
 import {
   CommunicationChannel,
   getTemplateSchemaWithUniqueCheck,
   Template,
-} from "@vivid/types";
+} from "@timelish/types";
 import {
   Form,
   FormControl,
@@ -20,9 +20,9 @@ import {
   Input,
   toastPromise,
   useDebounceCacheFn,
-} from "@vivid/ui";
-import { SaveButton } from "@vivid/ui-admin";
-import { TextMessageBuilder } from "@vivid/ui-admin-kit";
+} from "@timelish/ui";
+import { SaveButton } from "@timelish/ui-admin";
+import { TextMessageBuilder } from "@timelish/ui-admin-kit";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";

@@ -1,9 +1,9 @@
 "use client";
 
-import { adminApi } from "@vivid/api-sdk";
-import { useI18n } from "@vivid/i18n";
-import { Appointment, DaySchedule, Event } from "@vivid/types";
-import { cn } from "@vivid/ui";
+import { adminApi } from "@timelish/api-sdk";
+import { useI18n } from "@timelish/i18n";
+import { Appointment, DaySchedule, Event } from "@timelish/types";
+import { cn } from "@timelish/ui";
 import { DateTime, HourNumbers } from "luxon";
 import React from "react";
 import {

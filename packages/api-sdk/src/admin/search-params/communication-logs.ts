@@ -14,7 +14,7 @@ import {
   communicationChannels,
   communicationDirectionSchema,
   communicationParticipantTypeSchema,
-} from "@vivid/types";
+} from "@timelish/types";
 import { baseSearchParams } from "./base";
 
 export const communicationLogsSearchParams = {

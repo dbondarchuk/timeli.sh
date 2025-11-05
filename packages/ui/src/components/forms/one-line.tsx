@@ -1,7 +1,7 @@
 import { FormControl, FormField, FormItem } from "../form";
 import { Input } from "../input";
 
-import { WithLabelFieldData } from "@vivid/types";
+import { WithLabelFieldData } from "@timelish/types";
 import { FieldValues } from "react-hook-form";
 import { getFieldName, IFormFieldProps } from "./form-fiel.types";
 import { FormFieldDescription } from "./form-field-description";

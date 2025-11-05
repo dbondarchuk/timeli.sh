@@ -1,4 +1,4 @@
-import { asOptionalField } from "@vivid/types";
+import { asOptionalField } from "@timelish/types";
 import * as z from "zod";
 
 export const smartScheduleConfigurationSchema = z.object({

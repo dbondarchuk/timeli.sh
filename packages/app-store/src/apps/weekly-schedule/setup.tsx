@@ -1,6 +1,6 @@
 "use client";
 
-import { ComplexAppPageProps } from "@vivid/types";
+import { ComplexAppPageProps } from "@timelish/types";
 import React from "react";
 import { WeeklyScheduleForm } from "./components/form";
 

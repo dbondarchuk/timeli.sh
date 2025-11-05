@@ -1,12 +1,12 @@
 "use client";
 
+import { cn } from "@timelish/ui";
 import { RangeApi } from "@udecode/plate";
 import {
   type CursorData,
   type CursorOverlayState,
   useCursorOverlay,
 } from "@udecode/plate-selection/react";
-import { cn } from "@vivid/ui";
 
 export function Cursor({
   id,

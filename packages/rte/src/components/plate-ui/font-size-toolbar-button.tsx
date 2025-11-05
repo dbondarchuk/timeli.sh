@@ -4,17 +4,17 @@ import { useState } from "react";
 
 import type { TElement } from "@udecode/plate";
 
-import { toUnitLess } from "@udecode/plate-font";
-import { FontSizePlugin } from "@udecode/plate-font/react";
-import { HEADING_KEYS } from "@udecode/plate-heading";
-import { useEditorPlugin, useEditorSelector } from "@udecode/plate/react";
 import {
   cn,
   Popover,
   PopoverContent,
   PopoverTrigger,
   ToolbarButton,
-} from "@vivid/ui";
+} from "@timelish/ui";
+import { toUnitLess } from "@udecode/plate-font";
+import { FontSizePlugin } from "@udecode/plate-font/react";
+import { HEADING_KEYS } from "@udecode/plate-heading";
+import { useEditorPlugin, useEditorSelector } from "@udecode/plate/react";
 import { Minus, Plus } from "lucide-react";
 
 const DEFAULT_FONT_SIZE = "16";

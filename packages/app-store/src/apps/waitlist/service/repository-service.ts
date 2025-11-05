@@ -1,6 +1,11 @@
-import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
-import { DateRange, IConnectedAppProps, Query, WithTotal } from "@vivid/types";
-import { buildSearchQuery, escapeRegex } from "@vivid/utils";
+import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
+import {
+  DateRange,
+  IConnectedAppProps,
+  Query,
+  WithTotal,
+} from "@timelish/types";
+import { buildSearchQuery, escapeRegex } from "@timelish/utils";
 import { ObjectId, type Filter, type Sort } from "mongodb";
 import {
   WaitlistEntry,

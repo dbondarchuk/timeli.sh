@@ -1,9 +1,9 @@
 import { getServicesContainer, getWebsiteUrl } from "@/app/utils";
 import PageContainer from "@/components/admin/layout/page-container";
 import { PageForm } from "@/components/admin/pages/form";
-import { getI18nAsync } from "@vivid/i18n/server";
-import { getLoggerFactory } from "@vivid/logger";
-import { Styling } from "@vivid/page-builder/reader";
+import { getI18nAsync } from "@timelish/i18n/server";
+import { getLoggerFactory } from "@timelish/logger";
+import { Styling } from "@timelish/page-builder/reader";
 import { Metadata } from "next";
 
 export async function generateMetadata(): Promise<Metadata> {

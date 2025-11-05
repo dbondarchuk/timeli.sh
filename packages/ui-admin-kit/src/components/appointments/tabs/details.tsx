@@ -1,9 +1,9 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { adminApi } from "@vivid/api-sdk";
-import { AdminKeys, useI18n, useLocale } from "@vivid/i18n";
-import { Appointment, timeZones } from "@vivid/types";
+import { adminApi } from "@timelish/api-sdk";
+import { AdminKeys, useI18n, useLocale } from "@timelish/i18n";
+import { Appointment, timeZones } from "@timelish/types";
 import {
   Accordion,
   AccordionContent,
@@ -18,8 +18,8 @@ import {
   Textarea,
   toastPromise,
   useTimeZone,
-} from "@vivid/ui";
-import { durationToTime, formatAmountString } from "@vivid/utils";
+} from "@timelish/ui";
+import { durationToTime, formatAmountString } from "@timelish/utils";
 import { DateTime } from "luxon";
 import { useRouter } from "next/navigation";
 import { Fragment, useState } from "react";

@@ -1,5 +1,5 @@
-import { useI18n } from "@vivid/i18n";
-import { Button, Label } from "@vivid/ui";
+import { useI18n } from "@timelish/i18n";
+import { Button, Label } from "@timelish/ui";
 import { Trash } from "lucide-react";
 import * as z from "zod";
 import {

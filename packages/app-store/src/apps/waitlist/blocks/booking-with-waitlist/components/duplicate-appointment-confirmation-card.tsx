@@ -1,6 +1,6 @@
-import { useI18n } from "@vivid/i18n";
-import { Checkbox, Label, Markdown } from "@vivid/ui";
-import { template } from "@vivid/utils";
+import { useI18n } from "@timelish/i18n";
+import { Checkbox, Label, Markdown } from "@timelish/ui";
+import { template } from "@timelish/utils";
 import { DateTime } from "luxon";
 import { useScheduleContext } from "./context";
 

@@ -1,4 +1,4 @@
-import { ReaderBlock, TReaderBlock } from "@vivid/builder";
+import { ReaderBlock, TReaderBlock } from "@timelish/builder";
 import { BaseColumnsContainer } from "./base";
 import { ColumnsContainerReaderProps } from "./schema";
 

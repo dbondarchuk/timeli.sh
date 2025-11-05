@@ -1,8 +1,8 @@
 import type { SlateElementProps } from "@udecode/plate";
 import type { TAudioElement } from "@udecode/plate-media";
 
+import { cn } from "@timelish/ui";
 import { SlateElement } from "@udecode/plate";
-import { cn } from "@vivid/ui";
 
 export function MediaAudioElementStatic({
   children,

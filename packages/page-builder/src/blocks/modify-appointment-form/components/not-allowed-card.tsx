@@ -1,4 +1,4 @@
-import { useI18n, useLocale } from "@vivid/i18n";
+import { useI18n, useLocale } from "@timelish/i18n";
 import { DateTime as Luxon } from "luxon";
 import { useModifyAppointmentFormContext } from "./context";
 

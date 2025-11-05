@@ -1,4 +1,4 @@
-import { BaseReaderBlockProps } from "@vivid/builder";
+import { BaseReaderBlockProps } from "@timelish/builder";
 import * as z from "zod";
 import {
   zColor,

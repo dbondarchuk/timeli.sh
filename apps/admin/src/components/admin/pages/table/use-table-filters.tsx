@@ -1,7 +1,7 @@
 "use client";
 
-import { pagesSearchParams } from "@vivid/api-sdk";
-import { useI18n } from "@vivid/i18n";
+import { pagesSearchParams } from "@timelish/api-sdk";
+import { useI18n } from "@timelish/i18n";
 import { useQueryState } from "nuqs";
 import { useCallback, useMemo } from "react";
 

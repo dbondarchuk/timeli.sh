@@ -8,8 +8,8 @@ import {
   useCurrentBlock,
   useDispatchAction,
   useEditorArgs,
-} from "@vivid/builder";
-import { ArgumentsAutocomplete } from "@vivid/ui-admin";
+} from "@timelish/builder";
+import { ArgumentsAutocomplete } from "@timelish/ui-admin";
 import { OnlineMeetingProps, OnlineMeetingPropsDefaults } from "./schema";
 import { getLogoUrl, getStyles } from "./styles";
 

@@ -1,5 +1,5 @@
 {
-  "extends": ["@vivid/typescript-config/nextjs.json"],
+  "extends": ["@timelish/typescript-config/nextjs.json"],
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {

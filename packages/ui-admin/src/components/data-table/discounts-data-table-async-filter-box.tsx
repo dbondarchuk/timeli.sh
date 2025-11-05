@@ -2,16 +2,16 @@
 
 import React from "react";
 
-import { adminApi } from "@vivid/api-sdk";
-import { useI18n } from "@vivid/i18n";
-import { Discount } from "@vivid/types";
+import { adminApi } from "@timelish/api-sdk";
+import { useI18n } from "@timelish/i18n";
+import { Discount } from "@timelish/types";
 import {
   Skeleton,
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import {
   AsyncFilterBoxOption,
   AsyncFilterBoxProps,

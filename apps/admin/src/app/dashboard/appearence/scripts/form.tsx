@@ -2,11 +2,14 @@
 
 import { ResourcesCard } from "@/components/admin/resource/resources-card";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { adminApi } from "@vivid/api-sdk";
-import { useI18n } from "@vivid/i18n";
-import { ScriptsConfiguration, scriptsConfigurationSchema } from "@vivid/types";
-import { Form, toastPromise } from "@vivid/ui";
-import { SaveButton } from "@vivid/ui-admin";
+import { adminApi } from "@timelish/api-sdk";
+import { useI18n } from "@timelish/i18n";
+import {
+  ScriptsConfiguration,
+  scriptsConfigurationSchema,
+} from "@timelish/types";
+import { Form, toastPromise } from "@timelish/ui";
+import { SaveButton } from "@timelish/ui-admin";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";

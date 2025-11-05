@@ -5,12 +5,12 @@ import React from "react";
 import type { PlateContentProps } from "@udecode/plate/react";
 import type { VariantProps } from "class-variance-authority";
 
+import { cn } from "@timelish/ui";
 import {
   PlateContent,
   useEditorContainerRef,
   useEditorRef,
 } from "@udecode/plate/react";
-import { cn } from "@vivid/ui";
 import { cva } from "class-variance-authority";
 import { AbsoluteUrlContext } from "./absolute-url-context";
 import { WindowContext } from "./window-context";

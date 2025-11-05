@@ -1,6 +1,9 @@
-import { ReaderBlock } from "@vivid/builder";
-import { BlockStyle, generateClassName } from "@vivid/page-builder-base/reader";
-import { cn } from "@vivid/ui";
+import { ReaderBlock } from "@timelish/builder";
+import {
+  BlockStyle,
+  generateClassName,
+} from "@timelish/page-builder-base/reader";
+import { cn } from "@timelish/ui";
 import { Button } from "./button";
 import { ButtonReaderProps } from "./schema";
 import { styles } from "./styles";

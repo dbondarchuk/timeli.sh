@@ -1,4 +1,4 @@
-import { App } from "@vivid/types";
+import { App } from "@timelish/types";
 import { BellRing } from "lucide-react";
 import { SCHEDULED_NOTIFICATIONS_APP_NAME } from "./const";
 import {

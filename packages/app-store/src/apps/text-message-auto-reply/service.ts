@@ -1,4 +1,4 @@
-import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
 import {
   ConnectedAppData,
   ConnectedAppError,
@@ -8,13 +8,13 @@ import {
   ITextMessageResponder,
   RespondResult,
   TextMessageReply,
-} from "@vivid/types";
+} from "@timelish/types";
 import {
   getAdminUrl,
   getArguments,
   getWebsiteUrl,
   template,
-} from "@vivid/utils";
+} from "@timelish/utils";
 import { TextMessageAutoReplyConfiguration } from "./models";
 import {
   TextMessageAutoReplyAdminAllKeys,

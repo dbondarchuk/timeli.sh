@@ -1,6 +1,6 @@
 "use client";
 
-import { useI18n } from "@vivid/i18n";
+import { useI18n } from "@timelish/i18n";
 import {
   Button,
   Dialog,
@@ -14,7 +14,7 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { Settings } from "lucide-react";
 import { useState } from "react";
 import { WaitlistAppSetup } from "../setup";

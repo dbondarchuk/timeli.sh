@@ -23,7 +23,7 @@ import {
 import { toast } from "sonner";
 import { useFilePicker } from "use-file-picker";
 
-import { UploadedFile } from "@vivid/types";
+import { UploadedFile } from "@timelish/types";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -43,8 +43,8 @@ import {
   ToolbarSplitButtonPrimary,
   ToolbarSplitButtonSecondary,
   useOpenState,
-} from "@vivid/ui";
-import { AssetSelectorDialog } from "@vivid/ui-admin";
+} from "@timelish/ui";
+import { AssetSelectorDialog } from "@timelish/ui-admin";
 import { useAbsoluteUrl } from "./absolute-url-context";
 
 const MEDIA_CONFIG: Record<

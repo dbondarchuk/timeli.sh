@@ -1,4 +1,4 @@
-import { TabsContent } from "@vivid/ui";
+import { TabsContent } from "@timelish/ui";
 import { ComponentProps, memo } from "react";
 import { useDocument } from "../../documents/editor/context";
 import { Reader } from "../../documents/reader/block";

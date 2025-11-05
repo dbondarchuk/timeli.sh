@@ -1,4 +1,4 @@
-import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
 import {
   CalendarBusyTime,
   ConnectedAppData,
@@ -7,7 +7,7 @@ import {
   ICalendarBusyTimeProvider,
   IConnectedApp,
   IConnectedAppProps,
-} from "@vivid/types";
+} from "@timelish/types";
 import { DateTime } from "luxon";
 import { UrlBusyEventsConfiguration } from "./models";
 import {

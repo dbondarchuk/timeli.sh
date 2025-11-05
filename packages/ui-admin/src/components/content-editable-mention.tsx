@@ -9,7 +9,7 @@ import {
   CommandItem,
   CommandList,
   mergeRefs,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import React, {
   CSSProperties,
   JSX,

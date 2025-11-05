@@ -1,7 +1,7 @@
 "use client";
 
-import { useI18n } from "@vivid/i18n";
-import { ToolbarButton, ToolbarGroup } from "@vivid/ui";
+import { useI18n } from "@timelish/i18n";
+import { ToolbarButton, ToolbarGroup } from "@timelish/ui";
 import { ArrowDown, ArrowUp, Copy, Trash } from "lucide-react";
 import { useCallback, useEffect, useMemo } from "react";
 import {

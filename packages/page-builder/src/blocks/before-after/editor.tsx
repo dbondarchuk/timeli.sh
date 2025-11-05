@@ -8,9 +8,9 @@ import {
   useCurrentBlockId,
   useDispatchAction,
   usePortalContext,
-} from "@vivid/builder";
-import { BlockStyle, useClassName } from "@vivid/page-builder-base";
-import { cn } from "@vivid/ui";
+} from "@timelish/builder";
+import { BlockStyle, useClassName } from "@timelish/page-builder-base";
+import { cn } from "@timelish/ui";
 import { useCallback } from "react";
 import { ImageProvider } from "../image/context";
 import { BeforeAfterSlider } from "./before-after-slider";

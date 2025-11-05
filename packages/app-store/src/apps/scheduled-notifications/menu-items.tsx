@@ -1,4 +1,4 @@
-import { AppMenuItem } from "@vivid/types";
+import { AppMenuItem } from "@timelish/types";
 import { BellRing } from "lucide-react";
 import { EditScheduledNotificationPage } from "./edit-page";
 import { NewScheduledNotificationPage } from "./new-page";

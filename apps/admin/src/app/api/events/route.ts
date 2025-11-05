@@ -1,6 +1,6 @@
 import { getServicesContainer } from "@/app/utils";
-import { getLoggerFactory } from "@vivid/logger";
-import { AppointmentStatus, appointmentStatuses } from "@vivid/types";
+import { getLoggerFactory } from "@timelish/logger";
+import { AppointmentStatus, appointmentStatuses } from "@timelish/types";
 import { DateTime } from "luxon";
 import { NextRequest, NextResponse } from "next/server";
 

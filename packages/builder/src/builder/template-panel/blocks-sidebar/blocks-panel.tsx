@@ -1,5 +1,5 @@
 import { useDraggable } from "@dnd-kit/react";
-import { AllKeys, useI18n } from "@vivid/i18n";
+import { AllKeys, useI18n } from "@timelish/i18n";
 import {
   Button,
   cn,
@@ -7,7 +7,7 @@ import {
   Input,
   ScrollArea,
   useDebounce,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { GripVertical, Search, X } from "lucide-react";
 import { memo, useMemo, useState } from "react";
 import { useBlocks, useRootBlockType } from "../../../documents/editor/context";

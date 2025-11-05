@@ -1,15 +1,15 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { adminApi } from "@vivid/api-sdk";
-import { useI18n } from "@vivid/i18n";
+import { adminApi } from "@timelish/api-sdk";
+import { useI18n } from "@timelish/i18n";
 import {
   SocialConfiguration,
   socialConfigurationSchema,
   SocialLink,
-} from "@vivid/types";
-import { Form, toastPromise } from "@vivid/ui";
-import { SaveButton, Sortable } from "@vivid/ui-admin";
+} from "@timelish/types";
+import { Form, toastPromise } from "@timelish/ui";
+import { SaveButton, Sortable } from "@timelish/ui-admin";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useFieldArray, useForm } from "react-hook-form";

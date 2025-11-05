@@ -3,7 +3,7 @@ import {
   CollectPayment,
   DateTime,
   ModifyAppointmentInformation,
-} from "@vivid/types";
+} from "@timelish/types";
 import { DateTime as LuxonDateTime } from "luxon";
 import { createContext, FC, ReactNode, useContext } from "react";
 import { ModifyAppointmentFields, ModifyAppointmentType } from "./types";

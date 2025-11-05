@@ -1,6 +1,6 @@
 "use client";
 
-import { BuilderKeys, useI18n } from "@vivid/i18n";
+import { BuilderKeys, useI18n } from "@timelish/i18n";
 import {
   Badge,
   Button,
@@ -14,7 +14,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { Plus } from "lucide-react";
 import React, { useState } from "react";
 import {

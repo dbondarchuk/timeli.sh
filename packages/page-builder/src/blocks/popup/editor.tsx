@@ -5,9 +5,9 @@ import {
   useBlockChildrenBlockIds,
   useBlockEditor,
   useCurrentBlock,
-} from "@vivid/builder";
-import { BlockStyle, useClassName } from "@vivid/page-builder-base";
-import { cn, DialogFooter, DialogHeader } from "@vivid/ui";
+} from "@timelish/builder";
+import { BlockStyle, useClassName } from "@timelish/page-builder-base";
+import { cn, DialogFooter, DialogHeader } from "@timelish/ui";
 import { X } from "lucide-react";
 import { PopupProps } from "./schema";
 import { styles } from "./styles";

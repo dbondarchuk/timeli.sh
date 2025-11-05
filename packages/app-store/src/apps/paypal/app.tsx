@@ -1,4 +1,4 @@
-import { App } from "@vivid/types";
+import { App } from "@timelish/types";
 import { PAYPAL_APP_NAME } from "./const";
 import { PaypalLogo } from "./logo";
 import { PaypalAdminKeys, PaypalAdminNamespace } from "./translations/types";

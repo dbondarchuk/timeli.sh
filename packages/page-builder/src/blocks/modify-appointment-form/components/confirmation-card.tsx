@@ -1,6 +1,6 @@
-import { useI18n, useLocale } from "@vivid/i18n";
-import { Checkbox, Label } from "@vivid/ui";
-import { formatAmountString } from "@vivid/utils";
+import { useI18n, useLocale } from "@timelish/i18n";
+import { Checkbox, Label } from "@timelish/ui";
+import { formatAmountString } from "@timelish/utils";
 import { DateTime as Luxon } from "luxon";
 import { useModifyAppointmentFormContext } from "./context";
 

@@ -1,12 +1,12 @@
 import { Popup } from "./popup";
 import { PopupReaderProps } from "./schema";
 
-import { ReaderBlock } from "@vivid/builder";
+import { ReaderBlock } from "@timelish/builder";
 import {
   BlockStyle,
   generateClassName,
   ReplaceOriginalColors,
-} from "@vivid/page-builder-base/reader";
+} from "@timelish/page-builder-base/reader";
 import {
   cn,
   DialogDescription,
@@ -14,7 +14,7 @@ import {
   DialogHeader,
   DialogTitle,
   ScrollArea,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { styles } from "./styles";
 
 export const PopupReader = ({

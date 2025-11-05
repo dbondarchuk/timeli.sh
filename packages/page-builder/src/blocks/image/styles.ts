@@ -3,7 +3,7 @@ import {
   getStylesSchema,
   objectFitStyle,
   objectPositionStyle,
-} from "@vivid/page-builder-base/style";
+} from "@timelish/page-builder-base/style";
 
 export const styles = getAllStylesWithAdditionalStyles({
   objectFit: objectFitStyle,

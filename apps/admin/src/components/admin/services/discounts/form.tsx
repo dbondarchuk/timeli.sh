@@ -1,14 +1,14 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { adminApi } from "@vivid/api-sdk";
-import { useI18n } from "@vivid/i18n";
+import { adminApi } from "@timelish/api-sdk";
+import { useI18n } from "@timelish/i18n";
 import {
   DatabaseId,
   discountTypes,
   DiscountUpdateModel,
   getDiscountSchemaWithUniqueCheck,
-} from "@vivid/types";
+} from "@timelish/types";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -41,13 +41,13 @@ import {
   toastPromise,
   use12HourFormat,
   useDebounceCacheFn,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import {
   AddonSelector,
   NonSortable,
   OptionSelector,
   SaveButton,
-} from "@vivid/ui-admin";
+} from "@timelish/ui-admin";
 import { PlusCircle, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";

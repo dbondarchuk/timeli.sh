@@ -5,10 +5,10 @@ import {
   PageInput,
   SelectInput,
   TextInput,
-} from "@vivid/builder";
-import { useI18n } from "@vivid/i18n";
-import { StylesConfigurationPanel } from "@vivid/page-builder-base";
-import { Combobox, deepMemo, Label } from "@vivid/ui";
+} from "@timelish/builder";
+import { useI18n } from "@timelish/i18n";
+import { StylesConfigurationPanel } from "@timelish/page-builder-base";
+import { Combobox, deepMemo, Label } from "@timelish/ui";
 import { useCallback } from "react";
 import {
   ButtonDefaultAction,

@@ -11,7 +11,7 @@
     "noEmit": true,
     "paths": {
       "@/*": ["./*"],
-      "@vivid/*": ["../../packages/*"]
+      "@timelish/*": ["../../packages/*"]
     }
   },
   "exclude": ["node_modules"]

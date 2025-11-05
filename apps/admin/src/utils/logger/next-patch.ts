@@ -1,4 +1,4 @@
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory } from "@timelish/logger";
 
 // Need to use require to make it work with production build
 const nextLogger = require("next/dist/build/output/log");

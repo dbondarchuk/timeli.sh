@@ -1,11 +1,11 @@
-import { adminApi } from "@vivid/api-sdk";
-import { useI18n } from "@vivid/i18n";
-import { AppSetupProps, ConnectedApp } from "@vivid/types";
-import { Button, Spinner } from "@vivid/ui";
+import { adminApi } from "@timelish/api-sdk";
+import { useI18n } from "@timelish/i18n";
+import { AppSetupProps, ConnectedApp } from "@timelish/types";
+import { Button, Spinner } from "@timelish/ui";
 import {
   ConnectedAppNameAndLogo,
   ConnectedAppStatusMessage,
-} from "@vivid/ui-admin";
+} from "@timelish/ui-admin";
 import React from "react";
 import { ZoomApp } from "./app";
 import {

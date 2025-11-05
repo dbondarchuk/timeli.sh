@@ -1,8 +1,8 @@
 "use client";
 
-import { useI18n } from "@vivid/i18n";
-import { AvailablePeriod, Shift } from "@vivid/types";
-import { cn, use12HourFormat } from "@vivid/ui";
+import { useI18n } from "@timelish/i18n";
+import { AvailablePeriod, Shift } from "@timelish/types";
+import { cn, use12HourFormat } from "@timelish/ui";
 import { GripHorizontal, X } from "lucide-react";
 import { DateTime } from "luxon";
 import React, {

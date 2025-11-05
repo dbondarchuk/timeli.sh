@@ -1,6 +1,6 @@
 "use client";
 
-import { communicationLogsSearchParams } from "@vivid/api-sdk";
+import { communicationLogsSearchParams } from "@timelish/api-sdk";
 import { useQueryState } from "nuqs";
 import { useCallback, useMemo } from "react";
 

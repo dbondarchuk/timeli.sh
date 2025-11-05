@@ -1,4 +1,4 @@
-import { TranslationKeys, useI18n } from "@vivid/i18n";
+import { TranslationKeys, useI18n } from "@timelish/i18n";
 import React from "react";
 import { cn } from "../../utils";
 import { useFormField } from "../form";

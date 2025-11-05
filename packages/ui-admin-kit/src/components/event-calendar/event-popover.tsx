@@ -1,12 +1,12 @@
-import { useI18n, useLocale } from "@vivid/i18n";
+import { useI18n, useLocale } from "@timelish/i18n";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
   cn,
   useTimeZone,
-} from "@vivid/ui";
-import { durationToTime } from "@vivid/utils";
+} from "@timelish/ui";
+import { durationToTime } from "@timelish/utils";
 import { CalendarClock, Clock, Timer } from "lucide-react";
 import { DateTime } from "luxon";
 import React from "react";

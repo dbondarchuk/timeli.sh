@@ -1,8 +1,8 @@
 "use server";
 
 import { getServicesContainer } from "@/app/utils";
-import { getLoggerFactory } from "@vivid/logger";
-import { StylingConfiguration } from "@vivid/types";
+import { getLoggerFactory } from "@timelish/logger";
+import { StylingConfiguration } from "@timelish/types";
 
 const logger = getLoggerFactory("StylingConfigurationActions");
 

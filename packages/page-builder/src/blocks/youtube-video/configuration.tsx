@@ -1,9 +1,9 @@
 "use client";
 
-import { ConfigurationProps, TextInput } from "@vivid/builder";
-import { useI18n } from "@vivid/i18n";
-import { StylesConfigurationPanel } from "@vivid/page-builder-base";
-import { Checkbox, DurationInput, Label, deepMemo } from "@vivid/ui";
+import { ConfigurationProps, TextInput } from "@timelish/builder";
+import { useI18n } from "@timelish/i18n";
+import { StylesConfigurationPanel } from "@timelish/page-builder-base";
+import { Checkbox, DurationInput, Label, deepMemo } from "@timelish/ui";
 import { useCallback } from "react";
 import { YouTubeVideoProps } from "./schema";
 import { youtubeVideoShortcuts } from "./shortcuts";

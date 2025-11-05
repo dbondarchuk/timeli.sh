@@ -1,6 +1,6 @@
 "use client";
 
-import { AllKeys, useI18n } from "@vivid/i18n";
+import { AllKeys, useI18n } from "@timelish/i18n";
 import {
   cn,
   DropdownMenu,
@@ -16,7 +16,7 @@ import {
   TooltipContent,
   TooltipTrigger,
   useOpenState,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { Minus, Plus } from "lucide-react";
 import { useState } from "react";
 import { ShortcutWithNumberWithUnit } from "../../shortcuts";

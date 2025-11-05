@@ -1,7 +1,7 @@
 import { getServicesContainer } from "@/app/utils";
 import { ConnectedAppRow } from "@/components/admin/apps/connected-app";
-import { AvailableApps } from "@vivid/app-store";
-import { getI18nAsync } from "@vivid/i18n/server";
+import { AvailableApps } from "@timelish/app-store";
+import { getI18nAsync } from "@timelish/i18n/server";
 import React from "react";
 
 export const InstalledApps: React.FC = async () => {

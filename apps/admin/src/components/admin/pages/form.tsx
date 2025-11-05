@@ -1,12 +1,12 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { adminApi } from "@vivid/api-sdk";
-import { AppsBlocksEditors } from "@vivid/app-store/blocks/editors";
-import { AppsBlocksReaders } from "@vivid/app-store/blocks/readers";
-import { Language, useI18n } from "@vivid/i18n";
-import { PageBuilder } from "@vivid/page-builder";
-import { PageReader } from "@vivid/page-builder/reader";
+import { adminApi } from "@timelish/api-sdk";
+import { AppsBlocksEditors } from "@timelish/app-store/blocks/editors";
+import { AppsBlocksReaders } from "@timelish/app-store/blocks/readers";
+import { Language, useI18n } from "@timelish/i18n";
+import { PageBuilder } from "@timelish/page-builder";
+import { PageReader } from "@timelish/page-builder/reader";
 import {
   GeneralConfiguration,
   getPageSchemaWithUniqueCheck,
@@ -14,7 +14,7 @@ import {
   PageFooter,
   PageHeader,
   SocialConfiguration,
-} from "@vivid/types";
+} from "@timelish/types";
 import {
   Breadcrumbs,
   cn,
@@ -32,9 +32,9 @@ import {
   Link,
   toastPromise,
   useDebounceCacheFn,
-} from "@vivid/ui";
-import { SaveButton, useDemoArguments } from "@vivid/ui-admin";
-import { formatArguments } from "@vivid/utils";
+} from "@timelish/ui";
+import { SaveButton, useDemoArguments } from "@timelish/ui-admin";
+import { formatArguments } from "@timelish/utils";
 import { Globe, Settings as SettingsIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useMemo } from "react";

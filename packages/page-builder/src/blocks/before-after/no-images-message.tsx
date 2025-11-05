@@ -1,6 +1,6 @@
 "use client";
 
-import { useI18n } from "@vivid/i18n";
+import { useI18n } from "@timelish/i18n";
 import { AlertCircle } from "lucide-react";
 
 export const NoImagesMessage = () => {

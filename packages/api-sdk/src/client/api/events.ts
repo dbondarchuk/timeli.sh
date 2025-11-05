@@ -4,7 +4,7 @@ import {
   ModifyAppointmentInformation,
   ModifyAppointmentInformationRequest,
   ModifyAppointmentRequest,
-} from "@vivid/types";
+} from "@timelish/types";
 import { fetchClientApi } from "./utils";
 
 export const createEvent = async (

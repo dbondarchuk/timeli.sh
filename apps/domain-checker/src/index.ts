@@ -1,5 +1,5 @@
-import { getLoggerFactory } from "@vivid/logger";
-import { StaticOrganizationService } from "@vivid/services";
+import { getLoggerFactory } from "@timelish/logger";
+import { StaticOrganizationService } from "@timelish/services";
 import dotenv from "dotenv";
 import http from "http";
 import { URL } from "url";

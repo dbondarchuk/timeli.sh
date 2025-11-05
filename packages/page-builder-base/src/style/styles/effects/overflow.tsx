@@ -1,5 +1,5 @@
-import { useI18n } from "@vivid/i18n";
-import { Combobox } from "@vivid/ui";
+import { useI18n } from "@timelish/i18n";
+import { Combobox } from "@timelish/ui";
 import { Crop } from "lucide-react";
 import * as z from "zod";
 import { StyleDefinition } from "../../types";

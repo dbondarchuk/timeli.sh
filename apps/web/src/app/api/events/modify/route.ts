@@ -1,6 +1,6 @@
 import { getModifyAppointmentInformationRequestResult } from "@/utils/appointments/get-modify-appointment-request";
-import { getLoggerFactory } from "@vivid/logger";
-import { modifyAppointmentInformationRequestSchema } from "@vivid/types";
+import { getLoggerFactory } from "@timelish/logger";
+import { modifyAppointmentInformationRequestSchema } from "@timelish/types";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {

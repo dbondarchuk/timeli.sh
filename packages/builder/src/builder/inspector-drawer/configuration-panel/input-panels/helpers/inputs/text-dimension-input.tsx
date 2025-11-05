@@ -8,7 +8,7 @@ import {
   InputGroupSuffixClasses,
   InputSuffix,
   Label,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { ResetButton } from "./reset-button";
 
 type TextDimensionInputProps = {

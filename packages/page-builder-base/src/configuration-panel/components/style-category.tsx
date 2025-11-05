@@ -1,6 +1,6 @@
 "use client";
 
-import { BuilderKeys, useI18n } from "@vivid/i18n";
+import { BuilderKeys, useI18n } from "@timelish/i18n";
 import {
   Badge,
   Button,
@@ -8,7 +8,7 @@ import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { ChevronRight, Plus } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import * as z from "zod";

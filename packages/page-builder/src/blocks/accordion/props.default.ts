@@ -1,4 +1,4 @@
-import { generateId } from "@vivid/builder";
+import { generateId } from "@timelish/builder";
 import { AccordionItemPropsDefaults } from "../accordion-item/schema";
 import type { AccordionProps } from "./schema";
 

@@ -1,4 +1,4 @@
-import { useI18n, useLocale } from "@vivid/i18n";
+import { useI18n, useLocale } from "@timelish/i18n";
 import {
   Badge,
   Button,
@@ -11,7 +11,7 @@ import {
   DialogTrigger,
   ScrollArea,
   useTimeZone,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { DateTime } from "luxon";
 import { WaitlistEntry } from "../../models";
 import {

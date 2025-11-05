@@ -1,4 +1,4 @@
-import { AllKeys } from "@vivid/i18n";
+import { AllKeys } from "@timelish/i18n";
 import {
   asOptinalNumberField,
   CommunicationChannel,
@@ -6,7 +6,7 @@ import {
   Query,
   WithCompanyId,
   WithDatabaseId,
-} from "@vivid/types";
+} from "@timelish/types";
 import * as z from "zod";
 import { ScheduledNotificationsAdminAllKeys } from "./translations/types";
 

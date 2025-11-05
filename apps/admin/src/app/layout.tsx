@@ -1,5 +1,5 @@
 import Providers from "@/components/admin/layout/providers";
-import { SonnerToaster, Toaster } from "@vivid/ui";
+import { SonnerToaster, Toaster } from "@timelish/ui";
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale } from "next-intl/server";

@@ -1,5 +1,5 @@
 import { getAppointmentEventAndIsPaymentRequired } from "@/utils/appointments/get-payment-required";
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory } from "@timelish/logger";
 import {
   AppointmentRequest,
   CollectPayment,
@@ -8,8 +8,8 @@ import {
   ModifyAppointmentRequest,
   PaymentIntentUpdateModel,
   PaymentType,
-} from "@vivid/types";
-import { deepEqual } from "@vivid/utils";
+} from "@timelish/types";
+import { deepEqual } from "@timelish/utils";
 import { NextRequest, NextResponse } from "next/server";
 import { getModifyAppointmentInformationRequestResult } from "../appointments/get-modify-appointment-request";
 import { getServicesContainer } from "../utils";

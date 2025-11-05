@@ -1,4 +1,4 @@
-import { ComplexAppPageProps } from "@vivid/types";
+import { ComplexAppPageProps } from "@timelish/types";
 import React from "react";
 import { BusyEventsForm } from "./components/form";
 

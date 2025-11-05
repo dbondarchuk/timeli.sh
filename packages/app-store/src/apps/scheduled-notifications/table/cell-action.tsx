@@ -1,5 +1,5 @@
 "use client";
-import { useI18n } from "@vivid/i18n";
+import { useI18n } from "@timelish/i18n";
 import {
   AlertModal,
   Button,
@@ -9,7 +9,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
   toastPromise,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { Edit, MoreHorizontal, Trash } from "lucide-react";
 import Link from "next/link";
 import { useQueryState } from "nuqs";

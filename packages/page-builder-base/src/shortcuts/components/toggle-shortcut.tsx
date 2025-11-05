@@ -1,5 +1,5 @@
-import { useI18n } from "@vivid/i18n";
-import { Toggle } from "@vivid/ui";
+import { useI18n } from "@timelish/i18n";
+import { Toggle } from "@timelish/ui";
 import { BaseStyleDictionary } from "../../style/types";
 import { ShortcutOption, ShortcutWithToggle } from "../types";
 

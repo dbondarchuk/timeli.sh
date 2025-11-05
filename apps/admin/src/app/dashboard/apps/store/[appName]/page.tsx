@@ -1,9 +1,9 @@
 import { AppDetails } from "@/components/admin/apps/store/app-details";
 import PageContainer from "@/components/admin/layout/page-container";
-import { AvailableApps } from "@vivid/app-store";
-import { getI18nAsync } from "@vivid/i18n/server";
-import { getLoggerFactory } from "@vivid/logger";
-import { Breadcrumbs } from "@vivid/ui";
+import { AvailableApps } from "@timelish/app-store";
+import { getI18nAsync } from "@timelish/i18n/server";
+import { getLoggerFactory } from "@timelish/logger";
+import { Breadcrumbs } from "@timelish/ui";
 import { Metadata } from "next/types";
 
 type Params = PageProps<"/dashboard/apps/store/[appName]">;

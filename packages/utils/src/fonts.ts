@@ -1,4 +1,4 @@
-import { fontsOptions } from "@vivid/types";
+import { fontsOptions } from "@timelish/types";
 
 export const buildGoogleFontsUrl = (
   ...fonts: (string | undefined)[]

@@ -1,6 +1,6 @@
 "use client";
 
-import { useI18n } from "@vivid/i18n";
+import { useI18n } from "@timelish/i18n";
 import {
   Button,
   Dialog,
@@ -19,7 +19,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { Grid3X3 } from "lucide-react";
 import React, { useState } from "react";
 

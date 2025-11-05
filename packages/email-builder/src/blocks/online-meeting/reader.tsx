@@ -1,4 +1,4 @@
-import { ReaderProps, templateProps } from "@vivid/builder";
+import { ReaderProps, templateProps } from "@timelish/builder";
 import { OnlineMeetingProps, OnlineMeetingPropsDefaults } from "./schema";
 import { getLogoUrl, getStyles } from "./styles";
 

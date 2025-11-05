@@ -1,8 +1,8 @@
 "use client";
 
-import { ConfigurationProps } from "@vivid/builder";
-import { StylesConfigurationPanel } from "@vivid/page-builder-base";
-import { deepMemo } from "@vivid/ui";
+import { ConfigurationProps } from "@timelish/builder";
+import { StylesConfigurationPanel } from "@timelish/page-builder-base";
+import { deepMemo } from "@timelish/ui";
 import { useCallback } from "react";
 import { ContainerProps, styles } from "./schema";
 import { containerShortcuts } from "./shortcuts";

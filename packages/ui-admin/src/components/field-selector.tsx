@@ -1,7 +1,7 @@
-import { adminApi } from "@vivid/api-sdk";
-import { I18nFn, useI18n } from "@vivid/i18n";
-import { ServiceField } from "@vivid/types";
-import { cn, Combobox, IComboboxItem } from "@vivid/ui";
+import { adminApi } from "@timelish/api-sdk";
+import { I18nFn, useI18n } from "@timelish/i18n";
+import { ServiceField } from "@timelish/types";
+import { cn, Combobox, IComboboxItem } from "@timelish/ui";
 import React from "react";
 
 const FieldLabel: React.FC<{ field: ServiceField; t: I18nFn<"admin"> }> = ({

@@ -2,8 +2,8 @@
 
 import React from "react";
 
+import { cn } from "@timelish/ui";
 import { PlateLeaf } from "@udecode/plate/react";
-import { cn } from "@vivid/ui";
 
 export function AILeaf({
   className,

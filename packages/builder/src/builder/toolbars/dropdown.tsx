@@ -1,4 +1,4 @@
-import { Leaves } from "@vivid/types";
+import { Leaves } from "@timelish/types";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,8 +7,8 @@ import {
   DropdownMenuTrigger,
   ToolbarButton,
   useOpenState,
-} from "@vivid/ui";
-import { destructAndReplace, resolveProperty } from "@vivid/utils";
+} from "@timelish/ui";
+import { destructAndReplace, resolveProperty } from "@timelish/utils";
 import { CSSProperties, ReactNode } from "react";
 import { ConfigurationProps } from "../../documents/types";
 

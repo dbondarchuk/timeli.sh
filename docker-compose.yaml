@@ -1,19 +1,19 @@
 version: "3.9"
 services:
-  vivid-admin:
+  timelish-admin:
     build:
       context: .
       dockerfile: apps/admin/Dockerfile
-    image: ghcr.io/dbondarchuk/vivid-admin:latest
+    image: ghcr.io/dbondarchuk/timelish-admin:latest
     environment:
-      - MONGODB_URI=${MONGODB_URI:-mongodb://mongodb:27017/vivid?retryWrites=true&w=majority}
+      - MONGODB_URI=${MONGODB_URI:-mongodb://mongodb:27017/timelish?retryWrites=true&w=majority}
       - MONGODB_DB=${MONGODB_DB}
       - TZ=${TZ:-America/New_York}
       - AUTH_SECRET=${AUTH_SECRET:-n6WKAuaUVdOYMRReNYXEd/sHLF/Ddfams+FAGMe7vzk=}
-      - AUTH_TRUST_HOST=${ADMIN_DOMAIN:-app-dev.vividnail.studio}
-      - BETTER_AUTH_URL=https://${ADMIN_DOMAIN:-app-dev.vividnail.studio}
-      - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-vividnail.studio}
-      - ADMIN_DOMAIN=${ADMIN_DOMAIN:-app-dev.vividnail.studio}
+      - AUTH_TRUST_HOST=${ADMIN_DOMAIN:-app-dev.timelishnail.studio}
+      - BETTER_AUTH_URL=https://${ADMIN_DOMAIN:-app-dev.timelishnail.studio}
+      - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-timelishnail.studio}
+      - ADMIN_DOMAIN=${ADMIN_DOMAIN:-app-dev.timelishnail.studio}
       - SECRET_KEY=${SECRET_KEY:-uw8iDFHFNjbIU8gPGMByTLiFfXJex7E1}
       - OUTLOOK_APP_CLIENT_ID=${OUTLOOK_APP_CLIENT_ID}
       - OUTLOOK_APP_CLIENT_SECRET=${OUTLOOK_APP_CLIENT_SECRET}
@@ -40,23 +40,23 @@ services:
     volumes:
       - "./apps/admin/public/upload:/app/public/upload"
     networks:
-      - vivid-network
+      - timelish-network
     depends_on:
       - mongodb
       - redis
-      - vivid-job-processor
-      - vivid-notification-sender
+      - timelish-job-processor
+      - timelish-notification-sender
 
-  vivid-web:
+  timelish-web:
     build:
       context: .
       dockerfile: apps/web/Dockerfile
-    image: ghcr.io/dbondarchuk/vivid-web:latest
+    image: ghcr.io/dbondarchuk/timelish-web:latest
     environment:
-      - MONGODB_URI=${MONGODB_URI:-mongodb://mongodb:27017/vivid?retryWrites=true&w=majority}
+      - MONGODB_URI=${MONGODB_URI:-mongodb://mongodb:27017/timelish?retryWrites=true&w=majority}
       - MONGODB_DB=${MONGODB_DB}
       - TZ=${TZ:-America/New_York}
-      - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-vividnail.studio}
+      - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-timelishnail.studio}
       - SECRET_KEY=${SECRET_KEY:-uw8iDFHFNjbIU8gPGMByTLiFfXJex7E1}
       - OUTLOOK_APP_CLIENT_ID=${OUTLOOK_APP_CLIENT_ID}
       - OUTLOOK_APP_CLIENT_SECRET=${OUTLOOK_APP_CLIENT_SECRET}
@@ -83,19 +83,19 @@ services:
     volumes:
       - "./apps/web/public/upload:/app/public/upload"
     networks:
-      - vivid-network
+      - timelish-network
     depends_on:
       - mongodb
       - redis
-      - vivid-job-processor
-      - vivid-notification-sender
-      - vivid-admin
+      - timelish-job-processor
+      - timelish-notification-sender
+      - timelish-admin
 
-  vivid-notification-sender:
+  timelish-notification-sender:
     build:
       context: .
       dockerfile: apps/notification-sender/Dockerfile
-    image: ghcr.io/dbondarchuk/vivid-notification-sender:latest
+    image: ghcr.io/dbondarchuk/timelish-notification-sender:latest
     environment:
       - TZ=${TZ:-America/New_York}
       - REDIS_HOST=${REDIS_HOST:-redis}
@@ -103,12 +103,12 @@ services:
       - REDIS_USERNAME=${REDIS_USERNAME:-}
       - REDIS_PASSWORD=${REDIS_PASSWORD:-}
       - REDIS_DB=${REDIS_DB:-0}
-      - MONGODB_URI=${MONGODB_URI:-mongodb://mongodb:27017/vivid?retryWrites=true&w=majority}
+      - MONGODB_URI=${MONGODB_URI:-mongodb://mongodb:27017/timelish?retryWrites=true&w=majority}
       - MONGODB_DB=${MONGODB_DB}
       - SECRET_KEY=${SECRET_KEY:-uw8iDFHFNjbIU8gPGMByTLiFfXJex7E1}
       - LOG_LEVEL=${LOG_LEVEL:-debug}
-      - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-vividnail.studio}
-      - ADMIN_DOMAIN=${ADMIN_DOMAIN:-app-dev.vividnail.studio}
+      - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-timelishnail.studio}
+      - ADMIN_DOMAIN=${ADMIN_DOMAIN:-app-dev.timelishnail.studio}
       - OUTLOOK_APP_CLIENT_ID=${OUTLOOK_APP_CLIENT_ID}
       - OUTLOOK_APP_CLIENT_SECRET=${OUTLOOK_APP_CLIENT_SECRET}
       - GOOGLE_CALENDAR_APP_CLIENT_ID=${GOOGLE_CALENDAR_APP_CLIENT_ID}
@@ -124,16 +124,16 @@ services:
       - S3_FORCE_PATH_STYLE=${S3_FORCE_PATH_STYLE:-true}
     restart: unless-stopped
     networks:
-      - vivid-network
+      - timelish-network
     depends_on:
       - mongodb
       - redis
 
-  vivid-job-processor:
+  timelish-job-processor:
     build:
       context: .
       dockerfile: apps/job-processor/Dockerfile
-    image: ghcr.io/dbondarchuk/vivid-job-processor:latest
+    image: ghcr.io/dbondarchuk/timelish-job-processor:latest
     environment:
       - TZ=${TZ:-America/New_York}
       - REDIS_HOST=${REDIS_HOST:-redis}
@@ -141,12 +141,12 @@ services:
       - REDIS_USERNAME=${REDIS_USERNAME:-}
       - REDIS_PASSWORD=${REDIS_PASSWORD:-}
       - REDIS_DB=${REDIS_DB:-0}
-      - MONGODB_URI=${MONGODB_URI:-mongodb://mongodb:27017/vivid?retryWrites=true&w=majority}
+      - MONGODB_URI=${MONGODB_URI:-mongodb://mongodb:27017/timelish?retryWrites=true&w=majority}
       - MONGODB_DB=${MONGODB_DB}
       - SECRET_KEY=${SECRET_KEY:-uw8iDFHFNjbIU8gPGMByTLiFfXJex7E1}
       - LOG_LEVEL=${LOG_LEVEL:-debug}
-      - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-vividnail.studio}
-      - ADMIN_DOMAIN=${ADMIN_DOMAIN:-app-dev.vividnail.studio}
+      - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-timelishnail.studio}
+      - ADMIN_DOMAIN=${ADMIN_DOMAIN:-app-dev.timelishnail.studio}
       - OUTLOOK_APP_CLIENT_ID=${OUTLOOK_APP_CLIENT_ID}
       - OUTLOOK_APP_CLIENT_SECRET=${OUTLOOK_APP_CLIENT_SECRET}
       - GOOGLE_CALENDAR_APP_CLIENT_ID=${GOOGLE_CALENDAR_APP_CLIENT_ID}
@@ -162,27 +162,27 @@ services:
       - S3_FORCE_PATH_STYLE=${S3_FORCE_PATH_STYLE:-true}
     restart: unless-stopped
     networks:
-      - vivid-network
+      - timelish-network
     depends_on:
       - mongodb
       - redis
 
-  vivid-domain-checker:
+  timelish-domain-checker:
     build:
       context: .
       dockerfile: apps/domain-checker/Dockerfile
-    image: ghcr.io/dbondarchuk/vivid-domain-checker:latest
+    image: ghcr.io/dbondarchuk/timelish-domain-checker:latest
     environment:
       - TZ=${TZ:-America/New_York}
-      - MONGODB_URI=${MONGODB_URI:-mongodb://mongodb:27017/vivid?retryWrites=true&w=majority}
+      - MONGODB_URI=${MONGODB_URI:-mongodb://mongodb:27017/timelish?retryWrites=true&w=majority}
       - MONGODB_DB=${MONGODB_DB}
       - LOG_LEVEL=${LOG_LEVEL:-debug}
-      - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-vividnail.studio}
+      - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-timelishnail.studio}
     restart: unless-stopped
     ports:
       - "5555:5555"
     networks:
-      - vivid-network
+      - timelish-network
     depends_on:
       - mongodb
 
@@ -200,19 +200,19 @@ services:
     ports:
       - "27017:27017"
     networks:
-      - vivid-network
+      - timelish-network
   redis:
     image: redis:latest
     restart: unless-stopped
     ports:
       - "6379:6379"
     networks:
-      - vivid-network
+      - timelish-network
     volumes:
       - redis-data:/data
 
 networks:
-  vivid-network:
+  timelish-network:
     driver: bridge
 volumes:
   redis-data:

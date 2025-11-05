@@ -28,7 +28,7 @@ export type ButtonProps = z.infer<typeof ButtonPropsSchema>;
 export const ButtonPropsDefaults = {
   props: {
     text: "Button",
-    url: "https://vividnail.studio",
+    url: "https://timelishnail.studio",
     width: "auto",
     size: "medium",
     buttonStyle: "rounded",

@@ -1,7 +1,7 @@
 import {
   AvailableAppServices,
   ServiceAvailableApps,
-} from "@vivid/app-store/services";
+} from "@timelish/app-store/services";
 import {
   ApiRequest,
   App,
@@ -15,7 +15,7 @@ import {
   IConnectedAppWithWebhook,
   IOAuthConnectedApp,
   IServicesContainer,
-} from "@vivid/types";
+} from "@timelish/types";
 import { ObjectId } from "mongodb";
 import pLimit from "p-limit";
 import { cache } from "react";

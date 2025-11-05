@@ -1,4 +1,4 @@
-import { InStorePaymentUpdateModel, Payment } from "@vivid/types";
+import { InStorePaymentUpdateModel, Payment } from "@timelish/types";
 import { RefundPayments } from "../schemas/payments";
 import { fetchAdminApi } from "./utils";
 

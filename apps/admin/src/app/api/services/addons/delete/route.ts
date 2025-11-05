@@ -1,7 +1,7 @@
 import { getServicesContainer } from "@/app/utils";
-import { bulkDeleteSchema } from "@vivid/api-sdk";
-import { getLoggerFactory } from "@vivid/logger";
-import { okStatus } from "@vivid/types";
+import { bulkDeleteSchema } from "@timelish/api-sdk";
+import { getLoggerFactory } from "@timelish/logger";
+import { okStatus } from "@timelish/types";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {

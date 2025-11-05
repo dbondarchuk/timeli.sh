@@ -1,3 +1,3 @@
-const config = require("@vivid/eslint-config");
+const config = require("@timelish/eslint-config");
 
 module.exports = config;

@@ -2,8 +2,8 @@ import PageContainer from "@/components/admin/layout/page-container";
 
 import { getServicesContainer } from "@/app/utils";
 import { PageHeaderForm } from "@/components/admin/pages/headers/form";
-import { getI18nAsync } from "@vivid/i18n/server";
-import { getLoggerFactory } from "@vivid/logger";
+import { getI18nAsync } from "@timelish/i18n/server";
+import { getLoggerFactory } from "@timelish/logger";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { cache } from "react";

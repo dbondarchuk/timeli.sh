@@ -6,7 +6,7 @@ import { EditorBlock, useIsCurrentBlockOverlay } from "../../../editor/block";
 import { TEditorBlock } from "../../../editor/core";
 
 import { useDroppable } from "@dnd-kit/react";
-import { cn, deepMemo } from "@vivid/ui";
+import { cn, deepMemo } from "@timelish/ui";
 import { DndContext } from "../../../../types/dndContext";
 import {
   useBlockChildrenBlockIds,

@@ -1,14 +1,14 @@
 "use client";
 
-import { adminApi } from "@vivid/api-sdk";
-import { AvailableApps } from "@vivid/app-store";
-import { AdminKeys, AllKeys, useI18n, useLocale } from "@vivid/i18n";
+import { adminApi } from "@timelish/api-sdk";
+import { AvailableApps } from "@timelish/app-store";
+import { AdminKeys, AllKeys, useI18n, useLocale } from "@timelish/i18n";
 import {
   Payment,
   PaymentMethod,
   PaymentStatus,
   PaymentSummary,
-} from "@vivid/types";
+} from "@timelish/types";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -33,8 +33,8 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@vivid/ui";
-import { formatAmount, formatAmountString } from "@vivid/utils";
+} from "@timelish/ui";
+import { formatAmount, formatAmountString } from "@timelish/utils";
 import {
   Check,
   CheckCircle,

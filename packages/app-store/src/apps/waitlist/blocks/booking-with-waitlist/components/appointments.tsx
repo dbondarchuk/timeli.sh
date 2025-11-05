@@ -1,7 +1,7 @@
 "use client";
 
-import { AppointmentChoice, FieldSchema } from "@vivid/types";
-import { cn } from "@vivid/ui";
+import { AppointmentChoice, FieldSchema } from "@timelish/types";
+import { cn } from "@timelish/ui";
 import { useSearchParams } from "next/navigation";
 import React from "react";
 import { AppointmentsCard } from "./appointments-card";

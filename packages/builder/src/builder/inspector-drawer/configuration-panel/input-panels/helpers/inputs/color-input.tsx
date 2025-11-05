@@ -1,13 +1,13 @@
 import React from "react";
 
-import { Sketch } from "@uiw/react-color";
 import {
   Button,
   Label,
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@vivid/ui";
+} from "@timelish/ui";
+import { Sketch } from "@uiw/react-color";
 import { Plus } from "lucide-react";
 import { ResetButton } from "./reset-button";
 

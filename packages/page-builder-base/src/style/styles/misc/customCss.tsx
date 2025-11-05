@@ -1,4 +1,4 @@
-import { Textarea } from "@vivid/ui";
+import { Textarea } from "@timelish/ui";
 import { Code } from "lucide-react";
 import * as z from "zod";
 import { StyleDefinition } from "../../types";

@@ -1,7 +1,7 @@
 import type { VariantProps } from "class-variance-authority";
 
+import { cn } from "@timelish/ui";
 import { type PlateStaticProps, PlateStatic } from "@udecode/plate";
-import { cn } from "@vivid/ui";
 import { cva } from "class-variance-authority";
 
 export const editorVariants = cva(

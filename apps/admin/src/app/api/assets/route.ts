@@ -1,8 +1,8 @@
 import { getServicesContainer, getWebsiteUrl } from "@/app/utils";
-import { assetsSearchParamsLoader } from "@vivid/api-sdk";
-import { getLoggerFactory } from "@vivid/logger";
-import { UploadedFile } from "@vivid/types";
-import { getAppointmentBucket, getCustomerBucket } from "@vivid/utils";
+import { assetsSearchParamsLoader } from "@timelish/api-sdk";
+import { getLoggerFactory } from "@timelish/logger";
+import { UploadedFile } from "@timelish/types";
+import { getAppointmentBucket, getCustomerBucket } from "@timelish/utils";
 import mimeType from "mime-type/with-db";
 import { NextRequest, NextResponse } from "next/server";
 import { v4 } from "uuid";

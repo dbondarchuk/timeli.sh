@@ -1,4 +1,4 @@
-import { AllKeys } from "@vivid/i18n";
+import { AllKeys } from "@timelish/i18n";
 
 export interface CSSValueOption<T extends string> {
   value: T;

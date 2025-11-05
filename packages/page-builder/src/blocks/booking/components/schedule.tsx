@@ -1,7 +1,7 @@
 "use client";
 
-import { clientApi, ClientApiError } from "@vivid/api-sdk";
-import { useI18n } from "@vivid/i18n";
+import { clientApi, ClientApiError } from "@timelish/api-sdk";
+import { useI18n } from "@timelish/i18n";
 import type {
   AppointmentAddon,
   AppointmentChoice,
@@ -11,13 +11,13 @@ import type {
   CreateOrUpdatePaymentIntentRequest,
   DateTime,
   FieldSchema,
-} from "@vivid/types";
+} from "@timelish/types";
 import {
   ApplyDiscountResponse,
   Availability,
   CheckDuplicateAppointmentsResponse,
-} from "@vivid/types";
-import { Spinner, toast, useTimeZone } from "@vivid/ui";
+} from "@timelish/types";
+import { Spinner, toast, useTimeZone } from "@timelish/ui";
 import { DateTime as LuxonDateTime } from "luxon";
 import { useRouter } from "next/navigation";
 import React from "react";

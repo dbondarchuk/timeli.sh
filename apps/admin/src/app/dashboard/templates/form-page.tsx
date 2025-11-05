@@ -1,15 +1,15 @@
 import { getServicesContainer, getWebsiteUrl } from "@/app/utils";
 import { TemplateForm } from "@/components/admin/templates/form";
 import { TemplatesTemplate } from "@/components/admin/templates/templates/type";
-import { getI18nAsync } from "@vivid/i18n/server";
-import { CommunicationChannel, Template } from "@vivid/types";
-import { Breadcrumbs } from "@vivid/ui";
+import { getI18nAsync } from "@timelish/i18n/server";
+import { CommunicationChannel, Template } from "@timelish/types";
+import { Breadcrumbs } from "@timelish/ui";
 import {
   demoAppointment,
   demoWaitlistEntry,
   getAdminUrl,
   getArguments,
-} from "@vivid/utils";
+} from "@timelish/utils";
 import { notFound } from "next/navigation";
 import React from "react";
 import { getTemplate } from "./cached";

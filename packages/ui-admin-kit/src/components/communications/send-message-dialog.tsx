@@ -1,14 +1,14 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { adminApi } from "@vivid/api-sdk";
-import { EmailBuilder } from "@vivid/email-builder";
-import { useI18n } from "@vivid/i18n";
+import { adminApi } from "@timelish/api-sdk";
+import { EmailBuilder } from "@timelish/email-builder";
+import { useI18n } from "@timelish/i18n";
 import {
   communicationChannels,
   SendCommunicationRequest,
   sendCommunicationRequestSchema,
-} from "@vivid/types";
+} from "@timelish/types";
 import {
   AlertModal,
   Button,
@@ -35,12 +35,12 @@ import {
   Spinner,
   toast,
   toastPromise,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import {
   ArgumentsAutocomplete,
   TemplateSelector,
   useArguments,
-} from "@vivid/ui-admin";
+} from "@timelish/ui-admin";
 import { Send } from "lucide-react";
 import React from "react";
 import { useForm } from "react-hook-form";

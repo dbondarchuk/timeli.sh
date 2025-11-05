@@ -1,14 +1,14 @@
-import { adminApi } from "@vivid/api-sdk";
-import { useI18n } from "@vivid/i18n";
-import { AppointmentAddon } from "@vivid/types";
+import { adminApi } from "@timelish/api-sdk";
+import { useI18n } from "@timelish/i18n";
+import { AppointmentAddon } from "@timelish/types";
 import {
   cn,
   Combobox,
   IComboboxItem,
   MultiSelect,
   OptionType,
-} from "@vivid/ui";
-import { durationToTime } from "@vivid/utils";
+} from "@timelish/ui";
+import { durationToTime } from "@timelish/utils";
 import { Clock, DollarSign } from "lucide-react";
 import React from "react";
 

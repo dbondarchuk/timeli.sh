@@ -1,7 +1,7 @@
 "use client";
 
-import { useI18n, useLocale } from "@vivid/i18n";
-import { DaySchedule, Shift } from "@vivid/types";
+import { useI18n, useLocale } from "@timelish/i18n";
+import { DaySchedule, Shift } from "@timelish/types";
 import {
   Button,
   cn,
@@ -12,8 +12,8 @@ import {
   TooltipTrigger,
   useMouse,
   useTimeZone,
-} from "@vivid/ui";
-import { formatTime, formatTimeLocale, parseTime } from "@vivid/utils";
+} from "@timelish/ui";
+import { formatTime, formatTimeLocale, parseTime } from "@timelish/utils";
 import { ChevronLeft, ChevronRight, Clock } from "lucide-react";
 import { DateTime, HourNumbers, SecondNumbers } from "luxon";
 import React, { CSSProperties, Fragment, useCallback } from "react";

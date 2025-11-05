@@ -28,7 +28,7 @@ import {
   Popover,
   PopoverAnchor,
   PopoverContent,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { AIChatEditor } from "./ai-chat-editor";
 import { AIMenuItems } from "./ai-menu-items";
 

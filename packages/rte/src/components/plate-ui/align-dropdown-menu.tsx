@@ -21,7 +21,7 @@ import {
   DropdownMenuTrigger,
   ToolbarButton,
   useOpenState,
-} from "@vivid/ui";
+} from "@timelish/ui";
 
 const items = [
   {

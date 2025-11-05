@@ -1,10 +1,10 @@
-import { EditorDocumentBlocksDictionary } from "@vivid/builder";
+import { EditorDocumentBlocksDictionary } from "@timelish/builder";
 import { WaitlistConfiguration } from "./waitlist/configuration";
 import { WaitlistEditor } from "./waitlist/editor";
 import { WaitlistPropsDefaults, WaitlistPropsSchema } from "./waitlist/schema";
 import { WaitlistToolbar } from "./waitlist/toolbar";
 
-import { AllKeys, BuilderKeys } from "@vivid/i18n";
+import { AllKeys, BuilderKeys } from "@timelish/i18n";
 import { CalendarClock, CalendarFold } from "lucide-react";
 import {
   WaitlistAdminKeys,

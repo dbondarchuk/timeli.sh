@@ -1,7 +1,11 @@
 "use client";
 
-import { useBlockEditor, useCurrentBlock, useEditorArgs } from "@vivid/builder";
-import { templateSafeWithError } from "@vivid/utils";
+import {
+  useBlockEditor,
+  useCurrentBlock,
+  useEditorArgs,
+} from "@timelish/builder";
+import { templateSafeWithError } from "@timelish/utils";
 import { Avatar } from "./avatar";
 import { AvatarProps } from "./schema";
 

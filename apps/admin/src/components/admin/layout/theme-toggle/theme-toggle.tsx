@@ -1,7 +1,7 @@
 "use client";
 import { MoonIcon, SunIcon } from "@radix-ui/react-icons";
-import { useI18n } from "@vivid/i18n";
-import { useTheme } from "@vivid/ui";
+import { useI18n } from "@timelish/i18n";
+import { useTheme } from "@timelish/ui";
 
 import {
   Button,
@@ -9,7 +9,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@vivid/ui";
+} from "@timelish/ui";
 type CompProps = {};
 export default function ThemeToggle({}: CompProps) {
   const { setTheme } = useTheme();

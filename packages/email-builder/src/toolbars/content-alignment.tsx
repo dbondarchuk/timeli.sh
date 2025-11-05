@@ -1,9 +1,9 @@
 import {
   ToolbarDropdownMenu,
   ToolbarDropdownPropsValues,
-} from "@vivid/builder";
-import { useI18n } from "@vivid/i18n";
-import { Leaves } from "@vivid/types";
+} from "@timelish/builder";
+import { useI18n } from "@timelish/i18n";
+import { Leaves } from "@timelish/types";
 import { ArrowDownToLine, ArrowUpToLine, FoldVertical } from "lucide-react";
 
 type PropsType = {

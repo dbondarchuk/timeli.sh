@@ -11,10 +11,10 @@ import {
   ReactPayPalScriptOptions,
   usePayPalCardFields,
 } from "@paypal/react-paypal-js";
-import { clientApi } from "@vivid/api-sdk";
-import { useI18n } from "@vivid/i18n";
-import { PaymentAppFormProps } from "@vivid/types";
-import { Button, Spinner, toast } from "@vivid/ui";
+import { clientApi } from "@timelish/api-sdk";
+import { useI18n } from "@timelish/i18n";
+import { PaymentAppFormProps } from "@timelish/types";
+import { Button, Spinner, toast } from "@timelish/ui";
 import React from "react";
 import { PaypalLogo } from "./logo";
 import { PaypalFormProps } from "./models";

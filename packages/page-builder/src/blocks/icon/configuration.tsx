@@ -1,8 +1,8 @@
 "use client";
 
-import { ConfigurationProps } from "@vivid/builder";
-import { useI18n } from "@vivid/i18n";
-import { StylesConfigurationPanel } from "@vivid/page-builder-base";
+import { ConfigurationProps } from "@timelish/builder";
+import { useI18n } from "@timelish/i18n";
+import { StylesConfigurationPanel } from "@timelish/page-builder-base";
 import {
   ComboboxAsync,
   deepMemo,
@@ -11,8 +11,8 @@ import {
   iconNames,
   Label,
   type IconName,
-} from "@vivid/ui";
-import { capitalize } from "@vivid/utils";
+} from "@timelish/ui";
+import { capitalize } from "@timelish/utils";
 import { useCallback } from "react";
 import { IconProps, IconPropsDefaults } from "./schema";
 import { iconShortcuts } from "./shortcuts";

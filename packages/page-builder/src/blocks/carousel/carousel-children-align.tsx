@@ -1,9 +1,9 @@
-import { useI18n } from "@vivid/i18n";
+import { useI18n } from "@timelish/i18n";
 import {
   justifyItemsStyle,
   StyleDefinition,
-} from "@vivid/page-builder-base/style";
-import { Combobox } from "@vivid/ui";
+} from "@timelish/page-builder-base/style";
+import { Combobox } from "@timelish/ui";
 import { AlignLeft } from "lucide-react";
 import * as z from "zod";
 

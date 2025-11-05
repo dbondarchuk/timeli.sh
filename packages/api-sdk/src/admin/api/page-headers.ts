@@ -4,7 +4,7 @@ import {
   PageHeaderListModel,
   PageHeaderUpdateModel,
   WithTotal,
-} from "@vivid/types";
+} from "@timelish/types";
 import {
   PageHeadersSearchParams,
   pageHeadersSearchParamsSerializer,

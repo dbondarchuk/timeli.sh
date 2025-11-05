@@ -1,11 +1,11 @@
-import { useI18n } from "@vivid/i18n";
+import { useI18n } from "@timelish/i18n";
 import {
   Combobox,
   IComboboxItem,
   Icon,
   iconNames,
   type IconName,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { ControllerRenderProps } from "react-hook-form";
 
 export type IconSelectProps = {

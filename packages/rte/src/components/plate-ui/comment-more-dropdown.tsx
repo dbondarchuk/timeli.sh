@@ -1,10 +1,10 @@
 "use client";
 
+import { Button, cn } from "@timelish/ui";
 import {
   useCommentDeleteButton,
   useCommentEditButton,
 } from "@udecode/plate-comments/react";
-import { Button, cn } from "@vivid/ui";
 import { MoreHorizontal } from "lucide-react";
 
 import {
@@ -13,7 +13,7 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@vivid/ui";
+} from "@timelish/ui";
 
 export function CommentMoreDropdown() {
   const { props: editProps } = useCommentEditButton();

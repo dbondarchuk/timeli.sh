@@ -1,6 +1,6 @@
 "use client";
 
-import { AllKeys, BuilderKeys, useI18n } from "@vivid/i18n";
+import { AllKeys, BuilderKeys, useI18n } from "@timelish/i18n";
 import {
   Popover,
   PopoverContent,
@@ -9,7 +9,7 @@ import {
   Separator,
   ToolbarButton,
   ToolbarGroup,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { AlertTriangle, Check, TriangleAlert } from "lucide-react";
 import { Fragment, useMemo } from "react";
 import {

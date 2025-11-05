@@ -1,8 +1,8 @@
 import { getDbClient, getDbConnection } from "./database";
 
-import { AvailableAppServices } from "@vivid/app-store/services";
+import { AvailableAppServices } from "@timelish/app-store/services";
 
-import { BaseAllKeys } from "@vivid/i18n";
+import { BaseAllKeys } from "@timelish/i18n";
 import {
   Appointment,
   AppointmentChoice,
@@ -42,7 +42,7 @@ import {
   type Period,
   type Query,
   type WithTotal,
-} from "@vivid/types";
+} from "@timelish/types";
 import {
   buildSearchQuery,
   durationToTime,
@@ -52,7 +52,7 @@ import {
   getAvailableTimeSlotsInCalendar,
   getIcsEventUid,
   parseTime,
-} from "@vivid/utils";
+} from "@timelish/utils";
 import { DateTime } from "luxon";
 import mimeType from "mime-type/with-db";
 import { Filter, ObjectId, Sort } from "mongodb";

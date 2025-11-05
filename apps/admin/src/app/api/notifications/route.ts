@@ -1,8 +1,8 @@
 import { getCompanyId, getServicesContainer } from "@/app/utils";
-import { BaseAllKeys } from "@vivid/i18n";
-import { getLoggerFactory } from "@vivid/logger";
-import { getDashboardNotificationRealtimeBroker } from "@vivid/services";
-import { DashboardNotification, IDashboardNotifierApp } from "@vivid/types";
+import { BaseAllKeys } from "@timelish/i18n";
+import { getLoggerFactory } from "@timelish/logger";
+import { getDashboardNotificationRealtimeBroker } from "@timelish/services";
+import { DashboardNotification, IDashboardNotifierApp } from "@timelish/types";
 import { DateTime } from "luxon";
 import { NextRequest } from "next/server";
 import { v4 } from "uuid";

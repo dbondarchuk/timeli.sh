@@ -13,7 +13,7 @@ import {
   type FieldValues,
 } from "react-hook-form";
 
-import { AllKeys, useI18n, ValidationKeys } from "@vivid/i18n";
+import { AllKeys, useI18n, ValidationKeys } from "@timelish/i18n";
 import { cn } from "../utils";
 import { Label } from "./label";
 

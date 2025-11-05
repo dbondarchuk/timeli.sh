@@ -1,8 +1,14 @@
 "use client";
 
-import { useI18n } from "@vivid/i18n";
-import { appointmentStatuses } from "@vivid/types";
-import { Button, cn, Popover, PopoverContent, PopoverTrigger } from "@vivid/ui";
+import { useI18n } from "@timelish/i18n";
+import { appointmentStatuses } from "@timelish/types";
+import {
+  Button,
+  cn,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@timelish/ui";
 import {
   CustomersDataTableAsyncFilterBox,
   DataTableFilterBox,
@@ -10,7 +16,7 @@ import {
   DataTableResetFilter,
   DataTableSearch,
   DiscountsDataTableAsyncFilterBox,
-} from "@vivid/ui-admin";
+} from "@timelish/ui-admin";
 import { Settings2 } from "lucide-react";
 import React from "react";
 import { useAppointmentsTableFilters } from "./use-table-filters";

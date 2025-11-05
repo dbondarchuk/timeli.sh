@@ -1,6 +1,6 @@
 import * as z from "zod";
 
-import { BaseReaderBlockProps } from "@vivid/builder";
+import { BaseReaderBlockProps } from "@timelish/builder";
 import { zStylesBase } from "../../style-inputs/helpers/zod";
 
 export const ColumnsContainerPropsSchema = z.object({

@@ -1,9 +1,9 @@
 "use client";
 
-import { AvailableApps } from "@vivid/app-store";
-import { AppSetups } from "@vivid/app-store/setup";
-import { useI18n } from "@vivid/i18n";
-import { AppSetupProps, ConnectedApp } from "@vivid/types";
+import { AvailableApps } from "@timelish/app-store";
+import { AppSetups } from "@timelish/app-store/setup";
+import { useI18n } from "@timelish/i18n";
+import { AppSetupProps, ConnectedApp } from "@timelish/types";
 import {
   Button,
   Dialog,
@@ -15,7 +15,7 @@ import {
   DialogTrigger,
   Spinner,
   toast,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { RefreshCcw } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useMemo } from "react";

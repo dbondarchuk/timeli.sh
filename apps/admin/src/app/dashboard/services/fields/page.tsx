@@ -4,11 +4,11 @@ import { FieldsTableAction } from "@/components/admin/services/fields/table/tabl
 import {
   serviceFieldsSearchParamsCache,
   serviceFieldsSearchParamsSerializer,
-} from "@vivid/api-sdk";
-import { getI18nAsync } from "@vivid/i18n/server";
-import { getLoggerFactory } from "@vivid/logger";
-import { Breadcrumbs, Heading, Link } from "@vivid/ui";
-import { DataTableSkeleton } from "@vivid/ui-admin";
+} from "@timelish/api-sdk";
+import { getI18nAsync } from "@timelish/i18n/server";
+import { getLoggerFactory } from "@timelish/logger";
+import { Breadcrumbs, Heading, Link } from "@timelish/ui";
+import { DataTableSkeleton } from "@timelish/ui-admin";
 import { Plus } from "lucide-react";
 import { Metadata } from "next";
 import { Suspense } from "react";

@@ -18,7 +18,7 @@ import {
   ToolbarSplitButtonPrimary,
   ToolbarSplitButtonSecondary,
   useOpenState,
-} from "@vivid/ui";
+} from "@timelish/ui";
 
 export function NumberedIndentListToolbarButton() {
   const editor = useEditorRef();

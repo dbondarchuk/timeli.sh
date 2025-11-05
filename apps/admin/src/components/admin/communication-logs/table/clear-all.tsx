@@ -1,7 +1,7 @@
 "use client";
 
-import { adminApi } from "@vivid/api-sdk";
-import { useI18n } from "@vivid/i18n";
+import { adminApi } from "@timelish/api-sdk";
+import { useI18n } from "@timelish/i18n";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -14,7 +14,7 @@ import {
   Button,
   Spinner,
   toastPromise,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";

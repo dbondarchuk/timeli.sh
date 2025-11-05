@@ -1,4 +1,4 @@
-import { App } from "@vivid/types";
+import { App } from "@timelish/types";
 import { TEXTBELT_APP_NAME } from "./const";
 import { TextBeltLogo } from "./logo";
 import {

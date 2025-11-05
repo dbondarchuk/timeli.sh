@@ -1,5 +1,9 @@
-import { useI18n } from "@vivid/i18n";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@vivid/ui";
+import { useI18n } from "@timelish/i18n";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@timelish/ui";
 import { Bug } from "lucide-react";
 import { useMemo } from "react";
 import {

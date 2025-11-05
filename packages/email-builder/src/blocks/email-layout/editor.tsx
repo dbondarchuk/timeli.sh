@@ -7,7 +7,7 @@ import {
   useBlockEditor,
   useCurrentBlock,
   useSetSelectedBlockId,
-} from "@vivid/builder";
+} from "@timelish/builder";
 import { getFontFamily } from "../../style-inputs/helpers/styles";
 import { EmailLayoutProps } from "./schema";
 

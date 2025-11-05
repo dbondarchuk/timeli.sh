@@ -1,7 +1,7 @@
 "use client";
 
-import { Builder, generateId, TEditorConfiguration } from "@vivid/builder";
-import { UploadedFile } from "@vivid/types";
+import { Builder, generateId, TEditorConfiguration } from "@timelish/builder";
+import { UploadedFile } from "@timelish/types";
 import { EditorBlocks, RootBlock } from "./blocks";
 import { ImagePropsDefaults } from "./blocks/image";
 import { ReaderBlocks } from "./blocks/reader";

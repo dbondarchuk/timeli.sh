@@ -1,5 +1,5 @@
-import { deserializeMarkdown } from "@vivid/rte";
-import { template } from "@vivid/utils";
+import { deserializeMarkdown } from "@timelish/rte";
+import { template } from "@timelish/utils";
 import { renderToStaticMarkup } from "./static";
 
 export type UserEmailTemplateButton = {

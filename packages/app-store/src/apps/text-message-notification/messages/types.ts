@@ -1,4 +1,4 @@
-import { Language } from "@vivid/i18n";
+import { Language } from "@timelish/i18n";
 
 export type TextMessageNotificationMessage = {
   newAppointmentRequested: string;

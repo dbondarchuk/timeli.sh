@@ -1,4 +1,4 @@
-import { AppScope } from "@vivid/types";
+import { AppScope } from "@timelish/types";
 import { BullMQConfig } from "../types";
 
 export type BullMQJobConfig = BullMQConfig & {

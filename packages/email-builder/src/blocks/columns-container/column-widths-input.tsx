@@ -1,5 +1,5 @@
-import { TextDimensionInput } from "@vivid/builder";
-import { useI18n } from "@vivid/i18n";
+import { TextDimensionInput } from "@timelish/builder";
+import { useI18n } from "@timelish/i18n";
 import { useState } from "react";
 
 export const DEFAULT_2_COLUMNS = [6] as [number];

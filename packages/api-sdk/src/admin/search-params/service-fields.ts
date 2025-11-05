@@ -9,7 +9,7 @@ import {
   parseAsStringEnum,
 } from "nuqs/server";
 
-import { fieldTypes } from "@vivid/types";
+import { fieldTypes } from "@timelish/types";
 import { baseSearchParams } from "./base";
 
 export const serviceFieldsSearchParams = {

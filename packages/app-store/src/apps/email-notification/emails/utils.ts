@@ -1,7 +1,7 @@
-import { renderUserEmailTemplate } from "@vivid/email-builder/static";
-import { Language } from "@vivid/i18n";
-import { Appointment } from "@vivid/types";
-import { AppointmentStatusToICalMethodMap, template } from "@vivid/utils";
+import { renderUserEmailTemplate } from "@timelish/email-builder/static";
+import { Language } from "@timelish/i18n";
+import { Appointment } from "@timelish/types";
+import { AppointmentStatusToICalMethodMap, template } from "@timelish/utils";
 import { UserEmailTemplates } from ".";
 
 export const getEmailTemplate = async (

@@ -14,7 +14,7 @@ import {
   Message as OutlookMessage,
   ResponseType,
 } from "@microsoft/microsoft-graph-types";
-import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
 import {
   ApiRequest,
   AppointmentEvent,
@@ -36,8 +36,8 @@ import {
   IMeetingUrlProvider,
   IOAuthConnectedApp,
   WithDatabaseId,
-} from "@vivid/types";
-import { decrypt, encrypt, getAdminUrl } from "@vivid/utils";
+} from "@timelish/types";
+import { decrypt, encrypt, getAdminUrl } from "@timelish/utils";
 import { createEvent } from "ics";
 import { DateTime } from "luxon";
 import { env } from "process";

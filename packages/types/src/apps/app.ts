@@ -1,4 +1,4 @@
-import type { AllKeys, I18nNamespaces } from "@vivid/i18n";
+import type { AllKeys, I18nNamespaces } from "@timelish/i18n";
 import type { ReactElement, ReactNode } from "react";
 import type { Extandable } from "../utils/helpers";
 

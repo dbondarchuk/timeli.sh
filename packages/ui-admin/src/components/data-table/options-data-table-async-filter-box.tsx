@@ -2,11 +2,11 @@
 
 import React from "react";
 
-import { adminApi } from "@vivid/api-sdk";
-import { useI18n } from "@vivid/i18n";
-import { AppointmentOption } from "@vivid/types";
-import { Skeleton } from "@vivid/ui";
-import { durationToTime } from "@vivid/utils";
+import { adminApi } from "@timelish/api-sdk";
+import { useI18n } from "@timelish/i18n";
+import { AppointmentOption } from "@timelish/types";
+import { Skeleton } from "@timelish/ui";
+import { durationToTime } from "@timelish/utils";
 import {
   AsyncFilterBoxOption,
   AsyncFilterBoxProps,

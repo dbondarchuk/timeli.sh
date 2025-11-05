@@ -1,6 +1,6 @@
-import { AvailableApps } from "@vivid/app-store";
-import { useI18n } from "@vivid/i18n";
-import { CalendarSourceConfiguration } from "@vivid/types";
+import { AvailableApps } from "@timelish/app-store";
+import { useI18n } from "@timelish/i18n";
+import { CalendarSourceConfiguration } from "@timelish/types";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,8 +18,8 @@ import {
   FormLabel,
   FormMessage,
   InfoTooltip,
-} from "@vivid/ui";
-import { AppSelector } from "@vivid/ui-admin";
+} from "@timelish/ui";
+import { AppSelector } from "@timelish/ui-admin";
 import { Trash } from "lucide-react";
 import React from "react";
 import { UseFormReturn } from "react-hook-form";

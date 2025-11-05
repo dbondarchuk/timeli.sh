@@ -1,4 +1,4 @@
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory } from "@timelish/logger";
 import { redirect } from "next/navigation";
 
 export default async function ServicesPage() {

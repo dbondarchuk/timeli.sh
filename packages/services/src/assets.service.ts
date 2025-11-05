@@ -9,8 +9,8 @@ import {
   IConfigurationService,
   Query,
   WithTotal,
-} from "@vivid/types";
-import { buildSearchQuery, escapeRegex } from "@vivid/utils";
+} from "@timelish/types";
+import { buildSearchQuery, escapeRegex } from "@timelish/utils";
 import { createHash } from "crypto";
 import { DateTime } from "luxon";
 import { Filter, ObjectId, Sort } from "mongodb";

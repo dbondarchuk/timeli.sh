@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@vivid/ui";
+import { cn } from "@timelish/ui";
 import { forwardRef, useCallback, useEffect, useState } from "react";
 import { useLightboxImage } from "../lightbox/context";
 

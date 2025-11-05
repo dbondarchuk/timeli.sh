@@ -1,4 +1,4 @@
-import { BasicAppSetup } from "@vivid/types";
+import { BasicAppSetup } from "@timelish/types";
 
 // Import all setup components
 import { CaldavAppSetup } from "./apps/caldav/setup";

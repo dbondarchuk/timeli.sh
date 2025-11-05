@@ -2,8 +2,8 @@ import {
   ConfigurationProps,
   ToolbarColorMenu,
   ToolbarDropdownMenu,
-} from "@vivid/builder";
-import { useI18n } from "@vivid/i18n";
+} from "@timelish/builder";
+import { useI18n } from "@timelish/i18n";
 import { PaintBucket } from "lucide-react";
 import { ContentAlignmentDropdownMenu } from "../../toolbars/content-alignment";
 import { ColumnsContainerProps, ColumnsContainerPropsDefaults } from "./schema";

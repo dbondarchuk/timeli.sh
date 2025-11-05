@@ -1,5 +1,5 @@
-import { ConfigurationProps } from "@vivid/builder";
-import { useI18n } from "@vivid/i18n";
+import { ConfigurationProps } from "@timelish/builder";
+import { useI18n } from "@timelish/i18n";
 import { AccordionItemProps } from "./schema";
 
 export const AccordionItemToolbar = (

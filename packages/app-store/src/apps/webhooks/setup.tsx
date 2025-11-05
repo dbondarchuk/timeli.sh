@@ -1,7 +1,7 @@
 "use client";
 
-import { useI18n } from "@vivid/i18n";
-import { AppSetupProps } from "@vivid/types";
+import { useI18n } from "@timelish/i18n";
+import { AppSetupProps } from "@timelish/types";
 import {
   Button,
   Checkbox,
@@ -14,11 +14,11 @@ import {
   InfoTooltip,
   Input,
   Spinner,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import {
   ConnectedAppNameAndLogo,
   ConnectedAppStatusMessage,
-} from "@vivid/ui-admin";
+} from "@timelish/ui-admin";
 import React, { useState } from "react";
 import * as z from "zod";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";

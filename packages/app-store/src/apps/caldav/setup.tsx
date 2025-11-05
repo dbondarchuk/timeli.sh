@@ -1,8 +1,8 @@
 "use client";
 
-import { adminApi } from "@vivid/api-sdk";
-import { useI18n } from "@vivid/i18n";
-import { AppSetupProps } from "@vivid/types";
+import { adminApi } from "@timelish/api-sdk";
+import { useI18n } from "@timelish/i18n";
+import { AppSetupProps } from "@timelish/types";
 import {
   Button,
   Form,
@@ -20,11 +20,11 @@ import {
   SelectValue,
   Spinner,
   toast,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import {
   ConnectedAppNameAndLogo,
   ConnectedAppStatusMessage,
-} from "@vivid/ui-admin";
+} from "@timelish/ui-admin";
 import React from "react";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
 import { CaldavApp } from "./app";

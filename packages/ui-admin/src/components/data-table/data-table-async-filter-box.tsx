@@ -1,7 +1,7 @@
 "use client";
 
 import { PlusCircledIcon } from "@radix-ui/react-icons";
-import { useI18n } from "@vivid/i18n";
+import { useI18n } from "@timelish/i18n";
 import {
   Badge,
   Button,
@@ -20,7 +20,7 @@ import {
   Spinner,
   toast,
   useDebounce,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { CheckIcon } from "lucide-react";
 import { Options } from "nuqs";
 import React from "react";

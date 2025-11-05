@@ -1,4 +1,4 @@
-import { Button } from "@vivid/ui";
+import { Button } from "@timelish/ui";
 import { CalendarSync, CalendarX } from "lucide-react";
 import { useModifyAppointmentFormContext } from "./context";
 import { ModifyAppointmentType } from "./types";

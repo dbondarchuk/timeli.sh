@@ -1,4 +1,4 @@
-import { NavItemGroup } from "@vivid/types";
+import { NavItemGroup } from "@timelish/types";
 import {
   ArrowDownToLine,
   BadgeDollarSign,

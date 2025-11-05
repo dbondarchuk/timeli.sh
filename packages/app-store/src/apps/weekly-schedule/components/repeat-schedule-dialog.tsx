@@ -1,8 +1,8 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useI18n } from "@vivid/i18n";
-import { WeekIdentifier } from "@vivid/types";
+import { useI18n } from "@timelish/i18n";
+import { WeekIdentifier } from "@timelish/types";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -38,9 +38,9 @@ import {
   InputSuffix,
   Spinner,
   toastPromise,
-} from "@vivid/ui";
-import { WeekSelector } from "@vivid/ui-admin";
-import { getWeekIdentifier } from "@vivid/utils";
+} from "@timelish/ui";
+import { WeekSelector } from "@timelish/ui-admin";
+import { getWeekIdentifier } from "@timelish/utils";
 import { Repeat2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";

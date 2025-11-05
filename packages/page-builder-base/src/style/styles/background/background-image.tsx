@@ -1,4 +1,4 @@
-import { useI18n } from "@vivid/i18n";
+import { useI18n } from "@timelish/i18n";
 import {
   Button,
   Label,
@@ -7,8 +7,8 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@vivid/ui";
-import { AssetSelectorInput } from "@vivid/ui-admin";
+} from "@timelish/ui";
+import { AssetSelectorInput } from "@timelish/ui-admin";
 import { Image, Plus, Trash2 } from "lucide-react";
 import * as z from "zod";
 import { ColorExtendedInput } from "../../../style-inputs/base/color-exteneded-input";

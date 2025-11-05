@@ -1,13 +1,13 @@
 version: "3.9"
 services:
-  vivid-admin:
+  timelish-admin:
     build:
       context: .
       dockerfile: apps/admin/Dockerfile
-    image: ghcr.io/dbondarchuk/vivid-admin:latest
+    image: ghcr.io/dbondarchuk/timelish-admin:latest
     env_file: ".env"
     environment:
-      - MONGODB_URI=${MONGODB_URI:-mongodb://host.docker.internal:27017/vivid?retryWrites=true&w=majority}
+      - MONGODB_URI=${MONGODB_URI:-mongodb://host.docker.internal:27017/timelish?retryWrites=true&w=majority}
       - MONGODB_DB=${MONGODB_DB}
       - TZ=America/New_York
       - AUTH_SECRET=${AUTH_SECRET:-n6WKAuaUVdOYMRReNYXEd/sHLF/Ddfams+FAGMe7vzk=}
@@ -41,21 +41,21 @@ services:
     volumes:
       - "./apps/admin/public/upload:/app/public/upload"
     networks:
-      - vivid-network
+      - timelish-network
     depends_on:
       - mongodb
       - redis
-      - vivid-job-processor
-      - vivid-notification-sender
+      - timelish-job-processor
+      - timelish-notification-sender
 
-  vivid-web:
+  timelish-web:
     build:
       context: .
       dockerfile: apps/web/Dockerfile
-    image: ghcr.io/dbondarchuk/vivid-web:latest
+    image: ghcr.io/dbondarchuk/timelish-web:latest
     env_file: ".env"
     environment:
-      - MONGODB_URI=${MONGODB_URI:-mongodb://host.docker.internal:27017/vivid?retryWrites=true&w=majority}
+      - MONGODB_URI=${MONGODB_URI:-mongodb://host.docker.internal:27017/timelish?retryWrites=true&w=majority}
       - MONGODB_DB=${MONGODB_DB}
       - TZ=America/New_York
       - AUTH_PASSWORD=password
@@ -80,26 +80,26 @@ services:
       - S3_ENDPOINT=${S3_ENDPOINT:-http://s3:8080}
       - S3_BUCKET=${S3_BUCKET:-assets}
       - S3_FORCE_PATH_STYLE=${S3_FORCE_PATH_STYLE:-true}
-      - ORGANIZATION_SLUG=${ORGANIZATION_SLUG:-vivid}
+      - ORGANIZATION_SLUG=${ORGANIZATION_SLUG:-timelish}
     restart: unless-stopped
     ports:
       - "3000:3000"
     volumes:
       - "./apps/web/public/upload:/app/public/upload"
     networks:
-      - vivid-network
+      - timelish-network
     depends_on:
       - mongodb
       - redis
-      - vivid-job-processor
-      - vivid-notification-sender
-      - vivid-admin
+      - timelish-job-processor
+      - timelish-notification-sender
+      - timelish-admin
 
-  vivid-notification-sender:
+  timelish-notification-sender:
     build:
       context: .
       dockerfile: apps/notification-sender/Dockerfile
-    image: ghcr.io/dbondarchuk/vivid-notification-sender:latest
+    image: ghcr.io/dbondarchuk/timelish-notification-sender:latest
     env_file: ".env"
     environment:
       - REDIS_HOST=${REDIS_HOST:-redis}
@@ -107,7 +107,7 @@ services:
       - REDIS_USERNAME=${REDIS_USERNAME:-}
       - REDIS_PASSWORD=${REDIS_PASSWORD:-}
       - REDIS_DB=${REDIS_DB:-0}
-      - MONGODB_URI=${MONGODB_URI:-mongodb://mongodb:27017/vivid?retryWrites=true&w=majority}
+      - MONGODB_URI=${MONGODB_URI:-mongodb://mongodb:27017/timelish?retryWrites=true&w=majority}
       - MONGODB_DB=${MONGODB_DB}
       - SECRET_KEY=${SECRET_KEY:-uw8iDFHFNjbIU8gPGMByTLiFfXJex7E1}
       - LOG_LEVEL=${LOG_LEVEL:-debug}
@@ -128,16 +128,16 @@ services:
       - S3_FORCE_PATH_STYLE=${S3_FORCE_PATH_STYLE:-true}
     restart: unless-stopped
     networks:
-      - vivid-network
+      - timelish-network
     depends_on:
       - mongodb
       - redis
 
-  vivid-job-processor:
+  timelish-job-processor:
     build:
       context: .
       dockerfile: apps/job-processor/Dockerfile
-    image: ghcr.io/dbondarchuk/vivid-job-processor:latest
+    image: ghcr.io/dbondarchuk/timelish-job-processor:latest
     env_file: ".env"
     environment:
       - REDIS_HOST=${REDIS_HOST:-redis}
@@ -145,7 +145,7 @@ services:
       - REDIS_USERNAME=${REDIS_USERNAME:-}
       - REDIS_PASSWORD=${REDIS_PASSWORD:-}
       - REDIS_DB=${REDIS_DB:-0}
-      - MONGODB_URI=${MONGODB_URI:-mongodb://mongodb:27017/vivid?retryWrites=true&w=majority}
+      - MONGODB_URI=${MONGODB_URI:-mongodb://mongodb:27017/timelish?retryWrites=true&w=majority}
       - MONGODB_DB=${MONGODB_DB}
       - SECRET_KEY=${SECRET_KEY:-uw8iDFHFNjbIU8gPGMByTLiFfXJex7E1}
       - LOG_LEVEL=${LOG_LEVEL:-debug}
@@ -166,20 +166,20 @@ services:
       - S3_FORCE_PATH_STYLE=${S3_FORCE_PATH_STYLE:-true}
     restart: unless-stopped
     networks:
-      - vivid-network
+      - timelish-network
     depends_on:
       - mongodb
       - redis
 
-  vivid-domain-checker:
+  timelish-domain-checker:
     build:
       context: .
       dockerfile: apps/domain-checker/Dockerfile
-    image: ghcr.io/dbondarchuk/vivid-domain-checker:latest
+    image: ghcr.io/dbondarchuk/timelish-domain-checker:latest
     env_file: ".env"
     environment:
       - TZ=${TZ:-America/New_York}
-      - MONGODB_URI=${MONGODB_URI:-mongodb://mongodb:27017/vivid?retryWrites=true&w=majority}
+      - MONGODB_URI=${MONGODB_URI:-mongodb://mongodb:27017/timelish?retryWrites=true&w=majority}
       - MONGODB_DB=${MONGODB_DB}
       - LOG_LEVEL=${LOG_LEVEL:-debug}
       - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-localhost:3000}
@@ -187,7 +187,7 @@ services:
     ports:
       - "5555:5555"
     networks:
-      - vivid-network
+      - timelish-network
     depends_on:
       - mongodb
 
@@ -205,14 +205,14 @@ services:
     ports:
       - "27017:27017"
     networks:
-      - vivid-network
+      - timelish-network
   redis:
     image: redis:latest
     restart: unless-stopped
     ports:
       - "6379:6379"
     networks:
-      - vivid-network
+      - timelish-network
     volumes:
       - redis-data:/data
 
@@ -222,12 +222,12 @@ services:
     ports:
       - "8080:80"
     networks:
-      - vivid-network
+      - timelish-network
     volumes:
       - s3-data:/data
 
 networks:
-  vivid-network:
+  timelish-network:
     driver: bridge
 volumes:
   redis-data:

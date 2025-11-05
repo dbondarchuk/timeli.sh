@@ -5,7 +5,7 @@ import React from "react";
 import { cn, withRef } from "@udecode/cn";
 import { EraserIcon } from "lucide-react";
 
-import { DropdownMenuGroup, DropdownMenuItem } from "@vivid/ui";
+import { DropdownMenuGroup, DropdownMenuItem } from "@timelish/ui";
 import {
   type TColor,
   ColorDropdownMenuItems,

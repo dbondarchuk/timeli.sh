@@ -1,8 +1,8 @@
-import { useI18n } from "@vivid/i18n";
+import { useI18n } from "@timelish/i18n";
 import {
   appointmentReschedulePolicyActionType,
   BookingConfiguration,
-} from "@vivid/types";
+} from "@timelish/types";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -32,7 +32,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { Trash } from "lucide-react";
 import React from "react";
 import { FieldPath } from "react-hook-form";

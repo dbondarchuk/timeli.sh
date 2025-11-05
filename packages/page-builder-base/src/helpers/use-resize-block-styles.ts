@@ -4,7 +4,7 @@ import {
   useCurrentBlockId,
   useDispatchAction,
   useEditorStateStore,
-} from "@vivid/builder";
+} from "@timelish/builder";
 import { useCallback } from "react";
 import { BaseStyleDictionary, StyleValue } from "../style";
 

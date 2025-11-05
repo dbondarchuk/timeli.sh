@@ -1,4 +1,4 @@
-import { ScrollArea } from "@vivid/ui";
+import { ScrollArea } from "@timelish/ui";
 import React from "react";
 
 export default function PageContainer({

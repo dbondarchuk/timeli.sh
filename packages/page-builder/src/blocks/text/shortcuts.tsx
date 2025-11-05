@@ -3,8 +3,8 @@ import {
   colorShortcut,
   fontFamilyShortcut,
   Shortcut,
-} from "@vivid/page-builder-base";
-import { AllStylesSchemas, COLORS } from "@vivid/page-builder-base/style";
+} from "@timelish/page-builder-base";
+import { AllStylesSchemas, COLORS } from "@timelish/page-builder-base/style";
 import {
   AlignLeft,
   Bold,

@@ -1,10 +1,10 @@
-import { useI18n, useLocale } from "@vivid/i18n";
+import { useI18n, useLocale } from "@timelish/i18n";
 import {
   allowPromoCodeType,
   BookingConfiguration,
   customTimeSlotSchema,
   Time,
-} from "@vivid/types";
+} from "@timelish/types";
 import {
   BooleanSelect,
   Button,
@@ -29,9 +29,9 @@ import {
   SimpleTimePicker,
   TagInput,
   use12HourFormat,
-} from "@vivid/ui";
-import { AppSelector } from "@vivid/ui-admin";
-import { formatTime, formatTimeLocale, parseTime } from "@vivid/utils";
+} from "@timelish/ui";
+import { AppSelector } from "@timelish/ui-admin";
+import { formatTime, formatTimeLocale, parseTime } from "@timelish/utils";
 import React from "react";
 import { TabProps } from "./types";
 

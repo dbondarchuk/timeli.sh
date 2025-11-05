@@ -4,7 +4,7 @@ import {
   DataTableResetFilter,
   DataTableSearch,
   useSelectedRowsStore,
-} from "@vivid/ui-admin";
+} from "@timelish/ui-admin";
 import { DeleteSelectedCustomersButton } from "./delete-selected";
 import { MergeSelectedCustomersButton } from "./merge-selected";
 import { useCustomersTableFilters } from "./use-table-filters";

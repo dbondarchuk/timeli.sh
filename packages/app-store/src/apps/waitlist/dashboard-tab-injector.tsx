@@ -1,4 +1,4 @@
-import { DashboardTabInjectorApp } from "@vivid/types";
+import { DashboardTabInjectorApp } from "@timelish/types";
 import {
   WaitlistAdminKeys,
   WaitlistAdminNamespace,

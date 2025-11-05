@@ -5,9 +5,9 @@ import {
   PutObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
-import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
-import { IAssetsStorage } from "@vivid/types";
-import { maskify } from "@vivid/utils";
+import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
+import { IAssetsStorage } from "@timelish/types";
+import { maskify } from "@timelish/utils";
 import { Readable } from "stream";
 import { S3Configuration } from "./types";
 

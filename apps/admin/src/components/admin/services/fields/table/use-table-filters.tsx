@@ -1,6 +1,6 @@
 "use client";
 
-import { serviceFieldsSearchParams } from "@vivid/api-sdk";
+import { serviceFieldsSearchParams } from "@timelish/api-sdk";
 import { useQueryState } from "nuqs";
 import { useCallback, useMemo } from "react";
 

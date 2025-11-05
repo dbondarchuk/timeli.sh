@@ -2,7 +2,7 @@ import {
   BaseZodDictionary,
   TReaderProps,
   renderToStaticMarkup as baseRenderToStaticMarkup,
-} from "@vivid/builder";
+} from "@timelish/builder";
 import { ReaderBlocks } from "../blocks/reader";
 
 export async function renderToStaticMarkup<T extends BaseZodDictionary>(

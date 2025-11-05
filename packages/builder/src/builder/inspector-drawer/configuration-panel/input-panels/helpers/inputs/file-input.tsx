@@ -1,8 +1,11 @@
 import React from "react";
 
-import { Prettify } from "@vivid/types";
-import { cn, FormDescription, Label } from "@vivid/ui";
-import { AssetSelectorInput, AssetSelectorInputProps } from "@vivid/ui-admin";
+import { Prettify } from "@timelish/types";
+import { cn, FormDescription, Label } from "@timelish/ui";
+import {
+  AssetSelectorInput,
+  AssetSelectorInputProps,
+} from "@timelish/ui-admin";
 import { ResetButton } from "./reset-button";
 
 type Props = Prettify<

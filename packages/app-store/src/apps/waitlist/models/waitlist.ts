@@ -8,7 +8,7 @@ import {
   zNonEmptyString,
   zPhone,
   zUniqueArray,
-} from "@vivid/types";
+} from "@timelish/types";
 import * as z from "zod";
 import { WaitlistPublicAllKeys } from "../translations/types";
 

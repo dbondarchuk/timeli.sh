@@ -1,7 +1,7 @@
 "use client";
 
-import { pageFootersSearchParams } from "@vivid/api-sdk";
-import { useI18n } from "@vivid/i18n";
+import { pageFootersSearchParams } from "@timelish/api-sdk";
+import { useI18n } from "@timelish/i18n";
 import { useQueryState } from "nuqs";
 import { useCallback, useMemo } from "react";
 

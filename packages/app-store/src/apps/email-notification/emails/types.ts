@@ -1,4 +1,4 @@
-import { AppointmentStatusToICalMethodMap } from "@vivid/utils";
+import { AppointmentStatusToICalMethodMap } from "@timelish/utils";
 
 export type EmailTemplate = {
   title: string;

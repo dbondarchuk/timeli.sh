@@ -1,5 +1,5 @@
 {
-  "name": "@vivid/rte",
+  "name": "@timelish/rte",
   "version": "0.0.1",
   "private": true,
   "sideEffects": false,
@@ -17,9 +17,9 @@
     "@types/react-dom": "19.0.2",
     "@types/react-window": "^1.8.8",
     "@types/sanitize-html": "^2.13.0",
-    "@vivid/eslint-config": "*",
-    "@vivid/tailwind-config": "*",
-    "@vivid/typescript-config": "*",
+    "@timelish/eslint-config": "*",
+    "@timelish/tailwind-config": "*",
+    "@timelish/typescript-config": "*",
     "typescript": "5.5.4"
   },
   "dependencies": {
@@ -72,7 +72,7 @@
     "@udecode/plate-table": "^44.0.0",
     "@udecode/plate-toggle": "^44.0.0",
     "@udecode/plate-trailing-block": "^44.0.0",
-    "@vivid/ui": "*",
+    "@timelish/ui": "*",
     "ai": "^4.1.41",
     "date-fns": "^3.6.0",
     "html2canvas": "^1.4.1",

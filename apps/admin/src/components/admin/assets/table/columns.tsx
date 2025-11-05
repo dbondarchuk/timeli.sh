@@ -1,7 +1,7 @@
 "use client";
 import { ColumnDef } from "@tanstack/react-table";
-import { useI18n, useLocale } from "@vivid/i18n";
-import { Asset } from "@vivid/types";
+import { useI18n, useLocale } from "@timelish/i18n";
+import { Asset } from "@timelish/types";
 import {
   Checkbox,
   Link,
@@ -9,13 +9,13 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import {
   AssetPreview,
   tableSortHeader,
   tableSortNoopFunction,
-} from "@vivid/ui-admin";
-import { humanFileSize } from "@vivid/utils";
+} from "@timelish/ui-admin";
+import { humanFileSize } from "@timelish/utils";
 import { DateTime } from "luxon";
 import { CellAction } from "./cell-action";
 

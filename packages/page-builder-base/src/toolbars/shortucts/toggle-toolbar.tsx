@@ -1,5 +1,5 @@
-import { AllKeys, useI18n } from "@vivid/i18n";
-import { ToolbarButton } from "@vivid/ui";
+import { AllKeys, useI18n } from "@timelish/i18n";
+import { ToolbarButton } from "@timelish/ui";
 import { Shortcut } from "../../shortcuts";
 import {
   applyShortcutOption,

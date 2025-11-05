@@ -1,4 +1,4 @@
-import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
 import {
   ConnectedAppData,
   ConnectedAppStatusWithText,
@@ -10,8 +10,8 @@ import {
   ScheduleOverride,
   WeekIdentifier,
   WithDatabaseId,
-} from "@vivid/types";
-import { eachOfInterval, getWeekIdentifier } from "@vivid/utils";
+} from "@timelish/types";
+import { eachOfInterval, getWeekIdentifier } from "@timelish/utils";
 import { AnyBulkWriteOperation, ObjectId } from "mongodb";
 import { RequestAction } from "./models";
 import {

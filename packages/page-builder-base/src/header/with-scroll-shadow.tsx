@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@vivid/ui";
+import { cn } from "@timelish/ui";
 import React from "react";
 
 export const HeaderWithScrollShadow: React.FC<{

@@ -1,4 +1,4 @@
-import { Appointment, FieldType, ServiceField } from "@vivid/types";
+import { Appointment, FieldType, ServiceField } from "@timelish/types";
 
 export const getPhoneField = (
   appointment: Appointment,

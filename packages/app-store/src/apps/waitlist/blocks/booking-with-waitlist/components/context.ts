@@ -9,7 +9,7 @@ import {
   DateTime,
   Fields,
   WithLabelFieldData,
-} from "@vivid/types";
+} from "@timelish/types";
 import { DateTime as LuxonDateTime } from "luxon";
 import { createContext, FC, ReactNode, useContext } from "react";
 import { WaitlistDate } from "../../../models/waitlist";

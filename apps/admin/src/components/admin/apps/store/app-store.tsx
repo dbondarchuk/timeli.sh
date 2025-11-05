@@ -1,7 +1,7 @@
 "use client";
-import { AvailableApps } from "@vivid/app-store";
-import { useI18n } from "@vivid/i18n";
-import { App } from "@vivid/types";
+import { AvailableApps } from "@timelish/app-store";
+import { useI18n } from "@timelish/i18n";
+import { App } from "@timelish/types";
 import {
   Button,
   Card,
@@ -15,8 +15,8 @@ import {
   Input,
   Link,
   Markdown,
-} from "@vivid/ui";
-import { ConnectedAppNameAndLogo } from "@vivid/ui-admin";
+} from "@timelish/ui";
+import { ConnectedAppNameAndLogo } from "@timelish/ui-admin";
 import React from "react";
 
 export type AppStoreProps = {};

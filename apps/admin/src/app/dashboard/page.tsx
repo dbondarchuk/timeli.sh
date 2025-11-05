@@ -1,7 +1,7 @@
 import PageContainer from "@/components/admin/layout/page-container";
-import { DashboardTabInjectorApps } from "@vivid/app-store/injectors/dashboard-tab";
-import { getI18nAsync } from "@vivid/i18n/server";
-import { getLoggerFactory } from "@vivid/logger";
+import { DashboardTabInjectorApps } from "@timelish/app-store/injectors/dashboard-tab";
+import { getI18nAsync } from "@timelish/i18n/server";
+import { getLoggerFactory } from "@timelish/logger";
 import {
   Breadcrumbs,
   Skeleton,
@@ -9,7 +9,7 @@ import {
   TabsLinkTrigger,
   TabsList,
   TabsViaUrl,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { Metadata } from "next";
 import { Suspense } from "react";
 import { getServicesContainer } from "../utils";

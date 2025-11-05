@@ -1,5 +1,5 @@
 {
-  "name": "@vivid/page-builder-base",
+  "name": "@timelish/page-builder-base",
   "version": "0.0.1",
   "private": true,
   "sideEffects": false,
@@ -21,17 +21,17 @@
     "@types/react-dom": "19.0.2",
     "@types/react-window": "^1.8.8",
     "@types/sanitize-html": "^2.13.0",
-    "@vivid/eslint-config": "*",
-    "@vivid/tailwind-config": "*",
-    "@vivid/typescript-config": "*",
+    "@timelish/eslint-config": "*",
+    "@timelish/tailwind-config": "*",
+    "@timelish/typescript-config": "*",
     "typescript": "5.5.4"
   },
   "dependencies": {
-    "@vivid/builder": "*",
-    "@vivid/rte": "*",
-    "@vivid/ui": "*",
-    "@vivid/ui-admin": "*",
-    "@vivid/i18n": "*",
+    "@timelish/builder": "*",
+    "@timelish/rte": "*",
+    "@timelish/ui": "*",
+    "@timelish/ui-admin": "*",
+    "@timelish/i18n": "*",
     "lucide-react": "^0.525.0",
     "react-dom": "19.0.0",
     "sanitize-html": "^2.14.0"

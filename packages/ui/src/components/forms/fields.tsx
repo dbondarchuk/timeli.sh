@@ -6,7 +6,7 @@ import {
   WithLabelFieldData,
   zNonEmptyString,
   zRequiredString,
-} from "@vivid/types";
+} from "@timelish/types";
 import { Control } from "react-hook-form";
 import { z, ZodSchema } from "zod";
 import { CheckboxField } from "./checkbox-field";

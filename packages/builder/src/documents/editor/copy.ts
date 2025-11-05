@@ -1,6 +1,6 @@
 "use client";
 
-import { useClipboard } from "@vivid/ui";
+import { useClipboard } from "@timelish/ui";
 import { useCallback, useMemo } from "react";
 import { TEditorBlock } from "./core";
 

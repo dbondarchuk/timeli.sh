@@ -2,9 +2,9 @@ import {
   BlockStyle,
   generateClassName,
   ReplaceOriginalColors,
-} from "@vivid/page-builder-base/reader";
-import { Appointment } from "@vivid/types";
-import { cn } from "@vivid/ui";
+} from "@timelish/page-builder-base/reader";
+import { Appointment } from "@timelish/types";
+import { cn } from "@timelish/ui";
 import { redirect } from "next/navigation";
 import { ConfirmationCard } from "./confirmation-card";
 import { BookingConfirmationReaderProps } from "./schema";

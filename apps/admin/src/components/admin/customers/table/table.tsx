@@ -2,8 +2,8 @@ import { getServicesContainer } from "@/app/utils";
 import {
   customersSearchParams,
   customersSearchParamsCache,
-} from "@vivid/api-sdk";
-import { DataTable } from "@vivid/ui-admin";
+} from "@timelish/api-sdk";
+import { DataTable } from "@timelish/ui-admin";
 import { columns } from "./columns";
 
 export const CustomersTable: React.FC = async () => {

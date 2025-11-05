@@ -31,9 +31,9 @@ COPY --parents *.* ./
 
 # Build the domain checker app
 RUN \
-  if [ -f yarn.lock ]; then yarn run build --filter=@vivid/domain-checker; \
-  elif [ -f package-lock.json ]; then npm run build --filter=@vivid/domain-checker; \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm run build --filter=@vivid/domain-checker; \
+  if [ -f yarn.lock ]; then yarn run build --filter=@timelish/domain-checker; \
+  elif [ -f package-lock.json ]; then npm run build --filter=@timelish/domain-checker; \
+  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm run build --filter=@timelish/domain-checker; \
   else echo "Lockfile not found." && exit 1; \
   fi
 

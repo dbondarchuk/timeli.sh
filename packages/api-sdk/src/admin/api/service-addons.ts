@@ -4,7 +4,7 @@ import {
   AppointmentAddonUpdateModel,
   okStatus,
   WithTotal,
-} from "@vivid/types";
+} from "@timelish/types";
 import {
   ServiceAddonsSearchParams,
   serviceAddonsSearchParamsSerializer,

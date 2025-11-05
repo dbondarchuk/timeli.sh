@@ -1,6 +1,6 @@
 import { getServicesContainer, getWebsiteUrl } from "@/app/utils";
-import { getLoggerFactory } from "@vivid/logger";
-import { assetUpdateSchema, okStatus, UploadedFile } from "@vivid/types";
+import { getLoggerFactory } from "@timelish/logger";
+import { assetUpdateSchema, okStatus, UploadedFile } from "@timelish/types";
 import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";

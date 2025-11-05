@@ -1,6 +1,5 @@
 "use client";
 
-import { Sketch, SketchProps } from "@uiw/react-color";
 import {
   Button,
   cn,
@@ -13,7 +12,8 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@vivid/ui";
+} from "@timelish/ui";
+import { Sketch, SketchProps } from "@uiw/react-color";
 import { Palette } from "lucide-react";
 import React from "react";
 

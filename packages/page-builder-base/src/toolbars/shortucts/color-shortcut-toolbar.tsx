@@ -1,4 +1,3 @@
-import { Sketch } from "@uiw/react-color";
 import {
   cn,
   DropdownMenu,
@@ -17,7 +16,8 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@vivid/ui";
+} from "@timelish/ui";
+import { Sketch } from "@uiw/react-color";
 import { VariantProps } from "class-variance-authority";
 import { ChevronDown } from "lucide-react";
 import React from "react";

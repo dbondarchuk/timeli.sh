@@ -3,15 +3,15 @@ import {
   ToolbarDropdownMenu,
   ToolbarDropdownPropsValues,
   ToolbarToggle,
-} from "@vivid/builder";
-import { AllKeys, useI18n } from "@vivid/i18n";
+} from "@timelish/builder";
+import { AllKeys, useI18n } from "@timelish/i18n";
 import {
   backgroundColorShortcut,
   colorShortcut,
   ColorShortcutToolbar,
   FONT_FAMILIES,
   FONT_FAMILIES_LIST,
-} from "@vivid/page-builder-base";
+} from "@timelish/page-builder-base";
 import { AlignHorizontalSpaceAround } from "lucide-react";
 import { PageLayoutDefaultProps, PageLayoutProps } from "./schema";
 

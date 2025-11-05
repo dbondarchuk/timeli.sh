@@ -1,4 +1,4 @@
-import { resolve } from "@vivid/utils";
+import { resolve } from "@timelish/utils";
 import { Fragment, ReactNode } from "react";
 import reactStringReplace from "react-string-replace";
 

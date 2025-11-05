@@ -31,8 +31,8 @@ import {
   Label,
   popoverVariants,
   Separator,
-} from "@vivid/ui";
-import { PageSelectorDialog } from "@vivid/ui-admin";
+} from "@timelish/ui";
+import { PageSelectorDialog } from "@timelish/ui-admin";
 import { useRef } from "react";
 import { useWindow } from "./window-context";
 

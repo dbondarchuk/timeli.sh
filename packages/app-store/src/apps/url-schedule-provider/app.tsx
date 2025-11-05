@@ -1,4 +1,4 @@
-import { App } from "@vivid/types";
+import { App } from "@timelish/types";
 import { URL_SCHEDULE_PROVIDER_APP_NAME } from "./const";
 import { UrlScheduleProviderLogo } from "./logo";
 import {

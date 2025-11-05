@@ -1,5 +1,5 @@
-import { AllKeys } from "@vivid/i18n";
-import { Leaves } from "@vivid/types";
+import { AllKeys } from "@timelish/i18n";
+import { Leaves } from "@timelish/types";
 import { GOOGLE_CALENDAR_APP_NAME } from "../const";
 import type admin from "./en/admin.json";
 

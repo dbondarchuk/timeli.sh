@@ -1,4 +1,4 @@
-import { useIsMobile } from "@vivid/ui";
+import { useIsMobile } from "@timelish/ui";
 import React from "react";
 import {
   DayScheduleSelector,

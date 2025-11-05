@@ -1,9 +1,9 @@
 "use client";
 
-import { ConfigurationProps } from "@vivid/builder";
-import { useI18n } from "@vivid/i18n";
-import { StylesConfigurationPanel } from "@vivid/page-builder-base";
-import { deepMemo, Label, Textarea } from "@vivid/ui";
+import { ConfigurationProps } from "@timelish/builder";
+import { useI18n } from "@timelish/i18n";
+import { StylesConfigurationPanel } from "@timelish/page-builder-base";
+import { deepMemo, Label, Textarea } from "@timelish/ui";
 import { useCallback } from "react";
 import { CustomHTMLProps } from "./schema";
 import { styles } from "./styles";

@@ -1,5 +1,5 @@
-import { adminApi } from "@vivid/api-sdk";
-import { WithTotal } from "@vivid/types";
+import { adminApi } from "@timelish/api-sdk";
+import { WithTotal } from "@timelish/types";
 import {
   DismissWaitlistEntriesActionType,
   GetWaitlistEntriesAction,

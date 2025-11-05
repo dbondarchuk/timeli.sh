@@ -1,10 +1,10 @@
 "use client";
 
+import { buttonVariants, cn } from "@timelish/ui";
 import {
   CommentResolveButton as CommentResolveButtonPrimitive,
   useComment,
 } from "@udecode/plate-comments/react";
-import { buttonVariants, cn } from "@vivid/ui";
 import { Check, RotateCcw } from "lucide-react";
 
 export function CommentResolveButton() {

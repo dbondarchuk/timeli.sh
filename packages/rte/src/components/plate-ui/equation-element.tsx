@@ -9,7 +9,7 @@ import { useEquationElement } from "@udecode/plate-math/react";
 import { useElement, useSelected } from "@udecode/plate/react";
 import { RadicalIcon } from "lucide-react";
 
-import { Popover, PopoverTrigger } from "@vivid/ui";
+import { Popover, PopoverTrigger } from "@timelish/ui";
 import { EquationPopoverContent } from "./equation-popover";
 import { PlateElement } from "./plate-element";
 

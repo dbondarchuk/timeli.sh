@@ -10,9 +10,9 @@ import {
   useEditorArgs,
   usePortalContext,
   useSetSelectedBlockId,
-} from "@vivid/builder";
-import { ArgumentsAutocomplete } from "@vivid/ui-admin";
-import { mergeRefs } from "@vivid/ui/src/utils/merge-refs";
+} from "@timelish/builder";
+import { ArgumentsAutocomplete } from "@timelish/ui-admin";
+import { mergeRefs } from "@timelish/ui/src/utils/merge-refs";
 import { HeadingProps } from "./schema";
 import { getStyles } from "./styles";
 

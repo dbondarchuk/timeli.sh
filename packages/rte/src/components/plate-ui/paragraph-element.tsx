@@ -1,7 +1,7 @@
 "use client";
 
+import { cn } from "@timelish/ui";
 import { withRef } from "@udecode/plate/react";
-import { cn } from "@vivid/ui";
 
 import { PlateElement } from "./plate-element";
 

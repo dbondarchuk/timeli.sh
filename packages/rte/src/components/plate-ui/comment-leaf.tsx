@@ -2,12 +2,12 @@
 
 import type { TCommentText } from "@udecode/plate-comments";
 
+import { cn } from "@timelish/ui";
 import {
   useCommentLeaf,
   useCommentLeafState,
 } from "@udecode/plate-comments/react";
 import { type PlateLeafProps, PlateLeaf } from "@udecode/plate/react";
-import { cn } from "@vivid/ui";
 
 export function CommentLeaf({
   className,

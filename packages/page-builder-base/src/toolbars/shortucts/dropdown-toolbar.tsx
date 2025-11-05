@@ -1,4 +1,4 @@
-import { AllKeys, useI18n } from "@vivid/i18n";
+import { AllKeys, useI18n } from "@timelish/i18n";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,7 +7,7 @@ import {
   DropdownMenuTrigger,
   ToolbarButton,
   useOpenState,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { Shortcut, ShortcutOption } from "../../shortcuts";
 import {
   applyShortcutOption,

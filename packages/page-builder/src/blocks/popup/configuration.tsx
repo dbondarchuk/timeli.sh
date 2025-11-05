@@ -1,9 +1,9 @@
 "use client";
 
-import { ConfigurationProps, SelectInput } from "@vivid/builder";
-import { useI18n } from "@vivid/i18n";
-import { StylesConfigurationPanel } from "@vivid/page-builder-base";
-import { Checkbox, deepMemo, Label } from "@vivid/ui";
+import { ConfigurationProps, SelectInput } from "@timelish/builder";
+import { useI18n } from "@timelish/i18n";
+import { StylesConfigurationPanel } from "@timelish/page-builder-base";
+import { Checkbox, deepMemo, Label } from "@timelish/ui";
 import { useCallback, useMemo } from "react";
 import { overlayType, PopupProps, showPopupType } from "./schema";
 import { popupShortcuts } from "./shortcuts";

@@ -1,8 +1,8 @@
 "use client";
 
-import { adminApi } from "@vivid/api-sdk";
-import { useI18n } from "@vivid/i18n";
-import { Appointment, AssetEntity } from "@vivid/types";
+import { adminApi } from "@timelish/api-sdk";
+import { useI18n } from "@timelish/i18n";
+import { Appointment, AssetEntity } from "@timelish/types";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -26,8 +26,8 @@ import {
   Spinner,
   toastPromise,
   useUploadFile,
-} from "@vivid/ui";
-import { mimeTypeToExtension } from "@vivid/utils";
+} from "@timelish/ui";
+import { mimeTypeToExtension } from "@timelish/utils";
 import { FileIcon, Trash } from "lucide-react";
 // import Image from "next/image";
 import { useRouter } from "next/navigation";

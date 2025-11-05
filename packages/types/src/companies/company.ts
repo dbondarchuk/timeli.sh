@@ -5,7 +5,7 @@ export type CompanyPlan = "free" | "basic" | "pro" | "enterprise";
 
 export type Company = WithDatabaseId<{
   name: string;
-  subdomain?: string; // e.g., "acme" -> acme.vivid.com
+  subdomain?: string; // e.g., "acme" -> acme.timelish.com
   domain?: string; // e.g., "appointments.acme.com"
   status: CompanyStatus;
   plan: CompanyPlan;

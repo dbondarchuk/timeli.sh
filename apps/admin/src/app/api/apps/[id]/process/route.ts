@@ -1,5 +1,5 @@
 import { getServicesContainer } from "@/app/utils";
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory } from "@timelish/logger";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(

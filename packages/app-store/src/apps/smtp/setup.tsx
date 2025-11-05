@@ -1,6 +1,6 @@
 "use client";
 
-import { useI18n } from "@vivid/i18n";
+import { useI18n } from "@timelish/i18n";
 import {
   BooleanSelect,
   Form,
@@ -11,8 +11,8 @@ import {
   FormMessage,
   InfoTooltip,
   Input,
-} from "@vivid/ui";
-import { ConnectedAppStatusMessage, SaveButton } from "@vivid/ui-admin";
+} from "@timelish/ui";
+import { ConnectedAppStatusMessage, SaveButton } from "@timelish/ui-admin";
 import React from "react";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
 import { SmtpApp } from "./app";

@@ -1,7 +1,7 @@
 "use client";
 
-import { useI18n } from "@vivid/i18n";
-import type { DateRange, PaymentSummary } from "@vivid/types";
+import { useI18n } from "@timelish/i18n";
+import type { DateRange, PaymentSummary } from "@timelish/types";
 import {
   CalendarDateRangePicker,
   Card,
@@ -14,8 +14,8 @@ import {
   SelectTrigger,
   SelectValue,
   Skeleton,
-} from "@vivid/ui";
-import { PaymentCard } from "@vivid/ui-admin-kit";
+} from "@timelish/ui";
+import { PaymentCard } from "@timelish/ui-admin-kit";
 import { DateTime } from "luxon";
 import { useQueryState } from "nuqs";
 import React from "react";

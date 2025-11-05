@@ -1,14 +1,14 @@
 import {
   BaseBlockProps as BaseBlockPropsType,
   TextInput,
-} from "@vivid/builder";
-import { BuilderKeys, useI18n } from "@vivid/i18n";
+} from "@timelish/builder";
+import { BuilderKeys, useI18n } from "@timelish/i18n";
 import {
   cn,
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { ChevronRight, Eclipse, Hash } from "lucide-react";
 import { useState } from "react";
 

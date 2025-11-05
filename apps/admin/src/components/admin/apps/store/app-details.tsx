@@ -1,6 +1,6 @@
-import { AvailableApps } from "@vivid/app-store";
-import { AppImages } from "@vivid/app-store/images";
-import { getI18nAsync } from "@vivid/i18n/server";
+import { AvailableApps } from "@timelish/app-store";
+import { AppImages } from "@timelish/app-store/images";
+import { getI18nAsync } from "@timelish/i18n/server";
 import {
   Button,
   Carousel,
@@ -11,8 +11,8 @@ import {
   Heading,
   Link,
   Markdown,
-} from "@vivid/ui";
-import { ConnectedAppNameAndLogo } from "@vivid/ui-admin";
+} from "@timelish/ui";
+import { ConnectedAppNameAndLogo } from "@timelish/ui-admin";
 import { ArrowLeft } from "lucide-react";
 // import Image from "next/image";
 import React from "react";

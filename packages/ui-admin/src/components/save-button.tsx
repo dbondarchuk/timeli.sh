@@ -1,7 +1,7 @@
 "use client";
 
-import { useI18n } from "@vivid/i18n";
-import { Button, Spinner } from "@vivid/ui";
+import { useI18n } from "@timelish/i18n";
+import { Button, Spinner } from "@timelish/ui";
 import { cva } from "class-variance-authority";
 import { Save } from "lucide-react";
 import React from "react";

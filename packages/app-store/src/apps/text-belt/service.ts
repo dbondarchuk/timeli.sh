@@ -1,4 +1,4 @@
-import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
 import {
   ApiRequest,
   ApiResponse,
@@ -14,7 +14,7 @@ import {
   TextMessage,
   TextMessageReply,
   TextMessageResponse,
-} from "@vivid/types";
+} from "@timelish/types";
 import {
   decrypt,
   encrypt,
@@ -22,7 +22,7 @@ import {
   getArguments,
   getWebsiteUrl,
   maskify,
-} from "@vivid/utils";
+} from "@timelish/utils";
 import crypto from "crypto";
 import { getEmailTemplate } from "./emails/utils";
 import { TextBeltConfiguration } from "./models";

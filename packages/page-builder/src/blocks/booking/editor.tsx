@@ -1,12 +1,12 @@
 "use client";
 
-import { useBlockEditor, useCurrentBlock } from "@vivid/builder";
+import { useBlockEditor, useCurrentBlock } from "@timelish/builder";
 import {
   BlockStyle,
   ReplaceOriginalColors,
   useClassName,
-} from "@vivid/page-builder-base";
-import { cn } from "@vivid/ui";
+} from "@timelish/page-builder-base";
+import { cn } from "@timelish/ui";
 import { Booking } from "./components/booking";
 import { BookingProps } from "./schema";
 import { styles } from "./styles";

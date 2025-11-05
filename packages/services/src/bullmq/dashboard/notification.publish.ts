@@ -1,9 +1,9 @@
-import type { LoggerFactory } from "@vivid/logger";
-import { getLoggerFactory } from "@vivid/logger";
+import type { LoggerFactory } from "@timelish/logger";
+import { getLoggerFactory } from "@timelish/logger";
 import type {
   DashboardNotification,
   IDashboardNotificationsService,
-} from "@vivid/types";
+} from "@timelish/types";
 import type { Redis } from "ioredis";
 
 export class RedisDashboardNotificationPublisher

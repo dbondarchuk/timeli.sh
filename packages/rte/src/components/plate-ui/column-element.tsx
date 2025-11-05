@@ -18,7 +18,7 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { PlateElement } from "./plate-element";
 
 export const ColumnElement = withHOC(

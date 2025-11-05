@@ -2,8 +2,8 @@ import { getServicesContainer } from "@/app/utils";
 import {
   discountsSearchParams,
   discountsSearchParamsCache,
-} from "@vivid/api-sdk";
-import { DataTable } from "@vivid/ui-admin";
+} from "@timelish/api-sdk";
+import { DataTable } from "@timelish/ui-admin";
 import { columns } from "./columns";
 
 export const DiscountsTable: React.FC = async () => {

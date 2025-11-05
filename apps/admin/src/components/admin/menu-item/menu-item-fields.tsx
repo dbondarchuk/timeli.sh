@@ -1,7 +1,7 @@
 "use client";
 
-import { I18nText, useI18n } from "@vivid/i18n";
-import { MenuItemType, SubMenuItem } from "@vivid/types";
+import { I18nText, useI18n } from "@timelish/i18n";
+import { MenuItemType, SubMenuItem } from "@timelish/types";
 import {
   ButtonSizes,
   ButtonVariants,
@@ -19,8 +19,8 @@ import {
   TextFonts,
   TextSizes,
   TextWeights,
-} from "@vivid/ui";
-import { Sortable } from "@vivid/ui-admin";
+} from "@timelish/ui";
+import { Sortable } from "@timelish/ui-admin";
 import { useMemo } from "react";
 import { useFieldArray, UseFormReturn } from "react-hook-form";
 import { IconSelect } from "./icon-select";

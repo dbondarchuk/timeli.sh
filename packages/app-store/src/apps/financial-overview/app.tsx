@@ -1,4 +1,4 @@
-import { App } from "@vivid/types";
+import { App } from "@timelish/types";
 import { ChartArea } from "lucide-react";
 import { FINANCIAL_OVERVIEW_APP_NAME } from "./const";
 import { FinancialOverviewAdminKeys } from "./translations/types";

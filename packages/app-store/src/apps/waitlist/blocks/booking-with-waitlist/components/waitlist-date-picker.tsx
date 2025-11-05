@@ -1,5 +1,5 @@
-import { useFormatter, useI18n, useLocale } from "@vivid/i18n";
-import { DateRange } from "@vivid/types";
+import { useFormatter, useI18n, useLocale } from "@timelish/i18n";
+import { DateRange } from "@timelish/types";
 import {
   Button,
   CalendarDateRangePicker,
@@ -16,8 +16,8 @@ import {
   DialogTitle,
   DialogTrigger,
   Label,
-} from "@vivid/ui";
-import { eachOfInterval } from "@vivid/utils";
+} from "@timelish/ui";
+import { eachOfInterval } from "@timelish/utils";
 import { ChevronDown, ChevronRight, Plus, X } from "lucide-react";
 import { DateTime as LuxonDateTime } from "luxon";
 import { useState } from "react";

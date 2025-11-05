@@ -1,4 +1,4 @@
-import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
 import {
   ApiRequest,
   ApiResponse,
@@ -15,8 +15,8 @@ import {
   IPaymentHook,
   Payment,
   PaymentUpdateModel,
-} from "@vivid/types";
-import { decrypt, encrypt } from "@vivid/utils";
+} from "@timelish/types";
+import { decrypt, encrypt } from "@timelish/utils";
 import crypto from "crypto";
 import { WaitlistEntry } from "../waitlist/models/waitlist";
 import type { IWaitlistHook } from "../waitlist/models/waitlist-hook";

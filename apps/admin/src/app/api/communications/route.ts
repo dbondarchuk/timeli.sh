@@ -1,13 +1,13 @@
 import { getServicesContainer, getWebsiteUrl } from "@/app/utils";
-import { renderToStaticMarkup } from "@vivid/email-builder/static";
-import { getLoggerFactory } from "@vivid/logger";
+import { renderToStaticMarkup } from "@timelish/email-builder/static";
+import { getLoggerFactory } from "@timelish/logger";
 import {
   Appointment,
   Customer,
   okStatus,
   sendCommunicationRequestSchema,
-} from "@vivid/types";
-import { getAdminUrl, getArguments, template } from "@vivid/utils";
+} from "@timelish/types";
+import { getAdminUrl, getArguments, template } from "@timelish/utils";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {

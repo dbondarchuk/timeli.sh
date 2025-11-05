@@ -26,7 +26,7 @@ import {
   PopoverAnchor,
   PopoverContent,
   Separator,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { CaptionButton } from "./caption";
 
 export interface MediaPopoverProps {

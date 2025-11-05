@@ -1,4 +1,4 @@
-import { fetchWithJson } from "@vivid/utils";
+import { fetchWithJson } from "@timelish/utils";
 
 export const BASE_CLIENT_API_URL = "/api";
 

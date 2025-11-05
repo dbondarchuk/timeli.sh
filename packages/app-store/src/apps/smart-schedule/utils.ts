@@ -2,7 +2,7 @@ import {
   TimeSlot as BaseTimeSlot,
   DaySchedule,
   TimeSlotsFinderConfiguration,
-} from "@vivid/types";
+} from "@timelish/types";
 import { DateTime } from "luxon";
 
 type TimeSlotsWithPriorityFinderConfiguration = {

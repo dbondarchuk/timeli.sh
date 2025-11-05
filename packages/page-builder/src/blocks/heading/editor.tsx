@@ -6,9 +6,9 @@ import {
   useBlockChildrenBlockIds,
   useBlockEditor,
   useCurrentBlockId,
-} from "@vivid/builder";
-import { BlockStyle, useClassName } from "@vivid/page-builder-base";
-import { cn } from "@vivid/ui";
+} from "@timelish/builder";
+import { BlockStyle, useClassName } from "@timelish/page-builder-base";
+import { cn } from "@timelish/ui";
 import { DefaultHeadingLevel, HeadingProps } from "./schema";
 import { styles } from "./styles";
 import { getDefaults } from "./styles.default";

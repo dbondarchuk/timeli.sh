@@ -1,5 +1,5 @@
 {
-  "name": "@vivid/types",
+  "name": "@timelish/types",
   "version": "0.0.1",
   "private": true,
   "sideEffects": false,
@@ -11,9 +11,9 @@
   },
   "main": "./src/index.ts",
   "devDependencies": {
-    "@vivid/eslint-config": "*",
-    "@vivid/typescript-config": "*",
-    "@vivid/i18n": "*",
+    "@timelish/eslint-config": "*",
+    "@timelish/typescript-config": "*",
+    "@timelish/i18n": "*",
     "@types/react": "19.0.2",
     "typescript": "5.5.4",
     "mongodb": "^6.8.0"

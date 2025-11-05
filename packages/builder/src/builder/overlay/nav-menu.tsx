@@ -1,4 +1,4 @@
-import { useI18n } from "@vivid/i18n";
+import { useI18n } from "@timelish/i18n";
 import {
   Breadcrumb,
   BreadcrumbList,
@@ -7,7 +7,7 @@ import {
   ToolbarButton,
   ToolbarGroup,
   useIsMobile,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { ArrowDown, ArrowUp, Copy, Slash, Trash } from "lucide-react";
 import React, { memo, useCallback, useMemo } from "react";
 import {

@@ -1,4 +1,4 @@
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory } from "@timelish/logger";
 import {
   AppJobRequest,
   CompanyJobRequest,
@@ -6,7 +6,7 @@ import {
   IScheduled,
   IServicesContainer,
   WithCompanyId,
-} from "@vivid/types";
+} from "@timelish/types";
 import { Job } from "bullmq";
 import { BaseBullMQClient } from "../base-bullmq-client";
 import { BullMQJobConfig } from "./types";

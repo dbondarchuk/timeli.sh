@@ -1,7 +1,7 @@
 import type { SlateLeafProps } from "@udecode/plate";
 
+import { cn } from "@timelish/ui";
 import { SlateLeaf } from "@udecode/plate";
-import { cn } from "@vivid/ui";
 
 export function CodeSyntaxLeafStatic({
   children,

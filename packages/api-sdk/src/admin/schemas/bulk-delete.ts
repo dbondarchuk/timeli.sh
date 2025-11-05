@@ -1,4 +1,4 @@
-import { zNonEmptyString } from "@vivid/types";
+import { zNonEmptyString } from "@timelish/types";
 import * as z from "zod";
 
 export const bulkDeleteSchema = z.object({

@@ -1,4 +1,4 @@
-import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
 import {
   Appointment,
   AppointmentStatus,
@@ -7,7 +7,7 @@ import {
   IAppointmentHook,
   IConnectedApp,
   IConnectedAppProps,
-} from "@vivid/types";
+} from "@timelish/types";
 import { CustomerTextMessageNotificationConfiguration } from "./models";
 import {
   CustomerTextMessageNotificationAdminAllKeys,
@@ -21,7 +21,7 @@ import {
   getPhoneField,
   getWebsiteUrl,
   templateSafeWithError,
-} from "@vivid/utils";
+} from "@timelish/utils";
 
 export default class CustomerTextMessageNotificationConnectedApp
   implements IConnectedApp, IAppointmentHook

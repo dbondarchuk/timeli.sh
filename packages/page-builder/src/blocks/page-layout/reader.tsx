@@ -1,7 +1,10 @@
-import { ReaderBlock, ReaderProps } from "@vivid/builder";
-import { ReaderProvider, getFontFamily } from "@vivid/page-builder-base/reader";
-import { COLORS, getColorStyle } from "@vivid/page-builder-base/style";
-import { cn } from "@vivid/ui";
+import { ReaderBlock, ReaderProps } from "@timelish/builder";
+import {
+  ReaderProvider,
+  getFontFamily,
+} from "@timelish/page-builder-base/reader";
+import { COLORS, getColorStyle } from "@timelish/page-builder-base/style";
+import { cn } from "@timelish/ui";
 import { PageLayoutReaderProps } from "./schema";
 
 export const PageLayoutReader = ({

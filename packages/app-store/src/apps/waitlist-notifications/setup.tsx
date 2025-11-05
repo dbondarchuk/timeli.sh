@@ -1,7 +1,7 @@
 "use client";
 
-import { useI18n } from "@vivid/i18n";
-import { AppSetupProps } from "@vivid/types";
+import { useI18n } from "@timelish/i18n";
+import { AppSetupProps } from "@timelish/types";
 import {
   BooleanSelect,
   Button,
@@ -14,14 +14,14 @@ import {
   InfoTooltip,
   Input,
   Spinner,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import {
   ArgumentsAutocomplete,
   ConnectedAppNameAndLogo,
   ConnectedAppStatusMessage,
   TemplateSelector,
   useDemoArguments,
-} from "@vivid/ui-admin";
+} from "@timelish/ui-admin";
 import React from "react";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
 import { WaitlistNotificationsApp } from "./app";

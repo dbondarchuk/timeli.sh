@@ -1,7 +1,7 @@
 import { getServicesContainer } from "@/app/utils";
-import { serviceOptionsSearchParamsLoader } from "@vivid/api-sdk";
-import { getLoggerFactory } from "@vivid/logger";
-import { appointmentOptionSchema } from "@vivid/types";
+import { serviceOptionsSearchParamsLoader } from "@timelish/api-sdk";
+import { getLoggerFactory } from "@timelish/logger";
+import { appointmentOptionSchema } from "@timelish/types";
 import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";

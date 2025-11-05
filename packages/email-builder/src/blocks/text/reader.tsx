@@ -1,4 +1,4 @@
-import { PlateStaticEditor } from "@vivid/rte";
+import { PlateStaticEditor } from "@timelish/rte";
 import { TextProps } from "./schema";
 import { getStyles } from "./styles";
 

@@ -1,11 +1,11 @@
 "use client";
 
+import { ToolbarButton } from "@timelish/ui";
 import { withRef } from "@udecode/cn";
 import {
   useMarkToolbarButton,
   useMarkToolbarButtonState,
 } from "@udecode/plate/react";
-import { ToolbarButton } from "@vivid/ui";
 
 export const MarkToolbarButton = withRef<
   typeof ToolbarButton,

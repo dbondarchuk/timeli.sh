@@ -25,10 +25,10 @@ import {
   use12HourFormat,
   usePrevious,
   useTimeZone,
-} from "@vivid/ui";
+} from "@timelish/ui";
 
-import { useI18n } from "@vivid/i18n";
-import { deepEqual } from "@vivid/utils";
+import { useI18n } from "@timelish/i18n";
+import { deepEqual } from "@timelish/utils";
 import { useModifyAppointmentFormContext } from "./context";
 import { ModifyAppointmentFields } from "./types";
 

@@ -1,4 +1,4 @@
-import { AllKeys, I18nNamespaces } from "@vivid/i18n";
+import { AllKeys, I18nNamespaces } from "@timelish/i18n";
 import { WithCompanyId, WithDatabaseId } from "../database";
 import { Prettify } from "../utils";
 export type ConnectedAppStatus = "pending" | "connected" | "failed";

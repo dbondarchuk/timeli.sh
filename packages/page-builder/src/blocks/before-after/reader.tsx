@@ -1,6 +1,9 @@
-import { ReaderBlock } from "@vivid/builder";
-import { BlockStyle, generateClassName } from "@vivid/page-builder-base/reader";
-import { cn } from "@vivid/ui";
+import { ReaderBlock } from "@timelish/builder";
+import {
+  BlockStyle,
+  generateClassName,
+} from "@timelish/page-builder-base/reader";
+import { cn } from "@timelish/ui";
 import { BeforeAfterSlider } from "./before-after-slider";
 import { NoImagesMessage } from "./no-images-message";
 import { BeforeAfterReaderProps } from "./schema";

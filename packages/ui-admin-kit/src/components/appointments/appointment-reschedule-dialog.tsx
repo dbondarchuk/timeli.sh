@@ -2,9 +2,9 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogProps } from "@radix-ui/react-dialog";
-import { adminApi } from "@vivid/api-sdk";
-import { useI18n } from "@vivid/i18n";
-import { Appointment, Event } from "@vivid/types";
+import { adminApi } from "@timelish/api-sdk";
+import { useI18n } from "@timelish/i18n";
+import { Appointment, Event } from "@timelish/types";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -37,7 +37,7 @@ import {
   toastPromise,
   use12HourFormat,
   useTimeZone,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { DateTime } from "luxon";
 import { useRouter } from "next/navigation";
 import React from "react";

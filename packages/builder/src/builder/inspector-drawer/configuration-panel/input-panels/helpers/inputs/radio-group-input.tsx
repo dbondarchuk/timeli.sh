@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Label, RadioButtonGroup } from "@vivid/ui";
+import { Label, RadioButtonGroup } from "@timelish/ui";
 import { ResetButton } from "./reset-button";
 
 type Props = {

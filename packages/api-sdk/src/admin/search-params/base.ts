@@ -1,4 +1,4 @@
-import { sortSchema } from "@vivid/types";
+import { sortSchema } from "@timelish/types";
 import { parseAsInteger, parseAsJson, parseAsString } from "nuqs/server";
 
 export const baseSearchParams = {

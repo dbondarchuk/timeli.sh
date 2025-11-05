@@ -1,4 +1,4 @@
-import { StylingConfiguration } from "@vivid/types";
+import { StylingConfiguration } from "@timelish/types";
 import Color from "color";
 
 export const getColorsCss = (

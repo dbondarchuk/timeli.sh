@@ -1,7 +1,7 @@
 "use client";
 import { authClient } from "@/app/auth-client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useI18n } from "@vivid/i18n";
+import { useI18n } from "@timelish/i18n";
 import {
   Button,
   Form,
@@ -17,7 +17,7 @@ import {
   InputGroupSuffixClasses,
   InputSuffix,
   useDebounceCacheFn,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";

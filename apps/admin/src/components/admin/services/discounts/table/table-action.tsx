@@ -1,15 +1,15 @@
 "use client";
 
-import { useI18n } from "@vivid/i18n";
-import { discountTypes } from "@vivid/types";
-import { Button, Popover, PopoverContent, PopoverTrigger } from "@vivid/ui";
+import { useI18n } from "@timelish/i18n";
+import { discountTypes } from "@timelish/types";
+import { Button, Popover, PopoverContent, PopoverTrigger } from "@timelish/ui";
 import {
   DataTableFilterBox,
   DataTableRangeBox,
   DataTableResetFilter,
   DataTableSearch,
   useSelectedRowsStore,
-} from "@vivid/ui-admin";
+} from "@timelish/ui-admin";
 import { Settings2 } from "lucide-react";
 import { DeleteSelectedDiscountsButton } from "./delete-selected";
 import { useFieldsTableFilters } from "./use-table-filters";

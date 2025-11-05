@@ -1,9 +1,9 @@
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory } from "@timelish/logger";
 import {
   EmailNotificationRequest,
   IServicesContainer,
   TextMessageNotificationRequest,
-} from "@vivid/types";
+} from "@timelish/types";
 import { Job } from "bullmq";
 import { NotificationService } from "../../notifications.service";
 import { BaseBullMQClient } from "../base-bullmq-client";

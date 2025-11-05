@@ -1,6 +1,6 @@
 "use client";
-import { useI18n } from "@vivid/i18n";
-import { CommunicationChannel, communicationChannels } from "@vivid/types";
+import { useI18n } from "@timelish/i18n";
+import { CommunicationChannel, communicationChannels } from "@timelish/types";
 import {
   Button,
   Combobox,
@@ -18,7 +18,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { Plus } from "lucide-react";
 import React from "react";
 import { TemplateTemplates } from "./templates";

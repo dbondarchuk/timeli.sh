@@ -1,9 +1,6 @@
 "use client";
 
-import JsonView from "@uiw/react-json-view";
-import { darkTheme } from "@uiw/react-json-view/dark";
-import { lightTheme } from "@uiw/react-json-view/light";
-import { useI18n } from "@vivid/i18n";
+import { useI18n } from "@timelish/i18n";
 import {
   Button,
   cn,
@@ -20,7 +17,10 @@ import {
   TooltipContent,
   TooltipTrigger,
   useTheme,
-} from "@vivid/ui";
+} from "@timelish/ui";
+import JsonView from "@uiw/react-json-view";
+import { darkTheme } from "@uiw/react-json-view/dark";
+import { lightTheme } from "@uiw/react-json-view/light";
 import {
   Blocks,
   Braces,

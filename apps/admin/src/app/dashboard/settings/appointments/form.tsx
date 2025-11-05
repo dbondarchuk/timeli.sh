@@ -1,9 +1,12 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { adminApi } from "@vivid/api-sdk";
-import { useI18n } from "@vivid/i18n";
-import { BookingConfiguration, bookingConfigurationSchema } from "@vivid/types";
+import { adminApi } from "@timelish/api-sdk";
+import { useI18n } from "@timelish/i18n";
+import {
+  BookingConfiguration,
+  bookingConfigurationSchema,
+} from "@timelish/types";
 import {
   cn,
   Form,
@@ -12,8 +15,8 @@ import {
   TabsList,
   TabsTrigger,
   toastPromise,
-} from "@vivid/ui";
-import { SaveButton } from "@vivid/ui-admin";
+} from "@timelish/ui";
+import { SaveButton } from "@timelish/ui-admin";
 import { useRouter } from "next/navigation";
 import React, { useCallback } from "react";
 import { useForm } from "react-hook-form";

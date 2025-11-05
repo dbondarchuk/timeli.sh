@@ -1,7 +1,7 @@
 import PageContainer from "@/components/admin/layout/page-container";
-import { getI18nAsync } from "@vivid/i18n/server";
-import { getLoggerFactory } from "@vivid/logger";
-import { Breadcrumbs, Heading, Link, Skeleton } from "@vivid/ui";
+import { getI18nAsync } from "@timelish/i18n/server";
+import { getLoggerFactory } from "@timelish/logger";
+import { Breadcrumbs, Heading, Link, Skeleton } from "@timelish/ui";
 import { Boxes, Store } from "lucide-react";
 import { Metadata } from "next/types";
 import { Suspense } from "react";

@@ -1,4 +1,4 @@
-import { okStatus, SendCommunicationRequest } from "@vivid/types";
+import { okStatus, SendCommunicationRequest } from "@timelish/types";
 import { fetchAdminApi } from "./utils";
 
 export const sendCustomerMessage = async (

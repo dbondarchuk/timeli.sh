@@ -6,8 +6,8 @@ import {
   TemplateListModel,
   TemplateUpdateModel,
   WithTotal,
-} from "@vivid/types";
-import { buildSearchQuery, escapeRegex } from "@vivid/utils";
+} from "@timelish/types";
+import { buildSearchQuery, escapeRegex } from "@timelish/utils";
 import { DateTime } from "luxon";
 import { Filter, ObjectId, Sort } from "mongodb";
 import { TEMPLATES_COLLECTION_NAME } from "./collections";

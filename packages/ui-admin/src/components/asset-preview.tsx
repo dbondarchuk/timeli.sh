@@ -1,6 +1,6 @@
-import { AssetEntity } from "@vivid/types";
-import { cn, Dialog, DialogContent, DialogTrigger, Link } from "@vivid/ui";
-import { mimeTypeToExtension } from "@vivid/utils";
+import { AssetEntity } from "@timelish/types";
+import { cn, Dialog, DialogContent, DialogTrigger, Link } from "@timelish/ui";
+import { mimeTypeToExtension } from "@timelish/utils";
 import { FileIcon, Play } from "lucide-react";
 // import Image from "next/image";
 import React from "react";

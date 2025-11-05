@@ -1,12 +1,12 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { useI18n } from "@vivid/i18n";
+import { useI18n } from "@timelish/i18n";
 import {
   MenuItem,
   MenuItemType,
   menuItemTypes,
   MenuItemWithSubMenu,
-} from "@vivid/types";
+} from "@timelish/types";
 import {
   Button,
   Card,
@@ -19,7 +19,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { cva } from "class-variance-authority";
 import { GripVertical, Trash } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";

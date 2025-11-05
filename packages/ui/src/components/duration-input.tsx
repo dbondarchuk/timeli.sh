@@ -1,5 +1,5 @@
-import { useI18n } from "@vivid/i18n";
-import { durationToTime, timeToDuration, weeks } from "@vivid/utils";
+import { useI18n } from "@timelish/i18n";
+import { durationToTime, timeToDuration, weeks } from "@timelish/utils";
 import { Clock } from "lucide-react";
 import React from "react";
 import { cn } from "../utils/cn";

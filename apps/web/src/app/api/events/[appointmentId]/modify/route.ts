@@ -1,13 +1,13 @@
 import { getModifyAppointmentInformationRequestResult } from "@/utils/appointments/get-modify-appointment-request";
 import { getServicesContainer } from "@/utils/utils";
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory } from "@timelish/logger";
 import {
   ModifyAppointmentInformation,
   ModifyAppointmentRequest,
   modifyAppointmentRequestSchema,
   OnlinePayment,
-} from "@vivid/types";
-import { formatAmount } from "@vivid/utils";
+} from "@timelish/types";
+import { formatAmount } from "@timelish/utils";
 import { NextRequest, NextResponse } from "next/server";
 
 const processRescheduleRequest = async (

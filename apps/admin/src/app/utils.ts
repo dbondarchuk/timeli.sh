@@ -1,4 +1,4 @@
-import { ServicesContainer } from "@vivid/services";
+import { ServicesContainer } from "@timelish/services";
 import { headers } from "next/headers";
 import { redirect, unauthorized } from "next/navigation";
 import { cache } from "react";

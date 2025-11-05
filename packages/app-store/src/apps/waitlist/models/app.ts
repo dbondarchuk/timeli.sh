@@ -1,4 +1,4 @@
-import { DateRange, Query } from "@vivid/types";
+import { DateRange, Query } from "@timelish/types";
 import * as z from "zod";
 
 import { WaitlistStatus } from "./waitlist";

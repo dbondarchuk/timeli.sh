@@ -1,4 +1,4 @@
-import { Leaves } from "@vivid/types";
+import { Leaves } from "@timelish/types";
 
 export const resolve = (
   obj: any,

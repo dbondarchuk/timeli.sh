@@ -1,4 +1,4 @@
-import { Page } from "@vivid/types";
+import { Page } from "@timelish/types";
 import { cache } from "react";
 
 export type PageDataStore = {

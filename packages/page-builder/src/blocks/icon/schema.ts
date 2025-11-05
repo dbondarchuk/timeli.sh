@@ -1,6 +1,6 @@
-import { BaseReaderBlockProps } from "@vivid/builder";
-import { Prettify } from "@vivid/types";
-import { iconNames } from "@vivid/ui";
+import { BaseReaderBlockProps } from "@timelish/builder";
+import { Prettify } from "@timelish/types";
+import { iconNames } from "@timelish/ui";
 import * as z from "zod";
 import { zStyles } from "./styles";
 

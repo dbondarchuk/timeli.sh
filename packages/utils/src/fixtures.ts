@@ -1,4 +1,4 @@
-import { Appointment, AppointmentFields } from "@vivid/types";
+import { Appointment, AppointmentFields } from "@timelish/types";
 import { v4 } from "uuid";
 
 const proxyHandler = {

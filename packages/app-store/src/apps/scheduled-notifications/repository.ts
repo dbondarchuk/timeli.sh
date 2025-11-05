@@ -1,6 +1,10 @@
-import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
-import { ConnectedAppError, IConnectedAppProps, WithTotal } from "@vivid/types";
-import { buildSearchQuery, escapeRegex } from "@vivid/utils";
+import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
+import {
+  ConnectedAppError,
+  IConnectedAppProps,
+  WithTotal,
+} from "@timelish/types";
+import { buildSearchQuery, escapeRegex } from "@timelish/utils";
 import { DateTime } from "luxon";
 import { ObjectId, type Filter, type Sort } from "mongodb";
 import {

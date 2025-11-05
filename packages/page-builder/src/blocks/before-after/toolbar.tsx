@@ -1,5 +1,5 @@
-import { ConfigurationProps } from "@vivid/builder";
-import { ShortcutsToolbar } from "@vivid/page-builder-base";
+import { ConfigurationProps } from "@timelish/builder";
+import { ShortcutsToolbar } from "@timelish/page-builder-base";
 import { BeforeAfterProps } from "./schema";
 import { beforeAfterShortcuts } from "./shortcuts";
 

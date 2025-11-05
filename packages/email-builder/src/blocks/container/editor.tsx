@@ -2,7 +2,7 @@ import {
   EditorChildren,
   useBlockEditor,
   useCurrentBlock,
-} from "@vivid/builder";
+} from "@timelish/builder";
 import { BaseContainer } from "./base";
 import { ContainerProps } from "./schema";
 

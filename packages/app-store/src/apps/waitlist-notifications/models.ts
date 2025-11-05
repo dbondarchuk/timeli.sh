@@ -1,4 +1,4 @@
-import { asOptionalField, zEmail, zNonEmptyString } from "@vivid/types";
+import { asOptionalField, zEmail, zNonEmptyString } from "@timelish/types";
 import * as z from "zod";
 import { WaitlistNotificationsAdminAllKeys } from "./translations/types";
 

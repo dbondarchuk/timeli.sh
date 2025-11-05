@@ -1,4 +1,4 @@
-import { AppLogoProps } from "@vivid/types";
+import { AppLogoProps } from "@timelish/types";
 
 export function WebhooksLogo(props: AppLogoProps) {
   return (

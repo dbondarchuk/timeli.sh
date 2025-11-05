@@ -2,7 +2,7 @@ import {
   EditorChildren,
   useBlockEditor,
   useCurrentBlock,
-} from "@vivid/builder";
+} from "@timelish/builder";
 import { LightboxProvider } from "./context";
 import { LightboxProps } from "./schema";
 

@@ -1,4 +1,4 @@
-import { useI18n, useLocale } from "@vivid/i18n";
+import { useI18n, useLocale } from "@timelish/i18n";
 import {
   Button,
   Card,
@@ -9,8 +9,8 @@ import {
   CardTitle,
   cn,
   Spinner,
-} from "@vivid/ui";
-import { durationToTime, formatAmountString } from "@vivid/utils";
+} from "@timelish/ui";
+import { durationToTime, formatAmountString } from "@timelish/utils";
 import { Calendar, DollarSign, Timer } from "lucide-react";
 import { DateTime as Luxon } from "luxon";
 import React from "react";

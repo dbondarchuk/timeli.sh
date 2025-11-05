@@ -1,4 +1,4 @@
-import { appointmentStatuses } from "@vivid/types";
+import { appointmentStatuses } from "@timelish/types";
 import * as z from "zod";
 
 export const textMessagesTemplateSchema = z.object({

@@ -1,6 +1,6 @@
 import { getServicesContainer } from "@/app/utils";
-import { getLoggerFactory } from "@vivid/logger";
-import { inStorePaymentUpdateModelSchema } from "@vivid/types";
+import { getLoggerFactory } from "@timelish/logger";
+import { inStorePaymentUpdateModelSchema } from "@timelish/types";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function PATCH(

@@ -1,4 +1,4 @@
-import { Toolbar } from "@vivid/ui";
+import { Toolbar } from "@timelish/ui";
 import React from "react";
 import { ToolbarBlockGroups } from "./toolbar-block-groups";
 import { ToolbarBlockToolbarGroup } from "./toolbar-block-toolbar-group";

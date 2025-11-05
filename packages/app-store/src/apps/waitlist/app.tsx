@@ -1,4 +1,4 @@
-import { App } from "@vivid/types";
+import { App } from "@timelish/types";
 import { CalendarClock } from "lucide-react";
 import { WAITLIST_APP_NAME } from "./const";
 import { WaitlistAdminKeys } from "./translations/types";

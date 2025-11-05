@@ -1,7 +1,7 @@
 "use client";
 import { ColumnDef } from "@tanstack/react-table";
-import { useI18n, useLocale } from "@vivid/i18n";
-import { Appointment } from "@vivid/types";
+import { useI18n, useLocale } from "@timelish/i18n";
+import { Appointment } from "@timelish/types";
 import {
   Button,
   Link,
@@ -10,10 +10,10 @@ import {
   TooltipProvider,
   TooltipTrigger,
   useTimeZone,
-} from "@vivid/ui";
-import { tableSortHeader, tableSortNoopFunction } from "@vivid/ui-admin";
-import { AppointmentDialog } from "@vivid/ui-admin-kit";
-import { durationToTime, formatAmountString } from "@vivid/utils";
+} from "@timelish/ui";
+import { tableSortHeader, tableSortNoopFunction } from "@timelish/ui-admin";
+import { AppointmentDialog } from "@timelish/ui-admin-kit";
+import { durationToTime, formatAmountString } from "@timelish/utils";
 import {
   CalendarCheck,
   CalendarClock,

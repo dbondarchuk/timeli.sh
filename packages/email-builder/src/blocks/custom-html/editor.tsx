@@ -1,6 +1,6 @@
 "use client";
 
-import { useBlockEditor, useCurrentBlock } from "@vivid/builder";
+import { useBlockEditor, useCurrentBlock } from "@timelish/builder";
 import { CustomHTMLProps } from "./schema";
 
 export const CustomHTMLEditor = () => {

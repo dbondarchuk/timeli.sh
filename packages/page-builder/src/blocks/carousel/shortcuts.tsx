@@ -2,7 +2,7 @@ import {
   colorShortcut,
   fontFamilyShortcut,
   Shortcut,
-} from "@vivid/page-builder-base";
+} from "@timelish/page-builder-base";
 import { AlignHorizontalJustifyCenter, GalleryHorizontal } from "lucide-react";
 import { CarouselStylesSchema } from "./schema";
 

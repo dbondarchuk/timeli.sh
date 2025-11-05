@@ -1,6 +1,6 @@
-import { useI18n, useLocale } from "@vivid/i18n";
-import { Button, cn, ScrollArea, useTimeZone } from "@vivid/ui";
-import { formatTimeLocale, hasSame, parseTime } from "@vivid/utils";
+import { useI18n, useLocale } from "@timelish/i18n";
+import { Button, cn, ScrollArea, useTimeZone } from "@timelish/ui";
+import { formatTimeLocale, hasSame, parseTime } from "@timelish/utils";
 import {
   CalendarIcon,
   ChevronDown,

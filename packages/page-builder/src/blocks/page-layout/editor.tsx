@@ -7,10 +7,10 @@ import {
   useBlockEditor,
   useCurrentBlock,
   useSetSelectedBlockId,
-} from "@vivid/builder";
-import { getFontFamily } from "@vivid/page-builder-base";
-import { COLORS, getColorStyle } from "@vivid/page-builder-base/style";
-import { cn } from "@vivid/ui";
+} from "@timelish/builder";
+import { getFontFamily } from "@timelish/page-builder-base";
+import { COLORS, getColorStyle } from "@timelish/page-builder-base/style";
+import { cn } from "@timelish/ui";
 import { PageLayoutProps } from "./schema";
 
 export const PageLayoutEditor = () => {

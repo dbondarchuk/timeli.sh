@@ -2,14 +2,14 @@ import Header from "@/components/admin/layout/header";
 import { AppSidebar } from "@/components/admin/layout/sidebar";
 
 import { navItems } from "@/constants/data";
-import { AppMenuItems } from "@vivid/app-store/menu-items";
-import { NavItemGroup } from "@vivid/types";
+import { AppMenuItems } from "@timelish/app-store/menu-items";
+import { NavItemGroup } from "@timelish/types";
 import {
   BreadcrumbsProvider,
   ConfigProvider,
   SidebarInset,
   SidebarProvider,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { cookies } from "next/headers";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { CookiesProvider } from "../../components/cookies-provider";

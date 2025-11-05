@@ -2,10 +2,10 @@
 
 import React from "react";
 
+import { cn } from "@timelish/ui";
 import { DndPlugin } from "@udecode/plate-dnd";
 import { useBlockSelected } from "@udecode/plate-selection/react";
 import { usePluginOption } from "@udecode/plate/react";
-import { cn } from "@vivid/ui";
 import { type VariantProps, cva } from "class-variance-authority";
 
 export const blockSelectionVariants = cva(

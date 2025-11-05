@@ -1,4 +1,4 @@
-import { getI18nAsync } from "@vivid/i18n/server";
+import { getI18nAsync } from "@timelish/i18n/server";
 import { Metadata, ResolvingMetadata } from "next";
 
 export async function generateMetadata(

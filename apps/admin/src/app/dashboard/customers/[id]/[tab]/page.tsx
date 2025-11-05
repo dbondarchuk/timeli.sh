@@ -12,9 +12,9 @@ import {
   serializeAppointmentsSearchParams,
   serializeAssetsSearchParams,
   serializeCommunicationLogsSearchParams,
-} from "@vivid/api-sdk";
-import { getI18nAsync } from "@vivid/i18n/server";
-import { getLoggerFactory } from "@vivid/logger";
+} from "@timelish/api-sdk";
+import { getI18nAsync } from "@timelish/i18n/server";
+import { getLoggerFactory } from "@timelish/logger";
 import {
   Breadcrumbs,
   Heading,
@@ -23,12 +23,12 @@ import {
   TabsContent,
   TabsLinkTrigger,
   TabsList,
-} from "@vivid/ui";
-import { DataTableSkeleton } from "@vivid/ui-admin";
+} from "@timelish/ui";
+import { DataTableSkeleton } from "@timelish/ui-admin";
 import {
   RecentCommunications,
   SendCommunicationButton,
-} from "@vivid/ui-admin-kit";
+} from "@timelish/ui-admin-kit";
 import { CalendarClock } from "lucide-react";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";

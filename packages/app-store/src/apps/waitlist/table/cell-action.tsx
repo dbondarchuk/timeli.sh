@@ -9,12 +9,12 @@ import {
   DropdownMenuTrigger,
   Link,
   toastPromise,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { CalendarPlus, MoreHorizontal, X } from "lucide-react";
 import { useQueryState } from "nuqs";
 import { useState } from "react";
 
-import { useI18n } from "@vivid/i18n";
+import { useI18n } from "@timelish/i18n";
 import { dismissWaitlistEntries } from "../actions";
 import { WaitlistEntry } from "../models";
 import {

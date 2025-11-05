@@ -1,7 +1,7 @@
 "use client";
 
-import { useI18n } from "@vivid/i18n";
-import { cn, ScrollArea, ScrollBar, Skeleton } from "@vivid/ui";
+import { useI18n } from "@timelish/i18n";
+import { cn, ScrollArea, ScrollBar, Skeleton } from "@timelish/ui";
 import React, { memo, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { ViewportSize } from "../../documents/editor/context";

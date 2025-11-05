@@ -1,5 +1,5 @@
-import { BaseReaderBlockProps, generateId } from "@vivid/builder";
-import { Prettify } from "@vivid/types";
+import { BaseReaderBlockProps, generateId } from "@timelish/builder";
+import { Prettify } from "@timelish/types";
 import * as z from "zod";
 import { InlineContainerPropsDefaults } from "../inline-container";
 import { zStyles } from "./styles";

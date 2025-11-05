@@ -1,4 +1,8 @@
-import { ConfigurationKey, ConfigurationOption, okStatus } from "@vivid/types";
+import {
+  ConfigurationKey,
+  ConfigurationOption,
+  okStatus,
+} from "@timelish/types";
 import { fetchAdminApi } from "./utils";
 
 export const getConfiguration = async <T extends ConfigurationKey>(

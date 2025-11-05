@@ -12,7 +12,7 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
   useOpenState,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { ToolbarButton } from "./toolbar";
 
 export function ModeDropdownMenu(props: DropdownMenuProps) {

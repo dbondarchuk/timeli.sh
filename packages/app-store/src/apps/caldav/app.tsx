@@ -1,4 +1,4 @@
-import { App } from "@vivid/types";
+import { App } from "@timelish/types";
 import { CALDAV_APP_NAME } from "./const";
 import { CaldavLogo } from "./logo";
 import { CaldavAdminKeys, CaldavAdminNamespace } from "./translations/types";

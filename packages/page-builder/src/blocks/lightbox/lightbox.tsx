@@ -1,5 +1,5 @@
 "use client";
-import { ReplaceOriginalColors } from "@vivid/page-builder-base";
+import { ReplaceOriginalColors } from "@timelish/page-builder-base";
 import {
   Carousel,
   CarouselApi,
@@ -9,7 +9,7 @@ import {
   CarouselPrevious,
   Dialog,
   DialogContent,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { useContext, useEffect, useState } from "react";
 import { LightboxInternalContext } from "./context";
 import { LightboxProps } from "./schema";

@@ -1,7 +1,7 @@
 "use client";
-import { adminApi } from "@vivid/api-sdk";
-import { useI18n } from "@vivid/i18n";
-import { CustomerListModel } from "@vivid/types";
+import { adminApi } from "@timelish/api-sdk";
+import { useI18n } from "@timelish/i18n";
+import { CustomerListModel } from "@timelish/types";
 import {
   AlertModal,
   Button,
@@ -11,7 +11,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
   toastPromise,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { Edit, MoreHorizontal, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";

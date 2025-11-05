@@ -2,7 +2,7 @@ import {
   EditorDocumentBlocksDictionary,
   generateId,
   TEditorBlock,
-} from "@vivid/builder";
+} from "@timelish/builder";
 import {
   CircleUserRound,
   Code,

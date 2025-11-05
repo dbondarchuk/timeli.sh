@@ -1,7 +1,7 @@
 "use client";
 
-import { UploadedFile } from "@vivid/types";
-import { cn, SidebarInset, SidebarProvider, useSidebar } from "@vivid/ui";
+import { UploadedFile } from "@timelish/types";
+import { cn, SidebarInset, SidebarProvider, useSidebar } from "@timelish/ui";
 import { useEffect } from "react";
 import { useCookies } from "react-cookie";
 import { createPortal } from "react-dom";

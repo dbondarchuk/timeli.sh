@@ -1,6 +1,6 @@
-import { StylingConfiguration } from "@vivid/types";
-import { genericMemo } from "@vivid/ui";
-import { buildGoogleFontsUrl, deepEqual, getColorsCss } from "@vivid/utils";
+import { StylingConfiguration } from "@timelish/types";
+import { genericMemo } from "@timelish/ui";
+import { buildGoogleFontsUrl, deepEqual, getColorsCss } from "@timelish/utils";
 import React from "react";
 import {
   BaseStyleDictionary,

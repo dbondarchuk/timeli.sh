@@ -1,4 +1,4 @@
-import { Availability } from "@vivid/types";
+import { Availability } from "@timelish/types";
 import {
   AvailabilitySearchParams,
   serializeAvailabilitySearchParams,

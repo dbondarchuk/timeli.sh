@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Label } from "@vivid/ui";
+import { Label } from "@timelish/ui";
 import { CaseSensitive } from "lucide-react";
 import { RawSliderInput } from "./raw/raw-slider-input";
 

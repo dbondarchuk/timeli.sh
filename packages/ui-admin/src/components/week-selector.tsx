@@ -1,7 +1,7 @@
 "use client";
 
-import { useI18n } from "@vivid/i18n";
-import { WeekIdentifier } from "@vivid/types";
+import { useI18n } from "@timelish/i18n";
+import { WeekIdentifier } from "@timelish/types";
 import {
   Button,
   Card,
@@ -15,13 +15,13 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import {
   eachOfInterval,
   getDateFromWeekIdentifier,
   getWeekIdentifier,
   hasSame,
-} from "@vivid/utils";
+} from "@timelish/utils";
 import { Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 import { DateTime } from "luxon";
 import { FC, useCallback, useEffect, useMemo, useState } from "react";

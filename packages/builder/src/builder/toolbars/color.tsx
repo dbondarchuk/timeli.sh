@@ -1,6 +1,5 @@
-import { Sketch } from "@uiw/react-color";
-import { useI18n } from "@vivid/i18n";
-import { Leaves } from "@vivid/types";
+import { useI18n } from "@timelish/i18n";
+import { Leaves } from "@timelish/types";
 import {
   Button,
   DropdownMenu,
@@ -8,8 +7,9 @@ import {
   DropdownMenuTrigger,
   ToolbarButton,
   useOpenState,
-} from "@vivid/ui";
-import { destructAndReplace, resolveProperty } from "@vivid/utils";
+} from "@timelish/ui";
+import { destructAndReplace, resolveProperty } from "@timelish/utils";
+import { Sketch } from "@uiw/react-color";
 import { X } from "lucide-react";
 import { ReactNode } from "react";
 import { ConfigurationProps } from "../../documents/types";

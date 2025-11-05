@@ -1,6 +1,6 @@
 "use client";
 
-import { useI18n } from "@vivid/i18n";
+import { useI18n } from "@timelish/i18n";
 import {
   Form,
   FormControl,
@@ -10,14 +10,14 @@ import {
   FormMessage,
   InfoTooltip,
   Skeleton,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import {
   ArgumentsAutocomplete,
   ConnectedAppStatusMessage,
   SaveButton,
   TemplateSelector,
   useDemoArguments,
-} from "@vivid/ui-admin";
+} from "@timelish/ui-admin";
 import { UseFormReturn } from "react-hook-form";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
 import { CustomerEmailNotificationApp } from "./app";

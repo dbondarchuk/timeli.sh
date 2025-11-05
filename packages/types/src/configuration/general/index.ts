@@ -1,4 +1,4 @@
-import { languages } from "@vivid/i18n";
+import { languages } from "@timelish/i18n";
 import * as z from "zod";
 import { asOptionalField, zNonEmptyString, zPhone } from "../../utils";
 import { zTimeZone } from "../../utils/zTimeZone";

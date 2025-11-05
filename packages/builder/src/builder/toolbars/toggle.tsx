@@ -1,6 +1,6 @@
-import { Leaves } from "@vivid/types";
-import { Toggle, useOpenState } from "@vivid/ui";
-import { destructAndReplace, resolveProperty } from "@vivid/utils";
+import { Leaves } from "@timelish/types";
+import { Toggle, useOpenState } from "@timelish/ui";
+import { destructAndReplace, resolveProperty } from "@timelish/utils";
 import { ReactNode } from "react";
 import { ConfigurationProps } from "../../documents/types";
 

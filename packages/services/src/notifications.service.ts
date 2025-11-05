@@ -1,4 +1,4 @@
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory } from "@timelish/logger";
 import {
   EmailNotificationRequest,
   ICommunicationLogsService,
@@ -9,8 +9,8 @@ import {
   ITextMessageSender,
   TextMessageNotificationRequest,
   TextMessageResponse,
-} from "@vivid/types";
-import { maskify } from "@vivid/utils";
+} from "@timelish/types";
+import { maskify } from "@timelish/utils";
 import { convert } from "html-to-text";
 
 export class NotificationService implements INotificationService {

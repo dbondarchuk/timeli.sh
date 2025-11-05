@@ -1,7 +1,7 @@
 import { auth } from "@/app/auth";
-import { AppsTranslations } from "@vivid/app-store/translations";
-import { getConfig } from "@vivid/i18n/request";
-import { ServicesContainer } from "@vivid/services";
+import { AppsTranslations } from "@timelish/app-store/translations";
+import { getConfig } from "@timelish/i18n/request";
+import { ServicesContainer } from "@timelish/services";
 import { headers } from "next/headers";
 
 const config = getConfig(

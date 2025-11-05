@@ -1,5 +1,5 @@
 import { Header } from "@tanstack/react-table";
-import { cn } from "@vivid/ui";
+import { cn } from "@timelish/ui";
 import { GripVertical } from "lucide-react";
 
 export const ColumnResizer = <TData,>({

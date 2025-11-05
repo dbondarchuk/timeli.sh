@@ -13,9 +13,9 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import { baseSearchParams } from "@vivid/api-sdk";
-import { useI18n } from "@vivid/i18n";
-import { Sort } from "@vivid/types";
+import { baseSearchParams } from "@timelish/api-sdk";
+import { useI18n } from "@timelish/i18n";
+import { Sort } from "@timelish/types";
 import {
   Button,
   cn,
@@ -32,7 +32,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { parseAsInteger, useQueryState } from "nuqs";
 import { useEffect, useMemo, useRef, useState } from "react";

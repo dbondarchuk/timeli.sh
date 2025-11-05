@@ -13,7 +13,7 @@ import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@vivid/ui";
+} from "@timelish/ui";
 
 export const description = "An interactive bar chart";
 

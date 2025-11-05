@@ -8,7 +8,7 @@ import {
   PaymentIntent,
   PaymentIntentUpdateModel,
   PaymentUpdateModel,
-} from "@vivid/types";
+} from "@timelish/types";
 import { ObjectId } from "mongodb";
 import {
   PAYMENT_INTENTS_COLLECTION_NAME,

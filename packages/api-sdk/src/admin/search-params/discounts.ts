@@ -11,7 +11,7 @@ import {
   parseAsStringEnum,
 } from "nuqs/server";
 
-import { discountTypes } from "@vivid/types";
+import { discountTypes } from "@timelish/types";
 import { baseSearchParams } from "./base";
 
 export const discountsSearchParams = {

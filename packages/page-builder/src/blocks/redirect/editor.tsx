@@ -1,6 +1,6 @@
 "use client";
 
-import { useBlockEditor, useCurrentBlock } from "@vivid/builder";
+import { useBlockEditor, useCurrentBlock } from "@timelish/builder";
 import { EditorRedirect } from "./editor-redirect";
 import { RedirectDefaultUrl, RedirectProps } from "./schema";
 

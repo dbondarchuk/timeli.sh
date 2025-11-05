@@ -1,4 +1,4 @@
-import { AllKeys } from "@vivid/i18n";
+import { AllKeys } from "@timelish/i18n";
 import * as z from "zod";
 import { AllStylesNames } from "./styles";
 import { Breakpoint, StateWithTarget } from "./zod";

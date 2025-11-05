@@ -1,7 +1,7 @@
 import React from "react";
 
-import { cn, FormDescription, Label } from "@vivid/ui";
-import { AppSelector, AppSelectorProps } from "@vivid/ui-admin";
+import { cn, FormDescription, Label } from "@timelish/ui";
+import { AppSelector, AppSelectorProps } from "@timelish/ui-admin";
 import { ResetButton } from "./reset-button";
 
 type Props = Omit<

@@ -5,7 +5,7 @@ import {
   GeneralConfiguration,
   IcalEventMethod,
   ParticipationStatus,
-} from "@vivid/types";
+} from "@timelish/types";
 import { DateTime } from "luxon";
 import { getIcsEventUid } from "./ics-uid";
 import { getAdminUrl } from "./website";

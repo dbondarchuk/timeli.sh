@@ -1,4 +1,4 @@
-import { App } from "@vivid/types";
+import { App } from "@timelish/types";
 import { GOOGLE_CALENDAR_APP_NAME } from "./const";
 import { GoogleCalendarLogo } from "./logo";
 import {

@@ -1,5 +1,5 @@
-import { BaseReaderBlockProps } from "@vivid/builder";
-import { Prettify, zNonEmptyString } from "@vivid/types";
+import { BaseReaderBlockProps } from "@timelish/builder";
+import { Prettify, zNonEmptyString } from "@timelish/types";
 import * as z from "zod";
 
 export const RedirectPropsSchema = z.object({

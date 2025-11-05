@@ -1,4 +1,4 @@
-import { UploadedFile } from "@vivid/types";
+import { UploadedFile } from "@timelish/types";
 import React from "react";
 
 import { toast } from "sonner";

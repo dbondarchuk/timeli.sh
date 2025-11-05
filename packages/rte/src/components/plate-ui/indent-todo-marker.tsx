@@ -2,12 +2,12 @@
 
 import type { SlateRenderElementProps } from "@udecode/plate";
 
+import { Checkbox, cn } from "@timelish/ui";
 import {
   useIndentTodoListElement,
   useIndentTodoListElementState,
 } from "@udecode/plate-indent-list/react";
 import { useReadOnly } from "@udecode/plate/react";
-import { Checkbox, cn } from "@vivid/ui";
 
 export const TodoMarker = ({
   element,

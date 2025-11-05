@@ -1,4 +1,4 @@
-import { App } from "@vivid/types";
+import { App } from "@timelish/types";
 import { Bell } from "lucide-react";
 import { WAITLIST_NOTIFICATIONS_APP_NAME } from "./const";
 import {

@@ -1,15 +1,15 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { adminApi } from "@vivid/api-sdk";
-import { useI18n } from "@vivid/i18n";
+import { adminApi } from "@timelish/api-sdk";
+import { useI18n } from "@timelish/i18n";
 import {
   inPersonPaymentMethod,
   InStorePaymentUpdateModel,
   inStorePaymentUpdateModelSchema,
   Payment,
   paymentType,
-} from "@vivid/types";
+} from "@timelish/types";
 import {
   Button,
   DateTimePicker,
@@ -42,7 +42,7 @@ import {
   toastPromise,
   use12HourFormat,
   useTimeZone,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";

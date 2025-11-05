@@ -1,6 +1,6 @@
-import { RawDoubleNumberInput } from "@vivid/builder";
-import { useI18n } from "@vivid/i18n";
-import { Combobox } from "@vivid/ui";
+import { RawDoubleNumberInput } from "@timelish/builder";
+import { useI18n } from "@timelish/i18n";
+import { Combobox } from "@timelish/ui";
 import { Proportions } from "lucide-react";
 import * as z from "zod";
 import { StyleDefinition } from "../../types";

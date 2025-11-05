@@ -1,4 +1,4 @@
-import { Leaves } from "@vivid/types";
+import { Leaves } from "@timelish/types";
 
 export const buildSearchQuery = <T extends {}>(
   filter: any,

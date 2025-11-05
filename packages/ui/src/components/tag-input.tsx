@@ -1,6 +1,6 @@
 "use client";
 
-import { useI18n } from "@vivid/i18n";
+import { useI18n } from "@timelish/i18n";
 import { Array as EArray, Option, pipe, String } from "effect";
 import { Plus, XIcon } from "lucide-react";
 import { forwardRef, ReactElement, useEffect, useState } from "react";

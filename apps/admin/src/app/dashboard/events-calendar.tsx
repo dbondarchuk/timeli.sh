@@ -1,6 +1,6 @@
 "use client";
 
-import { useI18n } from "@vivid/i18n";
+import { useI18n } from "@timelish/i18n";
 import {
   Button,
   cn,
@@ -9,8 +9,8 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@vivid/ui";
-import { EventCalendar, EventCalendarType } from "@vivid/ui-admin-kit";
+} from "@timelish/ui";
+import { EventCalendar, EventCalendarType } from "@timelish/ui-admin-kit";
 import { DateTime } from "luxon";
 import React from "react";
 import { useCookies } from "react-cookie";

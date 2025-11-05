@@ -1,4 +1,4 @@
-import { RadioButtonGroupItem } from "@vivid/ui";
+import { RadioButtonGroupItem } from "@timelish/ui";
 import React from "react";
 
 export type RadioGroupInputItemProps = {

@@ -1,12 +1,12 @@
-import { AvailableApps } from "@vivid/app-store";
-import { getI18nAsync } from "@vivid/i18n/server";
-import { ConnectedApp } from "@vivid/types";
-import { Link } from "@vivid/ui";
+import { AvailableApps } from "@timelish/app-store";
+import { getI18nAsync } from "@timelish/i18n/server";
+import { ConnectedApp } from "@timelish/types";
+import { Link } from "@timelish/ui";
 import {
   ConnectedAppAccount,
   ConnectedAppNameAndLogo,
   ConnectedAppStatusMessage,
-} from "@vivid/ui-admin";
+} from "@timelish/ui-admin";
 import { RefreshCcw } from "lucide-react";
 import { AddOrUpdateAppButton } from "./add-or-update-app-dialog";
 import { DeleteAppButton } from "./delete-app-button";

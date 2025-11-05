@@ -1,6 +1,6 @@
 "use client";
 
-import { ToolbarGroup } from "@vivid/ui";
+import { ToolbarGroup } from "@timelish/ui";
 import { useCallback, useMemo } from "react";
 import {
   useBlocks,

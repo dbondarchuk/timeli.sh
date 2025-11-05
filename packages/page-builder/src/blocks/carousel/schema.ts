@@ -1,8 +1,8 @@
-import { BaseReaderBlockProps, generateId } from "@vivid/builder";
+import { BaseReaderBlockProps, generateId } from "@timelish/builder";
 import {
   getAllStylesWithAdditionalStyles,
   getStylesSchema,
-} from "@vivid/page-builder-base/style";
+} from "@timelish/page-builder-base/style";
 import * as z from "zod";
 import { carouselChildrenAlignStyle } from "./carousel-children-align";
 import { carouselChildrenItemsPerSlideStyle } from "./carousel-children-items-per-slide";

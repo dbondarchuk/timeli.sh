@@ -1,7 +1,7 @@
 import {
   BaseZodDictionary,
   EditorDocumentBlocksDictionary,
-} from "@vivid/builder";
+} from "@timelish/builder";
 import { WaitlistBlocks } from "../apps/waitlist/blocks/schema";
 import { WAITLIST_APP_NAME } from "../apps/waitlist/const";
 

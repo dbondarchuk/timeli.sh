@@ -1,4 +1,4 @@
-import { getLoggerFactory, LoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
 import {
   ConnectedAppData,
   ConnectedAppError,
@@ -8,8 +8,8 @@ import {
   IConnectedApp,
   IConnectedAppProps,
   IMailSender,
-} from "@vivid/types";
-import { decrypt, encrypt } from "@vivid/utils";
+} from "@timelish/types";
+import { decrypt, encrypt } from "@timelish/utils";
 import { createEvent } from "ics";
 import nodemailer from "nodemailer";
 import Mail from "nodemailer/lib/mailer";
@@ -172,6 +172,10 @@ export default class SmtpConnectedApp
 
     try {
       const smtpConfiguration = appData.data as SmtpConfiguration;
+      const config =
+        await this.props.services.configurationService.getConfiguration(
+          "general",
+        );
 
       logger.debug(
         { appId: appData._id, subject: email.subject },
@@ -216,7 +220,10 @@ export default class SmtpConnectedApp
       }
 
       const mailOptions: nodemailer.SendMailOptions = {
-        from: smtpConfiguration.email,
+        from: {
+          name: config.name,
+          address: smtpConfiguration.email,
+        },
         to: email.to,
         cc: email.cc,
         subject: email.subject,

@@ -1,4 +1,4 @@
-import { Language } from "@vivid/i18n";
+import { Language } from "@timelish/i18n";
 import { WithDatabaseId } from "../database";
 
 export type UserRole = "owner" | "admin" | "staff" | "viewer";

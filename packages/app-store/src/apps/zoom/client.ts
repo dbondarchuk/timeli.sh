@@ -3,8 +3,8 @@ import {
   ConnectedAppError,
   ConnectedAppUpdateModel,
   ConnectedOauthAppTokens,
-} from "@vivid/types";
-import { decrypt, encrypt } from "@vivid/utils";
+} from "@timelish/types";
+import { decrypt, encrypt } from "@timelish/utils";
 import { ZoomAdminAllKeys } from "./translations/types";
 
 export const ZOOM_OAUTH_TOKEN_URL = "https://zoom.us/oauth/token";

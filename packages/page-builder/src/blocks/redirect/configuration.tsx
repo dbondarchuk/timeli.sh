@@ -1,8 +1,8 @@
 "use client";
 
-import { ConfigurationProps, PageInput } from "@vivid/builder";
-import { useI18n } from "@vivid/i18n";
-import { Checkbox, deepMemo, Label } from "@vivid/ui";
+import { ConfigurationProps, PageInput } from "@timelish/builder";
+import { useI18n } from "@timelish/i18n";
+import { Checkbox, deepMemo, Label } from "@timelish/ui";
 import { useCallback } from "react";
 import { RedirectDefaultUrl, RedirectProps } from "./schema";
 

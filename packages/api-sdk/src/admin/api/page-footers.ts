@@ -4,7 +4,7 @@ import {
   PageFooterListModel,
   PageFooterUpdateModel,
   WithTotal,
-} from "@vivid/types";
+} from "@timelish/types";
 import {
   PageFootersSearchParams,
   pageFootersSearchParamsSerializer,

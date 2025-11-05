@@ -1,5 +1,5 @@
-import { BuilderKeys, useI18n } from "@vivid/i18n";
-import { Button, cn, Input, ScrollArea, useDebounce } from "@vivid/ui";
+import { BuilderKeys, useI18n } from "@timelish/i18n";
+import { Button, cn, Input, ScrollArea, useDebounce } from "@timelish/ui";
 import { Search, X } from "lucide-react";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {

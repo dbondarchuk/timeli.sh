@@ -1,8 +1,8 @@
 import type { SlateElementProps } from "@udecode/plate";
 import type { TColumnElement } from "@udecode/plate-layout";
 
+import { cn } from "@timelish/ui";
 import { SlateElement } from "@udecode/plate";
-import { cn } from "@vivid/ui";
 
 export function ColumnElementStatic({
   children,

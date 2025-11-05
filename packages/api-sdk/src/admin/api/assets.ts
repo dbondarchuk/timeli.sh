@@ -4,7 +4,7 @@ import {
   okStatus,
   UploadedFile,
   WithTotal,
-} from "@vivid/types";
+} from "@timelish/types";
 import {
   AssetsSearchParams,
   serializeAssetsSearchParams,

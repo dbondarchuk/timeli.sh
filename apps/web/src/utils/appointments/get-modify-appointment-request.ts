@@ -1,9 +1,9 @@
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory } from "@timelish/logger";
 import {
   ModifyAppointmentInformation,
   ModifyAppointmentInformationRequest,
-} from "@vivid/types";
-import { formatAmount, getPolicyForRequest } from "@vivid/utils";
+} from "@timelish/types";
+import { formatAmount, getPolicyForRequest } from "@timelish/utils";
 import { DateTime } from "luxon";
 import { getServicesContainer } from "../utils";
 

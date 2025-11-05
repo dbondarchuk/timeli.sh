@@ -8,10 +8,10 @@ import {
   ReaderDocumentBlocksDictionary,
   SidebarTab,
   TEditorConfiguration,
-} from "@vivid/builder";
-import { Header } from "@vivid/page-builder-base";
-import { PageHeader, UploadedFile } from "@vivid/types";
-import { deepMemo } from "@vivid/ui";
+} from "@timelish/builder";
+import { Header } from "@timelish/page-builder-base";
+import { PageHeader, UploadedFile } from "@timelish/types";
+import { deepMemo } from "@timelish/ui";
 import { useMemo } from "react";
 import { EditorBlocks, RootBlock } from "./blocks";
 import { ImagePropsDefaults } from "./blocks/image";

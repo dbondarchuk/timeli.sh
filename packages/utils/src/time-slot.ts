@@ -7,7 +7,7 @@ import {
   TimeSlotPeriod,
   TimeSlotsFinderConfiguration,
   TimeSlotsFinderError,
-} from "@vivid/types";
+} from "@timelish/types";
 
 export type DateTimePeriod = {
   startAt: Luxon;

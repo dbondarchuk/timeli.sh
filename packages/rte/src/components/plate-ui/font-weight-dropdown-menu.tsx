@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
   ToolbarButton,
   useOpenState,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { useCallback } from "react";
 
 const FONT_WEIGHT_VALUES = [

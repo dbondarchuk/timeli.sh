@@ -1,4 +1,4 @@
-import { AppMenuItem } from "@vivid/types";
+import { AppMenuItem } from "@timelish/types";
 import { CalendarDays } from "lucide-react";
 import { WeeklyScheduleAppSetup } from "./setup";
 import {

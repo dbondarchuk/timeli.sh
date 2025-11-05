@@ -6,8 +6,8 @@ import {
   RadioGroupInput,
   RadioGroupInputItem,
   TextInput,
-} from "@vivid/builder";
-import { useI18n } from "@vivid/i18n";
+} from "@timelish/builder";
+import { useI18n } from "@timelish/i18n";
 import { MultiStylePropertyPanel } from "../../style-inputs/multi-style-property-panel";
 import { ButtonProps, ButtonPropsDefaults } from "./schema";
 

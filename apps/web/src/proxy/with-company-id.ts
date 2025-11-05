@@ -1,4 +1,4 @@
-import { StaticOrganizationService } from "@vivid/services";
+import { StaticOrganizationService } from "@timelish/services";
 import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
 import { MiddlewareProxy } from "./types";
 

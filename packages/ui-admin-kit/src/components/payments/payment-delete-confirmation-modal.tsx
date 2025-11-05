@@ -1,8 +1,8 @@
 "use client";
 
-import { adminApi } from "@vivid/api-sdk";
-import { useI18n } from "@vivid/i18n";
-import { Payment } from "@vivid/types";
+import { adminApi } from "@timelish/api-sdk";
+import { useI18n } from "@timelish/i18n";
+import { Payment } from "@timelish/types";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,7 +16,7 @@ import {
   Button,
   Spinner,
   toastPromise,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { Trash } from "lucide-react";
 import { DateTime } from "luxon";
 import { useRouter } from "next/navigation";

@@ -1,5 +1,5 @@
 {
-  "name": "vivid",
+  "name": "timelish",
   "private": true,
   "workspaces": [
     "apps/*",

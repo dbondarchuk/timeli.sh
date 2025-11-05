@@ -1,4 +1,4 @@
-import { ConfigurationProps } from "@vivid/builder";
+import { ConfigurationProps } from "@timelish/builder";
 import { CustomHTMLProps } from "./schema";
 
 export const CustomHTMLToolbar = (

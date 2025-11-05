@@ -5,7 +5,7 @@ import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { ChevronsUpDown } from "lucide-react";
 import React from "react";
 

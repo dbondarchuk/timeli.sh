@@ -1,5 +1,5 @@
-import { useI18n } from "@vivid/i18n";
-import { Button, Input } from "@vivid/ui";
+import { useI18n } from "@timelish/i18n";
+import { Button, Input } from "@timelish/ui";
 import { Plus, Search, X } from "lucide-react";
 import {
   BaseStyleDictionary,

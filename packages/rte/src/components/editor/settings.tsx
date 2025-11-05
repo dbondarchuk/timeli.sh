@@ -33,7 +33,7 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@vivid/ui";
+} from "@timelish/ui";
 
 interface Model {
   label: string;

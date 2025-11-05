@@ -1,4 +1,4 @@
-import { Appointment } from "@vivid/types";
+import { Appointment } from "@timelish/types";
 import { DateTime } from "luxon";
 import { ScheduledNotification } from "./models";
 

@@ -1,5 +1,5 @@
-import { getLoggerFactory } from "@vivid/logger";
-import { ServicesContainer } from "@vivid/services";
+import { getLoggerFactory } from "@timelish/logger";
+import { ServicesContainer } from "@timelish/services";
 import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
