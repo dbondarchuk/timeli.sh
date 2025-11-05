@@ -1,5 +1,5 @@
 import * as z from "zod";
-import { asOptinalNumberField } from "../../utils";
+import { asOptinalNumberField, zNonEmptyString } from "../../utils";
 import { calendarSourcesConfigurationSchema } from "./calendar-source";
 import { appointmentCancellationRescheduleSchema } from "./cancellation";
 import { paymentsConfigurationSchema } from "./payments";
@@ -46,28 +46,28 @@ export type AllowPromoCodeType = (typeof allowPromoCodeType)[number];
 
 export const appointOptionsSchema = z.array(
   z.object({
-    id: z.string().min(1, "configuration.booking.options.id.required"),
+    id: zNonEmptyString("configuration.booking.options.id.required"),
   }),
 );
 
 export const generalBookingConfigurationSchema = z.object({
   maxWeeksInFuture: asOptinalNumberField(
     z.coerce
-      .number<number>()
+      .number<number>("configuration.booking.maxWeeksInFuture.integer")
       .int("configuration.booking.maxWeeksInFuture.integer")
       .min(2, "configuration.booking.maxWeeksInFuture.min")
       .max(20, "configuration.booking.maxWeeksInFuture.max"),
   ),
   minHoursBeforeBooking: asOptinalNumberField(
     z.coerce
-      .number<number>()
+      .number<number>("configuration.booking.minHoursBeforeBooking.integer")
       .int("configuration.booking.minHoursBeforeBooking.integer")
       .min(0, "configuration.booking.minHoursBeforeBooking.min")
       .max(72, "configuration.booking.minHoursBeforeBooking.max"),
   ),
   breakDuration: asOptinalNumberField(
     z.coerce
-      .number<number>()
+      .number<number>("configuration.booking.breakDuration.integer")
       .int("configuration.booking.breakDuration.integer")
       .min(0, "configuration.booking.breakDuration.min")
       .max(120, "configuration.booking.breakDuration.max"),

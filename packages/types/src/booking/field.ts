@@ -4,6 +4,7 @@ import { WithCompanyId, WithDatabaseId } from "../database";
 import {
   asOptinalNumberField,
   Prettify,
+  zNonEmptyString,
   zOptionalOrMinLengthString,
   zUniqueArray,
 } from "../utils";
@@ -14,7 +15,7 @@ const fieldTypeEnum = z.enum(fieldTypes, {
 });
 
 export const defaultFieldDataSchema = z.object({
-  label: z.string().min(1, "fields.label.required"),
+  label: zNonEmptyString("fields.label.required", 1),
   // description: z.array(z.any()),
   description: zOptionalOrMinLengthString(3, "fields.description.min"),
 });
@@ -24,7 +25,7 @@ export const selectFieldDataSchema = z.object({
   options: zUniqueArray(
     z.array(
       z.object({
-        option: z.string().min(1, "fields.option.required"),
+        option: zNonEmptyString("fields.option.required", 1),
       }),
     ),
     (item) => item.option,
@@ -32,13 +33,12 @@ export const selectFieldDataSchema = z.object({
   ),
 });
 
-export const fileFieldAcceptItemSchema = z
-  .string()
-  .min(1, "fields.accept.min")
-  .regex(
-    /(\.[a-zA-Z0-9]+$)|(^(image|video|audio)\/\*$)|(^[a-zA-Z0-9-_]+\/[a-zA-Z0-9-_\.]+$)/,
-    "fields.accept.invalid",
-  );
+export const fileFieldAcceptItemSchema = zNonEmptyString(
+  "fields.accept.min",
+).regex(
+  /(\.[a-zA-Z0-9]+$)|(^(image|video|audio)\/\*$)|(^[a-zA-Z0-9-_]+\/[a-zA-Z0-9-_\.]+$)/,
+  "fields.accept.invalid",
+);
 
 export const fileFieldDataSchema = z.object({
   ...defaultFieldDataSchema.shape,
@@ -52,10 +52,10 @@ export const fileFieldDataSchema = z.object({
 });
 
 export const baseFieldSchema = z.object({
-  name: z
-    .string()
-    .min(2, "fields.name.required")
-    .refine((s) => /^[a-z_][a-z0-9_]+$/i.test(s), "fields.name.invalid"),
+  name: zNonEmptyString("fields.name.required", 2).refine(
+    (s) => /^[a-z_][a-z0-9_]+$/i.test(s),
+    "fields.name.invalid",
+  ),
   required: z.coerce.boolean<boolean>().optional(),
 });
 

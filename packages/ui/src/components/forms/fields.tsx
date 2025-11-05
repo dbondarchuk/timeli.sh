@@ -4,6 +4,8 @@ import {
   FieldOptionsData,
   FieldType,
   WithLabelFieldData,
+  zNonEmptyString,
+  zRequiredString,
 } from "@vivid/types";
 import { Control } from "react-hook-form";
 import { z, ZodSchema } from "zod";
@@ -17,21 +19,18 @@ import { PhoneField } from "./phone";
 import { SelectField } from "./select";
 
 export const fieldsSchemaMap: Record<FieldType, (field: Field) => ZodSchema> = {
-  name: (field: Field) =>
-    z.string().min(2, {
-      error: "name_required_error",
-    }),
+  name: (field: Field) => zNonEmptyString("name_required_error", 2),
 
   email: (field: Field) => z.email("invalid_email_error"),
   phone: (field: Field) =>
-    z
-      .string()
-      .min(field.required ? 1 : 0, "phone_required_error")
-      .refine((s) => !s?.includes("_"), "invalid_phone_error"),
+    zRequiredString(field.required, "phone_required_error").refine(
+      (s) => !s?.includes("_"),
+      "invalid_phone_error",
+    ),
   oneLine: (field: Field) =>
-    z.string().min(field.required ? 1 : 0, "field_required_error"),
+    zRequiredString(field.required, "field_required_error"),
   multiLine: (field: Field) =>
-    z.string().min(field.required ? 1 : 0, "field_required_error"),
+    zRequiredString(field.required, "field_required_error"),
   checkbox: (field: Field) =>
     z
       .boolean()

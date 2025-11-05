@@ -446,7 +446,8 @@
       "required": "Page description is required"
     },
     "keywords": {
-      "required": "Page keywords are required"
+      "required": "Page keywords are required",
+      "min": "Page keywords must be at least 2 characters long"
     },
     "publishDate": {
       "required": "Publish date is required"

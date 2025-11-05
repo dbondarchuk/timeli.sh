@@ -1,3 +1,4 @@
+import { zNonEmptyString } from "@vivid/types";
 import * as z from "zod";
 import { PaypalAdminAllKeys } from "./translations/types";
 
@@ -13,18 +14,12 @@ export const paypalButtonColor = [
 export const paypalButtonLabel = ["paypal", "pay"] as const;
 
 export const paypalConfigurationSchema = z.object({
-  clientId: z
-    .string()
-    .min(
-      1,
-      "app_paypal_admin.validation.clientId.required" satisfies PaypalAdminAllKeys,
-    ),
-  secretKey: z
-    .string()
-    .min(
-      1,
-      "app_paypal_admin.validation.secretKey.required" satisfies PaypalAdminAllKeys,
-    ),
+  clientId: zNonEmptyString(
+    "app_paypal_admin.validation.clientId.required" satisfies PaypalAdminAllKeys,
+  ),
+  secretKey: zNonEmptyString(
+    "app_paypal_admin.validation.secretKey.required" satisfies PaypalAdminAllKeys,
+  ),
   buttonStyle: z.object({
     shape: z.enum(paypalButtonsShape, {
       message:
@@ -52,29 +47,20 @@ export type PaypalFormProps = Omit<PaypalConfiguration, "secretKey"> & {
 };
 
 export const createOrderRequestSchema = z.object({
-  paymentIntentId: z
-    .string()
-    .min(
-      1,
-      "app_paypal_admin.validation.paymentIntentId.required" satisfies PaypalAdminAllKeys,
-    ),
+  paymentIntentId: zNonEmptyString(
+    "app_paypal_admin.validation.paymentIntentId.required" satisfies PaypalAdminAllKeys,
+  ),
 });
 
 export type CreateOrderRequest = z.infer<typeof createOrderRequestSchema>;
 
 export const captureOrderRequestSchema = z.object({
-  orderId: z
-    .string()
-    .min(
-      1,
-      "app_paypal_admin.validation.orderId.required" satisfies PaypalAdminAllKeys,
-    ),
-  paymentIntentId: z
-    .string()
-    .min(
-      1,
-      "app_paypal_admin.validation.paymentIntentId.required" satisfies PaypalAdminAllKeys,
-    ),
+  orderId: zNonEmptyString(
+    "app_paypal_admin.validation.orderId.required" satisfies PaypalAdminAllKeys,
+  ),
+  paymentIntentId: zNonEmptyString(
+    "app_paypal_admin.validation.paymentIntentId.required" satisfies PaypalAdminAllKeys,
+  ),
 });
 
 export type CaptureOrderRequest = z.infer<typeof captureOrderRequestSchema>;

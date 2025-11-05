@@ -1,13 +1,11 @@
+import { zNonEmptyString } from "@vivid/types";
 import * as z from "zod";
 import { TextBeltAdminAllKeys } from "./translations/types";
 
 export const textBeltConfigurationSchema = z.object({
-  apiKey: z
-    .string()
-    .min(
-      1,
-      "app_text-belt_admin.validation.apiKey.required" satisfies TextBeltAdminAllKeys,
-    ),
+  apiKey: zNonEmptyString(
+    "app_text-belt_admin.validation.apiKey.required" satisfies TextBeltAdminAllKeys,
+  ),
   textMessageResponderAppId: z.string().optional(),
 });
 

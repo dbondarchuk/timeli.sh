@@ -2,7 +2,7 @@ import * as z from "zod";
 
 export const zEmail = z.email("common.email.invalid");
 export const zPhone = z
-  .string()
+  .string("common.phone.required")
   .min(1, "common.phone.required")
   .refine((s) => !s?.includes("_"), "common.phone.invalid");
 
@@ -62,12 +62,29 @@ export function zOptionalOrMinLengthString(
 ) {
   return z
     .union([
-      z.string().min(minLength, { message: minLengthErrorMessage }),
+      z
+        .string(minLengthErrorMessage)
+        .min(minLength, { message: minLengthErrorMessage }),
       z.string().length(0),
     ])
     .transform((e) => (e === "" ? undefined : e))
     .optional();
 }
+
+export const zNonEmptyString = (message?: string, minLength: number = 1) =>
+  z
+    .string(message)
+    .min(
+      minLength,
+      message ?? `String must be at least ${minLength} characters long`,
+    );
+
+export const zRequiredString = (
+  required?: boolean,
+  message?: string,
+  minLength: number = 1,
+) =>
+  required ? zNonEmptyString(message, minLength) : asOptionalField(z.string());
 
 const emptyStringToUndefined = z.literal("").transform(() => undefined);
 

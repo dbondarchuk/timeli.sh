@@ -2,7 +2,11 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { languages, useI18n } from "@vivid/i18n";
-import { GeneralConfiguration, generalConfigurationSchema } from "@vivid/types";
+import {
+  GeneralConfiguration,
+  generalConfigurationSchema,
+  zNonEmptyString,
+} from "@vivid/types";
 import {
   Combobox,
   Form,
@@ -24,7 +28,6 @@ import { getTimeZones } from "@vvo/tzdb";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
 
 import { LanguageOptions } from "@/constants/texts";
 import { adminApi } from "@vivid/api-sdk";
@@ -163,9 +166,10 @@ export const GeneralSettingsForm: React.FC<{
                     onChange={(value) =>
                       form.setValue("keywords", value.join(", "))
                     }
-                    tagValidator={z
-                      .string()
-                      .min(2, t("settings.general.form.keywordValidation"))}
+                    tagValidator={zNonEmptyString(
+                      t("settings.general.form.keywordValidation"),
+                      2,
+                    )}
                   />
                 </FormControl>
                 <FormMessage />

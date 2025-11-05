@@ -1,10 +1,10 @@
 import * as z from "zod";
 import { communicationChannels } from "../communication";
 import { WithCompanyId, WithDatabaseId } from "../database";
-import { Prettify } from "../utils";
+import { Prettify, zNonEmptyString } from "../utils";
 
 export const templateSchema = z.object({
-  name: z.string().min(3, "template.name.required"),
+  name: zNonEmptyString("template.name.required", 3),
   type: z.enum(communicationChannels, { message: "template.type.invalid" }),
   value: z.any(),
 });

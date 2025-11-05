@@ -6,7 +6,7 @@ import * as z from "zod";
 export const dynamic = "force-dynamic";
 
 const createAppSchema = z.object({
-  type: z.string().min(1, "App type is required"),
+  type: z.string("App type is required").min(1, "App type is required"),
 });
 
 export async function GET(request: NextRequest) {

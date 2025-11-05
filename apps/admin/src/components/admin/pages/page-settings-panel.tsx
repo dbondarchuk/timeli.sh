@@ -5,6 +5,7 @@ import {
   PageFooterListModel,
   PageHeaderListModel,
   pageTagSchema,
+  zNonEmptyString,
 } from "@vivid/types";
 import {
   Checkbox,
@@ -22,7 +23,6 @@ import {
 } from "@vivid/ui";
 import { memo, useCallback } from "react";
 import { ControllerRenderProps, FieldValues } from "react-hook-form";
-import * as z from "zod";
 import { FooterSelector } from "./footer-selector";
 import { HeaderSelector } from "./header-selector";
 
@@ -223,9 +223,10 @@ export const PageSettingsPanel = memo(
                     form.setValue("keywords", value.join(", "))
                   }
                   h="sm"
-                  tagValidator={z
-                    .string()
-                    .min(2, "Keyword must be at least 2 characters")}
+                  tagValidator={zNonEmptyString(
+                    t("pages.form.keywordValidation"),
+                    2,
+                  )}
                 />
               </FormControl>
               <FormMessage />

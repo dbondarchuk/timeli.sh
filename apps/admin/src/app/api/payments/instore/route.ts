@@ -3,13 +3,14 @@ import { getLoggerFactory } from "@vivid/logger";
 import {
   inStorePaymentUpdateModelSchema,
   PaymentUpdateModel,
+  zNonEmptyString,
 } from "@vivid/types";
 import { NextRequest, NextResponse } from "next/server";
 import * as z from "zod";
 
 const schema = z.object({
   ...inStorePaymentUpdateModelSchema.shape,
-  appointmentId: z.string().min(1, "payments.appointmentId.required"),
+  appointmentId: zNonEmptyString("payments.appointmentId.required"),
 });
 
 export async function POST(request: NextRequest) {

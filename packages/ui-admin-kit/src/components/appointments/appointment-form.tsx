@@ -18,6 +18,7 @@ import {
   getFields,
   Prettify,
   WithLabelFieldData,
+  zNonEmptyString,
 } from "@vivid/types";
 import {
   Button,
@@ -159,11 +160,11 @@ export const AppointmentScheduleForm: React.FC<
           .number<number>({ error: t("appointments.form.priceNumber") })
           .min(0, t("appointments.form.priceMin")),
       ),
-      option: z.string().min(1, t("appointments.form.optionRequired")),
+      option: zNonEmptyString(t("appointments.form.optionRequired")),
       addons: z
         .array(
           z.object({
-            id: z.string().min(1, t("appointments.form.addonRequired")),
+            id: zNonEmptyString(t("appointments.form.addonRequired")),
           }),
         )
         .optional(),

@@ -1,14 +1,16 @@
-import { asOptionalField } from "@vivid/types";
+import { asOptionalField, zNonEmptyString } from "@vivid/types";
 import * as z from "zod";
 import { SmtpAdminAllKeys } from "./translations/types";
 
 export const smtpConfigurationSchema = z.object({
-  host: z.string().min(3, {
-    message:
-      "app_smtp_admin.validation.host.required" satisfies SmtpAdminAllKeys,
-  }),
+  host: zNonEmptyString(
+    "app_smtp_admin.validation.host.required" satisfies SmtpAdminAllKeys,
+    3,
+  ),
   port: z.coerce
-    .number<number>()
+    .number<number>(
+      "app_smtp_admin.validation.port.integer" satisfies SmtpAdminAllKeys,
+    )
     .int("app_smtp_admin.validation.port.integer" satisfies SmtpAdminAllKeys)
     .min(1, {
       message: "app_smtp_admin.validation.port.min" satisfies SmtpAdminAllKeys,

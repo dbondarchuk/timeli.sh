@@ -3,7 +3,12 @@ import {
   AppointmentCancellationPolicyAction,
   AppointmentReschedulePolicyAction,
 } from "../configuration/booking/cancellation";
-import { zOptionalOrMinLengthString, zPhone, zUniqueArray } from "../utils";
+import {
+  zNonEmptyString,
+  zOptionalOrMinLengthString,
+  zPhone,
+  zUniqueArray,
+} from "../utils";
 import { Prettify } from "../utils/helpers";
 import { zTimeZone } from "../utils/zTimeZone";
 import { AppointmentAddon, AppointmentOption } from "./appointment-option";
@@ -57,16 +62,16 @@ export const appointmentEventSchema = z.object({
   totalPrice: z.coerce.number<number>().optional(),
   dateTime: z.coerce.date<Date>(),
   fields: z.record(z.string(), z.any()),
-  optionId: z.string().min(1, "appointments.event.optionId.required"),
+  optionId: zNonEmptyString("appointments.event.optionId.required"),
   addonsIds: zUniqueArray(
-    z.array(z.string().min(1, "appointments.event.addonsIds.required")),
+    z.array(zNonEmptyString("appointments.event.addonsIds.required")),
     (x) => x,
     "appointments.event.addonsIds.unique",
   ).optional(),
   note: z.string().optional(),
   discount: z
     .object({
-      code: z.string().min(1, "appointments.event.discount.code.required"),
+      code: zNonEmptyString("appointments.event.discount.code.required"),
       discountAmount: z.coerce.number<number>().min(1),
     })
     .optional(),
@@ -76,9 +81,9 @@ export const appointmentEventSchema = z.object({
 export type AppointmentEventRequest = z.infer<typeof appointmentEventSchema>;
 
 export const appointmentRequestSchema = z.object({
-  optionId: z.string().min(1, "appointments.request.optionId.required"),
+  optionId: zNonEmptyString("appointments.request.optionId.required"),
   addonsIds: zUniqueArray(
-    z.array(z.string().min(1, "appointments.request.addonsIds.required")),
+    z.array(zNonEmptyString("appointments.request.addonsIds.required")),
     (x) => x,
     "appointments.request.addonsIds.unique",
   ).optional(),
@@ -94,7 +99,7 @@ export const appointmentRequestSchema = z.object({
     .optional(),
   fields: z.looseObject({
     email: z.email("appointments.request.fields.email.required").trim(),
-    name: z.string().min(1, "appointments.request.fields.name.required").trim(),
+    name: zNonEmptyString("appointments.request.fields.name.required"),
     phone: zPhone,
   }),
   promoCode: zOptionalOrMinLengthString(
@@ -122,7 +127,7 @@ export const baseModifyAppointmentRequestSchema = z.object({
     }),
     z.object({
       type: z.literal("phone"),
-      phone: z.string().min(1, "appointments.request.fields.phone.required"),
+      phone: zNonEmptyString("appointments.request.fields.phone.required"),
       dateTime: z.coerce.date<Date>({
         error: "appointments.request.dateTime.required",
       }),

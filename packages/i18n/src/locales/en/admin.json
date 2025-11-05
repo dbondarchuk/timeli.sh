@@ -611,6 +611,7 @@
       "doNotCombineDescriptionTooltip": "Should the page description be combined with website description for SEO",
       "keywords": "Keywords",
       "keywordsTooltip": "Page keywords separated by comma",
+      "keywordValidation": "Keyword must be at least 2 characters long",
       "doNotCombineKeywords": "Do not combine keywords",
       "doNotCombineKeywordsTooltip": "Should the page keywords be combined with website keywords",
       "fullWidthPage": "Full width page",

@@ -1,4 +1,5 @@
 import * as z from "zod";
+import { zNonEmptyString } from "../../utils";
 
 export const socialType = z.enum(
   [
@@ -25,7 +26,7 @@ export const socialTypeLabels: Record<SocialLinkType, string> =
   );
 
 export const socialLinkSchema = z.object({
-  url: z.string().min(3, "common.url.invalid"),
+  url: zNonEmptyString("common.url.invalid", 3),
   type: socialType,
 });
 

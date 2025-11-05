@@ -5,6 +5,7 @@ import {
   Prettify,
   WithCompanyId,
   WithDatabaseId,
+  zNonEmptyString,
   zPhone,
   zUniqueArray,
 } from "@vivid/types";
@@ -20,7 +21,7 @@ export const waitlistTimeSchema = z.enum(waitlistTime, {
 });
 
 export const waitlistDateSchema = z.object({
-  date: z.string().date("waitlist.date.required"),
+  date: z.iso.date("waitlist.date.required"),
   time: zUniqueArray(
     z.array(waitlistTimeSchema),
     (x) => x,
@@ -32,7 +33,7 @@ export type WaitlistDate = z.infer<typeof waitlistDateSchema>;
 
 export const waitlistRequestFormSchemaBase = z.object({
   email: z.email({ error: "waitlist.email.required" }),
-  name: z.string().min(1, "waitlist.name.required").trim(),
+  name: zNonEmptyString("waitlist.name.required"),
   phone: zPhone,
 });
 
@@ -73,9 +74,9 @@ export type WaitlistRequestForm = Prettify<
 
 export const waitlistRequestSchema = waitlistRequestFormSchema.and(
   z.object({
-    optionId: z.string().min(1, "appointments.request.optionId.required"),
+    optionId: zNonEmptyString("appointments.request.optionId.required"),
     addonsIds: zUniqueArray(
-      z.array(z.string().min(1, "appointments.request.addonsIds.required")),
+      z.array(zNonEmptyString("appointments.request.addonsIds.required")),
       (x) => x,
       "appointments.request.addonsIds.unique",
     ).optional(),

@@ -3,7 +3,7 @@ import { Code } from "lucide-react";
 import * as z from "zod";
 import { StyleDefinition } from "../../types";
 
-const CustomCSSSchema = z.string().default("");
+const CustomCSSSchema = z.string();
 
 export const customCssStyle = {
   name: "customCss",

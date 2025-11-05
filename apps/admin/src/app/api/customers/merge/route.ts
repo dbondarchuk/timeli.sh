@@ -1,12 +1,14 @@
 import { getServicesContainer } from "@/app/utils";
 import { getLoggerFactory } from "@vivid/logger";
-import { okStatus } from "@vivid/types";
+import { okStatus, zNonEmptyString } from "@vivid/types";
 import { NextRequest, NextResponse } from "next/server";
 import * as z from "zod";
 
 const mergeCustomersSchema = z.object({
-  targetId: z.string().min(1, "Target ID is required"),
-  ids: z.array(z.string().min(1)).min(1, "At least one ID is required"),
+  targetId: zNonEmptyString("Target ID is required"),
+  ids: z
+    .array(zNonEmptyString("ID is required"))
+    .min(1, "At least one ID is required"),
 });
 
 export async function POST(request: NextRequest) {

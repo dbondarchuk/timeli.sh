@@ -1,7 +1,7 @@
 import { ValidationKeys } from "@vivid/i18n";
 import * as z from "zod";
 import { WithCompanyId, WithDatabaseId } from "../database";
-import { asOptinalNumberField, zUniqueArray } from "../utils";
+import { asOptinalNumberField, zNonEmptyString, zUniqueArray } from "../utils";
 import { Prettify } from "../utils/helpers";
 import { FieldSchema } from "./field";
 
@@ -11,9 +11,9 @@ const isRequiredOptionSchema = z.enum(isRequiredOptionTypes);
 
 export const appointmentOptionSchema = z
   .object({
-    name: z.string().min(2, "appointments.option.name.required"),
+    name: zNonEmptyString("appointments.option.name.required", 2),
     // description: z.array(z.any()),
-    description: z.string().min(2, "appointments.option.description.required"),
+    description: zNonEmptyString("appointments.option.description.required", 2),
     duration: asOptinalNumberField(
       z.coerce
         .number<number>()
@@ -27,7 +27,7 @@ export const appointmentOptionSchema = z
     addons: zUniqueArray(
       z.array(
         z.object({
-          id: z.string().min(1, "appointments.option.addons.id.required"),
+          id: zNonEmptyString("appointments.option.addons.id.required"),
         }),
       ),
       (addon) => addon.id,
@@ -36,7 +36,7 @@ export const appointmentOptionSchema = z
     fields: zUniqueArray(
       z.array(
         z.object({
-          id: z.string().min(1, "appointments.option.fields.id.required"),
+          id: zNonEmptyString("appointments.option.fields.id.required"),
           required: z.coerce.boolean<boolean>().optional(),
         }),
       ),
@@ -50,12 +50,9 @@ export const appointmentOptionSchema = z
           error:
             "appointments.option.duplicateAppointmentCheck.enabled.required",
         }),
-        message: z
-          .string()
-          .min(
-            1,
-            "appointments.option.duplicateAppointmentCheck.message.required",
-          ),
+        message: zNonEmptyString(
+          "appointments.option.duplicateAppointmentCheck.message.required",
+        ),
         days: z.coerce
           .number<number>({
             error: "appointments.option.duplicateAppointmentCheck.days.min",
@@ -154,9 +151,9 @@ export const getAppointmentOptionSchemaWithUniqueCheck = (
 };
 
 export const appointmentAddonSchema = z.object({
-  name: z.string().min(2, "addons.name.required"),
+  name: zNonEmptyString("addons.name.required", 2),
   // description: z.array(z.any()),
-  description: z.string().min(2, "addons.description.required"),
+  description: zNonEmptyString("addons.description.required", 2),
   duration: asOptinalNumberField(
     z.coerce
       .number<number>()
@@ -169,7 +166,7 @@ export const appointmentAddonSchema = z.object({
   fields: zUniqueArray(
     z.array(
       z.object({
-        id: z.string().min(1, "appointments.option.fields.id.required"),
+        id: zNonEmptyString("appointments.option.fields.id.required"),
         required: z.coerce.boolean<boolean>().optional(),
       }),
     ),

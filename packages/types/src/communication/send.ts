@@ -1,4 +1,5 @@
 import * as z from "zod";
+import { zNonEmptyString } from "../utils";
 import {
   emailCommunicationChannel,
   textMessageCommunicationChannel,
@@ -9,27 +10,27 @@ export const baseSendCommunicationRequestSchema = z.object({
 });
 
 export const sendAppointmentCommunicationRequestSchema = z.object({
-  appointmentId: z.string().min(1, "communication.appointment.required"),
+  appointmentId: zNonEmptyString("communication.appointment.required"),
 });
 
 export const sendCustomerCommunicationRequestSchema = z.object({
-  customerId: z.string().min(1, "communication.customer.required"),
+  customerId: zNonEmptyString("communication.customer.required"),
   ...baseSendCommunicationRequestSchema.shape,
 });
 
 export const sendTextMessageCommunicationRequestSchema = z.object({
   channel: z.literal(textMessageCommunicationChannel),
-  content: z.string().min(1, "communication.message.required"),
+  content: zNonEmptyString("communication.message.required"),
 });
 
 export const sendEmailCommunicationRequestSchema = z.object({
   channel: z.literal(emailCommunicationChannel),
-  subject: z.string().min(1, "communication.email.subject.required"),
+  subject: zNonEmptyString("communication.email.subject.required"),
   content: z.looseObject(
     {
-      type: z.string().min(1),
+      type: zNonEmptyString("communication.email.content.required"),
       data: z.custom<Required<any>>((d) => d !== undefined),
-      id: z.string().min(1),
+      id: zNonEmptyString("communication.email.content.required"),
     },
     {
       error: "communication.email.content.required",

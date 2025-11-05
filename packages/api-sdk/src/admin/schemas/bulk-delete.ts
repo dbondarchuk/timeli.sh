@@ -1,5 +1,8 @@
+import { zNonEmptyString } from "@vivid/types";
 import * as z from "zod";
 
 export const bulkDeleteSchema = z.object({
-  ids: z.array(z.string().min(1)).min(1, "At least one ID is required"),
+  ids: z
+    .array(zNonEmptyString("ID is required"))
+    .min(1, "At least one ID is required"),
 });

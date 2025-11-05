@@ -1,22 +1,20 @@
 import { languages } from "@vivid/i18n";
 import * as z from "zod";
 import { WithCompanyId, WithDatabaseId } from "../database";
-import { Prettify } from "../utils";
+import { Prettify, zNonEmptyString } from "../utils";
 
-export const pageTagSchema = z.string().min(3, "page.tag.min");
+export const pageTagSchema = zNonEmptyString("page.tag.min", 3);
 
 export const pageSchema = z.object({
-  title: z.string("page.title.required").min(2, "page.title.required"),
+  title: zNonEmptyString("page.title.required", 2),
   // content: z.string().min(1, "page.content.required"),
   content: z.any().optional(),
-  slug: z
-    .string()
-    .min(1, { error: "page.slug.required" })
-    .regex(/^[a-z0-9]+(?:[-\/][a-z0-9]+)*$/g, "page.slug.invalid"),
-  description: z
-    .string("page.description.required")
-    .min(1, "page.description.required"),
-  keywords: z.string("page.keywords.required").min(1, "page.keywords.required"),
+  slug: zNonEmptyString("page.slug.required").regex(
+    /^[a-z0-9]+(?:[-\/][a-z0-9]+)*$/g,
+    "page.slug.invalid",
+  ),
+  description: zNonEmptyString("page.description.required"),
+  keywords: zNonEmptyString("page.keywords.required", 1),
   published: z.coerce.boolean<boolean>(),
   publishDate: z.coerce.date<Date>({ error: "page.publishDate.required" }),
   tags: z.array(pageTagSchema).optional(),

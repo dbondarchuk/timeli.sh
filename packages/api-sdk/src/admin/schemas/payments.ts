@@ -1,12 +1,12 @@
-import { zUniqueArray } from "@vivid/types";
+import { zNonEmptyString, zUniqueArray } from "@vivid/types";
 import * as z from "zod";
 
 export const refundPaymentsSchema = z.object({
   refunds: zUniqueArray(
     z.array(
       z.object({
-        id: z.string().min(1),
-        amount: z.number().min(0.01),
+        id: zNonEmptyString("ID is required"),
+        amount: z.number("Amount is required").min(0.01, "Amount is required"),
       }),
     ),
     (s) => s.id,
@@ -16,7 +16,7 @@ export const refundPaymentsSchema = z.object({
 export type RefundPayments = z.infer<typeof refundPaymentsSchema>;
 
 export const refundPaymentSchema = z.object({
-  amount: z.number().min(0.01),
+  amount: z.number("Amount is required").min(0.01, "Amount is required"),
 });
 
 export type RefundPayment = z.infer<typeof refundPaymentSchema>;

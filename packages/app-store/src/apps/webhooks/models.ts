@@ -19,11 +19,9 @@ export const webhookEventTypes = [
 export type WebhookEventType = (typeof webhookEventTypes)[number];
 
 export const webhooksConfigurationSchema = z.object({
-  url: z
-    .string()
-    .url(
-      "app_webhooks_admin.validation.url.invalid" satisfies WebhooksAdminAllKeys,
-    ),
+  url: z.url(
+    "app_webhooks_admin.validation.url.invalid" satisfies WebhooksAdminAllKeys,
+  ),
   secret: z.string().optional(),
   eventTypes: z
     .array(z.enum(webhookEventTypes))

@@ -1,11 +1,11 @@
 import { BaseReaderBlockProps } from "@vivid/builder";
-import { Prettify } from "@vivid/types";
+import { Prettify, zNonEmptyString } from "@vivid/types";
 import * as z from "zod";
 
 export const RedirectPropsSchema = z.object({
   props: z
     .object({
-      url: z.string().min(1, "pageBuilder.blocks.redirect.errors.url"),
+      url: zNonEmptyString("pageBuilder.blocks.redirect.errors.url"),
       permanent: z.boolean().optional().nullable(),
     })
     .optional()

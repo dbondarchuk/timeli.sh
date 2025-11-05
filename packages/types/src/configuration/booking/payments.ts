@@ -1,11 +1,11 @@
 import * as z from "zod";
-import { asOptinalNumberField } from "../../utils";
+import { asOptinalNumberField, zNonEmptyString } from "../../utils";
 
 export const paymentsConfigurationSchema = z
   .object({
-    paymentAppId: z
-      .string()
-      .min(1, "configuration.booking.payments.paymentAppId.required"),
+    paymentAppId: zNonEmptyString(
+      "configuration.booking.payments.paymentAppId.required",
+    ),
     enabled: z.literal(true, {
       error: "configuration.booking.payments.paymentAppId.required",
     }),
