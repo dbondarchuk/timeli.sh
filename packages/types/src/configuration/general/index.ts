@@ -12,9 +12,14 @@ export const generalConfigurationSchema = z.object({
   email: z.email({ error: "common.email.required" }),
   address: z.string().optional(),
   domain: asOptionalField(
-    z.string().regex(/^((?!-)[A-Za-z0-9-]{1, 63}(?<!-)\\.)+[A-Za-z]{2, 6}$/, {
-      message: "configuration.general.domain.invalid",
-    }),
+    z
+      .string()
+      .regex(
+        /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$/,
+        {
+          message: "configuration.general.domain.invalid",
+        },
+      ),
   ),
   logo: z.string().optional(),
   favicon: z.string().optional(),

@@ -62,9 +62,7 @@ export class StaticOrganizationService {
 
     const configuration = await organizations.findOne({
       key: "general",
-      value: {
-        domain,
-      },
+      "value.domain": domain,
     });
 
     if (!configuration) {
