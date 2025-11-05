@@ -1,6 +1,6 @@
-import { z } from "zod";
+import * as z from "zod";
 
-import { BaseReaderBlockProps } from "@vivid/builder";
+import { BaseReaderBlockProps } from "@timelish/builder";
 import { zStylesBase } from "../../style-inputs/helpers/zod";
 
 export const ColumnsContainerPropsSchema = z.object({
@@ -10,7 +10,11 @@ export const ColumnsContainerPropsSchema = z.object({
     .nullable(),
   props: z.object({
     fixedWidths: z
-      .tuple([z.number().nullish(), z.number().nullish(), z.number().nullish()])
+      .tuple([
+        z.number().nullable(),
+        z.number().nullable(),
+        z.number().nullable(),
+      ])
       .optional()
       .nullable(),
     columnsCount: z

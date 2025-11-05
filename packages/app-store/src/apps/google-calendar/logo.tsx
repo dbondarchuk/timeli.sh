@@ -1,5 +1,5 @@
 export const GoogleCalendarLogo: React.FC<React.HTMLAttributes<SVGElement>> = (
-  props
+  props,
 ) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"

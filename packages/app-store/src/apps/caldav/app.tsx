@@ -1,20 +1,17 @@
-import { App } from "@vivid/types";
+import { App } from "@timelish/types";
 import { CALDAV_APP_NAME } from "./const";
 import { CaldavLogo } from "./logo";
-import { CaldavAppSetup } from "./setup";
-import image from "./images/image.png";
+import { CaldavAdminKeys, CaldavAdminNamespace } from "./translations/types";
 
-export const CaldavApp: App = {
+export const CaldavApp: App<CaldavAdminNamespace, CaldavAdminKeys> = {
   name: CALDAV_APP_NAME,
-  displayName: "calDav.displayName",
-  category: ["categories.schedule"],
+  displayName: "app_caldav_admin.app.displayName",
+  category: ["apps.categories.schedule"],
   scope: ["calendar-read", "calendar-write"],
   type: "basic",
   Logo: ({ className }) => <CaldavLogo className={className} />,
-  SetUp: (props) => <CaldavAppSetup {...props} />,
   isFeatured: true,
   description: {
-    text: "calDav.description",
-    images: [image.src],
+    text: "app_caldav_admin.app.description",
   },
 };

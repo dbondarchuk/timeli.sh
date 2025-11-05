@@ -13,9 +13,14 @@ import {
 } from "@udecode/plate/react";
 import { type LucideProps, Trash2Icon } from "lucide-react";
 
-import { Button, Separator } from "@vivid/ui";
+import {
+  Button,
+  Popover,
+  PopoverAnchor,
+  PopoverContent,
+  Separator,
+} from "@timelish/ui";
 import { PlateElement } from "./plate-element";
-import { Popover, PopoverAnchor, PopoverContent } from "@vivid/ui";
 
 export const ColumnGroupElement = withRef<typeof PlateElement>(
   ({ children, className, ...props }, ref) => {
@@ -26,7 +31,7 @@ export const ColumnGroupElement = withRef<typeof PlateElement>(
         </ColumnFloatingToolbar>
       </PlateElement>
     );
-  }
+  },
 );
 
 export function ColumnFloatingToolbar({ children }: React.PropsWithChildren) {

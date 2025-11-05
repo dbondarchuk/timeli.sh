@@ -1,20 +1,17 @@
-import { getLoggerFactory } from "@vivid/logger";
-import { ServicesContainer } from "@vivid/services";
+import { getWebsiteUrl } from "@/utils/utils";
+import { getLoggerFactory } from "@timelish/logger";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
   const logger = getLoggerFactory("API/robots")("GET");
-
+  const url = await getWebsiteUrl();
   logger.debug(
     {
       url: req.url,
       method: req.method,
     },
-    "Processing robots.txt request"
+    "Processing robots.txt request",
   );
-
-  const { url } =
-    await ServicesContainer.ConfigurationService().getConfiguration("general");
 
   const robots = `User-Agent: *
 Allow: /
@@ -26,7 +23,7 @@ Sitemap: ${url}/sitemap.xml`;
     {
       sitemapUrl: `${url}/sitemap.xml`,
     },
-    "Successfully generated robots.txt"
+    "Successfully generated robots.txt",
   );
 
   return new Response(robots, {

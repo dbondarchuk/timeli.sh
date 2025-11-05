@@ -1,12 +1,13 @@
-import { getLoggerFactory } from "@vivid/logger";
-import { ServicesContainer } from "@vivid/services";
+import { getLoggerFactory } from "@timelish/logger";
 import {
   AppointmentEvent,
   AppointmentOption,
   AppointmentRequest,
   Customer,
-} from "@vivid/types";
-import { formatAmount } from "@vivid/utils";
+  IServicesContainer,
+} from "@timelish/types";
+import { formatAmount } from "@timelish/utils";
+import { getServicesContainer } from "../utils";
 import { getAppointmentEventFromRequest } from "./get-event";
 
 type GetIsPaymentRequiredReturnType =
@@ -35,7 +36,7 @@ type GetIsPaymentRequiredReturnType =
 export const getAppointmentEventAndIsPaymentRequired = async (
   appointmentRequest: AppointmentRequest,
   ignoreFieldValidation?: boolean,
-  files?: Record<string, any>
+  files?: Record<string, any>,
 ): Promise<GetIsPaymentRequiredReturnType> => {
   const logger = getLoggerFactory("AppointmentsUtils")("getPaymentRequired");
 
@@ -48,13 +49,13 @@ export const getAppointmentEventAndIsPaymentRequired = async (
       hasFiles: !!files,
       fieldCount: Object.keys(appointmentRequest.fields).length,
     },
-    "Processing appointment event and payment requirement"
+    "Processing appointment event and payment requirement",
   );
 
   const eventOrError = await getAppointmentEventFromRequest(
     appointmentRequest,
     ignoreFieldValidation,
-    files
+    files,
   );
 
   if ("error" in eventOrError) {
@@ -64,7 +65,7 @@ export const getAppointmentEventAndIsPaymentRequired = async (
         errorCode: eventOrError.error.code,
         errorMessage: eventOrError.error.message,
       },
-      "Failed to create appointment event, returning error"
+      "Failed to create appointment event, returning error",
     );
 
     return { error: eventOrError.error };
@@ -80,13 +81,13 @@ export const getAppointmentEventAndIsPaymentRequired = async (
       customerId: customer?._id,
       customerName: customer?.name,
     },
-    "Successfully created appointment event, checking payment requirement"
+    "Successfully created appointment event, checking payment requirement",
   );
 
   if (!event.totalPrice) {
     logger.debug(
       { optionId: option._id, optionName: option.name },
-      "No total price, payment not required"
+      "No total price, payment not required",
     );
 
     return {
@@ -98,7 +99,7 @@ export const getAppointmentEventAndIsPaymentRequired = async (
 
   logger.debug(
     { totalPrice: event.totalPrice },
-    "Total price exists, checking payment configuration"
+    "Total price exists, checking payment configuration",
   );
 
   if (customer?.dontAllowBookings) {
@@ -109,7 +110,7 @@ export const getAppointmentEventAndIsPaymentRequired = async (
         customerId: customer._id,
         customerName: customer.name,
       },
-      "Customer is not allowed to book appointments. Returning error."
+      "Customer is not allowed to book appointments. Returning error.",
     );
 
     return {
@@ -121,39 +122,40 @@ export const getAppointmentEventAndIsPaymentRequired = async (
     };
   }
 
+  const servicesContainer = await getServicesContainer();
   const config =
-    await ServicesContainer.ConfigurationService().getConfiguration("booking");
+    await servicesContainer.configurationService.getConfiguration("booking");
 
   const customersPriorAppointmentsCount =
-    await getCustomerCompletedAppointments(customer?._id);
+    await getCustomerCompletedAppointments(servicesContainer, customer?._id);
 
   logger.debug(
     {
       customersPriorAppointmentsCount,
-      paymentsEnabled: config.payments?.enable,
-      paymentAppId: config.payments?.enable
+      paymentsEnabled: config.payments?.enabled,
+      paymentAppId: config.payments?.enabled
         ? config.payments.paymentAppId
         : undefined,
       requireDeposit:
-        config.payments?.enable && "requireDeposit" in config.payments
+        config.payments?.enabled && "requireDeposit" in config.payments
           ? config.payments.requireDeposit
           : undefined,
       depositPercentage:
-        config.payments?.enable && "depositPercentage" in config.payments
+        config.payments?.enabled && "depositPercentage" in config.payments
           ? config.payments.depositPercentage
           : undefined,
       dontRequireIfCompletedMinNumberOfAppointments:
-        config.payments?.enable && config.payments.requireDeposit
+        config.payments?.enabled && config.payments.requireDeposit
           ? config.payments.dontRequireIfCompletedMinNumberOfAppointments
           : undefined,
     },
-    "Retrieved booking configuration"
+    "Retrieved booking configuration",
   );
 
-  if (config.payments?.enable && config.payments.paymentAppId) {
+  if (config.payments?.enabled && config.payments.paymentAppId) {
     logger.debug(
       { paymentAppId: config.payments.paymentAppId },
-      "Payments enabled, determining deposit requirement"
+      "Payments enabled, determining deposit requirement",
     );
 
     let percentage: number | null = null;
@@ -167,7 +169,7 @@ export const getAppointmentEventAndIsPaymentRequired = async (
           customerDepositPercentage: customer.depositPercentage,
           reason: "customer_always_require_deposit",
         },
-        "Customer requires deposit"
+        "Customer requires deposit",
       );
     } else if (customer?.requireDeposit === "never") {
       logger.debug(
@@ -176,7 +178,7 @@ export const getAppointmentEventAndIsPaymentRequired = async (
           customerName: customer.name,
           reason: "customer_never_require_deposit",
         },
-        "Customer never requires deposit"
+        "Customer never requires deposit",
       );
 
       return {
@@ -200,7 +202,7 @@ export const getAppointmentEventAndIsPaymentRequired = async (
           customersPriorAppointmentsCount,
           reason: "customer_has_enough_appointments",
         },
-        "Customer has enough appointments to not require deposit"
+        "Customer has enough appointments to not require deposit",
       );
 
       return {
@@ -217,7 +219,7 @@ export const getAppointmentEventAndIsPaymentRequired = async (
           optionDepositPercentage: option.depositPercentage,
           reason: "option_always_require_deposit",
         },
-        "Option requires deposit"
+        "Option requires deposit",
       );
     } else if (option.requireDeposit === "never") {
       percentage = null;
@@ -227,7 +229,7 @@ export const getAppointmentEventAndIsPaymentRequired = async (
           optionName: option.name,
           reason: "option_never_require_deposit",
         },
-        "Option never requires deposit"
+        "Option never requires deposit",
       );
     } else if (
       config.payments.requireDeposit &&
@@ -240,7 +242,7 @@ export const getAppointmentEventAndIsPaymentRequired = async (
           configDepositPercentage: config.payments.depositPercentage,
           reason: "config_require_deposit",
         },
-        "Configuration requires deposit"
+        "Configuration requires deposit",
       );
     }
 
@@ -257,7 +259,7 @@ export const getAppointmentEventAndIsPaymentRequired = async (
           paymentAppId: config.payments.paymentAppId,
           customerId: customer?._id,
         },
-        "Payment required with deposit"
+        "Payment required with deposit",
       );
 
       return {
@@ -276,19 +278,19 @@ export const getAppointmentEventAndIsPaymentRequired = async (
           optionName: option.name,
           reason: "no_deposit_percentage_determined",
         },
-        "No deposit percentage determined, payment not required"
+        "No deposit percentage determined, payment not required",
       );
     }
   } else {
     logger.debug(
       {
-        paymentsEnabled: config.payments?.enable,
+        paymentsEnabled: config.payments?.enabled,
         hasPaymentAppId: !!(
-          config.payments?.enable && config.payments.paymentAppId
+          config.payments?.enabled && config.payments.paymentAppId
         ),
         reason: "payments_disabled_or_no_app_id",
       },
-      "Payments disabled or no payment app configured"
+      "Payments disabled or no payment app configured",
     );
   }
 
@@ -299,7 +301,7 @@ export const getAppointmentEventAndIsPaymentRequired = async (
       totalPrice: event.totalPrice,
       customerId: customer?._id,
     },
-    "Payment not required for appointment"
+    "Payment not required for appointment",
   );
 
   return {
@@ -309,9 +311,12 @@ export const getAppointmentEventAndIsPaymentRequired = async (
   };
 };
 
-const getCustomerCompletedAppointments = async (customerId?: string) => {
+const getCustomerCompletedAppointments = async (
+  servicesContainer: IServicesContainer,
+  customerId?: string,
+) => {
   if (!customerId) return 0;
-  const result = await ServicesContainer.EventsService().getAppointments({
+  const result = await servicesContainer.eventsService.getAppointments({
     customerId: customerId,
     limit: 0,
     status: ["confirmed"],

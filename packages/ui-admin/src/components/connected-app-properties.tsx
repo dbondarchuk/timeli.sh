@@ -1,0 +1,62 @@
+"use client";
+import { appStatusTextClasses, AvailableApps } from "@timelish/app-store";
+import { useI18n } from "@timelish/i18n";
+import { ConnectedApp } from "@timelish/types";
+import { cn } from "@timelish/ui";
+
+export const ConnectedAppAccount: React.FC<{
+  account: ConnectedApp["account"];
+  className?: string;
+}> = ({ account, className }) => {
+  const parts = [
+    (account as any)?.serverUrl,
+    account?.username,
+    account?.additional,
+  ].filter((p) => !!p);
+
+  return parts.length > 0 ? (
+    <span className={cn("text-sm text-muted-foreground", className)}>
+      {parts.join(" / ")}
+    </span>
+  ) : (
+    <span />
+  );
+};
+
+export const ConnectedAppStatusMessage: React.FC<{
+  status: ConnectedApp["status"];
+  statusText: ConnectedApp["statusText"];
+  className?: string;
+}> = ({ status, statusText, className }) => {
+  const tApps = useI18n("apps");
+  const t = useI18n();
+  return (
+    <div className={cn("break-all", appStatusTextClasses[status], className)}>
+      {tApps("common.statusMessage", {
+        status: tApps(`status.${status}`),
+        statusText:
+          typeof statusText === "string"
+            ? t.has(statusText)
+              ? t(statusText)
+              : statusText
+            : t(statusText.key, statusText.args),
+      })}
+    </div>
+  );
+};
+
+export const ConnectedAppNameAndLogo: React.FC<{
+  appName: ConnectedApp["name"];
+  className?: string;
+  logoClassName?: string;
+  nameClassName?: string;
+}> = ({ appName, className, logoClassName, nameClassName }) => {
+  const App = AvailableApps[appName];
+  const t = useI18n();
+  return (
+    <div className={cn("inline-flex items-center gap-2", className)}>
+      <App.Logo className={cn("size-4", logoClassName)} />
+      <span className={nameClassName}>{t(App.displayName)}</span>
+    </div>
+  );
+};

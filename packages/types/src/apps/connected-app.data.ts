@@ -1,8 +1,12 @@
-import { AppsKeys } from "@vivid/i18n";
-
+import { AllKeys, I18nNamespaces } from "@timelish/i18n";
+import { WithCompanyId, WithDatabaseId } from "../database";
+import { Prettify } from "../utils";
 export type ConnectedAppStatus = "pending" | "connected" | "failed";
 
-export type ConnectedAppResponse = {
+export type ConnectedAppResponse<
+  T extends I18nNamespaces = I18nNamespaces,
+  CustomKeys extends string | undefined = undefined,
+> = {
   appId: string;
 } & (
   | {
@@ -11,7 +15,7 @@ export type ConnectedAppResponse = {
       account: ConnectedAppAccount;
     }
   | {
-      error: AppsKeys;
+      error: AllKeys<T, CustomKeys>;
       errorArgs?: Record<string, any>;
     }
 );
@@ -34,39 +38,47 @@ export type ConnectedAppAccount = (
   additional?: string;
 };
 
-export class ConnectedAppError extends Error {
+export class ConnectedAppError<
+  T extends I18nNamespaces = I18nNamespaces,
+  CustomKeys extends string | undefined = undefined,
+> extends Error {
   constructor(
-    public readonly key: AppsKeys,
+    public readonly key: AllKeys<T, CustomKeys>,
     public readonly args?: Record<string, any>,
-    message?: string
+    message?: string,
   ) {
     super(message || key);
   }
 }
 
-export type ConnectedAppStatusWithText = {
+export type ConnectedAppStatusWithText<
+  T extends I18nNamespaces = I18nNamespaces,
+  CustomKeys extends string | undefined = undefined,
+> = {
   status: ConnectedAppStatus;
   statusText:
-    | AppsKeys
+    | AllKeys<T, CustomKeys>
     | {
-        key: AppsKeys;
+        key: AllKeys<T, CustomKeys>;
         args?: Record<string, any>;
       };
 };
 
-export type ConnectedAppData<
-  TData = any,
-  TToken = any,
-> = ConnectedAppStatusWithText & {
-  _id: string;
-  name: string;
-  account?: ConnectedAppAccount;
-  token?: TToken;
-  data?: TData;
-};
+export type ConnectedAppData<TData = any, TToken = any> = Prettify<
+  WithCompanyId<
+    WithDatabaseId<
+      ConnectedAppStatusWithText & {
+        name: string;
+        account?: ConnectedAppAccount;
+        token?: TToken;
+        data?: TData;
+      }
+    >
+  >
+>;
 
 export type ConnectedAppUpdateModel = Partial<
   Omit<ConnectedAppData, "_id" | "name">
 >;
 
-export type ConnectedApp = Omit<ConnectedAppData, "data">;
+export type ConnectedApp = Omit<ConnectedAppData, "data" | "token">;

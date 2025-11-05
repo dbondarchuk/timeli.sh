@@ -1,13 +1,19 @@
-import { AppsKeys } from "@vivid/i18n";
-import { Email, TextMessageData, TextMessageResponse } from "../apps";
+import { AllKeys, I18nNamespaces } from "@timelish/i18n";
+import { Email } from "../apps/mail";
+import { DashboardNotification } from "../apps/notifications/dashboard";
+import { TextMessageData } from "../apps/text-message";
+import { TextMessageResponse } from "../apps/text-message/text-message-sender";
 import { CommunicationParticipantType } from "../communication";
 
-export type EmailNotificationRequest = {
+export type EmailNotificationRequest<
+  T extends I18nNamespaces = I18nNamespaces,
+  CustomKeys extends string | undefined = undefined,
+> = {
   email: Email;
   handledBy:
-    | AppsKeys
+    | AllKeys<T, CustomKeys>
     | {
-        key: AppsKeys;
+        key: AllKeys<T, CustomKeys>;
         args: Record<string, string>;
       };
   participantType: CommunicationParticipantType;
@@ -15,14 +21,17 @@ export type EmailNotificationRequest = {
   customerId?: string;
 };
 
-export type TextMessageNotificationRequest = {
+export type TextMessageNotificationRequest<
+  T extends I18nNamespaces = I18nNamespaces,
+  CustomKeys extends string | undefined = undefined,
+> = {
   phone: string;
   body: string;
   sender?: string;
   handledBy:
-    | AppsKeys
+    | AllKeys<T, CustomKeys>
     | {
-        key: AppsKeys;
+        key: AllKeys<T, CustomKeys>;
         args: Record<string, string>;
       };
   participantType: CommunicationParticipantType;
@@ -35,6 +44,10 @@ export interface INotificationService {
   sendEmail(props: EmailNotificationRequest): Promise<void>;
 
   sendTextMessage(
-    props: TextMessageNotificationRequest
+    props: TextMessageNotificationRequest,
   ): Promise<TextMessageResponse>;
+}
+
+export interface IDashboardNotificationsService {
+  publishNotification(notification: DashboardNotification): Promise<void>;
 }

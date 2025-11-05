@@ -1,14 +1,14 @@
 "use client";
 
+import { ToolbarButton } from "@timelish/ui";
 import { useEditorRef, useEditorSelector, withRef } from "@udecode/plate/react";
-import { ToolbarButton } from "@vivid/ui";
 import { Redo2Icon, Undo2Icon } from "lucide-react";
 
 export const RedoToolbarButton = withRef<typeof ToolbarButton>((props, ref) => {
   const editor = useEditorRef();
   const disabled = useEditorSelector(
     (editor) => editor.history.redos.length === 0,
-    []
+    [],
   );
 
   return (
@@ -29,7 +29,7 @@ export const UndoToolbarButton = withRef<typeof ToolbarButton>((props, ref) => {
   const editor = useEditorRef();
   const disabled = useEditorSelector(
     (editor) => editor.history.undos.length === 0,
-    []
+    [],
   );
 
   return (

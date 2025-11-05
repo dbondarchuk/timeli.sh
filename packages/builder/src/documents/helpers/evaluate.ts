@@ -1,6 +1,6 @@
 export const evaluate = (
   code: string,
-  context: Record<string, any> = {}
+  context: Record<string, any> = {},
 ): any => {
   return function evaluateEval(): any {
     const argsStr = Object.keys(context)

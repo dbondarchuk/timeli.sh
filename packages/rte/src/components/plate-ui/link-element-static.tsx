@@ -1,8 +1,6 @@
-import React from "react";
-
 import type { SlateElementProps } from "@udecode/plate";
 
-import { cn } from "@vivid/ui";
+import { cn } from "@timelish/ui";
 import { SlateElement } from "@udecode/plate";
 
 export const LinkElementStatic = ({
@@ -15,7 +13,7 @@ export const LinkElementStatic = ({
       as="a"
       className={cn(
         className,
-        "font-medium text-primary underline decoration-primary underline-offset-4"
+        "font-medium text-primary underline decoration-primary underline-offset-4",
       )}
       {...props}
     >

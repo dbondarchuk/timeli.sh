@@ -1,0 +1,72 @@
+import { getServicesContainer } from "@/app/utils";
+import { getLoggerFactory } from "@timelish/logger";
+import { okStatus, zNonEmptyString } from "@timelish/types";
+import { NextRequest, NextResponse } from "next/server";
+import * as z from "zod";
+
+const mergeCustomersSchema = z.object({
+  targetId: zNonEmptyString("Target ID is required"),
+  ids: z
+    .array(zNonEmptyString("ID is required"))
+    .min(1, "At least one ID is required"),
+});
+
+export async function POST(request: NextRequest) {
+  const logger = getLoggerFactory("AdminAPI/customers/merge")("POST");
+  const servicesContainer = await getServicesContainer();
+  const body = await request.json();
+
+  logger.debug(
+    {
+      targetId: body.targetId,
+      customerIds: body.ids,
+      count: body.ids?.length || 0,
+    },
+    "Processing merge customers request",
+  );
+
+  const { data, error, success } = mergeCustomersSchema.safeParse(body);
+  if (!success) {
+    logger.warn({ error }, "Invalid merge customers request format");
+    return NextResponse.json(
+      { error, success: false, code: "invalid_request_format" },
+      { status: 400 },
+    );
+  }
+
+  try {
+    await servicesContainer.customersService.mergeCustomers(
+      data.targetId,
+      data.ids,
+    );
+
+    logger.debug(
+      {
+        targetId: data.targetId,
+        customerIds: data.ids,
+        count: data.ids.length,
+      },
+      "Customers merged successfully",
+    );
+
+    return NextResponse.json(okStatus);
+  } catch (error: any) {
+    logger.error(
+      {
+        targetId: data.targetId,
+        customerIds: data.ids,
+        count: data.ids.length,
+        error: error?.message || error?.toString(),
+      },
+      "Failed to merge customers",
+    );
+    return NextResponse.json(
+      {
+        success: false,
+        error: error?.message || "Failed to merge customers",
+        code: "merge_customers_failed",
+      },
+      { status: 500 },
+    );
+  }
+}

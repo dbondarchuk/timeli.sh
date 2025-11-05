@@ -1,9 +1,10 @@
-import { z } from "zod";
+import * as z from "zod";
+import { zNonEmptyString } from "../utils";
 
 export const sortOptionSchema = z.object({
-  id: z.string().min(1),
+  id: zNonEmptyString("ID is required"),
   desc: z.coerce
-    .boolean()
+    .boolean<boolean>()
     .optional()
     .transform((d) => (typeof d === "undefined" ? false : d)),
 });

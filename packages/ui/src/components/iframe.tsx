@@ -6,7 +6,7 @@ export const IFrame: React.FC<
 > = ({ children, ...props }) => {
   const contentRef = React.useRef<HTMLIFrameElement>(null);
   const [mountNode, setMountNode] = React.useState<HTMLElement | undefined>(
-    undefined
+    undefined,
   );
 
   const current = contentRef?.current;

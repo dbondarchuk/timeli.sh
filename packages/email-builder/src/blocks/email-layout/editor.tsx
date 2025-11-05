@@ -4,20 +4,17 @@ import { Fragment } from "react";
 
 import {
   EditorChildren,
+  useBlockEditor,
   useCurrentBlock,
-  useDispatchAction,
   useSetSelectedBlockId,
-} from "@vivid/builder";
+} from "@timelish/builder";
 import { getFontFamily } from "../../style-inputs/helpers/styles";
 import { EmailLayoutProps } from "./schema";
 
 export const EmailLayoutEditor = (props: EmailLayoutProps) => {
   const currentBlock = useCurrentBlock<EmailLayoutProps>();
-  const dispatchAction = useDispatchAction();
   const setSelectedBlockId = useSetSelectedBlockId();
-
-  const children = currentBlock.data.children || [];
-
+  const overlayProps = useBlockEditor(currentBlock.id);
   return (
     <Fragment>
       {props.previewText && (
@@ -27,6 +24,7 @@ export const EmailLayoutEditor = (props: EmailLayoutProps) => {
         </div>
       )}
       <div
+        {...overlayProps}
         onClick={() => {
           setSelectedBlockId(null);
         }}
@@ -68,25 +66,7 @@ export const EmailLayoutEditor = (props: EmailLayoutProps) => {
           <tbody>
             <tr style={{ width: "100%" }}>
               <td>
-                <EditorChildren
-                  block={currentBlock}
-                  property="data"
-                  children={children || []}
-                  onChange={({ block, blockId, children }) => {
-                    dispatchAction({
-                      type: "set-block-data",
-                      value: {
-                        blockId: currentBlock.id,
-                        data: {
-                          ...currentBlock.data,
-                          children,
-                        },
-                      },
-                    });
-
-                    setSelectedBlockId(blockId);
-                  }}
-                />
+                <EditorChildren blockId={currentBlock.id} property="" />
               </td>
             </tr>
           </tbody>

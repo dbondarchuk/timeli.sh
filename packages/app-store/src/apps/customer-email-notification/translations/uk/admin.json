@@ -1,0 +1,82 @@
+{
+  "app": {
+    "displayName": "Email повідомлення клієнту",
+    "description": "Надсилати email повідомлення клієнтам"
+  },
+  "navigation": {
+    "title": "Email повідомлення клієнту"
+  },
+  "new": "Нове email повідомлення клієнту",
+  "edit": "Редагувати email повідомлення клієнту",
+  "newDescription": "Створити нове email повідомлення клієнту",
+  "editDescription": "Оновити email повідомлення клієнту",
+  "form": {
+    "header": "Шаблон email {type}",
+    "subject": {
+      "label": "Тема email",
+      "description": "Тема email, яку побачать ваші клієнти, коли {whenText}",
+      "placeholder": "Тема"
+    },
+    "body": {
+      "label": "Тіло email",
+      "description": "Тіло email, яке побачать ваші клієнти, коли {whenText}",
+      "placeholder": "Тіло"
+    },
+    "calendarEventTemplate": {
+      "title": "Шаблон події календаря",
+      "summary": {
+        "label": "Підсумок події",
+        "description": "Підсумок події, який побачать ваші клієнти в своєму календарі",
+        "placeholder": "Підсумок події"
+      },
+      "templateId": {
+        "label": "Вміст події",
+        "description": "Вміст події, який побачать ваші клієнти в своєму календарі",
+        "placeholder": "Вміст події"
+      }
+    }
+  },
+  "whenText": {
+    "pending": "вони забронювали новий запис",
+    "confirmed": "запис було підтверджено",
+    "declined": "запис було відхилено",
+    "rescheduled": "запис було перенесено"
+  },
+  "statusText": {
+    "email_app_not_configured": "Відправник email за замовчуванням не налаштований",
+    "successfully_set_up": "Успішно налаштовано",
+    "error_processing_configuration": "Помилка обробки конфігурації",
+    "error_sending_customer_email_notification_for_new_appointment": "Помилка надсилання email повідомлення клієнту для нового запису",
+    "error_sending_customer_email_notification_for_status_change": "Помилка надсилання email повідомлення клієнту для зміни статусу",
+    "error_sending_customer_email_notification_for_rescheduled_appointment": "Помилка надсилання email повідомлення клієнту для перенесеного запису"
+  },
+  "handlers": {
+    "newRequest": "Email повідомлення клієнту - Новий запит",
+    "pending": "Email повідомлення клієнту - Очікує",
+    "confirmed": "Email повідомлення клієнту - Підтверджено",
+    "declined": "Email повідомлення клієнту - Відхилено",
+    "rescheduled": "Email повідомлення клієнту - Перенесено"
+  },
+  "validation": {
+    "eventTemplate": {
+      "summary": {
+        "required": "Підсумок події обов'язковий",
+        "min": "Підсумок події обов'язковий"
+      },
+      "templateId": {
+        "required": "Шаблон події обов'язковий",
+        "min": "Шаблон події обов'язковий"
+      }
+    },
+    "emailTemplate": {
+      "subject": {
+        "required": "Тема email обов'язкова",
+        "min": "Тема email обов'язкова"
+      },
+      "templateId": {
+        "required": "Шаблон email обов'язковий",
+        "min": "Шаблон email обов'язковий"
+      }
+    }
+  }
+}

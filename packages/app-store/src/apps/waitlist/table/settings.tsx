@@ -1,0 +1,66 @@
+"use client";
+
+import { useI18n } from "@timelish/i18n";
+import {
+  Button,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  ScrollArea,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@timelish/ui";
+import { Settings } from "lucide-react";
+import { useState } from "react";
+import { WaitlistAppSetup } from "../setup";
+import {
+  WaitlistAdminKeys,
+  WaitlistAdminNamespace,
+  waitlistAdminNamespace,
+} from "../translations/types";
+
+export const SettingsDialog = ({ appId }: { appId: string }) => {
+  const t = useI18n<WaitlistAdminNamespace, WaitlistAdminKeys>(
+    waitlistAdminNamespace,
+  );
+
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <DialogTrigger asChild>
+              <Button variant="outline">
+                <Settings className="size-4" />
+              </Button>
+            </DialogTrigger>
+          </TooltipTrigger>
+          <TooltipContent>{t("settings.tooltip")}</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{t("settings.title")}</DialogTitle>
+          <DialogDescription>{t("settings.description")}</DialogDescription>
+        </DialogHeader>
+        <div className="grid gap-4">
+          <ScrollArea className="max-h-[60vh]">
+            <WaitlistAppSetup
+              appId={appId}
+              onSuccess={() => {
+                setIsOpen(false);
+              }}
+              onError={() => {}}
+            />
+          </ScrollArea>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};

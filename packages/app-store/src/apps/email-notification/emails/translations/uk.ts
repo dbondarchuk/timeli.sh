@@ -5,7 +5,9 @@ const getText = (customText: string) => `
 
 ${customText}
 
-Клієнт: [{{ customer.name }}]({{ config.url }}/admin/dashboard/customers/{{customerId}})
+Запитаний {{ requestedAt.full }}
+
+Клієнт: [{{ customer.name }}]({{ adminUrl }}/dashboard/customers/{{customerId}})
 
 Ім'я: {{ fields.name }}
 
@@ -19,13 +21,13 @@ Email: {{ fields.email }}
 
 {{/restFields}} {{#images}}
 
-![{{description}}]({{ config.url }}/assets/{{filename}})
+![{{description}}]({{ websiteUrl }}/assets/{{filename}})
 
 {{filename}}
 
 {{/images}} {{#files}}
 
-Файл: [{{filename}}]({{ config.url }}/assets/{{filename}})
+Файл: [{{filename}}]({{ websiteUrl }}/assets/{{filename}})
 
 {{/files}}
 
@@ -40,13 +42,13 @@ Email: {{ fields.email }}
 - Жодного
 {{/addons}}
 
-Час: {{ dateTime }}
+Час: {{ dateTime.full}}
 
 Тривалість: {{#duration.hours}}{{.}} год {{/duration.hours}}{{#duration.minutes}}{{.}} хв{{/duration.minutes}}
 
 {{#discount}}
 
-Промокод: {{code}} (-\${{discountAmountFormatted}}) ([{{name}}]({{ config.url }}/admin/dashboard/services/discounts/{{id}}))
+Промокод: {{code}} (-\${{discountAmountFormatted}}) ([{{name}}]({{ adminUrl }}/dashboard/services/discounts/{{id}}))
 
 {{/discount}} {{#totalPriceFormatted}}
 
@@ -59,7 +61,7 @@ Email: {{ fields.email }}
 Платежі:
 
 {{#payments}}
- 1. {{appName}} {{paidAt}}: \${{amountFormatted}} {{#totalRefundedFormatted}} (-\${{totalRefundedFormatted}} повернено, \${{amountLeftFormatted}} залишилок) {{/totalRefundedFormatted}}
+ 1. {{#appName}}{{.}}{{/appName}}{{^appName}}{{#isOnline}}Онлайн{{/isOnline}}{{#isCash}}Готівка{{/isCash}}{{#isInPersonCard}}Картка{{/isInPersonCard}}{{/appName}} ({{#isTips}}Чаєві{{/isTips}}{{#isOther}}Інше{{/isOther}}{{#isDeposit}}Депозит{{/isDeposit}}{{#isRescheduleFee}}Плата за перенос{{/isRescheduleFee}}{{#isCancellationFee}}Плата за відміну{{/isCancellationFee}}{{#isPayment}}Платіж{{/isPayment}}) {{paidAt.full}}: \${{amountFormatted}} {{#totalRefundedFormatted}} (-\${{totalRefundedFormatted}} повернено, \${{amountLeftFormatted}} залишилок) {{/totalRefundedFormatted}}
 {{/payments}}
 {{^payments}}
 - Жодного
@@ -67,6 +69,9 @@ Email: {{ fields.email }}
 
 Зараз сплачено: \${{totalAmountLeftFormatted}}
 {{/totalAmountLeft}}
+{{#totalAmountLeftToPay}}
+Залишок до сплати: \${{totalAmountLeftToPayFormatted}}
+{{/totalAmountLeftToPay}}
 `;
 
 export const UkEmailTemplates: EmailTemplates = {
@@ -78,25 +83,35 @@ export const UkEmailTemplates: EmailTemplates = {
     title: "Запис на {{option.name}} був відхилений.",
     text: getText("Запис був відхилений вами."),
   },
-  rescheduled: {
-    title: "Запис був перенесений на {{dateTime}}",
+  cancelledByCustomer: {
+    title: "Запис на {{option.name}} був скасований.",
+    text: getText("Запис був скасований клієнтом."),
+  },
+  rescheduledByCustomer: {
+    title: "Запис на {{option.name}} був перенесений.",
     text: getText(
-      "Запис на {{option.name}} від {{fields.name}} був перенесений на {{dateTime}}, тривалість {{#duration.hours}}{{.}} год {{/duration.hours}}{{#duration.minutes}}{{.}} хв{{/duration.minutes}}"
+      "Запис на {{option.name}} від {{fields.name}} був перенесений клієнтом на {{dateTime.full}}, тривалість {{#duration.hours}}{{.}} год {{/duration.hours}}{{#duration.minutes}}{{.}} хв{{/duration.minutes}}",
+    ),
+  },
+  rescheduled: {
+    title: "Запис був перенесений на {{dateTime.full}}",
+    text: getText(
+      "Запис на {{option.name}} від {{fields.name}} був перенесений на {{dateTime.full}}, тривалість {{#duration.hours}}{{.}} год {{/duration.hours}}{{#duration.minutes}}{{.}} хв{{/duration.minutes}}",
     ),
   },
   "auto-confirmed": {
     title: "Запис на {{option.name}} був запитаний і автоматично підтверджений",
     text: getText(
-      "Новий запис був запитаний на веб-сайті і автоматично підтверджений."
+      "Новий запис був запитаний на веб-сайті і автоматично підтверджений.",
     ),
   },
   pending: {
     title: "Запит на запис для {{option.name}}",
     text: getText(
-      "Новий запис був запитаний на веб-сайті для {{option.name}}."
+      "Новий запис був запитаний на веб-сайті для {{option.name}}.",
     ),
   },
-  subject: "{{fields.name}} на {{option.name}} на {{dateTime}}",
+  subject: "{{fields.name}} на {{option.name}} на {{dateTime.full}}",
   eventTitle: "{{fields.name}} на {{option.name}}",
   buttonTexts: {
     viewAppointment: "Переглянути запис",

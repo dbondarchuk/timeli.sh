@@ -15,7 +15,7 @@ import { MediaUploadToast } from "../../plate-ui/media-upload-toast";
 
 export const mediaPlugins = [
   ImagePlugin.extend({
-    options: { disableUploadInsert: true },
+    options: { disableUploadInsert: true, isUrl: () => true },
     render: { afterEditable: ImagePreview },
   }),
   MediaEmbedPlugin,

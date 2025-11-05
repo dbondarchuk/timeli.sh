@@ -1,5 +1,5 @@
-import { ConnectedOauthAppTokens } from "@vivid/types";
-import { z } from "zod";
+import { ConnectedOauthAppTokens } from "@timelish/types";
+import * as z from "zod";
 
 export const googleCalendarConfigurationSchema = z.object({
   calendar: z

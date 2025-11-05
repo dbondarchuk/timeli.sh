@@ -7,11 +7,11 @@ import {
   RadioGroupInputItem,
   SliderInput,
   TextInput,
-} from "@vivid/builder";
+} from "@timelish/builder";
+import { useI18n } from "@timelish/i18n";
 import { Proportions } from "lucide-react";
 import { MultiStylePropertyPanel } from "../../style-inputs/multi-style-property-panel";
 import { AvatarProps, AvatarPropsDefaults } from "./schema";
-import { useI18n } from "@vivid/i18n";
 
 export const AvatarConfiguration = ({
   data,
@@ -60,6 +60,7 @@ export const AvatarConfiguration = ({
         label={t("emailBuilder.blocks.avatar.imageUrl")}
         accept="image/*"
         defaultValue={imageUrl ?? ""}
+        fullUrl
         onChange={(v) => {
           const url = v.trim().length === 0 ? null : v.trim();
           updateData({ ...data, props: { ...data.props, imageUrl: url } });

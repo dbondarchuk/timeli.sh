@@ -1,18 +1,15 @@
-import { z } from "zod";
+import * as z from "zod";
 
-export const zEmail = z.string().email("common.email.invalid");
+export const zEmail = z.email("common.email.invalid");
 export const zPhone = z
-  .string()
+  .string("common.phone.required")
   .min(1, "common.phone.required")
   .refine((s) => !s?.includes("_"), "common.phone.invalid");
 
-export function zUniqueArray<
-  ArrSchema extends z.ZodArray<z.ZodTypeAny, "many">,
-  UniqueVal,
->(
+export function zUniqueArray<ArrSchema extends z.ZodArray, UniqueVal>(
   schema: ArrSchema,
   uniqueBy: (item: z.infer<ArrSchema>[number]) => UniqueVal,
-  errorMessage?: string
+  errorMessage?: string,
 ) {
   return schema.superRefine((items, ctx) => {
     const seen = new Set<UniqueVal>();
@@ -34,7 +31,7 @@ export function zUniqueArray<
 }
 
 export function isPlainObject(
-  value: unknown
+  value: unknown,
 ): value is Record<string | number | symbol, unknown> {
   return (
     typeof value === "object" &&
@@ -45,15 +42,15 @@ export function isPlainObject(
 }
 
 export function zStrictRecord<
-  K extends z.ZodType<string | number | symbol>,
-  V extends z.ZodTypeAny,
+  K extends z.ZodType<string | number | symbol, string | number | symbol>,
+  V extends z.ZodType<any, any>,
 >(zKey: K, zValue: V) {
   return z.custom<Record<z.infer<K>, z.infer<V>>>((input: unknown) => {
     return (
       isPlainObject(input) &&
       Object.entries(input).every(
         ([key, value]) =>
-          zKey.safeParse(key).success && zValue.safeParse(value).success
+          zKey.safeParse(key).success && zValue.safeParse(value).success,
       )
     );
   }, "zodStrictRecord: error");
@@ -61,26 +58,43 @@ export function zStrictRecord<
 
 export function zOptionalOrMinLengthString(
   minLength: number,
-  minLengthErrorMessage?: string
+  minLengthErrorMessage?: string,
 ) {
   return z
     .union([
-      z.string().min(minLength, { message: minLengthErrorMessage }),
+      z
+        .string(minLengthErrorMessage)
+        .min(minLength, { message: minLengthErrorMessage }),
       z.string().length(0),
     ])
-    .optional()
-    .transform((e) => (e === "" ? undefined : e));
+    .transform((e) => (e === "" ? undefined : e))
+    .optional();
 }
+
+export const zNonEmptyString = (message?: string, minLength: number = 1) =>
+  z
+    .string(message)
+    .min(
+      minLength,
+      message ?? `String must be at least ${minLength} characters long`,
+    );
+
+export const zRequiredString = (
+  required?: boolean,
+  message?: string,
+  minLength: number = 1,
+) =>
+  required ? zNonEmptyString(message, minLength) : asOptionalField(z.string());
 
 const emptyStringToUndefined = z.literal("").transform(() => undefined);
 
-export function asOptionalField<T extends z.ZodTypeAny>(schema: T) {
+export function asOptionalField<T extends z.ZodType>(schema: T) {
   return schema.optional().or(emptyStringToUndefined);
 }
 
 export function asOptinalNumberField<T extends z.ZodNumber>(schema: T) {
   return z.preprocess(
     (arg) => (arg === "" ? undefined : arg),
-    schema.optional()
+    schema.optional(),
   ) as unknown as z.ZodOptional<T>;
 }

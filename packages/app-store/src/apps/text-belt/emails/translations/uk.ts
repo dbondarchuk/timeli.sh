@@ -10,7 +10,7 @@ const notifyReplyText = `
 *{{ reply.message }}*
 
 {{#customer}}
-Клієнт: [{{ name }}]({{ config.url }}/admin/dashboard/customers/{{_id}})
+Клієнт: [{{ name }}]({{ adminUrl }}/dashboard/customers/{{_id}})
 {{/customer}}
 
 {{#_id}}
@@ -28,13 +28,13 @@ Email: {{ fields.email }}
 
 {{/restFields}} {{#images}}
 
-![{{description}}]({{ config.url }}/assets/{{filename}})
+![{{description}}]({{ websiteUrl }}/assets/{{filename}})
 
 {{filename}}
 
 {{/images}} {{#files}}
 
-Файл: [{{filename}}]({{ config.url }}/assets/{{filename}})
+Файл: [{{filename}}]({{ websiteUrl }}/assets/{{filename}})
 
 {{/files}}
 
@@ -49,13 +49,13 @@ Email: {{ fields.email }}
 - Жодного
 {{/addons}}
 
-Час: {{ dateTime }}
+Час: {{ dateTime.full}}
 
 Тривалість: {{#duration.hours}}{{.}} год {{/duration.hours}}{{#duration.minutes}}{{.}} хв{{/duration.minutes}}
 
 {{#discount}}
 
-Промокод: {{code}} (-\${{discountAmountFormatted}}) ([{{name}}]({{ config.url }}/admin/dashboard/services/discounts/{{id}}))
+Промокод: {{code}} (-\${{discountAmountFormatted}}) ([{{name}}]({{ adminUrl }}/dashboard/services/discounts/{{id}}))
 
 {{/discount}} {{#totalPriceFormatted}}
 

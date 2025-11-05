@@ -3,30 +3,34 @@ import {
   ConfigurationKey,
   ConfigurationOption,
   IConfigurationService,
-} from "@vivid/types";
-import { getDbConnection } from "./database";
-
-import { getLoggerFactory } from "@vivid/logger";
+} from "@timelish/types";
 import { cache } from "react";
+import { CONFIGURATION_COLLECTION_NAME } from "./collections";
+import { getDbConnection } from "./database";
+import { BaseService } from "./services/base.service";
 
-export const CONFIGURATION_COLLECTION_NAME = "configuration";
-
-export class ConfigurationService implements IConfigurationService {
-  protected readonly loggerFactory = getLoggerFactory("ConfigurationService");
+export class ConfigurationService
+  extends BaseService
+  implements IConfigurationService
+{
+  public constructor(companyId: string) {
+    super("ConfigurationService", companyId);
+  }
 
   public async getConfiguration<T extends ConfigurationKey>(
-    key: T
+    key: T,
   ): Promise<ConfigurationOption<T>["value"]> {
     const logger = this.loggerFactory("getConfiguration");
     logger.debug({ key }, "Getting configuration");
     const db = await getDbConnection();
     const configurations = db.collection<ConfigurationOption<T>>(
-      CONFIGURATION_COLLECTION_NAME
+      CONFIGURATION_COLLECTION_NAME,
     );
 
     const value = await configurations.findOne({
       // @ts-ignore Correct key
       key,
+      companyId: this.companyId,
     });
 
     if (!value?.value) {
@@ -53,13 +57,17 @@ export class ConfigurationService implements IConfigurationService {
         key: {
           $in: keys,
         },
+        companyId: this.companyId,
       })
       .toArray();
 
     if (values.length !== keys.length) {
       logger.error(
-        { keys, foundKeys: values?.map((v) => v.key) },
-        "Can't find configuration for all keys"
+        {
+          keys,
+          foundKeys: values?.map((v) => v.key),
+        },
+        "Can't find configuration for all keys",
       );
     }
 
@@ -68,7 +76,7 @@ export class ConfigurationService implements IConfigurationService {
         ...acc,
         [cur.key]: cur.value,
       }),
-      {} as Pick<Configuration, T>
+      {} as Pick<Configuration, T>,
     );
 
     logger.debug({ keys }, "Fetched configurations");
@@ -77,30 +85,32 @@ export class ConfigurationService implements IConfigurationService {
 
   public async setConfiguration<T extends ConfigurationKey>(
     key: T,
-    configuration: ConfigurationOption<T>["value"]
+    configuration: ConfigurationOption<T>["value"],
   ): Promise<void> {
     const logger = this.loggerFactory("setConfiguration");
     logger.debug({ key }, "Setting configuration");
 
     const db = await getDbConnection();
     const configurations = db.collection<ConfigurationOption<T>>(
-      CONFIGURATION_COLLECTION_NAME
+      CONFIGURATION_COLLECTION_NAME,
     );
 
     const updateResult = await configurations.updateOne(
       {
         // @ts-ignore Correct key
         key,
+        companyId: this.companyId,
       },
       {
         $set: {
           key,
+          companyId: this.companyId,
           value: configuration,
         },
       },
       {
         upsert: true,
-      }
+      },
     );
 
     logger.debug({ key, updateResult }, "Set configuration");
@@ -115,7 +125,7 @@ export class CachedConfigurationService extends ConfigurationService {
     cache(async (...options) => await super.getConfigurations(...options));
 
   public async getConfiguration<T extends ConfigurationKey>(
-    key: T
+    key: T,
   ): Promise<ConfigurationOption<T>["value"]> {
     return await this.cachedGetConfiguration(key);
   }

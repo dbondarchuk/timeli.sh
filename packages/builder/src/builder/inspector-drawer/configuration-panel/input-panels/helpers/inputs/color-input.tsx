@@ -6,9 +6,9 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@vivid/ui";
-import { Plus } from "lucide-react";
+} from "@timelish/ui";
 import { Sketch } from "@uiw/react-color";
+import { Plus } from "lucide-react";
 import { ResetButton } from "./reset-button";
 
 type Props =

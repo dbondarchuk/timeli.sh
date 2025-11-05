@@ -1,12 +1,13 @@
-import { cn } from "../utils";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, VariantProps } from "class-variance-authority";
 import React from "react";
+import { cn } from "../utils";
 
 const fonts = {
-  default: "",
-  body: "font-primary",
-  header: "font-secondary",
+  default: "font-primary",
+  primary: "font-primary",
+  secondary: "font-secondary",
+  tertiary: "font-tertiary",
 };
 
 const textSizes = {
@@ -53,7 +54,7 @@ export const TextSizes = Object.keys(textSizes) as (keyof typeof textSizes)[];
 
 export type TextWeight = VariantProps<typeof textClasses>["fontWeight"];
 export const TextWeights = Object.keys(
-  textWeights
+  textWeights,
 ) as (keyof typeof textWeights)[];
 
 export interface TextProps
@@ -65,7 +66,7 @@ export interface TextProps
 const Text = React.forwardRef<HTMLButtonElement, TextProps>(
   (
     { className, fontSize, fontWeight, font, asChild = false, ...props },
-    ref
+    ref,
   ) => {
     const Comp = asChild ? Slot : "span";
     return (
@@ -75,8 +76,8 @@ const Text = React.forwardRef<HTMLButtonElement, TextProps>(
         {...props}
       />
     );
-  }
+  },
 );
 Text.displayName = "Text";
 
-export { Text, textClasses as textVariants, textSizes, textWeights };
+export { Text, textSizes, textClasses as textVariants, textWeights };

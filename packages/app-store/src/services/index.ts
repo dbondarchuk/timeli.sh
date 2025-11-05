@@ -1,4 +1,4 @@
-import { IConnectedApp, IConnectedAppProps } from "@vivid/types";
+import { IConnectedApp, IConnectedAppProps } from "@timelish/types";
 import { BUSY_EVENTS_APP_NAME } from "../apps/busy-events/const";
 import BusyEventsConnectedApp from "../apps/busy-events/service";
 import { CALDAV_APP_NAME } from "../apps/caldav/const";
@@ -11,24 +11,20 @@ import { CUSTOMER_TEXT_MESSAGE_NOTIFICATION_APP_NAME } from "../apps/customer-te
 import CustomerTextMessageNotificationConnectedApp from "../apps/customer-text-message-notification/service";
 import { EMAIL_NOTIFICATION_APP_NAME } from "../apps/email-notification/const";
 import { EmailNotificationConnectedApp } from "../apps/email-notification/service";
-import { FILE_SYSTEM_ASSETS_STORAGE_APP_NAME } from "../apps/file-system-assets-storage/const";
-import FileSystemAssetsStorageConnectedApp from "../apps/file-system-assets-storage/service";
-import { FOLLOW_UPS_APP_NAME } from "../apps/followups/const";
-import FollowUpsConnectedApp from "../apps/followups/service";
+import { FINANCIAL_OVERVIEW_APP_NAME } from "../apps/financial-overview/const";
+import FinancialOverviewService from "../apps/financial-overview/service";
 import { GOOGLE_CALENDAR_APP_NAME } from "../apps/google-calendar/const";
 import GoogleCalendarConnectedApp from "../apps/google-calendar/service";
 import { ICS_APP_NAME } from "../apps/ics/const";
 import IcsConnectedApp from "../apps/ics/service";
-import { LOG_CLEANUP_APP_NAME } from "../apps/log-cleanup/const";
-import LogCleanupConnectedApp from "../apps/log-cleanup/service";
 import { OUTLOOK_APP_NAME } from "../apps/outlook/const";
 import OutlookConnectedApp from "../apps/outlook/service";
 import { PAYPAL_APP_NAME } from "../apps/paypal/const";
 import PaypalConnectedApp from "../apps/paypal/service";
-import { REMINDERS_APP_NAME } from "../apps/reminders/const";
-import RemindersConnectedApp from "../apps/reminders/service";
-import { S3_ASSETS_STORAGE_APP_NAME } from "../apps/s3-assets-storage/const";
-import S3AssetsStorageConnectedApp from "../apps/s3-assets-storage/service";
+import { SCHEDULED_NOTIFICATIONS_APP_NAME } from "../apps/scheduled-notifications/const";
+import ScheduledNotificationsConnectedApp from "../apps/scheduled-notifications/service";
+import { SMART_SCHEDULE_APP_NAME } from "../apps/smart-schedule/const";
+import SmartScheduleConnectedApp from "../apps/smart-schedule/service";
 import { SMTP_APP_NAME } from "../apps/smtp/const";
 import SmtpConnectedApp from "../apps/smtp/service";
 import { TEXTBELT_APP_NAME } from "../apps/text-belt/const";
@@ -39,8 +35,20 @@ import { TEXT_MESSAGE_NOTIFICATION_APP_NAME } from "../apps/text-message-notific
 import { TextMessageNotificationConnectedApp } from "../apps/text-message-notification/service";
 import { TEXT_MESSAGE_RESENDER_APP_NAME } from "../apps/text-message-resender/const";
 import TextMessageResenderConnectedApp from "../apps/text-message-resender/service";
+import { URL_BUSY_EVENTS_APP_NAME } from "../apps/url-busy-events/const";
+import UrlBusyEventsConnectedApp from "../apps/url-busy-events/service";
+import { URL_SCHEDULE_PROVIDER_APP_NAME } from "../apps/url-schedule-provider/const";
+import UrlScheduleProviderConnectedApp from "../apps/url-schedule-provider/service";
+import { WAITLIST_NOTIFICATIONS_APP_NAME } from "../apps/waitlist-notifications/const";
+import { WaitlistNotificationsConnectedApp } from "../apps/waitlist-notifications/service";
+import { WAITLIST_APP_NAME } from "../apps/waitlist/const";
+import { WaitlistConnectedApp } from "../apps/waitlist/service/service";
+import { WEBHOOKS_APP_NAME } from "../apps/webhooks/const";
+import { WebhooksConnectedApp } from "../apps/webhooks/service";
 import { WEEKLY_SCHEDULE_APP_NAME } from "../apps/weekly-schedule/const";
 import WeeklyScheduleConnectedApp from "../apps/weekly-schedule/service";
+import { ZOOM_APP_NAME } from "../apps/zoom/const";
+import { ZoomConnectedApp } from "../apps/zoom/service";
 
 export const AvailableAppServices: Record<
   string,
@@ -67,12 +75,18 @@ export const AvailableAppServices: Record<
     new TextMessageAutoReplyConnectedApp(props),
   [TEXT_MESSAGE_RESENDER_APP_NAME]: (props) =>
     new TextMessageResenderConnectedApp(props),
-  [REMINDERS_APP_NAME]: (props) => new RemindersConnectedApp(props),
-  [FOLLOW_UPS_APP_NAME]: (props) => new FollowUpsConnectedApp(props),
-  [LOG_CLEANUP_APP_NAME]: (props) => new LogCleanupConnectedApp(props),
-  [FILE_SYSTEM_ASSETS_STORAGE_APP_NAME]: (props) =>
-    new FileSystemAssetsStorageConnectedApp(props),
-  [S3_ASSETS_STORAGE_APP_NAME]: (props) =>
-    new S3AssetsStorageConnectedApp(props),
+  [SCHEDULED_NOTIFICATIONS_APP_NAME]: (props) =>
+    new ScheduledNotificationsConnectedApp(props),
   [PAYPAL_APP_NAME]: (props) => new PaypalConnectedApp(props),
+  [WAITLIST_APP_NAME]: (props) => new WaitlistConnectedApp(props),
+  [WAITLIST_NOTIFICATIONS_APP_NAME]: (props) =>
+    new WaitlistNotificationsConnectedApp(props),
+  [FINANCIAL_OVERVIEW_APP_NAME]: (props) => new FinancialOverviewService(props),
+  [WEBHOOKS_APP_NAME]: (props) => new WebhooksConnectedApp(props),
+  [SMART_SCHEDULE_APP_NAME]: (props) => new SmartScheduleConnectedApp(props),
+  [URL_BUSY_EVENTS_APP_NAME]: (props) => new UrlBusyEventsConnectedApp(props),
+  [URL_SCHEDULE_PROVIDER_APP_NAME]: (props) =>
+    new UrlScheduleProviderConnectedApp(props),
+  [ZOOM_APP_NAME]: (props) => new ZoomConnectedApp(props),
 };
+export { AvailableApps as ServiceAvailableApps } from "../apps";

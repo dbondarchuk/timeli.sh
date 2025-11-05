@@ -1,14 +1,15 @@
+import type { App, AppScope } from "../apps/app";
 import {
-  ApiRequest,
-  ApiResponse,
-  App,
-  AppScope,
   ConnectedApp,
   ConnectedAppData,
   ConnectedAppUpdateModel,
+} from "../apps/connected-app.data";
+import type { IConnectedAppProps } from "../apps/connected-app.props";
+import {
+  ApiRequest,
+  ApiResponse,
   IConnectedApp,
-  IConnectedAppProps,
-} from "../apps";
+} from "../apps/connected-app.service";
 
 export interface IConnectedAppsService {
   createNewApp(name: string): Promise<string>;
@@ -18,12 +19,12 @@ export interface IConnectedAppsService {
   processRedirect(name: string, request: ApiRequest, data?: any): Promise<void>;
   processWebhook(
     appId: string,
-    request: ApiRequest
+    request: ApiRequest,
   ): Promise<ApiResponse | undefined>;
   processAppCall(
     appId: string,
     slug: string[],
-    request: ApiRequest
+    request: ApiRequest,
   ): Promise<ApiResponse | undefined>;
   processRequest(appId: string, data: any): Promise<any>;
   processStaticRequest(appName: string, data: any): Promise<any>;
@@ -36,7 +37,16 @@ export interface IConnectedAppsService {
   getApp(appId: string): Promise<ConnectedAppData>;
   getAppsData(appIds: string[]): Promise<ConnectedAppData[]>;
   getAppService<T>(
-    appId: string
-  ): Promise<{ service: IConnectedApp & T; app: ConnectedApp }>;
+    appId: string,
+  ): Promise<{ service: IConnectedApp & T; app: ConnectedAppData }>;
   getAppServiceProps(appId: string): IConnectedAppProps;
+
+  executeHooks<T, TReturn = void>(
+    scope: AppScope,
+    hook: (app: ConnectedAppData, service: T) => Promise<TReturn>,
+    options?: {
+      concurrencyLimit?: number;
+      ignoreErrors?: boolean;
+    },
+  ): Promise<(TReturn | undefined)[]>;
 }

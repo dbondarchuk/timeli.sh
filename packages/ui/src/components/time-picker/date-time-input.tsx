@@ -1,28 +1,28 @@
 "use client";
 
-import * as React from "react";
+import React from "react";
 
-import { cn } from "../../utils";
+import { useI18n } from "@timelish/i18n";
+import { CalendarIcon, CircleAlert, CircleCheck, X } from "lucide-react";
+import { DateTime } from "luxon";
 import {
-  useRef,
-  useState,
-  useMemo,
+  useCallback,
   useEffect,
   useLayoutEffect,
-  useCallback,
+  useMemo,
+  useRef,
+  useState,
 } from "react";
-import { CalendarIcon, CircleAlert, CircleCheck, X } from "lucide-react";
-import { Button } from "../button";
 import { useFormContext } from "react-hook-form";
+import { cn } from "../../utils";
+import { Button } from "../button";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "../tooltip";
-import { DateTime } from "luxon";
 import { DateTimePicker } from "./date-time-picker";
-import { useI18n } from "@vivid/i18n";
 
 type DateTimeInputProps = {
   className?: string;
@@ -106,14 +106,14 @@ const DateTimeInput = React.forwardRef<HTMLInputElement, DateTimeInputProps>(
     const value = useMemo(
       () =>
         _value ? DateTime.fromJSDate(_value).setZone(timeZone) : undefined,
-      [_value, timeZone]
+      [_value, timeZone],
     );
     const form = useFormContext();
     const formatStr = React.useMemo(
       () =>
         formatProp ||
         `dd/MM/yyyy${hideTime ? "" : ` hh:mm${use12HourFormat ? " a" : ""}`}`,
-      [formatProp]
+      [formatProp],
     );
 
     const inputRef = useRef<HTMLInputElement>(undefined);
@@ -147,23 +147,23 @@ const DateTimeInput = React.forwardRef<HTMLInputElement, DateTimeInputProps>(
         const at = segments?.findIndex((s) => s.index === segment?.index);
         at !== -1 && setSelectedSegmentAt(at);
       },
-      [segments, setSelectedSegmentAt]
+      [segments, setSelectedSegmentAt],
     );
 
     const validSegments = useMemo(
       () => segments.filter((s) => s.type !== "space"),
-      [segments]
+      [segments],
     );
     const inputStr = useMemo(() => {
       return segments
         .map((s) =>
-          s.value ? s.value.padStart(s.symbols.length, "0") : s.symbols
+          s.value ? s.value.padStart(s.symbols.length, "0") : s.symbols,
         )
         .join("");
     }, [segments]);
     const areAllSegmentsEmpty = useMemo(
       () => validSegments.every((s) => !s.value),
-      [validSegments]
+      [validSegments],
     );
 
     const inputValue = useMemo(() => {
@@ -198,7 +198,7 @@ const DateTimeInput = React.forwardRef<HTMLInputElement, DateTimeInputProps>(
           let segment = validSegments.find(
             (s) =>
               s.index <= selectionStart &&
-              s.index + s.symbols.length >= selectionStart
+              s.index + s.symbols.length >= selectionStart,
           );
           !segment &&
             (segment = [...validSegments]
@@ -210,7 +210,7 @@ const DateTimeInput = React.forwardRef<HTMLInputElement, DateTimeInputProps>(
           setSelection(inputRef, segment);
         }
       },
-      [segments]
+      [segments],
     );
 
     const onSegmentChange = useEventCallback(
@@ -228,7 +228,7 @@ const DateTimeInput = React.forwardRef<HTMLInputElement, DateTimeInputProps>(
           setSelection(inputRef, segment);
         }
       },
-      [segments, curSegment]
+      [segments, curSegment],
     );
 
     const onSegmentNumberValueChange = useEventCallback(
@@ -242,16 +242,16 @@ const DateTimeInput = React.forwardRef<HTMLInputElement, DateTimeInputProps>(
           let newValue = rawValue.length < length ? rawValue + num : num;
           let parsedDate = DateTime.fromFormat(
             newValue.padStart(length, "0"),
-            segment.symbols
+            segment.symbols,
           ).setZone(timeZone);
           if (!parsedDate.isValid && newValue.length > 1) {
             newValue = num;
             parsedDate = DateTime.fromFormat(newValue, segment.symbols).setZone(
-              timeZone
+              timeZone,
             );
           }
           const updatedSegments = segments.map((s) =>
-            s.index === segment.index ? { ...segment, value: newValue } : s
+            s.index === segment.index ? { ...segment, value: newValue } : s,
           );
           setSegments(updatedSegments);
           segment = updatedSegments.find((s) => s.index === segment.index)!;
@@ -279,7 +279,7 @@ const DateTimeInput = React.forwardRef<HTMLInputElement, DateTimeInputProps>(
         }
         shouldNext ? onSegmentChange("right") : setSelection(inputRef, segment);
       },
-      [segments, curSegment]
+      [segments, curSegment],
     );
 
     const onSegmentPeriodValueChange = useEventCallback(
@@ -297,25 +297,25 @@ const DateTimeInput = React.forwardRef<HTMLInputElement, DateTimeInputProps>(
         }
         if (ok) {
           const updatedSegments = segments.map((s) =>
-            s.index === segment.index ? { ...segment, value: newValue } : s
+            s.index === segment.index ? { ...segment, value: newValue } : s,
           );
           setSegments(updatedSegments);
           segment = updatedSegments.find((s) => s.index === segment.index)!;
         }
         setSelection(inputRef, segment);
       },
-      [segments, curSegment]
+      [segments, curSegment],
     );
 
     const onSegmentValueRemove = useEventCallback(() => {
       if (!curSegment) return;
       if (curSegment.value) {
         const updatedSegments = segments.map((s) =>
-          s.index === curSegment.index ? { ...curSegment, value: "" } : s
+          s.index === curSegment.index ? { ...curSegment, value: "" } : s,
         );
         setSegments(updatedSegments);
         const segment = updatedSegments.find(
-          (s) => s.index === curSegment.index
+          (s) => s.index === curSegment.index,
         )!;
         setSelection(inputRef, segment);
       } else {
@@ -354,7 +354,7 @@ const DateTimeInput = React.forwardRef<HTMLInputElement, DateTimeInputProps>(
             break;
         }
       },
-      []
+      [],
     );
 
     const [isFocused, setIsFocused] = useState(false);
@@ -365,7 +365,7 @@ const DateTimeInput = React.forwardRef<HTMLInputElement, DateTimeInputProps>(
           "flex h-9 items-center justify-start rounded-md border border-input bg-background text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground  disabled:cursor-not-allowed disabled:opacity-50",
           isFocused ? "outline-none ring-2 ring-ring ring-offset-2" : "",
           options.hideCalendarIcon && "ps-2",
-          options.className
+          options.className,
         )}
       >
         {!options.hideCalendarIcon && (
@@ -377,8 +377,8 @@ const DateTimeInput = React.forwardRef<HTMLInputElement, DateTimeInputProps>(
               setSegments(
                 parseFormat(
                   formatStr,
-                  d ? DateTime.fromJSDate(d).setZone(timeZone) : undefined
-                )
+                  d ? DateTime.fromJSDate(d).setZone(timeZone) : undefined,
+                ),
               );
             }}
             timeZone={timeZone}
@@ -418,7 +418,7 @@ const DateTimeInput = React.forwardRef<HTMLInputElement, DateTimeInputProps>(
                     <CircleAlert
                       className={cn(
                         "size-4",
-                        !areAllSegmentsEmpty && "text-red-500"
+                        !areAllSegmentsEmpty && "text-red-500",
                       )}
                     />
                   </TooltipTrigger>
@@ -445,7 +445,7 @@ const DateTimeInput = React.forwardRef<HTMLInputElement, DateTimeInputProps>(
         )}
       </div>
     );
-  }
+  },
 );
 
 DateTimeInput.displayName = "DateTimeInput";
@@ -497,20 +497,20 @@ const isAndroid = () => /Android/i.test(navigator.userAgent);
 
 function setSelection(
   ref: React.MutableRefObject<HTMLInputElement | undefined>,
-  segment?: Segment
+  segment?: Segment,
 ) {
   if (!ref.current || !segment) return;
   safeSetSelection(
     ref.current,
     segment.index,
-    segment.index + segment.symbols.length
+    segment.index + segment.symbols.length,
   );
 }
 
 function safeSetSelection(
   element: HTMLInputElement,
   selectionStart: number,
-  selectionEnd: number
+  selectionEnd: number,
 ) {
   requestAnimationFrame(() => {
     if (document.activeElement === element) {

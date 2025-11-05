@@ -30,13 +30,13 @@ import {
 
 import { MoreDropdownMenu } from "./more-dropdown-menu";
 
-import { ToolbarGroup } from "@vivid/ui";
+import { ToolbarGroup } from "@timelish/ui";
 import { AlignDropdownMenu } from "./align-dropdown-menu";
 import { ColorDropdownMenu } from "./color-dropdown-menu";
 import { EmojiDropdownMenu } from "./emoji-dropdown-menu";
 import { FontSizeToolbarButton } from "./font-size-toolbar-button";
+import { FontWeightDropdownMenu } from "./font-weight-dropdown-menu";
 import { RedoToolbarButton, UndoToolbarButton } from "./history-toolbar-button";
-import { ImportToolbarButton } from "./import-toolbar-button";
 import {
   BulletedIndentListToolbarButton,
   NumberedIndentListToolbarButton,
@@ -130,6 +130,8 @@ export function FixedToolbarButtons({ isMarkdown }: { isMarkdown?: boolean }) {
                 >
                   <PaintBucketIcon />
                 </ColorDropdownMenu>
+
+                <FontWeightDropdownMenu />
               </>
             )}
           </ToolbarGroup>

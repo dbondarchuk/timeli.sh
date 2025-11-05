@@ -1,6 +1,6 @@
-import { renderUserEmailTemplate } from "@vivid/email-builder/static";
-import { Language } from "@vivid/i18n";
-import { template } from "@vivid/utils";
+import { renderUserEmailTemplate } from "@timelish/email-builder/static";
+import { Language } from "@timelish/i18n";
+import { template } from "@timelish/utils";
 import { UserEmailTemplates } from ".";
 import { EmailTemplateKey } from "./types";
 
@@ -10,7 +10,7 @@ export const getEmailTemplate = async (
   url: string,
   args: Record<string, any>,
   appointmentId?: string,
-  customerId?: string
+  customerId?: string,
 ) => {
   const templateContent =
     UserEmailTemplates[language]?.[type] ?? UserEmailTemplates["en"][type];
@@ -30,18 +30,18 @@ export const getEmailTemplate = async (
         appointmentId
           ? {
               text: buttonTexts.viewAppointment,
-              url: `${url}/admin/dashboard/appointments/${appointmentId}`,
+              url: `${url}/dashboard/appointments/${appointmentId}`,
             }
           : undefined,
         customerId
           ? {
               text: buttonTexts.viewCustomer,
-              url: `${url}/admin/dashboard/customers/${customerId}`,
+              url: `${url}/dashboard/customers/${customerId}`,
             }
           : undefined,
       ],
     },
-    args
+    args,
   );
 
   return {

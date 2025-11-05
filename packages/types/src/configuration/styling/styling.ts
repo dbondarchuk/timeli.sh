@@ -1,8 +1,18 @@
-import { z } from "zod";
+import * as z from "zod";
 
 import { zUniqueArray } from "../../utils";
 import { resourceSchema } from "../resources";
 
+// export const allFonts = {
+//   items: [
+//     {
+//       family: "Inter",
+//       variants: ["400", "500", "600", "700"],
+//       subsets: ["latin"],
+//       category: "sans-serif",
+//     },
+//   ],
+// };
 import allFonts from "./fonts.json";
 
 export const fontsNames = allFonts.items.map((font) => font.family);
@@ -10,8 +20,23 @@ export const fontsNames = allFonts.items.map((font) => font.family);
 const [firstFont, ...restFonts] = fontsNames;
 
 export const fontName = z.enum([firstFont, ...restFonts], {
-  message: "configuration.styling.fonts.unknown",
+  error: "configuration.styling.fonts.unknown",
 });
+
+export const fontsOptions = allFonts.items.reduce(
+  (acc, font) => {
+    acc[font.family] = {
+      variants: font.variants,
+      subsets: font.subsets,
+      category: font.category,
+    };
+    return acc;
+  },
+  {} as Record<
+    string,
+    { variants: string[]; subsets: string[]; category: string }
+  >,
+);
 
 export const colors = [
   "background",
@@ -52,13 +77,13 @@ export const colorsLabels: Record<(typeof colors)[number], string> = {
 };
 
 export const colorsEnum = z.enum(colors, {
-  message: "configuration.styling.colors.invalid",
+  error: "configuration.styling.colors.invalid",
 });
 
 export const colorOverrideSchema = z.object({
   type: colorsEnum,
   value: z.string().regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, {
-    message: "configuration.styling.colors.value.invalid",
+    error: "configuration.styling.colors.value.invalid",
   }),
 });
 
@@ -68,7 +93,7 @@ export const stylingConfigurationSchema = z.object({
   colors: zUniqueArray(
     colorOverrideSchema.array(),
     (item) => item.type,
-    "configuration.styling.colors.unique"
+    "configuration.styling.colors.unique",
   ).optional(),
   fonts: z
     .object({

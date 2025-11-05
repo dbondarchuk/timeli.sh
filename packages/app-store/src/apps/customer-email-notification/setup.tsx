@@ -1,9 +1,7 @@
 "use client";
 
-import { ComplexAppSetupProps } from "@vivid/types";
+import { useI18n } from "@timelish/i18n";
 import {
-  ArgumentsAutocomplete,
-  ConnectedAppStatusMessage,
   Form,
   FormControl,
   FormField,
@@ -11,22 +9,28 @@ import {
   FormLabel,
   FormMessage,
   InfoTooltip,
-  Input,
   Skeleton,
+} from "@timelish/ui";
+import {
+  ArgumentsAutocomplete,
+  ConnectedAppStatusMessage,
+  SaveButton,
   TemplateSelector,
-} from "@vivid/ui";
-import React from "react";
+  useDemoArguments,
+} from "@timelish/ui-admin";
 import { UseFormReturn } from "react-hook-form";
+import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
 import { CustomerEmailNotificationApp } from "./app";
 import {
   CustomerEmailNotificationConfiguration,
   customerEmailNotificationConfigurationSchema,
   EmailTemplateKeys,
 } from "./models";
-
-import { useI18n } from "@vivid/i18n";
-import { SaveButton, useDemoArguments } from "@vivid/ui";
-import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
+import {
+  CustomerEmailNotificationAdminKeys,
+  CustomerEmailNotificationAdminNamespace,
+  customerEmailNotificationAdminNamespace,
+} from "./translations/types";
 
 const EmailTemplateForm: React.FC<{
   form: UseFormReturn<CustomerEmailNotificationConfiguration>;
@@ -36,13 +40,16 @@ const EmailTemplateForm: React.FC<{
   whenText: string;
   demoArguments: Record<string, any>;
 }> = ({ form, disabled, isDataLoading, type, whenText, demoArguments }) => {
-  const t = useI18n("apps");
+  const t = useI18n<
+    CustomerEmailNotificationAdminNamespace,
+    CustomerEmailNotificationAdminKeys
+  >(customerEmailNotificationAdminNamespace);
   const tAdmin = useI18n("admin");
 
   return (
     <div className="flex flex-col gap-2 w-full">
       <h3 className="m-0 text-center">
-        {t(`customerEmailNotification.form.header`, {
+        {t(`form.header`, {
           type: tAdmin(`appointments.status.${type}`),
         })}
       </h3>
@@ -53,10 +60,10 @@ const EmailTemplateForm: React.FC<{
           render={({ field }) => (
             <FormItem>
               <FormLabel>
-                {t(`customerEmailNotification.form.subject.label`)}
+                {t(`form.subject.label`)}
                 <InfoTooltip>
                   <p>
-                    {t(`customerEmailNotification.form.subject.description`, {
+                    {t(`form.subject.description`, {
                       whenText,
                     })}
                   </p>
@@ -69,9 +76,7 @@ const EmailTemplateForm: React.FC<{
                 ) : (
                   <ArgumentsAutocomplete
                     disabled={disabled}
-                    placeholder={t(
-                      `customerEmailNotification.form.subject.placeholder`
-                    )}
+                    placeholder={t(`form.subject.placeholder`)}
                     {...field}
                     asInput
                     args={demoArguments}
@@ -88,9 +93,9 @@ const EmailTemplateForm: React.FC<{
           render={({ field }) => (
             <FormItem>
               <FormLabel>
-                {t(`customerEmailNotification.form.body.label`)}
+                {t(`form.body.label`)}
                 <InfoTooltip>
-                  {t(`customerEmailNotification.form.body.description`, {
+                  {t(`form.body.description`, {
                     whenText,
                   })}
                 </InfoTooltip>
@@ -116,9 +121,9 @@ const EmailTemplateForm: React.FC<{
   );
 };
 
-export const CustomerEmailNotificationAppSetup: React.FC<
-  ComplexAppSetupProps
-> = ({ appId }) => {
+export const CustomerEmailNotificationAppSetup: React.FC<{ appId: string }> = ({
+  appId,
+}) => {
   const demoArguments = useDemoArguments();
   const { appStatus, form, isLoading, isDataLoading, isValid, onSubmit } =
     useConnectedAppSetup<CustomerEmailNotificationConfiguration>({
@@ -127,7 +132,10 @@ export const CustomerEmailNotificationAppSetup: React.FC<
       schema: customerEmailNotificationConfigurationSchema,
     });
 
-  const t = useI18n("apps");
+  const t = useI18n<
+    CustomerEmailNotificationAdminNamespace,
+    CustomerEmailNotificationAdminKeys
+  >(customerEmailNotificationAdminNamespace);
   const tAdmin = useI18n("admin");
 
   return (
@@ -140,7 +148,7 @@ export const CustomerEmailNotificationAppSetup: React.FC<
               disabled={isLoading}
               isDataLoading={isDataLoading}
               type={"pending"}
-              whenText={t(`customerEmailNotification.whenText.pending`)}
+              whenText={t(`whenText.pending`)}
               demoArguments={demoArguments}
             />
             <EmailTemplateForm
@@ -148,7 +156,7 @@ export const CustomerEmailNotificationAppSetup: React.FC<
               disabled={isLoading}
               isDataLoading={isDataLoading}
               type={"confirmed"}
-              whenText={t(`customerEmailNotification.whenText.confirmed`)}
+              whenText={t(`whenText.confirmed`)}
               demoArguments={demoArguments}
             />
             <EmailTemplateForm
@@ -156,7 +164,7 @@ export const CustomerEmailNotificationAppSetup: React.FC<
               disabled={isLoading}
               isDataLoading={isDataLoading}
               type={"declined"}
-              whenText={t(`customerEmailNotification.whenText.declined`)}
+              whenText={t(`whenText.declined`)}
               demoArguments={demoArguments}
             />
             <EmailTemplateForm
@@ -164,14 +172,12 @@ export const CustomerEmailNotificationAppSetup: React.FC<
               disabled={isLoading}
               isDataLoading={isDataLoading}
               type={"rescheduled"}
-              whenText={t(`customerEmailNotification.whenText.rescheduled`)}
+              whenText={t(`whenText.rescheduled`)}
               demoArguments={demoArguments}
             />
             <div className="flex flex-col gap-2 w-full">
               <h3 className="m-0 text-center">
-                {t(
-                  `customerEmailNotification.form.calendarEventTemplate.title`
-                )}
+                {t(`form.calendarEventTemplate.title`)}
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2 w-full">
                 <FormField
@@ -180,13 +186,11 @@ export const CustomerEmailNotificationAppSetup: React.FC<
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
-                        {t(
-                          `customerEmailNotification.form.calendarEventTemplate.summary.label`
-                        )}
+                        {t(`form.calendarEventTemplate.summary.label`)}
                         <InfoTooltip>
                           <p>
                             {t(
-                              `customerEmailNotification.form.calendarEventTemplate.summary.description`
+                              `form.calendarEventTemplate.summary.description`,
                             )}
                           </p>
                           <p>{tAdmin("common.usesTemplatedValues")}</p>
@@ -196,12 +200,14 @@ export const CustomerEmailNotificationAppSetup: React.FC<
                         {isDataLoading ? (
                           <Skeleton className="w-full h-10" />
                         ) : (
-                          <Input
+                          <ArgumentsAutocomplete
                             disabled={isLoading}
                             placeholder={t(
-                              `customerEmailNotification.form.calendarEventTemplate.summary.placeholder`
+                              `form.calendarEventTemplate.summary.placeholder`,
                             )}
                             {...field}
+                            asInput
+                            args={demoArguments}
                           />
                         )}
                       </FormControl>
@@ -215,12 +221,10 @@ export const CustomerEmailNotificationAppSetup: React.FC<
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
-                        {t(
-                          `customerEmailNotification.form.calendarEventTemplate.templateId.label`
-                        )}
+                        {t(`form.calendarEventTemplate.templateId.label`)}
                         <InfoTooltip>
                           {t(
-                            `customerEmailNotification.form.calendarEventTemplate.templateId.description`
+                            `form.calendarEventTemplate.templateId.description`,
                           )}
                         </InfoTooltip>
                       </FormLabel>
@@ -250,7 +254,12 @@ export const CustomerEmailNotificationAppSetup: React.FC<
           </div>
         </form>
       </Form>
-      {appStatus && <ConnectedAppStatusMessage app={appStatus} t={t} />}
+      {appStatus && (
+        <ConnectedAppStatusMessage
+          status={appStatus.status}
+          statusText={appStatus.statusText}
+        />
+      )}
     </>
   );
 };

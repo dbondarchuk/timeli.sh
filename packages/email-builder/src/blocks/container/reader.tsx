@@ -1,4 +1,4 @@
-import { ReaderBlock } from "@vivid/builder";
+import { ReaderBlock } from "@timelish/builder";
 import { BaseContainer } from "./base";
 import { ContainerReaderProps } from "./schema";
 
@@ -11,7 +11,7 @@ export const ContainerReader = ({
   return (
     <BaseContainer style={style}>
       {children.map((child) => (
-        <ReaderBlock key={child.id} block={child} {...rest} />
+        <ReaderBlock key={child.id} {...rest} block={child} />
       ))}
     </BaseContainer>
   );

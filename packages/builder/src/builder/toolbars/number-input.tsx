@@ -1,5 +1,6 @@
 "use client";
 
+import { Leaves } from "@timelish/types";
 import {
   cn,
   Popover,
@@ -9,8 +10,8 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@vivid/ui";
-import { destructAndReplace, Leaves, resolveProperty } from "@vivid/utils";
+} from "@timelish/ui";
+import { destructAndReplace, resolveProperty } from "@timelish/utils";
 import { Minus, Plus } from "lucide-react";
 import { useState } from "react";
 import { ConfigurationProps } from "../../documents/types";
@@ -63,7 +64,7 @@ export const NumberInputToolbarMenu = <T,>({
             <PopoverTrigger asChild>
               <input
                 className={cn(
-                  "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none h-full w-10 shrink-0 bg-transparent text-foreground px-1 text-center text-sm hover:bg-muted"
+                  "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none h-full w-10 shrink-0 bg-transparent text-foreground px-1 text-center text-sm hover:bg-muted",
                 )}
                 value={propValue}
                 onBlur={() => {
@@ -94,7 +95,7 @@ export const NumberInputToolbarMenu = <T,>({
                 <button
                   key={option}
                   className={cn(
-                    "flex h-8 w-full items-center justify-center text-sm hover:bg-accent data-[highlighted=true]:bg-accent"
+                    "flex h-8 w-full items-center justify-center text-sm hover:bg-accent data-[highlighted=true]:bg-accent",
                   )}
                   onClick={() => {
                     handleInputChange(option);

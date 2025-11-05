@@ -1,8 +1,6 @@
-import * as React from "react";
-
 import type { SlateElementProps } from "@udecode/plate";
 
-import { cn } from "@vivid/ui";
+import { cn } from "@timelish/ui";
 import { SlateElement } from "@udecode/plate";
 import { cva } from "class-variance-authority";
 

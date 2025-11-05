@@ -1,2 +1,2 @@
 export * from "./asset";
-export * from "./migrate";
+export * from "./entity";

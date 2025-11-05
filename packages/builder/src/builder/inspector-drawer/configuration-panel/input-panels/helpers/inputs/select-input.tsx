@@ -8,25 +8,25 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { ResetButton } from "./reset-button";
 
-type Props = {
+type Props = Pick<React.ComponentProps<typeof SelectTrigger>, "size"> & {
   label: string;
   placeholder?: string;
   options: { value: string; label: string; style?: React.CSSProperties }[];
 } & (
-  | {
-      defaultValue: string;
-      onChange: (v: string) => void;
-      nullable?: false;
-    }
-  | {
-      defaultValue: string | null;
-      onChange: (v: string | null) => void;
-      nullable: true;
-    }
-);
+    | {
+        defaultValue: string;
+        onChange: (v: string) => void;
+        nullable?: false;
+      }
+    | {
+        defaultValue: string | null;
+        onChange: (v: string | null) => void;
+        nullable: true;
+      }
+  );
 
 export const SelectInput: React.FC<Props> = ({
   label,
@@ -35,6 +35,7 @@ export const SelectInput: React.FC<Props> = ({
   onChange,
   defaultValue,
   options,
+  size = "sm",
 }) => {
   const [value, setValue] = React.useState(defaultValue);
   React.useEffect(() => {
@@ -58,7 +59,7 @@ export const SelectInput: React.FC<Props> = ({
             onChange(v);
           }}
         >
-          <SelectTrigger className="w-full">
+          <SelectTrigger className="w-full" size={size}>
             <SelectValue placeholder={placeholder ?? "Select option"} />
           </SelectTrigger>
           <SelectContent>

@@ -1,12 +1,14 @@
 "use client";
 
 import { Check } from "lucide-react";
-import * as React from "react";
+import React from "react";
 
+import { useI18n } from "@timelish/i18n";
 import { useInView } from "react-intersection-observer";
 import { toast } from "sonner";
 import { useDebounce } from "../hooks";
 import { cn } from "../utils";
+import { ButtonProps } from "./button";
 import { ComboboxTrigger, IComboboxItem, Loader } from "./combobox";
 import {
   Command,
@@ -25,7 +27,7 @@ type BaseComboboAsyncProps = {
   value?: string;
   fetchItems: (
     page: number,
-    search?: string
+    search?: string,
   ) => Promise<{
     items: IComboboxItem[];
     hasMore: boolean;
@@ -33,7 +35,9 @@ type BaseComboboAsyncProps = {
   debounceMs?: number;
   disabled?: boolean;
   className?: string;
+  id?: string;
   loader?: React.ReactNode;
+  size?: ButtonProps["size"];
 };
 
 type ClearableComboboAsyncProps = BaseComboboAsyncProps & {
@@ -51,9 +55,9 @@ export type ComboboAsyncProps =
   | ClearableComboboAsyncProps;
 
 export const ComboboxAsync: React.FC<ComboboAsyncProps> = ({
-  placeholder = "Select an item...",
-  emptyMessage = "No items found.",
-  searchLabel = "Search items...",
+  placeholder,
+  emptyMessage,
+  searchLabel,
   value,
   onChange,
   fetchItems,
@@ -76,6 +80,8 @@ export const ComboboxAsync: React.FC<ComboboAsyncProps> = ({
   const [hasMore, setHasMore] = React.useState(true);
   const [initialLoad, setInitialLoad] = React.useState(true);
 
+  const t = useI18n("ui");
+
   const { ref, inView } = useInView({
     threshold: 0.5,
   });
@@ -83,7 +89,7 @@ export const ComboboxAsync: React.FC<ComboboAsyncProps> = ({
   // Get selected item label
   const selectedItem = React.useMemo(
     () => items.find((item) => item.value === value),
-    [items, value]
+    [items, value],
   );
 
   // Reset when search changes
@@ -141,7 +147,7 @@ export const ComboboxAsync: React.FC<ComboboAsyncProps> = ({
         >
           {selectedItem
             ? (selectedItem.shortLabel ?? selectedItem.label)
-            : placeholder}
+            : placeholder || t("common.placeholder")}
         </ComboboxTrigger>
       </PopoverTrigger>
       <PopoverContent
@@ -149,7 +155,7 @@ export const ComboboxAsync: React.FC<ComboboAsyncProps> = ({
       >
         <Command shouldFilter={false}>
           <CommandInput
-            placeholder={searchLabel}
+            placeholder={searchLabel || t("common.search")}
             value={search}
             onValueChange={setSearch}
           />
@@ -157,12 +163,14 @@ export const ComboboxAsync: React.FC<ComboboAsyncProps> = ({
             {loading && page === 1 ? (
               <div className="py-2">{loader}</div>
             ) : items.length === 0 && !loading ? (
-              <CommandEmpty>{emptyMessage}</CommandEmpty>
+              <CommandEmpty>
+                {emptyMessage || t("common.noResults")}
+              </CommandEmpty>
             ) : (
               <CommandGroup>
-                {items.map((item) => (
+                {items.map((item, index) => (
                   <CommandItem
-                    key={item.value}
+                    key={`${item.value}-${index}`}
                     value={item.value}
                     onSelect={(currentValue) => {
                       onChange(currentValue);
@@ -172,7 +180,7 @@ export const ComboboxAsync: React.FC<ComboboAsyncProps> = ({
                     <Check
                       className={cn(
                         "mr-2 h-4 w-4",
-                        value === item.value ? "opacity-100" : "opacity-0"
+                        value === item.value ? "opacity-100" : "opacity-0",
                       )}
                     />
                     {item.label}

@@ -1,16 +1,16 @@
 import {
   ToolbarDropdownMenu,
   ToolbarDropdownPropsValues,
-} from "@vivid/builder";
+} from "@timelish/builder";
+import { useI18n } from "@timelish/i18n";
+import { Leaves } from "@timelish/types";
 import { Bold } from "lucide-react";
 import { FontWeight } from "../style-inputs/helpers/zod";
-import { Leaves } from "@vivid/utils";
-import { useI18n } from "@vivid/i18n";
 
 type PropsType = { style?: { fontWeight?: FontWeight | null } | null };
 
 export const FontWeightDropdownMenu = <T extends PropsType>(
-  props: ToolbarDropdownPropsValues<T>
+  props: ToolbarDropdownPropsValues<T>,
 ) => {
   const t = useI18n("builder");
 

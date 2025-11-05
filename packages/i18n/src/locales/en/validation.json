@@ -15,220 +15,6 @@
       "invalid": "Invalid URL"
     }
   },
-  "customerEmailNotification": {
-    "eventTemplate": {
-      "summary": {
-        "required": "Event summary is required",
-        "min": "Event summary is required"
-      },
-      "templateId": {
-        "required": "Event template is required",
-        "min": "Event template is required"
-      }
-    },
-    "emailTemplate": {
-      "subject": {
-        "required": "Email subject is required",
-        "min": "Email subject is required"
-      },
-      "templateId": {
-        "required": "Email template is required",
-        "min": "Email template is required"
-      }
-    }
-  },
-  "calDav": {
-    "calendarName": {
-      "required": "Calendar name is required",
-      "min": "Calendar name is required"
-    },
-    "serverUrl": {
-      "required": "Server URL is required",
-      "url": "Server URL must be a valid URL"
-    }
-  },
-  "calendarWriter": {
-    "appId": {
-      "required": "Calendar app is required"
-    }
-  },
-  "followUps": {
-    "form": {
-      "name": {
-        "required": "Name is required",
-        "min": "Name must be at least 2 characters long"
-      },
-      "weeks": {
-        "min": "Min amount of weeks is 0",
-        "max": "Max amount of weeks is 10"
-      },
-      "days": {
-        "min": "Min amount of days is 0",
-        "max": "Max amount of days is 31"
-      },
-      "hours": {
-        "min": "Min amount of hours is 0",
-        "max": "Max amount of hours is 120"
-      },
-      "minutes": {
-        "min": "Min amount of minutes is 0",
-        "max": "Max amount of minutes is 600"
-      },
-      "time": {
-        "hour": {
-          "min": "Hour must be between 0 and 23",
-          "max": "Hour must be between 0 and 23"
-        },
-        "minute": {
-          "min": "Minute must be between 0 and 59",
-          "max": "Minute must be between 0 and 59"
-        }
-      },
-      "templateId": {
-        "required": "Template is required"
-      },
-      "subject": {
-        "required": "Email subject is required"
-      },
-      "afterAppointmentCount": {
-        "min": "Min appointment count is 1",
-        "max": "Max appointment count is 100"
-      },
-      "atTime": {
-        "days": {
-          "min": "Follow-up should be sent at least 1 day after the appointment"
-        },
-        "minutes": {
-          "min": "Follow-up should be sent at least 1 minute after the appointment"
-        }
-      }
-    }
-  },
-  "ics": {
-    "invalidUrl": "ICS must be a valid URL to your calendar"
-  },
-  "logCleanup": {
-    "amountMin": "Amount must be at least 1",
-    "amountInteger": "Should be the integer value"
-  },
-  "reminders": {
-    "form": {
-      "name": {
-        "required": "Reminder name must be at least 2 characters long",
-        "min": "Reminder name must be at least 2 characters long"
-      },
-      "weeks": {
-        "min": "Min amount of weeks is 0",
-        "max": "Max amount of weeks is 10"
-      },
-      "days": {
-        "min": "Min amount of days is 0",
-        "max": "Max amount of days is 31"
-      },
-      "hours": {
-        "min": "Min amount of hours is 0",
-        "max": "Max amount of hours is 120"
-      },
-      "minutes": {
-        "min": "Min amount of minutes is 0",
-        "max": "Max amount of minutes is 600"
-      },
-      "time": {
-        "hour": {
-          "min": "Hour should be between 0 and 23",
-          "max": "Hour should be between 0 and 23"
-        },
-        "minute": {
-          "min": "Minute should be between 0 and 59",
-          "max": "Minute should be between 0 and 59"
-        }
-      },
-      "templateId": {
-        "required": "Template is required"
-      },
-      "subject": {
-        "required": "Email subject is required"
-      },
-      "atTime": {
-        "days": {
-          "min": "Reminder should be sent at least 1 day before the appointment"
-        },
-        "minutes": {
-          "min": "Reminder should be sent at least 1 minute before the appointment"
-        }
-      }
-    }
-  },
-  "paypal": {
-    "clientId": {
-      "required": "PayPal Client ID is required"
-    },
-    "secretKey": {
-      "required": "PayPal API key is required"
-    },
-    "buttonStyle": {
-      "shape": {
-        "invalid": "Unknown shape"
-      },
-      "layout": {
-        "invalid": "Unknown layout"
-      },
-      "color": {
-        "invalid": "Unknown color"
-      },
-      "label": {
-        "invalid": "Unknown label"
-      }
-    },
-    "paymentIntentId": {
-      "required": "Payment intent ID is required"
-    },
-    "orderId": {
-      "required": "Order ID is required"
-    }
-  },
-  "s3AssetsStorage": {
-    "form": {
-      "region": {
-        "required": "S3 region is required"
-      },
-      "accessKeyId": {
-        "required": "Access key ID is required"
-      },
-      "secretAccessKey": {
-        "required": "Secret access key is required"
-      },
-      "endpoint": {
-        "url": "Should be a valid URL"
-      }
-    }
-  },
-  "smtp": {
-    "host": {
-      "required": "SMTP host is required",
-      "min": "SMTP host is required"
-    },
-    "port": {
-      "integer": "Should be the integer value",
-      "min": "SMTP port number must be between 1 and 99999",
-      "max": "SMTP port number must be between 1 and 99999"
-    },
-    "email": {
-      "invalid": "Email must be a correct email address"
-    }
-  },
-  "textBelt": {
-    "apiKey": {
-      "required": "TextBelt API key is required",
-      "min": "TextBelt API key is required"
-    }
-  },
-  "textMessageAutoReply": {
-    "autoReplyTemplateId": {
-      "required": "Template is required",
-      "min": "Template is required"
-    }
-  },
   "assets": {
     "fileRequired": "File must be attached",
     "fileNameMinLength": "File name must be at least 3 characters",
@@ -238,9 +24,6 @@
   "customers": {
     "emailAlreadyExists": "There is already a customer with one or more of the emails",
     "phoneAlreadyExists": "There is already a customer with one or more of the phones"
-  },
-  "pages": {
-    "slugMustBeUnique": "Page slug must be unique"
   },
   "templates": {
     "nameMustBeUnique": "Template name must be unique"
@@ -278,11 +61,15 @@
       },
       "duration": {
         "required": "Duration is required",
-        "positive": "Duration must be a integer number greater or equal to 1"
+        "positive": "Duration must be a integer number greater or equal to 1 minute",
+        "max": "Duration must be at most 1 day"
       },
       "fields": {
         "email": {
           "required": "Valid email is required"
+        },
+        "phone": {
+          "required": "Phone is required"
         },
         "name": {
           "required": "Name is required"
@@ -293,6 +80,9 @@
       },
       "paymentIntentId": {
         "min": "Payment Intent ID should be undefined or at least one character long"
+      },
+      "appointmentId": {
+        "required": "Appointment ID is required"
       }
     },
     "option": {
@@ -321,11 +111,29 @@
           "unique": "Field IDs should be unique"
         }
       },
+      "isOnline": {
+        "required": "If selected, meeting URL provider app is required"
+      },
+      "meetingUrlProviderAppId": {
+        "required": "Meeting URL provider app is required if selected"
+      },
       "requireDeposit": {
         "required": "Deposit amount is required if set to always"
       },
       "depositPercentage": {
         "required": "Deposit percentage must be an integer number between 10 and 100"
+      },
+      "duplicateAppointmentCheck": {
+        "enabled": {
+          "required": "Amount of days before or after the appointment to ask for confirmation is required"
+        },
+        "days": {
+          "min": "Amount of days must be between 1 and 30",
+          "max": "Amount of days must be between 1 and 30"
+        },
+        "message": {
+          "required": "Message is required"
+        }
       }
     }
   },
@@ -529,6 +337,9 @@
       "url": {
         "invalid": "Website URL should be valid URL address",
         "min": "Website URL must be at least 3 characters long"
+      },
+      "domain": {
+        "invalid": "Domain must be a valid domain name"
       }
     },
     "resources": {
@@ -628,19 +439,35 @@
     },
     "slug": {
       "required": "Page slug is required",
-      "invalid": "Page slug must contain only latin lower case letters, digits, slash, and hyphens"
+      "invalid": "Page slug must contain only latin lower case letters, digits, slash, and hyphens",
+      "unique": "Page slug must be unique"
     },
     "description": {
       "required": "Page description is required"
     },
     "keywords": {
-      "required": "Page keywords are required"
+      "required": "Page keywords are required",
+      "min": "Page keywords must be at least 2 characters long"
     },
     "publishDate": {
       "required": "Publish date is required"
     },
     "tag": {
       "min": "Tag should be at least 3 characters long"
+    },
+    "headers": {
+      "name": {
+        "required": "Page header name is required",
+        "min": "Page header name must be at least 2 characters long",
+        "unique": "Page header name must be unique"
+      }
+    },
+    "footers": {
+      "name": {
+        "required": "Page footer name is required",
+        "min": "Page footer name must be at least 2 characters long",
+        "unique": "Page footer name must be unique"
+      }
     }
   },
   "template": {
@@ -652,6 +479,48 @@
     },
     "value": {
       "required": "Template value is required"
+    }
+  },
+  "payments": {
+    "amount": {
+      "required": "Amount is required",
+      "min": "Amount must be at least 1"
+    },
+    "paidAt": {
+      "required": "Paid at is required"
+    },
+    "method": {
+      "required": "Method is required"
+    },
+    "type": {
+      "required": "Payment type is required"
+    }
+  },
+  "cancellation": {
+    "policy": {
+      "enabled": {
+        "required": "Enabled is required"
+      },
+      "minutesToAppointment": {
+        "required": "Time to appointment must be a positive integer"
+      },
+      "action": {
+        "required": "Action is required"
+      },
+      "refundPercentage": {
+        "required": "Refund percentage must be an integer number between 0 and 100"
+      },
+      "paymentPercentage": {
+        "required": "Payment percentage must be an integer number between 0 and 100"
+      },
+      "note": {
+        "max": "Note must be at most 500 characters long"
+      },
+      "min": "At least one cancellation policy must be added",
+      "increasing": "Each policy's time must be strictly larger than the previous one.",
+      "maxReschedules": {
+        "required": "Max reschedules must be a positive integer"
+      }
     }
   }
 }

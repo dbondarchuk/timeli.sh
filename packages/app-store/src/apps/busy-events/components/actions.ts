@@ -1,12 +1,12 @@
-import { Schedule, WeekIdentifier } from "@vivid/types";
-import { processRequest } from "../../..";
+import { adminApi } from "@timelish/api-sdk";
+import { Schedule, WeekIdentifier } from "@timelish/types";
 import { RequestAction } from "../models";
 
 export const getWeeklyEvents = async (
   appId: string,
-  weekIdentifier: WeekIdentifier
+  weekIdentifier: WeekIdentifier,
 ) => {
-  return (await processRequest(appId, {
+  return (await adminApi.apps.processRequest(appId, {
     type: "get-weekly-busy-events",
     week: weekIdentifier,
   } as RequestAction)) as Schedule;
@@ -15,9 +15,9 @@ export const getWeeklyEvents = async (
 export const setEvents = async (
   appId: string,
   week: WeekIdentifier,
-  events: Schedule
+  events: Schedule,
 ) => {
-  await processRequest(appId, {
+  await adminApi.apps.processRequest(appId, {
     type: "set-busy-events",
     events,
     week,

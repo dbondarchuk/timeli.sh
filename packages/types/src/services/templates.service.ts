@@ -9,7 +9,7 @@ export interface ITemplatesService {
   getTemplates(
     query: Query & {
       type?: CommunicationChannel[];
-    }
+    },
   ): Promise<WithTotal<TemplateListModel>>;
   deleteTemplate(id: string): Promise<Template | null>;
   deleteTemplates(ids: string[]): Promise<void>;

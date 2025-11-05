@@ -1,6 +1,6 @@
-import { ReaderBlock, TReaderBlock } from "@vivid/builder";
-import { ColumnsContainerReaderProps } from "./schema";
+import { ReaderBlock, TReaderBlock } from "@timelish/builder";
 import { BaseColumnsContainer } from "./base";
+import { ColumnsContainerReaderProps } from "./schema";
 
 export const ColumnsContainerReader = ({
   style,
@@ -12,8 +12,8 @@ export const ColumnsContainerReader = ({
   if (columns) {
     cols = columns.map((col) =>
       col.children.map((child: TReaderBlock) => (
-        <ReaderBlock key={child.id} block={child} {...rest} />
-      ))
+        <ReaderBlock key={child.id} {...rest} block={child} />
+      )),
     );
   }
 

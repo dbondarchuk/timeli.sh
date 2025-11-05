@@ -1,43 +1,18 @@
 import {
   EditorChildren,
+  useBlockEditor,
   useCurrentBlock,
-  useDispatchAction,
-  useSetSelectedBlockId,
-} from "@vivid/builder";
-import { ContainerProps } from "./schema";
+} from "@timelish/builder";
 import { BaseContainer } from "./base";
+import { ContainerProps } from "./schema";
 
 export const ContainerEditor = ({ style, props }: ContainerProps) => {
   const currentBlock = useCurrentBlock<ContainerProps>();
-  const dispatchAction = useDispatchAction();
-  const setSelectedBlockId = useSetSelectedBlockId();
-
-  const children = currentBlock.data?.props?.children;
+  const overlayProps = useBlockEditor(currentBlock.id);
 
   return (
-    <BaseContainer style={style}>
-      <EditorChildren
-        block={currentBlock}
-        property="data.props"
-        children={children || []}
-        onChange={({ block, blockId, children }) => {
-          dispatchAction({
-            type: "set-block-data",
-            value: {
-              blockId: currentBlock.id,
-              data: {
-                ...currentBlock.data,
-                props: {
-                  ...currentBlock.data?.props,
-                  children,
-                },
-              },
-            },
-          });
-
-          setSelectedBlockId(blockId);
-        }}
-      />
+    <BaseContainer style={currentBlock.data?.style} {...overlayProps}>
+      <EditorChildren blockId={currentBlock.id} property="props" />
     </BaseContainer>
   );
 };

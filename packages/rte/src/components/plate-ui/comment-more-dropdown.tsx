@@ -1,8 +1,6 @@
 "use client";
 
-import React from "react";
-
-import { Button, cn } from "@vivid/ui";
+import { Button, cn } from "@timelish/ui";
 import {
   useCommentDeleteButton,
   useCommentEditButton,
@@ -15,7 +13,7 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@vivid/ui";
+} from "@timelish/ui";
 
 export function CommentMoreDropdown() {
   const { props: editProps } = useCommentEditButton();

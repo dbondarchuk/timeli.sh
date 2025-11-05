@@ -1,8 +1,6 @@
-import React from "react";
-
 import type { TEquationElement } from "@udecode/plate-math";
 
-import { cn } from "@vivid/ui";
+import { cn } from "@timelish/ui";
 import { type SlateElementProps, SlateElement } from "@udecode/plate";
 import { getEquationHtml } from "@udecode/plate-math";
 
@@ -32,7 +30,7 @@ export function InlineEquationElementStatic({
     <SlateElement
       className={cn(
         "inline-block rounded-sm select-none [&_.katex-display]:my-0",
-        className
+        className,
       )}
       {...props}
     >
@@ -42,13 +40,13 @@ export function InlineEquationElementStatic({
           "h-6",
           element.texExpression.length === 0 &&
             "text-muted-foreground after:bg-neutral-500/10",
-          className
+          className,
         )}
       >
         <span
           className={cn(
             element.texExpression.length === 0 && "hidden",
-            "font-mono leading-none"
+            "font-mono leading-none",
           )}
           dangerouslySetInnerHTML={{
             __html: html,

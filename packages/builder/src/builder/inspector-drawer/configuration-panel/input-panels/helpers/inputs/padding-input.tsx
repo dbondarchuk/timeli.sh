@@ -1,13 +1,13 @@
 import React from "react";
 
-import { Label } from "@vivid/ui";
+import { Label } from "@timelish/ui";
 import {
   AlignEndHorizontal,
   AlignEndVertical,
   AlignStartHorizontal,
   AlignStartVertical,
 } from "lucide-react";
-import RawSliderInput from "./raw/raw-slider-input";
+import { RawSliderInput } from "./raw/raw-slider-input";
 
 type TPaddingValue = {
   top: number;

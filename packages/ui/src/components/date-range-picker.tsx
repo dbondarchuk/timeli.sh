@@ -1,23 +1,36 @@
 "use client";
-import { Button } from "./button";
-import { Calendar } from "./calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "./popover";
-import { cn } from "../utils";
-import { DateRange } from "@vivid/types";
 import { CalendarIcon } from "@radix-ui/react-icons";
+import { useI18n } from "@timelish/i18n";
+import { DateRange } from "@timelish/types";
 import { DateTime } from "luxon";
-import * as React from "react";
-import { useI18n } from "@vivid/i18n";
+import React from "react";
+import { cn } from "../utils";
+import { Button } from "./button";
+import { Calendar, CalendarProps } from "./calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
-export type CalendarDateRangePickerProps =
-  React.HTMLAttributes<HTMLDivElement> & {
+export type RangeOption = {
+  label: string;
+  name: string;
+  value: DateRange | undefined;
+};
+
+export type CalendarDateRangePickerProps = Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "onChange"
+> &
+  Omit<
+    Extract<CalendarProps, { mode: "range" }>,
+    "mode" | "defaultMonth" | "selected" | "onSelect" | "numberOfMonths"
+  > & {
     range?: DateRange;
     onChange?: (range?: DateRange) => void;
+    rangeOptions?: RangeOption[];
   };
 
 export const CalendarDateRangePicker: React.FC<
   CalendarDateRangePickerProps
-> = ({ className, range, onChange }) => {
+> = ({ className, range, onChange, rangeOptions, ...rest }) => {
   const t = useI18n("ui");
   const [date, setDate] = React.useState<DateRange | undefined>(range);
   React.useEffect(() => {
@@ -38,7 +51,7 @@ export const CalendarDateRangePicker: React.FC<
             variant={"outline"}
             className={cn(
               "w-full justify-start text-left font-normal",
-              !date && "text-muted-foreground"
+              !date && "text-muted-foreground",
             )}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
@@ -58,9 +71,27 @@ export const CalendarDateRangePicker: React.FC<
             )}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="end">
+        <PopoverContent
+          className="w-auto p-0 flex flex-col md:flex-row gap-2"
+          align="end"
+        >
+          {!!rangeOptions?.length && (
+            <div className="flex flex-col gap-1 px-2 py-4">
+              {rangeOptions?.map((option) => (
+                <Button
+                  key={option.name}
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => onSelect(option.value)}
+                >
+                  {option.label}
+                </Button>
+              ))}
+            </div>
+          )}
           <Calendar
             autoFocus
+            {...rest}
             mode="range"
             defaultMonth={date?.start}
             selected={{
@@ -80,7 +111,7 @@ export const CalendarDateRangePicker: React.FC<
                         ? DateTime.fromJSDate(range.to).endOf("day").toJSDate()
                         : undefined,
                     }
-                  : undefined
+                  : undefined,
               )
             }
             numberOfMonths={2}

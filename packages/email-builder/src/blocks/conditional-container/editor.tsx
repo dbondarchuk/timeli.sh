@@ -1,27 +1,22 @@
 import {
   EditorChildren,
+  useBlockEditor,
   useCurrentBlock,
-  useDispatchAction,
-  useSetSelectedBlockId,
-} from "@vivid/builder";
-import { useI18n } from "@vivid/i18n";
+} from "@timelish/builder";
+import { useI18n } from "@timelish/i18n";
 import { ConditionalContainerProps } from "./schema";
 
 export const ConditionalContainerEditor = ({
   props,
 }: ConditionalContainerProps) => {
   const t = useI18n("builder");
-  const condition = props?.condition || "";
 
   const currentBlock = useCurrentBlock<ConditionalContainerProps>();
-  const dispatchAction = useDispatchAction();
-  const setSelectedBlockId = useSetSelectedBlockId();
-
-  const thenChildren = currentBlock.data?.props?.then?.children ?? [];
-  const elseChildren = currentBlock.data?.props?.otherwise?.children ?? [];
+  const overlayProps = useBlockEditor(currentBlock.id);
+  const condition = currentBlock.data?.props?.condition || "";
 
   return (
-    <div className="w-full">
+    <div className="w-full" {...overlayProps}>
       <div className="mb-2 text-muted-foreground text-xs w-full">
         {t.rich(
           "emailBuilder.blocks.conditionalContainer.ifConditionIsCorrectFormat",
@@ -30,62 +25,14 @@ export const ConditionalContainerEditor = ({
             condition:
               condition ||
               t("emailBuilder.blocks.conditionalContainer.condition"),
-          }
+          },
         )}
       </div>
-      <EditorChildren
-        block={currentBlock}
-        property="data.props.then"
-        children={thenChildren}
-        onChange={({ block, blockId, children }) => {
-          dispatchAction({
-            type: "set-block-data",
-            value: {
-              blockId: currentBlock.id,
-              data: {
-                ...currentBlock.data,
-                props: {
-                  ...currentBlock.data?.props,
-                  then: {
-                    ...currentBlock.data?.props?.then,
-                    children,
-                  },
-                },
-              },
-            },
-          });
-
-          setSelectedBlockId(blockId);
-        }}
-      />
+      <EditorChildren blockId={currentBlock.id} property="props.then" />
       <div className="mb-2 text-muted-foreground text-xs w-full">
         {t("emailBuilder.blocks.conditionalContainer.otherwise")},
       </div>
-      <EditorChildren
-        block={currentBlock}
-        property="data.props.otherwise"
-        children={elseChildren}
-        onChange={({ block, blockId, children }) => {
-          dispatchAction({
-            type: "set-block-data",
-            value: {
-              blockId: currentBlock.id,
-              data: {
-                ...currentBlock.data,
-                props: {
-                  ...currentBlock.data?.props,
-                  otherwise: {
-                    ...currentBlock.data?.props?.otherwise,
-                    children,
-                  },
-                },
-              },
-            },
-          });
-
-          setSelectedBlockId(blockId);
-        }}
-      />
+      <EditorChildren blockId={currentBlock.id} property="props.otherwise" />
     </div>
   );
 };

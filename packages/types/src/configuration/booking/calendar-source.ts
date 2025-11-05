@@ -1,7 +1,8 @@
-import { z } from "zod";
+import * as z from "zod";
+import { zNonEmptyString } from "../../utils";
 
 export const calendarSourceConfigurationSchema = z.object({
-  appId: z.string().min(1, "configuration.booking.calendarSource.required"),
+  appId: zNonEmptyString("configuration.booking.calendarSource.required"),
 });
 
 export type CalendarSourceConfiguration = z.infer<

@@ -1,4 +1,4 @@
-import { Language } from "@vivid/i18n";
+import { Language } from "@timelish/i18n";
 import { EnEmailTemplates } from "./translations/en";
 import { UkEmailTemplates } from "./translations/uk";
 import { EmailTemplates } from "./types";

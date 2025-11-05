@@ -3,19 +3,19 @@ import {
   ToolbarColorMenu,
   ToolbarDropdownMenu,
   ToolbarDropdownPropsValues,
-} from "@vivid/builder";
-import { useI18n } from "@vivid/i18n";
+} from "@timelish/builder";
+import { useI18n } from "@timelish/i18n";
 import { Baseline, Brush, PaintBucket, PaintRoller } from "lucide-react";
 import { FONT_FAMILIES } from "../../style-inputs/helpers/font-family";
 import { fontFamilyItems } from "../../toolbars/font-family";
 import { EmailLayoutDefaultProps, EmailLayoutProps } from "./schema";
 
 const LayoutFontFamilyDropdownMenu = (
-  props: ToolbarDropdownPropsValues<EmailLayoutProps>
+  props: ToolbarDropdownPropsValues<EmailLayoutProps>,
 ) => {
   const t = useI18n("builder");
   const selectedFont = FONT_FAMILIES.find(
-    (font) => font.key === props.data?.fontFamily
+    (font) => font.key === props.data?.fontFamily,
   );
 
   return (
@@ -34,7 +34,7 @@ const LayoutFontFamilyDropdownMenu = (
 };
 
 export const EmailLayoutToolbar = (
-  props: ConfigurationProps<EmailLayoutProps>
+  props: ConfigurationProps<EmailLayoutProps>,
 ) => {
   const t = useI18n("builder");
 

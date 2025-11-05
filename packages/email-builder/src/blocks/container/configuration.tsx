@@ -1,6 +1,6 @@
 "use client";
 
-import { ConfigurationProps } from "@vivid/builder";
+import { ConfigurationProps } from "@timelish/builder";
 import { MultiStylePropertyPanel } from "../../style-inputs/multi-style-property-panel";
 import { ContainerProps } from "./schema";
 

@@ -32,6 +32,7 @@
   "form_email_label": "Email",
   "form_phone_label": "Phone",
   "form_promo_code": "Promo code",
+  "form_select_option": "Select option",
   "apply": "Apply",
   "promo_code_success": "Promo code {code} (-${discount}) was successfully applied.",
   "promo_code_error": "Promo code is not valid.",
@@ -40,7 +41,9 @@
   "search_country_code_label": "Search for country...",
   "search_timezone_label": "Search to change the time zone",
   "confirmation_success_title": "Your request has been received!",
-  "confirmation_success_message": "Thanks, {name}! Your request has been received and you will get confirmation email shortly.",
+  "confirmation_success_message": "Thanks, {name}! Your request for {service} has been received and you will get confirmation email shortly.",
+  "confirmation_fetch_failed_title": "We can't find your appointment",
+
   "availability_fetch_failed_title": "Uh oh! Something went wrong.",
   "availability_fetch_failed_description": "Something went wrong while we were getting available times. Please contact us",
   "submit_event_failed_title": "Uh oh! Something went wrong.",
@@ -57,6 +60,50 @@
   "payment_form_full_payment_required_title": "Full payment is required",
   "payment_form_full_payment_required_description": "In order to book this appointment, full paymant of ${amount} is required. Please pay by using the form below",
 
+  "duplicate_appointment_confirmation_title": "Are you sure?",
+  "duplicate_appointment_checkbox_label": "I confirm that I understand and want to book this appointment",
+
+  "modify_appointment_title": "Modify appointment",
+  "modify_appointment_form_type_label": "Email or phone",
+
+  "cancel_appointment_title": "Cancel appointment",
+  "reschedule_appointment_title": "Reschedule appointment",
+
+  "cancel_appointment_form_title": "Let's find your appointment. Please provide the details of the appointment you want to cancel",
+  "reschedule_appointment_form_title": "Let's find your appointment. Please provide the details of the appointment you want to reschedule",
+
+  "cancel_appointment_confirmation_success_title": "Your appointment has been cancelled",
+  "cancel_appointment_confirmation_success_message": "Thanks, {name}! Your appointment for {service} has been cancelled and you will get confirmation email shortly.",
+
+  "reschedule_appointment_confirmation_success_title": "Your appointment has been rescheduled",
+  "reschedule_appointment_confirmation_success_message": "Thanks, {name}! Your appointment for {service} has been rescheduled to {newDateTime} and you will get confirmation email shortly.",
+
+  "cancel_appointment_not_allowed_title": "Cancellation is not allowed for this appointment",
+  "cancel_appointment_not_allowed_message": "Hi {name}, unfortunately we cannot cancel this appointment at this time. Please contact us to cancel.",
+
+  "reschedule_appointment_not_allowed_title": "Rescheduling is not allowed for this appointment",
+  "reschedule_appointment_not_allowed_message": "Hi {name}, unfortunately we cannot reschedule this appointment at this time. Please contact us to reschedule.",
+
+  "appointment_fetch_failed_title": "We can't find your appointment",
+  "appointment_fetch_failed_description": "We can't find your appointment. Make sure you have the correct date & time, and an email or phone number and try again. Or contact us to modify your appointment.",
+
+  "cancel_appointment_confirmation_title": "Are you sure?",
+  "cancel_appointment_confirmation_forfeitDeposit_description": "Hi {name}, are you sure you want to cancel your appointment for <b>{service}</b> on <i>{dateTime}</i>?<br></br>If you do, your deposit <b>will not be refunded</b>.",
+  "cancel_appointment_confirmation_partialRefund_description": "Hi {name}, are you sure you want to cancel your appointment for <b>{service}</b> on <i>{dateTime}</i>?<br></br>If you do, <b>{refundPercentage}%</b> of your deposit{refundFees, plural, =1 {} other {{feesAmount, plural, =0 {} other { (except <b>${feesAmount} fees</b>)}}}} will be refunded (<b>${refundAmount}</b>).",
+  "cancel_appointment_confirmation_fullRefund_description": "Hi {name}, are you sure you want to cancel your appointment for <b>{service}</b> on <i>{dateTime}</i>?<br></br>If you do, your deposit{refundFees, plural, =1 {} other {{feesAmount, plural, =0 {} other { (except <b>${feesAmount} fees</b>)}}}} will be refunded <b>fully</b> (<b>${refundAmount}</b>).",
+  "cancel_appointment_confirmation_checkbox_label": "I confirm that I understand and want to cancel this appointment",
+
+  "reschedule_appointment_confirmation_title": "Are you sure?",
+  "reschedule_appointment_confirmation_description": "Hi {name}, are you sure you want to reschedule your appointment for <b>{service}</b> on <i>{dateTime}</i> to <i>{newDateTime}</i>?",
+  "reschedule_appointment_confirmation_checkbox_label": "I confirm that I understand and want to reschedule this appointment",
+
+  "cancel_submit_failed_title": "Uh oh! Something went wrong.",
+  "cancel_submit_failed_description": "Something went wrong while we were trying to cancel your appointment. Please contact us",
+  "reschedule_submit_failed_title": "Uh oh! Something went wrong.",
+  "reschedule_submit_failed_description": "Something went wrong while we were trying to reschedule your appointment. Please contact us",
+  "reschedule_fee_required_title": "Reschedule fee is required",
+  "reschedule_fee_required_description": "In order to reschedule this appointment, a fee of {percentage}% (${amount}) from total price of ${totalPrice} is required. Please pay by using the form below",
+
   "footer": {
     "contactUsLabel": "Contact us",
     "phone": "Phone",
@@ -66,5 +113,11 @@
   "header": {
     "menu": "Menu",
     "close": "Close"
+  },
+  "common": {
+    "buttons": {
+      "close": "Close",
+      "add": "Add"
+    }
   }
 }

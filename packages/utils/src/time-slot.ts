@@ -7,7 +7,7 @@ import {
   TimeSlotPeriod,
   TimeSlotsFinderConfiguration,
   TimeSlotsFinderError,
-} from "@vivid/types";
+} from "@timelish/types";
 
 export type DateTimePeriod = {
   startAt: Luxon;
@@ -33,7 +33,7 @@ export interface TimeSlotsFinderParameters {
  * @return {TimeSlot[]}
  */
 export function getAvailableTimeSlotsInCalendar(
-  params: TimeSlotsFinderParameters
+  params: TimeSlotsFinderParameters,
 ): TimeSlot[] {
   const { calendarEvents, configuration, from, to } = params;
 
@@ -49,7 +49,7 @@ export function getAvailableTimeSlotsInCalendar(
   const { firstFromMoment, lastToMoment } = _computeBoundaries(
     from,
     to,
-    usedConfig
+    usedConfig,
   );
 
   const timeSlots: TimeSlot[] = [];
@@ -74,8 +74,8 @@ export function getAvailableTimeSlotsInCalendar(
             usedConfig,
             eventList,
             partialFrom,
-            partialTo
-          )
+            partialTo,
+          ),
         );
       });
     }
@@ -89,7 +89,7 @@ export function getAvailableTimeSlotsInCalendar(
 function _checkSearchParameters(
   configuration: TimeSlotsFinderConfiguration,
   from: Date,
-  to: Date
+  to: Date,
 ): TimeSlotsFinderConfiguration {
   if (!from || !to || from.getTime() > to.getTime()) {
     throw new TimeSlotsFinderError("Invalid boundaries for the search");
@@ -98,7 +98,7 @@ function _checkSearchParameters(
   let usedConfig = configuration;
   try {
     const formattedPeriods = _mergeOverlappingShiftsInAvailablePeriods(
-      configuration.schedule
+      configuration.schedule,
     );
     usedConfig = { ...configuration, schedule: formattedPeriods };
   } catch (_) {
@@ -112,7 +112,7 @@ function _checkSearchParameters(
 function _computeBoundaries(
   from: Date,
   to: Date,
-  configuration: TimeSlotsFinderConfiguration
+  configuration: TimeSlotsFinderConfiguration,
 ) {
   const searchLimitMoment = configuration.maxDaysBeforeLastSlot
     ? Luxon.now()
@@ -127,12 +127,12 @@ function _computeBoundaries(
       .setZone(configuration.timeZone)
       /* `minAvailableTimeBeforeSlot` will be subtract later and it cannot start before now */
       .plus({ minutes: configuration.minAvailableTimeBeforeSlot ?? 0 })
-      .plus({ minutes: configuration.minTimeBeforeFirstSlot ?? 0 })
+      .plus({ minutes: configuration.minTimeBeforeFirstSlot ?? 0 }),
   );
   const lastToMoment = searchLimitMoment
     ? Luxon.min(
         Luxon.fromJSDate(to).setZone(configuration.timeZone),
-        searchLimitMoment
+        searchLimitMoment,
       )
     : Luxon.fromJSDate(to).setZone(configuration.timeZone);
 
@@ -141,7 +141,7 @@ function _computeBoundaries(
 
 function _getWeekDayConfigForMoment(
   configuration: TimeSlotsFinderConfiguration,
-  searchMoment: Luxon
+  searchMoment: Luxon,
 ) {
   return configuration.schedule[searchMoment.toISODate() ?? ""] ?? [];
 }
@@ -164,7 +164,7 @@ function _getAvailableTimeSlotsForShift(
   configuration: TimeSlotsFinderConfiguration,
   eventList: DateTimePeriod[],
   from: Luxon,
-  to: Luxon
+  to: Luxon,
 ) {
   const timeSlots: TimeSlot[] = [];
   const minTimeWindowNeeded = _getMinTimeWindowNeeded(configuration);
@@ -194,7 +194,7 @@ function _getAvailableTimeSlotsForShift(
   const cleanedList: DateTimePeriod[] = _prepareEvents(
     eventList,
     filteringMin,
-    filteringMax
+    filteringMax,
   );
 
   /* Find index of the first event that is not yet ended at searchMoment */
@@ -228,7 +228,7 @@ function _getAvailableTimeSlotsForShift(
     } else {
       const { newSearchMoment, timeSlot } = _pushNewSlot(
         searchMoment,
-        configuration
+        configuration,
       );
       timeSlots.push(timeSlot);
       searchMoment = newSearchMoment;
@@ -246,7 +246,7 @@ function _prepareEvents(periods: DateTimePeriod[], from: Luxon, to: Luxon) {
   const filteredPeriods = _filterPeriods(periods, from, to);
   const sortedPeriods = _sortPeriods(filteredPeriods);
   return sortedPeriods.filter(
-    (event) => !_findEmcompassingEvent(sortedPeriods, event)
+    (event) => !_findEmcompassingEvent(sortedPeriods, event),
   );
 }
 
@@ -263,7 +263,7 @@ function _filterPeriods(periods: DateTimePeriod[], from: Luxon, to: Luxon) {
 /* Uses a sorted search technique. Event list must be sorted on event.startAt */
 function _findEmcompassingEvent(
   eventList: DateTimePeriod[],
-  event: DateTimePeriod
+  event: DateTimePeriod,
 ): boolean {
   for (const currentEvent of eventList) {
     // Found condition
@@ -290,7 +290,7 @@ function _getMinTimeWindowNeeded(configuration: TimeSlotsFinderConfiguration) {
 
 function _pushNewSlot(
   searchMoment: Luxon,
-  configuration: TimeSlotsFinderConfiguration
+  configuration: TimeSlotsFinderConfiguration,
 ): { newSearchMoment: Luxon; timeSlot: TimeSlot } {
   const minAvailableTimeBeforeSlot =
     configuration.minAvailableTimeBeforeSlot ?? 0;
@@ -301,8 +301,8 @@ function _pushNewSlot(
 
   const endAt = startAt.plus({ minute: configuration.timeSlotDuration });
   const timeSlot = {
-    startAt: startAt.toUTC().toMillis(),
-    endAt: endAt.toUTC().toMillis(),
+    startAt: startAt.toUTC().toJSDate(),
+    endAt: endAt.toUTC().toJSDate(),
     duration: endAt.diff(startAt, "minute").minutes,
   };
   /**
@@ -312,7 +312,7 @@ function _pushNewSlot(
   const minutesBeforeNextSearch = Math.max(
     (configuration.minAvailableTimeAfterSlot ?? 0) -
       (configuration.minAvailableTimeBeforeSlot ?? 0),
-    0
+    0,
   );
 
   const slotStartMinuteStep = configuration.slotStart ?? 5;
@@ -352,17 +352,17 @@ function _pushNewSlot(
 
 function _getUnavailablePeriodAsEvents(
   unavailablePeriods: TimeSlotPeriod[],
-  timeZone: string
+  timeZone: string,
 ) {
   const format = "YYYY-MM-DD HH:mm";
   return unavailablePeriods.map((unavailablePeriod) => {
     /* Transit through string since dayjs.tz with object parsing is bugged */
     const startAtString = Luxon.fromObject(unavailablePeriod.startAt).toFormat(
-      format
+      format,
     );
     let startAt = Luxon.fromFormat(startAtString, format).setZone(timeZone);
     const endAtString = Luxon.fromObject(unavailablePeriod.endAt).toFormat(
-      "YYYY-MM-DD HH:mm"
+      "YYYY-MM-DD HH:mm",
     );
     let endAt = Luxon.fromFormat(endAtString, format).setZone(timeZone);
 
@@ -384,7 +384,7 @@ function _getUnavailablePeriodAsEvents(
 
 function _nextSearchMoment(
   moment: Luxon,
-  configuration: TimeSlotsFinderConfiguration
+  configuration: TimeSlotsFinderConfiguration,
 ): Luxon {
   const minAvailableTimeBeforeSlot =
     configuration.minAvailableTimeBeforeSlot ?? 0;
@@ -430,14 +430,14 @@ function _nextSearchMoment(
  * @return {Record<string, Shift[]>}
  */
 export function _mergeOverlappingShiftsInAvailablePeriods(
-  schedule: Record<string, Shift[]>
+  schedule: Record<string, Shift[]>,
 ): Record<string, Shift[]> {
   return Object.entries(schedule).reduce(
     (map, [day, shifts]) => ({
       ...map,
       [day]: _mergeOverlappingShifts(shifts ?? []),
     }),
-    {} as Record<string, Shift[]>
+    {} as Record<string, Shift[]>,
   );
 }
 
@@ -452,7 +452,7 @@ export function _mergeOverlappingShifts(shifts: Shift[]): Shift[] {
   }
 
   const sortedShifts = [...shifts].sort((a, b) =>
-    a.start.localeCompare(b.start)
+    a.start.localeCompare(b.start),
   );
 
   for (let i = 0; i < sortedShifts.length - 1; i += 1) {
@@ -492,7 +492,7 @@ export function _isUnavailablePeriodValid(period: TimeSlotPeriod): boolean {
        */
       (period.startAt.year == null ||
         /* Using the objectSupport DayJS plugin, types are not up to date */
-        Luxon.fromObject(period.startAt) < Luxon.fromObject(period.endAt))
+        Luxon.fromObject(period.startAt) < Luxon.fromObject(period.endAt)),
   );
 }
 
@@ -506,7 +506,7 @@ function _isScheduleValid(schedule: Record<string, Shift[]>) {
     for (const shift of shifts) {
       if (!_isShiftValid(shift)) {
         throw new TimeSlotsFinderError(
-          `Daily shift ${shift.start} - ${shift.end} for ${day} is invalid`
+          `Daily shift ${shift.start} - ${shift.end} for ${day} is invalid`,
         );
       }
     }
@@ -578,7 +578,7 @@ function _isShiftValid(shift: Shift) {
 }
 
 export function isConfigurationValid(
-  configuration: TimeSlotsFinderConfiguration
+  configuration: TimeSlotsFinderConfiguration,
 ): boolean {
   if (!configuration) {
     throw new TimeSlotsFinderError("No configuration defined");
@@ -605,7 +605,7 @@ export function isConfigurationValid(
     for (let i = 0; i < configuration.unavailablePeriods.length; i += 1) {
       if (!_isUnavailablePeriodValid(configuration.unavailablePeriods[i])) {
         throw new TimeSlotsFinderError(
-          `Unavailable period nº${i + 1} is invalid`
+          `Unavailable period nº${i + 1} is invalid`,
         );
       }
     }
@@ -614,7 +614,7 @@ export function isConfigurationValid(
 }
 
 function _checkPrimitiveValue(
-  configuration: TimeSlotsFinderConfiguration
+  configuration: TimeSlotsFinderConfiguration,
 ): boolean {
   if (
     configuration.timeSlotDuration == null ||
@@ -627,7 +627,7 @@ function _checkPrimitiveValue(
     !configuration.customSlots?.length
   ) {
     throw new TimeSlotsFinderError(
-      `Custom slots are required when type is custom`
+      `Custom slots are required when type is custom`,
     );
   }
   if (
@@ -636,31 +636,31 @@ function _checkPrimitiveValue(
     !_nullOrBetween(1, 30, configuration.slotStart)
   ) {
     throw new TimeSlotsFinderError(
-      `Slot start minute step must be contained between 1 and 30`
+      `Slot start minute step must be contained between 1 and 30`,
     );
   }
   if (
     !_nullOrGreaterThanOrEqualTo(0, configuration.minAvailableTimeBeforeSlot)
   ) {
     throw new TimeSlotsFinderError(
-      `Time before a slot must be at least 0 minutes`
+      `Time before a slot must be at least 0 minutes`,
     );
   }
   if (
     !_nullOrGreaterThanOrEqualTo(0, configuration.minAvailableTimeAfterSlot)
   ) {
     throw new TimeSlotsFinderError(
-      `Time after a slot must be at least 0 minutes`
+      `Time after a slot must be at least 0 minutes`,
     );
   }
   if (!_nullOrGreaterThanOrEqualTo(0, configuration.minTimeBeforeFirstSlot)) {
     throw new TimeSlotsFinderError(
-      `The number of minutes before first slot must be 0 or more`
+      `The number of minutes before first slot must be 0 or more`,
     );
   }
   if (!_nullOrGreaterThanOrEqualTo(1, configuration.maxDaysBeforeLastSlot)) {
     throw new TimeSlotsFinderError(
-      `The number of days before latest slot must be at least 1`
+      `The number of days before latest slot must be at least 1`,
     );
   }
   _checkTimeZone(configuration.timeZone);
@@ -673,7 +673,7 @@ function _checkPrimitiveValue(
     minBeforeFirst / (24 * 60) > maxBeforeLast
   ) {
     throw new TimeSlotsFinderError(
-      `The first possible slot will always be after last one possible (see minTimeBeforeFirstSlot and maxDaysBeforeLastSlot)`
+      `The first possible slot will always be after last one possible (see minTimeBeforeFirstSlot and maxDaysBeforeLastSlot)`,
     );
   }
   return true;

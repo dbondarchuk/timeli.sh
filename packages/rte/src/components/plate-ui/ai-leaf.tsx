@@ -2,7 +2,7 @@
 
 import React from "react";
 
-import { cn } from "@vivid/ui";
+import { cn } from "@timelish/ui";
 import { PlateLeaf } from "@udecode/plate/react";
 
 export function AILeaf({
@@ -14,7 +14,7 @@ export function AILeaf({
       className={cn(
         className,
         "border-b-2 border-b-purple-100 bg-purple-50 text-purple-800",
-        "transition-all duration-200 ease-in-out"
+        "transition-all duration-200 ease-in-out",
       )}
       {...props}
     />

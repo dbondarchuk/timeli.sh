@@ -122,6 +122,39 @@ const config = {
         "accordion-up": "accordion-up 0.2s ease-out",
         "bounce-horizontal": "bounce-horizontal 1s infinite",
       },
+      typography: {
+        DEFAULT: {
+          css: {
+            maxWidth: "none",
+            [[
+              '[class~="lead"]',
+              "strong",
+              "ol > li::before",
+              "blockquote",
+              "h1",
+              "h2",
+              "h3",
+              "h4",
+              "figure figcaption",
+              "code",
+              "a code",
+              "a",
+              "a:hover",
+              "thead",
+            ].join(", ")]: {
+              color: "inherit",
+            },
+
+            "ul > li::before": {
+              backgroundColor: "currentColor",
+            },
+
+            [["hr", "blockquote", "thead", "tbody tr"].join(", ")]: {
+              borderColor: "currentColor",
+            },
+          },
+        },
+      },
     },
   },
   plugins: [

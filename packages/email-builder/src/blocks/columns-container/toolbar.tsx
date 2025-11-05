@@ -2,14 +2,14 @@ import {
   ConfigurationProps,
   ToolbarColorMenu,
   ToolbarDropdownMenu,
-} from "@vivid/builder";
-import { useI18n } from "@vivid/i18n";
+} from "@timelish/builder";
+import { useI18n } from "@timelish/i18n";
 import { PaintBucket } from "lucide-react";
-import { ColumnsContainerProps, ColumnsContainerPropsDefaults } from "./schema";
 import { ContentAlignmentDropdownMenu } from "../../toolbars/content-alignment";
+import { ColumnsContainerProps, ColumnsContainerPropsDefaults } from "./schema";
 
 export const ColumnsContainerToolbar = (
-  props: ConfigurationProps<ColumnsContainerProps>
+  props: ConfigurationProps<ColumnsContainerProps>,
 ) => {
   const t = useI18n("builder");
 
@@ -36,11 +36,12 @@ export const ColumnsContainerToolbar = (
         defaultValue={ColumnsContainerPropsDefaults.props.columnsCount.toString()}
         property="props.columnsCount"
         tooltip={t("emailBuilder.blocks.columnsContainer.columns")}
+        {...props}
         data={{
           ...props.data,
           props: {
             ...props.data?.props,
-            columnsCount: props.data?.props?.columnsCount?.toString(),
+            columnsCount: props.data?.props?.columnsCount?.toString() as any,
           },
         }}
         setData={(data) => {

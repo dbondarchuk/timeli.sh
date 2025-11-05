@@ -1,5 +1,5 @@
-import { BaseReaderBlockProps } from "@vivid/builder";
-import { z } from "zod";
+import { BaseReaderBlockProps } from "@timelish/builder";
+import * as z from "zod";
 
 export const ForeachContainerPropsSchema = z.object({
   props: z.object({

@@ -6,7 +6,7 @@ import {
 
 export interface IConfigurationService {
   getConfiguration<T extends ConfigurationKey>(
-    key: T
+    key: T,
   ): Promise<ConfigurationOption<T>["value"]>;
 
   getConfigurations<T extends ConfigurationKey>(
@@ -15,6 +15,6 @@ export interface IConfigurationService {
 
   setConfiguration<T extends ConfigurationKey>(
     key: T,
-    configuration: ConfigurationOption<T>["value"]
+    configuration: ConfigurationOption<T>["value"],
   ): Promise<void>;
 }

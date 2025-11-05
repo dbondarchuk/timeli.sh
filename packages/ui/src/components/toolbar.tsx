@@ -1,39 +1,41 @@
 "use client";
 
-import * as React from "react";
+import React from "react";
 
 import * as ToolbarPrimitive from "@radix-ui/react-toolbar";
-import { cn, withCn, withRef, withVariants } from "@udecode/cn";
+import { withCn, withRef, withVariants } from "@udecode/cn";
 import { type VariantProps, cva } from "class-variance-authority";
 import { ChevronDown } from "lucide-react";
 
-import { withTooltip, Separator } from "@vivid/ui";
+import { cn } from "../utils/cn";
+import { Separator } from "./separator";
+import { withTooltip } from "./tooltip";
 
 export const Toolbar = withCn(
   ToolbarPrimitive.Root,
-  "relative flex items-center select-none"
+  "relative flex items-center select-none",
 );
 
 const a = cn("flex items-center");
 
 export const ToolbarToggleGroup = withCn(
   ToolbarPrimitive.ToolbarToggleGroup,
-  "flex items-center"
+  "flex items-center",
 );
 
 export const ToolbarLink = withCn(
   ToolbarPrimitive.Link,
-  "font-medium underline underline-offset-4"
+  "font-medium underline underline-offset-4",
 );
 
 export const ToolbarSeparator = withCn(
   ToolbarPrimitive.Separator,
-  "mx-2 my-1 w-px shrink-0 bg-border"
+  "mx-2 my-1 w-px shrink-0 bg-border",
 );
 
-const toolbarButtonVariants = cva(
+export const toolbarButtonVariants = cva(
   cn(
-    "inline-flex cursor-pointer items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap text-foreground transition-colors disabled:pointer-events-none disabled:opacity-50 [&_svg:not([data-icon])]:size-4"
+    "inline-flex cursor-pointer items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap text-foreground transition-colors disabled:pointer-events-none disabled:opacity-50 [&_svg:not([data-icon])]:size-4",
   ),
   {
     defaultVariants: {
@@ -53,12 +55,12 @@ const toolbarButtonVariants = cva(
           "border border-input bg-transparent hover:bg-accent hover:text-accent-foreground",
       },
     },
-  }
+  },
 );
 
 const dropdownArrowVariants = cva(
   cn(
-    "inline-flex items-center justify-center rounded-r-md text-sm font-medium text-foreground transition-colors disabled:pointer-events-none disabled:opacity-50"
+    "inline-flex items-center justify-center rounded-r-md text-sm font-medium text-foreground transition-colors disabled:pointer-events-none disabled:opacity-50",
   ),
   {
     defaultVariants: {
@@ -78,7 +80,7 @@ const dropdownArrowVariants = cva(
           "border border-l-0 border-input bg-transparent hover:bg-accent hover:text-accent-foreground",
       },
     },
-  }
+  },
 );
 
 const ToolbarButton = withTooltip(
@@ -95,7 +97,7 @@ const ToolbarButton = withTooltip(
   >(
     (
       { children, className, isDropdown, pressed, size, variant, ...props },
-      ref
+      ref,
     ) => {
       return typeof pressed === "boolean" ? (
         <ToolbarToggleGroup
@@ -111,7 +113,7 @@ const ToolbarButton = withTooltip(
                 variant,
               }),
               isDropdown && "justify-between gap-1 pr-1",
-              className
+              className,
             )}
             value={pressed ? "single" : ""}
             {...props}
@@ -142,15 +144,15 @@ const ToolbarButton = withTooltip(
               variant,
             }),
             isDropdown && "pr-1",
-            className
+            className,
           )}
           {...props}
         >
           {children}
         </ToolbarPrimitive.Button>
       );
-    }
-  )
+    },
+  ),
 );
 
 export { ToolbarButton };
@@ -185,14 +187,14 @@ export const ToolbarSplitButtonPrimary = withTooltip(
           }),
           "rounded-r-none",
           "group-data-[pressed=true]:bg-accent group-data-[pressed=true]:text-accent-foreground",
-          className
+          className,
         )}
         {...props}
       >
         {children}
       </span>
     );
-  })
+  }),
 );
 
 export const ToolbarSplitButtonSecondary = React.forwardRef<
@@ -209,7 +211,7 @@ export const ToolbarSplitButtonSecondary = React.forwardRef<
           variant,
         }),
         "group-data-[pressed=true]:bg-accent group-data-[pressed=true]:text-accent-foreground",
-        className
+        className,
       )}
       onClick={(e) => e.stopPropagation()}
       role="button"
@@ -225,7 +227,7 @@ ToolbarSplitButton.displayName = "ToolbarButton";
 export const ToolbarToggleItem = withVariants(
   ToolbarPrimitive.ToggleItem,
   toolbarButtonVariants,
-  ["variant", "size"]
+  ["variant", "size"],
 );
 
 export const ToolbarGroup = withRef<"div">(({ children, className }, ref) => {
@@ -235,7 +237,7 @@ export const ToolbarGroup = withRef<"div">(({ children, className }, ref) => {
       className={cn(
         "group/toolbar-group",
         "relative hidden has-[button]:flex",
-        className
+        className,
       )}
     >
       <div className="flex items-center">{children}</div>

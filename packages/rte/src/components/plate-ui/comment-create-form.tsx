@@ -1,8 +1,6 @@
 "use client";
 
-import React from "react";
-
-import { buttonVariants, cn, inputVariants } from "@vivid/ui";
+import { buttonVariants, cn, inputVariants } from "@timelish/ui";
 import {
   CommentNewSubmitButton,
   CommentNewTextarea,

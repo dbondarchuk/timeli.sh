@@ -1,20 +1,27 @@
 "use client";
 
+import { useI18n } from "@timelish/i18n";
 import { Check, ChevronsUpDown, X } from "lucide-react";
-import * as React from "react";
-import { useI18n } from "@vivid/i18n";
+import React from "react";
 
 import InfiniteScroll from "react-infinite-scroll-component";
 
 import { cn } from "../utils";
 import { Button, ButtonProps } from "./button";
-import { Command, CommandInput, CommandItem, CommandList } from "./command";
+import {
+  Command,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "./command";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
 export type IComboboxItem = {
   value: string;
   label: React.ReactNode;
   shortLabel?: React.ReactNode;
+  category?: string;
 };
 
 type BaseComboboxProps = React.ButtonHTMLAttributes<any> & {
@@ -23,7 +30,9 @@ type BaseComboboxProps = React.ButtonHTMLAttributes<any> & {
   noResultsLabel?: string;
   value?: string;
   listClassName?: string;
+  useCategories?: boolean;
   customSearch?: (search: string) => IComboboxItem[];
+  size?: ButtonProps["size"];
 };
 
 type ClearableComboboxProps = BaseComboboxProps & {
@@ -73,7 +82,7 @@ const ItemComponent = React.memo(
   }) => {
     const onSelect = React.useCallback(
       () => props.select(props.item.value),
-      []
+      [],
     );
 
     return (
@@ -81,13 +90,13 @@ const ItemComponent = React.memo(
         <Check
           className={cn(
             "mr-2 h-4 w-4",
-            props.selected === props.item.value ? "opacity-100" : "opacity-0"
+            props.selected === props.item.value ? "opacity-100" : "opacity-0",
           )}
         />
         {props.item.label}
       </CommandItem>
     );
-  }
+  },
 );
 
 ItemComponent.displayName = "ItemComponent";
@@ -98,6 +107,7 @@ const Items = React.memo(
     selected: string | undefined;
     listRef: React.RefObject<HTMLDivElement | null>;
     select: (value: string) => void;
+    useCategories?: boolean;
   }) => {
     const t = useI18n("ui");
     const toLoad = 20;
@@ -105,12 +115,12 @@ const Items = React.memo(
     const [loaded, setLoaded] = React.useState(toLoad);
     const hasMore = React.useMemo(
       () => loaded < props.values.length - 1,
-      [loaded, props]
+      [loaded, props],
     );
 
     const values = React.useMemo(
       () => props.values.slice(0, loaded),
-      [props, loaded]
+      [props, loaded],
     );
 
     const fetchMore = () => {
@@ -135,26 +145,59 @@ const Items = React.memo(
         loader={<h4>{t("loading.loading")}</h4>}
         scrollableTarget={listId}
       >
-        {values.map((item) => (
-          <ItemComponent
-            key={item.value}
-            item={item}
-            selected={props.selected}
-            select={props.select}
-          />
-        ))}
+        {props.useCategories ? (
+          <CommandList>
+            {Object.entries(
+              props.values.reduce(
+                (acc, item) => {
+                  if (!acc[item.category || ""] && item.category) {
+                    acc[item.category || ""] = [];
+                  }
+                  acc[item.category || ""].push(item);
+                  return acc;
+                },
+                {} as Record<string, IComboboxItem[]>,
+              ),
+            ).map(([category, items]) => (
+              <CommandGroup key={category} heading={category}>
+                {items.map((item) => (
+                  <ItemComponent
+                    key={item.value}
+                    item={item}
+                    selected={props.selected}
+                    select={props.select}
+                  />
+                ))}
+              </CommandGroup>
+            ))}
+          </CommandList>
+        ) : (
+          props.values.map((item) => (
+            <ItemComponent
+              key={item.value}
+              item={item}
+              selected={props.selected}
+              select={props.select}
+            />
+          ))
+        )}
       </InfiniteScroll>
     ) : (
       <></>
     );
-  }
+  },
 );
 Items.displayName = "Items";
 
 export const ComboboxTrigger = React.forwardRef<
   HTMLButtonElement,
-  ButtonProps & { allowClear?: boolean; onClear?: () => void; open?: boolean }
->(({ onClear, allowClear, open, className, children, ...props }, ref) => {
+  ButtonProps & {
+    allowClear?: boolean;
+    onClear?: () => void;
+    open?: boolean;
+    size?: ButtonProps["size"];
+  }
+>(({ onClear, allowClear, open, className, children, size, ...props }, ref) => {
   const t = useI18n("ui");
 
   return (
@@ -163,11 +206,12 @@ export const ComboboxTrigger = React.forwardRef<
         variant="outline"
         role="combobox"
         aria-expanded={open}
+        size={size}
         {...props}
         ref={ref}
         className={cn(
           "justify-between flex-grow min-w-0",
-          allowClear ? "rounded-r-none" : ""
+          allowClear ? "rounded-r-none" : "",
         )}
       >
         {children}
@@ -178,6 +222,7 @@ export const ComboboxTrigger = React.forwardRef<
           variant="outline"
           onClick={onClear}
           type="button"
+          size={size}
           className="border-l-0 rounded-l-none"
           aria-label={t("common.clear")}
           disabled={props.disabled}
@@ -222,7 +267,7 @@ export const Combobox: React.FC<ComboboxProps> = (props) => {
       setOpen(false);
       onItemSelect?.(value as string);
     },
-    [props]
+    [props],
   );
 
   const onOpenChange = (isOpen: boolean) => {
@@ -233,7 +278,7 @@ export const Combobox: React.FC<ComboboxProps> = (props) => {
   const propsValues = props.values;
   const values = React.useMemo(
     () => (customSearch ? customSearch(search) : propsValues),
-    [customSearch, search, propsValues]
+    [customSearch, search, propsValues],
   );
 
   const listId = React.useId();
@@ -279,6 +324,7 @@ export const Combobox: React.FC<ComboboxProps> = (props) => {
               selected={value}
               select={onSelect}
               listRef={listRef}
+              useCategories={props.useCategories}
             />
           </CommandList>
         </Command>

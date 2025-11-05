@@ -1,13 +1,14 @@
-import { getLoggerFactory } from "@vivid/logger";
-import { ServicesContainer } from "@vivid/services";
+import { getServicesContainer } from "@/utils/utils";
+import { getLoggerFactory } from "@timelish/logger";
 import { NextRequest, NextResponse } from "next/server";
 
 const processAppCall = async (
   request: NextRequest,
-  { params }: { params: Promise<{ appId: string; slug: string[] }> }
+  { params }: RouteContext<"/api/apps/[appId]/[...slug]">,
 ) => {
   const logger = getLoggerFactory("API/apps-call")("processAppCall");
   const { appId, slug } = await params;
+  const servicesContainer = await getServicesContainer();
 
   logger.debug(
     {
@@ -16,7 +17,7 @@ const processAppCall = async (
       appId,
       slug: slug?.join("/"),
     },
-    "Processing app call request"
+    "Processing app call request",
   );
 
   if (!appId) {
@@ -24,10 +25,12 @@ const processAppCall = async (
     return NextResponse.json({ error: "AppId is required" }, { status: 400 });
   }
 
-  const service = ServicesContainer.ConnectedAppsService();
-
   try {
-    const result = await service.processAppCall(appId, slug, request);
+    const result = await servicesContainer.connectedAppsService.processAppCall(
+      appId,
+      slug,
+      request,
+    );
 
     if (result) {
       logger.debug(
@@ -36,7 +39,7 @@ const processAppCall = async (
           slug: slug.join("/"),
           status: result.status,
         },
-        "Successfully processed app call"
+        "Successfully processed app call",
       );
     } else {
       logger.warn({ appId, slug: slug.join("/") }, "No app call handler found");
@@ -52,7 +55,7 @@ const processAppCall = async (
         slug: slug.join("/"),
         error: error?.message || error?.toString(),
       },
-      "Error processing app call"
+      "Error processing app call",
     );
     throw error;
   }

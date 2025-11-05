@@ -1,11 +1,4 @@
-import { IServicesContainer } from "../services";
-import {
-  ConnectedAppData,
-  ConnectedAppResponse,
-  ConnectedAppUpdateModel,
-} from "./connected-app.data";
-
-import type { Db } from "mongodb";
+import { ConnectedAppData, ConnectedAppResponse } from "./connected-app.data";
 
 export interface ApiRequest extends Request {
   // query: Partial<{
@@ -27,34 +20,36 @@ export interface ApiResponse extends Response {}
 //   redirect(status: number, url: string): ApiResponse<Data>;
 // }
 
-export interface IConnectedApp {
-  processRequest?: (appData: ConnectedAppData, data: any) => Promise<any>;
+export interface IConnectedApp<TData = any, TToken = any> {
+  processAppData?: (
+    appData: NonNullable<ConnectedAppData<TData, TToken>["data"]>,
+  ) => Promise<NonNullable<ConnectedAppData<TData, TToken>["data"]>>;
+  processRequest?: (
+    appData: ConnectedAppData<TData, TToken>,
+    data: any,
+  ) => Promise<any>;
   processStaticRequest?: (data: any) => Promise<any>;
-  unInstall?: (appData: ConnectedAppData) => Promise<void>;
+  unInstall?: (appData: ConnectedAppData<TData, TToken>) => Promise<void>;
   processAppCall?: (
-    appData: ConnectedAppData,
+    appData: ConnectedAppData<TData, TToken>,
     slug: string[],
-    request: ApiRequest
+    request: ApiRequest,
   ) => Promise<ApiResponse | undefined>;
 }
 
-export interface IConnectedAppWithWebhook extends IConnectedApp {
+export interface IConnectedAppWithWebhook<TData = any, TToken = any>
+  extends IConnectedApp<TData, TToken> {
   processWebhook(
-    appData: ConnectedAppData,
-    request: ApiRequest
+    appData: ConnectedAppData<TData, TToken>,
+    request: ApiRequest,
   ): Promise<ApiResponse>;
 }
 
-export interface IOAuthConnectedApp extends IConnectedApp {
+export interface IOAuthConnectedApp<TData = any, TToken = any>
+  extends IConnectedApp<TData, TToken> {
   getLoginUrl: (appId: string) => Promise<string>;
   processRedirect: (
     request: ApiRequest,
-    data?: any
+    data?: any,
   ) => Promise<ConnectedAppResponse>;
 }
-
-export type IConnectedAppProps = {
-  update: (updateMode: ConnectedAppUpdateModel) => Promise<void>;
-  services: IServicesContainer;
-  getDbConnection: () => Promise<Db>;
-};

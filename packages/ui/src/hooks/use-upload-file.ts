@@ -1,13 +1,15 @@
-import { UploadedFile } from "@vivid/types";
-import * as React from "react";
+import { UploadedFile } from "@timelish/types";
+import React from "react";
 
 import { toast } from "sonner";
-import { z } from "zod";
+import { ZodError } from "zod";
+
+import pLimit from "p-limit";
 
 export type UseUploadFileProps = {
-  onUploadComplete?: (file: UploadedFile) => void;
-  onUploadError?: (error: unknown) => void;
-  description?: string;
+  onUploadComplete?: (files: UploadedFile[]) => void;
+  onFileUploaded?: (file: UploadedFile) => void;
+  onUploadError?: (file: File, error: unknown) => void;
 } & ({ bucket?: string } | { appointmentId: string } | { customerId: string });
 
 const uploadFilesWithProgress = ({
@@ -28,21 +30,21 @@ const uploadFilesWithProgress = ({
   status: number;
   body: string;
 }> => {
-  const url = `/admin/api/assets`;
+  const url = `/api/assets`;
 
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.upload.addEventListener("progress", (e) =>
-      onProgress(Math.round((e.loaded / e.total) * 100))
+      onProgress(Math.round((e.loaded / e.total) * 100)),
     );
     xhr.addEventListener("load", () =>
-      resolve({ status: xhr.status, body: xhr.responseText })
+      resolve({ status: xhr.status, body: xhr.responseText }),
     );
     xhr.addEventListener("error", () =>
-      reject(new Error("File upload failed"))
+      reject(new Error("File upload failed")),
     );
     xhr.addEventListener("abort", () =>
-      reject(new Error("File upload aborted"))
+      reject(new Error("File upload aborted")),
     );
 
     xhr.open("POST", url, true);
@@ -61,66 +63,99 @@ const uploadFilesWithProgress = ({
 export function useUploadFile({
   onUploadComplete,
   onUploadError,
+  onFileUploaded,
   ...rest
 }: UseUploadFileProps = {}) {
-  const [uploadedFile, setUploadedFile] = React.useState<UploadedFile>();
-  const [uploadingFile, setUploadingFile] = React.useState<File>();
-  const [progress, setProgress] = React.useState<number>(0);
+  const [uploadedFiles, setUploadedFiles] = React.useState<UploadedFile[]>([]);
+  const [uploadingFiles, setUploadingFiles] = React.useState<File[]>([]);
+  const [progress, setProgress] = React.useState<Map<string, number>>(
+    new Map(),
+  );
   const [isUploading, setIsUploading] = React.useState(false);
 
-  async function uploadFile(file: File) {
+  async function uploadFile(files: { file: File; description?: string }[]) {
     setIsUploading(true);
-    setUploadingFile(file);
+    setUploadingFiles(files.map((file) => file.file));
+    setProgress(new Map());
+
+    const limit = pLimit(3);
+
+    const tasks = files.map((file) =>
+      limit(async () => {
+        try {
+          const response = await uploadFilesWithProgress({
+            file: file.file,
+            description: file.description,
+            onProgress: (progress) => {
+              setProgress((prev) => {
+                prev.set(file.file.name, progress);
+                return prev;
+              });
+            },
+            ...rest,
+          });
+
+          if (response.status >= 400) {
+            throw new Error(`${response.status}: ${response.body}`);
+          }
+
+          const result = JSON.parse(response.body) as UploadedFile;
+
+          setUploadedFiles((prev) => [...prev, result]);
+          onFileUploaded?.(result);
+
+          return result;
+        } catch (error) {
+          const errorMessage = getErrorMessage(error);
+
+          const message =
+            errorMessage.length > 0
+              ? errorMessage
+              : "Something went wrong, please try again later.";
+
+          toast.error(message);
+
+          onUploadError?.(file.file, error);
+        }
+      }),
+    );
 
     try {
-      const response = await uploadFilesWithProgress({
-        file,
-        onProgress: setProgress,
-        ...rest,
-      });
+      const results = await Promise.all(tasks);
 
-      if (response.status >= 400) {
-        throw new Error(`${response.status}: ${response.body}`);
-      }
-
-      const result = JSON.parse(response.body) as UploadedFile;
-
-      setUploadedFile(result);
-
-      onUploadComplete?.(result);
-
-      return uploadedFile;
-    } catch (error) {
-      const errorMessage = getErrorMessage(error);
-
-      const message =
-        errorMessage.length > 0
-          ? errorMessage
-          : "Something went wrong, please try again later.";
-
-      toast.error(message);
-
-      onUploadError?.(error);
+      onUploadComplete?.(results.filter((result) => !!result));
     } finally {
-      setProgress(0);
+      setProgress(new Map());
+      setUploadingFiles([]);
+
       setIsUploading(false);
-      setUploadingFile(undefined);
     }
   }
 
+  const averageProgress =
+    progress.size > 0
+      ? Math.min(
+          Math.round(
+            Array.from(progress.values()).reduce((a, b) => a + b, 0) /
+              uploadingFiles.length,
+          ),
+          100,
+        )
+      : 0;
+
   return {
     isUploading,
-    progress,
-    uploadedFile,
-    uploadFile: uploadFile,
-    uploadingFile,
+    progress: averageProgress,
+    uploadedFiles,
+    uploadFile,
+    uploadingFiles,
   };
 }
 
 export function getErrorMessage(err: unknown) {
   const unknownError = "Something went wrong, please try again later.";
 
-  if (err instanceof z.ZodError) {
+  if (err instanceof ZodError) {
     const errors = err.issues.map((issue) => {
       return issue.message;
     });

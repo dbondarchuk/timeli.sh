@@ -1,7 +1,7 @@
-import { getLoggerFactory } from "@vivid/logger";
-import { formatAmountString } from "@vivid/utils";
+import { getLoggerFactory } from "@timelish/logger";
+import { formatAmountString } from "@timelish/utils";
 import { v4 as uuidv4 } from "uuid";
-import z from "zod";
+import * as z from "zod";
 import { PaypalOrder } from "./types";
 
 export class PaypalClient {
@@ -14,7 +14,7 @@ export class PaypalClient {
   constructor(
     private readonly clientId: string,
     private readonly secretKey: string,
-    isProduction: boolean
+    isProduction: boolean,
     // private readonly appUrl: string
   ) {
     this.url = isProduction
@@ -24,7 +24,7 @@ export class PaypalClient {
 
   private fetcher = async (
     endpoint: string,
-    init?: RequestInit | undefined
+    init?: RequestInit | undefined,
   ) => {
     await this.getAccessToken();
     return fetch(`${this.url}${endpoint}`, {
@@ -134,7 +134,7 @@ export class PaypalClient {
   }
 
   public async captureOrder(
-    orderId: string
+    orderId: string,
   ): Promise<
     | { order: PaypalOrder; error?: never }
     | { order?: never; error: { statusCode?: number } }
@@ -158,7 +158,7 @@ export class PaypalClient {
     } catch (error) {
       logger.error(
         { response, result, error },
-        "Request to create order has failed"
+        "Request to create order has failed",
       );
 
       return { error: { statusCode: response?.status } };
@@ -166,7 +166,7 @@ export class PaypalClient {
   }
 
   public async getOrder(
-    orderId: string
+    orderId: string,
   ): Promise<
     | { order: PaypalOrder; error?: never }
     | { order?: never; error: { statusCode?: number } }
@@ -188,7 +188,7 @@ export class PaypalClient {
     } catch (error) {
       logger.error(
         { response, result, error },
-        "Request to get order has failed"
+        "Request to get order has failed",
       );
 
       return { error: { statusCode: response?.status } };
@@ -197,7 +197,7 @@ export class PaypalClient {
 
   public async refundPayment(
     captureId: string,
-    amount: number
+    amount: number,
   ): Promise<
     { ok: true; error?: never } | { ok: false; error: { statusCode?: number } }
   > {
@@ -214,7 +214,7 @@ export class PaypalClient {
               value: formatAmountString(amount),
             },
           }),
-        }
+        },
       );
 
       if (response.ok) {
@@ -288,7 +288,7 @@ export class PaypalClient {
         `/v1/notifications/webhooks/${webhookId}`,
         {
           method: "DELETE",
-        }
+        },
       );
 
       if (response.ok) {
@@ -337,7 +337,7 @@ export class PaypalClient {
         {
           method: "POST",
           body: bodyToString,
-        }
+        },
       );
 
       if (!response.ok) {

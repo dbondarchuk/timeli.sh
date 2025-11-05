@@ -1,7 +1,11 @@
-import { z } from "zod";
+import { zNonEmptyString } from "@timelish/types";
+import * as z from "zod";
+import { CalendarWriterAdminAllKeys } from "./translations/types";
 
 export const calendarWriterConfigurationSchema = z.object({
-  appId: z.string().min(1, "calendarWriter.appId.required"),
+  appId: zNonEmptyString(
+    "app_calendar-writer_admin.validation.appId.required" satisfies CalendarWriterAdminAllKeys,
+  ),
 });
 
 export type CalendarWriterConfiguration = z.infer<

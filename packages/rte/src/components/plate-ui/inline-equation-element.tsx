@@ -13,9 +13,9 @@ import {
 } from "@udecode/plate/react";
 import { RadicalIcon } from "lucide-react";
 
+import { cn, Popover, PopoverTrigger } from "@timelish/ui";
 import { EquationPopoverContent } from "./equation-popover";
 import { PlateElement } from "./plate-element";
-import { cn, Popover, PopoverTrigger } from "@vivid/ui";
 
 export const InlineEquationElement = withRef<typeof PlateElement>(
   ({ children, className, ...props }, ref) => {
@@ -24,7 +24,7 @@ export const InlineEquationElement = withRef<typeof PlateElement>(
     const selected = useSelected();
     const isCollapsed = useEditorSelector(
       (editor) => editor.api.isCollapsed(),
-      []
+      [],
     );
     const [open, setOpen] = useState(selected && isCollapsed);
 
@@ -49,7 +49,7 @@ export const InlineEquationElement = withRef<typeof PlateElement>(
         ref={ref}
         className={cn(
           "inline-block rounded-sm select-none [&_.katex-display]:my-0",
-          className
+          className,
         )}
         {...props}
       >
@@ -62,7 +62,7 @@ export const InlineEquationElement = withRef<typeof PlateElement>(
                 element.texExpression.length > 0 && open && "after:bg-brand/15",
                 element.texExpression.length === 0 &&
                   "text-muted-foreground after:bg-neutral-500/10",
-                className
+                className,
               )}
               contentEditable={false}
             >
@@ -70,7 +70,7 @@ export const InlineEquationElement = withRef<typeof PlateElement>(
                 ref={katexRef}
                 className={cn(
                   element.texExpression.length === 0 && "hidden",
-                  "font-mono leading-none"
+                  "font-mono leading-none",
                 )}
               />
               {element.texExpression.length === 0 && (
@@ -94,5 +94,5 @@ export const InlineEquationElement = withRef<typeof PlateElement>(
         {children}
       </PlateElement>
     );
-  }
+  },
 );

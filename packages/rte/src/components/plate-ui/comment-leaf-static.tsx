@@ -1,9 +1,7 @@
-import React from "react";
-
 import type { SlateLeafProps } from "@udecode/plate";
 import type { TCommentText } from "@udecode/plate-comments";
 
-import { cn } from "@vivid/ui";
+import { cn } from "@timelish/ui";
 import { SlateLeaf } from "@udecode/plate";
 
 export function CommentLeafStatic({
@@ -15,7 +13,7 @@ export function CommentLeafStatic({
     <SlateLeaf
       className={cn(
         className,
-        "border-b-2 border-b-highlight/35 bg-highlight/15"
+        "border-b-2 border-b-highlight/35 bg-highlight/15",
       )}
       {...props}
     >

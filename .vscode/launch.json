@@ -8,6 +8,18 @@
       "command": "yarn run dev"
     },
     {
+      "name": "Next.js: debug admin server-side",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "yarn run dev --filter=@timelish/admin"
+    },
+    {
+      "name": "Next.js: debug web server-side",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "yarn run dev --filter=@timelish/web"
+    },
+    {
       "name": "Next.js: debug client-side",
       "type": "chrome",
       "request": "launch",

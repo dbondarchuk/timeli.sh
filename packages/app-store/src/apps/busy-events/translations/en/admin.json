@@ -1,0 +1,29 @@
+{
+  "app": {
+    "displayName": "Busy events",
+    "description": "Block specific dates and time in your schedule"
+  },
+  "navigation": {
+    "busyEvents": {
+      "label": "Busy events",
+      "title": "Busy events",
+      "description": "Block specific dates and time in your schedule"
+    }
+  },
+  "new": "New busy event",
+  "edit": "Edit busy event",
+  "newDescription": "Create new busy event",
+  "editDescription": "Update busy event",
+  "errors": {
+    "failed_to_load_schedule": "Failed to load schedule"
+  },
+  "thisWeek": "This week",
+  "previousWeek": "Previous week",
+  "nextWeek": "Next week",
+  "eventTitle": "Busy",
+  "addShift": "Add event",
+  "shifts": "{count, plural, =1 {1 event} other {# events}}",
+  "statusText": {
+    "successfully_set_up": "Successfully set up"
+  }
+}

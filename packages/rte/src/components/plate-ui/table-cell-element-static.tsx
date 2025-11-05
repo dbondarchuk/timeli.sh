@@ -2,7 +2,7 @@ import React from "react";
 
 import type { SlateElementProps } from "@udecode/plate";
 
-import { cn } from "@vivid/ui";
+import { cn } from "@timelish/ui";
 import { SlateElement } from "@udecode/plate";
 import { type TTableCellElement, BaseTablePlugin } from "@udecode/plate-table";
 
@@ -37,9 +37,9 @@ export function TableCellElementStatic({
               borders.bottom?.size && `before:border-b before:border-b-border`,
               borders.right?.size && `before:border-r before:border-r-border`,
               borders.left?.size && `before:border-l before:border-l-border`,
-              borders.top?.size && `before:border-t before:border-t-border`
-            )
-        )
+              borders.top?.size && `before:border-t before:border-t-border`,
+            ),
+        ),
       )}
       style={
         {

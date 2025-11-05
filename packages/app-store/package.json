@@ -1,48 +1,60 @@
 {
-  "name": "@vivid/app-store",
+  "name": "@timelish/app-store",
   "version": "0.0.1",
   "private": true,
   "sideEffects": false,
   "scripts": {
     "type-check": "tsc --pretty --noEmit",
     "type-check:ci": "tsc-absolute --pretty --noEmit",
-    "lint": "eslint . --ext .ts,.js,.tsx,.jsx",
-    "lint:fix": "eslint . --ext .ts,.js,.tsx,.jsx --fix"
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "main": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts",
-    "./services": "./src/services/index.ts"
+    "./services": "./src/services/index.ts",
+    "./injectors/dashboard-tab": "./src/injectors/dashboard-tab.ts",
+    "./blocks/editors": "./src/blocks/editors.ts",
+    "./blocks/readers": "./src/blocks/readers.ts",
+    "./translations": "./src/translations.ts",
+    "./menu-items": "./src/menu-items.ts",
+    "./setup": "./src/setup.tsx",
+    "./images": "./src/images.ts",
+    "./payment-forms": "./src/payment-forms.tsx"
   },
   "devDependencies": {
     "@microsoft/microsoft-graph-types": "^2.40.0",
     "@types/nodemailer": "^6.4.15",
     "@types/react": "19.0.2",
-    "@vivid/eslint-config": "*",
-    "@vivid/tailwind-config": "*",
-    "@vivid/typescript-config": "*",
-    "eslint": "^8.57.0",
+    "@timelish/eslint-config": "*",
+    "@timelish/tailwind-config": "*",
+    "@timelish/typescript-config": "*",
     "typescript": "5.5.4"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.782.0",
     "@azure/msal-node": "^3.0.1",
-    "@googleapis/calendar": "^9.8.0",
+    "@googleapis/calendar": "^12.0.0",
+    "@googleapis/meet": "^3.0.0",
     "@microsoft/microsoft-graph-client": "^3.0.7",
     "@paypal/paypal-server-sdk": "^1.1.0",
     "@paypal/react-paypal-js": "^8.8.3",
-    "@ts-ics/schema-zod": "2.0.4",
-    "@vivid/email-builder": "*",
-    "@vivid/types": "*",
-    "@vivid/logger": "*",
-    "@vivid/i18n": "*",
-    "@vivid/ui": "*",
-    "@vivid/utils": "*",
+    "@ts-ics/schema-zod": "2.4.0",
+    "@timelish/email-builder": "*",
+    "@timelish/i18n": "*",
+    "@timelish/logger": "*",
+    "@timelish/page-builder-base": "*",
+    "@timelish/types": "*",
+    "@timelish/ui": "*",
+    "@timelish/ui-admin": "*",
+    "@timelish/ui-admin-kit": "*",
+    "@timelish/utils": "*",
     "html-to-text": "^9.0.5",
     "ics": "^3.7.6",
     "lucide-react": "^0.525.0",
     "nodemailer": "^6.9.14",
-    "ts-ics": "2.0.4",
-    "tsdav": "2.1.2"
+    "ts-ics": "2.4.0",
+    "tsdav": "2.1.2",
+    "react": "19.0.0"
   }
 }

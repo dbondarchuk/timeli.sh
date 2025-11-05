@@ -2,7 +2,7 @@ import {
   Time,
   parseTime as typesParseTime,
   WeekIdentifier,
-} from "@vivid/types";
+} from "@timelish/types";
 import { DateTime, DateTimeUnit, Duration, Interval } from "luxon";
 
 const REFERENCE_DATE = DateTime.fromObject({ year: 1970, month: 1, day: 5 }); // January 5, 1970 (Monday)
@@ -38,7 +38,7 @@ export const formatTime = (time: Time) =>
 export const formatTimeLocale = (time: Time, locale?: string) =>
   DateTime.fromObject({ hour: time.hour, minute: time.minute }).toLocaleString(
     DateTime.TIME_SIMPLE,
-    { locale }
+    { locale },
   );
 
 export const durationToTime = (minutes: number) => {
@@ -50,15 +50,48 @@ export const durationToTime = (minutes: number) => {
 };
 
 export const timeToDuration = (
-  time?: { hours: number; minutes: number } | null
+  time?: { hours: number; minutes: number } | null,
 ) => {
   if (!time) return undefined;
   return time.hours * 60 + time.minutes;
 };
 
+export const weeks = {
+  durationToTime: (minutes: number) => {
+    const duration = Duration.fromObject({ minutes }).shiftTo(
+      "weeks",
+      "days",
+      "hours",
+      "minutes",
+    );
+    return {
+      weeks: duration.weeks,
+      days: duration.days,
+      hours: duration.hours,
+      minutes: duration.minutes,
+    };
+  },
+  timeToDuration: (
+    time: {
+      weeks: number;
+      days: number;
+      hours: number;
+      minutes: number;
+    } | null,
+  ) => {
+    if (!time) return undefined;
+    return (
+      time.weeks * 7 * 24 * 60 +
+      time.days * 24 * 60 +
+      time.hours * 60 +
+      time.minutes
+    );
+  },
+};
+
 export const areTimesEqual = (
   timeA: Time | undefined | null,
-  timeB: Time | undefined | null
+  timeB: Time | undefined | null,
 ) => timeA?.hour === timeB?.hour && timeA?.minute === timeB?.minute;
 
 export const is12hourUserTimeFormat = (locale?: string) => {
@@ -71,18 +104,18 @@ export const is12hourUserTimeFormat = (locale?: string) => {
 export const hasSame = (
   date1: DateTime | Date,
   date2: DateTime | Date,
-  unit: DateTimeUnit
+  unit: DateTimeUnit,
 ) => {
   const dateTime1 = date1 instanceof Date ? DateTime.fromJSDate(date1) : date1;
   const dateTime2 = date2 instanceof Date ? DateTime.fromJSDate(date2) : date2;
 
-  return dateTime1.startOf(unit).equals(dateTime2.startOf(unit));
+  return +dateTime1.startOf(unit) === +dateTime2.startOf(unit);
 };
 
 export function eachOfInterval(
   start: DateTime | Date,
   end: DateTime | Date,
-  unit: DateTimeUnit
+  unit: DateTimeUnit,
 ): DateTime[] {
   const startDate = start instanceof Date ? DateTime.fromJSDate(start) : start;
   const endDate = end instanceof Date ? DateTime.fromJSDate(end) : end;
@@ -90,7 +123,7 @@ export function eachOfInterval(
   return (
     Interval.fromDateTimes(
       startDate.startOf("day"),
-      endDate.endOf("day")
+      endDate.endOf("day"),
     ) as Interval<true>
   )
     .splitBy({ [unit]: 1 })

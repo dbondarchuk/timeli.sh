@@ -1,7 +1,5 @@
 "use client";
 
-import React from "react";
-
 import type { DropdownMenuProps } from "@radix-ui/react-dropdown-menu";
 
 import { useEditorRef, usePlateState } from "@udecode/plate/react";
@@ -14,7 +12,7 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
   useOpenState,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { ToolbarButton } from "./toolbar";
 
 export function ModeDropdownMenu(props: DropdownMenuProps) {

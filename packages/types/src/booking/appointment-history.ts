@@ -1,12 +1,14 @@
-import { WithDatabaseId } from "../database";
+import { WithCompanyId, WithDatabaseId } from "../database";
 import { Prettify } from "../utils/helpers";
-import { AppointmentStatus } from "./appointment";
-import { PaymentStatus, PaymentType } from "./payment";
+import { Appointment, AppointmentStatus } from "./appointment";
+import { AppointmentDiscount } from "./appointment-event";
+import { PaymentMethod, PaymentStatus, PaymentType } from "./payment";
 
 export type PaymentHistory = {
   id: string;
   amount: number;
   status: PaymentStatus;
+  method: PaymentMethod;
   type: PaymentType;
   intentId?: string;
   externalId?: string;
@@ -23,10 +25,12 @@ type AppointmentHistoryTypes = {
   statusChanged: {
     oldStatus: AppointmentStatus;
     newStatus: AppointmentStatus;
+    by: "customer" | "user";
   };
   rescheduled: {
     oldDateTime: Date;
     newDateTime: Date;
+    by: "customer" | "user";
   };
   paymentAdded: {
     payment: PaymentHistory;
@@ -35,6 +39,44 @@ type AppointmentHistoryTypes = {
     payment: PaymentHistory;
     refundedAmount: number;
     totalRefunded: number;
+  };
+  updated: {
+    oldOption: {
+      _id: string;
+      name: string;
+    };
+    newOption: {
+      _id: string;
+      name: string;
+    };
+    oldFields: Appointment["fields"];
+    newFields: Appointment["fields"];
+    oldAddons:
+      | {
+          _id: string;
+          name: string;
+        }[]
+      | undefined;
+    newAddons:
+      | {
+          _id: string;
+          name: string;
+        }[]
+      | undefined;
+    oldDiscount: AppointmentDiscount | undefined;
+    newDiscount: AppointmentDiscount | undefined;
+    oldNote: string | undefined;
+    newNote: string | undefined;
+    oldDateTime: Date;
+    newDateTime: Date;
+    oldDuration: number;
+    newDuration: number;
+    oldTotalPrice: number;
+    newTotalPrice: number;
+    oldTotalDuration: number;
+    newTotalDuration: number;
+    oldStatus: AppointmentStatus;
+    newStatus: AppointmentStatus;
   };
 };
 
@@ -46,10 +88,12 @@ type AppointmentHistoryEvent = {
 }[keyof AppointmentHistoryTypes];
 
 export type AppointmentHistoryEntry = Prettify<
-  WithDatabaseId<
-    {
-      appointmentId: string;
-      dateTime: Date;
-    } & AppointmentHistoryEvent
+  WithCompanyId<
+    WithDatabaseId<
+      {
+        appointmentId: string;
+        dateTime: Date;
+      } & AppointmentHistoryEvent
+    >
   >
 >;

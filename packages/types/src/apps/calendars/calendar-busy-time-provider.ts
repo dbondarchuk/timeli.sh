@@ -10,6 +10,6 @@ export interface ICalendarBusyTimeProvider {
   getBusyTimes(
     app: ConnectedAppData,
     start: Date,
-    end: Date
+    end: Date,
   ): Promise<CalendarBusyTime[]>;
 }

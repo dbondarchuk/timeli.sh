@@ -1,24 +1,24 @@
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory } from "@timelish/logger";
 import {
   DaySchedule,
   IConfigurationService,
   IConnectedAppsService,
   IScheduleProvider,
   IScheduleService,
-} from "@vivid/types";
-import { eachOfInterval } from "@vivid/utils";
+} from "@timelish/types";
+import { eachOfInterval } from "@timelish/utils";
 
 export class ScheduleService implements IScheduleService {
   protected readonly loggerFactory = getLoggerFactory("ScheduleService");
 
   constructor(
     protected readonly connectedAppsService: IConnectedAppsService,
-    protected readonly configurationService: IConfigurationService
+    protected readonly configurationService: IConfigurationService,
   ) {}
 
   public async getSchedule(
     start: Date,
-    end: Date
+    end: Date,
   ): Promise<Record<string, DaySchedule>> {
     const logger = this.loggerFactory("getSchedule");
     logger.debug({ start, end }, "Getting schedule");
@@ -30,7 +30,7 @@ export class ScheduleService implements IScheduleService {
       schedule: defaultSchedule,
     } = await this.configurationService.getConfigurations(
       "booking",
-      "schedule"
+      "schedule",
     );
 
     let scheduleFromApp: Record<string, DaySchedule> = {};
@@ -38,13 +38,13 @@ export class ScheduleService implements IScheduleService {
       logger.debug({ scheduleAppId }, "Using schedule from app");
       const { app: scheduleApp, service: scheduleAppService } =
         await this.connectedAppsService.getAppService<IScheduleProvider>(
-          scheduleAppId
+          scheduleAppId,
         );
 
       scheduleFromApp = await scheduleAppService.getSchedule(
         scheduleApp,
         start,
-        end
+        end,
       );
     } else {
       logger.debug("Using default schedule");
@@ -64,12 +64,12 @@ export class ScheduleService implements IScheduleService {
           [dayStr]: daySchedule || [],
         };
       },
-      {} as Record<string, DaySchedule>
+      {} as Record<string, DaySchedule>,
     );
 
     logger.debug(
       { start, end, dayCount: Object.keys(result).length },
-      "Successfully retrieved schedule"
+      "Successfully retrieved schedule",
     );
 
     return result;

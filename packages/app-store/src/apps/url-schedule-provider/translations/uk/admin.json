@@ -1,0 +1,47 @@
+{
+  "app": {
+    "displayName": "URL Провайдер Розкладу",
+    "description": "Підключіться до зовнішнього URL для отримання даних розкладу для інтеграції з календарем."
+  },
+  "form": {
+    "url": {
+      "label": "URL",
+      "placeholder": "https://example.com/api/schedule",
+      "tooltip": "URL-адреса кінцевої точки, яка надає дані розкладу. Час початку та закінчення будуть передані як параметри запиту в форматі ISO."
+    },
+    "headers": {
+      "label": "Заголовки",
+      "addButton": "Додати заголовок",
+      "keyLabel": "Назва заголовка",
+      "keyPlaceholder": "Authorization",
+      "valueLabel": "Значення заголовка",
+      "valuePlaceholder": "Bearer token",
+      "removeButton": "Видалити",
+      "tooltip": "Додаткові HTTP-заголовки для включення в запити"
+    },
+    "connect": "Підключитися з <app></app>"
+  },
+  "validation": {
+    "form": {
+      "url": {
+        "required": "URL обов'язковий",
+        "url": "Будь ласка, введіть дійсний URL"
+      },
+      "headers": {
+        "key": {
+          "required": "Назва заголовка обов'язкова",
+          "unique": "Назва заголовка повинна бути унікальною"
+        },
+        "value": {
+          "required": "Значення заголовка обов'язкове"
+        }
+      }
+    }
+  },
+  "statusText": {
+    "successfully_connected": "Успішно підключено до провайдера розкладу URL",
+    "error_processing_configuration": "Помилка обробки конфігурації",
+    "error_fetching_schedule": "Помилка отримання розкладу з URL",
+    "invalid_response_format": "Недійсний формат відповіді з URL"
+  }
+}

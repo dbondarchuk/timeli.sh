@@ -1,4 +1,4 @@
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory } from "@timelish/logger";
 import {
   EmailNotificationRequest,
   ICommunicationLogsService,
@@ -9,8 +9,8 @@ import {
   ITextMessageSender,
   TextMessageNotificationRequest,
   TextMessageResponse,
-} from "@vivid/types";
-import { maskify } from "@vivid/utils";
+} from "@timelish/types";
+import { maskify } from "@timelish/utils";
 import { convert } from "html-to-text";
 
 export class NotificationService implements INotificationService {
@@ -19,7 +19,7 @@ export class NotificationService implements INotificationService {
   constructor(
     private readonly configurationService: IConfigurationService,
     private readonly connectedAppService: IConnectedAppsService,
-    private readonly communicationLogService: ICommunicationLogsService
+    private readonly communicationLogService: ICommunicationLogsService,
   ) {}
 
   public async sendEmail({
@@ -49,7 +49,7 @@ export class NotificationService implements INotificationService {
         appointmentId,
         customerId,
       },
-      "Sending email"
+      "Sending email",
     );
 
     try {
@@ -100,7 +100,7 @@ export class NotificationService implements INotificationService {
 
     const { app, service } =
       await this.connectedAppService.getAppService<ITextMessageSender>(
-        textMessageSenderAppId
+        textMessageSenderAppId,
       );
 
     const logger = this.loggerFactory("sendTextMessage");
@@ -113,7 +113,7 @@ export class NotificationService implements INotificationService {
         appointmentId,
         customerId,
       },
-      "Sending Text Message message"
+      "Sending Text Message message",
     );
 
     let response: TextMessageResponse | undefined = undefined;
@@ -139,7 +139,7 @@ export class NotificationService implements INotificationService {
           appointmentId,
           customerId,
         },
-        "Text Message sent"
+        "Text Message sent",
       );
 
       this.communicationLogService.log({

@@ -61,7 +61,7 @@ export type FieldFileData = {
 
 export const getFields = (
   fields: Fields<WithLabelFieldData>,
-  defaultFieldLabels = false
+  defaultFieldLabels = false,
 ): Fields<any> => {
   return [
     {

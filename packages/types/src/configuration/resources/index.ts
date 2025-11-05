@@ -1,4 +1,5 @@
-import { z } from "zod";
+import * as z from "zod";
+import { zNonEmptyString } from "../../utils";
 
 export const inlineResourceType = "inline" as const;
 export const remoteResourceType = "remote" as const;
@@ -10,17 +11,17 @@ export const resourceSourceTypeLabels = {
 
 export const resourceSourceType = z.enum(
   [inlineResourceType, remoteResourceType],
-  { message: "configuration.resources.type.invalid" }
+  { message: "configuration.resources.type.invalid" },
 );
 
 export const inlineResourceSchema = z.object({
   source: resourceSourceType.extract(["inline"]),
-  value: z.string().min(1, "configuration.resources.value.required"),
+  value: zNonEmptyString("configuration.resources.value.required"),
 });
 
 export const remoteResourceSchema = z.object({
   source: resourceSourceType.extract(["remote"]),
-  url: z.string().url("common.url.invalid"),
+  url: z.url("common.url.invalid"),
 });
 
 export const resourceSchema = z.discriminatedUnion("source", [

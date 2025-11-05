@@ -1,14 +1,14 @@
 "use client";
 
-import React from "react";
+import React, { forwardRef } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
 import { Plate } from "@udecode/plate/react";
 
-import { useCreateEditor } from "./use-create-editor";
-import { Editor, EditorContainer } from "../plate-ui/editor";
 import { Value } from "@udecode/plate";
+import { Editor, EditorContainer } from "../plate-ui/editor";
+import { useCreateEditor } from "./use-create-editor";
 
 export type PlateEditorProps = {
   onChange?: (value: Value) => void;
@@ -18,38 +18,56 @@ export type PlateEditorProps = {
   disabled?: boolean;
   placeholder?: string;
   singleLine?: boolean;
+  noToolbar?: boolean;
+  document?: Document;
+  id?: string;
+  usesAbsoluteUrl?: boolean;
 };
 
-export const PlateEditor: React.FC<PlateEditorProps> = ({
-  value,
-  onChange,
-  style,
-  className,
-  disabled,
-  placeholder,
-  singleLine,
-}) => {
-  const editor = useCreateEditor(value, { singleLine });
+export const PlateEditor = forwardRef<HTMLDivElement, PlateEditorProps>(
+  (
+    {
+      value,
+      onChange,
+      style,
+      className,
+      disabled,
+      placeholder,
+      singleLine,
+      noToolbar,
+      id,
+      document,
+      usesAbsoluteUrl,
+    },
+    ref,
+  ) => {
+    const editor = useCreateEditor(value, { singleLine, noToolbar });
 
-  React.useEffect(() => {
-    editor.tf.focus({ edge: "endEditor" });
-  }, [editor]);
+    React.useEffect(() => {
+      editor.tf.focus({ edge: "endEditor" });
+    }, [editor]);
 
-  return (
-    <DndProvider backend={HTML5Backend}>
-      <Plate editor={editor} onChange={({ value }) => onChange?.(value)}>
-        <EditorContainer>
-          <Editor
-            variant="fullWidth"
-            className={className}
-            style={style}
-            disabled={disabled}
-            placeholder={placeholder}
-          />
-        </EditorContainer>
+    return (
+      <DndProvider backend={HTML5Backend} context={document?.defaultView}>
+        <Plate editor={editor} onChange={({ value }) => onChange?.(value)}>
+          <EditorContainer
+            context={document?.defaultView}
+            usesAbsoluteUrl={usesAbsoluteUrl}
+          >
+            <Editor
+              ref={ref}
+              variant="fullWidth"
+              className={className}
+              style={style}
+              disabled={disabled}
+              placeholder={placeholder}
+              id={id}
+            />
+          </EditorContainer>
 
-        {/* <SettingsDialog /> */}
-      </Plate>
-    </DndProvider>
-  );
-};
+          {/* <SettingsDialog /> */}
+        </Plate>
+      </DndProvider>
+    );
+  },
+);

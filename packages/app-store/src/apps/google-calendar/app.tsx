@@ -1,22 +1,23 @@
-import { App } from "@vivid/types";
-import { GoogleCalendarLogo } from "./logo";
-import { GoogleAppSetup } from "./setup";
+import { App } from "@timelish/types";
 import { GOOGLE_CALENDAR_APP_NAME } from "./const";
+import { GoogleCalendarLogo } from "./logo";
+import {
+  GoogleCalendarAdminKeys,
+  GoogleCalendarAdminNamespace,
+} from "./translations/types";
 
-import image1 from "./images/1.png";
-import image2 from "./images/2.png";
-
-export const GoogleCalendarApp: App = {
+export const GoogleCalendarApp: App<
+  GoogleCalendarAdminNamespace,
+  GoogleCalendarAdminKeys
+> = {
   name: GOOGLE_CALENDAR_APP_NAME,
-  displayName: "googleCalendar.displayName",
-  scope: ["calendar-read", "calendar-write"],
+  displayName: "app_google-calendar_admin.app.displayName",
+  scope: ["calendar-read", "calendar-write", "meeting-url-provider"],
   type: "oauth",
-  category: ["categories.calendar", "categories.communications"],
+  category: ["apps.categories.calendar", "apps.categories.communications"],
   Logo: ({ className }) => <GoogleCalendarLogo className={className} />,
-  SetUp: (props) => <GoogleAppSetup {...props} />,
   isFeatured: true,
   description: {
-    text: "googleCalendar.description",
-    images: [image1.src, image2.src],
+    text: "app_google-calendar_admin.app.description",
   },
 };

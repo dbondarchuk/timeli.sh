@@ -1,0 +1,7 @@
+{
+  "apps": {
+    "scopes": {
+      "waitlist-hook": "Хук черги"
+    }
+  }
+}

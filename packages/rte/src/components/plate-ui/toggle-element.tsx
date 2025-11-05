@@ -8,7 +8,7 @@ import {
 import { useElement } from "@udecode/plate/react";
 import { ChevronRight } from "lucide-react";
 
-import { Button } from "@vivid/ui";
+import { Button } from "@timelish/ui";
 import { PlateElement } from "./plate-element";
 
 export const ToggleElement = withRef<typeof PlateElement>(
@@ -29,12 +29,12 @@ export const ToggleElement = withRef<typeof PlateElement>(
           <ChevronRight
             className={cn(
               "transition-transform duration-75",
-              open ? "rotate-90" : "rotate-0"
+              open ? "rotate-90" : "rotate-0",
             )}
           />
         </Button>
         {children}
       </PlateElement>
     );
-  }
+  },
 );

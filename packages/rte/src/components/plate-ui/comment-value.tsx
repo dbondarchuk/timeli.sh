@@ -1,10 +1,10 @@
 "use client";
 
+import { buttonVariants, cn, inputVariants } from "@timelish/ui";
 import {
   CommentEditActions,
   CommentEditTextarea,
 } from "@udecode/plate-comments/react";
-import { buttonVariants, cn, inputVariants } from "@vivid/ui";
 
 export function CommentValue() {
   return (

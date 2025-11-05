@@ -1,0 +1,62 @@
+{
+  "title": "SMTP",
+  "app": {
+    "displayName": "SMTP",
+    "description": "SMTP (Simple Mail Transfer Protocol) - це інтернет стандарт для email, що підтримується більшістю серверів обробки email. Підключіться до SMTP для надсилання email."
+  },
+  "navigation": {
+    "title": "SMTP",
+    "description": "Налаштувати SMTP для надсилання email."
+  },
+  "form": {
+    "host": {
+      "label": "SMTP Хост",
+      "placeholder": "smtp.email.com"
+    },
+    "port": {
+      "label": "SMTP порт",
+      "placeholder": "465"
+    },
+    "secure": {
+      "label": "SMTP SSL",
+      "yes": "Увімкнено",
+      "no": "Вимкнено"
+    },
+    "email": {
+      "label": "Email відправника",
+      "placeholder": "john@exampl.com",
+      "tooltip": "Email адреса, з якої будуть надіслані всі email"
+    },
+    "authUser": {
+      "label": "Користувач авторизації SMTP",
+      "placeholder": "john",
+      "tooltip": "Ім'я користувача для входу в SMTP сервер"
+    },
+    "authPass": {
+      "label": "Пароль авторизації SMTP",
+      "tooltip": "Пароль для входу в SMTP сервер"
+    }
+  },
+  "statusText": {
+    "successfully_connected": "Успішно підключено до сервера",
+    "error_processing_configuration": "Помилка обробки запиту конфігурації SMTP",
+    "connection_verification_failed": "Не вдалося підключитися",
+    "error_sending_email": "Помилка надсилання email через SMTP",
+    "error_parsing_ical_event": "Не вдалося розібрати iCal подію",
+    "something_went_wrong": "Щось пішло не так"
+  },
+  "validation": {
+    "host": {
+      "required": "SMTP хост обов'язковий",
+      "min": "SMTP хост обов'язковий"
+    },
+    "port": {
+      "integer": "Повинно бути цілим числом",
+      "min": "Номер SMTP порту повинен бути від 1 до 99999",
+      "max": "Номер SMTP порту повинен бути від 1 до 99999"
+    },
+    "email": {
+      "invalid": "Email повинен бути правильною email адресою"
+    }
+  }
+}

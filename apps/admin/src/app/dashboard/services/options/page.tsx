@@ -1,0 +1,75 @@
+import PageContainer from "@/components/admin/layout/page-container";
+import { OptionsTable } from "@/components/admin/services/options/table/table";
+import { OptionsTableAction } from "@/components/admin/services/options/table/table-action";
+import {
+  serviceOptionsSearchParamsCache,
+  serviceOptionsSearchParamsSerializer,
+} from "@timelish/api-sdk";
+import { getI18nAsync } from "@timelish/i18n/server";
+import { getLoggerFactory } from "@timelish/logger";
+import { Breadcrumbs, Heading, Link } from "@timelish/ui";
+import { DataTableSkeleton } from "@timelish/ui-admin";
+import { Plus } from "lucide-react";
+import { Metadata } from "next";
+import { Suspense } from "react";
+
+type Params = PageProps<"/dashboard/services/options">;
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getI18nAsync("admin");
+  return {
+    title: t("services.options.title"),
+  };
+}
+
+export default async function OptionsPage(props: Params) {
+  const logger = getLoggerFactory("AdminPages")("options");
+  const t = await getI18nAsync("admin");
+
+  logger.debug("Loading options page");
+  const searchParams = await props.searchParams;
+  const parsed = serviceOptionsSearchParamsCache.parse(searchParams);
+
+  const key = serviceOptionsSearchParamsSerializer({ ...parsed });
+
+  const breadcrumbItems = [
+    { title: t("navigation.dashboard"), link: "/dashboard" },
+    { title: t("navigation.services"), link: "/dashboard/services" },
+    {
+      title: t("navigation.options"),
+      link: "/dashboard/services/options",
+    },
+  ];
+
+  return (
+    <PageContainer scrollable={false}>
+      <div className="flex flex-1 flex-col gap-4">
+        <div className="flex flex-col gap-4 justify-between">
+          <Breadcrumbs items={breadcrumbItems} />
+          <div className="flex items-center justify-between">
+            <Heading
+              title={t("services.options.title")}
+              description={t("services.options.description")}
+            />
+
+            <Link
+              button
+              href={"/dashboard/services/options/new"}
+              variant="default"
+            >
+              <Plus className="mr-2 h-4 w-4" /> {t("services.options.addNew")}
+            </Link>
+          </div>
+          {/* <Separator /> */}
+        </div>
+        <OptionsTableAction />
+        <Suspense
+          key={key}
+          fallback={<DataTableSkeleton columnCount={4} rowCount={10} />}
+        >
+          <OptionsTable />
+        </Suspense>
+      </div>
+    </PageContainer>
+  );
+}

@@ -1,0 +1,13 @@
+{
+  "form": {
+    "cardFieldsProviderError": "Не вдалося знайти дочірні компоненти в <PayPalCardFieldsProvider />",
+    "ui": {
+      "payButton": "Оплатити",
+      "or": "або"
+    }
+  },
+  "toast": {
+    "payment_failed": "Платіж не вдався",
+    "payment_failed_description": "Ваш платіж не вдався. Будь ласка, спробуйте ще раз. Якщо проблема не зникає, будь ласка, зателефонуйте нам"
+  }
+}

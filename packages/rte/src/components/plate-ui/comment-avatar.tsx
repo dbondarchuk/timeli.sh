@@ -1,11 +1,9 @@
 "use client";
 
-import React from "react";
-
 import { CommentsPlugin } from "@udecode/plate-comments/react";
 import { usePluginOption } from "@udecode/plate/react";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@vivid/ui";
+import { Avatar, AvatarFallback, AvatarImage } from "@timelish/ui";
 
 export function CommentAvatar({ userId }: { userId: string | null }) {
   const user = usePluginOption(CommentsPlugin, "userById", userId);

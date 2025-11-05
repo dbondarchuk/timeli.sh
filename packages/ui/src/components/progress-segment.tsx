@@ -1,5 +1,5 @@
-import * as React from "react";
 import * as ProgressPrimitive from "@radix-ui/react-progress";
+import React from "react";
 
 import { cn } from "../utils";
 
@@ -23,7 +23,7 @@ const SegmentProgress = React.forwardRef<
       ref={ref}
       className={cn(
         "relative h-6 w-full overflow-hidden rounded bg-secondary",
-        className
+        className,
       )}
       {...props}
     >
@@ -32,7 +32,7 @@ const SegmentProgress = React.forwardRef<
           key={index}
           className={cn(
             "h-full transition-all absolute",
-            segment.color ? segment.color : "bg-primary"
+            segment.color ? segment.color : "bg-primary",
           )}
           style={{
             width: `${segment.value}%`,

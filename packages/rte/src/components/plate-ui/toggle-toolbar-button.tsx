@@ -1,11 +1,11 @@
 "use client";
 
+import { ToolbarButton } from "@timelish/ui";
 import { withRef } from "@udecode/cn";
 import {
   useToggleToolbarButton,
   useToggleToolbarButtonState,
 } from "@udecode/plate-toggle/react";
-import { ToolbarButton } from "@vivid/ui";
 import { ListCollapseIcon } from "lucide-react";
 
 export const ToggleToolbarButton = withRef<typeof ToolbarButton>(
@@ -18,5 +18,5 @@ export const ToggleToolbarButton = withRef<typeof ToolbarButton>(
         <ListCollapseIcon />
       </ToolbarButton>
     );
-  }
+  },
 );

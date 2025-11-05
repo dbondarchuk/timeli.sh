@@ -1,10 +1,9 @@
 "use client";
 
-import { AppSetupProps } from "@vivid/types";
+import { useI18n } from "@timelish/i18n";
+import { AppSetupProps } from "@timelish/types";
 import {
   Button,
-  ConnectedAppNameAndLogo,
-  ConnectedAppStatusMessage,
   Form,
   FormControl,
   FormField,
@@ -14,15 +13,23 @@ import {
   InfoTooltip,
   PhoneInput,
   Spinner,
-} from "@vivid/ui";
+} from "@timelish/ui";
+import {
+  ConnectedAppNameAndLogo,
+  ConnectedAppStatusMessage,
+} from "@timelish/ui-admin";
 import React from "react";
-import { useI18n } from "@vivid/i18n";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
 import { TextMessageResenderApp } from "./app";
 import {
   TextMessageResenderConfiguration,
   textMessageResenderConfigurationSchema,
 } from "./models";
+import {
+  TextMessageResenderAdminKeys,
+  TextMessageResenderAdminNamespace,
+  textMessageResenderAdminNamespace,
+} from "./translations/types";
 
 export const TextMessageResenderAppSetup: React.FC<AppSetupProps> = ({
   onSuccess,
@@ -40,7 +47,10 @@ export const TextMessageResenderAppSetup: React.FC<AppSetupProps> = ({
       onError,
     });
 
-  const t = useI18n("apps");
+  const t = useI18n<
+    TextMessageResenderAdminNamespace,
+    TextMessageResenderAdminKeys
+  >(textMessageResenderAdminNamespace);
 
   return (
     <>
@@ -53,15 +63,13 @@ export const TextMessageResenderAppSetup: React.FC<AppSetupProps> = ({
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel>
-                    {t("textMessageResender.form.phone.label")}
-                    <InfoTooltip>
-                      {t("textMessageResender.form.phone.tooltip")}
-                    </InfoTooltip>
+                    {t("form.phone.label")}
+                    <InfoTooltip>{t("form.phone.tooltip")}</InfoTooltip>
                   </FormLabel>
                   <FormControl>
                     <PhoneInput
                       {...field}
-                      label={t("textMessageResender.form.phone.placeholder")}
+                      label={t("form.phone.placeholder")}
                     />
                   </FormControl>
                   <FormMessage />
@@ -75,16 +83,25 @@ export const TextMessageResenderAppSetup: React.FC<AppSetupProps> = ({
               className="inline-flex gap-2 items-center w-full"
             >
               {isLoading && <Spinner />}
-              <span>{t("textMessageResender.form.connectWith")}</span>
-              <ConnectedAppNameAndLogo
-                app={{ name: TextMessageResenderApp.name }}
-                t={t}
-              />
+              <span className="inline-flex gap-2 items-center">
+                {t.rich("form.connectWith", {
+                  app: () => (
+                    <ConnectedAppNameAndLogo
+                      appName={TextMessageResenderApp.name}
+                    />
+                  ),
+                })}
+              </span>
             </Button>
           </div>
         </form>
       </Form>
-      {appStatus && <ConnectedAppStatusMessage app={appStatus} t={t} />}
+      {appStatus && (
+        <ConnectedAppStatusMessage
+          status={appStatus.status}
+          statusText={appStatus.statusText}
+        />
+      )}
     </>
   );
 };

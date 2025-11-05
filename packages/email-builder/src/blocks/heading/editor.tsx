@@ -1,17 +1,20 @@
 "use client";
 
-import { useRef } from "react";
+import { Ref, useRef } from "react";
 import sanitizeHtml from "sanitize-html";
 
-import { ArgumentsAutocomplete } from "@vivid/ui";
-import { getStyles } from "./styles";
 import {
-  useEditorArgs,
+  useBlockEditor,
   useCurrentBlock,
   useDispatchAction,
+  useEditorArgs,
+  usePortalContext,
   useSetSelectedBlockId,
-} from "@vivid/builder";
+} from "@timelish/builder";
+import { ArgumentsAutocomplete } from "@timelish/ui-admin";
+import { mergeRefs } from "@timelish/ui/src/utils/merge-refs";
 import { HeadingProps } from "./schema";
+import { getStyles } from "./styles";
 
 export function HeadingEditor({ props, style }: HeadingProps) {
   const ref = useRef<HTMLInputElement>(null);
@@ -20,6 +23,9 @@ export function HeadingEditor({ props, style }: HeadingProps) {
   const value = currentBlock.data?.props?.text;
   const dispatchAction = useDispatchAction();
   const setSelectedBlockId = useSetSelectedBlockId();
+  const overlayProps = useBlockEditor(currentBlock.id);
+
+  const { document } = usePortalContext();
 
   const styles = getStyles({ props, style });
 
@@ -53,16 +59,20 @@ export function HeadingEditor({ props, style }: HeadingProps) {
     }
   };
 
+  const Element = currentBlock?.data?.props?.level || "h2";
+
   return (
     <ArgumentsAutocomplete
-      ref={ref}
+      ref={mergeRefs(ref, overlayProps.ref as Ref<HTMLInputElement>)}
       args={args}
-      asInput
-      className="w-full bg-transparent border-0 focus-visible:ring-0 rounded-none h-auto p-0 border-none leading-normal md:leading-normal"
-      style={styles}
+      asContentEditable
+      element={Element}
       value={value ?? "Heading"}
       onChange={onChange}
       onKeyDown={handleKeyPress}
+      documentElement={document}
+      style={styles}
+      onClick={overlayProps.onClick}
     />
   );
 }

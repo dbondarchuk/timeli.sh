@@ -1,5 +1,5 @@
-import { deserializeMarkdown } from "@vivid/rte";
-import { template } from "@vivid/utils";
+import { deserializeMarkdown } from "@timelish/rte";
+import { template } from "@timelish/utils";
 import { renderToStaticMarkup } from "./static";
 
 export type UserEmailTemplateButton = {
@@ -26,7 +26,7 @@ export const renderUserEmailTemplate = async (
     previewText,
     title,
   }: UserEmailTemplateProps,
-  args: Record<string, any> = {}
+  args: Record<string, any> = {},
 ) => {
   const topButtons =
     propsTopButtons
@@ -82,7 +82,7 @@ export const renderUserEmailTemplate = async (
                       props: {
                         size: 83,
                         shape: "circle",
-                        imageUrl: "{{config.url}}{{config.logo}}",
+                        imageUrl: "{{websiteUrl}}{{config.logo}}",
                       },
                     },
                   },
@@ -441,6 +441,32 @@ export const renderUserEmailTemplate = async (
         //         },
         //       ]
         //     : []),
+        {
+          id: "block-16a45380-afc4-4a5f-ab8b-3eb5c32fc99c",
+          type: "OnlineMeeting",
+          data: {
+            props: {
+              title: "{{option.name}}",
+              whenText: "When:",
+              codeText: "Code:",
+              passwordText: "Password:",
+              buttonText: "Join Meeting",
+              linkText:
+                "Trouble joining? Copy & paste this link into your browser:",
+              buttonTextColor: "#FFFFFF",
+              buttonBackgroundColor: "#0b5cff",
+              type: "{{meetingInformation.type}}",
+            },
+            style: {
+              padding: {
+                top: 16,
+                bottom: 16,
+                left: 24,
+                right: 24,
+              },
+            },
+          },
+        },
         {
           type: "Text",
           id: "block-1740258119442",

@@ -48,7 +48,7 @@ import {
   Toolbar,
   ToolbarButton,
   ToolbarGroup,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { PlateElement } from "./plate-element";
 import {
   BorderAll,
@@ -65,7 +65,7 @@ export const TableElement = withHOC(
     const readOnly = useReadOnly();
     const isSelectionAreaVisible = usePluginOption(
       BlockSelectionPlugin,
-      "isSelectionAreaVisible"
+      "isSelectionAreaVisible",
     );
     const hasControls = !readOnly && !isSelectionAreaVisible;
     const selected = useSelected();
@@ -80,7 +80,7 @@ export const TableElement = withHOC(
         className={cn(
           className,
           "overflow-x-auto py-5",
-          hasControls && "-ml-2"
+          hasControls && "-ml-2",
         )}
         style={{ paddingLeft: marginLeft }}
         blockSelectionClassName={cn(hasControls && "left-2")}
@@ -91,7 +91,7 @@ export const TableElement = withHOC(
             ref={ref}
             className={cn(
               "mr-0 ml-px table h-px table-fixed border-collapse",
-              isSelectingCell && "selection:bg-transparent"
+              isSelectingCell && "selection:bg-transparent",
             )}
             {...tableProps}
           >
@@ -106,7 +106,7 @@ export const TableElement = withHOC(
     }
 
     return <TableFloatingToolbar>{content}</TableFloatingToolbar>;
-  })
+  }),
 );
 
 export const TableFloatingToolbar = withRef<typeof PopoverContent>(
@@ -116,7 +116,7 @@ export const TableFloatingToolbar = withRef<typeof PopoverContent>(
     const { props: buttonProps } = useRemoveNodeButton({ element });
     const collapsed = useEditorSelector(
       (editor) => !editor.api.isExpanded(),
-      []
+      [],
     );
 
     const { canMerge, canSplit } = useTableMergeState();
@@ -243,7 +243,7 @@ export const TableFloatingToolbar = withRef<typeof PopoverContent>(
         </PopoverContent>
       </Popover>
     );
-  }
+  },
 );
 
 export const TableBordersDropdownMenuContent = withRef<

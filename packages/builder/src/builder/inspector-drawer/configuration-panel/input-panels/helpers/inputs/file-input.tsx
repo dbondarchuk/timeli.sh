@@ -1,34 +1,39 @@
 import React from "react";
 
-import { AssetSelectorInput, FormDescription, Label } from "@vivid/ui";
+import { Prettify } from "@timelish/types";
+import { cn, FormDescription, Label } from "@timelish/ui";
+import {
+  AssetSelectorInput,
+  AssetSelectorInputProps,
+} from "@timelish/ui-admin";
 import { ResetButton } from "./reset-button";
 
-type Props = {
-  label: string;
-  accept?: string;
-  helperText?: string | React.JSX.Element;
-  placeholder?: string;
-} & (
-  | {
-      defaultValue: string;
-      onChange: (v: string) => void;
-      nullable?: false;
-    }
-  | {
-      defaultValue: string | null;
-      onChange: (v: string | null) => void;
-      nullable: true;
-    }
-);
+type Props = Prettify<
+  Omit<AssetSelectorInputProps, "value" | "onChange" | "onBlur"> & {
+    label: string;
+    helperText?: string | React.JSX.Element;
+  } & (
+      | {
+          defaultValue: string;
+          onChange: (v: string) => void;
+          nullable?: false;
+        }
+      | {
+          defaultValue: string | null;
+          onChange: (v: string | null) => void;
+          nullable: true;
+        }
+    )
+>;
 
 export const FileInput: React.FC<Props> = ({
   helperText,
   label,
-  accept,
-  placeholder,
   defaultValue,
   onChange,
   nullable,
+  className,
+  ...rest
 }) => {
   const [value, setValue] = React.useState(defaultValue);
   React.useEffect(() => {
@@ -40,11 +45,10 @@ export const FileInput: React.FC<Props> = ({
       <Label>{label}</Label>
       <div className="flex w-full">
         <AssetSelectorInput
-          className="w-full"
-          accept={accept}
-          placeholder={placeholder}
+          className={cn("w-full", className)}
+          h="sm"
+          {...rest}
           value={value}
-          fullUrl
           onChange={(v) => {
             setValue(v);
             onChange(v);
@@ -52,6 +56,7 @@ export const FileInput: React.FC<Props> = ({
         />
         {nullable && (
           <ResetButton
+            size={rest.h ?? "sm"}
             onClick={() => {
               setValue(null);
               onChange(null);

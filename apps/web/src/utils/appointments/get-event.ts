@@ -1,5 +1,4 @@
-import { getLoggerFactory } from "@vivid/logger";
-import { ServicesContainer } from "@vivid/services";
+import { getLoggerFactory } from "@timelish/logger";
 import {
   AppointmentAddon,
   AppointmentDiscount,
@@ -7,13 +6,14 @@ import {
   AppointmentOption,
   AppointmentRequest,
   Customer,
-} from "@vivid/types";
-import { formatAmount, getDiscountAmount } from "@vivid/utils";
+} from "@timelish/types";
+import { formatAmount, getDiscountAmount } from "@timelish/utils";
+import { getServicesContainer } from "../utils";
 
 export const getAppointmentEventFromRequest = async (
   request: AppointmentRequest,
   ignoreFieldValidation?: boolean,
-  files?: Record<string, any>
+  files?: Record<string, any>,
 ): Promise<
   | {
       event: AppointmentEvent;
@@ -30,6 +30,7 @@ export const getAppointmentEventFromRequest = async (
     }
 > => {
   const logger = getLoggerFactory("AppointmentsUtils")("getEvent");
+  const servicesContainer = await getServicesContainer();
 
   logger.debug(
     {
@@ -40,11 +41,11 @@ export const getAppointmentEventFromRequest = async (
       hasFiles: !!files,
       fieldCount: Object.keys(request.fields).length,
     },
-    "Processing appointment event from request"
+    "Processing appointment event from request",
   );
 
-  const selectedOption = await ServicesContainer.ServicesService().getOption(
-    request.optionId
+  const selectedOption = await servicesContainer.servicesService.getOption(
+    request.optionId,
   );
 
   if (!selectedOption) {
@@ -65,14 +66,15 @@ export const getAppointmentEventFromRequest = async (
       optionName: selectedOption.name,
       optionDuration: selectedOption.duration,
       optionPrice: selectedOption.price,
+      optionIsOnline: selectedOption.isOnline,
     },
-    "Retrieved selected option"
+    "Retrieved selected option",
   );
 
   if (typeof selectedOption.duration === "undefined" && !request.duration) {
     logger.warn(
       { optionId: request.optionId, optionName: selectedOption.name },
-      "Duration required but not provided"
+      "Duration required but not provided",
     );
 
     return {
@@ -88,11 +90,11 @@ export const getAppointmentEventFromRequest = async (
   if (request.addonsIds) {
     logger.debug(
       { addonsIds: request.addonsIds },
-      "Retrieving selected addons"
+      "Retrieving selected addons",
     );
 
-    selectedAddons = await ServicesContainer.ServicesService().getAddonsById(
-      request.addonsIds
+    selectedAddons = await servicesContainer.servicesService.getAddonsById(
+      request.addonsIds,
     );
 
     if (selectedAddons.length !== request.addonsIds.length) {
@@ -102,7 +104,7 @@ export const getAppointmentEventFromRequest = async (
           foundAddonsCount: selectedAddons.length,
           addonsIds: request.addonsIds,
         },
-        "Some selected addons not found"
+        "Some selected addons not found",
       );
 
       return {
@@ -119,7 +121,7 @@ export const getAppointmentEventFromRequest = async (
         addonsCount: selectedAddons.length,
         addonNames: selectedAddons.map((a) => a.name),
       },
-      "Successfully retrieved all selected addons"
+      "Successfully retrieved all selected addons",
     );
   }
 
@@ -143,16 +145,16 @@ export const getAppointmentEventFromRequest = async (
       requiredFieldsCount: Array.from(allFields.values()).filter(Boolean)
         .length,
     },
-    "Calculated required fields from option and addons"
+    "Calculated required fields from option and addons",
   );
 
   const serviceFields =
-    await ServicesContainer.ServicesService().getFieldsById(fieldsIds);
+    await servicesContainer.servicesService.getFieldsById(fieldsIds);
 
   if (!ignoreFieldValidation) {
     logger.debug(
       { fieldValidationEnabled: true },
-      "Validating required fields"
+      "Validating required fields",
     );
 
     for (const field of serviceFields) {
@@ -169,7 +171,7 @@ export const getAppointmentEventFromRequest = async (
             hasFile: !!files?.[field.name],
             hasFieldValue: !!request.fields[field.name],
           },
-          "Required field validation failed"
+          "Required field validation failed",
         );
 
         return {
@@ -184,7 +186,7 @@ export const getAppointmentEventFromRequest = async (
 
     logger.debug(
       { validatedFieldsCount: serviceFields.length },
-      "Field validation completed successfully"
+      "Field validation completed successfully",
     );
   } else {
     logger.debug({ fieldValidationEnabled: false }, "Field validation skipped");
@@ -210,7 +212,7 @@ export const getAppointmentEventFromRequest = async (
         selectedAddons?.reduce((sum, cur) => sum + (cur.price ?? 0), 0) ?? 0,
       totalPrice,
     },
-    "Calculated duration and price"
+    "Calculated duration and price",
   );
 
   let appointmentDiscount: AppointmentDiscount | undefined = undefined;
@@ -220,26 +222,26 @@ export const getAppointmentEventFromRequest = async (
       customerEmail: request.fields.email,
       customerPhone: request.fields.phone?.replace(
         /(\d{3})\d{3}(\d{4})/,
-        "$1***$2"
+        "$1***$2",
       ),
     },
-    "Looking up customer"
+    "Looking up customer",
   );
 
-  const customer = await ServicesContainer.CustomersService().findCustomer(
+  const customer = await servicesContainer.customersService.findCustomer(
     request.fields.email,
-    request.fields.phone
+    request.fields.phone,
   );
 
   if (customer) {
     logger.debug(
       { customerId: customer._id, customerName: customer.name },
-      "Found existing customer"
+      "Found existing customer",
     );
   } else {
     logger.debug(
       { customerEmail: request.fields.email },
-      "No existing customer found"
+      "No existing customer found",
     );
   }
 
@@ -250,10 +252,10 @@ export const getAppointmentEventFromRequest = async (
         customerId: customer?._id,
         dateTime: request.dateTime,
       },
-      "Applying promo code discount"
+      "Applying promo code discount",
     );
 
-    const discount = await ServicesContainer.ServicesService().applyDiscount({
+    const discount = await servicesContainer.servicesService.applyDiscount({
       code: request.promoCode,
       dateTime: request.dateTime,
       optionId: request.optionId,
@@ -291,7 +293,7 @@ export const getAppointmentEventFromRequest = async (
         originalPrice: totalPrice + discountAmount,
         finalPrice: totalPrice,
       },
-      "Successfully applied promo code discount"
+      "Successfully applied promo code discount",
     );
   }
 
@@ -304,6 +306,7 @@ export const getAppointmentEventFromRequest = async (
       name: selectedOption.name,
       price: selectedOption.price,
       duration: selectedOption.duration,
+      isOnline: selectedOption.isOnline,
     },
     timeZone: request.timeZone,
     totalDuration,
@@ -318,7 +321,7 @@ export const getAppointmentEventFromRequest = async (
     discount: appointmentDiscount,
     fieldsLabels: serviceFields.reduce(
       (map, field) => ({ ...map, [field.name]: field.data.label }),
-      {} as Record<string, string>
+      {} as Record<string, string>,
     ),
   };
 
@@ -332,7 +335,7 @@ export const getAppointmentEventFromRequest = async (
       hasDiscount: !!appointmentDiscount,
       customerId: customer?._id,
     },
-    "Successfully created appointment event from request"
+    "Successfully created appointment event from request",
   );
 
   return {

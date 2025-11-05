@@ -1,6 +1,6 @@
-import { z } from "zod";
-import { WithDatabaseId } from "../database";
-import { asOptinalNumberField, zUniqueArray } from "../utils";
+import * as z from "zod";
+import { WithCompanyId, WithDatabaseId } from "../database";
+import { asOptinalNumberField, zNonEmptyString, zUniqueArray } from "../utils";
 import { Prettify } from "../utils/helpers";
 
 export const fixedAmountDiscountType = "amount";
@@ -13,23 +13,23 @@ export const discountTypes = [
 
 export const discountSchema = z
   .object({
-    name: z.string().min(2, "discount.name.required"),
-    enabled: z.coerce.boolean(),
-    startDate: z.coerce.date().optional(),
-    endDate: z.coerce.date().optional(),
-    appointmentStartDate: z.coerce.date().optional(),
-    appointmentEndDate: z.coerce.date().optional(),
+    name: zNonEmptyString("discount.name.required", 2),
+    enabled: z.coerce.boolean<boolean>(),
+    startDate: z.coerce.date<Date>().optional(),
+    endDate: z.coerce.date<Date>().optional(),
+    appointmentStartDate: z.coerce.date<Date>().optional(),
+    appointmentEndDate: z.coerce.date<Date>().optional(),
     maxUsage: asOptinalNumberField(
       z.coerce
-        .number({ message: "discount.maxUsage.min" })
+        .number<number>({ error: "discount.maxUsage.min" })
         .int("discount.maxUsage.min")
-        .min(1, "discount.maxUsage.min")
+        .min(1, "discount.maxUsage.min"),
     ),
     maxUsagePerCustomer: asOptinalNumberField(
       z.coerce
-        .number({ message: "discount.maxUsagePerCustomer.min" })
+        .number<number>({ error: "discount.maxUsagePerCustomer.min" })
         .int("discount.maxUsagePerCustomer.min")
-        .min(1, "discount.maxUsagePerCustomer.min")
+        .min(1, "discount.maxUsagePerCustomer.min"),
     ),
     type: z.enum(discountTypes),
     limitTo: z
@@ -41,38 +41,38 @@ export const discountSchema = z
                 ids: zUniqueArray(
                   z.array(
                     z.object({
-                      id: z.string().min(1, "discount.limitTo.addons.required"),
-                    })
+                      id: zNonEmptyString("discount.limitTo.addons.required"),
+                    }),
                   ),
                   // .min(1, "discount.limitTo.addons.min"),
                   (addon) => addon.id,
-                  "discount.limitTo.addons.unique"
+                  "discount.limitTo.addons.unique",
                 ),
-              })
+              }),
             )
             .optional(),
           options: zUniqueArray(
             z.array(
               z.object({
-                id: z.string().min(1, "discount.limitTo.options.required"),
-              })
+                id: zNonEmptyString("discount.limitTo.options.required"),
+              }),
             ),
             (option) => option.id,
-            "discount.limitTo.options.unique"
+            "discount.limitTo.options.unique",
           ).optional(),
-        })
+        }),
       )
       .optional(),
     value: z.coerce
-      .number({ message: "discount.value.required" })
+      .number<number>({ error: "discount.value.required" })
       .int("discount.value.required"),
     codes: zUniqueArray(
       z
-        .array(z.string().min(3, "discount.codes.minLength"))
+        .array(zNonEmptyString("discount.codes.minLength", 3))
         .min(1, "discount.codes.min")
         .max(10, "discount.codes.max"),
       (code) => code,
-      "discount.codes.unique"
+      "discount.codes.unique",
     ),
   })
   .superRefine((arg, ctx) => {
@@ -93,22 +93,26 @@ export const discountSchema = z
   });
 
 export type DiscountUpdateModel = z.infer<typeof discountSchema>;
-export type Discount = WithDatabaseId<DiscountUpdateModel> & {
-  updatedAt: Date;
-};
+export type Discount = Prettify<
+  WithCompanyId<
+    WithDatabaseId<DiscountUpdateModel> & {
+      updatedAt: Date;
+    }
+  >
+>;
 
 export type DiscountType = Discount["type"];
 
 export const getDiscountSchemaWithUniqueCheck = (
   uniqueNameAndCodeCheckFn: (
     name: string,
-    codes: string[]
+    codes: string[],
   ) => Promise<{
     name: boolean;
     code: Record<string, boolean>;
   }>,
   nameMessage: string,
-  codeMessage: string
+  codeMessage: string,
 ) => {
   return discountSchema.superRefine(async (arg, ctx) => {
     const isUnique = await uniqueNameAndCodeCheckFn(arg.name, arg.codes);
@@ -138,16 +142,16 @@ export const applyDiscountRequestSchema = z.object({
   name: z.string(),
   email: z.string(),
   phone: z.string(),
-  optionId: z.string().min(1, "discount.applyRequest.optionId.required"),
-  dateTime: z.coerce.date({
-    message: "discount.applyRequest.dateTime.required",
+  optionId: zNonEmptyString("discount.applyRequest.optionId.required"),
+  dateTime: z.coerce.date<Date>({
+    error: "discount.applyRequest.dateTime.required",
   }),
   addons: zUniqueArray(
-    z.array(z.string().min(1, "discount.applyRequest.addons.required")),
+    z.array(zNonEmptyString("discount.applyRequest.addons.required")),
     (id) => id,
-    "discount.applyRequest.addons.unique"
+    "discount.applyRequest.addons.unique",
   ).optional(),
-  code: z.string().min(1, "discount.applyRequest.code.required"),
+  code: zNonEmptyString("discount.applyRequest.code.required"),
 });
 
 export type ApplyDiscountRequest = z.infer<typeof applyDiscountRequestSchema>;

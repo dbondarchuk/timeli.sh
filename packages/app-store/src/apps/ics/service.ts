@@ -1,5 +1,4 @@
-import { parseIcsCalendar } from "@ts-ics/schema-zod";
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
 import {
   CalendarBusyTime,
   ConnectedAppData,
@@ -8,54 +7,68 @@ import {
   ICalendarBusyTimeProvider,
   IConnectedApp,
   IConnectedAppProps,
-} from "@vivid/types";
+} from "@timelish/types";
+import { parseIcsCalendar } from "@ts-ics/schema-zod";
 import { DateTime } from "luxon";
 import { IcsLinkCalendarSource } from "./models";
+import {
+  IcsAdminAllKeys,
+  IcsAdminKeys,
+  IcsAdminNamespace,
+} from "./translations/types";
 
 export default class IcsConnectedApp
   implements IConnectedApp, ICalendarBusyTimeProvider
 {
-  protected readonly loggerFactory = getLoggerFactory("IcsConnectedApp");
+  protected readonly loggerFactory: LoggerFactory;
 
-  public constructor(protected readonly props: IConnectedAppProps) {}
+  public constructor(protected readonly props: IConnectedAppProps) {
+    this.loggerFactory = getLoggerFactory("IcsConnectedApp", props.companyId);
+  }
 
   public async processRequest(
     appData: ConnectedAppData,
-    data: IcsLinkCalendarSource
-  ): Promise<ConnectedAppStatusWithText> {
+    data: IcsLinkCalendarSource,
+  ): Promise<ConnectedAppStatusWithText<IcsAdminNamespace, IcsAdminKeys>> {
     const logger = this.loggerFactory("processRequest");
     logger.debug(
       { appId: appData._id, icsLink: data.link },
-      "Processing ICS calendar connection request"
+      "Processing ICS calendar connection request",
     );
 
     try {
       logger.debug(
         { appId: appData._id, icsLink: data.link },
-        "Fetching ICS calendar from URL"
+        "Fetching ICS calendar from URL",
       );
 
       const response = await fetch(data.link);
 
       logger.debug(
         { appId: appData._id, icsLink: data.link, status: response.status },
-        "Received response from ICS URL"
+        "Received response from ICS URL",
       );
 
       if (response.status >= 400) {
         logger.error(
           { appId: appData._id, icsLink: data.link, status: response.status },
-          "Failed to fetch ICS calendar - HTTP error"
+          "Failed to fetch ICS calendar - HTTP error",
         );
 
-        throw new ConnectedAppError("ics.statusText.http_error", {
-          statusCode: response.status,
-        });
+        throw new ConnectedAppError<IcsAdminNamespace, IcsAdminKeys>(
+          "app_ics_admin.statusText.http_error",
+          {
+            statusCode: response.status,
+          },
+        );
       }
 
-      const status: ConnectedAppStatusWithText = {
+      const status: ConnectedAppStatusWithText<
+        IcsAdminNamespace,
+        IcsAdminKeys
+      > = {
         status: "connected",
-        statusText: "ics.statusText.successfully_set_up",
+        statusText: "app_ics_admin.statusText.successfully_set_up",
       };
 
       this.props.update({
@@ -68,17 +81,20 @@ export default class IcsConnectedApp
 
       logger.info(
         { appId: appData._id, icsLink: data.link, status: status.status },
-        "Successfully connected to ICS calendar"
+        "Successfully connected to ICS calendar",
       );
 
       return status;
     } catch (error: any) {
       logger.error(
         { appId: appData._id, icsLink: data.link, error },
-        "Error processing ICS calendar connection request"
+        "Error processing ICS calendar connection request",
       );
 
-      const status: ConnectedAppStatusWithText = {
+      const status: ConnectedAppStatusWithText<
+        IcsAdminNamespace,
+        IcsAdminKeys
+      > = {
         status: "failed",
         statusText:
           error instanceof ConnectedAppError
@@ -100,7 +116,7 @@ export default class IcsConnectedApp
   public async getBusyTimes(
     appData: ConnectedAppData,
     start: Date,
-    end: Date
+    end: Date,
   ): Promise<CalendarBusyTime[]> {
     const logger = this.loggerFactory("getBusyTimes");
     logger.debug(
@@ -109,7 +125,7 @@ export default class IcsConnectedApp
         start: start.toISOString(),
         end: end.toISOString(),
       },
-      "Getting busy times from ICS calendar"
+      "Getting busy times from ICS calendar",
     );
 
     try {
@@ -117,20 +133,20 @@ export default class IcsConnectedApp
 
       logger.debug(
         { appId: appData._id, icsLink: link },
-        "Fetching ICS calendar data"
+        "Fetching ICS calendar data",
       );
 
       const response = await fetch(link);
 
       logger.debug(
         { appId: appData._id, icsLink: link, status: response.status },
-        "Received ICS calendar response"
+        "Received ICS calendar response",
       );
 
       if (response.status >= 400) {
         logger.error(
           { appId: appData._id, icsLink: link, status: response.status },
-          "Failed to fetch ICS calendar data"
+          "Failed to fetch ICS calendar data",
         );
 
         throw new ConnectedAppError("ics.statusText.calendar_fetch_error", {
@@ -142,7 +158,7 @@ export default class IcsConnectedApp
 
       logger.debug(
         { appId: appData._id, icsLink: link, icsLength: ics.length },
-        "Retrieved ICS calendar content"
+        "Retrieved ICS calendar content",
       );
 
       logger.debug({ appId: appData._id }, "Parsing ICS calendar");
@@ -151,7 +167,7 @@ export default class IcsConnectedApp
 
       logger.debug(
         { appId: appData._id, eventCount: calendar.events?.length || 0 },
-        "Parsed ICS calendar events"
+        "Parsed ICS calendar events",
       );
 
       const startDateTime = DateTime.fromJSDate(start);
@@ -163,14 +179,14 @@ export default class IcsConnectedApp
           startDateTime: startDateTime.toISO(),
           endDateTime: endDateTime.toISO(),
         },
-        "Processing events within time range"
+        "Processing events within time range",
       );
 
       const icsEvents: CalendarBusyTime[] = (calendar.events || [])
         .filter(
           (event) =>
             event.status !== "CANCELLED" &&
-            !event.summary?.toLocaleLowerCase()?.startsWith("cancel")
+            !event.summary?.toLocaleLowerCase()?.startsWith("cancel"),
         )
         .map((event) => {
           const startAt = DateTime.fromJSDate(event.start.date);
@@ -186,7 +202,7 @@ export default class IcsConnectedApp
         })
         .filter(
           (event) =>
-            event.endAt >= startDateTime && event.startAt <= endDateTime
+            event.endAt >= startDateTime && event.startAt <= endDateTime,
         )
         .map((event) => ({
           ...event,
@@ -200,22 +216,26 @@ export default class IcsConnectedApp
           busyTimeCount: icsEvents.length,
           totalEvents: calendar.events?.length || 0,
         },
-        "Successfully processed busy times from ICS calendar"
+        "Successfully processed busy times from ICS calendar",
       );
 
       this.props.update({
         status: "connected",
-        statusText: "ics.statusText.successfully_fetched_events",
+        statusText:
+          "app_ics_admin.statusText.successfully_fetched_events" satisfies IcsAdminAllKeys,
       });
 
       return icsEvents;
     } catch (error: any) {
       logger.error(
         { appId: appData._id, error },
-        "Error getting busy times from ICS calendar"
+        "Error getting busy times from ICS calendar",
       );
 
-      const status: ConnectedAppStatusWithText = {
+      const status: ConnectedAppStatusWithText<
+        IcsAdminNamespace,
+        IcsAdminKeys
+      > = {
         status: "failed",
         statusText:
           error instanceof ConnectedAppError

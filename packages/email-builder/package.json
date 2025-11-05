@@ -1,13 +1,13 @@
 {
-  "name": "@vivid/email-builder",
+  "name": "@timelish/email-builder",
   "version": "0.0.1",
   "private": true,
   "sideEffects": false,
   "scripts": {
     "type-check": "tsc --pretty --noEmit",
     "type-check:ci": "tsc-absolute --pretty --noEmit",
-    "lint": "eslint . --ext .ts,.js,.tsx,.jsx",
-    "lint:fix": "eslint . --ext .ts,.js,.tsx,.jsx --fix"
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "exports": {
     ".": "./src/index.tsx",
@@ -19,20 +19,18 @@
     "@types/react-dom": "19.0.2",
     "@types/react-window": "^1.8.8",
     "@types/sanitize-html": "^2.13.0",
-    "@vivid/eslint-config": "*",
-    "@vivid/tailwind-config": "*",
-    "@vivid/typescript-config": "*",
-    "eslint": "^8.57.0",
+    "@timelish/eslint-config": "*",
+    "@timelish/tailwind-config": "*",
+    "@timelish/typescript-config": "*",
     "typescript": "5.5.4"
   },
   "dependencies": {
     "react-dom": "19.0.0",
-    "@vivid/builder": "*",
-    "@vivid/ui": "*",
-    "@vivid/rte": "*",
-    "highlight.js": "^11.9.0",
+    "@timelish/builder": "*",
+    "@timelish/ui": "*",
+    "@timelish/ui-admin": "*",
+    "@timelish/rte": "*",
     "lucide-react": "^0.525.0",
-    "react-contenteditable": "^3.3.7",
     "sanitize-html": "^2.14.0"
   }
 }

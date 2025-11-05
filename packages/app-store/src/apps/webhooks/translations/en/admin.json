@@ -1,0 +1,99 @@
+{
+  "title": "Webhooks",
+  "app": {
+    "displayName": "Webhooks",
+    "description": "Webhooks lets you connect your account with external systems and automate workflows in real time.\nInstantly send appointment, customer, or payment events to your own apps or third-party services — enabling powerful integrations and seamless data sync."
+  },
+  "form": {
+    "url": {
+      "label": "Webhook URL",
+      "placeholder": "https://your-server.com/webhook",
+      "tooltip": "Enter the URL where webhook events will be sent via POST requests"
+    },
+    "secret": {
+      "label": "Webhook Secret (Optional)",
+      "placeholder": "Enter webhook secret",
+      "tooltip": "If provided, webhook payloads will be signed with HMAC-SHA256. Leave empty to send webhooks without signatures.",
+      "editButton": "Edit secret"
+    },
+    "eventTypes": {
+      "label": "Event Types",
+      "tooltip": "Select which events should trigger webhooks to this URL"
+    },
+    "connect": "Connect with <app></app>"
+  },
+  "eventTypes": {
+    "appointment": {
+      "created": {
+        "label": "Appointment Created",
+        "description": "Triggered when a new appointment is created"
+      },
+      "status_changed": {
+        "label": "Appointment Status Changed",
+        "description": "Triggered when appointment status changes"
+      },
+      "rescheduled": {
+        "label": "Appointment Rescheduled",
+        "description": "Triggered when appointment is rescheduled"
+      }
+    },
+    "customer": {
+      "created": {
+        "label": "Customer Created",
+        "description": "Triggered when a new customer is created"
+      },
+      "updated": {
+        "label": "Customer Updated",
+        "description": "Triggered when customer information is updated"
+      }
+    },
+    "customers": {
+      "deleted": {
+        "label": "Customers Deleted",
+        "description": "Triggered when customers are deleted"
+      }
+    },
+    "payment": {
+      "created": {
+        "label": "Payment Created",
+        "description": "Triggered when a new payment is created"
+      },
+      "updated": {
+        "label": "Payment Updated",
+        "description": "Triggered when payment information is updated"
+      },
+      "deleted": {
+        "label": "Payment Deleted",
+        "description": "Triggered when a payment is deleted"
+      },
+      "refunded": {
+        "label": "Payment Refunded",
+        "description": "Triggered when a payment is refunded"
+      }
+    },
+    "waitlist-entry": {
+      "created": {
+        "label": "Waitlist Entry Created",
+        "description": "Triggered when a waitlist entry is created (Waitlist app is required)"
+      }
+    },
+    "waitlist-entries": {
+      "dismissed": {
+        "label": "Waitlist Entries Dismissed",
+        "description": "Triggered when a waitlist entries are dismissed (Waitlist app is required)"
+      }
+    }
+  },
+  "statusText": {
+    "successfullyConfigured": "Webhook successfully configured",
+    "webhook_request_failed": "Webhook request failed: {status} {statusText}"
+  },
+  "validation": {
+    "url": {
+      "invalid": "Please enter a valid URL"
+    },
+    "eventTypes": {
+      "required": "Please select at least one event type"
+    }
+  }
+}

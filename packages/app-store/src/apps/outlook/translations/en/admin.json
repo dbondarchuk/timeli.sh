@@ -1,0 +1,40 @@
+{
+  "title": "Outlook",
+  "app": {
+    "displayName": "Outlook",
+    "description": "Microsoft Office 365 is a suite of apps that helps you stay connected with others and get things done. It includes but is not limited to Microsoft Word, PowerPoint, Excel, Teams, OneNote and OneDrive. Office 365 allows you to work remotely with others on a team and collaborate in an online environment. Both web versions and desktop/mobile applications are available."
+  },
+  "form": {
+    "connectWith": "Connect with <app></app>",
+    "pendingAuthorization": "Pending authorization"
+  },
+  "statusText": {
+    "successfully_set_up": "Successfully connected to Outlook",
+    "error_processing_configuration": "Error processing Outlook configuration",
+    "redirect_request_does_not_contain_app_id": "Redirect request does not contain app ID",
+    "redirect_request_does_not_contain_authorization_code": "Redirect request does not contain authorization code",
+    "app_was_not_authorized_properly": "App was not authorized properly",
+    "app_was_not_given_required_scopes": "App was not given required scopes",
+    "failed_to_get_user_email": "Failed to get user email",
+    "error_creating_calendar_event": "Error creating calendar event",
+    "error_updating_calendar_event": "Error updating calendar event",
+    "error_deleting_calendar_event": "Error deleting calendar event",
+    "error_getting_busy_times": "Error getting busy times from Outlook",
+    "error_sending_email": "Error sending email",
+    "error_refreshing_access_token": "Error refreshing access token",
+    "failed_to_find_event_id_for_uid": "Failed to find Outlook Event ID for UID {uid}",
+    "event_created": "Calendar event created successfully",
+    "event_updated": "Calendar event updated successfully",
+    "event_deleted": "Calendar event deleted successfully",
+    "email_sent": "Email sent successfully",
+    "authorization_result_no_access_token": "Authorization result does not contain access token",
+    "authorization_result_no_account_info": "Authorization result does not contain account information",
+    "authorization_result_not_enough_scopes": "Authorization result does not contain enough scopes",
+    "authorization_result_no_refresh_token": "Authorization result does not contain refresh token",
+    "failed_to_get_meeting_url_for_appointment": "Failed to get meeting URL for appointment"
+  },
+  "toast": {
+    "changes_saved": "Your changes were saved.",
+    "request_error": "There was a problem with your request."
+  }
+}

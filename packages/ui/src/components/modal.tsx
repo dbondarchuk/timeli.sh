@@ -4,7 +4,7 @@ import {
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogOverlay,
+  DialogPortal,
   DialogTitle,
 } from "./dialog";
 
@@ -16,6 +16,7 @@ interface ModalProps {
   children?: React.ReactNode;
   className?: string;
   modal?: boolean;
+  portalContainer?: React.ComponentProps<typeof DialogPortal>["container"];
 }
 
 export const Modal: React.FC<ModalProps> = ({
@@ -26,6 +27,7 @@ export const Modal: React.FC<ModalProps> = ({
   children,
   className,
   modal = true,
+  portalContainer,
 }) => {
   const onChange = (open: boolean) => {
     if (!open) {
@@ -35,7 +37,11 @@ export const Modal: React.FC<ModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onChange} modal={modal}>
-      <DialogContent className={className} overlayVariant="blur">
+      <DialogContent
+        className={className}
+        overlayVariant="blur"
+        container={portalContainer}
+      >
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           {description && <DialogDescription>{description}</DialogDescription>}

@@ -1,15 +1,19 @@
-import { renderUserEmailTemplate } from "@vivid/email-builder/static";
-import { Language } from "@vivid/i18n";
-import { Appointment } from "@vivid/types";
-import { AppointmentStatusToICalMethodMap, template } from "@vivid/utils";
+import { renderUserEmailTemplate } from "@timelish/email-builder/static";
+import { Language } from "@timelish/i18n";
+import { Appointment } from "@timelish/types";
+import { AppointmentStatusToICalMethodMap, template } from "@timelish/utils";
 import { UserEmailTemplates } from ".";
 
 export const getEmailTemplate = async (
-  status: keyof typeof AppointmentStatusToICalMethodMap | "auto-confirmed",
+  status:
+    | keyof typeof AppointmentStatusToICalMethodMap
+    | "auto-confirmed"
+    | "cancelledByCustomer"
+    | "rescheduledByCustomer",
   language: Language,
   url: string,
   appointment: Appointment,
-  args: Record<string, any>
+  args: Record<string, any>,
 ) => {
   const templateContent =
     UserEmailTemplates[language]?.[status] ?? UserEmailTemplates["en"][status];
@@ -34,27 +38,27 @@ export const getEmailTemplate = async (
       topButtons: [
         {
           text: buttonTexts.viewAppointment,
-          url: `${url}/admin/dashboard/appointments/${appointment._id}`,
+          url: `${url}/dashboard/appointments/${appointment._id}`,
         },
       ],
       bottomButtons: [
         appointment.status != "declined"
           ? {
               text: buttonTexts.decline,
-              url: `${url}/admin/dashboard/appointments/${appointment._id}/decline`,
+              url: `${url}/dashboard/appointments/${appointment._id}/decline`,
               backgroundColor: "#FF0000",
             }
           : undefined,
         appointment.status === "pending"
           ? {
               text: buttonTexts.confirm,
-              url: `${url}/admin/dashboard/appointments/${appointment._id}/confirm`,
+              url: `${url}/dashboard/appointments/${appointment._id}/confirm`,
               backgroundColor: "#0008FF",
             }
           : undefined,
       ],
     },
-    args
+    args,
   );
 
   return {

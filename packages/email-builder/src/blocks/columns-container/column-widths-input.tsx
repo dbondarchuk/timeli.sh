@@ -1,5 +1,5 @@
-import { TextDimensionInput } from "@vivid/builder";
-import { useI18n } from "@vivid/i18n";
+import { TextDimensionInput } from "@timelish/builder";
+import { useI18n } from "@timelish/i18n";
 import { useState } from "react";
 
 export const DEFAULT_2_COLUMNS = [6] as [number];
@@ -35,7 +35,7 @@ export const ColumnWidthsInput = ({
 
   const setIndexValue = (
     index: 0 | 1 | 2,
-    value: number | null | undefined
+    value: number | null | undefined,
   ) => {
     const nValue: FixedWidths = [...currentValue];
     nValue[index] = value;

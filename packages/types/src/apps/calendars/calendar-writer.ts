@@ -35,18 +35,18 @@ export type CalendarEvent = {
 export interface ICalendarWriter {
   createEvent(
     app: ConnectedAppData,
-    event: CalendarEvent
+    event: CalendarEvent,
   ): Promise<CalendarEventResult>;
 
   updateEvent(
     app: ConnectedAppData,
     uid: string,
-    event: CalendarEvent
+    event: CalendarEvent,
   ): Promise<CalendarEventResult>;
 
   deleteEvent(
     app: ConnectedAppData,
     uid: string,
-    eventId: string
+    eventId: string,
   ): Promise<void>;
 }

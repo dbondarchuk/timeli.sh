@@ -1,10 +1,10 @@
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory } from "@timelish/logger";
 import { NextRequest } from "next/server";
 import { createOrUpdateIntent } from "../../../../utils/payments/createIntent";
 
-export async function POST(
+export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ intentId: string }> }
+  { params }: RouteContext<"/api/payments/[intentId]">,
 ) {
   const logger = getLoggerFactory("API/payments-intent")("POST");
   const { intentId } = await params;
@@ -15,7 +15,7 @@ export async function POST(
       method: request.method,
       intentId,
     },
-    "Processing payment intent API request"
+    "Processing payment intent API request",
   );
 
   try {
@@ -26,7 +26,7 @@ export async function POST(
         {
           status: result.status,
         },
-        "Getting if payment is required has failed"
+        "Getting if payment is required has failed",
       );
     } else {
       logger.debug(
@@ -34,7 +34,7 @@ export async function POST(
           intentId,
           success: true,
         },
-        "Successfully processed payment intent"
+        "Successfully processed payment intent",
       );
     }
 
@@ -45,7 +45,7 @@ export async function POST(
         intentId,
         error: error?.message || error?.toString(),
       },
-      "Error processing payment intent"
+      "Error processing payment intent",
     );
     throw error;
   }

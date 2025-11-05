@@ -1,5 +1,5 @@
 "use client";
-import { GeneralConfiguration } from "@vivid/types";
+import { GeneralConfiguration } from "@timelish/types";
 import { createContext, useContext } from "react";
 
 export const ConfigContext = createContext<{
@@ -11,7 +11,7 @@ export const ConfigContext = createContext<{
     description: "",
     keywords: "",
     email: "",
-    url: "",
+    domain: "",
     language: "en",
     timeZone: "local",
   },

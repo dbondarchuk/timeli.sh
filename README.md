@@ -1,6 +1,6 @@
-# Vivid - Modern Appointment Booking Platform
+# Timeli.sh - Modern Appointment Booking Platform
 
-Vivid is a comprehensive appointment booking and business management platform built with Next.js, featuring a modular architecture with advanced scheduling, communication, and customization capabilities.
+Timeli.sh is a comprehensive appointment booking and business management platform built with Next.js, featuring a modular architecture with advanced scheduling, communication, and customization capabilities.
 
 ## 🚀 Features
 
@@ -12,7 +12,7 @@ Vivid is a comprehensive appointment booking and business management platform bu
 - **Payment Processing** - Integrated payment solutions with refund capabilities
 - **Asset Management** - File storage and management system
 - **Template System** - Customizable email and SMS templates
-- **Visual builder** - Visual drag-n-drop for pages (_in progress_) email templates
+- **Visual builder** - Visual drag-n-drop for pages and email templates
 - **Admin Dashboard** - Comprehensive business management interface
 
 ### Technical Features
@@ -26,10 +26,10 @@ Vivid is a comprehensive appointment booking and business management platform bu
 
 ## 🏗️ Architecture
 
-Vivid is built as a monorepo using Turbo, with the following structure:
+Timeli.sh is built as a monorepo using Turbo, with the following structure:
 
 ```
-vivid/
+timelish/
 ├── apps/
 │   └── web/                    # Main Next.js application
 ├── packages/
@@ -47,13 +47,14 @@ vivid/
 
 ### Key Packages
 
-- **@vivid/web** - Main Next.js application with admin dashboard and customer-facing pages
-- **@vivid/services** - Core business logic and data access layer
-- **@vivid/ui** - Reusable UI components built with Radix UI and Tailwind
-- **@vivid/app-store** - Plugin system for third-party integrations
-- **@vivid/logger** - Structured logging with module and function context
-- **@vivid/builder** - Visual builder
-- **@vivid/email-builder** - Drag-and-drop email template builder
+- **@timelish/web** - Main Next.js application with admin dashboard and customer-facing pages
+- **@timelish/services** - Core business logic and data access layer
+- **@timelish/ui** - Reusable UI components built with Radix UI and Tailwind
+- **@timelish/app-store** - Plugin system for third-party integrations
+- **@timelish/logger** - Structured logging with module and function context
+- **@timelish/builder** - Visual builder
+- **@timelish/email-builder** - Drag-and-drop email template builder
+- **@timelish/page-builder** - Drag-and-drop page builder
 
 ## 🛠️ Technology Stack
 
@@ -94,7 +95,7 @@ vivid/
 
 ```bash
 git clone <repository-url>
-cd vivid
+cd timelish
 ```
 
 ### 2. Install Dependencies
@@ -109,16 +110,13 @@ Create a `.env.local` file in the `apps/web` directory:
 
 ```env
 # Database
-MONGODB_URI=mongodb://localhost:27017/vivid
+MONGODB_URI=mongodb://localhost:27017/timelish
 
 # Authentication
 AUTH_SECRET=your-auth-secret-here
 AUTH_PASSWORD=your-admin-password
 AUTH_TRUST_HOST=http://localhost:3000
 AUTH_URL=http://localhost:3000
-
-# Scheduler
-SCHEDULER_KEY=your-scheduler-key
 
 # Timezone
 TZ=America/New_York
@@ -199,7 +197,7 @@ After installation, consider:
 1. Build the Docker image:
 
 ```bash
-docker build -t vivid .
+docker build -t timelish .
 ```
 
 2. Start the services:
@@ -214,10 +212,9 @@ Update the `docker-compose.yaml` file with your environment variables:
 
 ```yaml
 environment:
-  - MONGODB_URI=mongodb://your-mongodb-host:27017/vivid
+  - MONGODB_URI=mongodb://your-mongodb-host:27017/timelish
   - AUTH_SECRET=your-auth-secret
   - AUTH_PASSWORD=your-admin-password
-  - SCHEDULER_KEY=your-scheduler-key
 ```
 
 ## 📚 Development Guide
@@ -277,10 +274,10 @@ yarn migration:down # Rollback migrations
 
 ### Logging
 
-Vivid uses a structured logging system with function-level context:
+Timeli.sh uses a structured logging system with function-level context:
 
 ```typescript
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory } from "@timelish/logger";
 
 // In a service class
 protected readonly loggerFactory = getLoggerFactory("ServiceName");
@@ -293,7 +290,7 @@ logger.error("Operation failed", { error });
 
 ## 🔌 Connected Apps
 
-Vivid supports various integrations through its app store:
+Timeli.sh supports various integrations through its app store:
 
 ### Communication Apps
 
@@ -386,7 +383,6 @@ NODE_ENV=production
 MONGODB_URI=mongodb://your-production-mongodb
 AUTH_SECRET=your-production-secret
 AUTH_PASSWORD=your-production-password
-SCHEDULER_KEY=your-production-scheduler-key
 ```
 
 ### Performance Optimization

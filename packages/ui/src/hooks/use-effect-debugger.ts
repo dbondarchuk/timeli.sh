@@ -6,7 +6,7 @@ import { usePrevious } from "./use-previous";
 export const useEffectDebugger = (
   effectHook: EffectCallback,
   dependencies: DependencyList,
-  dependencyNames: string[] = []
+  dependencyNames: string[] = [],
 ) => {
   const previousDeps = usePrevious(dependencies, []);
 

@@ -4,17 +4,17 @@ import { useState } from "react";
 
 import type { TElement } from "@udecode/plate";
 
-import { toUnitLess } from "@udecode/plate-font";
-import { FontSizePlugin } from "@udecode/plate-font/react";
-import { HEADING_KEYS } from "@udecode/plate-heading";
-import { useEditorPlugin, useEditorSelector } from "@udecode/plate/react";
 import {
   cn,
   Popover,
   PopoverContent,
   PopoverTrigger,
   ToolbarButton,
-} from "@vivid/ui";
+} from "@timelish/ui";
+import { toUnitLess } from "@udecode/plate-font";
+import { FontSizePlugin } from "@udecode/plate-font/react";
+import { HEADING_KEYS } from "@udecode/plate-heading";
+import { useEditorPlugin, useEditorSelector } from "@udecode/plate/react";
 import { Minus, Plus } from "lucide-react";
 
 const DEFAULT_FONT_SIZE = "16";
@@ -96,7 +96,7 @@ export function FontSizeToolbarButton() {
         <PopoverTrigger asChild>
           <input
             className={cn(
-              "h-full w-10 shrink-0 bg-transparent px-1 text-center text-sm hover:bg-muted"
+              "h-full w-10 shrink-0 bg-transparent px-1 text-center text-sm hover:bg-muted",
             )}
             value={displayValue}
             onBlur={() => {
@@ -126,7 +126,7 @@ export function FontSizeToolbarButton() {
             <button
               key={size}
               className={cn(
-                "flex h-8 w-full items-center justify-center text-sm hover:bg-accent data-[highlighted=true]:bg-accent"
+                "flex h-8 w-full items-center justify-center text-sm hover:bg-accent data-[highlighted=true]:bg-accent",
               )}
               onClick={() => {
                 api.fontSize.setMark(`${size}px`);

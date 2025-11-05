@@ -1,37 +1,23 @@
-import { App } from "@vivid/types";
+import { App } from "@timelish/types";
 import { CalendarX2 } from "lucide-react";
 import { BUSY_EVENTS_APP_NAME } from "./const";
-import { BusyEventsAppSetup } from "./setup";
+import {
+  BusyEventsAdminKeys,
+  BusyEventsAdminNamespace,
+} from "./translations/types";
 
-export const BusyEventsApp: App = {
-  name: BUSY_EVENTS_APP_NAME,
-  displayName: "busyEvents.displayName",
-  scope: ["calendar-read"],
-  type: "complex",
-  category: ["categories.schedule"],
-  Logo: ({ className }) => <CalendarX2 className={className} />,
-  isFeatured: true,
-  dontAllowMultiple: true,
-  description: {
-    text: "busyEvents.description",
-  },
-  menuItems: [
-    {
-      href: "settings/schedule/busy-events",
-      parent: "schedule",
-      id: "schedule-busy-events",
-      label: "navigation.busyEvents",
-      pageTitle: "busyEvents.title",
-      pageDescription: "busyEvents.description",
-      pageBreadcrumbs: [
-        {
-          title: "busyEvents.title",
-          link: "/admin/dashboard/settings/schedule/busy-events",
-        },
-      ],
-      icon: <CalendarX2 />,
-      Page: (props) => <BusyEventsAppSetup {...props} />,
+export const BusyEventsApp: App<BusyEventsAdminNamespace, BusyEventsAdminKeys> =
+  {
+    name: BUSY_EVENTS_APP_NAME,
+    displayName: "app_busy-events_admin.app.displayName",
+    scope: ["calendar-read"],
+    type: "complex",
+    category: ["apps.categories.schedule"],
+    Logo: ({ className }) => <CalendarX2 className={className} />,
+    isFeatured: true,
+    dontAllowMultiple: true,
+    description: {
+      text: "app_busy-events_admin.app.description",
     },
-  ],
-  settingsHref: "settings/schedule/busy-events",
-};
+    settingsHref: "settings/schedule/busy-events",
+  };

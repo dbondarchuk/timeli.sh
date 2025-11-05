@@ -1,6 +1,6 @@
-import * as React from "react";
+import React from "react";
 
-import { cn } from "@vivid/ui";
+import { cn } from "@timelish/ui";
 import { Check } from "lucide-react";
 
 export function CheckboxStatic({
@@ -15,7 +15,7 @@ export function CheckboxStatic({
     <button
       className={cn(
         "peer size-4 shrink-0 rounded-sm border border-primary bg-background ring-offset-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground",
-        className
+        className,
       )}
       data-state={props.checked ? "checked" : "unchecked"}
       type="button"

@@ -1,12 +1,13 @@
-import { JSX } from "react";
+import { JSX, useCallback, useId } from "react";
 
-import { ArgumentsAutocomplete, cn, FormDescription, Label } from "@vivid/ui";
+import { cn, FormDescription, Label } from "@timelish/ui";
+import { ArgumentsAutocomplete } from "@timelish/ui-admin";
 import React from "react";
 import { useEditorArgs } from "../../../../../../documents/editor/context";
 import { ResetButton } from "./reset-button";
 
 type Props = {
-  label: string;
+  label: React.ReactNode;
   rows?: number;
   placeholder?: string;
   helperText?: string | JSX.Element;
@@ -38,23 +39,34 @@ export const TextInput: React.FC<Props> = ({
 
   const args = useEditorArgs();
   const isMultiline = typeof rows === "number" && rows > 1;
+  const id = useId();
+
+  const onChangeCallback = useCallback(
+    (value: string) => {
+      setValue(value);
+      onChange(value);
+    },
+    [onChange],
+  );
+
   return (
     <div className="flex flex-col gap-2">
-      <Label>{label}</Label>
+      <Label htmlFor={id}>{label}</Label>
       <div className="flex w-full">
+        {/* @ts-expect-error - TODO: fix this */}
         <ArgumentsAutocomplete
           args={args}
           asInput={!isMultiline}
           className={cn("w-full", isMultiline && "max-h-40")}
           placeholder={placeholder}
           value={value ?? undefined}
-          onChange={(v) => {
-            setValue(v);
-            onChange(v);
-          }}
+          h="sm"
+          id={id}
+          onChange={onChangeCallback}
         />
         {nullable && (
           <ResetButton
+            size="sm"
             onClick={() => {
               setValue(null);
               onChange(null);
@@ -62,7 +74,9 @@ export const TextInput: React.FC<Props> = ({
           />
         )}
       </div>
-      {helperText && <FormDescription>{helperText}</FormDescription>}
+      {helperText && (
+        <FormDescription className="text-xs">{helperText}</FormDescription>
+      )}
     </div>
   );
 };

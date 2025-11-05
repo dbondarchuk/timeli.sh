@@ -1,20 +1,22 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useI18n } from "@vivid/i18n";
-import { ConnectedAppStatusWithText } from "@vivid/types";
-import { toastPromise } from "@vivid/ui";
+import { adminApi } from "@timelish/api-sdk";
+import { useI18n } from "@timelish/i18n";
+import { ConnectedAppStatusWithText } from "@timelish/types";
+import { toastPromise } from "@timelish/ui";
 import React from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import { ZodType } from "zod";
-import { addNewApp, getAppData, processRequest } from "../actions";
 
 export type UseConnectedAppSetupProps<T extends FieldValues> = {
   appId?: string;
   appName: string;
-  schema: ZodType<T>;
+  schema: ZodType<T, T>;
   successText?: string;
   errorText?: string;
   onSuccess?: () => void;
   onError?: (error: string) => void;
+  processDataForSubmit?: (data: T) => any;
+  initialData?: T;
 };
 
 export function useConnectedAppSetup<T extends FieldValues>({
@@ -25,6 +27,8 @@ export function useConnectedAppSetup<T extends FieldValues>({
   errorText,
   onSuccess,
   onError,
+  processDataForSubmit,
+  initialData,
 }: UseConnectedAppSetupProps<T>) {
   const t = useI18n("apps");
   const [appId, setAppId] = React.useState<string>();
@@ -33,7 +37,9 @@ export function useConnectedAppSetup<T extends FieldValues>({
   const [appStatus, setAppStatus] =
     React.useState<ConnectedAppStatusWithText>();
 
-  const [initialAppData, setInitialAppData] = React.useState<T>();
+  const [initialAppData, setInitialAppData] = React.useState<T>(
+    initialData as any,
+  );
   React.useEffect(() => {
     if (!existingAppId) return;
 
@@ -41,7 +47,7 @@ export function useConnectedAppSetup<T extends FieldValues>({
       setIsDataLoading(true);
       setIsLoading(true);
 
-      const data = await getAppData(existingAppId);
+      const data = await adminApi.apps.getAppData(existingAppId);
       setInitialAppData(data);
 
       setIsDataLoading(false);
@@ -64,12 +70,14 @@ export function useConnectedAppSetup<T extends FieldValues>({
 
       const promise = new Promise<ConnectedAppStatusWithText>(
         async (resolve, reject) => {
-          const _appId = appId || (await addNewApp(appName));
+          const _appId = appId || (await adminApi.apps.addNewApp(appName));
           setAppId(_appId);
 
-          const status = (await processRequest(
+          const processedData = processDataForSubmit?.(data) || data;
+
+          const status = (await adminApi.apps.processRequest(
             _appId,
-            data
+            processedData,
           )) as ConnectedAppStatusWithText;
 
           setAppStatus(status);
@@ -82,7 +90,7 @@ export function useConnectedAppSetup<T extends FieldValues>({
           if (status.status === "connected") {
             resolve(status);
           }
-        }
+        },
       );
 
       await toastPromise(promise, {
@@ -100,7 +108,7 @@ export function useConnectedAppSetup<T extends FieldValues>({
 
       onSuccess?.();
     } catch (e: any) {
-      onError?.(e?.message);
+      onError?.(e instanceof Error ? e.message : e?.toString());
     } finally {
       setIsLoading(false);
     }

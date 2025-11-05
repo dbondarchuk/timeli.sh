@@ -1,37 +1,25 @@
-import { App } from "@vivid/types";
-import { WEEKLY_SCHEDULE_APP_NAME } from "./const";
-import { WeeklyScheduleAppSetup } from "./setup";
+import { App } from "@timelish/types";
 import { CalendarDays } from "lucide-react";
+import { WEEKLY_SCHEDULE_APP_NAME } from "./const";
+import {
+  WeeklyScheduleAdminKeys,
+  WeeklyScheduleAdminNamespace,
+} from "./translations/types";
 
-export const WeeklyScheduleApp: App = {
+export const WeeklyScheduleApp: App<
+  WeeklyScheduleAdminNamespace,
+  WeeklyScheduleAdminKeys
+> = {
   name: WEEKLY_SCHEDULE_APP_NAME,
-  displayName: "weeklySchedule.displayName",
+  displayName: "app_weekly-schedule_admin.app.displayName",
   scope: ["schedule"],
   type: "complex",
-  category: ["categories.schedule"],
+  category: ["apps.categories.schedule"],
   Logo: ({ className }) => <CalendarDays className={className} />,
   isFeatured: true,
   dontAllowMultiple: true,
   description: {
-    text: "weeklySchedule.description",
+    text: "app_weekly-schedule_admin.app.description",
   },
-  menuItems: [
-    {
-      href: "settings/schedule/weekly",
-      parent: "schedule",
-      id: "schedule-weekly",
-      label: "navigation.weeklySchedule",
-      pageTitle: "weeklySchedule.displayName",
-      pageDescription: "weeklySchedule.form.setCustomWeeklySchedule",
-      pageBreadcrumbs: [
-        {
-          title: "weeklySchedule.displayName",
-          link: "/admin/dashboard/settings/schedule/weekly",
-        },
-      ],
-      icon: <CalendarDays />,
-      Page: (props) => <WeeklyScheduleAppSetup {...props} />,
-    },
-  ],
   settingsHref: "settings/schedule/weekly",
 };

@@ -8,7 +8,7 @@ import { cn, withRef } from "@udecode/cn";
 import { getHandler, IS_APPLE } from "@udecode/plate";
 import { useFocused, useReadOnly, useSelected } from "@udecode/plate/react";
 
-import { useMounted } from "@vivid/ui";
+import { useMounted } from "@timelish/ui";
 
 import { PlateElement } from "./plate-element";
 
@@ -35,7 +35,7 @@ export const MentionElement = withRef<
         selected && focused && "ring-2 ring-ring",
         element.children[0].bold === true && "font-bold",
         element.children[0].italic === true && "italic",
-        element.children[0].underline === true && "underline"
+        element.children[0].underline === true && "underline",
       )}
       onClick={getHandler(onClick, element)}
       data-slate-value={element.value}

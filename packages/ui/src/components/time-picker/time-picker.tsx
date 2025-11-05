@@ -1,8 +1,8 @@
 "use client";
 
-import * as React from "react";
+import { useI18n } from "@timelish/i18n";
+import React from "react";
 import { Label } from "../label";
-import { TimePickerInput } from "./time-picker-input";
 import {
   Select,
   SelectContent,
@@ -10,13 +10,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../select";
+import { TimePickerInput } from "./time-picker-input";
 import {
   getDateByType,
   getDatePeriod,
   Period,
   setDateByType,
 } from "./time-picker-utils";
-import { useI18n } from "@vivid/i18n";
 
 interface TimePickerDemoProps {
   date: Date | undefined;

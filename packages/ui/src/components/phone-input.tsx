@@ -1,15 +1,15 @@
+import countries from "countries-phone-masks";
 import React from "react";
 import { Mask, MaskedInput } from "./masked-input";
-import countries from "countries-phone-masks";
 
+import { Combobox } from "./combobox";
 import "./css/flags.css";
 import {
   InputGroup,
   InputGroupInput,
-  InputSuffix,
   InputGroupInputClasses,
+  InputSuffix,
 } from "./input-group";
-import { Combobox } from "./combobox";
 
 export type PhoneInputProps = {
   label: string;
@@ -102,7 +102,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
                 (c) =>
                   c.name.toLocaleLowerCase().indexOf(lowerSearch) >= 0 ||
                   c.iso.toLocaleLowerCase().indexOf(lowerSearch) >= 0 ||
-                  c.code.toLocaleLowerCase().indexOf(lowerSearch) >= 0
+                  c.code.toLocaleLowerCase().indexOf(lowerSearch) >= 0,
               )
               .map(countryTransform);
           }}

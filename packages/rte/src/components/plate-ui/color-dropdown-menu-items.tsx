@@ -4,7 +4,7 @@ import React from "react";
 
 import type { DropdownMenuItemProps } from "@radix-ui/react-dropdown-menu";
 
-import { cn } from "@vivid/ui";
+import { cn } from "@timelish/ui";
 import { Check } from "lucide-react";
 
 import {
@@ -14,7 +14,7 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@vivid/ui";
+} from "@timelish/ui";
 
 export type TColor = {
   isBrightColor: boolean;
@@ -49,7 +49,7 @@ export function ColorDropdownMenuItem({
         }),
         "my-1 flex size-6 items-center justify-center rounded-full border border-solid border-muted p-0 transition-all hover:scale-125",
         !isBrightColor && "border-transparent text-white hover:text-white!",
-        className
+        className,
       )}
       style={{ backgroundColor: value }}
       onSelect={(e) => {
@@ -89,7 +89,7 @@ export function ColorDropdownMenuItems({
     <div
       className={cn(
         "grid grid-cols-[repeat(10,1fr)] place-items-center",
-        className
+        className,
       )}
       {...props}
     >

@@ -2,8 +2,8 @@ import {
   ConfigurationProps,
   ToolbarColorMenu,
   ToolbarDropdownMenu,
-} from "@vivid/builder";
-import { useI18n } from "@vivid/i18n";
+} from "@timelish/builder";
+import { useI18n } from "@timelish/i18n";
 import {
   Baseline,
   Heading1,
@@ -60,7 +60,7 @@ export const HeadingToolbar = (props: ConfigurationProps<HeadingProps>) => {
       <FontSizeToolbarMenu
         {...props}
         defaultValue={getFontSize(
-          props.data.props?.level || HeadingPropsDefaults.props.level
+          props.data.props?.level || HeadingPropsDefaults.props.level,
         )}
       />
       <ToolbarColorMenu

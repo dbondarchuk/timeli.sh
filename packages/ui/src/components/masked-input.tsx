@@ -1,5 +1,5 @@
-import React from "react";
 import InputMask from "@mona-health/react-input-mask";
+import React from "react";
 import { Input, InputProps } from "./input";
 export type Mask = Array<string | RegExp> | string;
 export type MaskedInputProps = InputProps & {

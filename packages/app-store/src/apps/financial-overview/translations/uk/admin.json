@@ -1,0 +1,59 @@
+{
+  "tab": {
+    "title": "Фінансовий огляд"
+  },
+  "app": {
+    "displayName": "Фінансовий огляд",
+    "description": "Фінансовий огляд додає нову вкладку панелі керування з чіткими, простими фінансовими показниками — даючи вам швидкий огляд вашого доходу, платежів та продуктивності одним поглядом."
+  },
+  "view": {
+    "title": "Фінансовий огляд",
+    "estimatedRevenue": "Очікуваний дохід",
+    "totalPayments": "Загальні платежі",
+    "netPayments": "Чисті платежі",
+    "activeAppointments": "Активні записи",
+    "declinedAppointments": "Відхилені записи",
+    "recentPayments": "Останні платежі",
+    "paymentMethods": "Способи оплати",
+    "noPayments": "Платежі не знайдено",
+    "amount": "Сума",
+    "status": "Статус",
+    "date": "Дата",
+    "customer": "Клієнт",
+    "service": "Послуга",
+    "dateRange": "Діапазон дат",
+    "rangeOptions": {
+      "thisMonth": "Цей місяць",
+      "lastMonth": "Минулий місяць",
+      "thisWeek": "Цей тиждень",
+      "lastWeek": "Минулий тиждень",
+      "thisYear": "Цей рік",
+      "lastYear": "Минулий рік",
+      "allTime": "За весь час",
+      "custom": "Довільний діапазон"
+    },
+    "refunded": "Повернено",
+    "refundDate": "Дата повернення",
+    "refundAmount": "Сума повернення",
+    "viewAppointment": "Переглянути запис",
+    "revenueAndPayments": "Дохід та платежі",
+    "appointmentStatusDistribution": "Статус записів",
+    "serviceDistribution": "Опції",
+    "appointmentsCount": "{count, plural, =1 {1 запис} few {# записи} many {# записів} other {# записів}}",
+    "estimatedRevenueFormat": "Очікуваний дохід: {revenue}",
+    "financialOverview": "Фінансовий огляд",
+    "customerAcquisitionVsRetention": "Нові проти постійних клієнтів",
+    "timeGrouping": {
+      "label": "Групування за часом",
+      "daily": "Щоденно",
+      "weekly": "Щотижня",
+      "monthly": "Щомісяця"
+    }
+  },
+  "setup": {
+    "connect": "Підключитися з <app></app>"
+  },
+  "statusText": {
+    "successfully_set_up": "Фінансовий огляд успішно налаштовано"
+  }
+}

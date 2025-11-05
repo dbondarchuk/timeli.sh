@@ -1,0 +1,39 @@
+{
+  "title": "TextBelt SMS",
+  "app": {
+    "displayName": "TextBelt SMS",
+    "description": "Textbelt is a no-nonsense SMS API built for developers who just want to send SMS. Thousands of customers prefer Textbelt over other SMS providers for our ease of setup, simple, predictable pricing packages, and personal support"
+  },
+  "form": {
+    "apiKey": {
+      "label": "API key",
+      "placeholder": "API key",
+      "tooltip": "TextBelt auth token"
+    },
+    "textMessageResponderAppId": {
+      "label": "Fallback text message responder",
+      "tooltip": "If not handled by sender, it will be used as default app to respond to text messages (i.e. auto reply). Optional"
+    },
+    "connect": "Connect with <app></app>"
+  },
+  "statusText": {
+    "successfully_connected": "Successfully connected to TextBelt",
+    "error_processing_configuration": "Error processing TextBelt configuration request",
+    "invalid_responder_app": "Provided app does not exist or does not support responding to text messages",
+    "failed_to_fetch_quota": "Failed to fetch url. Status code: {statusCode}",
+    "failed_to_get_quota": "Failed to get remaining quota or quota is zero",
+    "remaining_quota": "Remaining quota is {quota}",
+    "error_sending_sms": "Error sending text message via TextBelt",
+    "failed_to_send_sms": "Failed to send SMS: {error}",
+    "something_went_wrong": "Something went wrong"
+  },
+  "webhookHandler": "TextBelt Webhook",
+  "webhookHandlerUser": "TextBelt Webhook - notify user",
+  "lowQuotaHandler": "TextBelt - notify low quota",
+  "validation": {
+    "apiKey": {
+      "required": "TextBelt API key is required",
+      "min": "TextBelt API key is required"
+    }
+  }
+}

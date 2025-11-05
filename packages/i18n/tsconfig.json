@@ -1,5 +1,5 @@
 {
-  "extends": "@vivid/typescript-config/react-library.json",
+  "extends": "@timelish/typescript-config/react-library.json",
   "compilerOptions": {
     "outDir": "dist",
     "rootDir": "src"

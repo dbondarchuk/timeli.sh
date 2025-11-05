@@ -1,10 +1,10 @@
-import React from "react";
 import { cva } from "class-variance-authority";
+import React from "react";
 import { cn } from "../utils";
 
 export const InputGroupSuffixClasses = cva(
   [
-    "h-9",
+    // "h-9",
     "rounded-md",
     "border",
     "border-input",
@@ -26,11 +26,18 @@ export const InputGroupSuffixClasses = cva(
         suffix: ["pr-3", "border-l-0", "rounded-l-none"],
         prefix: ["pl-3", "border-r-0", "rounded-r-none"],
       },
+      h: {
+        lg: "h-10",
+        md: "h-9",
+        sm: "h-8",
+        xs: "h-7",
+      },
     },
     defaultVariants: {
       variant: "suffix",
+      h: "md",
     },
-  }
+  },
 );
 
 export const InputGroupInputClasses = cva(
@@ -50,7 +57,7 @@ export const InputGroupInputClasses = cva(
     defaultVariants: {
       variant: "suffix",
     },
-  }
+  },
 );
 
 type ChildrenWithClassName = React.PropsWithChildren & {
@@ -85,7 +92,7 @@ export const InputGroup: React.FC<ChildrenWithClassName> = ({
     <div
       className={cn(
         "rounded-md relative flex focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
-        className
+        className,
       )}
     >
       {children}

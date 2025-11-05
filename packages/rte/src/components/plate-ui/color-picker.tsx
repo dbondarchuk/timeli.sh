@@ -5,12 +5,12 @@ import React from "react";
 import { cn, withRef } from "@udecode/cn";
 import { EraserIcon } from "lucide-react";
 
+import { DropdownMenuGroup, DropdownMenuItem } from "@timelish/ui";
 import {
   type TColor,
   ColorDropdownMenuItems,
 } from "./color-dropdown-menu-items";
 import { ColorCustom } from "./colors-custom";
-import { DropdownMenuGroup, DropdownMenuItem } from "@vivid/ui";
 
 export const ColorPickerContent = withRef<
   "div",
@@ -34,7 +34,7 @@ export const ColorPickerContent = withRef<
       updateCustomColor,
       ...props
     },
-    ref
+    ref,
   ) => {
     return (
       <div ref={ref} className={cn("flex flex-col", className)} {...props}>
@@ -66,7 +66,7 @@ export const ColorPickerContent = withRef<
         )}
       </div>
     );
-  }
+  },
 );
 
 export const ColorPicker = React.memo(
@@ -74,5 +74,5 @@ export const ColorPicker = React.memo(
   (prev, next) =>
     prev.color === next.color &&
     prev.colors === next.colors &&
-    prev.customColors === next.customColors
+    prev.customColors === next.customColors,
 );

@@ -1,15 +1,14 @@
-import { icons, Icon as LucidIcon } from "lucide-react";
+import {
+  DynamicIcon as LucideIcon,
+  IconName as LucideIconName,
+  iconNames as lucideIconNames,
+} from "lucide-react/dynamic";
 
-export type IconProps = Omit<
-  React.ComponentPropsWithoutRef<typeof LucidIcon>,
-  "iconNode"
-> & {
-  name: keyof typeof icons;
-};
+export type IconName = LucideIconName;
+export const iconNames = lucideIconNames;
+
+export type IconProps = React.ComponentProps<typeof LucideIcon>;
 
 export const Icon: React.FC<IconProps> = ({ name, ...props }) => {
-  const LucideIcon = icons[name];
-  if (!LucideIcon) return null;
-
-  return <LucideIcon {...props} />;
+  return <LucideIcon name={name} {...props} />;
 };

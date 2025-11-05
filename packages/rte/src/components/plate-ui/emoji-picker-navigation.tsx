@@ -8,7 +8,7 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@vivid/ui";
+} from "@timelish/ui";
 
 export type EmojiPickerNavigationProps = {
   onClick: (id: EmojiCategoryList) => void;
@@ -67,7 +67,7 @@ export function EmojiPickerNavigation({
                     className={cn(
                       "h-fit rounded-full fill-current p-1.5 text-muted-foreground hover:bg-muted hover:text-muted-foreground",
                       id === focusedCategory &&
-                        "pointer-events-none bg-accent fill-current text-accent-foreground"
+                        "pointer-events-none bg-accent fill-current text-accent-foreground",
                     )}
                     onClick={() => {
                       onClick(id);

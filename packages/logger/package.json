@@ -1,13 +1,13 @@
 {
-  "name": "@vivid/logger",
+  "name": "@timelish/logger",
   "version": "0.0.1",
   "private": true,
   "sideEffects": false,
   "scripts": {
     "type-check": "tsc --pretty --noEmit",
     "type-check:ci": "tsc-absolute --pretty --noEmit",
-    "lint": "eslint . --ext .ts,.js,.tsx,.jsx",
-    "lint:fix": "eslint . --ext .ts,.js,.tsx,.jsx --fix"
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "main": "./src/index.ts",
   "devDependencies": {

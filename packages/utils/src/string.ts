@@ -9,7 +9,7 @@ export function format(template: string, ...args: any[]) {
 export function template(
   template: string,
   args?: Record<string, any>,
-  plainText = false
+  plainText = false,
 ) {
   const originalEscape = Mustache.escape;
 
@@ -25,7 +25,7 @@ export function template(
 export function useIsTemplateSafe(
   templateString: string,
   args?: Record<string, any>,
-  plainText = false
+  plainText = false,
 ) {
   try {
     template(templateString, args, plainText);
@@ -38,7 +38,7 @@ export function useIsTemplateSafe(
 export function templateSafeWithError(
   templateString: string,
   args?: Record<string, any>,
-  plainText = false
+  plainText = false,
 ) {
   try {
     return template(templateString, args, plainText);

@@ -1,5 +1,5 @@
-import { Client, Environment } from "@paypal/paypal-server-sdk";
-import { getLoggerFactory } from "@vivid/logger";
+import { Environment } from "@paypal/paypal-server-sdk";
+import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
 import {
   ApiRequest,
   ApiResponse,
@@ -10,8 +10,9 @@ import {
   IConnectedAppProps,
   IPaymentProcessor,
   Payment,
-} from "@vivid/types";
-import { maskify } from "@vivid/utils";
+  PaymentFee,
+} from "@timelish/types";
+import { decrypt, encrypt, maskify } from "@timelish/utils";
 import { PaypalClient } from "./client";
 import { PAYPAL_APP_NAME } from "./const";
 import {
@@ -23,30 +24,68 @@ import {
   paypalConfigurationSchema,
   PaypalFormProps,
 } from "./models";
+import {
+  PaypalAdminAllKeys,
+  PaypalAdminKeys,
+  PaypalAdminNamespace,
+} from "./translations/types";
 
-class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
-  protected readonly loggerFactory = getLoggerFactory("PaypalConnectedApp");
+export const MASKED_SECRET_KEY = "this-is-a-masked-secret-key";
 
-  public constructor(protected readonly props: IConnectedAppProps) {}
+class PaypalConnectedApp
+  implements IConnectedApp<PaypalConfiguration>, IPaymentProcessor
+{
+  protected readonly loggerFactory: LoggerFactory;
+
+  public constructor(protected readonly props: IConnectedAppProps) {
+    this.loggerFactory = getLoggerFactory(
+      "PaypalConnectedApp",
+      props.companyId,
+    );
+  }
+
+  public async processAppData(
+    appData: PaypalConfiguration,
+  ): Promise<PaypalConfiguration> {
+    return {
+      ...appData,
+      secretKey: appData.secretKey ? MASKED_SECRET_KEY : "",
+      clientId: appData.clientId ? MASKED_SECRET_KEY : "",
+    };
+  }
 
   public async processRequest(
     appData: ConnectedAppData,
-    data: PaypalConfiguration
-  ): Promise<ConnectedAppStatusWithText> {
+    data: PaypalConfiguration,
+  ): Promise<
+    ConnectedAppStatusWithText<PaypalAdminNamespace, PaypalAdminKeys>
+  > {
     const logger = this.loggerFactory("processRequest");
     logger.debug(
-      { appId: appData._id, clientId: maskify(data.clientId) },
-      "Processing PayPal configuration request"
+      { appId: appData._id },
+      "Processing PayPal configuration request",
     );
+
+    if (data.secretKey === MASKED_SECRET_KEY && appData?.data?.secretKey) {
+      data.secretKey = appData.data.secretKey;
+    } else if (data.secretKey) {
+      data.secretKey = encrypt(data.secretKey);
+    }
+
+    if (data.clientId === MASKED_SECRET_KEY && appData?.data?.clientId) {
+      data.clientId = appData.data.clientId;
+    } else if (data.clientId) {
+      data.clientId = encrypt(data.clientId);
+    }
 
     try {
       if (!paypalConfigurationSchema.safeParse(data).success) {
         logger.error(
           { appId: appData._id },
-          "Invalid PayPal configuration data"
+          "Invalid PayPal configuration data",
         );
         throw new ConnectedAppError(
-          "paypal.statusText.invalid_configuration_data"
+          "app_paypal_admin.statusText.invalid_configuration_data" satisfies PaypalAdminAllKeys,
         );
       }
 
@@ -57,40 +96,48 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
 
       logger.debug(
         { appId: appData._id },
-        "Successfully obtained PayPal access token"
+        "Successfully obtained PayPal access token",
       );
 
-      const status: ConnectedAppStatusWithText = {
+      const status: ConnectedAppStatusWithText<
+        PaypalAdminNamespace,
+        PaypalAdminKeys
+      > = {
         status: "connected",
-        statusText: "paypal.statusText.successfully_connected",
+        statusText: "app_paypal_admin.statusText.successfully_connected",
       };
+
+      const decryptedClientId = decrypt(data.clientId);
 
       this.props.update({
         account: {
-          username: maskify(data.clientId),
+          username: maskify(decryptedClientId),
         },
         data,
         ...status,
       });
 
       logger.info(
-        { appId: appData._id, clientId: maskify(data.clientId) },
-        "Successfully connected to PayPal account"
+        { appId: appData._id, clientId: maskify(decryptedClientId) },
+        "Successfully connected to PayPal account",
       );
 
       return status;
     } catch (e: any) {
       logger.error(
         { appId: appData._id, error: e?.message || e?.toString() },
-        "Error processing PayPal configuration request"
+        "Error processing PayPal configuration request",
       );
 
-      const status: ConnectedAppStatusWithText = {
+      const status: ConnectedAppStatusWithText<
+        PaypalAdminNamespace,
+        PaypalAdminKeys
+      > = {
         status: "failed",
         statusText:
           e instanceof ConnectedAppError
-            ? e.key
-            : "paypal.statusText.error_processing_configuration",
+            ? (e.key as PaypalAdminAllKeys)
+            : ("app_paypal_admin.statusText.error_processing_configuration" satisfies PaypalAdminAllKeys),
       };
 
       this.props.update({
@@ -104,12 +151,12 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
   public async processAppCall(
     appData: ConnectedAppData,
     slug: string[],
-    request: ApiRequest
+    request: ApiRequest,
   ): Promise<ApiResponse | undefined> {
     const logger = this.loggerFactory("processAppCall");
     logger.debug(
       { appId: appData._id, slug, method: request.method },
-      "Processing PayPal app call"
+      "Processing PayPal app call",
     );
 
     if (
@@ -126,21 +173,21 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
         if (!success) {
           logger.error(
             { appId: appData._id, error },
-            "Invalid create order request data"
+            "Invalid create order request data",
           );
           return Response.json({ success: false, error }, { status: 400 });
         }
 
         logger.debug(
           { appId: appData._id, paymentIntentId: data.paymentIntentId },
-          "Creating PayPal order"
+          "Creating PayPal order",
         );
 
         return await this.createOrder(appData, data);
       } catch (error: any) {
         logger.error(
           { appId: appData._id, error: error?.message || error?.toString() },
-          "Error creating PayPal order"
+          "Error creating PayPal order",
         );
         throw error;
       }
@@ -159,7 +206,7 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
         if (!success) {
           logger.error(
             { appId: appData._id, error },
-            "Invalid capture order request data"
+            "Invalid capture order request data",
           );
           return Response.json({ success: false, error }, { status: 400 });
         }
@@ -170,14 +217,14 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
             orderId: data.orderId,
             paymentIntentId: data.paymentIntentId,
           },
-          "Capturing PayPal order"
+          "Capturing PayPal order",
         );
 
         return await this.captureOrder(appData, data);
       } catch (error: any) {
         logger.error(
           { appId: appData._id, error: error?.message || error?.toString() },
-          "Error capturing PayPal order"
+          "Error capturing PayPal order",
         );
         throw error;
       }
@@ -185,7 +232,7 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
 
     logger.debug(
       { appId: appData._id, slug },
-      "No matching PayPal app call handler found"
+      "No matching PayPal app call handler found",
     );
 
     return undefined;
@@ -226,37 +273,40 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
   // }
 
   public getFormProps(
-    appData: ConnectedAppData<PaypalConfiguration>
+    appData: ConnectedAppData<PaypalConfiguration>,
   ): PaypalFormProps {
     if (!appData.data)
-      throw new ConnectedAppError("paypal.statusText.app_not_configured");
-    const { secretKey, ...rest } = appData.data;
+      throw new ConnectedAppError(
+        "app_paypal_admin.statusText.app_not_configured" satisfies PaypalAdminAllKeys,
+      );
+    const { secretKey, clientId, ...rest } = appData.data;
 
     return {
       ...rest,
+      clientId: decrypt(clientId),
       isSandbox: this.environment === Environment.Sandbox,
     };
   }
 
   protected async createOrder(
     appData: ConnectedAppData,
-    request: CreateOrderRequest
+    request: CreateOrderRequest,
   ) {
     const logger = this.loggerFactory("createOrder");
     logger.debug(
       { appId: appData._id, paymentIntentId: request.paymentIntentId },
-      "Creating PayPal order"
+      "Creating PayPal order",
     );
 
     try {
-      const intent = await this.props.services
-        .PaymentsService()
-        .getIntent(request.paymentIntentId);
+      const intent = await this.props.services.paymentsService.getIntent(
+        request.paymentIntentId,
+      );
 
       if (!intent) {
         logger.error(
           { appId: appData._id, paymentIntentId: request.paymentIntentId },
-          "Payment intent not found"
+          "Payment intent not found",
         );
         return Response.json({ error: "intent_not_found" }, { status: 400 });
       }
@@ -267,7 +317,7 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
           paymentIntentId: request.paymentIntentId,
           amount: intent.amount,
         },
-        "Retrieved payment intent, creating PayPal order"
+        "Retrieved payment intent, creating PayPal order",
       );
 
       const client = await this.getSimplifiedClient(appData);
@@ -300,11 +350,11 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
             paymentIntentId: request.paymentIntentId,
             statusCode: error.statusCode,
           },
-          "Failed to create PayPal order"
+          "Failed to create PayPal order",
         );
         return Response.json(
           { error: "create_order_failed" },
-          { status: error.statusCode || 500 }
+          { status: error.statusCode || 500 },
         );
       }
 
@@ -314,10 +364,10 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
           paymentIntentId: request.paymentIntentId,
           orderId: order.id,
         },
-        "Successfully created PayPal order, updating payment intent"
+        "Successfully created PayPal order, updating payment intent",
       );
 
-      await this.props.services.PaymentsService().updateIntent(intent._id, {
+      await this.props.services.paymentsService.updateIntent(intent._id, {
         externalId: order.id,
       });
 
@@ -327,7 +377,7 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
           paymentIntentId: request.paymentIntentId,
           orderId: order.id,
         },
-        "Successfully created PayPal order"
+        "Successfully created PayPal order",
       );
 
       return Response.json(order);
@@ -338,7 +388,7 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
           paymentIntentId: request.paymentIntentId,
           error: error?.message || error?.toString(),
         },
-        "Error creating PayPal order"
+        "Error creating PayPal order",
       );
       throw error;
     }
@@ -346,7 +396,7 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
 
   protected async captureOrder(
     appData: ConnectedAppData,
-    request: CaptureOrderRequest
+    request: CaptureOrderRequest,
   ) {
     const logger = this.loggerFactory("captureOrder");
     logger.debug(
@@ -355,18 +405,19 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
         orderId: request.orderId,
         paymentIntentId: request.paymentIntentId,
       },
-      "Capturing PayPal order"
+      "Capturing PayPal order",
     );
 
     try {
-      const intent = await this.props.services
-        .PaymentsService()
-        .getIntentByExternalId(request.orderId);
+      const intent =
+        await this.props.services.paymentsService.getIntentByExternalId(
+          request.orderId,
+        );
 
       if (!intent) {
         logger.error(
           { appId: appData._id, orderId: request.orderId },
-          "Payment intent not found by external ID"
+          "Payment intent not found by external ID",
         );
         return Response.json({ error: "intent_not_found" }, { status: 400 });
       }
@@ -379,7 +430,7 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
             intentId: intent._id,
             requestIntentId: request.paymentIntentId,
           },
-          "Payment intent ID mismatch"
+          "Payment intent ID mismatch",
         );
         return Response.json({ error: "intent_id_not_match" }, { status: 400 });
       }
@@ -390,7 +441,7 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
           orderId: request.orderId,
           paymentIntentId: request.paymentIntentId,
         },
-        "Retrieved payment intent, capturing PayPal order"
+        "Retrieved payment intent, capturing PayPal order",
       );
 
       const client = await this.getSimplifiedClient(appData);
@@ -409,16 +460,16 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
             orderId: request.orderId,
             statusCode: error.statusCode,
           },
-          "Failed to capture PayPal order"
+          "Failed to capture PayPal order",
         );
 
-        await this.props.services.PaymentsService().updateIntent(intent._id, {
+        await this.props.services.paymentsService.updateIntent(intent._id, {
           status: "failed",
         });
 
         return Response.json(
           { error: "capture_order_failed" },
-          { status: error.statusCode || 500 }
+          { status: error.statusCode || 500 },
         );
       }
 
@@ -428,11 +479,36 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
           orderId: request.orderId,
           paymentIntentId: request.paymentIntentId,
         },
-        "Successfully captured PayPal order, updating payment intent status"
+        "Successfully captured PayPal order, updating payment intent status",
       );
 
-      await this.props.services.PaymentsService().updateIntent(intent._id, {
+      const platformFees: PaymentFee[] =
+        order.purchase_units?.[0].payments?.captures?.[0]?.seller_receivable_breakdown?.platform_fees?.map(
+          (fee) => ({
+            type: "platform",
+            amount: parseFloat(fee.amount.value) || 0,
+          }),
+        ) || [];
+
+      const paypalFees: PaymentFee[] = order.purchase_units?.[0].payments
+        ?.captures?.[0]?.seller_receivable_breakdown?.paypal_fee
+        ? [
+            {
+              type: "transaction",
+              amount:
+                parseFloat(
+                  order.purchase_units?.[0].payments?.captures?.[0]
+                    ?.seller_receivable_breakdown?.paypal_fee.value,
+                ) || 0,
+            },
+          ]
+        : [];
+
+      const fees = [...platformFees, ...paypalFees];
+
+      await this.props.services.paymentsService.updateIntent(intent._id, {
         status: "paid",
+        fees,
       });
 
       logger.info(
@@ -441,7 +517,7 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
           orderId: request.orderId,
           paymentIntentId: request.paymentIntentId,
         },
-        "Successfully captured PayPal order"
+        "Successfully captured PayPal order",
       );
 
       return Response.json(order);
@@ -453,7 +529,7 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
           paymentIntentId: request.paymentIntentId,
           error: error?.message || error?.toString(),
         },
-        "Error capturing PayPal order"
+        "Error capturing PayPal order",
       );
       throw error;
     }
@@ -462,7 +538,7 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
   public async refundPayment(
     appData: ConnectedAppData,
     payment: Payment,
-    amount: number
+    amount: number,
   ): Promise<{ success: boolean; error?: string }> {
     const logger = this.loggerFactory("refundPayment");
     logger.debug(
@@ -470,23 +546,24 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
         appId: appData._id,
         paymentId: payment._id,
         paymentType: payment.type,
+        paymentMethod: payment.method,
         amount,
-        ...(payment.type === "online" && {
+        ...(payment.method === "online" && {
           appName: (payment as any).appName,
           externalId: (payment as any).externalId,
         }),
       },
-      "Processing PayPal refund"
+      "Processing PayPal refund",
     );
 
     if (
-      payment.type !== "online" ||
+      payment.method !== "online" ||
       (payment as any).appName !== PAYPAL_APP_NAME ||
       !(payment as any).externalId
     ) {
       logger.debug(
         { appId: appData._id, paymentId: payment._id },
-        "Payment not supported for refund"
+        "Payment not supported for refund",
       );
       return { success: false, error: "not_supported" };
     }
@@ -496,7 +573,7 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
     try {
       logger.debug(
         { appId: appData._id, paymentId: payment._id, externalId },
-        "Retrieving PayPal order for refund"
+        "Retrieving PayPal order for refund",
       );
 
       const client = await this.getSimplifiedClient(appData);
@@ -516,7 +593,7 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
             externalId,
             statusCode: error.statusCode,
           },
-          "Failed to retrieve PayPal order for refund"
+          "Failed to retrieve PayPal order for refund",
         );
         return {
           success: false,
@@ -528,14 +605,14 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
       if (!captureId) {
         logger.error(
           { appId: appData._id, paymentId: payment._id, externalId },
-          "Failed to get capture ID from PayPal order"
+          "Failed to get capture ID from PayPal order",
         );
         return { success: false, error: "failed_to_get_capture_id" };
       }
 
       logger.debug(
         { appId: appData._id, paymentId: payment._id, captureId },
-        "Processing PayPal refund with capture ID"
+        "Processing PayPal refund with capture ID",
       );
 
       // const clientRefund = this.getClient(appData);
@@ -545,7 +622,7 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
 
       const { ok: refundOk, error: refundError } = await client.refundPayment(
         captureId,
-        amount
+        amount,
       );
 
       if (!refundOk || refundError) {
@@ -556,7 +633,7 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
             captureId,
             statusCode: refundError.statusCode,
           },
-          "Failed to refund PayPal payment"
+          "Failed to refund PayPal payment",
         );
         return {
           success: false,
@@ -566,7 +643,7 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
 
       logger.info(
         { appId: appData._id, paymentId: payment._id, captureId },
-        "Successfully refunded PayPal payment"
+        "Successfully refunded PayPal payment",
       );
 
       return { success: true };
@@ -577,7 +654,7 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
           paymentId: payment._id,
           error: error?.message || error?.toString(),
         },
-        "Error processing PayPal refund"
+        "Error processing PayPal refund",
       );
       throw error;
     }
@@ -592,17 +669,23 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
   >): Promise<PaypalClient> {
     const logger = this.loggerFactory("getSimplifiedClient");
     const environment = this.environment;
+
+    const clientId = data?.clientId ? decrypt(data.clientId) : undefined;
+    const secretKey = data?.secretKey ? decrypt(data.secretKey) : undefined;
+
     logger.debug(
       {
-        clientId: data?.clientId ? maskify(data.clientId) : undefined,
+        clientId: clientId ? maskify(clientId) : undefined,
         environment,
       },
-      "Creating simplified PayPal client"
+      "Creating simplified PayPal client",
     );
 
-    if (!data) {
+    if (!data || !clientId || !secretKey) {
       logger.error("No PayPal configuration data provided");
-      throw new ConnectedAppError("paypal.statusText.no_data");
+      throw new ConnectedAppError(
+        "app_paypal_admin.statusText.no_data" satisfies PaypalAdminAllKeys,
+      );
     }
 
     try {
@@ -611,92 +694,97 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
       //   .getConfiguration("general");
 
       logger.debug(
-        { clientId: maskify(data.clientId) },
-        "Created simplified PayPal client"
+        { clientId: maskify(clientId) },
+        "Created simplified PayPal client",
       );
 
       return new PaypalClient(
-        data.clientId,
-        data.secretKey,
-        environment === Environment.Production
+        clientId,
+        secretKey,
+        environment === Environment.Production,
       );
     } catch (error: any) {
       logger.error(
         {
-          clientId: maskify(data.clientId),
+          clientId: maskify(clientId),
           error: error?.message || error?.toString(),
         },
-        "Error creating simplified PayPal client"
+        "Error creating simplified PayPal client",
       );
       throw error;
     }
   }
 
-  protected getClient({
-    data,
-    token: dbToken,
-  }: Pick<ConnectedAppData<PaypalConfiguration>, "data" | "token">) {
-    const logger = this.loggerFactory("getClient");
-    logger.debug(
-      {
-        clientId: data?.clientId ? maskify(data.clientId) : undefined,
-        environment: this.environment,
-      },
-      "Creating PayPal client"
-    );
+  // protected getClient({
+  //   data,
+  //   token: dbToken,
+  // }: Pick<ConnectedAppData<PaypalConfiguration>, "data" | "token">) {
+  //   const logger = this.loggerFactory("getClient");
 
-    if (!data) {
-      logger.error("No PayPal configuration data provided");
-      throw new ConnectedAppError("paypal.statusText.no_data");
-    }
+  //   const clientId = data?.clientId ? decrypt(data.clientId) : undefined;
+  //   const secretKey = data?.secretKey ? decrypt(data.secretKey) : undefined;
 
-    logger.debug(
-      { clientId: maskify(data.clientId), environment: this.environment },
-      "Created PayPal client"
-    );
+  //   logger.debug(
+  //     {
+  //       clientId: clientId ? maskify(clientId) : undefined,
+  //       environment: this.environment,
+  //     },
+  //     "Creating PayPal client"
+  //   );
 
-    return new Client({
-      environment: this.environment,
-      clientCredentialsAuthCredentials: {
-        oAuthClientId: data.clientId,
-        oAuthClientSecret: data.secretKey,
-        oAuthOnTokenUpdate: async (token) => {
-          logger.debug(
-            { clientId: maskify(data.clientId) },
-            "Updating PayPal OAuth token"
-          );
-          await this.props.update({
-            token,
-          });
-        },
-        oAuthTokenProvider: (lastOAuthToken, authManager) => {
-          logger.debug(
-            { clientId: maskify(data.clientId), hasExistingToken: !!dbToken },
-            "Providing PayPal OAuth token"
-          );
-          const oAuthToken = dbToken;
-          if (oAuthToken != null && !authManager.isExpired(oAuthToken)) {
-            logger.debug(
-              { clientId: maskify(data.clientId) },
-              "Using existing PayPal OAuth token"
-            );
-            return oAuthToken;
-          }
+  //   if (!data || !clientId || !secretKey) {
+  //     logger.error("No PayPal configuration data provided");
+  //     throw new ConnectedAppError("paypal.statusText.no_data");
+  //   }
 
-          logger.debug(
-            { clientId: maskify(data.clientId) },
-            "Fetching new PayPal OAuth token"
-          );
-          return authManager.fetchToken();
-        },
-      },
-    });
-  }
+  //   logger.debug(
+  //     { clientId: maskify(clientId), environment: this.environment },
+  //     "Created PayPal client"
+  //   );
+
+  //   return new Client({
+  //     environment: this.environment,
+  //     clientCredentialsAuthCredentials: {
+  //       oAuthClientId: clientId,
+  //       oAuthClientSecret: secretKey,
+  //       oAuthOnTokenUpdate: async (token) => {
+  //         logger.debug(
+  //           { clientId: maskify(clientId) },
+  //           "Updating PayPal OAuth token"
+  //         );
+  //         await this.props.update({
+  //           token,
+  //         });
+  //       },
+  //       oAuthTokenProvider: (lastOAuthToken, authManager) => {
+  //         logger.debug(
+  //           { clientId: maskify(clientId), hasExistingToken: !!dbToken },
+  //           "Providing PayPal OAuth token"
+  //         );
+  //         const oAuthToken = dbToken;
+  //         if (oAuthToken != null && !authManager.isExpired(oAuthToken)) {
+  //           logger.debug(
+  //             { clientId: maskify(clientId) },
+  //             "Using existing PayPal OAuth token"
+  //           );
+  //           return oAuthToken;
+  //         }
+
+  //         logger.debug(
+  //           { clientId: maskify(clientId) },
+  //           "Fetching new PayPal OAuth token"
+  //         );
+  //         return authManager.fetchToken();
+  //       },
+  //     },
+  //   });
+  // }
 
   protected get environment() {
     return process.env.PAYPAL_ENV === "production"
       ? Environment.Production
-      : process.env.NODE_ENV === "development"
+      : process.env.NODE_ENV === "development" ||
+          process.env.PAYPAL_ENVIRONMENT?.toLocaleLowerCase() === "sandbox"
         ? Environment.Sandbox
         : Environment.Production;
   }

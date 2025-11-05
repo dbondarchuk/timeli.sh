@@ -1,11 +1,11 @@
+import { Info } from "lucide-react";
+import React from "react";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "./tooltip";
-import { Info } from "lucide-react";
-import React from "react";
 
 export type InfoTooltipProps = {
   children: React.ReactNode;

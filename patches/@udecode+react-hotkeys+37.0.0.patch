@@ -1,0 +1,34 @@
+diff --git a/node_modules/@udecode/react-hotkeys/dist/index.js b/node_modules/@udecode/react-hotkeys/dist/index.js
+index be80438..96da93c 100644
+--- a/node_modules/@udecode/react-hotkeys/dist/index.js
++++ b/node_modules/@udecode/react-hotkeys/dist/index.js
+@@ -75,10 +75,10 @@ function BoundHotkeysProxyProviderProvider({
+ 
+ // src/internal/deepEqual.ts
+ function deepEqual(x, y) {
+-  return x && y && typeof x === "object" && typeof y === "object" ? Object.keys(x).length === Object.keys(y).length && Object.keys(x).reduce(
++  return x && y && typeof x === "object" && typeof y === "object" ? Object.keys(x).length === Object.keys(y).length && (Object.is(x, y) || Object.keys(x).reduce(
+     (isEqual, key) => isEqual && deepEqual(x[key], y[key]),
+     true
+-  ) : x === y;
++  )) : x === y;
+ }
+ 
+ // src/internal/HotkeysProvider.tsx
+diff --git a/node_modules/@udecode/react-hotkeys/dist/index.mjs b/node_modules/@udecode/react-hotkeys/dist/index.mjs
+index beb88fe..ce3aaa4 100644
+--- a/node_modules/@udecode/react-hotkeys/dist/index.mjs
++++ b/node_modules/@udecode/react-hotkeys/dist/index.mjs
+@@ -42,10 +42,10 @@ function BoundHotkeysProxyProviderProvider({
+ 
+ // src/internal/deepEqual.ts
+ function deepEqual(x, y) {
+-  return x && y && typeof x === "object" && typeof y === "object" ? Object.keys(x).length === Object.keys(y).length && Object.keys(x).reduce(
++  return x && y && typeof x === "object" && typeof y === "object" ? Object.keys(x).length === Object.keys(y).length && (Object.is(x, y) || Object.keys(x).reduce(
+     (isEqual, key) => isEqual && deepEqual(x[key], y[key]),
+     true
+-  ) : x === y;
++  )) : x === y;
+ }
+ 
+ // src/internal/HotkeysProvider.tsx

@@ -1,10 +1,9 @@
 "use client";
 
-import { AppSetupProps } from "@vivid/types";
+import { useI18n } from "@timelish/i18n";
+import { AppSetupProps } from "@timelish/types";
 import {
   Button,
-  ConnectedAppNameAndLogo,
-  ConnectedAppStatusMessage,
   Form,
   FormControl,
   FormField,
@@ -13,16 +12,24 @@ import {
   FormMessage,
   InfoTooltip,
   Spinner,
+} from "@timelish/ui";
+import {
+  ConnectedAppNameAndLogo,
+  ConnectedAppStatusMessage,
   TemplateSelector,
-} from "@vivid/ui";
+} from "@timelish/ui-admin";
 import React from "react";
-import { useI18n } from "@vivid/i18n";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
 import { TextMessageAutoReplyApp } from "./app";
 import {
   TextMessageAutoReplyConfiguration,
   textMessageAutoReplyConfigurationSchema,
 } from "./models";
+import {
+  TextMessageAutoReplyAdminKeys,
+  TextMessageAutoReplyAdminNamespace,
+  textMessageAutoReplyAdminNamespace,
+} from "./translations/types";
 
 export const TextMessageAutoReplyAppSetup: React.FC<AppSetupProps> = ({
   onSuccess,
@@ -40,7 +47,10 @@ export const TextMessageAutoReplyAppSetup: React.FC<AppSetupProps> = ({
       onError,
     });
 
-  const t = useI18n("apps");
+  const t = useI18n<
+    TextMessageAutoReplyAdminNamespace,
+    TextMessageAutoReplyAdminKeys
+  >(textMessageAutoReplyAdminNamespace);
 
   return (
     <>
@@ -53,9 +63,9 @@ export const TextMessageAutoReplyAppSetup: React.FC<AppSetupProps> = ({
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel>
-                    {t("textMessageAutoReply.form.autoReplyTemplate.label")}
+                    {t("form.autoReplyTemplate.label")}
                     <InfoTooltip>
-                      {t("textMessageAutoReply.form.autoReplyTemplate.tooltip")}
+                      {t("form.autoReplyTemplate.tooltip")}
                     </InfoTooltip>
                   </FormLabel>
                   <FormControl>
@@ -78,16 +88,25 @@ export const TextMessageAutoReplyAppSetup: React.FC<AppSetupProps> = ({
               className="inline-flex gap-2 items-center w-full"
             >
               {isLoading && <Spinner />}
-              <span>{t("textMessageAutoReply.form.connectWith")}</span>
-              <ConnectedAppNameAndLogo
-                app={{ name: TextMessageAutoReplyApp.name }}
-                t={t}
-              />
+              <span className="inline-flex gap-2 items-center">
+                {t.rich("form.connectWith", {
+                  app: () => (
+                    <ConnectedAppNameAndLogo
+                      appName={TextMessageAutoReplyApp.name}
+                    />
+                  ),
+                })}
+              </span>
             </Button>
           </div>
         </form>
       </Form>
-      {appStatus && <ConnectedAppStatusMessage app={appStatus} t={t} />}
+      {appStatus && (
+        <ConnectedAppStatusMessage
+          status={appStatus.status}
+          statusText={appStatus.statusText}
+        />
+      )}
     </>
   );
 };

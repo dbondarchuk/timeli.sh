@@ -16,6 +16,7 @@ export type PlateMarkdownEditorProps = {
   className?: string;
   disabled?: boolean;
   placeholder?: string;
+  usesAbsoluteUrl?: boolean;
 };
 
 export const PlateMarkdownEditor: React.FC<PlateMarkdownEditorProps> = ({
@@ -25,6 +26,7 @@ export const PlateMarkdownEditor: React.FC<PlateMarkdownEditorProps> = ({
   className,
   disabled,
   placeholder,
+  usesAbsoluteUrl,
 }) => {
   const editor = useCreateMarkdownEditor(value);
 
@@ -40,7 +42,7 @@ export const PlateMarkdownEditor: React.FC<PlateMarkdownEditorProps> = ({
           onChange?.(editor.api.markdown.serialize().replaceAll("<br>", "\n"))
         }
       >
-        <EditorContainer>
+        <EditorContainer usesAbsoluteUrl={usesAbsoluteUrl}>
           <Editor
             variant="fullWidth"
             className={className}

@@ -1,26 +1,28 @@
-import { ReaderDocumentBlocksDictionary } from "@vivid/builder";
-import { Avatar } from "./avatar";
+import { ReaderDocumentBlocksDictionary } from "@timelish/builder";
+import { AvatarReader } from "./avatar";
 import { Button } from "./button";
 import { ColumnsContainerReader } from "./columns-container";
 import { ConditionalContainerReader } from "./conditional-container";
 import { ContainerReader } from "./container";
-import { Divider } from "./divider";
+import { CustomHTML } from "./custom-html";
+import { DividerReader } from "./divider";
 import { EmailLayoutReader } from "./email-layout";
 import { ForeachContainerReader } from "./foreach-container";
 import { Heading } from "./heading";
-import { Image } from "./image";
+import { ImageReader } from "./image";
+import { OnlineMeetingReader } from "./online-meeting/reader";
 import { EditorBlocksSchema } from "./schema";
-import { Spacer } from "./spacer";
+import { SpacerReader } from "./spacer";
 import { TextReader } from "./text";
 
 export const ReaderBlocks: ReaderDocumentBlocksDictionary<
   typeof EditorBlocksSchema
 > = {
   Avatar: {
-    Reader: Avatar,
+    Reader: AvatarReader,
   },
   Image: {
-    Reader: Image,
+    Reader: ImageReader,
   },
   Button: {
     Reader: Button,
@@ -29,10 +31,10 @@ export const ReaderBlocks: ReaderDocumentBlocksDictionary<
     Reader: TextReader,
   },
   Divider: {
-    Reader: Divider,
+    Reader: DividerReader,
   },
   Spacer: {
-    Reader: Spacer,
+    Reader: SpacerReader,
   },
   EmailLayout: {
     Reader: EmailLayoutReader,
@@ -51,5 +53,11 @@ export const ReaderBlocks: ReaderDocumentBlocksDictionary<
   },
   ForeachContainer: {
     Reader: ForeachContainerReader,
+  },
+  CustomHTML: {
+    Reader: CustomHTML,
+  },
+  OnlineMeeting: {
+    Reader: OnlineMeetingReader,
   },
 };

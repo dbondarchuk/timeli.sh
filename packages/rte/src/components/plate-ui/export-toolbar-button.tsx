@@ -107,12 +107,12 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  ToolbarButton,
   useOpenState,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { EditorStatic } from "./editor-static";
 import { EquationElementStatic } from "./equation-element-static";
 import { InlineEquationElementStatic } from "./inline-equation-element-static";
-import { ToolbarButton } from "./toolbar";
 
 const siteUrl = "https://platejs.org";
 
@@ -126,7 +126,7 @@ export function ExportToolbarButton({ children, ...props }: DropdownMenuProps) {
     const style = document.createElement("style");
     document.head.append(style);
     style.sheet?.insertRule(
-      "body > div:last-child img { display: inline-block !important; }"
+      "body > div:last-child img { display: inline-block !important; }",
     );
 
     const canvas = await html2canvas(editor.api.toDOMNode(editor)!);

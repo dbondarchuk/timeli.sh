@@ -1,18 +1,15 @@
-import { Footer } from "@/components/web/footer";
-import { Header } from "@/components/web/header";
-import { SonnerToaster, Toaster } from "@vivid/ui";
+import { ConfigProvider, SonnerToaster, Toaster } from "@timelish/ui";
 
-import { Resource } from "@vivid/types";
+import { Resource } from "@timelish/types";
 
 import NextScript from "next/script";
-import { TwLoad } from "../twLoad";
 
-import { ServicesContainer } from "@vivid/services";
-import "../globals.css";
-import { getColorsCss } from "@vivid/utils";
 import { CookiesProvider } from "@/components/cookies-provider";
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory } from "@timelish/logger";
+import { buildGoogleFontsUrl, getColorsCss } from "@timelish/utils";
+import "../globals.css";
 
+import { getServicesContainer } from "@/utils/utils";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale } from "next-intl/server";
 
@@ -55,30 +52,19 @@ export default async function RootLayout({
   const logger = getLoggerFactory("RootLayout")("RootLayout");
   logger.debug("Starting root layout render");
 
-  // const scripts = await Services.ConfigurationService().getConfiguration(
-  //   "scripts"
-  // );
-
-  // const { favicon } = await Services.ConfigurationService().getConfiguration(
-  //   "general"
-  // );
-
-  // const styling = await Services.ConfigurationService().getConfiguration(
-  //   "styling"
-  // );
-
+  const servicesContainer = await getServicesContainer();
   const { general, scripts, styling } =
-    await ServicesContainer.ConfigurationService().getConfigurations(
+    await servicesContainer.configurationService.getConfigurations(
       "general",
       "scripts",
-      "styling"
+      "styling",
     );
 
   const locale = await getLocale();
 
   logger.debug(
     { hasGeneral: !!general, hasScripts: !!scripts, hasStyling: !!styling },
-    "Retrieved configurations"
+    "Retrieved configurations",
   );
 
   if (!general) {
@@ -90,38 +76,26 @@ export default async function RootLayout({
     );
   }
 
-  const weights = `:wght@100..900`;
-
   const primaryFont = styling?.fonts?.primary || "Montserrat";
   const secondaryFont = styling?.fonts?.secondary || "Playfair Display";
   const tertiaryFont = styling?.fonts?.tertiary;
 
-  logger.debug(
-    { primaryFont, secondaryFont, tertiaryFont },
-    "Font configuration"
+  const fontsCssUrl = buildGoogleFontsUrl(
+    primaryFont,
+    secondaryFont,
+    tertiaryFont,
   );
 
-  const tertiaryFontQueryArg = tertiaryFont
-    ? `&family=${encodeURIComponent(tertiaryFont)}${weights}`
-    : "";
-
-  const fontsRes = await fetch(
-    `https://fonts.googleapis.com/css2?family=${encodeURIComponent(
-      primaryFont
-    )}${weights}&family=${encodeURIComponent(
-      secondaryFont
-    )}${weights}${tertiaryFontQueryArg}&display=swap`,
-    {
-      cache: "force-cache",
-    }
-  );
+  const fontsRes = await fetch(fontsCssUrl, {
+    cache: "force-cache",
+  });
 
   const fonts = await fontsRes.text();
   const colors = getColorsCss(styling?.colors);
 
   logger.debug(
     { fontsLength: fonts.length, hasColors: !!colors },
-    "Generated styles"
+    "Generated styles",
   );
 
   return (
@@ -159,20 +133,18 @@ export default async function RootLayout({
             <CssRenderer resource={resource} id={index} key={index} />
           ))}
         </head>
-        <TwLoad />
+        {/* <TwLoad /> */}
         <body className="font-primary">
-          <NextIntlClientProvider>
-            <Header />
-            <main className="min-h-screen bg-background pt-5 prose-lg lg:prose-xl prose-h3:text-4xl max-w-none">
-              {children}
-            </main>
-            <Footer />
-            {scripts?.footer?.map((resource, index) => (
-              <ScriptRenderer resource={resource} id={index} key={index} />
-            ))}
-            <Toaster />
-            <SonnerToaster />
-          </NextIntlClientProvider>
+          <ConfigProvider config={general}>
+            <NextIntlClientProvider>
+              <main className="min-h-screen max-w-none">{children}</main>
+              {scripts?.footer?.map((resource, index) => (
+                <ScriptRenderer resource={resource} id={index} key={index} />
+              ))}
+              <Toaster />
+              <SonnerToaster />
+            </NextIntlClientProvider>
+          </ConfigProvider>
         </body>
       </html>
     </CookiesProvider>

@@ -5,7 +5,9 @@ Hi {{config.name}},
 
 ${customText}
 
-Customer: [{{ customer.name }}]({{ config.url }}/admin/dashboard/customers/{{customerId}})
+Requested on {{ createdAt.full }}
+
+Customer: [{{ customer.name }}]({{ adminUrl }}/dashboard/customers/{{customerId}})
 
 Name: {{ fields.name }}
 
@@ -19,13 +21,13 @@ Phone: {{ fields.phone }}
 
 {{/restFields}} {{#images}}
 
-![{{description}}]({{ config.url }}/assets/{{filename}})
+![{{description}}]({{ websiteUrl }}/assets/{{filename}})
 
 {{filename}}
 
 {{/images}} {{#files}}
 
-File: [{{filename}}]({{ config.url }}/assets/{{filename}})
+File: [{{filename}}]({{ websiteUrl }}/assets/{{filename}})
 
 {{/files}}
 
@@ -40,15 +42,17 @@ Addons selected:
 - None
 {{/addons}}
 
-Time: {{ dateTime }}
+Time: {{ dateTime.full }}
 
 Duration: {{#duration.hours}}{{.}} hr {{/duration.hours}}{{#duration.minutes}}{{.}} min{{/duration.minutes}}
 
 {{#discount}}
 
-Promo code: {{code}} (-\${{discountAmountFormatted}}) ([{{name}}]({{ config.url }}/admin/dashboard/services/discounts/{{id}}))
+Promo code: {{code}} (-\${{discountAmountFormatted}}) ([{{name}}]({{ adminUrl }}/dashboard/services/discounts/{{id}}))
 
-{{/discount}} {{#totalPriceFormatted}}
+{{/discount}}
+
+{{#totalPriceFormatted}}
 
 Price: \${{.}}
 
@@ -58,7 +62,7 @@ Price: \${{.}}
 Payments:
 
 {{#payments}}
- 1. {{appName}} on {{paidAt}}: \${{amountFormatted}} {{#totalRefundedFormatted}} (-\${{totalRefundedFormatted}} refunded, \${{amountLeftFormatted}} left) {{/totalRefundedFormatted}}
+ 1. {{#appName}}{{.}}{{/appName}}{{^appName}}{{#isOnline}}Online{{/isOnline}}{{#isCash}}Cash{{/isCash}}{{#isInPersonCard}}Card{{/isInPersonCard}}{{/appName}} ({{#isTips}}Tips{{/isTips}}{{#isOther}}Other{{/isOther}}{{#isDeposit}}Deposit{{/isDeposit}}{{#isRescheduleFee}}Reschedule fee{{/isRescheduleFee}}{{#isCancellationFee}}Cancellation fee{{/isCancellationFee}}{{#isPayment}}Payment{{/isPayment}}) on {{paidAt.full}}: \${{amountFormatted}} {{#totalRefundedFormatted}} (-\${{totalRefundedFormatted}} refunded, \${{amountLeftFormatted}} left) {{/totalRefundedFormatted}}
 {{/payments}}
 {{^payments}}
 - None
@@ -66,6 +70,9 @@ Payments:
 
 Total amount currently paid: \${{totalAmountLeftFormatted}}
 {{/totalAmountLeft}}
+{{#totalAmountLeftToPay}}
+Total amount left to pay: \${{totalAmountLeftToPayFormatted}}
+{{/totalAmountLeftToPay}}
 `;
 
 export const EnEmailTemplates: EmailTemplates = {
@@ -77,25 +84,35 @@ export const EnEmailTemplates: EmailTemplates = {
     title: "Appointment for {{option.name}} was declined.",
     text: getText("The appointment was declined by you."),
   },
-  rescheduled: {
-    title: "Appointment was rescheduled for {{dateTime}}",
+  cancelledByCustomer: {
+    title: "Appointment for {{option.name}} was cancelled.",
+    text: getText("The appointment was cancelled by the customer."),
+  },
+  rescheduledByCustomer: {
+    title: "Appointment for {{option.name}} was rescheduled.",
     text: getText(
-      "The appointment for {{option.name}} by {{fields.name}} was rescheduled for {{dateTime}}, duration {{#duration.hours}}{{.}} hr {{/duration.hours}}{{#duration.minutes}}{{.}} min{{/duration.minutes}}"
+      "The appointment for {{option.name}} by {{fields.name}} was rescheduled by the customer for {{dateTime.full}}, duration {{#duration.hours}}{{.}} hr {{/duration.hours}}{{#duration.minutes}}{{.}} min{{/duration.minutes}}",
+    ),
+  },
+  rescheduled: {
+    title: "Appointment was rescheduled for {{dateTime.full}}",
+    text: getText(
+      "The appointment for {{option.name}} by {{fields.name}} was rescheduled for {{dateTime.full}}, duration {{#duration.hours}}{{.}} hr {{/duration.hours}}{{#duration.minutes}}{{.}} min{{/duration.minutes}}",
     ),
   },
   "auto-confirmed": {
     title: "Appointment for {{option.name}} was requested and auto-confirmed",
     text: getText(
-      "A new appointment was requested on the website and was auto-confirmed."
+      "A new appointment was requested on the website and was auto-confirmed.",
     ),
   },
   pending: {
     title: "Appointment for {{option.name}} was requested",
     text: getText(
-      "A new appointment was requested on the website for {{option.name}}."
+      "A new appointment was requested on the website for {{option.name}}.",
     ),
   },
-  subject: "{{fields.name}} for {{option.name}} at {{dateTime}}",
+  subject: "{{fields.name}} for {{option.name}} on {{dateTime.full}}",
   eventTitle: "{{fields.name}} for {{option.name}}",
   buttonTexts: {
     viewAppointment: "View Appointment",

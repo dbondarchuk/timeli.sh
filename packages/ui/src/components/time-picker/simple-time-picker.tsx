@@ -1,13 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Popover, PopoverContent, PopoverTrigger } from "../popover";
-import { cn } from "../../utils";
-import { Clock, ChevronDownIcon, CheckIcon } from "lucide-react";
-import { Button } from "../button";
-import { ScrollArea } from "../scroll-area";
+import { useI18n } from "@timelish/i18n";
+import { CheckIcon, ChevronDownIcon, Clock } from "lucide-react";
 import { DateTime } from "luxon";
-import { useI18n } from "@vivid/i18n";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { cn } from "../../utils";
+import { Button } from "../button";
+import { Popover, PopoverContent, PopoverTrigger } from "../popover";
+import { ScrollArea } from "../scroll-area";
 
 interface SimpleTimeOption {
   value: any;
@@ -50,29 +50,29 @@ export function SimpleTimePicker({
       use12HourFormat
         ? "yyyy-MM-dd hh:mm:ss.SSS a xxxx"
         : "yyyy-MM-dd HH:mm:ss.SSS xxxx",
-    [use12HourFormat]
+    [use12HourFormat],
   );
 
   const value = useMemo(
     () => DateTime.fromJSDate(valueDateJs).setZone(timeZone),
-    [valueDateJs, timeZone]
+    [valueDateJs, timeZone],
   );
 
   const [ampm, setAmpm] = useState(
-    value.toFormat("a") === "AM" ? AM_VALUE : PM_VALUE
+    value.toFormat("a") === "AM" ? AM_VALUE : PM_VALUE,
   );
 
   const minDate = useMemo(
     () => (min ? DateTime.fromJSDate(min).setZone(timeZone) : undefined),
-    [min, timeZone]
+    [min, timeZone],
   );
   const maxDate = useMemo(
     () => (max ? DateTime.fromJSDate(max).setZone(timeZone) : undefined),
-    [max, timeZone]
+    [max, timeZone],
   );
 
   const [hour, setHour] = useState(
-    use12HourFormat ? +value.toFormat("hh") : value.hour
+    use12HourFormat ? +value.toFormat("hh") : value.hour,
   );
   const [minute, setMinute] = useState(value.minute);
   const [second, setSecond] = useState(value.second);
@@ -88,7 +88,7 @@ export function SimpleTimePicker({
         second,
         ampm,
         showSeconds,
-      }).toJSDate()
+      }).toJSDate(),
     );
   }, [hour, minute, second, ampm, formatStr, use12HourFormat]);
 
@@ -112,7 +112,7 @@ export function SimpleTimePicker({
           disabled,
         };
       }),
-    [value, min, max, use12HourFormat, ampm]
+    [value, min, max, use12HourFormat, ampm],
   );
   const minutes: SimpleTimeOption[] = useMemo(() => {
     const anchorDate = value.set({ hour: _hourIn24h });
@@ -129,7 +129,8 @@ export function SimpleTimePicker({
         disabled,
       };
     }).filter(
-      (minute) => !minutesDivisibleBy || minute.value % minutesDivisibleBy === 0
+      (minute) =>
+        !minutesDivisibleBy || minute.value % minutesDivisibleBy === 0,
     );
   }, [value, min, max, _hourIn24h]);
 
@@ -227,7 +228,7 @@ export function SimpleTimePicker({
       }
       setHour(v.value);
     },
-    [setHour, use12HourFormat, value, formatStr, minute, second, ampm]
+    [setHour, use12HourFormat, value, formatStr, minute, second, ampm],
   );
 
   const onMinuteChange = useCallback(
@@ -262,7 +263,7 @@ export function SimpleTimePicker({
       }
       setMinute(v.value);
     },
-    [setMinute, use12HourFormat, value, formatStr, hour, second, ampm]
+    [setMinute, use12HourFormat, value, formatStr, hour, second, ampm],
   );
 
   const onAmpmChange = useCallback(
@@ -303,16 +304,26 @@ export function SimpleTimePicker({
       }
       setAmpm(v.value);
     },
-    [setAmpm, use12HourFormat, value, formatStr, hour, minute, second, min, max]
+    [
+      setAmpm,
+      use12HourFormat,
+      value,
+      formatStr,
+      hour,
+      minute,
+      second,
+      min,
+      max,
+    ],
   );
 
   const secondsFormat = useMemo(
     () => (showSeconds ? ":ss" : ""),
-    [showSeconds]
+    [showSeconds],
   );
   const display = useMemo(() => {
     return value.toFormat(
-      use12HourFormat ? `hh:mm${secondsFormat} a` : `HH:mm${secondsFormat}`
+      use12HourFormat ? `hh:mm${secondsFormat} a` : `HH:mm${secondsFormat}`,
     );
   }, [value, use12HourFormat, secondsFormat]);
 
@@ -324,7 +335,7 @@ export function SimpleTimePicker({
           aria-expanded={open}
           className={cn(
             "flex h-9 px-3 items-center justify-between cursor-pointer font-normal border border-input rounded-md text-sm shadow-sm",
-            disabled && "opacity-50 cursor-not-allowed"
+            disabled && "opacity-50 cursor-not-allowed",
           )}
           tabIndex={0}
         >

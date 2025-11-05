@@ -1,51 +1,59 @@
-import { ServicesContainer } from "@vivid/services";
 import { getRequestConfig } from "next-intl/server";
-import { headers } from "next/headers";
+import { mergeObjects } from "./utils";
 
-export const config = getRequestConfig(async ({ locale: baseLocale }) => {
-  // Provide a static locale, fetch a user setting,
-  // read from `cookies()`, `headers()`, etc.
-  const headersList = await headers();
+export const getConfig = (
+  getLocale: (
+    baseLocale: string | undefined,
+  ) => Promise<{ locale: string; includeAdmin: boolean }>,
+  getMessages?: () => Promise<{
+    public: (locale: string) => Promise<Record<string, Record<string, any>>>;
+    admin: (locale: string) => Promise<Record<string, Record<string, any>>>;
+    overrides: (locale: string) => Promise<(Record<string, any> | undefined)[]>;
+  }>,
+) =>
+  getRequestConfig(async ({ locale: baseLocale }) => {
+    const { locale, includeAdmin } = await getLocale(baseLocale);
 
-  const isAdminPath = headersList.get("x-is-admin-path") === "true";
+    const externalMessages = await getMessages?.();
+    const publicMessages = await externalMessages?.public(locale);
+    let messages: Record<string, any> = {
+      translation: (await import(`./locales/${locale}/translation.json`))
+        .default,
+      ui: (await import(`./locales/${locale}/ui.json`)).default,
+      validation: (await import(`./locales/${locale}/validation.json`)).default,
+      ...(publicMessages || {}),
+    };
 
-  let locale =
-    baseLocale ||
-    headersList.get("x-locale") ||
-    (await ServicesContainer.ConfigurationService().getConfiguration("general"))
-      .language ||
-    "en";
+    if (includeAdmin) {
+      messages.admin = (await import(`./locales/${locale}/admin.json`)).default;
+      messages.builder = (
+        await import(`./locales/${locale}/builder.json`)
+      ).default;
+      messages.apps = (await import(`./locales/${locale}/apps.json`)).default;
 
-  const pathname = headersList.get("x-pathname");
-  if (pathname && !isAdminPath) {
-    const trimmedPathname = pathname.replace(/^\//, "");
-    const page =
-      await ServicesContainer.PagesService().getPageBySlug(trimmedPathname);
-
-    if (page?.language) {
-      locale = page.language;
+      const adminMessages = await externalMessages?.admin(locale);
+      messages = {
+        ...messages,
+        ...(adminMessages || {}),
+      };
     }
-  }
 
-  const messages: Record<string, any> = {
-    translation: (await import(`./locales/${locale}/translation.json`)).default,
-    ui: (await import(`./locales/${locale}/ui.json`)).default,
-    validation: (await import(`./locales/${locale}/validation.json`)).default,
-    apps: (await import(`./locales/${locale}/apps.json`)).default,
-  };
+    const overrideEntries = await externalMessages?.overrides(locale);
+    const overrides =
+      overrideEntries?.filter(Boolean).reduce(
+        (acc, entry) => {
+          return mergeObjects(acc as {}, entry ?? {});
+        },
+        {} as Record<string, any>,
+      ) ?? {};
 
-  if (isAdminPath) {
-    messages.admin = (await import(`./locales/${locale}/admin.json`)).default;
-    messages.builder = (
-      await import(`./locales/${locale}/builder.json`)
-    ).default;
-  }
+    messages = mergeObjects(messages, overrides);
 
-  return {
-    locale,
-    onError: (error) => console.error(error),
-    getMessageFallback: ({ namespace, key }) => `${namespace}.${key}`,
+    return {
+      locale,
+      onError: (error) => console.error(error),
+      getMessageFallback: ({ namespace, key }) => `${namespace}.${key}`,
 
-    messages,
-  };
-});
+      messages,
+    };
+  });

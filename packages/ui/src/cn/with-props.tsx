@@ -9,7 +9,7 @@ import { cn } from "../utils/cn";
  */
 export function withProps<T extends React.ElementType>(
   Component: T,
-  defaultProps: Partial<React.ComponentPropsWithoutRef<T>>
+  defaultProps: Partial<React.ComponentPropsWithoutRef<T>>,
 ) {
   const ComponentWithClassName = Component as React.FC<{ className: string }>;
 
@@ -24,7 +24,7 @@ export function withProps<T extends React.ElementType>(
         {...props}
         className={cn(
           (defaultProps as any).className,
-          (props as any).className
+          (props as any).className,
         )}
       />
     );

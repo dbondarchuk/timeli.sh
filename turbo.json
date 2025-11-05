@@ -1,9 +1,15 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "globalEnv": [
+    "NEXT_RUNTIME",
+    "PUBLIC_DOMAIN",
+    "ADMIN_DOMAIN",
+    "ORGANIZATION_SLUG"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**"]
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
     },
     "start": {
       "dependsOn": ["^start"]
@@ -12,6 +18,20 @@
       "dependsOn": ["^check-types"]
     },
     "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "lint": {
+      "dependsOn": ["^lint"]
+    },
+    "lint:fix": {
+      "dependsOn": ["^lint:fix"]
+    },
+    "typegen": {
+      "dependsOn": ["^typegen"]
+    },
+    "check-translations": {
+      "dependsOn": ["^check-translations"],
       "cache": false
     }
   }

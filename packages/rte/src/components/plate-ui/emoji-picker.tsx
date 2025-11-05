@@ -1,10 +1,8 @@
 "use client";
 
-import React from "react";
-
 import type { UseEmojiPickerType } from "@udecode/plate-emoji/react";
 
-import { cn } from "@vivid/ui";
+import { cn } from "@timelish/ui";
 import { EmojiSettings } from "@udecode/plate-emoji";
 
 import { EmojiPickerContent } from "./emoji-picker-content";
@@ -36,7 +34,7 @@ export function EmojiPicker({
     <div
       className={cn(
         "flex flex-col rounded-xl bg-popover text-popover-foreground",
-        "h-[23rem] w-80 border shadow-md"
+        "h-[23rem] w-80 border shadow-md",
       )}
     >
       <EmojiPickerNavigation

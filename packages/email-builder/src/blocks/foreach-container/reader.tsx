@@ -1,6 +1,6 @@
-import { evaluate, ReaderBlock } from "@vivid/builder";
-import { ForeachContainerReaderProps } from "./schema";
+import { evaluate, ReaderBlock } from "@timelish/builder";
 import { Fragment } from "react";
+import { ForeachContainerReaderProps } from "./schema";
 
 export const ForeachContainerReader = ({
   props,
@@ -31,8 +31,8 @@ export const ForeachContainerReader = ({
           {children.map((child) => (
             <ReaderBlock
               key={child.id}
-              block={child}
               {...rest}
+              block={child}
               args={newCtx(item)}
             />
           ))}

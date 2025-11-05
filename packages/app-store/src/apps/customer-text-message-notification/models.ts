@@ -1,5 +1,5 @@
-import { appointmentStatuses, zStrictRecord } from "@vivid/types";
-import { z } from "zod";
+import { appointmentStatuses } from "@timelish/types";
+import * as z from "zod";
 
 export const textMessagesTemplateSchema = z.object({
   templateId: z.string().optional(),
@@ -16,13 +16,13 @@ export const textMessagesTemplateKeys = z.enum([
 
 export type TextMessagesTemplateKeys = z.infer<typeof textMessagesTemplateKeys>;
 
-export const textMessagesTemplatesSchema = zStrictRecord(
+export const textMessagesTemplatesSchema = z.record(
   textMessagesTemplateKeys,
-  textMessagesTemplateSchema
+  textMessagesTemplateSchema,
 );
 
 export const customerTextMessageNotificationConfigurationSchema = z.object({
-  sendNewRequestNotifications: z.coerce.boolean().optional(),
+  sendNewRequestNotifications: z.coerce.boolean<boolean>().optional(),
   templates: textMessagesTemplatesSchema,
 });
 

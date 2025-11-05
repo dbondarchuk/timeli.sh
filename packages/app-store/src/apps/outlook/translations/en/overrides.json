@@ -1,0 +1,9 @@
+{
+  "admin": {
+    "onlineMeeting": {
+      "types": {
+        "microsoft_teams": "Microsoft Teams"
+      }
+    }
+  }
+}

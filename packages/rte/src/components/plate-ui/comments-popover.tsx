@@ -1,8 +1,6 @@
 "use client";
 
-import React from "react";
-
-import { cn, popoverVariants } from "@vivid/ui";
+import { cn, popoverVariants } from "@timelish/ui";
 import {
   CommentProvider,
   CommentsPositioner,

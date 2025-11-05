@@ -1,8 +1,8 @@
 "use client";
 
+import { useI18n } from "@timelish/i18n";
 import { useTheme } from "next-themes";
 import { Toaster as Sonner, toast } from "sonner";
-import { useI18n } from "@vivid/i18n";
 
 type ToasterProps = React.ComponentProps<typeof Sonner>;
 
@@ -36,7 +36,7 @@ const LoadingToast = () => {
 
 async function toastPromise<T>(
   promise: Promise<T>,
-  data: Parameters<typeof toast.promise<T>>[1]
+  data: Parameters<typeof toast.promise<T>>[1],
 ): Promise<T> {
   toast.promise(promise, {
     loading: <LoadingToast />,

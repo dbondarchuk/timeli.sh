@@ -1,0 +1,31 @@
+{
+  "title": "Zoom",
+  "app": {
+    "displayName": "Zoom",
+    "description": "Zoom is a secure and reliable video platform that supports all of your online communication needs. It can provide everything from one on one meetings, chat, phone, webinars, and large-scale online events. Available with both desktop, web, and mobile versions."
+  },
+  "form": {
+    "connect": "Connect with <app></app>",
+    "reconnect": "Reconnect <app></app>",
+    "pendingAuthorization": "Pending authorization"
+  },
+  "statusText": {
+    "successfully_set_up": "Successfully connected to Zoom",
+    "error_processing_configuration": "Error processing Zoom configuration",
+    "oauth_error": "OAuth authentication error",
+    "refresh_token_not_set": "Refresh token is not set",
+    "invalid_credentials": "Invalid credentials",
+    "redirect_request_does_not_contain_app_id": "Redirect request does not contain app ID",
+    "redirect_request_does_not_contain_authorization_code": "Redirect request does not contain authorization code",
+    "app_was_not_authorized_properly": "App was not authorized properly",
+    "failed_to_get_user_email": "Failed to get user email",
+    "error_getting_busy_times": "Error getting busy times from Zoom: {error}",
+    "error_getting_meeting_url": "Error getting meeting URL from Zoom: {error}",
+    "error_rescheduling_zoom_meeting": "Error rescheduling Zoom meeting: {error}",
+    "error_deleting_zoom_meeting": "Error deleting Zoom meeting: {error}"
+  },
+  "toast": {
+    "changes_saved": "Your changes were saved.",
+    "request_error": "There was a problem with your request."
+  }
+}

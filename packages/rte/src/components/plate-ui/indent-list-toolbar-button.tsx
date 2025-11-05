@@ -18,7 +18,7 @@ import {
   ToolbarSplitButtonPrimary,
   ToolbarSplitButtonSecondary,
   useOpenState,
-} from "@vivid/ui";
+} from "@timelish/ui";
 
 export function NumberedIndentListToolbarButton() {
   const editor = useEditorRef();
@@ -33,7 +33,7 @@ export function NumberedIndentListToolbarButton() {
         ListStyleType.LowerRoman,
         ListStyleType.UpperRoman,
       ]),
-    []
+    [],
   );
 
   return (
@@ -121,7 +121,7 @@ export function BulletedIndentListToolbarButton() {
         ListStyleType.Circle,
         ListStyleType.Square,
       ]),
-    []
+    [],
   );
 
   return (

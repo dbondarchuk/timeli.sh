@@ -9,7 +9,7 @@ export interface BufferInfo {
 
 export const buffer = async (
   req: IncomingMessage,
-  { limit = "1mb", encoding }: BufferInfo = {}
+  { limit = "1mb", encoding }: BufferInfo = {},
 ) => {
   const type = req.headers["content-type"] || "text/plain";
   const length = req.headers["content-length"];
@@ -23,7 +23,7 @@ export const buffer = async (
 
 export const reqBodyText = async (
   req: IncomingMessage,
-  { limit, encoding }: BufferInfo = {}
+  { limit, encoding }: BufferInfo = {},
 ) => {
   const body = await buffer(req, { limit, encoding });
 
@@ -33,5 +33,5 @@ export const reqBodyText = async (
 
 export const reqBodyJson = async (
   req: IncomingMessage,
-  opts: BufferInfo = {}
+  opts: BufferInfo = {},
 ) => await reqBodyText(req, opts).then((body) => JSON.parse(body));

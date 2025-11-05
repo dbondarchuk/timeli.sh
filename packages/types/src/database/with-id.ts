@@ -3,3 +3,4 @@ export type DatabaseId = {
 };
 
 export type WithDatabaseId<T> = T & DatabaseId;
+export type WithCompanyId<T> = T & { companyId: string };

@@ -1,50 +1,46 @@
-import { getLoggerFactory } from "@vivid/logger";
-import { ServicesContainer } from "@vivid/services";
+import { getServicesContainer } from "@/utils/utils";
+import { availabilitySearchParamsLoader } from "@timelish/api-sdk";
+import { getLoggerFactory } from "@timelish/logger";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
   const logger = getLoggerFactory("API/availability")("GET");
-
+  const servicesContainer = await getServicesContainer();
   logger.debug(
     {
       url: request.url,
       method: request.method,
       searchParams: Object.fromEntries(request.nextUrl.searchParams.entries()),
     },
-    "Processing availability API request"
+    "Processing availability API request",
   );
 
-  const searchParams = request.nextUrl.searchParams;
-  const durationStr = searchParams.get("duration");
+  const params = availabilitySearchParamsLoader(request.nextUrl.searchParams);
+  const duration = params.duration;
 
-  if (!durationStr) {
-    logger.warn("Missing required duration parameter");
-    return NextResponse.json(
-      { error: "Duration is required" },
-      { status: 400 }
-    );
-  }
-
-  const duration = parseInt(durationStr);
   if (!duration || duration <= 0) {
-    logger.warn({ duration, durationStr }, "Invalid duration parameter");
+    logger.warn({ duration }, "Invalid duration parameter");
     return NextResponse.json(
-      { error: "Duration should be positive number" },
-      { status: 400 }
+      {
+        error: "Duration should be positive number",
+        code: "invalid_duration",
+        success: false,
+      },
+      { status: 400 },
     );
   }
 
   logger.debug({ duration }, "Fetching availability");
 
   const availability =
-    await ServicesContainer.EventsService().getAvailability(duration);
+    await servicesContainer.eventsService.getAvailability(duration);
 
   logger.debug(
     {
       duration,
       availableSlots: availability.length,
     },
-    "Successfully retrieved availability"
+    "Successfully retrieved availability",
   );
 
   return NextResponse.json(availability);

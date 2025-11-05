@@ -1,8 +1,6 @@
-import React from "react";
-
 import type { SlateLeafProps } from "@udecode/plate";
 
-import { cn } from "@vivid/ui";
+import { cn } from "@timelish/ui";
 import { SlateLeaf } from "@udecode/plate";
 
 export function HighlightLeafStatic({

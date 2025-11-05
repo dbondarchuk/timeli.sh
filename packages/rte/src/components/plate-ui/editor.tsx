@@ -5,16 +5,18 @@ import React from "react";
 import type { PlateContentProps } from "@udecode/plate/react";
 import type { VariantProps } from "class-variance-authority";
 
-import { cn } from "@vivid/ui";
+import { cn } from "@timelish/ui";
 import {
   PlateContent,
   useEditorContainerRef,
   useEditorRef,
 } from "@udecode/plate/react";
 import { cva } from "class-variance-authority";
+import { AbsoluteUrlContext } from "./absolute-url-context";
+import { WindowContext } from "./window-context";
 
 const editorContainerVariants = cva(
-  "relative w-full cursor-text overflow-y-auto caret-primary select-text selection:bg-brand/25 focus-visible:outline-none [&_.slate-selection-area]:z-50 [&_.slate-selection-area]:border [&_.slate-selection-area]:border-brand/25 [&_.slate-selection-area]:bg-brand/15",
+  "relative w-full cursor-text overflow-y-visible caret-primary select-text selection:bg-brand/25 focus-visible:outline-none [&_.slate-selection-area]:z-50 [&_.slate-selection-area]:border [&_.slate-selection-area]:border-brand/25 [&_.slate-selection-area]:bg-brand/15",
   {
     defaultVariants: {
       variant: "default",
@@ -25,33 +27,42 @@ const editorContainerVariants = cva(
         demo: "h-[650px]",
         select: cn(
           "group rounded-md border border-input ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
-          "has-data-readonly:w-fit has-data-readonly:cursor-default has-data-readonly:border-transparent has-data-readonly:focus-within:[box-shadow:none]"
+          "has-data-readonly:w-fit has-data-readonly:cursor-default has-data-readonly:border-transparent has-data-readonly:focus-within:[box-shadow:none]",
         ),
       },
     },
-  }
+  },
 );
 
 export const EditorContainer = ({
   className,
   variant,
+  context,
+  usesAbsoluteUrl,
   ...props
 }: React.HTMLAttributes<HTMLDivElement> &
-  VariantProps<typeof editorContainerVariants>) => {
+  VariantProps<typeof editorContainerVariants> & {
+    context?: Window | null;
+    usesAbsoluteUrl?: boolean;
+  }) => {
   const editor = useEditorRef();
   const containerRef = useEditorContainerRef();
 
   return (
-    <div
-      id={editor.uid}
-      ref={containerRef}
-      className={cn(
-        "ignore-click-outside/toolbar",
-        editorContainerVariants({ variant }),
-        className
-      )}
-      {...props}
-    />
+    <WindowContext.Provider value={context}>
+      <AbsoluteUrlContext.Provider value={usesAbsoluteUrl ?? false}>
+        <div
+          id={editor.uid}
+          ref={containerRef}
+          className={cn(
+            "ignore-click-outside/toolbar",
+            editorContainerVariants({ variant }),
+            className,
+          )}
+          {...props}
+        />
+      </AbsoluteUrlContext.Provider>
+    </WindowContext.Provider>
   );
 };
 
@@ -63,7 +74,7 @@ const editorVariants = cva(
     "relative w-full cursor-text overflow-x-hidden break-words whitespace-pre-wrap select-text",
     "rounded-md ring-offset-background focus-visible:outline-none",
     "placeholder:text-muted-foreground/80 **:data-slate-placeholder:top-[auto_!important] **:data-slate-placeholder:text-muted-foreground/80 **:data-slate-placeholder:opacity-100!",
-    "[&_strong]:font-bold"
+    "[&_strong]:font-bold",
   ),
   {
     defaultVariants: {
@@ -88,7 +99,7 @@ const editorVariants = cva(
         select: "px-3 py-2 text-base data-readonly:w-fit",
       },
     },
-  }
+  },
 );
 
 export type EditorProps = PlateContentProps &
@@ -105,14 +116,14 @@ export const Editor = React.forwardRef<HTMLDivElement, EditorProps>(
             focused,
             variant,
           }),
-          className
+          className,
         )}
         disabled={disabled}
         disableDefaultStyles
         {...props}
       />
     );
-  }
+  },
 );
 
 Editor.displayName = "Editor";

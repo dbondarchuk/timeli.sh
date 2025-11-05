@@ -11,13 +11,19 @@ import {
   ReactPayPalScriptOptions,
   usePayPalCardFields,
 } from "@paypal/react-paypal-js";
-import { PaymentAppFormProps } from "@vivid/types";
-import { Button, Spinner, toast } from "@vivid/ui";
+import { clientApi } from "@timelish/api-sdk";
+import { useI18n } from "@timelish/i18n";
+import { PaymentAppFormProps } from "@timelish/types";
+import { Button, Spinner, toast } from "@timelish/ui";
 import React from "react";
 import { PaypalLogo } from "./logo";
 import { PaypalFormProps } from "./models";
+import {
+  PaypalPublicKeys,
+  PaypalPublicNamespace,
+  paypalPublicNamespace,
+} from "./translations/types";
 import { PaypalOrder } from "./types";
-import { useI18n } from "@vivid/i18n";
 
 const SubmitPayment: React.FC<{
   isPaying: boolean;
@@ -25,11 +31,13 @@ const SubmitPayment: React.FC<{
   billingAddress: any;
 }> = ({ isPaying, setIsPaying, billingAddress }) => {
   const { cardFieldsForm } = usePayPalCardFields();
-  const t = useI18n("apps");
+  const t = useI18n<PaypalPublicNamespace, PaypalPublicKeys>(
+    paypalPublicNamespace,
+  );
 
   const handleClick = async () => {
     if (!cardFieldsForm) {
-      const childErrorMessage = t("paypal.form.cardFieldsProviderError");
+      const childErrorMessage = t("form.cardFieldsProviderError");
       throw new Error(childErrorMessage);
     }
 
@@ -55,7 +63,7 @@ const SubmitPayment: React.FC<{
         onClick={handleClick}
         disabled={isPaying}
       >
-        {isPaying && <Spinner />} <PaypalLogo /> {t("paypal.ui.payButton")}
+        {isPaying && <Spinner />} <PaypalLogo /> {t("form.ui.payButton")}
       </Button>
       {}
     </div>
@@ -69,7 +77,10 @@ export const PaypalForm: React.FC<PaymentAppFormProps<PaypalFormProps>> = ({
   onSubmit,
   isSandbox,
 }) => {
-  const t = useI18n("apps");
+  const t = useI18n<PaypalPublicNamespace, PaypalPublicKeys>(
+    paypalPublicNamespace,
+  );
+
   const [isPaying, setIsPaying] = React.useState(false);
 
   const initialOptions: ReactPayPalScriptOptions = {
@@ -99,17 +110,21 @@ export const PaypalForm: React.FC<PaymentAppFormProps<PaypalFormProps>> = ({
 
   const createOrder = async () => {
     try {
-      const response = await fetch(`/api/apps/${intent.appId}/orders`, {
+      const orderData = await clientApi.apps.callAppApi<{
+        id: string;
+        debug_id?: string;
+        details?: {
+          issue: string;
+          description: string;
+        }[];
+      }>({
+        appId: intent.appId,
+        path: "orders",
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+        body: {
           paymentIntentId: intent._id,
-        }),
+        },
       });
-
-      const orderData = await response.json();
 
       if (orderData.id) {
         return orderData.id;
@@ -130,21 +145,18 @@ export const PaypalForm: React.FC<PaymentAppFormProps<PaypalFormProps>> = ({
   const onApprove = async (
     data: Parameters<
       NonNullable<React.ComponentProps<typeof PayPalButtons>["onApprove"]>
-    >[0]
+    >[0],
   ) => {
     try {
-      const response = await fetch(`/api/apps/${intent.appId}/orders/capture`, {
+      const orderData = await clientApi.apps.callAppApi<PaypalOrder>({
+        appId: intent.appId,
+        path: "orders/capture",
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+        body: {
           orderId: data.orderID,
           paymentIntentId: intent._id,
-        }),
+        },
       });
-
-      const orderData = (await response.json()) as PaypalOrder;
 
       // Three cases to handle:
       //   (1) Recoverable INSTRUMENT_DECLINED -> call actions.restart()
@@ -168,14 +180,17 @@ export const PaypalForm: React.FC<PaymentAppFormProps<PaypalFormProps>> = ({
       }
     } catch (error) {
       console.error(`Payment has failed`, error);
-      toast.error(t("paypal.toast.payment_failed"), {
-        description: t("paypal.toast.payment_failed_description"),
+      toast.error(t("toast.payment_failed"), {
+        description: t("toast.payment_failed_description"),
       });
     }
   };
 
   function onError(error: any) {
-    // Do something with the error from the SDK
+    console.error(`Payment has failed`, error);
+    toast.error(t("toast.payment_failed"), {
+      description: t("toast.payment_failed_description"),
+    });
   }
 
   return (
@@ -194,7 +209,7 @@ export const PaypalForm: React.FC<PaymentAppFormProps<PaypalFormProps>> = ({
         <div className="items-center flex my-px text-center">
           <div className="bg-muted flex-1 h-px mx-2" />
           <span className="text-sm text-muted-foreground uppercase">
-            {t("paypal.ui.or")}
+            {t("form.ui.or")}
           </span>
           <div className="bg-muted flex-1 h-px mx-2" />
         </div>

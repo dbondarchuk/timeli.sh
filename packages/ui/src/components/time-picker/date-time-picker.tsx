@@ -1,6 +1,6 @@
 "use client";
 
-// import * as React from "react";
+// import React from "react";
 // import { Calendar as CalendarIcon } from "lucide-react";
 
 // import { cn } from "../../utils";
@@ -117,21 +117,26 @@ import {
   ChevronUpIcon,
   XCircle,
 } from "lucide-react";
-import * as React from "react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { DayPicker, Matcher, TZDate } from "react-day-picker";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { DayPicker, Matcher } from "react-day-picker";
 
+import { useLocale } from "@timelish/i18n";
+import { DateTime } from "luxon";
 import { cn } from "../../utils";
 import { Button, buttonVariants } from "../button";
 import { Popover, PopoverContent, PopoverTrigger } from "../popover";
 import { ScrollArea } from "../scroll-area";
 import { SimpleTimePicker } from "./simple-time-picker";
-import { DateTime } from "luxon";
-import { Language, useLocale } from "@vivid/i18n";
 
 export type DateTimeCalendarProps = Omit<
   React.ComponentProps<typeof DayPicker>,
-  "mode"
+  "mode" | "disabled"
 >;
 
 const AM_VALUE = 0;
@@ -173,6 +178,11 @@ export type DateTimePickerProps = {
    * @default false
    */
   disabled?: boolean;
+  /**
+   * Whether the datetime picker is disabled.
+   * @default false
+   */
+  disabledDays?: (date: Date) => boolean;
   /**
    * Whether to show the time picker.
    * @default false
@@ -239,6 +249,7 @@ export function DateTimePicker({
   modal = true,
   commitOnChange = false,
   minutesDivisibleBy,
+  disabledDays,
   ...props
 }: DateTimePickerProps & DateTimeCalendarProps) {
   const locale = useLocale();
@@ -249,7 +260,7 @@ export function DateTimePicker({
   >(false);
   const initDate = useMemo(
     () => DateTime.fromJSDate(value || new Date()).setZone(timeZone),
-    [value, timeZone]
+    [value, timeZone],
   );
 
   const [month, setMonth] = useState<DateTime>(initDate);
@@ -261,11 +272,11 @@ export function DateTimePicker({
 
   const minDate = useMemo(
     () => (min ? DateTime.fromJSDate(min).setZone(timeZone) : undefined),
-    [min, timeZone]
+    [min, timeZone],
   );
   const maxDate = useMemo(
     () => (max ? DateTime.fromJSDate(max).setZone(timeZone) : undefined),
-    [max, timeZone]
+    [max, timeZone],
   );
 
   const onDayChanged = useCallback(
@@ -292,7 +303,7 @@ export function DateTimePicker({
       setDate(day);
       if (commitOnChange) onChange?.(day.toJSDate());
     },
-    [setDate, setMonth, onChange, commitOnChange]
+    [setDate, setMonth, onChange, commitOnChange],
   );
 
   const onSubmit = useCallback(() => {
@@ -309,7 +320,7 @@ export function DateTimePicker({
         setMonthYearPicker(false);
       }
     },
-    [setMonth, setMonthYearPicker]
+    [setMonth, setMonthYearPicker],
   );
   const onNextMonth = useCallback(() => {
     setMonth(month.plus({ months: 1 }));
@@ -337,7 +348,7 @@ export function DateTimePicker({
 
     return displayValue.toFormat(
       `${!hideTime ? "MMM" : "MMMM"} d, yyyy${!hideTime ? (use12HourFormat ? ` hh:mm${secondsFormat} a` : ` HH:mm${secondsFormat}`) : ""}`,
-      { locale }
+      { locale },
     );
   }, [displayValue, hideTime, use12HourFormat, showSeconds, locale]);
 
@@ -349,7 +360,7 @@ export function DateTimePicker({
       setDate(d);
       if (commitOnChange) onChange?.(d.toJSDate());
     },
-    [setDate, commitOnChange]
+    [setDate, commitOnChange],
   );
 
   return (
@@ -371,7 +382,7 @@ export function DateTimePicker({
               !displayValue && "text-muted-foreground",
               (!clearable || !value) && "pe-3",
               disabled && "opacity-50 cursor-not-allowed",
-              classNames?.trigger
+              classNames?.trigger,
             )}
             tabIndex={0}
           >
@@ -407,7 +418,7 @@ export function DateTimePicker({
               <span
                 onClick={() =>
                   setMonthYearPicker(
-                    monthYearPicker === "month" ? false : "month"
+                    monthYearPicker === "month" ? false : "month",
                   )
                 }
               >
@@ -417,7 +428,7 @@ export function DateTimePicker({
                 className="ms-1"
                 onClick={() =>
                   setMonthYearPicker(
-                    monthYearPicker === "year" ? false : "year"
+                    monthYearPicker === "year" ? false : "year",
                   )
                 }
               >
@@ -456,10 +467,12 @@ export function DateTimePicker({
             month={month.toJSDate()}
             endMonth={endMonth.toJSDate()}
             disabled={
-              [
-                max ? { after: max } : null,
-                min ? { before: min } : null,
-              ].filter(Boolean) as Matcher[]
+              disabledDays
+                ? disabledDays
+                : ([
+                    max ? { after: max } : null,
+                    min ? { before: min } : null,
+                  ].filter(Boolean) as Matcher[])
             }
             onMonthChange={(d) =>
               setMonth(DateTime.fromJSDate(d).setZone(timeZone))
@@ -479,7 +492,7 @@ export function DateTimePicker({
               day: "h-9 w-9 text-center text-sm p-0 relative flex items-center justify-center [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20 rounded-1",
               day_button: cn(
                 buttonVariants({ variant: "ghost" }),
-                "size-9 rounded-md p-0 font-normal aria-selected:opacity-100"
+                "size-9 rounded-md p-0 font-normal aria-selected:opacity-100",
               ),
               range_end: "day-range-end",
               selected:
@@ -492,13 +505,13 @@ export function DateTimePicker({
                 "aria-selected:bg-accent aria-selected:text-accent-foreground",
               hidden: "invisible",
             }}
-            showOutsideDays={true}
+            showOutsideDays
             {...props}
           />
           <div
             className={cn(
               "absolute top-0 left-0 bottom-0 right-0",
-              monthYearPicker ? "bg-popover" : "hidden"
+              monthYearPicker ? "bg-popover" : "hidden",
             )}
           ></div>
           <MonthYearPicker
@@ -509,7 +522,7 @@ export function DateTimePicker({
             maxDate={maxDate}
             className={cn(
               "absolute top-0 left-0 bottom-0 right-0",
-              monthYearPicker ? "" : "hidden"
+              monthYearPicker ? "" : "hidden",
             )}
             locale={locale}
           />
@@ -612,7 +625,7 @@ function MonthYearPicker({
 
       onChange(newDate, "year");
     },
-    [onChange, value, minDate, maxDate]
+    [onChange, value, minDate, maxDate],
   );
 
   useEffect(() => {

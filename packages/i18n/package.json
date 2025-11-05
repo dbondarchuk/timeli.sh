@@ -1,13 +1,14 @@
 {
-  "name": "@vivid/i18n",
+  "name": "@timelish/i18n",
   "version": "0.0.1",
   "private": true,
   "sideEffects": false,
   "scripts": {
     "type-check": "tsc --pretty --noEmit",
     "type-check:ci": "tsc-absolute --pretty --noEmit",
-    "lint": "eslint . --ext .ts,.js,.tsx,.jsx",
-    "lint:fix": "eslint . --ext .ts,.js,.tsx,.jsx --fix"
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "check-translations": "node scripts/check-translations.js"
   },
   "exports": {
     ".": "./src/index.ts",
@@ -15,12 +16,11 @@
     "./request": "./src/request.ts"
   },
   "devDependencies": {
-    "@vivid/eslint-config": "*",
-    "@vivid/typescript-config": "*",
-    "eslint": "^8.57.0",
+    "@timelish/eslint-config": "*",
+    "@timelish/typescript-config": "*",
     "typescript": "5.5.4"
   },
   "dependencies": {
-    "next-intl": "^4.3.1"
+    "next-intl": "^4.3.9"
   }
 }

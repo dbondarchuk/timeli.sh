@@ -1,4 +1,4 @@
-import base from "@vivid/tailwind-config";
+import base from "@timelish/tailwind-config";
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {

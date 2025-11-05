@@ -1,19 +1,22 @@
-import { Fragment } from "react";
+"use client";
 
-import { EditorBlock } from "../../../editor/block";
+import { Fragment, memo, useEffect, useMemo } from "react";
+
+import { EditorBlock, useIsCurrentBlockOverlay } from "../../../editor/block";
 import { TEditorBlock } from "../../../editor/core";
 
-import { SortableContext, rectSwappingStrategy } from "@dnd-kit/sortable";
-import { DragOverlay } from "@dnd-kit/core";
-import { cn } from "@vivid/ui";
+import { useDroppable } from "@dnd-kit/react";
+import { cn, deepMemo } from "@timelish/ui";
+import { DndContext } from "../../../../types/dndContext";
 import {
-  useActiveDragBlock,
-  useActiveOverBlock,
-  useDocument,
-  useSetSelectedBlockId,
+  useBlockChildrenBlockIds,
+  useBlockDepth,
+  useBlockTypes,
+  useHasActiveDragBlock,
+  useSetAllowedBlockTypes,
 } from "../../../editor/context";
-import { AddBlockButton } from "./add-block-menu";
-import { createPortal } from "react-dom";
+import { BaseZodDictionary } from "../../../types";
+import { OverlayBlock } from "./overlay-block";
 
 export type EditorChildrenChange = {
   blockId: string;
@@ -21,123 +24,178 @@ export type EditorChildrenChange = {
   children: TEditorBlock[];
 };
 
-export type EditorChildrenProps = {
-  block: TEditorBlock;
-  children?: TEditorBlock[];
-  property: string;
-  onChange: (val: EditorChildrenChange) => void;
-};
-
-// const Placeholder = ({ contextId }: { contextId: string }) => {
-//   const id = useId();
-//   const { setNodeRef } = useSortable({ id, data: { contextId } });
-//   return (
-//     <div
-//       className="w-full outline-dashed p-8 outline-lime-300 text-gray-400 text-center"
-//       id={id}
-//       ref={setNodeRef}
-//     >
-//       Drop here
-//     </div>
-//   );
-// };
-
-export const EditorChildren: React.FC<EditorChildrenProps> = ({
-  children,
-  onChange,
+const Placeholder = ({
+  blockId,
   property,
-  block,
+  index,
+  depth,
+  allowOnly,
+}: {
+  blockId: string;
+  property: string;
+  index: number;
+  depth: number;
+  allowOnly: string[];
 }) => {
-  const document = useDocument();
-  const setSelectedBlockId = useSetSelectedBlockId();
-
-  const appendBlock = (block: TEditorBlock) => {
-    setTimeout(() => setSelectedBlockId(block.id), 200);
-
-    return onChange({
-      blockId: block.id,
-      block,
-      children: [...(children || []), block],
-    });
-  };
-
-  const insertBlock = (block: TEditorBlock, index: number) => {
-    const newChildren = [...(children || [])];
-    newChildren.splice(index, 0, block);
-
-    setTimeout(() => setSelectedBlockId(block.id), 200);
-
-    return onChange({
-      blockId: block.id,
-      block,
-      children: newChildren,
-    });
-  };
-
-  // const { isOver, setNodeRef } = useDroppable({ id: block.id, data: block });
-  const activeOverBlock = useActiveOverBlock();
-  const activeDragBlock = useActiveDragBlock();
-  const isOver =
-    activeOverBlock?.blockId === block.id &&
-    activeOverBlock?.property === property;
-
-  const ids =
-    children?.filter((block) => !!block).map((block) => block.id) || [];
-
-  const isChildActiveDragBlock =
-    activeDragBlock && activeDragBlock.parentBlockId === block.id;
-
-  const contextId = `${block.id}/${property}`;
+  const hasActiveDragBlock = useHasActiveDragBlock();
+  const isOverlay = useIsCurrentBlockOverlay();
+  const { ref } = useDroppable({
+    id: `${blockId}/${property}/${index}-placeholder`,
+    collisionPriority: depth,
+    accept: allowOnly,
+    disabled: isOverlay,
+    data: {
+      context: {
+        parentBlockId: blockId,
+        parentProperty: property,
+        index,
+        type: "",
+      } satisfies DndContext,
+    },
+  });
 
   return (
     <div
-      // ref={setNodeRef}
-      className={cn("w-full relative")}
-    >
-      <SortableContext
-        items={ids}
-        id={contextId}
-        strategy={rectSwappingStrategy}
-      >
-        {!children || children.length === 0 ? (
-          <AddBlockButton
-            placeholder
-            onSelect={appendBlock}
-            contextId={contextId}
-          />
-        ) : (
-          <>
-            {children
-              .filter((block) => !!block)
-              .map((child, i) => (
-                <Fragment key={child.id}>
-                  <AddBlockButton onSelect={(block) => insertBlock(block, i)} />
-                  <EditorBlock block={child} />
-                </Fragment>
-              ))}
-            {window &&
-              "document" in window &&
-              createPortal(
-                <DragOverlay
-                  dropAnimation={{
-                    duration: 500,
-                    easing: "cubic-bezier(0.18, 0.67, 0.6, 1.22)",
-                  }}
-                >
-                  {isChildActiveDragBlock ? (
-                    <EditorBlock block={activeDragBlock.block} isOverlay />
-                  ) : null}
-                  {/* </DragOverlay> */}
-                </DragOverlay>,
-                window.document.body
-              )}
-            <AddBlockButton onSelect={appendBlock} />
-          </>
-        )}
-      </SortableContext>
-      {isOver && block.id !== document.id && (
-        <div className="absolute z-1 top-0 left-0 bottom-0 right-0 bg-blue-400/40" />
+      ref={ref}
+      className={cn(
+        "w-full min-h-10 min-w-10 border-2 border-dashed border-blue-400 bg-blue-400/20",
+        hasActiveDragBlock && "bg-blue-400/60",
       )}
+    >
+      <OverlayBlock blockId={blockId} property={property} index={index} />
+      <OverlayBlock blockId={blockId} property={property} index={index + 1} />
     </div>
   );
 };
+
+export type EditorChildrenProps<T extends BaseZodDictionary = any> = {
+  blockId: string;
+  property: string;
+  allowOnly?: keyof T | (keyof T)[];
+  style?: React.CSSProperties;
+  childWrapper?: (props: {
+    children: React.ReactNode;
+    className?: string;
+    style?: React.CSSProperties;
+    ref?: React.Ref<HTMLDivElement>;
+    id?: string;
+  }) => React.ReactNode;
+  additionalProps?: Record<string, any>;
+};
+
+export const EditorChildren = memo(
+  <T extends BaseZodDictionary = any>({
+    property,
+    blockId: currentBlockId,
+    allowOnly: propAllowOnly,
+    childWrapper,
+    additionalProps,
+  }: EditorChildrenProps<T>) => {
+    const depth = useBlockDepth(currentBlockId) ?? 0;
+    const knownBlockTypes = useBlockTypes();
+
+    const allowOnly = useMemo(
+      () =>
+        propAllowOnly
+          ? Array.isArray(propAllowOnly)
+            ? propAllowOnly
+            : [propAllowOnly]
+          : knownBlockTypes,
+      [propAllowOnly, knownBlockTypes],
+    );
+
+    const childrenIds = useBlockChildrenBlockIds(currentBlockId, property);
+
+    return (
+      <EditorChildrenRender
+        childrenIds={childrenIds}
+        childWrapper={childWrapper}
+        additionalProps={additionalProps}
+        currentBlockId={currentBlockId}
+        property={property}
+        depth={depth}
+        allowOnly={allowOnly as string[]}
+      />
+    );
+  },
+);
+
+const EditorChildrenRender = deepMemo(
+  ({
+    childrenIds,
+    childWrapper,
+    additionalProps,
+    currentBlockId,
+    property,
+    depth,
+    allowOnly,
+  }: {
+    childrenIds?: string[];
+    childWrapper?: React.ElementType;
+    additionalProps?: Record<string, any>;
+    currentBlockId: string;
+    property: string;
+    depth: number;
+    allowOnly: string[];
+  }) => {
+    const ChildWrapper = useMemo(
+      () => (childWrapper ?? Fragment) as React.ElementType,
+      [childWrapper],
+    );
+
+    const setAllowedBlockTypes = useSetAllowedBlockTypes();
+    const isCurrentOverlay = useIsCurrentBlockOverlay();
+
+    useEffect(() => {
+      if (isCurrentOverlay) return;
+      setAllowedBlockTypes(currentBlockId, property, allowOnly);
+    }, [
+      allowOnly,
+      currentBlockId,
+      property,
+      setAllowedBlockTypes,
+      isCurrentOverlay,
+    ]);
+
+    return (
+      <>
+        {childrenIds
+          ?.filter((blockId) => !!blockId)
+          .map((childId, i) => (
+            <Fragment key={childId}>
+              <OverlayBlock
+                blockId={currentBlockId}
+                property={property}
+                index={i}
+              />
+              <ChildWrapper>
+                <EditorBlock
+                  blockId={childId}
+                  index={i}
+                  parentBlockId={currentBlockId}
+                  parentProperty={property}
+                  additionalProps={additionalProps}
+                  allowedTypes={allowOnly}
+                />
+              </ChildWrapper>
+            </Fragment>
+          ))}
+        {!childrenIds?.length ? (
+          <Placeholder
+            blockId={currentBlockId}
+            property={property}
+            index={0}
+            depth={depth + 1}
+            allowOnly={allowOnly}
+          />
+        ) : (
+          <OverlayBlock
+            blockId={currentBlockId}
+            property={property}
+            index={childrenIds.length}
+          />
+        )}
+      </>
+    );
+  },
+);

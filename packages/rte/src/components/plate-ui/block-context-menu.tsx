@@ -2,7 +2,7 @@
 
 import { useCallback, useState } from "react";
 
-import { useIsTouchDevice } from "@vivid/ui";
+import { useIsTouchDevice } from "@timelish/ui";
 import { AIChatPlugin } from "@udecode/plate-ai/react";
 import { BlockquotePlugin } from "@udecode/plate-block-quote/react";
 import { HEADING_KEYS } from "@udecode/plate-heading";
@@ -23,7 +23,7 @@ import {
   ContextMenuSubContent,
   ContextMenuSubTrigger,
   ContextMenuTrigger,
-} from "@vivid/ui";
+} from "@timelish/ui";
 
 type Value = "askAI" | null;
 
@@ -47,7 +47,7 @@ export function BlockContextMenu({ children }: { children: React.ReactNode }) {
           editor.tf.toggleBlock(type, { at: path });
         });
     },
-    [editor]
+    [editor],
   );
 
   const handleAlign = useCallback(
@@ -56,7 +56,7 @@ export function BlockContextMenu({ children }: { children: React.ReactNode }) {
         .getTransforms(BlockSelectionPlugin)
         .blockSelection.setNodes({ align });
     },
-    [editor]
+    [editor],
   );
 
   if (isTouch) {

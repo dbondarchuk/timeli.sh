@@ -1,36 +1,36 @@
 "use client";
 
 import {
+  useBlockEditor,
   useCurrentBlock,
   useCurrentBlockId,
   useDispatchAction,
   useEditorArgs,
-  useSelectedBlockId,
+  usePortalContext,
   useSetSelectedBlockId,
-} from "@vivid/builder";
-import { ArgumentsAutocomplete, cn } from "@vivid/ui";
-import { useI18n } from "@vivid/i18n";
+} from "@timelish/builder";
+import { useI18n } from "@timelish/i18n";
+import { cn } from "@timelish/ui";
+import { ArgumentsAutocomplete } from "@timelish/ui-admin";
 import { useRef } from "react";
 import sanitizeHtml from "sanitize-html";
 import { ButtonProps } from "./schema";
 import { getLinkStyles, getWrapperStyles } from "./styles";
-import { Button } from "./reader";
 
 export const ButtonEditor = ({ props, style }: ButtonProps) => {
   const t = useI18n("builder");
   const ref = useRef<HTMLInputElement>(null);
-
+  const { document } = usePortalContext();
   const wrapperStyles = getWrapperStyles({ style });
   const linkStyles = getLinkStyles({ props, style });
 
   const currentBlockId = useCurrentBlockId();
+  const overlayProps = useBlockEditor(currentBlockId);
   const args = useEditorArgs();
   const currentBlock = useCurrentBlock<ButtonProps>();
-  const selectedBlockId = useSelectedBlockId();
   const dispatchAction = useDispatchAction();
   const setSelectedBlockId = useSetSelectedBlockId();
 
-  const isSelected = selectedBlockId === currentBlockId;
   const value = currentBlock.data?.props?.text;
 
   const sanitizeConf = {
@@ -63,23 +63,23 @@ export const ButtonEditor = ({ props, style }: ButtonProps) => {
     }
   };
 
-  return isSelected ? (
-    <div style={wrapperStyles}>
+  return (
+    <div style={wrapperStyles} {...overlayProps}>
       <ArgumentsAutocomplete
         ref={ref}
         args={args}
-        asInput
+        asContentEditable
+        element="span"
         className={cn(
           "border-0 bg-transparent focus-visible:ring-0 rounded-none h-auto p-0 border-none leading-normal md:leading-normal",
-          props?.width === "full" ? "w-full" : "w-auto"
+          props?.width === "full" ? "w-full" : "w-auto",
         )}
         style={{ ...linkStyles, textAlign: style?.textAlign ?? undefined }}
         value={value ?? t("emailBuilder.blocks.button.text")}
         onChange={onChange}
         onKeyDown={handleKeyPress}
+        documentElement={document}
       />
     </div>
-  ) : (
-    <Button props={props} style={style} />
   );
 };

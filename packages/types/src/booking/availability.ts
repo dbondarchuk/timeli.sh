@@ -1,1 +1,1 @@
-export type Availability = number[];
+export type Availability = Date[];

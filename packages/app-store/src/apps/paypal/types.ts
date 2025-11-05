@@ -1,8 +1,8 @@
 export type PaypalOrder = {
   /** The date and time, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6). Seconds are required while fractional seconds are optional. Note: The regular expression provides guidance but does not reject all invalid dates. */
-  createTime?: string;
+  create_time?: string;
   /** The date and time, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6). Seconds are required while fractional seconds are optional. Note: The regular expression provides guidance but does not reject all invalid dates. */
-  updateTime?: string;
+  update_time?: string;
   /** The ID of the order. */
   id?: string;
   /** The intent to either capture payment immediately or authorize a payment for an order after order creation. */
@@ -124,6 +124,25 @@ export interface OrdersCapture {
   create_time?: string;
   /** The date and time, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6). Seconds are required while fractional seconds are optional. Note: The regular expression provides guidance but does not reject all invalid dates. */
   update_time?: string;
+  /** The breakdown of the seller receivable amount. */
+  seller_receivable_breakdown?: SellerReceivableBreakdown;
+}
+
+export interface SellerReceivableBreakdown {
+  /** The amount for this captured payment in the currency of the transaction. */
+  gross_amount?: Money;
+  /** The net amount that the payee receives for this captured payment in their PayPal account. The net amount is computed as gross_amount minus the paypal_fee minus the platform_fees. */
+  net_amount?: Money;
+  /** The applicable fee for this captured payment in the currency of the transaction. */
+  paypal_fee?: Money;
+  /** The applicable fee for this captured payment in the currency of the transaction. */
+  platform_fees?: {
+    amount: Money;
+    payee: {
+      email_address: string;
+      merchant_id: string;
+    };
+  }[];
 }
 
 /** The authorization with additional payment details, such as risk assessment and processor response. These details are populated only for certain payment methods. */

@@ -1,10 +1,8 @@
 "use client";
 
-import React from "react";
-
 import type { TCommentText } from "@udecode/plate-comments";
 
-import { cn } from "@vivid/ui";
+import { cn } from "@timelish/ui";
 import {
   useCommentLeaf,
   useCommentLeafState,
@@ -36,7 +34,7 @@ export function CommentLeaf({
       className={cn(
         className,
         "border-b-2 border-b-highlight/35 hover:bg-highlight/25",
-        state.isActive ? "bg-highlight/25" : "bg-highlight/15"
+        state.isActive ? "bg-highlight/25" : "bg-highlight/15",
       )}
       nodeProps={{
         ...rootProps,

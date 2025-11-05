@@ -1,20 +1,21 @@
 import React from "react";
 
-import { Label } from "@vivid/ui";
+import { Label } from "@timelish/ui";
 import { CaseSensitive } from "lucide-react";
-import RawSliderInput from "./raw/raw-slider-input";
-import { ResetButton } from "./reset-button";
+import { RawSliderInput } from "./raw/raw-slider-input";
 
 type Props = {
   label: string;
   defaultValue: number | null;
   onChange: (v: number | null) => void;
+  max?: number;
 };
 
 export const FontSizeInput: React.FC<Props> = ({
   label,
   defaultValue,
   onChange,
+  max = 48,
 }) => {
   const [value, setValue] = React.useState(defaultValue);
   React.useEffect(() => {
@@ -37,7 +38,7 @@ export const FontSizeInput: React.FC<Props> = ({
           units="px"
           step={1}
           min={8}
-          max={48}
+          max={max}
         />
         {/* <ResetButton onClick={handleChange} /> */}
       </div>

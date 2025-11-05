@@ -1,4 +1,4 @@
-import { templateSafeWithError } from "@vivid/utils";
+import { templateSafeWithError } from "@timelish/utils";
 
 const recursiveLoop = (data: any, modifier: (value: string) => string): any => {
   if (Array.isArray(data)) {

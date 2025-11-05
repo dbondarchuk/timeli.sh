@@ -1,6 +1,10 @@
-import { chainMiddleware } from "./middleware/chainMiddleware";
-import { withAuth } from "./middleware/withAuth";
-import { withLocale } from "./middleware/withLocale";
-import { withLogger } from "./middleware/withLogger";
+import { chainProxy } from "./proxy/chain-proxy";
+import { withCompanyId } from "./proxy/with-company-id";
+import { withLocale } from "./proxy/with-locale";
+import { withLogger } from "./proxy/with-logger";
 
-export default chainMiddleware([withLogger, withLocale, withAuth]);
+export const config = {
+  runtime: "nodejs", // Now stable!
+};
+
+export default chainProxy([withCompanyId, withLogger, withLocale]);

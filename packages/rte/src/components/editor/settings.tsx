@@ -33,7 +33,7 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@vivid/ui";
+} from "@timelish/ui";
 
 interface Model {
   label: string;
@@ -57,7 +57,7 @@ export const models: Model[] = [
 ];
 
 const SettingsContext = createContext<SettingsContextType | undefined>(
-  undefined
+  undefined,
 );
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
@@ -196,7 +196,7 @@ export function SettingsDialog() {
           className={cn(
             "group fixed right-4 bottom-4 z-50 size-10 overflow-hidden",
             "rounded-full shadow-md hover:shadow-lg",
-            "transition-all duration-300 ease-in-out hover:w-[106px]"
+            "transition-all duration-300 ease-in-out hover:w-[106px]",
           )}
           data-block-hide
         >
@@ -206,7 +206,7 @@ export function SettingsDialog() {
               className={cn(
                 "whitespace-nowrap opacity-0 transition-all duration-300 ease-in-out",
                 "group-hover:translate-x-0 group-hover:opacity-100",
-                "-translate-x-2"
+                "-translate-x-2",
               )}
             >
               Settings
@@ -275,7 +275,7 @@ export function SettingsDialog() {
                                   "mr-2 size-4",
                                   model.value === m.value
                                     ? "opacity-100"
-                                    : "opacity-0"
+                                    : "opacity-0",
                                 )}
                               />
                               <code>{m.label}</code>

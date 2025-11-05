@@ -1,4 +1,4 @@
-import z from "zod";
+import * as z from "zod";
 import { zColorNullable, zStyles } from "../../style-inputs/helpers/zod";
 
 export const ButtonPropsSchema = z.object({
@@ -28,7 +28,7 @@ export type ButtonProps = z.infer<typeof ButtonPropsSchema>;
 export const ButtonPropsDefaults = {
   props: {
     text: "Button",
-    url: "https://vividnail.studio",
+    url: "https://timelishnail.studio",
     width: "auto",
     size: "medium",
     buttonStyle: "rounded",

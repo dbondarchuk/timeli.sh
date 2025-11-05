@@ -1,8 +1,8 @@
-import { z } from "zod";
+import * as z from "zod";
 
 export const stripObject = <T extends Record<string, any>>(
   data: T,
-  schema: z.ZodType
+  schema: z.ZodType,
 ): T => {
   const parsed = schema.safeParse(data);
   if (parsed.success) return data;

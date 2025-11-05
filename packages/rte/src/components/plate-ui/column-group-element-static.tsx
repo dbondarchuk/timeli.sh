@@ -1,8 +1,6 @@
-import React from "react";
-
 import type { SlateElementProps } from "@udecode/plate";
 
-import { cn } from "@vivid/ui";
+import { cn } from "@timelish/ui";
 import { SlateElement } from "@udecode/plate";
 
 export function ColumnGroupElementStatic({

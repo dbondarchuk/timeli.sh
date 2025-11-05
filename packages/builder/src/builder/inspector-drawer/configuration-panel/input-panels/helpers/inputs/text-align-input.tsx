@@ -26,7 +26,7 @@ export const TextAlignInput: React.FC<Props> = ({
   nullable,
 }) => {
   const [value, setValue] = React.useState(
-    (defaultValue ?? !nullable) ? "left" : null
+    (defaultValue ?? !nullable) ? "left" : null,
   );
 
   React.useEffect(() => {

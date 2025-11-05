@@ -1,10 +1,10 @@
 import React from "react";
 
-import { withVariants } from "../cn/with-variants";
 import { type VariantProps, cva } from "class-variance-authority";
+import { withVariants } from "../cn/with-variants";
 
 export const inputVariants = cva(
-  "flex w-full rounded-md bg-background text-base file:border-0 file:bg-background file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+  "flex w-full rounded-md bg-background text-base file:border-0 file:bg-background file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50",
   {
     defaultVariants: {
       h: "md",
@@ -12,8 +12,10 @@ export const inputVariants = cva(
     },
     variants: {
       h: {
-        md: "h-9 px-3 py-2",
-        sm: "h-[28px] px-1.5 py-1",
+        lg: "h-10 px-4 py-2 text-base",
+        md: "h-9 px-3 py-2 text-sm",
+        sm: "h-8 px-2 py-1.5 text-xs",
+        xs: "h-7 px-1.5 py-1 text-xs",
       },
       variant: {
         default:
@@ -21,7 +23,7 @@ export const inputVariants = cva(
         ghost: "border-none focus-visible:ring-transparent",
       },
     },
-  }
+  },
 );
 
 export type InputProps = React.ComponentPropsWithoutRef<"input"> &

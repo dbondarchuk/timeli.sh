@@ -1,5 +1,5 @@
 {
-  "name": "vivid",
+  "name": "timelish",
   "private": true,
   "workspaces": [
     "apps/*",
@@ -7,21 +7,39 @@
   ],
   "scripts": {
     "build": "turbo run build",
+    "prebuild": "turbo run check-translations && turbo run lint",
     "start": "turbo run start",
     "dev": "turbo run dev",
-    "lint": "turbo run lint",
+    "typegen": "turbo run typegen",
+    "lint": "turbo run lint --",
+    "lint:fix": "turbo run lint:fix --",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "migration": "migrate-mongo",
     "migration:up": "migrate-mongo up",
-    "migration:down": "migrate-mongo down"
+    "migration:down": "migrate-mongo down",
+    "check-translations": "turbo run check-translations --",
+    "prepare": "husky",
+    "postinstall": "patch-package"
   },
+  "lint-staged": {},
   "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.5",
     "migrate-mongo": "^12.1.3",
+    "patch-package": "^8.0.0",
+    "postinstall-postinstall": "^2.1.0",
     "prettier": "^3.2.5",
+    "prettier-plugin-organize-imports": "^4.2.0",
     "turbo": "^2.3.3"
   },
   "packageManager": "yarn@1.22.22",
   "engines": {
     "node": ">=21"
+  },
+  "resolutions": {
+    "@types/react": "19.0.2",
+    "@types/react-dom": "19.0.2",
+    "date-fns": "4.1.0",
+    "zod": "4.1.12"
   }
 }

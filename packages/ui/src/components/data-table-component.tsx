@@ -7,8 +7,11 @@ import {
   getFilteredRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { useI18n } from "@vivid/i18n";
+import { useI18n } from "@timelish/i18n";
 
+import { Button } from "./button";
+import { Input } from "./input";
+import { ScrollArea, ScrollBar } from "./scroll-area";
 import {
   Table,
   TableBody,
@@ -17,9 +20,6 @@ import {
   TableHeader,
   TableRow,
 } from "./table";
-import { Input } from "./input";
-import { Button } from "./button";
-import { ScrollArea, ScrollBar } from "./scroll-area";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -65,7 +65,7 @@ export function BasicDataTable<TData, TValue>({
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                     </TableHead>
                   );
@@ -84,7 +84,7 @@ export function BasicDataTable<TData, TValue>({
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}

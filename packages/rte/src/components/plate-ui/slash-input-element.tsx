@@ -3,7 +3,6 @@
 import React from "react";
 
 import { withRef } from "@udecode/cn";
-import { AIChatPlugin } from "@udecode/plate-ai/react";
 import { BlockquotePlugin } from "@udecode/plate-block-quote/react";
 import { CodeBlockPlugin } from "@udecode/plate-code-block/react";
 import { DatePlugin } from "@udecode/plate-date/react";
@@ -30,7 +29,6 @@ import {
   PilcrowIcon,
   Quote,
   RadicalIcon,
-  SparklesIcon,
   Square,
   Table,
   TableOfContentsIcon,
@@ -243,7 +241,7 @@ export const SlashInputElement = withRef<typeof PlateElement>(
                       <div className="mr-2 text-muted-foreground">{icon}</div>
                       {label ?? value}
                     </InlineComboboxItem>
-                  )
+                  ),
                 )}
               </InlineComboboxGroup>
             ))}
@@ -253,5 +251,5 @@ export const SlashInputElement = withRef<typeof PlateElement>(
         {children}
       </PlateElement>
     );
-  }
+  },
 );

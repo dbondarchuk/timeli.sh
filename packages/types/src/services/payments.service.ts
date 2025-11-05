@@ -7,7 +7,7 @@ import {
 
 export interface IPaymentsService {
   createIntent(
-    intent: Omit<PaymentIntentUpdateModel, "status">
+    intent: Omit<PaymentIntentUpdateModel, "status">,
   ): Promise<PaymentIntent>;
 
   getIntent(id: string): Promise<PaymentIntent | null>;
@@ -15,21 +15,24 @@ export interface IPaymentsService {
 
   updateIntent(
     id: string,
-    update: Partial<PaymentIntentUpdateModel>
+    update: Partial<PaymentIntentUpdateModel>,
   ): Promise<PaymentIntent>;
 
   createPayment(payment: PaymentUpdateModel): Promise<Payment>;
 
   getPayment(id: string): Promise<Payment | null>;
+  getAppointmentPayments(appointmentId: string): Promise<Payment[]>;
 
   updatePayment(
     id: string,
-    update: Partial<PaymentUpdateModel>
+    update: Partial<PaymentUpdateModel>,
   ): Promise<Payment>;
+
+  deletePayment(id: string): Promise<Payment | null>;
 
   refundPayment(
     id: string,
-    amount: number
+    amount: number,
   ): Promise<
     | { success: false; error: string; status: number }
     | { success: true; updatedPayment: Payment }

@@ -1,19 +1,15 @@
-import { getLoggerFactory } from "@vivid/logger";
-import { MdxContent } from "@/components/web/mdx/mdx-content";
-import { ServicesContainer } from "@vivid/services";
-import { cn } from "@vivid/ui";
-import { setPageData } from "@vivid/utils";
+import { getServicesContainer } from "@/utils/utils";
+import { AppsBlocksReaders } from "@timelish/app-store/blocks/readers";
+import { getLoggerFactory } from "@timelish/logger";
+import { Header, PageReader, Styling } from "@timelish/page-builder/reader";
+import { formatArguments, setPageData } from "@timelish/utils";
+import { DateTime } from "luxon";
 import { Metadata, ResolvingMetadata } from "next";
+import { cookies, headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 import { cache } from "react";
-import { headers } from "next/headers";
 
-type Props = {
-  params: Promise<{ slug: string[] }>;
-  searchParams?: Promise<{
-    preview?: boolean;
-  }>;
-};
+type Props = PageProps<"/[[...slug]]">;
 
 export const dynamicParams = true;
 export const revalidate = 60;
@@ -27,20 +23,21 @@ class NotFoundError extends Error {
 
 const getSource = cache(async (slug?: string, preview = false) => {
   const logger = getLoggerFactory("PageComponent")("getSource");
+  const servicesContainer = await getServicesContainer();
 
   logger.debug({ slug, preview }, "Getting page source");
 
   if (!slug || !slug.length) {
     logger.debug(
       { originalSlug: slug },
-      "No slug provided, defaulting to home"
+      "No slug provided, defaulting to home",
     );
     slug = "home";
   }
 
   logger.debug({ slug, preview }, "Retrieving page by slug");
 
-  const page = await ServicesContainer.PagesService().getPageBySlug(slug);
+  const page = await servicesContainer.pagesService.getPageBySlug(slug);
 
   if (slug.length === 1 && slug[0] === "home" && !page) {
     logger.info({ slug }, "Home page not found, redirecting to install");
@@ -64,14 +61,14 @@ const getSource = cache(async (slug?: string, preview = false) => {
         publishDate: page?.publishDate,
         currentDate: new Date().toISOString(),
       },
-      "Page not found or not published"
+      "Page not found or not published",
     );
     throw new NotFoundError("Page not found");
   }
 
   // read route params
   const settings =
-    await ServicesContainer.ConfigurationService().getConfiguration("general");
+    await servicesContainer.configurationService.getConfiguration("general");
 
   logger.debug(
     {
@@ -81,7 +78,7 @@ const getSource = cache(async (slug?: string, preview = false) => {
       pagePublished: page.published,
       publishDate: page.publishDate,
     },
-    "Successfully retrieved page source"
+    "Successfully retrieved page source",
   );
 
   return { page, settings };
@@ -89,7 +86,7 @@ const getSource = cache(async (slug?: string, preview = false) => {
 
 export async function generateMetadata(
   props: Props,
-  parent: ResolvingMetadata
+  parent: ResolvingMetadata,
 ): Promise<Metadata> {
   const logger = getLoggerFactory("PageComponent")("generateMetadata");
 
@@ -104,12 +101,12 @@ export async function generateMetadata(
         slug: params.slug,
         preview: searchParams?.preview,
       },
-      "Processing metadata generation request"
+      "Processing metadata generation request",
     );
 
     const { page, settings } = await getSource(
       params.slug?.join("/"),
-      searchParams?.preview
+      !!searchParams?.preview,
     );
 
     logger.debug(
@@ -117,7 +114,7 @@ export async function generateMetadata(
         siteTitle: settings.title,
         siteDescription: settings.description?.substring(0, 100) + "...",
       },
-      "Retrieved general configuration"
+      "Retrieved general configuration",
     );
 
     const title = page.doNotCombine?.title
@@ -141,7 +138,7 @@ export async function generateMetadata(
         doNotCombineDescription: page.doNotCombine?.description,
         doNotCombineKeywords: page.doNotCombine?.keywords,
       },
-      "Generated page metadata"
+      "Generated page metadata",
     );
 
     return {
@@ -161,7 +158,7 @@ export async function generateMetadata(
         slug: (await props.params).slug,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Error generating page metadata"
+      "Error generating page metadata",
     );
 
     // Return basic metadata on error
@@ -181,18 +178,25 @@ export default async function Page(props: Props) {
     const searchParams = await props.searchParams;
     const params = await props.params;
 
+    const servicesContainer = await getServicesContainer();
+    const { styling, social } =
+      await servicesContainer.configurationService.getConfigurations(
+        "styling",
+        "social",
+      );
+
     logger.debug(
       {
         slug: params.slug,
         preview: searchParams?.preview,
         slugLength: params.slug?.length,
       },
-      "Processing page render request"
+      "Processing page render request",
     );
 
     const { page, settings } = await getSource(
       params.slug?.join("/"),
-      searchParams?.preview
+      !!searchParams?.preview,
     );
 
     logger.debug(
@@ -202,7 +206,7 @@ export default async function Page(props: Props) {
         pageFullWidth: page.fullWidth,
         contentLength: page.content?.length || 0,
       },
-      "Setting page data and rendering content"
+      "Setting page data and rendering content",
     );
 
     setPageData({
@@ -218,18 +222,98 @@ export default async function Page(props: Props) {
         pageSlug: params.slug?.join("/") || "home",
         preview: searchParams?.preview,
       },
-      "Successfully rendered page"
+      "Successfully rendered page",
+    );
+
+    const { content, ...rest } = page;
+    const args: Record<string, any> = {
+      page: rest,
+      isPage: true,
+      general: settings,
+      social: social,
+      now: new Date(),
+      ...rest,
+    };
+
+    const cookieStore = await cookies();
+    const appointmentId = cookieStore.get("appointment_id")?.value;
+    if (appointmentId) {
+      const appointment =
+        await servicesContainer.eventsService.getAppointment(appointmentId);
+      if (
+        appointment &&
+        DateTime.fromJSDate(appointment.createdAt).diffNow().toMillis() <
+          60 * 1000 // 60 seconds
+      ) {
+        args.appointment = appointment;
+      } else {
+        notFound();
+      }
+    }
+
+    const header = page.headerId
+      ? await servicesContainer.pagesService.getPageHeader(page.headerId)
+      : undefined;
+
+    const footer = page.footerId
+      ? await servicesContainer.pagesService.getPageFooter(page.footerId)
+      : undefined;
+
+    const formattedArgs = formatArguments(
+      args,
+      rest.language || settings.language,
+    );
+
+    const apps =
+      await servicesContainer.connectedAppsService.getAppsByScope(
+        "ui-components",
+      );
+
+    const additionalBlocks = apps?.reduce(
+      (acc, app) => {
+        acc.readers = {
+          ...acc.readers,
+          ...Object.fromEntries(
+            Object.entries(AppsBlocksReaders[app.name]).map(
+              ([blockName, value]) => [
+                `${blockName}-${app._id}`,
+                {
+                  ...value,
+                  staticProps: {
+                    ...value.staticProps,
+                    appId: app._id,
+                    appName: app.name,
+                  },
+                },
+              ],
+            ),
+          ),
+        };
+
+        return acc;
+      },
+      { readers: {} },
     );
 
     return (
-      <div
-        className={cn(
-          "flex flex-col gap-5",
-          page.fullWidth ? "w-full" : "container mx-auto"
+      <>
+        <Styling styling={styling} />
+        {header && (
+          <Header name={settings.name} logo={settings.logo} config={header} />
         )}
-      >
-        <MdxContent source={page.content} />
-      </div>
+        <PageReader
+          document={content}
+          args={formattedArgs}
+          additionalBlocks={additionalBlocks?.readers}
+        />
+        {footer?.content && (
+          <PageReader
+            document={footer.content}
+            args={formattedArgs}
+            additionalBlocks={additionalBlocks?.readers}
+          />
+        )}
+      </>
     );
   } catch (error: any) {
     const loggerFn =
@@ -240,7 +324,7 @@ export default async function Page(props: Props) {
         slug: (await props.params).slug,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Error rendering page"
+      "Error rendering page",
     );
 
     if (error instanceof NotFoundError) {

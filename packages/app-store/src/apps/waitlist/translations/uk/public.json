@@ -1,0 +1,73 @@
+{
+  "block": {
+    "selectAddonsLabel": "Вибрати додатки",
+    "durationFormat": "Тривалість: {hours, plural, =0 {{minutes} хв} other {# год, {minutes} хв}}",
+    "durationHourMinFormat": "{hours, plural, =0 {{minutes} хв} other {# год, {minutes} хв}}",
+    "priceFormat": "Ціна: ${price}",
+    "customDurationLabel": "Тривалість: довільна",
+    "customDuration": "Довільна",
+    "durationSelectTitle": "Скільки часу вам потрібно?",
+    "errors": {
+      "submit": {
+        "title": "Ой! Щось пішло не так.",
+        "description": "Щось пішло не так, коли ми намагалися додати вас до списку очікування. Будь ласка, зв'яжіться з нами"
+      }
+    },
+    "loadingPlaceholder": "Будь ласка, зачекайте...",
+    "buttons": {
+      "steps": {
+        "back": "Назад",
+        "next": "Далі"
+      },
+      "close": "Закрити",
+      "addTime": "Додати час"
+    },
+    "confirmation": {
+      "title": "Ваш запит отримано!",
+      "message": "Дякуємо, {name}. Ваш запит на приєднання до списку очікування для {service} отримано. Ми зв'яжемося з вами, як тільки з'явиться вільний час."
+    },
+    "title": "Список очікування",
+    "description": "Будь ласка, надайте свої дані для додавання до списку очікування",
+    "times": {
+      "label": "Часові слоти",
+      "morning": "Ранок",
+      "afternoon": "День",
+      "evening": "Вечір",
+      "required": "Будь ласка, виберіть час",
+      "descriptions": {
+        "morning": "до 12:00",
+        "afternoon": "12:00 - 16:00",
+        "evening": "після 16:00"
+      },
+      "add": "Додати час",
+      "addDescription": "Будь ласка, виберіть часові слоти, які ви хочете додати"
+    },
+    "email": {
+      "required": "Email обов'язковий"
+    },
+    "name": {
+      "required": "Ім'я обов'язкове"
+    },
+    "date": {
+      "label": "Дата",
+      "required": "Потрібна дійсна дата"
+    },
+    "dates": {
+      "label": "Бажана дата та час",
+      "label_count": "Бажана дата та час ({count})",
+      "required": "Дати обов'язкові",
+      "max": "Ви можете додати до 30 дат",
+      "groupLabel": "({count} дат)"
+    },
+    "when": {
+      "label": "Коли"
+    },
+    "asSoonAsPossible": {
+      "label": "Якнайшвидше",
+      "required": "Якнайшвидше обов'язкове"
+    },
+    "calendar": {
+      "waitlistLink": "Не бачите часу, який вам підходить? Натисніть <link>тут</link>, щоб приєднатися до списку очікування"
+    }
+  }
+}

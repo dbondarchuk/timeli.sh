@@ -1,9 +1,9 @@
-import { Reader, TReaderProps } from "./block";
 import { BaseZodDictionary } from "../types";
+import { Reader, TReaderProps } from "./block";
 
 export async function renderToStaticMarkup<T extends BaseZodDictionary>(
   props: TReaderProps<T>,
-  customCss?: string[]
+  customCss?: string[],
 ) {
   const { renderToStaticMarkup: baseRenderToStaticMarkup } = await import(
     "react-dom/server"

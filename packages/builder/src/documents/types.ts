@@ -1,45 +1,48 @@
-import { BuilderKeys } from "@vivid/i18n";
-import z from "zod";
-import { TReaderBlock } from "./reader/core";
+import { AllKeys } from "@timelish/i18n";
+import * as z from "zod";
 
 export type BaseZodDictionary = {
-  [name: string]: z.AnyZodObject;
+  [name: string]: z.ZodTypeAny;
 };
 
 export type ConfigurationProps<T> = {
   data: T;
   setData: (data: T) => void;
+  base: BaseBlockProps | undefined;
+  onBaseChange: (base: BaseBlockProps) => void;
+};
+
+export type BaseBlockProps = {
+  id?: string;
+  className?: string;
 };
 
 export type EditorProps<T> = T;
-export type ReaderProps<T> = T & {
-  document: TReaderBlock;
-  args: Record<string, any>;
-};
 
 export type BuilderSchema = BaseZodDictionary;
 
+export type BlockEditorDisableOptions = {
+  keyboardShortcuts?: {
+    moveUp?: boolean;
+    moveDown?: boolean;
+    delete?: boolean;
+    pasteImage?: boolean;
+    undoRedo?: boolean;
+  };
+};
+
 export type EditorDocumentBlocksDictionary<T extends BuilderSchema = any> = {
   [K in keyof T]: {
-    displayName: BuilderKeys;
+    displayName: AllKeys;
     icon: React.ReactNode;
     Editor: React.ComponentType<EditorProps<z.infer<T[K]>>>;
     Configuration: React.ComponentType<ConfigurationProps<z.infer<T[K]>>>;
     Toolbar?: React.ComponentType<ConfigurationProps<z.infer<T[K]>>>;
-    defaultValue: z.infer<T[K]>;
-    category: BuilderKeys;
-  };
-};
-
-export type ReaderDocumentBlocksDictionary<T extends BuilderSchema = any> = {
-  [K in keyof T]: {
-    Reader: React.ComponentType<
-      ReaderProps<
-        z.infer<T[K]> & {
-          blocks: ReaderDocumentBlocksDictionary<T>;
-        }
-      >
-    >;
+    defaultValue: z.infer<T[K]> | (() => z.infer<T[K]>);
+    category: AllKeys;
+    allowedIn?: (keyof T)[];
+    disable?: BlockEditorDisableOptions;
+    staticProps?: Record<string, any>;
   };
 };
 
@@ -66,14 +69,8 @@ export type BlockConfiguration<T extends BuilderSchema> = {
 //     .transform((v) => v as BlockConfiguration<T>);
 // }
 
-export function buildReaderBlockConfigurationDictionary<
-  T extends BaseZodDictionary,
->(blocks: ReaderDocumentBlocksDictionary<T>) {
-  return blocks;
-}
-
 export function buildBlockConfigurationDictionary<T extends BaseZodDictionary>(
-  blocks: EditorDocumentBlocksDictionary<T>
+  blocks: EditorDocumentBlocksDictionary<T>,
 ) {
   return blocks;
 }

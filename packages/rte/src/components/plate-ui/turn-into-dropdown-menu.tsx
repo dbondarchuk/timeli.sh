@@ -21,6 +21,9 @@ import {
   Heading1Icon,
   Heading2Icon,
   Heading3Icon,
+  Heading4Icon,
+  Heading5Icon,
+  Heading6Icon,
   ListIcon,
   ListOrderedIcon,
   PilcrowIcon,
@@ -42,7 +45,7 @@ import {
   DropdownMenuTrigger,
   ToolbarButton,
   useOpenState,
-} from "@vivid/ui";
+} from "@timelish/ui";
 
 const turnIntoItems = [
   {
@@ -68,6 +71,24 @@ const turnIntoItems = [
     keywords: ["subtitle", "h3"],
     label: "Heading 3",
     value: HEADING_KEYS.h3,
+  },
+  {
+    icon: <Heading4Icon />,
+    keywords: ["subtitle", "h4"],
+    label: "Heading 3",
+    value: HEADING_KEYS.h4,
+  },
+  {
+    icon: <Heading5Icon />,
+    keywords: ["subtitle", "h5"],
+    label: "Heading 5",
+    value: HEADING_KEYS.h5,
+  },
+  {
+    icon: <Heading6Icon />,
+    keywords: ["subtitle", "h6"],
+    label: "Heading 6",
+    value: HEADING_KEYS.h6,
   },
   {
     icon: <ListIcon />,
@@ -130,9 +151,9 @@ export function TurnIntoDropdownMenu({
   const selectedItem = React.useMemo(
     () =>
       turnIntoItems.find(
-        (item) => item.value === (value ?? ParagraphPlugin.key)
+        (item) => item.value === (value ?? ParagraphPlugin.key),
       ) ?? turnIntoItems[0],
-    [value]
+    [value],
   );
 
   return (

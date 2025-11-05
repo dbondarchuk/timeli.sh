@@ -1,0 +1,13 @@
+{
+  "form": {
+    "cardFieldsProviderError": "Unable to find any child components in the <PayPalCardFieldsProvider />",
+    "ui": {
+      "payButton": "Pay",
+      "or": "or"
+    }
+  },
+  "toast": {
+    "payment_failed": "Payment has failed",
+    "payment_failed_description": "Your payment has failed. Please try again. If the issue persists, please give us a call"
+  }
+}

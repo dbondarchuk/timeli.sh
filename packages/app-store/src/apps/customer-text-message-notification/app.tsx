@@ -1,29 +1,25 @@
-import { App } from "@vivid/types";
-import { CUSTOMER_TEXT_MESSAGE_NOTIFICATION_APP_NAME } from "./const";
-import { CustomerTextMessageNotificationAppSetup } from "./setup";
+import { App } from "@timelish/types";
 import { Send } from "lucide-react";
+import { CUSTOMER_TEXT_MESSAGE_NOTIFICATION_APP_NAME } from "./const";
+import {
+  CustomerTextMessageNotificationAdminKeys,
+  CustomerTextMessageNotificationAdminNamespace,
+} from "./translations/types";
 
-export const CustomerTextMessageNotificationApp: App = {
+export const CustomerTextMessageNotificationApp: App<
+  CustomerTextMessageNotificationAdminNamespace,
+  CustomerTextMessageNotificationAdminKeys
+> = {
   name: CUSTOMER_TEXT_MESSAGE_NOTIFICATION_APP_NAME,
-  displayName: "customerTextMessageNotification.displayName",
+  displayName: "app_customer-text-message-notification_admin.app.displayName",
   scope: ["appointment-hook"],
   type: "complex",
-  category: ["categories.notifications"],
+  category: ["apps.categories.notifications"],
   Logo: ({ className }) => <Send className={className} />,
   isFeatured: true,
   dontAllowMultiple: true,
   description: {
-    text: "customerTextMessageNotification.description",
+    text: "app_customer-text-message-notification_admin.app.description",
   },
-  menuItems: [
-    {
-      href: "communications/customer-text-message",
-      parent: "communications",
-      id: "communications-customer-text-message",
-      label: "navigation.customerTextMessageNotification",
-      icon: <Send />,
-      Page: (props) => <CustomerTextMessageNotificationAppSetup {...props} />,
-    },
-  ],
   settingsHref: "communications/customer-text-message",
 };

@@ -1,0 +1,40 @@
+{
+  "name": "@timelish/page-builder",
+  "version": "0.0.1",
+  "private": true,
+  "sideEffects": false,
+  "scripts": {
+    "type-check": "tsc --pretty --noEmit",
+    "type-check:ci": "tsc-absolute --pretty --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "exports": {
+    ".": "./src/index.tsx",
+    "./reader": "./src/reader.tsx"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "19.0.2",
+    "@types/react-dom": "19.0.2",
+    "@types/react-window": "^1.8.8",
+    "@types/sanitize-html": "^2.13.0",
+    "@timelish/eslint-config": "*",
+    "@timelish/tailwind-config": "*",
+    "@timelish/typescript-config": "*",
+    "typescript": "5.5.4"
+  },
+  "dependencies": {
+    "@timelish/builder": "*",
+    "@timelish/page-builder-base": "*",
+    "@timelish/types": "*",
+    "@timelish/rte": "*",
+    "@timelish/ui": "*",
+    "@timelish/ui-admin": "*",
+    "@timelish/api-sdk": "*",
+    "@timelish/i18n": "*",
+    "lucide-react": "^0.525.0",
+    "react-dom": "19.0.0",
+    "sanitize-html": "^2.14.0"
+  }
+}

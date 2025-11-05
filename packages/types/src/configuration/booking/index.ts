@@ -1,10 +1,12 @@
-import { z } from "zod";
-import { asOptinalNumberField, asOptionalField } from "../../utils";
+import * as z from "zod";
+import { asOptinalNumberField, zNonEmptyString } from "../../utils";
 import { calendarSourcesConfigurationSchema } from "./calendar-source";
+import { appointmentCancellationRescheduleSchema } from "./cancellation";
 import { paymentsConfigurationSchema } from "./payments";
 
 export * from "../../booking/field";
 export * from "./calendar-source";
+export * from "./cancellation";
 export * from "./payments";
 
 export const customTimeSlotSchema = z
@@ -21,6 +23,19 @@ export const customTimeSlotSchema = z
     );
   }, "Invalid time");
 
+export const slotStartSchema = z.union(
+  [
+    z.literal(5),
+    z.literal(10),
+    z.literal(15),
+    z.literal(20),
+    z.literal(30),
+    z.literal("every-hour"), // every hour at start
+    z.literal("custom"), // custom
+  ],
+  { message: "configuration.booking.slotStart.unknown" },
+);
+
 export const allowPromoCodeType = [
   "never",
   "allow-if-has-active",
@@ -29,76 +44,48 @@ export const allowPromoCodeType = [
 
 export type AllowPromoCodeType = (typeof allowPromoCodeType)[number];
 
+export const appointOptionsSchema = z.array(
+  z.object({
+    id: zNonEmptyString("configuration.booking.options.id.required"),
+  }),
+);
+
 export const generalBookingConfigurationSchema = z.object({
   maxWeeksInFuture: asOptinalNumberField(
     z.coerce
-      .number()
+      .number<number>("configuration.booking.maxWeeksInFuture.integer")
       .int("configuration.booking.maxWeeksInFuture.integer")
       .min(2, "configuration.booking.maxWeeksInFuture.min")
-      .max(20, "configuration.booking.maxWeeksInFuture.max")
+      .max(20, "configuration.booking.maxWeeksInFuture.max"),
   ),
   minHoursBeforeBooking: asOptinalNumberField(
     z.coerce
-      .number()
+      .number<number>("configuration.booking.minHoursBeforeBooking.integer")
       .int("configuration.booking.minHoursBeforeBooking.integer")
       .min(0, "configuration.booking.minHoursBeforeBooking.min")
-      .max(72, "configuration.booking.minHoursBeforeBooking.max")
+      .max(72, "configuration.booking.minHoursBeforeBooking.max"),
   ),
   breakDuration: asOptinalNumberField(
     z.coerce
-      .number()
+      .number<number>("configuration.booking.breakDuration.integer")
       .int("configuration.booking.breakDuration.integer")
       .min(0, "configuration.booking.breakDuration.min")
-      .max(120, "configuration.booking.breakDuration.max")
+      .max(120, "configuration.booking.breakDuration.max"),
   ),
-  slotStart: z
-    .union(
-      [
-        z.literal(5),
-        z.literal(10),
-        z.literal(15),
-        z.literal(20),
-        z.literal(30),
-        z.literal("every-hour"), // every hour at start
-        z.literal("custom"), // custom
-      ],
-      { message: "configuration.booking.slotStart.unknown" }
-    )
-    .optional(),
+  slotStart: slotStartSchema.optional(),
   customSlotTimes: z.array(customTimeSlotSchema).optional(),
   scheduleAppId: z.string().optional(),
-  autoConfirm: z.coerce.boolean().optional(),
-  allowPromoCode: z.enum(allowPromoCodeType).default("allow-if-has-active"),
-  smartSchedule: z
-    .object({
-      allowSmartSchedule: z.literal(true),
-      allowSkipBreak: z.coerce.boolean().optional(),
-      preferBackToBack: z.coerce.boolean().optional(),
-      allowSmartSlotStarts: z.coerce.boolean().optional(),
-      maximizeForOption: asOptionalField(z.string()),
-    })
-    .or(
-      z.object({
-        allowSmartSchedule: z.literal(false).optional(),
-      })
-    ),
+  availabilityProviderAppId: z.string().optional(),
+  autoConfirm: z.coerce.boolean<boolean>().optional(),
+  allowPromoCode: z.enum(allowPromoCodeType),
   payments: paymentsConfigurationSchema,
+  cancellationsAndReschedules: appointmentCancellationRescheduleSchema,
+  calendarSources: calendarSourcesConfigurationSchema,
+  options: appointOptionsSchema,
 });
 
-export const appointOptionsSchema = z.array(
-  z.object({
-    id: z.string().min(1, "configuration.booking.options.id.required"),
-  })
-);
-
-export const bookingConfigurationSchema = generalBookingConfigurationSchema
-  .merge(
-    z.object({
-      calendarSources: calendarSourcesConfigurationSchema,
-      options: appointOptionsSchema,
-    })
-  )
-  .superRefine((arg, ctx) => {
+export const bookingConfigurationSchema =
+  generalBookingConfigurationSchema.superRefine((arg, ctx) => {
     if (arg.slotStart === "custom" && !arg.customSlotTimes?.length) {
       ctx.addIssue({
         path: ["specifiedSlotTimes"],

@@ -1,0 +1,73 @@
+{
+  "block": {
+    "selectAddonsLabel": "Select addons",
+    "durationFormat": "Duration: {hours, plural, =0 {{minutes} min} other {# hr, {minutes} min}}",
+    "durationHourMinFormat": "{hours, plural, =0 {{minutes} min} other {# hr, {minutes} min}}",
+    "priceFormat": "Price: ${price}",
+    "customDurationLabel": "Duration: custom",
+    "customDuration": "Custom",
+    "durationSelectTitle": "How much time do you need?",
+    "errors": {
+      "submit": {
+        "title": "Uh oh! Something went wrong.",
+        "description": "Something went wrong while we were trying to add you to the wait list. Please contact us"
+      }
+    },
+    "loadingPlaceholder": "Please wait...",
+    "buttons": {
+      "steps": {
+        "back": "Back",
+        "next": "Next"
+      },
+      "close": "Close",
+      "addTime": "Add Time"
+    },
+    "confirmation": {
+      "title": "Your request has been received!",
+      "message": "Thank you, {name}. Your request to join the waitlist for {service} has been received. We’ll contact you once a time slot opens up."
+    },
+    "title": "Join our wait list",
+    "description": "Please provide your details to be added to the wait list",
+    "times": {
+      "label": "Time slots",
+      "morning": "Morning",
+      "afternoon": "Afternoon",
+      "evening": "Evening",
+      "required": "Please select a time",
+      "descriptions": {
+        "morning": "before 12:00PM",
+        "afternoon": "12:00PM - 4:00PM",
+        "evening": "after 4:00PM"
+      },
+      "add": "Add Time",
+      "addDescription": "Please select the time slots you want to add"
+    },
+    "email": {
+      "required": "Email is required"
+    },
+    "name": {
+      "required": "Name is required"
+    },
+    "date": {
+      "label": "Date",
+      "required": "Valid date is required"
+    },
+    "dates": {
+      "label": "Desired date and time",
+      "label_count": "Desired date and time ({count})",
+      "required": "Dates are required",
+      "max": "You can add up to 30 dates",
+      "groupLabel": "({count} dates)"
+    },
+    "when": {
+      "label": "When"
+    },
+    "asSoonAsPossible": {
+      "label": "As soon as possible",
+      "required": "As soon as possible is required"
+    },
+    "calendar": {
+      "waitlistLink": "Do not see a time you like? Click <link>here</link> to join our wait list."
+    }
+  }
+}

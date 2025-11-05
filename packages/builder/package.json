@@ -1,35 +1,37 @@
 {
-  "name": "@vivid/builder",
+  "name": "@timelish/builder",
   "version": "0.0.1",
   "private": true,
   "sideEffects": false,
   "scripts": {
     "type-check": "tsc --pretty --noEmit",
     "type-check:ci": "tsc-absolute --pretty --noEmit",
-    "lint": "eslint . --ext .ts,.js,.tsx,.jsx",
-    "lint:fix": "eslint . --ext .ts,.js,.tsx,.jsx --fix"
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "exports": {
     ".": "./src/index.ts",
-    "./static": "./src/documents/reader/static-render.tsx"
+    "./static": "./src/documents/reader/static-render.tsx",
+    "./reader": "./src/reader.ts"
   },
   "devDependencies": {
     "@types/node": "^20",
     "@types/react": "19.0.2",
     "@types/react-dom": "19.0.2",
     "@types/react-window": "^1.8.8",
-    "@vivid/eslint-config": "*",
-    "@vivid/tailwind-config": "*",
-    "@vivid/typescript-config": "*",
-    "eslint": "^8.57.0",
+    "@timelish/eslint-config": "*",
+    "@timelish/tailwind-config": "*",
+    "@timelish/typescript-config": "*",
     "typescript": "5.5.4"
   },
   "dependencies": {
     "@uiw/react-json-view": "2.0.0-alpha.30",
-    "react-dom": "19.0.0",
-    "@vivid/ui": "*",
-    "@vivid/i18n": "*",
-    "@vivid/rte": "*",
-    "lucide-react": "^0.525.0"
+    "@timelish/i18n": "*",
+    "@timelish/rte": "*",
+    "@timelish/ui": "*",
+    "@timelish/ui-admin": "*",
+    "framer-motion": "^12.23.12",
+    "lucide-react": "^0.525.0",
+    "react-dom": "19.0.0"
   }
 }

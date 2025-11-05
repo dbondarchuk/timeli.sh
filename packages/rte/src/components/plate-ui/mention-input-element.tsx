@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 
 import { withRef } from "@udecode/cn";
 import { getMentionOnSelectItem } from "@udecode/plate-mention";
@@ -34,7 +34,7 @@ export const MentionInputElement = withRef<typeof PlateElement>(
           value={search}
           element={element}
           setValue={setSearch}
-          showTrigger={true}
+          showTrigger
           trigger="{"
         >
           <span className="inline-block rounded-md bg-muted px-1.5 py-0.5 align-baseline text-sm ring-ring focus-within:ring-2">
@@ -61,7 +61,7 @@ export const MentionInputElement = withRef<typeof PlateElement>(
         {children}
       </PlateElement>
     );
-  }
+  },
 );
 
 export const MENTIONABLES = [

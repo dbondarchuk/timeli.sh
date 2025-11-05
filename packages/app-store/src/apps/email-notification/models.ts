@@ -1,5 +1,5 @@
-import { asOptionalField, zEmail } from "@vivid/types";
-import { z } from "zod";
+import { asOptionalField, zEmail } from "@timelish/types";
+import * as z from "zod";
 
 export const emailNotificationConfigurationSchema = z.object({
   email: asOptionalField(zEmail),

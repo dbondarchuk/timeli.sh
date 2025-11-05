@@ -1,4 +1,4 @@
-import { Label, Switch } from "@vivid/ui";
+import { Label, Switch } from "@timelish/ui";
 import React from "react";
 
 type Props = {

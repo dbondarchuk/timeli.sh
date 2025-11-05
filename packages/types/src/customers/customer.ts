@@ -1,8 +1,7 @@
-import { z } from "zod";
-import { Appointment } from "../booking";
-import { WithDatabaseId } from "../database";
+import * as z from "zod";
+import { WithCompanyId, WithDatabaseId } from "../database";
 import { zPhone, zUniqueArray } from "../utils";
-
+import { Prettify } from "../utils/helpers";
 export const isPaymentRequiredForCustomerTypes = [
   "inherit",
   "always",
@@ -10,39 +9,39 @@ export const isPaymentRequiredForCustomerTypes = [
 ] as const;
 
 const isPaymentRequiredForCustomerSchema = z.enum(
-  isPaymentRequiredForCustomerTypes
+  isPaymentRequiredForCustomerTypes,
 );
 
 export const customerSchema = z
   .object({
     name: z.string().min(1, "customer.name.required"),
-    email: z.string().email("customer.email.required"),
+    email: z.email("customer.email.required"),
     phone: zPhone,
-    dateOfBirth: z.coerce.date().optional(),
+    dateOfBirth: z.coerce.date<Date>().optional(),
     avatar: z.string().optional(),
     note: z.string().optional(),
     knownNames: zUniqueArray(
       z.array(z.string().min(1, "customer.name.required")),
       (s) => s,
-      "customer.knownNames.unique"
+      "customer.knownNames.unique",
     ),
     knownEmails: zUniqueArray(
-      z.array(z.string().email("customer.email.required")),
+      z.array(z.email({ error: "customer.email.required" })),
       (s) => s,
-      "customer.knownEmails.unique"
+      "customer.knownEmails.unique",
     ),
     knownPhones: zUniqueArray(
       z.array(zPhone),
       (s) => s,
-      "customer.knownPhones.unique"
+      "customer.knownPhones.unique",
     ),
-    dontAllowBookings: z.coerce.boolean().optional(),
+    dontAllowBookings: z.coerce.boolean<boolean>().optional(),
   })
   .and(
     z
       .object({
         requireDeposit: isPaymentRequiredForCustomerSchema.exclude(["always"], {
-          message: "customer.requireDeposit.required",
+          error: "customer.requireDeposit.required",
         }),
       })
       .or(
@@ -50,30 +49,30 @@ export const customerSchema = z
           requireDeposit: isPaymentRequiredForCustomerSchema.extract(
             ["always"],
             {
-              message: "customer.requireDeposit.required",
-            }
+              error: "customer.requireDeposit.required",
+            },
           ),
           depositPercentage: z.coerce
-            .number({ message: "customer.depositPercentage.required" })
+            .number<number>({ error: "customer.depositPercentage.required" })
             .int("customer.depositPercentage.integer")
             .min(10, "customer.depositPercentage.min")
             .max(100, "customer.depositPercentage.max"),
-        })
-      )
+        }),
+      ),
   );
 
 export const getCustomerSchemaWithUniqueCheck = (
   uniqueEmailOrPhoneCheckFn: (
     emails: string[],
-    phone: string[]
+    phone: string[],
   ) => Promise<{ email: boolean; phone: boolean }>,
   emailMessage: string,
-  phoneMessage: string
+  phoneMessage: string,
 ) => {
   return customerSchema.superRefine(async (args, ctx) => {
     const isUnique = await uniqueEmailOrPhoneCheckFn(
       [args.email, ...(args.knownEmails || [])],
-      [args.phone, ...(args.knownPhones || [])]
+      [args.phone, ...(args.knownPhones || [])],
     );
     if (!isUnique.email) {
       ctx.addIssue({
@@ -94,15 +93,6 @@ export const getCustomerSchemaWithUniqueCheck = (
 };
 
 export type CustomerUpdateModel = z.infer<typeof customerSchema>;
-export type Customer = WithDatabaseId<CustomerUpdateModel>;
-
-export type CustomerListModel = Pick<
-  Customer,
-  "_id" | "avatar" | "name" | "phone" | "email"
-> & {
-  appointmentsCount: number;
-  lastAppointment?: Appointment;
-  nextAppointment?: Appointment;
-};
-
-export type CustomerSearchField = "name" | "email" | "phone";
+export type Customer = Prettify<
+  WithCompanyId<WithDatabaseId<CustomerUpdateModel>>
+>;

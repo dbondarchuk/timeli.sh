@@ -1,11 +1,12 @@
 "use client";
 
-import * as React from "react";
+import { useI18n } from "@timelish/i18n";
+import React from "react";
 import { cn } from "../utils";
-import { useI18n } from "@vivid/i18n";
 
-import { Check, X, ChevronsUpDown } from "lucide-react";
-import { Button } from "./button";
+import { Check, ChevronsUpDown, X } from "lucide-react";
+import { Badge } from "./badge";
+import { Button, ButtonProps } from "./button";
 import {
   Command,
   CommandEmpty,
@@ -15,7 +16,6 @@ import {
   CommandList,
 } from "./command";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
-import { Badge } from "./badge";
 
 export type OptionType = {
   label: string;
@@ -25,10 +25,11 @@ export type OptionType = {
 interface MultiSelectProps {
   options: OptionType[];
   selected: string[];
-  onChange?: React.Dispatch<React.SetStateAction<string[]>>;
+  onChange?: (value: string[]) => void;
   className?: string;
   placeholder?: string;
   disabled?: boolean;
+  size?: ButtonProps["size"];
 }
 
 function MultiSelect({
@@ -38,6 +39,7 @@ function MultiSelect({
   className,
   placeholder,
   disabled,
+  size,
   ...props
 }: MultiSelectProps) {
   const t = useI18n("ui");
@@ -54,9 +56,8 @@ function MultiSelect({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className={`w-full justify-between ${
-            selected.length > 1 ? "h-full" : "h-9"
-          }`}
+          size={size}
+          className={cn("w-full justify-between")}
           onClick={() => setOpen(!open)}
           disabled={disabled}
         >
@@ -111,7 +112,7 @@ function MultiSelect({
                     onChange?.(
                       selected.includes(option.value)
                         ? selected.filter((item) => item !== option.value)
-                        : [...selected, option.value]
+                        : [...selected, option.value],
                     );
                     setOpen(true);
                   }}
@@ -121,7 +122,7 @@ function MultiSelect({
                       "mr-2 h-4 w-4",
                       selected.includes(option.value)
                         ? "opacity-100"
-                        : "opacity-0"
+                        : "opacity-0",
                     )}
                   />
                   {option.label}

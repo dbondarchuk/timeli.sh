@@ -1,4 +1,3 @@
-import { getLoggerFactory } from "@vivid/logger";
 import {
   AddonsType,
   ApplyCustomerDiscountRequest,
@@ -20,25 +19,28 @@ import {
   ServiceField,
   ServiceFieldUpdateModel,
   WithTotal,
-} from "@vivid/types";
-import { buildSearchQuery, escapeRegex } from "@vivid/utils";
+} from "@timelish/types";
+import { buildSearchQuery, escapeRegex } from "@timelish/utils";
 import { DateTime } from "luxon";
 import { Filter, ObjectId, Sort } from "mongodb";
-import { CONFIGURATION_COLLECTION_NAME } from "./configuration.service";
+import {
+  ADDONS_COLLECTION_NAME,
+  APPOINTMENTS_COLLECTION_NAME,
+  CONFIGURATION_COLLECTION_NAME,
+  DISCOUNTS_COLLECTION_NAME,
+  FIELDS_COLLECTION_NAME,
+  OPTIONS_COLLECTION_NAME,
+} from "./collections";
 import { getDbClient, getDbConnection } from "./database";
-import { APPOINTMENTS_COLLECTION_NAME } from "./events.service";
+import { BaseService } from "./services/base.service";
 
-export const FIELDS_COLLECTION_NAME = "fields";
-export const ADDONS_COLLECTION_NAME = "addons";
-export const OPTIONS_COLLECTION_NAME = "options";
-export const DISCOUNTS_COLLECTION_NAME = "discounts";
-
-export class ServicesService implements IServicesService {
-  protected readonly loggerFactory = getLoggerFactory("ServicesService");
-
+export class ServicesService extends BaseService implements IServicesService {
   public constructor(
-    protected readonly configurationService: IConfigurationService
-  ) {}
+    companyId: string,
+    protected readonly configurationService: IConfigurationService,
+  ) {
+    super("ServicesService", companyId);
+  }
 
   /** Fields */
 
@@ -51,6 +53,7 @@ export class ServicesService implements IServicesService {
 
     const field = await fields.findOne({
       _id: id,
+      companyId: this.companyId,
     });
 
     if (!field) {
@@ -66,7 +69,7 @@ export class ServicesService implements IServicesService {
     query: Query & {
       type: FieldType[];
     },
-    includeUsage?: T
+    includeUsage?: T,
   ): Promise<WithTotal<FieldsType<T>>> {
     const logger = this.loggerFactory("getFields");
     logger.debug({ query, includeUsage }, "Getting fields");
@@ -78,10 +81,12 @@ export class ServicesService implements IServicesService {
         ...prev,
         [curr.id]: curr.desc ? -1 : 1,
       }),
-      {}
+      {},
     ) || { updatedAt: -1 };
 
-    const filter: Filter<ServiceField> = {};
+    const filter: Filter<ServiceField> = {
+      companyId: this.companyId,
+    };
 
     if (query.type) {
       filter.type = {
@@ -96,7 +101,7 @@ export class ServicesService implements IServicesService {
         "name",
         "data.description",
         "data.label",
-        "data.options"
+        "data.options",
       );
 
       filter.$or = queries;
@@ -105,12 +110,6 @@ export class ServicesService implements IServicesService {
     const [result] = await db
       .collection<ServiceField>(FIELDS_COLLECTION_NAME)
       .aggregate([
-        {
-          $sort: sort,
-        },
-        {
-          $match: filter,
-        },
         ...(includeUsage
           ? [
               {
@@ -119,6 +118,11 @@ export class ServicesService implements IServicesService {
                   localField: "_id",
                   foreignField: "fields.id",
                   pipeline: [
+                    {
+                      $match: {
+                        companyId: this.companyId,
+                      },
+                    },
                     {
                       $project: {
                         _id: 1,
@@ -136,6 +140,11 @@ export class ServicesService implements IServicesService {
                   foreignField: "fields.id",
                   pipeline: [
                     {
+                      $match: {
+                        companyId: this.companyId,
+                      },
+                    },
+                    {
                       $project: {
                         _id: 1,
                         name: 1,
@@ -147,6 +156,12 @@ export class ServicesService implements IServicesService {
               },
             ]
           : []),
+        {
+          $match: filter,
+        },
+        {
+          $sort: sort,
+        },
         {
           $facet: {
             paginatedResults:
@@ -180,10 +195,31 @@ export class ServicesService implements IServicesService {
         query,
         result: { total: response.total, count: response.items.length },
       },
-      "Fetched fields"
+      "Fetched fields",
     );
 
     return response;
+  }
+
+  public async getFieldsByNames(names: string[]): Promise<ServiceField[]> {
+    const logger = this.loggerFactory("getFieldsByNames");
+    logger.debug({ names }, "Getting fields by names");
+
+    const db = await getDbConnection();
+    const fields = db.collection<ServiceField>(FIELDS_COLLECTION_NAME);
+
+    const result = await fields
+      .find({
+        name: {
+          $in: names,
+        },
+        companyId: this.companyId,
+      })
+      .toArray();
+
+    logger.debug({ names, count: result.length }, "Fields found");
+
+    return result;
   }
 
   public async getFieldsById(ids: string[]): Promise<ServiceField[]> {
@@ -198,6 +234,7 @@ export class ServicesService implements IServicesService {
         _id: {
           $in: ids,
         },
+        companyId: this.companyId,
       })
       .toArray();
 
@@ -207,16 +244,17 @@ export class ServicesService implements IServicesService {
   }
 
   public async createField(
-    field: ServiceFieldUpdateModel
+    field: ServiceFieldUpdateModel,
   ): Promise<ServiceField> {
     const logger = this.loggerFactory("createField");
     logger.debug(
       { field: { name: field.name, type: field.type } },
-      "Creating new field"
+      "Creating new field",
     );
 
     const dbField: ServiceField = {
       ...field,
+      companyId: this.companyId,
       _id: new ObjectId().toString(),
       updatedAt: DateTime.utc().toJSDate(),
     };
@@ -233,7 +271,7 @@ export class ServicesService implements IServicesService {
 
     logger.debug(
       { fieldId: dbField._id, name: dbField.name },
-      "Successfully created field"
+      "Successfully created field",
     );
 
     return dbField;
@@ -241,7 +279,7 @@ export class ServicesService implements IServicesService {
 
   public async updateField(
     id: string,
-    update: ServiceFieldUpdateModel
+    update: ServiceFieldUpdateModel,
   ): Promise<void> {
     const logger = this.loggerFactory("updateField");
     logger.debug({ id, update }, "Updating field");
@@ -249,7 +287,7 @@ export class ServicesService implements IServicesService {
     const db = await getDbConnection();
     const fields = db.collection<ServiceField>(FIELDS_COLLECTION_NAME);
 
-    const { _id, ...updateObj } = update as ServiceField; // Remove fields in case it slips here
+    const { _id, companyId, ...updateObj } = update as ServiceField; // Remove fields in case it slips here
 
     if (!this.checkFieldUniqueName(update.name, id)) {
       throw new Error("Name already exists");
@@ -260,10 +298,11 @@ export class ServicesService implements IServicesService {
     await fields.updateOne(
       {
         _id: id,
+        companyId: this.companyId,
       },
       {
         $set: updateObj,
-      }
+      },
     );
 
     logger.debug({ fieldId: id, name: update.name }, "Field updated");
@@ -281,7 +320,10 @@ export class ServicesService implements IServicesService {
         const db = client.db(undefined, { ignoreUndefined: true });
         const fields = db.collection<ServiceField>(FIELDS_COLLECTION_NAME);
 
-        const field = await fields.findOneAndDelete({ _id: id });
+        const field = await fields.findOneAndDelete({
+          _id: id,
+          companyId: this.companyId,
+        });
         if (!field) {
           logger.warn({ fieldId: id }, "Field not found");
           return null;
@@ -289,34 +331,38 @@ export class ServicesService implements IServicesService {
 
         const addons = db.collection<AppointmentAddon>(ADDONS_COLLECTION_NAME);
         const options = db.collection<AppointmentOption>(
-          OPTIONS_COLLECTION_NAME
+          OPTIONS_COLLECTION_NAME,
         );
         const { modifiedCount: addonsModifiedCount } = await addons.updateMany(
-          {},
+          {
+            companyId: this.companyId,
+          },
           {
             $pull: {
               fields: {
                 id,
               },
             },
-          }
+          },
         );
 
         const { modifiedCount: optionsModifiedCount } =
           await options.updateMany(
-            {},
+            {
+              companyId: this.companyId,
+            },
             {
               $pull: {
                 fields: {
                   id,
                 },
               },
-            }
+            },
           );
 
         logger.debug(
           { fieldId: id, addonsModifiedCount, optionsModifiedCount },
-          "Field deleted"
+          "Field deleted",
         );
 
         return field;
@@ -344,14 +390,17 @@ export class ServicesService implements IServicesService {
           _id: {
             $in: ids,
           },
+          companyId: this.companyId,
         });
 
         const addons = db.collection<AppointmentAddon>(ADDONS_COLLECTION_NAME);
         const options = db.collection<AppointmentOption>(
-          OPTIONS_COLLECTION_NAME
+          OPTIONS_COLLECTION_NAME,
         );
         const { modifiedCount: addonsModifiedCount } = await addons.updateMany(
-          {},
+          {
+            companyId: this.companyId,
+          },
           {
             $pull: {
               fields: {
@@ -360,12 +409,14 @@ export class ServicesService implements IServicesService {
                 },
               },
             },
-          }
+          },
         );
 
         const { modifiedCount: optionsModifiedCount } =
           await options.updateMany(
-            {},
+            {
+              companyId: this.companyId,
+            },
             {
               $pull: {
                 fields: {
@@ -374,12 +425,12 @@ export class ServicesService implements IServicesService {
                   },
                 },
               },
-            }
+            },
           );
 
         logger.debug(
           { fieldsDeletedCount, addonsModifiedCount, optionsModifiedCount },
-          "Fields deleted"
+          "Fields deleted",
         );
       });
     } finally {
@@ -389,7 +440,7 @@ export class ServicesService implements IServicesService {
 
   public async checkFieldUniqueName(
     name: string,
-    id?: string
+    id?: string,
   ): Promise<boolean> {
     const logger = this.loggerFactory("checkFieldUniqueName");
     logger.debug({ name, id }, "Checking field unique name");
@@ -399,6 +450,7 @@ export class ServicesService implements IServicesService {
 
     const filter: Filter<ServiceField> = {
       name,
+      companyId: this.companyId,
     };
 
     if (id) {
@@ -423,6 +475,7 @@ export class ServicesService implements IServicesService {
 
     const result = await addons.findOne({
       _id: id,
+      companyId: this.companyId,
     });
 
     if (!result) {
@@ -446,6 +499,7 @@ export class ServicesService implements IServicesService {
         _id: {
           $in: ids,
         },
+        companyId: this.companyId,
       })
       .toArray();
 
@@ -456,7 +510,7 @@ export class ServicesService implements IServicesService {
 
   public async getAddons<T extends boolean | undefined>(
     query: Query,
-    includeUsage?: T
+    includeUsage?: T,
   ): Promise<WithTotal<AddonsType<T>>> {
     const logger = this.loggerFactory("getAddons");
     logger.debug({ query, includeUsage }, "Getting addons");
@@ -467,10 +521,12 @@ export class ServicesService implements IServicesService {
         ...prev,
         [curr.id]: curr.desc ? -1 : 1,
       }),
-      {}
+      {},
     ) || { updatedAt: -1 };
 
-    const filter: Filter<AppointmentAddon> = {};
+    const filter: Filter<AppointmentAddon> = {
+      companyId: this.companyId,
+    };
 
     if (query.search) {
       const $regex = new RegExp(escapeRegex(query.search), "i");
@@ -479,7 +535,7 @@ export class ServicesService implements IServicesService {
         "name",
         "duration",
         "price",
-        "description"
+        "description",
       );
 
       filter.$or = queries;
@@ -488,12 +544,6 @@ export class ServicesService implements IServicesService {
     const [result] = await db
       .collection<AppointmentAddon>(ADDONS_COLLECTION_NAME)
       .aggregate([
-        {
-          $sort: sort,
-        },
-        {
-          $match: filter,
-        },
         ...(includeUsage
           ? [
               {
@@ -502,6 +552,11 @@ export class ServicesService implements IServicesService {
                   localField: "_id",
                   foreignField: "addons.id",
                   pipeline: [
+                    {
+                      $match: {
+                        companyId: this.companyId,
+                      },
+                    },
                     {
                       $project: {
                         _id: 1,
@@ -514,6 +569,12 @@ export class ServicesService implements IServicesService {
               },
             ]
           : []),
+        {
+          $match: filter,
+        },
+        {
+          $sort: sort,
+        },
         {
           $facet: {
             paginatedResults:
@@ -548,19 +609,20 @@ export class ServicesService implements IServicesService {
         includeUsage,
         result: { total: response.total, count: response.items.length },
       },
-      "Fetched addons"
+      "Fetched addons",
     );
 
     return response;
   }
 
   public async createAddon(
-    addon: AppointmentAddonUpdateModel
+    addon: AppointmentAddonUpdateModel,
   ): Promise<AppointmentAddon> {
     const logger = this.loggerFactory("createAddon");
     logger.debug({ addon }, "Creating addon");
     const dbAddon: AppointmentAddon = {
       ...addon,
+      companyId: this.companyId,
       _id: new ObjectId().toString(),
       updatedAt: DateTime.utc().toJSDate(),
     };
@@ -581,14 +643,14 @@ export class ServicesService implements IServicesService {
 
   public async updateAddon(
     id: string,
-    update: AppointmentAddonUpdateModel
+    update: AppointmentAddonUpdateModel,
   ): Promise<void> {
     const logger = this.loggerFactory("updateAddon");
     logger.debug({ id, update }, "Updating addon");
     const db = await getDbConnection();
     const addons = db.collection<AppointmentAddon>(ADDONS_COLLECTION_NAME);
 
-    const { _id, ...updateObj } = update as AppointmentAddon; // Remove fields in case it slips here
+    const { _id, companyId, ...updateObj } = update as AppointmentAddon; // Remove fields in case it slips here
 
     if (!this.checkAddonUniqueName(update.name, id)) {
       throw new Error("Name already exists");
@@ -599,10 +661,11 @@ export class ServicesService implements IServicesService {
     await addons.updateOne(
       {
         _id: id,
+        companyId: this.companyId,
       },
       {
         $set: updateObj,
-      }
+      },
     );
 
     logger.debug({ addonId: id, name: update.name }, "Addon updated");
@@ -619,26 +682,31 @@ export class ServicesService implements IServicesService {
         const db = client.db(undefined, { ignoreUndefined: true });
         const addons = db.collection<AppointmentAddon>(ADDONS_COLLECTION_NAME);
 
-        const addon = await addons.findOneAndDelete({ _id: id });
+        const addon = await addons.findOneAndDelete({
+          _id: id,
+          companyId: this.companyId,
+        });
         if (!addon) {
           logger.warn({ addonId: id }, "Addon not found");
           return null;
         }
 
         const options = db.collection<AppointmentOption>(
-          OPTIONS_COLLECTION_NAME
+          OPTIONS_COLLECTION_NAME,
         );
 
         const { modifiedCount: optionsModifiedCount } =
           await options.updateMany(
-            {},
+            {
+              companyId: this.companyId,
+            },
             {
               $pull: {
                 addons: {
                   id,
                 },
               },
-            }
+            },
           );
 
         logger.debug({ addonId: id, optionsModifiedCount }, "Addon deleted");
@@ -667,14 +735,15 @@ export class ServicesService implements IServicesService {
           _id: {
             $in: ids,
           },
+          companyId: this.companyId,
         });
 
         const options = db.collection<AppointmentOption>(
-          OPTIONS_COLLECTION_NAME
+          OPTIONS_COLLECTION_NAME,
         );
         const { modifiedCount: optionsModifiedCount } =
           await options.updateMany(
-            {},
+            { companyId: this.companyId },
             {
               $pull: {
                 addons: {
@@ -683,12 +752,12 @@ export class ServicesService implements IServicesService {
                   },
                 },
               },
-            }
+            },
           );
 
         logger.debug(
           { addonsDeletedCount, optionsModifiedCount },
-          "Addons deleted"
+          "Addons deleted",
         );
       });
     } finally {
@@ -698,7 +767,7 @@ export class ServicesService implements IServicesService {
 
   public async checkAddonUniqueName(
     name: string,
-    id?: string
+    id?: string,
   ): Promise<boolean> {
     const logger = this.loggerFactory("checkAddonUniqueName");
     logger.debug({ name, id }, "Checking addon unique name");
@@ -707,6 +776,7 @@ export class ServicesService implements IServicesService {
 
     const filter: Filter<AppointmentAddon> = {
       name,
+      companyId: this.companyId,
     };
 
     if (id) {
@@ -730,6 +800,7 @@ export class ServicesService implements IServicesService {
 
     const option = await options.findOne({
       _id: id,
+      companyId: this.companyId,
     });
 
     if (!option) {
@@ -741,7 +812,9 @@ export class ServicesService implements IServicesService {
     return option;
   }
 
-  public async getOptions(query: Query): Promise<WithTotal<AppointmentOption>> {
+  public async getOptions(
+    query: Query & { priorityIds?: string[] },
+  ): Promise<WithTotal<AppointmentOption>> {
     const logger = this.loggerFactory("getOptions");
     logger.debug({ query }, "Getting options");
     const db = await getDbConnection();
@@ -751,10 +824,10 @@ export class ServicesService implements IServicesService {
         ...prev,
         [curr.id]: curr.desc ? -1 : 1,
       }),
-      {}
+      {},
     ) || { updatedAt: -1 };
 
-    const filter: Filter<AppointmentOption> = {};
+    const filter: Filter<AppointmentOption> = { companyId: this.companyId };
 
     if (query.search) {
       const $regex = new RegExp(escapeRegex(query.search), "i");
@@ -763,21 +836,72 @@ export class ServicesService implements IServicesService {
         "name",
         "duration",
         "price",
-        "description"
+        "description",
       );
 
       filter.$or = queries;
     }
 
+    const priorityStages = query.priorityIds
+      ? [
+          {
+            $facet: {
+              priority: [
+                {
+                  $match: {
+                    _id: {
+                      $in: query.priorityIds,
+                    },
+                    companyId: this.companyId,
+                  },
+                },
+              ],
+              other: [
+                {
+                  $match: {
+                    ...filter,
+                    _id: {
+                      $nin: query.priorityIds,
+                    },
+                  },
+                },
+                {
+                  $sort: sort,
+                },
+              ],
+            },
+          },
+          {
+            $project: {
+              values: {
+                $concatArrays: ["$priority", "$other"],
+              },
+            },
+          },
+          {
+            $unwind: {
+              path: "$values",
+            },
+          },
+          {
+            $replaceRoot: {
+              newRoot: "$values",
+            },
+          },
+        ]
+      : [
+          {
+            $match: filter,
+          },
+          {
+            $sort: sort,
+          },
+        ];
+
     const [result] = await db
       .collection<AppointmentOption>(OPTIONS_COLLECTION_NAME)
       .aggregate([
-        {
-          $sort: sort,
-        },
-        {
-          $match: filter,
-        },
+        ...priorityStages,
         {
           $facet: {
             paginatedResults:
@@ -811,19 +935,20 @@ export class ServicesService implements IServicesService {
         query,
         result: { total: response.total, count: response.items.length },
       },
-      "Fetched options"
+      "Fetched options",
     );
 
     return response;
   }
 
   public async createOption(
-    addon: AppointmentOptionUpdateModel
+    addon: AppointmentOptionUpdateModel,
   ): Promise<AppointmentOption> {
     const logger = this.loggerFactory("createOption");
     logger.debug({ addon }, "Creating option");
     const dbOption: AppointmentOption = {
       ...addon,
+      companyId: this.companyId,
       _id: new ObjectId().toString(),
       updatedAt: DateTime.utc().toJSDate(),
     };
@@ -839,7 +964,7 @@ export class ServicesService implements IServicesService {
 
     logger.debug(
       { optionId: dbOption._id, name: dbOption.name },
-      "Option created"
+      "Option created",
     );
 
     return dbOption;
@@ -847,14 +972,14 @@ export class ServicesService implements IServicesService {
 
   public async updateOption(
     id: string,
-    update: AppointmentOptionUpdateModel
+    update: AppointmentOptionUpdateModel,
   ): Promise<void> {
     const logger = this.loggerFactory("updateOption");
     logger.debug({ id, update }, "Updating option");
     const db = await getDbConnection();
     const options = db.collection<AppointmentOption>(OPTIONS_COLLECTION_NAME);
 
-    const { _id, ...updateObj } = update as AppointmentOption; // Remove fields in case it slips here
+    const { _id, companyId, ...updateObj } = update as AppointmentOption; // Remove fields in case it slips here
 
     if (!this.checkOptionUniqueName(update.name, id)) {
       throw new Error("Name already exists");
@@ -865,10 +990,11 @@ export class ServicesService implements IServicesService {
     await options.updateOne(
       {
         _id: id,
+        companyId: this.companyId,
       },
       {
         $set: updateObj,
-      }
+      },
     );
 
     logger.debug({ optionId: id, name: update.name }, "Option updated");
@@ -884,23 +1010,27 @@ export class ServicesService implements IServicesService {
       const result = await session.withTransaction(async () => {
         const db = client.db(undefined, { ignoreUndefined: true });
         const options = db.collection<AppointmentOption>(
-          OPTIONS_COLLECTION_NAME
+          OPTIONS_COLLECTION_NAME,
         );
 
-        const option = await options.findOneAndDelete({ _id: id });
+        const option = await options.findOneAndDelete({
+          _id: id,
+          companyId: this.companyId,
+        });
         if (!option) {
           logger.warn({ optionId: id }, "Option not found");
           return null;
         }
 
         const configurations = db.collection<ConfigurationOption<"booking">>(
-          CONFIGURATION_COLLECTION_NAME
+          CONFIGURATION_COLLECTION_NAME,
         );
 
         const { modifiedCount: configurationsModifiedCount } =
           await configurations.updateOne(
             {
               key: "booking",
+              companyId: this.companyId,
             },
             {
               $pull: {
@@ -908,12 +1038,12 @@ export class ServicesService implements IServicesService {
                   id,
                 },
               },
-            }
+            },
           );
 
         logger.debug(
           { optionId: id, configurationsModifiedCount },
-          "Option deleted"
+          "Option deleted",
         );
 
         return option;
@@ -935,23 +1065,25 @@ export class ServicesService implements IServicesService {
       await session.withTransaction(async () => {
         const db = client.db(undefined, { ignoreUndefined: true });
         const options = db.collection<AppointmentOption>(
-          OPTIONS_COLLECTION_NAME
+          OPTIONS_COLLECTION_NAME,
         );
 
         const { deletedCount: optionsDeletedCount } = await options.deleteMany({
           _id: {
             $in: ids,
           },
+          companyId: this.companyId,
         });
 
         const configurations = db.collection<ConfigurationOption<"booking">>(
-          CONFIGURATION_COLLECTION_NAME
+          CONFIGURATION_COLLECTION_NAME,
         );
 
         const { modifiedCount: configurationsModifiedCount } =
           await configurations.updateOne(
             {
               key: "booking",
+              companyId: this.companyId,
             },
             {
               $pull: {
@@ -961,12 +1093,12 @@ export class ServicesService implements IServicesService {
                   },
                 },
               },
-            }
+            },
           );
 
         logger.debug(
           { optionsDeletedCount, configurationsModifiedCount },
-          "Options deleted"
+          "Options deleted",
         );
       });
     } finally {
@@ -976,7 +1108,7 @@ export class ServicesService implements IServicesService {
 
   public async checkOptionUniqueName(
     name: string,
-    id?: string
+    id?: string,
   ): Promise<boolean> {
     const logger = this.loggerFactory("checkOptionUniqueName");
     logger.debug({ name, id }, "Checking option unique name");
@@ -985,6 +1117,7 @@ export class ServicesService implements IServicesService {
 
     const filter: Filter<AppointmentOption> = {
       name,
+      companyId: this.companyId,
     };
 
     if (id) {
@@ -1008,6 +1141,7 @@ export class ServicesService implements IServicesService {
 
     const result = await discounts.findOne({
       _id: id,
+      companyId: this.companyId,
     });
 
     if (!result) {
@@ -1027,6 +1161,7 @@ export class ServicesService implements IServicesService {
 
     const result = await discounts.findOne({
       codes: code,
+      companyId: this.companyId,
     });
 
     if (!result) {
@@ -1044,7 +1179,7 @@ export class ServicesService implements IServicesService {
       type?: DiscountType[];
       range?: DateRange;
       priorityIds?: string[];
-    }
+    },
   ): Promise<
     WithTotal<
       Discount & {
@@ -1061,10 +1196,14 @@ export class ServicesService implements IServicesService {
         ...prev,
         [curr.id]: curr.desc ? -1 : 1,
       }),
-      {}
+      {},
     ) || { updatedAt: -1 };
 
-    const $and: Filter<Discount>[] = [];
+    const $and: Filter<Discount>[] = [
+      {
+        companyId: this.companyId,
+      },
+    ];
 
     if (query.type) {
       $and.push({
@@ -1131,6 +1270,7 @@ export class ServicesService implements IServicesService {
                     _id: {
                       $in: query.priorityIds,
                     },
+                    companyId: this.companyId,
                   },
                 },
               ],
@@ -1185,6 +1325,13 @@ export class ServicesService implements IServicesService {
             localField: "_id",
             foreignField: "discount.id",
             as: "usedCount",
+            pipeline: [
+              {
+                $match: {
+                  companyId: this.companyId,
+                },
+              },
+            ],
           },
         },
         {
@@ -1228,19 +1375,20 @@ export class ServicesService implements IServicesService {
         query,
         result: { total: response.total, count: response.items.length },
       },
-      "Fetched discounts"
+      "Fetched discounts",
     );
 
     return response;
   }
 
   public async createDiscount(
-    discount: DiscountUpdateModel
+    discount: DiscountUpdateModel,
   ): Promise<Discount> {
     const logger = this.loggerFactory("createDiscount");
     logger.debug({ discount }, "Creating discount");
     const dbDiscount: Discount = {
       ...discount,
+      companyId: this.companyId,
       _id: new ObjectId().toString(),
       updatedAt: DateTime.utc().toJSDate(),
     };
@@ -1257,7 +1405,7 @@ export class ServicesService implements IServicesService {
 
     logger.debug(
       { discountId: dbDiscount._id, name: dbDiscount.name },
-      "Discount created"
+      "Discount created",
     );
 
     return dbDiscount;
@@ -1265,19 +1413,19 @@ export class ServicesService implements IServicesService {
 
   public async updateDiscount(
     id: string,
-    update: DiscountUpdateModel
+    update: DiscountUpdateModel,
   ): Promise<void> {
     const logger = this.loggerFactory("updateDiscount");
     logger.debug({ id, update }, "Updating discount");
     const db = await getDbConnection();
     const discounts = db.collection<Discount>(DISCOUNTS_COLLECTION_NAME);
 
-    const { _id, ...updateObj } = update as Discount; // Remove fields in case it slips here
+    const { _id, companyId, ...updateObj } = update as Discount; // Remove fields in case it slips here
 
     if (!this.checkDiscountUniqueNameAndCode(update.name, update.codes, id)) {
       logger.error(
         { discount: update },
-        "Discount name or code already exists"
+        "Discount name or code already exists",
       );
       throw new Error("Name or code already exists");
     }
@@ -1287,10 +1435,11 @@ export class ServicesService implements IServicesService {
     await discounts.updateOne(
       {
         _id: id,
+        companyId: this.companyId,
       },
       {
         $set: updateObj,
-      }
+      },
     );
 
     logger.debug({ discountId: id, name: update.name }, "Discount updated");
@@ -1307,7 +1456,10 @@ export class ServicesService implements IServicesService {
         const db = client.db(undefined, { ignoreUndefined: true });
         const discounts = db.collection<Discount>(DISCOUNTS_COLLECTION_NAME);
 
-        const discount = await discounts.findOneAndDelete({ _id: id });
+        const discount = await discounts.findOneAndDelete({
+          _id: id,
+          companyId: this.companyId,
+        });
         if (!discount) {
           logger.warn({ discountId: id }, "Discount not found");
           return null;
@@ -1340,6 +1492,7 @@ export class ServicesService implements IServicesService {
             _id: {
               $in: ids,
             },
+            companyId: this.companyId,
           });
 
         logger.debug({ ids, discountsDeletedCount }, "Discounts deleted");
@@ -1352,7 +1505,7 @@ export class ServicesService implements IServicesService {
   public async checkDiscountUniqueNameAndCode(
     name: string,
     codes: string[],
-    id?: string
+    id?: string,
   ): Promise<{ name: boolean; code: Record<string, boolean> }> {
     const logger = this.loggerFactory("checkDiscountUniqueNameAndCode");
     logger.debug({ name, codes, id }, "Checking discount unique name and code");
@@ -1362,9 +1515,10 @@ export class ServicesService implements IServicesService {
 
     const nameFilter: Filter<Discount> = {
       name,
+      companyId: this.companyId,
     };
 
-    const codeFilter: Filter<Discount> = {};
+    const codeFilter: Filter<Discount> = { companyId: this.companyId };
 
     if (id) {
       nameFilter._id = {
@@ -1393,7 +1547,7 @@ export class ServicesService implements IServicesService {
                   },
                 ],
               }),
-              {}
+              {},
             ),
           },
         ])
@@ -1412,21 +1566,21 @@ export class ServicesService implements IServicesService {
               ...map,
               [code]: !val[0]?.count,
             }),
-            {}
+            {},
           )
         : {},
     };
 
     logger.debug(
       { name, codes, id, result },
-      "Discount unique name and code check result"
+      "Discount unique name and code check result",
     );
 
     return result;
   }
 
   public async applyDiscount(
-    request: ApplyCustomerDiscountRequest
+    request: ApplyCustomerDiscountRequest,
   ): Promise<Discount | null> {
     const logger = this.loggerFactory("applyDiscount");
     logger.debug({ request }, "Applying discount");
@@ -1447,7 +1601,7 @@ export class ServicesService implements IServicesService {
     ) {
       logger.debug(
         { request, discount },
-        "Discount start date is in the future"
+        "Discount start date is in the future",
       );
       return null;
     }
@@ -1467,7 +1621,7 @@ export class ServicesService implements IServicesService {
     ) {
       logger.debug(
         { request, discount },
-        "Discount appointment start date is in the future"
+        "Discount appointment start date is in the future",
       );
       return null;
     }
@@ -1479,7 +1633,7 @@ export class ServicesService implements IServicesService {
     ) {
       logger.debug(
         { request, discount },
-        "Discount appointment end date is in the past"
+        "Discount appointment end date is in the past",
       );
       return null;
     }
@@ -1492,7 +1646,7 @@ export class ServicesService implements IServicesService {
         ) {
           logger.debug(
             { request, discount },
-            "Discount limit to option not found"
+            "Discount limit to option not found",
           );
           return false;
         }
@@ -1500,14 +1654,14 @@ export class ServicesService implements IServicesService {
         if (limit.addons?.length) {
           const hasAddonIntersection = limit.addons.some((bundle) =>
             bundle.ids.every(({ id: bId }) =>
-              request.addons?.some((aId) => aId === bId)
-            )
+              request.addons?.some((aId) => aId === bId),
+            ),
           );
 
           if (!hasAddonIntersection) {
             logger.debug(
               { request, discount },
-              "Discount limit to addon not found"
+              "Discount limit to addon not found",
             );
             return false;
           }
@@ -1524,12 +1678,16 @@ export class ServicesService implements IServicesService {
 
     const db = await getDbConnection();
     const appointments = db.collection<AppointmentEntity>(
-      APPOINTMENTS_COLLECTION_NAME
+      APPOINTMENTS_COLLECTION_NAME,
     );
 
     if (discount.maxUsage) {
       const usage = await appointments.countDocuments({
         "discount.id": discount._id,
+        companyId: this.companyId,
+        status: {
+          $in: ["confirmed", "pending"],
+        },
       });
 
       if (usage >= discount.maxUsage) {
@@ -1542,12 +1700,16 @@ export class ServicesService implements IServicesService {
       const usage = await appointments.countDocuments({
         "discount.id": discount._id,
         customerId: request.customerId,
+        companyId: this.companyId,
+        status: {
+          $in: ["confirmed", "pending"],
+        },
       });
 
       if (usage >= discount.maxUsagePerCustomer) {
         logger.debug(
           { request, discount },
-          "Discount max usage per customer reached"
+          "Discount max usage per customer reached",
         );
         return null;
       }
@@ -1575,6 +1737,7 @@ export class ServicesService implements IServicesService {
             $and: [
               {
                 enabled: true,
+                companyId: this.companyId,
               },
               {
                 $or: [

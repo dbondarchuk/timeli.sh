@@ -1,13 +1,13 @@
 {
-  "name": "@vivid/utils",
+  "name": "@timelish/utils",
   "version": "0.0.1",
   "private": true,
   "sideEffects": false,
   "scripts": {
     "type-check": "tsc --pretty --noEmit",
     "type-check:ci": "tsc-absolute --pretty --noEmit",
-    "lint": "eslint . --ext .ts,.js,.tsx,.jsx",
-    "lint:fix": "eslint . --ext .ts,.js,.tsx,.jsx --fix"
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "main": "./src/index.ts",
   "devDependencies": {
@@ -17,21 +17,23 @@
     "@types/mustache": "^4.2.5",
     "@types/node": "^20",
     "@types/uuid": "^10.0.0",
-    "@vivid/eslint-config": "*",
-    "@vivid/typescript-config": "*",
-    "eslint": "^8.57.0",
+    "@timelish/eslint-config": "*",
+    "@timelish/typescript-config": "*",
     "typescript": "5.5.4"
   },
   "dependencies": {
     "color": "^5.0.0",
     "content-type": "1.0.4",
+    "fast-equals": "^5.2.2",
     "luxon": "^3.5.0",
     "mime-type": "^5.0.0",
     "mustache": "^4.2.0",
     "raw-body": "2.4.1",
-    "uuid": "^10.0.0",
-    "next": "15.2.1",
     "react": "19.0.0",
-    "react-dom": "19.0.0"
+    "react-dom": "19.0.0",
+    "uuid": "^10.0.0"
+  },
+  "peerDependencies": {
+    "next": "15.5.6"
   }
 }

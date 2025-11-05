@@ -2,7 +2,7 @@
 
 import React from "react";
 
-import { cn } from "@vivid/ui";
+import { cn } from "@timelish/ui";
 import { DndPlugin } from "@udecode/plate-dnd";
 import { useBlockSelected } from "@udecode/plate-selection/react";
 import { usePluginOption } from "@udecode/plate/react";
@@ -20,7 +20,7 @@ export const blockSelectionVariants = cva(
         true: "opacity-100",
       },
     },
-  }
+  },
 );
 
 export function BlockSelection({
@@ -39,7 +39,7 @@ export function BlockSelection({
         blockSelectionVariants({
           active: isBlockSelected && !isDragging,
         }),
-        className
+        className,
       )}
       {...props}
     />

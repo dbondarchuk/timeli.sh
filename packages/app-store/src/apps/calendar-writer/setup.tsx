@@ -1,11 +1,9 @@
 "use client";
 
-import { AppSetupProps } from "@vivid/types";
+import { useI18n } from "@timelish/i18n";
+import { AppSetupProps } from "@timelish/types";
 import {
-  AppSelector,
   Button,
-  ConnectedAppNameAndLogo,
-  ConnectedAppStatusMessage,
   Form,
   FormControl,
   FormField,
@@ -13,9 +11,13 @@ import {
   FormLabel,
   FormMessage,
   InfoTooltip,
-  Input,
   Spinner,
-} from "@vivid/ui";
+} from "@timelish/ui";
+import {
+  AppSelector,
+  ConnectedAppNameAndLogo,
+  ConnectedAppStatusMessage,
+} from "@timelish/ui-admin";
 import React from "react";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
 import { CalendarWriterApp } from "./app";
@@ -23,7 +25,11 @@ import {
   CalendarWriterConfiguration,
   calendarWriterConfigurationSchema,
 } from "./models";
-import { useI18n } from "@vivid/i18n";
+import {
+  CalendarWriterAdminKeys,
+  calendarWriterAdminNamespace,
+  CalendarWriterAdminNamespace,
+} from "./translations/types";
 
 export const CalendarWriterAppSetup: React.FC<AppSetupProps> = ({
   onSuccess,
@@ -39,7 +45,9 @@ export const CalendarWriterAppSetup: React.FC<AppSetupProps> = ({
       onError,
     });
 
-  const t = useI18n("apps");
+  const t = useI18n<CalendarWriterAdminNamespace, CalendarWriterAdminKeys>(
+    calendarWriterAdminNamespace,
+  );
 
   return (
     <>
@@ -52,9 +60,9 @@ export const CalendarWriterAppSetup: React.FC<AppSetupProps> = ({
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel>
-                    {t("calendarWriter.form.calendarStorage.label")}
+                    {t("form.calendarStorage.label")}
                     <InfoTooltip>
-                      {t("calendarWriter.form.calendarStorage.tooltip")}
+                      {t("form.calendarStorage.tooltip")}
                     </InfoTooltip>
                   </FormLabel>
                   <FormControl>
@@ -80,20 +88,23 @@ export const CalendarWriterAppSetup: React.FC<AppSetupProps> = ({
               className="inline-flex gap-2 items-center w-full"
             >
               {isLoading && <Spinner />}
-              <span>
-                {existingAppId
-                  ? t("calendarWriter.form.update")
-                  : t("calendarWriter.form.add")}
+              <span className="inline-flex gap-2 items-center">
+                {t.rich(existingAppId ? "form.update" : "form.add", {
+                  app: () => (
+                    <ConnectedAppNameAndLogo appName={CalendarWriterApp.name} />
+                  ),
+                })}
               </span>
-              <ConnectedAppNameAndLogo
-                app={{ name: CalendarWriterApp.name }}
-                t={t}
-              />
             </Button>
           </div>
         </form>
       </Form>
-      {appStatus && <ConnectedAppStatusMessage app={appStatus} t={t} />}
+      {appStatus && (
+        <ConnectedAppStatusMessage
+          status={appStatus.status}
+          statusText={appStatus.statusText}
+        />
+      )}
     </>
   );
 };

@@ -10,7 +10,7 @@ Reply text:
 *{{ reply.message }}*
 
 {{#customer}}
-Customer: [{{ name }}]({{ config.url }}/admin/dashboard/customers/{{_id}})
+Customer: [{{ name }}]({{ adminUrl }}/dashboard/customers/{{_id}})
 {{/customer}}
 
 {{#_id}}
@@ -28,13 +28,13 @@ Phone: {{ fields.phone }}
 
 {{/restFields}} {{#images}}
 
-![{{description}}]({{ config.url }}/assets/{{filename}})
+![{{description}}]({{ websiteUrl }}/assets/{{filename}})
 
 {{filename}}
 
 {{/images}} {{#files}}
 
-File: [{{filename}}]({{ config.url }}/assets/{{filename}})
+File: [{{filename}}]({{ websiteUrl }}/assets/{{filename}})
 
 {{/files}}
 
@@ -49,13 +49,13 @@ Addons selected:
 - None
 {{/addons}}
 
-Time: {{ dateTime }}
+Time: {{ dateTime.full}}
 
 Duration: {{#duration.hours}}{{.}} hr {{/duration.hours}}{{#duration.minutes}}{{.}} min{{/duration.minutes}}
 
 {{#discount}}
 
-Promo code: {{code}} (-\${{discountAmountFormatted}}) ([{{name}}]({{ config.url }}/admin/dashboard/services/discounts/{{id}}))
+Promo code: {{code}} (-\${{discountAmountFormatted}}) ([{{name}}]({{ adminUrl }}/dashboard/services/discounts/{{id}}))
 
 {{/discount}} {{#totalPriceFormatted}}
 

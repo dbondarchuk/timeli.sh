@@ -1,0 +1,59 @@
+{
+  "tab": {
+    "title": "Financial overview"
+  },
+  "app": {
+    "displayName": "Financial overview",
+    "description": "Financial Overview adds a new dashboard tab with clear, simple financial metrics — giving you a quick snapshot of your revenue, payments, and performance at a glance."
+  },
+  "view": {
+    "title": "Financial overview",
+    "estimatedRevenue": "Estimated Revenue",
+    "totalPayments": "Total Payments",
+    "netPayments": "Net Payments",
+    "activeAppointments": "Active Appointments",
+    "declinedAppointments": "Declined Appointments",
+    "recentPayments": "Recent Payments",
+    "paymentMethods": "Payment Methods",
+    "noPayments": "No payments found",
+    "amount": "Amount",
+    "status": "Status",
+    "date": "Date",
+    "customer": "Customer",
+    "service": "Service",
+    "dateRange": "Date Range",
+    "rangeOptions": {
+      "thisMonth": "This Month",
+      "lastMonth": "Last Month",
+      "thisWeek": "This Week",
+      "lastWeek": "Last Week",
+      "thisYear": "This Year",
+      "lastYear": "Last Year",
+      "allTime": "All Time",
+      "custom": "Custom Range"
+    },
+    "refunded": "Refunded",
+    "refundDate": "Refund Date",
+    "refundAmount": "Refund Amount",
+    "viewAppointment": "View Appointment",
+    "revenueAndPayments": "Revenue and Payments",
+    "appointmentStatusDistribution": "Appointment Status",
+    "serviceDistribution": "Options",
+    "appointmentsCount": "{count, plural, =1 {1 appointment} other {# appointments}}",
+    "estimatedRevenueFormat": "Estimated revenue: {revenue}",
+    "financialOverview": "Financial Overview",
+    "customerAcquisitionVsRetention": "New vs Returning Customers",
+    "timeGrouping": {
+      "label": "Time Grouping",
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "monthly": "Monthly"
+    }
+  },
+  "setup": {
+    "connect": "Connect with <app></app>"
+  },
+  "statusText": {
+    "successfully_set_up": "Successfully set up financial overview"
+  }
+}

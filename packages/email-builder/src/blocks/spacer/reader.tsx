@@ -1,11 +1,6 @@
-import { CSSProperties } from "react";
-import { SpacerProps, SpacerPropsDefaults } from "./schema";
+import { SpacerProps } from "./schema";
+import { Spacer } from "./spacer";
 
-export const Spacer = ({ props, style }: SpacerProps) => {
-  const styles: CSSProperties = {
-    height: props?.height ?? SpacerPropsDefaults.props.height,
-    backgroundColor: style?.backgroundColor ?? undefined,
-  };
-
-  return <div style={styles} />;
+export const SpacerReader = ({ props, style }: SpacerProps) => {
+  return <Spacer props={props} style={style} />;
 };

@@ -4,7 +4,7 @@ import { memo, useCallback } from "react";
 
 import type { UseEmojiPickerType } from "@udecode/plate-emoji/react";
 
-import { cn } from "@vivid/ui";
+import { cn } from "@timelish/ui";
 import { type Emoji, type GridRow, EmojiSettings } from "@udecode/plate-emoji";
 
 export type EmojiButtonProps = {
@@ -60,7 +60,7 @@ const Button = memo(
         </span>
       </button>
     );
-  }
+  },
 );
 Button.displayName = "Button";
 
@@ -77,7 +77,7 @@ const RowOfButtons = memo(
         />
       ))}
     </div>
-  )
+  ),
 );
 RowOfButtons.displayName = "RowOfButtons";
 
@@ -100,7 +100,7 @@ export function EmojiPickerContent({
         ? visibleCategories.get(categoryId)
         : false;
     },
-    [visibleCategories]
+    [visibleCategories],
   );
 
   const EmojiList = useCallback(() => {
@@ -187,7 +187,7 @@ export function EmojiPickerContent({
         "[&::-webkit-scrollbar]:w-4",
         "[&::-webkit-scrollbar-button]:hidden [&::-webkit-scrollbar-button]:size-0",
         "[&::-webkit-scrollbar-thumb]:min-h-11 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-muted [&::-webkit-scrollbar-thumb]:hover:bg-muted-foreground/25",
-        "[&::-webkit-scrollbar-thumb]:border-4 [&::-webkit-scrollbar-thumb]:border-solid [&::-webkit-scrollbar-thumb]:border-popover [&::-webkit-scrollbar-thumb]:bg-clip-padding"
+        "[&::-webkit-scrollbar-thumb]:border-4 [&::-webkit-scrollbar-thumb]:border-solid [&::-webkit-scrollbar-thumb]:border-popover [&::-webkit-scrollbar-thumb]:bg-clip-padding",
       )}
       data-id="scroll"
     >

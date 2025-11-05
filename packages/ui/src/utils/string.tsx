@@ -1,10 +1,10 @@
+import { resolve } from "@timelish/utils";
 import { Fragment, ReactNode } from "react";
 import reactStringReplace from "react-string-replace";
-import { resolve } from "@vivid/utils";
 
 export function formatJsx(
   template: string,
-  args: Record<string, any | ReactNode>
+  args: Record<string, any | ReactNode>,
 ) {
   return reactStringReplace(
     template,
@@ -16,6 +16,6 @@ export function formatJsx(
           {typeof resolved != "undefined" ? resolved : match}
         </Fragment>
       );
-    }
+    },
   );
 }

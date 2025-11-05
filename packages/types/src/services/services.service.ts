@@ -38,9 +38,10 @@ export interface IServicesService {
     query: Query & {
       type?: FieldType[];
     },
-    includeUsage?: T
+    includeUsage?: T,
   ): Promise<WithTotal<FieldsType<T>>>;
   getFieldsById(ids: string[]): Promise<ServiceField[]>;
+  getFieldsByNames(names: string[]): Promise<ServiceField[]>;
   createField(field: ServiceFieldUpdateModel): Promise<ServiceField>;
   updateField(id: string, update: ServiceFieldUpdateModel): Promise<void>;
   deleteField(id: string): Promise<ServiceField | null>;
@@ -51,7 +52,7 @@ export interface IServicesService {
   getAddon(id: string): Promise<AppointmentAddon | null>;
   getAddons<T extends boolean | undefined = undefined>(
     query: Query,
-    includeUsage?: T
+    includeUsage?: T,
   ): Promise<WithTotal<AddonsType<T>>>;
   getAddonsById(ids: string[]): Promise<AppointmentAddon[]>;
   createAddon(addon: AppointmentAddonUpdateModel): Promise<AppointmentAddon>;
@@ -62,7 +63,9 @@ export interface IServicesService {
 
   /** Options */
   getOption(id: string): Promise<AppointmentOption | null>;
-  getOptions(query: Query): Promise<WithTotal<AppointmentOption>>;
+  getOptions(
+    query: Query & { priorityIds?: string[] },
+  ): Promise<WithTotal<AppointmentOption>>;
   createOption(addon: AppointmentOptionUpdateModel): Promise<AppointmentOption>;
   updateOption(id: string, update: AppointmentOptionUpdateModel): Promise<void>;
   deleteOption(id: string): Promise<AppointmentOption | null>;
@@ -79,7 +82,7 @@ export interface IServicesService {
       type?: DiscountType[];
       range?: DateRange;
       priorityIds?: string[];
-    }
+    },
   ): Promise<
     WithTotal<
       Discount & {
@@ -94,11 +97,11 @@ export interface IServicesService {
   checkDiscountUniqueNameAndCode(
     name: string,
     codes: string[],
-    id?: string
+    id?: string,
   ): Promise<{ name: boolean; code: Record<string, boolean> }>;
 
   applyDiscount(
-    request: ApplyCustomerDiscountRequest
+    request: ApplyCustomerDiscountRequest,
   ): Promise<Discount | null>;
 
   hasActiveDiscounts(date: Date): Promise<boolean>;

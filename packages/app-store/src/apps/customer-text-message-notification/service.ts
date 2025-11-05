@@ -1,4 +1,4 @@
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
 import {
   Appointment,
   AppointmentStatus,
@@ -7,75 +7,94 @@ import {
   IAppointmentHook,
   IConnectedApp,
   IConnectedAppProps,
-} from "@vivid/types";
+} from "@timelish/types";
 import { CustomerTextMessageNotificationConfiguration } from "./models";
+import {
+  CustomerTextMessageNotificationAdminAllKeys,
+  CustomerTextMessageNotificationAdminKeys,
+  CustomerTextMessageNotificationAdminNamespace,
+} from "./translations/types";
 
 import {
+  getAdminUrl,
   getArguments,
   getPhoneField,
+  getWebsiteUrl,
   templateSafeWithError,
-} from "@vivid/utils";
+} from "@timelish/utils";
 
 export default class CustomerTextMessageNotificationConnectedApp
   implements IConnectedApp, IAppointmentHook
 {
-  protected readonly loggerFactory = getLoggerFactory(
-    "CustomerTextMessageNotificationConnectedApp"
-  );
+  protected readonly loggerFactory: LoggerFactory;
 
-  public constructor(protected readonly props: IConnectedAppProps) {}
+  public constructor(protected readonly props: IConnectedAppProps) {
+    this.loggerFactory = getLoggerFactory(
+      "CustomerTextMessageNotificationConnectedApp",
+      props.companyId,
+    );
+  }
 
   public async processRequest(
     appData: ConnectedAppData,
-    data: CustomerTextMessageNotificationConfiguration
-  ): Promise<ConnectedAppStatusWithText> {
+    data: CustomerTextMessageNotificationConfiguration,
+  ): Promise<
+    ConnectedAppStatusWithText<
+      CustomerTextMessageNotificationAdminNamespace,
+      CustomerTextMessageNotificationAdminKeys
+    >
+  > {
     const logger = this.loggerFactory("processRequest");
     logger.debug(
       { appId: appData._id },
-      "Processing customer text message notification configuration request"
+      "Processing customer text message notification configuration request",
     );
 
     try {
-      const defaultApps = await this.props.services
-        .ConfigurationService()
-        .getConfiguration("defaultApps");
+      const defaultApps =
+        await this.props.services.configurationService.getConfiguration(
+          "defaultApps",
+        );
 
       logger.debug(
         { appId: appData._id },
-        "Retrieved default apps configuration"
+        "Retrieved default apps configuration",
       );
 
       try {
         const textMessageAppId = defaultApps.textMessage?.appId;
         logger.debug(
           { appId: appData._id, textMessageAppId },
-          "Retrieved text message app ID"
+          "Retrieved text message app ID",
         );
 
-        await this.props.services
-          .ConnectedAppsService()
-          .getApp(textMessageAppId!);
+        await this.props.services.connectedAppsService.getApp(
+          textMessageAppId!,
+        );
 
         logger.debug(
           { appId: appData._id, textMessageAppId },
-          "Text message app is properly configured"
+          "Text message app is properly configured",
         );
       } catch (error: any) {
         logger.error(
           { appId: appData._id, error },
-          "Text message sender default app is not configured"
+          "Text message sender default app is not configured",
         );
         return {
           status: "failed",
           statusText:
-            "customerTextMessageNotification.statusText.text_message_app_not_configured",
+            "app_customer-text-message-notification_admin.statusText.text_message_app_not_configured",
         };
       }
 
-      const status: ConnectedAppStatusWithText = {
+      const status: ConnectedAppStatusWithText<
+        CustomerTextMessageNotificationAdminNamespace,
+        CustomerTextMessageNotificationAdminKeys
+      > = {
         status: "connected",
         statusText:
-          "customerTextMessageNotification.statusText.successfully_set_up",
+          "app_customer-text-message-notification_admin.statusText.successfully_set_up",
       };
 
       this.props.update({
@@ -85,20 +104,20 @@ export default class CustomerTextMessageNotificationConnectedApp
 
       logger.info(
         { appId: appData._id, status: status.status },
-        "Successfully configured customer text message notification"
+        "Successfully configured customer text message notification",
       );
 
       return status;
     } catch (error: any) {
       logger.error(
         { appId: appData._id, error },
-        "Error processing customer text message notification configuration"
+        "Error processing customer text message notification configuration",
       );
 
       this.props.update({
         status: "failed",
         statusText:
-          "customerTextMessageNotification.statusText.error_processing_configuration",
+          "app_customer-text-message-notification_admin.statusText.error_processing_configuration" satisfies CustomerTextMessageNotificationAdminAllKeys,
       });
 
       throw error;
@@ -108,12 +127,12 @@ export default class CustomerTextMessageNotificationConnectedApp
   public async onAppointmentCreated(
     appData: ConnectedAppData,
     appointment: Appointment,
-    confirmed: boolean
+    confirmed: boolean,
   ): Promise<void> {
     const logger = this.loggerFactory("onAppointmentCreated");
     logger.debug(
       { appId: appData._id, appointmentId: appointment._id, confirmed },
-      "Appointment created, sending customer text message notification"
+      "Appointment created, sending customer text message notification",
     );
 
     try {
@@ -121,23 +140,23 @@ export default class CustomerTextMessageNotificationConnectedApp
         appData,
         appointment,
         confirmed ? "confirmed" : "pending",
-        "newRequest"
+        "newRequest",
       );
 
       logger.info(
         { appId: appData._id, appointmentId: appointment._id, confirmed },
-        "Successfully sent customer text message notification for new appointment"
+        "Successfully sent customer text message notification for new appointment",
       );
     } catch (error: any) {
       logger.error(
         { appId: appData._id, appointmentId: appointment._id, error },
-        "Error sending customer text message notification for new appointment"
+        "Error sending customer text message notification for new appointment",
       );
 
       this.props.update({
         status: "failed",
         statusText:
-          "customerTextMessageNotification.statusText.error_sending_customer_text_message_notification_for_new_appointment",
+          "app_customer-text-message-notification_admin.statusText.error_sending_customer_text_message_notification_for_new_appointment" satisfies CustomerTextMessageNotificationAdminAllKeys,
       });
 
       throw error;
@@ -147,12 +166,12 @@ export default class CustomerTextMessageNotificationConnectedApp
   public async onAppointmentStatusChanged(
     appData: ConnectedAppData,
     appointment: Appointment,
-    newStatus: AppointmentStatus
+    newStatus: AppointmentStatus,
   ): Promise<void> {
     const logger = this.loggerFactory("onAppointmentStatusChanged");
     logger.debug(
       { appId: appData._id, appointmentId: appointment._id, newStatus },
-      "Appointment status changed, sending customer text message notification"
+      "Appointment status changed, sending customer text message notification",
     );
 
     try {
@@ -160,7 +179,7 @@ export default class CustomerTextMessageNotificationConnectedApp
 
       logger.info(
         { appId: appData._id, appointmentId: appointment._id, newStatus },
-        "Successfully sent customer text message notification for status change"
+        "Successfully sent customer text message notification for status change",
       );
     } catch (error: any) {
       logger.error(
@@ -170,13 +189,13 @@ export default class CustomerTextMessageNotificationConnectedApp
           newStatus,
           error,
         },
-        "Error sending customer text message notification for status change"
+        "Error sending customer text message notification for status change",
       );
 
       this.props.update({
         status: "failed",
         statusText:
-          "customerTextMessageNotification.statusText.error_sending_customer_text_message_notification_for_status_change",
+          "app_customer-text-message-notification_admin.statusText.error_sending_customer_text_message_notification_for_status_change" satisfies CustomerTextMessageNotificationAdminAllKeys,
       });
 
       throw error;
@@ -187,17 +206,35 @@ export default class CustomerTextMessageNotificationConnectedApp
     appData: ConnectedAppData,
     appointment: Appointment,
     newTime: Date,
-    newDuration: number
+    newDuration: number,
+    _?: Date,
+    __?: number,
+    doNotNotifyCustomer?: boolean,
   ): Promise<void> {
     const logger = this.loggerFactory("onAppointmentRescheduled");
+    if (doNotNotifyCustomer) {
+      logger.debug(
+        {
+          appId: appData._id,
+          appointmentId: appointment._id,
+          newTime: newTime.toISOString(),
+          newDuration,
+          doNotNotifyCustomer,
+        },
+        "Appointment rescheduled, not sending customer text message notification - do not notify customer",
+      );
+      return;
+    }
+
     logger.debug(
       {
         appId: appData._id,
         appointmentId: appointment._id,
         newTime: newTime.toISOString(),
         newDuration,
+        doNotNotifyCustomer,
       },
-      "Appointment rescheduled, sending customer text message notification"
+      "Appointment rescheduled, sending customer text message notification",
     );
 
     const newAppointment: Appointment = {
@@ -211,7 +248,7 @@ export default class CustomerTextMessageNotificationConnectedApp
         appData,
         newAppointment,
         "rescheduled",
-        "rescheduled"
+        "rescheduled",
       );
 
       logger.info(
@@ -221,7 +258,7 @@ export default class CustomerTextMessageNotificationConnectedApp
           newTime: newTime.toISOString(),
           newDuration,
         },
-        "Successfully sent customer text message notification for rescheduled appointment"
+        "Successfully sent customer text message notification for rescheduled appointment",
       );
     } catch (error: any) {
       logger.error(
@@ -232,13 +269,13 @@ export default class CustomerTextMessageNotificationConnectedApp
           newDuration,
           error,
         },
-        "Error sending customer text message notification for rescheduled appointment"
+        "Error sending customer text message notification for rescheduled appointment",
       );
 
       this.props.update({
         status: "failed",
         statusText:
-          "customerTextMessageNotification.statusText.error_sending_customer_text_message_notification_for_rescheduled_appointment",
+          "app_customer-text-message-notification_admin.statusText.error_sending_customer_text_message_notification_for_rescheduled_appointment" satisfies CustomerTextMessageNotificationAdminAllKeys,
       });
 
       throw error;
@@ -251,12 +288,12 @@ export default class CustomerTextMessageNotificationConnectedApp
     status: keyof CustomerTextMessageNotificationConfiguration["templates"],
     initiator:
       | keyof CustomerTextMessageNotificationConfiguration["templates"]
-      | "newRequest"
+      | "newRequest",
   ) {
     const logger = this.loggerFactory("sendNotification");
     logger.debug(
       { appId: appData._id, appointmentId: appointment._id, status, initiator },
-      "Sending customer text message notification"
+      "Sending customer text message notification",
     );
 
     try {
@@ -266,23 +303,22 @@ export default class CustomerTextMessageNotificationConnectedApp
       if (!templateId) {
         logger.warn(
           { appId: appData._id, appointmentId: appointment._id, status },
-          "No template ID configured for status, skipping text message notification"
+          "No template ID configured for status, skipping text message notification",
         );
         return;
       }
 
       logger.debug(
         { appId: appData._id, appointmentId: appointment._id, templateId },
-        "Getting text message template"
+        "Getting text message template",
       );
 
-      const template = await this.props.services
-        .TemplatesService()
-        .getTemplate(templateId);
+      const template =
+        await this.props.services.templatesService.getTemplate(templateId);
       if (!template) {
         logger.error(
           { appId: appData._id, appointmentId: appointment._id, templateId },
-          "Text message template not found"
+          "Text message template not found",
         );
         console.error(`Can't find template with id ${templateId}`);
         return;
@@ -290,20 +326,23 @@ export default class CustomerTextMessageNotificationConnectedApp
 
       logger.debug(
         { appId: appData._id, appointmentId: appointment._id },
-        "Retrieved text message template"
+        "Retrieved text message template",
       );
 
-      const config = await this.props.services
-        .ConfigurationService()
-        .getConfigurations("booking", "general", "social");
+      const config =
+        await this.props.services.configurationService.getConfigurations(
+          "booking",
+          "general",
+          "social",
+        );
 
       logger.debug(
         { appId: appData._id, appointmentId: appointment._id },
-        "Retrieved configuration for text message notification"
+        "Retrieved configuration for text message notification",
       );
 
       const phoneFields = (
-        await this.props.services.ServicesService().getFields({
+        await this.props.services.servicesService.getFields({
           type: ["phone"],
         })
       ).items;
@@ -314,7 +353,7 @@ export default class CustomerTextMessageNotificationConnectedApp
           appointmentId: appointment._id,
           phoneFieldCount: phoneFields.length,
         },
-        "Retrieved phone fields"
+        "Retrieved phone fields",
       );
 
       const phone =
@@ -322,17 +361,33 @@ export default class CustomerTextMessageNotificationConnectedApp
       if (!phone) {
         logger.warn(
           { appId: appData._id, appointmentId: appointment._id },
-          "Can't find the phone field for appointment"
+          "Can't find the phone field for appointment",
         );
         console.warn(
-          `Can't find the phone field for appointment ${appointment._id}`
+          `Can't find the phone field for appointment ${appointment._id}`,
         );
         return;
       }
 
       logger.debug(
         { appId: appData._id, appointmentId: appointment._id, phone },
-        "Found phone number for customer"
+        "Found phone number for customer",
+      );
+
+      const organization =
+        await this.props.services.organizationService.getOrganization();
+      if (!organization) {
+        logger.error(
+          { appId: appData._id, appointmentId: appointment._id },
+          "Organization not found",
+        );
+        return;
+      }
+
+      const adminUrl = getAdminUrl();
+      const websiteUrl = getWebsiteUrl(
+        organization.slug,
+        config.general.domain,
       );
 
       const args = getArguments({
@@ -341,17 +396,19 @@ export default class CustomerTextMessageNotificationConnectedApp
         customer: appointment.customer,
         useAppointmentTimezone: true,
         locale: config.general.language,
+        adminUrl,
+        websiteUrl,
       });
 
       logger.debug(
         { appId: appData._id, appointmentId: appointment._id },
-        "Generated template arguments"
+        "Generated template arguments",
       );
 
       const templatedBody = templateSafeWithError(
         template.value as string,
         args,
-        true
+        true,
       );
 
       logger.debug(
@@ -360,15 +417,15 @@ export default class CustomerTextMessageNotificationConnectedApp
           appointmentId: appointment._id,
           bodyLength: templatedBody.length,
         },
-        "Generated templated message body"
+        "Generated templated message body",
       );
 
       logger.debug(
         { appId: appData._id, appointmentId: appointment._id, phone },
-        "Sending text message notification"
+        "Sending text message notification",
       );
 
-      await this.props.services.NotificationService().sendTextMessage({
+      await this.props.services.notificationService.sendTextMessage({
         phone,
         body: templatedBody,
         webhookData: {
@@ -377,17 +434,18 @@ export default class CustomerTextMessageNotificationConnectedApp
         },
         appointmentId: appointment._id,
         participantType: "customer",
-        handledBy: `customerTextMessageNotification.handlers.${initiator}`,
+        handledBy:
+          `app_customer-text-message-notification_admin.handlers.${initiator}` satisfies CustomerTextMessageNotificationAdminAllKeys,
       });
 
       logger.info(
         { appId: appData._id, appointmentId: appointment._id, status, phone },
-        "Successfully sent customer text message notification"
+        "Successfully sent customer text message notification",
       );
     } catch (error: any) {
       logger.error(
         { appId: appData._id, appointmentId: appointment._id, status, error },
-        "Error sending customer text message notification"
+        "Error sending customer text message notification",
       );
       throw error;
     }

@@ -1,17 +1,17 @@
-import { CSSProperties, JSX } from "react";
-import { ColumnsContainerProps, ColumnsContainerPropsDefaults } from "./schema";
+import type { NestedOmit } from "@timelish/types";
+import { CSSProperties, forwardRef, JSX } from "react";
 import { getPadding } from "../../style-inputs/helpers/styles";
-import type { NestedOmit } from "@vivid/utils";
+import { ColumnsContainerProps, ColumnsContainerPropsDefaults } from "./schema";
 
 type TColumn = JSX.Element | JSX.Element[] | null;
 
-export const BaseColumnsContainer = ({
-  style,
-  props,
-  columns,
-}: NestedOmit<ColumnsContainerProps, "props.columns"> & {
-  columns?: TColumn[];
-}) => {
+export const BaseColumnsContainer = forwardRef<
+  HTMLDivElement,
+  NestedOmit<ColumnsContainerProps, "props.columns"> & {
+    columns?: TColumn[];
+    onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
+  }
+>(({ style, props, columns, onClick }, ref) => {
   const wStyle: CSSProperties = {
     backgroundColor: style?.backgroundColor ?? undefined,
     padding: getPadding(style?.padding),
@@ -29,7 +29,7 @@ export const BaseColumnsContainer = ({
   };
 
   return (
-    <div style={wStyle}>
+    <div style={wStyle} ref={ref} onClick={onClick}>
       <table
         align="center"
         width="100%"
@@ -47,7 +47,7 @@ export const BaseColumnsContainer = ({
       </table>
     </div>
   );
-};
+});
 
 type Props = {
   props: {
@@ -84,7 +84,7 @@ const TableCell = ({ index, props, columns }: Props) => {
 
 function getPaddingBefore(
   index: number,
-  { columnsGap, columnsCount }: Props["props"]
+  { columnsGap, columnsCount }: Props["props"],
 ) {
   if (index === 0) {
     return 0;
@@ -100,7 +100,7 @@ function getPaddingBefore(
 
 function getPaddingAfter(
   index: number,
-  { columnsGap, columnsCount }: Props["props"]
+  { columnsGap, columnsCount }: Props["props"],
 ) {
   if (columnsCount === 2) {
     if (index === 0) {

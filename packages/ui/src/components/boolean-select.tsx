@@ -1,5 +1,5 @@
+import { useI18n } from "@timelish/i18n";
 import React from "react";
-import { useI18n } from "@vivid/i18n";
 import {
   Select,
   SelectContent,
@@ -11,6 +11,7 @@ import {
 export type BooleanSelectProps = {
   value?: boolean;
   onValueChange: (value: boolean) => void;
+  disabled?: boolean;
   trueLabel?: React.ReactNode;
   falseLabel?: React.ReactNode;
   className?: string;
@@ -20,6 +21,7 @@ export type BooleanSelectProps = {
 export const BooleanSelect: React.FC<BooleanSelectProps> = ({
   value,
   onValueChange,
+  disabled,
   trueLabel,
   falseLabel,
   className,
@@ -35,6 +37,7 @@ export const BooleanSelect: React.FC<BooleanSelectProps> = ({
     <Select
       value={value?.toString()}
       onValueChange={(value) => onValueChange(value === "true")}
+      disabled={disabled}
     >
       <SelectTrigger className={className}>
         <SelectValue placeholder={placeholder || defaultPlaceholder} />

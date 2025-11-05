@@ -1,4 +1,4 @@
-import { evaluate, ReaderBlock } from "@vivid/builder";
+import { evaluate, ReaderBlock } from "@timelish/builder";
 import { ConditionalContainerReaderProps } from "./schema";
 
 export const ConditionalContainerReader = ({
@@ -20,7 +20,7 @@ export const ConditionalContainerReader = ({
   return (
     <>
       {(result ? thenChildren : otherwiseChildren).map((child) => (
-        <ReaderBlock key={child.id} block={child} {...rest} />
+        <ReaderBlock key={child.id} {...rest} block={child} />
       ))}
     </>
   );

@@ -1,15 +1,16 @@
-import type { AdminKeys } from "@vivid/i18n";
+import type { AllKeys } from "@timelish/i18n";
 import type { ReactElement } from "react";
 
 export interface NavItem {
   id: string;
-  title: AdminKeys;
+  title: AllKeys;
   href?: string;
   disabled?: boolean;
   external?: boolean;
   icon?: ReactElement;
-  label?: AdminKeys;
-  description?: AdminKeys;
+  label?: AllKeys;
+  description?: AllKeys;
+  removeIfBecameParent?: boolean;
 }
 
 export interface NavItemWithChildren extends NavItem {
@@ -21,14 +22,14 @@ export interface NavItemWithOptionalChildren extends NavItem {
 }
 
 export interface NavItemGroup {
-  title: AdminKeys;
+  title: AllKeys;
   children: NavItemWithOptionalChildren[];
 }
 
 export interface FooterItem {
-  title: AdminKeys;
+  title: AllKeys;
   items: {
-    title: AdminKeys;
+    title: AllKeys;
     href: string;
     external?: boolean;
   }[];

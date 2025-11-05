@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useCallback, useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import type { TPlaceholderElement } from "@udecode/plate-media";
 
-import { cn, useUploadFile } from "@vivid/ui";
+import { cn, useUploadFile } from "@timelish/ui";
 import {
   AudioPlugin,
   FilePlugin,
@@ -19,6 +19,7 @@ import { useEditorPlugin, withHOC, withRef } from "@udecode/plate/react";
 import { AudioLines, FileUp, Film, ImageIcon } from "lucide-react";
 import { useFilePicker } from "use-file-picker";
 
+import { useAbsoluteUrl } from "./absolute-url-context";
 import { PlateElement } from "./plate-element";
 import { Spinner } from "./spinner";
 
@@ -60,11 +61,17 @@ export const MediaPlaceholderElement = withHOC(
       const element = props.element as TPlaceholderElement;
 
       const { api } = useEditorPlugin(PlaceholderPlugin);
+      const usesAbsoluteUrl = useAbsoluteUrl();
 
-      const { isUploading, progress, uploadedFile, uploadFile, uploadingFile } =
-        useUploadFile();
+      const {
+        isUploading,
+        progress,
+        uploadedFiles,
+        uploadFile,
+        uploadingFiles,
+      } = useUploadFile();
 
-      const loading = isUploading && uploadingFile;
+      const loading = isUploading && uploadingFiles.length > 0;
 
       const currentContent = CONTENT[element.mediaType];
 
@@ -87,14 +94,14 @@ export const MediaPlaceholderElement = withHOC(
 
       const replaceCurrentPlaceholder = useCallback(
         (file: File) => {
-          void uploadFile(file);
+          void uploadFile([{ file }]);
           api.placeholder.addUploadingFile(element.id as string, file);
         },
-        [api.placeholder, element.id, uploadFile]
+        [api.placeholder, element.id, uploadFile],
       );
 
       useEffect(() => {
-        if (!uploadedFile) return;
+        if (!uploadedFiles.length) return;
 
         const path = editor.api.findPath(element);
 
@@ -107,10 +114,14 @@ export const MediaPlaceholderElement = withHOC(
             initialWidth: imageRef.current?.width,
             isUpload: true,
             name:
-              element.mediaType === FilePlugin.key ? uploadedFile.filename : "",
+              element.mediaType === FilePlugin.key
+                ? uploadedFiles[0].filename
+                : "",
             placeholderId: element.id as string,
             type: element.mediaType!,
-            url: uploadedFile.url,
+            url: usesAbsoluteUrl
+              ? uploadedFiles[0].url
+              : `/assets/${uploadedFiles[0].filename}`,
           };
 
           editor.tf.insertNodes(node, { at: path });
@@ -120,7 +131,7 @@ export const MediaPlaceholderElement = withHOC(
 
         api.placeholder.removeUploadingFile(element.id as string);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, [uploadedFile, element.id]);
+      }, [uploadedFiles, element.id, usesAbsoluteUrl]);
 
       // React dev mode will call useEffect twice
       const isReplaced = useRef(false);
@@ -131,7 +142,7 @@ export const MediaPlaceholderElement = withHOC(
 
         isReplaced.current = true;
         const currentFiles = api.placeholder.getUploadingFile(
-          element.id as string
+          element.id as string,
         );
 
         if (!currentFiles) return;
@@ -146,7 +157,7 @@ export const MediaPlaceholderElement = withHOC(
           {(!loading || !isImage) && (
             <div
               className={cn(
-                "flex cursor-pointer items-center rounded-sm bg-muted p-3 pr-9 select-none hover:bg-primary/10"
+                "flex cursor-pointer items-center rounded-sm bg-muted p-3 pr-9 select-none hover:bg-primary/10",
               )}
               onClick={() => !loading && openFilePicker()}
               contentEditable={false}
@@ -156,12 +167,12 @@ export const MediaPlaceholderElement = withHOC(
               </div>
               <div className="text-sm whitespace-nowrap text-muted-foreground">
                 <div>
-                  {loading ? uploadingFile?.name : currentContent.content}
+                  {loading ? uploadingFiles[0]?.name : currentContent.content}
                 </div>
 
                 {loading && !isImage && (
                   <div className="mt-1 flex items-center gap-1.5">
-                    <div>{formatBytes(uploadingFile?.size ?? 0)}</div>
+                    <div>{formatBytes(uploadingFiles[0]?.size ?? 0)}</div>
                     <div>–</div>
                     <div className="flex items-center">
                       <Spinner className="mr-1 size-3.5" />
@@ -175,7 +186,7 @@ export const MediaPlaceholderElement = withHOC(
 
           {isImage && loading && (
             <ImageProgress
-              file={uploadingFile}
+              file={uploadingFiles[0]}
               imageRef={imageRef}
               progress={progress}
             />
@@ -184,8 +195,8 @@ export const MediaPlaceholderElement = withHOC(
           {children}
         </PlateElement>
       );
-    }
-  )
+    },
+  ),
 );
 
 export function ImageProgress({
@@ -239,7 +250,7 @@ export function formatBytes(
   opts: {
     decimals?: number;
     sizeType?: "accurate" | "normal";
-  } = {}
+  } = {},
 ) {
   const { decimals = 0, sizeType = "normal" } = opts;
 

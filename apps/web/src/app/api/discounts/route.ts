@@ -1,20 +1,20 @@
-import { getLoggerFactory } from "@vivid/logger";
-import { ServicesContainer } from "@vivid/services";
+import { getServicesContainer } from "@/utils/utils";
+import { getLoggerFactory } from "@timelish/logger";
 import {
   applyDiscountRequestSchema,
   ApplyDiscountResponse,
-} from "@vivid/types";
+} from "@timelish/types";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   const logger = getLoggerFactory("API/discounts")("POST");
-
+  const servicesContainer = await getServicesContainer();
   logger.debug(
     {
       url: request.url,
       method: request.method,
     },
-    "Processing discounts API request"
+    "Processing discounts API request",
   );
 
   const body = await request.json();
@@ -32,15 +32,15 @@ export async function POST(request: NextRequest) {
       optionId: data.optionId,
       addonsCount: data.addons?.length || 0,
     },
-    "Applying discount"
+    "Applying discount",
   );
 
-  const customer = await ServicesContainer.CustomersService().findCustomer(
+  const customer = await servicesContainer.customersService.findCustomer(
     data.email,
-    data.phone
+    data.phone,
   );
 
-  const discount = await ServicesContainer.ServicesService().applyDiscount({
+  const discount = await servicesContainer.servicesService.applyDiscount({
     code: data.code,
     optionId: data.optionId,
     addons: data.addons,
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
       value: discount.value,
       customerFound: !!customer,
     },
-    "Successfully applied discount"
+    "Successfully applied discount",
   );
 
   return NextResponse.json({

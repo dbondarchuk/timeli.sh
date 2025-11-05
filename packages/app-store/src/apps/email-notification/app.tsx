@@ -1,20 +1,25 @@
-import { App } from "@vivid/types";
-import { EMAIL_NOTIFICATION_APP_NAME } from "./const";
+import { App } from "@timelish/types";
 import { Mailbox } from "lucide-react";
-import { EmailNotificationAppSetup } from "./setup";
+import { EMAIL_NOTIFICATION_APP_NAME } from "./const";
+import {
+  EmailNotificationAdminKeys,
+  EmailNotificationAdminNamespace,
+} from "./translations/types";
 
-export const EmailNotificationApp: App = {
+export const EmailNotificationApp: App<
+  EmailNotificationAdminNamespace,
+  EmailNotificationAdminKeys
+> = {
   name: EMAIL_NOTIFICATION_APP_NAME,
-  displayName: "emailNotification.displayName",
-  category: ["categories.notifications"],
+  displayName: "app_email-notification_admin.app.displayName",
+  category: ["apps.categories.notifications"],
   scope: ["appointment-hook"],
   type: "basic",
   Logo: ({ className }) => <Mailbox className={className} />,
-  SetUp: (props) => <EmailNotificationAppSetup {...props} />,
   isFeatured: false,
   isHidden: false,
   dontAllowMultiple: true,
   description: {
-    text: "emailNotification.description",
+    text: "app_email-notification_admin.app.description",
   },
 };

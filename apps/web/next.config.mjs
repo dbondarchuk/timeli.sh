@@ -1,5 +1,5 @@
-import { fileURLToPath } from "url";
 import { dirname, join } from "path";
+import { fileURLToPath } from "url";
 
 import createNextIntlPlugin from "next-intl/plugin";
 
@@ -12,28 +12,29 @@ const __dirname = dirname(__filename);
 const nextConfig = {
   output: "standalone",
   outputFileTracingRoot: join(__dirname, "../../"),
+  serverExternalPackages: ["pino", "pino-pretty", "bullmq"],
   experimental: {
     useCache: true,
+    webpackMemoryOptimizations: true,
     serverActions: {
-      serverComponentsExternalPackages: ["pino", "pino-pretty"],
       bodySizeLimit: "150mb",
     },
-    turbo: {
-      rules: {
-        "*.html": {
-          loaders: ["raw-loader"],
-          as: "*.js",
-        },
-      },
-    },
+    // turbo: {
+    //   rules: {
+    //     "*.html": {
+    //       loaders: ["raw-loader"],
+    //       as: "*.js",
+    //     },
+    //   },
+    // },
   },
-  webpack: (config) => {
-    config.module.rules.push({
-      test: /\.html$/,
-      use: "raw-loader",
-    });
-    return config;
-  },
+  // webpack: (config) => {
+  //   config.module.rules.push({
+  //     test: /\.html$/,
+  //     use: "raw-loader",
+  //   });
+  //   return config;
+  // },
   rewrites: () => [
     {
       source: "/robots.txt",

@@ -1,4 +1,4 @@
-import { Leaves } from "./types";
+import { Leaves } from "@timelish/types";
 
 export const resolve = (
   obj: any,
@@ -7,7 +7,7 @@ export const resolve = (
   error = false,
   setValue = false,
   newValue: any = undefined,
-  separator = "."
+  separator = ".",
 ) => {
   var properties = Array.isArray(path) ? path : path.split(separator);
 
@@ -54,7 +54,7 @@ const recursiveDestructAndReplace = (
   obj: any,
   property: string,
   newValue: any,
-  currentPath: string
+  currentPath: string,
 ) => {
   if (currentPath === property) return newValue;
 
@@ -64,7 +64,7 @@ const recursiveDestructAndReplace = (
 
   if (Array.isArray(obj)) {
     return obj.map((o: any, i: number): any =>
-      recursiveDestructAndReplace(o, property, newValue, `${currentPath}.${i}`)
+      recursiveDestructAndReplace(o, property, newValue, `${currentPath}.${i}`),
     );
   }
 
@@ -73,7 +73,7 @@ const recursiveDestructAndReplace = (
     `${currentPath.length > 0 ? `${currentPath}.` : ""}${key}`;
 
   const currentPart = property.substring(
-    currentPath.length > 0 ? currentPath.length + 1 : 0
+    currentPath.length > 0 ? currentPath.length + 1 : 0,
   );
 
   const currentProperty =
@@ -90,7 +90,7 @@ const recursiveDestructAndReplace = (
         val,
         property,
         newValue,
-        nextPath(currentProperty)
+        nextPath(currentProperty),
       );
     }
   }
@@ -100,7 +100,7 @@ const recursiveDestructAndReplace = (
       value,
       property,
       newValue,
-      nextPath(key)
+      nextPath(key),
     );
   }
 
@@ -110,7 +110,7 @@ const recursiveDestructAndReplace = (
 export const destructAndReplace = <T>(
   obj: T,
   property: Leaves<T>,
-  newValue: any
+  newValue: any,
 ): T => {
   const newObj = JSON.parse(JSON.stringify(obj));
   resolve(newObj, property, true, false, true, newValue);

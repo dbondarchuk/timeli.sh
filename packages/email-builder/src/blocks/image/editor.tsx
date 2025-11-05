@@ -1,15 +1,16 @@
 "use client";
 
 import {
+  useBlockEditor,
   useCurrentBlock,
   useCurrentBlockId,
   useDispatchAction,
   useEditorArgs,
-  useSelectedBlockId,
-} from "@vivid/builder";
-import { templateSafeWithError } from "@vivid/utils";
-import { useCallback } from "react";
-import { Image } from "./reader";
+  useIsSelectedBlock,
+} from "@timelish/builder";
+import { templateSafeWithError } from "@timelish/utils";
+import { Ref, useCallback } from "react";
+import { Image } from "./image";
 import { ResizableImage } from "./resizable-image";
 import { ImageProps, ImagePropsDefaults } from "./schema";
 import { getWrapperStyles } from "./styles";
@@ -22,8 +23,7 @@ export const ImageEditor = ({ props, style }: ImageProps) => {
 
   const currentBlock = useCurrentBlock<ImageProps>();
   const currentBlockId = useCurrentBlockId();
-  const selectedBlockId = useSelectedBlockId();
-  const isSelected = selectedBlockId === currentBlockId;
+  const isSelected = useIsSelectedBlock(currentBlockId);
 
   const dispatchAction = useDispatchAction();
   const onDimensionsChange = useCallback(
@@ -43,7 +43,7 @@ export const ImageEditor = ({ props, style }: ImageProps) => {
         },
       });
     },
-    [dispatchAction, currentBlock]
+    [dispatchAction, currentBlock],
   );
 
   const onPositionChange = useCallback(
@@ -63,22 +63,30 @@ export const ImageEditor = ({ props, style }: ImageProps) => {
         },
       });
     },
-    [dispatchAction, currentBlock]
+    [dispatchAction, currentBlock],
   );
+
+  const overlayProps = useBlockEditor(currentBlock.id, onDimensionsChange);
 
   return isSelected ? (
     <ResizableImage
       src={url || ""}
       alt={currentBlock.data?.props?.alt ?? undefined}
       wrapperStyles={getWrapperStyles({ style: currentBlock.data?.style })}
-      onDimensionsChange={onDimensionsChange}
       onPositionChange={onPositionChange}
-      initialWidth={currentBlock.data?.props?.width ?? undefined}
-      initialHeight={currentBlock.data?.props?.height ?? undefined}
+      width={currentBlock.data?.props?.width ?? undefined}
+      height={currentBlock.data?.props?.height ?? undefined}
       initialX={currentBlock.data?.props?.x ?? ImagePropsDefaults.props.x}
       initialY={currentBlock.data?.props?.y ?? ImagePropsDefaults.props.y}
+      ref={overlayProps.ref as Ref<HTMLImageElement>}
+      onClick={overlayProps.onClick}
     />
   ) : (
-    <Image props={props} style={style} />
+    <Image
+      props={props}
+      style={style}
+      ref={overlayProps.ref as Ref<HTMLImageElement>}
+      onClick={overlayProps.onClick}
+    />
   );
 };

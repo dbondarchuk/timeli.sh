@@ -13,7 +13,8 @@
     "cancel": "Cancel",
     "placeholder": "Select option",
     "hours": "Hours",
-    "minutes": "Minutes"
+    "minutes": "Minutes",
+    "seconds": "Seconds"
   },
   "actions": {
     "delete": "Delete",
@@ -39,9 +40,16 @@
     "placeholder": "Select customer",
     "requestFailed": "Request to fetch customers has failed"
   },
+  "optionSelector": {
+    "placeholder": "Select option",
+    "requestFailed": "Request to fetch options has failed"
+  },
   "assetSelector": {
     "title": "Select asset",
     "upload": "Upload"
+  },
+  "pageSelector": {
+    "title": "Select page"
   },
   "promoCodeSelector": {
     "placeholder": "Select promo code",
@@ -117,10 +125,13 @@
   },
   "durationInput": {
     "hr": "hr",
-    "min": "min"
+    "min": "min",
+    "sec": "sec",
+    "weeks": "weeks",
+    "days": "days"
   },
   "dataTable": {
-    "searchPlaceholder": "Search {searchKey}...",
+    "searchPlaceholder": "Search...",
     "selectedRows": "{selected} of {total} row(s) selected.",
     "previous": "Previous",
     "next": "Next",
@@ -165,5 +176,9 @@
     "am": "AM",
     "pm": "PM",
     "format": "MM/dd/yyyy hh:mm a"
+  },
+  "currencyInput": {
+    "amount": "Amount: ${amount}",
+    "max": "Max: ${max}"
   }
 }

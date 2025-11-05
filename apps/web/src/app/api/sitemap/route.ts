@@ -1,5 +1,5 @@
-import { getLoggerFactory } from "@vivid/logger";
-import { ServicesContainer } from "@vivid/services";
+import { getServicesContainer, getWebsiteUrl } from "@/utils/utils";
+import { getLoggerFactory } from "@timelish/logger";
 import { NextRequest } from "next/server";
 
 type Sitemap = {
@@ -34,13 +34,13 @@ export async function GET(req: NextRequest) {
       url: req.url,
       method: req.method,
     },
-    "Processing sitemap.xml request"
+    "Processing sitemap.xml request",
   );
 
-  const { url } =
-    await ServicesContainer.ConfigurationService().getConfiguration("general");
+  const url = await getWebsiteUrl();
+  const servicesContainer = await getServicesContainer();
 
-  const pages = await ServicesContainer.PagesService().getPages({
+  const pages = await servicesContainer.pagesService.getPages({
     publishStatus: [true],
   });
 
@@ -63,7 +63,7 @@ export async function GET(req: NextRequest) {
       pageCount: pages.items.length,
       totalUrls: sitemap.length,
     },
-    "Successfully generated sitemap"
+    "Successfully generated sitemap",
   );
 
   return new Response(generateSiteMap(sitemap), {

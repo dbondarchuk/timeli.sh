@@ -1,27 +1,30 @@
 "use client";
 
-import { Schedule, ScheduleOverride, WeekIdentifier } from "@vivid/types";
-import { useI18n } from "@vivid/i18n";
+import { useI18n } from "@timelish/i18n";
+import { Schedule, ScheduleOverride, WeekIdentifier } from "@timelish/types";
 import {
   Button,
-  DayScheduleSelector,
-  Scheduler,
   Separator,
   Skeleton,
   toast,
   toastPromise,
   useDebounce,
-  WeekSelector,
-} from "@vivid/ui";
-import { getDateFromWeekIdentifier, getWeekIdentifier } from "@vivid/utils";
+} from "@timelish/ui";
+import { Scheduler, WeekSelector } from "@timelish/ui-admin";
+import { getDateFromWeekIdentifier, getWeekIdentifier } from "@timelish/utils";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";
+import {
+  WeeklyScheduleAdminKeys,
+  WeeklyScheduleAdminNamespace,
+  weeklyScheduleAdminNamespace,
+} from "../translations/types";
 import { getWeeklySchedule, updateWeeklySchedule } from "./actions";
 import { CopyScheduleDialog } from "./copy-schedule-dialog";
+import { RepeatScheduleDialog } from "./repeat-schedule-dialog";
 import { ResetAllDialog } from "./reset-all-dialog";
 import { ResetDialog } from "./reset-dialog";
-import { RepeatScheduleDialog } from "./repeat-schedule-dialog";
 
 type WeeklySchedule = ScheduleOverride["schedule"];
 type WeeklyScheduleFormProps = {
@@ -31,7 +34,9 @@ type WeeklyScheduleFormProps = {
 export const WeeklyScheduleForm: React.FC<WeeklyScheduleFormProps> = ({
   appId,
 }) => {
-  const t = useI18n("apps");
+  const t = useI18n<WeeklyScheduleAdminNamespace, WeeklyScheduleAdminKeys>(
+    weeklyScheduleAdminNamespace,
+  );
   const [loading, setLoading] = React.useState(true);
 
   const weekStr = useSearchParams().get("week");
@@ -60,7 +65,7 @@ export const WeeklyScheduleForm: React.FC<WeeklyScheduleFormProps> = ({
       setLoading(false);
     } catch (e: any) {
       console.error(e);
-      toast.error(t("weeklySchedule.statusText.failed_to_load_schedule"));
+      toast.error(t("statusText.failed_to_load_schedule"));
     }
   };
 
@@ -75,8 +80,8 @@ export const WeeklyScheduleForm: React.FC<WeeklyScheduleFormProps> = ({
     try {
       // setLoading(true);
       await toastPromise(updateWeeklySchedule(appId, week, newSchedule), {
-        success: t("weeklySchedule.statusText.saved"),
-        error: t("weeklySchedule.statusText.request_error"),
+        success: t("statusText.saved"),
+        error: t("statusText.request_error"),
       });
 
       setIsDefault(false);
@@ -99,7 +104,7 @@ export const WeeklyScheduleForm: React.FC<WeeklyScheduleFormProps> = ({
         router.push(`?week=${newWeek}`);
       }
     },
-    [router, week]
+    [router, week],
   );
 
   return (
@@ -110,13 +115,13 @@ export const WeeklyScheduleForm: React.FC<WeeklyScheduleFormProps> = ({
           disabled={week === todayWeek || loading}
           onClick={() => onWeekChange(todayWeek)}
         >
-          {t("weeklySchedule.form.thisWeek")}
+          {t("form.thisWeek")}
         </Button>
         <div className="flex flex-row gap-1 max-lg:w-full">
           <Button
             variant="outline"
             size="icon"
-            title={t("weeklySchedule.form.previousWeek")}
+            title={t("form.previousWeek")}
             disabled={loading}
             onClick={() => onWeekChange(week - 1)}
           >
@@ -131,7 +136,7 @@ export const WeeklyScheduleForm: React.FC<WeeklyScheduleFormProps> = ({
           <Button
             variant="outline"
             size="icon"
-            title={t("weeklySchedule.form.nextWeek")}
+            title={t("form.nextWeek")}
             disabled={loading}
             onClick={() => onWeekChange(week + 1)}
           >

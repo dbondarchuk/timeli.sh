@@ -1,0 +1,36 @@
+{
+  "title": "ICS Feed",
+  "app": {
+    "displayName": "ICS Feed",
+    "description": "Keep your schedule up to date by automatically importing events from external calendar links (.ics)"
+  },
+  "form": {
+    "link": {
+      "label": "ICS link",
+      "placeholder": "https://",
+      "tooltip": "URL to ICS calendar"
+    },
+    "connect": "Connect with",
+    "validation": {}
+  },
+  "statusText": {
+    "successfully_set_up": "Successfully fetched calendar",
+    "error_processing_configuration": "Error processing ICS configuration",
+    "successfully_fetched_events": "Successfully fetched events",
+    "error_fetching_calendar": "Error fetching calendar",
+    "error_parsing_calendar": "Error parsing ICS calendar",
+    "error_getting_busy_times": "Error getting busy times from ICS calendar",
+    "http_error": "Failed to fetch url. Status code: {statusCode}",
+    "calendar_fetch_error": "Failed to fetch ICS calendar. Status code: {statusCode}",
+    "invalid_url": "Invalid ICS URL",
+    "connection_failed": "Connection to ICS calendar failed"
+  },
+  "toast": {
+    "connection_success": "Successfully connected to ICS calendar",
+    "connection_error": "Failed to connect to ICS calendar",
+    "fetch_error": "Error fetching ICS calendar data"
+  },
+  "validation": {
+    "invalidUrl": "ICS must be a valid URL to your calendar"
+  }
+}

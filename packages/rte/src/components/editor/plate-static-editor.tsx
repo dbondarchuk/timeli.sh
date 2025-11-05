@@ -1,5 +1,7 @@
+import type { VariantProps } from "class-variance-authority";
 import React from "react";
 
+import { cn } from "@timelish/ui";
 import { withProps } from "@udecode/cn";
 import {
   BaseParagraphPlugin,
@@ -31,6 +33,7 @@ import {
   BaseFontBackgroundColorPlugin,
   BaseFontColorPlugin,
   BaseFontSizePlugin,
+  BaseFontWeightPlugin,
 } from "@udecode/plate-font";
 import {
   BaseHeadingPlugin,
@@ -46,6 +49,7 @@ import { BaseKbdPlugin } from "@udecode/plate-kbd";
 import { BaseColumnItemPlugin, BaseColumnPlugin } from "@udecode/plate-layout";
 import { BaseLineHeightPlugin } from "@udecode/plate-line-height";
 import { BaseLinkPlugin } from "@udecode/plate-link";
+import { MarkdownPlugin } from "@udecode/plate-markdown";
 import {
   BaseEquationPlugin,
   BaseInlineEquationPlugin,
@@ -65,7 +69,6 @@ import {
   BaseTableRowPlugin,
 } from "@udecode/plate-table";
 import { BaseTogglePlugin } from "@udecode/plate-toggle";
-import { MarkdownPlugin } from "@udecode/plate-markdown";
 import Prism from "prismjs";
 import { BlockquoteElementStatic } from "../plate-ui/blockquote-element-static";
 import { CodeBlockElementStatic } from "../plate-ui/code-block-element-static";
@@ -76,6 +79,7 @@ import { ColumnElementStatic } from "../plate-ui/column-element-static";
 import { ColumnGroupElementStatic } from "../plate-ui/column-group-element-static";
 import { CommentLeafStatic } from "../plate-ui/comment-leaf-static";
 import { DateElementStatic } from "../plate-ui/date-element-static";
+import { editorVariants } from "../plate-ui/editor-static";
 import { EquationElementStatic } from "../plate-ui/equation-element-static";
 import { HeadingElementStatic } from "../plate-ui/heading-element-static";
 import { HighlightLeafStatic } from "../plate-ui/highlight-leaf-static";
@@ -107,13 +111,16 @@ export type PlateStaticEditorProps = {
   value?: Value;
   style?: React.CSSProperties;
   className?: string;
-};
+  id?: string;
+  onClick?: () => void;
+  ref?: React.Ref<HTMLDivElement>;
+} & VariantProps<typeof editorVariants>;
 
 export const createPlateStaticEditor = (
   value?: string | Value | ((editor: SlateEditor) => Value) | undefined,
   options?: {
     includeMarkdown?: boolean;
-  }
+  },
 ) =>
   createSlateEditor({
     plugins: [
@@ -126,6 +133,7 @@ export const createPlateStaticEditor = (
       BaseHeadingPlugin,
       BaseMediaEmbedPlugin,
       BaseBoldPlugin,
+      BaseFontWeightPlugin,
       BaseCodePlugin,
       BaseItalicPlugin,
       BaseStrikethroughPlugin,
@@ -223,6 +231,9 @@ export const PlateStaticEditor: React.FC<PlateStaticEditorProps> = ({
   value,
   style,
   className,
+  id,
+  variant,
+  ...rest
 }) => {
   const editorStatic = createPlateStaticEditor(value);
 
@@ -274,7 +285,9 @@ export const PlateStaticEditor: React.FC<PlateStaticEditorProps> = ({
       editor={editorStatic}
       components={components}
       style={style}
-      className={className}
+      className={cn(editorVariants({ variant }), className)}
+      id={id}
+      {...rest}
     />
   );
 };

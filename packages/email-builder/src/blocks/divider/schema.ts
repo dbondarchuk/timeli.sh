@@ -1,4 +1,4 @@
-import z from "zod";
+import * as z from "zod";
 import {
   zColor,
   zColorNullable,
@@ -17,7 +17,7 @@ export const DividerPropsSchema = z.object({
     .object({
       lineColor: zColor,
       lineHeight: z.coerce
-        .number()
+        .number<number>()
         .int("Should be the integer value")
         .positive()
         .optional()

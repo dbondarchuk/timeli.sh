@@ -26,7 +26,7 @@ import {
   PopoverAnchor,
   PopoverContent,
   Separator,
-} from "@vivid/ui";
+} from "@timelish/ui";
 import { CaptionButton } from "./caption";
 
 export interface MediaPopoverProps {
@@ -40,7 +40,7 @@ export function MediaPopover({ children, plugin }: MediaPopoverProps) {
 
   const selectionCollapsed = useEditorSelector(
     (editor) => !editor.api.isExpanded(),
-    []
+    [],
   );
   const isOpen = !readOnly && selected && selectionCollapsed;
   const isEditing = useFloatingMediaValue("isEditing");

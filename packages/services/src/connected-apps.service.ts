@@ -1,6 +1,7 @@
-import { AvailableApps } from "@vivid/app-store";
-import { AvailableAppServices } from "@vivid/app-store/services";
-import { getLoggerFactory } from "@vivid/logger";
+import {
+  AvailableAppServices,
+  ServiceAvailableApps,
+} from "@timelish/app-store/services";
 import {
   ApiRequest,
   App,
@@ -13,35 +14,46 @@ import {
   IConnectedAppsService,
   IConnectedAppWithWebhook,
   IOAuthConnectedApp,
-} from "@vivid/types";
+  IServicesContainer,
+} from "@timelish/types";
 import { ObjectId } from "mongodb";
-import { ServicesContainer } from ".";
+import pLimit from "p-limit";
+import { cache } from "react";
+import { CONNECTED_APPS_COLLECTION_NAME } from "./collections";
 import { getDbConnection } from "./database";
+import { BaseService } from "./services/base.service";
 
-export const CONNECTED_APPS_COLLECTION_NAME = "connected-apps";
-
-export class ConnectedAppsService implements IConnectedAppsService {
-  protected readonly loggerFactory = getLoggerFactory("ConnectedAppsService");
+export class ConnectedAppsService
+  extends BaseService
+  implements IConnectedAppsService
+{
+  public constructor(
+    companyId: string,
+    protected readonly getServices: () => IServicesContainer,
+  ) {
+    super("ConnectedAppsService", companyId);
+  }
 
   public async createNewApp(name: string): Promise<string> {
     const logger = this.loggerFactory("createNewApp");
     logger.debug({ name }, "Creating new app");
 
-    if (!AvailableApps[name]) {
+    if (!ServiceAvailableApps[name]) {
       logger.error({ name }, "Unknown app type");
       throw new Error("Unknown app type");
     }
 
     const app: ConnectedAppData = {
       _id: new ObjectId().toString(),
+      companyId: this.companyId,
       status: "pending",
-      statusText: "common.statusText.pending",
+      statusText: "apps.common.statusText.pending",
       name,
     };
 
     const db = await getDbConnection();
     const collection = db.collection<ConnectedAppData>(
-      CONNECTED_APPS_COLLECTION_NAME
+      CONNECTED_APPS_COLLECTION_NAME,
     );
 
     await collection.insertOne(app);
@@ -56,7 +68,7 @@ export class ConnectedAppsService implements IConnectedAppsService {
     logger.debug({ appId }, "Deleting app");
     const db = await getDbConnection();
     const collection = db.collection<ConnectedAppData>(
-      CONNECTED_APPS_COLLECTION_NAME
+      CONNECTED_APPS_COLLECTION_NAME,
     );
 
     const { app, service } = await this.getAppService(appId);
@@ -67,6 +79,7 @@ export class ConnectedAppsService implements IConnectedAppsService {
 
     await collection.deleteOne({
       _id: appId,
+      companyId: this.companyId,
     });
 
     logger.debug({ appId, appName: app.name }, "Successfully deleted app");
@@ -78,11 +91,12 @@ export class ConnectedAppsService implements IConnectedAppsService {
 
     const db = await getDbConnection();
     const collection = db.collection<ConnectedAppData>(
-      CONNECTED_APPS_COLLECTION_NAME
+      CONNECTED_APPS_COLLECTION_NAME,
     );
 
     const app = await collection.findOne({
       _id: appId,
+      companyId: this.companyId,
     });
 
     if (!app) {
@@ -93,12 +107,13 @@ export class ConnectedAppsService implements IConnectedAppsService {
     await collection.updateOne(
       {
         _id: appId,
+        companyId: this.companyId,
       },
       {
         $set: {
           ...updateModel,
         },
-      }
+      },
     );
 
     logger.debug({ appId, appName: app.name }, "Successfully updated app");
@@ -110,11 +125,12 @@ export class ConnectedAppsService implements IConnectedAppsService {
 
     const db = await getDbConnection();
     const collection = db.collection<ConnectedAppData>(
-      CONNECTED_APPS_COLLECTION_NAME
+      CONNECTED_APPS_COLLECTION_NAME,
     );
 
     const app = await collection.findOne({
       _id: appId,
+      companyId: this.companyId,
     });
 
     if (!app) {
@@ -123,22 +139,22 @@ export class ConnectedAppsService implements IConnectedAppsService {
       throw new Error(message);
     }
 
-    const appService = AvailableApps[app.name];
+    const appService = ServiceAvailableApps[app.name];
     if (!appService || appService.type !== "oauth") {
       const message = "App type is not supported";
       logger.error(
         { appId, appName: app.name, appType: appService.type },
-        message
+        message,
       );
       throw new Error(message);
     }
 
     const service = AvailableAppServices[app.name](
-      this.getAppServiceProps(appId)
+      this.getAppServiceProps(appId),
     );
 
     const loginUrl = await (service as any as IOAuthConnectedApp).getLoginUrl(
-      appId
+      appId,
     );
 
     logger.debug({ appId, appName: app.name }, "Successfully got login URL");
@@ -150,10 +166,10 @@ export class ConnectedAppsService implements IConnectedAppsService {
     const logger = this.loggerFactory("processRedirect");
     logger.debug(
       { name, request: { method: request.method, url: request.url } },
-      "Processing OAuth redirect"
+      "Processing OAuth redirect",
     );
 
-    const appService = AvailableApps[name];
+    const appService = ServiceAvailableApps[name];
     if (!appService || appService.type !== "oauth") {
       logger.error({ name }, "App type is not supported");
       throw new Error("App type is not supported");
@@ -163,16 +179,18 @@ export class ConnectedAppsService implements IConnectedAppsService {
 
     const result = await (service as any as IOAuthConnectedApp).processRedirect(
       request,
-      data
+      data,
     );
 
     const db = await getDbConnection();
     const collection = db.collection<ConnectedAppData>(
-      CONNECTED_APPS_COLLECTION_NAME
+      CONNECTED_APPS_COLLECTION_NAME,
     );
 
     const app = await collection.findOne({
       _id: result.appId,
+      // WARNING: This is a workaround to allow OAuth redirects to be processed without a companyId
+      //companyId: this.companyId,
     });
 
     if (!app) {
@@ -183,12 +201,14 @@ export class ConnectedAppsService implements IConnectedAppsService {
     if ("error" in result) {
       logger.error(
         { appId: result.appId, error: result.error },
-        "OAuth redirect failed"
+        "OAuth redirect failed",
       );
 
       await collection.updateOne(
         {
           _id: result.appId,
+          // WARNING: This is a workaround to allow OAuth redirects to be processed without a companyId
+          //companyId: this.companyId,
         },
         {
           $set: {
@@ -198,28 +218,29 @@ export class ConnectedAppsService implements IConnectedAppsService {
               args: result.errorArgs ?? {},
             },
           },
-        }
+        },
       );
     } else {
       logger.debug({ appId: result.appId }, "OAuth redirect successful");
       await collection.updateOne(
         {
           _id: result.appId,
+          // WARNING: This is a workaround to allow OAuth redirects to be processed without a companyId
+          //companyId: this.companyId,
         },
         {
           $set: {
             status: "connected",
-            statusText: "common.statusText.connected",
-            data: result.data,
-            account: result.account,
+            statusText: "apps.common.statusText.connected",
+            ...result,
           },
-        }
+        },
       );
     }
 
     logger.debug(
       { appId: result.appId },
-      "OAuth redirect processing completed"
+      "OAuth redirect processing completed",
     );
   }
 
@@ -227,24 +248,24 @@ export class ConnectedAppsService implements IConnectedAppsService {
     const logger = this.loggerFactory("processWebhook");
     logger.debug(
       { appId, request: { method: request.method, url: request.url } },
-      "Processing webhook"
+      "Processing webhook",
     );
 
     const app = await this.getApp(appId);
     const appService = AvailableAppServices[app.name](
-      this.getAppServiceProps(appId)
+      this.getAppServiceProps(appId),
     ) as IConnectedAppWithWebhook;
 
     if (!("processWebhook" in appService)) {
       logger.debug(
         { appId, appName: app.name },
-        "App does not process webhooks"
+        "App does not process webhooks",
       );
       return Response.json(
         {
           error: `App ${app.name} does not process webhooks`,
         },
-        { status: 405 }
+        { status: 405 },
       );
     }
 
@@ -256,29 +277,29 @@ export class ConnectedAppsService implements IConnectedAppsService {
   public async processAppCall(
     appId: string,
     slug: string[],
-    request: ApiRequest
+    request: ApiRequest,
   ) {
     const logger = this.loggerFactory("processAppCall");
     logger.debug(
       { appId, slug, request: { method: request.method, url: request.url } },
-      "Processing app call"
+      "Processing app call",
     );
 
     const app = await this.getApp(appId);
     const appService = AvailableAppServices[app.name](
-      this.getAppServiceProps(appId)
+      this.getAppServiceProps(appId),
     ) as IConnectedAppWithWebhook;
 
     if (!("processAppCall" in appService) || !appService.processAppCall) {
       logger.debug(
         { appId, appName: app.name },
-        "App does not process app calls"
+        "App does not process app calls",
       );
       return Response.json(
         {
           error: `App ${app.name} does not process app calls`,
         },
-        { status: 405 }
+        { status: 405 },
       );
     }
 
@@ -294,13 +315,13 @@ export class ConnectedAppsService implements IConnectedAppsService {
     const app = await this.getApp(appId);
 
     const appService = AvailableAppServices[app.name](
-      this.getAppServiceProps(appId)
+      this.getAppServiceProps(appId),
     );
 
     if (!appService.processRequest) {
       logger.error(
         { appId, appName: app.name },
-        "App does not implement processRequest"
+        "App does not implement processRequest",
       );
 
       throw new Error(`App ${app.name} does not implement processRequest`);
@@ -316,7 +337,7 @@ export class ConnectedAppsService implements IConnectedAppsService {
     const logger = this.loggerFactory("processStaticRequest");
     logger.debug({ appName }, "Processing static request");
     const appService = AvailableAppServices[appName](
-      this.getAppServiceStaticProps(appName)
+      this.getAppServiceStaticProps(appName),
     );
 
     if (!appService.processStaticRequest) {
@@ -333,11 +354,12 @@ export class ConnectedAppsService implements IConnectedAppsService {
     logger.debug({ appId }, "Getting app status");
     const db = await getDbConnection();
     const collection = db.collection<ConnectedAppData>(
-      CONNECTED_APPS_COLLECTION_NAME
+      CONNECTED_APPS_COLLECTION_NAME,
     );
 
     const result = await collection.findOne({
       _id: appId,
+      companyId: this.companyId,
     });
 
     if (!result) {
@@ -356,13 +378,15 @@ export class ConnectedAppsService implements IConnectedAppsService {
     logger.debug({}, "Getting all apps");
     const db = await getDbConnection();
     const collection = db.collection<ConnectedAppData>(
-      CONNECTED_APPS_COLLECTION_NAME
+      CONNECTED_APPS_COLLECTION_NAME,
     );
 
-    const result = await collection.find().toArray();
+    const result = await collection
+      .find({ companyId: this.companyId })
+      .toArray();
 
     logger.debug({ count: result.length }, "Returning all apps");
-    return result.map(({ data: __, ...app }) => app);
+    return result.map(({ data: __, token: ___, ...app }) => app);
   }
 
   public async getAppsByScope(...scope: AppScope[]): Promise<ConnectedApp[]> {
@@ -371,7 +395,7 @@ export class ConnectedAppsService implements IConnectedAppsService {
     const result = await this.getAppsByScopeWithData(...scope);
 
     logger.debug({ scope, count: result.length }, "Returning apps by scope");
-    return result.map(({ data: __, ...app }) => app);
+    return result.map(({ data: __, token: ___, ...app }) => app);
   }
 
   public async getAppsByApp(appName: string): Promise<ConnectedApp[]> {
@@ -379,18 +403,19 @@ export class ConnectedAppsService implements IConnectedAppsService {
     logger.debug({ appName }, "Getting apps by app name");
     const db = await getDbConnection();
     const collection = db.collection<ConnectedAppData>(
-      CONNECTED_APPS_COLLECTION_NAME
+      CONNECTED_APPS_COLLECTION_NAME,
     );
 
     const result = await collection
       .find({
         name: appName,
+        companyId: this.companyId,
       })
       .toArray();
 
     logger.debug(
       { appName, count: result.length },
-      "Returning apps by app name"
+      "Returning apps by app name",
     );
     return result.map(({ data: __, ...app }) => app);
   }
@@ -402,11 +427,12 @@ export class ConnectedAppsService implements IConnectedAppsService {
     logger.debug({ scope }, "Getting apps by scope with data");
     const db = await getDbConnection();
     const collection = db.collection<ConnectedAppData>(
-      CONNECTED_APPS_COLLECTION_NAME
+      CONNECTED_APPS_COLLECTION_NAME,
     );
 
-    const possibleAppNames = Object.keys(AvailableApps).filter((appName) =>
-      AvailableApps[appName].scope.some((s) => scope.includes(s))
+    const possibleAppNames = Object.keys(ServiceAvailableApps).filter(
+      (appName) =>
+        ServiceAvailableApps[appName].scope.some((s) => scope.includes(s)),
     );
 
     const result = await collection
@@ -414,12 +440,13 @@ export class ConnectedAppsService implements IConnectedAppsService {
         name: {
           $in: possibleAppNames,
         },
+        companyId: this.companyId,
       })
       .toArray();
 
     logger.debug(
       { scope, count: result.length },
-      "Returning apps by scope with data"
+      "Returning apps by scope with data",
     );
     return result;
   }
@@ -429,11 +456,11 @@ export class ConnectedAppsService implements IConnectedAppsService {
     logger.debug({ type }, "Getting apps by type");
     const db = await getDbConnection();
     const collection = db.collection<ConnectedAppData>(
-      CONNECTED_APPS_COLLECTION_NAME
+      CONNECTED_APPS_COLLECTION_NAME,
     );
 
-    const possibleAppNames = Object.keys(AvailableApps).filter(
-      (appName) => AvailableApps[appName].type === type
+    const possibleAppNames = Object.keys(ServiceAvailableApps).filter(
+      (appName) => ServiceAvailableApps[appName].type === type,
     );
 
     const result = await collection
@@ -441,6 +468,7 @@ export class ConnectedAppsService implements IConnectedAppsService {
         name: {
           $in: possibleAppNames,
         },
+        companyId: this.companyId,
       })
       .map((app) => ({ id: app._id, name: app.name }))
       .toArray();
@@ -454,11 +482,12 @@ export class ConnectedAppsService implements IConnectedAppsService {
     logger.debug({ appId }, "Getting app data");
     const db = await getDbConnection();
     const collection = db.collection<ConnectedAppData>(
-      CONNECTED_APPS_COLLECTION_NAME
+      CONNECTED_APPS_COLLECTION_NAME,
     );
 
     const result = await collection.findOne({
       _id: appId,
+      companyId: this.companyId,
     });
 
     if (!result) {
@@ -475,7 +504,7 @@ export class ConnectedAppsService implements IConnectedAppsService {
     logger.debug({ appIds }, "Getting apps data");
     const db = await getDbConnection();
     const collection = db.collection<ConnectedAppData>(
-      CONNECTED_APPS_COLLECTION_NAME
+      CONNECTED_APPS_COLLECTION_NAME,
     );
 
     const result = await collection
@@ -483,6 +512,7 @@ export class ConnectedAppsService implements IConnectedAppsService {
         _id: {
           $in: appIds,
         },
+        companyId: this.companyId,
       })
       .toArray();
 
@@ -491,17 +521,18 @@ export class ConnectedAppsService implements IConnectedAppsService {
   }
 
   public async getAppService<T>(
-    appId: string
+    appId: string,
   ): Promise<{ service: IConnectedApp & T; app: ConnectedApp }> {
     const logger = this.loggerFactory("getAppService");
     logger.debug({ appId }, "Getting app service");
     const db = await getDbConnection();
     const collection = db.collection<ConnectedAppData>(
-      CONNECTED_APPS_COLLECTION_NAME
+      CONNECTED_APPS_COLLECTION_NAME,
     );
 
     const app = await collection.findOne({
       _id: appId,
+      companyId: this.companyId,
     });
 
     if (!app) {
@@ -510,7 +541,7 @@ export class ConnectedAppsService implements IConnectedAppsService {
     }
 
     const service = AvailableAppServices[app.name](
-      this.getAppServiceProps(appId)
+      this.getAppServiceProps(appId),
     ) as any as T & IConnectedApp;
 
     logger.debug({ appId }, "Returning app service");
@@ -520,8 +551,9 @@ export class ConnectedAppsService implements IConnectedAppsService {
   public getAppServiceProps(appId: string): IConnectedAppProps {
     return {
       update: (updateModel) => this.updateApp(appId, updateModel),
-      services: ServicesContainer,
+      services: this.getServices(),
       getDbConnection: getDbConnection,
+      companyId: this.companyId,
     };
   }
 
@@ -536,24 +568,143 @@ export class ConnectedAppsService implements IConnectedAppsService {
       }
 
       return {
+        companyId: this.companyId,
         update: async (updateModel) => {
           logger.error(
             { appName },
-            `App called update method from static request`
+            `App called update method from static request`,
           );
           throw new Error(
-            `App ${appName} called update method from static request`
+            `App ${appName} called update method from static request`,
           );
         },
-        services: ServicesContainer,
+        services: this.getServices(),
         getDbConnection: getDbConnection,
       };
     } catch (error) {
       logger.error(
         { appName, error },
-        "Error getting app service static props"
+        "Error getting app service static props",
       );
       throw error;
     }
+  }
+
+  public async executeHooks<T, TReturn = void>(
+    scope: AppScope,
+    hook: (app: ConnectedAppData, service: T) => Promise<TReturn>,
+    options?: {
+      concurrencyLimit?: number;
+      ignoreErrors?: boolean;
+    },
+  ): Promise<(TReturn | undefined)[]> {
+    const logger = this.loggerFactory("executeHooks");
+    logger.debug({ scope }, "Executing hooks");
+
+    const { concurrencyLimit = 10, ignoreErrors = false } = options ?? {};
+    const limit = pLimit(concurrencyLimit);
+
+    const hooks = await this.getAppsByScopeWithData(scope);
+
+    logger.debug({ scope, count: hooks.length }, "Retrieved hooks");
+
+    const promises = hooks.map(async (hookData) => {
+      logger.debug(
+        { appName: hookData.name, appId: hookData._id },
+        "Executing hook",
+      );
+
+      const service = AvailableAppServices[hookData.name](
+        this.getAppServiceProps(hookData._id),
+      ) as any as T;
+
+      try {
+        const result = await hook(hookData, service);
+        logger.debug(
+          { appName: hookData.name, appId: hookData._id },
+          "Hook executed",
+        );
+
+        return result;
+      } catch (error) {
+        if (!ignoreErrors) {
+          logger.error(
+            { appName: hookData.name, appId: hookData._id, error },
+            "Error executing hook",
+          );
+          throw error;
+        } else {
+          logger.warn(
+            { appName: hookData.name, appId: hookData._id, error },
+            "Error executing hook, ignoring",
+          );
+        }
+      }
+    });
+
+    const results = await Promise.all(promises.map((p) => limit(() => p)));
+
+    logger.debug({ scope }, "Hooks executed");
+    return results;
+  }
+}
+
+export class CachedConnectedAppsService extends ConnectedAppsService {
+  private cachedGetApps = cache(async () => {
+    const logger = this.loggerFactory("cachedGetApps");
+    logger.debug({}, "Getting apps");
+    const db = await getDbConnection();
+    const collection = db.collection<ConnectedAppData>(
+      CONNECTED_APPS_COLLECTION_NAME,
+    );
+    const apps = await collection.find({ companyId: this.companyId }).toArray();
+    logger.debug({ count: apps.length }, "Returning apps");
+
+    return apps;
+  });
+
+  public async getApps(): Promise<ConnectedApp[]> {
+    const apps = await this.cachedGetApps();
+    return apps.map(({ data: __, ...app }) => app);
+  }
+
+  public async getAppsByScopeWithData(
+    ...scope: AppScope[]
+  ): Promise<ConnectedAppData[]> {
+    const apps = await this.cachedGetApps();
+    return apps.filter((app) =>
+      scope.some((s) =>
+        (ServiceAvailableApps[app.name]?.scope ?? []).includes(s),
+      ),
+    );
+  }
+
+  public async getAppsByScope(...scope: AppScope[]): Promise<ConnectedApp[]> {
+    const apps = await this.cachedGetApps();
+    return apps
+      .filter((app) =>
+        scope.some((s) =>
+          (ServiceAvailableApps[app.name]?.scope ?? []).includes(s),
+        ),
+      )
+      .map(({ data: __, token: ___, ...app }) => app);
+  }
+
+  public async getAppsByApp(appName: string): Promise<ConnectedApp[]> {
+    const apps = await this.cachedGetApps();
+    return apps
+      .filter((app) => app.name === appName)
+      .map(({ data: __, token: ___, ...app }) => app);
+  }
+
+  public async getApp(appId: string): Promise<ConnectedAppData> {
+    const apps = await this.cachedGetApps();
+    const app = apps.find((app) => app._id === appId);
+
+    if (!app) {
+      throw new Error(`App ${appId} not found`);
+    }
+
+    return app;
   }
 }

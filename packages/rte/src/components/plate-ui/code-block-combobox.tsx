@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 
+import { cn } from "@timelish/ui";
 import {
   useCodeBlockCombobox,
   useCodeBlockComboboxState,
 } from "@udecode/plate-code-block/react";
-import { cn } from "@vivid/ui";
 import { Check, ChevronsUpDown } from "lucide-react";
 // Prism must be imported before all language files
 import Prism from "prismjs";
@@ -21,7 +21,7 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@vivid/ui";
+} from "@timelish/ui";
 
 import "prismjs/components/prism-antlr4.js";
 import "prismjs/components/prism-bash.js";
@@ -144,7 +144,7 @@ export function CodeBlockCombobox() {
     (language) =>
       !value ||
       language.label.toLowerCase().includes(value.toLowerCase()) ||
-      language.value.toLowerCase().includes(value.toLowerCase())
+      language.value.toLowerCase().includes(value.toLowerCase()),
   );
 
   return (
@@ -186,7 +186,9 @@ export function CodeBlockCombobox() {
               >
                 <Check
                   className={cn(
-                    state.value === language.value ? "opacity-100" : "opacity-0"
+                    state.value === language.value
+                      ? "opacity-100"
+                      : "opacity-0",
                   )}
                 />
                 {language.label}

@@ -13,7 +13,8 @@
     "cancel": "Скасувати",
     "placeholder": "Вибрати опцію",
     "hours": "Години",
-    "minutes": "Хвилини"
+    "minutes": "Хвилини",
+    "seconds": "Секунди"
   },
   "actions": {
     "delete": "Видалити",
@@ -39,9 +40,16 @@
     "placeholder": "Вибрати клієнта",
     "requestFailed": "Запит на отримання клієнтів не вдався"
   },
+  "optionSelector": {
+    "placeholder": "Вибрати опцію",
+    "requestFailed": "Запит на отримання опцій не вдався"
+  },
   "assetSelector": {
     "title": "Вибрати ресурс",
     "upload": "Завантажити"
+  },
+  "pageSelector": {
+    "title": "Вибрати сторінку"
   },
   "promoCodeSelector": {
     "placeholder": "Вибрати промо-код",
@@ -117,10 +125,13 @@
   },
   "durationInput": {
     "hr": "год",
-    "min": "хв"
+    "min": "хв",
+    "sec": "сек",
+    "weeks": "тижнів",
+    "days": "днів"
   },
   "dataTable": {
-    "searchPlaceholder": "Пошук {searchKey}...",
+    "searchPlaceholder": "Пошук...",
     "selectedRows": "Вибрано {selected} з {total} рядка(ів).",
     "previous": "Попередній",
     "next": "Наступний",
@@ -165,5 +176,9 @@
     "am": "ДП",
     "pm": "ПП",
     "format": "dd/MM/yyyy HH:mm"
+  },
+  "currencyInput": {
+    "amount": "Сума: ${amount}",
+    "max": "Максимум: ${max}"
   }
 }

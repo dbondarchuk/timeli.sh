@@ -1,0 +1,47 @@
+{
+  "title": "Google Календар",
+  "app": {
+    "displayName": "Google Календар",
+    "description": "Google Календар - це сервіс управління часом та планування, розроблений Google. Дозволяє користувачам створювати та редагувати події з опціями для типу та часу. Доступний для всіх, хто має обліковий запис Gmail, як на мобільній, так і на веб-версії."
+  },
+  "primaryCalendar": "Основний",
+  "form": {
+    "selectCalendar": {
+      "label": "Вибрати календар",
+      "searchLabel": "Вибрати календар",
+      "tooltip": "Виберіть, який Google Календар використовувати для ваших записів"
+    },
+    "connect": "Підключитися з <app></app>",
+    "reconnect": "Перепідключитися <app></app>",
+    "pendingAuthorization": "Очікує авторизації"
+  },
+  "statusText": {
+    "successfully_set_up": "Успішно підключено до Google Календаря",
+    "error_processing_configuration": "Помилка обробки конфігурації Google Календаря",
+    "failed_to_retrieve_calendar_list": "Не вдалося отримати список календарів",
+    "calendar_list_retrieved": "Список календарів успішно отримано",
+    "calendar_set": "Календар успішно встановлено",
+    "error_retrieving_calendar_list": "Помилка отримання списку календарів",
+    "error_setting_calendar": "Помилка встановлення календаря",
+    "error_creating_calendar_event": "Помилка створення події календаря",
+    "error_updating_calendar_event": "Помилка оновлення події календаря",
+    "error_deleting_calendar_event": "Помилка видалення події календаря",
+    "error_getting_busy_times": "Помилка отримання зайнятого часу з Google Календаря",
+    "oauth_error": "Помилка OAuth авторизації",
+    "invalid_credentials": "Недійсні облікові дані",
+    "calendar_not_found": "Календар не знайдено",
+    "event_created": "Подію календаря успішно створено",
+    "event_updated": "Подію календаря успішно оновлено",
+    "event_deleted": "Подію календаря успішно видалено",
+    "redirect_request_does_not_contain_app_id": "Запит перенаправлення не містить app ID",
+    "redirect_request_does_not_contain_authorization_code": "Запит перенаправлення не містить код авторизації",
+    "app_was_not_authorized_properly": "Додаток не було правильно авторизовано",
+    "app_was_not_given_required_scopes": "Додатку не було надано необхідні області",
+    "failed_to_get_user_email": "Не вдалося отримати email користувача"
+  },
+  "toast": {
+    "changes_saved": "Ваші зміни були збережені.",
+    "request_error": "Виникла проблема з вашим запитом.",
+    "calendar_list_error": "Не вдалося отримати список календарів"
+  }
+}

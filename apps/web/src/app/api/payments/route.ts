@@ -1,8 +1,8 @@
-import { getLoggerFactory } from "@vivid/logger";
+import { getLoggerFactory } from "@timelish/logger";
 import { NextRequest } from "next/server";
 import { createOrUpdateIntent } from "../../../utils/payments/createIntent";
 
-export async function PUT(request: NextRequest) {
+export async function POST(request: NextRequest) {
   const logger = getLoggerFactory("API/payments")("PUT");
 
   logger.debug(
@@ -10,7 +10,7 @@ export async function PUT(request: NextRequest) {
       url: request.url,
       method: request.method,
     },
-    "Processing payments API request"
+    "Processing payments API request",
   );
 
   try {
@@ -21,14 +21,14 @@ export async function PUT(request: NextRequest) {
         {
           status: result.status,
         },
-        "Getting if payment is required has failed"
+        "Getting if payment is required has failed",
       );
     } else {
       logger.debug(
         {
           success: true,
         },
-        "Successfully processed payment intent"
+        "Successfully processed payment intent",
       );
     }
 
@@ -38,7 +38,7 @@ export async function PUT(request: NextRequest) {
       {
         error: error?.message || error?.toString(),
       },
-      "Error processing payment intent"
+      "Error processing payment intent",
     );
     throw error;
   }

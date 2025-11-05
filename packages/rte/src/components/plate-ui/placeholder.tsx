@@ -2,10 +2,10 @@
 
 import React from "react";
 
-import { cn } from "@vivid/ui";
+import { cn } from "@timelish/ui";
 import { HEADING_KEYS } from "@udecode/plate-heading";
-import { ParagraphPlugin } from "@udecode/plate/react";
 import {
+  ParagraphPlugin,
   type PlaceholderProps,
   createNodeHOC,
   createNodesHOC,
@@ -24,7 +24,7 @@ export const Placeholder = (props: PlaceholderProps) => {
         ...nodeProps,
         className: cn(
           enabled &&
-            "before:absolute before:cursor-text before:opacity-30 before:content-[attr(placeholder)]"
+            "before:absolute before:cursor-text before:opacity-30 before:content-[attr(placeholder)]",
         ),
         placeholder,
       },

@@ -1,4 +1,3 @@
-import { getLoggerFactory } from "@vivid/logger";
 import {
   CommunicationChannel,
   CommunicationDirection,
@@ -9,21 +8,28 @@ import {
   ICommunicationLogsService,
   Query,
   WithTotal,
-} from "@vivid/types";
-import { buildSearchQuery, escapeRegex } from "@vivid/utils";
+} from "@timelish/types";
+import { buildSearchQuery, escapeRegex } from "@timelish/utils";
 import { Filter, ObjectId, Sort } from "mongodb";
-import { CUSTOMERS_COLLECTION_NAME } from "./customers.service";
+import {
+  APPOINTMENTS_COLLECTION_NAME,
+  CUSTOMERS_COLLECTION_NAME,
+  LOG_COLLECTION_NAME,
+} from "./collections";
 import { getDbConnection } from "./database";
-import { APPOINTMENTS_COLLECTION_NAME } from "./events.service";
+import { BaseService } from "./services/base.service";
 
-export const LOG_COLLECTION_NAME = "communication-logs";
+export class CommunicationLogsService
+  extends BaseService
+  implements ICommunicationLogsService
+{
+  public constructor(companyId: string) {
+    super("CommunicationLogsService", companyId);
+  }
 
-export class CommunicationLogsService implements ICommunicationLogsService {
-  protected readonly loggerFactory = getLoggerFactory(
-    "CommunicationLogsService"
-  );
-
-  public async log(log: Omit<CommunicationLogEntity, "dateTime" | "_id">) {
+  public async log(
+    log: Omit<CommunicationLogEntity, "dateTime" | "_id" | "companyId">,
+  ) {
     const {
       channel,
       direction,
@@ -50,6 +56,7 @@ export class CommunicationLogsService implements ICommunicationLogsService {
     const _id = new ObjectId().toString();
     await collection.insertOne({
       ...log,
+      companyId: this.companyId,
       dateTime: new Date(),
       _id,
     });
@@ -65,7 +72,7 @@ export class CommunicationLogsService implements ICommunicationLogsService {
       range?: DateRange;
       customerId?: string | string[];
       appointmentId?: string;
-    }
+    },
   ): Promise<WithTotal<CommunicationLog>> {
     const logger = this.loggerFactory("getCommunicationLogs");
     logger.debug({ query }, "Getting communication logs");
@@ -77,10 +84,12 @@ export class CommunicationLogsService implements ICommunicationLogsService {
         ...prev,
         [curr.id]: curr.desc ? -1 : 1,
       }),
-      {}
+      {},
     ) || { dateTime: -1 };
 
-    const filter: Filter<CommunicationLog> = {};
+    const filter: Filter<CommunicationLog> = {
+      companyId: this.companyId,
+    };
 
     if (query.range?.start || query.range?.end) {
       filter.dateTime = {};
@@ -132,7 +141,7 @@ export class CommunicationLogsService implements ICommunicationLogsService {
         "text",
         "appointment.option.name",
         "customer.name",
-        "subject"
+        "subject",
       );
 
       filter.$or = queries;
@@ -142,11 +151,23 @@ export class CommunicationLogsService implements ICommunicationLogsService {
       .collection<CommunicationLogEntity>(LOG_COLLECTION_NAME)
       .aggregate([
         {
+          $match: {
+            companyId: this.companyId,
+          },
+        },
+        {
           $lookup: {
             from: APPOINTMENTS_COLLECTION_NAME,
             localField: "appointmentId",
             foreignField: "_id",
             as: "appointment",
+            pipeline: [
+              {
+                $match: {
+                  companyId: this.companyId,
+                },
+              },
+            ],
           },
         },
         {
@@ -155,6 +176,13 @@ export class CommunicationLogsService implements ICommunicationLogsService {
             localField: "customerId",
             foreignField: "_id",
             as: "customer",
+            pipeline: [
+              {
+                $match: {
+                  companyId: this.companyId,
+                },
+              },
+            ],
           },
         },
         {
@@ -173,6 +201,13 @@ export class CommunicationLogsService implements ICommunicationLogsService {
             localField: "appointment.customerId",
             foreignField: "_id",
             as: "appointmentCustomer",
+            pipeline: [
+              {
+                $match: {
+                  companyId: this.companyId,
+                },
+              },
+            ],
           },
         },
         {
@@ -224,7 +259,7 @@ export class CommunicationLogsService implements ICommunicationLogsService {
         query,
         result: { total: response.total, count: response.items.length },
       },
-      "Fetched communication logs"
+      "Fetched communication logs",
     );
 
     return response;
@@ -237,7 +272,10 @@ export class CommunicationLogsService implements ICommunicationLogsService {
     const db = await getDbConnection();
     const collection = db.collection<CommunicationLog>(LOG_COLLECTION_NAME);
 
-    const { deletedCount } = await collection.deleteMany();
+    const { deletedCount } = await collection.deleteMany({
+      companyId: this.companyId,
+    });
+
     logger.debug({ deletedCount }, "Cleared all logs");
   }
 
@@ -251,6 +289,7 @@ export class CommunicationLogsService implements ICommunicationLogsService {
       _id: {
         $in: ids,
       },
+      companyId: this.companyId,
     });
 
     logger.debug({ ids, deletedCount }, "Cleared selected logs");
@@ -266,6 +305,7 @@ export class CommunicationLogsService implements ICommunicationLogsService {
       dateTime: {
         $lt: maxDate,
       },
+      companyId: this.companyId,
     });
 
     logger.debug({ maxDate, deletedCount }, "Cleared old logs");

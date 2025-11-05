@@ -1,0 +1,27 @@
+{
+  "title": "Calendar Writer",
+  "app": {
+    "displayName": "Calendar Writer",
+    "description": "Keep your schedule in sync by automatically adding, updating, or removing events in your connected calendars (Google, Outlook, CalDAV, etc.) whenever appointments are created, rescheduled, or canceled."
+  },
+  "statusText": {
+    "successfully_set_up": "Successfully set up",
+    "calendar_app_not_found": "Calendar app is not found or does not support write",
+    "error_creating_calendar_event_for_new_appointment": "Error creating calendar event for new appointment",
+    "error_updating_calendar_event_for_status_change": "Error updating calendar event for status change",
+    "error_updating_calendar_event_for_rescheduled_appointment": "Error updating calendar event for rescheduled appointment"
+  },
+  "form": {
+    "calendarStorage": {
+      "label": "Calendar storage",
+      "tooltip": "Select calendar that you would like to use as target storage for your appointment events."
+    },
+    "update": "Update with <app></app>",
+    "add": "Add <app></app>"
+  },
+  "validation": {
+    "appId": {
+      "required": "Calendar app is required"
+    }
+  }
+}

@@ -1,6 +1,4 @@
-type Props = {
-  params: Promise<{ file: string }>;
-};
+type Props = RouteContext<"/assets/placeholder/[file]">;
 
 import { notFound } from "next/navigation";
 import { NextRequest, NextResponse } from "next/server";
@@ -47,7 +45,7 @@ const generatePlaceholderImage = async ({
 
 export async function GET(
   request: NextRequest,
-  props: Props
+  props: Props,
 ): Promise<NextResponse> {
   const { file } = await props.params;
 
@@ -76,7 +74,7 @@ export async function GET(
   const contentType = `image/${ext}`;
   const inline = request.nextUrl.searchParams.has("inline");
 
-  const res = new NextResponse(result, {
+  const res = new NextResponse(Buffer.from(result), {
     status: 200,
     headers: new Headers({
       //Headers

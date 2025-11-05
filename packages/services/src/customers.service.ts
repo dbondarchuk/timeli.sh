@@ -1,23 +1,32 @@
-import { getLoggerFactory } from "@vivid/logger";
 import {
   Appointment,
   Customer,
   CustomerListModel,
   CustomerSearchField,
   CustomerUpdateModel,
+  ICustomerHook,
+  IJobService,
+  Leaves,
   Query,
   WithTotal,
   type ICustomersService,
-} from "@vivid/types";
-import { buildSearchQuery, escapeRegex, Leaves } from "@vivid/utils";
+} from "@timelish/types";
+import { buildSearchQuery, escapeRegex } from "@timelish/utils";
 import { Filter, ObjectId, Sort } from "mongodb";
+import {
+  APPOINTMENTS_COLLECTION_NAME,
+  CUSTOMERS_COLLECTION_NAME,
+} from "./collections";
 import { getDbConnection } from "./database";
-import { APPOINTMENTS_COLLECTION_NAME } from "./events.service";
+import { BaseService } from "./services/base.service";
 
-export const CUSTOMERS_COLLECTION_NAME = "customers";
-
-export class CustomersService implements ICustomersService {
-  protected readonly loggerFactory = getLoggerFactory("CustomersService");
+export class CustomersService extends BaseService implements ICustomersService {
+  public constructor(
+    companyId: string,
+    private readonly jobService: IJobService,
+  ) {
+    super("CustomersService", companyId);
+  }
 
   public async getCustomer(id: string): Promise<Customer | null> {
     const logger = this.loggerFactory("getCustomer");
@@ -29,6 +38,7 @@ export class CustomersService implements ICustomersService {
 
     const customer = await collection.findOne({
       _id: id,
+      companyId: this.companyId,
     });
 
     if (!customer) {
@@ -39,7 +49,7 @@ export class CustomersService implements ICustomersService {
           customerId: id,
           name: customer.name,
         },
-        "Customer found"
+        "Customer found",
       );
     }
 
@@ -47,7 +57,7 @@ export class CustomersService implements ICustomersService {
   }
 
   public async getCustomers(
-    query: Query & { priorityIds?: string[] }
+    query: Query & { priorityIds?: string[] },
   ): Promise<WithTotal<CustomerListModel>> {
     const logger = this.loggerFactory("getCustomers");
     logger.debug({ query }, "Getting customers");
@@ -59,10 +69,12 @@ export class CustomersService implements ICustomersService {
         ...prev,
         [curr.id]: curr.desc ? -1 : 1,
       }),
-      {}
+      {},
     ) || { "lastAppointment.dateTime": -1 };
 
-    const filter: Filter<Customer> = {};
+    const filter: Filter<Customer> = {
+      companyId: this.companyId,
+    };
 
     if (query.search) {
       const $regex = new RegExp(escapeRegex(query.search), "i");
@@ -74,7 +86,7 @@ export class CustomersService implements ICustomersService {
         "knownNames",
         "knownEmails",
         "knownPhones",
-        "note"
+        "note",
       );
 
       filter.$or = queries;
@@ -139,6 +151,12 @@ export class CustomersService implements ICustomersService {
       .collection<Customer>(CUSTOMERS_COLLECTION_NAME)
       .aggregate([
         {
+          $match: {
+            companyId: this.companyId,
+          },
+        },
+        ...priorityStages,
+        {
           $lookup: {
             from: APPOINTMENTS_COLLECTION_NAME,
             localField: "_id",
@@ -148,6 +166,7 @@ export class CustomersService implements ICustomersService {
               {
                 $match: {
                   status: { $ne: "declined" },
+                  companyId: this.companyId,
                 },
               },
             ],
@@ -247,7 +266,7 @@ export class CustomersService implements ICustomersService {
         query,
         result: { total: response.total, count: response.items.length },
       },
-      "Fetched customers"
+      "Fetched customers",
     );
 
     return response;
@@ -255,7 +274,7 @@ export class CustomersService implements ICustomersService {
 
   public async findCustomer(
     email: string,
-    phone: string
+    phone: string,
   ): Promise<Customer | null> {
     const logger = this.loggerFactory("findCustomer");
     logger.debug({ email, phone }, "Finding customer by email and phone");
@@ -264,7 +283,7 @@ export class CustomersService implements ICustomersService {
     if (byEmail) {
       logger.debug(
         { email, customerId: byEmail._id },
-        "Customer found by email"
+        "Customer found by email",
       );
       return byEmail;
     }
@@ -273,7 +292,7 @@ export class CustomersService implements ICustomersService {
     if (byPhone) {
       logger.debug(
         { phone, customerId: byPhone._id },
-        "Customer found by phone"
+        "Customer found by phone",
       );
     } else {
       logger.debug({ email, phone }, "Customer not found by email or phone");
@@ -283,7 +302,7 @@ export class CustomersService implements ICustomersService {
 
   public async findCustomerBySearchField(
     search: string,
-    field: CustomerSearchField
+    field: CustomerSearchField,
   ): Promise<Customer | null> {
     const logger = this.loggerFactory("findCustomerBySearchField");
     logger.debug({ search, field }, "Finding customer by search field");
@@ -295,17 +314,18 @@ export class CustomersService implements ICustomersService {
     const queries = buildSearchQuery<Customer>(
       { $regex },
       field,
-      `known${field[0].toUpperCase()}${field.substring(1)}s` as Leaves<Customer>
+      `known${field[0].toUpperCase()}${field.substring(1)}s` as Leaves<Customer>,
     );
 
     const customer = await collection.findOne({
       $or: queries,
+      companyId: this.companyId,
     });
 
     if (customer) {
       logger.debug(
         { search, field, customerId: customer._id },
-        "Customer found by search field"
+        "Customer found by search field",
       );
     } else {
       logger.debug({ search, field }, "Customer not found by search field");
@@ -314,7 +334,9 @@ export class CustomersService implements ICustomersService {
     return customer;
   }
 
-  public async createCustomer(customer: CustomerUpdateModel): Promise<string> {
+  public async createCustomer(
+    customer: CustomerUpdateModel,
+  ): Promise<Customer> {
     const logger = this.loggerFactory("createCustomer");
     logger.debug(
       {
@@ -324,7 +346,7 @@ export class CustomersService implements ICustomersService {
           phone: customer.phone,
         },
       },
-      "Creating new customer"
+      "Creating new customer",
     );
 
     const id = new ObjectId().toString();
@@ -332,22 +354,32 @@ export class CustomersService implements ICustomersService {
 
     const collection = db.collection<Customer>(CUSTOMERS_COLLECTION_NAME);
 
-    await collection.insertOne({
+    const createdCustomer: Customer = {
       ...customer,
+      companyId: this.companyId,
       _id: id,
-    });
+    };
+
+    await collection.insertOne(createdCustomer);
 
     logger.debug(
       { customerId: id, name: customer.name },
-      "Successfully created customer"
+      "Successfully created customer, executing hooks",
     );
 
-    return id;
+    // Execute customer hooks
+    await this.jobService.enqueueHook<ICustomerHook, "onCustomerCreated">(
+      "customer-hook",
+      "onCustomerCreated",
+      createdCustomer,
+    );
+
+    return createdCustomer;
   }
 
   public async updateCustomer(
     id: string,
-    update: CustomerUpdateModel
+    update: CustomerUpdateModel,
   ): Promise<void> {
     const logger = this.loggerFactory("updateCustomer");
     logger.debug(
@@ -355,7 +387,7 @@ export class CustomersService implements ICustomersService {
         customerId: id,
         update: { name: update.name, email: update.email, phone: update.phone },
       },
-      "Updating customer"
+      "Updating customer",
     );
 
     const db = await getDbConnection();
@@ -367,13 +399,140 @@ export class CustomersService implements ICustomersService {
     await collection.updateOne(
       {
         _id: id,
+        companyId: this.companyId,
       },
       {
         $set: updateObj,
-      }
+      },
     );
 
-    logger.debug({ customerId: id }, "Successfully updated customer");
+    // Get the updated customer for hooks
+    const updatedCustomer = await collection.findOne({
+      _id: id,
+      companyId: this.companyId,
+    });
+    if (!updatedCustomer) {
+      logger.warn({ customerId: id }, "Customer not found after update");
+      return;
+    }
+
+    logger.debug(
+      { customerId: id },
+      "Successfully updated customer, executing hooks",
+    );
+
+    // Execute customer hooks
+    await this.jobService.enqueueHook<ICustomerHook, "onCustomerUpdated">(
+      "customer-hook",
+      "onCustomerUpdated",
+      updatedCustomer,
+      update,
+    );
+  }
+
+  public async getOrUpsertCustomer({
+    name,
+    email,
+    phone,
+  }: {
+    name: string;
+    email: string;
+    phone: string;
+  }): Promise<Customer> {
+    const logger = this.loggerFactory("getOrUpsertCustomer");
+
+    logger.debug(
+      { customerName: name, customerEmail: email },
+      "Getting or creating/updating customer",
+    );
+
+    const existingCustomer = await this.findCustomer(
+      email.trim(),
+      phone.trim(),
+    );
+
+    if (existingCustomer) {
+      logger.debug(
+        {
+          customerId: existingCustomer._id,
+          customerName: existingCustomer.name,
+        },
+        "Found existing customer",
+      );
+
+      await this.updateCustomerIfNeeded(existingCustomer, {
+        name,
+        email,
+        phone,
+      });
+
+      return existingCustomer;
+    }
+
+    logger.debug(
+      { customerName: name, customerEmail: email },
+      "Creating new customer",
+    );
+
+    const customer: CustomerUpdateModel = {
+      email: email.trim(),
+      name: name.trim(),
+      phone: phone.trim(),
+      knownEmails: [],
+      knownNames: [],
+      knownPhones: [],
+      requireDeposit: "inherit",
+    };
+
+    const newCustomer = await this.createCustomer(customer);
+
+    logger.debug(
+      { customerId: newCustomer._id, customerName: newCustomer.name },
+      "New customer created",
+    );
+
+    return newCustomer;
+  }
+
+  private async updateCustomerIfNeeded(
+    customer: Customer,
+    updatedFields: { name: string; email: string; phone: string },
+  ): Promise<void> {
+    const logger = this.loggerFactory("updateCustomerIfNeeded");
+
+    logger.debug(
+      { customerId: customer._id, customerName: customer.name, updatedFields },
+      "Checking if customer update is needed",
+    );
+
+    let needsUpdate = false;
+    const name = updatedFields.name.trim();
+    if (customer.name !== name && !customer.knownNames.includes(name)) {
+      customer.knownNames.push(name);
+      needsUpdate = true;
+    }
+
+    const email = updatedFields.email.trim();
+    if (customer.email !== email && !customer.knownEmails.includes(email)) {
+      customer.knownEmails.push(email);
+      needsUpdate = true;
+    }
+
+    const phone = updatedFields.phone.trim();
+    if (customer.phone !== phone && !customer.knownPhones.includes(phone)) {
+      customer.knownPhones.push(phone);
+      needsUpdate = true;
+    }
+
+    if (needsUpdate) {
+      logger.debug(
+        { customerId: customer._id, updatedFields: { name, email, phone } },
+        "Updating customer with new information",
+      );
+      await this.updateCustomer(customer._id, customer);
+    } else {
+      logger.debug({ customerId: customer._id }, "No customer update needed");
+    }
   }
 
   public async deleteCustomer(id: string): Promise<Customer | null> {
@@ -384,14 +543,17 @@ export class CustomersService implements ICustomersService {
 
     const collection = db.collection<Customer>(CUSTOMERS_COLLECTION_NAME);
 
-    const customer = await collection.findOne({ _id: id });
+    const customer = await collection.findOne({
+      _id: id,
+      companyId: this.companyId,
+    });
     if (!customer) {
       logger.warn({ customerId: id }, "Customer not found for deletion");
       return null;
     }
 
     const appointmentsCollection = db.collection<Appointment>(
-      APPOINTMENTS_COLLECTION_NAME
+      APPOINTMENTS_COLLECTION_NAME,
     );
     const count = await appointmentsCollection.countDocuments({
       customerId: id,
@@ -400,7 +562,7 @@ export class CustomersService implements ICustomersService {
     if (count > 0) {
       logger.error(
         { customerId: id, appointmentCount: count },
-        "Cannot delete customer with existing appointments"
+        "Cannot delete customer with existing appointments",
       );
       throw new Error("Customer has existing appointments");
     }
@@ -411,7 +573,14 @@ export class CustomersService implements ICustomersService {
 
     logger.debug(
       { customerId: id, name: customer.name },
-      "Successfully deleted customer"
+      "Successfully deleted customer, executing hooks",
+    );
+
+    // Execute customer hooks
+    await this.jobService.enqueueHook<ICustomerHook, "onCustomersDeleted">(
+      "customer-hook",
+      "onCustomersDeleted",
+      [customer],
     );
 
     return customer;
@@ -425,7 +594,7 @@ export class CustomersService implements ICustomersService {
 
     const collection = db.collection<Customer>(CUSTOMERS_COLLECTION_NAME);
     const appointmentsCollection = db.collection<Appointment>(
-      APPOINTMENTS_COLLECTION_NAME
+      APPOINTMENTS_COLLECTION_NAME,
     );
 
     const appointmentMap = (await appointmentsCollection
@@ -435,6 +604,7 @@ export class CustomersService implements ICustomersService {
             customerId: {
               $in: ids,
             },
+            companyId: this.companyId,
           },
         },
         {
@@ -455,28 +625,44 @@ export class CustomersService implements ICustomersService {
           customerIds: nonEmptyCustomers.map(({ _id }) => _id),
           appointmentCounts: nonEmptyCustomers,
         },
-        "Cannot delete customers with existing appointments"
+        "Cannot delete customers with existing appointments",
       );
       throw new Error(
-        `Some customers already have appointments: ${nonEmptyCustomers.map(({ _id }) => _id).join(", ")}`
+        `Some customers already have appointments: ${nonEmptyCustomers.map(({ _id }) => _id).join(", ")}`,
       );
     }
+
+    // Get customers before deletion for hooks
+    const customersToDelete = await collection
+      .find({
+        _id: { $in: ids },
+        companyId: this.companyId,
+      })
+      .toArray();
 
     await collection.deleteMany({
       _id: {
         $in: ids,
       },
+      companyId: this.companyId,
     });
 
     logger.debug(
       { customerIds: ids, count: ids.length },
-      "Successfully deleted multiple customers"
+      "Successfully deleted multiple customers, executing hooks",
+    );
+
+    // Execute customer hooks
+    await this.jobService.enqueueHook<ICustomerHook, "onCustomersDeleted">(
+      "customer-hook",
+      "onCustomersDeleted",
+      customersToDelete,
     );
   }
 
   public async mergeCustomers(
     targetId: string,
-    valueIds: string[]
+    valueIds: string[],
   ): Promise<void> {
     const logger = this.loggerFactory("mergeCustomers");
     logger.debug({ targetId, valueIds }, "Merging customers");
@@ -486,6 +672,7 @@ export class CustomersService implements ICustomersService {
 
     const target = await collection.findOne({
       _id: targetId,
+      companyId: this.companyId,
     });
 
     if (!target) {
@@ -505,6 +692,7 @@ export class CustomersService implements ICustomersService {
         _id: {
           $in: ids,
         },
+        companyId: this.companyId,
       })
       .toArray();
 
@@ -516,7 +704,7 @@ export class CustomersService implements ICustomersService {
           foundCount: customers.length,
           expectedCount: ids.length,
         },
-        "Could not find all customers for merge"
+        "Could not find all customers for merge",
       );
       throw new Error(`Could not find all customers for merge`);
     }
@@ -567,14 +755,15 @@ export class CustomersService implements ICustomersService {
     await collection.updateOne(
       {
         _id: targetId,
+        companyId: this.companyId,
       },
       {
         $set: update,
-      }
+      },
     );
 
     const appointmentsCollection = db.collection<Appointment>(
-      APPOINTMENTS_COLLECTION_NAME
+      APPOINTMENTS_COLLECTION_NAME,
     );
     await appointmentsCollection.updateMany(
       {
@@ -586,7 +775,7 @@ export class CustomersService implements ICustomersService {
         $set: {
           customerId: targetId,
         },
-      }
+      },
     );
 
     await collection.deleteMany({
@@ -597,25 +786,26 @@ export class CustomersService implements ICustomersService {
 
     logger.debug(
       { targetId, valueIds, mergedCount: ids.length },
-      "Successfully merged customers"
+      "Successfully merged customers",
     );
   }
 
   public async checkUniqueEmailAndPhone(
     emails: string[],
     phones: string[],
-    id?: string
+    id?: string,
   ): Promise<{ email: boolean; phone: boolean }> {
     const logger = this.loggerFactory("checkUniqueEmailAndPhone");
     logger.debug(
       { emails, phones, customerId: id },
-      "Checking unique email and phone"
+      "Checking unique email and phone",
     );
 
     const db = await getDbConnection();
     const customers = db.collection<Customer>(CUSTOMERS_COLLECTION_NAME);
 
     const emailFilter: Filter<Customer> = {
+      companyId: this.companyId,
       $or: [
         {
           email: { $in: emails },
@@ -630,6 +820,7 @@ export class CustomersService implements ICustomersService {
     };
 
     const phoneFilter: Filter<Customer> = {
+      companyId: this.companyId,
       $or: [
         {
           phone: { $in: phones },
@@ -660,7 +851,7 @@ export class CustomersService implements ICustomersService {
     const result = { email: !emailResult, phone: !phoneResult };
     logger.debug(
       { emails, phones, customerId: id, result },
-      "Email and phone uniqueness check completed"
+      "Email and phone uniqueness check completed",
     );
 
     return result;

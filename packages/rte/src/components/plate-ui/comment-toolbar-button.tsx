@@ -1,7 +1,7 @@
 "use client";
 
+import { ToolbarButton } from "@timelish/ui";
 import { useCommentAddButton } from "@udecode/plate-comments/react";
-import { ToolbarButton } from "@vivid/ui";
 import { MessageSquarePlus } from "lucide-react";
 
 export function CommentToolbarButton() {

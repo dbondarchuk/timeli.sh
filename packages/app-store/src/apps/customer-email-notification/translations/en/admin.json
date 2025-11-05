@@ -1,0 +1,82 @@
+{
+  "app": {
+    "displayName": "Customer email notification",
+    "description": "Send personalized emails to customers about their appointments — including confirmations, updates, and cancellations — so they stay informed every step of the way"
+  },
+  "navigation": {
+    "title": "Customer email notification"
+  },
+  "new": "New customer email notification",
+  "edit": "Edit customer email notification",
+  "newDescription": "Create new customer email notification",
+  "editDescription": "Update customer email notification",
+  "form": {
+    "header": "{type} email template",
+    "subject": {
+      "label": "Email subject",
+      "description": "Subject of the email, that your customers will see when {whenText}",
+      "placeholder": "Subject"
+    },
+    "body": {
+      "label": "Email body",
+      "description": "Body of the email, that your customers will see when {whenText}",
+      "placeholder": "Body"
+    },
+    "calendarEventTemplate": {
+      "title": "Calendar event template",
+      "summary": {
+        "label": "Event summary",
+        "description": "Summary of the event, that your customers will see in their calendar",
+        "placeholder": "Event summary"
+      },
+      "templateId": {
+        "label": "Event content",
+        "description": "Content of the event, that your customers will see in their calendar",
+        "placeholder": "Event content"
+      }
+    }
+  },
+  "whenText": {
+    "pending": "they book new appointment",
+    "confirmed": "the appointment was confirmed",
+    "declined": "the appointment was declined",
+    "rescheduled": "the appointment was rescheduled"
+  },
+  "statusText": {
+    "email_app_not_configured": "Email sender default is not configured",
+    "successfully_set_up": "Successfully set up",
+    "error_processing_configuration": "Error processing configuration",
+    "error_sending_customer_email_notification_for_new_appointment": "Error sending customer email notification for new appointment",
+    "error_sending_customer_email_notification_for_status_change": "Error sending customer email notification for status change",
+    "error_sending_customer_email_notification_for_rescheduled_appointment": "Error sending customer email notification for rescheduled appointment"
+  },
+  "handlers": {
+    "newRequest": "Customer Email Notification - New Request",
+    "pending": "Customer Email Notification - Pending",
+    "confirmed": "Customer Email Notification - Confirmed",
+    "declined": "Customer Email Notification - Declined",
+    "rescheduled": "Customer Email Notification - Rescheduled"
+  },
+  "validation": {
+    "eventTemplate": {
+      "summary": {
+        "required": "Event summary is required",
+        "min": "Event summary is required"
+      },
+      "templateId": {
+        "required": "Event template is required",
+        "min": "Event template is required"
+      }
+    },
+    "emailTemplate": {
+      "subject": {
+        "required": "Email subject is required",
+        "min": "Email subject is required"
+      },
+      "templateId": {
+        "required": "Email template is required",
+        "min": "Email template is required"
+      }
+    }
+  }
+}

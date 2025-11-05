@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import React from "react";
 
 import { type NodeEntry, isHotkey } from "@udecode/plate";
 import {
@@ -21,10 +21,16 @@ import { Loader2Icon } from "lucide-react";
 
 import { useChat } from "../editor/use-chat";
 
+import {
+  Command,
+  CommandList,
+  InputCommand,
+  Popover,
+  PopoverAnchor,
+  PopoverContent,
+} from "@timelish/ui";
 import { AIChatEditor } from "./ai-chat-editor";
 import { AIMenuItems } from "./ai-menu-items";
-import { Command, CommandList, InputCommand } from "@vivid/ui";
-import { Popover, PopoverAnchor, PopoverContent } from "@vivid/ui";
 
 export function AIMenu() {
   const { api, editor } = useEditorPlugin(AIChatPlugin);
@@ -38,7 +44,7 @@ export function AIMenu() {
 
   const { input, isLoading, messages, setInput } = chat;
   const [anchorElement, setAnchorElement] = React.useState<HTMLElement | null>(
-    null
+    null,
   );
 
   const content = useLastAssistantMessage()?.content;
@@ -88,7 +94,7 @@ export function AIMenu() {
     () => {
       api.aiChat.show();
     },
-    { enableOnContentEditable: true, enableOnFormTags: true }
+    { enableOnContentEditable: true, enableOnFormTags: true },
   );
 
   return (

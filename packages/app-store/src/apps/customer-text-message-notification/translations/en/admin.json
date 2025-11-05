@@ -1,0 +1,41 @@
+{
+  "app": {
+    "displayName": "Customer text message notification",
+    "description": "Send personalized text message notifications to customers about their appointments — including confirmations, updates, and cancellations — so they stay informed every step of the way"
+  },
+  "navigation": {
+    "title": "Customer text message notification"
+  },
+  "new": "New customer text message notification",
+  "edit": "Edit customer text message notification",
+  "newDescription": "Create new customer text message notification",
+  "editDescription": "Update customer text message notification",
+  "form": {
+    "template": {
+      "label": "{type} text message template",
+      "tooltip": "Body of the text message, that your customers will see when {whenText}",
+      "tooltipEmpty": "Leave empty to not send text message when {whenText}"
+    }
+  },
+  "whenText": {
+    "pending": "they book new appointment",
+    "confirmed": "the appointment was confirmed",
+    "declined": "the appointment was declined",
+    "rescheduled": "the appointment was rescheduled"
+  },
+  "statusText": {
+    "text_message_app_not_configured": "Text message sender default app is not configured",
+    "successfully_set_up": "Successfully set up",
+    "error_processing_configuration": "Error processing customer text message notification configuration",
+    "error_sending_customer_text_message_notification_for_new_appointment": "Error sending customer text message notification for new appointment",
+    "error_sending_customer_text_message_notification_for_status_change": "Error sending customer text message notification for status change",
+    "error_sending_customer_text_message_notification_for_rescheduled_appointment": "Error sending customer text message notification for rescheduled appointment"
+  },
+  "handlers": {
+    "newRequest": "Customer Text Message Notification - New Request",
+    "pending": "Customer Text Message Notification - Pending",
+    "confirmed": "Customer Text Message Notification - Confirmed",
+    "declined": "Customer Text Message Notification - Declined",
+    "rescheduled": "Customer Text Message Notification - Rescheduled"
+  }
+}

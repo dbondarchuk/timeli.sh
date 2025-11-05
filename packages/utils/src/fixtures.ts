@@ -1,4 +1,4 @@
-import { Appointment, AppointmentFields } from "@vivid/types";
+import { Appointment, AppointmentFields } from "@timelish/types";
 import { v4 } from "uuid";
 
 const proxyHandler = {
@@ -14,6 +14,7 @@ const appointmentId = "hjsjrlklfsdnx";
 const customerId = "customer-1234";
 export const demoAppointment: Appointment = {
   _id: appointmentId,
+  companyId: "company-1",
   createdAt: new Date(2024, 10, 20, 9, 0, 0),
   dateTime: new Date(2024, 10, 20, 9, 0, 0),
   status: "confirmed",
@@ -28,7 +29,14 @@ export const demoAppointment: Appointment = {
     // description: "This is a demo option",
     duration: 100,
     price: 50,
+    isOnline: false,
     // requireDeposit: "inherit",
+  },
+  meetingInformation: {
+    type: "google_meet",
+    meetingId: "1234567890",
+    meetingPassword: "1234567890",
+    url: "https://meet.google.com/1234567890",
   },
   files: [
     {
@@ -39,6 +47,8 @@ export const demoAppointment: Appointment = {
       uploadedAt: new Date(2024, 10, 20, 9, 0, 0),
       appointmentId,
       description: "Image 1",
+      hash: "hash1",
+      companyId: "company-1",
     },
     {
       _id: v4(),
@@ -48,6 +58,8 @@ export const demoAppointment: Appointment = {
       uploadedAt: new Date(2024, 10, 20, 9, 0, 0),
       appointmentId,
       description: "Image 2",
+      hash: "hash2",
+      companyId: "company-1",
     },
     {
       _id: v4(),
@@ -57,6 +69,8 @@ export const demoAppointment: Appointment = {
       uploadedAt: new Date(2024, 10, 20, 9, 0, 0),
       appointmentId,
       description: "Video 1",
+      hash: "hash3",
+      companyId: "company-1",
     },
     {
       _id: v4(),
@@ -66,6 +80,8 @@ export const demoAppointment: Appointment = {
       uploadedAt: new Date(2024, 10, 20, 9, 0, 0),
       appointmentId,
       description: "Video 2",
+      hash: "hash4",
+      companyId: "company-1",
     },
   ],
   addons: [
@@ -90,7 +106,7 @@ export const demoAppointment: Appointment = {
       email: "john.smith@example.com",
       phone: "+1 (555)555-5555",
     },
-    proxyHandler
+    proxyHandler,
   ) as AppointmentFields,
   fieldsLabels: new Proxy({}, proxyHandler),
   customerId,
@@ -103,6 +119,7 @@ export const demoAppointment: Appointment = {
     knownNames: [],
     knownPhones: [],
     requireDeposit: "inherit",
+    companyId: "company-1",
   },
   discount: {
     id: "12345",
@@ -119,11 +136,13 @@ export const demoAppointment: Appointment = {
       appointmentId,
       customerId,
       description: "Demo payment",
-      type: "online",
+      method: "online",
       intentId: "intent-1234",
       appName: "Demo app",
       appId: "app-1234",
       updatedAt: new Date(),
+      type: "deposit",
+      companyId: "company-1",
     },
     {
       _id: "payment-1235",
@@ -133,7 +152,7 @@ export const demoAppointment: Appointment = {
       appointmentId,
       customerId,
       description: "Demo payment",
-      type: "online",
+      method: "online",
       intentId: "intent-1235",
       appName: "Demo app",
       appId: "app-1234",
@@ -144,6 +163,45 @@ export const demoAppointment: Appointment = {
           refundedAt: new Date(),
         },
       ],
+      type: "deposit",
+      companyId: "company-1",
     },
   ],
+};
+
+export const demoWaitlistEntry = {
+  _id: "waitlist-entry-1234",
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  customerId,
+  status: "active",
+  customer: {
+    _id: customerId,
+    name: "John Smith",
+    email: "john.smith@example.com",
+    phone: "+1 (555)555-5555",
+    knownEmails: ["johnsmith@example.com"],
+    knownNames: ["Dr. John Smith"],
+    knownPhones: ["+1 (555)555-6666"],
+    requireDeposit: "inherit",
+    dateOfBirth: new Date(),
+    avatar: "https://via.placeholder.com/150",
+    note: "Demo note",
+    dontAllowBookings: false,
+  },
+  email: "johnsmith@example.com",
+  name: "Dr. John Smith",
+  phone: "+1 (555)555-6666",
+  asSoonAsPossible: false,
+  optionId: "option-1234",
+  addonsIds: [],
+  duration: 100,
+  option: {
+    _id: "option-1234",
+    name: "Demo option",
+    duration: 100,
+    price: 50,
+  },
+  addons: [],
+  dates: [],
 };

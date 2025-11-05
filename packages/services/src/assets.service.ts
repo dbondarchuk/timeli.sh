@@ -7,28 +7,49 @@ import {
   IAssetsService,
   IAssetsStorage,
   IConfigurationService,
-  IConnectedAppsService,
   Query,
   WithTotal,
-} from "@vivid/types";
-import { buildSearchQuery, escapeRegex } from "@vivid/utils";
-
-import { getLoggerFactory } from "@vivid/logger";
+} from "@timelish/types";
+import { buildSearchQuery, escapeRegex } from "@timelish/utils";
+import { createHash } from "crypto";
 import { DateTime } from "luxon";
 import { Filter, ObjectId, Sort } from "mongodb";
 import { Readable } from "stream";
-import { CUSTOMERS_COLLECTION_NAME } from "./customers.service";
-import { APPOINTMENTS_COLLECTION_NAME } from "./events.service";
+import {
+  S3AssetsStorageService,
+  getS3Configuration,
+} from "./s3-assets-storage";
+import { BaseService } from "./services/base.service";
 
-export const ASSETS_COLLECTION_NAME = "assets";
+import {
+  APPOINTMENTS_COLLECTION_NAME,
+  ASSETS_COLLECTION_NAME,
+  CUSTOMERS_COLLECTION_NAME,
+} from "./collections";
 
-export class AssetsService implements IAssetsService {
-  protected readonly loggerFactory = getLoggerFactory("AssetsService");
+async function getFileHash(file: File): Promise<string> {
+  const hash = createHash("sha256");
 
-  constructor(
+  // Convert the file.stream() (Web ReadableStream) into a Node stream
+  const nodeStream = Readable.fromWeb(file.stream() as any);
+
+  return new Promise<string>((resolve, reject) => {
+    nodeStream.on("data", (chunk) => hash.update(chunk));
+    nodeStream.on("end", () => resolve(hash.digest("hex")));
+    nodeStream.on("error", reject);
+  });
+}
+
+export class AssetsService extends BaseService implements IAssetsService {
+  protected readonly storage: IAssetsStorage;
+
+  public constructor(
+    companyId: string,
     protected readonly configurationService: IConfigurationService,
-    protected readonly connectedAppService: IConnectedAppsService
-  ) {}
+  ) {
+    super("AssetsService", companyId);
+    this.storage = new S3AssetsStorageService(companyId, getS3Configuration());
+  }
 
   public async getAsset(id: string): Promise<Asset | null> {
     const logger = this.loggerFactory("getAsset");
@@ -42,6 +63,7 @@ export class AssetsService implements IAssetsService {
         {
           $match: {
             _id: id,
+            companyId: this.companyId,
           },
         },
         ...this.aggregateJoin,
@@ -58,7 +80,7 @@ export class AssetsService implements IAssetsService {
           fileSize: asset.size,
           fileType: asset.mimeType,
         },
-        "Asset found"
+        "Asset found",
       );
     }
 
@@ -71,7 +93,7 @@ export class AssetsService implements IAssetsService {
       customerId?: string | string[];
       appointmentId?: string | string[];
       appId?: string;
-    }
+    },
   ): Promise<WithTotal<Asset>> {
     const logger = this.loggerFactory("getAssets");
     logger.debug({ query }, "Getting assets with query");
@@ -83,10 +105,12 @@ export class AssetsService implements IAssetsService {
         ...prev,
         [curr.id]: curr.desc ? -1 : 1,
       }),
-      {}
+      {},
     ) || { uploadedAt: -1 };
 
-    const filter: Filter<Asset> = {};
+    const filter: Filter<Asset> = {
+      companyId: this.companyId,
+    };
 
     if (query.search) {
       const $regex = new RegExp(escapeRegex(query.search), "i");
@@ -94,7 +118,7 @@ export class AssetsService implements IAssetsService {
         { $regex },
         "filename",
         "mimeType",
-        "description"
+        "description",
       );
 
       filter.$or = queries;
@@ -133,6 +157,11 @@ export class AssetsService implements IAssetsService {
     const [res] = await db
       .collection<AssetEntity>(ASSETS_COLLECTION_NAME)
       .aggregate([
+        {
+          $match: {
+            companyId: this.companyId,
+          },
+        },
         ...this.aggregateJoin,
         {
           $match: filter,
@@ -174,21 +203,25 @@ export class AssetsService implements IAssetsService {
         total: result.total,
         count: result.items.length,
       },
-      "Successfully retrieved assets"
+      "Successfully retrieved assets",
     );
 
     return result;
   }
 
   public async createAsset(
-    asset: Omit<Asset, "_id" | "uploadedAt">,
-    file: File
+    asset: Omit<Asset, "_id" | "uploadedAt" | "size" | "hash">,
+    file: File,
   ): Promise<AssetEntity> {
-    const storage = await this.getAssetsStorage();
-    const args = { fileName: asset.filename, size: asset.size };
+    const args = {
+      fileName: asset.filename,
+      mimeType: asset.mimeType,
+      size: file.size,
+      hash: undefined as string | undefined,
+    };
 
     const logger = this.loggerFactory("createAsset");
-    logger.debug(args, "Creating new asset");
+    logger.debug({ args }, "Creating new asset");
 
     const db = await getDbConnection();
     const dbClient = await getDbClient();
@@ -200,6 +233,7 @@ export class AssetsService implements IAssetsService {
 
         const existing = await assets.findOne({
           filename: asset.filename,
+          companyId: this.companyId,
         });
 
         if (!!existing) {
@@ -207,22 +241,37 @@ export class AssetsService implements IAssetsService {
           throw new Error(`File '${asset.filename}' already exists`);
         }
 
+        const hash = await getFileHash(file);
+        args.hash = hash;
+        const existingWithSameHash = await assets.findOne({
+          hash,
+          appointmentId: asset.appointmentId,
+          customerId: asset.customerId,
+          companyId: this.companyId,
+        });
+
+        if (!!existingWithSameHash) {
+          logger.info(args, "Asset with such hash already exists");
+          return existingWithSameHash;
+        }
+
         logger.debug(args, "Uploading new asset");
 
-        await storage.service.saveFile(
-          storage.app,
+        await this.storage.saveFile(
           asset.filename,
           Readable.fromWeb(file.stream() as any),
-          file.size
+          file.size,
         );
 
         logger.debug(args, "Saving new asset");
 
         const dbAsset: Asset = {
           ...asset,
+          companyId: this.companyId,
           _id: new ObjectId().toString(),
           uploadedAt: DateTime.utc().toJSDate(),
           size: file.size,
+          hash,
         };
 
         await assets.insertOne(dbAsset);
@@ -238,7 +287,7 @@ export class AssetsService implements IAssetsService {
 
   public async updateAsset(
     assetId: string,
-    update: AssetUpdate
+    update: AssetUpdate,
   ): Promise<void> {
     const logger = this.loggerFactory("updateAsset");
     logger.debug({ assetId }, "Updating asset");
@@ -252,10 +301,11 @@ export class AssetsService implements IAssetsService {
     await assets.updateOne(
       {
         _id: assetId,
+        companyId: this.companyId,
       },
       {
         $set: updateObj,
-      }
+      },
     );
 
     logger.debug({ assetId }, "Asset was successfully updated");
@@ -271,8 +321,6 @@ export class AssetsService implements IAssetsService {
     const session = dbClient.startSession();
     try {
       return await session.withTransaction(async () => {
-        const storage = await this.getAssetsStorage();
-
         const assets = db.collection<Asset>(ASSETS_COLLECTION_NAME);
 
         const asset = await assets.findOneAndDelete({ _id: assetId });
@@ -283,10 +331,10 @@ export class AssetsService implements IAssetsService {
 
         logger.debug(
           { assetId, fileName: asset.filename },
-          "Asset deleted. Deleting file"
+          "Asset deleted. Deleting file",
         );
 
-        await storage.service.deleteFile(storage.app, asset.filename);
+        await this.storage.deleteFile(asset.filename);
         logger.debug({ assetId, fileName: asset.filename }, "File deleted");
 
         return asset;
@@ -306,7 +354,6 @@ export class AssetsService implements IAssetsService {
     const session = dbClient.startSession();
     try {
       return await session.withTransaction(async () => {
-        const storage = await this.getAssetsStorage();
         const assets = db.collection<AssetEntity>(ASSETS_COLLECTION_NAME);
 
         const toRemove = await assets
@@ -314,6 +361,7 @@ export class AssetsService implements IAssetsService {
             _id: {
               $in: assetsIds,
             },
+            companyId: this.companyId,
           })
           .toArray();
 
@@ -321,17 +369,15 @@ export class AssetsService implements IAssetsService {
           _id: {
             $in: assetsIds,
           },
+          companyId: this.companyId,
         });
 
         logger.debug(
           { assetsIds, deletedCount },
-          "Assets deleted. Deleting files"
+          "Assets deleted. Deleting files",
         );
 
-        await storage.service.deleteFiles(
-          storage.app,
-          toRemove.map((asset) => asset.filename)
-        );
+        await this.storage.deleteFiles(toRemove.map((asset) => asset.filename));
 
         logger.debug({ assetsIds, deletedCount }, "Files deleted");
 
@@ -344,7 +390,7 @@ export class AssetsService implements IAssetsService {
 
   public async checkUniqueFileName(
     filename: string,
-    _id?: string
+    _id?: string,
   ): Promise<boolean> {
     const logger = this.loggerFactory("checkUniqueFileName");
     logger.debug({ filename, _id }, "Checking if file name is unqiue");
@@ -354,6 +400,7 @@ export class AssetsService implements IAssetsService {
 
     const filter: Filter<AssetEntity> = {
       filename,
+      companyId: this.companyId,
     };
 
     if (_id) {
@@ -372,24 +419,24 @@ export class AssetsService implements IAssetsService {
 
     logger.debug(
       { filename, _id },
-      `File name is${hasNext ? " not" : ""} unqiue`
+      `File name is${hasNext ? " not" : ""} unqiue`,
     );
 
     return !hasNext;
   }
 
   public async streamAsset(
-    filename: string
+    filename: string,
   ): Promise<{ stream: Readable; asset: AssetEntity } | null> {
     const logger = this.loggerFactory("streamAsset");
     logger.info({ filename }, "Streaming asset");
-    const storage = await this.getAssetsStorage();
 
     const db = await getDbConnection();
     const assets = db.collection<AssetEntity>(ASSETS_COLLECTION_NAME);
 
     const asset = await assets.findOne({
       filename,
+      companyId: this.companyId,
     });
 
     if (!asset) {
@@ -399,22 +446,16 @@ export class AssetsService implements IAssetsService {
 
     logger.debug(
       { filename, assetId: asset._id, size: asset.size },
-      "Found asset, streaming it."
+      "Found asset, streaming it.",
     );
 
-    const stream = await storage.service.getFile(storage.app, filename);
+    const stream = await this.storage.getFile(filename);
+    if (!stream) {
+      logger.warn({ filename }, "File not found");
+      return null;
+    }
+
     return { stream, asset };
-  }
-
-  private async getAssetsStorage() {
-    const defaultAppsConfiguration =
-      await this.configurationService.getConfiguration("defaultApps");
-
-    const assetsStorageAppId = defaultAppsConfiguration?.assetsStorage.appId;
-
-    return await this.connectedAppService.getAppService<IAssetsStorage>(
-      assetsStorageAppId
-    );
   }
 
   private get aggregateJoin() {
@@ -425,6 +466,13 @@ export class AssetsService implements IAssetsService {
           localField: "appointmentId",
           foreignField: "_id",
           as: "appointment",
+          pipeline: [
+            {
+              $match: {
+                companyId: this.companyId,
+              },
+            },
+          ],
         },
       },
       {
@@ -433,6 +481,13 @@ export class AssetsService implements IAssetsService {
           localField: "customerId",
           foreignField: "_id",
           as: "customer",
+          pipeline: [
+            {
+              $match: {
+                companyId: this.companyId,
+              },
+            },
+          ],
         },
       },
       {
@@ -451,6 +506,13 @@ export class AssetsService implements IAssetsService {
           localField: "appointment.customerId",
           foreignField: "_id",
           as: "appointmentCustomer",
+          pipeline: [
+            {
+              $match: {
+                companyId: this.companyId,
+              },
+            },
+          ],
         },
       },
       {

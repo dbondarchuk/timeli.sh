@@ -1,8 +1,8 @@
 import { cva, VariantProps } from "class-variance-authority";
 import NextLink from "next/link";
 import React from "react";
-import { ButtonSize, ButtonVariant, buttonVariants } from "./button";
 import { cn } from "../utils";
+import { ButtonSize, ButtonVariant, buttonVariants } from "./button";
 import { textVariants, TextVariants } from "./text";
 
 const linkVariants = {
@@ -26,12 +26,12 @@ export const linkClasses = cva(
       size: linkSizes,
     },
     defaultVariants: {},
-  }
+  },
 );
 
 export type LinkVariant = VariantProps<typeof linkClasses>["variant"];
 export const LinkVariants = Object.keys(
-  linkVariants
+  linkVariants,
 ) as (keyof typeof linkVariants)[];
 
 export type LinkSize = VariantProps<typeof linkClasses>["size"];
@@ -89,7 +89,7 @@ export const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(
         className={cn(classes, textClasses, props.className)}
       />
     );
-  }
+  },
 );
 
 Link.displayName = "Link";

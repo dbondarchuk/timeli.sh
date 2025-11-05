@@ -1,4 +1,4 @@
-import { Discount } from "@vivid/types";
+import { Discount } from "@timelish/types";
 
 export const formatAmountString = (value: number): string =>
   value.toFixed(2).replace(/\.00$/, "");
@@ -8,7 +8,7 @@ export const formatAmount = (value: number): number =>
 
 export const getDiscountAmount = (
   price: number,
-  discount: Discount
+  discount: Discount,
 ): number => {
   switch (discount.type) {
     case "amount":

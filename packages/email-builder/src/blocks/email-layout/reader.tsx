@@ -1,4 +1,4 @@
-import { ReaderBlock, ReaderProps } from "@vivid/builder";
+import { ReaderBlock, ReaderProps } from "@timelish/builder";
 import { getFontFamily } from "../../style-inputs/helpers/styles";
 import { EmailLayoutProps, EmailLayoutReaderProps } from "./schema";
 
@@ -63,6 +63,7 @@ export const EmailLayoutReader = ({
                     block={child}
                     args={args}
                     document={document}
+                    isEditor={props.isEditor}
                   />
                 ))}
               </td>

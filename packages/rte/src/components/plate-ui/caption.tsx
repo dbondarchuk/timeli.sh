@@ -1,5 +1,6 @@
 "use client";
 
+import { Button, cn } from "@timelish/ui";
 import { createPrimitiveComponent, withCn, withVariants } from "@udecode/cn";
 import {
   Caption as CaptionPrimitive,
@@ -7,7 +8,6 @@ import {
   useCaptionButton,
   useCaptionButtonState,
 } from "@udecode/plate-caption/react";
-import { Button, cn } from "@vivid/ui";
 import { cva } from "class-variance-authority";
 
 const captionVariants = cva("max-w-full", {
@@ -32,8 +32,8 @@ export const CaptionTextarea = withCn(
   cn(
     "mt-2 w-full resize-none border-none bg-inherit p-0 font-[inherit] text-inherit",
     "focus:outline-none focus:[&::placeholder]:opacity-0",
-    "text-center print:placeholder:text-transparent"
-  )
+    "text-center print:placeholder:text-transparent",
+  ),
 );
 
 export const CaptionButton = createPrimitiveComponent(Button)({

@@ -12,7 +12,7 @@ interface UseMouseOptions {
 }
 
 export function useMouse<T extends HTMLElement = HTMLElement>(
-  options: UseMouseOptions = {}
+  options: UseMouseOptions = {},
 ) {
   const { resetOnExit = false } = options;
   const [position, setPosition] = useState<MousePosition>({ x: 0, y: 0 });
@@ -37,7 +37,7 @@ export function useMouse<T extends HTMLElement = HTMLElement>(
         setPosition({ x: event.clientX, y: event.clientY });
       }
     },
-    [element]
+    [element],
   );
 
   // Optionally reset mouse position on leaving the element

@@ -1,17 +1,24 @@
 import { getDbClient, getDbConnection } from "./database";
 
-import { AvailableAppServices } from "@vivid/app-store/services";
+import { AvailableAppServices } from "@timelish/app-store/services";
 
-import { getLoggerFactory } from "@vivid/logger";
+import { BaseAllKeys } from "@timelish/i18n";
 import {
   Appointment,
+  AppointmentChoice,
   AppointmentEntity,
   AppointmentHistoryEntry,
+  AppointmentOnlineMeetingInformation,
   AppointmentTimeNotAvaialbleError,
-  Customer,
-  CustomerUpdateModel,
+  FieldSchema,
+  GetAppointmentOptionsResponse,
+  IAvailabilityProvider,
+  IDashboardNotificationsService,
+  IJobService,
+  IMeetingUrlProvider,
   IPaymentsService,
   IServicesService,
+  ModifyAppointmentInformationRequest,
   Payment,
   PaymentHistory,
   TimeSlot,
@@ -35,39 +42,45 @@ import {
   type Period,
   type Query,
   type WithTotal,
-} from "@vivid/types";
+} from "@timelish/types";
 import {
   buildSearchQuery,
+  durationToTime,
   escapeRegex,
+  getAdminUrl,
   getAppointmentBucket,
   getAvailableTimeSlotsInCalendar,
-  getAvailableTimeSlotsWithPriority,
   getIcsEventUid,
   parseTime,
-} from "@vivid/utils";
+} from "@timelish/utils";
 import { DateTime } from "luxon";
 import mimeType from "mime-type/with-db";
 import { Filter, ObjectId, Sort } from "mongodb";
 import { v4 } from "uuid";
-import { ASSETS_COLLECTION_NAME } from "./assets.service";
-import { CUSTOMERS_COLLECTION_NAME } from "./customers.service";
-import { PAYMENTS_COLLECTION_NAME } from "./payments.service";
+import {
+  APPOINTMENTS_COLLECTION_NAME,
+  APPOINTMENTS_HISTORY_COLLECTION_NAME,
+  ASSETS_COLLECTION_NAME,
+  CUSTOMERS_COLLECTION_NAME,
+  PAYMENTS_COLLECTION_NAME,
+} from "./collections";
+import { BaseService } from "./services/base.service";
 
-export const APPOINTMENTS_COLLECTION_NAME = "appointments";
-export const APPOINTMENTS_HISTORY_COLLECTION_NAME = "appointments-history";
-
-export class EventsService implements IEventsService {
-  protected readonly loggerFactory = getLoggerFactory("EventsService");
-
+export class EventsService extends BaseService implements IEventsService {
   constructor(
+    companyId: string,
     private readonly configurationService: IConfigurationService,
     private readonly appsService: IConnectedAppsService,
     private readonly assetsService: IAssetsService,
     private readonly customersService: ICustomersService,
     private readonly scheduleService: IScheduleService,
     private readonly servicesService: IServicesService,
-    private readonly paymentsService: IPaymentsService
-  ) {}
+    private readonly paymentsService: IPaymentsService,
+    private readonly jobService: IJobService,
+    private readonly dashboardNotificationsService: IDashboardNotificationsService,
+  ) {
+    super("EventsService", companyId);
+  }
 
   public async getAvailability(duration: number): Promise<Availability> {
     const logger = this.loggerFactory("getAvailability");
@@ -86,7 +99,7 @@ export class EventsService implements IEventsService {
 
     const schedule = await this.scheduleService.getSchedule(
       start.toJSDate(),
-      end.toJSDate()
+      end.toJSDate(),
     );
 
     const availability = await this.getAvailableTimes(
@@ -96,12 +109,12 @@ export class EventsService implements IEventsService {
       events,
       config,
       generalConfig,
-      schedule
+      schedule,
     );
 
     logger.debug(
       { duration, start, end, availableSlots: availability.length },
-      "Availability retrieved"
+      "Availability retrieved",
     );
 
     return availability;
@@ -109,24 +122,22 @@ export class EventsService implements IEventsService {
 
   public async getBusyEventsInTimeFrame(
     start: Date,
-    end: Date
+    end: Date,
   ): Promise<Period[]> {
     const logger = this.loggerFactory("getBusyEventsInTimeFrame");
     logger.debug({ start, end }, "Getting busy events in time frame");
 
-    const { booking: config, general: generalConfig } =
-      await this.configurationService.getConfigurations("booking", "general");
+    const config = await this.configurationService.getConfiguration("booking");
 
     const events = await this.getBusyTimes(
       DateTime.fromJSDate(start),
       DateTime.fromJSDate(end),
       config,
-      generalConfig
     );
 
     logger.debug(
       { start, end, eventCount: events.length },
-      "Busy events in time frame retrieved"
+      "Busy events in time frame retrieved",
     );
 
     return events;
@@ -136,13 +147,12 @@ export class EventsService implements IEventsService {
     const logger = this.loggerFactory("getBusyEvents");
     logger.debug("Getting busy events");
 
-    const { booking: config, general: generalConfig } =
-      await this.configurationService.getConfigurations("booking", "general");
+    const config = await this.configurationService.getConfiguration("booking");
 
     const start = DateTime.utc();
     const end = DateTime.utc().plus({ weeks: config.maxWeeksInFuture ?? 8 });
 
-    const events = await this.getBusyTimes(start, end, config, generalConfig);
+    const events = await this.getBusyTimes(start, end, config);
 
     logger.debug({ eventCount: events.length }, "Busy events retrieved");
 
@@ -174,59 +184,35 @@ export class EventsService implements IEventsService {
           customerEmail: event.fields.email,
           customerPhone: event.fields.phone,
           optionName: event.option.name,
+          optionIsOnline: event.option.isOnline,
+          data: event.data,
         },
         confirmed: propsConfirmed,
         force,
         fileCount: files ? Object.keys(files).length : 0,
         paymentIntentId,
       },
-      "Creating event"
+      "Creating event",
     );
 
     const { booking: config, general: generalConfig } =
       await this.configurationService.getConfigurations("booking", "general");
 
     if (!force) {
-      const eventTime = DateTime.fromJSDate(event.dateTime, {
-        zone: "utc",
-      }).setZone(generalConfig.timeZone);
+      const isAvailable = await this.verifyTimeAvailability(
+        event.dateTime,
+        event.totalDuration,
+        config,
+        generalConfig,
+      );
 
-      if (eventTime < DateTime.now()) {
+      if (!isAvailable) {
         logger.error(
-          { eventTime, now: DateTime.now() },
-          "Event time is in the past"
+          { dateTime: event.dateTime, duration: event.totalDuration },
+          "Event time is not available",
         );
 
         throw new AppointmentTimeNotAvaialbleError("Time is not available");
-      }
-
-      const start = eventTime.startOf("day");
-      const end = start.endOf("day");
-
-      const events = await this.getBusyTimes(start, end, config, generalConfig);
-
-      const schedule = await this.scheduleService.getSchedule(
-        start.toJSDate(),
-        end.toJSDate()
-      );
-
-      const availability = await this.getAvailableTimes(
-        start,
-        end,
-        event.totalDuration,
-        events,
-        config,
-        generalConfig,
-        schedule
-      );
-
-      if (!availability.find((time) => time === eventTime.toMillis())) {
-        logger.error(
-          { eventTime, availability, start, end },
-          "Event time is not available"
-        );
-
-        throw new Error("Time is not available");
       }
     }
 
@@ -235,7 +221,7 @@ export class EventsService implements IEventsService {
     if (files) {
       logger.debug(
         { appointmentId, fileCount: Object.keys(files).length },
-        "Processing files for event"
+        "Processing files for event",
       );
 
       for (const [fieldId, file] of Object.entries(files)) {
@@ -253,18 +239,72 @@ export class EventsService implements IEventsService {
             appointmentId,
             description: `${event.fields.name} - ${event.option.name} - ${fieldId}`,
           },
-          file
+          file,
         );
 
         assets.push(asset);
       }
     }
 
-    const confirmed = propsConfirmed ?? config.autoConfirm ?? false;
+    const option = await this.servicesService.getOption(event.option._id);
+    const isAutoConfirm = option?.isAutoConfirm ?? config.autoConfirm;
+    logger.debug(
+      {
+        isAutoConfirm,
+        isOptionAutoConfirm: option?.isAutoConfirm,
+        autoConfirm: config.autoConfirm,
+      },
+      "Service option auto confirm",
+    );
+
+    const confirmed =
+      propsConfirmed ??
+      (option?.isAutoConfirm === "always" ||
+        (option?.isAutoConfirm === "inherit" && config.autoConfirm)) ??
+      false;
+
+    let meetingInformation: AppointmentOnlineMeetingInformation | undefined =
+      undefined;
+    if (option?.isOnline && option?.meetingUrlProviderAppId) {
+      logger.debug(
+        { appointmentId, meetingProviderAppId: option.meetingUrlProviderAppId },
+        "This is an online option with meeting URL provider set up. Creating meeting link",
+      );
+
+      try {
+        const { app, service } =
+          await this.appsService.getAppService<IMeetingUrlProvider>(
+            option.meetingUrlProviderAppId,
+          );
+
+        meetingInformation = await service.getMeetingUrl(app, {
+          ...event,
+          _id: appointmentId,
+        });
+
+        logger.debug(
+          {
+            appointmentId,
+            meetingProviderAppId: option.meetingUrlProviderAppId,
+            meetingInformation,
+          },
+          "Successfully created meeting information",
+        );
+      } catch (error: any) {
+        logger.error(
+          {
+            appointmentId,
+            meetingProviderAppId: option.meetingUrlProviderAppId,
+            error,
+          },
+          "Meeting URL creation has failed",
+        );
+      }
+    }
 
     logger.debug(
       { appointmentId, confirmed, force, paymentIntentId },
-      "Saving event"
+      "Saving event",
     );
 
     const appointment = await this.saveEvent(
@@ -273,67 +313,62 @@ export class EventsService implements IEventsService {
       by,
       assets.length ? assets : undefined,
       paymentIntentId,
+      meetingInformation,
       confirmed ? "confirmed" : "pending",
-      force
+      force,
     );
 
     logger.debug(
       { appointmentId, confirmed, force, paymentIntentId },
-      "Event saved"
+      "Event saved, executing hooks",
     );
 
-    const hooks =
-      await this.appsService.getAppsByScopeWithData("appointment-hook");
-
-    logger.debug(
-      { appointmentId, hookCount: hooks.length },
-      "Executing appointment hooks"
+    await this.jobService.enqueueHook<IAppointmentHook, "onAppointmentCreated">(
+      "appointment-hook",
+      "onAppointmentCreated",
+      appointment,
+      confirmed,
     );
 
-    const promises = hooks.map(async (hook) => {
-      const service = AvailableAppServices[hook.name](
-        this.appsService.getAppServiceProps(hook._id)
-      ) as any as IAppointmentHook;
+    const pendingAppointments = await this.getPendingAppointmentsCount(
+      new Date(),
+    );
 
-      try {
-        logger.debug(
-          {
-            appointmentId,
-            hookName: hook.name,
-            confirmed,
-            force,
-            paymentIntentId,
-            hookId: hook._id,
+    const duration = durationToTime(appointment.totalDuration);
+    await this.dashboardNotificationsService.publishNotification({
+      type: "appointment-created",
+      badges: [
+        {
+          key: "pending_appointments",
+          count: pendingAppointments.totalCount,
+        },
+      ],
+      toast: {
+        type: "info",
+        title: {
+          key: "admin.appointments.notifications.appointmentCreated.title" satisfies BaseAllKeys,
+        },
+        message: {
+          key: "admin.appointments.notifications.appointmentCreated.message" satisfies BaseAllKeys,
+          args: {
+            name: appointment.customer.name,
+            service: appointment.option.name,
+            dateTime: DateTime.fromJSDate(appointment.dateTime)
+              .setLocale(generalConfig.language)
+              .setZone(generalConfig.timeZone)
+              .toLocaleString(DateTime.DATETIME_HUGE),
+            durationHours: duration.hours,
+            durationMinutes: duration.minutes,
           },
-          "Executing appointment hook"
-        );
-
-        await service.onAppointmentCreated(hook, appointment, confirmed);
-
-        // if (confirmed) {
-        //   await service.onAppointmentStatusChanged(
-        //     hook,
-        //     appointment,
-        //     "confirmed"
-        //   );
-        // }
-      } catch (error: any) {
-        logger.error(
-          {
-            hookName: hook.name,
-            hookId: hook._id,
-            appointmentId,
-            confirmed,
-            force,
-            paymentIntentId,
-            error,
+        },
+        action: {
+          label: {
+            key: "admin.appointments.notifications.appointmentCreated.action" satisfies BaseAllKeys,
           },
-          "Hook execution failed"
-        );
-      }
+          href: `/dashboard/appointments/${appointment._id}`,
+        },
+      },
     });
-
-    await Promise.all(promises);
 
     logger.debug(
       {
@@ -342,40 +377,223 @@ export class EventsService implements IEventsService {
         status: appointment.status,
         confirmed,
       },
-      "Event created successfully"
+      "Event created successfully",
     );
 
     return appointment;
   }
 
-  public async getPendingAppointmentsCount(after?: Date): Promise<number> {
+  public async updateEvent(
+    appointmentId: string,
+    {
+      event,
+      confirmed: propsConfirmed,
+      files,
+      doNotNotifyCustomer,
+    }: {
+      event: AppointmentEvent;
+      confirmed?: boolean;
+      files?: Record<string, File>;
+      doNotNotifyCustomer?: boolean;
+    },
+  ): Promise<Appointment> {
+    const logger = this.loggerFactory("updateEvent");
+    logger.debug(
+      {
+        event: {
+          dateTime: event.dateTime,
+          totalDuration: event.totalDuration,
+          customerName: event.fields.name,
+          customerEmail: event.fields.email,
+          customerPhone: event.fields.phone,
+          optionName: event.option.name,
+          optionIsOnline: event.option.isOnline,
+        },
+        confirmed: propsConfirmed,
+        fileCount: files ? Object.keys(files).length : 0,
+        doNotNotifyCustomer,
+      },
+      "Updating event",
+    );
+
+    const appointment = await this.getAppointment(appointmentId);
+
+    if (!appointment) {
+      logger.error({ id: appointmentId }, "Appointment not found");
+      throw new Error("Appointment not found");
+    }
+
+    if (appointment.status === "declined") {
+      logger.error({ id: appointmentId }, "Appointment is declined");
+      throw new Error("Appointment is declined");
+    }
+
+    const assets: Asset[] = [];
+    if (files) {
+      logger.debug(
+        { appointmentId, fileCount: Object.keys(files).length },
+        "Processing files for event",
+      );
+
+      for (const [fieldId, file] of Object.entries(files)) {
+        let fileType = mimeType.lookup(file.name);
+        if (!fileType) {
+          fileType = "application/octet-stream";
+        } else if (Array.isArray(fileType)) {
+          fileType = fileType[0];
+        }
+
+        const asset = await this.assetsService.createAsset(
+          {
+            filename: `${getAppointmentBucket(appointmentId)}/${fieldId}-${file.name}`,
+            mimeType: fileType,
+            appointmentId,
+            description: `${event.fields.name} - ${event.option.name} - ${fieldId}`,
+          },
+          file,
+        );
+
+        assets.push(asset);
+      }
+    }
+
+    const confirmed = propsConfirmed ?? appointment.status === "confirmed";
+
+    logger.debug({ appointmentId, confirmed }, "Saving event");
+
+    await this.updateEventInDatabase(
+      appointmentId,
+      event,
+      appointment,
+      assets.length ? assets : undefined,
+      confirmed,
+    );
+
+    logger.debug({ appointmentId, confirmed }, "Event saved");
+
+    const updatedAppointment = await this.getAppointment(appointmentId);
+    if (!updatedAppointment) {
+      logger.error(
+        { appointmentId },
+        "Something went wrong - updated appointment not found",
+      );
+      throw new Error("Something went wrong - updated appointment not found");
+    }
+
+    logger.debug({ appointmentId }, "Event saved, executing hooks");
+    await this.jobService.enqueueHook<
+      IAppointmentHook,
+      "onAppointmentRescheduled"
+    >(
+      "appointment-hook",
+      "onAppointmentRescheduled",
+      updatedAppointment,
+      event.dateTime,
+      event.totalDuration,
+      updatedAppointment.dateTime,
+      updatedAppointment.totalDuration,
+      doNotNotifyCustomer,
+    );
+
+    const pendingAppointments = await this.getPendingAppointmentsCount(
+      new Date(),
+    );
+
+    await this.dashboardNotificationsService.publishNotification({
+      type: "appointment-updated",
+      badges: [
+        {
+          key: "pending_appointments",
+          count: pendingAppointments.totalCount,
+        },
+      ],
+    });
+
+    logger.debug(
+      {
+        appointmentId,
+        customerName: updatedAppointment.customer.name,
+        status: updatedAppointment.status,
+        confirmed,
+      },
+      "Event updated successfully",
+    );
+
+    return updatedAppointment;
+  }
+
+  public async getPendingAppointmentsCount(
+    minimumDate?: Date,
+    createdAfter?: Date,
+  ): Promise<{ totalCount: number; newCount: number }> {
     const logger = this.loggerFactory("getPendingAppointmentsCount");
-    logger.debug({ after }, "Getting pending appointments count");
+    logger.debug(
+      { minimumDate, createdAfter },
+      "Getting pending appointments count",
+    );
 
     const db = await getDbConnection();
     const filter: Filter<AppointmentEntity> = {
       status: "pending",
-      dateTime: after
-        ? {
-            $gte: after,
-          }
-        : undefined,
+      dateTime: minimumDate ? { $gte: minimumDate } : undefined,
+      companyId: this.companyId,
     };
 
     const collection = db.collection<AppointmentEntity>(
-      APPOINTMENTS_COLLECTION_NAME
+      APPOINTMENTS_COLLECTION_NAME,
     );
 
-    const count = await collection.countDocuments(filter);
+    const dateMatch = createdAfter
+      ? [
+          {
+            $match: {
+              createdAt: {
+                $gte: createdAfter,
+              },
+            },
+          },
+        ]
+      : [];
 
-    logger.debug({ after, count }, "Pending appointments count retrieved");
+    const [result] = await collection
+      .aggregate([
+        {
+          $match: filter,
+        },
+        {
+          $facet: {
+            totalCount: [
+              {
+                $count: "count",
+              },
+            ],
+            newCount: [
+              ...dateMatch,
+              {
+                $count: "count",
+              },
+            ],
+          },
+        },
+      ])
+      .toArray();
 
-    return count;
+    const response = {
+      totalCount: result.totalCount?.[0]?.count || 0,
+      newCount: result.newCount?.[0]?.count || 0,
+    };
+
+    logger.debug(
+      { minimumDate, createdAfter, response },
+      "Pending appointments count retrieved",
+    );
+
+    return response;
   }
 
   public async getPendingAppointments(
     limit = 20,
-    after?: Date
+    after?: Date,
   ): Promise<WithTotal<Appointment>> {
     const logger = this.loggerFactory("getPendingAppointments");
     logger.debug({ limit, after }, "Getting pending appointments");
@@ -383,6 +601,7 @@ export class EventsService implements IEventsService {
     const db = await getDbConnection();
     const filter: Filter<Appointment> = {
       status: "pending",
+      companyId: this.companyId,
       dateTime: after
         ? {
             $gte: after,
@@ -424,7 +643,7 @@ export class EventsService implements IEventsService {
         after,
         result: { total: response.total, count: response.items.length },
       },
-      "Pending appointments retrieved"
+      "Pending appointments retrieved",
     );
 
     return response;
@@ -459,7 +678,7 @@ export class EventsService implements IEventsService {
 
     const db = await getDbConnection();
     const appointments = db.collection<AppointmentEntity>(
-      APPOINTMENTS_COLLECTION_NAME
+      APPOINTMENTS_COLLECTION_NAME,
     );
 
     const result = await appointments
@@ -467,6 +686,7 @@ export class EventsService implements IEventsService {
         ...this.aggregateJoin,
         {
           $match: {
+            companyId: this.companyId,
             endAt: {
               $gte: date,
             },
@@ -486,7 +706,7 @@ export class EventsService implements IEventsService {
 
     logger.debug(
       { date, limit, count: result.length },
-      "Next appointments retrieved"
+      "Next appointments retrieved",
     );
 
     return result as Appointment[];
@@ -497,9 +717,10 @@ export class EventsService implements IEventsService {
       range?: DateRange;
       endRange?: DateRange;
       status?: AppointmentStatus[];
+      optionId?: string | string[];
       customerId?: string | string[];
       discountId?: string | string[];
-    }
+    },
   ): Promise<WithTotal<Appointment>> {
     const logger = this.loggerFactory("getAppointments");
     logger.info({ query }, "Getting appointments");
@@ -511,10 +732,10 @@ export class EventsService implements IEventsService {
         ...prev,
         [curr.id]: curr.desc ? -1 : 1,
       }),
-      {}
+      {},
     ) || { dateTime: -1 };
 
-    const filter: Filter<Appointment> = {};
+    const filter: Filter<Appointment> = { companyId: this.companyId };
     if (query.range?.start || query.range?.end) {
       filter.dateTime = {};
 
@@ -552,6 +773,12 @@ export class EventsService implements IEventsService {
       };
     }
 
+    if (query.optionId) {
+      filter["option._id"] = {
+        $in: Array.isArray(query.optionId) ? query.optionId : [query.optionId],
+      };
+    }
+
     if (query.discountId) {
       filter["discount.id"] = {
         $in: Array.isArray(query.discountId)
@@ -569,7 +796,7 @@ export class EventsService implements IEventsService {
         "addons.name",
         "addons.description",
         // @ts-ignore value
-        "fields.v"
+        "fields.v",
       );
 
       filter.$or = queries;
@@ -632,7 +859,7 @@ export class EventsService implements IEventsService {
         result: { total: response.total, count: response.items.length },
         query,
       },
-      "Fetched appointments"
+      "Fetched appointments",
     );
 
     return response;
@@ -641,7 +868,7 @@ export class EventsService implements IEventsService {
   public async getEvents(
     start: Date,
     end: Date,
-    status: AppointmentStatus[]
+    status: AppointmentStatus[],
   ): Promise<Event[]> {
     const logger = this.loggerFactory("getEvents");
     logger.debug({ start, end, status }, "Getting events");
@@ -654,27 +881,25 @@ export class EventsService implements IEventsService {
       status,
     });
 
-    const { booking: config, general: generalConfig } =
-      await this.configurationService.getConfigurations("booking", "general");
+    const config = await this.configurationService.getConfiguration("booking");
 
     const apps = await this.appsService.getAppsData(
-      config.calendarSources?.map((source) => source.appId) || []
+      config.calendarSources?.map((source) => source.appId) || [],
     );
 
+    const url = getAdminUrl();
     const skipUids = new Set(
-      appointments.items.map((app) =>
-        getIcsEventUid(app._id, generalConfig.url)
-      )
+      appointments.items.map((app) => getIcsEventUid(app._id, url)),
     );
 
     logger.debug(
       { appCount: apps.length },
-      "Getting busy times from calendar apps"
+      "Getting busy times from calendar apps",
     );
 
     const appsPromises = apps.map(async (app) => {
       const service = AvailableAppServices[app.name](
-        this.appsService.getAppServiceProps(app._id)
+        this.appsService.getAppServiceProps(app._id),
       ) as any as ICalendarBusyTimeProvider;
 
       return await service.getBusyTimes(app, start, end);
@@ -688,7 +913,7 @@ export class EventsService implements IEventsService {
         dateTime: event.startAt,
         totalDuration: DateTime.fromJSDate(event.endAt).diff(
           DateTime.fromJSDate(event.startAt),
-          "minutes"
+          "minutes",
         ).minutes,
         uid: event.uid,
       }))
@@ -705,7 +930,7 @@ export class EventsService implements IEventsService {
         appEventCount: appsEvents.length,
         totalEventCount: result.length,
       },
-      "Events retrieved"
+      "Events retrieved",
     );
 
     return result;
@@ -717,7 +942,7 @@ export class EventsService implements IEventsService {
 
     const db = await getDbConnection();
     const appointments = db.collection<AppointmentEntity>(
-      APPOINTMENTS_COLLECTION_NAME
+      APPOINTMENTS_COLLECTION_NAME,
     );
 
     const result = await appointments
@@ -725,6 +950,7 @@ export class EventsService implements IEventsService {
         {
           $match: {
             _id: id,
+            companyId: this.companyId,
           },
         },
         ...this.aggregateJoin,
@@ -740,7 +966,72 @@ export class EventsService implements IEventsService {
           customerName: result.customer?.name,
           status: result.status,
         },
-        "Appointment found"
+        "Appointment found",
+      );
+    }
+
+    return result as Appointment | null;
+  }
+
+  public async findAppointment(
+    fields: ModifyAppointmentInformationRequest["fields"],
+    status?: AppointmentStatus[],
+  ): Promise<Appointment | null> {
+    const logger = this.loggerFactory("findAppointment");
+    logger.debug({ fields }, "Finding appointment");
+
+    const db = await getDbConnection();
+    const appointments = db.collection<AppointmentEntity>(
+      APPOINTMENTS_COLLECTION_NAME,
+    );
+
+    const dateTime = DateTime.fromJSDate(fields.dateTime);
+
+    const filter: Filter<Appointment>[] = [
+      {
+        companyId: this.companyId,
+        dateTime: {
+          $gte: dateTime.startOf("minute").toJSDate(),
+          $lte: dateTime.endOf("minute").toJSDate(),
+        },
+      },
+    ];
+
+    if (status && status.length) {
+      filter.push({
+        status: {
+          $in: status,
+        },
+      });
+    }
+
+    if (fields.type === "email") {
+      filter.push({ "fields.email": fields.email });
+    } else if (fields.type === "phone") {
+      filter.push({ "fields.phone": fields.phone });
+    }
+
+    const result = await appointments
+      .aggregate([
+        {
+          $match: {
+            $and: filter,
+          },
+        },
+        ...this.aggregateJoin,
+      ])
+      .next();
+
+    if (!result) {
+      logger.warn({ fields }, "Appointment not found");
+    } else {
+      logger.debug(
+        {
+          appointmentId: result._id,
+          customerName: result.customer?.name,
+          status: result.status,
+        },
+        "Appointment found",
       );
     }
 
@@ -749,12 +1040,13 @@ export class EventsService implements IEventsService {
 
   public async changeAppointmentStatus(
     id: string,
-    newStatus: AppointmentStatus
+    newStatus: AppointmentStatus,
+    by: "customer" | "user" = "user",
   ) {
     const logger = this.loggerFactory("changeAppointmentStatus");
     logger.debug(
       { appointmentId: id, newStatus },
-      "Changing appointment status"
+      "Changing appointment status",
     );
 
     const appointment = await this.getAppointment(id);
@@ -762,7 +1054,7 @@ export class EventsService implements IEventsService {
     if (!appointment) {
       logger.warn(
         { appointmentId: id },
-        "Appointment not found for status change"
+        "Appointment not found for status change",
       );
       return;
     }
@@ -771,7 +1063,7 @@ export class EventsService implements IEventsService {
     if (oldStatus === newStatus) {
       logger.debug(
         { appointmentId: id, status: oldStatus },
-        "Appointment status unchanged"
+        "Appointment status unchanged",
       );
       return;
     }
@@ -782,17 +1074,18 @@ export class EventsService implements IEventsService {
       .updateOne(
         {
           _id: id,
+          companyId: this.companyId,
         },
         {
           $set: {
             status: newStatus,
           },
-        }
+        },
       );
 
     logger.debug(
       { appointmentId: id, oldStatus, newStatus },
-      "Appointment status changed"
+      "Appointment status changed",
     );
 
     appointment.status = newStatus;
@@ -803,64 +1096,39 @@ export class EventsService implements IEventsService {
       data: {
         oldStatus,
         newStatus,
+        by,
       },
     });
 
-    const hooks =
-      await this.appsService.getAppsByScopeWithData("appointment-hook");
-
-    logger.debug(
-      { appointmentId: id, hookCount: hooks.length },
-      "Executing status change hooks"
+    await this.jobService.enqueueHook<
+      IAppointmentHook,
+      "onAppointmentStatusChanged"
+    >(
+      "appointment-hook",
+      "onAppointmentStatusChanged",
+      appointment,
+      newStatus,
+      oldStatus,
+      by,
     );
 
-    const promises = hooks.map(async (hook) => {
-      const service = AvailableAppServices[hook.name](
-        this.appsService.getAppServiceProps(hook._id)
-      ) as any as IAppointmentHook;
+    const pendingAppointments = await this.getPendingAppointmentsCount(
+      new Date(),
+    );
 
-      try {
-        logger.debug(
-          {
-            appointmentId: id,
-            hookName: hook.name,
-            hookId: hook._id,
-            newStatus,
-            oldStatus,
-          },
-          "Executing status change hook"
-        );
-
-        await service.onAppointmentStatusChanged(
-          hook,
-          appointment,
-          newStatus,
-          oldStatus
-        );
-
-        logger.debug(
-          {
-            appointmentId: id,
-            hookName: hook.name,
-            hookId: hook._id,
-            newStatus,
-            oldStatus,
-          },
-          "Status change hook executed"
-        );
-      } catch (error: any) {
-        logger.error(
-          { hookName: hook.name, hookId: hook._id, appointmentId: id, error },
-          "Status change hook execution failed"
-        );
-      }
+    await this.dashboardNotificationsService.publishNotification({
+      type: "appointment-status-changed",
+      badges: [
+        {
+          key: "pending_appointments",
+          count: pendingAppointments.totalCount,
+        },
+      ],
     });
-
-    await Promise.all(promises);
 
     logger.debug(
       { appointmentId: id, oldStatus, newStatus },
-      "Appointment status changed successfully"
+      "Appointment status changed successfully",
     );
   }
 
@@ -868,7 +1136,7 @@ export class EventsService implements IEventsService {
     const logger = this.loggerFactory("updateAppointmentNote");
     logger.debug(
       { appointmentId: id, noteLength: note?.length },
-      "Updating appointment note"
+      "Updating appointment note",
     );
 
     const db = await getDbConnection();
@@ -878,28 +1146,29 @@ export class EventsService implements IEventsService {
       .updateOne(
         {
           _id: id,
+          companyId: this.companyId,
         },
         {
           $set: {
             note: note,
           },
-        }
+        },
       );
 
     logger.debug(
       { appointmentId: id },
-      "Appointment note updated successfully"
+      "Appointment note updated successfully",
     );
   }
 
   public async addAppointmentFiles(
     appointmentId: string,
-    files: File[]
+    files: File[],
   ): Promise<Asset[]> {
     const logger = this.loggerFactory("addAppointmentFiles");
     logger.debug(
       { appointmentId, fileCount: files.length },
-      "Adding files to appointment"
+      "Adding files to appointment",
     );
 
     const db = await getDbConnection();
@@ -907,6 +1176,7 @@ export class EventsService implements IEventsService {
       .collection<AppointmentEntity>(APPOINTMENTS_COLLECTION_NAME)
       .findOne({
         _id: appointmentId,
+        companyId: this.companyId,
       });
 
     if (!event) {
@@ -926,7 +1196,7 @@ export class EventsService implements IEventsService {
 
         logger.debug(
           { appointmentId, fileName: file.name, fileType },
-          "Adding file to appointment"
+          "Adding file to appointment",
         );
 
         const id = v4();
@@ -937,7 +1207,7 @@ export class EventsService implements IEventsService {
             appointmentId,
             description: `${event.fields.name} - ${event.option.name}`,
           },
-          file
+          file,
         );
 
         assets.push({ ...asset, appointment: event });
@@ -946,7 +1216,7 @@ export class EventsService implements IEventsService {
 
     logger.debug(
       { appointmentId, fileCount: files.length, assetCount: assets.length },
-      "Files added to appointment successfully"
+      "Files added to appointment successfully",
     );
 
     return assets;
@@ -955,12 +1225,14 @@ export class EventsService implements IEventsService {
   public async rescheduleAppointment(
     id: string,
     newTime: Date,
-    newDuration: number
+    newDuration: number,
+    doNotNotifyCustomer?: boolean,
+    by: "customer" | "user" = "user",
   ) {
     const logger = this.loggerFactory("rescheduleAppointment");
     logger.debug(
-      { appointmentId: id, newTime, newDuration },
-      "Rescheduling appointment"
+      { appointmentId: id, newTime, newDuration, doNotNotifyCustomer },
+      "Rescheduling appointment",
     );
 
     const appointment = await this.getAppointment(id);
@@ -968,7 +1240,7 @@ export class EventsService implements IEventsService {
     if (!appointment) {
       logger.warn(
         { appointmentId: id },
-        "Appointment not found for rescheduling"
+        "Appointment not found for rescheduling",
       );
       return;
     }
@@ -982,13 +1254,14 @@ export class EventsService implements IEventsService {
       .updateOne(
         {
           _id: id,
+          companyId: this.companyId,
         },
         {
           $set: {
             dateTime: newTime,
             totalDuration: newDuration,
           },
-        }
+        },
       );
 
     await this.addAppointmentHistory({
@@ -997,71 +1270,33 @@ export class EventsService implements IEventsService {
       data: {
         oldDateTime: oldTime,
         newDateTime: newTime,
+        by,
       },
     });
 
     logger.debug(
       { appointmentId: id, newTime, newDuration },
-      "Appointment rescheduled in db"
+      "Appointment rescheduled in db",
     );
-
-    const hooks =
-      await this.appsService.getAppsByScopeWithData("appointment-hook");
 
     logger.debug(
-      { appointmentId: id, hookCount: hooks.length },
-      "Executing reschedule hooks"
+      { appointmentId: id, newTime, newDuration },
+      "Appointment rescheduled in db",
     );
 
-    const promises = hooks.map(async (hook) => {
-      const service = AvailableAppServices[hook.name](
-        this.appsService.getAppServiceProps(hook._id)
-      ) as any as IAppointmentHook;
-
-      try {
-        logger.debug(
-          {
-            appointmentId: id,
-            hookName: hook.name,
-            hookId: hook._id,
-            newTime,
-            newDuration,
-            oldTime,
-            oldDuration,
-          },
-          "Executing reschedule hook"
-        );
-
-        await service.onAppointmentRescheduled(
-          hook,
-          appointment,
-          newTime,
-          newDuration,
-          oldTime,
-          oldDuration
-        );
-
-        logger.debug(
-          {
-            appointmentId: id,
-            hookName: hook.name,
-            hookId: hook._id,
-            newTime,
-            newDuration,
-            oldTime,
-            oldDuration,
-          },
-          "Reschedule hook executed"
-        );
-      } catch (error: any) {
-        logger.error(
-          { hookName: hook.name, appointmentId: id, error },
-          "Reschedule hook execution failed"
-        );
-      }
-    });
-
-    await Promise.all(promises);
+    await this.jobService.enqueueHook<
+      IAppointmentHook,
+      "onAppointmentRescheduled"
+    >(
+      "appointment-hook",
+      "onAppointmentRescheduled",
+      appointment,
+      newTime,
+      newDuration,
+      oldTime,
+      oldDuration,
+      doNotNotifyCustomer,
+    );
 
     logger.debug(
       {
@@ -1071,7 +1306,7 @@ export class EventsService implements IEventsService {
         oldDuration,
         newDuration,
       },
-      "Appointment rescheduled successfully"
+      "Appointment rescheduled successfully",
     );
   }
 
@@ -1079,7 +1314,7 @@ export class EventsService implements IEventsService {
     query: Query & {
       appointmentId: string;
       type?: AppointmentHistoryEntry["type"];
-    }
+    },
   ): Promise<WithTotal<AppointmentHistoryEntry>> {
     const logger = this.loggerFactory("getAppointmentHistory");
     logger.debug({ query }, "Getting appointment history");
@@ -1089,10 +1324,13 @@ export class EventsService implements IEventsService {
         ...prev,
         [curr.id]: curr.desc ? -1 : 1,
       }),
-      {}
+      {},
     ) || { dateTime: -1 };
 
-    const filter: Filter<AppointmentHistoryEntry> = {};
+    const filter: Filter<AppointmentHistoryEntry> = {
+      companyId: this.companyId,
+    };
+
     if (query.appointmentId) {
       filter.appointmentId = query.appointmentId;
     }
@@ -1105,7 +1343,7 @@ export class EventsService implements IEventsService {
       const $regex = new RegExp(escapeRegex(query.search), "i");
       const queries = buildSearchQuery<AppointmentHistoryEntry>(
         { $regex },
-        "type"
+        "type",
       );
 
       filter.$or = queries;
@@ -1148,14 +1386,14 @@ export class EventsService implements IEventsService {
 
     logger.debug(
       { total: response.total, items: response.items.length },
-      "Appointment history retrieved"
+      "Appointment history retrieved",
     );
 
     return response;
   }
 
   public async addAppointmentHistory(
-    entry: Omit<AppointmentHistoryEntry, "_id" | "dateTime">
+    entry: Omit<AppointmentHistoryEntry, "_id" | "dateTime" | "companyId">,
   ): Promise<string> {
     const logger = this.loggerFactory("addAppointmentHistory");
     logger.debug({ entry }, "Adding appointment history");
@@ -1165,6 +1403,7 @@ export class EventsService implements IEventsService {
       ...entry,
       _id: new ObjectId().toString(),
       dateTime: new Date(),
+      companyId: this.companyId,
     } as AppointmentHistoryEntry;
 
     await db
@@ -1176,6 +1415,143 @@ export class EventsService implements IEventsService {
     return historyEntry._id;
   }
 
+  public async verifyTimeAvailability(
+    dateTime: Date,
+    duration: number,
+    propConfig?: BookingConfiguration,
+    propGeneralConfig?: GeneralConfiguration,
+  ): Promise<boolean> {
+    const logger = this.loggerFactory("verifyTimeAvailability");
+    logger.debug({ dateTime, duration }, "Verifying time availability");
+
+    const config =
+      propConfig ||
+      (await this.configurationService.getConfiguration("booking"));
+    const generalConfig =
+      propGeneralConfig ||
+      (await this.configurationService.getConfiguration("general"));
+
+    const eventTime = DateTime.fromJSDate(dateTime, {
+      zone: "utc",
+    }).setZone(generalConfig.timeZone);
+
+    if (eventTime < DateTime.now()) {
+      logger.warn(
+        { eventTime, now: DateTime.now() },
+        "Event time is in the past",
+      );
+
+      return false;
+    }
+
+    const start = eventTime.startOf("day");
+    const end = start.endOf("day");
+
+    const events = await this.getBusyTimes(start, end, config);
+
+    const schedule = await this.scheduleService.getSchedule(
+      start.toJSDate(),
+      end.toJSDate(),
+    );
+
+    const availability = await this.getAvailableTimes(
+      start,
+      end,
+      duration,
+      events,
+      config,
+      generalConfig,
+      schedule,
+    );
+
+    if (!availability.find((time) => time.getTime() === eventTime.toMillis())) {
+      logger.warn(
+        { eventTime, availability, start, end },
+        "Event time is not available",
+      );
+
+      return false;
+    }
+
+    return true;
+  }
+
+  public async getAppointmentOptions(): Promise<GetAppointmentOptionsResponse> {
+    const logger = this.loggerFactory("getAppointmentOptions");
+
+    logger.debug("Processing getting booking options API request");
+
+    const config = await this.configurationService.getConfiguration("booking");
+
+    logger.debug({ config }, "Booking configuration");
+
+    const [fields, addons, options] = await Promise.all([
+      this.servicesService.getFields({}),
+      this.servicesService.getAddons({}),
+      this.servicesService.getOptions({}),
+    ]);
+
+    const configFields = (fields?.items || []).reduce(
+      (map, field) => ({
+        ...map,
+        [field._id]: field,
+      }),
+      {} as Record<string, FieldSchema>,
+    );
+
+    const optionsChoices = (config.options || [])
+      .map((o) => options.items?.find(({ _id }) => o.id == _id))
+      .filter((o) => !!o);
+
+    const choices: AppointmentChoice[] = optionsChoices.map((option) => {
+      const addonsFiltered =
+        option.addons
+          ?.map((o) => addons.items?.find((x) => x._id === o.id))
+          .filter((f) => !!f) || [];
+
+      const optionFields = option.fields || [];
+
+      const fieldsIdsRequired = [...optionFields].reduce(
+        (map, field) => ({
+          ...map,
+          [field.id]: !!map[field.id] || !!field.required,
+        }),
+        {} as Record<string, boolean>,
+      );
+
+      const fields = Object.entries(fieldsIdsRequired)
+        .filter(([id]) => !!configFields[id])
+        .map(([id, required]) => ({
+          ...configFields[id],
+          required: !!configFields[id].required || required,
+          id: id,
+        }));
+
+      return {
+        ...option,
+        addons: addonsFiltered,
+        fields,
+      };
+    });
+
+    let showPromoCode = false;
+    if (config.allowPromoCode === "always") showPromoCode = true;
+    else if (config.allowPromoCode === "allow-if-has-active") {
+      const hasActiveDiscounts = await this.servicesService.hasActiveDiscounts(
+        new Date(),
+      );
+      if (hasActiveDiscounts) showPromoCode = true;
+    }
+
+    const response: GetAppointmentOptionsResponse = {
+      options: choices,
+      fieldsSchema: configFields,
+      showPromoCode: showPromoCode,
+    };
+
+    return response;
+  }
+
   private async getAvailableTimes(
     start: DateTime,
     end: DateTime,
@@ -1183,17 +1559,42 @@ export class EventsService implements IEventsService {
     events: Period[],
     config: BookingConfiguration,
     generalConfig: GeneralConfiguration,
-    schedule: Record<string, DaySchedule>
+    schedule: Record<string, DaySchedule>,
   ) {
     const logger = this.loggerFactory("getAvailableTimes");
-
-    const customSlots = config.customSlotTimes?.map((x) => parseTime(x));
-
     let results: TimeSlot[];
-    if (!config.smartSchedule?.allowSmartSchedule) {
+
+    if (config.availabilityProviderAppId) {
+      logger.debug(
+        { availabilityProviderAppId: config.availabilityProviderAppId },
+        "Getting available time slots from availability provider",
+      );
+
+      const { service, app } =
+        await this.appsService.getAppService<IAvailabilityProvider>(
+          config.availabilityProviderAppId,
+        );
+
+      const availability = await service.getAvailability(
+        app,
+        start.toJSDate(),
+        end.toJSDate(),
+        duration,
+        events,
+        schedule,
+      );
+      logger.debug(
+        { availability: availability.length },
+        "Availability retrieved from availability provider",
+      );
+
+      results = availability;
+    } else {
+      const customSlots = config.customSlotTimes?.map((x) => parseTime(x));
+
       logger.debug(
         { start, end, duration, events, config, schedule },
-        "Getting available time slots in calendar"
+        "Getting available time slots in calendar using default method",
       );
 
       results = getAvailableTimeSlotsInCalendar({
@@ -1214,52 +1615,11 @@ export class EventsService implements IEventsService {
         from: start.toJSDate(),
         to: end.toJSDate(),
       });
-    } else {
-      // Smart schedule
-      logger.debug(
-        { start, end, duration, events, config, schedule },
-        "Getting available time slots with priority"
-      );
-
-      let servicesDurations: number[] | undefined = undefined;
-      if (config.smartSchedule?.maximizeForOption) {
-        const service = await this.servicesService.getOption(
-          config.smartSchedule.maximizeForOption
-        );
-        if (service?.duration) {
-          servicesDurations = [service.duration];
-        }
-      }
-
-      results = getAvailableTimeSlotsWithPriority({
-        events: events.map((event) => ({
-          ...event,
-          startAt: DateTime.fromJSDate(event.startAt),
-          endAt: DateTime.fromJSDate(event.endAt),
-        })),
-        duration,
-        schedule,
-        configuration: {
-          timeZone: generalConfig.timeZone || DateTime.now().zoneName!,
-          breakDuration: config.breakDuration ?? 0,
-          slotStart: config.slotStart ?? 15,
-          allowSkipBreak: config.smartSchedule?.allowSkipBreak,
-          filterLowPrioritySlots: true,
-          lowerPriorityIfNoFollowingBooking: true,
-          discourageLargeGaps: true,
-          allowSmartSlotStarts: config.smartSchedule?.allowSmartSlotStarts,
-          preferBackToBack: config.smartSchedule?.preferBackToBack,
-          customSlots,
-        },
-        start,
-        end,
-        allServiceDurations: servicesDurations, //  servicesDurations
-      });
     }
 
     logger.debug(
-      { start, end, duration, results },
-      "Available time slots retrieved"
+      { start, end, duration, results: results.length },
+      "Available time slots retrieved",
     );
 
     return results.map((x) => x.startAt);
@@ -1269,35 +1629,35 @@ export class EventsService implements IEventsService {
     start: DateTime,
     end: DateTime,
     config: BookingConfiguration,
-    generalConfig: GeneralConfiguration
   ) {
     const logger = this.loggerFactory("getBusyTimes");
 
     logger.debug({ start, end }, "Getting busy times");
 
+    const url = getAdminUrl();
     const declinedAppointments = await this.getDbDeclinedEventIds(start, end);
     const declinedUids = new Set(
-      declinedAppointments.map((id) => getIcsEventUid(id, generalConfig.url))
+      declinedAppointments.map((id) => getIcsEventUid(id, url)),
     );
 
     logger.debug(
       { start, end, declinedAppointments, declinedUids },
-      "Declined appointments retrieved"
+      "Declined appointments retrieved",
     );
 
     const apps = await this.appsService.getAppsData(
-      config.calendarSources?.map((source) => source.appId) || []
+      config.calendarSources?.map((source) => source.appId) || [],
     );
 
     const dbEventsPromise = this.getDbBusyTimes(start, end);
     const appsPromises = apps.map(async (app) => {
       logger.debug(
         { appId: app._id, appName: app.name, start, end },
-        "Getting busy times from app"
+        "Getting busy times from app",
       );
 
       const service = AvailableAppServices[app.name](
-        this.appsService.getAppServiceProps(app._id)
+        this.appsService.getAppServiceProps(app._id),
       ) as any as ICalendarBusyTimeProvider;
 
       return service.getBusyTimes(app, start.toJSDate(), end.toJSDate());
@@ -1318,7 +1678,7 @@ export class EventsService implements IEventsService {
           ({
             startAt: event.startAt,
             endAt: event.endAt,
-          }) satisfies Period
+          }) satisfies Period,
       );
 
     logger.debug(
@@ -1329,7 +1689,7 @@ export class EventsService implements IEventsService {
         dbEvents: dbEvents.length,
         total: remoteEvents.length + dbEvents.length,
       },
-      "Busy times retrieved"
+      "Busy times retrieved",
     );
 
     return [...dbEvents, ...remoteEvents];
@@ -1337,7 +1697,7 @@ export class EventsService implements IEventsService {
 
   private async getDbBusyTimes(
     start: DateTime,
-    end: DateTime
+    end: DateTime,
   ): Promise<Period[]> {
     const logger = this.loggerFactory("getDbBusyTimes");
 
@@ -1347,6 +1707,7 @@ export class EventsService implements IEventsService {
     const events = await db
       .collection<AppointmentEntity>(APPOINTMENTS_COLLECTION_NAME)
       .find({
+        companyId: this.companyId,
         dateTime: {
           $gte: start.minus({ days: 1 }).toJSDate(),
           $lte: end.plus({ days: 1 }).toJSDate(),
@@ -1365,7 +1726,7 @@ export class EventsService implements IEventsService {
 
     logger.debug(
       { start, end, events: events.length },
-      "Busy times retrieved from db"
+      "Busy times retrieved from db",
     );
 
     return events.map((x) => ({
@@ -1380,7 +1741,7 @@ export class EventsService implements IEventsService {
 
   private async getDbDeclinedEventIds(
     start: DateTime,
-    end: DateTime
+    end: DateTime,
   ): Promise<string[]> {
     const logger = this.loggerFactory("getDbDeclinedEventIds");
 
@@ -1390,6 +1751,7 @@ export class EventsService implements IEventsService {
     const ids = await db
       .collection<AppointmentEntity>(APPOINTMENTS_COLLECTION_NAME)
       .find({
+        companyId: this.companyId,
         dateTime: {
           $gte: start.minus({ days: 1 }).toJSDate(),
           $lte: end.plus({ days: 1 }).toJSDate(),
@@ -1403,7 +1765,7 @@ export class EventsService implements IEventsService {
 
     logger.debug(
       { start, end, ids: ids.length },
-      "Declined event ids retrieved from db"
+      "Declined event ids retrieved from db",
     );
 
     return ids;
@@ -1415,8 +1777,9 @@ export class EventsService implements IEventsService {
     by: "customer" | "user",
     files?: Asset[],
     paymentIntentId?: string,
+    meetingInformation?: AppointmentOnlineMeetingInformation,
     status: AppointmentStatus = "pending",
-    force?: boolean
+    force?: boolean,
   ): Promise<Appointment> {
     const logger = this.loggerFactory("saveEvent");
 
@@ -1429,7 +1792,7 @@ export class EventsService implements IEventsService {
         paymentIntentId,
         force,
       },
-      "Saving event"
+      "Saving event",
     );
 
     const db = await getDbConnection();
@@ -1438,28 +1801,34 @@ export class EventsService implements IEventsService {
     try {
       return await session.withTransaction(async () => {
         const appointments = db.collection<AppointmentEntity>(
-          APPOINTMENTS_COLLECTION_NAME
+          APPOINTMENTS_COLLECTION_NAME,
         );
 
-        const customer = await this.getCustomer(event);
-        await this.updateCustomerIfNeeded(customer, event);
+        const customer = await this.customersService.getOrUpsertCustomer(
+          event.fields,
+        );
 
         if (customer.dontAllowBookings && !force) {
           logger.error(
             { appointmentId: id, customerName: customer.name },
-            "Customer is not allowed to make appointments"
+            "Customer is not allowed to make appointments",
           );
           console.error(
-            `Customer ${customer.name} is not allowed to make appointments`
+            `Customer ${customer.name} is not allowed to make appointments`,
           );
           throw new Error(
-            `Customer ${customer.name} is not allowed to make appointments`
+            `Customer ${customer.name} is not allowed to make appointments`,
           );
         }
 
         const dbEvent: AppointmentEntity = {
           _id: id,
+          companyId: this.companyId,
           ...event,
+          meetingInformation,
+          dateTime: DateTime.fromJSDate(event.dateTime)
+            .startOf("minute")
+            .toJSDate(),
           status,
           createdAt: DateTime.now().toJSDate(),
           customerId: customer._id,
@@ -1471,7 +1840,7 @@ export class EventsService implements IEventsService {
         if (paymentIntentId) {
           logger.debug(
             { appointmentId: id, paymentIntentId },
-            "Processing payment for appointment"
+            "Processing payment for appointment",
           );
 
           const {
@@ -1482,6 +1851,7 @@ export class EventsService implements IEventsService {
             paidAt,
             externalId,
             status,
+            fees,
           } = await this.paymentsService.updateIntent(paymentIntentId, {
             appointmentId: id,
             customerId: customer._id,
@@ -1490,7 +1860,7 @@ export class EventsService implements IEventsService {
           if (status === "paid") {
             logger.debug(
               { appointmentId: id, paymentIntentId, amount },
-              "Payment intent is paid, adding to payments"
+              "Payment intent is paid, adding to payments",
             );
             const payment = await this.paymentsService.createPayment({
               appId,
@@ -1503,15 +1873,17 @@ export class EventsService implements IEventsService {
               description:
                 amount === event.totalPrice ? "full_payment" : "deposit",
               status: "paid",
-              type: "online",
+              method: "online",
+              type: "deposit",
               externalId: externalId,
+              fees,
             });
 
             payments.push(payment);
           } else {
             logger.warn(
               { appointmentId: id, paymentIntentId, amount, status },
-              "Payment intent is not paid. Skipping it"
+              "Payment intent is not paid. Skipping it",
             );
           }
 
@@ -1522,7 +1894,7 @@ export class EventsService implements IEventsService {
               paymentType:
                 amount === event.totalPrice ? "full_payment" : "deposit",
             },
-            "Payment processed for appointment"
+            "Payment processed for appointment",
           );
         }
 
@@ -1543,6 +1915,7 @@ export class EventsService implements IEventsService {
               id: payments[0]._id,
               amount: payments[0].amount,
               status: payments[0].status,
+              method: payments[0].method,
               type: payments[0].type,
               intentId:
                 "intentId" in payments[0] ? payments[0].intentId : undefined,
@@ -1568,7 +1941,7 @@ export class EventsService implements IEventsService {
 
         logger.debug(
           { appointmentId: id, customerName: customer.name, status },
-          "Event saved successfully"
+          "Event saved successfully",
         );
 
         return result;
@@ -1578,96 +1951,86 @@ export class EventsService implements IEventsService {
     }
   }
 
-  private async getCustomer(event: AppointmentEvent): Promise<Customer> {
-    const logger = this.loggerFactory("getCustomer");
-
-    logger.debug(
-      { customerName: event.fields.name, customerEmail: event.fields.email },
-      "Getting or creating customer"
-    );
-
-    const existingCustomer = await this.customersService.findCustomer(
-      event.fields.email.trim(),
-      event.fields.phone.trim()
-    );
-
-    if (existingCustomer) {
-      logger.debug(
-        {
-          customerId: existingCustomer._id,
-          customerName: existingCustomer.name,
-        },
-        "Found existing customer"
-      );
-      return existingCustomer;
-    }
-
-    logger.debug(
-      { customerName: event.fields.name, customerEmail: event.fields.email },
-      "Creating new customer"
-    );
-
-    const customer: CustomerUpdateModel = {
-      email: event.fields.email.trim(),
-      name: event.fields.name.trim(),
-      phone: event.fields.phone.trim(),
-      knownEmails: [],
-      knownNames: [],
-      knownPhones: [],
-      requireDeposit: "inherit",
-    };
-
-    const customerId = await this.customersService.createCustomer(customer);
-    const newCustomer = {
-      _id: customerId,
-      ...customer,
-    };
-
-    logger.debug(
-      { customerId, customerName: newCustomer.name },
-      "New customer created"
-    );
-    return newCustomer;
-  }
-
-  private async updateCustomerIfNeeded(
-    customer: Customer,
-    event: AppointmentEvent
+  private async updateEventInDatabase(
+    id: string,
+    event: AppointmentEvent,
+    oldEvent: Appointment,
+    files?: Asset[],
+    confirmed?: boolean,
   ): Promise<void> {
-    const logger = this.loggerFactory("updateCustomerIfNeeded");
+    const logger = this.loggerFactory("saveEvent");
 
     logger.debug(
-      { customerId: customer._id, customerName: customer.name },
-      "Checking if customer update is needed"
+      {
+        appointmentId: id,
+        customerName: event.fields.name,
+        fileCount: files?.length || 0,
+        confirmed,
+      },
+      "Updating event in database",
     );
 
-    let needsUpdate = false;
-    const name = event.fields.name.trim();
-    if (customer.name !== name && !customer.knownNames.includes(name)) {
-      customer.knownNames.push(name);
-      needsUpdate = true;
-    }
+    const db = await getDbConnection();
+    const client = await getDbClient();
+    const session = client.startSession();
+    try {
+      await session.withTransaction(async () => {
+        const appointments = db.collection<AppointmentEntity>(
+          APPOINTMENTS_COLLECTION_NAME,
+        );
 
-    const email = event.fields.email.trim();
-    if (customer.email !== email && !customer.knownEmails.includes(email)) {
-      customer.knownEmails.push(email);
-      needsUpdate = true;
-    }
+        const status =
+          confirmed || oldEvent.status === "confirmed"
+            ? "confirmed"
+            : "pending";
 
-    const phone = event.fields.phone.trim();
-    if (customer.phone !== phone && !customer.knownPhones.includes(phone)) {
-      customer.knownPhones.push(phone);
-      needsUpdate = true;
-    }
+        const dbEvent: Partial<AppointmentEntity> = {
+          ...event,
+          dateTime: DateTime.fromJSDate(event.dateTime)
+            .startOf("minute")
+            .toJSDate(),
+          status,
+        };
 
-    if (needsUpdate) {
-      logger.debug(
-        { customerId: customer._id, updatedFields: { name, email, phone } },
-        "Updating customer with new information"
-      );
-      await this.customersService.updateCustomer(customer._id, customer);
-    } else {
-      logger.debug({ customerId: customer._id }, "No customer update needed");
+        await appointments.updateOne(
+          { _id: id, companyId: this.companyId },
+          { $set: dbEvent },
+        );
+
+        await this.addAppointmentHistory({
+          appointmentId: id,
+          type: "updated",
+          data: {
+            oldOption: oldEvent.option,
+            newOption: event.option,
+            oldFields: oldEvent.fields,
+            newFields: event.fields,
+            oldAddons: oldEvent.addons,
+            newAddons: event.addons,
+            oldDiscount: oldEvent.discount,
+            newDiscount: event.discount,
+            oldNote: oldEvent.note,
+            newNote: event.note,
+            oldDateTime: oldEvent.dateTime,
+            newDateTime: event.dateTime,
+            oldDuration: oldEvent.totalDuration,
+            newDuration: event.totalDuration,
+            oldTotalPrice: oldEvent.totalPrice ?? 0,
+            newTotalPrice: event.totalPrice ?? 0,
+            oldTotalDuration: oldEvent.totalDuration,
+            newTotalDuration: event.totalDuration,
+            oldStatus: oldEvent.status,
+            newStatus: status,
+          },
+        });
+
+        logger.debug(
+          { appointmentId: id, status },
+          "Event updated in database successfully",
+        );
+      });
+    } finally {
+      await session.endSession();
     }
   }
 

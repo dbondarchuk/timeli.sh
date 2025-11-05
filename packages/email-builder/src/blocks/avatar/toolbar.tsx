@@ -1,8 +1,8 @@
-import { ConfigurationProps, ToolbarDropdownMenu } from "@vivid/builder";
+import { ConfigurationProps, ToolbarDropdownMenu } from "@timelish/builder";
+import { useI18n } from "@timelish/i18n";
 import { Circle, Square, SquareRoundCorner } from "lucide-react";
 import { TextAlignDropdownMenu } from "../../toolbars/text-align";
 import { AvatarProps, AvatarPropsDefaults } from "./schema";
-import { useI18n } from "@vivid/i18n";
 
 export const AvatarToolbar = (props: ConfigurationProps<AvatarProps>) => {
   const t = useI18n("builder");

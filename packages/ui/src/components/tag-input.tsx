@@ -1,21 +1,19 @@
 "use client";
 
+import { useI18n } from "@timelish/i18n";
 import { Array as EArray, Option, pipe, String } from "effect";
 import { Plus, XIcon } from "lucide-react";
 import { forwardRef, ReactElement, useEffect, useState } from "react";
 import { type z } from "zod";
-import { useI18n } from "@vivid/i18n";
 
+import { cva } from "class-variance-authority";
 import { cn } from "../utils";
 import { Badge } from "./badge";
 import { Button } from "./button";
 import type { InputProps } from "./input";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
-const parseTagOpt = (params: {
-  tags: string[];
-  tagValidator: z.ZodString | z.ZodEffects<z.ZodString, string, string>;
-}) => {
+const parseTagOpt = (params: { tags: string[]; tagValidator: z.ZodString }) => {
   const { tags, tagValidator } = params;
 
   const parsedTags = tags.map((tag) => tagValidator.safeParse(tag));
@@ -24,17 +22,34 @@ const parseTagOpt = (params: {
   if (successParsedTags.length > 0) {
     return pipe(
       successParsedTags.map((parsed) => parsed.data),
-      Option.some
+      Option.some,
     );
   }
 
   return Option.none();
 };
 
+const tagInputVariant = cva(
+  "has-[:focus-visible]:ring-ring flex w-full flex-wrap gap-2 rounded-md border border-input bg-background text-base ring-offset-white disabled:cursor-not-allowed disabled:opacity-50 has-[:focus-visible]:outline-none has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-offset-2",
+  {
+    variants: {
+      h: {
+        xs: "min-h-7 px-1.5 py-1 text-xs",
+        sm: "min-h-8 px-2 py-1 text-xs",
+        md: "min-h-9 px-3 py-2 text-sm",
+        lg: "min-h-10 px-4 py-3 text-base",
+      },
+    },
+    defaultVariants: {
+      h: "md",
+    },
+  },
+);
+
 type TagInputProps = Omit<InputProps, "value" | "onChange"> & {
   value?: ReadonlyArray<string>;
   onChange: (value: ReadonlyArray<string>) => void;
-  tagValidator?: z.ZodString | z.ZodEffects<z.ZodString, string, string>;
+  tagValidator?: z.ZodString;
   addItemTemplate?: (props: {
     onAdd: (value: string | string[]) => void;
   }) => ReactElement;
@@ -72,10 +87,10 @@ const TagInput = forwardRef<HTMLInputElement, TagInputProps>((props, ref) => {
                 onNone: () => pipe([trimmedX], Option.some),
                 onSome: (y) =>
                   parseTagOpt({ tags: [trimmedX], tagValidator: y }),
-              })
+              }),
             );
           }),
-          EArray.flatMap((x) => x)
+          EArray.flatMap((x) => x),
         ),
       ]);
       onChange(Array.from(newDataPoints));
@@ -103,9 +118,9 @@ const TagInput = forwardRef<HTMLInputElement, TagInputProps>((props, ref) => {
                 onChange(Array.from(newDataPoints));
                 setPendingDataPoint("");
               },
-            })
+            }),
           ),
-      })
+      }),
     );
   };
 
@@ -119,8 +134,8 @@ const TagInput = forwardRef<HTMLInputElement, TagInputProps>((props, ref) => {
     <div
       className={cn(
         // caveat: :has() variant requires tailwind v3.4 or above: https://tailwindcss.com/blog/tailwindcss-v3-4#new-has-variant
-        "has-[:focus-visible]:ring-ring flex min-h-9 w-full flex-wrap gap-2 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-white disabled:cursor-not-allowed disabled:opacity-50 has-[:focus-visible]:outline-none has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-offset-2",
-        className
+        tagInputVariant({ h: props.h ?? undefined }),
+        className,
       )}
     >
       {value.map((item) => (

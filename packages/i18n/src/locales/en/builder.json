@@ -18,15 +18,34 @@
       "moveDown": "Move selected block down",
       "clone": "Clone selected block",
       "delete": "Delete selected block",
-      "desktopView": "Desktop view",
-      "mobileView": "Mobile view",
+      "copy": "Copy selected block",
+      "paste": "Paste block",
+      "imageUpload": {
+        "loading": "Uploading image...",
+        "success": "Image uploaded successfully",
+        "error": "Failed to upload image"
+      },
+      "view": {
+        "title": "Viewport size",
+        "original": "Original",
+        "desktop": "Desktop",
+        "largeDesktop": "Large Desktop",
+        "laptop": "Laptop",
+        "tablet": "Tablet",
+        "mobile": "Mobile",
+        "mobileLandscape": "Mobile landscape"
+      },
       "errors": "There are {count, plural, =1 {1 issue} other {# issues}} in the document",
       "noErrors": "Awesome! No issues found!",
       "preview": "Preview",
+      "fullScreen": "Full screen",
+      "disableAnimation": "Disable animation",
+      "enableAnimation": "Enable animation",
       "context": "View context",
       "contextValues": "Context values",
       "contextValuesDescription": "The context values are the values that are available to the template. They are the values that are passed to the template when it is rendered.",
       "toggleSidebar": "Toggle sidebar panel",
+      "toggleBlocksPanel": "Toggle blocks panel",
       "copied": "Copied",
       "copyPath": "Copy path"
     },
@@ -36,7 +55,1313 @@
       "clone": "Clone",
       "delete": "Delete"
     },
-    "searchBlocks": "Search blocks..."
+    "blocks": {
+      "search": "Search blocks...",
+      "noResultsFound": "No blocks found matching your search",
+      "noBlocksAvailable": "No blocks available",
+      "panel": {
+        "title": "Blocks",
+        "subtitle": "Add a new block"
+      },
+      "outline": {
+        "title": "Document structure",
+        "subtitle": "Block hierarchy",
+        "noBlocks": "Document is empty",
+        "selectBlock": "Click to select a block"
+      }
+    }
+  },
+  "pageBuilder": {
+    "styles": {
+      "searchPlaceholder": "Search styles...",
+      "generatedCSS": "Generated CSS",
+      "variants": "Variants",
+      "addVariant": "Add Variant",
+      "addStyle": "Add Style",
+      "searchStyles": "Search styles...",
+      "noStylesFound": "No styles found",
+      "noAvailableStyles": "No available styles",
+      "addVariantDescription": "Add a new variant for this style. You can configure breakpoints and states later.",
+      "selectCategory": "Select Category",
+      "chooseCategory": "Choose a category",
+      "selectStyle": "Select Style",
+      "chooseStyle": "Choose a style",
+      "activeStyles": "Active Styles",
+      "addNewStyle": "Add New Style",
+      "addStyleAndVariant": "Add Style & Variant",
+      "cancel": "Cancel",
+      "add": "Add",
+      "base": "Base",
+      "categories": {
+        "typography": "Typography",
+        "layout": "Layout",
+        "spacing": "Spacing",
+        "background": "Background",
+        "colors": "Colors",
+        "effects": "Effects",
+        "border": "Border",
+        "content": "Content",
+        "misc": "Miscellaneous"
+      },
+      "properties": {
+        "customCss": "Custom CSS",
+        "color": "Text Color",
+        "backgroundColor": "Background Color",
+        "backgroundImage": "Background Image",
+        "fontSize": "Font Size",
+        "fontFamily": "Font Family",
+        "fontStyle": "Font Style",
+        "fontWeight": "Font Weight",
+        "textAlign": "Text Alignment",
+        "textDecoration": "Text Decoration",
+        "textTransform": "Text Transform",
+        "letterSpacing": "Letter Spacing",
+        "wordSpacing": "Word Spacing",
+        "lineHeight": "Line Height",
+        "padding": "Padding",
+        "margin": "Margin",
+        "inset": "Inset",
+        "width": "Width",
+        "minWidth": "Min Width",
+        "maxWidth": "Max Width",
+        "height": "Height",
+        "minHeight": "Min Height",
+        "maxHeight": "Max Height",
+        "display": "Display",
+        "position": "Position",
+        "zIndex": "Z-Index",
+        "overflow": "Overflow",
+        "borderWidth": "Border Width",
+        "borderColor": "Border Color",
+        "borderStyle": "Border Style",
+        "borderRadius": "Border Radius",
+        "boxShadow": "Box Shadow",
+        "aspectRatio": "Aspect Ratio",
+        "backgroundPosition": "Background Position",
+        "backgroundSize": "Background Size",
+        "backgroundRepeat": "Background Repeat",
+        "backgroundBlendMode": "Background Blend Mode",
+        "backgroundClip": "Background Clip",
+        "opacity": "Opacity",
+        "backgroundColorOpacity": "Background Color Opacity",
+        "cursor": "Cursor",
+        "hide": "Hide",
+        "gap": "Gap",
+        "flexDirection": "Flex Direction",
+        "justifyContent": "Justify Content",
+        "justifyItems": "Justify Items",
+        "alignItems": "Align Items",
+        "flexWrap": "Flex Wrap",
+        "flexBasis": "Flex Basis",
+        "gridTemplateColumns": "Grid Template Columns",
+        "transform": "Transform",
+        "transition": "Transition",
+        "animation": "Animation",
+        "animationName": "Animation Name",
+        "animationDuration": "Animation Duration",
+        "animationIterationCount": "Animation Iteration Count",
+        "animationDirection": "Animation Direction",
+        "animationFillMode": "Animation Fill Mode",
+        "animationTimingFunction": "Animation Timing Function",
+        "animationDelay": "Animation Delay",
+        "transitionProperties": "Transition Properties",
+        "transitionDuration": "Transition Duration",
+        "transitionTimingFunction": "Transition Timing Function",
+        "selectTransitionProperties": "Select transition properties...",
+        "filter": "Filter",
+        "objectFit": "Object Fit",
+        "objectPosition": "Object Position",
+        "verticalAlign": "Vertical Align",
+        "zoom": "Zoom"
+      },
+      "shortcuts": "Quick Settings",
+      "fontWeight": {
+        "normal": "Normal",
+        "bold": "Bold",
+        "100": "100 (Thin)",
+        "200": "200 (Extra Light)",
+        "300": "300 (Light)",
+        "400": "400 (Regular)",
+        "500": "500 (Medium)",
+        "600": "600 (Semi Bold)",
+        "700": "700 (Bold)",
+        "800": "800 (Extra Bold)",
+        "900": "900 (Black)"
+      },
+      "fontStyle": {
+        "normal": "Normal",
+        "italic": "Italic",
+        "oblique": "Oblique"
+      },
+      "display": {
+        "block": "Block",
+        "inline": "Inline",
+        "inline-block": "Inline Block",
+        "flex": "Flex",
+        "inline-flex": "Inline Flex",
+        "grid": "Grid",
+        "none": "None"
+      },
+      "gridTemplateColumns": "Grid Template Columns",
+      "gridTemplateColumnsDialog": {
+        "title": "Grid Template Columns",
+        "description": "Generate CSS Grid column template or enter a custom value.",
+        "responsive": "Responsive (auto-fit)",
+        "responsiveDescription": "Columns automatically fit content and wrap to new rows",
+        "fixed": "Fixed columns",
+        "fixedDescription": "Fixed number of equal-width columns",
+        "masonry": "Masonry (auto-fill)",
+        "masonryDescription": "Columns fill available space and create masonry-like layout",
+        "sidebar": "Sidebar layout",
+        "sidebarDescription": "Fixed sidebar with flexible main content area",
+        "hero": "Hero section",
+        "heroDescription": "Single full-width column for hero content",
+        "magazine": "Magazine layout",
+        "magazineDescription": "Featured content with smaller sidebar columns",
+        "gallery": "Photo gallery",
+        "galleryDescription": "Optimized for image galleries and portfolios",
+        "dashboard": "Dashboard grid",
+        "dashboardDescription": "Compact grid for dashboard widgets and cards",
+        "custom": "Custom template",
+        "customDescription": "Enter custom CSS Grid template syntax",
+        "minWidth": "Minimum column width (px)",
+        "columnCount": "Number of columns",
+        "sidebarWidth": "Sidebar width (px)",
+        "customTemplate": "Custom template",
+        "preview": "Preview",
+        "cancel": "Cancel",
+        "applyTemplate": "Apply Template",
+        "column": "column",
+        "columns": "columns"
+      },
+      "fontFamily": {
+        "default": "Default",
+        "inherit": "Inherit",
+        "primary": "Primary",
+        "secondary": "Secondary",
+        "tertiary": "Tertiary"
+      },
+      "flexDirection": {
+        "row": "Row",
+        "row-reverse": "Row Reverse",
+        "column": "Column",
+        "column-reverse": "Column Reverse"
+      },
+      "flexWrap": {
+        "nowrap": "No Wrap",
+        "wrap": "Wrap",
+        "wrap-reverse": "Wrap Reverse"
+      },
+      "justifyContent": {
+        "flex-start": "Flex Start",
+        "flex-end": "Flex End",
+        "center": "Center",
+        "space-between": "Space Between",
+        "space-around": "Space Around",
+        "space-evenly": "Space Evenly"
+      },
+      "justifyItems": {
+        "start": "Start",
+        "end": "End",
+        "center": "Center",
+        "stretch": "Stretch"
+      },
+      "alignItems": {
+        "flex-start": "Flex Start",
+        "flex-end": "Flex End",
+        "center": "Center",
+        "baseline": "Baseline",
+        "stretch": "Stretch"
+      },
+      "transform": {
+        "none": "None",
+        "scale_0_5": "Scale 50%",
+        "scale_0_75": "Scale 75%",
+        "scale_1_25": "Scale 125%",
+        "scale_1_5": "Scale 150%",
+        "scale_2": "Scale 200%",
+        "rotate_45deg": "Rotate 45°",
+        "rotate_90deg": "Rotate 90°",
+        "rotate_180deg": "Rotate 180°",
+        "rotate_minus_45deg": "Rotate -45°",
+        "translateX_10px": "Move Right 10px",
+        "translateY_10px": "Move Down 10px",
+        "translateX_minus_10px": "Move Left 10px",
+        "translateY_minus_10px": "Move Up 10px",
+        "skewX_10deg": "Skew X 10°",
+        "skewY_10deg": "Skew Y 10°",
+        "skewX_minus_10deg": "Skew X -10°",
+        "skewY_minus_10deg": "Skew Y -10°",
+        "custom": "Custom",
+        "function": "Function {index}",
+        "functionType": "Function Type",
+        "values": "Values",
+        "addFunction": "Add Function",
+        "transformFunctions": {
+          "scale": "Scale",
+          "scaleX": "Scale X",
+          "scaleY": "Scale Y",
+          "rotate": "Rotate",
+          "translateX": "Translate X",
+          "translateY": "Translate Y",
+          "translate": "Translate",
+          "skewX": "Skew X",
+          "skewY": "Skew Y",
+          "skew": "Skew"
+        }
+      },
+      "transition": {
+        "none": "None",
+        "all_0_2s_ease": "All 0.2s Ease",
+        "all_0_3s_ease": "All 0.3s Ease",
+        "all_0_5s_ease": "All 0.5s Ease",
+        "all_0_2s_ease_in": "All 0.2s Ease In",
+        "all_0_2s_ease_out": "All 0.2s Ease Out",
+        "all_0_2s_ease_in_out": "All 0.2s Ease In Out",
+        "opacity_0_2s_ease": "Opacity 0.2s Ease",
+        "transform_0_2s_ease": "Transform 0.2s Ease",
+        "background_color_0_2s_ease": "Background Color 0.2s Ease",
+        "color_0_2s_ease": "Color 0.2s Ease",
+        "border_color_0_2s_ease": "Border Color 0.2s Ease",
+        "filter_0_2s_ease": "Filter 0.2s Ease",
+        "filter_0_5s_ease": "Filter 0.5s Ease",
+        "custom": "Custom"
+      },
+      "transitionProperties": {
+        "all": "All",
+        "none": "None",
+        "opacity": "Opacity",
+        "transform": "Transform",
+        "background_color": "Background Color",
+        "color": "Color",
+        "border_color": "Border Color",
+        "filter": "Filter",
+        "width": "Width",
+        "height": "Height",
+        "padding": "Padding",
+        "margin": "Margin",
+        "inset": "Inset",
+        "border_width": "Border Width",
+        "border_radius": "Border Radius",
+        "box_shadow": "Box Shadow",
+        "font_size": "Font Size",
+        "font_weight": "Font Weight",
+        "letter_spacing": "Letter Spacing",
+        "line_height": "Line Height"
+      },
+      "transitionDuration": {
+        "0s": "0s",
+        "0_1s": "0.1s",
+        "0_2s": "0.2s",
+        "0_3s": "0.3s",
+        "0_5s": "0.5s",
+        "0_7s": "0.7s",
+        "1s": "1s",
+        "1_5s": "1.5s",
+        "2s": "2s",
+        "3s": "3s",
+        "5s": "5s"
+      },
+      "transitionTimingFunction": {
+        "ease": "Ease",
+        "linear": "Linear",
+        "ease_in": "Ease In",
+        "ease_out": "Ease Out",
+        "ease_in_out": "Ease In Out",
+        "step_start": "Step Start",
+        "step_end": "Step End"
+      },
+      "animation": {
+        "none": "None",
+        "fadeIn": "Fade In",
+        "fadeOut": "Fade Out",
+        "slideInLeft": "Slide In Left",
+        "slideInRight": "Slide In Right",
+        "slideInUp": "Slide In Up",
+        "slideInDown": "Slide In Down",
+        "slideOutLeft": "Slide Out Left",
+        "slideOutRight": "Slide Out Right",
+        "slideOutUp": "Slide Out Up",
+        "slideOutDown": "Slide Out Down",
+        "scaleIn": "Scale In",
+        "scaleOut": "Scale Out",
+        "bounceIn": "Bounce In",
+        "bounceOut": "Bounce Out",
+        "rotateIn": "Rotate In",
+        "rotateOut": "Rotate Out",
+        "flipInX": "Flip In X",
+        "flipOutX": "Flip Out X",
+        "flipInY": "Flip In Y",
+        "flipOutY": "Flip Out Y",
+        "zoomIn": "Zoom In",
+        "zoomOut": "Zoom Out",
+        "pulse": "Pulse",
+        "shake": "Shake",
+        "wiggle": "Wiggle",
+        "tada": "Tada",
+        "swing": "Swing",
+        "rubberBand": "Rubber Band",
+        "lightSpeedIn": "Light Speed In",
+        "lightSpeedOut": "Light Speed Out",
+        "hinge": "Hinge",
+        "rollIn": "Roll In",
+        "rollOut": "Roll Out"
+      },
+      "animationKeywords": {
+        "infinite": "Infinite",
+        "custom": "Custom"
+      },
+      "animationDirection": {
+        "normal": "Normal",
+        "reverse": "Reverse",
+        "alternate": "Alternate",
+        "alternate_reverse": "Alternate Reverse"
+      },
+      "animationTimingFunction": {
+        "ease": "Ease",
+        "linear": "Linear",
+        "ease_in": "Ease In",
+        "ease_out": "Ease Out",
+        "ease_in_out": "Ease In Out",
+        "step_start": "Step Start",
+        "step_end": "Step End"
+      },
+      "animationFillMode": {
+        "none": "None",
+        "forwards": "Forwards",
+        "backwards": "Backwards",
+        "both": "Both"
+      },
+      "filter": {
+        "none": "None",
+        "blur_1px": "Blur 1px",
+        "blur_2px": "Blur 2px",
+        "blur_4px": "Blur 4px",
+        "brightness_0_5": "Brightness 50%",
+        "brightness_0_9": "Brightness 90%",
+        "brightness_1_1": "Brightness 110%",
+        "brightness_1_5": "Brightness 150%",
+        "contrast_0_5": "Contrast 50%",
+        "contrast_1_5": "Contrast 150%",
+        "grayscale_100": "Grayscale 100%",
+        "hue_rotate_90deg": "Hue Rotate 90°",
+        "invert_100": "Invert 100%",
+        "saturate_0_5": "Saturate 50%",
+        "saturate_1_5": "Saturate 150%",
+        "sepia_100": "Sepia 100%"
+      },
+      "position": {
+        "static": "Static",
+        "relative": "Relative",
+        "absolute": "Absolute",
+        "fixed": "Fixed",
+        "sticky": "Sticky"
+      },
+      "textAlign": {
+        "left": "Left",
+        "center": "Center",
+        "right": "Right",
+        "justify": "Justify"
+      },
+      "breakpoints": {
+        "title": "Breakpoints",
+        "shortLabel": "{count, plural, =0 {Any size} =1 {1 Breakpoint} few {# Breakpoints} other {# Breakpoints}}",
+        "and": " and ",
+        "sm": "SM (≥40rem)",
+        "max-sm": "Max SM (<40rem)",
+        "md": "MD (≥48rem)",
+        "max-md": "Max MD (<48rem)",
+        "lg": "LG (≥64rem)",
+        "max-lg": "Max LG (<64rem)",
+        "xl": "XL (≥80rem)",
+        "max-xl": "Max XL (<80rem)",
+        "2xl": "2XL (≥96rem)",
+        "max-2xl": "Max 2XL (<96rem)"
+      },
+      "states": {
+        "title": "States",
+        "shortLabel": "{count, plural, =0 {State: default} =1 {1 State} other {# States}}",
+        "selectedStates": "Selected States",
+        "addNewState": "Add New State",
+        "add": "Add",
+        "selector": {
+          "title": "Child selector",
+          "block": "Block state",
+          "selector": "Selector state",
+          "placeholder": "Enter CSS selector (e.g., .my-class, #my-id)"
+        },
+        "self": "Self",
+        "parent": "Parent",
+        "parentLevels": {
+          "1": "Parent",
+          "2": "Grandparent",
+          "3": "Great-grandparent",
+          "4": "4th Parent",
+          "5": "5th Parent",
+          "6": "6th Parent",
+          "7": "7th Parent",
+          "8": "8th Parent",
+          "9": "9th Parent",
+          "10": "10th Parent"
+        },
+        "default": "Default",
+        "hover": "Hover",
+        "focus": "Focus",
+        "active": "Active",
+        "disabled": "Disabled",
+        "inView": "In View",
+        "firstTimeInView": "First Time In View",
+        "notInView": "Not In View"
+      },
+      "textDecoration": {
+        "none": "None",
+        "underline": "Underline",
+        "overline": "Overline",
+        "line-through": "Line Through"
+      },
+      "textTransform": {
+        "none": "None",
+        "capitalize": "Capitalize",
+        "uppercase": "Uppercase",
+        "lowercase": "Lowercase",
+        "full-width": "Full Width",
+        "full-size-kana": "Full Size Kana"
+      },
+      "borderStyle": {
+        "solid": "Solid",
+        "dashed": "Dashed",
+        "dotted": "Dotted",
+        "double": "Double",
+        "groove": "Groove",
+        "ridge": "Ridge",
+        "inset": "Inset",
+        "outset": "Outset",
+        "none": "None",
+        "hidden": "Hidden"
+      },
+      "overflow": {
+        "visible": "Visible",
+        "hidden": "Hidden",
+        "scroll": "Scroll",
+        "auto": "Auto",
+        "clip": "Clip"
+      },
+      "cursor": {
+        "auto": "Auto",
+        "default": "Default",
+        "pointer": "Pointer",
+        "text": "Text",
+        "wait": "Wait",
+        "move": "Move",
+        "not-allowed": "Not Allowed",
+        "help": "Help",
+        "crosshair": "Crosshair",
+        "grab": "Grab",
+        "grabbing": "Grabbing"
+      },
+      "boxShadow": {
+        "xOffset": "X Offset",
+        "yOffset": "Y Offset",
+        "blur": "Blur",
+        "spread": "Spread",
+        "color": "Color",
+        "inset": "Inset"
+      },
+      "backgroundImage": {
+        "type": "Type",
+        "none": "None",
+        "url": "Image URL",
+        "gradient": "Gradient",
+        "imageUrl": "Image URL",
+        "gradientType": "Gradient Type",
+        "linear": "Linear",
+        "radial": "Radial",
+        "direction": "Direction",
+        "toRight": "To Right",
+        "toLeft": "To Left",
+        "toTop": "To Top",
+        "toBottom": "To Bottom",
+        "toTopRight": "To Top Right",
+        "toTopLeft": "To Top Left",
+        "toBottomRight": "To Bottom Right",
+        "toBottomLeft": "To Bottom Left",
+        "colors": "Colors",
+        "addColor": "Add Color",
+        "removeColor": "Remove Color"
+      },
+      "colors": {
+        "default": "Default",
+        "transparent": "Transparent",
+        "custom": "Custom Color",
+        "background": "Background",
+        "foreground": "Text",
+        "card": "Card",
+        "card-foreground": "Card Text",
+        "popover": "Popover",
+        "popover-foreground": "Popover Text",
+        "primary": "Primary",
+        "primary-foreground": "Primary Text",
+        "secondary": "Secondary",
+        "secondary-foreground": "Secondary Text",
+        "muted": "Muted",
+        "muted-foreground": "Muted Text",
+        "accent": "Accent",
+        "accent-foreground": "Accent Text",
+        "destructive": "Destructive",
+        "destructive-foreground": "Destructive Text"
+      },
+      "aspectRatio": {
+        "initial": "Initial",
+        "inherit": "Inherit",
+        "unset": "Unset",
+        "custom": "Custom"
+      },
+      "backgroundPosition": {
+        "center": "Center",
+        "top": "Top",
+        "bottom": "Bottom",
+        "left": "Left",
+        "right": "Right",
+        "topLeft": "Top Left",
+        "topRight": "Top Right",
+        "bottomLeft": "Bottom Left",
+        "bottomRight": "Bottom Right",
+        "initial": "Initial",
+        "inherit": "Inherit",
+        "custom": "Custom",
+        "xPosition": "X Position",
+        "yPosition": "Y Position",
+        "mode": "Mode",
+        "predefined": "Predefined",
+        "customValues": "Custom Values"
+      },
+      "backgroundSize": {
+        "auto": "Auto",
+        "cover": "Cover",
+        "contain": "Contain",
+        "initial": "Initial",
+        "inherit": "Inherit"
+      },
+      "backgroundRepeat": {
+        "repeat": "Repeat",
+        "no-repeat": "No Repeat",
+        "repeat-x": "Repeat X",
+        "repeat-y": "Repeat Y",
+        "space": "Space",
+        "round": "Round",
+        "initial": "Initial",
+        "inherit": "Inherit"
+      },
+      "backgroundBlendMode": {
+        "normal": "Normal",
+        "multiply": "Multiply",
+        "screen": "Screen",
+        "overlay": "Overlay",
+        "darken": "Darken",
+        "lighten": "Lighten",
+        "color-dodge": "Color Dodge",
+        "color-burn": "Color Burn",
+        "hard-light": "Hard Light",
+        "soft-light": "Soft Light",
+        "difference": "Difference",
+        "exclusion": "Exclusion",
+        "hue": "Hue",
+        "saturation": "Saturation",
+        "color": "Color",
+        "luminosity": "Luminosity",
+        "initial": "Initial",
+        "inherit": "Inherit"
+      },
+      "backgroundClip": {
+        "border-box": "Border Box",
+        "padding-box": "Padding Box",
+        "content-box": "Content Box",
+        "text": "Text",
+        "initial": "Initial",
+        "inherit": "Inherit"
+      },
+      "objectFit": {
+        "fill": "Fill",
+        "contain": "Contain",
+        "cover": "Cover",
+        "none": "None",
+        "scale-down": "Scale Down"
+      },
+      "verticalAlign": {
+        "baseline": "Baseline",
+        "sub": "Subscript",
+        "super": "Superscript",
+        "text-top": "Text Top",
+        "text-bottom": "Text Bottom",
+        "middle": "Middle",
+        "top": "Top",
+        "bottom": "Bottom"
+      },
+      "keywords": {
+        "maxContent": "Max Content",
+        "minContent": "Min Content",
+        "fitContent": "Fit Content",
+        "fill": "Fill",
+        "content": "Content",
+        "inherit": "Inherit",
+        "auto": "Auto",
+        "initial": "Initial",
+        "none": "None",
+        "unset": "Unset",
+        "custom": "Custom",
+        "notSet": "Not Set"
+      },
+      "borderRadius": {
+        "none": "None",
+        "small": "Small",
+        "medium": "Medium",
+        "large": "Large",
+        "full": "Full"
+      }
+    },
+    "base": {
+      "title": "Basic Properties",
+      "id": "ID",
+      "className": "CSS Classes"
+    },
+    "blocks": {
+      "categories": {
+        "text": "Text",
+        "layout": "Layout",
+        "buttons": "Buttons",
+        "objects": "Objects",
+        "booking": "Booking",
+        "content": "Content",
+        "navigation": "Navigation"
+      },
+      "heading": {
+        "displayName": "Heading",
+        "content": "Content",
+        "level": "Level",
+        "levels": {
+          "h1": "H1",
+          "h2": "H2",
+          "h3": "H3",
+          "h4": "H4",
+          "h5": "H5",
+          "h6": "H6"
+        },
+        "style": "Style",
+        "styles": {
+          "display": "Display",
+          "title": "Title",
+          "subtitle": "Subtitle",
+          "caption": "Caption"
+        }
+      },
+      "pageLayout": {
+        "displayName": "Layout",
+        "backgroundColor": "Background color",
+        "textColor": "Text color",
+        "fullWidth": "Full width"
+      },
+      "text": {
+        "displayName": "Text",
+        "shortcuts": {
+          "size": "Text Size",
+          "weight": "Font Weight",
+          "alignment": "Text Alignment",
+          "style": "Text Style",
+          "spacing": "Spacing"
+        },
+        "sizes": {
+          "small": "Small",
+          "medium": "Medium",
+          "large": "Large",
+          "x-large": "X-Large"
+        },
+        "weights": {
+          "light": "Light",
+          "normal": "Normal",
+          "medium": "Medium",
+          "bold": "Bold"
+        },
+        "alignments": {
+          "left": "Left",
+          "center": "Center",
+          "right": "Right",
+          "justify": "Justify"
+        },
+        "styles": {
+          "body": "Body Text",
+          "lead": "Lead Paragraph",
+          "caption": "Caption",
+          "quote": "Quote"
+        },
+        "spacings": {
+          "compact": "Compact",
+          "comfortable": "Comfortable",
+          "loose": "Loose"
+        }
+      },
+      "button": {
+        "displayName": "Button",
+        "text": "Text",
+        "type": "Type",
+        "action": "Action",
+        "actions": {
+          "openPopup": {
+            "label": "Open Popup",
+            "popupId": "Popup ID",
+            "helperText": "Use base ID of popup block"
+          },
+          "closeCurrentPopup": {
+            "label": "Close Current Popup"
+          }
+        },
+        "url": "URL",
+        "width": "Width",
+        "size": "Size",
+        "style": "Style",
+        "target": "Target",
+        "widths": {
+          "auto": "Auto",
+          "full": "Full width"
+        },
+        "types": {
+          "link": "Link",
+          "action": "Action"
+        },
+        "sizes": {
+          "x-small": "X-Small",
+          "small": "Small",
+          "medium": "Medium",
+          "large": "Large"
+        },
+        "styles": {
+          "rectangle": "Rectangle",
+          "rounded": "Rounded",
+          "pill": "Pill"
+        },
+        "targets": {
+          "_self": "Current tab",
+          "_blank": "New tab"
+        },
+        "alignment": "Alignment",
+        "alignments": {
+          "left": "Left",
+          "center": "Center"
+        },
+        "errors": {
+          "action": "Action is required"
+        },
+        "prefixIcon": "Prefix Icon",
+        "suffixIcon": "Suffix Icon",
+        "noIcon": "No Icon",
+        "variant": "Variant",
+        "variants": {
+          "primary": "Primary",
+          "secondary": "Secondary",
+          "destructive": "Destructive",
+          "muted": "Muted",
+          "ghost": "Ghost"
+        },
+        "disabled": "Disabled",
+        "borderRadius": "Border Radius"
+      },
+      "link": {
+        "displayName": "Link",
+        "url": "URL",
+        "target": "Target",
+        "targets": {
+          "_self": "Current tab",
+          "_blank": "New tab"
+        },
+        "style": "Style",
+        "styles": {
+          "default": "Default",
+          "button": "Button Style",
+          "minimal": "Minimal"
+        }
+      },
+      "image": {
+        "displayName": "Image",
+        "imageUrl": "Image URL",
+        "altText": "Alt text",
+        "clickThroughUrl": "Click through URL",
+        "size": "Size",
+        "sizes": {
+          "small": "Small",
+          "medium": "Medium",
+          "large": "Large",
+          "full": "Full Width",
+          "avatar": "Avatar"
+        },
+        "fit": "Fit",
+        "fits": {
+          "cover": "Cover",
+          "contain": "Contain",
+          "fill": "Fill",
+          "none": "None"
+        },
+        "position": "Position",
+        "positions": {
+          "center": "Center",
+          "top": "Top",
+          "bottom": "Bottom",
+          "left": "Left",
+          "right": "Right",
+          "top-left": "Top Left",
+          "top-right": "Top Right",
+          "bottom-left": "Bottom Left",
+          "bottom-right": "Bottom Right"
+        },
+        "alignment": "Alignment",
+        "alignments": {
+          "standard": "Standard",
+          "center": "Center"
+        }
+      },
+      "video": {
+        "displayName": "Video",
+        "videoUrl": "Video URL",
+        "posterUrl": "Poster Image URL",
+        "controls": "Show Controls",
+        "autoplay": "Autoplay",
+        "loop": "Loop",
+        "muted": "Muted",
+        "preload": "Preload",
+        "preloadOptions": {
+          "none": "None",
+          "metadata": "Metadata",
+          "auto": "Auto"
+        },
+        "size": "Size",
+        "sizes": {
+          "small": "Small",
+          "medium": "Medium",
+          "large": "Large",
+          "full": "Full Width",
+          "wide": "Wide (16:9)"
+        },
+        "alignment": "Alignment",
+        "alignments": {
+          "standard": "Standard",
+          "center": "Center"
+        },
+        "playback": "Playback",
+        "playbackOptions": {
+          "standard": "Standard",
+          "autoplay": "Autoplay",
+          "loop": "Loop",
+          "background": "Background"
+        },
+        "audio": "Audio",
+        "audioOptions": {
+          "withSound": "With Sound",
+          "muted": "Muted"
+        }
+      },
+      "youtubeVideo": {
+        "displayName": "YouTube Video",
+        "url": "YouTube URL or Embed Code",
+        "customAspectRatio": "Custom Aspect Ratio",
+        "privacy": "Privacy Enhanced Mode",
+        "autoplay": "Autoplay",
+        "controls": "Show Controls",
+        "loop": "Loop",
+        "muted": "Muted",
+        "modestbranding": "Modest Branding",
+        "showInfo": "Show Video Info",
+        "rel": "Show Related Videos",
+        "start": "Start Time (seconds)",
+        "end": "End Time (seconds)",
+        "invalidUrl": "Invalid YouTube URL",
+        "aspectRatio": "Aspect Ratio",
+        "alignment": "Alignment",
+        "playback": "Playback",
+        "audio": "Audio"
+      },
+      "container": {
+        "displayName": "Container",
+        "fullWidth": "Full width",
+        "gap": "Gap",
+        "shortcuts": {
+          "padding": "Padding",
+          "gap": "Gap",
+          "flexDirection": "Flex Direction",
+          "flexWrap": "Flex Wrap",
+          "justifyContent": "Justify Content",
+          "alignItems": "Align Items",
+          "style": "Style",
+          "width": "Width"
+        },
+        "paddings": {
+          "none": "None",
+          "small": "Small",
+          "medium": "Medium",
+          "large": "Large",
+          "x-large": "X-Large"
+        },
+        "gaps": {
+          "none": "None",
+          "small": "Small",
+          "medium": "Medium",
+          "large": "Large",
+          "x-large": "Extra Large"
+        },
+        "styles": {
+          "plain": "Plain",
+          "card": "Card",
+          "paper": "Paper",
+          "rounded": "Rounded",
+          "bordered": "Bordered"
+        },
+        "widths": {
+          "contained": "Contained",
+          "full": "Full Width",
+          "small": "Small",
+          "medium": "Medium",
+          "large": "Large"
+        },
+        "flexDirections": {
+          "row": "Row",
+          "column": "Column",
+          "rowReverse": "Row Reverse",
+          "columnReverse": "Column Reverse"
+        },
+        "flexWraps": {
+          "nowrap": "No Wrap",
+          "wrap": "Wrap",
+          "wrapReverse": "Wrap Reverse"
+        },
+        "justifyContents": {
+          "start": "Start",
+          "center": "Center",
+          "end": "End",
+          "spaceBetween": "Space Between",
+          "spaceAround": "Space Around",
+          "spaceEvenly": "Space Evenly"
+        },
+        "alignItemses": {
+          "start": "Start",
+          "center": "Center",
+          "end": "End",
+          "stretch": "Stretch",
+          "baseline": "Baseline"
+        }
+      },
+      "inlineContainer": {
+        "displayName": "Inline Container"
+      },
+      "icon": {
+        "displayName": "Icon",
+        "size": "Size",
+        "width": "Width",
+        "height": "Height",
+        "icon": "Icon",
+        "sizes": {
+          "small": "Small",
+          "medium": "Medium",
+          "large": "Large",
+          "xlarge": "Extra Large",
+          "xxlarge": "2X Large"
+        }
+      },
+      "carousel": {
+        "displayName": "Carousel",
+        "orientation": {
+          "label": "Orientation",
+          "horizontal": "Horizontal",
+          "vertical": "Vertical"
+        },
+        "navigation": "Navigation",
+        "loop": "Loop",
+        "autoPlay": "Auto play",
+        "autoPlaySpeed": "Auto Play Speed",
+        "autoPlaySeconds": "s",
+        "itemPosition": {
+          "label": "Item position",
+          "start": "Start",
+          "center": "Center",
+          "end": "End",
+          "stretch": "Stretch"
+        },
+        "styles": {
+          "carouselChildrenItemsPerSlide": "Items per slide",
+          "carouselChildrenAlign": "Items align"
+        },
+        "shortcuts": {
+          "itemsPerSlide": {
+            "label": "Items per slide",
+            "mobile": "Mobile optimized",
+            "tablet": "Tablet optimized",
+            "desktop": "Desktop optimized"
+          },
+          "childrenPosition": {
+            "label": "Children position",
+            "start": "Start",
+            "center": "Center",
+            "end": "End",
+            "stretch": "Stretch"
+          }
+        }
+      },
+      "spacer": {
+        "displayName": "Spacer",
+        "shortcuts": {
+          "height": "Height"
+        },
+        "heights": {
+          "tiny": "Tiny",
+          "small": "Small",
+          "medium": "Medium",
+          "large": "Large",
+          "x-large": "X-Large",
+          "huge": "Huge"
+        }
+      },
+      "conditionalContainer": {
+        "displayName": "Conditional Container",
+        "condition": "Condition",
+        "ifConditionIsCorrectFormat": "If condition <condition></condition> is correct, then",
+        "otherwise": "Otherwise",
+        "value": "value"
+      },
+      "foreachContainer": {
+        "displayName": "Loop Container",
+        "forEachItemInValueFormat": "For each <item></item> in <value></value>",
+        "value": "Value",
+        "errors": {
+          "value": "Value is required"
+        }
+      },
+      "gridContainer": {
+        "displayName": "Grid Container",
+        "fullWidth": "Full width",
+        "gap": "Gap",
+        "shortcuts": {
+          "padding": "Padding",
+          "gap": "Gap",
+          "gridTemplateColumns": "Grid Template Columns",
+          "justifyContent": "Justify Content",
+          "alignItems": "Align Items",
+          "style": "Style"
+        },
+        "paddings": {
+          "none": "None",
+          "small": "Small",
+          "medium": "Medium",
+          "large": "Large",
+          "x-large": "X-Large"
+        },
+        "gaps": {
+          "none": "None",
+          "small": "Small",
+          "medium": "Medium",
+          "large": "Large",
+          "x-large": "X-Large"
+        },
+        "gridTemplates": {
+          "autoFit": "Auto Fit",
+          "autoFill": "Auto Fill",
+          "twoColumns": "Two Columns",
+          "threeColumns": "Three Columns",
+          "fourColumns": "Four Columns",
+          "sidebar": "Sidebar Layout",
+          "hero": "Hero Section",
+          "asymmetric": "Asymmetric (1:2:1)",
+          "mixed": "Mixed widths",
+          "magazine": "Magazine layout",
+          "gallery": "Photo gallery",
+          "dashboard": "Dashboard grid",
+          "threeColumnWide": "Three columns (wide center)",
+          "fiveColumns": "Five columns",
+          "sixColumns": "Six columns",
+          "twelveColumns": "Twelve columns"
+        },
+        "styles": {
+          "plain": "Plain",
+          "card": "Card",
+          "paper": "Paper",
+          "rounded": "Rounded",
+          "bordered": "Bordered"
+        },
+        "justifyContents": {
+          "start": "Start",
+          "center": "Center",
+          "end": "End",
+          "spaceBetween": "Space Between",
+          "spaceAround": "Space Around",
+          "spaceEvenly": "Space Evenly"
+        },
+        "alignItemses": {
+          "start": "Start",
+          "center": "Center",
+          "end": "End",
+          "stretch": "Stretch",
+          "baseline": "Baseline"
+        }
+      },
+      "pageHero": {
+        "displayName": "Page Hero"
+      },
+      "booking": {
+        "displayName": "Booking form",
+        "confirmationPage": "Confirmation Page"
+      },
+      "popup": {
+        "displayName": "Popup",
+        "open": "Open",
+        "show": {
+          "label": "Show",
+          "always": "Always",
+          "one-time": "One time",
+          "on-click": "On click"
+        },
+        "overlay": {
+          "label": "Overlay",
+          "blur": "Blur",
+          "default": "Default"
+        },
+        "noClose": {
+          "label": "Hide close button"
+        },
+        "shortcuts": {
+          "maxWidth": {
+            "label": "Width",
+            "variants": {
+              "small": "Small",
+              "medium": "Medium",
+              "large": "Large",
+              "full": "Full"
+            }
+          }
+        }
+      },
+      "lightbox": {
+        "displayName": "Lightbox",
+        "overlay": {
+          "label": "Overlay",
+          "blur": "Blur",
+          "default": "Default"
+        },
+        "navigation": "Navigation",
+        "loop": "Loop",
+        "autoPlay": "Auto play",
+        "autoPlaySpeed": "Auto Play Speed",
+        "autoPlaySeconds": "s",
+        "showAltAsDescription": "Show Alt As Description"
+      },
+      "inlineText": {
+        "displayName": "Inline text",
+        "placeholder": "Text here",
+        "url": "Link URL"
+      },
+      "accordion": {
+        "displayName": "Accordion",
+        "allowMultipleOpen": "Allow Multiple Items Open",
+        "defaultOpenFirst": "Open First Item by Default",
+        "animation": "Animation Type",
+        "iconPosition": "Icon Position",
+        "iconStyle": "Icon Style",
+        "animations": {
+          "slide": "Slide",
+          "fade": "Fade",
+          "none": "None"
+        },
+        "iconPositions": {
+          "left": "Left",
+          "right": "Right"
+        },
+        "iconStyles": {
+          "plus": "Plus/Minus",
+          "arrow": "Arrow",
+          "chevron": "Chevron"
+        }
+      },
+      "accordionItem": {
+        "displayName": "Accordion Item",
+        "title": "Title",
+        "content": "Content"
+      },
+      "customHtml": {
+        "displayName": "Custom HTML",
+        "html": "HTML",
+        "errors": {
+          "required": "HTML is required"
+        }
+      },
+      "beforeAfterSlider": {
+        "displayName": "Before/After Slider",
+        "beforeImage": "Before Image",
+        "afterImage": "After Image",
+        "beforeAlt": "Before Image Alt Text",
+        "afterAlt": "After Image Alt Text",
+        "sliderPosition": "Initial Slider Position",
+        "orientation": {
+          "label": "Orientation",
+          "horizontal": "Horizontal",
+          "vertical": "Vertical"
+        },
+        "showLabels": "Show Labels",
+        "beforeLabel": {
+          "label": "Before Label",
+          "placeholder": "Before"
+        },
+        "afterLabel": {
+          "label": "After Label",
+          "placeholder": "After"
+        },
+        "noImages": "Please add both before and after images",
+        "shortcuts": {
+          "aspectRatio": {
+            "label": "Aspect Ratio",
+            "square": "Square (1:1)",
+            "landscape": "Landscape (4:3)",
+            "portrait": "Portrait (3:4)",
+            "widescreen": "Widescreen (16:9)",
+            "mobile": "Mobile (9:16)"
+          },
+          "orientation": {
+            "label": "Orientation",
+            "horizontal": "Horizontal",
+            "vertical": "Vertical"
+          }
+        }
+      },
+      "redirect": {
+        "displayName": "Redirect",
+        "url": "URL",
+        "permanent": "Permanent redirect (HTTP 308)",
+        "editorRedirectText": "You will be redirected to {url}",
+        "errors": {
+          "url": "URL is required"
+        }
+      },
+      "modifyAppointmentForm": {
+        "displayName": "Modify Appointment Form"
+      },
+      "bookingConfirmation": {
+        "displayName": "Booking Confirmation"
+      }
+    },
+    "shortcuts": {
+      "backgroundColor": "Background Color",
+      "backgroundImage": "Background Image",
+      "color": "Text Color",
+      "fontFamily": "Font Family"
+    },
+    "styleInputs": {
+      "color": {
+        "unknownType": "Unknown color type",
+        "presets": "Presets"
+      },
+      "unit": {
+        "unknownType": "Unknown unit"
+      },
+      "fontFamily": {
+        "unknownType": "Unknown font family"
+      }
+    },
+    "common": {
+      "secondsShort": "s"
+    }
   },
   "emailBuilder": {
     "common": {
@@ -64,7 +1389,10 @@
         },
         "fontFamily": {
           "label": "Font family",
-          "inherit": "Inherit"
+          "inherit": "Inherit",
+          "primary": "Primary",
+          "secondary": "Secondary",
+          "tertiary": "Tertiary"
         },
         "fontSize": {
           "label": "Font size"
@@ -88,7 +1416,8 @@
         "text": "Text",
         "dividers": "Dividers",
         "containers": "Containers",
-        "layout": "Layout"
+        "layout": "Layout",
+        "onlineMeeting": "Online Meeting"
       },
       "avatar": {
         "displayName": "Avatar",
@@ -157,6 +1486,13 @@
         "ifConditionIsCorrectFormat": "If condition {condition} is correct, then",
         "otherwise": "Otherwise",
         "value": "value"
+      },
+      "customHtml": {
+        "displayName": "Custom HTML",
+        "html": "HTML",
+        "errors": {
+          "required": "HTML is required"
+        }
       },
       "container": {
         "displayName": "Container",
@@ -229,6 +1565,19 @@
         "displayName": "Text",
         "textColor": "Text color",
         "backgroundColor": "Background color"
+      },
+      "onlineMeeting": {
+        "displayName": "Online Meeting",
+        "title": "Title",
+        "whenText": "When Text",
+        "codeText": "Code Text",
+        "passwordText": "Password Text",
+        "buttonText": "Button Text",
+        "linkText": "Link Text",
+        "buttonTextColor": "Button Text Color",
+        "buttonBackgroundColor": "Button Background Color",
+        "type": "Type",
+        "logoUrl": "Logo URL"
       }
     }
   }

@@ -4,7 +4,7 @@ import { AvatarProps } from "./schema";
 
 export const getBorderRadius = (
   shape: "circle" | "square" | "rounded",
-  size: number
+  size: number,
 ): number | undefined => {
   switch (shape) {
     case "rounded":

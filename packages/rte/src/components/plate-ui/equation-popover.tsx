@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import TextareaAutosize, {
   type TextareaAutosizeProps,
 } from "react-textarea-autosize";
 
 import type { TEquationElement } from "@udecode/plate-math";
 
-import { cn, Button, PopoverContent } from "@vivid/ui";
+import { Button, cn, PopoverContent } from "@timelish/ui";
 import { useEquationInput } from "@udecode/plate-math/react";
 import { BlockSelectionPlugin } from "@udecode/plate-selection/react";
 import {

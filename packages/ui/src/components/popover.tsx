@@ -1,10 +1,10 @@
 "use client";
 
-import * as React from "react";
 import * as PopoverPrimitive from "@radix-ui/react-popover";
+import React from "react";
 
-import { cn } from "../utils";
 import { cva, VariantProps } from "class-variance-authority";
+import { cn } from "../utils";
 import { withTooltip } from "./tooltip";
 
 const Popover = PopoverPrimitive.Root;
@@ -24,7 +24,7 @@ const popoverVariants = cva(
         true: "data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
       },
     },
-  }
+  },
 );
 
 const PopoverContent = React.forwardRef<
@@ -46,8 +46,8 @@ PopoverContent.displayName = PopoverPrimitive.Content.displayName;
 
 export {
   Popover,
-  PopoverTrigger,
-  PopoverContent,
   PopoverAnchor,
+  PopoverContent,
+  PopoverTrigger,
   popoverVariants,
 };

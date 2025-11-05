@@ -5,6 +5,6 @@ export interface IScheduleProvider {
   getSchedule(
     appData: ConnectedAppData,
     start: Date,
-    end: Date
+    end: Date,
   ): Promise<Record<string, DaySchedule>>;
 }

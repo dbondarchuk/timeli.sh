@@ -1,11 +1,11 @@
 "use client";
 
-import * as React from "react";
 import * as RadioGroupPrimitive from "@radix-ui/react-radio-group";
-import { cn } from "../utils";
-import { buttonVariants } from "./button";
 import { cva } from "class-variance-authority";
+import React from "react";
 import { useAttributeObserver } from "../hooks";
+import { cn } from "../utils";
+import { ButtonProps, ButtonSize, buttonVariants } from "./button";
 
 const RadioButtonGroup = React.forwardRef<
   React.ElementRef<typeof RadioGroupPrimitive.Root>,
@@ -21,24 +21,23 @@ const RadioButtonGroup = React.forwardRef<
 });
 RadioButtonGroup.displayName = "RadioButtonGroup";
 
-const buttonClasses = cva("", {
-  variants: {
-    variant: {
-      unchecked: buttonVariants({ variant: "secondary" }),
-      checked: buttonVariants({ variant: "default" }),
+const buttonClasses = (size?: ButtonSize) =>
+  cva("", {
+    variants: {
+      variant: {
+        unchecked: buttonVariants({ variant: "secondary", size }),
+        checked: buttonVariants({ variant: "default", size }),
+      },
     },
-  },
-  defaultVariants: {
-    variant: "unchecked",
-  },
-});
+  });
 
 const RadioButtonGroupItem = React.forwardRef<
   React.ElementRef<typeof RadioGroupPrimitive.Item>,
   {
     children: React.ReactNode;
+    size?: ButtonProps["size"];
   } & React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item>
->(({ className, children, ...props }, ref) => {
+>(({ className, children, size, ...props }, ref) => {
   const [current, setCurrent] = React.useState<HTMLButtonElement | null>();
 
   React.useImperativeHandle(ref, () => current!);
@@ -52,10 +51,10 @@ const RadioButtonGroupItem = React.forwardRef<
       }}
       className={cn(
         state === "checked"
-          ? buttonClasses({ variant: "checked" })
-          : buttonClasses({ variant: "unchecked" }),
+          ? buttonClasses(size)({ variant: "checked" })
+          : buttonClasses(size)({ variant: "unchecked" }),
         // "border data-[state=checked]:bg-background text-center rounded-md focus:outline-none 2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
-        className
+        className,
       )}
       {...props}
     >

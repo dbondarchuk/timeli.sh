@@ -1,8 +1,6 @@
 "use client";
 
-import React from "react";
-
-import { buttonVariants, cn } from "@vivid/ui";
+import { buttonVariants, cn } from "@timelish/ui";
 import {
   CommentResolveButton as CommentResolveButtonPrimitive,
   useComment,
@@ -16,7 +14,7 @@ export function CommentResolveButton() {
     <CommentResolveButtonPrimitive
       className={cn(
         buttonVariants({ variant: "ghost" }),
-        "h-6 p-1 text-muted-foreground"
+        "h-6 p-1 text-muted-foreground",
       )}
     >
       {comment.isResolved ? (

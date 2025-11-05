@@ -1,0 +1,322 @@
+import { getLoggerFactory } from "@timelish/logger";
+import {
+  EmailNotificationRequest,
+  IServicesContainer,
+  TextMessageNotificationRequest,
+} from "@timelish/types";
+import { Job } from "bullmq";
+import { NotificationService } from "../../notifications.service";
+import { BaseBullMQClient } from "../base-bullmq-client";
+import { NotificationJobData } from "./bullmq-notification-service";
+import { BullMQNotificationConfig } from "./types";
+
+export class BullMQNotificationWorker extends BaseBullMQClient {
+  protected readonly config: BullMQNotificationConfig;
+
+  constructor(
+    config: BullMQNotificationConfig,
+    protected readonly getServices: (companyId: string) => IServicesContainer,
+  ) {
+    super(config, getLoggerFactory("BullMQNotificationWorker"));
+    this.config = config;
+    this.initializeWorkers();
+  }
+
+  private initializeWorkers(): void {
+    const logger = this.loggerFactory("initializeWorkers");
+
+    // Create email worker
+    const emailWorker = this.createWorker(
+      this.config.queues.email.name,
+      this.processEmailJob.bind(this),
+      {
+        concurrency: this.config.queues.email.concurrency,
+      },
+    );
+    this.setupWorkerEventListeners(emailWorker, this.config.queues.email.name);
+
+    // Create text message worker
+    const textMessageWorker = this.createWorker(
+      this.config.queues.textMessage.name,
+      this.processTextMessageJob.bind(this),
+      {
+        concurrency: this.config.queues.textMessage.concurrency,
+      },
+    );
+    this.setupWorkerEventListeners(
+      textMessageWorker,
+      this.config.queues.textMessage.name,
+    );
+
+    logger.info("BullMQ notification workers initialized");
+  }
+
+  private async processEmailJob(job: Job<NotificationJobData>): Promise<void> {
+    const logger = this.loggerFactory("processEmailJob");
+    const jobData = job.data;
+
+    if (jobData.type !== "email") {
+      throw new Error("Invalid job type for email processor");
+    }
+
+    const emailData = jobData.data as EmailNotificationRequest;
+    const companyId = jobData.companyId;
+    if (!companyId) {
+      throw new Error("companyId is required in job data");
+    }
+
+    const notificationService = this.getNotificationService(companyId);
+
+    try {
+      logger.info(
+        {
+          jobId: job.id,
+          attempt: job.attemptsMade + 1,
+          maxAttempts: job.opts.attempts,
+          emailTo: Array.isArray(emailData.email.to)
+            ? emailData.email.to.join(", ")
+            : emailData.email.to,
+          subject: emailData.email.subject,
+          appointmentId: emailData.appointmentId,
+          customerId: emailData.customerId,
+          companyId,
+        },
+        "Processing email notification job",
+      );
+
+      await notificationService.sendEmail(emailData);
+
+      logger.info(
+        { jobId: job.id },
+        "Email notification job completed successfully",
+      );
+    } catch (error) {
+      logger.error(
+        {
+          error,
+          jobId: job.id,
+          attempt: job.attemptsMade + 1,
+          maxAttempts: job.opts.attempts,
+        },
+        "Email notification job failed",
+      );
+      throw error; // Re-throw to trigger retry mechanism
+    }
+  }
+
+  private async processTextMessageJob(
+    job: Job<NotificationJobData>,
+  ): Promise<void> {
+    const logger = this.loggerFactory("processTextMessageJob");
+    const jobData = job.data;
+
+    if (jobData.type !== "text-message") {
+      throw new Error("Invalid job type for text message processor");
+    }
+
+    const textData = jobData.data as TextMessageNotificationRequest;
+    const companyId = jobData.companyId;
+    if (!companyId) {
+      throw new Error("companyId is required in job data");
+    }
+    const notificationService = this.getNotificationService(companyId);
+
+    try {
+      logger.info(
+        {
+          jobId: job.id,
+          attempt: job.attemptsMade + 1,
+          maxAttempts: job.opts.attempts,
+          phone: textData.phone,
+          sender: textData.sender,
+          appointmentId: textData.appointmentId,
+          customerId: textData.customerId,
+          companyId,
+        },
+        "Processing text message notification job",
+      );
+
+      await notificationService.sendTextMessage(textData);
+
+      logger.info(
+        { jobId: job.id },
+        "Text message notification job completed successfully",
+      );
+    } catch (error) {
+      logger.error(
+        {
+          error,
+          jobId: job.id,
+          attempt: job.attemptsMade + 1,
+          maxAttempts: job.opts.attempts,
+        },
+        "Text message notification job failed",
+      );
+      throw error; // Re-throw to trigger retry mechanism
+    }
+  }
+
+  public async getWorkerStats(): Promise<{
+    email: {
+      waiting: number;
+      active: number;
+      completed: number;
+      failed: number;
+    };
+    textMessage: {
+      waiting: number;
+      active: number;
+      completed: number;
+      failed: number;
+    };
+  }> {
+    const [emailStats, textMessageStats] = await Promise.all([
+      this.getQueueStats(this.config.queues.email.name),
+      this.getQueueStats(this.config.queues.textMessage.name),
+    ]);
+
+    return {
+      email: emailStats,
+      textMessage: textMessageStats,
+    };
+  }
+
+  public async start(): Promise<void> {
+    const logger = this.loggerFactory("start");
+    logger.info("Starting BullMQ notification worker");
+
+    try {
+      // Call parent start method to handle Redis connection
+      await super.start();
+
+      // Start all workers
+      for (const [name, worker] of this.workers) {
+        await worker.waitUntilReady();
+        logger.info({ worker: name }, "Worker started");
+      }
+
+      logger.info("BullMQ notification worker started successfully");
+    } catch (error) {
+      logger.error({ error }, "Failed to start BullMQ notification worker");
+      throw error;
+    }
+  }
+
+  public async stop(): Promise<void> {
+    const logger = this.loggerFactory("stop");
+    logger.info("Stopping BullMQ notification worker");
+
+    try {
+      // Call parent stop method to handle cleanup
+      await super.stop();
+      logger.info("BullMQ notification worker stopped successfully");
+    } catch (error) {
+      logger.error({ error }, "Error stopping BullMQ notification worker");
+    }
+  }
+  /**
+   * Start the worker and keep it running until it crashes or is stopped
+   * This method will block until the worker encounters a fatal error
+   */
+  public async run(): Promise<void> {
+    const logger = this.loggerFactory("runUntilCrash");
+
+    try {
+      await this.start();
+      logger.info("BullMQ notification worker started successfully");
+
+      // Set up graceful shutdown handlers
+      const gracefulShutdown = async (signal: string) => {
+        logger.info(
+          { signal },
+          "Received shutdown signal, stopping worker gracefully",
+        );
+        await this.stop();
+        process.exit(0);
+      };
+
+      process.on("SIGINT", () => gracefulShutdown("SIGINT"));
+      process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
+
+      // Keep the process alive and wait for worker errors
+      await new Promise<void>((resolve, reject) => {
+        // Listen for worker errors
+        for (const [workerName, worker] of this.workers) {
+          worker.on("error", (error: Error) => {
+            logger.error(
+              { error, worker: workerName },
+              "Worker encountered fatal error",
+            );
+            reject(error);
+          });
+        }
+
+        // Listen for Redis connection errors
+        this.redis.on("error", (error: Error) => {
+          logger.error({ error }, "Redis connection error");
+          reject(error);
+        });
+
+        // Listen for Redis connection close
+        this.redis.on("close", () => {
+          logger.warn("Redis connection closed");
+          reject(new Error("Redis connection closed"));
+        });
+
+        // Keep the process alive
+        const keepAlive = () => {
+          setTimeout(keepAlive, 1000);
+        };
+        keepAlive();
+      });
+    } catch (error) {
+      logger.error({ error }, "Worker crashed with error");
+      await this.stop();
+      throw error;
+    }
+  }
+
+  /**
+   * Start the worker and run it indefinitely with automatic restart on crashes
+   * This method will restart the worker if it crashes, with exponential backoff
+   */
+  public async runWithRestart(
+    maxRestarts: number = 10,
+    restartDelay: number = 5000,
+  ): Promise<void> {
+    const logger = this.loggerFactory("runWithRestart");
+    let restartCount = 0;
+
+    while (restartCount < maxRestarts) {
+      try {
+        logger.info({ restartCount, maxRestarts }, "Starting worker");
+        await this.run();
+      } catch (error) {
+        restartCount++;
+        logger.error(
+          { error, restartCount, maxRestarts },
+          "Worker crashed, attempting restart",
+        );
+
+        if (restartCount >= maxRestarts) {
+          logger.error({ maxRestarts }, "Max restarts reached, giving up");
+          throw new Error(`Worker crashed ${maxRestarts} times, giving up`);
+        }
+
+        // Exponential backoff delay
+        const delay = restartDelay * Math.pow(2, restartCount - 1);
+        logger.info({ delay }, "Waiting before restart");
+        await new Promise((resolve) => setTimeout(resolve, delay));
+      }
+    }
+  }
+
+  private getNotificationService(companyId: string): NotificationService {
+    const services = this.getServices(companyId);
+    return new NotificationService(
+      services.configurationService,
+      services.connectedAppsService,
+      services.communicationLogsService,
+    );
+  }
+}

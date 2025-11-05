@@ -1,8 +1,8 @@
 "use client";
 
-import React, { type ComponentPropsWithoutRef } from "react";
+import { type ComponentPropsWithoutRef } from "react";
 
-import { cn, buttonVariants } from "@vivid/ui";
+import { buttonVariants, cn } from "@timelish/ui";
 import {
   useColorsCustom,
   useColorsCustomState,
@@ -15,7 +15,7 @@ import {
 } from "./color-dropdown-menu-items";
 import { ColorInput } from "./color-input";
 // import { ColorInput } from './color-input';
-import { DropdownMenuItem } from "@vivid/ui";
+import { DropdownMenuItem } from "@timelish/ui";
 
 type ColorCustomProps = {
   colors: TColor[];
@@ -57,7 +57,7 @@ export function ColorCustom({
                 size: "icon",
                 variant: "outline",
               }),
-              "absolute top-1.5 right-2 bottom-2 flex size-7 items-center justify-center rounded-full"
+              "absolute top-1.5 right-2 bottom-2 flex size-7 items-center justify-center rounded-full",
             )}
             {...menuItemProps}
           >

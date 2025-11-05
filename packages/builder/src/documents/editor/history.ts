@@ -1,3 +1,6 @@
+import { BaseBlockProps } from "../types";
+import { TEditorBlock } from "./core";
+
 export type EditorHistoryEntry =
   | {
       type: "document";
@@ -15,6 +18,15 @@ export type EditorHistoryEntry =
       type: "clone-block";
       value: {
         blockId: string;
+      };
+    }
+  | {
+      type: "add-block";
+      value: {
+        block: TEditorBlock;
+        parentBlockId: string;
+        parentBlockProperty?: string;
+        index?: number | "last";
       };
     }
   | {
@@ -42,7 +54,7 @@ export type EditorHistoryEntry =
         blockId: string;
         parentBlockId: string;
         parentBlockProperty?: string;
-        index?: number;
+        index?: number | "last";
       };
     }
   | {
@@ -50,6 +62,13 @@ export type EditorHistoryEntry =
       value: {
         blockId: string;
         data: any;
+      };
+    }
+  | {
+      type: "set-block-base";
+      value: {
+        blockId: string;
+        base: BaseBlockProps;
       };
     };
 

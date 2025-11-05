@@ -1,10 +1,9 @@
 "use client";
 
-import { AppSetupProps } from "@vivid/types";
+import { useI18n } from "@timelish/i18n";
+import { AppSetupProps } from "@timelish/types";
 import {
   Button,
-  ConnectedAppNameAndLogo,
-  ConnectedAppStatusMessage,
   Form,
   FormControl,
   FormField,
@@ -14,19 +13,27 @@ import {
   InfoTooltip,
   Input,
   Spinner,
-} from "@vivid/ui";
+} from "@timelish/ui";
+import {
+  ConnectedAppNameAndLogo,
+  ConnectedAppStatusMessage,
+} from "@timelish/ui-admin";
 import React from "react";
-import { useI18n } from "@vivid/i18n";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
 import { IcsApp } from "./app";
 import { IcsLinkCalendarSource, icsLinkCalendarSourceSchema } from "./models";
+import {
+  IcsAdminKeys,
+  IcsAdminNamespace,
+  icsAdminNamespace,
+} from "./translations/types";
 
 export const IcsAppSetup: React.FC<AppSetupProps> = ({
   onSuccess,
   onError,
   appId: existingAppId,
 }) => {
-  const t = useI18n("apps");
+  const t = useI18n<IcsAdminNamespace, IcsAdminKeys>(icsAdminNamespace);
   const { appStatus, form, isLoading, isValid, onSubmit } =
     useConnectedAppSetup<IcsLinkCalendarSource>({
       appId: existingAppId,
@@ -47,12 +54,12 @@ export const IcsAppSetup: React.FC<AppSetupProps> = ({
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel>
-                    {t("ics.form.link.label")}{" "}
-                    <InfoTooltip>{t("ics.form.link.tooltip")}</InfoTooltip>
+                    {t("form.link.label")}{" "}
+                    <InfoTooltip>{t("form.link.tooltip")}</InfoTooltip>
                   </FormLabel>
                   <FormControl>
                     <Input
-                      placeholder={t("ics.form.link.placeholder")}
+                      placeholder={t("form.link.placeholder")}
                       {...field}
                     />
                   </FormControl>
@@ -67,13 +74,18 @@ export const IcsAppSetup: React.FC<AppSetupProps> = ({
               className="inline-flex gap-2 items-center w-full"
             >
               {isLoading && <Spinner />}
-              <span>{t("ics.form.connect")}</span>
-              <ConnectedAppNameAndLogo app={{ name: IcsApp.name }} t={t} />
+              <span>{t("form.connect")}</span>
+              <ConnectedAppNameAndLogo appName={IcsApp.name} />
             </Button>
           </div>
         </form>
       </Form>
-      {appStatus && <ConnectedAppStatusMessage app={appStatus} t={t} />}
+      {appStatus && (
+        <ConnectedAppStatusMessage
+          status={appStatus.status}
+          statusText={appStatus.statusText}
+        />
+      )}
     </>
   );
 };

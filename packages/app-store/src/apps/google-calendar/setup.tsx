@@ -1,32 +1,36 @@
-import { AppSetupProps, ConnectedApp } from "@vivid/types";
+import { adminApi } from "@timelish/api-sdk";
+import { useI18n } from "@timelish/i18n";
+import { AppSetupProps, ConnectedApp } from "@timelish/types";
 import {
   Button,
   Combobox,
-  ConnectedAppNameAndLogo,
-  ConnectedAppStatusMessage,
   Label,
   Spinner,
   toast,
   toastPromise,
-} from "@vivid/ui";
-import React from "react";
-import { useI18n } from "@vivid/i18n";
+} from "@timelish/ui";
 import {
-  addNewApp,
-  getAppLoginUrl,
-  getAppStatus,
-  processRequest,
-  setAppStatus,
-} from "../../actions";
+  ConnectedAppNameAndLogo,
+  ConnectedAppStatusMessage,
+} from "@timelish/ui-admin";
+import React from "react";
 import { GoogleCalendarApp } from "./app";
 import { CalendarListItem, RequestAction } from "./models";
+import {
+  GoogleCalendarAdminAllKeys,
+  GoogleCalendarAdminKeys,
+  GoogleCalendarAdminNamespace,
+  googleCalendarAdminNamespace,
+} from "./translations/types";
 
 export const GoogleAppSetup: React.FC<AppSetupProps> = ({
   onSuccess,
   onError,
   appId: existingAppId,
 }) => {
-  const t = useI18n("apps");
+  const t = useI18n<GoogleCalendarAdminNamespace, GoogleCalendarAdminKeys>(
+    googleCalendarAdminNamespace,
+  );
   const [isLoading, setIsLoading] = React.useState(false);
 
   const [app, setApp] = React.useState<ConnectedApp | undefined>(undefined);
@@ -36,7 +40,7 @@ export const GoogleAppSetup: React.FC<AppSetupProps> = ({
 
   const primaryCalendar: CalendarListItem = {
     id: "primary",
-    name: t("googleCalendar.primaryCalendar"),
+    name: t("primaryCalendar"),
   };
 
   const [calendars, setCalendars] = React.useState<CalendarListItem[]>([
@@ -53,10 +57,10 @@ export const GoogleAppSetup: React.FC<AppSetupProps> = ({
       setIsLoading(true);
       try {
         const [calendarList, selected] = await Promise.all([
-          processRequest(appId, {
+          adminApi.apps.processRequest(appId, {
             type: "get-calendar-list",
           } as RequestAction),
-          processRequest(appId, {
+          adminApi.apps.processRequest(appId, {
             type: "get-selected-calendar",
           } as RequestAction),
         ]);
@@ -80,14 +84,14 @@ export const GoogleAppSetup: React.FC<AppSetupProps> = ({
     setIsLoading(true);
     try {
       await toastPromise(
-        processRequest(appId, {
+        adminApi.apps.processRequest(appId, {
           type: "set-calendar",
           calendar,
         } as RequestAction),
         {
-          success: t("googleCalendar.toast.changes_saved"),
-          error: t("googleCalendar.toast.request_error"),
-        }
+          success: t("toast.changes_saved"),
+          error: t("toast.request_error"),
+        },
       );
     } catch (e: any) {
       console.error(e);
@@ -97,7 +101,7 @@ export const GoogleAppSetup: React.FC<AppSetupProps> = ({
   };
 
   const getStatus = async (appId: string) => {
-    const status = await getAppStatus(appId);
+    const status = await adminApi.apps.getAppStatus(appId);
     setApp(() => status);
 
     if (status.status === "pending") {
@@ -116,15 +120,11 @@ export const GoogleAppSetup: React.FC<AppSetupProps> = ({
     onError(status.statusText);
   };
 
-  const clearTimer = () => {
-    if (timer) clearTimeout(timer);
-  };
-
   React.useEffect(() => {
     return () => {
-      clearTimer();
+      if (timer) clearTimeout(timer);
     };
-  }, []);
+  }, [timer]);
 
   const connectApp = async () => {
     try {
@@ -133,15 +133,16 @@ export const GoogleAppSetup: React.FC<AppSetupProps> = ({
       let appId: string;
       if (app?._id || existingAppId) {
         appId = (app?._id || existingAppId)!;
-        await setAppStatus(appId, {
+        await adminApi.apps.setAppStatus(appId, {
           status: "pending",
-          statusText: "googleCalendar.form.pendingAuthorization",
+          statusText:
+            "app_google-calendar_admin.form.pendingAuthorization" satisfies GoogleCalendarAdminAllKeys,
         });
       } else {
-        appId = await addNewApp(GoogleCalendarApp.name);
+        appId = await adminApi.apps.addNewApp(GoogleCalendarApp.name);
       }
 
-      const loginUrl = await getAppLoginUrl(appId);
+      const loginUrl = await adminApi.apps.getAppLoginUrl(appId);
 
       getStatus(appId);
       window.open(loginUrl, "_blank", "popup=true");
@@ -158,19 +159,19 @@ export const GoogleAppSetup: React.FC<AppSetupProps> = ({
         value: c.id,
         label: c.name,
       })) ?? [],
-    [calendars]
+    [calendars],
   );
 
   return (
     <>
       {appId && (
         <div className="flex flex-col gap-2">
-          <Label>{t("googleCalendar.form.selectCalendar.label")}</Label>
+          <Label>{t("form.selectCalendar.label")}</Label>
           <Combobox
             values={calendarListValues}
             disabled={isLoading}
             className="flex w-full font-normal text-base"
-            searchLabel={t("googleCalendar.form.selectCalendar.searchLabel")}
+            searchLabel={t("form.selectCalendar.searchLabel")}
             value={selectedCalendar}
             onItemSelect={(value) => {
               setSelectedCalendar(value);
@@ -188,18 +189,21 @@ export const GoogleAppSetup: React.FC<AppSetupProps> = ({
           className="inline-flex gap-2 items-center w-full"
         >
           {isLoading && <Spinner />}
-          <span>
-            {appId
-              ? t("googleCalendar.form.reconnect")
-              : t("googleCalendar.form.connect")}
+          <span className="inline-flex gap-2 items-center">
+            {t.rich(appId ? "form.reconnect" : "form.connect", {
+              app: () => (
+                <ConnectedAppNameAndLogo appName={GoogleCalendarApp.name} />
+              ),
+            })}
           </span>
-          <ConnectedAppNameAndLogo
-            app={{ name: GoogleCalendarApp.name }}
-            t={t}
-          />
         </Button>
       </div>
-      {app && <ConnectedAppStatusMessage app={app} t={t} />}
+      {app && (
+        <ConnectedAppStatusMessage
+          status={app.status}
+          statusText={app.statusText}
+        />
+      )}
     </>
   );
 };

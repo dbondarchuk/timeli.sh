@@ -1,7 +1,7 @@
 import React from "react";
 
-import { Label } from "@vivid/ui";
-import RawSliderInput from "./raw/raw-slider-input";
+import { Label } from "@timelish/ui";
+import { RawSliderInput } from "./raw/raw-slider-input";
 import { ResetButton } from "./reset-button";
 
 type SliderInputProps = {

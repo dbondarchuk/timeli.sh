@@ -3,7 +3,8 @@
 const config = {
   mongodb: {
     // TODO Change (or review) the url to your MongoDB:
-    url: process.env.MONGODB_URI || "mongodb://localhost:27017/vivid",
+    url: process.env.MONGODB_URI || "mongodb://localhost:27017/timelish",
+    databaseName: process.env.MONGODB_DB,
 
     options: {
       useNewUrlParser: true, // removes a deprecation warning when connecting

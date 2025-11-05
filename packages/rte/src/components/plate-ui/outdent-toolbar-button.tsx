@@ -1,8 +1,8 @@
 "use client";
 
+import { ToolbarButton } from "@timelish/ui";
 import { withRef } from "@udecode/cn";
 import { useOutdentButton } from "@udecode/plate-indent/react";
-import { ToolbarButton } from "@vivid/ui";
 import { Outdent } from "lucide-react";
 
 export const OutdentToolbarButton = withRef<typeof ToolbarButton>(
@@ -14,5 +14,5 @@ export const OutdentToolbarButton = withRef<typeof ToolbarButton>(
         <Outdent />
       </ToolbarButton>
     );
-  }
+  },
 );

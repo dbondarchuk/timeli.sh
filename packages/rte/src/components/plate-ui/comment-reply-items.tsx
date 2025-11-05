@@ -1,13 +1,11 @@
-'use client';
-
-import React from 'react';
+"use client";
 
 import {
   SCOPE_ACTIVE_COMMENT,
   useCommentReplies,
-} from '@udecode/plate-comments/react';
+} from "@udecode/plate-comments/react";
 
-import { CommentItem } from './comment-item';
+import { CommentItem } from "./comment-item";
 
 export function CommentReplyItems() {
   const commentReplies = useCommentReplies(SCOPE_ACTIVE_COMMENT);

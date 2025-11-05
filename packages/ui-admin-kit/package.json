@@ -1,0 +1,45 @@
+{
+  "name": "@timelish/ui-admin-kit",
+  "version": "0.0.1",
+  "private": true,
+  "sideEffects": false,
+  "scripts": {
+    "type-check": "tsc --pretty --noEmit",
+    "type-check:ci": "tsc-absolute --pretty --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "main": "./src/index.ts",
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "19.0.2",
+    "@types/react-big-calendar": "^1.8.10",
+    "@types/react-dom": "19.0.2",
+    "@types/react-window": "^1.8.8",
+    "@timelish/eslint-config": "*",
+    "@timelish/tailwind-config": "*",
+    "@timelish/typescript-config": "*",
+    "typescript": "5.5.4"
+  },
+  "dependencies": {
+    "@timelish/ui": "*",
+    "@timelish/ui-admin": "*",
+    "@timelish/api-sdk": "*",
+    "@timelish/builder": "*",
+    "@timelish/email-builder": "*",
+    "@timelish/i18n": "*",
+    "@timelish/rte": "*",
+    "@timelish/page-builder-base": "*",
+    "@timelish/types": "*",
+    "@timelish/utils": "*",
+    "@monaco-editor/react": "^4.6.0",
+    "@uiw/react-json-view": "2.0.0-alpha.30",
+    "lucide-react": "^0.525.0",
+    "react": "19.0.0",
+    "nuqs": "^2.7.1",
+    "zustand": "^4.5.5"
+  },
+  "peerDependencies": {
+    "next": "15.5.6"
+  }
+}

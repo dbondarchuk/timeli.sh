@@ -1,16 +1,16 @@
 import {
   ToolbarDropdownMenu,
   ToolbarDropdownPropsValues,
-} from "@vivid/builder";
+} from "@timelish/builder";
+import { useI18n } from "@timelish/i18n";
+import { Leaves } from "@timelish/types";
 import { AlignCenter, AlignLeft, AlignRight } from "lucide-react";
 import { TextAlign } from "../style-inputs/helpers/zod";
-import { Leaves } from "@vivid/utils";
-import { useI18n } from "@vivid/i18n";
 
 type PropsType = { style?: { textAlign?: TextAlign | null } | null };
 
 export const TextAlignDropdownMenu = <T extends PropsType>(
-  props: ToolbarDropdownPropsValues<T>
+  props: ToolbarDropdownPropsValues<T>,
 ) => {
   const t = useI18n("builder");
 

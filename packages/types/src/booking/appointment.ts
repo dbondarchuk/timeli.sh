@@ -1,7 +1,12 @@
-import { AppointmentEvent, Payment } from ".";
-import { AssetEntity } from "../assets";
-import { Customer } from "../customers";
+import { AssetEntity } from "../assets/entity";
+import { Customer } from "../customers/customer";
+import { WithCompanyId, WithDatabaseId } from "../database";
 import { Prettify } from "../utils/helpers";
+import {
+  AppointmentEvent,
+  AppointmentOnlineMeetingInformation,
+} from "./appointment-event";
+import { Payment } from "./payment";
 
 export const appointmentStatuses = [
   "pending",
@@ -12,12 +17,16 @@ export const appointmentStatuses = [
 export type AppointmentStatus = (typeof appointmentStatuses)[number];
 
 export type AppointmentEntity = Prettify<
-  AppointmentEvent & {
-    _id: string;
-    status: AppointmentStatus;
-    createdAt: Date;
-    customerId: string;
-  }
+  WithCompanyId<
+    WithDatabaseId<
+      AppointmentEvent & {
+        status: AppointmentStatus;
+        createdAt: Date;
+        customerId: string;
+        meetingInformation?: AppointmentOnlineMeetingInformation;
+      }
+    >
+  >
 >;
 
 export type Appointment = Prettify<
@@ -28,9 +37,3 @@ export type Appointment = Prettify<
     endAt: Date;
   }
 >;
-
-// export const StatusText: Record<AppointmentStatus, string> = {
-//   pending: "Pending",
-//   confirmed: "Confirmed",
-//   declined: "Declined",
-// };

@@ -1,0 +1,259 @@
+import { getLoggerFactory } from "@timelish/logger";
+import {
+  EmailNotificationRequest,
+  INotificationService,
+  TextMessageNotificationRequest,
+  TextMessageResponse,
+  WithCompanyId,
+} from "@timelish/types";
+import { Job } from "bullmq";
+import { BaseBullMQClient } from "../base-bullmq-client";
+import { BullMQNotificationConfig } from "./types";
+
+export type EmailJobData = WithCompanyId<{
+  type: "email";
+  data: EmailNotificationRequest;
+}>;
+
+export type TextMessageJobData = WithCompanyId<{
+  type: "text-message";
+  data: TextMessageNotificationRequest;
+}>;
+
+export type NotificationJobData = EmailJobData | TextMessageJobData;
+
+export class BullMQNotificationService
+  extends BaseBullMQClient
+  implements INotificationService
+{
+  protected readonly config: BullMQNotificationConfig;
+
+  constructor(
+    protected readonly companyId: string,
+    config: BullMQNotificationConfig,
+  ) {
+    super(config, getLoggerFactory("BullMQNotificationService", companyId));
+
+    this.config = config;
+    this.initializeQueues();
+  }
+
+  private initializeQueues(): void {
+    const logger = this.loggerFactory("initializeQueues");
+
+    // Create email queue
+    const emailQueue = this.createQueue(this.config.queues.email.name);
+    // this.createQueueEvents(this.config.queues.email.name);
+
+    // Create text message queue
+    const textMessageQueue = this.createQueue(
+      this.config.queues.textMessage.name,
+    );
+
+    // this.createQueueEvents(this.config.queues.textMessage.name);
+
+    logger.info("BullMQ notification queues initialized");
+  }
+
+  public async sendEmail(data: EmailNotificationRequest): Promise<void> {
+    const logger = this.loggerFactory("sendEmail");
+
+    const jobData: EmailJobData = {
+      type: "email",
+      data,
+      companyId: this.companyId,
+    };
+
+    try {
+      const queue = this.getQueue(this.config.queues.email.name);
+      const job = await queue.add("email-notification", jobData, {
+        priority: 0,
+        delay: 0,
+      });
+
+      logger.info(
+        {
+          jobId: job.id,
+          emailTo: Array.isArray(data.email.to)
+            ? data.email.to.join(", ")
+            : data.email.to,
+          subject: data.email.subject,
+          appointmentId: data.appointmentId,
+          customerId: data.customerId,
+        },
+        "Email notification job added to queue",
+      );
+    } catch (error) {
+      logger.error(
+        { error, data },
+        "Failed to add email notification to queue",
+      );
+      throw error;
+    }
+  }
+
+  public async sendTextMessage(
+    data: TextMessageNotificationRequest,
+  ): Promise<TextMessageResponse> {
+    const logger = this.loggerFactory("sendTextMessage");
+
+    const jobData: TextMessageJobData = {
+      type: "text-message",
+      data,
+      companyId: this.companyId,
+    };
+
+    try {
+      const queue = this.getQueue(this.config.queues.textMessage.name);
+      const job = await queue.add("text-message-notification", jobData, {
+        priority: 0,
+        delay: 0,
+      });
+
+      logger.info(
+        {
+          jobId: job.id,
+          phone: data.phone,
+          sender: data.sender,
+          appointmentId: data.appointmentId,
+          customerId: data.customerId,
+        },
+        "Text message notification job added to queue",
+      );
+
+      // Return a mock response since the actual sending happens asynchronously
+      return {
+        success: true,
+        textId: job.id?.toString() || "unknown",
+        data: { provider: "bullmq" },
+      };
+    } catch (error) {
+      logger.error(
+        { error, data },
+        "Failed to add text message notification to queue",
+      );
+      throw error;
+    }
+  }
+
+  public async getEmailQueueStats(): Promise<{
+    waiting: number;
+    active: number;
+    completed: number;
+    failed: number;
+  }> {
+    return this.getQueueStats(this.config.queues.email.name);
+  }
+
+  public async getTextMessageQueueStats(): Promise<{
+    waiting: number;
+    active: number;
+    completed: number;
+    failed: number;
+  }> {
+    return this.getQueueStats(this.config.queues.textMessage.name);
+  }
+
+  public async getAllNotificationQueueStats(): Promise<{
+    email: {
+      waiting: number;
+      active: number;
+      completed: number;
+      failed: number;
+    };
+    textMessage: {
+      waiting: number;
+      active: number;
+      completed: number;
+      failed: number;
+    };
+  }> {
+    const [emailStats, textMessageStats] = await Promise.all([
+      this.getEmailQueueStats(),
+      this.getTextMessageQueueStats(),
+    ]);
+
+    return {
+      email: emailStats,
+      textMessage: textMessageStats,
+    };
+  }
+
+  public async addEmailWithOptions(
+    data: EmailNotificationRequest,
+    options?: {
+      delay?: number;
+      priority?: number;
+      maxRetries?: number;
+    },
+  ): Promise<Job> {
+    const logger = this.loggerFactory("addEmailWithOptions");
+
+    const jobData: EmailJobData = {
+      type: "email",
+      data,
+      companyId: this.companyId,
+    };
+
+    const queue = this.getQueue(this.config.queues.email.name);
+    const job = await queue.add("email-notification", jobData, {
+      priority: options?.priority || 0,
+      delay: options?.delay || 0,
+      attempts: options?.maxRetries || this.config.defaultJobOptions.attempts,
+    });
+
+    logger.info(
+      {
+        jobId: job.id,
+        emailTo: Array.isArray(data.email.to)
+          ? data.email.to.join(", ")
+          : data.email.to,
+        subject: data.email.subject,
+        appointmentId: data.appointmentId,
+        customerId: data.customerId,
+        options,
+      },
+      "Email notification job added to queue with custom options",
+    );
+
+    return job;
+  }
+
+  public async addTextMessageWithOptions(
+    data: TextMessageNotificationRequest,
+    options?: {
+      delay?: number;
+      priority?: number;
+      maxRetries?: number;
+    },
+  ): Promise<Job> {
+    const logger = this.loggerFactory("addTextMessageWithOptions");
+
+    const jobData: TextMessageJobData = {
+      type: "text-message",
+      data,
+      companyId: this.companyId,
+    };
+
+    const queue = this.getQueue(this.config.queues.textMessage.name);
+    const job = await queue.add("text-message-notification", jobData, {
+      priority: options?.priority || 0,
+      delay: options?.delay || 0,
+      attempts: options?.maxRetries || this.config.defaultJobOptions.attempts,
+    });
+
+    logger.info(
+      {
+        jobId: job.id,
+        phone: data.phone,
+        sender: data.sender,
+        appointmentId: data.appointmentId,
+        customerId: data.customerId,
+        options,
+      },
+      "Text message notification job added to queue with custom options",
+    );
+
+    return job;
+  }
+}
