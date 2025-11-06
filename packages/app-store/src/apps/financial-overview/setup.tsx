@@ -43,7 +43,7 @@ export const FinancialOverviewAppSetup: React.FC<AppSetupProps> = ({
           disabled={isLoading || !isValid}
           variant="default"
           className="inline-flex gap-2 items-center w-full"
-          onClick={() => onSubmit(undefined)}
+          onClick={() => onSubmit({})}
         >
           {isLoading && <Spinner />}
           <span className="inline-flex gap-2 items-center">
