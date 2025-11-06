@@ -16,9 +16,12 @@ import { eachOfInterval, getWeekIdentifier, parseTime } from "@timelish/utils";
 import { ObjectId } from "mongodb";
 import { RequestAction } from "./models";
 import {
+  BusyEventsAdminAllKeys,
   BusyEventsAdminKeys,
-  busyEventsAdminNamespace,
   BusyEventsAdminNamespace,
+  BusyEventsPublicKeys,
+  busyEventsPublicNamespace,
+  BusyEventsPublicNamespace,
 } from "./translations/types";
 
 export const BUSY_EVENTS_COLLECTION_NAME = "busy-events";
@@ -130,7 +133,8 @@ export default class BusyEventsConnectedApp
             BusyEventsAdminKeys
           > = {
             status: "connected",
-            statusText: "app_busy-events_admin.statusText.successfully_set_up",
+            statusText:
+              "app_busy-events_admin.statusText.successfully_set_up" satisfies BusyEventsAdminAllKeys,
           };
 
           this.props.update({
@@ -242,9 +246,10 @@ export default class BusyEventsConnectedApp
     end: Date,
   ): Promise<CalendarBusyTime[]> {
     const logger = this.loggerFactory("getBusyTimes");
-    const t = await getI18nAsync<BusyEventsAdminNamespace, BusyEventsAdminKeys>(
-      busyEventsAdminNamespace,
-    );
+    const t = await getI18nAsync<
+      BusyEventsPublicNamespace,
+      BusyEventsPublicKeys
+    >(busyEventsPublicNamespace);
     logger.debug(
       { appId, start: start.toISOString(), end: end.toISOString() },
       "Getting busy times",

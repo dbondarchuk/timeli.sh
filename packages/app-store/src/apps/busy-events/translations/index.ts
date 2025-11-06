@@ -6,4 +6,10 @@ export const BusyEventsTranslations = {
     }
     return (await import(`./${locale}/admin.json`)).default;
   },
+  public: async (locale: string) => {
+    if (!knownLocales.includes(locale)) {
+      return (await import(`./en/public.json`)).default;
+    }
+    return (await import(`./${locale}/public.json`)).default;
+  },
 };
