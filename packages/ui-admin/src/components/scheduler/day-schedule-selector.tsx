@@ -74,7 +74,7 @@ const gridColsClasses = {
 
 export const DayScheduleSelector: React.FC<DayScheduleSelectorProps> = ({
   days = [1, 2, 3, 4, 5, 6, 7],
-  interval = 10,
+  interval = 5,
   startHour = 0,
   endHour = 23,
   scrollToHour = 8,

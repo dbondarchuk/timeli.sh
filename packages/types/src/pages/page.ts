@@ -4,15 +4,22 @@ import { WithCompanyId, WithDatabaseId } from "../database";
 import { Prettify, zNonEmptyString } from "../utils";
 
 export const pageTagSchema = zNonEmptyString("page.tag.min", 3);
+const notAllowedSlugs = ["admin", "assets", "api"];
 
 export const pageSchema = z.object({
   title: zNonEmptyString("page.title.required", 2),
   // content: z.string().min(1, "page.content.required"),
   content: z.any().optional(),
-  slug: zNonEmptyString("page.slug.required").regex(
-    /^[a-z0-9]+(?:[-\/][a-z0-9]+)*$/g,
-    "page.slug.invalid",
-  ),
+  slug: zNonEmptyString("page.slug.required")
+    .regex(/^[a-z0-9]+(?:[-\/][a-z0-9]+)*$/g, "page.slug.invalid")
+    .refine(
+      (slug) =>
+        !notAllowedSlugs.some(
+          (notAllowedSlug) =>
+            slug.startsWith(notAllowedSlug + "/") || slug === notAllowedSlug,
+        ),
+      { message: "page.slug.notAllowed" },
+    ),
   description: zNonEmptyString("page.description.required"),
   keywords: zNonEmptyString("page.keywords.required", 1),
   published: z.coerce.boolean<boolean>(),

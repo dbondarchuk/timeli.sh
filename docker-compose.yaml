@@ -10,10 +10,10 @@ services:
       - MONGODB_DB=${MONGODB_DB}
       - TZ=${TZ:-America/New_York}
       - AUTH_SECRET=${AUTH_SECRET:-n6WKAuaUVdOYMRReNYXEd/sHLF/Ddfams+FAGMe7vzk=}
-      - AUTH_TRUST_HOST=${ADMIN_DOMAIN:-app-dev.timelishnail.studio}
-      - BETTER_AUTH_URL=https://${ADMIN_DOMAIN:-app-dev.timelishnail.studio}
-      - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-timelishnail.studio}
-      - ADMIN_DOMAIN=${ADMIN_DOMAIN:-app-dev.timelishnail.studio}
+      - AUTH_TRUST_HOST=${ADMIN_DOMAIN:-app.timelish.com}
+      - BETTER_AUTH_URL=https://${ADMIN_DOMAIN:-app.timelish.com}
+      - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-timeli.sh}
+      - ADMIN_DOMAIN=${ADMIN_DOMAIN:-app.timelish.com}
       - SECRET_KEY=${SECRET_KEY:-uw8iDFHFNjbIU8gPGMByTLiFfXJex7E1}
       - OUTLOOK_APP_CLIENT_ID=${OUTLOOK_APP_CLIENT_ID}
       - OUTLOOK_APP_CLIENT_SECRET=${OUTLOOK_APP_CLIENT_SECRET}
@@ -56,7 +56,8 @@ services:
       - MONGODB_URI=${MONGODB_URI:-mongodb://mongodb:27017/timelish?retryWrites=true&w=majority}
       - MONGODB_DB=${MONGODB_DB}
       - TZ=${TZ:-America/New_York}
-      - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-timelishnail.studio}
+      - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-timeli.sh}
+      - ADMIN_DOMAIN=${ADMIN_DOMAIN:-app.timelish.com}
       - SECRET_KEY=${SECRET_KEY:-uw8iDFHFNjbIU8gPGMByTLiFfXJex7E1}
       - OUTLOOK_APP_CLIENT_ID=${OUTLOOK_APP_CLIENT_ID}
       - OUTLOOK_APP_CLIENT_SECRET=${OUTLOOK_APP_CLIENT_SECRET}
@@ -107,8 +108,8 @@ services:
       - MONGODB_DB=${MONGODB_DB}
       - SECRET_KEY=${SECRET_KEY:-uw8iDFHFNjbIU8gPGMByTLiFfXJex7E1}
       - LOG_LEVEL=${LOG_LEVEL:-debug}
-      - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-timelishnail.studio}
-      - ADMIN_DOMAIN=${ADMIN_DOMAIN:-app-dev.timelishnail.studio}
+      - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-timeli.sh}
+      - ADMIN_DOMAIN=${ADMIN_DOMAIN:-app.timelish.com}
       - OUTLOOK_APP_CLIENT_ID=${OUTLOOK_APP_CLIENT_ID}
       - OUTLOOK_APP_CLIENT_SECRET=${OUTLOOK_APP_CLIENT_SECRET}
       - GOOGLE_CALENDAR_APP_CLIENT_ID=${GOOGLE_CALENDAR_APP_CLIENT_ID}
@@ -145,8 +146,8 @@ services:
       - MONGODB_DB=${MONGODB_DB}
       - SECRET_KEY=${SECRET_KEY:-uw8iDFHFNjbIU8gPGMByTLiFfXJex7E1}
       - LOG_LEVEL=${LOG_LEVEL:-debug}
-      - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-timelishnail.studio}
-      - ADMIN_DOMAIN=${ADMIN_DOMAIN:-app-dev.timelishnail.studio}
+      - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-timeli.sh}
+      - ADMIN_DOMAIN=${ADMIN_DOMAIN:-app.timelish.com}
       - OUTLOOK_APP_CLIENT_ID=${OUTLOOK_APP_CLIENT_ID}
       - OUTLOOK_APP_CLIENT_SECRET=${OUTLOOK_APP_CLIENT_SECRET}
       - GOOGLE_CALENDAR_APP_CLIENT_ID=${GOOGLE_CALENDAR_APP_CLIENT_ID}
@@ -177,7 +178,7 @@ services:
       - MONGODB_URI=${MONGODB_URI:-mongodb://mongodb:27017/timelish?retryWrites=true&w=majority}
       - MONGODB_DB=${MONGODB_DB}
       - LOG_LEVEL=${LOG_LEVEL:-debug}
-      - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-timelishnail.studio}
+      - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-timeli.sh}
     restart: unless-stopped
     ports:
       - "5555:5555"

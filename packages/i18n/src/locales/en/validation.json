@@ -440,7 +440,8 @@
     "slug": {
       "required": "Page slug is required",
       "invalid": "Page slug must contain only latin lower case letters, digits, slash, and hyphens",
-      "unique": "Page slug must be unique"
+      "unique": "Page slug must be unique",
+      "notAllowed": "Page slug cannot be used for internal pages"
     },
     "description": {
       "required": "Page description is required"

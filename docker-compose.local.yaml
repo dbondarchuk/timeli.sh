@@ -60,6 +60,7 @@ services:
       - TZ=America/New_York
       - AUTH_PASSWORD=password
       - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-localhost:3000}
+      - ADMIN_DOMAIN=${ADMIN_DOMAIN:-localhost:3001}
       - SECRET_KEY=${SECRET_KEY:-uw8iDFHFNjbIU8gPGMByTLiFfXJex7E1}
       - REDIS_HOST=${REDIS_HOST:-redis}
       - REDIS_PORT=${REDIS_PORT:-6379}
