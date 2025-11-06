@@ -23,7 +23,7 @@ import { DateTime, HourNumbers, DateTime as Luxon, MinuteNumbers } from "luxon";
 
 import { useI18n, useLocale } from "@timelish/i18n";
 import { areTimesEqual, formatTimeLocale } from "@timelish/utils";
-// import * as Locales from "date-fns/locale";
+import * as Locales from "date-fns/locale";
 import { useModifyAppointmentFormContext } from "./context";
 
 const asJsDate = (dateTime: Luxon) =>
