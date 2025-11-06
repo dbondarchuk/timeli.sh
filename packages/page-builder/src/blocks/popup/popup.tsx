@@ -38,6 +38,7 @@ export const Popup: React.FC<{
   >([COOKIE_NAME]);
 
   const { body } = usePortalContext();
+  const container = body && body.nodeType === 1 ? body : undefined;
 
   const [isOpen, setIsOpen] = useState(
     show === "always" ||
@@ -59,7 +60,7 @@ export const Popup: React.FC<{
     <PopupProvider id={popupId} isOpen={isOpen} setIsOpen={onOpenChange}>
       <Dialog open={isOpen} modal onOpenChange={onOpenChange}>
         <DialogContent
-          container={body}
+          container={container}
           id={id}
           className={className}
           overlayVariant={overlay}

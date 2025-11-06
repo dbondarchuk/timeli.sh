@@ -58,7 +58,7 @@ export const PopupReader = ({
             ))}
           </DialogDescription>
         </DialogHeader>
-        <ScrollArea className="max-h-[70vh]">
+        <ScrollArea className="max-h-[70svh]">
           {content.map((child) => (
             <ReaderBlock key={child.id} block={child} {...rest} />
           ))}

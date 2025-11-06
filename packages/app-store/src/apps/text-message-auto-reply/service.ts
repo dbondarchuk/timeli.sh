@@ -218,7 +218,8 @@ export default class TextMessageAutoReplyConnectedApp
 
           await this.props.services.notificationService.sendTextMessage({
             body: message,
-            handledBy: "textMessageAutoReply.handler",
+            handledBy:
+              "app_text-message-auto-reply_admin.handler" satisfies TextMessageAutoReplyAdminAllKeys,
             phone: reply.from,
             participantType: "customer",
             appointmentId: reply.data?.appointmentId,

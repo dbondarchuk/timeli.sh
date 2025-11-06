@@ -19,6 +19,7 @@ import {
   ScheduledNotificationsJobPayload,
 } from "./models";
 import { ScheduledNotificationsRepository } from "./repository";
+import { ScheduledNotificationsAdminAllKeys } from "./translations/types";
 import {
   calculateScheduledNotificationTime,
   compareAppointmentCount,
@@ -259,7 +260,7 @@ export class ScheduledNotificationsJobProcessor {
             },
             participantType: "customer",
             handledBy: {
-              key: `scheduledNotifications.handler`,
+              key: `app_scheduled-notifications_admin.handler` satisfies ScheduledNotificationsAdminAllKeys,
               args: {
                 scheduledNotificationName: scheduledNotification.name,
               },
@@ -313,7 +314,7 @@ export class ScheduledNotificationsJobProcessor {
             },
             participantType: "customer",
             handledBy: {
-              key: `scheduledNotifications.handler`,
+              key: `app_scheduled-notifications_admin.handler` satisfies ScheduledNotificationsAdminAllKeys,
               args: {
                 scheduledNotificationName: scheduledNotification.name,
               },

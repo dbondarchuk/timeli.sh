@@ -42,8 +42,6 @@ export const withCompanyId: MiddlewareProxy = (next) => {
       request.headers.set("x-organization-domain", hostname);
     }
 
-    console.log("companyId", companyId, slug);
-
     request.headers.set("x-company-id", companyId);
     request.headers.set("x-organization-slug", slug);
 

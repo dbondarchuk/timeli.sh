@@ -51,8 +51,12 @@ export const IconConfiguration = deepMemo(
         }
 
         if (search) {
-          filteredIcons = filteredIcons.filter((iconName) =>
-            iconName.toLowerCase().includes(search.toLowerCase()),
+          filteredIcons = filteredIcons.filter(
+            (iconName) =>
+              iconName.toLowerCase().includes(search.toLowerCase()) ||
+              transformIconName(iconName)
+                .toLowerCase()
+                .includes(search.toLowerCase()),
           );
         }
 

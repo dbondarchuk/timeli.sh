@@ -40,8 +40,8 @@ export const ModifyAppointmentForm: React.FC<
       fetchPaymentInformationDescription: i18n(
         "payment_information_fetch_failed_description",
       ),
-      submitTitle: i18n(`${type!}_submit_failed_title`),
-      submitDescription: i18n(`${type!}_submit_failed_description`),
+      submitTitle: i18n(`${type ?? "cancel"}_submit_failed_title`),
+      submitDescription: i18n(`${type ?? "cancel"}_submit_failed_description`),
       timeNotAvailableDescription: i18n(
         "submit_event_failed_time_not_available_description",
       ),

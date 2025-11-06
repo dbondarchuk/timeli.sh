@@ -6,6 +6,7 @@ import {
   iconNames,
   type IconName,
 } from "@timelish/ui";
+import { capitalize } from "@timelish/utils";
 import { ControllerRenderProps } from "react-hook-form";
 
 export type IconSelectProps = {
@@ -14,13 +15,20 @@ export type IconSelectProps = {
   allowClear?: boolean;
 };
 
+function transformIconName(iconName: IconName): string {
+  return iconName
+    .split("-")
+    .map((word) => capitalize(word))
+    .join(" ");
+}
+
 const iconValues = iconNames.map(
   (icon) =>
     ({
       value: icon,
       label: (
         <div className="flex flex-row gap-1 items-center">
-          <Icon name={icon as IconName} size={20} /> {icon}
+          <Icon name={icon as IconName} size={20} /> {transformIconName(icon)}
         </div>
       ),
     }) as IComboboxItem,
@@ -44,7 +52,10 @@ export const IconSelect: React.FC<IconSelectProps> = ({
           (icon) =>
             icon.value
               .toLocaleLowerCase()
-              .indexOf(search.toLocaleLowerCase()) >= 0,
+              .indexOf(search.toLocaleLowerCase()) >= 0 ||
+            transformIconName(icon.value as IconName)
+              .toLowerCase()
+              .indexOf(search.toLowerCase()) >= 0,
         )
       }
       value={field.value}
