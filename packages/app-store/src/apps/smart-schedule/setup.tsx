@@ -99,6 +99,28 @@ export const SmartScheduleAppSetup: React.FC<AppSetupProps> = ({
             />
             <FormField
               control={form.control}
+              name="preferLaterStartsEarlierEnds"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>
+                    {t("form.preferLaterStartsEarlierEnds")}{" "}
+                    <InfoTooltip>
+                      {t("form.preferLaterStartsEarlierEndsTooltip")}
+                    </InfoTooltip>
+                  </FormLabel>
+                  <FormControl>
+                    <BooleanSelect
+                      value={field.value}
+                      onValueChange={field.onChange}
+                      className="w-full"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="allowSmartSlotStarts"
               render={({ field }) => (
                 <FormItem className="w-full">

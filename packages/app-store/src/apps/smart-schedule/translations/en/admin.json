@@ -9,6 +9,8 @@
     "allowSkipBreakTooltip": "Allows skipping break when no other has been found",
     "preferBackToBack": "Prefer back-to-back appointments",
     "preferBackToBackTooltip": "Will give higher preference for time slots, that will allow back-to-back appointments",
+    "preferLaterStartsEarlierEnds": "Prefer later starts and earlier ends",
+    "preferLaterStartsEarlierEndsTooltip": "Will give higher preference for time slots, that will allow later starts and earlier ends of the shift",
     "allowSmartSlotStarts": "Allow smart slot start times",
     "allowSmartSlotStartsTooltip": "If no allowed slot start times were found, will try to find unconventional time slot",
     "preferredService": "Preferred service",

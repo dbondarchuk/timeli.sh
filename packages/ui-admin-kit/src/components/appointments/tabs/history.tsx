@@ -147,7 +147,7 @@ const HistoryEntry: React.FC<{ entry: AppointmentHistoryEntry }> = ({
                   {t("admin.appointments.history.payment", {
                     amount: formatAmountString(entry.data.payment.amount),
                     appName: t(
-                      `apps.${AvailableApps[entry.data.payment.appName].displayName}`,
+                      AvailableApps[entry.data.payment.appName].displayName,
                     ),
                   })}
                 </Badge>

@@ -273,7 +273,7 @@ export class BullMQJobWorker extends BaseBullMQClient {
         try {
           const method = service[jobData.method];
           if (!method) {
-            logger.error({ jobId, jobData }, "Method not found");
+            logger.warn({ jobId, jobData }, "Method not found");
             return;
           }
 

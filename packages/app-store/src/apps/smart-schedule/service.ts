@@ -139,6 +139,8 @@ export default class SmartScheduleConnectedApp
         discourageLargeGaps: true,
         allowSmartSlotStarts: config?.allowSmartSlotStarts,
         preferBackToBack: config?.preferBackToBack,
+        preferLaterStarts: config?.preferLaterStartsEarlierEnds,
+        preferEarlierEnds: config?.preferLaterStartsEarlierEnds,
         customSlots,
       },
       start: DateTime.fromJSDate(start),

@@ -13,6 +13,8 @@ type TimeSlotsWithPriorityFinderConfiguration = {
   discourageLargeGaps?: boolean;
   preferBackToBack?: boolean;
   allowSmartSlotStarts?: boolean;
+  preferLaterStarts?: boolean;
+  preferEarlierEnds?: boolean;
 } & Pick<
   TimeSlotsFinderConfiguration,
   "timeZone" | "slotStart" | "customSlots"
@@ -155,6 +157,8 @@ export function getAvailableTimeSlotsWithPriority({
     lowerPriorityIfNoFollowingBooking = false,
     discourageLargeGaps = false,
     preferBackToBack = false,
+    preferLaterStarts = false,
+    preferEarlierEnds = false,
     customSlots,
     slotStart: slotStartAt = 5,
   } = configuration;
@@ -342,7 +346,7 @@ export function getAvailableTimeSlotsWithPriority({
             priority -= 1;
           }
 
-          if (discourageLargeGaps && !anyOtherServiceCanFit) {
+          if (!anyOtherServiceCanFit) {
             const isBackToBack = adjacentToEvent && preferBackToBack;
 
             const penalizeGap = (
@@ -361,13 +365,29 @@ export function getAvailableTimeSlotsWithPriority({
               }
               return 0;
             };
+            // Prefer later starts: if no other service fits, prefer slot with lesser gap after
+            if (preferLaterStarts && isFirstGap) {
+              // Add priority bonus inversely proportional to gap after (smaller gap = higher bonus)
+              // Formula: bonus = 2 / (1 + gapMinutes / 10)
+              // This gives: gap=0 -> bonus=2.0, gap=10 -> bonus=1, gap=30 -> bonus=0.5
+              const gapAfterBonus = 2 / (1 + gapAfterSlot / 10);
+              priority += gapAfterBonus;
+            } else if (discourageLargeGaps) {
+              priority -= penalizeGap(
+                gapBeforeSlot,
+                isToShiftStart,
+                isBackToBack,
+              );
+            }
 
-            priority -= penalizeGap(
-              gapBeforeSlot,
-              isToShiftStart,
-              isBackToBack,
-            );
-            priority -= penalizeGap(gapAfterSlot, isToShiftEnd, isBackToBack);
+            // Prefer earlier ends: if no other service fits, prefer slot with lesser gap before
+            if (preferEarlierEnds && isLastGap) {
+              // Add priority bonus inversely proportional to gap before (smaller gap = higher bonus)
+              const gapBeforeBonus = 2 / (1 + gapBeforeSlot / 10);
+              priority += gapBeforeBonus;
+            } else if (discourageLargeGaps) {
+              priority -= penalizeGap(gapAfterSlot, isToShiftEnd, isBackToBack);
+            }
           }
 
           gapSlots.push({

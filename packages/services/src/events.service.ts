@@ -1583,6 +1583,7 @@ export class EventsService extends BaseService implements IEventsService {
         events,
         schedule,
       );
+
       logger.debug(
         { availability: availability.length },
         "Availability retrieved from availability provider",
@@ -1668,7 +1669,10 @@ export class EventsService extends BaseService implements IEventsService {
       ...appsPromises,
     ]);
 
-    logger.debug({ start, end, dbEvents, appsEvents }, "Busy times retrieved");
+    logger.debug(
+      { start, end, dbEvents, appsEvents: appsEvents.length },
+      "Busy times retrieved",
+    );
 
     const remoteEvents = appsEvents
       .flat()
