@@ -41,7 +41,7 @@ export const WaitlistDate = ({ entry }: { entry: WaitlistEntry }) => {
             .slice(0, 3)
             .map((dateEntry, index) => (
               <div key={index} className="space-y-1">
-                <p className="text-sm font-medium">
+                <p className="text-xs font-medium">
                   {DateTime.fromISO(dateEntry.date, {
                     zone: timeZone,
                   })

@@ -89,7 +89,7 @@ function MultiSelect({
               </Badge>
             ))}
             {(!selected || !selected.length) && (
-              <div className="text-sm text-muted-foreground font-normal">
+              <div className="text-xs text-muted-foreground font-normal">
                 {placeholder || t("multiSelect.placeholder")}
               </div>
             )}

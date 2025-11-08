@@ -152,13 +152,13 @@ export const WaitlistFormCard: React.FC = () => {
                 >
                   <ToggleGroupItem
                     value="true"
-                    className="max-sm:text-xs max-sm:w-full max-sm:py-2 max-sm:!rounded-md max-sm:!border"
+                    className="text-xs max-sm:w-full max-sm:py-2 max-sm:!rounded-md max-sm:!border"
                   >
                     {t("block.asSoonAsPossible.label")}
                   </ToggleGroupItem>
                   <ToggleGroupItem
                     value="false"
-                    className="max-sm:text-xs max-sm:w-full max-sm:py-2 max-sm:!rounded-md max-sm:!border"
+                    className="text-xs max-sm:w-full max-sm:py-2 max-sm:!rounded-md max-sm:!border"
                   >
                     {t(
                       values.asSoonAsPossible

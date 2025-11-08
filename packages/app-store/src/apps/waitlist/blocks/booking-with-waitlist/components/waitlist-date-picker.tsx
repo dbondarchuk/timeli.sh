@@ -318,7 +318,7 @@ export function WaitlistDatePicker({
                     />
                     <Label
                       htmlFor={slot}
-                      className="cursor-pointer text-sm font-normal flex-1"
+                      className="cursor-pointer font-normal flex-1"
                     >
                       {t(`block.times.${slot}`)}{" "}
                       <span className="text-xs text-muted-foreground">

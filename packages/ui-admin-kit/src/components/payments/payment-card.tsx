@@ -206,7 +206,7 @@ const RefundDialog = ({
             <h4 className="font-semibold mb-3">
               {t("admin.payment.card.refundDetails")}
             </h4>
-            <div className="space-y-2 text-sm">
+            <div className="space-y-2 text-xs">
               <div className="flex justify-between">
                 <span className="">
                   {t("admin.payment.card.paymentMethod")}
@@ -380,7 +380,7 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
               "appName" in rest ? rest.appName : undefined,
             )}
             <div>
-              <h3 className="font-semibold text-lg">
+              <h3 className="font-semibold text-base">
                 {t(
                   getPaymentMethod(
                     method,
@@ -388,7 +388,7 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
                   ),
                 )}
               </h3>
-              <p className="text-sm text-gray-600">
+              <p className="text-xs text-gray-600">
                 {t(`admin.payment.types.${payment.type}`)}
               </p>
             </div>
@@ -414,21 +414,21 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
               <span className="text-foreground/80">
                 {t("admin.payment.card.amount")}
               </span>
-              <span className="font-semibold text-lg text-right">
+              <span className="font-semibold text-base text-right">
                 ${formatAmountString(amount)}
               </span>
             </div>
 
             {fees && fees.length > 0 && (
               <>
-                <div className="flex justify-between items-center text-sm">
+                <div className="flex justify-between items-center text-xs">
                   <span className="text-foreground/80">
                     {t("admin.payment.card.fees")}
                   </span>
                 </div>
                 {fees.map((fee, index) => (
                   <div
-                    className="flex justify-between items-center text-sm pl-4"
+                    className="flex justify-between items-center text-xs pl-4"
                     key={fee.type + index + fee.amount}
                   >
                     <span className="text-foreground/80">
@@ -443,7 +443,7 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
             )}
 
             {"externalId" in rest && (
-              <div className="flex justify-between items-center text-sm">
+              <div className="flex justify-between items-center text-xs">
                 <span className="text-foreground/80">
                   {t("admin.payment.card.transactionId")}
                 </span>
@@ -454,7 +454,7 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
             )}
 
             {"customerName" in rest && rest.customerId && (
-              <div className="flex justify-between items-center text-sm">
+              <div className="flex justify-between items-center text-xs">
                 <span className="text-foreground/80">
                   {t("admin.payment.card.customerName")}
                 </span>
@@ -470,7 +470,7 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
             )}
 
             {"serviceName" in rest && rest.appointmentId && (
-              <div className="flex justify-between items-center text-sm">
+              <div className="flex justify-between items-center text-xs">
                 <span className="text-foreground/80">
                   {t("admin.payment.card.appointment")}
                 </span>
@@ -483,14 +483,14 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
               </div>
             )}
 
-            <div className="flex justify-between items-center text-sm">
+            <div className="flex justify-between items-center text-xs">
               <span className="text-foreground/80">
                 {t("admin.payment.card.timePaid")}
               </span>
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <span className="text-sm text-foreground/60 underline decoration-dashed cursor-help text-right">
+                    <span className="text-xs text-foreground/60 underline decoration-dashed cursor-help text-right">
                       {dateTime.setLocale(locale).toRelative()}
                     </span>
                   </TooltipTrigger>
@@ -504,7 +504,7 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
             </div>
 
             {description && (
-              <div className="flex justify-between items-center text-sm">
+              <div className="flex justify-between items-center text-xs">
                 <span className="text-foreground/80">
                   {t("admin.payment.card.description")}
                 </span>
@@ -518,14 +518,14 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
             )}
 
             {refundedDateTime?.isValid && (
-              <div className="flex justify-between items-center text-sm">
+              <div className="flex justify-between items-center text-xs">
                 <span className="text-foreground/80">
                   {t("admin.payment.card.timeRefunded")}
                 </span>
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <span className="text-sm text-foreground/60 underline decoration-dashed cursor-help text-right">
+                      <span className="text-xs text-foreground/60 underline decoration-dashed cursor-help text-right">
                         {refundedDateTime.setLocale(locale).toRelative()}
                       </span>
                     </TooltipTrigger>
@@ -541,14 +541,14 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
 
             {totalRefunded > 0 && (
               <>
-                <div className="flex justify-between items-center text-sm">
+                <div className="flex justify-between items-center text-xs">
                   <span className="text-foreground/80">
                     {t("admin.payment.card.refunded")}
                   </span>
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <span className="text-sm text-foreground/60 underline decoration-dashed cursor-help">
+                        <span className="text-xs text-foreground/60 underline decoration-dashed cursor-help">
                           -${formatAmountString(totalRefunded)}
                         </span>
                       </TooltipTrigger>
@@ -628,7 +628,7 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
         <Separator className="my-4" />
         <div className="flex justify-between items-center font-semibold">
           <span>{t("admin.payment.card.netAmount")}</span>
-          <span className="text-lg">
+          <span className="text-base">
             $
             {(
               amount -

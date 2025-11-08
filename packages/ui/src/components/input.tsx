@@ -15,8 +15,8 @@ export const inputVariants = cva(
       h: {
         lg: "h-10 px-4 py-2 text-base",
         md: "h-9 px-3 py-2 text-sm",
-        sm: "h-8 px-2 py-1.5 text-xs",
-        xs: "h-7 px-1.5 py-1 text-xs",
+        sm: "h-8 px-2 py-1.5 text-xs file:text-xs",
+        xs: "h-7 px-1.5 py-1 text-xs file:text-xs",
       },
       variant: {
         default:

@@ -225,7 +225,9 @@ export const columns: ColumnDef<Appointment>[] = [
   //   enableHiding: false,
   // },
   {
-    cell: ({ row }) => <StatusCell appointment={row.original} size={20} />,
+    cell: ({ row }) => (
+      <StatusCell appointment={row.original} className="size-4" />
+    ),
     id: "status",
     header: tableSortHeader(
       "appointments.table.columns.status",

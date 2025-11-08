@@ -29,8 +29,8 @@ export const InputGroupSuffixClasses = cva(
       h: {
         lg: "h-10",
         md: "h-9",
-        sm: "h-8",
-        xs: "h-7",
+        sm: "h-8 text-xs",
+        xs: "h-7 text-xs",
       },
     },
     defaultVariants: {

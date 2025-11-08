@@ -378,7 +378,7 @@ export function DateTimePicker({
         ) : (
           <div
             className={cn(
-              "flex w-full cursor-pointer items-center h-9 ps-3 pe-1 font-normal border border-input rounded-md text-sm shadow-sm",
+              "flex w-full cursor-pointer items-center h-8 ps-3 pe-1 font-normal border border-input rounded-md text-xs shadow-sm",
               !displayValue && "text-muted-foreground",
               (!clearable || !value) && "pe-3",
               disabled && "opacity-50 cursor-not-allowed",

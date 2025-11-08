@@ -6,6 +6,7 @@ import { ButtonSize, ButtonVariant, buttonVariants } from "./button";
 import { textVariants, TextVariants } from "./text";
 
 const linkVariants = {
+  none: "",
   default: "underline",
   underline: "underline",
   standalone: "no-underline",
@@ -13,9 +14,12 @@ const linkVariants = {
 };
 
 const linkSizes = {
+  none: "",
+  xs: "text-xs",
   sm: "text-sm",
-  md: "text-base",
+  md: "text-md",
   lg: "text-lg",
+  xl: "text-xl",
 };
 
 export const linkClasses = cva(
@@ -26,8 +30,8 @@ export const linkClasses = cva(
       size: linkSizes,
     },
     defaultVariants: {
-      variant: "default",
-      size: "sm",
+      variant: "none",
+      size: "none",
     },
   },
 );
