@@ -153,7 +153,7 @@ export function DataTableAsyncFilterBox({
     <Popover>
       <PopoverTrigger asChild>
         <Button variant="outline" className="border-dashed">
-          <PlusCircledIcon className="mr-2 h-4 w-4" />
+          <PlusCircledIcon className="mr-2 size-3.5" />
           {title}
           {selectedValuesSet.size > 0 && (
             <>

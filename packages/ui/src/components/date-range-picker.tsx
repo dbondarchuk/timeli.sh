@@ -54,7 +54,7 @@ export const CalendarDateRangePicker: React.FC<
               !date && "text-muted-foreground",
             )}
           >
-            <CalendarIcon className="mr-2 h-4 w-4" />
+            <CalendarIcon className="mr-2 size-3.5" />
             {date?.start ? (
               date.end ? (
                 <>
@@ -65,7 +65,7 @@ export const CalendarDateRangePicker: React.FC<
                 DateTime.fromJSDate(date.start).toFormat("LLL dd, y")
               )
             ) : (
-              <span className="text-sm text-muted-foreground">
+              <span className="text-xs text-muted-foreground">
                 {t("dateRangePicker.placeholder")}
               </span>
             )}
@@ -95,6 +95,7 @@ export const CalendarDateRangePicker: React.FC<
               from: date?.start,
               to: date?.end,
             }}
+            numberOfMonths={2}
             onSelect={(range) =>
               onSelect(
                 range

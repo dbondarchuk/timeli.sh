@@ -25,7 +25,10 @@ export const linkClasses = cva(
       variant: linkVariants,
       size: linkSizes,
     },
-    defaultVariants: {},
+    defaultVariants: {
+      variant: "default",
+      size: "sm",
+    },
   },
 );
 
