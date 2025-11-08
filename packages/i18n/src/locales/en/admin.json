@@ -228,8 +228,8 @@
     "new": {
       "title": "New appointment",
       "description": "Schedule a new appointment on behalf of the customer",
-      "waitlistEntry": "Wait list entry",
-      "waitlistEntryDescription": "Look up wait list entry information"
+      "waitlistEntry": "Waitlist entry",
+      "waitlistEntryDescription": "Look up waitlist entry information"
     },
     "edit": {
       "title": "Edit appointment",

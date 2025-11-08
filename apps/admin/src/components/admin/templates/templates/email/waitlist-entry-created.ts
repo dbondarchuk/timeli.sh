@@ -1,5 +1,5 @@
 export const waitlistEntryCreatedEmailTemplate = {
-  name: "New wait list entry email",
+  name: "New waitlist entry email",
   value: {
     type: "EmailLayout",
     id: "block-1740257042800",
@@ -54,7 +54,7 @@ export const waitlistEntryCreatedEmailTemplate = {
           id: "block-1740076839739",
           data: {
             props: {
-              text: "Thank you for joining the wait list!",
+              text: "Thank you for joining the waitlist!",
             },
             style: {
               textAlign: "center",
@@ -107,7 +107,7 @@ export const waitlistEntryCreatedEmailTemplate = {
                   align: "start",
                   children: [
                     {
-                      text: "We have received your request to join our wait list.",
+                      text: "We have received your request to join our waitlist.",
                       fontSize: "14px",
                     },
                   ],

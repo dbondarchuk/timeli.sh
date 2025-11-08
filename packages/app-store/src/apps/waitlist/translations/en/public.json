@@ -10,7 +10,7 @@
     "errors": {
       "submit": {
         "title": "Uh oh! Something went wrong.",
-        "description": "Something went wrong while we were trying to add you to the wait list. Please contact us"
+        "description": "Something went wrong while we were trying to add you to the waitlist. Please contact us"
       }
     },
     "loadingPlaceholder": "Please wait...",
@@ -26,8 +26,8 @@
       "title": "Your request has been received!",
       "message": "Thank you, {name}. Your request to join the waitlist for {service} has been received. We’ll contact you once a time slot opens up."
     },
-    "title": "Join our wait list",
-    "description": "Please provide your details to be added to the wait list",
+    "title": "Join our waitlist",
+    "description": "Please provide your details to be added to the waitlist",
     "times": {
       "label": "Time slots",
       "morning": "Morning",
@@ -67,7 +67,7 @@
       "required": "As soon as possible is required"
     },
     "calendar": {
-      "waitlistLink": "Do not see a time you like? Click <link>here</link> to join our wait list."
+      "waitlistLink": "Do not see a time you like? Click <link>here</link> to join our waitlist."
     }
   }
 }

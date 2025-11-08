@@ -45,13 +45,13 @@ Duration: {{#hours}}{{.}} hr {{/hours}}{{#minutes}}{{.}} min{{/minutes}}
 export const EnEmailTemplates: EmailTemplates = {
   newWaitlistEntry: {
     title:
-      "New wait list entry by {{waitlistEntry.name}} for {{waitlistEntry.option.name}}",
+      "New waitlist entry by {{waitlistEntry.name}} for {{waitlistEntry.option.name}}",
     text: getText(
-      "New wait list entry by {{waitlistEntry.name}} for {{waitlistEntry.option.name}}",
+      "New waitlist entry by {{waitlistEntry.name}} for {{waitlistEntry.option.name}}",
     ),
   },
   subject:
-    "New wait list entry by {{waitlistEntry.name}} for {{waitlistEntry.option.name}}",
+    "New waitlist entry by {{waitlistEntry.name}} for {{waitlistEntry.option.name}}",
   buttonTexts: {
     viewWaitlist: "View Wait List",
     createAppointment: "Create Appointment",

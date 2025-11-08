@@ -14,20 +14,20 @@
       },
       "notifyOnNewEntry": {
         "label": "Send yourself email on new entry",
-        "tooltip": "Send notification to yourself when a new entry is added to the wait list"
+        "tooltip": "Send notification to yourself when a new entry is added to the waitlist"
       },
       "notifyCustomerOnNewEntry": {
         "label": "Send customer email on new entry",
-        "tooltip": "Send notification to customer when a new entry is added to the wait list"
+        "tooltip": "Send notification to customer when a new entry is added to the waitlist"
       },
       "customerNewEntrySubject": {
         "label": "Customer new entry email subject",
-        "tooltip": "Subject of the email, that your customers will see when a new entry is added to the wait list",
+        "tooltip": "Subject of the email, that your customers will see when a new entry is added to the waitlist",
         "placeholder": "Email subject"
       },
       "customerNewEntryTemplateId": {
         "label": "Customer new entry email template",
-        "tooltip": "Template of the email, that your customers will see when a new entry is added to the wait list",
+        "tooltip": "Template of the email, that your customers will see when a new entry is added to the waitlist",
         "placeholder": "Template ID"
       }
     }

@@ -1,5 +1,5 @@
 {
-  "pageTitle": "Wait list (from app)",
+  "pageTitle": "Waitlist (from app)",
   "table": {
     "columns": {
       "status": "Status",
@@ -21,11 +21,11 @@
       "action": "Dismiss"
     },
     "toast": {
-      "waitlist_entry_dismissed": "Wait list entry dismissed successfully",
-      "error_deleting_waitlist_entry": "Error dismissing wait list entry",
-      "waitlist_entries_dismissed": "Wait list entries dismissed successfully",
-      "error_deleting_waitlist_entries": "Error dismissing wait list entries",
-      "error_loading_waitlist_entries": "Error loading wait list entries"
+      "waitlist_entry_dismissed": "Waitlist entry dismissed successfully",
+      "error_deleting_waitlist_entry": "Error dismissing waitlist entry",
+      "waitlist_entries_dismissed": "Waitlist entries dismissed successfully",
+      "error_deleting_waitlist_entries": "Error dismissing waitlist entries",
+      "error_loading_waitlist_entries": "Error loading waitlist entries"
     }
   },
   "statuses": {
@@ -57,21 +57,21 @@
   "settings": {
     "tooltip": "Settings",
     "title": "Settings",
-    "description": "Configure wait list notification settings"
+    "description": "Configure waitlist notification settings"
   },
   "tab": {
-    "title": "Wait list",
+    "title": "Waitlist",
     "noWaitlistEntries": "No waitlist entries",
     "caughtUp": "You've caught up on all requests. Good job!"
   },
   "app": {
-    "displayName": "Wait list",
-    "description": "Wait list helps you capture and manage customer demand when your schedule is full.\nEasily allow clients to join a waiting list for specific services, dates, or times",
+    "displayName": "Waitlist",
+    "description": "Waitlist helps you capture and manage customer demand when your schedule is full.\nEasily allow clients to join a waiting list for specific services, dates, or times",
     "pages": {
       "main": {
-        "label": "Wait list",
-        "title": "Wait list",
-        "description": "Manage wait list entries"
+        "label": "Waitlist",
+        "title": "Waitlist",
+        "description": "Manage waitlist entries"
       }
     }
   },
@@ -85,25 +85,25 @@
     }
   },
   "notifications": {
-    "newEntries": "New wait list entries",
-    "viewWaitlist": "View wait list",
-    "message": "You have {count, plural, =1 {one new wait list entry} other {# new wait list entries}}",
-    "newEntry": "New wait list request",
-    "newEntryMessage": "You have a new wait list request"
+    "newEntries": "New waitlist entries",
+    "viewWaitlist": "View waitlist",
+    "message": "You have {count, plural, =1 {one new waitlist entry} other {# new waitlist entries}}",
+    "newEntry": "New waitlist request",
+    "newEntryMessage": "You have a new waitlist request"
   },
   "handlers": {
     "newWaitlistEntry": "Waitlist Notification - New Entry"
   },
   "statusText": {
-    "successfully_set_up": "Successfully set up wait list",
-    "error_processing_configuration": "Error processing wait list configuration"
+    "successfully_set_up": "Successfully set up waitlist",
+    "error_processing_configuration": "Error processing waitlist configuration"
   },
   "block": {
     "waitlist": {
-      "displayName": "Wait list"
+      "displayName": "Waitlist"
     },
     "bookingWithWaitlist": {
-      "displayName": "Booking with wait list"
+      "displayName": "Booking with waitlist"
     },
     "shortcuts": {
       "gap": {
