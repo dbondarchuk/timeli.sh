@@ -1,10 +1,10 @@
 import * as z from "zod";
 
-export const zEmail = z.email("common.email.invalid");
+export const zEmail = z.email("validation.common.email.invalid");
 export const zPhone = z
-  .string("common.phone.required")
-  .min(1, "common.phone.required")
-  .refine((s) => !s?.includes("_"), "common.phone.invalid");
+  .string("validation.common.phone.required")
+  .min(1, "validation.common.phone.required")
+  .refine((s) => !s?.includes("_"), "validation.common.phone.invalid");
 
 export function zUniqueArray<ArrSchema extends z.ZodArray, UniqueVal>(
   schema: ArrSchema,

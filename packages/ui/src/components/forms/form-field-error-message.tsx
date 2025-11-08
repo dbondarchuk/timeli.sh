@@ -1,4 +1,4 @@
-import { TranslationKeys, useI18n } from "@timelish/i18n";
+import { AllKeys, TranslationKeys, useI18n } from "@timelish/i18n";
 import React from "react";
 import { cn } from "../../utils";
 import { useFormField } from "../form";
@@ -7,7 +7,8 @@ export const FormFieldErrorMessage = React.forwardRef<
   HTMLParagraphElement,
   Exclude<React.HTMLAttributes<HTMLParagraphElement>, "children">
 >(({ className, ...props }, ref) => {
-  const i18n = useI18n("translation");
+  const translationT = useI18n("translation");
+  const t = useI18n();
   const { error, formMessageId } = useFormField();
   const body = error?.message;
 
@@ -22,7 +23,11 @@ export const FormFieldErrorMessage = React.forwardRef<
       className={cn("text-sm font-medium text-destructive", className)}
       {...props}
     >
-      {i18n(body as TranslationKeys)}
+      {translationT.has(body as TranslationKeys)
+        ? translationT(body as TranslationKeys)
+        : t.has(body as AllKeys)
+          ? t(body as AllKeys)
+          : body}
     </p>
   );
 });

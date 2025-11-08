@@ -255,13 +255,14 @@ export const CalendarCard: React.FC = () => {
             )}
           </div>
         </div>
-        <div>
+        <div data-identifier="waitlist-link">
           {t.rich("block.calendar.waitlistLink", {
             link: (chunks: any) => (
               <Button
                 variant="link-underline"
                 className="px-0 text-base font-semibold inline-block"
                 onClick={() => setStep("waitlist-form")}
+                data-identifier="waitlist-link-button"
               >
                 {chunks}
               </Button>

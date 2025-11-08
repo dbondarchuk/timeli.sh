@@ -148,12 +148,18 @@ export const WaitlistFormCard: React.FC = () => {
                     field.onBlur();
                   }}
                   variant="outline"
-                  className="w-full"
+                  className="w-full max-sm:flex-col max-sm:gap-1"
                 >
-                  <ToggleGroupItem value="true" className="max-sm:text-xs">
+                  <ToggleGroupItem
+                    value="true"
+                    className="max-sm:text-xs max-sm:w-full max-sm:py-2 max-sm:!rounded-md max-sm:!border"
+                  >
                     {t("block.asSoonAsPossible.label")}
                   </ToggleGroupItem>
-                  <ToggleGroupItem value="false" className="max-sm:text-xs">
+                  <ToggleGroupItem
+                    value="false"
+                    className="max-sm:text-xs max-sm:w-full max-sm:py-2 max-sm:!rounded-md max-sm:!border"
+                  >
                     {t(
                       values.asSoonAsPossible
                         ? "block.dates.label"

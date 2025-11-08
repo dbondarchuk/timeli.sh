@@ -7,7 +7,6 @@ const config = getConfig(
   async (baseLocale: string | undefined) => {
     const headersList = await headers();
 
-    const isAdminPath = headersList.get("x-is-admin-path") === "true";
     const servicesContainer = await getServicesContainer();
 
     let locale =
@@ -17,18 +16,7 @@ const config = getConfig(
         .language ||
       "en";
 
-    const pathname = headersList.get("x-pathname");
-    if (pathname && !isAdminPath) {
-      const trimmedPathname = pathname.replace(/^\//, "");
-      const page =
-        await servicesContainer.pagesService.getPageBySlug(trimmedPathname);
-
-      if (page?.language) {
-        locale = page.language;
-      }
-    }
-
-    return { locale, includeAdmin: isAdminPath };
+    return { locale, includeAdmin: false };
   },
   async () => {
     const servicesContainer = await getServicesContainer();
@@ -39,8 +27,6 @@ const config = getConfig(
         ),
       ),
     );
-
-    const allApps = Object.keys(AppsTranslations);
 
     const messages = {
       public: async (locale: string) => {
@@ -55,16 +41,7 @@ const config = getConfig(
         return Object.fromEntries(entries);
       },
       admin: async (locale: string) => {
-        // Include all apps, not just installed apps to display in store / set up forms
-        const promises = allApps
-          .filter((app) => AppsTranslations[app]?.admin)
-          .map(async (app) => [
-            `app_${app}_admin`,
-            await AppsTranslations[app]?.admin?.(locale),
-          ]);
-
-        const entries = await Promise.all(promises);
-        return Object.fromEntries(entries);
+        return {};
       },
       overrides: async (locale: string) => {
         const promises = installedApps

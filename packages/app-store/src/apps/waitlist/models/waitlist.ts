@@ -21,19 +21,26 @@ export const waitlistTimeSchema = z.enum(waitlistTime, {
 });
 
 export const waitlistDateSchema = z.object({
-  date: z.iso.date("waitlist.date.required"),
+  date: z.iso.date(
+    "app_waitlist_public.block.date.required" satisfies WaitlistPublicAllKeys,
+  ),
   time: zUniqueArray(
     z.array(waitlistTimeSchema),
     (x) => x,
-    "waitlist.times.required",
+    "app_waitlist_public.block.times.required" satisfies WaitlistPublicAllKeys,
   ),
 });
 
 export type WaitlistDate = z.infer<typeof waitlistDateSchema>;
 
 export const waitlistRequestFormSchemaBase = z.object({
-  email: z.email({ error: "waitlist.email.required" }),
-  name: zNonEmptyString("waitlist.name.required"),
+  email: z.email({
+    error:
+      "app_waitlist_public.block.email.required" satisfies WaitlistPublicAllKeys,
+  }),
+  name: zNonEmptyString(
+    "app_waitlist_public.block.name.required" satisfies WaitlistPublicAllKeys,
+  ),
   phone: zPhone,
 });
 
