@@ -136,7 +136,7 @@ export const ResourceCard = ({
         dragging: isOverlay ? "overlay" : isDragging ? "over" : undefined,
       })}
     >
-      <CardHeader className="justify-between relative flex flex-row border-b-2 border-secondary px-3 py-3 w-full">
+      <CardHeader className="justify-between relative flex flex-row border-b px-3 py-3 w-full items-center">
         <Button
           type="button"
           variant={"ghost"}
@@ -161,13 +161,12 @@ export const ResourceCard = ({
             <AlertDialogTrigger asChild>
               <Button
                 disabled={disabled}
-                variant="destructive"
-                className=""
-                size="sm"
+                variant="ghost-destructive"
+                size="icon"
                 type="button"
                 title={t("resource.card.remove")}
               >
-                <Trash size={20} />
+                <Trash />
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>

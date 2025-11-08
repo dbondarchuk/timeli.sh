@@ -194,7 +194,7 @@ const CancellationSection: React.FC<TabProps> = ({ form, disabled }) => {
                 </FormItem>
               )}
             />
-            <h3 className="text-base font-semibold">
+            <h3 className="text-sm font-semibold">
               {t(
                 "settings.appointments.form.cancellationsAndReschedules.cancellationPolicy.default.title",
               )}{" "}
@@ -367,7 +367,7 @@ const RescheduleSection: React.FC<TabProps> = ({ form, disabled }) => {
                 </FormItem>
               )}
             />
-            <h3 className="text-base font-semibold">
+            <h3 className="text-sm font-semibold">
               {t(
                 "settings.appointments.form.cancellationsAndReschedules.cancellationPolicy.default.title",
               )}{" "}

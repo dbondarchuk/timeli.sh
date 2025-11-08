@@ -11,6 +11,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
+  BooleanSelect,
   Button,
   cn,
   FormControl,
@@ -19,7 +20,6 @@ import {
   FormLabel,
   FormMessage,
   InfoTooltip,
-  Switch,
 } from "@timelish/ui";
 import { FieldSelector } from "@timelish/ui-admin";
 import { cva } from "class-variance-authority";
@@ -95,7 +95,7 @@ export const FieldSelectCard: React.FC<FieldSelectProps> = ({
   return (
     <div
       className={cn(
-        "flex flex-row gap-2 px-2 py-4 bg-background rounded",
+        "flex flex-row gap-2 px-2 py-4 border rounded",
         variants({
           dragging: isOverlay ? "overlay" : isDragging ? "over" : undefined,
         }),
@@ -105,7 +105,7 @@ export const FieldSelectCard: React.FC<FieldSelectProps> = ({
     >
       <Button
         type="button"
-        variant={"ghost"}
+        variant="ghost"
         {...attributes}
         {...listeners}
         className="h-auto cursor-grab p-1 text-secondary-foreground/50"
@@ -149,28 +149,29 @@ export const FieldSelectCard: React.FC<FieldSelectProps> = ({
                 </InfoTooltip>
               </FormLabel>
               <FormControl>
-                <div className="!mt-4">
-                  <Switch
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                </div>
+                <BooleanSelect
+                  value={field.value ?? false}
+                  onValueChange={(value) => {
+                    field.onChange(value);
+                    field.onBlur();
+                  }}
+                  className="w-full"
+                />
               </FormControl>
             </FormItem>
           )}
         />
       </div>
-      <div className="flex flex-row items-center">
+      <div className="flex flex-row items-start">
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button
               disabled={disabled}
-              variant="destructive"
-              className=""
-              size="sm"
+              variant="ghost-destructive"
+              size="icon"
               type="button"
             >
-              <Trash size={20} />
+              <Trash />
             </Button>
           </AlertDialogTrigger>
           <AlertDialogContent>

@@ -10,12 +10,16 @@ const buttonVariants = {
     // "border border-primary bg-background text-primary hover:bg-primary hover:text-primary-foreground ",
     "bg-primary text-primary-foreground hover:bg-primary/90",
   default: "bg-primary text-primary-foreground hover:bg-primary/90",
+  brand:
+    "relative bg-gradient-primary dark:bg-gradient-dark text-primary-foreground z-[1] before:absolute before:inset-0 before:bg-background before:z-[-1] before:rounded-md before:opacity-0 hover:before:opacity-100 before:transition-all before:duration-300 before:rounded-md before:bg-gradient-dark before:dark:bg-gradient-accent",
   destructive:
     "bg-destructive text-destructive-foreground hover:bg-destructive/90",
   outline:
     "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
   secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
   ghost: "hover:bg-accent hover:text-accent-foreground",
+  "ghost-destructive":
+    "text-destructive hover:bg-destructive hover:text-destructive-foreground",
   link: "text-primary underline-offset-4 hover:underline",
   "link-underline": "text-primary underline-offset-4 underline",
   "link-dashed": "text-primary underline-offset-4 underline decoration-dashed",
@@ -23,12 +27,13 @@ const buttonVariants = {
 
 export const buttonSizes = {
   none: "",
-  default: "h-9 px-4 py-2",
+  // default: "h-9 px-4 py-2",
+  default: "h-8 rounded-md px-3 text-xs",
   xs: "h-7 rounded-md px-3 text-xs [&>svg]:size-3",
   sm: "h-8 rounded-md px-3 text-xs",
   md: "h-9 rounded-md px-5",
   lg: "h-10 rounded-md px-8",
-  icon: "h-9 w-9",
+  icon: "h-8 w-8",
 };
 
 const buttonClasses = cva(

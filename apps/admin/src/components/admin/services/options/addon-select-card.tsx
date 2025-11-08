@@ -91,7 +91,7 @@ export const AddonSelectCard: React.FC<AddonSelectProps> = ({
   return (
     <div
       className={cn(
-        "flex flex-row gap-2 px-2 py-4 bg-background rounded",
+        "flex flex-row gap-2 px-2 py-4 border rounded",
         variants({
           dragging: isOverlay ? "overlay" : isDragging ? "over" : undefined,
         }),
@@ -134,17 +134,16 @@ export const AddonSelectCard: React.FC<AddonSelectProps> = ({
           )}
         />
       </div>
-      <div className="flex flex-row items-center">
+      <div className="flex flex-row items-start">
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button
               disabled={disabled}
-              variant="destructive"
-              className=""
-              size="sm"
+              variant="ghost-destructive"
+              size="icon"
               type="button"
             >
-              <Trash size={20} />
+              <Trash />
             </Button>
           </AlertDialogTrigger>
           <AlertDialogContent>

@@ -44,7 +44,8 @@ export const toolbarButtonVariants = cva(
     },
     variants: {
       size: {
-        default: "h-9 px-3",
+        // default: "h-9 px-3",//
+        default: "h-8 rounded-md px-3",
         lg: "h-10 px-5",
         sm: "h-7 px-2",
       },

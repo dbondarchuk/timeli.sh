@@ -1734,7 +1734,7 @@
       "fixErrors": "Будь ласка, виправте помилки у формі встановлення."
     },
     "layout": {
-      "title": "VIVID CMS - Встановлення",
+      "title": "Timeli.sh - Встановлення",
       "description": "Встановлення timelish"
     }
   },
@@ -1806,7 +1806,8 @@
     "sign_up_error": "Виникла проблема з вашим запитом.",
     "email_or_password_incorrect": "Email або пароль неправильний",
     "signIn": "Увійти",
-    "sign_in_sign_up_link": "Немає облікового запису? <link>Зареєструватися</link> зараз!",
+    "sign_in_sign_up_link": "Немає облікового запису? <link>Зареєструйтеся</link> зараз!",
+    "sign_up_sign_in_link": "Вже маєте обліковий запис? <link>Увійдіть</link> зараз!",
     "signInDescription": "Введіть ваш email нижче, щоб увійти в ваш обліковий запис",
     "quote": "Я люблю це!",
     "quoteAuthor": "Олеся Бондарчук",

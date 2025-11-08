@@ -24,7 +24,7 @@ const playfair = Playfair_Display({
 export const metadata: Metadata = {
   title: {
     default: "Dashboard",
-    template: "%s | VIVID CMS",
+    template: "%s | Timeli.sh",
   },
   icons: {
     icon: "/icon.ico",

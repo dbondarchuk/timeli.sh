@@ -320,7 +320,8 @@ export const DurationInput: React.FC<DurationInputProps> = ({
       ? t("durationInput.min")
       : t("durationInput.sec");
 
-  const size = rest.h ? sizes[rest.h] : sizes.md;
+  // const size = rest.h ? sizes[rest.h] : sizes.md;
+  const size = rest.h ? sizes[rest.h] : sizes.sm;
 
   return (
     <div className="flex items-center bg-background border rounded-md focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-background">

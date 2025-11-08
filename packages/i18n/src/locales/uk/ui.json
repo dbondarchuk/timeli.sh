@@ -80,7 +80,18 @@
     "select": "Вибрати"
   },
   "dateRangePicker": {
-    "placeholder": "Вибрати діапазон дат"
+    "placeholder": "Вибрати діапазон дат",
+    "rangeOptions": {
+      "thisMonth": "Цей місяць",
+      "lastMonth": "Минулий місяць",
+      "thisWeek": "Цей тиждень",
+      "lastWeek": "Минулий тиждень",
+      "nextWeek": "Наступний тиждень",
+      "nextMonth": "Наступний місяць",
+      "thisYear": "Цей рік",
+      "lastYear": "Минулий рік",
+      "allTime": "За весь час"
+    }
   },
   "dialog": {
     "close": "Закрити"

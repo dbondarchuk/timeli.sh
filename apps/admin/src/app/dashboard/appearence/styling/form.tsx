@@ -264,7 +264,7 @@ export const StylingsConfigurationForm: React.FC<{
 
                 return (
                   <Card key={color.fields_id}>
-                    <CardHeader className="justify-between relative flex flex-row items-center border-b-2 border-secondary px-3 py-3 w-full">
+                    <CardHeader className="justify-between relative flex flex-row items-center border-b px-3 py-3 w-full">
                       <div className="hidden md:block">&nbsp;</div>
                       <div
                         className={cn(
@@ -285,13 +285,12 @@ export const StylingsConfigurationForm: React.FC<{
                           <AlertDialogTrigger asChild>
                             <Button
                               disabled={loading}
-                              variant="destructive"
-                              className=""
-                              size="sm"
+                              variant="ghost-destructive"
+                              size="icon"
                               type="button"
                               title={t("appearance.styling.form.remove")}
                             >
-                              <Trash size={20} />
+                              <Trash />
                             </Button>
                           </AlertDialogTrigger>
                           <AlertDialogContent>

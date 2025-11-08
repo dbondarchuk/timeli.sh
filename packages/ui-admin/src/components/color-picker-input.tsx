@@ -48,7 +48,7 @@ export const ColorPickerInput: React.FC<ColorPickerInputProps> = ({
       <div
         className={cn(
           InputGroupSuffixClasses({ variant: "prefix" }),
-          "w-9 h-9",
+          "size-8",
           "transition-colors",
         )}
         style={{ backgroundColor: value }}

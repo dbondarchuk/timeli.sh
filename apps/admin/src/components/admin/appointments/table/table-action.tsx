@@ -56,6 +56,12 @@ export const AppointmentsTableAction: React.FC<{
         setFilterValue={setStatusFilter as any}
         filterValue={statusFilter}
       />
+      <DataTableRangeBox
+        startValue={start}
+        endValue={end}
+        setStartValue={setStartValue}
+        setEndValue={setEndValue}
+      />
       {showCustomerFilter && (
         <CustomersDataTableAsyncFilterBox
           filterValue={customerFilter}
@@ -65,12 +71,6 @@ export const AppointmentsTableAction: React.FC<{
       <DiscountsDataTableAsyncFilterBox
         filterValue={discountFilter}
         setFilterValue={setDiscountFilter}
-      />
-      <DataTableRangeBox
-        startValue={start}
-        endValue={end}
-        setStartValue={setStartValue}
-        setEndValue={setEndValue}
       />
     </>
   );

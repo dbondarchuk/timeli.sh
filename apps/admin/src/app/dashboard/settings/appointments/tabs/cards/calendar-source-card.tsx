@@ -60,7 +60,7 @@ export const CalendarSourceCard: React.FC<CalendarSourceCardProps> = ({
   const appDisplayName = appName ? AvailableApps[appName].displayName : null;
 
   return (
-    <div className="flex flex-row gap-2 px-2 py-4 bg-card rounded w-full">
+    <div className="flex flex-row gap-2 px-2 py-4 bg-card border rounded w-full">
       <div className="grid grid-cols-1 gap-2 w-full relative">
         <FormField
           control={form.control}
@@ -95,20 +95,19 @@ export const CalendarSourceCard: React.FC<CalendarSourceCardProps> = ({
           )}
         />
       </div>
-      <div className="flex flex-row items-center">
+      <div className="flex flex-row items-start">
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button
               disabled={disabled}
-              variant="destructive"
-              className=""
-              size="sm"
+              variant="ghost-destructive"
+              size="icon"
               type="button"
               title={t(
                 "settings.appointments.form.cards.calendarSource.remove",
               )}
             >
-              <Trash size={20} />
+              <Trash />
             </Button>
           </AlertDialogTrigger>
           <AlertDialogContent>

@@ -64,7 +64,7 @@ export const UserAuthForm = () => {
   };
 
   return (
-    <>
+    <div className="w-full flex flex-col gap-4">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -117,22 +117,22 @@ export const UserAuthForm = () => {
           <Button disabled={loading} className="ml-auto w-full" type="submit">
             {t("auth.signIn")}
           </Button>
-
-          <div className="text-center w-full mt-4">
-            {t.rich("auth.sign_in_sign_up_link", {
-              link: (chunks: any) => (
-                <Link
-                  href="/auth/signup"
-                  className="ml-auto w-full"
-                  variant="underline"
-                >
-                  {chunks}
-                </Link>
-              ),
-            })}
-          </div>
         </form>
       </Form>
-    </>
+
+      <div className="text-center w-full text-sm">
+        {t.rich("auth.sign_in_sign_up_link", {
+          link: (chunks: any) => (
+            <Link
+              href="/auth/signup"
+              className="ml-auto w-full"
+              variant="underline"
+            >
+              {chunks}
+            </Link>
+          ),
+        })}
+      </div>
+    </div>
   );
 };

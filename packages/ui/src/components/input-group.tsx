@@ -35,7 +35,7 @@ export const InputGroupSuffixClasses = cva(
     },
     defaultVariants: {
       variant: "suffix",
-      h: "md",
+      h: "sm",
     },
   },
 );

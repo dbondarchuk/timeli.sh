@@ -549,7 +549,7 @@ export const AppointmentScheduleForm: React.FC<
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="flex flex-col gap-4 w-full">
           <div className="flex flex-col md:grid md:grid-cols-2 gap-2">
-            <div className="w-full space-y-8 relative px-1 content-start">
+            <div className="w-full space-y-4 relative px-1 content-start">
               <FormField
                 control={form.control}
                 name="option"

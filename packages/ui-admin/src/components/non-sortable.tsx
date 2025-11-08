@@ -36,12 +36,12 @@ export function NonSortable({
   className,
 }: NonSortableProps) {
   const variants = cva(
-    "h-fit max-h-[75vh] max-w-full bg-secondary flex flex-col flex-shrink-0 snap-center w-full",
+    "h-fit max-h-[75vh] max-w-full bg-card flex flex-col flex-shrink-0 snap-center w-full",
   );
 
   return (
     <Card className={variants({ className })}>
-      <CardHeader className="justify-between flex flex-row items-center border-b-2 p-4 text-left font-semibold space-y-0">
+      <CardHeader className="justify-between flex flex-row items-center border-b p-4 text-left font-semibold space-y-0">
         <div className="hidden md:block">&nbsp;</div>
         {title}
         <div className="flex flex-row gap-2 items-center">
@@ -49,21 +49,23 @@ export function NonSortable({
             <Button
               type="button"
               disabled={disabled}
-              variant="outline"
+              variant="ghost"
+              size="icon"
               onClick={collapse}
               aria-label={allCollapsed ? "Expand all" : "Collapse all"}
             >
-              <ChevronsUpDown size={20} />
+              <ChevronsUpDown />
             </Button>
           )}
           <Button
             type="button"
             disabled={disabled || disabledAdd}
-            variant="outline"
+            variant="ghost"
+            size="icon"
             onClick={onAdd}
             aria-label="Add a new item"
           >
-            <Plus size={20} />
+            <Plus />
           </Button>
         </div>
       </CardHeader>

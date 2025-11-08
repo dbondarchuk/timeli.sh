@@ -1734,7 +1734,7 @@
       "fixErrors": "Please fix errors in installation form."
     },
     "layout": {
-      "title": "VIVID CMS - Install",
+      "title": "Timeli.sh - Install",
       "description": "Installation of timelish"
     }
   },
@@ -1804,6 +1804,7 @@
     "email_or_password_incorrect": "Email or password is incorrect",
     "signIn": "Sign in",
     "sign_in_sign_up_link": "Don't have an account? <link>Sign up</link> now!",
+    "sign_up_sign_in_link": "Already have an account? <link>Sign in</link> now!",
     "signInDescription": "Enter your email below to sign into your account",
     "signUp": "Sign up",
     "signUpDescription": "Create an account to get started",

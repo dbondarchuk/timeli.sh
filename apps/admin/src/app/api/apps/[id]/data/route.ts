@@ -44,7 +44,7 @@ export async function GET(
       "App data retrieved",
     );
 
-    return NextResponse.json(appData);
+    return NextResponse.json(appData ?? null);
   } catch (error: any) {
     logger.error(
       {

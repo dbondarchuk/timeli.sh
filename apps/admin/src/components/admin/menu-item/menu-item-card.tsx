@@ -126,7 +126,7 @@ export function MenuItemCard({
         dragging: isOverlay ? "overlay" : isDragging ? "over" : undefined,
       })}
     >
-      <CardHeader className="justify-between relative flex flex-row border-b-2 border-secondary px-3 py-3 w-full">
+      <CardHeader className="justify-between relative flex flex-row border-b px-3 py-3 w-full items-center">
         <Button
           type="button"
           variant={"ghost"}
@@ -144,13 +144,12 @@ export function MenuItemCard({
         </span>
         <Button
           disabled={disabled}
-          variant="destructive"
-          className=""
+          variant="ghost-destructive"
           onClick={remove}
-          size="sm"
+          size="icon"
           type="button"
         >
-          <Trash size={20} />
+          <Trash />
         </Button>
       </CardHeader>
       <CardContent className="px-3 pb-6 pt-3 text-left relative flex flex-col gap-4">

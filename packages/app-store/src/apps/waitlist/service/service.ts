@@ -378,6 +378,7 @@ export class WaitlistConnectedApp
         appData._id,
         appData.companyId,
       );
+
       const result = await repositoryService.getWaitlistEntries(data.query);
       logger.debug(
         { appId: appData._id },

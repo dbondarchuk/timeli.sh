@@ -192,7 +192,7 @@ export const ReschedulePolicyCard: React.FC<
   const t = useI18n("admin");
 
   return (
-    <div className="flex flex-row gap-2 px-2 py-4 bg-card rounded w-full">
+    <div className="flex flex-row gap-2 px-2 py-4 bg-card border rounded w-full">
       <div className="grid grid-cols-1 gap-2 w-full relative">
         <ReschedulePolicyCardContent
           form={form}
@@ -201,20 +201,19 @@ export const ReschedulePolicyCard: React.FC<
           index={index}
         />
       </div>
-      <div className="flex flex-row items-center">
+      <div className="flex flex-row items-start">
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button
               disabled={disabled}
-              variant="destructive"
-              className=""
-              size="sm"
+              variant="ghost-destructive"
+              size="icon"
               type="button"
               title={t(
                 "settings.appointments.form.cards.reschedulePolicy.remove",
               )}
             >
-              <Trash size={20} />
+              <Trash />
             </Button>
           </AlertDialogTrigger>
           <AlertDialogContent>

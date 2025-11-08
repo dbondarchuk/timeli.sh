@@ -41,7 +41,7 @@ const tagInputVariant = cva(
       },
     },
     defaultVariants: {
-      h: "md",
+      h: "sm",
     },
   },
 );

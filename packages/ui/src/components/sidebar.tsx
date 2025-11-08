@@ -502,7 +502,7 @@ const SidebarGroupContent = React.forwardRef<
   <div
     ref={ref}
     data-sidebar="group-content"
-    className={cn("w-full text-sm", className)}
+    className={cn("w-full text-xs", className)}
     {...props}
   />
 ));
@@ -569,7 +569,7 @@ const SidebarMenuButton = React.forwardRef<
       asChild = false,
       isActive = false,
       variant = "default",
-      size = "default",
+      size = "sm",
       tooltip,
       className,
       ...props

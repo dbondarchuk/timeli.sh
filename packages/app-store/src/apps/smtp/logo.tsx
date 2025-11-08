@@ -5,6 +5,7 @@ export const SmtpLogo: React.FC<React.HTMLAttributes<SVGElement>> = (props) => (
     width="24"
     height="24"
     viewBox="0 0 24 24"
+    {...props}
   >
     <defs>
       <clipPath id="clip1">

@@ -73,7 +73,7 @@ const DiscountLimitCard: React.FC<{
   });
 
   return (
-    <div className="flex flex-col gap-4 md:items-center md:grid md:grid-cols-[minmax(0,_1fr),50px,minmax(0,_1fr),50px] bg-card px-2 py-4 rounded">
+    <div className="flex flex-col gap-4 md:items-center md:grid md:grid-cols-[minmax(0,_1fr),50px,minmax(0,_1fr),50px] bg-card px-2 py-4 border rounded">
       <div className="flex flex-col gap-4">
         <Label>{t("services.discounts.form.optionsLabel")}</Label>
         {(options.fields || []).map((option, optionsIndex) => (
@@ -99,7 +99,7 @@ const DiscountLimitCard: React.FC<{
                     />
                     <InputSuffix>
                       <Button
-                        variant="secondary"
+                        variant="ghost-destructive"
                         size="icon"
                         className={cn(InputGroupSuffixClasses(), "px-2")}
                         onClick={() => options.remove(optionsIndex)}
@@ -137,26 +137,35 @@ const DiscountLimitCard: React.FC<{
               <FormItem>
                 <FormControl>
                   <div className="flex flex-row gap-2">
-                    <AddonSelector
-                      multi
-                      // className={cn(
-                      //   InputGroupInputClasses(),
-                      //   "[&>button]:rounded-r-none [&>button]:border-r-0  w-full flex-1"
-                      // )}
-                      onItemSelect={(ids) => {
-                        field.onChange({ ids: ids.map((id) => ({ id })) });
-                        field.onBlur();
-                      }}
-                      value={field.value?.ids?.map((v) => v.id) ?? []}
-                      disabled={disabled}
-                    />
-                    <Button
-                      variant="secondary"
-                      size="icon"
-                      onClick={() => addons.remove(addonsIndex)}
-                    >
-                      <Trash />
-                    </Button>
+                    <InputGroup className="w-full">
+                      <AddonSelector
+                        multi
+                        // className={cn(
+                        //   InputGroupInputClasses(),
+                        //   "[&>button]:rounded-r-none [&>button]:border-r-0  w-full flex-1"
+                        // )}
+                        onItemSelect={(ids) => {
+                          field.onChange({ ids: ids.map((id) => ({ id })) });
+                          field.onBlur();
+                        }}
+                        value={field.value?.ids?.map((v) => v.id) ?? []}
+                        disabled={disabled}
+                        className={cn(
+                          InputGroupInputClasses(),
+                          "[&>button]:rounded-r-none [&>button]:border-r-0  w-full flex-1",
+                        )}
+                      />
+                      <InputSuffix>
+                        <Button
+                          variant="ghost-destructive"
+                          size="icon"
+                          onClick={() => addons.remove(addonsIndex)}
+                          className={cn(InputGroupSuffixClasses(), "px-2")}
+                        >
+                          <Trash />
+                        </Button>
+                      </InputSuffix>
+                    </InputGroup>
                   </div>
                 </FormControl>
                 <FormMessage />
@@ -179,12 +188,13 @@ const DiscountLimitCard: React.FC<{
         <AlertDialogTrigger asChild>
           <Button
             disabled={disabled}
-            variant="destructive"
-            className="[&>svg]:size-6"
+            variant="ghost-destructive"
+            size="icon"
+            className="self-start"
             type="button"
             title={t("services.discounts.form.removeLimit")}
           >
-            <Trash size={20} />
+            <Trash />
           </Button>
         </AlertDialogTrigger>
         <AlertDialogContent>
@@ -638,7 +648,7 @@ export const DiscountForm: React.FC<{
                               />
                               <InputSuffix>
                                 <Button
-                                  variant="secondary"
+                                  variant="ghost-destructive"
                                   size="icon"
                                   className={cn(
                                     InputGroupSuffixClasses(),

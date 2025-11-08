@@ -1,5 +1,6 @@
 import { getServicesContainer } from "@/app/utils";
 import { getLoggerFactory } from "@timelish/logger";
+import { parseJSON } from "@timelish/utils";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(
@@ -9,7 +10,8 @@ export async function POST(
   const logger = getLoggerFactory("AdminAPI/apps/[id]/process")("POST");
   const servicesContainer = await getServicesContainer();
   const { id } = await params;
-  const body = await request.json();
+
+  const body = parseJSON((await request.text()) ?? "");
 
   logger.debug(
     {

@@ -16,7 +16,10 @@ type JsonParseOptions = {
   reviver?: (key: string, value: any) => any;
 };
 
-function parseJSON<T = any>(text: string, options?: JsonParseOptions): T {
+export function parseJSON<T = any>(
+  text: string,
+  options?: JsonParseOptions,
+): T {
   const isoDateRegex =
     /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/;
 

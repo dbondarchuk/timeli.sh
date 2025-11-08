@@ -197,15 +197,15 @@ export const AssetSelectorDialog: React.FC<AssetSelectorProps> = ({
       onClose={onClose}
       className="sm:max-w-[80%]"
     >
+      <div className="w-full mb-4">
+        <Input
+          placeholder={t("common.search")}
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      </div>
       <ScrollArea className="w-full h-[80vh]">
         <div className="flex flex-col gap-4">
-          <div className="w-full">
-            <Input
-              placeholder={t("common.search")}
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
           <div className="w-full flex flex-col gap-2 relative">
             <DndFileInput
               value={fileToUpload}

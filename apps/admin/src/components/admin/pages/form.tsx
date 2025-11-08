@@ -354,7 +354,7 @@ export const PageForm: React.FC<{
       <div className="flex flex-1 flex-col gap-4">
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
-          <div className="flex flex-col-reverse md:flex-row md:items-center justify-between gap-4">
+          <div className="flex flex-col-reverse md:flex-row md:items-start justify-between gap-4">
             {/* <Heading title={t("pages.edit")} description={`/${slug}`} /> */}
             <div className="flex flex-col gap-2 w-full">
               <FormField

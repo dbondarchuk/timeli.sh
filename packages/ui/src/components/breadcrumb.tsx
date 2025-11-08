@@ -20,7 +20,7 @@ const BreadcrumbList = React.forwardRef<
   <ol
     ref={ref}
     className={cn(
-      "flex flex-wrap items-center gap-1.5 break-words text-sm text-muted-foreground sm:gap-2.5",
+      "flex flex-wrap items-center gap-1.5 break-words text-xs text-muted-foreground sm:gap-2.5",
       className,
     )}
     {...props}
@@ -81,7 +81,7 @@ const BreadcrumbSeparator = ({
   <li
     role="presentation"
     aria-hidden="true"
-    className={cn("[&>svg]:size-3.5", className)}
+    className={cn("[&>svg]:size-3", className)}
     {...props}
   >
     {children ?? <ChevronRightIcon />}
@@ -99,10 +99,10 @@ const BreadcrumbEllipsis = ({
     <span
       role="presentation"
       aria-hidden="true"
-      className={cn("flex h-9 w-9 items-center justify-center", className)}
+      className={cn("flex h-8 w-8 items-center justify-center", className)}
       {...props}
     >
-      <DotsHorizontalIcon className="h-4 w-4" />
+      <DotsHorizontalIcon className="size-3.5" />
       <span className="sr-only">{t("breadcrumb.more")}</span>
     </span>
   );

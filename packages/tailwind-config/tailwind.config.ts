@@ -89,6 +89,14 @@ const config = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      backgroundImage: {
+        "gradient-primary":
+          "linear-gradient(135deg, hsl(223, 84%, 60%) 0%, hsl(215, 83%, 70%) 100%)",
+        "gradient-accent":
+          "linear-gradient(135deg, hsl(215, 83%, 70%) 0%, hsl(223, 84%, 60%) 100%)",
+        "gradient-dark":
+          "linear-gradient(145deg, hsl(222, 47%, 12%) 0%, hsl(223, 84%, 40%) 100%)",
+      },
       keyframes: {
         "accordion-down": {
           from: {

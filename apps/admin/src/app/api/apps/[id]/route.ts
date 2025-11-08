@@ -30,7 +30,7 @@ export async function GET(
       "Successfully retrieved app",
     );
 
-    return NextResponse.json(app);
+    return NextResponse.json(app ?? null);
   } catch (error: any) {
     logger.error(
       {

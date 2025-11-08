@@ -16,6 +16,7 @@ import {
   InputGroupInputClasses,
   InputGroupSuffixClasses,
   InputSuffix,
+  Link,
   useDebounceCacheFn,
 } from "@timelish/ui";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -130,137 +131,155 @@ export const UserSignupForm = ({ publicDomain }: { publicDomain: string }) => {
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-2">
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t("auth.email")}</FormLabel>
-              <FormControl>
-                <Input
-                  type="email"
-                  placeholder={t("auth.email")}
-                  disabled={loading}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+    <div className="w-full flex flex-col gap-4">
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="w-full space-y-2"
+        >
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("auth.email")}</FormLabel>
+                <FormControl>
+                  <Input
+                    type="email"
+                    placeholder={t("auth.email")}
+                    disabled={loading}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("auth.password")}</FormLabel>
+                <FormControl>
+                  <Input
+                    type="password"
+                    placeholder={t("auth.password")}
+                    disabled={loading}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="confirmPassword"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("auth.confirmPassword")}</FormLabel>
+                <FormControl>
+                  <Input
+                    type="password"
+                    placeholder={t("auth.password")}
+                    disabled={loading}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("auth.name")}</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder={t("auth.name")}
+                    disabled={loading}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="organizationName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("auth.organizationName")}</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder={t("auth.organizationName")}
+                    disabled={loading}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="organizationSlug"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("auth.organizationSlug")}</FormLabel>
+                <FormControl>
+                  <InputGroup>
+                    <InputGroupInput>
+                      <Input
+                        placeholder={t("auth.organizationSlug")}
+                        disabled={loading}
+                        className={InputGroupInputClasses()}
+                        {...field}
+                      />
+                    </InputGroupInput>
+                    <InputSuffix className={InputGroupSuffixClasses()}>
+                      .{publicDomain}
+                    </InputSuffix>
+                  </InputGroup>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {error && (
+            <p className="text-sm font-medium text-destructive">
+              {t("auth.sign_up_error")}
+            </p>
           )}
-        />
 
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t("auth.password")}</FormLabel>
-              <FormControl>
-                <Input
-                  type="password"
-                  placeholder={t("auth.password")}
-                  disabled={loading}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="confirmPassword"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t("auth.confirmPassword")}</FormLabel>
-              <FormControl>
-                <Input
-                  type="password"
-                  placeholder={t("auth.password")}
-                  disabled={loading}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t("auth.name")}</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder={t("auth.name")}
-                  disabled={loading}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="organizationName"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t("auth.organizationName")}</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder={t("auth.organizationName")}
-                  disabled={loading}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="organizationSlug"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t("auth.organizationSlug")}</FormLabel>
-              <FormControl>
-                <InputGroup>
-                  <InputGroupInput>
-                    <Input
-                      placeholder={t("auth.organizationSlug")}
-                      disabled={loading}
-                      className={InputGroupInputClasses()}
-                      {...field}
-                    />
-                  </InputGroupInput>
-                  <InputSuffix className={InputGroupSuffixClasses()}>
-                    .{publicDomain}
-                  </InputSuffix>
-                </InputGroup>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {error && (
-          <p className="text-sm font-medium text-destructive">
-            {t("auth.sign_up_error")}
-          </p>
-        )}
-
-        <Button disabled={loading} className="ml-auto w-full" type="submit">
-          {t("auth.signUp")}
-        </Button>
-      </form>
-    </Form>
+          <Button disabled={loading} className="ml-auto w-full" type="submit">
+            {t("auth.signUp")}
+          </Button>
+        </form>
+      </Form>
+      <div className="text-center w-full text-sm">
+        {t.rich("auth.sign_up_sign_in_link", {
+          link: (chunks: any) => (
+            <Link
+              href="/auth/signin"
+              className="ml-auto w-full"
+              variant="underline"
+            >
+              {chunks}
+            </Link>
+          ),
+        })}
+      </div>
+    </div>
   );
 };

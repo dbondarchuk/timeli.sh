@@ -80,7 +80,18 @@
     "select": "Select"
   },
   "dateRangePicker": {
-    "placeholder": "Select date range"
+    "placeholder": "Select date range",
+    "rangeOptions": {
+      "thisMonth": "This Month",
+      "lastMonth": "Last Month",
+      "thisWeek": "This Week",
+      "lastWeek": "Last Week",
+      "nextWeek": "Next Week",
+      "nextMonth": "Next Month",
+      "thisYear": "This Year",
+      "lastYear": "Last Year",
+      "allTime": "All Time"
+    }
   },
   "dialog": {
     "close": "Close"

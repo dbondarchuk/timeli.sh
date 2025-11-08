@@ -20,7 +20,7 @@ import {
 const AppShortLabel: React.FC<{ app: ConnectedApp }> = ({ app }) => {
   return (
     <span className="flex flex-row items-center gap-2 shrink overflow-hidden text-nowrap min-w-0 max-w-[var(--radix-popover-trigger-width)]">
-      <ConnectedAppNameAndLogo appName={app.name} logoClassName="w-4 h-4" />
+      <ConnectedAppNameAndLogo appName={app.name} logoClassName="size-3.5" />
       <ConnectedAppAccount account={app.account} />
     </span>
   );

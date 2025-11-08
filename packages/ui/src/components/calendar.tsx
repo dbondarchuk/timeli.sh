@@ -6,6 +6,7 @@ import { DayPicker, DropdownProps } from "react-day-picker";
 
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { useLocale } from "@timelish/i18n";
+import { DateTime } from "luxon";
 import { useIsMobile } from "../hooks";
 import { cn } from "../utils";
 import { buttonVariants } from "./button";
@@ -18,6 +19,7 @@ import {
 } from "./select";
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
+const endMonth = DateTime.now().plus({ years: 10 }).toJSDate();
 
 function Calendar({
   className,
@@ -74,8 +76,9 @@ function Calendar({
         hidden: "invisible",
         ...classNames,
       }}
-      numberOfMonths={isMobile ? 1 : props.numberOfMonths}
+      endMonth={endMonth}
       {...props}
+      numberOfMonths={isMobile ? 1 : props.numberOfMonths}
       components={{
         Dropdown: ({ value, onChange, options }: DropdownProps) => {
           const selected = options?.find((child) => child.value === value);

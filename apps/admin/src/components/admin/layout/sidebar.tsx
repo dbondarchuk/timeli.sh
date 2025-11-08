@@ -106,12 +106,12 @@ export const AppSidebar: React.FC<SidebarProps> = ({
                           <CollapsibleTrigger asChild>
                             <SidebarMenuButton tooltip={t(item.title)}>
                               {item.icon && (
-                                <NavIcon className={`size-5`}>
+                                <NavIcon className={`size-4`}>
                                   {item.icon}
                                 </NavIcon>
                               )}
                               <span>{t(item.title)}</span>
-                              <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                              <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90 size-3.5" />
                             </SidebarMenuButton>
                           </CollapsibleTrigger>
                           <CollapsibleContent>
@@ -119,9 +119,12 @@ export const AppSidebar: React.FC<SidebarProps> = ({
                               {item.items?.map((subItem) => (
                                 <SidebarMenuSubItem key={subItem.title}>
                                   <SidebarMenuSubButton asChild>
-                                    <Link href={subItem.href || "/"}>
+                                    <Link
+                                      href={subItem.href || "/"}
+                                      className="text-xs"
+                                    >
                                       {subItem.icon && (
-                                        <NavIcon className={`size-5`}>
+                                        <NavIcon className={`size-4`}>
                                           {subItem.icon}
                                         </NavIcon>
                                       )}
@@ -140,7 +143,7 @@ export const AppSidebar: React.FC<SidebarProps> = ({
                           <DropdownMenuTrigger asChild>
                             <SidebarMenuButton tooltip={t(item.title)}>
                               {item.icon && (
-                                <NavIcon className={`size-5`}>
+                                <NavIcon className={`size-4`}>
                                   {item.icon}
                                 </NavIcon>
                               )}
@@ -159,10 +162,10 @@ export const AppSidebar: React.FC<SidebarProps> = ({
                               <DropdownMenuItem asChild key={subItem.title}>
                                 <Link
                                   href={subItem.href || "/"}
-                                  className="inline-flex items-center gap-2 cursor-pointer text-sidebar-foreground hover:text-sidebar-accent-foreground"
+                                  className="inline-flex items-center gap-2 cursor-pointer text-sidebar-foreground hover:text-sidebar-accent-foreground text-xs"
                                 >
                                   {subItem.icon && (
-                                    <NavIcon className={`size-5`}>
+                                    <NavIcon className={`size-4`}>
                                       {subItem.icon}
                                     </NavIcon>
                                   )}
@@ -183,7 +186,7 @@ export const AppSidebar: React.FC<SidebarProps> = ({
                       >
                         <Link href={item.href || "/"}>
                           {item.icon && (
-                            <NavIcon className={`size-5`}>{item.icon}</NavIcon>
+                            <NavIcon className={`size-4`}>{item.icon}</NavIcon>
                           )}
                           <span>{t(item.title)}</span>
                         </Link>

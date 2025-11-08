@@ -89,7 +89,7 @@ const ItemComponent = React.memo(
       <CommandItem style={props.style} onSelect={onSelect}>
         <Check
           className={cn(
-            "mr-2 h-4 w-4",
+            "mr-2 size-3.5",
             props.selected === props.item.value ? "opacity-100" : "opacity-0",
           )}
         />

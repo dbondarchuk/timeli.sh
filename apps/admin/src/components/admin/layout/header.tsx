@@ -27,7 +27,7 @@ export default async function Header({}: {}) {
             href={websiteUrl}
             target="_blank"
             button
-            variant="default"
+            variant="brand"
             className="inline-flex items-center gap-1"
           >
             <Globe2 size={16} />{" "}

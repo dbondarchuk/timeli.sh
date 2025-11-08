@@ -57,7 +57,7 @@ function MultiSelect({
           role="combobox"
           aria-expanded={open}
           size={size}
-          className={cn("w-full justify-between")}
+          className={cn("w-full justify-between", className)}
           onClick={() => setOpen(!open)}
           disabled={disabled}
         >
