@@ -37,8 +37,8 @@ export const EventCalendar: React.FC<EventCalendarProps> = (props) => {
     setEvents([]);
 
     const result = await adminApi.calendar.getCalendar({
-      start,
-      end,
+      start: DateTime.fromJSDate(start).startOf("day").toJSDate(),
+      end: DateTime.fromJSDate(end).endOf("day").toJSDate(),
     });
 
     setLoading(false);

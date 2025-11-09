@@ -36,8 +36,8 @@ export const AppointmentCalendar: React.FC<
     setLoading(true);
 
     const result = await adminApi.calendar.getCalendar({
-      start: start.toJSDate(),
-      end: end.toJSDate(),
+      start: start.startOf("day").toJSDate(),
+      end: end.endOf("day").toJSDate(),
     });
 
     const apiEvents = result.events || [];

@@ -533,7 +533,7 @@
         "address": "Address",
         "appointments": "Appointments",
         "lastAppointment": "Last appointment",
-        "nextAppointment": "Next appointment",
+        "nextAppointment": "Upcoming appointment",
         "createdAt": "Created at",
         "actions": "Actions"
       },
@@ -1706,7 +1706,7 @@
       "pendingToast": "New pending appointmens",
       "pendingToastMessage": "You have {count, plural, =1 {one pending appointment} other {# pending appointments}}",
       "view": "View",
-      "nextAppointments": "Next appointments"
+      "nextAppointments": "Upcoming appointments"
     },
     "tabs": {
       "overview": "Overview",

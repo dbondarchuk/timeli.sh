@@ -1670,7 +1670,12 @@ export class EventsService extends BaseService implements IEventsService {
     ]);
 
     logger.debug(
-      { start, end, dbEvents, appsEvents: appsEvents.length },
+      {
+        start,
+        end,
+        dbEvents: dbEvents.length,
+        appsEvents: appsEvents.flat().length,
+      },
       "Busy times retrieved",
     );
 
