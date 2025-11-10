@@ -229,8 +229,9 @@ const createOrUpdateModifyAppointmentRequestIntent = async (
   }
 
   if (
-    information.type !== "reschedule" ||
-    information.reschedulePolicy !== "paymentRequired"
+    (information.type === "reschedule" &&
+      information.reschedulePolicy !== "paymentRequired") ||
+    (information.type === "cancel" && information.action !== "payment")
   ) {
     logger.debug(
       { modifyAppointmentRequestResult },
@@ -267,7 +268,7 @@ const createOrUpdateModifyAppointmentRequestIntent = async (
     appName: app.name,
     request: modifyAppointmentRequest,
     customerId,
-    type: "rescheduleFee",
+    type,
   } satisfies Omit<PaymentIntentUpdateModel, "status">;
 
   logger.debug(

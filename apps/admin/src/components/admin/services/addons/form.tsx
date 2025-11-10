@@ -142,32 +142,6 @@ export const AddonForm: React.FC<{
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="description"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>
-                  {t("services.addons.form.description")}{" "}
-                  <InfoTooltip>
-                    {t("services.addons.form.descriptionTooltip")}
-                  </InfoTooltip>
-                </FormLabel>
-                <FormControl>
-                  <PlateMarkdownEditor
-                    className="bg-background px-4 sm:px-4 pb-24"
-                    disabled={loading}
-                    value={field.value}
-                    onChange={(v) => {
-                      field.onChange(v);
-                      field.onBlur();
-                    }}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
           <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
             <FormField
               control={form.control}
@@ -217,6 +191,32 @@ export const AddonForm: React.FC<{
               )}
             />
           </div>
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  {t("services.addons.form.description")}{" "}
+                  <InfoTooltip>
+                    {t("services.addons.form.descriptionTooltip")}
+                  </InfoTooltip>
+                </FormLabel>
+                <FormControl>
+                  <PlateMarkdownEditor
+                    className="bg-background px-4 sm:px-4 pb-24"
+                    disabled={loading}
+                    value={field.value}
+                    onChange={(v) => {
+                      field.onChange(v);
+                      field.onBlur();
+                    }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <Sortable
             title={t("services.addons.form.fields")}
             ids={fieldsFieldsIds}

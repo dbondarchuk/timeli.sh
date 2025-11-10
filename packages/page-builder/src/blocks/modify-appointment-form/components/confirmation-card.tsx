@@ -24,7 +24,7 @@ export const ConfirmationCard: React.FC = () => {
       </div>
       <div className="flex flex-col gap-4 flex-wrap">
         <div>
-          {appointment.type === "cancel"
+          {appointment.type === "cancel" && appointment.action === "refund"
             ? i18n.rich(
                 `cancel_appointment_confirmation_${appointment.refundPolicy}_description`,
                 {
@@ -45,22 +45,45 @@ export const ConfirmationCard: React.FC = () => {
                   p: (chunks: any) => <p>{chunks}</p>,
                 },
               )
-            : i18n.rich(`reschedule_appointment_confirmation_description`, {
-                name: (appointment as any).name,
-                service: (appointment as any).optionName,
-                dateTime: Luxon.fromJSDate(
-                  (appointment as any).dateTime,
-                ).toLocaleString(Luxon.DATETIME_FULL, {
-                  locale,
-                }),
-                newDateTime: newDateTime?.toLocaleString(Luxon.DATETIME_FULL, {
-                  locale,
-                }),
-                br: () => <br />,
-                b: (chunks: any) => <strong>{chunks}</strong>,
-                i: (chunks: any) => <i>{chunks}</i>,
-                p: (chunks: any) => <p>{chunks}</p>,
-              })}
+            : appointment.type === "cancel" && appointment.action === "payment"
+              ? i18n.rich(
+                  `cancel_payment_${appointment.paymentPolicy === "paymentRequired" ? "partial" : "full_price"}_required_description`,
+                  {
+                    name: (appointment as any).name,
+                    service: (appointment as any).optionName,
+                    dateTime: Luxon.fromJSDate(
+                      (appointment as any).dateTime,
+                    ).toLocaleString(Luxon.DATETIME_FULL, {
+                      locale,
+                    }),
+                    percentage: appointment.paymentPercentage,
+                    amount: formatAmountString(appointment.paymentAmount),
+                    totalPrice: formatAmountString(appointment.price ?? 0),
+                    br: () => <br />,
+                    b: (chunks: any) => <strong>{chunks}</strong>,
+                    i: (chunks: any) => <i>{chunks}</i>,
+                    p: (chunks: any) => <p>{chunks}</p>,
+                  },
+                )
+              : i18n.rich(`reschedule_appointment_confirmation_description`, {
+                  name: (appointment as any).name,
+                  service: (appointment as any).optionName,
+                  dateTime: Luxon.fromJSDate(
+                    (appointment as any).dateTime,
+                  ).toLocaleString(Luxon.DATETIME_FULL, {
+                    locale,
+                  }),
+                  newDateTime: newDateTime?.toLocaleString(
+                    Luxon.DATETIME_FULL,
+                    {
+                      locale,
+                    },
+                  ),
+                  br: () => <br />,
+                  b: (chunks: any) => <strong>{chunks}</strong>,
+                  i: (chunks: any) => <i>{chunks}</i>,
+                  p: (chunks: any) => <p>{chunks}</p>,
+                })}
         </div>
         <Label className="flex flex-row gap-2 items-center text-base">
           <Checkbox

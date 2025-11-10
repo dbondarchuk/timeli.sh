@@ -192,7 +192,7 @@ export const ReschedulePolicyCard: React.FC<
   const t = useI18n("admin");
 
   return (
-    <div className="flex flex-row gap-2 px-2 py-4 bg-card border rounded w-full">
+    <div className="flex flex-col md:flex-row gap-2 px-2 py-4 bg-card border rounded w-full">
       <div className="grid grid-cols-1 gap-2 w-full relative">
         <ReschedulePolicyCardContent
           form={form}
@@ -209,11 +209,15 @@ export const ReschedulePolicyCard: React.FC<
               variant="ghost-destructive"
               size="icon"
               type="button"
+              className="max-md:w-full"
               title={t(
                 "settings.appointments.form.cards.reschedulePolicy.remove",
               )}
             >
-              <Trash />
+              <Trash />{" "}
+              <span className="md:hidden">
+                {t("settings.appointments.form.cards.reschedulePolicy.remove")}
+              </span>
             </Button>
           </AlertDialogTrigger>
           <AlertDialogContent>

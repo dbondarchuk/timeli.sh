@@ -41,7 +41,7 @@
   "search_country_code_label": "Search for country...",
   "search_timezone_label": "Search to change the time zone",
   "confirmation_success_title": "Your request has been received!",
-  "confirmation_success_message": "Thanks, {name}! Your request for {service} has been received and you will get confirmation email shortly.",
+  "confirmation_success_message": "Thanks, {name}! Your request for {service} has been received and you will get confirmation shortly.",
   "confirmation_fetch_failed_title": "We can't find your appointment",
 
   "availability_fetch_failed_title": "Uh oh! Something went wrong.",
@@ -73,10 +73,10 @@
   "reschedule_appointment_form_title": "Let's find your appointment. Please provide the details of the appointment you want to reschedule",
 
   "cancel_appointment_confirmation_success_title": "Your appointment has been cancelled",
-  "cancel_appointment_confirmation_success_message": "Thanks, {name}! Your appointment for {service} has been cancelled and you will get confirmation email shortly.",
+  "cancel_appointment_confirmation_success_message": "Thanks, {name}! Your appointment for {service} has been cancelled and you will get confirmation shortly.",
 
   "reschedule_appointment_confirmation_success_title": "Your appointment has been rescheduled",
-  "reschedule_appointment_confirmation_success_message": "Thanks, {name}! Your appointment for {service} has been rescheduled to {newDateTime} and you will get confirmation email shortly.",
+  "reschedule_appointment_confirmation_success_message": "Thanks, {name}! Your appointment for {service} has been rescheduled to {newDateTime} and you will get confirmation shortly.",
 
   "cancel_appointment_not_allowed_title": "Cancellation is not allowed for this appointment",
   "cancel_appointment_not_allowed_message": "Hi {name}, unfortunately we cannot cancel this appointment at this time. Please contact us to cancel.",
@@ -91,6 +91,8 @@
   "cancel_appointment_confirmation_forfeitDeposit_description": "Hi {name}, are you sure you want to cancel your appointment for <b>{service}</b> on <i>{dateTime}</i>?<br></br>If you do, your deposit <b>will not be refunded</b>.",
   "cancel_appointment_confirmation_partialRefund_description": "Hi {name}, are you sure you want to cancel your appointment for <b>{service}</b> on <i>{dateTime}</i>?<br></br>If you do, <b>{refundPercentage}%</b> of your deposit{refundFees, plural, =1 {} other {{feesAmount, plural, =0 {} other { (except <b>${feesAmount} fees</b>)}}}} will be refunded (<b>${refundAmount}</b>).",
   "cancel_appointment_confirmation_fullRefund_description": "Hi {name}, are you sure you want to cancel your appointment for <b>{service}</b> on <i>{dateTime}</i>?<br></br>If you do, your deposit{refundFees, plural, =1 {} other {{feesAmount, plural, =0 {} other { (except <b>${feesAmount} fees</b>)}}}} will be refunded <b>fully</b> (<b>${refundAmount}</b>).",
+  "cancel_payment_partial_required_description": "Hi {name}, are you sure you want to cancel your appointment for <b>{service}</b> on <i>{dateTime}</i>?",
+  "cancel_payment_full_price_required_description": "Hi {name}, are you sure you want to cancel your appointment for <b>{service}</b> on <i>{dateTime}</i>?",
   "cancel_appointment_confirmation_checkbox_label": "I confirm that I understand and want to cancel this appointment",
 
   "reschedule_appointment_confirmation_title": "Are you sure?",
@@ -101,6 +103,8 @@
   "cancel_submit_failed_description": "Something went wrong while we were trying to cancel your appointment. Please contact us",
   "reschedule_submit_failed_title": "Uh oh! Something went wrong.",
   "reschedule_submit_failed_description": "Something went wrong while we were trying to reschedule your appointment. Please contact us",
+  "cancel_fee_required_title": "Cancellation fee is required",
+  "cancel_fee_required_description": "In order to cancel this appointment, a fee of {percentage}% (${amount}) from total price of ${totalPrice} is required. Please pay by using the form below",
   "reschedule_fee_required_title": "Reschedule fee is required",
   "reschedule_fee_required_description": "In order to reschedule this appointment, a fee of {percentage}% (${amount}) from total price of ${totalPrice} is required. Please pay by using the form below",
 

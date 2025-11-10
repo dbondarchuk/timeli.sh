@@ -509,10 +509,14 @@
         "required": "Action is required"
       },
       "refundPercentage": {
-        "required": "Refund percentage must be an integer number between 0 and 100"
+        "required": "Refund percentage must be an integer number between 0 and 100",
+        "min": "Refund percentage must be at least 0",
+        "max": "Refund percentage must be at most 100"
       },
       "paymentPercentage": {
-        "required": "Payment percentage must be an integer number between 0 and 100"
+        "required": "Payment percentage must be an integer number between 0 and 100",
+        "min": "Payment percentage must be at least 0",
+        "max": "Payment percentage must be at most 100"
       },
       "note": {
         "max": "Note must be at most 500 characters long"

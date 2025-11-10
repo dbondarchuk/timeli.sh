@@ -21,10 +21,11 @@ import { useRouter } from "next/navigation";
 import React, { useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { CalendarSourcesTab } from "./tabs/calendar-sources";
-import { CancellationsAndReschedulesTab } from "./tabs/cancellations";
+import { CancellationsTab } from "./tabs/cancellations";
 import { MainTab } from "./tabs/main";
 import { OptionsTab } from "./tabs/options";
 import { PaymentsTab } from "./tabs/payments";
+import { ReschedulesTab } from "./tabs/reschedules";
 
 export const AppointmentsSettingsForm: React.FC<{
   values: BookingConfiguration;
@@ -121,14 +122,26 @@ export const AppointmentsSettingsForm: React.FC<{
               {t("settings.appointments.form.tabs.payments")}
             </TabsTrigger>
             <TabsTrigger
-              value="cancellationsAndReschedules"
+              value="cancellations"
               className={cn(
-                form.getFieldState("cancellationsAndReschedules").invalid
+                form.getFieldState("cancellationsAndReschedules.cancellations")
+                  .invalid
                   ? "text-destructive"
                   : "",
               )}
             >
-              {t("settings.appointments.form.tabs.cancellationsAndReschedules")}
+              {t("settings.appointments.form.tabs.cancellations")}
+            </TabsTrigger>
+            <TabsTrigger
+              value="reschedules"
+              className={cn(
+                form.getFieldState("cancellationsAndReschedules.reschedules")
+                  .invalid
+                  ? "text-destructive"
+                  : "",
+              )}
+            >
+              {t("settings.appointments.form.tabs.reschedules")}
             </TabsTrigger>
           </TabsList>
           <TabsContent value="main">
@@ -143,8 +156,11 @@ export const AppointmentsSettingsForm: React.FC<{
           <TabsContent value="payments">
             <PaymentsTab form={form} />
           </TabsContent>
-          <TabsContent value="cancellationsAndReschedules">
-            <CancellationsAndReschedulesTab form={form} />
+          <TabsContent value="cancellations">
+            <CancellationsTab form={form} />
+          </TabsContent>
+          <TabsContent value="reschedules">
+            <ReschedulesTab form={form} />
           </TabsContent>
         </Tabs>
         <SaveButton form={form} disabled={loading} />

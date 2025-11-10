@@ -184,10 +184,12 @@ const processRescheduleRequest = async (
 };
 
 const processCancelRequest = async (
+  request: Extract<ModifyAppointmentRequest, { type: "cancel" }>,
   information: Extract<
     ModifyAppointmentInformation,
     { type: "cancel"; allowed: true }
   >,
+  customerId: string,
 ) => {
   const logger = getLoggerFactory("API/event/[appointmentId]/modify")(
     "processCancelRequest",
@@ -197,88 +199,200 @@ const processCancelRequest = async (
 
   logger.debug({ appointmentId }, "Processing cancel request");
 
-  if (
-    (information.refundPolicy === "fullRefund" ||
-      information.refundPolicy === "partialRefund") &&
-    information.refundAmount > 0
-  ) {
-    logger.debug({ appointmentId }, "Refunding payments");
+  if (information.action === "refund") {
+    if (
+      (information.refundPolicy === "fullRefund" ||
+        information.refundPolicy === "partialRefund") &&
+      information.refundAmount > 0
+    ) {
+      logger.debug({ appointmentId }, "Refunding payments");
 
-    const allPayments =
-      await servicesContainer.paymentsService.getAppointmentPayments(
-        appointmentId,
+      const allPayments =
+        await servicesContainer.paymentsService.getAppointmentPayments(
+          appointmentId,
+        );
+      const paymentsToRefund = allPayments.filter(
+        (payment) =>
+          payment.status === "paid" &&
+          payment.type === "deposit" &&
+          payment.method === "online",
       );
-    const paymentsToRefund = allPayments.filter(
-      (payment) =>
-        payment.status === "paid" &&
-        payment.type === "deposit" &&
-        payment.method === "online",
-    );
-
-    logger.debug(
-      {
-        appointmentId,
-        paymentsToRefund: paymentsToRefund.length,
-        paymentIds: paymentsToRefund.map((p) => p._id),
-      },
-      "Payments to refund",
-    );
-
-    let successfullyRefunded = 0;
-    for (const payment of paymentsToRefund) {
-      const fees = payment.fees?.reduce((acc, fee) => acc + fee.amount, 0) ?? 0;
-      const feesToDeduct = !information.refundFees ? fees : 0;
-      const amountToRefund =
-        information.refundPolicy === "fullRefund"
-          ? payment.amount - feesToDeduct
-          : formatAmount(
-              (payment.amount - feesToDeduct) *
-                (information.refundPercentage / 100),
-            );
 
       logger.debug(
         {
           appointmentId,
-          paymentId: payment._id,
-          amountToRefund,
-          refundFees: information.refundFees,
+          paymentsToRefund: paymentsToRefund.length,
+          paymentIds: paymentsToRefund.map((p) => p._id),
         },
-        "Refunding payment",
+        "Payments to refund",
       );
 
-      const result = await servicesContainer.paymentsService.refundPayment(
-        payment._id,
-        amountToRefund,
-      );
+      let successfullyRefunded = 0;
+      for (const payment of paymentsToRefund) {
+        const fees =
+          payment.fees?.reduce((acc, fee) => acc + fee.amount, 0) ?? 0;
+        const feesToDeduct = !information.refundFees ? fees : 0;
+        const amountToRefund =
+          information.refundPolicy === "fullRefund"
+            ? payment.amount - feesToDeduct
+            : formatAmount(
+                (payment.amount - feesToDeduct) *
+                  (information.refundPercentage / 100),
+              );
 
-      if (result.success) {
         logger.debug(
-          { appointmentId, paymentId: payment._id, amountToRefund },
-          "Payment refunded successfully",
-        );
-
-        successfullyRefunded++;
-      } else {
-        logger.warn(
           {
             appointmentId,
             paymentId: payment._id,
-            error: result.error,
             amountToRefund,
+            refundFees: information.refundFees,
           },
-          "Payment refund failed",
+          "Refunding payment",
         );
+
+        const result = await servicesContainer.paymentsService.refundPayment(
+          payment._id,
+          amountToRefund,
+        );
+
+        if (result.success) {
+          logger.debug(
+            { appointmentId, paymentId: payment._id, amountToRefund },
+            "Payment refunded successfully",
+          );
+
+          successfullyRefunded++;
+        } else {
+          logger.warn(
+            {
+              appointmentId,
+              paymentId: payment._id,
+              error: result.error,
+              amountToRefund,
+            },
+            "Payment refund failed",
+          );
+        }
       }
+
+      logger.debug(
+        {
+          appointmentId,
+          successfullyRefunded,
+          paymentsToRefund: paymentsToRefund.length,
+        },
+        "Payments refunded",
+      );
+    }
+  }
+
+  let paymentIntentId = request.paymentIntentId;
+  const config =
+    await servicesContainer.configurationService.getConfiguration("booking");
+  if (
+    information.action === "payment" &&
+    config.payments?.enabled &&
+    config.payments?.paymentAppId
+  ) {
+    if (!paymentIntentId) {
+      logger.warn("Payment required but no payment intent provided");
+      return NextResponse.json(
+        { success: false, error: "payment_required" },
+        { status: 402 },
+      ); // Payment required
     }
 
-    logger.debug(
-      {
-        appointmentId,
-        successfullyRefunded,
-        paymentsToRefund: paymentsToRefund.length,
+    const paymentIntent =
+      await servicesContainer.paymentsService.getIntent(paymentIntentId);
+    if (!paymentIntent) {
+      logger.warn({ paymentIntentId }, "Payment intent not found");
+      return NextResponse.json(
+        { success: false, error: "payment_intent_not_found" },
+        { status: 402 },
+      ); // Payment required
+    }
+
+    if (paymentIntent.status !== "paid") {
+      logger.warn(
+        { paymentIntentId, status: paymentIntent.status },
+        "Payment not paid",
+      );
+      return NextResponse.json(
+        { success: false, error: "payment_not_paid" },
+        { status: 402 },
+      ); // Payment required
+    }
+
+    if (paymentIntent.amount !== information.paymentAmount) {
+      logger.warn(
+        {
+          paymentIntentId,
+          paymentAmount: paymentIntent.amount,
+          requiredAmount: information.paymentAmount,
+        },
+        "Payment amount mismatch",
+      );
+      return NextResponse.json(
+        { success: false, error: "payment_amount_dont_match" },
+        { status: 402 },
+      ); // Payment required
+    }
+
+    const { name: appName } =
+      await servicesContainer.connectedAppsService.getApp(
+        config.payments?.paymentAppId,
+      );
+
+    logger.debug({ appName, paymentIntentId }, "Creating payment");
+
+    const payment = (await servicesContainer.paymentsService.createPayment({
+      amount: information.paymentAmount,
+      status: "paid",
+      paidAt: new Date(),
+      appointmentId,
+      customerId,
+      description: "cancellationFee",
+      method: "online",
+      intentId: paymentIntentId,
+      appName,
+      appId: config.payments?.paymentAppId,
+      type: "cancellationFee",
+      fees: paymentIntent.fees,
+    })) as OnlinePayment;
+
+    await servicesContainer.eventsService.addAppointmentHistory({
+      appointmentId,
+      type: "paymentAdded",
+      data: {
+        payment: {
+          id: payment._id,
+          amount: payment.amount,
+          status: payment.status,
+          method: payment.method,
+          type: "rescheduleFee",
+          intentId: payment.intentId,
+          externalId: payment.externalId,
+          appName: payment.appName,
+          appId: payment.appId,
+        },
       },
-      "Payments refunded",
-    );
+    });
+  } else if (paymentIntentId) {
+    logger.warn("Payment not required but payment intent provided");
+
+    const paymentIntent =
+      await servicesContainer.paymentsService.getIntent(paymentIntentId);
+
+    if (!paymentIntent) {
+      logger.warn({ paymentIntentId }, "Payment intent not found");
+      paymentIntentId = undefined;
+    } else if (paymentIntent.status !== "paid") {
+      logger.warn(
+        { paymentIntentId },
+        "Payment intent is not paid. Removing it",
+      );
+      paymentIntentId = undefined;
+    }
   }
 
   await servicesContainer.eventsService.changeAppointmentStatus(
@@ -413,10 +527,12 @@ export async function POST(
     );
   } else if (modifyAppointmentRequest.type === "cancel") {
     return await processCancelRequest(
+      modifyAppointmentRequest,
       information as Extract<
         ModifyAppointmentInformation,
         { type: "cancel"; allowed: true }
       >,
+      eventOrError.customerId,
     );
   } else {
     logger.warn(

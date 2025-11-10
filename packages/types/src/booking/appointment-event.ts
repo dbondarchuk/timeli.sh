@@ -1,7 +1,7 @@
 import * as z from "zod";
 import {
-  AppointmentCancellationPolicyAction,
   AppointmentReschedulePolicyAction,
+  AppointmentWithDepositCancellationPolicyAction,
 } from "../configuration/booking/cancellation";
 import {
   zNonEmptyString,
@@ -151,6 +151,10 @@ export type ModifyAppointmentInformationRequest = z.infer<
 export const modifyAppointmentRequestSchema = z.discriminatedUnion("type", [
   z.object({
     type: modifyAppointmentTypeSchema.extract(["cancel"]),
+    paymentIntentId: zOptionalOrMinLengthString(
+      1,
+      "appointments.request.intentId.min",
+    ),
     ...baseModifyAppointmentRequestSchema.shape,
   }),
   z.object({
@@ -180,15 +184,34 @@ export type ModifyAppointmentInformation = {
   duration: number;
   price?: number;
 } & (
-  | {
+  | ({
       allowed: true;
       type: "cancel";
-      refundPolicy: Exclude<AppointmentCancellationPolicyAction, "notAllowed">;
-      refundPercentage: number;
-      refundAmount: number;
-      refundFees: boolean;
-      feesAmount: number;
-    }
+    } & (
+      | {
+          action: "payment";
+          paymentPolicy: Extract<
+            AppointmentWithDepositCancellationPolicyAction,
+            "paymentRequired" | "paymentToFullPriceRequired"
+          >;
+          paymentPercentage: number;
+          paymentAmount: number;
+        }
+      | {
+          action: "refund";
+          refundPolicy: Extract<
+            AppointmentWithDepositCancellationPolicyAction,
+            "partialRefund" | "fullRefund" | "forfeitDeposit"
+          >;
+          refundPercentage: number;
+          refundAmount: number;
+          refundFees: boolean;
+          feesAmount: number;
+        }
+      | {
+          action: "allowed";
+        }
+    ))
   | ({
       allowed: true;
       type: "reschedule";

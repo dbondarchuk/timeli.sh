@@ -1,6 +1,7 @@
 import {
-  AppointmentCancellationConfiguration,
   AppointmentRescheduleConfiguration,
+  AppointmentWithDepositCancellationConfiguration,
+  AppointmentWithoutDepositCancellationConfiguration,
 } from "@timelish/types";
 import { DateTime } from "luxon";
 
@@ -13,8 +14,18 @@ import { DateTime } from "luxon";
  */
 export function findApplicablePolicy<
   T extends
-    | Exclude<AppointmentCancellationConfiguration, { enabled: "disabled" }>
-    | Exclude<AppointmentRescheduleConfiguration, { enabled: "disabled" }>,
+    | Exclude<
+        AppointmentWithDepositCancellationConfiguration,
+        { enabled?: false | undefined }
+      >
+    | Exclude<
+        AppointmentWithoutDepositCancellationConfiguration,
+        { enabled?: false | undefined }
+      >
+    | Exclude<
+        AppointmentRescheduleConfiguration,
+        { enabled?: false | undefined }
+      >,
 >(
   policies: NonNullable<T["policies"]>,
   timeBeforeAppointmentMinutes: number,
@@ -41,17 +52,18 @@ export function findApplicablePolicy<
  */
 export function getPolicyForRequest<
   T extends
-    | AppointmentCancellationConfiguration
+    | AppointmentWithDepositCancellationConfiguration
+    | AppointmentWithoutDepositCancellationConfiguration
     | AppointmentRescheduleConfiguration,
 >(
   featureConfig: T,
   appointmentTime: Date | DateTime,
   requestTime: Date | DateTime,
 ):
-  | NonNullable<Exclude<T, { enabled: "disabled" }>["policies"]>[number]
-  | Exclude<T, { enabled: "disabled" }>["defaultPolicy"]
+  | NonNullable<Exclude<T, { enabled?: false | undefined }>["policies"]>[number]
+  | Exclude<T, { enabled?: false | undefined }>["defaultPolicy"]
   | undefined {
-  if (featureConfig?.enabled === "disabled") return undefined;
+  if (!featureConfig?.enabled) return undefined;
 
   const appointmentDateTime =
     appointmentTime instanceof DateTime
@@ -70,7 +82,9 @@ export function getPolicyForRequest<
     return {
       minutesToAppointment: 0,
       action: "notAllowed",
-    } as NonNullable<Exclude<T, { enabled: "disabled" }>["policies"]>[number];
+    } as NonNullable<
+      Exclude<T, { enabled?: false | undefined }>["policies"]
+    >[number];
   }
 
   return findApplicablePolicy(

@@ -57,29 +57,20 @@ export const getModifyAppointmentInformationRequestResult = async (
   };
 
   if (request.type === "cancel") {
-    const featureConfig = config.cancellationsAndReschedules.cancellations;
-    if (!featureConfig.enabled || featureConfig.enabled === "disabled") {
+    const hasDeposit = appointment.payments?.some(
+      (payment) => payment.type === "deposit" && payment.status === "paid",
+    );
+
+    const featureConfig =
+      config.cancellationsAndReschedules.cancellations[
+        hasDeposit ? "withDeposit" : "withoutDeposit"
+      ];
+    if (!featureConfig.enabled) {
       return {
         information: {
           ...appointmentInformation,
           allowed: false,
           reason: "cancellation_not_allowed",
-        },
-        customerId: appointment.customerId,
-      };
-    }
-
-    if (
-      featureConfig.enabled === "notAllowedWithoutDeposit" &&
-      !appointment.payments?.some(
-        (payment) => payment.type === "deposit" && payment.status === "paid",
-      )
-    ) {
-      return {
-        information: {
-          ...appointmentInformation,
-          allowed: false,
-          reason: "original_appointment_deposit_required",
         },
         customerId: appointment.customerId,
       };
@@ -122,55 +113,147 @@ export const getModifyAppointmentInformationRequestResult = async (
       };
     }
 
-    const refundPercentage =
-      policy.action === "partialRefund"
-        ? (policy.refundPercentage ?? 0)
-        : policy.action === "fullRefund"
-          ? 100
-          : 0;
+    if (policy.action === "allowed") {
+      return {
+        information: {
+          ...appointmentInformation,
+          allowed: true,
+          type: "cancel",
+          action: "allowed",
+        },
+        customerId: appointment.customerId,
+      };
+    }
 
-    const depositsPaidOnline = appointment.payments?.filter(
-      (payment) =>
-        payment.method === "online" &&
-        payment.status === "paid" &&
-        payment.type === "deposit",
-    );
+    if (
+      hasDeposit &&
+      (policy.action === "partialRefund" ||
+        policy.action === "fullRefund" ||
+        policy.action === "forfeitDeposit")
+    ) {
+      const refundPercentage =
+        policy.action === "partialRefund"
+          ? (policy.refundPercentage ?? 0)
+          : policy.action === "fullRefund"
+            ? 100
+            : 0;
 
-    const totalDepositsPaidOnline =
-      depositsPaidOnline?.reduce((acc, payment) => acc + payment.amount, 0) ??
-      0;
+      const depositsPaidOnline = appointment.payments?.filter(
+        (payment) =>
+          payment.method === "online" &&
+          payment.status === "paid" &&
+          payment.type === "deposit",
+      );
 
-    const totalFeesPaidOnline =
-      depositsPaidOnline?.reduce(
-        (acc, payment) =>
-          acc + (payment.fees?.reduce((acc, fee) => acc + fee.amount, 0) ?? 0),
-        0,
-      ) ?? 0;
+      const totalDepositsPaidOnline =
+        depositsPaidOnline?.reduce((acc, payment) => acc + payment.amount, 0) ??
+        0;
 
-    const totalRefundableAmount =
-      totalDepositsPaidOnline - (!policy.refundFees ? totalFeesPaidOnline : 0);
+      const totalFeesPaidOnline =
+        depositsPaidOnline?.reduce(
+          (acc, payment) =>
+            acc +
+            (payment.fees?.reduce((acc, fee) => acc + fee.amount, 0) ?? 0),
+          0,
+        ) ?? 0;
 
-    const refundAmount = totalDepositsPaidOnline
-      ? formatAmount((refundPercentage * totalRefundableAmount) / 100)
-      : 0;
+      const totalRefundableAmount =
+        totalDepositsPaidOnline -
+        (!policy.refundFees ? totalFeesPaidOnline : 0);
 
-    return {
-      information: {
-        ...appointmentInformation,
-        allowed: true,
-        refundPolicy: policy.action,
-        refundPercentage: refundPercentage,
-        refundAmount: refundAmount,
-        refundFees: !!policy.refundFees,
-        feesAmount: totalFeesPaidOnline,
-        ...appointmentInformation,
-        type: "cancel",
-      },
-      customerId: appointment.customerId,
-    };
+      const refundAmount = totalDepositsPaidOnline
+        ? formatAmount((refundPercentage * totalRefundableAmount) / 100)
+        : 0;
+
+      return {
+        information: {
+          ...appointmentInformation,
+          allowed: true,
+          action: "refund",
+          refundPolicy: policy.action,
+          refundPercentage: refundPercentage,
+          refundAmount: refundAmount,
+          refundFees: !!policy.refundFees,
+          feesAmount: totalFeesPaidOnline,
+          ...appointmentInformation,
+          type: "cancel",
+        },
+        customerId: appointment.customerId,
+      };
+    }
+
+    if (
+      policy.action === "paymentRequired" ||
+      policy.action === "paymentToFullPriceRequired"
+    ) {
+      if (
+        (policy.action === "paymentRequired" && !policy.paymentPercentage) ||
+        !appointment.totalPrice
+      ) {
+        return {
+          information: {
+            ...appointmentInformation,
+            allowed: false,
+            reason: "cancellation_not_allowed_by_policy",
+          },
+          customerId: appointment.customerId,
+        };
+      }
+
+      const deposits = appointment.payments?.filter(
+        (payment) => payment.type === "deposit" && payment.status === "paid",
+      );
+
+      const totalDeposits =
+        deposits?.reduce((acc, payment) => acc + payment.amount, 0) ?? 0;
+
+      const paymentAmount =
+        policy.action === "paymentRequired"
+          ? formatAmount(
+              (appointment.totalPrice * (policy.paymentPercentage ?? 100)) /
+                100,
+            )
+          : formatAmount(appointment.totalPrice - totalDeposits);
+
+      const paymentPercentage =
+        policy.action === "paymentRequired"
+          ? (policy.paymentPercentage ?? 100)
+          : formatAmount(
+              ((appointment.totalPrice - totalDeposits) /
+                appointment.totalPrice) *
+                100,
+            );
+
+      return {
+        information: {
+          ...appointmentInformation,
+          allowed: true,
+          action: "payment",
+          paymentPolicy: policy.action,
+          paymentPercentage,
+          paymentAmount,
+          ...appointmentInformation,
+          type: "cancel",
+        },
+        customerId: appointment.customerId,
+      };
+    } else {
+      return {
+        information: {
+          ...appointmentInformation,
+          allowed: false,
+          reason: "cancellation_not_allowed_by_policy",
+        },
+        customerId: appointment.customerId,
+      };
+    }
   } else if (request.type === "reschedule") {
     const featureConfig = config.cancellationsAndReschedules.reschedules;
-    if (!featureConfig.enabled || featureConfig.enabled === "disabled") {
+    const hasDeposit = appointment.payments?.some(
+      (payment) => payment.type === "deposit" && payment.status === "paid",
+    );
+
+    if (!featureConfig.enabled) {
       return {
         information: {
           ...appointmentInformation,
@@ -181,21 +264,21 @@ export const getModifyAppointmentInformationRequestResult = async (
       };
     }
 
-    if (
-      featureConfig.enabled === "notAllowedWithoutDeposit" &&
-      !appointment.payments?.some(
-        (payment) => payment.type === "deposit" && payment.status === "paid",
-      )
-    ) {
-      return {
-        information: {
-          ...appointmentInformation,
-          allowed: false,
-          reason: "original_appointment_deposit_required",
-        },
-        customerId: appointment.customerId,
-      };
-    }
+    // if (
+    //   featureConfig.enabled === "notAllowedWithoutDeposit" &&
+    //   !appointment.payments?.some(
+    //     (payment) => payment.type === "deposit" && payment.status === "paid",
+    //   )
+    // ) {
+    //   return {
+    //     information: {
+    //       ...appointmentInformation,
+    //       allowed: false,
+    //       reason: "original_appointment_deposit_required",
+    //     },
+    //     customerId: appointment.customerId,
+    //   };
+    // }
 
     if (featureConfig.maxReschedules) {
       const appointmentHistory =

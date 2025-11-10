@@ -22,7 +22,7 @@ export type DurationInputProps = Omit<
 const sizes: Record<NonNullable<InputProps["h"]>, string> = {
   lg: "text-base py-2",
   md: "text-sm py-2",
-  sm: "text-xs py-1.5",
+  sm: "text-xs py-2",
   xs: "text-xs py-1",
 };
 
@@ -328,7 +328,7 @@ export const DurationInput: React.FC<DurationInputProps> = ({
       <div className="flex items-center pl-3 text-muted-foreground">
         <Clock className="h-4 w-4" />
       </div>
-      <div className="flex items-center">
+      <div className="flex items-center gap-1 pl-1">
         {type === "weeks-days-hours-minutes" && (
           <>
             <Input
@@ -339,14 +339,14 @@ export const DurationInput: React.FC<DurationInputProps> = ({
               value={duration?.weeks}
               onChange={handleWeeksChange}
               variant="ghost"
-              className="w-12 border-0 bg-transparent p-2 text-center focus:outline-none focus:ring-0"
+              className="w-4 sm:w-12 border-0 bg-transparent py-2 px-0 text-center focus:outline-none focus:ring-0"
               aria-label={t("durationInput.weeks")}
               name={name ? `${name}.weeks` : "weeks"}
               onKeyDown={(e) => handleKeyDown(e, "weeks")}
               {...rest}
               ref={weeksRef}
             />
-            <span className={cn("pr-3 text-muted-foreground", size)}>
+            <span className={cn("text-muted-foreground h-8", size)}>
               {t("durationInput.weeks")}
             </span>
             <span className={cn("font-medium px-0.5", size)}>&nbsp;</span>
@@ -360,13 +360,13 @@ export const DurationInput: React.FC<DurationInputProps> = ({
               min={0}
               max={6}
               variant="ghost"
-              className="w-12 border-0 bg-transparent p-2 text-center focus:outline-none focus:ring-0"
+              className="w-4 sm:w-12 border-0 bg-transparent py-2 px-0 text-center focus:outline-none focus:ring-0"
               aria-label={t("durationInput.days")}
               name={name ? `${name}.days` : "days"}
               {...rest}
               ref={daysRef}
             />
-            <span className={cn("pr-3 text-muted-foreground", size)}>
+            <span className={cn("text-muted-foreground h-8", size)}>
               {t("durationInput.days")}
             </span>
           </>
@@ -379,14 +379,14 @@ export const DurationInput: React.FC<DurationInputProps> = ({
           value={duration?.hours}
           onChange={handleHoursChange}
           variant="ghost"
-          className="w-12 border-0 bg-transparent p-2 text-center focus:outline-none focus:ring-0"
+          className="w-4 sm:w-12 border-0 bg-transparent py-2 px-0 text-center focus:outline-none focus:ring-0"
           aria-label={firstPartLabel}
           name={name ? `${name}.${firstPartName}` : firstPartName}
           onKeyDown={(e) => handleKeyDown(e, "hours")}
           {...rest}
           ref={hoursRef}
         />
-        <span className={cn("pr-3 text-muted-foreground", size)}>
+        <span className={cn("text-muted-foreground h-8", size)}>
           {firstPartShortLabel}
         </span>
         <span className={cn("font-medium px-0.5", size)}>:</span>
@@ -400,13 +400,13 @@ export const DurationInput: React.FC<DurationInputProps> = ({
           min={0}
           max={59}
           variant="ghost"
-          className="w-12 border-0 bg-transparent p-2 text-center focus:outline-none focus:ring-0"
+          className="w-4 sm:w-12 border-0 bg-transparent py-2 px-0 text-center focus:outline-none focus:ring-0"
           aria-label={secondPartLabel}
           name={name ? `${name}.${secondPartName}` : secondPartName}
           {...rest}
           ref={minutesRef}
         />
-        <span className={cn("pr-3 text-muted-foreground", size)}>
+        <span className={cn("text-muted-foreground h-8", size)}>
           {secondPartShortLabel}
         </span>
       </div>

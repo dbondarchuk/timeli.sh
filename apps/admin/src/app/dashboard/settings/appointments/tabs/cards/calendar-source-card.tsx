@@ -60,7 +60,7 @@ export const CalendarSourceCard: React.FC<CalendarSourceCardProps> = ({
   const appDisplayName = appName ? AvailableApps[appName].displayName : null;
 
   return (
-    <div className="flex flex-row gap-2 px-2 py-4 bg-card border rounded w-full">
+    <div className="flex flex-col md:flex-row gap-2 px-2 py-4 bg-card border rounded w-full">
       <div className="grid grid-cols-1 gap-2 w-full relative">
         <FormField
           control={form.control}
@@ -79,7 +79,7 @@ export const CalendarSourceCard: React.FC<CalendarSourceCardProps> = ({
               <FormControl>
                 <AppSelector
                   disabled={disabled}
-                  className="w-full"
+                  className="w-full grid"
                   scope="calendar-read"
                   value={field.value}
                   onItemSelect={(value) => {
@@ -103,11 +103,15 @@ export const CalendarSourceCard: React.FC<CalendarSourceCardProps> = ({
               variant="ghost-destructive"
               size="icon"
               type="button"
+              className="max-md:w-full"
               title={t(
                 "settings.appointments.form.cards.calendarSource.remove",
               )}
             >
-              <Trash />
+              <Trash />{" "}
+              <span className="md:hidden">
+                {t("settings.appointments.form.cards.calendarSource.remove")}
+              </span>
             </Button>
           </AlertDialogTrigger>
           <AlertDialogContent>

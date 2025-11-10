@@ -5,32 +5,53 @@ export const modifyEnabledType = [
   "enabled",
   "notAllowedWithoutDeposit",
 ] as const;
+
 export const enabledSchema = z.enum(modifyEnabledType, {
   message: "cancellation.policy.enabled.required",
 });
+
 export type ModifyEnabledType = z.infer<typeof enabledSchema>;
 
 /**
- * Policy action options:
+ * Policy action options for appointments with deposit:
  * - notAllowed: no cancellations allowed in this window
  * - forfeitDeposit: allowed but customer loses 100% of deposit
  * - partialRefund: allowed with a refund percentage of deposit (0-100)
+ * - paymentRequired: payment required to cancel
+ * - paymentToFullPriceRequired: payment required to cancel, and the payment amount is the full price of the appointment minus the deposit
  * - fullRefund: allowed with full refund
  */
-export const appointmentCancellationPolicyActionType = [
+export const appointmentWithDepositCancellationPolicyActionType = [
   "notAllowed",
   "forfeitDeposit",
   "partialRefund",
+  "paymentRequired",
+  "paymentToFullPriceRequired",
   "fullRefund",
 ] as const;
 
-export const appointmentCancellationPolicyAction = z.enum(
-  appointmentCancellationPolicyActionType,
+export const appointmentWithDepositCancellationPolicyAction = z.enum(
+  appointmentWithDepositCancellationPolicyActionType,
   { message: "cancellation.policy.action.required" },
 );
 
-export type AppointmentCancellationPolicyAction = z.infer<
-  typeof appointmentCancellationPolicyAction
+export type AppointmentWithDepositCancellationPolicyAction = z.infer<
+  typeof appointmentWithDepositCancellationPolicyAction
+>;
+
+export const appointmentWithoutDepositCancellationPolicyActionType = [
+  "notAllowed",
+  "paymentRequired",
+  "allowed",
+] as const;
+
+export const appointmentWithoutDepositCancellationPolicyAction = z.enum(
+  appointmentWithoutDepositCancellationPolicyActionType,
+  { message: "cancellation.policy.action.required" },
+);
+
+export type AppointmentWithoutDepositCancellationPolicyAction = z.infer<
+  typeof appointmentWithoutDepositCancellationPolicyAction
 >;
 
 /**
@@ -54,18 +75,35 @@ export type AppointmentReschedulePolicyAction = z.infer<
   typeof appointmentReschedulePolicyAction
 >;
 
-const baseAppointmentCancellationPolicyRowSchema = z.object({
-  action: appointmentCancellationPolicyAction,
+const baseAppointmentWithDepositCancellationPolicyRowSchema = z.object({
+  action: appointmentWithDepositCancellationPolicyAction,
   refundFees: z.coerce.boolean<boolean>().optional(),
   refundPercentage: z.coerce
     .number<number>("cancellation.policy.refundPercentage.required")
-    .min(0, { message: "cancellation.policy.refundPercentage.min" })
+    .int({ message: "cancellation.policy.refundPercentage.required" })
+    .min(10, { message: "cancellation.policy.refundPercentage.min" })
     .max(100, { message: "cancellation.policy.refundPercentage.max" })
+    .optional(),
+  paymentPercentage: z.coerce
+    .number<number>("cancellation.policy.paymentPercentage.required")
+    .int({ message: "cancellation.policy.paymentPercentage.required" })
+    .min(10, { message: "cancellation.policy.paymentPercentage.min" })
+    .max(100, { message: "cancellation.policy.paymentPercentage.max" })
     .optional(),
   // optional free-form note for admins
   note: z
     .string()
     .max(500, { message: "cancellation.policy.note.max" })
+    .optional(),
+});
+
+const baseAppointmentWithoutDepositCancellationPolicyRowSchema = z.object({
+  action: appointmentWithoutDepositCancellationPolicyAction,
+  paymentPercentage: z.coerce
+    .number<number>("cancellation.policy.paymentPercentage.required")
+    .int({ message: "cancellation.policy.paymentPercentage.required" })
+    .min(10, { message: "cancellation.policy.paymentPercentage.min" })
+    .max(100, { message: "cancellation.policy.paymentPercentage.max" })
     .optional(),
 });
 
@@ -83,8 +121,8 @@ const baseAppointmentReschedulePolicyRowSchema = z.object({
     .optional(),
 });
 
-const baseAppointmentCancellationPolicyRowSuperRefineFunction = (
-  val: z.infer<typeof baseAppointmentCancellationPolicyRowSchema>,
+const baseAppointmentWithDepositCancellationPolicyRowSuperRefineFunction = (
+  val: z.infer<typeof baseAppointmentWithDepositCancellationPolicyRowSchema>,
   ctx: z.RefinementCtx,
 ) => {
   if (val.action === "partialRefund") {
@@ -95,9 +133,32 @@ const baseAppointmentCancellationPolicyRowSuperRefineFunction = (
         path: ["refundPercentage"],
       });
     }
+  } else if (val.action === "paymentRequired") {
+    if (typeof val.paymentPercentage !== "number") {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "cancellation.policy.paymentPercentage.required",
+        path: ["paymentPercentage"],
+      });
+    }
   } else {
     // if provided, ensure it's within range (already validated) but warn if unnecessary?
     // We'll simply ignore it for other actions — no error.
+  }
+};
+
+const baseAppointmentWithoutDepositCancellationPolicyRowSuperRefineFunction = (
+  val: z.infer<typeof baseAppointmentWithoutDepositCancellationPolicyRowSchema>,
+  ctx: z.RefinementCtx,
+) => {
+  if (val.action === "paymentRequired") {
+    if (typeof val.paymentPercentage !== "number") {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "cancellation.policy.paymentPercentage.required",
+        path: ["paymentPercentage"],
+      });
+    }
   }
 };
 
@@ -125,7 +186,7 @@ const baseAppointmentReschedulePolicyRowSuperRefineFunction = (
  *
  * NOTE: We keep time in minutes for precision; helpers below convert days/hours -> minutes.
  */
-export const appointmentCancellationPolicyRowSchema = z
+export const appointmentWithDepositCancellationPolicyRowSchema = z
   .object({
     minutesToAppointment: z.coerce
       .number<number>()
@@ -135,29 +196,60 @@ export const appointmentCancellationPolicyRowSchema = z
       .positive({
         error: "cancellation.policy.minutesToAppointment.required",
       }),
-    ...baseAppointmentCancellationPolicyRowSchema.shape,
+    ...baseAppointmentWithDepositCancellationPolicyRowSchema.shape,
   })
-  .superRefine(baseAppointmentCancellationPolicyRowSuperRefineFunction);
-
-export type AppointmentCancellationPolicyRow = z.infer<
-  typeof appointmentCancellationPolicyRowSchema
->;
-
-export const defaultAppointmentCancellationPolicyRowSchema =
-  baseAppointmentCancellationPolicyRowSchema.superRefine(
-    baseAppointmentCancellationPolicyRowSuperRefineFunction,
+  .superRefine(
+    baseAppointmentWithDepositCancellationPolicyRowSuperRefineFunction,
   );
 
-export type DefaultAppointmentCancellationPolicyRow = z.infer<
-  typeof defaultAppointmentCancellationPolicyRowSchema
+export const appointmentWithoutDepositCancellationPolicyRowSchema = z
+  .object({
+    minutesToAppointment: z.coerce
+      .number<number>()
+      .int({
+        error: "cancellation.policy.minutesToAppointment.required",
+      })
+      .positive({
+        error: "cancellation.policy.minutesToAppointment.required",
+      }),
+    ...baseAppointmentWithoutDepositCancellationPolicyRowSchema.shape,
+  })
+  .superRefine(
+    baseAppointmentWithoutDepositCancellationPolicyRowSuperRefineFunction,
+  );
+
+export type AppointmentWithDepositCancellationPolicyRow = z.infer<
+  typeof appointmentWithDepositCancellationPolicyRowSchema
+>;
+
+export type AppointmentWithoutDepositCancellationPolicyRow = z.infer<
+  typeof appointmentWithoutDepositCancellationPolicyRowSchema
+>;
+
+export const defaultAppointmentWithDepositCancellationPolicyRowSchema =
+  baseAppointmentWithDepositCancellationPolicyRowSchema.superRefine(
+    baseAppointmentWithDepositCancellationPolicyRowSuperRefineFunction,
+  );
+
+export const defaultAppointmentWithoutDepositCancellationPolicyRowSchema =
+  baseAppointmentWithoutDepositCancellationPolicyRowSchema.superRefine(
+    baseAppointmentWithoutDepositCancellationPolicyRowSuperRefineFunction,
+  );
+
+export type DefaultAppointmentWithoutDepositCancellationPolicyRow = z.infer<
+  typeof defaultAppointmentWithoutDepositCancellationPolicyRowSchema
+>;
+
+export type DefaultAppointmentWithDepositCancellationPolicyRow = z.infer<
+  typeof defaultAppointmentWithDepositCancellationPolicyRowSchema
 >;
 
 /**
  * Policy array schema: enforces strictly increasing minutesToAppointment order.
  * (each item's time must be greater than the previous one)
  */
-export const appointmentCancellationPolicyListSchema = z
-  .array(appointmentCancellationPolicyRowSchema)
+export const appointmentWithDepositCancellationPolicyListSchema = z
+  .array(appointmentWithDepositCancellationPolicyRowSchema)
   .optional()
   .superRefine((rows, ctx) => {
     if (!rows) {
@@ -177,8 +269,33 @@ export const appointmentCancellationPolicyListSchema = z
     }
   });
 
-export type AppointmentCancellationPolicyList = z.infer<
-  typeof appointmentCancellationPolicyListSchema
+export const appointmentWithoutDepositCancellationPolicyListSchema = z
+  .array(appointmentWithoutDepositCancellationPolicyRowSchema)
+  .optional()
+  .superRefine((rows, ctx) => {
+    if (!rows) {
+      return;
+    }
+
+    for (let i = 1; i < rows.length; i++) {
+      const prev = rows[i - 1].minutesToAppointment;
+      const cur = rows[i].minutesToAppointment;
+      if (!(cur > prev)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "cancellation.policy.increasing",
+          path: [i, "minutesToAppointment"],
+        });
+      }
+    }
+  });
+
+export type AppointmentWithDepositCancellationPolicyList = z.infer<
+  typeof appointmentWithDepositCancellationPolicyListSchema
+>;
+
+export type AppointmentWithoutDepositCancellationPolicyList = z.infer<
+  typeof appointmentWithoutDepositCancellationPolicyListSchema
 >;
 
 /**
@@ -252,28 +369,51 @@ export type AppointmentReschedulePolicyList = z.infer<
  * - policies: array (required if enabled === true)
  * If enabled === false, policies may be present or omitted (we allow present but ignore).
  */
-export const appointmentCancellationSchema = z.discriminatedUnion("enabled", [
-  z.object({
-    enabled: enabledSchema.extract(["disabled"]),
-  }),
-  z.object({
-    enabled: enabledSchema.exclude(["disabled"]),
-    doNotAllowIfRescheduled: z.coerce.boolean<boolean>().optional(),
-    policies: appointmentCancellationPolicyListSchema,
-    defaultPolicy: defaultAppointmentCancellationPolicyRowSchema,
-  }),
-]);
+export const appointmentWithDepositCancellationSchema = z.discriminatedUnion(
+  "enabled",
+  [
+    z.object({
+      enabled: z.literal(false).optional(),
+    }),
+    z.object({
+      enabled: z.literal(true),
+      doNotAllowIfRescheduled: z.coerce.boolean<boolean>().optional(),
+      policies: appointmentWithDepositCancellationPolicyListSchema,
+      defaultPolicy: defaultAppointmentWithDepositCancellationPolicyRowSchema,
+    }),
+  ],
+);
 
-export type AppointmentCancellationConfiguration = z.infer<
-  typeof appointmentCancellationSchema
+export const appointmentWithoutDepositCancellationSchema = z.discriminatedUnion(
+  "enabled",
+  [
+    z.object({
+      enabled: z.literal(false).optional(),
+    }),
+    z.object({
+      enabled: z.literal(true),
+      doNotAllowIfRescheduled: z.coerce.boolean<boolean>().optional(),
+      policies: appointmentWithoutDepositCancellationPolicyListSchema,
+      defaultPolicy:
+        defaultAppointmentWithoutDepositCancellationPolicyRowSchema,
+    }),
+  ],
+);
+
+export type AppointmentWithDepositCancellationConfiguration = z.infer<
+  typeof appointmentWithDepositCancellationSchema
+>;
+
+export type AppointmentWithoutDepositCancellationConfiguration = z.infer<
+  typeof appointmentWithoutDepositCancellationSchema
 >;
 
 export const appointmentRescheduleSchema = z.discriminatedUnion("enabled", [
   z.object({
-    enabled: enabledSchema.extract(["disabled"]),
+    enabled: z.literal(false).optional(),
   }),
   z.object({
-    enabled: enabledSchema.exclude(["disabled"]),
+    enabled: z.literal(true),
     maxReschedules: z.coerce
       .number<number>()
       .int({
@@ -296,7 +436,10 @@ export type AppointmentRescheduleConfiguration = z.infer<
  * Top-level schema for cancellation/reschedule configuration
  */
 export const appointmentCancellationRescheduleSchema = z.object({
-  cancellations: appointmentCancellationSchema,
+  cancellations: z.object({
+    withDeposit: appointmentWithDepositCancellationSchema,
+    withoutDeposit: appointmentWithoutDepositCancellationSchema,
+  }),
   reschedules: appointmentRescheduleSchema,
   // Optional global settings you might want later (example: deposit percentage / currency)
   // depositPercentage: z.number().min(0).max(100).optional(),

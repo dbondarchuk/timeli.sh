@@ -1,8 +1,5 @@
 import { useI18n } from "@timelish/i18n";
-import {
-  AppointmentWithDepositCancellationPolicyRow,
-  AppointmentWithoutDepositCancellationPolicyRow,
-} from "@timelish/types";
+import { AppointmentReschedulePolicyRow } from "@timelish/types";
 import {
   BooleanSelect,
   Card,
@@ -15,49 +12,41 @@ import {
   FormLabel,
   FormMessage,
   InfoTooltip,
+  Input,
 } from "@timelish/ui";
 import { NonSortable } from "@timelish/ui-admin";
 import React from "react";
 import { useFieldArray } from "react-hook-form";
 import {
-  CancellationPolicyCard,
-  CancellationPolicyCardContent,
-} from "./cards/cancellation-policy-card";
+  ReschedulePolicyCard,
+  ReschedulePolicyCardContent,
+} from "./cards/reschedule-policy-card";
 import { TabProps } from "./types";
 
-const CancellationSection: React.FC<TabProps & { withDeposit: boolean }> = ({
-  form,
-  disabled,
-  withDeposit,
-}) => {
+const RescheduleSection: React.FC<TabProps> = ({ form, disabled }) => {
   const t = useI18n("admin");
-  const baseName =
-    `cancellationsAndReschedules.cancellations.${withDeposit ? "withDeposit" : "withoutDeposit"}` as const;
   const {
     fields: policies,
     append: appendPolicy,
     remove: removePolicy,
   } = useFieldArray({
     control: form.control,
-    name: `${baseName}.policies`,
+    name: `cancellationsAndReschedules.reschedules.policies`,
     keyName: "fields_id",
   });
 
   const ids = React.useMemo(() => policies.map((x) => x.fields_id), [policies]);
 
-  const enabled = form.watch(`${baseName}.enabled`) ?? false;
+  const enabled = !!form.watch(
+    `cancellationsAndReschedules.reschedules.enabled`,
+  );
 
   const addNew = () => {
     appendPolicy({
       minutesToAppointment: 0,
       action: "notAllowed",
       note: "",
-    } as Partial<
-      | AppointmentWithoutDepositCancellationPolicyRow
-      | AppointmentWithDepositCancellationPolicyRow
-    > as
-      | AppointmentWithoutDepositCancellationPolicyRow
-      | AppointmentWithDepositCancellationPolicyRow);
+    } as Partial<AppointmentReschedulePolicyRow> as AppointmentReschedulePolicyRow);
   };
 
   return (
@@ -65,14 +54,14 @@ const CancellationSection: React.FC<TabProps & { withDeposit: boolean }> = ({
       <CardHeader>
         <CardTitle>
           {t(
-            `settings.appointments.form.cancellationsAndReschedules.cancellations.${withDeposit ? "withDeposit" : "withoutDeposit"}.title`,
+            `settings.appointments.form.cancellationsAndReschedules.reschedules.title`,
           )}
         </CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
         <FormField
           control={form.control}
-          name={`${baseName}.enabled`}
+          name={`cancellationsAndReschedules.reschedules.enabled`}
           render={({ field }) => (
             <FormItem>
               <FormLabel>
@@ -81,7 +70,7 @@ const CancellationSection: React.FC<TabProps & { withDeposit: boolean }> = ({
                 )}{" "}
                 <InfoTooltip>
                   {t(
-                    `settings.appointments.form.cancellationsAndReschedules.cancellations.enabledTooltip`,
+                    `settings.appointments.form.cancellationsAndReschedules.reschedules.enabledTooltip`,
                   )}
                 </InfoTooltip>
               </FormLabel>
@@ -93,10 +82,10 @@ const CancellationSection: React.FC<TabProps & { withDeposit: boolean }> = ({
                     field.onBlur();
                   }}
                   trueLabel={t(
-                    `settings.appointments.form.cancellationsAndReschedules.enabled.labels.enabled`,
+                    "settings.appointments.form.cancellationsAndReschedules.enabled.labels.enabled",
                   )}
                   falseLabel={t(
-                    `settings.appointments.form.cancellationsAndReschedules.enabled.labels.disabled`,
+                    "settings.appointments.form.cancellationsAndReschedules.enabled.labels.disabled",
                   )}
                 />
               </FormControl>
@@ -108,45 +97,25 @@ const CancellationSection: React.FC<TabProps & { withDeposit: boolean }> = ({
           <>
             <FormField
               control={form.control}
-              name={`${baseName}.doNotAllowIfRescheduled`}
+              name="cancellationsAndReschedules.reschedules.maxReschedules"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
                     {t(
-                      "settings.appointments.form.cancellationsAndReschedules.cancellations.doNotAllowIfRescheduled.label",
-                    )}{" "}
+                      "settings.appointments.form.cancellationsAndReschedules.reschedules.maxReschedules.label",
+                    )}
                     <InfoTooltip>
                       {t(
-                        `settings.appointments.form.cancellationsAndReschedules.cancellations.doNotAllowIfRescheduled.tooltip`,
+                        "settings.appointments.form.cancellationsAndReschedules.reschedules.maxReschedules.tooltip",
                       )}
                     </InfoTooltip>
                   </FormLabel>
                   <FormControl>
-                    <BooleanSelect
-                      value={field.value ?? false}
-                      onValueChange={(val) => {
-                        field.onChange(val);
-                        if (val) {
-                          form.setValue(
-                            `${baseName}.policies`,
-                            form.getValues(`${baseName}.policies`) ||
-                              ([] as any),
-                          );
-                        }
-
-                        field.onBlur();
-
-                        form.trigger(`${baseName}.policies`);
-
-                        form.trigger(`${baseName}.defaultPolicy.action`);
-                      }}
+                    <Input
+                      {...field}
                       disabled={disabled}
-                      trueLabel={t(
-                        "settings.appointments.form.cancellationsAndReschedules.cancellations.doNotAllowIfRescheduled.labels.true",
-                      )}
-                      falseLabel={t(
-                        "settings.appointments.form.cancellationsAndReschedules.cancellations.doNotAllowIfRescheduled.labels.false",
-                      )}
+                      type="number"
+                      inputMode="decimal"
                     />
                   </FormControl>
                   <FormMessage />
@@ -163,15 +132,14 @@ const CancellationSection: React.FC<TabProps & { withDeposit: boolean }> = ({
                 )}
               </InfoTooltip>
             </h3>
-            <CancellationPolicyCardContent
-              withDeposit={withDeposit}
+            <ReschedulePolicyCardContent
               form={form}
               disabled={disabled}
               default
             />
             <NonSortable
               title={t(
-                "settings.appointments.form.cancellationsAndReschedules.cancellationPolicy.policies.title",
+                "settings.appointments.form.cancellationsAndReschedules.reschedulePolicy.policies.title",
               )}
               ids={ids}
               onAdd={addNew}
@@ -179,13 +147,12 @@ const CancellationSection: React.FC<TabProps & { withDeposit: boolean }> = ({
               <div className="flex flex-grow flex-col gap-4">
                 {policies.map((item, index) => {
                   return (
-                    <CancellationPolicyCard
+                    <ReschedulePolicyCard
                       form={form}
                       disabled={disabled}
                       index={index}
                       remove={() => removePolicy(index)}
                       key={item.fields_id}
-                      withDeposit={withDeposit}
                     />
                   );
                 })}
@@ -198,11 +165,10 @@ const CancellationSection: React.FC<TabProps & { withDeposit: boolean }> = ({
   );
 };
 
-export const CancellationsTab: React.FC<TabProps> = (props) => {
+export const ReschedulesTab: React.FC<TabProps> = (props) => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-      <CancellationSection {...props} withDeposit={false} />
-      <CancellationSection {...props} withDeposit={true} />
+      <RescheduleSection {...props} />
     </div>
   );
 };

@@ -20,6 +20,8 @@ const buttonVariants = {
   ghost: "hover:bg-accent hover:text-accent-foreground",
   "ghost-destructive":
     "text-destructive hover:bg-destructive hover:text-destructive-foreground",
+  "md-ghost-destructive":
+    "bg-destructive text-destructive-foreground hover:bg-destructive/90 md:text-destructive md:bg-transparent md:hover:bg-destructive hover:text-destructive-foreground",
   link: "text-primary underline-offset-4 hover:underline",
   "link-underline": "text-primary underline-offset-4 underline",
   "link-dashed": "text-primary underline-offset-4 underline decoration-dashed",

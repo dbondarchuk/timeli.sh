@@ -1406,7 +1406,8 @@
           "calendarSources": "Джерела календаря",
           "options": "Опції",
           "payments": "Платежі",
-          "cancellationsAndReschedules": "Скасування та перенесення"
+          "cancellations": "Скасування",
+          "reschedules": "Перенесення"
         },
         "main": {
           "add": "Додати",
@@ -1472,9 +1473,15 @@
           "title": "Скасування та перенесення",
           "cancellations": {
             "title": "Скасування",
+            "withDeposit": {
+              "title": "Для записів з завдатком"
+            },
+            "withoutDeposit": {
+              "title": "Для записів без завдатку"
+            },
             "enabledTooltip": "Увімкнути можливість клієнтам скасовувати запис самостійно",
             "doNotAllowIfRescheduled": {
-              "label": "Не дозволяти, якщо перенесено",
+              "label": "Дозволяти, якщо перенесено",
               "tooltip": "Налаштувати, чи можна скасувати запис, якщо він був перенесений",
               "labels": {
                 "true": "Не дозволяти",
@@ -1558,7 +1565,10 @@
                 "notAllowed": "Не дозволено",
                 "forfeitDeposit": "Втратити завдаток",
                 "partialRefund": "Часткове повернення",
-                "fullRefund": "Повне повернення"
+                "fullRefund": "Повне повернення",
+                "paymentRequired": "Потрібна оплата",
+                "paymentToFullPriceRequired": "Потрібна оплата до повної ціни",
+                "allowed": "Дозволено"
               }
             },
             "refundFees": {
@@ -1568,6 +1578,10 @@
             "refundPercentage": {
               "label": "Відсоток повернення",
               "tooltip": "Налаштувати відсоток завдатку, який буде повернено при запиті на скасування"
+            },
+            "paymentPercentage": {
+              "label": "Відсоток оплати",
+              "tooltip": "Налаштувати відсоток ціни запису, який потрібно буде сплатити при запиті на скасування"
             },
             "minutesToAppointment": {
               "label": "Мінімальний час до запису",
@@ -2006,11 +2020,12 @@
     "descriptions": {
       "fullPayment": "Повна оплата",
       "deposit": "Депозит",
-      "rescheduleFee": "Плата за перенос"
+      "rescheduleFee": "Плата за перенесення",
+      "cancellationFee": "Плата за відміну"
     },
     "types": {
       "deposit": "Депозит",
-      "rescheduleFee": "Плата за перенос",
+      "rescheduleFee": "Плата за перенесення",
       "cancellationFee": "Плата за відміну",
       "payment": "Платіж",
       "tips": "Чаеві",

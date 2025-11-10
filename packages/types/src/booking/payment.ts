@@ -46,7 +46,7 @@ export type PaymentIntentUpdateModel = {
       request: AppointmentRequest;
     }
   | {
-      type: Extract<PaymentType, "rescheduleFee">;
+      type: Extract<PaymentType, "rescheduleFee" | "cancellationFee">;
       request: ModifyAppointmentRequest;
     }
 );

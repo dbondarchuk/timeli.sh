@@ -14,6 +14,7 @@ export const PaymentCard: React.FC = () => {
     paymentInformation: paymentForm,
     fields,
     onSubmit,
+    type,
   } = useModifyAppointmentFormContext();
   if (!paymentForm) return null;
 
@@ -22,12 +23,10 @@ export const PaymentCard: React.FC = () => {
   return (
     <div className="flex flex-col gap-4">
       <div className="mb-3">
-        <h2 className="mt-0 text-xl">
-          {i18n("reschedule_fee_required_title")}
-        </h2>
+        <h2 className="mt-0 text-xl">{i18n(`${type}_fee_required_title`)}</h2>
       </div>
       <div className="text-sm mb-3">
-        {i18n("reschedule_fee_required_description", {
+        {i18n(`${type}_fee_required_description`, {
           totalPrice: formatAmountString(appointment?.price ?? 0),
           percentage: paymentForm.intent.percentage,
           amount: formatAmountString(paymentForm.intent.amount),

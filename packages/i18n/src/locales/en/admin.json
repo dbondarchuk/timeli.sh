@@ -1406,7 +1406,8 @@
           "calendarSources": "Calendar sources",
           "options": "Options",
           "payments": "Payments",
-          "cancellationsAndReschedules": "Cancellations and Reschedules"
+          "cancellations": "Cancellations",
+          "reschedules": "Reschedules"
         },
         "main": {
           "add": "Add",
@@ -1472,9 +1473,15 @@
           "title": "Cancellations and Reschedules",
           "cancellations": {
             "title": "Cancellations",
+            "withDeposit": {
+              "title": "For appointments with deposit"
+            },
+            "withoutDeposit": {
+              "title": "For appointments without deposit"
+            },
             "enabledTooltip": "Enables ability for customers to cancel an appointment on their own",
             "doNotAllowIfRescheduled": {
-              "label": "Do not allow if rescheduled",
+              "label": "Allow if rescheduled",
               "tooltip": "Configure if a customer can cancel an appointment if it has been rescheduled",
               "labels": {
                 "true": "Do not allow",
@@ -1558,7 +1565,10 @@
                 "notAllowed": "Not allowed",
                 "forfeitDeposit": "Forfeit deposit",
                 "partialRefund": "Partial refund",
-                "fullRefund": "Full refund"
+                "fullRefund": "Full refund",
+                "paymentRequired": "Payment required",
+                "paymentToFullPriceRequired": "Payment to full price required",
+                "allowed": "Allowed"
               }
             },
             "refundFees": {
@@ -1568,6 +1578,10 @@
             "refundPercentage": {
               "label": "Refund percentage",
               "tooltip": "Configure percentage of the deposit that will be refunded when a cancellation is requested"
+            },
+            "paymentPercentage": {
+              "label": "Payment percentage",
+              "tooltip": "Configure percentage of the appointment price that will be required to be paid when a cancellation is requested"
             },
             "minutesToAppointment": {
               "label": "Minimum time to appointment",
@@ -2006,7 +2020,8 @@
     "descriptions": {
       "fullPayment": "Full payment",
       "deposit": "Deposit",
-      "rescheduleFee": "Reschedule fee"
+      "rescheduleFee": "Reschedule fee",
+      "cancellationFee": "Cancellation fee"
     },
     "types": {
       "deposit": "Deposit",

@@ -396,7 +396,7 @@ const DateTimeInput = React.forwardRef<HTMLInputElement, DateTimeInputProps>(
         )}
         <input
           ref={mergeRefs(inputRef)}
-          className="font-mono flex-grow min-w-0 bg-background py-1 pe-2 text-sm focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+          className="font-mono flex-grow min-w-0 bg-background py-1 pe-2 text-xs focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           onClick={onClick}
@@ -437,10 +437,13 @@ const DateTimeInput = React.forwardRef<HTMLInputElement, DateTimeInputProps>(
           <Button
             variant="ghost"
             size="icon"
-            className={cn("w-8 h-8", showValidation ? "me-6" : "me-3")}
+            className={cn(
+              "size-6 [&>svg]:size-3",
+              showValidation ? "me-6" : "me-3",
+            )}
             onClick={() => setSegments(parseFormat(formatStr, undefined))}
           >
-            <X className="size-4 text-muted-foreground" />
+            <X className="size-3 text-muted-foreground" />
           </Button>
         )}
       </div>

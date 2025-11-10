@@ -190,11 +190,14 @@ const DiscountLimitCard: React.FC<{
             disabled={disabled}
             variant="ghost-destructive"
             size="icon"
-            className="self-start"
+            className="self-start max-md:w-full"
             type="button"
             title={t("services.discounts.form.removeLimit")}
           >
-            <Trash />
+            <Trash />{" "}
+            <span className="md:hidden">
+              {t("services.discounts.form.removeLimit")}
+            </span>
           </Button>
         </AlertDialogTrigger>
         <AlertDialogContent>

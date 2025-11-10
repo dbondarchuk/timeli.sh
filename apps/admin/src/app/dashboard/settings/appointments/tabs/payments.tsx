@@ -70,7 +70,7 @@ export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
                     )}
                   </InfoTooltip>
                 </FormLabel>
-                <FormControl>
+                <FormControl className="grid">
                   <AppSelector
                     scope="payment"
                     className="w-full"

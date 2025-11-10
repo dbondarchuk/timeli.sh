@@ -41,7 +41,7 @@
   "search_country_code_label": "Пошук країни...",
   "search_timezone_label": "Пошук для зміни часового поясу",
   "confirmation_success_title": "Ваш запит отримано!",
-  "confirmation_success_message": "Дякуємо, {name}! Ваш запит на {service} отримано, і ви незабаром отримаєте підтвердження на електронну пошту.",
+  "confirmation_success_message": "Дякуємо, {name}! Ваш запит на {service} отримано, і ви незабаром отримаєте підтвердження.",
   "confirmation_fetch_failed_title": "Ми не можемо знайти ваш запис",
   "availability_fetch_failed_title": "Ой! Щось пішло не так.",
   "availability_fetch_failed_description": "Щось пішло не так під час отримання доступного часу",
@@ -68,10 +68,10 @@
   "reschedule_appointment_form_title": "Давайте знайдемо ваш запис. Будь ласка, надайте деталі запису, який ви хочете перенести",
 
   "cancel_appointment_confirmation_success_title": "Ваш запис був скасований",
-  "cancel_appointment_confirmation_success_message": "Дякуємо, {name}! Ваш запис для {service} був скасований і ви отримаєте підтвердження електронною поштою в найближчому часі.",
+  "cancel_appointment_confirmation_success_message": "Дякуємо, {name}! Ваш запис для {service} був скасований і ви отримаєте підтвердження в найближчому часі.",
 
   "reschedule_appointment_confirmation_success_title": "Ваш запис був перенесений",
-  "reschedule_appointment_confirmation_success_message": "Дякуємо, {name}! Ваш запис для {service} був перенесений на {newDateTime} і ви отримаєте підтвердження електронною поштою в найближчому часі.",
+  "reschedule_appointment_confirmation_success_message": "Дякуємо, {name}! Ваш запис для {service} був перенесений на {newDateTime} і ви отримаєте підтвердження в найближчому часі.",
 
   "cancel_appointment_not_allowed_title": "Скасування не дозволено для цього запису",
   "cancel_appointment_not_allowed_message": "Привіт {name}, на жаль, ми не можемо скасувати цей запис в цей час. Будь ласка, зв'яжіться з нами, щоб скасувати.",
@@ -86,6 +86,8 @@
   "cancel_appointment_confirmation_forfeitDeposit_description": "Привіт {name}, ви впевнені, що хочете скасувати ваш запис для <b>{service}</b> на <i>{dateTime}</i>?<br></br>Якщо ви це зробите, ваш депозит не буде повернений.",
   "cancel_appointment_confirmation_partialRefund_description": "Привіт {name}, ви впевнені, що хочете скасувати ваш запис для <b>{service}</b> на <i>{dateTime}</i>?<br></br>Якщо ви це зробите, <b>{refundPercentage}%</b> вашого депозиту{refundFees, plural, =1 {} other {{feesAmount, plural, =0 {} other { (окрім <b>${feesAmount} комісій</b>)}}}} буде повернено (<b>${refundAmount}</b>).",
   "cancel_appointment_confirmation_fullRefund_description": "Привіт {name}, ви впевнені, що хочете скасувати ваш запис для <b>{service}</b> на <i>{dateTime}</i>?<br></br>Якщо ви це зробите, ваш депозит{refundFees, plural, =1 {} other {{feesAmount, plural, =0 {} other { (окрім <b>${feesAmount} комісій</b>)}}}} буде повернений <b>в повному обсязі</b> (<b>${refundAmount}</b>).",
+  "cancel_payment_partial_required_description": "Привіт {name}, ви впевнені, що хочете скасувати ваш запис для <b>{service}</b> на <i>{dateTime}</i>?",
+  "cancel_payment_full_price_required_description": "Привіт {name}, ви впевнені, що хочете скасувати ваш запис для <b>{service}</b> на <i>{dateTime}</i>?",
   "cancel_appointment_confirmation_checkbox_label": "Я підтверджую, що розумію та хочу скасувати цей запис",
 
   "reschedule_appointment_confirmation_title": "Ви впевнені?",
@@ -96,7 +98,9 @@
   "cancel_submit_failed_description": "Щось пішло не так під час спроби скасувати ваш запис. Будь ласка, зв'яжіться з нами",
   "reschedule_submit_failed_title": "Ой! Щось пішло не так.",
   "reschedule_submit_failed_description": "Щось пішло не так під час спроби перенести ваш запис. Будь ласка, зв'яжіться з нами",
-  "reschedule_fee_required_title": "Потрібна плата за перенос запису",
+  "cancel_fee_required_title": "Потрібна плата за відміну запису",
+  "cancel_fee_required_description": "Для відміни цього запису потрібна плата {percentage}% (${amount}) від загальної ціни ${totalPrice}. Будь ласка, оплатіть, використовуючи форму нижче",
+  "reschedule_fee_required_title": "Потрібна плата за перенесення запису",
   "reschedule_fee_required_description": "Для перенесення цього запису потрібна плата {percentage}% (${amount}) від загальної ціни ${totalPrice}. Будь ласка, оплатіть, використовуючи форму нижче",
 
   "footer": {

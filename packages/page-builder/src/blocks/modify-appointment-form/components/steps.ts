@@ -114,11 +114,7 @@ export const CancelOrRescheduleSteps: Record<StepType, Step> = {
       show: () => true,
       isEnabled: ({ confirmedByUser }) => confirmedByUser,
       action: (ctx) => {
-        if (ctx.type === "cancel") {
-          ctx.onSubmit();
-        } else {
-          handleGoToPayment(ctx);
-        }
+        handleGoToPayment(ctx);
       },
     },
     Content: ConfirmationCard,

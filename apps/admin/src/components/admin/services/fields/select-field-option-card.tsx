@@ -133,9 +133,8 @@ export const SelectFieldOptionCard: React.FC<SelectFieldOptionProps> = ({
           <AlertDialogTrigger asChild>
             <Button
               disabled={disabled}
-              variant="destructive"
-              className=""
-              size="sm"
+              variant="ghost-destructive"
+              size="icon"
               type="button"
             >
               <Trash size={20} />

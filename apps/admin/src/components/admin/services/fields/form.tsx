@@ -12,6 +12,7 @@ import {
   ServiceFieldUpdateModel,
 } from "@timelish/types";
 import {
+  BooleanSelect,
   Button,
   Combobox,
   Form,
@@ -32,7 +33,6 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  Switch,
   TagInput,
   toastPromise,
   useDebounceCacheFn,
@@ -266,32 +266,6 @@ export const ServiceFieldForm: React.FC<{
             />
             <FormField
               control={form.control}
-              name="data.description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    {t("services.fields.form.description")}{" "}
-                    <InfoTooltip>
-                      {t("services.fields.form.descriptionTooltip")}
-                    </InfoTooltip>
-                  </FormLabel>
-                  <FormControl>
-                    <PlateMarkdownEditor
-                      className="bg-background px-4 sm:px-4 pb-24"
-                      disabled={loading}
-                      value={field.value}
-                      onChange={(v) => {
-                        field.onChange(v);
-                        field.onBlur();
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
               name="required"
               render={({ field }) => (
                 <FormItem>
@@ -302,38 +276,19 @@ export const ServiceFieldForm: React.FC<{
                     </InfoTooltip>
                   </FormLabel>
                   <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
+                    <BooleanSelect
+                      value={field.value ?? false}
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        field.onBlur();
+                      }}
+                      className="w-full"
                     />
                   </FormControl>
                 </FormItem>
               )}
             />
           </div>
-          {fieldType === "select" && (
-            <Sortable
-              title={t("services.fields.form.optionsTitle")}
-              ids={selectOptionsIds}
-              onSort={sortSelectOptions}
-              onAdd={addNewSelectOption}
-            >
-              <div className="flex flex-grow flex-col gap-4">
-                {selectOptionsFields.map((item, index) => {
-                  return (
-                    <SelectFieldOptionCard
-                      form={form}
-                      item={item}
-                      key={item.id}
-                      name={`data.options.${index}`}
-                      disabled={loading}
-                      remove={() => removeSelectOption(index)}
-                    />
-                  );
-                })}
-              </div>
-            </Sortable>
-          )}
           {fieldType === "file" && (
             <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
               <FormField
@@ -403,6 +358,55 @@ export const ServiceFieldForm: React.FC<{
               />
             </div>
           )}
+          {fieldType === "select" && (
+            <Sortable
+              title={t("services.fields.form.optionsTitle")}
+              ids={selectOptionsIds}
+              onSort={sortSelectOptions}
+              onAdd={addNewSelectOption}
+            >
+              <div className="flex flex-grow flex-col gap-4">
+                {selectOptionsFields.map((item, index) => {
+                  return (
+                    <SelectFieldOptionCard
+                      form={form}
+                      item={item}
+                      key={item.id}
+                      name={`data.options.${index}`}
+                      disabled={loading}
+                      remove={() => removeSelectOption(index)}
+                    />
+                  );
+                })}
+              </div>
+            </Sortable>
+          )}
+          <FormField
+            control={form.control}
+            name="data.description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  {t("services.fields.form.description")}{" "}
+                  <InfoTooltip>
+                    {t("services.fields.form.descriptionTooltip")}
+                  </InfoTooltip>
+                </FormLabel>
+                <FormControl>
+                  <PlateMarkdownEditor
+                    className="bg-background px-4 sm:px-4 pb-24"
+                    disabled={loading}
+                    value={field.value}
+                    onChange={(v) => {
+                      field.onChange(v);
+                      field.onBlur();
+                    }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
         <SaveButton form={form} />
       </form>

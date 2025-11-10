@@ -1,7 +1,7 @@
 import { useI18n } from "@timelish/i18n";
 import {
-  appointmentCancellationPolicyActionType,
-  BookingConfiguration,
+  appointmentWithDepositCancellationPolicyActionType,
+  appointmentWithoutDepositCancellationPolicyActionType,
 } from "@timelish/types";
 import {
   AlertDialog,
@@ -36,21 +36,35 @@ import {
 } from "@timelish/ui";
 import { Trash } from "lucide-react";
 import React from "react";
-import { FieldPath } from "react-hook-form";
 import { TabProps } from "../types";
 
+function getPath<TDeposit extends boolean, TDefault extends boolean>(
+  withDeposit: TDeposit,
+  isDefault: TDefault,
+  index: number,
+): TDeposit extends true
+  ? TDefault extends true
+    ? `cancellationsAndReschedules.cancellations.withDeposit.defaultPolicy`
+    : `cancellationsAndReschedules.cancellations.withDeposit.policies.${number}`
+  : TDefault extends true
+    ? `cancellationsAndReschedules.cancellations.withoutDeposit.defaultPolicy`
+    : `cancellationsAndReschedules.cancellations.withoutDeposit.policies.${number}` {
+  return `cancellationsAndReschedules.cancellations.${withDeposit ? "withDeposit" : "withoutDeposit"}.${isDefault ? "defaultPolicy" : `policies.${index}`}` as const as any;
+}
+
 export const CancellationPolicyCardContent: React.FC<
-  {} & TabProps &
+  { withDeposit: boolean } & TabProps &
     ({ default: true; index?: never } | { default?: false; index: number })
-> = ({ form, disabled, default: isDefault, index }) => {
+> = ({ form, disabled, default: isDefault, index, withDeposit }) => {
   const t = useI18n("admin");
-  const path: FieldPath<BookingConfiguration> = isDefault
-    ? `cancellationsAndReschedules.cancellations.defaultPolicy`
-    : (`cancellationsAndReschedules.cancellations.policies.${index}` as const);
+
+  const path = getPath(withDeposit, isDefault ?? false, index ?? 0);
 
   const action = form.watch(`${path}.action`);
   const isPartialRefund = action === "partialRefund";
   const isFullRefund = action === "fullRefund";
+  const isPaymentRequired = action === "paymentRequired";
+  const isPaymentToFullPriceRequired = action === "paymentToFullPriceRequired";
 
   return (
     <>
@@ -104,12 +118,22 @@ export const CancellationPolicyCardContent: React.FC<
                   field.onChange(value);
                   field.onBlur();
 
-                  if (value === "partialRefund") {
-                    form.setValue(`${path}.refundPercentage`, 50, {
+                  if (withDeposit && value === "partialRefund") {
+                    form.setValue(`${path}.refundPercentage` as any, 50, {
                       shouldValidate: true,
                     });
+                  } else if (value === "paymentRequired") {
+                    form.setValue(`${path}.paymentPercentage` as any, 50, {
+                      shouldValidate: true,
+                    });
+                  } else if (withDeposit) {
+                    form.setValue(`${path}.refundPercentage` as any, undefined);
                   } else {
-                    form.setValue(`${path}.refundPercentage`, undefined);
+                    form.setValue(`${path}.refundPercentage` as any, undefined);
+                    form.setValue(
+                      `${path}.paymentPercentage` as any,
+                      undefined,
+                    );
                   }
                 }}
                 disabled={disabled}
@@ -122,7 +146,10 @@ export const CancellationPolicyCardContent: React.FC<
                   />
                 </SelectTrigger>
                 <SelectContent>
-                  {appointmentCancellationPolicyActionType.map((action) => (
+                  {(withDeposit
+                    ? appointmentWithDepositCancellationPolicyActionType
+                    : appointmentWithoutDepositCancellationPolicyActionType
+                  ).map((action) => (
                     <SelectItem key={action} value={action}>
                       {t(
                         `settings.appointments.form.cards.cancellationPolicy.action.labels.${action}`,
@@ -136,10 +163,10 @@ export const CancellationPolicyCardContent: React.FC<
           </FormItem>
         )}
       />
-      {(isPartialRefund || isFullRefund) && (
+      {withDeposit && (isPartialRefund || isFullRefund) && (
         <FormField
           control={form.control}
-          name={`${path}.refundFees`}
+          name={`${path}.refundFees` as any}
           render={({ field }) => (
             <FormItem>
               <FormLabel>
@@ -166,10 +193,10 @@ export const CancellationPolicyCardContent: React.FC<
           )}
         />
       )}
-      {isPartialRefund && (
+      {withDeposit && isPartialRefund && (
         <FormField
           control={form.control}
-          name={`${path}.refundPercentage`}
+          name={`${path}.refundPercentage` as any}
           render={({ field }) => (
             <FormItem>
               <FormLabel>
@@ -212,6 +239,52 @@ export const CancellationPolicyCardContent: React.FC<
           )}
         />
       )}
+      {isPaymentRequired && (
+        <FormField
+          control={form.control}
+          name={`${path}.paymentPercentage`}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                {t(
+                  "settings.appointments.form.cards.cancellationPolicy.paymentPercentage.label",
+                )}
+                <InfoTooltip>
+                  {t(
+                    "settings.appointments.form.cards.cancellationPolicy.paymentPercentage.tooltip",
+                  )}
+                </InfoTooltip>
+              </FormLabel>
+              <FormControl>
+                <InputGroup>
+                  <InputGroupInput>
+                    <Input
+                      {...field}
+                      disabled={disabled}
+                      type="number"
+                      min={0}
+                      max={100}
+                      inputMode="decimal"
+                      step={1}
+                      className={InputGroupInputClasses({
+                        variant: "suffix",
+                      })}
+                    />
+                  </InputGroupInput>
+                  <InputSuffix
+                    className={InputGroupSuffixClasses({
+                      variant: "suffix",
+                    })}
+                  >
+                    %
+                  </InputSuffix>
+                </InputGroup>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      )}
     </>
   );
 };
@@ -219,19 +292,21 @@ export const CancellationPolicyCardContent: React.FC<
 export const CancellationPolicyCard: React.FC<
   {
     remove: () => void;
+    withDeposit: boolean;
   } & TabProps &
     ({ default: true; index?: never } | { default?: false; index: number })
-> = ({ form, disabled, default: isDefault, index, remove }) => {
+> = ({ form, disabled, default: isDefault, index, remove, withDeposit }) => {
   const t = useI18n("admin");
 
   return (
-    <div className="flex flex-row gap-2 px-2 py-4 bg-card border rounded w-full">
+    <div className="flex flex-col md:flex-row gap-2 px-2 py-4 bg-card border rounded w-full">
       <div className="grid grid-cols-1 gap-2 w-full relative">
         <CancellationPolicyCardContent
           form={form}
           disabled={disabled}
           default={isDefault as any}
           index={index}
+          withDeposit={withDeposit}
         />
       </div>
       <div className="flex flex-row items-start">
@@ -240,14 +315,19 @@ export const CancellationPolicyCard: React.FC<
             <Button
               disabled={disabled}
               variant="ghost-destructive"
-              className=""
+              className="max-md:w-full"
               size="icon"
               type="button"
               title={t(
                 "settings.appointments.form.cards.cancellationPolicy.remove",
               )}
             >
-              <Trash />
+              <Trash />{" "}
+              <span className="md:hidden">
+                {t(
+                  "settings.appointments.form.cards.cancellationPolicy.remove",
+                )}
+              </span>
             </Button>
           </AlertDialogTrigger>
           <AlertDialogContent>
