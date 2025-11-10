@@ -137,8 +137,7 @@ export const columns: ColumnDef<WaitlistEntry & { appId: string }>[] = [
           variant="primary"
           button
         >
-          <CalendarPlus className="h-4 w-4" />{" "}
-          {t("table.actions.createAppointment")}
+          <CalendarPlus /> {t("table.actions.createAppointment")}
         </Link>
       );
     },

@@ -60,7 +60,7 @@ export const CellAction: React.FC<CellActionProps> = ({ template }) => {
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
             <span className="sr-only">{t("common.openMenu")}</span>
-            <MoreHorizontal className="h-4 w-4" />
+            <MoreHorizontal className="size-3.5" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
@@ -70,18 +70,18 @@ export const CellAction: React.FC<CellActionProps> = ({ template }) => {
 
           <DropdownMenuItem asChild>
             <Link href={`/dashboard/templates/${template._id}`}>
-              <Edit className="h-4 w-4" />{" "}
+              <Edit className="size-3.5" />{" "}
               {t("templates.table.cellAction.update")}
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setOpen(true)}>
-            <Trash className="h-4 w-4" />{" "}
+            <Trash className="size-3.5" />{" "}
             {t("templates.table.cellAction.delete")}
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
             <Link href={`/dashboard/templates/${template._id}/clone`}>
-              <Copy className="h-4 w-4" />{" "}
+              <Copy className="size-3.5" />{" "}
               {t("templates.table.cellAction.clone")}
             </Link>
           </DropdownMenuItem>

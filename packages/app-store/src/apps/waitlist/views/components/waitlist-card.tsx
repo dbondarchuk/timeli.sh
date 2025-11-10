@@ -16,8 +16,16 @@ import {
   toastPromise,
   useTimeZone,
 } from "@timelish/ui";
+import { SendCommunicationDialog } from "@timelish/ui-admin-kit";
 import { durationToTime } from "@timelish/utils";
-import { Calendar, CalendarCheck, Clock, Grid2X2Plus, X } from "lucide-react";
+import {
+  Calendar,
+  CalendarCheck,
+  Clock,
+  Grid2X2Plus,
+  Send,
+  X,
+} from "lucide-react";
 import { DateTime } from "luxon";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -172,6 +180,12 @@ export const WaitlistCard: React.FC<WaitlistCardProps> = ({ entry, appId }) => {
           {loading ? <Spinner /> : <X />}
           {t("view.dismiss")}
         </Button>
+        <SendCommunicationDialog customerId={entry.customerId}>
+          <Button variant="secondary">
+            <Send />
+            {t("view.sendMessage")}
+          </Button>
+        </SendCommunicationDialog>
         <Link
           href={`/dashboard/waitlist/appointment/new?id=${entry._id}`}
           button

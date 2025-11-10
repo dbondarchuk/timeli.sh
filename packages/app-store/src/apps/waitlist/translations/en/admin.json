@@ -10,7 +10,8 @@
       "option": "Service"
     },
     "actions": {
-      "createAppointment": "Create appointment"
+      "createAppointment": "Create appointment",
+      "sendMessage": "Send message"
     },
     "dismiss": {
       "label": "Dismiss {count, plural, =1 {waitlist entry} other {# waitlist entries}}",
@@ -41,6 +42,7 @@
     "submitted": "Submitted {date}",
     "dismiss": "Dismiss",
     "createAppointment": "Create appointment",
+    "sendMessage": "Send message",
     "viewAll": "View all",
     "dates": "Dates",
     "toast": {

@@ -42,12 +42,14 @@ import {
   useArguments,
 } from "@timelish/ui-admin";
 import { Send } from "lucide-react";
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { TextMessageBuilder } from "../templates/text-message-builder";
 
 export type SendCommunicationDialogProps = {
-  children: React.ReactNode;
+  children?: React.ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
   onSuccess?: () => void;
 } & (
   | {
@@ -60,9 +62,9 @@ export type SendCommunicationDialogProps = {
 
 export const SendCommunicationDialog: React.FC<
   SendCommunicationDialogProps
-> = ({ children, onSuccess, ...rest }) => {
+> = ({ children, onSuccess, open, onOpenChange, ...rest }) => {
   const t = useI18n("admin");
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [isOpen, setIsOpen] = React.useState(open ?? false);
   const [loading, setLoading] = React.useState(false);
 
   const [isTemplateDialogOpen, setIsTemplateDialogOpen] = React.useState(false);
@@ -81,6 +83,11 @@ export const SendCommunicationDialog: React.FC<
     },
     [setIsTemplateDialogOpen, setIsTemplateLoading, setTemplateId],
   );
+
+  useEffect(() => {
+    if (open === undefined || open === isOpen) return;
+    setIsOpen(open);
+  }, [open]);
 
   const args = useArguments(rest);
 
@@ -108,6 +115,7 @@ export const SendCommunicationDialog: React.FC<
   const close = () => {
     setIsCloseAlertModalOpen(false);
     setIsOpen(false);
+    onOpenChange?.(false);
     form.reset();
     setContentKey(new Date().getTime().toString());
   };
@@ -117,6 +125,7 @@ export const SendCommunicationDialog: React.FC<
       setIsCloseAlertModalOpen(true);
     } else {
       setIsOpen(true);
+      onOpenChange?.(true);
     }
   };
 
@@ -166,7 +175,7 @@ export const SendCommunicationDialog: React.FC<
 
   return (
     <Dialog open={isOpen} onOpenChange={onDialogOpenChange}>
-      <DialogTrigger asChild>{children}</DialogTrigger>
+      {!!children && <DialogTrigger asChild>{children}</DialogTrigger>}
       <DialogContent className="sm:max-w-[80%] max-h-[100%]">
         <DialogHeader>
           <DialogTitle>{t("communications.sendNewMessage")}</DialogTitle>

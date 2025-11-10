@@ -81,7 +81,7 @@ export const CellAction: React.FC<CellActionProps> = ({ page: page }) => {
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
             <span className="sr-only">{t("pages.table.actions.openMenu")}</span>
-            <MoreHorizontal className="h-4 w-4" />
+            <MoreHorizontal className="size-3.5" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
@@ -91,21 +91,21 @@ export const CellAction: React.FC<CellActionProps> = ({ page: page }) => {
 
           <DropdownMenuItem asChild>
             <Link href={`/dashboard/pages/${page._id}`}>
-              <Edit className="h-4 w-4" /> {t("pages.table.actions.edit")}
+              <Edit className="size-3.5" /> {t("pages.table.actions.edit")}
             </Link>
           </DropdownMenuItem>
           {page.slug !== "home" && (
             <DropdownMenuItem onClick={() => setOpen(true)}>
-              <Trash className="h-4 w-4" /> {t("pages.table.actions.delete")}
+              <Trash className="size-3.5" /> {t("pages.table.actions.delete")}
             </DropdownMenuItem>
           )}
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={copyRelative}>
-            <Copy className="h-4 w-4" />{" "}
+            <Copy className="size-3.5" />{" "}
             {t("pages.table.actions.copyRelativeUrl")}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={copyAbsolute}>
-            <Copy className="h-4 w-4" />{" "}
+            <Copy className="size-3.5" />{" "}
             {t("pages.table.actions.copyAbsoluteUrl")}
           </DropdownMenuItem>
         </DropdownMenuContent>

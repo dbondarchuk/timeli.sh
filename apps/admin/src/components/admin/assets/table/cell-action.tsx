@@ -83,7 +83,7 @@ export const CellAction: React.FC<CellActionProps> = ({ asset }) => {
             <span className="sr-only">
               {t("assets.table.actions.openMenu")}
             </span>
-            <MoreHorizontal className="h-4 w-4" />
+            <MoreHorizontal className="size-3.5" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
@@ -93,25 +93,25 @@ export const CellAction: React.FC<CellActionProps> = ({ asset }) => {
 
           <DropdownMenuItem asChild>
             <Link href={`/dashboard/assets/${asset._id}`}>
-              <Edit className="h-4 w-4" /> {t("assets.table.actions.update")}
+              <Edit className="size-3.5" /> {t("assets.table.actions.update")}
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setOpen(true)}>
-            <Trash className="h-4 w-4" /> {t("assets.table.actions.delete")}
+            <Trash className="size-3.5" /> {t("assets.table.actions.delete")}
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={copyRelative}>
-            <Copy className="h-4 w-4" />{" "}
+            <Copy className="size-3.5" />{" "}
             {t("assets.table.actions.copyRelativeUrl")}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={copyAbsolute}>
-            <Copy className="h-4 w-4" />{" "}
+            <Copy className="size-3.5" />{" "}
             {t("assets.table.actions.copyAbsoluteUrl")}
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
             <Link href={`/assets/${asset.filename}`} target="_blank">
-              <Download className="h-4 w-4" />{" "}
+              <Download className="size-3.5" />{" "}
               {t("assets.table.actions.download")}
             </Link>
           </DropdownMenuItem>

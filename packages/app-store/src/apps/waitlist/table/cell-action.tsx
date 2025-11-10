@@ -10,7 +10,7 @@ import {
   Link,
   toastPromise,
 } from "@timelish/ui";
-import { CalendarPlus, MoreHorizontal, X } from "lucide-react";
+import { CalendarPlus, MoreHorizontal, Send, X } from "lucide-react";
 import { useQueryState } from "nuqs";
 import { useState } from "react";
 
@@ -22,6 +22,7 @@ import {
   waitlistAdminNamespace,
   WaitlistAdminNamespace,
 } from "../translations/types";
+import { SendCommunicationDialog } from "@timelish/ui-admin-kit";
 
 interface CellActionProps {
   waitlistEntry: WaitlistEntry;
@@ -34,6 +35,8 @@ export const CellAction: React.FC<CellActionProps> = ({
 }) => {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const [openCommunicationDialogOpen, setOpenCommunicationDialogOpen] =
+    useState(false);
   const t = useI18n<WaitlistAdminNamespace, WaitlistAdminKeys>(
     waitlistAdminNamespace,
   );
@@ -65,6 +68,11 @@ export const CellAction: React.FC<CellActionProps> = ({
 
   return (
     <>
+      <SendCommunicationDialog
+        customerId={waitlistEntry.customerId}
+        open={openCommunicationDialogOpen}
+        onOpenChange={setOpenCommunicationDialogOpen}
+      />
       <AlertModal
         isOpen={open}
         onClose={() => setOpen(false)}
@@ -78,7 +86,7 @@ export const CellAction: React.FC<CellActionProps> = ({
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
             <span className="sr-only">{tUi("common.openMenu")}</span>
-            <MoreHorizontal className="h-4 w-4" />
+            <MoreHorizontal className="size-3.5" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
@@ -87,12 +95,18 @@ export const CellAction: React.FC<CellActionProps> = ({
             <Link
               href={`/dashboard/waitlist/appointment/new?id=${waitlistEntry._id}`}
             >
-              <CalendarPlus className="h-4 w-4" />{" "}
+              <CalendarPlus className="size-3.5" />{" "}
               {t("table.actions.createAppointment")}
             </Link>
           </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => setOpenCommunicationDialogOpen(true)}
+          >
+            <Send className="size-3.5" />
+            {t("table.actions.sendMessage")}
+          </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setOpen(true)}>
-            <X className="h-4 w-4" /> {t("table.dismiss.action")}
+            <X className="size-3.5" /> {t("table.dismiss.action")}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

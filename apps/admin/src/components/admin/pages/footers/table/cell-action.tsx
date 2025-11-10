@@ -67,7 +67,7 @@ export const CellAction: React.FC<CellActionProps> = ({ pageFooter }) => {
             <span className="sr-only">
               {t("pages.footers.table.actions.openMenu")}
             </span>
-            <MoreHorizontal className="h-4 w-4" />
+            <MoreHorizontal className="size-3.5" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
@@ -77,13 +77,13 @@ export const CellAction: React.FC<CellActionProps> = ({ pageFooter }) => {
 
           <DropdownMenuItem asChild>
             <Link href={`/dashboard/pages/footers/${pageFooter._id}`}>
-              <Edit className="h-4 w-4" />{" "}
+              <Edit className="size-3.5" />{" "}
               {t("pages.footers.table.actions.edit")}
             </Link>
           </DropdownMenuItem>
           {pageFooter.usedCount === 0 && (
             <DropdownMenuItem onClick={() => setOpen(true)}>
-              <Trash className="h-4 w-4" />{" "}
+              <Trash className="size-3.5" />{" "}
               {t("pages.footers.table.actions.delete")}
             </DropdownMenuItem>
           )}

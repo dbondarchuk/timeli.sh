@@ -10,7 +10,8 @@
       "option": "Послуга"
     },
     "actions": {
-      "createAppointment": "Створити запис"
+      "createAppointment": "Створити запис",
+      "sendMessage": "Відправити повідомлення"
     },
     "dismiss": {
       "label": "Відхилити {count, plural, =1 {запис списку очікування} few {# записи списку очікування} many {# записів списку очікування} other {# записів списку очікування}}",
@@ -41,6 +42,7 @@
     "submitted": "Подано {date}",
     "dismiss": "Відхилити",
     "createAppointment": "Створити запис",
+    "sendMessage": "Відправити повідомлення",
     "viewAll": "Переглянути все",
     "dates": "Дати",
     "toast": {

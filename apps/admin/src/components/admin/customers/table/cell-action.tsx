@@ -61,7 +61,7 @@ export const CellAction: React.FC<CellActionProps> = ({ customer }) => {
             <span className="sr-only">
               {t("customers.table.actions.openMenu")}
             </span>
-            <MoreHorizontal className="h-4 w-4" />
+            <MoreHorizontal className="size-3.5" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
@@ -70,12 +70,12 @@ export const CellAction: React.FC<CellActionProps> = ({ customer }) => {
           </DropdownMenuLabel>
           <DropdownMenuItem asChild>
             <Link href={`/dashboard/customers/${customer._id}`}>
-              <Edit className="h-4 w-4" /> {t("customers.table.actions.edit")}
+              <Edit className="size-3.5" /> {t("customers.table.actions.edit")}
             </Link>
           </DropdownMenuItem>
           {customer.appointmentsCount === 0 ? (
             <DropdownMenuItem onClick={() => setOpen(true)}>
-              <Trash className="h-4 w-4" />{" "}
+              <Trash className="size-3.5" />{" "}
               {t("customers.table.actions.delete")}
             </DropdownMenuItem>
           ) : null}

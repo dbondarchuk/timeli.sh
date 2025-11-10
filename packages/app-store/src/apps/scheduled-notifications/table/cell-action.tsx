@@ -77,7 +77,7 @@ export const CellAction: React.FC<CellActionProps> = ({
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
             <span className="sr-only">{tAdmin("common.openMenu")}</span>
-            <MoreHorizontal className="h-4 w-4" />
+            <MoreHorizontal className="size-3.5" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
@@ -86,11 +86,11 @@ export const CellAction: React.FC<CellActionProps> = ({
             <Link
               href={`/dashboard/communications/scheduled-notifications/edit?id=${scheduledNotification._id}`}
             >
-              <Edit className="h-4 w-4" /> {t("table.actions.edit")}
+              <Edit className="size-3.5" /> {t("table.actions.edit")}
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setOpen(true)}>
-            <Trash className="h-4 w-4" /> {t("table.actions.delete")}
+            <Trash className="size-3.5" /> {t("table.actions.delete")}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
