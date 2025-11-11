@@ -1,7 +1,18 @@
 "use client";
 import { ColumnDef } from "@tanstack/react-table";
 import { useI18n, useLocale } from "@timelish/i18n";
-import { Checkbox, Link } from "@timelish/ui";
+import {
+  Button,
+  Checkbox,
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  Link,
+} from "@timelish/ui";
 import { tableSortHeader, tableSortNoopFunction } from "@timelish/ui-admin";
 import { CalendarPlus } from "lucide-react";
 import { DateTime } from "luxon";
@@ -125,6 +136,56 @@ export const columns: ColumnDef<WaitlistEntry & { appId: string }>[] = [
       return t("table.columns.dateAndTime");
     },
     sortingFn: tableSortNoopFunction,
+  },
+  {
+    header: () => {
+      const t = useI18n<WaitlistAdminNamespace, WaitlistAdminKeys>(
+        "app_waitlist_admin",
+      );
+      return t("table.columns.note");
+    },
+    cell: ({ row }) => {
+      const t = useI18n<WaitlistAdminNamespace, WaitlistAdminKeys>(
+        "app_waitlist_admin",
+      );
+
+      if (!row.original.note) return null;
+      if (row.original.note.length <= 50)
+        return <div className="whitespace-pre-wrap">{row.original.note}</div>;
+
+      return (
+        <div className="flex flex-col gap-1">
+          <div className="whitespace-pre-wrap">
+            {row.original.note.substring(0, 50)}...
+          </div>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="link-dashed">
+                {t("table.actions.viewNote")}
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[80%] flex flex-col max-h-[100%]">
+              <DialogHeader>
+                <DialogTitle className="w-full flex flex-row justify-between items-center mt-2">
+                  {t("table.columns.note")}
+                </DialogTitle>
+              </DialogHeader>
+              <div className="flex-1 w-full overflow-auto whitespace-pre-wrap">
+                {row.original.note}
+              </div>
+              <DialogFooter className="flex-row !justify-between gap-2">
+                <DialogClose asChild>
+                  <Button variant="secondary">
+                    {t("table.actions.close")}
+                  </Button>
+                </DialogClose>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
+      );
+    },
+    id: "note",
   },
   {
     cell: ({ row }) => {

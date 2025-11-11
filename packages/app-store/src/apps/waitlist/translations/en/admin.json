@@ -7,11 +7,14 @@
       "dateAndTime": "Date and time",
       "createAppointment": "Create appointment",
       "customer": "Customer",
-      "option": "Service"
+      "option": "Service",
+      "note": "Note"
     },
     "actions": {
       "createAppointment": "Create appointment",
-      "sendMessage": "Send message"
+      "sendMessage": "Send message",
+      "viewNote": "View note",
+      "close": "Close"
     },
     "dismiss": {
       "label": "Dismiss {count, plural, =1 {waitlist entry} other {# waitlist entries}}",
@@ -39,6 +42,7 @@
     "duration": "Duration",
     "addons": "Addons",
     "unknown": "Unknown",
+    "note": "Note",
     "submitted": "Submitted {date}",
     "dismiss": "Dismiss",
     "createAppointment": "Create appointment",

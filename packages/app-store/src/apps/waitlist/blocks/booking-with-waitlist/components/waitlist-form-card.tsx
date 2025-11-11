@@ -8,12 +8,14 @@ import * as z from "zod";
 import {
   EmailField,
   Form,
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
   NameField,
   PhoneField,
+  Textarea,
   ToggleGroup,
   ToggleGroupItem,
   usePrevious,
@@ -133,6 +135,23 @@ export const WaitlistFormCard: React.FC = () => {
             data={{ label: "form_phone_label" }}
             disabled={false}
             namespace={undefined}
+          />
+          <FormField
+            control={form.control}
+            name="note"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("block.note.label")}</FormLabel>
+                <FormControl>
+                  <Textarea
+                    autoResize
+                    {...field}
+                    placeholder={t("block.note.placeholder")}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
           <FormField
             control={form.control}

@@ -185,6 +185,7 @@ export const Schedule: React.FC<
         email: fields.email,
         name: fields.name,
         phone: fields.phone,
+        note: fields.note,
         optionId: appointmentOption._id,
         addonsIds: selectedAddons?.map((addon) => addon._id),
         duration: duration,

@@ -1,6 +1,7 @@
 import {
   AppointmentEventAddon,
   AppointmentEventOption,
+  asOptionalField,
   Customer,
   Prettify,
   WithCompanyId,
@@ -42,6 +43,14 @@ export const waitlistRequestFormSchemaBase = z.object({
     "app_waitlist_public.block.name.required" satisfies WaitlistPublicAllKeys,
   ),
   phone: zPhone,
+  note: asOptionalField(
+    z
+      .string()
+      .max(
+        500,
+        "app_waitlist_public.block.note.max" satisfies WaitlistPublicAllKeys,
+      ),
+  ),
 });
 
 export const MAX_WAITLIST_DATES = 30;

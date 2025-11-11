@@ -24,6 +24,7 @@ import {
   Clock,
   Grid2X2Plus,
   Send,
+  SquarePen,
   X,
 } from "lucide-react";
 import { DateTime } from "luxon";
@@ -72,7 +73,7 @@ export const WaitlistCardContent: React.FC<{ entry: WaitlistEntry }> = ({
               entry.asSoonAsPossible && "self-center",
             )}
           >
-            <Calendar className="size-4" /> {t("view.dateTimeTitle")}
+            <Calendar className="size-3.5" /> {t("view.dateTimeTitle")}
           </dt>
           <dd
             className={cn(
@@ -86,7 +87,7 @@ export const WaitlistCardContent: React.FC<{ entry: WaitlistEntry }> = ({
         {!!entry.duration && (
           <div className="py-1 flex flex-row gap-2 flex-wrap @sm:py-2 @sm:grid @sm:grid-cols-3 @sm:gap-4">
             <dt className="flex self-center items-center gap-1">
-              <Clock className="size-4" /> {t("view.duration")}
+              <Clock className="size-3.5" /> {t("view.duration")}
             </dt>
             <dd className="col-span-2">
               {tAdmin("common.timeDuration", durationToTime(entry.duration))}
@@ -106,6 +107,14 @@ export const WaitlistCardContent: React.FC<{ entry: WaitlistEntry }> = ({
                 </Badge>
               ))}
             </dd>
+          </div>
+        )}
+        {!!entry.note && (
+          <div className="py-1 flex flex-row gap-2 flex-wrap @sm:py-2 @sm:grid @sm:grid-cols-3 @sm:gap-4">
+            <dt className="flex self-center items-center gap-1">
+              <SquarePen className="size-3.5" /> {t("view.note")}
+            </dt>
+            <dd className="col-span-2 whitespace-pre-wrap">{entry.note}</dd>
           </div>
         )}
       </dl>

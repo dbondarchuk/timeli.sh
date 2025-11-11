@@ -22,6 +22,11 @@
       "close": "Close",
       "addTime": "Add Time"
     },
+    "note": {
+      "label": "Note",
+      "placeholder": "You can leave a note here",
+      "max": "You can enter up to 500 characters"
+    },
     "confirmation": {
       "title": "Your request has been received!",
       "message": "Thank you, {name}. Your request to join the waitlist for {service} has been received. We’ll contact you once a time slot opens up."

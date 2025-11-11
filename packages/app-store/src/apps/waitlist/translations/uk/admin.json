@@ -7,11 +7,14 @@
       "dateAndTime": "Дата та час",
       "createAppointment": "Створити запис",
       "customer": "Клієнт",
-      "option": "Послуга"
+      "option": "Послуга",
+      "note": "Примітка"
     },
     "actions": {
       "createAppointment": "Створити запис",
-      "sendMessage": "Відправити повідомлення"
+      "sendMessage": "Відправити повідомлення",
+      "viewNote": "Переглянути примітку",
+      "close": "Закрити"
     },
     "dismiss": {
       "label": "Відхилити {count, plural, =1 {запис списку очікування} few {# записи списку очікування} many {# записів списку очікування} other {# записів списку очікування}}",
@@ -39,6 +42,7 @@
     "duration": "Тривалість",
     "addons": "Додатки",
     "unknown": "Невідомо",
+    "note": "Примітка",
     "submitted": "Подано {date}",
     "dismiss": "Відхилити",
     "createAppointment": "Створити запис",
