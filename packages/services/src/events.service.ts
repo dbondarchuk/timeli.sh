@@ -335,40 +335,42 @@ export class EventsService extends BaseService implements IEventsService {
     );
 
     const duration = durationToTime(appointment.totalDuration);
-    await this.dashboardNotificationsService.publishNotification({
-      type: "appointment-created",
-      badges: [
-        {
-          key: "pending_appointments",
-          count: pendingAppointments.totalCount,
-        },
-      ],
-      toast: {
-        type: "info",
-        title: {
-          key: "admin.appointments.notifications.appointmentCreated.title" satisfies BaseAllKeys,
-        },
-        message: {
-          key: "admin.appointments.notifications.appointmentCreated.message" satisfies BaseAllKeys,
-          args: {
-            name: appointment.customer.name,
-            service: appointment.option.name,
-            dateTime: DateTime.fromJSDate(appointment.dateTime)
-              .setLocale(generalConfig.language)
-              .setZone(generalConfig.timeZone)
-              .toLocaleString(DateTime.DATETIME_HUGE),
-            durationHours: duration.hours,
-            durationMinutes: duration.minutes,
+    if (by === "customer") {
+      await this.dashboardNotificationsService.publishNotification({
+        type: "appointment-created",
+        badges: [
+          {
+            key: "pending_appointments",
+            count: pendingAppointments.totalCount,
+          },
+        ],
+        toast: {
+          type: "info",
+          title: {
+            key: "admin.appointments.notifications.appointmentCreated.title" satisfies BaseAllKeys,
+          },
+          message: {
+            key: "admin.appointments.notifications.appointmentCreated.message" satisfies BaseAllKeys,
+            args: {
+              name: appointment.customer.name,
+              service: appointment.option.name,
+              dateTime: DateTime.fromJSDate(appointment.dateTime)
+                .setLocale(generalConfig.language)
+                .setZone(generalConfig.timeZone)
+                .toLocaleString(DateTime.DATETIME_HUGE),
+              durationHours: duration.hours,
+              durationMinutes: duration.minutes,
+            },
+          },
+          action: {
+            label: {
+              key: "admin.appointments.notifications.appointmentCreated.action" satisfies BaseAllKeys,
+            },
+            href: `/dashboard/appointments/${appointment._id}`,
           },
         },
-        action: {
-          label: {
-            key: "admin.appointments.notifications.appointmentCreated.action" satisfies BaseAllKeys,
-          },
-          href: `/dashboard/appointments/${appointment._id}`,
-        },
-      },
-    });
+      });
+    }
 
     logger.debug(
       {

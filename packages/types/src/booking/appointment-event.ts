@@ -61,21 +61,29 @@ export const appointmentEventSchema = z.object({
   totalDuration: z.coerce.number<number>().int().min(1),
   totalPrice: z.coerce.number<number>().optional(),
   dateTime: z.coerce.date<Date>(),
-  fields: z.record(z.string(), z.any()),
-  optionId: zNonEmptyString("appointments.event.optionId.required"),
+  fields: z.looseObject({
+    email: z.email("appointments.request.fields.email.required"),
+    name: zNonEmptyString("appointments.request.fields.name.required"),
+    phone: zPhone,
+  }),
+  optionId: zNonEmptyString("appointments.request.optionId.required"),
   addonsIds: zUniqueArray(
-    z.array(zNonEmptyString("appointments.event.addonsIds.required")),
+    z.array(zNonEmptyString("appointments.request.addonsIds.required")),
     (x) => x,
-    "appointments.event.addonsIds.unique",
+    "appointments.request.addonsIds.unique",
   ).optional(),
   note: z.string().optional(),
   discount: z
     .object({
-      code: zNonEmptyString("appointments.event.discount.code.required"),
+      code: zNonEmptyString("appointments.request.discount.code.required"),
       discountAmount: z.coerce.number<number>().min(1),
     })
     .optional(),
-  data: z.record(z.string(), z.any()).optional(),
+  data: z
+    .record(z.string(), z.any())
+    .optional()
+    .nullable()
+    .transform((data) => data ?? undefined),
 });
 
 export type AppointmentEventRequest = z.infer<typeof appointmentEventSchema>;

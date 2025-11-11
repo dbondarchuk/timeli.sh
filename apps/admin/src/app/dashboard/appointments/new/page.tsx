@@ -92,7 +92,7 @@ export default async function NewAppointmentPage(props: Props) {
       };
 
   const customer =
-    !from && searchParams.customer
+    !from?.customerId && searchParams.customer
       ? await servicesContainer.customersService.getCustomer(
           searchParams.customer,
         )
