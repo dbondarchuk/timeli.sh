@@ -7,7 +7,7 @@ ${customText}
 
 Запитаний {{ waitlistEntry.createdAt.full }}
 
-Клієнт: [{{ customer.name }}]({{ adminUrl }}/dashboard/customers/{{customerId}})
+Клієнт: [{{ customer.name }}]({{ adminUrl }}/dashboard/customers/{{customer.id}})
 
 Ім'я: {{ waitlistEntry.name }}
 

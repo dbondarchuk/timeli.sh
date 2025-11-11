@@ -43,6 +43,7 @@
     "addons": "Addons",
     "unknown": "Unknown",
     "note": "Note",
+    "viewNote": "View note",
     "submitted": "Submitted {date}",
     "dismiss": "Dismiss",
     "createAppointment": "Create appointment",

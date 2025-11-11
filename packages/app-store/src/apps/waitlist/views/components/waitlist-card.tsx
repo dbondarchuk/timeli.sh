@@ -10,6 +10,13 @@ import {
   CardHeader,
   CardTitle,
   cn,
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
   Heading,
   Link,
   Spinner,
@@ -114,7 +121,41 @@ export const WaitlistCardContent: React.FC<{ entry: WaitlistEntry }> = ({
             <dt className="flex self-center items-center gap-1">
               <SquarePen className="size-3.5" /> {t("view.note")}
             </dt>
-            <dd className="col-span-2 whitespace-pre-wrap">{entry.note}</dd>
+            <dd className="col-span-2">
+              {entry.note.length <= 50 ? (
+                <div className="whitespace-pre-wrap">{entry.note}</div>
+              ) : (
+                <div className="whitespace-pre-wrap">
+                  {entry.note.substring(0, 50)}...
+                </div>
+              )}
+              {entry.note.length > 50 && (
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="link-dashed">
+                      {t("table.actions.viewNote")}
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[80%] flex flex-col max-h-[100%]">
+                    <DialogHeader>
+                      <DialogTitle className="w-full flex flex-row justify-between items-center mt-2">
+                        {t("view.note")}
+                      </DialogTitle>
+                    </DialogHeader>
+                    <div className="flex-1 w-full overflow-auto whitespace-pre-wrap">
+                      {entry.note}
+                    </div>
+                    <DialogFooter className="flex-row !justify-between gap-2">
+                      <DialogClose asChild>
+                        <Button variant="secondary">
+                          {t("table.actions.close")}
+                        </Button>
+                      </DialogClose>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              )}
+            </dd>
           </div>
         )}
       </dl>
@@ -184,17 +225,17 @@ export const WaitlistCard: React.FC<WaitlistCardProps> = ({ entry, appId }) => {
         <WaitlistCardContent entry={entry} />
       </CardContent>
 
-      <CardFooter className="gap-2 justify-end">
-        <Button onClick={onDismiss} variant="destructive" disabled={loading}>
-          {loading ? <Spinner /> : <X />}
-          {t("view.dismiss")}
-        </Button>
+      <CardFooter className="gap-2 justify-end flex-wrap">
         <SendCommunicationDialog customerId={entry.customerId}>
           <Button variant="secondary">
             <Send />
             {t("view.sendMessage")}
           </Button>
         </SendCommunicationDialog>
+        <Button onClick={onDismiss} variant="destructive" disabled={loading}>
+          {loading ? <Spinner /> : <X />}
+          {t("view.dismiss")}
+        </Button>
         <Link
           href={`/dashboard/waitlist/appointment/new?id=${entry._id}`}
           button

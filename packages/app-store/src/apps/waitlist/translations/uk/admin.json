@@ -43,6 +43,7 @@
     "addons": "Додатки",
     "unknown": "Невідомо",
     "note": "Примітка",
+    "viewNote": "Переглянути примітку",
     "submitted": "Подано {date}",
     "dismiss": "Відхилити",
     "createAppointment": "Створити запис",
