@@ -26,6 +26,10 @@ Addons selected:
 - None
 {{/waitlistEntry.addons}}
 
+{{#waitlistEntry.note}}
+Note: {{.}}
+{{/waitlistEntry.note}}
+
 {{#waitlistEntry.asSoonAsPossible}}
 Time: As soon as possible
 {{/waitlistEntry.asSoonAsPossible}}

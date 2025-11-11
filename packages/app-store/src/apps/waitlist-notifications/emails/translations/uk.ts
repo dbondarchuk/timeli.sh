@@ -26,6 +26,10 @@ Email: {{ waitlistEntry.email }}
 - Жодного
 {{/waitlistEntry.addons}}
 
+{{#waitlistEntry.note}}
+Примітка: {{.}}
+{{/waitlistEntry.note}}
+
 {{#waitlistEntry.asSoonAsPossible}}
 Час: якнайшвидше
 {{/waitlistEntry.asSoonAsPossible}}
