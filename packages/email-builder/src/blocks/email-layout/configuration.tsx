@@ -4,13 +4,15 @@ import {
   ColorInput,
   ConfigurationProps,
   FontFamilyInput,
+  PaddingInput,
   SliderInput,
+  TextDimensionInput,
   TextInput,
 } from "@timelish/builder";
 import { useI18n } from "@timelish/i18n";
 import { SquareRoundCorner } from "lucide-react";
 import { FONT_FAMILIES } from "../../style-inputs/helpers/font-family";
-import { EmailLayoutProps } from "./schema";
+import { EmailLayoutDefaultProps, EmailLayoutProps } from "./schema";
 
 export const EmailLayoutConfiguration = ({
   data,
@@ -37,6 +39,12 @@ export const EmailLayoutConfiguration = ({
         defaultValue={data.borderColor ?? null}
         onChange={(borderColor) => updateData({ ...data, borderColor })}
       />
+      <TextDimensionInput
+        label={t("emailBuilder.blocks.emailLayout.maxWidth")}
+        nullable
+        defaultValue={data.maxWidth ?? null}
+        onChange={(maxWidth) => updateData({ ...data, maxWidth })}
+      />
       <SliderInput
         iconLabel={<SquareRoundCorner />}
         units="px"
@@ -46,6 +54,11 @@ export const EmailLayoutConfiguration = ({
         label={t("emailBuilder.blocks.emailLayout.canvasBorderRadius")}
         defaultValue={data.borderRadius ?? 0}
         onChange={(borderRadius) => updateData({ ...data, borderRadius })}
+      />
+      <PaddingInput
+        label={t("emailBuilder.blocks.emailLayout.padding")}
+        defaultValue={data.padding ?? EmailLayoutDefaultProps.padding}
+        onChange={(padding) => updateData({ ...data, padding })}
       />
       <FontFamilyInput
         defaultValue={data.fontFamily ?? null}

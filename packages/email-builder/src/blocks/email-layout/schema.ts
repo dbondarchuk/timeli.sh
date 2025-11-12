@@ -4,6 +4,7 @@ import {
   zColor,
   zColorNullable,
   zFontFamily,
+  zPadding,
 } from "../../style-inputs/helpers/zod";
 
 const EmailLayoutPropsSchema = z.object({
@@ -17,6 +18,14 @@ const EmailLayoutPropsSchema = z.object({
   canvasColor: zColor,
   textColor: zColor,
   fontFamily: zFontFamily,
+  maxWidth: z.coerce
+    .number<number>()
+    .int("emailBuilder.common.validation.maxWidth")
+    .min(500, "emailBuilder.common.validation.maxWidth")
+    .max(1200, "emailBuilder.common.validation.maxWidth")
+    .optional()
+    .nullable(),
+  padding: zPadding,
   previewText: z.string().optional().nullable(),
   children: z.array(z.any()),
 });
@@ -32,5 +41,12 @@ export const EmailLayoutDefaultProps = {
   canvasColor: "#FFFFFF",
   textColor: "#262626",
   fontFamily: "MODERN_SANS",
+  maxWidth: 600,
+  padding: {
+    top: 24,
+    bottom: 24,
+    left: 16,
+    right: 16,
+  },
   children: [],
 } satisfies EmailLayoutProps;

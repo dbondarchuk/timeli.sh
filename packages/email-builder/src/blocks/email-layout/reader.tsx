@@ -1,13 +1,6 @@
 import { ReaderBlock, ReaderProps } from "@timelish/builder";
-import { getFontFamily } from "../../style-inputs/helpers/styles";
-import { EmailLayoutProps, EmailLayoutReaderProps } from "./schema";
-
-function getBorder({ borderColor }: EmailLayoutProps) {
-  if (!borderColor) {
-    return undefined;
-  }
-  return `1px solid ${borderColor}`;
-}
+import { getFontFamily, getPadding } from "../../style-inputs/helpers/styles";
+import { EmailLayoutDefaultProps, EmailLayoutReaderProps } from "./schema";
 
 export const EmailLayoutReader = ({
   args,
@@ -43,10 +36,16 @@ export const EmailLayoutReader = ({
           width="100%"
           style={{
             margin: "0 auto",
-            maxWidth: "80%",
+            maxWidth: props.maxWidth ? `${props.maxWidth}px` : undefined,
             backgroundColor: props.canvasColor ?? "#FFFFFF",
             borderRadius: props.borderRadius ?? undefined,
-            border: getBorder(props),
+            border: props.borderColor
+              ? `1px solid ${props.borderColor}`
+              : undefined,
+            borderCollapse: "separate",
+            padding: getPadding(
+              props.padding ?? EmailLayoutDefaultProps.padding,
+            ),
           }}
           role="presentation"
           cellSpacing="0"

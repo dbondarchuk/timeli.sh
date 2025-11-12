@@ -1367,6 +1367,7 @@
     "common": {
       "validation": {
         "borderRadius": "Border radius must be integer and greater than 0",
+        "maxWidth": "Max width must be integer and greater than 500 and less than 1200",
         "fontSize": "Font size must be integer and greater than 0"
       },
       "styleInputs": {
@@ -1522,7 +1523,9 @@
         "previewText": "Preview text",
         "fontFamily": "Font family",
         "borderColor": "Border color",
-        "inherit": "Inherit"
+        "inherit": "Inherit",
+        "maxWidth": "Canvas Max width",
+        "padding": "Canvas Padding"
       },
       "heading": {
         "displayName": "Heading",

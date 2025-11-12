@@ -33,7 +33,7 @@ export const renderUserEmailTemplate = async (
       ?.filter((b) => !!b)
       .map((b) => ({
         ...b,
-        backgroundColor: b.backgroundColor ?? "#2B2B33",
+        backgroundColor: b.backgroundColor ?? "#0066ff",
         textColor: b.textColor ?? "#FFFFFF",
       })) || [];
 
@@ -42,7 +42,7 @@ export const renderUserEmailTemplate = async (
       ?.filter((b) => !!b)
       .map((b) => ({
         ...b,
-        backgroundColor: b.backgroundColor ?? "#2B2B33",
+        backgroundColor: b.backgroundColor ?? "#0066ff",
         textColor: b.textColor ?? "#FFFFFF",
       })) || [];
 
@@ -58,6 +58,7 @@ export const renderUserEmailTemplate = async (
       textColor: "#262626",
       fontFamily: "MODERN_SANS",
       previewText: previewText ?? title,
+      maxWidth: 600,
       children: [
         {
           type: "ConditionalContainer",

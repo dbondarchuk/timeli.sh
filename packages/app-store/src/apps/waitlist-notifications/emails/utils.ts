@@ -35,12 +35,12 @@ export const getEmailTemplate = async (
         {
           text: buttonTexts.dismiss,
           url: `${url}/dashboard/waitlist/dismiss?id=${entry._id}`,
-          backgroundColor: "#FF0000",
+          backgroundColor: "#ef4444",
         },
         {
           text: buttonTexts.createAppointment,
           url: `${url}/dashboard/waitlist/appointment/new?id=${entry._id}`,
-          backgroundColor: "#0008FF",
+          backgroundColor: "#0066ff",
         },
       ],
     },

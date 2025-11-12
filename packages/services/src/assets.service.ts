@@ -230,15 +230,16 @@ export class AssetsService extends BaseService implements IAssetsService {
     try {
       return await session.withTransaction(async () => {
         const assets = db.collection<AssetEntity>(ASSETS_COLLECTION_NAME);
+        const filename = asset.filename.replace(/ /g, "_");
 
         const existing = await assets.findOne({
-          filename: asset.filename,
+          filename,
           companyId: this.companyId,
         });
 
         if (!!existing) {
           logger.error(args, "Asset with such file name already exists");
-          throw new Error(`File '${asset.filename}' already exists`);
+          throw new Error(`File '${filename}' already exists`);
         }
 
         const hash = await getFileHash(file);
@@ -258,7 +259,7 @@ export class AssetsService extends BaseService implements IAssetsService {
         logger.debug(args, "Uploading new asset");
 
         await this.storage.saveFile(
-          asset.filename,
+          filename,
           Readable.fromWeb(file.stream() as any),
           file.size,
         );
@@ -267,6 +268,7 @@ export class AssetsService extends BaseService implements IAssetsService {
 
         const dbAsset: Asset = {
           ...asset,
+          filename,
           companyId: this.companyId,
           _id: new ObjectId().toString(),
           uploadedAt: DateTime.utc().toJSDate(),

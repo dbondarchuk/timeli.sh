@@ -46,14 +46,14 @@ export const getEmailTemplate = async (
           ? {
               text: buttonTexts.decline,
               url: `${url}/dashboard/appointments/${appointment._id}/decline`,
-              backgroundColor: "#FF0000",
+              backgroundColor: "#ef4444",
             }
           : undefined,
         appointment.status === "pending"
           ? {
               text: buttonTexts.confirm,
               url: `${url}/dashboard/appointments/${appointment._id}/confirm`,
-              backgroundColor: "#0008FF",
+              backgroundColor: "#0066ff",
             }
           : undefined,
       ],

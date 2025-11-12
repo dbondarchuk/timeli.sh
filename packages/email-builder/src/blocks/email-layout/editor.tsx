@@ -8,8 +8,8 @@ import {
   useCurrentBlock,
   useSetSelectedBlockId,
 } from "@timelish/builder";
-import { getFontFamily } from "../../style-inputs/helpers/styles";
-import { EmailLayoutProps } from "./schema";
+import { getFontFamily, getPadding } from "../../style-inputs/helpers/styles";
+import { EmailLayoutDefaultProps, EmailLayoutProps } from "./schema";
 
 export const EmailLayoutEditor = (props: EmailLayoutProps) => {
   const currentBlock = useCurrentBlock<EmailLayoutProps>();
@@ -47,16 +47,19 @@ export const EmailLayoutEditor = (props: EmailLayoutProps) => {
           width="100%"
           style={{
             margin: "0 auto",
-            maxWidth: "80%",
+            maxWidth:
+              props.maxWidth && props.maxWidth > 0
+                ? `${props.maxWidth}px`
+                : undefined,
             backgroundColor: props.canvasColor ?? "#FFFFFF",
             borderRadius: props.borderRadius ?? undefined,
-            border: (() => {
-              const v = props.borderColor;
-              if (!v) {
-                return undefined;
-              }
-              return `1px solid ${v}`;
-            })(),
+            borderCollapse: "separate",
+            border: props.borderColor
+              ? `1px solid ${props.borderColor}`
+              : undefined,
+            padding: getPadding(
+              props.padding ?? EmailLayoutDefaultProps.padding,
+            ),
           }}
           role="presentation"
           cellSpacing="0"
