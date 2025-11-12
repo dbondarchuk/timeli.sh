@@ -9,6 +9,13 @@ export const appointmentCreatedEmailTemplate = {
       canvasColor: "#FFFFFF",
       textColor: "#262626",
       fontFamily: "BOOK_SANS",
+      maxWidth: 600,
+      padding: {
+        top: 24,
+        bottom: 24,
+        left: 16,
+        right: 16,
+      },
       children: [
         {
           type: "Avatar",
