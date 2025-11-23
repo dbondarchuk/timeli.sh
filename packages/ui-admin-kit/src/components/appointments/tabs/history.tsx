@@ -72,14 +72,14 @@ const HistoryEntry: React.FC<{ entry: AppointmentHistoryEntry }> = ({
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between">
-          <p className="font-medium">
+          <p className="font-medium text-sm">
             {t(`admin.common.labels.appointmentHistoryType.${entry.type}`)}
           </p>
           <div className="flex items-center space-x-2">
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <span className="text-sm text-gray-500 underline decoration-dashed cursor-help">
+                  <span className="text-xs text-gray-500 underline decoration-dashed cursor-help">
                     {dateTime.setLocale(locale).toRelative()}
                   </span>
                 </TooltipTrigger>

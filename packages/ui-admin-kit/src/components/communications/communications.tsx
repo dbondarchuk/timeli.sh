@@ -54,7 +54,7 @@ const CommunicationEntry: React.FC<{ entry: CommunicationLog }> = ({
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between">
-          <p className="font-medium">
+          <p className="font-medium text-sm">
             {entry.subject ??
               t(
                 typeof entry.handledBy === "string"
@@ -69,7 +69,7 @@ const CommunicationEntry: React.FC<{ entry: CommunicationLog }> = ({
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <span className="text-sm text-gray-500 underline decoration-dashed cursor-help">
+                  <span className="text-xs text-gray-500 underline decoration-dashed cursor-help">
                     {dateTime.setLocale(locale).toRelative()}
                   </span>
                 </TooltipTrigger>
@@ -81,7 +81,11 @@ const CommunicationEntry: React.FC<{ entry: CommunicationLog }> = ({
           </div>
         </div>
         <div className="inline-flex gap-1 text-sm mt-1 flex-wrap w-full">
-          <span className="break-all">{entry.text.substring(0, 200)}...</span>
+          <span className="break-all text-xs">
+            {entry.text.length > 200
+              ? entry.text.substring(0, 200) + "..."
+              : entry.text}
+          </span>
           <Dialog>
             <DialogTrigger asChild>
               <Button variant="link-dashed" className="px-0">

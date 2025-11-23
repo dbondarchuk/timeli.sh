@@ -144,6 +144,12 @@ export const CalendarCard: React.FC = () => {
   const minDate = React.useMemo(() => dates[0], [dates]);
   const maxDate = React.useMemo(() => dates[dates.length - 1], [dates]);
 
+  const changeTimeZone = (timeZone: string) => {
+    setTimeZone(timeZone);
+    setDate(undefined);
+    setTime(undefined);
+  };
+
   React.useEffect(() => {
     if (
       date &&
@@ -173,7 +179,7 @@ export const CalendarCard: React.FC = () => {
           )
         }
         value={timeZone}
-        onItemSelect={(value) => setTimeZone(value)}
+        onItemSelect={(value) => changeTimeZone(value)}
       />
     ),
   });
@@ -196,6 +202,7 @@ export const CalendarCard: React.FC = () => {
                 mode="single"
                 selected={date}
                 showOutsideDays={false}
+                timeZone={timeZone}
                 // startMonth={Luxon.fromJSDate(minDate)
                 //   .startOf("month")
                 //   .toJSDate()}

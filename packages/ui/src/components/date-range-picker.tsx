@@ -42,6 +42,14 @@ export const CalendarDateRangePicker: React.FC<
     onChange?.(range);
   };
 
+  const getDateTime = (date: Date) => {
+    const d = DateTime.fromJSDate(date);
+    if (rest.timeZone) {
+      return d.setZone(rest.timeZone, { keepLocalTime: true });
+    }
+    return d;
+  };
+
   return (
     <div className={cn("grid gap-2 w-full", className)}>
       <Popover>
@@ -101,12 +109,10 @@ export const CalendarDateRangePicker: React.FC<
                 range
                   ? {
                       start: range.from
-                        ? DateTime.fromJSDate(range.from)
-                            .startOf("day")
-                            .toJSDate()
+                        ? getDateTime(range.from).startOf("day").toJSDate()
                         : undefined,
                       end: range.to
-                        ? DateTime.fromJSDate(range.to).endOf("day").toJSDate()
+                        ? getDateTime(range.to).endOf("day").toJSDate()
                         : undefined,
                     }
                   : undefined,

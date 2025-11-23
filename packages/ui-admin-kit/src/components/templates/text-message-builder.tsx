@@ -88,12 +88,12 @@ export const TextMessageBuilder: React.FC<{
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="w-4 h-4 p-0 ml-1"
+                              className="p-0 ml-1"
                               onClick={click}
                             >
                               <ClipboardCopy
                                 className={cn(
-                                  "w-3 h-3",
+                                  "size-4",
                                   copied ? "text-green-600" : "",
                                 )}
                               />
@@ -135,10 +135,12 @@ export const TextMessageBuilder: React.FC<{
         </FormDescription>
         <FormMessage />
       </FormItem>
-      <FormItem className="flex-1">
-        <FormLabel>{t("templates.textMessageBuilder.preview")}</FormLabel>
+      <FormItem className="flex-1 flex flex-col">
+        <FormLabel className="h-8 flex items-center">
+          {t("templates.textMessageBuilder.preview")}
+        </FormLabel>
         <div
-          className="w-full text-sm"
+          className="w-full text-xs"
           dangerouslySetInnerHTML={{
             __html: preview.replaceAll("\n", "<br/>"),
           }}

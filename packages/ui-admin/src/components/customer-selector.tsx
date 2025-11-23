@@ -115,7 +115,7 @@ export const CustomerSelector: React.FC<CustomerSelectorProps> = ({
       // @ts-ignore Allow clear passthrough
       onChange={onItemSelect}
       disabled={disabled}
-      className={cn("flex font-normal text-base max-w-full", className)}
+      className={cn("font-normal text-base max-w-full grid", className)}
       placeholder={t("customerSelector.placeholder")}
       value={value}
       allowClear={allowClear}

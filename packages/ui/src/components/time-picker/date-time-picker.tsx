@@ -280,7 +280,10 @@ export function DateTimePicker({
   );
 
   const onDayChanged = useCallback(
-    (d: DateTime) => {
+    (newDate: Date) => {
+      const d = DateTime.fromJSDate(newDate).setZone(timeZone, {
+        keepLocalTime: true,
+      });
       let day = d.set({
         hour: date.hour,
         minute: date.minute,
@@ -303,7 +306,7 @@ export function DateTimePicker({
       setDate(day);
       if (commitOnChange) onChange?.(day.toJSDate());
     },
-    [setDate, setMonth, onChange, commitOnChange],
+    [setDate, onChange, commitOnChange, timeZone, date],
   );
 
   const onSubmit = useCallback(() => {
@@ -461,9 +464,7 @@ export function DateTimePicker({
             timeZone={timeZone}
             mode="single"
             selected={date.toJSDate()}
-            onSelect={(d) =>
-              d && onDayChanged(DateTime.fromJSDate(d).setZone(timeZone))
-            }
+            onSelect={(d) => d && onDayChanged(d)}
             month={month.toJSDate()}
             endMonth={endMonth.toJSDate()}
             disabled={
@@ -474,9 +475,7 @@ export function DateTimePicker({
                     min ? { before: min } : null,
                   ].filter(Boolean) as Matcher[])
             }
-            onMonthChange={(d) =>
-              setMonth(DateTime.fromJSDate(d).setZone(timeZone))
-            }
+            onMonthChange={(d) => setMonth(DateTime.fromJSDate(d))}
             classNames={{
               dropdowns: "flex w-full gap-2",
               months: "flex w-full h-fit",
@@ -596,7 +595,7 @@ function MonthYearPicker({
   }, [value]);
   const months = useMemo(() => {
     const months: TimeOption[] = [];
-    for (let i = 0; i < 12; i++) {
+    for (let i = 1; i <= 12; i++) {
       let disabled = false;
       const startM = value.set({ month: i }).startOf("month");
       const endM = value.set({ month: i }).endOf("month");

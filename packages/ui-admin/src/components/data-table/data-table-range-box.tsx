@@ -2,7 +2,7 @@
 
 import { useI18n } from "@timelish/i18n";
 import { DateRange } from "@timelish/types";
-import { CalendarDateRangePicker } from "@timelish/ui";
+import { CalendarDateRangePicker, useTimeZone } from "@timelish/ui";
 import { DateTime } from "luxon";
 import { Options } from "nuqs";
 
@@ -19,8 +19,11 @@ const dateRangeOptions = [
 ] as const;
 type DateRangeOption = (typeof dateRangeOptions)[number];
 
-const getDateRange = (option: DateRangeOption): DateRange | undefined => {
-  const now = DateTime.now();
+const getDateRange = (
+  option: DateRangeOption,
+  timeZone: string,
+): DateRange | undefined => {
+  const now = DateTime.now().setZone(timeZone);
 
   switch (option) {
     case "thisMonth":
@@ -99,6 +102,8 @@ export function DataTableRangeBox({
     end: endValue || undefined,
   };
 
+  const timeZone = useTimeZone();
+
   const onRangeChange = (newRange?: DateRange) => {
     setStartValue(newRange?.start || null);
     setEndValue(newRange?.end || null);
@@ -112,8 +117,9 @@ export function DataTableRangeBox({
       rangeOptions={dateRangeOptions.map((option) => ({
         label: t(`dateRangePicker.rangeOptions.${option}`),
         name: option,
-        value: getDateRange(option),
+        value: getDateRange(option, timeZone),
       }))}
+      timeZone={timeZone}
     />
   );
 }

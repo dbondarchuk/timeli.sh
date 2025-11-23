@@ -14,6 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
   Skeleton,
+  useTimeZone,
 } from "@timelish/ui";
 import { PaymentCard } from "@timelish/ui-admin-kit";
 import { DateTime } from "luxon";
@@ -58,8 +59,11 @@ const dateRangeOptions = [
 ] as const;
 type DateRangeOption = (typeof dateRangeOptions)[number];
 
-const getDateRange = (option: DateRangeOption): DateRange | undefined => {
-  const now = DateTime.now();
+const getDateRange = (
+  option: DateRangeOption,
+  timeZone: string,
+): DateRange | undefined => {
+  const now = DateTime.now().setZone(timeZone);
 
   switch (option) {
     case "thisMonth":
@@ -186,6 +190,8 @@ export const FinancialsTabClient: React.FC<FinancialsTabProps> = ({
     date: formatChartDate(point.date),
   }));
 
+  const timeZone = useTimeZone();
+
   return (
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-4">
@@ -220,16 +226,19 @@ export const FinancialsTabClient: React.FC<FinancialsTabProps> = ({
               <CalendarDateRangePicker
                 range={{
                   start: start
-                    ? DateTime.fromJSDate(start).toJSDate()
+                    ? DateTime.fromJSDate(start).setZone(timeZone).toJSDate()
                     : undefined,
-                  end: end ? DateTime.fromJSDate(end).toJSDate() : undefined,
+                  end: end
+                    ? DateTime.fromJSDate(end).setZone(timeZone).toJSDate()
+                    : undefined,
                 }}
                 rangeOptions={dateRangeOptions.map((option) => ({
                   label: t(`view.rangeOptions.${option}`),
                   name: option,
-                  value: getDateRange(option),
+                  value: getDateRange(option, timeZone),
                 }))}
                 onChange={handleCalendarChange}
+                timeZone={timeZone}
               />
             </div>
           </div>

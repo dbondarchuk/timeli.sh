@@ -16,6 +16,7 @@ import {
   DialogTitle,
   DialogTrigger,
   Label,
+  useTimeZone,
 } from "@timelish/ui";
 import { eachOfInterval } from "@timelish/utils";
 import { ChevronDown, ChevronRight, Plus, X } from "lucide-react";
@@ -94,6 +95,8 @@ export function WaitlistDatePicker({
   const handleRemoveEntry = (index: number) => {
     onChange(value.filter((_, i) => i !== index));
   };
+
+  const timeZone = useTimeZone();
 
   const handleRemoveDateFromGroup = (
     group: WaitlistDateGroup,
@@ -283,6 +286,7 @@ export function WaitlistDatePicker({
                 {t("block.date.label")} *
               </Label>
               <CalendarDateRangePicker
+                timeZone={timeZone}
                 range={selectedDateRange ?? undefined}
                 onChange={(dateRange) =>
                   setSelectedDateRange(dateRange ?? null)

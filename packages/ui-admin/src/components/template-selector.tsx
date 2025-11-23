@@ -83,7 +83,7 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
     <Combobox
       allowClear={allowClear}
       disabled={disabled || isLoading}
-      className={cn("flex font-normal text-base", className)}
+      className={cn("flex font-normal text-xs", className)}
       values={templateValues(templates)}
       searchLabel={
         isLoading

@@ -104,7 +104,7 @@ export const AppointmentDetails = ({
   return (
     <>
       <div className="flex flex-col @4xl:grid grid-cols-2 gap-4">
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 text-xs">
           <dl className="divide-y">
             <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
               <dt className="flex self-center">
@@ -126,7 +126,7 @@ export const AppointmentDetails = ({
                         .toLocaleString(DateTime.TIME_SIMPLE, { locale })}
                     </AccordionTrigger>
                     <AccordionContent>
-                      <div className="grid grid-cols-2 gap-1">
+                      <div className="grid grid-cols-2 gap-1 text-xs">
                         <div>{t("appointments.view.dateAndTime")}:</div>
                         <div>
                           {DateTime.fromJSDate(appointment.dateTime)
@@ -257,7 +257,7 @@ export const AppointmentDetails = ({
                       </span>
                     </AccordionTrigger>
                     <AccordionContent>
-                      <div className="grid grid-cols-3 gap-1">
+                      <div className="grid grid-cols-3 gap-1 text-xs">
                         <div>{t("appointments.view.name")}:</div>
                         <div className="col-span-2">
                           <Link
@@ -286,7 +286,7 @@ export const AppointmentDetails = ({
                 {t("appointments.view.fields")}
               </dt>
               <dd className="col-span-2">
-                <div className="grid grid-cols-3 gap-1 text-sm">
+                <div className="grid grid-cols-3 gap-1 text-xs">
                   <div>{t("appointments.view.name")}:</div>
                   <div className="col-span-2">{name}</div>
                   <div>{t("appointments.view.email")}:</div>
@@ -331,7 +331,7 @@ export const AppointmentDetails = ({
                       {appointment.option.name}
                     </AccordionTrigger>
                     <AccordionContent>
-                      <div className="grid grid-cols-3 gap-1">
+                      <div className="grid grid-cols-3 gap-1 text-xs">
                         <div>{t("appointments.view.option")}:</div>
                         <div className="col-span-2">
                           <Link
@@ -420,7 +420,7 @@ export const AppointmentDetails = ({
                 </dt>
                 <dd className="col-span-2">
                   <dd className="col-span-2">
-                    <div className="grid grid-cols-3 gap-1 text-sm">
+                    <div className="grid grid-cols-3 gap-1 text-xs">
                       <div>
                         {t("appointments.view.meetingInformation.url")}:
                       </div>
