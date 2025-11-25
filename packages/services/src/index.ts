@@ -29,6 +29,7 @@ export * from "./communication-logs.service";
 export * from "./configuration.service";
 export * from "./connected-apps.service";
 export * from "./customers.service";
+export * from "./email";
 export * from "./events.service";
 export * from "./organization.service";
 export * from "./pages.service";

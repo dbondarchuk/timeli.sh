@@ -48,6 +48,10 @@ export interface INotificationService {
   ): Promise<TextMessageResponse>;
 }
 
+export interface ISystemNotificationService {
+  sendSystemEmail(email: Email): Promise<void>;
+}
+
 export interface IDashboardNotificationsService {
   publishNotification(notification: DashboardNotification): Promise<void>;
 }

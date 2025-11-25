@@ -1,11 +1,15 @@
 import { getLoggerFactory } from "@timelish/logger";
 import {
+  Email,
   EmailNotificationRequest,
+  EmailResponse,
   ICommunicationLogsService,
   IConfigurationService,
   IConnectedAppsService,
   IMailSender,
+  IMailSenderApp,
   INotificationService,
+  ISystemNotificationService,
   ITextMessageSender,
   TextMessageNotificationRequest,
   TextMessageResponse,
@@ -20,6 +24,7 @@ export class NotificationService implements INotificationService {
     private readonly configurationService: IConfigurationService,
     private readonly connectedAppService: IConnectedAppsService,
     private readonly communicationLogService: ICommunicationLogsService,
+    private readonly defaultEmailService: IMailSender,
   ) {}
 
   public async sendEmail({
@@ -33,15 +38,36 @@ export class NotificationService implements INotificationService {
     const defaultAppsConfiguration =
       await this.configurationService.getConfiguration("defaultApps");
 
-    const emailAppId = defaultAppsConfiguration?.email.appId;
+    const emailAppId = defaultAppsConfiguration?.email?.appId;
 
-    const { app, service } =
-      await this.connectedAppService.getAppService<IMailSender>(emailAppId);
+    let sendMail: (email: Email, fromName?: string) => Promise<EmailResponse>;
+    let useCustomerEmailApp = false;
+    if (participantType === "customer" && emailAppId) {
+      logger.debug({ appId: emailAppId }, "Using customer email app");
+
+      const { app, service } =
+        await this.connectedAppService.getAppService<IMailSenderApp>(
+          emailAppId,
+        );
+
+      sendMail = async (email: Email) => await service.sendMail(app, email);
+      useCustomerEmailApp = true;
+    } else {
+      let fromName: string | undefined = undefined;
+      if (participantType === "customer") {
+        const generalConfiguration =
+          await this.configurationService.getConfiguration("general");
+        fromName = generalConfiguration?.name;
+      }
+
+      sendMail = async (email: Email) =>
+        await this.defaultEmailService.sendMail(email, fromName);
+    }
 
     logger.info(
       {
-        emailAppName: app.name,
         emailAppId,
+        useCustomerEmailApp,
         emailTo: (Array.isArray(email.to) ? email.to : [email.to])
           .map((to) => maskify(to))
           .join("; "),
@@ -53,7 +79,7 @@ export class NotificationService implements INotificationService {
     );
 
     try {
-      const response = await service.sendMail(app, email);
+      const response = await sendMail(email);
 
       logger.info({ response }, "Successfully sent email");
 
@@ -157,6 +183,26 @@ export class NotificationService implements INotificationService {
       return response;
     } catch (error) {
       logger.error({ error }, "Error sending Text Message");
+      throw error;
+    }
+  }
+}
+
+export class SystemNotificationService implements ISystemNotificationService {
+  protected readonly loggerFactory = getLoggerFactory(
+    "SystemNotificationService",
+  );
+
+  public constructor(private readonly emailService: IMailSender) {}
+
+  public async sendSystemEmail(email: Email): Promise<void> {
+    const logger = this.loggerFactory("sendSystemEmail");
+    logger.info({ email }, "Sending system email");
+    try {
+      await this.emailService.sendMail(email);
+      logger.info({ email }, "System email sent");
+    } catch (error) {
+      logger.error({ error }, "Error sending system email");
       throw error;
     }
   }

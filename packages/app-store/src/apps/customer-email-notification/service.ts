@@ -53,35 +53,6 @@ export default class CustomerEmailNotificationConnectedApp
     );
 
     try {
-      const defaultApps =
-        await this.props.services.configurationService.getConfiguration(
-          "defaultApps",
-        );
-      const emailAppId = defaultApps.email.appId;
-
-      logger.debug(
-        { appId: appData._id, emailAppId },
-        "Retrieved default email app configuration",
-      );
-
-      try {
-        await this.props.services.connectedAppsService.getApp(emailAppId);
-        logger.debug(
-          { appId: appData._id, emailAppId },
-          "Email app is properly configured",
-        );
-      } catch (error: any) {
-        logger.error(
-          { appId: appData._id, emailAppId, error },
-          "Email sender default is not configured",
-        );
-        return {
-          status: "failed",
-          statusText:
-            "app_customer-email-notification_admin.statusText.email_app_not_configured",
-        };
-      }
-
       const status: ConnectedAppStatusWithText<
         CustomerEmailNotificationAdminNamespace,
         CustomerEmailNotificationAdminKeys

@@ -1,5 +1,6 @@
 import { getLoggerFactory } from "@timelish/logger";
 import {
+  Email,
   EmailNotificationRequest,
   INotificationService,
   TextMessageNotificationRequest,
@@ -20,7 +21,15 @@ export type TextMessageJobData = WithCompanyId<{
   data: TextMessageNotificationRequest;
 }>;
 
-export type NotificationJobData = EmailJobData | TextMessageJobData;
+export type SystemEmailJobData = {
+  type: "system-email";
+  data: Email;
+};
+
+export type NotificationJobData =
+  | EmailJobData
+  | TextMessageJobData
+  | SystemEmailJobData;
 
 export class BullMQNotificationService
   extends BaseBullMQClient
@@ -87,6 +96,38 @@ export class BullMQNotificationService
       logger.error(
         { error, data },
         "Failed to add email notification to queue",
+      );
+      throw error;
+    }
+  }
+
+  public async sendSystemEmail(data: Email): Promise<void> {
+    const logger = this.loggerFactory("sendSystemEmail");
+
+    const jobData: SystemEmailJobData = {
+      type: "system-email",
+      data,
+    };
+
+    try {
+      const queue = this.getQueue(this.config.queues.email.name);
+      const job = await queue.add("system-email-notification", jobData, {
+        priority: 0,
+        delay: 0,
+      });
+
+      logger.info(
+        {
+          jobId: job.id,
+          emailTo: Array.isArray(data.to) ? data.to.join(", ") : data.to,
+          subject: data.subject,
+        },
+        "Systme email notification job added to queue",
+      );
+    } catch (error) {
+      logger.error(
+        { error, data },
+        "Failed to add system email notification to queue",
       );
       throw error;
     }

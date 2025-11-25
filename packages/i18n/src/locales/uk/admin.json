@@ -1336,8 +1336,14 @@
     "appStore": "Магазин додатків",
     "noConnectedApps": "У вас немає підключених додатків",
     "defaultAppsForm": {
-      "emailSender": "Відправник email",
-      "textMessageSender": "Відправник текстових повідомлень",
+      "emailSender": {
+        "label": "Відправник email",
+        "placeholder": "Використовувати відправник email за замовчуванням"
+      },
+      "textMessageSender": {
+        "label": "Відправник текстових повідомлень",
+        "placeholder": "Використовувати відправник текстових повідомлень за замовчуванням"
+      },
       "assetsStorage": "Сховище ресурсів",
       "toasts": {
         "changesSaved": "Ваші зміни були збережені.",

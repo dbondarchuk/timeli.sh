@@ -14,5 +14,17 @@
       "@timelish/*": ["../../packages/*"]
     }
   },
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    ".next",
+    ".next/cache",
+    "coverage",
+    "*.tsbuildinfo",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx"
+  ]
 }
