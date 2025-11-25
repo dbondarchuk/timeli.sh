@@ -168,6 +168,7 @@ export function getAvailableTimeSlotsWithPriority({
   const sortedDurations = [...(allServiceDurations || [])].sort(
     (a, b) => b - a,
   );
+
   const durationWeights = new Map<number, number>();
   sortedDurations.forEach((d, i) => durationWeights.set(d, i + 1)); // weight 1 = highest priority
 
@@ -193,23 +194,6 @@ export function getAvailableTimeSlotsWithPriority({
 
     return { count, totalWeight: weightSum };
   }
-
-  // function calculateFittingAppointments(gap: number): {
-  //   count: number;
-  //   totalWeight: number;
-  // } {
-  //   let count = 0;
-  //   let weightSum = 0;
-  //   let remaining = gap;
-  //   while (true) {
-  //     const next = sortedDurations.find((d) => d <= remaining);
-  //     if (!next) break;
-  //     count++;
-  //     weightSum += durationWeights.get(next)!;
-  //     remaining -= next;
-  //   }
-  //   return { count, totalWeight: weightSum };
-  // }
 
   for (
     let day = start.startOf("day");
@@ -283,11 +267,15 @@ export function getAvailableTimeSlotsWithPriority({
                 .minutes,
             ) <= 5;
 
-          const anyOtherServiceCanFit =
+          const anyOtherServiceCanFitBefore =
             allServiceDurations &&
-            allServiceDurations.some(
-              (s) => s <= gapBeforeSlot || s <= gapAfterSlot,
-            );
+            allServiceDurations.some((s) => s <= gapBeforeSlot);
+          const anyOtherServiceCanFitAfter =
+            allServiceDurations &&
+            allServiceDurations.some((s) => s <= gapAfterSlot);
+
+          const anyOtherServiceCanFit =
+            anyOtherServiceCanFitBefore || anyOtherServiceCanFitAfter;
 
           const hasBreakBefore =
             isToShiftStart || gapBeforeSlot >= breakDuration;
@@ -330,8 +318,8 @@ export function getAvailableTimeSlotsWithPriority({
           let priority = 0;
 
           if (slotMatchesCustom) priority += 3;
-          if (hasBreakBefore) priority += 1;
-          if (hasBreakAfter) priority += 1;
+          if (hasBreakBefore && !anyOtherServiceCanFitBefore) priority += 1;
+          if (hasBreakAfter && !anyOtherServiceCanFitAfter) priority += 1;
           if (
             preferBackToBack &&
             adjacentToEvent &&
