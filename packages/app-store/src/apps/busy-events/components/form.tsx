@@ -15,6 +15,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";
 import {
+  BusyEventsAdminAllKeys,
   BusyEventsAdminKeys,
   busyEventsAdminNamespace,
   BusyEventsAdminNamespace,
@@ -143,7 +144,9 @@ export const BusyEventsForm: React.FC<BusyEventsFormProps> = ({ appId }) => {
           onChange={setCurrentSchedule}
           disabled={week < todayWeek}
           weekDate={weekDate}
-          shiftsLabel={"apps.busyEvents.shifts"}
+          shiftsLabel={
+            "app_busy-events_admin.shifts" satisfies BusyEventsAdminAllKeys
+          }
           addShiftLabel={t("addShift")}
         />
       )}
