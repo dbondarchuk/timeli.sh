@@ -32,7 +32,7 @@ import {
   ICalendarBusyTimeProvider,
   ICalendarWriter,
   IConnectedAppProps,
-  IMailSender,
+  IMailSenderApp,
   IMeetingUrlProvider,
   IOAuthConnectedApp,
   WithDatabaseId,
@@ -77,7 +77,7 @@ export class OutlookConnectedApp
   implements
     IOAuthConnectedApp,
     ICalendarBusyTimeProvider,
-    IMailSender,
+    IMailSenderApp,
     ICalendarWriter,
     IMeetingUrlProvider
 {

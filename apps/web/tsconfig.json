@@ -8,11 +8,18 @@
   },
   "include": [
     "next-env.d.ts",
+    "src/**/*.ts",
+    "src/**/*.tsx",
     "src/types/*.d.ts",
-    "next.config.ts",
-    "**/*.ts",
-    "**/*.tsx",
+    "next.config.mjs",
     ".next/types/**/*.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    ".next",
+    ".next/cache",
+    "coverage"
+  ]
 }

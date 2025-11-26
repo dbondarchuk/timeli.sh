@@ -62,7 +62,9 @@ export const DefaultAppsConfigurationForm: React.FC<{
             name="email.appId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t("apps.defaultAppsForm.emailSender")}</FormLabel>
+                <FormLabel>
+                  {t("apps.defaultAppsForm.emailSender.label")}
+                </FormLabel>
                 <FormControl>
                   <AppSelector
                     onItemSelect={field.onChange}
@@ -70,6 +72,10 @@ export const DefaultAppsConfigurationForm: React.FC<{
                     value={field.value}
                     disabled={loading}
                     className="w-full"
+                    allowClear
+                    placeholder={t(
+                      "apps.defaultAppsForm.emailSender.placeholder",
+                    )}
                   />
                 </FormControl>
                 <FormMessage />
@@ -82,7 +88,7 @@ export const DefaultAppsConfigurationForm: React.FC<{
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  {t("apps.defaultAppsForm.textMessageSender")}
+                  {t("apps.defaultAppsForm.textMessageSender.label")}
                 </FormLabel>
                 <FormControl>
                   <AppSelector
@@ -92,6 +98,9 @@ export const DefaultAppsConfigurationForm: React.FC<{
                     disabled={loading}
                     className="w-full"
                     allowClear
+                    placeholder={t(
+                      "apps.defaultAppsForm.textMessageSender.placeholder",
+                    )}
                   />
                 </FormControl>
                 <FormMessage />

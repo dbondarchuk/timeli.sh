@@ -37,6 +37,7 @@ const checkAppSearch = (app: ConnectedApp, query: string) => {
 };
 
 type BaseAppSelectorProps = {
+  placeholder?: string;
   scope: AppScope;
   value?: string;
   disabled?: boolean;
@@ -61,6 +62,7 @@ export type AppSelectorProps = BaseAppSelectorProps &
 
 export const AppSelector: React.FC<AppSelectorProps> = ({
   scope,
+  placeholder,
   disabled,
   className,
   excludeIds,
@@ -123,7 +125,11 @@ export const AppSelector: React.FC<AppSelectorProps> = ({
       disabled={disabled || isLoading}
       className={cn("flex font-normal text-base max-w-full", className)}
       values={appValues(apps)}
-      searchLabel={isLoading ? t("common.loadingApps") : t("common.selectApp")}
+      searchLabel={
+        isLoading
+          ? t("common.loadingApps")
+          : placeholder || t("common.selectApp")
+      }
       value={value}
       customSearch={(search) =>
         appValues(apps.filter((app) => checkAppSearch(app, search)))

@@ -7,7 +7,7 @@ import {
   EmailResponse,
   IConnectedApp,
   IConnectedAppProps,
-  IMailSender,
+  IMailSenderApp,
 } from "@timelish/types";
 import { decrypt, encrypt } from "@timelish/utils";
 import { createEvent } from "ics";
@@ -23,7 +23,7 @@ import {
 const MASKED_PASSWORD = "********";
 
 export default class SmtpConnectedApp
-  implements IConnectedApp<SmtpConfiguration>, IMailSender
+  implements IConnectedApp<SmtpConfiguration>, IMailSenderApp
 {
   protected readonly loggerFactory: LoggerFactory;
 

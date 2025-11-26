@@ -52,41 +52,6 @@ export class EmailNotificationConnectedApp
     );
 
     try {
-      const defaultApps =
-        await this.props.services.configurationService.getConfiguration(
-          "defaultApps",
-        );
-
-      logger.debug(
-        { appId: appData._id },
-        "Retrieved default apps configuration",
-      );
-
-      const emailAppId = defaultApps.email.appId;
-
-      logger.debug(
-        { appId: appData._id, emailAppId },
-        "Retrieved email app ID",
-      );
-
-      try {
-        await this.props.services.connectedAppsService.getApp(emailAppId);
-        logger.debug(
-          { appId: appData._id, emailAppId },
-          "Email app is properly configured",
-        );
-      } catch (error: any) {
-        logger.error(
-          { appId: appData._id, emailAppId, error },
-          "Email sender default is not configured",
-        );
-        return {
-          status: "failed",
-          statusText:
-            "app_email-notification_admin.statusText.email_app_not_configured" satisfies EmailNotificationAdminAllKeys,
-        };
-      }
-
       const status: ConnectedAppStatusWithText<
         EmailNotificationAdminNamespace,
         EmailNotificationAdminKeys

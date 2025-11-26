@@ -27,6 +27,10 @@ export type EmailResponse = {
   messageId: string;
 };
 
-export interface IMailSender {
+export interface IMailSenderApp {
   sendMail: (app: ConnectedAppData, mail: Email) => Promise<EmailResponse>;
+}
+
+export interface IMailSender {
+  sendMail: (mail: Email, fromName?: string) => Promise<EmailResponse>;
 }

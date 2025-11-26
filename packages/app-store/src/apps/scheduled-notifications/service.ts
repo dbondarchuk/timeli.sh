@@ -18,7 +18,6 @@ import {
 } from "./models";
 import { ScheduledNotificationsRepository } from "./repository";
 import {
-  ScheduledNotificationsAdminAllKeys,
   ScheduledNotificationsAdminKeys,
   ScheduledNotificationsAdminNamespace,
 } from "./translations/types";
@@ -129,31 +128,6 @@ export default class ScheduledNotificationsConnectedApp
             { appId: appData._id },
             "Processing default request - setting up scheduled notifications app",
           );
-
-          const defaultApps =
-            await this.props.services.configurationService.getConfiguration(
-              "defaultApps",
-            );
-
-          try {
-            const emailAppId = defaultApps.email?.appId;
-            await this.props.services.connectedAppsService.getApp(emailAppId);
-
-            logger.debug(
-              { appId: appData._id, emailAppId },
-              "Email sender default app found",
-            );
-          } catch {
-            logger.error(
-              { appId: appData._id },
-              "Email sender default app is not configured",
-            );
-            return {
-              status: "failed",
-              statusText:
-                "app_scheduled-notifications_admin.statusText.email_app_not_configured" satisfies ScheduledNotificationsAdminAllKeys,
-            };
-          }
 
           const status: ConnectedAppStatusWithText<
             ScheduledNotificationsAdminNamespace,

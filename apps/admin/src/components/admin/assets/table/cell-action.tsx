@@ -13,6 +13,7 @@ import {
   DropdownMenuTrigger,
   toast,
   toastPromise,
+  useWebsiteUrl,
 } from "@timelish/ui";
 import copy from "copy-text-to-clipboard";
 import { Copy, Download, Edit, MoreHorizontal, Trash } from "lucide-react";
@@ -25,10 +26,11 @@ interface CellActionProps {
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ asset }) => {
+  const t = useI18n("admin");
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const router = useRouter();
-  const t = useI18n("admin");
+  const websiteUrl = useWebsiteUrl();
 
   const copyRelative = () => {
     const url = `/assets/${asset.filename}`;
@@ -41,7 +43,7 @@ export const CellAction: React.FC<CellActionProps> = ({ asset }) => {
   };
 
   const copyAbsolute = () => {
-    const url = `${window.location.origin}/assets/${asset.filename}`;
+    const url = `${websiteUrl}/assets/${asset.filename}`;
     copy(url);
 
     toast.info(t("assets.toasts.copied"), {

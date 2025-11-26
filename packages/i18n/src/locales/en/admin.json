@@ -1336,8 +1336,14 @@
     "appStore": "App Store",
     "noConnectedApps": "You do not have any connected apps",
     "defaultAppsForm": {
-      "emailSender": "Email sender",
-      "textMessageSender": "Text message sender",
+      "emailSender": {
+        "label": "Email sender",
+        "placeholder": "Use default email sender"
+      },
+      "textMessageSender": {
+        "label": "Text message sender",
+        "placeholder": "Use default text message sender"
+      },
       "assetsStorage": "Assets storage",
       "toasts": {
         "changesSaved": "Your changes were saved.",

@@ -7,11 +7,12 @@ import NextScript from "next/script";
 import { CookiesProvider } from "@/components/cookies-provider";
 import { getLoggerFactory } from "@timelish/logger";
 import { buildGoogleFontsUrl, getColorsCss } from "@timelish/utils";
-import "../globals.css";
 
-import { getServicesContainer } from "@/utils/utils";
+import { getServicesContainer, getWebsiteUrl } from "@/utils/utils";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale } from "next-intl/server";
+
+import "../globals.css";
 
 const ScriptRenderer = ({
   resource,
@@ -61,6 +62,7 @@ export default async function RootLayout({
     );
 
   const locale = await getLocale();
+  const websiteUrl = await getWebsiteUrl();
 
   logger.debug(
     { hasGeneral: !!general, hasScripts: !!scripts, hasStyling: !!styling },
@@ -135,7 +137,7 @@ export default async function RootLayout({
         </head>
         {/* <TwLoad /> */}
         <body className="font-primary">
-          <ConfigProvider config={general}>
+          <ConfigProvider config={general} websiteUrl={websiteUrl}>
             <NextIntlClientProvider>
               <main className="min-h-screen max-w-none">{children}</main>
               {scripts?.footer?.map((resource, index) => (

@@ -4,6 +4,7 @@ import { createContext, useContext } from "react";
 
 export const ConfigContext = createContext<{
   config: GeneralConfiguration;
+  websiteUrl: string;
 }>({
   config: {
     name: "",
@@ -15,17 +16,20 @@ export const ConfigContext = createContext<{
     language: "en",
     timeZone: "local",
   },
+  websiteUrl: "",
 });
 
 export const ConfigProvider = ({
   children,
   config,
+  websiteUrl,
 }: {
   children: React.ReactNode;
   config: GeneralConfiguration;
+  websiteUrl: string;
 }) => {
   return (
-    <ConfigContext.Provider value={{ config }}>
+    <ConfigContext.Provider value={{ config, websiteUrl }}>
       {children}
     </ConfigContext.Provider>
   );
@@ -33,6 +37,10 @@ export const ConfigProvider = ({
 
 export const useConfig = () => {
   return useContext(ConfigContext).config;
+};
+
+export const useWebsiteUrl = () => {
+  return useContext(ConfigContext).websiteUrl;
 };
 
 export const useTimeZone = () => {

@@ -1,11 +1,17 @@
 import { getLoggerFactory } from "@timelish/logger";
 import {
+  Email,
   EmailNotificationRequest,
   IServicesContainer,
   TextMessageNotificationRequest,
 } from "@timelish/types";
 import { Job } from "bullmq";
-import { NotificationService } from "../../notifications.service";
+import { SmtpService } from "../../email";
+import { getSmtpConfiguration } from "../../email/smtp/utils";
+import {
+  NotificationService,
+  SystemNotificationService,
+} from "../../notifications.service";
 import { BaseBullMQClient } from "../base-bullmq-client";
 import { NotificationJobData } from "./bullmq-notification-service";
 import { BullMQNotificationConfig } from "./types";
@@ -28,7 +34,7 @@ export class BullMQNotificationWorker extends BaseBullMQClient {
     // Create email worker
     const emailWorker = this.createWorker(
       this.config.queues.email.name,
-      this.processEmailJob.bind(this),
+      this.processEmailJobs.bind(this),
       {
         concurrency: this.config.queues.email.concurrency,
       },
@@ -49,6 +55,21 @@ export class BullMQNotificationWorker extends BaseBullMQClient {
     );
 
     logger.info("BullMQ notification workers initialized");
+  }
+
+  private async processEmailJobs(job: Job<NotificationJobData>): Promise<void> {
+    const jobData = job.data;
+
+    switch (jobData.type) {
+      case "email":
+        await this.processEmailJob(job);
+        break;
+      case "system-email":
+        await this.processSystemEmailJob(job);
+        break;
+      default:
+        throw new Error("Invalid job type for notification processor");
+    }
   }
 
   private async processEmailJob(job: Job<NotificationJobData>): Promise<void> {
@@ -100,6 +121,54 @@ export class BullMQNotificationWorker extends BaseBullMQClient {
         },
         "Email notification job failed",
       );
+      throw error; // Re-throw to trigger retry mechanism
+    }
+  }
+
+  private async processSystemEmailJob(
+    job: Job<NotificationJobData>,
+  ): Promise<void> {
+    const logger = this.loggerFactory("processSystemEmailJob");
+    const jobData = job.data;
+
+    if (jobData.type !== "system-email") {
+      throw new Error("Invalid job type for system email processor");
+    }
+
+    const email = jobData.data as Email;
+    const notificationService = new SystemNotificationService(
+      new SmtpService(getSmtpConfiguration()),
+    );
+
+    try {
+      logger.info(
+        {
+          jobId: job.id,
+          attempt: job.attemptsMade + 1,
+          maxAttempts: job.opts.attempts,
+          emailTo: Array.isArray(email.to) ? email.to.join(", ") : email.to,
+          subject: email.subject,
+        },
+        "Processing system email notification job",
+      );
+
+      await notificationService.sendSystemEmail(email);
+
+      logger.info(
+        { jobId: job.id },
+        "System email notification job completed successfully",
+      );
+    } catch (error) {
+      logger.error(
+        {
+          error,
+          jobId: job.id,
+          attempt: job.attemptsMade + 1,
+          maxAttempts: job.opts.attempts,
+        },
+        "System email notification job failed",
+      );
+
       throw error; // Re-throw to trigger retry mechanism
     }
   }
@@ -313,10 +382,12 @@ export class BullMQNotificationWorker extends BaseBullMQClient {
 
   private getNotificationService(companyId: string): NotificationService {
     const services = this.getServices(companyId);
+    const defaultEmailService = new SmtpService(getSmtpConfiguration());
     return new NotificationService(
       services.configurationService,
       services.connectedAppsService,
       services.communicationLogsService,
+      defaultEmailService,
     );
   }
 }

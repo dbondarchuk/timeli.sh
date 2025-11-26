@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "files": [],
+  "references": [],
+  "compilerOptions": {
+    "composite": false,
+    "skipLibCheck": true
+  },
+  "exclude": [
+    "**/node_modules",
+    "**/dist",
+    "**/build",
+    "**/.next",
+    "**/coverage",
+    "**/*.tsbuildinfo"
+  ]
+}

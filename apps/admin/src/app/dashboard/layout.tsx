@@ -13,7 +13,7 @@ import {
 import { cookies } from "next/headers";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { CookiesProvider } from "../../components/cookies-provider";
-import { getServicesContainer } from "../utils";
+import { getServicesContainer, getWebsiteUrl } from "../utils";
 import { NotificationsToastStream } from "./notifications-toast-stream";
 
 const SIDEBAR_COOKIE_NAME = "admin-sidebar-open";
@@ -31,6 +31,8 @@ export default async function DashboardLayout({
 
   const { name, logo } =
     await servicesContainer.configurationService.getConfiguration("general");
+
+  const websiteUrl = await getWebsiteUrl();
 
   const groups: NavItemGroup[] = [
     ...navItems.map((x) => ({
@@ -98,7 +100,7 @@ export default async function DashboardLayout({
 
   return (
     <div className="flex">
-      <ConfigProvider config={config}>
+      <ConfigProvider config={config} websiteUrl={websiteUrl}>
         <SidebarProvider
           defaultOpen={sidebarDefaultOpen}
           cookieName={SIDEBAR_COOKIE_NAME}
