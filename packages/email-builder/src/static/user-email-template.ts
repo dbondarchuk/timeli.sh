@@ -61,47 +61,37 @@ export const renderUserEmailTemplate = async (
       maxWidth: 600,
       children: [
         {
-          type: "ConditionalContainer",
+          id: "block-36919dfb-0ea4-4f96-bf60-26e647e8f0a9",
+          type: "Image",
           data: {
             props: {
-              condition: "config.logo",
-              then: {
-                children: [
-                  {
-                    type: "Avatar",
-                    id: "block-1740257042821",
-                    data: {
-                      style: {
-                        textAlign: "center",
-                        padding: {
-                          top: 16,
-                          bottom: 16,
-                          right: 24,
-                          left: 24,
-                        },
-                      },
-                      props: {
-                        size: 83,
-                        shape: "circle",
-                        imageUrl: "{{websiteUrl}}{{config.logo}}",
-                      },
-                    },
-                  },
-                ],
+              // url: "https://app.timelish.com/email-logo.png",
+              url: "https://vividnail.studio/assets/6da18974-375c-45ab-8394-cbca15abdc16-email-logo.png",
+              alt: "Timeli.sh Logo",
+              contentAlignment: "middle",
+              linkHref: "https://timelish.com",
+              x: 50,
+              y: 50,
+              width: 200,
+              height: 50,
+            },
+            style: {
+              padding: {
+                top: 16,
+                bottom: 16,
+                left: 24,
+                right: 24,
               },
-              otherwise: {
-                children: [],
-              },
+              textAlign: "center",
             },
           },
-          id: "block-8f282ec6-0660-4ade-a1b1-c224aba979ad",
         },
         {
           type: "Heading",
           id: "block-1740257133963",
           data: {
             props: {
-              text: "{{config.name}}",
+              text: "Timeli.sh - {{config.name}}",
               level: "h3",
             },
             style: {
