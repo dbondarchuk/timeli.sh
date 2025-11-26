@@ -65,8 +65,7 @@ export const renderUserEmailTemplate = async (
           type: "Image",
           data: {
             props: {
-              // url: "https://app.timelish.com/email-logo.png",
-              url: "https://vividnail.studio/assets/6da18974-375c-45ab-8394-cbca15abdc16-email-logo.png",
+              url: "https://app.timelish.com/email-logo.png",
               alt: "Timeli.sh Logo",
               contentAlignment: "middle",
               linkHref: "https://timelish.com",
