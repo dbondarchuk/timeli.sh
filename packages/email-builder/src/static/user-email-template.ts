@@ -457,61 +457,61 @@ export const renderUserEmailTemplate = async (
             },
           },
         },
-        {
-          type: "Text",
-          id: "block-1740258119442",
-          data: {
-            props: {
-              value: [
-                {
-                  children: [
-                    {
-                      text: "{{config.name}}",
-                      fontSize: "11px",
-                      color: "#999999",
-                    },
-                  ],
-                  type: "p",
-                  id: "_ZckO-whgq",
-                  align: "center",
-                },
-                {
-                  type: "p",
-                  id: "GgAnNok00v",
-                  align: "center",
-                  children: [
-                    {
-                      text: "{{config.address}}",
-                      fontSize: "11px",
-                      color: "#999999",
-                    },
-                  ],
-                },
-                {
-                  type: "p",
-                  align: "center",
-                  children: [
-                    {
-                      text: "{{config.phone}}",
-                      fontSize: "11px",
-                      color: "#999999",
-                    },
-                  ],
-                  id: "Nb_oLeI107",
-                },
-              ],
-            },
-            style: {
-              padding: {
-                top: 16,
-                bottom: 16,
-                left: 24,
-                right: 24,
-              },
-              fontWeight: "normal",
-            },
-          },
-        },
+        // {
+        //   type: "Text",
+        //   id: "block-1740258119442",
+        //   data: {
+        //     props: {
+        //       value: [
+        //         {
+        //           children: [
+        //             {
+        //               text: "{{config.name}}",
+        //               fontSize: "11px",
+        //               color: "#999999",
+        //             },
+        //           ],
+        //           type: "p",
+        //           id: "_ZckO-whgq",
+        //           align: "center",
+        //         },
+        //         {
+        //           type: "p",
+        //           id: "GgAnNok00v",
+        //           align: "center",
+        //           children: [
+        //             {
+        //               text: "{{config.address}}",
+        //               fontSize: "11px",
+        //               color: "#999999",
+        //             },
+        //           ],
+        //         },
+        //         {
+        //           type: "p",
+        //           align: "center",
+        //           children: [
+        //             {
+        //               text: "{{config.phone}}",
+        //               fontSize: "11px",
+        //               color: "#999999",
+        //             },
+        //           ],
+        //           id: "Nb_oLeI107",
+        //         },
+        //       ],
+        //     },
+        //     style: {
+        //       padding: {
+        //         top: 16,
+        //         bottom: 16,
+        //         left: 24,
+        //         right: 24,
+        //       },
+        //       fontWeight: "normal",
+        //     },
+        //   },
+        // },
       ],
     },
   };
