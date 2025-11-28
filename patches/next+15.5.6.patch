@@ -11,3 +11,20 @@ index fc2d54d..32ce898 100644
                  }
              }
          } else {
+diff --git a/node_modules/next/dist/server/web/http.js b/node_modules/next/dist/server/web/http.js
+index 652972a..8c74d75 100644
+--- a/node_modules/next/dist/server/web/http.js
++++ b/node_modules/next/dist/server/web/http.js
+@@ -30,7 +30,11 @@ const HTTP_METHODS = [
+     'POST',
+     'PUT',
+     'DELETE',
+-    'PATCH'
++    'PATCH',
++    'PROPFIND',
++    'PROPPATCH',
++    'REPORT',
++    'MKCOL',
+ ];
+ function isHTTPMethod(maybeMethod) {
+     return HTTP_METHODS.includes(maybeMethod);

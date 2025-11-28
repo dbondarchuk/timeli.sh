@@ -2,6 +2,8 @@ import { BUSY_EVENTS_APP_NAME } from "./apps/busy-events/const";
 import { BusyEventsTranslations } from "./apps/busy-events/translations";
 import { CALDAV_APP_NAME } from "./apps/caldav/const";
 import { CaldavTranslations } from "./apps/caldav/translations";
+import { CARDDAV_APP_NAME } from "./apps/carddav/const";
+import { CarddavTranslations } from "./apps/carddav/translations";
 import { CALENDAR_WRITER_APP_NAME } from "./apps/calendar-writer/const";
 import { CalendarWriterTranslations } from "./apps/calendar-writer/translations";
 import { CUSTOMER_EMAIL_NOTIFICATION_APP_NAME } from "./apps/customer-email-notification/const";
@@ -62,6 +64,7 @@ export const AppsTranslations: Record<
   [FINANCIAL_OVERVIEW_APP_NAME]: FinancialOverviewTranslations,
   [BUSY_EVENTS_APP_NAME]: BusyEventsTranslations,
   [CALDAV_APP_NAME]: CaldavTranslations,
+  [CARDDAV_APP_NAME]: CarddavTranslations,
   [CALENDAR_WRITER_APP_NAME]: CalendarWriterTranslations,
   [CUSTOMER_EMAIL_NOTIFICATION_APP_NAME]: CustomerEmailNotificationTranslations,
   [CUSTOMER_TEXT_MESSAGE_NOTIFICATION_APP_NAME]:

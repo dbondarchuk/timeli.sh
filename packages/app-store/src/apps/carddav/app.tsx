@@ -1,0 +1,22 @@
+import { App } from "@timelish/types";
+import { IdCard } from "lucide-react";
+import { CARDDAV_APP_NAME } from "./const";
+import {
+  CarddavAdminAllKeys,
+  CarddavAdminKeys,
+  CarddavAdminNamespace,
+} from "./translations/types";
+
+export const CarddavApp: App<CarddavAdminNamespace, CarddavAdminKeys> = {
+  name: CARDDAV_APP_NAME,
+  displayName:
+    "app_carddav_admin.app.displayName" satisfies CarddavAdminAllKeys,
+  category: ["apps.categories.customers"],
+  scope: ["customer-read"],
+  type: "basic",
+  Logo: ({ className }) => <IdCard className={className} />,
+  isFeatured: true,
+  description: {
+    text: "app_carddav_admin.app.description" satisfies CarddavAdminAllKeys,
+  },
+};
