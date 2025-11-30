@@ -318,8 +318,11 @@ export function getAvailableTimeSlotsWithPriority({
           let priority = 0;
 
           if (slotMatchesCustom) priority += 3;
-          if (hasBreakBefore && !anyOtherServiceCanFitBefore) priority += 1;
-          if (hasBreakAfter && !anyOtherServiceCanFitAfter) priority += 1;
+          if (hasBreakBefore && !isToShiftStart && !anyOtherServiceCanFitBefore)
+            priority += 1;
+          if (hasBreakAfter && !isToShiftEnd && !anyOtherServiceCanFitAfter)
+            priority += 1;
+
           if (
             preferBackToBack &&
             adjacentToEvent &&
@@ -330,9 +333,9 @@ export function getAvailableTimeSlotsWithPriority({
           if (lowerPriorityIfNoFollowingBooking && !anyOtherServiceCanFit)
             priority -= 1;
 
-          if (allowSkipBreak && (!hasBreakBefore || !hasBreakAfter)) {
-            priority -= 1;
-          }
+          // if (allowSkipBreak && (!hasBreakBefore || !hasBreakAfter)) {
+          //   priority -= 1;
+          // }
 
           if (!anyOtherServiceCanFit) {
             const isBackToBack = adjacentToEvent && preferBackToBack;
@@ -405,7 +408,10 @@ export function getAvailableTimeSlotsWithPriority({
           }
 
           const maxPriority = Math.max(...gapSlots.map((s) => s.priority));
-          days.push(...gapSlots.filter((s) => s.priority === maxPriority));
+
+          // Select slots that are at least 80% of the max priority
+          // This ensures we select "near top" priorities
+          days.push(...gapSlots.filter((s) => s.priority >= maxPriority * 0.8));
         } else {
           days.push(...gapSlots);
         }
