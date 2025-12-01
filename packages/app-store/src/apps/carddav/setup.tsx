@@ -27,6 +27,7 @@ import {
   ConnectedAppStatusMessage,
 } from "@timelish/ui-admin";
 import { CopyIcon, RotateCw } from "lucide-react";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { CarddavApp } from "./app";
 import {
@@ -52,6 +53,7 @@ export const CarddavAppSetup: React.FC<AppSetupProps> = ({
   );
 
   const tApps = useI18n("apps");
+  const router = useRouter();
 
   const [appId, setAppId] = React.useState<string | undefined>(existingAppId);
   const [isLoading, setIsLoading] = React.useState(false);
@@ -149,6 +151,7 @@ export const CarddavAppSetup: React.FC<AppSetupProps> = ({
           }
 
           setConfiguration(data);
+          router.refresh();
         },
       );
 
