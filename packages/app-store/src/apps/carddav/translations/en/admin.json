@@ -8,17 +8,25 @@
     "successfullySetUp": "CardDAV server is ready. Access your contacts at the provided URL.",
     "connectionFailed": "Failed to set up CardDAV server"
   },
+  "toast": {
+    "copiedToClipboard": "Copied to clipboard",
+    "regenerateSuccess": "Password regenerated successfully",
+    "regenerateError": "Failed to regenerate password"
+  },
   "form": {
+    "carddavUrl": {
+      "label": "CardDAV URL"
+    },
     "username": {
-      "label": "Username",
-      "tooltip": "Optional username for CardDAV authentication"
+      "label": "Username"
     },
     "password": {
       "label": "Password",
-      "tooltip": "Optional password for CardDAV authentication"
+      "regenerateTooltip": "Regenerate password"
     },
-    "connect": "Enable CardDAV Access",
-    "info": "After enabling, you can access your customer list via CardDAV at: <url></url>"
+    "connect": "Enable <app></app>",
+    "update": "Update <app></app>",
+    "info": "You can access your customer list via CardDAV using the following details:"
   },
   "validation": {}
 }

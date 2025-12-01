@@ -1,10 +1,30 @@
-import * as z from "zod";
-import { CarddavAdminAllKeys } from "./translations/types";
+import { ConnectedAppStatusWithText, Prettify } from "@timelish/types";
 
-export const carddavConfigurationSchema = z.object({
-  username: z.string().optional(),
-  password: z.string().optional(),
-});
+export type CarddavConfiguration = {
+  username: string;
+  password: string;
+  carddavUrl: string;
+};
 
-export type CarddavConfiguration = z.infer<typeof carddavConfigurationSchema>;
+export type CarddavRequestInstallActionType = "install";
+export type CarddavRequestResetPasswordActionType = "reset-password";
+export type CarddavRequestGetConfigurationActionType = "get-configuration";
 
+export type CarddavRequest = Prettify<{
+  type:
+    | CarddavRequestInstallActionType
+    | CarddavRequestResetPasswordActionType
+    | CarddavRequestGetConfigurationActionType;
+}>;
+
+export type CarddavRequestInstallActionResponse = ConnectedAppStatusWithText & {
+  data: CarddavConfiguration;
+};
+
+export type CarddavRequestResetPasswordActionResponse = {
+  password: string;
+};
+
+export type CarddavRequestGetConfigurationActionResponse = {
+  data: CarddavConfiguration;
+};

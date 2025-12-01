@@ -50,11 +50,6 @@ RUN adduser --system --uid 1001 app-server
 COPY --from=builder --chown=app-server:nodejs /app/apps/app-external-server/dist ./dist
 COPY --from=builder --chown=app-server:nodejs /app/apps/app-external-server/package.json ./package.json
 
-# Copy necessary node_modules for runtime
-COPY --from=builder /app/node_modules/@timelish ./node_modules/@timelish
-COPY --from=builder /app/node_modules/dotenv ./node_modules/dotenv
-COPY --from=builder /app/node_modules/mongodb ./node_modules/mongodb
-
 USER app-server
 
 EXPOSE 5556

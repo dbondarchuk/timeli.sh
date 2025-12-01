@@ -9,13 +9,25 @@ import {
 } from "@timelish/types";
 import { decrypt, encrypt } from "@timelish/utils";
 import crypto from "crypto";
-import { CarddavConfiguration } from "./models";
-import { CarddavAdminKeys, CarddavAdminNamespace } from "./translations/types";
+import {
+  CarddavConfiguration,
+  CarddavRequest,
+  CarddavRequestGetConfigurationActionResponse,
+  CarddavRequestInstallActionResponse,
+  CarddavRequestResetPasswordActionResponse,
+} from "./models";
+import {
+  CarddavAdminAllKeys,
+  CarddavAdminKeys,
+  CarddavAdminNamespace,
+} from "./translations/types";
 
-const MASKED_PASSWORD = "********";
+function generatePassword(): string {
+  return crypto.randomBytes(12).toString("hex");
+}
 
-function computeETag(content: string) {
-  return crypto.createHash("md5").update(content, "utf8").digest("hex");
+function generateCarddavUrl(companyId: string, appId: string): string {
+  return `https://${process.env.APPS_EXTERNAL_DOMAIN}/api/apps/${companyId}/${appId}`;
 }
 
 /* (Keep your escapeVCardText and customerToVCard helpers unchanged) */
@@ -107,7 +119,7 @@ function validateAuth(
   const credentials = parseBasicAuth(authHeader);
   if (!credentials) return false;
   const expectedUsername = config.username || "";
-  const expectedPassword = config.password ? decrypt(config.password) : "";
+  const expectedPassword = config.password || "";
   return (
     credentials.username === expectedUsername &&
     credentials.password === expectedPassword
@@ -126,65 +138,155 @@ export default class CarddavConnectedApp
     );
   }
 
-  public async processAppData(
-    appData: CarddavConfiguration,
-  ): Promise<CarddavConfiguration> {
-    return {
-      ...appData,
-      password: appData.password ? MASKED_PASSWORD : undefined,
-    };
-  }
-
   public async processRequest(
     appData: ConnectedAppData,
-    data: CarddavConfiguration,
-  ): Promise<
-    ConnectedAppStatusWithText<CarddavAdminNamespace, CarddavAdminKeys>
-  > {
+    data: CarddavRequest,
+  ): Promise<any> {
     const logger = this.loggerFactory("processRequest");
     logger.debug(
       {
         appId: appData._id,
-        hasUsername: !!data.username,
-        hasPassword: !!data.password,
+        type: data.type,
       },
       "Processing CardDAV configuration request",
     );
 
-    if (data.password === MASKED_PASSWORD && appData?.data?.password) {
-      data.password = appData.data.password;
-    } else if (data.password) {
-      data.password = encrypt(data.password);
+    switch (data.type) {
+      case "reset-password":
+        return this.resetPassword(appData);
+      case "get-configuration":
+        return this.getConfiguration(appData);
+      case "install":
+      default:
+        return this.install(appData);
     }
+  }
 
+  private async resetPassword(appData: ConnectedAppData) {
+    const logger = this.loggerFactory("resetPassword");
+    const password = generatePassword();
+    const encryptedPassword = encrypt(password);
     const status: ConnectedAppStatusWithText<
       CarddavAdminNamespace,
       CarddavAdminKeys
     > = {
       status: "connected",
-      statusText: {
-        key: "app_carddav_admin.statusText.successfullySetUp",
-      },
+      statusText:
+        "app_carddav_admin.statusText.successfullySetUp" satisfies CarddavAdminAllKeys,
     };
 
-    this.props.update({
-      account: {
-        username: data.username || "CardDAV",
-        serverUrl: "CardDAV Server",
+    await this.props.update({
+      data: {
+        ...appData.data,
+        password: encryptedPassword,
       },
-      data,
+      ...status,
+    });
+
+    logger.debug(
+      {
+        appId: appData._id,
+        status: status.status,
+      },
+      "Successfully reset CardDAV password",
+    );
+
+    return {
+      password,
+    } satisfies CarddavRequestResetPasswordActionResponse;
+  }
+
+  private async getUsername(appData: ConnectedAppData) {
+    const logger = this.loggerFactory("getUsername");
+    const organization =
+      await this.props.services.organizationService.getOrganization();
+
+    if (!organization) {
+      logger.error({ appId: appData._id }, "Organization not found");
+      throw new Error("Organization not found");
+    }
+
+    logger.debug(
+      { appId: appData._id, organizationSlug: organization.slug },
+      "Successfully got organization slug",
+    );
+
+    return organization.slug;
+  }
+
+  private async getConfiguration(appData: ConnectedAppData) {
+    const logger = this.loggerFactory("getConfiguration");
+    const username = await this.getUsername(appData);
+
+    const configuration: CarddavConfiguration = {
+      username,
+      password: decrypt(appData.data.password),
+      carddavUrl: generateCarddavUrl(appData.companyId, appData._id),
+    };
+
+    logger.debug(
+      { appId: appData._id, url: configuration.carddavUrl, username },
+      "Successfully got configuration",
+    );
+
+    return {
+      data: configuration,
+    } satisfies CarddavRequestGetConfigurationActionResponse;
+  }
+
+  private async install(appData: ConnectedAppData) {
+    const logger = this.loggerFactory("install");
+
+    if (appData.data.password) {
+      return {
+        status: "connected",
+        statusText:
+          "app_carddav_admin.statusText.successfullySetUp" satisfies CarddavAdminAllKeys,
+      };
+    }
+
+    const password = generatePassword();
+    const encryptedPassword = encrypt(password);
+    const status: ConnectedAppStatusWithText<
+      CarddavAdminNamespace,
+      CarddavAdminKeys
+    > = {
+      status: "connected",
+      statusText:
+        "app_carddav_admin.statusText.successfullySetUp" satisfies CarddavAdminAllKeys,
+    };
+
+    const username = await this.getUsername(appData);
+    const carddavUrl = generateCarddavUrl(appData.companyId, appData._id);
+    await this.props.update({
+      account: {
+        username,
+        serverUrl: carddavUrl,
+      },
+      data: {
+        password: encryptedPassword,
+      },
       ...status,
     });
 
     logger.info(
       {
         appId: appData._id,
+        username,
+        url: carddavUrl,
         status: status.status,
       },
-      "Successfully configured CardDAV server",
+      "Successfully connected to CalDAV calendar",
     );
 
-    return status;
+    return {
+      ...status,
+      data: {
+        carddavUrl,
+        username,
+        password,
+      },
+    } satisfies CarddavRequestInstallActionResponse;
   }
 
   /**
@@ -205,8 +307,8 @@ export default class CarddavConnectedApp
     );
 
     // Validate auth
-    const config = appData.data as CarddavConfiguration | undefined;
-    if (!validateAuth(request, config)) {
+    const config = await this.getConfiguration(appData);
+    if (!validateAuth(request, config?.data)) {
       logger.warn(
         { appId: appData._id, method, path },
         "Authentication failed",

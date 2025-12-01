@@ -12,10 +12,11 @@ export const CarddavApp: App<CarddavAdminNamespace, CarddavAdminKeys> = {
   displayName:
     "app_carddav_admin.app.displayName" satisfies CarddavAdminAllKeys,
   category: ["apps.categories.customers"],
-  scope: ["customer-read"],
+  scope: [],
   type: "basic",
   Logo: ({ className }) => <IdCard className={className} />,
-  isFeatured: true,
+  isFeatured: false,
+  dontAllowMultiple: true,
   description: {
     text: "app_carddav_admin.app.description" satisfies CarddavAdminAllKeys,
   },

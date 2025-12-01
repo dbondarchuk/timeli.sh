@@ -40,6 +40,7 @@ export function useConnectedAppSetup<T extends FieldValues>({
   const [initialAppData, setInitialAppData] = React.useState<T>(
     initialData as any,
   );
+
   React.useEffect(() => {
     if (!existingAppId) return;
 
