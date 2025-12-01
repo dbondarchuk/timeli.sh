@@ -12,6 +12,8 @@ export interface ICustomersService {
     query: Query & { priorityIds?: string[] },
   ): Promise<WithTotal<CustomerListModel>>;
 
+  getAllCustomers(): Promise<Customer[]>;
+
   findCustomer(email: string, phone: string): Promise<Customer | null>;
 
   findCustomerBySearchField(

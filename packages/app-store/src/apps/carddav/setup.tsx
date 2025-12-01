@@ -22,11 +22,7 @@ import {
 import React from "react";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
 import { CarddavApp } from "./app";
-import { CARDDAV_APP_NAME } from "./const";
-import {
-  carddavConfigurationSchema,
-  CarddavConfiguration,
-} from "./models";
+import { CarddavConfiguration, carddavConfigurationSchema } from "./models";
 import {
   CarddavAdminKeys,
   carddavAdminNamespace,
@@ -55,12 +51,29 @@ export const CarddavAppSetup: React.FC<AppSetupProps> = ({
   const [carddavUrl, setCarddavUrl] = React.useState<string>("");
 
   React.useEffect(() => {
-    if (existingAppId) {
-      // Get the base URL
-      const baseUrl = window.location.origin;
-      const url = `${baseUrl}/api/apps/${existingAppId}/addressbook/`;
-      setCarddavUrl(url);
-    }
+    const fetchUrl = async () => {
+      if (!existingAppId) return;
+
+      try {
+        // Get app data to extract companyId
+        const appData = await adminApi.apps.getAppData(existingAppId);
+        const companyId = appData?.companyId;
+
+        if (companyId) {
+          // Use the external server port (default 5556)
+          const externalServerPort =
+            process.env.NEXT_PUBLIC_APP_EXTERNAL_SERVER_PORT || "5556";
+          const protocol = window.location.protocol;
+          const hostname = window.location.hostname;
+          const url = `${protocol}//${hostname}:${externalServerPort}/api/apps/${companyId}/${existingAppId}/addressbook/`;
+          setCarddavUrl(url);
+        }
+      } catch (error) {
+        console.error("Failed to fetch app data for URL", error);
+      }
+    };
+
+    fetchUrl();
   }, [existingAppId]);
 
   return (
@@ -145,4 +158,3 @@ export const CarddavAppSetup: React.FC<AppSetupProps> = ({
     </>
   );
 };
-

@@ -67,5 +67,3 @@ export const PUT = processAppCall;
 export const DELETE = processAppCall;
 export const OPTIONS = processAppCall;
 export const PATCH = processAppCall;
-export const PROPFIND = processAppCall;
-export const REPORT = processAppCall;

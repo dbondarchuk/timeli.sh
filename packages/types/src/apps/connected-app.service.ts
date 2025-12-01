@@ -35,6 +35,11 @@ export interface IConnectedApp<TData = any, TToken = any> {
     slug: string[],
     request: ApiRequest,
   ) => Promise<ApiResponse | undefined>;
+  processAppExternalCall?: (
+    appData: ConnectedAppData<TData, TToken>,
+    slug: string[],
+    request: Request,
+  ) => Promise<Response | undefined>;
 }
 
 export interface IConnectedAppWithWebhook<TData = any, TToken = any>

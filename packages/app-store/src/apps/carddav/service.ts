@@ -1,3 +1,4 @@
+// Replace your CarddavConnectedApp class with this version (keeps your helpers)
 import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
 import {
   ConnectedAppData,
@@ -7,14 +8,17 @@ import {
   IConnectedAppProps,
 } from "@timelish/types";
 import { decrypt, encrypt } from "@timelish/utils";
+import crypto from "crypto";
 import { CarddavConfiguration } from "./models";
 import { CarddavAdminKeys, CarddavAdminNamespace } from "./translations/types";
 
 const MASKED_PASSWORD = "********";
 
-/**
- * Escapes special characters in vCard text fields
- */
+function computeETag(content: string) {
+  return crypto.createHash("md5").update(content, "utf8").digest("hex");
+}
+
+/* (Keep your escapeVCardText and customerToVCard helpers unchanged) */
 function escapeVCardText(text: string): string {
   return text
     .replace(/\\/g, "\\\\")
@@ -23,16 +27,11 @@ function escapeVCardText(text: string): string {
     .replace(/\n/g, "\\n");
 }
 
-/**
- * Converts a customer to vCard format (vCard 3.0)
- */
 function customerToVCard(customer: Customer, baseUrl: string): string {
   const lines: string[] = ["BEGIN:VCARD", "VERSION:3.0"];
 
-  // UID
   lines.push(`UID:${customer._id}`);
 
-  // Name
   const nameParts = customer.name.split(/\s+/);
   const firstName = nameParts[0] || "";
   const lastName = nameParts.slice(1).join(" ") || "";
@@ -43,7 +42,6 @@ function customerToVCard(customer: Customer, baseUrl: string): string {
     );
   }
 
-  // Email
   if (customer.email) {
     lines.push(`EMAIL;TYPE=INTERNET:${customer.email}`);
   }
@@ -53,7 +51,6 @@ function customerToVCard(customer: Customer, baseUrl: string): string {
     });
   }
 
-  // Phone
   if (customer.phone) {
     lines.push(`TEL;TYPE=CELL:${customer.phone}`);
   }
@@ -63,7 +60,6 @@ function customerToVCard(customer: Customer, baseUrl: string): string {
     });
   }
 
-  // Date of birth
   if (customer.dateOfBirth) {
     const dob = new Date(customer.dateOfBirth);
     const year = dob.getFullYear();
@@ -72,17 +68,14 @@ function customerToVCard(customer: Customer, baseUrl: string): string {
     lines.push(`BDAY:${year}${month}${day}`);
   }
 
-  // Note
   if (customer.note) {
     lines.push(`NOTE:${escapeVCardText(customer.note)}`);
   }
 
-  // URL to customer (if we have a base URL)
   if (baseUrl) {
     lines.push(`URL:${baseUrl}/customers/${customer._id}`);
   }
 
-  // Revision timestamp
   lines.push(
     `REV:${new Date().toISOString().replace(/[-:]/g, "").split(".")[0]}Z`,
   );
@@ -91,17 +84,10 @@ function customerToVCard(customer: Customer, baseUrl: string): string {
   return lines.join("\r\n");
 }
 
-/**
- * Parses Basic Auth header
- */
-function parseBasicAuth(authHeader: string | null): {
-  username: string;
-  password: string;
-} | null {
-  if (!authHeader || !authHeader.startsWith("Basic ")) {
-    return null;
-  }
-
+function parseBasicAuth(
+  authHeader: string | null,
+): { username: string; password: string } | null {
+  if (!authHeader || !authHeader.startsWith("Basic ")) return null;
   try {
     const base64 = authHeader.substring(6);
     const decoded = Buffer.from(base64, "base64").toString("utf-8");
@@ -112,28 +98,16 @@ function parseBasicAuth(authHeader: string | null): {
   }
 }
 
-/**
- * Validates authentication
- */
 function validateAuth(
   request: Request,
   config: CarddavConfiguration | undefined,
 ): boolean {
-  if (!config || (!config.username && !config.password)) {
-    // No auth required
-    return true;
-  }
-
+  if (!config || (!config.username && !config.password)) return true;
   const authHeader = request.headers.get("authorization");
   const credentials = parseBasicAuth(authHeader);
-
-  if (!credentials) {
-    return false;
-  }
-
+  if (!credentials) return false;
   const expectedUsername = config.username || "";
   const expectedPassword = config.password ? decrypt(config.password) : "";
-
   return (
     credentials.username === expectedUsername &&
     credentials.password === expectedPassword
@@ -213,91 +187,92 @@ export default class CarddavConnectedApp
     return status;
   }
 
-  public async processAppCall(
+  /**
+   * Main entry — old behavior preserved but improved
+   * slug: array of path pieces after /api/apps/{companyId}/{appId}/
+   */
+  public async processAppExternalCall(
     appData: ConnectedAppData,
     slug: string[],
     request: Request,
   ): Promise<Response | undefined> {
-    const logger = this.loggerFactory("processAppCall");
-    const method = request.method;
-    const url = new URL(request.url);
-    const path = slug.join("/");
-
+    const logger = this.loggerFactory("processAppExternalCall");
+    const method = request.method.toUpperCase();
+    const path = slug.join("/"); // might be "" for root
     logger.debug(
-      {
-        appId: appData._id,
-        method,
-        path,
-        url: url.pathname,
-      },
-      "Processing CardDAV request",
+      { appId: appData._id, method, path },
+      "Processing CardDAV external request",
     );
 
-    // Validate authentication
+    // Validate auth
     const config = appData.data as CarddavConfiguration | undefined;
     if (!validateAuth(request, config)) {
       logger.warn(
-        {
-          appId: appData._id,
-          method,
-          path,
-        },
+        { appId: appData._id, method, path },
         "Authentication failed",
       );
       return new Response("Unauthorized", {
         status: 401,
-        headers: {
-          "WWW-Authenticate": 'Basic realm="CardDAV"',
-        },
+        headers: { "WWW-Authenticate": 'Basic realm="CardDAV"' },
       });
     }
 
-    // Handle OPTIONS (CORS preflight)
+    // Common response headers
+    const commonHeaders = {
+      DAV: "1, 2, 3, addressbook",
+      Allow: "OPTIONS, PROPFIND, GET, REPORT",
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "OPTIONS, PROPFIND, GET, REPORT",
+      "Access-Control-Allow-Headers": "Authorization, Content-Type, Depth",
+    };
+
+    // OPTIONS
     if (method === "OPTIONS") {
-      return new Response(null, {
-        status: 200,
-        headers: {
-          DAV: "1, 2, 3, addressbook",
-          Allow: "OPTIONS, PROPFIND, GET, REPORT",
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "OPTIONS, PROPFIND, GET, REPORT",
-          "Access-Control-Allow-Headers": "Authorization, Content-Type, Depth",
-        },
-      });
+      return new Response(null, { status: 200, headers: commonHeaders });
     }
 
-    // Handle PROPFIND (discovery and listing)
+    // PROPFIND
     if (method === "PROPFIND") {
-      return await this.handlePropfind(appData, path, request);
+      const resp = await this.handlePropfind(appData, path, request);
+      // make sure common headers are present
+      Object.entries(commonHeaders).forEach(([key, value]) => {
+        resp.headers.set(key, value);
+      });
+
+      return resp;
     }
 
-    // Handle GET (retrieve vCard)
+    // GET
     if (method === "GET") {
-      return await this.handleGet(appData, path, request);
+      const resp = await this.handleGet(appData, path, request);
+      if (resp) {
+        Object.entries(commonHeaders).forEach(([key, value]) => {
+          resp.headers.set(key, value);
+        });
+      }
+      return resp;
     }
 
-    // Handle REPORT (used by some clients for querying)
+    // REPORT
     if (method === "REPORT") {
-      return await this.handleReport(appData, path, request);
+      const resp = await this.handleReport(appData, path, request);
+      Object.entries(commonHeaders).forEach(([key, value]) => {
+        resp.headers.set(key, value);
+      });
+
+      return resp;
     }
 
-    logger.warn(
-      {
-        appId: appData._id,
-        method,
-        path,
-      },
-      "Unsupported method",
-    );
-
+    logger.warn({ appId: appData._id, method, path }, "Unsupported method");
     return new Response("Method Not Allowed", {
       status: 405,
-      headers: {
-        Allow: "OPTIONS, PROPFIND, GET, REPORT",
-      },
+      headers: { Allow: commonHeaders.Allow },
     });
   }
 
+  /**
+   * PROPFIND handler — respects Depth: 0 or 1 and returns properly namespaced XML
+   */
   private async handlePropfind(
     appData: ConnectedAppData,
     path: string,
@@ -306,112 +281,196 @@ export default class CarddavConnectedApp
     const logger = this.loggerFactory("handlePropfind");
     logger.debug({ appId: appData._id, path }, "Handling PROPFIND request");
 
-    // Get base URL for generating contact URLs
-    const baseUrl = request.url.split("/api/apps/")[0] || "";
+    const basePath = `/api/apps/${appData.companyId}/${appData._id}`;
+    const depth = (request.headers.get("depth") || "0").toLowerCase(); // "0" or "1" (string)
+    const depthIs0 = depth === "0";
 
-    // If requesting root or addressbook path, return addressbook info
+    // Helper to wrap xml with required namespaces and use D: and C: prefixes
+    const wrap = (inner: string) =>
+      `<?xml version="1.0" encoding="UTF-8"?>
+<D:multistatus xmlns:D="DAV:" xmlns:C="urn:ietf:params:xml:ns:carddav">
+${inner}
+</D:multistatus>`;
+
+    // ROOT (e.g., /api/apps/{companyId}/{appId}/)
     if (path === "") {
-      const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<multistatus xmlns="DAV:">
-  <response>
-    <href>/api/apps/${appData._id}/addressbook/</href>
-    <propstat>
-      <prop>
-        <resourcetype>
-          <collection/>
-          <addressbook xmlns="urn:ietf:params:xml:ns:carddav"/>
-        </resourcetype>
-        <displayname>Customers</displayname>
-        <getcontenttype>text/vcard; charset=utf-8</getcontenttype>
-      </prop>
-      <status>HTTP/1.1 200 OK</status>
-    </propstat>
-  </response>
-</multistatus>`;
+      // At Depth:0 return only the resource's props.
+      // At Depth:1 include a child entry for addressbooks/ (discovery)
+      const rootHref = `${basePath}/`; // must end with slash for collection
+      const addressbooksHref = `${basePath}/addressbook/`; // must end with slash
+      let inner = `
+  <D:response>
+    <D:href>${rootHref}</D:href>
+   <D:propstat>
+      <D:prop>
+        <D:resourcetype>
+          <D:collection/>
+        </D:resourcetype>
+        <D:displayname>CardDAV Root</D:displayname>
+        <D:current-user-principal>
+          <D:href>${basePath}/principal/</D:href>
+        </D:current-user-principal>
+      </D:prop>
+      <D:status>HTTP/1.1 200 OK</D:status>
+    </D:propstat>
+  </D:response>`;
 
-      return new Response(xml, {
-        status: 207,
-        headers: {
-          "Content-Type": "application/xml; charset=utf-8",
-          DAV: "1, 2, 3, addressbook",
-        },
-      });
-    }
-
-    // List all contacts
-    if (path === "addressbook") {
-      const customers = await this.props.services.customersService.getCustomers(
-        {
-          limit: 1000,
-          offset: 0,
-        },
-      );
-
-      const responses = customers.items.map(
-        (customer) => `
-  <response>
-    <href>/api/apps/${appData._id}/addressbook/${customer._id}.vcf</href>
-    <propstat>
-      <prop>
-        <getcontenttype>text/vcard; charset=utf-8</getcontenttype>
-        <getetag>"${customer._id}"</getetag>
-        <resourcetype/>
-      </prop>
-      <status>HTTP/1.1 200 OK</status>
-    </propstat>
-  </response>`,
-      );
-
-      const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<multistatus xmlns="DAV:">
-${responses.join("\n")}
-</multistatus>`;
-
-      return new Response(xml, {
-        status: 207,
-        headers: {
-          "Content-Type": "application/xml; charset=utf-8",
-          DAV: "1, 2, 3, addressbook",
-        },
-      });
-    }
-
-    // If requesting a specific contact, return its properties
-    if (path.startsWith("addressbook/")) {
-      const contactId = path.replace("addressbook/", "").replace(".vcf", "");
-      const customer =
-        await this.props.services.customersService.getCustomer(contactId);
-      if (!customer) {
-        return new Response("Not Found", { status: 404 });
+      if (!depthIs0) {
+        // include a separate response for addressbooks home (discovery)
+        inner += `
+  <D:response>
+    <D:href>${addressbooksHref}</D:href>
+    <D:propstat>
+      <D:prop>
+        <D:resourcetype><D:collection/></D:resourcetype>
+        <D:displayname>Addressbooks</D:displayname>
+      </D:prop>
+      <D:status>HTTP/1.1 200 OK</D:status>
+    </D:propstat>
+  </D:response>`;
       }
 
-      const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<multistatus xmlns="DAV:">
-  <response>
-    <href>/api/apps/${appData._id}/addressbook/${contactId}.vcf</href>
-    <propstat>
-      <prop>
-        <getcontenttype>text/vcard; charset=utf-8</getcontenttype>
-        <getetag>"${customer._id}"</getetag>
-        <resourcetype/>
-      </prop>
-      <status>HTTP/1.1 200 OK</status>
-    </propstat>
-  </response>
-</multistatus>`;
-
-      return new Response(xml, {
+      return new Response(wrap(inner), {
         status: 207,
-        headers: {
-          "Content-Type": "application/xml; charset=utf-8",
-          DAV: "1, 2, 3, addressbook",
-        },
+        headers: { "Content-Type": "application/xml; charset=utf-8" },
+      });
+    }
+
+    // PRINCIPAL
+    if (path === "principal") {
+      const principalHref = `${basePath}/principal/`;
+      const addressbooksHref = `${basePath}/addressbook/`;
+      const inner = `
+  <D:response>
+    <D:href>${principalHref}</D:href>
+    <D:propstat>
+      <D:prop>
+        <D:resourcetype>
+          <D:principal/>
+        </D:resourcetype>
+
+        <D:displayname>Company Principal</D:displayname>
+
+        <D:principal-URL>
+          <D:href>${basePath}/principal/</D:href>
+        </D:principal-URL>
+
+        <D:current-user-principal>
+          <D:href>${basePath}/principal/</D:href>
+        </D:current-user-principal>
+
+        <C:addressbook-home-set>
+          <D:href>${basePath}/addressbook/</D:href>
+        </C:addressbook-home-set>
+
+      </D:prop>
+      <D:status>HTTP/1.1 200 OK</D:status>
+    </D:propstat>
+  </D:response>`;
+      return new Response(wrap(inner), {
+        status: 207,
+        headers: { "Content-Type": "application/xml; charset=utf-8" },
+      });
+    }
+
+    // ADDRESSBOOK HOME (lists addressbooks)
+    if (path === "addressbook") {
+      const customersHref = `${basePath}/addressbook/customers/`;
+      const inner = `
+  <D:response>
+    <D:href>${customersHref}</D:href>
+    <D:propstat>
+      <D:prop>
+        <D:resourcetype><D:collection/><C:addressbook/></D:resourcetype>
+        <D:displayname>Customers</D:displayname>
+      </D:prop>
+      <D:status>HTTP/1.1 200 OK</D:status>
+    </D:propstat>
+  </D:response>`;
+      return new Response(wrap(inner), {
+        status: 207,
+        headers: { "Content-Type": "application/xml; charset=utf-8" },
+      });
+    }
+
+    // ADDRESSBOOK COLLECTION => list members when Depth:1 or return collection props at Depth:0
+    if (path === "addressbook/customers") {
+      // fetch customers list
+      const customers = await this.props.services.customersService.getCustomers(
+        { limit: 1000, offset: 0 },
+      );
+      const collectionHref = `${basePath}/addressbook/customers/`;
+      let inner = `
+  <D:response>
+    <D:href>${collectionHref}</D:href>
+    <D:propstat>
+      <D:prop>
+        <D:resourcetype><D:collection/><C:addressbook/></D:resourcetype>
+        <D:displayname>Customers</D:displayname>
+      </D:prop>
+      <D:status>HTTP/1.1 200 OK</D:status>
+    </D:propstat>
+  </D:response>`;
+
+      if (!depthIs0) {
+        for (const cust of customers.items) {
+          const href = `${basePath}/addressbook/customers/${cust._id}.vcf`;
+          inner += `
+  <D:response>
+    <D:href>${href}</D:href>
+    <D:propstat>
+      <D:prop>
+        <D:getetag>"${cust._id}"</D:getetag>
+        <D:getcontenttype>text/vcard; charset=utf-8</D:getcontenttype>
+      </D:prop>
+      <D:status>HTTP/1.1 200 OK</D:status>
+    </D:propstat>
+  </D:response>`;
+        }
+      }
+
+      return new Response(wrap(inner), {
+        status: 207,
+        headers: { "Content-Type": "application/xml; charset=utf-8" },
+      });
+    }
+
+    // Specific contact PROPFIND (props only)
+    if (path.startsWith("addressbook/customers/")) {
+      // normalize and extract id
+      const suffix = path.replace(/^addressbook\/customers\//, "");
+      const contactId = suffix.replace(/^\/*/, "").replace(/\.vcf$/, "");
+      if (!contactId) return new Response("Not Found", { status: 404 });
+
+      const customer =
+        await this.props.services.customersService.getCustomer(contactId);
+      if (!customer) return new Response("Not Found", { status: 404 });
+
+      const href = `${basePath}/addressbook/customers/${customer._id}.vcf`;
+      const inner = `
+  <D:response>
+    <D:href>${href}</D:href>
+    <D:propstat>
+      <D:prop>
+        <D:getetag>"${customer._id}"</D:getetag>
+        <D:getcontenttype>text/vcard; charset=utf-8</D:getcontenttype>
+      </D:prop>
+      <D:status>HTTP/1.1 200 OK</D:status>
+    </D:propstat>
+  </D:response>`;
+
+      return new Response(wrap(inner), {
+        status: 207,
+        headers: { "Content-Type": "application/xml; charset=utf-8" },
       });
     }
 
     return new Response("Not Found", { status: 404 });
   }
 
+  /**
+   * GET handler — returns vCard and proper headers (Content-Type & ETag).
+   */
   private async handleGet(
     appData: ConnectedAppData,
     path: string,
@@ -420,27 +479,25 @@ ${responses.join("\n")}
     const logger = this.loggerFactory("handleGet");
     logger.debug({ appId: appData._id, path }, "Handling GET request");
 
-    if (!path.startsWith("addressbook/")) {
+    // Expect path like: addressbook/customers/{id}.vcf
+    if (!path.startsWith("addressbook/customers/")) {
       return new Response("Not Found", { status: 404 });
     }
 
-    const contactId = path.replace("addressbook/", "").replace(".vcf", "");
+    const suffix = path.replace(/^addressbook\/customers\//, "");
+    const contactId = suffix.replace(/^\/*/, "").replace(/\.vcf$/, "");
+    if (!contactId) return new Response("Not Found", { status: 404 });
+
     const customer =
       await this.props.services.customersService.getCustomer(contactId);
-    if (!customer) {
-      return new Response("Not Found", { status: 404 });
-    }
+    if (!customer) return new Response("Not Found", { status: 404 });
 
-    // Get base URL for generating contact URLs
-    const baseUrl = request.url.split("/api/apps/")[0] || "";
+    const baseUrl = `https://${process.env.ADMIN_DOMAIN}/dashboard/customers/${customer._id}`;
     const vcard = customerToVCard(customer, baseUrl);
+    const etag = customer._id; // simple etag; replace with computeETag(vcard) if you prefer content-based
 
     logger.debug(
-      {
-        appId: appData._id,
-        contactId,
-        customerName: customer.name,
-      },
+      { appId: appData._id, contactId, customerName: customer.name },
       "Returning vCard",
     );
 
@@ -448,12 +505,14 @@ ${responses.join("\n")}
       status: 200,
       headers: {
         "Content-Type": "text/vcard; charset=utf-8",
-        ETag: `"${customer._id}"`,
-        DAV: "1, 2, 3, addressbook",
+        ETag: `"${etag}"`,
       },
     });
   }
 
+  /**
+   * REPORT handler — supports addressbook-multiget and addressbook-query (simple mode)
+   */
   private async handleReport(
     appData: ConnectedAppData,
     path: string,
@@ -462,38 +521,98 @@ ${responses.join("\n")}
     const logger = this.loggerFactory("handleReport");
     logger.debug({ appId: appData._id, path }, "Handling REPORT request");
 
-    // Get all customers (list model is sufficient for listing)
-    const customers = await this.props.services.customersService.getCustomers({
-      limit: 1000,
-      offset: 0,
-    });
+    const basePath = `/api/apps/${appData.companyId}/${appData._id}`;
 
-    const responses = customers.items.map(
-      (customer) => `
-  <response>
-    <href>/api/apps/${appData._id}/addressbook/${customer._id}.vcf</href>
-    <propstat>
-      <prop>
-        <getcontenttype>text/vcard; charset=utf-8</getcontenttype>
-        <getetag>"${customer._id}"</getetag>
-        <resourcetype/>
-      </prop>
-      <status>HTTP/1.1 200 OK</status>
-    </propstat>
-  </response>`,
-    );
+    // Only support REPORT on the customers collection
+    if (path !== "addressbook/customers") {
+      return new Response("Not Found", { status: 404 });
+    }
 
-    const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<multistatus xmlns="DAV:">
-${responses.join("")}
-</multistatus>`;
+    const bodyText = await request.text().catch(() => "");
+    // Basic detection: addressbook-multiget vs addressbook-query
+    const isMultiget = /<\s*addressbook-multiget[\s>]/i.test(bodyText);
+    const isQuery = /<\s*addressbook-query[\s>]/i.test(bodyText);
 
-    return new Response(xml, {
+    // fetch all customers for query fallback
+    const customers =
+      await this.props.services.customersService.getAllCustomers();
+
+    // XML wrapper using D: and C: prefixes
+    const wrap = (inner: string) =>
+      `<?xml version="1.0" encoding="UTF-8"?>
+<D:multistatus xmlns:D="DAV:" xmlns:C="urn:ietf:params:xml:ns:carddav">
+${inner}
+</D:multistatus>`;
+
+    let inner = "";
+
+    if (isMultiget) {
+      // parse <D:href> or <href> from the body and return only requested vCards as <address-data>
+      const hrefs: string[] = [];
+      const hrefRegex = /<\s*(?:D:)?href\s*>([^<]+)<\s*\/\s*(?:D:)?href\s*>/gi;
+      let m: RegExpExecArray | null;
+      while ((m = hrefRegex.exec(bodyText))) {
+        hrefs.push(m[1]);
+      }
+
+      // normalize hrefs to contact ids
+      for (const h of hrefs) {
+        // href may be absolute or relative. Extract last segment and remove .vcf
+        const last = h.split("/").filter(Boolean).pop() || "";
+        const id = last.replace(/\.vcf$/, "");
+        const customer =
+          await this.props.services.customersService.getCustomer(id);
+        if (!customer) continue;
+        const vcard = customerToVCard(
+          customer,
+          `https://${process.env.ADMIN_DOMAIN}/dashboard/customers/${customer._id}`,
+        );
+        inner += `
+  <D:response>
+    <D:href>${basePath}/addressbook/customers/${customer._id}.vcf</D:href>
+    <D:propstat>
+      <D:prop>
+        <D:getetag>"${customer._id}"</D:getetag>
+        <C:address-data>${escapeXml(vcard)}</C:address-data>
+      </D:prop>
+      <D:status>HTTP/1.1 200 OK</D:status>
+    </D:propstat>
+  </D:response>`;
+      }
+
+      return new Response(wrap(inner), {
+        status: 207,
+        headers: { "Content-Type": "application/xml; charset=utf-8" },
+      });
+    }
+
+    // For simplicity we return address-data for all contacts (clients often request all)
+    for (const customer of customers) {
+      const vcard = customerToVCard(
+        customer,
+        `https://${process.env.ADMIN_DOMAIN}/dashboard/customers/${customer._id}`,
+      );
+      inner += `
+  <D:response>
+    <D:href>${basePath}/addressbook/customers/${customer._id}.vcf</D:href>
+    <D:propstat>
+      <D:prop>
+        <D:getetag>"${customer._id}"</D:getetag>
+        <C:address-data>${escapeXml(vcard)}</C:address-data>
+      </D:prop>
+      <D:status>HTTP/1.1 200 OK</D:status>
+    </D:propstat>
+  </D:response>`;
+    }
+
+    return new Response(wrap(inner), {
       status: 207,
-      headers: {
-        "Content-Type": "application/xml; charset=utf-8",
-        DAV: "1, 2, 3, addressbook",
-      },
+      headers: { "Content-Type": "application/xml; charset=utf-8" },
     });
   }
+}
+
+/* small helper to XML-escape address-data content */
+function escapeXml(s: string) {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }

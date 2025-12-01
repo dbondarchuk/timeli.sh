@@ -309,6 +309,44 @@ export class ConnectedAppsService
     return result;
   }
 
+  public async processAppExternalCall(
+    appId: string,
+    slug: string[],
+    request: Request,
+  ): Promise<Response | undefined> {
+    const logger = this.loggerFactory("processAppExternalCall");
+    logger.debug(
+      { appId, slug, request: { method: request.method, url: request.url } },
+      "Processing external app call",
+    );
+
+    const app = await this.getApp(appId);
+    const appService = AvailableAppServices[app.name](
+      this.getAppServiceProps(appId),
+    );
+
+    if (
+      !("processAppExternalCall" in appService) ||
+      !appService.processAppExternalCall
+    ) {
+      logger.debug(
+        { appId, appName: app.name },
+        "App does not process external app calls",
+      );
+      return new Response(
+        JSON.stringify({
+          error: `App ${app.name} does not process external app calls`,
+        }),
+        { status: 405, headers: { "Content-Type": "application/json" } },
+      );
+    }
+
+    const result = await appService.processAppExternalCall(app, slug, request);
+    logger.debug({ appId, slug }, "Returning external app call response");
+
+    return result;
+  }
+
   public async processRequest(appId: string, data: any): Promise<any> {
     const logger = this.loggerFactory("processRequest");
     logger.debug({ appId, data }, "Processing request");
