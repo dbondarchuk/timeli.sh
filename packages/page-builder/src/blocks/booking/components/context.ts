@@ -147,10 +147,11 @@ export const useScheduleContext = () => {
   const ctx = useContext(ScheduleContext);
 
   return {
+    ...ctx,
+    baseDuration: ctx.duration || ctx.appointmentOption.duration,
     duration: getAppointmentDuration(ctx),
     basePrice: getAppointmentBasePrice(ctx),
     discountAmount: getAppointmentDiscountAmount(ctx),
     price: getAppointmentPrice(ctx),
-    ...ctx,
   };
 };
