@@ -23,7 +23,7 @@ export type AppScope = Extandable<
 >;
 
 export type AppSetupProps = {
-  onSuccess: () => void;
+  onSuccess: (doNotCloseDialog?: boolean) => void;
   onError: (
     error: string | { key: string; args?: Record<string, any> },
   ) => void;

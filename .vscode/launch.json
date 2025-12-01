@@ -20,6 +20,12 @@
       "command": "yarn run dev --filter=@timelish/web"
     },
     {
+      "name": "Next.js: debug app-external-server server-side",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "yarn run dev --filter=@timelish/app-external-server"
+    },
+    {
       "name": "Next.js: debug client-side",
       "type": "chrome",
       "request": "launch",

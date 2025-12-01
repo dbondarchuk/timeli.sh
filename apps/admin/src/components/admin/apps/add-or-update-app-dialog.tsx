@@ -79,9 +79,11 @@ export const AddOrUpdateAppButton: React.FC<AddOrUpdateAppButtonProps> = ({
 
   const setupProps: AppSetupProps = useMemo(
     () => ({
-      onSuccess: () => {
+      onSuccess: (doNotCloseDialog?: boolean) => {
         toast.success(t("common.connectedAppSetup.success.description"));
-        closeDialog(true);
+        if (!doNotCloseDialog) {
+          closeDialog(true);
+        }
       },
       onError: (
         error: string | { key: string; args?: Record<string, any> },

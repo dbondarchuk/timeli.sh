@@ -3,6 +3,8 @@ import { BUSY_EVENTS_APP_NAME } from "../apps/busy-events/const";
 import BusyEventsConnectedApp from "../apps/busy-events/service";
 import { CALDAV_APP_NAME } from "../apps/caldav/const";
 import CaldavConnectedApp from "../apps/caldav/service";
+import { CARDDAV_APP_NAME } from "../apps/carddav/const";
+import CarddavConnectedApp from "../apps/carddav/service";
 import { CALENDAR_WRITER_APP_NAME } from "../apps/calendar-writer/const";
 import { CalendarWriterConnectedApp } from "../apps/calendar-writer/service";
 import { CUSTOMER_EMAIL_NOTIFICATION_APP_NAME } from "../apps/customer-email-notification/const";
@@ -58,6 +60,7 @@ export const AvailableAppServices: Record<
   [GOOGLE_CALENDAR_APP_NAME]: (props) => new GoogleCalendarConnectedApp(props),
   [ICS_APP_NAME]: (props) => new IcsConnectedApp(props),
   [CALDAV_APP_NAME]: (props) => new CaldavConnectedApp(props),
+  [CARDDAV_APP_NAME]: (props) => new CarddavConnectedApp(props),
   [WEEKLY_SCHEDULE_APP_NAME]: (props) => new WeeklyScheduleConnectedApp(props),
   [BUSY_EVENTS_APP_NAME]: (props) => new BusyEventsConnectedApp(props),
   [SMTP_APP_NAME]: (props) => new SmtpConnectedApp(props),

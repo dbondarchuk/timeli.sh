@@ -84,7 +84,8 @@
     "communications": "Communications",
     "utilities": "Utilities",
     "payment": "Payments",
-    "appointments": "Appointments"
+    "appointments": "Appointments",
+    "customers": "Customers"
   },
   "fileSystemAssetsStorage": {
     "title": "File system assets storage",

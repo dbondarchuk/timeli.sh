@@ -56,6 +56,24 @@ export class CustomersService extends BaseService implements ICustomersService {
     return customer;
   }
 
+  public async getAllCustomers(): Promise<Customer[]> {
+    const logger = this.loggerFactory("getAllCustomers");
+    logger.debug("Getting all customers");
+
+    const db = await getDbConnection();
+
+    const collection = db.collection<Customer>(CUSTOMERS_COLLECTION_NAME);
+    const customers = await collection
+      .find({
+        companyId: this.companyId,
+      })
+      .toArray();
+
+    logger.debug({ count: customers.length }, "Got all customers");
+
+    return customers;
+  }
+
   public async getCustomers(
     query: Query & { priorityIds?: string[] },
   ): Promise<WithTotal<CustomerListModel>> {

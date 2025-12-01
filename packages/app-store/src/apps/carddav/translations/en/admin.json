@@ -1,0 +1,32 @@
+{
+  "title": "CardDAV Contacts",
+  "app": {
+    "displayName": "CardDAV Contacts",
+    "description": "CardDAV is a protocol that allows different clients/servers to access contact information on remote servers. It extends WebDAV specification and uses vCard format for the data. This app allows you to access your customer list via CardDAV protocol."
+  },
+  "statusText": {
+    "successfullySetUp": "CardDAV server is ready. Access your contacts at the provided URL.",
+    "connectionFailed": "Failed to set up CardDAV server"
+  },
+  "toast": {
+    "copiedToClipboard": "Copied to clipboard",
+    "regenerateSuccess": "Password regenerated successfully",
+    "regenerateError": "Failed to regenerate password"
+  },
+  "form": {
+    "carddavUrl": {
+      "label": "CardDAV URL"
+    },
+    "username": {
+      "label": "Username"
+    },
+    "password": {
+      "label": "Password",
+      "regenerateTooltip": "Regenerate password"
+    },
+    "connect": "Enable <app></app>",
+    "update": "Update <app></app>",
+    "info": "You can access your customer list via CardDAV using the following details:"
+  },
+  "validation": {}
+}

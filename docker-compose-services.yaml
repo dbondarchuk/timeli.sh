@@ -14,6 +14,7 @@ services:
       - BETTER_AUTH_URL=https://${ADMIN_DOMAIN:-app.timelish.com}
       - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-timeli.sh}
       - ADMIN_DOMAIN=${ADMIN_DOMAIN:-app.timelish.com}
+      - APPS_EXTERNAL_DOMAIN=${APPS_EXTERNAL_DOMAIN:-apps.timelish.com}
       - SECRET_KEY=${SECRET_KEY:-uw8iDFHFNjbIU8gPGMByTLiFfXJex7E1}
       - OUTLOOK_APP_CLIENT_ID=${OUTLOOK_APP_CLIENT_ID}
       - OUTLOOK_APP_CLIENT_SECRET=${OUTLOOK_APP_CLIENT_SECRET}
@@ -52,6 +53,7 @@ services:
       - TZ=${TZ:-America/New_York}
       - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-timeli.sh}
       - ADMIN_DOMAIN=${ADMIN_DOMAIN:-app.timelish.com}
+      - APPS_EXTERNAL_DOMAIN=${APPS_EXTERNAL_DOMAIN:-apps.timelish.com}
       - SECRET_KEY=${SECRET_KEY:-uw8iDFHFNjbIU8gPGMByTLiFfXJex7E1}
       - OUTLOOK_APP_CLIENT_ID=${OUTLOOK_APP_CLIENT_ID}
       - OUTLOOK_APP_CLIENT_SECRET=${OUTLOOK_APP_CLIENT_SECRET}
@@ -98,6 +100,7 @@ services:
       - LOG_LEVEL=${LOG_LEVEL:-debug}
       - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-timeli.sh}
       - ADMIN_DOMAIN=${ADMIN_DOMAIN:-app.timelish.com}
+      - APPS_EXTERNAL_DOMAIN=${APPS_EXTERNAL_DOMAIN:-apps.timelish.com}
       - OUTLOOK_APP_CLIENT_ID=${OUTLOOK_APP_CLIENT_ID}
       - OUTLOOK_APP_CLIENT_SECRET=${OUTLOOK_APP_CLIENT_SECRET}
       - GOOGLE_CALENDAR_APP_CLIENT_ID=${GOOGLE_CALENDAR_APP_CLIENT_ID}
@@ -138,6 +141,7 @@ services:
       - LOG_LEVEL=${LOG_LEVEL:-debug}
       - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-timeli.sh}
       - ADMIN_DOMAIN=${ADMIN_DOMAIN:-app.timelish.com}
+      - APPS_EXTERNAL_DOMAIN=${APPS_EXTERNAL_DOMAIN:-apps.timelish.com}
       - OUTLOOK_APP_CLIENT_ID=${OUTLOOK_APP_CLIENT_ID}
       - OUTLOOK_APP_CLIENT_SECRET=${OUTLOOK_APP_CLIENT_SECRET}
       - GOOGLE_CALENDAR_APP_CLIENT_ID=${GOOGLE_CALENDAR_APP_CLIENT_ID}
@@ -152,6 +156,42 @@ services:
       - S3_BUCKET=${S3_BUCKET:-assets}
       - S3_FORCE_PATH_STYLE=${S3_FORCE_PATH_STYLE:-true}
     restart: unless-stopped
+
+  timelish-app-external-server:
+    build:
+      context: .
+      dockerfile: apps/app-external-server/Dockerfile
+    image: ghcr.io/dbondarchuk/timelish-app-external-server:latest
+    environment:
+      - TZ=${TZ:-America/New_York}
+      - REDIS_HOST=${REDIS_HOST:-redis}
+      - REDIS_PORT=${REDIS_PORT:-6379}
+      - REDIS_USERNAME=${REDIS_USERNAME:-}
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-}
+      - REDIS_DB=${REDIS_DB:-0}
+      - MONGODB_URI=${MONGODB_URI:-mongodb://mongodb:27017/timelish?retryWrites=true&w=majority}
+      - MONGODB_DB=${MONGODB_DB}
+      - SECRET_KEY=${SECRET_KEY:-uw8iDFHFNjbIU8gPGMByTLiFfXJex7E1}
+      - LOG_LEVEL=${LOG_LEVEL:-debug}
+      - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-timeli.sh}
+      - ADMIN_DOMAIN=${ADMIN_DOMAIN:-app.timelish.com}
+      - APPS_EXTERNAL_DOMAIN=${APPS_EXTERNAL_DOMAIN:-apps.timelish.com}
+      - OUTLOOK_APP_CLIENT_ID=${OUTLOOK_APP_CLIENT_ID}
+      - OUTLOOK_APP_CLIENT_SECRET=${OUTLOOK_APP_CLIENT_SECRET}
+      - GOOGLE_CALENDAR_APP_CLIENT_ID=${GOOGLE_CALENDAR_APP_CLIENT_ID}
+      - GOOGLE_CALENDAR_APP_CLIENT_SECRET=${GOOGLE_CALENDAR_APP_CLIENT_SECRET}
+      - ZOOM_APP_CLIENT_ID=${ZOOM_APP_CLIENT_ID}
+      - ZOOM_APP_CLIENT_SECRET=${ZOOM_APP_CLIENT_SECRET}
+      - PAYPAL_ENVIRONMENT=${PAYPAL_ENVIRONMENT:-sandbox}
+      - S3_REGION=${S3_REGION:-local}
+      - S3_ACCESS_KEY=${S3_ACCESS_KEY:-}
+      - S3_SECRET_KEY=${S3_SECRET_KEY:-}
+      - S3_ENDPOINT=${S3_ENDPOINT:-http://s3:8080}
+      - S3_BUCKET=${S3_BUCKET:-assets}
+      - S3_FORCE_PATH_STYLE=${S3_FORCE_PATH_STYLE:-true}
+    restart: unless-stopped
+    ports:
+      - "5556:5556"
 
   timelish-domain-checker:
     build:

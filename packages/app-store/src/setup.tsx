@@ -2,6 +2,7 @@ import { BasicAppSetup } from "@timelish/types";
 
 // Import all setup components
 import { CaldavAppSetup } from "./apps/caldav/setup";
+import { CarddavAppSetup } from "./apps/carddav/setup";
 import { CalendarWriterAppSetup } from "./apps/calendar-writer/setup";
 import { EmailNotificationAppSetup } from "./apps/email-notification/setup";
 import { FinancialOverviewAppSetup } from "./apps/financial-overview/setup";
@@ -22,6 +23,7 @@ import { ZoomAppSetup } from "./apps/zoom/setup";
 
 // Import app name constants
 import { CALDAV_APP_NAME } from "./apps/caldav/const";
+import { CARDDAV_APP_NAME } from "./apps/carddav/const";
 import { CALENDAR_WRITER_APP_NAME } from "./apps/calendar-writer/const";
 import { EMAIL_NOTIFICATION_APP_NAME } from "./apps/email-notification/const";
 import { FINANCIAL_OVERVIEW_APP_NAME } from "./apps/financial-overview/const";
@@ -42,6 +44,7 @@ import { ZOOM_APP_NAME } from "./apps/zoom/const";
 
 export const AppSetups: Record<string, BasicAppSetup> = {
   [CALDAV_APP_NAME]: (props) => <CaldavAppSetup {...props} />,
+  [CARDDAV_APP_NAME]: (props) => <CarddavAppSetup {...props} />,
   [CALENDAR_WRITER_APP_NAME]: (props) => <CalendarWriterAppSetup {...props} />,
   [EMAIL_NOTIFICATION_APP_NAME]: (props) => (
     <EmailNotificationAppSetup {...props} />

@@ -65,3 +65,5 @@ export const GET = processAppCall;
 export const POST = processAppCall;
 export const PUT = processAppCall;
 export const DELETE = processAppCall;
+export const OPTIONS = processAppCall;
+export const PATCH = processAppCall;
