@@ -237,7 +237,7 @@ export default class CarddavConnectedApp
   private async install(appData: ConnectedAppData) {
     const logger = this.loggerFactory("install");
 
-    if (appData.data.password) {
+    if (appData?.data?.password) {
       return {
         status: "connected",
         statusText:
