@@ -39,7 +39,7 @@ function escapeVCardText(text: string): string {
     .replace(/\n/g, "\\n");
 }
 
-function customerToVCard(customer: Customer, baseUrl: string): string {
+function customerToVCard(customer: Customer): string {
   const lines: string[] = ["BEGIN:VCARD", "VERSION:3.0"];
 
   lines.push(`UID:${customer._id}`);
@@ -84,9 +84,8 @@ function customerToVCard(customer: Customer, baseUrl: string): string {
     lines.push(`NOTE:${escapeVCardText(customer.note)}`);
   }
 
-  if (baseUrl) {
-    lines.push(`URL:${baseUrl}/customers/${customer._id}`);
-  }
+  const url = `https://${process.env.ADMIN_DOMAIN}/dashboard/customers/${customer._id}`;
+  lines.push(`URL:${url}`);
 
   lines.push(
     `REV:${new Date().toISOString().replace(/[-:]/g, "").split(".")[0]}Z`,
@@ -594,8 +593,7 @@ ${inner}
       await this.props.services.customersService.getCustomer(contactId);
     if (!customer) return new Response("Not Found", { status: 404 });
 
-    const baseUrl = `https://${process.env.ADMIN_DOMAIN}/dashboard/customers/${customer._id}`;
-    const vcard = customerToVCard(customer, baseUrl);
+    const vcard = customerToVCard(customer);
     const etag = customer._id; // simple etag; replace with computeETag(vcard) if you prefer content-based
 
     logger.debug(
@@ -665,10 +663,7 @@ ${inner}
         const customer =
           await this.props.services.customersService.getCustomer(id);
         if (!customer) continue;
-        const vcard = customerToVCard(
-          customer,
-          `https://${process.env.ADMIN_DOMAIN}/dashboard/customers/${customer._id}`,
-        );
+        const vcard = customerToVCard(customer);
         inner += `
   <D:response>
     <D:href>${basePath}/addressbook/customers/${customer._id}.vcf</D:href>
@@ -690,10 +685,7 @@ ${inner}
 
     // For simplicity we return address-data for all contacts (clients often request all)
     for (const customer of customers) {
-      const vcard = customerToVCard(
-        customer,
-        `https://${process.env.ADMIN_DOMAIN}/dashboard/customers/${customer._id}`,
-      );
+      const vcard = customerToVCard(customer);
       inner += `
   <D:response>
     <D:href>${basePath}/addressbook/customers/${customer._id}.vcf</D:href>
