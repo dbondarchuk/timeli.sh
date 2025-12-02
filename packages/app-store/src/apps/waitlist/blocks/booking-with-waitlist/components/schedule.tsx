@@ -174,6 +174,9 @@ export const Schedule: React.FC<
   const onWaitlistSubmit = async () => {
     if (!waitlistAppId) return;
 
+    const totalDuration = getTotalDuration();
+    if (!totalDuration) return;
+
     setIsLoading(true);
 
     try {
@@ -188,7 +191,7 @@ export const Schedule: React.FC<
         note: fields.note,
         optionId: appointmentOption._id,
         addonsIds: selectedAddons?.map((addon) => addon._id),
-        duration: duration,
+        duration: totalDuration,
       };
 
       await clientApi.apps.callAppApi({
