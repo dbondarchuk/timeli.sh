@@ -3,6 +3,7 @@ import {
   Email,
   EmailNotificationRequest,
   INotificationService,
+  ISystemNotificationService,
   TextMessageNotificationRequest,
   TextMessageResponse,
   WithCompanyId,
@@ -96,38 +97,6 @@ export class BullMQNotificationService
       logger.error(
         { error, data },
         "Failed to add email notification to queue",
-      );
-      throw error;
-    }
-  }
-
-  public async sendSystemEmail(data: Email): Promise<void> {
-    const logger = this.loggerFactory("sendSystemEmail");
-
-    const jobData: SystemEmailJobData = {
-      type: "system-email",
-      data,
-    };
-
-    try {
-      const queue = this.getQueue(this.config.queues.email.name);
-      const job = await queue.add("system-email-notification", jobData, {
-        priority: 0,
-        delay: 0,
-      });
-
-      logger.info(
-        {
-          jobId: job.id,
-          emailTo: Array.isArray(data.to) ? data.to.join(", ") : data.to,
-          subject: data.subject,
-        },
-        "Systme email notification job added to queue",
-      );
-    } catch (error) {
-      logger.error(
-        { error, data },
-        "Failed to add system email notification to queue",
       );
       throw error;
     }
@@ -296,5 +265,61 @@ export class BullMQNotificationService
     );
 
     return job;
+  }
+}
+
+export class BullMQSystemNotificationService
+  extends BaseBullMQClient
+  implements ISystemNotificationService
+{
+  protected readonly config: BullMQNotificationConfig;
+
+  constructor(config: BullMQNotificationConfig) {
+    super(config, getLoggerFactory("BullMQSystemNotificationService"));
+
+    this.config = config;
+    this.initializeQueues();
+  }
+
+  private initializeQueues(): void {
+    const logger = this.loggerFactory("initializeQueues");
+
+    // Create email queue
+    const emailQueue = this.createQueue(this.config.queues.email.name);
+    // this.createQueueEvents(this.config.queues.email.name);
+
+    logger.info("BullMQ notification queues initialized");
+  }
+
+  public async sendSystemEmail(data: Email): Promise<void> {
+    const logger = this.loggerFactory("sendSystemEmail");
+
+    const jobData: SystemEmailJobData = {
+      type: "system-email",
+      data,
+    };
+
+    try {
+      const queue = this.getQueue(this.config.queues.email.name);
+      const job = await queue.add("system-email-notification", jobData, {
+        priority: 0,
+        delay: 0,
+      });
+
+      logger.info(
+        {
+          jobId: job.id,
+          emailTo: Array.isArray(data.to) ? data.to.join(", ") : data.to,
+          subject: data.subject,
+        },
+        "Systme email notification job added to queue",
+      );
+    } catch (error) {
+      logger.error(
+        { error, data },
+        "Failed to add system email notification to queue",
+      );
+      throw error;
+    }
   }
 }

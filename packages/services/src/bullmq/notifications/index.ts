@@ -1,4 +1,7 @@
-export { BullMQNotificationService } from "./bullmq-notification-service";
+export {
+  BullMQNotificationService,
+  BullMQSystemNotificationService,
+} from "./bullmq-notification-service";
 export type {
   EmailJobData,
   NotificationJobData,
