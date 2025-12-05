@@ -1,4 +1,4 @@
-import { Button } from "@timelish/ui";
+import { Link } from "@timelish/ui";
 import { Check } from "lucide-react";
 
 const plans = [
@@ -9,44 +9,48 @@ const plans = [
     features: [
       "Your own booking page",
       "Up to 50 bookings a month",
-      "Email confirmations",
+      "Email confirmations and reminders",
       "Calendar sync",
-      "Basic customization",
+      "Full branding control",
+      "Free subdomain (yourname.timeli.sh)",
     ],
-    cta: "Start Free",
+    cta: "Join the Waitlist",
+    ctaLink: "#waitlist",
     highlighted: false,
   },
   {
     name: "Pro",
-    price: "$19",
+    price: "$15",
     period: "/month",
     description: "Most popular choice",
     features: [
+      "Everything in Free",
       "Unlimited bookings",
-      "Text message reminders",
       "Take payments online",
-      "Zoom & Google Meet included",
-      "Your own web address",
-      "Remove our branding",
+      "Text message confirmations and reminders",
+      "50 free SMS credits per month",
+      "Waitlist for busy times",
+      "Use your own domain name",
       "Priority help when you need it",
     ],
-    cta: "Try Free for 14 Days",
+    cta: "Join the Waitlist",
+    ctaLink: "#waitlist",
     highlighted: true,
   },
   {
     name: "Team",
-    price: "$49",
-    period: "/month",
+    price: "$19",
+    period: "/person/month",
     description: "For businesses with staff",
     features: [
       "Everything in Pro",
       "Multiple team members",
-      "Waitlist for busy times",
       "See how you're doing",
       "Connect other tools",
       "Dedicated support person",
     ],
     cta: "Talk to Us",
+    ctaLink: "mailto:sales@timelish.com",
     highlighted: false,
   },
 ];
@@ -114,12 +118,14 @@ export function Pricing() {
                 ))}
               </ul>
 
-              <Button
+              <Link
+                href={plan.ctaLink}
                 className="mt-8 w-full"
                 variant={plan.highlighted ? "brand" : "outline"}
+                button
               >
                 {plan.cta}
-              </Button>
+              </Link>
             </div>
           ))}
         </div>

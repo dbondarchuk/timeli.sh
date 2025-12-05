@@ -1,8 +1,8 @@
 const stats = [
   {
-    value: "10,000+",
-    label: "Happy Customers",
-    sublabel: "Businesses like yours",
+    value: "Up to 40%",
+    label: "More bookings",
+    sublabel: "With online bookings",
   },
   { value: "85%", label: "Less No-Shows", sublabel: "Thanks to reminders" },
   { value: "5 min", label: "Setup Time", sublabel: "Really, that fast" },

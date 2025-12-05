@@ -90,7 +90,9 @@ export const renderUserEmailTemplate = async (
           id: "block-1740257133963",
           data: {
             props: {
-              text: "Timeli.sh - {{config.name}}",
+              text: args.config?.name
+                ? `Timeli.sh - ${args.config.name}`
+                : "Timeli.sh",
               level: "h3",
             },
             style: {

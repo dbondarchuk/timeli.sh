@@ -1,15 +1,43 @@
 "use client";
 
-import { Button } from "@timelish/ui";
-import { ArrowRight, CheckCircle2, Play } from "lucide-react";
-import Image from "next/image";
+import { Link } from "@timelish/ui";
+import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const phrases = [
   "what you love",
   "your clients",
   "growing your business",
+  "your family",
   "your craft",
+];
+
+const screenshots = [
+  {
+    url: "/dashboard.png",
+    label: "Dashboard",
+    path: "app.timelish.com/dashboard",
+  },
+  {
+    url: "/booking-page.png",
+    label: "Booking Website",
+    path: "yourname.timeli.sh",
+  },
+  {
+    url: "/page-builder.png",
+    label: "Page Builder",
+    path: "app.timelish.com/page-builder",
+  },
+  {
+    url: "/email-builder.png",
+    label: "Email Builder",
+    path: "app.timelish.com/email-builder",
+  },
+  {
+    url: "/app-store.png",
+    label: "App Store",
+    path: "app.timelish.com/apps/store",
+  },
 ];
 
 function TypewriterText() {
@@ -61,21 +89,27 @@ function TypewriterText() {
 }
 
 export function Hero() {
+  const [currentScreenshot, setCurrentScreenshot] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentScreenshot((prev) => (prev + 1) % screenshots.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <section className="relative overflow-hidden px-6 py-24 sm:py-32 lg:px-8">
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(45%_40%_at_50%_60%,hsl(216_100%_50%_/_0.08),transparent)]" />
 
       <div className="mx-auto max-w-4xl text-center">
-        <a
-          href="#waitlist"
-          className="mb-8 inline-flex items-center gap-2 rounded-full border border-border bg-muted/50 px-4 py-1.5 text-sm"
-        >
-          <span className="flex h-2 w-2 rounded-full bg-primary animate-pulse" />
+        <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-border bg-muted/50 px-4 py-1.5 text-sm">
+          <span className="flex h-2 w-2 rounded-full bg-gradient-primary animate-pulse" />
           <span className="text-muted-foreground">
             Coming soon — Join the waitlist
           </span>
           <ArrowRight className="h-3 w-3 text-muted-foreground" />
-        </a>
+        </div>
 
         <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-6xl lg:text-7xl text-balance">
           Spend less time on bookings, more time on <TypewriterText />
@@ -88,26 +122,26 @@ export function Hero() {
         </p>
 
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Button
+          <Link
             size="lg"
-            className="gap-2 px-8 bg-gradient-primary border-0 text-white hover:opacity-90"
-            asChild
+            className="gap-2 px-8 border-0 hover:opacity-90"
+            variant="brand-dark"
+            href="#waitlist"
+            button
           >
-            <a href="#waitlist">
-              Join the Waitlist
-              <ArrowRight className="h-4 w-4" />
-            </a>
-          </Button>
-          <Button size="lg" variant="outline" className="gap-2 bg-transparent">
+            Join the Waitlist
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+          {/* <Button size="lg" variant="outline" className="gap-2 bg-transparent">
             <Play className="h-4 w-4" />
             See How It Works
-          </Button>
+          </Button> */}
         </div>
 
         <div className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-muted-foreground">
           <div className="flex items-center gap-2">
             <CheckCircle2 className="h-4 w-4 text-primary" />
-            <span>Free for early members</span>
+            <span>Discounts for early members</span>
           </div>
           <div className="flex items-center gap-2">
             <CheckCircle2 className="h-4 w-4 text-primary" />
@@ -123,6 +157,22 @@ export function Hero() {
       {/* Hero Image / App Preview */}
       <div className="relative mt-16 sm:mt-24">
         <div className="mx-auto max-w-6xl px-6 lg:px-8">
+          <div className="flex justify-center gap-2 mb-4">
+            {screenshots.map((screenshot, index) => (
+              <button
+                key={screenshot.label}
+                onClick={() => setCurrentScreenshot(index)}
+                className={`px-3 py-1.5 text-sm rounded-full transition-all ${
+                  currentScreenshot === index
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-muted text-muted-foreground hover:bg-muted/80"
+                }`}
+              >
+                {screenshot.label}
+              </button>
+            ))}
+          </div>
+
           <div className="relative rounded-xl bg-foreground/5 p-2 ring-1 ring-primary/20">
             <div className="overflow-hidden rounded-lg bg-card shadow-2xl ring-1 ring-border">
               <div className="flex items-center gap-2 border-b border-border bg-muted/30 px-4 py-3">
@@ -133,19 +183,38 @@ export function Hero() {
                 </div>
                 <div className="flex-1 text-center">
                   <span className="text-xs text-muted-foreground">
-                    app.timelish.com/dashboard
+                    {screenshots[currentScreenshot].path}
                   </span>
                 </div>
               </div>
-              <div className="relative aspect-[16/9] bg-gradient-to-br from-muted/50 to-muted flex items-center justify-center">
-                <Image
-                  src="/dashboard.png"
-                  alt="Timeli.sh Dashboard Preview"
-                  className="w-full h-full object-contain"
-                  fill
-                />
+              <div className="aspect-[16/9] bg-gradient-to-br from-muted/50 to-muted relative overflow-hidden">
+                {screenshots.map((screenshot, index) => (
+                  <img
+                    key={screenshot.label}
+                    src={screenshot.url || "/placeholder.svg"}
+                    alt={`Timeli.sh ${screenshot.label} Preview`}
+                    className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
+                      currentScreenshot === index ? "opacity-100" : "opacity-0"
+                    }`}
+                  />
+                ))}
               </div>
             </div>
+          </div>
+
+          <div className="flex justify-center gap-1.5 mt-4">
+            {screenshots.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentScreenshot(index)}
+                className={`h-1.5 rounded-full transition-all duration-300 ${
+                  currentScreenshot === index
+                    ? "w-6 bg-primary"
+                    : "w-1.5 bg-muted-foreground/30"
+                }`}
+                aria-label={`Go to screenshot ${index + 1}`}
+              />
+            ))}
           </div>
         </div>
       </div>

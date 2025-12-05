@@ -8,6 +8,7 @@ import { Pricing } from "@/components/pricing";
 import { Stats } from "@/components/stats";
 import { Testimonials } from "@/components/testimonials";
 import { Waitlist } from "@/components/waitlist";
+import { WaitlistBanner } from "@/components/waitlist-banner";
 
 export default function LandingPage() {
   return (
@@ -15,6 +16,7 @@ export default function LandingPage() {
       <Header />
       <main>
         <Hero />
+        <WaitlistBanner />
         <Stats />
         <Features />
         <HowItWorks />

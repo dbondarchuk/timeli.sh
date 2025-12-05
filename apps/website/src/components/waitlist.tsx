@@ -2,19 +2,40 @@
 
 import type React from "react";
 
-import { Button, Input } from "@timelish/ui";
-import { Bell, CheckCircle2, Sparkles, Users } from "lucide-react";
+import { Button, Input, Spinner, toast } from "@timelish/ui";
+import { CheckCircle2, Sparkles } from "lucide-react";
 import { useState } from "react";
+import { joinWaitlist } from "./actions";
 
 export function Waitlist() {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) {
-      setSubmitted(true);
-      setEmail("");
+    setIsLoading(true);
+
+    try {
+      if (email) {
+        const result = await joinWaitlist(email);
+        if (result.success) {
+          setSubmitted(true);
+          setEmail("");
+          toast.success(
+            "You're on the waitlist! We'll send you an email as soon as spots open up.",
+          );
+        } else {
+          toast.error(
+            result.message || "Something went wrong, please try again later.",
+          );
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong, please try again later.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -48,6 +69,7 @@ export function Waitlist() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              disabled={isLoading}
               h="lg"
               className="flex-1 bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:border-white/40 focus:ring-white/20"
             />
@@ -55,7 +77,9 @@ export function Waitlist() {
               type="submit"
               size="lg"
               className="bg-white text-foreground hover:bg-white/90 shrink-0"
+              disabled={isLoading}
             >
+              {isLoading ? <Spinner className="size-4" /> : null}
               Join the Waitlist
             </Button>
           </form>
@@ -73,7 +97,7 @@ export function Waitlist() {
           </div>
         )}
 
-        <div className="mt-12 flex flex-wrap items-center justify-center gap-x-8 gap-y-4 text-sm text-white/70">
+        {/* <div className="mt-12 flex flex-wrap items-center justify-center gap-x-8 gap-y-4 text-sm text-white/70">
           <div className="flex items-center gap-2">
             <Users className="h-4 w-4" />
             <span>500+ people already waiting</span>
@@ -86,7 +110,7 @@ export function Waitlist() {
             <Sparkles className="h-4 w-4" />
             <span>Free for early members</span>
           </div>
-        </div>
+        </div> */}
       </div>
     </section>
   );

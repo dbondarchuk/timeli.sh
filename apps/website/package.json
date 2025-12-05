@@ -26,7 +26,7 @@
     "lucide-react": "^0.525.0",
     "luxon": "^3.5.0",
     "mongodb": "^6.8.0",
-    "next": "15.5.6",
+    "next": "15.5.7",
     "next-logger": "^5.0.1",
     "next-navigation-guard": "^0.2.0",
     "nextjs-toploader": "^1.6.12",

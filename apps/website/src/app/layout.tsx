@@ -1,3 +1,4 @@
+import { SonnerToaster } from "@timelish/ui";
 import type { Metadata } from "next";
 import { Geist_Mono, Inter } from "next/font/google";
 import type React from "react";
@@ -18,8 +19,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`font-sans antialiased scroll-smooth`}>{children}</body>
+    <html lang="en" className="scroll-smooth">
+      <body className={`font-sans antialiased`}>
+        {children}
+        <SonnerToaster />
+      </body>
     </html>
   );
 }

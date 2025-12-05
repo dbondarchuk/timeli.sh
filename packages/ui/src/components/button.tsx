@@ -12,6 +12,8 @@ const buttonVariants = {
   default: "bg-primary text-primary-foreground hover:bg-primary/90",
   brand:
     "relative bg-gradient-primary dark:bg-gradient-dark text-primary-foreground z-[1] before:absolute before:inset-0 before:bg-background before:z-[-1] before:rounded-md before:opacity-0 hover:before:opacity-100 before:transition-all before:duration-300 before:rounded-md before:bg-gradient-dark before:dark:bg-gradient-accent",
+  "brand-dark":
+    "relative bg-gradient-dark dark:bg-gradient-primary text-primary-foreground z-[1] before:absolute before:inset-0 before:bg-background before:z-[-1] before:rounded-md before:opacity-0 hover:before:opacity-100 before:transition-all before:duration-300 before:rounded-md before:bg-gradient-accent before:dark:bg-gradient-primary",
   destructive:
     "bg-destructive text-destructive-foreground hover:bg-destructive/90",
   outline:

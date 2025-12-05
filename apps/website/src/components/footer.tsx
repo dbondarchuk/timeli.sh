@@ -6,7 +6,7 @@ const footerLinks = {
     { name: "Features", href: "#features" },
     { name: "Pricing", href: "#pricing" },
     { name: "Integrations", href: "#integrations" },
-    { name: "API", href: "#" },
+    // { name: "API", href: "#" },
   ],
   //   company: [
   //     { name: "About", href: "#" },
@@ -14,16 +14,16 @@ const footerLinks = {
   //     { name: "Careers", href: "#" },
   //     { name: "Contact", href: "#" },
   //   ],
-  resources: [
-    { name: "Documentation", href: "#" },
-    { name: "Help Center", href: "#" },
-    { name: "Community", href: "#" },
-    { name: "Status", href: "#" },
-  ],
+  // resources: [
+  //   { name: "Documentation", href: "#" },
+  //   { name: "Help Center", href: "#" },
+  //   { name: "Community", href: "#" },
+  //   { name: "Status", href: "#" },
+  // ],
   legal: [
-    { name: "Privacy", href: "#" },
-    { name: "Terms", href: "#" },
-    { name: "Security", href: "#" },
+    { name: "Privacy", href: "/privacy" },
+    { name: "Terms", href: "/terms" },
+    // { name: "Security", href: "#" },
   ],
 };
 
@@ -76,7 +76,7 @@ export function Footer() {
               ))}
             </ul>
           </div> */}
-
+          {/* 
           <div>
             <h3 className="text-sm font-semibold text-foreground">Resources</h3>
             <ul className="mt-4 space-y-3">
@@ -91,7 +91,7 @@ export function Footer() {
                 </li>
               ))}
             </ul>
-          </div>
+          </div> */}
 
           <div>
             <h3 className="text-sm font-semibold text-foreground">Legal</h3>

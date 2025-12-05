@@ -4,6 +4,7 @@ import { AssetsService } from "./assets.service";
 import {
   BullMQJobService,
   BullMQNotificationService,
+  BullMQSystemNotificationService,
   getBullMQJobConfig,
   getBullMQNotificationConfig,
   RedisDashboardNotificationPublisher,
@@ -110,3 +111,13 @@ export const ServicesContainer: (companyId: string) => IServicesContainer =
 
     return services;
   });
+
+export const SystemServicesContainer = cache(() => {
+  const notificationService = new BullMQSystemNotificationService(
+    getBullMQNotificationConfig(),
+  );
+
+  return {
+    notificationService,
+  };
+});

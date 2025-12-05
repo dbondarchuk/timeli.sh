@@ -13,7 +13,7 @@ WORKDIR /app
 
 # Install dependencies based on the preferred package manager
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
-COPY --parents apps/web/package.json .
+COPY --parents apps/website/package.json .
 COPY --parents packages/*/package.json .
 
 COPY patches/ ./patches
@@ -34,7 +34,7 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 
 # Copy everything except other apps
-COPY --parents apps/web ./
+COPY --parents apps/website ./
 COPY --parents packages ./
 COPY --parents *.* ./
 
@@ -44,9 +44,9 @@ COPY --parents *.* ./
 # ENV NEXT_TELEMETRY_DISABLED 1
 
 RUN \
-  if [ -f yarn.lock ]; then NODE_OPTIONS="--max-old-space-size=4096" yarn run build --filter=@timelish/web; \
-  elif [ -f package-lock.json ]; then NODE_OPTIONS="--max-old-space-size=4096" npm run build --filter=@timelish/web; \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && NODE_OPTIONS="--max-old-space-size=4096" pnpm run build --filter=@timelish/web; \
+  if [ -f yarn.lock ]; then NODE_OPTIONS="--max-old-space-size=4096" yarn run build --filter=@timelish/website; \
+  elif [ -f package-lock.json ]; then NODE_OPTIONS="--max-old-space-size=4096" npm run build --filter=@timelish/website; \
+  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && NODE_OPTIONS="--max-old-space-size=4096" pnpm run build --filter=@timelish/website; \
   else echo "Lockfile not found." && exit 1; \
   fi
 
@@ -61,7 +61,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-COPY --from=builder /app/apps/web/public ./apps/web/public
+COPY --from=builder /app/apps/website/public ./apps/website/public
 
 # Set the correct permission for prerender cache
 RUN mkdir .next
@@ -80,16 +80,16 @@ RUN find ./packages/app-store/src/apps -type f ! -path "*/translations/*" -delet
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./.next/static
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/apps/website/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/apps/website/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/apps/website/.next/static ./apps/website/.next/static
 
 USER nextjs
 
-EXPOSE 3000
+EXPOSE 3002
 
-ENV PORT=3000
+ENV PORT=3002
 
 # server.js is created by next build from the standalone output
 # https://nextjs.org/docs/pages/api-reference/next-config-js/output
-CMD HOSTNAME="0.0.0.0" node apps/web/server.js
+CMD HOSTNAME="0.0.0.0" node apps/website/server.js
