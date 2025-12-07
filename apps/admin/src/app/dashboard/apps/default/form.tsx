@@ -13,6 +13,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  InfoTooltip,
   toastPromise,
 } from "@timelish/ui";
 import { AppSelector, SaveButton } from "@timelish/ui-admin";
@@ -59,7 +60,7 @@ export const DefaultAppsConfigurationForm: React.FC<{
         <div className="gap-2 flex flex-col md:grid md:grid-cols-2 md:gap-4">
           <FormField
             control={form.control}
-            name="email.appId"
+            name="emailSender.appId"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
@@ -84,7 +85,7 @@ export const DefaultAppsConfigurationForm: React.FC<{
           />
           <FormField
             control={form.control}
-            name="textMessage.appId"
+            name="textMessageSender.appId"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
@@ -101,6 +102,31 @@ export const DefaultAppsConfigurationForm: React.FC<{
                     placeholder={t(
                       "apps.defaultAppsForm.textMessageSender.placeholder",
                     )}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="textMessageResponder.appId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  {t("apps.defaultAppsForm.textMessageResponder.label")}
+                  <InfoTooltip>
+                    {t("apps.defaultAppsForm.textMessageResponder.tooltip")}
+                  </InfoTooltip>
+                </FormLabel>
+                <FormControl>
+                  <AppSelector
+                    onItemSelect={field.onChange}
+                    scope="text-message-respond"
+                    value={field.value}
+                    disabled={loading}
+                    className="w-full"
+                    allowClear
                   />
                 </FormControl>
                 <FormMessage />

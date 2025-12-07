@@ -20,7 +20,8 @@
     "./menu-items": "./src/menu-items.ts",
     "./setup": "./src/setup.tsx",
     "./images": "./src/images.ts",
-    "./payment-forms": "./src/payment-forms.tsx"
+    "./payment-forms": "./src/payment-forms.tsx",
+    "./exports": "./src/exports.ts"
   },
   "devDependencies": {
     "@microsoft/microsoft-graph-types": "^2.40.0",

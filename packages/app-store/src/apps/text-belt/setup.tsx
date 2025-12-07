@@ -15,7 +15,6 @@ import {
   Spinner,
 } from "@timelish/ui";
 import {
-  AppSelector,
   ConnectedAppNameAndLogo,
   ConnectedAppStatusMessage,
 } from "@timelish/ui-admin";
@@ -68,30 +67,6 @@ export const TextBeltAppSetup: React.FC<AppSetupProps> = ({
                       autoComplete="off"
                       placeholder={t("form.apiKey.placeholder")}
                       {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="textMessageResponderAppId"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>
-                    {t("form.textMessageResponderAppId.label")}
-                    <InfoTooltip>
-                      {t("form.textMessageResponderAppId.tooltip")}
-                    </InfoTooltip>
-                  </FormLabel>
-                  <FormControl>
-                    <AppSelector
-                      scope="text-message-respond"
-                      disabled={isLoading}
-                      value={field.value}
-                      onItemSelect={(value) => field.onChange(value)}
-                      allowClear
                     />
                   </FormControl>
                   <FormMessage />

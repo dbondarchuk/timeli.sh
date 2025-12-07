@@ -10,10 +10,6 @@
       "placeholder": "API key",
       "tooltip": "TextBelt auth token"
     },
-    "textMessageResponderAppId": {
-      "label": "Fallback text message responder",
-      "tooltip": "If not handled by sender, it will be used as default app to respond to text messages (i.e. auto reply). Optional"
-    },
     "connect": "Connect with <app></app>"
   },
   "statusText": {

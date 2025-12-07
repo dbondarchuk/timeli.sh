@@ -1,5 +1,6 @@
 import { getServicesContainer, getWebsiteUrl } from "@/app/utils";
 import { renderToStaticMarkup } from "@timelish/email-builder/static";
+import { BaseAllKeys } from "@timelish/i18n";
 import { getLoggerFactory } from "@timelish/logger";
 import {
   Appointment,
@@ -114,8 +115,8 @@ export async function POST(request: NextRequest) {
     "appointmentId" in data ? data.appointmentId : undefined;
 
   const handledBy = customerId
-    ? "communications.handledBy.customer"
-    : "communications.handledBy.appointment";
+    ? ("apps.communications.handledBy.customer" satisfies BaseAllKeys)
+    : ("apps.communications.handledBy.appointment" satisfies BaseAllKeys);
 
   switch (data.channel) {
     case "text-message": {

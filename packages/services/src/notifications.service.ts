@@ -11,6 +11,8 @@ import {
   INotificationService,
   ISystemNotificationService,
   ITextMessageSender,
+  ITextMessageSenderApp,
+  TextMessage,
   TextMessageNotificationRequest,
   TextMessageResponse,
 } from "@timelish/types";
@@ -21,10 +23,12 @@ export class NotificationService implements INotificationService {
   protected readonly loggerFactory = getLoggerFactory("NotificationService");
 
   constructor(
+    private readonly companyId: string,
     private readonly configurationService: IConfigurationService,
     private readonly connectedAppService: IConnectedAppsService,
     private readonly communicationLogService: ICommunicationLogsService,
     private readonly defaultEmailService: IMailSender,
+    private readonly defaultTextMessageSender: ITextMessageSender,
   ) {}
 
   public async sendEmail({
@@ -38,7 +42,7 @@ export class NotificationService implements INotificationService {
     const defaultAppsConfiguration =
       await this.configurationService.getConfiguration("defaultApps");
 
-    const emailAppId = defaultAppsConfiguration?.email?.appId;
+    const emailAppId = defaultAppsConfiguration?.emailSender?.appId;
 
     let sendMail: (email: Email, fromName?: string) => Promise<EmailResponse>;
     let useCustomerEmailApp = false;
@@ -113,39 +117,44 @@ export class NotificationService implements INotificationService {
     customerId,
   }: TextMessageNotificationRequest): Promise<TextMessageResponse> {
     const trimmedPhone = phone.replaceAll(/[^+0-9]/gi, "");
+    const logger = this.loggerFactory("sendTextMessage");
+
+    logger.debug(
+      { appointmentId, customerId, phone: maskify(trimmedPhone) },
+      "Sending text message",
+    );
 
     const defaultAppsConfiguration =
       await this.configurationService.getConfiguration("defaultApps");
-    const textMessageSenderAppId = defaultAppsConfiguration?.textMessage?.appId;
+    const textMessageSenderAppId =
+      defaultAppsConfiguration?.textMessageSender?.appId;
 
-    if (!textMessageSenderAppId) {
-      const logger = this.loggerFactory("sendTextMessage");
-      logger.error("No text message sender app is configured");
-      throw new Error("No text message sender app is configured");
+    let sendTextMessage: (message: TextMessage) => Promise<TextMessageResponse>;
+    if (textMessageSenderAppId) {
+      logger.debug(
+        { textMessageSenderAppId },
+        "Using app-based text message sender app",
+      );
+      const { app, service } =
+        await this.connectedAppService.getAppService<ITextMessageSenderApp>(
+          textMessageSenderAppId,
+        );
+
+      sendTextMessage = async (message: TextMessage) =>
+        await service.sendTextMessage(app, message);
+    } else {
+      logger.debug(
+        "No app-based text message sender app is configured, using default text message sender service",
+      );
+      sendTextMessage = async (message: TextMessage) =>
+        await this.defaultTextMessageSender.sendTextMessage(
+          this.companyId,
+          message,
+        );
     }
 
-    const { app, service } =
-      await this.connectedAppService.getAppService<ITextMessageSender>(
-        textMessageSenderAppId,
-      );
-
-    const logger = this.loggerFactory("sendTextMessage");
-    logger.info(
-      {
-        textMessageSenderAppName: app.name,
-        textMessageSenderAppId,
-        textMessageSenderParticipant: handledBy,
-        textMessageSenderPhone: maskify(trimmedPhone),
-        appointmentId,
-        customerId,
-      },
-      "Sending Text Message message",
-    );
-
-    let response: TextMessageResponse | undefined = undefined;
-
     try {
-      response = await service.sendTextMessage(app, {
+      const response = await sendTextMessage({
         message: body,
         phone: trimmedPhone,
         data: webhookData,
@@ -158,14 +167,13 @@ export class NotificationService implements INotificationService {
 
       logger.info(
         {
-          textMessageSenderAppName: app.name,
-          textMessageSenderAppId,
+          textMessageSender: "built-in-textbelt",
           textMessageSenderParticipant: handledBy,
           textMessageSenderPhone: maskify(trimmedPhone),
           appointmentId,
           customerId,
         },
-        "Text Message sent",
+        "Text Message sent via built-in TextBelt",
       );
 
       this.communicationLogService.log({
@@ -182,7 +190,10 @@ export class NotificationService implements INotificationService {
 
       return response;
     } catch (error) {
-      logger.error({ error }, "Error sending Text Message");
+      logger.error(
+        { error },
+        "Error sending Text Message via built-in TextBelt",
+      );
       throw error;
     }
   }

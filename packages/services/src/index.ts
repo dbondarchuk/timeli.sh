@@ -25,6 +25,9 @@ import { TemplatesService } from "./templates.service";
 // BullMQ exports
 export * from "./bullmq";
 
+// Text message exports
+export * from "./text-message";
+
 export * from "./assets.service";
 export * from "./communication-logs.service";
 export * from "./configuration.service";

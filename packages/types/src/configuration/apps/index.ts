@@ -1,13 +1,19 @@
 import * as z from "zod";
 
 export const defaultAppsConfigurationSchema = z.object({
-  email: z
+  emailSender: z
     .object({
       appId: z.string().optional(),
       data: z.any().optional(),
     })
     .optional(),
-  textMessage: z
+  textMessageSender: z
+    .object({
+      appId: z.string().optional(),
+      data: z.any().optional(),
+    })
+    .optional(),
+  textMessageResponder: z
     .object({
       appId: z.string().optional(),
       data: z.any().optional(),

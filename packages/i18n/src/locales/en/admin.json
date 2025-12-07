@@ -1344,6 +1344,10 @@
         "label": "Text message sender",
         "placeholder": "Use default text message sender"
       },
+      "textMessageResponder": {
+        "label": "Text message responder",
+        "tooltip": "If not handled by sender, it will be used as default app to respond to text messages (i.e. auto reply). Optional."
+      },
       "assetsStorage": "Assets storage",
       "toasts": {
         "changesSaved": "Your changes were saved.",
@@ -2049,5 +2053,8 @@
   },
   "onlineMeeting": {
     "types": {}
+  },
+  "textbelt-webhook": {
+    "handledBy": "Text message reply - notify user"
   }
 }

@@ -9,7 +9,7 @@ import {
   IConnectedAppProps,
   IConnectedAppWithWebhook,
   ITextMessageResponder,
-  ITextMessageSender,
+  ITextMessageSenderApp,
   RespondResult,
   TextMessage,
   TextMessageReply,
@@ -93,7 +93,7 @@ export default class TextBeltConnectedApp
   implements
     IConnectedApp<TextBeltConfiguration>,
     IConnectedAppWithWebhook,
-    ITextMessageSender
+    ITextMessageSenderApp
 {
   protected readonly loggerFactory: LoggerFactory;
 
@@ -395,35 +395,41 @@ export default class TextBeltConnectedApp
       data.apiKey = encrypt(data.apiKey);
     }
 
+    const defaultApps =
+      await this.props.services.configurationService.getConfiguration(
+        "defaultApps",
+      );
+    const textMessageResponderAppId = defaultApps.textMessageResponder?.appId;
+
     logger.debug(
       {
         appId: appData._id,
         apiKey: scrambleKey(data.apiKey),
-        hasResponderApp: !!data.textMessageResponderAppId,
+        textMessageResponderAppId,
       },
       "Processing TextBelt configuration request",
     );
 
     try {
-      if (data.textMessageResponderAppId) {
+      if (textMessageResponderAppId) {
         logger.debug(
           {
             appId: appData._id,
-            responderAppId: data.textMessageResponderAppId,
+            responderAppId: textMessageResponderAppId,
           },
           "Validating text message responder app",
         );
 
         const { app, service } =
           await this.props.services.connectedAppsService.getAppService<ITextMessageResponder>(
-            data.textMessageResponderAppId,
+            textMessageResponderAppId,
           );
 
         if (!app || !service || !service.respond) {
           logger.error(
             {
               appId: appData._id,
-              responderAppId: data.textMessageResponderAppId,
+              responderAppId: textMessageResponderAppId,
             },
             "Provided app does not exist or does not support responding to text messages",
           );
@@ -567,7 +573,10 @@ export default class TextBeltConnectedApp
       customer,
       useAppointmentTimezone: true,
       additionalProperties: {
-        reply,
+        reply: {
+          ...reply,
+          message: reply.message?.trim(),
+        },
       },
       locale: config.general.language,
       adminUrl,
@@ -631,13 +640,31 @@ export default class TextBeltConnectedApp
             { appId: appData._id },
             "No service has processed the incoming text message. Will try to use responder app",
           );
-          if (appData.data?.textMessageResponderAppId) {
+
+          const defaultApps =
+            await this.props.services.configurationService.getConfiguration(
+              "defaultApps",
+            );
+          const textMessageResponderAppId =
+            defaultApps.textMessageResponder?.appId;
+
+          if (textMessageResponderAppId) {
+            logger.debug(
+              { appId: appData._id, responderAppId: textMessageResponderAppId },
+              "Using default text message responder app",
+            );
+
             const { app, service } =
               await this.props.services.connectedAppsService.getAppService<ITextMessageResponder>(
-                appData.data.textMessageResponderAppId,
+                textMessageResponderAppId,
               );
 
             result = await service.respond(app, textMessageReply);
+          } else {
+            logger.debug(
+              { appId: appData._id },
+              "No default text message responder app was found",
+            );
           }
         }
       }

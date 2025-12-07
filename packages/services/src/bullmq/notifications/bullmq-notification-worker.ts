@@ -12,6 +12,8 @@ import {
   NotificationService,
   SystemNotificationService,
 } from "../../notifications.service";
+import { getTextBeltConfiguration } from "../../text-message";
+import { TextBeltService } from "../../text-message/textbelt/service";
 import { BaseBullMQClient } from "../base-bullmq-client";
 import { NotificationJobData } from "./bullmq-notification-service";
 import { BullMQNotificationConfig } from "./types";
@@ -383,11 +385,17 @@ export class BullMQNotificationWorker extends BaseBullMQClient {
   private getNotificationService(companyId: string): NotificationService {
     const services = this.getServices(companyId);
     const defaultEmailService = new SmtpService(getSmtpConfiguration());
+    const defaultTextMessageSender = new TextBeltService(
+      getTextBeltConfiguration(),
+    );
+
     return new NotificationService(
+      companyId,
       services.configurationService,
       services.connectedAppsService,
       services.communicationLogsService,
       defaultEmailService,
+      defaultTextMessageSender,
     );
   }
 }

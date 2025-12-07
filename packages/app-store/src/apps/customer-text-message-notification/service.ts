@@ -62,7 +62,7 @@ export default class CustomerTextMessageNotificationConnectedApp
       );
 
       try {
-        const textMessageAppId = defaultApps.textMessage?.appId;
+        const textMessageAppId = defaultApps.textMessageSender?.appId;
         logger.debug(
           { appId: appData._id, textMessageAppId },
           "Retrieved text message app ID",

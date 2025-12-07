@@ -21,9 +21,16 @@ export type TextMessageResponse = {
   data?: any;
 };
 
-export interface ITextMessageSender {
+export interface ITextMessageSenderApp {
   sendTextMessage: (
     app: ConnectedAppData,
+    message: TextMessage,
+  ) => Promise<TextMessageResponse>;
+}
+
+export interface ITextMessageSender {
+  sendTextMessage: (
+    companyId: string,
     message: TextMessage,
   ) => Promise<TextMessageResponse>;
 }
