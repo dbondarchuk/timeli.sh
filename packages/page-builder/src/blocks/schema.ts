@@ -1,8 +1,10 @@
 import { AccordionItemPropsSchema } from "./accordion-item/schema";
 import { AccordionPropsSchema } from "./accordion/schema";
 import { BeforeAfterPropsSchema } from "./before-after/schema";
-import { BookingConfirmationPropsSchema } from "./booking-confirmation/schema";
-import { BookingPropsSchema } from "./booking/schema";
+import { BookingConfirmationPropsSchema as BookingConfirmationModernPropsSchema } from "./booking-confirmation/modern/schema";
+import { BookingConfirmationPropsSchema as BookingConfirmationSimplePropsSchema } from "./booking-confirmation/simple/schema";
+import { BookingPropsSchema as BookingModernPropsSchema } from "./booking/modern/schema";
+import { BookingPropsSchema as BookingSimplePropsSchema } from "./booking/simple/schema";
 import { ButtonPropsSchema } from "./button/schema";
 import { CarouselPropsSchema } from "./carousel/schema";
 import { ConditionalContainerPropsSchema } from "./conditional-container/schema";
@@ -17,7 +19,8 @@ import { InlineContainerPropsSchema } from "./inline-container/schema";
 import { InlineTextPropsSchema } from "./inline-text/schema";
 import { LightboxPropsSchema } from "./lightbox/schema";
 import { LinkPropsSchema } from "./link/schema";
-import { ModifyAppointmentFormPropsSchema } from "./modify-appointment-form/schema";
+import { ModifyAppointmentFormPropsSchema as ModifyAppointmentFormModernPropsSchema } from "./modify-appointment-form/modern/schema";
+import { ModifyAppointmentFormPropsSchema as ModifyAppointmentFormSimplePropsSchema } from "./modify-appointment-form/simple/schema";
 import { PageHeroPropsSchema } from "./page-hero/schema";
 import { PageLayoutPropsSchema } from "./page-layout/schema";
 import { PopupPropsSchema } from "./popup/schema";
@@ -41,7 +44,8 @@ export const EditorBlocksSchema = {
   // // Columns: ColumnsContainerPropsSchema,
   ConditionalContainer: ConditionalContainerPropsSchema,
   ForeachContainer: ForeachContainerPropsSchema,
-  Booking: BookingPropsSchema,
+  BookingSimple: BookingSimplePropsSchema,
+  BookingModern: BookingModernPropsSchema,
   Carousel: CarouselPropsSchema,
   Video: VideoPropsSchema,
   YouTubeVideo: YouTubeVideoPropsSchema,
@@ -55,8 +59,10 @@ export const EditorBlocksSchema = {
   BeforeAfter: BeforeAfterPropsSchema,
   Lightbox: LightboxPropsSchema,
   Redirect: RedirectPropsSchema,
-  ModifyAppointmentForm: ModifyAppointmentFormPropsSchema,
-  BookingConfirmation: BookingConfirmationPropsSchema,
+  ModifyAppointmentFormSimple: ModifyAppointmentFormSimplePropsSchema,
+  ModifyAppointmentFormModern: ModifyAppointmentFormModernPropsSchema,
+  BookingConfirmationSimple: BookingConfirmationSimplePropsSchema,
+  BookingConfirmationModern: BookingConfirmationModernPropsSchema,
 } as {
   Image: typeof ImagePropsSchema;
   Button: typeof ButtonPropsSchema;
@@ -70,7 +76,8 @@ export const EditorBlocksSchema = {
   PageHero: typeof PageHeroPropsSchema;
   ConditionalContainer: typeof ConditionalContainerPropsSchema;
   ForeachContainer: typeof ForeachContainerPropsSchema;
-  Booking: typeof BookingPropsSchema;
+  BookingSimple: typeof BookingSimplePropsSchema;
+  BookingModern: typeof BookingModernPropsSchema;
   Carousel: typeof CarouselPropsSchema;
   Video: typeof VideoPropsSchema;
   YouTubeVideo: typeof YouTubeVideoPropsSchema;
@@ -84,6 +91,8 @@ export const EditorBlocksSchema = {
   BeforeAfter: typeof BeforeAfterPropsSchema;
   Lightbox: typeof LightboxPropsSchema;
   Redirect: typeof RedirectPropsSchema;
-  ModifyAppointmentForm: typeof ModifyAppointmentFormPropsSchema;
-  BookingConfirmation: typeof BookingConfirmationPropsSchema;
+  ModifyAppointmentFormSimple: typeof ModifyAppointmentFormSimplePropsSchema;
+  ModifyAppointmentFormModern: typeof ModifyAppointmentFormModernPropsSchema;
+  BookingConfirmationSimple: typeof BookingConfirmationSimplePropsSchema;
+  BookingConfirmationModern: typeof BookingConfirmationModernPropsSchema;
 };

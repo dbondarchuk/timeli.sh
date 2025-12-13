@@ -7,6 +7,44 @@
     "customDurationLabel": "Duration: custom",
     "customDuration": "Custom",
     "durationSelectTitle": "How much time do you need?",
+    "steps": {
+      "option": "Service",
+      "addons": "Add-ons",
+      "calendar": "Date & Time",
+      "form": "Details",
+      "payment": "Payment",
+      "review": "Summary",
+      "waitlist-form": "Details",
+      "waitlist-review": "Review"
+    },
+    "layout": {
+      "booking": {
+        "title": "Book Your Appointment",
+        "description": "Complete the steps below to schedule your session"
+      },
+      "waitlist": {
+        "title": "Join Waitlist",
+        "description": "We'll notify you when a slot becomes available"
+      }
+    },
+    "calendar": {
+      "waitlist": {
+        "title": "Can't find a suitable time?",
+        "description": "Join our waitlist and we'll notify you when a slot matching your preferences becomes available.",
+        "button": "Join Waitlist Instead",
+        "link": "Do not see a time you like? Click <link>here</link> to join our waitlist."
+      }
+    },
+    "review": {
+      "waitlistTitle": "Review Your Waitlist Request"
+    },
+    "waitlist_form": {
+      "title": "Your Details",
+      "description": "Please provide your contact information and preferences",
+      "back_to_booking": "Back to Date Selection",
+      "back_to_booking_description": "Go back to select a specific date and time for your appointment.",
+      "back_to_booking_title": "Want to book a specific slot?"
+    },
     "errors": {
       "submit": {
         "title": "Uh oh! Something went wrong.",
@@ -17,19 +55,26 @@
     "buttons": {
       "steps": {
         "back": "Back",
-        "next": "Next"
+        "next": "Continue"
       },
+      "confirm": "Confirm Booking",
+      "joinWaitlist": "Join Waitlist",
+      "bookAnotherAppointment": "Book Another Appointment",
       "close": "Close",
       "addTime": "Add Time"
     },
+
     "note": {
       "label": "Note",
       "placeholder": "You can leave a note here",
       "max": "You can enter up to 500 characters"
     },
     "confirmation": {
-      "title": "Your request has been received!",
-      "message": "Thank you, {name}. Your request to join the waitlist for {service} has been received. We’ll contact you once a time slot opens up."
+      "waitlist": {
+        "title": "Your request has been received!",
+        "message": "Thank you, {name}. Your request to join the waitlist for {service} has been received. We’ll contact you once a time slot opens up.",
+        "waitlist_details": "Waitlist details"
+      }
     },
     "title": "Join our waitlist",
     "description": "Please provide your details to be added to the waitlist",
@@ -70,9 +115,6 @@
     "asSoonAsPossible": {
       "label": "As soon as possible",
       "required": "As soon as possible is required"
-    },
-    "calendar": {
-      "waitlistLink": "Do not see a time you like? Click <link>here</link> to join our waitlist."
     }
   }
 }

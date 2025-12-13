@@ -1,0 +1,111 @@
+import { PaymentAppForms } from "@timelish/app-store/payment-forms";
+import { useI18n } from "@timelish/i18n";
+import { cn } from "@timelish/ui";
+import { formatAmountString } from "@timelish/utils";
+import { CreditCard } from "lucide-react";
+import { useScheduleContext } from "./context";
+
+export const PaymentCard: React.FC = () => {
+  const i18n = useI18n("translation");
+
+  const {
+    paymentInformation: paymentForm,
+    onSubmit,
+    price,
+  } = useScheduleContext();
+  if (!paymentForm || !price) return null;
+
+  const Form = PaymentAppForms[paymentForm.intent.appName];
+
+  const isFullPayment = paymentForm.intent.percentage >= 100;
+
+  return (
+    <div className="space-y-6 payment-card card-container">
+      <div className="mb-6">
+        <h2 className="text-lg font-semibold text-foreground payment-card-title card-title">
+          {i18n(
+            isFullPayment
+              ? "payment_form_full_payment_required_title"
+              : "payment_form_deposit_required_title",
+          )}
+        </h2>
+        <p className="text-xs text-muted-foreground payment-card-description card-description">
+          {i18n(
+            isFullPayment
+              ? "payment_form_full_payment_required_description"
+              : "payment_form_deposit_required_description",
+            {
+              percentage: paymentForm.intent.percentage,
+              amount: formatAmountString(paymentForm.intent.amount),
+            },
+          )}
+        </p>
+      </div>
+
+      <div className="border rounded-lg p-6">
+        <div className="text-center mb-6">
+          <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+            <CreditCard className="w-6 h-6 text-primary" />
+          </div>
+          <p className="text-2xl font-bold text-foreground">
+            ${formatAmountString(paymentForm.intent.amount)}
+          </p>
+          <p className="text-sm text-muted-foreground mt-1">
+            {i18n("booking.payment.amount.deposit")}
+          </p>
+        </div>
+
+        <div className="space-y-4 mb-6">
+          <div className="flex justify-between text-sm payment-card-service-total">
+            <span className="text-muted-foreground payment-card-service-total-label">
+              {i18n("booking.payment.serviceTotal")}
+            </span>
+            <span className="text-foreground payment-card-service-total-amount">
+              ${formatAmountString(price)}
+            </span>
+          </div>
+          <div className="flex justify-between text-sm payment-card-deposit">
+            <span className="text-muted-foreground payment-card-deposit-label">
+              {i18n(
+                isFullPayment
+                  ? "booking.payment.fullPayment"
+                  : "booking.payment.deposit",
+              )}
+            </span>
+            <span className="text-foreground payment-card-deposit-amount">
+              ${formatAmountString(paymentForm.intent.amount)}
+            </span>
+          </div>
+          <div className="border-t pt-4 flex justify-between">
+            <span className="font-medium text-foreground payment-card-remaining-balance-label">
+              {i18n("booking.payment.remainingBalance")}
+            </span>
+            <span className="font-semibold text-foreground payment-card-remaining-balance-amount">
+              ${formatAmountString(price - paymentForm.intent.amount)}
+            </span>
+          </div>
+        </div>
+
+        {!isFullPayment && (
+          <p className="text-xs text-muted-foreground mb-4">
+            {i18n("booking.payment.remainingBalanceDescription", {
+              remainingBalance: formatAmountString(
+                price - paymentForm.intent.amount,
+              ),
+            })}
+          </p>
+        )}
+
+        <Form
+          {...paymentForm.formProps}
+          intent={paymentForm.intent}
+          onSubmit={onSubmit}
+          className={cn(
+            "payment-card-form payment-form",
+            paymentForm.formProps?.className,
+          )}
+        />
+      </div>
+    </div>
+  );
+};

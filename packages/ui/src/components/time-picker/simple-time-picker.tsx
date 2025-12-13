@@ -334,7 +334,7 @@ export function SimpleTimePicker({
           role="combobox"
           aria-expanded={open}
           className={cn(
-            "flex h-9 px-3 items-center justify-between cursor-pointer font-normal border border-input rounded-md text-sm shadow-sm",
+            "flex h-8 px-3 items-center justify-between cursor-pointer font-normal border border-input rounded-md text-xs shadow-sm",
             disabled && "opacity-50 cursor-not-allowed",
           )}
           tabIndex={0}

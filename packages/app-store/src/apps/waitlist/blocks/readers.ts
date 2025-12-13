@@ -1,15 +1,23 @@
 import { ReaderDocumentBlocksDictionary } from "@timelish/builder";
-import { BookingWithWaitlistReader } from "./booking-with-waitlist/reader";
+import { BookingWithWaitlistReader as ModernBookingWithWaitlistReader } from "./modern/booking-with-waitlist/reader";
+import { WaitlistReader as ModernWaitlistReader } from "./modern/waitlist/reader";
 import { WaitlistBlocksSchema } from "./schema";
-import { WaitlistReader } from "./waitlist/reader";
+import { BookingWithWaitlistReader as SimpleBookingWithWaitlistReader } from "./simple/booking-with-waitlist/reader";
+import { WaitlistReader as SimpleWaitlistReader } from "./simple/waitlist/reader";
 
 export const WaitlistReaders: ReaderDocumentBlocksDictionary<
   typeof WaitlistBlocksSchema
 > = {
-  Waitlist: {
-    Reader: WaitlistReader,
+  WaitlistModern: {
+    Reader: ModernWaitlistReader,
   },
-  BookingWithWaitlist: {
-    Reader: BookingWithWaitlistReader,
+  BookingWithWaitlistModern: {
+    Reader: ModernBookingWithWaitlistReader,
+  },
+  WaitlistSimple: {
+    Reader: SimpleWaitlistReader,
+  },
+  BookingWithWaitlistSimple: {
+    Reader: SimpleBookingWithWaitlistReader,
   },
 };

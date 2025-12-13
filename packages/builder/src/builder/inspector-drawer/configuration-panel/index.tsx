@@ -53,7 +53,7 @@ export const ConfigurationPanel: React.FC = () => {
   );
 
   const Panel = useMemo(
-    () => (selectedBlockType ? blocks[selectedBlockType].Configuration : null),
+    () => (selectedBlockType ? blocks[selectedBlockType]?.Configuration : null),
     [blocks, selectedBlockType],
   );
 

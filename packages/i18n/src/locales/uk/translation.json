@@ -1,6 +1,207 @@
 {
-  "next_button": "Далі",
+  "next_button": "Продовжити",
   "back_button": "Назад",
+  "confirm_booking_button": "Підтвердити бронювання",
+  "booking": {
+    "title": "Забронюйте ваш запис",
+    "description": "Завершіть кроки нижче, щоб запланувати вашу сесію",
+    "steps": {
+      "option": "Послуга",
+      "addons": "Додатки",
+      "calendar": "Дата та час",
+      "form": "Деталі",
+      "payment": "Оплата",
+      "review": "Підсумок"
+    },
+    "summary": {
+      "estimates": {
+        "amount": "Сума",
+        "duration": "Тривалість",
+        "dateTime": "Дата та час"
+      }
+    },
+    "option": {
+      "title": "Виберіть послугу",
+      "description": "Виберіть тип сесії, який найкраще підходить для вас",
+      "duration": {
+        "custom": {
+          "title": "Тривалість сесії",
+          "min_max": "Мін: {min} • Макс: {max}"
+        }
+      }
+    },
+    "addons": {
+      "title": "Покращіть ваш досвід",
+      "description": "Додаткові опції для максимального використання вашої сесії",
+      "no_addons_available": "Немає доступних додатків для цієї послуги"
+    },
+    "calendar": {
+      "title": "Виберіть дату та час",
+      "description": "Виберіть бажаний часовий слот для запису",
+      "loading": "Завантаження доступного часу...",
+      "no_available_times": "Немає доступного часу на цю дату"
+    },
+    "form": {
+      "title": "Ваші дані",
+      "description": "Будь ласка, надайте вашу контактну інформацію"
+    },
+    "review": {
+      "title": "Перевірте ваше бронювання",
+      "description": "Будь ласка, підтвердіть, що всі деталі правильні",
+      "duplicate": {
+        "title": "Можливий дублікат запису",
+        "description": "Ми знайшли існуючі записи, які можуть конфліктувати з цим бронюванням:",
+        "closestAppointment": "Найближчий запис: ",
+        "confirm": "Я розумію і хочу продовжити все одно"
+      },
+      "addons": {
+        "title": "Додатки"
+      },
+      "date": {
+        "title": "Дата та час"
+      },
+      "contact": {
+        "title": "Контактна інформація",
+        "name": "Ім'я: {name}",
+        "email": "Електронна пошта: {email}",
+        "phone": "Телефон: {phone}",
+        "other": "{label}: {value}",
+        "yes": "Так",
+        "no": "Ні"
+      },
+      "total": {
+        "title": "Всього",
+        "duration": "Орієнтовна тривалість: {duration}"
+      }
+    },
+    "payment": {
+      "amount": {
+        "full": "Сума повної оплати",
+        "deposit": "Сума депозиту"
+      },
+      "serviceTotal": "Всього за послугу",
+      "deposit": "Депозит (сплатити зараз)",
+      "fullPayment": "Повна оплата (сплатити зараз)",
+      "remainingBalance": "Залишок балансу",
+      "remainingBalanceDescription": "Залишок балансу ${remainingBalance} буде сплачено під час вашого запису."
+    }
+  },
+  "modification": {
+    "title": "Керуйте вашим записом",
+    "description": "Скасуйте або перенесіть ваш існуючий запис",
+    "steps": {
+      "type": "Дія",
+      "form": "Знайти",
+      "calendar": "Новий час",
+      "review": "Підсумок",
+      "payment": "Оплата"
+    },
+    "summary": {
+      "estimates": {
+        "dateTime": "Дата та час",
+        "newDateTime": "Нова дата та час"
+      }
+    },
+    "type": {
+      "cancel": {
+        "title": "Скасувати запис",
+        "description": "Скасуйте ваш майбутній запис"
+      },
+      "reschedule": {
+        "title": "Перенести запис",
+        "description": "Перенесіть ваш майбутній запис"
+      },
+      "title": "Що ви хочете зробити?",
+      "description": "Виберіть скасувати або перенести ваш запис"
+    },
+    "form": {
+      "title": "Знайдіть ваш запис",
+      "description": "Введіть ваші дані, щоб знайти ваше бронювання",
+      "type": {
+        "email": "Електронна пошта",
+        "phone": "Телефон",
+        "label": "Як ви хочете знайти ваш запис?"
+      },
+      "email": {
+        "label": "Адреса електронної пошти",
+        "placeholder": "john.doe@example.com"
+      },
+      "phone": {
+        "label": "Номер телефону",
+        "placeholder": "+1234567890"
+      },
+      "date": {
+        "label": "Дата та час",
+        "placeholder": "Виберіть дату"
+      },
+      "time": {
+        "label": "Час",
+        "placeholder": "Виберіть час"
+      },
+      "searchError": {
+        "notFound": "Запис не знайдено за наданими деталями. Будь ласка, перевірте та спробуйте знову.",
+        "notAllowed": {
+          "cancel": "Привіт {name}, на жаль, ми не можемо скасувати цей запис в цей час. Будь ласка, зв'яжіться з нами, щоб скасувати.",
+          "reschedule": "Привіт {name}, на жаль, ми не можемо перенести цей запис в цей час. Будь ласка, зв'яжіться з нами, щоб перенести."
+        }
+      }
+    },
+    "calendar": {
+      "title": "Виберіть нову дату та час",
+      "description": "Виберіть новий час для вашого запису {serviceName}"
+    },
+    "review": {
+      "cancel": {
+        "title": "Перевірка скасування",
+        "description": "Будь ласка, підтвердіть деталі запису нижче",
+        "alert": {
+          "title": "Ви збираєтеся скасувати цей запис",
+          "subTitle": "Цю дію неможливо скасувати",
+          "forfeitDepositDescription": "Якщо ви це зробите, ваш депозит не буде повернений."
+        },
+        "checkboxLabel": "Я підтверджую, що розумію та хочу скасувати цей запис",
+        "refundAmount": "Сума повернення",
+        "fee": "Плата за скасування"
+      },
+      "reschedule": {
+        "title": "Перевірка змін",
+        "description": "Підтвердіть деталі вашого перенесеного запису",
+        "checkboxLabel": "Я підтверджую, що розумію та хочу перенести цей запис",
+        "fee": "Плата за перенесення"
+      },
+      "service": "Послуга",
+      "addons": "Додатки",
+      "originalDate": "Оригінальна дата",
+      "newDate": "Нова дата",
+      "originalTime": "Оригінальний час",
+      "newTime": "Новий час",
+      "duration": "Тривалість",
+      "originalPrice": "Оригінальна ціна",
+      "confirm": "Підтвердити"
+    },
+    "payment": {
+      "cancel": {
+        "title": "Плата за скасування",
+        "description": "Будь ласка, сплатіть необхідну плату, щоб продовжити"
+      },
+      "reschedule": {
+        "title": "Плата за перенесення",
+        "description": "Будь ласка, сплатіть необхідну плату, щоб продовжити"
+      },
+      "amountDue": "Сума до сплати"
+    },
+    "confirmation": {
+      "cancel": {
+        "title": "Запис скасовано",
+        "description": "Ваш запис успішно скасовано."
+      },
+      "reschedule": {
+        "title": "Запис перенесено",
+        "description": "Ваш запис успішно перенесено."
+      },
+      "appointmentDetails": "Деталі запису"
+    }
+  },
   "duration_min_format": "{duration} хв",
   "duration_hour_min_format": "{hours, plural, =0 {{minutes} хв} other {# год, {minutes} хв}}",
   "duration_minutes_format": "{duration} хвилин",
@@ -9,6 +210,8 @@
   "loading_aria": "Завантаження...",
   "select_date_time_label": "Виберіть дату та час",
   "select_date_first_label": "Будь ласка, спочатку виберіть дату",
+  "available_times": "Доступний час",
+  "loading_available_times": "Завантаження доступного часу...",
   "no_avaialable_time_slots": "Цього дня не має вільного часу",
   "duration_select_title": "Скільки часу вам потрібно?",
   "name_required_error": "Будь ласка, вкажіть ваше ім'я.",
@@ -42,6 +245,9 @@
   "search_timezone_label": "Пошук для зміни часового поясу",
   "confirmation_success_title": "Ваш запит отримано!",
   "confirmation_success_message": "Дякуємо, {name}! Ваш запит на {service} отримано, і ви незабаром отримаєте підтвердження.",
+  "confirmation_success_appointment_details": "Деталі запису",
+  "confirmation_success_duration": "Тривалість: {duration}",
+  "confirmation_new_booking_button": "Забронювати інший запис",
   "confirmation_fetch_failed_title": "Ми не можемо знайти ваш запис",
   "availability_fetch_failed_title": "Ой! Щось пішло не так.",
   "availability_fetch_failed_description": "Щось пішло не так під час отримання доступного часу",

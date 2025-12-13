@@ -32,7 +32,7 @@
     "luxon": "^3.5.0",
     "mdx-bundler": "^10.0.2",
     "mongodb": "^6.8.0",
-    "next": "15.5.7",
+    "next": "15.5.9",
     "next-logger": "^5.0.1",
     "next-navigation-guard": "^0.2.0",
     "nextjs-toploader": "^1.6.12",

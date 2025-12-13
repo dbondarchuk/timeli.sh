@@ -1,0 +1,120 @@
+"use client";
+
+import { useI18n, useLocale } from "@timelish/i18n";
+import { Appointment, timeZones } from "@timelish/types";
+import { Link, useTimeZone } from "@timelish/ui";
+import { durationToTime, formatAmountString } from "@timelish/utils";
+import { TimeZone } from "@vvo/tzdb";
+import { CheckCircle2 } from "lucide-react";
+import { DateTime } from "luxon";
+import { forwardRef } from "react";
+
+export const ConfirmationCard = forwardRef<
+  HTMLDivElement,
+  {
+    appointment: Appointment;
+    newBookingPage?: string;
+    onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
+    className?: string;
+    id?: string;
+  }
+>(({ appointment, newBookingPage, onClick, className, id }, ref) => {
+  const i18n = useI18n("translation");
+  const locale = useLocale();
+  const defaultTimeZone = useTimeZone();
+
+  let timeZone: TimeZone | undefined = timeZones.find((tz) => {
+    const timeZoneName = appointment.timeZone || defaultTimeZone;
+    return timeZoneName === tz.name || tz.group.includes(timeZoneName);
+  });
+
+  if (!timeZone) {
+    const defaultZone = DateTime.now().zoneName;
+    timeZone = timeZones.find((tz) => {
+      return defaultZone === tz.name || tz.group.includes(defaultZone || "");
+    });
+  }
+
+  const dateTime =
+    appointment?.dateTime && "timestamp" in appointment.dateTime
+      ? DateTime.fromMillis(appointment.dateTime.timestamp as number).setZone(
+          appointment.timeZone as string,
+        )
+      : undefined;
+
+  return (
+    <div className={className} ref={ref} onClick={onClick} id={id}>
+      {appointment?.option && appointment.fields ? (
+        <div className="max-w-3xl mx-auto booking-container">
+          <div className="text-center py-8">
+            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+              <CheckCircle2 className="w-6 h-6 text-primary" />
+            </div>
+            <h2 className="text-lg font-semibold text-foreground mb-2">
+              {i18n("confirmation_success_title")}
+            </h2>
+            <p className="text-sm text-muted-foreground mb-6">
+              {i18n("confirmation_success_message", {
+                name: appointment.fields.name,
+                service: appointment.option.name,
+              })}
+            </p>
+            <div className="bg-muted/50 flex flex-col gap-2 rounded-lg p-4 text-left">
+              <p className="text-sm text-muted-foreground">
+                {i18n("confirmation_success_appointment_details")}
+              </p>
+              <p className="text-sm font-semibold text-foreground">
+                {appointment.option.name}
+              </p>
+              {!!dateTime && dateTime.isValid && (
+                <>
+                  <p className="text-xs text-foreground">
+                    {dateTime.toLocaleString(DateTime.DATETIME_HUGE, {
+                      locale: locale,
+                    })}
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {i18n("timezone_format", {
+                      timezone: timeZone?.currentTimeFormat || "",
+                    })}
+                  </p>
+                </>
+              )}
+              <p className="text-xs text-muted-foreground mt-1">
+                {i18n("confirmation_success_duration", {
+                  duration: i18n(
+                    "duration_hour_minutes_format",
+                    durationToTime(appointment.totalDuration || 0),
+                  ),
+                })}
+              </p>
+              {!!appointment.totalPrice && (
+                <p className="text-sm font-semibold text-foreground mt-1">
+                  {i18n("form_price_label_format", {
+                    price: formatAmountString(appointment.totalPrice || 0),
+                  })}
+                </p>
+              )}
+            </div>
+            {newBookingPage && (
+              <div className="mt-6 confirm-new-booking-button-container">
+                <Link
+                  href={newBookingPage}
+                  button
+                  variant="outline"
+                  className="confirm-new-booking-button"
+                >
+                  {i18n("confirmation_new_booking_button")}
+                </Link>
+              </div>
+            )}
+          </div>
+        </div>
+      ) : (
+        <div className="relative text-center">
+          <h2>{i18n("appointment_fetch_failed_title")}</h2>
+        </div>
+      )}
+    </div>
+  );
+});

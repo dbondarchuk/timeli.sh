@@ -1,6 +1,207 @@
 {
-  "next_button": "Next",
+  "next_button": "Continue",
   "back_button": "Back",
+  "confirm_booking_button": "Confirm Booking",
+  "booking": {
+    "title": "Book Your Appointment",
+    "description": "Complete the steps below to schedule your session",
+    "steps": {
+      "option": "Service",
+      "addons": "Add-ons",
+      "calendar": "Date & Time",
+      "form": "Details",
+      "payment": "Payment",
+      "review": "Summary"
+    },
+    "summary": {
+      "estimates": {
+        "amount": "Amount",
+        "duration": "Duration",
+        "dateTime": "Date & Time"
+      }
+    },
+    "option": {
+      "title": "Select a Service",
+      "description": "Choose the type of session that works best for you",
+      "duration": {
+        "custom": {
+          "title": "Session Duration",
+          "min_max": "Min: {min} • Max: {max}"
+        }
+      }
+    },
+    "addons": {
+      "title": "Enhance Your Experience",
+      "description": "Optional add-ons to make the most of your session",
+      "no_addons_available": "No add-ons available for this service"
+    },
+    "calendar": {
+      "title": "Select Date & Time",
+      "description": "Choose your preferred appointment slot",
+      "loading": "Loading available times...",
+      "no_available_times": "No available times for this date"
+    },
+    "form": {
+      "title": "Your Details",
+      "description": "Please provide your contact information"
+    },
+    "review": {
+      "title": "Review Your Booking",
+      "description": "Please confirm all details are correct",
+      "duplicate": {
+        "title": "Potential Duplicate Appointment",
+        "description": "We found existing appointments that may conflict with this booking:",
+        "closestAppointment": "Closest appointment: ",
+        "confirm": "I understand and want to proceed anyway"
+      },
+      "addons": {
+        "title": "Add-ons"
+      },
+      "date": {
+        "title": "Date & Time"
+      },
+      "contact": {
+        "title": "Contact Information",
+        "name": "Name: {name}",
+        "email": "Email: {email}",
+        "phone": "Phone: {phone}",
+        "other": "{label}: {value}",
+        "yes": "Yes",
+        "no": "No"
+      },
+      "total": {
+        "title": "Total",
+        "duration": "Estimated duration: {duration}"
+      }
+    },
+    "payment": {
+      "amount": {
+        "full": "Full payment amount",
+        "deposit": "Deposit amount"
+      },
+      "serviceTotal": "Service total",
+      "deposit": "Deposit (due now)",
+      "fullPayment": "Full payment (due now)",
+      "remainingBalance": "Remaining balance",
+      "remainingBalanceDescription": "The remaining balance of ${remainingBalance} will be due at the time of your appointment."
+    }
+  },
+  "modification": {
+    "title": "Manage Your Appointment",
+    "description": "Cancel or reschedule your existing appointment",
+    "steps": {
+      "type": "Action",
+      "form": "Find",
+      "calendar": "New Time",
+      "review": "Summary",
+      "payment": "Payment"
+    },
+    "summary": {
+      "estimates": {
+        "dateTime": "Date & Time",
+        "newDateTime": "New Date & Time"
+      }
+    },
+    "type": {
+      "cancel": {
+        "title": "Cancel Appointment",
+        "description": "Cancel your upcoming appointment"
+      },
+      "reschedule": {
+        "title": "Reschedule Appointment",
+        "description": "Reschedule your upcoming appointment"
+      },
+      "title": "What would you like to do?",
+      "description": "Choose to cancel or reschedule your appointment"
+    },
+    "form": {
+      "title": "Find your appointment",
+      "description": "Enter your details to find your booking",
+      "type": {
+        "email": "Email",
+        "phone": "Phone",
+        "label": "How would you like to find your appointment?"
+      },
+      "email": {
+        "label": "Email address",
+        "placeholder": "john.doe@example.com"
+      },
+      "phone": {
+        "label": "Phone number",
+        "placeholder": "+1234567890"
+      },
+      "date": {
+        "label": "Date & Time",
+        "placeholder": "Select date"
+      },
+      "time": {
+        "label": "Time",
+        "placeholder": "Select time"
+      },
+      "searchError": {
+        "notFound": "No appointment was found with the provided details. Please check and try again.",
+        "notAllowed": {
+          "cancel": "Hi {name}, unfortunately we cannot cancel this appointment at this time. Please contact us to cancel.",
+          "reschedule": "Hi {name}, unfortunately we cannot reschedule this appointment at this time. Please contact us to reschedule."
+        }
+      }
+    },
+    "calendar": {
+      "title": "Select New Date & Time",
+      "description": "Choose a new time for your {serviceName} appointment"
+    },
+    "review": {
+      "cancel": {
+        "title": "Review Cancellation",
+        "description": "Please confirm the appointment details below",
+        "alert": {
+          "title": "You are about to cancel this appointment",
+          "subTitle": "This action cannot be undone",
+          "forfeitDepositDescription": "If you do, your deposit will not be refunded."
+        },
+        "checkboxLabel": "I confirm that I understand and want to cancel this appointment",
+        "refundAmount": "Refund amount",
+        "fee": "Cancellation fee"
+      },
+      "reschedule": {
+        "title": "Review Changes",
+        "description": "Confirm your rescheduled appointment details",
+        "checkboxLabel": "I confirm that I understand and want to reschedule this appointment",
+        "fee": "Reschedule fee"
+      },
+      "service": "Service",
+      "addons": "Add-ons",
+      "originalDate": "Original Date",
+      "newDate": "New Date",
+      "originalTime": "Original Time",
+      "newTime": "New Time",
+      "duration": "Duration",
+      "originalPrice": "Original Price",
+      "confirm": "Confirm"
+    },
+    "payment": {
+      "cancel": {
+        "title": "Cancellation Fee",
+        "description": "Please pay the required fee to proceed"
+      },
+      "reschedule": {
+        "title": "Reschedule Fee",
+        "description": "Please pay the required fee to proceed"
+      },
+      "amountDue": "Amount Due"
+    },
+    "confirmation": {
+      "cancel": {
+        "title": "Appointment Cancelled",
+        "description": "Your appointment has been successfully cancelled."
+      },
+      "reschedule": {
+        "title": "Appointment Rescheduled",
+        "description": "Your appointment has been successfully rescheduled."
+      },
+      "appointmentDetails": "Appointment Details"
+    }
+  },
   "duration_min_format": "{duration} min",
   "duration_hour_min_format": "{hours, plural, =0 {{minutes} min} other {# hr, {minutes} min}}",
   "duration_minutes_format": "{duration} minutes",
@@ -9,6 +210,8 @@
   "loading_aria": "Loading...",
   "select_date_time_label": "Select date & time",
   "select_date_first_label": "Please select date first",
+  "available_times": "Available times",
+  "loading_available_times": "Loading available times...",
   "no_avaialable_time_slots": "No available time slots on this day",
   "duration_select_title": "How much time do you need?",
   "name_required_error": "Please provide your name.",
@@ -43,7 +246,9 @@
   "confirmation_success_title": "Your request has been received!",
   "confirmation_success_message": "Thanks, {name}! Your request for {service} has been received and you will get confirmation shortly.",
   "confirmation_fetch_failed_title": "We can't find your appointment",
-
+  "confirmation_success_appointment_details": "Appointment details",
+  "confirmation_success_duration": "Duration: {duration}",
+  "confirmation_new_booking_button": "Book Another Appointment",
   "availability_fetch_failed_title": "Uh oh! Something went wrong.",
   "availability_fetch_failed_description": "Something went wrong while we were getting available times. Please contact us",
   "submit_event_failed_title": "Uh oh! Something went wrong.",

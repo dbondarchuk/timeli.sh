@@ -34,6 +34,6 @@
     "uuid": "^10.0.0"
   },
   "peerDependencies": {
-    "next": "15.5.7"
+    "next": "15.5.9"
   }
 }

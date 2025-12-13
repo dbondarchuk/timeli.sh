@@ -58,8 +58,14 @@ export const MAX_WAITLIST_DATES = 30;
 export const waitlistRequestDates = zUniqueArray(
   z
     .array(waitlistDateSchema)
-    .min(1, "waitlist.dates.required")
-    .max(MAX_WAITLIST_DATES, "waitlist.dates.max"),
+    .min(
+      1,
+      "app_waitlist_public.block.dates.required" satisfies WaitlistPublicAllKeys,
+    )
+    .max(
+      MAX_WAITLIST_DATES,
+      "app_waitlist_public.block.dates.max" satisfies WaitlistPublicAllKeys,
+    ),
   (x) => x.date,
   "app_waitlist_public.block.dates.required" satisfies WaitlistPublicAllKeys,
 );

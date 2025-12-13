@@ -18,8 +18,8 @@ export const Markdown: React.FC<MarkdownProps> = ({
       className={cn(
         "text-foreground text-[var(--value-foreground-color)] [&_a]:underline",
         prose === "prose" &&
-          "[&_p]:py-4 [&_li]:li[st-inside [&_li]:pl-8 [&_ul_li]:list-disc prose prose-slate",
-        prose === "simple" && "[&_p]:my-2 prose prose-slate",
+          "[&_p]:py-4 [&_li]:list-inside [&_li]:pl-8 [&_ul_li]:list-disc prose prose-slate",
+        prose === "simple" && "[&_p]:my-2 prose prose-slate [&_li]:my-0",
         className,
       )}
     >

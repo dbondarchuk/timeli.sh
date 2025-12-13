@@ -106,11 +106,21 @@
     "error_processing_configuration": "Error processing waitlist configuration"
   },
   "block": {
-    "waitlist": {
-      "displayName": "Waitlist"
+    "simple": {
+      "waitlist": {
+        "displayName": "Waitlist (Simple)"
+      },
+      "bookingWithWaitlist": {
+        "displayName": "Booking with waitlist (Simple)"
+      }
     },
-    "bookingWithWaitlist": {
-      "displayName": "Booking with waitlist"
+    "modern": {
+      "waitlist": {
+        "displayName": "Waitlist (Modern)"
+      },
+      "bookingWithWaitlist": {
+        "displayName": "Booking with waitlist (Modern)"
+      }
     },
     "shortcuts": {
       "gap": {

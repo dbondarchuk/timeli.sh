@@ -24,7 +24,7 @@ export const ToolbarBlockToolbarGroup = () => {
   const blockId = selectedBlock?.id || rootBlockId;
 
   const BlockToolbar = useMemo(
-    () => blocks[blockType].Toolbar,
+    () => blocks[blockType]?.Toolbar,
     [blocks, blockType],
   );
 
@@ -37,6 +37,10 @@ export const ToolbarBlockToolbarGroup = () => {
     },
     [dispatchAction, blockId],
   );
+
+  if (!BlockToolbar) {
+    return null;
+  }
 
   const blockData = selectedBlock?.data ?? {};
   return (

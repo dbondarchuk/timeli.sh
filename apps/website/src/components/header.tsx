@@ -12,7 +12,7 @@ const navigation = [
   { name: "Integrations", href: "#integrations" },
 ];
 
-export function Header() {
+export function Header({ appUrl }: { appUrl: string }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
@@ -50,9 +50,9 @@ export function Header() {
           ))}
         </div>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-x-4">
-          <Button variant="ghost" size="sm">
+          <Link href={appUrl} variant="ghost" size="sm" button>
             Log in
-          </Button>
+          </Link>
           <Link size="sm" variant="brand" href="#waitlist" button>
             Join the waitlist
           </Link>

@@ -2,8 +2,10 @@ import { ReaderDocumentBlocksDictionary } from "@timelish/builder";
 import { AccordionItem } from "./accordion-item/reader";
 import { Accordion } from "./accordion/reader";
 import { BeforeAfterReader } from "./before-after/reader";
-import { BookingConfirmationReader } from "./booking-confirmation/reader";
-import { BookingReader } from "./booking/reader";
+import { BookingConfirmationReader as BookingConfirmationModernReader } from "./booking-confirmation/modern/reader";
+import { BookingConfirmationReader as BookingConfirmationSimpleReader } from "./booking-confirmation/simple/reader";
+import { BookingReader as BookingModernReader } from "./booking/modern/reader";
+import { BookingReader as BookingSimpleReader } from "./booking/simple/reader";
 import { ButtonReader } from "./button/reader";
 import { CarouselReader } from "./carousel/reader";
 import { ConditionalContainerReader } from "./conditional-container/reader";
@@ -18,7 +20,8 @@ import { InlineContainerReader } from "./inline-container/reader";
 import { InlineText } from "./inline-text/reader";
 import { LightboxReader } from "./lightbox/reader";
 import { Link } from "./link/reader";
-import { ModifyAppointmentFormReader } from "./modify-appointment-form/reader";
+import { ModifyAppointmentFormReader as ModifyAppointmentFormModernReader } from "./modify-appointment-form/modern/reader";
+import { ModifyAppointmentFormReader as ModifyAppointmentFormSimpleReader } from "./modify-appointment-form/simple/reader";
 import { PageHeroReader } from "./page-hero/reader";
 import { PageLayoutReader } from "./page-layout/reader";
 import { PopupReader } from "./popup/reader";
@@ -71,11 +74,17 @@ export const ReaderBlocks: ReaderDocumentBlocksDictionary<
   PageHero: {
     Reader: PageHeroReader,
   },
-  Booking: {
-    Reader: BookingReader,
+  BookingSimple: {
+    Reader: BookingSimpleReader,
   },
-  BookingConfirmation: {
-    Reader: BookingConfirmationReader,
+  BookingModern: {
+    Reader: BookingModernReader,
+  },
+  BookingConfirmationSimple: {
+    Reader: BookingConfirmationSimpleReader,
+  },
+  BookingConfirmationModern: {
+    Reader: BookingConfirmationModernReader,
   },
   Carousel: {
     Reader: CarouselReader,
@@ -113,7 +122,10 @@ export const ReaderBlocks: ReaderDocumentBlocksDictionary<
   Redirect: {
     Reader: RedirectReader,
   },
-  ModifyAppointmentForm: {
-    Reader: ModifyAppointmentFormReader,
+  ModifyAppointmentFormSimple: {
+    Reader: ModifyAppointmentFormSimpleReader,
+  },
+  ModifyAppointmentFormModern: {
+    Reader: ModifyAppointmentFormModernReader,
   },
 };

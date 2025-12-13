@@ -36,45 +36,70 @@ function Calendar({
       captionLayout="dropdown"
       className={cn("p-3", className)}
       classNames={{
-        month: "space-y-4",
-        months: "flex flex-col md:flex-row space-y-0 relative gap-4",
-        month_caption: "flex justify-center pt-1 relative items-center",
-        month_grid: "border-collapse space-y-1 justify-self-center w-full",
+        ...classNames,
+        month: cn("space-y-4", classNames?.month),
+        months: cn(
+          "flex flex-col md:flex-row space-y-0 relative gap-4",
+          classNames?.months,
+        ),
+        month_caption: cn(
+          "flex justify-center pt-1 relative items-center",
+          classNames?.month_caption,
+        ),
+        month_grid: cn(
+          "border-collapse space-y-1 justify-self-center w-full",
+          classNames?.month_grid,
+        ),
 
         // TEST
-        dropdowns: "flex justify-center gap-1",
-        nav: "flex items-center justify-between absolute inset-x-0 top-2",
+        dropdowns: cn("flex justify-center gap-1", classNames?.dropdowns),
+        nav: cn(
+          "flex items-center justify-between absolute inset-x-0 top-2",
+          classNames?.nav,
+        ),
         button_previous: cn(
           buttonVariants({ variant: "outline" }),
           "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 z-10",
+          classNames?.button_previous,
         ),
         button_next: cn(
           buttonVariants({ variant: "outline" }),
           "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 z-10",
+          classNames?.button_next,
         ),
         // TEST
 
-        weeks: "w-full border-collapse space-y-",
-        weekdays: "flex",
-        weekday:
+        weeks: cn("w-full border-collapse space-y-", classNames?.weeks),
+        weekdays: cn("flex", classNames?.weekdays),
+        weekday: cn(
           "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem] flex-grow",
-        week: "flex w-full mt-2",
-        day_button:
-          "h-9 w-9 text-center text-sm p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
+          classNames?.weekday,
+        ),
+        week: cn("flex w-full mt-2", classNames?.week),
+        day_button: cn(
+          "h-9 w-9  text-center text-sm p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
+          classNames?.day_button,
+        ),
         day: cn(
           buttonVariants({ variant: "ghost" }),
           "flex-grow h-9 w-9 p-0 font-normal aria-selected:opacity-100",
+          classNames?.day,
         ),
-        range_end: "day-range-end",
-        selected:
+        range_end: cn("day-range-end", classNames?.range_end),
+        selected: cn(
           "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground",
-        outside:
+          classNames?.selected,
+        ),
+        outside: cn(
           "day-outside text-muted-foreground opacity-50 aria-selected:bg-accent/50 aria-selected:text-muted-foreground aria-selected:opacity-30",
-        disabled: "text-muted-foreground opacity-50",
-        range_middle:
+          classNames?.outside,
+        ),
+        disabled: cn("text-muted-foreground opacity-50", classNames?.disabled),
+        range_middle: cn(
           "aria-selected:bg-accent aria-selected:text-accent-foreground",
-        hidden: "invisible",
-        ...classNames,
+          classNames?.range_middle,
+        ),
+        hidden: cn("invisible", classNames?.hidden),
       }}
       endMonth={endMonth}
       {...props}

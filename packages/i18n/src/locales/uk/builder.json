@@ -59,6 +59,7 @@
       "search": "Пошук блоків...",
       "noResultsFound": "Блоки не знайдено за вашим пошуком",
       "noBlocksAvailable": "Немає доступних блоків",
+      "notFound": "Блок не знайдено: {blockType}",
       "panel": {
         "title": "Блоки",
         "subtitle": "Додати новий блок"
@@ -1202,7 +1203,15 @@
         "displayName": "Hero секція"
       },
       "booking": {
-        "displayName": "Форма бронювання",
+        "simple": {
+          "displayName": "Форма бронювання (Проста)"
+        },
+        "modern": {
+          "displayName": "Форма бронювання (Сучасна)",
+          "hideTitle": "Приховати заголовок",
+          "hideSteps": "Приховати кроки",
+          "scrollToTop": "Прокрутити вгору при зміні кроку"
+        },
         "confirmationPage": "Сторінка підтвердження"
       },
       "popup": {
@@ -1335,10 +1344,24 @@
         }
       },
       "modifyAppointmentForm": {
-        "displayName": "Форма перенесення або скасування прийому"
+        "modern": {
+          "displayName": "Форма перенесення або скасування прийому (Сучасна)",
+          "hideTitle": "Приховати заголовок",
+          "hideSteps": "Приховати кроки",
+          "scrollToTop": "Прокрутити вгору при зміні кроку"
+        },
+        "simple": {
+          "displayName": "Форма перенесення або скасування прийому (Проста)"
+        }
       },
       "bookingConfirmation": {
-        "displayName": "Підтвердження бронювання"
+        "simple": {
+          "displayName": "Підтвердження бронювання (Просте)"
+        },
+        "modern": {
+          "displayName": "Підтвердження бронювання (Сучасний)",
+          "newBookingPage": "URL сторінки нового бронювання"
+        }
       }
     },
     "shortcuts": {

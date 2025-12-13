@@ -1,10 +1,12 @@
-import { BuilderKeys, useI18n } from "@timelish/i18n";
+import { BaseAllKeys, BuilderKeys, useI18n } from "@timelish/i18n";
 import { Button, cn, Input, ScrollArea, useDebounce } from "@timelish/ui";
-import { Search, X } from "lucide-react";
+import { AlertTriangle, Search, X } from "lucide-react";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
+  useBlock,
   useBlockChildrenIds,
   useBlockSchema,
+  useBlockType,
   useIsSelectedBlock,
   useRootBlockId,
   useSetSelectedBlockId,
@@ -22,7 +24,9 @@ const DocumentOutlineItem: React.FC<DocumentOutlineItemProps> = memo(
     const t = useI18n();
 
     const setSelectedBlockId = useSetSelectedBlockId();
-    const block = useBlockSchema(blockId);
+    const schema = useBlockSchema(blockId);
+    const block = useBlock(blockId);
+    const blockType = useBlockType(blockId);
     const isSelected = useIsSelectedBlock(blockId);
     const outlineItemRef = useRef<HTMLDivElement>(null);
 
@@ -54,16 +58,51 @@ const DocumentOutlineItem: React.FC<DocumentOutlineItemProps> = memo(
 
     const isVisible = useMemo(() => {
       if (!searchQuery) return true;
-      if (!block) return false;
+      if (!schema) return false;
       return (
-        t(block.schema.displayName as BuilderKeys)
+        t(schema.schema.displayName as BuilderKeys)
           .toLocaleLowerCase()
           .includes(searchQuery.toLocaleLowerCase()) ||
-        block.type.toLocaleLowerCase().includes(searchQuery.toLocaleLowerCase())
+        schema.type
+          .toLocaleLowerCase()
+          .includes(searchQuery.toLocaleLowerCase())
       );
-    }, [block, searchQuery, tBuilder]);
+    }, [schema, searchQuery, tBuilder]);
 
-    return !block ? null : (
+    // Non-builder block
+    if (!block?.data) {
+      return null;
+    }
+
+    if (!schema)
+      return (
+        <div
+          ref={outlineItemRef}
+          className={cn(
+            "flex items-center gap-2 px-3 py-2 rounded-md cursor-pointer transition-colors hover:bg-accent hover:text-accent-foreground border border-destructive",
+            isSelected ? "bg-accent text-accent-foreground" : "text-foreground",
+            !isVisible && "hidden",
+          )}
+          style={{
+            marginLeft: !searchQuery ? `${depth * 8}px` : undefined,
+          }}
+          onClick={handleOutlineItemClick}
+        >
+          <div className="flex-shrink-0 text-destructive">
+            <AlertTriangle className="h-4 w-4" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="text-sm font-medium truncate text-destructive">
+              {t("builder.baseBuilder.blocks.notFound" satisfies BaseAllKeys, {
+                blockType,
+              })}{" "}
+              ({blockId})
+            </div>
+          </div>
+        </div>
+      );
+
+    return !schema ? null : (
       <>
         <div
           ref={outlineItemRef}
@@ -78,14 +117,14 @@ const DocumentOutlineItem: React.FC<DocumentOutlineItemProps> = memo(
           onClick={handleOutlineItemClick}
         >
           <div className="flex-shrink-0 text-muted-foreground">
-            {block.schema.icon}
+            {schema.schema.icon}
           </div>
           <div className="flex-1 min-w-0">
             <div className="text-sm font-medium truncate">
-              {t(block.schema.displayName)}
+              {t(schema.schema.displayName)}
             </div>
             <div className="text-xs text-muted-foreground truncate">
-              {t(block.schema.category)}
+              {t(schema.schema.category)}
             </div>
           </div>
         </div>

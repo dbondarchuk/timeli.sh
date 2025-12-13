@@ -1,0 +1,69 @@
+"use client";
+
+import { BooleanInput, ConfigurationProps, PageInput } from "@timelish/builder";
+import { useI18n } from "@timelish/i18n";
+import { StylesConfigurationPanel } from "@timelish/page-builder-base";
+import { deepMemo } from "@timelish/ui";
+import { useCallback } from "react";
+import { BookingWithWaitlistProps } from "./schema";
+import { bookingWithWaitlistShortcuts } from "./shortcuts";
+import { styles } from "./styles";
+
+export const BookingWithWaitlistConfiguration = deepMemo(
+  ({
+    data,
+    setData,
+    base,
+    onBaseChange,
+  }: ConfigurationProps<BookingWithWaitlistProps>) => {
+    const updateProps = useCallback(
+      (p: unknown) =>
+        setData({ ...data, props: p as BookingWithWaitlistProps["props"] }),
+      [setData, data],
+    );
+    const t = useI18n("builder");
+
+    const updateStyle = useCallback(
+      (s: unknown) =>
+        setData({ ...data, style: s as BookingWithWaitlistProps["style"] }),
+      [setData, data],
+    );
+
+    return (
+      <StylesConfigurationPanel
+        styles={data.style ?? {}}
+        onStylesChange={updateStyle}
+        availableStyles={styles}
+        shortcuts={bookingWithWaitlistShortcuts}
+        base={base}
+        onBaseChange={onBaseChange}
+      >
+        <BooleanInput
+          label={t("pageBuilder.blocks.booking.modern.hideTitle")}
+          defaultValue={data.props.hideTitle ?? false}
+          onChange={(value) => updateProps({ ...data.props, hideTitle: value })}
+        />
+        <BooleanInput
+          label={t("pageBuilder.blocks.booking.modern.hideSteps")}
+          defaultValue={data.props.hideSteps ?? false}
+          onChange={(value) => updateProps({ ...data.props, hideSteps: value })}
+        />
+        <BooleanInput
+          label={t("pageBuilder.blocks.booking.modern.scrollToTop")}
+          defaultValue={data.props.scrollToTop ?? false}
+          onChange={(value) =>
+            updateProps({ ...data.props, scrollToTop: value })
+          }
+        />
+        <PageInput
+          label={t("pageBuilder.blocks.booking.confirmationPage")}
+          defaultValue={data.props.confirmationPage ?? null}
+          nullable
+          onChange={(value) =>
+            updateProps({ ...data.props, confirmationPage: value })
+          }
+        />
+      </StylesConfigurationPanel>
+    );
+  },
+);

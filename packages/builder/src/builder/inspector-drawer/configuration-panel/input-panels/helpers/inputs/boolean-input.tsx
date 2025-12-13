@@ -1,5 +1,5 @@
-import { Label, Switch } from "@timelish/ui";
-import React from "react";
+import { Checkbox, Label } from "@timelish/ui";
+import React, { useId } from "react";
 
 type Props = {
   label: string;
@@ -17,18 +17,19 @@ export const BooleanInput: React.FC<Props> = ({
     setValue(defaultValue);
   }, [defaultValue, setValue]);
 
+  const id = useId();
+
   return (
-    <div className="flex flex-col gap-2">
-      <Label>{label}</Label>
-      <div className="flex w-full">
-        <Switch
-          checked={value}
-          onCheckedChange={(checked) => {
-            setValue(checked);
-            onChange(checked);
-          }}
-        />
-      </div>
+    <div className="flex items-center gap-2 flex-1">
+      <Checkbox
+        id={id}
+        checked={value}
+        onCheckedChange={(checked) => {
+          setValue(checked === true);
+          onChange(checked === true);
+        }}
+      />
+      <Label htmlFor={id}>{label}</Label>
     </div>
   );
 };

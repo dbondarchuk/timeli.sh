@@ -106,11 +106,21 @@
     "newEntryMessage": "У вас є новий запис списку очікування"
   },
   "block": {
-    "waitlist": {
-      "displayName": "Список очікування"
+    "simple": {
+      "waitlist": {
+        "displayName": "Список очікування (Простий)"
+      },
+      "bookingWithWaitlist": {
+        "displayName": "Форма бронювання зі списком очікування (Проста)"
+      }
     },
-    "bookingWithWaitlist": {
-      "displayName": "Форма бронювання зі списком очікування"
+    "modern": {
+      "waitlist": {
+        "displayName": "Список очікування (Сучасний)"
+      },
+      "bookingWithWaitlist": {
+        "displayName": "Форма бронювання зі списком очікування (Сучасна)"
+      }
     },
     "shortcuts": {
       "gap": {

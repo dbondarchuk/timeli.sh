@@ -59,6 +59,7 @@
       "search": "Search blocks...",
       "noResultsFound": "No blocks found matching your search",
       "noBlocksAvailable": "No blocks available",
+      "notFound": "Block not found: {blockType}",
       "panel": {
         "title": "Blocks",
         "subtitle": "Add a new block"
@@ -1202,7 +1203,15 @@
         "displayName": "Page Hero"
       },
       "booking": {
-        "displayName": "Booking form",
+        "simple": {
+          "displayName": "Booking form (Simple)"
+        },
+        "modern": {
+          "displayName": "Booking form (Modern)",
+          "hideTitle": "Hide title",
+          "hideSteps": "Hide steps",
+          "scrollToTop": "Scroll to top on step change"
+        },
         "confirmationPage": "Confirmation Page"
       },
       "popup": {
@@ -1335,10 +1344,24 @@
         }
       },
       "modifyAppointmentForm": {
-        "displayName": "Modify Appointment Form"
+        "modern": {
+          "displayName": "Modify Appointment Form (Modern)",
+          "hideTitle": "Hide title",
+          "hideSteps": "Hide steps",
+          "scrollToTop": "Scroll to top on step change"
+        },
+        "simple": {
+          "displayName": "Modify Appointment Form (Simple)"
+        }
       },
       "bookingConfirmation": {
-        "displayName": "Booking Confirmation"
+        "simple": {
+          "displayName": "Booking Confirmation (Simple)"
+        },
+        "modern": {
+          "displayName": "Booking Confirmation (Modern)",
+          "newBookingPage": "New Booking Page URL"
+        }
       }
     },
     "shortcuts": {

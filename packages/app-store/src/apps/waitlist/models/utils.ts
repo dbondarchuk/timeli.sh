@@ -63,6 +63,21 @@ export const groupWaitlistDates = (
   return groups;
 };
 
+export const formatDateRange = (
+  startDate: string,
+  endDate: string,
+  locale: string,
+) => {
+  const start = DateTime.fromISO(startDate).setLocale(locale);
+  const end = DateTime.fromISO(endDate).setLocale(locale);
+
+  if (startDate === endDate) {
+    return start.toLocaleString(DateTime.DATE_HUGE);
+  }
+
+  return `${start.toLocaleString(DateTime.DATE_MED)} - ${end.toLocaleString(DateTime.DATE_MED)}`;
+};
+
 const isSequentialDate = (date1: string, date2: string): boolean => {
   const d1 = DateTime.fromISO(date1);
   const d2 = DateTime.fromISO(date2);
