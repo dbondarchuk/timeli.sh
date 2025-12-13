@@ -1,5 +1,5 @@
 import { useI18n, useLocale } from "@timelish/i18n";
-import { Button, cn, Spinner } from "@timelish/ui";
+import { Button, cn, Spinner, usePrevious } from "@timelish/ui";
 import { Check, ChevronLeft, ChevronRight } from "lucide-react";
 import { DateTime } from "luxon";
 import { useEffect, useRef } from "react";
@@ -45,11 +45,12 @@ export const ModifyAppointmentFormLayout = ({
 
   const StepContent = step.Content;
 
+  const previousStep = usePrevious(step, step);
   useEffect(() => {
-    if (scrollToTopRef.current) {
+    if (scrollToTopRef.current && previousStep !== step) {
       topRef?.current?.scrollIntoView();
     }
-  }, [step]);
+  }, [previousStep, step]);
 
   return (
     <div className={className} {...props}>
