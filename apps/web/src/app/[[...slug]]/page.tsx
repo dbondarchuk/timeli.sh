@@ -37,7 +37,13 @@ const getSource = cache(async (slug?: string, preview = false) => {
 
   logger.debug({ slug, preview }, "Retrieving page by slug");
 
-  const page = await servicesContainer.pagesService.getPageBySlug(slug);
+  const result = await servicesContainer.pagesService.resolvePage(slug);
+  if (!result) {
+    logger.warn({ slug }, "Page not found, returning 404");
+    throw new NotFoundError("Page not found");
+  }
+
+  const { page, params } = result;
 
   if (slug.length === 1 && slug[0] === "home" && !page) {
     logger.info({ slug }, "Home page not found, redirecting to install");
@@ -81,7 +87,7 @@ const getSource = cache(async (slug?: string, preview = false) => {
     "Successfully retrieved page source",
   );
 
-  return { page, settings };
+  return { page, settings, params };
 });
 
 export async function generateMetadata(
@@ -176,7 +182,7 @@ export default async function Page(props: Props) {
 
   try {
     const searchParams = await props.searchParams;
-    const params = await props.params;
+    const routeParams = await props.params;
 
     const servicesContainer = await getServicesContainer();
     const { styling, social } =
@@ -187,15 +193,15 @@ export default async function Page(props: Props) {
 
     logger.debug(
       {
-        slug: params.slug,
+        slug: routeParams.slug,
         preview: searchParams?.preview,
-        slugLength: params.slug?.length,
+        slugLength: routeParams.slug?.length,
       },
       "Processing page render request",
     );
 
-    const { page, settings } = await getSource(
-      params.slug?.join("/"),
+    const { page, settings, params } = await getSource(
+      routeParams.slug?.join("/"),
       !!searchParams?.preview,
     );
 
@@ -210,16 +216,17 @@ export default async function Page(props: Props) {
     );
 
     setPageData({
-      params,
+      routeParams,
       searchParams: searchParams || {},
       page,
+      params,
     });
 
     logger.info(
       {
         pageId: page._id,
         pageTitle: page.title,
-        pageSlug: params.slug?.join("/") || "home",
+        pageSlug: routeParams.slug?.join("/") || "home",
         preview: searchParams?.preview,
       },
       "Successfully rendered page",
@@ -232,6 +239,8 @@ export default async function Page(props: Props) {
       general: settings,
       social: social,
       now: new Date(),
+      path: routeParams.slug?.join("/") || "",
+      params,
       ...rest,
     };
 

@@ -15,6 +15,7 @@ export * from "./ics-uid";
 export * from "./incoming-message";
 export * from "./markdown";
 export * from "./object";
+export * from "./page";
 export * from "./page-data-cache";
 export * from "./phone";
 export * from "./properties-to-array";

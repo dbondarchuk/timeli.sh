@@ -34,7 +34,7 @@ import {
   useDebounceCacheFn,
 } from "@timelish/ui";
 import { SaveButton, useDemoArguments } from "@timelish/ui-admin";
-import { formatArguments } from "@timelish/utils";
+import { formatArguments, generateSlugPreview } from "@timelish/utils";
 import { Globe, Settings as SettingsIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useMemo } from "react";
@@ -160,6 +160,8 @@ export const PageForm: React.FC<{
   const language = form.watch("language");
   const isNewPage = !initialData;
 
+  const { path, params } = useMemo(() => generateSlugPreview(slug), [slug]);
+
   // Auto-generate slug when title changes (only for new pages and when slug hasn't been manually changed)
   React.useEffect(() => {
     if (isNewPage && !slugManuallyChanged && title) {
@@ -255,6 +257,8 @@ export const PageForm: React.FC<{
           publishDate,
           tags,
           fullWidth,
+          path,
+          params,
           appointment: demoAppointment,
           social: config.social,
           general: config.general,
