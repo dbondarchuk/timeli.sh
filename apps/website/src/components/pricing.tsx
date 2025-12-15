@@ -20,7 +20,7 @@ const plans = [
   },
   {
     name: "Pro",
-    price: "$15",
+    price: "$19",
     period: "/month",
     description: "Most popular choice",
     features: [
@@ -39,7 +39,7 @@ const plans = [
   },
   {
     name: "Team",
-    price: "$19",
+    price: "$25",
     period: "/person/month",
     description: "For businesses with staff",
     features: [

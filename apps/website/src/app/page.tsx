@@ -10,12 +10,10 @@ import { Testimonials } from "@/components/testimonials";
 import { Waitlist } from "@/components/waitlist";
 import { WaitlistBanner } from "@/components/waitlist-banner";
 
-export default async function LandingPage() {
-  const appUrl = `https://${process.env.ADMIN_DOMAIN}`;
-
+export default function LandingPage() {
   return (
     <div className="min-h-screen bg-background">
-      <Header appUrl={appUrl} />
+      <Header />
       <main>
         <Hero />
         <WaitlistBanner />

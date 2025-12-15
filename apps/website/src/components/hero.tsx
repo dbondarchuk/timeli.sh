@@ -157,7 +157,7 @@ export function Hero() {
       {/* Hero Image / App Preview */}
       <div className="relative mt-16 sm:mt-24">
         <div className="mx-auto max-w-6xl px-6 lg:px-8">
-          <div className="flex justify-center gap-2 mb-4">
+          <div className="flex flex-wrap justify-center gap-2 mb-4">
             {screenshots.map((screenshot, index) => (
               <button
                 key={screenshot.label}

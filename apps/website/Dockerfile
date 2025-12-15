@@ -43,6 +43,9 @@ COPY --parents *.* ./
 # Uncomment the following line in case you want to disable telemetry during the build.
 # ENV NEXT_TELEMETRY_DISABLED 1
 
+# Set the admin domain for the website to be used in the header as it is statically built page
+ENV NEXT_PUBLIC_ADMIN_DOMAIN=app.timelish.com
+
 RUN \
   if [ -f yarn.lock ]; then NODE_OPTIONS="--max-old-space-size=4096" yarn run build --filter=@timelish/website; \
   elif [ -f package-lock.json ]; then NODE_OPTIONS="--max-old-space-size=4096" npm run build --filter=@timelish/website; \
