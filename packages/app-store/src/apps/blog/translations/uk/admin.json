@@ -1,0 +1,90 @@
+{
+  "pageTitle": "Блог",
+  "table": {
+    "columns": {
+      "title": "Заголовок",
+      "slug": "Слаг",
+      "status": "Статус",
+      "publicationDate": "Дата публікації",
+      "tags": "Теги",
+      "published": "Опубліковано",
+      "draft": "Чернетка"
+    },
+    "actions": {
+      "create": "Створити запис",
+      "edit": "Редагувати"
+    },
+    "delete": {
+      "title": "Ви впевнені?",
+      "description": "Цю дію неможливо скасувати. Запис буде видалено назавжди.",
+      "confirm": "Видалити",
+      "cancel": "Скасувати",
+      "action": "Видалити"
+    },
+    "toast": {
+      "blog_post_deleted": "Запис блогу успішно видалено",
+      "error_deleting_blog_post": "Помилка під час видалення запису блогу",
+      "error_loading_blog_posts": "Помилка завантаження записів блогу"
+    }
+  },
+  "form": {
+    "title": "Заголовок",
+    "titleTooltip": "Заголовок запису блогу",
+    "titlePlaceholder": "Введіть заголовок запису",
+    "slug": "Слаг",
+    "slugTooltip": "URL-дружня версія заголовка",
+    "slugPlaceholder": "slug-zapysu",
+    "content": "Контент",
+    "contentTooltip": "Основний вміст запису",
+    "isPublished": "Опубліковано",
+    "isPublishedDescription": "Чи опублікований запис і видимий для відвідувачів",
+    "publicationDate": "Дата публікації",
+    "publicationDateTooltip": "Коли слід опублікувати запис",
+    "tags": "Теги",
+    "tagsTooltip": "Теги для категоризації запису",
+    "toasts": {
+      "changesSaved": "Запис блогу збережено",
+      "requestError": "Помилка збереження запису"
+    }
+  },
+  "app": {
+    "displayName": "Блог",
+    "description": "Створюйте та керуйте записами блогу з контентом, тегами та датами публікації",
+    "pages": {
+      "main": {
+        "label": "Блог",
+        "title": "Записи блогу",
+        "description": "Керуйте записами блогу"
+      },
+      "new": {
+        "label": "Новий запис",
+        "title": "Створити новий запис блогу",
+        "description": "Створити новий запис блогу"
+      },
+      "edit": {
+        "label": "Редагувати запис",
+        "title": "Редагувати запис блогу",
+        "description": "Редагувати запис блогу",
+        "notFound": "Запис блогу не знайдено"
+      }
+    }
+  },
+  "setup": {
+    "update": "Оновити <app></app>"
+  },
+  "statusText": {
+    "successfully_set_up": "Блог успішно налаштовано",
+    "error_processing_configuration": "Помилка обробки конфігурації блогу"
+  },
+  "block": {
+    "postsList": {
+      "displayName": "Список записів блогу"
+    },
+    "postContent": {
+      "displayName": "Вміст запису блогу"
+    },
+    "tagList": {
+      "displayName": "Список тегів блогу"
+    }
+  }
+}

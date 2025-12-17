@@ -2,6 +2,8 @@ import {
   BaseZodDictionary,
   EditorDocumentBlocksDictionary,
 } from "@timelish/builder";
+import { BlogBlocks } from "../apps/blog/blocks/schema";
+import { BLOG_APP_NAME } from "../apps/blog/const";
 import { WaitlistBlocks } from "../apps/waitlist/blocks/schema";
 import { WAITLIST_APP_NAME } from "../apps/waitlist/const";
 
@@ -15,5 +17,6 @@ export const AppsBlocksEditors: Record<
     };
   }
 > = {
+  [BLOG_APP_NAME]: BlogBlocks,
   [WAITLIST_APP_NAME]: WaitlistBlocks,
 };

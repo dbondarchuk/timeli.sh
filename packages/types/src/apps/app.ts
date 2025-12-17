@@ -57,7 +57,6 @@ export type AppMenuItem<
   T extends I18nNamespaces = I18nNamespaces,
   CustomKeys extends string | undefined = undefined,
 > = {
-  parent?: string;
   order?: number;
   id: string;
   label: AllKeys<T, CustomKeys>;
@@ -72,7 +71,16 @@ export type AppMenuItem<
   isHidden?: boolean;
   pageTitle?: AllKeys<T, CustomKeys>;
   pageDescription?: AllKeys<T, CustomKeys>;
-};
+} & (
+  | {
+      group: "overview" | "appointments" | "website" | "customers" | "settings";
+      parent?: undefined;
+    }
+  | {
+      group?: undefined;
+      parent: string;
+    }
+);
 
 export type OAuthApp<
   T extends I18nNamespaces = I18nNamespaces,

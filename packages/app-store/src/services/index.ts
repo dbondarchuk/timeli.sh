@@ -43,6 +43,8 @@ import { URL_SCHEDULE_PROVIDER_APP_NAME } from "../apps/url-schedule-provider/co
 import UrlScheduleProviderConnectedApp from "../apps/url-schedule-provider/service";
 import { WAITLIST_NOTIFICATIONS_APP_NAME } from "../apps/waitlist-notifications/const";
 import { WaitlistNotificationsConnectedApp } from "../apps/waitlist-notifications/service";
+import { BLOG_APP_NAME } from "../apps/blog/const";
+import { BlogConnectedApp } from "../apps/blog/service/service";
 import { WAITLIST_APP_NAME } from "../apps/waitlist/const";
 import { WaitlistConnectedApp } from "../apps/waitlist/service/service";
 import { WEBHOOKS_APP_NAME } from "../apps/webhooks/const";
@@ -81,6 +83,7 @@ export const AvailableAppServices: Record<
   [SCHEDULED_NOTIFICATIONS_APP_NAME]: (props) =>
     new ScheduledNotificationsConnectedApp(props),
   [PAYPAL_APP_NAME]: (props) => new PaypalConnectedApp(props),
+  [BLOG_APP_NAME]: (props) => new BlogConnectedApp(props),
   [WAITLIST_APP_NAME]: (props) => new WaitlistConnectedApp(props),
   [WAITLIST_NOTIFICATIONS_APP_NAME]: (props) =>
     new WaitlistNotificationsConnectedApp(props),
