@@ -1,3 +1,4 @@
+import { BaseAllKeys } from "@timelish/i18n";
 import { Ruler } from "lucide-react";
 import { RawNumberInputWithUnitsAndKeywords } from "../../../style-inputs/base/raw-number-input-with-units-and-keywords";
 import { widthOrHeightOptions } from "../../../style-inputs/base/types";
@@ -11,7 +12,7 @@ const HeightSchema = getZNumberValueWithUnitOrKeyword(
 
 export const heightStyle = {
   name: "height",
-  label: "builder.pageBuilder.styles.properties.height",
+  label: "builder.pageBuilder.styles.properties.height" satisfies BaseAllKeys,
   category: "layout",
   schema: HeightSchema,
   icon: ({ className }) => <Ruler className={className} />,
