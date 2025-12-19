@@ -89,13 +89,15 @@ export type FieldComponentMapFn = (
 
 export const fieldsComponentMap: (
   namespace?: string,
-) => Record<FieldType, FieldComponentMapFn> = (namespace) => ({
+  afterChange?: (value: any) => void,
+) => Record<FieldType, FieldComponentMapFn> = (namespace, afterChange) => ({
   name: (field, control, disabled) => (
     <NameField
       control={control}
       {...field}
       disabled={disabled}
       namespace={namespace}
+      afterChange={afterChange}
     />
   ),
   email: (field, control, disabled) => (
@@ -104,6 +106,7 @@ export const fieldsComponentMap: (
       {...field}
       disabled={disabled}
       namespace={namespace}
+      afterChange={afterChange}
     />
   ),
   phone: (field, control, disabled) => (
@@ -112,6 +115,7 @@ export const fieldsComponentMap: (
       disabled={disabled}
       {...(field as Field<WithLabelFieldData>)}
       namespace={namespace}
+      afterChange={afterChange}
     />
   ),
   oneLine: (field, control, disabled) => (
@@ -120,6 +124,7 @@ export const fieldsComponentMap: (
       disabled={disabled}
       {...(field as Field<WithLabelFieldData>)}
       namespace={namespace}
+      afterChange={afterChange}
     />
   ),
   multiLine: (field, control, disabled) => (
@@ -128,6 +133,7 @@ export const fieldsComponentMap: (
       disabled={disabled}
       {...(field as Field<WithLabelFieldData>)}
       namespace={namespace}
+      afterChange={afterChange}
     />
   ),
   checkbox: (field, control, disabled) => (
@@ -136,6 +142,7 @@ export const fieldsComponentMap: (
       disabled={disabled}
       {...(field as Field<WithLabelFieldData>)}
       namespace={namespace}
+      afterChange={afterChange}
     />
   ),
   select: (field, control, disabled) => (
@@ -144,6 +151,7 @@ export const fieldsComponentMap: (
       disabled={disabled}
       {...(field as Field<WithLabelFieldData & FieldOptionsData>)}
       namespace={namespace}
+      afterChange={afterChange}
     />
   ),
   file: (field, control, disabled) => (
@@ -152,6 +160,7 @@ export const fieldsComponentMap: (
       disabled={disabled}
       {...(field as Field<WithLabelFieldData & FieldFileData>)}
       namespace={namespace}
+      afterChange={afterChange}
     />
   ),
 });

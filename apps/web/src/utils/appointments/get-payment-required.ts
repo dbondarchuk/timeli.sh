@@ -247,7 +247,24 @@ export const getAppointmentEventAndIsPaymentRequired = async (
     }
 
     if (percentage !== null) {
-      const amount = formatAmount((event.totalPrice * percentage) / 100);
+      let amount = formatAmount((event.totalPrice * percentage) / 100);
+      if (
+        config.payments.fullPaymentAmountThreshold &&
+        amount < config.payments.fullPaymentAmountThreshold
+      ) {
+        logger.debug(
+          {
+            fullPaymentAmountThreshold:
+              config.payments.fullPaymentAmountThreshold,
+            amount,
+            reason: "amount_less_than_full_payment_amount_threshold",
+          },
+          "Amount is less than full payment amount threshold, setting to full payment",
+        );
+
+        amount = event.totalPrice;
+        percentage = 100;
+      }
 
       logger.info(
         {

@@ -58,7 +58,8 @@
         "title": "Додатки"
       },
       "date": {
-        "title": "Дата та час"
+        "title": "Дата та час",
+        "duration": "Орієнтовна тривалість: {duration}"
       },
       "contact": {
         "title": "Контактна інформація",
@@ -69,9 +70,10 @@
         "yes": "Так",
         "no": "Ні"
       },
-      "total": {
-        "title": "Всього",
-        "duration": "Орієнтовна тривалість: {duration}"
+      "price": {
+        "total": "Всього до сплати",
+        "discount": "Знижка",
+        "original": "Підсумок"
       }
     },
     "payment": {
@@ -79,11 +81,20 @@
         "full": "Сума повної оплати",
         "deposit": "Сума депозиту"
       },
-      "serviceTotal": "Всього за послугу",
+      "subtotal": "Сумарна ціна",
+      "discount": "Знижка",
+      "total": "Всього до сплати",
       "deposit": "Депозит (сплатити зараз)",
       "fullPayment": "Повна оплата (сплатити зараз)",
       "remainingBalance": "Залишок балансу",
       "remainingBalanceDescription": "Залишок балансу ${remainingBalance} буде сплачено під час вашого запису."
+    },
+    "confirmation": {
+      "price": {
+        "original": "Підсумок: ${original}",
+        "discount": "Знижка: -${discount}",
+        "total": "Всього: ${total}"
+      }
     }
   },
   "modification": {

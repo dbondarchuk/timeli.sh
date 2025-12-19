@@ -12,6 +12,8 @@ export const PaymentCard: React.FC = () => {
     paymentInformation: paymentForm,
     onSubmit,
     price,
+    basePrice,
+    discountAmount,
   } = useScheduleContext();
   if (!paymentForm || !price) return null;
 
@@ -55,10 +57,30 @@ export const PaymentCard: React.FC = () => {
           </p>
         </div>
 
-        <div className="space-y-4 mb-6">
+        <div className="space-y-2 mb-6">
+          {!!discountAmount && (
+            <>
+              <div className="flex justify-between text-xs payment-card-service-total">
+                <span className="text-muted-foreground payment-card-service-total-label">
+                  {t("booking.payment.subtotal")}
+                </span>
+                <span className="text-foreground payment-card-service-total-amount">
+                  ${formatAmountString(basePrice)}
+                </span>
+              </div>
+              <div className="flex justify-between text-xs payment-card-service-total pb-2 border-b">
+                <span className="text-muted-foreground payment-card-service-total-label">
+                  {t("booking.payment.discount")}
+                </span>
+                <span className="text-destructive payment-card-service-total-amount">
+                  -(${formatAmountString(discountAmount)})
+                </span>
+              </div>
+            </>
+          )}
           <div className="flex justify-between text-sm payment-card-service-total">
             <span className="text-muted-foreground payment-card-service-total-label">
-              {t("booking.payment.serviceTotal")}
+              {t("booking.payment.total")}
             </span>
             <span className="text-foreground payment-card-service-total-amount">
               ${formatAmountString(price)}

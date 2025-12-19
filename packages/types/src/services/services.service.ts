@@ -95,8 +95,8 @@ export interface IServicesService {
   deleteDiscount(id: string): Promise<Discount | null>;
   deleteDiscounts(ids: string[]): Promise<void>;
   checkDiscountUniqueNameAndCode(
-    name: string,
-    codes: string[],
+    name?: string,
+    codes?: string[],
     id?: string,
   ): Promise<{ name: boolean; code: Record<string, boolean> }>;
 

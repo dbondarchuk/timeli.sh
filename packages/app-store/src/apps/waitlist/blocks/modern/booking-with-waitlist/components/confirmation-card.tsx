@@ -1,8 +1,6 @@
 import { useFormatter, useI18n, useLocale } from "@timelish/i18n";
-import { timeZones } from "@timelish/types";
 import { Button, useTimeZone } from "@timelish/ui";
 import { durationToTime, formatAmountString } from "@timelish/utils";
-import { TimeZone } from "@vvo/tzdb";
 import { CheckCircle2 } from "lucide-react";
 import { DateTime } from "luxon";
 import { formatDateRange, groupWaitlistDates } from "../../../../models/utils";
@@ -28,6 +26,9 @@ export const ConfirmationCard: React.FC = () => {
     waitlistTimes,
     handleNewBooking,
     price,
+    discount,
+    discountAmount,
+    basePrice,
   } = useScheduleContext();
 
   const locale = useLocale();
@@ -35,18 +36,6 @@ export const ConfirmationCard: React.FC = () => {
   const defaultTimeZone = useTimeZone();
 
   if (!selectedAppointmentOption) return null;
-
-  let timeZone: TimeZone | undefined = timeZones.find((tz) => {
-    const timeZoneName = dateTime?.timeZone || defaultTimeZone;
-    return timeZoneName === tz.name || tz.group.includes(timeZoneName);
-  });
-
-  if (!timeZone) {
-    const defaultZone = DateTime.now().zoneName;
-    timeZone = timeZones.find((tz) => {
-      return defaultZone === tz.name || tz.group.includes(defaultZone || "");
-    });
-  }
 
   const groups = groupWaitlistDates(waitlistTimes.dates || []);
 
@@ -87,11 +76,6 @@ export const ConfirmationCard: React.FC = () => {
                 .set({ hour: dateTime.time.hour, minute: dateTime.time.minute })
                 .setZone(dateTime.timeZone)
                 .toLocaleString(DateTime.DATETIME_HUGE, { locale })}
-            </p>
-            <p className="text-xs text-muted-foreground mt-1">
-              {i18n("timezone_format", {
-                timezone: timeZone?.currentTimeFormat || "",
-              })}
             </p>
           </>
         )}
@@ -137,10 +121,24 @@ export const ConfirmationCard: React.FC = () => {
             ),
           })}
         </p>
-        {!!price && (
+        {!!discount && (
+          <>
+            <p className="text-xs text-muted-foreground mt-1">
+              {i18n("booking.confirmation.price.original", {
+                original: formatAmountString(basePrice),
+              })}
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">
+              {i18n("booking.confirmation.price.discount", {
+                discount: formatAmountString(discountAmount),
+              })}
+            </p>
+          </>
+        )}
+        {!!basePrice && (
           <p className="text-sm font-semibold text-foreground mt-1">
-            {i18n("form_price_label_format", {
-              price: formatAmountString(price),
+            {i18n("booking.confirmation.price.total", {
+              total: formatAmountString(price),
             })}
           </p>
         )}

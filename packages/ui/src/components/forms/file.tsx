@@ -29,6 +29,7 @@ export const FileField: <T extends FieldValues>(
               onChange={(event) => {
                 field.onChange(event.target?.files?.[0]);
                 field.onBlur();
+                props.afterChange?.(event.target?.files?.[0]);
               }}
               disabled={field.disabled || props.disabled}
             />

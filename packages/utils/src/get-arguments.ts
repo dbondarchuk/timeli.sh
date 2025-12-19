@@ -60,8 +60,9 @@ type ArgsProps = {
   pending: boolean;
   totalAmountPaid?: number;
   totalAmountLeft?: number;
-  totalRefunded?: number;
+  totalAmountRefunded?: number;
   totalAmountLeftToPay?: number;
+  subTotalAmount?: number;
   payments?: (Payment & {
     amountLeft: number;
     totalRefunded: number;
@@ -179,12 +180,19 @@ export const getArguments = <
         .reduce((sum, payment) => sum + payment.amountLeft, 0) || 0)
     : undefined;
 
+  const subTotal =
+    appointment?.totalPrice || appointment?.discount?.discountAmount
+      ? (appointment.totalPrice || 0) +
+        (appointment.discount?.discountAmount || 0)
+      : undefined;
+
   const extendedArgs: ArgsProps = {
     payments: payments || [],
     totalAmountLeft,
-    totalRefunded,
+    totalAmountRefunded: totalRefunded,
     totalAmountPaid,
     totalAmountLeftToPay,
+    subTotalAmount: subTotal,
     restFields: Object.entries(restFields).map(([name, value]) => ({
       name,
       value,
@@ -233,6 +241,10 @@ export const getArguments = <
     ...((appointment || {}) as TAppointment),
     ...extendedArgs,
     customer: customer || appointment?.customer,
+    totalPrice:
+      appointment?.totalPrice || appointment?.discount?.discountAmount
+        ? appointment.totalPrice || 0
+        : undefined,
   };
 
   const args = formatArguments(

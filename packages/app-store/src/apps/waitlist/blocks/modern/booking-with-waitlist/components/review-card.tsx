@@ -17,8 +17,11 @@ export const ReviewCard: React.FC = () => {
     setConfirmDuplicateAppointment,
     dateTime,
     fields,
-    price,
     formFields,
+    discount,
+    basePrice,
+    discountAmount,
+    price,
   } = useScheduleContext();
 
   const locale = useLocale();
@@ -40,6 +43,7 @@ export const ReviewCard: React.FC = () => {
   }
 
   const { name, email, phone, ...restFields } = fields;
+  const shouldShowTotals = !!basePrice;
   return (
     <div className="space-y-6 review-card card-container">
       <div className="mb-6">
@@ -230,7 +234,7 @@ export const ReviewCard: React.FC = () => {
           <div className="flex items-center gap-2 text-foreground text-xs review-duration-content">
             <Clock className="w-4 h-4 text-muted-foreground" />
             <span className="review-date-duration">
-              {i18n("booking.review.total.duration", {
+              {i18n("booking.review.date.duration", {
                 duration: i18n(
                   "duration_hour_min_format",
                   durationToTime(selectedAppointmentOption.duration || 0),
@@ -293,22 +297,44 @@ export const ReviewCard: React.FC = () => {
         </div>
 
         {/* Total */}
-        <div className="border-t pt-4 review-total">
-          <div className="flex items-center justify-between review-total-content">
-            <div>
-              {!!price && price > 0 && (
+        {shouldShowTotals && (
+          <div className="border-t pt-4 review-total">
+            {discount && (
+              <>
+                <div className="flex items-center justify-between review-total-content text-xs">
+                  <div>
+                    <p className="font-semibold text-foreground review-total-title">
+                      {i18n("booking.review.price.original")}
+                    </p>
+                  </div>
+                  <p className="font-bold text-foreground review-total-amount">
+                    ${formatAmountString(basePrice)}
+                  </p>
+                </div>
+                <div className="flex items-center justify-between review-total-content text-xs">
+                  <div>
+                    <p className="font-semibold text-foreground review-total-title">
+                      {i18n("booking.review.price.discount")}
+                    </p>
+                  </div>
+                  <p className="font-bold text-destructive review-total-amount">
+                    -(${formatAmountString(discountAmount)})
+                  </p>
+                </div>
+              </>
+            )}
+            <div className="flex items-center justify-between review-total-content">
+              <div>
                 <p className="font-semibold text-foreground review-total-title">
-                  {i18n("booking.review.total.title")}
+                  {i18n("booking.review.price.total")}
                 </p>
-              )}
-            </div>
-            {!!price && price > 0 && (
+              </div>
               <p className="text-lg font-bold text-foreground review-total-amount">
                 ${formatAmountString(price)}
               </p>
-            )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

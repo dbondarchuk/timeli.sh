@@ -154,12 +154,15 @@ const getAppointmentDiscountAmount = ({
 }: ScheduleContextProps) => {
   if (!promoCode) return 0;
 
+  const basePrice = getAppointmentBasePrice(rest);
+
   switch (promoCode.type) {
     case "amount":
-      return promoCode.value;
+      return Math.min(basePrice, promoCode.value);
     case "percentage":
-      return parseFloat(
-        ((getAppointmentBasePrice(rest) * promoCode.value) / 100).toFixed(2),
+      return Math.min(
+        basePrice,
+        parseFloat(((basePrice * promoCode.value) / 100).toFixed(2)),
       );
   }
 };

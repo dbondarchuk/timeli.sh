@@ -15,12 +15,14 @@ export const AppointmentOptionCard: React.FC = () => {
     setDateTime,
     baseDuration,
     setDuration,
+    setSelectedAddons,
   } = useScheduleContext();
 
   const i18n = useI18n("translation");
 
   const onClick = (option: AppointmentChoice): void => {
     setSelectedAppointmentOption(option);
+    setSelectedAddons([]);
     setDiscount(undefined);
     setDateTime(undefined);
   };

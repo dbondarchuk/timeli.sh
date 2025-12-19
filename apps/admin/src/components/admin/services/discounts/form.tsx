@@ -115,7 +115,9 @@ const DiscountLimitCard: React.FC<{
           />
         ))}
         {!options.fields?.length && (
-          <div>{t("services.discounts.form.anyOption")}</div>
+          <div className="text-sm">
+            {t("services.discounts.form.anyOption")}
+          </div>
         )}
         <Button
           variant="outline"
@@ -174,7 +176,7 @@ const DiscountLimitCard: React.FC<{
           />
         ))}
         {!addons.fields?.length && (
-          <div>{t("services.discounts.form.anyAddon")}</div>
+          <div className="text-sm">{t("services.discounts.form.anyAddon")}</div>
         )}
         <Button
           variant="outline"
@@ -409,16 +411,16 @@ export const DiscountForm: React.FC<{
                   </FormLabel>
                   <FormControl>
                     <InputGroup>
+                      {discountType === "amount" && (
+                        <InputSuffix
+                          className={InputGroupSuffixClasses({
+                            variant: "prefix",
+                          })}
+                        >
+                          $
+                        </InputSuffix>
+                      )}
                       <InputGroupInput>
-                        {discountType === "amount" && (
-                          <InputSuffix
-                            className={InputGroupSuffixClasses({
-                              variant: "prefix",
-                            })}
-                          >
-                            $
-                          </InputSuffix>
-                        )}
                         <Input
                           disabled={loading}
                           placeholder="15"
@@ -430,6 +432,10 @@ export const DiscountForm: React.FC<{
                                 : "prefix",
                           })}
                           {...field}
+                          onBlur={() => {
+                            field.onBlur();
+                            form.trigger("type");
+                          }}
                         />
                       </InputGroupInput>
                       {discountType === "percentage" && (
@@ -468,6 +474,10 @@ export const DiscountForm: React.FC<{
                       format={timeFormat}
                       use12HourFormat={uses12HourFormat}
                       {...field}
+                      onChange={(date) => {
+                        field.onChange(date);
+                        field.onBlur();
+                      }}
                     />
                   </FormControl>
                   <FormMessage />
@@ -493,6 +503,10 @@ export const DiscountForm: React.FC<{
                       format={timeFormat}
                       use12HourFormat={uses12HourFormat}
                       {...field}
+                      onChange={(date) => {
+                        field.onChange(date);
+                        field.onBlur();
+                      }}
                     />
                   </FormControl>
                   <FormMessage />
@@ -522,6 +536,10 @@ export const DiscountForm: React.FC<{
                       format={timeFormat}
                       use12HourFormat={uses12HourFormat}
                       {...field}
+                      onChange={(date) => {
+                        field.onChange(date);
+                        field.onBlur();
+                      }}
                     />
                   </FormControl>
                   <FormMessage />
@@ -551,6 +569,10 @@ export const DiscountForm: React.FC<{
                       format={timeFormat}
                       use12HourFormat={uses12HourFormat}
                       {...field}
+                      onChange={(date) => {
+                        field.onChange(date);
+                        field.onBlur();
+                      }}
                     />
                   </FormControl>
                   <FormMessage />
@@ -693,12 +715,12 @@ export const DiscountForm: React.FC<{
                 />
               ))}
               {!limitTo.fields?.length && (
-                <div className="flex flex-col gap-4 px-2 py-4 border rounded bg-card">
+                <div className="flex flex-col gap-4 px-2 py-4 border rounded bg-card text-sm">
                   {t("admin.services.discounts.form.anyOptionOrAddon")}
                 </div>
               )}
 
-              <div className="text-sm text-muted-foreground">
+              <div className="text-xs text-muted-foreground">
                 {t("admin.services.discounts.form.limitToDescription")}
               </div>
             </div>

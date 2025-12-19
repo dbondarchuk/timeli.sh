@@ -9,6 +9,7 @@ export type IFormFieldProps<
   name: FieldPath<T>;
   namespace?: string;
   disabled?: boolean;
+  afterChange?: (value: any) => void;
 };
 
 export const getFieldName = <T extends FieldValues>({

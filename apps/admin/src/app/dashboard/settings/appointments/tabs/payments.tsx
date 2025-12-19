@@ -21,6 +21,7 @@ export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
   const t = useI18n("admin");
   const enablePayments = form.watch("payments.enabled");
   const requireDeposit = form.watch("payments.requireDeposit");
+  const depositPercentage = form.watch("payments.depositPercentage");
   return (
     <div className="gap-2 grid grid-cols-1 md:grid-cols-2 md:gap-4 w-full">
       {/* <div className="flex flex-col gap-2"> */}
@@ -203,7 +204,52 @@ export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
               />
             </>
           )}
-          {/* </div> */}
+
+          <FormField
+            control={form.control}
+            name="payments.fullPaymentAmountThreshold"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  {t(
+                    "settings.appointments.form.payments.fullPaymentAmountThreshold",
+                  )}{" "}
+                  <InfoTooltip>
+                    {t.rich(
+                      "settings.appointments.form.payments.fullPaymentAmountThresholdTooltip",
+                      {
+                        p: (chunks: any) => <p>{chunks}</p>,
+                        strong: (chunks: any) => <strong>{chunks}</strong>,
+                      },
+                    )}
+                  </InfoTooltip>
+                </FormLabel>
+                <FormControl>
+                  <InputGroup>
+                    <InputSuffix
+                      className={InputGroupSuffixClasses({
+                        variant: "prefix",
+                      })}
+                    >
+                      $
+                    </InputSuffix>
+                    <InputGroupInput>
+                      <Input
+                        disabled={disabled}
+                        placeholder="5.00"
+                        type="number"
+                        className={InputGroupInputClasses({
+                          variant: "prefix",
+                        })}
+                        {...field}
+                      />
+                    </InputGroupInput>
+                  </InputGroup>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </>
       )}
     </div>

@@ -37,6 +37,7 @@ export const FormCard: React.FC = () => {
     formFields,
     discount,
     showPromoCode,
+    basePrice,
     setDiscount,
     discountAmount,
     setIsFormValid,
@@ -130,6 +131,16 @@ export const FormCard: React.FC = () => {
     }
   };
 
+  const fieldsMap = useMemo(
+    () =>
+      fieldsComponentMap(undefined, () => {
+        setDiscount(undefined);
+        setPromoCode("");
+        setPromoCodeError(undefined);
+      }),
+    [setDiscount, setPromoCode, setPromoCodeError],
+  );
+
   return (
     <div className="space-y-6 form-card card-container">
       <div className="mb-6">
@@ -149,11 +160,11 @@ export const FormCard: React.FC = () => {
           <div className="flex flex-col gap-2 form-card-form-fields">
             {fields.map((field) => (
               <React.Fragment key={field.name}>
-                {fieldsComponentMap()[field.type](field, form.control)}
+                {fieldsMap[field.type](field, form.control)}
               </React.Fragment>
             ))}
 
-            {showPromoCode && (
+            {showPromoCode && !!basePrice && (
               <FormItem>
                 <Label htmlFor="promo-code">{i18n("form_promo_code")}</Label>
                 <div className="flex flex-row gap-2 form-card-promo-code-container">
@@ -178,7 +189,7 @@ export const FormCard: React.FC = () => {
                 </div>
                 <p
                   className={cn(
-                    "text-sm font-medium form-card-promo-code-message",
+                    "text-xs font-medium form-card-promo-code-message",
                     promoCodeError
                       ? "text-destructive form-card-promo-code-message-error"
                       : "text-green-700 form-card-promo-code-message-success",

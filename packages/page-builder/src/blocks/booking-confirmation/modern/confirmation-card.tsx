@@ -1,10 +1,9 @@
 "use client";
 
 import { useI18n, useLocale } from "@timelish/i18n";
-import { Appointment, timeZones } from "@timelish/types";
+import { Appointment } from "@timelish/types";
 import { Link, useTimeZone } from "@timelish/ui";
 import { durationToTime, formatAmountString } from "@timelish/utils";
-import { TimeZone } from "@vvo/tzdb";
 import { CheckCircle2 } from "lucide-react";
 import { DateTime } from "luxon";
 import { forwardRef } from "react";
@@ -22,18 +21,6 @@ export const ConfirmationCard = forwardRef<
   const i18n = useI18n("translation");
   const locale = useLocale();
   const defaultTimeZone = useTimeZone();
-
-  let timeZone: TimeZone | undefined = timeZones.find((tz) => {
-    const timeZoneName = appointment.timeZone || defaultTimeZone;
-    return timeZoneName === tz.name || tz.group.includes(timeZoneName);
-  });
-
-  if (!timeZone) {
-    const defaultZone = DateTime.now().zoneName;
-    timeZone = timeZones.find((tz) => {
-      return defaultZone === tz.name || tz.group.includes(defaultZone || "");
-    });
-  }
 
   const dateTime =
     appointment?.dateTime && "timestamp" in appointment.dateTime
@@ -73,11 +60,6 @@ export const ConfirmationCard = forwardRef<
                       locale: locale,
                     })}
                   </p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {i18n("timezone_format", {
-                      timezone: timeZone?.currentTimeFormat || "",
-                    })}
-                  </p>
                 </>
               )}
               <p className="text-xs text-muted-foreground mt-1">
@@ -88,10 +70,29 @@ export const ConfirmationCard = forwardRef<
                   ),
                 })}
               </p>
-              {!!appointment.totalPrice && (
+              {!!appointment.discount && (
+                <>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {i18n("booking.confirmation.price.original", {
+                      original: formatAmountString(
+                        (appointment.totalPrice || 0) +
+                          (appointment.discount.discountAmount || 0),
+                      ),
+                    })}
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {i18n("booking.confirmation.price.discount", {
+                      discount: formatAmountString(
+                        appointment.discount.discountAmount,
+                      ),
+                    })}
+                  </p>
+                </>
+              )}
+              {(!!appointment.totalPrice || !!appointment.discount) && (
                 <p className="text-sm font-semibold text-foreground mt-1">
-                  {i18n("form_price_label_format", {
-                    price: formatAmountString(appointment.totalPrice || 0),
+                  {i18n("booking.confirmation.price.total", {
+                    total: formatAmountString(appointment.totalPrice || 0),
                   })}
                 </p>
               )}

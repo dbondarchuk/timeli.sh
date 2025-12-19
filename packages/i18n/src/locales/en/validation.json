@@ -318,6 +318,10 @@
         "dontRequireIfCompletedMinNumberOfAppointments": {
           "min": "Min number of appointments must be at least 1",
           "integer": "Min number of appointments must be an integer number"
+        },
+        "fullPaymentAmountThreshold": {
+          "required": "Full payment amount threshold should be positive number",
+          "min": "Full payment amount threshold should be at least 1"
         }
       }
     },

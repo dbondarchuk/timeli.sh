@@ -64,10 +64,7 @@ export const AppointmentDetails = ({
     ? appointment.totalPrice -
       (paidPayments
         ?.filter(
-          (payment) =>
-            payment.type !== "rescheduleFee" &&
-            payment.type !== "cancellationFee" &&
-            payment.type !== "tips",
+          (payment) => payment.type === "payment" || payment.type === "deposit",
         )
         .reduce((sum, payment) => sum + payment.amount, 0) || 0)
     : 0;
@@ -199,47 +196,52 @@ export const AppointmentDetails = ({
                 {t(`appointments.status.${appointment.status}`)}
               </dd>
             </div>
-
-            {!!appointment.totalPrice && (
+            {(!!appointment.totalPrice ||
+              !!appointment.discount ||
+              !!totalPaid) && (
               <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt>{t("appointments.view.price")}:</dt>
-                <dd className="col-span-2">
-                  ${formatAmountString(appointment.totalPrice)}
-                </dd>
-              </div>
-            )}
-            {!!appointment.discount && (
-              <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt>{t("appointments.view.discount")}:</dt>
-                <dd className="col-span-2 flex flex-row gap-1 items-center">
-                  <span>
-                    -${formatAmountString(appointment.discount.discountAmount)}
-                  </span>
-                  <span className="text-sm text-muted-foreground">
-                    ({appointment.discount.code})
-                  </span>
-                </dd>
-              </div>
-            )}
-            {!!totalPaid && (
-              <>
-                <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt>{t("appointments.view.amountPaid")}:</dt>
-                  <dd className="col-span-2">
-                    ${formatAmountString(totalPaid)}
-                  </dd>
-                </div>
-                {!!appointment.totalPrice &&
-                  totalAmountLeft > 0 &&
-                  appointment.status !== "declined" && (
-                    <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                      <dt>{t("appointments.view.amountLeftToPay")}:</dt>
-                      <dd className="col-span-2">
-                        ${formatAmountString(totalAmountLeft)}
-                      </dd>
+                <dt>{t("appointments.view.price")}</dt>
+                <dd className="col-span-2 flex flex-col gap-2">
+                  {!!appointment.discount && (
+                    <>
+                      <div>
+                        {t("appointments.view.subtotal", {
+                          subtotal: formatAmountString(
+                            (appointment.totalPrice || 0) +
+                              (appointment.discount?.discountAmount || 0),
+                          ),
+                        })}
+                      </div>
+                      <div className="text-destructive pb-2 border-b">
+                        {t("appointments.view.discount", {
+                          discount: formatAmountString(
+                            appointment.discount?.discountAmount || 0,
+                          ),
+                        })}
+                      </div>
+                    </>
+                  )}
+                  <div className="font-semibold text-sm">
+                    {t("appointments.view.total", {
+                      total: formatAmountString(appointment.totalPrice || 0),
+                    })}
+                  </div>
+                  {!!totalPaid && (
+                    <div>
+                      {t("appointments.view.amountPaid", {
+                        amountPaid: formatAmountString(totalPaid),
+                      })}
                     </div>
                   )}
-              </>
+                  {appointment.status !== "declined" && (
+                    <div className="font-semibold text-sm pt-2 border-t">
+                      {t("appointments.view.amountDue", {
+                        amountDue: formatAmountString(totalAmountLeft),
+                      })}
+                    </div>
+                  )}
+                </dd>
+              </div>
             )}
             <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
               <dt className="flex self-center">
@@ -251,7 +253,7 @@ export const AppointmentDetails = ({
                     <AccordionTrigger className="text-left">
                       <span>
                         {appointment.customer.name}{" "}
-                        <span className="text-sm text-muted-foreground">
+                        <span className="text-xs text-muted-foreground">
                           ({appointment.customer.email})
                         </span>
                       </span>
@@ -372,7 +374,7 @@ export const AppointmentDetails = ({
                 <dd className="col-span-2">
                   <Accordion type="single" collapsible>
                     <AccordionItem value="addons" className="border-none">
-                      <AccordionTrigger>
+                      <AccordionTrigger className="text-left">
                         {appointment.addons
                           .map((addon) => addon.name)
                           .join(", ")}

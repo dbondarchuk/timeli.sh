@@ -58,7 +58,8 @@
         "title": "Add-ons"
       },
       "date": {
-        "title": "Date & Time"
+        "title": "Date & Time",
+        "duration": "Estimated duration: {duration}"
       },
       "contact": {
         "title": "Contact Information",
@@ -69,9 +70,10 @@
         "yes": "Yes",
         "no": "No"
       },
-      "total": {
-        "title": "Total",
-        "duration": "Estimated duration: {duration}"
+      "price": {
+        "total": "Total due",
+        "discount": "Discount",
+        "original": "Subtotal"
       }
     },
     "payment": {
@@ -79,11 +81,20 @@
         "full": "Full payment amount",
         "deposit": "Deposit amount"
       },
-      "serviceTotal": "Service total",
+      "subtotal": "Subtotal",
+      "discount": "Discount",
+      "total": "Total due",
       "deposit": "Deposit (due now)",
       "fullPayment": "Full payment (due now)",
       "remainingBalance": "Remaining balance",
       "remainingBalanceDescription": "The remaining balance of ${remainingBalance} will be due at the time of your appointment."
+    },
+    "confirmation": {
+      "price": {
+        "original": "Subtotal: ${original}",
+        "discount": "Discount: -${discount}",
+        "total": "Total: ${total}"
+      }
     }
   },
   "modification": {

@@ -155,6 +155,17 @@ export const WaitlistReviewCard: React.FC = () => {
               ))}
             </>
           )}
+          <div className="flex items-center gap-2 text-foreground text-xs review-duration-content">
+            <Clock className="w-4 h-4 text-muted-foreground" />
+            <span className="review-date-duration">
+              {i18n("booking.review.date.duration", {
+                duration: i18n(
+                  "duration_hour_min_format",
+                  durationToTime(selectedAppointmentOption.duration || 0),
+                ),
+              })}
+            </span>
+          </div>
         </div>
 
         {/* Contact Details */}
@@ -180,31 +191,24 @@ export const WaitlistReviewCard: React.FC = () => {
         </div>
 
         {/* Total */}
-        <div className="border-t pt-4 review-total">
-          <div className="flex items-center justify-between review-total-content">
-            <div>
+        {!!price && price > 0 && (
+          <div className="border-t pt-4 review-total">
+            <div className="flex items-center justify-between review-total-content">
+              <div>
+                {!!price && price > 0 && (
+                  <p className="font-semibold text-foreground review-total-title">
+                    {i18n("booking.review.price.total")}
+                  </p>
+                )}
+              </div>
               {!!price && price > 0 && (
-                <p className="font-semibold text-foreground review-total-title">
-                  {i18n("booking.review.total.title")}
+                <p className="text-lg font-bold text-foreground review-total-amount">
+                  ${formatAmountString(price)}
                 </p>
               )}
-              <p className="text-xs text-muted-foreground flex items-center gap-1 review-total-duration">
-                <Clock className="w-3 h-3" />{" "}
-                {i18n("booking.review.total.duration", {
-                  duration: i18n(
-                    "duration_hour_min_format",
-                    durationToTime(selectedAppointmentOption.duration || 0),
-                  ),
-                })}
-              </p>
             </div>
-            {!!price && price > 0 && (
-              <p className="text-lg font-bold text-foreground review-total-amount">
-                ${formatAmountString(price)}
-              </p>
-            )}
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

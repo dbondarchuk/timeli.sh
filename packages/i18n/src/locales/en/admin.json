@@ -255,9 +255,11 @@
       "requestedAt": "Requested at",
       "status": "Status",
       "price": "Price",
-      "discount": "Discount",
-      "amountPaid": "Amount paid",
-      "amountLeftToPay": "Amount left to pay",
+      "subtotal": "Subtotal: ${subtotal}",
+      "total": "Total: ${total}",
+      "discount": "Discount: -(${discount})",
+      "amountPaid": "Amount paid: ${amountPaid}",
+      "amountDue": "Amount due: ${amountDue}",
       "customer": "Customer",
       "name": "Name",
       "email": "Email",
@@ -1060,7 +1062,7 @@
           "updatedAt": "Updated at"
         },
         "cellAction": {
-          "discountDeleted": "Discount '{name}' was deleted.",
+          "discountDeleted": "Discount {name} was deleted.",
           "deleteError": "There was a problem with your request.",
           "actions": "Actions",
           "update": "Update",
@@ -1475,9 +1477,11 @@
           "require": "Require",
           "doNotRequire": "Do not require",
           "depositAmount": "Deposit amount",
-          "depositAmountTooltip": "<p>Deposit amount in percents</p><p><strong>Example:</strong> If set to 100, full price will be required to be paid upfront</p><p><strong>Optional</strong></p>",
+          "depositAmountTooltip": "<p>Deposit amount in percents from full price</p><p><strong>Example:</strong> If set to 100, full price will be required to be paid upfront</p><p><strong>Optional</strong></p>",
           "dontRequireIfCompletedMinNumberOfAppointments": "Min amount of appointments to not require deposit",
-          "dontRequireIfCompletedMinNumberOfAppointmentsTooltip": "<p>Do not require deposit for customers who have at least specified amount of appointments completed</p><p><strong>Example:</strong> If set to 3, customers who are booking their first, second, or third appointment will be required to pay a deposit. While customers who are making their 4th or later appointmens will not be required to pay deposit unless it is specifically required for the customer</p><p><strong>Optional</strong></p>"
+          "dontRequireIfCompletedMinNumberOfAppointmentsTooltip": "<p>Do not require deposit for customers who have at least specified amount of appointments completed</p><p><strong>Example:</strong> If set to 3, customers who are booking their first, second, or third appointment will be required to pay a deposit. While customers who are making their 4th or later appointmens will not be required to pay deposit unless it is specifically required for the customer</p><p><strong>Optional</strong></p>",
+          "fullPaymentAmountThreshold": "Minimum amount to require full payment",
+          "fullPaymentAmountThresholdTooltip": "<p>If the calculated deposit is less than this amount, customers will be required to pay the <strong>full appointment price</strong> instead of a partial deposit.</p><p><strong>Example:</strong> If the threshold is $5 and the deposit is $2, the customer will pay the full appointment price.</p><p><strong>Optional</strong></p>"
         },
         "cancellationsAndReschedules": {
           "title": "Cancellations and Reschedules",

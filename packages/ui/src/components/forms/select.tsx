@@ -31,6 +31,7 @@ export const SelectField: <T extends FieldValues>(
             onValueChange={(e) => {
               field.onChange(e);
               field.onBlur();
+              props.afterChange?.(e);
             }}
             defaultValue={field.value}
             disabled={field.disabled || props.disabled}

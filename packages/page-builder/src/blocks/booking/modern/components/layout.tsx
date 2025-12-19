@@ -29,6 +29,7 @@ export const BookingLayout = ({
     dateTime,
     duration,
     price,
+    basePrice,
     steps,
     currentStepIndex,
     step,
@@ -168,7 +169,7 @@ export const BookingLayout = ({
           <div className="flex flex-col lg:flex-row items-center justify-between gap-4 bg-card border rounded-lg p-4 mt-6 summary-container">
             {!!selectedAppointmentOption && (
               <div className="flex flex-col md:flex-row gap-2 w-full">
-                {!!price && (
+                {!!basePrice && (
                   <div className="text-left">
                     <p className="text-xs text-muted-foreground amount-label">
                       {t("booking.summary.estimates.amount")}
@@ -182,7 +183,7 @@ export const BookingLayout = ({
                   <div
                     className={cn(
                       "text-left",
-                      !!price &&
+                      !!basePrice &&
                         "border-t pt-2 md:border-t-0 md:border-l md:pl-2 md:pt-0",
                     )}
                   >
