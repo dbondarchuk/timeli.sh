@@ -20,7 +20,14 @@ export const NameField: <T extends FieldValues>(
           required={props.required}
         />
         <FormControl>
-          <Input {...field} disabled={field.disabled || props.disabled} />
+          <Input
+            {...field}
+            disabled={field.disabled || props.disabled}
+            onChange={(e) => {
+              field.onChange(e);
+              props.afterChange?.(e.target.value);
+            }}
+          />
         </FormControl>
         <FormFieldDescription description={props.data?.description} />
         <FormFieldErrorMessage />

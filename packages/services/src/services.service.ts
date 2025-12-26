@@ -1448,63 +1448,45 @@ export class ServicesService extends BaseService implements IServicesService {
   public async deleteDiscount(id: string): Promise<Discount | null> {
     const logger = this.loggerFactory("deleteDiscount");
     logger.debug({ id }, "Deleting discount");
-    const client = await getDbClient();
-    const session = client.startSession();
+    const db = await getDbConnection();
 
-    try {
-      const result = await session.withTransaction(async () => {
-        const db = client.db(undefined, { ignoreUndefined: true });
-        const discounts = db.collection<Discount>(DISCOUNTS_COLLECTION_NAME);
+    const discounts = db.collection<Discount>(DISCOUNTS_COLLECTION_NAME);
 
-        const discount = await discounts.findOneAndDelete({
-          _id: id,
-          companyId: this.companyId,
-        });
-        if (!discount) {
-          logger.warn({ discountId: id }, "Discount not found");
-          return null;
-        }
+    const discount = await discounts.findOneAndDelete({
+      _id: id,
+      companyId: this.companyId,
+    });
 
-        logger.debug({ discountId: id }, "Discount deleted");
-
-        return discount;
-      });
-
-      return result;
-    } finally {
-      await session.endSession();
+    if (!discount) {
+      logger.warn({ discountId: id }, "Discount not found");
+      return null;
     }
+
+    logger.debug({ discountId: id }, "Discount deleted");
+
+    return discount;
   }
 
   public async deleteDiscounts(ids: string[]): Promise<void> {
     const logger = this.loggerFactory("deleteDiscounts");
     logger.debug({ ids }, "Deleting discounts");
-    const client = await getDbClient();
-    const session = client.startSession();
+    const db = await getDbConnection();
 
-    try {
-      await session.withTransaction(async () => {
-        const db = client.db(undefined, { ignoreUndefined: true });
-        const discounts = db.collection<Discount>(DISCOUNTS_COLLECTION_NAME);
+    const discounts = db.collection<Discount>(DISCOUNTS_COLLECTION_NAME);
 
-        const { deletedCount: discountsDeletedCount } =
-          await discounts.deleteMany({
-            _id: {
-              $in: ids,
-            },
-            companyId: this.companyId,
-          });
+    const { deletedCount: discountsDeletedCount } = await discounts.deleteMany({
+      _id: {
+        $in: ids,
+      },
+      companyId: this.companyId,
+    });
 
-        logger.debug({ ids, discountsDeletedCount }, "Discounts deleted");
-      });
-    } finally {
-      await session.endSession();
-    }
+    logger.debug({ ids, discountsDeletedCount }, "Discounts deleted");
   }
 
   public async checkDiscountUniqueNameAndCode(
-    name: string,
-    codes: string[],
+    name?: string,
+    codes?: string[],
     id?: string,
   ): Promise<{ name: boolean; code: Record<string, boolean> }> {
     const logger = this.loggerFactory("checkDiscountUniqueNameAndCode");

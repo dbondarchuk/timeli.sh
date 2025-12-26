@@ -17,8 +17,12 @@ export const ReviewCard: React.FC = () => {
     setConfirmDuplicateAppointment,
     dateTime,
     fields,
-    price,
     formFields,
+    discount,
+    basePrice,
+    discountAmount,
+    price,
+    duration,
   } = useScheduleContext();
 
   const locale = useLocale();
@@ -40,6 +44,7 @@ export const ReviewCard: React.FC = () => {
   }
 
   const { name, email, phone, ...restFields } = fields;
+  const shouldShowTotals = !!basePrice;
   return (
     <div className="space-y-6 review-card card-container">
       <div className="mb-6">
@@ -147,25 +152,38 @@ export const ReviewCard: React.FC = () => {
               className="text-xs text-muted-foreground [&_p]:my-0.5 [&_p]:leading-6 review-service-summary-description"
             />
           </div>
-          {(!!selectedAppointmentOption.price ||
-            !!selectedAppointmentOption.duration) && (
-            <div className="text-right shrink-0 review-service-summary-price">
-              {!!selectedAppointmentOption.price && (
+          {selectedAppointmentOption.durationType === "fixed" &&
+            (!!selectedAppointmentOption.price ||
+              !!selectedAppointmentOption.duration) && (
+              <div className="text-right shrink-0 review-service-summary-price">
+                {!!selectedAppointmentOption.price && (
+                  <p className="text-xs font-semibold text-foreground review-service-summary-price-amount">
+                    ${formatAmountString(selectedAppointmentOption.price)}
+                  </p>
+                )}
+                {!!selectedAppointmentOption.duration && (
+                  <p className="text-xs text-muted-foreground flex items-center gap-1 justify-end review-service-summary-price-duration">
+                    <Clock className="w-3 h-3" />{" "}
+                    {t(
+                      "duration_hour_min_format",
+                      durationToTime(selectedAppointmentOption.duration || 0),
+                    )}
+                  </p>
+                )}
+              </div>
+            )}
+          {selectedAppointmentOption.durationType === "flexible" &&
+            !!selectedAppointmentOption.pricePerHour && (
+              <div className="text-right shrink-0 review-service-summary-price">
                 <p className="text-xs font-semibold text-foreground review-service-summary-price-amount">
-                  ${formatAmountString(selectedAppointmentOption.price)}
+                  {t("booking.option.price_per_hour", {
+                    price: formatAmountString(
+                      selectedAppointmentOption.pricePerHour,
+                    ),
+                  })}
                 </p>
-              )}
-              {!!selectedAppointmentOption.duration && (
-                <p className="text-xs text-muted-foreground flex items-center gap-1 justify-end review-service-summary-price-duration">
-                  <Clock className="w-3 h-3" />{" "}
-                  {t(
-                    "duration_hour_min_format",
-                    durationToTime(selectedAppointmentOption.duration || 0),
-                  )}
-                </p>
-              )}
-            </div>
-          )}
+              </div>
+            )}
         </div>
 
         {/* Add-ons */}
@@ -230,10 +248,10 @@ export const ReviewCard: React.FC = () => {
           <div className="flex items-center gap-2 text-foreground text-xs review-duration-content">
             <Clock className="w-4 h-4 text-muted-foreground" />
             <span className="review-date-duration">
-              {t("booking.review.total.duration", {
+              {t("booking.review.date.duration", {
                 duration: t(
                   "duration_hour_min_format",
-                  durationToTime(selectedAppointmentOption.duration || 0),
+                  durationToTime(duration || 0),
                 ),
               })}
             </span>
@@ -293,22 +311,44 @@ export const ReviewCard: React.FC = () => {
         </div>
 
         {/* Total */}
-        <div className="border-t pt-4 review-total">
-          <div className="flex items-center justify-between review-total-content">
-            <div>
-              {!!price && price > 0 && (
+        {shouldShowTotals && (
+          <div className="border-t pt-4 review-total">
+            {discount && (
+              <>
+                <div className="flex items-center justify-between review-total-content text-xs">
+                  <div>
+                    <p className="font-semibold text-foreground review-total-title">
+                      {t("booking.review.price.original")}
+                    </p>
+                  </div>
+                  <p className="font-bold text-foreground review-total-amount">
+                    ${formatAmountString(basePrice)}
+                  </p>
+                </div>
+                <div className="flex items-center justify-between review-total-content text-xs">
+                  <div>
+                    <p className="font-semibold text-foreground review-total-title">
+                      {t("booking.review.price.discount")}
+                    </p>
+                  </div>
+                  <p className="font-bold text-destructive review-total-amount">
+                    -(${formatAmountString(discountAmount)})
+                  </p>
+                </div>
+              </>
+            )}
+            <div className="flex items-center justify-between review-total-content">
+              <div>
                 <p className="font-semibold text-foreground review-total-title">
-                  {t("booking.review.total.title")}
+                  {t("booking.review.price.total")}
                 </p>
-              )}
-            </div>
-            {!!price && price > 0 && (
+              </div>
               <p className="text-lg font-bold text-foreground review-total-amount">
                 ${formatAmountString(price)}
               </p>
-            )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

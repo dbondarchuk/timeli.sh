@@ -9,7 +9,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   const logger = getLoggerFactory("API/event")("POST");
-  console.log("Reached here");
   const servicesContainer = await getServicesContainer();
   logger.debug(
     {
@@ -19,10 +18,8 @@ export async function POST(request: NextRequest) {
     "Processing event API request",
   );
 
-  console.log("Reached here2");
   const formData = await request.formData();
 
-  console.log("Reached here3");
   const json = formData.get("json") as string;
   if (!json) {
     logger.warn("Missing JSON data in form");

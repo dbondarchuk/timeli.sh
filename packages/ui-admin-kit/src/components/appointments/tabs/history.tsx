@@ -11,10 +11,10 @@ import {
   cn,
   Skeleton,
   toast,
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
+  TooltipResponsive,
+  TooltipResponsiveContent,
+  TooltipResponsiveTrigger,
+  useIsMobile,
   useTimeZone,
 } from "@timelish/ui";
 import { formatAmountString } from "@timelish/utils";
@@ -65,6 +65,8 @@ const HistoryEntry: React.FC<{ entry: AppointmentHistoryEntry }> = ({
   const locale = useLocale();
   const timeZone = useTimeZone();
 
+  const isMobile = useIsMobile();
+
   return (
     <div className="flex flex-row w-full bg-card items-start space-x-4 p-4 border rounded-lg">
       <div className="flex-shrink-0 mt-1">
@@ -76,18 +78,16 @@ const HistoryEntry: React.FC<{ entry: AppointmentHistoryEntry }> = ({
             {t(`admin.common.labels.appointmentHistoryType.${entry.type}`)}
           </p>
           <div className="flex items-center space-x-2">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <span className="text-xs text-gray-500 underline decoration-dashed cursor-help">
-                    {dateTime.setLocale(locale).toRelative()}
-                  </span>
-                </TooltipTrigger>
-                <TooltipContent side="left">
-                  {dateTime.toLocaleString(DateTime.DATETIME_MED, { locale })}
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <TooltipResponsive>
+              <TooltipResponsiveTrigger>
+                <span className="text-xs text-gray-500 underline decoration-dashed cursor-help">
+                  {dateTime.setLocale(locale).toRelative()}
+                </span>
+              </TooltipResponsiveTrigger>
+              <TooltipResponsiveContent side={isMobile ? "bottom" : "left"}>
+                {dateTime.toLocaleString(DateTime.DATETIME_MED, { locale })}
+              </TooltipResponsiveContent>
+            </TooltipResponsive>
           </div>
         </div>
         {/* <div className="inline-flex gap-1 text-sm mt-1 flex-wrap w-full">

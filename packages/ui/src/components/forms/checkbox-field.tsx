@@ -25,6 +25,7 @@ export const CheckboxField: <T extends FieldValues>(
               onCheckedChange={(e) => {
                 field.onChange(e);
                 field.onBlur();
+                props.afterChange?.(e);
               }}
             />
           </FormControl>

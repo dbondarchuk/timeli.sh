@@ -49,7 +49,7 @@ export const Popup: React.FC<{
   const onOpenChange = (isOpen: boolean) => {
     setIsOpen(isOpen);
 
-    if (!isOpen) return;
+    if (!!cookies[COOKIE_NAME]) return;
 
     setCookies(COOKIE_NAME, shownCookieValue, {
       expires: DateTime.now().plus({ years: 1 }).toJSDate(),

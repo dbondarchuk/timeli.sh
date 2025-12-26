@@ -47,21 +47,23 @@ Email: {{ fields.email }}
 Тривалість: {{#duration.hours}}{{.}} год {{/duration.hours}}{{#duration.minutes}}{{.}} хв{{/duration.minutes}}
 
 {{#discount}}
+Сумарна ціна: \${{subTotalAmountFormatted}}
 
-Промокод: {{code}} (-\${{discountAmountFormatted}}) ([{{name}}]({{ adminUrl }}/dashboard/services/discounts/{{id}}))
+Знижка: -\${{discountAmountFormatted}} {{code}} ([{{name}}]({{ adminUrl }}/dashboard/services/discounts/{{id}}))
 
-{{/discount}} {{#totalPriceFormatted}}
-
-Ціна: \${{.}}
-
-{{/totalPriceFormatted}} 
+Загальна ціна: \${{totalPriceFormatted}}
+{{/discount}}
+{{^discount}}
+{{#totalPrice}}
+Загальна ціна: \${{totalPriceFormatted}}
+{{/totalPrice}}
+{{/discount}}
 
 {{#totalAmountLeft}}
-
 Платежі:
 
 {{#payments}}
- 1. {{#appName}}{{.}}{{/appName}}{{^appName}}{{#isOnline}}Онлайн{{/isOnline}}{{#isCash}}Готівка{{/isCash}}{{#isInPersonCard}}Картка{{/isInPersonCard}}{{/appName}} ({{#isTips}}Чаєві{{/isTips}}{{#isOther}}Інше{{/isOther}}{{#isDeposit}}Депозит{{/isDeposit}}{{#isRescheduleFee}}Плата за перенос{{/isRescheduleFee}}{{#isCancellationFee}}Плата за відміну{{/isCancellationFee}}{{#isPayment}}Платіж{{/isPayment}}) {{paidAt.full}}: \${{amountFormatted}} {{#totalRefundedFormatted}} (-\${{totalRefundedFormatted}} повернено, \${{amountLeftFormatted}} залишилок) {{/totalRefundedFormatted}}
+ 1. {{#appName}}{{.}}{{/appName}}{{^appName}}{{#isOnline}}Онлайн{{/isOnline}}{{#isCash}}Готівка{{/isCash}}{{#isInPersonCard}}Картка{{/isInPersonCard}}{{/appName}} ({{#isTips}}Чаєві{{/isTips}}{{#isOther}}Інше{{/isOther}}{{#isDeposit}}Депозит{{/isDeposit}}{{#isRescheduleFee}}Плата за перенос{{/isRescheduleFee}}{{#isCancellationFee}}Плата за відміну{{/isCancellationFee}}{{#isPayment}}Платіж{{/isPayment}}) {{paidAt.full}}: \${{amountFormatted}} {{#totalAmountRefunded}} (-\${{totalAmountRefundedFormatted}} повернено, \${{amountLeftFormatted}} залишилок) {{/totalAmountRefunded}}
 {{/payments}}
 {{^payments}}
 - Жодного
@@ -69,6 +71,7 @@ Email: {{ fields.email }}
 
 Зараз сплачено: \${{totalAmountLeftFormatted}}
 {{/totalAmountLeft}}
+
 {{#totalAmountLeftToPay}}
 Залишок до сплати: \${{totalAmountLeftToPayFormatted}}
 {{/totalAmountLeftToPay}}

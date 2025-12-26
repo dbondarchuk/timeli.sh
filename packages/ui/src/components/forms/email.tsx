@@ -24,6 +24,10 @@ export const EmailField: <T extends FieldValues>(
             type="email"
             {...field}
             disabled={field.disabled || props.disabled}
+            onChange={(e) => {
+              field.onChange(e);
+              props.afterChange?.(e.target.value);
+            }}
           />
         </FormControl>
         <FormFieldDescription description={props.data?.description} />

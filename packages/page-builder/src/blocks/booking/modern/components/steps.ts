@@ -48,7 +48,7 @@ export const ScheduleSteps: Record<StepType, Step> = {
     },
     next: {
       show: () => true,
-      isEnabled: (ctx) => !!ctx.selectedAppointmentOption,
+      isEnabled: (ctx) => !!ctx.selectedAppointmentOption && !!ctx.duration,
       action: async (ctx) => {
         if (ctx.selectedAppointmentOption?.addons?.length) {
           ctx.setCurrentStep("addons");

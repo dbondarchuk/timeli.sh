@@ -22,6 +22,10 @@ export const MultiLineField: <T extends FieldValues>(
             {...field}
             placeholder="Type your response here"
             disabled={field.disabled || props.disabled}
+            onChange={(e) => {
+              field.onChange(e);
+              props.afterChange?.(e.target.value);
+            }}
           />
         </FormControl>
         <FormFieldDescription description={props.data?.description} />

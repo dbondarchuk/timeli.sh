@@ -2,13 +2,14 @@ import { adminApi } from "@timelish/api-sdk";
 import { useI18n } from "@timelish/i18n";
 import { AppointmentOption } from "@timelish/types";
 import { cn, ComboboxAsync, IComboboxItem, Skeleton } from "@timelish/ui";
-import { durationToTime } from "@timelish/utils";
+import { durationToTime, formatAmountString } from "@timelish/utils";
 import { Clock, DollarSign } from "lucide-react";
 import React from "react";
 
 const OptionLabel: React.FC<{ option: AppointmentOption }> = ({ option }) => {
   const t = useI18n("admin");
-  const time = option.duration ? durationToTime(option.duration) : null;
+  const time =
+    option.durationType === "fixed" ? durationToTime(option.duration) : null;
   return (
     <span className="flex flex-col justify-center gap-2 shrink overflow-hidden text-nowrap min-w-0">
       {option.name}{" "}
@@ -18,9 +19,17 @@ const OptionLabel: React.FC<{ option: AppointmentOption }> = ({ option }) => {
           {t("settings.appointments.form.cards.optionSelector.time", time)}
         </div>
       )}
-      {option.price && (
+      {option.durationType === "fixed" && option.price && (
         <div className="inline-flex gap-2 items-center text-xs italic">
           <DollarSign size={16} /> ${option.price}
+        </div>
+      )}
+      {option.durationType === "flexible" && option.pricePerHour && (
+        <div className="inline-flex gap-2 items-center text-xs italic">
+          <DollarSign size={16} />{" "}
+          {t("common.pricePerHour", {
+            price: formatAmountString(option.pricePerHour),
+          })}
         </div>
       )}
     </span>

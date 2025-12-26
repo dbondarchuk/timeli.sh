@@ -191,5 +191,8 @@
   "currencyInput": {
     "amount": "Amount: ${amount}",
     "max": "Max: ${max}"
+  },
+  "stepper": {
+    "step_of_total": "Step {step} of {total}"
   }
 }

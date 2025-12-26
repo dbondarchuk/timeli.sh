@@ -118,7 +118,6 @@ const createOrUpdateAppointmentRequestIntent = async (
 
   const intentUpdate = {
     amount,
-    percentage,
     appId: app._id,
     appName: app.name,
     request: appointmentRequest,
@@ -230,7 +229,7 @@ const createOrUpdateModifyAppointmentRequestIntent = async (
 
   if (
     (information.type === "reschedule" &&
-      information.reschedulePolicy !== "paymentRequired") ||
+      information.action !== "paymentRequired") ||
     (information.type === "cancel" && information.action !== "payment")
   ) {
     logger.debug(
@@ -240,12 +239,27 @@ const createOrUpdateModifyAppointmentRequestIntent = async (
     return NextResponse.json(null);
   }
 
+  if (
+    (information.type === "cancel" &&
+      information.action === "payment" &&
+      !information.paymentAmount) ||
+    (information.type === "reschedule" &&
+      information.action === "paymentRequired" &&
+      !information.paymentAmount)
+  ) {
+    logger.debug(
+      { modifyAppointmentRequestResult },
+      "Payment amount is not set or is 0",
+    );
+    return NextResponse.json(null);
+  }
+
   logger.debug(
     { modifyAppointmentRequestResult, intentId },
     "Payment is required.",
   );
 
-  const { paymentPercentage, paymentAmount } = information;
+  const { paymentAmount } = information;
 
   const config =
     await servicesContainer.configurationService.getConfiguration("booking");
@@ -263,7 +277,6 @@ const createOrUpdateModifyAppointmentRequestIntent = async (
 
   const intentUpdate = {
     amount: paymentAmount,
-    percentage: paymentPercentage,
     appId: app._id,
     appName: app.name,
     request: modifyAppointmentRequest,

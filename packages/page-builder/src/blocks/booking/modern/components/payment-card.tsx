@@ -1,7 +1,7 @@
 import { PaymentAppForms } from "@timelish/app-store/payment-forms";
 import { useI18n } from "@timelish/i18n";
 import { cn } from "@timelish/ui";
-import { formatAmountString } from "@timelish/utils";
+import { formatAmount, formatAmountString } from "@timelish/utils";
 import { CreditCard } from "lucide-react";
 import { useScheduleContext } from "./context";
 
@@ -12,12 +12,15 @@ export const PaymentCard: React.FC = () => {
     paymentInformation: paymentForm,
     onSubmit,
     price,
+    basePrice,
+    discountAmount,
   } = useScheduleContext();
   if (!paymentForm || !price) return null;
 
   const Form = PaymentAppForms[paymentForm.intent.appName];
 
-  const isFullPayment = paymentForm.intent.percentage >= 100;
+  const isFullPayment = paymentForm.intent.amount === price;
+  const percentage = formatAmount((paymentForm.intent.amount / price) * 100);
 
   return (
     <div className="space-y-6 payment-card card-container">
@@ -35,7 +38,7 @@ export const PaymentCard: React.FC = () => {
               ? "payment_form_full_payment_required_description"
               : "payment_form_deposit_required_description",
             {
-              percentage: paymentForm.intent.percentage,
+              percentage,
               amount: formatAmountString(paymentForm.intent.amount),
             },
           )}
@@ -55,10 +58,30 @@ export const PaymentCard: React.FC = () => {
           </p>
         </div>
 
-        <div className="space-y-4 mb-6">
+        <div className="space-y-2 mb-6">
+          {!!discountAmount && (
+            <>
+              <div className="flex justify-between text-xs payment-card-service-total">
+                <span className="text-muted-foreground payment-card-service-total-label">
+                  {t("booking.payment.subtotal")}
+                </span>
+                <span className="text-foreground payment-card-service-total-amount">
+                  ${formatAmountString(basePrice)}
+                </span>
+              </div>
+              <div className="flex justify-between text-xs payment-card-service-total pb-2 border-b">
+                <span className="text-muted-foreground payment-card-service-total-label">
+                  {t("booking.payment.discount")}
+                </span>
+                <span className="text-destructive payment-card-service-total-amount">
+                  -(${formatAmountString(discountAmount)})
+                </span>
+              </div>
+            </>
+          )}
           <div className="flex justify-between text-sm payment-card-service-total">
             <span className="text-muted-foreground payment-card-service-total-label">
-              {t("booking.payment.serviceTotal")}
+              {t("booking.payment.total")}
             </span>
             <span className="text-foreground payment-card-service-total-amount">
               ${formatAmountString(price)}

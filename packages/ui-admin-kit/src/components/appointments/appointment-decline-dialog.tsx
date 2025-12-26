@@ -22,10 +22,9 @@ import {
   Label,
   ScrollArea,
   Separator,
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
+  TooltipResponsive,
+  TooltipResponsiveContent,
+  TooltipResponsiveTrigger,
 } from "@timelish/ui";
 import { formatAmount, formatAmountString } from "@timelish/utils";
 import { CalendarX2 } from "lucide-react";
@@ -219,18 +218,16 @@ const PaymentRefundCard = ({
             <span className="text-foreground/80">
               {t("admin.appointments.declineDialog.timePaid")}
             </span>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <span className="text-sm text-foreground/60 underline decoration-dashed cursor-help">
-                    {dateTime.setLocale(locale).toRelative()}
-                  </span>
-                </TooltipTrigger>
-                <TooltipContent>
-                  {dateTime.toLocaleString(DateTime.DATETIME_MED, { locale })}
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <TooltipResponsive>
+              <TooltipResponsiveTrigger>
+                <span className="text-sm text-foreground/60 underline decoration-dashed cursor-help">
+                  {dateTime.setLocale(locale).toRelative()}
+                </span>
+              </TooltipResponsiveTrigger>
+              <TooltipResponsiveContent>
+                {dateTime.toLocaleString(DateTime.DATETIME_MED, { locale })}
+              </TooltipResponsiveContent>
+            </TooltipResponsive>
           </div>
 
           {payment.status === "refunded" && (

@@ -56,7 +56,6 @@ export const ConfirmationCard: React.FC = () => {
                     ).toLocaleString(Luxon.DATETIME_FULL, {
                       locale,
                     }),
-                    percentage: appointment.paymentPercentage,
                     amount: formatAmountString(appointment.paymentAmount),
                     totalPrice: formatAmountString(appointment.price ?? 0),
                     br: () => <br />,

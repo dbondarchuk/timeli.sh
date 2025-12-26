@@ -16,7 +16,8 @@ import {
 const OptionShortLabel: React.FC<{
   option: AppointmentOption;
 }> = ({ option }) => {
-  const time = option.duration ? durationToTime(option.duration) : null;
+  const time =
+    option.durationType === "fixed" ? durationToTime(option.duration) : null;
   const t = useI18n("admin");
   const timeString = time ? t("common.timeDuration", time) : t("common.custom");
   return (

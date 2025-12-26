@@ -17,11 +17,10 @@ import { useFormContext } from "react-hook-form";
 import { cn } from "../../utils";
 import { Button } from "../button";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "../tooltip";
+  TooltipResponsive,
+  TooltipResponsiveContent,
+  TooltipResponsiveTrigger,
+} from "../tooltip-responsive";
 import { DateTimePicker } from "./date-time-picker";
 
 type DateTimeInputProps = {
@@ -408,30 +407,28 @@ const DateTimeInput = React.forwardRef<HTMLInputElement, DateTimeInputProps>(
           spellCheck={false}
         />
         {showValidation && (
-          <TooltipProvider>
-            <div className="me-3">
-              {inputValue ? (
-                <CircleCheck className="size-4 text-green-500" />
-              ) : (
-                <Tooltip>
-                  <TooltipTrigger className="flex items-center justify-center">
+          <div className="me-3">
+            {inputValue ? (
+              <CircleCheck className="size-4 text-green-500" />
+            ) : (
+              <TooltipResponsive>
+                <TooltipResponsiveTrigger>
+                  <div className="flex items-center justify-center">
                     <CircleAlert
                       className={cn(
                         "size-4",
                         !areAllSegmentsEmpty && "text-red-500",
                       )}
                     />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>
-                      Please enter a valid value. The input cannot be empty and
-                      must be within the range of years 1900 to 2100.
-                    </p>
-                  </TooltipContent>
-                </Tooltip>
-              )}
-            </div>
-          </TooltipProvider>
+                  </div>
+                </TooltipResponsiveTrigger>
+                <TooltipResponsiveContent>
+                  Please enter a valid value. The input cannot be empty and must
+                  be within the range of years 1900 to 2100.
+                </TooltipResponsiveContent>
+              </TooltipResponsive>
+            )}
+          </div>
         )}
         {rest.clearable && (
           <Button

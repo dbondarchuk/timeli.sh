@@ -1,7 +1,7 @@
 import { useI18n, useLocale } from "@timelish/i18n";
-import { Button, cn, Spinner, usePrevious } from "@timelish/ui";
+import { Button, cn, Spinner, Stepper, usePrevious } from "@timelish/ui";
 import { durationToTime, formatAmountString } from "@timelish/utils";
-import { Check, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { DateTime } from "luxon";
 import { useEffect, useRef } from "react";
 import { ConfirmationCard } from "./confirmation-card";
@@ -29,6 +29,7 @@ export const BookingLayout = ({
     dateTime,
     duration,
     price,
+    basePrice,
     steps,
     currentStepIndex,
     step,
@@ -55,6 +56,24 @@ export const BookingLayout = ({
     }
   }, [previousStep, step]);
 
+  const filteredSteps = steps
+    .filter((step) => {
+      if (!paymentInformation?.intent?._id && step === "payment") {
+        return false;
+      }
+
+      if (step === "addons" && !selectedAppointmentOption?.addons?.length) {
+        return false;
+      }
+
+      return true;
+    })
+    .map((step) => ({
+      id: step,
+      label: t(`booking.steps.${step}`),
+      icon: ScheduleSteps[step].icon,
+    }));
+
   return (
     <div className={className} {...props}>
       <div ref={topRef} />
@@ -72,76 +91,14 @@ export const BookingLayout = ({
 
         {/* Progress Steps */}
         {!hideSteps && (
-          <div className="mb-8 flex items-center justify-center flex-wrap steps-container">
-            {steps
-              .map((step, index) => ({ step, index }))
-              .filter(({ step }) => {
-                if (!paymentInformation?.intent?._id && step === "payment") {
-                  return false;
-                }
-
-                if (
-                  step === "addons" &&
-                  !selectedAppointmentOption?.addons?.length
-                ) {
-                  return false;
-                }
-
-                return true;
-              })
-              .map(({ step, index }, jndex, filteredSteps) => {
-                const Icon = ScheduleSteps[step].icon;
-                const isCompleted =
-                  isBookingConfirmed || currentStepIndex > jndex;
-
-                const isCurrent = !isBookingConfirmed && currentStep === step;
-
-                return (
-                  <div key={step} className="flex items-start">
-                    <div className="flex flex-col items-center w-20">
-                      <div
-                        className={cn(
-                          "w-10 h-10 rounded-full flex items-center justify-center transition-all duration-500",
-                          isCompleted && "bg-primary text-primary-foreground",
-                          isCurrent &&
-                            "bg-primary text-primary-foreground ring-4 ring-primary/20",
-                          !isCompleted &&
-                            !isCurrent &&
-                            "bg-muted text-muted-foreground",
-                        )}
-                      >
-                        {isCompleted ? (
-                          <Check className="w-5 h-5" />
-                        ) : (
-                          <Icon className="w-5 h-5" />
-                        )}
-                      </div>
-                      <span
-                        className={cn(
-                          "text-xs mt-2 font-medium text-center",
-                          isCurrent
-                            ? "text-foreground"
-                            : "text-muted-foreground",
-                        )}
-                      >
-                        {t(`booking.steps.${step}`)}
-                      </span>
-                    </div>
-                    {jndex < filteredSteps.length - 1 && (
-                      <div
-                        className={cn(
-                          "w-8 h-0.5 mt-5 -mx-4 transition-colors duration-500",
-                          isBookingConfirmed ||
-                            steps.indexOf(currentStep) > steps.indexOf(step)
-                            ? "bg-primary"
-                            : "bg-muted",
-                        )}
-                      />
-                    )}
-                  </div>
-                );
-              })}
-          </div>
+          <Stepper
+            steps={filteredSteps}
+            currentStepId={currentStep}
+            isCompleted={(id, index) =>
+              isBookingConfirmed || index < currentStepIndex
+            }
+            className="mb-8"
+          />
         )}
 
         {/* <StepCard /> */}
@@ -168,7 +125,7 @@ export const BookingLayout = ({
           <div className="flex flex-col lg:flex-row items-center justify-between gap-4 bg-card border rounded-lg p-4 mt-6 summary-container">
             {!!selectedAppointmentOption && (
               <div className="flex flex-col md:flex-row gap-2 w-full">
-                {!!price && (
+                {!!basePrice && (
                   <div className="text-left">
                     <p className="text-xs text-muted-foreground amount-label">
                       {t("booking.summary.estimates.amount")}
@@ -182,7 +139,7 @@ export const BookingLayout = ({
                   <div
                     className={cn(
                       "text-left",
-                      !!price &&
+                      !!basePrice &&
                         "border-t pt-2 md:border-t-0 md:border-l md:pl-2 md:pt-0",
                     )}
                   >

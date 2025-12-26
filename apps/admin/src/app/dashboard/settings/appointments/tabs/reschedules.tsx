@@ -15,12 +15,12 @@ import {
   Input,
 } from "@timelish/ui";
 import { NonSortable } from "@timelish/ui-admin";
-import React from "react";
-import { useFieldArray } from "react-hook-form";
 import {
   ReschedulePolicyCard,
   ReschedulePolicyCardContent,
-} from "./cards/reschedule-policy-card";
+} from "@timelish/ui-admin-kit";
+import React from "react";
+import { useFieldArray } from "react-hook-form";
 import { TabProps } from "./types";
 
 const RescheduleSection: React.FC<TabProps> = ({ form, disabled }) => {
@@ -53,9 +53,7 @@ const RescheduleSection: React.FC<TabProps> = ({ form, disabled }) => {
     <Card>
       <CardHeader>
         <CardTitle>
-          {t(
-            `settings.appointments.form.cancellationsAndReschedules.reschedules.title`,
-          )}
+          {t(`cancellationsAndReschedules.reschedulePolicy.title`)}
         </CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
@@ -65,12 +63,10 @@ const RescheduleSection: React.FC<TabProps> = ({ form, disabled }) => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>
-                {t(
-                  "settings.appointments.form.cancellationsAndReschedules.enabled.label",
-                )}{" "}
+                {t("cancellationsAndReschedules.enabled.label")}{" "}
                 <InfoTooltip>
                   {t(
-                    `settings.appointments.form.cancellationsAndReschedules.reschedules.enabledTooltip`,
+                    `cancellationsAndReschedules.reschedulePolicy.enabledTooltip`,
                   )}
                 </InfoTooltip>
               </FormLabel>
@@ -82,10 +78,10 @@ const RescheduleSection: React.FC<TabProps> = ({ form, disabled }) => {
                     field.onBlur();
                   }}
                   trueLabel={t(
-                    "settings.appointments.form.cancellationsAndReschedules.enabled.labels.enabled",
+                    "cancellationsAndReschedules.enabled.labels.enabled",
                   )}
                   falseLabel={t(
-                    "settings.appointments.form.cancellationsAndReschedules.enabled.labels.disabled",
+                    "cancellationsAndReschedules.enabled.labels.disabled",
                   )}
                 />
               </FormControl>
@@ -102,11 +98,11 @@ const RescheduleSection: React.FC<TabProps> = ({ form, disabled }) => {
                 <FormItem>
                   <FormLabel>
                     {t(
-                      "settings.appointments.form.cancellationsAndReschedules.reschedules.maxReschedules.label",
+                      "cancellationsAndReschedules.reschedulePolicy.maxReschedules.label",
                     )}
                     <InfoTooltip>
                       {t(
-                        "settings.appointments.form.cancellationsAndReschedules.reschedules.maxReschedules.tooltip",
+                        "cancellationsAndReschedules.reschedulePolicy.maxReschedules.tooltip",
                       )}
                     </InfoTooltip>
                   </FormLabel>
@@ -123,23 +119,22 @@ const RescheduleSection: React.FC<TabProps> = ({ form, disabled }) => {
               )}
             />
             <h3 className="text-sm font-semibold">
-              {t(
-                "settings.appointments.form.cancellationsAndReschedules.cancellationPolicy.default.title",
-              )}{" "}
+              {t("cancellationsAndReschedules.reschedulePolicy.default.title")}{" "}
               <InfoTooltip>
                 {t(
-                  "settings.appointments.form.cancellationsAndReschedules.cancellationPolicy.default.tooltip",
+                  "cancellationsAndReschedules.reschedulePolicy.default.tooltip",
                 )}
               </InfoTooltip>
             </h3>
             <ReschedulePolicyCardContent
               form={form}
+              basePath="cancellationsAndReschedules.reschedules"
               disabled={disabled}
               default
             />
             <NonSortable
               title={t(
-                "settings.appointments.form.cancellationsAndReschedules.reschedulePolicy.policies.title",
+                "cancellationsAndReschedules.reschedulePolicy.policies.title",
               )}
               ids={ids}
               onAdd={addNew}
@@ -149,6 +144,7 @@ const RescheduleSection: React.FC<TabProps> = ({ form, disabled }) => {
                   return (
                     <ReschedulePolicyCard
                       form={form}
+                      basePath="cancellationsAndReschedules.reschedules"
                       disabled={disabled}
                       index={index}
                       remove={() => removePolicy(index)}

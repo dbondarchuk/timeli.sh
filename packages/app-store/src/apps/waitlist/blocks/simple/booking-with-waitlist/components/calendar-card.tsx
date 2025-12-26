@@ -1,29 +1,23 @@
 "use client";
+import { useI18n, useLocale } from "@timelish/i18n";
 import type { Time } from "@timelish/types";
-
-import React from "react";
-
-import { getTimeZones } from "@vvo/tzdb";
-
-import { DayButtonProps } from "react-day-picker";
-
 import {
   Button,
   Calendar,
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
+  Combobox,
+  IComboboxItem,
+  TooltipResponsive,
+  TooltipResponsiveContent,
+  TooltipResponsiveTrigger,
   useTimeZone,
 } from "@timelish/ui";
-
-import { Combobox, IComboboxItem } from "@timelish/ui";
+import { areTimesEqual, formatTimeLocale } from "@timelish/utils";
+import { getTimeZones } from "@vvo/tzdb";
+import * as Locales from "date-fns/locale";
 import { Globe2Icon } from "lucide-react";
 import { DateTime, HourNumbers, DateTime as Luxon, MinuteNumbers } from "luxon";
-
-import { useI18n, useLocale } from "@timelish/i18n";
-import { areTimesEqual, formatTimeLocale } from "@timelish/utils";
-import * as Locales from "date-fns/locale";
+import React from "react";
+import { DayButtonProps } from "react-day-picker";
 import {
   WaitlistPublicKeys,
   waitlistPublicNamespace,
@@ -49,17 +43,16 @@ const DayButton = (props: DayButtonProps) => {
   const t = useI18n("translation");
 
   return isDisabled ? (
-    <TooltipProvider>
-      <Tooltip>
-        {/* We need to force tooltip on mobile (long tap) */}
-        <TooltipTrigger>
-          <span>
-            <button {...buttonProps} />
-          </span>
-        </TooltipTrigger>
-        <TooltipContent>{t("no_avaialable_time_slots")}</TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+    <TooltipResponsive>
+      <TooltipResponsiveTrigger>
+        <div className="w-full h-full flex items-center justify-center">
+          {buttonProps.children}
+        </div>
+      </TooltipResponsiveTrigger>
+      <TooltipResponsiveContent>
+        {t("no_avaialable_time_slots")}
+      </TooltipResponsiveContent>
+    </TooltipResponsive>
   ) : (
     <button {...buttonProps} />
   );

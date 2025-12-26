@@ -9,6 +9,17 @@ export const paymentsConfigurationSchema = z
     enabled: z.literal(true, {
       error: "configuration.booking.payments.paymentAppId.required",
     }),
+    fullPaymentAmountThreshold: asOptinalNumberField(
+      z.coerce
+        .number<number>({
+          error:
+            "configuration.booking.payments.fullPaymentAmountThreshold.required",
+        })
+        .min(
+          1,
+          "configuration.booking.payments.fullPaymentAmountThreshold.min",
+        ),
+    ),
   })
   .and(
     z.discriminatedUnion("requireDeposit", [

@@ -210,13 +210,33 @@ export const getAppointmentEventAndIsPaymentRequired = async (
         customer,
         isPaymentRequired: false,
       };
-    } else if (option.requireDeposit === "always" && option.depositPercentage) {
-      percentage = option.depositPercentage;
+    } else if (option.requireDeposit === "always") {
+      if (option.paymentType === "percentage") {
+        percentage = option.depositPercentage;
+      } else {
+        let amount = option.depositAmount;
+        if (amount > event.totalPrice) {
+          logger.debug(
+            {
+              amount,
+              totalPrice: event.totalPrice,
+              reason: "option_amount_greater_than_total_price",
+            },
+            "Option amount is greater than total price, setting to total price",
+          );
+          amount = event.totalPrice;
+          percentage = 100;
+        } else {
+          percentage = formatAmount((amount / event.totalPrice) * 100);
+        }
+      }
+
       logger.debug(
         {
           optionId: option._id,
           optionName: option.name,
-          optionDepositPercentage: option.depositPercentage,
+          optionDepositPercentage: percentage,
+          paymentType: option.paymentType,
           reason: "option_always_require_deposit",
         },
         "Option requires deposit",
@@ -247,7 +267,24 @@ export const getAppointmentEventAndIsPaymentRequired = async (
     }
 
     if (percentage !== null) {
-      const amount = formatAmount((event.totalPrice * percentage) / 100);
+      let amount = formatAmount((event.totalPrice * percentage) / 100);
+      if (
+        config.payments.fullPaymentAmountThreshold &&
+        amount < config.payments.fullPaymentAmountThreshold
+      ) {
+        logger.debug(
+          {
+            fullPaymentAmountThreshold:
+              config.payments.fullPaymentAmountThreshold,
+            amount,
+            reason: "amount_less_than_full_payment_amount_threshold",
+          },
+          "Amount is less than full payment amount threshold, setting to full payment",
+        );
+
+        amount = event.totalPrice;
+        percentage = 100;
+      }
 
       logger.info(
         {
@@ -261,6 +298,19 @@ export const getAppointmentEventAndIsPaymentRequired = async (
         },
         "Payment required with deposit",
       );
+
+      if (amount > event.totalPrice) {
+        logger.debug(
+          {
+            amount,
+            totalPrice: event.totalPrice,
+            reason: "amount_greater_than_total_price",
+          },
+          "Amount is greater than total price, setting to total price",
+        );
+        amount = event.totalPrice;
+        percentage = 100;
+      }
 
       return {
         event,

@@ -44,6 +44,10 @@ export const getModifyAppointmentInformationRequestResult = async (
   const config =
     await servicesContainer.configurationService.getConfiguration("booking");
 
+  const option = await servicesContainer.servicesService.getOption(
+    appointment.option._id,
+  );
+
   const appointmentInformation = {
     type: request.type,
     id: appointment._id,
@@ -61,10 +65,23 @@ export const getModifyAppointmentInformationRequestResult = async (
       (payment) => payment.type === "deposit" && payment.status === "paid",
     );
 
-    const featureConfig =
+    let featureConfig =
       config.cancellationsAndReschedules.cancellations[
         hasDeposit ? "withDeposit" : "withoutDeposit"
       ];
+
+    const optionConfig =
+      option?.cancellationPolicy?.[
+        hasDeposit ? "withDeposit" : "withoutDeposit"
+      ];
+    if (optionConfig?.type === "custom") {
+      logger.debug(
+        { optionId: option?._id },
+        "Option has custom cancellation policy. Using it instead of general configuration.",
+      );
+      featureConfig = optionConfig;
+    }
+
     if (!featureConfig.enabled) {
       return {
         information: {
@@ -125,11 +142,21 @@ export const getModifyAppointmentInformationRequestResult = async (
       };
     }
 
+    if (hasDeposit && policy.action === "forfeitDeposit") {
+      return {
+        information: {
+          ...appointmentInformation,
+          allowed: true,
+          type: "cancel",
+          action: "forfeitDeposit",
+        },
+        customerId: appointment.customerId,
+      };
+    }
+
     if (
       hasDeposit &&
-      (policy.action === "partialRefund" ||
-        policy.action === "fullRefund" ||
-        policy.action === "forfeitDeposit")
+      (policy.action === "partialRefund" || policy.action === "fullRefund")
     ) {
       const refundPercentage =
         policy.action === "partialRefund"
@@ -182,14 +209,13 @@ export const getModifyAppointmentInformationRequestResult = async (
       };
     }
 
-    if (
-      policy.action === "paymentRequired" ||
-      policy.action === "paymentToFullPriceRequired"
-    ) {
-      if (
-        (policy.action === "paymentRequired" && !policy.paymentPercentage) ||
-        !appointment.totalPrice
-      ) {
+    if (policy.action === "paymentToFullPriceRequired") {
+      const originalPrice = policy.calculateFromOriginalPrice
+        ? (appointment.totalPrice ?? 0) +
+          (appointment.discount?.discountAmount ?? 0)
+        : (appointment.totalPrice ?? 0);
+
+      if (!originalPrice) {
         return {
           information: {
             ...appointmentInformation,
@@ -207,22 +233,7 @@ export const getModifyAppointmentInformationRequestResult = async (
       const totalDeposits =
         deposits?.reduce((acc, payment) => acc + payment.amount, 0) ?? 0;
 
-      const paymentAmount =
-        policy.action === "paymentRequired"
-          ? formatAmount(
-              (appointment.totalPrice * (policy.paymentPercentage ?? 100)) /
-                100,
-            )
-          : formatAmount(appointment.totalPrice - totalDeposits);
-
-      const paymentPercentage =
-        policy.action === "paymentRequired"
-          ? (policy.paymentPercentage ?? 100)
-          : formatAmount(
-              ((appointment.totalPrice - totalDeposits) /
-                appointment.totalPrice) *
-                100,
-            );
+      const paymentAmount = formatAmount(originalPrice - totalDeposits);
 
       return {
         information: {
@@ -230,7 +241,56 @@ export const getModifyAppointmentInformationRequestResult = async (
           allowed: true,
           action: "payment",
           paymentPolicy: policy.action,
-          paymentPercentage,
+          paymentAmount: paymentAmount,
+          ...appointmentInformation,
+          type: "cancel",
+        },
+        customerId: appointment.customerId,
+      };
+    }
+
+    if (policy.action === "paymentRequired") {
+      if (policy.paymentType === "amount") {
+        return {
+          information: {
+            ...appointmentInformation,
+            allowed: true,
+            action: "payment",
+            paymentPolicy: policy.action,
+            paymentAmount: policy.paymentAmount,
+            ...appointmentInformation,
+            type: "cancel",
+          },
+          customerId: appointment.customerId,
+        };
+      }
+
+      const originalPrice = policy.calculateFromOriginalPrice
+        ? (appointment.totalPrice ?? 0) +
+          (appointment.discount?.discountAmount ?? 0)
+        : (appointment.totalPrice ?? 0);
+
+      if (!originalPrice) {
+        return {
+          information: {
+            ...appointmentInformation,
+            allowed: false,
+            reason: "cancellation_not_allowed_by_policy",
+          },
+          customerId: appointment.customerId,
+        };
+      }
+
+      const paymentAmount = formatAmount(
+        (originalPrice * (policy.paymentPercentage ?? 100)) / 100,
+      );
+
+      return {
+        information: {
+          ...appointmentInformation,
+          allowed: true,
+          action: "payment",
+          paymentPolicy: policy.action,
           paymentAmount,
           ...appointmentInformation,
           type: "cancel",
@@ -248,10 +308,15 @@ export const getModifyAppointmentInformationRequestResult = async (
       };
     }
   } else if (request.type === "reschedule") {
-    const featureConfig = config.cancellationsAndReschedules.reschedules;
-    const hasDeposit = appointment.payments?.some(
-      (payment) => payment.type === "deposit" && payment.status === "paid",
-    );
+    let featureConfig = config.cancellationsAndReschedules.reschedules;
+    const optionConfig = option?.reschedulePolicy;
+    if (optionConfig?.type === "custom") {
+      logger.debug(
+        { optionId: option?._id },
+        "Option has custom reschedule policy. Using it instead of general configuration.",
+      );
+      featureConfig = optionConfig;
+    }
 
     if (!featureConfig.enabled) {
       return {
@@ -317,20 +382,68 @@ export const getModifyAppointmentInformationRequestResult = async (
       };
     }
 
-    return {
-      information: {
-        allowed: true,
-        reschedulePolicy: policy.action,
-        paymentPercentage: policy.paymentPercentage ?? 0,
-        paymentAmount: policy.paymentPercentage
-          ? (policy.paymentPercentage * (appointment.totalPrice ?? 0)) / 100
-          : 0,
-        ...appointmentInformation,
-        type: "reschedule",
-        timeZone: appointment.timeZone,
-      },
-      customerId: appointment.customerId,
-    };
+    if (policy.action === "allowed") {
+      return {
+        information: {
+          ...appointmentInformation,
+          allowed: true,
+          action: policy.action,
+          ...appointmentInformation,
+          type: "reschedule",
+          timeZone: appointment.timeZone,
+        },
+        customerId: appointment.customerId,
+      };
+    }
+
+    if (policy.action === "paymentRequired") {
+      if (policy.paymentType === "amount") {
+        return {
+          information: {
+            ...appointmentInformation,
+            allowed: true,
+            action: "paymentRequired",
+            paymentAmount: policy.paymentAmount,
+            ...appointmentInformation,
+            type: "reschedule",
+            timeZone: appointment.timeZone,
+          },
+          customerId: appointment.customerId,
+        };
+      }
+
+      const originalPrice = policy.calculateFromOriginalPrice
+        ? (appointment.totalPrice ?? 0) +
+          (appointment.discount?.discountAmount ?? 0)
+        : (appointment.totalPrice ?? 0);
+
+      if (!originalPrice) {
+        return {
+          information: {
+            ...appointmentInformation,
+            allowed: false,
+            reason: "reschedule_not_allowed_by_policy",
+          },
+          customerId: appointment.customerId,
+        };
+      }
+
+      const paymentAmount = formatAmount(
+        (originalPrice * (policy.paymentPercentage ?? 100)) / 100,
+      );
+
+      return {
+        information: {
+          allowed: true,
+          action: policy.action,
+          paymentAmount: paymentAmount,
+          ...appointmentInformation,
+          type: "reschedule",
+          timeZone: appointment.timeZone,
+        },
+        customerId: appointment.customerId,
+      };
+    }
   }
 
   logger.warn({ request }, "Invalid request type");

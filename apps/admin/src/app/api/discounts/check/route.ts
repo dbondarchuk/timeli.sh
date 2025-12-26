@@ -20,25 +20,25 @@ export async function GET(request: NextRequest) {
     request.nextUrl.searchParams,
   );
 
-  if (!params.name || !params.codes?.length) {
-    logger.warn(
-      { params },
-      "Invalid check discount name and code uniqueness request format",
-    );
-    return NextResponse.json(
-      {
-        error: "Missing required parameters",
-        success: false,
-        code: "invalid_request_format",
-      },
-      { status: 400 },
-    );
-  }
+  // if (!params.name && !params.codes?.length) {
+  //   logger.warn(
+  //     { params },
+  //     "Invalid check discount name and code uniqueness request format",
+  //   );
+  //   return NextResponse.json(
+  //     {
+  //       error: "Missing required parameters",
+  //       success: false,
+  //       code: "invalid_request_format",
+  //     },
+  //     { status: 400 },
+  //   );
+  // }
 
   const result =
     await servicesContainer.servicesService.checkDiscountUniqueNameAndCode(
-      params.name,
-      params.codes,
+      params.name ?? undefined,
+      params.codes ?? undefined,
       params.id ?? undefined,
     );
 

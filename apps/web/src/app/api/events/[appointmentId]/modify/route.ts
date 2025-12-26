@@ -55,7 +55,8 @@ const processRescheduleRequest = async (
     await servicesContainer.configurationService.getConfiguration("booking");
 
   if (
-    information.reschedulePolicy === "paymentRequired" &&
+    information.action === "paymentRequired" &&
+    information.paymentAmount > 0 &&
     config.payments?.enabled &&
     config.payments?.paymentAppId
   ) {
@@ -292,7 +293,8 @@ const processCancelRequest = async (
   if (
     information.action === "payment" &&
     config.payments?.enabled &&
-    config.payments?.paymentAppId
+    config.payments?.paymentAppId &&
+    information.paymentAmount > 0
   ) {
     if (!paymentIntentId) {
       logger.warn("Payment required but no payment intent provided");

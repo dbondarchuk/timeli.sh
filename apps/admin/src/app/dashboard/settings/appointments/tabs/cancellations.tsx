@@ -17,12 +17,12 @@ import {
   InfoTooltip,
 } from "@timelish/ui";
 import { NonSortable } from "@timelish/ui-admin";
-import React from "react";
-import { useFieldArray } from "react-hook-form";
 import {
   CancellationPolicyCard,
   CancellationPolicyCardContent,
-} from "./cards/cancellation-policy-card";
+} from "@timelish/ui-admin-kit";
+import React from "react";
+import { useFieldArray } from "react-hook-form";
 import { TabProps } from "./types";
 
 const CancellationSection: React.FC<TabProps & { withDeposit: boolean }> = ({
@@ -65,7 +65,7 @@ const CancellationSection: React.FC<TabProps & { withDeposit: boolean }> = ({
       <CardHeader>
         <CardTitle>
           {t(
-            `settings.appointments.form.cancellationsAndReschedules.cancellations.${withDeposit ? "withDeposit" : "withoutDeposit"}.title`,
+            `cancellationsAndReschedules.cancellationPolicy.${withDeposit ? "withDeposit" : "withoutDeposit"}.title`,
           )}
         </CardTitle>
       </CardHeader>
@@ -76,12 +76,10 @@ const CancellationSection: React.FC<TabProps & { withDeposit: boolean }> = ({
           render={({ field }) => (
             <FormItem>
               <FormLabel>
-                {t(
-                  "settings.appointments.form.cancellationsAndReschedules.enabled.label",
-                )}{" "}
+                {t("cancellationsAndReschedules.enabled.label")}{" "}
                 <InfoTooltip>
                   {t(
-                    `settings.appointments.form.cancellationsAndReschedules.cancellations.enabledTooltip`,
+                    `cancellationsAndReschedules.cancellationPolicy.enabledTooltip`,
                   )}
                 </InfoTooltip>
               </FormLabel>
@@ -93,10 +91,10 @@ const CancellationSection: React.FC<TabProps & { withDeposit: boolean }> = ({
                     field.onBlur();
                   }}
                   trueLabel={t(
-                    `settings.appointments.form.cancellationsAndReschedules.enabled.labels.enabled`,
+                    `cancellationsAndReschedules.enabled.labels.enabled`,
                   )}
                   falseLabel={t(
-                    `settings.appointments.form.cancellationsAndReschedules.enabled.labels.disabled`,
+                    `cancellationsAndReschedules.enabled.labels.disabled`,
                   )}
                 />
               </FormControl>
@@ -113,11 +111,11 @@ const CancellationSection: React.FC<TabProps & { withDeposit: boolean }> = ({
                 <FormItem>
                   <FormLabel>
                     {t(
-                      "settings.appointments.form.cancellationsAndReschedules.cancellations.doNotAllowIfRescheduled.label",
+                      "cancellationsAndReschedules.cancellationPolicy.doNotAllowIfRescheduled.label",
                     )}{" "}
                     <InfoTooltip>
                       {t(
-                        `settings.appointments.form.cancellationsAndReschedules.cancellations.doNotAllowIfRescheduled.tooltip`,
+                        `cancellationsAndReschedules.cancellationPolicy.doNotAllowIfRescheduled.tooltip`,
                       )}
                     </InfoTooltip>
                   </FormLabel>
@@ -142,10 +140,10 @@ const CancellationSection: React.FC<TabProps & { withDeposit: boolean }> = ({
                       }}
                       disabled={disabled}
                       trueLabel={t(
-                        "settings.appointments.form.cancellationsAndReschedules.cancellations.doNotAllowIfRescheduled.labels.true",
+                        "cancellationsAndReschedules.cancellationPolicy.doNotAllowIfRescheduled.labels.true",
                       )}
                       falseLabel={t(
-                        "settings.appointments.form.cancellationsAndReschedules.cancellations.doNotAllowIfRescheduled.labels.false",
+                        "cancellationsAndReschedules.cancellationPolicy.doNotAllowIfRescheduled.labels.false",
                       )}
                     />
                   </FormControl>
@@ -155,15 +153,16 @@ const CancellationSection: React.FC<TabProps & { withDeposit: boolean }> = ({
             />
             <h3 className="text-sm font-semibold">
               {t(
-                "settings.appointments.form.cancellationsAndReschedules.cancellationPolicy.default.title",
+                "cancellationsAndReschedules.cancellationPolicy.default.title",
               )}{" "}
               <InfoTooltip>
                 {t(
-                  "settings.appointments.form.cancellationsAndReschedules.cancellationPolicy.default.tooltip",
+                  "cancellationsAndReschedules.cancellationPolicy.default.tooltip",
                 )}
               </InfoTooltip>
             </h3>
             <CancellationPolicyCardContent
+              basePath="cancellationsAndReschedules.cancellations"
               withDeposit={withDeposit}
               form={form}
               disabled={disabled}
@@ -171,7 +170,7 @@ const CancellationSection: React.FC<TabProps & { withDeposit: boolean }> = ({
             />
             <NonSortable
               title={t(
-                "settings.appointments.form.cancellationsAndReschedules.cancellationPolicy.policies.title",
+                "cancellationsAndReschedules.cancellationPolicy.policies.title",
               )}
               ids={ids}
               onAdd={addNew}
@@ -181,6 +180,7 @@ const CancellationSection: React.FC<TabProps & { withDeposit: boolean }> = ({
                   return (
                     <CancellationPolicyCard
                       form={form}
+                      basePath="cancellationsAndReschedules.cancellations"
                       disabled={disabled}
                       index={index}
                       remove={() => removePolicy(index)}

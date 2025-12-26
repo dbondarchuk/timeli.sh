@@ -12,9 +12,9 @@ export const getDiscountAmount = (
 ): number => {
   switch (discount.type) {
     case "amount":
-      return discount.value;
+      return Math.min(price, discount.value);
     case "percentage":
-      return formatAmount((price * discount.value) / 100);
+      return Math.min(price, formatAmount((price * discount.value) / 100));
   }
 
   return 0;

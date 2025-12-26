@@ -1,6 +1,6 @@
 "use client";
 
-import { BuilderKeys, useI18n } from "@timelish/i18n";
+import { AllKeys, BaseAllKeys, useI18n } from "@timelish/i18n";
 import { Button, cn, Combobox } from "@timelish/ui";
 import { X } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
@@ -19,22 +19,22 @@ import { CSSValueOption } from "./types";
 const globalKeywords = [
   {
     value: "auto",
-    label: "builder.pageBuilder.styles.keywords.auto",
+    label: "builder.pageBuilder.styles.keywords.auto" satisfies BaseAllKeys,
     isKeyword: false,
   },
   {
     value: "inherit",
-    label: "builder.pageBuilder.styles.keywords.inherit",
+    label: "builder.pageBuilder.styles.keywords.inherit" satisfies BaseAllKeys,
     isKeyword: false,
   },
   {
     value: "initial",
-    label: "builder.pageBuilder.styles.keywords.initial",
+    label: "builder.pageBuilder.styles.keywords.initial" satisfies BaseAllKeys,
     isKeyword: false,
   },
   {
     value: "unset",
-    label: "builder.pageBuilder.styles.keywords.unset",
+    label: "builder.pageBuilder.styles.keywords.unset" satisfies BaseAllKeys,
     isKeyword: false,
   },
 ] as const satisfies CSSValueOption<string>[];
@@ -78,13 +78,13 @@ type RawNumberInputWithUnitsAndKeywordsProps<T extends string> =
 
 const customKeyword = {
   value: "custom",
-  label: "builder.pageBuilder.styles.keywords.custom",
+  label: "builder.pageBuilder.styles.keywords.custom" satisfies BaseAllKeys,
   isKeyword: false,
 };
 
 const nullKeyword = {
   value: "null",
-  label: "builder.pageBuilder.styles.keywords.notSet",
+  label: "builder.pageBuilder.styles.keywords.notSet" satisfies BaseAllKeys,
   isKeyword: false,
 };
 
@@ -142,7 +142,7 @@ export const RawNumberInputWithUnitsAndKeywords = <T extends string>({
     [onChange, defaultUnit],
   );
 
-  const t = useI18n("builder");
+  const t = useI18n();
 
   const filteredGlobalKeywords = useMemo(() => {
     return globalKeywords.filter(
@@ -172,7 +172,7 @@ export const RawNumberInputWithUnitsAndKeywords = <T extends string>({
         <Combobox
           values={allOptions.map((option) => ({
             ...option,
-            label: t(option.label as BuilderKeys),
+            label: t(option.label as AllKeys),
           }))}
           value={currentKeyword}
           onItemSelect={handleKeywordSelect}

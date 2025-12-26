@@ -143,7 +143,7 @@ export const ReviewCard: React.FC = () => {
         )}
         {((appointment.type === "cancel" && appointment.action === "payment") ||
           (appointment.type === "reschedule" &&
-            appointment.reschedulePolicy === "paymentRequired")) &&
+            appointment.action === "paymentRequired")) &&
           !!appointment.paymentAmount && (
             <div className="flex justify-between py-2 border-b border-border review-service-summary-item">
               <span className="text-muted-foreground review-service-summary-item-label">

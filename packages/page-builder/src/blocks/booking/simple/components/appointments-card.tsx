@@ -8,7 +8,7 @@ import {
   CardTitle,
   Markdown,
 } from "@timelish/ui";
-import { durationToTime } from "@timelish/utils";
+import { durationToTime, formatAmountString } from "@timelish/utils";
 import { DollarSign, Timer } from "lucide-react";
 import React from "react";
 
@@ -54,7 +54,7 @@ export const AppointmentsCard: React.FC<
                   <div
                     className="flex flex-row items-center"
                     aria-label={
-                      option.duration
+                      option.durationType === "fixed"
                         ? i18n(
                             "form_duration_hour_minutes_label_format",
                             durationToTime(option.duration),
@@ -63,24 +63,38 @@ export const AppointmentsCard: React.FC<
                     }
                   >
                     <Timer className="mr-1" />
-                    {option.duration
+                    {option.durationType === "fixed"
                       ? i18n(
                           "duration_hour_min_format",
                           durationToTime(option.duration),
                         )
                       : i18n("duration_custom")}
                   </div>
-                  {!!option.price && (
+                  {option.durationType === "fixed" && !!option.price && (
                     <div
                       className="flex flex-row items-center"
                       aria-label={i18n("form_price_label_format", {
-                        price: option.price.toFixed(2).replace(/\.00$/, ""),
+                        price: formatAmountString(option.price),
                       })}
                     >
                       <DollarSign className="mr-1" aria-label="" />
-                      {option.price.toFixed(2).replace(/\.00$/, "")}
+                      {formatAmountString(option.price)}
                     </div>
                   )}
+                  {option.durationType === "flexible" &&
+                    !!option.pricePerHour && (
+                      <div
+                        className="flex flex-row items-center"
+                        aria-label={i18n("form_price_label_format", {
+                          price: formatAmountString(option.pricePerHour),
+                        })}
+                      >
+                        <DollarSign className="mr-1" aria-label="" />
+                        {i18n("booking.option.price_per_hour", {
+                          price: formatAmountString(option.pricePerHour),
+                        })}
+                      </div>
+                    )}
                 </CardDescription>
               </div>
             </CardHeader>

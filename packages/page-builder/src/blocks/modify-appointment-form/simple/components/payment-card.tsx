@@ -28,7 +28,6 @@ export const PaymentCard: React.FC = () => {
       <div className="text-sm mb-3">
         {i18n(`${type}_fee_required_description`, {
           totalPrice: formatAmountString(appointment?.price ?? 0),
-          percentage: paymentForm.intent.percentage,
           amount: formatAmountString(paymentForm.intent.amount),
         })}
       </div>

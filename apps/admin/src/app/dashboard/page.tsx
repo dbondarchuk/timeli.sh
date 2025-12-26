@@ -4,10 +4,10 @@ import { getI18nAsync } from "@timelish/i18n/server";
 import { getLoggerFactory } from "@timelish/logger";
 import {
   Breadcrumbs,
+  ResponsiveTabsList,
   Skeleton,
   TabsContent,
-  TabsLinkTrigger,
-  TabsList,
+  TabsTrigger,
   TabsViaUrl,
 } from "@timelish/ui";
 import { Metadata } from "next";
@@ -93,25 +93,25 @@ export default async function Page(params: Params) {
         </div>
         <Suspense>
           <TabsViaUrl defaultValue={defaultTab} className="space-y-4">
-            <TabsList className="w-full flex flex-col h-auto md:flex-row gap-2">
-              <TabsLinkTrigger value="overview">
+            <ResponsiveTabsList className="w-full md:flex flex-col h-auto md:flex-row gap-2">
+              <TabsTrigger value="overview">
                 {tAdmin("dashboard.tabs.overview")}
-              </TabsLinkTrigger>
-              <TabsLinkTrigger value="appointments">
+              </TabsTrigger>
+              <TabsTrigger value="appointments">
                 {tAdmin("dashboard.tabs.pendingAppointments")}{" "}
                 <PendingAppointmentsBadge />
-              </TabsLinkTrigger>
+              </TabsTrigger>
               {dashboardTabAppsMap.map((item) => (
-                <TabsLinkTrigger value={item.href} key={item.href}>
+                <TabsTrigger value={item.href} key={item.href}>
                   {item.label}{" "}
                   {item.notificationsCountKey ? (
                     <DashboardTabNotificationsBadge
                       notificationsCountKey={item.notificationsCountKey}
                     />
                   ) : null}
-                </TabsLinkTrigger>
+                </TabsTrigger>
               ))}
-            </TabsList>
+            </ResponsiveTabsList>
             {activeTab === "overview" && (
               <TabsContent
                 value="overview"

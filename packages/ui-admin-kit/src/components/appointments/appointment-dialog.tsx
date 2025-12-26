@@ -30,7 +30,7 @@ export const AppointmentDialog: React.FC<AppointmentDialogProps> = ({
 
   return (
     <Dialog {...rest}>
-      <DialogContent className="sm:max-w-[80%] flex flex-col max-h-[100%]">
+      <DialogContent className="sm:max-w-[80%] flex flex-col h-full max-h-[100%]">
         <DialogHeader>
           <DialogTitle className="w-full flex flex-row justify-between items-center mt-2">
             <span>{appointment.option.name}</span>
@@ -46,7 +46,7 @@ export const AppointmentDialog: React.FC<AppointmentDialogProps> = ({
             {t("appointments.dialog.by")} {appointment.fields.name}
           </DialogDescription>
         </DialogHeader>
-        <div className="flex-1 w-full overflow-auto">
+        <div className="flex-1 w-full overflow-y-auto">
           <AppointmentView appointment={appointment} />
         </div>
         <DialogFooter className="flex-row gap-2">

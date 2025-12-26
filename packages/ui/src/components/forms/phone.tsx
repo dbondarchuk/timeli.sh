@@ -30,6 +30,10 @@ export const PhoneField: <T extends FieldValues>(
               {...field}
               label={i18n("form_phone_label")}
               disabled={field.disabled || props.disabled}
+              onChange={(e) => {
+                field.onChange(e);
+                props.afterChange?.(e.target.value);
+              }}
             />
           </FormControl>
           <FormFieldDescription description={props.data?.description} />

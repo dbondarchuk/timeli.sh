@@ -3,55 +3,33 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { adminApi } from "@timelish/api-sdk";
 import { useI18n } from "@timelish/i18n";
-import { PlateMarkdownEditor } from "@timelish/rte";
 import {
   AppointmentOptionUpdateModel,
   DatabaseId,
   getAppointmentOptionSchemaWithUniqueCheck,
-  isRequiredOptionTypes,
-  WithDatabaseId,
 } from "@timelish/types";
 import {
-  BooleanSelect,
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-  Combobox,
-  DurationInput,
+  cn,
   Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-  InfoTooltip,
-  Input,
-  InputGroup,
-  InputGroupInput,
-  InputGroupInputClasses,
-  InputGroupSuffixClasses,
-  InputSuffix,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  ResponsiveTabsList,
+  Tabs,
+  TabsContent,
+  TabsTrigger,
   toastPromise,
   useDebounceCacheFn,
 } from "@timelish/ui";
-import { AppSelector, SaveButton, Sortable } from "@timelish/ui-admin";
-import { ChevronRight } from "lucide-react";
+import { SaveButton } from "@timelish/ui-admin";
 import { useRouter } from "next/navigation";
-import React from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+import React, { useCallback } from "react";
+import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { FieldSelectCard } from "../field-select-card";
-import { AddonSelectCard } from "./addon-select-card";
+import { AddonsTab } from "./tabs/addons";
+import { CancellationsTab } from "./tabs/cancellations";
+import { DuplicatesTab } from "./tabs/duplicates";
+import { FieldsTab } from "./tabs/fields";
+import { GeneralTab } from "./tabs/general";
+import { PaymentsTab } from "./tabs/payments";
+import { ReschedulesTab } from "./tabs/reschedules";
 
 export const OptionForm: React.FC<{
   initialData?: AppointmentOptionUpdateModel & Partial<DatabaseId>;
@@ -86,10 +64,11 @@ export const OptionForm: React.FC<{
     },
   });
 
-  const requireDeposit = form.watch("requireDeposit");
-  const duplicateAppointmentCheck = form.watch(
-    "duplicateAppointmentCheck.enabled",
-  );
+  const triggerValidation = useCallback(() => {
+    form.trigger();
+  }, [form]);
+
+  React.useEffect(() => triggerValidation(), [triggerValidation]);
 
   const onSubmit = async (data: FormValues) => {
     try {
@@ -121,611 +100,116 @@ export const OptionForm: React.FC<{
     }
   };
 
-  const {
-    fields: fieldsFields,
-    append: appendField,
-    remove: removeField,
-    swap: swapFields,
-    update: updateField,
-  } = useFieldArray({
-    control: form.control,
-    name: "fields",
-    keyName: "fields_id",
-  });
-
-  const fieldsFieldsIds = fieldsFields.map((x) => x.fields_id);
-
-  const sortFields = (activeId: string, overId: string) => {
-    const activeIndex = fieldsFields.findIndex((x) => x.fields_id === activeId);
-
-    const overIndex = fieldsFields.findIndex((x) => x.fields_id === overId);
-
-    if (activeIndex < 0 || overIndex < 0) return;
-
-    swapFields(activeIndex, overIndex);
-  };
-
-  const addNewField = () => {
-    appendField({
-      id: "",
-    });
-  };
-
-  const {
-    fields: addonsFields,
-    append: appendAddon,
-    remove: removeAddon,
-    swap: swapAddons,
-    update: updateAddon,
-  } = useFieldArray({
-    control: form.control,
-    name: "addons",
-    keyName: "fields_id",
-  });
-
-  const addonsFieldsIds = addonsFields.map((x) => x.fields_id);
-
-  const sortAddons = (activeId: string, overId: string) => {
-    const activeIndex = addonsFields.findIndex((x) => x.fields_id === activeId);
-
-    const overIndex = addonsFields.findIndex((x) => x.fields_id === overId);
-
-    if (activeIndex < 0 || overIndex < 0) return;
-
-    swapAddons(activeIndex, overIndex);
-  };
-
-  const addNewAddon = () => {
-    appendAddon({
-      id: "",
-    });
-  };
-
-  const isOnline = form.watch("isOnline");
-
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-8">
-        <div className="flex flex-col gap-4">
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t("services.options.form.name")}</FormLabel>
-
-                <FormControl>
-                  <Input
-                    disabled={loading}
-                    placeholder={t("services.options.form.namePlaceholder")}
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="description"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>
-                  {t("services.options.form.description")}{" "}
-                  <InfoTooltip>
-                    {t("services.options.form.descriptionTooltip")}
-                  </InfoTooltip>
-                </FormLabel>
-                <FormControl>
-                  <PlateMarkdownEditor
-                    className="bg-background px-4 sm:px-4 pb-24"
-                    disabled={loading}
-                    value={field.value}
-                    onChange={(v) => {
-                      field.onChange(v);
-                      field.onBlur();
-                    }}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
-            <FormField
-              control={form.control}
-              name="duration"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("services.options.form.duration")}</FormLabel>
-                  <FormControl>
-                    <DurationInput {...field} disabled={loading} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="w-full space-y-8 relative flex flex-col gap-2 pb-4"
+      >
+        <Tabs
+          onValueChange={triggerValidation}
+          defaultValue={"general"}
+          className="space-y-4"
+          orientation="vertical"
+        >
+          <ResponsiveTabsList className="w-full flex-wrap h-auto">
+            <TabsTrigger
+              value="general"
+              className={cn(
+                form.getFieldState("name").invalid ||
+                  form.getFieldState("description").invalid ||
+                  form.getFieldState("duration").invalid ||
+                  form.getFieldState("price").invalid ||
+                  form.getFieldState("isAutoConfirm").invalid ||
+                  form.getFieldState("isOnline").invalid ||
+                  form.getFieldState("meetingUrlProviderAppId").invalid
+                  ? "text-destructive"
+                  : "",
               )}
-            />
-            <FormField
-              control={form.control}
-              name="price"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("services.options.form.price")}</FormLabel>
-                  <FormControl>
-                    <InputGroup>
-                      <InputSuffix
-                        className={InputGroupSuffixClasses({
-                          variant: "prefix",
-                        })}
-                      >
-                        $
-                      </InputSuffix>
-                      <InputGroupInput>
-                        <Input
-                          disabled={loading}
-                          placeholder="0.00"
-                          type="number"
-                          className={InputGroupInputClasses({
-                            variant: "prefix",
-                          })}
-                          {...field}
-                        />
-                      </InputGroupInput>
-                    </InputGroup>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="isAutoConfirm"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    {t("services.options.form.isAutoConfirm.label")}{" "}
-                    <InfoTooltip>
-                      {t("services.options.form.isAutoConfirm.tooltip")}
-                    </InfoTooltip>
-                  </FormLabel>
-                  <FormControl>
-                    <Select
-                      value={field.value}
-                      onValueChange={(value) => {
-                        field.onChange(value);
-                        field.onBlur();
-                      }}
-                      disabled={loading}
-                    >
-                      <SelectTrigger>
-                        <SelectValue
-                          placeholder={t("services.options.form.selectOption")}
-                        />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="always">
-                          {t("services.options.form.isAutoConfirm.always")}
-                        </SelectItem>
-                        <SelectItem value="never">
-                          {t("services.options.form.isAutoConfirm.never")}
-                        </SelectItem>
-                        <SelectItem value="inherit">
-                          {t("services.options.form.isAutoConfirm.inherit")}
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="isOnline"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    {t("services.options.form.isOnline.label")}{" "}
-                    <InfoTooltip>
-                      {t("services.options.form.isOnline.tooltip")}
-                    </InfoTooltip>
-                  </FormLabel>
-                  <FormControl>
-                    <BooleanSelect
-                      value={field.value}
-                      onValueChange={(value) => {
-                        field.onChange(value);
-                        field.onBlur();
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            {isOnline && (
-              <FormField
-                control={form.control}
-                name="meetingUrlProviderAppId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      {t("services.options.form.meetingUrlProviderAppId.label")}{" "}
-                      <InfoTooltip>
-                        {t(
-                          "services.options.form.meetingUrlProviderAppId.tooltip",
-                        )}
-                      </InfoTooltip>
-                    </FormLabel>
-                    <FormControl>
-                      <AppSelector
-                        scope="meeting-url-provider"
-                        disabled={loading}
-                        value={field.value}
-                        onItemSelect={(value) => field.onChange(value)}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-            )}
-          </div>
-          <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base font-medium">
-                  {t("services.options.form.requireDeposit.label")}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="flex flex-col gap-4">
-                <FormField
-                  control={form.control}
-                  name="requireDeposit"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>
-                        {t("services.options.form.requireDeposit.label")}{" "}
-                        <InfoTooltip>
-                          {t.rich(
-                            "services.options.form.requireDeposit.tooltip",
-                            {
-                              p: (chunks: any) => <p>{chunks}</p>,
-                              br: () => <br />,
-                            },
-                          )}
-                        </InfoTooltip>
-                      </FormLabel>
-                      <FormControl>
-                        <Combobox
-                          disabled={loading}
-                          className="flex w-full font-normal text-base"
-                          values={isRequiredOptionTypes.map((value) => ({
-                            value,
-                            label: t(
-                              `services.options.form.requireDeposit.${value}`,
-                            ),
-                          }))}
-                          searchLabel={t("services.options.form.selectOption")}
-                          value={field.value || "inherit"}
-                          onItemSelect={(item) => {
-                            field.onChange(item);
-                            field.onBlur();
-                          }}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                {requireDeposit === "always" && (
-                  <>
-                    <FormField
-                      control={form.control}
-                      name="depositPercentage"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>
-                            {t("services.options.form.depositAmount")}{" "}
-                            <InfoTooltip>
-                              {t.rich(
-                                "services.options.form.depositAmountTooltip",
-                                {
-                                  p: (chunks: any) => <p>{chunks}</p>,
-                                  br: () => <br />,
-                                },
-                              )}
-                            </InfoTooltip>
-                          </FormLabel>
-                          <FormControl>
-                            <InputGroup>
-                              <InputGroupInput>
-                                <Input
-                                  disabled={loading}
-                                  placeholder="20"
-                                  type="number"
-                                  className={InputGroupInputClasses()}
-                                  {...field}
-                                  onChange={(e) => {
-                                    field.onChange(e);
-                                    form.trigger("requireDeposit");
-                                  }}
-                                />
-                              </InputGroupInput>
-                              <InputSuffix
-                                className={InputGroupSuffixClasses()}
-                              >
-                                %
-                              </InputSuffix>
-                            </InputGroup>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </>
-                )}
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base font-medium">
-                  {t("services.options.form.duplicateAppointmentCheck.title")}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="flex flex-col gap-4">
-                <FormField
-                  control={form.control}
-                  name="duplicateAppointmentCheck.enabled"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>
-                        {t(
-                          "services.options.form.duplicateAppointmentCheck.enabled",
-                        )}{" "}
-                        <InfoTooltip>
-                          {t(
-                            "services.options.form.duplicateAppointmentCheck.enabledTooltip",
-                          )}
-                        </InfoTooltip>
-                      </FormLabel>
-                      <FormControl>
-                        <BooleanSelect
-                          value={field.value ?? false}
-                          onValueChange={(item) => {
-                            field.onChange(item);
-                            field.onBlur();
-                          }}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                {duplicateAppointmentCheck && (
-                  <>
-                    <FormField
-                      control={form.control}
-                      name="duplicateAppointmentCheck.doNotAllowScheduling"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>
-                            {t(
-                              "services.options.form.duplicateAppointmentCheck.doNotAllowScheduling.label",
-                            )}{" "}
-                            <InfoTooltip>
-                              {t(
-                                "services.options.form.duplicateAppointmentCheck.doNotAllowScheduling.tooltip",
-                              )}
-                            </InfoTooltip>
-                          </FormLabel>
-                          <FormControl>
-                            <BooleanSelect
-                              value={field.value ?? false}
-                              onValueChange={(item) => {
-                                field.onChange(item);
-                                field.onBlur();
-                              }}
-                              trueLabel={t(
-                                "services.options.form.duplicateAppointmentCheck.doNotAllowScheduling.labels.true",
-                              )}
-                              falseLabel={t(
-                                "services.options.form.duplicateAppointmentCheck.doNotAllowScheduling.labels.false",
-                              )}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="duplicateAppointmentCheck.days"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>
-                            {t(
-                              "services.options.form.duplicateAppointmentCheck.days",
-                            )}{" "}
-                            <InfoTooltip>
-                              {t(
-                                "services.options.form.duplicateAppointmentCheck.daysTooltip",
-                              )}
-                            </InfoTooltip>
-                          </FormLabel>
-                          <FormControl>
-                            <InputGroup>
-                              <InputGroupInput>
-                                <Input
-                                  disabled={loading}
-                                  placeholder="7"
-                                  type="number"
-                                  className={InputGroupInputClasses({
-                                    variant: "suffix",
-                                  })}
-                                  {...field}
-                                  onChange={(e) => {
-                                    field.onChange(e);
-                                    form.trigger(
-                                      "duplicateAppointmentCheck.enabled",
-                                    );
-                                  }}
-                                  onBlur={() => {
-                                    field.onBlur();
-                                    form.trigger(
-                                      "duplicateAppointmentCheck.enabled",
-                                    );
-                                  }}
-                                />
-                              </InputGroupInput>
-                              <InputSuffix
-                                className={InputGroupSuffixClasses({
-                                  variant: "suffix",
-                                })}
-                              >
-                                {t(
-                                  "services.options.form.duplicateAppointmentCheck.daysSuffix",
-                                )}
-                              </InputSuffix>
-                            </InputGroup>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="duplicateAppointmentCheck.message"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>
-                            {t(
-                              "services.options.form.duplicateAppointmentCheck.message",
-                            )}{" "}
-                            <InfoTooltip>
-                              {t.rich(
-                                "services.options.form.duplicateAppointmentCheck.messageTooltip",
-                                {
-                                  p: (chunks: any) => <p>{chunks}</p>,
-                                  br: () => <br />,
-                                  i: (chunks: any) => <em>{chunks}</em>,
-                                },
-                              )}
-                            </InfoTooltip>
-                          </FormLabel>
-                          <FormControl>
-                            <PlateMarkdownEditor
-                              className="bg-background px-4 sm:px-4 pb-24"
-                              disabled={loading}
-                              value={field.value}
-                              onChange={(v) => {
-                                field.onChange(v);
-                                field.onBlur();
-                              }}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                          <FormDescription>
-                            <Collapsible>
-                              <CollapsibleTrigger className="flex items-center gap-2 [&[data-state=open]_svg]:rotate-90">
-                                {t.rich(
-                                  "services.options.form.duplicateAppointmentCheck.messageExamples.label",
-                                  {
-                                    chevron: () => (
-                                      <ChevronRight className="w-4 h-4 transition-transform duration-200" />
-                                    ),
-                                  },
-                                )}
-                              </CollapsibleTrigger>
-                              <CollapsibleContent>
-                                <ul className="list-disc list-inside space-y-2 pt-2 pl-4 italic">
-                                  <li>
-                                    {t(
-                                      "services.options.form.duplicateAppointmentCheck.messageExamples.friendly",
-                                    )}
-                                  </li>
-                                  <li>
-                                    {t(
-                                      "services.options.form.duplicateAppointmentCheck.messageExamples.neutral",
-                                    )}
-                                  </li>
-                                  <li>
-                                    {t(
-                                      "services.options.form.duplicateAppointmentCheck.messageExamples.formal",
-                                    )}
-                                  </li>
-                                </ul>
-                              </CollapsibleContent>
-                            </Collapsible>
-                          </FormDescription>
-                        </FormItem>
-                      )}
-                    />
-                  </>
-                )}
-              </CardContent>
-            </Card>
-          </div>
-          <div className="w-full  grid md:grid-cols-2 gap-4">
-            <Sortable
-              title={t("services.options.form.fields")}
-              ids={fieldsFieldsIds}
-              onSort={sortFields}
-              onAdd={addNewField}
             >
-              <div className="flex flex-grow flex-col gap-4">
-                {fieldsFields.map((item, index) => {
-                  return (
-                    <FieldSelectCard
-                      form={form}
-                      type="option"
-                      item={item as WithDatabaseId<any>}
-                      key={(item as WithDatabaseId<any>).id}
-                      name={`fields.${index}`}
-                      disabled={loading}
-                      remove={() => removeField(index)}
-                      excludeIds={form
-                        .getValues("fields")
-                        ?.filter(
-                          ({ id }) =>
-                            id !== form.getValues(`fields.${index}`)?.id,
-                        )
-                        .map(({ id }) => id)}
-                    />
-                  );
-                })}
-              </div>
-            </Sortable>
-            <Sortable
-              title={t("services.options.form.addons")}
-              ids={addonsFieldsIds}
-              onSort={sortAddons}
-              onAdd={addNewAddon}
+              {t("services.options.form.tabs.general")}
+            </TabsTrigger>
+            <TabsTrigger
+              value="fields"
+              className={cn(
+                form.getFieldState("fields").invalid ? "text-destructive" : "",
+              )}
             >
-              <div className="flex flex-grow flex-col gap-4">
-                {addonsFields.map((item, index) => {
-                  return (
-                    <AddonSelectCard
-                      form={form}
-                      item={item as WithDatabaseId<any>}
-                      key={(item as WithDatabaseId<any>).id}
-                      name={`addons.${index}`}
-                      disabled={loading}
-                      remove={() => removeAddon(index)}
-                      excludeIds={form
-                        .getValues("addons")
-                        ?.filter(
-                          ({ id }) =>
-                            id !== form.getValues(`addons.${index}`)?.id,
-                        )
-                        .map(({ id }) => id)}
-                    />
-                  );
-                })}
-              </div>
-            </Sortable>
-          </div>
-        </div>
-        <SaveButton form={form} />
+              {t("services.options.form.tabs.fields")}
+            </TabsTrigger>
+            <TabsTrigger
+              value="addons"
+              className={cn(
+                form.getFieldState("addons").invalid ? "text-destructive" : "",
+              )}
+            >
+              {t("services.options.form.tabs.addons")}
+            </TabsTrigger>
+            <TabsTrigger
+              value="payments"
+              className={cn(
+                form.getFieldState("requireDeposit").invalid ||
+                  form.getFieldState("depositPercentage").invalid
+                  ? "text-destructive"
+                  : "",
+              )}
+            >
+              {t("services.options.form.tabs.payments")}
+            </TabsTrigger>
+            <TabsTrigger
+              value="duplicates"
+              className={cn(
+                form.getFieldState("duplicateAppointmentCheck").invalid
+                  ? "text-destructive"
+                  : "",
+              )}
+            >
+              {t("services.options.form.tabs.duplicates")}
+            </TabsTrigger>
+            <TabsTrigger
+              value="cancellations"
+              className={cn(
+                form.getFieldState("cancellationPolicy").invalid
+                  ? "text-destructive"
+                  : "",
+              )}
+            >
+              {t("services.options.form.cancellationPolicy.title")}
+            </TabsTrigger>
+            <TabsTrigger
+              value="reschedules"
+              className={cn(
+                form.getFieldState("reschedulePolicy").invalid
+                  ? "text-destructive"
+                  : "",
+              )}
+            >
+              {t("services.options.form.reschedulePolicy.title")}
+            </TabsTrigger>
+          </ResponsiveTabsList>
+          <TabsContent value="general">
+            <GeneralTab form={form} disabled={loading} />
+          </TabsContent>
+          <TabsContent value="payments">
+            <PaymentsTab form={form} disabled={loading} />
+          </TabsContent>
+          <TabsContent value="duplicates">
+            <DuplicatesTab form={form} disabled={loading} />
+          </TabsContent>
+          <TabsContent value="fields">
+            <FieldsTab form={form} disabled={loading} />
+          </TabsContent>
+          <TabsContent value="addons">
+            <AddonsTab form={form} disabled={loading} />
+          </TabsContent>
+          <TabsContent value="cancellations">
+            <CancellationsTab form={form} disabled={loading} />
+          </TabsContent>
+          <TabsContent value="reschedules">
+            <ReschedulesTab form={form} disabled={loading} />
+          </TabsContent>
+        </Tabs>
+        <SaveButton form={form} disabled={loading} />
       </form>
     </Form>
   );

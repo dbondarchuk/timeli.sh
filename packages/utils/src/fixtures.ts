@@ -30,6 +30,7 @@ export const demoAppointment: Appointment = {
     duration: 100,
     price: 50,
     isOnline: false,
+    durationType: "fixed",
     // requireDeposit: "inherit",
   },
   meetingInformation: {
@@ -201,6 +202,7 @@ export const demoWaitlistEntry = {
     name: "Demo option",
     duration: 100,
     price: 50,
+    durationType: "fixed",
   },
   addons: [],
   dates: [],

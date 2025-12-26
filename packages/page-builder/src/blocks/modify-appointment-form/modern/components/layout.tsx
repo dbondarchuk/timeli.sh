@@ -1,6 +1,6 @@
 import { useI18n, useLocale } from "@timelish/i18n";
-import { Button, cn, Spinner, usePrevious } from "@timelish/ui";
-import { Check, ChevronLeft, ChevronRight } from "lucide-react";
+import { Button, cn, Spinner, Stepper, usePrevious } from "@timelish/ui";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { DateTime } from "luxon";
 import { useEffect, useRef } from "react";
 import { ConfirmationCard } from "./confirmation-card";
@@ -52,6 +52,24 @@ export const ModifyAppointmentFormLayout = ({
     }
   }, [previousStep, step]);
 
+  const filteredSteps = steps
+    .filter((step) => {
+      if (!paymentInformation?.intent?._id && step === "payment") {
+        return false;
+      }
+
+      if (type === "cancel" && step === "calendar") {
+        return false;
+      }
+
+      return true;
+    })
+    .map((step) => ({
+      id: step,
+      label: t(`modification.steps.${step}`),
+      icon: CancelOrRescheduleSteps[step].icon,
+    }));
+
   return (
     <div className={className} {...props}>
       <div ref={topRef} />
@@ -69,74 +87,14 @@ export const ModifyAppointmentFormLayout = ({
 
         {/* Progress Steps */}
         {!hideSteps && (
-          <div className="mb-8 flex items-center justify-center flex-wrap steps-container">
-            {steps
-              .map((step, index) => ({ step, index }))
-              .filter(({ step }) => {
-                if (!paymentInformation?.intent?._id && step === "payment") {
-                  return false;
-                }
-
-                if (type === "cancel" && step === "calendar") {
-                  return false;
-                }
-
-                return true;
-              })
-              .map(({ step, index }, jndex, filteredSteps) => {
-                const Icon = CancelOrRescheduleSteps[step].icon;
-                const isCompleted =
-                  isModificationConfirmed || currentStepIndex > jndex;
-
-                const isCurrent =
-                  !isModificationConfirmed && currentStep === step;
-
-                return (
-                  <div key={step} className="flex items-start">
-                    <div className="flex flex-col items-center w-20">
-                      <div
-                        className={cn(
-                          "w-10 h-10 rounded-full flex items-center justify-center transition-all duration-500",
-                          isCompleted && "bg-primary text-primary-foreground",
-                          isCurrent &&
-                            "bg-primary text-primary-foreground ring-4 ring-primary/20",
-                          !isCompleted &&
-                            !isCurrent &&
-                            "bg-muted text-muted-foreground",
-                        )}
-                      >
-                        {isCompleted ? (
-                          <Check className="w-5 h-5" />
-                        ) : (
-                          <Icon className="w-5 h-5" />
-                        )}
-                      </div>
-                      <span
-                        className={cn(
-                          "text-xs mt-2 font-medium text-center",
-                          isCurrent
-                            ? "text-foreground"
-                            : "text-muted-foreground",
-                        )}
-                      >
-                        {t(`modification.steps.${step}`)}
-                      </span>
-                    </div>
-                    {jndex < filteredSteps.length - 1 && (
-                      <div
-                        className={cn(
-                          "w-8 h-0.5 mt-5 -mx-4 transition-colors duration-500",
-                          isModificationConfirmed ||
-                            steps.indexOf(currentStep) > steps.indexOf(step)
-                            ? "bg-primary"
-                            : "bg-muted",
-                        )}
-                      />
-                    )}
-                  </div>
-                );
-              })}
-          </div>
+          <Stepper
+            steps={filteredSteps}
+            currentStepId={currentStep}
+            isCompleted={(id, index) =>
+              isModificationConfirmed || index < currentStepIndex
+            }
+            className="mb-8"
+          />
         )}
 
         {/* <StepCard /> */}
@@ -163,7 +121,7 @@ export const ModifyAppointmentFormLayout = ({
           <div className="flex flex-col lg:flex-row items-center justify-between gap-4 bg-card border rounded-lg p-4 mt-6 summary-container">
             {!!appointment && (
               <div className="flex flex-col md:flex-row gap-2 w-full">
-                {!!appointment.price && (
+                {!!appointment.dateTime && (
                   <div className="text-left">
                     <p className="text-xs text-muted-foreground amount-label">
                       {t("modification.summary.estimates.dateTime")}

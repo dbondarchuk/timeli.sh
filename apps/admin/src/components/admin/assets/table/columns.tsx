@@ -5,10 +5,9 @@ import { Asset } from "@timelish/types";
 import {
   Checkbox,
   Link,
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
+  TooltipResponsive,
+  TooltipResponsiveContent,
+  TooltipResponsiveTrigger,
 } from "@timelish/ui";
 import {
   AssetPreview,
@@ -79,20 +78,20 @@ export const columns: ColumnDef<Asset>[] = [
   {
     id: "filename",
     cell: ({ row }) => (
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <span className="text-primary underline decoration-dashed underline-offset-2">
-              {shortenFilename(
-                row.original.filename?.substring(
-                  row.original.filename.lastIndexOf("/") + 1,
-                ),
-              )}
-            </span>
-          </TooltipTrigger>
-          <TooltipContent>{row.original.filename}</TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      <TooltipResponsive>
+        <TooltipResponsiveTrigger>
+          <span className="text-primary underline decoration-dashed underline-offset-2">
+            {shortenFilename(
+              row.original.filename?.substring(
+                row.original.filename.lastIndexOf("/") + 1,
+              ),
+            )}
+          </span>
+        </TooltipResponsiveTrigger>
+        <TooltipResponsiveContent>
+          {row.original.filename}
+        </TooltipResponsiveContent>
+      </TooltipResponsive>
     ),
     header: tableSortHeader("assets.table.columns.fileName", "string", "admin"),
     accessorFn: (asset) => asset.filename,
