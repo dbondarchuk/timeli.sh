@@ -6,11 +6,11 @@ import {
 
 import { useI18n } from "@timelish/i18n";
 import {
+  ResponsiveTabsList,
   Sidebar,
   SidebarContent,
   Tabs,
   TabsContent,
-  TabsList,
   TabsTrigger,
 } from "@timelish/ui";
 import { Paintbrush, SquareDashedMousePointer } from "lucide-react";
@@ -82,7 +82,7 @@ export const InspectorDrawer: React.FC<{ extraTabs?: SidebarTab[] }> = ({
             onValueChange={(value) => setSidebarTab(value as any)}
           >
             <SelectBlockListener />
-            <TabsList className="w-full justify-between sticky top-0 z-10 flex-wrap h-auto items-center">
+            <ResponsiveTabsList className="w-full justify-between sticky top-0 z-10 flex-wrap h-auto items-center">
               {allTabs.map((tab) => (
                 <TabsTrigger
                   key={tab.value}
@@ -92,7 +92,7 @@ export const InspectorDrawer: React.FC<{ extraTabs?: SidebarTab[] }> = ({
                   {tab.icon} {tab.label}
                 </TabsTrigger>
               ))}
-            </TabsList>
+            </ResponsiveTabsList>
             <div className="max-h-[calc(100vh-120px)] overflow-y-auto">
               {allTabs.map((tab) => (
                 <TabsContent key={tab.value} value={tab.value}>

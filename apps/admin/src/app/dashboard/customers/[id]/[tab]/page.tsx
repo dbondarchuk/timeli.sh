@@ -19,10 +19,10 @@ import {
   Breadcrumbs,
   Heading,
   Link,
-  Tabs,
+  ResponsiveTabsList,
   TabsContent,
-  TabsLinkTrigger,
-  TabsList,
+  TabsTrigger,
+  TabsViaUrl,
 } from "@timelish/ui";
 import { DataTableSkeleton } from "@timelish/ui-admin";
 import {
@@ -163,14 +163,18 @@ export default async function CustomerPage(props: Props) {
           {/* <Separator /> */}
         </div>
         <div className="flex flex-col gap-4 flex-1">
-          <Tabs value={activeTab} className="flex-1 flex flex-col gap-4">
-            <TabsList className="w-full [&>a]:flex-1 bg-card border flex-wrap h-auto">
+          <TabsViaUrl
+            value={activeTab}
+            usePath={path}
+            className="flex-1 flex flex-col gap-4 tabs-url"
+          >
+            <ResponsiveTabsList className="w-full [&>a]:flex-1 bg-card border flex-wrap h-auto">
               {tabs.map((t) => (
-                <TabsLinkTrigger value={t} usePath={path} key={t}>
+                <TabsTrigger value={t} key={t}>
                   {tabTitle[t]}
-                </TabsLinkTrigger>
+                </TabsTrigger>
               ))}
-            </TabsList>
+            </ResponsiveTabsList>
             <TabsContent value={detailsTab}>
               {activeTab === detailsTab && (
                 <CustomerForm initialData={customer} />
@@ -253,7 +257,7 @@ export default async function CustomerPage(props: Props) {
                 </Suspense>
               </TabsContent>
             )}
-          </Tabs>
+          </TabsViaUrl>
         </div>
       </div>
     </PageContainer>

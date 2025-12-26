@@ -48,8 +48,12 @@ export const AppointmentOptionCard: React.FC = () => {
           <>
             {appointmentOptions.map((option) => {
               const isSelected = selectedAppointmentOption?._id === option._id;
-              const currentDuration = option?.duration;
-              const currentPrice = option?.price;
+              const currentDuration =
+                option.durationType === "fixed" ? option.duration : null;
+              const currentPrice =
+                option.durationType === "fixed"
+                  ? option.price
+                  : option.pricePerHour;
 
               return (
                 <div
@@ -78,11 +82,18 @@ export const AppointmentOptionCard: React.FC = () => {
                       </div>
                       {(!!currentPrice || !!currentDuration) && (
                         <div className="text-right flex-shrink-0">
-                          {!!currentPrice && (
-                            <p className="text-sm font-semibold text-foreground">
-                              ${formatAmountString(currentPrice)}
-                            </p>
-                          )}
+                          {!!currentPrice &&
+                            (option.durationType === "fixed" ? (
+                              <p className="text-sm font-semibold text-foreground">
+                                ${formatAmountString(currentPrice)}
+                              </p>
+                            ) : (
+                              <p className="text-sm font-semibold text-foreground">
+                                {t("booking.option.price_per_hour", {
+                                  price: formatAmountString(currentPrice),
+                                })}
+                              </p>
+                            ))}
                           {!!currentDuration && (
                             <p className="text-xs text-muted-foreground flex items-center gap-1 justify-end">
                               <Clock className="w-3 h-3" />{" "}
@@ -96,7 +107,7 @@ export const AppointmentOptionCard: React.FC = () => {
                       )}
                     </div>
                   </button>
-                  {!option.duration && isSelected && (
+                  {option.durationType === "flexible" && isSelected && (
                     <div className="mt-4 pt-4 border-t border-border">
                       <div className="flex flex-row gap-2 items-center justify-between">
                         <div className="flex flex-col gap-2">
@@ -108,11 +119,11 @@ export const AppointmentOptionCard: React.FC = () => {
                             {t("booking.option.duration.custom.min_max", {
                               min: t(
                                 "duration_hour_min_format",
-                                durationToTime(15),
+                                durationToTime(option.durationMin),
                               ),
                               max: t(
                                 "duration_hour_min_format",
-                                durationToTime(240),
+                                durationToTime(option.durationMax),
                               ),
                             })}
                           </p>
@@ -121,14 +132,21 @@ export const AppointmentOptionCard: React.FC = () => {
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              setDuration(baseDuration ? baseDuration - 15 : 0);
+                              setDuration(
+                                baseDuration
+                                  ? baseDuration - option.durationStep
+                                  : 0,
+                              );
                             }}
                             disabled={
-                              baseDuration ? baseDuration - 15 <= 0 : false
+                              baseDuration
+                                ? baseDuration - option.durationStep <= 0
+                                : false
                             }
                             className={cn(
                               "w-8 h-8 rounded-full flex items-center justify-center border transition-colors",
-                              !baseDuration || baseDuration <= 15
+                              !baseDuration ||
+                                baseDuration <= option.durationStep
                                 ? "border-muted text-muted-foreground cursor-not-allowed"
                                 : "border-primary text-primary hover:bg-primary hover:text-primary-foreground",
                             )}
@@ -145,15 +163,19 @@ export const AppointmentOptionCard: React.FC = () => {
                             onClick={(e) => {
                               e.stopPropagation();
                               setDuration(
-                                baseDuration ? baseDuration + 15 : 15,
+                                baseDuration
+                                  ? baseDuration + option.durationStep
+                                  : option.durationStep,
                               );
                             }}
                             disabled={
-                              baseDuration ? baseDuration >= 240 : false
+                              baseDuration
+                                ? baseDuration >= option.durationMax
+                                : false
                             }
                             className={cn(
                               "w-8 h-8 rounded-full flex items-center justify-center border transition-colors",
-                              baseDuration && baseDuration >= 240
+                              baseDuration && baseDuration >= option.durationMax
                                 ? "border-muted text-muted-foreground cursor-not-allowed"
                                 : "border-primary text-primary hover:bg-primary hover:text-primary-foreground",
                             )}
@@ -167,11 +189,11 @@ export const AppointmentOptionCard: React.FC = () => {
                         {t("booking.option.duration.custom.min_max", {
                           min: t(
                             "duration_hour_min_format",
-                            durationToTime(15),
+                            durationToTime(option.durationMin),
                           ),
                           max: t(
                             "duration_hour_min_format",
-                            durationToTime(240),
+                            durationToTime(option.durationMax),
                           ),
                         })}
                       </p>

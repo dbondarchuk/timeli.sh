@@ -7,10 +7,10 @@ import {
   cn,
   ScrollArea,
   ScrollBar,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-  useMouse,
+  TooltipResponsive,
+  TooltipResponsiveContent,
+  TooltipResponsiveTrigger,
+  usePointer,
   useTimeZone,
 } from "@timelish/ui";
 import { formatTime, formatTimeLocale, parseTime } from "@timelish/utils";
@@ -34,20 +34,29 @@ const ShiftDisplay: React.FC<{
 }> = ({ schedule, className, style }) => {
   const t = useI18n("admin");
   const locale = useLocale();
-  const { ref, x, y } = useMouse<HTMLDivElement>();
+  const { ref, x, y } = usePointer<HTMLDivElement>({
+    resetOnExit: false,
+  });
   return (
-    <Tooltip>
-      <TooltipTrigger asChild>
+    <TooltipResponsive>
+      <TooltipResponsiveTrigger>
         <div className={className} style={style} ref={ref} />
-      </TooltipTrigger>
-      <TooltipContent
-        className="bg-transparent"
+      </TooltipResponsiveTrigger>
+      <TooltipResponsiveContent
+        className="bg-transparent border-none shadow-none"
         align="start"
+        side="top"
         alignOffset={x}
         sideOffset={-y + 10}
         hideWhenDetached
       >
-        <div className="bg-accent p-3 rounded-md">
+        <div
+          className={cn(
+            "bg-accent p-3 rounded-md",
+            x || y ? "block" : "hidden",
+          )}
+          style={style}
+        >
           <div className="text-sm font-medium flex items-center text-accent-foreground">
             <Clock className="h-4 w-4 mr-2" />
             <span>{t("calendar.workingHours")}</span>
@@ -61,8 +70,8 @@ const ShiftDisplay: React.FC<{
             ))}
           </div>
         </div>
-      </TooltipContent>
-    </Tooltip>
+      </TooltipResponsiveContent>
+    </TooltipResponsive>
   );
 };
 

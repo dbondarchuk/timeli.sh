@@ -81,19 +81,19 @@ export const TypeCard: React.FC = () => {
                 <div className="flex items-center gap-4">
                   <div
                     className={cn(
-                      "size-12 rounded-full flex items-center justify-center type-card-button-icon-container",
+                      "size-10 flex-shrink-0 rounded-full flex items-center justify-center type-card-button-icon-container",
                       isSelected
                         ? iconClassName
                         : "bg-muted text-muted-foreground",
                     )}
                   >
-                    <Icon className="size-6 type-card-button-icon" />
+                    <Icon className="size-4 type-card-button-icon" />
                   </div>
                   <div>
-                    <h3 className="font-medium text-foreground type-card-button-title">
+                    <h3 className="font-medium text-sm text-foreground type-card-button-title">
                       {t(title)}
                     </h3>
-                    <p className="text-sm text-muted-foreground type-card-button-description">
+                    <p className="text-xs text-muted-foreground type-card-button-description">
                       {t(description)}
                     </p>
                   </div>

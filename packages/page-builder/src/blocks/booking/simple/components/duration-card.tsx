@@ -4,11 +4,28 @@ import { durationToTime } from "@timelish/utils";
 import React from "react";
 import { useScheduleContext } from "./context";
 
-const durations = [15, 30, 45, 60, 90, 120];
-
 export const DurationCard: React.FC = () => {
   const i18n = useI18n("translation");
-  const { setDuration, duration } = useScheduleContext();
+  const { setDuration, duration, appointmentOption } = useScheduleContext();
+
+  if (appointmentOption.durationType !== "flexible") return null;
+
+  const durations = React.useMemo(() => {
+    const durations = [];
+    for (
+      let i = appointmentOption.durationMin;
+      i <= appointmentOption.durationMax;
+      i += appointmentOption.durationStep
+    ) {
+      durations.push(i);
+    }
+
+    return durations;
+  }, [
+    appointmentOption.durationMin,
+    appointmentOption.durationMax,
+    appointmentOption.durationStep,
+  ]);
 
   return (
     <div className="relative text-center">

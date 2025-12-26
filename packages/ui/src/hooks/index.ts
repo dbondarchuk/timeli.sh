@@ -12,8 +12,10 @@ export * from "./use-is-touch-device";
 export * from "./use-mobile";
 export * from "./use-mounted";
 export * from "./use-mouse";
+export * from "./use-pointer";
 export * from "./use-previous";
 export * from "./use-throttle-callback";
 export * from "./use-unsaved-changes-prompt";
 export * from "./use-upload-file";
 export * from "./use-window-size";
+

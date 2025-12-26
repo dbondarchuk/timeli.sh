@@ -54,6 +54,17 @@ export type AppointmentWithoutDepositCancellationPolicyAction = z.infer<
   typeof appointmentWithoutDepositCancellationPolicyAction
 >;
 
+export const modificationPaymentCalculationType = [
+  "percentage",
+  "amount",
+] as const;
+export const modificationPaymentCalculationTypeSchema = z.enum(
+  modificationPaymentCalculationType,
+  {
+    message: "cancellation.policy.paymentType.required",
+  },
+);
+
 /**
  * Policy action options:
  * - notAllowed: no reschedules allowed in this window
@@ -75,51 +86,226 @@ export type AppointmentReschedulePolicyAction = z.infer<
   typeof appointmentReschedulePolicyAction
 >;
 
-const baseAppointmentWithDepositCancellationPolicyRowSchema = z.object({
-  action: appointmentWithDepositCancellationPolicyAction,
-  refundFees: z.coerce.boolean<boolean>().optional(),
-  refundPercentage: z.coerce
-    .number<number>("cancellation.policy.refundPercentage.required")
-    .int({ message: "cancellation.policy.refundPercentage.required" })
-    .min(10, { message: "cancellation.policy.refundPercentage.min" })
-    .max(100, { message: "cancellation.policy.refundPercentage.max" })
-    .optional(),
-  paymentPercentage: z.coerce
-    .number<number>("cancellation.policy.paymentPercentage.required")
-    .int({ message: "cancellation.policy.paymentPercentage.required" })
-    .min(10, { message: "cancellation.policy.paymentPercentage.min" })
-    .max(100, { message: "cancellation.policy.paymentPercentage.max" })
-    .optional(),
-  // optional free-form note for admins
-  note: z
-    .string()
-    .max(500, { message: "cancellation.policy.note.max" })
-    .optional(),
-});
+const baseAppointmentWithDepositCancellationPolicyRowSchema = z
+  .object({
+    // optional free-form note for admins
+    note: z
+      .string()
+      .max(500, { message: "cancellation.policy.note.max" })
+      .optional(),
+  })
+  .and(
+    z
+      .object({
+        action: appointmentWithDepositCancellationPolicyAction.extract([
+          "forfeitDeposit",
+          "notAllowed",
+        ]),
+      })
+      .or(
+        z.object({
+          action: appointmentWithDepositCancellationPolicyAction.extract([
+            "partialRefund",
+          ]),
+          refundFees: z.coerce.boolean<boolean>().optional(),
+          refundPercentage: z.coerce
+            .number<number>("cancellation.policy.refundPercentage.required")
+            .int({ message: "cancellation.policy.refundPercentage.required" })
+            .min(10, { message: "cancellation.policy.refundPercentage.min" })
+            .max(100, { message: "cancellation.policy.refundPercentage.max" }),
+        }),
+      )
+      .or(
+        z.object({
+          action: appointmentWithDepositCancellationPolicyAction.extract([
+            "fullRefund",
+          ]),
+          refundFees: z.coerce.boolean<boolean>().optional(),
+        }),
+      )
+      .or(
+        z.object({
+          action: appointmentWithDepositCancellationPolicyAction.extract([
+            "paymentToFullPriceRequired",
+          ]),
+          calculateFromOriginalPrice: z.coerce.boolean<boolean>().optional(),
+        }),
+      )
+      .or(
+        z
+          .object({
+            action: appointmentWithDepositCancellationPolicyAction.extract([
+              "paymentRequired",
+            ]),
+          })
+          .and(
+            z
+              .object({
+                paymentType: modificationPaymentCalculationTypeSchema.extract([
+                  "percentage",
+                ]),
+                calculateFromOriginalPrice: z.coerce
+                  .boolean<boolean>()
+                  .optional(),
 
-const baseAppointmentWithoutDepositCancellationPolicyRowSchema = z.object({
-  action: appointmentWithoutDepositCancellationPolicyAction,
-  paymentPercentage: z.coerce
-    .number<number>("cancellation.policy.paymentPercentage.required")
-    .int({ message: "cancellation.policy.paymentPercentage.required" })
-    .min(10, { message: "cancellation.policy.paymentPercentage.min" })
-    .max(100, { message: "cancellation.policy.paymentPercentage.max" })
-    .optional(),
-});
+                paymentPercentage: z.coerce
+                  .number<number>(
+                    "cancellation.policy.paymentPercentage.required",
+                  )
+                  .int({
+                    message: "cancellation.policy.paymentPercentage.required",
+                  })
+                  .min(10, {
+                    message: "cancellation.policy.paymentPercentage.min",
+                  })
+                  .max(100, {
+                    message: "cancellation.policy.paymentPercentage.max",
+                  }),
+              })
+              .or(
+                z.object({
+                  paymentType: modificationPaymentCalculationTypeSchema.extract(
+                    ["amount"],
+                  ),
+                  paymentAmount: z.coerce
+                    .number<number>(
+                      "cancellation.policy.paymentAmount.required",
+                    )
+                    .min(1, {
+                      message: "cancellation.policy.paymentAmount.min",
+                    }),
+                }),
+              ),
+          ),
+      ),
+  );
 
-const baseAppointmentReschedulePolicyRowSchema = z.object({
-  action: appointmentReschedulePolicyAction,
-  paymentPercentage: z.coerce
-    .number<number>("cancellation.policy.paymentPercentage.required")
-    .min(0, { message: "cancellation.policy.paymentPercentage.min" })
-    .max(100, { message: "cancellation.policy.paymentPercentage.max" })
-    .optional(),
-  // optional free-form note for admins
-  note: z
-    .string()
-    .max(500, { message: "cancellation.policy.note.max" })
-    .optional(),
-});
+const baseAppointmentWithoutDepositCancellationPolicyRowSchema = z
+  .object({
+    // optional free-form note for admins
+    note: z
+      .string()
+      .max(500, { message: "cancellation.policy.note.max" })
+      .optional(),
+  })
+  .and(
+    z
+      .object({
+        action: appointmentWithoutDepositCancellationPolicyAction.extract([
+          "notAllowed",
+          "allowed",
+        ]),
+      })
+      .or(
+        z
+          .object({
+            action: appointmentWithoutDepositCancellationPolicyAction.extract([
+              "paymentRequired",
+            ]),
+          })
+          .and(
+            z
+              .object({
+                paymentType: modificationPaymentCalculationTypeSchema.extract([
+                  "percentage",
+                ]),
+                calculateFromOriginalPrice: z.coerce
+                  .boolean<boolean>()
+                  .optional(),
+
+                paymentPercentage: z.coerce
+                  .number<number>(
+                    "cancellation.policy.paymentPercentage.required",
+                  )
+                  .int({
+                    message: "cancellation.policy.paymentPercentage.required",
+                  })
+                  .min(10, {
+                    message: "cancellation.policy.paymentPercentage.min",
+                  })
+                  .max(100, {
+                    message: "cancellation.policy.paymentPercentage.max",
+                  }),
+              })
+              .or(
+                z.object({
+                  paymentType: modificationPaymentCalculationTypeSchema.extract(
+                    ["amount"],
+                  ),
+                  paymentAmount: z.coerce
+                    .number<number>(
+                      "cancellation.policy.paymentAmount.required",
+                    )
+                    .min(1, {
+                      message: "cancellation.policy.paymentAmount.min",
+                    }),
+                }),
+              ),
+          ),
+      ),
+  );
+
+const baseAppointmentReschedulePolicyRowSchema = z
+  .object({
+    // optional free-form note for admins
+    note: z
+      .string()
+      .max(500, { message: "cancellation.policy.note.max" })
+      .optional(),
+  })
+  .and(
+    z
+      .object({
+        action: appointmentReschedulePolicyAction.exclude(["paymentRequired"]),
+      })
+      .or(
+        z
+          .object({
+            action: appointmentReschedulePolicyAction.extract([
+              "paymentRequired",
+            ]),
+          })
+          .and(
+            z
+              .object({
+                paymentType: modificationPaymentCalculationTypeSchema.extract([
+                  "percentage",
+                ]),
+                calculateFromOriginalPrice: z.coerce
+                  .boolean<boolean>()
+                  .optional(),
+
+                paymentPercentage: z.coerce
+                  .number<number>(
+                    "cancellation.policy.paymentPercentage.required",
+                  )
+                  .int({
+                    message: "cancellation.policy.paymentPercentage.required",
+                  })
+                  .min(0, {
+                    message: "cancellation.policy.paymentPercentage.min",
+                  })
+                  .max(100, {
+                    message: "cancellation.policy.paymentPercentage.max",
+                  }),
+              })
+              .or(
+                z.object({
+                  paymentType: modificationPaymentCalculationTypeSchema.extract(
+                    ["amount"],
+                  ),
+                  paymentAmount: z.coerce
+                    .number<number>(
+                      "cancellation.policy.paymentAmount.required",
+                    )
+                    .min(1, {
+                      message: "cancellation.policy.paymentAmount.min",
+                    }),
+                }),
+              ),
+          ),
+      ),
+  );
 
 const baseAppointmentWithDepositCancellationPolicyRowSuperRefineFunction = (
   val: z.infer<typeof baseAppointmentWithDepositCancellationPolicyRowSchema>,
@@ -134,11 +320,23 @@ const baseAppointmentWithDepositCancellationPolicyRowSuperRefineFunction = (
       });
     }
   } else if (val.action === "paymentRequired") {
-    if (typeof val.paymentPercentage !== "number") {
+    if (
+      val.paymentType === "percentage" &&
+      typeof val.paymentPercentage !== "number"
+    ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: "cancellation.policy.paymentPercentage.required",
         path: ["paymentPercentage"],
+      });
+    } else if (
+      val.paymentType === "amount" &&
+      typeof val.paymentAmount !== "number"
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "cancellation.policy.paymentAmount.required",
+        path: ["paymentAmount"],
       });
     }
   } else {
@@ -152,11 +350,23 @@ const baseAppointmentWithoutDepositCancellationPolicyRowSuperRefineFunction = (
   ctx: z.RefinementCtx,
 ) => {
   if (val.action === "paymentRequired") {
-    if (typeof val.paymentPercentage !== "number") {
+    if (
+      val.paymentType === "percentage" &&
+      typeof val.paymentPercentage !== "number"
+    ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: "cancellation.policy.paymentPercentage.required",
         path: ["paymentPercentage"],
+      });
+    } else if (
+      val.paymentType === "amount" &&
+      typeof val.paymentAmount !== "number"
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "cancellation.policy.paymentAmount.required",
+        path: ["paymentAmount"],
       });
     }
   }
@@ -167,11 +377,23 @@ const baseAppointmentReschedulePolicyRowSuperRefineFunction = (
   ctx: z.RefinementCtx,
 ) => {
   if (val.action === "paymentRequired") {
-    if (typeof val.paymentPercentage !== "number") {
+    if (
+      val.paymentType === "percentage" &&
+      typeof val.paymentPercentage !== "number"
+    ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: "cancellation.policy.paymentPercentage.required",
         path: ["paymentPercentage"],
+      });
+    } else if (
+      val.paymentType === "amount" &&
+      typeof val.paymentAmount !== "number"
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "cancellation.policy.paymentAmount.required",
+        path: ["paymentAmount"],
       });
     }
   }
@@ -196,8 +418,8 @@ export const appointmentWithDepositCancellationPolicyRowSchema = z
       .positive({
         error: "cancellation.policy.minutesToAppointment.required",
       }),
-    ...baseAppointmentWithDepositCancellationPolicyRowSchema.shape,
   })
+  .and(baseAppointmentWithDepositCancellationPolicyRowSchema)
   .superRefine(
     baseAppointmentWithDepositCancellationPolicyRowSuperRefineFunction,
   );
@@ -212,8 +434,8 @@ export const appointmentWithoutDepositCancellationPolicyRowSchema = z
       .positive({
         error: "cancellation.policy.minutesToAppointment.required",
       }),
-    ...baseAppointmentWithoutDepositCancellationPolicyRowSchema.shape,
   })
+  .and(baseAppointmentWithoutDepositCancellationPolicyRowSchema)
   .superRefine(
     baseAppointmentWithoutDepositCancellationPolicyRowSuperRefineFunction,
   );
@@ -317,8 +539,8 @@ export const appointmentReschedulePolicyRowSchema = z
       .positive({
         error: "cancellation.policy.minutesToAppointment.required",
       }),
-    ...baseAppointmentReschedulePolicyRowSchema.shape,
   })
+  .and(baseAppointmentReschedulePolicyRowSchema)
   .superRefine(baseAppointmentReschedulePolicyRowSuperRefineFunction);
 
 export type AppointmentReschedulePolicyRow = z.infer<

@@ -23,6 +23,7 @@ import {
 import {
   Button,
   Checkbox,
+  cn,
   Combobox,
   DateTimePicker,
   DurationInput,
@@ -49,8 +50,13 @@ import {
   useTimeZone,
 } from "@timelish/ui";
 import { CustomerSelector, PromoCodeSelector } from "@timelish/ui-admin";
-import { formatAmount, getDiscountAmount } from "@timelish/utils";
-import { CalendarClock, Clock, DollarSign } from "lucide-react";
+import {
+  durationToTime,
+  formatAmount,
+  formatAmountString,
+  getDiscountAmount,
+} from "@timelish/utils";
+import { CalendarClock, Clock, DollarSign, X } from "lucide-react";
 import { DateTime } from "luxon";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -223,14 +229,18 @@ export const AppointmentScheduleForm: React.FC<
 
   const fromDuration = from
     ? from?.totalDuration
-      ? (fromOption?.duration || 0) +
+      ? (fromOption?.durationType === "fixed"
+          ? fromOption?.duration
+          : fromOption?.durationMin || 0) +
         (fromAddons?.reduce((sum, addon) => sum + (addon?.duration || 0), 0) ||
           0)
       : undefined
     : undefined;
 
   const fromPrice = from
-    ? (fromOption?.price || 0) +
+    ? ((fromOption?.durationType === "fixed"
+        ? fromOption?.price
+        : (fromOption?.pricePerHour || 0) / 60) || 0) +
       (fromAddons?.reduce((sum, addon) => sum + (addon?.price || 0), 0) || 0)
     : undefined;
 
@@ -241,7 +251,12 @@ export const AppointmentScheduleForm: React.FC<
     values: {
       dateTime: isEdit ? (from.dateTime ?? now) : now,
       totalDuration:
-        from?.totalDuration || fromDuration || options[0]?.duration || 0,
+        from?.totalDuration ||
+        fromDuration ||
+        (options[0]?.durationType === "fixed"
+          ? options[0]?.duration
+          : options[0]?.durationMin || 0) ||
+        0,
       totalPrice: from?.totalPrice || fromPrice || undefined,
       addons: from?.addonsIds?.map((id) => ({ id })) || [],
       fields: (from?.fields as AppointmentFields) || {
@@ -498,14 +513,18 @@ export const AppointmentScheduleForm: React.FC<
 
   React.useEffect(() => {
     const duration =
-      (selectedOption?.duration || 0) +
+      (selectedOption?.durationType === "fixed"
+        ? selectedOption?.duration
+        : selectedOption?.durationMin || 0) +
       (selectedAddons || []).reduce(
         (prev, curr) => prev + (curr.duration || 0),
         0,
       );
 
     let price: number | undefined =
-      (selectedOption?.price || 0) +
+      ((selectedOption?.durationType === "fixed"
+        ? selectedOption?.price
+        : selectedOption?.pricePerHour) || 0) +
       (selectedAddons || []).reduce(
         (prev, curr) => prev + (curr.price || 0),
         0,
@@ -519,7 +538,10 @@ export const AppointmentScheduleForm: React.FC<
     price -= priceDiscount;
 
     form.setValue("totalDuration", duration);
-    form.setValue("totalPrice", Math.max(formatAmount(price || 0), 0));
+    form.setValue(
+      "totalPrice",
+      Math.max(formatAmount(price || 0), 0) || undefined,
+    );
 
     form.trigger("totalDuration");
   }, [selectedOption, selectedAddons, discount]);
@@ -571,22 +593,33 @@ export const AppointmentScheduleForm: React.FC<
                           label: (
                             <div className="flex flex-col gap-1">
                               <div>{x.name}</div>
-                              <div className="text-sm text-muted-foreground inline-flex items-center gap-2">
+                              <div className="text-xs text-muted-foreground inline-flex items-center gap-2">
                                 <div className="inline-flex items-center gap-1">
-                                  <Clock size={16} />{" "}
-                                  {!!x.duration ? (
-                                    <>
-                                      {x.duration} {t("appointments.form.min")}
-                                    </>
-                                  ) : (
-                                    t("appointments.form.custom")
-                                  )}
+                                  <Clock className="w-3 h-3" />{" "}
+                                  {x.durationType === "fixed"
+                                    ? t(
+                                        "common.timeDuration",
+                                        durationToTime(x.duration),
+                                      )
+                                    : t("appointments.form.custom")}
                                 </div>
-                                {!!x.price && (
+                                {x.durationType === "fixed" && !!x.price && (
                                   <div className="inline-flex items-center gap-1">
-                                    <DollarSign size={16} /> ${x.price}
+                                    <DollarSign className="w-3 h-3" /> $
+                                    {x.price}
                                   </div>
                                 )}
+                                {x.durationType === "flexible" &&
+                                  !!x.pricePerHour && (
+                                    <div className="inline-flex items-center gap-1">
+                                      <DollarSign className="w-3 h-3" />{" "}
+                                      {t("common.pricePerHour", {
+                                        price: formatAmountString(
+                                          x.pricePerHour,
+                                        ),
+                                      })}
+                                    </div>
+                                  )}
                               </div>
                             </div>
                           ),
@@ -730,14 +763,28 @@ export const AppointmentScheduleForm: React.FC<
                         <InputGroupInput>
                           <Input
                             disabled={loading}
-                            placeholder="30"
+                            placeholder="30.00"
                             type="number"
-                            className={InputGroupInputClasses({
-                              variant: "prefix",
-                            })}
+                            className={cn(
+                              InputGroupInputClasses({
+                                variant: "prefix",
+                              }),
+                              "rounded-r-none",
+                            )}
                             {...field}
                           />
                         </InputGroupInput>
+
+                        <Button
+                          variant="outline"
+                          className="rounded-l-none border-l-0"
+                          onClick={() => {
+                            field.onChange("");
+                            field.onBlur();
+                          }}
+                        >
+                          <X className="w-4 h-4 opacity-50" />
+                        </Button>
                       </InputGroup>
                     </FormControl>
                     <FormMessage />

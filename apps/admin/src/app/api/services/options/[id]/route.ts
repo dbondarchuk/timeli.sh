@@ -80,8 +80,17 @@ export async function PUT(
     {
       optionId: id,
       optionName: data.name,
-      optionDuration: data.duration,
-      optionPrice: data.price,
+      optionDurationType: data.durationType,
+      optionDuration: data.durationType === "fixed" ? data.duration : undefined,
+      optionPrice: data.durationType === "fixed" ? data.price : undefined,
+      optionDurationMin:
+        data.durationType === "flexible" ? data.durationMin : undefined,
+      optionDurationMax:
+        data.durationType === "flexible" ? data.durationMax : undefined,
+      optionDurationStep:
+        data.durationType === "flexible" ? data.durationStep : undefined,
+      optionPricePerHour:
+        data.durationType === "flexible" ? data.pricePerHour : undefined,
     },
     "Updating service option",
   );

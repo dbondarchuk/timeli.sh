@@ -15,7 +15,7 @@ export const ConnectedAppAccount: React.FC<{
   ].filter((p) => !!p);
 
   return parts.length > 0 ? (
-    <span className={cn("text-sm text-muted-foreground", className)}>
+    <span className={cn("text-xs text-muted-foreground", className)}>
       {parts.join(" / ")}
     </span>
   ) : (
@@ -31,7 +31,13 @@ export const ConnectedAppStatusMessage: React.FC<{
   const tApps = useI18n("apps");
   const t = useI18n();
   return (
-    <div className={cn("break-all", appStatusTextClasses[status], className)}>
+    <div
+      className={cn(
+        "break-all text-xs",
+        appStatusTextClasses[status],
+        className,
+      )}
+    >
       {tApps("common.statusMessage", {
         status: tApps(`status.${status}`),
         statusText:
@@ -56,7 +62,7 @@ export const ConnectedAppNameAndLogo: React.FC<{
   return (
     <div className={cn("inline-flex items-center gap-2", className)}>
       <App.Logo className={cn("size-4", logoClassName)} />
-      <span className={nameClassName}>{t(App.displayName)}</span>
+      <span className={cn("text-sm", nameClassName)}>{t(App.displayName)}</span>
     </div>
   );
 };

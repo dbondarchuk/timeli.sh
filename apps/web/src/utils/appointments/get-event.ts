@@ -64,14 +64,23 @@ export const getAppointmentEventFromRequest = async (
     {
       optionId: request.optionId,
       optionName: selectedOption.name,
-      optionDuration: selectedOption.duration,
-      optionPrice: selectedOption.price,
+      optionDurationType: selectedOption.durationType,
       optionIsOnline: selectedOption.isOnline,
+      optionDuration:
+        selectedOption.durationType === "fixed"
+          ? selectedOption.duration
+          : null,
+      optionPrice:
+        selectedOption.durationType === "fixed" ? selectedOption.price : null,
+      optionPricePerHour:
+        selectedOption.durationType === "flexible"
+          ? selectedOption.pricePerHour
+          : null,
     },
     "Retrieved selected option",
   );
 
-  if (typeof selectedOption.duration === "undefined" && !request.duration) {
+  if (selectedOption.durationType === "flexible" && !request.duration) {
     logger.warn(
       { optionId: request.optionId, optionName: selectedOption.name },
       "Duration required but not provided",
@@ -81,6 +90,48 @@ export const getAppointmentEventFromRequest = async (
       error: {
         code: "duration_required",
         message: `Selected option requires the duration to be provided`,
+        status: 400,
+      },
+    };
+  } else if (
+    selectedOption.durationType === "flexible" &&
+    request.duration &&
+    request.duration < selectedOption.durationMin
+  ) {
+    logger.warn(
+      {
+        optionId: request.optionId,
+        optionName: selectedOption.name,
+        duration: request.duration,
+      },
+      "Duration is less than the minimum duration",
+    );
+
+    return {
+      error: {
+        code: "duration_less_than_minimum",
+        message: `Selected option requires the duration to be greater than the minimum duration`,
+        status: 400,
+      },
+    };
+  } else if (
+    selectedOption.durationType === "flexible" &&
+    request.duration &&
+    request.duration > selectedOption.durationMax
+  ) {
+    logger.warn(
+      {
+        optionId: request.optionId,
+        optionName: selectedOption.name,
+        duration: request.duration,
+      },
+      "Duration is greater than the maximum duration",
+    );
+
+    return {
+      error: {
+        code: "duration_greater_than_maximum",
+        message: `Selected option requires the duration to be less than the maximum duration`,
         status: 400,
       },
     };
@@ -192,22 +243,31 @@ export const getAppointmentEventFromRequest = async (
     logger.debug({ fieldValidationEnabled: false }, "Field validation skipped");
   }
 
+  const optionDuration =
+    selectedOption.durationType === "fixed"
+      ? selectedOption.duration
+      : (request.duration ?? 0);
   const totalDuration =
-    (selectedOption.duration ?? request.duration ?? 0) +
+    (optionDuration ?? 0) +
     (selectedAddons?.reduce((sum, cur) => sum + (cur.duration ?? 0), 0) ?? 0);
 
+  const optionPrice =
+    selectedOption.durationType === "fixed"
+      ? selectedOption.price
+      : ((selectedOption.pricePerHour || 0) / 60) * (optionDuration || 0);
   let totalPrice: number | undefined =
-    (selectedOption.price ?? 0) +
+    (optionPrice ?? 0) +
     (selectedAddons?.reduce((sum, cur) => sum + (cur.price ?? 0), 0) ?? 0);
 
   logger.debug(
     {
-      optionDuration: selectedOption.duration,
+      optionDurationType: selectedOption.durationType,
+      optionDuration,
       requestDuration: request.duration,
       addonsDuration:
         selectedAddons?.reduce((sum, cur) => sum + (cur.duration ?? 0), 0) ?? 0,
       totalDuration,
-      optionPrice: selectedOption.price,
+      optionPrice: optionPrice,
       addonsPrice:
         selectedAddons?.reduce((sum, cur) => sum + (cur.price ?? 0), 0) ?? 0,
       totalPrice,
@@ -304,8 +364,9 @@ export const getAppointmentEventFromRequest = async (
     option: {
       _id: selectedOption._id,
       name: selectedOption.name,
-      price: selectedOption.price,
-      duration: selectedOption.duration,
+      durationType: selectedOption.durationType,
+      duration: optionDuration,
+      price: optionPrice,
       isOnline: selectedOption.isOnline,
     },
     timeZone: request.timeZone,

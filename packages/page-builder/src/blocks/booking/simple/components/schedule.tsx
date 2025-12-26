@@ -72,7 +72,10 @@ export const Schedule: React.FC<
 
   const topRef = React.createRef<HTMLDivElement>();
 
-  const appointmentOptionDuration = appointmentOption.duration;
+  const appointmentOptionDuration =
+    appointmentOption.durationType === "fixed"
+      ? appointmentOption.duration
+      : appointmentOption.durationMin;
   const [duration, setDuration] = React.useState<number | undefined>(
     appointmentOptionDuration,
   );
@@ -107,7 +110,8 @@ export const Schedule: React.FC<
   let initialStep: StepType = "duration";
   if (appointmentOption.addons && appointmentOption.addons.length) {
     initialStep = "addons";
-  } else if (appointmentOption.duration) initialStep = "calendar";
+  } else if (appointmentOption.durationType === "fixed")
+    initialStep = "calendar";
 
   const [step, setStep] = React.useState<StepType>(initialStep);
   const [dateTime, setDateTime] = React.useState<DateTime | undefined>(

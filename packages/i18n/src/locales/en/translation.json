@@ -28,7 +28,8 @@
           "title": "Session Duration",
           "min_max": "Min: {min} • Max: {max}"
         }
-      }
+      },
+      "price_per_hour": "${price}/hr"
     },
     "addons": {
       "title": "Enhance Your Experience",
@@ -274,7 +275,7 @@
   "payment_form_deposit_required_description": "In order to book this appointment, {percentage}% (${amount}) deposit is required. Please pay by using the form below",
 
   "payment_form_full_payment_required_title": "Full payment is required",
-  "payment_form_full_payment_required_description": "In order to book this appointment, full paymant of ${amount} is required. Please pay by using the form below",
+  "payment_form_full_payment_required_description": "In order to book this appointment, full payment of ${amount} is required. Please pay by using the form below",
 
   "duplicate_appointment_confirmation_title": "Are you sure?",
   "duplicate_appointment_checkbox_label": "I confirm that I understand and want to book this appointment",
@@ -320,9 +321,9 @@
   "reschedule_submit_failed_title": "Uh oh! Something went wrong.",
   "reschedule_submit_failed_description": "Something went wrong while we were trying to reschedule your appointment. Please contact us",
   "cancel_fee_required_title": "Cancellation fee is required",
-  "cancel_fee_required_description": "In order to cancel this appointment, a fee of {percentage}% (${amount}) from total price of ${totalPrice} is required. Please pay by using the form below",
+  "cancel_fee_required_description": "In order to cancel this appointment, a fee of ${amount} is required. Please pay by using the form below",
   "reschedule_fee_required_title": "Reschedule fee is required",
-  "reschedule_fee_required_description": "In order to reschedule this appointment, a fee of {percentage}% (${amount}) from total price of ${totalPrice} is required. Please pay by using the form below",
+  "reschedule_fee_required_description": "In order to reschedule this appointment, a fee of ${amount} is required. Please pay by using the form below",
 
   "footer": {
     "contactUsLabel": "Contact us",

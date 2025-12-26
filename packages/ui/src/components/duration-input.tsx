@@ -328,7 +328,7 @@ export const DurationInput: React.FC<DurationInputProps> = ({
       <div className="flex items-center pl-3 text-muted-foreground">
         <Clock className="h-4 w-4" />
       </div>
-      <div className="flex items-center gap-1 pl-1">
+      <div className="flex items-center gap-1 px-1">
         {type === "weeks-days-hours-minutes" && (
           <>
             <Input

@@ -1,11 +1,40 @@
 import { ValidationKeys } from "@timelish/i18n";
 import * as z from "zod";
+import {
+  appointmentRescheduleSchema,
+  appointmentWithDepositCancellationSchema,
+  appointmentWithoutDepositCancellationSchema,
+} from "../configuration/booking/cancellation";
 import { WithCompanyId, WithDatabaseId } from "../database";
 import { asOptinalNumberField, zNonEmptyString, zUniqueArray } from "../utils";
-import { Prettify } from "../utils/helpers";
+import { DistributiveOmit, Prettify } from "../utils/helpers";
 import { FieldSchema } from "./field";
 
 export const isRequiredOptionTypes = ["inherit", "always", "never"] as const;
+export const optionPaymentCalculationType = ["percentage", "amount"] as const;
+export const optionDurationType = ["fixed", "flexible"] as const;
+export const optionDurationTypeSchema = z.enum(optionDurationType, {
+  error: "appointments.option.durationType.required" satisfies ValidationKeys,
+});
+
+export const optionAppointmentModificationPolicyType = [
+  "inherit",
+  "custom",
+] as const;
+export const optionAppointmentModificationPolicyTypeSchema = z.enum(
+  optionAppointmentModificationPolicyType,
+  {
+    error:
+      "appointments.option.cancellationPolicyType.required" satisfies ValidationKeys,
+  },
+);
+
+export const optionPaymentCalculationTypeSchema = z.enum(
+  optionPaymentCalculationType,
+  {
+    error: "appointments.option.paymentType.required" satisfies ValidationKeys,
+  },
+);
 
 const isRequiredOptionSchema = z.enum(isRequiredOptionTypes);
 
@@ -14,16 +43,6 @@ export const appointmentOptionSchema = z
     name: zNonEmptyString("appointments.option.name.required", 2),
     // description: z.array(z.any()),
     description: zNonEmptyString("appointments.option.description.required", 2),
-    duration: asOptinalNumberField(
-      z.coerce
-        .number<number>()
-        .int("appointments.option.duration.positive")
-        .min(1, "appointments.option.duration.positive"),
-    ),
-
-    price: asOptinalNumberField(
-      z.coerce.number<number>().min(1, "appointments.option.price.min"),
-    ),
     addons: zUniqueArray(
       z.array(
         z.object({
@@ -75,6 +94,56 @@ export const appointmentOptionSchema = z
         }),
       )
       .optional(),
+    cancellationPolicy: z
+      .object({
+        withDeposit: z
+          .object({
+            type: optionAppointmentModificationPolicyTypeSchema.extract([
+              "inherit",
+            ]),
+          })
+          .or(
+            z
+              .object({
+                type: optionAppointmentModificationPolicyTypeSchema.extract([
+                  "custom",
+                ]),
+              })
+              .and(appointmentWithDepositCancellationSchema),
+          ),
+        withoutDeposit: z
+          .object({
+            type: optionAppointmentModificationPolicyTypeSchema.extract([
+              "inherit",
+            ]),
+          })
+          .or(
+            z
+              .object({
+                type: optionAppointmentModificationPolicyTypeSchema.extract([
+                  "custom",
+                ]),
+              })
+              .and(appointmentWithoutDepositCancellationSchema),
+          ),
+      })
+      .optional(),
+    reschedulePolicy: z
+      .object({
+        type: optionAppointmentModificationPolicyTypeSchema.extract([
+          "inherit",
+        ]),
+      })
+      .or(
+        z
+          .object({
+            type: optionAppointmentModificationPolicyTypeSchema.extract([
+              "custom",
+            ]),
+          })
+          .and(appointmentRescheduleSchema),
+      )
+      .optional(),
   })
   .and(
     z
@@ -87,18 +156,39 @@ export const appointmentOptionSchema = z
           .nullable(),
       })
       .or(
-        z.object({
-          requireDeposit: isRequiredOptionSchema.extract(["always"], {
-            error: "appointments.option.requireDeposit.required",
-          }),
-          depositPercentage: z.coerce
-            .number<number>({
-              error: "appointments.option.depositPercentage.required",
-            })
-            .int("appointments.option.depositPercentage.required")
-            .min(10, "appointments.option.depositPercentage.required")
-            .max(100, "appointments.option.depositPercentage.required"),
-        }),
+        z
+          .object({
+            requireDeposit: isRequiredOptionSchema.extract(["always"], {
+              error: "appointments.option.requireDeposit.required",
+            }),
+          })
+          .and(
+            z
+              .object({
+                paymentType: optionPaymentCalculationTypeSchema.extract([
+                  "percentage",
+                ]),
+                depositPercentage: z.coerce
+                  .number<number>({
+                    error: "appointments.option.depositPercentage.required",
+                  })
+                  .int("appointments.option.depositPercentage.required")
+                  .min(10, "appointments.option.depositPercentage.required")
+                  .max(100, "appointments.option.depositPercentage.required"),
+              })
+              .or(
+                z.object({
+                  paymentType: optionPaymentCalculationTypeSchema.extract([
+                    "amount",
+                  ]),
+                  depositAmount: z.coerce
+                    .number<number>({
+                      error: "appointments.option.depositAmount.required",
+                    })
+                    .min(1, "appointments.option.depositAmount.required"),
+                }),
+              ),
+          ),
       ),
   )
   .and(
@@ -118,10 +208,51 @@ export const appointmentOptionSchema = z
           meetingUrlProviderAppId: z.string().optional(),
         }),
       ),
+  )
+  .and(
+    z
+      .object({
+        durationType: optionDurationTypeSchema.extract(["fixed"]),
+        duration: z.coerce
+          .number<number>()
+          .int("appointments.option.duration.positive")
+          .min(1, "appointments.option.duration.positive"),
+        price: asOptinalNumberField(
+          z.coerce.number<number>().min(1, "appointments.option.price.min"),
+        ),
+      })
+      .or(
+        z.object({
+          durationType: optionDurationTypeSchema.extract(["flexible"]),
+          durationMin: z.coerce
+            .number<number>()
+            .int("appointments.option.durationMin.positive")
+            .min(1, "appointments.option.durationMin.positive"),
+          durationMax: z.coerce
+            .number<number>()
+            .int("appointments.option.durationMax.positive")
+            .min(1, "appointments.option.durationMax.positive")
+            .max(60 * 24 * 1, "appointments.option.durationMax.max"),
+          durationStep: z.coerce
+            .number<number>()
+            .int("appointments.option.durationStep.positive")
+            .min(1, "appointments.option.durationStep.positive"),
+          pricePerHour: asOptinalNumberField(
+            z.coerce
+              .number<number>(
+                "appointments.option.pricePerHour.required" satisfies ValidationKeys,
+              )
+              .min(
+                1,
+                "appointments.option.pricePerHour.min" satisfies ValidationKeys,
+              ),
+          ),
+        }),
+      ),
   );
 
-export type AppointmentOptionUpdateModel = z.infer<
-  typeof appointmentOptionSchema
+export type AppointmentOptionUpdateModel = Prettify<
+  z.infer<typeof appointmentOptionSchema>
 >;
 
 export type AppointmentOption = Prettify<
@@ -211,7 +342,7 @@ export const appointmentAddonsSchema = z
 export type AppointmentAddons = z.infer<typeof appointmentAddonsSchema>;
 
 export type AppointmentChoice = Prettify<
-  Omit<AppointmentOption, "addons"> & {
+  DistributiveOmit<AppointmentOption, "addons"> & {
     addons: AppointmentAddon[];
   }
 >;

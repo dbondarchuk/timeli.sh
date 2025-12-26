@@ -21,10 +21,10 @@ import {
   Markdown,
   Skeleton,
   toast,
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
+  TooltipResponsive,
+  TooltipResponsiveContent,
+  TooltipResponsiveTrigger,
+  useIsMobile,
 } from "@timelish/ui";
 import JsonView from "@uiw/react-json-view";
 import { Mail, MailQuestion, MessageSquare, Send } from "lucide-react";
@@ -41,6 +41,7 @@ const CommunicationEntry: React.FC<{ entry: CommunicationLog }> = ({
   const t = useI18n();
   const dateTime = DateTime.fromJSDate(entry.dateTime);
   const locale = useLocale();
+  const isMobile = useIsMobile();
   return (
     <div className="flex flex-row w-full bg-card items-start space-x-4 p-4 border rounded-lg">
       <div className="flex-shrink-0 mt-1">
@@ -66,18 +67,16 @@ const CommunicationEntry: React.FC<{ entry: CommunicationLog }> = ({
               )}
           </p>
           <div className="flex items-center space-x-2">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <span className="text-xs text-gray-500 underline decoration-dashed cursor-help">
-                    {dateTime.setLocale(locale).toRelative()}
-                  </span>
-                </TooltipTrigger>
-                <TooltipContent side="left">
-                  {dateTime.toLocaleString(DateTime.DATETIME_MED, { locale })}
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <TooltipResponsive>
+              <TooltipResponsiveTrigger>
+                <span className="text-xs text-gray-500 underline decoration-dashed cursor-help">
+                  {dateTime.setLocale(locale).toRelative()}
+                </span>
+              </TooltipResponsiveTrigger>
+              <TooltipResponsiveContent side={isMobile ? "bottom" : "left"}>
+                {dateTime.toLocaleString(DateTime.DATETIME_MED, { locale })}
+              </TooltipResponsiveContent>
+            </TooltipResponsive>
           </div>
         </div>
         <div className="inline-flex gap-1 text-sm mt-1 flex-wrap w-full">

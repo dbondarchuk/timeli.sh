@@ -17,9 +17,9 @@ import {
   Spinner,
   toast,
   toastPromise,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
+  TooltipResponsive,
+  TooltipResponsiveContent,
+  TooltipResponsiveTrigger,
   useClipboard,
 } from "@timelish/ui";
 import {
@@ -250,8 +250,8 @@ export const CarddavAppSetup: React.FC<AppSetupProps> = ({
                 </InputGroupInput>
                 <InputSuffix>
                   <ButtonGroup className={cn(InputGroupSuffixClasses(), "p-0")}>
-                    <Tooltip>
-                      <TooltipTrigger>
+                    <TooltipResponsive>
+                      <TooltipResponsiveTrigger>
                         <Button
                           variant="ghost"
                           onClick={() => {
@@ -265,11 +265,11 @@ export const CarddavAppSetup: React.FC<AppSetupProps> = ({
                             )}
                           />
                         </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>
+                      </TooltipResponsiveTrigger>
+                      <TooltipResponsiveContent>
                         {t("form.password.regenerateTooltip")}
-                      </TooltipContent>
-                    </Tooltip>
+                      </TooltipResponsiveContent>
+                    </TooltipResponsive>
                     <Button
                       variant="ghost"
                       className="border-l-0 rounded-l-none"

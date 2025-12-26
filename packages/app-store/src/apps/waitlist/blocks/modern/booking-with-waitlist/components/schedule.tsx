@@ -97,7 +97,10 @@ export const Schedule: React.FC<
     React.useState<AppointmentChoice | undefined>(undefined);
 
   const appointmentOptionDuration =
-    selectedAppointmentOption?.duration || undefined;
+    selectedAppointmentOption?.durationType === "fixed"
+      ? selectedAppointmentOption?.duration
+      : selectedAppointmentOption?.durationMin;
+
   const [duration, setDuration] = React.useState<number | undefined>(
     appointmentOptionDuration,
   );

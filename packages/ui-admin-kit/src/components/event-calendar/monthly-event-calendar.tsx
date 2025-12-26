@@ -2,9 +2,9 @@ import { useI18n, useLocale } from "@timelish/i18n";
 import {
   Button,
   cn,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
+  TooltipResponsive,
+  TooltipResponsiveContent,
+  TooltipResponsiveTrigger,
   useTimeZone,
 } from "@timelish/ui";
 import { formatTimeLocale, hasSame, parseTime } from "@timelish/utils";
@@ -107,16 +107,16 @@ export const MonthlyEventCalendar: React.FC<MonthlyEventCalendarProps> = ({
               {formattedDate}
             </span>
             {daySchedule?.length > 0 && (
-              <Tooltip>
-                <TooltipTrigger>
+              <TooltipResponsive>
+                <TooltipResponsiveTrigger>
                   <span className="text-xs bg-accent text-accent-foreground px-1 md:px-2 py-0.5 rounded flex items-center">
                     <Clock className="h-3 w-3 md:mr-1" />
                     <span className="hidden md:inline">
                       {t("calendar.work")}
                     </span>
                   </span>
-                </TooltipTrigger>
-                <TooltipContent className="bg-transparent">
+                </TooltipResponsiveTrigger>
+                <TooltipResponsiveContent className="bg-transparent">
                   <div className="bg-accent text-accent-foreground p-3 rounded-md">
                     <div className="text-sm font-medium flex items-center text-accent-foreground">
                       <Clock className="h-4 w-4 mr-2" />
@@ -134,8 +134,8 @@ export const MonthlyEventCalendar: React.FC<MonthlyEventCalendarProps> = ({
                       ))}
                     </div>
                   </div>
-                </TooltipContent>
-              </Tooltip>
+                </TooltipResponsiveContent>
+              </TooltipResponsive>
             )}
           </div>
           <div className="mt-2 space-y-1 overflow-y-auto max-h-24">

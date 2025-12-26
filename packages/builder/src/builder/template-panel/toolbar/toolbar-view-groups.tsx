@@ -13,9 +13,9 @@ import {
   ScrollArea,
   ToolbarButton,
   ToolbarGroup,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
+  TooltipResponsive,
+  TooltipResponsiveContent,
+  TooltipResponsiveTrigger,
   useTheme,
 } from "@timelish/ui";
 import JsonView from "@uiw/react-json-view";
@@ -127,8 +127,8 @@ export const ToolbarViewGroups = memo(
                       };
 
                       return (
-                        <Tooltip>
-                          <TooltipTrigger>
+                        <TooltipResponsive>
+                          <TooltipResponsiveTrigger>
                             <Button
                               variant="ghost"
                               size="icon"
@@ -142,13 +142,13 @@ export const ToolbarViewGroups = memo(
                                 )}
                               />
                             </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>
+                          </TooltipResponsiveTrigger>
+                          <TooltipResponsiveContent>
                             {copied
                               ? t("baseBuilder.builderToolbar.copied")
                               : t("baseBuilder.builderToolbar.copyPath")}
-                          </TooltipContent>
-                        </Tooltip>
+                          </TooltipResponsiveContent>
+                        </TooltipResponsive>
                       );
                     }}
                   />

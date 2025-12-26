@@ -111,8 +111,16 @@ const getAppointmentDuration = ({
   appointmentOption,
   selectedAddons,
 }: ScheduleContextProps) => {
-  const baseDuration = duration || appointmentOption.duration;
-  if (!baseDuration) return undefined;
+  let baseDuration = duration;
+  if (!baseDuration && appointmentOption) {
+    if (appointmentOption.durationType === "fixed") {
+      baseDuration = appointmentOption.duration;
+    } else {
+      baseDuration = appointmentOption.durationMin;
+    }
+  }
+
+  if (!baseDuration) return 0;
 
   return (
     baseDuration +
@@ -126,9 +134,20 @@ const getAppointmentDuration = ({
 const getAppointmentBasePrice = ({
   appointmentOption,
   selectedAddons,
+  duration,
 }: ScheduleContextProps) => {
+  let basePrice = 0;
+  if (appointmentOption) {
+    if (appointmentOption.durationType === "fixed") {
+      basePrice = appointmentOption.price || 0;
+    } else {
+      basePrice =
+        ((appointmentOption.pricePerHour || 0) / 60) * (duration || 0);
+    }
+  }
+
   return (
-    (appointmentOption.price || 0) +
+    basePrice +
     (selectedAddons || []).reduce((sum, addon) => sum + (addon.price || 0), 0)
   );
 };
@@ -139,12 +158,15 @@ const getAppointmentDiscountAmount = ({
 }: ScheduleContextProps) => {
   if (!promoCode) return 0;
 
+  const basePrice = getAppointmentBasePrice(rest);
+
   switch (promoCode.type) {
     case "amount":
-      return promoCode.value;
+      return Math.min(basePrice, promoCode.value);
     case "percentage":
-      return parseFloat(
-        ((getAppointmentBasePrice(rest) * promoCode.value) / 100).toFixed(2),
+      return Math.min(
+        basePrice,
+        parseFloat(((basePrice * promoCode.value) / 100).toFixed(2)),
       );
   }
 };
@@ -159,12 +181,22 @@ const getAppointmentPrice = (ctx: ScheduleContextProps) => {
 export const useScheduleContext = () => {
   const ctx = useContext(ScheduleContext);
 
-  return {
+  const baseDuration =
+    ctx.duration ||
+    (ctx.appointmentOption?.durationType === "fixed"
+      ? ctx.appointmentOption?.duration
+      : ctx.appointmentOption?.durationMin);
+
+  const baseCtx = {
     ...ctx,
-    baseDuration: ctx.duration || ctx.appointmentOption.duration,
+    baseDuration,
     duration: getAppointmentDuration(ctx),
-    basePrice: getAppointmentBasePrice(ctx),
-    discountAmount: getAppointmentDiscountAmount(ctx),
-    price: getAppointmentPrice(ctx),
+  };
+
+  return {
+    ...baseCtx,
+    basePrice: getAppointmentBasePrice(baseCtx),
+    discountAmount: getAppointmentDiscountAmount(baseCtx),
+    price: getAppointmentPrice(baseCtx),
   };
 };

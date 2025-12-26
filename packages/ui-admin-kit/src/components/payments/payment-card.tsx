@@ -29,10 +29,9 @@ import {
   Separator,
   Spinner,
   toast,
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
+  TooltipResponsive,
+  TooltipResponsiveContent,
+  TooltipResponsiveTrigger,
 } from "@timelish/ui";
 import { formatAmount, formatAmountString } from "@timelish/utils";
 import {
@@ -93,6 +92,9 @@ export const getPaymentDescription = (description: string): AdminKeys => {
 
     case "rescheduleFee":
       return "payment.descriptions.rescheduleFee";
+
+    case "cancellationFee":
+      return "payment.descriptions.cancellationFee";
 
     default:
       return description as AdminKeys;
@@ -487,20 +489,18 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
               <span className="text-foreground/80">
                 {t("admin.payment.card.timePaid")}
               </span>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <span className="text-xs text-foreground/60 underline decoration-dashed cursor-help text-right">
-                      {dateTime.setLocale(locale).toRelative()}
-                    </span>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    {dateTime.toLocaleString(DateTime.DATETIME_MED, {
-                      locale,
-                    })}
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <TooltipResponsive>
+                <TooltipResponsiveTrigger>
+                  <span className="text-xs text-foreground/60 underline decoration-dashed cursor-help text-right">
+                    {dateTime.setLocale(locale).toRelative()}
+                  </span>
+                </TooltipResponsiveTrigger>
+                <TooltipResponsiveContent>
+                  {dateTime.toLocaleString(DateTime.DATETIME_MED, {
+                    locale,
+                  })}
+                </TooltipResponsiveContent>
+              </TooltipResponsive>
             </div>
 
             {description && (
@@ -522,20 +522,18 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
                 <span className="text-foreground/80">
                   {t("admin.payment.card.timeRefunded")}
                 </span>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <span className="text-xs text-foreground/60 underline decoration-dashed cursor-help text-right">
-                        {refundedDateTime.setLocale(locale).toRelative()}
-                      </span>
-                    </TooltipTrigger>
-                    <TooltipContent side="left">
-                      {refundedDateTime.toLocaleString(DateTime.DATETIME_MED, {
-                        locale,
-                      })}
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+                <TooltipResponsive>
+                  <TooltipResponsiveTrigger>
+                    <span className="text-xs text-foreground/60 underline decoration-dashed cursor-help text-right">
+                      {refundedDateTime.setLocale(locale).toRelative()}
+                    </span>
+                  </TooltipResponsiveTrigger>
+                  <TooltipResponsiveContent side="left">
+                    {refundedDateTime.toLocaleString(DateTime.DATETIME_MED, {
+                      locale,
+                    })}
+                  </TooltipResponsiveContent>
+                </TooltipResponsive>
               </div>
             )}
 
@@ -545,32 +543,30 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
                   <span className="text-foreground/80">
                     {t("admin.payment.card.refunded")}
                   </span>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <span className="text-xs text-foreground/60 underline decoration-dashed cursor-help">
-                          -${formatAmountString(totalRefunded)}
-                        </span>
-                      </TooltipTrigger>
-                      <TooltipContent className="flex flex-col gap-2">
-                        {refunds?.map((refund) => (
-                          <div
-                            key={refund.refundedAt?.toISOString()}
-                            className="flex flex-row gap-2"
-                          >
-                            <span>
-                              {DateTime.fromJSDate(
-                                refund.refundedAt,
-                              ).toLocaleString(DateTime.DATETIME_MED, {
-                                locale,
-                              })}
-                            </span>
-                            <span>-${formatAmountString(refund.amount)}</span>
-                          </div>
-                        ))}
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                  <TooltipResponsive>
+                    <TooltipResponsiveTrigger>
+                      <span className="text-xs text-foreground/60 underline decoration-dashed cursor-help">
+                        -${formatAmountString(totalRefunded)}
+                      </span>
+                    </TooltipResponsiveTrigger>
+                    <TooltipResponsiveContent className="flex flex-col gap-2">
+                      {refunds?.map((refund) => (
+                        <div
+                          key={refund.refundedAt?.toISOString()}
+                          className="flex flex-row gap-2"
+                        >
+                          <span>
+                            {DateTime.fromJSDate(
+                              refund.refundedAt,
+                            ).toLocaleString(DateTime.DATETIME_MED, {
+                              locale,
+                            })}
+                          </span>
+                          <span>-${formatAmountString(refund.amount)}</span>
+                        </div>
+                      ))}
+                    </TooltipResponsiveContent>
+                  </TooltipResponsive>
                 </div>
                 <Separator className="my-4" />
                 <div className="flex justify-between items-center">

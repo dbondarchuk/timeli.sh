@@ -29,7 +29,10 @@ export type AppointmentDiscount = {
 };
 
 export type AppointmentEventOption = Prettify<
-  Pick<AppointmentOption, "_id" | "name" | "price" | "duration" | "isOnline">
+  Pick<AppointmentOption, "_id" | "name" | "durationType" | "isOnline"> & {
+    duration: number;
+    price?: number;
+  }
 >;
 export type AppointmentEventAddon = Prettify<
   Pick<AppointmentAddon, "_id" | "name" | "price" | "duration">
@@ -202,7 +205,6 @@ export type ModifyAppointmentInformation = {
             AppointmentWithDepositCancellationPolicyAction,
             "paymentRequired" | "paymentToFullPriceRequired"
           >;
-          paymentPercentage: number;
           paymentAmount: number;
         }
       | {
@@ -217,6 +219,9 @@ export type ModifyAppointmentInformation = {
           feesAmount: number;
         }
       | {
+          action: "forfeitDeposit";
+        }
+      | {
           action: "allowed";
         }
     ))
@@ -226,17 +231,10 @@ export type ModifyAppointmentInformation = {
       timeZone: string;
     } & (
       | {
-          reschedulePolicy: Extract<
-            AppointmentReschedulePolicyAction,
-            "allowed"
-          >;
+          action: Extract<AppointmentReschedulePolicyAction, "allowed">;
         }
       | {
-          reschedulePolicy: Extract<
-            AppointmentReschedulePolicyAction,
-            "paymentRequired"
-          >;
-          paymentPercentage: number;
+          action: Extract<AppointmentReschedulePolicyAction, "paymentRequired">;
           paymentAmount: number;
         }
     ))

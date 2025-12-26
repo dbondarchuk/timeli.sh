@@ -6,10 +6,9 @@ import {
   Combobox,
   IComboboxItem,
   Skeleton,
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
+  TooltipResponsive,
+  TooltipResponsiveContent,
+  TooltipResponsiveTrigger,
   useTimeZone,
 } from "@timelish/ui";
 import { areTimesEqual, formatTimeLocale } from "@timelish/utils";
@@ -50,17 +49,16 @@ const DayButton = (props: DayButtonProps) => {
   }
 
   return isDisabled ? (
-    <TooltipProvider>
-      <Tooltip>
-        {/* We need to force tooltip on mobile (long tap) */}
-        <TooltipTrigger>
-          <span>
-            <button {...buttonProps} />
-          </span>
-        </TooltipTrigger>
-        <TooltipContent>{t("no_avaialable_time_slots")}</TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+    <TooltipResponsive>
+      <TooltipResponsiveTrigger>
+        <div className="w-full h-full flex items-center justify-center">
+          {buttonProps.children}
+        </div>
+      </TooltipResponsiveTrigger>
+      <TooltipResponsiveContent>
+        {t("no_avaialable_time_slots")}
+      </TooltipResponsiveContent>
+    </TooltipResponsive>
   ) : (
     <button {...buttonProps} />
   );

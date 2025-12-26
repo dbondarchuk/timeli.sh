@@ -51,7 +51,11 @@ export const ScheduleSteps: Record<StepType, Step> = {
       show: () => true,
       isEnabled: () => true,
       action: ({ appointmentOption, goBack, setStep }) => {
-        if (appointmentOption.duration && !!goBack) {
+        if (
+          appointmentOption.durationType === "fixed" &&
+          appointmentOption.duration &&
+          !!goBack
+        ) {
           goBack();
         } else {
           setStep("duration");
@@ -83,7 +87,11 @@ export const ScheduleSteps: Record<StepType, Step> = {
           return;
         }
 
-        if (appointmentOption.duration && goBack) {
+        if (
+          appointmentOption.durationType === "fixed" &&
+          appointmentOption.duration &&
+          goBack
+        ) {
           goBack();
           return;
         }
@@ -188,7 +196,11 @@ export const ScheduleSteps: Record<StepType, Step> = {
           return;
         }
 
-        if (appointmentOption.duration && !!goBack) {
+        if (
+          appointmentOption.durationType === "fixed" &&
+          appointmentOption.duration &&
+          !!goBack
+        ) {
           goBack();
           return;
         }

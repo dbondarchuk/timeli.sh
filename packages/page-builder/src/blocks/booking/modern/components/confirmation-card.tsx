@@ -17,6 +17,7 @@ export const ConfirmationCard: React.FC = () => {
     discount,
     discountAmount,
     basePrice,
+    duration,
   } = useScheduleContext();
 
   const locale = useLocale();
@@ -59,7 +60,7 @@ export const ConfirmationCard: React.FC = () => {
           {i18n("confirmation_success_duration", {
             duration: i18n(
               "duration_hour_minutes_format",
-              durationToTime(selectedAppointmentOption.duration || 0),
+              durationToTime(duration || 0),
             ),
           })}
         </p>

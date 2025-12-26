@@ -210,13 +210,33 @@ export const getAppointmentEventAndIsPaymentRequired = async (
         customer,
         isPaymentRequired: false,
       };
-    } else if (option.requireDeposit === "always" && option.depositPercentage) {
-      percentage = option.depositPercentage;
+    } else if (option.requireDeposit === "always") {
+      if (option.paymentType === "percentage") {
+        percentage = option.depositPercentage;
+      } else {
+        let amount = option.depositAmount;
+        if (amount > event.totalPrice) {
+          logger.debug(
+            {
+              amount,
+              totalPrice: event.totalPrice,
+              reason: "option_amount_greater_than_total_price",
+            },
+            "Option amount is greater than total price, setting to total price",
+          );
+          amount = event.totalPrice;
+          percentage = 100;
+        } else {
+          percentage = formatAmount((amount / event.totalPrice) * 100);
+        }
+      }
+
       logger.debug(
         {
           optionId: option._id,
           optionName: option.name,
-          optionDepositPercentage: option.depositPercentage,
+          optionDepositPercentage: percentage,
+          paymentType: option.paymentType,
           reason: "option_always_require_deposit",
         },
         "Option requires deposit",
@@ -278,6 +298,19 @@ export const getAppointmentEventAndIsPaymentRequired = async (
         },
         "Payment required with deposit",
       );
+
+      if (amount > event.totalPrice) {
+        logger.debug(
+          {
+            amount,
+            totalPrice: event.totalPrice,
+            reason: "amount_greater_than_total_price",
+          },
+          "Amount is greater than total price, setting to total price",
+        );
+        amount = event.totalPrice;
+        percentage = 100;
+      }
 
       return {
         event,

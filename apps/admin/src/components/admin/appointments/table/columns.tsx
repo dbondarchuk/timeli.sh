@@ -5,10 +5,9 @@ import { Appointment } from "@timelish/types";
 import {
   Button,
   Link,
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
+  TooltipResponsive,
+  TooltipResponsiveContent,
+  TooltipResponsiveTrigger,
   useTimeZone,
 } from "@timelish/ui";
 import { tableSortHeader, tableSortNoopFunction } from "@timelish/ui-admin";
@@ -45,22 +44,21 @@ const StatusCell: React.FC<{ appointment: Appointment } & LucideProps> = ({
   }
 
   return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger
+    <TooltipResponsive>
+      <TooltipResponsiveTrigger>
+        <div
           className="flex justify-center w-full"
-          type="button"
           aria-label={t("appointments.table.columns.statusAriaLabel", {
             status: t(`appointments.status.${appointment.status}`),
           })}
         >
           {child}
-        </TooltipTrigger>
-        <TooltipContent>
-          {t(`appointments.status.${appointment.status}`)}
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+        </div>
+      </TooltipResponsiveTrigger>
+      <TooltipResponsiveContent>
+        {t(`appointments.status.${appointment.status}`)}
+      </TooltipResponsiveContent>
+    </TooltipResponsive>
   );
 };
 
@@ -173,28 +171,26 @@ const CustomerCell: React.FC<{
 }> = ({ appointment }) => {
   const t = useI18n("admin");
   return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Link
-            href={`/dashboard/customers/${appointment.customerId}`}
-            variant="underline"
-          >
-            {appointment.customer.name}
-          </Link>
-        </TooltipTrigger>
-        <TooltipContent className="flex flex-col gap-2 w-full py-2 px-4">
-          <div className="grid grid-cols-2 gap-1">
-            <div>{t("appointments.table.columns.customerName")}:</div>
-            <div>{appointment.customer.name}</div>
-            <div>{t("appointments.table.columns.customerEmail")}:</div>
-            <div>{appointment.customer.email}</div>
-            <div>{t("appointments.table.columns.customerPhone")}:</div>
-            <div>{appointment.customer.phone}</div>
-          </div>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+    <TooltipResponsive>
+      <TooltipResponsiveTrigger>
+        <Link
+          href={`/dashboard/customers/${appointment.customerId}`}
+          variant="underline"
+        >
+          {appointment.customer.name}
+        </Link>
+      </TooltipResponsiveTrigger>
+      <TooltipResponsiveContent className="flex flex-col gap-2 w-full py-2 px-4">
+        <div className="grid grid-cols-2 gap-1">
+          <div>{t("appointments.table.columns.customerName")}:</div>
+          <div>{appointment.customer.name}</div>
+          <div>{t("appointments.table.columns.customerEmail")}:</div>
+          <div>{appointment.customer.email}</div>
+          <div>{t("appointments.table.columns.customerPhone")}:</div>
+          <div>{appointment.customer.phone}</div>
+        </div>
+      </TooltipResponsiveContent>
+    </TooltipResponsive>
   );
 };
 
@@ -327,22 +323,22 @@ export const columns: ColumnDef<Appointment>[] = [
   {
     cell: ({ row }) =>
       row.original.discount ? (
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Link
-                variant="underline"
-                href={`/dashboard/services/discounts/${row.original.discount.id}`}
-              >
-                {row.original.discount.code}{" "}
-                <span className="text-sm">
-                  -${formatAmountString(row.original.discount.discountAmount)}
-                </span>
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent>{row.original.discount.name}</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <TooltipResponsive>
+          <TooltipResponsiveTrigger>
+            <Link
+              variant="underline"
+              href={`/dashboard/services/discounts/${row.original.discount.id}`}
+            >
+              {row.original.discount.code}{" "}
+              <span className="text-sm">
+                -${formatAmountString(row.original.discount.discountAmount)}
+              </span>
+            </Link>
+          </TooltipResponsiveTrigger>
+          <TooltipResponsiveContent>
+            {row.original.discount.name}
+          </TooltipResponsiveContent>
+        </TooltipResponsive>
       ) : null,
     id: "discount.name",
     header: tableSortHeader(

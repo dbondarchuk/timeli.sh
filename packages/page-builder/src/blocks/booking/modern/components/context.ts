@@ -105,7 +105,15 @@ const getAppointmentDuration = ({
   selectedAppointmentOption,
   selectedAddons,
 }: ScheduleContextProps) => {
-  const baseDuration = duration || selectedAppointmentOption?.duration;
+  let baseDuration = duration;
+  if (!baseDuration && selectedAppointmentOption) {
+    if (selectedAppointmentOption.durationType === "fixed") {
+      baseDuration = selectedAppointmentOption.duration;
+    } else {
+      baseDuration = selectedAppointmentOption.durationMin;
+    }
+  }
+
   if (!baseDuration) return 0;
 
   return (
@@ -120,9 +128,20 @@ const getAppointmentDuration = ({
 const getAppointmentBasePrice = ({
   selectedAppointmentOption,
   selectedAddons,
+  duration,
 }: ScheduleContextProps) => {
+  let basePrice = 0;
+  if (selectedAppointmentOption) {
+    if (selectedAppointmentOption.durationType === "fixed") {
+      basePrice = selectedAppointmentOption.price || 0;
+    } else {
+      basePrice =
+        ((selectedAppointmentOption.pricePerHour || 0) / 60) * (duration || 0);
+    }
+  }
+
   return (
-    (selectedAppointmentOption?.price || 0) +
+    basePrice +
     (selectedAddons || []).reduce((sum, addon) => sum + (addon.price || 0), 0)
   );
 };
@@ -134,6 +153,7 @@ const getAppointmentDiscountAmount = ({
   if (!promoCode) return 0;
 
   const basePrice = getAppointmentBasePrice(rest);
+
   switch (promoCode.type) {
     case "amount":
       return Math.min(basePrice, promoCode.value);
@@ -158,13 +178,23 @@ export const useScheduleContext = () => {
   const currentStepIndex = steps.indexOf(ctx.currentStep);
   const step = ScheduleSteps[ctx.currentStep];
 
-  return {
+  const baseDuration =
+    ctx.duration ||
+    (ctx.selectedAppointmentOption?.durationType === "fixed"
+      ? ctx.selectedAppointmentOption?.duration
+      : ctx.selectedAppointmentOption?.durationMin);
+
+  const baseCtx = {
     ...ctx,
-    baseDuration: ctx.duration || ctx.selectedAppointmentOption?.duration,
+    baseDuration,
     duration: getAppointmentDuration(ctx),
-    basePrice: getAppointmentBasePrice(ctx),
-    discountAmount: getAppointmentDiscountAmount(ctx),
-    price: getAppointmentPrice(ctx),
+  };
+
+  return {
+    ...baseCtx,
+    basePrice: getAppointmentBasePrice(baseCtx),
+    discountAmount: getAppointmentDiscountAmount(baseCtx),
+    price: getAppointmentPrice(baseCtx),
     currentStepIndex,
     steps,
     step,

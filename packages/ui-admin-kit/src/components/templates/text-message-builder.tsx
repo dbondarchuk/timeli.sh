@@ -17,9 +17,9 @@ import {
   FormMessage,
   InfoTooltip,
   ScrollArea,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
+  TooltipResponsive,
+  TooltipResponsiveContent,
+  TooltipResponsiveTrigger,
   useTheme,
 } from "@timelish/ui";
 import { ArgumentsAutocomplete } from "@timelish/ui-admin";
@@ -49,18 +49,18 @@ export const TextMessageBuilder: React.FC<{
           </span>
 
           <Dialog>
-            <Tooltip>
-              <TooltipTrigger asChild>
+            <TooltipResponsive>
+              <TooltipResponsiveTrigger>
                 <DialogTrigger asChild>
                   <Button size="icon" variant="ghost">
                     <Braces size={16} />
                   </Button>
                 </DialogTrigger>
-              </TooltipTrigger>
-              <TooltipContent side="bottom">
+              </TooltipResponsiveTrigger>
+              <TooltipResponsiveContent side="bottom">
                 {t("templates.textMessageBuilder.viewContext")}
-              </TooltipContent>
-            </Tooltip>
+              </TooltipResponsiveContent>
+            </TooltipResponsive>
             <DialogContent className="md:max-w-3/5">
               <DialogTitle>
                 {t("templates.textMessageBuilder.contextValues")}
@@ -83,8 +83,8 @@ export const TextMessageBuilder: React.FC<{
                       };
 
                       return (
-                        <Tooltip>
-                          <TooltipTrigger>
+                        <TooltipResponsive>
+                          <TooltipResponsiveTrigger>
                             <Button
                               variant="ghost"
                               size="icon"
@@ -98,13 +98,13 @@ export const TextMessageBuilder: React.FC<{
                                 )}
                               />
                             </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>
+                          </TooltipResponsiveTrigger>
+                          <TooltipResponsiveContent>
                             {copied
                               ? t("templates.textMessageBuilder.copied")
                               : t("templates.textMessageBuilder.copyPath")}
-                          </TooltipContent>
-                        </Tooltip>
+                          </TooltipResponsiveContent>
+                        </TooltipResponsive>
                       );
                     }}
                   />

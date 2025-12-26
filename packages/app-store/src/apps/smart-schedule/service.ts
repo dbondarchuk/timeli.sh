@@ -116,7 +116,8 @@ export default class SmartScheduleConnectedApp
       const service = await this.props.services.servicesService.getOption(
         config.maximizeForOption,
       );
-      if (service?.duration) {
+
+      if (service?.durationType === "fixed") {
         servicesDurations = [service.duration];
       }
     }

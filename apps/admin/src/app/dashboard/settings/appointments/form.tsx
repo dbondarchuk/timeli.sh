@@ -10,9 +10,9 @@ import {
 import {
   cn,
   Form,
+  ResponsiveTabsList,
   Tabs,
   TabsContent,
-  TabsList,
   TabsTrigger,
   toastPromise,
 } from "@timelish/ui";
@@ -86,7 +86,7 @@ export const AppointmentsSettingsForm: React.FC<{
           className="space-y-4"
           orientation="vertical"
         >
-          <TabsList className="w-full flex-wrap h-auto">
+          <ResponsiveTabsList className="w-full flex-wrap h-auto">
             <TabsTrigger
               value="main"
               className={cn(mainTabInvalid ? "text-destructive" : "")}
@@ -143,7 +143,7 @@ export const AppointmentsSettingsForm: React.FC<{
             >
               {t("settings.appointments.form.tabs.reschedules")}
             </TabsTrigger>
-          </TabsList>
+          </ResponsiveTabsList>
           <TabsContent value="main">
             <MainTab form={form} />
           </TabsContent>

@@ -7,9 +7,9 @@ import {
   PopoverContent,
   PopoverTrigger,
   ToolbarButton,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
+  TooltipResponsive,
+  TooltipResponsiveContent,
+  TooltipResponsiveTrigger,
 } from "@timelish/ui";
 import { destructAndReplace, resolveProperty } from "@timelish/utils";
 import { Minus, Plus } from "lucide-react";
@@ -53,8 +53,8 @@ export const NumberInputToolbarMenu = <T,>({
   };
 
   return (
-    <Tooltip>
-      <TooltipTrigger asChild>
+    <TooltipResponsive>
+      <TooltipResponsiveTrigger>
         <div className="flex h-7 items-center gap-1 rounded-md bg-muted/60 p-0 mx-1">
           <ToolbarButton onClick={() => handleDeltaChange(-1)}>
             <Minus />
@@ -113,8 +113,8 @@ export const NumberInputToolbarMenu = <T,>({
             <Plus />
           </ToolbarButton>
         </div>
-      </TooltipTrigger>
-      <TooltipContent>{tooltip}</TooltipContent>
-    </Tooltip>
+      </TooltipResponsiveTrigger>
+      <TooltipResponsiveContent>{tooltip}</TooltipResponsiveContent>
+    </TooltipResponsive>
   );
 };

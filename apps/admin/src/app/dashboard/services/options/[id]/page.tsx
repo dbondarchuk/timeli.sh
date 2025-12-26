@@ -48,8 +48,18 @@ export default async function EditOptionPage(props: Props) {
     {
       optionId: params.id,
       optionName: option.name,
-      optionDuration: option.duration,
-      optionPrice: option.price,
+      optionDurationType: option.durationType,
+      optionDurationMin:
+        option.durationType === "flexible" ? option.durationMin : undefined,
+      optionDurationMax:
+        option.durationType === "flexible" ? option.durationMax : undefined,
+      optionDurationStep:
+        option.durationType === "flexible" ? option.durationStep : undefined,
+      optionPricePerHour:
+        option.durationType === "flexible" ? option.pricePerHour : undefined,
+      optionDuration:
+        option.durationType === "fixed" ? option.duration : undefined,
+      optionPrice: option.durationType === "fixed" ? option.price : undefined,
     },
     "Service option edit page loaded",
   );

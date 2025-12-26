@@ -6,9 +6,9 @@ import { Appointment, AppointmentStatus } from "@timelish/types";
 import {
   Button,
   Link,
+  ResponsiveTabsList,
   Tabs,
   TabsContent,
-  TabsList,
   TabsTrigger,
 } from "@timelish/ui";
 import {
@@ -150,7 +150,7 @@ export const AppointmentView: React.FC<{
 
       <Tabs defaultValue={defaultView} className="flex flex-col gap-2 mb-4">
         {/* <TabsList className="w-fit self-end"> */}
-        <TabsList className="w-full [&>button]:flex-1 bg-card border flex-wrap h-auto">
+        <ResponsiveTabsList className="w-full [&>button]:flex-1 bg-card border flex-wrap h-auto">
           <TabsTrigger value="details">
             {t("appointments.view.details")}
           </TabsTrigger>
@@ -166,7 +166,7 @@ export const AppointmentView: React.FC<{
           <TabsTrigger value="history">
             {t("appointments.view.history")}
           </TabsTrigger>
-        </TabsList>
+        </ResponsiveTabsList>
         <TabsContent value="details">
           <AppointmentDetails appointment={appointment} key={key} />
         </TabsContent>

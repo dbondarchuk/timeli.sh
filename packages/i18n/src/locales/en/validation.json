@@ -96,8 +96,31 @@
         "required": "Duration is required",
         "positive": "Duration must be a integer number greater or equal to 1 minute"
       },
+      "durationType": {
+        "required": "Duration type is required"
+      },
+      "durationMin": {
+        "required": "Duration min is required",
+        "positive": "Duration min must be a integer number greater or equal to 1 minute"
+      },
+      "durationMax": {
+        "required": "Duration max is required",
+        "positive": "Duration max must be a integer number greater or equal to 1 minute",
+        "max": "Duration max must be at most 1 day"
+      },
+      "durationStep": {
+        "required": "Duration step is required",
+        "positive": "Duration step must be a integer number greater or equal to 1 minute"
+      },
+      "pricePerHour": {
+        "required": "Price per hour is required",
+        "min": "Price per hour must be at least 1"
+      },
       "price": {
         "min": "Price must be at least 1"
+      },
+      "paymentType": {
+        "required": "Payment calculation type is required"
       },
       "addons": {
         "id": {
@@ -120,6 +143,9 @@
       "requireDeposit": {
         "required": "Deposit amount is required if set to always"
       },
+      "depositAmount": {
+        "required": "Deposit amount must be a positive number"
+      },
       "depositPercentage": {
         "required": "Deposit percentage must be an integer number between 10 and 100"
       },
@@ -134,6 +160,9 @@
         "message": {
           "required": "Message is required"
         }
+      },
+      "cancellationPolicyType": {
+        "required": "Cancellation policy type is required"
       }
     }
   },
@@ -521,6 +550,13 @@
         "required": "Payment percentage must be an integer number between 0 and 100",
         "min": "Payment percentage must be at least 0",
         "max": "Payment percentage must be at most 100"
+      },
+      "paymentAmount": {
+        "required": "Payment amount must be at least 1",
+        "min": "Payment amount must be at least 1"
+      },
+      "paymentType": {
+        "required": "Payment type is required"
       },
       "note": {
         "max": "Note must be at most 500 characters long"

@@ -75,7 +75,8 @@
       "description": "You have unsaved changes. Are you sure you want to leave this page?",
       "cancel": "Cancel",
       "leave": "Leave"
-    }
+    },
+    "pricePerHour": "${price}/hr"
   },
   "navigation": {
     "overview": "Overview",
@@ -818,6 +819,45 @@
         "descriptionTooltip": "Short text that will be visible during booking",
         "duration": "Duration",
         "price": "Price",
+        "durationType": {
+          "label": "Duration type",
+          "tooltip": "Type of the duration",
+          "fixed": "Fixed",
+          "flexible": "Flexible",
+          "placeholder": "Select duration type"
+        },
+        "durationMin": {
+          "label": "Minimum duration",
+          "tooltip": "Minimum duration of the option",
+          "placeholder": "Select duration min"
+        },
+        "durationMax": {
+          "label": "Duration max",
+          "tooltip": "Maximum duration of the option",
+          "placeholder": "Select duration max"
+        },
+        "pricePerHour": {
+          "label": "Price per hour",
+          "tooltip": "Price per hour of the option",
+          "placeholder": "Select price per hour"
+        },
+        "durationStep": {
+          "label": "Duration step",
+          "tooltip": "Step of the duration",
+          "placeholder": "Select duration step",
+          "steps": {
+            "1": "1 minute",
+            "5": "5 minutes",
+            "10": "10 minutes",
+            "15": "15 minutes",
+            "20": "20 minutes",
+            "30": "30 minutes",
+            "60": "1 hour",
+            "120": "2 hours",
+            "180": "3 hours",
+            "360": "6 hours"
+          }
+        },
         "isAutoConfirm": {
           "label": "Auto confirm",
           "tooltip": "Whether to auto confirm the appointment instantely",
@@ -825,26 +865,111 @@
           "never": "Never",
           "inherit": "Same as general configuration"
         },
-        "isOnline": {
-          "label": "Online",
-          "tooltip": "Whether this option will be provided online"
+        "onlineSettings": {
+          "title": "Virtual appointment settings",
+          "isOnline": {
+            "label": "Appointment type",
+            "tooltip": "Indicates if this appointment is held via video or audio meeting, phone call, etc.",
+            "labels": {
+              "false": "In-person",
+              "true": "Virtual"
+            }
+          },
+          "meetingUrlProviderAppId": {
+            "label": "Meeting URL provider app",
+            "tooltip": "App that will be used to provide meeting URL"
+          }
         },
-        "meetingUrlProviderAppId": {
-          "label": "Meeting URL provider app",
-          "tooltip": "App that will be used to provide meeting URL"
+        "paymentSettings": {
+          "title": "Payment settings",
+          "requireDeposit": {
+            "label": "Require deposit",
+            "tooltip": "Should this option require deposit<br></br>Requires configured payments app",
+            "always": "Always, unless not required for customer",
+            "never": "Never, unless required for customer",
+            "inherit": "Same as general configuration, or configured for customer"
+          },
+          "paymentType": {
+            "label": "Payment calculation type",
+            "tooltip": "Choose whether the payment is a fixed amount or a percentage of the price",
+            "labels": {
+              "amount": "Fixed amount",
+              "percentage": "Percentage of price"
+            },
+            "placeholder": "Select payment calculation type"
+          },
+          "depositAmount": {
+            "label": "Deposit amount",
+            "tooltip": "Fixed deposit amount (won't be higher than the final price)"
+          },
+          "depositPercentage": {
+            "label": "Deposit percentage",
+            "tooltip": "Deposit percentage<br></br>If set to 100, full price will be required to be paid upfront<br></br>Can be overriden per each customer"
+          }
         },
-        "requireDeposit": {
-          "label": "Require deposit",
-          "tooltip": "Should this option require deposit<br></br>Requires configured payments app",
-          "always": "Always, unless not required for customer",
-          "never": "Never, unless required for customer",
-          "inherit": "Same as general configuration, or configured for customer"
+        "cancellationPolicy": {
+          "title": "Cancellations",
+          "type": {
+            "label": "Cancellation policy type",
+            "tooltip": "Type of the cancellation policy",
+            "inherit": "Same as general configuration",
+            "custom": "Custom policy",
+            "placeholder": "Select cancellation policy type"
+          },
+          "enabled": {
+            "label": "Enabled",
+            "tooltip": "Whether to allow cancellation for option",
+            "labels": {
+              "disabled": "Disabled",
+              "enabled": "Enabled"
+            }
+          },
+          "withDeposit": {
+            "title": "With deposit",
+            "description": "Configure cancellation policy for option when deposit is required",
+            "enabled": "Enabled",
+            "enabledTooltip": "Whether to allow cancellation for option when deposit is required"
+          },
+          "withoutDeposit": {
+            "title": "Without deposit",
+            "description": "Configure cancellation policy for option when deposit is not required",
+            "enabled": "Enabled",
+            "enabledTooltip": "Whether to allow cancellation for option when deposit is not required"
+          }
         },
-        "depositAmount": "Deposit amount",
-        "depositAmountTooltip": "Deposit amount in percents<br></br>If set to 100, full price will be required to be paid upfront<br></br>Can be overriden per each customer",
+        "reschedulePolicy": {
+          "title": "Reschedules",
+          "type": {
+            "label": "Reschedule policy type",
+            "tooltip": "Type of the reschedule policy",
+            "inherit": "Same as general configuration",
+            "custom": "Custom policy",
+            "placeholder": "Select reschedule policy type"
+          },
+          "enabled": {
+            "label": "Enabled",
+            "tooltip": "Whether to allow reschedule for option",
+            "labels": {
+              "disabled": "Disabled",
+              "enabled": "Enabled"
+            }
+          },
+          "default": {
+            "title": "Default Policy",
+            "tooltip": "Configure default policy that will be applied if no other policy is applicable"
+          }
+        },
         "selectOption": "Select option",
         "fields": "Fields",
         "addons": "Add-ons",
+        "tabs": {
+          "general": "General",
+          "payments": "Payments",
+          "virtual": "Virtual",
+          "duplicates": "Duplicates",
+          "fields": "Fields",
+          "addons": "Add-ons"
+        },
         "duplicateAppointmentCheck": {
           "title": "Duplicate bookings for same service",
           "enabled": "Check for duplicate bookings",
@@ -1508,10 +1633,10 @@
             "enabledTooltip": "Enables ability for customers to reschedule an appointment on their own",
             "minutesToAppointment": {
               "label": "Minimum time to appointment",
-              "tooltip": "Configure minimum time before appointment to allow rescheduling"
+              "tooltip": "Configure minimum time to appointment for allowing reschedule"
             },
             "maxReschedules": {
-              "label": "Max reschedules",
+              "label": "Maximum number of reschedules",
               "tooltip": "Configure how many times a customer can reschedule an appointment"
             }
           },
@@ -1585,6 +1710,15 @@
                 "allowed": "Allowed"
               }
             },
+            "paymentType": {
+              "label": "Payment calculation type",
+              "tooltip": "Choose whether the payment is a fixed amount or a percentage of the price",
+              "labels": {
+                "amount": "Fixed amount",
+                "percentage": "Percentage of price"
+              },
+              "placeholder": "Select payment calculation type"
+            },
             "refundFees": {
               "label": "Refund fees",
               "tooltip": "Configure if fees should be refunded when a cancellation is requested"
@@ -1597,9 +1731,17 @@
               "label": "Payment percentage",
               "tooltip": "Configure percentage of the appointment price that will be required to be paid when a cancellation is requested"
             },
+            "calculateFromOriginalPrice": {
+              "label": "Use price before discounts for payment calculation",
+              "tooltip": "Uses the appointment price before discounts instead of the discounted total"
+            },
+            "paymentAmount": {
+              "label": "Payment amount",
+              "tooltip": "Configure amount that will be required to be paid when a cancellation is requested"
+            },
             "minutesToAppointment": {
-              "label": "Minimum time to appointment",
-              "tooltip": "Configure minimum time until appointment to apply this policy"
+              "label": "Earliest applicable time",
+              "tooltip": "The minimum time before an appointment when this policy applies. If there's another policy with a larger value and the appointment is far enough in advance, that policy will take effect instead."
             },
             "remove": "Remove",
             "deleteConfirmTitle": "Are you absolutely sure?",
@@ -1618,13 +1760,30 @@
                 "paymentRequired": "Payment required"
               }
             },
+            "paymentType": {
+              "label": "Payment calculation type",
+              "tooltip": "Choose whether the payment is a fixed amount or a percentage of the price",
+              "labels": {
+                "amount": "Fixed amount",
+                "percentage": "Percentage of price"
+              },
+              "placeholder": "Select payment calculation type"
+            },
+            "paymentAmount": {
+              "label": "Payment amount",
+              "tooltip": "Configure amount that will be required to be paid when a reschedule is requested"
+            },
             "paymentPercentage": {
               "label": "Payment percentage",
               "tooltip": "Configure percentage of the appointment price that will be required to be paid when a reschedule is requested"
             },
+            "calculateFromOriginalPrice": {
+              "label": "Use price before discounts for payment calculation",
+              "tooltip": "Uses the appointment price before discounts instead of the discounted total"
+            },
             "minutesToAppointment": {
-              "label": "Minimum time to appointment",
-              "tooltip": "Configure minimum time until appointment to apply this policy"
+              "label": "Earliest applicable time",
+              "tooltip": "The minimum time before an appointment when this policy applies. If there's another policy with a larger value and the appointment is far enough in advance, that policy will take effect instead."
             },
             "remove": "Remove",
             "deleteConfirmTitle": "Are you absolutely sure?",
@@ -2060,5 +2219,150 @@
   },
   "textbelt-webhook": {
     "handledBy": "Text message reply - notify user"
+  },
+  "cancellationsAndReschedules": {
+    "cancellationPolicy": {
+      "title": "Cancellations",
+      "withDeposit": {
+        "title": "For appointments with deposit"
+      },
+      "withoutDeposit": {
+        "title": "For appointments without deposit"
+      },
+      "enabledTooltip": "Enables ability for customers to cancel an appointment on their own",
+      "doNotAllowIfRescheduled": {
+        "label": "Allow if rescheduled",
+        "tooltip": "Configure if a customer can cancel an appointment if it has been rescheduled",
+        "labels": {
+          "true": "Do not allow",
+          "false": "Allow"
+        }
+      },
+      "default": {
+        "title": "Default Policy",
+        "tooltip": "Configure default policy that will be applied if no other policy is applicable"
+      },
+      "policies": {
+        "title": "Policies",
+        "add": "Add policy"
+      },
+      "action": {
+        "label": "Action",
+        "tooltip": "Configure action to be taken when a cancellation is requested",
+        "placeholder": "Select action",
+        "labels": {
+          "notAllowed": "Not allowed",
+          "forfeitDeposit": "Forfeit deposit",
+          "partialRefund": "Partial refund",
+          "fullRefund": "Full refund",
+          "paymentRequired": "Payment required",
+          "paymentToFullPriceRequired": "Payment to full price required",
+          "allowed": "Allowed"
+        }
+      },
+      "paymentType": {
+        "label": "Payment calculation type",
+        "tooltip": "Choose whether the payment is a fixed amount or a percentage of the price",
+        "labels": {
+          "amount": "Fixed amount",
+          "percentage": "Percentage of price"
+        },
+        "placeholder": "Select payment calculation type"
+      },
+      "refundFees": {
+        "label": "Refund fees",
+        "tooltip": "Configure if fees should be refunded when a cancellation is requested"
+      },
+      "refundPercentage": {
+        "label": "Refund percentage",
+        "tooltip": "Configure percentage of the deposit that will be refunded when a cancellation is requested"
+      },
+      "calculateFromOriginalPrice": {
+        "label": "Use price before discounts for payment calculation",
+        "tooltip": "Uses the appointment price before discounts instead of the discounted total"
+      },
+      "paymentPercentage": {
+        "label": "Payment percentage",
+        "tooltip": "Configure percentage of the appointment price that will be required to be paid when a cancellation is requested"
+      },
+      "paymentAmount": {
+        "label": "Payment amount",
+        "tooltip": "Configure amount that will be required to be paid when a cancellation is requested"
+      },
+      "minutesToAppointment": {
+        "label": "Earliest applicable time",
+        "tooltip": "The minimum time before an appointment when this policy applies. If there’s another policy with a larger value and the appointment is far enough in advance, that policy will take effect instead."
+      },
+      "remove": "Remove",
+      "deleteConfirmTitle": "Are you absolutely sure?",
+      "deleteCancellationPolicyConfirmDescription": "Are you sure you want to remove this cancellation policy?",
+      "cancel": "Cancel",
+      "delete": "Delete"
+    },
+    "reschedulePolicy": {
+      "title": "Reschedules",
+      "enabledTooltip": "Enables ability for customers to reschedule an appointment on their own",
+      "default": {
+        "title": "Default Policy",
+        "tooltip": "Configure default policy that will be applied if no other policy is applicable"
+      },
+      "policies": {
+        "title": "Policies",
+        "add": "Add policy"
+      },
+      "action": {
+        "label": "Action",
+        "tooltip": "Configure action to be taken when a reschedule is requested",
+        "placeholder": "Select action",
+        "labels": {
+          "notAllowed": "Not allowed",
+          "allowed": "Allowed",
+          "paymentRequired": "Payment required"
+        }
+      },
+      "paymentType": {
+        "label": "Payment calculation type",
+        "tooltip": "Choose whether the payment is a fixed amount or a percentage of the price",
+        "labels": {
+          "amount": "Fixed amount",
+          "percentage": "Percentage of price"
+        },
+        "placeholder": "Select payment calculation type"
+      },
+      "calculateFromOriginalPrice": {
+        "label": "Use price before discounts for payment calculation",
+        "tooltip": "Uses the appointment price before discounts instead of the discounted total"
+      },
+      "paymentAmount": {
+        "label": "Payment amount",
+        "tooltip": "Configure amount that will be required to be paid when a reschedule is requested"
+      },
+      "paymentPercentage": {
+        "label": "Payment percentage",
+        "tooltip": "Configure percentage of the appointment price that will be required to be paid when a reschedule is requested"
+      },
+      "minutesToAppointment": {
+        "label": "Earliest applicable time",
+        "tooltip": "The minimum time before an appointment when this policy applies. If there’s another policy with a larger value and the appointment is far enough in advance, that policy will take effect instead."
+      },
+      "remove": "Remove",
+      "deleteConfirmTitle": "Are you absolutely sure?",
+      "deleteReschedulePolicyConfirmDescription": "Are you sure you want to remove this reschedule policy?",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "maxReschedules": {
+        "label": "Max reschedules",
+        "tooltip": "Configure how many times a customer can reschedule an appointment"
+      }
+    },
+    "enabled": {
+      "label": "Enabled",
+      "selectPlaceholder": "Select option",
+      "labels": {
+        "disabled": "Disabled",
+        "enabled": "Enabled",
+        "notAllowedWithoutDeposit": "Not allowed without deposit"
+      }
+    }
   }
 }

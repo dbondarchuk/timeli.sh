@@ -30,7 +30,6 @@ export type PaymentFee = {
 
 export type PaymentIntentStatus = "created" | "failed" | "paid";
 export type PaymentIntentUpdateModel = {
-  percentage: number;
   amount: number;
   customerId?: string;
   appId: string;

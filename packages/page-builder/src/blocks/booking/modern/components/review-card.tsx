@@ -22,6 +22,7 @@ export const ReviewCard: React.FC = () => {
     basePrice,
     discountAmount,
     price,
+    duration,
   } = useScheduleContext();
 
   const locale = useLocale();
@@ -151,25 +152,38 @@ export const ReviewCard: React.FC = () => {
               className="text-xs text-muted-foreground [&_p]:my-0.5 [&_p]:leading-6 review-service-summary-description"
             />
           </div>
-          {(!!selectedAppointmentOption.price ||
-            !!selectedAppointmentOption.duration) && (
-            <div className="text-right shrink-0 review-service-summary-price">
-              {!!selectedAppointmentOption.price && (
+          {selectedAppointmentOption.durationType === "fixed" &&
+            (!!selectedAppointmentOption.price ||
+              !!selectedAppointmentOption.duration) && (
+              <div className="text-right shrink-0 review-service-summary-price">
+                {!!selectedAppointmentOption.price && (
+                  <p className="text-xs font-semibold text-foreground review-service-summary-price-amount">
+                    ${formatAmountString(selectedAppointmentOption.price)}
+                  </p>
+                )}
+                {!!selectedAppointmentOption.duration && (
+                  <p className="text-xs text-muted-foreground flex items-center gap-1 justify-end review-service-summary-price-duration">
+                    <Clock className="w-3 h-3" />{" "}
+                    {t(
+                      "duration_hour_min_format",
+                      durationToTime(selectedAppointmentOption.duration || 0),
+                    )}
+                  </p>
+                )}
+              </div>
+            )}
+          {selectedAppointmentOption.durationType === "flexible" &&
+            !!selectedAppointmentOption.pricePerHour && (
+              <div className="text-right shrink-0 review-service-summary-price">
                 <p className="text-xs font-semibold text-foreground review-service-summary-price-amount">
-                  ${formatAmountString(selectedAppointmentOption.price)}
+                  {t("booking.option.price_per_hour", {
+                    price: formatAmountString(
+                      selectedAppointmentOption.pricePerHour,
+                    ),
+                  })}
                 </p>
-              )}
-              {!!selectedAppointmentOption.duration && (
-                <p className="text-xs text-muted-foreground flex items-center gap-1 justify-end review-service-summary-price-duration">
-                  <Clock className="w-3 h-3" />{" "}
-                  {t(
-                    "duration_hour_min_format",
-                    durationToTime(selectedAppointmentOption.duration || 0),
-                  )}
-                </p>
-              )}
-            </div>
-          )}
+              </div>
+            )}
         </div>
 
         {/* Add-ons */}
@@ -237,7 +251,7 @@ export const ReviewCard: React.FC = () => {
               {t("booking.review.date.duration", {
                 duration: t(
                   "duration_hour_min_format",
-                  durationToTime(selectedAppointmentOption.duration || 0),
+                  durationToTime(duration || 0),
                 ),
               })}
             </span>

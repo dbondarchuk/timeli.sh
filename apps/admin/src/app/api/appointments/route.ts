@@ -160,6 +160,18 @@ export async function POST(request: NextRequest) {
     {} as Record<string, string>,
   );
 
+  const optionDuration =
+    option.durationType === "fixed"
+      ? option.duration
+      : (data.totalDuration ?? 0) -
+        (addons?.reduce((sum, addon) => sum + (addon.duration || 0), 0) ?? 0);
+
+  const optionPrice =
+    option.durationType === "fixed"
+      ? option.price
+      : ((option.pricePerHour || 0) / 60) * (optionDuration || 0) -
+        (addons?.reduce((sum, addon) => sum + (addon.price || 0), 0) ?? 0);
+
   const appointmentEvent: AppointmentEvent = {
     ...data,
     fields: Object.entries(data.fields)
@@ -173,8 +185,9 @@ export async function POST(request: NextRequest) {
     option: {
       _id: option._id,
       name: option.name,
-      price: option.price,
-      duration: option.duration,
+      price: optionPrice,
+      duration: optionDuration,
+      durationType: option.durationType,
       isOnline: option.isOnline,
     },
     addons: addons?.map((addon) => ({

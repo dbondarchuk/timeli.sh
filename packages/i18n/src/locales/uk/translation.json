@@ -28,7 +28,8 @@
           "title": "Тривалість сесії",
           "min_max": "Мін: {min} • Макс: {max}"
         }
-      }
+      },
+      "price_per_hour": "${price}/год"
     },
     "addons": {
       "title": "Покращіть ваш досвід",
@@ -316,9 +317,9 @@
   "reschedule_submit_failed_title": "Ой! Щось пішло не так.",
   "reschedule_submit_failed_description": "Щось пішло не так під час спроби перенести ваш запис. Будь ласка, зв'яжіться з нами",
   "cancel_fee_required_title": "Потрібна плата за відміну запису",
-  "cancel_fee_required_description": "Для відміни цього запису потрібна плата {percentage}% (${amount}) від загальної ціни ${totalPrice}. Будь ласка, оплатіть, використовуючи форму нижче",
+  "cancel_fee_required_description": "Для відміни цього запису потрібна плата в сумі ${amount}. Будь ласка, оплатіть, використовуючи форму нижче",
   "reschedule_fee_required_title": "Потрібна плата за перенесення запису",
-  "reschedule_fee_required_description": "Для перенесення цього запису потрібна плата {percentage}% (${amount}) від загальної ціни ${totalPrice}. Будь ласка, оплатіть, використовуючи форму нижче",
+  "reschedule_fee_required_description": "Для перенесення цього запису потрібна плата в сумі ${amount}. Будь ласка, оплатіть, використовуючи форму нижче",
 
   "footer": {
     "contactUsLabel": "Зв'яжіться з нами",
