@@ -10,8 +10,6 @@ import {
 import {
   BlogConfiguration,
   blogConfigurationSchema,
-  BlogPost,
-  BlogPostUpdateModel,
   CreateBlogPostAction,
   CreateBlogPostActionType,
   DeleteBlogPostAction,
@@ -23,7 +21,6 @@ import {
   GetBlogTagsAction,
   GetBlogTagsActionType,
   RequestAction,
-  SetConfigurationAction,
   SetConfigurationActionType,
   UpdateBlogPostAction,
   UpdateBlogPostActionType,
@@ -66,6 +63,7 @@ export class BlogConnectedApp implements IConnectedApp {
       case GetBlogTagsActionType:
         return this.processGetBlogTagsRequest(appData, data);
       case SetConfigurationActionType:
+      default:
         return this.processSetConfigurationRequest(appData, data.configuration);
     }
   }
@@ -86,15 +84,30 @@ export class BlogConnectedApp implements IConnectedApp {
         await db.dropCollection(BLOG_POSTS_COLLECTION_NAME);
       }
 
-      logger.info(
-        { appId: appData._id },
-        "Successfully uninstalled blog app",
-      );
+      logger.info({ appId: appData._id }, "Successfully uninstalled blog app");
     } catch (error: any) {
       logger.error(
         { appId: appData._id, error: error?.message || error?.toString() },
         "Error uninstalling blog app",
       );
+      throw error;
+    }
+  }
+
+  public async install(appData: ConnectedAppData): Promise<void> {
+    const logger = this.loggerFactory("install");
+    logger.debug({ appId: appData._id }, "Installing blog app");
+
+    try {
+      const repositoryService = this.getRepositoryService(
+        appData._id,
+        appData.companyId,
+      );
+      await repositoryService.install();
+
+      logger.debug({ appId: appData._id }, "Blog app installed successfully");
+    } catch (error: any) {
+      logger.error({ appId: appData._id, error }, "Error installing blog app");
       throw error;
     }
   }
@@ -133,10 +146,7 @@ export class BlogConnectedApp implements IConnectedApp {
       );
       const result = await repositoryService.getBlogPosts(data.query);
 
-      logger.debug(
-        { appId: appData._id },
-        "Successfully retrieved blog posts",
-      );
+      logger.debug({ appId: appData._id }, "Successfully retrieved blog posts");
       return result;
     } catch (error: any) {
       logger.error(
@@ -161,16 +171,10 @@ export class BlogConnectedApp implements IConnectedApp {
       );
       const result = await repositoryService.getBlogPost(data.id, data.slug);
 
-      logger.debug(
-        { appId: appData._id },
-        "Successfully retrieved blog post",
-      );
+      logger.debug({ appId: appData._id }, "Successfully retrieved blog post");
       return result;
     } catch (error: any) {
-      logger.error(
-        { appId: appData._id, error },
-        "Error retrieving blog post",
-      );
+      logger.error({ appId: appData._id, error }, "Error retrieving blog post");
       throw error;
     }
   }
@@ -192,10 +196,7 @@ export class BlogConnectedApp implements IConnectedApp {
       logger.debug({ appId: appData._id }, "Successfully created blog post");
       return result;
     } catch (error: any) {
-      logger.error(
-        { appId: appData._id, error },
-        "Error creating blog post",
-      );
+      logger.error({ appId: appData._id, error }, "Error creating blog post");
       throw error;
     }
   }
@@ -217,10 +218,7 @@ export class BlogConnectedApp implements IConnectedApp {
       logger.debug({ appId: appData._id }, "Successfully updated blog post");
       return result;
     } catch (error: any) {
-      logger.error(
-        { appId: appData._id, error },
-        "Error updating blog post",
-      );
+      logger.error({ appId: appData._id, error }, "Error updating blog post");
       throw error;
     }
   }
@@ -242,10 +240,7 @@ export class BlogConnectedApp implements IConnectedApp {
       logger.debug({ appId: appData._id }, "Successfully deleted blog post");
       return result;
     } catch (error: any) {
-      logger.error(
-        { appId: appData._id, error },
-        "Error deleting blog post",
-      );
+      logger.error({ appId: appData._id, error }, "Error deleting blog post");
       throw error;
     }
   }
@@ -270,10 +265,7 @@ export class BlogConnectedApp implements IConnectedApp {
       logger.debug({ appId: appData._id }, "Successfully retrieved blog tags");
       return result;
     } catch (error: any) {
-      logger.error(
-        { appId: appData._id, error },
-        "Error retrieving blog tags",
-      );
+      logger.error({ appId: appData._id, error }, "Error retrieving blog tags");
       throw error;
     }
   }
@@ -281,9 +273,7 @@ export class BlogConnectedApp implements IConnectedApp {
   private async processSetConfigurationRequest(
     appData: ConnectedAppData,
     data: BlogConfiguration,
-  ): Promise<
-    ConnectedAppStatusWithText<BlogAdminNamespace, BlogAdminKeys>
-  > {
+  ): Promise<ConnectedAppStatusWithText<BlogAdminNamespace, BlogAdminKeys>> {
     const logger = this.loggerFactory("processSetConfigurationRequest");
     logger.debug(
       { appId: appData._id },
@@ -296,8 +286,10 @@ export class BlogConnectedApp implements IConnectedApp {
 
       logger.debug(
         { appId: appData._id },
-        "Configuration validated successfully",
+        "Configuration validated successfully, installing blog app...",
       );
+
+      await this.install(appData);
 
       const status: ConnectedAppStatusWithText<
         BlogAdminNamespace,
@@ -335,4 +327,3 @@ export class BlogConnectedApp implements IConnectedApp {
     }
   }
 }
-

@@ -55,7 +55,7 @@ export const Editor = memo(({ selectedView }: { selectedView: string }) => {
           blockId={rootBlockId}
           index={0}
           parentBlockId={rootBlockId}
-          parentProperty="children"
+          parentProperty="props"
         />
       </OverlayProvider>
     </TabsContent>

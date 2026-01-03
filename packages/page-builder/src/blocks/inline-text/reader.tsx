@@ -2,6 +2,7 @@ import {
   BlockStyle,
   generateClassName,
 } from "@timelish/page-builder-base/reader";
+import { StaticText } from "@timelish/rte-inline/reader";
 import { cn } from "@timelish/ui";
 import { InlineTextPropsDefaults, InlineTextReaderProps } from "./schema";
 import { styles } from "./styles";
@@ -17,13 +18,12 @@ export const InlineText = ({ props, style, block }: InlineTextReaderProps) => {
   return (
     <>
       <BlockStyle name={className} styleDefinitions={styles} styles={style} />
-      <Element
+      <StaticText
+        value={text}
         className={cn(className, base?.className)}
         id={base?.id}
-        // href={props?.url ?? undefined}
-      >
-        {text}
-      </Element>
+        inline={true}
+      />
     </>
   );
 };

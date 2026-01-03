@@ -15,8 +15,8 @@ export const Heading = ({
   ...rest
 }: HeadingReaderProps) => {
   const level = props?.level ?? DefaultHeadingLevel;
-  const content = props?.children?.[0];
   const defaults = getDefaults(level);
+  const children = props?.children ?? [];
 
   const className = generateClassName();
   const Element = level;
@@ -31,7 +31,9 @@ export const Heading = ({
         defaults={defaults}
       />
       <Element className={cn(className, base?.className)} id={base?.id}>
-        {content && <ReaderBlock key={content.id} {...rest} block={content} />}
+        {children.map((child) => (
+          <ReaderBlock key={child.id} {...rest} block={child} />
+        ))}
       </Element>
     </>
   );

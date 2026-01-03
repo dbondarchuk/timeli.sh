@@ -7,7 +7,7 @@ export const BlogApp: App<"app_blog_admin", BlogAdminKeys> = {
   name: BLOG_APP_NAME,
   displayName: "app_blog_admin.app.displayName",
   category: ["apps.categories.content"],
-  scope: ["dashboard-tab", "ui-components"],
+  scope: ["ui-components"],
   type: "complex",
   Logo: ({ className }) => <FileText className={className} />,
   isFeatured: true,
@@ -18,4 +18,3 @@ export const BlogApp: App<"app_blog_admin", BlogAdminKeys> = {
   },
   settingsHref: "blog",
 };
-

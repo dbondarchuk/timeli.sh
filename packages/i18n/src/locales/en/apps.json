@@ -85,7 +85,8 @@
     "utilities": "Utilities",
     "payment": "Payments",
     "appointments": "Appointments",
-    "customers": "Customers"
+    "customers": "Customers",
+    "content": "Content"
   },
   "fileSystemAssetsStorage": {
     "title": "File system assets storage",

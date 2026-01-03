@@ -85,7 +85,8 @@
     "utilities": "Утиліти",
     "payment": "Платежі",
     "appointments": "Записи",
-    "customers": "Клієнти"
+    "customers": "Клієнти",
+    "content": "Контент"
   },
   "fileSystemAssetsStorage": {
     "title": "Сховище ресурсів файлової системи",

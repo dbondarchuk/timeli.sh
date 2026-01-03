@@ -1,9 +1,5 @@
 import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
-import {
-  IConnectedAppProps,
-  Query,
-  WithTotal,
-} from "@timelish/types";
+import { IConnectedAppProps, Query, WithTotal } from "@timelish/types";
 import { escapeRegex } from "@timelish/utils";
 import { ObjectId, type Filter, type Sort } from "mongodb";
 import {
@@ -11,8 +7,9 @@ import {
   BlogPostEntity,
   BlogPostUpdateModel,
 } from "../models/blog-post";
+import { BLOG_PAGES } from "./pages";
 
-export const BLOG_POSTS_COLLECTION_NAME = "blogPosts";
+export const BLOG_POSTS_COLLECTION_NAME = "blog-posts";
 
 export class BlogRepositoryService {
   protected readonly loggerFactory: LoggerFactory;
@@ -29,9 +26,7 @@ export class BlogRepositoryService {
     );
   }
 
-  public async createBlogPost(
-    post: BlogPostUpdateModel,
-  ): Promise<BlogPost> {
+  public async createBlogPost(post: BlogPostUpdateModel): Promise<BlogPost> {
     const logger = this.loggerFactory("createBlogPost");
     logger.debug({ post }, "Creating blog post");
 
@@ -144,10 +139,7 @@ export class BlogRepositoryService {
     if (query.search) {
       const $regex = new RegExp(escapeRegex(query.search), "i");
       $and.push({
-        $or: [
-          { title: { $regex } },
-          { slug: { $regex } },
-        ],
+        $or: [{ title: { $regex } }, { slug: { $regex } }],
       });
     }
 
@@ -287,5 +279,77 @@ export class BlogRepositoryService {
 
     return result as Array<{ tag: string; count: number }>;
   }
-}
 
+  public async install(): Promise<void> {
+    const logger = this.loggerFactory("install");
+    logger.debug("Installing blog app");
+
+    const db = await this.getDbConnection();
+
+    logger.debug("Creating blog posts collection");
+    const collection = await db.createCollection(BLOG_POSTS_COLLECTION_NAME);
+    logger.debug("Blog posts collection created");
+
+    const indexes = {
+      companyId_appId_1: { companyId: 1, appId: 1 },
+      companyId_appId_slug_1: { companyId: 1, appId: 1, slug: 1 },
+      companyId_appId_isPublished_1: { companyId: 1, appId: 1, isPublished: 1 },
+      companyId_appId_tags_1: { companyId: 1, appId: 1, tags: 1 },
+      companyId_appId_createdAt_1: { companyId: 1, appId: 1, createdAt: 1 },
+      companyId_appId_updatedAt_1: { companyId: 1, appId: 1, updatedAt: 1 },
+      companyId_appId_publicationDate_1: {
+        companyId: 1,
+        appId: 1,
+        publicationDate: 1,
+      },
+    };
+
+    for (const [name, index] of Object.entries(indexes)) {
+      logger.debug(`Checking if index ${name} exists`);
+      if (await collection.indexExists(name)) {
+        logger.debug(`Index ${name} already exists`);
+        continue;
+      }
+
+      logger.debug(`Creating index ${name}`);
+      await collection.createIndex(index, { name });
+    }
+
+    logger.debug("Blog posts collection indexed. Creating blog pages");
+
+    const header = await this.services.pagesService.getPageHeaders({
+      limit: 1,
+    });
+
+    const footer = await this.services.pagesService.getPageFooters({
+      limit: 1,
+    });
+
+    const headerId = header.items[0]?._id;
+    const footerId = footer.items[0]?._id;
+
+    logger.debug({ headerId, footerId }, "Using blog pages header and footer");
+
+    const pages = BLOG_PAGES(this.appId, headerId, footerId);
+
+    for (const page of pages) {
+      logger.debug(`Creating blog page ${page.title} (${page.slug})`);
+      const isUnique = await this.services.pagesService.checkUniqueSlug(
+        page.slug,
+      );
+      if (!isUnique) {
+        logger.warn(`Blog page ${page.title} (${page.slug}) already exists`);
+        continue;
+      }
+
+      logger.debug(
+        `Blog page ${page.title} (${page.slug}) is unique. Creating...`,
+      );
+      await this.services.pagesService.createPage(page);
+      logger.debug(`Blog page ${page.title} (${page.slug}) created`);
+    }
+
+    logger.debug("Blog pages created");
+    logger.debug("Blog app installed");
+  }
+}

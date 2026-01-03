@@ -2,6 +2,7 @@ import {
   AvailableAppServices,
   ServiceAvailableApps,
 } from "@timelish/app-store/services";
+import { BaseAllKeys } from "@timelish/i18n";
 import {
   ApiRequest,
   App,
@@ -47,7 +48,7 @@ export class ConnectedAppsService
       _id: new ObjectId().toString(),
       companyId: this.companyId,
       status: "pending",
-      statusText: "apps.common.statusText.pending",
+      statusText: "apps.common.statusText.pending" satisfies BaseAllKeys,
       name,
     };
 
@@ -57,6 +58,15 @@ export class ConnectedAppsService
     );
 
     await collection.insertOne(app);
+
+    const { app: appData, service } = await this.getAppService(app._id);
+    if (service.install) {
+      logger.debug(
+        { appId: appData._id, appName: appData.name },
+        "Running install hook",
+      );
+      await service.install(appData);
+    }
 
     logger.debug({ name, appId: app._id }, "Successfully created new app");
 
@@ -231,7 +241,8 @@ export class ConnectedAppsService
         {
           $set: {
             status: "connected",
-            statusText: "apps.common.statusText.connected",
+            statusText:
+              "apps.common.statusText.connected" satisfies BaseAllKeys,
             ...result,
           },
         },

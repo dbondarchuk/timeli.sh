@@ -2,10 +2,13 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { adminApi } from "@timelish/api-sdk";
-import { AppsBlocksEditors } from "@timelish/app-store/blocks/editors";
+import {
+  AppsBlocksEditors,
+  AppsBlocksTemplates,
+} from "@timelish/app-store/blocks/editors";
 import { AppsBlocksReaders } from "@timelish/app-store/blocks/readers";
 import { Language, useI18n } from "@timelish/i18n";
-import { PageBuilder } from "@timelish/page-builder";
+import { BlockProviderRegistry, PageBuilder } from "@timelish/page-builder";
 import { PageReader } from "@timelish/page-builder/reader";
 import {
   GeneralConfiguration,
@@ -70,61 +73,37 @@ export const PageForm: React.FC<{
     300,
   );
 
-  const additionalBlocks = useMemo(() => {
-    return apps?.reduce(
-      (acc, app) => {
-        acc.schemas = {
-          ...acc.schemas,
-          ...Object.fromEntries(
-            Object.entries(AppsBlocksEditors[app.appName]).map(
-              ([blockName, value]) => [
-                `${blockName}-${app.appId}`,
-                value.schema,
-              ],
-            ),
-          ),
-        };
-        acc.editors = {
-          ...acc.editors,
-          ...Object.fromEntries(
-            Object.entries(AppsBlocksEditors[app.appName]).map(
-              ([blockName, value]) => [
-                `${blockName}-${app.appId}`,
+  const blockRegistry: BlockProviderRegistry = useMemo(() => {
+    return {
+      providers:
+        apps?.map((app) => ({
+          providerName: app.appName,
+          priority: 100,
+          blocks: Object.fromEntries(
+            Object.entries(AppsBlocksEditors[app.appName] || {}).map(
+              ([name, value]) => [
+                name,
                 {
-                  ...value.editor,
-                  staticProps: {
-                    ...value.editor.staticProps,
-                    appId: app.appId,
-                    appName: app.appName,
+                  schema: value.schema,
+                  editor: {
+                    ...value.editor,
+                    defaultMetadata: value.defaultMetadata?.(
+                      app.appName,
+                      app.appId,
+                    ),
                   },
+                  reader: AppsBlocksReaders[app.appName][name],
                 },
               ],
             ),
           ),
-        };
-        acc.readers = {
-          ...acc.readers,
-          ...Object.fromEntries(
-            Object.entries(AppsBlocksReaders[app.appName]).map(
-              ([blockName, value]) => [
-                `${blockName}-${app.appId}`,
-                {
-                  ...value,
-                  staticProps: {
-                    ...value.staticProps,
-                    appId: app.appId,
-                    appName: app.appName,
-                  },
-                },
-              ],
-            ),
+          templates: Object.fromEntries(
+            Object.entries(
+              AppsBlocksTemplates[app.appName]?.(app.appName, app.appId) || {},
+            ).map(([name, value]) => [name, value.configuration]),
           ),
-        };
-
-        return acc;
-      },
-      { schemas: {}, editors: {}, readers: {} },
-    );
+        })) || [],
+    };
   }, [apps]);
 
   const formSchema = React.useMemo(
@@ -459,7 +438,7 @@ export const PageForm: React.FC<{
                       header={pageHeader}
                       footer={pageFooter}
                       extraTabs={extraTabs}
-                      additionalBlocks={additionalBlocks}
+                      blockRegistry={blockRegistry}
                     />
                   </FormControl>
                   <FormMessage />

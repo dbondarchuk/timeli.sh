@@ -16,11 +16,11 @@ export const ButtonPropsSchema = z.object({
           error: "pageBuilder.blocks.button.errors.action",
         }),
         actionData: z.any().optional().nullable(),
-        children: z.array(z.any()).length(1),
+        children: z.array(z.any()),
       }),
       z.object({
         type: z.literal("link").optional().nullable(),
-        children: z.array(z.any()).length(1),
+        children: z.array(z.any()),
         url: z.string().optional().nullable(),
         target: z.enum(["_self", "_blank"]).optional().nullable(),
       }),

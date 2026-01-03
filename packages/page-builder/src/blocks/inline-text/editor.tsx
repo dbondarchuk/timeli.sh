@@ -1,8 +1,5 @@
 "use client";
 
-import { useCallback, useRef } from "react";
-import sanitizeHtml from "sanitize-html";
-
 import {
   useBlockEditor,
   useCurrentBlock,
@@ -18,8 +15,9 @@ import {
   useClassName,
   useResizeBlockStyles,
 } from "@timelish/page-builder-base";
+import { EditableText, RichTextValue, StaticText } from "@timelish/rte-inline";
 import { cn, useDebounceCallback } from "@timelish/ui";
-import { ArgumentsAutocomplete } from "@timelish/ui-admin";
+import { useCallback, useRef } from "react";
 import { InlineTextProps } from "./schema";
 import { styles } from "./styles";
 
@@ -45,7 +43,7 @@ export function InlineTextEditor({ props, style }: InlineTextProps) {
   };
 
   const onChange = useDebounceCallback(
-    (value: string) => {
+    (value: RichTextValue) => {
       dispatchAction({
         type: "set-block-data",
         value: {
@@ -54,7 +52,7 @@ export function InlineTextEditor({ props, style }: InlineTextProps) {
             ...currentBlock.data,
             props: {
               ...currentBlock.data?.props,
-              text: sanitizeHtml(value, sanitizeConf),
+              text: value,
             },
           },
         },
@@ -84,7 +82,7 @@ export function InlineTextEditor({ props, style }: InlineTextProps) {
         styles={style}
         isEditor
       />
-      <ArgumentsAutocomplete
+      {/* <ArgumentsAutocomplete
         ref={(el) => {
           ref.current = el as HTMLInputElement;
           overlayProps.ref(el as HTMLElement);
@@ -111,7 +109,30 @@ export function InlineTextEditor({ props, style }: InlineTextProps) {
         }
         id={base?.id}
         onClick={overlayProps.onClick}
-      />
+      /> */}
+      {isSelected ? (
+        <EditableText
+          value={value ?? "Simple text"}
+          onChange={onChange}
+          placeholder={t("pageBuilder.blocks.inlineText.placeholder")}
+          className={cn(className, base?.className)}
+          id={base?.id}
+          onClick={overlayProps.onClick}
+          inline={true}
+          variables={args}
+          documentElement={document}
+          ref={overlayProps.ref}
+        />
+      ) : (
+        <StaticText
+          value={value ?? "Simple text"}
+          inline={true}
+          className={cn(className, base?.className)}
+          id={base?.id}
+          onClick={overlayProps.onClick}
+          ref={overlayProps.ref}
+        />
+      )}
     </>
   );
 }

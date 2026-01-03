@@ -54,15 +54,5 @@ export const BlogEditPage = ({ appId }: { appId: string }) => {
     );
   }
 
-  return (
-    <div className="flex flex-col flex-1 gap-8">
-      <div>
-        <h1 className="text-2xl font-bold">{t("app.pages.edit.title")}</h1>
-        <p className="text-muted-foreground">
-          {t("app.pages.edit.description")}
-        </p>
-      </div>
-      <BlogPostForm initialData={post} appId={appId} />
-    </div>
-  );
+  return <BlogPostForm initialData={post} appId={appId} />;
 };

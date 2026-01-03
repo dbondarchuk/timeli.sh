@@ -116,5 +116,11 @@
       "label": "As soon as possible",
       "required": "As soon as possible is required"
     }
+  },
+  "errors": {
+    "waitlistAppNotConfigured": {
+      "title": "Waitlist app not set",
+      "description": "The waitlist app is not set. Please set the waitlist app to use this block."
+    }
   }
 }

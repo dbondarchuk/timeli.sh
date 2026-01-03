@@ -1,7 +1,7 @@
 "use client";
 
 import { AvailableApps } from "@timelish/app-store";
-import { useI18n } from "@timelish/i18n";
+import { BaseAllKeys, useI18n } from "@timelish/i18n";
 import { Button, toastPromise } from "@timelish/ui";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -25,7 +25,7 @@ export const InstallComplexAppButton: React.FC<{
       } else if (app.type === "system") {
         await setAppStatus(appId, {
           status: "connected",
-          statusText: "common.statusText.installed",
+          statusText: "apps.common.statusText.installed" satisfies BaseAllKeys,
         });
 
         router.refresh();

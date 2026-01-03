@@ -38,7 +38,7 @@ export const SelectedBlockOverlay = memo(
       >
         {/* Drag handle */}
         {!disable?.drag && <DragHandle handleRef={handleRef} />}
-        <div className="absolute -translate-y-full left-[-2px] top-[-2px]  z-[20] hover:z-50 pointer-events-auto">
+        <div className="absolute -translate-y-full left-[-2px] top-[-2px]  z-[10] hover:z-50 pointer-events-auto">
           <NavMenu blockId={id} disable={disable} />
         </div>
 

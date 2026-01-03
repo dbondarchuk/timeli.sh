@@ -29,6 +29,7 @@
     "@timelish/page-builder-base": "*",
     "@timelish/types": "*",
     "@timelish/rte": "*",
+    "@timelish/rte-inline": "*",
     "@timelish/ui": "*",
     "@timelish/ui-admin": "*",
     "@timelish/api-sdk": "*",

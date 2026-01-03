@@ -7,9 +7,6 @@
   "paths": {
     "@/*": ["./src/*"]
   },
-  "include": [
-    "src",
-    "../../apps/admin/src/app/apps/textbelt/[companyId]/webhook/webhook.service.ts"
-  ],
+  "include": ["src"],
   "exclude": ["node_modules", "dist"]
 }

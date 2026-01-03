@@ -2032,6 +2032,7 @@
       "submenu": "Submenu"
     },
     "linkVariants": {
+      "none": "None",
       "default": "Default",
       "underline": "Underline",
       "standalone": "Standalone",

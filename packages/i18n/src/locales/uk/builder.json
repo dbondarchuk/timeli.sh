@@ -62,7 +62,8 @@
       "notFound": "Блок не знайдено: {blockType}",
       "panel": {
         "title": "Блоки",
-        "subtitle": "Додати новий блок"
+        "subtitle": "Додати новий блок",
+        "template": "Шаблон"
       },
       "outline": {
         "title": "Структура документа",
@@ -1128,8 +1129,11 @@
         "displayName": "Контейнер циклу",
         "forEachItemInValueFormat": "Для кожного <item></item> в <value></value>",
         "value": "Значення",
+        "itemName": "Назва елемента",
+        "itemNameHelperText": "Необов'язково. Якщо не вказано, назва елемента буде встановлена на '_item'",
         "errors": {
-          "value": "Значення є обов'язковим"
+          "value": "Значення є обов'язковим",
+          "itemName": "Назва елемента повинна бути дійсною змінною (наприклад, item, item1, item_1, _item1, тощо)"
         }
       },
       "gridContainer": {

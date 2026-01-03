@@ -77,14 +77,95 @@
     "error_processing_configuration": "Error processing blog configuration"
   },
   "block": {
-    "postsList": {
-      "displayName": "Blog Posts List"
+    "postContainer": {
+      "displayName": "Blog Post Container",
+      "postUrl": {
+        "label": "Post URL",
+        "helperText": "The URL of the blog post. Use [slug] as a placeholder for the post slug."
+      },
+      "errors": {
+        "postUrl": {
+          "required": "Post URL is required",
+          "slug": "Post URL must contain a [slug] placeholder"
+        }
+      }
+    },
+    "postTitle": {
+      "displayName": "Blog Post Title"
     },
     "postContent": {
       "displayName": "Blog Post Content"
     },
-    "tagList": {
-      "displayName": "Blog Tag List"
+    "postTag": {
+      "displayName": "Blog Post Tag",
+      "blogListUrl": {
+        "label": "Blog List URL",
+        "description": "Optional URL for the blog posts list page. If set, tags will link to this URL with a tag query parameter. If not set, tags will link to the current page with a tag query parameter."
+      }
+    },
+    "postPublishDate": {
+      "displayName": "Blog Post Publish Date",
+      "dateFormat": {
+        "label": "Date Format"
+      },
+      "dateFormats": {
+        "dateFull": "Full Date",
+        "dateHuge": "Huge Date",
+        "dateMed": "Medium Date",
+        "dateMedWithWeekday": "Medium with Weekday",
+        "dateShort": "Short Date",
+        "datetimeFull": "Full DateTime",
+        "datetimeHuge": "Huge DateTime",
+        "datetimeMed": "Medium DateTime",
+        "datetimeMedWithWeekday": "Medium DateTime with Weekday",
+        "datetimeShort": "Short DateTime",
+        "customMmmmdYyyy": "Custom: MMMM d, yyyy",
+        "customMmmdYyyy": "Custom: MMM d, yyyy",
+        "customDdMmYyyy": "Custom: dd/MM/yyyy",
+        "customMmDdYyyy": "Custom: MM/dd/yyyy",
+        "customYyyyMmDd": "Custom: yyyy-MM-dd"
+      }
+    },
+    "postsContainer": {
+      "displayName": "Blog Posts Container",
+      "postsPerPage": {
+        "label": "Posts per page",
+        "description": "The number of posts to display per page"
+      }
+    },
+    "postNavigationButton": {
+      "displayName": "Blog Post Navigation Button",
+      "direction": {
+        "label": "Direction",
+        "options": {
+          "prev": "Previous",
+          "next": "Next"
+        }
+      }
+    },
+    "category": {
+      "blog": "Blog"
+    },
+    "templates": {
+      "postTitleHeader": {
+        "displayName": "Blog Post Title Header"
+      },
+      "postTags": {
+        "displayName": "Blog Post Tags"
+      },
+      "post": {
+        "displayName": "Blog Post"
+      },
+      "postsList": {
+        "displayName": "Blog Posts List"
+      },
+      "postsListNavigation": {
+        "displayName": "Blog Posts List Navigation"
+      }
+    },
+    "blogAppId": {
+      "label": "Blog App",
+      "helperText": "The app that will be used to work with the blog posts"
     }
   }
 }

@@ -2032,6 +2032,7 @@
       "submenu": "Підменю"
     },
     "linkVariants": {
+      "none": "Немає",
       "default": "Типовий",
       "underline": "Підкреслення",
       "standalone": "Стандартний",

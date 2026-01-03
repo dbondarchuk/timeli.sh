@@ -1,22 +1,30 @@
 import { BaseReaderBlockProps } from "@timelish/builder";
+import { ALL_STYLES, getStylesSchema } from "@timelish/page-builder-base/style";
+import { Prettify } from "@timelish/types";
 import * as z from "zod";
-import { zStyles } from "./styles";
+
+export const styles = ALL_STYLES;
+export const zStyles = getStylesSchema(styles);
 
 export const BlogPostContentPropsSchema = z.object({
+  props: z
+    .object({
+      showShort: z.boolean().optional(),
+    })
+    .optional()
+    .nullable(),
   style: zStyles,
-  props: z.object({
-    paramKey: z.string().default("postId"),
-  }),
 });
 
-export type BlogPostContentProps = z.infer<typeof BlogPostContentPropsSchema>;
+export type BlogPostContentProps = Prettify<
+  z.infer<typeof BlogPostContentPropsSchema>
+>;
 export type BlogPostContentReaderProps = BaseReaderBlockProps<any> &
-  BlogPostContentProps & { appId?: string };
+  BlogPostContentProps;
 
 export const BlogPostContentPropsDefaults = {
-  style: {},
   props: {
-    paramKey: "postId",
+    showShort: false,
   },
+  style: {},
 } as const satisfies BlogPostContentProps;
-

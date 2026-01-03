@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useI18n } from "@timelish/i18n";
 import { PlateEditor } from "@timelish/rte";
 import {
+  Breadcrumbs,
   Checkbox,
   DateTimePicker,
   Form,
@@ -14,18 +15,13 @@ import {
   FormMessage,
   InfoTooltip,
   Input,
-  InputGroup,
-  InputGroupInput,
-  InputGroupInputClasses,
-  InputGroupSuffixClasses,
-  InputSuffix,
   TagInput,
   toastPromise,
   use12HourFormat,
 } from "@timelish/ui";
 import { SaveButton } from "@timelish/ui-admin";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { createBlogPost, updateBlogPost } from "./actions";
@@ -53,6 +49,7 @@ export const BlogPostForm: React.FC<{
   appId: string;
 }> = ({ initialData, appId }) => {
   const t = useI18n<BlogAdminNamespace, BlogAdminKeys>(blogAdminNamespace);
+  const tAdmin = useI18n("admin");
 
   const [loading, setLoading] = useState(false);
   const [slugManuallyChanged, setSlugManuallyChanged] = useState(false);
@@ -63,7 +60,7 @@ export const BlogPostForm: React.FC<{
     mode: "all",
     reValidateMode: "onChange",
     defaultValues: initialData || {
-      isPublished: false,
+      isPublished: true,
       publicationDate: new Date(),
       tags: [],
       content: [],
@@ -74,11 +71,25 @@ export const BlogPostForm: React.FC<{
   const title = form.watch("title");
   const isNewPost = !initialData;
 
+  const breadcrumbItems = useMemo(
+    () => [
+      { title: tAdmin("navigation.dashboard"), link: "/dashboard" },
+      { title: t("app.displayName"), link: "/dashboard/blog" },
+      {
+        title: initialData?._id ? initialData.title : t("app.pages.new.label"),
+        link: initialData?._id
+          ? `/dashboard/blog/${initialData._id}`
+          : "/dashboard/blog/new",
+      },
+    ],
+    [initialData?._id, initialData?.title, t, tAdmin],
+  );
+
   // Auto-generate slug when title changes (only when slug hasn't been manually changed)
   // For new posts: always auto-generate if not manually changed
   // For existing posts: only auto-generate if slug was never manually changed
   React.useEffect(() => {
-    if (!slugManuallyChanged && title) {
+    if (!slugManuallyChanged && title && isNewPost) {
       const generatedSlug = generateSlug(title);
       if (generatedSlug && generatedSlug !== slug) {
         form.setValue("slug", generatedSlug);
@@ -114,22 +125,22 @@ export const BlogPostForm: React.FC<{
 
   return (
     <Form {...form}>
+      <Breadcrumbs items={breadcrumbItems} />
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="w-full h-full space-y-8"
       >
-        <div className="flex flex-col gap-4 w-full h-full">
+        <div className="flex flex-col gap-2 w-full">
           <FormField
             control={form.control}
             name="title"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>
-                  {t("form.title")}{" "}
-                  <InfoTooltip>{t("form.titleTooltip")}</InfoTooltip>
-                </FormLabel>
+              <FormItem className="w-full">
                 <FormControl>
                   <Input
+                    className="md:text-xl lg:text-2xl font-bold tracking-tight border-0 w-full px-0"
+                    autoFocus
+                    h={"lg"}
                     disabled={loading}
                     placeholder={t("form.titlePlaceholder")}
                     {...field}
@@ -139,47 +150,13 @@ export const BlogPostForm: React.FC<{
               </FormItem>
             )}
           />
-
-          <FormField
-            control={form.control}
-            name="slug"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>
-                  {t("form.slug")}{" "}
-                  <InfoTooltip>{t("form.slugTooltip")}</InfoTooltip>
-                </FormLabel>
-                <FormControl>
-                  <InputGroup>
-                    <InputGroupInput>
-                      <Input
-                        disabled={loading}
-                        className={InputGroupInputClasses()}
-                        placeholder={t("form.slugPlaceholder")}
-                        {...field}
-                        onChange={(e) => {
-                          setSlugManuallyChanged(true);
-                          field.onChange(e);
-                        }}
-                      />
-                    </InputGroupInput>
-                    <InputSuffix className={InputGroupSuffixClasses()}>
-                      <span className="text-muted-foreground text-sm">
-                        /blog/{slug || "..."}
-                      </span>
-                    </InputSuffix>
-                  </InputGroup>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
+        </div>
+        <div className="grid lg:grid-cols-3 gap-4">
           <FormField
             control={form.control}
             name="content"
             render={({ field }) => (
-              <FormItem className="w-full flex-grow relative h-full">
+              <FormItem className="lg:col-span-2 w-full flex-grow relative h-full">
                 <FormLabel>
                   {t("form.content")}{" "}
                   <InfoTooltip>{t("form.contentTooltip")}</InfoTooltip>
@@ -201,30 +178,28 @@ export const BlogPostForm: React.FC<{
               </FormItem>
             )}
           />
-
-          <div className="grid grid-cols-2 gap-4">
+          <div className="flex flex-col gap-4">
             <FormField
               control={form.control}
-              name="isPublished"
+              name="slug"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4">
+                <FormItem className="w-full">
+                  <FormLabel>{t("form.slug")}</FormLabel>
                   <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
+                    <Input
                       disabled={loading}
+                      placeholder={t("form.slugPlaceholder")}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        setSlugManuallyChanged(true);
+                      }}
+                      value={field.value}
                     />
                   </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel>{t("form.isPublished")}</FormLabel>
-                    <p className="text-sm text-muted-foreground">
-                      {t("form.isPublishedDescription")}
-                    </p>
-                  </div>
+                  <FormMessage />
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="publicationDate"
@@ -257,33 +232,54 @@ export const BlogPostForm: React.FC<{
                 );
               }}
             />
-          </div>
+            <FormField
+              control={form.control}
+              name="isPublished"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-center">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                      disabled={loading}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>{t("form.isPublished")}</FormLabel>
+                    <p className="text-sm text-muted-foreground">
+                      {t("form.isPublishedDescription")}
+                    </p>
+                  </div>
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="tags"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>
-                  {t("form.tags")}{" "}
-                  <InfoTooltip>{t("form.tagsTooltip")}</InfoTooltip>
-                </FormLabel>
-                <FormControl>
-                  <TagInput
-                    {...field}
-                    value={field.value || []}
-                    onChange={(e) => {
-                      field.onChange(e);
-                      field.onBlur();
-                    }}
-                    h="sm"
-                    tagValidator={blogPostTagSchema}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="tags"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    {t("form.tags")}{" "}
+                    <InfoTooltip>{t("form.tagsTooltip")}</InfoTooltip>
+                  </FormLabel>
+                  <FormControl>
+                    <TagInput
+                      {...field}
+                      value={field.value || []}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        field.onBlur();
+                      }}
+                      h="sm"
+                      tagValidator={blogPostTagSchema}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
         </div>
         <SaveButton form={form} />
       </form>

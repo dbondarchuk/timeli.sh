@@ -38,6 +38,16 @@ export const ToolbarBlockToolbarGroup = () => {
     [dispatchAction, blockId],
   );
 
+  const setMetadata = useCallback(
+    (metadata: Record<string, any> | undefined) => {
+      dispatchAction({
+        type: "set-block-metadata",
+        value: { blockId, metadata },
+      });
+    },
+    [dispatchAction, blockId],
+  );
+
   if (!BlockToolbar) {
     return null;
   }
@@ -50,6 +60,8 @@ export const ToolbarBlockToolbarGroup = () => {
           data={blockData}
           setData={setBlockData}
           base={selectedBlock?.base}
+          metadata={selectedBlock?.metadata}
+          onMetadataChange={setMetadata}
           onBaseChange={(base) => {
             dispatchAction({
               type: "set-block-base",

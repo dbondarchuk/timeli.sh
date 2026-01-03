@@ -18,6 +18,7 @@ import {
   useSetActiveDragBlockId,
   useSetActiveOverBlockContextId,
   useSetDisableAnimation,
+  useTemplates,
 } from "../../documents/editor/context";
 import { TEditorBlock } from "../../documents/editor/core";
 import { generateId } from "../../documents/helpers/block-id";
@@ -59,7 +60,10 @@ const EnableDisableAnimations = memo(
 const sensors = [
   PointerSensor.configure({
     activatorElements(source) {
-      if (source.data?.type === "block-template") {
+      if (
+        source.data?.type === "block-template" ||
+        source.data?.type === "composite-template"
+      ) {
         // Allow pointer sensor to activate on the element and the handle for template blocks
         return [source.element, source.handle];
       } else {
@@ -76,6 +80,7 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = memo(
     const dispatchAction = useDispatchAction();
     const setActiveDragBlock = useSetActiveDragBlockId();
     const setActiveOverBlock = useSetActiveOverBlockContextId();
+    const templates = useTemplates();
 
     const selectedScreenSize = useSelectedScreenSize();
     const selectedView = useSelectedView();
@@ -103,10 +108,18 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = memo(
               typeof blockData.blockConfig.defaultValue === "function"
                 ? blockData.blockConfig.defaultValue()
                 : blockData.blockConfig.defaultValue,
+            metadata: blockData.blockConfig.defaultMetadata,
           };
 
           setActiveDragBlock(newBlock.id, newBlock);
           return;
+        } else if (blockData?.type === "composite-template") {
+          const template = templates?.[blockData.blockType];
+          if (template) {
+            const newBlock = template.getBlock();
+            setActiveDragBlock(newBlock.id, newBlock);
+            return;
+          }
         }
       }
 
@@ -200,6 +213,7 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = memo(
               typeof blockData.blockConfig.defaultValue === "function"
                 ? blockData.blockConfig.defaultValue()
                 : blockData.blockConfig.defaultValue,
+            metadata: blockData.blockConfig.defaultMetadata,
           };
 
           dispatchAction({
@@ -213,6 +227,21 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = memo(
           });
 
           return;
+        } else if (blockData?.type === "composite-template") {
+          const template = templates?.[blockData.blockType];
+          if (template) {
+            const newBlock = template.getBlock();
+            dispatchAction({
+              type: "add-block",
+              value: {
+                block: newBlock,
+                parentBlockId: activeOverBlock.blockId,
+                parentBlockProperty: activeOverBlock.property,
+                index: activeOverBlock.index,
+              },
+            });
+            return;
+          }
         }
       }
 

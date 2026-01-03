@@ -69,6 +69,7 @@ export type AppMenuItem<
   }[];
   notScrollable?: boolean;
   isHidden?: boolean;
+  hideHeading?: boolean;
   pageTitle?: AllKeys<T, CustomKeys>;
   pageDescription?: AllKeys<T, CustomKeys>;
 } & (

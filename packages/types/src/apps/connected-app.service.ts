@@ -29,6 +29,7 @@ export interface IConnectedApp<TData = any, TToken = any> {
     data: any,
   ) => Promise<any>;
   processStaticRequest?: (data: any) => Promise<any>;
+  install?: (appData: ConnectedAppData<TData, TToken>) => Promise<void>;
   unInstall?: (appData: ConnectedAppData<TData, TToken>) => Promise<void>;
   processAppCall?: (
     appData: ConnectedAppData<TData, TToken>,

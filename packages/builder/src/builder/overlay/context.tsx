@@ -15,11 +15,11 @@ import {
 import { createPortal } from "react-dom";
 import { useIsCurrentBlockOverlay } from "../../documents/editor/block";
 import {
-  useAllowedBlockTypes,
+  useAllowedRule,
+  useBlockDefinition,
   useBlockDisableOptions,
   useBlockParentData,
   useBlocks,
-  useBlockType,
   useDisableAnimation,
   useHasActiveDragBlock,
   useIsActiveDragBlock,
@@ -29,6 +29,7 @@ import {
   useSetDisableAnimation,
   useSetSelectedBlockId,
 } from "../../documents/editor/context";
+import { matchesRule } from "../../documents/utils";
 import { DndContext } from "../../types/dndContext";
 import { createDynamicCollisionDetector } from "../dnd/collision/dynamic";
 import { usePortalContext } from "../template-panel/portal-context";
@@ -252,13 +253,13 @@ export function OverlayProvider({ children }: { children: ReactNode }) {
   // One global scroll listener
   useEffect(() => {
     const onScroll = () => updateActiveBlocks();
-    document.defaultView?.addEventListener("scroll", onScroll, true);
+    // document.defaultView?.addEventListener("scroll", onScroll, true);
 
-    const intervalId = setInterval(() => updateActiveBlocks(), 10);
+    // const intervalId = setInterval(() => updateActiveBlocks(), 10);
 
     return () => {
-      document.defaultView?.removeEventListener("scroll", onScroll, true);
-      clearInterval(intervalId);
+      // document.defaultView?.removeEventListener("scroll", onScroll, true);
+      // clearInterval(intervalId);
     };
   }, [updateActiveBlocks, document]);
 
@@ -308,14 +309,15 @@ export function useBlockEditor(
   const isSelected = useIsSelectedBlock(id);
   const isOverlay = useIsCurrentBlockOverlay();
 
-  const blockType = useBlockType(id);
+  const blockDefinition = useBlockDefinition(id);
+  const blockType = blockDefinition?.type;
 
   const { parentBlockId, parentProperty, index, depth } =
     useBlockParentData(id)!;
 
   const disable = useBlockDisableOptions(id);
-  const allowOnly = useAllowedBlockTypes(parentBlockId, parentProperty);
-  const parentBlockType = useBlockType(parentBlockId);
+  const allowOnly = useAllowedRule(parentBlockId, parentProperty);
+  const parentBlockDefinition = useBlockDefinition(parentBlockId);
   const blocks = useBlocks();
   const isActiveDragBlock = useIsActiveDragBlock(id);
 
@@ -329,13 +331,20 @@ export function useBlockEditor(
     accept: (draggable) => {
       if (!draggable.type || isOverlay) return false;
       const type = draggable.type as string;
-      if (!allowOnly?.includes(type)) return false;
+
+      if (allowOnly === "impossible") return false;
+      if (
+        allowOnly &&
+        blockDefinition &&
+        !matchesRule(blockDefinition, allowOnly)
+      )
+        return false;
 
       const allowedParents = blocks[type]?.allowedIn;
       if (
         allowedParents &&
-        parentBlockType &&
-        !allowedParents.includes(parentBlockType)
+        parentBlockDefinition &&
+        !matchesRule(parentBlockDefinition, allowedParents)
       )
         return false;
 
@@ -508,7 +517,7 @@ const OverlayLayer = () => {
   );
 
   return createPortal(
-    <div className="fixed inset-0 pointer-events-none z-20">
+    <div className="absolute inset-0 pointer-events-none z-10">
       {hoveredBlock && selectedId !== hoveredId && !isResizing && (
         <div
           className="absolute border border-blue-300"

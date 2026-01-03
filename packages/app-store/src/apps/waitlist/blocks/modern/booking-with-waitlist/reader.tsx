@@ -13,11 +13,12 @@ export const BookingWithWaitlistReader = ({
   style,
   args,
   isEditor,
-  appId,
   ...rest
 }: BookingWithWaitlistReaderProps) => {
   const className = generateClassName();
   const base = rest.block.base;
+  const metadata = rest.block.metadata;
+  const appId = metadata?.waitlistAppId;
 
   return (
     <>

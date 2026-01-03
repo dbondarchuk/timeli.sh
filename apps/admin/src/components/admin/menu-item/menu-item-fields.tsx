@@ -20,7 +20,7 @@ import {
   TextSizes,
   TextWeights,
 } from "@timelish/ui";
-import { Sortable } from "@timelish/ui-admin";
+import { PageSelectorInput, Sortable } from "@timelish/ui-admin";
 import { useMemo } from "react";
 import { useFieldArray, UseFormReturn } from "react-hook-form";
 import { IconSelect } from "./icon-select";
@@ -211,9 +211,11 @@ export const MenuItemFields: React.FC<MenuItemFieldsProps> = ({
               <FormItem>
                 <FormLabel>{t("menuItem.fields.url")}</FormLabel>
                 <FormControl>
-                  <Input
+                  <PageSelectorInput
                     disabled={disabled}
                     placeholder={t("menuItem.fields.urlPlaceholder")}
+                    h="sm"
+                    className="w-full"
                     {...field}
                   />
                 </FormControl>

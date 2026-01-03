@@ -1,0 +1,29 @@
+{
+  "name": "@timelish/rte-inline",
+  "version": "0.0.1",
+  "private": true,
+  "sideEffects": false,
+  "scripts": {
+    "type-check": "tsc --pretty --noEmit",
+    "type-check:ci": "tsc-absolute --pretty --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./reader": "./src/reader.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "19.0.2",
+    "@types/react-dom": "19.0.2",
+    "@types/react-window": "^1.8.8",
+    "@timelish/eslint-config": "*",
+    "@timelish/tailwind-config": "*",
+    "@timelish/typescript-config": "*",
+    "typescript": "5.5.4"
+  },
+  "dependencies": {
+    "@timelish/ui": "*"
+  }
+}

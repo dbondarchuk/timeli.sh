@@ -62,7 +62,8 @@
       "notFound": "Block not found: {blockType}",
       "panel": {
         "title": "Blocks",
-        "subtitle": "Add a new block"
+        "subtitle": "Add a new block",
+        "template": "Template"
       },
       "outline": {
         "title": "Document structure",
@@ -1128,8 +1129,11 @@
         "displayName": "Loop Container",
         "forEachItemInValueFormat": "For each <item></item> in <value></value>",
         "value": "Value",
+        "itemName": "Item name",
+        "itemNameHelperText": "Optional. If not provided, the item name will be set to '_item'",
         "errors": {
-          "value": "Value is required"
+          "value": "Value is required",
+          "itemName": "Item name must be a valid variable name (e.g. item, item1, item_1, _item1, etc.)"
         }
       },
       "gridContainer": {

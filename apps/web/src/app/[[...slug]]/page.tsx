@@ -1,7 +1,12 @@
 import { getServicesContainer } from "@/utils/utils";
 import { AppsBlocksReaders } from "@timelish/app-store/blocks/readers";
 import { getLoggerFactory } from "@timelish/logger";
-import { Header, PageReader, Styling } from "@timelish/page-builder/reader";
+import {
+  BlockProviderRegistry,
+  Header,
+  PageReader,
+  Styling,
+} from "@timelish/page-builder/reader";
 import { formatArguments, setPageData } from "@timelish/utils";
 import { DateTime } from "luxon";
 import { Metadata, ResolvingMetadata } from "next";
@@ -241,6 +246,7 @@ export default async function Page(props: Props) {
       now: new Date(),
       path: routeParams.slug?.join("/") || "",
       params,
+      searchParams: searchParams || {},
       ...rest,
     };
 
@@ -278,31 +284,23 @@ export default async function Page(props: Props) {
         "ui-components",
       );
 
-    const additionalBlocks = apps?.reduce(
-      (acc, app) => {
-        acc.readers = {
-          ...acc.readers,
-          ...Object.fromEntries(
-            Object.entries(AppsBlocksReaders[app.name]).map(
-              ([blockName, value]) => [
-                `${blockName}-${app._id}`,
+    const blockRegistry: BlockProviderRegistry = {
+      providers:
+        apps?.map((app) => ({
+          providerName: app.name,
+          priority: 100,
+          blocks: Object.fromEntries(
+            Object.entries(AppsBlocksReaders[app.name] || {}).map(
+              ([name, value]) => [
+                name,
                 {
-                  ...value,
-                  staticProps: {
-                    ...value.staticProps,
-                    appId: app._id,
-                    appName: app.name,
-                  },
+                  reader: value,
                 },
               ],
             ),
           ),
-        };
-
-        return acc;
-      },
-      { readers: {} },
-    );
+        })) || [],
+    };
 
     return (
       <>
@@ -313,13 +311,13 @@ export default async function Page(props: Props) {
         <PageReader
           document={content}
           args={formattedArgs}
-          additionalBlocks={additionalBlocks?.readers}
+          blockRegistry={blockRegistry}
         />
         {footer?.content && (
           <PageReader
             document={footer.content}
             args={formattedArgs}
-            additionalBlocks={additionalBlocks?.readers}
+            blockRegistry={blockRegistry}
           />
         )}
       </>

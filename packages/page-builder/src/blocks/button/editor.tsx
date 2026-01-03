@@ -1,8 +1,8 @@
 "use client";
 
 import {
-  EditorBlock,
-  useBlockChildrenBlockIds,
+  BlockFilterRule,
+  EditorChildren,
   useBlockEditor,
   useCurrentBlock,
 } from "@timelish/builder";
@@ -23,11 +23,14 @@ const disable = {
   disableDrag: true,
 };
 
+const allowOnly: BlockFilterRule = {
+  capabilities: ["inline"],
+};
+
 export const ButtonEditor = ({ props, style }: ButtonProps) => {
   const currentBlock = useCurrentBlock<ButtonProps>();
   const onResize = useResizeBlockStyles();
   const overlayProps = useBlockEditor(currentBlock.id, onResize);
-  const contentId = useBlockChildrenBlockIds(currentBlock.id, "props")?.[0];
 
   const base = currentBlock.base;
 
@@ -48,17 +51,11 @@ export const ButtonEditor = ({ props, style }: ButtonProps) => {
         id={base?.id}
         {...overlayProps}
       >
-        {!!contentId && (
-          <EditorBlock
-            key={contentId}
-            blockId={contentId}
-            {...disable}
-            index={0}
-            parentBlockId={currentBlock.id}
-            parentProperty="content"
-            allowedTypes="InlineContainer"
-          />
-        )}
+        <EditorChildren
+          blockId={currentBlock.id}
+          property="props"
+          allow={allowOnly}
+        />
       </span>
     </>
   );

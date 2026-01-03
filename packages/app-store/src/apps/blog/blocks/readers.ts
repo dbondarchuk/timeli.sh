@@ -1,20 +1,35 @@
 import { ReaderDocumentBlocksDictionary } from "@timelish/builder";
-import { BlogPostsListReader } from "./posts-list/reader";
-import { BlogBlocksSchema } from "./schema";
+import { BlogPostContainerReader } from "./post-container/reader";
 import { BlogPostContentReader } from "./post-content/reader";
-import { BlogTagListReader } from "./tag-list/reader";
+import { BlogPostNavigationButtonReader } from "./post-navigation-button/reader";
+import { BlogPostPublishDateReader } from "./post-publish-date/reader";
+import { BlogPostTagReader } from "./post-tag/reader";
+import { BlogPostTitleReader } from "./post-title/reader";
+import { BlogPostsContainerReader } from "./posts-container/reader";
+import type { BlogBlocksSchema } from "./schema";
 
 export const BlogReaders: ReaderDocumentBlocksDictionary<
   typeof BlogBlocksSchema
 > = {
-  BlogPostsList: {
-    Reader: BlogPostsListReader,
+  BlogPostContainer: {
+    Reader: BlogPostContainerReader,
+  },
+  BlogPostTitle: {
+    Reader: BlogPostTitleReader,
   },
   BlogPostContent: {
     Reader: BlogPostContentReader,
   },
-  BlogTagList: {
-    Reader: BlogTagListReader,
+  BlogPostTag: {
+    Reader: BlogPostTagReader,
+  },
+  BlogPostPublishDate: {
+    Reader: BlogPostPublishDateReader,
+  },
+  BlogPostsContainer: {
+    Reader: BlogPostsContainerReader,
+  },
+  BlogPostNavigationButton: {
+    Reader: BlogPostNavigationButtonReader,
   },
 };
-

@@ -13,7 +13,7 @@ export type BookingWithWaitlistProps = z.infer<
   typeof BookingWithWaitlistPropsSchema
 >;
 export type BookingWithWaitlistReaderProps = BaseReaderBlockProps<any> &
-  BookingWithWaitlistProps & { appId?: string };
+  BookingWithWaitlistProps;
 
 export const BookingWithWaitlistPropsDefaults = {
   style: {

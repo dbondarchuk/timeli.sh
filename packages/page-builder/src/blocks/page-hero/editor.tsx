@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  BlockFilterRule,
   EditorBlock,
   useBlockChildrenBlockIds,
   useBlockEditor,
@@ -16,6 +17,10 @@ const disable = {
   disableDelete: true,
   disableClone: true,
   disableDrag: true,
+};
+
+const allowOnly: BlockFilterRule = {
+  capabilities: ["heading"],
 };
 
 export const PageHeroEditor = ({ props, style }: PageHeroProps) => {
@@ -49,7 +54,7 @@ export const PageHeroEditor = ({ props, style }: PageHeroProps) => {
             index={0}
             parentBlockId={currentBlock.id}
             parentProperty="title"
-            allowedTypes="Heading"
+            allow={allowOnly}
           />
         )}
         {!!subtitleId && (
@@ -59,7 +64,7 @@ export const PageHeroEditor = ({ props, style }: PageHeroProps) => {
             index={0}
             parentBlockId={currentBlock.id}
             parentProperty="subtitle"
-            allowedTypes="Heading"
+            allow={allowOnly}
           />
         )}
         {!!buttonsId && (
