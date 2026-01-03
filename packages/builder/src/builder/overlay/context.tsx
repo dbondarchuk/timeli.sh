@@ -253,13 +253,13 @@ export function OverlayProvider({ children }: { children: ReactNode }) {
   // One global scroll listener
   useEffect(() => {
     const onScroll = () => updateActiveBlocks();
-    // document.defaultView?.addEventListener("scroll", onScroll, true);
+    document.defaultView?.addEventListener("scroll", onScroll, true);
 
-    // const intervalId = setInterval(() => updateActiveBlocks(), 10);
+    const intervalId = setInterval(() => updateActiveBlocks(), 10);
 
     return () => {
-      // document.defaultView?.removeEventListener("scroll", onScroll, true);
-      // clearInterval(intervalId);
+      document.defaultView?.removeEventListener("scroll", onScroll, true);
+      clearInterval(intervalId);
     };
   }, [updateActiveBlocks, document]);
 

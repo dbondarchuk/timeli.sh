@@ -1082,6 +1082,7 @@ export const EditableText = forwardRef<HTMLDivElement, EditableTextProps>(
                 variables={variables}
                 onSelect={handleVariableSelect}
                 onClose={() => setShowAutocomplete(false)}
+                documentElement={documentElement}
               />
             </div>,
             portalContainerElement,
