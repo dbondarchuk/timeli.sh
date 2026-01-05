@@ -1,3 +1,5 @@
+import { BuilderKeys, useI18n } from "@timelish/i18n";
+import { colors } from "@timelish/types";
 import {
   Button,
   cn,
@@ -10,7 +12,25 @@ import {
   TooltipResponsiveTrigger,
 } from "@timelish/ui";
 import { Sketch } from "@uiw/react-color";
-import { COLORS } from "../floating-toolbar";
+
+export const COLOR_NAMES = colors;
+
+export const COLORS: Record<
+  (typeof COLOR_NAMES)[number],
+  { label: BuilderKeys; value: string }
+> = COLOR_NAMES.reduce(
+  (map, color) => ({
+    ...map,
+    [color]: {
+      label: `rte.colors.options.${color}` satisfies BuilderKeys,
+      value: `hsl(var(--value-${color}-color))`,
+    },
+  }),
+  {} as Record<
+    (typeof COLOR_NAMES)[number],
+    { label: BuilderKeys; value: string }
+  >,
+);
 
 export interface ColorPickerButtonProps {
   mark: string;
@@ -37,6 +57,7 @@ export const ColorPickerButton = ({
   contentRef,
   color: currentColor,
 }: ColorPickerButtonProps) => {
+  const t = useI18n("builder");
   return (
     <Popover open={open} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>
@@ -67,31 +88,26 @@ export const ColorPickerButton = ({
         />
         <div className="p-1 bg-card rounded-sm flex flex-col gap-2">
           <div className="flex flex-wrap gap-0.5 items-center justify-center">
-            {Object.values(COLORS)
-              .map(({ label, value }) => ({
-                color: value,
-                title: label,
-              }))
-              .map(({ color, title }) => (
-                <TooltipResponsive>
-                  <TooltipResponsiveTrigger>
-                    <button
-                      key={color}
-                      className={cn(
-                        "size-6 rounded border border-border transition-transform hover:scale-110",
-                        color === currentColor && "scale-105",
-                      )}
-                      style={{ backgroundColor: color }}
-                      onClick={() => {
-                        onChange(color);
-                        onClose();
-                      }}
-                      type="button"
-                    />
-                  </TooltipResponsiveTrigger>
-                  <TooltipResponsiveContent>{title}</TooltipResponsiveContent>
-                </TooltipResponsive>
-              ))}
+            {Object.values(COLORS).map(({ value: color, label }) => (
+              <TooltipResponsive>
+                <TooltipResponsiveTrigger>
+                  <button
+                    key={color}
+                    className={cn(
+                      "size-6 rounded border border-border transition-transform hover:scale-110",
+                      color === currentColor && "scale-105",
+                    )}
+                    style={{ backgroundColor: color }}
+                    onClick={() => {
+                      onChange(color);
+                      onClose();
+                    }}
+                    type="button"
+                  />
+                </TooltipResponsiveTrigger>
+                <TooltipResponsiveContent>{t(label)}</TooltipResponsiveContent>
+              </TooltipResponsive>
+            ))}
           </div>
           <Button
             variant="outline"
@@ -102,7 +118,7 @@ export const ColorPickerButton = ({
               onClose();
             }}
           >
-            Inherit
+            {t("rte.common.inherit")}
           </Button>
         </div>
       </PopoverContent>

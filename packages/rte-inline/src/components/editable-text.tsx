@@ -1,6 +1,6 @@
 "use client";
 
-import { cn, mergeRefs } from "@timelish/ui";
+import { cn, mergeRefs, useDebounceCallback } from "@timelish/ui";
 import type React from "react";
 import {
   forwardRef,
@@ -11,6 +11,7 @@ import {
   useState,
 } from "react";
 import { createPortal } from "react-dom";
+import { RTEProvider, useRTEContext } from "../context/rte-context";
 import type {
   DisabledFeatures,
   RichTextValue,
@@ -18,17 +19,12 @@ import type {
   VariableData,
 } from "../lib/rich-text-types";
 import {
-  adjustFontSizesInRange,
-  adjustFontWeightsInRange,
-  applyMarksToRange,
-  getBlockPosition,
-  getMarksInRange,
   getSelectionPositions,
   htmlToRichText,
   normalizeRichText,
-  removeMarkFromRange,
   stringToRichText,
 } from "../lib/rich-text-utils";
+import { pluginRegistry } from "../plugins";
 import { richTextToHtml } from "../styles/apply-text-styles";
 import { FloatingToolbar } from "./floating-toolbar";
 import { VariableAutocomplete } from "./variable-autocomplete";
@@ -47,11 +43,16 @@ interface EditableTextProps {
   portalContainer?: string;
 }
 
-export const EditableText = forwardRef<HTMLDivElement, EditableTextProps>(
+// Inner component that uses the context
+const EditableTextInner = forwardRef<
+  HTMLDivElement,
+  Omit<EditableTextProps, "value" | "onChange"> & {
+    richTextValue: RichTextValue;
+    popoverRefs: React.RefObject<Set<HTMLElement>>;
+  }
+>(
   (
     {
-      value,
-      onChange,
       placeholder = "Type something...",
       className = "",
       inline = false,
@@ -61,11 +62,14 @@ export const EditableText = forwardRef<HTMLDivElement, EditableTextProps>(
       disabledFeatures = [],
       documentElement = document,
       portalContainer = "body",
+      richTextValue,
+      popoverRefs,
     },
     ref,
   ) => {
+    const rteContext = useRTEContext();
     const defaultView = documentElement.defaultView ?? window;
-    const editorRef = useRef<HTMLDivElement>(null);
+    const editorRef = rteContext.editorRef;
     const toolbarRef = useRef<HTMLDivElement>(null);
     const autocompleteRef = useRef<HTMLDivElement>(null);
     const savedSelectionRef = useRef<{ start: number; end: number } | null>(
@@ -86,40 +90,6 @@ export const EditableText = forwardRef<HTMLDivElement, EditableTextProps>(
       left: 0,
     });
     const [variableQuery, setVariableQuery] = useState("");
-    const [history, setHistory] = useState<RichTextValue[]>([]);
-    const [historyIndex, setHistoryIndex] = useState(-1);
-    const isUndoRedoRef = useRef(false);
-    const lastValueRef = useRef<string>("");
-    const popoverRefs = useRef<Set<HTMLElement>>(new Set());
-
-    const richTextValue =
-      typeof value === "string" ? stringToRichText(value) : value;
-
-    useEffect(() => {
-      const valueStr = JSON.stringify(richTextValue);
-
-      if (isUndoRedoRef.current) {
-        isUndoRedoRef.current = false;
-        lastValueRef.current = valueStr;
-        return;
-      }
-
-      if (valueStr === lastValueRef.current) {
-        return;
-      }
-
-      lastValueRef.current = valueStr;
-      const newHistory = history.slice(0, historyIndex + 1);
-      newHistory.push(richTextValue);
-
-      if (newHistory.length > 50) {
-        newHistory.shift();
-        setHistory(newHistory);
-      } else {
-        setHistory(newHistory);
-        setHistoryIndex(historyIndex + 1);
-      }
-    }, [richTextValue]);
 
     const renderToHTML = useCallback(
       (blocks: RichTextValue): string => {
@@ -213,6 +183,59 @@ export const EditableText = forwardRef<HTMLDivElement, EditableTextProps>(
       [inline],
     );
 
+    const getTextOffset = useCallback(
+      (root: Node, node: Node, offset: number): number => {
+        let pos = 0;
+        const walker = documentElement.createTreeWalker(
+          root,
+          NodeFilter.SHOW_TEXT,
+        );
+
+        let currentNode = walker.nextNode();
+        while (currentNode) {
+          if (currentNode === node) {
+            return pos + offset;
+          }
+          pos += currentNode.textContent?.length || 0;
+          currentNode = walker.nextNode();
+        }
+
+        return pos;
+      },
+      [documentElement],
+    );
+
+    const setRangeFromOffset = useCallback(
+      (root: Node, range: Range, start: number, end: number) => {
+        let pos = 0;
+        const walker = documentElement.createTreeWalker(
+          root,
+          NodeFilter.SHOW_TEXT,
+        );
+        let startSet = false;
+        let endSet = false;
+
+        let currentNode = walker.nextNode();
+        while (currentNode && !endSet) {
+          const nodeLength = currentNode.textContent?.length || 0;
+
+          if (!startSet && pos + nodeLength >= start) {
+            range.setStart(currentNode, Math.min(start - pos, nodeLength));
+            startSet = true;
+          }
+
+          if (startSet && pos + nodeLength >= end) {
+            range.setEnd(currentNode, Math.min(end - pos, nodeLength));
+            endSet = true;
+          }
+
+          pos += nodeLength;
+          currentNode = walker.nextNode();
+        }
+      },
+      [documentElement],
+    );
+
     const isUpdatingRef = useRef(false);
 
     useEffect(() => {
@@ -266,7 +289,15 @@ export const EditableText = forwardRef<HTMLDivElement, EditableTextProps>(
           // Ignore cursor restoration errors
         }
       }
-    }, [richTextValue, renderToHTML]);
+    }, [
+      richTextValue,
+      renderToHTML,
+      getTextOffset,
+      setRangeFromOffset,
+      editorRef,
+      defaultView,
+      documentElement,
+    ]);
 
     const parseHTMLToRichText = useCallback(
       (html: string): RichTextValue => {
@@ -274,58 +305,6 @@ export const EditableText = forwardRef<HTMLDivElement, EditableTextProps>(
       },
       [defaultView],
     );
-
-    const getTextOffset = (root: Node, node: Node, offset: number): number => {
-      let pos = 0;
-      const walker = documentElement.createTreeWalker(
-        root,
-        NodeFilter.SHOW_TEXT,
-      );
-
-      let currentNode = walker.nextNode();
-      while (currentNode) {
-        if (currentNode === node) {
-          return pos + offset;
-        }
-        pos += currentNode.textContent?.length || 0;
-        currentNode = walker.nextNode();
-      }
-
-      return pos;
-    };
-
-    const setRangeFromOffset = (
-      root: Node,
-      range: Range,
-      start: number,
-      end: number,
-    ) => {
-      let pos = 0;
-      const walker = documentElement.createTreeWalker(
-        root,
-        NodeFilter.SHOW_TEXT,
-      );
-      let startSet = false;
-      let endSet = false;
-
-      let currentNode = walker.nextNode();
-      while (currentNode && !endSet) {
-        const nodeLength = currentNode.textContent?.length || 0;
-
-        if (!startSet && pos + nodeLength >= start) {
-          range.setStart(currentNode, Math.min(start - pos, nodeLength));
-          startSet = true;
-        }
-
-        if (startSet && pos + nodeLength >= end) {
-          range.setEnd(currentNode, Math.min(end - pos, nodeLength));
-          endSet = true;
-        }
-
-        pos += nodeLength;
-        currentNode = walker.nextNode();
-      }
-    };
 
     const handleInput = useCallback(() => {
       if (!editorRef.current || isUpdatingRef.current) return;
@@ -336,10 +315,10 @@ export const EditableText = forwardRef<HTMLDivElement, EditableTextProps>(
       const newValue = parseHTMLToRichText(html);
       const normalized = normalizeRichText(newValue);
 
-      onChange(normalized);
+      rteContext.onChange(normalized);
 
       setTimeout(() => detectVariableInput(), 0);
-    }, [onChange, parseHTMLToRichText]);
+    }, [rteContext, parseHTMLToRichText]);
 
     const detectVariableInput = useCallback(() => {
       if (!variables || !editorRef.current) return;
@@ -423,71 +402,6 @@ export const EditableText = forwardRef<HTMLDivElement, EditableTextProps>(
       [handleInput],
     );
 
-    const recalculateActiveMarksInRange = useCallback(
-      (
-        richTextValue: RichTextValue,
-        startBlock: number,
-        startOffset: number,
-        endBlock: number,
-        endOffset: number,
-      ) => {
-        const marksInfo = getMarksInRange(
-          richTextValue,
-          startBlock,
-          startOffset,
-          endBlock,
-          endOffset,
-        );
-
-        setActiveMarks(marksInfo);
-      },
-      [setActiveMarks],
-    );
-
-    const saveSelection = useCallback(() => {
-      if (!editorRef.current) return;
-
-      const selection = defaultView.getSelection();
-      if (!selection || selection.rangeCount === 0) return;
-
-      const range = selection.getRangeAt(0);
-      const start = getTextOffset(
-        editorRef.current,
-        range.startContainer,
-        range.startOffset,
-      );
-      const end = getTextOffset(
-        editorRef.current,
-        range.endContainer,
-        range.endOffset,
-      );
-
-      savedSelectionRef.current = { start, end };
-    }, []);
-
-    const restoreSelection = useCallback(() => {
-      if (!editorRef.current || !savedSelectionRef.current)
-        return Promise.resolve();
-
-      return new Promise<void>((resolve) => {
-        setTimeout(() => {
-          const sel = defaultView.getSelection();
-          if (sel && editorRef.current) {
-            const newRange = documentElement.createRange();
-            setRangeFromOffset(
-              editorRef.current,
-              newRange,
-              savedSelectionRef.current!.start,
-              savedSelectionRef.current!.end,
-            );
-            sel.removeAllRanges();
-            sel.addRange(newRange);
-          }
-          resolve();
-        }, 0);
-      });
-    }, []);
-
     const handleSelectionChange = useCallback(() => {
       if (!editorRef.current?.contains(documentElement.activeElement)) return;
 
@@ -514,15 +428,9 @@ export const EditableText = forwardRef<HTMLDivElement, EditableTextProps>(
         return;
       }
 
-      const marksInfo = getMarksInRange(
-        richTextValue,
-        startPos.blockIndex,
-        startPos.offset,
-        endPos.blockIndex,
-        endPos.offset,
-      );
+      const marksInfo = rteContext.getActiveMarks();
       setActiveMarks(marksInfo);
-      saveSelection();
+      rteContext.saveSelection();
       setShowToolbar(true);
 
       const rect = range.getBoundingClientRect();
@@ -530,7 +438,14 @@ export const EditableText = forwardRef<HTMLDivElement, EditableTextProps>(
         top: rect.top + defaultView.scrollY - 50,
         left: rect.left + defaultView.scrollX + rect.width / 2,
       });
-    }, [richTextValue, saveSelection, defaultView]);
+    }, [
+      richTextValue,
+      rteContext,
+      defaultView,
+      getSelectionPositions,
+      editorRef,
+      documentElement,
+    ]);
 
     useEffect(() => {
       documentElement.addEventListener(
@@ -544,7 +459,7 @@ export const EditableText = forwardRef<HTMLDivElement, EditableTextProps>(
           handleSelectionChange,
         );
       };
-    }, [handleSelectionChange, defaultView]);
+    }, [handleSelectionChange, defaultView, rteContext]);
 
     useEffect(() => {
       const handleClickOutside = (e: MouseEvent) => {
@@ -552,7 +467,7 @@ export const EditableText = forwardRef<HTMLDivElement, EditableTextProps>(
 
         // Check if click is inside any registered popover
         let isInsidePopover = false;
-        popoverRefs.current.forEach((popoverEl) => {
+        popoverRefs.current?.forEach((popoverEl) => {
           if (popoverEl.contains(target)) {
             isInsidePopover = true;
             e.stopPropagation();
@@ -576,300 +491,26 @@ export const EditableText = forwardRef<HTMLDivElement, EditableTextProps>(
       documentElement.addEventListener("mousedown", handleClickOutside);
       return () =>
         documentElement.removeEventListener("mousedown", handleClickOutside);
-    }, []);
-
-    const applyFormat = useCallback(
-      (type: keyof TextMark, value?: string | number | boolean | "inherit") => {
-        const selection = defaultView.getSelection();
-        if (!selection || selection.rangeCount === 0 || !editorRef.current)
-          return;
-
-        const range = selection.getRangeAt(0);
-        const start = getTextOffset(
-          editorRef.current,
-          range.startContainer,
-          range.startOffset,
-        );
-        const end = getTextOffset(
-          editorRef.current,
-          range.endContainer,
-          range.endOffset,
-        );
-
-        if (start === end) return;
-
-        const startPos = getBlockPosition(richTextValue, start);
-        const endPos = getBlockPosition(richTextValue, end);
-
-        let newValue: RichTextValue;
-
-        if (value === "inherit") {
-          newValue = removeMarkFromRange(
-            richTextValue,
-            startPos.blockIndex,
-            startPos.offset,
-            endPos.blockIndex,
-            endPos.offset,
-            type,
-          );
-        } else if (typeof value === "boolean") {
-          if (activeMarks.marks[type]) {
-            newValue = removeMarkFromRange(
-              richTextValue,
-              startPos.blockIndex,
-              startPos.offset,
-              endPos.blockIndex,
-              endPos.offset,
-              type,
-            );
-          } else {
-            newValue = applyMarksToRange(
-              richTextValue,
-              startPos.blockIndex,
-              startPos.offset,
-              endPos.blockIndex,
-              endPos.offset,
-              { [type]: true },
-            );
-          }
-        } else if (value !== undefined) {
-          newValue = applyMarksToRange(
-            richTextValue,
-            startPos.blockIndex,
-            startPos.offset,
-            endPos.blockIndex,
-            endPos.offset,
-            { [type]: value },
-          );
-        } else {
-          if (activeMarks.marks[type]) {
-            newValue = removeMarkFromRange(
-              richTextValue,
-              startPos.blockIndex,
-              startPos.offset,
-              endPos.blockIndex,
-              endPos.offset,
-              type,
-            );
-          } else {
-            newValue = applyMarksToRange(
-              richTextValue,
-              startPos.blockIndex,
-              startPos.offset,
-              endPos.blockIndex,
-              endPos.offset,
-              { [type]: true },
-            );
-          }
-        }
-
-        onChange(normalizeRichText(newValue));
-      },
-      [richTextValue, activeMarks, onChange],
-    );
+    }, [popoverRefs, editorRef, toolbarRef, autocompleteRef, documentElement]);
 
     const handleFormat = useCallback(
       async (
         type: keyof TextMark,
         value?: string | number | boolean | "inherit",
       ) => {
-        await restoreSelection();
-        applyFormat(type, value);
+        await rteContext.restoreSelection();
+        rteContext.applyFormat(type, value);
       },
-      [applyFormat, restoreSelection],
-    );
-
-    const handleClearFormat = useCallback(async () => {
-      await restoreSelection();
-      const selection = defaultView.getSelection();
-      if (!selection || selection.rangeCount === 0 || !editorRef.current)
-        return;
-
-      const range = selection.getRangeAt(0);
-      const start = getTextOffset(
-        editorRef.current,
-        range.startContainer,
-        range.startOffset,
-      );
-      const end = getTextOffset(
-        editorRef.current,
-        range.endContainer,
-        range.endOffset,
-      );
-
-      if (start === end) return;
-
-      const startPos = getBlockPosition(richTextValue, start);
-      const endPos = getBlockPosition(richTextValue, end);
-
-      const newValue = richTextValue.map((block, blockIndex) => {
-        if (
-          blockIndex < startPos.blockIndex ||
-          blockIndex > endPos.blockIndex
-        ) {
-          return block;
-        }
-
-        const blockLength = block.content.reduce(
-          (sum, node) => sum + node.text.length,
-          0,
-        );
-        const rangeStart =
-          blockIndex === startPos.blockIndex ? startPos.offset : 0;
-        const rangeEnd =
-          blockIndex === endPos.blockIndex ? endPos.offset : blockLength;
-
-        const result: typeof block.content = [];
-        let currentPos = 0;
-
-        for (const node of block.content) {
-          const nodeEnd = currentPos + node.text.length;
-
-          if (nodeEnd <= rangeStart || currentPos >= rangeEnd) {
-            result.push(node);
-          } else if (currentPos >= rangeStart && nodeEnd <= rangeEnd) {
-            result.push({ text: node.text });
-          } else {
-            if (currentPos < rangeStart) {
-              result.push({
-                text: node.text.slice(0, rangeStart - currentPos),
-                marks: node.marks,
-              });
-            }
-
-            const selectionStart = Math.max(0, rangeStart - currentPos);
-            const selectionEnd = Math.min(
-              node.text.length,
-              rangeEnd - currentPos,
-            );
-
-            result.push({
-              text: node.text.slice(selectionStart, selectionEnd),
-            });
-
-            if (nodeEnd > rangeEnd) {
-              result.push({
-                text: node.text.slice(rangeEnd - currentPos),
-                marks: node.marks,
-              });
-            }
-          }
-
-          currentPos = nodeEnd;
-        }
-
-        return { ...block, content: result };
-      });
-
-      onChange(normalizeRichText(newValue));
-    }, [richTextValue, onChange, restoreSelection]);
-
-    const handleFontSizeChange = useCallback(
-      async (size: number | "inherit") => {
-        await restoreSelection();
-        applyFormat("fontSize", size);
-      },
-      [applyFormat, restoreSelection],
-    );
-
-    const handleFontSizeAdjust = useCallback(
-      async (delta: number) => {
-        await restoreSelection();
-        const selection = defaultView.getSelection();
-        if (!selection || selection.rangeCount === 0 || !editorRef.current)
-          return;
-
-        const range = selection.getRangeAt(0);
-        const start = getTextOffset(
-          editorRef.current,
-          range.startContainer,
-          range.startOffset,
-        );
-        const end = getTextOffset(
-          editorRef.current,
-          range.endContainer,
-          range.endOffset,
-        );
-
-        const startPos = getBlockPosition(richTextValue, start);
-        const endPos = getBlockPosition(richTextValue, end);
-
-        const newValue = adjustFontSizesInRange(
-          richTextValue,
-          startPos.blockIndex,
-          startPos.offset,
-          endPos.blockIndex,
-          endPos.offset,
-          delta,
-        );
-        recalculateActiveMarksInRange(
-          newValue,
-          startPos.blockIndex,
-          startPos.offset,
-          endPos.blockIndex,
-          endPos.offset,
-        );
-        onChange(normalizeRichText(newValue));
-      },
-      [
-        richTextValue,
-        onChange,
-        restoreSelection,
-        recalculateActiveMarksInRange,
-      ],
-    );
-
-    const handleFontWeightAdjust = useCallback(
-      (delta: number) => {
-        const selection = defaultView.getSelection();
-        if (!selection || selection.rangeCount === 0 || !editorRef.current)
-          return;
-
-        const range = selection.getRangeAt(0);
-        const start = getTextOffset(
-          editorRef.current,
-          range.startContainer,
-          range.startOffset,
-        );
-        const end = getTextOffset(
-          editorRef.current,
-          range.endContainer,
-          range.endOffset,
-        );
-
-        const startPos = getBlockPosition(richTextValue, start);
-        const endPos = getBlockPosition(richTextValue, end);
-
-        const newValue = adjustFontWeightsInRange(
-          richTextValue,
-          startPos.blockIndex,
-          startPos.offset,
-          endPos.blockIndex,
-          endPos.offset,
-          delta,
-        );
-        onChange(normalizeRichText(newValue));
-      },
-      [richTextValue, onChange],
+      [rteContext],
     );
 
     const handleUndo = useCallback(() => {
-      if (historyIndex > 0) {
-        isUndoRedoRef.current = true;
-        const newIndex = historyIndex - 1;
-        setHistoryIndex(newIndex);
-        onChange(history[newIndex]);
-      }
-    }, [historyIndex, history, onChange]);
+      rteContext.undo();
+    }, [rteContext]);
 
     const handleRedo = useCallback(() => {
-      if (historyIndex < history.length - 1) {
-        isUndoRedoRef.current = true;
-        const newIndex = historyIndex + 1;
-        setHistoryIndex(newIndex);
-        onChange(history[newIndex]);
-      }
-    }, [historyIndex, history, onChange]);
+      rteContext.redo();
+    }, [rteContext]);
 
     const handleKeyDown = useCallback(
       (e: React.KeyboardEvent) => {
@@ -885,27 +526,51 @@ export const EditableText = forwardRef<HTMLDivElement, EditableTextProps>(
             return;
           }
 
-          switch (e.key.toLowerCase()) {
-            case "z":
-              e.preventDefault();
-              handleUndo();
-              break;
-            case "b":
-              e.preventDefault();
-              handleFormat("bold");
-              break;
-            case "i":
-              e.preventDefault();
-              handleFormat("italic");
-              break;
-            case "u":
-              e.preventDefault();
-              handleFormat("underline");
-              break;
+          if (e.key.toLowerCase() === "z") {
+            e.preventDefault();
+            handleUndo();
+            return;
+          }
+
+          // Check plugins for keyboard shortcuts
+          const plugins = pluginRegistry.getAll();
+          for (const plugin of plugins) {
+            if (plugin.keyboardShortcut) {
+              const shortcut = plugin.keyboardShortcut;
+              const keyMatch =
+                e.key.toLowerCase() === shortcut.key.toLowerCase();
+              const metaMatch =
+                shortcut.metaKey === undefined ||
+                (shortcut.metaKey && (e.metaKey || e.ctrlKey));
+              const ctrlMatch =
+                shortcut.ctrlKey === undefined ||
+                (shortcut.ctrlKey && (e.metaKey || e.ctrlKey));
+              const shiftMatch =
+                shortcut.shiftKey === undefined ||
+                (shortcut.shiftKey && e.shiftKey);
+              const altMatch =
+                shortcut.altKey === undefined || (shortcut.altKey && e.altKey);
+
+              if (
+                keyMatch &&
+                metaMatch &&
+                ctrlMatch &&
+                shiftMatch &&
+                altMatch
+              ) {
+                e.preventDefault();
+                if (plugin.apply) {
+                  plugin.apply(rteContext);
+                } else {
+                  handleFormat(plugin.name);
+                }
+                return;
+              }
+            }
           }
         }
       },
-      [inline, handleUndo, handleRedo, handleFormat],
+      [inline, handleUndo, handleRedo, handleFormat, rteContext],
     );
 
     const handlePaste = useCallback(
@@ -940,17 +605,6 @@ export const EditableText = forwardRef<HTMLDivElement, EditableTextProps>(
 
     const Component = inline ? "span" : "div";
 
-    const registerPopoverRef = useCallback((element: HTMLElement | null) => {
-      if (element) {
-        popoverRefs.current.add(element);
-      }
-      return () => {
-        if (element) {
-          popoverRefs.current.delete(element);
-        }
-      };
-    }, []);
-
     useEffect(() => {
       if (!editorRef.current || !savedSelectionRef.current) return;
 
@@ -964,6 +618,7 @@ export const EditableText = forwardRef<HTMLDivElement, EditableTextProps>(
         if (
           documentElement.activeElement &&
           !(
+            popoverRefs.current &&
             popoverRefs.current.size > 0 &&
             Array.from(popoverRefs.current).some((el) =>
               el.contains(documentElement.activeElement),
@@ -1043,7 +698,8 @@ export const EditableText = forwardRef<HTMLDivElement, EditableTextProps>(
           onKeyDown={handleKeyDown}
           onPaste={handlePaste}
           className={cn(`outline-none focus:outline-none`, className)}
-          data-placeholder={placeholder}
+          // @ts-ignore ignore placeholder attribute
+          placeholder={placeholder}
           id={id}
           onClick={onClick}
         />
@@ -1052,21 +708,7 @@ export const EditableText = forwardRef<HTMLDivElement, EditableTextProps>(
           typeof defaultView !== "undefined" &&
           createPortal(
             <div ref={toolbarRef}>
-              <FloatingToolbar
-                position={toolbarPosition}
-                activeMarks={activeMarks.marks}
-                hasMixed={activeMarks.hasMixed}
-                onFormat={handleFormat}
-                onFontSizeChange={handleFontSizeChange}
-                onFontSizeAdjust={handleFontSizeAdjust}
-                disabledFeatures={disabledFeatures}
-                canUndo={historyIndex > 0}
-                canRedo={historyIndex < history.length - 1}
-                onUndo={handleUndo}
-                onRedo={handleRedo}
-                onClearFormat={handleClearFormat}
-                registerPopoverRef={registerPopoverRef}
-              />
+              <FloatingToolbar position={toolbarPosition} />
             </div>,
             portalContainerElement,
           )}
@@ -1091,3 +733,135 @@ export const EditableText = forwardRef<HTMLDivElement, EditableTextProps>(
     );
   },
 );
+
+EditableTextInner.displayName = "EditableTextInner";
+
+// Outer component that provides the context
+export const EditableText = forwardRef<HTMLDivElement, EditableTextProps>(
+  (
+    {
+      value,
+      onChange,
+      placeholder = "Type something...",
+      className = "",
+      inline = false,
+      variables,
+      id,
+      onClick,
+      disabledFeatures = [],
+      documentElement = document,
+      portalContainer = "body",
+    },
+    ref,
+  ) => {
+    const defaultView = documentElement.defaultView ?? window;
+    const editorRef = useRef<HTMLDivElement>(null);
+    const [history, setHistory] = useState<{
+      history: RichTextValue[];
+      historyIndex: number;
+    }>({
+      history: [],
+      historyIndex: -1,
+    });
+
+    const isUndoRedoRef = useRef(false);
+    const lastValueRef = useRef<string>("");
+    const popoverRefs = useRef<Set<HTMLElement>>(new Set());
+
+    const registerPopoverRef = useCallback((element: HTMLElement | null) => {
+      if (element) {
+        popoverRefs.current.add(element);
+      }
+      return () => {
+        if (element) {
+          popoverRefs.current.delete(element);
+        }
+      };
+    }, []);
+
+    const richTextValue =
+      typeof value === "string" ? stringToRichText(value) : value;
+
+    const debouncedHistoryChange = useDebounceCallback(
+      (value: RichTextValue) => {
+        setHistory(({ history, historyIndex }) => {
+          const newHistory = history.slice(0, historyIndex + 1);
+          newHistory.push(value);
+
+          if (newHistory.length > 50) {
+            newHistory.shift();
+            return { history: newHistory, historyIndex };
+          }
+
+          return { history: newHistory, historyIndex: historyIndex + 1 };
+        });
+      },
+      [],
+      500,
+    );
+
+    useEffect(() => {
+      const valueStr = JSON.stringify(richTextValue);
+
+      if (isUndoRedoRef.current) {
+        isUndoRedoRef.current = false;
+        lastValueRef.current = valueStr;
+        return;
+      }
+
+      if (valueStr === lastValueRef.current) {
+        return;
+      }
+
+      lastValueRef.current = valueStr;
+      debouncedHistoryChange(richTextValue);
+    }, [richTextValue, debouncedHistoryChange]);
+
+    const handleHistoryChange = useCallback(
+      (index: number) => {
+        isUndoRedoRef.current = true;
+        const newValue = history.history[index];
+        setHistory(({ history }) => ({
+          history,
+          historyIndex: index,
+        }));
+
+        onChange(newValue);
+      },
+      [onChange, history.history],
+    );
+
+    return (
+      <RTEProvider
+        value={richTextValue}
+        onChange={onChange}
+        editorRef={editorRef}
+        defaultView={defaultView}
+        documentElement={documentElement}
+        variables={variables}
+        historyIndex={history.historyIndex}
+        historyLength={history.history.length}
+        onHistoryChange={handleHistoryChange}
+        disabledFeatures={disabledFeatures}
+        registerPopoverRef={registerPopoverRef}
+      >
+        <EditableTextInner
+          ref={ref}
+          placeholder={placeholder}
+          className={className}
+          inline={inline}
+          variables={variables}
+          id={id}
+          onClick={onClick}
+          disabledFeatures={disabledFeatures}
+          documentElement={documentElement}
+          portalContainer={portalContainer}
+          richTextValue={richTextValue}
+          popoverRefs={popoverRefs}
+        />
+      </RTEProvider>
+    );
+  },
+);
+
+EditableText.displayName = "EditableText";

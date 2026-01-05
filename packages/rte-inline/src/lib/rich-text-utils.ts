@@ -1,5 +1,6 @@
 // Utility functions for rich text editor
 
+import { pluginRegistry } from "../plugins";
 import type {
   Block,
   RichTextValue,
@@ -70,113 +71,12 @@ export function htmlToRichText(
         }
       }
 
-      const style = el.style;
-      const computedStyle = window.getComputedStyle(el);
-
-      // Bold/font-weight
-      if (
-        el.tagName === "STRONG" ||
-        el.tagName === "B" ||
-        style.fontWeight ||
-        Number.parseInt(computedStyle.fontWeight) >= 600
-      ) {
-        const weight = style.fontWeight || computedStyle.fontWeight;
-        const isTagBold = el.tagName === "B" || el.tagName === "STRONG";
-        if (weight === "bold" || Number.parseInt(weight) >= 600 || isTagBold) {
-          if (Number.parseInt(weight) === 700 || isTagBold) {
-            marks.bold = true;
-          } else {
-            marks.fontWeight = Number.parseInt(weight);
-          }
-        }
-      }
-
-      // Italic
-      if (
-        el.tagName === "EM" ||
-        el.tagName === "I" ||
-        style.fontStyle === "italic" ||
-        computedStyle.fontStyle === "italic"
-      ) {
-        marks.italic = true;
-      }
-
-      // Underline
-      if (
-        el.tagName === "U" ||
-        style.textDecoration?.includes("underline") ||
-        computedStyle.textDecoration.includes("underline")
-      ) {
-        marks.underline = true;
-      }
-
-      // Strikethrough
-      if (
-        el.tagName === "S" ||
-        el.tagName === "STRIKE" ||
-        style.textDecoration?.includes("line-through") ||
-        computedStyle.textDecoration.includes("line-through")
-      ) {
-        marks.strikethrough = true;
-      }
-
-      // Superscript/Subscript
-      if (el.tagName === "SUP") {
-        marks.superscript = true;
-      }
-      if (el.tagName === "SUB") {
-        marks.subscript = true;
-      }
-
-      // Font size
-      if (style.fontSize) {
-        const size = Number.parseFloat(style.fontSize);
-        if (!Number.isNaN(size)) {
-          marks.fontSize = Math.round(size);
-        }
-      }
-
-      // Font family
-      if (style.fontFamily) {
-        marks.fontFamily = style.fontFamily
-          .replace(/["']/g, "")
-          .split(",")[0]
-          .trim();
-      }
-
-      // Text color
-      if (style.color) {
-        marks.color = rgbToHex(style.color);
-      }
-
-      // Background color
-      if (
-        style.backgroundColor &&
-        style.backgroundColor !== "transparent" &&
-        style.backgroundColor !== "rgba(0, 0, 0, 0)"
-      ) {
-        marks.backgroundColor = rgbToHex(style.backgroundColor);
-      }
-
-      // Text transform
-      if (style.textTransform && style.textTransform !== "none") {
-        marks.textTransform = style.textTransform as any;
-      }
-
-      // Letter spacing
-      if (style.letterSpacing && style.letterSpacing !== "normal") {
-        const spacing = Number.parseFloat(style.letterSpacing);
-        if (!Number.isNaN(spacing)) {
-          if (spacing <= -0.5) marks.letterSpacing = "tight";
-          else if (spacing >= 0.5) marks.letterSpacing = "wide";
-        }
-      }
-
-      // Line height
-      if (style.lineHeight && style.lineHeight !== "normal") {
-        const height = Number.parseFloat(style.lineHeight);
-        if (!Number.isNaN(height)) {
-          marks.lineHeight = height;
+      // Use plugin parsers
+      const plugins = pluginRegistry.getAll();
+      for (const plugin of plugins) {
+        if (plugin.parseHTML) {
+          const parsed = plugin.parseHTML(el, marks);
+          Object.assign(marks, parsed);
         }
       }
 

@@ -15,7 +15,7 @@ import {
   useClassName,
   useResizeBlockStyles,
 } from "@timelish/page-builder-base";
-import { EditableText, RichTextValue, StaticText } from "@timelish/rte-inline";
+import { EditableText, RichTextValue } from "@timelish/rte-inline";
 import { cn, useDebounceCallback } from "@timelish/ui";
 import { useCallback, useRef } from "react";
 import { InlineTextProps } from "./schema";
@@ -82,35 +82,7 @@ export function InlineTextEditor({ props, style }: InlineTextProps) {
         styles={style}
         isEditor
       />
-      {/* <ArgumentsAutocomplete
-        ref={(el) => {
-          ref.current = el as HTMLInputElement;
-          overlayProps.ref(el as HTMLElement);
-        }}
-        args={args}
-        className={cn(
-          "w-fit bg-transparent border-0 focus-visible:ring-0 rounded-none h-auto p-0 border-none leading-normal cursor-text",
-          isSelected && "px-1",
-          className,
-          base?.className,
-        )}
-        value={value ?? "Simple text"}
-        onChange={onChange}
-        onKeyDown={handleKeyPress}
-        asContentEditable
-        element={"span"}
-        placeholder={t("pageBuilder.blocks.inlineText.placeholder")}
-        documentElement={document}
-        style={
-          {
-            //// @ts-expect-error - TODO: remove this once we have a proper solution for this
-            // fieldSizing: "content",
-          }
-        }
-        id={base?.id}
-        onClick={overlayProps.onClick}
-      /> */}
-      {isSelected ? (
+      {/* {isSelected ? (
         <EditableText
           value={value ?? "Simple text"}
           onChange={onChange}
@@ -132,7 +104,19 @@ export function InlineTextEditor({ props, style }: InlineTextProps) {
           onClick={overlayProps.onClick}
           ref={overlayProps.ref}
         />
-      )}
+      )} */}
+      <EditableText
+        value={value ?? ""}
+        onChange={onChange}
+        placeholder={t("pageBuilder.blocks.inlineText.placeholder")}
+        className={cn(className, base?.className)}
+        id={base?.id}
+        onClick={overlayProps.onClick}
+        inline={true}
+        variables={args}
+        documentElement={document}
+        ref={overlayProps.ref}
+      />
     </>
   );
 }

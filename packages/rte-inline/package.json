@@ -24,6 +24,7 @@
     "typescript": "5.5.4"
   },
   "dependencies": {
-    "@timelish/ui": "*"
+    "@timelish/ui": "*",
+    "@timelish/i18n": "*"
   }
 }

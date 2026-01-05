@@ -2,38 +2,21 @@ import type React from "react";
 // @ts-ignore It's there but not typed
 import { renderToStaticMarkup } from "react-dom/server.browser";
 import type { RichTextValue, TextMark, TextNode } from "../lib/rich-text-types";
+import { pluginRegistry } from "../plugins";
 
 export function applyTextStyles(node: TextNode): React.CSSProperties {
   const styles: React.CSSProperties = {};
 
-  if (node.marks) {
-    if (node.marks.color && node.marks.color !== "inherit") {
-      styles.color = node.marks.color;
-    }
-    if (
-      node.marks.backgroundColor &&
-      node.marks.backgroundColor !== "inherit"
-    ) {
-      styles.backgroundColor = node.marks.backgroundColor;
-    }
-    if (node.marks.fontSize && node.marks.fontSize !== "inherit") {
-      styles.fontSize = `${node.marks.fontSize}px`;
-    }
-    if (node.marks.fontFamily && node.marks.fontFamily !== "inherit") {
-      styles.fontFamily = node.marks.fontFamily;
-    }
-    if (node.marks.fontWeight && node.marks.fontWeight !== "inherit") {
-      styles.fontWeight = node.marks.fontWeight;
-    }
-    if (node.marks.letterSpacing && node.marks.letterSpacing !== "inherit") {
-      const spacingMap = { tight: "-0.025em", normal: "0em", wide: "0.05em" };
-      styles.letterSpacing = spacingMap[node.marks.letterSpacing];
-    }
-    if (node.marks.textTransform && node.marks.textTransform !== "inherit") {
-      styles.textTransform = node.marks.textTransform;
-    }
-    if (node.marks.lineHeight && node.marks.lineHeight !== "inherit") {
-      styles.lineHeight = node.marks.lineHeight;
+  if (!node.marks) {
+    return styles;
+  }
+
+  // Collect styles from all plugins
+  const plugins = pluginRegistry.getAll();
+  for (const plugin of plugins) {
+    if (plugin.getStyles && node.marks[plugin.name]) {
+      const pluginStyles = plugin.getStyles(node.marks);
+      Object.assign(styles, pluginStyles);
     }
   }
 
@@ -55,27 +38,37 @@ export function wrapWithMarkElements(
     );
   }
 
-  // Apply structural elements first
-  if (marks.superscript) {
-    content = <sup style={styles}>{content}</sup>;
-  } else if (marks.subscript) {
-    content = <sub style={styles}>{content}</sub>;
-  } else if (Object.keys(styles).length > 0) {
+  // Apply styles first if there are any
+  if (Object.keys(styles).length > 0) {
     content = <span style={styles}>{content}</span>;
   }
 
-  // Apply text decoration elements
-  if (marks.bold && !marks.fontWeight) {
-    content = <strong style={styles}>{content}</strong>;
+  // Apply element wrappers from plugins
+  // Order: structural elements (subscript/superscript) first, then text decorations
+  const plugins = pluginRegistry.getAll();
+
+  // First pass: structural elements (subscript/superscript)
+  for (const plugin of plugins) {
+    if (
+      plugin.render &&
+      (plugin.name === "superscript" || plugin.name === "subscript")
+    ) {
+      if (marks[plugin.name]) {
+        content = plugin.render(content, marks);
+      }
+    }
   }
-  if (marks.italic) {
-    content = <em style={styles}>{content}</em>;
-  }
-  if (marks.underline) {
-    content = <u style={styles}>{content}</u>;
-  }
-  if (marks.strikethrough) {
-    content = <s style={styles}>{content}</s>;
+
+  // Second pass: text decoration elements
+  for (const plugin of plugins) {
+    if (
+      plugin.render &&
+      plugin.name !== "superscript" &&
+      plugin.name !== "subscript" &&
+      marks[plugin.name]
+    ) {
+      content = plugin.render(content, marks);
+    }
   }
 
   return content;
