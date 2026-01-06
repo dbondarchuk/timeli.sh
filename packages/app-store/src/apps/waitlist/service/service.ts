@@ -72,6 +72,20 @@ export class WaitlistConnectedApp
     }
   }
 
+  public async install(appData: ConnectedAppData): Promise<void> {
+    const logger = this.loggerFactory("install");
+    logger.debug({ appId: appData._id }, "Installing waitlist app");
+
+    const repositoryService = this.getRepositoryService(
+      appData._id,
+      appData.companyId,
+    );
+
+    await repositoryService.installWaitlistApp();
+
+    logger.debug({ appId: appData._id }, "Waitlist app installed successfully");
+  }
+
   public async unInstall(appData: ConnectedAppData): Promise<void> {
     const logger = this.loggerFactory("unInstall");
     logger.debug({ appId: appData._id }, "Uninstalling follow-ups app");
