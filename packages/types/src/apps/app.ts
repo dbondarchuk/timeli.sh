@@ -9,6 +9,7 @@ export type AppScope = Extandable<
   | "text-message-send"
   | "text-message-respond"
   | "appointment-hook"
+  | "event-hook"
   | "customer-hook"
   | "payment-hook"
   // | "assets-storage"

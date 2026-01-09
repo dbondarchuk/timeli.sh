@@ -4,6 +4,10 @@ import { WithCompanyId } from "../database";
 export type BaseJobRequest = {
   id?: string;
   executeAt: Date | "now";
+  deduplication?: {
+    id: string;
+    ttl: number;
+  };
 };
 
 export type AppJobRequest<T = any> = BaseJobRequest & {
@@ -19,7 +23,13 @@ export type HookJobRequest = BaseJobRequest & {
   args: any[];
 };
 
-export type JobRequest = AppJobRequest | HookJobRequest;
+export type CoreJobRequest<T = any> = BaseJobRequest & {
+  type: "core";
+  appId: string;
+  payload: T;
+};
+
+export type JobRequest = AppJobRequest | HookJobRequest | CoreJobRequest;
 export type CompanyJobRequest = WithCompanyId<JobRequest>;
 
 export type Job = JobRequest & {

@@ -26,6 +26,12 @@
       "command": "yarn run dev --filter=@timelish/app-external-server"
     },
     {
+      "name": "Next.js: debug job processor server-side",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "yarn run dev --filter=@timelish/job-processor"
+    },
+    {
       "name": "Next.js: debug client-side",
       "type": "chrome",
       "request": "launch",

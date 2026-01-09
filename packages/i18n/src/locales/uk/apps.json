@@ -69,7 +69,8 @@
     "ui-components": "UI компоненти",
     "availability-provider": "Постачальник доступності",
     "meeting-url-provider": "Постачальник URL зустрічі",
-    "dashboard-notifier": "Сповіщувач панелі керування"
+    "dashboard-notifier": "Сповіщувач панелі керування",
+    "booking-tracking-hook": "Відстеження бронювань"
   },
   "status": {
     "connected": "Підключено",

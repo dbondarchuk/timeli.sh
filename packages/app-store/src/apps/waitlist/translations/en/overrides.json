@@ -3,5 +3,12 @@
     "scopes": {
       "waitlist-hook": "Waitlist hook"
     }
+  },
+  "admin": {
+    "bookingTracking": {
+      "convertedTo": {
+        "waitlist": "Waitlist"
+      }
+    }
   }
 }

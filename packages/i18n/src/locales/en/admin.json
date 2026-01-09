@@ -2365,5 +2365,10 @@
         "notAllowedWithoutDeposit": "Not allowed without deposit"
       }
     }
+  },
+  "bookingTracking": {
+    "convertedTo": {
+      "appointment": "Appointment"
+    }
   }
 }

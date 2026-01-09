@@ -1,4 +1,5 @@
 import { getAppointmentEventAndIsPaymentRequired } from "@/utils/appointments/get-payment-required";
+import { trackBookingStepWithCustomer } from "@/utils/booking-tracking";
 import { getServicesContainer } from "@/utils/utils";
 import { getLoggerFactory } from "@timelish/logger";
 import {
@@ -176,17 +177,62 @@ export async function POST(request: NextRequest) {
     }
   }
 
+  // Get session ID for tracking
+  const sessionId = request.headers.get("x-session-id");
+
+  // Track form submission attempt
+  await trackBookingStepWithCustomer(
+    request,
+    "FORM_SUBMITTED",
+    appointmentRequest,
+    {
+      isPaymentRequired: eventOrError.isPaymentRequired,
+      paymentAmount: eventOrError.isPaymentRequired
+        ? eventOrError.amount
+        : undefined,
+    },
+  );
+
   try {
-    const { _id } = await servicesContainer.eventsService.createEvent({
-      event: eventOrError.event,
+    // Store sessionId in event data for later tracking
+    const eventWithSessionId = {
+      ...eventOrError.event,
+      data: {
+        ...eventOrError.event.data,
+        sessionId, // Store for onAppointmentCreated hook
+      },
+    };
+
+    const result = await servicesContainer.eventsService.createEvent({
+      event: eventWithSessionId,
       paymentIntentId,
       files,
       by: "customer",
     });
 
+    await trackBookingStepWithCustomer(
+      request,
+      "BOOKING_CONVERTED",
+      appointmentRequest,
+      {
+        convertedTo: "appointment",
+        convertedId: result._id,
+        appointmentId: result._id,
+        optionId: eventOrError.event.option._id,
+        duration: eventOrError.event.totalDuration,
+        customerId: appointmentRequest.fields.email,
+        customerEmail: appointmentRequest.fields.email,
+        customerName: appointmentRequest.fields.name,
+        isPaymentRequired: eventOrError.isPaymentRequired,
+        paymentAmount: eventOrError.isPaymentRequired
+          ? eventOrError.amount
+          : undefined,
+      },
+    );
+
     logger.debug(
       {
-        eventId: _id,
+        eventId: result._id,
         customerEmail: appointmentRequest.fields.email,
         customerName: appointmentRequest.fields.name,
         isPaymentRequired: eventOrError.isPaymentRequired,
@@ -194,8 +240,28 @@ export async function POST(request: NextRequest) {
       "Successfully created appointment event",
     );
 
-    return NextResponse.json({ success: true, id: _id }, { status: 201 });
+    return NextResponse.json(
+      { success: true, id: result._id },
+      { status: 201 },
+    );
   } catch (e: any) {
+    // Track failure
+    await trackBookingStepWithCustomer(
+      request,
+      "FORM_SUBMITTED",
+      appointmentRequest,
+      {
+        error:
+          e instanceof AppointmentTimeNotAvaialbleError
+            ? "time_not_available"
+            : "unknown_error",
+        isPaymentRequired: eventOrError.isPaymentRequired,
+        paymentAmount: eventOrError.isPaymentRequired
+          ? eventOrError.amount
+          : undefined,
+      },
+    );
+
     if (e instanceof AppointmentTimeNotAvaialbleError) {
       logger.warn({ error: e?.message }, "Appointment time not available");
       return NextResponse.json(

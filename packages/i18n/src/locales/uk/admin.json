@@ -2365,5 +2365,10 @@
         "notAllowedWithoutDeposit": "Не дозволено без завдатку"
       }
     }
+  },
+  "bookingTracking": {
+    "convertedTo": {
+      "appointment": "Запис"
+    }
   }
 }

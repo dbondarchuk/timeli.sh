@@ -54,6 +54,7 @@ export class BullMQJobService extends BaseBullMQClient implements IJobService {
             jobRequest.executeAt === "now"
               ? 0
               : jobRequest.executeAt.getTime() - new Date().getTime(),
+          deduplication: jobRequest.deduplication,
         },
       );
 
@@ -95,6 +96,29 @@ export class BullMQJobService extends BaseBullMQClient implements IJobService {
       };
     } catch (error) {
       logger.error({ error, jobId: id }, "Failed to get job");
+      throw error;
+    }
+  }
+
+  public async getDeduplicatedJob(
+    deduplicationId: string,
+  ): Promise<Job | null> {
+    const logger = this.loggerFactory("getDeduplicatedJob");
+    try {
+      logger.info({ deduplicationId }, "Getting deduplicated job");
+      const queue = this.getQueue(this.config.queues.job.name);
+      const jobId = await queue.getDeduplicationJobId(deduplicationId);
+      if (!jobId) {
+        logger.debug({ deduplicationId }, "Deduplicated job not found");
+        return null;
+      }
+
+      return this.getJob(jobId);
+    } catch (error) {
+      logger.error(
+        { error, deduplicationId },
+        "Failed to get deduplicated job",
+      );
       throw error;
     }
   }

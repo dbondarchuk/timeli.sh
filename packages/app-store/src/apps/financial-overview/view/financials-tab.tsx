@@ -32,6 +32,10 @@ export const FinancialsTab: React.FC<{
     revenueOverTime,
     serviceDistribution,
     customerData,
+    bookingStats,
+    abandonmentBookingStepBreakdown,
+    bookingStatsOverTime,
+    bookingConversionStats,
   ] = await Promise.all([
     paymentsService.getFinancialMetrics(dateRange),
     // Intentionally not using date range for recent payments
@@ -40,6 +44,10 @@ export const FinancialsTab: React.FC<{
     paymentsService.getRevenueOverTime(dateRange, timeGrouping),
     paymentsService.getServiceDistribution(dateRange),
     paymentsService.getCustomerData(dateRange, timeGrouping),
+    paymentsService.getBookingCompletionStats(dateRange),
+    paymentsService.getAbandonmentBookingStepBreakdown(dateRange),
+    paymentsService.getBookingStatsOverTime(dateRange, timeGrouping),
+    paymentsService.getBookingConversionStats(dateRange),
   ]);
 
   return (
@@ -50,6 +58,10 @@ export const FinancialsTab: React.FC<{
       revenueOverTime={revenueOverTime}
       serviceDistribution={serviceDistribution}
       customerData={customerData}
+      bookingStats={bookingStats}
+      abandonmentBookingStepBreakdown={abandonmentBookingStepBreakdown}
+      bookingStatsOverTime={bookingStatsOverTime}
+      bookingConversionStats={bookingConversionStats}
       loading={false}
     />
   );
