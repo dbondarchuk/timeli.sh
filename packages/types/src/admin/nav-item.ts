@@ -22,6 +22,13 @@ export interface NavItemWithOptionalChildren extends NavItem {
 }
 
 export interface NavItemGroup {
+  id:
+    | "overview"
+    | "appointments"
+    | "website"
+    | "customers"
+    | "settings"
+    | "other";
   title: AllKeys;
   children: NavItemWithOptionalChildren[];
 }

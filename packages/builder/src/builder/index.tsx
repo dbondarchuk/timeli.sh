@@ -18,6 +18,7 @@ import { ReaderDocumentBlocksDictionary } from "../documents/reader/core";
 import {
   BaseZodDictionary,
   EditorDocumentBlocksDictionary,
+  TemplatesConfiguration,
 } from "../documents/types";
 import { InspectorDrawer, SidebarTab } from "./inspector-drawer";
 import { TemplatePanel } from "./template-panel";
@@ -32,6 +33,7 @@ export type BuilderProps<T extends BaseZodDictionary> = {
   schemas: T;
   editorBlocks: EditorDocumentBlocksDictionary<T>;
   readerBlocks: ReaderDocumentBlocksDictionary<T>;
+  templates?: TemplatesConfiguration;
   rootBlock: TEditorBlock;
   key?: string;
   extraTabs?: SidebarTab[];
@@ -164,6 +166,7 @@ export const Builder = <T extends BaseZodDictionary>({
     <EditorStateProvider
       blocks={editorBlocks}
       readerBlocks={rest.readerBlocks}
+      templates={rest.templates}
       rootBlock={rootBlock}
       document={defaultValue}
       schemas={schemas}

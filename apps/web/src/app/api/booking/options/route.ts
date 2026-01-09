@@ -1,3 +1,4 @@
+import { trackBookingStep } from "@/utils/booking-tracking";
 import { getServicesContainer } from "@/utils/utils";
 import { getLoggerFactory } from "@timelish/logger";
 import { NextRequest, NextResponse } from "next/server";
@@ -14,6 +15,9 @@ export async function GET(request: NextRequest) {
     },
     "Processing booking options API request",
   );
+
+  // Track booking started
+  await trackBookingStep(request, "OPTIONS_REQUESTED");
 
   const response =
     await servicesContainer.eventsService.getAppointmentOptions();

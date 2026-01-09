@@ -6,6 +6,7 @@ export interface IAppointmentHook {
     appData: ConnectedAppData,
     appointment: Appointment,
     confirmed: boolean,
+    by: "customer" | "user",
   ) => Promise<void>;
   onAppointmentStatusChanged?: (
     appData: ConnectedAppData,

@@ -157,7 +157,7 @@ export default class CarddavConnectedApp
         return this.getConfiguration(appData);
       case "install":
       default:
-        return this.install(appData);
+        return this.installApp(appData);
     }
   }
 
@@ -233,8 +233,8 @@ export default class CarddavConnectedApp
     } satisfies CarddavRequestGetConfigurationActionResponse;
   }
 
-  private async install(appData: ConnectedAppData) {
-    const logger = this.loggerFactory("install");
+  private async installApp(appData: ConnectedAppData) {
+    const logger = this.loggerFactory("installApp");
 
     if (appData?.data?.password) {
       return {

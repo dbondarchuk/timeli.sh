@@ -15,7 +15,6 @@ export const ButtonReader = ({
   block,
   ...rest
 }: ButtonReaderProps) => {
-  const content = props?.children?.[0];
   const defaults = getDefaults({ props, style }, false);
 
   const className = generateClassName();
@@ -36,7 +35,9 @@ export const ButtonReader = ({
         className={cn("block", className, base?.className)}
         {...restProps}
       >
-        {content && <ReaderBlock key={content.id} {...rest} block={content} />}
+        {children?.map((child) => (
+          <ReaderBlock key={child.id} {...rest} block={child} />
+        ))}
       </Button>
     </>
   );

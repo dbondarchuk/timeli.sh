@@ -6,7 +6,7 @@ import { COLOR_NAMES } from "./helpers/colors";
 export const zColorCustom = z
   .string()
   .regex(/^(\d+)\s+([\d.]+)%\s+([\d.]+)%$/, {
-    message: "pageBuilder.styleInputs.color.unknownType",
+    message: "builder.pageBuilder.styleInputs.color.unknownType",
   });
 export const zTransparentColor = z.literal("transparent");
 const colorPresetVars = COLOR_NAMES.map((c) => `var(--value-${c}-color)`);
@@ -14,23 +14,23 @@ const [zColorPresetVarsFirst, ...zColorPresetVars] = colorPresetVars;
 export const zColorPreset = z.enum(
   [zColorPresetVarsFirst, ...zColorPresetVars],
   {
-    message: "pageBuilder.styleInputs.color.unknownType",
+    message: "builder.pageBuilder.styleInputs.color.unknownType",
   },
 );
 
 export const zColor = z.union([zColorCustom, zColorPreset, zTransparentColor], {
-  message: "pageBuilder.styleInputs.color.unknownType",
+  message: "builder.pageBuilder.styleInputs.color.unknownType",
 });
 export const zColorNullable = zColor.optional().nullable();
 
 export const units = ["px", "rem", "%", "vh", "vw"] as const;
 export const zUnit = z.enum(units, {
-  message: "pageBuilder.styleInputs.unit.unknownType",
+  message: "builder.pageBuilder.styleInputs.unit.unknownType",
 });
 export type Unit = z.infer<typeof zUnit>;
 
 export const zFontFamily = z.enum(FONT_FAMILY_NAMES, {
-  message: "pageBuilder.styleInputs.fontFamily.unknownType",
+  message: "builder.pageBuilder.styleInputs.fontFamily.unknownType",
 });
 export type FontFamily = z.infer<typeof zFontFamily>;
 
@@ -71,7 +71,7 @@ export const getZNumberValueWithUnitOrKeyword = <T extends string>(
       ]),
     ],
     {
-      message: "pageBuilder.styleInputs.unit.unknownType",
+      message: "builder.pageBuilder.styleInputs.unit.unknownType",
     },
   );
 

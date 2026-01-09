@@ -9,6 +9,7 @@ import {
   useRef,
 } from "react";
 
+import { BlockFilterRuleResult } from "../types";
 import { useBlock, useSetBlockDisableOptions } from "./context";
 import { BlockDisableOptions, TEditorBlock } from "./core";
 import { CoreEditorBlock } from "./core.block";
@@ -16,12 +17,12 @@ import { CoreEditorBlock } from "./core.block";
 const EditorBlockContext = createContext<{
   blockId: string;
   isOverlay: boolean;
-  allowedTypes?: string[];
+  allow?: BlockFilterRuleResult;
   disable: BlockDisableOptions;
 }>({
   blockId: "",
   isOverlay: false,
-  allowedTypes: [],
+  allow: undefined,
   disable: {
     move: false,
     delete: false,
@@ -33,8 +34,7 @@ const EditorBlockContext = createContext<{
 export const useCurrentBlockId = () => useContext(EditorBlockContext).blockId;
 export const useIsCurrentBlockOverlay = () =>
   useContext(EditorBlockContext).isOverlay;
-export const useCurrentBlockAllowedTypes = () =>
-  useContext(EditorBlockContext).allowedTypes;
+export const useCurrentBlockAllow = () => useContext(EditorBlockContext).allow;
 export const useCurrentBlockDisableOptions = () =>
   useContext(EditorBlockContext).disable;
 
@@ -58,7 +58,7 @@ type EditorBlockProps = {
   index: number;
   parentBlockId: string;
   parentProperty: string;
-  allowedTypes?: string | string[];
+  allow?: BlockFilterRuleResult;
 };
 
 export const EditorBlock = memo(
@@ -73,7 +73,7 @@ export const EditorBlock = memo(
     index,
     parentBlockId,
     parentProperty,
-    allowedTypes,
+    allow,
   }: EditorBlockProps) => {
     const setBlockDisableOptions = useSetBlockDisableOptions();
     const isCurrentOverlay = useIsCurrentBlockOverlay();
@@ -100,13 +100,10 @@ export const EditorBlock = memo(
         blockId,
         isOverlay: isOvelayBlock,
         disable,
-        allowedTypes:
-          Array.isArray(allowedTypes) || typeof allowedTypes === "undefined"
-            ? allowedTypes
-            : [allowedTypes],
+        allow,
         ref,
       }),
-      [blockId, isOvelayBlock, allowedTypes, disable],
+      [blockId, isOvelayBlock, allow, disable],
     );
 
     return (

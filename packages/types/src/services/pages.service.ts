@@ -8,6 +8,7 @@ import {
   PageHeaderListModel,
   PageHeaderUpdateModel,
   PageListModel,
+  PageMatchResult,
   PageUpdateModel,
 } from "../pages";
 
@@ -16,6 +17,7 @@ export interface IPagesService {
 
   getPage(id: string): Promise<Page | null>;
   getPageBySlug(slug: string): Promise<Page | null>;
+  resolvePage(rawSlug: string): Promise<PageMatchResult | null>;
   getPages(
     query: Query & {
       publishStatus: boolean[];

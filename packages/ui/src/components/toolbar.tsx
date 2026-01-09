@@ -241,7 +241,7 @@ export const ToolbarGroup = withRef<"div">(({ children, className }, ref) => {
         className,
       )}
     >
-      <div className="flex items-center">{children}</div>
+      <div className="flex items-center gap-0.5">{children}</div>
 
       <div className="mx-1.5 py-0.5 group-last/toolbar-group:!hidden">
         <Separator orientation="vertical" />

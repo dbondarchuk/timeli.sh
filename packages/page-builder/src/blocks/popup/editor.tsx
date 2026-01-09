@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  BlockFilterRule,
   EditorBlock,
   useBlockChildrenBlockIds,
   useBlockEditor,
@@ -17,6 +18,10 @@ const disable = {
   disableDelete: true,
   disableClone: true,
   disableDrag: true,
+};
+
+const allowOnly: BlockFilterRule = {
+  capabilities: ["inline"],
 };
 
 export const PopupEditor = ({ props, style }: PopupProps) => {
@@ -75,7 +80,7 @@ export const PopupEditor = ({ props, style }: PopupProps) => {
                   index={0}
                   parentBlockId={currentBlock.id}
                   parentProperty="title"
-                  allowedTypes="InlineContainer"
+                  allow={allowOnly}
                 />
               )}
             </div>
@@ -87,7 +92,7 @@ export const PopupEditor = ({ props, style }: PopupProps) => {
                   index={0}
                   parentBlockId={currentBlock.id}
                   parentProperty="subtitle"
-                  allowedTypes="InlineContainer"
+                  allow={allowOnly}
                 />
               )}
             </div>

@@ -42,6 +42,41 @@ export default class BusyEventsConnectedApp
     );
   }
 
+  public async install(appData: ConnectedAppData): Promise<void> {
+    const logger = this.loggerFactory("install");
+    logger.debug({ appId: appData._id }, "Installing busy events app");
+
+    const db = await this.props.getDbConnection();
+    const collection = db.collection<BusyEventsEntity>(
+      BUSY_EVENTS_COLLECTION_NAME,
+    );
+
+    logger.debug({ appId: appData._id }, "Busy events collection created");
+
+    const indexes = {
+      companyId_appId_week_1: { companyId: 1, appId: 1, week: 1 },
+      appId_week_1: { appId: 1, week: 1 },
+    };
+
+    logger.debug({ appId: appData._id }, "Creating indexes");
+    for (const [name, index] of Object.entries(indexes)) {
+      logger.debug(`Checking if index ${name} exists`);
+      if (await collection.indexExists(name)) {
+        logger.debug(`Index ${name} already exists`);
+        continue;
+      }
+
+      logger.debug(`Creating index ${name}`);
+      await collection.createIndex(index, { name });
+      logger.debug(`Index ${name} created`);
+    }
+
+    logger.debug(
+      { appId: appData._id },
+      "Busy events app installed successfully",
+    );
+  }
+
   public async unInstall(appData: ConnectedAppData): Promise<void> {
     const logger = this.loggerFactory("unInstall");
     logger.debug({ appId: appData._id }, "Starting uninstall");

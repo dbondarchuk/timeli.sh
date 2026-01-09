@@ -2,12 +2,14 @@ import { getLoggerFactory } from "@timelish/logger";
 import {
   AppJobRequest,
   CompanyJobRequest,
+  CoreJobRequest,
   HookJobRequest,
   IScheduled,
   IServicesContainer,
   WithCompanyId,
 } from "@timelish/types";
 import { Job } from "bullmq";
+import { BuiltInApps } from "../../built-in/apps";
 import { BaseBullMQClient } from "../base-bullmq-client";
 import { BullMQJobConfig } from "./types";
 import { reviveJobData } from "./utils";
@@ -62,6 +64,11 @@ export class BullMQJobWorker extends BaseBullMQClient {
         case "hook":
           await this.processHookJob(job.id!, jobData);
           break;
+        case "core":
+          await this.processCoreJob(job.id!, jobData);
+          break;
+        default:
+          throw new Error(`Invalid job type: ${(jobData as any).type}`);
       }
 
       logger.info({ jobId: job.id }, "Job completed successfully");
@@ -237,6 +244,7 @@ export class BullMQJobWorker extends BaseBullMQClient {
       if (!companyId) {
         throw new Error("companyId is required in job data");
       }
+
       const { app, service } = await this.getServices(
         companyId,
       ).connectedAppsService.getAppService<IScheduled>(jobData.appId);
@@ -245,7 +253,7 @@ export class BullMQJobWorker extends BaseBullMQClient {
         await service.processJob(app, jobData);
         logger.info({ jobId }, "Job completed successfully");
       } else {
-        logger.error({ jobId }, "Job does not implement processJob");
+        logger.error({ jobId }, "Service does not implement processJob");
       }
     } catch (error) {
       logger.error({ error, jobId, jobData }, "Failed to process app job");
@@ -292,5 +300,40 @@ export class BullMQJobWorker extends BaseBullMQClient {
       logger.error({ error, jobId, jobData }, "Failed to process hook job");
       throw error;
     }
+  }
+
+  private async processCoreJob(
+    jobId: string,
+    jobData: WithCompanyId<CoreJobRequest>,
+  ): Promise<void> {
+    const logger = this.loggerFactory("processCoreJob");
+    logger.info({ jobId, jobData }, "Processing core job");
+    const companyId = jobData.companyId;
+    if (!companyId) {
+      throw new Error("companyId is required in job data");
+    }
+
+    const coreApp = BuiltInApps[jobData.appId];
+    if (!coreApp) {
+      throw new Error(`Core app ${jobData.appId} not found`);
+    }
+
+    if (!coreApp.scheduled) {
+      throw new Error(`Core app ${jobData.appId} is not scheduled`);
+    }
+
+    const service = new coreApp.getService(
+      companyId,
+      this.getServices(companyId),
+    );
+
+    if (!service.processJob) {
+      throw new Error(
+        `Core app ${jobData.appId} does not implement processJob`,
+      );
+    }
+
+    await service.processJob(jobData);
+    logger.info({ jobId }, "Job completed successfully");
   }
 }

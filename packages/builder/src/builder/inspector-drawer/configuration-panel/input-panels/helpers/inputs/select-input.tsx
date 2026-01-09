@@ -14,7 +14,11 @@ import { ResetButton } from "./reset-button";
 type Props = Pick<React.ComponentProps<typeof SelectTrigger>, "size"> & {
   label: string;
   placeholder?: string;
-  options: { value: string; label: string; style?: React.CSSProperties }[];
+  options: {
+    value: string;
+    label: string | React.ReactNode;
+    style?: React.CSSProperties;
+  }[];
 } & (
     | {
         defaultValue: string;

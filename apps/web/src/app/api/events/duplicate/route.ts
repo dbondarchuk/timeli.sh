@@ -1,4 +1,5 @@
 import { getAppointmentEventFromRequest } from "@/utils/appointments/get-event";
+import { trackBookingStepWithCustomer } from "@/utils/booking-tracking";
 import { getServicesContainer } from "@/utils/utils";
 import { getLoggerFactory } from "@timelish/logger";
 import {
@@ -38,6 +39,13 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(error, { status: 400 });
   }
+
+  // Track duplicate check
+  await trackBookingStepWithCustomer(
+    request,
+    "DUPLICATE_CHECKED",
+    appointmentRequest,
+  );
 
   const eventOrError = await getAppointmentEventFromRequest(
     appointmentRequest,

@@ -1,7 +1,7 @@
 "use client";
 
-import { useI18n } from "@timelish/i18n";
-import type { DateRange, PaymentSummary } from "@timelish/types";
+import { AdminKeys, useI18n } from "@timelish/i18n";
+import type { BookingStep, DateRange, PaymentSummary } from "@timelish/types";
 import {
   CalendarDateRangePicker,
   Card,
@@ -36,6 +36,10 @@ import {
   YAxis,
 } from "recharts";
 import {
+  BookingConversionStats,
+  BookingStats,
+  BookingStatsOverTime,
+  BookingStepBreakdown,
   CustomerDataPoint,
   FinancialMetrics,
   RevenueDataPoint,
@@ -47,6 +51,10 @@ import {
   financialOverviewAdminNamespace,
 } from "../translations/types";
 import { searchParams } from "./search-params";
+
+const getConvertedToLabelKey = (convertedTo: string): AdminKeys => {
+  return `bookingTracking.convertedTo.${convertedTo}` as AdminKeys;
+};
 
 const dateRangeOptions = [
   "thisMonth",
@@ -112,6 +120,10 @@ type FinancialsTabProps =
       revenueOverTime: RevenueDataPoint[];
       serviceDistribution: ServiceDataPoint[];
       customerData: CustomerDataPoint[];
+      bookingStats: BookingStats;
+      abandonmentBookingStepBreakdown: BookingStepBreakdown;
+      bookingStatsOverTime: BookingStatsOverTime;
+      bookingConversionStats: BookingConversionStats;
       loading?: false;
     }
   | {
@@ -121,6 +133,10 @@ type FinancialsTabProps =
       revenueOverTime?: never;
       serviceDistribution?: never;
       customerData?: never;
+      bookingStats?: never;
+      abandonmentBookingStepBreakdown?: never;
+      bookingStatsOverTime?: never;
+      bookingConversionStats?: never;
     };
 
 const tooltipContentStyle = {
@@ -130,18 +146,33 @@ const tooltipContentStyle = {
   borderRadius: "0.5rem",
 };
 
+const bookingStepLabels: Record<BookingStep, FinancialOverviewAdminKeys> = {
+  OPTIONS_REQUESTED: "view.bookingTracking.bookingSteps.optionsRequested",
+  AVAILABILITY_CHECKED: "view.bookingTracking.bookingSteps.availabilityChecked",
+  DUPLICATE_CHECKED: "view.bookingTracking.bookingSteps.duplicateChecked",
+  PAYMENT_CHECKED: "view.bookingTracking.bookingSteps.paymentChecked",
+  FORM_SUBMITTED: "view.bookingTracking.bookingSteps.formSubmitted",
+  BOOKING_CONVERTED: "view.bookingTracking.bookingSteps.bookingConverted",
+};
+
 export const FinancialsTabClient: React.FC<FinancialsTabProps> = ({
   financialMetrics,
   recentPayments,
   revenueOverTime,
   serviceDistribution,
   customerData,
+  bookingStats,
+  abandonmentBookingStepBreakdown,
+  bookingStatsOverTime,
+  bookingConversionStats,
   loading,
 }) => {
   const t = useI18n<
     FinancialOverviewAdminNamespace,
     FinancialOverviewAdminKeys
   >(financialOverviewAdminNamespace);
+
+  const tAdmin = useI18n("admin");
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-US", {
@@ -190,7 +221,19 @@ export const FinancialsTabClient: React.FC<FinancialsTabProps> = ({
     date: formatChartDate(point.date),
   }));
 
+  const bookingStatsChart =
+    bookingStatsOverTime?.map((point) => ({
+      ...point,
+      date: formatChartDate(point.date),
+    })) || [];
+
   const timeZone = useTimeZone();
+
+  const getConvertedToLabel = (convertedTo: string) => {
+    return tAdmin.has(getConvertedToLabelKey(convertedTo))
+      ? tAdmin(getConvertedToLabelKey(convertedTo))
+      : convertedTo;
+  };
 
   return (
     <div className="flex flex-col gap-8">
@@ -502,6 +545,7 @@ export const FinancialsTabClient: React.FC<FinancialsTabProps> = ({
                         </div>
                       )}
                       labelFormatter={(label) => `${label}`}
+                      separator=":"
                       itemStyle={{ color: "var(--foreground)" }}
                     />
                   </PieChart>
@@ -566,6 +610,326 @@ export const FinancialsTabClient: React.FC<FinancialsTabProps> = ({
               </ResponsiveContainer>
             </CardContent>
           </Card>
+        </div>
+
+        {/* Booking Tracking Section */}
+        <div className="flex flex-col gap-4">
+          <h3 className="text-2xl font-semibold leading-none tracking-tight wrap-anywhere">
+            {t("view.bookingTracking.title")}
+          </h3>
+
+          {/* Booking Stats Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  {t("view.bookingTracking.totalBookings")}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {loading ? (
+                  <Skeleton className="w-full h-10" />
+                ) : (
+                  <div className="text-2xl font-bold text-blue-600">
+                    {bookingStats?.total || 0}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  {t("view.bookingTracking.converted")}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {loading ? (
+                  <Skeleton className="w-full h-10" />
+                ) : (
+                  <div className="text-2xl font-bold text-blue-600">
+                    {bookingStats?.converted || 0}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  {t("view.bookingTracking.abandoned")}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {loading ? (
+                  <Skeleton className="w-full h-10" />
+                ) : (
+                  <div className="text-2xl font-bold text-red-600">
+                    {bookingStats?.abandoned || 0}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  {t("view.bookingTracking.conversionRate")}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {loading ? (
+                  <Skeleton className="w-full h-10" />
+                ) : (
+                  <div className="text-2xl font-bold text-green-600">
+                    {bookingStats?.conversionRate
+                      ? `${bookingStats.conversionRate.toFixed(1)}%`
+                      : "0%"}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  {t("view.bookingTracking.abandonmentRate")}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {loading ? (
+                  <Skeleton className="w-full h-10" />
+                ) : (
+                  <div className="text-2xl font-bold text-orange-600">
+                    {bookingStats?.abandonmentRate
+                      ? `${bookingStats.abandonmentRate.toFixed(1)}%`
+                      : "0%"}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+            {/* Booking Completion vs Abandonment Over Time */}
+            <Card>
+              <CardHeader>
+                <CardTitle>
+                  {t("view.bookingTracking.completionVsAbandonment")}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={400}>
+                  {loading ? (
+                    <Skeleton className="w-full h-full" />
+                  ) : (
+                    <LineChart data={bookingStatsChart}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis
+                        dataKey="date"
+                        tick={{ fontSize: 12 }}
+                        angle={-45}
+                        textAnchor="end"
+                        height={60}
+                      />
+                      <YAxis tick={{ fontSize: 12 }} />
+                      <Tooltip
+                        contentStyle={tooltipContentStyle}
+                        formatter={(value, name) => [
+                          value,
+                          name === "abandoned"
+                            ? t("view.bookingTracking.abandoned")
+                            : name === "converted"
+                              ? t("view.bookingTracking.converted")
+                              : name === "total"
+                                ? t("view.bookingTracking.totalBookings")
+                                : name,
+                        ]}
+                        labelFormatter={(label) => `Date: ${label}`}
+                      />
+                      <Legend />
+                      <Line
+                        type="monotone"
+                        dataKey="abandoned"
+                        stroke="#ef4444"
+                        strokeWidth={2}
+                        dot={{ fill: "#ef4444", strokeWidth: 2, r: 4 }}
+                        name={t("view.bookingTracking.abandoned")}
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="converted"
+                        stroke="#3b82f6"
+                        strokeWidth={2}
+                        dot={{ fill: "#3b82f6", strokeWidth: 2, r: 4 }}
+                        name={t("view.bookingTracking.converted")}
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="total"
+                        stroke="#6366f1"
+                        strokeWidth={2}
+                        strokeDasharray="5 5"
+                        dot={{ fill: "#6366f1", strokeWidth: 2, r: 4 }}
+                        name={t("view.bookingTracking.totalBookings")}
+                      />
+                    </LineChart>
+                  )}
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            {/* Abandonment by Step */}
+            <Card>
+              <CardHeader>
+                <CardTitle>
+                  {t("view.bookingTracking.abandonmentByStep.title")}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={400}>
+                  {loading ? (
+                    <Skeleton className="w-full h-full" />
+                  ) : abandonmentBookingStepBreakdown &&
+                    abandonmentBookingStepBreakdown.length > 0 ? (
+                    <PieChart>
+                      <Pie
+                        data={abandonmentBookingStepBreakdown}
+                        dataKey="count"
+                        nameKey="step"
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={100}
+                        label={({ step, count, percentage }) =>
+                          `${t(bookingStepLabels[step as BookingStep])}: ${count} (${percentage.toFixed(1)}%)`
+                        }
+                      >
+                        {abandonmentBookingStepBreakdown.map((entry, index) => (
+                          <Cell
+                            key={`cell-${index}`}
+                            fill={`hsl(${(index * 137.5 + 50) % 360}, 70%, 50%)`}
+                            name={t(
+                              bookingStepLabels[entry.step as BookingStep],
+                            )}
+                          />
+                        ))}
+                      </Pie>
+                      <Tooltip
+                        contentStyle={tooltipContentStyle}
+                        formatter={(value, name, props) => {
+                          return [
+                            <div className="flex flex-col text-foreground">
+                              <span>
+                                {t(
+                                  "view.bookingTracking.abandonmentByStep.count",
+                                  {
+                                    count: value,
+                                  },
+                                )}
+                              </span>
+                              <span>
+                                {t(
+                                  "view.bookingTracking.abandonmentByStep.percentage",
+                                  {
+                                    percentage:
+                                      props.payload.percentage.toFixed(1),
+                                  },
+                                )}
+                              </span>
+                            </div>,
+                            t(
+                              bookingStepLabels[
+                                props.payload.step as BookingStep
+                              ],
+                            ),
+                          ];
+                        }}
+                        labelFormatter={(label) => `${label}`}
+                        separator=":"
+                        itemStyle={{ color: "var(--foreground)" }}
+                      />
+                    </PieChart>
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+                      {t("view.bookingTracking.abandonmentByStep.noData")}
+                    </div>
+                  )}
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            {/* Conversion by Type */}
+            <Card>
+              <CardHeader>
+                <CardTitle>
+                  {t("view.bookingTracking.conversionByType.title")}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={400}>
+                  {loading ? (
+                    <Skeleton className="w-full h-full" />
+                  ) : bookingConversionStats &&
+                    bookingConversionStats.byType.length > 0 ? (
+                    <PieChart>
+                      <Pie
+                        data={bookingConversionStats.byType}
+                        dataKey="count"
+                        nameKey="convertedTo"
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={100}
+                        label={({ convertedTo, count, percentage }) =>
+                          `${getConvertedToLabel(convertedTo)}: ${count} (${percentage.toFixed(1)}%)`
+                        }
+                      >
+                        {bookingConversionStats.byType.map((entry, index) => (
+                          <Cell
+                            key={`cell-${index}`}
+                            fill={`hsl(${(index * 137.508 + 80) % 360}, 70%, 50%)`}
+                          />
+                        ))}
+                      </Pie>
+                      <Tooltip
+                        contentStyle={tooltipContentStyle}
+                        formatter={(value, name, props) => {
+                          return [
+                            <div className="flex flex-col text-foreground">
+                              <span>
+                                {t(
+                                  "view.bookingTracking.conversionByType.count",
+                                  {
+                                    count: value,
+                                  },
+                                )}
+                              </span>
+                              <span>
+                                {t(
+                                  "view.bookingTracking.conversionByType.percentage",
+                                  {
+                                    percentage:
+                                      props.payload.percentage.toFixed(1),
+                                  },
+                                )}
+                              </span>
+                            </div>,
+                            getConvertedToLabel(props.payload.convertedTo),
+                          ];
+                        }}
+                        labelFormatter={(label) => `${label}`}
+                        separator=":"
+                        itemStyle={{ color: "var(--foreground)" }}
+                      />
+                    </PieChart>
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+                      {t("view.bookingTracking.conversionByType.noData")}
+                    </div>
+                  )}
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
 

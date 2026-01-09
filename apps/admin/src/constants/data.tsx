@@ -30,6 +30,7 @@ import {
 
 export const navItems: NavItemGroup[] = [
   {
+    id: "overview",
     title: "admin.navigation.overview",
     children: [
       {
@@ -42,6 +43,7 @@ export const navItems: NavItemGroup[] = [
     ],
   },
   {
+    id: "appointments",
     title: "admin.navigation.appointments",
     children: [
       {
@@ -103,6 +105,7 @@ export const navItems: NavItemGroup[] = [
     ],
   },
   {
+    id: "customers",
     title: "admin.navigation.customers",
     children: [
       {
@@ -115,6 +118,7 @@ export const navItems: NavItemGroup[] = [
     ],
   },
   {
+    id: "website",
     title: "admin.navigation.website",
     children: [
       {
@@ -170,6 +174,7 @@ export const navItems: NavItemGroup[] = [
     ],
   },
   {
+    id: "settings",
     title: "admin.navigation.settings",
     children: [
       {

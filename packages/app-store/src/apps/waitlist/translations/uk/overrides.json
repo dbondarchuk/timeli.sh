@@ -3,5 +3,12 @@
     "scopes": {
       "waitlist-hook": "Хук черги"
     }
+  },
+  "admin": {
+    "bookingTracking": {
+      "convertedTo": {
+        "waitlist": "Черга"
+      }
+    }
   }
 }

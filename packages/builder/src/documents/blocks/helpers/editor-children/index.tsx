@@ -11,11 +11,16 @@ import { DndContext } from "../../../../types/dndContext";
 import {
   useBlockChildrenBlockIds,
   useBlockDepth,
-  useBlockTypes,
+  useBlocksDefinitions,
   useHasActiveDragBlock,
-  useSetAllowedBlockTypes,
+  useSetAllowedRule,
 } from "../../../editor/context";
-import { BaseZodDictionary } from "../../../types";
+import {
+  BaseZodDictionary,
+  BlockFilterRule,
+  BlockFilterRuleResult,
+} from "../../../types";
+import { matchesRule } from "../../../utils";
 import { OverlayBlock } from "./overlay-block";
 
 export type EditorChildrenChange = {
@@ -29,20 +34,28 @@ const Placeholder = ({
   property,
   index,
   depth,
-  allowOnly,
+  allow,
 }: {
   blockId: string;
   property: string;
   index: number;
   depth: number;
-  allowOnly: string[];
+  allow?: BlockFilterRuleResult;
 }) => {
   const hasActiveDragBlock = useHasActiveDragBlock();
   const isOverlay = useIsCurrentBlockOverlay();
+  const blocksDefinitions = useBlocksDefinitions();
   const { ref } = useDroppable({
     id: `${blockId}/${property}/${index}-placeholder`,
     collisionPriority: depth,
-    accept: allowOnly,
+    accept: (draggable) => {
+      if (!draggable.type) return false;
+      const type = draggable.type as string;
+      const blockDefinition = blocksDefinitions.find((b) => b.type === type);
+      if (allow && blockDefinition && !matchesRule(blockDefinition, allow))
+        return false;
+      return true;
+    },
     disabled: isOverlay,
     data: {
       context: {
@@ -71,7 +84,7 @@ const Placeholder = ({
 export type EditorChildrenProps<T extends BaseZodDictionary = any> = {
   blockId: string;
   property: string;
-  allowOnly?: keyof T | (keyof T)[];
+  allow?: BlockFilterRule;
   style?: React.CSSProperties;
   childWrapper?: (props: {
     children: React.ReactNode;
@@ -87,22 +100,11 @@ export const EditorChildren = memo(
   <T extends BaseZodDictionary = any>({
     property,
     blockId: currentBlockId,
-    allowOnly: propAllowOnly,
+    allow,
     childWrapper,
     additionalProps,
   }: EditorChildrenProps<T>) => {
     const depth = useBlockDepth(currentBlockId) ?? 0;
-    const knownBlockTypes = useBlockTypes();
-
-    const allowOnly = useMemo(
-      () =>
-        propAllowOnly
-          ? Array.isArray(propAllowOnly)
-            ? propAllowOnly
-            : [propAllowOnly]
-          : knownBlockTypes,
-      [propAllowOnly, knownBlockTypes],
-    );
 
     const childrenIds = useBlockChildrenBlockIds(currentBlockId, property);
 
@@ -114,7 +116,7 @@ export const EditorChildren = memo(
         currentBlockId={currentBlockId}
         property={property}
         depth={depth}
-        allowOnly={allowOnly as string[]}
+        allow={allow}
       />
     );
   },
@@ -128,7 +130,7 @@ const EditorChildrenRender = deepMemo(
     currentBlockId,
     property,
     depth,
-    allowOnly,
+    allow,
   }: {
     childrenIds?: string[];
     childWrapper?: React.ElementType;
@@ -136,26 +138,20 @@ const EditorChildrenRender = deepMemo(
     currentBlockId: string;
     property: string;
     depth: number;
-    allowOnly: string[];
+    allow?: BlockFilterRule;
   }) => {
     const ChildWrapper = useMemo(
       () => (childWrapper ?? Fragment) as React.ElementType,
       [childWrapper],
     );
 
-    const setAllowedBlockTypes = useSetAllowedBlockTypes();
+    const setAllowedRule = useSetAllowedRule();
     const isCurrentOverlay = useIsCurrentBlockOverlay();
 
     useEffect(() => {
       if (isCurrentOverlay) return;
-      setAllowedBlockTypes(currentBlockId, property, allowOnly);
-    }, [
-      allowOnly,
-      currentBlockId,
-      property,
-      setAllowedBlockTypes,
-      isCurrentOverlay,
-    ]);
+      setAllowedRule(currentBlockId, property, allow ?? {});
+    }, [allow, currentBlockId, property, setAllowedRule, isCurrentOverlay]);
 
     return (
       <>
@@ -175,7 +171,7 @@ const EditorChildrenRender = deepMemo(
                   parentBlockId={currentBlockId}
                   parentProperty={property}
                   additionalProps={additionalProps}
-                  allowedTypes={allowOnly}
+                  allow={allow}
                 />
               </ChildWrapper>
             </Fragment>
@@ -186,7 +182,7 @@ const EditorChildrenRender = deepMemo(
             property={property}
             index={0}
             depth={depth + 1}
-            allowOnly={allowOnly}
+            allow={allow}
           />
         ) : (
           <OverlayBlock

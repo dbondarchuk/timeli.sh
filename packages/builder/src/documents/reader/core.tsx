@@ -6,6 +6,7 @@ export type TReaderBlock = {
   data: any;
   id: string;
   base?: BaseBlockProps;
+  metadata?: Record<string, any>;
 };
 
 export type TReaderDocument = TReaderBlock;
@@ -34,7 +35,6 @@ export type ReaderDocumentBlocksDictionary<T extends BuilderSchema = any> = {
         }
       >
     >;
-    staticProps?: Record<string, any>;
   };
 };
 

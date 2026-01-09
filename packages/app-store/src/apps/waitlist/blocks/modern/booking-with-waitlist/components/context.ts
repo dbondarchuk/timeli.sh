@@ -104,7 +104,7 @@ export type ScheduleContextProps = {
 
   onSubmit: () => void;
 
-  waitlistAppId: string;
+  waitlistAppId?: string;
 
   paymentInformation?: CollectPayment | null;
   setPaymentInformation: (form?: CollectPayment | null) => void;

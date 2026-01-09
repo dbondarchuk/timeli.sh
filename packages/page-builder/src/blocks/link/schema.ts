@@ -2,13 +2,12 @@ import { BaseReaderBlockProps, generateId } from "@timelish/builder";
 import { COLORS } from "@timelish/page-builder-base/style";
 import { Prettify } from "@timelish/types";
 import * as z from "zod";
-import { InlineContainerPropsDefaults } from "../inline-container";
 import { zStyles } from "./styles";
 
 export const LinkPropsSchema = z.object({
   props: z
     .object({
-      children: z.array(z.any()).length(1),
+      children: z.array(z.any()),
       url: z.string().optional().nullable(),
       target: z.enum(["_self", "_blank"]).optional().nullable(),
     })
@@ -29,30 +28,39 @@ export const LinkPropsDefaults = () =>
       url: LinkDefaultUrl,
       target: LinkDefaultTarget,
       children: [
+        // {
+        //   type: "InlineContainer",
+        //   id: generateId(),
+        //   data: {
+        //     style: {
+        //       ...InlineContainerPropsDefaults.style,
+        //       textDecoration: [
+        //         {
+        //           value: "underline",
+        //         },
+        //       ],
+        //     },
+        //     props: {
+        //       children: [
+        //         {
+        //           type: "InlineText",
+        //           id: generateId(),
+        //           data: {
+        //             props: {
+        //               text: "Link",
+        //             },
+        //           },
+        //         },
+        //       ],
+        //     },
+        //   },
+        // },
         {
-          type: "InlineContainer",
+          type: "InlineText",
           id: generateId(),
           data: {
-            style: {
-              ...InlineContainerPropsDefaults.style,
-              textDecoration: [
-                {
-                  value: "underline",
-                },
-              ],
-            },
             props: {
-              children: [
-                {
-                  type: "InlineText",
-                  id: generateId(),
-                  data: {
-                    props: {
-                      text: "Link",
-                    },
-                  },
-                },
-              ],
+              text: "Link",
             },
           },
         },

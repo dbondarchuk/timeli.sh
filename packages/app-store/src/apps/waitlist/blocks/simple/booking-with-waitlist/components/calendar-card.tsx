@@ -67,6 +67,7 @@ export const CalendarCard: React.FC = () => {
     setDiscount: setPromoCode,
     availability,
     setStep,
+    waitlistAppId,
   } = useScheduleContext();
 
   const t = useI18n<WaitlistPublicNamespace, WaitlistPublicKeys>(
@@ -255,20 +256,22 @@ export const CalendarCard: React.FC = () => {
             )}
           </div>
         </div>
-        <div data-identifier="waitlist-link">
-          {t.rich("block.calendar.waitlist.link", {
-            link: (chunks: any) => (
-              <Button
-                variant="link-underline"
-                className="px-0 text-base font-semibold inline-block"
-                onClick={() => setStep("waitlist-form")}
-                data-identifier="waitlist-link-button"
-              >
-                {chunks}
-              </Button>
-            ),
-          })}
-        </div>
+        {!!waitlistAppId && (
+          <div data-identifier="waitlist-link">
+            {t.rich("block.calendar.waitlist.link", {
+              link: (chunks: any) => (
+                <Button
+                  variant="link-underline"
+                  className="px-0 text-base font-semibold inline-block"
+                  onClick={() => setStep("waitlist-form")}
+                  data-identifier="waitlist-link-button"
+                >
+                  {chunks}
+                </Button>
+              ),
+            })}
+          </div>
+        )}
         <div className="text-sm text-muted-foreground leading-10">
           <Globe2Icon className="inline-block mr-1" />
           {timeZoneLabel}

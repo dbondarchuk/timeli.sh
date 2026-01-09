@@ -15,7 +15,13 @@ import {
 import { useCookies } from "react-cookie";
 import { cloneBlock, validateBlocks } from "../helpers/blocks";
 import { ReaderDocumentBlocksDictionary } from "../reader/core";
-import { BuilderSchema, EditorDocumentBlocksDictionary } from "../types";
+import {
+  BlockFilterRule,
+  BlockFilterRuleResult,
+  BuilderSchema,
+  EditorDocumentBlocksDictionary,
+  TemplatesConfiguration,
+} from "../types";
 import {
   BlockDisableOptions,
   TEditorBlock,
@@ -58,6 +64,7 @@ const DEFAULT_VIEW: View = "editor";
 type EditorState = {
   blocks: EditorDocumentBlocksDictionary<any>;
   readerBlocks: ReaderDocumentBlocksDictionary<any>;
+  templates?: TemplatesConfiguration;
   rootBlock: TEditorBlock;
   schemas: BuilderSchema;
 
@@ -89,7 +96,7 @@ type EditorState = {
   activeDragBlockTemplate: TEditorBlock | null;
   blockDisableOptions: Record<string, BlockDisableOptions | undefined>;
   // Key: blockId|property
-  allowedBlockTypes: Record<string, string[]>;
+  allowedRules: Record<string, BlockFilterRuleResult>;
 
   indexes: EditorBlockIndexes;
   templateBlockIndexes: EditorBlockIndexes | null;
@@ -126,10 +133,10 @@ type EditorState = {
       blockId: string,
       options: BlockDisableOptions | undefined,
     ) => void;
-    setAllowedBlockTypes: (
+    setAllowedRule: (
       blockId: string,
       property: string,
-      types: string[],
+      rule: BlockFilterRule,
     ) => void;
     setDocument: (document: TEditorConfiguration) => void;
     setOnChange: (onChange: (document: TEditorConfiguration) => void) => void;
@@ -152,6 +159,7 @@ const createEditorStateStore = ({
   blocks,
   readerBlocks,
   rootBlock,
+  templates,
   document,
   schemas,
   defaultScreenSize,
@@ -162,6 +170,7 @@ const createEditorStateStore = ({
   readerBlocks: ReaderDocumentBlocksDictionary<any>;
   rootBlock: TEditorBlock;
   schemas: BuilderSchema;
+  templates?: TemplatesConfiguration;
   document?: TEditorConfiguration;
   defaultScreenSize?: ViewportSize;
   persistScreenSize?: (screenSize: ViewportSize) => void;
@@ -181,6 +190,7 @@ const createEditorStateStore = ({
     originalDocument: defaultDocument,
     blocks,
     readerBlocks,
+    templates: templates,
     rootBlock: defaultRootBlock,
     schemas,
     disableAnimation: false,
@@ -211,7 +221,7 @@ const createEditorStateStore = ({
     activeDragBlockTemplate: null,
     activeOverBlockContextId: null,
     blockDisableOptions: {},
-    allowedBlockTypes: {},
+    allowedRules: {},
     actions: {
       setSelectedBlockId: (selectedBlockId: string | null) => {
         set({ selectedBlockId });
@@ -305,15 +315,15 @@ const createEditorStateStore = ({
           },
         });
       },
-      setAllowedBlockTypes: (
+      setAllowedRule: (
         blockId: string,
         property: string,
-        types: string[],
+        rule: BlockFilterRule,
       ) => {
         set({
-          allowedBlockTypes: {
-            ...get().allowedBlockTypes,
-            [`${blockId}/${property}`]: types,
+          allowedRules: {
+            ...get().allowedRules,
+            [`${blockId}/${property}`]: rule,
           },
         });
       },
@@ -726,6 +736,7 @@ export const EditorStateProvider: FC<
   PropsWithChildren<{
     blocks: EditorDocumentBlocksDictionary<any>;
     readerBlocks: ReaderDocumentBlocksDictionary<any>;
+    templates?: TemplatesConfiguration;
     rootBlock: TEditorBlock;
     document?: TEditorConfiguration;
     schemas: BuilderSchema;
@@ -780,6 +791,14 @@ export function useBlocks() {
   return useStore(
     store,
     useDeep((s) => s.blocks),
+  );
+}
+
+export function useTemplates() {
+  const store = useEditorStateStore();
+  return useStore(
+    store,
+    useDeep((s) => s.templates),
   );
 }
 
@@ -945,22 +964,22 @@ export function useSetBlockDisableOptions() {
   return useStore(store, (s) => s.actions.setBlockDisableOptions);
 }
 
-export function useAllowedBlockTypes(
+export function useAllowedRule(
   blockId: string | undefined | null,
   property: string | undefined | null,
-): string[] | undefined {
+): BlockFilterRuleResult | undefined {
   const store = useEditorStateStore();
   return useStore(
     store,
     useDeep((s) =>
-      blockId ? s.allowedBlockTypes[`${blockId}/${property ?? ""}`] : undefined,
+      blockId ? s.allowedRules[`${blockId}/${property ?? ""}`] : undefined,
     ),
   );
 }
 
-export function useSetAllowedBlockTypes() {
+export function useSetAllowedRule() {
   const store = useEditorStateStore();
-  return useStore(store, (s) => s.actions.setAllowedBlockTypes);
+  return useStore(store, (s) => s.actions.setAllowedRule);
 }
 
 export function useSetActiveDragBlockId() {
@@ -1177,6 +1196,44 @@ export function useBlockType(blockId: string | null) {
       null
     );
   });
+}
+
+export function useBlockDefinition(blockId: string | null) {
+  const store = useEditorStateStore();
+  return useStore(
+    store,
+    useDeep((s) => {
+      if (!blockId) return null;
+      const type = (s.indexes[blockId] ?? s.templateBlockIndexes?.[blockId])
+        ?.blockType;
+      if (!type) return null;
+
+      const block = s.blocks[type];
+      if (!block) return null;
+
+      return {
+        type,
+        capabilities: block.capabilities,
+        tags: block.tags,
+        allowedIn: block.allowedIn,
+      };
+    }),
+  );
+}
+
+export function useBlocksDefinitions() {
+  const store = useEditorStateStore();
+  return useStore(
+    store,
+    useDeep((s) => {
+      return Object.entries(s.blocks).map(([type, block]) => ({
+        type,
+        capabilities: block.capabilities,
+        tags: block.tags,
+        allowedIn: block.allowedIn,
+      }));
+    }),
+  );
 }
 
 export function useBlockAllowedParentTypes(blockId: string | null) {

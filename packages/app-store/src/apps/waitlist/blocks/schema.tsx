@@ -36,17 +36,24 @@ import { WaitlistToolbar as SimpleWaitlistToolbar } from "./simple/waitlist/tool
 
 export const WaitlistBlocksSchema = {
   WaitlistModern: ModernWaitlistPropsSchema,
-  BookingWithWaitlistModern: ModernBookingWithWaitlistPropsSchema,
+  BookingModern: ModernBookingWithWaitlistPropsSchema,
   WaitlistSimple: SimpleWaitlistPropsSchema,
-  BookingWithWaitlistSimple: SimpleBookingWithWaitlistPropsSchema,
+  BookingSimple: SimpleBookingWithWaitlistPropsSchema,
 };
 
 export const WaitlistBlocksAllowedInFooter = {
   WaitlistModern: false,
-  BookingWithWaitlistModern: false,
+  BookingModern: false,
   WaitlistSimple: false,
-  BookingWithWaitlistSimple: false,
+  BookingSimple: false,
 };
+
+export const WaitlistBlocksDefaultMetadata = (
+  appName: string,
+  appId: string,
+) => ({
+  waitlistAppId: appId,
+});
 
 export const WaitlistEditors: EditorDocumentBlocksDictionary<
   typeof WaitlistBlocksSchema
@@ -66,8 +73,10 @@ export const WaitlistEditors: EditorDocumentBlocksDictionary<
       "builder",
       BuilderKeys
     >,
+    capabilities: ["booking", "waitlist", "block"],
+    tags: ["booking", "waitlist"],
   },
-  BookingWithWaitlistModern: {
+  BookingModern: {
     displayName:
       "app_waitlist_admin.block.modern.bookingWithWaitlist.displayName" satisfies AllKeys<
         WaitlistAdminNamespace,
@@ -82,6 +91,8 @@ export const WaitlistEditors: EditorDocumentBlocksDictionary<
       "builder",
       BuilderKeys
     >,
+    capabilities: ["booking", "waitlist", "block"],
+    tags: ["booking", "waitlist"],
   },
   WaitlistSimple: {
     displayName:
@@ -98,8 +109,10 @@ export const WaitlistEditors: EditorDocumentBlocksDictionary<
       "builder",
       BuilderKeys
     >,
+    capabilities: ["booking", "waitlist", "block"],
+    tags: ["booking", "waitlist"],
   },
-  BookingWithWaitlistSimple: {
+  BookingSimple: {
     displayName:
       "app_waitlist_admin.block.simple.bookingWithWaitlist.displayName" satisfies AllKeys<
         WaitlistAdminNamespace,
@@ -114,6 +127,8 @@ export const WaitlistEditors: EditorDocumentBlocksDictionary<
       "builder",
       BuilderKeys
     >,
+    capabilities: ["booking", "waitlist", "block"],
+    tags: ["booking", "waitlist"],
   },
 };
 
@@ -123,6 +138,7 @@ export const WaitlistBlocks = Object.fromEntries(
     {
       schema,
       editor: WaitlistEditors[key as keyof typeof WaitlistBlocksSchema],
+      defaultMetadata: WaitlistBlocksDefaultMetadata,
       allowedInFooter:
         WaitlistBlocksAllowedInFooter[key as keyof typeof WaitlistBlocksSchema],
     },

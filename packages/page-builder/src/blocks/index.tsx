@@ -113,6 +113,7 @@ import {
   ForeachContainerConfiguration,
   ForeachContainerEditor,
   ForeachContainerPropsDefaults,
+  ForeachContainerToolbar,
 } from "./foreach-container";
 import {
   GridContainerConfiguration,
@@ -228,6 +229,8 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     defaultValue: ImagePropsDefaults,
     category:
       "builder.pageBuilder.blocks.categories.objects" satisfies BaseAllKeys,
+    capabilities: ["image", "media", "block"],
+    tags: ["image", "media"],
   },
   Button: {
     displayName:
@@ -239,6 +242,8 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     defaultValue: ButtonPropsDefaults,
     category:
       "builder.pageBuilder.blocks.categories.buttons" satisfies BaseAllKeys,
+    capabilities: ["button", "action", "link", "block"],
+    tags: ["button", "action", "link"],
   },
   Link: {
     displayName:
@@ -250,6 +255,8 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     defaultValue: LinkPropsDefaults,
     category:
       "builder.pageBuilder.blocks.categories.buttons" satisfies BaseAllKeys,
+    capabilities: ["link", "inline", "action"],
+    tags: ["link"],
   },
   Heading: {
     displayName:
@@ -261,6 +268,8 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     defaultValue: HeadingPropsDefaults,
     category:
       "builder.pageBuilder.blocks.categories.text" satisfies BaseAllKeys,
+    capabilities: ["heading", "title", "block"],
+    tags: ["heading", "title"],
   },
   Text: {
     displayName:
@@ -281,6 +290,8 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
         undoRedo: true,
       },
     },
+    capabilities: ["text", "block"],
+    tags: ["text", "block"],
   },
   Icon: {
     displayName:
@@ -292,6 +303,8 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     defaultValue: IconPropsDefaults,
     category:
       "builder.pageBuilder.blocks.categories.objects" satisfies BaseAllKeys,
+    capabilities: ["icon", "inline"],
+    tags: ["icon"],
   },
   // Divider: {
   //   displayName: "Divider",
@@ -312,6 +325,8 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     defaultValue: SpacerPropsDefaults,
     category:
       "builder.pageBuilder.blocks.categories.layout" satisfies BaseAllKeys,
+    capabilities: ["spacer", "block"],
+    tags: ["spacer", "block"],
   },
   PageLayout: {
     displayName:
@@ -323,6 +338,8 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     defaultValue: PageLayoutDefaultProps,
     category:
       "builder.pageBuilder.blocks.categories.layout" satisfies BaseAllKeys,
+    capabilities: ["layout"],
+    tags: ["layout"],
   },
   Container: {
     displayName:
@@ -334,6 +351,8 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     defaultValue: ContainerPropsDefaults,
     category:
       "builder.pageBuilder.blocks.categories.layout" satisfies BaseAllKeys,
+    capabilities: ["container", "layout", "block"],
+    tags: ["container", "layout"],
   },
   GridContainer: {
     displayName:
@@ -345,6 +364,8 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     defaultValue: GridContainerPropsDefaults,
     category:
       "builder.pageBuilder.blocks.categories.layout" satisfies BaseAllKeys,
+    capabilities: ["grid", "layout", "block", "container"],
+    tags: ["grid", "container"],
   },
   PageHero: {
     displayName:
@@ -356,6 +377,8 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     defaultValue: PageHeroPropsDefaults,
     category:
       "builder.pageBuilder.blocks.categories.layout" satisfies BaseAllKeys,
+    capabilities: ["layout", "block"],
+    tags: ["page-hero"],
   },
   // Columns: {
   //   displayName: "Columns",
@@ -375,6 +398,8 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     defaultValue: ConditionalContainerPropsDefaults,
     category:
       "builder.pageBuilder.blocks.categories.layout" satisfies BaseAllKeys,
+    capabilities: ["conditional", "layout", "block"],
+    tags: ["conditional"],
   },
   ForeachContainer: {
     displayName:
@@ -382,9 +407,12 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     icon: <Repeat2 />,
     Configuration: ForeachContainerConfiguration,
     Editor: ForeachContainerEditor,
+    Toolbar: ForeachContainerToolbar,
     defaultValue: ForeachContainerPropsDefaults,
     category:
       "builder.pageBuilder.blocks.categories.layout" satisfies BaseAllKeys,
+    capabilities: ["foreach", "layout", "block"],
+    tags: ["foreach"],
   },
   BookingSimple: {
     displayName:
@@ -396,6 +424,8 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     defaultValue: BookingSimplePropsDefaults,
     category:
       "builder.pageBuilder.blocks.categories.booking" satisfies BaseAllKeys,
+    capabilities: ["booking", "block"],
+    tags: ["booking"],
   },
   BookingModern: {
     displayName:
@@ -407,6 +437,8 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     defaultValue: BookingModernPropsDefaults,
     category:
       "builder.pageBuilder.blocks.categories.booking" satisfies BaseAllKeys,
+    capabilities: ["booking", "block"],
+    tags: ["booking"],
   },
   Carousel: {
     displayName:
@@ -418,6 +450,8 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     defaultValue: CarouselPropsDefaults,
     category:
       "builder.pageBuilder.blocks.categories.layout" satisfies BaseAllKeys,
+    capabilities: ["carousel", "layout", "block", "container"],
+    tags: ["carousel"],
   },
   Video: {
     displayName:
@@ -429,6 +463,8 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     defaultValue: VideoPropsDefaults,
     category:
       "builder.pageBuilder.blocks.categories.objects" satisfies BaseAllKeys,
+    capabilities: ["video", "media", "block"],
+    tags: ["video", "media"],
   },
   YouTubeVideo: {
     displayName:
@@ -440,6 +476,8 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     defaultValue: YouTubeVideoPropsDefaults,
     category:
       "builder.pageBuilder.blocks.categories.objects" satisfies BaseAllKeys,
+    capabilities: ["video", "media", "block"],
+    tags: ["video", "media"],
   },
   Popup: {
     displayName:
@@ -451,7 +489,11 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     defaultValue: PopupPropsDefaults,
     category:
       "builder.pageBuilder.blocks.categories.objects" satisfies BaseAllKeys,
-    allowedIn: ["PageLayout"],
+    capabilities: ["popup", "block"],
+    tags: ["popup"],
+    allowedIn: {
+      type: ["PageLayout"],
+    },
   },
   InlineText: {
     displayName:
@@ -470,6 +512,8 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
         moveDown: true,
       },
     },
+    capabilities: ["text", "inline"],
+    tags: ["text", "inline"],
   },
   Accordion: {
     displayName:
@@ -481,6 +525,8 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     defaultValue: AccordionPropsDefaults,
     category:
       "builder.pageBuilder.blocks.categories.layout" satisfies BaseAllKeys,
+    capabilities: ["accordion", "layout", "block", "container"],
+    tags: ["accordion"],
   },
   AccordionItem: {
     displayName:
@@ -492,7 +538,11 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     defaultValue: AccordionItemPropsDefaults,
     category:
       "builder.pageBuilder.blocks.categories.layout" satisfies BaseAllKeys,
-    allowedIn: ["Accordion"],
+    capabilities: ["accordion-item", "layout", "block", "container"],
+    tags: ["accordion-item", "accordion"],
+    allowedIn: {
+      type: ["Accordion"],
+    },
   },
   InlineContainer: {
     displayName:
@@ -504,6 +554,8 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     defaultValue: InlineContainerPropsDefaults,
     category:
       "builder.pageBuilder.blocks.categories.layout" satisfies BaseAllKeys,
+    capabilities: ["inline", "layout", "block", "container"],
+    tags: ["inline-container", "inline", "container"],
   },
   CustomHTML: {
     displayName:
@@ -515,6 +567,8 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     defaultValue: CustomHTMLPropsDefaults,
     category:
       "builder.pageBuilder.blocks.categories.layout" satisfies BaseAllKeys,
+    capabilities: ["html", "block"],
+    tags: ["html"],
   },
   BeforeAfter: {
     displayName:
@@ -526,6 +580,8 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     defaultValue: BeforeAfterPropsDefaults,
     category:
       "builder.pageBuilder.blocks.categories.objects" satisfies BaseAllKeys,
+    capabilities: ["media", "block"],
+    tags: ["before-after", "media"],
   },
   Lightbox: {
     displayName:
@@ -536,6 +592,8 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     defaultValue: LightboxPropsDefaults,
     category:
       "builder.pageBuilder.blocks.categories.content" satisfies BaseAllKeys,
+    capabilities: ["lightbox", "media", "block"],
+    tags: ["lightbox", "media"],
   },
   Redirect: {
     displayName:
@@ -546,6 +604,8 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     defaultValue: RedirectPropsDefaults,
     category:
       "builder.pageBuilder.blocks.categories.navigation" satisfies BaseAllKeys,
+    capabilities: ["redirect", "invisible"],
+    tags: ["redirect"],
   },
   ModifyAppointmentFormSimple: {
     displayName:
@@ -556,6 +616,8 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     defaultValue: ModifyAppointmentFormSimplePropsDefaults,
     category:
       "builder.pageBuilder.blocks.categories.booking" satisfies BaseAllKeys,
+    capabilities: ["booking", "block", "modify-booking"],
+    tags: ["booking", "modify-booking"],
   },
   ModifyAppointmentFormModern: {
     displayName:
@@ -566,6 +628,8 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     defaultValue: ModifyAppointmentFormModernPropsDefaults,
     category:
       "builder.pageBuilder.blocks.categories.booking" satisfies BaseAllKeys,
+    capabilities: ["booking", "block", "modify-booking"],
+    tags: ["booking", "modify-booking"],
   },
   BookingConfirmationSimple: {
     displayName:
@@ -576,6 +640,8 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     defaultValue: BookingConfirmationSimplePropsDefaults,
     category:
       "builder.pageBuilder.blocks.categories.booking" satisfies BaseAllKeys,
+    capabilities: ["booking", "block"],
+    tags: ["booking", "confirmation"],
   },
   BookingConfirmationModern: {
     displayName:
@@ -586,6 +652,8 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     defaultValue: BookingConfirmationModernPropsDefaults,
     category:
       "builder.pageBuilder.blocks.categories.booking" satisfies BaseAllKeys,
+    capabilities: ["booking", "block"],
+    tags: ["booking", "confirmation"],
   },
 };
 

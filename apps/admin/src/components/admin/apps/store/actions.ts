@@ -1,6 +1,7 @@
 "use server";
 
 import { getServicesContainer } from "@/app/utils";
+import { BaseAllKeys } from "@timelish/i18n";
 import { getLoggerFactory } from "@timelish/logger";
 import { ConnectedAppStatusWithText } from "@timelish/types";
 
@@ -67,7 +68,7 @@ export const installComplexApp = async (name: string) => {
 
     await servicesContainer.connectedAppsService.updateApp(appId, {
       status: "connected",
-      statusText: "common.statusText.installed",
+      statusText: "apps.common.statusText.installed" satisfies BaseAllKeys,
     });
 
     actionLogger.debug(

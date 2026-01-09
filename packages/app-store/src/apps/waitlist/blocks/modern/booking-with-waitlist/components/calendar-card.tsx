@@ -75,6 +75,7 @@ export const CalendarCard: React.FC = () => {
     setCurrentStep,
     isLoading,
     setFlow,
+    waitlistAppId,
   } = useScheduleContext();
 
   const t = useI18n<WaitlistPublicNamespace, WaitlistPublicKeys>(
@@ -284,27 +285,29 @@ export const CalendarCard: React.FC = () => {
         </div>
       </div>
 
-      <div className="border-t pt-6">
-        <div className="flex items-start gap-3 p-4 bg-muted/50 rounded-lg waitlist-card">
-          <ListPlus className="w-5 h-5 text-muted-foreground mt-0.5" />
-          <div className="flex-1">
-            <h4 className="text-sm font-medium text-foreground waitlist-title">
-              {t("block.calendar.waitlist.title")}
-            </h4>
-            <p className="text-xs text-muted-foreground mb-3 waitlist-description">
-              {t("block.calendar.waitlist.description")}
-            </p>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={switchToWaitlist}
-              className="waitlist-button"
-            >
-              {t("block.calendar.waitlist.button")}
-            </Button>
+      {!!waitlistAppId && (
+        <div className="border-t pt-6">
+          <div className="flex items-start gap-3 p-4 bg-muted/50 rounded-lg waitlist-card">
+            <ListPlus className="w-5 h-5 text-muted-foreground mt-0.5" />
+            <div className="flex-1">
+              <h4 className="text-sm font-medium text-foreground waitlist-title">
+                {t("block.calendar.waitlist.title")}
+              </h4>
+              <p className="text-xs text-muted-foreground mb-3 waitlist-description">
+                {t("block.calendar.waitlist.description")}
+              </p>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={switchToWaitlist}
+                className="waitlist-button"
+              >
+                {t("block.calendar.waitlist.button")}
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

@@ -8,10 +8,10 @@ export const CustomHTMLPropsSchema = z.object({
     .object({
       html: z
         .string({
-          error: "pageBuilder.blocks.customHtml.errors.required",
+          error: "builder.pageBuilder.blocks.customHtml.errors.required",
         })
         .min(1, {
-          message: "pageBuilder.blocks.customHtml.errors.required",
+          message: "builder.pageBuilder.blocks.customHtml.errors.required",
         }),
     })
     .optional()

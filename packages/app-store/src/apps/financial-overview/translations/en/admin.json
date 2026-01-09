@@ -4,7 +4,7 @@
   },
   "app": {
     "displayName": "Financial overview",
-    "description": "Financial Overview adds a new dashboard tab with clear, simple financial metrics — giving you a quick snapshot of your revenue, payments, and performance at a glance."
+    "description": "**Financial Overview** adds a dedicated dashboard tab with clear, easy-to-understand financial metrics, giving you a quick snapshot of your revenue, payments, and overall performance at a glance.\n\nIn addition to your financial totals, it helps you understand how customers move through your booking process — showing how many people complete a booking and where others may drop off before finishing. This makes it easier to spot friction, improve your booking experience, and increase successful appointments.\n\n### What you can see\n- Total revenue and payments over time  \n- Number of completed appointments  \n- How many customers start a booking but don’t finish  \n- Where customers commonly stop during the booking process  \n- Trends over selected time ranges\n\n### Why it’s useful\n- See your business performance in one place  \n- Understand what’s working and what needs improvement  \n- Identify steps that may be causing customers to leave  \n- Make informed decisions without digging into complex reports"
   },
   "view": {
     "title": "Financial overview",
@@ -48,6 +48,35 @@
       "daily": "Daily",
       "weekly": "Weekly",
       "monthly": "Monthly"
+    },
+    "bookingTracking": {
+      "title": "Booking Completion Tracking",
+      "totalBookings": "Total Started Bookings",
+      "abandoned": "Abandoned",
+      "abandonmentRate": "Abandonment Rate",
+      "completionVsAbandonment": "Completion vs Abandonment Over Time",
+      "abandonmentByStep": {
+        "title": "Abandonment by Step",
+        "count": "{count, plural, =1 {1 abandoned} other {# abandoned}}",
+        "percentage": "{percentage}% of all abandonments",
+        "noData": "No abandonment data available"
+      },
+      "converted": "Converted",
+      "conversionRate": "Conversion Rate",
+      "conversionByType": {
+        "title": "Conversion by Type",
+        "count": "{count, plural, =1 {1 converted} other {# converted}}",
+        "percentage": "{percentage}% of all conversions",
+        "noData": "No conversion data available"
+      },
+      "bookingSteps": {
+        "optionsRequested": "Options Requested",
+        "availabilityChecked": "Availability Checked",
+        "duplicateChecked": "Duplicate Checked",
+        "paymentChecked": "Payment Checked",
+        "formSubmitted": "Form Submitted",
+        "bookingConverted": "Booking Converted"
+      }
     }
   },
   "setup": {

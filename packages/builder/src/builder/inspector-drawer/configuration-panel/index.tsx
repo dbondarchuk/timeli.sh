@@ -52,6 +52,17 @@ export const ConfigurationPanel: React.FC = () => {
     [dispatchAction, selectedBlockId],
   );
 
+  const setMetadata = useCallback(
+    (metadata: Record<string, any> | undefined) => {
+      if (!selectedBlockId) return;
+      dispatchAction({
+        type: "set-block-metadata",
+        value: { blockId: selectedBlockId, metadata },
+      });
+    },
+    [dispatchAction, selectedBlockId],
+  );
+
   const Panel = useMemo(
     () => (selectedBlockType ? blocks[selectedBlockType]?.Configuration : null),
     [blocks, selectedBlockType],
@@ -65,7 +76,7 @@ export const ConfigurationPanel: React.FC = () => {
     );
   }
 
-  const { data, id, base } = selectedBlock;
+  const { data, id, base, metadata } = selectedBlock;
 
   return (
     <BaseSidebarPanel title={t(blocks[selectedBlock.type].displayName)}>
@@ -75,6 +86,8 @@ export const ConfigurationPanel: React.FC = () => {
         key={id}
         base={base}
         onBaseChange={setBase}
+        metadata={metadata}
+        onMetadataChange={setMetadata}
       />
     </BaseSidebarPanel>
   );

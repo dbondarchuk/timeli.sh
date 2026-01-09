@@ -1,4 +1,5 @@
 import {
+  BlockFilterRule,
   EditorChildren,
   useBlockEditor,
   useCurrentBlock,
@@ -10,7 +11,9 @@ import {
 } from "@timelish/page-builder-base";
 import { InlineContainerProps, styles } from "./schema";
 
-const allowOnly = ["InlineText", "Icon", "Link"];
+const allowOnly: BlockFilterRule = {
+  capabilities: ["inline"],
+};
 
 export const InlineContainerEditor = ({
   style,
@@ -34,7 +37,7 @@ export const InlineContainerEditor = ({
         <EditorChildren
           blockId={currentBlock.id}
           property="props"
-          allowOnly={allowOnly}
+          allow={allowOnly}
         />
       </span>
     </>

@@ -232,6 +232,16 @@ export const editorHistoryReducer = (
 
       break;
     }
+
+    case "set-block-metadata": {
+      // const block = indexes[value.blockId];
+      const block = findBlock(originalDocument, value.blockId);
+      if (block) {
+        block.metadata = value.metadata;
+      } else {
+        return null;
+      }
+    }
   }
 
   const document = JSON.parse(JSON.stringify(originalDocument));

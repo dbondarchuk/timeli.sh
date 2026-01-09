@@ -70,6 +70,13 @@ export type EditorHistoryEntry =
         blockId: string;
         base: BaseBlockProps;
       };
+    }
+  | {
+      type: "set-block-metadata";
+      value: {
+        blockId: string;
+        metadata: Record<string, any> | undefined;
+      };
     };
 
 export type EditorHistoryEntryType = Pick<EditorHistoryEntry, "type">["type"];

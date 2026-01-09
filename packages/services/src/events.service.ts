@@ -328,6 +328,7 @@ export class EventsService extends BaseService implements IEventsService {
       "onAppointmentCreated",
       appointment,
       confirmed,
+      by,
     );
 
     const pendingAppointments = await this.getPendingAppointmentsCount(

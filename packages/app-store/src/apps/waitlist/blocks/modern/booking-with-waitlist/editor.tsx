@@ -14,13 +14,14 @@ import { styles } from "./styles";
 export const BookingWithWaitlistEditor = ({
   props,
   style,
-  appId,
-}: BookingWithWaitlistProps & { appId?: string }) => {
+}: BookingWithWaitlistProps) => {
   const currentBlock = useCurrentBlock<BookingWithWaitlistProps>();
   const overlayProps = useBlockEditor(currentBlock.id);
 
   const className = useClassName();
   const base = currentBlock.base;
+  const metadata = currentBlock?.metadata;
+  const appId = metadata?.waitlistAppId;
 
   return (
     <>

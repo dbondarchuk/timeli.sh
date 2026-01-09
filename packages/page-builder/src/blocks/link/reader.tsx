@@ -10,7 +10,7 @@ import { getDefaults } from "./styles.default";
 
 export const Link = ({ props, style, block, ...rest }: LinkReaderProps) => {
   const url = (props as any)?.url ?? LinkDefaultUrl;
-  const content = (props as any)?.children?.[0];
+  const children = props?.children ?? [];
   const defaults = getDefaults({ props, style }, false);
 
   const className = generateClassName();
@@ -30,7 +30,9 @@ export const Link = ({ props, style, block, ...rest }: LinkReaderProps) => {
         className={cn(className, base?.className)}
         id={base?.id}
       >
-        {content && <ReaderBlock key={content.id} {...rest} block={content} />}
+        {children.map((child) => (
+          <ReaderBlock key={child.id} {...rest} block={child} />
+        ))}
       </a>
     </>
   );

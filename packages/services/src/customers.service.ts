@@ -297,7 +297,10 @@ export class CustomersService extends BaseService implements ICustomersService {
     const logger = this.loggerFactory("findCustomer");
     logger.debug({ email, phone }, "Finding customer by email and phone");
 
-    const byEmail = await this.findCustomerBySearchField(email, "email");
+    const byEmail = await this.findCustomerBySearchField(
+      email?.trim() || "",
+      "email",
+    );
     if (byEmail) {
       logger.debug(
         { email, customerId: byEmail._id },
@@ -306,7 +309,10 @@ export class CustomersService extends BaseService implements ICustomersService {
       return byEmail;
     }
 
-    const byPhone = await this.findCustomerBySearchField(phone, "phone");
+    const byPhone = await this.findCustomerBySearchField(
+      phone?.trim() || "",
+      "phone",
+    );
     if (byPhone) {
       logger.debug(
         { phone, customerId: byPhone._id },

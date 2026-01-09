@@ -1,0 +1,171 @@
+{
+  "pageTitle": "Blog",
+  "table": {
+    "columns": {
+      "title": "Title",
+      "slug": "Slug",
+      "status": "Status",
+      "publicationDate": "Publication Date",
+      "tags": "Tags",
+      "published": "Published",
+      "draft": "Draft"
+    },
+    "actions": {
+      "create": "Create Post",
+      "edit": "Edit"
+    },
+    "delete": {
+      "title": "Are you absolutely sure?",
+      "description": "This action cannot be undone. This will permanently delete the blog post.",
+      "confirm": "Delete",
+      "cancel": "Cancel",
+      "action": "Delete"
+    },
+    "toast": {
+      "blog_post_deleted": "Blog post deleted successfully",
+      "error_deleting_blog_post": "Error deleting blog post",
+      "error_loading_blog_posts": "Error loading blog posts"
+    }
+  },
+  "form": {
+    "title": "Title",
+    "titleTooltip": "The title of the blog post",
+    "titlePlaceholder": "Enter post title",
+    "slug": "Slug",
+    "slugTooltip": "URL-friendly version of the title",
+    "slugPlaceholder": "post-slug",
+    "content": "Content",
+    "contentTooltip": "The main content of the blog post",
+    "isPublished": "Published",
+    "isPublishedDescription": "Whether this post is published and visible to the public",
+    "publicationDate": "Publication Date",
+    "publicationDateTooltip": "When this post should be published",
+    "tags": "Tags",
+    "tagsTooltip": "Tags to categorize this post",
+    "toasts": {
+      "changesSaved": "Blog post saved successfully",
+      "requestError": "Error saving blog post"
+    }
+  },
+  "app": {
+    "displayName": "Blog",
+    "description": "Create and manage blog posts with rich content, tags, and publication dates",
+    "pages": {
+      "main": {
+        "label": "Blog",
+        "title": "Blog Posts",
+        "description": "Manage your blog posts"
+      },
+      "new": {
+        "label": "New Post",
+        "title": "Create New Blog Post",
+        "description": "Create a new blog post"
+      },
+      "edit": {
+        "label": "Edit Post",
+        "title": "Edit Blog Post",
+        "description": "Edit blog post",
+        "notFound": "Blog post not found"
+      }
+    }
+  },
+  "setup": {
+    "update": "Update <app></app>"
+  },
+  "statusText": {
+    "successfully_set_up": "Successfully set up blog",
+    "error_processing_configuration": "Error processing blog configuration"
+  },
+  "block": {
+    "postContainer": {
+      "displayName": "Blog Post Container",
+      "postUrl": {
+        "label": "Post URL",
+        "helperText": "The URL of the blog post. Use [slug] as a placeholder for the post slug."
+      },
+      "errors": {
+        "postUrl": {
+          "required": "Post URL is required",
+          "slug": "Post URL must contain a [slug] placeholder"
+        }
+      }
+    },
+    "postTitle": {
+      "displayName": "Blog Post Title"
+    },
+    "postContent": {
+      "displayName": "Blog Post Content"
+    },
+    "postTag": {
+      "displayName": "Blog Post Tag",
+      "blogListUrl": {
+        "label": "Blog List URL",
+        "description": "Optional URL for the blog posts list page. If set, tags will link to this URL with a tag query parameter. If not set, tags will link to the current page with a tag query parameter."
+      }
+    },
+    "postPublishDate": {
+      "displayName": "Blog Post Publish Date",
+      "dateFormat": {
+        "label": "Date Format"
+      },
+      "dateFormats": {
+        "dateFull": "Full Date",
+        "dateHuge": "Huge Date",
+        "dateMed": "Medium Date",
+        "dateMedWithWeekday": "Medium with Weekday",
+        "dateShort": "Short Date",
+        "datetimeFull": "Full DateTime",
+        "datetimeHuge": "Huge DateTime",
+        "datetimeMed": "Medium DateTime",
+        "datetimeMedWithWeekday": "Medium DateTime with Weekday",
+        "datetimeShort": "Short DateTime",
+        "customMmmmdYyyy": "Custom: MMMM d, yyyy",
+        "customMmmdYyyy": "Custom: MMM d, yyyy",
+        "customDdMmYyyy": "Custom: dd/MM/yyyy",
+        "customMmDdYyyy": "Custom: MM/dd/yyyy",
+        "customYyyyMmDd": "Custom: yyyy-MM-dd"
+      }
+    },
+    "postsContainer": {
+      "displayName": "Blog Posts Container",
+      "postsPerPage": {
+        "label": "Posts per page",
+        "description": "The number of posts to display per page"
+      }
+    },
+    "postNavigationButton": {
+      "displayName": "Blog Post Navigation Button",
+      "direction": {
+        "label": "Direction",
+        "options": {
+          "prev": "Previous",
+          "next": "Next"
+        }
+      }
+    },
+    "category": {
+      "blog": "Blog"
+    },
+    "templates": {
+      "postTitleHeader": {
+        "displayName": "Blog Post Title Header"
+      },
+      "postTags": {
+        "displayName": "Blog Post Tags"
+      },
+      "post": {
+        "displayName": "Blog Post"
+      },
+      "postsList": {
+        "displayName": "Blog Posts List"
+      },
+      "postsListNavigation": {
+        "displayName": "Blog Posts List Navigation"
+      }
+    },
+    "blogAppId": {
+      "label": "Blog App",
+      "helperText": "The app that will be used to work with the blog posts"
+    }
+  }
+}

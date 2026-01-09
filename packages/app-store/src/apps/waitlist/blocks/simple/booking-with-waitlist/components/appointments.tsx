@@ -16,7 +16,7 @@ export type AppointmentsProps = {
   className?: string;
   id?: string;
   isEditor?: boolean;
-  appId: string;
+  appId?: string;
   isOnlyWaitlist: boolean;
 };
 

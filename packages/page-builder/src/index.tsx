@@ -1,11 +1,9 @@
 "use client";
 
 import {
-  BaseZodDictionary,
   Builder,
   EditorDocumentBlocksDictionary,
   generateId,
-  ReaderDocumentBlocksDictionary,
   SidebarTab,
   TEditorConfiguration,
 } from "@timelish/builder";
@@ -13,10 +11,16 @@ import { Header } from "@timelish/page-builder-base";
 import { PageHeader, UploadedFile } from "@timelish/types";
 import { deepMemo } from "@timelish/ui";
 import { useMemo } from "react";
+import {
+  BlockProviderRegistry,
+  resolveProviders,
+} from "./block-providers/editor";
 import { EditorBlocks, RootBlock } from "./blocks";
 import { ImagePropsDefaults } from "./blocks/image";
 import { ReaderBlocks } from "./blocks/reader";
 import { EditorBlocksSchema } from "./blocks/schema";
+
+export * from "./block-providers/editor";
 
 type PageBuilderProps = {
   value?: TEditorConfiguration;
@@ -31,11 +35,7 @@ type PageBuilderProps = {
   };
   footer?: React.ReactNode;
   notAllowedBlocks?: (keyof typeof EditorBlocks | string)[];
-  additionalBlocks?: {
-    schemas: BaseZodDictionary;
-    editors: EditorDocumentBlocksDictionary<any>;
-    readers: ReaderDocumentBlocksDictionary<any>;
-  };
+  blockRegistry?: BlockProviderRegistry<typeof EditorBlocksSchema>;
 };
 
 const getImageBlock = (file: UploadedFile) => {
@@ -63,7 +63,7 @@ export const PageBuilder = deepMemo(
     header,
     footer,
     notAllowedBlocks,
-    additionalBlocks,
+    blockRegistry,
   }: PageBuilderProps) => {
     const headerComponent = useMemo(
       () =>
@@ -90,20 +90,25 @@ export const PageBuilder = deepMemo(
       return EditorBlocks;
     }, [notAllowedBlocks]);
 
+    const resolvedBlocks = useMemo(() => {
+      return resolveProviders(blockRegistry || { providers: [] });
+    }, [blockRegistry]);
+
     return (
       <Builder
         defaultValue={value}
         onChange={onChange}
         onIsValidChange={onIsValidChange}
         args={args}
-        schemas={{ ...EditorBlocksSchema, ...additionalBlocks?.schemas }}
+        templates={resolvedBlocks.templates}
+        schemas={{ ...EditorBlocksSchema, ...resolvedBlocks.schemas }}
         editorBlocks={
           {
             ...editorBlocks,
-            ...additionalBlocks?.editors,
+            ...resolvedBlocks.editors,
           } as EditorDocumentBlocksDictionary<typeof EditorBlocksSchema>
         }
-        readerBlocks={{ ...ReaderBlocks, ...additionalBlocks?.readers }}
+        readerBlocks={{ ...ReaderBlocks, ...resolvedBlocks.readers }}
         rootBlock={RootBlock}
         extraTabs={extraTabs}
         sidebarWidth={28}

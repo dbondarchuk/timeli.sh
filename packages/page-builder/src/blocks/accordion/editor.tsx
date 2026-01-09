@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  BlockFilterRule,
   EditorChildren,
   useBlockEditor,
   useCurrentBlock,
@@ -10,6 +11,10 @@ import { cn } from "@timelish/ui";
 import { useMemo } from "react";
 import { AccordionProps } from "./schema";
 import { styles } from "./styles";
+
+const allowOnly: BlockFilterRule = {
+  capabilities: ["accordion-item"],
+};
 
 export const AccordionEditor = ({ props, style }: AccordionProps) => {
   const currentBlock = useCurrentBlock<AccordionProps>();
@@ -46,7 +51,7 @@ export const AccordionEditor = ({ props, style }: AccordionProps) => {
         <EditorChildren
           blockId={currentBlock.id}
           property="props"
-          allowOnly="AccordionItem"
+          allow={allowOnly}
           additionalProps={additionalProps}
         />
       </div>

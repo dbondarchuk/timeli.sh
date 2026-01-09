@@ -164,6 +164,19 @@ export default class ScheduledNotificationsConnectedApp
     }
   }
 
+  public async install(appData: ConnectedAppData): Promise<void> {
+    const logger = this.loggerFactory("install");
+    logger.debug(
+      { appId: appData._id },
+      "Installing scheduled notifications app",
+    );
+    await this.repository.installScheduledNotificationsApp();
+    logger.debug(
+      { appId: appData._id },
+      "Scheduled notifications app installed successfully",
+    );
+  }
+
   public async unInstall(appData: ConnectedAppData): Promise<void> {
     const logger = this.loggerFactory("unInstall");
     logger.debug(

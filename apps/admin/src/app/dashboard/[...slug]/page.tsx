@@ -122,7 +122,9 @@ export default async function Page(props: Props) {
       <div className="flex flex-1 flex-col gap-4">
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
-          <Heading title={title} description={description} />
+          {!menuItem.hideHeading && (
+            <Heading title={title} description={description} />
+          )}
           {/* <Separator /> */}
         </div>
         <menuItem.Page appId={appId} />

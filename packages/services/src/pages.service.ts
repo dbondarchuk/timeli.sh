@@ -8,6 +8,7 @@ import {
   PageHeaderListModel,
   PageHeaderUpdateModel,
   PageListModel,
+  PageMatchResult,
   PageUpdateModel,
   Query,
   WithTotal,
@@ -55,6 +56,103 @@ export class PagesService extends BaseService implements IPagesService {
     }
 
     return page;
+  }
+
+  public async resolvePage(rawSlug: string): Promise<PageMatchResult | null> {
+    const logger = this.loggerFactory("resolvePage");
+    logger.debug({ rawSlug }, "Resolving page");
+
+    const db = await getDbConnection();
+    const pages = db.collection<Page>(PAGES_COLLECTION_NAME);
+
+    const slug = rawSlug.replace(/^\/+|\/+$/g, "");
+    const slugParts = slug.split("/");
+
+    // Combined query: either exact match OR contains brackets
+    const candidates = await pages
+      .find({
+        $or: [
+          { slug }, // exact match
+          { slug: { $regex: /\[.*?\]/ } }, // dynamic route pattern
+        ],
+        companyId: this.companyId,
+      })
+      .toArray();
+
+    // 1️⃣ Try exact match first
+    const exact = candidates.find((p) => p.slug === slug);
+    if (exact) {
+      logger.debug({ rawSlug, page: exact }, "Exact match found");
+      return { page: exact, params: {} };
+    }
+
+    // 2️⃣ Match dynamic patterns
+    const matches: PageMatchResult[] = [];
+
+    for (const page of candidates) {
+      logger.debug({ rawSlug, page }, "Checking page");
+      if (!page.slug.includes("[")) continue; // skip static pages
+
+      const patternParts = page.slug.split("/");
+      logger.debug({ rawSlug, patternParts }, "Pattern parts");
+      if (patternParts.length !== slugParts.length) {
+        logger.debug(
+          { rawSlug, patternParts, slugParts },
+          "Pattern parts length mismatch",
+        );
+        continue;
+      }
+
+      const params: Record<string, string> = {};
+      let match = true;
+
+      for (let i = 0; i < patternParts.length; i++) {
+        const patternSegment = patternParts[i];
+        const slugSegment = slugParts[i];
+
+        if (/^\[.+\]$/.test(patternSegment)) {
+          const paramName = patternSegment.slice(1, -1);
+          params[paramName] = slugSegment;
+        } else if (patternSegment !== slugSegment) {
+          logger.debug(
+            { rawSlug, patternSegment, slugSegment },
+            "Pattern segment mismatch",
+          );
+          match = false;
+          break;
+        }
+
+        logger.debug(
+          { rawSlug, patternSegment, slugSegment, match },
+          "Pattern segment match",
+        );
+      }
+
+      if (match) {
+        logger.debug({ rawSlug, page, params }, "Match found");
+        matches.push({ page, params });
+      }
+    }
+
+    if (matches.length === 0) {
+      logger.debug({ rawSlug }, "No matches found");
+      return null;
+    }
+
+    // 3️⃣ Choose the most specific (fewest [param] segments)
+    matches.sort((a, b) => {
+      const aDynamic = a.page.slug
+        .split("/")
+        .filter((s) => /^\[.+\]$/.test(s)).length;
+      const bDynamic = b.page.slug
+        .split("/")
+        .filter((s) => /^\[.+\]$/.test(s)).length;
+
+      return aDynamic - bDynamic;
+    });
+
+    logger.debug({ rawSlug, page: matches[0] }, "Page match result");
+    return matches[0];
   }
 
   public async getPageBySlug(slug: string): Promise<Page | null> {

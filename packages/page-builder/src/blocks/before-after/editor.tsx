@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  BlockFilterRule,
   EditorBlock,
   useBlockChildrenBlockIds,
   useBlockEditor,
@@ -23,6 +24,14 @@ const disable = {
   disableDelete: true,
   disableClone: true,
   disableDrag: true,
+};
+
+const inlineAllowOnly: BlockFilterRule = {
+  capabilities: ["inline"],
+};
+
+const containerAllowOnly: BlockFilterRule = {
+  capabilities: ["container"],
 };
 
 export const BeforeAfterEditor = ({ props, style }: BeforeAfterProps) => {
@@ -97,7 +106,7 @@ export const BeforeAfterEditor = ({ props, style }: BeforeAfterProps) => {
                 index={0}
                 parentBlockId={currentBlock.id}
                 parentProperty="props.beforeLabel"
-                allowedTypes="InlineContainer"
+                allow={inlineAllowOnly}
               />
             }
             afterLabel={
@@ -108,7 +117,7 @@ export const BeforeAfterEditor = ({ props, style }: BeforeAfterProps) => {
                 index={0}
                 parentBlockId={currentBlock.id}
                 parentProperty="props.afterLabel"
-                allowedTypes="InlineContainer"
+                allow={inlineAllowOnly}
               />
             }
             orientation={orientation || "horizontal"}
@@ -121,7 +130,7 @@ export const BeforeAfterEditor = ({ props, style }: BeforeAfterProps) => {
                 index={0}
                 parentBlockId={currentBlock.id}
                 parentProperty="props.before"
-                allowedTypes="Container"
+                allow={containerAllowOnly}
               />
             }
             after={
@@ -132,7 +141,7 @@ export const BeforeAfterEditor = ({ props, style }: BeforeAfterProps) => {
                 index={0}
                 parentBlockId={currentBlock.id}
                 parentProperty="props.after"
-                allowedTypes="Container"
+                allow={containerAllowOnly}
               />
             }
           />

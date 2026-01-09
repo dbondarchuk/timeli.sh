@@ -46,8 +46,6 @@ export default async function DashboardLayout({
     })),
   ];
 
-  const menuItems = groups.flatMap((group) => group.children);
-
   const appsWithMenu = await servicesContainer.connectedAppsService.getApps();
   const appsMenus = appsWithMenu
     .map(({ name }) => AppMenuItems[name] || [])
@@ -57,14 +55,19 @@ export default async function DashboardLayout({
   appsMenus
     .filter((item) => !item.parent && !item.isHidden)
     .sort(({ order: aOrder = 0 }, { order: bOrder = 0 }) => bOrder - aOrder)
+    .filter((item) => !!item.group)
     .forEach(({ Page: _, ...item }) => {
-      menuItems.push({
+      const group = groups.find((group) => group.id === item.group);
+      if (!group) return;
+      group.children = group.children || [];
+      group.children.push({
         ...item,
         href: `/dashboard/${item.href}`,
         title: item.label,
       });
     });
 
+  const menuItems = groups.flatMap((group) => group.children);
   appsMenus
     .filter((item) => !!item.parent && !item.isHidden)
     .sort(({ order: aOrder = 0 }, { order: bOrder = 0 }) => bOrder - aOrder)

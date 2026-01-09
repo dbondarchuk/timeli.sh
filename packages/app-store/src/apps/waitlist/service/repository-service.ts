@@ -411,6 +411,38 @@ export class WaitlistRepositoryService {
     });
   }
 
+  public async installWaitlistApp() {
+    const logger = this.loggerFactory("installWaitlistApp");
+    logger.debug("Installing waitlist app");
+
+    const db = await this.getDbConnection();
+    const collection = await db.createCollection<WaitlistEntry>(
+      WAITLIST_COLLECTION_NAME,
+    );
+
+    const indexes = {
+      companyId_createdAt_1: { companyId: 1, createdAt: 1 },
+      companyId_status_1: { companyId: 1, status: 1 },
+      companyId_customerId_1: { companyId: 1, customerId: 1 },
+      companyId_optionId_1: { companyId: 1, optionId: 1 },
+      companyId_asSoonAsPossible_1: { companyId: 1, asSoonAsPossible: 1 },
+      companyId_dates_date_1: { companyId: 1, "dates.date": 1 },
+    };
+
+    for (const [name, index] of Object.entries(indexes)) {
+      logger.debug(`Checking if index ${name} exists`);
+      if (await collection.indexExists(name)) {
+        logger.debug(`Index ${name} already exists`);
+        continue;
+      }
+
+      logger.debug(`Creating index ${name}`);
+      await collection.createIndex(index, { name });
+    }
+
+    logger.debug("Waitlist app installed");
+  }
+
   private get waitlistAggregateJoin() {
     return [
       {

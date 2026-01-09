@@ -133,6 +133,10 @@
           "x-large": "Extra Large"
         }
       }
+    },
+    "waitlistAppId": {
+      "label": "Waitlist app",
+      "tooltip": "The app that will be used to work with the waitlist. Required for the waitlist flow to work."
     }
   }
 }

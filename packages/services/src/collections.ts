@@ -16,3 +16,4 @@ export const ADDONS_COLLECTION_NAME = "addons";
 export const OPTIONS_COLLECTION_NAME = "options";
 export const DISCOUNTS_COLLECTION_NAME = "discounts";
 export const TEMPLATES_COLLECTION_NAME = "templates";
+export const BOOKING_TRACKING_COLLECTION_NAME = "booking-tracking";

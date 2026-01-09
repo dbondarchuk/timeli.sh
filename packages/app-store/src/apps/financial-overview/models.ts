@@ -29,3 +29,46 @@ export type CustomerDataPoint = {
 };
 
 export type TimeGrouping = "day" | "week" | "month";
+
+export type BookingStats = {
+  total: number;
+  abandoned: number;
+  converted: number;
+  abandonmentRate: number;
+  conversionRate: number;
+};
+
+export type BookingStepBreakdownItem = {
+  step: string;
+  count: number;
+  percentage: number;
+};
+
+export type BookingStepBreakdown = BookingStepBreakdownItem[];
+
+export type BookingStatOverTime = {
+  date: string;
+  total: number;
+  abandoned: number;
+  converted: number;
+};
+
+export type BookingStatsOverTime = BookingStatOverTime[];
+
+export type BookingConversionStatByType = {
+  convertedTo: string;
+  count: number;
+  percentage: number;
+};
+
+export type BookingConversionStatByApp = {
+  convertedAppName: string | null;
+  count: number;
+  percentage: number;
+};
+
+export type BookingConversionStats = {
+  totalConverted: number;
+  byType: BookingConversionStatByType[];
+  byApp: BookingConversionStatByApp[];
+};

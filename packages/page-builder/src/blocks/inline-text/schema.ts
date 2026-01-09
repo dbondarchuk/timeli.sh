@@ -6,7 +6,7 @@ import { zStyles } from "./styles";
 export const InlineTextPropsSchema = z.object({
   props: z
     .object({
-      text: z.string().optional().nullable(),
+      text: z.any().optional().nullable(),
       // url: z.string().optional().nullable(),
     })
     .optional()

@@ -1,8 +1,5 @@
 "use client";
 
-import { useCallback, useRef } from "react";
-import sanitizeHtml from "sanitize-html";
-
 import {
   useBlockEditor,
   useCurrentBlock,
@@ -18,8 +15,9 @@ import {
   useClassName,
   useResizeBlockStyles,
 } from "@timelish/page-builder-base";
+import { EditableText, RichTextValue } from "@timelish/rte-inline";
 import { cn, useDebounceCallback } from "@timelish/ui";
-import { ArgumentsAutocomplete } from "@timelish/ui-admin";
+import { useCallback, useRef } from "react";
 import { InlineTextProps } from "./schema";
 import { styles } from "./styles";
 
@@ -45,7 +43,7 @@ export function InlineTextEditor({ props, style }: InlineTextProps) {
   };
 
   const onChange = useDebounceCallback(
-    (value: string) => {
+    (value: RichTextValue) => {
       dispatchAction({
         type: "set-block-data",
         value: {
@@ -54,7 +52,7 @@ export function InlineTextEditor({ props, style }: InlineTextProps) {
             ...currentBlock.data,
             props: {
               ...currentBlock.data?.props,
-              text: sanitizeHtml(value, sanitizeConf),
+              text: value,
             },
           },
         },
@@ -84,33 +82,40 @@ export function InlineTextEditor({ props, style }: InlineTextProps) {
         styles={style}
         isEditor
       />
-      <ArgumentsAutocomplete
-        ref={(el) => {
-          ref.current = el as HTMLInputElement;
-          overlayProps.ref(el as HTMLElement);
-        }}
-        args={args}
-        className={cn(
-          "w-fit bg-transparent border-0 focus-visible:ring-0 rounded-none h-auto p-0 border-none leading-normal cursor-text",
-          isSelected && "px-1",
-          className,
-          base?.className,
-        )}
-        value={value ?? "Simple text"}
+      {/* {isSelected ? (
+        <EditableText
+          value={value ?? "Simple text"}
+          onChange={onChange}
+          placeholder={t("pageBuilder.blocks.inlineText.placeholder")}
+          className={cn(className, base?.className)}
+          id={base?.id}
+          onClick={overlayProps.onClick}
+          inline={true}
+          variables={args}
+          documentElement={document}
+          ref={overlayProps.ref}
+        />
+      ) : (
+        <StaticText
+          value={value ?? "Simple text"}
+          inline={true}
+          className={cn(className, base?.className)}
+          id={base?.id}
+          onClick={overlayProps.onClick}
+          ref={overlayProps.ref}
+        />
+      )} */}
+      <EditableText
+        value={value ?? ""}
         onChange={onChange}
-        onKeyDown={handleKeyPress}
-        asContentEditable
-        element={"span"}
         placeholder={t("pageBuilder.blocks.inlineText.placeholder")}
-        documentElement={document}
-        style={
-          {
-            //// @ts-expect-error - TODO: remove this once we have a proper solution for this
-            // fieldSizing: "content",
-          }
-        }
+        className={cn(className, base?.className)}
         id={base?.id}
         onClick={overlayProps.onClick}
+        inline={true}
+        variables={args}
+        documentElement={document}
+        ref={overlayProps.ref}
       />
     </>
   );

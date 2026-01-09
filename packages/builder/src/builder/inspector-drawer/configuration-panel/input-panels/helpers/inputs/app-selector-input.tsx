@@ -1,25 +1,44 @@
 import React from "react";
 
+import { AppScope, Prettify } from "@timelish/types";
 import { cn, FormDescription, Label } from "@timelish/ui";
 import { AppSelector, AppSelectorProps } from "@timelish/ui-admin";
 import { ResetButton } from "./reset-button";
 
-type Props = Omit<
-  AppSelectorProps,
-  "value" | "onChange" | "onBlur" | "size" | "allowClear"
-> & {
-  label: string;
-  helperText?: string | React.JSX.Element;
-} & (
+type Props = Prettify<
+  Omit<
+    AppSelectorProps,
+    | "value"
+    | "onChange"
+    | "onBlur"
+    | "size"
+    | "allowClear"
+    | "appName"
+    | "scope"
+  > & {
+    label: string;
+    helperText?: string | React.JSX.Element;
+  } & (
+      | {
+          defaultValue: string;
+          onChange: (v: string) => void;
+          nullable?: false;
+        }
+      | {
+          defaultValue: string | null;
+          onChange: (v: string | null) => void;
+          nullable: true;
+        }
+    )
+> &
+  (
     | {
-        defaultValue: string;
-        onChange: (v: string) => void;
-        nullable?: false;
+        appName: string;
+        scope?: never;
       }
     | {
-        defaultValue: string | null;
-        onChange: (v: string | null) => void;
-        nullable: true;
+        appName?: never;
+        scope: AppScope;
       }
   );
 
@@ -30,6 +49,8 @@ export const AppSelectorInput: React.FC<Props> = ({
   onChange,
   nullable,
   className,
+  appName,
+  scope,
   ...rest
 }) => {
   const [value, setValue] = React.useState(defaultValue);
@@ -43,6 +64,8 @@ export const AppSelectorInput: React.FC<Props> = ({
       <div className="flex w-full">
         <AppSelector
           className={cn("w-full", className)}
+          appName={appName as any}
+          scope={scope as any}
           {...rest}
           value={value ?? undefined}
           size="sm"

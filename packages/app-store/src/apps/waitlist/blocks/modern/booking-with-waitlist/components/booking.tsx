@@ -1,8 +1,14 @@
 "use client";
 import { clientApi } from "@timelish/api-sdk";
+import { useI18n } from "@timelish/i18n";
 import { GetAppointmentOptionsResponse } from "@timelish/types";
 import React from "react";
 import { demoBookingOptionsResponse } from "../../../../components/fixtures";
+import {
+  WaitlistPublicKeys,
+  WaitlistPublicNamespace,
+  waitlistPublicNamespace,
+} from "../../../../translations/types";
 import { Schedule } from "./schedule";
 
 export type BookingWithWaitlistProps = {
@@ -35,6 +41,10 @@ export const BookingWithWaitlist: React.FC<
   const [response, setResponse] =
     React.useState<GetAppointmentOptionsResponse | null>(null);
 
+  const t = useI18n<WaitlistPublicNamespace, WaitlistPublicKeys>(
+    waitlistPublicNamespace,
+  );
+
   React.useEffect(() => {
     const loadOptions = async () => {
       const data = await clientApi.booking.getBookingOptions();
@@ -48,7 +58,18 @@ export const BookingWithWaitlist: React.FC<
     }
   }, [isEditor]);
 
-  if (!appId) return null;
+  if (!appId && isOnlyWaitlist) {
+    return (
+      <div className={className} id={id} {...props}>
+        <h2 className="text-lg font-bold">
+          {t("errors.waitlistAppNotConfigured.title")}
+        </h2>
+        <p className="text-sm text-gray-500">
+          {t("errors.waitlistAppNotConfigured.description")}
+        </p>
+      </div>
+    );
+  }
 
   return (
     <Schedule

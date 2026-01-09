@@ -1,10 +1,20 @@
 "use client";
 
-import { BooleanInput, ConfigurationProps } from "@timelish/builder";
+import {
+  AppSelectorInput,
+  BooleanInput,
+  ConfigurationProps,
+} from "@timelish/builder";
 import { useI18n } from "@timelish/i18n";
 import { StylesConfigurationPanel } from "@timelish/page-builder-base";
 import { deepMemo } from "@timelish/ui";
 import { useCallback } from "react";
+import { WAITLIST_APP_NAME } from "../../../const";
+import {
+  WaitlistAdminKeys,
+  WaitlistAdminNamespace,
+  waitlistAdminNamespace,
+} from "../../../translations/types";
 import { WaitlistProps } from "./schema";
 import { waitlistShortcuts } from "./shortcuts";
 import { styles } from "./styles";
@@ -15,8 +25,13 @@ export const WaitlistConfiguration = deepMemo(
     setData,
     base,
     onBaseChange,
+    metadata,
+    onMetadataChange,
   }: ConfigurationProps<WaitlistProps>) => {
     const t = useI18n("builder");
+    const tAdmin = useI18n<WaitlistAdminNamespace, WaitlistAdminKeys>(
+      waitlistAdminNamespace,
+    );
 
     const updateStyle = useCallback(
       (s: unknown) => setData({ ...data, style: s as WaitlistProps["style"] }),
@@ -25,6 +40,11 @@ export const WaitlistConfiguration = deepMemo(
     const updateProps = useCallback(
       (p: unknown) => setData({ ...data, props: p as WaitlistProps["props"] }),
       [setData, data],
+    );
+
+    const updateMetadata = useCallback(
+      (m: Record<string, any>) => onMetadataChange(m),
+      [onMetadataChange],
     );
 
     return (
@@ -36,6 +56,15 @@ export const WaitlistConfiguration = deepMemo(
         base={base}
         onBaseChange={onBaseChange}
       >
+        <AppSelectorInput
+          label={tAdmin("block.waitlistAppId.label")}
+          helperText={tAdmin("block.waitlistAppId.tooltip")}
+          defaultValue={metadata?.waitlistAppId ?? ""}
+          appName={WAITLIST_APP_NAME}
+          onChange={(value) =>
+            updateMetadata({ ...metadata, waitlistAppId: value })
+          }
+        />
         <BooleanInput
           label={t("pageBuilder.blocks.booking.modern.hideTitle")}
           defaultValue={data.props.hideTitle ?? false}

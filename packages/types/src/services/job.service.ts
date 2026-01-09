@@ -12,6 +12,7 @@ type FunctionParamsWithoutAppData<T, K extends keyof T> =
 export interface IJobService {
   scheduleJob(job: JobRequest): Promise<Job>;
   getJob(id: string): Promise<Job | null>;
+  getDeduplicatedJob(deduplicationId: string): Promise<Job | null>;
   getJobs(): Promise<Job[]>;
   cancelJob(id: string): Promise<void>;
   enqueueHook<T extends object, M extends FunctionKeys<T>>(
