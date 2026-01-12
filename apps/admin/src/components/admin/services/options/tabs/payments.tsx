@@ -1,4 +1,4 @@
-import { useI18n } from "@timelish/i18n";
+import { I18nRichText, useI18n } from "@timelish/i18n";
 import {
   isRequiredOptionTypes,
   optionPaymentCalculationType,
@@ -45,13 +45,10 @@ export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
                   "services.options.form.paymentSettings.requireDeposit.label",
                 )}{" "}
                 <InfoTooltip>
-                  {t.rich(
-                    "services.options.form.paymentSettings.requireDeposit.tooltip",
-                    {
-                      p: (chunks: any) => <p>{chunks}</p>,
-                      br: () => <br />,
-                    },
-                  )}
+                  <I18nRichText
+                    namespace="admin"
+                    text="services.options.form.paymentSettings.requireDeposit.tooltip"
+                  />
                 </InfoTooltip>
               </FormLabel>
               <FormControl>
@@ -107,9 +104,10 @@ export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
                       "services.options.form.paymentSettings.paymentType.label",
                     )}
                     <InfoTooltip>
-                      {t(
-                        "services.options.form.paymentSettings.paymentType.tooltip",
-                      )}
+                      <I18nRichText
+                        namespace="admin"
+                        text="services.options.form.paymentSettings.paymentType.tooltip"
+                      />
                     </InfoTooltip>
                   </FormLabel>
                   <FormControl>
@@ -165,13 +163,10 @@ export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
                         "services.options.form.paymentSettings.depositAmount.label",
                       )}{" "}
                       <InfoTooltip>
-                        {t.rich(
-                          "services.options.form.paymentSettings.depositAmount.tooltip",
-                          {
-                            p: (chunks: any) => <p>{chunks}</p>,
-                            br: () => <br />,
-                          },
-                        )}
+                        <I18nRichText
+                          namespace="admin"
+                          text="services.options.form.paymentSettings.depositAmount.tooltip"
+                        />
                       </InfoTooltip>
                     </FormLabel>
                     <FormControl>
@@ -216,13 +211,10 @@ export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
                         "services.options.form.paymentSettings.depositPercentage.label",
                       )}{" "}
                       <InfoTooltip>
-                        {t.rich(
-                          "services.options.form.paymentSettings.depositPercentage.tooltip",
-                          {
-                            p: (chunks: any) => <p>{chunks}</p>,
-                            br: () => <br />,
-                          },
-                        )}
+                        <I18nRichText
+                          namespace="admin"
+                          text="services.options.form.paymentSettings.depositPercentage.tooltip"
+                        />
                       </InfoTooltip>
                     </FormLabel>
                     <FormControl>

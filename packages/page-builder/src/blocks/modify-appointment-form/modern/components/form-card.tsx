@@ -25,7 +25,12 @@ import {
   useTimeZone,
 } from "@timelish/ui";
 
-import { useI18n } from "@timelish/i18n";
+import {
+  I18nRichText,
+  TranslationKeys,
+  useI18n,
+  useLocale,
+} from "@timelish/i18n";
 import { HourNumbers, MinuteNumbers } from "@timelish/types";
 import { deepEqual, formatTime, parseTime } from "@timelish/utils";
 import { Mail, Phone } from "lucide-react";
@@ -58,6 +63,7 @@ export const FormCard: React.FC = () => {
     searchError,
     setSearchError,
     type: modifyType,
+    appointment,
   } = useModifyAppointmentFormContext();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -85,6 +91,7 @@ export const FormCard: React.FC = () => {
 
   const uses12HourFormat = use12HourFormat();
   const timeZone = useTimeZone();
+  const locale = useLocale();
 
   const values = form.watch();
   const previousValues = usePrevious(values, values);
@@ -256,9 +263,35 @@ export const FormCard: React.FC = () => {
           </div>
           {searchError && (
             <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-xs">
-              {searchError === "notFound"
-                ? t("modification.form.searchError.notFound")
-                : t(`modification.form.searchError.notAllowed.${modifyType}`)}
+              <I18nRichText
+                namespace="translation"
+                text={
+                  searchError === "notFound"
+                    ? "modification.form.searchError.notFound"
+                    : `modification.form.searchError.notAllowed.${modifyType}`
+                }
+                args={{
+                  name: appointment?.name ?? "",
+                  service: appointment?.optionName ?? "",
+                  dateTime: DateTime.fromJSDate(
+                    appointment?.dateTime ?? new Date(),
+                  ).toLocaleString(DateTime.DATETIME_HUGE, { locale }),
+                  reason:
+                    appointment &&
+                    "reason" in appointment &&
+                    t.has(
+                      `modification.form.searchError.notAllowed.reason.${appointment?.reason}` as TranslationKeys,
+                    )
+                      ? t(
+                          `modification.form.searchError.notAllowed.reason.${appointment?.reason}` as TranslationKeys,
+                        )
+                      : appointment && "reason" in appointment
+                        ? appointment.reason
+                        : t(
+                            "modification.form.searchError.notAllowed.reason.unknown",
+                          ),
+                }}
+              />
             </div>
           )}
         </form>

@@ -1,4 +1,4 @@
-import { useI18n } from "@timelish/i18n";
+import { I18nRichText, useI18n } from "@timelish/i18n";
 import {
   BooleanSelect,
   FormControl,
@@ -134,13 +134,10 @@ export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
                     <FormLabel>
                       {t("settings.appointments.form.payments.depositAmount")}{" "}
                       <InfoTooltip>
-                        {t.rich(
-                          "settings.appointments.form.payments.depositAmountTooltip",
-                          {
-                            p: (chunks: any) => <p>{chunks}</p>,
-                            strong: (chunks: any) => <strong>{chunks}</strong>,
-                          },
-                        )}
+                        <I18nRichText
+                          namespace="admin"
+                          text="settings.appointments.form.payments.depositAmountTooltip"
+                        />
                       </InfoTooltip>
                     </FormLabel>
                     <FormControl>
@@ -173,13 +170,10 @@ export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
                         "settings.appointments.form.payments.dontRequireIfCompletedMinNumberOfAppointments",
                       )}{" "}
                       <InfoTooltip>
-                        {t.rich(
-                          "settings.appointments.form.payments.dontRequireIfCompletedMinNumberOfAppointmentsTooltip",
-                          {
-                            p: (chunks: any) => <p>{chunks}</p>,
-                            strong: (chunks: any) => <strong>{chunks}</strong>,
-                          },
-                        )}
+                        <I18nRichText
+                          namespace="admin"
+                          text="settings.appointments.form.payments.dontRequireIfCompletedMinNumberOfAppointmentsTooltip"
+                        />
                       </InfoTooltip>
                     </FormLabel>
                     <FormControl>
@@ -215,13 +209,10 @@ export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
                     "settings.appointments.form.payments.fullPaymentAmountThreshold",
                   )}{" "}
                   <InfoTooltip>
-                    {t.rich(
-                      "settings.appointments.form.payments.fullPaymentAmountThresholdTooltip",
-                      {
-                        p: (chunks: any) => <p>{chunks}</p>,
-                        strong: (chunks: any) => <strong>{chunks}</strong>,
-                      },
-                    )}
+                    <I18nRichText
+                      namespace="admin"
+                      text="settings.appointments.form.payments.fullPaymentAmountThresholdTooltip"
+                    />
                   </InfoTooltip>
                 </FormLabel>
                 <FormControl>
