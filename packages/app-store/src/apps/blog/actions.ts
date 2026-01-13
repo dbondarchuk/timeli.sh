@@ -53,11 +53,7 @@ export async function getBlogPosts(
   }
 }
 
-export async function getBlogPost(
-  appId: string,
-  id?: string,
-  slug?: string,
-) {
+export async function getBlogPost(appId: string, id?: string, slug?: string) {
   const logger = loggerFactory("getBlogPost");
   logger.debug({ appId, id, slug }, "Getting blog post");
 
@@ -79,10 +75,7 @@ export async function getBlogPost(
   }
 }
 
-export async function createBlogPost(
-  appId: string,
-  post: BlogPostUpdateModel,
-) {
+export async function createBlogPost(appId: string, post: BlogPostUpdateModel) {
   const logger = loggerFactory("createBlogPost");
   logger.debug({ appId, post }, "Creating blog post");
 
@@ -149,4 +142,3 @@ export async function deleteBlogPost(appId: string, id: string) {
     throw error;
   }
 }
-

@@ -694,7 +694,7 @@ export class ConnectedAppsService
 
     const builtInHooks = getBuiltInAppsHooks(scope);
 
-    console.debug(
+    logger.debug(
       { builtInHooks: builtInHooks.map((h) => h.name), scope },
       "Built-in hooks",
     );
