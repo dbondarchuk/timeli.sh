@@ -76,9 +76,12 @@ export const ViewportEmulator: React.FC<ViewportEmulatorProps> = memo(
           box-sizing: border-box;
         }
         
+        html {
+          overflow-x: hidden;
+        }
+
         html, body {
           height: 100%;
-          overflow-x: hidden;
         }
         
         body {
@@ -91,7 +94,6 @@ export const ViewportEmulator: React.FC<ViewportEmulatorProps> = memo(
         #root {
           width: 100%;
           min-height: 100vh;
-          position: relative;
         }
       `;
 
@@ -330,8 +332,8 @@ const IframePortal: React.FC<IframePortalProps> = ({ document, children }) => {
         body {
           background: #f8f9fa;
           padding: 2rem;
+          position: relative;
         }
-
       `}</style>
       {children}
     </>,

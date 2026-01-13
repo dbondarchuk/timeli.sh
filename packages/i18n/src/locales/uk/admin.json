@@ -2032,6 +2032,7 @@
       "submenu": "Підменю"
     },
     "linkVariants": {
+      "none": "Немає",
       "default": "Типовий",
       "underline": "Підкреслення",
       "standalone": "Стандартний",
@@ -2363,6 +2364,11 @@
         "enabled": "Увімкнено",
         "notAllowedWithoutDeposit": "Не дозволено без завдатку"
       }
+    }
+  },
+  "bookingTracking": {
+    "convertedTo": {
+      "appointment": "Запис"
     }
   }
 }

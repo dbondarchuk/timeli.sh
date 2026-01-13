@@ -9,6 +9,7 @@ const ButtonSizes = [
   "sm",
   "md",
   "lg",
+  "xl",
   "icon",
 ] as const;
 const ButtonVariants = [
@@ -22,10 +23,16 @@ const ButtonVariants = [
   "link-underline",
   "link-dashed",
 ] as const;
-const LinkSizes = ["sm", "md", "lg"] as const;
-const LinkVariants = ["default", "underline", "standalone", "dashed"] as const;
+const LinkSizes = ["none", "xs", "sm", "md", "lg", "xl"] as const;
+const LinkVariants = [
+  "none",
+  "default",
+  "underline",
+  "standalone",
+  "dashed",
+] as const;
 const TextFonts = ["default", "primary", "secondary", "tertiary"] as const;
-const TextSizes = ["sm", "md", "lg"] as const;
+const TextSizes = ["default", "sm", "md", "lg", "xl"] as const;
 const TextWeights = [
   "default",
   "light",

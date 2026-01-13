@@ -11,12 +11,10 @@ import { BookingWithWaitlist } from "../booking-with-waitlist/components/booking
 import { WaitlistProps } from "./schema";
 import { styles } from "./styles";
 
-export const WaitlistEditor = ({
-  props,
-  style,
-  appId,
-}: WaitlistProps & { appId?: string }) => {
+export const WaitlistEditor = ({ props, style }: WaitlistProps) => {
   const currentBlock = useCurrentBlock<WaitlistProps>();
+
+  const metadata = currentBlock?.metadata;
   const overlayProps = useBlockEditor(currentBlock.id);
 
   const className = useClassName();
@@ -30,7 +28,7 @@ export const WaitlistEditor = ({
         className={cn(className, base?.className)}
         id={base?.id}
         isEditor
-        appId={appId}
+        appId={metadata?.waitlistAppId}
         isOnlyWaitlist={true}
         scrollToTop={props.scrollToTop}
         hideTitle={props.hideTitle}

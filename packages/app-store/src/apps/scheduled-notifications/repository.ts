@@ -453,4 +453,34 @@ export class ScheduledNotificationsRepository {
       throw error;
     }
   }
+
+  public async installScheduledNotificationsApp() {
+    const logger = this.loggerFactory("installScheduledNotificationsApp");
+    logger.debug("Installing scheduled notifications app");
+
+    const db = await this.props.getDbConnection();
+    const collection = await db.createCollection<ScheduledNotification>(
+      SCHEDULED_NOTIFICATIONS_COLLECTION_NAME,
+    );
+
+    const indexes = {
+      companyId_appId_updatedAt_1: { companyId: 1, appId: 1, updatedAt: 1 },
+      companyId_appId_type_1: { companyId: 1, appId: 1, type: 1 },
+      companyId_appId_channel_1: { companyId: 1, appId: 1, channel: 1 },
+      companyId_appId_name_1: { companyId: 1, appId: 1, name: 1 },
+    };
+
+    for (const [name, index] of Object.entries(indexes)) {
+      logger.debug(`Checking if index ${name} exists`);
+      if (await collection.indexExists(name)) {
+        logger.debug(`Index ${name} already exists`);
+        continue;
+      }
+
+      logger.debug(`Creating index ${name}`);
+      await collection.createIndex(index, { name });
+    }
+
+    logger.debug("Scheduled notifications app installed");
+  }
 }

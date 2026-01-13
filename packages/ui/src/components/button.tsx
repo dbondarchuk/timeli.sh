@@ -37,6 +37,7 @@ export const buttonSizes = {
   sm: "h-8 rounded-md px-3 text-xs",
   md: "h-9 rounded-md px-5",
   lg: "h-10 rounded-md px-8",
+  xl: "h-11 rounded-md px-10",
   icon: "h-8 w-8",
 };
 

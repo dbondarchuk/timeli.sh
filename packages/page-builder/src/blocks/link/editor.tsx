@@ -1,8 +1,8 @@
 "use client";
 
 import {
-  EditorBlock,
-  useBlockChildrenBlockIds,
+  BlockFilterRule,
+  EditorChildren,
   useBlockEditor,
   useCurrentBlock,
 } from "@timelish/builder";
@@ -12,16 +12,12 @@ import { LinkProps } from "./schema";
 import { styles } from "./styles";
 import { getDefaults } from "./styles.default";
 
-const disable = {
-  disableMove: true,
-  disableDelete: true,
-  disableClone: true,
-  disableDrag: true,
+const allowOnly: BlockFilterRule = {
+  capabilities: ["inline"],
 };
 
 export const LinkEditor = ({ props, style }: LinkProps) => {
   const currentBlock = useCurrentBlock<LinkProps>();
-  const contentId = useBlockChildrenBlockIds(currentBlock.id, "props")?.[0];
   const base = currentBlock.base;
   const overlayProps = useBlockEditor(currentBlock.id);
 
@@ -42,17 +38,11 @@ export const LinkEditor = ({ props, style }: LinkProps) => {
         id={base?.id}
         {...overlayProps}
       >
-        {!!contentId && (
-          <EditorBlock
-            key={contentId}
-            blockId={contentId}
-            {...disable}
-            index={0}
-            parentBlockId={currentBlock.id}
-            parentProperty="content"
-            allowedTypes="InlineContainer"
-          />
-        )}
+        <EditorChildren
+          blockId={currentBlock.id}
+          property="props"
+          allow={allowOnly}
+        />
       </span>
     </>
   );

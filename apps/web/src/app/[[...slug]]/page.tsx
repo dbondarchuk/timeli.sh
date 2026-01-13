@@ -1,7 +1,12 @@
 import { getServicesContainer } from "@/utils/utils";
 import { AppsBlocksReaders } from "@timelish/app-store/blocks/readers";
 import { getLoggerFactory } from "@timelish/logger";
-import { Header, PageReader, Styling } from "@timelish/page-builder/reader";
+import {
+  BlockProviderRegistry,
+  Header,
+  PageReader,
+  Styling,
+} from "@timelish/page-builder/reader";
 import { formatArguments, setPageData } from "@timelish/utils";
 import { DateTime } from "luxon";
 import { Metadata, ResolvingMetadata } from "next";
@@ -37,7 +42,13 @@ const getSource = cache(async (slug?: string, preview = false) => {
 
   logger.debug({ slug, preview }, "Retrieving page by slug");
 
-  const page = await servicesContainer.pagesService.getPageBySlug(slug);
+  const result = await servicesContainer.pagesService.resolvePage(slug);
+  if (!result) {
+    logger.warn({ slug }, "Page not found, returning 404");
+    throw new NotFoundError("Page not found");
+  }
+
+  const { page, params } = result;
 
   if (slug.length === 1 && slug[0] === "home" && !page) {
     logger.info({ slug }, "Home page not found, redirecting to install");
@@ -81,7 +92,7 @@ const getSource = cache(async (slug?: string, preview = false) => {
     "Successfully retrieved page source",
   );
 
-  return { page, settings };
+  return { page, settings, params };
 });
 
 export async function generateMetadata(
@@ -176,7 +187,7 @@ export default async function Page(props: Props) {
 
   try {
     const searchParams = await props.searchParams;
-    const params = await props.params;
+    const routeParams = await props.params;
 
     const servicesContainer = await getServicesContainer();
     const { styling, social } =
@@ -187,15 +198,15 @@ export default async function Page(props: Props) {
 
     logger.debug(
       {
-        slug: params.slug,
+        slug: routeParams.slug,
         preview: searchParams?.preview,
-        slugLength: params.slug?.length,
+        slugLength: routeParams.slug?.length,
       },
       "Processing page render request",
     );
 
-    const { page, settings } = await getSource(
-      params.slug?.join("/"),
+    const { page, settings, params } = await getSource(
+      routeParams.slug?.join("/"),
       !!searchParams?.preview,
     );
 
@@ -210,16 +221,17 @@ export default async function Page(props: Props) {
     );
 
     setPageData({
-      params,
+      routeParams,
       searchParams: searchParams || {},
       page,
+      params,
     });
 
     logger.info(
       {
         pageId: page._id,
         pageTitle: page.title,
-        pageSlug: params.slug?.join("/") || "home",
+        pageSlug: routeParams.slug?.join("/") || "home",
         preview: searchParams?.preview,
       },
       "Successfully rendered page",
@@ -232,6 +244,9 @@ export default async function Page(props: Props) {
       general: settings,
       social: social,
       now: new Date(),
+      path: routeParams.slug?.join("/") || "",
+      params,
+      searchParams: searchParams || {},
       ...rest,
     };
 
@@ -269,31 +284,23 @@ export default async function Page(props: Props) {
         "ui-components",
       );
 
-    const additionalBlocks = apps?.reduce(
-      (acc, app) => {
-        acc.readers = {
-          ...acc.readers,
-          ...Object.fromEntries(
-            Object.entries(AppsBlocksReaders[app.name]).map(
-              ([blockName, value]) => [
-                `${blockName}-${app._id}`,
+    const blockRegistry: BlockProviderRegistry = {
+      providers:
+        apps?.map((app) => ({
+          providerName: app.name,
+          priority: 100,
+          blocks: Object.fromEntries(
+            Object.entries(AppsBlocksReaders[app.name] || {}).map(
+              ([name, value]) => [
+                name,
                 {
-                  ...value,
-                  staticProps: {
-                    ...value.staticProps,
-                    appId: app._id,
-                    appName: app.name,
-                  },
+                  reader: value,
                 },
               ],
             ),
           ),
-        };
-
-        return acc;
-      },
-      { readers: {} },
-    );
+        })) || [],
+    };
 
     return (
       <>
@@ -304,13 +311,13 @@ export default async function Page(props: Props) {
         <PageReader
           document={content}
           args={formattedArgs}
-          additionalBlocks={additionalBlocks?.readers}
+          blockRegistry={blockRegistry}
         />
         {footer?.content && (
           <PageReader
             document={footer.content}
             args={formattedArgs}
-            additionalBlocks={additionalBlocks?.readers}
+            blockRegistry={blockRegistry}
           />
         )}
       </>

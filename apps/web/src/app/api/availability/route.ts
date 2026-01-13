@@ -1,3 +1,4 @@
+import { trackBookingStep } from "@/utils/booking-tracking";
 import { getServicesContainer } from "@/utils/utils";
 import { availabilitySearchParamsLoader } from "@timelish/api-sdk";
 import { getLoggerFactory } from "@timelish/logger";
@@ -29,6 +30,11 @@ export async function GET(request: NextRequest) {
       { status: 400 },
     );
   }
+
+  // Track availability check
+  await trackBookingStep(request, "AVAILABILITY_CHECKED", {
+    duration,
+  });
 
   logger.debug({ duration }, "Fetching availability");
 

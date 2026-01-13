@@ -11,7 +11,11 @@ export const pageSchema = z.object({
   // content: z.string().min(1, "page.content.required"),
   content: z.any().optional(),
   slug: zNonEmptyString("page.slug.required")
-    .regex(/^[a-z0-9]+(?:[-\/][a-z0-9]+)*$/g, "page.slug.invalid")
+    // .regex(/^[a-z0-9]+(?:[-\/][a-z0-9]+)*$/g, "page.slug.invalid")
+    .regex(
+      /^(?:[a-z0-9-]+|\[(?:\.{3})?[a-zA-Z0-9_-]+\])(\/(?:[a-z0-9-]+|\[(?:\.{3})?[a-zA-Z0-9_-]+\]))*$/g,
+      "page.slug.invalid",
+    )
     .refine(
       (slug) =>
         !notAllowedSlugs.some(
@@ -56,6 +60,11 @@ export type Page = Prettify<
     updatedAt: Date;
   }
 >;
+
+export type PageMatchResult = {
+  page: Page;
+  params: Record<string, string>;
+};
 
 export type PageListModel = Omit<Page, "content">;
 export type PageListModelWithUrl = PageListModel & {

@@ -69,7 +69,8 @@
     "ui-components": "UI компоненти",
     "availability-provider": "Постачальник доступності",
     "meeting-url-provider": "Постачальник URL зустрічі",
-    "dashboard-notifier": "Сповіщувач панелі керування"
+    "dashboard-notifier": "Сповіщувач панелі керування",
+    "booking-tracking-hook": "Відстеження бронювань"
   },
   "status": {
     "connected": "Підключено",
@@ -85,7 +86,8 @@
     "utilities": "Утиліти",
     "payment": "Платежі",
     "appointments": "Записи",
-    "customers": "Клієнти"
+    "customers": "Клієнти",
+    "content": "Контент"
   },
   "fileSystemAssetsStorage": {
     "title": "Сховище ресурсів файлової системи",

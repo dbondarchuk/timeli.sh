@@ -3,6 +3,8 @@ import {
   ApiRequest,
   ApiResponse,
   Appointment,
+  BOOKING_TRACKING_STEP_EVENT_TYPE,
+  BookingTrackingEventData,
   ConnectedAppData,
   ConnectedAppStatusWithText,
   DashboardNotification,
@@ -10,6 +12,7 @@ import {
   IConnectedApp,
   IConnectedAppProps,
   IDashboardNotifierApp,
+  IEventHook,
 } from "@timelish/types";
 import {
   DismissWaitlistEntriesAction,
@@ -70,6 +73,20 @@ export class WaitlistConnectedApp
       case SetConfigurationActionType:
         return this.processSetConfigurationRequest(appData, data.configuration);
     }
+  }
+
+  public async install(appData: ConnectedAppData): Promise<void> {
+    const logger = this.loggerFactory("install");
+    logger.debug({ appId: appData._id }, "Installing waitlist app");
+
+    const repositoryService = this.getRepositoryService(
+      appData._id,
+      appData.companyId,
+    );
+
+    await repositoryService.installWaitlistApp();
+
+    logger.debug({ appId: appData._id }, "Waitlist app installed successfully");
   }
 
   public async unInstall(appData: ConnectedAppData): Promise<void> {
@@ -278,6 +295,49 @@ export class WaitlistConnectedApp
 
     try {
       const result = await this.createWaitlistEntry(appData, data);
+
+      // Track booking conversion to waitlist if sessionId is available
+      const sessionId = request.headers.get("x-session-id");
+      if (sessionId) {
+        try {
+          const eventData: BookingTrackingEventData = {
+            sessionId,
+            step: "BOOKING_CONVERTED",
+            metadata: {
+              convertedTo: "waitlist",
+              convertedId: result._id,
+              convertedAppName: "waitlist",
+              customerId: result.customer._id,
+              customerEmail: result.customer.email,
+              customerName: result.customer.name,
+              optionId: data.optionId,
+              duration: data.duration,
+            },
+          };
+
+          await this.props.services.jobService.enqueueHook<
+            IEventHook,
+            "onEvent"
+          >(
+            "event-hook",
+            "onEvent",
+            BOOKING_TRACKING_STEP_EVENT_TYPE,
+            eventData,
+          );
+
+          logger.debug(
+            { sessionId, waitlistEntryId: result._id },
+            "Booking conversion to waitlist tracked",
+          );
+        } catch (trackingError) {
+          // Don't fail waitlist creation if tracking fails
+          logger.warn(
+            { error: trackingError, sessionId },
+            "Failed to track booking conversion to waitlist",
+          );
+        }
+      }
+
       logger.debug({ result }, "Waitlist entry created");
       return Response.json(result, { status: 201 });
     } catch (error: any) {

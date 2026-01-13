@@ -13,11 +13,12 @@ export const WaitlistReader = ({
   style,
   args,
   isEditor,
-  appId,
   ...rest
 }: WaitlistReaderProps) => {
   const className = generateClassName();
   const base = rest.block.base;
+  const metadata = rest.block.metadata;
+  const appId = metadata?.waitlistAppId;
 
   return (
     <>

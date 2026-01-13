@@ -116,6 +116,8 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     Toolbar: AvatarToolbar,
     defaultValue: AvatarPropsDefaults,
     category: "builder.emailBuilder.blocks.categories.images",
+    capabilities: ["image", "media", "block"],
+    tags: ["image", "media"],
   },
   Image: {
     displayName: "builder.emailBuilder.blocks.image.displayName",
@@ -125,6 +127,8 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     Toolbar: ImageToolbar,
     defaultValue: ImagePropsDefaults,
     category: "builder.emailBuilder.blocks.categories.images",
+    capabilities: ["image", "media", "block"],
+    tags: ["image", "media"],
   },
   Button: {
     displayName: "builder.emailBuilder.blocks.button.displayName",
@@ -134,6 +138,8 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     Toolbar: ButtonToolbar,
     defaultValue: ButtonPropsDefaults,
     category: "builder.emailBuilder.blocks.categories.text",
+    capabilities: ["button", "action", "link", "block"],
+    tags: ["button", "action", "link"],
   },
   Heading: {
     displayName: "builder.emailBuilder.blocks.heading.displayName",
@@ -150,6 +156,8 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
         moveDown: true,
       },
     },
+    capabilities: ["heading", "title", "block"],
+    tags: ["heading", "title"],
   },
   Text: {
     displayName: "builder.emailBuilder.blocks.text.displayName",
@@ -168,6 +176,8 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
         undoRedo: true,
       },
     },
+    capabilities: ["text", "block"],
+    tags: ["text", "block"],
   },
   Divider: {
     displayName: "builder.emailBuilder.blocks.divider.displayName",
@@ -177,6 +187,8 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     Toolbar: DividerToolbar,
     defaultValue: DividerPropsDefaults,
     category: "builder.emailBuilder.blocks.categories.dividers",
+    capabilities: ["divider", "block"],
+    tags: ["divider"],
   },
   Spacer: {
     displayName: "builder.emailBuilder.blocks.spacer.displayName",
@@ -186,6 +198,8 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     Toolbar: SpacerToolbar,
     defaultValue: SpacerPropsDefaults,
     category: "builder.emailBuilder.blocks.categories.dividers",
+    capabilities: ["spacer", "block"],
+    tags: ["spacer"],
   },
   EmailLayout: {
     displayName: "builder.emailBuilder.blocks.emailLayout.displayName",
@@ -195,6 +209,8 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     Toolbar: EmailLayoutToolbar,
     defaultValue: EmailLayoutDefaultProps,
     category: "builder.emailBuilder.blocks.categories.layout",
+    capabilities: ["layout"],
+    tags: ["layout"],
   },
   Container: {
     displayName: "builder.emailBuilder.blocks.container.displayName",
@@ -204,6 +220,8 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     Toolbar: ContainerToolbar,
     defaultValue: ContainerPropsDefaults,
     category: "builder.emailBuilder.blocks.categories.containers",
+    capabilities: ["container", "layout", "block"],
+    tags: ["container", "layout"],
   },
   Columns: {
     displayName: "builder.emailBuilder.blocks.columnsContainer.displayName",
@@ -213,6 +231,8 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     Toolbar: ColumnsContainerToolbar,
     defaultValue: ColumnsContainerPropsDefaults,
     category: "builder.emailBuilder.blocks.categories.containers",
+    capabilities: ["columns", "layout", "block", "container"],
+    tags: ["columns", "container"],
   },
   ConditionalContainer: {
     displayName: "builder.emailBuilder.blocks.conditionalContainer.displayName",
@@ -221,6 +241,8 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     Editor: ConditionalContainerEditor,
     defaultValue: ConditionalContainerPropsDefaults,
     category: "builder.emailBuilder.blocks.categories.containers",
+    capabilities: ["conditional", "layout", "block"],
+    tags: ["conditional"],
   },
   ForeachContainer: {
     displayName: "builder.emailBuilder.blocks.foreachContainer.displayName",
@@ -229,6 +251,8 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     Editor: ForeachContainerEditor,
     defaultValue: ForeachContainerPropsDefaults,
     category: "builder.emailBuilder.blocks.categories.containers",
+    capabilities: ["foreach", "layout", "block"],
+    tags: ["foreach"],
   },
   CustomHTML: {
     displayName: "builder.emailBuilder.blocks.customHtml.displayName",
@@ -238,6 +262,8 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     Toolbar: CustomHTMLToolbar,
     defaultValue: CustomHTMLPropsDefaults,
     category: "builder.emailBuilder.blocks.categories.layout",
+    capabilities: ["html", "block"],
+    tags: ["html"],
   },
   OnlineMeeting: {
     displayName: "builder.emailBuilder.blocks.onlineMeeting.displayName",
@@ -246,6 +272,8 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     Configuration: OnlineMeetingConfiguration,
     defaultValue: OnlineMeetingPropsDefaults,
     category: "builder.emailBuilder.blocks.categories.onlineMeeting",
+    capabilities: ["online-meeting", "block"],
+    tags: ["online-meeting"],
   },
 };
 

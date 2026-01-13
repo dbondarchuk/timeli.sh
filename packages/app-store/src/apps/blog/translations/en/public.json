@@ -1,0 +1,40 @@
+{
+  "notInBlogContext": "Not in a blog context",
+  "notInBlogTagContext": "Not in a blog tag context",
+  "blogPostNotFound": "Blog post not found",
+  "readMore": "Read more",
+  "block": {
+    "post": {
+      "title": {
+        "required": "Title is required"
+      },
+      "slug": {
+        "required": "Slug is required"
+      },
+      "tag": {
+        "min": "Tag must be at least 2 characters"
+      }
+    },
+    "postsList": {
+      "title": "Blog Posts",
+      "noPosts": "No blog posts found",
+      "previous": "Previous",
+      "next": "Next",
+      "readMore": "Read More"
+    },
+    "postContent": {
+      "notFound": "Blog post not found",
+      "publishedOn": "Published on"
+    },
+    "tagList": {
+      "title": "Tags",
+      "noTags": "No tags available"
+    }
+  },
+  "errors": {
+    "blogAppNotConfigured": {
+      "title": "Blog app not configured",
+      "description": "Blog app not configured. Please configure the blog app to use this block."
+    }
+  }
+}

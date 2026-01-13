@@ -62,7 +62,8 @@
       "notFound": "Block not found: {blockType}",
       "panel": {
         "title": "Blocks",
-        "subtitle": "Add a new block"
+        "subtitle": "Add a new block",
+        "template": "Template"
       },
       "outline": {
         "title": "Document structure",
@@ -1128,8 +1129,11 @@
         "displayName": "Loop Container",
         "forEachItemInValueFormat": "For each <item></item> in <value></value>",
         "value": "Value",
+        "itemName": "Item name",
+        "itemNameHelperText": "Optional. If not provided, the item name will be set to '_item'",
         "errors": {
-          "value": "Value is required"
+          "value": "Value is required",
+          "itemName": "Item name must be a valid variable name (e.g. item, item1, item_1, _item1, etc.)"
         }
       },
       "gridContainer": {
@@ -1604,6 +1608,160 @@
         "buttonBackgroundColor": "Button Background Color",
         "type": "Type",
         "logoUrl": "Logo URL"
+      }
+    }
+  },
+  "rte": {
+    "toolbar": {
+      "undo": "Undo (⌘Z)",
+      "redo": "Redo (⌘⇧Z)",
+      "clearFormat": "Clear Formatting",
+      "moreOptions": "More Options"
+    },
+    "plugins": {
+      "bold": {
+        "toolbar": "Bold (⌘B)",
+        "label": "Bold"
+      },
+      "italic": {
+        "toolbar": "Italic (⌘I)",
+        "label": "Italic"
+      },
+      "underline": {
+        "toolbar": "Underline (⌘U)",
+        "label": "Underline"
+      },
+      "strikethrough": {
+        "toolbar": "Strikethrough",
+        "label": "Strikethrough"
+      },
+      "superscript": {
+        "toolbar": "Superscript",
+        "label": "Superscript"
+      },
+      "subscript": {
+        "toolbar": "Subscript",
+        "label": "Subscript"
+      },
+      "color": {
+        "toolbar": "Text Color",
+        "label": "Text Color"
+      },
+      "backgroundColor": {
+        "toolbar": "Highlight Color",
+        "label": "Background Color"
+      },
+      "fontSize": {
+        "toolbar": "Font Size",
+        "label": "Font Size",
+        "options": {
+          "inherit": "Inherit",
+          "12px": "12px",
+          "14px": "14px",
+          "16px": "16px",
+          "18px": "18px",
+          "20px": "20px",
+          "24px": "24px",
+          "28px": "28px",
+          "32px": "32px",
+          "36px": "36px",
+          "48px": "48px",
+          "60px": "60px",
+          "72px": "72px"
+        }
+      },
+      "fontFamily": {
+        "toolbar": "Font Family",
+        "label": "Font Family",
+        "options": {
+          "inherit": "Inherit",
+          "primary": "Primary",
+          "secondary": "Secondary",
+          "tertiary": "Tertiary",
+          "modernSans": "Modern sans",
+          "bookSans": "Book sans",
+          "organicSans": "Organic sans",
+          "geometricSans": "Geometric sans",
+          "heavySans": "Heavy sans",
+          "roundedSans": "Rounded sans",
+          "modernSerif": "Modern serif",
+          "bookSerif": "Book serif",
+          "monospace": "Monospace"
+        }
+      },
+      "fontWeight": {
+        "toolbar": "Font Weight",
+        "label": "Font Weight",
+        "options": {
+          "inherit": "Inherit",
+          "thin": "Thin",
+          "extraLight": "Extra Light",
+          "light": "Light",
+          "regular": "Regular",
+          "medium": "Medium",
+          "semiBold": "Semi Bold",
+          "bold": "Bold",
+          "extraBold": "Extra Bold",
+          "black": "Black"
+        }
+      },
+      "letterSpacing": {
+        "toolbar": "Letter Spacing",
+        "label": "Letter Spacing",
+        "options": {
+          "inherit": "Inherit",
+          "tight": "Tight",
+          "normal": "Normal",
+          "wide": "Wide"
+        }
+      },
+      "textTransform": {
+        "toolbar": "Text Transform",
+        "label": "Text Transform",
+        "options": {
+          "inherit": "Inherit",
+          "none": "None",
+          "uppercase": "Uppercase",
+          "lowercase": "Lowercase",
+          "capitalize": "Capitalize"
+        }
+      },
+      "lineHeight": {
+        "toolbar": "Line Height",
+        "label": "Line Height",
+        "options": {
+          "inherit": "Inherit",
+          "tight": "Tight",
+          "snug": "Snug",
+          "normal": "Normal",
+          "relaxed": "Relaxed",
+          "loose": "Loose"
+        }
+      }
+    },
+    "common": {
+      "size": "Size",
+      "mixed": "Mixed",
+      "inherit": "Inherit"
+    },
+    "colors": {
+      "options": {
+        "background": "Background",
+        "foreground": "Text",
+        "card": "Card",
+        "card-foreground": "Card text",
+        "popover": "Popover",
+        "popover-foreground": "Popover text",
+        "primary": "Primary",
+        "primary-foreground": "Primary text",
+        "secondary": "Secondary",
+        "secondary-foreground": "Secondary text",
+        "muted": "Muted",
+        "muted-foreground": "Muted text",
+        "accent": "Accent",
+        "accent-foreground": "Accent text",
+        "destructive": "Destructive",
+        "destructive-foreground": "Destructive text"
       }
     }
   }

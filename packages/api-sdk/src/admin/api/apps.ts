@@ -181,6 +181,24 @@ export const getAppsByScope = async (...scope: AppScope[]) => {
   return data;
 };
 
+export const getAppsByName = async (appName: string) => {
+  console.debug("Getting apps by name", {
+    appName,
+  });
+
+  const response = await fetchAdminApi(`/apps/by/name?name=${appName}`, {
+    method: "GET",
+  });
+
+  const data = await response.json<ConnectedApp[]>();
+  console.debug("Apps by name retrieved", {
+    appName,
+    count: data.length,
+  });
+
+  return data;
+};
+
 export const getApp = async (appId: string) => {
   console.debug("Getting app", {
     appId,

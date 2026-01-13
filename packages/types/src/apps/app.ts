@@ -9,6 +9,7 @@ export type AppScope = Extandable<
   | "text-message-send"
   | "text-message-respond"
   | "appointment-hook"
+  | "event-hook"
   | "customer-hook"
   | "payment-hook"
   // | "assets-storage"
@@ -57,7 +58,6 @@ export type AppMenuItem<
   T extends I18nNamespaces = I18nNamespaces,
   CustomKeys extends string | undefined = undefined,
 > = {
-  parent?: string;
   order?: number;
   id: string;
   label: AllKeys<T, CustomKeys>;
@@ -70,9 +70,19 @@ export type AppMenuItem<
   }[];
   notScrollable?: boolean;
   isHidden?: boolean;
+  hideHeading?: boolean;
   pageTitle?: AllKeys<T, CustomKeys>;
   pageDescription?: AllKeys<T, CustomKeys>;
-};
+} & (
+  | {
+      group: "overview" | "appointments" | "website" | "customers" | "settings";
+      parent?: undefined;
+    }
+  | {
+      group?: undefined;
+      parent: string;
+    }
+);
 
 export type OAuthApp<
   T extends I18nNamespaces = I18nNamespaces,

@@ -1,4 +1,4 @@
-import { useI18n, useLocale } from "@timelish/i18n";
+import { I18nRichText, useI18n, useLocale } from "@timelish/i18n";
 import {
   allowPromoCodeType,
   BookingConfiguration,
@@ -98,13 +98,10 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
             <FormLabel>
               {t("settings.appointments.form.main.scheduleProviderApp")}
               <InfoTooltip>
-                {t.rich(
-                  "settings.appointments.form.main.scheduleProviderAppTooltip",
-                  {
-                    br: () => <br />,
-                    p: (chunks: any) => <p>{chunks}</p>,
-                  },
-                )}
+                <I18nRichText
+                  namespace="admin"
+                  text="settings.appointments.form.main.scheduleProviderAppTooltip"
+                />
               </InfoTooltip>
             </FormLabel>
             <FormControl>
@@ -128,13 +125,10 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
             <FormLabel>
               {t("settings.appointments.form.main.availabilityProviderApp")}
               <InfoTooltip>
-                {t.rich(
-                  "settings.appointments.form.main.availabilityProviderAppTooltip",
-                  {
-                    br: () => <br />,
-                    p: (chunks: any) => <p>{chunks}</p>,
-                  },
-                )}
+                <I18nRichText
+                  namespace="admin"
+                  text="settings.appointments.form.main.availabilityProviderAppTooltip"
+                />
               </InfoTooltip>
             </FormLabel>
             <FormControl>
@@ -158,13 +152,10 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
             <FormLabel>
               {t("settings.appointments.form.main.autoConfirmAppointments")}{" "}
               <InfoTooltip>
-                {t.rich("settings.appointments.form.main.autoConfirmTooltip", {
-                  br: () => <br />,
-                  p: (chunks: any) => <p>{chunks}</p>,
-                  b: (chunks: any) => (
-                    <span className="font-semibold">{chunks}</span>
-                  ),
-                })}
+                <I18nRichText
+                  namespace="admin"
+                  text="settings.appointments.form.main.autoConfirmTooltip"
+                />
               </InfoTooltip>
             </FormLabel>
             <FormControl>
@@ -212,16 +203,10 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
             <FormLabel>
               {t("settings.appointments.form.main.maxWeeksInFuture")}
               <InfoTooltip>
-                {t.rich(
-                  "settings.appointments.form.main.maxWeeksInFutureTooltip",
-                  {
-                    br: () => <br />,
-                    p: (chunks: any) => <p>{chunks}</p>,
-                    b: (chunks: any) => (
-                      <span className="font-semibold">{chunks}</span>
-                    ),
-                  },
-                )}
+                <I18nRichText
+                  namespace="admin"
+                  text="settings.appointments.form.main.maxWeeksInFutureTooltip"
+                />
               </InfoTooltip>
             </FormLabel>
             <FormControl>
@@ -252,16 +237,10 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
             <FormLabel>
               {t("settings.appointments.form.main.minHoursBeforeBooking")}
               <InfoTooltip>
-                {t.rich(
-                  "settings.appointments.form.main.minHoursBeforeBookingTooltip",
-                  {
-                    br: () => <br />,
-                    p: (chunks: any) => <p>{chunks}</p>,
-                    b: (chunks: any) => (
-                      <span className="font-semibold">{chunks}</span>
-                    ),
-                  },
-                )}
+                <I18nRichText
+                  namespace="admin"
+                  text="settings.appointments.form.main.minHoursBeforeBookingTooltip"
+                />
               </InfoTooltip>
             </FormLabel>
             <FormControl>
@@ -292,13 +271,10 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
             <FormLabel>
               {t("settings.appointments.form.main.minBreakTime")}
               <InfoTooltip>
-                {t.rich("settings.appointments.form.main.minBreakTimeTooltip", {
-                  br: () => <br />,
-                  p: (chunks: any) => <p>{chunks}</p>,
-                  b: (chunks: any) => (
-                    <span className="font-semibold">{chunks}</span>
-                  ),
-                })}
+                <I18nRichText
+                  namespace="admin"
+                  text="settings.appointments.form.main.minBreakTimeTooltip"
+                />
               </InfoTooltip>
             </FormLabel>
             <FormControl>
@@ -329,9 +305,10 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
             <FormLabel>
               {t("settings.appointments.form.main.allowedSlotStartTimes")}
               <InfoTooltip>
-                {t(
-                  "settings.appointments.form.main.allowedSlotStartTimesTooltip",
-                )}
+                <I18nRichText
+                  namespace="admin"
+                  text="settings.appointments.form.main.allowedSlotStartTimesTooltip"
+                />
               </InfoTooltip>
             </FormLabel>
             <FormControl>

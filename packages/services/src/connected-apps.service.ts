@@ -2,6 +2,7 @@ import {
   AvailableAppServices,
   ServiceAvailableApps,
 } from "@timelish/app-store/services";
+import { BaseAllKeys } from "@timelish/i18n";
 import {
   ApiRequest,
   App,
@@ -19,6 +20,7 @@ import {
 import { ObjectId } from "mongodb";
 import pLimit from "p-limit";
 import { cache } from "react";
+import { getBuiltInAppData, getBuiltInAppsHooks } from "./built-in/utils";
 import { CONNECTED_APPS_COLLECTION_NAME } from "./collections";
 import { getDbConnection } from "./database";
 import { BaseService } from "./services/base.service";
@@ -47,7 +49,7 @@ export class ConnectedAppsService
       _id: new ObjectId().toString(),
       companyId: this.companyId,
       status: "pending",
-      statusText: "apps.common.statusText.pending",
+      statusText: "apps.common.statusText.pending" satisfies BaseAllKeys,
       name,
     };
 
@@ -57,6 +59,15 @@ export class ConnectedAppsService
     );
 
     await collection.insertOne(app);
+
+    const { app: appData, service } = await this.getAppService(app._id);
+    if (service.install) {
+      logger.debug(
+        { appId: appData._id, appName: appData.name },
+        "Running install hook",
+      );
+      await service.install(appData);
+    }
 
     logger.debug({ name, appId: app._id }, "Successfully created new app");
 
@@ -231,7 +242,8 @@ export class ConnectedAppsService
         {
           $set: {
             status: "connected",
-            statusText: "apps.common.statusText.connected",
+            statusText:
+              "apps.common.statusText.connected" satisfies BaseAllKeys,
             ...result,
           },
         },
@@ -646,7 +658,7 @@ export class ConnectedAppsService
 
     logger.debug({ scope, count: hooks.length }, "Retrieved hooks");
 
-    const promises = hooks.map(async (hookData) => {
+    const appPromises = hooks.map(async (hookData) => {
       logger.debug(
         { appName: hookData.name, appId: hookData._id },
         "Executing hook",
@@ -680,7 +692,38 @@ export class ConnectedAppsService
       }
     });
 
-    const results = await Promise.all(promises.map((p) => limit(() => p)));
+    const builtInHooks = getBuiltInAppsHooks(scope);
+
+    console.debug(
+      { builtInHooks: builtInHooks.map((h) => h.name), scope },
+      "Built-in hooks",
+    );
+
+    const builtInAppPromises = builtInHooks.map(async (app) => {
+      logger.debug({ appName: app.name }, "Executing built-in app");
+
+      try {
+        const service = new app.getService(this.companyId, this.getServices());
+        return await hook(getBuiltInAppData(this.companyId, app.name), service);
+      } catch (error) {
+        if (!ignoreErrors) {
+          logger.error(
+            { appName: app.name, error },
+            "Error executing built-in app",
+          );
+          throw error;
+        } else {
+          logger.warn(
+            { appName: app.name, error },
+            "Error executing built-in app, ignoring",
+          );
+        }
+      }
+    });
+
+    const allPromises = [...builtInAppPromises, ...appPromises];
+
+    const results = await Promise.all(allPromises.map((p) => limit(() => p)));
 
     logger.debug({ scope }, "Hooks executed");
     return results;

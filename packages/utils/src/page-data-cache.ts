@@ -2,9 +2,10 @@ import { Page } from "@timelish/types";
 import { cache } from "react";
 
 export type PageDataStore = {
-  params: Record<string, any>;
   searchParams: Record<string, any | undefined | null>;
+  routeParams: Record<string, any>;
   page: Page;
+  params: Record<string, any>;
 };
 
 const getStore = cache(() => ({
@@ -12,6 +13,7 @@ const getStore = cache(() => ({
     params: {},
     searchParams: {},
     page: {},
+    routeParams: {},
   } as PageDataStore,
 }));
 

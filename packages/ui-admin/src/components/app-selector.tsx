@@ -2,7 +2,7 @@
 
 import { adminApi } from "@timelish/api-sdk";
 import { useI18n } from "@timelish/i18n";
-import { AppScope, ConnectedApp } from "@timelish/types";
+import { AppScope, ConnectedApp, Prettify } from "@timelish/types";
 import {
   cn,
   Combobox,
@@ -40,9 +40,18 @@ const checkAppSearch = (app: ConnectedApp, query: string) => {
   );
 };
 
+type SearchProps =
+  | {
+      appName: string;
+      scope?: never;
+    }
+  | {
+      scope: AppScope;
+      appName?: never;
+    };
+
 type BaseAppSelectorProps = {
   placeholder?: string;
-  scope: AppScope;
   value?: string;
   disabled?: boolean;
   className?: string;
@@ -61,10 +70,14 @@ type NonClearableAppSelectorProps = {
   allowClear?: false;
 };
 
-export type AppSelectorProps = BaseAppSelectorProps &
-  (ClearableAppSelectorProps | NonClearableAppSelectorProps);
+export type AppSelectorProps = Prettify<
+  BaseAppSelectorProps &
+    SearchProps &
+    (ClearableAppSelectorProps | NonClearableAppSelectorProps)
+>;
 
 export const AppSelector: React.FC<AppSelectorProps> = ({
+  appName,
   scope,
   placeholder,
   disabled,
@@ -82,9 +95,18 @@ export const AppSelector: React.FC<AppSelectorProps> = ({
 
   React.useEffect(() => {
     const fn = async () => {
+      if (!scope && !appName) {
+        console.warn("No scope or app name provided");
+        setApps([]);
+        setIsLoading(false);
+        return;
+      }
+
       try {
         setIsLoading(true);
-        const apps = await adminApi.apps.getAppsByScope(scope);
+        const apps = scope
+          ? await adminApi.apps.getAppsByScope(scope)
+          : await adminApi.apps.getAppsByName(appName!);
         setApps(apps);
       } catch (e) {
         toast.error(t("common.requestFailed"));
@@ -96,7 +118,7 @@ export const AppSelector: React.FC<AppSelectorProps> = ({
     };
 
     fn();
-  }, [scope]);
+  }, [scope, appName]);
 
   React.useEffect(() => {
     setAppName?.(apps?.find((app) => app._id === value)?.name);

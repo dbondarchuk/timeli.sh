@@ -1,7 +1,13 @@
 import { getLoggerFactory } from "@timelish/logger";
 import {
+  CANCELLATION_NOT_ALLOWED_BY_POLICY_REASON,
+  CANCELLATION_NOT_ALLOWED_REASON,
+  MAX_RESCHEDULES_REACHED_REASON,
   ModifyAppointmentInformation,
   ModifyAppointmentInformationRequest,
+  RESCHEDULE_NOT_ALLOWED_BY_POLICY_REASON,
+  RESCHEDULE_NOT_ALLOWED_REASON,
+  RESCHEDULED_APPOINTMENT_NOT_ALLOWED_REASON,
 } from "@timelish/types";
 import { formatAmount, getPolicyForRequest } from "@timelish/utils";
 import { DateTime } from "luxon";
@@ -87,7 +93,7 @@ export const getModifyAppointmentInformationRequestResult = async (
         information: {
           ...appointmentInformation,
           allowed: false,
-          reason: "cancellation_not_allowed",
+          reason: CANCELLATION_NOT_ALLOWED_REASON,
         },
         customerId: appointment.customerId,
       };
@@ -106,7 +112,7 @@ export const getModifyAppointmentInformationRequestResult = async (
           information: {
             ...appointmentInformation,
             allowed: false,
-            reason: "rescheduled_appointment_not_allowed",
+            reason: RESCHEDULED_APPOINTMENT_NOT_ALLOWED_REASON,
           },
           customerId: appointment.customerId,
         };
@@ -124,7 +130,7 @@ export const getModifyAppointmentInformationRequestResult = async (
         information: {
           ...appointmentInformation,
           allowed: false,
-          reason: "cancellation_not_allowed_by_policy",
+          reason: CANCELLATION_NOT_ALLOWED_BY_POLICY_REASON,
         },
         customerId: appointment.customerId,
       };
@@ -220,7 +226,7 @@ export const getModifyAppointmentInformationRequestResult = async (
           information: {
             ...appointmentInformation,
             allowed: false,
-            reason: "cancellation_not_allowed_by_policy",
+            reason: CANCELLATION_NOT_ALLOWED_BY_POLICY_REASON,
           },
           customerId: appointment.customerId,
         };
@@ -275,7 +281,7 @@ export const getModifyAppointmentInformationRequestResult = async (
           information: {
             ...appointmentInformation,
             allowed: false,
-            reason: "cancellation_not_allowed_by_policy",
+            reason: CANCELLATION_NOT_ALLOWED_BY_POLICY_REASON,
           },
           customerId: appointment.customerId,
         };
@@ -302,7 +308,7 @@ export const getModifyAppointmentInformationRequestResult = async (
         information: {
           ...appointmentInformation,
           allowed: false,
-          reason: "cancellation_not_allowed_by_policy",
+          reason: CANCELLATION_NOT_ALLOWED_BY_POLICY_REASON,
         },
         customerId: appointment.customerId,
       };
@@ -323,7 +329,7 @@ export const getModifyAppointmentInformationRequestResult = async (
         information: {
           ...appointmentInformation,
           allowed: false,
-          reason: "reschedule_not_allowed",
+          reason: RESCHEDULE_NOT_ALLOWED_REASON,
         },
         customerId: appointment.customerId,
       };
@@ -358,7 +364,7 @@ export const getModifyAppointmentInformationRequestResult = async (
           information: {
             ...appointmentInformation,
             allowed: false,
-            reason: "max_reschedules_reached",
+            reason: MAX_RESCHEDULES_REACHED_REASON,
           },
           customerId: appointment.customerId,
         };
@@ -376,7 +382,7 @@ export const getModifyAppointmentInformationRequestResult = async (
         information: {
           ...appointmentInformation,
           allowed: false,
-          reason: "reschedule_not_allowed_by_policy",
+          reason: RESCHEDULE_NOT_ALLOWED_BY_POLICY_REASON,
         },
         customerId: appointment.customerId,
       };
@@ -422,7 +428,7 @@ export const getModifyAppointmentInformationRequestResult = async (
           information: {
             ...appointmentInformation,
             allowed: false,
-            reason: "reschedule_not_allowed_by_policy",
+            reason: RESCHEDULE_NOT_ALLOWED_BY_POLICY_REASON,
           },
           customerId: appointment.customerId,
         };

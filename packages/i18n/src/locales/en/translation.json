@@ -153,8 +153,20 @@
       "searchError": {
         "notFound": "No appointment was found with the provided details. Please check and try again.",
         "notAllowed": {
-          "cancel": "Hi {name}, unfortunately we cannot cancel this appointment at this time. Please contact us to cancel.",
-          "reschedule": "Hi {name}, unfortunately we cannot reschedule this appointment at this time. Please contact us to reschedule."
+          "cancel": "<p>Hi {name}, unfortunately we cannot cancel this appointment at this time. Please contact us to cancel.</p><ul><li>{reason}</li></ul>",
+          "reschedule": "<p>Hi {name}, unfortunately we cannot reschedule this appointment at this time. Please contact us to reschedule.</p><ul><li>{reason}</li></ul>",
+          "reason": {
+            "max_reschedules_reached": "You have reached the maximum number of reschedules for this appointment.",
+            "original_appointment_deposit_required": "The original appointment deposit is required to reschedule this appointment.",
+            "time_not_available": "The time is not available for rescheduling.",
+            "invalid_request_type": "The request type is invalid.",
+            "cancellation_not_allowed": "Cancellations are not allowed.",
+            "reschedule_not_allowed": "Reschedules are not allowed.",
+            "cancellation_not_allowed_by_policy": "Cancellation is not allowed for this appointment.",
+            "reschedule_not_allowed_by_policy": "Reschedules are not allowed for this appointment.",
+            "rescheduled_appointment_not_allowed": "Cancellation is not allowed for this appointment because it has been rescheduled.",
+            "unknown": "Unknown reason"
+          }
         }
       }
     },
@@ -296,10 +308,10 @@
   "reschedule_appointment_confirmation_success_message": "Thanks, {name}! Your appointment for {service} has been rescheduled to {newDateTime} and you will get confirmation shortly.",
 
   "cancel_appointment_not_allowed_title": "Cancellation is not allowed for this appointment",
-  "cancel_appointment_not_allowed_message": "Hi {name}, unfortunately we cannot cancel this appointment at this time. Please contact us to cancel.",
+  "cancel_appointment_not_allowed_message": "<p>Hi {name}, unfortunately we cannot cancel this appointment at this time. Please contact us to cancel.</p><ul><li>{reason}</li></ul>",
 
   "reschedule_appointment_not_allowed_title": "Rescheduling is not allowed for this appointment",
-  "reschedule_appointment_not_allowed_message": "Hi {name}, unfortunately we cannot reschedule this appointment at this time. Please contact us to reschedule.",
+  "reschedule_appointment_not_allowed_message": "<p>Hi {name}, unfortunately we cannot reschedule this appointment at this time. Please contact us to reschedule.</p><ul><li>{reason}</li></ul>",
 
   "appointment_fetch_failed_title": "We can't find your appointment",
   "appointment_fetch_failed_description": "We can't find your appointment. Make sure you have the correct date & time, and an email or phone number and try again. Or contact us to modify your appointment.",

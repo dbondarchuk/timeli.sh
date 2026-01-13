@@ -12,6 +12,7 @@ export type TEditorBlock<T = any> = {
   data: T;
   id: string;
   base?: BaseBlockProps;
+  metadata?: Record<string, any>;
 };
 
 export type TEditorConfiguration = TEditorBlock;

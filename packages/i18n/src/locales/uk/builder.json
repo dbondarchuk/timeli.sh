@@ -62,7 +62,8 @@
       "notFound": "Блок не знайдено: {blockType}",
       "panel": {
         "title": "Блоки",
-        "subtitle": "Додати новий блок"
+        "subtitle": "Додати новий блок",
+        "template": "Шаблон"
       },
       "outline": {
         "title": "Структура документа",
@@ -1128,8 +1129,11 @@
         "displayName": "Контейнер циклу",
         "forEachItemInValueFormat": "Для кожного <item></item> в <value></value>",
         "value": "Значення",
+        "itemName": "Назва елемента",
+        "itemNameHelperText": "Необов'язково. Якщо не вказано, назва елемента буде встановлена на '_item'",
         "errors": {
-          "value": "Значення є обов'язковим"
+          "value": "Значення є обов'язковим",
+          "itemName": "Назва елемента повинна бути дійсною змінною (наприклад, item, item1, item_1, _item1, тощо)"
         }
       },
       "gridContainer": {
@@ -1604,6 +1608,160 @@
         "buttonBackgroundColor": "Колір фону кнопки",
         "type": "Тип",
         "logoUrl": "URL логотипу"
+      }
+    }
+  },
+  "rte": {
+    "toolbar": {
+      "undo": "Скасувати (⌘Z)",
+      "redo": "Повторити (⌘⇧Z)",
+      "clearFormat": "Очистити форматування",
+      "moreOptions": "Більше опцій"
+    },
+    "plugins": {
+      "bold": {
+        "toolbar": "Жирний (⌘B)",
+        "label": "Жирний"
+      },
+      "italic": {
+        "toolbar": "Курсив (⌘I)",
+        "label": "Курсив"
+      },
+      "underline": {
+        "toolbar": "Підкреслений (⌘U)",
+        "label": "Підкреслений"
+      },
+      "strikethrough": {
+        "toolbar": "Закреслений",
+        "label": "Закреслений"
+      },
+      "superscript": {
+        "toolbar": "Надрядковий",
+        "label": "Надрядковий"
+      },
+      "subscript": {
+        "toolbar": "Підрядковий",
+        "label": "Підрядковий"
+      },
+      "color": {
+        "toolbar": "Колір тексту",
+        "label": "Колір тексту"
+      },
+      "backgroundColor": {
+        "toolbar": "Колір виділення",
+        "label": "Колір фону"
+      },
+      "fontSize": {
+        "toolbar": "Розмір шрифту",
+        "label": "Розмір шрифту",
+        "options": {
+          "inherit": "Успадкувати",
+          "12px": "12px",
+          "14px": "14px",
+          "16px": "16px",
+          "18px": "18px",
+          "20px": "20px",
+          "24px": "24px",
+          "28px": "28px",
+          "32px": "32px",
+          "36px": "36px",
+          "48px": "48px",
+          "60px": "60px",
+          "72px": "72px"
+        }
+      },
+      "fontFamily": {
+        "toolbar": "Сімейство шрифтів",
+        "label": "Сімейство шрифтів",
+        "options": {
+          "inherit": "Успадкувати",
+          "primary": "Основний",
+          "secondary": "Додатковий",
+          "tertiary": "Третій",
+          "modernSans": "Сучасний без засічок",
+          "bookSans": "Книжковий без засічок",
+          "organicSans": "Органічний без засічок",
+          "geometricSans": "Геометричний без засічок",
+          "heavySans": "Важкий без засічок",
+          "roundedSans": "Закруглений без засічок",
+          "modernSerif": "Сучасний з засічками",
+          "bookSerif": "Книжковий з засічками",
+          "monospace": "Моноширинний"
+        }
+      },
+      "fontWeight": {
+        "toolbar": "Насиченість шрифту",
+        "label": "Насиченість шрифту",
+        "options": {
+          "inherit": "Успадкувати",
+          "thin": "Тонкий",
+          "extraLight": "Дуже світлий",
+          "light": "Світлий",
+          "regular": "Звичайний",
+          "medium": "Середній",
+          "semiBold": "Напівжирний",
+          "bold": "Жирний",
+          "extraBold": "Дуже жирний",
+          "black": "Чорний"
+        }
+      },
+      "letterSpacing": {
+        "toolbar": "Міжлітерний інтервал",
+        "label": "Міжлітерний інтервал",
+        "options": {
+          "inherit": "Успадкувати",
+          "tight": "Щільний",
+          "normal": "Звичайний",
+          "wide": "Широкий"
+        }
+      },
+      "textTransform": {
+        "toolbar": "Трансформація тексту",
+        "label": "Трансформація тексту",
+        "options": {
+          "inherit": "Успадкувати",
+          "none": "Немає",
+          "uppercase": "Великі літери",
+          "lowercase": "Малі літери",
+          "capitalize": "З великої літери"
+        }
+      },
+      "lineHeight": {
+        "toolbar": "Висота рядка",
+        "label": "Висота рядка",
+        "options": {
+          "inherit": "Успадкувати",
+          "tight": "Щільний",
+          "snug": "Компактний",
+          "normal": "Звичайний",
+          "relaxed": "Розслаблений",
+          "loose": "Вільний"
+        }
+      }
+    },
+    "common": {
+      "size": "Розмір",
+      "mixed": "Змішано",
+      "inherit": "Успадкувати"
+    },
+    "colors": {
+      "options": {
+        "background": "Фон",
+        "foreground": "Текст",
+        "card": "Картка",
+        "card-foreground": "Текст картки",
+        "popover": "Спливаюче вікно",
+        "popover-foreground": "Текст спливаючого вікна",
+        "primary": "Основний",
+        "primary-foreground": "Основний текст",
+        "secondary": "Додатковий",
+        "secondary-foreground": "Додатковий текст",
+        "muted": "Приглушений",
+        "muted-foreground": "Приглушений текст",
+        "accent": "Акцент",
+        "accent-foreground": "Акцентний текст",
+        "destructive": "Руйнівний",
+        "destructive-foreground": "Руйнівний текст"
       }
     }
   }

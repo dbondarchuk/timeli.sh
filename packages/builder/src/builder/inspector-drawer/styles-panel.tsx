@@ -20,7 +20,7 @@ export const StylesPanel: React.FC = () => {
     return <p>{tBuilder("baseBuilder.inspector.stylesPanel.blockNotFound")}</p>;
   }
 
-  const { data, type, base } = block;
+  const { data, type, base, metadata } = block;
   const blocks = useBlocks();
   const Panel = useMemo(
     () => blocks[block.type].Configuration,
@@ -47,6 +47,16 @@ export const StylesPanel: React.FC = () => {
     [block.id, dispatchAction],
   );
 
+  const setMetadata = useCallback(
+    (metadata: Record<string, any> | undefined) => {
+      dispatchAction({
+        type: "set-block-metadata",
+        value: { blockId: block.id, metadata },
+      });
+    },
+    [dispatchAction, block.id],
+  );
+
   return (
     <BaseSidebarPanel title={t(blocks[type].displayName)}>
       <Panel
@@ -55,6 +65,8 @@ export const StylesPanel: React.FC = () => {
         setData={setData}
         base={base}
         onBaseChange={setBase}
+        metadata={metadata}
+        onMetadataChange={setMetadata}
       />
     </BaseSidebarPanel>
   );

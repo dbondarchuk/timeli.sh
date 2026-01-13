@@ -2032,6 +2032,7 @@
       "submenu": "Submenu"
     },
     "linkVariants": {
+      "none": "None",
       "default": "Default",
       "underline": "Underline",
       "standalone": "Standalone",
@@ -2363,6 +2364,11 @@
         "enabled": "Enabled",
         "notAllowedWithoutDeposit": "Not allowed without deposit"
       }
+    }
+  },
+  "bookingTracking": {
+    "convertedTo": {
+      "appointment": "Appointment"
     }
   }
 }

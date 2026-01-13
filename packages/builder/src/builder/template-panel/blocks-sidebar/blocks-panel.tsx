@@ -6,11 +6,18 @@ import {
   genericMemo,
   Input,
   ScrollArea,
+  TooltipResponsive,
+  TooltipResponsiveContent,
+  TooltipResponsiveTrigger,
   useDebounce,
 } from "@timelish/ui";
-import { GripVertical, Search, X } from "lucide-react";
+import { GripVertical, Layers, Search, X } from "lucide-react";
 import { memo, useMemo, useState } from "react";
-import { useBlocks, useRootBlockType } from "../../../documents/editor/context";
+import {
+  useBlocks,
+  useRootBlockType,
+  useTemplates,
+} from "../../../documents/editor/context";
 import { BaseZodDictionary } from "../../../documents/types";
 
 type BlocksPanelProps<T extends BaseZodDictionary = any> = {
@@ -19,17 +26,29 @@ type BlocksPanelProps<T extends BaseZodDictionary = any> = {
 type DraggableBlockItemProps = {
   blockType: string;
   blockConfig: any;
+  isTemplate: boolean;
 };
 
 const DraggableBlockItem: React.FC<DraggableBlockItemProps> = memo(
-  ({ blockType, blockConfig }) => {
+  ({ blockType, blockConfig, isTemplate }) => {
+    const templates = useTemplates();
+
+    const templateBlock = useMemo(() => {
+      if (!isTemplate) return null;
+      const template = templates?.[blockType];
+      if (template) {
+        return template.getBlock();
+      }
+      return null;
+    }, [blockType, templates, isTemplate]);
+
     const { isDragging, ref } = useDraggable({
       id: `template-${blockType}`,
-      type: blockType,
+      type: templateBlock?.type ?? blockType,
       feedback: "clone",
 
       data: {
-        type: "block-template",
+        type: isTemplate ? "composite-template" : "block-template",
         blockType,
         blockConfig,
       },
@@ -70,8 +89,22 @@ const DraggableBlockItem: React.FC<DraggableBlockItemProps> = memo(
             {blockConfig.icon}
           </div>
           <div className="flex-1 min-w-0">
-            <div className="text-sm font-medium truncate">
-              {t(blockConfig.displayName)}
+            <div className="text-sm w-full font-medium inline-flex items-center gap-2">
+              <span className="truncate flex-1">
+                {t(blockConfig.displayName)}
+              </span>
+              {isTemplate ? (
+                <TooltipResponsive>
+                  <TooltipResponsiveTrigger>
+                    <Layers className="size-3" />
+                  </TooltipResponsiveTrigger>
+                  <TooltipResponsiveContent>
+                    {t("builder.baseBuilder.blocks.panel.template")}
+                  </TooltipResponsiveContent>
+                </TooltipResponsive>
+              ) : (
+                ""
+              )}
             </div>
             <div className="text-xs text-muted-foreground truncate">
               {t(blockConfig.category)}
@@ -90,7 +123,10 @@ const BlocksPanelContent = memo(
   ({
     filteredBlocks,
   }: {
-    filteredBlocks: Record<string, Array<{ type: string; config: any }>>;
+    filteredBlocks: Record<
+      string,
+      Array<{ type: string; config: any; blockType: "block" | "template" }>
+    >;
   }) => {
     const tBuilder = useI18n("builder");
     const t = useI18n();
@@ -112,10 +148,11 @@ const BlocksPanelContent = memo(
                   {t(category as AllKeys)}
                 </h4>
                 <div className="grid grid-cols-1 gap-2">
-                  {blockList.map(({ type, config }) => (
+                  {blockList.map(({ type, config, blockType }) => (
                     <DraggableBlockItem
                       key={type}
                       blockType={type}
+                      isTemplate={blockType === "template"}
                       blockConfig={config}
                     />
                   ))}
@@ -136,11 +173,25 @@ export const BlocksPanel = genericMemo(
     const [searchQuery, setSearchQuery] = useState("");
     const debouncedSearchQuery = useDebounce(searchQuery, 300);
     const blocks = useBlocks();
+    const templates = useTemplates();
     const rootBlockType = useRootBlockType();
 
     const filteredBlocks = useMemo(() => {
-      return Object.entries(blocks)
-        .filter(([type, config]) => {
+      const allBlocks = [
+        ...Object.entries(blocks).map(([type, config]) => ({
+          type,
+          config,
+          blockType: "block" as const,
+        })),
+        ...Object.entries(templates || {}).map(([type, config]) => ({
+          type,
+          config,
+          blockType: "template" as const,
+        })),
+      ];
+
+      return allBlocks
+        .filter(({ type, config, blockType }) => {
           // Filter by allowOnly if specified
           if (allowOnly) {
             if (Array.isArray(allowOnly)) {
@@ -172,15 +223,22 @@ export const BlocksPanel = genericMemo(
           return true;
         })
         .reduce(
-          (acc, [type, config]) => {
+          (acc, { type, config, blockType }) => {
             const category = config.category;
             if (!acc[category]) {
               acc[category] = [];
             }
-            acc[category].push({ type, config });
+            acc[category].push({ type, config, blockType });
             return acc;
           },
-          {} as Record<string, Array<{ type: string; config: any }>>,
+          {} as Record<
+            string,
+            Array<{
+              type: string;
+              config: any;
+              blockType: "block" | "template";
+            }>
+          >,
         );
     }, [blocks, allowOnly, rootBlockType, tBuilder, debouncedSearchQuery]);
 

@@ -130,6 +130,38 @@ export default class WeeklyScheduleConnectedApp
     }
   }
 
+  public async install(appData: ConnectedAppData): Promise<void> {
+    const logger = this.loggerFactory("install");
+    logger.debug({ appId: appData._id }, "Installing weekly schedule app");
+
+    const db = await this.props.getDbConnection();
+    const collection = await db.createCollection<ScheduleOverrideEntity>(
+      SCHEDULE_COLLECTION_NAME,
+    );
+
+    const indexes = {
+      companyId_appId_week_1: { companyId: 1, appId: 1, week: 1 },
+      appId_week_1: { appId: 1, week: 1 },
+    };
+
+    for (const [name, index] of Object.entries(indexes)) {
+      logger.debug(`Checking if index ${name} exists`);
+      if (await collection.indexExists(name)) {
+        logger.debug(`Index ${name} already exists`);
+        continue;
+      }
+
+      logger.debug(`Creating index ${name}`);
+      await collection.createIndex(index, { name });
+      logger.debug(`Index ${name} created`);
+    }
+
+    logger.debug(
+      { appId: appData._id },
+      "Weekly schedule app installed successfully",
+    );
+  }
+
   public async unInstall(appData: ConnectedAppData): Promise<void> {
     const logger = this.loggerFactory("unInstall");
     logger.info({ appId: appData._id }, "Uninstalling weekly schedule app");

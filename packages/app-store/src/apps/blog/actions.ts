@@ -1,0 +1,152 @@
+import { adminApi } from "@timelish/api-sdk";
+import { WithTotal } from "@timelish/types";
+import {
+  BlogPost,
+  BlogPostUpdateModel,
+  CreateBlogPostActionType,
+  DeleteBlogPostActionType,
+  GetBlogPostActionType,
+  GetBlogPostsActionType,
+  UpdateBlogPostActionType,
+} from "./models";
+
+const loggerFactory = (action: string) => ({
+  debug: (data: any, message: string) => {
+    console.debug(`[${action}] DEBUG:`, message, data);
+  },
+  info: (data: any, message: string) => {
+    console.log(`[${action}] INFO:`, message, data);
+  },
+  error: (data: any, message: string) => {
+    console.error(`[${action}] ERROR:`, message, data);
+  },
+});
+
+export async function getBlogPosts(
+  appId: string,
+  query: Parameters<typeof adminApi.apps.processRequest>[1] extends {
+    type: typeof GetBlogPostsActionType;
+  }
+    ? Parameters<typeof adminApi.apps.processRequest>[1]["query"]
+    : never,
+) {
+  const logger = loggerFactory("getBlogPosts");
+  logger.debug({ appId, query }, "Getting blog posts");
+
+  try {
+    const result = (await adminApi.apps.processRequest(appId, {
+      type: GetBlogPostsActionType,
+      query,
+    })) as WithTotal<BlogPost>;
+
+    logger.info(
+      { appId, resultCount: result?.items?.length || 0 },
+      "Successfully retrieved blog posts",
+    );
+    return result;
+  } catch (error: any) {
+    logger.error(
+      { appId, error: error?.message || error?.toString() },
+      "Error getting blog posts",
+    );
+    throw error;
+  }
+}
+
+export async function getBlogPost(
+  appId: string,
+  id?: string,
+  slug?: string,
+) {
+  const logger = loggerFactory("getBlogPost");
+  logger.debug({ appId, id, slug }, "Getting blog post");
+
+  try {
+    const result = (await adminApi.apps.processRequest(appId, {
+      type: GetBlogPostActionType,
+      id,
+      slug,
+    })) as BlogPost;
+
+    logger.info({ appId, id, slug }, "Successfully retrieved blog post");
+    return result;
+  } catch (error: any) {
+    logger.error(
+      { appId, error: error?.message || error?.toString() },
+      "Error getting blog post",
+    );
+    throw error;
+  }
+}
+
+export async function createBlogPost(
+  appId: string,
+  post: BlogPostUpdateModel,
+) {
+  const logger = loggerFactory("createBlogPost");
+  logger.debug({ appId, post }, "Creating blog post");
+
+  try {
+    const result = (await adminApi.apps.processRequest(appId, {
+      type: CreateBlogPostActionType,
+      post,
+    })) as BlogPost;
+
+    logger.info({ appId }, "Successfully created blog post");
+    return result;
+  } catch (error: any) {
+    logger.error(
+      { appId, error: error?.message || error?.toString() },
+      "Error creating blog post",
+    );
+    throw error;
+  }
+}
+
+export async function updateBlogPost(
+  appId: string,
+  id: string,
+  post: BlogPostUpdateModel,
+) {
+  const logger = loggerFactory("updateBlogPost");
+  logger.debug({ appId, id, post }, "Updating blog post");
+
+  try {
+    const result = (await adminApi.apps.processRequest(appId, {
+      type: UpdateBlogPostActionType,
+      id,
+      post,
+    })) as BlogPost;
+
+    logger.info({ appId, id }, "Successfully updated blog post");
+    return result;
+  } catch (error: any) {
+    logger.error(
+      { appId, error: error?.message || error?.toString() },
+      "Error updating blog post",
+    );
+    throw error;
+  }
+}
+
+export async function deleteBlogPost(appId: string, id: string) {
+  const logger = loggerFactory("deleteBlogPost");
+  logger.debug({ appId, id }, "Deleting blog post");
+
+  try {
+    const result = await adminApi.apps.processRequest(appId, {
+      type: DeleteBlogPostActionType,
+      id,
+    });
+
+    logger.info({ appId, id }, "Successfully deleted blog post");
+    return result;
+  } catch (error: any) {
+    logger.error(
+      { appId, error: error?.message || error?.toString() },
+      "Error deleting blog post",
+    );
+    throw error;
+  }
+}
+

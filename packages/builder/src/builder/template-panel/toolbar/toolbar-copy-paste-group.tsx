@@ -20,6 +20,7 @@ import {
 import { useBlockClipboard } from "../../../documents/editor/copy";
 import { TEditorBlock } from "../../../documents/editor/core";
 import { cloneBlock } from "../../../documents/helpers/blocks";
+import { matchesRule } from "../../../documents/utils";
 import { usePortalContext } from "../portal-context";
 
 const useParentData = (blockId: string | null | undefined) => {
@@ -81,22 +82,36 @@ export const ToolbarCopyPasteGroup = ({
   const handlePasteBlock = useCallback(
     (block: TEditorBlock | null | undefined) => {
       if (block && parentData && parentData.parentBlockId) {
-        const allowedParents = store.getState().blocks[block.type]?.allowedIn;
+        const state = store.getState();
+        const allowedParents = state.blocks[block.type]?.allowedIn;
+        const parentBlockDefinition = parentData.parentBlockType
+          ? {
+              ...state.blocks[parentData.parentBlockType],
+              type: parentData.parentBlockType,
+            }
+          : undefined;
+
         if (
           allowedParents &&
-          parentData.parentBlockType &&
-          !allowedParents.includes(parentData.parentBlockType)
+          parentBlockDefinition &&
+          !matchesRule(parentBlockDefinition, allowedParents)
         ) {
           return;
         }
 
-        const allowedBlockTypes =
-          store.getState().allowedBlockTypes[
+        const allowedBlockRule =
+          state.allowedRules[
             `${parentData.parentBlockId}/${parentData.parentProperty}`
           ];
+
+        const blockDefinition = state.blocks[block.type]
+          ? { ...state.blocks[block.type], type: block.type }
+          : undefined;
+
         if (
-          allowedBlockTypes?.length &&
-          !allowedBlockTypes.includes(block.type)
+          allowedBlockRule &&
+          blockDefinition &&
+          !matchesRule(blockDefinition, allowedBlockRule)
         ) {
           return;
         }

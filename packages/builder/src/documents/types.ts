@@ -1,5 +1,6 @@
 import { AllKeys } from "@timelish/i18n";
 import * as z from "zod";
+import { TEditorBlock } from "./editor/core";
 
 export type BaseZodDictionary = {
   [name: string]: z.ZodTypeAny;
@@ -10,12 +11,28 @@ export type ConfigurationProps<T> = {
   setData: (data: T) => void;
   base: BaseBlockProps | undefined;
   onBaseChange: (base: BaseBlockProps) => void;
+  metadata: Record<string, any> | undefined;
+  onMetadataChange: (metadata: Record<string, any> | undefined) => void;
 };
 
 export type BaseBlockProps = {
   id?: string;
   className?: string;
 };
+
+export type BlockFilterRule = {
+  type?: string[];
+  tags?: string[];
+  capabilities?: string[];
+
+  not?: {
+    type?: string[];
+    tags?: string[];
+    capabilities?: string[];
+  };
+};
+
+export type BlockFilterRuleResult = BlockFilterRule | "impossible";
 
 export type EditorProps<T> = T;
 
@@ -31,6 +48,15 @@ export type BlockEditorDisableOptions = {
   };
 };
 
+export type TemplateDefinition = {
+  displayName: AllKeys;
+  icon: React.ReactNode;
+  category: AllKeys;
+  getBlock: () => TEditorBlock;
+};
+
+export type TemplatesConfiguration = Record<string, TemplateDefinition>;
+
 export type EditorDocumentBlocksDictionary<T extends BuilderSchema = any> = {
   [K in keyof T]: {
     displayName: AllKeys;
@@ -40,9 +66,11 @@ export type EditorDocumentBlocksDictionary<T extends BuilderSchema = any> = {
     Toolbar?: React.ComponentType<ConfigurationProps<z.infer<T[K]>>>;
     defaultValue: z.infer<T[K]> | (() => z.infer<T[K]>);
     category: AllKeys;
-    allowedIn?: (keyof T)[];
+    allowedIn?: BlockFilterRule;
+    tags?: string[];
+    capabilities?: string[];
     disable?: BlockEditorDisableOptions;
-    staticProps?: Record<string, any>;
+    defaultMetadata?: Record<string, any>;
   };
 };
 

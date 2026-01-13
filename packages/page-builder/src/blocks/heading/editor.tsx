@@ -2,8 +2,8 @@
 
 import {
   BaseBlockProps,
-  EditorBlock,
-  useBlockChildrenBlockIds,
+  BlockFilterRule,
+  EditorChildren,
   useBlockEditor,
   useCurrentBlockId,
 } from "@timelish/builder";
@@ -13,11 +13,8 @@ import { DefaultHeadingLevel, HeadingProps } from "./schema";
 import { styles } from "./styles";
 import { getDefaults } from "./styles.default";
 
-const disable = {
-  disableMove: true,
-  disableDelete: true,
-  disableClone: true,
-  disableDrag: true,
+const allowOnly: BlockFilterRule = {
+  capabilities: ["inline"],
 };
 
 export function HeadingEditor({
@@ -29,7 +26,6 @@ export function HeadingEditor({
 
   const currentBlockId = useCurrentBlockId();
   const overlayProps = useBlockEditor(currentBlockId);
-  const contentId = useBlockChildrenBlockIds(currentBlockId, "props")?.[0];
 
   const className = useClassName();
   const defaults = getDefaults(level);
@@ -50,17 +46,11 @@ export function HeadingEditor({
         id={base?.id}
         {...overlayProps}
       >
-        {!!contentId && (
-          <EditorBlock
-            key={contentId}
-            blockId={contentId}
-            index={0}
-            {...disable}
-            parentBlockId={currentBlockId}
-            parentProperty="content"
-            allowedTypes="InlineContainer"
-          />
-        )}
+        <EditorChildren
+          blockId={currentBlockId}
+          property="props"
+          allow={allowOnly}
+        />
       </Element>
     </>
   );

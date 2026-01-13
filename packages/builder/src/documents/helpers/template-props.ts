@@ -7,6 +7,22 @@ const recursiveLoop = (data: any, modifier: (value: string) => string): any => {
     }
   } else if (typeof data === "object" && data !== null) {
     for (const key in data) {
+      // Check if the key is a children array and if it contains blocks
+      if (
+        key === "children" &&
+        data[key] &&
+        Array.isArray(data[key]) &&
+        data[key].length > 0 &&
+        typeof data[key][0] === "object" &&
+        "id" in data[key][0] &&
+        data[key][0].id &&
+        "type" in data[key][0] &&
+        "data" in data[key][0] &&
+        data[key][0].data
+      ) {
+        continue;
+      }
+
       if (data.hasOwnProperty(key)) {
         if (typeof data[key] === "string") {
           data[key] = modifier(data[key]);

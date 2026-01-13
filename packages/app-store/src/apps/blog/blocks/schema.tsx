@@ -1,0 +1,225 @@
+import { EditorDocumentBlocksDictionary } from "@timelish/builder";
+import { AllKeys } from "@timelish/i18n";
+import {
+  ArrowRight,
+  Calendar,
+  FileText,
+  Heading,
+  SquareSquare,
+} from "lucide-react";
+import { BlogAdminKeys, BlogAdminNamespace } from "../translations/types";
+import { BlogPostContainerConfiguration } from "./post-container/configuration";
+import { BlogPostContainerEditor } from "./post-container/editor";
+import {
+  BlogPostContainerPropsDefaults,
+  BlogPostContainerPropsSchema,
+} from "./post-container/schema";
+import { BlogPostContainerToolbar } from "./post-container/toolbar";
+import { BlogPostContentConfiguration } from "./post-content/configuration";
+import { BlogPostContentEditor } from "./post-content/editor";
+import {
+  BlogPostContentPropsDefaults,
+  BlogPostContentPropsSchema,
+} from "./post-content/schema";
+import { BlogPostNavigationButtonConfiguration } from "./post-navigation-button/configuration";
+import { BlogPostNavigationButtonEditor } from "./post-navigation-button/editor";
+import {
+  BlogPostNavigationButtonPropsDefaults,
+  BlogPostNavigationButtonPropsSchema,
+} from "./post-navigation-button/schema";
+import { BlogPostNavigationButtonToolbar } from "./post-navigation-button/toolbar";
+import { BlogPostPublishDateConfiguration } from "./post-publish-date/configuration";
+import { BlogPostPublishDateEditor } from "./post-publish-date/editor";
+import {
+  BlogPostPublishDatePropsDefaults,
+  BlogPostPublishDatePropsSchema,
+} from "./post-publish-date/schema";
+import { BlogPostTagConfiguration } from "./post-tag/configuration";
+import { BlogPostTagEditor } from "./post-tag/editor";
+import {
+  BlogPostTagPropsDefaults,
+  BlogPostTagPropsSchema,
+} from "./post-tag/schema";
+import { BlogPostTitleConfiguration } from "./post-title/configuration";
+import { BlogPostTitleEditor } from "./post-title/editor";
+import {
+  BlogPostTitlePropsDefaults,
+  BlogPostTitlePropsSchema,
+} from "./post-title/schema";
+import { BlogPostsContainerConfiguration } from "./posts-container/configuration";
+import { BlogPostsContainerEditor } from "./posts-container/editor";
+import {
+  BlogPostsContainerPropsDefaults,
+  BlogPostsContainerPropsSchema,
+} from "./posts-container/schema";
+import { BlogPostsContainerToolbar } from "./posts-container/toolbar";
+
+export const BlogBlocksSchema = {
+  BlogPostContainer: BlogPostContainerPropsSchema,
+  BlogPostTitle: BlogPostTitlePropsSchema,
+  BlogPostContent: BlogPostContentPropsSchema,
+  BlogPostTag: BlogPostTagPropsSchema,
+  BlogPostPublishDate: BlogPostPublishDatePropsSchema,
+  BlogPostsContainer: BlogPostsContainerPropsSchema,
+  BlogPostNavigationButton: BlogPostNavigationButtonPropsSchema,
+};
+
+export const BlogBlocksAllowedInFooter = {
+  BlogPostContainer: false,
+  BlogPostTitle: false,
+  BlogPostContent: false,
+  BlogPostTag: false,
+  BlogPostPublishDate: false,
+  BlogPostsContainer: false,
+  BlogPostNavigationButton: false,
+};
+
+export const BlogBlocksDefaultMetadata = (
+  appName: string,
+  appId: string,
+): Record<string, any> => ({
+  blogAppId: appId,
+});
+
+export const BlogEditors: EditorDocumentBlocksDictionary<
+  typeof BlogBlocksSchema
+> = {
+  BlogPostContainer: {
+    displayName:
+      "app_blog_admin.block.postContainer.displayName" satisfies AllKeys<
+        BlogAdminNamespace,
+        BlogAdminKeys
+      >,
+    icon: <FileText />,
+    Configuration: BlogPostContainerConfiguration,
+    Editor: BlogPostContainerEditor,
+    Toolbar: BlogPostContainerToolbar,
+    defaultValue: BlogPostContainerPropsDefaults,
+    category: "app_blog_admin.block.category.blog" satisfies AllKeys<
+      BlogAdminNamespace,
+      BlogAdminKeys
+    >,
+    capabilities: ["container", "post-provider"],
+    tags: ["container", "blog", "post-container"],
+  },
+  BlogPostTitle: {
+    displayName: "app_blog_admin.block.postTitle.displayName" satisfies AllKeys<
+      BlogAdminNamespace,
+      BlogAdminKeys
+    >,
+    icon: <Heading />,
+    Configuration: BlogPostTitleConfiguration,
+    Editor: BlogPostTitleEditor,
+    defaultValue: BlogPostTitlePropsDefaults,
+    category: "app_blog_admin.block.category.blog" satisfies AllKeys<
+      BlogAdminNamespace,
+      BlogAdminKeys
+    >,
+    capabilities: ["inline", "blog-post-title"],
+    tags: ["blog", "blog-post-title"],
+  },
+  BlogPostContent: {
+    displayName: "app_blog_admin.block.postContent.displayName" as any,
+    icon: <FileText />,
+    Configuration: BlogPostContentConfiguration,
+    Editor: BlogPostContentEditor,
+    defaultValue: BlogPostContentPropsDefaults,
+    category: "app_blog_admin.block.category.blog" satisfies AllKeys<
+      BlogAdminNamespace,
+      BlogAdminKeys
+    >,
+    capabilities: ["block", "blog-post-content"],
+    tags: ["blog", "blog-post-content"],
+  },
+  BlogPostTag: {
+    displayName: "app_blog_admin.block.postTag.displayName" satisfies AllKeys<
+      BlogAdminNamespace,
+      BlogAdminKeys
+    >,
+    icon: <SquareSquare />,
+    Configuration: BlogPostTagConfiguration,
+    Editor: BlogPostTagEditor,
+    defaultValue: BlogPostTagPropsDefaults,
+    category: "app_blog_admin.block.category.blog" satisfies AllKeys<
+      BlogAdminNamespace,
+      BlogAdminKeys
+    >,
+    capabilities: ["inline", "blog-post-tag", "link"],
+    tags: ["blog", "blog-post-tag", "link"],
+  },
+  BlogPostPublishDate: {
+    displayName:
+      "app_blog_admin.block.postPublishDate.displayName" satisfies AllKeys<
+        BlogAdminNamespace,
+        BlogAdminKeys
+      >,
+    icon: <Calendar />,
+    Configuration: BlogPostPublishDateConfiguration,
+    Editor: BlogPostPublishDateEditor,
+    defaultValue: BlogPostPublishDatePropsDefaults,
+    category: "app_blog_admin.block.category.blog" satisfies AllKeys<
+      BlogAdminNamespace,
+      BlogAdminKeys
+    >,
+    capabilities: ["inline", "blog-post-publish-date"],
+    tags: ["blog", "blog-post-publish-date"],
+  },
+  BlogPostsContainer: {
+    displayName:
+      "app_blog_admin.block.postsContainer.displayName" satisfies AllKeys<
+        BlogAdminNamespace,
+        BlogAdminKeys
+      >,
+    icon: <FileText />,
+    Configuration: BlogPostsContainerConfiguration,
+    Editor: BlogPostsContainerEditor,
+    Toolbar: BlogPostsContainerToolbar,
+    defaultValue: BlogPostsContainerPropsDefaults,
+    category: "app_blog_admin.block.category.blog" satisfies AllKeys<
+      BlogAdminNamespace,
+      BlogAdminKeys
+    >,
+    capabilities: ["container", "blog-posts-provider"],
+    tags: ["container", "blog", "blog-posts-container"],
+  },
+  BlogPostNavigationButton: {
+    displayName:
+      "app_blog_admin.block.postNavigationButton.displayName" satisfies AllKeys<
+        BlogAdminNamespace,
+        BlogAdminKeys
+      >,
+    icon: <ArrowRight />,
+    Configuration: BlogPostNavigationButtonConfiguration,
+    Editor: BlogPostNavigationButtonEditor,
+    Toolbar: BlogPostNavigationButtonToolbar,
+    defaultValue: BlogPostNavigationButtonPropsDefaults,
+    category: "app_blog_admin.block.category.blog" satisfies AllKeys<
+      BlogAdminNamespace,
+      BlogAdminKeys
+    >,
+    capabilities: ["button", "action", "link", "blog-post-navigation-button"],
+    tags: ["blog", "blog-post-navigation-button"],
+  },
+};
+
+type BlogBlocksType = {
+  [K in keyof typeof BlogBlocksSchema]: {
+    schema: (typeof BlogBlocksSchema)[K];
+    editor: (typeof BlogEditors)[K];
+    allowedInFooter: (typeof BlogBlocksAllowedInFooter)[K];
+    defaultMetadata: (appName: string, appId: string) => Record<string, any>;
+  };
+};
+
+export const BlogBlocks = Object.fromEntries(
+  Object.entries(BlogBlocksSchema).map(([key, schema]) => [
+    key,
+    {
+      schema,
+      editor: BlogEditors[key as keyof typeof BlogBlocksSchema],
+      allowedInFooter:
+        BlogBlocksAllowedInFooter[key as keyof typeof BlogBlocksSchema],
+      defaultMetadata: BlogBlocksDefaultMetadata,
+    },
+  ]),
+) as BlogBlocksType;

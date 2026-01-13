@@ -12,8 +12,7 @@ export const WaitlistPropsSchema = z.object({
 });
 
 export type WaitlistProps = z.infer<typeof WaitlistPropsSchema>;
-export type WaitlistReaderProps = BaseReaderBlockProps<any> &
-  WaitlistProps & { appId?: string };
+export type WaitlistReaderProps = BaseReaderBlockProps<any> & WaitlistProps;
 
 export const WaitlistPropsDefaults = {
   style: {},

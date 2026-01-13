@@ -1,4 +1,4 @@
-import { useI18n } from "@timelish/i18n";
+import { I18nRichText, useI18n } from "@timelish/i18n";
 import { PlateMarkdownEditor } from "@timelish/rte";
 import {
   BooleanSelect,
@@ -158,14 +158,10 @@ export const DuplicatesTab: React.FC<TabProps> = ({ form, disabled }) => {
                       "services.options.form.duplicateAppointmentCheck.message",
                     )}{" "}
                     <InfoTooltip>
-                      {t.rich(
-                        "services.options.form.duplicateAppointmentCheck.messageTooltip",
-                        {
-                          p: (chunks: any) => <p>{chunks}</p>,
-                          br: () => <br />,
-                          i: (chunks: any) => <em>{chunks}</em>,
-                        },
-                      )}
+                      <I18nRichText
+                        namespace="admin"
+                        text="services.options.form.duplicateAppointmentCheck.messageTooltip"
+                      />
                     </InfoTooltip>
                   </FormLabel>
                   <FormControl>
@@ -183,14 +179,15 @@ export const DuplicatesTab: React.FC<TabProps> = ({ form, disabled }) => {
                   <FormDescription>
                     <Collapsible>
                       <CollapsibleTrigger className="flex items-center gap-2 [&[data-state=open]_svg]:rotate-90">
-                        {t.rich(
-                          "services.options.form.duplicateAppointmentCheck.messageExamples.label",
-                          {
+                        <I18nRichText
+                          namespace="admin"
+                          text="services.options.form.duplicateAppointmentCheck.messageExamples.label"
+                          args={{
                             chevron: () => (
                               <ChevronRight className="w-4 h-4 transition-transform duration-200" />
                             ),
-                          },
-                        )}
+                          }}
+                        />
                       </CollapsibleTrigger>
                       <CollapsibleContent>
                         <ul className="list-disc list-inside space-y-2 pt-2 pl-4 italic">

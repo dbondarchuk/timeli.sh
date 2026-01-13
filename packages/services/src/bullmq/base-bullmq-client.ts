@@ -138,6 +138,7 @@ export abstract class BaseBullMQClient {
     const logger = this.loggerFactory("createWorker");
 
     const worker = new Worker(queueName, processor, {
+      ...this.config.defaultJobOptions,
       connection: this.redis,
       concurrency: 5,
       ...options,

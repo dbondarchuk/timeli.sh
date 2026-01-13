@@ -43,6 +43,8 @@ import { UrlScheduleProviderApp } from "./apps/url-schedule-provider/app";
 import { URL_SCHEDULE_PROVIDER_APP_NAME } from "./apps/url-schedule-provider/const";
 import { WaitlistNotificationsApp } from "./apps/waitlist-notifications/app";
 import { WAITLIST_NOTIFICATIONS_APP_NAME } from "./apps/waitlist-notifications/const";
+import { BlogApp } from "./apps/blog/app";
+import { BLOG_APP_NAME } from "./apps/blog/const";
 import { WaitlistApp } from "./apps/waitlist/app";
 import { WAITLIST_APP_NAME } from "./apps/waitlist/const";
 import { webhooksApp } from "./apps/webhooks/app";
@@ -74,6 +76,7 @@ export const AvailableApps: Record<string, App> = {
   [TEXT_MESSAGE_AUTO_REPLY_APP_NAME]: TextMessageAutoReplyApp,
   [TEXT_MESSAGE_RESENDER_APP_NAME]: TextMessageResenderApp,
   [PAYPAL_APP_NAME]: PaypalApp,
+  [BLOG_APP_NAME]: BlogApp,
   [WAITLIST_APP_NAME]: WaitlistApp,
   [WAITLIST_NOTIFICATIONS_APP_NAME]: WaitlistNotificationsApp,
   [WEBHOOKS_APP_NAME]: webhooksApp,
@@ -84,6 +87,7 @@ export const AvailableApps: Record<string, App> = {
   [ZOOM_APP_NAME]: ZoomApp,
 };
 
+export { BLOG_APP_NAME } from "./apps/blog/const";
 export { BUSY_EVENTS_APP_NAME } from "./apps/busy-events/const";
 export { CALDAV_APP_NAME } from "./apps/caldav/const";
 export { CARDDAV_APP_NAME } from "./apps/carddav/const";

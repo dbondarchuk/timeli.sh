@@ -1,13 +1,13 @@
 import { BaseReaderBlockProps, generateId } from "@timelish/builder";
 import { Prettify } from "@timelish/types";
 import * as z from "zod";
-import { InlineContainerPropsDefaults } from "../inline-container";
+import { InlineContainerPropsDefaults } from "../inline-container/schema";
 import { zStyles } from "./styles";
 
 export const HeadingPropsSchema = z.object({
   props: z
     .object({
-      children: z.array(z.any()).length(1),
+      children: z.array(z.any()),
       level: z.enum(["h1", "h2", "h3", "h4", "h5", "h6"]).optional().nullable(),
     })
     .optional()

@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  BlockFilterRule,
   EditorBlock,
   EditorChildren,
   useBlockChildrenBlockIds,
@@ -26,6 +27,10 @@ const disable = {
   disableDelete: true,
   disableClone: true,
   disableDrag: true,
+};
+
+const allowOnly: BlockFilterRule = {
+  capabilities: ["inline"],
 };
 
 export const AccordionItemEditor = ({
@@ -121,7 +126,7 @@ export const AccordionItemEditor = ({
                 index={0}
                 parentBlockId={currentBlock.id}
                 parentProperty="title"
-                allowedTypes="InlineContainer"
+                allow={allowOnly}
               />
             )}
           </div>

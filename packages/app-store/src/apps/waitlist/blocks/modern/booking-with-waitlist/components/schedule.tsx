@@ -40,7 +40,7 @@ export type ScheduleProps = {
   className?: string;
   id?: string;
   isEditor?: boolean;
-  waitlistAppId: string;
+  waitlistAppId?: string;
   isOnlyWaitlist: boolean;
   scrollToTop?: boolean;
   hideTitle?: boolean;
