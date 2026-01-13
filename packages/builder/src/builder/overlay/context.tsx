@@ -517,7 +517,7 @@ const OverlayLayer = () => {
   );
 
   return createPortal(
-    <div className="absolute inset-0 pointer-events-none z-10">
+    <div className="absolute inset-0 pointer-events-none z-[25]">
       {hoveredBlock && selectedId !== hoveredId && !isResizing && (
         <div
           className="absolute border border-blue-300"

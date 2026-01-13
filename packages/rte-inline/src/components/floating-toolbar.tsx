@@ -74,7 +74,7 @@ export const FloatingToolbar = forwardRef<HTMLDivElement, FloatingToolbarProps>(
     return (
       <Toolbar
         ref={ref}
-        className="absolute z-[15] animate-in fade-in-0 zoom-in-95"
+        className="absolute z-[30] animate-in fade-in-0 zoom-in-95"
         style={{
           left: `${adjustedPosition.left}px`,
           top: `${adjustedPosition.top}px`,
