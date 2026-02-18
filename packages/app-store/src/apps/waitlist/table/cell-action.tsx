@@ -15,6 +15,7 @@ import { useQueryState } from "nuqs";
 import { useState } from "react";
 
 import { useI18n } from "@timelish/i18n";
+import { SendCommunicationDialog } from "@timelish/ui-admin-kit";
 import { dismissWaitlistEntries } from "../actions";
 import { WaitlistEntry } from "../models";
 import {
@@ -22,7 +23,6 @@ import {
   waitlistAdminNamespace,
   WaitlistAdminNamespace,
 } from "../translations/types";
-import { SendCommunicationDialog } from "@timelish/ui-admin-kit";
 
 interface CellActionProps {
   waitlistEntry: WaitlistEntry;
@@ -94,6 +94,7 @@ export const CellAction: React.FC<CellActionProps> = ({
           <DropdownMenuItem asChild>
             <Link
               href={`/dashboard/waitlist/appointment/new?id=${waitlistEntry._id}`}
+              className="text-foreground"
             >
               <CalendarPlus className="size-3.5" />{" "}
               {t("table.actions.createAppointment")}

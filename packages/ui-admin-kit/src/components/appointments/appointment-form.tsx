@@ -691,7 +691,7 @@ export const AppointmentScheduleForm: React.FC<
                           loading || !!from?.customerId || !!propsCustomer
                         }
                         onValueChange={onCustomerChange}
-                        allowClear={!from && !propsCustomer}
+                        allowClear={!from?.customerId && !propsCustomer}
                       />
                     </FormControl>
                     <FormMessage />

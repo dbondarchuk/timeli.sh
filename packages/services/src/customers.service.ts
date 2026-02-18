@@ -358,6 +358,43 @@ export class CustomersService extends BaseService implements ICustomersService {
     return customer;
   }
 
+  public async findCustomerBySearchFields(
+    searches: { search: string; field: CustomerSearchField }[],
+  ): Promise<Customer | null> {
+    const logger = this.loggerFactory("findCustomerBySearchFields");
+    logger.debug({ searches }, "Finding customer by search fields");
+
+    const db = await getDbConnection();
+
+    const collection = db.collection<Customer>(CUSTOMERS_COLLECTION_NAME);
+    let $or: Filter<Customer>[] = [];
+    for (const { search, field } of searches) {
+      const $regex = new RegExp(escapeRegex(search), "i");
+      const queries = buildSearchQuery<Customer>(
+        { $regex },
+        field,
+        `known${field[0].toUpperCase()}${field.substring(1)}s` as Leaves<Customer>,
+      );
+      $or.push({ $or: queries });
+    }
+
+    const customer = await collection.findOne({
+      $or,
+      companyId: this.companyId,
+    });
+
+    if (customer) {
+      logger.debug(
+        { searches, customerId: customer._id },
+        "Customer found by search fields",
+      );
+    } else {
+      logger.debug({ searches }, "Customer not found by search fields");
+    }
+
+    return customer;
+  }
+
   public async createCustomer(
     customer: CustomerUpdateModel,
   ): Promise<Customer> {

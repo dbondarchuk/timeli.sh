@@ -41,6 +41,7 @@ export const PlateMarkdownEditor: React.FC<PlateMarkdownEditorProps> = ({
         onChange={({}) =>
           onChange?.(editor.api.markdown.serialize().replaceAll("<br>", "\n"))
         }
+        readOnly={disabled}
       >
         <EditorContainer usesAbsoluteUrl={usesAbsoluteUrl}>
           <Editor

@@ -2370,5 +2370,18 @@
     "convertedTo": {
       "appointment": "Запис"
     }
+  },
+  "customerSelector": {
+    "addNew": "Створити нового",
+    "dialog": {
+      "title": "Створити нового клієнта",
+      "description": "Введіть деталі нового клієнта",
+      "form": {
+        "name": "Ім'я",
+        "email": "Email",
+        "phone": "Телефон"
+      },
+      "confirm": "Створити"
+    }
   }
 }

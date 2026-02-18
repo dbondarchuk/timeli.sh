@@ -1,0 +1,425 @@
+{
+  "app": {
+    "displayName": "Forms",
+    "description": "Forms is a simple form builder that allows you to create forms and collect data from your users.",
+    "customerTab": {
+      "forms": "Forms"
+    },
+    "pages": {
+      "main": {
+        "title": "Forms",
+        "description": "Manage your forms and responses"
+      },
+      "new": {
+        "label": "New Form",
+        "title": "Create New Form",
+        "description": "Create a new form"
+      },
+      "edit": {
+        "title": "Edit Form",
+        "description": "Edit a form",
+        "notFound": "Form not found"
+      },
+      "responses": {
+        "title": "Form Responses",
+        "description": "View form responses",
+        "edit": {
+          "title": "Edit Response",
+          "description": "View or edit a form response"
+        },
+        "new": {
+          "title": "New Response",
+          "description": "Create a new form response"
+        }
+      }
+    }
+  },
+  "block": {
+    "category": "Forms",
+    "displayName": "Form",
+    "formsAppId": {
+      "label": "Forms app",
+      "helperText": "Select the Forms app that provides the form."
+    },
+    "form": {
+      "formId": {
+        "label": "Form"
+      },
+      "preview": "Form block (form will be displayed on the page)",
+      "selectForm": "Select a form to display",
+      "loadError": "Could not load form"
+    }
+  },
+  "forms": {
+    "table": {
+      "filters": {
+        "status": "Status",
+        "public": "Public",
+        "archived": "Archived"
+      },
+      "actions": {
+        "create": "Create Form",
+        "delete": "Delete Form",
+        "edit": "Edit Form",
+        "viewResponses": "Form Responses",
+        "archive": "Archive",
+        "unarchive": "Unarchive"
+      },
+      "archive": {
+        "title": "Archive form",
+        "description": "Archive form {name}? It will be hidden from your website and no new responses can be added.",
+        "confirm": "Archive"
+      },
+      "unarchive": {
+        "title": "Unarchive form",
+        "description": "Unarchive form {name}? It will be visible again and accept new responses.",
+        "confirm": "Unarchive"
+      },
+      "archiveSelected": {
+        "label": "Archive {count, plural, =1 {form} other {# forms}}",
+        "description": "Archive {count, plural, =1 {selected form} other {# selected forms}}? They will be hidden from your website and no new responses can be added.",
+        "confirm": "Archive"
+      },
+      "unarchiveSelected": {
+        "label": "Unarchive {count, plural, =1 {form} other {# forms}}",
+        "description": "Unarchive {count, plural, =1 {selected form} other {# selected forms}}? They will be visible again and accept new responses.",
+        "confirm": "Unarchive"
+      },
+      "delete": {
+        "title": "Delete Form",
+        "description": "Are you sure you want to delete form {name}? This action cannot be undone.",
+        "confirm": "Yes, delete",
+        "cancel": "No, keep"
+      },
+      "deleteSelected": {
+        "label": "Delete selected {count, plural, =1 {form} other {# forms}}",
+        "description": "Are you sure you want to delete {count, plural, =1 {selected form} other {# selected forms}}? This action cannot be undone.",
+        "confirm": "Delete {count, plural, =1 {selected form} other {# selected forms}}"
+      },
+      "toast": {
+        "delete": "Form {name} deleted successfully",
+        "deleteError": "Failed to delete form",
+        "formArchived": "Form {name} archived",
+        "formUnarchived": "Form {name} unarchived",
+        "formsArchived": "{count, plural, =1 {Form} other {# forms}} archived",
+        "formsUnarchived": "{count, plural, =1 {Form} other {# forms}} unarchived",
+        "archiveError": "Failed to archive form",
+        "unarchiveError": "Failed to unarchive form",
+        "formsDeleted": "{count, plural, =1 {Form} other {# forms}} deleted successfully"
+      },
+      "columns": {
+        "name": "Name",
+        "responsesCount": "Responses",
+        "createdAt": "Created At",
+        "lastResponse": "Last Response",
+        "noResponses": "No responses yet"
+      }
+    }
+  },
+  "responses": {
+    "table": {
+      "filters": {
+        "form": "Form",
+        "customer": "Customer"
+      },
+      "columns": {
+        "form": "Form",
+        "answersPreview": "Preview",
+        "previewTitle": "View full response",
+        "customer": "Customer",
+        "createdAt": "Submitted"
+      },
+      "actions": {
+        "create": "New Response",
+        "viewEdit": "View / Edit",
+        "reassignCustomer": "Reassign customer",
+        "delete": "Delete"
+      },
+      "delete": {
+        "title": "Delete Response",
+        "description": "Are you sure you want to delete this response?",
+        "confirm": "Yes, delete"
+      },
+      "reassign": {
+        "title": "Reassign customer",
+        "description": "Choose a customer to assign this response to. You can clear the selection to unassign.",
+        "cancel": "Cancel",
+        "confirm": "Reassign"
+      },
+      "reassignSelected": {
+        "label": "Reassign customer ({count, plural, =1 {# response} other {# responses}})",
+        "title": "Reassign customer for {count, plural, =1 {selected response} other {# selected responses}}",
+        "description": "Choose a customer to assign the selected responses to. You can clear to unassign.",
+        "cancel": "Cancel",
+        "confirm": "Reassign"
+      },
+      "deleteSelected": {
+        "label": "Delete selected {count, plural, =1 {response} other {# responses}}",
+        "description": "Are you sure you want to delete {count, plural, =1 {selected response} other {# selected responses}}? This action cannot be undone.",
+        "confirm": "Delete {count, plural, =1 {selected response} other {# selected responses}}"
+      },
+      "toast": {
+        "delete": "Response deleted",
+        "deleteError": "Failed to delete response",
+        "reassigned": "Customer reassigned",
+        "reassignError": "Failed to reassign customer",
+        "responsesDeleted": "{count, plural, =1 {Response} other {# responses}} deleted successfully",
+        "responsesReassigned": "{count, plural, =1 {Response} other {# responses}} reassigned successfully"
+      }
+    },
+    "edit": {
+      "title": "Edit Response",
+      "formLabel": "Form",
+      "answersTitle": "Answers",
+      "customerTitle": "Customer",
+      "customerLabel": "Assign to customer",
+      "customerRequired": "Please select a customer for this response.",
+      "customerRequiredNotice": "This form only accepts responses from identified participants. A customer must be assigned.",
+      "toast": {
+        "saved": "Response saved",
+        "error": "Failed to save"
+      },
+      "notFound": "Response not found"
+    },
+    "new": {
+      "title": "New Response",
+      "selectForm": "Select form",
+      "formLabel": "Form",
+      "selectPlaceholder": "Select…",
+      "submit": "Submit",
+      "toast": {
+        "created": "Response created",
+        "error": "Failed to create response"
+      }
+    },
+    "dialog": {
+      "cancel": "Cancel",
+      "continue": "Continue"
+    }
+  },
+  "form": {
+    "archivedNotice": "This form is archived. Only the name can be edited.",
+    "notifications": {
+      "enabled": {
+        "label": "Enable email notifications",
+        "description": "Send email notifications to the email address when a form is submitted"
+      },
+      "email": {
+        "label": "Email address",
+        "description": "Optional email address to send notifications to. If not provided, the default email address will be used"
+      }
+    },
+    "requireCustomerId": {
+      "label": "Restrict to identified participants",
+      "description": "Only allow submissions from people you've invited or who have an access link. Ideal for intake forms, applications, or any form that should not be filled by anonymous visitors."
+    },
+    "name": {
+      "label": "Form name",
+      "placeholder": "Form name"
+    },
+    "description": "Description",
+    "submit": "Submit",
+    "toasts": {
+      "changesSaved": "Form changes saved",
+      "requestError": "There was a problem with your request"
+    },
+    "fields": {
+      "title": "Fields",
+      "invalid": "Invalid",
+      "addNew": "Add new field",
+      "moveField": "Move field",
+      "removeField": "Remove field",
+      "deleteConfirmTitle": "Are you absolutely sure?",
+      "deleteConfirmDescription": "Are you sure you want to remove this field?",
+      "name": {
+        "label": "Field name",
+        "placeholder": "myField",
+        "description": "Unique ID of the field. Can contain only letter, digits, and underscore (_)"
+      },
+      "label": {
+        "label": "Field label",
+        "placeholder": "My Field",
+        "description": "Label that will be shown to the user"
+      },
+      "description": {
+        "label": "Field description",
+        "placeholder": "This is a description for the field",
+        "description": "Help text that will be shown to the user"
+      },
+      "type": {
+        "label": "Field type",
+        "placeholder": "Field type",
+        "description": "Type of the field",
+        "labels": {
+          "name": "Name",
+          "email": "Email",
+          "phone": "Phone",
+          "oneLine": "One line",
+          "multiLine": "Multi line",
+          "checkbox": "Checkbox",
+          "select": "Select",
+          "file": "File",
+          "radio": "Radio",
+          "multiSelect": "Multi select"
+        }
+      },
+      "required": {
+        "label": "Required",
+        "description": "Whether the field is required. If field has multiple choices, at least one selection is required"
+      },
+      "select": {
+        "options": {
+          "label": "Field options",
+          "placeholder": "Field options",
+          "moveOption": "Move option",
+          "option": "Option",
+          "removeOption": "Remove option",
+          "deleteConfirmTitle": "Are you absolutely sure?",
+          "deleteConfirmDescription": "Are you sure you want to remove this option?"
+        }
+      },
+      "multiSelect": {
+        "label": "Field multi select",
+        "placeholder": "Field multi select",
+        "minSelected": {
+          "label": "Minimum selected",
+          "description": "Optional minimum number of selected options.",
+          "placeholder": "0"
+        },
+        "maxSelected": {
+          "label": "Maximum selected",
+          "description": "Optional maximum number of selected options.",
+          "placeholder": "3"
+        },
+        "choices": "choices"
+      },
+      "file": {
+        "label": "Field file",
+        "placeholder": "Field file",
+        "maxSizeMb": {
+          "label": "Max file size (MB)",
+          "description": "Max allowed file size in megabytes",
+          "placeholder": "5"
+        },
+        "accept": {
+          "label": "Accepted file types",
+          "description": "Allowed file types for upload",
+          "placeholder": "image/*, video/*, audio/*"
+        }
+      },
+      "text": {
+        "characters": "characters",
+        "minLength": {
+          "label": "Minimum length",
+          "description": "Optional minimum length of the text.",
+          "placeholder": "0"
+        },
+        "maxLength": {
+          "label": "Maximum length",
+          "oneLineDescription": "Optional maximum length of the text. Default value is 64 characters.",
+          "multiLineDescription": "Optional maximum length of the text. Default value is 1024 characters.",
+          "placeholder": "64"
+        }
+      }
+    }
+  },
+  "handlers": {
+    "formResponseCreated": "Forms - Form response created"
+  },
+  "validation": {
+    "form": {
+      "fields": {
+        "name": {
+          "required": "Field name should be at least 2 characters long",
+          "max": "Field name should be no more than 64 characters long",
+          "invalid": "Field name should start with letter and contain only letters, digits, and underscore (_)"
+        },
+        "label": {
+          "required": "Label is required",
+          "max": "Label should not exceed 64 characters"
+        },
+        "description": {
+          "min": "Description should be at least 10 characters",
+          "max": "Description should be not more than 256 characters"
+        },
+        "type": {
+          "invalid": "Field type is required"
+        },
+        "options": {
+          "value": {
+            "min": "Option should be at least 2 characters",
+            "max": "Option should be not more than 256 characters"
+          },
+          "min": "At least 2 options are required",
+          "max": "Maximum 32 options are allowed",
+          "unique": "Options should be unique"
+        },
+        "text": {
+          "minLength": {
+            "invalid": "Minimum length should be a positive integer number"
+          },
+          "maxLength": {
+            "invalid": "Maximum length should be a positive integer number"
+          },
+          "minMaxRange": {
+            "invalid": "Minimum length should not be larger than maximum length value"
+          }
+        },
+        "oneLine": {
+          "maxLength": {
+            "max": "Maximum length should be not larger than 256 characters"
+          }
+        },
+        "multiLine": {
+          "maxLength": {
+            "max": "Maximum length should be not larger than 4096 characters"
+          }
+        },
+        "multiSelect": {
+          "minSelected": {
+            "invalid": "Should be a positive integer number"
+          },
+          "maxSelected": {
+            "invalid": "Should be a positive integer number",
+            "min": "Should be at least 1"
+          },
+          "minMaxRange": {
+            "invalid": "Minimum selected should not be larger than maximum selected value"
+          }
+        },
+        "file": {
+          "accept": {
+            "invalid": "Should be avalid MIME type",
+            "unique": "File types should be unique"
+          },
+          "maxSizeMb": {
+            "min": "File max size should be at least 1MB",
+            "max": "File max size should be not larger than 100MB"
+          }
+        },
+        "min": "Form should have at least 1 field",
+        "unique": "Form fields should have unique names and labels"
+      },
+      "notifications": {
+        "email": {
+          "invalid": "Should be a valid email address"
+        }
+      },
+      "name": {
+        "min": "Form name is required",
+        "max": "Form name should be not more than 64 characters",
+        "unique": "Form name should be unique"
+      }
+    },
+    "response": {
+      "formId": {
+        "required": "Form ID is required"
+      },
+      "answer": {
+        "fieldId": {
+          "required": " ID is required"
+        }
+      }
+    }
+  }
+}

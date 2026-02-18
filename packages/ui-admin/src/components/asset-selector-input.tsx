@@ -22,6 +22,7 @@ export type AssetSelectorInputProps = {
   accept?: string;
   fullUrl?: boolean;
   disabled?: boolean;
+  disabledInput?: boolean;
   placeholder?: string;
   className?: string;
 } & VariantProps<typeof inputVariants>;
@@ -33,6 +34,7 @@ export const AssetSelectorInput: React.FC<AssetSelectorInputProps> = ({
   accept,
   placeholder,
   disabled,
+  disabledInput,
   fullUrl,
   className,
   ...rest
@@ -59,7 +61,7 @@ export const AssetSelectorInput: React.FC<AssetSelectorInputProps> = ({
       />
       <InputGroupInput>
         <Input
-          disabled={disabled}
+          disabled={disabled || disabledInput}
           placeholder={placeholder}
           {...rest}
           className={InputGroupInputClasses()}

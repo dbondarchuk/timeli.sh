@@ -34,3 +34,33 @@ export const humanFileSize = (bytes: number, si = false, dp = 1) => {
 
 export const getAppointmentBucket = (id: string) => `appointments/${id}`;
 export const getCustomerBucket = (id: string) => `customers/${id}`;
+
+export const validateFileType = (file: File, acceptString: string) => {
+  if (!acceptString) {
+    return true; // No accept attribute specified, so all files are technically "accepted"
+  }
+
+  const acceptedTypes = acceptString.replace(/\s/g, "").split(",");
+
+  // Check if any accepted type matches the file's type or extension
+  return acceptedTypes.some((accept) => {
+    // Escape special characters for regex, then replace '*' with '.*'
+    const regex = new RegExp(
+      accept.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&").replace("\\*", ".*"),
+    );
+
+    // Check if the file's MIME type matches the pattern
+    if (regex.test(file.type)) {
+      return true;
+    }
+
+    // Also check if the file's extension matches if an extension was provided
+    if (accept.startsWith(".")) {
+      const fileExtension = file.name.split(".").pop()?.toLowerCase();
+      const acceptedExtension = accept.substring(1).toLowerCase();
+      return fileExtension === acceptedExtension;
+    }
+
+    return false;
+  });
+};

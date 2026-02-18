@@ -15,6 +15,8 @@ import { WAITLIST_APP_NAME } from "./apps/waitlist/const";
 import { WaitlistMenuItems } from "./apps/waitlist/menu-items";
 import { WEEKLY_SCHEDULE_APP_NAME } from "./apps/weekly-schedule/const";
 import { WeeklyScheduleMenuItems } from "./apps/weekly-schedule/menu-items";
+import { FORMS_APP_NAME } from "./apps/forms/const";
+import { FormsMenuItems } from "./apps/forms/menu-items";
 
 export const AppMenuItems: Record<string, AppMenuItem[]> = {
   [BLOG_APP_NAME]: BlogMenuItems,
@@ -26,4 +28,5 @@ export const AppMenuItems: Record<string, AppMenuItem[]> = {
   [SMTP_APP_NAME]: SmtpMenuItems,
   [WEEKLY_SCHEDULE_APP_NAME]: WeeklyScheduleMenuItems,
   [SCHEDULED_NOTIFICATIONS_APP_NAME]: ScheduledNotificationsMenuItems,
+  [FORMS_APP_NAME]: FormsMenuItems,
 };

@@ -33,6 +33,7 @@ export interface IConnectedAppsService {
   ): Promise<Response | undefined>;
   processRequest(appId: string, data: any): Promise<any>;
   processStaticRequest(appName: string, data: any): Promise<any>;
+  processFormRequest(appId: string, formData: FormData): Promise<any>;
   getAppStatus(appId: string): Promise<ConnectedApp>;
   getApps(): Promise<ConnectedApp[]>;
   getAppsByScope(...scope: AppScope[]): Promise<ConnectedApp[]>;

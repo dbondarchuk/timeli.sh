@@ -94,7 +94,10 @@ export const CellAction: React.FC<CellActionProps> = ({ asset }) => {
           </DropdownMenuLabel>
 
           <DropdownMenuItem asChild>
-            <Link href={`/dashboard/assets/${asset._id}`}>
+            <Link
+              href={`/dashboard/assets/${asset._id}`}
+              className="text-foreground"
+            >
               <Edit className="size-3.5" /> {t("assets.table.actions.update")}
             </Link>
           </DropdownMenuItem>
@@ -112,7 +115,11 @@ export const CellAction: React.FC<CellActionProps> = ({ asset }) => {
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
-            <Link href={`/assets/${asset.filename}`} target="_blank">
+            <Link
+              href={`/assets/${asset.filename}`}
+              target="_blank"
+              className="text-foreground"
+            >
               <Download className="size-3.5" />{" "}
               {t("assets.table.actions.download")}
             </Link>

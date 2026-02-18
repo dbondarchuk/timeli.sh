@@ -210,7 +210,7 @@ export const ComboboxTrigger = React.forwardRef<
         {...props}
         ref={ref}
         className={cn(
-          "justify-between flex-grow min-w-0",
+          "justify-between flex-grow min-w-0 flex-shrink",
           allowClear ? "rounded-r-none" : "",
         )}
       >

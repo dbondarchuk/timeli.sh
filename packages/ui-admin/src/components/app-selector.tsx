@@ -149,7 +149,7 @@ export const AppSelector: React.FC<AppSelectorProps> = ({
       allowClear={allowClear}
       size={size}
       disabled={disabled || isLoading}
-      className={cn("flex font-normal text-base max-w-full", className)}
+      className={cn("flex font-normal text-base max-w-full min-w-0", className)}
       values={appValues(apps)}
       searchLabel={
         isLoading

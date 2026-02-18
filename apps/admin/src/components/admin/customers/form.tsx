@@ -36,6 +36,7 @@ import {
   PhoneInput,
   Textarea,
   toastPromise,
+  useDebounceCacheFn,
 } from "@timelish/ui";
 import { AssetSelectorDialog, SaveButton } from "@timelish/ui-admin";
 import { PlusCircle, Trash } from "lucide-react";
@@ -50,13 +51,13 @@ export const CustomerForm: React.FC<{
 }> = ({ initialData }) => {
   const t = useI18n("admin");
 
+  const customerUniqueCheck = useDebounceCacheFn(
+    adminApi.customers.checkCustomerUniqueEmailAndPhone,
+    300,
+  );
+
   const formSchema = getCustomerSchemaWithUniqueCheck(
-    (emails, phones) =>
-      adminApi.customers.checkCustomerUniqueEmailAndPhone(
-        emails,
-        phones,
-        initialData?._id,
-      ),
+    (emails, phones) => customerUniqueCheck(emails, phones, initialData?._id),
     "customers.emailAlreadyExists",
     "customers.phoneAlreadyExists",
   );

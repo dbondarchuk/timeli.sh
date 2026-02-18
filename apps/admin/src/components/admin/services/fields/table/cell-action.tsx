@@ -70,14 +70,20 @@ export const CellAction: React.FC<CellActionProps> = ({ field }) => {
             {t("services.fields.table.cellAction.actions")}
           </DropdownMenuLabel>
           <DropdownMenuItem asChild>
-            <Link href={`/dashboard/services/fields/new?from=${field._id}`}>
+            <Link
+              href={`/dashboard/services/fields/new?from=${field._id}`}
+              className="text-foreground"
+            >
               <Copy className="size-3.5" />{" "}
               {t("services.fields.table.cellAction.clone")}
             </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
-            <Link href={`/dashboard/services/fields/${field._id}`}>
+            <Link
+              href={`/dashboard/services/fields/${field._id}`}
+              className="text-foreground"
+            >
               <Edit className="size-3.5" />{" "}
               {t("services.fields.table.cellAction.update")}
             </Link>

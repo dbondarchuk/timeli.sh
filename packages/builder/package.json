@@ -31,7 +31,7 @@
     "@timelish/ui": "*",
     "@timelish/ui-admin": "*",
     "framer-motion": "^12.23.12",
-    "lucide-react": "^0.525.0",
+    "lucide-react": "^0.555.0",
     "react-dom": "19.0.0"
   }
 }

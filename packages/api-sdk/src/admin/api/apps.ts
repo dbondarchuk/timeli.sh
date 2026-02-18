@@ -87,7 +87,10 @@ export const getAppLoginUrl = async (appId: string) => {
   return data;
 };
 
-export const processRequest = async (appId: string, data: any) => {
+export const processRequest = async <TResponse extends any = any>(
+  appId: string,
+  data: any,
+) => {
   console.debug("Processing app request", {
     appId,
     hasData: !!data,
@@ -98,7 +101,7 @@ export const processRequest = async (appId: string, data: any) => {
     body: JSON.stringify(data),
   });
 
-  const result = await response.json<any>();
+  const result = await response.json<TResponse>();
   console.debug("App request processed", {
     appId,
     hasData: !!data,
@@ -107,7 +110,10 @@ export const processRequest = async (appId: string, data: any) => {
   return result;
 };
 
-export const processStaticRequest = async (appName: string, data: any) => {
+export const processStaticRequest = async <TResponse extends any = any>(
+  appName: string,
+  data: any,
+) => {
   console.debug("Processing static app request", {
     appName,
     hasData: !!data,
@@ -118,10 +124,33 @@ export const processStaticRequest = async (appName: string, data: any) => {
     body: JSON.stringify(data),
   });
 
-  const result = await response.json<any>();
+  const result = await response.json<TResponse>();
   console.debug("Static app request processed", {
     appName,
     hasData: !!data,
+  });
+
+  return result;
+};
+
+export const processFormRequest = async <TResponse extends any = any>(
+  appId: string,
+  formData: FormData,
+) => {
+  console.debug("Processing form app request", {
+    appId,
+    hasData: !!formData,
+  });
+
+  const response = await fetchAdminApi(`/apps/${appId}/process/form`, {
+    method: "POST",
+    body: formData,
+  });
+
+  const result = await response.json<TResponse>();
+  console.debug("Form app request processed", {
+    appId,
+    hasData: !!formData,
   });
 
   return result;

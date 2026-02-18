@@ -9,11 +9,13 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import { SortableContext } from "@dnd-kit/sortable";
+import { AllKeys, useI18n } from "@timelish/i18n";
 import {
   Button,
   Card,
   CardContent,
   CardHeader,
+  cn,
   ScrollArea,
 } from "@timelish/ui";
 import { cva } from "class-variance-authority";
@@ -30,6 +32,7 @@ export type SortableProps = {
   allCollapsed?: boolean;
   collapse?: () => void;
   className?: string;
+  invalid?: boolean | { isInvalid: boolean; message?: string | AllKeys };
 };
 
 export function Sortable({
@@ -42,8 +45,10 @@ export function Sortable({
   onSort,
   onAdd,
   className,
+  invalid,
 }: SortableProps) {
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
+  const t = useI18n();
 
   const variants = cva(
     "h-fit max-h-[75vh] max-w-full bg-card flex flex-col snap-center w-full",
@@ -70,11 +75,30 @@ export function Sortable({
     onSort(activeId.toString(), overId.toString());
   }
 
+  const invalidMessageBase =
+    typeof invalid === "object" ? invalid.message : undefined;
+
+  const invalidMessage = invalidMessageBase
+    ? t.has(invalidMessageBase as AllKeys)
+      ? t(invalidMessageBase as AllKeys)
+      : invalidMessageBase
+    : undefined;
+
+  const isInvalid = typeof invalid === "object" ? invalid.isInvalid : invalid;
+
   return (
     <Card className={variants({ className })}>
       <CardHeader className="justify-between flex flex-row items-center border-b p-4 text-left font-semibold space-y-0">
         <div className="hidden md:block">&nbsp;</div>
-        {title}
+        <div
+          className={cn(
+            "flex flex-col gap-1 text-center",
+            isInvalid ? "text-destructive" : "",
+          )}
+        >
+          <div>{title}</div>
+          {invalidMessage && <div className="text-xs">{invalidMessage}</div>}
+        </div>
         <div className="flex flex-row gap-2 items-center">
           {collapse && (
             <Button

@@ -38,6 +38,7 @@ type BaseComboboAsyncProps = {
   id?: string;
   loader?: React.ReactNode;
   size?: ButtonProps["size"];
+  addNewItem?: React.ComponentType<{ onCreated: (value: string) => void }>;
 };
 
 type ClearableComboboAsyncProps = BaseComboboAsyncProps & {
@@ -69,6 +70,7 @@ export const ComboboxAsync: React.FC<ComboboAsyncProps> = ({
       <Loader />
     </div>
   ),
+  addNewItem: AddNewItem,
   ...rest
 }) => {
   const [open, setOpen] = React.useState(false);
@@ -168,6 +170,16 @@ export const ComboboxAsync: React.FC<ComboboAsyncProps> = ({
               </CommandEmpty>
             ) : (
               <CommandGroup>
+                {AddNewItem && (
+                  <CommandItem>
+                    <AddNewItem
+                      onCreated={(value) => {
+                        onChange(value);
+                        setOpen(false);
+                      }}
+                    />
+                  </CommandItem>
+                )}
                 {items.map((item, index) => (
                   <CommandItem
                     key={`${item.value}-${index}`}

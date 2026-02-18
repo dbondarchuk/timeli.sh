@@ -3,8 +3,10 @@ import { WithTotal } from "@timelish/types";
 import {
   BlogPost,
   BlogPostUpdateModel,
+  CheckBlogPostSlugUniqueActionType,
   CreateBlogPostActionType,
   DeleteBlogPostActionType,
+  DeleteSelectedBlogPostsActionType,
   GetBlogPostActionType,
   GetBlogPostsActionType,
   UpdateBlogPostActionType,
@@ -138,6 +140,56 @@ export async function deleteBlogPost(appId: string, id: string) {
     logger.error(
       { appId, error: error?.message || error?.toString() },
       "Error deleting blog post",
+    );
+    throw error;
+  }
+}
+
+export async function deleteSelectedBlogPosts(appId: string, ids: string[]) {
+  const logger = loggerFactory("deleteSelectedBlogPosts");
+  logger.debug({ appId, ids }, "Deleting blog posts");
+
+  try {
+    const result = await adminApi.apps.processRequest(appId, {
+      type: DeleteSelectedBlogPostsActionType,
+      ids,
+    });
+
+    logger.info({ appId, ids }, "Successfully deleted blog posts");
+    return result;
+  } catch (error: any) {
+    logger.error(
+      { appId, error: error?.message || error?.toString() },
+      "Error deleting blog posts",
+    );
+    throw error;
+  }
+}
+
+export async function checkBlogPostSlugUnique(
+  appId: string,
+  slug: string,
+  id?: string,
+) {
+  const logger = loggerFactory("checkBlogPostSlugUnique");
+  logger.debug({ appId, slug, id }, "Checking blog post slug uniqueness");
+
+  try {
+    const result = await adminApi.apps.processRequest(appId, {
+      type: CheckBlogPostSlugUniqueActionType,
+      slug,
+      id,
+    });
+
+    logger.info(
+      { appId, slug, id },
+      "Successfully checked blog post slug uniqueness",
+    );
+    return result;
+  } catch (error: any) {
+    logger.error(
+      { appId, error: error?.message || error?.toString() },
+      "Error checking blog post slug uniqueness",
     );
     throw error;
   }

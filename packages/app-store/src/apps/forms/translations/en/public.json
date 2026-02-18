@@ -1,0 +1,67 @@
+{
+  "block": {
+    "customerAccess": {
+      "label": "Your access code",
+      "description": "Enter the access code from your invitation, or open this form using the link we might have sent you.",
+      "placeholder": "Access code",
+      "readonlyFromLink": "You're submitting as an invited participant.",
+      "required": "Please enter your access code or use the link if sent you one."
+    },
+    "formNotFound": {
+      "title": "Form not available",
+      "description": "This form is no longer available or has been archived."
+    },
+    "formSubmit": {
+      "submit": "Submit",
+      "submitting": "Submitting…",
+      "success": "Thank you! Your response has been submitted.",
+      "error": "Something went wrong. Please try again.",
+      "successScreen": {
+        "title": "Thank you",
+        "description": "Your response has been received."
+      }
+    }
+  },
+  "validation": {
+    "fields": {
+      "customerAccess": {
+        "required": "Please enter your access code or use the link if sent you one.",
+        "invalid": "Invalid access code"
+      },
+      "required": "This field is required",
+      "minLength": "This field must be at least {length} characters long",
+      "maxLength": "This field must be less than {length} characters long",
+      "email": { "invalid": "Invalid email address" },
+      "name": {
+        "min": "Name must be at least 2 characters long",
+        "max": "Name must be less than 64 characters long"
+      },
+      "checkbox": { "required": "This field must be checked" },
+      "select": {
+        "required": "This field must have at least one option selected",
+        "unknownOption": "Invalid option"
+      },
+      "multiSelect": {
+        "unique": "Options must be unique",
+        "required": "This field must have at least one option selected",
+        "unknownOption": "Invalid option",
+        "minSelected": "This field must have at least {minSelected} options selected",
+        "maxSelected": "This field must have at most {maxSelected} options selected"
+      },
+      "file": {
+        "required": "This field is required",
+        "type": "Invalid file type",
+        "maxSize": "File size must be less than {maxSizeMb} MB",
+        "accept": "Invalid file type"
+      }
+    }
+  },
+  "responses": {
+    "fields": {
+      "select": {
+        "noneOption": "None",
+        "placeholder": "Select an option"
+      }
+    }
+  }
+}

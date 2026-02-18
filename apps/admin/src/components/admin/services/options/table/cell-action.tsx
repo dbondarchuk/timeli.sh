@@ -76,7 +76,10 @@ export const CellAction: React.FC<CellActionProps> = ({ option }) => {
             {t("services.options.table.columns.cellAction.actions")}
           </DropdownMenuLabel>
           <DropdownMenuItem asChild>
-            <Link href={`/dashboard/services/options/new?from=${option._id}`}>
+            <Link
+              href={`/dashboard/services/options/new?from=${option._id}`}
+              className="text-foreground"
+            >
               <Copy className="size-3.5" />{" "}
               {t("services.options.table.columns.cellAction.clone")}
             </Link>
@@ -84,7 +87,10 @@ export const CellAction: React.FC<CellActionProps> = ({ option }) => {
           <DropdownMenuSeparator />
 
           <DropdownMenuItem asChild>
-            <Link href={`/dashboard/services/options/${option._id}`}>
+            <Link
+              href={`/dashboard/services/options/${option._id}`}
+              className="text-foreground"
+            >
               <Edit className="size-3.5" />{" "}
               {t("services.options.table.columns.cellAction.update")}
             </Link>

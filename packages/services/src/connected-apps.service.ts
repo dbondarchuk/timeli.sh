@@ -399,6 +399,31 @@ export class ConnectedAppsService
     return await appService.processStaticRequest(data);
   }
 
+  public async processFormRequest(
+    appId: string,
+    formData: FormData,
+  ): Promise<any> {
+    const logger = this.loggerFactory("processFormRequest");
+    logger.debug({ appId, formData }, "Processing form request");
+    const app = await this.getApp(appId);
+    const appService = AvailableAppServices[app.name](
+      this.getAppServiceProps(appId),
+    );
+
+    if (!appService.processFormRequest) {
+      logger.error(
+        { appId, appName: app.name },
+        "App does not implement processFormRequest",
+      );
+      throw new Error(`App ${app.name} does not implement processFormRequest`);
+    }
+
+    const result = await appService.processFormRequest(app, formData);
+
+    logger.debug({ appId }, "Returning form request response");
+    return result;
+  }
+
   public async getAppStatus(appId: string): Promise<ConnectedApp> {
     const logger = this.loggerFactory("getAppStatus");
     logger.debug({ appId }, "Getting app status");

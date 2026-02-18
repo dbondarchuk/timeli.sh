@@ -20,3 +20,23 @@ export type DashboardTabInjectorApp<
     },
   ];
 };
+
+export type CustomerTabInjectorApp<
+  T extends I18nNamespaces = I18nNamespaces,
+  CustomKeys extends string | undefined = undefined,
+> = {
+  items: [
+    {
+      order: number;
+      href: string;
+      label: AllKeys<T, CustomKeys>;
+      scrollable?: boolean;
+      view: (props: {
+        props: IConnectedAppProps;
+        appId: string;
+        customerId: string;
+        searchParams: { [key: string]: string | string[] | undefined };
+      }) => ReactNode;
+    },
+  ];
+};

@@ -53,6 +53,8 @@ import { WeeklyScheduleApp } from "./apps/weekly-schedule/app";
 import { WEEKLY_SCHEDULE_APP_NAME } from "./apps/weekly-schedule/const";
 import { ZoomApp } from "./apps/zoom/app";
 import { ZOOM_APP_NAME } from "./apps/zoom/const";
+import { FormsApp } from "./apps/forms/app";
+import { FORMS_APP_NAME } from "./apps/forms/const";
 
 export const AvailableApps: Record<string, App> = {
   [OUTLOOK_APP_NAME]: OutlookApp,
@@ -85,6 +87,7 @@ export const AvailableApps: Record<string, App> = {
   [URL_BUSY_EVENTS_APP_NAME]: UrlBusyEventsApp,
   [URL_SCHEDULE_PROVIDER_APP_NAME]: UrlScheduleProviderApp,
   [ZOOM_APP_NAME]: ZoomApp,
+  [FORMS_APP_NAME]: FormsApp,
 };
 
 export { BLOG_APP_NAME } from "./apps/blog/const";
@@ -116,3 +119,4 @@ export { WAITLIST_APP_NAME } from "./apps/waitlist/const";
 export { WEBHOOKS_APP_NAME } from "./apps/webhooks/const";
 export { WEEKLY_SCHEDULE_APP_NAME } from "./apps/weekly-schedule/const";
 export { ZOOM_APP_NAME } from "./apps/zoom/const";
+export { FORMS_APP_NAME } from "./apps/forms/const";
