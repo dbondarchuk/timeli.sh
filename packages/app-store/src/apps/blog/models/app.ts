@@ -41,6 +41,20 @@ export type DeleteBlogPostAction = {
 
 export const DeleteBlogPostActionType = "delete-blog-post" as const;
 
+export type DeleteSelectedBlogPostsAction = {
+  ids: string[];
+};
+
+export const DeleteSelectedBlogPostsActionType = "delete-blog-posts" as const;
+
+export type CheckBlogPostSlugUniqueAction = {
+  slug: string;
+  id?: string;
+};
+
+export const CheckBlogPostSlugUniqueActionType =
+  "check-blog-post-slug-unique" as const;
+
 export type GetBlogTagsAction = {
   sortBy?: "alphabetical" | "count";
   sortOrder?: "asc" | "desc";
@@ -70,6 +84,12 @@ export type RequestAction =
   | ({
       type: typeof DeleteBlogPostActionType;
     } & DeleteBlogPostAction)
+  | ({
+      type: typeof DeleteSelectedBlogPostsActionType;
+    } & DeleteSelectedBlogPostsAction)
+  | ({
+      type: typeof CheckBlogPostSlugUniqueActionType;
+    } & CheckBlogPostSlugUniqueAction)
   | ({
       type: typeof GetBlogTagsActionType;
     } & GetBlogTagsAction)

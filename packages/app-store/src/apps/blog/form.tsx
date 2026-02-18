@@ -18,16 +18,26 @@ import {
   TagInput,
   toastPromise,
   use12HourFormat,
+  useDebounceCacheFn,
 } from "@timelish/ui";
 import { SaveButton } from "@timelish/ui-admin";
 import { useRouter } from "next/navigation";
 import React, { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { createBlogPost, updateBlogPost } from "./actions";
-import { BlogPost } from "./models";
-import { blogPostSchema, blogPostTagSchema } from "./models/blog-post";
 import {
+  checkBlogPostSlugUnique,
+  createBlogPost,
+  updateBlogPost,
+} from "./actions";
+import { BlogPost } from "./models";
+import {
+  blogPostSchema,
+  blogPostTagSchema,
+  getBlogPostSchemaWithUniqueCheck,
+} from "./models/blog-post";
+import {
+  BlogAdminAllKeys,
   BlogAdminKeys,
   BlogAdminNamespace,
   blogAdminNamespace,
@@ -55,8 +65,22 @@ export const BlogPostForm: React.FC<{
   const [slugManuallyChanged, setSlugManuallyChanged] = useState(false);
   const router = useRouter();
 
-  const form = useForm<z.infer<typeof blogPostSchema>>({
-    resolver: zodResolver(blogPostSchema),
+  const cachedUniqueSlugCheck = useDebounceCacheFn(
+    checkBlogPostSlugUnique,
+    300,
+  );
+
+  const formSchema = useMemo(
+    () =>
+      getBlogPostSchemaWithUniqueCheck(
+        (slug) => cachedUniqueSlugCheck(appId, slug, initialData?._id),
+        "app_blog_admin.validation.post.slug.unique" satisfies BlogAdminAllKeys,
+      ),
+    [cachedUniqueSlugCheck, appId, initialData?._id],
+  );
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
     mode: "all",
     reValidateMode: "onChange",
     defaultValues: initialData || {

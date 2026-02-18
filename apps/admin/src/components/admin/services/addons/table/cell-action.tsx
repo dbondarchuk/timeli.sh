@@ -70,14 +70,20 @@ export const CellAction: React.FC<CellActionProps> = ({ addon }) => {
             {t("services.addons.table.cellAction.actions")}
           </DropdownMenuLabel>
           <DropdownMenuItem asChild>
-            <Link href={`/dashboard/services/addons/new?from=${addon._id}`}>
+            <Link
+              href={`/dashboard/services/addons/new?from=${addon._id}`}
+              className="text-foreground"
+            >
               <Copy className="size-3.5" />{" "}
               {t("services.addons.table.cellAction.clone")}
             </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
-            <Link href={`/dashboard/services/addons/${addon._id}`}>
+            <Link
+              href={`/dashboard/services/addons/${addon._id}`}
+              className="text-foreground"
+            >
               <Edit className="size-3.5" />{" "}
               {t("services.addons.table.cellAction.update")}
             </Link>

@@ -69,7 +69,10 @@ export const CellAction: React.FC<CellActionProps> = ({ customer }) => {
             {t("customers.table.actions.actions")}
           </DropdownMenuLabel>
           <DropdownMenuItem asChild>
-            <Link href={`/dashboard/customers/${customer._id}`}>
+            <Link
+              href={`/dashboard/customers/${customer._id}`}
+              className="text-foreground"
+            >
               <Edit className="size-3.5" /> {t("customers.table.actions.edit")}
             </Link>
           </DropdownMenuItem>

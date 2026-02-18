@@ -1,9 +1,41 @@
+"use client";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { adminApi } from "@timelish/api-sdk";
 import { useI18n } from "@timelish/i18n";
-import { CustomerListModel } from "@timelish/types";
-import { cn, ComboboxAsync, IComboboxItem, Skeleton } from "@timelish/ui";
-// import Image from "next/image";
+import {
+  CustomerListModel,
+  getCustomerSchemaWithUniqueCheck,
+} from "@timelish/types";
+import {
+  Button,
+  cn,
+  ComboboxAsync,
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  IComboboxItem,
+  Input,
+  PhoneInput,
+  Skeleton,
+  Spinner,
+  toastPromise,
+  useDebounceCacheFn,
+} from "@timelish/ui";
+import { PlusCircle } from "lucide-react";
 import React from "react";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 
 const CustomerShortLabel: React.FC<{
   customer: CustomerListModel;
@@ -60,6 +92,153 @@ export type CustomerSelectorProps =
   | NonClearableCustomerSelectorProps
   | ClearableCustomerSelectorProps;
 
+const AddNewCustomerItem: React.FC<{ onCreated: (value: string) => void }> = ({
+  onCreated,
+}) => {
+  const [open, setOpen] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
+  const t = useI18n("admin");
+
+  const customerUniqueCheck = useDebounceCacheFn(
+    adminApi.customers.checkCustomerUniqueEmailAndPhone,
+    300,
+  );
+
+  const formSchema = getCustomerSchemaWithUniqueCheck(
+    (emails, phones) => customerUniqueCheck(emails, phones),
+    "customers.emailAlreadyExists",
+    "customers.phoneAlreadyExists",
+  );
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    mode: "all",
+    reValidateMode: "onChange",
+    defaultValues: {
+      name: "",
+      email: "",
+      phone: "",
+      knownNames: [],
+      knownEmails: [],
+      knownPhones: [],
+      requireDeposit: "inherit",
+    },
+  });
+
+  const isValid = form.formState.isValid;
+
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    setLoading(true);
+    try {
+      const fn = async () => {
+        const customer = await adminApi.customers.createCustomer(data);
+        onCreated(customer._id);
+      };
+      await toastPromise(fn(), {
+        success: t("customers.toasts.customerCreated"),
+        error: t("common.toasts.error"),
+      });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="w-full flex flex-row items-center gap-2 justify-start"
+        >
+          <PlusCircle className="ml-4 w-5 h-5" /> {t("customerSelector.addNew")}
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{t("customerSelector.dialog.title")}</DialogTitle>
+          <DialogDescription>
+            {t("customerSelector.dialog.description")}
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="flex flex-col gap-2">
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="flex flex-col gap-2"
+            >
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      {t("customerSelector.dialog.form.name")}
+                    </FormLabel>
+                    <FormControl>
+                      <Input {...field} disabled={loading} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      {t("customerSelector.dialog.form.email")}
+                    </FormLabel>
+                    <FormControl>
+                      <Input {...field} disabled={loading} type="email" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      {t("customerSelector.dialog.form.phone")}
+                    </FormLabel>
+                    <FormControl>
+                      <PhoneInput
+                        label={t("customerSelector.dialog.form.phone")}
+                        {...field}
+                        disabled={loading}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </form>
+          </Form>
+        </div>
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button variant="secondary">{t("common.buttons.close")}</Button>
+          </DialogClose>
+          <Button
+            disabled={loading || !isValid}
+            onClick={form.handleSubmit(onSubmit)}
+          >
+            {loading ? <Spinner /> : <PlusCircle />}{" "}
+            {t("customerSelector.dialog.confirm")}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
 export const CustomerSelector: React.FC<CustomerSelectorProps> = ({
   disabled,
   className,
@@ -115,12 +294,13 @@ export const CustomerSelector: React.FC<CustomerSelectorProps> = ({
       // @ts-ignore Allow clear passthrough
       onChange={onItemSelect}
       disabled={disabled}
-      className={cn("font-normal text-base max-w-full grid", className)}
+      className={cn("flex font-normal text-base max-w-full min-w-0", className)}
       placeholder={t("customerSelector.placeholder")}
       value={value}
       allowClear={allowClear}
       fetchItems={getCustomers}
       loader={<CustomerLoader />}
+      addNewItem={AddNewCustomerItem}
     />
   );
 };

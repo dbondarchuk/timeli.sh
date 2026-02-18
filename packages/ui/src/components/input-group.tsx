@@ -41,12 +41,7 @@ export const InputGroupSuffixClasses = cva(
 );
 
 export const InputGroupInputClasses = cva(
-  [
-    "rounded-r-none",
-    "focus:ring-0",
-    "focus-visible:ring-0",
-    "focus-visible:ring-offset-0",
-  ],
+  ["focus:ring-0", "focus-visible:ring-0", "focus-visible:ring-offset-0"],
   {
     variants: {
       variant: {

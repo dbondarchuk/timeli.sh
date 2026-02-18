@@ -21,8 +21,14 @@
       "cancel": "Cancel",
       "action": "Delete"
     },
+    "deleteSelected": {
+      "label": "Delete selected {count, plural, =1 {blog post} other {# blog posts}}",
+      "description": "Are you sure you want to delete {count, plural, =1 {selected blog post} other {# selected blog posts}}? This action cannot be undone.",
+      "confirm": "Delete {count, plural, =1 {selected blog post} other {# selected blog posts}}"
+    },
     "toast": {
       "blog_post_deleted": "Blog post deleted successfully",
+      "blog_posts_deleted": "{count, plural, =1 {Blog post} other {# blog posts}} deleted successfully",
       "error_deleting_blog_post": "Error deleting blog post",
       "error_loading_blog_posts": "Error loading blog posts"
     }
@@ -166,6 +172,28 @@
     "blogAppId": {
       "label": "Blog App",
       "helperText": "The app that will be used to work with the blog posts"
+    }
+  },
+  "validation": {
+    "post": {
+      "tag": {
+        "max": "Tag should not exceed 64 characters",
+        "min": "Tag should be at least 2 characters long",
+        "unique": "Tags should be unique"
+      },
+      "title": {
+        "required": "Title is required",
+        "max": "Title should not exceed 256 characters"
+      },
+      "slug": {
+        "required": "Slug is required",
+        "max": "Slug should not exceed 256 characters",
+        "pattern": "Slug should contain only letters, numbers, hyphens, and underscores",
+        "unique": "Slug should be unique"
+      },
+      "publicationDate": {
+        "required": "Publish date is required"
+      }
     }
   }
 }

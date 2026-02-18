@@ -2,8 +2,11 @@ import { getServicesContainer, getWebsiteUrl } from "@/app/utils";
 import { assetsSearchParamsLoader } from "@timelish/api-sdk";
 import { getLoggerFactory } from "@timelish/logger";
 import { UploadedFile } from "@timelish/types";
-import { getAppointmentBucket, getCustomerBucket } from "@timelish/utils";
-import mimeType from "mime-type/with-db";
+import {
+  fileNameToMimeType,
+  getAppointmentBucket,
+  getCustomerBucket,
+} from "@timelish/utils";
 import { NextRequest, NextResponse } from "next/server";
 import { v4 } from "uuid";
 
@@ -103,12 +106,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  let fileType = mimeType.lookup(file.name);
-  if (!fileType) {
-    fileType = "application/octet-stream";
-  } else if (Array.isArray(fileType)) {
-    fileType = fileType[0];
-  }
+  const fileType = fileNameToMimeType(file.name);
 
   const appointmentId = (formData.get("appointmentId") as string) ?? undefined;
   const customerId = (formData.get("customerId") as string) ?? undefined;

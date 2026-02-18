@@ -21,6 +21,10 @@ export interface ICustomersService {
     field: CustomerSearchField,
   ): Promise<Customer | null>;
 
+  findCustomerBySearchFields(
+    searches: { search: string; field: CustomerSearchField }[],
+  ): Promise<Customer | null>;
+
   createCustomer(customer: CustomerUpdateModel): Promise<Customer>;
   updateCustomer(id: string, update: CustomerUpdateModel): Promise<void>;
 

@@ -16,6 +16,7 @@ export type AppScope = Extandable<
   | "scheduled"
   | "schedule"
   | "dashboard-tab"
+  | "customer-tab"
   | "payment"
   | "ui-components"
   | "availability-provider"

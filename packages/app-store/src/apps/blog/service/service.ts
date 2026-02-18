@@ -10,10 +10,14 @@ import {
 import {
   BlogConfiguration,
   blogConfigurationSchema,
+  CheckBlogPostSlugUniqueAction,
+  CheckBlogPostSlugUniqueActionType,
   CreateBlogPostAction,
   CreateBlogPostActionType,
   DeleteBlogPostAction,
   DeleteBlogPostActionType,
+  DeleteSelectedBlogPostsAction,
+  DeleteSelectedBlogPostsActionType,
   GetBlogPostAction,
   GetBlogPostActionType,
   GetBlogPostsAction,
@@ -60,8 +64,12 @@ export class BlogConnectedApp implements IConnectedApp {
         return this.processUpdateBlogPostRequest(appData, data);
       case DeleteBlogPostActionType:
         return this.processDeleteBlogPostRequest(appData, data);
+      case DeleteSelectedBlogPostsActionType:
+        return this.processDeleteBlogPostsRequest(appData, data);
       case GetBlogTagsActionType:
         return this.processGetBlogTagsRequest(appData, data);
+      case CheckBlogPostSlugUniqueActionType:
+        return this.processCheckBlogPostSlugUniqueRequest(appData, data);
       case SetConfigurationActionType:
       default:
         return this.processSetConfigurationRequest(appData, data.configuration);
@@ -245,6 +253,31 @@ export class BlogConnectedApp implements IConnectedApp {
     }
   }
 
+  private async processDeleteBlogPostsRequest(
+    appData: ConnectedAppData,
+    data: DeleteSelectedBlogPostsAction,
+  ) {
+    const logger = this.loggerFactory("processDeleteBlogPostsRequest");
+    logger.debug(
+      { appId: appData._id },
+      "Processing delete blog posts request",
+    );
+
+    try {
+      const repositoryService = this.getRepositoryService(
+        appData._id,
+        appData.companyId,
+      );
+      const result = await repositoryService.deleteBlogPosts(data.ids);
+
+      logger.debug({ appId: appData._id }, "Successfully deleted blog posts");
+      return result;
+    } catch (error: any) {
+      logger.error({ appId: appData._id, error }, "Error deleting blog posts");
+      throw error;
+    }
+  }
+
   private async processGetBlogTagsRequest(
     appData: ConnectedAppData,
     data: GetBlogTagsAction,
@@ -266,6 +299,41 @@ export class BlogConnectedApp implements IConnectedApp {
       return result;
     } catch (error: any) {
       logger.error({ appId: appData._id, error }, "Error retrieving blog tags");
+      throw error;
+    }
+  }
+
+  private async processCheckBlogPostSlugUniqueRequest(
+    appData: ConnectedAppData,
+    data: CheckBlogPostSlugUniqueAction,
+  ) {
+    const logger = this.loggerFactory("processCheckBlogPostSlugUniqueRequest");
+    logger.debug(
+      { appId: appData._id, slug: data.slug, id: data.id },
+      "Processing check blog post slug uniqueness request",
+    );
+
+    try {
+      const repositoryService = this.getRepositoryService(
+        appData._id,
+        appData.companyId,
+      );
+      
+      const result = await repositoryService.checkBlogPostSlugUnique(
+        data.slug,
+        data.id,
+      );
+
+      logger.debug(
+        { appId: appData._id, slug: data.slug, id: data.id, result },
+        "Successfully checked blog post slug uniqueness",
+      );
+      return result;
+    } catch (error: any) {
+      logger.error(
+        { appId: appData._id, slug: data.slug, error },
+        "Error checking blog post slug uniqueness",
+      );
       throw error;
     }
   }

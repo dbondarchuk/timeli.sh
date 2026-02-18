@@ -76,7 +76,10 @@ export const CellAction: React.FC<CellActionProps> = ({ pageFooter }) => {
           </DropdownMenuLabel>
 
           <DropdownMenuItem asChild>
-            <Link href={`/dashboard/pages/footers/${pageFooter._id}`}>
+            <Link
+              href={`/dashboard/pages/footers/${pageFooter._id}`}
+              className="text-foreground"
+            >
               <Edit className="size-3.5" />{" "}
               {t("pages.footers.table.actions.edit")}
             </Link>

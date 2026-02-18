@@ -79,7 +79,10 @@ export const CellAction: React.FC<CellActionProps> = ({ blogPost, appId }) => {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>{tUi("actions.label")}</DropdownMenuLabel>
           <DropdownMenuItem asChild>
-            <Link href={`/dashboard/blog/edit?id=${blogPost._id}`}>
+            <Link
+              href={`/dashboard/blog/edit?id=${blogPost._id}`}
+              className="text-foreground"
+            >
               <Pencil className="size-3.5" /> {t("table.actions.edit")}
             </Link>
           </DropdownMenuItem>

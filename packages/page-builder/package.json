@@ -34,7 +34,7 @@
     "@timelish/ui-admin": "*",
     "@timelish/api-sdk": "*",
     "@timelish/i18n": "*",
-    "lucide-react": "^0.525.0",
+    "lucide-react": "^0.555.0",
     "react-dom": "19.0.0",
     "sanitize-html": "^2.14.0"
   }

@@ -1,5 +1,6 @@
 import { getServicesContainer } from "@/app/utils";
 import { getLoggerFactory } from "@timelish/logger";
+import { ConnectedAppRequestError } from "@timelish/types";
 import { parseJSON } from "@timelish/utils";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -45,6 +46,18 @@ export async function POST(
       },
       "Failed to process app request",
     );
+
+    if (error instanceof ConnectedAppRequestError) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: error.message,
+          code: error.code,
+        },
+        { status: error.status },
+      );
+    }
+
     return NextResponse.json(
       {
         success: false,

@@ -16,6 +16,8 @@ import { EMAIL_NOTIFICATION_APP_NAME } from "./apps/email-notification/const";
 import { EmailNotificationTranslations } from "./apps/email-notification/translations";
 import { FINANCIAL_OVERVIEW_APP_NAME } from "./apps/financial-overview/const";
 import { FinancialOverviewTranslations } from "./apps/financial-overview/translations";
+import { FORMS_APP_NAME } from "./apps/forms/const";
+import { FormsTranslations } from "./apps/forms/translations";
 import { GOOGLE_CALENDAR_APP_NAME } from "./apps/google-calendar/const";
 import { GoogleCalendarTranslations } from "./apps/google-calendar/translations";
 import { ICS_APP_NAME } from "./apps/ics/const";
@@ -89,4 +91,5 @@ export const AppsTranslations: Record<
   [URL_BUSY_EVENTS_APP_NAME]: UrlBusyEventsTranslations,
   [URL_SCHEDULE_PROVIDER_APP_NAME]: UrlScheduleProviderTranslations,
   [ZOOM_APP_NAME]: ZoomTranslations,
+  [FORMS_APP_NAME]: FormsTranslations,
 };

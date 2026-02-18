@@ -13,6 +13,7 @@ import {
   serializeAssetsSearchParams,
   serializeCommunicationLogsSearchParams,
 } from "@timelish/api-sdk";
+import { CustomerTabInjectorApps } from "@timelish/app-store/injectors/customer-tab";
 import { getI18nAsync } from "@timelish/i18n/server";
 import { getLoggerFactory } from "@timelish/logger";
 import {
@@ -46,16 +47,16 @@ const appointmentsTab = "appointments";
 const filesTab = "files";
 const communicationsTab = "communications";
 
-const tabs = [
+const staticTabs = [
   detailsTab,
   appointmentsTab,
   filesTab,
   communicationsTab,
 ] as const;
 
-const scrollableTabs = [detailsTab, communicationsTab, filesTab];
+const baseScrollableTabs = [detailsTab, communicationsTab, filesTab];
 
-type Tab = (typeof tabs)[number];
+type StaticTab = (typeof staticTabs)[number];
 
 const getCustomer = cache(async (id: string) => {
   const servicesContainer = await getServicesContainer();
@@ -74,16 +75,36 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 export default async function CustomerPage(props: Props) {
   const logger = getLoggerFactory("AdminPages")("customer-detail");
   const t = await getI18nAsync("admin");
+  const tAll = await getI18nAsync();
+  const servicesContainer = await getServicesContainer();
   const params = await props.params;
   const path = `/dashboard/customers/${params.id}`;
 
-  const activeTab = params.tab as Tab;
-  if (!tabs.includes(activeTab)) {
+  const customerTabApps =
+    await servicesContainer.connectedAppsService.getAppsByScope("customer-tab");
+
+  const customerTabItems = customerTabApps.flatMap((app) =>
+    (CustomerTabInjectorApps[app.name]?.items ?? []).map((item) => ({
+      ...item,
+      appId: app._id,
+      props: servicesContainer.connectedAppsService.getAppServiceProps(app._id),
+      label: tAll(item.label),
+    })),
+  );
+
+  const dynamicTabHrefs = customerTabItems.map((item) => item.href);
+  const dynamicTabScrollable = customerTabItems
+    .filter((item) => item.scrollable)
+    .map((item) => item.href);
+  const allTabValues = [...staticTabs, ...dynamicTabHrefs];
+  const scrollableTabs = [...baseScrollableTabs, ...dynamicTabScrollable];
+  const activeTab = params.tab as string;
+  if (!allTabValues.includes(activeTab)) {
     logger.warn(
       {
         customerId: params.id,
         invalidTab: params.tab,
-        validTabs: tabs,
+        validTabs: allTabValues,
       },
       "Invalid tab requested",
     );
@@ -134,12 +155,17 @@ export default async function CustomerPage(props: Props) {
     "Customer detail page loaded",
   );
 
-  const tabTitle: Record<Tab, string> = {
+  const tabTitle: Record<StaticTab, string> = {
     [detailsTab]: t("customers.details"),
     [appointmentsTab]: t("customers.appointments"),
     [filesTab]: t("customers.files"),
     [communicationsTab]: t("customers.communications"),
   };
+
+  const getTabLabel = (tabValue: string) =>
+    tabTitle[tabValue as StaticTab] ??
+    customerTabItems.find((i) => i.href === tabValue)?.label ??
+    tabValue;
 
   const breadcrumbItems = [
     { title: t("assets.dashboard"), link: "/dashboard" },
@@ -169,9 +195,9 @@ export default async function CustomerPage(props: Props) {
             className="flex-1 flex flex-col gap-4 tabs-url"
           >
             <ResponsiveTabsList className="w-full [&>a]:flex-1 bg-card border flex-wrap h-auto">
-              {tabs.map((t) => (
-                <TabsTrigger value={t} key={t}>
-                  {tabTitle[t]}
+              {allTabValues.map((tabValue) => (
+                <TabsTrigger value={tabValue} key={tabValue}>
+                  {getTabLabel(tabValue)}
                 </TabsTrigger>
               ))}
             </ResponsiveTabsList>
@@ -257,6 +283,21 @@ export default async function CustomerPage(props: Props) {
                 </Suspense>
               </TabsContent>
             )}
+            {customerTabItems.map((item) => (
+              <TabsContent
+                key={item.href}
+                value={item.href}
+                className="flex flex-1 flex-col gap-4"
+              >
+                {activeTab === item.href &&
+                  item.view({
+                    props: item.props,
+                    appId: item.appId,
+                    customerId: params.id,
+                    searchParams,
+                  })}
+              </TabsContent>
+            ))}
           </TabsViaUrl>
         </div>
       </div>

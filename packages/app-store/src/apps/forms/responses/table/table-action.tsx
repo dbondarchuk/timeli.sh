@@ -1,0 +1,144 @@
+"use client";
+
+import { useI18n } from "@timelish/i18n";
+import { Button, Popover, PopoverContent, PopoverTrigger } from "@timelish/ui";
+import {
+  CustomersDataTableAsyncFilterBox,
+  DataTableRangeBox,
+  DataTableResetFilter,
+  DataTableSearch,
+  useSelectedRowsStore,
+} from "@timelish/ui-admin";
+import { Settings2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
+import {
+  FormsAdminKeys,
+  FormsAdminNamespace,
+  formsAdminNamespace,
+} from "../../translations/types";
+import { SelectFormDialog } from "../components/select-form-dialog";
+import { DeleteSelectedFormResponsesButton } from "./delete-selected";
+import { FormsDataTableAsyncFilterBox } from "./forms-data-table-async-filter-box";
+import { ReassignSelectedFormResponsesButton } from "./reassign-selected";
+import { useResponsesTableFilters } from "./use-table-filters";
+
+export const ResponsesTableAction: React.FC<{
+  appId: string;
+  /** When set, customer filter is hidden and new response link includes this customer and returnUrl. */
+  customerIdLock?: string;
+  /** When set with customerIdLock, redirect here after creating a new response. */
+  returnUrl?: string;
+}> = ({ appId, customerIdLock, returnUrl }) => {
+  const { rowSelection } = useSelectedRowsStore();
+  const router = useRouter();
+  const [selectFormOpen, setSelectFormOpen] = useState(false);
+  const {
+    isAnyFilterActive,
+    resetFilters,
+    searchQuery,
+    setSearchQuery,
+    setPage,
+    formIdFilter,
+    setFormIdFilter,
+    customerIdFilter,
+    setCustomerIdFilter,
+    start,
+    setStartValue,
+    end,
+    setEndValue,
+  } = useResponsesTableFilters();
+  const t = useI18n<FormsAdminNamespace, FormsAdminKeys>(formsAdminNamespace);
+  const tAdmin = useI18n("admin");
+
+  const handleSelectFormForNew = (formId: string) => {
+    const params = new URLSearchParams({ formId });
+    if (customerIdLock) params.set("customerId", customerIdLock);
+    if (returnUrl) params.set("returnUrl", returnUrl);
+    router.push(`/dashboard/forms/responses/new?${params.toString()}`);
+  };
+
+  const additionalFilters = (
+    <>
+      <FormsDataTableAsyncFilterBox
+        appId={appId}
+        filterKey="formId"
+        filterValue={formIdFilter}
+        setFilterValue={setFormIdFilter}
+      />
+      {!customerIdLock && (
+        <CustomersDataTableAsyncFilterBox
+          filterKey="customerId"
+          title={t("responses.table.filters.customer")}
+          filterValue={customerIdFilter}
+          setFilterValue={setCustomerIdFilter}
+        />
+      )}
+      <DataTableRangeBox
+        startValue={start}
+        endValue={end}
+        setStartValue={setStartValue}
+        setEndValue={setEndValue}
+      />
+      <DataTableResetFilter
+        isFilterActive={isAnyFilterActive}
+        onReset={resetFilters}
+      />
+    </>
+  );
+
+  return (
+    <>
+      <div className="flex flex-col flex-wrap md:items-center justify-between gap-4 md:flex-row">
+        <div className="flex flex-1 md:flex-wrap items-center gap-4">
+          <DataTableSearch
+            searchKey="search"
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            setPage={setPage}
+          />
+          <Popover>
+            <PopoverTrigger
+              tooltip={tAdmin("common.labels.filters")}
+              asChild
+              className="md:hidden"
+            >
+              <Button variant="outline">
+                <Settings2 size={16} />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="flex flex-col gap-2">
+              {additionalFilters}
+            </PopoverContent>
+          </Popover>
+          <div className="hidden md:flex flex-row gap-4">
+            {additionalFilters}
+          </div>
+          <DataTableResetFilter
+            isFilterActive={isAnyFilterActive}
+            onReset={resetFilters}
+          />
+        </div>
+        <div className="flex flex-wrap items-center gap-4 max-md:justify-between">
+          <ReassignSelectedFormResponsesButton
+            selected={rowSelection}
+            appId={appId}
+          />
+          <DeleteSelectedFormResponsesButton
+            selected={rowSelection}
+            appId={appId}
+          />
+          <Button onClick={() => setSelectFormOpen(true)}>
+            {t("responses.table.actions.create")}
+          </Button>
+        </div>
+      </div>
+      <SelectFormDialog
+        appId={appId}
+        open={selectFormOpen}
+        onOpenChange={setSelectFormOpen}
+        onSelect={handleSelectFormForNew}
+      />
+    </>
+  );
+};

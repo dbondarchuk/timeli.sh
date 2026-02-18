@@ -53,6 +53,8 @@ import { WEEKLY_SCHEDULE_APP_NAME } from "../apps/weekly-schedule/const";
 import WeeklyScheduleConnectedApp from "../apps/weekly-schedule/service";
 import { ZOOM_APP_NAME } from "../apps/zoom/const";
 import { ZoomConnectedApp } from "../apps/zoom/service";
+import { FORMS_APP_NAME } from "../apps/forms/const";
+import { FormsConnectedApp } from "../apps/forms/service";
 
 export const AvailableAppServices: Record<
   string,
@@ -94,5 +96,6 @@ export const AvailableAppServices: Record<
   [URL_SCHEDULE_PROVIDER_APP_NAME]: (props) =>
     new UrlScheduleProviderConnectedApp(props),
   [ZOOM_APP_NAME]: (props) => new ZoomConnectedApp(props),
+  [FORMS_APP_NAME]: (props) => new FormsConnectedApp(props),
 };
 export { AvailableApps as ServiceAvailableApps } from "../apps";

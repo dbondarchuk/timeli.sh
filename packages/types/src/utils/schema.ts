@@ -6,6 +6,16 @@ export const zPhone = z
   .min(1, "validation.common.phone.required")
   .refine((s) => !s?.includes("_"), "validation.common.phone.invalid");
 
+export type ErrorMessageWithParams = {
+  message: string;
+  params?: Record<string, any>;
+};
+export type ErrorMessage = string | ErrorMessageWithParams;
+export const zErrorMessageWithParams = (
+  message: string,
+  params?: Record<string, any>,
+) => JSON.stringify({ message, params });
+
 export function zUniqueArray<ArrSchema extends z.ZodArray, UniqueVal>(
   schema: ArrSchema,
   uniqueBy: (item: z.infer<ArrSchema>[number]) => UniqueVal,
@@ -65,6 +75,22 @@ export function zOptionalOrMinLengthString(
       z
         .string(minLengthErrorMessage)
         .min(minLength, { message: minLengthErrorMessage }),
+      z.string().length(0),
+    ])
+    .transform((e) => (e === "" ? undefined : e))
+    .optional();
+}
+
+export function zOptionalOrMinMaxLengthString(
+  min: { length: number; message?: string },
+  max: { length: number; message?: string },
+) {
+  return z
+    .union([
+      z
+        .string(min.message)
+        .min(min.length, min.message)
+        .max(max.length, max.message),
       z.string().length(0),
     ])
     .transform((e) => (e === "" ? undefined : e))

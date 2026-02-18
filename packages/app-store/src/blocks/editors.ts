@@ -6,6 +6,8 @@ import {
 import { BlogBlocks } from "../apps/blog/blocks/schema";
 import { BlogTemplates } from "../apps/blog/blocks/templates";
 import { BLOG_APP_NAME } from "../apps/blog/const";
+import { FormsBlocks } from "../apps/forms/blocks/schema";
+import { FORMS_APP_NAME } from "../apps/forms/const";
 import { WaitlistBlocks } from "../apps/waitlist/blocks/schema";
 import { WAITLIST_APP_NAME } from "../apps/waitlist/const";
 
@@ -21,6 +23,7 @@ export const AppsBlocksEditors: Record<
   }
 > = {
   [BLOG_APP_NAME]: BlogBlocks,
+  [FORMS_APP_NAME]: FormsBlocks,
   [WAITLIST_APP_NAME]: WaitlistBlocks,
 };
 

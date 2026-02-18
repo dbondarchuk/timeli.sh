@@ -30,7 +30,7 @@
     "@timelish/ui": "*",
     "@timelish/ui-admin": "*",
     "juice": "^11.0.3",
-    "lucide-react": "^0.525.0",
+    "lucide-react": "^0.555.0",
     "react-dom": "19.0.0",
     "sanitize-html": "^2.14.0"
   }

@@ -1,0 +1,43 @@
+version: "3.9"
+services:
+  mongodb:
+    image: mongo:latest
+    restart: unless-stopped
+    #command: mongod --replSet rs0
+    # healthcheck:
+    #   test: |
+    #     mongosh --eval "try { rs.status().ok } catch (e) { rs.initiate({ _id: 'rs0', members: [{ _id: 0, host: 'localhost:27017' }] }).ok }"
+    #   start_period: 0s
+    #   interval: 500ms
+    #   timeout: 5s
+    #   retries: 5
+    ports:
+      - "27017:27017"
+    networks:
+      - timelish-network
+  redis:
+    image: redis:latest
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - timelish-network
+    volumes:
+      - redis-data:/data
+
+  s3:
+    image: luofuxiang/local-s3
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    networks:
+      - timelish-network
+    volumes:
+      - s3-data:/data
+
+networks:
+  timelish-network:
+    driver: bridge
+volumes:
+  redis-data:
+  s3-data:

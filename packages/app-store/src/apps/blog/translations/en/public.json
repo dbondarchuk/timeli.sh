@@ -4,17 +4,6 @@
   "blogPostNotFound": "Blog post not found",
   "readMore": "Read more",
   "block": {
-    "post": {
-      "title": {
-        "required": "Title is required"
-      },
-      "slug": {
-        "required": "Slug is required"
-      },
-      "tag": {
-        "min": "Tag must be at least 2 characters"
-      }
-    },
     "postsList": {
       "title": "Blog Posts",
       "noPosts": "No blog posts found",

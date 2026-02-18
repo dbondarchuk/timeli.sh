@@ -72,6 +72,7 @@ export const CellAction: React.FC<CellActionProps> = ({ discount }) => {
           <DropdownMenuItem asChild>
             <Link
               href={`/dashboard/services/discounts/new?from=${discount._id}`}
+              className="text-foreground"
             >
               <Copy className="size-3.5" />{" "}
               {t("services.discounts.table.cellAction.clone")}
@@ -79,7 +80,10 @@ export const CellAction: React.FC<CellActionProps> = ({ discount }) => {
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
-            <Link href={`/dashboard/services/discounts/${discount._id}`}>
+            <Link
+              href={`/dashboard/services/discounts/${discount._id}`}
+              className="text-foreground"
+            >
               <Edit className="size-3.5" />{" "}
               {t("services.discounts.table.cellAction.update")}
             </Link>

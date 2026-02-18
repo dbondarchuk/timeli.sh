@@ -2370,5 +2370,18 @@
     "convertedTo": {
       "appointment": "Appointment"
     }
+  },
+  "customerSelector": {
+    "addNew": "Create new",
+    "dialog": {
+      "title": "Create new customer",
+      "description": "Enter the details of the new customer",
+      "form": {
+        "name": "Name",
+        "email": "Email",
+        "phone": "Phone"
+      },
+      "confirm": "Create"
+    }
   }
 }

@@ -5,6 +5,7 @@ import { Button, Popover, PopoverContent, PopoverTrigger } from "@timelish/ui";
 import {
   DataTableResetFilter,
   DataTableSearch,
+  useSelectedRowsStore,
 } from "@timelish/ui-admin";
 import { Settings2 } from "lucide-react";
 import React from "react";
@@ -13,9 +14,11 @@ import {
   BlogAdminNamespace,
   blogAdminNamespace,
 } from "../translations/types";
+import { DeleteSelectedBlogPostsButton } from "./delete-selected";
 import { useBlogTableFilters } from "./use-table-filters";
 
 export const BlogTableAction: React.FC<{ appId: string }> = ({ appId }) => {
+  const { rowSelection } = useSelectedRowsStore();
   const {
     isAnyFilterActive,
     resetFilters,
@@ -43,6 +46,10 @@ export const BlogTableAction: React.FC<{ appId: string }> = ({ appId }) => {
         />
       </div>
       <div className="flex flex-wrap items-center gap-4 max-md:justify-between">
+        <DeleteSelectedBlogPostsButton
+          selected={rowSelection}
+          appId={appId}
+        />
         <Button asChild>
           <a href="/dashboard/blog/new">{t("table.actions.create")}</a>
         </Button>

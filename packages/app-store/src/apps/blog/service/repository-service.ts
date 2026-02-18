@@ -98,6 +98,32 @@ export class BlogRepositoryService {
     return true;
   }
 
+  public async deleteBlogPosts(ids: string[]): Promise<boolean> {
+    const logger = this.loggerFactory("deleteBlogPosts");
+    logger.debug({ ids }, "Deleting blog posts");
+
+    const db = await this.getDbConnection();
+    const { deletedCount } = await db
+      .collection<BlogPostEntity>(BLOG_POSTS_COLLECTION_NAME)
+      .deleteMany({
+        _id: {
+          $in: ids,
+        },
+        companyId: this.companyId,
+      });
+
+    if (deletedCount !== ids.length) {
+      logger.warn(
+        { expected: ids.length, actual: deletedCount },
+        "Not all blog posts were removed",
+      );
+    } else {
+      logger.debug({ ids }, "Blog post deleted");
+    }
+
+    return true;
+  }
+
   public async getBlogPosts(
     query: Query & {
       tag?: string;
@@ -278,6 +304,36 @@ export class BlogRepositoryService {
     logger.debug({ count: result.length }, "Blog tags retrieved");
 
     return result as Array<{ tag: string; count: number }>;
+  }
+
+  public async checkBlogPostSlugUnique(
+    slug: string,
+    id?: string,
+  ): Promise<boolean> {
+    const logger = this.loggerFactory("checkBlogPostSlugUnique");
+    logger.debug({ slug, id }, "Checking blog post slug uniqueness");
+    const filter: Filter<BlogPost> = {
+      slug,
+      companyId: this.companyId,
+      appId: this.appId,
+    };
+    if (id) {
+      filter._id = { $ne: id };
+    }
+
+    const db = await this.getDbConnection();
+    const hasNext = await db
+      .collection<BlogPost>(BLOG_POSTS_COLLECTION_NAME)
+      .aggregate([{ $match: filter }])
+      .hasNext();
+
+    const result = !hasNext;
+
+    logger.debug(
+      { slug, id, result },
+      "Blog post slug uniqueness check result",
+    );
+    return result;
   }
 
   public async install(): Promise<void> {

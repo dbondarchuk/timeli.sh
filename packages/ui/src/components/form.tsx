@@ -2,7 +2,9 @@
 
 import * as LabelPrimitive from "@radix-ui/react-label";
 import { Slot } from "@radix-ui/react-slot";
-import React from "react";
+import { AllKeys, useI18n, ValidationKeys } from "@timelish/i18n";
+import { ErrorMessageWithParams } from "@timelish/types";
+import React, { ReactNode } from "react";
 import {
   Controller,
   FormProvider,
@@ -12,8 +14,6 @@ import {
   type FieldPath,
   type FieldValues,
 } from "react-hook-form";
-
-import { AllKeys, useI18n, ValidationKeys } from "@timelish/i18n";
 import { cn } from "../utils";
 import { Label } from "./label";
 
@@ -105,6 +105,20 @@ function FormLabel({
   );
 }
 
+function FormLabelWithRequiredIndicator({
+  className,
+  required,
+  children,
+  ...props
+}: React.ComponentProps<typeof LabelPrimitive.Root> & { required?: boolean }) {
+  return (
+    <FormLabel {...props}>
+      {children}
+      {required && <span className="text-destructive ml-1">*</span>}
+    </FormLabel>
+  );
+}
+
 function FormControl({ ...props }: React.ComponentProps<typeof Slot>) {
   const { error, formItemId, formDescriptionId, formMessageId } =
     useFormField();
@@ -141,16 +155,32 @@ function FormMessage({ className, ...props }: React.ComponentProps<"p">) {
   const { error, formMessageId } = useFormField();
   const tValidation = useI18n("validation");
   const t = useI18n();
-  const body = error ? String(error?.message ?? "") : props.children;
-  const message = tValidation.has(body as ValidationKeys)
-    ? tValidation(body as ValidationKeys)
-    : t.has(body as AllKeys)
-      ? t(body as AllKeys)
-      : body;
+  const bodyJson = error ? String(error?.message ?? "") : props.children;
+
+  let body: ReactNode = bodyJson;
+  let params: Record<string, any> | undefined;
+  if (bodyJson && typeof bodyJson === "string") {
+    try {
+      const bodyObj = JSON.parse(bodyJson) as ErrorMessageWithParams;
+      body = bodyObj.message;
+      params = bodyObj.params;
+    } catch (error) {
+      body = bodyJson;
+    }
+  }
 
   if (!body) {
     return null;
   }
+
+  const message =
+    typeof body === "string"
+      ? tValidation.has(body as ValidationKeys)
+        ? tValidation(body as ValidationKeys, params)
+        : t.has(body as AllKeys)
+          ? t(body as AllKeys, params)
+          : body
+      : body;
 
   return (
     <p
@@ -171,6 +201,7 @@ export {
   FormField,
   FormItem,
   FormLabel,
+  FormLabelWithRequiredIndicator,
   FormMessage,
   useFormField,
 };

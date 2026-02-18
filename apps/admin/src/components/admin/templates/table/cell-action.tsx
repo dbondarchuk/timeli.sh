@@ -69,7 +69,10 @@ export const CellAction: React.FC<CellActionProps> = ({ template }) => {
           </DropdownMenuLabel>
 
           <DropdownMenuItem asChild>
-            <Link href={`/dashboard/templates/${template._id}`}>
+            <Link
+              href={`/dashboard/templates/${template._id}`}
+              className="text-foreground"
+            >
               <Edit className="size-3.5" />{" "}
               {t("templates.table.cellAction.update")}
             </Link>
@@ -80,7 +83,10 @@ export const CellAction: React.FC<CellActionProps> = ({ template }) => {
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
-            <Link href={`/dashboard/templates/${template._id}/clone`}>
+            <Link
+              href={`/dashboard/templates/${template._id}/clone`}
+              className="text-foreground"
+            >
               <Copy className="size-3.5" />{" "}
               {t("templates.table.cellAction.clone")}
             </Link>

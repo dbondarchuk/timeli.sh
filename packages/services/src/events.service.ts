@@ -47,6 +47,7 @@ import {
   buildSearchQuery,
   durationToTime,
   escapeRegex,
+  fileNameToMimeType,
   getAdminUrl,
   getAppointmentBucket,
   getAvailableTimeSlotsInCalendar,
@@ -54,7 +55,6 @@ import {
   parseTime,
 } from "@timelish/utils";
 import { DateTime } from "luxon";
-import mimeType from "mime-type/with-db";
 import { Filter, ObjectId, Sort } from "mongodb";
 import { v4 } from "uuid";
 import {
@@ -225,12 +225,7 @@ export class EventsService extends BaseService implements IEventsService {
       );
 
       for (const [fieldId, file] of Object.entries(files)) {
-        let fileType = mimeType.lookup(file.name);
-        if (!fileType) {
-          fileType = "application/octet-stream";
-        } else if (Array.isArray(fileType)) {
-          fileType = fileType[0];
-        }
+        const fileType = fileNameToMimeType(file.name);
 
         const asset = await this.assetsService.createAsset(
           {
@@ -439,12 +434,7 @@ export class EventsService extends BaseService implements IEventsService {
       );
 
       for (const [fieldId, file] of Object.entries(files)) {
-        let fileType = mimeType.lookup(file.name);
-        if (!fileType) {
-          fileType = "application/octet-stream";
-        } else if (Array.isArray(fileType)) {
-          fileType = fileType[0];
-        }
+        const fileType = fileNameToMimeType(file.name);
 
         const asset = await this.assetsService.createAsset(
           {
@@ -1190,12 +1180,7 @@ export class EventsService extends BaseService implements IEventsService {
     const assets: Asset[] = [];
     if (files) {
       for (const file of files) {
-        let fileType = mimeType.lookup(file.name);
-        if (!fileType) {
-          fileType = "application/octet-stream";
-        } else if (Array.isArray(fileType)) {
-          fileType = fileType[0];
-        }
+        const fileType = fileNameToMimeType(file.name);
 
         logger.debug(
           { appointmentId, fileName: file.name, fileType },
