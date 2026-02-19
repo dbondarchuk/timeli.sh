@@ -1,4 +1,5 @@
 import {
+  asOptionalField,
   ConnectedAppData,
   Customer,
   DateRange,
@@ -7,6 +8,7 @@ import {
   WithAppId,
   WithCompanyId,
   WithDatabaseId,
+  zEmail,
   zNonEmptyString,
 } from "@timelish/types";
 import * as z from "zod";
@@ -18,12 +20,7 @@ export const FORM_RESPONSES_COLLECTION_NAME = "form-responses";
 
 export const formsNotificationSchema = z.object({
   enabled: z.coerce.boolean<boolean>().optional(),
-  email: z
-    .email(
-      "app_forms_admin.validation.form.notifications.email.invalid" satisfies FormsAdminAllKeys,
-    )
-    .optional()
-    .nullable(),
+  email: asOptionalField(zEmail),
 });
 
 export type FormsNotification = z.infer<typeof formsNotificationSchema>;

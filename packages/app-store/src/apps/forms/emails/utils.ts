@@ -36,6 +36,7 @@ export const getEmailTemplate = async (
         {
           text: buttonTexts.viewAllResponses,
           url: `${adminUrl}/dashboard/forms/responses?formId=${formId}`,
+          backgroundColor: "#5d8be2",
         },
       ],
     },
