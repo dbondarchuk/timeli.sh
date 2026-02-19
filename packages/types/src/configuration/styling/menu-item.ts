@@ -2,7 +2,7 @@ import * as z from "zod";
 
 // import { icons } from "lucide-react";
 
-const ButtonSizes = [
+export const ButtonSizes = [
   "none",
   "default",
   "xs",
@@ -12,7 +12,7 @@ const ButtonSizes = [
   "xl",
   "icon",
 ] as const;
-const ButtonVariants = [
+export const ButtonVariants = [
   "default",
   "primary",
   "secondary",
@@ -23,17 +23,22 @@ const ButtonVariants = [
   "link-underline",
   "link-dashed",
 ] as const;
-const LinkSizes = ["none", "xs", "sm", "md", "lg", "xl"] as const;
-const LinkVariants = [
+export const LinkSizes = ["none", "xs", "sm", "md", "lg", "xl"] as const;
+export const LinkVariants = [
   "none",
   "default",
   "underline",
   "standalone",
   "dashed",
 ] as const;
-const TextFonts = ["default", "primary", "secondary", "tertiary"] as const;
-const TextSizes = ["default", "sm", "md", "lg", "xl"] as const;
-const TextWeights = [
+export const TextFonts = [
+  "default",
+  "primary",
+  "secondary",
+  "tertiary",
+] as const;
+export const TextSizes = ["default", "sm", "md", "lg", "xl"] as const;
+export const TextWeights = [
   "default",
   "light",
   "thin",

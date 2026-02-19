@@ -1,10 +1,18 @@
 "use client";
 
-import { I18nText, useI18n } from "@timelish/i18n";
-import { MenuItemType, SubMenuItem } from "@timelish/types";
+import { BaseAllKeys, I18nText, useI18n } from "@timelish/i18n";
 import {
   ButtonSizes,
   ButtonVariants,
+  LinkSizes,
+  LinkVariants,
+  MenuItemType,
+  SubMenuItem,
+  TextFonts,
+  TextSizes,
+  TextWeights,
+} from "@timelish/types";
+import {
   Combobox,
   FormControl,
   FormField,
@@ -14,11 +22,6 @@ import {
   IComboboxItem,
   Input,
   Link,
-  LinkSizes,
-  LinkVariants,
-  TextFonts,
-  TextSizes,
-  TextWeights,
 } from "@timelish/ui";
 import { PageSelectorInput, Sortable } from "@timelish/ui-admin";
 import { useMemo } from "react";
@@ -37,10 +40,18 @@ const linkVariantsValues = LinkVariants.map(
   (variant) =>
     ({
       value: variant,
-      shortLabel: <I18nText text={`admin.menuItem.linkVariants.${variant}`} />,
+      shortLabel: (
+        <I18nText
+          text={`admin.menuItem.linkVariants.${variant}` satisfies BaseAllKeys}
+        />
+      ),
       label: (
         <Link href="#" variant={variant} onClick={(e) => e.preventDefault()}>
-          <I18nText text={`admin.menuItem.linkVariants.${variant}`} />
+          <I18nText
+            text={
+              `admin.menuItem.linkVariants.${variant}` satisfies BaseAllKeys
+            }
+          />
         </Link>
       ),
     }) as IComboboxItem,
@@ -51,7 +62,11 @@ const buttonVariantsValues = ButtonVariants.map(
     ({
       value: variant,
       shortLabel: (
-        <I18nText text={`admin.menuItem.buttonVariants.${variant}`} />
+        <I18nText
+          text={
+            `admin.menuItem.buttonVariants.${variant}` satisfies BaseAllKeys
+          }
+        />
       ),
       label: (
         <Link
@@ -61,7 +76,11 @@ const buttonVariantsValues = ButtonVariants.map(
           size="sm"
           onClick={(e) => e.preventDefault()}
         >
-          <I18nText text={`admin.menuItem.buttonVariants.${variant}`} />
+          <I18nText
+            text={
+              `admin.menuItem.buttonVariants.${variant}` satisfies BaseAllKeys
+            }
+          />
         </Link>
       ),
     }) as IComboboxItem,
@@ -71,7 +90,9 @@ const linkSizesValues = LinkSizes.map(
   (size) =>
     ({
       value: size,
-      shortLabel: <I18nText text={`admin.menuItem.sizes.${size}`} />,
+      shortLabel: (
+        <I18nText text={`admin.menuItem.sizes.${size}` satisfies BaseAllKeys} />
+      ),
       label: (
         <Link
           href="#"
@@ -79,7 +100,9 @@ const linkSizesValues = LinkSizes.map(
           variant="default"
           onClick={(e) => e.preventDefault()}
         >
-          <I18nText text={`admin.menuItem.sizes.${size}`} />
+          <I18nText
+            text={`admin.menuItem.sizes.${size}` satisfies BaseAllKeys}
+          />
         </Link>
       ),
     }) as IComboboxItem,
@@ -89,7 +112,9 @@ const buttonSizesValues = ButtonSizes.map(
   (size) =>
     ({
       value: size,
-      shortLabel: <I18nText text={`admin.menuItem.sizes.${size}`} />,
+      shortLabel: (
+        <I18nText text={`admin.menuItem.sizes.${size}` satisfies BaseAllKeys} />
+      ),
       label: (
         <Link
           button
@@ -98,7 +123,9 @@ const buttonSizesValues = ButtonSizes.map(
           variant="secondary"
           onClick={(e) => e.preventDefault()}
         >
-          <I18nText text={`admin.menuItem.sizes.${size}`} />
+          <I18nText
+            text={`admin.menuItem.sizes.${size}` satisfies BaseAllKeys}
+          />
         </Link>
       ),
     }) as IComboboxItem,
@@ -108,7 +135,11 @@ const textFontValues = TextFonts.map(
   (variant) =>
     ({
       value: variant,
-      shortLabel: <I18nText text={`admin.menuItem.fonts.${variant}`} />,
+      shortLabel: (
+        <I18nText
+          text={`admin.menuItem.fonts.${variant}` satisfies BaseAllKeys}
+        />
+      ),
       label: (
         <Link
           button
@@ -117,7 +148,9 @@ const textFontValues = TextFonts.map(
           variant="secondary"
           onClick={(e) => e.preventDefault()}
         >
-          <I18nText text={`admin.menuItem.fonts.${variant}`} />
+          <I18nText
+            text={`admin.menuItem.fonts.${variant}` satisfies BaseAllKeys}
+          />
         </Link>
       ),
     }) as IComboboxItem,
@@ -127,7 +160,11 @@ const textSizesValues = TextSizes.map(
   (variant) =>
     ({
       value: variant,
-      shortLabel: <I18nText text={`admin.menuItem.sizes.${variant}`} />,
+      shortLabel: (
+        <I18nText
+          text={`admin.menuItem.sizes.${variant}` satisfies BaseAllKeys}
+        />
+      ),
       label: (
         <Link
           button
@@ -136,7 +173,9 @@ const textSizesValues = TextSizes.map(
           variant="secondary"
           onClick={(e) => e.preventDefault()}
         >
-          <I18nText text={`admin.menuItem.sizes.${variant}`} />
+          <I18nText
+            text={`admin.menuItem.sizes.${variant}` satisfies BaseAllKeys}
+          />
         </Link>
       ),
     }) as IComboboxItem,
@@ -146,7 +185,11 @@ const textWeightsValues = TextWeights.map(
   (variant) =>
     ({
       value: variant,
-      shortLabel: <I18nText text={`admin.menuItem.weights.${variant}`} />,
+      shortLabel: (
+        <I18nText
+          text={`admin.menuItem.weights.${variant}` satisfies BaseAllKeys}
+        />
+      ),
       label: (
         <Link
           button
@@ -155,7 +198,9 @@ const textWeightsValues = TextWeights.map(
           variant="secondary"
           onClick={(e) => e.preventDefault()}
         >
-          <I18nText text={`admin.menuItem.weights.${variant}`} />
+          <I18nText
+            text={`admin.menuItem.weights.${variant}` satisfies BaseAllKeys}
+          />
         </Link>
       ),
     }) as IComboboxItem,
