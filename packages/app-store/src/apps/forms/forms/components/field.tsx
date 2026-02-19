@@ -24,10 +24,15 @@ import {
   SelectValue,
   TagInput,
 } from "@timelish/ui";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 import * as z from "zod";
-import { formSchemaBase, formsFieldTypes } from "../../models";
+import {
+  defaultMultiLineLength,
+  defaultOneLineLength,
+  formSchemaBase,
+  formsFieldTypes,
+} from "../../models";
 import {
   FormsAdminKeys,
   FormsAdminNamespace,
@@ -94,7 +99,24 @@ export const FormFieldEditor: React.FC<{
 }> = ({ form, name: fieldName, disabled }) => {
   const t = useI18n<FormsAdminNamespace, FormsAdminKeys>(formsAdminNamespace);
   const field = form.watch(fieldName);
+  const fieldMaxLength =
+    "data" in field && "maxLength" in field.data
+      ? field.data?.maxLength
+      : undefined;
   const fieldType = field.type;
+
+  useEffect(() => {
+    if (fieldType === "oneLine" || fieldType === "multiLine") {
+      const maxLength =
+        fieldType === "oneLine" ? defaultOneLineLength : defaultMultiLineLength;
+      if (
+        (fieldType === "oneLine" && fieldMaxLength == defaultMultiLineLength) ||
+        (fieldType === "multiLine" && fieldMaxLength == defaultOneLineLength)
+      ) {
+        form.setValue(`${fieldName}.data.maxLength`, maxLength);
+      }
+    }
+  }, [fieldType, form, fieldName, fieldMaxLength]);
 
   return (
     <div className="flex flex-col gap-4">

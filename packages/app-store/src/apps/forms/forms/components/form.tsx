@@ -22,7 +22,11 @@ import React, { useMemo, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import * as z from "zod";
 import { checkFormNameUnique, createForm, updateForm } from "../../actions";
-import { FormModel, getFormSchemaWithUniqueCheck } from "../../models";
+import {
+  defaultOneLineLength,
+  FormModel,
+  getFormSchemaWithUniqueCheck,
+} from "../../models";
 import {
   FormsAdminAllKeys,
   FormsAdminKeys,
@@ -102,7 +106,7 @@ export const FormEditForm: React.FC<{
       label: "",
       description: "",
       required: false,
-      data: { minLength: 0, maxLength: 64 },
+      data: { minLength: 1, maxLength: defaultOneLineLength },
     });
   };
 

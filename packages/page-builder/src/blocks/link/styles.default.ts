@@ -8,12 +8,5 @@ export const getDefaults = (
   { props, style }: LinkProps,
   isEditor?: boolean,
 ): DefaultCSSProperties<AllStylesSchemas> => {
-  return {
-    fontSize: { value: 1, unit: "rem" },
-    fontWeight: "normal",
-    textAlign: "left",
-    textDecoration: "underline",
-    display: "block",
-    width: "max-content",
-  };
+  return {};
 };
