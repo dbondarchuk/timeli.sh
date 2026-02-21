@@ -10,7 +10,11 @@ import {
   TooltipResponsiveTrigger,
   useTimeZone,
 } from "@timelish/ui";
-import { tableSortHeader, tableSortNoopFunction } from "@timelish/ui-admin";
+import {
+  CustomerName,
+  tableSortHeader,
+  tableSortNoopFunction,
+} from "@timelish/ui-admin";
 import { AppointmentDialog } from "@timelish/ui-admin-kit";
 import { durationToTime, formatAmountString } from "@timelish/utils";
 import {
@@ -177,18 +181,22 @@ const CustomerCell: React.FC<{
           href={`/dashboard/customers/${appointment.customerId}`}
           variant="underline"
         >
-          {appointment.customer.name}
+          <CustomerName customer={appointment.customer} />
         </Link>
       </TooltipResponsiveTrigger>
       <TooltipResponsiveContent className="flex flex-col gap-2 w-full py-2 px-4">
-        <div className="grid grid-cols-2 gap-1">
-          <div>{t("appointments.table.columns.customerName")}:</div>
-          <div>{appointment.customer.name}</div>
-          <div>{t("appointments.table.columns.customerEmail")}:</div>
-          <div>{appointment.customer.email}</div>
-          <div>{t("appointments.table.columns.customerPhone")}:</div>
-          <div>{appointment.customer.phone}</div>
-        </div>
+        {appointment.customer.isDeleted ? (
+          t("customers.deletedCustomer")
+        ) : (
+          <div className="grid grid-cols-2 gap-1">
+            <div>{t("appointments.table.columns.customerName")}:</div>
+            <div>{appointment.customer.name}</div>
+            <div>{t("appointments.table.columns.customerEmail")}:</div>
+            <div>{appointment.customer.email}</div>
+            <div>{t("appointments.table.columns.customerPhone")}:</div>
+            <div>{appointment.customer.phone}</div>
+          </div>
+        )}
       </TooltipResponsiveContent>
     </TooltipResponsive>
   );

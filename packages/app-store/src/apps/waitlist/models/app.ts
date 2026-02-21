@@ -1,7 +1,12 @@
-import { DateRange, Query } from "@timelish/types";
+import {
+  dateRangeSchema,
+  querySchema,
+  zObjectId,
+  zTaggedUnion,
+} from "@timelish/types";
 import * as z from "zod";
 
-import { WaitlistStatus } from "./waitlist";
+import { waitlistStatus } from "./waitlist";
 
 export const waitlistConfigurationSchema = z.object({
   dontDismissWaitlistOnAppointmentCreate: z.coerce
@@ -11,46 +16,68 @@ export const waitlistConfigurationSchema = z.object({
 
 export type WaitlistConfiguration = z.infer<typeof waitlistConfigurationSchema>;
 
-export type GetWaitlistEntriesAction = {
-  query: Query & {
-    status?: WaitlistStatus[];
-    optionId?: string | string[];
-    customerId?: string | string[];
-    range?: DateRange;
-  };
-};
+// Request actions
 
+// Get waitlist entries action
+
+export const getWaitlistEntriesActionSchema = z.object({
+  query: querySchema.extend({
+    status: z.array(z.enum(waitlistStatus)).optional(),
+    optionId: z.array(zObjectId()).or(zObjectId()).optional(),
+    customerId: z.array(zObjectId()).or(zObjectId()).optional(),
+    range: dateRangeSchema.optional(),
+  }),
+});
+
+export type GetWaitlistEntriesAction = z.infer<
+  typeof getWaitlistEntriesActionSchema
+>;
 export const GetWaitlistEntriesActionType = "get-waitlist-entries" as const;
 
-export type GetWaitlistEntryAction = {
-  id: string;
-};
+// Get waitlist entry action
 
+export const getWaitlistEntryActionSchema = z.object({
+  id: zObjectId(),
+});
+
+export type GetWaitlistEntryAction = z.infer<
+  typeof getWaitlistEntryActionSchema
+>;
 export const GetWaitlistEntryActionType = "get-waitlist-entry" as const;
 
-export type DismissWaitlistEntriesAction = {
-  ids: string[];
-};
+// Dismiss waitlist entries action
 
+export const dismissWaitlistEntriesActionSchema = z.object({
+  ids: z.array(zObjectId()),
+});
+
+export type DismissWaitlistEntriesAction = z.infer<
+  typeof dismissWaitlistEntriesActionSchema
+>;
 export const DismissWaitlistEntriesActionType =
   "dismiss-waitlist-entries" as const;
 
-export type SetConfigurationAction = {
-  configuration: WaitlistConfiguration;
-};
+// Set configuration action
 
+export const setConfigurationActionSchema = z.object({
+  configuration: waitlistConfigurationSchema,
+});
+
+export type SetConfigurationAction = z.infer<
+  typeof setConfigurationActionSchema
+>;
 export const SetConfigurationActionType = "set-configuration" as const;
 
-export type RequestAction =
-  | ({
-      type: typeof GetWaitlistEntriesActionType;
-    } & GetWaitlistEntriesAction)
-  | ({
-      type: typeof GetWaitlistEntryActionType;
-    } & GetWaitlistEntryAction)
-  | ({
-      type: typeof DismissWaitlistEntriesActionType;
-    } & DismissWaitlistEntriesAction)
-  | ({
-      type: typeof SetConfigurationActionType;
-    } & SetConfigurationAction);
+// Request action
+
+export const requestActionSchema = zTaggedUnion([
+  { type: GetWaitlistEntriesActionType, data: getWaitlistEntriesActionSchema },
+  { type: GetWaitlistEntryActionType, data: getWaitlistEntryActionSchema },
+  {
+    type: DismissWaitlistEntriesActionType,
+    data: dismissWaitlistEntriesActionSchema,
+  },
+  { type: SetConfigurationActionType, data: setConfigurationActionSchema },
+]);
+
+export type RequestAction = z.infer<typeof requestActionSchema>;

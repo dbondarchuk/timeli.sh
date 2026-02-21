@@ -4,7 +4,12 @@ import { WithCompanyId, WithDatabaseId } from "../database";
 import { Prettify, zNonEmptyString } from "../utils";
 
 export const templateSchema = z.object({
-  name: zNonEmptyString("template.name.required", 3),
+  name: zNonEmptyString(
+    "validation.template.name.required",
+    3,
+    256,
+    "validation.template.name.max",
+  ),
   type: z.enum(communicationChannels, { message: "template.type.invalid" }),
   value: z.any(),
 });

@@ -1,7 +1,7 @@
 "use client";
 
 import { useI18n } from "@timelish/i18n";
-import { AppSetupProps } from "@timelish/types";
+import { AppSetupProps, zEmail } from "@timelish/types";
 import {
   Button,
   Form,
@@ -11,8 +11,8 @@ import {
   FormLabel,
   FormMessage,
   InfoTooltip,
-  Input,
   Spinner,
+  TagInput,
 } from "@timelish/ui";
 import {
   ConnectedAppNameAndLogo,
@@ -65,11 +65,16 @@ export const EmailNotificationAppSetup: React.FC<AppSetupProps> = ({
                     <InfoTooltip>{t("form.email.tooltip")}</InfoTooltip>
                   </FormLabel>
                   <FormControl>
-                    <Input
-                      disabled={isLoading}
-                      type="email"
-                      placeholder={t("form.email.placeholder")}
+                    <TagInput
                       {...field}
+                      value={
+                        field.value && !Array.isArray(field.value)
+                          ? [field.value]
+                          : (field.value as readonly string[])
+                      }
+                      disabled={isLoading}
+                      placeholder={t("form.email.placeholder")}
+                      tagValidator={zEmail}
                     />
                   </FormControl>
                   <FormMessage />

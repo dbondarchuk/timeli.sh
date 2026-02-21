@@ -4,6 +4,7 @@ import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
 import {
   BookingConfiguration,
   ConnectedAppData,
+  ConnectedAppRequestError,
   ConnectedAppStatusWithText,
   GeneralConfiguration,
   IConnectedApp,
@@ -44,13 +45,28 @@ export class WaitlistNotificationsConnectedApp
 
   public async processRequest(
     appData: ConnectedAppData,
-    data: WaitlistNotificationsConfiguration,
+    request: WaitlistNotificationsConfiguration,
   ): Promise<ConnectedAppStatusWithText> {
     const logger = this.loggerFactory("processRequest");
     logger.debug(
-      { appId: appData._id, configuration: data },
+      { appId: appData._id },
       "Processing waitlist notifications configuration request",
     );
+
+    const { data, success, error } =
+      waitlistNotificationsConfigurationSchema.safeParse(request);
+    if (!success) {
+      logger.error(
+        { error },
+        "Invalid waitlist notifications configuration request",
+      );
+      throw new ConnectedAppRequestError(
+        "invalid_waitlist-notifications_configuration_request",
+        { request, error },
+        400,
+        error.message,
+      );
+    }
 
     try {
       // Validate configuration

@@ -290,10 +290,18 @@ export class FormsRepositoryService {
           ? [
               {
                 $facet: {
-                  priority: [{ $match: { _id: { $in: query.priorityIds } } }],
+                  priority: [
+                    {
+                      $match: {
+                        _id: { $in: query.priorityIds },
+                        companyId: this.companyId,
+                      },
+                    },
+                  ],
                   other: [
                     {
                       $match: {
+                        ...filter,
                         _id: { $nin: query.priorityIds },
                       },
                     },
@@ -429,7 +437,7 @@ export class FormsRepositoryService {
     return { email, phone, name };
   }
 
-  protected async getOrCreateCustomerFromAnswers(
+  public async getOrCreateCustomerFromAnswers(
     answers: FormAnswer[],
   ): Promise<Customer | null> {
     const logger = this.loggerFactory("getOrCreateCustomerFromAnswers");
@@ -466,17 +474,13 @@ export class FormsRepositoryService {
 
     const db = await this.getDbConnection();
 
-    const customer = await this.getOrCreateCustomerFromAnswers(
-      response.answers as any,
-    );
-
     const entity: FormResponseModel = {
       ...response,
       formId,
       _id: new ObjectId().toString(),
       appId: this.appId,
       companyId: this.companyId,
-      customerId: customer?._id,
+      customerId: response.customerId ?? undefined,
       createdAt: new Date(),
       updatedAt: new Date(),
     };

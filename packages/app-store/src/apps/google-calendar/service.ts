@@ -9,6 +9,7 @@ import {
   CalendarEventResult,
   ConnectedAppData,
   ConnectedAppError,
+  ConnectedAppRequestError,
   ConnectedAppResponse,
   ICalendarBusyTimeProvider,
   ICalendarWriter,
@@ -33,6 +34,7 @@ import {
   CalendarListItem,
   GoogleCalendarConfiguration,
   RequestAction,
+  requestActionSchema,
 } from "./models";
 
 import {
@@ -101,14 +103,24 @@ class GoogleCalendarConnectedApp
 
   public async processRequest(
     appData: ConnectedAppData<GoogleCalendarConfiguration>,
-    data: RequestAction,
+    request: RequestAction,
   ) {
-    const requestType = data.type;
     const logger = this.loggerFactory("processRequest");
     logger.debug(
-      { appId: appData._id, requestType },
+      { appId: appData._id, type: request.type },
       "Processing Google Calendar request",
     );
+
+    const { data, success, error } = requestActionSchema.safeParse(request);
+    if (!success) {
+      logger.error({ error }, "Invalid Google Calendar request");
+      throw new ConnectedAppRequestError(
+        "invalid_google_calendar_request",
+        { request },
+        400,
+        error.message,
+      );
+    }
 
     try {
       switch (data.type) {
@@ -161,14 +173,14 @@ class GoogleCalendarConnectedApp
 
         default:
           logger.debug(
-            { appId: appData._id, requestType },
+            { appId: appData._id, type: request.type },
             "Processing default request",
           );
           return okStatus;
       }
     } catch (error: any) {
       logger.error(
-        { appId: appData._id, requestType, error },
+        { appId: appData._id, type: data.type, error },
         "Error processing Google Calendar request",
       );
       throw error;

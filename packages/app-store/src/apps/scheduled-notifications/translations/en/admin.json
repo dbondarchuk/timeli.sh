@@ -165,7 +165,8 @@
     "form": {
       "name": {
         "required": "Scheduled notification name must be at least 2 characters long",
-        "min": "Scheduled notification name must be at least 2 characters long"
+        "min": "Scheduled notification name must be at least 2 characters long",
+        "max": "Scheduled notification name must be at most 256 characters long"
       },
       "weeks": {
         "min": "Min amount of weeks is 0",
@@ -197,7 +198,8 @@
         "required": "Template is required"
       },
       "subject": {
-        "required": "Email subject is required"
+        "required": "Email subject is required",
+        "max": "Email subject must be at most 256 characters long"
       },
       "atTimeBefore": {
         "days": {

@@ -6,7 +6,12 @@ import {
   appointmentWithoutDepositCancellationSchema,
 } from "../configuration/booking/cancellation";
 import { WithCompanyId, WithDatabaseId } from "../database";
-import { asOptinalNumberField, zNonEmptyString, zUniqueArray } from "../utils";
+import {
+  asOptinalNumberField,
+  zNonEmptyString,
+  zObjectId,
+  zUniqueArray,
+} from "../utils";
 import { DistributiveOmit, Prettify } from "../utils/helpers";
 import { FieldSchema } from "./field";
 
@@ -40,45 +45,66 @@ const isRequiredOptionSchema = z.enum(isRequiredOptionTypes);
 
 export const appointmentOptionSchema = z
   .object({
-    name: zNonEmptyString("appointments.option.name.required", 2),
+    name: zNonEmptyString(
+      "validation.appointments.option.name.required",
+      2,
+      256,
+      "validation.appointments.option.name.max",
+    ),
     // description: z.array(z.any()),
-    description: zNonEmptyString("appointments.option.description.required", 2),
+    description: zNonEmptyString(
+      "validation.appointments.option.description.required",
+      2,
+      1024,
+      "validation.appointments.option.description.max",
+    ),
     addons: zUniqueArray(
       z.array(
         z.object({
-          id: zNonEmptyString("appointments.option.addons.id.required"),
+          id: zObjectId("validation.appointments.option.addons.id.required"),
         }),
       ),
       (addon) => addon.id,
-      "appointments.option.addons.id.unique",
+      "validation.appointments.option.addons.id.unique",
     ).optional(),
     fields: zUniqueArray(
       z.array(
         z.object({
-          id: zNonEmptyString("appointments.option.fields.id.required"),
+          id: zNonEmptyString(
+            "validation.appointments.option.fields.id.required",
+          ),
           required: z.coerce.boolean<boolean>().optional(),
         }),
       ),
       (field) => field.id,
-      "appointments.option.fields.id.unique",
+      "validation.appointments.option.fields.id.unique",
     ).optional(),
     isAutoConfirm: isRequiredOptionSchema,
     duplicateAppointmentCheck: z
       .object({
         enabled: z.literal(true, {
           error:
-            "appointments.option.duplicateAppointmentCheck.enabled.required",
+            "validation.appointments.option.duplicateAppointmentCheck.enabled.required",
         }),
         message: zNonEmptyString(
-          "appointments.option.duplicateAppointmentCheck.message.required",
+          "validation.appointments.option.duplicateAppointmentCheck.message.required",
         ),
         days: z.coerce
           .number<number>({
-            error: "appointments.option.duplicateAppointmentCheck.days.min",
+            error:
+              "validation.appointments.option.duplicateAppointmentCheck.days.min",
           })
-          .int("appointments.option.duplicateAppointmentCheck.days.min")
-          .min(1, "appointments.option.duplicateAppointmentCheck.days.min")
-          .max(30, "appointments.option.duplicateAppointmentCheck.days.max"),
+          .int(
+            "validation.appointments.option.duplicateAppointmentCheck.days.min",
+          )
+          .min(
+            1,
+            "validation.appointments.option.duplicateAppointmentCheck.days.min",
+          )
+          .max(
+            30,
+            "validation.appointments.option.duplicateAppointmentCheck.days.max",
+          ),
         doNotAllowScheduling: z.coerce.boolean<boolean>().optional(),
       })
       .or(
@@ -150,7 +176,7 @@ export const appointmentOptionSchema = z
       .object({
         requireDeposit: isRequiredOptionSchema
           .exclude(["always"], {
-            error: "appointments.option.requireDeposit.required",
+            error: "validation.appointments.option.requireDeposit.required",
           })
           .optional()
           .nullable(),
@@ -159,7 +185,7 @@ export const appointmentOptionSchema = z
         z
           .object({
             requireDeposit: isRequiredOptionSchema.extract(["always"], {
-              error: "appointments.option.requireDeposit.required",
+              error: "validation.appointments.option.requireDeposit.required",
             }),
           })
           .and(
@@ -170,11 +196,20 @@ export const appointmentOptionSchema = z
                 ]),
                 depositPercentage: z.coerce
                   .number<number>({
-                    error: "appointments.option.depositPercentage.required",
+                    error:
+                      "validation.appointments.option.depositPercentage.required",
                   })
-                  .int("appointments.option.depositPercentage.required")
-                  .min(10, "appointments.option.depositPercentage.required")
-                  .max(100, "appointments.option.depositPercentage.required"),
+                  .int(
+                    "validation.appointments.option.depositPercentage.required",
+                  )
+                  .min(
+                    10,
+                    "validation.appointments.option.depositPercentage.required",
+                  )
+                  .max(
+                    100,
+                    "validation.appointments.option.depositPercentage.required",
+                  ),
               })
               .or(
                 z.object({
@@ -183,9 +218,13 @@ export const appointmentOptionSchema = z
                   ]),
                   depositAmount: z.coerce
                     .number<number>({
-                      error: "appointments.option.depositAmount.required",
+                      error:
+                        "validation.appointments.option.depositAmount.required",
                     })
-                    .min(1, "appointments.option.depositAmount.required"),
+                    .min(
+                      1,
+                      "validation.appointments.option.depositAmount.required",
+                    ),
                 }),
               ),
           ),
@@ -205,7 +244,7 @@ export const appointmentOptionSchema = z
             error:
               "appointments.option.isOnline.required" satisfies ValidationKeys,
           }),
-          meetingUrlProviderAppId: z.string().optional(),
+          meetingUrlProviderAppId: zObjectId().optional(),
         }),
       ),
   )
@@ -215,10 +254,12 @@ export const appointmentOptionSchema = z
         durationType: optionDurationTypeSchema.extract(["fixed"]),
         duration: z.coerce
           .number<number>()
-          .int("appointments.option.duration.positive")
-          .min(1, "appointments.option.duration.positive"),
+          .int("validation.appointments.option.duration.positive")
+          .min(1, "validation.appointments.option.duration.positive"),
         price: asOptinalNumberField(
-          z.coerce.number<number>().min(1, "appointments.option.price.min"),
+          z.coerce
+            .number<number>()
+            .min(1, "validation.appointments.option.price.min"),
         ),
       })
       .or(
@@ -226,17 +267,17 @@ export const appointmentOptionSchema = z
           durationType: optionDurationTypeSchema.extract(["flexible"]),
           durationMin: z.coerce
             .number<number>()
-            .int("appointments.option.durationMin.positive")
-            .min(1, "appointments.option.durationMin.positive"),
+            .int("validation.appointments.option.durationMin.positive")
+            .min(1, "validation.appointments.option.durationMin.positive"),
           durationMax: z.coerce
             .number<number>()
-            .int("appointments.option.durationMax.positive")
-            .min(1, "appointments.option.durationMax.positive")
-            .max(60 * 24 * 1, "appointments.option.durationMax.max"),
+            .int("validation.appointments.option.durationMax.positive")
+            .min(1, "validation.appointments.option.durationMax.positive")
+            .max(60 * 24 * 1, "validation.appointments.option.durationMax.max"),
           durationStep: z.coerce
             .number<number>()
-            .int("appointments.option.durationStep.positive")
-            .min(1, "appointments.option.durationStep.positive"),
+            .int("validation.appointments.option.durationStep.positive")
+            .min(1, "validation.appointments.option.durationStep.positive"),
           pricePerHour: asOptinalNumberField(
             z.coerce
               .number<number>(
@@ -282,27 +323,37 @@ export const getAppointmentOptionSchemaWithUniqueCheck = (
 };
 
 export const appointmentAddonSchema = z.object({
-  name: zNonEmptyString("addons.name.required", 2),
+  name: zNonEmptyString(
+    "validation.addons.name.required",
+    2,
+    256,
+    "validation.addons.name.max",
+  ),
   // description: z.array(z.any()),
-  description: zNonEmptyString("addons.description.required", 2),
+  description: zNonEmptyString(
+    "validation.addons.description.required",
+    2,
+    1024,
+    "validation.addons.description.max",
+  ),
   duration: asOptinalNumberField(
     z.coerce
       .number<number>()
-      .int("addons.duration.positive")
-      .min(1, "addons.duration.positive"),
+      .int("validation.addons.duration.positive")
+      .min(1, "validation.addons.duration.positive"),
   ),
   price: asOptinalNumberField(
-    z.coerce.number<number>().min(1, "addons.price.min"),
+    z.coerce.number<number>().min(1, "validation.addons.price.min"),
   ),
   fields: zUniqueArray(
     z.array(
       z.object({
-        id: zNonEmptyString("appointments.option.fields.id.required"),
+        id: zObjectId("validation.appointments.option.fields.id.required"),
         required: z.coerce.boolean<boolean>().optional(),
       }),
     ),
     (field) => field.id,
-    "appointments.option.fields.id.unique",
+    "validation.appointments.option.fields.id.unique",
   ).optional(),
 });
 

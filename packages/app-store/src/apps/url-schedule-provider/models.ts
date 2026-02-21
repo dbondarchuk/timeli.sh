@@ -10,15 +10,25 @@ export const urlScheduleProviderConfigurationSchema = z.object({
     .min(
       1,
       "app_url-schedule-provider_admin.validation.form.url.required" satisfies UrlScheduleProviderAdminAllKeys,
+    )
+    .max(
+      2048,
+      "app_url-schedule-provider_admin.validation.form.url.max" satisfies UrlScheduleProviderAdminAllKeys,
     ),
   headers: zUniqueArray(
     z.array(
       z.object({
         key: zNonEmptyString(
           "app_url-schedule-provider_admin.validation.form.headers.key.required" satisfies UrlScheduleProviderAdminAllKeys,
+          1,
+          256,
+          "app_url-schedule-provider_admin.validation.form.headers.key.max" satisfies UrlScheduleProviderAdminAllKeys,
         ),
         value: zNonEmptyString(
           "app_url-schedule-provider_admin.validation.form.headers.value.required" satisfies UrlScheduleProviderAdminAllKeys,
+          1,
+          4096,
+          "app_url-schedule-provider_admin.validation.form.headers.value.max" satisfies UrlScheduleProviderAdminAllKeys,
         ),
       }),
     ),

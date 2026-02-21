@@ -61,7 +61,8 @@
     "eventTemplate": {
       "summary": {
         "required": "Event summary is required",
-        "min": "Event summary is required"
+        "min": "Event summary is required",
+        "max": "Event summary must be no more than 256 characters"
       },
       "templateId": {
         "required": "Event template is required",
@@ -71,7 +72,8 @@
     "emailTemplate": {
       "subject": {
         "required": "Email subject is required",
-        "min": "Email subject is required"
+        "min": "Email subject is required",
+        "max": "Email subject must be no more than 256 characters"
       },
       "templateId": {
         "required": "Email template is required",

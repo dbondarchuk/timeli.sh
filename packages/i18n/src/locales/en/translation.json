@@ -226,6 +226,38 @@
       "appointmentDetails": "Appointment Details"
     }
   },
+  "validation": {
+    "name": {
+      "required": "Name is required",
+      "max": "Name must be no more than 256 characters long"
+    },
+    "email": {
+      "invalid": "Invalid email",
+      "required": "Email is required",
+      "max": "Email must be no more than 256 characters long"
+    },
+    "phone": {
+      "invalid": "Invalid phone number",
+      "required": "Phone is required",
+      "max": "Phone must be no more than 32 characters long"
+    },
+    "text": {
+      "required": "Please provide the answer",
+      "maxOneLine": "Text must be no more than 256 characters long",
+      "maxMultiLine": "Text must be no more than 4096 characters long"
+    },
+    "checkbox": {
+      "required": "Please tick the checkbox"
+    },
+    "select": {
+      "required": "Please select an option"
+    },
+    "file": {
+      "required": "Please upload a file",
+      "maxSize": "File is too large",
+      "type": "Expected file"
+    }
+  },
   "duration_min_format": "{duration} min",
   "duration_hour_min_format": "{hours, plural, =0 {{minutes} min} other {# hr, {minutes} min}}",
   "duration_minutes_format": "{duration} minutes",
@@ -238,16 +270,6 @@
   "loading_available_times": "Loading available times...",
   "no_avaialable_time_slots": "No available time slots on this day",
   "duration_select_title": "How much time do you need?",
-  "name_required_error": "Please provide your name.",
-  "invalid_email_error": "Invalid email",
-  "email_required_error": "Email is required",
-  "invalid_phone_error": "Invalid phone number",
-  "phone_required_error": "Phone is required",
-  "field_required_error": "Please provide the answer",
-  "checkbox_required_error": "Please tick the checkbox",
-  "file_required_error": "File is required",
-  "file_max_size_error": "File is too large",
-  "file_type_error": "Expected file",
   "form_date_label_format": "Date: {date}",
   "form_time_label_format": "Time: {start} - {end}",
   "custom_duration_label_format": "Duration: custom",

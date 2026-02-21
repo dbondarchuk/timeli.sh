@@ -3,7 +3,7 @@ import { FormControl, FormField, FormItem } from "../form";
 import { PhoneInput } from "../phone-input";
 
 import { FieldValues } from "react-hook-form";
-import { getFieldName, IFormFieldProps } from "./form-fiel.types";
+import { getFieldName, IFormFieldProps } from "./form-field.types";
 
 import { useI18n } from "@timelish/i18n";
 import { WithLabelFieldData } from "@timelish/types";

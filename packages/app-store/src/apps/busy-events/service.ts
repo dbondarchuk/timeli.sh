@@ -3,6 +3,7 @@ import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
 import {
   CalendarBusyTime,
   ConnectedAppData,
+  ConnectedAppRequestError,
   ConnectedAppStatusWithText,
   ICalendarBusyTimeProvider,
   IConnectedApp,
@@ -14,7 +15,7 @@ import {
 } from "@timelish/types";
 import { eachOfInterval, getWeekIdentifier, parseTime } from "@timelish/utils";
 import { ObjectId } from "mongodb";
-import { RequestAction } from "./models";
+import { RequestAction, requestActionSchema } from "./models";
 import {
   BusyEventsAdminAllKeys,
   BusyEventsAdminKeys,
@@ -118,13 +119,24 @@ export default class BusyEventsConnectedApp
 
   public async processRequest(
     appData: ConnectedAppData,
-    data: RequestAction,
+    request: RequestAction,
   ): Promise<any> {
     const logger = this.loggerFactory("processRequest");
     logger.debug(
-      { appId: appData._id, requestType: data.type },
+      { appId: appData._id, request: request.type },
       "Processing request",
     );
+
+    const { data, success, error } = requestActionSchema.safeParse(request);
+    if (!success) {
+      logger.error({ error }, "Invalid request");
+      throw new ConnectedAppRequestError(
+        "invalid_request",
+        { data, error },
+        400,
+        error.message,
+      );
+    }
 
     try {
       switch (data.type) {
@@ -160,6 +172,7 @@ export default class BusyEventsConnectedApp
 
           return;
 
+        case "default":
         default: {
           logger.debug({ appId: appData._id }, "Processing default request");
 

@@ -3,6 +3,7 @@ import {
   CalendarBusyTime,
   ConnectedAppData,
   ConnectedAppError,
+  ConnectedAppRequestError,
   ConnectedAppStatusWithText,
   ICalendarBusyTimeProvider,
   IConnectedApp,
@@ -10,7 +11,7 @@ import {
 } from "@timelish/types";
 import { parseIcsCalendar } from "@ts-ics/schema-zod";
 import { DateTime } from "luxon";
-import { IcsLinkCalendarSource } from "./models";
+import { IcsLinkCalendarSource, icsLinkCalendarSourceSchema } from "./models";
 import {
   IcsAdminAllKeys,
   IcsAdminKeys,
@@ -28,13 +29,25 @@ export default class IcsConnectedApp
 
   public async processRequest(
     appData: ConnectedAppData,
-    data: IcsLinkCalendarSource,
+    request: IcsLinkCalendarSource,
   ): Promise<ConnectedAppStatusWithText<IcsAdminNamespace, IcsAdminKeys>> {
     const logger = this.loggerFactory("processRequest");
     logger.debug(
-      { appId: appData._id, icsLink: data.link },
+      { appId: appData._id },
       "Processing ICS calendar connection request",
     );
+
+    const { data, success, error } =
+      icsLinkCalendarSourceSchema.safeParse(request);
+    if (!success) {
+      logger.error({ error }, "Invalid ICS calendar connection request");
+      throw new ConnectedAppRequestError(
+        "invalid_request",
+        { request },
+        400,
+        error.message,
+      );
+    }
 
     try {
       logger.debug(

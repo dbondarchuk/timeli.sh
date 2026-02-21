@@ -3,12 +3,16 @@ import {
   Appointment,
   AppointmentStatus,
   ConnectedAppData,
+  ConnectedAppRequestError,
   ConnectedAppStatusWithText,
   IAppointmentHook,
   IConnectedApp,
   IConnectedAppProps,
 } from "@timelish/types";
-import { CustomerTextMessageNotificationConfiguration } from "./models";
+import {
+  CustomerTextMessageNotificationConfiguration,
+  customerTextMessageNotificationConfigurationSchema,
+} from "./models";
 import {
   CustomerTextMessageNotificationAdminAllKeys,
   CustomerTextMessageNotificationAdminKeys,
@@ -37,7 +41,7 @@ export default class CustomerTextMessageNotificationConnectedApp
 
   public async processRequest(
     appData: ConnectedAppData,
-    data: CustomerTextMessageNotificationConfiguration,
+    request: CustomerTextMessageNotificationConfiguration,
   ): Promise<
     ConnectedAppStatusWithText<
       CustomerTextMessageNotificationAdminNamespace,
@@ -49,6 +53,18 @@ export default class CustomerTextMessageNotificationConnectedApp
       { appId: appData._id },
       "Processing customer text message notification configuration request",
     );
+
+    const { data, success, error } =
+      customerTextMessageNotificationConfigurationSchema.safeParse(request);
+    if (!success) {
+      logger.error({ error }, "Invalid request");
+      throw new ConnectedAppRequestError(
+        "invalid_request",
+        { request, error },
+        400,
+        error.message,
+      );
+    }
 
     try {
       const defaultApps =

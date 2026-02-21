@@ -28,7 +28,10 @@ export class CustomersService extends BaseService implements ICustomersService {
     super("CustomersService", companyId);
   }
 
-  public async getCustomer(id: string): Promise<Customer | null> {
+  public async getCustomer(
+    id: string,
+    options?: { includeDeleted?: boolean },
+  ): Promise<Customer | null> {
     const logger = this.loggerFactory("getCustomer");
     logger.debug({ customerId: id }, "Getting customer by id");
 
@@ -43,6 +46,9 @@ export class CustomersService extends BaseService implements ICustomersService {
 
     if (!customer) {
       logger.warn({ customerId: id }, "Customer not found");
+    } else if (!options?.includeDeleted && customer.isDeleted) {
+      logger.warn({ customerId: id }, "Customer is deleted");
+      return null;
     } else {
       logger.debug(
         {
@@ -92,6 +98,7 @@ export class CustomersService extends BaseService implements ICustomersService {
 
     const filter: Filter<Customer> = {
       companyId: this.companyId,
+      isDeleted: { $ne: true },
     };
 
     if (query.search) {
@@ -120,6 +127,7 @@ export class CustomersService extends BaseService implements ICustomersService {
                     _id: {
                       $in: query.priorityIds,
                     },
+                    companyId: this.companyId,
                   },
                 },
               ],
@@ -344,6 +352,7 @@ export class CustomersService extends BaseService implements ICustomersService {
     const customer = await collection.findOne({
       $or: queries,
       companyId: this.companyId,
+      isDeleted: { $ne: true },
     });
 
     if (customer) {
@@ -381,6 +390,7 @@ export class CustomersService extends BaseService implements ICustomersService {
     const customer = await collection.findOne({
       $or,
       companyId: this.companyId,
+      isDeleted: { $ne: true },
     });
 
     if (customer) {
@@ -471,6 +481,7 @@ export class CustomersService extends BaseService implements ICustomersService {
     const updatedCustomer = await collection.findOne({
       _id: id,
       companyId: this.companyId,
+      isDeleted: { $ne: true },
     });
     if (!updatedCustomer) {
       logger.warn({ customerId: id }, "Customer not found after update");
@@ -608,29 +619,41 @@ export class CustomersService extends BaseService implements ICustomersService {
       _id: id,
       companyId: this.companyId,
     });
+
     if (!customer) {
       logger.warn({ customerId: id }, "Customer not found for deletion");
       return null;
     }
 
-    const appointmentsCollection = db.collection<Appointment>(
-      APPOINTMENTS_COLLECTION_NAME,
-    );
-    const count = await appointmentsCollection.countDocuments({
-      customerId: id,
-    });
-
-    if (count > 0) {
-      logger.error(
-        { customerId: id, appointmentCount: count },
-        "Cannot delete customer with existing appointments",
-      );
-      throw new Error("Customer has existing appointments");
+    if (customer.isDeleted) {
+      logger.warn({ customerId: id }, "Customer already deleted");
+      return null;
     }
 
-    await collection.deleteOne({
-      _id: id,
-    });
+    await collection.updateOne(
+      {
+        _id: id,
+        companyId: this.companyId,
+      },
+      {
+        $set: {
+          isDeleted: true,
+          deletedAt: new Date(),
+          knownEmails: [],
+          knownPhones: [],
+          knownNames: [],
+        },
+        $unset: {
+          avatar: "",
+          dateOfBirth: "",
+          requireDeposit: "",
+          depositPercentage: "",
+          dontAllowBookings: "",
+          email: "",
+          phone: "",
+        },
+      },
+    );
 
     logger.debug(
       { customerId: id, name: customer.name },
@@ -654,59 +677,45 @@ export class CustomersService extends BaseService implements ICustomersService {
     const db = await getDbConnection();
 
     const collection = db.collection<Customer>(CUSTOMERS_COLLECTION_NAME);
-    const appointmentsCollection = db.collection<Appointment>(
-      APPOINTMENTS_COLLECTION_NAME,
-    );
-
-    const appointmentMap = (await appointmentsCollection
-      .aggregate([
-        {
-          $match: {
-            customerId: {
-              $in: ids,
-            },
-            companyId: this.companyId,
-          },
-        },
-        {
-          $group: {
-            _id: "$customerId",
-            count: {
-              $count: {},
-            },
-          },
-        },
-      ])
-      .toArray()) as { _id: string; count: number }[];
-
-    const nonEmptyCustomers = appointmentMap.filter(({ count }) => count > 0);
-    if (nonEmptyCustomers.length > 0) {
-      logger.error(
-        {
-          customerIds: nonEmptyCustomers.map(({ _id }) => _id),
-          appointmentCounts: nonEmptyCustomers,
-        },
-        "Cannot delete customers with existing appointments",
-      );
-      throw new Error(
-        `Some customers already have appointments: ${nonEmptyCustomers.map(({ _id }) => _id).join(", ")}`,
-      );
-    }
-
-    // Get customers before deletion for hooks
     const customersToDelete = await collection
       .find({
-        _id: { $in: ids },
+        _id: {
+          $in: ids,
+        },
+        isDeleted: { $ne: true },
         companyId: this.companyId,
       })
       .toArray();
 
-    await collection.deleteMany({
-      _id: {
-        $in: ids,
+    const idsToDelete = customersToDelete.map((customer) => customer._id);
+    logger.debug({ customerIds: idsToDelete }, "Customers to delete");
+
+    await collection.updateMany(
+      {
+        _id: {
+          $in: idsToDelete,
+        },
       },
-      companyId: this.companyId,
-    });
+      {
+        $set: {
+          isDeleted: true,
+          deletedAt: new Date(),
+          knownEmails: [],
+          knownPhones: [],
+          knownNames: [],
+          // name: "Deleted Customer",
+        },
+        $unset: {
+          avatar: "",
+          dateOfBirth: "",
+          requireDeposit: "",
+          depositPercentage: "",
+          dontAllowBookings: "",
+          email: "",
+          phone: "",
+        },
+      },
+    );
 
     logger.debug(
       { customerIds: ids, count: ids.length },

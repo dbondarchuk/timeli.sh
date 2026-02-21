@@ -53,6 +53,7 @@ export async function POST(
           success: false,
           error: error.message,
           code: error.code,
+          data: error.data,
         },
         { status: error.status },
       );

@@ -36,6 +36,7 @@ import { PlusCircle } from "lucide-react";
 import React from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { CustomerName } from "./data-table/customer-name";
 
 const CustomerShortLabel: React.FC<{
   customer: CustomerListModel;
@@ -50,9 +51,13 @@ const CustomerShortLabel: React.FC<{
         alt={customer.name}
       />
       <div className={cn("flex gap-0.5", row ? "items-baseline" : "flex-col")}>
-        <span>{customer.name}</span>
-        <span className="text-xs italic">{customer.email}</span>
-        <span className="text-xs italic">{customer.phone}</span>
+        <CustomerName customer={customer} />
+        {!customer.isDeleted && (
+          <>
+            <span className="text-xs italic">{customer.email}</span>
+            <span className="text-xs italic">{customer.phone}</span>
+          </>
+        )}
       </div>
     </div>
   );

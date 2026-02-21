@@ -1,6 +1,11 @@
 import * as z from "zod";
 import { WithCompanyId, WithDatabaseId } from "../database";
-import { asOptinalNumberField, zNonEmptyString, zUniqueArray } from "../utils";
+import {
+  asOptinalNumberField,
+  zNonEmptyString,
+  zObjectId,
+  zUniqueArray,
+} from "../utils";
 import { Prettify } from "../utils/helpers";
 
 export const fixedAmountDiscountType = "amount";
@@ -13,7 +18,12 @@ export const discountTypes = [
 
 export const discountSchema = z
   .object({
-    name: zNonEmptyString("discount.name.required", 2),
+    name: zNonEmptyString(
+      "validation.discount.name.required",
+      2,
+      256,
+      "validation.discount.name.max",
+    ),
     enabled: z.coerce.boolean<boolean>(),
     startDate: z.coerce.date<Date>().optional(),
     endDate: z.coerce.date<Date>().optional(),
@@ -21,15 +31,17 @@ export const discountSchema = z
     appointmentEndDate: z.coerce.date<Date>().optional(),
     maxUsage: asOptinalNumberField(
       z.coerce
-        .number<number>({ error: "discount.maxUsage.min" })
-        .int("discount.maxUsage.min")
-        .min(1, "discount.maxUsage.min"),
+        .number<number>({ error: "validation.discount.maxUsage.min" })
+        .int("validation.discount.maxUsage.min")
+        .min(1, "validation.discount.maxUsage.min"),
     ),
     maxUsagePerCustomer: asOptinalNumberField(
       z.coerce
-        .number<number>({ error: "discount.maxUsagePerCustomer.min" })
-        .int("discount.maxUsagePerCustomer.min")
-        .min(1, "discount.maxUsagePerCustomer.min"),
+        .number<number>({
+          error: "validation.discount.maxUsagePerCustomer.min",
+        })
+        .int("validation.discount.maxUsagePerCustomer.min")
+        .min(1, "validation.discount.maxUsagePerCustomer.min"),
     ),
     type: z.enum(discountTypes),
     limitTo: z
@@ -41,12 +53,14 @@ export const discountSchema = z
                 ids: zUniqueArray(
                   z.array(
                     z.object({
-                      id: zNonEmptyString("discount.limitTo.addons.required"),
+                      id: zObjectId(
+                        "validation.discount.limitTo.addons.required",
+                      ),
                     }),
                   ),
                   // .min(1, "discount.limitTo.addons.min"),
                   (addon) => addon.id,
-                  "discount.limitTo.addons.unique",
+                  "validation.discount.limitTo.addons.unique",
                 ),
               }),
             )
@@ -54,25 +68,32 @@ export const discountSchema = z
           options: zUniqueArray(
             z.array(
               z.object({
-                id: zNonEmptyString("discount.limitTo.options.required"),
+                id: zObjectId("validation.discount.limitTo.options.required"),
               }),
             ),
             (option) => option.id,
-            "discount.limitTo.options.unique",
+            "validation.discount.limitTo.options.unique",
           ).optional(),
         }),
       )
       .optional(),
     value: z.coerce
-      .number<number>({ error: "discount.value.required" })
-      .int("discount.value.required"),
+      .number<number>({ error: "validation.discount.value.required" })
+      .int("validation.discount.value.required"),
     codes: zUniqueArray(
       z
-        .array(zNonEmptyString("discount.codes.minLength", 3))
-        .min(1, "discount.codes.min")
-        .max(10, "discount.codes.max"),
+        .array(
+          zNonEmptyString(
+            "validation.discount.codes.minLength",
+            3,
+            256,
+            "validation.discount.codes.maxLength",
+          ),
+        )
+        .min(1, "validation.discount.codes.min")
+        .max(10, "validation.discount.codes.max"),
       (code) => code,
-      "discount.codes.unique",
+      "validation.discount.codes.unique",
     ),
   })
   .superRefine((arg, ctx) => {
@@ -142,14 +163,14 @@ export const applyDiscountRequestSchema = z.object({
   name: z.string(),
   email: z.string(),
   phone: z.string(),
-  optionId: zNonEmptyString("discount.applyRequest.optionId.required"),
+  optionId: zObjectId("validation.discount.applyRequest.optionId.required"),
   dateTime: z.coerce.date<Date>({
-    error: "discount.applyRequest.dateTime.required",
+    error: "validation.discount.applyRequest.dateTime.required",
   }),
   addons: zUniqueArray(
-    z.array(zNonEmptyString("discount.applyRequest.addons.required")),
+    z.array(zObjectId("validation.discount.applyRequest.addons.required")),
     (id) => id,
-    "discount.applyRequest.addons.unique",
+    "validation.discount.applyRequest.addons.unique",
   ).optional(),
   code: zNonEmptyString("discount.applyRequest.code.required"),
 });

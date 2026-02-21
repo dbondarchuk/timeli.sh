@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "./link";
 
 type HeadingProps = {
-  title: string;
+  title: React.ReactNode;
   description?: React.ReactNode;
   href?: string;
 };

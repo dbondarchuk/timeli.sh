@@ -29,7 +29,8 @@
   "validation": {
     "apiKey": {
       "required": "TextBelt API key is required",
-      "min": "TextBelt API key is required"
+      "min": "TextBelt API key is required",
+      "max": "TextBelt API key must be at most 256 characters long"
     }
   }
 }

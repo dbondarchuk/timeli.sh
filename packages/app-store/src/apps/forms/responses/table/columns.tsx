@@ -3,7 +3,11 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { useI18n } from "@timelish/i18n";
 import { Button, Checkbox, Link } from "@timelish/ui";
-import { tableSortHeader, tableSortNoopFunction } from "@timelish/ui-admin";
+import {
+  CustomerName,
+  tableSortHeader,
+  tableSortNoopFunction,
+} from "@timelish/ui-admin";
 import { DateTime } from "luxon";
 import React from "react";
 import { FormResponseListModel, FormResponseModel } from "../../models";
@@ -113,12 +117,12 @@ export const columns: ColumnDef<ResponsesTableRow>[] = [
   },
   {
     cell: ({ row }) =>
-      row.original.customerId ? (
+      row.original.customer ? (
         <Link
           href={`/dashboard/customers/${row.original.customerId}`}
           variant="underline"
         >
-          {row.original.customer?.name ?? row.original.customerId}
+          <CustomerName customer={row.original.customer} />
         </Link>
       ) : (
         <span className="text-muted-foreground">—</span>

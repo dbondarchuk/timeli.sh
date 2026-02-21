@@ -77,10 +77,12 @@
   },
   "validation": {
     "clientId": {
-      "required": "PayPal Client ID is required"
+      "required": "PayPal Client ID is required",
+      "max": "PayPal Client ID must be at most 256 characters long"
     },
     "secretKey": {
-      "required": "PayPal API key is required"
+      "required": "PayPal API key is required",
+      "max": "PayPal API key must be at most 256 characters long"
     },
     "buttonStyle": {
       "shape": {

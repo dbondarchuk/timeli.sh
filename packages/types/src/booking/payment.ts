@@ -137,15 +137,15 @@ export type InStorePayment = Extract<
 
 export const inStorePaymentUpdateModelSchema = z.object({
   amount: z.coerce
-    .number<number>({ error: "payments.amount.min" })
-    .min(1, "payments.amount.min"),
-  paidAt: z.coerce.date<Date>({ error: "payments.paidAt.required" }),
+    .number<number>({ error: "validation.payments.amount.positive" })
+    .positive("validation.payments.amount.positive"),
+  paidAt: z.coerce.date<Date>({ error: "validation.payments.paidAt.required" }),
   appointmentId: z.string(),
-  description: z.string(),
+  description: z.string().max(1024, "validation.payments.description.max"),
   method: z.enum(inPersonPaymentMethod, {
-    error: "payments.method.required",
+    error: "validation.payments.method.required",
   }),
-  type: z.enum(paymentType, { error: "payments.type.required" }),
+  type: z.enum(paymentType, { error: "validation.payments.type.required" }),
 });
 
 export type InStorePaymentUpdateModel = z.infer<

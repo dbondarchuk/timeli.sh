@@ -10,15 +10,25 @@ export const urlBusyEventsConfigurationSchema = z.object({
     .min(
       1,
       "app_url-busy-events_admin.validation.form.url.required" satisfies UrlBusyEventsAdminAllKeys,
+    )
+    .max(
+      2048,
+      "app_url-busy-events_admin.validation.form.url.max" satisfies UrlBusyEventsAdminAllKeys,
     ),
   headers: zUniqueArray(
     z.array(
       z.object({
         key: zNonEmptyString(
           "app_url-busy-events_admin.validation.form.headers.key.required" satisfies UrlBusyEventsAdminAllKeys,
+          1,
+          256,
+          "app_url-busy-events_admin.validation.form.headers.key.max" satisfies UrlBusyEventsAdminAllKeys,
         ),
         value: zNonEmptyString(
           "app_url-busy-events_admin.validation.form.headers.value.required" satisfies UrlBusyEventsAdminAllKeys,
+          1,
+          4096,
+          "app_url-busy-events_admin.validation.form.headers.value.max" satisfies UrlBusyEventsAdminAllKeys,
         ),
       }),
     ),

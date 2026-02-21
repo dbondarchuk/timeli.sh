@@ -4,6 +4,7 @@ import {
   Appointment,
   AppointmentStatus,
   ConnectedAppData,
+  ConnectedAppRequestError,
   ConnectedAppStatusWithText,
   IAppointmentHook,
   IConnectedApp,
@@ -17,7 +18,10 @@ import {
   getWebsiteUrl,
   templateSafeWithError,
 } from "@timelish/utils";
-import { CustomerEmailNotificationConfiguration } from "./models";
+import {
+  CustomerEmailNotificationConfiguration,
+  customerEmailNotificationConfigurationSchema,
+} from "./models";
 import {
   CustomerEmailNotificationAdminAllKeys,
   CustomerEmailNotificationAdminKeys,
@@ -38,7 +42,7 @@ export default class CustomerEmailNotificationConnectedApp
 
   public async processRequest(
     appData: ConnectedAppData,
-    data: CustomerEmailNotificationConfiguration,
+    request: CustomerEmailNotificationConfiguration,
   ): Promise<
     ConnectedAppStatusWithText<
       CustomerEmailNotificationAdminNamespace,
@@ -51,6 +55,18 @@ export default class CustomerEmailNotificationConnectedApp
       { appId: appData._id },
       "Processing customer email notification configuration request",
     );
+
+    const { data, success, error } =
+      customerEmailNotificationConfigurationSchema.safeParse(request);
+    if (!success) {
+      logger.error({ error }, "Invalid request");
+      throw new ConnectedAppRequestError(
+        "invalid_request",
+        { request, error },
+        400,
+        error.message,
+      );
+    }
 
     try {
       const status: ConnectedAppStatusWithText<

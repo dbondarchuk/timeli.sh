@@ -4,8 +4,9 @@ import { Prettify } from "../utils";
 
 export const pageFooterSchema = z.object({
   name: z
-    .string({ error: "page.footers.name.required" })
-    .min(2, "page.footers.name.min"),
+    .string({ error: "validation.page.footers.name.required" })
+    .min(2, "validation.page.footers.name.min")
+    .max(256, "validation.page.footers.name.max"),
   content: z.any().optional(),
 });
 

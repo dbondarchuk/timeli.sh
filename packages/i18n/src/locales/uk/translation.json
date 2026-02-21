@@ -226,6 +226,38 @@
       "appointmentDetails": "Деталі запису"
     }
   },
+  "validation": {
+    "name": {
+      "required": "Ім'я обов'язкове",
+      "max": "Ім'я не може бути більше 256 символів"
+    },
+    "email": {
+      "invalid": "Невірна електронна пошта",
+      "required": "Електронна пошта обов'язкова",
+      "max": "Електронна пошта не може бути більше 256 символів"
+    },
+    "phone": {
+      "invalid": "Невірний номер телефону",
+      "required": "Телефон обов'язковий",
+      "max": "Номер телефону не може бути більше 32 символів"
+    },
+    "text": {
+      "required": "Будь ласка, надайте відповідь",
+      "maxOneLine": "Текст не може бути більше 256 символів",
+      "maxMultiLine": "Текст не може бути більше 4096 символів"
+    },
+    "checkbox": {
+      "required": "Будь ласка, поставте галочку"
+    },
+    "select": {
+      "required": "Будь ласка, виберіть опцію"
+    },
+    "file": {
+      "required": "Будь ласка, завантажте файл",
+      "maxSize": "Файл занадто великий",
+      "type": "Очікуваний файл"
+    }
+  },
   "duration_min_format": "{duration} хв",
   "duration_hour_min_format": "{hours, plural, =0 {{minutes} хв} other {# год, {minutes} хв}}",
   "duration_minutes_format": "{duration} хвилин",
@@ -238,16 +270,6 @@
   "loading_available_times": "Завантаження доступного часу...",
   "no_avaialable_time_slots": "Цього дня не має вільного часу",
   "duration_select_title": "Скільки часу вам потрібно?",
-  "name_required_error": "Будь ласка, вкажіть ваше ім'я.",
-  "invalid_email_error": "Невірна електронна пошта",
-  "email_required_error": "Електронна пошта обов'язкова",
-  "invalid_phone_error": "Невірний номер телефону",
-  "phone_required_error": "Телефон обов'язковий",
-  "field_required_error": "Будь ласка, надайте відповідь",
-  "checkbox_required_error": "Будь ласка, поставте галочку",
-  "file_required_error": "Файл обов'язковий",
-  "file_max_size_error": "Файл занадто великий",
-  "file_type_error": "Очікуваний файл",
   "form_date_label_format": "Дата: {date}",
   "form_time_label_format": "Час: {start} - {end}",
   "custom_duration_label_format": "Тривалість: власна",

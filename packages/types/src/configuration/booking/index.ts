@@ -1,5 +1,5 @@
 import * as z from "zod";
-import { asOptinalNumberField, zNonEmptyString } from "../../utils";
+import { asOptinalNumberField, zObjectId } from "../../utils";
 import { calendarSourcesConfigurationSchema } from "./calendar-source";
 import { appointmentCancellationRescheduleSchema } from "./cancellation";
 import { paymentsConfigurationSchema } from "./payments";
@@ -10,7 +10,9 @@ export * from "./cancellation";
 export * from "./payments";
 
 export const customTimeSlotSchema = z
-  .string({ message: "Time is required" })
+  .string({
+    message: "validation.configuration.booking.customTimeSlot.required",
+  })
   .refine((arg) => {
     const split = arg.split(":", 2).map((x) => parseInt(x));
     return !(
@@ -21,7 +23,7 @@ export const customTimeSlotSchema = z
       split[1] < 0 ||
       split[1] >= 60
     );
-  }, "Invalid time");
+  }, "validation.configuration.booking.customTimeSlot.invalid");
 
 export const slotStartSchema = z.union(
   [
@@ -33,7 +35,7 @@ export const slotStartSchema = z.union(
     z.literal("every-hour"), // every hour at start
     z.literal("custom"), // custom
   ],
-  { message: "configuration.booking.slotStart.unknown" },
+  { message: "validation.configuration.booking.slotStart.unknown" },
 );
 
 export const allowPromoCodeType = [
@@ -46,7 +48,7 @@ export type AllowPromoCodeType = (typeof allowPromoCodeType)[number];
 
 export const appointOptionsSchema = z.array(
   z.object({
-    id: zNonEmptyString("configuration.booking.options.id.required"),
+    id: zObjectId("validation.configuration.booking.options.id.required"),
   }),
 );
 
@@ -88,9 +90,9 @@ export const bookingConfigurationSchema =
   generalBookingConfigurationSchema.superRefine((arg, ctx) => {
     if (arg.slotStart === "custom" && !arg.customSlotTimes?.length) {
       ctx.addIssue({
-        path: ["specifiedSlotTimes"],
+        path: ["customSlotTimes"],
         code: z.ZodIssueCode.custom,
-        message: "configuration.booking.customSlotTimes.required",
+        message: "validation.configuration.booking.customSlotTimes.required",
       });
     }
   });

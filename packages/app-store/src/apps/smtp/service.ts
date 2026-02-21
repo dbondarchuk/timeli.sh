@@ -2,6 +2,7 @@ import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
 import {
   ConnectedAppData,
   ConnectedAppError,
+  ConnectedAppRequestError,
   ConnectedAppStatusWithText,
   Email,
   EmailResponse,
@@ -13,7 +14,7 @@ import { decrypt, encrypt } from "@timelish/utils";
 import { createEvent } from "ics";
 import nodemailer from "nodemailer";
 import Mail from "nodemailer/lib/mailer";
-import { SmtpConfiguration } from "./models";
+import { SmtpConfiguration, smtpConfigurationSchema } from "./models";
 import {
   SmtpAdminAllKeys,
   SmtpAdminKeys,
@@ -45,19 +46,30 @@ export default class SmtpConnectedApp
 
   public async processRequest(
     appData: ConnectedAppData,
-    data: SmtpConfiguration,
+    request: SmtpConfiguration,
   ): Promise<ConnectedAppStatusWithText> {
     const logger = this.loggerFactory("processRequest");
     logger.debug(
       {
         appId: appData._id,
-        host: data.host,
-        port: data.port,
-        secure: data.secure,
-        email: data.email,
+        host: request.host,
+        port: request.port,
+        secure: request.secure,
+        email: request.email,
       },
       "Processing SMTP configuration request",
     );
+
+    const { data, success, error } = smtpConfigurationSchema.safeParse(request);
+    if (!success) {
+      logger.error({ error }, "Invalid SMTP configuration request");
+      throw new ConnectedAppRequestError(
+        "invalid_smtp_configuration_request",
+        { error },
+        400,
+        error.message,
+      );
+    }
 
     if (data?.auth?.pass === MASKED_PASSWORD && appData?.data?.auth?.pass) {
       data.auth = {

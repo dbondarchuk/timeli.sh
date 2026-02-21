@@ -1,9 +1,9 @@
-import { zNonEmptyString } from "@timelish/types";
+import { zObjectId } from "@timelish/types";
 import * as z from "zod";
 import { TextMessageAutoReplyAdminAllKeys } from "./translations/types";
 
 export const textMessageAutoReplyConfigurationSchema = z.object({
-  autoReplyTemplateId: zNonEmptyString(
+  autoReplyTemplateId: zObjectId(
     "app_text-message-auto-reply_admin.validation.autoReplyTemplateId.required" satisfies TextMessageAutoReplyAdminAllKeys,
   ),
 });

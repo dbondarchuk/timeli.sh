@@ -69,10 +69,16 @@ const [firstTextSize, ...restTextSizes] = TextSizes;
 const [firstTextWeight, ...restTextWeights] = TextWeights;
 
 export const baseMenuItemSchema = z.object({
-  url: z.string({ error: "common.url.invalid" }).min(1, "common.url.invalid"),
+  url: z
+    .string({ error: "validation.common.url.invalid" })
+    .min(1, "validation.common.url.invalid")
+    .max(2048, "validation.common.url.max"),
   label: z
-    .string({ error: "configuration.styling.menuItem.label.required" })
-    .min(1, "configuration.styling.menuItem.label.required"),
+    .string({
+      error: "validation.configuration.styling.menuItem.label.required",
+    })
+    .min(1, "validation.configuration.styling.menuItem.label.required")
+    .max(256, "validation.configuration.styling.menuItem.label.max"),
   className: z.string().optional(),
 });
 

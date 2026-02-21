@@ -1,13 +1,14 @@
+import { zNonEmptyString, zObjectId, zTaggedUnion } from "@timelish/types";
 import * as z from "zod";
 import {
   formSchemaBase,
-  GetFormResponsesQuery,
-  GetFormsQuery,
+  getFormResponsesQuerySchema,
+  getFormsQuerySchema,
   updateFormResponseSchema,
 } from "./form";
 
 export const getFormResponseByIdActionSchema = z.object({
-  id: z.string().min(1),
+  id: zObjectId(),
 });
 
 export type GetFormResponseByIdAction = z.infer<
@@ -17,7 +18,7 @@ export const GetFormResponseByIdActionType =
   "forms-get-form-response-by-id" as const;
 
 export const updateFormResponseActionSchema = z.object({
-  id: z.string().min(1),
+  id: zObjectId(),
   update: updateFormResponseSchema,
 });
 
@@ -28,7 +29,7 @@ export const UpdateFormResponseActionType =
   "forms-update-form-response" as const;
 
 export const deleteFormResponseActionSchema = z.object({
-  id: z.string().min(1),
+  id: zObjectId(),
 });
 
 export type DeleteFormResponseAction = z.infer<
@@ -38,7 +39,7 @@ export const DeleteFormResponseActionType =
   "forms-delete-form-response" as const;
 
 export const deleteSelectedFormResponsesActionSchema = z.object({
-  ids: z.array(z.string().min(1)),
+  ids: z.array(zObjectId()),
 });
 
 export type DeleteSelectedFormResponsesAction = z.infer<
@@ -55,7 +56,7 @@ export type CreateFormAction = z.infer<typeof createFormActionSchema>;
 export const CreateFormActionType = "forms-create-form" as const;
 
 export const updateFormActionSchema = z.object({
-  id: z.string(),
+  id: zObjectId(),
   form: formSchemaBase,
 });
 
@@ -63,14 +64,14 @@ export type UpdateFormAction = z.infer<typeof updateFormActionSchema>;
 export const UpdateFormActionType = "forms-update-form" as const;
 
 export const deleteFormActionSchema = z.object({
-  id: z.string().min(1),
+  id: zObjectId(),
 });
 
 export type DeleteFormAction = z.infer<typeof deleteFormActionSchema>;
 export const DeleteFormActionType = "forms-delete-form" as const;
 
 export const deleteSelectedFormsActionSchema = z.object({
-  ids: z.array(z.string().min(1)),
+  ids: z.array(zObjectId()),
 });
 
 export type DeleteSelectedFormsAction = z.infer<
@@ -80,41 +81,39 @@ export const DeleteSelectedFormsActionType =
   "forms-delete-selected-forms" as const;
 
 export const setFormArchivedActionSchema = z.object({
-  id: z.string().min(1),
-  isArchived: z.boolean(),
+  id: zObjectId(),
+  isArchived: z.coerce.boolean<boolean>(),
 });
 
 export type SetFormArchivedAction = z.infer<typeof setFormArchivedActionSchema>;
-export const SetFormArchivedActionType =
-  "forms-set-form-archived" as const;
+export const SetFormArchivedActionType = "forms-set-form-archived" as const;
 
 export const setFormsArchivedActionSchema = z.object({
-  ids: z.array(z.string().min(1)),
-  isArchived: z.boolean(),
+  ids: z.array(zObjectId()),
+  isArchived: z.coerce.boolean<boolean>(),
 });
 
 export type SetFormsArchivedAction = z.infer<
   typeof setFormsArchivedActionSchema
 >;
-export const SetFormsArchivedActionType =
-  "forms-set-forms-archived" as const;
+export const SetFormsArchivedActionType = "forms-set-forms-archived" as const;
 
 export const getFormsActionSchema = z.object({
-  query: z.custom<GetFormsQuery>(),
+  query: getFormsQuerySchema,
 });
 
 export type GetFormsAction = z.infer<typeof getFormsActionSchema>;
 export const GetFormsActionType = "forms-get-forms" as const;
 
 export const getFormByIdActionSchema = z.object({
-  id: z.string(),
+  id: zObjectId(),
 });
 
 export type GetFormByIdAction = z.infer<typeof getFormByIdActionSchema>;
 export const GetFormByIdActionType = "forms-get-form" as const;
 
 export const getFormResponsesActionSchema = z.object({
-  query: z.custom<GetFormResponsesQuery>(),
+  query: getFormResponsesQuerySchema,
 });
 
 export type GetFormResponsesAction = z.infer<
@@ -123,8 +122,8 @@ export type GetFormResponsesAction = z.infer<
 export const GetFormResponsesActionType = "forms-get-responses" as const;
 
 export const checkFormNameUniqueActionSchema = z.object({
-  name: z.string(),
-  id: z.string().optional(),
+  name: zNonEmptyString(),
+  id: zObjectId().optional(),
 });
 
 export type CheckFormNameUniqueAction = z.infer<
@@ -133,7 +132,7 @@ export type CheckFormNameUniqueAction = z.infer<
 export const CheckFormNameUniqueActionType = "forms-check-name-unique" as const;
 
 export const createFormResponseActionSchema = z.object({
-  formId: z.string().min(1),
+  formId: zObjectId(),
   update: updateFormResponseSchema,
 });
 
@@ -143,8 +142,8 @@ export type CreateFormResponseAction = z.infer<
 export const CreateFormResponseActionType = "forms-create-response" as const;
 
 export const reassignFormResponsesActionSchema = z.object({
-  ids: z.array(z.string().min(1)),
-  customerId: z.string().nullable(),
+  ids: z.array(zObjectId()),
+  customerId: zObjectId().nullable(),
 });
 
 export type ReassignFormResponsesAction = z.infer<
@@ -153,28 +152,38 @@ export type ReassignFormResponsesAction = z.infer<
 export const ReassignFormResponsesActionType =
   "forms-reassign-form-responses" as const;
 
-export type RequestAction =
-  | ({ type: typeof CreateFormActionType } & CreateFormAction)
-  | ({ type: typeof UpdateFormActionType } & UpdateFormAction)
-  | ({ type: typeof DeleteFormActionType } & DeleteFormAction)
-  | ({ type: typeof GetFormsActionType } & GetFormsAction)
-  | ({ type: typeof GetFormByIdActionType } & GetFormByIdAction)
-  | ({ type: typeof GetFormResponsesActionType } & GetFormResponsesAction)
-  | ({ type: typeof CreateFormResponseActionType } & CreateFormResponseAction)
-  | ({ type: typeof GetFormResponseByIdActionType } & GetFormResponseByIdAction)
-  | ({ type: typeof UpdateFormResponseActionType } & UpdateFormResponseAction)
-  | ({ type: typeof DeleteFormResponseActionType } & DeleteFormResponseAction)
-  | ({
-      type: typeof DeleteSelectedFormsActionType;
-    } & DeleteSelectedFormsAction)
-  | ({
-      type: typeof DeleteSelectedFormResponsesActionType;
-    } & DeleteSelectedFormResponsesAction)
-  | ({
-      type: typeof ReassignFormResponsesActionType;
-    } & ReassignFormResponsesAction)
-  | ({ type: typeof SetFormArchivedActionType } & SetFormArchivedAction)
-  | ({ type: typeof SetFormsArchivedActionType } & SetFormsArchivedAction)
-  | ({
-      type: typeof CheckFormNameUniqueActionType;
-    } & CheckFormNameUniqueAction);
+export const requestActionSchema = zTaggedUnion([
+  { type: CreateFormActionType, data: createFormActionSchema },
+  { type: UpdateFormActionType, data: updateFormActionSchema },
+  { type: DeleteFormActionType, data: deleteFormActionSchema },
+  { type: GetFormsActionType, data: getFormsActionSchema },
+  { type: GetFormByIdActionType, data: getFormByIdActionSchema },
+  { type: GetFormResponsesActionType, data: getFormResponsesActionSchema },
+  { type: CreateFormResponseActionType, data: createFormResponseActionSchema },
+  {
+    type: GetFormResponseByIdActionType,
+    data: getFormResponseByIdActionSchema,
+  },
+  { type: UpdateFormResponseActionType, data: updateFormResponseActionSchema },
+  { type: DeleteFormResponseActionType, data: deleteFormResponseActionSchema },
+  {
+    type: DeleteSelectedFormsActionType,
+    data: deleteSelectedFormsActionSchema,
+  },
+  {
+    type: DeleteSelectedFormResponsesActionType,
+    data: deleteSelectedFormResponsesActionSchema,
+  },
+  {
+    type: ReassignFormResponsesActionType,
+    data: reassignFormResponsesActionSchema,
+  },
+  { type: SetFormArchivedActionType, data: setFormArchivedActionSchema },
+  { type: SetFormsArchivedActionType, data: setFormsArchivedActionSchema },
+  {
+    type: CheckFormNameUniqueActionType,
+    data: checkFormNameUniqueActionSchema,
+  },
+]);
+
+export type RequestAction = z.infer<typeof requestActionSchema>;

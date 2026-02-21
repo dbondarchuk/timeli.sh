@@ -16,9 +16,15 @@ export const paypalButtonLabel = ["paypal", "pay"] as const;
 export const paypalConfigurationSchema = z.object({
   clientId: zNonEmptyString(
     "app_paypal_admin.validation.clientId.required" satisfies PaypalAdminAllKeys,
+    1,
+    256,
+    "app_paypal_admin.validation.clientId.max" satisfies PaypalAdminAllKeys,
   ),
   secretKey: zNonEmptyString(
     "app_paypal_admin.validation.secretKey.required" satisfies PaypalAdminAllKeys,
+    1,
+    256,
+    "app_paypal_admin.validation.secretKey.max" satisfies PaypalAdminAllKeys,
   ),
   buttonStyle: z.object({
     shape: z.enum(paypalButtonsShape, {

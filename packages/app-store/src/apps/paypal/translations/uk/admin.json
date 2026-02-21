@@ -77,10 +77,12 @@
   },
   "validation": {
     "clientId": {
-      "required": "PayPal Client ID обов'язковий"
+      "required": "PayPal Client ID обов'язковий",
+      "max": "PayPal Client ID має бути не більше 256 символів"
     },
     "secretKey": {
-      "required": "PayPal API ключ обов'язковий"
+      "required": "PayPal API ключ обов'язковий",
+      "max": "PayPal API ключ має бути не більше 256 символів"
     },
     "buttonStyle": {
       "shape": {

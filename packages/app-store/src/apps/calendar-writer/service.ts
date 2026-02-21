@@ -5,6 +5,7 @@ import {
   CalendarEvent,
   ConnectedAppData,
   ConnectedAppError,
+  ConnectedAppRequestError,
   ConnectedAppStatusWithText,
   IAppointmentHook,
   ICalendarWriter,
@@ -19,7 +20,10 @@ import {
   getWebsiteUrl,
 } from "@timelish/utils";
 import { convert } from "html-to-text";
-import { CalendarWriterConfiguration } from "./models";
+import {
+  CalendarWriterConfiguration,
+  calendarWriterConfigurationSchema,
+} from "./models";
 
 import { AvailableApps } from "../../apps";
 import { getEmailTemplate } from "../email-notification/emails/utils";
@@ -43,7 +47,7 @@ export class CalendarWriterConnectedApp
 
   public async processRequest(
     appData: ConnectedAppData,
-    data: CalendarWriterConfiguration,
+    request: CalendarWriterConfiguration,
   ): Promise<
     ConnectedAppStatusWithText<
       CalendarWriterAdminNamespace,
@@ -52,9 +56,21 @@ export class CalendarWriterConnectedApp
   > {
     const logger = this.loggerFactory("processRequest");
     logger.debug(
-      { appId: appData._id, targetAppId: data.appId },
+      { appId: appData._id, targetAppId: request.appId },
       "Processing calendar writer configuration request",
     );
+
+    const { data, success, error } =
+      calendarWriterConfigurationSchema.safeParse(request);
+    if (!success) {
+      logger.error({ error }, "Invalid request");
+      throw new ConnectedAppRequestError(
+        "invalid_request",
+        { request, error },
+        400,
+        error.message,
+      );
+    }
 
     try {
       const { name: appName } =

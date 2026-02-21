@@ -25,15 +25,18 @@
     "form": {
       "url": {
         "required": "URL is required",
-        "url": "Please enter a valid URL"
+        "url": "Please enter a valid URL",
+        "max": "URL must be at most 2048 characters long"
       },
       "headers": {
         "key": {
           "required": "Header name is required",
-          "unique": "Header name must be unique"
+          "unique": "Header name must be unique",
+          "max": "Header name must be at most 256 characters long"
         },
         "value": {
-          "required": "Header value is required"
+          "required": "Header value is required",
+          "max": "Header value must be at most 4096 characters long"
         }
       }
     }

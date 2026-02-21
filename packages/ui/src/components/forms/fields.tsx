@@ -1,3 +1,4 @@
+import { TranslationKeys } from "@timelish/i18n";
 import {
   Field,
   FieldFileData,
@@ -5,7 +6,7 @@ import {
   FieldType,
   WithLabelFieldData,
   zNonEmptyString,
-  zRequiredString,
+  zPossiblyOptionalMinMaxLengthString,
 } from "@timelish/types";
 import { Control } from "react-hook-form";
 import { z, ZodSchema } from "zod";
@@ -19,25 +20,61 @@ import { PhoneField } from "./phone";
 import { SelectField } from "./select";
 
 export const fieldsSchemaMap: Record<FieldType, (field: Field) => ZodSchema> = {
-  name: (field: Field) => zNonEmptyString("name_required_error", 2),
+  name: (field: Field) =>
+    zNonEmptyString(
+      "validation.name.required" satisfies TranslationKeys,
+      2,
+      256,
+      "validation.name.max" satisfies TranslationKeys,
+    ),
 
-  email: (field: Field) => z.email("invalid_email_error"),
+  email: (field: Field) =>
+    z
+      .email("validation.email.invalid" satisfies TranslationKeys)
+      .max(256, "validation.email.max" satisfies TranslationKeys),
   phone: (field: Field) =>
-    zRequiredString(field.required, "phone_required_error").refine(
+    zPossiblyOptionalMinMaxLengthString(
+      field.required,
+      {
+        length: 1,
+        message: "validation.phone.required" satisfies TranslationKeys,
+      },
+      { length: 32, message: "validation.phone.max" satisfies TranslationKeys },
+    ).refine(
       (s) => !s?.includes("_"),
-      "invalid_phone_error",
+      "validation.phone.invalid" satisfies TranslationKeys,
     ),
   oneLine: (field: Field) =>
-    zRequiredString(field.required, "field_required_error"),
+    zPossiblyOptionalMinMaxLengthString(
+      field.required,
+      {
+        length: 1,
+        message: "validation.text.required" satisfies TranslationKeys,
+      },
+      {
+        length: 256,
+        message: "validation.text.maxOneLine" satisfies TranslationKeys,
+      },
+    ),
   multiLine: (field: Field) =>
-    zRequiredString(field.required, "field_required_error"),
+    zPossiblyOptionalMinMaxLengthString(
+      field.required,
+      {
+        length: 1,
+        message: "validation.text.required" satisfies TranslationKeys,
+      },
+      {
+        length: 4096,
+        message: "validation.text.maxMultiLine" satisfies TranslationKeys,
+      },
+    ),
   checkbox: (field: Field) =>
     z
       .boolean()
       .default(false)
       .refine(
         (arg) => (field.required ? !!arg : true),
-        "checkbox_required_error",
+        "validation.checkbox.required" satisfies TranslationKeys,
       ),
   select: (field: Field) => {
     const [firstOption, ...restOptions] = (
@@ -45,15 +82,23 @@ export const fieldsSchemaMap: Record<FieldType, (field: Field) => ZodSchema> = {
     ).data.options.map((x) => x.option);
 
     return z
-      .enum([firstOption, ...restOptions], { message: "field_required_error" })
-      .refine((arg) => (field.required ? !!arg : true), "field_required_error");
+      .enum([firstOption, ...restOptions], {
+        message: "validation.select.required" satisfies TranslationKeys,
+      })
+      .refine(
+        (arg) => (field.required ? !!arg : true),
+        "validation.select.required" satisfies TranslationKeys,
+      );
   },
   file: (field: Field) => {
     return z
       .custom((f) => typeof f === "undefined" || f instanceof File, {
-        message: "file_type_error",
+        message: "validation.file.type" satisfies TranslationKeys,
       })
-      .refine((file) => !field.required || !!file, "file_required_error")
+      .refine(
+        (file) => !field.required || !!file,
+        "validation.file.required" satisfies TranslationKeys,
+      )
       .refine(
         (file) => {
           if (field.required && !file) return false;
@@ -64,7 +109,7 @@ export const fieldsSchemaMap: Record<FieldType, (field: Field) => ZodSchema> = {
           );
         },
         {
-          message: "file_max_size_error",
+          message: "validation.file.maxSize" satisfies TranslationKeys,
 
           params: {
             maxSizeMb: (field.data as unknown as FieldFileData).maxSizeMb,

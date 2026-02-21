@@ -21,7 +21,9 @@ export async function GET(
   );
 
   try {
-    const customer = await servicesContainer.customersService.getCustomer(id);
+    const customer = await servicesContainer.customersService.getCustomer(id, {
+      includeDeleted: true,
+    });
 
     if (!customer) {
       logger.warn({ customerId: id }, "Customer not found");

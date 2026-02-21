@@ -29,7 +29,8 @@
   "validation": {
     "apiKey": {
       "required": "TextBelt API ключ обов'язковий",
-      "min": "TextBelt API ключ обов'язковий"
+      "min": "TextBelt API ключ обов'язковий",
+      "max": "TextBelt API ключ не може бути більше 256 символів"
     }
   }
 }

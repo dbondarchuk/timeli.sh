@@ -11,6 +11,7 @@ import {
 } from "@timelish/ui";
 import {
   AssetPreview,
+  CustomerName,
   tableSortHeader,
   tableSortNoopFunction,
 } from "@timelish/ui-admin";
@@ -144,7 +145,7 @@ export const columns: ColumnDef<Asset>[] = [
           href={`/dashboard/customers/${row.original.customer?._id}`}
           variant="underline"
         >
-          {row.original.customer.name}
+          <CustomerName customer={row.original.customer} />
         </Link>
       ) : null,
     id: "customer.name",

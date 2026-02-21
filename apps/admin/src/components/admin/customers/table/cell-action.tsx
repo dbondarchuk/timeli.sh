@@ -76,12 +76,12 @@ export const CellAction: React.FC<CellActionProps> = ({ customer }) => {
               <Edit className="size-3.5" /> {t("customers.table.actions.edit")}
             </Link>
           </DropdownMenuItem>
-          {customer.appointmentsCount === 0 ? (
+          {!customer.isDeleted && (
             <DropdownMenuItem onClick={() => setOpen(true)}>
               <Trash className="size-3.5" />{" "}
               {t("customers.table.actions.delete")}
             </DropdownMenuItem>
-          ) : null}
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
     </>

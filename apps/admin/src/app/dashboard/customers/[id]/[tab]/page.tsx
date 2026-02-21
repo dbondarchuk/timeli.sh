@@ -25,7 +25,7 @@ import {
   TabsTrigger,
   TabsViaUrl,
 } from "@timelish/ui";
-import { DataTableSkeleton } from "@timelish/ui-admin";
+import { CustomerName, DataTableSkeleton } from "@timelish/ui-admin";
 import {
   RecentCommunications,
   SendCommunicationButton,
@@ -60,7 +60,9 @@ type StaticTab = (typeof staticTabs)[number];
 
 const getCustomer = cache(async (id: string) => {
   const servicesContainer = await getServicesContainer();
-  return await servicesContainer.customersService.getCustomer(id);
+  return await servicesContainer.customersService.getCustomer(id, {
+    includeDeleted: true,
+  });
 });
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
@@ -182,7 +184,7 @@ export default async function CustomerPage(props: Props) {
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
           <Heading
-            title={customer.name}
+            title={<CustomerName customer={customer} />}
             description={t("customers.manageCustomer")}
           />
 
@@ -213,19 +215,21 @@ export default async function CustomerPage(props: Props) {
               >
                 <div className="flex flex-col md:flex-row gap-2 w-full">
                   <AppointmentsTableAction className="flex-1" />
-                  <Link
-                    button
-                    href={`/dashboard/appointments/new?customer=${params.id}`}
-                    variant="default"
-                  >
-                    <CalendarClock className="mr-2 h-4 w-4" />{" "}
-                    <span className="max-md:hidden">
-                      {t("customers.scheduleAppointment")}
-                    </span>
-                    <span className="md:hidden">
-                      {t("customers.addNewShort")}
-                    </span>
-                  </Link>
+                  {!customer.isDeleted && (
+                    <Link
+                      button
+                      href={`/dashboard/appointments/new?customer=${params.id}`}
+                      variant="default"
+                    >
+                      <CalendarClock className="mr-2 h-4 w-4" />{" "}
+                      <span className="max-md:hidden">
+                        {t("customers.scheduleAppointment")}
+                      </span>
+                      <span className="md:hidden">
+                        {t("customers.addNewShort")}
+                      </span>
+                    </Link>
+                  )}
                 </div>
                 <Suspense
                   key={key}
@@ -247,7 +251,9 @@ export default async function CustomerPage(props: Props) {
               >
                 <div className="flex flex-col md:flex-row gap-2 w-full">
                   <CustomerFilesTableAction />
-                  <CustomerFileUpload customerId={params.id} />
+                  {!customer.isDeleted && (
+                    <CustomerFileUpload customerId={params.id} />
+                  )}
                 </div>
                 <Suspense
                   key={key}
@@ -271,7 +277,9 @@ export default async function CustomerPage(props: Props) {
               >
                 <div className="flex flex-col md:flex-row gap-2 w-full">
                   <CommunicationLogsTableAction className="flex-1" />
-                  <SendCommunicationButton customerId={params.id} />
+                  {!customer.isDeleted && (
+                    <SendCommunicationButton customerId={params.id} />
+                  )}
                 </div>
                 <Suspense
                   key={key}
@@ -293,7 +301,7 @@ export default async function CustomerPage(props: Props) {
                   item.view({
                     props: item.props,
                     appId: item.appId,
-                    customerId: params.id,
+                    customer,
                     searchParams,
                   })}
               </TabsContent>

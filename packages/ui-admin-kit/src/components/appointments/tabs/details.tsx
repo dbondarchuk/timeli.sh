@@ -19,6 +19,7 @@ import {
   toastPromise,
   useTimeZone,
 } from "@timelish/ui";
+import { CustomerName } from "@timelish/ui-admin";
 import { durationToTime, formatAmountString } from "@timelish/utils";
 import { DateTime } from "luxon";
 import { useRouter } from "next/navigation";
@@ -252,10 +253,12 @@ export const AppointmentDetails = ({
                   <AccordionItem value="option" className="border-none">
                     <AccordionTrigger className="text-left">
                       <span>
-                        {appointment.customer.name}{" "}
-                        <span className="text-xs text-muted-foreground">
-                          ({appointment.customer.email})
-                        </span>
+                        <CustomerName customer={appointment.customer} />{" "}
+                        {!appointment.customer.isDeleted && (
+                          <span className="text-xs text-muted-foreground">
+                            ({appointment.customer.email})
+                          </span>
+                        )}
                       </span>
                     </AccordionTrigger>
                     <AccordionContent>
@@ -266,17 +269,21 @@ export const AppointmentDetails = ({
                             variant="default"
                             href={`/dashboard/customers/${appointment.customerId}`}
                           >
-                            {appointment.customer.name}
+                            <CustomerName customer={appointment.customer} />
                           </Link>
                         </div>
-                        <div>{t("appointments.view.email")}:</div>
-                        <div className="col-span-2">
-                          {appointment.customer.email}
-                        </div>
-                        <div>{t("appointments.view.phone")}:</div>
-                        <div className="col-span-2">
-                          {appointment.customer.phone}
-                        </div>
+                        {!appointment.customer.isDeleted && (
+                          <>
+                            <div>{t("appointments.view.email")}:</div>
+                            <div className="col-span-2">
+                              {appointment.customer.email}
+                            </div>
+                            <div>{t("appointments.view.phone")}:</div>
+                            <div className="col-span-2">
+                              {appointment.customer.phone}
+                            </div>
+                          </>
+                        )}
                       </div>
                     </AccordionContent>
                   </AccordionItem>

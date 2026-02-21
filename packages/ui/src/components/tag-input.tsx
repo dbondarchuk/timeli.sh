@@ -4,7 +4,7 @@ import { useI18n } from "@timelish/i18n";
 import { Array as EArray, Option, pipe, String } from "effect";
 import { Plus, XIcon } from "lucide-react";
 import { forwardRef, ReactElement, useEffect, useState } from "react";
-import { type z } from "zod";
+import type { ZodType } from "zod";
 
 import { cva } from "class-variance-authority";
 import { cn } from "../utils";
@@ -13,7 +13,10 @@ import { Button } from "./button";
 import type { InputProps } from "./input";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
-const parseTagOpt = (params: { tags: string[]; tagValidator: z.ZodString }) => {
+const parseTagOpt = (params: {
+  tags: string[];
+  tagValidator: ZodType<string>;
+}) => {
   const { tags, tagValidator } = params;
 
   const parsedTags = tags.map((tag) => tagValidator.safeParse(tag));
@@ -49,7 +52,7 @@ const tagInputVariant = cva(
 type TagInputProps = Omit<InputProps, "value" | "onChange"> & {
   value?: ReadonlyArray<string>;
   onChange: (value: ReadonlyArray<string>) => void;
-  tagValidator?: z.ZodString;
+  tagValidator?: ZodType<string>;
   addItemTemplate?: (props: {
     onAdd: (value: string | string[]) => void;
   }) => ReactElement;

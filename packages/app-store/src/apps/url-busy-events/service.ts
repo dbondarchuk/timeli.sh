@@ -3,13 +3,17 @@ import {
   CalendarBusyTime,
   ConnectedAppData,
   ConnectedAppError,
+  ConnectedAppRequestError,
   ConnectedAppStatusWithText,
   ICalendarBusyTimeProvider,
   IConnectedApp,
   IConnectedAppProps,
 } from "@timelish/types";
 import { DateTime } from "luxon";
-import { UrlBusyEventsConfiguration } from "./models";
+import {
+  UrlBusyEventsConfiguration,
+  urlBusyEventsConfigurationSchema,
+} from "./models";
 import {
   UrlBusyEventsAdminAllKeys,
   UrlBusyEventsAdminKeys,
@@ -32,7 +36,7 @@ export default class UrlBusyEventsConnectedApp
 
   public async processRequest(
     appData: ConnectedAppData,
-    data: UrlBusyEventsConfiguration,
+    request: UrlBusyEventsConfiguration,
   ): Promise<
     ConnectedAppStatusWithText<
       UrlBusyEventsAdminNamespace,
@@ -43,11 +47,23 @@ export default class UrlBusyEventsConnectedApp
     logger.debug(
       {
         appId: appData._id,
-        url: data.url,
-        headerCount: data.headers?.length || 0,
+        url: request.url,
+        headerCount: request.headers?.length || 0,
       },
       "Processing URL busy events configuration request",
     );
+
+    const { data, success, error } =
+      urlBusyEventsConfigurationSchema.safeParse(request);
+    if (!success) {
+      logger.error({ error }, "Invalid URL busy events configuration request");
+      throw new ConnectedAppRequestError(
+        "invalid_url-busy-events_configuration_request",
+        { request, error },
+        400,
+        error.message,
+      );
+    }
 
     try {
       // Test the URL by making a simple request

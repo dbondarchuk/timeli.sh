@@ -3,6 +3,7 @@ import {
   AppJobRequest,
   Appointment,
   ConnectedAppData,
+  ConnectedAppRequestError,
   ConnectedAppStatusWithText,
   IAppointmentHook,
   IConnectedApp,
@@ -12,6 +13,7 @@ import {
 import { ScheduledNotificationsJobProcessor } from "./job-processor";
 import {
   RequestAction,
+  requestActionSchema,
   ScheduledNotification,
   ScheduledNotificationsJobPayload,
   ScheduledNotificationUpdateModel,
@@ -40,13 +42,24 @@ export default class ScheduledNotificationsConnectedApp
 
   public async processRequest(
     appData: ConnectedAppData,
-    data: RequestAction,
+    request: RequestAction,
   ): Promise<any> {
     const logger = this.loggerFactory("processRequest");
     logger.debug(
-      { appId: appData._id, actionType: data.type },
+      { appId: appData._id, actionType: request.type },
       "Processing scheduled notifications request",
     );
+
+    const { data, success, error } = requestActionSchema.safeParse(request);
+    if (!success) {
+      logger.error({ error }, "Invalid scheduled notifications request");
+      throw new ConnectedAppRequestError(
+        "invalid_scheduled_notifications_request",
+        { request },
+        400,
+        error.message,
+      );
+    }
 
     try {
       switch (data.type) {

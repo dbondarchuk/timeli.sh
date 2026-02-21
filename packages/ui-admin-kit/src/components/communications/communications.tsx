@@ -126,9 +126,9 @@ const CommunicationEntry: React.FC<{ entry: CommunicationLog }> = ({
           <Badge variant="outline" className="text-xs">
             {tAdmin("communications.handler", {
               handler: t(
-                typeof entry.handledBy === "string"
-                  ? entry.handledBy
-                  : entry.handledBy.key,
+                typeof entry.handledBy === "object"
+                  ? entry.handledBy.key
+                  : entry.handledBy,
                 typeof entry.handledBy === "object" && entry.handledBy.args
                   ? entry.handledBy.args
                   : undefined,

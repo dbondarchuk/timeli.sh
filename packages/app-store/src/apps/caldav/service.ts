@@ -6,6 +6,7 @@ import {
   CalendarEventResult,
   ConnectedAppData,
   ConnectedAppError,
+  ConnectedAppRequestError,
   ConnectedAppStatusWithText,
   ICalendarBusyTimeProvider,
   ICalendarWriter,
@@ -23,7 +24,11 @@ import {
   VEVENT_OBJECT_KEY,
 } from "ts-ics";
 import { DAVClient } from "tsdav";
-import { CaldavAction, CaldavCalendarSource } from "./models";
+import {
+  CaldavAction,
+  caldavActionSchema,
+  CaldavCalendarSource,
+} from "./models";
 import { CaldavAdminKeys, CaldavAdminNamespace } from "./translations/types";
 
 const attendeeStatusToPartStatusMap: Record<
@@ -73,12 +78,29 @@ export default class CaldavConnectedApp
 
   public async processRequest(
     appData: ConnectedAppData,
-    action: CaldavAction,
+    request: CaldavAction,
   ): Promise<
     ConnectedAppStatusWithText<CaldavAdminNamespace, CaldavAdminKeys> | string[]
   > {
     const logger = this.loggerFactory("processRequest");
-    const { type, data } = action;
+
+    const {
+      data: parsedData,
+      success,
+      error,
+    } = caldavActionSchema.safeParse(request);
+    if (!success) {
+      logger.error({ error }, "Invalid request");
+      throw new ConnectedAppRequestError(
+        "invalid_request",
+        { request, error },
+        400,
+        error.message,
+      );
+    }
+
+    const { type, ...data } = parsedData;
+
     logger.debug(
       {
         appId: appData._id,

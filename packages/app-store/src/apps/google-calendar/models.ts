@@ -1,4 +1,4 @@
-import { ConnectedOauthAppTokens } from "@timelish/types";
+import { ConnectedOauthAppTokens, zNonEmptyString, zTaggedUnion } from "@timelish/types";
 import * as z from "zod";
 
 export const googleCalendarConfigurationSchema = z.object({
@@ -13,32 +13,28 @@ export const googleCalendarConfigurationSchema = z.object({
 export type GoogleCalendarConfiguration = ConnectedOauthAppTokens &
   z.infer<typeof googleCalendarConfigurationSchema>;
 
-export type CalendarListItem = {
-  id: string;
-  name: string;
-};
+export const calendarListItemSchema = z.object({
+  id: zNonEmptyString(),
+  name: zNonEmptyString(),
+});
 
-export type GetCalendarListRequest = {};
+export type CalendarListItem = z.infer<typeof calendarListItemSchema>;
 
 export const GetCalendarListRequestType = "get-calendar-list" as const;
-
-export type GetSelectedCalendarRequest = {};
-
 export const GetSelectedCalendarRequestType = "get-selected-calendar" as const;
 
-export type SetCalendarRequest = {
-  calendar: CalendarListItem;
-};
 
+export const setCalendarRequestSchema = z.object({
+  calendar: calendarListItemSchema,
+});
+
+export type SetCalendarRequest = z.infer<typeof setCalendarRequestSchema>;
 export const SetCalendarRequestType = "set-calendar" as const;
 
-export type RequestAction =
-  | ({
-      type: typeof GetSelectedCalendarRequestType;
-    } & GetSelectedCalendarRequest)
-  | ({
-      type: typeof GetCalendarListRequestType;
-    } & GetCalendarListRequest)
-  | ({
-      type: typeof SetCalendarRequestType;
-    } & SetCalendarRequest);
+export const requestActionSchema = zTaggedUnion([
+  { type: GetSelectedCalendarRequestType, data: z.void() },
+  { type: GetCalendarListRequestType, data: z.void() },
+  { type: SetCalendarRequestType, data: setCalendarRequestSchema },
+]);
+
+export type RequestAction = z.infer<typeof requestActionSchema>;

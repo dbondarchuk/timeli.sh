@@ -1,11 +1,12 @@
 import { AllKeys } from "@timelish/i18n";
 import {
   asOptinalNumberField,
-  CommunicationChannel,
   communicationChannels,
-  Query,
+  querySchema,
   WithCompanyId,
   WithDatabaseId,
+  zObjectId,
+  zTaggedUnion,
 } from "@timelish/types";
 import * as z from "zod";
 import { ScheduledNotificationsAdminAllKeys } from "./translations/types";
@@ -139,15 +140,9 @@ export const scheduledNotificationAtTimeSchema = z.object({
 });
 
 export const baseScheduledNotificationChannelSchema = z.object({
-  templateId: z
-    .string({
-      error:
-        "app_scheduled-notifications_admin.validation.form.templateId.required" satisfies ScheduledNotificationsAdminAllKeys,
-    })
-    .min(
-      1,
-      "app_scheduled-notifications_admin.validation.form.templateId.required" satisfies ScheduledNotificationsAdminAllKeys,
-    ),
+  templateId: zObjectId(
+    "app_scheduled-notifications_admin.validation.form.templateId.required" satisfies ScheduledNotificationsAdminAllKeys,
+  ),
 });
 
 export const scheduledNotificationEmailSchema = z.object({
@@ -160,6 +155,10 @@ export const scheduledNotificationEmailSchema = z.object({
     .min(
       1,
       "app_scheduled-notifications_admin.validation.form.subject.required" satisfies ScheduledNotificationsAdminAllKeys,
+    )
+    .max(
+      256,
+      "app_scheduled-notifications_admin.validation.form.subject.max" satisfies ScheduledNotificationsAdminAllKeys,
     ),
 });
 
@@ -218,6 +217,10 @@ export const scheduledNotificationGeneralSchema = z.object({
     .min(
       2,
       "app_scheduled-notifications_admin.validation.form.name.min" satisfies ScheduledNotificationsAdminAllKeys,
+    )
+    .max(
+      256,
+      "app_scheduled-notifications_admin.validation.form.name.max" satisfies ScheduledNotificationsAdminAllKeys,
     ),
 
   // Optional setting to send scheduled notification after specific number of customer appointments
@@ -330,52 +333,88 @@ export type ScheduledNotification = WithCompanyId<
   updatedAt: Date;
 };
 
-export type GetScheduledNotificationsAction = {
-  query: Query & {
-    channel?: CommunicationChannel[];
-    type?: ScheduledNotificationType[];
-  };
-};
+// Request schemas
 
+// Get scheduled notifications query schema
+
+export const getScheduledNotificationsQuerySchema = z.object({
+  query: querySchema.extend({
+    channel: z.array(scheduledNotificationChannelsEnum).optional(),
+    type: z.array(scheduledNotificationTypesEnum).optional(),
+  }),
+});
+
+export type GetScheduledNotificationsAction = z.infer<
+  typeof getScheduledNotificationsQuerySchema
+>;
 export const GetScheduledNotificationsActionType =
   "get-scheduled-notifications" as const;
 
-export type GetScheduledNotificationAction = {
-  id: string;
-};
+// Get scheduled notification action
 
+export const getScheduledNotificationActionSchema = z.object({
+  id: zObjectId(),
+});
+
+export type GetScheduledNotificationAction = z.infer<
+  typeof getScheduledNotificationActionSchema
+>;
 export const GetScheduledNotificationActionType =
   "get-scheduled-notification" as const;
 
-export type DeleteScheduledNotificationsAction = {
-  ids: string[];
-};
+// Delete scheduled notifications action
 
+export const deleteScheduledNotificationsActionSchema = z.object({
+  ids: z.array(zObjectId()),
+});
+
+export type DeleteScheduledNotificationsAction = z.infer<
+  typeof deleteScheduledNotificationsActionSchema
+>;
 export const DeleteScheduledNotificationsActionType =
   "delete-scheduled-notifications" as const;
 
-export type CreateNewScheduledNotificationAction = {
-  scheduledNotification: ScheduledNotificationUpdateModel;
-};
+// Create new scheduled notification action
 
+export const createNewScheduledNotificationActionSchema = z.object({
+  scheduledNotification: scheduledNotificationSchema,
+});
+
+export type CreateNewScheduledNotificationAction = z.infer<
+  typeof createNewScheduledNotificationActionSchema
+>;
 export const CreateNewScheduledNotificationActionType =
   "create-scheduled-notification" as const;
 
-export type UpdateScheduledNotificationAction = {
-  id: string;
-  update: ScheduledNotificationUpdateModel;
-};
+// Update scheduled notification action
+
+export const updateScheduledNotificationActionSchema = z.object({
+  id: zObjectId(),
+  update: scheduledNotificationSchema,
+});
+
+export type UpdateScheduledNotificationAction = z.infer<
+  typeof updateScheduledNotificationActionSchema
+>;
 
 export const UpdateScheduledNotificationActionType =
   "update-scheduled-notification" as const;
 
-export type CheckUniqueScheduledNotificationNameAction = {
-  id?: string;
-  name: string;
-};
+// Check unique scheduled notification name action
+
+export const checkUniqueScheduledNotificationNameActionSchema = z.object({
+  id: zObjectId().optional(),
+  name: z.string(),
+});
+
+export type CheckUniqueScheduledNotificationNameAction = z.infer<
+  typeof checkUniqueScheduledNotificationNameActionSchema
+>;
 
 export const CheckUniqueScheduledNotificationNameActionType =
   "check-unique-name" as const;
+
+// Get app data action
 
 export const scheduledNotificationsAppDataSchema = z.object({});
 
@@ -383,41 +422,48 @@ export type ScheduledNotificationsAppData = z.infer<
   typeof scheduledNotificationsAppDataSchema
 >;
 
-export type GetAppDataAction = {};
-
 export const GetAppDataActionType = "get-app-data" as const;
 
-export type SetAppDataAction = {
-  data: ScheduledNotificationsAppData;
-};
+// Set app data action
+
+export const setAppDataActionSchema = z.object({
+  data: scheduledNotificationsAppDataSchema,
+});
+
+export type SetAppDataAction = z.infer<typeof setAppDataActionSchema>;
 
 export const SetAppDataActionType = "set-app-data" as const;
 
-export type RequestAction =
-  | ({
-      type: typeof GetScheduledNotificationsActionType;
-    } & GetScheduledNotificationsAction)
-  | ({
-      type: typeof GetScheduledNotificationActionType;
-    } & GetScheduledNotificationAction)
-  | ({
-      type: typeof DeleteScheduledNotificationsActionType;
-    } & DeleteScheduledNotificationsAction)
-  | ({
-      type: typeof CreateNewScheduledNotificationActionType;
-    } & CreateNewScheduledNotificationAction)
-  | ({
-      type: typeof UpdateScheduledNotificationActionType;
-    } & UpdateScheduledNotificationAction)
-  | ({
-      type: typeof CheckUniqueScheduledNotificationNameActionType;
-    } & CheckUniqueScheduledNotificationNameAction)
-  | ({
-      type: typeof GetAppDataActionType;
-    } & GetAppDataAction)
-  | ({
-      type: typeof SetAppDataActionType;
-    } & SetAppDataAction);
+export const requestActionSchema = zTaggedUnion([
+  {
+    type: GetScheduledNotificationsActionType,
+    data: getScheduledNotificationsQuerySchema,
+  },
+  {
+    type: GetScheduledNotificationActionType,
+    data: getScheduledNotificationActionSchema,
+  },
+  {
+    type: DeleteScheduledNotificationsActionType,
+    data: deleteScheduledNotificationsActionSchema,
+  },
+  {
+    type: CreateNewScheduledNotificationActionType,
+    data: createNewScheduledNotificationActionSchema,
+  },
+  {
+    type: UpdateScheduledNotificationActionType,
+    data: updateScheduledNotificationActionSchema,
+  },
+  {
+    type: CheckUniqueScheduledNotificationNameActionType,
+    data: checkUniqueScheduledNotificationNameActionSchema,
+  },
+  { type: GetAppDataActionType },
+  { type: SetAppDataActionType, data: setAppDataActionSchema },
+]);
+
+export type RequestAction = z.infer<typeof requestActionSchema>;
 
 export type ScheduledNotificationsJobPayload =
   | {

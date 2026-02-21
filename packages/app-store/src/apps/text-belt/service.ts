@@ -4,6 +4,7 @@ import {
   ApiResponse,
   ConnectedAppData,
   ConnectedAppError,
+  ConnectedAppRequestError,
   ConnectedAppStatusWithText,
   IConnectedApp,
   IConnectedAppProps,
@@ -25,7 +26,7 @@ import {
 } from "@timelish/utils";
 import crypto from "crypto";
 import { getEmailTemplate } from "./emails/utils";
-import { TextBeltConfiguration } from "./models";
+import { TextBeltConfiguration, textBeltConfigurationSchema } from "./models";
 import { TextBeltAdminAllKeys } from "./translations/types";
 
 const MASKED_API_KEY = "this-is-a-masked-api-key";
@@ -385,9 +386,21 @@ export default class TextBeltConnectedApp
 
   public async processRequest(
     appData: ConnectedAppData,
-    data: TextBeltConfiguration,
+    request: TextBeltConfiguration,
   ): Promise<ConnectedAppStatusWithText> {
     const logger = this.loggerFactory("processRequest");
+
+    const { data, success, error } =
+      textBeltConfigurationSchema.safeParse(request);
+    if (!success) {
+      logger.error({ error }, "Invalid TextBelt configuration request");
+      throw new ConnectedAppRequestError(
+        "invalid_text-belt_configuration_request",
+        { request, error },
+        400,
+        error.message,
+      );
+    }
 
     if (data.apiKey === MASKED_API_KEY && appData?.data?.apiKey) {
       data.apiKey = appData.data.apiKey;

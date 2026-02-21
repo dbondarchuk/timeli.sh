@@ -483,6 +483,7 @@
     "appointments": "Appointments",
     "files": "Files",
     "communications": "Communications",
+    "deletedCustomer": "Deleted customer",
     "form": {
       "customerPhoto": "Customer photo",
       "personalInformation": "Personal information",
@@ -578,7 +579,7 @@
       "changesSaved": "Your changes were saved.",
       "customerCreated": "Customer created successfully.",
       "customerUpdated": "Customer updated successfully.",
-      "customerDeleted": "Customer '{name}' was deleted."
+      "customerDeleted": "Customer {name} was deleted."
     }
   },
   "pages": {

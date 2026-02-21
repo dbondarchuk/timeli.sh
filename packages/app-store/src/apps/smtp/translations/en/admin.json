@@ -48,7 +48,16 @@
   "validation": {
     "host": {
       "required": "SMTP host is required",
-      "min": "SMTP host is required"
+      "min": "SMTP host is required",
+      "max": "SMTP host must be at most 256 characters long"
+    },
+    "auth": {
+      "user": {
+        "max": "SMTP authentication user must be at most 256 characters long"
+      },
+      "pass": {
+        "max": "SMTP authentication password must be at most 256 characters long"
+      }
     },
     "port": {
       "integer": "Should be the integer value",

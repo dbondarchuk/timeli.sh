@@ -16,7 +16,11 @@ import {
   Link,
   Markdown,
 } from "@timelish/ui";
-import { tableSortHeader, tableSortNoopFunction } from "@timelish/ui-admin";
+import {
+  CustomerName,
+  tableSortHeader,
+  tableSortNoopFunction,
+} from "@timelish/ui-admin";
 import JsonView from "@uiw/react-json-view";
 import { DateTime } from "luxon";
 
@@ -274,7 +278,7 @@ export const columns: ColumnDef<CommunicationLog>[] = [
           variant="default"
           href={`/dashboard/customers/${row.original.customer._id}`}
         >
-          {row.original.customer.name}
+          <CustomerName customer={row.original.customer} />
         </Link>
       );
     },

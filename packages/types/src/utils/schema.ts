@@ -1,10 +1,30 @@
-import * as z from "zod";
+import { z, ZodTypeAny } from "zod";
 
-export const zEmail = z.email("validation.common.email.invalid");
+export const zEmail = z
+  .email("validation.common.email.invalid")
+  .max(256, "validation.common.email.max");
 export const zPhone = z
   .string("validation.common.phone.required")
   .min(1, "validation.common.phone.required")
+  .max(32, "validation.common.phone.max")
   .refine((s) => !s?.includes("_"), "validation.common.phone.invalid");
+
+export const zAssetName = z.union(
+  [
+    z
+      .string()
+      .min(3, "validation.common.asset.minLength")
+      .max(1024, "validation.common.asset.maxLength"),
+    z
+      .url("validation.common.asset.invalid")
+      .max(2048, "validation.common.url.max"),
+  ],
+  { message: "validation.common.asset.invalid" },
+);
+
+export const zUrl = z
+  .url("validation.common.url.invalid")
+  .max(2048, "validation.common.url.max");
 
 export type ErrorMessageWithParams = {
   message: string;
@@ -81,7 +101,7 @@ export function zOptionalOrMinLengthString(
     .optional();
 }
 
-export function zOptionalOrMinMaxLengthString(
+export function zMinMaxLengthString(
   min: { length: number; message?: string },
   max: { length: number; message?: string },
 ) {
@@ -93,24 +113,62 @@ export function zOptionalOrMinMaxLengthString(
         .max(max.length, max.message),
       z.string().length(0),
     ])
+    .transform((e) => (e === "" ? undefined : e));
+}
+
+export function zOptionalOrMinMaxLengthString(
+  min: { length: number; message?: string },
+  max: { length: number; message?: string },
+) {
+  return zMinMaxLengthString(min, max).optional();
+}
+
+export function zOptionalOrMaxLengthString(
+  maxLength: number,
+  maxLengthErrorMessage?: string,
+) {
+  return z
+    .union([
+      z
+        .string("validation.common.string.invalid")
+        .max(maxLength, maxLengthErrorMessage),
+      z.string().length(0),
+    ])
     .transform((e) => (e === "" ? undefined : e))
     .optional();
 }
 
-export const zNonEmptyString = (message?: string, minLength: number = 1) =>
-  z
+export function zPossiblyOptionalMinMaxLengthString(
+  required: boolean | undefined,
+  min: { length: number; message?: string },
+  max: { length: number; message?: string },
+) {
+  const zString = zMinMaxLengthString(min, max);
+  return required ? zString : zString.optional();
+}
+
+export const zNonEmptyString = (
+  message?: string,
+  minLength: number = 1,
+  maxLength?: number,
+  maxLengthErrorMessage?: string,
+) => {
+  let zString = z
     .string(message)
     .min(
       minLength,
       message ?? `String must be at least ${minLength} characters long`,
     );
 
-export const zRequiredString = (
-  required?: boolean,
-  message?: string,
-  minLength: number = 1,
-) =>
-  required ? zNonEmptyString(message, minLength) : asOptionalField(z.string());
+  if (maxLength) {
+    zString = zString.max(
+      maxLength,
+      maxLengthErrorMessage ??
+        `String must be at most ${maxLength} characters long`,
+    );
+  }
+  return zString;
+};
 
 const emptyStringToUndefined = z.literal("").transform(() => undefined);
 
@@ -123,4 +181,38 @@ export function asOptinalNumberField<T extends z.ZodNumber>(schema: T) {
     (arg) => (arg === "" ? undefined : arg),
     schema.optional(),
   ) as unknown as z.ZodOptional<T>;
+}
+
+export function isValidObjectId(value: string): boolean {
+  return /^[a-fA-F0-9]{24}$/.test(value);
+}
+
+export const zObjectId = (message?: string) =>
+  z
+    .string(message ?? "validation.common.objectId.required")
+    .refine((s) => isValidObjectId(s), "validation.common.objectId.invalid");
+
+/**
+ * Builds a union schema for `data & { type }` from a list of { type, data } objects.
+ * Each variant is validated as { type: literal, ...data }.
+ */
+export function zTaggedUnion<
+  const T extends string,
+  const Items extends readonly { type: T; data?: ZodTypeAny }[],
+>(items: Items) {
+  const options = items.map(({ type, data }) =>
+    data
+      ? z.object({ type: z.literal(type) }).and(data)
+      : z.object({ type: z.literal(type) }),
+  );
+
+  return z.union(
+    options as unknown as [z.ZodTypeAny, z.ZodTypeAny, ...z.ZodTypeAny[]],
+  ) as z.ZodType<
+    {
+      [i in keyof Items]: { type: Items[i]["type"] } & z.infer<
+        Items[i]["data"]
+      >;
+    }[number]
+  >;
 }

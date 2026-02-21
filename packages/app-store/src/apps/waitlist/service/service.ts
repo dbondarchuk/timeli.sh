@@ -6,6 +6,7 @@ import {
   BOOKING_TRACKING_STEP_EVENT_TYPE,
   BookingTrackingEventData,
   ConnectedAppData,
+  ConnectedAppRequestError,
   ConnectedAppStatusWithText,
   DashboardNotification,
   IAppointmentHook,
@@ -22,6 +23,7 @@ import {
   GetWaitlistEntryAction,
   GetWaitlistEntryActionType,
   RequestAction,
+  requestActionSchema,
   SetConfigurationAction,
   SetConfigurationActionType,
   WaitlistConfiguration,
@@ -55,13 +57,24 @@ export class WaitlistConnectedApp
 
   public async processRequest(
     appData: ConnectedAppData,
-    data: RequestAction,
+    request: RequestAction,
   ): Promise<any> {
     const logger = this.loggerFactory("processRequest");
     logger.debug(
       { appId: appData._id },
       "Processing waitlist notification request",
     );
+
+    const { data, success, error } = requestActionSchema.safeParse(request);
+    if (!success) {
+      logger.error({ error }, "Invalid waitlist request");
+      throw new ConnectedAppRequestError(
+        "invalid_waitlist_request",
+        { request },
+        400,
+        error.message,
+      );
+    }
 
     switch (data.type) {
       case GetWaitlistEntryActionType:

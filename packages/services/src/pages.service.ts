@@ -500,6 +500,7 @@ export class PagesService extends BaseService implements IPagesService {
                     _id: {
                       $in: query.priorityIds,
                     },
+                    companyId: this.companyId,
                   },
                 },
               ],
@@ -820,6 +821,7 @@ export class PagesService extends BaseService implements IPagesService {
                     _id: {
                       $in: query.priorityIds,
                     },
+                    companyId: this.companyId,
                   },
                 },
               ],

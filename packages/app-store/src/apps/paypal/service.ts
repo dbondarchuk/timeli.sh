@@ -5,6 +5,7 @@ import {
   ApiResponse,
   ConnectedAppData,
   ConnectedAppError,
+  ConnectedAppRequestError,
   ConnectedAppStatusWithText,
   IConnectedApp,
   IConnectedAppProps,
@@ -56,7 +57,7 @@ class PaypalConnectedApp
 
   public async processRequest(
     appData: ConnectedAppData,
-    data: PaypalConfiguration,
+    request: PaypalConfiguration,
   ): Promise<
     ConnectedAppStatusWithText<PaypalAdminNamespace, PaypalAdminKeys>
   > {
@@ -65,6 +66,18 @@ class PaypalConnectedApp
       { appId: appData._id },
       "Processing PayPal configuration request",
     );
+
+    const { data, success, error } =
+      paypalConfigurationSchema.safeParse(request);
+    if (!success) {
+      logger.error({ error }, "Invalid PayPal configuration request");
+      throw new ConnectedAppRequestError(
+        "invalid_paypal_configuration_request",
+        { error },
+        400,
+        error.message,
+      );
+    }
 
     if (data.secretKey === MASKED_SECRET_KEY && appData?.data?.secretKey) {
       data.secretKey = appData.data.secretKey;

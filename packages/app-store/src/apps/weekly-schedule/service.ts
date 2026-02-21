@@ -1,6 +1,7 @@
 import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
 import {
   ConnectedAppData,
+  ConnectedAppRequestError,
   ConnectedAppStatusWithText,
   DaySchedule,
   IConnectedApp,
@@ -13,7 +14,7 @@ import {
 } from "@timelish/types";
 import { eachOfInterval, getWeekIdentifier } from "@timelish/utils";
 import { AnyBulkWriteOperation, ObjectId } from "mongodb";
-import { RequestAction } from "./models";
+import { RequestAction, requestActionSchema } from "./models";
 import {
   WeeklyScheduleAdminAllKeys,
   WeeklyScheduleAdminKeys,
@@ -39,15 +40,24 @@ export default class WeeklyScheduleConnectedApp
 
   public async processRequest(
     appData: ConnectedAppData,
-    data: RequestAction,
+    request: RequestAction,
   ): Promise<any> {
-    const actionType = data.type;
-
     const logger = this.loggerFactory("processRequest");
     logger.debug(
-      { appId: appData._id, actionType },
+      { appId: appData._id, requestType: request.type },
       "Processing weekly schedule request",
     );
+
+    const { data, success, error } = requestActionSchema.safeParse(request);
+    if (!success) {
+      logger.error({ error }, "Invalid weekly schedule request");
+      throw new ConnectedAppRequestError(
+        "invalid_weekly_schedule_request",
+        { request },
+        400,
+        error.message,
+      );
+    }
 
     try {
       switch (data.type) {
@@ -89,7 +99,7 @@ export default class WeeklyScheduleConnectedApp
 
         default: {
           logger.debug(
-            { appId: appData._id, actionType },
+            { appId: appData._id, requestType: request.type },
             "Processing default action - app installation",
           );
 
@@ -116,7 +126,7 @@ export default class WeeklyScheduleConnectedApp
       }
     } catch (error: any) {
       logger.error(
-        { appId: appData._id, actionType, error },
+        { appId: appData._id, requestType: request.type, error },
         "Error processing weekly schedule request",
       );
 

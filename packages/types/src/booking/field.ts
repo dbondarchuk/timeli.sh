@@ -5,7 +5,7 @@ import {
   asOptinalNumberField,
   Prettify,
   zNonEmptyString,
-  zOptionalOrMinLengthString,
+  zOptionalOrMinMaxLengthString,
   zUniqueArray,
 } from "../utils";
 import { fieldTypes } from "./fields";
@@ -15,9 +15,23 @@ const fieldTypeEnum = z.enum(fieldTypes, {
 });
 
 export const defaultFieldDataSchema = z.object({
-  label: zNonEmptyString("fields.label.required", 1),
+  label: zNonEmptyString(
+    "validation.fields.label.required",
+    1,
+    256,
+    "validation.fields.label.max",
+  ),
   // description: z.array(z.any()),
-  description: zOptionalOrMinLengthString(3, "fields.description.min"),
+  description: zOptionalOrMinMaxLengthString(
+    {
+      length: 3,
+      message: "validation.fields.description.min",
+    },
+    {
+      length: 1024,
+      message: "validation.fields.description.max",
+    },
+  ),
 });
 
 export const selectFieldDataSchema = z.object({
@@ -25,7 +39,12 @@ export const selectFieldDataSchema = z.object({
   options: zUniqueArray(
     z.array(
       z.object({
-        option: zNonEmptyString("fields.option.required", 1),
+        option: zNonEmptyString(
+          "validation.fields.option.required",
+          1,
+          256,
+          "validation.fields.option.max",
+        ),
       }),
     ),
     (item) => item.option,
@@ -34,10 +53,10 @@ export const selectFieldDataSchema = z.object({
 });
 
 export const fileFieldAcceptItemSchema = zNonEmptyString(
-  "fields.accept.min",
+  "validation.fields.accept.min",
 ).regex(
   /(\.[a-zA-Z0-9]+$)|(^(image|video|audio)\/\*$)|(^[a-zA-Z0-9-_]+\/[a-zA-Z0-9-_\.]+$)/,
-  "fields.accept.invalid",
+  "validation.fields.accept.invalid",
 );
 
 export const fileFieldDataSchema = z.object({
@@ -46,15 +65,20 @@ export const fileFieldDataSchema = z.object({
   maxSizeMb: asOptinalNumberField(
     z.coerce
       .number<number>()
-      .min(1, "fields.maxSizeMb.min")
-      .max(100, "fields.maxSizeMb.max"),
+      .min(1, "validation.fields.maxSizeMb.min")
+      .max(100, "validation.fields.maxSizeMb.max"),
   ),
 });
 
 export const baseFieldSchema = z.object({
-  name: zNonEmptyString("fields.name.required", 2).refine(
+  name: zNonEmptyString(
+    "fields.name.required",
+    2,
+    64,
+    "fields.name.max",
+  ).refine(
     (s) => /^[a-z_][a-z0-9_]+$/i.test(s),
-    "fields.name.invalid",
+    "validation.fields.name.invalid",
   ),
   required: z.coerce.boolean<boolean>().optional(),
 });

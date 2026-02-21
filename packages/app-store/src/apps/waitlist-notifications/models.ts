@@ -1,4 +1,9 @@
-import { asOptionalField, zEmail, zNonEmptyString } from "@timelish/types";
+import {
+  asOptionalField,
+  zEmail,
+  zNonEmptyString,
+  zObjectId,
+} from "@timelish/types";
 import * as z from "zod";
 import { WaitlistNotificationsAdminAllKeys } from "./translations/types";
 
@@ -16,8 +21,11 @@ export const waitlistNotificationsConfigurationSchema = z
         }),
         customerNewEntrySubject: zNonEmptyString(
           "app_waitlist-notifications_admin.validation.customerNewEntrySubject.required" satisfies WaitlistNotificationsAdminAllKeys,
+          1,
+          256,
+          "app_waitlist-notifications_admin.validation.customerNewEntrySubject.max" satisfies WaitlistNotificationsAdminAllKeys,
         ),
-        customerNewEntryTemplateId: zNonEmptyString(
+        customerNewEntryTemplateId: zObjectId(
           "app_waitlist-notifications_admin.validation.customerNewEntryTemplateId.required" satisfies WaitlistNotificationsAdminAllKeys,
         ),
       })

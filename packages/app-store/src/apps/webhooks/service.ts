@@ -5,6 +5,7 @@ import {
   Appointment,
   AppointmentStatus,
   ConnectedAppData,
+  ConnectedAppRequestError,
   ConnectedAppStatusWithText,
   Customer,
   CustomerUpdateModel,
@@ -18,9 +19,15 @@ import {
 } from "@timelish/types";
 import { decrypt, encrypt } from "@timelish/utils";
 import crypto from "crypto";
-import { WaitlistEntry } from "../waitlist/models/waitlist";
+import type { FormModel, FormResponseModel } from "../forms/models/form";
+import type { IFormsHook } from "../forms/models/hook";
+import type { WaitlistEntry } from "../waitlist/models/waitlist";
 import type { IWaitlistHook } from "../waitlist/models/waitlist-hook";
-import { MASKED_SECRET, WebhooksConfiguration } from "./models";
+import {
+  MASKED_SECRET,
+  WebhooksConfiguration,
+  webhooksConfigurationSchema,
+} from "./models";
 import {
   WebhooksAdminAllKeys,
   WebhooksAdminKeys,
@@ -33,7 +40,8 @@ export class WebhooksConnectedApp
     IAppointmentHook,
     ICustomerHook,
     IPaymentHook,
-    IWaitlistHook
+    IWaitlistHook,
+    IFormsHook
 {
   protected readonly loggerFactory: LoggerFactory;
 
@@ -64,6 +72,21 @@ export class WebhooksConnectedApp
       { appId: appData._id },
       "Processing webhooks configuration request",
     );
+
+    const { success, error } = webhooksConfigurationSchema.safeParse(data);
+    if (!success) {
+      logger.warn(
+        { appId: appData._id, error },
+        "Invalid webhooks configuration data",
+      );
+
+      throw new ConnectedAppRequestError(
+        "invalid_webhooks_configuration",
+        { data },
+        400,
+        error.message,
+      );
+    }
 
     // Handle secret encryption
     if (data.secret === MASKED_SECRET && appData?.data?.secret) {
@@ -236,6 +259,20 @@ export class WebhooksConnectedApp
   ): Promise<void> {
     await this.sendWebhook(appData, "waitlist-entries.dismissed", {
       waitlistEntries,
+    });
+  }
+
+  // Form Hooks
+  public async onFormResponseCreated(
+    appData: ConnectedAppData,
+    response: FormResponseModel,
+    form: FormModel,
+    customer?: Customer | null,
+  ): Promise<void> {
+    await this.sendWebhook(appData, "form-response.created", {
+      response,
+      form,
+      customer,
     });
   }
 

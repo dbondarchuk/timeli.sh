@@ -2,6 +2,7 @@ import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
 import {
   ConnectedAppData,
   ConnectedAppError,
+  ConnectedAppRequestError,
   ConnectedAppStatusWithText,
   IConnectedApp,
   IConnectedAppProps,
@@ -15,7 +16,10 @@ import {
   getWebsiteUrl,
   template,
 } from "@timelish/utils";
-import { TextMessageAutoReplyConfiguration } from "./models";
+import {
+  TextMessageAutoReplyConfiguration,
+  textMessageAutoReplyConfigurationSchema,
+} from "./models";
 import {
   TextMessageAutoReplyAdminAllKeys,
   TextMessageAutoReplyAdminKeys,
@@ -36,16 +40,31 @@ export default class TextMessageAutoReplyConnectedApp
 
   public async processRequest(
     appData: ConnectedAppData,
-    data: TextMessageAutoReplyConfiguration,
+    request: TextMessageAutoReplyConfiguration,
   ): Promise<ConnectedAppStatusWithText> {
     const logger = this.loggerFactory("processRequest");
     logger.debug(
       {
         appId: appData._id,
-        autoReplyTemplateId: data.autoReplyTemplateId,
+        autoReplyTemplateId: request.autoReplyTemplateId,
       },
       "Processing Text Message Auto Reply configuration request",
     );
+
+    const { data, success, error } =
+      textMessageAutoReplyConfigurationSchema.safeParse(request);
+    if (!success) {
+      logger.error(
+        { error },
+        "Invalid Text Message Auto Reply configuration request",
+      );
+      throw new ConnectedAppRequestError(
+        "invalid_text-message-auto-reply_configuration_request",
+        { request, error },
+        400,
+        error.message,
+      );
+    }
 
     try {
       logger.debug(

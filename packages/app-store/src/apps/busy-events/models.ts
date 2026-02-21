@@ -1,22 +1,42 @@
-import { Schedule, WeekIdentifier } from "@timelish/types";
+import {
+  shiftsSchema,
+  weekIdentifierSchema,
+  zTaggedUnion,
+} from "@timelish/types";
+import * as z from "zod";
 
-export type SetBusyEventsAction = {
-  events: Schedule;
-  week: WeekIdentifier;
-};
+// SetBusyEventsAction
 
+export const setBusyEventsActionSchema = z.object({
+  events: shiftsSchema,
+  week: weekIdentifierSchema,
+});
+
+export type SetBusyEventsAction = z.infer<typeof setBusyEventsActionSchema>;
 export const SetBusyEventsActionType = "set-busy-events" as const;
 
-export type GetWeeklyBusyEventsRequest = {
-  week: WeekIdentifier;
-};
+// GetWeeklyBusyEventsRequest
 
+export const getWeeklyBusyEventsRequestSchema = z.object({
+  week: weekIdentifierSchema,
+});
+
+export type GetWeeklyBusyEventsRequest = z.infer<
+  typeof getWeeklyBusyEventsRequestSchema
+>;
 export const GetWeeklyBusyEventsRequestType = "get-weekly-busy-events" as const;
 
-export type RequestAction =
-  | ({
-      type: typeof SetBusyEventsActionType;
-    } & SetBusyEventsAction)
-  | ({
-      type: typeof GetWeeklyBusyEventsRequestType;
-    } & GetWeeklyBusyEventsRequest);
+export const DefaultRequestType = "default" as const;
+
+export const requestActionSchema = zTaggedUnion([
+  { type: SetBusyEventsActionType, data: setBusyEventsActionSchema },
+  {
+    type: GetWeeklyBusyEventsRequestType,
+    data: getWeeklyBusyEventsRequestSchema,
+  },
+  {
+    type: DefaultRequestType,
+  },
+]);
+
+export type RequestAction = z.infer<typeof requestActionSchema>;

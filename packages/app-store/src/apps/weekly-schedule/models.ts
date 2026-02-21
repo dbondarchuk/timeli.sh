@@ -1,38 +1,48 @@
-import { Schedule, WeekIdentifier } from "@timelish/types";
+import {
+  shiftsSchema,
+  weekIdentifierSchema,
+  zTaggedUnion,
+} from "@timelish/types";
+import * as z from "zod";
 
-export type SetSchedulesAction = {
-  schedules: Record<WeekIdentifier, Schedule>;
-  replaceExisting?: boolean;
-};
+export const setSchedulesActionSchema = z.object({
+  schedules: z.record(weekIdentifierSchema, shiftsSchema),
+  replaceExisting: z.coerce.boolean<boolean>().optional(),
+});
 
+export type SetSchedulesAction = z.infer<typeof setSchedulesActionSchema>;
 export const SetSchedulesActionType = "set-schedules" as const;
 
-export type RemoveScheduleAction = {
-  week: WeekIdentifier;
-};
+export const removeScheduleActionSchema = z.object({
+  week: weekIdentifierSchema,
+});
 
+export type RemoveScheduleAction = z.infer<typeof removeScheduleActionSchema>;
 export const RemoveScheduleActionType = "remove-schedule" as const;
 
-export type RemoveAllSchedulesAction = {
-  week: WeekIdentifier;
-};
+export const removeAllSchedulesActionSchema = z.object({
+  week: weekIdentifierSchema,
+});
 
+export type RemoveAllSchedulesAction = z.infer<
+  typeof removeAllSchedulesActionSchema
+>;
 export const RemoveAllSchedulesActionType = "remove-all-schedules" as const;
 
-export type GetWeeklyScheduleRequest = {
-  week: WeekIdentifier;
-};
+export const getWeeklyScheduleRequestSchema = z.object({
+  week: weekIdentifierSchema,
+});
 
+export type GetWeeklyScheduleRequest = z.infer<
+  typeof getWeeklyScheduleRequestSchema
+>;
 export const GetWeeklyScheduleRequestType = "get-weekly-schedule" as const;
 
-export type RequestAction =
-  | ({
-      type: typeof SetSchedulesActionType;
-    } & SetSchedulesAction)
-  | ({
-      type: typeof RemoveScheduleActionType;
-    } & RemoveScheduleAction)
-  | ({
-      type: typeof RemoveAllSchedulesActionType;
-    } & RemoveAllSchedulesAction)
-  | ({ type: typeof GetWeeklyScheduleRequestType } & GetWeeklyScheduleRequest);
+export const requestActionSchema = zTaggedUnion([
+  { type: SetSchedulesActionType, data: setSchedulesActionSchema },
+  { type: RemoveScheduleActionType, data: removeScheduleActionSchema },
+  { type: RemoveAllSchedulesActionType, data: removeAllSchedulesActionSchema },
+  { type: GetWeeklyScheduleRequestType, data: getWeeklyScheduleRequestSchema },
+]);
+
+export type RequestAction = z.infer<typeof requestActionSchema>;

@@ -3,7 +3,7 @@ import { Customer } from "./customer";
 
 export type CustomerListModel = Pick<
   Customer,
-  "_id" | "avatar" | "name" | "phone" | "email"
+  "_id" | "avatar" | "name" | "phone" | "email" | "isDeleted" | "deletedAt"
 > & {
   appointmentsCount: number;
   lastAppointment?: Appointment;

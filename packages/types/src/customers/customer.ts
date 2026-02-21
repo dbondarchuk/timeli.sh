@@ -1,6 +1,13 @@
 import * as z from "zod";
 import { WithCompanyId, WithDatabaseId } from "../database";
-import { zPhone, zUniqueArray } from "../utils";
+import {
+  asOptionalField,
+  zAssetName,
+  zEmail,
+  zNonEmptyString,
+  zPhone,
+  zUniqueArray,
+} from "../utils";
 import { Prettify } from "../utils/helpers";
 export const isPaymentRequiredForCustomerTypes = [
   "inherit",
@@ -14,19 +21,29 @@ const isPaymentRequiredForCustomerSchema = z.enum(
 
 export const customerSchema = z
   .object({
-    name: z.string().min(1, "customer.name.required"),
-    email: z.email("customer.email.required"),
+    name: zNonEmptyString(
+      "validation.customer.name.required",
+      2,
+      256,
+      "validation.customer.name.max",
+    ),
+    email: zEmail,
     phone: zPhone,
     dateOfBirth: z.coerce.date<Date>().optional(),
-    avatar: z.string().optional(),
-    note: z.string().optional(),
+    avatar: asOptionalField(zAssetName),
+    note: asOptionalField(z.string().max(4096, "validation.customer.note.max")),
     knownNames: zUniqueArray(
-      z.array(z.string().min(1, "customer.name.required")),
+      z.array(
+        z
+          .string()
+          .min(1, "customer.name.required")
+          .max(256, "customer.name.max"),
+      ),
       (s) => s,
       "customer.knownNames.unique",
     ),
     knownEmails: zUniqueArray(
-      z.array(z.email({ error: "customer.email.required" })),
+      z.array(zEmail),
       (s) => s,
       "customer.knownEmails.unique",
     ),
@@ -94,5 +111,15 @@ export const getCustomerSchemaWithUniqueCheck = (
 
 export type CustomerUpdateModel = z.infer<typeof customerSchema>;
 export type Customer = Prettify<
-  WithCompanyId<WithDatabaseId<CustomerUpdateModel>>
+  WithCompanyId<WithDatabaseId<CustomerUpdateModel>> &
+    (
+      | {
+          isDeleted?: false;
+          deletedAt?: never;
+        }
+      | {
+          isDeleted: true;
+          deletedAt: Date;
+        }
+    )
 >;

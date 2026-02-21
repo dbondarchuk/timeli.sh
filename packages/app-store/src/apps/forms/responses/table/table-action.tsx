@@ -27,9 +27,10 @@ export const ResponsesTableAction: React.FC<{
   appId: string;
   /** When set, customer filter is hidden and new response link includes this customer and returnUrl. */
   customerIdLock?: string;
+  disableNewResponseLink?: boolean;
   /** When set with customerIdLock, redirect here after creating a new response. */
   returnUrl?: string;
-}> = ({ appId, customerIdLock, returnUrl }) => {
+}> = ({ appId, customerIdLock, disableNewResponseLink, returnUrl }) => {
   const { rowSelection } = useSelectedRowsStore();
   const router = useRouter();
   const [selectFormOpen, setSelectFormOpen] = useState(false);
@@ -128,9 +129,11 @@ export const ResponsesTableAction: React.FC<{
             selected={rowSelection}
             appId={appId}
           />
-          <Button onClick={() => setSelectFormOpen(true)}>
-            {t("responses.table.actions.create")}
-          </Button>
+          {!disableNewResponseLink && (
+            <Button onClick={() => setSelectFormOpen(true)}>
+              {t("responses.table.actions.create")}
+            </Button>
+          )}
         </div>
       </div>
       <SelectFormDialog

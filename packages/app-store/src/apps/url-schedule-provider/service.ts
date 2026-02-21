@@ -2,6 +2,7 @@ import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
 import {
   ConnectedAppData,
   ConnectedAppError,
+  ConnectedAppRequestError,
   ConnectedAppStatusWithText,
   DaySchedule,
   IConnectedApp,
@@ -9,7 +10,10 @@ import {
   IScheduleProvider,
 } from "@timelish/types";
 import { DateTime } from "luxon";
-import { UrlScheduleProviderConfiguration } from "./models";
+import {
+  UrlScheduleProviderConfiguration,
+  urlScheduleProviderConfigurationSchema,
+} from "./models";
 import {
   UrlScheduleProviderAdminAllKeys,
   UrlScheduleProviderAdminKeys,
@@ -29,7 +33,7 @@ export default class UrlScheduleProviderConnectedApp
 
   public async processRequest(
     appData: ConnectedAppData,
-    data: UrlScheduleProviderConfiguration,
+    request: UrlScheduleProviderConfiguration,
   ): Promise<
     ConnectedAppStatusWithText<
       UrlScheduleProviderAdminNamespace,
@@ -40,11 +44,26 @@ export default class UrlScheduleProviderConnectedApp
     logger.debug(
       {
         appId: appData._id,
-        url: data.url,
-        headerCount: data.headers?.length || 0,
+        url: request.url,
+        headerCount: request.headers?.length || 0,
       },
       "Processing URL schedule provider configuration request",
     );
+
+    const { data, success, error } =
+      urlScheduleProviderConfigurationSchema.safeParse(request);
+    if (!success) {
+      logger.error(
+        { error },
+        "Invalid URL schedule provider configuration request",
+      );
+      throw new ConnectedAppRequestError(
+        "invalid_url-schedule-provider_configuration_request",
+        { request, error },
+        400,
+        error.message,
+      );
+    }
 
     try {
       // Test the URL by making a simple request

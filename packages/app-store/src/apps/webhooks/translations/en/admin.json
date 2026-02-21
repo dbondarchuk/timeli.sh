@@ -82,6 +82,12 @@
         "label": "Waitlist Entries Dismissed",
         "description": "Triggered when a waitlist entries are dismissed (Waitlist app is required)"
       }
+    },
+    "form-response": {
+      "created": {
+        "label": "Form Response Created",
+        "description": "Triggered when a form response is created (Forms app is required)"
+      }
     }
   },
   "statusText": {
@@ -90,7 +96,11 @@
   },
   "validation": {
     "url": {
-      "invalid": "Please enter a valid URL"
+      "invalid": "Please enter a valid URL",
+      "max": "Webhook URL must be at most 2048 characters long"
+    },
+    "secret": {
+      "max": "Webhook secret must be at most 256 characters long"
     },
     "eventTypes": {
       "required": "Please select at least one event type"

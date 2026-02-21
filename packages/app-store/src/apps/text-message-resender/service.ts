@@ -1,6 +1,7 @@
 import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
 import {
   ConnectedAppData,
+  ConnectedAppRequestError,
   ConnectedAppStatusWithText,
   IConnectedApp,
   IConnectedAppProps,
@@ -15,7 +16,10 @@ import {
   template,
 } from "@timelish/utils";
 import { TextMessageResenderMessages } from "./messages";
-import { TextMessageResenderConfiguration } from "./models";
+import {
+  TextMessageResenderConfiguration,
+  textMessageResenderConfigurationSchema,
+} from "./models";
 import {
   TextMessageResenderAdminAllKeys,
   TextMessageResenderAdminKeys,
@@ -36,7 +40,7 @@ export default class TextMessageResenderConnectedApp
 
   public async processRequest(
     appData: ConnectedAppData,
-    data: TextMessageResenderConfiguration,
+    request: TextMessageResenderConfiguration,
   ): Promise<
     ConnectedAppStatusWithText<
       TextMessageResenderAdminNamespace,
@@ -44,6 +48,21 @@ export default class TextMessageResenderConnectedApp
     >
   > {
     const logger = this.loggerFactory("processRequest");
+    const { data, success, error } =
+      textMessageResenderConfigurationSchema.safeParse(request);
+    if (!success) {
+      logger.error(
+        { error },
+        "Invalid Text Message Resender configuration request",
+      );
+      throw new ConnectedAppRequestError(
+        "invalid_text-message-resender_configuration_request",
+        { request, error },
+        400,
+        error.message,
+      );
+    }
+
     logger.debug(
       { appId: appData._id, phone: data?.phone },
       "Processing text message resender configuration request",

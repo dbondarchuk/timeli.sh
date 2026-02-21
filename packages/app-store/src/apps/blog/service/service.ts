@@ -3,6 +3,7 @@ import {
   ApiRequest,
   ApiResponse,
   ConnectedAppData,
+  ConnectedAppRequestError,
   ConnectedAppStatusWithText,
   IConnectedApp,
   IConnectedAppProps,
@@ -25,6 +26,7 @@ import {
   GetBlogTagsAction,
   GetBlogTagsActionType,
   RequestAction,
+  requestActionSchema,
   SetConfigurationActionType,
   UpdateBlogPostAction,
   UpdateBlogPostActionType,
@@ -48,11 +50,21 @@ export class BlogConnectedApp implements IConnectedApp {
 
   public async processRequest(
     appData: ConnectedAppData,
-    data: RequestAction,
+    request: RequestAction,
   ): Promise<any> {
     const logger = this.loggerFactory("processRequest");
     logger.debug({ appId: appData._id }, "Processing blog request");
 
+    const { data, success, error } = requestActionSchema.safeParse(request);
+    if (!success) {
+      logger.error({ error }, "Invalid blog request");
+      throw new ConnectedAppRequestError(
+        "invalid_blog_request",
+        { data },
+        400,
+        error.message,
+      );
+    }
     switch (data.type) {
       case GetBlogPostsActionType:
         return this.processGetBlogPostsRequest(appData, data);
@@ -111,6 +123,7 @@ export class BlogConnectedApp implements IConnectedApp {
         appData._id,
         appData.companyId,
       );
+
       await repositoryService.install();
 
       logger.debug({ appId: appData._id }, "Blog app installed successfully");
@@ -152,6 +165,7 @@ export class BlogConnectedApp implements IConnectedApp {
         appData._id,
         appData.companyId,
       );
+
       const result = await repositoryService.getBlogPosts(data.query);
 
       logger.debug({ appId: appData._id }, "Successfully retrieved blog posts");
@@ -199,6 +213,19 @@ export class BlogConnectedApp implements IConnectedApp {
         appData._id,
         appData.companyId,
       );
+
+      const isUnique = await repositoryService.checkBlogPostSlugUnique(
+        data.post.slug,
+      );
+      if (!isUnique) {
+        throw new ConnectedAppRequestError(
+          "blog_post_slug_not_unique",
+          { slug: data.post.slug },
+          400,
+          "Blog post slug not unique",
+        );
+      }
+
       const result = await repositoryService.createBlogPost(data.post);
 
       logger.debug({ appId: appData._id }, "Successfully created blog post");
@@ -221,6 +248,20 @@ export class BlogConnectedApp implements IConnectedApp {
         appData._id,
         appData.companyId,
       );
+
+      const isUnique = await repositoryService.checkBlogPostSlugUnique(
+        data.post.slug,
+        data.id,
+      );
+      if (!isUnique) {
+        throw new ConnectedAppRequestError(
+          "blog_post_slug_not_unique",
+          { slug: data.post.slug },
+          400,
+          "Blog post slug not unique",
+        );
+      }
+
       const result = await repositoryService.updateBlogPost(data.id, data.post);
 
       logger.debug({ appId: appData._id }, "Successfully updated blog post");
@@ -243,7 +284,16 @@ export class BlogConnectedApp implements IConnectedApp {
         appData._id,
         appData.companyId,
       );
+
       const result = await repositoryService.deleteBlogPost(data.id);
+      if (!result) {
+        throw new ConnectedAppRequestError(
+          "blog_post_not_found",
+          { id: data.id },
+          404,
+          "Blog post not found",
+        );
+      }
 
       logger.debug({ appId: appData._id }, "Successfully deleted blog post");
       return result;
@@ -268,6 +318,7 @@ export class BlogConnectedApp implements IConnectedApp {
         appData._id,
         appData.companyId,
       );
+
       const result = await repositoryService.deleteBlogPosts(data.ids);
 
       logger.debug({ appId: appData._id }, "Successfully deleted blog posts");
@@ -290,6 +341,7 @@ export class BlogConnectedApp implements IConnectedApp {
         appData._id,
         appData.companyId,
       );
+
       const result = await repositoryService.getBlogTags(
         data.sortBy,
         data.sortOrder,
@@ -318,7 +370,7 @@ export class BlogConnectedApp implements IConnectedApp {
         appData._id,
         appData.companyId,
       );
-      
+
       const result = await repositoryService.checkBlogPostSlugUnique(
         data.slug,
         data.id,

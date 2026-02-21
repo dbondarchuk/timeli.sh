@@ -1,5 +1,6 @@
 import { AllKeys, I18nNamespaces } from "@timelish/i18n";
 import type { ReactNode } from "react";
+import { Customer } from "../customers/customer";
 import { IConnectedAppProps } from "./connected-app.props";
 
 export type DashboardTabInjectorApp<
@@ -34,7 +35,7 @@ export type CustomerTabInjectorApp<
       view: (props: {
         props: IConnectedAppProps;
         appId: string;
-        customerId: string;
+        customer: Customer;
         searchParams: { [key: string]: string | string[] | undefined };
       }) => ReactNode;
     },

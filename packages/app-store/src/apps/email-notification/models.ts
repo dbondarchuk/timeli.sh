@@ -1,8 +1,14 @@
-import { asOptionalField, zEmail } from "@timelish/types";
+import { asOptionalField, zEmail, zUniqueArray } from "@timelish/types";
 import * as z from "zod";
 
 export const emailNotificationConfigurationSchema = z.object({
-  email: asOptionalField(zEmail),
+  email: asOptionalField(zEmail).or(
+    zUniqueArray(
+      z.array(zEmail),
+      (email) => email,
+      "validation.common.email.unique",
+    ),
+  ),
 });
 
 export type EmailNotificationConfiguration = z.infer<

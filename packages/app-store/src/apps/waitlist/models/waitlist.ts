@@ -6,7 +6,9 @@ import {
   Prettify,
   WithCompanyId,
   WithDatabaseId,
+  zEmail,
   zNonEmptyString,
+  zObjectId,
   zPhone,
   zUniqueArray,
 } from "@timelish/types";
@@ -35,19 +37,19 @@ export const waitlistDateSchema = z.object({
 export type WaitlistDate = z.infer<typeof waitlistDateSchema>;
 
 export const waitlistRequestFormSchemaBase = z.object({
-  email: z.email({
-    error:
-      "app_waitlist_public.block.email.required" satisfies WaitlistPublicAllKeys,
-  }),
+  email: zEmail,
   name: zNonEmptyString(
     "app_waitlist_public.block.name.required" satisfies WaitlistPublicAllKeys,
+    1,
+    256,
+    "app_waitlist_public.block.name.max" satisfies WaitlistPublicAllKeys,
   ),
   phone: zPhone,
   note: asOptionalField(
     z
       .string()
       .max(
-        500,
+        1024,
         "app_waitlist_public.block.note.max" satisfies WaitlistPublicAllKeys,
       ),
   ),
@@ -96,9 +98,9 @@ export type WaitlistRequestForm = Prettify<
 
 export const waitlistRequestSchema = waitlistRequestFormSchema.and(
   z.object({
-    optionId: zNonEmptyString("appointments.request.optionId.required"),
+    optionId: zObjectId("appointments.request.optionId.required"),
     addonsIds: zUniqueArray(
-      z.array(zNonEmptyString("appointments.request.addonsIds.required")),
+      z.array(zObjectId("appointments.request.addonsIds.required")),
       (x) => x,
       "appointments.request.addonsIds.unique",
     ).optional(),

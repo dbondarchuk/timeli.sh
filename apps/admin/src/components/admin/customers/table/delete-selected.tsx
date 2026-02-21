@@ -49,25 +49,16 @@ export const DeleteSelectedCustomersButton: React.FC<{
     }
   };
 
-  const hasCustomersWithAppointments = selected.some(
-    (customer) => customer.appointmentsCount > 0,
-  );
+  const hasDeletedCustomers = selected.some((customer) => customer.isDeleted);
 
   return (
     <AlertDialog onOpenChange={setIsOpen} open={isOpen}>
       <AlertDialogTrigger asChild>
         <Button
           variant="default"
-          title={
-            hasCustomersWithAppointments
-              ? t("customers.table.delete.cannotDeleteWithAppointments")
-              : t("customers.table.delete.deleteSelectedCustomers")
-          }
+          title={t("customers.table.delete.deleteSelectedCustomers")}
           disabled={
-            isLoading ||
-            !selected ||
-            !selected.length ||
-            hasCustomersWithAppointments
+            isLoading || !selected || !selected.length || hasDeletedCustomers
           }
         >
           {isLoading && <Spinner />}

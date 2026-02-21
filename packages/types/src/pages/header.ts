@@ -6,7 +6,10 @@ import { Prettify } from "../utils";
 export const pageHeaderShadowType = ["none", "static", "on-scroll"] as const;
 
 export const pageHeaderSchema = z.object({
-  name: z.string("page.headers.name.min").min(2, "page.headers.name.min"),
+  name: z
+    .string("validation.page.headers.name.required")
+    .min(2, "validation.page.headers.name.min")
+    .max(256, "validation.page.headers.name.max"),
   menu: menuItemsWithSubMenuSchema,
   showLogo: z.coerce.boolean<boolean>().default(false).optional(),
   sticky: z.coerce.boolean<boolean>().default(false).optional(),

@@ -2,7 +2,7 @@ import * as z from "zod";
 import { AppointmentEntity } from "../booking/appointment";
 import { Customer } from "../customers/customer";
 import { WithCompanyId, WithDatabaseId } from "../database";
-import { Prettify } from "../utils";
+import { Prettify, zObjectId } from "../utils";
 import { AssetEntity } from "./entity";
 
 export type Asset = Prettify<
@@ -19,9 +19,12 @@ export type Asset = Prettify<
 >;
 
 export const assetUpdateSchema = z.object({
-  description: z.string().optional(),
-  appointmentId: z.string().optional(),
-  customerId: z.string().optional(),
+  description: z
+    .string()
+    .max(1024, "validation.assets.descriptionMaxLength")
+    .optional(),
+  appointmentId: zObjectId().optional(),
+  customerId: zObjectId().optional(),
 });
 
 export type AssetUpdate = z.infer<typeof assetUpdateSchema>;

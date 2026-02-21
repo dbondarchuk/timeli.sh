@@ -1,8 +1,8 @@
-import { appointmentStatuses } from "@timelish/types";
+import { appointmentStatuses, zObjectId } from "@timelish/types";
 import * as z from "zod";
 
 export const textMessagesTemplateSchema = z.object({
-  templateId: z.string().optional(),
+  templateId: zObjectId().optional(),
 });
 
 export type TextMessageTemplateConfiguration = z.infer<

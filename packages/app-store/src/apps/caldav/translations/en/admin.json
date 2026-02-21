@@ -37,10 +37,18 @@
   },
   "validation": {
     "calendarName": {
-      "required": "Calendar name is required"
+      "required": "Calendar name is required",
+      "max": "Calendar name must be no more than 256 characters"
     },
     "serverUrl": {
-      "url": "Server URL must be a valid URL"
+      "url": "Server URL must be a valid URL",
+      "max": "Server URL must be no more than 4096 characters"
+    },
+    "username": {
+      "max": "Username must be no more than 256 characters"
+    },
+    "password": {
+      "max": "Password must be no more than 256 characters"
     }
   }
 }

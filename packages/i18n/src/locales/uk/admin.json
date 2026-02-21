@@ -483,6 +483,7 @@
     "appointments": "Записи",
     "files": "Файли",
     "communications": "Комунікації",
+    "deletedCustomer": "Видалений клієнт",
     "form": {
       "customerPhoto": "Фото клієнта",
       "personalInformation": "Особиста інформація",
@@ -578,7 +579,7 @@
       "changesSaved": "Ваші зміни були збережені.",
       "customerCreated": "Клієнта успішно створено.",
       "customerUpdated": "Клієнта успішно оновлено.",
-      "customerDeleted": "Клієнта '{name}' було видалено."
+      "customerDeleted": "Клієнта {name} було видалено."
     }
   },
   "pages": {

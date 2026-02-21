@@ -21,57 +21,45 @@ import { v4 as uuidv4 } from "uuid";
 import { getEmailTemplate } from "../emails/utils";
 import {
   CheckFormNameUniqueAction,
-  checkFormNameUniqueActionSchema,
   CheckFormNameUniqueActionType,
   CreateFormAction,
   CreateFormActionType,
   CreateFormResponseAction,
   CreateFormResponseActionType,
   DeleteFormAction,
-  deleteFormActionSchema,
   DeleteFormActionType,
   DeleteFormResponseAction,
-  deleteFormResponseActionSchema,
   DeleteFormResponseActionType,
   DeleteSelectedFormResponsesAction,
-  deleteSelectedFormResponsesActionSchema,
   DeleteSelectedFormResponsesActionType,
   DeleteSelectedFormsAction,
-  deleteSelectedFormsActionSchema,
   DeleteSelectedFormsActionType,
   FormAnswer,
   FormModel,
   FormResponseModel,
   FormsFieldType,
   GetFormByIdAction,
-  getFormByIdActionSchema,
   GetFormByIdActionType,
   GetFormResponseByIdAction,
-  getFormResponseByIdActionSchema,
   GetFormResponseByIdActionType,
   GetFormResponsesAction,
-  getFormResponsesActionSchema,
   GetFormResponsesActionType,
   GetFormsAction,
-  getFormsActionSchema,
   GetFormsActionType,
-  getFormSchemaWithUniqueCheck,
-  IFormsHook,
   ReassignFormResponsesAction,
-  reassignFormResponsesActionSchema,
   ReassignFormResponsesActionType,
   RequestAction,
+  requestActionSchema,
   SetFormArchivedAction,
-  setFormArchivedActionSchema,
   SetFormArchivedActionType,
   SetFormsArchivedAction,
-  setFormsArchivedActionSchema,
   SetFormsArchivedActionType,
   UpdateFormAction,
   UpdateFormActionType,
   UpdateFormResponseAction,
   UpdateFormResponseActionType,
 } from "../models";
+import { FORMS_HOOK_NAME, IFormsHook } from "../models/hook";
 import { getFormResponseSchema } from "../models/utils";
 import { FormsAdminAllKeys } from "../translations/types";
 import { FormsRepositoryService } from "./repository-service";
@@ -85,13 +73,24 @@ export class FormsConnectedApp implements IConnectedApp {
 
   public async processRequest(
     appData: ConnectedAppData,
-    data: RequestAction,
+    request: RequestAction,
   ): Promise<any> {
     const logger = this.loggerFactory("processRequest");
     logger.debug(
-      { appId: appData._id, type: data.type },
+      { appId: appData._id, type: request.type },
       "Processing forms request",
     );
+
+    const { data, success, error } = requestActionSchema.safeParse(request);
+    if (!success) {
+      logger.error({ error }, "Invalid forms request");
+      throw new ConnectedAppRequestError(
+        "invalid_forms_request",
+        { request },
+        400,
+        error.message,
+      );
+    }
 
     switch (data.type) {
       case CreateFormActionType:
@@ -543,7 +542,7 @@ export class FormsConnectedApp implements IConnectedApp {
       "Successfully created form response",
     );
 
-    await this.enqueueFormResponseHook(response, form);
+    await this.enqueueFormResponseHook(response, form, customer);
     await this.sendEmailNotification(appData, response, form, customer);
 
     return Response.json(
@@ -586,23 +585,22 @@ export class FormsConnectedApp implements IConnectedApp {
       appData.companyId,
     );
 
-    const schema = getFormSchemaWithUniqueCheck((name) =>
-      repositoryService.checkFormNameUnique(name),
+    const isUnique = await repositoryService.checkFormNameUnique(
+      data.form.name,
     );
-    const result = await schema.safeParseAsync(data.form);
-    if (!result.success) {
-      logger.error({ error: result.error }, "Invalid form");
+    if (!isUnique) {
+      logger.error({ name: data.form.name }, "Form name not unique");
       throw new ConnectedAppRequestError(
-        "invalid_form",
-        { form: data.form },
+        "form_name_not_unique",
+        { name: data.form.name },
         400,
-        result.error.message,
+        "Form name not unique",
       );
     }
 
-    logger.debug({ form: result.data }, "Form validated");
+    logger.debug({ form: data.form }, "Form validated");
 
-    const form = await repositoryService.createForm(result.data);
+    const form = await repositoryService.createForm(data.form);
     logger.debug({ formId: form._id }, "Form created");
     return form;
   }
@@ -619,24 +617,24 @@ export class FormsConnectedApp implements IConnectedApp {
       appData.companyId,
     );
 
-    const schema = getFormSchemaWithUniqueCheck((name) =>
-      repositoryService.checkFormNameUnique(name, data.id),
+    const isUnique = await repositoryService.checkFormNameUnique(
+      data.form.name,
+      data.id,
     );
-
-    const result = await schema.safeParseAsync(data.form);
-    if (!result.success) {
-      logger.error({ error: result.error }, "Invalid form");
+    if (!isUnique) {
+      logger.error(
+        { name: data.form.name, id: data.id },
+        "Form name not unique",
+      );
       throw new ConnectedAppRequestError(
-        "invalid_form",
-        { form: data.form },
+        "form_name_not_unique",
+        { name: data.form.name, id: data.id },
         400,
-        result.error.message,
+        "Form name not unique",
       );
     }
 
-    logger.debug({ form: result.data }, "Form validated");
-
-    const form = await repositoryService.updateForm(data.id, result.data);
+    const form = await repositoryService.updateForm(data.id, data.form);
     if (!form) {
       logger.warn({ formId: data.id }, "Form not found");
       throw new ConnectedAppRequestError(
@@ -661,28 +659,17 @@ export class FormsConnectedApp implements IConnectedApp {
       "Processing delete form request",
     );
 
-    const parsed = deleteFormActionSchema.safeParse(data);
-    if (!parsed.success) {
-      logger.error({ error: parsed.error }, "Invalid delete form request body");
-      throw new ConnectedAppRequestError(
-        "invalid_delete_form",
-        { data },
-        400,
-        parsed.error.message,
-      );
-    }
-
     const repositoryService = this.getRepositoryService(
       appData._id,
       appData.companyId,
     );
 
-    const result = await repositoryService.deleteForm(parsed.data.id);
+    const result = await repositoryService.deleteForm(data.id);
     if (!result) {
       logger.warn({ formId: data.id }, "Form not found");
       throw new ConnectedAppRequestError(
         "form_not_found",
-        { formId: parsed.data.id },
+        { formId: data.id },
         404,
         "Form not found",
       );
@@ -699,23 +686,12 @@ export class FormsConnectedApp implements IConnectedApp {
     const logger = this.loggerFactory("processGetFormsRequest");
     logger.debug({ appId: appData._id }, "Processing get forms request");
 
-    const parsed = getFormsActionSchema.safeParse(data);
-    if (!parsed.success) {
-      logger.error({ error: parsed.error }, "Invalid get forms request body");
-      throw new ConnectedAppRequestError(
-        "invalid_get_forms",
-        { data },
-        400,
-        parsed.error.message,
-      );
-    }
-
     const repositoryService = this.getRepositoryService(
       appData._id,
       appData.companyId,
     );
 
-    const result = await repositoryService.getForms(parsed.data.query);
+    const result = await repositoryService.getForms(data.query);
     logger.debug(
       { forms: result.total, count: result.items.length },
       "Forms found",
@@ -733,31 +709,17 @@ export class FormsConnectedApp implements IConnectedApp {
       "Processing get form by id request",
     );
 
-    const parsed = getFormByIdActionSchema.safeParse(data);
-    if (!parsed.success) {
-      logger.error(
-        { error: parsed.error },
-        "Invalid get form by id request body",
-      );
-      throw new ConnectedAppRequestError(
-        "invalid_get_form_by_id",
-        { data },
-        400,
-        parsed.error.message,
-      );
-    }
-
     const repositoryService = this.getRepositoryService(
       appData._id,
       appData.companyId,
     );
 
-    const result = await repositoryService.getFormById(parsed.data.id);
+    const result = await repositoryService.getFormById(data.id);
     if (!result) {
       logger.warn({ formId: data.id }, "Form not found");
       throw new ConnectedAppRequestError(
         "form_not_found",
-        { formId: parsed.data.id },
+        { formId: data.id },
         404,
         "Form not found",
       );
@@ -776,26 +738,13 @@ export class FormsConnectedApp implements IConnectedApp {
       { appId: appData._id },
       "Processing get form responses request",
     );
-    const parsed = getFormResponsesActionSchema.safeParse(data);
-    if (!parsed.success) {
-      logger.error(
-        { error: parsed.error },
-        "Invalid get form responses request body",
-      );
-      throw new ConnectedAppRequestError(
-        "invalid_get_form_responses",
-        { data },
-        400,
-        parsed.error.message,
-      );
-    }
 
     const repositoryService = this.getRepositoryService(
       appData._id,
       appData.companyId,
     );
 
-    const result = await repositoryService.getFormResponses(parsed.data.query);
+    const result = await repositoryService.getFormResponses(data.query);
     logger.debug(
       { formResponses: result.total, count: result.items.length },
       "Form responses found",
@@ -813,28 +762,17 @@ export class FormsConnectedApp implements IConnectedApp {
       "Processing get form response by id request",
     );
 
-    const parsed = getFormResponseByIdActionSchema.safeParse(data);
-    if (!parsed.success) {
-      logger.error({ error: parsed.error }, "Invalid form response");
-      throw new ConnectedAppRequestError(
-        "invalid_form_response",
-        { formResponse: data },
-        400,
-        parsed.error.message,
-      );
-    }
-
     const repositoryService = this.getRepositoryService(
       appData._id,
       appData.companyId,
     );
 
-    const result = await repositoryService.getFormResponseById(parsed.data.id);
+    const result = await repositoryService.getFormResponseById(data.id);
     if (!result) {
       logger.warn({ formResponseId: data.id }, "Form response not found");
       throw new ConnectedAppRequestError(
         "form_response_not_found",
-        { formResponseId: parsed.data.id },
+        { formResponseId: data.id },
         404,
         "Form response not found",
       );
@@ -956,26 +894,12 @@ export class FormsConnectedApp implements IConnectedApp {
       "Processing delete form response request",
     );
 
-    const parsed = deleteFormResponseActionSchema.safeParse(data);
-    if (!parsed.success) {
-      logger.error(
-        { error: parsed.error },
-        "Invalid delete form response request body",
-      );
-      throw new ConnectedAppRequestError(
-        "invalid_delete_form_response",
-        { data },
-        400,
-        parsed.error.message,
-      );
-    }
-
     const repositoryService = this.getRepositoryService(
       appData._id,
       appData.companyId,
     );
 
-    const result = await repositoryService.deleteFormResponse(parsed.data.id);
+    const result = await repositoryService.deleteFormResponse(data.id);
     if (!result) {
       logger.warn({ formResponseId: data.id }, "Form response not found");
       throw new ConnectedAppRequestError(
@@ -1000,26 +924,12 @@ export class FormsConnectedApp implements IConnectedApp {
       "Processing delete selected forms request",
     );
 
-    const parsed = deleteSelectedFormsActionSchema.safeParse(data);
-    if (!parsed.success) {
-      logger.error(
-        { error: parsed.error },
-        "Invalid delete selected forms request body",
-      );
-      throw new ConnectedAppRequestError(
-        "invalid_delete_selected_forms",
-        { data },
-        400,
-        parsed.error.message,
-      );
-    }
-
     const repositoryService = this.getRepositoryService(
       appData._id,
       appData.companyId,
     );
 
-    const result = await repositoryService.deleteForms(parsed.data.ids);
+    const result = await repositoryService.deleteForms(data.ids);
     logger.debug({ deletedCount: result }, "Forms deleted");
     return result;
   }
@@ -1036,26 +946,12 @@ export class FormsConnectedApp implements IConnectedApp {
       "Processing delete selected form responses request",
     );
 
-    const parsed = deleteSelectedFormResponsesActionSchema.safeParse(data);
-    if (!parsed.success) {
-      logger.error(
-        { error: parsed.error },
-        "Invalid delete selected form responses request body",
-      );
-      throw new ConnectedAppRequestError(
-        "invalid_delete_selected_form_responses",
-        { data },
-        400,
-        parsed.error.message,
-      );
-    }
-
     const repositoryService = this.getRepositoryService(
       appData._id,
       appData.companyId,
     );
 
-    const result = await repositoryService.deleteFormResponses(parsed.data.ids);
+    const result = await repositoryService.deleteFormResponses(data.ids);
     logger.debug({ deletedCount: result }, "Form responses deleted");
     return result;
   }
@@ -1075,39 +971,25 @@ export class FormsConnectedApp implements IConnectedApp {
       appData.companyId,
     );
 
-    const parsed = reassignFormResponsesActionSchema.safeParse(data);
-    if (!parsed.success) {
-      logger.error(
-        { error: parsed.error },
-        "Invalid reassign form responses request body",
-      );
-      throw new ConnectedAppRequestError(
-        "invalid_reassign_form_responses",
-        { data },
-        400,
-        parsed.error.message,
-      );
-    }
-
-    if (parsed.data.customerId) {
+    if (data.customerId) {
       const customer = await this.props.services.customersService.getCustomer(
-        parsed.data.customerId,
+        data.customerId,
       );
       if (!customer) {
         logger.warn(
-          { appId: appData._id, customerId: parsed.data.customerId },
+          { appId: appData._id, customerId: data.customerId },
           "Customer not found",
         );
         throw new ConnectedAppRequestError(
           "customer_not_found",
-          { appId: appData._id, customerId: parsed.data.customerId },
+          { appId: appData._id, customerId: data.customerId },
           404,
           "Customer not found",
         );
       }
     } else {
       const anyFormRequiresCustomer =
-        await repositoryService.isAnyFormRequiresCustomer(parsed.data.ids);
+        await repositoryService.isAnyFormRequiresCustomer(data.ids);
       if (anyFormRequiresCustomer) {
         logger.warn(
           { appId: appData._id },
@@ -1141,29 +1023,12 @@ export class FormsConnectedApp implements IConnectedApp {
       "Processing set form archived request",
     );
 
-    const parsed = setFormArchivedActionSchema.safeParse(data);
-    if (!parsed.success) {
-      logger.error(
-        { error: parsed.error },
-        "Invalid set form archived request body",
-      );
-      throw new ConnectedAppRequestError(
-        "invalid_set_form_archived",
-        { data },
-        400,
-        parsed.error.message,
-      );
-    }
-
     const repositoryService = this.getRepositoryService(
       appData._id,
       appData.companyId,
     );
 
-    return repositoryService.setFormArchived(
-      parsed.data.id,
-      parsed.data.isArchived,
-    );
+    return repositoryService.setFormArchived(data.id, data.isArchived);
   }
 
   private async processSetFormsArchivedRequest(
@@ -1176,29 +1041,12 @@ export class FormsConnectedApp implements IConnectedApp {
       "Processing set forms archived request",
     );
 
-    const parsed = setFormsArchivedActionSchema.safeParse(data);
-    if (!parsed.success) {
-      logger.error(
-        { error: parsed.error },
-        "Invalid set forms archived request body",
-      );
-      throw new ConnectedAppRequestError(
-        "invalid_set_forms_archived",
-        { data },
-        400,
-        parsed.error.message,
-      );
-    }
-
     const repositoryService = this.getRepositoryService(
       appData._id,
       appData.companyId,
     );
 
-    return repositoryService.setFormsArchived(
-      parsed.data.ids,
-      parsed.data.isArchived,
-    );
+    return repositoryService.setFormsArchived(data.ids, data.isArchived);
   }
 
   private async processCheckFormNameUniqueRequest(
@@ -1211,84 +1059,21 @@ export class FormsConnectedApp implements IConnectedApp {
       "Processing check form name uniqueness request",
     );
 
-    const parsed = checkFormNameUniqueActionSchema.safeParse(data);
-    if (!parsed.success) {
-      logger.error(
-        { error: parsed.error },
-        "Invalid check form name uniqueness request body",
-      );
-      throw new ConnectedAppRequestError(
-        "invalid_check_form_name_uniqueness",
-        { data },
-        400,
-        parsed.error.message,
-      );
-    }
-
     const repositoryService = this.getRepositoryService(
       appData._id,
       appData.companyId,
     );
 
     const result = await repositoryService.checkFormNameUnique(
-      parsed.data.name,
-      parsed.data.id,
+      data.name,
+      data.id,
     );
 
     logger.debug(
       {
         appId: appData._id,
-        name: parsed.data.name,
-        id: parsed.data.id,
-        result,
-      },
-      "Successfully checked form name uniqueness",
-    );
-
-    return result;
-  }
-
-  private async processCheckFormCustomerIdCorrectRequest(
-    appData: ConnectedAppData,
-    data: CheckFormNameUniqueAction,
-  ) {
-    const logger = this.loggerFactory(
-      "processCheckFormCustomerIdCorrectRequest",
-    );
-    logger.debug(
-      { appId: appData._id, name: data.name, id: data.id },
-      "Processing check form name uniqueness request",
-    );
-
-    const parsed = checkFormNameUniqueActionSchema.safeParse(data);
-    if (!parsed.success) {
-      logger.error(
-        { error: parsed.error },
-        "Invalid check form name uniqueness request body",
-      );
-      throw new ConnectedAppRequestError(
-        "invalid_check_form_name_uniqueness",
-        { data },
-        400,
-        parsed.error.message,
-      );
-    }
-
-    const repositoryService = this.getRepositoryService(
-      appData._id,
-      appData.companyId,
-    );
-
-    const result = await repositoryService.checkFormNameUnique(
-      parsed.data.name,
-      parsed.data.id,
-    );
-
-    logger.debug(
-      {
-        appId: appData._id,
-        name: parsed.data.name,
-        id: parsed.data.id,
+        name: data.name,
+        id: data.id,
         result,
       },
       "Successfully checked form name uniqueness",
@@ -1377,8 +1162,18 @@ export class FormsConnectedApp implements IConnectedApp {
       );
     }
 
+    const normalizedAnswers = Object.entries(result.data).map(
+      ([name, value]) => ({
+        name,
+        label: form.fields.find((field) => field.name === name)!.label,
+        type: form.fields.find((field) => field.name === name)!.type,
+        value: value as string | boolean | string[] | null,
+      }),
+    );
+
+    let customer: Customer | null = null;
     if (data.update.customerId) {
-      const customer = await this.props.services.customersService.getCustomer(
+      customer = await this.props.services.customersService.getCustomer(
         data.update.customerId,
       );
 
@@ -1394,23 +1189,19 @@ export class FormsConnectedApp implements IConnectedApp {
           "Customer not found",
         );
       }
+    } else {
+      customer =
+        await repositoryService.getOrCreateCustomerFromAnswers(
+          normalizedAnswers,
+        );
     }
-
-    const normalizedAnswers = Object.entries(result.data).map(
-      ([name, value]) => ({
-        name,
-        label: form.fields.find((field) => field.name === name)!.label,
-        type: form.fields.find((field) => field.name === name)!.type,
-        value: value as string | boolean | string[] | null,
-      }),
-    );
 
     const created = await repositoryService.createFormResponse(data.formId, {
       answers: normalizedAnswers,
-      customerId: data.update.customerId ?? undefined,
+      customerId: customer?._id,
     });
 
-    await this.enqueueFormResponseHook(created, form);
+    await this.enqueueFormResponseHook(created, form, customer);
 
     logger.debug(
       { formId: form._id, responseId: created._id },
@@ -1563,6 +1354,7 @@ export class FormsConnectedApp implements IConnectedApp {
   private async enqueueFormResponseHook(
     formResponse: FormResponseModel,
     form: FormModel,
+    customer?: Customer | null,
   ) {
     const logger = this.loggerFactory("enqueueFormResponseHook");
     // Enqueue hook for apps that want to react to form submissions
@@ -1570,7 +1362,7 @@ export class FormsConnectedApp implements IConnectedApp {
       await this.props.services.jobService.enqueueHook<
         IFormsHook,
         "onFormResponseCreated"
-      >("forms-hook", "onFormResponseCreated", formResponse, form);
+      >(FORMS_HOOK_NAME, "onFormResponseCreated", formResponse, form, customer);
       logger.debug(
         { formId: form._id, responseId: formResponse._id },
         "Form response hook enqueued",

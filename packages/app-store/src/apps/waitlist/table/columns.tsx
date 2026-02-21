@@ -13,7 +13,11 @@ import {
   DialogTrigger,
   Link,
 } from "@timelish/ui";
-import { tableSortHeader, tableSortNoopFunction } from "@timelish/ui-admin";
+import {
+  CustomerName,
+  tableSortHeader,
+  tableSortNoopFunction,
+} from "@timelish/ui-admin";
 import { CalendarPlus } from "lucide-react";
 import { DateTime } from "luxon";
 import { WaitlistEntry } from "../models";
@@ -74,7 +78,9 @@ export const columns: ColumnDef<WaitlistEntry & { appId: string }>[] = [
         href={`/dashboard/customers/${row.original.customerId}`}
         variant="underline"
       >
-        {row.original.customer?.name || row.original.name}
+        <CustomerName
+          customer={row.original.customer ?? { name: row.original.name }}
+        />
       </Link>
     ),
     id: "customer.name",

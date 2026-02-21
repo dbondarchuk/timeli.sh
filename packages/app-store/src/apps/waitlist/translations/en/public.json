@@ -67,7 +67,7 @@
     "note": {
       "label": "Note",
       "placeholder": "You can leave a note here",
-      "max": "You can enter up to 500 characters"
+      "max": "You can enter up to 1024 characters"
     },
     "confirmation": {
       "waitlist": {
@@ -96,7 +96,8 @@
       "required": "Email is required"
     },
     "name": {
-      "required": "Name is required"
+      "required": "Name is required",
+      "max": "Name must be at most 256 characters long"
     },
     "date": {
       "label": "Date",

@@ -3,7 +3,11 @@ import { ColumnDef } from "@tanstack/react-table";
 import { useI18n, useLocale } from "@timelish/i18n";
 import { AppointmentEntity, CustomerListModel } from "@timelish/types";
 import { Checkbox, Link } from "@timelish/ui";
-import { tableSortHeader, tableSortNoopFunction } from "@timelish/ui-admin";
+import {
+  CustomerName,
+  tableSortHeader,
+  tableSortNoopFunction,
+} from "@timelish/ui-admin";
 import { DateTime } from "luxon";
 // import Image from "next/image";
 import React from "react";
@@ -75,7 +79,7 @@ export const columns: ColumnDef<CustomerListModel>[] = [
         href={`/dashboard/customers/${row.original._id}`}
         variant="underline"
       >
-        {row.original.name}
+        <CustomerName customer={row.original} />
       </Link>
     ),
     id: "name",

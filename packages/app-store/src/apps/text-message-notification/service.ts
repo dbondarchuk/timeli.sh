@@ -4,6 +4,7 @@ import {
   AppointmentStatus,
   BookingConfiguration,
   ConnectedAppData,
+  ConnectedAppRequestError,
   ConnectedAppStatusWithText,
   GeneralConfiguration,
   IAppointmentHook,
@@ -22,7 +23,10 @@ import {
   template,
 } from "@timelish/utils";
 import { TextMessageNotificationMessages } from "./messages";
-import { TextMessageNotificationConfiguration } from "./models";
+import {
+  TextMessageNotificationConfiguration,
+  textMessageNotificationConfigurationSchema,
+} from "./models";
 import {
   TextMessageNotificationAdminAllKeys,
   TextMessageNotificationAdminKeys,
@@ -43,7 +47,7 @@ export class TextMessageNotificationConnectedApp
 
   public async processRequest(
     appData: ConnectedAppData,
-    data: TextMessageNotificationConfiguration,
+    request: TextMessageNotificationConfiguration,
   ): Promise<
     ConnectedAppStatusWithText<
       TextMessageNotificationAdminNamespace,
@@ -51,6 +55,21 @@ export class TextMessageNotificationConnectedApp
     >
   > {
     const logger = this.loggerFactory("processRequest");
+    const { data, success, error } =
+      textMessageNotificationConfigurationSchema.safeParse(request);
+    if (!success) {
+      logger.error(
+        { error },
+        "Invalid Text Message Notification configuration request",
+      );
+      throw new ConnectedAppRequestError(
+        "invalid_text-message-notification_configuration_request",
+        { request, error },
+        400,
+        error.message,
+      );
+    }
+
     logger.debug(
       { appId: appData._id, phone: data?.phone },
       "Processing text message notification configuration request",

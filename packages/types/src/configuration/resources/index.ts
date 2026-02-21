@@ -1,5 +1,5 @@
 import * as z from "zod";
-import { zNonEmptyString } from "../../utils";
+import { zNonEmptyString, zUrl } from "../../utils";
 
 export const inlineResourceType = "inline" as const;
 export const remoteResourceType = "remote" as const;
@@ -21,7 +21,7 @@ export const inlineResourceSchema = z.object({
 
 export const remoteResourceSchema = z.object({
   source: resourceSourceType.extract(["remote"]),
-  url: z.url("common.url.invalid"),
+  url: zUrl,
 });
 
 export const resourceSchema = z.discriminatedUnion("source", [

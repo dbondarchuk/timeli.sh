@@ -7,7 +7,10 @@ import {
 import { Query, WithTotal } from "../database";
 
 export interface ICustomersService {
-  getCustomer(id: string): Promise<Customer | null>;
+  getCustomer(
+    id: string,
+    options?: { includeDeleted?: boolean },
+  ): Promise<Customer | null>;
   getCustomers(
     query: Query & { priorityIds?: string[] },
   ): Promise<WithTotal<CustomerListModel>>;

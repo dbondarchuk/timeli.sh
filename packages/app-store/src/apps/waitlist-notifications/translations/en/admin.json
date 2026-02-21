@@ -37,7 +37,8 @@
       "required": "If you want to send customer email on new entry, you must fill in the customer new entry email subject and customer new entry email template"
     },
     "customerNewEntrySubject": {
-      "required": "Customer new entry email subject is required"
+      "required": "Customer new entry email subject is required",
+      "max": "Customer new entry email subject must be at most 256 characters long"
     },
     "customerNewEntryTemplateId": {
       "required": "Customer new entry email template is required"

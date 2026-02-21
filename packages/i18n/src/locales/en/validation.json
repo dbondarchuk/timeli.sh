@@ -2,24 +2,42 @@
   "common": {
     "email": {
       "invalid": "Invalid email",
-      "required": "Valid email is required"
+      "required": "Valid email is required",
+      "max": "Email must be no more than 256 characters",
+      "unique": "Email must be unique"
     },
     "phone": {
       "invalid": "Invalid phone number",
-      "required": "Phone number is required"
+      "required": "Phone number is required",
+      "max": "Phone number must be no more than 32 characters"
     },
     "number": {
       "integer": "Value must be an integer"
     },
     "url": {
-      "invalid": "Invalid URL"
+      "invalid": "Invalid URL",
+      "max": "URL must be no more than 2048 characters"
+    },
+    "objectId": {
+      "required": "Object ID is required",
+      "invalid": "Invalid object ID"
+    },
+    "string": {
+      "invalid": "Invalid string"
+    },
+    "asset": {
+      "invalid": "Must be a valid asset name or URL",
+      "minLength": "Asset name must be at least 3 characters long",
+      "maxLength": "Asset name must be at most 1024 characters long"
     }
   },
   "assets": {
     "fileRequired": "File must be attached",
     "fileNameMinLength": "File name must be at least 3 characters",
+    "fileNameMaxLength": "File name must be at most 64 characters",
     "fileNameExtension": "File name must have an extension",
-    "fileNameUnique": "File name must be unique"
+    "fileNameUnique": "File name must be unique",
+    "descriptionMaxLength": "Description must be no more than 1024 characters long"
   },
   "customers": {
     "emailAlreadyExists": "There is already a customer with one or more of the emails",
@@ -87,10 +105,12 @@
     },
     "option": {
       "name": {
-        "required": "Option name must be at least 2 characters long"
+        "required": "Option name must be at least 2 characters long",
+        "max": "Option name must be no more than 256 characters long"
       },
       "description": {
-        "required": "Option description is required"
+        "required": "Option description is required",
+        "max": "Option description must be no more than 1024 characters long"
       },
       "duration": {
         "required": "Duration is required",
@@ -168,10 +188,12 @@
   },
   "addons": {
     "name": {
-      "required": "Add-on name must be at least 2 characters long"
+      "required": "Add-on name must be at least 2 characters long",
+      "max": "Add-on name must be no more than 256 characters long"
     },
     "description": {
-      "required": "Add-on description is required"
+      "required": "Add-on description is required",
+      "max": "Add-on description must be no more than 1024 characters long"
     },
     "duration": {
       "positive": "Duration must be a integer number greater or equal to 1 minute"
@@ -188,10 +210,12 @@
   },
   "discount": {
     "name": {
-      "required": "Discount name must be at least 2 characters long"
+      "required": "Discount name must be at least 2 characters long",
+      "max": "Discount name must be no more than 256 characters long"
     },
     "code": {
-      "required": "Discount code must be at least 2 characters long"
+      "required": "Discount code must be at least 2 characters long",
+      "max": "Discount code must be no more than 256 characters long"
     },
     "maxUsage": {
       "min": "Max usage must be a integer number greater or equal to 1"
@@ -218,6 +242,7 @@
       "min": "At least one promo code should be added",
       "max": "Maximum 10 promo codes per discount is allowed",
       "minLength": "Promo code should be at least 3 characters long",
+      "maxLength": "Promo code should be no more than 256 characters long",
       "unique": "Promo codes should be unique"
     },
     "endDate": {
@@ -244,18 +269,22 @@
       "invalid": "Unknown field type"
     },
     "label": {
-      "required": "Field label is required"
+      "required": "Field label is required",
+      "max": "Field label must be no more than 256 characters long"
     },
     "description": {
-      "min": "Field description should be at least 3 characters long"
+      "min": "Field description should be at least 3 characters long",
+      "max": "Field description must be no more than 1024 characters long"
     },
     "name": {
       "required": "Field name must be at least 2 characters long",
+      "max": "Field name must be no more than 64 characters long",
       "invalid": "Field name must start with letter and contain only letters, digits, and underscore (_)"
     },
     "option": {
       "required": "Option value is required",
-      "unique": "Option values should be unique"
+      "unique": "Option values should be unique",
+      "max": "Option value must be no more than 256 characters long"
     },
     "accept": {
       "min": "Accept item should be at least one character",
@@ -304,6 +333,10 @@
     "booking": {
       "calendarSource": {
         "required": "Calendar source app is required"
+      },
+      "customTimeSlot": {
+        "required": "Time is required",
+        "invalid": "Invalid time"
       },
       "maxWeeksInFuture": {
         "min": "Max weeks in future must be at least 2",
@@ -356,20 +389,27 @@
     },
     "general": {
       "name": {
-        "min": "Website name must be at least 3 characters long"
+        "min": "Website name must be at least 3 characters long",
+        "max": "Website name must be at most 64 characters long"
       },
       "title": {
-        "min": "Website title must be at least 3 characters long"
+        "min": "Website title must be at least 3 characters long",
+        "max": "Website title must be at most 64 characters long"
       },
       "description": {
-        "min": "Website description must be at least 3 characters long"
+        "min": "Website description must be at least 3 characters long",
+        "max": "Website description must be at most 1024 characters long"
       },
       "keywords": {
-        "min": "Website keywords must be at least 3 characters long"
+        "min": "Website keywords must be at least 3 characters long",
+        "max": "Website keywords must be at most 1024 characters long"
       },
       "url": {
         "invalid": "Website URL should be valid URL address",
         "min": "Website URL must be at least 3 characters long"
+      },
+      "address": {
+        "max": "Address must be at most 1024 characters long"
       },
       "domain": {
         "invalid": "Domain must be a valid domain name"
@@ -416,7 +456,8 @@
           "required": "Icon is required"
         },
         "label": {
-          "required": "Label is required"
+          "required": "Label is required",
+          "max": "Label must be no more than 256 characters long"
         },
         "submenu": {
           "min": "Sub menu should have at least one item"
@@ -436,7 +477,8 @@
   },
   "customer": {
     "name": {
-      "required": "Name is required"
+      "required": "Name is required",
+      "max": "Name must be no more than 256 characters long"
     },
     "email": {
       "required": "Valid email is required"
@@ -465,7 +507,8 @@
   },
   "page": {
     "title": {
-      "required": "Page title must be at least 2 characters long"
+      "required": "Page title must be at least 2 characters long",
+      "max": "Page title must be no more than 256 characters long"
     },
     "content": {
       "required": "Page content is required"
@@ -474,25 +517,30 @@
       "required": "Page slug is required",
       "invalid": "Page slug must contain only latin lower case letters, digits, slash, and hyphens",
       "unique": "Page slug must be unique",
-      "notAllowed": "Page slug cannot be used for internal pages"
+      "notAllowed": "Page slug cannot be used for internal pages",
+      "max": "Page slug must be no more than 1024 characters long"
     },
     "description": {
-      "required": "Page description is required"
+      "required": "Page description is required",
+      "max": "Page description must be no more than 1024 characters long"
     },
     "keywords": {
       "required": "Page keywords are required",
-      "min": "Page keywords must be at least 2 characters long"
+      "min": "Page keywords must be at least 2 characters long",
+      "max": "Page keywords must be no more than 1024 characters long"
     },
     "publishDate": {
       "required": "Publish date is required"
     },
     "tag": {
-      "min": "Tag should be at least 3 characters long"
+      "min": "Tag should be at least 3 characters long",
+      "max": "Tag must be no more than 64 characters long"
     },
     "headers": {
       "name": {
         "required": "Page header name is required",
         "min": "Page header name must be at least 2 characters long",
+        "max": "Page header name must be no more than 256 characters long",
         "unique": "Page header name must be unique"
       }
     },
@@ -500,13 +548,15 @@
       "name": {
         "required": "Page footer name is required",
         "min": "Page footer name must be at least 2 characters long",
+        "max": "Page footer name must be no more than 256 characters long",
         "unique": "Page footer name must be unique"
       }
     }
   },
   "template": {
     "name": {
-      "required": "Template name is required"
+      "required": "Template name is required",
+      "max": "Template name must be no more than 256 characters long"
     },
     "type": {
       "invalid": "Unknown type"
@@ -518,10 +568,13 @@
   "payments": {
     "amount": {
       "required": "Amount is required",
-      "min": "Amount must be at least 1"
+      "positive": "Amount must be a positive number"
     },
     "paidAt": {
       "required": "Paid at is required"
+    },
+    "description": {
+      "max": "Description must be no more than 1024 characters long"
     },
     "method": {
       "required": "Method is required"

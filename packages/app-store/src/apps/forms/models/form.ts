@@ -1,15 +1,15 @@
 import {
   asOptionalField,
-  ConnectedAppData,
   Customer,
-  DateRange,
+  dateRangeSchema,
   Prettify,
-  Query,
+  querySchema,
   WithAppId,
   WithCompanyId,
   WithDatabaseId,
   zEmail,
   zNonEmptyString,
+  zObjectId,
 } from "@timelish/types";
 import * as z from "zod";
 import { FormsAdminAllKeys } from "../translations/types";
@@ -132,22 +132,17 @@ export type FormResponseListModel = FormResponseModel & {
   formName?: string;
 };
 
-export type GetFormsQuery = Query & {
-  priorityIds?: string[];
-  /** Filter by archived status. Default [false] = public only. [true, false] = all. */
-  isArchived?: boolean[];
-};
+export const getFormsQuerySchema = querySchema.extend({
+  priorityIds: z.array(zObjectId()).optional(),
+  isArchived: z.array(z.coerce.boolean<boolean>()).optional(),
+});
 
-export type GetFormResponsesQuery = Query & {
-  formId?: string | string[];
-  customerId?: string | string[];
-  range?: DateRange;
-};
+export type GetFormsQuery = z.infer<typeof getFormsQuerySchema>;
 
-export interface IFormsHook {
-  onFormResponseCreated?: (
-    appData: ConnectedAppData,
-    formResponse: FormResponseModel,
-    form: FormModel,
-  ) => Promise<void>;
-}
+export const getFormResponsesQuerySchema = querySchema.extend({
+  formId: z.array(zObjectId()).or(zObjectId()).optional(),
+  customerId: z.array(zObjectId()).or(zObjectId()).optional(),
+  range: dateRangeSchema.optional(),
+});
+
+export type GetFormResponsesQuery = z.infer<typeof getFormResponsesQuerySchema>;

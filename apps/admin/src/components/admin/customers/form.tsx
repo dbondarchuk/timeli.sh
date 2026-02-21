@@ -47,7 +47,8 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 export const CustomerForm: React.FC<{
-  initialData?: CustomerUpdateModel & Partial<DatabaseId>;
+  initialData?: CustomerUpdateModel &
+    Partial<DatabaseId> & { isDeleted?: boolean };
 }> = ({ initialData }) => {
   const t = useI18n("admin");
 
@@ -69,7 +70,7 @@ export const CustomerForm: React.FC<{
 
   const router = useRouter();
   const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+    resolver: !initialData?.isDeleted ? zodResolver(formSchema) : undefined,
     mode: "all",
     reValidateMode: "onChange",
     defaultValues: initialData || {
@@ -151,6 +152,7 @@ export const CustomerForm: React.FC<{
   };
 
   const requireDeposit = form.watch("requireDeposit");
+  const disabled = loading || initialData?.isDeleted;
 
   return (
     <Form {...form}>
@@ -180,7 +182,7 @@ export const CustomerForm: React.FC<{
                           width={200}
                         />
                       </div>
-                      {initialData?._id && (
+                      {initialData?._id && !disabled && (
                         <div className="w-full">
                           <AssetSelectorDialog
                             accept={["image/*"]}
@@ -197,6 +199,7 @@ export const CustomerForm: React.FC<{
                           <Button
                             className="w-full"
                             variant="secondary"
+                            disabled={disabled}
                             onClick={() => setAvatarDialogOpen(true)}
                           >
                             {t("customers.form.changePhoto")}
@@ -225,7 +228,7 @@ export const CustomerForm: React.FC<{
 
                       <FormControl>
                         <Input
-                          disabled={loading}
+                          disabled={disabled}
                           placeholder={t("customers.form.namePlaceholder")}
                           {...field}
                         />
@@ -244,7 +247,7 @@ export const CustomerForm: React.FC<{
                       <FormControl>
                         <Input
                           type="email"
-                          disabled={loading}
+                          disabled={disabled}
                           placeholder={t("customers.form.emailPlaceholder")}
                           {...field}
                         />
@@ -263,7 +266,7 @@ export const CustomerForm: React.FC<{
                       <FormControl>
                         <PhoneInput
                           label={t("customers.form.phone")}
-                          disabled={loading}
+                          disabled={disabled}
                           {...field}
                         />
                       </FormControl>
@@ -280,7 +283,7 @@ export const CustomerForm: React.FC<{
 
                       <FormControl>
                         <DateTimeInput
-                          disabled={loading}
+                          disabled={disabled}
                           clearable
                           format="MM/dd/yyyy"
                           hideTime
@@ -299,7 +302,7 @@ export const CustomerForm: React.FC<{
                       <div className="flex flex-row items-center gap-2">
                         <Checkbox
                           id="dontAllowBookings"
-                          disabled={loading}
+                          disabled={disabled}
                           checked={field.value}
                           onCheckedChange={field.onChange}
                         />
@@ -330,7 +333,7 @@ export const CustomerForm: React.FC<{
                       </FormLabel>
                       <FormControl>
                         <Combobox
-                          disabled={loading}
+                          disabled={disabled}
                           className="flex w-full font-normal text-base"
                           values={isPaymentRequiredForCustomerTypes.map(
                             (value) => ({
@@ -367,7 +370,7 @@ export const CustomerForm: React.FC<{
                             <InputGroup>
                               <InputGroupInput>
                                 <Input
-                                  disabled={loading}
+                                  disabled={disabled}
                                   placeholder="20"
                                   type="number"
                                   className={InputGroupInputClasses()}
@@ -420,7 +423,7 @@ export const CustomerForm: React.FC<{
                           <FormControl>
                             <InputGroup>
                               <Input
-                                disabled={loading}
+                                disabled={disabled}
                                 placeholder={t(
                                   "customers.form.namePlaceholder",
                                 )}
@@ -434,6 +437,7 @@ export const CustomerForm: React.FC<{
                                 <Button
                                   variant="secondary"
                                   size="icon"
+                                  disabled={disabled}
                                   className={cn(
                                     InputGroupSuffixClasses(),
                                     "px-2",
@@ -454,6 +458,7 @@ export const CustomerForm: React.FC<{
                     variant="secondary"
                     className="w-full"
                     onClick={onAddName}
+                    disabled={disabled}
                   >
                     <PlusCircle /> {t("customers.form.addName")}
                   </Button>
@@ -476,7 +481,7 @@ export const CustomerForm: React.FC<{
                             <InputGroup>
                               <Input
                                 type="email"
-                                disabled={loading}
+                                disabled={disabled}
                                 placeholder={t(
                                   "customers.form.emailPlaceholder",
                                 )}
@@ -490,6 +495,7 @@ export const CustomerForm: React.FC<{
                                 <Button
                                   variant="secondary"
                                   size="icon"
+                                  disabled={disabled}
                                   className={cn(
                                     InputGroupSuffixClasses(),
                                     "px-2",
@@ -510,6 +516,7 @@ export const CustomerForm: React.FC<{
                     variant="secondary"
                     className="w-full"
                     onClick={onAddEmail}
+                    disabled={disabled}
                   >
                     <PlusCircle /> {t("customers.form.addEmail")}
                   </Button>
@@ -563,6 +570,7 @@ export const CustomerForm: React.FC<{
                     variant="secondary"
                     className="w-full"
                     onClick={onAddPhone}
+                    disabled={disabled}
                   >
                     <PlusCircle /> {t("customers.form.addPhone")}
                   </Button>
@@ -578,7 +586,7 @@ export const CustomerForm: React.FC<{
                     <FormControl>
                       <Textarea
                         autoResize
-                        disabled={loading}
+                        disabled={disabled}
                         placeholder={t("customers.form.notesPlaceholder")}
                         {...field}
                       />
@@ -590,7 +598,7 @@ export const CustomerForm: React.FC<{
             </CardContent>
           </Card>
         </div>
-        <SaveButton form={form} />
+        <SaveButton form={form} disabled={disabled} />
       </form>
     </Form>
   );

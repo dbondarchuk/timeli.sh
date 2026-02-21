@@ -1,10 +1,16 @@
+import { zOptionalOrMaxLengthString, zTaggedUnion } from "@timelish/types";
 import * as z from "zod";
 import { CaldavAdminAllKeys } from "./translations/types";
 
 export const caldavCalendarSourceSchema = z.object({
-  serverUrl: z.url(
-    "app_caldav_admin.validation.serverUrl.url" satisfies CaldavAdminAllKeys,
-  ),
+  serverUrl: z
+    .url(
+      "app_caldav_admin.validation.serverUrl.url" satisfies CaldavAdminAllKeys,
+    )
+    .max(
+      4096,
+      "app_caldav_admin.validation.serverUrl.max" satisfies CaldavAdminAllKeys,
+    ),
   calendarName: z
     .string({
       message:
@@ -13,24 +19,29 @@ export const caldavCalendarSourceSchema = z.object({
     .min(
       1,
       "app_caldav_admin.validation.calendarName.required" satisfies CaldavAdminAllKeys,
+    )
+    .max(
+      256,
+      "app_caldav_admin.validation.calendarName.max" satisfies CaldavAdminAllKeys,
     ),
-  username: z.string().optional(),
-  password: z.string().optional(),
+  username: zOptionalOrMaxLengthString(
+    256,
+    "app_caldav_admin.validation.username.max" satisfies CaldavAdminAllKeys,
+  ),
+  password: zOptionalOrMaxLengthString(
+    256,
+    "app_caldav_admin.validation.password.max" satisfies CaldavAdminAllKeys,
+  ),
 });
 
 export type CaldavCalendarSource = z.infer<typeof caldavCalendarSourceSchema>;
 
-export type SaveActionType = "save";
-export type FetchActionType = "fetchCalendars";
+export const SaveActionType = "save" as const;
+export const FetchActionType = "fetchCalendars" as const;
 
-export type CaldavActionType = SaveActionType | FetchActionType;
+export const caldavActionSchema = zTaggedUnion([
+  { type: SaveActionType, data: caldavCalendarSourceSchema },
+  { type: FetchActionType, data: caldavCalendarSourceSchema },
+]);
 
-export type CaldavAction =
-  | {
-      type: SaveActionType;
-      data: CaldavCalendarSource;
-    }
-  | {
-      type: FetchActionType;
-      data: CaldavCalendarSource;
-    };
+export type CaldavAction = z.infer<typeof caldavActionSchema>;

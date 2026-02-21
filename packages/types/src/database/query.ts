@@ -14,9 +14,11 @@ export type SortOption = z.infer<typeof sortOptionSchema>;
 export const sortSchema = z.array(sortOptionSchema);
 export type Sort = z.infer<typeof sortSchema>;
 
-export type Query = {
-  search?: string;
-  limit?: number;
-  offset?: number;
-  sort?: Sort;
-};
+export const querySchema = z.object({
+  search: z.string().optional(),
+  limit: z.coerce.number<number>().optional(),
+  offset: z.coerce.number<number>().optional(),
+  sort: sortSchema.optional(),
+});
+
+export type Query = z.infer<typeof querySchema>;

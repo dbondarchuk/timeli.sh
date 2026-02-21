@@ -1,5 +1,5 @@
 import * as z from "zod";
-import { zNonEmptyString } from "../../utils";
+import { zUrl } from "../../utils";
 
 export const socialType = z.enum(
   [
@@ -11,7 +11,7 @@ export const socialType = z.enum(
     "twitch",
     "youtube",
   ],
-  { message: "configuration.social.type.invalid" },
+  { message: "validation.configuration.social.type.invalid" },
 );
 
 export type SocialLinkType = z.infer<typeof socialType>;
@@ -26,7 +26,7 @@ export const socialTypeLabels: Record<SocialLinkType, string> =
   );
 
 export const socialLinkSchema = z.object({
-  url: zNonEmptyString("common.url.invalid", 3),
+  url: zUrl,
   type: socialType,
 });
 
