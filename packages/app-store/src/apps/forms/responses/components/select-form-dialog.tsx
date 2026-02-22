@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@timelish/ui";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FormSelector } from "../../components/form-selector";
 import {
   FormsAdminKeys,
@@ -22,14 +22,22 @@ export const SelectFormDialog: React.FC<{
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSelect: (formId: string) => void;
-}> = ({ appId, open, onOpenChange, onSelect }) => {
+  selectedFormId?: string;
+}> = ({ appId, open, onOpenChange, onSelect, selectedFormId: initialSelectedFormId }) => {
   const t = useI18n<FormsAdminNamespace, FormsAdminKeys>(formsAdminNamespace);
-  const [selectedFormId, setSelectedFormId] = useState<string | undefined>();
+  const [selectedFormId, setSelectedFormId] = useState<string | undefined>(initialSelectedFormId);
 
   const handleOpenChange = (next: boolean) => {
     if (!next) setSelectedFormId(undefined);
+    
     onOpenChange(next);
   };
+
+  useEffect(() => {
+    if (initialSelectedFormId && open) {
+      setSelectedFormId(initialSelectedFormId);
+    }
+  }, [initialSelectedFormId, open]);
 
   const handleContinue = () => {
     if (selectedFormId) {

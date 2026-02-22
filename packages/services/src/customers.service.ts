@@ -1,5 +1,4 @@
 import {
-  Appointment,
   Customer,
   CustomerListModel,
   CustomerSearchField,
@@ -9,7 +8,7 @@ import {
   Leaves,
   Query,
   WithTotal,
-  type ICustomersService,
+  type ICustomersService
 } from "@timelish/types";
 import { buildSearchQuery, escapeRegex } from "@timelish/utils";
 import { Filter, ObjectId, Sort } from "mongodb";
@@ -788,6 +787,8 @@ export class CustomersService extends BaseService implements ICustomersService {
     let avatar = target.avatar;
     let dateOfBirth = target.dateOfBirth;
 
+    logger.debug({ targetId, ids }, "Building merge data");
+
     for (const customer of customers) {
       nameSet.add(customer.name);
       customer.knownNames.forEach((name) => nameSet.add(name));
@@ -822,6 +823,8 @@ export class CustomersService extends BaseService implements ICustomersService {
       dateOfBirth,
     };
 
+    logger.debug({ targetId, ids }, "Updating target customer");
+
     await collection.updateOne(
       {
         _id: targetId,
@@ -832,21 +835,29 @@ export class CustomersService extends BaseService implements ICustomersService {
       },
     );
 
-    const appointmentsCollection = db.collection<Appointment>(
-      APPOINTMENTS_COLLECTION_NAME,
-    );
-    await appointmentsCollection.updateMany(
-      {
-        customerId: {
-          $in: ids,
+    logger.debug({ targetId, ids }, "Updating collections");
+
+    const collections = await db.collections();
+
+    for (const collection of collections) {
+      logger.debug({ collectionName: collection.collectionName }, "Updating collection");
+      const { modifiedCount } = await collection.updateMany(
+        {
+          customerId: {
+            $in: ids,
+          },
         },
-      },
-      {
-        $set: {
-          customerId: targetId,
+        {
+          $set: {
+            customerId: targetId,
+          },
         },
-      },
-    );
+      );
+      
+      logger.debug({ collectionName: collection.collectionName, modifiedCount }, "Updated collection");
+    }
+
+    logger.debug({ targetId, ids }, "Deleting merged customers");
 
     await collection.deleteMany({
       _id: {

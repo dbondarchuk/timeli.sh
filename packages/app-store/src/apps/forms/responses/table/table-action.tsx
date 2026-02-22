@@ -59,6 +59,8 @@ export const ResponsesTableAction: React.FC<{
     router.push(`/dashboard/forms/responses/new?${params.toString()}`);
   };
 
+  const selectedFormId = formIdFilter?.length === 1 ? formIdFilter[0] : undefined;
+
   const additionalFilters = (
     <>
       <FormsDataTableAsyncFilterBox
@@ -141,6 +143,7 @@ export const ResponsesTableAction: React.FC<{
         open={selectFormOpen}
         onOpenChange={setSelectFormOpen}
         onSelect={handleSelectFormForNew}
+        selectedFormId={selectedFormId}
       />
     </>
   );

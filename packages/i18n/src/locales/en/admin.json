@@ -563,7 +563,7 @@
       },
       "merge": {
         "title": "Are you absolutely sure?",
-        "description": "This action cannot be undone. This will merge selected customers into the first one",
+        "description": "This action cannot be undone. This will merge selected customers into the target one",
         "confirm": "Merge selected",
         "cancel": "Cancel",
         "selectedCount": "Merge selected {count, plural, =1 {customer} other {# customers}}",
