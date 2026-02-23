@@ -291,21 +291,22 @@ export default async function CustomerPage(props: Props) {
                 </Suspense>
               </TabsContent>
             )}
-            {customerTabItems.map((item) => (
-              <TabsContent
-                key={item.href}
-                value={item.href}
-                className="flex flex-1 flex-col gap-4"
-              >
-                {activeTab === item.href &&
-                  item.view({
+            {customerTabItems
+              .filter((item) => activeTab === item.href)
+              .map((item) => (
+                <TabsContent
+                  key={item.href}
+                  value={item.href}
+                  className="flex flex-1 flex-col gap-4"
+                >
+                  {item.view({
                     props: item.props,
                     appId: item.appId,
                     customer,
                     searchParams,
                   })}
-              </TabsContent>
-            ))}
+                </TabsContent>
+              ))}
           </TabsViaUrl>
         </div>
       </div>
