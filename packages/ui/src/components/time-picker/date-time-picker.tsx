@@ -115,7 +115,7 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   ChevronUpIcon,
-  XCircle,
+  X,
 } from "lucide-react";
 import React, {
   useCallback,
@@ -397,7 +397,7 @@ export function DateTimePicker({
               <Button
                 disabled={disabled}
                 variant="ghost"
-                size="sm"
+                size="icon"
                 role="button"
                 aria-label="Clear date"
                 className="size-6 p-1 ms-1"
@@ -408,7 +408,7 @@ export function DateTimePicker({
                   setOpen(false);
                 }}
               >
-                <XCircle className="size-4" />
+                <X className="size-4 text-muted-foreground" />
               </Button>
             )}
           </div>

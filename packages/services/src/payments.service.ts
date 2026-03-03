@@ -4,6 +4,7 @@ import {
   IPaymentHook,
   IPaymentProcessor,
   IPaymentsService,
+  OnlinePaymentMethod,
   Payment,
   PaymentIntent,
   PaymentIntentUpdateModel,
@@ -401,15 +402,15 @@ export class PaymentsService extends BaseService implements IPaymentsService {
       return { success: false, error: "payment_not_found", status: 404 };
     }
 
-    if (payment.method !== "online") {
+    if (payment.method !== "online" && payment.method !== "gift-card") {
       logger.error(
         { paymentId: id, method: payment.method, amount },
-        "Only online payments supported for refund",
+        "Only online and gift card payments supported for refund",
       );
 
       return {
         success: false,
-        error: "only_online_payments_supported",
+        error: "only_online_and_gift_card_payments_supported",
         status: 405,
       };
     }
@@ -448,6 +449,60 @@ export class PaymentsService extends BaseService implements IPaymentsService {
       };
     }
 
+    if (payment.method === "gift-card") {
+      return this.refundGiftCardPayment(payment, amount);
+    }
+
+    return this.refundOnlinePayment(payment, amount);
+  }
+
+  private async refundGiftCardPayment(
+    payment: Payment,
+    amount: number,
+  ): Promise<
+    | { success: false; error: string; status: number }
+    | { success: true; updatedPayment: Payment }
+  > {
+    const logger = this.loggerFactory("refundGiftCardPayment");
+    logger.debug(
+      { paymentId: payment._id, amount },
+      "Processing gift card payment refund",
+    );
+
+    const updatedPayment = await this.updatePayment(payment._id, {
+      status: "refunded",
+      refunds: [...(payment.refunds || []), { amount, refundedAt: new Date() }],
+    });
+
+    logger.debug(
+      { paymentId: payment._id, amount },
+      "Successfully processed gift card payment refund, executing hooks",
+    );
+
+    // Execute payment hooks
+    await this.jobService.enqueueHook<IPaymentHook, "onPaymentRefunded">(
+      "payment-hook",
+      "onPaymentRefunded",
+      updatedPayment,
+      amount,
+    );
+
+    return { success: true, updatedPayment };
+  }
+
+  private async refundOnlinePayment(
+    payment: Extract<Payment, { method: OnlinePaymentMethod }>,
+    amount: number,
+  ): Promise<
+    | { success: false; error: string; status: number }
+    | { success: true; updatedPayment: Payment }
+  > {
+    const logger = this.loggerFactory("refundOnlinePayment");
+    logger.debug(
+      { paymentId: payment._id, amount },
+      "Processing online payment refund",
+    );
+
     try {
       const { app, service } =
         await this.connectedAppsService.getAppService<IPaymentProcessor>(
@@ -455,7 +510,7 @@ export class PaymentsService extends BaseService implements IPaymentsService {
         );
       if (!service.refundPayment) {
         logger.error(
-          { paymentId: id, appId: payment.appId, amount },
+          { paymentId: payment._id, appId: payment.appId, amount },
           "Refund not supported by payment app",
         );
 
@@ -464,7 +519,7 @@ export class PaymentsService extends BaseService implements IPaymentsService {
 
       const result = await service.refundPayment(app, payment, amount);
       if (result.success) {
-        const updatedPayment = await this.updatePayment(id, {
+        const updatedPayment = await this.updatePayment(payment._id, {
           status: "refunded",
           refunds: [
             ...(payment.refunds || []),
@@ -473,7 +528,7 @@ export class PaymentsService extends BaseService implements IPaymentsService {
         });
 
         logger.debug(
-          { paymentId: id, amount },
+          { paymentId: payment._id, amount },
           "Successfully processed payment refund, executing hooks",
         );
 
@@ -489,7 +544,7 @@ export class PaymentsService extends BaseService implements IPaymentsService {
       }
 
       logger.error(
-        { paymentId: id, error: result.error, amount },
+        { paymentId: payment._id, error: result.error, amount },
         "Payment app refund failed",
       );
 
@@ -500,7 +555,7 @@ export class PaymentsService extends BaseService implements IPaymentsService {
       };
     } catch (error) {
       logger.error(
-        { paymentId: id, error, amount },
+        { paymentId: payment._id, error, amount },
         "Payment app does not support refund",
       );
 

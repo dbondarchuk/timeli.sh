@@ -1,10 +1,30 @@
-import { useI18n, useLocale } from "@timelish/i18n";
-import { timeZones } from "@timelish/types";
-import { Checkbox, cn, Markdown } from "@timelish/ui";
+import { clientApi } from "@timelish/api-sdk";
+import { TranslationKeys, useI18n, useLocale } from "@timelish/i18n";
+import { ApplyDiscountRequest, timeZones } from "@timelish/types";
+import {
+  Button,
+  Checkbox,
+  cn,
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+  Input,
+  Markdown,
+  Spinner,
+} from "@timelish/ui";
 import { durationToTime, formatAmountString, template } from "@timelish/utils";
 import { TimeZone } from "@vvo/tzdb";
-import { AlertTriangle, Calendar, Clock, Globe2 } from "lucide-react";
+import {
+  AlertTriangle,
+  Calendar,
+  Clock,
+  Gift,
+  Globe2,
+  TicketPercent,
+  X,
+} from "lucide-react";
 import { DateTime } from "luxon";
+import { useEffect, useState } from "react";
 import { useScheduleContext } from "./context";
 
 export const ReviewCard: React.FC = () => {
@@ -19,10 +39,15 @@ export const ReviewCard: React.FC = () => {
     fields,
     formFields,
     discount,
+    setDiscount,
+    showPromoCode,
     basePrice,
     discountAmount,
     price,
     duration,
+    giftCards,
+    setGiftCards,
+    applyGiftCards,
   } = useScheduleContext();
 
   const locale = useLocale();
@@ -42,6 +67,145 @@ export const ReviewCard: React.FC = () => {
       return defaultZone === tz.name || tz.group.includes(defaultZone || "");
     });
   }
+
+  const [openGiftCards, setOpenGiftCards] = useState(false);
+  const [openPromoCode, setOpenPromoCode] = useState(false);
+  const [giftCardCode, setGiftCardCode] = useState("");
+  const [giftCardError, setGiftCardError] = useState<string>();
+  const [isLoadingGiftCards, setIsLoadingGiftCards] = useState(false);
+
+  const [promoCode, setPromoCode] = useState(discount?.code ?? "");
+  const [promoCodeError, setPromoCodeError] = useState<TranslationKeys>();
+  const [isLoadingPromoCode, setIsLoadingPromoCode] = useState(false);
+
+  const totalGiftCardsApplied =
+    giftCards?.reduce((sum, giftCard) => sum + giftCard.appliedAmount, 0) || 0;
+  const hasGiftCardApplied = totalGiftCardsApplied > 0;
+  const totalAfterGiftCards = Math.max(0, price - totalGiftCardsApplied);
+
+  const applyPromoCode = async () => {
+    if (!promoCode || !dateTime || !selectedAppointmentOption) {
+      setPromoCodeError(undefined);
+      return;
+    }
+
+    setIsLoadingPromoCode(true);
+
+    try {
+      const request = {
+        code: promoCode,
+        optionId: selectedAppointmentOption._id,
+        addons: selectedAddons?.map((addon) => addon._id),
+        dateTime: DateTime.fromObject(
+          {
+            year: dateTime.date.getFullYear(),
+            month: dateTime.date.getMonth() + 1,
+            day: dateTime.date.getDate(),
+            hour: dateTime.time.hour,
+            minute: dateTime.time.minute,
+            second: 0,
+          },
+          { zone: dateTime.timeZone },
+        )
+          .toUTC()
+          .toJSDate(),
+        name: fields.name || "",
+        email: fields.email || "",
+        phone: fields.phone || "",
+      } satisfies ApplyDiscountRequest;
+
+      const data = await clientApi.discounts.applyDiscount(request);
+
+      setDiscount(data);
+      setPromoCodeError(undefined);
+    } catch (e) {
+      console.error(e);
+
+      setPromoCodeError("promo_code_error");
+
+      setDiscount(undefined);
+    } finally {
+      setIsLoadingPromoCode(false);
+    }
+  };
+
+  const applyGiftCard = async () => {
+    if (!giftCardCode) {
+      setGiftCardError(i18n("booking.giftCard.codeRequired"));
+      return;
+    }
+
+    if ((giftCards?.length || 0) >= 2) {
+      return;
+    }
+
+    const newCodes = [
+      ...(giftCards
+        ?.map((giftCard) => giftCard.code)
+        .filter((code) => code !== giftCardCode) || []),
+      giftCardCode,
+    ];
+
+    try {
+      setIsLoadingGiftCards(true);
+      const data = await applyGiftCards(newCodes, price);
+
+      setGiftCardCode("");
+      setGiftCardError(undefined);
+    } catch (error) {
+      console.error(error);
+      setGiftCardError(i18n("booking.giftCard.error", { code: giftCardCode }));
+    } finally {
+      setIsLoadingGiftCards(false);
+    }
+  };
+
+  const removeGiftCard = async (code: string) => {
+    const newGiftCards =
+      giftCards?.filter((giftCard) => giftCard.code !== code) || [];
+    setGiftCards(newGiftCards);
+
+    if (!!newGiftCards.length) {
+      try {
+        await applyGiftCards(
+          newGiftCards.map((giftCard) => giftCard.code),
+          price,
+        );
+      } catch (error) {
+        console.error(error);
+        setGiftCardError(
+          i18n("booking.giftCard.error", { code: giftCardCode }),
+        );
+      }
+    }
+
+    setOpenGiftCards(false);
+  };
+
+  useEffect(() => {
+    const fn = async () => {
+      if (!price || !giftCards?.length) return;
+
+      try {
+        setIsLoadingGiftCards(true);
+        const data = await applyGiftCards(
+          giftCards?.map((giftCard) => giftCard.code) || [],
+          price,
+        );
+
+        setGiftCardError(undefined);
+      } catch (error) {
+        console.error(error);
+        setGiftCardError(
+          i18n("booking.giftCard.error", { code: giftCardCode }),
+        );
+      } finally {
+        setIsLoadingGiftCards(false);
+      }
+    };
+
+    fn();
+  }, [price]);
 
   const { name, email, phone, ...restFields } = fields;
   const shouldShowTotals = !!basePrice;
@@ -313,18 +477,195 @@ export const ReviewCard: React.FC = () => {
         {/* Total */}
         {shouldShowTotals && (
           <div className="border-t pt-4 review-total">
+            <div className="flex items-center justify-between review-total-content text-xs">
+              <div>
+                <p className="font-semibold text-foreground review-total-title">
+                  {i18n("booking.review.price.original")}
+                </p>
+              </div>
+              <p className="font-bold text-foreground review-total-amount">
+                ${formatAmountString(basePrice)}
+              </p>
+            </div>
+            {showPromoCode && !!basePrice && (
+              <div className="flex items-center justify-between review-total-promo-code">
+                <Collapsible
+                  open={openPromoCode || !!promoCode}
+                  onOpenChange={setOpenPromoCode}
+                  className="w-full"
+                >
+                  <CollapsibleTrigger className="w-full">
+                    <p className="text-xs text-muted-foreground w-full inline-flex  items-center gap-2 underline review-total-gift-cards-title">
+                      <TicketPercent className="w-3 h-3" />{" "}
+                      {i18n("booking.promoCode.trigger")}
+                    </p>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="w-full">
+                    <div className="my-3 space-y-1 review-total-promo">
+                      <div className="flex flex-row gap-2 review-total-promo-container">
+                        <Input
+                          className="w-full flex-1 review-total-promo-input"
+                          value={promoCode}
+                          placeholder={i18n(
+                            "booking.promoCode.codePlaceholder",
+                          )}
+                          onChange={(e) => {
+                            setPromoCode(e.target.value);
+                            setPromoCodeError(undefined);
+
+                            setDiscount(undefined);
+                          }}
+                          disabled={isLoadingPromoCode}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              applyPromoCode();
+                            }
+                          }}
+                        />
+                        <Button
+                          variant="outline"
+                          className="review-total-promo-button"
+                          onClick={applyPromoCode}
+                          disabled={!promoCode || isLoadingPromoCode}
+                        >
+                          {isLoadingPromoCode && <Spinner />}{" "}
+                          {i18n("booking.promoCode.apply")}
+                        </Button>
+                      </div>
+                      <p
+                        className={cn(
+                          "text-xs font-medium review-total-promo-code-message",
+                          promoCodeError
+                            ? "text-destructive review-total-promo-code-message-error"
+                            : "text-green-700 review-total-promo-code-message-success",
+                        )}
+                      >
+                        {!!promoCodeError && i18n(promoCodeError)}
+                        {discount &&
+                          !promoCodeError &&
+                          i18n("booking.promoCode.success", {
+                            code: discount.code,
+                            discount: formatAmountString(discountAmount),
+                          })}
+                      </p>
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
+              </div>
+            )}
+            {!!basePrice && (
+              <div className="flex items-center justify-between mb-2 review-total-gift-cards">
+                <Collapsible
+                  open={openGiftCards || !!giftCards?.length}
+                  onOpenChange={setOpenGiftCards}
+                  className="w-full"
+                >
+                  <CollapsibleTrigger className="w-full">
+                    <p className="text-xs text-muted-foreground w-full inline-flex  items-center gap-2 underline review-total-gift-cards-title">
+                      <Gift className="w-3 h-3" />{" "}
+                      {i18n("booking.giftCard.trigger")}
+                    </p>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="w-full">
+                    <div className="mt-2 flex flex-col gap-2 items-center w-full review-total-gift-cards-content">
+                      <div className="flex flex-row items-center w-full gap-2 review-total-gift-cards-input-container">
+                        <Input
+                          id="gift-card-code"
+                          type="text"
+                          className="w-full flex-1 form-card-promo-code-input"
+                          value={giftCardCode}
+                          onChange={(e) => {
+                            setGiftCardCode(e.target.value);
+                            setGiftCardError(undefined);
+                          }}
+                          disabled={
+                            isLoadingGiftCards || (giftCards?.length || 0) >= 2
+                          }
+                          placeholder={i18n("booking.giftCard.codePlaceholder")}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              applyGiftCard();
+                            }
+                          }}
+                        />
+                        <Button
+                          variant="outline"
+                          className="form-card-promo-code-button"
+                          onClick={applyGiftCard}
+                          disabled={
+                            !giftCardCode || (giftCards?.length || 0) >= 2
+                          }
+                        >
+                          {isLoadingGiftCards && <Spinner />} {i18n("apply")}
+                        </Button>
+                      </div>
+                      {!!giftCardError && (
+                        <div className="text-xs w-full text-left text-destructive review-total-gift-cards-error">
+                          {giftCardError}
+                        </div>
+                      )}
+                      {giftCards?.map((giftCard) => (
+                        <div
+                          key={giftCard.code}
+                          className="rounded-md border border-green-300 bg-green-100 text-foreground flex flex-col items-center gap-1 w-full review-total-gift-cards-item"
+                        >
+                          <div className="px-2 pt-2 pb-1 flex flex-row items-center gap-2 w-full">
+                            <div className="text-xs flex flex-1 justify-between items-center review-total-gift-cards-item-code">
+                              <div className="text-xs text-green-700 inline-flex items-center gap-2 font-medium review-total-gift-cards-item-code">
+                                <div className="flex items-center gap-2">
+                                  {/* <Gift className="size-4" /> */}
+                                  <div>🎁</div>
+                                  <div>{giftCard.code}</div>
+                                </div>
+                                <div className="text-green-800 font-semibold">
+                                  {i18n(
+                                    "booking.giftCard.giftCardAppliedAmount",
+                                    {
+                                      appliedAmount: formatAmountString(
+                                        giftCard.appliedAmount,
+                                      ),
+                                    },
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                            <Button
+                              variant="ghost"
+                              size="xs"
+                              className="h-6 px-0 hover:bg-transparent text-green-500 hover:text-destructive focus:bg-transparent focus:text-destructive active:bg-transparent active:text-destructive review-total-gift-cards-item-button"
+                              onClick={() => removeGiftCard(giftCard.code)}
+                            >
+                              <X className="w-3 h-3" />
+                            </Button>
+                          </div>
+                          <div className="px-2 pb-2 pt-1 text-xs flex flex-row justify-between items-center w-full border-t border-t-green-300 text-green-500 review-total-gift-cards-item-amount-left">
+                            <div className="text-muted-foreground">
+                              {i18n(
+                                "booking.giftCard.giftCardAmountLeftLabel",
+                                {
+                                  amountLeft: formatAmountString(
+                                    giftCard.amountLeft,
+                                  ),
+                                },
+                              )}
+                            </div>
+                            <div className="text-green-800 font-bold">
+                              {i18n("booking.giftCard.giftCardAmountLeft", {
+                                amountLeft: formatAmountString(
+                                  giftCard.amountLeft,
+                                ),
+                              })}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
+              </div>
+            )}
             {discount && (
               <>
-                <div className="flex items-center justify-between review-total-content text-xs">
-                  <div>
-                    <p className="font-semibold text-foreground review-total-title">
-                      {i18n("booking.review.price.original")}
-                    </p>
-                  </div>
-                  <p className="font-bold text-foreground review-total-amount">
-                    ${formatAmountString(basePrice)}
-                  </p>
-                </div>
                 <div className="flex items-center justify-between review-total-content text-xs">
                   <div>
                     <p className="font-semibold text-foreground review-total-title">
@@ -337,6 +678,18 @@ export const ReviewCard: React.FC = () => {
                 </div>
               </>
             )}
+            {hasGiftCardApplied && (
+              <div className="flex items-center justify-between review-total-content text-xs">
+                <div>
+                  <p className="font-semibold text-foreground review-total-title">
+                    {i18n("booking.review.price.giftCards")}
+                  </p>
+                </div>
+                <p className="font-bold text-destructive review-total-amount">
+                  -(${formatAmountString(totalGiftCardsApplied)})
+                </p>
+              </div>
+            )}
             <div className="flex items-center justify-between review-total-content">
               <div>
                 <p className="font-semibold text-foreground review-total-title">
@@ -344,7 +697,7 @@ export const ReviewCard: React.FC = () => {
                 </p>
               </div>
               <p className="text-lg font-bold text-foreground review-total-amount">
-                ${formatAmountString(price)}
+                ${formatAmountString(totalAfterGiftCards)}
               </p>
             </div>
           </div>

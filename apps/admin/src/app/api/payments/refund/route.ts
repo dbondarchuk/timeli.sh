@@ -48,33 +48,42 @@ export async function POST(request: NextRequest) {
         if (result.success) {
           successes[paymentId] = result.updatedPayment;
 
-          await servicesContainer.eventsService.addAppointmentHistory({
-            type: "paymentRefunded",
-            data: {
-              payment: {
-                id: result.updatedPayment._id,
-                amount: result.updatedPayment.amount,
-                status: result.updatedPayment.status,
-                method: result.updatedPayment.method,
-                type: result.updatedPayment.type,
-                appName:
-                  "appName" in result.updatedPayment
-                    ? result.updatedPayment.appName
-                    : undefined,
-                externalId:
-                  "externalId" in result.updatedPayment
-                    ? result.updatedPayment.externalId
-                    : undefined,
+          if (result.updatedPayment.appointmentId) {
+            logger.debug(
+              {
+                appointmentId: result.updatedPayment.appointmentId,
               },
-              refundedAmount: amount,
-              totalRefunded:
-                result.updatedPayment.refunds?.reduce(
-                  (acc, refund) => acc + refund.amount,
-                  0,
-                ) || 0,
-            },
-            appointmentId: result.updatedPayment.appointmentId,
-          });
+              "Adding appointment history",
+            );
+
+            await servicesContainer.eventsService.addAppointmentHistory({
+              type: "paymentRefunded",
+              data: {
+                payment: {
+                  id: result.updatedPayment._id,
+                  amount: result.updatedPayment.amount,
+                  status: result.updatedPayment.status,
+                  method: result.updatedPayment.method,
+                  type: result.updatedPayment.type,
+                  appName:
+                    "appName" in result.updatedPayment
+                      ? result.updatedPayment.appName
+                      : undefined,
+                  externalId:
+                    "externalId" in result.updatedPayment
+                      ? result.updatedPayment.externalId
+                      : undefined,
+                },
+                refundedAmount: amount,
+                totalRefunded:
+                  result.updatedPayment.refunds?.reduce(
+                    (acc, refund) => acc + refund.amount,
+                    0,
+                  ) || 0,
+              },
+              appointmentId: result.updatedPayment.appointmentId,
+            });
+          }
         } else {
           errors[paymentId] = result.error;
         }

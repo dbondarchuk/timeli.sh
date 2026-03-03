@@ -74,7 +74,8 @@
       "price": {
         "total": "Total due",
         "discount": "Discount",
-        "original": "Subtotal"
+        "original": "Subtotal",
+        "giftCards": "Gift cards"
       }
     },
     "payment": {
@@ -88,7 +89,33 @@
       "deposit": "Deposit (due now)",
       "fullPayment": "Full payment (due now)",
       "remainingBalance": "Remaining balance",
-      "remainingBalanceDescription": "The remaining balance of ${remainingBalance} will be due at the time of your appointment."
+      "remainingBalanceDescription": "The remaining balance of ${remainingBalance} will be due at the time of your appointment.",
+      "giftCards": "Gift cards"
+    },
+    "promoCode": {
+      "trigger": "Have a promo code?",
+      "title": "Promo code",
+      "code": "Promo code",
+      "codePlaceholder": "Enter promo code (e.g. XXX-XXX-XXX)",
+      "description": "Up to 2 promo codes can be applied",
+      "success": "Promo code {code} (-${discount}) was successfully applied.",
+      "error": "Promo code {code} is not valid or has expired.",
+      "apply": "Apply"
+    },
+    "giftCard": {
+      "trigger": "Have a gift card?",
+      "title": "Gift card",
+      "code": "Gift card code",
+      "description": "Up to 2 gift cards can be applied",
+      "success": "Gift card {code} (-${appliedAmount}) was successfully applied.",
+      "error": "Gift card {code} is not valid or has expired.",
+      "codeRequired": "Gift card code is required",
+      "apply": "Apply",
+      "codePlaceholder": "Enter gift card code (e.g. XXX-XXX-XXX)",
+      "giftCardAppliedAmount": "-${appliedAmount} applied.",
+      "giftCardAmountLeftLabel": "Remaining balance on card after booking",
+      "giftCardAmountLeft": "${amountLeft} left on card",
+      "remove": "Remove gift card"
     },
     "confirmation": {
       "price": {
@@ -256,6 +283,11 @@
       "required": "Please upload a file",
       "maxSize": "File is too large",
       "type": "Expected file"
+    },
+    "giftCard": {
+      "code": {
+        "required": "Gift card code is required"
+      }
     }
   },
   "duration_min_format": "{duration} min",
@@ -307,6 +339,7 @@
 
   "payment_form_deposit_required_title": "Deposit is required",
   "payment_form_deposit_required_description": "In order to book this appointment, {percentage}% (${amount}) deposit is required. Please pay by using the form below",
+  "payment_form_fixed_amount_required_description": "In order to book this appointment, a ${amount} deposit is required. Please pay by using the form below",
 
   "payment_form_full_payment_required_title": "Full payment is required",
   "payment_form_full_payment_required_description": "In order to book this appointment, full payment of ${amount} is required. Please pay by using the form below",

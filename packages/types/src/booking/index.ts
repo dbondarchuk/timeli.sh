@@ -9,6 +9,7 @@ export * from "./discount";
 export * from "./event";
 export * from "./field";
 export * from "./fields";
+export * from "./gift-card";
 export * from "./payment";
 export * from "./period";
 export * from "./time-slot";

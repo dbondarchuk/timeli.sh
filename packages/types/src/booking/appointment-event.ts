@@ -117,6 +117,18 @@ export const appointmentRequestSchema = z.object({
     1,
     "appointments.request.promoCode.min",
   ),
+  giftCards: zUniqueArray(
+    z
+      .array(
+        zNonEmptyString("appointments.request.giftCards.required").min(
+          1,
+          "appointments.request.giftCards.min",
+        ),
+      )
+      .max(2, "appointments.request.giftCards.max"),
+    (x) => x,
+    "appointments.request.giftCards.unique",
+  ).optional(),
   paymentIntentId: zOptionalOrMinLengthString(
     1,
     "appointments.request.paymentIntentId.min",

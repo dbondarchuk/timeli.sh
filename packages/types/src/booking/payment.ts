@@ -1,5 +1,6 @@
 import * as z from "zod";
 import { WithCompanyId, WithDatabaseId } from "../database";
+import { zObjectId } from "../utils";
 import { Prettify } from "../utils/helpers";
 import {
   AppointmentRequest,
@@ -83,6 +84,14 @@ export type PaymentIntent = Prettify<
 export type CollectPayment = {
   formProps: Record<string, any>;
   intent: Omit<PaymentIntent, "request">;
+  amount: number;
+  amountPaid: number;
+  amountTotal: number;
+  isFixedAmount?: boolean;
+  giftCards?: {
+    code: string;
+    amountApplied: number;
+  }[];
 };
 
 export const inPersonPaymentMethod = ["cash", "in-person-card"] as const;
@@ -91,13 +100,19 @@ export type PaymentStatus = "paid" | "refunded";
 export type OnlinePaymentMethod = "online";
 export type InPersonPaymentMethod = (typeof inPersonPaymentMethod)[number];
 
-export type PaymentMethod = OnlinePaymentMethod | InPersonPaymentMethod;
+export const giftCardPaymentMethod = ["gift-card"] as const;
+export type GiftCardPaymentMethod = (typeof giftCardPaymentMethod)[number];
+
+export type PaymentMethod =
+  | OnlinePaymentMethod
+  | InPersonPaymentMethod
+  | GiftCardPaymentMethod;
 
 export type PaymentUpdateModel = {
   amount: number;
   status: PaymentStatus;
   paidAt: Date;
-  appointmentId: string;
+  appointmentId?: string;
   customerId: string;
   description: string;
   type: PaymentType;
@@ -109,6 +124,7 @@ export type PaymentUpdateModel = {
 } & (
   | {
       method: InPersonPaymentMethod;
+      disableUpdate?: boolean;
     }
   | {
       method: OnlinePaymentMethod;
@@ -116,6 +132,11 @@ export type PaymentUpdateModel = {
       externalId?: string;
       appName: string;
       appId: string;
+    }
+  | {
+      method: GiftCardPaymentMethod;
+      giftCardCode: string;
+      giftCardId: string;
     }
 );
 
@@ -135,18 +156,35 @@ export type InStorePayment = Extract<
   { method: InPersonPaymentMethod }
 >;
 
-export const inStorePaymentUpdateModelSchema = z.object({
-  amount: z.coerce
-    .number<number>({ error: "validation.payments.amount.positive" })
-    .positive("validation.payments.amount.positive"),
-  paidAt: z.coerce.date<Date>({ error: "validation.payments.paidAt.required" }),
-  appointmentId: z.string(),
-  description: z.string().max(1024, "validation.payments.description.max"),
-  method: z.enum(inPersonPaymentMethod, {
-    error: "validation.payments.method.required",
-  }),
-  type: z.enum(paymentType, { error: "validation.payments.type.required" }),
-});
+export const inStorePaymentUpdateModelSchema = z
+  .object({
+    amount: z.coerce
+      .number<number>({ error: "validation.payments.amount.positive" })
+      .positive("validation.payments.amount.positive"),
+    paidAt: z.coerce.date<Date>({
+      error: "validation.payments.paidAt.required",
+    }),
+    description: z.string().max(1024, "validation.payments.description.max"),
+    type: z.enum(paymentType, { error: "validation.payments.type.required" }),
+    disableUpdate: z.boolean().optional(),
+    customerId: zObjectId("validation.payments.customerId.required"),
+    appointmentId: zObjectId().optional(),
+  })
+  .and(
+    z.discriminatedUnion("method", [
+      z.object({
+        method: z.enum(inPersonPaymentMethod, {
+          error: "validation.payments.method.required",
+        }),
+      }),
+      z.object({
+        method: z.enum(giftCardPaymentMethod, {
+          error: "validation.payments.method.required",
+        }),
+        giftCardId: zObjectId("validation.payments.giftCardId.required"),
+      }),
+    ]),
+  );
 
 export type InStorePaymentUpdateModel = z.infer<
   typeof inStorePaymentUpdateModelSchema

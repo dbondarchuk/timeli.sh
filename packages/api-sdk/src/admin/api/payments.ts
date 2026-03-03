@@ -31,21 +31,12 @@ export const deleteInstore = async (id: string) => {
   return result;
 };
 
-export const addInstore = async (
-  id: string,
-  payment: InStorePaymentUpdateModel,
-) => {
-  console.debug(
-    { appointmentId: id, payment },
-    "Adding in-store appointment payment",
-  );
+export const addInstore = async (payment: InStorePaymentUpdateModel) => {
+  console.debug({ payment }, "Adding in-store appointment payment");
 
   const response = await fetchAdminApi("/payments/instore", {
     method: "POST",
-    body: JSON.stringify({
-      ...payment,
-      appointmentId: id,
-    }),
+    body: JSON.stringify(payment),
   });
 
   const result = await response.json<Payment>();
@@ -67,7 +58,7 @@ export const updateInstore = async (
   );
 
   const response = await fetchAdminApi(`/payments/instore/${id}`, {
-    method: "PATCH",
+    method: "PUT",
     body: JSON.stringify(update),
   });
 

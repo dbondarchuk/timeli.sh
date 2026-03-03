@@ -63,7 +63,15 @@ const createOrUpdateAppointmentRequestIntent = async (
 
   logger.debug({ ...isPaymentRequired, intentId }, "Payment is required.");
 
-  const { amount, percentage, appId, customer } = isPaymentRequired;
+  const {
+    amount,
+    amountPaid,
+    amountTotal,
+    giftCards,
+    appId,
+    customer,
+    isFixedAmount,
+  } = isPaymentRequired;
 
   const { app, service } =
     await servicesContainer.connectedAppsService.getAppService<IPaymentProcessor>(
@@ -112,6 +120,14 @@ const createOrUpdateAppointmentRequestIntent = async (
       return NextResponse.json({
         formProps,
         intent,
+        amount,
+        amountPaid,
+        amountTotal,
+        giftCards: giftCards?.map((giftCard) => ({
+          code: giftCard.code,
+          amountApplied: giftCard.appliedAmount,
+        })),
+        isFixedAmount,
       } satisfies CollectPayment);
     }
   }
@@ -147,6 +163,14 @@ const createOrUpdateAppointmentRequestIntent = async (
   return NextResponse.json({
     formProps,
     intent,
+    amount,
+    amountPaid,
+    amountTotal,
+    giftCards: giftCards?.map((giftCard) => ({
+      code: giftCard.code,
+      amountApplied: giftCard.appliedAmount,
+    })),
+    isFixedAmount,
   } satisfies CollectPayment);
 };
 
@@ -306,6 +330,10 @@ const createOrUpdateModifyAppointmentRequestIntent = async (
   return NextResponse.json({
     formProps,
     intent,
+    amount: paymentAmount,
+    amountPaid: paymentAmount,
+    amountTotal: paymentAmount,
+    giftCards: [],
   } satisfies CollectPayment);
 };
 

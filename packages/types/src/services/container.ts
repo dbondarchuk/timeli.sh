@@ -4,6 +4,7 @@ import type { IConfigurationService } from "./configuration.service";
 import type { IConnectedAppsService } from "./connected-apps.service";
 import type { ICustomersService } from "./customers.service";
 import type { IEventsService } from "./events.service";
+import type { IGiftCardsService } from "./gift-cards.service";
 import type { IJobService } from "./job.service";
 import type {
   IDashboardNotificationsService,
@@ -32,4 +33,5 @@ export type IServicesContainer = {
   jobService: IJobService;
   organizationService: IOrganizationService;
   dashboardNotificationsService: IDashboardNotificationsService;
+  giftCardsService: IGiftCardsService;
 };

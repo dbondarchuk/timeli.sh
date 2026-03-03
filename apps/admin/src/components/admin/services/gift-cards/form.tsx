@@ -1,0 +1,389 @@
+"use client";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import { adminApi } from "@timelish/api-sdk";
+import { BaseAllKeys, useI18n } from "@timelish/i18n";
+import {
+  getGiftCardSchemaWithUniqueCheck,
+  GiftCard,
+  InPersonPaymentMethod,
+  inPersonPaymentMethod,
+} from "@timelish/types";
+import {
+  BooleanSelect,
+  Button,
+  cn,
+  DateTimePicker,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  InfoTooltip,
+  Input,
+  InputGroup,
+  InputGroupInput,
+  InputGroupInputClasses,
+  InputGroupSuffixClasses,
+  InputSuffix,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  toastPromise,
+  TooltipResponsive,
+  TooltipResponsiveContent,
+  TooltipResponsiveTrigger,
+  use12HourFormat,
+  useDebounceCacheFn,
+} from "@timelish/ui";
+import { CustomerSelector, SaveButton } from "@timelish/ui-admin";
+import { Dices } from "lucide-react";
+import { DateTime } from "luxon";
+import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+
+const expiryDate = DateTime.now().plus({ days: 365 }).endOf("day").toJSDate();
+const minDate = DateTime.now().plus({ days: 1 }).startOf("day").toJSDate();
+
+// Generate a random code like XXX-XXX-XXX
+const generateGiftCardCode = () => {
+  return (
+    Math.random().toString(36).substring(2, 5).toUpperCase() +
+    "-" +
+    Math.random().toString(36).substring(2, 5).toUpperCase() +
+    "-" +
+    Math.random().toString(36).substring(2, 5).toUpperCase()
+  );
+};
+
+const defaultCode = generateGiftCardCode();
+
+export const GiftCardForm: React.FC<{
+  initialData?: GiftCard;
+}> = ({ initialData }) => {
+  const t = useI18n("admin");
+  const uses12HourFormat = use12HourFormat();
+
+  const cachedGiftCardCodeCheck = useDebounceCacheFn(
+    adminApi.giftCards.checkGiftCardCodeUnique,
+    300,
+  );
+
+  const formSchema = useMemo(() => {
+    let schema = getGiftCardSchemaWithUniqueCheck(
+      (code) => cachedGiftCardCodeCheck(code, initialData?._id),
+      "validation.giftCard.code.unique" satisfies BaseAllKeys,
+    );
+
+    if (!initialData?._id) {
+      return schema.omit({ paymentId: true }).extend({
+        paymentMethod: z.enum(inPersonPaymentMethod, {
+          error: "validation.giftCard.paymentMethod.required",
+        }),
+      });
+    }
+
+    return schema;
+  }, [cachedGiftCardCodeCheck, initialData?._id]);
+
+  type FormValues = z.infer<typeof formSchema>;
+
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    mode: "all",
+    reValidateMode: "onChange",
+    defaultValues: initialData || {
+      code: defaultCode,
+      status: "active",
+      amount: 50,
+      expiresAt: expiryDate,
+      paymentMethod: "cash",
+    },
+  });
+
+  const disableAmountUpdate = useMemo(() => {
+    return !!initialData?._id; //&& !!initialData.payments?.length;
+  }, [initialData?._id]);
+
+  const onSubmit = async (data: FormValues) => {
+    try {
+      setLoading(true);
+
+      const fn = async () => {
+        if (!initialData?._id) {
+          if (!("paymentMethod" in data)) {
+            throw new Error("Payment method is required");
+          }
+
+          const payment = await adminApi.payments.addInstore({
+            amount: data.amount,
+            description: "giftCard",
+            type: "payment",
+            method: data.paymentMethod as InPersonPaymentMethod,
+            paidAt: new Date(),
+            customerId: data.customerId,
+            disableUpdate: true,
+          });
+
+          const newData = {
+            ...data,
+            paymentId: payment._id,
+          };
+
+          const { _id } = await adminApi.giftCards.createGiftCard(newData);
+          router.push(`/dashboard/services/gift-cards`);
+        } else {
+          await adminApi.giftCards.updateGiftCard(initialData._id, {
+            ...data,
+            paymentId: initialData.paymentId,
+          });
+
+          router.refresh();
+        }
+      };
+
+      await toastPromise(fn(), {
+        success: t(
+          initialData?._id
+            ? "services.giftCards.form.toasts.changesSaved"
+            : "services.giftCards.form.toasts.created",
+        ),
+        error: t("services.giftCards.form.toasts.requestError"),
+      });
+    } catch (error: any) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-8">
+        <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
+          <FormField
+            control={form.control}
+            name="code"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  {t("services.giftCards.form.code.label")}{" "}
+                  <InfoTooltip>
+                    {t("services.giftCards.form.code.tooltip")}
+                  </InfoTooltip>
+                </FormLabel>
+
+                <FormControl>
+                  <InputGroup>
+                    <InputGroupInput>
+                      <Input
+                        disabled={loading || !!initialData?._id}
+                        placeholder={t(
+                          "services.giftCards.form.code.placeholder",
+                        )}
+                        className={cn(InputGroupInputClasses(), "flex-1")}
+                        {...field}
+                      />
+                    </InputGroupInput>
+                    <InputSuffix>
+                      <TooltipResponsive>
+                        <TooltipResponsiveTrigger
+                          className={cn(InputGroupSuffixClasses(), "px-2")}
+                        >
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            disabled={loading || !!initialData?._id}
+                            onClick={() => {
+                              field.onChange(generateGiftCardCode());
+                              field.onBlur();
+                              form.trigger("code");
+                            }}
+                          >
+                            <Dices />
+                          </Button>
+                        </TooltipResponsiveTrigger>
+                        <TooltipResponsiveContent>
+                          {t("services.giftCards.form.code.tooltip")}
+                        </TooltipResponsiveContent>
+                      </TooltipResponsive>
+                    </InputSuffix>
+                  </InputGroup>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="amount"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  {t("services.giftCards.form.amount.label")}
+                </FormLabel>
+                <FormControl>
+                  <InputGroup>
+                    <InputSuffix
+                      className={InputGroupSuffixClasses({
+                        variant: "prefix",
+                      })}
+                    >
+                      $
+                    </InputSuffix>
+                    <InputGroupInput>
+                      <Input
+                        disabled={loading || disableAmountUpdate}
+                        placeholder={t(
+                          "services.giftCards.form.amount.placeholder",
+                        )}
+                        type="number"
+                        className={InputGroupInputClasses({
+                          variant: "prefix",
+                        })}
+                        {...field}
+                      />
+                    </InputGroupInput>
+                  </InputGroup>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="status"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  {t("services.giftCards.form.status.label")}
+                </FormLabel>
+                <FormControl>
+                  <BooleanSelect
+                    className="w-full"
+                    trueLabel={t(
+                      "services.giftCards.form.status.options.active",
+                    )}
+                    falseLabel={t(
+                      "services.giftCards.form.status.options.inactive",
+                    )}
+                    value={field.value === "active"}
+                    onValueChange={(item) => {
+                      field.onChange(item ? "active" : "inactive");
+                      field.onBlur();
+                    }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="expiresAt"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  {t("services.giftCards.form.expiresAt.label")}{" "}
+                  <InfoTooltip>
+                    <p>{t("services.giftCards.form.expiresAt.tooltip")}</p>
+                    <p>{t("common.optional")}</p>
+                  </InfoTooltip>
+                </FormLabel>
+                <FormControl>
+                  <DateTimePicker
+                    disabled={loading}
+                    clearable
+                    use12HourFormat={uses12HourFormat}
+                    min={minDate}
+                    {...field}
+                    onChange={(date) => {
+                      field.onChange(date ?? null);
+                      field.onBlur();
+                    }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="customerId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  {t("services.giftCards.form.customerId.label")}
+                  <InfoTooltip>
+                    {t("services.giftCards.form.customerId.tooltip")}
+                  </InfoTooltip>
+                </FormLabel>
+                <FormControl>
+                  <CustomerSelector
+                    onItemSelect={(customerId) => {
+                      field.onChange(customerId);
+                      field.onBlur();
+                    }}
+                    value={field.value}
+                    disabled={loading}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {!initialData?._id && (
+            <FormField
+              control={form.control}
+              name="paymentMethod"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    {t("services.giftCards.form.paymentMethod.label")}
+                    <InfoTooltip>
+                      {t("services.giftCards.form.paymentMethod.tooltip")}
+                    </InfoTooltip>
+                  </FormLabel>
+                  <FormControl>
+                    <Select
+                      value={field.value}
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        field.onBlur();
+                      }}
+                      disabled={loading}
+                    >
+                      <SelectTrigger>
+                        <SelectValue
+                          placeholder={t(
+                            "payment.addUpdatePayment.form.method.label",
+                          )}
+                        />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {inPersonPaymentMethod.map((type) => (
+                          <SelectItem value={type} key={type}>
+                            {t(`payment.addUpdatePayment.form.method.${type}`)}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
+        </div>
+        <SaveButton form={form} />
+      </form>
+    </Form>
+  );
+};

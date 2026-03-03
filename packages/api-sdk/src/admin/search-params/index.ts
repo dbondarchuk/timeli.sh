@@ -6,6 +6,7 @@ export * from "./calendar";
 export * from "./communication-logs";
 export * from "./customers";
 export * from "./discounts";
+export * from "./gift-cards";
 export * from "./pages";
 export * from "./schedule";
 export * from "./service-addons";
