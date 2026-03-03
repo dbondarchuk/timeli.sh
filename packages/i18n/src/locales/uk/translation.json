@@ -74,7 +74,8 @@
       "price": {
         "total": "Всього до сплати",
         "discount": "Знижка",
-        "original": "Підсумок"
+        "original": "Підсумок",
+        "giftCards": "Подарункові картки"
       }
     },
     "payment": {
@@ -88,7 +89,33 @@
       "deposit": "Депозит (сплатити зараз)",
       "fullPayment": "Повна оплата (сплатити зараз)",
       "remainingBalance": "Залишок балансу",
-      "remainingBalanceDescription": "Залишок балансу ${remainingBalance} буде сплачено під час вашого запису."
+      "remainingBalanceDescription": "Залишок балансу ${remainingBalance} буде сплачено під час вашого запису.",
+      "giftCards": "Подарункові картки"
+    },
+    "promoCode": {
+      "trigger": "Маєте промокод?",
+      "title": "Промокод",
+      "code": "Промокод",
+      "codePlaceholder": "Введіть промокод (наприклад XXX-XXX-XXX)",
+      "description": "Можна застосувати до 2 промокодів",
+      "success": "Промокод {code} (-${discount}) успішно застосовано.",
+      "error": "Промокод {code} недійсний або закінчився.",
+      "apply": "Застосувати"
+    },
+    "giftCard": {
+      "trigger": "Маєте подарункову картку?",
+      "title": "Подарункова картка",
+      "code": "Код подарункової картки",
+      "description": "Можна застосувати до 2 подарункових карток",
+      "success": "Подарункову картку {code} (-${appliedAmount}) успішно застосовано.",
+      "error": "Подарункова картка {code} недійсна або закінчилася.",
+      "codeRequired": "Код подарункової картки обов'язковий",
+      "apply": "Застосувати",
+      "codePlaceholder": "Введіть код подарункової картки (наприклад XXX-XXX-XXX)",
+      "giftCardAppliedAmount": "-${appliedAmount} застосовано.",
+      "giftCardAmountLeftLabel": "Залишок на картці після бронювання",
+      "giftCardAmountLeft": "${amountLeft} залишилось на картці",
+      "remove": "Видалити подарункову картку"
     },
     "confirmation": {
       "price": {
@@ -256,6 +283,11 @@
       "required": "Будь ласка, завантажте файл",
       "maxSize": "Файл занадто великий",
       "type": "Очікуваний файл"
+    },
+    "giftCard": {
+      "code": {
+        "required": "Код подарункової картки обов'язковий"
+      }
     }
   },
   "duration_min_format": "{duration} хв",
@@ -305,6 +337,7 @@
   "payment_information_fetch_failed_description": "Щось пішло не так під час спроби отримати інформацію для бронювання вашої зустрічі. Будь ласка, зателефонуйте нам",
   "payment_form_deposit_required_title": "Потрібен депозит",
   "payment_form_deposit_required_description": "Для бронювання цього запису потрібен депозит {percentage}% (${amount}). Будь ласка, оплатіть, використовуючи форму нижче",
+  "payment_form_fixed_amount_required_description": "Для бронювання цього запису потрібен депозит у розмірі ${amount}. Будь ласка, оплатіть, використовуючи форму нижче",
   "payment_form_full_payment_required_title": "Потрібна повна оплата",
   "payment_form_full_payment_required_description": "Для бронювання цього запису потрібна повна оплата ${amount}. Будь ласка, оплатіть, використовуючи форму нижче",
   "duplicate_appointment_confirmation_title": "Ви впевнені?",

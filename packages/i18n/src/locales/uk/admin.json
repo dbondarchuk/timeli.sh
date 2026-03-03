@@ -44,6 +44,10 @@
         "disabled": "Вимкнено",
         "active": "Активна"
       },
+      "giftCardStatus": {
+        "inactive": "Неактивна",
+        "active": "Активна"
+      },
       "paymentStatus": {
         "paid": "Оплачено",
         "refunded": "Повернено",
@@ -89,6 +93,7 @@
     "addons": "Додатки",
     "options": "Опції",
     "discounts": "Знижки",
+    "giftCards": "Подарункові картки",
     "customers": "Клієнти",
     "website": "Веб-сайт",
     "pages": "Сторінки",
@@ -1207,6 +1212,85 @@
         "deleteSelected": "Видалити вибрані"
       }
     },
+    "giftCards": {
+      "title": "Подарункові картки",
+      "description": "Керувати подарунковими картками",
+      "addNew": "Додати нову",
+      "new": "Нова",
+      "newTitle": "Нова подарункова картка",
+      "newDescription": "Додати нову подарункову картку",
+      "editDescription": "Редагувати подарункову картку",
+      "table": {
+        "payments": {
+          "title": "Платежі",
+          "description": "Платежі, здійснені цією подарунковою карткою",
+          "noPayments": "Платежі не знайдено"
+        },
+        "columns": {
+          "code": "Код",
+          "amount": "Сума",
+          "amountLeft": "Залишок",
+          "expiresAt": "Дійсна до",
+          "status": "Статус",
+          "createdAt": "Створено",
+          "updatedAt": "Оновлено",
+          "payments": "Платежі",
+          "customer": "Клієнт"
+        },
+        "cellAction": {
+          "giftCardDeleted": "Подарункову картку {code} видалено.",
+          "actions": "Дії",
+          "update": "Оновити",
+          "delete": "Видалити"
+        }
+      },
+      "deleteSelected": {
+        "success": "Вибрані подарункові картки видалено",
+        "error": "Виникла проблема з вашим запитом.",
+        "button": "Видалити {count, plural, =1 {вибрану подарункову картку} few {вибрані # подарункові картки} many {вибраних # подарункових карток} other {вибраних # подарункових карток}}",
+        "confirmTitle": "Ви абсолютно впевнені?",
+        "confirmDescription": "Цю дію неможливо скасувати. Це видалить вибрані подарункові картки.",
+        "cancel": "Скасувати",
+        "deleteSelected": "Видалити вибрані"
+      },
+      "form": {
+        "code": {
+          "label": "Код",
+          "placeholder": "XXX-XXX-XXX",
+          "tooltip": "Унікальний код подарункової картки"
+        },
+        "amount": {
+          "label": "Сума",
+          "placeholder": "50",
+          "tooltip": "Сума подарункової картки"
+        },
+        "expiresAt": {
+          "label": "Дійсна до",
+          "tooltip": "Дата закінчення терміну дії подарункової картки"
+        },
+        "paymentMethod": {
+          "label": "Спосіб оплати",
+          "tooltip": "Спосіб оплати при покупці подарункової картки"
+        },
+        "status": {
+          "label": "Статус",
+          "tooltip": "Статус подарункової картки",
+          "options": {
+            "active": "Активна",
+            "inactive": "Неактивна"
+          }
+        },
+        "customerId": {
+          "label": "Клієнт",
+          "tooltip": "Клієнт, який придбав подарункову картку"
+        },
+        "toasts": {
+          "created": "Подарункову картку успішно створено",
+          "changesSaved": "Ваші зміни збережено.",
+          "requestError": "Виникла проблема з вашим запитом."
+        }
+      }
+    },
     "addons": {
       "title": "Додатки",
       "description": "Керувати додатками",
@@ -2140,7 +2224,9 @@
   "payment": {
     "card": {
       "amount": "Сума",
+      "giftCardCode": "Код подарункової картки",
       "transactionId": "ID транзакції",
+      "customer": "Клієнт",
       "timePaid": "Час оплати",
       "timeRefunded": "Час повернення",
       "refund": "Повернення",
@@ -2179,10 +2265,14 @@
         "method": {
           "label": "Спосіб",
           "cash": "Готівка",
-          "in-person-card": "Картка"
+          "in-person-card": "Картка",
+          "gift-card": "Подарункова картка"
         },
         "type": {
           "label": "Тип платежу"
+        },
+        "giftCardId": {
+          "label": "Подарункова картка"
         }
       }
     },
@@ -2196,7 +2286,8 @@
       "fullPayment": "Повна оплата",
       "deposit": "Депозит",
       "rescheduleFee": "Плата за перенесення",
-      "cancellationFee": "Плата за відміну"
+      "cancellationFee": "Плата за відміну",
+      "giftCard": "Покупка подарункової картки"
     },
     "types": {
       "deposit": "Депозит",
@@ -2208,7 +2299,8 @@
     },
     "methods": {
       "cash": "Готівка",
-      "card": "Картка"
+      "card": "Картка",
+      "giftCard": "Подарункова картка"
     },
     "feeTypes": {
       "transaction": "Комісія транзакції",
@@ -2386,5 +2478,10 @@
       },
       "confirm": "Створити"
     }
+  },
+  "giftCardSelector": {
+    "amountLabel": "${amount} (залишок: ${amountLeft})",
+    "expiresAt": "Дійсна до {expiresAt}",
+    "placeholder": "Виберіть подарункову картку"
   }
 }
