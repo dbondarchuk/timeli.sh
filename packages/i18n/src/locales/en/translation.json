@@ -239,6 +239,7 @@
         "title": "Reschedule Fee",
         "description": "Please pay the required fee to proceed"
       },
+      "paymentReview": "Payment summary",
       "amountDue": "Amount Due"
     },
     "confirmation": {

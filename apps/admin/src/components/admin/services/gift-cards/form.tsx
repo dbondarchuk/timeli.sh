@@ -32,6 +32,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  toast,
   toastPromise,
   TooltipResponsive,
   TooltipResponsiveContent,
@@ -40,7 +41,7 @@ import {
   useDebounceCacheFn,
 } from "@timelish/ui";
 import { CustomerSelector, SaveButton } from "@timelish/ui-admin";
-import { Dices } from "lucide-react";
+import { Copy, Dices } from "lucide-react";
 import { DateTime } from "luxon";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
@@ -176,26 +177,19 @@ export const GiftCardForm: React.FC<{
                 <FormLabel>
                   {t("services.giftCards.form.code.label")}{" "}
                   <InfoTooltip>
-                    {t("services.giftCards.form.code.tooltip")}
+                    {t("services.giftCards.form.code.generateTooltip")}
                   </InfoTooltip>
                 </FormLabel>
 
                 <FormControl>
                   <InputGroup>
-                    <InputGroupInput>
-                      <Input
-                        disabled={loading || !!initialData?._id}
-                        placeholder={t(
-                          "services.giftCards.form.code.placeholder",
-                        )}
-                        className={cn(InputGroupInputClasses(), "flex-1")}
-                        {...field}
-                      />
-                    </InputGroupInput>
                     <InputSuffix>
                       <TooltipResponsive>
                         <TooltipResponsiveTrigger
-                          className={cn(InputGroupSuffixClasses(), "px-2")}
+                          className={cn(
+                            InputGroupSuffixClasses({ variant: "prefix" }),
+                            "px-2",
+                          )}
                         >
                           <Button
                             variant="ghost"
@@ -212,6 +206,46 @@ export const GiftCardForm: React.FC<{
                         </TooltipResponsiveTrigger>
                         <TooltipResponsiveContent>
                           {t("services.giftCards.form.code.tooltip")}
+                        </TooltipResponsiveContent>
+                      </TooltipResponsive>
+                    </InputSuffix>
+                    <InputGroupInput>
+                      <Input
+                        disabled={loading || !!initialData?._id}
+                        placeholder={t(
+                          "services.giftCards.form.code.placeholder",
+                        )}
+                        className={cn(
+                          InputGroupInputClasses(),
+                          InputGroupInputClasses({ variant: "prefix" }),
+                          "flex-1",
+                        )}
+                        {...field}
+                      />
+                    </InputGroupInput>
+                    <InputSuffix>
+                      <TooltipResponsive>
+                        <TooltipResponsiveTrigger
+                          className={cn(InputGroupSuffixClasses(), "px-2")}
+                        >
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            disabled={!field.value}
+                            onClick={() => {
+                              navigator.clipboard.writeText(field.value);
+                              toast.success(
+                                t("services.giftCards.form.code.copied"),
+                              );
+                            }}
+                          >
+                            <Copy />
+                          </Button>
+                        </TooltipResponsiveTrigger>
+                        <TooltipResponsiveContent>
+                          {t(
+                            "services.giftCards.form.code.copyToClipboardTooltip",
+                          )}
                         </TooltipResponsiveContent>
                       </TooltipResponsive>
                     </InputSuffix>

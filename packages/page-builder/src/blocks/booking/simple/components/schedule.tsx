@@ -3,6 +3,7 @@
 import { clientApi, ClientApiError } from "@timelish/api-sdk";
 import { useI18n } from "@timelish/i18n";
 import type {
+  ApplyGiftCardsSuccessResponse,
   AppointmentAddon,
   AppointmentChoice,
   AppointmentFields,
@@ -100,6 +101,9 @@ export const Schedule: React.FC<
   ] = React.useState<boolean | undefined>(undefined);
 
   const [promoCode, setPromoCode] = React.useState<ApplyDiscountResponse>();
+  const [giftCards, setGiftCards] = React.useState<
+    ApplyGiftCardsSuccessResponse["giftCards"]
+  >([]);
   const [paymentInformation, setPaymentInformation] =
     React.useState<CollectPayment | null>();
 
@@ -235,6 +239,7 @@ export const Schedule: React.FC<
       addonsIds: selectedAddons?.map((addon) => addon._id),
       promoCode: promoCode?.code,
       paymentIntentId: paymentInformation?.intent?._id,
+      giftCards: giftCards?.map((giftCard) => giftCard.code),
       fields: Object.entries(fields)
         .filter(([_, value]) => !((value as any) instanceof File))
         .reduce(
@@ -252,6 +257,25 @@ export const Schedule: React.FC<
       fetchAvailability();
     }
   }, [initialStep, i18n]);
+
+  const applyGiftCards = async (codes: string[], amount: number) => {
+    try {
+      const data = await clientApi.giftCards.applyGiftCards({
+        codes,
+        amount,
+      });
+
+      if (data.success) {
+        setGiftCards(data.giftCards);
+        return data.giftCards;
+      }
+
+      throw new Error(data.error);
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
 
   const fetchPaymentInformation = async (): Promise<CollectPayment | null> => {
     const request = getAppointmentRequest();
@@ -369,6 +393,9 @@ export const Schedule: React.FC<
           formFields,
           timeZone,
           availability,
+          giftCards,
+          setGiftCards,
+          applyGiftCards,
           paymentInformation,
           setPaymentInformation,
           fetchPaymentInformation,

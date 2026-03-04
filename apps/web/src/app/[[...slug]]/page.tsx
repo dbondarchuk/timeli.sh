@@ -284,22 +284,27 @@ export default async function Page(props: Props) {
         "ui-components",
       );
 
+    const isDev = process.env.NODE_ENV === "development";
+    const hasNoAppBlocks =
+      isDev && searchParams && "noAppBlocks" in searchParams;
+
     const blockRegistry: BlockProviderRegistry = {
-      providers:
-        apps?.map((app) => ({
-          providerName: app.name,
-          priority: 100,
-          blocks: Object.fromEntries(
-            Object.entries(AppsBlocksReaders[app.name] || {}).map(
-              ([name, value]) => [
-                name,
-                {
-                  reader: value,
-                },
-              ],
+      providers: hasNoAppBlocks
+        ? []
+        : apps?.map((app) => ({
+            providerName: app.name,
+            priority: 100,
+            blocks: Object.fromEntries(
+              Object.entries(AppsBlocksReaders[app.name] || {}).map(
+                ([name, value]) => [
+                  name,
+                  {
+                    reader: value,
+                  },
+                ],
+              ),
             ),
-          ),
-        })) || [],
+          })) || [],
     };
 
     return (

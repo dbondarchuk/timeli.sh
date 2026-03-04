@@ -283,7 +283,8 @@ const createOrUpdateModifyAppointmentRequestIntent = async (
     "Payment is required.",
   );
 
-  const { paymentAmount } = information;
+  const paymentAmount = information.paymentAmount ?? 0;
+  const giftCards = information.giftCards;
 
   const config =
     await servicesContainer.configurationService.getConfiguration("booking");
@@ -333,7 +334,10 @@ const createOrUpdateModifyAppointmentRequestIntent = async (
     amount: paymentAmount,
     amountPaid: paymentAmount,
     amountTotal: paymentAmount,
-    giftCards: [],
+    giftCards: giftCards?.map((giftCard) => ({
+      code: giftCard.code,
+      amountApplied: giftCard.appliedAmount,
+    })),
   } satisfies CollectPayment);
 };
 

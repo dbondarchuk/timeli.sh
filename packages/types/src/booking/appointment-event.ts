@@ -12,6 +12,7 @@ import {
 import { Extandable, Prettify } from "../utils/helpers";
 import { zTimeZone } from "../utils/zTimeZone";
 import { AppointmentAddon, AppointmentOption } from "./appointment-option";
+import type { ApplyGiftCardsSuccessResponse } from "./gift-card";
 
 export type AppointmentFields = {
   name: string;
@@ -171,6 +172,19 @@ export type ModifyAppointmentInformationRequest = z.infer<
   typeof modifyAppointmentInformationRequestSchema
 >;
 
+const modifyAppointmentRequestGiftCardsSchema = zUniqueArray(
+  z
+    .array(
+      zNonEmptyString("appointments.request.giftCards.required").min(
+        1,
+        "appointments.request.giftCards.min",
+      ),
+    )
+    .max(2, "appointments.request.giftCards.max"),
+  (x) => x,
+  "appointments.request.giftCards.unique",
+).optional();
+
 export const modifyAppointmentRequestSchema = z.discriminatedUnion("type", [
   z.object({
     type: modifyAppointmentTypeSchema.extract(["cancel"]),
@@ -178,6 +192,7 @@ export const modifyAppointmentRequestSchema = z.discriminatedUnion("type", [
       1,
       "appointments.request.intentId.min",
     ),
+    giftCards: modifyAppointmentRequestGiftCardsSchema,
     ...baseModifyAppointmentRequestSchema.shape,
   }),
   z.object({
@@ -189,6 +204,7 @@ export const modifyAppointmentRequestSchema = z.discriminatedUnion("type", [
       1,
       "appointments.request.intentId.min",
     ),
+    giftCards: modifyAppointmentRequestGiftCardsSchema,
     ...baseModifyAppointmentRequestSchema.shape,
   }),
 ]);
@@ -244,6 +260,7 @@ export type ModifyAppointmentInformation = {
             "paymentRequired" | "paymentToFullPriceRequired"
           >;
           paymentAmount: number;
+          giftCards?: ApplyGiftCardsSuccessResponse["giftCards"];
         }
       | {
           action: "refund";
@@ -274,6 +291,7 @@ export type ModifyAppointmentInformation = {
       | {
           action: Extract<AppointmentReschedulePolicyAction, "paymentRequired">;
           paymentAmount: number;
+          giftCards?: ApplyGiftCardsSuccessResponse["giftCards"];
         }
     ))
   | {

@@ -494,11 +494,9 @@ export const ReviewCard: React.FC = () => {
                   onOpenChange={setOpenPromoCode}
                   className="w-full"
                 >
-                  <CollapsibleTrigger className="w-full">
-                    <p className="text-xs text-muted-foreground w-full inline-flex  items-center gap-2 underline review-total-gift-cards-title">
-                      <TicketPercent className="w-3 h-3" />{" "}
-                      {i18n("booking.promoCode.trigger")}
-                    </p>
+                  <CollapsibleTrigger className="w-full text-xs text-muted-foreground inline-flex  items-center gap-2 underline review-total-gift-cards-title">
+                    <TicketPercent className="w-3 h-3" />{" "}
+                    {i18n("booking.promoCode.trigger")}
                   </CollapsibleTrigger>
                   <CollapsibleContent className="w-full">
                     <div className="my-3 space-y-1 review-total-promo">
@@ -560,11 +558,9 @@ export const ReviewCard: React.FC = () => {
                   onOpenChange={setOpenGiftCards}
                   className="w-full"
                 >
-                  <CollapsibleTrigger className="w-full">
-                    <p className="text-xs text-muted-foreground w-full inline-flex  items-center gap-2 underline review-total-gift-cards-title">
-                      <Gift className="w-3 h-3" />{" "}
-                      {i18n("booking.giftCard.trigger")}
-                    </p>
+                  <CollapsibleTrigger className="w-full text-xs text-muted-foreground inline-flex items-center gap-2 underline review-total-gift-cards-title">
+                    <Gift className="w-3 h-3" />{" "}
+                    {i18n("booking.giftCard.trigger")}
                   </CollapsibleTrigger>
                   <CollapsibleContent className="w-full">
                     <div className="mt-2 flex flex-col gap-2 items-center w-full review-total-gift-cards-content">

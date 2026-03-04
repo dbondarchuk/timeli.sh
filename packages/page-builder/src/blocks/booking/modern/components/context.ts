@@ -1,6 +1,7 @@
 import { TranslationKeys } from "@timelish/i18n";
 import {
   ApplyDiscountResponse,
+  ApplyGiftCardsSuccessResponse,
   AppointmentAddon,
   AppointmentChoice,
   AppointmentFields,
@@ -81,6 +82,15 @@ export type ScheduleContextProps = {
   showPromoCode?: boolean;
   discount?: ApplyDiscountResponse;
   setDiscount: (promoCode?: ApplyDiscountResponse) => void;
+
+  giftCards?: ApplyGiftCardsSuccessResponse["giftCards"];
+  setGiftCards: (
+    giftCards: ApplyGiftCardsSuccessResponse["giftCards"],
+  ) => void;
+  applyGiftCards: (
+    codes: string[],
+    amount: number,
+  ) => Promise<ApplyGiftCardsSuccessResponse["giftCards"]>;
 
   currentStep: StepType;
   setCurrentStep: (step: StepType) => void;

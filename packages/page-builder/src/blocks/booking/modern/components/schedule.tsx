@@ -7,6 +7,7 @@ import type {
   AppointmentChoice,
   AppointmentFields,
   AppointmentRequest,
+  ApplyGiftCardsSuccessResponse,
   CollectPayment,
   CreateOrUpdatePaymentIntentRequest,
   DateTime,
@@ -109,6 +110,9 @@ export const Schedule: React.FC<
   ] = React.useState<boolean | undefined>(undefined);
 
   const [promoCode, setPromoCode] = React.useState<ApplyDiscountResponse>();
+  const [giftCards, setGiftCards] = React.useState<
+    ApplyGiftCardsSuccessResponse["giftCards"]
+  >([]);
   const [paymentInformation, setPaymentInformation] =
     React.useState<CollectPayment | null>();
 
@@ -223,6 +227,25 @@ export const Schedule: React.FC<
       }
     };
 
+  const applyGiftCards = async (codes: string[], amount: number) => {
+    try {
+      const data = await clientApi.giftCards.applyGiftCards({
+        codes,
+        amount,
+      });
+
+      if (data.success) {
+        setGiftCards(data.giftCards);
+        return data.giftCards;
+      }
+
+      throw new Error(data.error);
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
+
   const getAppointmentRequest = (): AppointmentRequest | null => {
     if (!dateTime || !duration || !selectedAppointmentOption?._id) return null;
     return {
@@ -245,6 +268,7 @@ export const Schedule: React.FC<
       addonsIds: selectedAddons?.map((addon) => addon._id),
       promoCode: promoCode?.code,
       paymentIntentId: paymentInformation?.intent?._id,
+      giftCards: giftCards?.map((giftCard) => giftCard.code),
       fields: Object.entries(fields)
         .filter(([_, value]) => !((value as any) instanceof File))
         .reduce(
@@ -275,6 +299,7 @@ export const Schedule: React.FC<
     setDuplicateAppointmentDoNotAllowScheduling(undefined);
     setConfirmDuplicateAppointment(false);
     setPromoCode(undefined);
+    setGiftCards([]);
     setPaymentInformation(null);
     setIsFormValid(false);
     setFields({
@@ -407,6 +432,9 @@ export const Schedule: React.FC<
         setClosestDuplicateAppointment,
         duplicateAppointmentDoNotAllowScheduling,
         setDuplicateAppointmentDoNotAllowScheduling,
+        giftCards,
+        setGiftCards,
+        applyGiftCards,
         isFormValid,
         setIsFormValid,
         isEditor,

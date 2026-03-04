@@ -3,6 +3,7 @@
 import { clientApi, ClientApiError } from "@timelish/api-sdk";
 import { useI18n } from "@timelish/i18n";
 import type {
+  ApplyGiftCardsSuccessResponse,
   CollectPayment,
   CreateOrUpdatePaymentIntentRequest,
   DateTime,
@@ -83,6 +84,9 @@ export const ModifyAppointmentForm: React.FC<
   const [paymentInformation, setPaymentInformation] =
     React.useState<CollectPayment | null>();
 
+  const [giftCards, setGiftCards] =
+    React.useState<ApplyGiftCardsSuccessResponse["giftCards"]>();
+
   const [isFormValid, setIsFormValid] = React.useState(false);
   const [isModificationConfirmed, setIsModificationConfirmed] =
     React.useState(false);
@@ -118,6 +122,7 @@ export const ModifyAppointmentForm: React.FC<
       });
 
       setAppointment(data);
+      setGiftCards(undefined);
 
       return data;
     } catch (e: any) {
@@ -151,6 +156,18 @@ export const ModifyAppointmentForm: React.FC<
     }
   };
 
+  const applyGiftCards = async (
+    codes: string[],
+    amount: number,
+  ): Promise<ApplyGiftCardsSuccessResponse["giftCards"] | undefined> => {
+    const data = await clientApi.giftCards.applyGiftCards({ codes, amount });
+    if (data.success) {
+      setGiftCards(data.giftCards);
+      return data.giftCards;
+    }
+    throw new Error(data.error);
+  };
+
   const fetchPaymentInformation = async (): Promise<CollectPayment | null> => {
     const intentId = paymentInformation?.intent?._id;
     try {
@@ -168,11 +185,13 @@ export const ModifyAppointmentForm: React.FC<
           dateTime: newDateTime.toUTC().toJSDate(),
           type,
           fields,
+          giftCards: giftCards?.map((g) => g.code),
         } satisfies ModifyAppointmentRequest;
       } else {
         request = {
           type,
           fields,
+          giftCards: giftCards?.map((g) => g.code),
         } satisfies ModifyAppointmentRequest;
       }
 
@@ -243,6 +262,7 @@ export const ModifyAppointmentForm: React.FC<
         dateTime: newDateTime?.toUTC().toJSDate() as Date,
         fields,
         paymentIntentId: paymentInformation?.intent?._id,
+        giftCards: giftCards?.map((g) => g.code),
       } satisfies ModifyAppointmentRequest);
 
       setIsModificationConfirmed(true);
@@ -305,6 +325,9 @@ export const ModifyAppointmentForm: React.FC<
         setIsLoading,
         searchError,
         setSearchError,
+        giftCards,
+        setGiftCards,
+        applyGiftCards,
       }}
     >
       <ModifyAppointmentFormLayout

@@ -1257,7 +1257,10 @@
         "code": {
           "label": "Code",
           "placeholder": "XXX-XXX-XXX",
-          "tooltip": "Unique code for the gift card"
+          "tooltip": "Unique code for the gift card",
+          "generateTooltip": "Generate a new code for the gift card",
+          "copied": "Code copied to clipboard",
+          "copyToClipboardTooltip": "Copy code to clipboard"
         },
         "amount": {
           "label": "Amount",

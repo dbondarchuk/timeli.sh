@@ -19,8 +19,10 @@ export const PaymentCard: React.FC = () => {
 
   const Form = PaymentAppForms[paymentForm.intent.appName];
 
-  const isFullPayment = paymentForm.intent.amount === price;
-  const percentage = formatAmount((paymentForm.intent.amount / price) * 100);
+  const isFullPayment = paymentForm.amountTotal === price;
+  const percentage = formatAmount((paymentForm.amountTotal / price) * 100);
+  const remainingBalance =
+    price - paymentForm.intent.amount - paymentForm.amountPaid;
 
   return (
     <div className="space-y-6 payment-card card-container">
@@ -36,10 +38,12 @@ export const PaymentCard: React.FC = () => {
           {t(
             isFullPayment
               ? "payment_form_full_payment_required_description"
-              : "payment_form_deposit_required_description",
+              : paymentForm.isFixedAmount
+                ? "payment_form_fixed_amount_required_description"
+                : "payment_form_deposit_required_description",
             {
               percentage,
-              amount: formatAmountString(paymentForm.intent.amount),
+              amount: formatAmountString(paymentForm.amountTotal),
             },
           )}
         </p>
@@ -51,7 +55,7 @@ export const PaymentCard: React.FC = () => {
             <CreditCard className="w-6 h-6 text-primary" />
           </div>
           <p className="text-2xl font-bold text-foreground">
-            ${formatAmountString(paymentForm.intent.amount)}
+            ${formatAmountString(paymentForm.amount)}
           </p>
           <p className="text-sm text-muted-foreground mt-1">
             {t("booking.payment.amount.deposit")}
@@ -59,32 +63,48 @@ export const PaymentCard: React.FC = () => {
         </div>
 
         <div className="space-y-2 mb-6">
+          <div className="flex justify-between text-xs payment-card-service-total">
+            <span className="text-muted-foreground payment-card-service-total-label">
+              {t("booking.payment.subtotal")}
+            </span>
+            <span className="text-foreground payment-card-service-total-amount">
+              ${formatAmountString(basePrice)}
+            </span>
+          </div>
           {!!discountAmount && (
-            <>
-              <div className="flex justify-between text-xs payment-card-service-total">
-                <span className="text-muted-foreground payment-card-service-total-label">
-                  {t("booking.payment.subtotal")}
-                </span>
-                <span className="text-foreground payment-card-service-total-amount">
-                  ${formatAmountString(basePrice)}
-                </span>
-              </div>
-              <div className="flex justify-between text-xs payment-card-service-total pb-2 border-b">
-                <span className="text-muted-foreground payment-card-service-total-label">
-                  {t("booking.payment.discount")}
-                </span>
-                <span className="text-destructive payment-card-service-total-amount">
-                  -(${formatAmountString(discountAmount)})
-                </span>
-              </div>
-            </>
+            <div className="flex justify-between text-xs payment-card-service-total">
+              <span className="text-muted-foreground payment-card-service-total-label">
+                {t("booking.payment.discount")}
+              </span>
+              <span className="text-destructive payment-card-service-total-amount">
+                -(${formatAmountString(discountAmount)})
+              </span>
+            </div>
           )}
+          {!!paymentForm.giftCards?.length && (
+            <div className="flex justify-between text-xs payment-card-service-total">
+              <span className="text-muted-foreground payment-card-service-total-label">
+                {t("booking.payment.giftCards")}
+              </span>
+              <span className="text-destructive payment-card-service-total-amount">
+                -($
+                {formatAmountString(
+                  paymentForm.giftCards.reduce(
+                    (acc, giftCard) => acc + giftCard.amountApplied,
+                    0,
+                  ),
+                )}
+                )
+              </span>
+            </div>
+          )}
+          <div className="border-b pb-2" />
           <div className="flex justify-between text-sm payment-card-service-total">
             <span className="text-muted-foreground payment-card-service-total-label">
               {t("booking.payment.total")}
             </span>
             <span className="text-foreground payment-card-service-total-amount">
-              ${formatAmountString(price)}
+              ${formatAmountString(price - paymentForm.amountPaid)}
             </span>
           </div>
           <div className="flex justify-between text-sm payment-card-deposit">
@@ -99,12 +119,12 @@ export const PaymentCard: React.FC = () => {
               ${formatAmountString(paymentForm.intent.amount)}
             </span>
           </div>
-          <div className="border-t pt-4 flex justify-between">
+          <div className="border-t pt-4 flex justify-between text-sm">
             <span className="font-medium text-foreground payment-card-remaining-balance-label">
               {t("booking.payment.remainingBalance")}
             </span>
             <span className="font-semibold text-foreground payment-card-remaining-balance-amount">
-              ${formatAmountString(price - paymentForm.intent.amount)}
+              ${formatAmountString(remainingBalance)}
             </span>
           </div>
         </div>
@@ -112,9 +132,7 @@ export const PaymentCard: React.FC = () => {
         {!isFullPayment && (
           <p className="text-xs text-muted-foreground mb-4">
             {t("booking.payment.remainingBalanceDescription", {
-              remainingBalance: formatAmountString(
-                price - paymentForm.intent.amount,
-              ),
+              remainingBalance: formatAmountString(remainingBalance),
             })}
           </p>
         )}
