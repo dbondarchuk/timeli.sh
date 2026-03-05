@@ -1239,10 +1239,33 @@
         },
         "cellAction": {
           "giftCardDeleted": "Gift card {code} was deleted.",
+          "giftCardSetActive": "Gift card {code} was set active.",
+          "giftCardSetInactive": "Gift card {code} was set inactive.",
           "actions": "Actions",
           "update": "Update",
-          "delete": "Delete"
+          "delete": "Delete",
+          "setActive": "Set active",
+          "setInactive": "Set inactive"
+        },
+        "statusBadges": {
+          "active": "Active",
+          "inactive": "Inactive",
+          "expired": "Expired",
+          "noAmountLeft": "No amount left"
         }
+      },
+      "setStatusSelected": {
+        "setActive": "Set active",
+        "setInactive": "Set inactive",
+        "buttonActive": "Set {count, plural, =1 {gift card} other {# gift cards}} active",
+        "buttonInactive": "Set {count, plural, =1 {gift card} other {# gift cards}} inactive",
+        "confirmTitleActive": "Set selected gift cards active?",
+        "confirmTitleInactive": "Set selected gift cards inactive?",
+        "confirmDescription": "This will change the status of the selected gift cards.",
+        "successActive": "Selected gift cards have been set active.",
+        "successInactive": "Selected gift cards have been set inactive.",
+        "error": "There was a problem with your request.",
+        "cancel": "Cancel"
       },
       "deleteSelected": {
         "success": "Selected gift cards have been deleted",

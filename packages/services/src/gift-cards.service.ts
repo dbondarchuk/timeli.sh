@@ -175,6 +175,57 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
     return (await this.getGiftCard(id)) as GiftCardListModel;
   }
 
+  public async setGiftCardStatus(
+    id: string,
+    status: GiftCardStatus,
+  ): Promise<GiftCardListModel | null> {
+    const logger = this.loggerFactory("setGiftCardStatus");
+    logger.debug({ id, status }, "Setting gift card status");
+
+    const existingGiftCard = await this.getGiftCard(id);
+    if (!existingGiftCard) {
+      logger.warn({ id }, "Gift card not found");
+      return null;
+    }
+
+    const db = await getDbConnection();
+    const giftCards = db.collection<GiftCard>(GIFT_CARDS_COLLECTION_NAME);
+    const result = await giftCards.updateOne(
+      { _id: id, companyId: this.companyId },
+      { $set: { status, updatedAt: new Date() } },
+    );
+
+    if (result.matchedCount === 0) {
+      logger.warn({ id }, "Gift card not found");
+      return null;
+    }
+
+    logger.debug({ id, status }, "Gift card status updated");
+    return (await this.getGiftCard(id)) as GiftCardListModel;
+  }
+
+  public async setGiftCardsStatus(
+    ids: string[],
+    status: GiftCardStatus,
+  ): Promise<void> {
+    const logger = this.loggerFactory("setGiftCardsStatus");
+    logger.debug({ ids, status }, "Setting gift cards status");
+
+    if (!ids.length) {
+      logger.warn("No gift card ids provided");
+      return;
+    }
+
+    const db = await getDbConnection();
+    const giftCards = db.collection<GiftCard>(GIFT_CARDS_COLLECTION_NAME);
+    await giftCards.updateMany(
+      { _id: { $in: ids }, companyId: this.companyId },
+      { $set: { status, updatedAt: new Date() } },
+    );
+
+    logger.debug({ ids, status }, "Gift cards status updated");
+  }
+
   public async deleteGiftCard(id: string): Promise<GiftCardListModel | null> {
     const logger = this.loggerFactory("deleteGiftCard");
     logger.debug({ id }, "Deleting gift card");
@@ -762,21 +813,21 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
       //     _customers: 0,
       //   },
       // },
-      // {
-      //   $lookup: {
-      //     from: PAYMENTS_COLLECTION_NAME,
-      //     localField: "paymentId",
-      //     foreignField: "_id",
-      //     as: "payment",
-      //     pipeline: [
-      //       {
-      //         $match: {
-      //           companyId: this.companyId,
-      //         },
-      //       },
-      //     ],
-      //   },
-      // },
+      {
+        $lookup: {
+          from: PAYMENTS_COLLECTION_NAME,
+          localField: "paymentId",
+          foreignField: "_id",
+          as: "payment",
+          pipeline: [
+            {
+              $match: {
+                companyId: this.companyId,
+              },
+            },
+          ],
+        },
+      },
       {
         $lookup: {
           from: CUSTOMERS_COLLECTION_NAME,
@@ -796,6 +847,9 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
         $set: {
           customer: {
             $first: "$customer",
+          },
+          payment: {
+            $first: "$payment",
           },
         },
       },

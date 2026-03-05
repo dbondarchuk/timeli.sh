@@ -1,5 +1,6 @@
 import {
   GiftCardListModel,
+  GiftCardStatus,
   GiftCardUpdateModel,
   okStatus,
   PaymentSummary,
@@ -65,6 +66,52 @@ export const updateGiftCard = async (
   const data = await response.json<typeof okStatus>();
   console.debug("Gift card updated successfully", {
     id,
+  });
+
+  return data;
+};
+
+export const setGiftCardStatus = async (
+  id: string,
+  status: GiftCardStatus,
+) => {
+  console.debug("Setting gift card status", {
+    id,
+    status,
+  });
+
+  const response = await fetchAdminApi(`/gift-cards/${id}/status`, {
+    method: "PUT",
+    body: JSON.stringify({ status }),
+  });
+
+  const data = await response.json<typeof okStatus>();
+  console.debug("Gift card status updated successfully", {
+    id,
+    status,
+  });
+
+  return data;
+};
+
+export const setGiftCardsStatus = async (
+  ids: string[],
+  status: GiftCardStatus,
+) => {
+  console.debug("Setting gift cards status", {
+    ids,
+    status,
+  });
+
+  const response = await fetchAdminApi("/gift-cards/set-status", {
+    method: "POST",
+    body: JSON.stringify({ ids, status }),
+  });
+
+  const data = await response.json<typeof okStatus>();
+  console.debug("Gift cards status updated successfully", {
+    ids,
+    status,
   });
 
   return data;

@@ -13,6 +13,7 @@ import {
 } from "@timelish/ui-admin";
 import { Settings2 } from "lucide-react";
 import { DeleteSelectedGiftCardsButton } from "./delete-selected";
+import { SetStatusSelectedGiftCardsButton } from "./set-status-selected";
 import { useGiftCardsTableFilters } from "./use-table-filters";
 
 export function GiftCardsTableAction() {
@@ -91,6 +92,14 @@ export function GiftCardsTableAction() {
         />
       </div>
       <div className="flex flex-wrap items-center gap-4">
+        <SetStatusSelectedGiftCardsButton
+          selected={rowSelection}
+          status="active"
+        />
+        <SetStatusSelectedGiftCardsButton
+          selected={rowSelection}
+          status="inactive"
+        />
         <DeleteSelectedGiftCardsButton selected={rowSelection} />
       </div>
     </div>

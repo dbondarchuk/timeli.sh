@@ -61,19 +61,48 @@ export const columns: ColumnDef<GiftCardListModel>[] = [
   {
     cell: ({ row }) => {
       const t = useI18n("admin");
-      const isActive =
-        row.original.status === "active" &&
-        (!row.original.expiresAt || row.original.expiresAt > new Date()) &&
-        row.original.amountLeft > 0;
-      return isActive ? (
-        <Badge variant="default">
-          {t(`common.labels.giftCardStatus.active`)}
-        </Badge>
-      ) : (
-        <Badge variant="secondary">
-          {t(`common.labels.giftCardStatus.inactive`)}
-        </Badge>
-      );
+      const { status, expiresAt, amountLeft } = row.original;
+
+      const now = new Date();
+      const isExpired = !!expiresAt && expiresAt <= now;
+      const isNoAmountLeft = amountLeft <= 0;
+      const isActive = status === "active" && !isExpired && !isNoAmountLeft;
+
+      const badges = [];
+
+      // Primary badge (active/inactive using existing logic)
+      if (isActive) {
+        badges.push(
+          <Badge key="active" variant="default">
+            {t("services.giftCards.table.statusBadges.active")}
+          </Badge>,
+        );
+      } else {
+        badges.push(
+          <Badge key="inactive" variant="secondary">
+            {t("services.giftCards.table.statusBadges.inactive")}
+          </Badge>,
+        );
+      }
+
+      // Extra badges for derived states
+      if (isExpired) {
+        badges.push(
+          <Badge key="expired" variant="destructive">
+            {t("services.giftCards.table.statusBadges.expired")}
+          </Badge>,
+        );
+      }
+
+      if (isNoAmountLeft) {
+        badges.push(
+          <Badge key="noAmountLeft" variant="outline">
+            {t("services.giftCards.table.statusBadges.noAmountLeft")}
+          </Badge>,
+        );
+      }
+
+      return <div className="flex flex-wrap gap-1">{badges}</div>;
     },
     id: "status",
     header: tableSortHeader(

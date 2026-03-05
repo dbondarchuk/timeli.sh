@@ -2,7 +2,7 @@
 
 import { adminApi } from "@timelish/api-sdk";
 import { useI18n } from "@timelish/i18n";
-import { GiftCard } from "@timelish/types";
+import { GiftCardListModel } from "@timelish/types";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -21,7 +21,7 @@ import { useRouter } from "next/navigation";
 import React from "react";
 
 export const DeleteSelectedGiftCardsButton: React.FC<{
-  selected: GiftCard[];
+  selected: GiftCardListModel[];
 }> = ({ selected }) => {
   const t = useI18n("admin");
   const [isLoading, setIsLoading] = React.useState(false);
@@ -51,13 +51,21 @@ export const DeleteSelectedGiftCardsButton: React.FC<{
     }
   };
 
+  const hasPayments = selected.some((giftCard) => giftCard.paymentsCount > 0);
+  const hasOnlinePayments = selected.some(
+    (giftCard) => giftCard.payment.method === "online",
+  );
+
+  const disabled =
+    isLoading ||
+    !selected ||
+    !selected.length ||
+    hasPayments ||
+    hasOnlinePayments;
   return (
     <AlertDialog onOpenChange={setIsOpen} open={isOpen}>
       <AlertDialogTrigger asChild>
-        <Button
-          variant="default"
-          disabled={isLoading || !selected || !selected.length}
-        >
+        <Button variant="default" disabled={disabled}>
           {isLoading && <Spinner />}
           <Trash className="mr-2 h-4 w-4" />
           <span>

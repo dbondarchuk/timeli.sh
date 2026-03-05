@@ -1,7 +1,7 @@
 "use client";
 import { adminApi } from "@timelish/api-sdk";
 import { useI18n } from "@timelish/i18n";
-import { GiftCard } from "@timelish/types";
+import { GiftCardListModel } from "@timelish/types";
 import {
   AlertModal,
   Button,
@@ -13,14 +13,19 @@ import {
   DropdownMenuTrigger,
   toastPromise,
 } from "@timelish/ui";
-import { Edit, MoreHorizontal, Trash } from "lucide-react";
+import {
+  Edit,
+  MoreHorizontal,
+  ToggleLeft,
+  ToggleRight,
+  Trash,
+} from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import Link from "next/link";
-
 interface CellActionProps {
-  giftCard: GiftCard;
+  giftCard: GiftCardListModel;
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ giftCard }) => {
@@ -28,6 +33,7 @@ export const CellAction: React.FC<CellActionProps> = ({ giftCard }) => {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const router = useRouter();
+  const isActive = giftCard.status === "active";
 
   const onConfirm = async () => {
     try {
@@ -49,6 +55,31 @@ export const CellAction: React.FC<CellActionProps> = ({ giftCard }) => {
       setLoading(false);
     }
   };
+
+  const onSetStatus = async (status: "active" | "inactive") => {
+    try {
+      await toastPromise(
+        adminApi.giftCards.setGiftCardStatus(giftCard._id, status),
+        {
+          success:
+            status === "active"
+              ? t("services.giftCards.table.cellAction.giftCardSetActive", {
+                  code: giftCard.code,
+                })
+              : t("services.giftCards.table.cellAction.giftCardSetInactive", {
+                  code: giftCard.code,
+                }),
+          error: t("common.toasts.error"),
+        },
+      );
+      router.refresh();
+    } catch (error: any) {
+      console.error(error);
+    }
+  };
+
+  const canDelete =
+    !giftCard.paymentsCount && giftCard.payment?.method !== "online";
 
   return (
     <>
@@ -79,10 +110,24 @@ export const CellAction: React.FC<CellActionProps> = ({ giftCard }) => {
               {t("services.giftCards.table.cellAction.update")}
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setOpen(true)}>
-            <Trash className="size-3.5" />{" "}
-            {t("services.giftCards.table.cellAction.delete")}
-          </DropdownMenuItem>
+          {!isActive && (
+            <DropdownMenuItem onClick={() => onSetStatus("active")}>
+              <ToggleRight className="size-3.5" />{" "}
+              {t("services.giftCards.table.cellAction.setActive")}
+            </DropdownMenuItem>
+          )}
+          {isActive && (
+            <DropdownMenuItem onClick={() => onSetStatus("inactive")}>
+              <ToggleLeft className="size-3.5" />{" "}
+              {t("services.giftCards.table.cellAction.setInactive")}
+            </DropdownMenuItem>
+          )}
+          {canDelete && (
+            <DropdownMenuItem onClick={() => setOpen(true)}>
+              <Trash className="size-3.5" />{" "}
+              {t("services.giftCards.table.cellAction.delete")}
+            </DropdownMenuItem>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
     </>

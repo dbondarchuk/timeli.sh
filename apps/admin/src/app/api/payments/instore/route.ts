@@ -110,6 +110,28 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (giftCard.status === "inactive") {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Gift card is inactive",
+          code: "gift_card_inactive",
+        },
+        { status: 400 },
+      );
+    }
+
+    if (giftCard.expiresAt && giftCard.expiresAt < new Date()) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Gift card expired",
+          code: "gift_card_expired",
+        },
+        { status: 400 },
+      );
+    }
+
     if (giftCard.amountLeft < payment.amount) {
       return NextResponse.json(
         {

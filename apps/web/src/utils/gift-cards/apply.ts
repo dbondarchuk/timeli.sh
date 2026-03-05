@@ -29,6 +29,15 @@ export const applyGiftCards = async (
       } satisfies ApplyGiftCardsResponse;
     }
 
+    if (giftCard.status === "inactive") {
+      logger.warn({ code }, "Gift card is inactive");
+      return {
+        success: false,
+        code: "gift_card_inactive",
+        error: "Gift card is inactive",
+      } satisfies ApplyGiftCardsResponse;
+    }
+
     if (giftCard.expiresAt && giftCard.expiresAt < new Date()) {
       logger.warn({ code }, "Gift card expired");
       return {

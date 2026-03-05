@@ -3,6 +3,7 @@ import * as z from "zod";
 import { Customer } from "../customers";
 import { WithCompanyId, WithDatabaseId } from "../database";
 import { Prettify, zNonEmptyString, zObjectId, zUniqueArray } from "../utils";
+import { Payment } from "./payment";
 
 export const giftCardStatus = ["active", "inactive"] as const;
 export type GiftCardStatus = (typeof giftCardStatus)[number];
@@ -54,6 +55,7 @@ export type GiftCardListModel = Prettify<
     customer: Customer;
     amountLeft: number;
     paymentsCount: number;
+    payment: Payment;
   }
 >;
 
@@ -101,7 +103,8 @@ export type ApplyGiftCardsErrorResponse = {
     | "invalid_request_format"
     | "code_not_found"
     | "gift_card_expired"
-    | "gift_card_amount_exhausted";
+    | "gift_card_amount_exhausted"
+    | "gift_card_inactive";
   error: any;
 };
 
