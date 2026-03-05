@@ -3,11 +3,11 @@ import { getLoggerFactory } from "@timelish/logger";
 import { inStorePaymentUpdateModelSchema } from "@timelish/types";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function PATCH(
+export async function PUT(
   request: NextRequest,
   { params }: RouteContext<"/api/payments/instore/[id]">,
 ) {
-  const logger = getLoggerFactory("AdminAPI/payments/instore/[id]")("PATCH");
+  const logger = getLoggerFactory("AdminAPI/payments/instore/[id]")("PUT");
   const servicesContainer = await getServicesContainer();
   const id = (await params).id;
   logger.debug(
@@ -25,7 +25,7 @@ export async function PATCH(
     data: update,
     success,
     error,
-  } = inStorePaymentUpdateModelSchema.partial().safeParse(body);
+  } = inStorePaymentUpdateModelSchema.safeParse(body);
 
   if (!success || !update) {
     logger.warn("Invalid request format");
@@ -44,13 +44,25 @@ export async function PATCH(
     );
   }
 
-  if (payment.method === "online") {
+  if (payment.method === "online" || payment.method === "gift-card") {
     logger.error({ paymentId: id }, "Cannot update online payment");
     return NextResponse.json(
       {
         success: false,
         error: "Cannot update online payment",
         code: "cannot_update_online_payment",
+      },
+      { status: 400 },
+    );
+  }
+
+  if (payment.disableUpdate) {
+    logger.error({ paymentId: id }, "Cannot update amount for this payment");
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Cannot update amount for this payment",
+        code: "cannot_update_amount_for_this_payment",
       },
       { status: 400 },
     );
@@ -102,6 +114,30 @@ export async function DELETE(
         success: false,
         error: "Cannot delete online payment",
         code: "cannot_delete_online_payment",
+      },
+      { status: 400 },
+    );
+  }
+
+  if (payment.method === "gift-card") {
+    logger.error({ paymentId: id }, "Cannot delete gift card payment");
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Cannot delete gift card payment",
+        code: "cannot_delete_gift_card_payment",
+      },
+      { status: 400 },
+    );
+  }
+
+  if ("disableUpdate" in payment && payment.disableUpdate) {
+    logger.error({ paymentId: id }, "Cannot delete this payment");
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Cannot delete this payment",
+        code: "cannot_delete_this_payment",
       },
       { status: 400 },
     );

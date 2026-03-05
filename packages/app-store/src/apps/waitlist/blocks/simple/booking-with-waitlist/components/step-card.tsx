@@ -54,7 +54,7 @@ export const StepCard: React.FC = () => {
             {duration && (
               <div className="flex flex-row items-center">
                 <Timer className="mr-1" />
-                {i18n("duration_hour_min_format", durationToTime(duration))}
+                {i18n("common.formats.durationHourMin", durationToTime(duration))}
               </div>
             )}
             {!!price && (
@@ -78,7 +78,7 @@ export const StepCard: React.FC = () => {
               onClick={() => onClick("prev")}
             >
               {isPrevLoading && <Spinner />}
-              {i18n("back_button")}
+              {i18n("common.buttons.back")}
             </Button>
           )}
         </div>
@@ -90,7 +90,7 @@ export const StepCard: React.FC = () => {
               onClick={() => onClick("next")}
             >
               {isNextLoading && <Spinner />}
-              {i18n("next_button")}
+              {i18n("common.buttons.next")}
             </Button>
           )}
         </div>

@@ -252,7 +252,7 @@ export const CustomerSelector: React.FC<CustomerSelectorProps> = ({
   onValueChange,
   allowClear,
 }) => {
-  const t = useI18n("ui");
+  const t = useI18n("admin");
   const [itemsCache, setItemsCache] = React.useState<
     Record<string, CustomerListModel>
   >({});

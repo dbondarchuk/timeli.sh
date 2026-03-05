@@ -44,7 +44,7 @@ export const AddonsCard: React.FC = () => {
   return (
     <div className="flex flex-col gap-2">
       <div className="text-center">
-        <h2 className="text-xl">{i18n("select_addons_label")}</h2>
+        <h2 className="text-xl">{i18n("booking.addons.selectLabel")}</h2>
       </div>
       <div className={className}>
         {(appointmentOption.addons || []).map((addon) => {
@@ -65,13 +65,13 @@ export const AddonsCard: React.FC = () => {
                       <div
                         className="flex flex-row items-center"
                         aria-label={i18n(
-                          "form_duration_hour_minutes_label_format",
+                          "common.formats.formDurationHourMinutesLabel",
                           durationToTime(addon.duration),
                         )}
                       >
                         <Timer className="mr-1" />
                         {i18n(
-                          "duration_hour_min_format",
+                          "common.formats.durationHourMin",
                           durationToTime(addon.duration),
                         )}
                       </div>
@@ -79,7 +79,7 @@ export const AddonsCard: React.FC = () => {
                     {addon.price && (
                       <div
                         className="flex flex-row items-center"
-                        aria-label={i18n("form_price_label_format", {
+                        aria-label={i18n("common.formats.formPriceLabel", {
                           price: addon.price.toFixed(2).replace(/\.00$/, ""),
                         })}
                       >

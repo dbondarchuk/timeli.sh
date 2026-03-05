@@ -1,5 +1,6 @@
 import {
   ApplyDiscountResponse,
+  ApplyGiftCardsSuccessResponse,
   AppointmentAddon,
   AppointmentChoice,
   AppointmentFields,
@@ -72,6 +73,15 @@ export type ScheduleContextProps = {
   showPromoCode?: boolean;
   discount?: ApplyDiscountResponse;
   setDiscount: (promoCode?: ApplyDiscountResponse) => void;
+
+  giftCards?: ApplyGiftCardsSuccessResponse["giftCards"];
+  setGiftCards: (
+    giftCards: ApplyGiftCardsSuccessResponse["giftCards"],
+  ) => void;
+  applyGiftCards: (
+    codes: string[],
+    amount: number,
+  ) => Promise<ApplyGiftCardsSuccessResponse["giftCards"]>;
 
   step: StepType;
   setStep: (step: StepType) => void;
@@ -158,7 +168,7 @@ const getAppointmentDiscountAmount = ({
   }
 };
 
-const getAppointmentPrice = (ctx: ScheduleContextProps) => {
+export const getAppointmentPrice = (ctx: ScheduleContextProps) => {
   return Math.max(
     0,
     getAppointmentBasePrice(ctx) - getAppointmentDiscountAmount(ctx),

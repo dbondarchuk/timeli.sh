@@ -12,7 +12,7 @@ import {
 } from "@timelish/ui-admin";
 import { Settings2 } from "lucide-react";
 import { DeleteSelectedDiscountsButton } from "./delete-selected";
-import { useFieldsTableFilters } from "./use-table-filters";
+import { useDiscountsTableFilters } from "./use-table-filters";
 
 export function DiscountsTableAction() {
   const {
@@ -29,7 +29,7 @@ export function DiscountsTableAction() {
     setStartValue,
     end,
     setEndValue,
-  } = useFieldsTableFilters();
+  } = useDiscountsTableFilters();
   const { rowSelection } = useSelectedRowsStore();
   const t = useI18n("admin");
 

@@ -16,7 +16,7 @@ export const NameField: <T extends FieldValues>(
     render={({ field }) => (
       <FormItem>
         <FormFieldLabel
-          label={props.data?.label || "form_name_label"}
+          label={props.data?.label || "common.labels.formName"}
           required={props.required}
         />
         <FormControl>

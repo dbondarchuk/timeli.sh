@@ -1,5 +1,6 @@
 import { AssetEntity } from "../assets";
 import {
+  ApplyGiftCardsSuccessResponse,
   Appointment,
   AppointmentEvent,
   AppointmentHistoryEntry,
@@ -24,6 +25,7 @@ export interface IEventsService {
     files?: Record<string, File>;
     paymentIntentId?: string;
     by: "customer" | "user";
+    giftCards?: ApplyGiftCardsSuccessResponse["giftCards"];
   }): Promise<Appointment>;
   updateEvent(
     id: string,

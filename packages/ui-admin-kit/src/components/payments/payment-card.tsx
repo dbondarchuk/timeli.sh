@@ -2,7 +2,7 @@
 
 import { adminApi } from "@timelish/api-sdk";
 import { AvailableApps } from "@timelish/app-store";
-import { AdminKeys, AllKeys, useI18n, useLocale } from "@timelish/i18n";
+import { AllKeys, BaseAllKeys, useI18n, useLocale } from "@timelish/i18n";
 import {
   Payment,
   PaymentMethod,
@@ -26,6 +26,7 @@ import {
   cn,
   CurrencyPercentageInput,
   Label,
+  Link,
   Separator,
   Spinner,
   toast,
@@ -40,6 +41,7 @@ import {
   CircleDollarSign,
   Clock,
   CreditCard,
+  Gift,
   Pencil,
 } from "lucide-react";
 import { DateTime } from "luxon";
@@ -52,6 +54,7 @@ export type PaymentCardProps = {
   payment: Payment | PaymentSummary;
   className?: string;
   onDelete?: (payment: Payment) => void;
+  onRefund?: (payment: Payment) => void;
 };
 
 export const getPaymentStatusIcon = (status: PaymentStatus) => {
@@ -82,22 +85,25 @@ export const getPaymentStatusColor = (status: PaymentStatus) => {
   }
 };
 
-export const getPaymentDescription = (description: string): AdminKeys => {
+export const getPaymentDescription = (description: string): AllKeys => {
   switch (description) {
     case "full_payment":
-      return "payment.descriptions.fullPayment";
+      return "admin.payment.descriptions.fullPayment" satisfies BaseAllKeys;
 
     case "deposit":
-      return "payment.descriptions.deposit";
+      return "admin.payment.descriptions.deposit" satisfies BaseAllKeys;
 
     case "rescheduleFee":
-      return "payment.descriptions.rescheduleFee";
+      return "admin.payment.descriptions.rescheduleFee" satisfies BaseAllKeys;
 
     case "cancellationFee":
-      return "payment.descriptions.cancellationFee";
+      return "admin.payment.descriptions.cancellationFee" satisfies BaseAllKeys;
+
+    case "giftCard":
+      return "admin.payment.descriptions.giftCard" satisfies BaseAllKeys;
 
     default:
-      return description as AdminKeys;
+      return description as AllKeys;
   }
 };
 
@@ -107,9 +113,11 @@ export const getPaymentMethod = (
 ): AllKeys => {
   return method === "online" && appName
     ? AvailableApps[appName]?.displayName
-    : method === "cash"
-      ? "admin.payment.methods.cash"
-      : "admin.payment.methods.card";
+    : method === "gift-card"
+      ? "admin.payment.methods.giftCard"
+      : method === "cash"
+        ? "admin.payment.methods.cash"
+        : "admin.payment.methods.card";
 };
 
 export const getPaymentMethodIcon = (
@@ -119,9 +127,11 @@ export const getPaymentMethodIcon = (
   const Icon =
     method === "online" && appName
       ? AvailableApps[appName]?.Logo
-      : method === "cash"
-        ? CircleDollarSign
-        : CreditCard;
+      : method === "gift-card"
+        ? Gift
+        : method === "cash"
+          ? CircleDollarSign
+          : CreditCard;
 
   return <Icon className="h-8 w-8" />;
 };
@@ -295,6 +305,7 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
   payment,
   className,
   onDelete,
+  onRefund,
 }) => {
   const {
     _id,
@@ -351,6 +362,7 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
         Object.assign(payment, result.payment);
 
         setIsRefundDialogOpen(false);
+        onRefund?.(payment);
         router.refresh();
       } catch (e) {
         console.error(e);
@@ -485,6 +497,21 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
               </div>
             )}
 
+            {"giftCardCode" in rest && rest.giftCardId && (
+              <div className="flex justify-between items-center text-xs">
+                <span className="text-foreground/80">
+                  {t("admin.payment.card.giftCardCode")}
+                </span>
+                <Link
+                  className="font-semibold"
+                  href={`/dashboard/services/gift-cards/${rest.giftCardId}`}
+                  variant="underline"
+                >
+                  {rest.giftCardCode}
+                </Link>
+              </div>
+            )}
+
             <div className="flex justify-between items-center text-xs">
               <span className="text-foreground/80">
                 {t("admin.payment.card.timePaid")}
@@ -510,8 +537,8 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
                 </span>
                 <span className="font-semibold">
                   {" "}
-                  {t.has(`admin.${getPaymentDescription(description)}`)
-                    ? t(`admin.${getPaymentDescription(description)}`)
+                  {t.has(getPaymentDescription(description))
+                    ? t(getPaymentDescription(description))
                     : description}
                 </span>
               </div>
@@ -583,7 +610,7 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
 
           {(status === "paid" ||
             (status === "refunded" && totalRefunded < amount)) &&
-            method === "online" && (
+            (method === "online" || method === "gift-card") && (
               <RefundDialog
                 isRefundInProgress={isRefundInProgress}
                 setIsRefundDialogOpen={setIsRefundDialogOpen}
@@ -593,24 +620,26 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
               />
             )}
 
-          {method !== "online" && (
-            <div className="mt-4 flex flex-row gap-2 w-full">
-              <AddUpdatePaymentDialog
-                paymentId={payment._id}
-                payment={payment}
-                onSuccess={onUpdate}
-              >
-                <Button variant="primary" className="w-full">
-                  <Pencil /> {t("admin.payment.card.update")}
-                </Button>
-              </AddUpdatePaymentDialog>
+          {method !== "online" &&
+            method !== "gift-card" &&
+            (!("disableUpdate" in rest) || !rest.disableUpdate) && (
+              <div className="mt-4 flex flex-row gap-2 w-full">
+                <AddUpdatePaymentDialog
+                  paymentId={payment._id}
+                  payment={payment}
+                  onSuccess={onUpdate}
+                >
+                  <Button variant="primary" className="w-full">
+                    <Pencil /> {t("admin.payment.card.update")}
+                  </Button>
+                </AddUpdatePaymentDialog>
 
-              <PaymentDeleteConfirmationModal
-                payment={payment}
-                onDelete={onDelete}
-              />
-            </div>
-          )}
+                <PaymentDeleteConfirmationModal
+                  payment={payment}
+                  onDelete={onDelete}
+                />
+              </div>
+            )}
 
           {status === "refunded" && totalRefunded >= amount && (
             <div className="mt-4">

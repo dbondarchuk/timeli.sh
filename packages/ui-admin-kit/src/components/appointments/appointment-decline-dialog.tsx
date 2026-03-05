@@ -152,8 +152,8 @@ const PaymentRefundCard = ({
               </h3>
               <p className="text-sm text-gray-600">
                 {payment.description
-                  ? t.has(`admin.${getPaymentDescription(payment.description)}`)
-                    ? t(`admin.${getPaymentDescription(payment.description)}`)
+                  ? t.has(getPaymentDescription(payment.description))
+                    ? t(getPaymentDescription(payment.description))
                     : payment.description
                   : ""}
               </p>

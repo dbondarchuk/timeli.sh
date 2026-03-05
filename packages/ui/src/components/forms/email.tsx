@@ -16,7 +16,7 @@ export const EmailField: <T extends FieldValues>(
     render={({ field }) => (
       <FormItem>
         <FormFieldLabel
-          label={props.data?.label || "form_email_label"}
+          label={props.data?.label || "common.labels.formEmail"}
           required={props.required}
         />
         <FormControl>

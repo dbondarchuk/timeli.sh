@@ -2,8 +2,10 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { adminApi } from "@timelish/api-sdk";
-import { useI18n } from "@timelish/i18n";
+import { BaseAllKeys, useI18n } from "@timelish/i18n";
 import {
+  GiftCardListModel,
+  giftCardPaymentMethod,
   inPersonPaymentMethod,
   InStorePaymentUpdateModel,
   inStorePaymentUpdateModelSchema,
@@ -43,8 +45,9 @@ import {
   use12HourFormat,
   useTimeZone,
 } from "@timelish/ui";
+import { GiftCardSelector } from "@timelish/ui-admin";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
@@ -52,7 +55,7 @@ type AddUpdatePaymentDialogProps = {
   onSuccess?: (payment: Payment) => void;
   children: React.ReactNode;
 } & (
-  | { appointmentId: string }
+  | { appointmentId?: string; customerId: string }
   | {
       paymentId: string;
       payment: InStorePaymentUpdateModel;
@@ -77,20 +80,26 @@ export const AddUpdatePaymentDialog = ({
     "appointmentId" in props
       ? {
           appointmentId: props.appointmentId,
+          customerId: props.customerId,
           amount: 0,
           description: "",
           paidAt: new Date(),
           method: "cash",
           type: "payment",
         }
-      : {
-          appointmentId: props.payment.appointmentId,
-          amount: props.payment.amount,
-          description: props.payment.description,
-          paidAt: props.payment.paidAt,
-          method: props.payment.method,
-          type: props.payment.type,
-        };
+      : "customerId" in props
+        ? {
+            customerId: props.customerId,
+            appointmentId: undefined,
+            amount: 0,
+            description: "",
+            paidAt: new Date(),
+            method: "cash",
+            type: "payment",
+          }
+        : ({
+            ...props.payment,
+          } as InStorePaymentUpdateModel);
 
   const onDialogOpenChange = (open: boolean) => {
     if (!open && loading) {
@@ -105,11 +114,57 @@ export const AddUpdatePaymentDialog = ({
   };
 
   const isEdit = "paymentId" in props;
+  const [giftCard, setGiftCard] = useState<GiftCardListModel | undefined>(
+    undefined,
+  );
+
+  const schema = useMemo(() => {
+    return inStorePaymentUpdateModelSchema.superRefine((data, ctx) => {
+      if (data.method === "gift-card") {
+        if (!giftCard) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message:
+              "validation.payments.giftCardId.required" satisfies BaseAllKeys,
+            path: ["giftCardId"],
+          });
+
+          return;
+        }
+
+        if (giftCard.amountLeft && giftCard.amountLeft < data.amount) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message:
+              "validation.payments.giftCardAmount.max" satisfies BaseAllKeys,
+            path: ["amount"],
+          });
+        }
+      }
+    });
+  }, [giftCard]);
 
   const form = useForm<z.infer<typeof inStorePaymentUpdateModelSchema>>({
-    resolver: zodResolver(inStorePaymentUpdateModelSchema),
+    resolver: zodResolver(schema),
     defaultValues,
+    mode: "all",
+    reValidateMode: "onChange",
   });
+
+  const originalMethod = isEdit ? props.payment.method : undefined;
+
+  const method = form.watch("method");
+  const allowedMethods = useMemo(() => {
+    if (!isEdit) {
+      return [...inPersonPaymentMethod, ...giftCardPaymentMethod];
+    }
+
+    if (originalMethod === "gift-card") {
+      return giftCardPaymentMethod;
+    }
+
+    return inPersonPaymentMethod;
+  }, [method, isEdit, originalMethod]);
 
   const onSubmit = async (
     data: z.infer<typeof inStorePaymentUpdateModelSchema>,
@@ -119,7 +174,7 @@ export const AddUpdatePaymentDialog = ({
       const result = await toastPromise(
         isEdit
           ? adminApi.payments.updateInstore(props.paymentId, data)
-          : adminApi.payments.addInstore(props.appointmentId, data),
+          : adminApi.payments.addInstore(data),
         {
           success: t("common.toasts.saved"),
           error: t("common.toasts.error"),
@@ -138,6 +193,13 @@ export const AddUpdatePaymentDialog = ({
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (method === "gift-card") {
+      form.trigger("amount");
+      form.trigger("giftCardId");
+    }
+  }, [method, form, giftCard]);
 
   return (
     <Dialog open={open} onOpenChange={onDialogOpenChange}>
@@ -158,6 +220,73 @@ export const AddUpdatePaymentDialog = ({
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className="w-full flex flex-col gap-2 relative">
+              <FormField
+                control={form.control}
+                name="method"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      {t("payment.addUpdatePayment.form.method.label")}
+                    </FormLabel>
+                    <FormControl>
+                      <Select
+                        value={field.value}
+                        onValueChange={(value) => {
+                          field.onChange(value);
+                          field.onBlur();
+                        }}
+                        disabled={loading}
+                      >
+                        <SelectTrigger>
+                          <SelectValue
+                            placeholder={t(
+                              "payment.addUpdatePayment.form.method.label",
+                            )}
+                          />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {allowedMethods.map((type) => (
+                            <SelectItem value={type} key={type}>
+                              {t(
+                                `payment.addUpdatePayment.form.method.${type}`,
+                              )}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {method === "gift-card" && (
+                <FormField
+                  control={form.control}
+                  name="giftCardId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        {t("payment.addUpdatePayment.form.giftCardId.label")}
+                      </FormLabel>
+                      <FormControl>
+                        <GiftCardSelector
+                          onItemSelect={(value) => {
+                            field.onChange(value);
+                            field.onBlur();
+                          }}
+                          value={field.value}
+                          onValueChange={(value) => {
+                            setGiftCard(value);
+                            form.trigger("amount");
+                          }}
+                          disabled={loading}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
               <FormField
                 control={form.control}
                 name="amount"
@@ -186,45 +315,6 @@ export const AddUpdatePaymentDialog = ({
                           />
                         </InputGroupInput>
                       </InputGroup>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="method"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      {t("payment.addUpdatePayment.form.method.label")}
-                    </FormLabel>
-                    <FormControl>
-                      <Select
-                        value={field.value}
-                        onValueChange={(value) => {
-                          field.onChange(value);
-                          field.onBlur();
-                        }}
-                        disabled={loading}
-                      >
-                        <SelectTrigger>
-                          <SelectValue
-                            placeholder={t(
-                              "payment.addUpdatePayment.form.method.label",
-                            )}
-                          />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {inPersonPaymentMethod.map((type) => (
-                            <SelectItem value={type} key={type}>
-                              {t(
-                                `payment.addUpdatePayment.form.method.${type}`,
-                              )}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>

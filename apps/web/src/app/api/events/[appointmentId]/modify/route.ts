@@ -56,6 +56,40 @@ const processRescheduleRequest = async (
 
   if (
     information.action === "paymentRequired" &&
+    information.giftCards?.length
+  ) {
+    for (const giftCard of information.giftCards) {
+      const payment = await servicesContainer.paymentsService.createPayment({
+        amount: giftCard.appliedAmount,
+        status: "paid",
+        paidAt: new Date(),
+        appointmentId,
+        customerId,
+        description: "rescheduleFee",
+        method: "gift-card",
+        type: "rescheduleFee",
+        giftCardCode: giftCard.code,
+        giftCardId: giftCard.id,
+      });
+
+      await servicesContainer.eventsService.addAppointmentHistory({
+        appointmentId,
+        type: "paymentAdded",
+        data: {
+          payment: {
+            id: payment._id,
+            amount: payment.amount,
+            status: payment.status,
+            method: payment.method,
+            type: payment.type,
+          },
+        },
+      });
+    }
+  }
+
+  if (
+    information.action === "paymentRequired" &&
     information.paymentAmount > 0 &&
     config.payments?.enabled &&
     config.payments?.paymentAppId
@@ -290,6 +324,38 @@ const processCancelRequest = async (
   let paymentIntentId = request.paymentIntentId;
   const config =
     await servicesContainer.configurationService.getConfiguration("booking");
+
+  if (information.action === "payment" && information.giftCards?.length) {
+    for (const giftCard of information.giftCards) {
+      const payment = await servicesContainer.paymentsService.createPayment({
+        amount: giftCard.appliedAmount,
+        status: "paid",
+        paidAt: new Date(),
+        appointmentId,
+        customerId,
+        description: "cancellationFee",
+        method: "gift-card",
+        type: "cancellationFee",
+        giftCardCode: giftCard.code,
+        giftCardId: giftCard.id,
+      });
+
+      await servicesContainer.eventsService.addAppointmentHistory({
+        appointmentId,
+        type: "paymentAdded",
+        data: {
+          payment: {
+            id: payment._id,
+            amount: payment.amount,
+            status: payment.status,
+            method: payment.method,
+            type: payment.type,
+          },
+        },
+      });
+    }
+  }
+
   if (
     information.action === "payment" &&
     config.payments?.enabled &&

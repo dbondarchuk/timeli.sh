@@ -15,6 +15,7 @@ import { CachedConfigurationService } from "./configuration.service";
 import { CachedConnectedAppsService } from "./connected-apps.service";
 import { CustomersService } from "./customers.service";
 import { EventsService } from "./events.service";
+import { GiftCardsService } from "./gift-cards.service";
 import { OrganizationService } from "./organization.service";
 import { PagesService } from "./pages.service";
 import { PaymentsService } from "./payments.service";
@@ -35,6 +36,7 @@ export * from "./connected-apps.service";
 export * from "./customers.service";
 export * from "./email";
 export * from "./events.service";
+export * from "./gift-cards.service";
 export * from "./organization.service";
 export * from "./pages.service";
 export * from "./payments.service";
@@ -94,6 +96,8 @@ export const ServicesContainer: (companyId: string) => IServicesContainer =
       getBullMQNotificationConfig(),
     );
 
+    const giftCardsService = new GiftCardsService(companyId, paymentsService);
+
     const services: IServicesContainer = {
       configurationService,
       assetsService,
@@ -110,6 +114,7 @@ export const ServicesContainer: (companyId: string) => IServicesContainer =
       notificationService,
       organizationService,
       dashboardNotificationsService,
+      giftCardsService,
     };
 
     return services;

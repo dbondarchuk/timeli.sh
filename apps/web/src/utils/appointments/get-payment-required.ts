@@ -1,5 +1,6 @@
 import { getLoggerFactory } from "@timelish/logger";
 import {
+  ApplyGiftCardsSuccessResponse,
   AppointmentEvent,
   AppointmentOption,
   AppointmentRequest,
@@ -7,18 +8,23 @@ import {
   IServicesContainer,
 } from "@timelish/types";
 import { formatAmount } from "@timelish/utils";
+import { applyGiftCards } from "../gift-cards/apply";
 import { getServicesContainer } from "../utils";
 import { getAppointmentEventFromRequest } from "./get-event";
 
 type GetIsPaymentRequiredReturnType =
   | {
       amount: number;
+      amountPaid: number;
+      amountTotal: number;
       percentage: number;
       appId: string;
       option: AppointmentOption;
       customer: Customer | null;
       event: AppointmentEvent;
       isPaymentRequired: true;
+      giftCards?: ApplyGiftCardsSuccessResponse["giftCards"];
+      isFixedAmount: boolean;
     }
   | {
       error: {
@@ -31,6 +37,7 @@ type GetIsPaymentRequiredReturnType =
       customer: Customer | null;
       event: AppointmentEvent;
       isPaymentRequired: false;
+      giftCards?: ApplyGiftCardsSuccessResponse["giftCards"];
     };
 
 export const getAppointmentEventAndIsPaymentRequired = async (
@@ -97,6 +104,41 @@ export const getAppointmentEventAndIsPaymentRequired = async (
     };
   }
 
+  let totalPaid = 0;
+  let giftCards: ApplyGiftCardsSuccessResponse["giftCards"] = [];
+  if (appointmentRequest.giftCards?.length) {
+    logger.debug(
+      { giftCards: appointmentRequest.giftCards },
+      "Gift cards applied, subtracting from total price",
+    );
+
+    const giftCardsResponse = await applyGiftCards(
+      appointmentRequest.giftCards,
+      event.totalPrice,
+    );
+
+    if (giftCardsResponse.success) {
+      giftCards = giftCardsResponse.giftCards;
+      totalPaid += giftCardsResponse.giftCards.reduce(
+        (sum, giftCard) => sum + giftCard.appliedAmount,
+        0,
+      );
+    } else {
+      logger.warn(
+        { error: giftCardsResponse.error },
+        "Failed to apply gift cards, returning error",
+      );
+
+      return {
+        error: {
+          code: "failed_to_apply_gift_cards",
+          status: 400,
+          message: "Failed to apply gift cards",
+        },
+      };
+    }
+  }
+
   logger.debug(
     { totalPrice: event.totalPrice },
     "Total price exists, checking payment configuration",
@@ -159,6 +201,7 @@ export const getAppointmentEventAndIsPaymentRequired = async (
     );
 
     let percentage: number | null = null;
+    let isFixedAmount: boolean = false;
 
     if (customer?.requireDeposit === "always" && customer.depositPercentage) {
       percentage = customer.depositPercentage;
@@ -183,6 +226,7 @@ export const getAppointmentEventAndIsPaymentRequired = async (
 
       return {
         event,
+        giftCards,
         customer,
         isPaymentRequired: false,
       };
@@ -207,6 +251,7 @@ export const getAppointmentEventAndIsPaymentRequired = async (
 
       return {
         event,
+        giftCards,
         customer,
         isPaymentRequired: false,
       };
@@ -215,6 +260,7 @@ export const getAppointmentEventAndIsPaymentRequired = async (
         percentage = option.depositPercentage;
       } else {
         let amount = option.depositAmount;
+        isFixedAmount = true;
         if (amount > event.totalPrice) {
           logger.debug(
             {
@@ -267,22 +313,22 @@ export const getAppointmentEventAndIsPaymentRequired = async (
     }
 
     if (percentage !== null) {
-      let amount = formatAmount((event.totalPrice * percentage) / 100);
+      let totalAmount = formatAmount((event.totalPrice * percentage) / 100);
       if (
         config.payments.fullPaymentAmountThreshold &&
-        amount < config.payments.fullPaymentAmountThreshold
+        totalAmount < config.payments.fullPaymentAmountThreshold
       ) {
         logger.debug(
           {
             fullPaymentAmountThreshold:
               config.payments.fullPaymentAmountThreshold,
-            amount,
+            amount: totalAmount,
             reason: "amount_less_than_full_payment_amount_threshold",
           },
           "Amount is less than full payment amount threshold, setting to full payment",
         );
 
-        amount = event.totalPrice;
+        totalAmount = event.totalPrice;
         percentage = 100;
       }
 
@@ -292,31 +338,64 @@ export const getAppointmentEventAndIsPaymentRequired = async (
           optionName: option.name,
           totalPrice: event.totalPrice,
           depositPercentage: percentage,
-          depositAmount: amount,
+          depositAmount: totalAmount,
           paymentAppId: config.payments.paymentAppId,
           customerId: customer?._id,
         },
         "Payment required with deposit",
       );
 
-      if (amount > event.totalPrice) {
+      if (totalAmount > event.totalPrice) {
         logger.debug(
           {
-            amount,
+            amount: totalAmount,
             totalPrice: event.totalPrice,
             reason: "amount_greater_than_total_price",
           },
           "Amount is greater than total price, setting to total price",
         );
-        amount = event.totalPrice;
+        totalAmount = event.totalPrice;
         percentage = 100;
+      }
+
+      const amount = Math.max(0, totalAmount - totalPaid);
+
+      if (amount === 0) {
+        logger.debug(
+          {
+            totalPaid,
+            amount: totalAmount,
+            reason: "total_paid_greater_than_amount",
+          },
+          "Total paid is greater than amount, no payment required",
+        );
+
+        return {
+          event,
+          giftCards,
+          customer,
+          isPaymentRequired: false,
+        };
+      } else {
+        logger.debug(
+          {
+            totalPaid,
+            amount: totalAmount,
+            reason: "total_paid_less_than_amount",
+          },
+          "Total paid is less than amount, payment required",
+        );
       }
 
       return {
         event,
         amount,
+        amountPaid: totalPaid,
+        amountTotal: totalAmount,
         percentage,
         appId: config.payments.paymentAppId,
+        isFixedAmount,
+        giftCards,
         option,
         customer,
         isPaymentRequired: true,
@@ -356,6 +435,7 @@ export const getAppointmentEventAndIsPaymentRequired = async (
 
   return {
     event,
+    giftCards,
     customer,
     isPaymentRequired: false,
   };

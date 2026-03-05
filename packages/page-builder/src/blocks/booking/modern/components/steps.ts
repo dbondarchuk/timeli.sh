@@ -163,7 +163,7 @@ export const ScheduleSteps: Record<StepType, Step> = {
       },
 
       action: (ctx) => handleGoToPayment(ctx),
-      text: "confirm_booking_button",
+      text: "common.buttons.confirmBooking",
     },
     Content: ReviewCard,
   },

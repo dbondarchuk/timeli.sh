@@ -36,10 +36,6 @@
     "requestFailed": "Запит на отримання шаблонів не вдався",
     "loadingTemplates": "Завантаження шаблонів..."
   },
-  "customerSelector": {
-    "placeholder": "Вибрати клієнта",
-    "requestFailed": "Запит на отримання клієнтів не вдався"
-  },
   "optionSelector": {
     "placeholder": "Вибрати опцію",
     "requestFailed": "Запит на отримання опцій не вдався"

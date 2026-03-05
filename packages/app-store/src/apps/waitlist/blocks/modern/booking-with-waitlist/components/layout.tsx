@@ -132,7 +132,7 @@ export const BookingWithWaitlistLayout = ({
                 <div className="flex flex-col items-center gap-3">
                   <Spinner className="w-8 h-8 text-primary" />
                   <span className="text-sm text-muted-foreground">
-                    {i18n("loading_aria")}
+                    {i18n("common.aria.loading")}
                   </span>
                 </div>
               </div>
@@ -169,7 +169,7 @@ export const BookingWithWaitlistLayout = ({
                     </p>
                     <p className="text-sm font-bold text-foreground flex items-center gap-2 duration-value">
                       {i18n(
-                        "duration_hour_min_format",
+                        "common.formats.durationHourMin",
                         durationToTime(duration),
                       )}
                     </p>
