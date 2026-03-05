@@ -26,15 +26,15 @@ export const PaymentCard: React.FC = () => {
     <CardWithAppointmentInformation
       title={
         isFullPayment
-          ? "payment_form_full_payment_required_title"
-          : "payment_form_deposit_required_title"
+          ? "booking.payment.fullPaymentRequiredTitle"
+          : "booking.payment.depositRequiredTitle"
       }
     >
       <div className="text-sm mb-3">
         {i18n(
           isFullPayment
-            ? "payment_form_full_payment_required_description"
-            : "payment_form_deposit_required_description",
+            ? "booking.payment.fullPaymentRequiredDescription"
+            : "booking.payment.depositRequiredDescription",
           {
             percentage,
             amount: formatAmountString(paymentForm.intent.amount),

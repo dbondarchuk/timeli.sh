@@ -1,7 +1,48 @@
 {
-  "next_button": "Продовжити",
-  "back_button": "Назад",
-  "confirm_booking_button": "Підтвердити бронювання",
+  "common": {
+    "buttons": {
+      "next": "Продовжити",
+      "back": "Назад",
+      "confirmBooking": "Підтвердити бронювання",
+      "apply": "Застосувати",
+      "close": "Закрити",
+      "add": "Додати"
+    },
+    "formats": {
+      "durationMin": "{duration} хв",
+      "durationHourMin": "{hours, plural, =0 {{minutes} хв} other {# год, {minutes} хв}}",
+      "durationMinutes": "{duration} хвилин",
+      "durationHourMinutes": "{hours, plural, =0 {{minutes, plural, =0 {0 хвилин} few {# хвилини} other {# хвилин}}} =1 {1 година, {minutes, plural, =0 {} few {# хвилини} other {# хвилин}}} few {# години, {minutes, plural, =0 {0 хвилин} few {# хвилини} other {# хвилин}}} other {# годин, {minutes, plural, =0 {0 хвилин} few {# хвилини} other {# хвилин}}}}",
+      "timezone": "GMT{timezone}",
+      "formDateLabel": "Дата: {date}",
+      "formTimeLabel": "Час: {start} - {end}",
+      "customDurationLabel": "Тривалість: власна",
+      "formDurationLabel": "Тривалість: {duration} хв",
+      "formDurationHourMinutesLabel": "Тривалість: {hours, plural, =0 {{minutes} хв} other {# год, {minutes} хв}}",
+      "formPriceLabel": "Ціна: ${price}",
+      "selectTimezoneLabel": "Весь час у <timeZoneCombobox></timeZoneCombobox> часовому поясі"
+    },
+    "labels": {
+      "durationCustom": "Власний",
+      "selectDateTime": "Виберіть дату та час",
+      "selectDateFirst": "Будь ласка, спочатку виберіть дату",
+      "availableTimes": "Доступний час",
+      "loadingAvailableTimes": "Завантаження доступного часу...",
+      "noAvailableTimeSlots": "Цього дня не має вільного часу",
+      "durationSelectTitle": "Скільки часу вам потрібно?",
+      "formTitle": "Введіть ваші дані",
+      "formName": "Ім'я",
+      "formEmail": "Електронна пошта",
+      "formPhone": "Телефон",
+      "formPromoCode": "Промокод",
+      "formSelectOption": "Виберіть опцію",
+      "searchCountryCode": "Пошук країни...",
+      "searchTimezone": "Пошук для зміни часового поясу"
+    },
+    "aria": {
+      "loading": "Завантаження..."
+    }
+  },
   "booking": {
     "title": "Забронюйте ваш запис",
     "description": "Завершіть кроки нижче, щоб запланувати вашу сесію",
@@ -34,7 +75,8 @@
     "addons": {
       "title": "Покращіть ваш досвід",
       "description": "Додаткові опції для максимального використання вашої сесії",
-      "no_addons_available": "Немає доступних додатків для цієї послуги"
+      "no_addons_available": "Немає доступних додатків для цієї послуги",
+      "selectLabel": "Виберіть додаткові послуги"
     },
     "calendar": {
       "title": "Виберіть дату та час",
@@ -53,7 +95,9 @@
         "title": "Можливий дублікат запису",
         "description": "Ми знайшли існуючі записи, які можуть конфліктувати з цим бронюванням:",
         "closestAppointment": "Найближчий запис: ",
-        "confirm": "Я розумію і хочу продовжити все одно"
+        "confirm": "Я розумію і хочу продовжити все одно",
+        "confirmationTitle": "Ви впевнені?",
+        "confirmationCheckboxLabel": "Я підтверджую, що розумію та хочу забронювати цей запис"
       },
       "addons": {
         "title": "Додатки"
@@ -90,7 +134,14 @@
       "fullPayment": "Повна оплата (сплатити зараз)",
       "remainingBalance": "Залишок балансу",
       "remainingBalanceDescription": "Залишок балансу ${remainingBalance} буде сплачено під час вашого запису.",
-      "giftCards": "Подарункові картки"
+      "giftCards": "Подарункові картки",
+      "informationFetchFailedTitle": "Ой! Щось пішло не так.",
+      "informationFetchFailedDescription": "Щось пішло не так під час спроби отримати інформацію для бронювання вашої зустрічі. Будь ласка, зателефонуйте нам",
+      "depositRequiredTitle": "Потрібен депозит",
+      "depositRequiredDescription": "Для бронювання цього запису потрібен депозит {percentage}% (${amount}). Будь ласка, оплатіть, використовуючи форму нижче",
+      "fixedAmountRequiredDescription": "Для бронювання цього запису потрібен депозит у розмірі ${amount}. Будь ласка, оплатіть, використовуючи форму нижче",
+      "fullPaymentRequiredTitle": "Потрібна повна оплата",
+      "fullPaymentRequiredDescription": "Для бронювання цього запису потрібна повна оплата ${amount}. Будь ласка, оплатіть, використовуючи форму нижче"
     },
     "promoCode": {
       "trigger": "Маєте промокод?",
@@ -99,7 +150,9 @@
       "codePlaceholder": "Введіть промокод (наприклад XXX-XXX-XXX)",
       "description": "Можна застосувати до 2 промокодів",
       "success": "Промокод {code} (-${discount}) успішно застосовано.",
+      "successMessage": "Промокод {code} (-${discount}) успішно застосовано.",
       "error": "Промокод {code} недійсний або закінчився.",
+      "errorInvalid": "Промокод недійсний.",
       "apply": "Застосувати"
     },
     "giftCard": {
@@ -122,11 +175,27 @@
         "original": "Підсумок: ${original}",
         "discount": "Знижка: -${discount}",
         "total": "Всього: ${total}"
-      }
+      },
+      "successTitle": "Ваш запит отримано!",
+      "successMessage": "Дякуємо, {name}! Ваш запит на {service} отримано, і ви незабаром отримаєте підтвердження.",
+      "fetchFailedTitle": "Ми не можемо знайти ваш запис",
+      "appointmentDetails": "Деталі запису",
+      "duration": "Тривалість: {duration}",
+      "newBookingButton": "Забронювати інший запис"
+    },
+    "availability": {
+      "fetchFailedTitle": "Ой! Щось пішло не так.",
+      "fetchFailedDescription": "Щось пішло не так під час отримання доступного часу"
+    },
+    "submitEvent": {
+      "failedTitle": "Ой! Щось пішло не так.",
+      "failedDescription": "Щось пішло не так під час спроби забронювати вашу запис. Будь ласка, зателефонуйте нам",
+      "timeNotAvailableDescription": "Схоже, що час більше не доступний. Будь ласка, виберіть інший часовий слот"
     }
   },
   "modification": {
     "title": "Керуйте вашим записом",
+    "pageTitle": "Змінити запис",
     "description": "Скасуйте або перенесіть ваш існуючий запис",
     "steps": {
       "type": "Дія",
@@ -156,6 +225,9 @@
     "form": {
       "title": "Знайдіть ваш запис",
       "description": "Введіть ваші дані, щоб знайти ваше бронювання",
+      "typeLabel": "Електронна пошта або телефон",
+      "cancelTitle": "Давайте знайдемо ваш запис. Будь ласка, надайте деталі запису, який ви хочете скасувати",
+      "rescheduleTitle": "Давайте знайдемо ваш запис. Будь ласка, надайте деталі запису, який ви хочете перенести",
       "type": {
         "email": "Електронна пошта",
         "phone": "Телефон",
@@ -176,6 +248,16 @@
       "time": {
         "label": "Час",
         "placeholder": "Виберіть час"
+      },
+      "notAllowed": {
+        "cancel": {
+          "title": "Скасування не дозволено для цього запису",
+          "message": "<p>Привіт {name}, на жаль, ми не можемо скасувати цей запис в цей час. Будь ласка, зв'яжіться з нами, щоб скасувати.</p><ul><li>{reason}</li></ul>"
+        },
+        "reschedule": {
+          "title": "Перенесення не дозволено для цього запису",
+          "message": "<p>Привіт {name}, на жаль, ми не можемо перенести цей запис в цей час. Будь ласка, зв'яжіться з нами, щоб перенести.</p><ul><li>{reason}</li></ul>"
+        }
       },
       "searchError": {
         "notFound": "Запис не знайдено за наданими деталями. Будь ласка, перевірте та спробуйте знову.",
@@ -211,6 +293,13 @@
           "forfeitDepositDescription": "Якщо ви це зробите, ваш депозит не буде повернений."
         },
         "checkboxLabel": "Я підтверджую, що розумію та хочу скасувати цей запис",
+        "confirmationTitle": "Ви впевнені?",
+        "confirmationForfeitDepositDescription": "Привіт {name}, ви впевнені, що хочете скасувати ваш запис для <b>{service}</b> на <i>{dateTime}</i>?<br></br>Якщо ви це зробите, ваш депозит не буде повернений.",
+        "partialRefundDescription": "Привіт {name}, ви впевнені, що хочете скасувати ваш запис для <b>{service}</b> на <i>{dateTime}</i>?<br></br>Якщо ви це зробите, <b>{refundPercentage}%</b> вашого депозиту{refundFees, plural, =1 {} other {{feesAmount, plural, =0 {} other { (окрім <b>${feesAmount} комісій</b>)}}}} буде повернено (<b>${refundAmount}</b>).",
+        "fullRefundDescription": "Привіт {name}, ви впевнені, що хочете скасувати ваш запис для <b>{service}</b> на <i>{dateTime}</i>?<br></br>Якщо ви це зробите, ваш депозит{refundFees, plural, =1 {} other {{feesAmount, plural, =0 {} other { (окрім <b>${feesAmount} комісій</b>)}}}} буде повернений <b>в повному обсязі</b> (<b>${refundAmount}</b>).",
+        "paymentPartialRequiredDescription": "Привіт {name}, ви впевнені, що хочете скасувати ваш запис для <b>{service}</b> на <i>{dateTime}</i>?",
+        "paymentFullPriceRequiredDescription": "Привіт {name}, ви впевнені, що хочете скасувати ваш запис для <b>{service}</b> на <i>{dateTime}</i>?",
+        "confirmationCheckboxLabel": "Я підтверджую, що розумію та хочу скасувати цей запис",
         "refundAmount": "Сума повернення",
         "fee": "Плата за скасування"
       },
@@ -218,6 +307,9 @@
         "title": "Перевірка змін",
         "description": "Підтвердіть деталі вашого перенесеного запису",
         "checkboxLabel": "Я підтверджую, що розумію та хочу перенести цей запис",
+        "confirmationTitle": "Ви впевнені?",
+        "confirmationDescription": "Привіт {name}, ви впевнені, що хочете Ваш запис на <b>{service}</b> на <i>{dateTime}</i> перенести на <i>{newDateTime}</i>?",
+        "confirmationCheckboxLabel": "Я підтверджую, що розумію та хочу перенести цей запис",
         "fee": "Плата за перенесення"
       },
       "service": "Послуга",
@@ -245,13 +337,41 @@
     "confirmation": {
       "cancel": {
         "title": "Запис скасовано",
-        "description": "Ваш запис успішно скасовано."
+        "description": "Ваш запис успішно скасовано.",
+        "successTitle": "Ваш запис був скасований",
+        "successMessage": "Дякуємо, {name}! Ваш запис для {service} був скасований і ви отримаєте підтвердження в найближчому часі."
       },
       "reschedule": {
         "title": "Запис перенесено",
-        "description": "Ваш запис успішно перенесено."
+        "description": "Ваш запис успішно перенесено.",
+        "successTitle": "Ваш запис був перенесений",
+        "successMessage": "Дякуємо, {name}! Ваш запис для {service} був перенесений на {newDateTime} і ви отримаєте підтвердження в найближчому часі."
       },
       "appointmentDetails": "Деталі запису"
+    },
+    "appointmentFetchFailed": {
+      "title": "Ми не можемо знайти ваш запис",
+      "description": "Ми не можемо знайти ваш запис. Переконайтеся, що Ви ввели правильну дату та час, а також електронну пошту чи номер телефону, та спробуйте знову. Або зв'яжіться з нами, щоб змінити ваш запис."
+    },
+    "submitFailed": {
+      "cancel": {
+        "title": "Ой! Щось пішло не так.",
+        "description": "Щось пішло не так під час спроби скасувати ваш запис. Будь ласка, зв'яжіться з нами"
+      },
+      "reschedule": {
+        "title": "Ой! Щось пішло не так.",
+        "description": "Щось пішло не так під час спроби перенести ваш запис. Будь ласка, зв'яжіться з нами"
+      }
+    },
+    "feeRequired": {
+      "cancel": {
+        "title": "Потрібна плата за відміну запису",
+        "description": "Для відміни цього запису потрібна плата в сумі ${amount}. Будь ласка, оплатіть, використовуючи форму нижче"
+      },
+      "reschedule": {
+        "title": "Потрібна плата за перенесення запису",
+        "description": "Для перенесення цього запису потрібна плата в сумі ${amount}. Будь ласка, оплатіть, використовуючи форму нижче"
+      }
     }
   },
   "validation": {
@@ -291,104 +411,6 @@
       }
     }
   },
-  "duration_min_format": "{duration} хв",
-  "duration_hour_min_format": "{hours, plural, =0 {{minutes} хв} other {# год, {minutes} хв}}",
-  "duration_minutes_format": "{duration} хвилин",
-  "duration_hour_minutes_format": "{hours, plural, =0 {{minutes, plural, =0 {0 хвилин} few {# хвилини} other {# хвилин}}} =1 {1 година, {minutes, plural, =0 {} few {# хвилини} other {# хвилин}}} few {# години, {minutes, plural, =0 {0 хвилин} few {# хвилини} other {# хвилин}}} other {# годин, {minutes, plural, =0 {0 хвилин} few {# хвилини} other {# хвилин}}}}",
-  "duration_custom": "Власний",
-  "loading_aria": "Завантаження...",
-  "select_date_time_label": "Виберіть дату та час",
-  "select_date_first_label": "Будь ласка, спочатку виберіть дату",
-  "available_times": "Доступний час",
-  "loading_available_times": "Завантаження доступного часу...",
-  "no_avaialable_time_slots": "Цього дня не має вільного часу",
-  "duration_select_title": "Скільки часу вам потрібно?",
-  "form_date_label_format": "Дата: {date}",
-  "form_time_label_format": "Час: {start} - {end}",
-  "custom_duration_label_format": "Тривалість: власна",
-  "form_duration_label_format": "Тривалість: {duration} хв",
-  "form_duration_hour_minutes_label_format": "Тривалість: {hours, plural, =0 {{minutes} хв} other {# год, {minutes} хв}}",
-  "form_price_label_format": "Ціна: ${price}",
-  "form_title_label": "Введіть ваші дані",
-  "form_name_label": "Ім'я",
-  "form_email_label": "Електронна пошта",
-  "form_phone_label": "Телефон",
-  "form_promo_code": "Промокод",
-  "form_select_option": "Виберіть опцію",
-  "apply": "Застосувати",
-  "promo_code_success": "Промокод {code} (-${discount}) успішно застосовано.",
-  "promo_code_error": "Промокод недійсний.",
-  "timezone_format": "GMT{timezone}",
-  "select_timezone_label_format": "Весь час у <timeZoneCombobox></timeZoneCombobox> часовому поясі",
-  "search_country_code_label": "Пошук країни...",
-  "search_timezone_label": "Пошук для зміни часового поясу",
-  "confirmation_success_title": "Ваш запит отримано!",
-  "confirmation_success_message": "Дякуємо, {name}! Ваш запит на {service} отримано, і ви незабаром отримаєте підтвердження.",
-  "confirmation_success_appointment_details": "Деталі запису",
-  "confirmation_success_duration": "Тривалість: {duration}",
-  "confirmation_new_booking_button": "Забронювати інший запис",
-  "confirmation_fetch_failed_title": "Ми не можемо знайти ваш запис",
-  "availability_fetch_failed_title": "Ой! Щось пішло не так.",
-  "availability_fetch_failed_description": "Щось пішло не так під час отримання доступного часу",
-  "submit_event_failed_title": "Ой! Щось пішло не так.",
-  "submit_event_failed_description": "Щось пішло не так під час спроби забронювати вашу запис. Будь ласка, зателефонуйте нам",
-  "submit_event_failed_time_not_available_description": "Схоже, що час більше не доступний. Будь ласка, виберіть інший часовий слот",
-  "select_addons_label": "Виберіть додаткові послуги",
-  "payment_information_fetch_failed_title": "Ой! Щось пішло не так.",
-  "payment_information_fetch_failed_description": "Щось пішло не так під час спроби отримати інформацію для бронювання вашої зустрічі. Будь ласка, зателефонуйте нам",
-  "payment_form_deposit_required_title": "Потрібен депозит",
-  "payment_form_deposit_required_description": "Для бронювання цього запису потрібен депозит {percentage}% (${amount}). Будь ласка, оплатіть, використовуючи форму нижче",
-  "payment_form_fixed_amount_required_description": "Для бронювання цього запису потрібен депозит у розмірі ${amount}. Будь ласка, оплатіть, використовуючи форму нижче",
-  "payment_form_full_payment_required_title": "Потрібна повна оплата",
-  "payment_form_full_payment_required_description": "Для бронювання цього запису потрібна повна оплата ${amount}. Будь ласка, оплатіть, використовуючи форму нижче",
-  "duplicate_appointment_confirmation_title": "Ви впевнені?",
-  "duplicate_appointment_checkbox_label": "Я підтверджую, що розумію та хочу забронювати цей запис",
-
-  "modify_appointment_title": "Змінити запис",
-  "modify_appointment_form_type_label": "Електронна пошта або телефон",
-
-  "cancel_appointment_title": "Скасувати запис",
-  "reschedule_appointment_title": "Перенести запис",
-
-  "cancel_appointment_form_title": "Давайте знайдемо ваш запис. Будь ласка, надайте деталі запису, який ви хочете скасувати",
-  "reschedule_appointment_form_title": "Давайте знайдемо ваш запис. Будь ласка, надайте деталі запису, який ви хочете перенести",
-
-  "cancel_appointment_confirmation_success_title": "Ваш запис був скасований",
-  "cancel_appointment_confirmation_success_message": "Дякуємо, {name}! Ваш запис для {service} був скасований і ви отримаєте підтвердження в найближчому часі.",
-
-  "reschedule_appointment_confirmation_success_title": "Ваш запис був перенесений",
-  "reschedule_appointment_confirmation_success_message": "Дякуємо, {name}! Ваш запис для {service} був перенесений на {newDateTime} і ви отримаєте підтвердження в найближчому часі.",
-
-  "cancel_appointment_not_allowed_title": "Скасування не дозволено для цього запису",
-  "cancel_appointment_not_allowed_message": "<p>Привіт {name}, на жаль, ми не можемо скасувати цей запис в цей час. Будь ласка, зв'яжіться з нами, щоб скасувати.</p><ul><li>{reason}</li></ul>",
-
-  "reschedule_appointment_not_allowed_title": "Перенесення не дозволено для цього запису",
-  "reschedule_appointment_not_allowed_message": "<p>Привіт {name}, на жаль, ми не можемо перенести цей запис в цей час. Будь ласка, зв'яжіться з нами, щоб перенести.</p><ul><li>{reason}</li></ul>",
-
-  "appointment_fetch_failed_title": "Ми не можемо знайти ваш запис",
-  "appointment_fetch_failed_description": "Ми не можемо знайти ваш запис. Переконайтеся, що Ви ввели правильну дату та час, а також електронну пошту чи номер телефону, та спробуйте знову. Або зв'яжіться з нами, щоб змінити ваш запис.",
-
-  "cancel_appointment_confirmation_title": "Ви впевнені?",
-  "cancel_appointment_confirmation_forfeitDeposit_description": "Привіт {name}, ви впевнені, що хочете скасувати ваш запис для <b>{service}</b> на <i>{dateTime}</i>?<br></br>Якщо ви це зробите, ваш депозит не буде повернений.",
-  "cancel_appointment_confirmation_partialRefund_description": "Привіт {name}, ви впевнені, що хочете скасувати ваш запис для <b>{service}</b> на <i>{dateTime}</i>?<br></br>Якщо ви це зробите, <b>{refundPercentage}%</b> вашого депозиту{refundFees, plural, =1 {} other {{feesAmount, plural, =0 {} other { (окрім <b>${feesAmount} комісій</b>)}}}} буде повернено (<b>${refundAmount}</b>).",
-  "cancel_appointment_confirmation_fullRefund_description": "Привіт {name}, ви впевнені, що хочете скасувати ваш запис для <b>{service}</b> на <i>{dateTime}</i>?<br></br>Якщо ви це зробите, ваш депозит{refundFees, plural, =1 {} other {{feesAmount, plural, =0 {} other { (окрім <b>${feesAmount} комісій</b>)}}}} буде повернений <b>в повному обсязі</b> (<b>${refundAmount}</b>).",
-  "cancel_payment_partial_required_description": "Привіт {name}, ви впевнені, що хочете скасувати ваш запис для <b>{service}</b> на <i>{dateTime}</i>?",
-  "cancel_payment_full_price_required_description": "Привіт {name}, ви впевнені, що хочете скасувати ваш запис для <b>{service}</b> на <i>{dateTime}</i>?",
-  "cancel_appointment_confirmation_checkbox_label": "Я підтверджую, що розумію та хочу скасувати цей запис",
-
-  "reschedule_appointment_confirmation_title": "Ви впевнені?",
-  "reschedule_appointment_confirmation_description": "Привіт {name}, ви впевнені, що хочете Ваш запис на <b>{service}</b> на <i>{dateTime}</i> перенести на <i>{newDateTime}</i>?",
-  "reschedule_appointment_confirmation_checkbox_label": "Я підтверджую, що розумію та хочу перенести цей запис",
-
-  "cancel_submit_failed_title": "Ой! Щось пішло не так.",
-  "cancel_submit_failed_description": "Щось пішло не так під час спроби скасувати ваш запис. Будь ласка, зв'яжіться з нами",
-  "reschedule_submit_failed_title": "Ой! Щось пішло не так.",
-  "reschedule_submit_failed_description": "Щось пішло не так під час спроби перенести ваш запис. Будь ласка, зв'яжіться з нами",
-  "cancel_fee_required_title": "Потрібна плата за відміну запису",
-  "cancel_fee_required_description": "Для відміни цього запису потрібна плата в сумі ${amount}. Будь ласка, оплатіть, використовуючи форму нижче",
-  "reschedule_fee_required_title": "Потрібна плата за перенесення запису",
-  "reschedule_fee_required_description": "Для перенесення цього запису потрібна плата в сумі ${amount}. Будь ласка, оплатіть, використовуючи форму нижче",
-
   "footer": {
     "contactUsLabel": "Зв'яжіться з нами",
     "phone": "Телефон",
@@ -398,11 +420,5 @@
   "header": {
     "menu": "Меню",
     "close": "Закрити"
-  },
-  "common": {
-    "buttons": {
-      "close": "Закрити",
-      "add": "Додати"
-    }
   }
 }

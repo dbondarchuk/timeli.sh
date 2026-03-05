@@ -30,7 +30,7 @@ export const DurationCard: React.FC = () => {
   return (
     <div className="relative text-center">
       <div className="mb-3">
-        <h2>{i18n("duration_select_title")}</h2>
+        <h2>{i18n("common.labels.durationSelectTitle")}</h2>
       </div>
       <div className="flex flex-row gap-2 justify-around flex-wrap">
         {durations.map((dur) => (
@@ -40,7 +40,7 @@ export const DurationCard: React.FC = () => {
               variant={duration === dur ? "default" : "outline"}
               onClick={() => setDuration(duration === dur ? undefined : dur)}
             >
-              {i18n("duration_hour_minutes_format", durationToTime(dur))}
+              {i18n("common.formats.durationHourMinutes", durationToTime(dur))}
             </Button>
           </div>
         ))}

@@ -202,7 +202,7 @@ export const ReviewCard: React.FC = () => {
           </span>
           <span className="font-medium text-foreground review-service-summary-item-value">
             {t(
-              "duration_hour_minutes_format",
+              "common.formats.durationHourMinutes",
               durationToTime(appointment.duration || 0),
             )}
           </span>
@@ -276,7 +276,7 @@ export const ReviewCard: React.FC = () => {
                           isLoadingGiftCards
                         }
                       >
-                        {isLoadingGiftCards && <Spinner />} {t("apply")}
+                        {isLoadingGiftCards && <Spinner />} {t("common.buttons.apply")}
                       </Button>
                     </div>
                     {!!giftCardError && (

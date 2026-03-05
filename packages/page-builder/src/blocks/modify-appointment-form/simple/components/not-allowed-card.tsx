@@ -17,13 +17,13 @@ export const NotAllowedCard: React.FC = () => {
     <div className="relative text-center">
       <div className="mb-3">
         <h2 className="text-lg font-bold">
-          {i18n(`${type}_appointment_not_allowed_title`)}
+          {i18n(`modification.form.notAllowed.${type}.title`)}
         </h2>
       </div>
       <div className="flex flex-row gap-2 justify-around flex-wrap">
         <I18nRichText
           namespace="translation"
-          text={`${type}_appointment_not_allowed_message`}
+          text={`modification.form.notAllowed.${type}.message`}
           args={{
             name: (appointment as any).name,
             service: (appointment as any).optionName,

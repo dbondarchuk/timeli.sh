@@ -31,20 +31,20 @@ export const ModifyAppointmentForm: React.FC<
 
   const errors = React.useMemo(
     () => ({
-      fetchTitle: i18n("availability_fetch_failed_title"),
-      fetchDescription: i18n("availability_fetch_failed_description"),
-      fetchAppointmentTitle: i18n("appointment_fetch_failed_title"),
-      fetchAppointmentDescription: i18n("appointment_fetch_failed_description"),
+      fetchTitle: i18n("booking.availability.fetchFailedTitle"),
+      fetchDescription: i18n("booking.availability.fetchFailedDescription"),
+      fetchAppointmentTitle: i18n("modification.appointmentFetchFailed.title"),
+      fetchAppointmentDescription: i18n("modification.appointmentFetchFailed.description"),
       fetchPaymentInformationTitle: i18n(
-        "payment_information_fetch_failed_title",
+        "booking.payment.informationFetchFailedTitle",
       ),
       fetchPaymentInformationDescription: i18n(
-        "payment_information_fetch_failed_description",
+        "booking.payment.informationFetchFailedDescription",
       ),
-      submitTitle: i18n(`${type ?? "cancel"}_submit_failed_title`),
-      submitDescription: i18n(`${type ?? "cancel"}_submit_failed_description`),
+      submitTitle: i18n(`modification.submitFailed.${type ?? "cancel"}.title`),
+      submitDescription: i18n(`modification.submitFailed.${type ?? "cancel"}.description`),
       timeNotAvailableDescription: i18n(
-        "submit_event_failed_time_not_available_description",
+        "booking.submitEvent.timeNotAvailableDescription",
       ),
     }),
     [i18n, type],
@@ -208,7 +208,7 @@ export const ModifyAppointmentForm: React.FC<
   ) => {
     if (!appointment || !appointment.allowed || !appointment.duration) return;
 
-    if (errors.fetchTitle === "availability_fetch_failed_title") return;
+    if (errors.fetchTitle === i18n("booking.availability.fetchFailedTitle")) return;
 
     setIsLoading(true);
 

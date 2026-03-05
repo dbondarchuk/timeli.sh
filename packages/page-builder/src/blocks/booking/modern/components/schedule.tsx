@@ -61,16 +61,16 @@ export const Schedule: React.FC<
 
   const errors = React.useMemo(
     () => ({
-      fetchTitle: t("availability_fetch_failed_title"),
-      fetchDescription: t("availability_fetch_failed_description"),
-      fetchPaymentInformationTitle: t("payment_information_fetch_failed_title"),
+      fetchTitle: t("booking.availability.fetchFailedTitle"),
+      fetchDescription: t("booking.availability.fetchFailedDescription"),
+      fetchPaymentInformationTitle: t("booking.payment.informationFetchFailedTitle"),
       fetchPaymentInformationDescription: t(
-        "payment_information_fetch_failed_description",
+        "booking.payment.informationFetchFailedDescription",
       ),
-      submitTitle: t("submit_event_failed_title"),
-      submitDescription: t("submit_event_failed_description"),
+      submitTitle: t("booking.submitEvent.failedTitle"),
+      submitDescription: t("booking.submitEvent.failedDescription"),
       timeNotAvailableDescription: t(
-        "submit_event_failed_time_not_available_description",
+        "booking.submitEvent.timeNotAvailableDescription",
       ),
     }),
     [t],
@@ -180,7 +180,7 @@ export const Schedule: React.FC<
   const fetchAvailability = async () => {
     const totalDuration = getTotalDuration();
     if (!totalDuration) return;
-    if (errors.fetchTitle === "availability_fetch_failed_title") return;
+    if (errors.fetchTitle === t("booking.availability.fetchFailedTitle")) return;
 
     setIsLoading(true);
     setAvailability([]);

@@ -121,7 +121,7 @@ export const ReviewCard: React.FC = () => {
     } catch (e) {
       console.error(e);
 
-      setPromoCodeError("promo_code_error");
+      setPromoCodeError("booking.promoCode.errorInvalid");
 
       setDiscount(undefined);
     } finally {
@@ -329,7 +329,7 @@ export const ReviewCard: React.FC = () => {
                   <p className="text-xs text-muted-foreground flex items-center gap-1 justify-end review-service-summary-price-duration">
                     <Clock className="w-3 h-3" />{" "}
                     {i18n(
-                      "duration_hour_min_format",
+                      "common.formats.durationHourMin",
                       durationToTime(selectedAppointmentOption.duration || 0),
                     )}
                   </p>
@@ -375,7 +375,7 @@ export const ReviewCard: React.FC = () => {
                       <span className="text-xs text-muted-foreground ml-2 review-addons-duration">
                         +
                         {i18n(
-                          "duration_hour_min_format",
+                          "common.formats.durationHourMin",
                           durationToTime(addon.duration),
                         )}
                       </span>
@@ -404,7 +404,7 @@ export const ReviewCard: React.FC = () => {
           <div className="mb-2 flex items-center gap-2 text-foreground text-xs review-timezone-content">
             <Globe2 className="w-4 h-4 text-muted-foreground" />
             <span className="review-date-timezone">
-              {i18n("timezone_format", {
+              {i18n("common.formats.timezone", {
                 timezone: timeZone?.currentTimeFormat || "",
               })}
             </span>
@@ -414,7 +414,7 @@ export const ReviewCard: React.FC = () => {
             <span className="review-date-duration">
               {i18n("booking.review.date.duration", {
                 duration: i18n(
-                  "duration_hour_min_format",
+                  "common.formats.durationHourMin",
                   durationToTime(duration || 0),
                 ),
               })}
@@ -592,7 +592,7 @@ export const ReviewCard: React.FC = () => {
                             !giftCardCode || (giftCards?.length || 0) >= 2
                           }
                         >
-                          {isLoadingGiftCards && <Spinner />} {i18n("apply")}
+                          {isLoadingGiftCards && <Spinner />} {i18n("common.buttons.apply")}
                         </Button>
                       </div>
                       {!!giftCardError && (

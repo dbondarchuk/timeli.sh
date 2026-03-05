@@ -59,10 +59,10 @@ export const StepCard: React.FC = () => {
       <CardHeader className="text-center flex flex-col gap-2">
         <CardTitle>
           {!type || stepType === "type"
-            ? i18n("modify_appointment_title")
+            ? i18n("modification.pageTitle")
             : type === "cancel"
-              ? i18n("cancel_appointment_title")
-              : i18n("reschedule_appointment_title")}
+              ? i18n("modification.type.cancel.title")
+              : i18n("modification.type.reschedule.title")}
         </CardTitle>
         {hasAppointmentInformation && (
           <CardDescription className="flex flex-col gap-2 justify-center place-items-center text-foreground @container/info">
@@ -94,7 +94,7 @@ export const StepCard: React.FC = () => {
                 <Timer className="mr-1 size-5" />
                 <span className="leading-[normal]">
                   {i18n(
-                    "duration_hour_min_format",
+                    "common.formats.durationHourMin",
                     durationToTime(appointment.duration),
                   )}
                 </span>
@@ -124,7 +124,7 @@ export const StepCard: React.FC = () => {
                 onClick={() => onClick("prev")}
               >
                 {isPrevLoading && <Spinner />}
-                {i18n("back_button")}
+                {i18n("common.buttons.back")}
               </Button>
             )}
           </div>
@@ -136,7 +136,7 @@ export const StepCard: React.FC = () => {
                 onClick={() => onClick("next")}
               >
                 {isNextLoading && <Spinner />}
-                {i18n("next_button")}
+                {i18n("common.buttons.next")}
               </Button>
             )}
           </div>

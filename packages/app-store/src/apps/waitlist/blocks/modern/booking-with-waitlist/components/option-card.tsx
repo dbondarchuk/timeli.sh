@@ -98,7 +98,7 @@ export const AppointmentOptionCard: React.FC = () => {
                             <p className="text-xs text-muted-foreground flex items-center gap-1 justify-end">
                               <Clock className="w-3 h-3" />{" "}
                               {i18n(
-                                "duration_hour_min_format",
+                                "common.formats.durationHourMin",
                                 durationToTime(currentDuration),
                               )}
                             </p>
@@ -118,11 +118,11 @@ export const AppointmentOptionCard: React.FC = () => {
                             {/* ${service.pricePerHour}/hour •  */}
                             {i18n("booking.option.duration.custom.min_max", {
                               min: i18n(
-                                "duration_hour_min_format",
+                                "common.formats.durationHourMin",
                                 durationToTime(option.durationMin),
                               ),
                               max: i18n(
-                                "duration_hour_min_format",
+                                "common.formats.durationHourMin",
                                 durationToTime(option.durationMax),
                               ),
                             })}
@@ -155,7 +155,7 @@ export const AppointmentOptionCard: React.FC = () => {
                           </button>
                           <span className="w-28 text-center font-semibold text-foreground">
                             {i18n(
-                              "duration_hour_min_format",
+                              "common.formats.durationHourMin",
                               durationToTime(baseDuration || 0),
                             )}
                           </span>
@@ -188,11 +188,11 @@ export const AppointmentOptionCard: React.FC = () => {
                         {/* ${service.pricePerHour}/hour •  */}
                         {i18n("booking.option.duration.custom.min_max", {
                           min: i18n(
-                            "duration_hour_min_format",
+                            "common.formats.durationHourMin",
                             durationToTime(option.durationMin),
                           ),
                           max: i18n(
-                            "duration_hour_min_format",
+                            "common.formats.durationHourMin",
                             durationToTime(240),
                           ),
                         })}

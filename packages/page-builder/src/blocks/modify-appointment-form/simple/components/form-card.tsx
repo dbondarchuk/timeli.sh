@@ -84,27 +84,27 @@ export const FormCard: React.FC = () => {
   return (
     <Form {...form}>
       <form onSubmit={() => {}} className="space-y-4">
-        <div>{i18n(`${modifyType}_appointment_form_title`)}</div>
+        <div>{i18n(`modification.form.${modifyType}Title`)}</div>
         <div className="flex flex-col gap-2">
           <FormField
             control={form.control}
             name="type"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>
-                  {i18n("modify_appointment_form_type_label")}
-                </FormLabel>
+                <FormLabel>{i18n("modification.form.typeLabel")}</FormLabel>
                 <FormControl>
                   <Select value={field.value} onValueChange={field.onChange}>
                     <SelectTrigger>
-                      <SelectValue placeholder={i18n("form_select_option")} />
+                      <SelectValue
+                        placeholder={i18n("common.labels.formSelectOption")}
+                      />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="email">
-                        {i18n("form_email_label")}
+                        {i18n("common.labels.formEmail")}
                       </SelectItem>
                       <SelectItem value="phone">
-                        {i18n("form_phone_label")}
+                        {i18n("common.labels.formPhone")}
                       </SelectItem>
                     </SelectContent>
                   </Select>
@@ -119,7 +119,7 @@ export const FormCard: React.FC = () => {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{i18n("form_email_label")}</FormLabel>
+                  <FormLabel>{i18n("common.labels.formEmail")}</FormLabel>
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
@@ -134,9 +134,12 @@ export const FormCard: React.FC = () => {
               name="phone"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{i18n("form_phone_label")}</FormLabel>
+                  <FormLabel>{i18n("common.labels.formPhone")}</FormLabel>
                   <FormControl>
-                    <PhoneInput label={i18n("form_phone_label")} {...field} />
+                    <PhoneInput
+                      label={i18n("common.labels.formPhone")}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

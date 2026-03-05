@@ -30,17 +30,17 @@ export const PaymentCard: React.FC = () => {
         <h2 className="text-lg font-semibold text-foreground payment-card-title card-title">
           {t(
             isFullPayment
-              ? "payment_form_full_payment_required_title"
-              : "payment_form_deposit_required_title",
+              ? "booking.payment.fullPaymentRequiredTitle"
+              : "booking.payment.depositRequiredTitle",
           )}
         </h2>
         <p className="text-xs text-muted-foreground payment-card-description card-description">
           {t(
             isFullPayment
-              ? "payment_form_full_payment_required_description"
+              ? "booking.payment.fullPaymentRequiredDescription"
               : paymentForm.isFixedAmount
-                ? "payment_form_fixed_amount_required_description"
-                : "payment_form_deposit_required_description",
+                ? "booking.payment.fixedAmountRequiredDescription"
+                : "booking.payment.depositRequiredDescription",
             {
               percentage,
               amount: formatAmountString(paymentForm.amountTotal),

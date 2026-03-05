@@ -25,7 +25,7 @@ export const DuplicateAppointmentConfirmationCard: React.FC = () => {
   return (
     <div className="relative">
       <div className="mb-3 text-center">
-        <h2>{i18n("duplicate_appointment_confirmation_title")}</h2>
+        <h2>{i18n("booking.review.duplicate.confirmationTitle")}</h2>
       </div>
       <div className="flex flex-col gap-4 flex-wrap">
         <Markdown
@@ -49,7 +49,7 @@ export const DuplicateAppointmentConfirmationCard: React.FC = () => {
               onCheckedChange={(e) => setConfirmDuplicateAppointment(!!e)}
             />
             <div className="cursor-pointer">
-              {i18n("duplicate_appointment_checkbox_label")}
+              {i18n("booking.review.duplicate.confirmationCheckboxLabel")}
             </div>
           </Label>
         )}

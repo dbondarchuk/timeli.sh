@@ -134,7 +134,7 @@ export const FormCard: React.FC = () => {
     } catch (e) {
       console.error(e);
 
-      setPromoCodeError("promo_code_error");
+      setPromoCodeError("booking.promoCode.errorInvalid");
 
       setDiscount(undefined);
     } finally {
@@ -224,7 +224,7 @@ export const FormCard: React.FC = () => {
   return (
     <Form {...form}>
       <form onSubmit={() => {}} className="space-y-8">
-        <CardWithAppointmentInformation title="form_title_label">
+        <CardWithAppointmentInformation title="common.labels.formTitle">
           <div className="flex flex-col gap-2">
             {fields.map((field) => (
               <React.Fragment key={field.name}>
@@ -234,7 +234,7 @@ export const FormCard: React.FC = () => {
 
             {showPromoCode && !!basePrice && (
               <FormItem>
-                <Label htmlFor="promo-code">{i18n("form_promo_code")}</Label>
+                <Label htmlFor="promo-code">{i18n("common.labels.formPromoCode")}</Label>
                 <div className="flex flex-row gap-2">
                   <Input
                     className="w-full flex-1"
@@ -258,7 +258,7 @@ export const FormCard: React.FC = () => {
                     onClick={() => applyPromoCode()}
                     disabled={!promoCode || isLoading}
                   >
-                    {isLoading && <Spinner />} {i18n("apply")}
+                    {isLoading && <Spinner />} {i18n("common.buttons.apply")}
                   </Button>
                 </div>
                 <p
@@ -269,7 +269,7 @@ export const FormCard: React.FC = () => {
                 >
                   {!!promoCodeError && i18n(promoCodeError)}
                   {discount &&
-                    i18n("promo_code_success", {
+                    i18n("booking.promoCode.successMessage", {
                       code: discount.code,
                       discount: formatAmountString(discountAmount),
                     })}
@@ -309,7 +309,7 @@ export const FormCard: React.FC = () => {
                       isLoadingGiftCards
                     }
                   >
-                    {isLoadingGiftCards && <Spinner />} {i18n("apply")}
+                    {isLoadingGiftCards && <Spinner />} {i18n("common.buttons.apply")}
                   </Button>
                 </div>
                 {!!giftCardError && (

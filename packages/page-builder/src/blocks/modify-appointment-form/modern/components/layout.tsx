@@ -107,7 +107,7 @@ export const ModifyAppointmentFormLayout = ({
                 <div className="flex flex-col items-center gap-3">
                   <Spinner className="w-8 h-8 text-primary" />
                   <span className="text-sm text-muted-foreground">
-                    {t("loading_aria")}
+                    {t("common.aria.loading")}
                   </span>
                 </div>
               </div>
@@ -163,7 +163,7 @@ export const ModifyAppointmentFormLayout = ({
                   disabled={!step.prev.isEnabled(ctx) || isLoading}
                 >
                   <ChevronLeft className="w-4 h-4 mr-1" />
-                  {t(step.prev.text ?? "back_button")}
+                  {t(step.prev.text ?? "common.buttons.back")}
                 </Button>
               )}
               {step.next.show(ctx) && (
@@ -172,7 +172,7 @@ export const ModifyAppointmentFormLayout = ({
                   onClick={() => step.next.action(ctx)}
                   disabled={!step.next.isEnabled(ctx) || isLoading}
                 >
-                  {t(step.next.text ?? "next_button")}
+                  {t(step.next.text ?? "common.buttons.next")}
                   <ChevronRight className="w-4 h-4 ml-1" />
                 </Button>
               )}

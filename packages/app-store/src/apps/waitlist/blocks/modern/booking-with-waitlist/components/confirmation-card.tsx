@@ -48,7 +48,7 @@ export const ConfirmationCard: React.FC = () => {
       <h2 className="text-lg font-semibold text-foreground mb-2">
         {flow === "waitlist"
           ? t("block.confirmation.waitlist.title")
-          : i18n("confirmation_success_title")}
+          : i18n("booking.confirmation.successTitle")}
       </h2>
       <p className="text-sm text-muted-foreground mb-6">
         {flow === "waitlist"
@@ -56,7 +56,7 @@ export const ConfirmationCard: React.FC = () => {
               name: fields.name,
               service: selectedAppointmentOption.name,
             })
-          : i18n("confirmation_success_message", {
+          : i18n("booking.confirmation.successMessage", {
               name: fields.name,
               service: selectedAppointmentOption.name,
             })}
@@ -65,7 +65,7 @@ export const ConfirmationCard: React.FC = () => {
         <p className="text-sm text-muted-foreground">
           {flow === "waitlist"
             ? t("block.confirmation.waitlist.waitlist_details")
-            : i18n("confirmation_success_appointment_details")}
+            : i18n("booking.confirmation.appointmentDetails")}
         </p>
         <p className="text-sm font-semibold text-foreground">
           {selectedAppointmentOption.name}
@@ -115,9 +115,9 @@ export const ConfirmationCard: React.FC = () => {
           )
         ) : null}
         <p className="text-xs text-muted-foreground mt-1">
-          {i18n("confirmation_success_duration", {
+          {i18n("booking.confirmation.duration", {
             duration: i18n(
-              "duration_hour_minutes_format",
+              "common.formats.durationHourMinutes",
               durationToTime(duration || 0),
             ),
           })}
@@ -151,7 +151,7 @@ export const ConfirmationCard: React.FC = () => {
             variant="outline"
             className="confirm-new-booking-button"
           >
-            {i18n("confirmation_new_booking_button")}
+            {i18n("booking.confirmation.newBookingButton")}
           </Button>
         </div>
       )}

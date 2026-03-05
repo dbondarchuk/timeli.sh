@@ -56,24 +56,24 @@ export const AppointmentsCard: React.FC<
                     aria-label={
                       option.durationType === "fixed"
                         ? i18n(
-                            "form_duration_hour_minutes_label_format",
+                            "common.formats.formDurationHourMinutesLabel",
                             durationToTime(option.duration),
                           )
-                        : i18n("custom_duration_label_format")
+                        : i18n("common.formats.customDurationLabel")
                     }
                   >
                     <Timer className="mr-1" />
                     {option.durationType === "fixed"
                       ? i18n(
-                          "duration_hour_min_format",
+                          "common.formats.durationHourMin",
                           durationToTime(option.duration),
                         )
-                      : i18n("duration_custom")}
+                      : i18n("common.labels.durationCustom")}
                   </div>
                   {option.durationType === "fixed" && !!option.price && (
                     <div
                       className="flex flex-row items-center"
-                      aria-label={i18n("form_price_label_format", {
+                      aria-label={i18n("common.formats.formPriceLabel", {
                         price: formatAmountString(option.price),
                       })}
                     >
@@ -85,7 +85,7 @@ export const AppointmentsCard: React.FC<
                     !!option.pricePerHour && (
                       <div
                         className="flex flex-row items-center"
-                        aria-label={i18n("form_price_label_format", {
+                        aria-label={i18n("common.formats.formPriceLabel", {
                           price: formatAmountString(option.pricePerHour),
                         })}
                       >

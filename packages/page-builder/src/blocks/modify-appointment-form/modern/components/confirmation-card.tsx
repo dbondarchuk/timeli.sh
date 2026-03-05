@@ -57,7 +57,7 @@ export const ConfirmationCard: React.FC = () => {
               {newDateTime.toLocaleString(DateTime.DATETIME_HUGE, { locale })}
             </p>
             <p className="text-xs text-muted-foreground mt-1">
-              {t("timezone_format", {
+              {t("common.formats.timezone", {
                 timezone: timeZone?.currentTimeFormat || "",
               })}
             </p>
