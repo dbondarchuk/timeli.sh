@@ -1,6 +1,5 @@
 import { TranslationKeys, useI18n, useLocale } from "@timelish/i18n";
-import { Time } from "@timelish/types";
-import { timeZones } from "@timelish/types/src/utils/zTimeZone";
+import { Time, timeZones } from "@timelish/types";
 import {
   durationToTime,
   formatAmountString,
@@ -52,7 +51,7 @@ export const CardWithAppointmentInformation: React.FC<
         <div className="grid md:col-span-1 md:pr-5 md:flex gap-3 md:flex-col">
           <div className="flex items-center">
             <Calendar className="mr-1" />
-            {i18n("form_date_label_format", {
+            {i18n("common.formats.formDateLabel", {
               date: date.toLocaleString(Luxon.DATE_FULL, {
                 locale,
               }),
@@ -60,7 +59,7 @@ export const CardWithAppointmentInformation: React.FC<
           </div>
           <div className="flex items-center">
             <Clock className="mr-1" />
-            {i18n("form_time_label_format", {
+            {i18n("common.formats.formTimeLabel", {
               start: formatTimeLocale(dateTime.time, locale),
               end: formatTimeLocale(timeEnd, locale),
             })}
@@ -68,20 +67,23 @@ export const CardWithAppointmentInformation: React.FC<
           {!!duration && (
             <div className="flex items-center">
               <Timer className="mr-1" />
-              {i18n("duration_hour_minutes_format", durationToTime(duration))}
+              {i18n(
+                "common.formats.durationHourMinutes",
+                durationToTime(duration),
+              )}
             </div>
           )}
           {!!price && (
             <div className="flex items-center">
               <DollarSign className="mr-1" />
-              {i18n("form_price_label_format", {
+              {i18n("common.formats.formPriceLabel", {
                 price: formatAmountString(price),
               })}
             </div>
           )}
           <div className="flex items-center">
             <Globe2 className="mr-1 flex-none" />
-            {i18n("timezone_format", {
+            {i18n("common.formats.timezone", {
               timezone: timeZone?.currentTimeFormat || "",
             })}
           </div>

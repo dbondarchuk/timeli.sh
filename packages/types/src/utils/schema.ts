@@ -190,7 +190,10 @@ export function isValidObjectId(value: string): boolean {
 export const zObjectId = (message?: string) =>
   z
     .string(message ?? "validation.common.objectId.required")
-    .refine((s) => isValidObjectId(s), "validation.common.objectId.invalid");
+    .refine(
+      (s) => isValidObjectId(s),
+      message ?? "validation.common.objectId.invalid",
+    );
 
 /**
  * Builds a union schema for `data & { type }` from a list of { type, data } objects.

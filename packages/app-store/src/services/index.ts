@@ -55,6 +55,8 @@ import { ZOOM_APP_NAME } from "../apps/zoom/const";
 import { ZoomConnectedApp } from "../apps/zoom/service";
 import { FORMS_APP_NAME } from "../apps/forms/const";
 import { FormsConnectedApp } from "../apps/forms/service";
+import { GIFT_CARD_STUDIO_APP_NAME } from "../apps/gift-card-studio/const";
+import { GiftCardStudioConnectedApp } from "../apps/gift-card-studio/service/service";
 
 export const AvailableAppServices: Record<
   string,
@@ -97,5 +99,7 @@ export const AvailableAppServices: Record<
     new UrlScheduleProviderConnectedApp(props),
   [ZOOM_APP_NAME]: (props) => new ZoomConnectedApp(props),
   [FORMS_APP_NAME]: (props) => new FormsConnectedApp(props),
+  [GIFT_CARD_STUDIO_APP_NAME]: (props) =>
+    new GiftCardStudioConnectedApp(props),
 };
 export { AvailableApps as ServiceAvailableApps } from "../apps";

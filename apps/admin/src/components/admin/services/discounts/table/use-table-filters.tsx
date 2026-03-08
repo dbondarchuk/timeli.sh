@@ -4,7 +4,7 @@ import { discountsSearchParams } from "@timelish/api-sdk";
 import { useQueryState } from "nuqs";
 import { useCallback, useMemo } from "react";
 
-export function useFieldsTableFilters() {
+export function useDiscountsTableFilters() {
   const [searchQuery, setSearchQuery] = useQueryState(
     "search",
     discountsSearchParams.search

@@ -116,7 +116,7 @@ export const WaitlistFormCard: React.FC = () => {
             control={form.control}
             name="name"
             required={true}
-            data={{ label: "form_name_label" }}
+            data={{ label: "common.labels.formName" }}
             disabled={false}
             namespace={undefined}
           />
@@ -124,7 +124,7 @@ export const WaitlistFormCard: React.FC = () => {
             control={form.control}
             name="email"
             required={true}
-            data={{ label: "form_email_label" }}
+            data={{ label: "common.labels.formEmail" }}
             disabled={false}
             namespace={undefined}
           />
@@ -132,7 +132,7 @@ export const WaitlistFormCard: React.FC = () => {
             control={form.control}
             name="phone"
             required={true}
-            data={{ label: "form_phone_label" }}
+            data={{ label: "common.labels.formPhone" }}
             disabled={false}
             namespace={undefined}
           />

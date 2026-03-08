@@ -16,6 +16,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "migration": "migrate-mongo",
     "migration:up": "migrate-mongo up",
+    "migration:add": "migrate-mongo create",
     "migration:down": "migrate-mongo down",
     "check-translations": "turbo run check-translations --",
     "prepare": "husky",

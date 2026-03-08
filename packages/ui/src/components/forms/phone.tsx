@@ -22,13 +22,13 @@ export const PhoneField: <T extends FieldValues>(
       render={({ field }) => (
         <FormItem>
           <FormFieldLabel
-            label={props.data?.label || "form_phone_label"}
+            label={props.data?.label || "common.labels.formPhone"}
             required={props.required}
           />
           <FormControl>
             <PhoneInput
               {...field}
-              label={i18n("form_phone_label")}
+              label={i18n("common.labels.formPhone")}
               disabled={field.disabled || props.disabled}
               onChange={(e) => {
                 field.onChange(e);

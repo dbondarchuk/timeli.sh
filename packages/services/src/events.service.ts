@@ -4,6 +4,7 @@ import { AvailableAppServices } from "@timelish/app-store/services";
 
 import { BaseAllKeys } from "@timelish/i18n";
 import {
+  ApplyGiftCardsSuccessResponse,
   Appointment,
   AppointmentChoice,
   AppointmentEntity,
@@ -166,6 +167,7 @@ export class EventsService extends BaseService implements IEventsService {
     files,
     paymentIntentId,
     by,
+    giftCards,
   }: {
     event: AppointmentEvent;
     confirmed?: boolean;
@@ -173,6 +175,7 @@ export class EventsService extends BaseService implements IEventsService {
     files?: Record<string, File>;
     paymentIntentId?: string;
     by: "customer" | "user";
+    giftCards?: ApplyGiftCardsSuccessResponse["giftCards"];
   }): Promise<Appointment> {
     const logger = this.loggerFactory("createEvent");
     logger.debug(
@@ -298,7 +301,13 @@ export class EventsService extends BaseService implements IEventsService {
     }
 
     logger.debug(
-      { appointmentId, confirmed, force, paymentIntentId },
+      {
+        appointmentId,
+        confirmed,
+        force,
+        paymentIntentId,
+        giftCardsLength: giftCards?.length ?? 0,
+      },
       "Saving event",
     );
 
@@ -311,6 +320,7 @@ export class EventsService extends BaseService implements IEventsService {
       meetingInformation,
       confirmed ? "confirmed" : "pending",
       force,
+      giftCards,
     );
 
     logger.debug(
@@ -1777,6 +1787,7 @@ export class EventsService extends BaseService implements IEventsService {
     meetingInformation?: AppointmentOnlineMeetingInformation,
     status: AppointmentStatus = "pending",
     force?: boolean,
+    giftCards?: ApplyGiftCardsSuccessResponse["giftCards"],
   ): Promise<Appointment> {
     const logger = this.loggerFactory("saveEvent");
 
@@ -1788,6 +1799,7 @@ export class EventsService extends BaseService implements IEventsService {
         fileCount: files?.length || 0,
         paymentIntentId,
         force,
+        giftCardsLength: giftCards?.length ?? 0,
       },
       "Saving event",
     );
@@ -1859,6 +1871,7 @@ export class EventsService extends BaseService implements IEventsService {
               { appointmentId: id, paymentIntentId, amount },
               "Payment intent is paid, adding to payments",
             );
+
             const payment = await this.paymentsService.createPayment({
               appId,
               appName,
@@ -1893,6 +1906,25 @@ export class EventsService extends BaseService implements IEventsService {
             },
             "Payment processed for appointment",
           );
+        }
+
+        if (giftCards) {
+          for (const giftCard of giftCards) {
+            const payment = await this.paymentsService.createPayment({
+              amount: giftCard.appliedAmount,
+              status: "paid",
+              paidAt: new Date(),
+              customerId: customer._id,
+              description: "giftCard",
+              appointmentId: id,
+              type: "payment",
+              method: "gift-card",
+              giftCardCode: giftCard.code,
+              giftCardId: giftCard.id,
+            });
+
+            payments.push(payment);
+          }
         }
 
         const result = {

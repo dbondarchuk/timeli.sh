@@ -3,15 +3,8 @@ import { getLoggerFactory } from "@timelish/logger";
 import {
   inStorePaymentUpdateModelSchema,
   PaymentUpdateModel,
-  zNonEmptyString,
 } from "@timelish/types";
 import { NextRequest, NextResponse } from "next/server";
-import * as z from "zod";
-
-const schema = z.object({
-  ...inStorePaymentUpdateModelSchema.shape,
-  appointmentId: zNonEmptyString("payments.appointmentId.required"),
-});
 
 export async function POST(request: NextRequest) {
   const logger = getLoggerFactory("AdminAPI/payments/instore")("POST");
@@ -26,7 +19,11 @@ export async function POST(request: NextRequest) {
 
   const body = await request.json();
 
-  const { data: payment, success, error } = schema.safeParse(body);
+  const {
+    data: payment,
+    success,
+    error,
+  } = inStorePaymentUpdateModelSchema.safeParse(body);
 
   if (!success) {
     logger.warn("Invalid request format");
@@ -36,31 +33,131 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const appointment = await servicesContainer.eventsService.getAppointment(
-    payment.appointmentId,
-  );
+  let customerId: string | undefined;
 
-  if (!appointment) {
-    logger.error(
-      { appointmentId: payment.appointmentId, payment },
-      "Appointment not found",
+  if (payment.appointmentId) {
+    const appointment = await servicesContainer.eventsService.getAppointment(
+      payment.appointmentId,
     );
 
+    if (!appointment) {
+      logger.error(
+        { appointmentId: payment.appointmentId, payment },
+        "Appointment not found",
+      );
+
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Appointment not found",
+          code: "appointment_not_found",
+        },
+        { status: 404 },
+      );
+    }
+
+    customerId = appointment.customerId;
+  } else if ("customerId" in payment && payment.customerId) {
+    const customer = await servicesContainer.customersService.getCustomer(
+      payment.customerId,
+    );
+
+    if (!customer) {
+      logger.error(
+        { customerId: payment.customerId, payment },
+        "Customer not found",
+      );
+
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Customer not found",
+          code: "customer_not_found",
+        },
+        { status: 404 },
+      );
+    }
+
+    customerId = customer._id;
+  }
+
+  if (!customerId) {
+    logger.error({ payment }, "Customer ID not found");
     return NextResponse.json(
       {
         success: false,
-        error: "Appointment not found",
-        code: "appointment_not_found",
+        error: "Customer ID not found",
+        code: "customer_id_not_found",
       },
-      { status: 404 },
+      { status: 400 },
     );
   }
 
-  const paymentUpdateModel: PaymentUpdateModel = {
-    ...payment,
-    customerId: appointment.customerId,
-    status: "paid",
-  };
+  let paymentUpdateModel: PaymentUpdateModel;
+
+  if (payment.method === "gift-card") {
+    const giftCard = await servicesContainer.giftCardsService.getGiftCard(
+      payment.giftCardId,
+    );
+    if (!giftCard) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Gift card not found",
+          code: "gift_card_not_found",
+        },
+        { status: 404 },
+      );
+    }
+
+    if (giftCard.status === "inactive") {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Gift card is inactive",
+          code: "gift_card_inactive",
+        },
+        { status: 400 },
+      );
+    }
+
+    if (giftCard.expiresAt && giftCard.expiresAt < new Date()) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Gift card expired",
+          code: "gift_card_expired",
+        },
+        { status: 400 },
+      );
+    }
+
+    if (giftCard.amountLeft < payment.amount) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Gift card amount is not enough",
+          code: "gift_card_amount_not_enough",
+        },
+        { status: 400 },
+      );
+    }
+
+    paymentUpdateModel = {
+      ...payment,
+      customerId,
+      status: "paid",
+      method: "gift-card",
+      giftCardCode: giftCard.code,
+      giftCardId: giftCard._id,
+    };
+  } else {
+    paymentUpdateModel = {
+      ...payment,
+      customerId,
+      status: "paid",
+    };
+  }
 
   const result =
     await servicesContainer.paymentsService.createPayment(paymentUpdateModel);

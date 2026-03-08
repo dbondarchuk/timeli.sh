@@ -17,6 +17,8 @@ import { WEEKLY_SCHEDULE_APP_NAME } from "./apps/weekly-schedule/const";
 import { WeeklyScheduleMenuItems } from "./apps/weekly-schedule/menu-items";
 import { FORMS_APP_NAME } from "./apps/forms/const";
 import { FormsMenuItems } from "./apps/forms/menu-items";
+import { GIFT_CARD_STUDIO_APP_NAME } from "./apps/gift-card-studio/const";
+import { GiftCardStudioMenuItems } from "./apps/gift-card-studio/menu-items";
 
 export const AppMenuItems: Record<string, AppMenuItem[]> = {
   [BLOG_APP_NAME]: BlogMenuItems,
@@ -29,4 +31,5 @@ export const AppMenuItems: Record<string, AppMenuItem[]> = {
   [WEEKLY_SCHEDULE_APP_NAME]: WeeklyScheduleMenuItems,
   [SCHEDULED_NOTIFICATIONS_APP_NAME]: ScheduledNotificationsMenuItems,
   [FORMS_APP_NAME]: FormsMenuItems,
+  [GIFT_CARD_STUDIO_APP_NAME]: GiftCardStudioMenuItems,
 };

@@ -70,7 +70,7 @@ export const WaitlistReviewCard: React.FC = () => {
                   <p className="text-xs text-muted-foreground flex items-center gap-1 justify-end review-service-summary-price-duration">
                     <Clock className="w-3 h-3" />{" "}
                     {i18n(
-                      "duration_hour_min_format",
+                      "common.formats.durationHourMin",
                       durationToTime(selectedAppointmentOption.duration || 0),
                     )}
                   </p>
@@ -116,7 +116,7 @@ export const WaitlistReviewCard: React.FC = () => {
                       <span className="text-xs text-muted-foreground ml-2 review-addons-duration">
                         +
                         {i18n(
-                          "duration_hour_min_format",
+                          "common.formats.durationHourMin",
                           durationToTime(addon.duration),
                         )}
                       </span>
@@ -174,7 +174,7 @@ export const WaitlistReviewCard: React.FC = () => {
             <span className="review-date-duration">
               {i18n("booking.review.date.duration", {
                 duration: i18n(
-                  "duration_hour_min_format",
+                  "common.formats.durationHourMin",
                   durationToTime(duration || 0),
                 ),
               })}

@@ -1,9 +1,11 @@
+import type { IAssetsStorage } from "../apps/assets/assets-storage";
 import type { IAssetsService } from "./assets.service";
 import type { ICommunicationLogsService } from "./communication-logs.service";
 import type { IConfigurationService } from "./configuration.service";
 import type { IConnectedAppsService } from "./connected-apps.service";
 import type { ICustomersService } from "./customers.service";
 import type { IEventsService } from "./events.service";
+import type { IGiftCardsService } from "./gift-cards.service";
 import type { IJobService } from "./job.service";
 import type {
   IDashboardNotificationsService,
@@ -18,6 +20,7 @@ import type { ITemplatesService } from "./templates.service";
 
 export type IServicesContainer = {
   configurationService: IConfigurationService;
+  assetsStorage: IAssetsStorage;
   assetsService: IAssetsService;
   eventsService: IEventsService;
   pagesService: IPagesService;
@@ -32,4 +35,5 @@ export type IServicesContainer = {
   jobService: IJobService;
   organizationService: IOrganizationService;
   dashboardNotificationsService: IDashboardNotificationsService;
+  giftCardsService: IGiftCardsService;
 };

@@ -12,11 +12,11 @@ export const SuccessCard: React.FC = () => {
     <div className="relative text-center">
       <div className="mb-3">
         <h2 className="text-lg font-bold">
-          {i18n(`${type}_appointment_confirmation_success_title`)}
+          {i18n(`modification.confirmation.${type}.successTitle`)}
         </h2>
       </div>
       <div className="flex flex-row gap-2 justify-around flex-wrap">
-        {i18n(`${type}_appointment_confirmation_success_message`, {
+        {i18n(`modification.confirmation.${type}.successMessage`, {
           name: (appointment as any).name,
           service: (appointment as any).optionName,
           dateTime: Luxon.fromJSDate(

@@ -124,11 +124,20 @@ const config = {
             "animation-timing-function": "cubic-bezier(0,0,0.2,1)",
           },
         },
+        shimmer: {
+          "0%": {
+            transform: "translateX(-100%)",
+          },
+          "100%": {
+            transform: "translateX(100%)",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "bounce-horizontal": "bounce-horizontal 1s infinite",
+        shimmer: "shimmer 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
       },
       typography: {
         DEFAULT: {

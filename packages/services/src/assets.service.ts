@@ -15,10 +15,6 @@ import { createHash } from "crypto";
 import { DateTime } from "luxon";
 import { Filter, ObjectId, Sort } from "mongodb";
 import { Readable } from "stream";
-import {
-  S3AssetsStorageService,
-  getS3Configuration,
-} from "./s3-assets-storage";
 import { BaseService } from "./services/base.service";
 
 import {
@@ -41,14 +37,12 @@ async function getFileHash(file: File): Promise<string> {
 }
 
 export class AssetsService extends BaseService implements IAssetsService {
-  protected readonly storage: IAssetsStorage;
-
   public constructor(
     companyId: string,
     protected readonly configurationService: IConfigurationService,
+    protected readonly storage: IAssetsStorage,
   ) {
     super("AssetsService", companyId);
-    this.storage = new S3AssetsStorageService(companyId, getS3Configuration());
   }
 
   public async getAsset(id: string): Promise<Asset | null> {
@@ -451,13 +445,13 @@ export class AssetsService extends BaseService implements IAssetsService {
       "Found asset, streaming it.",
     );
 
-    const stream = await this.storage.getFile(filename);
-    if (!stream) {
+    const result = await this.storage.getFile(filename);
+    if (!result) {
       logger.warn({ filename }, "File not found");
       return null;
     }
 
-    return { stream, asset };
+    return { stream: result.stream, asset };
   }
 
   private get aggregateJoin() {

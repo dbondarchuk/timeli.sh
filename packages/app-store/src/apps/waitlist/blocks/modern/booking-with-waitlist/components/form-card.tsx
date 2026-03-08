@@ -1,26 +1,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { clientApi } from "@timelish/api-sdk";
-import { TranslationKeys, useI18n } from "@timelish/i18n";
+import { useI18n } from "@timelish/i18n";
+import { AppointmentFields, getFields } from "@timelish/types";
 import {
-  ApplyDiscountRequest,
-  AppointmentFields,
-  getFields,
-} from "@timelish/types";
-import {
-  Button,
-  cn,
   fieldSchemaMapper,
   fieldsComponentMap,
   Form,
-  FormItem,
-  Input,
-  Label,
-  Spinner,
   usePrevious,
 } from "@timelish/ui";
-import { deepEqual, formatAmountString } from "@timelish/utils";
-import { DateTime } from "luxon";
-import React, { useEffect, useMemo, useState } from "react";
+import { deepEqual } from "@timelish/utils";
+import React, { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { useScheduleContext } from "./context";
@@ -29,25 +17,12 @@ export const FormCard: React.FC = () => {
   const i18n = useI18n("translation");
 
   const {
-    selectedAppointmentOption,
-    selectedAddons,
-    dateTime,
     fields: propsFields,
     setFields,
     formFields,
-    discount,
-    showPromoCode,
-    basePrice,
     setDiscount,
-    discountAmount,
     setIsFormValid,
   } = useScheduleContext();
-
-  if (!dateTime || !selectedAppointmentOption) return null;
-
-  const [promoCode, setPromoCode] = useState(discount?.code ?? "");
-  const [promoCodeError, setPromoCodeError] = useState<TranslationKeys>();
-  const [isLoading, setIsLoading] = useState(false);
 
   const fields = getFields(formFields);
 
@@ -85,60 +60,12 @@ export const FormCard: React.FC = () => {
     setIsFormValid(isFormValid);
   }, [isFormValid]);
 
-  const applyPromoCode = async () => {
-    if (!promoCode || !dateTime) {
-      setPromoCodeError(undefined);
-      return;
-    }
-
-    setIsLoading(true);
-
-    try {
-      const request = {
-        code: promoCode,
-        optionId: selectedAppointmentOption._id,
-        addons: selectedAddons?.map((addon) => addon._id),
-        dateTime: DateTime.fromObject(
-          {
-            year: dateTime.date.getFullYear(),
-            month: dateTime.date.getMonth() + 1,
-            day: dateTime.date.getDate(),
-            hour: dateTime.time.hour,
-            minute: dateTime.time.minute,
-            second: 0,
-          },
-          { zone: dateTime.timeZone },
-        )
-          .toUTC()
-          .toJSDate(),
-        name: form.getValues("name") || "",
-        email: form.getValues("email") || "",
-        phone: form.getValues("phone") || "",
-      } satisfies ApplyDiscountRequest;
-
-      const data = await clientApi.discounts.applyDiscount(request);
-
-      setDiscount(data);
-      setPromoCodeError(undefined);
-    } catch (e) {
-      console.error(e);
-
-      setPromoCodeError("promo_code_error");
-
-      setDiscount(undefined);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const fieldsMap = useMemo(
     () =>
       fieldsComponentMap(undefined, () => {
         setDiscount(undefined);
-        setPromoCode("");
-        setPromoCodeError(undefined);
       }),
-    [setDiscount, setPromoCode, setPromoCodeError],
+    [setDiscount],
   );
 
   return (
@@ -163,47 +90,6 @@ export const FormCard: React.FC = () => {
                 {fieldsMap[field.type](field, form.control)}
               </React.Fragment>
             ))}
-
-            {showPromoCode && !!basePrice && (
-              <FormItem>
-                <Label htmlFor="promo-code">{i18n("form_promo_code")}</Label>
-                <div className="flex flex-row gap-2 form-card-promo-code-container">
-                  <Input
-                    className="w-full flex-1 form-card-promo-code-input"
-                    value={promoCode}
-                    onChange={(e) => {
-                      setPromoCode(e.target.value);
-                      setPromoCodeError(undefined);
-
-                      setDiscount(undefined);
-                    }}
-                  />
-                  <Button
-                    variant="outline"
-                    className="form-card-promo-code-button"
-                    onClick={() => applyPromoCode()}
-                    disabled={!promoCode}
-                  >
-                    {isLoading && <Spinner />} {i18n("apply")}
-                  </Button>
-                </div>
-                <p
-                  className={cn(
-                    "text-xs font-medium form-card-promo-code-message",
-                    promoCodeError
-                      ? "text-destructive form-card-promo-code-message-error"
-                      : "text-green-700 form-card-promo-code-message-success",
-                  )}
-                >
-                  {!!promoCodeError && i18n(promoCodeError)}
-                  {discount &&
-                    i18n("promo_code_success", {
-                      code: discount.code,
-                      discount: formatAmountString(discountAmount),
-                    })}
-                </p>
-              </FormItem>
-            )}
           </div>
         </form>
       </Form>

@@ -3,6 +3,7 @@
 import { clientApi, ClientApiError } from "@timelish/api-sdk";
 import { useI18n } from "@timelish/i18n";
 import type {
+  ApplyGiftCardsSuccessResponse,
   CollectPayment,
   CreateOrUpdatePaymentIntentRequest,
   DateTime,
@@ -41,20 +42,20 @@ export const ModifyAppointmentForm: React.FC<
 
   const errors = React.useMemo(
     () => ({
-      fetchTitle: i18n("availability_fetch_failed_title"),
-      fetchDescription: i18n("availability_fetch_failed_description"),
-      fetchAppointmentTitle: i18n("appointment_fetch_failed_title"),
-      fetchAppointmentDescription: i18n("appointment_fetch_failed_description"),
+      fetchTitle: i18n("booking.availability.fetchFailedTitle"),
+      fetchDescription: i18n("booking.availability.fetchFailedDescription"),
+      fetchAppointmentTitle: i18n("modification.appointmentFetchFailed.title"),
+      fetchAppointmentDescription: i18n("modification.appointmentFetchFailed.description"),
       fetchPaymentInformationTitle: i18n(
-        "payment_information_fetch_failed_title",
+        "booking.payment.informationFetchFailedTitle",
       ),
       fetchPaymentInformationDescription: i18n(
-        "payment_information_fetch_failed_description",
+        "booking.payment.informationFetchFailedDescription",
       ),
-      submitTitle: i18n(`${type ?? "cancel"}_submit_failed_title`),
-      submitDescription: i18n(`${type ?? "cancel"}_submit_failed_description`),
+      submitTitle: i18n(`modification.submitFailed.${type ?? "cancel"}.title`),
+      submitDescription: i18n(`modification.submitFailed.${type ?? "cancel"}.description`),
       timeNotAvailableDescription: i18n(
-        "submit_event_failed_time_not_available_description",
+        "booking.submitEvent.timeNotAvailableDescription",
       ),
     }),
     [i18n, type],
@@ -82,6 +83,9 @@ export const ModifyAppointmentForm: React.FC<
 
   const [paymentInformation, setPaymentInformation] =
     React.useState<CollectPayment | null>();
+
+  const [giftCards, setGiftCards] =
+    React.useState<ApplyGiftCardsSuccessResponse["giftCards"]>();
 
   const [isFormValid, setIsFormValid] = React.useState(false);
   const [isModificationConfirmed, setIsModificationConfirmed] =
@@ -118,6 +122,7 @@ export const ModifyAppointmentForm: React.FC<
       });
 
       setAppointment(data);
+      setGiftCards(undefined);
 
       return data;
     } catch (e: any) {
@@ -151,6 +156,18 @@ export const ModifyAppointmentForm: React.FC<
     }
   };
 
+  const applyGiftCards = async (
+    codes: string[],
+    amount: number,
+  ): Promise<ApplyGiftCardsSuccessResponse["giftCards"] | undefined> => {
+    const data = await clientApi.giftCards.applyGiftCards({ codes, amount });
+    if (data.success) {
+      setGiftCards(data.giftCards);
+      return data.giftCards;
+    }
+    throw new Error(data.error);
+  };
+
   const fetchPaymentInformation = async (): Promise<CollectPayment | null> => {
     const intentId = paymentInformation?.intent?._id;
     try {
@@ -168,11 +185,13 @@ export const ModifyAppointmentForm: React.FC<
           dateTime: newDateTime.toUTC().toJSDate(),
           type,
           fields,
+          giftCards: giftCards?.map((g) => g.code),
         } satisfies ModifyAppointmentRequest;
       } else {
         request = {
           type,
           fields,
+          giftCards: giftCards?.map((g) => g.code),
         } satisfies ModifyAppointmentRequest;
       }
 
@@ -203,7 +222,7 @@ export const ModifyAppointmentForm: React.FC<
   ) => {
     if (!appointment || !appointment.allowed || !appointment.duration) return;
 
-    if (errors.fetchTitle === "availability_fetch_failed_title") return;
+    if (errors.fetchTitle === i18n("booking.availability.fetchFailedTitle")) return;
 
     setIsLoading(true);
 
@@ -243,6 +262,7 @@ export const ModifyAppointmentForm: React.FC<
         dateTime: newDateTime?.toUTC().toJSDate() as Date,
         fields,
         paymentIntentId: paymentInformation?.intent?._id,
+        giftCards: giftCards?.map((g) => g.code),
       } satisfies ModifyAppointmentRequest);
 
       setIsModificationConfirmed(true);
@@ -305,6 +325,9 @@ export const ModifyAppointmentForm: React.FC<
         setIsLoading,
         searchError,
         setSearchError,
+        giftCards,
+        setGiftCards,
+        applyGiftCards,
       }}
     >
       <ModifyAppointmentFormLayout
