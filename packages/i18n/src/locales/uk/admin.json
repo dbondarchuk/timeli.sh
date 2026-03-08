@@ -61,6 +61,12 @@
         "paymentRefunded": "Платіж повернено",
         "updated": "Оновлено"
       },
+      "paymentMethod": {
+        "cash": "Готівка",
+        "in-person-card": "Картка в особі",
+        "gift-card": "Подарункова карта",
+        "online": "Онлайн"
+      },
       "filters": "Фільтри",
       "loading": "Завантаження"
     },

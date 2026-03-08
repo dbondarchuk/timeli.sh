@@ -1,6 +1,5 @@
 import { TranslationKeys, useI18n, useLocale } from "@timelish/i18n";
-import { Time } from "@timelish/types";
-import { timeZones } from "@timelish/types/src/utils/zTimeZone";
+import { Time, timeZones } from "@timelish/types";
 import {
   durationToTime,
   formatAmountString,
@@ -68,7 +67,10 @@ export const CardWithAppointmentInformation: React.FC<
           {!!duration && (
             <div className="flex items-center">
               <Timer className="mr-1" />
-              {i18n("common.formats.durationHourMinutes", durationToTime(duration))}
+              {i18n(
+                "common.formats.durationHourMinutes",
+                durationToTime(duration),
+              )}
             </div>
           )}
           {!!price && (

@@ -1,0 +1,371 @@
+{
+  "app": {
+    "displayName": "Gift Card Studio",
+    "description": "Manage gift card designs and sell gift cards through your website.",
+    "pages": {
+      "main": {
+        "title": "Designs",
+        "description": "Manage gift card designs"
+      },
+      "new": {
+        "label": "New Design",
+        "title": "Create Design",
+        "description": "Create a new gift card design"
+      },
+      "edit": {
+        "title": "Edit Design",
+        "description": "Edit gift card design",
+        "notFound": "Design not found"
+      },
+      "purchases": {
+        "title": "Purchased Gift Cards",
+        "description": "View all purchased gift cards"
+      },
+      "purchasesNew": {
+        "title": "Manual Gift Card Purchase",
+        "description": "Create a gift card purchase manually"
+      },
+      "settings": {
+        "title": "Settings",
+        "description": "Gift Card Studio settings"
+      }
+    }
+  },
+  "designs": {
+    "table": {
+      "filters": {
+        "status": "Status",
+        "published": "Published",
+        "draft": "Draft"
+      },
+      "actions": {
+        "create": "Create Design",
+        "edit": "Edit",
+        "publish": "Publish",
+        "unpublish": "Unpublish",
+        "delete": "Delete",
+        "purchase": "Purchase"
+      },
+      "publish": {
+        "title": "Publish design",
+        "description": "Publish design {name}? It will be visible to customers on your website.",
+        "confirm": "Publish"
+      },
+      "unpublish": {
+        "title": "Unpublish design",
+        "description": "Unpublish design {name}? It will no longer be visible to customers.",
+        "confirm": "Unpublish"
+      },
+      "delete": {
+        "title": "Delete Design",
+        "description": "Are you sure you want to delete design {name}? This action cannot be undone.",
+        "confirm": "Yes, delete",
+        "cannotDelete": "Cannot delete: gift cards have been purchased with this design."
+      },
+      "toast": {
+        "delete": "Design {name} deleted successfully",
+        "deleteError": "Failed to delete design",
+        "published": "Design {name} published",
+        "unpublished": "Design {name} unpublished",
+        "publishError": "Failed to publish design",
+        "unpublishError": "Failed to unpublish design"
+      },
+      "columns": {
+        "name": "Name",
+        "status": "Status",
+        "purchasesCount": "Purchases",
+        "createdAt": "Created At"
+      },
+      "status": {
+        "published": "Published",
+        "draft": "Draft"
+      }
+    },
+    "form": {
+      "name": "Name",
+      "namePlaceholder": "Design name",
+      "isPublic": "Published",
+      "design": "Card design",
+      "unpublishedNotice": "This design is not published and will not be visible to customers."
+    }
+  },
+  "designer": {
+    "toolbar": {
+      "validationTitle": "Design Validation",
+      "missingRequiredField": "Missing required field: {label}",
+      "allRequiredPresent": "All required fields are present!",
+      "edit": "Edit",
+      "preview": "Preview",
+      "undo": "Undo",
+      "redo": "Redo",
+      "zoomOut": "Zoom Out",
+      "zoomIn": "Zoom In"
+    },
+    "sidebar": {
+      "elements": "Elements",
+      "addText": "Add Text",
+      "addImage": "Add Image",
+      "dynamicFields": "Dynamic Fields",
+      "addDynamicField": "Add Dynamic Field",
+      "required": "(Required)",
+      "shapes": "Shapes",
+      "rectangle": "Rectangle",
+      "circle": "Circle",
+      "line": "Line"
+    },
+    "dynamicFields": {
+      "amount": "Gift Card Amount",
+      "code": "Gift Card Code",
+      "expiresAt": "Expiration Date",
+      "to": "To",
+      "from": "From",
+      "message": "Message"
+    },
+    "sampleValues": {
+      "amount": "100",
+      "code": "GIFT-2026-ABCD",
+      "to": "John Doe",
+      "from": "Jane Doe",
+      "message": "Happy Birthday!"
+    },
+    "canvasSetup": {
+      "title": "Canvas Settings",
+      "description": "Configure your gift card canvas dimensions and theme",
+      "canvasTheme": "Canvas Theme",
+      "light": "Light",
+      "dark": "Dark",
+      "themeHint": "Sets the background color of your gift card",
+      "aspectRatio": "Aspect Ratio",
+      "widthPx": "Width (px)",
+      "heightPx": "Height (px)",
+      "currentSize": "Current: {width} × {height} px • {theme} theme",
+      "themeLight": "Light",
+      "themeDark": "Dark",
+      "cancel": "Cancel",
+      "apply": "Apply",
+      "aspectRatioCustom": "Custom",
+      "aspectRatio3_2": "3:2",
+      "aspectRatio4_3": "4:3",
+      "aspectRatio1_1": "1:1",
+      "aspectRatio16_9": "16:9"
+    },
+    "properties": {
+      "title": "Properties",
+      "canvasBackground": "Canvas Background",
+      "elementsSelected": "{count} elements selected",
+      "singleElementHint": "Properties are only available when a single element is selected",
+      "backgroundType": "Background Type",
+      "transparent": "Transparent",
+      "solidColor": "Solid Color",
+      "gradient": "Gradient",
+      "image": "Image",
+      "backgroundColor": "Background Color",
+      "gradientType": "Gradient Type",
+      "linear": "Linear",
+      "radial": "Radial",
+      "color1": "Color 1",
+      "color2": "Color 2",
+      "angle": "Angle",
+      "imageUrl": "Image URL",
+      "imageUrlPlaceholder": "https://...",
+      "imageFit": "Image Fit",
+      "cover": "Cover",
+      "contain": "Contain",
+      "fill": "Fill",
+      "dynamicField": "Dynamic Field",
+      "fieldLabel": "Field: {key}",
+      "content": "Content",
+      "dateFormat": "Date format",
+      "sampleValue": "Sample Value",
+      "sampleValuePlaceholder": "Preview value",
+      "fontSize": "Font Size",
+      "fontWeight": "Font Weight",
+      "light": "Light",
+      "regular": "Regular",
+      "medium": "Medium",
+      "semiBold": "Semi Bold",
+      "bold": "Bold",
+      "textAlign": "Text Align",
+      "left": "Left",
+      "center": "Center",
+      "right": "Right",
+      "color": "Color",
+      "paintFill": "Fill",
+      "paintStroke": "Stroke",
+      "none": "None",
+      "strokeWidth": "Stroke Width",
+      "borderRadius": "Border Radius",
+      "lineThickness": "Line Thickness",
+      "objectFit": "Object Fit",
+      "toFront": "To Front",
+      "toBack": "To Back",
+      "lock": "Lock",
+      "opacity": "Opacity",
+      "rotation": "Rotation",
+      "elementSpecific": "Element Specific",
+      "x": "X",
+      "y": "Y",
+      "width": "Width",
+      "height": "Height",
+      "fontFamily": "Font Family"
+    },
+    "layers": {
+      "title": "Layers",
+      "group": "Group",
+      "noElements": "No elements yet",
+      "text": "Text",
+      "image": "Image",
+      "shape": "Shape",
+      "groupLabel": "Group",
+      "req": "REQ",
+      "dynamic": "Dynamic"
+    },
+    "contextMenu": {
+      "copy": "Copy",
+      "delete": "Delete",
+      "paste": "Paste",
+      "bringToFront": "Bring to Front",
+      "sendToBack": "Send to Back",
+      "ungroup": "Ungroup",
+      "group": "Group"
+    },
+    "newTextDefault": "New Text"
+  },
+  "purchases": {
+    "table": {
+      "searchPlaceholder": "Search by code, customer, design…",
+      "filters": {
+        "design": "Design",
+        "customer": "Customer"
+      },
+      "actions": {
+        "create": "Manual Purchase"
+      },
+      "columns": {
+        "code": "Gift Card Code",
+        "amountPurchased": "Amount Purchased",
+        "amountLeft": "Amount Left",
+        "customer": "Customer",
+        "toName": "Recipient Name",
+        "toEmail": "Recipient Email",
+        "design": "Design",
+        "createdAt": "Created"
+      },
+      "detail": {
+        "title": "Purchase Details",
+        "preview": "Gift Card Preview",
+        "downloadGiftCardPdf": "Download Gift Card PDF",
+        "downloadInvoice": "Download Invoice"
+      },
+      "giftCardDetail": {
+        "title": "Gift Card Details",
+        "description": "View the details of the gift card",
+        "preview": "Gift Card Preview",
+        "code": "Gift Card Code",
+        "amountPurchased": "Amount Purchased",
+        "amountLeft": "Amount Left",
+        "expiresAt": "Expires At",
+        "paymentsCount": "Payments",
+        "customer": "Customer",
+        "recipient": "Recipient",
+        "recipientEmail": "Recipient Email",
+        "message": "Message",
+        "downloadGiftCardPdf": "Download Gift Card PDF",
+        "downloadInvoice": "Download Invoice"
+      }
+    },
+    "manualForm": {
+      "design": "Design",
+      "designPlaceholder": "Select design",
+      "previewPlaceholder": "Select design and amount to see preview",
+      "amount": "Amount",
+      "customer": "Customer",
+      "toName": "Recipient Name",
+      "toEmail": "Recipient Email",
+      "message": "Message",
+      "paymentType": "Payment Method",
+      "sendToAnotherRecipient": "Send to another recipient",
+      "sendGiftCardEmail": "Send gift card email",
+      "sendInvoiceToCustomer": "Send invoice to customer",
+      "toast": {
+        "success": "Gift card purchase created successfully",
+        "error": "Failed to create gift card purchase"
+      }
+    }
+  },
+  "settings": {
+    "emailTemplateToPurchaser": "Email template (gift card to purchaser)",
+    "emailTemplateToRecipient": "Email template (gift card to recipient)",
+    "minAmount": "Minimum gift card amount",
+    "maxAmount": "Maximum gift card amount",
+    "expirationMonths": "Expiration",
+    "months": "months",
+    "years": "years",
+    "toasts": {
+      "saved": "Settings saved",
+      "error": "Failed to save settings"
+    }
+  },
+  "validation": {
+    "design": {
+      "name": {
+        "min": "Name must be at least 1 character",
+        "max": "Name must be less than 64 characters",
+        "unique": "A design with this name already exists"
+      }
+    },
+    "manualForm": {
+      "designId": {
+        "required": "Design is required"
+      },
+      "amountPurchased": {
+        "required": "Amount is required",
+        "positive": "Amount must be a positive number",
+        "min": "Amount must be greater than {min}",
+        "max": "Amount must be less than {max}"
+      },
+      "customerId": {
+        "required": "Customer is required"
+      },
+      "message": {
+        "required": "Message is required",
+        "max": "Message must be less than 1024 characters"
+      },
+      "paymentType": {
+        "required": "Payment type is required"
+      },
+      "sendToAnotherRecipient": {
+        "required": "Recipient information is required"
+      },
+      "toName": {
+        "min": "Recipient name must be at least 1 character",
+        "max": "Recipient name must be less than 64 characters"
+      }
+    },
+    "settings": {
+      "expirationMonths": {
+        "min": "Expiration months must be at least 1 month",
+        "max": "Expiration months must be less than 120 months"
+      },
+      "emailTemplateIdToPurchaser": {
+        "required": "Email template is required"
+      },
+      "emailTemplateIdToRecipient": {
+        "required": "Email template is required"
+      },
+      "minAmount": {
+        "required": "Minimum amount is required",
+        "positive": "Minimum amount must be a positive number",
+        "min": "Minimum amount must be greater than 5",
+        "max": "Minimum amount must be less than 1000000",
+        "minMax": "Minimum amount must be less than maximum amount"
+      },
+      "maxAmount": {
+        "required": "Maximum amount is required",
+        "positive": "Maximum amount must be a positive number",
+        "min": "Maximum amount must be greater than 5",
+        "max": "Maximum amount must be less than 1000000"
+      }
+    }
+  }
+}

@@ -12,7 +12,13 @@ const __dirname = dirname(__filename);
 const nextConfig = {
   output: "standalone",
   outputFileTracingRoot: join(__dirname, "../../"),
-  serverExternalPackages: ["pino", "pino-pretty", "bullmq"],
+  serverExternalPackages: [
+    "pino",
+    "pino-pretty",
+    "bullmq",
+    "pdfkit",
+    "@resvg/resvg-js",
+  ],
   experimental: {
     webpackMemoryOptimizations: true,
     serverActions: {

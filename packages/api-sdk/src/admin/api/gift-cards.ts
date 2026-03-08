@@ -13,6 +13,21 @@ import {
 } from "../search-params";
 import { fetchAdminApi } from "./utils";
 
+export const getGiftCard = async (id: string) => {
+  console.debug("Getting gift card", {
+    id,
+  });
+
+  const response = await fetchAdminApi(`/gift-cards/${id}`);
+  const data = await response.json<GiftCardListModel>();
+  console.debug("Gift card retrieved successfully", {
+    id,
+    giftCardCode: data.code,
+  });
+
+  return data;
+};
+
 export const getGiftCards = async (params: GiftCardsSearchParams) => {
   console.debug("Getting gift cards", {
     params,
@@ -71,10 +86,7 @@ export const updateGiftCard = async (
   return data;
 };
 
-export const setGiftCardStatus = async (
-  id: string,
-  status: GiftCardStatus,
-) => {
+export const setGiftCardStatus = async (id: string, status: GiftCardStatus) => {
   console.debug("Setting gift card status", {
     id,
     status,

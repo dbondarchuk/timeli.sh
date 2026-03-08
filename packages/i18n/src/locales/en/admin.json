@@ -61,6 +61,12 @@
         "paymentRefunded": "Payment refunded",
         "updated": "Updated"
       },
+      "paymentMethod": {
+        "cash": "Cash",
+        "in-person-card": "In-person card",
+        "gift-card": "Gift card",
+        "online": "Online"
+      },
       "filters": "Filters",
       "loading": "Loading"
     },

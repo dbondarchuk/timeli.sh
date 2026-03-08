@@ -55,6 +55,8 @@ import { ZoomApp } from "./apps/zoom/app";
 import { ZOOM_APP_NAME } from "./apps/zoom/const";
 import { FormsApp } from "./apps/forms/app";
 import { FORMS_APP_NAME } from "./apps/forms/const";
+import { GiftCardStudioApp } from "./apps/gift-card-studio/app";
+import { GIFT_CARD_STUDIO_APP_NAME } from "./apps/gift-card-studio/const";
 
 export const AvailableApps: Record<string, App> = {
   [OUTLOOK_APP_NAME]: OutlookApp,
@@ -88,6 +90,7 @@ export const AvailableApps: Record<string, App> = {
   [URL_SCHEDULE_PROVIDER_APP_NAME]: UrlScheduleProviderApp,
   [ZOOM_APP_NAME]: ZoomApp,
   [FORMS_APP_NAME]: FormsApp,
+  [GIFT_CARD_STUDIO_APP_NAME]: GiftCardStudioApp,
 };
 
 export { BLOG_APP_NAME } from "./apps/blog/const";
@@ -120,3 +123,4 @@ export { WEBHOOKS_APP_NAME } from "./apps/webhooks/const";
 export { WEEKLY_SCHEDULE_APP_NAME } from "./apps/weekly-schedule/const";
 export { ZOOM_APP_NAME } from "./apps/zoom/const";
 export { FORMS_APP_NAME } from "./apps/forms/const";
+export { GIFT_CARD_STUDIO_APP_NAME } from "./apps/gift-card-studio/const";

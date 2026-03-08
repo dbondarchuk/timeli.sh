@@ -18,6 +18,8 @@ import { FINANCIAL_OVERVIEW_APP_NAME } from "./apps/financial-overview/const";
 import { FinancialOverviewTranslations } from "./apps/financial-overview/translations";
 import { FORMS_APP_NAME } from "./apps/forms/const";
 import { FormsTranslations } from "./apps/forms/translations";
+import { GIFT_CARD_STUDIO_APP_NAME } from "./apps/gift-card-studio/const";
+import { GiftCardStudioTranslations } from "./apps/gift-card-studio/translations";
 import { GOOGLE_CALENDAR_APP_NAME } from "./apps/google-calendar/const";
 import { GoogleCalendarTranslations } from "./apps/google-calendar/translations";
 import { ICS_APP_NAME } from "./apps/ics/const";
@@ -92,4 +94,5 @@ export const AppsTranslations: Record<
   [URL_SCHEDULE_PROVIDER_APP_NAME]: UrlScheduleProviderTranslations,
   [ZOOM_APP_NAME]: ZoomTranslations,
   [FORMS_APP_NAME]: FormsTranslations,
+  [GIFT_CARD_STUDIO_APP_NAME]: GiftCardStudioTranslations,
 };

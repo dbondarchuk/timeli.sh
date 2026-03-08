@@ -8,12 +8,12 @@ import {
   tableSortHeader,
   tableSortNoopFunction,
 } from "@timelish/ui-admin";
+import { GiftCardPaymentsDialog } from "@timelish/ui-admin-kit";
 import { formatAmount } from "@timelish/utils";
 import { DateTime } from "luxon";
 import { parseAsString, useQueryState } from "nuqs";
 import { useCallback } from "react";
 import { CellAction } from "./cell-action";
-import { GiftCardPaymentsDialog } from "./payments-dialog";
 
 export const columns: ColumnDef<GiftCardListModel>[] = [
   {

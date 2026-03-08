@@ -1,8 +1,8 @@
 import {
   ConfigurationOptionWithCompanyId,
   IOrganizationService,
+  Organization,
 } from "@timelish/types";
-import { Organization } from "@timelish/types/src/users/organization";
 import {
   CONFIGURATION_COLLECTION_NAME,
   ORGANIZATIONS_COLLECTION_NAME,

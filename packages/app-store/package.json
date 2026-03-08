@@ -26,11 +26,12 @@
   },
   "devDependencies": {
     "@microsoft/microsoft-graph-types": "^2.40.0",
-    "@types/nodemailer": "^6.4.15",
-    "@types/react": "19.0.2",
     "@timelish/eslint-config": "*",
     "@timelish/tailwind-config": "*",
     "@timelish/typescript-config": "*",
+    "@types/nodemailer": "^6.4.15",
+    "@types/pdfkit": "^0.17.5",
+    "@types/react": "19.0.2",
     "typescript": "5.5.4"
   },
   "dependencies": {
@@ -41,7 +42,7 @@
     "@microsoft/microsoft-graph-client": "^3.0.7",
     "@paypal/paypal-server-sdk": "^1.1.0",
     "@paypal/react-paypal-js": "^8.8.3",
-    "@ts-ics/schema-zod": "2.4.0",
+    "@resvg/resvg-js": "^2.6.2",
     "@timelish/email-builder": "*",
     "@timelish/i18n": "*",
     "@timelish/logger": "*",
@@ -51,12 +52,15 @@
     "@timelish/ui-admin": "*",
     "@timelish/ui-admin-kit": "*",
     "@timelish/utils": "*",
+    "@ts-ics/schema-zod": "2.4.0",
     "html-to-text": "^9.0.5",
     "ics": "^3.7.6",
     "lucide-react": "^0.555.0",
     "nodemailer": "^6.9.14",
+    "pdfkit": "^0.17.2",
+    "react": "19.0.0",
+    "satori": "^0.25.0",
     "ts-ics": "2.4.0",
-    "tsdav": "2.1.2",
-    "react": "19.0.0"
+    "tsdav": "2.1.2"
   }
 }

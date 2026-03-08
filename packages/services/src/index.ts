@@ -19,6 +19,8 @@ import { GiftCardsService } from "./gift-cards.service";
 import { OrganizationService } from "./organization.service";
 import { PagesService } from "./pages.service";
 import { PaymentsService } from "./payments.service";
+import { S3AssetsStorageService } from "./s3-assets-storage";
+import { getS3Configuration } from "./s3-assets-storage/utils";
 import { ScheduleService } from "./schedule.service";
 import { ServicesService } from "./services.service";
 import { TemplatesService } from "./templates.service";
@@ -40,6 +42,7 @@ export * from "./gift-cards.service";
 export * from "./organization.service";
 export * from "./pages.service";
 export * from "./payments.service";
+export * from "./s3-assets-storage";
 export * from "./schedule.service";
 export * from "./services.service";
 
@@ -51,7 +54,16 @@ export * from "./services.service";
 export const ServicesContainer: (companyId: string) => IServicesContainer =
   cache((companyId: string) => {
     const configurationService = new CachedConfigurationService(companyId);
-    const assetsService = new AssetsService(companyId, configurationService);
+    const assetsStorage = new S3AssetsStorageService(
+      companyId,
+      getS3Configuration(),
+    );
+    const assetsService = new AssetsService(
+      companyId,
+      configurationService,
+      assetsStorage,
+    );
+    
     const jobService = new BullMQJobService(companyId, getBullMQJobConfig());
     const dashboardNotificationsService =
       new RedisDashboardNotificationPublisher(companyId, getRedisClient());
@@ -100,6 +112,7 @@ export const ServicesContainer: (companyId: string) => IServicesContainer =
 
     const services: IServicesContainer = {
       configurationService,
+      assetsStorage,
       assetsService,
       eventsService,
       pagesService,

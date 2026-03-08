@@ -1,3 +1,4 @@
+"use client";
 import { adminApi } from "@timelish/api-sdk";
 import { useI18n } from "@timelish/i18n";
 import { Payment, PaymentSummary } from "@timelish/types";

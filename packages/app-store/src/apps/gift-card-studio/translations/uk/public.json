@@ -1,0 +1,30 @@
+{
+  "block": {
+    "title": "Купити подарункову карту",
+    "description": "Оберіть дизайн та суму",
+    "steps": {
+      "details": "Деталі карти",
+      "payment": "Оплата"
+    },
+    "details": {
+      "design": "Дизайн",
+      "amount": "Сума",
+      "yourName": "Ваше ім'я",
+      "email": "Email",
+      "phone": "Телефон",
+      "sendToSomeoneElse": "Надіслати цю карту іншій особі",
+      "toName": "Ім'я отримувача",
+      "toEmail": "Email отримувача",
+      "message": "Повідомлення",
+      "preview": "Попередній перегляд",
+      "previewLabel": "ПОПЕРЕДНІЙ ПЕРЕГЛЯД"
+    },
+    "payment": {
+      "pay": "Оплатити"
+    },
+    "success": {
+      "title": "Дякуємо!",
+      "description": "Подарункову карту успішно придбано."
+    }
+  }
+}

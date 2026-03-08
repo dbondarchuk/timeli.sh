@@ -1,6 +1,7 @@
 import { getServicesContainer } from "@/utils/utils";
 import { notFound } from "next/navigation";
 import { NextRequest, NextResponse } from "next/server";
+import path from "path";
 import { Readable, ReadableOptions } from "stream";
 
 /**
@@ -41,13 +42,13 @@ export async function GET(
 ): Promise<NextResponse> {
   const params = await props.params;
 
-  const filename = params?.slug?.join("/");
-  if (!filename) {
+  const filePath = params?.slug?.join("/");
+  if (!filePath) {
     return notFound();
   }
 
   const servicesContainer = await getServicesContainer();
-  const result = await servicesContainer.assetsService.streamAsset(filename);
+  const result = await servicesContainer.assetsService.streamAsset(filePath);
   if (!result) {
     return notFound();
   }
@@ -57,6 +58,8 @@ export async function GET(
   const contentType = asset.mimeType;
   const inline = request.nextUrl.searchParams.has("inline");
 
+  const fileName = path.basename(filePath);
+
   const data: ReadableStream<Uint8Array> = streamFile(stream); // Stream the file with a 1kb chunk
   const res = new NextResponse(data, {
     status: 200,
@@ -64,7 +67,7 @@ export async function GET(
       //Headers
       "content-disposition": inline
         ? "inline"
-        : `attachment; filename=${filename}`, //State that this is a file attachment
+        : `attachment; filename=${fileName}`, //State that this is a file attachment
       "content-type": contentType,
       "content-length": `${asset.size}`,
       "Cache-Control": `public, max-age=31536000, immutable`,

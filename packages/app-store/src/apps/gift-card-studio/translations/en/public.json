@@ -1,0 +1,30 @@
+{
+  "block": {
+    "title": "Purchase a Gift Card",
+    "description": "Choose a design and amount",
+    "steps": {
+      "details": "Gift Card Details",
+      "payment": "Payment"
+    },
+    "details": {
+      "design": "Design",
+      "amount": "Amount",
+      "yourName": "Your Name",
+      "email": "Email",
+      "phone": "Phone",
+      "sendToSomeoneElse": "Send this gift card to someone else",
+      "toName": "Recipient Name",
+      "toEmail": "Recipient Email",
+      "message": "Message",
+      "preview": "Preview",
+      "previewLabel": "PREVIEW"
+    },
+    "payment": {
+      "pay": "Pay"
+    },
+    "success": {
+      "title": "Thank you!",
+      "description": "Your gift card has been purchased successfully."
+    }
+  }
+}

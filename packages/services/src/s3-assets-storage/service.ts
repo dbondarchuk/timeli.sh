@@ -23,7 +23,9 @@ export class S3AssetsStorageService implements IAssetsStorage {
     this.loggerFactory = getLoggerFactory("S3AssetsStorageService", companyId);
   }
 
-  public async getFile(filename: string): Promise<Readable | null> {
+  public async getFile(
+    filename: string,
+  ): Promise<{ stream: Readable; contentLength: number } | null> {
     const logger = this.loggerFactory("getFile");
     logger.debug(
       {
@@ -43,7 +45,7 @@ export class S3AssetsStorageService implements IAssetsStorage {
         }),
       );
 
-      if (!response.Body) {
+      if (!response.Body || !response.ContentLength) {
         logger.error({ filename, fileKey }, "S3 response has no body");
         throw new Error("S3 response has no body");
       }
@@ -53,7 +55,10 @@ export class S3AssetsStorageService implements IAssetsStorage {
         "Successfully retrieved file from S3",
       );
 
-      return response.Body as Readable;
+      return {
+        stream: response.Body as Readable,
+        contentLength: response.ContentLength,
+      };
     } catch (error: any) {
       if (error?.name === "NoSuchKey" || error?.name === "NotFound") {
         logger.error({ filename, fileKey }, "File not found in S3");
