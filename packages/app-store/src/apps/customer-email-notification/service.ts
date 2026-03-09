@@ -351,6 +351,18 @@ export default class CustomerEmailNotificationConnectedApp
         return;
       }
 
+      if (eventTemplate.type !== "email") {
+        logger.warn(
+          {
+            appId: appData._id,
+            appointmentId: appointment._id,
+            eventTemplateId: data.event.templateId,
+          },
+          "Event template is not an email template, skipping email notification",
+        );
+        return;
+      }
+
       logger.debug(
         { appId: appData._id, appointmentId: appointment._id },
         "Rendering event template",
@@ -364,7 +376,7 @@ export default class CustomerEmailNotificationConnectedApp
       const eventContent = getEventCalendarContent(
         config.general,
         appointment,
-        templateSafeWithError(data.event.summary, args),
+        templateSafeWithError(eventTemplate.subject, args),
         renderedEventTemplate,
         forceRequest ? "REQUEST" : AppointmentStatusToICalMethodMap[status],
       );
@@ -374,7 +386,7 @@ export default class CustomerEmailNotificationConnectedApp
         "Generated event calendar content",
       );
 
-      const { subject, templateId } = data.templates[status];
+      const { templateId } = data.templates[status];
       if (!templateId) {
         logger.warn(
           { appId: appData._id, appointmentId: appointment._id, status },
@@ -388,7 +400,6 @@ export default class CustomerEmailNotificationConnectedApp
           appId: appData._id,
           appointmentId: appointment._id,
           templateId,
-          subject,
         },
         "Getting email template",
       );
@@ -399,6 +410,14 @@ export default class CustomerEmailNotificationConnectedApp
         logger.error(
           { appId: appData._id, appointmentId: appointment._id, templateId },
           "Email template not found",
+        );
+        return;
+      }
+
+      if (template.type !== "email") {
+        logger.warn(
+          { appId: appData._id, appointmentId: appointment._id, templateId },
+          "Email template is not an email template, skipping email notification",
         );
         return;
       }
@@ -425,7 +444,7 @@ export default class CustomerEmailNotificationConnectedApp
       await this.props.services.notificationService.sendEmail({
         email: {
           to: appointment.fields.email,
-          subject: templateSafeWithError(subject, args),
+          subject: templateSafeWithError(template.subject, args),
           body: renderedTemplate,
           icalEvent: {
             method: forceRequest

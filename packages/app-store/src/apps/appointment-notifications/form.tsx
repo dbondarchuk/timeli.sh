@@ -23,7 +23,6 @@ import {
   use12HourFormat,
 } from "@timelish/ui";
 import {
-  ArgumentsAutocomplete,
   SaveButton,
   TemplateSelector,
   useDemoArguments,
@@ -35,29 +34,29 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { checkUniqueName, create, update } from "./actions";
 import {
-  getScheduledNotificationSchemaWithUniqueCheck,
-  scheduledNotificationAppointmentCountType,
-  scheduledNotificationTypes,
-  ScheduledNotificationUpdateModel,
+  appointmentNotificationAppointmentCountType,
+  appointmentNotificationTypes,
+  AppointmentNotificationUpdateModel,
+  getAppointmentNotificationSchemaWithUniqueCheck,
 } from "./models";
 import {
-  ScheduledNotificationsAdminKeys,
-  ScheduledNotificationsAdminNamespace,
-  scheduledNotificationsAdminNamespace,
+  AppointmentNotificationsAdminKeys,
+  appointmentNotificationsAdminNamespace,
+  AppointmentNotificationsAdminNamespace,
 } from "./translations/types";
 
-export const ScheduledNotificationForm: React.FC<{
-  initialData?: ScheduledNotificationUpdateModel & Partial<DatabaseId>;
+export const AppointmentNotificationForm: React.FC<{
+  initialData?: AppointmentNotificationUpdateModel & Partial<DatabaseId>;
   appId: string;
 }> = ({ initialData, appId }) => {
   const t = useI18n<
-    ScheduledNotificationsAdminNamespace,
-    ScheduledNotificationsAdminKeys
-  >(scheduledNotificationsAdminNamespace);
+    AppointmentNotificationsAdminNamespace,
+    AppointmentNotificationsAdminKeys
+  >(appointmentNotificationsAdminNamespace);
   const tAdmin = useI18n("admin");
   const uses12HourFormat = use12HourFormat();
 
-  const formSchema = getScheduledNotificationSchemaWithUniqueCheck(
+  const formSchema = getAppointmentNotificationSchemaWithUniqueCheck(
     (name) => checkUniqueName(appId, name, initialData?._id),
     t("form.name.validation.unique"),
   );
@@ -93,7 +92,7 @@ export const ScheduledNotificationForm: React.FC<{
         if (!initialData?._id) {
           const { _id } = await create(appId, data);
           router.push(
-            `/dashboard/communications/scheduled-notifications/edit?id=${_id}`,
+            `/dashboard/communications/appointment-notifications/edit?id=${_id}`,
           );
         } else {
           await update(appId, initialData._id, data);
@@ -149,7 +148,7 @@ export const ScheduledNotificationForm: React.FC<{
                   <Combobox
                     disabled={loading}
                     className="flex w-full font-normal text-base"
-                    values={scheduledNotificationTypes.map((type) => ({
+                    values={appointmentNotificationTypes.map((type) => ({
                       value: type,
                       label: t(`triggers.${type}`),
                     }))}
@@ -190,11 +189,13 @@ export const ScheduledNotificationForm: React.FC<{
                       />
                     </SelectTrigger>
                     <SelectContent>
-                      {scheduledNotificationAppointmentCountType.map((type) => (
-                        <SelectItem key={type} value={type}>
-                          {t(`form.appointmentCount.type.types.${type}`)}
-                        </SelectItem>
-                      ))}
+                      {appointmentNotificationAppointmentCountType.map(
+                        (type) => (
+                          <SelectItem key={type} value={type}>
+                            {t(`form.appointmentCount.type.types.${type}`)}
+                          </SelectItem>
+                        ),
+                      )}
                     </SelectContent>
                   </Select>
                 </FormControl>
@@ -474,36 +475,6 @@ export const ScheduledNotificationForm: React.FC<{
               </FormItem>
             )}
           />
-          {itemChannel === "email" && (
-            <>
-              <FormField
-                control={form.control}
-                name="subject"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      {t("form.subject.label")}
-                      <InfoTooltip>
-                        <p>{t("form.subject.tooltip")}</p>
-                        <p>{t("form.subject.templatedValues")}</p>
-                      </InfoTooltip>
-                    </FormLabel>
-                    <FormControl>
-                      <ArgumentsAutocomplete
-                        args={demoArguments}
-                        asInput
-                        value={field.value}
-                        onChange={(value) => field.onChange(value)}
-                        disabled={loading}
-                        placeholder={t("form.subject.placeholder")}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </>
-          )}
           <FormField
             control={form.control}
             name="templateId"

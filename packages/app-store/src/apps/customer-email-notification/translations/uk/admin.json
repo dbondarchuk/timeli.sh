@@ -11,36 +11,36 @@
   "newDescription": "Створити нове email повідомлення клієнту",
   "editDescription": "Оновити email повідомлення клієнту",
   "form": {
-    "header": "Шаблон email {type}",
-    "subject": {
-      "label": "Тема email",
-      "description": "Тема email, яку побачать ваші клієнти, коли {whenText}",
-      "placeholder": "Тема"
+    "pending": {
+      "templateId": {
+        "label": "Шаблон email коли очікує",
+        "description": "Шаблон email, який побачать ваші клієнти, коли їхній запис очікує"
+      }
     },
-    "body": {
-      "label": "Тіло email",
-      "description": "Тіло email, яке побачать ваші клієнти, коли {whenText}",
-      "placeholder": "Тіло"
+    "confirmed": {
+      "templateId": {
+        "label": "Шаблон email коли підтверджено",
+        "description": "Шаблон email, який побачать ваші клієнти, коли їхній запис підтверджено"
+      }
+    },
+    "declined": {
+      "templateId": {
+        "label": "Шаблон email коли відхилено",
+        "description": "Шаблон email, який побачать ваші клієнти, коли їхній запис відхилено"
+      }
+    },
+    "rescheduled": {
+      "templateId": {
+        "label": "Шаблон email коли перенесено",
+        "description": "Шаблон email, який побачать ваші клієнти, коли їхній запис перенесено"
+      }
     },
     "calendarEventTemplate": {
-      "title": "Шаблон події календаря",
-      "summary": {
-        "label": "Підсумок події",
-        "description": "Підсумок події, який побачать ваші клієнти в своєму календарі",
-        "placeholder": "Підсумок події"
-      },
       "templateId": {
-        "label": "Вміст події",
-        "description": "Вміст події, який побачать ваші клієнти в своєму календарі",
-        "placeholder": "Вміст події"
+        "label": "Шаблон події календаря",
+        "description": "Вміст події, який побачать ваші клієнти в своєму календарі"
       }
     }
-  },
-  "whenText": {
-    "pending": "вони забронювали новий запис",
-    "confirmed": "запис було підтверджено",
-    "declined": "запис було відхилено",
-    "rescheduled": "запис було перенесено"
   },
   "statusText": {
     "email_app_not_configured": "Відправник email за замовчуванням не налаштований",

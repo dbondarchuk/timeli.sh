@@ -1404,6 +1404,9 @@
       "close": "Close"
     },
     "form": {
+      "subject": "Email subject",
+      "subjectTooltip": "Email subject that will be used to send the message",
+      "subjectPlaceholder": "Subject",
       "name": "Template name",
       "nameTooltip": "Unique template name",
       "namePlaceholder": "Template name",

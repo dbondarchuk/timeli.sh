@@ -1,5 +1,6 @@
 export const appointmentReminderEmailTemplate = {
   name: "Reminder appointment email",
+  subject: "Reminder about your appointment",
   value: {
     type: "EmailLayout",
     id: "block-1740257042800",

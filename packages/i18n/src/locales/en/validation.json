@@ -598,14 +598,25 @@
   },
   "template": {
     "name": {
-      "required": "Template name is required",
+      "required": "Template name is required and must be at least 3 characters long",
+      "unique": "Template name must be unique",
       "max": "Template name must be no more than 256 characters long"
     },
     "type": {
       "invalid": "Unknown type"
     },
     "value": {
-      "required": "Template value is required"
+      "required": "Template value is required",
+      "subject": {
+        "required": "Template subject is required",
+        "max": "Template subject must be no more than 256 characters long"
+      }
+    },
+    "textMessage": {
+      "value": {
+        "required": "Text message value is required and must be at least 1 character long",
+        "max": "Text message value must be no more than 500 characters long"
+      }
     }
   },
   "payments": {

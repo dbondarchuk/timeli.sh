@@ -12,7 +12,8 @@ import * as z from "zod";
 export const PURCHASED_GIFT_CARDS_COLLECTION_NAME =
   "gift-card-studio-purchased-gift-cards";
 
-export const statusEnum = z.enum(["pending", "completed", "failed"]);
+export const generationStatusEnum = z.enum(["pending", "completed", "failed"]);
+export const deliveryStatusEnum = z.enum(["pending", "scheduled"]);
 
 export const purchasedGiftCardSchemaBase = z.object({
   designId: zObjectId(),
@@ -22,10 +23,10 @@ export const purchasedGiftCardSchemaBase = z.object({
   toName: z.string().optional(),
   toEmail: z.union([zEmail, z.literal("")]).optional(),
   message: z.string().optional(),
-  cardGenerationStatus: statusEnum.default("pending"),
-  invoiceGenerationStatus: statusEnum.default("pending"),
-  recipientDeliveryStatus: statusEnum.default("pending"),
-  customerDeliveryStatus: statusEnum.default("pending"),
+  cardGenerationStatus: generationStatusEnum.default("pending"),
+  invoiceGenerationStatus: generationStatusEnum.default("pending"),
+  recipientDeliveryStatus: deliveryStatusEnum.default("pending"),
+  customerDeliveryStatus: deliveryStatusEnum.default("pending"),
 });
 
 export type PurchasedGiftCardUpdateModel = z.infer<

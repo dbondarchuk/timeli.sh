@@ -367,5 +367,10 @@
         "max": "Maximum amount must be less than 1000000"
       }
     }
+  },
+  "handlers": {
+    "send-gift-card-to-recipient": "Send gift card to recipient",
+    "send-gift-card-to-customer": "Send gift card to customer",
+    "send-invoice-to-customer": "Send invoice to customer"
   }
 }

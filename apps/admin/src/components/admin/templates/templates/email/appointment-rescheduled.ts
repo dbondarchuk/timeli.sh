@@ -1,5 +1,6 @@
 export const appointmentRescheduledEmailTemplate = {
   name: "Rescheduled appointment email",
+  subject: "Appointment rescheduled",
   value: {
     type: "EmailLayout",
     id: "block-1740257042800",

@@ -5,24 +5,24 @@ import { AlertModal, Button, Spinner, toastPromise } from "@timelish/ui";
 import { Trash } from "lucide-react";
 import { useQueryState } from "nuqs";
 import React from "react";
-import { deleteSelectedScheduledNotifications } from "../actions";
-import { ScheduledNotification } from "../models";
+import { deleteSelectedAppointmentNotifications } from "../actions";
+import { AppointmentNotification } from "../models";
 import {
-  ScheduledNotificationsAdminKeys,
-  ScheduledNotificationsAdminNamespace,
-  scheduledNotificationsAdminNamespace,
+  AppointmentNotificationsAdminKeys,
+  AppointmentNotificationsAdminNamespace,
+  appointmentNotificationsAdminNamespace,
 } from "../translations/types";
 
-export const DeleteSelectedScheduledNotificationsButton: React.FC<{
+export const DeleteSelectedAppointmentNotificationsButton: React.FC<{
   appId: string;
-  selected: ScheduledNotification[];
+  selected: AppointmentNotification[];
 }> = ({ selected, appId }) => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [isOpen, setIsOpen] = React.useState(false);
   const t = useI18n<
-    ScheduledNotificationsAdminNamespace,
-    ScheduledNotificationsAdminKeys
-  >(scheduledNotificationsAdminNamespace);
+    AppointmentNotificationsAdminNamespace,
+    AppointmentNotificationsAdminKeys
+  >(appointmentNotificationsAdminNamespace);
   const tAdmin = useI18n("admin");
 
   const [_, reload] = useQueryState("ts", { history: "replace" });
@@ -31,12 +31,12 @@ export const DeleteSelectedScheduledNotificationsButton: React.FC<{
       setIsLoading(true);
 
       await toastPromise(
-        deleteSelectedScheduledNotifications(
+        deleteSelectedAppointmentNotifications(
           appId,
           selected.map((r) => r._id),
         ),
         {
-          success: t("statusText.scheduled_notifications_deleted", {
+          success: t("statusText.appointment_notifications_deleted", {
             count: selected.length,
           }),
           error: tAdmin("common.toasts.error"),

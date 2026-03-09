@@ -8,37 +8,37 @@ import { buildSearchQuery, escapeRegex } from "@timelish/utils";
 import { DateTime } from "luxon";
 import { ObjectId, type Filter, type Sort } from "mongodb";
 import {
-  GetScheduledNotificationsAction,
-  ScheduledNotification,
-  ScheduledNotificationUpdateModel,
+  AppointmentNotification,
+  AppointmentNotificationUpdateModel,
+  GetAppointmentNotificationsAction,
 } from "./models";
-import { ScheduledNotificationsAdminAllKeys } from "./translations/types";
+import { AppointmentNotificationsAdminAllKeys } from "./translations/types";
 
-const SCHEDULED_NOTIFICATIONS_COLLECTION_NAME = "scheduled-notifications";
+const APPOINTMENT_NOTIFICATIONS_COLLECTION_NAME = "appointment-notifications";
 
-export class ScheduledNotificationsRepository {
+export class AppointmentNotificationsRepository {
   protected readonly loggerFactory: LoggerFactory;
 
   public constructor(protected readonly props: IConnectedAppProps) {
     this.loggerFactory = getLoggerFactory(
-      "ScheduledNotificationsRepository",
+      "AppointmentNotificationsRepository",
       props.companyId,
     );
   }
 
-  public async getScheduledNotification(appId: string, id: string) {
-    const logger = this.loggerFactory("getScheduledNotification");
+  public async getAppointmentNotification(appId: string, id: string) {
+    const logger = this.loggerFactory("getAppointmentNotification");
     logger.debug(
-      { appId, companyId: this.props.companyId, scheduledNotificationId: id },
-      "Getting scheduled notification",
+      { appId, companyId: this.props.companyId, appointmentNotificationId: id },
+      "Getting appointment notification",
     );
 
     try {
       const db = await this.props.getDbConnection();
 
-      const scheduledNotification = await db
-        .collection<ScheduledNotification>(
-          SCHEDULED_NOTIFICATIONS_COLLECTION_NAME,
+      const appointmentNotification = await db
+        .collection<AppointmentNotification>(
+          APPOINTMENT_NOTIFICATIONS_COLLECTION_NAME,
         )
         .findOne({
           appId,
@@ -46,42 +46,42 @@ export class ScheduledNotificationsRepository {
           _id: id,
         });
 
-      if (scheduledNotification) {
+      if (appointmentNotification) {
         logger.debug(
           {
             appId,
-            scheduledNotificationId: id,
-            scheduledNotificationName: scheduledNotification.name,
+            appointmentNotificationId: id,
+            appointmentNotificationName: appointmentNotification.name,
           },
-          "Successfully retrieved scheduled notification",
+          "Successfully retrieved appointment notification",
         );
       } else {
         logger.debug(
-          { appId, scheduledNotificationId: id },
-          "Scheduled notification not found",
+          { appId, appointmentNotificationId: id },
+          "Appointment notification not found",
         );
       }
 
-      return scheduledNotification;
+      return appointmentNotification;
     } catch (error: any) {
       logger.error(
         {
           appId,
-          scheduledNotificationId: id,
+          appointmentNotificationId: id,
           error: error?.message || error?.toString(),
         },
-        "Error getting scheduled notification",
+        "Error getting appointment notification",
       );
       throw error;
     }
   }
 
-  public async getScheduledNotifications(
+  public async getAppointmentNotifications(
     appId: string,
-    query: GetScheduledNotificationsAction["query"],
-  ): Promise<WithTotal<ScheduledNotification>> {
-    const logger = this.loggerFactory("getScheduledNotifications");
-    logger.debug({ appId, query }, "Getting scheduled notifications");
+    query: GetAppointmentNotificationsAction["query"],
+  ): Promise<WithTotal<AppointmentNotification>> {
+    const logger = this.loggerFactory("getAppointmentNotifications");
+    logger.debug({ appId, query }, "Getting appointment notifications");
 
     try {
       const db = await this.props.getDbConnection();
@@ -94,7 +94,7 @@ export class ScheduledNotificationsRepository {
         {},
       ) || { updatedAt: -1 };
 
-      const filter: Filter<ScheduledNotification> = {
+      const filter: Filter<AppointmentNotification> = {
         appId,
       };
 
@@ -112,7 +112,7 @@ export class ScheduledNotificationsRepository {
 
       if (query.search) {
         const $regex = new RegExp(escapeRegex(query.search), "i");
-        const queries = buildSearchQuery<ScheduledNotification>(
+        const queries = buildSearchQuery<AppointmentNotification>(
           { $regex },
           "name",
         );
@@ -122,12 +122,12 @@ export class ScheduledNotificationsRepository {
 
       logger.debug(
         { appId, filter, sort, offset: query.offset, limit: query.limit },
-        "Executing scheduled notifications query",
+        "Executing appointment notifications query",
       );
 
       const [result] = await db
-        .collection<ScheduledNotification>(
-          SCHEDULED_NOTIFICATIONS_COLLECTION_NAME,
+        .collection<AppointmentNotification>(
+          APPOINTMENT_NOTIFICATIONS_COLLECTION_NAME,
         )
         .aggregate([
           {
@@ -169,7 +169,7 @@ export class ScheduledNotificationsRepository {
 
       logger.debug(
         { appId, total, itemCount: items.length },
-        "Successfully retrieved scheduled notifications",
+        "Successfully retrieved appointment notifications",
       );
 
       return {
@@ -179,31 +179,31 @@ export class ScheduledNotificationsRepository {
     } catch (error: any) {
       logger.error(
         { appId, query, error: error?.message || error?.toString() },
-        "Error getting scheduled notifications",
+        "Error getting appointment notifications",
       );
       throw error;
     }
   }
 
-  public async createScheduledNotification(
+  public async createAppointmentNotification(
     appId: string,
-    scheduledNotification: ScheduledNotificationUpdateModel,
-  ): Promise<ScheduledNotification> {
-    const logger = this.loggerFactory("createScheduledNotification");
+    appointmentNotification: AppointmentNotificationUpdateModel,
+  ): Promise<AppointmentNotification> {
+    const logger = this.loggerFactory("createAppointmentNotification");
     logger.debug(
       {
         appId,
-        scheduledNotificationName: scheduledNotification.name,
-        channel: scheduledNotification.channel,
-        type: scheduledNotification.type,
-        appointmentCount: scheduledNotification.appointmentCount,
+        appointmentNotificationName: appointmentNotification.name,
+        channel: appointmentNotification.channel,
+        type: appointmentNotification.type,
+        appointmentCount: appointmentNotification.appointmentCount,
       },
-      "Creating scheduled notification",
+      "Creating appointment notification",
     );
 
     try {
-      const dbScheduledNotification: ScheduledNotification = {
-        ...scheduledNotification,
+      const dbAppointmentNotification: AppointmentNotification = {
+        ...appointmentNotification,
         appId,
         _id: new ObjectId().toString(),
         companyId: this.props.companyId,
@@ -212,89 +212,89 @@ export class ScheduledNotificationsRepository {
 
       const isUnique = await this.checkUniqueName(
         appId,
-        scheduledNotification.name,
+        appointmentNotification.name,
       );
       if (!isUnique) {
         logger.error(
-          { appId, scheduledNotificationName: scheduledNotification.name },
-          "Scheduled notification name already exists",
+          { appId, appointmentNotificationName: appointmentNotification.name },
+          "Appointment notification name already exists",
         );
         throw new ConnectedAppError(
-          "app_scheduled-notifications_admin.form.name.validation.unique" satisfies ScheduledNotificationsAdminAllKeys,
+          "app_appointment-notifications_admin.form.name.validation.unique" satisfies AppointmentNotificationsAdminAllKeys,
         );
       }
 
       const db = await this.props.getDbConnection();
-      const scheduledNotifications = db.collection<ScheduledNotification>(
-        SCHEDULED_NOTIFICATIONS_COLLECTION_NAME,
+      const appointmentNotifications = db.collection<AppointmentNotification>(
+        APPOINTMENT_NOTIFICATIONS_COLLECTION_NAME,
       );
 
-      await scheduledNotifications.insertOne(dbScheduledNotification);
+      await appointmentNotifications.insertOne(dbAppointmentNotification);
 
       logger.info(
         {
           appId,
-          scheduledNotificationId: dbScheduledNotification._id,
-          scheduledNotificationName: scheduledNotification.name,
+          appointmentNotificationId: dbAppointmentNotification._id,
+          appointmentNotificationName: appointmentNotification.name,
         },
-        "Successfully created scheduled notification",
+        "Successfully created appointment notification",
       );
 
-      return dbScheduledNotification;
+      return dbAppointmentNotification;
     } catch (error: any) {
       logger.error(
         {
           appId,
-          scheduledNotificationName: scheduledNotification.name,
+          appointmentNotificationName: appointmentNotification.name,
           error: error?.message || error?.toString(),
         },
-        "Error creating scheduled notification",
+        "Error creating appointment notification",
       );
       throw error;
     }
   }
 
-  public async updateScheduledNotification(
+  public async updateAppointmentNotification(
     appId: string,
     id: string,
-    update: ScheduledNotificationUpdateModel,
+    update: AppointmentNotificationUpdateModel,
   ): Promise<void> {
-    const logger = this.loggerFactory("updateScheduledNotification");
+    const logger = this.loggerFactory("updateAppointmentNotification");
     logger.debug(
       {
         appId,
-        scheduledNotificationId: id,
-        scheduledNotificationName: update.name,
+        appointmentNotificationId: id,
+        appointmentNotificationName: update.name,
       },
-      "Updating scheduled notification",
+      "Updating appointment notification",
     );
 
     try {
       const db = await this.props.getDbConnection();
-      const scheduledNotifications = db.collection<ScheduledNotification>(
-        SCHEDULED_NOTIFICATIONS_COLLECTION_NAME,
+      const appointmentNotifications = db.collection<AppointmentNotification>(
+        APPOINTMENT_NOTIFICATIONS_COLLECTION_NAME,
       );
 
-      const { _id, ...updateObj } = update as ScheduledNotification; // Remove fields in case it slips here
+      const { _id, ...updateObj } = update as AppointmentNotification; // Remove fields in case it slips here
 
       const isUnique = await this.checkUniqueName(appId, update.name, id);
       if (!isUnique) {
         logger.error(
           {
             appId,
-            scheduledNotificationId: id,
-            scheduledNotificationName: update.name,
+            appointmentNotificationId: id,
+            appointmentNotificationName: update.name,
           },
-          "Scheduled notification name already exists",
+          "Appointment notification name already exists",
         );
         throw new ConnectedAppError(
-          "app_scheduled-notifications_admin.form.name.validation.unique" satisfies ScheduledNotificationsAdminAllKeys,
+          "app_appointment-notifications_admin.form.name.validation.unique" satisfies AppointmentNotificationsAdminAllKeys,
         );
       }
 
       updateObj.updatedAt = DateTime.utc().toJSDate();
 
-      await scheduledNotifications.updateOne(
+      await appointmentNotifications.updateOne(
         {
           _id: id,
         },
@@ -306,42 +306,42 @@ export class ScheduledNotificationsRepository {
       logger.info(
         {
           appId,
-          scheduledNotificationId: id,
-          scheduledNotificationName: update.name,
+          appointmentNotificationId: id,
+          appointmentNotificationName: update.name,
         },
-        "Successfully updated scheduled notification",
+        "Successfully updated appointment notification",
       );
     } catch (error: any) {
       logger.error(
         {
           appId,
-          scheduledNotificationId: id,
-          scheduledNotificationName: update.name,
+          appointmentNotificationId: id,
+          appointmentNotificationName: update.name,
           error: error?.message || error?.toString(),
         },
-        "Error updating scheduled notification",
+        "Error updating appointment notification",
       );
       throw error;
     }
   }
 
-  public async deleteScheduledNotifications(
+  public async deleteAppointmentNotifications(
     appId: string,
     ids: string[],
   ): Promise<void> {
-    const logger = this.loggerFactory("deleteScheduledNotifications");
+    const logger = this.loggerFactory("deleteAppointmentNotifications");
     logger.debug(
-      { appId, scheduledNotificationIds: ids },
-      "Deleting scheduled notifications",
+      { appId, appointmentNotificationIds: ids },
+      "Deleting appointment notifications",
     );
 
     try {
       const db = await this.props.getDbConnection();
-      const scheduledNotifications = db.collection<ScheduledNotification>(
-        SCHEDULED_NOTIFICATIONS_COLLECTION_NAME,
+      const appointmentNotifications = db.collection<AppointmentNotification>(
+        APPOINTMENT_NOTIFICATIONS_COLLECTION_NAME,
       );
 
-      await scheduledNotifications.deleteMany({
+      await appointmentNotifications.deleteMany({
         appId,
         companyId: this.props.companyId,
         _id: {
@@ -350,17 +350,17 @@ export class ScheduledNotificationsRepository {
       });
 
       logger.info(
-        { appId, scheduledNotificationIds: ids },
-        "Successfully deleted scheduled notifications",
+        { appId, appointmentNotificationIds: ids },
+        "Successfully deleted appointment notifications",
       );
     } catch (error: any) {
       logger.error(
         {
           appId,
-          scheduledNotificationIds: ids,
+          appointmentNotificationIds: ids,
           error: error?.message || error?.toString(),
         },
-        "Error deleting scheduled notifications",
+        "Error deleting appointment notifications",
       );
       throw error;
     }
@@ -373,17 +373,17 @@ export class ScheduledNotificationsRepository {
   ): Promise<boolean> {
     const logger = this.loggerFactory("checkUniqueName");
     logger.debug(
-      { appId, name, scheduledNotificationId: id },
+      { appId, name, appointmentNotificationId: id },
       "Checking unique name",
     );
 
     try {
       const db = await this.props.getDbConnection();
-      const scheduledNotifications = db.collection<ScheduledNotification>(
-        SCHEDULED_NOTIFICATIONS_COLLECTION_NAME,
+      const appointmentNotifications = db.collection<AppointmentNotification>(
+        APPOINTMENT_NOTIFICATIONS_COLLECTION_NAME,
       );
 
-      const filter: Filter<ScheduledNotification> = {
+      const filter: Filter<AppointmentNotification> = {
         name,
         appId,
       };
@@ -394,7 +394,7 @@ export class ScheduledNotificationsRepository {
         };
       }
 
-      const result = scheduledNotifications.aggregate([
+      const result = appointmentNotifications.aggregate([
         {
           $match: filter,
         },
@@ -402,7 +402,7 @@ export class ScheduledNotificationsRepository {
       const isUnique = !(await result.hasNext());
 
       logger.debug(
-        { appId, name, scheduledNotificationId: id, isUnique },
+        { appId, name, appointmentNotificationId: id, isUnique },
         "Name uniqueness check completed",
       );
 
@@ -412,7 +412,7 @@ export class ScheduledNotificationsRepository {
         {
           appId,
           name,
-          scheduledNotificationId: id,
+          appointmentNotificationId: id,
           error: error?.message || error?.toString(),
         },
         "Error checking unique name",
@@ -425,11 +425,11 @@ export class ScheduledNotificationsRepository {
     const logger = this.loggerFactory("onUninstall");
     try {
       const db = await this.props.getDbConnection();
-      const collection = db.collection<ScheduledNotification>(
-        SCHEDULED_NOTIFICATIONS_COLLECTION_NAME,
+      const collection = db.collection<AppointmentNotification>(
+        APPOINTMENT_NOTIFICATIONS_COLLECTION_NAME,
       );
 
-      logger.debug({ appId }, "Deleting scheduled notifications for app");
+      logger.debug({ appId }, "Deleting appointment notifications for app");
 
       await collection.deleteMany({
         appId,
@@ -439,28 +439,31 @@ export class ScheduledNotificationsRepository {
       if (count === 0) {
         logger.debug(
           { appId },
-          "No scheduled notifications left, dropping collection",
+          "No appointment notifications left, dropping collection",
         );
-        await db.dropCollection(SCHEDULED_NOTIFICATIONS_COLLECTION_NAME);
+        await db.dropCollection(APPOINTMENT_NOTIFICATIONS_COLLECTION_NAME);
       }
 
-      logger.info({ appId }, "Successfully cleaned up scheduled notifications");
+      logger.info(
+        { appId },
+        "Successfully cleaned up appointment notifications",
+      );
     } catch (error: any) {
       logger.error(
         { appId, error: error?.message || error?.toString() },
-        "Error cleaning up scheduled notifications",
+        "Error cleaning up appointment notifications",
       );
       throw error;
     }
   }
 
-  public async installScheduledNotificationsApp() {
-    const logger = this.loggerFactory("installScheduledNotificationsApp");
-    logger.debug("Installing scheduled notifications app");
+  public async installAppointmentNotificationsApp() {
+    const logger = this.loggerFactory("installAppointmentNotificationsApp");
+    logger.debug("Installing appointment notifications app");
 
     const db = await this.props.getDbConnection();
-    const collection = await db.createCollection<ScheduledNotification>(
-      SCHEDULED_NOTIFICATIONS_COLLECTION_NAME,
+    const collection = await db.createCollection<AppointmentNotification>(
+      APPOINTMENT_NOTIFICATIONS_COLLECTION_NAME,
     );
 
     const indexes = {
@@ -481,6 +484,6 @@ export class ScheduledNotificationsRepository {
       await collection.createIndex(index, { name });
     }
 
-    logger.debug("Scheduled notifications app installed");
+    logger.debug("Appointment notifications app installed");
   }
 }

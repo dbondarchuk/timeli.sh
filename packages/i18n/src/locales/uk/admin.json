@@ -1404,8 +1404,9 @@
       "close": "Закрити"
     },
     "form": {
-      "name": "Назва шаблону",
-      "nameTooltip": "Унікальна назва шаблону",
+      "subject": "Тема повідомлення",
+      "subjectPlaceholder": "Тема",
+      "subjectTooltip": "Тема повідомлення, яка буде використана для відправлення повідомлення",
       "namePlaceholder": "Назва шаблону",
       "validation": {
         "templateNotValid": "Шаблон недійсний"

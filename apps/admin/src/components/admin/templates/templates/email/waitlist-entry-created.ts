@@ -1,5 +1,6 @@
 export const waitlistEntryCreatedEmailTemplate = {
   name: "New waitlist entry email",
+  subject: "Thank you for joining the waitlist!",
   value: {
     type: "EmailLayout",
     id: "block-1740257042800",

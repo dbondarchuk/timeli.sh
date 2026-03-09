@@ -1,3 +1,5 @@
+import { APPOINTMENT_NOTIFICATIONS_APP_NAME } from "./apps/appointment-notifications/const";
+import { ScheduledNotificationsTranslations } from "./apps/appointment-notifications/translations";
 import { BLOG_APP_NAME } from "./apps/blog/const";
 import { BlogTranslations } from "./apps/blog/translations";
 import { BUSY_EVENTS_APP_NAME } from "./apps/busy-events/const";
@@ -28,8 +30,6 @@ import { OUTLOOK_APP_NAME } from "./apps/outlook/const";
 import { OutlookTranslations } from "./apps/outlook/translations";
 import { PAYPAL_APP_NAME } from "./apps/paypal/const";
 import { PaypalTranslations } from "./apps/paypal/translations";
-import { SCHEDULED_NOTIFICATIONS_APP_NAME } from "./apps/scheduled-notifications/const";
-import { ScheduledNotificationsTranslations } from "./apps/scheduled-notifications/translations";
 import { SMART_SCHEDULE_APP_NAME } from "./apps/smart-schedule/const";
 import { SmartScheduleTranslations } from "./apps/smart-schedule/translations";
 import { SMTP_APP_NAME } from "./apps/smtp/const";
@@ -81,7 +81,7 @@ export const AppsTranslations: Record<
   [ICS_APP_NAME]: IcsTranslations,
   [OUTLOOK_APP_NAME]: OutlookTranslations,
   [PAYPAL_APP_NAME]: PaypalTranslations,
-  [SCHEDULED_NOTIFICATIONS_APP_NAME]: ScheduledNotificationsTranslations,
+  [APPOINTMENT_NOTIFICATIONS_APP_NAME]: ScheduledNotificationsTranslations,
   [SMTP_APP_NAME]: SmtpTranslations,
   [TEXTBELT_APP_NAME]: TextBeltTranslations,
   [TEXT_MESSAGE_AUTO_REPLY_APP_NAME]: TextMessageAutoReplyTranslations,

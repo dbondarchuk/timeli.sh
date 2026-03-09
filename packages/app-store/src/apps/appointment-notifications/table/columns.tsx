@@ -4,15 +4,15 @@ import { useI18n, useLocale } from "@timelish/i18n";
 import { Checkbox, Link } from "@timelish/ui";
 import { tableSortHeader, tableSortNoopFunction } from "@timelish/ui-admin";
 import { DateTime } from "luxon";
-import { ScheduledNotification } from "../models";
+import { AppointmentNotification } from "../models";
 import {
-  ScheduledNotificationsAdminKeys,
-  ScheduledNotificationsAdminNamespace,
-  scheduledNotificationsAdminNamespace,
+  AppointmentNotificationsAdminKeys,
+  AppointmentNotificationsAdminNamespace,
+  appointmentNotificationsAdminNamespace,
 } from "../translations/types";
 import { CellAction } from "./cell-action";
 
-export const columns: ColumnDef<ScheduledNotification>[] = [
+export const columns: ColumnDef<AppointmentNotification>[] = [
   {
     id: "select",
     header: ({ table }) => {
@@ -41,7 +41,7 @@ export const columns: ColumnDef<ScheduledNotification>[] = [
   {
     cell: ({ row }) => (
       <Link
-        href={`/dashboard/communications/scheduled-notifications/edit?id=${row.original._id}`}
+        href={`/dashboard/communications/appointment-notifications/edit?id=${row.original._id}`}
         variant="underline"
       >
         {row.original.name}
@@ -49,39 +49,43 @@ export const columns: ColumnDef<ScheduledNotification>[] = [
     ),
     id: "name",
     header: tableSortHeader<
-      ScheduledNotificationsAdminNamespace,
-      ScheduledNotificationsAdminKeys
-    >("table.columns.name", "string", scheduledNotificationsAdminNamespace),
+      AppointmentNotificationsAdminNamespace,
+      AppointmentNotificationsAdminKeys
+    >("table.columns.name", "string", appointmentNotificationsAdminNamespace),
     sortingFn: tableSortNoopFunction,
   },
   {
     cell: ({ row }) => {
       const t = useI18n<
-        ScheduledNotificationsAdminNamespace,
-        ScheduledNotificationsAdminKeys
-      >(scheduledNotificationsAdminNamespace);
+        AppointmentNotificationsAdminNamespace,
+        AppointmentNotificationsAdminKeys
+      >(appointmentNotificationsAdminNamespace);
       return t(`triggers.${row.original.type}`);
     },
     id: "type",
     header: tableSortHeader<
-      ScheduledNotificationsAdminNamespace,
-      ScheduledNotificationsAdminKeys
-    >("table.columns.type", "string", scheduledNotificationsAdminNamespace),
+      AppointmentNotificationsAdminNamespace,
+      AppointmentNotificationsAdminKeys
+    >("table.columns.type", "string", appointmentNotificationsAdminNamespace),
     sortingFn: tableSortNoopFunction,
   },
   {
     cell: ({ row }) => {
       const t = useI18n<
-        ScheduledNotificationsAdminNamespace,
-        ScheduledNotificationsAdminKeys
-      >(scheduledNotificationsAdminNamespace);
+        AppointmentNotificationsAdminNamespace,
+        AppointmentNotificationsAdminKeys
+      >(appointmentNotificationsAdminNamespace);
       return t(`channels.${row.original.channel}`);
     },
     id: "channel",
     header: tableSortHeader<
-      ScheduledNotificationsAdminNamespace,
-      ScheduledNotificationsAdminKeys
-    >("table.columns.channel", "string", scheduledNotificationsAdminNamespace),
+      AppointmentNotificationsAdminNamespace,
+      AppointmentNotificationsAdminKeys
+    >(
+      "table.columns.channel",
+      "string",
+      appointmentNotificationsAdminNamespace,
+    ),
     sortingFn: tableSortNoopFunction,
   },
   {
@@ -94,16 +98,20 @@ export const columns: ColumnDef<ScheduledNotification>[] = [
     },
     id: "updatedAt",
     header: tableSortHeader<
-      ScheduledNotificationsAdminNamespace,
-      ScheduledNotificationsAdminKeys
-    >("table.columns.updatedAt", "date", scheduledNotificationsAdminNamespace),
+      AppointmentNotificationsAdminNamespace,
+      AppointmentNotificationsAdminKeys
+    >(
+      "table.columns.updatedAt",
+      "date",
+      appointmentNotificationsAdminNamespace,
+    ),
     sortingFn: tableSortNoopFunction,
   },
   {
     id: "actions",
     cell: ({ row }) => (
       <CellAction
-        scheduledNotification={row.original}
+        appointmentNotification={row.original}
         appId={row.original.appId}
       />
     ),

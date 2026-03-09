@@ -1,11 +1,11 @@
 import { adminApi } from "@timelish/api-sdk";
 import { WithTotal } from "@timelish/types";
 import {
-  GetScheduledNotificationsAction,
+  AppointmentNotification,
+  AppointmentNotificationsAppData,
+  AppointmentNotificationUpdateModel,
+  GetAppointmentNotificationsAction,
   RequestAction,
-  ScheduledNotification,
-  ScheduledNotificationsAppData,
-  ScheduledNotificationUpdateModel,
 } from "./models";
 
 const logger = (action: string) => ({
@@ -20,55 +20,55 @@ const logger = (action: string) => ({
   },
 });
 
-export const deleteScheduledNotification = async (
+export const deleteAppointmentNotification = async (
   appId: string,
-  scheduledNotificationId: string,
+  appointmentNotificationId: string,
 ) => {
-  const actionLogger = logger("deleteScheduledNotification");
+  const actionLogger = logger("deleteAppointmentNotification");
   actionLogger.debug(
-    { appId, scheduledNotificationId },
-    "Deleting scheduled notification",
+    { appId, appointmentNotificationId },
+    "Deleting appointment notification",
   );
   try {
     const result = await adminApi.apps.processRequest(appId, {
-      type: "delete-scheduled-notifications",
-      ids: [scheduledNotificationId],
+      type: "delete-appointment-notifications",
+      ids: [appointmentNotificationId],
     } as RequestAction);
     actionLogger.debug(
-      { appId, scheduledNotificationId },
-      "Scheduled notification deleted",
+      { appId, appointmentNotificationId },
+      "Appointment notification deleted",
     );
     return result;
   } catch (error) {
     actionLogger.error(
       {
         appId,
-        scheduledNotificationId,
+        appointmentNotificationId,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to delete scheduled notification",
+      "Failed to delete appointment notification",
     );
     throw error;
   }
 };
 
-export const deleteSelectedScheduledNotifications = async (
+export const deleteSelectedAppointmentNotifications = async (
   appId: string,
   ids: string[],
 ) => {
-  const actionLogger = logger("deleteSelectedScheduledNotifications");
+  const actionLogger = logger("deleteSelectedAppointmentNotifications");
   actionLogger.debug(
     { appId, ids, count: ids.length },
-    "Deleting selected scheduled notifications",
+    "Deleting selected appointment notifications",
   );
   try {
     const result = await adminApi.apps.processRequest(appId, {
-      type: "delete-scheduled-notifications",
+      type: "delete-appointment-notifications",
       ids: ids,
     } as RequestAction);
     actionLogger.debug(
       { appId, ids, count: ids.length },
-      "Selected scheduled notifications deleted",
+      "Selected appointment notifications deleted",
     );
     return result;
   } catch (error) {
@@ -79,29 +79,29 @@ export const deleteSelectedScheduledNotifications = async (
         count: ids.length,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to delete selected scheduled notifications",
+      "Failed to delete selected appointment notifications",
     );
     throw error;
   }
 };
 
-export const getScheduledNotifications = async (
+export const getAppointmentNotifications = async (
   appId: string,
-  query: GetScheduledNotificationsAction["query"],
+  query: GetAppointmentNotificationsAction["query"],
 ) => {
-  const actionLogger = logger("getScheduledNotifications");
+  const actionLogger = logger("getAppointmentNotifications");
   actionLogger.debug(
     { appId, hasQuery: !!query },
-    "Getting scheduled notifications",
+    "Getting appointment notifications",
   );
   try {
     const result = (await adminApi.apps.processRequest(appId, {
-      type: "get-scheduled-notifications",
+      type: "get-appointment-notifications",
       query,
-    } as RequestAction)) as WithTotal<ScheduledNotification>;
+    } as RequestAction)) as WithTotal<AppointmentNotification>;
     actionLogger.debug(
       { appId, hasQuery: !!query, total: result.total },
-      "Scheduled notifications retrieved",
+      "Appointment notifications retrieved",
     );
     return result;
   } catch (error) {
@@ -111,23 +111,23 @@ export const getScheduledNotifications = async (
         hasQuery: !!query,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to get scheduled notifications",
+      "Failed to get appointment notifications",
     );
     throw error;
   }
 };
 
-export const getScheduledNotification = async (appId: string, id: string) => {
-  const actionLogger = logger("getScheduledNotification");
-  actionLogger.debug({ appId, id }, "Getting scheduled notification");
+export const getAppointmentNotification = async (appId: string, id: string) => {
+  const actionLogger = logger("getAppointmentNotification");
+  actionLogger.debug({ appId, id }, "Getting appointment notification");
   try {
     const result = (await adminApi.apps.processRequest(appId, {
-      type: "get-scheduled-notification",
+      type: "get-appointment-notification",
       id,
-    } as RequestAction)) as ScheduledNotification;
+    } as RequestAction)) as AppointmentNotification;
     actionLogger.debug(
       { appId, id, hasResult: !!result },
-      "Scheduled notification retrieved",
+      "Appointment notification retrieved",
     );
     return result;
   } catch (error) {
@@ -137,38 +137,38 @@ export const getScheduledNotification = async (appId: string, id: string) => {
         id,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to get scheduled notification",
+      "Failed to get appointment notification",
     );
     throw error;
   }
 };
 
-export const getScheduledNotificationsAppData = async (appId: string) => {
-  const actionLogger = logger("getScheduledNotificationsAppData");
+export const getAppointmentNotificationsAppData = async (appId: string) => {
+  const actionLogger = logger("getAppointmentNotificationsAppData");
   actionLogger.debug({ appId }, "Getting app data");
   try {
     const result = (await adminApi.apps.processRequest(appId, {
       type: "get-app-data",
-    } as RequestAction)) as ScheduledNotificationsAppData;
+    } as RequestAction)) as AppointmentNotificationsAppData;
     actionLogger.debug({ appId, hasData: !!result }, "App data retrieved");
     return result;
   } catch (error) {
     actionLogger.error(
       { appId, error: error instanceof Error ? error.message : String(error) },
-      "Failed to get scheduled notifications app data",
+      "Failed to get appointment notifications app data",
     );
     throw error;
   }
 };
 
-export const setScheduledNotificationsAppData = async (
+export const setAppointmentNotificationsAppData = async (
   appId: string,
-  data: ScheduledNotificationsAppData,
+  data: AppointmentNotificationsAppData,
 ) => {
-  const actionLogger = logger("setScheduledNotificationsAppData");
+  const actionLogger = logger("setAppointmentNotificationsAppData");
   actionLogger.debug(
     { appId, hasData: !!data },
-    "Setting scheduled notifications app data",
+    "Setting appointment notifications app data",
   );
   try {
     const result = await adminApi.apps.processRequest(appId, {
@@ -224,31 +224,31 @@ export const checkUniqueName = async (
 
 export const create = async (
   appId: string,
-  scheduledNotification: ScheduledNotificationUpdateModel,
+  appointmentNotification: AppointmentNotificationUpdateModel,
 ) => {
   const actionLogger = logger("create");
   actionLogger.debug(
-    { appId, hasScheduledNotification: !!scheduledNotification },
-    "Creating scheduled notification",
+    { appId, hasAppointmentNotification: !!appointmentNotification },
+    "Creating appointment notification",
   );
   try {
     const result = await adminApi.apps.processRequest(appId, {
-      type: "create-scheduled-notification",
-      scheduledNotification,
+      type: "create-appointment-notification",
+      appointmentNotification,
     } as RequestAction);
     actionLogger.debug(
-      { appId, hasScheduledNotification: !!scheduledNotification },
-      "Scheduled notification created",
+      { appId, hasAppointmentNotification: !!appointmentNotification },
+      "Appointment notification created",
     );
     return result;
   } catch (error) {
     actionLogger.error(
       {
         appId,
-        hasScheduledNotification: !!scheduledNotification,
+        hasAppointmentNotification: !!appointmentNotification,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to create scheduled notification",
+      "Failed to create appointment notification",
     );
     throw error;
   }
@@ -257,22 +257,22 @@ export const create = async (
 export const update = async (
   appId: string,
   id: string,
-  update: ScheduledNotificationUpdateModel,
+  update: AppointmentNotificationUpdateModel,
 ) => {
   const actionLogger = logger("update");
   actionLogger.debug(
     { appId, id, hasUpdate: !!update },
-    "Updating scheduled notification",
+    "Updating appointment notification",
   );
   try {
     const result = await adminApi.apps.processRequest(appId, {
-      type: "update-scheduled-notification",
+      type: "update-appointment-notification",
       update,
       id,
     } as RequestAction);
     actionLogger.debug(
       { appId, id, hasUpdate: !!update },
-      "Scheduled notification updated",
+      "Appointment notification updated",
     );
     return result;
   } catch (error) {
@@ -283,7 +283,7 @@ export const update = async (
         hasUpdate: !!update,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to update scheduled notification",
+      "Failed to update appointment notification",
     );
     throw error;
   }

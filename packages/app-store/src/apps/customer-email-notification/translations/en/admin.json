@@ -11,36 +11,36 @@
   "newDescription": "Create new customer email notification",
   "editDescription": "Update customer email notification",
   "form": {
-    "header": "{type} email template",
-    "subject": {
-      "label": "Email subject",
-      "description": "Subject of the email, that your customers will see when {whenText}",
-      "placeholder": "Subject"
+    "pending": {
+      "templateId": {
+        "label": "Pending email template",
+        "description": "Email template that will be used to send to customers when their appointment is pending"
+      }
     },
-    "body": {
-      "label": "Email body",
-      "description": "Body of the email, that your customers will see when {whenText}",
-      "placeholder": "Body"
+    "confirmed": {
+      "templateId": {
+        "label": "Confirmed email template",
+        "description": "Email template that will be used to send to customers when their appointment is confirmed"
+      }
+    },
+    "declined": {
+      "templateId": {
+        "label": "Declined email template",
+        "description": "Email template that will be used to send to customers when their appointment is declined"
+      }
+    },
+    "rescheduled": {
+      "templateId": {
+        "label": "Rescheduled email template",
+        "description": "Email template that will be used to send to customers when their appointment is rescheduled"
+      }
     },
     "calendarEventTemplate": {
-      "title": "Calendar event template",
-      "summary": {
-        "label": "Event summary",
-        "description": "Summary of the event, that your customers will see in their calendar",
-        "placeholder": "Event summary"
-      },
       "templateId": {
-        "label": "Event content",
-        "description": "Content of the event, that your customers will see in their calendar",
-        "placeholder": "Event content"
+        "label": "Calendar event template",
+        "description": "Content of the event, that your customers will see in their calendar"
       }
     }
-  },
-  "whenText": {
-    "pending": "they book new appointment",
-    "confirmed": "the appointment was confirmed",
-    "declined": "the appointment was declined",
-    "rescheduled": "the appointment was rescheduled"
   },
   "statusText": {
     "email_app_not_configured": "Email sender default is not configured",

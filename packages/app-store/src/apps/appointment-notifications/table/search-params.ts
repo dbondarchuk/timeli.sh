@@ -7,7 +7,7 @@ import {
 
 import { baseSearchParams } from "@timelish/api-sdk";
 import { communicationChannels } from "@timelish/types";
-import { scheduledNotificationTypes } from "../models";
+import { appointmentNotificationTypes } from "../models";
 
 export const searchParams = {
   ...baseSearchParams,
@@ -15,8 +15,8 @@ export const searchParams = {
     parseAsStringEnum(communicationChannels.flat()),
   ).withDefault(communicationChannels.flat()),
   type: parseAsArrayOf(
-    parseAsStringEnum(scheduledNotificationTypes.flat()),
-  ).withDefault(scheduledNotificationTypes.flat()),
+    parseAsStringEnum(appointmentNotificationTypes.flat()),
+  ).withDefault(appointmentNotificationTypes.flat()),
   sort: baseSearchParams.sort.withDefault([
     {
       id: "updatedAt",

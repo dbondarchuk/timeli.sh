@@ -1,6 +1,8 @@
 "use client";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+export const IS_CLIPBOARD_PASTE_SUPPORTED = false;
+
 export function useClipboard(document?: Document, pollInterval = 1000) {
   const [clipboardText, setClipboardText] = useState<string>("");
 
@@ -17,6 +19,11 @@ export function useClipboard(document?: Document, pollInterval = 1000) {
     try {
       // Firefox shows a popup when reading the clipboard
       if (isFirefox) {
+        return false;
+      }
+
+      // Clipboard paste might not be supported in some browsers
+      if (!IS_CLIPBOARD_PASTE_SUPPORTED) {
         return false;
       }
 
@@ -65,5 +72,9 @@ export function useClipboard(document?: Document, pollInterval = 1000) {
     };
   }, [pollInterval, readClipboard, navigatorToUse]);
 
-  return { clipboardText, readClipboard, copyToClipboard };
+  const isPasteSupported = useMemo(() => {
+    return IS_CLIPBOARD_PASTE_SUPPORTED;
+  }, []);
+
+  return { clipboardText, readClipboard, copyToClipboard, isPasteSupported };
 }

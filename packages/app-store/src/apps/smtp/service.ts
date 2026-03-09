@@ -231,6 +231,23 @@ export default class SmtpConnectedApp
         );
       }
 
+      const attachments = await Promise.all(
+        email.attachments?.map(async (attachment) => {
+          const result = await this.props.services.assetsStorage.getFile(
+            attachment.storageFilename,
+          );
+          if (!result) {
+            throw new Error("Attachment not found");
+          }
+          const { stream } = result;
+          return {
+            cid: attachment.cid,
+            filename: attachment.filename,
+            content: stream,
+          };
+        }) ?? [],
+      );
+
       const mailOptions: nodemailer.SendMailOptions = {
         from: {
           name: config.name,
@@ -241,11 +258,7 @@ export default class SmtpConnectedApp
         subject: email.subject,
         html: email.body,
         icalEvent: icalEvent,
-        attachments: email.attachments?.map((attachment) => ({
-          cid: attachment.cid,
-          filename: attachment.filename,
-          content: attachment.content,
-        })),
+        attachments,
       };
 
       logger.debug(

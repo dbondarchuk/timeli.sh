@@ -6,9 +6,11 @@ import {
 } from "@timelish/types";
 import { formatAmountString } from "@timelish/utils";
 import { DateTime } from "luxon";
+import path from "path";
 import { Readable } from "stream";
 import { png2pdf, renderGiftCard } from "../designer/lib/render/render";
 import { GiftCardStudioJobPayload } from "../models/app";
+import { GiftCardStudioAdminAllKeys } from "../translations/types";
 import { GiftCardStudioRepositoryService } from "./repository-service";
 import { getFileName } from "./utils";
 
@@ -71,6 +73,17 @@ export class GiftCardStudioJobProcessor {
           "Purchased gift card not found",
         );
         throw new Error("Purchased gift card not found");
+      }
+
+      const customer = await this.services.customersService.getCustomer(
+        purchasedGiftCard.customerId,
+      );
+      if (!customer) {
+        logger.error(
+          { appId: appData._id, customerId: purchasedGiftCard.customerId },
+          "Customer not found",
+        );
+        throw new Error("Customer not found");
       }
 
       const design = await this.repository.getDesignById(
@@ -163,18 +176,88 @@ export class GiftCardStudioJobProcessor {
       );
 
       logger.debug(
-        { appId: appData._id, purchasedGiftCardId, pdfFileName },
-        "Saved gift card PDF to storage",
+        {
+          appId: appData._id,
+          purchasedGiftCardId,
+          pdfFileName,
+          customerId: purchasedGiftCard.customerId,
+        },
+        "Saved gift card PDF to storage. Sending email to customer and recipient.",
+      );
+
+      await this.services.notificationService.sendEmail({
+        email: {
+          to: customer.email,
+          subject: "Your gift card purchase",
+          body: "Thank you for your purchase. Your gift card has been generated and is attached to this email.",
+          attachments: [
+            {
+              filename: path.basename(pdfFileName),
+              contentType: "application/pdf",
+              storageFilename: pdfFileName,
+              cid: "pdf",
+            },
+          ],
+        },
+        participantType: "customer",
+        handledBy: {
+          key: "app_gift-card-studio_admin.handlers.send-gift-card-to-customer" satisfies GiftCardStudioAdminAllKeys,
+          args: {
+            name: customer.name,
+            email: customer.email,
+          },
+        },
+        customerId: purchasedGiftCard.customerId,
+      });
+
+      if (
+        purchasedGiftCard.toEmail &&
+        purchasedGiftCard.toEmail !== customer.email
+      ) {
+        logger.debug(
+          {
+            appId: appData._id,
+            purchasedGiftCardId,
+            toEmail: purchasedGiftCard.toEmail,
+          },
+          "Sending gift card to recipient",
+        );
+
+        await this.services.notificationService.sendEmail({
+          email: {
+            to: purchasedGiftCard.toEmail,
+            subject: "Your gift card",
+            body: "Someone has purchased a gift card for you. Your gift card is attached to this email.",
+            attachments: [
+              {
+                filename: path.basename(pdfFileName),
+                contentType: "application/pdf",
+                storageFilename: pdfFileName,
+                cid: "pdf",
+              },
+            ],
+          },
+          customerId: purchasedGiftCard.customerId,
+          participantType: "customer",
+          handledBy: {
+            key: "app_gift-card-studio_admin.handlers.send-gift-card-to-recipient" satisfies GiftCardStudioAdminAllKeys,
+            args: {
+              name: purchasedGiftCard.toName ?? "",
+              email: purchasedGiftCard.toEmail,
+            },
+          },
+        });
+      }
+
+      logger.debug(
+        { appId: appData._id, purchasedGiftCardId },
+        "Successfully generated gift card. Marking as completed and delivery scheduled.",
       );
 
       await this.repository.updatePurchasedGiftCardStatus(purchasedGiftCardId, {
         cardGenerationStatus: "completed",
+        recipientDeliveryStatus: "scheduled",
       });
-
-      logger.debug(
-        { appId: appData._id, purchasedGiftCardId },
-        "Updated purchased gift card with PDF and PNG file names",
-      );
     } catch (error) {
       logger.error(
         { appId: appData._id, purchasedGiftCardId, error },

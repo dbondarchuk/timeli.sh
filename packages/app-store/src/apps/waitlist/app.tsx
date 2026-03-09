@@ -13,6 +13,7 @@ export const WaitlistApp: App<"app_waitlist_admin", WaitlistAdminKeys> = {
     "waitlist",
     "appointment-hook",
     "dashboard-notifier",
+    "customer-tab",
   ],
   type: "complex",
   Logo: ({ className }) => <CalendarClock className={className} />,

@@ -4,7 +4,7 @@ import { useQueryState } from "nuqs";
 import { useCallback, useMemo } from "react";
 import { searchParams } from "./search-params";
 
-export function useScheduledNotificationsTableFilters() {
+export function useAppointmentNotificationsTableFilters() {
   const [searchQuery, setSearchQuery] = useQueryState(
     "search",
     searchParams.search

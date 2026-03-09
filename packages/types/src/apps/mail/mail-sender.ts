@@ -6,7 +6,7 @@ export type IcalEventMethod = "PUBLISH" | "REQUEST" | "CANCEL" | "REPLY";
 export type EmailAttachment = {
   filename: string;
   contentType: string;
-  content: Buffer;
+  storageFilename: string;
   cid: string;
 };
 

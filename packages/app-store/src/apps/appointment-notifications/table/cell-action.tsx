@@ -15,29 +15,29 @@ import Link from "next/link";
 import { useQueryState } from "nuqs";
 import { useState } from "react";
 
-import { deleteScheduledNotification } from "../actions";
-import { ScheduledNotification } from "../models";
+import { deleteAppointmentNotification } from "../actions";
+import { AppointmentNotification } from "../models";
 import {
-  ScheduledNotificationsAdminKeys,
-  scheduledNotificationsAdminNamespace,
-  ScheduledNotificationsAdminNamespace,
+  AppointmentNotificationsAdminKeys,
+  appointmentNotificationsAdminNamespace,
+  AppointmentNotificationsAdminNamespace,
 } from "../translations/types";
 
 interface CellActionProps {
-  scheduledNotification: ScheduledNotification;
+  appointmentNotification: AppointmentNotification;
   appId: string;
 }
 
 export const CellAction: React.FC<CellActionProps> = ({
-  scheduledNotification,
+  appointmentNotification,
   appId,
 }) => {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const t = useI18n<
-    ScheduledNotificationsAdminNamespace,
-    ScheduledNotificationsAdminKeys
-  >(scheduledNotificationsAdminNamespace);
+    AppointmentNotificationsAdminNamespace,
+    AppointmentNotificationsAdminKeys
+  >(appointmentNotificationsAdminNamespace);
 
   const tAdmin = useI18n("admin");
 
@@ -48,9 +48,9 @@ export const CellAction: React.FC<CellActionProps> = ({
       setLoading(true);
 
       await toastPromise(
-        deleteScheduledNotification(appId, scheduledNotification._id),
+        deleteAppointmentNotification(appId, appointmentNotification._id),
         {
-          success: t("statusText.scheduled_notification_deleted"),
+          success: t("statusText.appointment_notification_deleted"),
           error: tAdmin("common.toasts.error"),
         },
       );
@@ -84,7 +84,7 @@ export const CellAction: React.FC<CellActionProps> = ({
           <DropdownMenuLabel>{t("table.actions.label")}</DropdownMenuLabel>
           <DropdownMenuItem asChild>
             <Link
-              href={`/dashboard/communications/scheduled-notifications/edit?id=${scheduledNotification._id}`}
+              href={`/dashboard/communications/appointment-notifications/edit?id=${appointmentNotification._id}`}
               className="text-foreground"
             >
               <Edit className="size-3.5" /> {t("table.actions.edit")}

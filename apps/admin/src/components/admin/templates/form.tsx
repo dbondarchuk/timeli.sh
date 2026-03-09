@@ -21,7 +21,7 @@ import {
   toastPromise,
   useDebounceCacheFn,
 } from "@timelish/ui";
-import { SaveButton } from "@timelish/ui-admin";
+import { ArgumentsAutocomplete, SaveButton } from "@timelish/ui-admin";
 import { TextMessageBuilder } from "@timelish/ui-admin-kit";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -47,6 +47,7 @@ export const TemplateForm: React.FC<
     adminApi.templates.checkUniqueName,
     300,
   );
+
   const formSchema = getTemplateSchemaWithUniqueCheck(
     (name) => cachedUniqueNameCheck(name, initialData?._id),
     "templates.nameMustBeUnique",
@@ -140,6 +141,31 @@ export const TemplateForm: React.FC<
               </FormItem>
             )}
           />
+          {type === "email" && (
+            <FormField
+              control={form.control}
+              name="subject"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    {t("templates.form.subject")}
+                    <InfoTooltip>
+                      {t("templates.form.subjectTooltip")}
+                    </InfoTooltip>
+                  </FormLabel>
+                  <FormControl>
+                    <ArgumentsAutocomplete
+                      args={args}
+                      disabled={loading}
+                      placeholder={t("templates.form.subjectPlaceholder")}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
           <FormField
             control={form.control}
             name="value"

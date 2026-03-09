@@ -475,13 +475,13 @@ export class GiftCardStudioConnectedApp implements IConnectedApp, IScheduled {
 
     if (sendGiftCard) {
       await repo.updatePurchasedGiftCardStatus(purchasedId, {
-        recipientDeliveryStatus: "completed",
+        recipientDeliveryStatus: "scheduled",
       });
       logger.debug({ purchasedId }, "Marked gift card delivered to recipient");
     }
     if (sendInvoice) {
       await repo.updatePurchasedGiftCardStatus(purchasedId, {
-        customerDeliveryStatus: "completed",
+        customerDeliveryStatus: "scheduled",
       });
       logger.debug({ purchasedId }, "Marked invoice sent to customer");
     }

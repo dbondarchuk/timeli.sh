@@ -74,6 +74,9 @@
   "app": {
     "displayName": "Waitlist",
     "description": "Waitlist helps you capture and manage customer demand when your schedule is full.\nEasily allow clients to join a waiting list for specific services, dates, or times",
+    "customerTab": {
+      "waitlist": "Waitlist"
+    },
     "pages": {
       "main": {
         "label": "Waitlist",

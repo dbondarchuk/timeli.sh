@@ -1,5 +1,6 @@
 export const appointmentDeclinedEmailTemplate = {
   name: "Declined appointment email",
+  subject: "Appointment declined",
   value: {
     type: "EmailLayout",
     id: "block-1740257042800",

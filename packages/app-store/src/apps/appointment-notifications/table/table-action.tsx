@@ -17,22 +17,22 @@ import {
 } from "@timelish/ui-admin";
 import { Plus, Settings2 } from "lucide-react";
 import React from "react";
-import { scheduledNotificationTypes } from "../models";
+import { appointmentNotificationTypes } from "../models";
 import {
-  ScheduledNotificationsAdminKeys,
-  ScheduledNotificationsAdminNamespace,
-  scheduledNotificationsAdminNamespace,
+  AppointmentNotificationsAdminKeys,
+  AppointmentNotificationsAdminNamespace,
+  appointmentNotificationsAdminNamespace,
 } from "../translations/types";
-import { DeleteSelectedScheduledNotificationsButton } from "./delete-selected";
-import { useScheduledNotificationsTableFilters } from "./use-table-filters";
+import { DeleteSelectedAppointmentNotificationsButton } from "./delete-selected";
+import { useAppointmentNotificationsTableFilters } from "./use-table-filters";
 
-export const ScheduledNotificationsTableAction: React.FC<{ appId: string }> = ({
-  appId,
-}) => {
+export const AppointmentNotificationsTableAction: React.FC<{
+  appId: string;
+}> = ({ appId }) => {
   const t = useI18n<
-    ScheduledNotificationsAdminNamespace,
-    ScheduledNotificationsAdminKeys
-  >(scheduledNotificationsAdminNamespace);
+    AppointmentNotificationsAdminNamespace,
+    AppointmentNotificationsAdminKeys
+  >(appointmentNotificationsAdminNamespace);
   const tUi = useI18n("ui");
   const tAdmin = useI18n("admin");
 
@@ -46,7 +46,7 @@ export const ScheduledNotificationsTableAction: React.FC<{ appId: string }> = ({
     setSearchQuery,
     typeFilter,
     setTypeFilter,
-  } = useScheduledNotificationsTableFilters();
+  } = useAppointmentNotificationsTableFilters();
   const { rowSelection } = useSelectedRowsStore();
 
   const additionalFilters = (
@@ -64,7 +64,7 @@ export const ScheduledNotificationsTableAction: React.FC<{ appId: string }> = ({
       <DataTableFilterBox
         filterKey="type"
         title={t("table.columns.type")}
-        options={scheduledNotificationTypes.map((value) => ({
+        options={appointmentNotificationTypes.map((value) => ({
           value,
           label: t(`triggers.${value}`),
         }))}
@@ -104,14 +104,14 @@ export const ScheduledNotificationsTableAction: React.FC<{ appId: string }> = ({
         />
       </div>
       <div className="flex flex-wrap items-center gap-4 max-md:justify-between">
-        <DeleteSelectedScheduledNotificationsButton
+        <DeleteSelectedAppointmentNotificationsButton
           selected={rowSelection}
           appId={appId}
         />
         <Link
           button
           variant="primary"
-          href="/dashboard/communications/scheduled-notifications/new"
+          href="/dashboard/communications/appointment-notifications/new"
         >
           <Plus size={16} />{" "}
           <span className="max-md:hidden">{t("table.actions.add")}</span>

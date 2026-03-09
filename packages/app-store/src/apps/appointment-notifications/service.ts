@@ -10,32 +10,32 @@ import {
   IConnectedAppProps,
   IScheduled,
 } from "@timelish/types";
-import { ScheduledNotificationsJobProcessor } from "./job-processor";
+import { AppointmentNotificationsJobProcessor } from "./job-processor";
 import {
+  AppointmentNotification,
+  AppointmentNotificationsJobPayload,
+  AppointmentNotificationUpdateModel,
   RequestAction,
   requestActionSchema,
-  ScheduledNotification,
-  ScheduledNotificationsJobPayload,
-  ScheduledNotificationUpdateModel,
 } from "./models";
-import { ScheduledNotificationsRepository } from "./repository";
+import { AppointmentNotificationsRepository } from "./repository";
 import {
-  ScheduledNotificationsAdminKeys,
-  ScheduledNotificationsAdminNamespace,
+  AppointmentNotificationsAdminKeys,
+  AppointmentNotificationsAdminNamespace,
 } from "./translations/types";
 
-export default class ScheduledNotificationsConnectedApp
+export default class AppointmentNotificationsConnectedApp
   implements IConnectedApp, IScheduled, IAppointmentHook
 {
   protected readonly loggerFactory: LoggerFactory;
-  protected readonly repository: ScheduledNotificationsRepository;
-  protected readonly jobProcessor: ScheduledNotificationsJobProcessor;
+  protected readonly repository: AppointmentNotificationsRepository;
+  protected readonly jobProcessor: AppointmentNotificationsJobProcessor;
 
   public constructor(protected readonly props: IConnectedAppProps) {
-    this.repository = new ScheduledNotificationsRepository(props);
-    this.jobProcessor = new ScheduledNotificationsJobProcessor(props);
+    this.repository = new AppointmentNotificationsRepository(props);
+    this.jobProcessor = new AppointmentNotificationsJobProcessor(props);
     this.loggerFactory = getLoggerFactory(
-      "ScheduledNotificationsConnectedApp",
+      "AppointmentNotificationsConnectedApp",
       props.companyId,
     );
   }
@@ -47,14 +47,14 @@ export default class ScheduledNotificationsConnectedApp
     const logger = this.loggerFactory("processRequest");
     logger.debug(
       { appId: appData._id, actionType: request.type },
-      "Processing scheduled notifications request",
+      "Processing appointment notifications request",
     );
 
     const { data, success, error } = requestActionSchema.safeParse(request);
     if (!success) {
-      logger.error({ error }, "Invalid scheduled notifications request");
+      logger.error({ error }, "Invalid appointment notifications request");
       throw new ConnectedAppRequestError(
-        "invalid_scheduled_notifications_request",
+        "invalid_appointment_notifications_request",
         { request },
         400,
         error.message,
@@ -63,59 +63,59 @@ export default class ScheduledNotificationsConnectedApp
 
     try {
       switch (data.type) {
-        case "get-scheduled-notification":
+        case "get-appointment-notification":
           logger.debug(
-            { appId: appData._id, scheduledNotificationId: data.id },
-            "Getting scheduled notification",
+            { appId: appData._id, appointmentNotificationId: data.id },
+            "Getting appointment notification",
           );
-          return await this.repository.getScheduledNotification(
+          return await this.repository.getAppointmentNotification(
             appData._id,
             data.id,
           );
 
-        case "get-scheduled-notifications":
+        case "get-appointment-notifications":
           logger.debug(
             { appId: appData._id, query: data.query },
-            "Getting scheduled notifications",
+            "Getting appointment notifications",
           );
-          return await this.repository.getScheduledNotifications(
+          return await this.repository.getAppointmentNotifications(
             appData._id,
             data.query,
           );
 
-        case "delete-scheduled-notifications":
+        case "delete-appointment-notifications":
           logger.debug(
-            { appId: appData._id, scheduledNotificationIds: data.ids },
-            "Deleting scheduled notifications",
+            { appId: appData._id, appointmentNotificationIds: data.ids },
+            "Deleting appointment notifications",
           );
 
-          return await this.deleteScheduledNotifications(appData, data.ids);
+          return await this.deleteAppointmentNotifications(appData, data.ids);
 
-        case "create-scheduled-notification":
+        case "create-appointment-notification":
           logger.debug(
             {
               appId: appData._id,
-              scheduledNotificationName: data.scheduledNotification.name,
+              appointmentNotificationName: data.appointmentNotification.name,
             },
-            "Creating scheduled notification",
+            "Creating appointment notification",
           );
 
-          return await this.createScheduledNotification(
+          return await this.createAppointmentNotification(
             appData,
-            data.scheduledNotification,
+            data.appointmentNotification,
           );
 
-        case "update-scheduled-notification":
+        case "update-appointment-notification":
           logger.debug(
             {
               appId: appData._id,
-              scheduledNotificationId: data.id,
-              scheduledNotificationName: data.update.name,
+              appointmentNotificationId: data.id,
+              appointmentNotificationName: data.update.name,
             },
-            "Updating scheduled notification",
+            "Updating appointment notification",
           );
 
-          return await this.updateScheduledNotification(
+          return await this.updateAppointmentNotification(
             appData,
             data.id,
             data.update,
@@ -126,7 +126,7 @@ export default class ScheduledNotificationsConnectedApp
             {
               appId: appData._id,
               name: data.name,
-              scheduledNotificationId: data.id,
+              appointmentNotificationId: data.id,
             },
             "Checking unique name",
           );
@@ -139,16 +139,16 @@ export default class ScheduledNotificationsConnectedApp
         default: {
           logger.debug(
             { appId: appData._id },
-            "Processing default request - setting up scheduled notifications app",
+            "Processing default request - setting up appointment notifications app",
           );
 
           const status: ConnectedAppStatusWithText<
-            ScheduledNotificationsAdminNamespace,
-            ScheduledNotificationsAdminKeys
+            AppointmentNotificationsAdminNamespace,
+            AppointmentNotificationsAdminKeys
           > = {
             status: "connected",
             statusText:
-              "app_scheduled-notifications_admin.statusText.successfully_set_up",
+              "app_appointment-notifications_admin.statusText.successfully_set_up",
           };
 
           this.props.update({
@@ -158,7 +158,7 @@ export default class ScheduledNotificationsConnectedApp
 
           logger.info(
             { appId: appData._id },
-            "Successfully set up scheduled notifications app",
+            "Successfully set up appointment notifications app",
           );
 
           return status;
@@ -171,7 +171,7 @@ export default class ScheduledNotificationsConnectedApp
           actionType: data.type,
           error: error?.message || error?.toString(),
         },
-        "Error processing scheduled notifications request",
+        "Error processing appointment notifications request",
       );
       throw error;
     }
@@ -181,12 +181,12 @@ export default class ScheduledNotificationsConnectedApp
     const logger = this.loggerFactory("install");
     logger.debug(
       { appId: appData._id },
-      "Installing scheduled notifications app",
+      "Installing appointment notifications app",
     );
-    await this.repository.installScheduledNotificationsApp();
+    await this.repository.installAppointmentNotificationsApp();
     logger.debug(
       { appId: appData._id },
-      "Scheduled notifications app installed successfully",
+      "Appointment notifications app installed successfully",
     );
   }
 
@@ -194,32 +194,32 @@ export default class ScheduledNotificationsConnectedApp
     const logger = this.loggerFactory("unInstall");
     logger.debug(
       { appId: appData._id },
-      "Uninstalling scheduled notifications app",
+      "Uninstalling appointment notifications app",
     );
 
     await this.repository.onUninstall(appData._id);
 
     logger.info(
       { appId: appData._id },
-      "Successfully uninstalled scheduled notifications app",
+      "Successfully uninstalled appointment notifications app",
     );
   }
 
   public async processJob(
     appData: ConnectedAppData,
-    jobData: AppJobRequest<ScheduledNotificationsJobPayload>,
+    jobData: AppJobRequest<AppointmentNotificationsJobPayload>,
   ): Promise<void> {
     const logger = this.loggerFactory("processJob");
     logger.debug(
       { appId: appData._id, jobData },
-      "Processing scheduled notifications job",
+      "Processing appointment notifications job",
     );
 
     await this.jobProcessor.processJob(appData, jobData);
 
     logger.info(
       { appId: appData._id, jobData },
-      "Successfully processed scheduled notifications job",
+      "Successfully processed appointment notifications job",
     );
 
     return;
@@ -247,7 +247,7 @@ export default class ScheduledNotificationsConnectedApp
       payload: {
         type: "update-appointment",
         appointmentId: appointment._id,
-      } satisfies ScheduledNotificationsJobPayload,
+      } satisfies AppointmentNotificationsJobPayload,
     });
   }
 
@@ -265,23 +265,23 @@ export default class ScheduledNotificationsConnectedApp
       payload: {
         type: "update-appointment",
         appointmentId: appointment._id,
-      } satisfies ScheduledNotificationsJobPayload,
+      } satisfies AppointmentNotificationsJobPayload,
     });
 
     logger.info(
       { appId: appData._id, appointment },
-      "Successfully scheduled scheduled notifications update appointment job",
+      "Successfully appointment appointment notifications update appointment job",
     );
   }
 
-  public async onAppointmentRescheduled(
+  public async onAppointmentReappointment(
     appData: ConnectedAppData,
     appointment: Appointment,
   ): Promise<void> {
-    const logger = this.loggerFactory("onAppointmentRescheduled");
+    const logger = this.loggerFactory("onAppointmentReappointment");
     logger.debug(
       { appId: appData._id, appointment },
-      "On appointment rescheduled",
+      "On appointment reappointment",
     );
 
     await this.props.services.jobService.scheduleJob({
@@ -291,27 +291,27 @@ export default class ScheduledNotificationsConnectedApp
       payload: {
         type: "update-appointment",
         appointmentId: appointment._id,
-      } satisfies ScheduledNotificationsJobPayload,
+      } satisfies AppointmentNotificationsJobPayload,
     });
 
     logger.info(
       { appId: appData._id, appointment },
-      "Successfully scheduled scheduled notifications update appointment job",
+      "Successfully appointment appointment notifications update appointment job",
     );
   }
 
-  private async createScheduledNotification(
+  private async createAppointmentNotification(
     appData: ConnectedAppData,
-    updateModel: ScheduledNotificationUpdateModel,
-  ): Promise<ScheduledNotification> {
-    const logger = this.loggerFactory("createScheduledNotification");
+    updateModel: AppointmentNotificationUpdateModel,
+  ): Promise<AppointmentNotification> {
+    const logger = this.loggerFactory("createAppointmentNotification");
     logger.debug(
       { appId: appData._id, updateModel },
-      "Creating scheduled notification",
+      "Creating appointment notification",
     );
 
-    const scheduledNotification =
-      await this.repository.createScheduledNotification(
+    const appointmentNotification =
+      await this.repository.createAppointmentNotification(
         appData._id,
         updateModel,
       );
@@ -319,9 +319,9 @@ export default class ScheduledNotificationsConnectedApp
     logger.debug(
       {
         appId: appData._id,
-        scheduledNotificationId: scheduledNotification._id,
+        appointmentNotificationId: appointmentNotification._id,
       },
-      "Successfully created scheduled notification, scheduling update scheduled notification job",
+      "Successfully created appointment notification, scheduling update appointment notification job",
     );
 
     await this.props.services.jobService.scheduleJob({
@@ -329,42 +329,42 @@ export default class ScheduledNotificationsConnectedApp
       executeAt: "now",
       appId: appData._id,
       payload: {
-        type: "update-scheduled-notification",
-        scheduledNotificationId: scheduledNotification._id,
-      } satisfies ScheduledNotificationsJobPayload,
+        type: "update-appointment-notification",
+        appointmentNotificationId: appointmentNotification._id,
+      } satisfies AppointmentNotificationsJobPayload,
     });
 
     logger.info(
       {
         appId: appData._id,
-        scheduledNotificationId: scheduledNotification._id,
+        appointmentNotificationId: appointmentNotification._id,
       },
-      "Successfully scheduled update scheduled notification job",
+      "Successfully appointment update appointment notification job",
     );
 
-    return scheduledNotification;
+    return appointmentNotification;
   }
 
-  private async updateScheduledNotification(
+  private async updateAppointmentNotification(
     appData: ConnectedAppData,
-    scheduledNotificationId: string,
-    updateModel: ScheduledNotificationUpdateModel,
+    appointmentNotificationId: string,
+    updateModel: AppointmentNotificationUpdateModel,
   ): Promise<void> {
-    const logger = this.loggerFactory("updateScheduledNotification");
+    const logger = this.loggerFactory("updateAppointmentNotification");
     logger.debug(
-      { appId: appData._id, scheduledNotificationId },
-      "Updating scheduled notification",
+      { appId: appData._id, appointmentNotificationId },
+      "Updating appointment notification",
     );
 
-    await this.repository.updateScheduledNotification(
+    await this.repository.updateAppointmentNotification(
       appData._id,
-      scheduledNotificationId,
+      appointmentNotificationId,
       updateModel,
     );
 
     logger.debug(
-      { appId: appData._id, scheduledNotificationId },
-      "Successfully updated scheduled notification, scheduling update scheduled notification job",
+      { appId: appData._id, appointmentNotificationId },
+      "Successfully updated appointment notification, scheduling update appointment notification job",
     );
 
     await this.props.services.jobService.scheduleJob({
@@ -372,35 +372,35 @@ export default class ScheduledNotificationsConnectedApp
       executeAt: "now",
       appId: appData._id,
       payload: {
-        type: "update-scheduled-notification",
-        scheduledNotificationId,
-      } satisfies ScheduledNotificationsJobPayload,
+        type: "update-appointment-notification",
+        appointmentNotificationId,
+      } satisfies AppointmentNotificationsJobPayload,
     });
 
     logger.info(
-      { appId: appData._id, scheduledNotificationId },
-      "Successfully scheduled update scheduled notification job",
+      { appId: appData._id, appointmentNotificationId },
+      "Successfully appointment update appointment notification job",
     );
   }
 
-  private async deleteScheduledNotifications(
+  private async deleteAppointmentNotifications(
     appData: ConnectedAppData,
-    scheduledNotificationIds: string[],
+    appointmentNotificationIds: string[],
   ): Promise<void> {
-    const logger = this.loggerFactory("deleteScheduledNotifications");
+    const logger = this.loggerFactory("deleteAppointmentNotifications");
     logger.debug(
-      { appId: appData._id, scheduledNotificationIds },
-      "Deleting scheduled notifications",
+      { appId: appData._id, appointmentNotificationIds },
+      "Deleting appointment notifications",
     );
 
-    await this.repository.deleteScheduledNotifications(
+    await this.repository.deleteAppointmentNotifications(
       appData._id,
-      scheduledNotificationIds,
+      appointmentNotificationIds,
     );
 
     logger.info(
-      { appId: appData._id, scheduledNotificationIds },
-      "Successfully deleted scheduled notifications, deleting scheduled notification jobs",
+      { appId: appData._id, appointmentNotificationIds },
+      "Successfully deleted appointment notifications, deleting appointment notification jobs",
     );
 
     await this.props.services.jobService.scheduleJob({
@@ -408,14 +408,14 @@ export default class ScheduledNotificationsConnectedApp
       appId: appData._id,
       executeAt: "now",
       payload: {
-        type: "delete-scheduled-notifications",
-        scheduledNotificationIds,
-      } satisfies ScheduledNotificationsJobPayload,
+        type: "delete-appointment-notifications",
+        appointmentNotificationIds,
+      } satisfies AppointmentNotificationsJobPayload,
     });
 
     logger.info(
-      { appId: appData._id, scheduledNotificationIds },
-      "Successfully deleted scheduled notification jobs",
+      { appId: appData._id, appointmentNotificationIds },
+      "Successfully deleted appointment notification jobs",
     );
   }
 }

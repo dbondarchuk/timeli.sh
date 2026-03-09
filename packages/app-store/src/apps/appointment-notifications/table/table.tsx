@@ -6,29 +6,29 @@ import { searchParams } from "./search-params";
 import { WithTotal } from "@timelish/types";
 import { toast, useDebounce } from "@timelish/ui";
 import { DataTable, DataTableSkeleton } from "@timelish/ui-admin";
-import { getScheduledNotifications } from "../actions";
-import { ScheduledNotification } from "../models";
+import { getAppointmentNotifications } from "../actions";
+import { AppointmentNotification } from "../models";
 import {
-  ScheduledNotificationsAdminKeys,
-  ScheduledNotificationsAdminNamespace,
-  scheduledNotificationsAdminNamespace,
+  AppointmentNotificationsAdminKeys,
+  AppointmentNotificationsAdminNamespace,
+  appointmentNotificationsAdminNamespace,
 } from "../translations/types";
 import { columns } from "./columns";
 
-export const ScheduledNotificationsTable: React.FC<{ appId: string }> = ({
+export const AppointmentNotificationsTable: React.FC<{ appId: string }> = ({
   appId,
 }) => {
   const [query] = useQueryStates(searchParams);
   const t = useI18n<
-    ScheduledNotificationsAdminNamespace,
-    ScheduledNotificationsAdminKeys
-  >(scheduledNotificationsAdminNamespace);
+    AppointmentNotificationsAdminNamespace,
+    AppointmentNotificationsAdminKeys
+  >(appointmentNotificationsAdminNamespace);
 
   const delayedQuery = useDebounce(query, 100);
 
   const [loading, setLoading] = React.useState(true);
   const [response, setResponse] = React.useState<
-    WithTotal<ScheduledNotification>
+    WithTotal<AppointmentNotification>
   >({
     items: [],
     total: 0,
@@ -47,7 +47,7 @@ export const ScheduledNotificationsTable: React.FC<{ appId: string }> = ({
 
       const offset = (page - 1) * limit;
 
-      const res = await getScheduledNotifications(appId, {
+      const res = await getAppointmentNotifications(appId, {
         channel,
         offset,
         limit,
@@ -59,7 +59,7 @@ export const ScheduledNotificationsTable: React.FC<{ appId: string }> = ({
       setResponse(res);
     } catch (e: any) {
       console.error(e);
-      toast.error(t("statusText.error_loading_scheduled_notifications"));
+      toast.error(t("statusText.error_loading_appointment_notifications"));
     } finally {
       setLoading(false);
     }

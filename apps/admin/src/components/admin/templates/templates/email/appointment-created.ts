@@ -1,5 +1,6 @@
 export const appointmentCreatedEmailTemplate = {
   name: "New appointment email",
+  subject: "Your appointment request has been received",
   value: {
     type: "EmailLayout",
     id: "block-1740257042800",

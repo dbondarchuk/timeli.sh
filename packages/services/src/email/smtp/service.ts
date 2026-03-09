@@ -1,5 +1,10 @@
 import { getLoggerFactory } from "@timelish/logger";
-import { Email, EmailResponse, IMailSender } from "@timelish/types";
+import {
+  Email,
+  EmailResponse,
+  IAssetsStorage,
+  IMailSender,
+} from "@timelish/types";
 import { createEvent } from "ics";
 import nodemailer from "nodemailer";
 import Mail from "nodemailer/lib/mailer";
@@ -8,7 +13,10 @@ import { SmtpConfiguration } from "./types";
 export class SmtpService implements IMailSender {
   protected readonly loggerFactory = getLoggerFactory("SmtpService");
 
-  public constructor(protected readonly configuration: SmtpConfiguration) {}
+  public constructor(
+    protected readonly configuration: SmtpConfiguration,
+    protected readonly storageService: IAssetsStorage,
+  ) {}
 
   public async sendMail(
     email: Email,
@@ -64,6 +72,23 @@ export class SmtpService implements IMailSender {
         );
       }
 
+      const attachments = await Promise.all(
+        email.attachments?.map(async (attachment) => {
+          const result = await this.storageService.getFile(
+            attachment.storageFilename,
+          );
+          if (!result) {
+            throw new Error("Attachment not found");
+          }
+          const { stream } = result;
+          return {
+            cid: attachment.cid,
+            filename: attachment.filename,
+            content: stream,
+          };
+        }) ?? [],
+      );
+
       const mailOptions: nodemailer.SendMailOptions = {
         from: {
           name: fromName || this.configuration.fromName,
@@ -74,11 +99,7 @@ export class SmtpService implements IMailSender {
         subject: email.subject,
         html: email.body,
         icalEvent: icalEvent,
-        attachments: email.attachments?.map((attachment) => ({
-          cid: attachment.cid,
-          filename: attachment.filename,
-          content: attachment.content,
-        })),
+        attachments,
       };
 
       logger.debug(
