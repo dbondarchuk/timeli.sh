@@ -20,6 +20,7 @@ import {
   waitlistAdminNamespace,
 } from "../translations/types";
 import { DismissSelectedWaitlistEntriesButton } from "./dismiss-selected";
+import { NewEntryDialog } from "./new-entry";
 import { SettingsDialog } from "./settings";
 import { useWaitlistTableFilters } from "./use-table-filters";
 
@@ -112,6 +113,7 @@ export const WaitlistTableAction: React.FC<{
         />
       </div>
       <div className="flex flex-wrap items-center gap-4 max-md:justify-between">
+        <NewEntryDialog appId={appId} customerIdLock={customerIdLock} />
         <DismissSelectedWaitlistEntriesButton
           selected={rowSelection}
           appId={appId}

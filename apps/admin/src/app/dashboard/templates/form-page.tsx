@@ -2,14 +2,14 @@ import { getServicesContainer, getWebsiteUrl } from "@/app/utils";
 import { TemplateForm } from "@/components/admin/templates/form";
 import { TemplatesTemplate } from "@/components/admin/templates/templates/type";
 import { getI18nAsync } from "@timelish/i18n/server";
-import { CommunicationChannel, Template } from "@timelish/types";
-import { Breadcrumbs } from "@timelish/ui";
 import {
-  demoAppointment,
-  demoWaitlistEntry,
-  getAdminUrl,
-  getArguments,
-} from "@timelish/utils";
+  CommunicationChannel,
+  DemoEmailArguments,
+  IDemoEmailArgumentsProvider,
+  Template,
+} from "@timelish/types";
+import { Breadcrumbs } from "@timelish/ui";
+import { demoAppointment, getAdminUrl, getArguments } from "@timelish/utils";
 import { notFound } from "next/navigation";
 import React from "react";
 import { getTemplate } from "./cached";
@@ -33,6 +33,18 @@ export const TemplateFormPage: React.FC<
     "social",
   );
 
+  const demoEmailArgumentsArray =
+    await servicesContainer.connectedAppsService.executeHooks<
+      IDemoEmailArgumentsProvider,
+      DemoEmailArguments
+    >("demo-email-arguments-provider", async (app, service) => {
+      return service.getDemoEmailArguments();
+    });
+
+  const demoEmailArguments = demoEmailArgumentsArray.reduce((acc, curr) => {
+    return { ...acc, ...curr };
+  }, {});
+
   const demoArguments = getArguments({
     appointment: demoAppointment,
     config,
@@ -40,9 +52,7 @@ export const TemplateFormPage: React.FC<
     websiteUrl,
     customer: demoAppointment.customer,
     locale: config.general.language,
-    additionalProperties: {
-      waitlistEntry: demoWaitlistEntry,
-    },
+    additionalProperties: demoEmailArguments,
   });
 
   let initialData: Template | undefined;

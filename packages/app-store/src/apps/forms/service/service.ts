@@ -545,6 +545,27 @@ export class FormsConnectedApp implements IConnectedApp {
     await this.enqueueFormResponseHook(response, form, customer);
     await this.sendEmailNotification(appData, response, form, customer);
 
+    await this.props.services.dashboardNotificationsService.publishNotification(
+      {
+        type: "form-response-created",
+        toast: {
+          type: "info",
+          title: {
+            key: "app_forms_admin.notifications.newResponse" satisfies FormsAdminAllKeys,
+          },
+          message: {
+            key: "app_forms_admin.notifications.newResponseMessage" satisfies FormsAdminAllKeys,
+          },
+          action: {
+            label: {
+              key: "app_forms_admin.notifications.viewResponse" satisfies FormsAdminAllKeys,
+            },
+            href: `/dashboard/forms/responses?formId=${form._id}`,
+          },
+        },
+      },
+    );
+
     return Response.json(
       { success: true, responseId: response._id },
       { status: 200 },

@@ -15,7 +15,6 @@ import {
   ConnectedAppStatusMessage,
   SaveButton,
   TemplateSelector,
-  useDemoArguments,
 } from "@timelish/ui-admin";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
 import { CustomerEmailNotificationApp } from "./app";
@@ -32,7 +31,6 @@ import {
 export const CustomerEmailNotificationAppSetup: React.FC<{ appId: string }> = ({
   appId,
 }) => {
-  const demoArguments = useDemoArguments();
   const { appStatus, form, isLoading, isDataLoading, isValid, onSubmit } =
     useConnectedAppSetup<CustomerEmailNotificationConfiguration>({
       appId,
@@ -44,7 +42,6 @@ export const CustomerEmailNotificationAppSetup: React.FC<{ appId: string }> = ({
     CustomerEmailNotificationAdminNamespace,
     CustomerEmailNotificationAdminKeys
   >(customerEmailNotificationAdminNamespace);
-  const tAdmin = useI18n("admin");
 
   return (
     <>

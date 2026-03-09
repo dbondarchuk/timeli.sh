@@ -52,6 +52,7 @@ export type OptionSelectorProps = {
   excludeIds?: string[];
   className?: string;
   onItemSelect?: (value: string) => void;
+  onValueChange?: (value: AppointmentOption | undefined) => void;
   allowClear?: boolean;
 };
 
@@ -61,6 +62,7 @@ export const OptionSelector: React.FC<OptionSelectorProps> = ({
   excludeIds,
   value,
   onItemSelect,
+  onValueChange,
   allowClear,
 }) => {
   const t = useI18n("ui");
@@ -106,6 +108,10 @@ export const OptionSelector: React.FC<OptionSelectorProps> = ({
     },
     [value, setItemsCache, t, excludeIds],
   );
+
+  React.useEffect(() => {
+    onValueChange?.(value ? itemsCache[value] : undefined);
+  }, [value, itemsCache, onValueChange]);
 
   return (
     <ComboboxAsync

@@ -157,6 +157,7 @@ export const TemplateForm: React.FC<
                     <ArgumentsAutocomplete
                       args={args}
                       disabled={loading}
+                      asInput
                       placeholder={t("templates.form.subjectPlaceholder")}
                       {...field}
                     />

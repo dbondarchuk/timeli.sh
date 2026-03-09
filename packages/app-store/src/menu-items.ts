@@ -1,6 +1,6 @@
 import { AppMenuItem } from "@timelish/types";
 import { APPOINTMENT_NOTIFICATIONS_APP_NAME } from "./apps/appointment-notifications/const";
-import { ScheduledNotificationsMenuItems } from "./apps/appointment-notifications/menu-items";
+import { AppointmentNotificationsMenuItems } from "./apps/appointment-notifications/menu-items";
 import { BLOG_APP_NAME } from "./apps/blog/const";
 import { BlogMenuItems } from "./apps/blog/menu-items";
 import { BUSY_EVENTS_APP_NAME } from "./apps/busy-events/const";
@@ -29,7 +29,7 @@ export const AppMenuItems: Record<string, AppMenuItem[]> = {
   [WAITLIST_APP_NAME]: WaitlistMenuItems,
   [SMTP_APP_NAME]: SmtpMenuItems,
   [WEEKLY_SCHEDULE_APP_NAME]: WeeklyScheduleMenuItems,
-  [APPOINTMENT_NOTIFICATIONS_APP_NAME]: ScheduledNotificationsMenuItems,
+  [APPOINTMENT_NOTIFICATIONS_APP_NAME]: AppointmentNotificationsMenuItems,
   [FORMS_APP_NAME]: FormsMenuItems,
   [GIFT_CARD_STUDIO_APP_NAME]: GiftCardStudioMenuItems,
 };

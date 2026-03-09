@@ -22,11 +22,7 @@ import {
   toastPromise,
   use12HourFormat,
 } from "@timelish/ui";
-import {
-  SaveButton,
-  TemplateSelector,
-  useDemoArguments,
-} from "@timelish/ui-admin";
+import { SaveButton, TemplateSelector } from "@timelish/ui-admin";
 import { DateTime } from "luxon";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -63,7 +59,6 @@ export const AppointmentNotificationForm: React.FC<{
 
   type FormValues = z.infer<typeof formSchema>;
 
-  const demoArguments = useDemoArguments();
   const [loading, setLoading] = React.useState(false);
   const router = useRouter();
   const form = useForm<FormValues>({

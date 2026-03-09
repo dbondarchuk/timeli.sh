@@ -14,7 +14,7 @@ export const GiftCardStudioApp: App<
   name: GIFT_CARD_STUDIO_APP_NAME,
   displayName: "app_gift-card-studio_admin.app.displayName" satisfies GiftCardStudioAdminAllKeys,
   category: ["apps.categories.content"],
-  scope: ["ui-components"],
+  scope: ["ui-components", "demo-email-arguments-provider"],
   type: "complex",
   Logo: ({ className }) => <Gift className={className} />,
   isFeatured: true,

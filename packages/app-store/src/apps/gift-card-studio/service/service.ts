@@ -6,10 +6,12 @@ import {
   ConnectedAppRequestError,
   IConnectedApp,
   IConnectedAppProps,
+  IDemoEmailArgumentsProvider,
   IScheduled,
 } from "@timelish/types";
 import { formatAmountString } from "@timelish/utils";
 import { DateTime } from "luxon";
+import { demoPurchasedGiftCard } from "../demo-arguments";
 import { renderGiftCard } from "../designer/lib/render/render";
 import { FieldKeyValues } from "../designer/lib/types";
 import type { DesignModel, GiftCardStudioJobPayload } from "../models";
@@ -44,8 +46,14 @@ const generateGiftCardCode = () => {
   );
 };
 
-export class GiftCardStudioConnectedApp implements IConnectedApp, IScheduled {
+export class GiftCardStudioConnectedApp
+  implements IConnectedApp, IScheduled, IDemoEmailArgumentsProvider
+{
   protected readonly loggerFactory: LoggerFactory;
+
+  public getDemoEmailArguments() {
+    return { giftCard: demoPurchasedGiftCard };
+  }
 
   public constructor(protected readonly props: IConnectedAppProps) {
     this.loggerFactory = getLoggerFactory(

@@ -1,5 +1,5 @@
 const knownLocales = ["en", "uk"];
-export const ScheduledNotificationsTranslations = {
+export const AppointmentNotificationsTranslations = {
   admin: async (locale: string) => {
     if (!knownLocales.includes(locale)) {
       return (await import(`./en/admin.json`)).default;

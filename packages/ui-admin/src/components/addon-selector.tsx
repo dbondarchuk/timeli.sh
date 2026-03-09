@@ -1,6 +1,6 @@
 import { adminApi } from "@timelish/api-sdk";
 import { useI18n } from "@timelish/i18n";
-import { AppointmentAddon } from "@timelish/types";
+import { AddonsType, AppointmentAddon } from "@timelish/types";
 import {
   cn,
   Combobox,
@@ -31,12 +31,22 @@ const AddonLabel: React.FC<{ addon: AppointmentAddon }> = ({ addon }) => {
   );
 };
 
-const getAddons = async () => {
+const getAddons = async (forOptionId?: string) => {
+  const includeUsage = forOptionId ? true : false;
   const response = await adminApi.serviceAddons.getServiceAddons({
     limit: 10000,
+    includeUsage,
   });
 
-  return response.items;
+  if (!forOptionId) {
+    return response.items;
+  }
+
+  return response.items.filter((addon) =>
+    (addon as AddonsType<true>).options?.some(
+      (option) => option._id === forOptionId,
+    ),
+  );
 };
 
 const checkAddonSearch = (addon: AppointmentAddon, query: string) => {
@@ -48,15 +58,18 @@ export type AddonSelectorProps = {
   disabled?: boolean;
   excludeIds?: string[];
   className?: string;
+  forOptionId?: string;
 } & (
   | {
       onItemSelect?: (value: string) => void;
+      onValueChange?: (value: AppointmentAddon | undefined) => void;
       value?: string;
       multi?: false;
     }
   | {
       multi: true;
       onItemSelect?: (value: string[]) => void;
+      onValueChange?: (value: AppointmentAddon[] | undefined) => void;
       value?: string[];
     }
 );
@@ -67,7 +80,9 @@ export const AddonSelector: React.FC<AddonSelectorProps> = ({
   excludeIds,
   value,
   onItemSelect,
+  onValueChange,
   multi,
+  forOptionId,
 }) => {
   const t = useI18n("admin");
   const [addons, setAddons] = React.useState<AppointmentAddon[]>([]);
@@ -77,15 +92,29 @@ export const AddonSelector: React.FC<AddonSelectorProps> = ({
     const fn = async () => {
       try {
         setIsLoading(true);
-        const fields = await getAddons();
-        setAddons(fields);
+        const addons = await getAddons(forOptionId);
+        setAddons(addons);
+
+        if (forOptionId && value) {
+          if (typeof value === "string") {
+            if (!addons.find((addon) => addon._id === value)) {
+              onItemSelect?.(undefined as any);
+            }
+          } else {
+            onItemSelect?.(
+              value.filter((id) =>
+                addons.some((addon) => addon._id === id),
+              ) as any,
+            );
+          }
+        }
       } finally {
         setIsLoading(false);
       }
     };
 
     fn();
-  }, []);
+  }, [forOptionId]);
 
   const addonValues = (addons: AppointmentAddon[]): IComboboxItem[] =>
     addons
@@ -111,6 +140,14 @@ export const AddonSelector: React.FC<AddonSelectorProps> = ({
           label: addon.name,
         };
       });
+
+  React.useEffect(() => {
+    const selectedAddons = value
+      ? addons.filter((addon) => value.includes(addon._id))
+      : [];
+
+    onValueChange?.((multi ? selectedAddons : selectedAddons[0]) as any);
+  }, [value, addons, onValueChange, multi]);
 
   return multi ? (
     <MultiSelect

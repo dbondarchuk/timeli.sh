@@ -22,6 +22,7 @@ export type AppScope = Extandable<
   | "availability-provider"
   | "meeting-url-provider"
   | "dashboard-notifier"
+  | "demo-email-arguments-provider"
 >;
 
 export type AppSetupProps = {

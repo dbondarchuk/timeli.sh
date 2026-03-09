@@ -1,11 +1,7 @@
 import { getServicesContainer, getWebsiteUrl } from "@/app/utils";
+import { AvailableApps, getDemoEmailArgumentsFromApps } from "@timelish/app-store";
 import { getLoggerFactory } from "@timelish/logger";
-import {
-  demoAppointment,
-  demoWaitlistEntry,
-  getAdminUrl,
-  getArguments,
-} from "@timelish/utils";
+import { demoAppointment, getAdminUrl, getArguments } from "@timelish/utils";
 import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
@@ -45,12 +41,10 @@ export async function GET(request: NextRequest) {
     config,
     customer: demoAppointment.customer,
     locale: config.general.language,
-    additionalProperties: {
-      waitlistEntry:
-        searchParams.get("waitlistEntry") === "true"
-          ? demoWaitlistEntry
-          : undefined,
-    },
+    additionalProperties:
+      searchParams.get("waitlistEntry") === "true"
+        ? getDemoEmailArgumentsFromApps(AvailableApps)
+        : {},
     adminUrl,
     websiteUrl,
   });

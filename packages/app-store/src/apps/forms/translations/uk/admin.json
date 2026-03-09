@@ -323,6 +323,11 @@
       }
     }
   },
+  "notifications": {
+    "newResponse": "Нова відповідь на форму",
+    "newResponseMessage": "У вас є нова відповідь на форму",
+    "viewResponse": "Переглянути відповідь"
+  },
   "handlers": {
     "formResponseCreated": "Форми — відповідь на форму створено"
   },

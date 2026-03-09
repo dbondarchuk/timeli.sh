@@ -323,6 +323,11 @@
       }
     }
   },
+  "notifications": {
+    "newResponse": "New form response",
+    "newResponseMessage": "A new form response has been created",
+    "viewResponse": "View response"
+  },
   "handlers": {
     "formResponseCreated": "Forms - Form response created"
   },

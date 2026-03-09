@@ -71,7 +71,8 @@
     "availability-provider": "Availability provider",
     "meeting-url-provider": "Meeting URL provider",
     "dashboard-notifier": "Dashboard notifier",
-    "booking-tracking-hook": "Booking tracking"
+    "booking-tracking-hook": "Booking tracking",
+    "demo-email-arguments-provider": "Demo email arguments provider"
   },
   "status": {
     "connected": "Connected",

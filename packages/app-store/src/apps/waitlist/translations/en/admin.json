@@ -94,6 +94,44 @@
       }
     }
   },
+  "newEntry": {
+    "trigger": "New entry",
+    "title": "New waitlist entry",
+    "description": "Create a new waitlist entry",
+    "confirm": "Create",
+    "toasts": {
+      "success": "Waitlist entry created successfully",
+      "error": "Error creating waitlist entry"
+    },
+    "form": {
+      "customerId": {
+        "label": "Customer"
+      },
+      "optionId": {
+        "label": "Service"
+      },
+      "addonsIds": {
+        "label": "Addons"
+      },
+      "duration": {
+        "label": "Duration"
+      },
+      "note": {
+        "label": "Note",
+        "placeholder": "Note"
+      },
+      "when": {
+        "label": "When"
+      },
+      "asSoonAsPossible": {
+        "label": "As soon as possible"
+      },
+      "dates": {
+        "label": "Dates",
+        "label_count": "Dates ({count})"
+      }
+    }
+  },
   "notifications": {
     "newEntries": "New waitlist entries",
     "viewWaitlist": "View waitlist",
@@ -140,6 +178,23 @@
     "waitlistAppId": {
       "label": "Waitlist app",
       "tooltip": "The app that will be used to work with the waitlist. Required for the waitlist flow to work."
+    }
+  },
+  "validation": {
+    "createWaitlistEntry": {
+      "customerId": {
+        "required": "Customer is required"
+      },
+      "note": {
+        "max": "Note must be no more than 1024 characters long"
+      },
+      "asSoonAsPossible": {
+        "required": "As soon as possible is required"
+      },
+      "dates": {
+        "required": "Dates are required",
+        "max": "Dates must be no more than 30 dates"
+      }
     }
   }
 }

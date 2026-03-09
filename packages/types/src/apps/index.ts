@@ -7,6 +7,7 @@ export * from "./connected-app.data";
 export * from "./connected-app.props";
 export * from "./connected-app.service";
 export * from "./customer-hooks";
+export * from "./demo-email-arguments-provider";
 export * from "./errors";
 export * from "./events";
 export * from "./injectors";

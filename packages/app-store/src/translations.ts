@@ -1,5 +1,5 @@
 import { APPOINTMENT_NOTIFICATIONS_APP_NAME } from "./apps/appointment-notifications/const";
-import { ScheduledNotificationsTranslations } from "./apps/appointment-notifications/translations";
+import { AppointmentNotificationsTranslations } from "./apps/appointment-notifications/translations";
 import { BLOG_APP_NAME } from "./apps/blog/const";
 import { BlogTranslations } from "./apps/blog/translations";
 import { BUSY_EVENTS_APP_NAME } from "./apps/busy-events/const";
@@ -81,7 +81,7 @@ export const AppsTranslations: Record<
   [ICS_APP_NAME]: IcsTranslations,
   [OUTLOOK_APP_NAME]: OutlookTranslations,
   [PAYPAL_APP_NAME]: PaypalTranslations,
-  [APPOINTMENT_NOTIFICATIONS_APP_NAME]: ScheduledNotificationsTranslations,
+  [APPOINTMENT_NOTIFICATIONS_APP_NAME]: AppointmentNotificationsTranslations,
   [SMTP_APP_NAME]: SmtpTranslations,
   [TEXTBELT_APP_NAME]: TextBeltTranslations,
   [TEXT_MESSAGE_AUTO_REPLY_APP_NAME]: TextMessageAutoReplyTranslations,
