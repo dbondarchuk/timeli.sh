@@ -4,9 +4,10 @@ import {
   AppJobRequest,
   ConnectedAppData,
   ConnectedAppRequestError,
+  DemoArguments,
   IConnectedApp,
   IConnectedAppProps,
-  IDemoEmailArgumentsProvider,
+  IDemoArgumentsProvider,
   IScheduled,
 } from "@timelish/types";
 import { formatAmountString } from "@timelish/utils";
@@ -14,12 +15,21 @@ import { DateTime } from "luxon";
 import { demoPurchasedGiftCard } from "../demo-arguments";
 import { renderGiftCard } from "../designer/lib/render/render";
 import { FieldKeyValues } from "../designer/lib/types";
-import type { DesignModel, GiftCardStudioJobPayload } from "../models";
+import type {
+  CreatePurchasedGiftCardAction,
+  DeleteDesignAction,
+  DeleteDesignsAction,
+  DesignModel,
+  GiftCardStudioJobPayload,
+  SetDesignArchivedAction,
+  SetDesignsArchivedAction,
+} from "../models";
 import {
   CheckDesignNameUniqueActionType,
   CreateDesignActionType,
   CreatePurchasedGiftCardActionType,
   DeleteDesignActionType,
+  DeleteDesignsActionType,
   GetDesignByIdActionType,
   GetDesignsActionType,
   GetPreviewActionType,
@@ -28,7 +38,8 @@ import {
   GetSettingsActionType,
   RequestAction,
   requestActionSchema,
-  SetDesignPublicActionType,
+  SetDesignArchivedActionType,
+  SetDesignsArchivedActionType,
   UpdateDesignActionType,
   UpdateSettingsActionType,
 } from "../models";
@@ -47,11 +58,11 @@ const generateGiftCardCode = () => {
 };
 
 export class GiftCardStudioConnectedApp
-  implements IConnectedApp, IScheduled, IDemoEmailArgumentsProvider
+  implements IConnectedApp, IScheduled, IDemoArgumentsProvider
 {
   protected readonly loggerFactory: LoggerFactory;
 
-  public getDemoEmailArguments() {
+  public async getDemoEmailArguments(): Promise<DemoArguments> {
     return { giftCard: demoPurchasedGiftCard };
   }
 
@@ -89,30 +100,31 @@ export class GiftCardStudioConnectedApp
     switch (data.type) {
       case CreateDesignActionType:
         logger.debug({ designName: data.design?.name }, "Create design");
-        return this.processCreateDesign(appData, { design: data.design }, repo);
+        return this.processCreateDesign(appData, data, repo);
       case UpdateDesignActionType:
         logger.debug(
           { id: data.id, designName: data.design?.name },
           "Update design",
         );
-        return this.processUpdateDesign(
-          appData,
-          { id: data.id, design: data.design },
-          repo,
-        );
+        return this.processUpdateDesign(appData, data, repo);
       case DeleteDesignActionType:
         logger.debug({ id: data.id }, "Delete design");
-        return this.processDeleteDesign(appData, { id: data.id }, repo);
-      case SetDesignPublicActionType:
+        return this.processDeleteDesign(appData, data, repo);
+      case DeleteDesignsActionType:
+        logger.debug({ ids: data.ids }, "Delete designs");
+        return this.processDeleteDesigns(appData, data, repo);
+      case SetDesignArchivedActionType:
         logger.debug(
-          { id: data.id, isPublic: data.isPublic },
+          { id: data.id, isArchived: data.isArchived },
           "Set design public",
         );
-        return this.processSetDesignPublic(
-          appData,
-          { id: data.id, isPublic: data.isPublic },
-          repo,
+        return this.processSetDesignArchived(appData, data, repo);
+      case SetDesignsArchivedActionType:
+        logger.debug(
+          { ids: data.ids, isArchived: data.isArchived },
+          "Set designs archived",
         );
+        return this.processSetDesignsArchived(appData, data, repo);
       case GetDesignsActionType:
         logger.debug("Get designs");
         return repo.getDesigns(data.query);
@@ -139,11 +151,7 @@ export class GiftCardStudioConnectedApp
           },
           "Create purchased gift card",
         );
-        return this.processCreatePurchasedGiftCard(
-          appData,
-          { purchase: data.purchase },
-          repo,
-        );
+        return this.processCreatePurchasedGiftCard(appData, data, repo);
       case GetPreviewActionType:
         logger.debug({ designId: data.designId }, "Get preview");
         return this.processGetPreview(appData, data, repo);
@@ -289,7 +297,7 @@ export class GiftCardStudioConnectedApp
 
   private async processDeleteDesign(
     appData: ConnectedAppData,
-    data: { id: string },
+    data: DeleteDesignAction,
     repo: GiftCardStudioRepositoryService,
   ) {
     const logger = this.loggerFactory("processDeleteDesign");
@@ -307,13 +315,34 @@ export class GiftCardStudioConnectedApp
     return deleted;
   }
 
-  private async processSetDesignPublic(
+  private async processDeleteDesigns(
     appData: ConnectedAppData,
-    data: { id: string; isPublic: boolean },
+    data: DeleteDesignsAction,
     repo: GiftCardStudioRepositoryService,
   ) {
-    const logger = this.loggerFactory("processSetDesignPublic");
-    const ok = await repo.setDesignPublic(data.id, data.isPublic);
+    const logger = this.loggerFactory("processDeleteDesigns");
+    const deleted = await repo.deleteDesigns(data.ids);
+    if (!deleted) {
+      logger.warn({ ids: data.ids }, "Designs not found or have purchases");
+      throw new ConnectedAppRequestError(
+        "designs_not_found_or_have_purchases",
+        { ids: data.ids },
+        404,
+        "Designs not found or have purchases",
+      );
+    }
+
+    logger.info({ ids: data.ids }, "Designs deleted");
+    return deleted;
+  }
+
+  private async processSetDesignArchived(
+    appData: ConnectedAppData,
+    data: SetDesignArchivedAction,
+    repo: GiftCardStudioRepositoryService,
+  ) {
+    const logger = this.loggerFactory("processSetDesignArchived");
+    const ok = await repo.setDesignArchived(data.id, data.isArchived);
     if (!ok) {
       logger.warn({ id: data.id }, "Design not found for set public");
       throw new ConnectedAppRequestError(
@@ -324,19 +353,41 @@ export class GiftCardStudioConnectedApp
       );
     }
     logger.info(
-      { id: data.id, isPublic: data.isPublic },
+      { id: data.id, isArchived: data.isArchived },
       "Design visibility updated",
+    );
+    return ok;
+  }
+
+  private async processSetDesignsArchived(
+    appData: ConnectedAppData,
+    data: SetDesignsArchivedAction,
+    repo: GiftCardStudioRepositoryService,
+  ) {
+    const logger = this.loggerFactory("processSetDesignsArchived");
+    const ok = await repo.setDesignsArchived(data.ids, data.isArchived);
+    if (!ok) {
+      logger.warn({ ids: data.ids }, "Designs not found for set public");
+      throw new ConnectedAppRequestError(
+        "designs_not_found",
+        { ids: data.ids },
+        404,
+        "Designs not found",
+      );
+    }
+    logger.info(
+      { ids: data.ids, isArchived: data.isArchived },
+      "Designs archived updated",
     );
     return ok;
   }
 
   private async processCreatePurchasedGiftCard(
     appData: ConnectedAppData,
-    data: { purchase: any },
+    { purchase }: CreatePurchasedGiftCardAction,
     repo: GiftCardStudioRepositoryService,
   ) {
     const logger = this.loggerFactory("processCreatePurchasedGiftCard");
-    const { purchase } = data;
     const settings = (appData.data as GiftCardStudioSettings) ?? {};
     const minAmount = settings.minAmount ?? 5;
     const maxAmount = settings.maxAmount ?? 1000000;

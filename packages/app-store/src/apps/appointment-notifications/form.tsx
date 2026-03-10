@@ -165,7 +165,7 @@ export const AppointmentNotificationForm: React.FC<{
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  {t("form.appointmentCount.type.label")}{" "}
+                  <span>{t("form.appointmentCount.type.label")}</span>{" "}
                   <InfoTooltip>
                     {t("form.appointmentCount.type.tooltip")}
                   </InfoTooltip>
@@ -204,7 +204,7 @@ export const AppointmentNotificationForm: React.FC<{
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    {t("form.appointmentCount.count.label")}{" "}
+                    <span>{t("form.appointmentCount.count.label")}</span>{" "}
                     <InfoTooltip>
                       {t("form.appointmentCount.count.tooltip")}
                     </InfoTooltip>
@@ -231,9 +231,11 @@ export const AppointmentNotificationForm: React.FC<{
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      {t(
-                        `form.${itemType === "timeBefore" ? "weeksBefore" : "weeksAfter"}.label`,
-                      )}{" "}
+                      <span>
+                        {t(
+                          `form.${itemType === "timeBefore" ? "weeksBefore" : "weeksAfter"}.label`,
+                        )}
+                      </span>{" "}
                       <InfoTooltip>
                         {t(
                           `form.${itemType === "timeBefore" ? "weeksBefore" : "weeksAfter"}.tooltip`,
@@ -259,9 +261,11 @@ export const AppointmentNotificationForm: React.FC<{
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      {t(
-                        `form.${itemType === "timeBefore" ? "daysBefore" : "daysAfter"}.label`,
-                      )}{" "}
+                      <span>
+                        {t(
+                          `form.${itemType === "timeBefore" ? "daysBefore" : "daysAfter"}.label`,
+                        )}{" "}
+                      </span>
                       <InfoTooltip>
                         {t(
                           `form.${itemType === "timeBefore" ? "daysBefore" : "daysAfter"}.tooltip`,
@@ -288,9 +292,11 @@ export const AppointmentNotificationForm: React.FC<{
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      {t(
-                        `form.${itemType === "timeBefore" ? "hoursBefore" : "hoursAfter"}.label`,
-                      )}{" "}
+                      <span>
+                        {t(
+                          `form.${itemType === "timeBefore" ? "hoursBefore" : "hoursAfter"}.label`,
+                        )}{" "}
+                      </span>
                       <InfoTooltip>
                         {t(
                           `form.${itemType === "timeBefore" ? "hoursBefore" : "hoursAfter"}.tooltip`,
@@ -316,9 +322,11 @@ export const AppointmentNotificationForm: React.FC<{
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      {t(
-                        `form.${itemType === "timeBefore" ? "minutesBefore" : "minutesAfter"}.label`,
-                      )}{" "}
+                      <span>
+                        {t(
+                          `form.${itemType === "timeBefore" ? "minutesBefore" : "minutesAfter"}.label`,
+                        )}
+                      </span>{" "}
                       <InfoTooltip>
                         {t(
                           `form.${itemType === "timeBefore" ? "minutesBefore" : "minutesAfter"}.tooltip`,
@@ -348,9 +356,11 @@ export const AppointmentNotificationForm: React.FC<{
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      {t(
-                        `form.${itemType === "atTimeBefore" ? "weeksBefore" : "weeksAfter"}.label`,
-                      )}{" "}
+                      <span>
+                        {t(
+                          `form.${itemType === "atTimeBefore" ? "weeksBefore" : "weeksAfter"}.label`,
+                        )}
+                      </span>{" "}
                       <InfoTooltip>
                         {t(
                           `form.${itemType === "atTimeBefore" ? "weeksBefore" : "weeksAfter"}.tooltip`,
@@ -380,9 +390,11 @@ export const AppointmentNotificationForm: React.FC<{
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      {t(
-                        `form.${itemType === "atTimeBefore" ? "daysBefore" : "daysAfter"}.label`,
-                      )}{" "}
+                      <span>
+                        {t(
+                          `form.${itemType === "atTimeBefore" ? "daysBefore" : "daysAfter"}.label`,
+                        )}
+                      </span>{" "}
                       <InfoTooltip>
                         {t(
                           `form.${itemType === "atTimeBefore" ? "daysBefore" : "daysAfter"}.tooltip`,
@@ -409,7 +421,7 @@ export const AppointmentNotificationForm: React.FC<{
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      {t("form.time.label")}{" "}
+                      <span>{t("form.time.label")}</span>{" "}
                       <InfoTooltip>{t("form.time.tooltip")}</InfoTooltip>
                     </FormLabel>
 
@@ -447,7 +459,7 @@ export const AppointmentNotificationForm: React.FC<{
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  {t("form.channel.label")}{" "}
+                  <span>{t("form.channel.label")}</span>{" "}
                   <InfoTooltip>{t("form.channel.tooltip")}</InfoTooltip>
                 </FormLabel>
                 <FormControl>
@@ -476,7 +488,7 @@ export const AppointmentNotificationForm: React.FC<{
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  {t("form.template.label")}
+                  <span>{t("form.template.label")}</span>
                   <InfoTooltip>{t("form.template.tooltip")}</InfoTooltip>
                 </FormLabel>
                 <FormControl>

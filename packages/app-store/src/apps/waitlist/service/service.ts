@@ -9,13 +9,15 @@ import {
   ConnectedAppRequestError,
   ConnectedAppStatusWithText,
   DashboardNotification,
-  DemoEmailArguments,
+  DemoArguments,
   IAppointmentHook,
+  ICommunicationTemplatesProvider,
   IConnectedApp,
   IConnectedAppProps,
   IDashboardNotifierApp,
-  IDemoEmailArgumentsProvider,
+  IDemoArgumentsProvider,
   IEventHook,
+  TemplateTemplatesList,
 } from "@timelish/types";
 import {
   CreateWaitlistEntryAction,
@@ -38,6 +40,7 @@ import {
 } from "../models";
 
 import { demoWaitlistEntry } from "../demo-arguments";
+import { WaitlistTemplates } from "../templates";
 import {
   WaitlistAdminAllKeys,
   WaitlistAdminKeys,
@@ -53,7 +56,8 @@ export class WaitlistConnectedApp
     IConnectedApp,
     IAppointmentHook,
     IDashboardNotifierApp,
-    IDemoEmailArgumentsProvider
+    IDemoArgumentsProvider,
+    ICommunicationTemplatesProvider
 {
   protected readonly loggerFactory: LoggerFactory;
 
@@ -271,10 +275,14 @@ export class WaitlistConnectedApp
     ];
   }
 
-  public getDemoEmailArguments(): DemoEmailArguments {
+  public async getDemoEmailArguments(): Promise<DemoArguments> {
     return {
       waitlistEntry: demoWaitlistEntry,
     };
+  }
+
+  public async getCommunicationTemplates(): Promise<TemplateTemplatesList> {
+    return WaitlistTemplates;
   }
 
   protected getRepositoryService(appId: string, companyId: string) {

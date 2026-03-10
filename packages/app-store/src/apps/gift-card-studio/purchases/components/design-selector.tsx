@@ -2,6 +2,7 @@
 
 import { useI18n } from "@timelish/i18n";
 import { cn, ComboboxAsync, IComboboxItem, Skeleton } from "@timelish/ui";
+import { Archive } from "lucide-react";
 import React from "react";
 import { getDesigns } from "../../actions";
 import { DesignListModel } from "../../models";
@@ -12,11 +13,19 @@ import {
 } from "../../translations/types";
 
 const DesignLoader: React.FC = () => (
-  <div className="flex flex-row items-center gap-2 overflow-hidden text-nowrap pl-6 w-full py-1">
-    <Skeleton className="w-5 h-5 rounded" />
-    <Skeleton className="min-w-32 max-w-64 w-full h-5" />
-  </div>
+  <Skeleton className="min-w-32 max-w-64 w-full h-5" />
 );
+
+const DesignLabel: React.FC<{ design: DesignListModel }> = ({ design }) => {
+  return (
+    <div className="flex flex-row items-center gap-2 overflow-hidden text-nowrap pl-6 w-full py-1">
+      {!!design.isArchived && (
+        <Archive className="size-3.5 shrink-0 text-muted-foreground" />
+      )}{" "}
+      {design.name}
+    </div>
+  );
+};
 
 export type DesignSelectorProps = {
   appId: string;
@@ -25,7 +34,7 @@ export type DesignSelectorProps = {
   allowClear?: false;
   disabled?: boolean;
   className?: string;
-  includeNonPublic?: boolean;
+  includeArchived?: boolean;
 };
 
 export const DesignSelector: React.FC<DesignSelectorProps> = ({
@@ -34,7 +43,7 @@ export const DesignSelector: React.FC<DesignSelectorProps> = ({
   onItemSelect,
   disabled,
   className,
-  includeNonPublic = false,
+  includeArchived = false,
 }) => {
   const t = useI18n<GiftCardStudioAdminNamespace, GiftCardStudioAdminKeys>(
     giftCardStudioAdminNamespace,
@@ -49,14 +58,14 @@ export const DesignSelector: React.FC<DesignSelectorProps> = ({
         offset,
         search: search?.trim() || undefined,
         priorityIds: value ? [value] : undefined,
-        isPublic: includeNonPublic ? [true, false] : [true],
+        isArchived: includeArchived ? [true, false] : [false],
       });
 
       const items: IComboboxItem[] = (result.items ?? []).map(
         (d: DesignListModel) => ({
           value: d._id,
-          label: d.name,
-          shortLabel: d.name,
+          label: <DesignLabel design={d} />,
+          shortLabel: <DesignLabel design={d} />,
         }),
       );
 
@@ -65,7 +74,7 @@ export const DesignSelector: React.FC<DesignSelectorProps> = ({
 
       return { items, hasMore };
     },
-    [appId, value],
+    [appId, value, includeArchived],
   );
 
   return (

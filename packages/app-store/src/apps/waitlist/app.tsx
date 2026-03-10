@@ -1,7 +1,6 @@
 import { App } from "@timelish/types";
 import { CalendarClock } from "lucide-react";
 import { WAITLIST_APP_NAME } from "./const";
-import { demoWaitlistEntry } from "./demo-arguments";
 import { WaitlistAdminKeys } from "./translations/types";
 
 export const WaitlistApp: App<"app_waitlist_admin", WaitlistAdminKeys> = {
@@ -15,7 +14,8 @@ export const WaitlistApp: App<"app_waitlist_admin", WaitlistAdminKeys> = {
     "appointment-hook",
     "dashboard-notifier",
     "customer-tab",
-    "demo-email-arguments-provider",
+    "demo-arguments-provider",
+    "communication-templates-provider",
   ],
   type: "complex",
   Logo: ({ className }) => <CalendarClock className={className} />,
@@ -26,5 +26,4 @@ export const WaitlistApp: App<"app_waitlist_admin", WaitlistAdminKeys> = {
     text: "app_waitlist_admin.app.description",
   },
   settingsHref: "waitlist",
-  getDemoEmailArguments: () => ({ waitlistEntry: demoWaitlistEntry }),
 };

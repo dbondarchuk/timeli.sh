@@ -1,4 +1,5 @@
 "use client";
+import { useI18n } from "@timelish/i18n";
 import {
   AlertModal,
   Button,
@@ -7,14 +8,19 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger,
-  Link,
   toastPromise,
 } from "@timelish/ui";
-import { Archive, ArchiveRestore, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import {
+  Archive,
+  ArchiveRestore,
+  Copy,
+  MoreHorizontal,
+  Pencil,
+  Trash2,
+} from "lucide-react";
+import Link from "next/link";
 import { useQueryState } from "nuqs";
 import { useState } from "react";
-
-import { useI18n } from "@timelish/i18n";
 import { deleteForm, setFormArchived } from "../../actions";
 import { FormListModel } from "../../models";
 import {
@@ -117,7 +123,9 @@ export const CellAction: React.FC<CellActionProps> = ({ form, appId }) => {
         onConfirm={onConfirmUnarchive}
         loading={loading}
         title={t("forms.table.unarchive.title")}
-        description={t("forms.table.unarchive.description", { name: form.name })}
+        description={t("forms.table.unarchive.description", {
+          name: form.name,
+        })}
         continueButton={t("forms.table.unarchive.confirm")}
       />
       <DropdownMenu modal={false}>
@@ -137,13 +145,23 @@ export const CellAction: React.FC<CellActionProps> = ({ form, appId }) => {
               <Pencil className="size-3.5" /> {t("forms.table.actions.edit")}
             </Link>
           </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link
+              href={`/dashboard/forms/new?from=${form._id}`}
+              className="text-foreground"
+            >
+              <Copy className="size-3.5" /> {t("forms.table.actions.clone")}
+            </Link>
+          </DropdownMenuItem>
           {!isArchived ? (
             <DropdownMenuItem onClick={() => setArchiveOpen(true)}>
-              <Archive className="size-3.5" /> {t("forms.table.actions.archive")}
+              <Archive className="size-3.5" />{" "}
+              {t("forms.table.actions.archive")}
             </DropdownMenuItem>
           ) : (
             <DropdownMenuItem onClick={() => setUnarchiveOpen(true)}>
-              <ArchiveRestore className="size-3.5" /> {t("forms.table.actions.unarchive")}
+              <ArchiveRestore className="size-3.5" />{" "}
+              {t("forms.table.actions.unarchive")}
             </DropdownMenuItem>
           )}
           {canDelete && (

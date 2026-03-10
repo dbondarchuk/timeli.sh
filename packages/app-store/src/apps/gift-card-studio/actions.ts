@@ -6,6 +6,7 @@ import {
   CreatePurchasedGiftCardAction,
   CreatePurchasedGiftCardActionType,
   DeleteDesignActionType,
+  DeleteDesignsActionType,
   DesignListModel,
   DesignModel,
   DesignUpdateModel,
@@ -18,7 +19,8 @@ import {
   GetPurchasedGiftCardsActionType,
   GetSettingsActionType,
   PurchasedGiftCardListModel,
-  SetDesignPublicActionType,
+  SetDesignArchivedActionType,
+  SetDesignsArchivedActionType,
   UpdateDesignActionType,
   UpdateSettingsActionType,
 } from "./models";
@@ -43,24 +45,42 @@ export async function getDesigns(
   const logger = loggerFactory("getDesigns");
   logger.debug({ appId, query }, "Getting designs");
 
-  return (await adminApi.apps.processRequest(appId, {
+  const result = (await adminApi.apps.processRequest(appId, {
     type: GetDesignsActionType,
     query,
   })) as WithTotal<DesignListModel>;
+
+  logger.debug(
+    { appId, query, result: result.items.length, total: result.total },
+    "Designs got",
+  );
+  return result;
 }
 
 export async function getDesignById(appId: string, id: string) {
-  return (await adminApi.apps.processRequest(appId, {
+  const logger = loggerFactory("getDesignById");
+  logger.debug({ appId, id }, "Getting design by id");
+
+  const result = (await adminApi.apps.processRequest(appId, {
     type: GetDesignByIdActionType,
     id,
   })) as DesignModel | null;
+
+  logger.debug({ appId, id, name: result?.name }, "Design got");
+  return result;
 }
 
 export async function createDesign(appId: string, design: DesignUpdateModel) {
-  return (await adminApi.apps.processRequest(appId, {
+  const logger = loggerFactory("createDesign");
+  logger.debug({ appId, design }, "Creating design");
+
+  const result = (await adminApi.apps.processRequest(appId, {
     type: CreateDesignActionType,
     design,
   })) as DesignModel;
+
+  logger.debug({ appId, design, resultId: result._id }, "Design created");
+  return result;
 }
 
 export async function updateDesign(
@@ -68,30 +88,79 @@ export async function updateDesign(
   id: string,
   design: DesignUpdateModel,
 ) {
-  return (await adminApi.apps.processRequest(appId, {
+  const logger = loggerFactory("updateDesign");
+  logger.debug({ appId, id, design }, "Updating design");
+
+  const result = (await adminApi.apps.processRequest(appId, {
     type: UpdateDesignActionType,
     id,
     design,
   })) as DesignModel;
+
+  logger.debug({ appId, id, resultId: result._id }, "Design updated");
+  return result;
 }
 
 export async function deleteDesign(appId: string, id: string) {
-  return (await adminApi.apps.processRequest(appId, {
+  const logger = loggerFactory("deleteDesign");
+  logger.debug({ appId, id }, "Deleting design");
+
+  const result = (await adminApi.apps.processRequest(appId, {
     type: DeleteDesignActionType,
     id,
   })) as boolean;
+
+  logger.debug({ appId, id, result }, "Design deleted");
+  return result;
 }
 
-export async function setDesignPublic(
+export async function deleteDesigns(appId: string, ids: string[]) {
+  const logger = loggerFactory("deleteDesigns");
+  logger.debug({ appId, ids }, "Deleting designs");
+
+  const result = (await adminApi.apps.processRequest(appId, {
+    type: DeleteDesignsActionType,
+    ids,
+  })) as boolean;
+
+  logger.debug({ appId, ids, result }, "Designs deleted");
+  return result;
+}
+
+export async function setDesignArchived(
   appId: string,
   id: string,
-  isPublic: boolean,
+  isArchived: boolean,
 ) {
-  return (await adminApi.apps.processRequest(appId, {
-    type: SetDesignPublicActionType,
+  const logger = loggerFactory("setDesignArchived");
+  logger.debug({ appId, id, isArchived }, "Setting design archived");
+
+  const result = (await adminApi.apps.processRequest(appId, {
+    type: SetDesignArchivedActionType,
     id,
-    isPublic,
+    isArchived,
   })) as boolean;
+
+  logger.debug({ appId, id, result }, "Design archived");
+  return result;
+}
+
+export async function setDesignsArchived(
+  appId: string,
+  ids: string[],
+  isArchived: boolean,
+) {
+  const logger = loggerFactory("setDesignsArchived");
+  logger.debug({ appId, ids, isArchived }, "Setting designs archived");
+
+  const result = (await adminApi.apps.processRequest(appId, {
+    type: SetDesignsArchivedActionType,
+    ids,
+    isArchived,
+  })) as boolean;
+
+  logger.debug({ appId, ids, result }, "Designs archived");
+  return result;
 }
 
 export async function checkDesignNameUnique(
@@ -99,38 +168,71 @@ export async function checkDesignNameUnique(
   name: string,
   id?: string,
 ) {
-  return (await adminApi.apps.processRequest(appId, {
+  const logger = loggerFactory("checkDesignNameUnique");
+  logger.debug({ appId, name, id }, "Checking design name uniqueness");
+
+  const result = (await adminApi.apps.processRequest(appId, {
     type: CheckDesignNameUniqueActionType,
     name,
     id,
   })) as boolean;
+
+  logger.debug({ appId, name, id, result }, "Design name unique");
+  return result;
 }
 
 export async function getPurchasedGiftCards(
   appId: string,
   query: GetPurchasedGiftCardsAction["query"],
 ) {
-  return (await adminApi.apps.processRequest(appId, {
+  const logger = loggerFactory("getPurchasedGiftCards");
+  logger.debug({ appId, query }, "Getting purchased gift cards");
+
+  const result = (await adminApi.apps.processRequest(appId, {
     type: GetPurchasedGiftCardsActionType,
     query,
   })) as WithTotal<PurchasedGiftCardListModel>;
+
+  logger.debug(
+    { appId, query, result: result.items.length, total: result.total },
+    "Purchased gift cards got",
+  );
+  return result;
 }
 
 export async function getPurchasedGiftCardById(appId: string, id: string) {
-  return (await adminApi.apps.processRequest(appId, {
+  const logger = loggerFactory("getPurchasedGiftCardById");
+  logger.debug({ appId, id }, "Getting purchased gift card by id");
+
+  const result = (await adminApi.apps.processRequest(appId, {
     type: GetPurchasedGiftCardByIdActionType,
     id,
   })) as PurchasedGiftCardListModel | null;
+
+  logger.debug(
+    { appId, id, code: result?.giftCardCode },
+    "Purchased gift card got",
+  );
+  return result;
 }
 
 export async function createPurchasedGiftCard(
   appId: string,
   purchase: CreatePurchasedGiftCardAction["purchase"],
 ) {
-  return (await adminApi.apps.processRequest(appId, {
+  const logger = loggerFactory("createPurchasedGiftCard");
+  logger.debug({ appId, purchase }, "Creating purchased gift card");
+
+  const result = (await adminApi.apps.processRequest(appId, {
     type: CreatePurchasedGiftCardActionType,
     purchase,
   })) as PurchasedGiftCardListModel;
+
+  logger.debug(
+    { appId, purchase, resultId: result._id },
+    "Purchased gift card created",
+  );
+  return result;
 }
 
 export type GetPreviewPayload = {
@@ -148,24 +250,42 @@ export async function getPreviewImage(
   appId: string,
   payload: GetPreviewPayload,
 ): Promise<{ success: true; imageDataUrl: string }> {
-  return (await adminApi.apps.processRequest(appId, {
+  const logger = loggerFactory("getPreviewImage");
+  logger.debug({ appId, payload }, "Getting preview image");
+
+  const result = (await adminApi.apps.processRequest(appId, {
     type: GetPreviewActionType,
     ...payload,
   })) as { success: true; imageDataUrl: string };
+
+  logger.debug({ appId }, "Preview image got");
+  return result;
 }
 
 export async function getSettings(appId: string) {
-  return (await adminApi.apps.processRequest(appId, {
+  const logger = loggerFactory("getSettings");
+  logger.debug({ appId }, "Getting settings");
+
+  const result = (await adminApi.apps.processRequest(appId, {
     type: GetSettingsActionType,
   })) as GiftCardStudioSettings;
+
+  logger.debug({ appId }, "Settings got");
+  return result;
 }
 
 export async function updateSettings(
   appId: string,
   settings: Partial<GiftCardStudioSettings>,
 ) {
-  return (await adminApi.apps.processRequest(appId, {
+  const logger = loggerFactory("updateSettings");
+  logger.debug({ appId }, "Updating settings");
+
+  const result = (await adminApi.apps.processRequest(appId, {
     type: UpdateSettingsActionType,
     ...settings,
   })) as GiftCardStudioSettings;
+
+  logger.debug({ appId }, "Settings updated");
+  return result;
 }

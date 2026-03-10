@@ -8,22 +8,24 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
-  Link,
   toastPromise,
 } from "@timelish/ui";
 import {
-  Eye,
-  EyeOff,
+  Archive,
+  ArchiveRestore,
+  Copy,
   MoreHorizontal,
   Pencil,
   ShoppingCart,
   Trash2,
 } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useQueryState } from "nuqs";
 import { useState } from "react";
-import { deleteDesign, setDesignPublic } from "../../actions";
+import { deleteDesign, setDesignArchived } from "../../actions";
 import { DesignListModel } from "../../models";
 import { ManualPurchaseDialog } from "../../purchases/components/manual-purchase-form";
 import {
@@ -40,8 +42,8 @@ interface CellActionProps {
 export const CellAction: React.FC<CellActionProps> = ({ design, appId }) => {
   const [loading, setLoading] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [publishOpen, setPublishOpen] = useState(false);
-  const [unpublishOpen, setUnpublishOpen] = useState(false);
+  const [archiveOpen, setArchiveOpen] = useState(false);
+  const [unarchiveOpen, setUnarchiveOpen] = useState(false);
   const [purchaseOpen, setPurchaseOpen] = useState(false);
   const t = useI18n<GiftCardStudioAdminNamespace, GiftCardStudioAdminKeys>(
     giftCardStudioAdminNamespace,
@@ -50,7 +52,7 @@ export const CellAction: React.FC<CellActionProps> = ({ design, appId }) => {
   const [, reload] = useQueryState("ts", { history: "replace" });
   const router = useRouter();
   const canDelete = (design.purchasesCount ?? 0) === 0;
-  const isPublic = design.isPublic ?? false;
+  const isArchived = design.isArchived ?? false;
 
   const onConfirmDelete = async () => {
     try {
@@ -68,14 +70,14 @@ export const CellAction: React.FC<CellActionProps> = ({ design, appId }) => {
     }
   };
 
-  const onConfirmPublish = async () => {
+  const onConfirmArchive = async () => {
     try {
       setLoading(true);
-      await toastPromise(setDesignPublic(appId, design._id, true), {
-        success: t("designs.table.toast.published", { name: design.name }),
-        error: t("designs.table.toast.publishError"),
+      await toastPromise(setDesignArchived(appId, design._id, true), {
+        success: t("designs.table.toast.archived", { name: design.name }),
+        error: t("designs.table.toast.archiveError"),
       });
-      setPublishOpen(false);
+      setArchiveOpen(false);
       reload(`${Date.now()}`);
     } catch (e) {
       console.error(e);
@@ -84,14 +86,14 @@ export const CellAction: React.FC<CellActionProps> = ({ design, appId }) => {
     }
   };
 
-  const onConfirmUnpublish = async () => {
+  const onConfirmUnarchive = async () => {
     try {
       setLoading(true);
-      await toastPromise(setDesignPublic(appId, design._id, false), {
-        success: t("designs.table.toast.unpublished", { name: design.name }),
-        error: t("designs.table.toast.unpublishError"),
+      await toastPromise(setDesignArchived(appId, design._id, false), {
+        success: t("designs.table.toast.unarchived", { name: design.name }),
+        error: t("designs.table.toast.unarchiveError"),
       });
-      setUnpublishOpen(false);
+      setUnarchiveOpen(false);
       reload(`${Date.now()}`);
     } catch (e) {
       console.error(e);
@@ -114,26 +116,26 @@ export const CellAction: React.FC<CellActionProps> = ({ design, appId }) => {
         continueButton={t("designs.table.delete.confirm")}
       />
       <AlertModal
-        isOpen={publishOpen}
-        onClose={() => setPublishOpen(false)}
-        onConfirm={onConfirmPublish}
+        isOpen={archiveOpen}
+        onClose={() => setArchiveOpen(false)}
+        onConfirm={onConfirmArchive}
         loading={loading}
-        title={t("designs.table.publish.title")}
-        description={t("designs.table.publish.description", {
+        title={t("designs.table.archive.title")}
+        description={t("designs.table.archive.description", {
           name: design.name,
         })}
-        continueButton={t("designs.table.publish.confirm")}
+        continueButton={t("designs.table.archive.confirm")}
       />
       <AlertModal
-        isOpen={unpublishOpen}
-        onClose={() => setUnpublishOpen(false)}
-        onConfirm={onConfirmUnpublish}
+        isOpen={unarchiveOpen}
+        onClose={() => setUnarchiveOpen(false)}
+        onConfirm={onConfirmUnarchive}
         loading={loading}
-        title={t("designs.table.unpublish.title")}
-        description={t("designs.table.unpublish.description", {
+        title={t("designs.table.unarchive.title")}
+        description={t("designs.table.unarchive.description", {
           name: design.name,
         })}
-        continueButton={t("designs.table.unpublish.confirm")}
+        continueButton={t("designs.table.unarchive.confirm")}
       />
       <ManualPurchaseDialog
         appId={appId}
@@ -163,25 +165,39 @@ export const CellAction: React.FC<CellActionProps> = ({ design, appId }) => {
               <Pencil className="size-3.5" /> {t("designs.table.actions.edit")}
             </Link>
           </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link
+              href={`/dashboard/gift-card-studio/new?from=${design._id}`}
+              className="text-foreground"
+            >
+              <Copy className="size-3.5" /> {t("designs.table.actions.clone")}
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => setPurchaseOpen(true)}>
             <ShoppingCart className="size-3.5" />{" "}
             {t("designs.table.actions.purchase")}
           </DropdownMenuItem>
-          {!isPublic ? (
-            <DropdownMenuItem onClick={() => setPublishOpen(true)}>
-              <Eye className="size-3.5" /> {t("designs.table.actions.publish")}
+          <DropdownMenuSeparator />
+          {!isArchived ? (
+            <DropdownMenuItem onClick={() => setArchiveOpen(true)}>
+              <Archive className="size-3.5" />{" "}
+              {t("designs.table.actions.archive")}
             </DropdownMenuItem>
           ) : (
-            <DropdownMenuItem onClick={() => setUnpublishOpen(true)}>
-              <EyeOff className="size-3.5" />{" "}
-              {t("designs.table.actions.unpublish")}
+            <DropdownMenuItem onClick={() => setUnarchiveOpen(true)}>
+              <ArchiveRestore className="size-3.5" />{" "}
+              {t("designs.table.actions.unarchive")}
             </DropdownMenuItem>
           )}
           {canDelete && (
-            <DropdownMenuItem onClick={() => setDeleteOpen(true)}>
-              <Trash2 className="size-3.5" />{" "}
-              {t("designs.table.actions.delete")}
-            </DropdownMenuItem>
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => setDeleteOpen(true)}>
+                <Trash2 className="size-3.5" />{" "}
+                {t("designs.table.actions.delete")}
+              </DropdownMenuItem>
+            </>
           )}
         </DropdownMenuContent>
       </DropdownMenu>

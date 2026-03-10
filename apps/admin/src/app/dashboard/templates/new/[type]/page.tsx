@@ -1,6 +1,4 @@
 import PageContainer from "@/components/admin/layout/page-container";
-import { TemplateTemplates } from "@/components/admin/templates/templates";
-import { TemplatesTemplate } from "@/components/admin/templates/templates/type";
 import { getI18nAsync } from "@timelish/i18n/server";
 import { getLoggerFactory } from "@timelish/logger";
 import { CommunicationChannel } from "@timelish/types";
@@ -28,27 +26,26 @@ export default async function NewTemplatePage({ params, searchParams }: Props) {
   const t = await getI18nAsync("admin");
   const { type: typeParam } = await params;
   const type = typeParam as string as CommunicationChannel;
-  const { template: templateParam } = await searchParams;
-  const templateQuery = templateParam as string;
+  const { templateId: templateParam } = await searchParams;
+  const templateId = templateParam as string;
+
+  const { cloneFrom: cloneFromParam } = await searchParams;
+  const cloneFrom = cloneFromParam as string;
 
   logger.debug(
     {
       type,
-      template: templateQuery,
+      templateId,
+      cloneFrom,
     },
     "Loading new template page",
   );
 
-  let template: TemplatesTemplate | undefined = undefined;
-  if (templateQuery) {
-    template = TemplateTemplates[type][templateQuery];
-  }
-
   logger.debug(
     {
       type,
-      template: templateQuery,
-      hasTemplate: !!template,
+      templateId,
+      cloneFrom,
     },
     "New template page loaded",
   );
@@ -64,7 +61,11 @@ export default async function NewTemplatePage({ params, searchParams }: Props) {
           />
         </div>
         <Suspense fallback={<Skeleton className="w-full h-full" />}>
-          <TemplateFormPage type={type} template={template} />
+          <TemplateFormPage
+            type={type}
+            templateId={templateId}
+            cloneFromId={cloneFrom}
+          />
         </Suspense>
       </div>
     </PageContainer>

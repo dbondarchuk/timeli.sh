@@ -1,4 +1,5 @@
 "use client";
+import { useI18n } from "@timelish/i18n";
 import {
   AlertModal,
   Button,
@@ -6,15 +7,14 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
-  Link,
   toastPromise,
 } from "@timelish/ui";
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { Copy, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import Link from "next/link";
 import { useQueryState } from "nuqs";
 import { useState } from "react";
-
-import { useI18n } from "@timelish/i18n";
 import { deleteBlogPost } from "../actions";
 import { BlogPost } from "../models";
 import {
@@ -86,6 +86,15 @@ export const CellAction: React.FC<CellActionProps> = ({ blogPost, appId }) => {
               <Pencil className="size-3.5" /> {t("table.actions.edit")}
             </Link>
           </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link
+              href={`/dashboard/blog/new?from=${blogPost._id}`}
+              className="text-foreground"
+            >
+              <Copy className="size-3.5" /> {t("table.actions.clone")}
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => setOpen(true)}>
             <Trash2 className="size-3.5" /> {t("table.delete.action")}
           </DropdownMenuItem>

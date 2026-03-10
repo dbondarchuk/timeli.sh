@@ -13,6 +13,7 @@ interface EditorState {
   uiTheme: "light" | "dark";
   clipboard: Element | null;
   clipboardMultiple: Element[];
+  disabled: boolean;
 
   // Canvas actions
   setCanvas: (canvas: Partial<Canvas>) => void;
@@ -78,7 +79,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   uiTheme: "dark",
   clipboard: null,
   clipboardMultiple: [],
-
+  disabled: false,
   setCanvas: (canvas) => {
     set((state) => ({
       design: {

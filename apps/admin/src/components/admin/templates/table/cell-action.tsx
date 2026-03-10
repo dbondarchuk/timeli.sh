@@ -84,7 +84,7 @@ export const CellAction: React.FC<CellActionProps> = ({ template }) => {
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
             <Link
-              href={`/dashboard/templates/${template._id}/clone`}
+              href={`/dashboard/templates/new/${template.type}?cloneFrom=${template._id}`}
               className="text-foreground"
             >
               <Copy className="size-3.5" />{" "}

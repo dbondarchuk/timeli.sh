@@ -2,13 +2,26 @@
 
 import { useI18n } from "@timelish/i18n";
 import { DataTableAsyncFilterBox } from "@timelish/ui-admin";
+import { Archive } from "lucide-react";
 import React, { useCallback } from "react";
 import { getDesigns } from "../../actions";
+import { DesignListModel } from "../../models/design";
 import {
   GiftCardStudioAdminKeys,
   GiftCardStudioAdminNamespace,
   giftCardStudioAdminNamespace,
 } from "../../translations/types";
+
+const DesignLabel: React.FC<{ design: DesignListModel }> = ({ design }) => {
+  return (
+    <div className="flex flex-row items-center gap-2 overflow-hidden text-nowrap pl-6 w-full py-1">
+      {!!design.isArchived && (
+        <Archive className="size-3.5 shrink-0 text-muted-foreground" />
+      )}{" "}
+      {design.name}
+    </div>
+  );
+};
 
 export const DesignsDataTableAsyncFilterBox: React.FC<{
   appId: string;
@@ -25,14 +38,14 @@ export const DesignsDataTableAsyncFilterBox: React.FC<{
       const res = await getDesigns(appId, {
         limit,
         offset: (page - 1) * limit,
-        isPublic: [true, false],
+        isArchived: [true, false],
         search,
       });
       return {
         items: (res.items ?? []).map((d) => ({
           value: d._id,
-          label: d.name,
-          shortLabel: d.name,
+          label: <DesignLabel design={d} />,
+          shortLabel: <DesignLabel design={d} />,
         })),
         hasMore: res.total > page * limit,
       };

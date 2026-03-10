@@ -11,6 +11,7 @@ import {
   DataTableFilterBox,
   DataTableResetFilter,
   DataTableSearch,
+  useSelectedRowsStore,
 } from "@timelish/ui-admin";
 import { Settings2 } from "lucide-react";
 import React from "react";
@@ -20,16 +21,21 @@ import {
   giftCardStudioAdminNamespace,
 } from "../../translations/types";
 import { useDesignsTableFilters } from "./use-table-filters";
+import { DesignsTableRow } from "./columns";
+import { ArchiveSelectedDesignsButton } from "./archive-selected";
+import { UnarchiveSelectedDesignsButton } from "./unarchive-selected";
+import { DeleteSelectedDesignsButton } from "./delete-selected";
 
-export const DesignsTableAction: React.FC<{ appId: string }> = () => {
+export const DesignsTableAction: React.FC<{ appId: string }> = ({ appId }) => {
+  const { rowSelection } = useSelectedRowsStore();
   const {
     isAnyFilterActive,
     resetFilters,
     searchQuery,
     setPage,
     setSearchQuery,
-    isPublicFilter,
-    setIsPublicFilter,
+    isArchivedFilter,
+    setIsArchivedFilter,
     STATUS_OPTIONS,
   } = useDesignsTableFilters();
   const t = useI18n<
@@ -39,13 +45,21 @@ export const DesignsTableAction: React.FC<{ appId: string }> = () => {
 
   const additionalFilters = (
     <DataTableFilterBox
-      filterKey="isPublic"
+      filterKey="isArchived"
       title={t("designs.table.filters.status")}
       options={STATUS_OPTIONS}
-      setFilterValue={setIsPublicFilter}
-      filterValue={isPublicFilter}
+      setFilterValue={setIsArchivedFilter}
+      filterValue={isArchivedFilter}
     />
   );
+
+  const canDeleteAll = rowSelection.every(
+    (d) => (d.purchasesCount ?? 0) === 0,
+  );
+  const allArchived =
+    rowSelection.length > 0 && rowSelection.every((d) => d.isArchived);
+  const allActive =
+    rowSelection.length > 0 && rowSelection.every((d) => !d.isArchived);
 
   return (
     <div className="flex flex-col flex-wrap md:items-center justify-between gap-4 md:flex-row">
@@ -73,6 +87,21 @@ export const DesignsTableAction: React.FC<{ appId: string }> = () => {
         />
       </div>
       <div className="flex flex-wrap max-md:flex-row-reverse items-center gap-4 max-md:justify-between">
+        <UnarchiveSelectedDesignsButton
+          appId={appId}
+          selected={rowSelection}
+          disabled={!allArchived}
+        />
+        <ArchiveSelectedDesignsButton
+          appId={appId}
+          selected={rowSelection}
+          disabled={!allActive}
+        />
+        <DeleteSelectedDesignsButton
+          appId={appId}
+          selected={rowSelection}
+          disabled={!canDeleteAll}
+        />
         <Button asChild>
           <a href="/dashboard/gift-card-studio/new">
             {t("designs.table.actions.create")}

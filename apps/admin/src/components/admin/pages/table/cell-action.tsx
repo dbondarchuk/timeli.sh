@@ -16,7 +16,14 @@ import {
   useWebsiteUrl,
 } from "@timelish/ui";
 import copy from "copy-text-to-clipboard";
-import { Copy, Edit, MoreHorizontal, Trash } from "lucide-react";
+import {
+  Copy,
+  CopyCheck,
+  CopySlash,
+  Edit,
+  MoreHorizontal,
+  Trash,
+} from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -99,18 +106,30 @@ export const CellAction: React.FC<CellActionProps> = ({ page: page }) => {
               <Edit className="size-3.5" /> {t("pages.table.actions.edit")}
             </Link>
           </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link
+              href={`/dashboard/pages/new?from=${page._id}`}
+              className="text-foreground"
+            >
+              <Copy className="size-3.5" /> {t("pages.table.actions.clone")}
+            </Link>
+          </DropdownMenuItem>
           {page.slug !== "home" && (
-            <DropdownMenuItem onClick={() => setOpen(true)}>
-              <Trash className="size-3.5" /> {t("pages.table.actions.delete")}
-            </DropdownMenuItem>
+            <>
+              <DropdownMenuSeparator />
+
+              <DropdownMenuItem onClick={() => setOpen(true)}>
+                <Trash className="size-3.5" /> {t("pages.table.actions.delete")}
+              </DropdownMenuItem>
+            </>
           )}
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={copyRelative}>
-            <Copy className="size-3.5" />{" "}
+            <CopySlash className="size-3.5" />{" "}
             {t("pages.table.actions.copyRelativeUrl")}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={copyAbsolute}>
-            <Copy className="size-3.5" />{" "}
+            <CopyCheck className="size-3.5" />{" "}
             {t("pages.table.actions.copyAbsoluteUrl")}
           </DropdownMenuItem>
         </DropdownMenuContent>

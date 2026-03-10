@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
   toastPromise,
 } from "@timelish/ui";
-import { Edit, MoreHorizontal, Trash } from "lucide-react";
+import { Copy, Edit, MoreHorizontal, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -84,13 +84,25 @@ export const CellAction: React.FC<CellActionProps> = ({ pageFooter }) => {
               {t("pages.footers.table.actions.edit")}
             </Link>
           </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link
+              href={`/dashboard/pages/footers/new?from=${pageFooter._id}`}
+              className="text-foreground"
+            >
+              <Copy className="size-3.5" />{" "}
+              {t("pages.footers.table.actions.clone")}
+            </Link>
+          </DropdownMenuItem>
           {pageFooter.usedCount === 0 && (
-            <DropdownMenuItem onClick={() => setOpen(true)}>
-              <Trash className="size-3.5" />{" "}
-              {t("pages.footers.table.actions.delete")}
-            </DropdownMenuItem>
+            <>
+              <DropdownMenuSeparator />
+
+              <DropdownMenuItem onClick={() => setOpen(true)}>
+                <Trash className="size-3.5" />{" "}
+                {t("pages.footers.table.actions.delete")}
+              </DropdownMenuItem>
+            </>
           )}
-          <DropdownMenuSeparator />
         </DropdownMenuContent>
       </DropdownMenu>
     </>

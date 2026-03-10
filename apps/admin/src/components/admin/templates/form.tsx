@@ -8,6 +8,7 @@ import {
   CommunicationChannel,
   getTemplateSchemaWithUniqueCheck,
   Template,
+  TemplatesTemplate,
 } from "@timelish/types";
 import {
   Form,
@@ -28,7 +29,6 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { NavigationGuardDialog, useIsDirty } from "../navigation-guard/dialog";
-import { TemplatesTemplate } from "./templates/type";
 
 export const TemplateForm: React.FC<
   {
@@ -62,8 +62,8 @@ export const TemplateForm: React.FC<
     mode: "onBlur",
     reValidateMode: "onChange",
     defaultValues: initialData || {
-      type,
       ...(template || {}),
+      type,
     },
   });
 

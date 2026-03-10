@@ -1,4 +1,4 @@
-import { zObjectId, zTaggedUnion } from "@timelish/types";
+import { zObjectId, zTaggedUnion, zUniqueArray } from "@timelish/types";
 import * as z from "zod";
 import { designSchemaBase, getDesignsQuerySchema } from "./design";
 import {
@@ -25,13 +25,32 @@ export const deleteDesignActionSchema = z.object({
 export type DeleteDesignAction = z.infer<typeof deleteDesignActionSchema>;
 export const DeleteDesignActionType = "gift-card-studio-delete-design" as const;
 
-export const setDesignPublicActionSchema = z.object({
-  id: zObjectId(),
-  isPublic: z.coerce.boolean<boolean>(),
+export const deleteDesignsActionSchema = z.object({
+  ids: zUniqueArray(z.array(zObjectId()).min(1), (id) => id),
 });
-export type SetDesignPublicAction = z.infer<typeof setDesignPublicActionSchema>;
-export const SetDesignPublicActionType =
-  "gift-card-studio-set-design-public" as const;
+export type DeleteDesignsAction = z.infer<typeof deleteDesignsActionSchema>;
+export const DeleteDesignsActionType =
+  "gift-card-studio-delete-designs" as const;
+
+export const setDesignArchivedActionSchema = z.object({
+  id: zObjectId(),
+  isArchived: z.coerce.boolean<boolean>(),
+});
+export type SetDesignArchivedAction = z.infer<
+  typeof setDesignArchivedActionSchema
+>;
+export const SetDesignArchivedActionType =
+  "gift-card-studio-set-design-archived" as const;
+
+export const setDesignsArchivedActionSchema = z.object({
+  ids: zUniqueArray(z.array(zObjectId()).min(1), (id) => id),
+  isArchived: z.coerce.boolean<boolean>(),
+});
+export type SetDesignsArchivedAction = z.infer<
+  typeof setDesignsArchivedActionSchema
+>;
+export const SetDesignsArchivedActionType =
+  "gift-card-studio-set-designs-archived" as const;
 
 export const getDesignsActionSchema = z.object({
   query: getDesignsQuerySchema,
@@ -126,7 +145,9 @@ export const requestActionSchema = zTaggedUnion([
   { type: CreateDesignActionType, data: createDesignActionSchema },
   { type: UpdateDesignActionType, data: updateDesignActionSchema },
   { type: DeleteDesignActionType, data: deleteDesignActionSchema },
-  { type: SetDesignPublicActionType, data: setDesignPublicActionSchema },
+  { type: DeleteDesignsActionType, data: deleteDesignsActionSchema },
+  { type: SetDesignArchivedActionType, data: setDesignArchivedActionSchema },
+  { type: SetDesignsArchivedActionType, data: setDesignsArchivedActionSchema },
   { type: GetDesignsActionType, data: getDesignsActionSchema },
   { type: GetDesignByIdActionType, data: getDesignByIdActionSchema },
   {

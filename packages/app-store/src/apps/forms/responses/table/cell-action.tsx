@@ -17,11 +17,11 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
   Label,
-  Link,
   toastPromise,
 } from "@timelish/ui";
 import { CustomerSelector } from "@timelish/ui-admin";
 import { MoreHorizontal, Pencil, Trash2, UserPlus } from "lucide-react";
+import Link from "next/link";
 import { useQueryState } from "nuqs";
 import { useState } from "react";
 import { deleteFormResponse, reassignFormResponses } from "../../actions";

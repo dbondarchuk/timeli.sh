@@ -35,26 +35,42 @@
     "table": {
       "filters": {
         "status": "Status",
-        "published": "Published",
-        "draft": "Draft"
+        "active": "Active",
+        "archived": "Archived"
       },
       "actions": {
         "create": "Create Design",
         "edit": "Edit",
-        "publish": "Publish",
-        "unpublish": "Unpublish",
+        "archive": "Archive",
+        "unarchive": "Unarchive",
         "delete": "Delete",
-        "purchase": "Purchase"
+        "purchase": "Purchase",
+        "clone": "Clone"
       },
-      "publish": {
-        "title": "Publish design",
-        "description": "Publish design {name}? It will be visible to customers on your website.",
-        "confirm": "Publish"
+      "archiveSelected": {
+        "label": "Archive selected {count, plural, =1 {design} other {# designs}}",
+        "description": "Archive {count, plural, =1 {selected design} other {# selected designs}}? They will be hidden from customers on your website.",
+        "confirm": "Archive {count, plural, =1 {selected design} other {# selected designs}}"
       },
-      "unpublish": {
-        "title": "Unpublish design",
-        "description": "Unpublish design {name}? It will no longer be visible to customers.",
-        "confirm": "Unpublish"
+      "unarchiveSelected": {
+        "label": "Unarchive selected {count, plural, =1 {design} other {# designs}}",
+        "description": "Unarchive {count, plural, =1 {selected design} other {# selected designs}}? They will be visible again on your website.",
+        "confirm": "Unarchive {count, plural, =1 {selected design} other {# selected designs}}"
+      },
+      "deleteSelected": {
+        "label": "Delete selected {count, plural, =1 {design} other {# designs}}",
+        "description": "Are you sure you want to delete {count, plural, =1 {selected design} other {# selected designs}}? This action cannot be undone.",
+        "confirm": "Delete {count, plural, =1 {selected design} other {# selected designs}}"
+      },
+      "archive": {
+        "title": "Archive design",
+        "description": "Archive design {name}? It will be hidden from customers on your website.",
+        "confirm": "Archive"
+      },
+      "unarchive": {
+        "title": "Unarchive design",
+        "description": "Unarchive design {name}? It will be visible again on your website.",
+        "confirm": "Unarchive"
       },
       "delete": {
         "title": "Delete Design",
@@ -65,10 +81,13 @@
       "toast": {
         "delete": "Design {name} deleted successfully",
         "deleteError": "Failed to delete design",
-        "published": "Design {name} published",
-        "unpublished": "Design {name} unpublished",
-        "publishError": "Failed to publish design",
-        "unpublishError": "Failed to unpublish design"
+        "archived": "Design {name} archived",
+        "unarchived": "Design {name} unarchived",
+        "archiveError": "Failed to archive design",
+        "unarchiveError": "Failed to unarchive design",
+        "designsArchived": "{count, plural, =1 {Design} other {# designs}} archived",
+        "designsUnarchived": "{count, plural, =1 {Design} other {# designs}} unarchived",
+        "designsDeleted": "{count, plural, =1 {Design} other {# designs}} deleted"
       },
       "columns": {
         "name": "Name",
@@ -77,16 +96,21 @@
         "createdAt": "Created At"
       },
       "status": {
-        "published": "Published",
-        "draft": "Draft"
+        "archived": "Archived",
+        "active": "Active"
       }
     },
     "form": {
       "name": "Name",
       "namePlaceholder": "Design name",
-      "isPublic": "Published",
       "design": "Card design",
-      "unpublishedNotice": "This design is not published and will not be visible to customers."
+      "archivedNotice": "This design is archived and will not be visible to customers.",
+      "toasts": {
+        "updated": "Design {name} updated successfully",
+        "updatedError": "Failed to update design",
+        "created": "Design {name} created successfully",
+        "createdError": "Failed to create design"
+      }
     }
   },
   "designer": {

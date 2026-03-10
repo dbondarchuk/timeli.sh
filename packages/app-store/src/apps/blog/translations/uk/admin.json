@@ -12,7 +12,8 @@
     },
     "actions": {
       "create": "Створити запис",
-      "edit": "Редагувати"
+      "edit": "Редагувати",
+      "clone": "Клонувати"
     },
     "delete": {
       "title": "Ви впевнені?",
@@ -42,8 +43,12 @@
     "slugPlaceholder": "slug-zapysu",
     "content": "Контент",
     "contentTooltip": "Основний вміст запису",
-    "isPublished": "Опубліковано",
-    "isPublishedDescription": "Чи опублікований запис і видимий для відвідувачів",
+    "isPublished": {
+      "label": "Статус",
+      "tooltip": "Чи опублікований запис і видимий для відвідувачів",
+      "published": "Опубліковано",
+      "draft": "Чернетка"
+    },
     "publicationDate": "Дата публікації",
     "publicationDateTooltip": "Коли слід опублікувати запис",
     "tags": "Теги",

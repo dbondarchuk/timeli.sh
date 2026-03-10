@@ -1,7 +1,7 @@
 "use client";
 
 import { useI18n } from "@timelish/i18n";
-import { Skeleton, toast } from "@timelish/ui";
+import { AutoSkeleton, toast } from "@timelish/ui";
 import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 import { getAppointmentNotification } from "./actions";
@@ -49,18 +49,19 @@ export const EditAppointmentNotificationPage: React.FC<{ appId: string }> = ({
         console.error(e);
         toast.error(t("statusText.error_loading_appointment_notification"));
       } finally {
+        setLoading(false);
       }
     };
 
     fn();
   }, [id]);
 
-  return loading ? (
-    <Skeleton className="w-full h-[70vh]" />
-  ) : (
-    <AppointmentNotificationForm
-      appId={appId}
-      initialData={appointmentNotification}
-    />
+  return (
+    <AutoSkeleton loading={loading}>
+      <AppointmentNotificationForm
+        appId={appId}
+        initialData={appointmentNotification}
+      />
+    </AutoSkeleton>
   );
 };

@@ -1,7 +1,7 @@
 "use client";
 
 import { useI18n } from "@timelish/i18n";
-import { Spinner } from "@timelish/ui";
+import { AutoSkeleton } from "@timelish/ui";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getDesignById } from "../../actions";
@@ -16,10 +16,9 @@ import { DesignForm } from "../components/design-form";
 export const DesignEditPage = ({ appId }: { appId: string }) => {
   const params = useSearchParams();
   const designId = params.get("id") as string;
-  const t = useI18n<
-    GiftCardStudioAdminNamespace,
-    GiftCardStudioAdminKeys
-  >(giftCardStudioAdminNamespace);
+  const t = useI18n<GiftCardStudioAdminNamespace, GiftCardStudioAdminKeys>(
+    giftCardStudioAdminNamespace,
+  );
 
   const [design, setDesign] = useState<DesignModel | null>(null);
   const [loading, setLoading] = useState(true);
@@ -40,9 +39,9 @@ export const DesignEditPage = ({ appId }: { appId: string }) => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <Spinner />
-      </div>
+      <AutoSkeleton loading>
+        <DesignForm appId={appId} />
+      </AutoSkeleton>
     );
   }
 

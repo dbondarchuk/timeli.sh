@@ -63,7 +63,8 @@
         "edit": "Edit Form",
         "viewResponses": "Form Responses",
         "archive": "Archive",
-        "unarchive": "Unarchive"
+        "unarchive": "Unarchive",
+        "clone": "Clone"
       },
       "archive": {
         "title": "Archive form",

@@ -11,10 +11,9 @@ import {
 import { searchParams } from "./search-params";
 
 export function useDesignsTableFilters() {
-  const t = useI18n<
-    GiftCardStudioAdminNamespace,
-    GiftCardStudioAdminKeys
-  >(giftCardStudioAdminNamespace);
+  const t = useI18n<GiftCardStudioAdminNamespace, GiftCardStudioAdminKeys>(
+    giftCardStudioAdminNamespace,
+  );
 
   const [searchQuery, setSearchQuery] = useQueryState(
     "search",
@@ -23,30 +22,30 @@ export function useDesignsTableFilters() {
       .withDefault(""),
   );
   const [page, setPage] = useQueryState("page", searchParams.page);
-  const [isPublicFilter, setIsPublicFilter] = useQueryState(
-    "isPublic",
-    searchParams.isPublic.withOptions({ shallow: false }),
+  const [isArchivedFilter, setIsArchivedFilter] = useQueryState(
+    "isArchived",
+    searchParams.isArchived.withOptions({ shallow: false }),
   );
 
   const resetFilters = useCallback(() => {
     setSearchQuery(null);
-    setIsPublicFilter(null);
+    setIsArchivedFilter(null);
     setPage(1);
-  }, [setSearchQuery, setIsPublicFilter, setPage]);
+  }, [setSearchQuery, setIsArchivedFilter, setPage]);
 
   const isAnyFilterActive = useMemo(() => {
-    const defaultPublic = searchParams.isPublic.defaultValue;
+    const defaultArchived = searchParams.isArchived.defaultValue;
     return (
       !!searchQuery ||
-      JSON.stringify(isPublicFilter ?? defaultPublic) !==
-        JSON.stringify(defaultPublic)
+      JSON.stringify(isArchivedFilter ?? defaultArchived) !==
+        JSON.stringify(defaultArchived)
     );
-  }, [searchQuery, isPublicFilter]);
+  }, [searchQuery, isArchivedFilter]);
 
   const STATUS_OPTIONS = useMemo(
     () => [
-      { value: true, label: t("designs.table.filters.published") },
-      { value: false, label: t("designs.table.filters.draft") },
+      { value: false, label: t("designs.table.filters.active") },
+      { value: true, label: t("designs.table.filters.archived") },
     ],
     [t],
   );
@@ -58,8 +57,8 @@ export function useDesignsTableFilters() {
     setPage,
     resetFilters,
     isAnyFilterActive,
-    isPublicFilter: isPublicFilter ?? searchParams.isPublic.defaultValue,
-    setIsPublicFilter,
+    isArchivedFilter: isArchivedFilter ?? searchParams.isArchived.defaultValue,
+    setIsArchivedFilter,
     STATUS_OPTIONS,
   };
 }

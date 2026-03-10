@@ -19,7 +19,7 @@ export const designSchemaBase = z.object({
     64,
     "app_gift-card-studio_admin.validation.design.name.max" satisfies GiftCardStudioAdminAllKeys,
   ),
-  isPublic: z.coerce.boolean<boolean>(),
+  isArchived: z.coerce.boolean<boolean>().optional(),
   design: designSchema,
 });
 
@@ -66,7 +66,7 @@ export const getDesignsQuerySchema = z.object({
       }),
     )
     .optional(),
-  isPublic: z.array(z.coerce.boolean<boolean>()).optional(),
+  isArchived: z.array(z.coerce.boolean<boolean>()).optional(),
   priorityIds: z.array(z.string()).optional(),
 });
 

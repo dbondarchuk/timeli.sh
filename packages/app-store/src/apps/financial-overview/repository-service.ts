@@ -22,6 +22,9 @@ import {
 const PAYMENTS_COLLECTION_NAME = "payments";
 const BOOKING_TRACKING_COLLECTION_NAME = "booking-tracking";
 
+/** Collection name for gift cards; payments linked as giftCard.paymentId are excluded (gift card purchases, not service revenue). */
+const GIFT_CARDS_COLLECTION_NAME = "gift-cards";
+
 export default class FinancialOverviewService {
   protected readonly loggerFactory: LoggerFactory;
 
@@ -80,11 +83,41 @@ export default class FinancialOverviewService {
         },
       },
       {
+        $lookup: {
+          from: GIFT_CARDS_COLLECTION_NAME,
+          pipeline: [
+            { $match: { companyId: this.companyId } },
+            { $project: { paymentId: 1, _id: 0 } },
+          ],
+          as: "giftCardPaymentIds",
+        },
+      },
+      {
+        $addFields: {
+          giftCardPaymentIdList: {
+            $map: {
+              input: "$giftCardPaymentIds",
+              as: "g",
+              in: "$$g.paymentId",
+            },
+          },
+          paymentsExcludingGiftCardPurchases: {
+            $filter: {
+              input: "$payments",
+              as: "p",
+              cond: {
+                $not: { $in: ["$$p._id", "$giftCardPaymentIdList"] },
+              },
+            },
+          },
+        },
+      },
+      {
         $addFields: {
           totalPaidAmount: {
             $sum: {
               $map: {
-                input: "$payments",
+                input: "$paymentsExcludingGiftCardPurchases",
                 as: "payment",
                 in: "$$payment.amount",
               },
@@ -93,7 +126,7 @@ export default class FinancialOverviewService {
           totalRefundedAmount: {
             $sum: {
               $map: {
-                input: "$payments",
+                input: "$paymentsExcludingGiftCardPurchases",
                 as: "payment",
                 in: {
                   $cond: [
@@ -108,7 +141,7 @@ export default class FinancialOverviewService {
           netPaymentAmount: {
             $sum: {
               $map: {
-                input: "$payments",
+                input: "$paymentsExcludingGiftCardPurchases",
                 as: "payment",
                 in: {
                   $subtract: [
@@ -347,11 +380,41 @@ export default class FinancialOverviewService {
         },
       },
       {
+        $lookup: {
+          from: GIFT_CARDS_COLLECTION_NAME,
+          pipeline: [
+            { $match: { companyId: this.companyId } },
+            { $project: { paymentId: 1, _id: 0 } },
+          ],
+          as: "giftCardPaymentIds",
+        },
+      },
+      {
+        $addFields: {
+          giftCardPaymentIdList: {
+            $map: {
+              input: "$giftCardPaymentIds",
+              as: "g",
+              in: "$$g.paymentId",
+            },
+          },
+          paymentsExcludingGiftCardPurchases: {
+            $filter: {
+              input: "$payments",
+              as: "p",
+              cond: {
+                $not: { $in: ["$$p._id", "$giftCardPaymentIdList"] },
+              },
+            },
+          },
+        },
+      },
+      {
         $addFields: {
           totalPaidAmount: {
             $sum: {
               $map: {
-                input: "$payments",
+                input: "$paymentsExcludingGiftCardPurchases",
                 as: "payment",
                 in: "$$payment.amount",
               },
@@ -360,7 +423,7 @@ export default class FinancialOverviewService {
           totalRefundedAmount: {
             $sum: {
               $map: {
-                input: "$payments",
+                input: "$paymentsExcludingGiftCardPurchases",
                 as: "payment",
                 in: {
                   $cond: [
@@ -375,7 +438,7 @@ export default class FinancialOverviewService {
           netPaymentAmount: {
             $sum: {
               $map: {
-                input: "$payments",
+                input: "$paymentsExcludingGiftCardPurchases",
                 as: "payment",
                 in: {
                   $subtract: [
@@ -526,11 +589,41 @@ export default class FinancialOverviewService {
         },
       },
       {
+        $lookup: {
+          from: GIFT_CARDS_COLLECTION_NAME,
+          pipeline: [
+            { $match: { companyId: this.companyId } },
+            { $project: { paymentId: 1, _id: 0 } },
+          ],
+          as: "giftCardPaymentIds",
+        },
+      },
+      {
+        $addFields: {
+          giftCardPaymentIdList: {
+            $map: {
+              input: "$giftCardPaymentIds",
+              as: "g",
+              in: "$$g.paymentId",
+            },
+          },
+          paymentsExcludingGiftCardPurchases: {
+            $filter: {
+              input: "$payments",
+              as: "p",
+              cond: {
+                $not: { $in: ["$$p._id", "$giftCardPaymentIdList"] },
+              },
+            },
+          },
+        },
+      },
+      {
         $addFields: {
           totalPaidAmount: {
             $sum: {
               $map: {
-                input: "$payments",
+                input: "$paymentsExcludingGiftCardPurchases",
                 as: "payment",
                 in: "$$payment.amount",
               },
@@ -539,7 +632,7 @@ export default class FinancialOverviewService {
           netPaymentAmount: {
             $sum: {
               $map: {
-                input: "$payments",
+                input: "$paymentsExcludingGiftCardPurchases",
                 as: "payment",
                 in: {
                   $subtract: [

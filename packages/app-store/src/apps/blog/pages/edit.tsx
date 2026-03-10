@@ -1,7 +1,7 @@
 "use client";
 
 import { useI18n } from "@timelish/i18n";
-import { Spinner } from "@timelish/ui";
+import { AutoSkeleton } from "@timelish/ui";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getBlogPost } from "../actions";
@@ -40,9 +40,9 @@ export const BlogEditPage = ({ appId }: { appId: string }) => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <Spinner />
-      </div>
+      <AutoSkeleton loading>
+        <BlogPostForm appId={appId} />
+      </AutoSkeleton>
     );
   }
 

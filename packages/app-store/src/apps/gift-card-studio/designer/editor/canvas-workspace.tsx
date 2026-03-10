@@ -2,6 +2,7 @@
 
 import type React from "react";
 
+import { cn } from "@timelish/ui";
 import { useEffect, useRef, useState } from "react";
 import { isTypingInInput } from "../lib/keyboard";
 import { useEditorStore } from "../lib/store";
@@ -21,8 +22,16 @@ export function CanvasWorkspace({
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
   const preventUnselectionRef = useRef(false);
-  const { design, zoom, pan, mode, clearSelection, setPan, selectedElements } =
-    useEditorStore();
+  const {
+    design,
+    zoom,
+    pan,
+    mode,
+    clearSelection,
+    setPan,
+    selectedElements,
+    disabled,
+  } = useEditorStore();
   const [isPanning, setIsPanning] = useState(false);
   const [panStart, setPanStart] = useState({ x: 0, y: 0 });
   const [isAltPressed, setIsAltPressed] = useState(false);
@@ -356,7 +365,7 @@ export function CanvasWorkspace({
   return (
     <div
       ref={containerRef}
-      className="flex-1 grid min-w-0 overflow-hidden relative bg-muted/30"
+      className={cn("flex-1 grid min-w-0 overflow-hidden relative bg-muted/30")}
       id="gift-card-editor-canvas"
       onMouseDown={handleMouseDown}
       onWheel={handleWheel}

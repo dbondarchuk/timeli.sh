@@ -7,10 +7,11 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
   toastPromise,
 } from "@timelish/ui";
-import { Edit, MoreHorizontal, Trash } from "lucide-react";
+import { Copy, Edit, MoreHorizontal, Trash } from "lucide-react";
 import Link from "next/link";
 import { useQueryState } from "nuqs";
 import { useState } from "react";
@@ -90,6 +91,15 @@ export const CellAction: React.FC<CellActionProps> = ({
               <Edit className="size-3.5" /> {t("table.actions.edit")}
             </Link>
           </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link
+              href={`/dashboard/communications/appointment-notifications/new?from=${appointmentNotification._id}`}
+              className="text-foreground"
+            >
+              <Copy className="size-3.5" /> {t("table.actions.clone")}
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => setOpen(true)}>
             <Trash className="size-3.5" /> {t("table.actions.delete")}
           </DropdownMenuItem>

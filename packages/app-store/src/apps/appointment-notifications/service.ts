@@ -6,9 +6,11 @@ import {
   ConnectedAppRequestError,
   ConnectedAppStatusWithText,
   IAppointmentHook,
+  ICommunicationTemplatesProvider,
   IConnectedApp,
   IConnectedAppProps,
   IScheduled,
+  TemplateTemplatesList,
 } from "@timelish/types";
 import { AppointmentNotificationsJobProcessor } from "./job-processor";
 import {
@@ -19,13 +21,18 @@ import {
   requestActionSchema,
 } from "./models";
 import { AppointmentNotificationsRepository } from "./repository";
+import { AppointmentNotificationsTemplates } from "./templates";
 import {
   AppointmentNotificationsAdminKeys,
   AppointmentNotificationsAdminNamespace,
 } from "./translations/types";
 
 export default class AppointmentNotificationsConnectedApp
-  implements IConnectedApp, IScheduled, IAppointmentHook
+  implements
+    IConnectedApp,
+    IScheduled,
+    IAppointmentHook,
+    ICommunicationTemplatesProvider
 {
   protected readonly loggerFactory: LoggerFactory;
   protected readonly repository: AppointmentNotificationsRepository;
@@ -298,6 +305,10 @@ export default class AppointmentNotificationsConnectedApp
       { appId: appData._id, appointment },
       "Successfully appointment appointment notifications update appointment job",
     );
+  }
+
+  public async getCommunicationTemplates(): Promise<TemplateTemplatesList> {
+    return AppointmentNotificationsTemplates;
   }
 
   private async createAppointmentNotification(

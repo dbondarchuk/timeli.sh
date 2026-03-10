@@ -1,0 +1,85 @@
+"use client";
+
+import { useI18n } from "@timelish/i18n";
+import { AlertModal, Button, Spinner, toastPromise } from "@timelish/ui";
+import { ArchiveRestore } from "lucide-react";
+import { useQueryState } from "nuqs";
+import React from "react";
+import { setDesignsArchived } from "../../actions";
+import {
+  GiftCardStudioAdminKeys,
+  GiftCardStudioAdminNamespace,
+  giftCardStudioAdminNamespace,
+} from "../../translations/types";
+import { DesignsTableRow } from "./columns";
+
+export const UnarchiveSelectedDesignsButton: React.FC<{
+  appId: string;
+  selected: DesignsTableRow[];
+  disabled?: boolean;
+}> = ({ selected, appId, disabled }) => {
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [isOpen, setIsOpen] = React.useState(false);
+  const t = useI18n<
+    GiftCardStudioAdminNamespace,
+    GiftCardStudioAdminKeys
+  >(giftCardStudioAdminNamespace);
+  const tAdmin = useI18n("admin");
+
+  const [, reload] = useQueryState("ts", { history: "replace" });
+  const action = async () => {
+    try {
+      setIsLoading(true);
+      await toastPromise(
+        setDesignsArchived(
+          appId,
+          selected.map((r) => r._id),
+          false,
+        ),
+        {
+          success: t("designs.table.toast.designsUnarchived", {
+            count: selected.length,
+          }),
+          error: tAdmin("common.toasts.error"),
+        },
+      );
+      reload(`${Date.now()}`);
+      setIsOpen(false);
+    } catch (error: any) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <>
+      <Button
+        variant="secondary"
+        disabled={disabled || isLoading || !selected?.length}
+        onClick={() => setIsOpen(true)}
+      >
+        {isLoading && <Spinner />}
+        <ArchiveRestore className="mr-2 h-4 w-4" />
+        <span>
+          {t("designs.table.unarchiveSelected.label", {
+            count: selected.length,
+          })}
+        </span>
+      </Button>
+      <AlertModal
+        isOpen={isOpen}
+        loading={isLoading}
+        onClose={() => setIsOpen(false)}
+        onConfirm={action}
+        description={t("designs.table.unarchiveSelected.description", {
+          count: selected.length,
+        })}
+        continueButton={t("designs.table.unarchiveSelected.confirm", {
+          count: selected.length,
+        })}
+      />
+    </>
+  );
+}
+

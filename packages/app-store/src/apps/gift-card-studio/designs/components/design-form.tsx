@@ -2,16 +2,17 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useI18n } from "@timelish/i18n";
+import { DatabaseId } from "@timelish/types";
 import {
   Breadcrumbs,
-  Checkbox,
+  cn,
   Form,
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
   Input,
+  Spinner,
   toastPromise,
   useDebounceCacheFn,
 } from "@timelish/ui";
@@ -32,7 +33,10 @@ import {
   useIsValidDesign,
 } from "../../designer/design-editor";
 import { DesignValue } from "../../designer/lib/schema";
-import { DesignModel, getDesignSchemaWithUniqueCheck } from "../../models";
+import {
+  DesignUpdateModel,
+  getDesignSchemaWithUniqueCheck,
+} from "../../models";
 import {
   GiftCardStudioAdminAllKeys,
   GiftCardStudioAdminKeys,
@@ -41,7 +45,7 @@ import {
 } from "../../translations/types";
 
 export const DesignForm: React.FC<{
-  initialData?: DesignModel;
+  initialData?: DesignUpdateModel & Partial<DatabaseId>;
   appId: string;
 }> = ({ initialData, appId }) => {
   const t = useI18n<GiftCardStudioAdminNamespace, GiftCardStudioAdminKeys>(
@@ -65,7 +69,7 @@ export const DesignForm: React.FC<{
   type FormValues = z.infer<typeof formSchema>;
   const defaultDesign = useMemo(
     () => initialData?.design ?? getDefaultDesign(),
-    [initialData?._id],
+    [initialData?.design],
   );
   const form = useForm<FormValues>({
     // Cast needed when zod schema inference differs slightly from DesignUpdateModel (same shape at runtime).
@@ -74,12 +78,9 @@ export const DesignForm: React.FC<{
     reValidateMode: "onChange",
     defaultValues: (initialData ?? {
       name: "",
-      isPublic: true,
       design: getDefaultDesign(),
     }) as FormValues,
   });
-
-  const isPublic = form.watch("isPublic");
 
   const breadcrumbItems = useMemo(
     () => [
@@ -95,7 +96,7 @@ export const DesignForm: React.FC<{
           : "/dashboard/gift-card-studio/new",
       },
     ],
-    [t, tAdmin, initialData],
+    [t, tAdmin, initialData?.name, initialData?._id],
   );
 
   const onSubmit = async (values: FormValues) => {
@@ -110,12 +111,11 @@ export const DesignForm: React.FC<{
         await toastPromise(
           updateDesign(appId, initialData._id, {
             name: values.name,
-            isPublic: values.isPublic,
             design,
           }),
           {
-            success: t("designs.table.toast.published", { name: values.name }),
-            error: t("designs.table.toast.publishError"),
+            success: t("designs.form.toasts.updated", { name: values.name }),
+            error: t("designs.form.toasts.updatedError"),
           },
         );
         router.refresh();
@@ -123,12 +123,11 @@ export const DesignForm: React.FC<{
         const result = await toastPromise(
           createDesign(appId, {
             name: values.name,
-            isPublic: values.isPublic,
             design,
           }),
           {
-            success: t("designs.table.toast.published", { name: values.name }),
-            error: t("designs.table.toast.publishError"),
+            success: t("designs.form.toasts.created", { name: values.name }),
+            error: t("designs.form.toasts.createdError"),
           },
         );
         router.push(`/dashboard/gift-card-studio/edit?id=${result._id}`);
@@ -163,9 +162,9 @@ export const DesignForm: React.FC<{
                     {...field}
                   />
                 </FormControl>
-                {!isPublic && (
+                {initialData?.isArchived && (
                   <p className="text-sm text-muted-foreground">
-                    {t("designs.form.unpublishedNotice")}
+                    {t("designs.form.archivedNotice")}
                   </p>
                 )}
                 <FormMessage />
@@ -173,34 +172,24 @@ export const DesignForm: React.FC<{
             )}
           />
         </div>
-        <div className="grid gap-4 max-w-md">
-          <FormField
-            control={form.control}
-            name="isPublic"
-            render={({ field }) => (
-              <FormItem className="flex flex-row items-center gap-2">
-                <FormControl>
-                  <Checkbox
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                </FormControl>
-                <FormLabel className="!mt-0">
-                  {t("designs.form.isPublic")}
-                </FormLabel>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
         <div className="flex flex-col gap-2">
-          <div className="border border-border rounded-lg overflow-hidden h-[70vh] min-h-[520px] max-h-[900px]">
+          <div
+            className={cn(
+              "border border-border rounded-lg overflow-hidden h-[70vh] min-h-[520px] max-h-[900px] relative",
+              (loading || initialData?.isArchived) && "pointer-events-none",
+            )}
+          >
             <DesignEditor
               key={initialData?._id ?? "new"}
               designId={initialData?._id}
               initialDesign={defaultDesign}
               disabled={loading}
             />
+            {(loading || initialData?.isArchived) && (
+              <div className="absolute inset-0 bg-muted/50 z-[100] flex items-center justify-center pointer-events-none">
+                {loading && <Spinner />}
+              </div>
+            )}
           </div>
         </div>
         <SaveButton form={form} isLoading={loading} disabled={!isValidDesign} />

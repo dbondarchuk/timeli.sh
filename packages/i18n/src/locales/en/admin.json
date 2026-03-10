@@ -656,6 +656,7 @@
         "edit": "Edit",
         "delete": "Delete",
         "view": "View",
+        "clone": "Clone",
         "copyRelativeUrl": "Copy relative url",
         "copyAbsoluteUrl": "Copy absolute url"
       },
@@ -724,7 +725,8 @@
           "openMenu": "Open menu",
           "actions": "Actions",
           "edit": "Edit",
-          "delete": "Delete"
+          "delete": "Delete",
+          "clone": "Clone"
         },
         "delete": {
           "title": "Are you absolutely sure?",
@@ -775,7 +777,8 @@
           "openMenu": "Open menu",
           "actions": "Actions",
           "edit": "Edit",
-          "delete": "Delete"
+          "delete": "Delete",
+          "clone": "Clone"
         },
         "delete": {
           "title": "Are you absolutely sure?",

@@ -33,7 +33,7 @@ export function useConnectedAppSetup<T extends FieldValues>({
   const t = useI18n("apps");
   const [appId, setAppId] = React.useState<string>();
   const [isLoading, setIsLoading] = React.useState(false);
-  const [isDataLoading, setIsDataLoading] = React.useState(false);
+  const [isDataLoading, setIsDataLoading] = React.useState(true);
   const [appStatus, setAppStatus] =
     React.useState<ConnectedAppStatusWithText>();
 

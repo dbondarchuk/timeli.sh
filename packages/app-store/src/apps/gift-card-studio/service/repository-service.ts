@@ -81,25 +81,51 @@ export class GiftCardStudioRepositoryService {
     return this.getDesignById(id);
   }
 
-  public async setDesignPublic(
+  public async setDesignArchived(
     id: string,
-    isPublic: boolean,
+    isArchived: boolean,
   ): Promise<boolean> {
-    const logger = this.loggerFactory("setDesignPublic");
-    logger.debug({ id, isPublic }, "Setting design public");
+    const logger = this.loggerFactory("setDesignArchived");
+    logger.debug({ id, isArchived }, "Setting design archived");
 
     const db = await this.getDbConnection();
     const { modifiedCount } = await db
       .collection<DesignModel>(GIFT_CARD_DESIGNS_COLLECTION_NAME)
       .updateOne(
         { _id: id, companyId: this.companyId, appId: this.appId },
-        { $set: { updatedAt: new Date(), isPublic } },
+        { $set: { updatedAt: new Date(), isArchived } },
       );
 
     if (modifiedCount === 0) {
       logger.warn({ id }, "Design not found");
       return false;
     }
+
+    logger.debug({ id, isArchived }, "Design archived updated");
+    return true;
+  }
+
+  public async setDesignsArchived(
+    ids: string[],
+    isArchived: boolean,
+  ): Promise<boolean> {
+    const logger = this.loggerFactory("setDesignsArchived");
+    logger.debug({ ids, isArchived }, "Setting designs archived");
+
+    const db = await this.getDbConnection();
+    const { modifiedCount } = await db
+      .collection<DesignModel>(GIFT_CARD_DESIGNS_COLLECTION_NAME)
+      .updateMany(
+        { _id: { $in: ids }, companyId: this.companyId, appId: this.appId },
+        { $set: { updatedAt: new Date(), isArchived } },
+      );
+
+    if (modifiedCount === 0) {
+      logger.warn({ ids }, "Designs not found");
+      return false;
+    }
+
+    logger.debug({ ids, isArchived }, "Designs archived updated");
     return true;
   }
 
@@ -131,15 +157,17 @@ export class GiftCardStudioRepositoryService {
       $and.push({ name: { $regex } } as Filter<DesignModel>);
     }
 
-    if (query.isPublic?.length) {
-      const hasFalse = query.isPublic.includes(false);
-      const hasTrue = query.isPublic.includes(true);
+    if (query.isArchived?.length) {
+      const hasFalse = query.isArchived.includes(false);
+      const hasTrue = query.isArchived.includes(true);
       if (hasFalse && hasTrue) {
         // no filter – show all
       } else if (hasFalse) {
-        $and.push({ isPublic: false });
+        $and.push({
+          isArchived: { $ne: true },
+        });
       } else {
-        $and.push({ isPublic: true });
+        $and.push({ isArchived: true });
       }
     }
 
@@ -286,6 +314,45 @@ export class GiftCardStudioRepositoryService {
     }
 
     logger.debug({ id }, "Design deleted");
+    return true;
+  }
+
+  public async deleteDesigns(ids: string[]): Promise<boolean> {
+    const logger = this.loggerFactory("deleteDesigns");
+    logger.debug({ ids }, "Deleting designs");
+
+    const db = await this.getDbConnection();
+    const hasPurchases = await db
+      .collection<PurchasedGiftCardModel>(PURCHASED_GIFT_CARDS_COLLECTION_NAME)
+      .aggregate([
+        {
+          $match: {
+            designId: { $in: ids },
+            companyId: this.companyId,
+            appId: this.appId,
+          },
+        },
+      ])
+      .hasNext();
+
+    if (hasPurchases) {
+      logger.warn({ ids }, "Designs have purchases, cannot delete");
+      return false;
+    }
+
+    const { deletedCount } = await db
+      .collection<DesignModel>(GIFT_CARD_DESIGNS_COLLECTION_NAME)
+      .deleteMany({
+        _id: { $in: ids },
+        companyId: this.companyId,
+        appId: this.appId,
+      });
+
+    if (deletedCount !== ids.length) {
+      logger.warn({ ids, deletedCount }, "Not all designs were removed");
+    }
+
+    logger.debug({ ids }, "Designs deleted");
     return true;
   }
 
@@ -631,7 +698,7 @@ export class GiftCardStudioRepositoryService {
       );
       const designIndexes: Record<string, Record<string, 1>> = {
         companyId_appId_1: { companyId: 1, appId: 1 },
-        companyId_appId_isPublic_1: { companyId: 1, appId: 1, isPublic: 1 },
+        companyId_appId_isArchived_1: { companyId: 1, appId: 1, isArchived: 1 },
         companyId_appId_name_1: { companyId: 1, appId: 1, name: 1 },
         companyId_appId_createdAt_1: { companyId: 1, appId: 1, createdAt: 1 },
       };

@@ -1,4 +1,5 @@
 "use client";
+import { adminApi } from "@timelish/api-sdk";
 import { useI18n } from "@timelish/i18n";
 import { CommunicationChannel, communicationChannels } from "@timelish/types";
 import {
@@ -12,7 +13,6 @@ import {
   DialogTitle,
   DialogTrigger,
   Label,
-  Link,
   Select,
   SelectContent,
   SelectItem,
@@ -20,29 +20,59 @@ import {
   SelectValue,
 } from "@timelish/ui";
 import { Plus } from "lucide-react";
-import React from "react";
-import { TemplateTemplates } from "./templates";
+import { useRouter } from "next/navigation";
+import React, { useMemo } from "react";
 
 export const AddNewTemplateButton: React.FC = () => {
   const t = useI18n("admin");
   const [type, setType] = React.useState<CommunicationChannel>("email");
   const [template, setTemplate] = React.useState<string>("");
+  const [availableTemplates, setAvailableTemplates] = React.useState<
+    { id: string; name: string; type: CommunicationChannel }[]
+  >([]);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
+  const router = useRouter();
 
-  const availableTemplates = [
-    {
-      label: t("templates.addNew.emptyTemplate"),
-      value: "",
-    },
-    ...Object.entries(TemplateTemplates[type] || {}).map(
-      ([name, { name: displayName }]) => ({
-        label: displayName,
-        value: name,
-      }),
-    ),
-  ];
+  const availableTemplatesValues = useMemo(
+    () => [
+      {
+        label: t("templates.addNew.emptyTemplate"),
+        value: "",
+      },
+      ...availableTemplates.map((template) => ({
+        label: template.name,
+        value: template.id,
+      })),
+    ],
+    [t, availableTemplates],
+  );
+
+  const fetchAvailableTemplates = async (type: CommunicationChannel) => {
+    setIsLoading(true);
+    const templates = await adminApi.templates.getTemplateTemplates(type);
+    setAvailableTemplates(templates);
+    setIsLoading(false);
+  };
+
+  const handleTypeChange = (value: CommunicationChannel) => {
+    setType(value);
+    setTemplate("");
+    fetchAvailableTemplates(value);
+  };
+
+  const onOpenChange = (open: boolean) => {
+    setOpen(open);
+    if (!open) {
+      setAvailableTemplates([]);
+      setTemplate("");
+    } else {
+      fetchAvailableTemplates(type);
+    }
+  };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
         <Button variant="default">
           <Plus className="mr-2 h-4 w-4" />{" "}
@@ -60,13 +90,7 @@ export const AddNewTemplateButton: React.FC = () => {
           <div className="flex flex-col gap-2">
             <Label>{t("templates.addNew.type")}</Label>
             <div className="flex w-full">
-              <Select
-                value={type}
-                onValueChange={(value) => {
-                  setType(value as CommunicationChannel);
-                  setTemplate("");
-                }}
-              >
+              <Select value={type} onValueChange={handleTypeChange}>
                 <SelectTrigger className="w-full">
                   <SelectValue
                     placeholder={t("templates.addNew.selectTemplateType")}
@@ -86,9 +110,10 @@ export const AddNewTemplateButton: React.FC = () => {
             <Label>{t("templates.addNew.template")}</Label>
             <div className="flex w-full">
               <Combobox
-                values={availableTemplates}
+                values={availableTemplatesValues}
                 value={template}
                 onItemSelect={setTemplate}
+                disabled={isLoading}
               />
             </div>
           </div>
@@ -99,14 +124,17 @@ export const AddNewTemplateButton: React.FC = () => {
               {t("templates.addNew.close")}
             </Button>
           </DialogClose>
-          <Link
-            button
+          <Button
             variant="default"
-            aria-disabled={!!type}
-            href={`/dashboard/templates/new/${type}${template ? `?template=${encodeURIComponent(template)}` : ""}`}
+            disabled={!type || isLoading || !template}
+            onClick={() => {
+              router.push(
+                `/dashboard/templates/new/${type}${template ? `?templateId=${encodeURIComponent(template)}` : ""}`,
+              );
+            }}
           >
             {t("templates.addNew.addNewTemplate")}
-          </Link>
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -34,6 +34,7 @@ export function DesignEditor({
   useEffect(() => {
     useEditorStore.setState({
       design: initialDesign,
+      disabled,
       history: [initialDesign],
       historyIndex: 0,
       selectedElements: [],

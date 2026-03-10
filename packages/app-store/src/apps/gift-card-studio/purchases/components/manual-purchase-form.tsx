@@ -339,7 +339,7 @@ export const ManualPurchaseDialog: React.FC<{
                         value={field.value}
                         onItemSelect={field.onChange}
                         disabled={loading}
-                        includeNonPublic
+                        includeArchived
                       />
                     </FormControl>
                     <FormMessage />

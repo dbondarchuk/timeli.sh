@@ -1,5 +1,4 @@
 import { getServicesContainer, getWebsiteUrl } from "@/app/utils";
-import { AvailableApps, getDemoEmailArgumentsFromApps } from "@timelish/app-store";
 import { getLoggerFactory } from "@timelish/logger";
 import { demoAppointment, getAdminUrl, getArguments } from "@timelish/utils";
 import { NextRequest, NextResponse } from "next/server";
@@ -41,10 +40,7 @@ export async function GET(request: NextRequest) {
     config,
     customer: demoAppointment.customer,
     locale: config.general.language,
-    additionalProperties:
-      searchParams.get("waitlistEntry") === "true"
-        ? getDemoEmailArgumentsFromApps(AvailableApps)
-        : {},
+    additionalProperties: {},
     adminUrl,
     websiteUrl,
   });

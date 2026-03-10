@@ -54,32 +54,23 @@ export const columns: ColumnDef<DesignsTableRow>[] = [
     header: tableSortHeader<
       GiftCardStudioAdminNamespace,
       GiftCardStudioAdminKeys
-    >(
-      "designs.table.columns.name",
-      "string",
-      giftCardStudioAdminNamespace,
-    ),
+    >("designs.table.columns.name", "string", giftCardStudioAdminNamespace),
     sortingFn: tableSortNoopFunction,
   },
   {
     cell: ({ row }) => {
-      const t = useI18n<
-        GiftCardStudioAdminNamespace,
-        GiftCardStudioAdminKeys
-      >(giftCardStudioAdminNamespace);
-      return row.original.isPublic
-        ? t("designs.table.status.published")
-        : t("designs.table.status.draft");
+      const t = useI18n<GiftCardStudioAdminNamespace, GiftCardStudioAdminKeys>(
+        giftCardStudioAdminNamespace,
+      );
+      return row.original.isArchived
+        ? t("designs.table.status.archived")
+        : t("designs.table.status.active");
     },
     id: "status",
     header: tableSortHeader<
       GiftCardStudioAdminNamespace,
       GiftCardStudioAdminKeys
-    >(
-      "designs.table.columns.status",
-      "string",
-      giftCardStudioAdminNamespace,
-    ),
+    >("designs.table.columns.status", "string", giftCardStudioAdminNamespace),
     sortingFn: tableSortNoopFunction,
   },
   {
@@ -111,11 +102,7 @@ export const columns: ColumnDef<DesignsTableRow>[] = [
     header: tableSortHeader<
       GiftCardStudioAdminNamespace,
       GiftCardStudioAdminKeys
-    >(
-      "designs.table.columns.createdAt",
-      "date",
-      giftCardStudioAdminNamespace,
-    ),
+    >("designs.table.columns.createdAt", "date", giftCardStudioAdminNamespace),
     sortingFn: tableSortNoopFunction,
   },
   {

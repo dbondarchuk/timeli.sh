@@ -1,4 +1,5 @@
 "use client";
+import { useI18n } from "@timelish/i18n";
 import {
   AlertModal,
   Button,
@@ -7,15 +8,13 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger,
-  Link,
   toastPromise,
 } from "@timelish/ui";
+import { SendCommunicationDialog } from "@timelish/ui-admin-kit";
 import { CalendarPlus, MoreHorizontal, Send, X } from "lucide-react";
+import Link from "next/link";
 import { useQueryState } from "nuqs";
 import { useState } from "react";
-
-import { useI18n } from "@timelish/i18n";
-import { SendCommunicationDialog } from "@timelish/ui-admin-kit";
 import { dismissWaitlistEntries } from "../actions";
 import { WaitlistEntry } from "../models";
 import {

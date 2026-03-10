@@ -3,6 +3,7 @@ import { communicationChannels } from "../communication";
 import { WithCompanyId, WithDatabaseId } from "../database";
 import { Prettify, zNonEmptyString } from "../utils";
 
+/** Template schema for template creation and update */
 export const templateSchema = z
   .object({
     name: zNonEmptyString(
@@ -40,6 +41,11 @@ export const templateSchema = z
     ]),
   );
 
+/** Gets template schema with unique name check
+ * @param uniqueNameCheckFn - Function to check if the template name is unique
+ * @param message - Message to display if the template name is not unique
+ * @returns Template schema with unique name check
+ */
 export const getTemplateSchemaWithUniqueCheck = (
   uniqueNameCheckFn: (name: string) => Promise<boolean> | boolean,
   message: string,
@@ -56,11 +62,25 @@ export const getTemplateSchemaWithUniqueCheck = (
   });
 };
 
+/** Template update model (used for creating and updating templates) */
 export type TemplateUpdateModel = z.infer<typeof templateSchema>;
+
+/** Communication template */
 export type Template = Prettify<
   WithCompanyId<WithDatabaseId<TemplateUpdateModel>> & {
     updatedAt: Date;
   }
 >;
 
+/** Template list model (used for listing templates) */
 export type TemplateListModel = Omit<Template, "value">;
+
+/** Templates template (used for templates in the admin panel) */
+export type TemplatesTemplate = TemplateUpdateModel;
+
+/** Template templates list (used for listing templates in the admin panel) */
+export type TemplateTemplatesList = {
+  [id: string]: {
+    [language: string]: TemplatesTemplate;
+  };
+};

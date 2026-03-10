@@ -33,7 +33,7 @@ export const DesignsTable: React.FC<{ appId: string }> = ({ appId }) => {
         limit,
         search: q.search || undefined,
         sort: q.sort,
-        isPublic: q.isPublic,
+        isArchived: q.isArchived,
       });
       setResponse({
         items: (res.items ?? []).map((item) => ({ ...item, appId })),

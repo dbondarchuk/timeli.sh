@@ -1,13 +1,15 @@
 import { baseSearchParams } from "@timelish/api-sdk";
-import { createSerializer } from "nuqs";
-import { parseAsArrayOf, parseAsBoolean, parseAsString } from "nuqs";
+import {
+  createSerializer,
+  parseAsArrayOf,
+  parseAsBoolean,
+  parseAsString,
+} from "nuqs";
 
 export const searchParams = {
   ...baseSearchParams,
-  isPublic: parseAsArrayOf(parseAsBoolean).withDefault([true]),
-  sort: baseSearchParams.sort.withDefault([
-    { id: "createdAt", desc: true },
-  ]),
+  isArchived: parseAsArrayOf(parseAsBoolean).withDefault([false]),
+  sort: baseSearchParams.sort.withDefault([{ id: "createdAt", desc: true }]),
   ts: parseAsString,
 };
 
