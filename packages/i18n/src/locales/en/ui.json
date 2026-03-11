@@ -14,7 +14,10 @@
     "placeholder": "Select option",
     "hours": "Hours",
     "minutes": "Minutes",
-    "seconds": "Seconds"
+    "seconds": "Seconds",
+    "toasts": {
+      "error": "There was a problem with your request."
+    }
   },
   "actions": {
     "delete": "Delete",

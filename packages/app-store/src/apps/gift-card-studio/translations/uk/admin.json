@@ -263,7 +263,9 @@
         "customer": "Клієнт"
       },
       "actions": {
-        "create": "Ручна покупка"
+        "create": "Ручна покупка",
+        "setActive": "Зробити активною",
+        "setInactive": "Зробити неактивною"
       },
       "columns": {
         "code": "Код карти",
@@ -273,7 +275,16 @@
         "toName": "Ім'я отримувача",
         "toEmail": "Email отримувача",
         "design": "Дизайн",
-        "createdAt": "Створено"
+        "createdAt": "Створено",
+        "status": "Статус"
+      },
+      "status": {
+        "active": "Активна",
+        "inactive": "Неактивна"
+      },
+      "toast": {
+        "setActive": "Подарункову карту {code} позначено як активну",
+        "setInactive": "Подарункову карту {code} позначено як неактивну"
       },
       "detail": {
         "title": "Деталі покупки",
@@ -295,7 +306,8 @@
         "recipientEmail": "Email отримувача",
         "message": "Повідомлення",
         "downloadGiftCardPdf": "Завантажити PDF карти",
-        "downloadInvoice": "Завантажити рахунок"
+        "downloadInvoice": "Завантажити рахунок",
+        "status": "Статус"
       }
     },
     "manualForm": {

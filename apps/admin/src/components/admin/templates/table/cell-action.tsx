@@ -67,7 +67,7 @@ export const CellAction: React.FC<CellActionProps> = ({ template }) => {
           <DropdownMenuLabel>
             {t("templates.table.cellAction.actions")}
           </DropdownMenuLabel>
-
+          <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
             <Link
               href={`/dashboard/templates/${template._id}`}
@@ -77,11 +77,6 @@ export const CellAction: React.FC<CellActionProps> = ({ template }) => {
               {t("templates.table.cellAction.update")}
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setOpen(true)}>
-            <Trash className="size-3.5" />{" "}
-            {t("templates.table.cellAction.delete")}
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
             <Link
               href={`/dashboard/templates/new/${template.type}?cloneFrom=${template._id}`}
@@ -90,6 +85,11 @@ export const CellAction: React.FC<CellActionProps> = ({ template }) => {
               <Copy className="size-3.5" />{" "}
               {t("templates.table.cellAction.clone")}
             </Link>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => setOpen(true)}>
+            <Trash className="size-3.5" />{" "}
+            {t("templates.table.cellAction.delete")}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

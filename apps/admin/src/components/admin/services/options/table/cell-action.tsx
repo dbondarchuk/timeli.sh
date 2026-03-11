@@ -75,6 +75,7 @@ export const CellAction: React.FC<CellActionProps> = ({ option }) => {
           <DropdownMenuLabel>
             {t("services.options.table.columns.cellAction.actions")}
           </DropdownMenuLabel>
+          <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
             <Link
               href={`/dashboard/services/options/new?from=${option._id}`}
@@ -95,6 +96,7 @@ export const CellAction: React.FC<CellActionProps> = ({ option }) => {
               {t("services.options.table.columns.cellAction.update")}
             </Link>
           </DropdownMenuItem>
+          <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => setOpen(true)}>
             <Trash className="size-3.5" />{" "}
             {t("services.options.table.columns.cellAction.delete")}

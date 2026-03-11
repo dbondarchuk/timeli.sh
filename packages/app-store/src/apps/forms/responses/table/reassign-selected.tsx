@@ -14,9 +14,8 @@ import {
   Spinner,
   toastPromise,
 } from "@timelish/ui";
-import { CustomerSelector } from "@timelish/ui-admin";
+import { CustomerSelector, useReload } from "@timelish/ui-admin";
 import { UserPlus } from "lucide-react";
-import { useQueryState } from "nuqs";
 import React from "react";
 import { reassignFormResponses } from "../../actions";
 import {
@@ -36,7 +35,7 @@ export const ReassignSelectedFormResponsesButton: React.FC<{
   const t = useI18n<FormsAdminNamespace, FormsAdminKeys>(formsAdminNamespace);
   const tAdmin = useI18n("admin");
 
-  const [_, reload] = useQueryState("ts", { history: "replace" });
+  const { reload } = useReload();
 
   const action = async () => {
     try {
@@ -54,7 +53,7 @@ export const ReassignSelectedFormResponsesButton: React.FC<{
           error: tAdmin("common.toasts.error"),
         },
       );
-      reload(`${new Date().valueOf()}`);
+      reload();
       setIsOpen(false);
       setCustomerId(undefined);
     } catch (error: any) {

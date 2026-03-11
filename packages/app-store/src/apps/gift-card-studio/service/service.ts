@@ -418,7 +418,7 @@ export class GiftCardStudioConnectedApp
       status: "paid",
       paidAt,
       customerId: purchase.customerId,
-      description: "Gift card purchase (manual)",
+      description: "giftCard",
       type: "payment",
       method: purchase.paymentType,
     });
@@ -439,6 +439,7 @@ export class GiftCardStudioConnectedApp
       paymentId: payment._id,
       expiresAt: DateTime.now()
         .plus({ months: settings.expirationMonths ?? 12 })
+        .endOf("day")
         .toJSDate(),
     });
 

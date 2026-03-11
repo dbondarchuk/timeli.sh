@@ -11,9 +11,9 @@ import {
   DropdownMenuTrigger,
   toastPromise,
 } from "@timelish/ui";
+import { useReload } from "@timelish/ui-admin";
 import { Copy, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import Link from "next/link";
-import { useQueryState } from "nuqs";
 import { useState } from "react";
 import { deleteBlogPost } from "../actions";
 import { BlogPost } from "../models";
@@ -35,7 +35,7 @@ export const CellAction: React.FC<CellActionProps> = ({ blogPost, appId }) => {
 
   const tUi = useI18n("ui");
 
-  const [_, reload] = useQueryState("ts", { history: "replace" });
+  const { reload } = useReload();
 
   const onConfirm = async () => {
     try {
@@ -49,7 +49,7 @@ export const CellAction: React.FC<CellActionProps> = ({ blogPost, appId }) => {
       });
 
       setOpen(false);
-      reload(`${new Date().valueOf()}`);
+      reload();
     } catch (error: any) {
       setLoading(false);
       console.error(error);
@@ -78,6 +78,7 @@ export const CellAction: React.FC<CellActionProps> = ({ blogPost, appId }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>{tUi("actions.label")}</DropdownMenuLabel>
+          <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
             <Link
               href={`/dashboard/blog/edit?id=${blogPost._id}`}

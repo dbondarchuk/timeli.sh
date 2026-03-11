@@ -69,6 +69,7 @@ export const CellAction: React.FC<CellActionProps> = ({ addon }) => {
           <DropdownMenuLabel>
             {t("services.addons.table.cellAction.actions")}
           </DropdownMenuLabel>
+          <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
             <Link
               href={`/dashboard/services/addons/new?from=${addon._id}`}

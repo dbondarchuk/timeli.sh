@@ -7,9 +7,11 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
   toastPromise,
 } from "@timelish/ui";
+import { useReload } from "@timelish/ui-admin";
 import {
   Archive,
   ArchiveRestore,
@@ -19,7 +21,6 @@ import {
   Trash2,
 } from "lucide-react";
 import Link from "next/link";
-import { useQueryState } from "nuqs";
 import { useState } from "react";
 import { deleteForm, setFormArchived } from "../../actions";
 import { FormListModel } from "../../models";
@@ -41,7 +42,7 @@ export const CellAction: React.FC<CellActionProps> = ({ form, appId }) => {
   const [unarchiveOpen, setUnarchiveOpen] = useState(false);
   const t = useI18n<FormsAdminNamespace, FormsAdminKeys>(formsAdminNamespace);
   const tUi = useI18n("ui");
-  const [_, reload] = useQueryState("ts", { history: "replace" });
+  const { reload } = useReload();
 
   const canDelete = (form.responsesCount ?? 0) === 0;
   const isArchived = form.isArchived ?? false;
@@ -54,7 +55,7 @@ export const CellAction: React.FC<CellActionProps> = ({ form, appId }) => {
         error: t("forms.table.toast.deleteError"),
       });
       setDeleteOpen(false);
-      reload(`${new Date().valueOf()}`);
+      reload();
     } catch (error: any) {
       setLoading(false);
       console.error(error);
@@ -71,7 +72,7 @@ export const CellAction: React.FC<CellActionProps> = ({ form, appId }) => {
         error: t("forms.table.toast.archiveError"),
       });
       setArchiveOpen(false);
-      reload(`${new Date().valueOf()}`);
+      reload();
     } catch (error: any) {
       setLoading(false);
       console.error(error);
@@ -88,7 +89,7 @@ export const CellAction: React.FC<CellActionProps> = ({ form, appId }) => {
         error: t("forms.table.toast.unarchiveError"),
       });
       setUnarchiveOpen(false);
-      reload(`${new Date().valueOf()}`);
+      reload();
     } catch (error: any) {
       setLoading(false);
       console.error(error);
@@ -137,6 +138,7 @@ export const CellAction: React.FC<CellActionProps> = ({ form, appId }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>{tUi("actions.label")}</DropdownMenuLabel>
+          <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
             <Link
               href={`/dashboard/forms/edit?id=${form._id}`}
@@ -153,6 +155,7 @@ export const CellAction: React.FC<CellActionProps> = ({ form, appId }) => {
               <Copy className="size-3.5" /> {t("forms.table.actions.clone")}
             </Link>
           </DropdownMenuItem>
+          <DropdownMenuSeparator />
           {!isArchived ? (
             <DropdownMenuItem onClick={() => setArchiveOpen(true)}>
               <Archive className="size-3.5" />{" "}
@@ -165,9 +168,13 @@ export const CellAction: React.FC<CellActionProps> = ({ form, appId }) => {
             </DropdownMenuItem>
           )}
           {canDelete && (
-            <DropdownMenuItem onClick={() => setDeleteOpen(true)}>
-              <Trash2 className="size-3.5" /> {t("forms.table.actions.delete")}
-            </DropdownMenuItem>
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => setDeleteOpen(true)}>
+                <Trash2 className="size-3.5" />{" "}
+                {t("forms.table.actions.delete")}
+              </DropdownMenuItem>
+            </>
           )}
         </DropdownMenuContent>
       </DropdownMenu>

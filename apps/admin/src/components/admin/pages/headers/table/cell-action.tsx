@@ -74,7 +74,7 @@ export const CellAction: React.FC<CellActionProps> = ({ pageHeader }) => {
           <DropdownMenuLabel>
             {t("pages.headers.table.actions.actions")}
           </DropdownMenuLabel>
-
+          <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
             <Link
               href={`/dashboard/pages/headers/${pageHeader._id}`}

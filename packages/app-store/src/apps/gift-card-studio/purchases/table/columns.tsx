@@ -1,6 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
+import { useI18n } from "@timelish/i18n";
 import { Button, Link } from "@timelish/ui";
 import {
   CustomerName,
@@ -15,6 +16,7 @@ import {
   giftCardStudioAdminNamespace,
 } from "../../translations/types";
 import { GiftCardDetailDialog } from "./gift-card-detail-dialog";
+import { CellAction } from "./cell-action";
 
 export type PurchasesTableRow = PurchasedGiftCardListModel & { appId: string };
 
@@ -61,6 +63,22 @@ export const columns: ColumnDef<PurchasesTableRow>[] = [
   //     row.original.amountLeft != null ? `$${row.original.amountLeft}` : "—",
   //   sortingFn: tableSortNoopFunction,
   // },
+  {
+    id: "status",
+    header: tableSortHeader<
+      GiftCardStudioAdminNamespace,
+      GiftCardStudioAdminKeys
+    >("purchases.table.columns.status", "string", giftCardStudioAdminNamespace),
+    cell: ({ row }) => {
+      const t = useI18n<GiftCardStudioAdminNamespace, GiftCardStudioAdminKeys>(
+        giftCardStudioAdminNamespace,
+      );
+      return row.original.status === "active"
+        ? t("purchases.table.status.active")
+        : t("purchases.table.status.inactive");
+    },
+    sortingFn: tableSortNoopFunction,
+  },
   {
     id: "customer",
     header: tableSortHeader<
@@ -134,5 +152,9 @@ export const columns: ColumnDef<PurchasesTableRow>[] = [
         DateTime.DATETIME_MED,
       ),
     sortingFn: tableSortNoopFunction,
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => <CellAction purchase={row.original} />,
   },
 ];

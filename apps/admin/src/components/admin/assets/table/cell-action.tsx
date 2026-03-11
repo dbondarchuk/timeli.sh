@@ -16,7 +16,15 @@ import {
   useWebsiteUrl,
 } from "@timelish/ui";
 import copy from "copy-text-to-clipboard";
-import { Copy, Download, Edit, MoreHorizontal, Trash } from "lucide-react";
+import {
+  Copy,
+  CopyCheck,
+  CopySlash,
+  Download,
+  Edit,
+  MoreHorizontal,
+  Trash,
+} from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -92,7 +100,7 @@ export const CellAction: React.FC<CellActionProps> = ({ asset }) => {
           <DropdownMenuLabel>
             {t("assets.table.actions.actions")}
           </DropdownMenuLabel>
-
+          <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
             <Link
               href={`/dashboard/assets/${asset._id}`}
@@ -101,16 +109,17 @@ export const CellAction: React.FC<CellActionProps> = ({ asset }) => {
               <Edit className="size-3.5" /> {t("assets.table.actions.update")}
             </Link>
           </DropdownMenuItem>
+          <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => setOpen(true)}>
             <Trash className="size-3.5" /> {t("assets.table.actions.delete")}
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={copyRelative}>
-            <Copy className="size-3.5" />{" "}
+            <CopySlash className="size-3.5" />{" "}
             {t("assets.table.actions.copyRelativeUrl")}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={copyAbsolute}>
-            <Copy className="size-3.5" />{" "}
+            <CopyCheck className="size-3.5" />{" "}
             {t("assets.table.actions.copyAbsoluteUrl")}
           </DropdownMenuItem>
           <DropdownMenuSeparator />

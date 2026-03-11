@@ -2,8 +2,8 @@
 
 import { useI18n } from "@timelish/i18n";
 import { AlertModal, Button, Spinner, toastPromise } from "@timelish/ui";
+import { useReload } from "@timelish/ui-admin";
 import { Trash } from "lucide-react";
-import { useQueryState } from "nuqs";
 import React from "react";
 import { deleteSelectedBlogPosts } from "../actions";
 import { BlogPost } from "../models";
@@ -22,7 +22,7 @@ export const DeleteSelectedBlogPostsButton: React.FC<{
   const t = useI18n<BlogAdminNamespace, BlogAdminKeys>(blogAdminNamespace);
   const tAdmin = useI18n("admin");
 
-  const [_, reload] = useQueryState("ts", { history: "replace" });
+  const { reload } = useReload();
   const action = async () => {
     try {
       setIsLoading(true);
@@ -40,7 +40,7 @@ export const DeleteSelectedBlogPostsButton: React.FC<{
         },
       );
 
-      reload(`${new Date().valueOf()}`);
+      reload();
       setIsOpen(false);
     } catch (error: any) {
       console.error(error);

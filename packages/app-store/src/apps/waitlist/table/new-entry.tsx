@@ -29,10 +29,10 @@ import {
   AddonSelector,
   CustomerSelector,
   OptionSelector,
+  useReload,
 } from "@timelish/ui-admin";
 import { Plus } from "lucide-react";
 import { DateTime } from "luxon";
-import { useQueryState } from "nuqs";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { createWaitlistEntry } from "../actions";
@@ -56,10 +56,7 @@ export const NewEntryDialog = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [_, reload] = useQueryState("ts", {
-    history: "replace",
-    shallow: false,
-  });
+  const { reload } = useReload();
 
   const t = useI18n<WaitlistAdminNamespace, WaitlistAdminKeys>(
     waitlistAdminNamespace,
@@ -120,7 +117,7 @@ export const NewEntryDialog = ({
         error: t("newEntry.toasts.error"),
       });
       form.reset();
-      reload(`${new Date().valueOf()}`);
+      reload();
       setIsOpen(false);
     } catch (error: any) {
       console.error(error);

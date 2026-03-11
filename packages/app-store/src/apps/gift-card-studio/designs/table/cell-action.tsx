@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
   toastPromise,
 } from "@timelish/ui";
+import { useReload } from "@timelish/ui-admin";
 import {
   Archive,
   ArchiveRestore,
@@ -23,7 +24,6 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useQueryState } from "nuqs";
 import { useState } from "react";
 import { deleteDesign, setDesignArchived } from "../../actions";
 import { DesignListModel } from "../../models";
@@ -49,8 +49,8 @@ export const CellAction: React.FC<CellActionProps> = ({ design, appId }) => {
     giftCardStudioAdminNamespace,
   );
   const tUi = useI18n("ui");
-  const [, reload] = useQueryState("ts", { history: "replace" });
   const router = useRouter();
+  const { reload } = useReload();
   const canDelete = (design.purchasesCount ?? 0) === 0;
   const isArchived = design.isArchived ?? false;
 
@@ -62,7 +62,7 @@ export const CellAction: React.FC<CellActionProps> = ({ design, appId }) => {
         error: t("designs.table.toast.deleteError"),
       });
       setDeleteOpen(false);
-      reload(`${Date.now()}`);
+      reload();
     } catch (e) {
       console.error(e);
     } finally {
@@ -78,7 +78,7 @@ export const CellAction: React.FC<CellActionProps> = ({ design, appId }) => {
         error: t("designs.table.toast.archiveError"),
       });
       setArchiveOpen(false);
-      reload(`${Date.now()}`);
+      reload();
     } catch (e) {
       console.error(e);
     } finally {
@@ -94,7 +94,7 @@ export const CellAction: React.FC<CellActionProps> = ({ design, appId }) => {
         error: t("designs.table.toast.unarchiveError"),
       });
       setUnarchiveOpen(false);
-      reload(`${Date.now()}`);
+      reload();
     } catch (e) {
       console.error(e);
     } finally {
@@ -157,6 +157,7 @@ export const CellAction: React.FC<CellActionProps> = ({ design, appId }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>{tUi("actions.label")}</DropdownMenuLabel>
+          <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
             <Link
               href={`/dashboard/gift-card-studio/edit?id=${design._id}`}

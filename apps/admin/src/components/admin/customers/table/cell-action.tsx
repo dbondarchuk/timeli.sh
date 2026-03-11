@@ -9,6 +9,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
   toastPromise,
 } from "@timelish/ui";
@@ -68,19 +69,28 @@ export const CellAction: React.FC<CellActionProps> = ({ customer }) => {
           <DropdownMenuLabel>
             {t("customers.table.actions.actions")}
           </DropdownMenuLabel>
-          <DropdownMenuItem asChild>
-            <Link
-              href={`/dashboard/customers/${customer._id}`}
-              className="text-foreground"
-            >
-              <Edit className="size-3.5" /> {t("customers.table.actions.edit")}
-            </Link>
-          </DropdownMenuItem>
           {!customer.isDeleted && (
-            <DropdownMenuItem onClick={() => setOpen(true)}>
-              <Trash className="size-3.5" />{" "}
-              {t("customers.table.actions.delete")}
-            </DropdownMenuItem>
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Link
+                  href={`/dashboard/customers/${customer._id}`}
+                  className="text-foreground"
+                >
+                  <Edit className="size-3.5" />{" "}
+                  {t("customers.table.actions.edit")}
+                </Link>
+              </DropdownMenuItem>
+            </>
+          )}
+          {!customer.isDeleted && (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => setOpen(true)}>
+                <Trash className="size-3.5" />{" "}
+                {t("customers.table.actions.delete")}
+              </DropdownMenuItem>
+            </>
           )}
         </DropdownMenuContent>
       </DropdownMenu>

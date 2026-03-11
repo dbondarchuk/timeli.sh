@@ -1,6 +1,6 @@
 import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
 import { IConnectedAppProps, WithTotal } from "@timelish/types";
-import { escapeRegex } from "@timelish/utils";
+import { buildSearchQuery, escapeRegex } from "@timelish/utils";
 import { ObjectId, type Filter, type Sort } from "mongodb";
 import { CUSTOMERS_COLLECTION_NAME } from "../../../../../services/src/collections";
 import {
@@ -456,7 +456,7 @@ export class GiftCardStudioRepositoryService {
       {},
     ) || { createdAt: -1 };
 
-    const $and: Filter<PurchasedGiftCardModel>[] = [
+    const $and: Filter<PurchasedGiftCardListModel>[] = [
       {
         companyId: this.companyId,
         appId: this.appId,
@@ -481,6 +481,26 @@ export class GiftCardStudioRepositoryService {
             : [query.customerId],
         },
       });
+    }
+
+    if (query.search) {
+      const $regex = new RegExp(escapeRegex(query.search), "i");
+      const queries = buildSearchQuery<PurchasedGiftCardListModel>(
+        { $regex },
+        "toName",
+        "toEmail",
+        "giftCardCode",
+        "designName",
+        "customer.name",
+        "customer.phone",
+        "customer.email",
+        "customer.knownNames",
+        "customer.knownEmails",
+        "customer.knownPhones",
+        "customer.note",
+      );
+
+      $and.push({ $or: queries });
     }
 
     const filter: Filter<PurchasedGiftCardModel> =
@@ -520,55 +540,10 @@ export class GiftCardStudioRepositoryService {
             customer: { $first: "$customers" },
             designName: { $first: "$designs.name" },
             giftCardCode: { $first: "$giftCards.code" },
+            status: { $first: "$giftCards.status" },
           },
         },
-        { $unset: ["designs", "customers"] },
-        ...(query.search?.trim()
-          ? [
-              {
-                $match: {
-                  $or: [
-                    {
-                      designName: {
-                        $regex: escapeRegex(query.search.trim()),
-                        $options: "i",
-                      },
-                    },
-                    {
-                      giftCardCode: {
-                        $regex: escapeRegex(query.search.trim()),
-                        $options: "i",
-                      },
-                    },
-                    {
-                      toName: {
-                        $regex: escapeRegex(query.search.trim()),
-                        $options: "i",
-                      },
-                    },
-                    {
-                      toEmail: {
-                        $regex: escapeRegex(query.search.trim()),
-                        $options: "i",
-                      },
-                    },
-                    {
-                      "customer.name": {
-                        $regex: escapeRegex(query.search.trim()),
-                        $options: "i",
-                      },
-                    },
-                    {
-                      "customer.email": {
-                        $regex: escapeRegex(query.search.trim()),
-                        $options: "i",
-                      },
-                    },
-                  ],
-                },
-              },
-            ]
-          : []),
+        { $unset: ["designs", "customers", "giftCards"] },
         { $match: filter },
         { $sort: sort },
         {

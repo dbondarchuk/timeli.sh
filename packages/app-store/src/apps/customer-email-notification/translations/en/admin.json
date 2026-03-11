@@ -14,25 +14,25 @@
     "pending": {
       "templateId": {
         "label": "Pending email template",
-        "description": "Email template that will be used to send to customers when their appointment is pending"
+        "description": "Email template that will be used to send to customers when they requested an appointment and their appointment is pending"
       }
     },
     "confirmed": {
       "templateId": {
         "label": "Confirmed email template",
-        "description": "Email template that will be used to send to customers when their appointment is confirmed"
+        "description": "Email template that will be used to send to customers when their appointment was confirmed"
       }
     },
     "declined": {
       "templateId": {
         "label": "Declined email template",
-        "description": "Email template that will be used to send to customers when their appointment is declined"
+        "description": "Email template that will be used to send to customers when their appointment was declined"
       }
     },
     "rescheduled": {
       "templateId": {
         "label": "Rescheduled email template",
-        "description": "Email template that will be used to send to customers when their appointment is rescheduled"
+        "description": "Email template that will be used to send to customers when their appointment was rescheduled"
       }
     },
     "calendarEventTemplate": {

@@ -191,6 +191,20 @@ export const GiftCardDetailDialog: React.FC<{
                 <div className="grid grid-cols-2 gap-2">
                   <dt className="text-muted-foreground">
                     <span data-autoskeleton-ignore>
+                      {t("purchases.table.giftCardDetail.status")}
+                    </span>
+                  </dt>
+                  <dd className="font-medium">
+                    <span>
+                      {purchase.status === "active"
+                        ? t("purchases.table.status.active")
+                        : t("purchases.table.status.inactive")}
+                    </span>
+                  </dd>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <dt className="text-muted-foreground">
+                    <span data-autoskeleton-ignore>
                       {t("purchases.table.giftCardDetail.paymentsCount")}
                     </span>
                   </dt>

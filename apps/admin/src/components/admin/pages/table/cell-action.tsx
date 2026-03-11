@@ -97,7 +97,7 @@ export const CellAction: React.FC<CellActionProps> = ({ page: page }) => {
           <DropdownMenuLabel>
             {t("pages.table.actions.actions")}
           </DropdownMenuLabel>
-
+          <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
             <Link
               href={`/dashboard/pages/${page._id}`}

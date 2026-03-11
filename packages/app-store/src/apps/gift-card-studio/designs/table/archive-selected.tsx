@@ -2,8 +2,8 @@
 
 import { useI18n } from "@timelish/i18n";
 import { AlertModal, Button, Spinner, toastPromise } from "@timelish/ui";
+import { useReload } from "@timelish/ui-admin";
 import { Archive } from "lucide-react";
-import { useQueryState } from "nuqs";
 import React from "react";
 import { setDesignsArchived } from "../../actions";
 import {
@@ -20,13 +20,12 @@ export const ArchiveSelectedDesignsButton: React.FC<{
 }> = ({ selected, appId, disabled }) => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [isOpen, setIsOpen] = React.useState(false);
-  const t = useI18n<
-    GiftCardStudioAdminNamespace,
-    GiftCardStudioAdminKeys
-  >(giftCardStudioAdminNamespace);
+  const t = useI18n<GiftCardStudioAdminNamespace, GiftCardStudioAdminKeys>(
+    giftCardStudioAdminNamespace,
+  );
   const tAdmin = useI18n("admin");
 
-  const [, reload] = useQueryState("ts", { history: "replace" });
+  const { reload } = useReload();
   const action = async () => {
     try {
       setIsLoading(true);
@@ -43,7 +42,7 @@ export const ArchiveSelectedDesignsButton: React.FC<{
           error: tAdmin("common.toasts.error"),
         },
       );
-      reload(`${Date.now()}`);
+      reload();
       setIsOpen(false);
     } catch (error: any) {
       console.error(error);
@@ -79,5 +78,4 @@ export const ArchiveSelectedDesignsButton: React.FC<{
       />
     </>
   );
-}
-
+};

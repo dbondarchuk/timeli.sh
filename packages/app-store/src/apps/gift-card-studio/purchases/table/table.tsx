@@ -3,7 +3,7 @@
 import { useI18n } from "@timelish/i18n";
 import { WithTotal } from "@timelish/types";
 import { toast, useDebounce } from "@timelish/ui";
-import { DataTable, DataTableSkeleton } from "@timelish/ui-admin";
+import { DataTable, DataTableSkeleton, useReload } from "@timelish/ui-admin";
 import { useQueryStates } from "nuqs";
 import React from "react";
 import { getPurchasedGiftCards } from "../../actions";
@@ -13,11 +13,11 @@ import { searchParams } from "./search-params";
 
 export const PurchasesTable: React.FC<{
   appId: string;
-  refreshKey?: number;
-}> = ({ appId, refreshKey = 0 }) => {
+}> = ({ appId }) => {
   const [query] = useQueryStates(searchParams);
   const t = useI18n("admin");
   const delayedQuery = useDebounce(query, 100);
+  const { refreshKey } = useReload();
 
   const [loading, setLoading] = React.useState(true);
   const [response, setResponse] = React.useState<

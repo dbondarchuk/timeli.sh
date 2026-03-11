@@ -1,12 +1,7 @@
 "use client";
 
 import { useI18n } from "@timelish/i18n";
-import {
-  Button,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@timelish/ui";
+import { Button, Popover, PopoverContent, PopoverTrigger } from "@timelish/ui";
 import {
   DataTableFilterBox,
   DataTableResetFilter,
@@ -20,11 +15,10 @@ import {
   GiftCardStudioAdminNamespace,
   giftCardStudioAdminNamespace,
 } from "../../translations/types";
-import { useDesignsTableFilters } from "./use-table-filters";
-import { DesignsTableRow } from "./columns";
 import { ArchiveSelectedDesignsButton } from "./archive-selected";
-import { UnarchiveSelectedDesignsButton } from "./unarchive-selected";
 import { DeleteSelectedDesignsButton } from "./delete-selected";
+import { UnarchiveSelectedDesignsButton } from "./unarchive-selected";
+import { useDesignsTableFilters } from "./use-table-filters";
 
 export const DesignsTableAction: React.FC<{ appId: string }> = ({ appId }) => {
   const { rowSelection } = useSelectedRowsStore();
@@ -38,10 +32,9 @@ export const DesignsTableAction: React.FC<{ appId: string }> = ({ appId }) => {
     setIsArchivedFilter,
     STATUS_OPTIONS,
   } = useDesignsTableFilters();
-  const t = useI18n<
-    GiftCardStudioAdminNamespace,
-    GiftCardStudioAdminKeys
-  >(giftCardStudioAdminNamespace);
+  const t = useI18n<GiftCardStudioAdminNamespace, GiftCardStudioAdminKeys>(
+    giftCardStudioAdminNamespace,
+  );
 
   const additionalFilters = (
     <DataTableFilterBox
@@ -53,9 +46,7 @@ export const DesignsTableAction: React.FC<{ appId: string }> = ({ appId }) => {
     />
   );
 
-  const canDeleteAll = rowSelection.every(
-    (d) => (d.purchasesCount ?? 0) === 0,
-  );
+  const canDeleteAll = rowSelection.every((d) => (d.purchasesCount ?? 0) === 0);
   const allArchived =
     rowSelection.length > 0 && rowSelection.every((d) => d.isArchived);
   const allActive =

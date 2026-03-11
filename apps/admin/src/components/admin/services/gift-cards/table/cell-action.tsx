@@ -110,6 +110,7 @@ export const CellAction: React.FC<CellActionProps> = ({ giftCard }) => {
               {t("services.giftCards.table.cellAction.update")}
             </Link>
           </DropdownMenuItem>
+          <DropdownMenuSeparator />
           {!isActive && (
             <DropdownMenuItem onClick={() => onSetStatus("active")}>
               <ToggleRight className="size-3.5" />{" "}
@@ -123,10 +124,13 @@ export const CellAction: React.FC<CellActionProps> = ({ giftCard }) => {
             </DropdownMenuItem>
           )}
           {canDelete && (
-            <DropdownMenuItem onClick={() => setOpen(true)}>
-              <Trash className="size-3.5" />{" "}
-              {t("services.giftCards.table.cellAction.delete")}
-            </DropdownMenuItem>
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => setOpen(true)}>
+                <Trash className="size-3.5" />{" "}
+                {t("services.giftCards.table.cellAction.delete")}
+              </DropdownMenuItem>
+            </>
           )}
         </DropdownMenuContent>
       </DropdownMenu>

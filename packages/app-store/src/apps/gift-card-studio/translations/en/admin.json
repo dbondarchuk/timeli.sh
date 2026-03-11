@@ -263,7 +263,9 @@
         "customer": "Customer"
       },
       "actions": {
-        "create": "Manual Purchase"
+        "create": "Manual Purchase",
+        "setActive": "Mark as active",
+        "setInactive": "Mark as inactive"
       },
       "columns": {
         "code": "Gift Card Code",
@@ -273,7 +275,16 @@
         "toName": "Recipient Name",
         "toEmail": "Recipient Email",
         "design": "Design",
-        "createdAt": "Created"
+        "createdAt": "Created",
+        "status": "Status"
+      },
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "toast": {
+        "setActive": "Gift card {code} marked as active",
+        "setInactive": "Gift card {code} marked as inactive"
       },
       "detail": {
         "title": "Purchase Details",
@@ -295,7 +306,8 @@
         "recipientEmail": "Recipient Email",
         "message": "Message",
         "downloadGiftCardPdf": "Download Gift Card PDF",
-        "downloadInvoice": "Download Invoice"
+        "downloadInvoice": "Download Invoice",
+        "status": "Status"
       }
     },
     "manualForm": {

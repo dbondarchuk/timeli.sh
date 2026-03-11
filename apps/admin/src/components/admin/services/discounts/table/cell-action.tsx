@@ -69,6 +69,7 @@ export const CellAction: React.FC<CellActionProps> = ({ discount }) => {
           <DropdownMenuLabel>
             {t("services.discounts.table.cellAction.actions")}
           </DropdownMenuLabel>
+          <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
             <Link
               href={`/dashboard/services/discounts/new?from=${discount._id}`}

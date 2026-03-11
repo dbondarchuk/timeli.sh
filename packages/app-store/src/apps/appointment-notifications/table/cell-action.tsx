@@ -13,9 +13,9 @@ import {
 } from "@timelish/ui";
 import { Copy, Edit, MoreHorizontal, Trash } from "lucide-react";
 import Link from "next/link";
-import { useQueryState } from "nuqs";
 import { useState } from "react";
 
+import { useReload } from "@timelish/ui-admin";
 import { deleteAppointmentNotification } from "../actions";
 import { AppointmentNotification } from "../models";
 import {
@@ -42,7 +42,7 @@ export const CellAction: React.FC<CellActionProps> = ({
 
   const tAdmin = useI18n("admin");
 
-  const [_, reload] = useQueryState("ts", { history: "replace" });
+  const { reload } = useReload();
 
   const onConfirm = async () => {
     try {
@@ -57,7 +57,7 @@ export const CellAction: React.FC<CellActionProps> = ({
       );
 
       setOpen(false);
-      reload(`${new Date().valueOf()}`);
+      reload();
     } catch (error: any) {
       setLoading(false);
       console.error(error);
@@ -83,6 +83,7 @@ export const CellAction: React.FC<CellActionProps> = ({
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>{t("table.actions.label")}</DropdownMenuLabel>
+          <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
             <Link
               href={`/dashboard/communications/appointment-notifications/edit?id=${appointmentNotification._id}`}
