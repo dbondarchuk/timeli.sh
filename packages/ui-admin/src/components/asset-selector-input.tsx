@@ -6,9 +6,9 @@ import {
   Button,
   Input,
   InputGroup,
+  InputGroupAddonClasses,
   InputGroupInput,
   InputGroupInputClasses,
-  InputGroupSuffixClasses,
   inputVariants,
 } from "@timelish/ui";
 import { VariantProps } from "class-variance-authority";
@@ -74,7 +74,7 @@ export const AssetSelectorInput: React.FC<AssetSelectorInputProps> = ({
         type="button"
         variant="outline"
         disabled={disabled}
-        className={InputGroupSuffixClasses({ h: rest.h })}
+        className={InputGroupAddonClasses({ h: rest.h })}
         onClick={openDialog}
       >
         {t("form.select")}

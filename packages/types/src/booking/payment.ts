@@ -49,6 +49,12 @@ export type PaymentIntentUpdateModel = {
       type: Extract<PaymentType, "rescheduleFee" | "cancellationFee">;
       request: ModifyAppointmentRequest;
     }
+  | {
+      type: "purchase";
+      request: {
+        amount: number;
+      };
+    }
 );
 
 export const createOrUpdatePaymentIntentRequestSchema = z.discriminatedUnion(

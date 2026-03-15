@@ -143,17 +143,13 @@ export const columns: ColumnDef<GiftCardListModel>[] = [
         setQuery(new Date().getTime().toString());
       }, [setQuery]);
 
-      return !!row.original.paymentsCount ? (
+      return (
         <GiftCardPaymentsDialog
           giftCardId={row.original._id}
           onRefund={onRefund}
         >
           <Button variant="link-dashed">{row.original.paymentsCount}</Button>
         </GiftCardPaymentsDialog>
-      ) : (
-        <Button variant="link-dashed" disabled>
-          0
-        </Button>
       );
     },
     id: "payments",

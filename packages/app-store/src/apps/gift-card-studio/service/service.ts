@@ -2,16 +2,22 @@ import { getLocale } from "@timelish/i18n/server";
 import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
 import {
   AppJobRequest,
+  CollectPayment,
   ConnectedAppData,
   ConnectedAppRequestError,
   DemoArguments,
+  ICommunicationTemplatesProvider,
   IConnectedApp,
   IConnectedAppProps,
   IDemoArgumentsProvider,
+  IPaymentProcessor,
   IScheduled,
+  PaymentIntentUpdateModel,
+  TemplateTemplatesList,
 } from "@timelish/types";
 import { formatAmountString } from "@timelish/utils";
 import { DateTime } from "luxon";
+import { DEFAULT_MAX_AMOUNT, DEFAULT_MIN_AMOUNT } from "../const";
 import { demoPurchasedGiftCard } from "../demo-arguments";
 import { renderGiftCard } from "../designer/lib/render/render";
 import { FieldKeyValues } from "../designer/lib/types";
@@ -19,8 +25,11 @@ import type {
   CreatePurchasedGiftCardAction,
   DeleteDesignAction,
   DeleteDesignsAction,
+  DeletePurchasedGiftCardAction,
   DesignModel,
   GiftCardStudioJobPayload,
+  RegenerateGiftCardAssetsAction,
+  ResendEmailAction,
   SetDesignArchivedAction,
   SetDesignsArchivedAction,
 } from "../models";
@@ -30,22 +39,34 @@ import {
   CreatePurchasedGiftCardActionType,
   DeleteDesignActionType,
   DeleteDesignsActionType,
+  DeletePurchasedGiftCardActionType,
   GetDesignByIdActionType,
   GetDesignsActionType,
   GetPreviewActionType,
   GetPurchasedGiftCardByIdActionType,
   GetPurchasedGiftCardsActionType,
   GetSettingsActionType,
+  RegenerateGiftCardAssetsActionType,
   RequestAction,
   requestActionSchema,
+  ResendEmailActionType,
   SetDesignArchivedActionType,
   SetDesignsArchivedActionType,
   UpdateDesignActionType,
   UpdateSettingsActionType,
 } from "../models";
+import {
+  fetchPreviewPayloadSchema,
+  FetchPreviewResponse,
+  GetInitOptionsResponse,
+  intentRequestSchema,
+  purchaseRequestSchema,
+} from "../models/public";
 import { GiftCardStudioSettings } from "../models/settings";
+import { GiftCardStudioTemplates } from "../templates";
 import { GiftCardStudioJobProcessor } from "./job-processor";
 import { GiftCardStudioRepositoryService } from "./repository-service";
+import { getFileName } from "./utils";
 
 const generateGiftCardCode = () => {
   return (
@@ -58,12 +79,20 @@ const generateGiftCardCode = () => {
 };
 
 export class GiftCardStudioConnectedApp
-  implements IConnectedApp, IScheduled, IDemoArgumentsProvider
+  implements
+    IConnectedApp,
+    IScheduled,
+    IDemoArgumentsProvider,
+    ICommunicationTemplatesProvider
 {
   protected readonly loggerFactory: LoggerFactory;
 
   public async getDemoEmailArguments(): Promise<DemoArguments> {
     return { giftCard: demoPurchasedGiftCard };
+  }
+
+  public async getCommunicationTemplates(): Promise<TemplateTemplatesList> {
+    return GiftCardStudioTemplates;
   }
 
   public constructor(protected readonly props: IConnectedAppProps) {
@@ -152,6 +181,18 @@ export class GiftCardStudioConnectedApp
           "Create purchased gift card",
         );
         return this.processCreatePurchasedGiftCard(appData, data, repo);
+      case RegenerateGiftCardAssetsActionType:
+        logger.debug(
+          {
+            id: data.id,
+            assetType: data.assetType,
+          },
+          "Regenerate gift card assets",
+        );
+        return this.processRegenerateGiftCardAssets(
+          appData,
+          data as RegenerateGiftCardAssetsAction,
+        );
       case GetPreviewActionType:
         logger.debug({ designId: data.designId }, "Get preview");
         return this.processGetPreview(appData, data, repo);
@@ -161,6 +202,15 @@ export class GiftCardStudioConnectedApp
       case UpdateSettingsActionType:
         logger.debug("Update settings");
         return this.processUpdateSettings(appData, data);
+      case DeletePurchasedGiftCardActionType:
+        logger.debug({ id: data.id }, "Delete purchased gift card");
+        return this.processDeletePurchasedGiftCard(appData, data, repo);
+      case ResendEmailActionType:
+        logger.debug(
+          { id: data.id, participantType: data.participantType },
+          "Resend email to customer",
+        );
+        return this.processResendEmail(appData, data, repo);
       default:
         logger.warn({ type: (data as any).type }, "Unknown request type");
         return null;
@@ -173,6 +223,122 @@ export class GiftCardStudioConnectedApp
 
     const repo = this.getRepositoryService(appData._id, appData.companyId);
     await repo.install();
+    logger.debug(
+      { appId: appData._id },
+      "Creating Gift Card Studio communication templates",
+    );
+
+    try {
+      const { configurationService, templatesService } = this.props.services;
+
+      const { language } =
+        await configurationService.getConfiguration("general");
+
+      let purchaserTemplateId: string | undefined;
+      let recipientTemplateId: string | undefined;
+
+      const getUniqueName = async (
+        baseName: string,
+      ): Promise<string | null> => {
+        for (let i = 0; i < 10; i++) {
+          const candidate = i === 0 ? baseName : `${baseName} (${i + 1})`;
+          const isUnique = await templatesService.checkUniqueName(candidate);
+          if (isUnique) {
+            return candidate;
+          }
+        }
+
+        logger.warn(
+          { appId: appData._id, baseName },
+          "Could not generate unique template name after 10 attempts",
+        );
+        return null;
+      };
+
+      for (const [id, templatesByLang] of Object.entries(
+        GiftCardStudioTemplates,
+      )) {
+        const source = templatesByLang[language] ?? templatesByLang.en;
+        if (!source) {
+          logger.warn(
+            { appId: appData._id, id, language },
+            "No source template found for language",
+          );
+          continue;
+        }
+
+        logger.debug(
+          { appId: appData._id, id, language, name: source.name },
+          "Creating Gift Card Studio template",
+        );
+
+        const uniqueName = await getUniqueName(source.name);
+        if (!uniqueName) {
+          continue;
+        }
+
+        logger.debug(
+          { appId: appData._id, id, language, name: uniqueName },
+          "Unique name generated for Gift Card Studio template",
+        );
+
+        const created = await templatesService.createTemplate({
+          ...source,
+          name: uniqueName,
+        });
+
+        logger.debug(
+          {
+            appId: appData._id,
+            templateId: created._id,
+            templateName: created.name,
+          },
+          "Created Gift Card Studio template",
+        );
+
+        if (id === "gift-card-studio-customer-email") {
+          purchaserTemplateId = created._id;
+        } else if (id === "gift-card-studio-recipient-email") {
+          recipientTemplateId = created._id;
+        }
+      }
+
+      const currentSettings = (appData.data as GiftCardStudioSettings) ?? {};
+
+      logger.debug(
+        { appId: appData._id, purchaserTemplateId, recipientTemplateId },
+        "Updating Gift Card Studio settings",
+      );
+
+      const nextSettings: GiftCardStudioSettings = {
+        emailTemplateIdToPurchaser:
+          purchaserTemplateId ?? currentSettings.emailTemplateIdToPurchaser,
+        emailTemplateIdToRecipient:
+          recipientTemplateId ?? currentSettings.emailTemplateIdToRecipient,
+        expirationMonths: currentSettings.expirationMonths ?? 12,
+        minAmount: currentSettings.minAmount ?? DEFAULT_MIN_AMOUNT,
+        maxAmount: currentSettings.maxAmount ?? DEFAULT_MAX_AMOUNT,
+      };
+
+      await this.props.update({
+        data: nextSettings,
+      });
+
+      logger.info(
+        {
+          appId: appData._id,
+          purchaserTemplateId,
+          recipientTemplateId,
+        },
+        "Gift Card Studio settings updated with default templates",
+      );
+    } catch (error) {
+      logger.error(
+        { appId: appData._id, error },
+        "Failed to create Gift Card Studio communication templates on install",
+      );
+    }
+
     logger.info({ appId: appData._id }, "Gift Card Studio installed");
   }
 
@@ -195,6 +361,44 @@ export class GiftCardStudioConnectedApp
 
     if (slug[0] === "preview" && request.method === "POST") {
       return this.handlePreviewRequest(appData, request);
+    }
+
+    if (slug[0] === "intent" && request.method === "POST") {
+      return this.handleIntentRequest(appData, request);
+    }
+
+    if (slug[0] === "purchase" && request.method === "POST") {
+      return this.handlePurchaseRequest(appData, request);
+    }
+
+    if (slug[0] === "init-options" && request.method === "GET") {
+      logger.debug("Getting init options");
+      const designs = await this.getRepositoryService(
+        appData._id,
+        appData.companyId,
+      ).getDesigns({
+        limit: undefined,
+        sort: [{ id: "createdAt", desc: true }],
+        isArchived: [false],
+      });
+
+      const settings = (appData.data as GiftCardStudioSettings) ?? {};
+      const response: GetInitOptionsResponse = {
+        designs: designs.items.map((design) => ({
+          _id: design._id,
+          name: design.name,
+        })),
+        amountLimits: {
+          minAmount: settings.minAmount ?? DEFAULT_MIN_AMOUNT,
+          maxAmount: settings.maxAmount ?? DEFAULT_MAX_AMOUNT,
+        },
+      };
+
+      logger.debug(
+        { designs: designs.items.length, amountLimits: response.amountLimits },
+        "Init options got",
+      );
+      return Response.json(response);
     }
 
     return Response.json(
@@ -232,6 +436,7 @@ export class GiftCardStudioConnectedApp
       appId,
       companyId,
       this.props.getDbConnection,
+      this.props.services,
     );
   }
 
@@ -389,8 +594,8 @@ export class GiftCardStudioConnectedApp
   ) {
     const logger = this.loggerFactory("processCreatePurchasedGiftCard");
     const settings = (appData.data as GiftCardStudioSettings) ?? {};
-    const minAmount = settings.minAmount ?? 5;
-    const maxAmount = settings.maxAmount ?? 1000000;
+    const minAmount = settings.minAmount ?? DEFAULT_MIN_AMOUNT;
+    const maxAmount = settings.maxAmount ?? DEFAULT_MAX_AMOUNT;
     if (purchase.amountPurchased < minAmount) {
       throw new ConnectedAppRequestError(
         "amount_purchased_too_low",
@@ -441,15 +646,16 @@ export class GiftCardStudioConnectedApp
         .plus({ months: settings.expirationMonths ?? 12 })
         .endOf("day")
         .toJSDate(),
+      source: {
+        appName: appData.name,
+        appId: appData._id,
+      },
     });
 
     logger.debug(
       { giftCardId: giftCard._id, code, amount: purchase.amountPurchased },
       "Gift card created",
     );
-
-    const sendGiftCard = purchase.sendGiftCardEmail !== false;
-    const sendInvoice = purchase.sendInvoiceToCustomer !== false;
 
     const purchased = await repo.createPurchasedGiftCard({
       designId: purchase.designId,
@@ -477,7 +683,24 @@ export class GiftCardStudioConnectedApp
       payload: {
         type: "generate-gift-card",
         purchasedGiftCardId: purchased._id,
-        sendEmail: sendGiftCard,
+        sendEmails: {
+          recipient: purchase.sendRecipientEmail ?? false,
+          customer: purchase.sendCustomerEmail ?? false,
+        },
+      } satisfies GiftCardStudioJobPayload,
+    });
+
+    await this.props.services.jobService.scheduleJob({
+      type: "app",
+      executeAt: "now",
+      appId: appData._id,
+      payload: {
+        type: "generate-invoice",
+        purchasedGiftCardId: purchased._id,
+        sendEmails: {
+          recipient: purchase.sendRecipientEmail ?? false,
+          customer: purchase.sendCustomerEmail ?? false,
+        },
       } satisfies GiftCardStudioJobPayload,
     });
 
@@ -486,7 +709,10 @@ export class GiftCardStudioConnectedApp
         purchasedId: purchased._id,
         code,
         amount: purchase.amountPurchased,
-        sendEmail: sendGiftCard,
+        sendEmails: {
+          recipient: purchase.sendRecipientEmail ?? false,
+          customer: purchase.sendCustomerEmail ?? false,
+        },
       },
       "Successfully scheduled generate gift card job",
     );
@@ -502,6 +728,212 @@ export class GiftCardStudioConnectedApp
     return repo.getPurchasedGiftCardById(purchased._id);
   }
 
+  private async processDeletePurchasedGiftCard(
+    appData: ConnectedAppData,
+    data: DeletePurchasedGiftCardAction,
+    repo: GiftCardStudioRepositoryService,
+  ) {
+    const logger = this.loggerFactory("processDeletePurchasedGiftCard");
+    const deleted = await repo.deletePurchasedGiftCard(data.id);
+    if (!deleted) {
+      logger.warn(
+        { id: data.id },
+        "Purchased gift card not found or not allowed to be deleted",
+      );
+      throw new ConnectedAppRequestError(
+        "purchased_gift_card_not_found",
+        { id: data.id },
+        405,
+        "Purchased gift card not found",
+      );
+    }
+
+    logger.info(
+      { id: data.id },
+      "Purchased gift card deleted, cleaning up related assets",
+    );
+
+    if (
+      await this.props.services.assetsStorage.checkExists(
+        getFileName(appData._id, data.id, "gift-card", "png"),
+      )
+    ) {
+      logger.debug(
+        { fileName: getFileName(appData._id, data.id, "gift-card", "png") },
+        "Deleting gift card PNG",
+      );
+      await this.props.services.assetsStorage.deleteFile(
+        getFileName(appData._id, data.id, "gift-card", "png"),
+      );
+    }
+    if (
+      await this.props.services.assetsStorage.checkExists(
+        getFileName(appData._id, data.id, "gift-card", "pdf"),
+      )
+    ) {
+      logger.debug(
+        { fileName: getFileName(appData._id, data.id, "gift-card", "pdf") },
+        "Deleting gift card PDF",
+      );
+      await this.props.services.assetsStorage.deleteFile(
+        getFileName(appData._id, data.id, "gift-card", "pdf"),
+      );
+    }
+    if (
+      await this.props.services.assetsStorage.checkExists(
+        getFileName(appData._id, data.id, "invoice", "pdf"),
+      )
+    ) {
+      logger.debug(
+        { fileName: getFileName(appData._id, data.id, "invoice", "pdf") },
+        "Deleting invoice PDF",
+      );
+      await this.props.services.assetsStorage.deleteFile(
+        getFileName(appData._id, data.id, "invoice", "pdf"),
+      );
+    }
+
+    logger.info({ id: data.id }, "Related assets cleaned up");
+    return deleted;
+  }
+
+  private async processRegenerateGiftCardAssets(
+    appData: ConnectedAppData,
+    data: RegenerateGiftCardAssetsAction,
+  ) {
+    const logger = this.loggerFactory("processRegenerateGiftCardAssets");
+    logger.debug(
+      {
+        appId: appData._id,
+        purchasedGiftCardId: data.id,
+        assetType: data.assetType,
+      },
+      "Scheduling regeneration of gift card assets",
+    );
+
+    const payload: GiftCardStudioJobPayload =
+      data.assetType === "gift-card"
+        ? {
+            type: "generate-gift-card",
+            purchasedGiftCardId: data.id,
+          }
+        : {
+            type: "generate-invoice",
+            purchasedGiftCardId: data.id,
+          };
+
+    const repo = this.getRepositoryService(appData._id, appData.companyId);
+    const purchased = await repo.getPurchasedGiftCardById(data.id);
+    if (!purchased) {
+      logger.warn({ purchasedId: data.id }, "Purchased gift card not found");
+      throw new ConnectedAppRequestError(
+        "purchased_gift_card_not_found",
+        { purchasedId: data.id },
+        404,
+        "Purchased gift card not found",
+      );
+    }
+
+    if (data.assetType === "gift-card") {
+      await repo.updatePurchasedGiftCardStatus(data.id, {
+        cardGenerationStatus: "pending",
+      });
+    } else {
+      await repo.updatePurchasedGiftCardStatus(data.id, {
+        invoiceGenerationStatus: "pending",
+      });
+    }
+
+    await this.props.services.jobService.scheduleJob({
+      type: "app",
+      executeAt: "now",
+      appId: appData._id,
+      payload,
+    });
+
+    logger.info(
+      {
+        appId: appData._id,
+        purchasedGiftCardId: data.id,
+        assetType: data.assetType,
+      },
+      "Scheduled regeneration of gift card assets",
+    );
+  }
+
+  private async processResendEmail(
+    appData: ConnectedAppData,
+    { id, participantType }: ResendEmailAction,
+    repo: GiftCardStudioRepositoryService,
+  ) {
+    const logger = this.loggerFactory("processResendEmail");
+
+    logger.debug({ id, participantType }, `Resend email to ${participantType}`);
+
+    const purchased = await repo.getPurchasedGiftCardById(id);
+    if (!purchased) {
+      logger.warn({ id }, "Purchased gift card not found");
+      throw new ConnectedAppRequestError(
+        "purchased_gift_card_not_found",
+        { id },
+        404,
+        "Purchased gift card not found",
+      );
+    }
+
+    const jobProcessor = new GiftCardStudioJobProcessor(
+      appData.companyId,
+      this.props.services,
+      repo,
+    );
+    if (participantType === "customer") {
+      if (purchased.invoiceGenerationStatus !== "completed") {
+        logger.warn({ id, participantType }, "Invoice not generated yet");
+        throw new ConnectedAppRequestError(
+          "invoice_not_generated",
+          { id, participantType },
+          400,
+          "Invoice not generated yet",
+        );
+      }
+
+      if (purchased.cardGenerationStatus !== "completed") {
+        logger.warn({ id, participantType }, "Gift card not generated yet");
+        throw new ConnectedAppRequestError(
+          "gift_card_not_generated",
+          { id, participantType },
+          400,
+          "Gift card not generated yet",
+        );
+      }
+
+      await repo.updatePurchasedGiftCardStatus(id, {
+        customerDeliveryStatus: "scheduled",
+      });
+
+      await jobProcessor.sendEmailToCustomer(appData, purchased);
+    } else {
+      if (purchased.cardGenerationStatus !== "completed") {
+        logger.warn({ id, participantType }, "Gift card not generated yet");
+        throw new ConnectedAppRequestError(
+          "gift_card_not_generated",
+          { id, participantType },
+          400,
+          "Gift card not generated yet",
+        );
+      }
+
+      await repo.updatePurchasedGiftCardStatus(id, {
+        recipientDeliveryStatus: "scheduled",
+      });
+
+      await jobProcessor.sendEmailToRecipient(appData, purchased);
+    }
+
+    logger.info({ id, participantType }, "Successfully resend email");
+    return true;
+  }
+
   private async generateUniqueGiftCardCode(): Promise<string> {
     const logger = this.loggerFactory("generateUniqueGiftCardCode");
     for (let i = 0; i < 50; i++) {
@@ -514,37 +946,6 @@ export class GiftCardStudioConnectedApp
     }
     logger.error("Could not generate unique gift card code after 50 attempts");
     throw new Error("Could not generate unique gift card code");
-  }
-
-  private async triggerDeliveriesForPurchase(
-    appData: ConnectedAppData,
-    purchasedId: string,
-    sendGiftCard: boolean,
-    sendInvoice: boolean,
-  ): Promise<void> {
-    const logger = this.loggerFactory("triggerDeliveriesForPurchase");
-    const repo = this.getRepositoryService(appData._id, appData.companyId);
-    const purchased = await repo.getPurchasedGiftCardById(purchasedId);
-    if (!purchased) {
-      logger.warn(
-        { purchasedId },
-        "Purchased gift card not found for deliveries",
-      );
-      return;
-    }
-
-    if (sendGiftCard) {
-      await repo.updatePurchasedGiftCardStatus(purchasedId, {
-        recipientDeliveryStatus: "scheduled",
-      });
-      logger.debug({ purchasedId }, "Marked gift card delivered to recipient");
-    }
-    if (sendInvoice) {
-      await repo.updatePurchasedGiftCardStatus(purchasedId, {
-        customerDeliveryStatus: "scheduled",
-      });
-      logger.debug({ purchasedId }, "Marked invoice sent to customer");
-    }
   }
 
   private async processGetPreview(
@@ -611,6 +1012,300 @@ export class GiftCardStudioConnectedApp
     return next;
   }
 
+  private async handlePurchaseRequest(
+    appData: ConnectedAppData,
+    request: Request,
+  ): Promise<Response> {
+    const logger = this.loggerFactory("handlePurchaseRequest");
+
+    const body = await request.json();
+    const { success, error, data } = purchaseRequestSchema.safeParse(body);
+    if (!success) {
+      logger.debug({ error }, "Purchase rejected: invalid body");
+      return Response.json(
+        { success: false, code: "invalid_body", error },
+        { status: 400 },
+      );
+    }
+
+    const { amount, designId, name, email, phone, intentId, message, ...rest } =
+      data;
+    const settings = (appData.data as GiftCardStudioSettings) ?? {};
+    if (amount < settings.minAmount || amount > settings.maxAmount) {
+      logger.debug(
+        {
+          amount,
+          minAmount: settings.minAmount,
+          maxAmount: settings.maxAmount,
+        },
+        "Purchase rejected: amount is out of range",
+      );
+      return Response.json(
+        { success: false, code: "amount_out_of_range" },
+        { status: 400 },
+      );
+    }
+
+    const intent =
+      await this.props.services.paymentsService.getIntent(intentId);
+    if (!intent) {
+      logger.debug({ intentId }, "Purchase rejected: intent not found");
+      return Response.json(
+        { success: false, code: "intent_not_found" },
+        { status: 404 },
+      );
+    }
+
+    if (intent.amount !== amount) {
+      logger.debug(
+        { intentId, amount },
+        "Purchase rejected: intent amount does not match",
+      );
+      return Response.json(
+        { success: false, code: "intent_amount_does_not_match" },
+        { status: 400 },
+      );
+    }
+
+    const customer =
+      await this.props.services.customersService.getOrUpsertCustomer({
+        email,
+        phone,
+        name,
+      });
+
+    if (intent.customerId !== customer._id) {
+      logger.debug(
+        { intentId, customerId: customer._id },
+        "Purchase rejected: intent customer id does not match",
+      );
+      return Response.json(
+        { success: false, code: "intent_customer_id_does_not_match" },
+        { status: 400 },
+      );
+    }
+
+    logger.debug(
+      { intentId, customerId: customer._id },
+      "Intent found, creating payment",
+    );
+
+    const payment = await this.props.services.paymentsService.createPayment({
+      amount,
+      customerId: customer._id,
+      description: "giftCard",
+      type: "payment",
+      method: "online",
+      status: "paid",
+      paidAt: new Date(),
+      intentId,
+      appId: intent.appId,
+      appName: intent.appName,
+    });
+
+    logger.debug(
+      { paymentId: payment._id },
+      "Payment created, creating gift card",
+    );
+
+    const code = await this.generateUniqueGiftCardCode();
+
+    const giftCard = await this.props.services.giftCardsService.createGiftCard({
+      code,
+      amount,
+      customerId: customer._id,
+      paymentId: payment._id,
+      expiresAt: DateTime.now()
+        .plus({ months: settings.expirationMonths ?? 12 })
+        .endOf("day")
+        .toJSDate(),
+      source: {
+        appName: appData.name,
+        appId: appData._id,
+      },
+    });
+
+    logger.debug(
+      { giftCardId: giftCard._id, code, amount },
+      "Gift card created, creating purchased gift card",
+    );
+
+    const repo = this.getRepositoryService(appData._id, appData.companyId);
+
+    const purchased = await repo.createPurchasedGiftCard({
+      designId,
+      giftCardId: giftCard._id,
+      amountPurchased: amount,
+      customerId: customer._id,
+      toName: rest.sendToSomeoneElse ? rest.toName : customer.name,
+      toEmail: rest.sendToSomeoneElse ? rest.toEmail : customer.email,
+      message: message,
+      cardGenerationStatus: "pending",
+      invoiceGenerationStatus: "pending",
+      recipientDeliveryStatus: "pending",
+      customerDeliveryStatus: "pending",
+    });
+
+    logger.debug(
+      { purchasedId: purchased._id, code, amount },
+      "Purchased gift card created, scheduling gift card and invoice generation jobs",
+    );
+
+    await this.props.services.jobService.scheduleJob({
+      type: "app",
+      executeAt: "now",
+      appId: appData._id,
+      payload: {
+        type: "generate-gift-card",
+        purchasedGiftCardId: purchased._id,
+        sendEmails: {
+          recipient: rest.sendToSomeoneElse ?? false,
+          customer: true,
+        },
+      } satisfies GiftCardStudioJobPayload,
+    });
+
+    await this.props.services.jobService.scheduleJob({
+      type: "app",
+      executeAt: "now",
+      appId: appData._id,
+      payload: {
+        type: "generate-invoice",
+        purchasedGiftCardId: purchased._id,
+        sendEmails: {
+          recipient: rest.sendToSomeoneElse ?? false,
+          customer: true,
+        },
+      } satisfies GiftCardStudioJobPayload,
+    });
+
+    logger.debug(
+      {
+        purchasedId: purchased._id,
+        code,
+        amount,
+        sendEmails: {
+          recipient: rest.sendToSomeoneElse ?? false,
+          customer: true,
+        },
+      },
+      "Successfully scheduled generate gift card job",
+    );
+
+    logger.info(
+      {
+        purchasedId: purchased._id,
+        designId,
+        amount,
+      },
+      "Purchased gift card created",
+    );
+
+    return Response.json({ success: true, giftCardCode: code });
+  }
+
+  private async handleIntentRequest(
+    appData: ConnectedAppData,
+    request: Request,
+  ): Promise<Response> {
+    const logger = this.loggerFactory("handleIntentRequest");
+
+    const body = await request.json();
+    const { success, error, data } = intentRequestSchema.safeParse(body);
+    if (!success) {
+      logger.debug({ error }, "Intent rejected: invalid body");
+      return Response.json(
+        { success: false, code: "invalid_body", error },
+        { status: 400 },
+      );
+    }
+    const { amount, intentId, email, phone, name } = data;
+    const settings = (appData.data as GiftCardStudioSettings) ?? {};
+
+    if (amount < settings.minAmount || amount > settings.maxAmount) {
+      logger.debug(
+        {
+          amount,
+          minAmount: settings.minAmount,
+          maxAmount: settings.maxAmount,
+        },
+        "Intent rejected: amount is out of range",
+      );
+      return Response.json(
+        { success: false, code: "amount_out_of_range" },
+        { status: 400 },
+      );
+    }
+
+    const { booking: config, defaultApps } =
+      await this.props.services.configurationService.getConfigurations(
+        "booking",
+        "defaultApps",
+      );
+
+    const paymentAppId = defaultApps?.paymentAppId;
+
+    if (!config.payments?.enabled || !paymentAppId) {
+      logger.debug({ config }, "Payments are not enabled");
+      return Response.json(
+        { success: false, code: "payments_not_enabled" },
+        { status: 405 },
+      );
+    }
+
+    const { app, service } =
+      await this.props.services.connectedAppsService.getAppService<IPaymentProcessor>(
+        paymentAppId,
+      );
+
+    const formProps = service.getFormProps(app);
+    const customer =
+      await this.props.services.customersService.getOrUpsertCustomer({
+        email,
+        phone,
+        name,
+      });
+
+    const intentUpdate = {
+      amount,
+      appId: app._id,
+      appName: app.name,
+      request: {
+        amount,
+      },
+      customerId: customer._id,
+      type: "purchase",
+    } satisfies Omit<PaymentIntentUpdateModel, "status">;
+
+    logger.debug(
+      { intent: intentUpdate, isUpdating: !!intentId },
+      "Creating or updating intent",
+    );
+
+    const intentResult = intentId
+      ? await this.props.services.paymentsService.updateIntent(intentId, {
+          ...intentUpdate,
+          status: "created",
+        })
+      : await this.props.services.paymentsService.createIntent(intentUpdate);
+
+    const { request: _, ...intent } = intentResult;
+
+    logger.debug(
+      { intent, isUpdating: !!intentId },
+      "Successfully created or updated intent",
+    );
+
+    return Response.json({
+      formProps,
+      intent,
+      amount,
+      amountPaid: 0,
+      amountTotal: amount,
+      isFixedAmount: true,
+    } satisfies CollectPayment);
+  }
+
   private async handlePreviewRequest(
     appData: ConnectedAppData,
     request: Request,
@@ -618,16 +1313,43 @@ export class GiftCardStudioConnectedApp
     const logger = this.loggerFactory("handlePreviewRequest");
     try {
       const body = await request.json();
-      const { designId, amount, name, email, phone, toName, toEmail, message } =
-        body as Record<string, unknown>;
+      const { success, error, data } =
+        fetchPreviewPayloadSchema.safeParse(body);
+      if (!success) {
+        logger.debug({ error }, "Preview rejected: invalid body");
+        return Response.json(
+          { success: false, code: "invalid_body", error },
+          { status: 400 },
+        );
+      }
 
-      if (!designId || typeof amount !== "number") {
-        logger.debug({ designId, amount }, "Preview rejected: invalid body");
+      const { designId, amount, fromName, toName, message } = data;
+      const settings = (appData.data as GiftCardStudioSettings) ?? {};
+      if (settings.minAmount && amount < settings.minAmount) {
+        logger.debug(
+          { amount, minAmount: settings.minAmount },
+          "Preview rejected: amount is less than minimum amount",
+        );
         return Response.json(
           {
             success: false,
-            code: "invalid_body",
-            error: "designId and amount required",
+            code: "amount_less_than_minimum",
+            error: "Amount is less than minimum amount",
+          },
+          { status: 400 },
+        );
+      }
+
+      if (settings.maxAmount && amount > settings.maxAmount) {
+        logger.debug(
+          { amount, maxAmount: settings.maxAmount },
+          "Preview rejected: amount is greater than maximum amount",
+        );
+        return Response.json(
+          {
+            success: false,
+            code: "amount_greater_than_maximum",
+            error: "Amount is greater than maximum amount",
           },
           { status: 400 },
         );
@@ -646,30 +1368,26 @@ export class GiftCardStudioConnectedApp
           { status: 404 },
         );
       }
-      const settings = (appData.data as GiftCardStudioSettings) ?? {};
       const expirationMonths = settings.expirationMonths ?? 12;
       const locale = await getLocale();
       const { timeZone } =
         await this.props.services.configurationService.getConfiguration(
           "general",
         );
+
       const expiresAt = DateTime.now()
         .plus({ months: expirationMonths })
         .setLocale(locale)
         .setZone(timeZone);
 
-      const previewCode = "PREVIEW";
       const payload = {
-        designId: String(designId ?? ""),
-        amount: Number(amount),
-        name: String(name ?? ""),
-        email: String(email ?? ""),
-        phone: String(phone ?? ""),
-        toName: String(toName ?? ""),
-        toEmail: String(toEmail ?? ""),
-        message: String(message ?? ""),
-        code: previewCode,
-        expiresAt: expiresAt,
+        designId,
+        amount,
+        name: fromName ?? "",
+        toName: (toName || fromName) ?? "",
+        message: message ?? "",
+        code: "PREVIEW",
+        expiresAt,
       };
 
       const imageDataUrl = await this.generatePreviewImage(design, payload);
@@ -677,7 +1395,10 @@ export class GiftCardStudioConnectedApp
         { designId, dataUrlLength: imageDataUrl?.length },
         "Preview generated",
       );
-      return Response.json({ success: true, imageDataUrl });
+      return Response.json({
+        success: true,
+        imageDataUrl,
+      } satisfies FetchPreviewResponse);
     } catch (e) {
       logger.error({ error: e }, "Preview request failed");
       return Response.json(
@@ -693,10 +1414,7 @@ export class GiftCardStudioConnectedApp
       designId: string;
       amount: number;
       name: string;
-      email: string;
-      phone: string;
       toName: string;
-      toEmail: string;
       message: string;
       code: string;
       expiresAt: DateTime;

@@ -2,10 +2,10 @@ import { useI18n } from "@timelish/i18n";
 import {
   Input,
   InputGroup,
+  InputGroupAddon,
+  InputGroupAddonClasses,
   InputGroupInput,
   InputGroupInputClasses,
-  InputGroupSuffixClasses,
-  InputSuffix,
 } from "@timelish/ui";
 import {
   GiftCardStudioAdminKeys,
@@ -47,9 +47,9 @@ export const MonthsInput: React.FC<{
             className={InputGroupInputClasses()}
           />
         </InputGroupInput>
-        <InputSuffix className={InputGroupSuffixClasses()}>
+        <InputGroupAddon className={InputGroupAddonClasses()}>
           {t("settings.years")}
-        </InputSuffix>
+        </InputGroupAddon>
       </InputGroup>
       <InputGroup className="flex-1">
         <InputGroupInput>
@@ -62,9 +62,9 @@ export const MonthsInput: React.FC<{
             className={InputGroupInputClasses()}
           />
         </InputGroupInput>
-        <InputSuffix className={InputGroupSuffixClasses()}>
+        <InputGroupAddon className={InputGroupAddonClasses()}>
           {t("settings.months")}
-        </InputSuffix>
+        </InputGroupAddon>
       </InputGroup>
     </div>
   );

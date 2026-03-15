@@ -24,10 +24,10 @@ import {
   InfoTooltip,
   Input,
   InputGroup,
+  InputGroupAddon,
+  InputGroupAddonClasses,
   InputGroupInput,
   InputGroupInputClasses,
-  InputGroupSuffixClasses,
-  InputSuffix,
   Select,
   SelectContent,
   SelectItem,
@@ -216,13 +216,13 @@ export const ReschedulePolicyCardContent: React.FC<
                   </FormLabel>
                   <FormControl>
                     <InputGroup>
-                      <InputSuffix
-                        className={InputGroupSuffixClasses({
+                      <InputGroupAddon
+                        className={InputGroupAddonClasses({
                           variant: "prefix",
                         })}
                       >
                         $
-                      </InputSuffix>
+                      </InputGroupAddon>
                       <InputGroupInput>
                         <Input
                           {...field}
@@ -303,13 +303,13 @@ export const ReschedulePolicyCardContent: React.FC<
                             })}
                           />
                         </InputGroupInput>
-                        <InputSuffix
-                          className={InputGroupSuffixClasses({
+                        <InputGroupAddon
+                          className={InputGroupAddonClasses({
                             variant: "suffix",
                           })}
                         >
                           %
-                        </InputSuffix>
+                        </InputGroupAddon>
                       </InputGroup>
                     </FormControl>
                     <FormMessage />

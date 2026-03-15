@@ -51,8 +51,13 @@ const processRescheduleRequest = async (
   }
 
   let paymentIntentId = request.paymentIntentId;
-  const config =
-    await servicesContainer.configurationService.getConfiguration("booking");
+  const { booking: config, defaultApps } =
+    await servicesContainer.configurationService.getConfigurations(
+      "booking",
+      "defaultApps",
+    );
+
+  const paymentAppId = defaultApps?.paymentAppId;
 
   if (
     information.action === "paymentRequired" &&
@@ -92,7 +97,7 @@ const processRescheduleRequest = async (
     information.action === "paymentRequired" &&
     information.paymentAmount > 0 &&
     config.payments?.enabled &&
-    config.payments?.paymentAppId
+    paymentAppId
   ) {
     if (!paymentIntentId) {
       logger.warn("Payment required but no payment intent provided");
@@ -139,9 +144,7 @@ const processRescheduleRequest = async (
     }
 
     const { name: appName } =
-      await servicesContainer.connectedAppsService.getApp(
-        config.payments?.paymentAppId,
-      );
+      await servicesContainer.connectedAppsService.getApp(paymentAppId);
 
     logger.debug({ appName, paymentIntentId }, "Creating payment");
 
@@ -155,7 +158,7 @@ const processRescheduleRequest = async (
       method: "online",
       intentId: paymentIntentId,
       appName,
-      appId: config.payments?.paymentAppId,
+      appId: paymentAppId,
       type: "rescheduleFee",
       fees: paymentIntent.fees,
     })) as OnlinePayment;
@@ -322,8 +325,13 @@ const processCancelRequest = async (
   }
 
   let paymentIntentId = request.paymentIntentId;
-  const config =
-    await servicesContainer.configurationService.getConfiguration("booking");
+  const { booking: config, defaultApps } =
+    await servicesContainer.configurationService.getConfigurations(
+      "booking",
+      "defaultApps",
+    );
+
+  const paymentAppId = defaultApps?.paymentAppId;
 
   if (information.action === "payment" && information.giftCards?.length) {
     for (const giftCard of information.giftCards) {
@@ -359,7 +367,7 @@ const processCancelRequest = async (
   if (
     information.action === "payment" &&
     config.payments?.enabled &&
-    config.payments?.paymentAppId &&
+    paymentAppId &&
     information.paymentAmount > 0
   ) {
     if (!paymentIntentId) {
@@ -407,9 +415,7 @@ const processCancelRequest = async (
     }
 
     const { name: appName } =
-      await servicesContainer.connectedAppsService.getApp(
-        config.payments?.paymentAppId,
-      );
+      await servicesContainer.connectedAppsService.getApp(paymentAppId);
 
     logger.debug({ appName, paymentIntentId }, "Creating payment");
 
@@ -423,7 +429,7 @@ const processCancelRequest = async (
       method: "online",
       intentId: paymentIntentId,
       appName,
-      appId: config.payments?.paymentAppId,
+      appId: paymentAppId,
       type: "cancellationFee",
       fees: paymentIntent.fees,
     })) as OnlinePayment;

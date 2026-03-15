@@ -2,25 +2,25 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { useI18n } from "@timelish/i18n";
-import { Button, Link } from "@timelish/ui";
+import { Button, Link, Spinner } from "@timelish/ui";
 import {
   CustomerName,
   tableSortHeader,
   tableSortNoopFunction,
 } from "@timelish/ui-admin";
+import { GiftCardPaymentsDialog } from "@timelish/ui-admin-kit";
 import { DateTime } from "luxon";
 import { PurchasedGiftCardListModel } from "../../models";
+import { getFileName } from "../../service/utils";
 import {
   GiftCardStudioAdminKeys,
   GiftCardStudioAdminNamespace,
   giftCardStudioAdminNamespace,
 } from "../../translations/types";
-import { GiftCardDetailDialog } from "./gift-card-detail-dialog";
 import { CellAction } from "./cell-action";
+import { GiftCardDetailDialog } from "./gift-card-detail-dialog";
 
-export type PurchasesTableRow = PurchasedGiftCardListModel & { appId: string };
-
-export const columns: ColumnDef<PurchasesTableRow>[] = [
+export const columns: ColumnDef<PurchasedGiftCardListModel>[] = [
   {
     id: "code",
     header: tableSortHeader<
@@ -34,6 +34,98 @@ export const columns: ColumnDef<PurchasesTableRow>[] = [
         </Button>
       </GiftCardDetailDialog>
     ),
+    sortingFn: tableSortNoopFunction,
+  },
+  {
+    id: "giftCardPdf",
+    header: tableSortHeader<
+      GiftCardStudioAdminNamespace,
+      GiftCardStudioAdminKeys
+    >(
+      "purchases.table.columns.giftCardPdf",
+      "string",
+      giftCardStudioAdminNamespace,
+    ),
+    cell: ({ row }) => {
+      const purchase = row.original;
+      const t = useI18n<GiftCardStudioAdminNamespace, GiftCardStudioAdminKeys>(
+        giftCardStudioAdminNamespace,
+      );
+      if (purchase.cardGenerationStatus !== "completed") {
+        return (
+          <div className="flex items-center gap-2 text-muted-foreground">
+            <Spinner className="h-4 w-4" />
+            <span>{t("purchases.table.detail.generating")}</span>
+          </div>
+        );
+      }
+
+      const pdfFileName = getFileName(
+        purchase.appId,
+        purchase._id,
+        "gift-card",
+        "pdf",
+      );
+
+      return (
+        <Button asChild variant="link-dashed" className="p-0 h-auto">
+          <a
+            href={`/files/${pdfFileName}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            download="gift-card.pdf"
+          >
+            {t("purchases.table.detail.downloadGiftCardPdf")}
+          </a>
+        </Button>
+      );
+    },
+    sortingFn: tableSortNoopFunction,
+  },
+  {
+    id: "invoicePdf",
+    header: tableSortHeader<
+      GiftCardStudioAdminNamespace,
+      GiftCardStudioAdminKeys
+    >(
+      "purchases.table.columns.invoicePdf",
+      "string",
+      giftCardStudioAdminNamespace,
+    ),
+    cell: ({ row }) => {
+      const purchase = row.original;
+      const t = useI18n<GiftCardStudioAdminNamespace, GiftCardStudioAdminKeys>(
+        giftCardStudioAdminNamespace,
+      );
+      if (purchase.invoiceGenerationStatus !== "completed") {
+        return (
+          <div className="flex items-center gap-2 text-muted-foreground">
+            <Spinner className="h-4 w-4" />
+            <span>{t("purchases.table.detail.generating")}</span>
+          </div>
+        );
+      }
+
+      const pdfFileName = getFileName(
+        purchase.appId,
+        purchase._id,
+        "invoice",
+        "pdf",
+      );
+
+      return (
+        <Button asChild variant="link-dashed" className="p-0 h-auto">
+          <a
+            href={`/files/${pdfFileName}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            download="invoice.pdf"
+          >
+            {t("purchases.table.detail.downloadInvoice")}
+          </a>
+        </Button>
+      );
+    },
     sortingFn: tableSortNoopFunction,
   },
   {
@@ -76,6 +168,45 @@ export const columns: ColumnDef<PurchasesTableRow>[] = [
       return row.original.status === "active"
         ? t("purchases.table.status.active")
         : t("purchases.table.status.inactive");
+    },
+    sortingFn: tableSortNoopFunction,
+  },
+  {
+    id: "paymentMethod",
+    header: tableSortHeader<
+      GiftCardStudioAdminNamespace,
+      GiftCardStudioAdminKeys
+    >(
+      "purchases.table.columns.paymentMethod",
+      "string",
+      giftCardStudioAdminNamespace,
+    ),
+    cell: ({ row }) => {
+      const tAdmin = useI18n("admin");
+      return tAdmin(
+        `common.labels.paymentMethod.${row.original.paymentMethod}`,
+      );
+    },
+    sortingFn: tableSortNoopFunction,
+  },
+  {
+    id: "paymentsCount",
+    header: tableSortHeader<
+      GiftCardStudioAdminNamespace,
+      GiftCardStudioAdminKeys
+    >(
+      "purchases.table.columns.paymentsCount",
+      "number",
+      giftCardStudioAdminNamespace,
+    ),
+    cell: ({ row }) => {
+      return (
+        <GiftCardPaymentsDialog giftCardId={row.original.giftCardId}>
+          <Button variant="link-dashed" className="p-0 h-auto">
+            {row.original.paymentsCount}
+          </Button>
+        </GiftCardPaymentsDialog>
+      );
     },
     sortingFn: tableSortNoopFunction,
   },

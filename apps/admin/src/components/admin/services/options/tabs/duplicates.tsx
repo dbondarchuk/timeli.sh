@@ -14,10 +14,10 @@ import {
   InfoTooltip,
   Input,
   InputGroup,
+  InputGroupAddon,
+  InputGroupAddonClasses,
   InputGroupInput,
   InputGroupInputClasses,
-  InputGroupSuffixClasses,
-  InputSuffix,
 } from "@timelish/ui";
 import { ChevronRight } from "lucide-react";
 import React from "react";
@@ -132,15 +132,15 @@ export const DuplicatesTab: React.FC<TabProps> = ({ form, disabled }) => {
                             }}
                           />
                         </InputGroupInput>
-                        <InputSuffix
-                          className={InputGroupSuffixClasses({
+                        <InputGroupAddon
+                          className={InputGroupAddonClasses({
                             variant: "suffix",
                           })}
                         >
                           {t(
                             "services.options.form.duplicateAppointmentCheck.daysSuffix",
                           )}
-                        </InputSuffix>
+                        </InputGroupAddon>
                       </InputGroup>
                     </FormControl>
                     <FormMessage />

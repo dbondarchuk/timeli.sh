@@ -21,8 +21,11 @@ export type IGiftCardsService = {
     status: GiftCardStatus,
   ): Promise<GiftCardListModel | null>;
   setGiftCardsStatus(ids: string[], status: GiftCardStatus): Promise<void>;
-  deleteGiftCard(id: string): Promise<GiftCardListModel | null>;
-  deleteGiftCards(ids: string[]): Promise<void>;
+  deleteGiftCard(
+    id: string,
+    sourceAppId?: string,
+  ): Promise<GiftCardListModel | null>;
+  deleteGiftCards(ids: string[], sourceAppId?: string): Promise<void>;
   getGiftCard(id: string): Promise<GiftCardListModel | null>;
   getGiftCardByCode(code: string): Promise<GiftCardListModel | null>;
   getGiftCards(

@@ -265,7 +265,38 @@
       "actions": {
         "create": "Ручна покупка",
         "setActive": "Зробити активною",
-        "setInactive": "Зробити неактивною"
+        "setInactive": "Зробити неактивною",
+        "regenerateGiftCard": "Перегенерувати подарункову карту",
+        "regenerateInvoice": "Перегенерувати рахунок",
+        "resendEmailToCustomer": "Надіслати email клієнту",
+        "resendEmailToRecipient": "Надіслати email отримувачу",
+        "delete": "Видалити"
+      },
+      "delete": {
+        "title": "Видалити куплену подарункову карту",
+        "description": "Ви впевнені, що хочете видалити покупку подарункової карти {code}? Цю дію не можна скасувати.",
+        "confirm": "Так, видалити",
+        "toast": {
+          "success": "Куплену подарункову карту {code} успішно видалено"
+        }
+      },
+      "resendEmail": {
+        "customer": {
+          "title": "Надіслати email покупцю",
+          "description": "Ви впевнені, що хочете надіслати email клієнту {code}? Це надішле подарункову карту та рахунок клієнту.",
+          "confirm": "Так, надіслати",
+          "toast": {
+            "success": "Email клієнту {code} успішно надіслано"
+          }
+        },
+        "recipient": {
+          "title": "Надіслати email отримувачу",
+          "description": "Ви впевнені, що хочете надіслати email отримувачу {code}? Це надішле подарункову карту отримувачу.",
+          "confirm": "Так, надіслати",
+          "toast": {
+            "success": "Email отримувачу {code} успішно надіслано"
+          }
+        }
       },
       "columns": {
         "code": "Код карти",
@@ -276,7 +307,15 @@
         "toEmail": "Email отримувача",
         "design": "Дизайн",
         "createdAt": "Створено",
-        "status": "Статус"
+        "status": "Статус",
+        "giftCardPdf": "PDF карти",
+        "invoicePdf": "PDF рахунку",
+        "paymentMethod": "Спосіб оплати",
+        "paymentsCount": "Платежі"
+      },
+      "download": {
+        "giftCard": "Завантажити",
+        "invoice": "Завантажити"
       },
       "status": {
         "active": "Активна",
@@ -284,13 +323,16 @@
       },
       "toast": {
         "setActive": "Подарункову карту {code} позначено як активну",
-        "setInactive": "Подарункову карту {code} позначено як неактивну"
+        "setInactive": "Подарункову карту {code} позначено як неактивну",
+        "regeneratedGiftCard": "Файли подарункової карти перегенеровано",
+        "regeneratedInvoice": "Рахунок перегенеровано"
       },
       "detail": {
         "title": "Деталі покупки",
         "preview": "Попередній перегляд",
         "downloadGiftCardPdf": "Завантажити PDF карти",
-        "downloadInvoice": "Завантажити рахунок"
+        "downloadInvoice": "Завантажити рахунок",
+        "generating": "Генерується..."
       },
       "giftCardDetail": {
         "title": "Деталі карти",
@@ -321,8 +363,8 @@
       "message": "Повідомлення",
       "paymentType": "Спосіб оплати",
       "sendToAnotherRecipient": "Надіслати іншому отримувачу",
-      "sendGiftCardEmail": "Надіслати email з подарунковою картою",
-      "sendInvoiceToCustomer": "Надіслати рахунок клієнту",
+      "sendCustomerEmail": "Надіслати email з подарунковою картою та рахунком",
+      "sendRecipientEmail": "Надіслати подарункову карту отримувачу",
       "toast": {
         "success": "Покупка подарункової карти створена успішно",
         "error": "Не вдалося створити покупку подарункової карти"
@@ -340,6 +382,23 @@
     "toasts": {
       "saved": "Налаштування збережено",
       "error": "Не вдалося зберегти налаштування"
+    }
+  },
+  "block": {
+    "giftCardPurchase": {
+      "displayName": "Купівля подарункової карти",
+      "category": "Подарункові карти",
+      "configuration": {
+        "app": {
+          "label": "Застосунок Gift Card Studio",
+          "helperText": "Оберіть застосунок Gift Card Studio, який буде використовуватися для блоку."
+        }
+      },
+      "validation": {
+        "appId": {
+          "required": "Застосунок Gift Card Studio обов'язковий"
+        }
+      }
     }
   },
   "validation": {
@@ -405,8 +464,7 @@
     }
   },
   "handlers": {
-    "send-gift-card-to-recipient": "Надіслати подарункову карту отримувачу",
-    "send-gift-card-to-customer": "Надіслати подарункову карту покупцю",
-    "send-invoice-to-customer": "Надіслати рахунок покупцю"
+    "send-email-to-recipient": "Надіслати подарункову карту отримувачу",
+    "send-email-to-customer": "Надіслати подарункову карту покупцю"
   }
 }

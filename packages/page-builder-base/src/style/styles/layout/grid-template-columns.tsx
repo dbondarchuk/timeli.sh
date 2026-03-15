@@ -3,9 +3,9 @@ import {
   cn,
   Input,
   InputGroup,
+  InputGroupAddonClasses,
   InputGroupInput,
   InputGroupInputClasses,
-  InputGroupSuffixClasses,
 } from "@timelish/ui";
 import { Grid3X3 } from "lucide-react";
 import * as z from "zod";
@@ -45,7 +45,7 @@ export const gridTemplateColumnsStyle = {
           <Button
             variant="outline"
             size="sm"
-            className={cn(InputGroupSuffixClasses(), "h-8")}
+            className={cn(InputGroupAddonClasses(), "h-8")}
           >
             <Grid3X3 className="w-4 h-4" />
           </Button>

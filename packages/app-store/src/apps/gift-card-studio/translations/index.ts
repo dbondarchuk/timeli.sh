@@ -1,4 +1,4 @@
-const knownLocales = ["en", "uk"];
+export const knownLocales = ["en", "uk"];
 export const GiftCardStudioTranslations = {
   admin: async (locale: string) => {
     if (!knownLocales.includes(locale)) {

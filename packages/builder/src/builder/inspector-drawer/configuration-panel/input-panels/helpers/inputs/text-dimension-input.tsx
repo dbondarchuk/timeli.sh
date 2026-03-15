@@ -3,10 +3,10 @@ import React from "react";
 import {
   Input,
   InputGroup,
+  InputGroupAddon,
+  InputGroupAddonClasses,
   InputGroupInput,
   InputGroupInputClasses,
-  InputGroupSuffixClasses,
-  InputSuffix,
   Label,
 } from "@timelish/ui";
 import { ResetButton } from "./reset-button";
@@ -54,7 +54,9 @@ export const TextDimensionInput: React.FC<TextDimensionInputProps> = ({
               onChange={(e) => handleChange(e.target.value)}
             />
           </InputGroupInput>
-          <InputSuffix className={InputGroupSuffixClasses()}>px</InputSuffix>
+          <InputGroupAddon className={InputGroupAddonClasses()}>
+            px
+          </InputGroupAddon>
         </InputGroup>
         {nullable && <ResetButton onClick={handleChange} />}
       </div>

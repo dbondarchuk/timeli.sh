@@ -31,11 +31,11 @@ interface CellActionProps {
 export const CellAction: React.FC<CellActionProps> = ({ giftCard }) => {
   const t = useI18n("admin");
   const [loading, setLoading] = useState(false);
-  const [open, setOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const router = useRouter();
   const isActive = giftCard.status === "active";
 
-  const onConfirm = async () => {
+  const onConfirmDelete = async () => {
     try {
       setLoading(true);
 
@@ -46,7 +46,7 @@ export const CellAction: React.FC<CellActionProps> = ({ giftCard }) => {
         error: t("common.toasts.error"),
       });
 
-      setOpen(false);
+      setIsDeleteOpen(false);
       router.refresh();
     } catch (error: any) {
       setLoading(false);
@@ -58,6 +58,7 @@ export const CellAction: React.FC<CellActionProps> = ({ giftCard }) => {
 
   const onSetStatus = async (status: "active" | "inactive") => {
     try {
+      setLoading(true);
       await toastPromise(
         adminApi.giftCards.setGiftCardStatus(giftCard._id, status),
         {
@@ -75,6 +76,8 @@ export const CellAction: React.FC<CellActionProps> = ({ giftCard }) => {
       router.refresh();
     } catch (error: any) {
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -84,9 +87,9 @@ export const CellAction: React.FC<CellActionProps> = ({ giftCard }) => {
   return (
     <>
       <AlertModal
-        isOpen={open}
-        onClose={() => setOpen(false)}
-        onConfirm={onConfirm}
+        isOpen={isDeleteOpen}
+        onClose={() => setIsDeleteOpen(false)}
+        onConfirm={onConfirmDelete}
         loading={loading}
       />
       <DropdownMenu modal={false}>
@@ -126,9 +129,17 @@ export const CellAction: React.FC<CellActionProps> = ({ giftCard }) => {
           {canDelete && (
             <>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => setOpen(true)}>
+              <DropdownMenuItem
+                onClick={() => setIsDeleteOpen(true)}
+                disabled={!!giftCard.source?.appId}
+              >
                 <Trash className="size-3.5" />{" "}
-                {t("services.giftCards.table.cellAction.delete")}
+                {giftCard.source?.appId
+                  ? t("services.giftCards.table.cellAction.deleteFromSource", {
+                      code: giftCard.code,
+                      appName: giftCard.source?.appName,
+                    })
+                  : t("services.giftCards.table.cellAction.delete")}
               </DropdownMenuItem>
             </>
           )}

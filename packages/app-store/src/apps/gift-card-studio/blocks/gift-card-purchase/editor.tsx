@@ -1,13 +1,18 @@
 "use client";
 
-import { ReplaceOriginalColors } from "@timelish/page-builder-base";
-import { useI18n } from "@timelish/i18n";
+import { useBlockEditor, useCurrentBlock } from "@timelish/builder";
 import {
-  GiftCardStudioPublicKeys,
-  GiftCardStudioPublicNamespace,
-  giftCardStudioPublicNamespace,
-} from "../../translations/types";
-import { GiftCardPurchaseBlockReaderProps } from "./schema";
+  ReplaceOriginalColors,
+  useClassName,
+} from "@timelish/page-builder-base";
+import { BlockStyle } from "@timelish/page-builder-base/reader";
+import { cn } from "@timelish/ui";
+import { GiftCardPurchaseBlockReader } from "./reader-component";
+import {
+  GiftCardPurchaseBlockProps,
+  GiftCardPurchaseBlockReaderProps,
+  styles,
+} from "./schema";
 
 export const GiftCardPurchaseBlockEditor = ({
   style,
@@ -15,20 +20,32 @@ export const GiftCardPurchaseBlockEditor = ({
   block,
   ..._rest
 }: GiftCardPurchaseBlockReaderProps & Record<string, unknown>) => {
-  const t = useI18n<
-    GiftCardStudioPublicNamespace,
-    GiftCardStudioPublicKeys
-  >(giftCardStudioPublicNamespace);
+  const currentBlock = useCurrentBlock<GiftCardPurchaseBlockProps>();
+  const overlayProps = useBlockEditor(currentBlock?.id);
+
+  const appId = (currentBlock?.metadata as { giftCardStudioAppId?: string })
+    ?.giftCardStudioAppId;
+
+  const className = useClassName();
+  const base = currentBlock?.base;
 
   return (
     <>
       <ReplaceOriginalColors />
-      <div
-        className="rounded-lg border border-dashed border-muted-foreground/25 p-8 text-center text-sm text-muted-foreground"
-        style={style as React.CSSProperties}
-      >
-        {t("block.title")} — {t("block.description")}
-      </div>
+      <BlockStyle
+        name={className}
+        styleDefinitions={styles}
+        styles={style}
+        isEditor
+      />
+      <GiftCardPurchaseBlockReader
+        appId={appId}
+        className={cn(className, base?.className)}
+        id={base?.id}
+        onClick={overlayProps.onClick}
+        isEditor={true}
+        ref={overlayProps.ref}
+      />
     </>
   );
 };

@@ -2,7 +2,7 @@ import { cva } from "class-variance-authority";
 import React from "react";
 import { cn } from "../utils";
 
-export const InputGroupSuffixClasses = cva(
+export const InputGroupAddonClasses = cva(
   [
     // "h-9",
     "rounded-md",
@@ -59,7 +59,7 @@ type ChildrenWithClassName = React.PropsWithChildren & {
   className?: string;
 };
 
-export const InputSuffix: React.FC<ChildrenWithClassName> = ({
+export const InputGroupAddon: React.FC<ChildrenWithClassName> = ({
   children,
   className,
 }) => {

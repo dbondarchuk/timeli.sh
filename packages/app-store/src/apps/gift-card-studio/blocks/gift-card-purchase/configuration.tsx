@@ -26,10 +26,9 @@ export const GiftCardPurchaseBlockConfiguration = deepMemo(
     metadata,
     onMetadataChange,
   }: ConfigurationProps<GiftCardPurchaseBlockProps>) => {
-    const t = useI18n<
-      GiftCardStudioAdminNamespace,
-      GiftCardStudioAdminKeys
-    >(giftCardStudioAdminNamespace);
+    const t = useI18n<GiftCardStudioAdminNamespace, GiftCardStudioAdminKeys>(
+      giftCardStudioAdminNamespace,
+    );
 
     const updateStyle = useCallback(
       (s: unknown) =>
@@ -52,8 +51,8 @@ export const GiftCardPurchaseBlockConfiguration = deepMemo(
         onBaseChange={onBaseChange}
       >
         <AppSelectorInput
-          label="Gift Card Studio app"
-          helperText="Select the Gift Card Studio app for this block."
+          label={t("block.giftCardPurchase.configuration.app.label")}
+          helperText={t("block.giftCardPurchase.configuration.app.helperText")}
           defaultValue={appId}
           appName={GIFT_CARD_STUDIO_APP_NAME}
           onChange={(value) =>

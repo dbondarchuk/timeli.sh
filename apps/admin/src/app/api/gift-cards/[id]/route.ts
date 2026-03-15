@@ -91,6 +91,7 @@ export async function DELETE(
   { params }: RouteContext<"/api/gift-cards/[id]">,
 ) {
   const logger = getLoggerFactory("AdminAPI/gift-cards/[id]")("DELETE");
+
   const servicesContainer = await getServicesContainer();
   const { id } = await params;
 

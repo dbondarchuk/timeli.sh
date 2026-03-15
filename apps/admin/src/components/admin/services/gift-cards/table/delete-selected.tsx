@@ -61,7 +61,8 @@ export const DeleteSelectedGiftCardsButton: React.FC<{
     !selected ||
     !selected.length ||
     hasPayments ||
-    hasOnlinePayments;
+    hasOnlinePayments ||
+    selected.some((giftCard) => !!giftCard.source?.appId);
   return (
     <AlertDialog onOpenChange={setIsOpen} open={isOpen}>
       <AlertDialogTrigger asChild>

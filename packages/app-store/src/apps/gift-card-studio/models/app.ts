@@ -1,4 +1,9 @@
-import { zObjectId, zTaggedUnion, zUniqueArray } from "@timelish/types";
+import {
+  Prettify,
+  zObjectId,
+  zTaggedUnion,
+  zUniqueArray,
+} from "@timelish/types";
 import * as z from "zod";
 import { designSchemaBase, getDesignsQuerySchema } from "./design";
 import {
@@ -93,6 +98,33 @@ export type GetPurchasedGiftCardByIdAction = z.infer<
 export const GetPurchasedGiftCardByIdActionType =
   "gift-card-studio-get-purchased-gift-card-by-id" as const;
 
+export const regenerateGiftCardAssetsActionSchema = z.object({
+  id: zObjectId(),
+  assetType: z.enum(["gift-card", "invoice"]),
+});
+export type RegenerateGiftCardAssetsAction = z.infer<
+  typeof regenerateGiftCardAssetsActionSchema
+>;
+export const RegenerateGiftCardAssetsActionType =
+  "gift-card-studio-regenerate-assets" as const;
+
+export const deletePurchasedGiftCardActionSchema = z.object({
+  id: zObjectId(),
+});
+export type DeletePurchasedGiftCardAction = z.infer<
+  typeof deletePurchasedGiftCardActionSchema
+>;
+export const DeletePurchasedGiftCardActionType =
+  "gift-card-studio-delete-purchased-gift-card" as const;
+
+export const resendEmailActionSchema = z.object({
+  id: zObjectId(),
+  participantType: z.enum(["customer", "recipient"]),
+});
+export type ResendEmailAction = z.infer<typeof resendEmailActionSchema>;
+export const ResendEmailActionType =
+  "gift-card-studio-resend-email-to-customer" as const;
+
 export const createPurchasedGiftCardActionSchema = z.object({
   purchase: purchasedGiftCardSchemaBase
     .omit({
@@ -104,8 +136,8 @@ export const createPurchasedGiftCardActionSchema = z.object({
     })
     .extend({
       paymentType: z.enum(["cash", "in-person-card"]),
-      sendGiftCardEmail: z.coerce.boolean<boolean>().optional(),
-      sendInvoiceToCustomer: z.coerce.boolean<boolean>().optional(),
+      sendCustomerEmail: z.coerce.boolean<boolean>().optional(),
+      sendRecipientEmail: z.coerce.boolean<boolean>().optional(),
     }),
 });
 export type CreatePurchasedGiftCardAction = z.infer<
@@ -169,17 +201,36 @@ export const requestActionSchema = zTaggedUnion([
   { type: GetPreviewActionType, data: getPreviewActionSchema },
   { type: GetSettingsActionType, data: getSettingsActionSchema },
   { type: UpdateSettingsActionType, data: updateSettingsActionSchema },
+  {
+    type: RegenerateGiftCardAssetsActionType,
+    data: regenerateGiftCardAssetsActionSchema,
+  },
+  {
+    type: DeletePurchasedGiftCardActionType,
+    data: deletePurchasedGiftCardActionSchema,
+  },
+  {
+    type: ResendEmailActionType,
+    data: resendEmailActionSchema,
+  },
 ]);
 
-export type RequestAction = z.infer<typeof requestActionSchema>;
+export type RequestAction = Prettify<z.infer<typeof requestActionSchema>>;
 
 export type GiftCardStudioJobPayload =
   | {
       type: "generate-gift-card";
       purchasedGiftCardId: string;
-      sendEmail: boolean;
+      sendEmails?: {
+        recipient: boolean;
+        customer: boolean;
+      };
     }
   | {
       type: "generate-invoice";
       purchasedGiftCardId: string;
+      sendEmails?: {
+        recipient: boolean;
+        customer: boolean;
+      };
     };

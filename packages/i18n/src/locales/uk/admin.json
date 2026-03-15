@@ -854,7 +854,8 @@
         "pricePerHour": {
           "label": "Ціна за годину",
           "tooltip": "Ціна за годину опції",
-          "placeholder": "Вибрати ціну за годину"
+          "placeholder": "Вибрати ціну за годину",
+          "suffix": "/год"
         },
         "durationStep": {
           "label": "Крок тривалості",
@@ -1233,7 +1234,8 @@
         "payments": {
           "title": "Платежі",
           "description": "Платежі, здійснені цією подарунковою карткою",
-          "noPayments": "Платежі не знайдено"
+          "noPayments": "Платежі не знайдено",
+          "addPayment": "Додати платіж"
         },
         "columns": {
           "code": "Код",
@@ -1248,13 +1250,14 @@
         },
         "cellAction": {
           "giftCardDeleted": "Подарункову картку {code} видалено.",
-          "giftCardSetActive": "Подарункову картку {code} встановлено як активну.",
-          "giftCardSetInactive": "Подарункову картку {code} встановлено як неактивну.",
+          "giftCardSetActive": "Подарункову картку {code} позначено як активну.",
+          "giftCardSetInactive": "Подарункову картку {code} позначено як неактивну.",
           "actions": "Дії",
           "update": "Оновити",
           "delete": "Видалити",
-          "setActive": "Зробити активною",
-          "setInactive": "Зробити неактивною"
+          "deleteFromSource": "Можна видаляти тільки з {appName}",
+          "setActive": "Активувати",
+          "setInactive": "Деактивувати"
         },
         "statusBadges": {
           "active": "Активна",
@@ -1264,8 +1267,8 @@
         }
       },
       "setStatusSelected": {
-        "setActive": "Зробити активною",
-        "setInactive": "Зробити неактивною",
+        "setActive": "Активувати",
+        "setInactive": "Деактивувати",
         "buttonActive": "Активувати {count, plural, =1 {подарункову картку} few {# подарункові картки} many {# подарункових карток} other {# подарункових карток}}",
         "buttonInactive": "Деактивувати {count, plural, =1 {подарункову картку} few {# подарункові картки} many {# подарункових карток} other {# подарункових карток}}",
         "confirmTitleActive": "Активувати вибрані подарункові картки?",
@@ -1586,6 +1589,10 @@
     "appStore": "Магазин додатків",
     "noConnectedApps": "У вас немає підключених додатків",
     "defaultAppsForm": {
+      "payment": {
+        "label": "Платіжний процессор",
+        "placeholder": "Вимкнути платежі"
+      },
       "emailSender": {
         "label": "Відправник email",
         "placeholder": "Використовувати відправник email за замовчуванням"
@@ -1714,7 +1721,7 @@
         },
         "payments": {
           "enableDeposits": "Увімкнути завдатки",
-          "enableDepositsTooltip": "Увімкнути можливість просити завдаток для бронювання запису",
+          "enableDepositsTooltip": "Увімкнути можливість просити завдаток для бронювання запису. Платіжний додаток за замовчуванням повинен бути налаштований.",
           "enable": "Увімкнути",
           "disable": "Вимкнути",
           "paymentsApp": "Платіжний додаток",
@@ -1724,6 +1731,7 @@
           "requireDepositTooltip2": "Може бути перевизначено для кожного клієнта",
           "require": "Вимагати",
           "doNotRequire": "Не вимагати",
+          "appointments": "записів",
           "depositAmount": "Сума завдатку",
           "depositAmountTooltip": "<p>Сума завдатку у відсотках</p><p><strong>Приклад:</strong> Якщо встановлено 100, повна ціна має бути сплачена наперед</p><p><strong>Опціонально</strong></p>",
           "dontRequireIfCompletedMinNumberOfAppointments": "Мінімальна кількість записів для невимоги завдатку",
@@ -2311,6 +2319,9 @@
         },
         "giftCardId": {
           "label": "Подарункова картка"
+        },
+        "customerId": {
+          "label": "Клієнт"
         }
       }
     },

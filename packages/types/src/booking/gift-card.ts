@@ -22,13 +22,16 @@ export const giftCardSchema = z.object({
   customerId: zObjectId(
     "validation.giftCard.customerId.required" satisfies BaseAllKeys,
   ),
-  status: z.enum(
-    giftCardStatus,
-    "validation.giftCard.status.required" satisfies BaseAllKeys,
-  ),
   paymentId: zObjectId(
     "validation.giftCard.paymentId.required" satisfies BaseAllKeys,
   ),
+  source: z
+    .object({
+      appName: z.string(),
+      appId: zObjectId(),
+      metadata: z.any().optional(),
+    })
+    .optional(),
 });
 
 export const getGiftCardSchemaWithUniqueCheck = (
@@ -46,6 +49,7 @@ export type GiftCard = Prettify<
     WithDatabaseId<GiftCardUpdateModel> & {
       createdAt: Date;
       updatedAt: Date;
+      status: GiftCardStatus;
     }
   >
 >;

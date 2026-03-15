@@ -1,18 +1,12 @@
 import { EditorDocumentBlocksDictionary } from "@timelish/builder";
-import { AllKeys } from "@timelish/i18n";
 import { Gift } from "lucide-react";
+import { GiftCardStudioAdminAllKeys } from "../translations/types";
 import {
   GiftCardPurchaseBlockConfiguration,
   GiftCardPurchaseBlockEditor,
   GiftCardPurchaseBlockPropsDefaults,
   GiftCardPurchaseBlockPropsSchema,
-  GiftCardPurchaseBlockReader,
 } from "./gift-card-purchase";
-import {
-  GiftCardStudioAdminKeys,
-  GiftCardStudioAdminNamespace,
-  giftCardStudioAdminNamespace,
-} from "../translations/types";
 
 export const GiftCardStudioBlocksSchema = {
   GiftCardPurchase: GiftCardPurchaseBlockPropsSchema,
@@ -33,18 +27,14 @@ export const GiftCardStudioEditors: EditorDocumentBlocksDictionary<
   typeof GiftCardStudioBlocksSchema
 > = {
   GiftCardPurchase: {
-    displayName: "Gift Card Purchase" as AllKeys<
-      GiftCardStudioAdminNamespace,
-      GiftCardStudioAdminKeys
-    >,
+    displayName:
+      "app_gift-card-studio_admin.block.giftCardPurchase.displayName" satisfies GiftCardStudioAdminAllKeys,
     icon: <Gift />,
     Configuration: GiftCardPurchaseBlockConfiguration,
     Editor: GiftCardPurchaseBlockEditor as any,
     defaultValue: GiftCardPurchaseBlockPropsDefaults,
-    category: "Gift Card Studio" as AllKeys<
-      GiftCardStudioAdminNamespace,
-      GiftCardStudioAdminKeys
-    >,
+    category:
+      "app_gift-card-studio_admin.block.giftCardPurchase.category" satisfies GiftCardStudioAdminAllKeys,
     capabilities: ["block"],
     tags: ["gift-card"],
   },
@@ -67,7 +57,8 @@ export const GiftCardStudioBlocks = Object.fromEntries(
     key,
     {
       schema,
-      editor: GiftCardStudioEditors[key as keyof typeof GiftCardStudioBlocksSchema],
+      editor:
+        GiftCardStudioEditors[key as keyof typeof GiftCardStudioBlocksSchema],
       allowedInFooter:
         GiftCardStudioBlocksAllowedInFooter[
           key as keyof typeof GiftCardStudioBlocksSchema

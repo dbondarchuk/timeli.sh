@@ -10,7 +10,6 @@ import {
   inPersonPaymentMethod,
 } from "@timelish/types";
 import {
-  BooleanSelect,
   Button,
   cn,
   DateTimePicker,
@@ -23,10 +22,10 @@ import {
   InfoTooltip,
   Input,
   InputGroup,
+  InputGroupAddon,
+  InputGroupAddonClasses,
   InputGroupInput,
   InputGroupInputClasses,
-  InputGroupSuffixClasses,
-  InputSuffix,
   Select,
   SelectContent,
   SelectItem,
@@ -102,7 +101,6 @@ export const GiftCardForm: React.FC<{
     reValidateMode: "onChange",
     defaultValues: initialData || {
       code: defaultCode,
-      status: "active",
       amount: 50,
       expiresAt: expiryDate,
       paymentMethod: "cash",
@@ -183,11 +181,11 @@ export const GiftCardForm: React.FC<{
 
                 <FormControl>
                   <InputGroup>
-                    <InputSuffix>
+                    <InputGroupAddon>
                       <TooltipResponsive>
                         <TooltipResponsiveTrigger
                           className={cn(
-                            InputGroupSuffixClasses({ variant: "prefix" }),
+                            InputGroupAddonClasses({ variant: "prefix" }),
                             "px-2",
                           )}
                         >
@@ -208,7 +206,7 @@ export const GiftCardForm: React.FC<{
                           {t("services.giftCards.form.code.tooltip")}
                         </TooltipResponsiveContent>
                       </TooltipResponsive>
-                    </InputSuffix>
+                    </InputGroupAddon>
                     <InputGroupInput>
                       <Input
                         disabled={loading || !!initialData?._id}
@@ -223,10 +221,10 @@ export const GiftCardForm: React.FC<{
                         {...field}
                       />
                     </InputGroupInput>
-                    <InputSuffix>
+                    <InputGroupAddon>
                       <TooltipResponsive>
                         <TooltipResponsiveTrigger
-                          className={cn(InputGroupSuffixClasses(), "px-2")}
+                          className={cn(InputGroupAddonClasses(), "px-2")}
                         >
                           <Button
                             variant="ghost"
@@ -248,7 +246,7 @@ export const GiftCardForm: React.FC<{
                           )}
                         </TooltipResponsiveContent>
                       </TooltipResponsive>
-                    </InputSuffix>
+                    </InputGroupAddon>
                   </InputGroup>
                 </FormControl>
                 <FormMessage />
@@ -265,13 +263,13 @@ export const GiftCardForm: React.FC<{
                 </FormLabel>
                 <FormControl>
                   <InputGroup>
-                    <InputSuffix
-                      className={InputGroupSuffixClasses({
+                    <InputGroupAddon
+                      className={InputGroupAddonClasses({
                         variant: "prefix",
                       })}
                     >
                       $
-                    </InputSuffix>
+                    </InputGroupAddon>
                     <InputGroupInput>
                       <Input
                         disabled={loading || disableAmountUpdate}
@@ -286,34 +284,6 @@ export const GiftCardForm: React.FC<{
                       />
                     </InputGroupInput>
                   </InputGroup>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="status"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>
-                  {t("services.giftCards.form.status.label")}
-                </FormLabel>
-                <FormControl>
-                  <BooleanSelect
-                    className="w-full"
-                    trueLabel={t(
-                      "services.giftCards.form.status.options.active",
-                    )}
-                    falseLabel={t(
-                      "services.giftCards.form.status.options.inactive",
-                    )}
-                    value={field.value === "active"}
-                    onValueChange={(item) => {
-                      field.onChange(item ? "active" : "inactive");
-                      field.onBlur();
-                    }}
-                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

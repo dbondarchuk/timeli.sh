@@ -30,10 +30,10 @@ import {
   FormMessage,
   Input,
   InputGroup,
+  InputGroupAddon,
+  InputGroupAddonClasses,
   InputGroupInput,
   InputGroupInputClasses,
-  InputGroupSuffixClasses,
-  InputSuffix,
   Select,
   SelectContent,
   SelectItem,
@@ -45,7 +45,7 @@ import {
   use12HourFormat,
   useTimeZone,
 } from "@timelish/ui";
-import { GiftCardSelector } from "@timelish/ui-admin";
+import { CustomerSelector, GiftCardSelector } from "@timelish/ui-admin";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -56,6 +56,7 @@ type AddUpdatePaymentDialogProps = {
   children: React.ReactNode;
 } & (
   | { appointmentId?: string; customerId: string }
+  | { giftCardId: string }
   | {
       paymentId: string;
       payment: InStorePaymentUpdateModel;
@@ -97,9 +98,19 @@ export const AddUpdatePaymentDialog = ({
             method: "cash",
             type: "payment",
           }
-        : ({
-            ...props.payment,
-          } as InStorePaymentUpdateModel);
+        : "giftCardId" in props
+          ? {
+              giftCardId: props.giftCardId,
+              customerId: "",
+              amount: 0,
+              description: "",
+              paidAt: new Date(),
+              method: "gift-card",
+              type: "payment",
+            }
+          : ({
+              ...props.payment,
+            } as InStorePaymentUpdateModel);
 
   const onDialogOpenChange = (open: boolean) => {
     if (!open && loading) {
@@ -235,7 +246,7 @@ export const AddUpdatePaymentDialog = ({
                           field.onChange(value);
                           field.onBlur();
                         }}
-                        disabled={loading}
+                        disabled={loading || "giftCardId" in props}
                       >
                         <SelectTrigger>
                           <SelectValue
@@ -260,32 +271,56 @@ export const AddUpdatePaymentDialog = ({
                 )}
               />
               {method === "gift-card" && (
-                <FormField
-                  control={form.control}
-                  name="giftCardId"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>
-                        {t("payment.addUpdatePayment.form.giftCardId.label")}
-                      </FormLabel>
-                      <FormControl>
-                        <GiftCardSelector
-                          onItemSelect={(value) => {
-                            field.onChange(value);
-                            field.onBlur();
-                          }}
-                          value={field.value}
-                          onValueChange={(value) => {
-                            setGiftCard(value);
-                            form.trigger("amount");
-                          }}
-                          disabled={loading}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <>
+                  <FormField
+                    control={form.control}
+                    name="giftCardId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>
+                          {t("payment.addUpdatePayment.form.giftCardId.label")}
+                        </FormLabel>
+                        <FormControl>
+                          <GiftCardSelector
+                            onItemSelect={(value) => {
+                              field.onChange(value);
+                              field.onBlur();
+                            }}
+                            value={field.value}
+                            onValueChange={(value) => {
+                              setGiftCard(value);
+                              form.trigger("amount");
+                            }}
+                            disabled={loading}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="customerId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>
+                          {t("payment.addUpdatePayment.form.customerId.label")}
+                        </FormLabel>
+                        <FormControl>
+                          <CustomerSelector
+                            onItemSelect={(value: string) => {
+                              field.onChange(value);
+                              field.onBlur();
+                            }}
+                            value={field.value}
+                            disabled={loading}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </>
               )}
               <FormField
                 control={form.control}
@@ -297,13 +332,13 @@ export const AddUpdatePaymentDialog = ({
                     </FormLabel>
                     <FormControl>
                       <InputGroup>
-                        <InputSuffix
-                          className={InputGroupSuffixClasses({
+                        <InputGroupAddon
+                          className={InputGroupAddonClasses({
                             variant: "prefix",
                           })}
                         >
                           $
-                        </InputSuffix>
+                        </InputGroupAddon>
                         <InputGroupInput>
                           <Input
                             {...field}

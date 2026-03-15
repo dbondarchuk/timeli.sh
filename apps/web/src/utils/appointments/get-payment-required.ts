@@ -165,8 +165,12 @@ export const getAppointmentEventAndIsPaymentRequired = async (
   }
 
   const servicesContainer = await getServicesContainer();
-  const config =
-    await servicesContainer.configurationService.getConfiguration("booking");
+  const { booking: config, defaultApps } =
+    await servicesContainer.configurationService.getConfigurations(
+      "booking",
+      "defaultApps",
+    );
+  const paymentAppId = defaultApps?.paymentAppId;
 
   const customersPriorAppointmentsCount =
     await getCustomerCompletedAppointments(servicesContainer, customer?._id);
@@ -175,9 +179,7 @@ export const getAppointmentEventAndIsPaymentRequired = async (
     {
       customersPriorAppointmentsCount,
       paymentsEnabled: config.payments?.enabled,
-      paymentAppId: config.payments?.enabled
-        ? config.payments.paymentAppId
-        : undefined,
+      paymentAppId: config.payments?.enabled ? paymentAppId : undefined,
       requireDeposit:
         config.payments?.enabled && "requireDeposit" in config.payments
           ? config.payments.requireDeposit
@@ -194,9 +196,9 @@ export const getAppointmentEventAndIsPaymentRequired = async (
     "Retrieved booking configuration",
   );
 
-  if (config.payments?.enabled && config.payments.paymentAppId) {
+  if (config.payments?.enabled && paymentAppId) {
     logger.debug(
-      { paymentAppId: config.payments.paymentAppId },
+      { paymentAppId },
       "Payments enabled, determining deposit requirement",
     );
 
@@ -339,7 +341,7 @@ export const getAppointmentEventAndIsPaymentRequired = async (
           totalPrice: event.totalPrice,
           depositPercentage: percentage,
           depositAmount: totalAmount,
-          paymentAppId: config.payments.paymentAppId,
+          paymentAppId,
           customerId: customer?._id,
         },
         "Payment required with deposit",
@@ -393,7 +395,7 @@ export const getAppointmentEventAndIsPaymentRequired = async (
         amountPaid: totalPaid,
         amountTotal: totalAmount,
         percentage,
-        appId: config.payments.paymentAppId,
+        appId: paymentAppId,
         isFixedAmount,
         giftCards,
         option,
@@ -414,9 +416,7 @@ export const getAppointmentEventAndIsPaymentRequired = async (
     logger.debug(
       {
         paymentsEnabled: config.payments?.enabled,
-        hasPaymentAppId: !!(
-          config.payments?.enabled && config.payments.paymentAppId
-        ),
+        hasPaymentAppId: !!(config.payments?.enabled && paymentAppId),
         reason: "payments_disabled_or_no_app_id",
       },
       "Payments disabled or no payment app configured",

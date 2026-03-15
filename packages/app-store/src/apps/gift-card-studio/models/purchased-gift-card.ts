@@ -1,6 +1,7 @@
 import {
   Customer,
   GiftCardStatus,
+  PaymentMethod,
   Prettify,
   WithAppId,
   WithCompanyId,
@@ -48,6 +49,9 @@ export type PurchasedGiftCardListModel = PurchasedGiftCardModel & {
   designName: string;
   giftCardCode: string;
   status: GiftCardStatus;
+  paymentId: string;
+  paymentMethod: PaymentMethod;
+  paymentsCount: number;
 };
 
 export const getPurchasedGiftCardsQuerySchema = z.object({

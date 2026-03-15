@@ -16,7 +16,8 @@ import {
   Skeleton,
   toast,
 } from "@timelish/ui";
-import { PaymentCard } from "@timelish/ui-admin-kit";
+import { AddUpdatePaymentDialog, PaymentCard } from "@timelish/ui-admin-kit";
+import { BanknoteArrowUp } from "lucide-react";
 import { useState } from "react";
 
 export const GiftCardPaymentsDialog: React.FC<{
@@ -62,6 +63,17 @@ export const GiftCardPaymentsDialog: React.FC<{
           </DialogDescription>
         </DialogHeader>
         <ScrollArea className="max-h-[calc(80vh-100px)] @container/payments-dialog-scroll-area">
+          <AddUpdatePaymentDialog
+            giftCardId={giftCardId}
+            onSuccess={(payment) => {
+              setPayments([...payments, payment]);
+            }}
+          >
+            <Button variant="primary" className="w-full">
+              <BanknoteArrowUp />
+              {t("services.giftCards.table.payments.addPayment")}
+            </Button>
+          </AddUpdatePaymentDialog>
           {payments.length > 0 || isLoading ? (
             <div className="grid grid-cols-1 @2xl/payments-dialog-scroll-area:grid-cols-2 @4xl/payments-dialog-scroll-area:grid-cols-3 gap-2 py-2">
               {!isLoading
@@ -72,7 +84,7 @@ export const GiftCardPaymentsDialog: React.FC<{
                       onRefund={onRefund}
                     />
                   ))
-                : Array.from({ length: 12 }).map((_, index) => (
+                : Array.from({ length: 6 }).map((_, index) => (
                     <Skeleton className="w-full h-80" key={index} />
                   ))}
             </div>

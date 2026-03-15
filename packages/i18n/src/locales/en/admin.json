@@ -854,7 +854,8 @@
         "pricePerHour": {
           "label": "Price per hour",
           "tooltip": "Price per hour of the option",
-          "placeholder": "Select price per hour"
+          "placeholder": "Select price per hour",
+          "suffix": "/hr"
         },
         "durationStep": {
           "label": "Duration step",
@@ -1233,7 +1234,8 @@
         "payments": {
           "title": "Payments",
           "description": "Payments made with this gift card",
-          "noPayments": "No payments found"
+          "noPayments": "No payments found",
+          "addPayment": "Add payment"
         },
         "columns": {
           "code": "Code",
@@ -1248,13 +1250,14 @@
         },
         "cellAction": {
           "giftCardDeleted": "Gift card {code} was deleted.",
-          "giftCardSetActive": "Gift card {code} was set active.",
-          "giftCardSetInactive": "Gift card {code} was set inactive.",
+          "giftCardSetActive": "Gift card {code} was activated.",
+          "giftCardSetInactive": "Gift card {code} was deactivated.",
           "actions": "Actions",
           "update": "Update",
           "delete": "Delete",
-          "setActive": "Set active",
-          "setInactive": "Set inactive"
+          "deleteFromSource": "Can be deleted only from {appName}",
+          "setActive": "Activate",
+          "setInactive": "Deactivate"
         },
         "statusBadges": {
           "active": "Active",
@@ -1264,15 +1267,15 @@
         }
       },
       "setStatusSelected": {
-        "setActive": "Set active",
-        "setInactive": "Set inactive",
-        "buttonActive": "Set {count, plural, =1 {gift card} other {# gift cards}} active",
-        "buttonInactive": "Set {count, plural, =1 {gift card} other {# gift cards}} inactive",
-        "confirmTitleActive": "Set selected gift cards active?",
-        "confirmTitleInactive": "Set selected gift cards inactive?",
+        "setActive": "Activate",
+        "setInactive": "Deactivate",
+        "buttonActive": "Activate {count, plural, =1 {gift card} other {# gift cards}}",
+        "buttonInactive": "Deactivate {count, plural, =1 {gift card} other {# gift cards}}",
+        "confirmTitleActive": "Activate selected gift cards?",
+        "confirmTitleInactive": "Deactivate selected gift cards?",
         "confirmDescription": "This will change the status of the selected gift cards.",
-        "successActive": "Selected gift cards have been set active.",
-        "successInactive": "Selected gift cards have been set inactive.",
+        "successActive": "Selected gift cards have been activated.",
+        "successInactive": "Selected gift cards have been deactivated.",
         "error": "There was a problem with your request.",
         "cancel": "Cancel"
       },
@@ -1586,6 +1589,10 @@
     "appStore": "App Store",
     "noConnectedApps": "You do not have any connected apps",
     "defaultAppsForm": {
+      "payment": {
+        "label": "Payment processor",
+        "placeholder": "Disable payments"
+      },
       "emailSender": {
         "label": "Email sender",
         "placeholder": "Use default email sender"
@@ -1714,10 +1721,11 @@
         },
         "payments": {
           "enableDeposits": "Enable Deposits",
-          "enableDepositsTooltip": "Enables ability to ask for a deposit to book an appointment",
+          "enableDepositsTooltip": "Enables ability to ask for a deposit to book an appointment. Default payment app must be configured in the default apps section.",
           "enable": "Enable",
           "disable": "Disable",
           "paymentsApp": "Payments app",
+          "appointments": "appointments",
           "paymentsAppTooltip": "What payment processor to use for payments",
           "requireDeposit": "Require deposit",
           "requireDepositTooltip1": "If enabled, each customer will be required to pay a deposit to book an appointment",
@@ -2311,6 +2319,9 @@
         },
         "giftCardId": {
           "label": "Gift card"
+        },
+        "customerId": {
+          "label": "Customer"
         }
       }
     },

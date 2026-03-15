@@ -286,16 +286,21 @@ const createOrUpdateModifyAppointmentRequestIntent = async (
   const paymentAmount = information.paymentAmount ?? 0;
   const giftCards = information.giftCards;
 
-  const config =
-    await servicesContainer.configurationService.getConfiguration("booking");
-  if (!config.payments?.enabled || !config.payments.paymentAppId) {
+  const { booking: config, defaultApps } =
+    await servicesContainer.configurationService.getConfigurations(
+      "booking",
+      "defaultApps",
+    );
+  const paymentAppId = defaultApps?.paymentAppId;
+
+  if (!config.payments?.enabled || !paymentAppId) {
     logger.debug({ config }, "Payments are not enabled");
     return NextResponse.json(null);
   }
 
   const { app, service } =
     await servicesContainer.connectedAppsService.getAppService<IPaymentProcessor>(
-      config.payments.paymentAppId,
+      paymentAppId,
     );
 
   const formProps = service.getFormProps(app);

@@ -12,10 +12,10 @@ import {
   FormMessage,
   Input,
   InputGroup,
+  InputGroupAddon,
+  InputGroupAddonClasses,
   InputGroupInput,
   InputGroupInputClasses,
-  InputGroupSuffixClasses,
-  InputSuffix,
   toastPromise,
 } from "@timelish/ui";
 import { SaveButton, TemplateSelector } from "@timelish/ui-admin";
@@ -150,13 +150,13 @@ export const GiftCardStudioSettingsPage: React.FC<{ appId: string }> = ({
                 <FormLabel>{t("settings.minAmount")}</FormLabel>
                 <FormControl>
                   <InputGroup>
-                    <InputSuffix
-                      className={InputGroupSuffixClasses({
+                    <InputGroupAddon
+                      className={InputGroupAddonClasses({
                         variant: "prefix",
                       })}
                     >
                       $
-                    </InputSuffix>
+                    </InputGroupAddon>
                     <InputGroupInput>
                       <Input
                         type="number"
@@ -190,13 +190,13 @@ export const GiftCardStudioSettingsPage: React.FC<{ appId: string }> = ({
                 <FormLabel>{t("settings.maxAmount")}</FormLabel>
                 <FormControl>
                   <InputGroup>
-                    <InputSuffix
-                      className={InputGroupSuffixClasses({
+                    <InputGroupAddon
+                      className={InputGroupAddonClasses({
                         variant: "prefix",
                       })}
                     >
                       $
-                    </InputSuffix>
+                    </InputGroupAddon>
                     <InputGroupInput>
                       <Input
                         type="number"

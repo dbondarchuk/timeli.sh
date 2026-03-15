@@ -60,7 +60,28 @@ export const DefaultAppsConfigurationForm: React.FC<{
         <div className="gap-2 flex flex-col md:grid md:grid-cols-2 md:gap-4">
           <FormField
             control={form.control}
-            name="emailSender.appId"
+            name="paymentAppId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("apps.defaultAppsForm.payment.label")}</FormLabel>
+                <FormControl>
+                  <AppSelector
+                    onItemSelect={field.onChange}
+                    scope="payment"
+                    value={field.value}
+                    disabled={loading}
+                    className="w-full"
+                    allowClear
+                    placeholder={t("apps.defaultAppsForm.payment.placeholder")}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="emailSenderAppId"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
@@ -85,7 +106,7 @@ export const DefaultAppsConfigurationForm: React.FC<{
           />
           <FormField
             control={form.control}
-            name="textMessageSender.appId"
+            name="textMessageSenderAppId"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
@@ -110,7 +131,7 @@ export const DefaultAppsConfigurationForm: React.FC<{
           />
           <FormField
             control={form.control}
-            name="textMessageResponder.appId"
+            name="textMessageResponderAppId"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>

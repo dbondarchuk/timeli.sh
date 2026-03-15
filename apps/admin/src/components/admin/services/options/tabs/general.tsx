@@ -13,10 +13,10 @@ import {
   InfoTooltip,
   Input,
   InputGroup,
+  InputGroupAddon,
+  InputGroupAddonClasses,
   InputGroupInput,
   InputGroupInputClasses,
-  InputGroupSuffixClasses,
-  InputSuffix,
   Select,
   SelectContent,
   SelectItem,
@@ -200,13 +200,13 @@ export const GeneralTab: React.FC<TabProps> = ({ form, disabled }) => {
                   <FormLabel>{t("services.options.form.price")}</FormLabel>
                   <FormControl>
                     <InputGroup>
-                      <InputSuffix
-                        className={InputGroupSuffixClasses({
+                      <InputGroupAddon
+                        className={InputGroupAddonClasses({
                           variant: "prefix",
                         })}
                       >
                         $
-                      </InputSuffix>
+                      </InputGroupAddon>
                       <InputGroupInput>
                         <Input
                           disabled={disabled}
@@ -333,13 +333,13 @@ export const GeneralTab: React.FC<TabProps> = ({ form, disabled }) => {
                   </FormLabel>
                   <FormControl>
                     <InputGroup>
-                      <InputSuffix
-                        className={InputGroupSuffixClasses({
+                      <InputGroupAddon
+                        className={InputGroupAddonClasses({
                           variant: "prefix",
                         })}
                       >
                         $
-                      </InputSuffix>
+                      </InputGroupAddon>
                       <InputGroupInput>
                         <Input
                           disabled={disabled}
@@ -356,16 +356,16 @@ export const GeneralTab: React.FC<TabProps> = ({ form, disabled }) => {
                           {...field}
                         />
                       </InputGroupInput>
-                      <InputSuffix
+                      <InputGroupAddon
                         className={cn(
-                          InputGroupSuffixClasses({
+                          InputGroupAddonClasses({
                             variant: "suffix",
                           }),
                           "rounded-r-none",
                         )}
                       >
-                        /hr
-                      </InputSuffix>
+                        {t("services.options.form.pricePerHour.suffix")}
+                      </InputGroupAddon>
 
                       <Button
                         variant="outline"

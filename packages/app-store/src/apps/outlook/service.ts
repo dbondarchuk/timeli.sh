@@ -40,7 +40,6 @@ import {
 import { decrypt, encrypt, getAdminUrl } from "@timelish/utils";
 import { createEvent } from "ics";
 import { DateTime } from "luxon";
-import { env } from "process";
 import { Readable } from "stream";
 import { v4 } from "uuid";
 import { OutlookAdminAllKeys } from "./translations/types";
@@ -1060,10 +1059,10 @@ export class OutlookConnectedApp
   private getMsalClient() {
     const msalConfig: MsalConfig = {
       auth: {
-        clientId: env.OUTLOOK_APP_CLIENT_ID!,
-        clientSecret: env.OUTLOOK_APP_CLIENT_SECRET,
+        clientId: process.env.OUTLOOK_APP_CLIENT_ID!,
+        clientSecret: process.env.OUTLOOK_APP_CLIENT_SECRET!,
         authority: `https://login.microsoftonline.com/${
-          env.OUTLOOK_APP_TENNANT_ID || "common"
+          process.env.OUTLOOK_APP_TENNANT_ID || "common"
         }`,
       },
       system: {

@@ -32,10 +32,10 @@ import {
   InfoTooltip,
   Input,
   InputGroup,
+  InputGroupAddon,
+  InputGroupAddonClasses,
   InputGroupInput,
   InputGroupInputClasses,
-  InputGroupSuffixClasses,
-  InputSuffix,
   Spinner,
   toastPromise,
 } from "@timelish/ui";
@@ -180,9 +180,9 @@ export const RepeatScheduleDialog: React.FC<RepeatScheduleDialogProps> = ({
                             {...field}
                           />
                         </InputGroupInput>
-                        <InputSuffix className={InputGroupSuffixClasses()}>
+                        <InputGroupAddon className={InputGroupAddonClasses()}>
                           {t("dialogs.repeat.weeks")}
-                        </InputSuffix>
+                        </InputGroupAddon>
                       </InputGroup>
                     </FormControl>
                     <FormMessage />

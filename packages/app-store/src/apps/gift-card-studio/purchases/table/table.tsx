@@ -24,8 +24,15 @@ export const PurchasesTable: React.FC<{
     WithTotal<PurchasedGiftCardListModel>
   >({ items: [], total: 0 });
 
-  const fn = async (q: typeof delayedQuery) => {
-    setLoading(true);
+  const fetch = async (
+    q: typeof delayedQuery,
+    options?: {
+      silent?: boolean;
+    },
+  ) => {
+    if (!options?.silent) {
+      setLoading(true);
+    }
     try {
       const page = q.page;
       const limit = q.limit;
@@ -38,6 +45,7 @@ export const PurchasesTable: React.FC<{
         designId: q.designId?.length ? q.designId : undefined,
         customerId: q.customerId?.length ? q.customerId : undefined,
       });
+
       setResponse({
         items: (res.items ?? []).map((item) => ({ ...item, appId })),
         total: res.total ?? 0,
@@ -46,13 +54,37 @@ export const PurchasesTable: React.FC<{
       console.error(e);
       toast.error(t("common.toasts.error"));
     } finally {
-      setLoading(false);
+      if (!options?.silent) {
+        setLoading(false);
+      }
     }
   };
 
   React.useEffect(() => {
-    fn(delayedQuery);
+    fetch(delayedQuery);
   }, [delayedQuery, refreshKey]);
+
+  const hasPending = React.useMemo(
+    () =>
+      response.items?.some(
+        (item) =>
+          item.cardGenerationStatus === "pending" ||
+          item.invoiceGenerationStatus === "pending",
+      ),
+    [response.items],
+  );
+
+  React.useEffect(() => {
+    if (!hasPending) {
+      return;
+    }
+
+    const intervalId = setInterval(() => {
+      void fetch(delayedQuery, { silent: true });
+    }, 5000);
+
+    return () => clearInterval(intervalId);
+  }, [hasPending, delayedQuery]);
 
   return (
     <>

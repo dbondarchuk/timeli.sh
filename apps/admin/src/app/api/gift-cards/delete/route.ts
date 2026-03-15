@@ -6,6 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   const logger = getLoggerFactory("AdminAPI/gift-cards/delete")("POST");
+
   const servicesContainer = await getServicesContainer();
   logger.debug(
     {

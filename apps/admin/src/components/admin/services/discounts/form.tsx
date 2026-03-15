@@ -33,10 +33,10 @@ import {
   InfoTooltip,
   Input,
   InputGroup,
+  InputGroupAddon,
+  InputGroupAddonClasses,
   InputGroupInput,
   InputGroupInputClasses,
-  InputGroupSuffixClasses,
-  InputSuffix,
   Label,
   toastPromise,
   use12HourFormat,
@@ -97,16 +97,16 @@ const DiscountLimitCard: React.FC<{
                       value={field.value?.id}
                       disabled={disabled}
                     />
-                    <InputSuffix>
+                    <InputGroupAddon>
                       <Button
                         variant="ghost-destructive"
                         size="icon"
-                        className={cn(InputGroupSuffixClasses(), "px-2")}
+                        className={cn(InputGroupAddonClasses(), "px-2")}
                         onClick={() => options.remove(optionsIndex)}
                       >
                         <Trash />
                       </Button>
-                    </InputSuffix>
+                    </InputGroupAddon>
                   </InputGroup>
                 </FormControl>
                 <FormMessage />
@@ -157,16 +157,16 @@ const DiscountLimitCard: React.FC<{
                           "[&>button]:rounded-r-none [&>button]:border-r-0  w-full flex-1",
                         )}
                       />
-                      <InputSuffix>
+                      <InputGroupAddon>
                         <Button
                           variant="ghost-destructive"
                           size="icon"
                           onClick={() => addons.remove(addonsIndex)}
-                          className={cn(InputGroupSuffixClasses(), "px-2")}
+                          className={cn(InputGroupAddonClasses(), "px-2")}
                         >
                           <Trash />
                         </Button>
-                      </InputSuffix>
+                      </InputGroupAddon>
                     </InputGroup>
                   </div>
                 </FormControl>
@@ -412,13 +412,13 @@ export const DiscountForm: React.FC<{
                   <FormControl>
                     <InputGroup>
                       {discountType === "amount" && (
-                        <InputSuffix
-                          className={InputGroupSuffixClasses({
+                        <InputGroupAddon
+                          className={InputGroupAddonClasses({
                             variant: "prefix",
                           })}
                         >
                           $
-                        </InputSuffix>
+                        </InputGroupAddon>
                       )}
                       <InputGroupInput>
                         <Input
@@ -439,13 +439,13 @@ export const DiscountForm: React.FC<{
                         />
                       </InputGroupInput>
                       {discountType === "percentage" && (
-                        <InputSuffix
-                          className={InputGroupSuffixClasses({
+                        <InputGroupAddon
+                          className={InputGroupAddonClasses({
                             variant: "suffix",
                           })}
                         >
                           %
-                        </InputSuffix>
+                        </InputGroupAddon>
                       )}
                     </InputGroup>
                   </FormControl>
@@ -671,19 +671,19 @@ export const DiscountForm: React.FC<{
                                 )}
                                 {...field}
                               />
-                              <InputSuffix>
+                              <InputGroupAddon>
                                 <Button
                                   variant="ghost-destructive"
                                   size="icon"
                                   className={cn(
-                                    InputGroupSuffixClasses(),
+                                    InputGroupAddonClasses(),
                                     "px-2",
                                   )}
                                   onClick={() => onCodeRemove(index)}
                                 >
                                   <Trash />
                                 </Button>
-                              </InputSuffix>
+                              </InputGroupAddon>
                             </InputGroup>
                           </FormControl>
                           <FormMessage />

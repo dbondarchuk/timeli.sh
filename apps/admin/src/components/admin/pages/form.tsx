@@ -28,10 +28,10 @@ import {
   FormMessage,
   Input,
   InputGroup,
+  InputGroupAddon,
+  InputGroupAddonClasses,
   InputGroupInput,
   InputGroupInputClasses,
-  InputGroupSuffixClasses,
-  InputSuffix,
   Link,
   toastPromise,
   useDebounceCacheFn,
@@ -366,9 +366,9 @@ export const PageForm: React.FC<{
                   <FormItem className="w-full">
                     <FormControl>
                       <InputGroup>
-                        <InputSuffix
+                        <InputGroupAddon
                           className={cn(
-                            InputGroupSuffixClasses({
+                            InputGroupAddonClasses({
                               variant: "prefix",
                               h: "sm",
                             }),
@@ -378,7 +378,7 @@ export const PageForm: React.FC<{
                           <span className="text-sm text-muted-foreground">
                             /
                           </span>
-                        </InputSuffix>
+                        </InputGroupAddon>
                         <InputGroupInput>
                           <Input
                             className={cn(

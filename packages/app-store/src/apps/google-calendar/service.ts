@@ -1,3 +1,9 @@
+import {
+  calendar_v3,
+  auth as googleAuth,
+  calendar as googleCalendar,
+} from "@googleapis/calendar";
+import { meet as googleMeet } from "@googleapis/meet";
 import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
 import {
   ApiRequest,
@@ -19,17 +25,9 @@ import {
   okStatus,
   WithDatabaseId,
 } from "@timelish/types";
-import { DateTime } from "luxon";
-import { env } from "process";
-
-import {
-  calendar_v3,
-  auth as googleAuth,
-  calendar as googleCalendar,
-} from "@googleapis/calendar";
-import { meet as googleMeet } from "@googleapis/meet";
 import { decrypt, encrypt, getAdminUrl } from "@timelish/utils";
 import { Credentials, OAuth2Client } from "google-auth-library";
+import { DateTime } from "luxon";
 import {
   CalendarListItem,
   GoogleCalendarConfiguration,
@@ -868,8 +866,8 @@ class GoogleCalendarConnectedApp
       logger.debug({ redirectUri }, "Created Google OAuth client");
 
       return new googleAuth.OAuth2(
-        env.GOOGLE_CALENDAR_APP_CLIENT_ID!,
-        env.GOOGLE_CALENDAR_APP_CLIENT_SECRET,
+        process.env.GOOGLE_CALENDAR_APP_CLIENT_ID!,
+        process.env.GOOGLE_CALENDAR_APP_CLIENT_SECRET!,
         redirectUri,
       );
     } catch (error: any) {

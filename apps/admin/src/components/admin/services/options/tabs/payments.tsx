@@ -13,10 +13,10 @@ import {
   InfoTooltip,
   Input,
   InputGroup,
+  InputGroupAddon,
+  InputGroupAddonClasses,
   InputGroupInput,
   InputGroupInputClasses,
-  InputGroupSuffixClasses,
-  InputSuffix,
   Select,
   SelectContent,
   SelectItem,
@@ -171,13 +171,13 @@ export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
                     </FormLabel>
                     <FormControl>
                       <InputGroup>
-                        <InputSuffix
-                          className={InputGroupSuffixClasses({
+                        <InputGroupAddon
+                          className={InputGroupAddonClasses({
                             variant: "prefix",
                           })}
                         >
                           $
-                        </InputSuffix>
+                        </InputGroupAddon>
                         <InputGroupInput>
                           <Input
                             disabled={disabled}
@@ -233,9 +233,9 @@ export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
                             }}
                           />
                         </InputGroupInput>
-                        <InputSuffix className={InputGroupSuffixClasses()}>
+                        <InputGroupAddon className={InputGroupAddonClasses()}>
                           %
-                        </InputSuffix>
+                        </InputGroupAddon>
                       </InputGroup>
                     </FormControl>
                     <FormMessage />

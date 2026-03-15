@@ -1,5 +1,9 @@
 import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
-import { IConnectedAppProps, WithTotal } from "@timelish/types";
+import {
+  IConnectedAppProps,
+  inPersonPaymentMethod,
+  WithTotal,
+} from "@timelish/types";
 import { buildSearchQuery, escapeRegex } from "@timelish/utils";
 import { ObjectId, type Filter, type Sort } from "mongodb";
 import { CUSTOMERS_COLLECTION_NAME } from "../../../../../services/src/collections";
@@ -24,6 +28,7 @@ export class GiftCardStudioRepositoryService {
     protected readonly appId: string,
     protected readonly companyId: string,
     protected readonly getDbConnection: IConnectedAppProps["getDbConnection"],
+    protected readonly services: IConnectedAppProps["services"],
   ) {
     this.loggerFactory = getLoggerFactory(
       "GiftCardStudioRepositoryService",
@@ -503,11 +508,13 @@ export class GiftCardStudioRepositoryService {
       $and.push({ $or: queries });
     }
 
-    const filter: Filter<PurchasedGiftCardModel> =
-      $and.length > 0 ? ({ $and } as Filter<PurchasedGiftCardModel>) : {};
+    const filter: Filter<PurchasedGiftCardListModel> =
+      $and.length > 0 ? ({ $and } as Filter<PurchasedGiftCardListModel>) : {};
 
     const [result] = await db
-      .collection<PurchasedGiftCardModel>(PURCHASED_GIFT_CARDS_COLLECTION_NAME)
+      .collection<PurchasedGiftCardListModel>(
+        PURCHASED_GIFT_CARDS_COLLECTION_NAME,
+      )
       .aggregate([
         {
           $lookup: {
@@ -540,10 +547,51 @@ export class GiftCardStudioRepositoryService {
             customer: { $first: "$customers" },
             designName: { $first: "$designs.name" },
             giftCardCode: { $first: "$giftCards.code" },
+            paymentId: { $first: "$giftCards.paymentId" },
             status: { $first: "$giftCards.status" },
           },
         },
-        { $unset: ["designs", "customers", "giftCards"] },
+        {
+          $lookup: {
+            from: "payments",
+            localField: "paymentId",
+            foreignField: "_id",
+            as: "payments",
+            pipeline: [
+              {
+                $match: {
+                  companyId: this.companyId,
+                },
+              },
+            ],
+          },
+        },
+        {
+          $lookup: {
+            from: "payments",
+            localField: "giftCardId",
+            foreignField: "giftCardId",
+            as: "giftCardPayments",
+            pipeline: [
+              { $match: { companyId: this.companyId, method: "gift-card" } },
+            ],
+          },
+        },
+        {
+          $set: {
+            paymentMethod: { $first: "$payments.method" },
+            paymentsCount: { $size: "$giftCardPayments" },
+          },
+        },
+        {
+          $unset: [
+            "designs",
+            "customers",
+            "giftCards",
+            "payments",
+            "giftCardPayments",
+          ],
+        },
         { $match: filter },
         { $sort: sort },
         {
@@ -576,6 +624,58 @@ export class GiftCardStudioRepositoryService {
     return { total, items };
   }
 
+  public async getPurchasedGiftCardReadyToSendEmails(
+    id: string,
+    type: "customer" | "recipient",
+  ): Promise<PurchasedGiftCardModel | null> {
+    const logger = this.loggerFactory("getPurchasedGiftCardReadyToSendEmails");
+    logger.debug(
+      { id, type },
+      "Atomicly checking if purchased gift card is ready to send emails and set delivery status",
+    );
+
+    const db = await this.getDbConnection();
+    const filter: Filter<PurchasedGiftCardModel> = {
+      _id: id,
+      companyId: this.companyId,
+      appId: this.appId,
+      cardGenerationStatus: "completed",
+      [type === "customer"
+        ? "customerDeliveryStatus"
+        : "recipientDeliveryStatus"]: "pending",
+    };
+
+    if (type === "customer") {
+      filter.invoiceGenerationStatus = "completed";
+    }
+
+    const result = await db
+      .collection<PurchasedGiftCardModel>(PURCHASED_GIFT_CARDS_COLLECTION_NAME)
+      .findOneAndUpdate(
+        filter,
+        {
+          $set: {
+            updatedAt: new Date(),
+            [type === "customer"
+              ? "customerDeliveryStatus"
+              : "recipientDeliveryStatus"]: "scheduled",
+          },
+        },
+        { returnDocument: "after" },
+      );
+
+    if (!result) {
+      logger.warn({ id, type }, "Purchased gift card not ready to send emails");
+      return null;
+    }
+
+    logger.debug(
+      { id, type },
+      "Purchased gift card ready to send emails and delivery status set",
+    );
+    return result;
+  }
+
   public async getPurchasedGiftCardById(
     id: string,
   ): Promise<PurchasedGiftCardListModel | null> {
@@ -584,7 +684,9 @@ export class GiftCardStudioRepositoryService {
 
     const db = await this.getDbConnection();
     const [doc] = await db
-      .collection<PurchasedGiftCardModel>(PURCHASED_GIFT_CARDS_COLLECTION_NAME)
+      .collection<PurchasedGiftCardListModel>(
+        PURCHASED_GIFT_CARDS_COLLECTION_NAME,
+      )
       .aggregate([
         { $match: { _id: id, companyId: this.companyId, appId: this.appId } },
         {
@@ -618,9 +720,51 @@ export class GiftCardStudioRepositoryService {
             customer: { $first: "$customers" },
             designName: { $first: "$designs.name" },
             giftCardCode: { $first: "$giftCards.code" },
+            paymentId: { $first: "$giftCards.paymentId" },
+            status: { $first: "$giftCards.status" },
           },
         },
-        { $unset: ["designs", "customers"] },
+        {
+          $lookup: {
+            from: "payments",
+            localField: "paymentId",
+            foreignField: "_id",
+            as: "payments",
+            pipeline: [
+              {
+                $match: {
+                  companyId: this.companyId,
+                },
+              },
+            ],
+          },
+        },
+        {
+          $lookup: {
+            from: "payments",
+            localField: "giftCardId",
+            foreignField: "giftCardId",
+            as: "giftCardPayments",
+            pipeline: [
+              { $match: { companyId: this.companyId, method: "gift-card" } },
+            ],
+          },
+        },
+        {
+          $set: {
+            paymentMethod: { $first: "$payments.method" },
+            paymentsCount: { $size: "$giftCardPayments" },
+          },
+        },
+        {
+          $unset: [
+            "designs",
+            "customers",
+            "giftCards",
+            "payments",
+            "giftCardPayments",
+          ],
+        },
       ])
       .toArray();
 
@@ -632,32 +776,50 @@ export class GiftCardStudioRepositoryService {
     return doc as PurchasedGiftCardListModel;
   }
 
-  private async getGiftCardForPurchase(
-    giftCardId: string,
-  ): Promise<{ code: string; amountLeft: number } | null> {
+  public async deletePurchasedGiftCard(
+    id: string,
+  ): Promise<PurchasedGiftCardModel | null> {
+    const logger = this.loggerFactory("deletePurchasedGiftCard");
+    logger.debug({ id }, "Deleting purchased gift card");
+
     const db = await this.getDbConnection();
-    const giftCards = db.collection("gift-cards");
-    const gc = await giftCards.findOne({
-      _id: giftCardId as any,
-      companyId: this.companyId,
-    });
-    if (!gc) return null;
-    const payments = db.collection("payments");
-    const used = await payments
-      .aggregate([
-        {
-          $match: {
-            giftCardId,
-            companyId: this.companyId,
-            method: "gift-card",
-          },
-        },
-        { $group: { _id: null, total: { $sum: "$amount" } } },
-      ])
-      .toArray();
-    const amountUsed = used[0]?.total ?? 0;
-    const amountLeft = Math.max(0, (gc.amount ?? 0) - amountUsed);
-    return { code: gc.code, amountLeft };
+    const giftCard = await this.getPurchasedGiftCardById(id);
+    if (!giftCard) {
+      logger.warn({ id }, "Purchased gift card not found");
+      return null;
+    }
+
+    if (
+      !(inPersonPaymentMethod as readonly string[]).includes(
+        giftCard.paymentMethod,
+      )
+    ) {
+      logger.warn(
+        { id, paymentMethod: giftCard.paymentMethod },
+        "Purchased gift card payment method is not an in-person payment method",
+      );
+      return null;
+    }
+
+    const deletedGiftCard = await this.services.giftCardsService.deleteGiftCard(
+      giftCard.giftCardId,
+      this.appId,
+    );
+    if (!deletedGiftCard) {
+      logger.warn({ id }, "Failed to delete gift card");
+      return null;
+    }
+
+    const { deletedCount } = await db
+      .collection<PurchasedGiftCardModel>(PURCHASED_GIFT_CARDS_COLLECTION_NAME)
+      .deleteOne({ _id: id, companyId: this.companyId, appId: this.appId });
+
+    if (deletedCount === 0) {
+      logger.warn({ id }, "Purchased gift card not found");
+      return null;
+    }
+
+    return giftCard;
   }
 
   public async install(): Promise<void> {

@@ -1,10 +1,15 @@
+import { PurchasedGiftCardListModel } from "./models/purchased-gift-card";
+
 /**
  * Demo purchased gift card for template preview (e.g. email templates with gift card placeholders).
  * Used by getDemoEmailArguments when the gift-card-studio app implements demo-email-arguments-provider.
  */
 const customerId = "customer-1234";
 
-export const demoPurchasedGiftCard = {
+export const demoPurchasedGiftCard: Omit<
+  PurchasedGiftCardListModel,
+  "customer"
+> = {
   _id: "purchased-gift-card-1234",
   appId: "gift-card-studio-app-1234",
   companyId: "company-1",
@@ -23,4 +28,8 @@ export const demoPurchasedGiftCard = {
   customerDeliveryStatus: "scheduled" as const,
   designName: "Demo gift card design",
   giftCardCode: "ABC-XYZ-123",
+  status: "active",
+  paymentId: "payment-1234",
+  paymentMethod: "online",
+  paymentsCount: 1,
 };

@@ -265,7 +265,38 @@
       "actions": {
         "create": "Manual Purchase",
         "setActive": "Mark as active",
-        "setInactive": "Mark as inactive"
+        "setInactive": "Mark as inactive",
+        "regenerateGiftCard": "Regenerate gift card",
+        "regenerateInvoice": "Regenerate invoice",
+        "resendEmailToCustomer": "Resend email to customer",
+        "resendEmailToRecipient": "Resend email to recipient",
+        "delete": "Delete"
+      },
+      "delete": {
+        "title": "Delete purchased gift card",
+        "description": "Are you sure you want to delete this purchased gift card {code}? This action cannot be undone.",
+        "confirm": "Yes, delete",
+        "toast": {
+          "success": "Purchased gift card {code} deleted successfully"
+        }
+      },
+      "resendEmail": {
+        "customer": {
+          "title": "Resend email to customer",
+          "description": "Are you sure you want to resend email to customer {code}? This will send the gift card and invoice to the customer.",
+          "confirm": "Yes, resend",
+          "toast": {
+            "success": "Email to customer {code} sent successfully"
+          }
+        },
+        "recipient": {
+          "title": "Resend email to recipient",
+          "description": "Are you sure you want to resend email to recipient {code}? This will send the gift card to the recipient.",
+          "confirm": "Yes, resend",
+          "toast": {
+            "success": "Email to recipient {code} sent successfully"
+          }
+        }
       },
       "columns": {
         "code": "Gift Card Code",
@@ -276,21 +307,32 @@
         "toEmail": "Recipient Email",
         "design": "Design",
         "createdAt": "Created",
-        "status": "Status"
+        "status": "Status",
+        "giftCardPdf": "Gift Card",
+        "invoicePdf": "Invoice",
+        "paymentMethod": "Payment Method",
+        "paymentsCount": "Payments"
       },
       "status": {
         "active": "Active",
         "inactive": "Inactive"
       },
+      "download": {
+        "giftCard": "Download",
+        "invoice": "Download"
+      },
       "toast": {
         "setActive": "Gift card {code} marked as active",
-        "setInactive": "Gift card {code} marked as inactive"
+        "setInactive": "Gift card {code} marked as inactive",
+        "regeneratedGiftCard": "Gift card assets regenerated",
+        "regeneratedInvoice": "Invoice regenerated"
       },
       "detail": {
         "title": "Purchase Details",
         "preview": "Gift Card Preview",
         "downloadGiftCardPdf": "Download Gift Card PDF",
-        "downloadInvoice": "Download Invoice"
+        "downloadInvoice": "Download Invoice",
+        "generating": "Generating..."
       },
       "giftCardDetail": {
         "title": "Gift Card Details",
@@ -321,8 +363,8 @@
       "message": "Message",
       "paymentType": "Payment Method",
       "sendToAnotherRecipient": "Send to another recipient",
-      "sendGiftCardEmail": "Send gift card email",
-      "sendInvoiceToCustomer": "Send invoice to customer",
+      "sendCustomerEmail": "Send gift card and invoice to customer",
+      "sendRecipientEmail": "Send gift card to recipient",
       "toast": {
         "success": "Gift card purchase created successfully",
         "error": "Failed to create gift card purchase"
@@ -340,6 +382,23 @@
     "toasts": {
       "saved": "Settings saved",
       "error": "Failed to save settings"
+    }
+  },
+  "block": {
+    "giftCardPurchase": {
+      "displayName": "Gift Card Purchase",
+      "category": "Gift Cards",
+      "configuration": {
+        "app": {
+          "label": "Gift Card Studio app",
+          "helperText": "Select the Gift Card Studio app that will be used."
+        }
+      },
+      "validation": {
+        "appId": {
+          "required": "Gift Card Studio app is required"
+        }
+      }
     }
   },
   "validation": {
@@ -405,8 +464,7 @@
     }
   },
   "handlers": {
-    "send-gift-card-to-recipient": "Send gift card to recipient",
-    "send-gift-card-to-customer": "Send gift card to customer",
-    "send-invoice-to-customer": "Send invoice to customer"
+    "send-email-to-recipient": "Send email to recipient",
+    "send-email-to-customer": "Send email to customer"
   }
 }

@@ -91,7 +91,8 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
 
     const db = await getDbConnection();
     const giftCards = db.collection<GiftCard>(GIFT_CARDS_COLLECTION_NAME);
-    const { _id, companyId, createdAt, ...updateObj } = giftCard as GiftCard;
+    const { _id, companyId, createdAt, status, ...updateObj } =
+      giftCard as GiftCard;
 
     const existingGiftCard = await this.getGiftCard(id);
 
@@ -226,7 +227,10 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
     logger.debug({ ids, status }, "Gift cards status updated");
   }
 
-  public async deleteGiftCard(id: string): Promise<GiftCardListModel | null> {
+  public async deleteGiftCard(
+    id: string,
+    sourceAppId?: string,
+  ): Promise<GiftCardListModel | null> {
     const logger = this.loggerFactory("deleteGiftCard");
     logger.debug({ id }, "Deleting gift card");
     const db = await getDbConnection();
@@ -236,6 +240,11 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
     const giftCard = await this.getGiftCard(id);
     if (!giftCard) {
       logger.warn({ id }, "Gift card not found");
+      return null;
+    }
+
+    if (giftCard.source?.appId !== sourceAppId) {
+      logger.warn({ id, sourceAppId }, "Gift card source app ID mismatch");
       return null;
     }
 
@@ -285,7 +294,10 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
     return giftCard;
   }
 
-  public async deleteGiftCards(ids: string[]): Promise<void> {
+  public async deleteGiftCards(
+    ids: string[],
+    sourceAppId?: string,
+  ): Promise<void> {
     const logger = this.loggerFactory("deleteGiftCards");
     logger.debug({ ids }, "Deleting gift cards");
     const db = await getDbConnection();
@@ -331,8 +343,9 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
 
     const toDelete = giftCardsToDelete.filter(
       (giftCard) =>
-        !giftCard.payment ||
-        inPersonPaymentMethod.includes(giftCard.payment.method),
+        (!giftCard.payment ||
+          inPersonPaymentMethod.includes(giftCard.payment.method)) &&
+        giftCard.source?.appId === sourceAppId,
     );
 
     const giftCardIdsToDelete = toDelete.map((giftCard) => giftCard._id);

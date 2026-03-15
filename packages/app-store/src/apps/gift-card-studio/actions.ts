@@ -7,6 +7,7 @@ import {
   CreatePurchasedGiftCardActionType,
   DeleteDesignActionType,
   DeleteDesignsActionType,
+  DeletePurchasedGiftCardActionType,
   DesignListModel,
   DesignModel,
   DesignUpdateModel,
@@ -19,6 +20,8 @@ import {
   GetPurchasedGiftCardsActionType,
   GetSettingsActionType,
   PurchasedGiftCardListModel,
+  RegenerateGiftCardAssetsActionType,
+  ResendEmailActionType,
   SetDesignArchivedActionType,
   SetDesignsArchivedActionType,
   UpdateDesignActionType,
@@ -287,5 +290,63 @@ export async function updateSettings(
   })) as GiftCardStudioSettings;
 
   logger.debug({ appId }, "Settings updated");
+  return result;
+}
+
+export async function regenerateGiftCardAssets(
+  appId: string,
+  id: string,
+  assetType: "gift-card" | "invoice",
+) {
+  const logger = loggerFactory("regenerateGiftCardAssets");
+  logger.debug({ appId, id, assetType }, "Regenerating gift card assets");
+
+  const result = (await adminApi.apps.processRequest(appId, {
+    type: RegenerateGiftCardAssetsActionType,
+    id,
+    assetType,
+  })) as boolean;
+
+  logger.debug(
+    { appId, id, assetType, result },
+    "Gift card assets scheduled for regeneration",
+  );
+  return result;
+}
+
+export async function deletePurchasedGiftCard(appId: string, id: string) {
+  const logger = loggerFactory("deletePurchasedGiftCard");
+  logger.debug({ appId, id }, "Deleting purchased gift card");
+
+  const result = (await adminApi.apps.processRequest(appId, {
+    type: DeletePurchasedGiftCardActionType,
+    id,
+  })) as boolean;
+
+  logger.debug({ appId, id, result }, "Purchased gift card deleted");
+  return result;
+}
+
+export async function resendEmail(
+  appId: string,
+  id: string,
+  participantType: "customer" | "recipient",
+) {
+  const logger = loggerFactory("resendEmail");
+  logger.debug(
+    { appId, id, participantType },
+    `Resending email to ${participantType}`,
+  );
+
+  const result = (await adminApi.apps.processRequest(appId, {
+    type: ResendEmailActionType,
+    id,
+    participantType,
+  })) as boolean;
+
+  logger.debug(
+    { appId, id, participantType, result },
+    `Email ${participantType} resent`,
+  );
   return result;
 }

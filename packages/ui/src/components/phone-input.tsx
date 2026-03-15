@@ -6,9 +6,9 @@ import { Combobox } from "./combobox";
 import "./css/flags.css";
 import {
   InputGroup,
+  InputGroupAddon,
   InputGroupInput,
   InputGroupInputClasses,
-  InputSuffix,
 } from "./input-group";
 
 export type PhoneInputProps = {
@@ -83,7 +83,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
 
   return (
     <InputGroup className={className}>
-      <InputSuffix className="border-r-0 rounded-r-none">
+      <InputGroupAddon className="border-r-0 rounded-r-none">
         <label htmlFor="countryCode" className="sr-only">
           {label}
         </label>
@@ -107,7 +107,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
               .map(countryTransform);
           }}
         />
-      </InputSuffix>
+      </InputGroupAddon>
       <InputGroupInput>
         <MaskedInput
           {...props}

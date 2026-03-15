@@ -1,18 +1,22 @@
-"use client";
-
+import { generateClassName } from "@timelish/page-builder-base/reader";
+import { cn } from "@timelish/ui";
 import { GiftCardPurchaseBlockReader } from "./reader-component";
+import { GiftCardPurchaseBlockReaderProps } from "./schema";
 
 export const GiftCardPurchaseBlockReaderWrapper = (
-  props: import("./schema").GiftCardPurchaseBlockReaderProps & {
+  props: GiftCardPurchaseBlockReaderProps & {
     isEditor?: boolean;
   },
 ) => {
   const metadata = props.block?.metadata as { giftCardStudioAppId?: string };
   const appId = metadata?.giftCardStudioAppId;
+  const className = generateClassName();
 
-  if (typeof window !== "undefined" || !appId) {
-    return <GiftCardPurchaseBlockReader {...props} appId={appId ?? ""} />;
-  }
-
-  return <GiftCardPurchaseBlockReader {...props} appId={appId ?? ""} />;
+  return (
+    <GiftCardPurchaseBlockReader
+      appId={appId}
+      className={cn(className, props.block?.base?.className)}
+      id={props.block?.base?.id}
+    />
+  );
 };

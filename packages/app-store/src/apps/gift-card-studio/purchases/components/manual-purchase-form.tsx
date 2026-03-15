@@ -28,10 +28,10 @@ import {
   FormMessage,
   Input,
   InputGroup,
+  InputGroupAddon,
+  InputGroupAddonClasses,
   InputGroupInput,
   InputGroupInputClasses,
-  InputGroupSuffixClasses,
-  InputSuffix,
   Select,
   SelectContent,
   SelectItem,
@@ -90,8 +90,8 @@ const manualPurchaseSchema = z
       message:
         "app_gift-card-studio_admin.validation.manualForm.paymentType.required" satisfies GiftCardStudioAdminAllKeys,
     }),
-    sendGiftCardEmail: z.coerce.boolean<boolean>().default(true),
-    sendInvoiceToCustomer: z.coerce.boolean<boolean>().default(true),
+    sendCustomerEmail: z.coerce.boolean<boolean>().default(true),
+    sendRecipientEmail: z.coerce.boolean<boolean>().default(true),
   })
   .and(
     z
@@ -193,8 +193,8 @@ export const ManualPurchaseDialog: React.FC<{
       amountPurchased: 50,
       customerId: "",
       paymentType: "cash",
-      sendGiftCardEmail: true,
-      sendInvoiceToCustomer: true,
+      sendCustomerEmail: true,
+      sendRecipientEmail: true,
       sendToAnotherRecipient: false,
     },
     mode: "all",
@@ -283,8 +283,10 @@ export const ManualPurchaseDialog: React.FC<{
             : customer.email,
           message: values.message,
           paymentType: values.paymentType,
-          sendGiftCardEmail: values.sendGiftCardEmail,
-          sendInvoiceToCustomer: values.sendInvoiceToCustomer,
+          sendCustomerEmail: values.sendCustomerEmail,
+          sendRecipientEmail: sendToAnotherRecipient
+            ? values.sendRecipientEmail
+            : false,
         }),
         {
           success: t("purchases.manualForm.toast.success"),
@@ -354,13 +356,13 @@ export const ManualPurchaseDialog: React.FC<{
                     <FormLabel>{t("purchases.manualForm.amount")}</FormLabel>
                     <FormControl>
                       <InputGroup>
-                        <InputSuffix
-                          className={InputGroupSuffixClasses({
+                        <InputGroupAddon
+                          className={InputGroupAddonClasses({
                             variant: "prefix",
                           })}
                         >
                           $
-                        </InputSuffix>
+                        </InputGroupAddon>
                         <InputGroupInput>
                           <Input
                             type="number"
@@ -516,7 +518,7 @@ export const ManualPurchaseDialog: React.FC<{
             <div className="grid gap-6 sm:grid-cols-[1fr,280px]">
               <FormField
                 control={form.control}
-                name="sendGiftCardEmail"
+                name="sendCustomerEmail"
                 render={({ field }) => (
                   <FormItem className="flex flex-row items-center gap-2">
                     <FormControl>
@@ -527,31 +529,33 @@ export const ManualPurchaseDialog: React.FC<{
                       />
                     </FormControl>
                     <FormLabel className="!mt-0">
-                      {t("purchases.manualForm.sendGiftCardEmail")}
+                      {t("purchases.manualForm.sendCustomerEmail")}
                     </FormLabel>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="sendInvoiceToCustomer"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center gap-2">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                        disabled={loading}
-                      />
-                    </FormControl>
-                    <FormLabel className="!mt-0">
-                      {t("purchases.manualForm.sendInvoiceToCustomer")}
-                    </FormLabel>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {sendToAnotherRecipient && (
+                <FormField
+                  control={form.control}
+                  name="sendRecipientEmail"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center gap-2">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                          disabled={loading}
+                        />
+                      </FormControl>
+                      <FormLabel className="!mt-0">
+                        {t("purchases.manualForm.sendRecipientEmail")}
+                      </FormLabel>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
             </div>
 
             <div className="flex flex-col gap-2 border-t border-border pt-6 w-full">

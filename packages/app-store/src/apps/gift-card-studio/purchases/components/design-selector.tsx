@@ -13,7 +13,7 @@ import {
 } from "../../translations/types";
 
 const DesignLoader: React.FC = () => (
-  <Skeleton className="min-w-32 max-w-64 w-full h-5" />
+  <Skeleton className="min-w-32 max-w-64 w-full h-5 pl-6" />
 );
 
 const DesignLabel: React.FC<{ design: DesignListModel }> = ({ design }) => {
