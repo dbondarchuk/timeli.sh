@@ -17,6 +17,7 @@ const Label = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <LabelPrimitive.Root
     ref={ref}
+    data-shimmer-ignore
     className={cn(
       labelVariants(),
       props.htmlFor && "cursor-pointer",

@@ -118,6 +118,7 @@ export const Editor = React.forwardRef<HTMLDivElement, EditorProps>(
           }),
           className,
         )}
+        data-shimmer-no-children
         disabled={disabled}
         disableDefaultStyles
         {...props}

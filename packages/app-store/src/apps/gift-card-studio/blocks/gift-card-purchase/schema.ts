@@ -14,6 +14,8 @@ export const GiftCardPurchaseBlockPropsSchema = z.object({
     )
       .optional()
       .nullable(),
+    hideTitle: z.boolean().optional().nullable(),
+    hideSteps: z.boolean().optional().nullable(),
   }),
   style: zStyles,
 });
@@ -27,6 +29,8 @@ export type GiftCardPurchaseBlockReaderProps = BaseReaderBlockProps<any> &
 export const GiftCardPurchaseBlockPropsDefaults = {
   props: {
     appId: null,
+    hideTitle: false,
+    hideSteps: false,
   },
   style: {},
 } as const satisfies GiftCardPurchaseBlockProps;

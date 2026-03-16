@@ -2,13 +2,6 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Launch Program",
-      "program": "${workspaceFolder}/apps/job-processor/dist/index.js",
-      "request": "launch",
-      "skipFiles": ["<node_internals>/**"],
-      "type": "node"
-    },
-    {
       "name": "Next.js: debug server-side",
       "type": "node-terminal",
       "request": "launch",

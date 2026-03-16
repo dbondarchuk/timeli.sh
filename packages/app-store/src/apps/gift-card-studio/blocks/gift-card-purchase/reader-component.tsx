@@ -69,11 +69,13 @@ export const GiftCardPurchaseBlockReader = forwardRef<
   {
     appId: string | null | undefined;
     className: string;
+    hideTitle?: boolean | null;
+    hideSteps?: boolean | null;
     onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
     id?: string;
     isEditor?: boolean;
   }
->(({ appId, className, onClick, id, isEditor }, ref) => {
+>(({ appId, className, hideTitle, hideSteps, onClick, id, isEditor }, ref) => {
   const t = useI18n<GiftCardStudioPublicNamespace, GiftCardStudioPublicKeys>(
     giftCardStudioPublicNamespace,
   );
@@ -360,16 +362,18 @@ export const GiftCardPurchaseBlockReader = forwardRef<
       ref={ref}
       id={id}
     >
-      <div className="text-center space-y-2 mb-8 title-container">
-        <h1 className="text-xl font-semibold text-foreground mb-2 title-text">
-          {t("block.title")}
-        </h1>
-        <p className="text-sm text-muted-foreground description-text">
-          {t("block.description")}
-        </p>
-      </div>
+      {!hideTitle && (
+        <div className="text-center space-y-2 mb-8 title-container">
+          <h1 className="text-xl font-semibold text-foreground mb-2 title-text">
+            {t("block.title")}
+          </h1>
+          <p className="text-sm text-muted-foreground description-text">
+            {t("block.description")}
+          </p>
+        </div>
+      )}
 
-      {!isSuccess && (
+      {!isSuccess && !hideSteps && (
         <Stepper
           steps={steps}
           currentStepId={currentStep}

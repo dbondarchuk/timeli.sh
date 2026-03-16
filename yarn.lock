@@ -13054,10 +13054,10 @@ shiki@^1.24.2:
     "@shikijs/vscode-textmate" "^10.0.1"
     "@types/hast" "^3.0.4"
 
-shimmer-from-structure@^2.3.2:
-  version "2.3.2"
-  resolved "https://registry.yarnpkg.com/shimmer-from-structure/-/shimmer-from-structure-2.3.2.tgz#c4ff3d7bcd40b815a4c4d8ba12c2a6de53aebd97"
-  integrity sha512-6ho8yezoFbmsVs3321ywoEcPv6KHP1Cr0+X8vqgsRFeLI1xGVmlvnpkydw0QIOAqzpxE9fP0axpQpsgr2ejABg==
+shimmer-from-structure@^2.4.1:
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/shimmer-from-structure/-/shimmer-from-structure-2.4.1.tgz#4994181c64d8f1db3f8378f54f3379235f890ded"
+  integrity sha512-G6EUpa1dYRl4w8+3jko01JdXUqgw3H7HK4bL+mJL/j9sFtaqjVxfMrX6Tf0jwUWLkXUyyIl18G1basdlv8Kjew==
   dependencies:
     "@shimmer-from-structure/angular" "*"
     "@shimmer-from-structure/react" "*"

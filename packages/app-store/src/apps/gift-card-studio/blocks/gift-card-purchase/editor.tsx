@@ -28,6 +28,7 @@ export const GiftCardPurchaseBlockEditor = ({
 
   const className = useClassName();
   const base = currentBlock?.base;
+  const props = currentBlock?.data?.props;
 
   return (
     <>
@@ -42,6 +43,8 @@ export const GiftCardPurchaseBlockEditor = ({
         appId={appId}
         className={cn(className, base?.className)}
         id={base?.id}
+        hideTitle={props?.hideTitle ?? false}
+        hideSteps={props?.hideSteps ?? false}
         onClick={overlayProps.onClick}
         isEditor={true}
         ref={overlayProps.ref}

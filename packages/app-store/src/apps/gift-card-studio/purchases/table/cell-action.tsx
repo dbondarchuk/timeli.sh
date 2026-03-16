@@ -60,6 +60,10 @@ export const CellAction: React.FC<CellActionProps> = ({ purchase }) => {
       await toastPromise(resendEmail(purchase.appId, purchase._id, type), {
         success: t(`purchases.table.resendEmail.${type}.toast.success`, {
           code: purchase.giftCardCode ?? purchase.giftCardId,
+          email:
+            type === "customer"
+              ? purchase.customer.email
+              : (purchase.toEmail ?? purchase.customer.email),
         }),
         error: tUi("common.toasts.error"),
       });
@@ -164,7 +168,13 @@ export const CellAction: React.FC<CellActionProps> = ({ purchase }) => {
         )}
         description={t(
           `purchases.table.resendEmail.${resendEmailOpenType ?? "customer"}.description`,
-          { code: purchase.giftCardCode ?? purchase.giftCardId },
+          {
+            code: purchase.giftCardCode ?? purchase.giftCardId,
+            email:
+              resendEmailOpenType === "customer"
+                ? purchase.customer.email
+                : (purchase.toEmail ?? purchase.customer.email),
+          },
         )}
         continueButton={t(
           `purchases.table.resendEmail.${resendEmailOpenType ?? "customer"}.confirm`,

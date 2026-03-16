@@ -283,18 +283,18 @@
       "resendEmail": {
         "customer": {
           "title": "Resend email to customer",
-          "description": "Are you sure you want to resend email to customer {code}? This will send the gift card and invoice to the customer.",
+          "description": "Are you sure you want to resend email with gift card {code} to customer? This will send the gift card and invoice to the customer's email ({email}).",
           "confirm": "Yes, resend",
           "toast": {
-            "success": "Email to customer {code} sent successfully"
+            "success": "Email to customer ({email}) was scheduled"
           }
         },
         "recipient": {
           "title": "Resend email to recipient",
-          "description": "Are you sure you want to resend email to recipient {code}? This will send the gift card to the recipient.",
+          "description": "Are you sure you want to resend email with gift card {code} to recipient? This will send the gift card to the recipient's email ({email}).",
           "confirm": "Yes, resend",
           "toast": {
-            "success": "Email to recipient {code} sent successfully"
+            "success": "Email to recipient ({email}) was scheduled"
           }
         }
       },
@@ -324,8 +324,8 @@
       "toast": {
         "setActive": "Gift card {code} marked as active",
         "setInactive": "Gift card {code} marked as inactive",
-        "regeneratedGiftCard": "Gift card assets regenerated",
-        "regeneratedInvoice": "Invoice regenerated"
+        "regeneratedGiftCard": "Gift card assets regeneration scheduled",
+        "regeneratedInvoice": "Invoice regeneration scheduled"
       },
       "detail": {
         "title": "Purchase Details",
@@ -392,6 +392,12 @@
         "app": {
           "label": "Gift Card Studio app",
           "helperText": "Select the Gift Card Studio app that will be used."
+        },
+        "hideTitle": {
+          "label": "Hide title and description"
+        },
+        "hideSteps": {
+          "label": "Hide steps"
         }
       },
       "validation": {

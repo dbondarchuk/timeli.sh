@@ -84,7 +84,7 @@
     "react-window": "^1.8.10",
     "recharts": "^2.15.0",
     "remark-breaks": "^4.0.0",
-    "shimmer-from-structure": "^2.3.2",
+    "shimmer-from-structure": "^2.4.1",
     "sonner": "^2.0.5",
     "tailwind-merge": "^2.4.0",
     "use-sync-external-store": "^1.5.0",

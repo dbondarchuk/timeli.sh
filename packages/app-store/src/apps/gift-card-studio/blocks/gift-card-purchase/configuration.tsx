@@ -1,6 +1,10 @@
 "use client";
 
-import { AppSelectorInput, ConfigurationProps } from "@timelish/builder";
+import {
+  AppSelectorInput,
+  BooleanInput,
+  ConfigurationProps,
+} from "@timelish/builder";
 import { useI18n } from "@timelish/i18n";
 import { StylesConfigurationPanel } from "@timelish/page-builder-base";
 import { deepMemo } from "@timelish/ui";
@@ -35,6 +39,11 @@ export const GiftCardPurchaseBlockConfiguration = deepMemo(
         setData({ ...data, style: s as GiftCardPurchaseBlockProps["style"] }),
       [setData, data],
     );
+    const updateProps = useCallback(
+      (p: unknown) =>
+        setData({ ...data, props: p as GiftCardPurchaseBlockProps["props"] }),
+      [setData, data],
+    );
     const updateMetadata = useCallback(
       (m: Record<string, unknown>) => onMetadataChange(m),
       [onMetadataChange],
@@ -57,6 +66,26 @@ export const GiftCardPurchaseBlockConfiguration = deepMemo(
           appName={GIFT_CARD_STUDIO_APP_NAME}
           onChange={(value) =>
             updateMetadata({ ...metadata, giftCardStudioAppId: value ?? "" })
+          }
+        />
+        <BooleanInput
+          label={t("block.giftCardPurchase.configuration.hideTitle.label")}
+          defaultValue={data.props?.hideTitle ?? false}
+          onChange={(value) =>
+            updateProps({
+              ...(data.props ?? {}),
+              hideTitle: value,
+            })
+          }
+        />
+        <BooleanInput
+          label={t("block.giftCardPurchase.configuration.hideSteps.label")}
+          defaultValue={data.props?.hideSteps ?? false}
+          onChange={(value) =>
+            updateProps({
+              ...(data.props ?? {}),
+              hideSteps: value,
+            })
           }
         />
       </StylesConfigurationPanel>

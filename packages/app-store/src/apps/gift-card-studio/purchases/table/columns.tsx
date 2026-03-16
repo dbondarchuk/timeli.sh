@@ -75,7 +75,7 @@ export const columns: ColumnDef<PurchasedGiftCardListModel>[] = [
             rel="noopener noreferrer"
             download="gift-card.pdf"
           >
-            {t("purchases.table.detail.downloadGiftCardPdf")}
+            {t("purchases.table.download.giftCard")}
           </a>
         </Button>
       );
@@ -121,7 +121,7 @@ export const columns: ColumnDef<PurchasedGiftCardListModel>[] = [
             rel="noopener noreferrer"
             download="invoice.pdf"
           >
-            {t("purchases.table.detail.downloadInvoice")}
+            {t("purchases.table.download.invoice")}
           </a>
         </Button>
       );

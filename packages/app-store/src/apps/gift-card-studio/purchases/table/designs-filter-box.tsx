@@ -1,6 +1,7 @@
 "use client";
 
 import { useI18n } from "@timelish/i18n";
+import { Skeleton } from "@timelish/ui";
 import { DataTableAsyncFilterBox } from "@timelish/ui-admin";
 import { Archive } from "lucide-react";
 import React, { useCallback } from "react";
@@ -14,11 +15,19 @@ import {
 
 const DesignLabel: React.FC<{ design: DesignListModel }> = ({ design }) => {
   return (
-    <div className="flex flex-row items-center gap-2 overflow-hidden text-nowrap pl-6 w-full py-1">
+    <div className="flex flex-row items-center gap-2 overflow-hidden text-nowrap w-full py-1">
       {!!design.isArchived && (
         <Archive className="size-3.5 shrink-0 text-muted-foreground" />
       )}{" "}
       {design.name}
+    </div>
+  );
+};
+
+const DesignLoader: React.FC<{}> = ({}) => {
+  return (
+    <div className="flex flex-row items-center gap-2 overflow-hidden text-nowrap w-full py-1 pl-6flex flex-col gap-2 overflow-hidden text-nowrap pl-6">
+      <Skeleton className="w-40 h-5" />
     </div>
   );
 };
@@ -64,6 +73,7 @@ export const DesignsDataTableAsyncFilterBox: React.FC<{
         return new URLSearchParams();
       }}
       filterValue={filterValue}
+      loader={<DesignLoader />}
     />
   );
 };
