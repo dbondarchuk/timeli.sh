@@ -45,7 +45,9 @@ export const ModifyAppointmentForm: React.FC<
       fetchTitle: i18n("booking.availability.fetchFailedTitle"),
       fetchDescription: i18n("booking.availability.fetchFailedDescription"),
       fetchAppointmentTitle: i18n("modification.appointmentFetchFailed.title"),
-      fetchAppointmentDescription: i18n("modification.appointmentFetchFailed.description"),
+      fetchAppointmentDescription: i18n(
+        "modification.appointmentFetchFailed.description",
+      ),
       fetchPaymentInformationTitle: i18n(
         "booking.payment.informationFetchFailedTitle",
       ),
@@ -53,7 +55,9 @@ export const ModifyAppointmentForm: React.FC<
         "booking.payment.informationFetchFailedDescription",
       ),
       submitTitle: i18n(`modification.submitFailed.${type ?? "cancel"}.title`),
-      submitDescription: i18n(`modification.submitFailed.${type ?? "cancel"}.description`),
+      submitDescription: i18n(
+        `modification.submitFailed.${type ?? "cancel"}.description`,
+      ),
       timeNotAvailableDescription: i18n(
         "booking.submitEvent.timeNotAvailableDescription",
       ),
@@ -222,7 +226,7 @@ export const ModifyAppointmentForm: React.FC<
   ) => {
     if (!appointment || !appointment.allowed || !appointment.duration) return;
 
-    if (errors.fetchTitle === i18n("booking.availability.fetchFailedTitle")) return;
+    if (errors.fetchTitle === "booking.availability.fetchFailedTitle") return;
 
     setIsLoading(true);
 

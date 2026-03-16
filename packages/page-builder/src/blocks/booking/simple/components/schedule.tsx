@@ -173,7 +173,7 @@ export const Schedule: React.FC<
   const fetchAvailability = async () => {
     const totalDuration = getTotalDuration();
     if (!totalDuration) return;
-    if (errors.fetchTitle === i18n("booking.availability.fetchFailedTitle")) return;
+    if (errors.fetchTitle === "booking.availability.fetchFailedTitle") return;
 
     setIsLoading(true);
 

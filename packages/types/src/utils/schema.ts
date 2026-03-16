@@ -106,21 +106,16 @@ export function zMinMaxLengthString(
   max: { length: number; message?: string },
 ) {
   return z
-    .union([
-      z
-        .string(min.message)
-        .min(min.length, min.message)
-        .max(max.length, max.message),
-      z.string().length(0),
-    ])
-    .transform((e) => (e === "" ? undefined : e));
+    .string(min.message)
+    .min(min.length, min.message)
+    .max(max.length, max.message);
 }
 
 export function zOptionalOrMinMaxLengthString(
   min: { length: number; message?: string },
   max: { length: number; message?: string },
 ) {
-  return zMinMaxLengthString(min, max).optional();
+  return asOptionalField(zMinMaxLengthString(min, max));
 }
 
 export function zOptionalOrMaxLengthString(
@@ -144,7 +139,7 @@ export function zPossiblyOptionalMinMaxLengthString(
   max: { length: number; message?: string },
 ) {
   const zString = zMinMaxLengthString(min, max);
-  return required ? zString : zString.optional();
+  return required ? zString : asOptionalField(zString);
 }
 
 export const zNonEmptyString = (

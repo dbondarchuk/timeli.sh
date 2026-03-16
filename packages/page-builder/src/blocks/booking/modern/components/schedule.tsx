@@ -3,11 +3,11 @@
 import { clientApi, ClientApiError } from "@timelish/api-sdk";
 import { useI18n } from "@timelish/i18n";
 import type {
+  ApplyGiftCardsSuccessResponse,
   AppointmentAddon,
   AppointmentChoice,
   AppointmentFields,
   AppointmentRequest,
-  ApplyGiftCardsSuccessResponse,
   CollectPayment,
   CreateOrUpdatePaymentIntentRequest,
   DateTime,
@@ -63,7 +63,9 @@ export const Schedule: React.FC<
     () => ({
       fetchTitle: t("booking.availability.fetchFailedTitle"),
       fetchDescription: t("booking.availability.fetchFailedDescription"),
-      fetchPaymentInformationTitle: t("booking.payment.informationFetchFailedTitle"),
+      fetchPaymentInformationTitle: t(
+        "booking.payment.informationFetchFailedTitle",
+      ),
       fetchPaymentInformationDescription: t(
         "booking.payment.informationFetchFailedDescription",
       ),
@@ -180,7 +182,7 @@ export const Schedule: React.FC<
   const fetchAvailability = async () => {
     const totalDuration = getTotalDuration();
     if (!totalDuration) return;
-    if (errors.fetchTitle === t("booking.availability.fetchFailedTitle")) return;
+    if (errors.fetchTitle === "booking.availability.fetchFailedTitle") return;
 
     setIsLoading(true);
     setAvailability([]);
