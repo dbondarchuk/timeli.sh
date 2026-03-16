@@ -23,7 +23,7 @@ export const DesignNewPage = ({ appId }: { appId: string }) => {
   const [design, setDesign] = useState<DesignUpdateModel | undefined>(
     undefined,
   );
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!!fromId);
 
   useEffect(() => {
     const fetchDesign = async () => {
@@ -42,7 +42,7 @@ export const DesignNewPage = ({ appId }: { appId: string }) => {
     };
 
     if (appId && fromId) fetchDesign();
-  }, [appId, fromId]);
+  }, [appId, fromId, t]);
 
   return (
     <AutoSkeleton loading={loading}>

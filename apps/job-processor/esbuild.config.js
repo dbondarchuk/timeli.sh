@@ -26,7 +26,6 @@ const buildConfig = {
     "next/image",
     "next/link",
     "@resvg/resvg-js",
-    "pdfkit",
   ],
 };
 

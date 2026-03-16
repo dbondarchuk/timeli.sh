@@ -1,6 +1,4 @@
-import { Resvg } from "@resvg/resvg-js";
 import { DateTime } from "luxon";
-import PDFDocument from "pdfkit";
 import satori from "satori";
 import { getFamilyFromStoredFont, SERVER_FONT_WEIGHTS } from "../fonts";
 import type {
@@ -316,6 +314,8 @@ export async function png2pdf(
   design: Design,
   pngBuffer: Buffer,
 ): Promise<Buffer> {
+  const pdfkit = await import("pdfkit");
+  const PDFDocument = pdfkit.default;
   const pdfBuffer = await new Promise<Buffer>((resolve, reject) => {
     const chunks: Buffer[] = [];
 
@@ -359,7 +359,7 @@ export async function renderGiftCard({
 
   // 2. Load fonts used in the design (or fallback to Roboto if none)
   const fontFamilies = collectFontFamilies(design);
-  const toLoad = fontFamilies.size > 0 ? [...fontFamilies] : ["Roboto"];
+  const toLoad = fontFamilies.size > 0 ? Array.from(fontFamilies) : ["Roboto"];
 
   const fontPromises = toLoad.map((family) =>
     loadGoogleFontForSatori(family, SERVER_FONT_WEIGHTS),
@@ -383,6 +383,7 @@ export async function renderGiftCard({
   // 3. Rasterise SVG → PNG using resvg
   let pngBuffer: Buffer;
   try {
+    const { Resvg } = await import("@resvg/resvg-js");
     const resvg = new Resvg(svg, {
       fitTo: { mode: "original" },
     });

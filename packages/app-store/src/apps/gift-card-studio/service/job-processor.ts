@@ -14,7 +14,6 @@ import {
   templateSafeWithError,
 } from "@timelish/utils";
 import { DateTime } from "luxon";
-import PDFDocument from "pdfkit";
 import { Readable } from "stream";
 import { png2pdf, renderGiftCard } from "../designer/lib/render/render";
 import { GiftCardStudioSettings, PurchasedGiftCardListModel } from "../models";
@@ -328,6 +327,8 @@ export class GiftCardStudioJobProcessor {
         }
       }
 
+      const pdfkit = await import("pdfkit");
+      const PDFDocument = pdfkit.default;
       const pdfBuffer = await new Promise<Buffer>((resolve, reject) => {
         const doc = new PDFDocument({ margin: 40 });
         const chunks: Buffer[] = [];

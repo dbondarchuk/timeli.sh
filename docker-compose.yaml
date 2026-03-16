@@ -256,6 +256,8 @@ services:
       - "27017:27017"
     networks:
       - timelish-network
+    volumes:
+      - mongodb-data:/data/db
   redis:
     image: redis:latest
     restart: unless-stopped
@@ -271,3 +273,4 @@ networks:
     driver: bridge
 volumes:
   redis-data:
+  mongodb-data:
