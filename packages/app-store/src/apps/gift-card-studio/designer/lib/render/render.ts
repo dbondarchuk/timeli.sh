@@ -74,15 +74,19 @@ function backgroundToCss(
 // ---------------------------------------------------------------------------
 
 function resolveText(el: TextElement, fields: FieldKeyValues): string {
-  if (el.fieldKey && !!fields[el.fieldKey as FieldKey]!) {
-    const value = fields[el.fieldKey as FieldKey]!;
-    if (el.fieldKey === "expiresAt") {
-      return (value as DateTime).toFormat(
-        el.dateFormat ?? DEFAULT_EXPIRES_AT_DATE_FORMAT,
-      );
-    }
+  if (el.fieldKey) {
+    if (!!fields[el.fieldKey as FieldKey]) {
+      const value = fields[el.fieldKey as FieldKey]!;
+      if (el.fieldKey === "expiresAt") {
+        return (value as DateTime).toFormat(
+          el.dateFormat ?? DEFAULT_EXPIRES_AT_DATE_FORMAT,
+        );
+      }
 
-    return value.toString();
+      return value.toString();
+    } else {
+      return "";
+    }
   }
   // if (el.fieldKey && el.sampleValue) return el.sampleValue;
   return el.content ?? "";
