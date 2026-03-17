@@ -69,6 +69,7 @@ type ArgsProps = {
     isOnline: boolean;
     isCash: boolean;
     isInPersonCard: boolean;
+    isGiftCard: boolean;
     isTips: boolean;
     isOther: boolean;
     isDeposit: boolean;
@@ -144,6 +145,7 @@ export const getArguments = <
       isOnline: payment.method === "online",
       isCash: payment.method === "cash",
       isInPersonCard: payment.method === "in-person-card",
+      isGiftCard: payment.method === "gift-card",
       isTips: payment.type === "tips",
       isOther: payment.type === "other",
       isDeposit: payment.type === "deposit",

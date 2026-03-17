@@ -63,7 +63,7 @@ Total: \${{totalPriceFormatted}}
 Payments:
 
 {{#payments}}
- 1. {{#appName}}{{.}}{{/appName}}{{^appName}}{{#isOnline}}Online{{/isOnline}}{{#isCash}}Cash{{/isCash}}{{#isInPersonCard}}Card{{/isInPersonCard}}{{/appName}} ({{#isTips}}Tips{{/isTips}}{{#isOther}}Other{{/isOther}}{{#isDeposit}}Deposit{{/isDeposit}}{{#isRescheduleFee}}Reschedule fee{{/isRescheduleFee}}{{#isCancellationFee}}Cancellation fee{{/isCancellationFee}}{{#isPayment}}Payment{{/isPayment}}) on {{paidAt.full}}: \${{amountFormatted}} {{#totalAmountRefunded}} (-\${{totalAmountRefundedFormatted}} refunded, \${{amountLeftFormatted}} left) {{/totalAmountRefunded}}
+ 1. {{#appName}}{{.}}{{/appName}}{{^appName}}{{#isOnline}}Online{{/isOnline}}{{#isGiftCard}}Gift card {{#giftCardCode}}({{.}}){{/giftCardCode}}{{/isGiftCard}}{{#isCash}}Cash{{/isCash}}{{#isInPersonCard}}Card{{/isInPersonCard}}{{/appName}} ({{#isTips}}Tips{{/isTips}}{{#isOther}}Other{{/isOther}}{{#isDeposit}}Deposit{{/isDeposit}}{{#isRescheduleFee}}Reschedule fee{{/isRescheduleFee}}{{#isCancellationFee}}Cancellation fee{{/isCancellationFee}}{{#isPayment}}Payment{{/isPayment}}) on {{paidAt.full}}: \${{amountFormatted}} {{#totalAmountRefunded}} (-\${{totalAmountRefundedFormatted}} refunded, \${{amountLeftFormatted}} left) {{/totalAmountRefunded}}
 {{/payments}}
 {{^payments}}
 - None

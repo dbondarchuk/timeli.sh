@@ -63,7 +63,7 @@ Email: {{ fields.email }}
 Платежі:
 
 {{#payments}}
- 1. {{#appName}}{{.}}{{/appName}}{{^appName}}{{#isOnline}}Онлайн{{/isOnline}}{{#isCash}}Готівка{{/isCash}}{{#isInPersonCard}}Картка{{/isInPersonCard}}{{/appName}} ({{#isTips}}Чаєві{{/isTips}}{{#isOther}}Інше{{/isOther}}{{#isDeposit}}Депозит{{/isDeposit}}{{#isRescheduleFee}}Плата за перенос{{/isRescheduleFee}}{{#isCancellationFee}}Плата за відміну{{/isCancellationFee}}{{#isPayment}}Платіж{{/isPayment}}) {{paidAt.full}}: \${{amountFormatted}} {{#totalAmountRefunded}} (-\${{totalAmountRefundedFormatted}} повернено, \${{amountLeftFormatted}} залишилок) {{/totalAmountRefunded}}
+ 1. {{#appName}}{{.}}{{/appName}}{{^appName}}{{#isOnline}}Онлайн{{/isOnline}}{{#isGiftCard}}Подарункова карта {{#giftCardCode}}({{.}}){{/giftCardCode}}{{/isGiftCard}}{{#isCash}}Готівка{{/isCash}}{{#isInPersonCard}}Картка{{/isInPersonCard}}{{/appName}} ({{#isTips}}Чаєві{{/isTips}}{{#isOther}}Інше{{/isOther}}{{#isDeposit}}Депозит{{/isDeposit}}{{#isRescheduleFee}}Плата за перенос{{/isRescheduleFee}}{{#isCancellationFee}}Плата за відміну{{/isCancellationFee}}{{#isPayment}}Платіж{{/isPayment}}) {{paidAt.full}}: \${{amountFormatted}} {{#totalAmountRefunded}} (-\${{totalAmountRefundedFormatted}} повернено, \${{amountLeftFormatted}} залишилок) {{/totalAmountRefunded}}
 {{/payments}}
 {{^payments}}
 - Жодного
