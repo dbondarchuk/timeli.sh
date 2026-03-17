@@ -339,19 +339,21 @@ export function PropertiesPanel() {
         </div>
       )}
 
-      <div>
-        <Label className="text-xs text-foreground">
-          {t("designer.properties.content")}
-        </Label>
-        <Input
-          value={element.content}
-          onChange={(e) =>
-            updateElement(element.id, { content: e.target.value })
-          }
-          className="h-8 text-sm"
-          disabled={!!element.fieldKey}
-        />
-      </div>
+      {!element.fieldKey && (
+        <div>
+          <Label className="text-xs text-foreground">
+            {t("designer.properties.content")}
+          </Label>
+          <Input
+            value={element.content}
+            onChange={(e) =>
+              updateElement(element.id, { content: e.target.value })
+            }
+            className="h-8 text-sm"
+            disabled={!!element.fieldKey}
+          />
+        </div>
+      )}
 
       {element.fieldKey === "expiresAt" && (
         <div>

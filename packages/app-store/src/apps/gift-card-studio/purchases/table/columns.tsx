@@ -260,7 +260,7 @@ export const columns: ColumnDef<PurchasedGiftCardListModel>[] = [
     >("purchases.table.columns.design", "string", giftCardStudioAdminNamespace),
     cell: ({ row }) => (
       <Link
-        href={`/dashboard/gift-card-studio/designs/${row.original.designId}`}
+        href={`/dashboard/gift-card-studio/edit?id=${row.original.designId}`}
         variant="underline"
       >
         {row.original.designName}

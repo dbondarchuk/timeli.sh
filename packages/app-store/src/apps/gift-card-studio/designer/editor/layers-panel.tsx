@@ -15,12 +15,7 @@ interface LayersPanelProps {
   allowGrouping?: boolean;
 }
 
-const shapeTypeLabels: Record<
-  string,
-  | "designer.sidebar.rectangle"
-  | "designer.sidebar.circle"
-  | "designer.sidebar.line"
-> = {
+const shapeTypeLabels: Record<string, GiftCardStudioAdminKeys> = {
   rectangle: "designer.sidebar.rectangle",
   circle: "designer.sidebar.circle",
   line: "designer.sidebar.line",
@@ -53,7 +48,7 @@ export function LayersPanel({ allowGrouping = true }: LayersPanelProps = {}) {
     const label =
       element.type === "text"
         ? textElement?.fieldKey
-          ? `${textElement.content} [${t("designer.layers.dynamic")}]`
+          ? `${t.has(`designer.dynamicFields.${textElement.fieldKey}` as GiftCardStudioAdminKeys) ? t(`designer.dynamicFields.${textElement.fieldKey}` as GiftCardStudioAdminKeys) : textElement.content} [${t("designer.layers.dynamic")}]`
           : textElement?.content || t("designer.layers.text")
         : element.type === "image"
           ? t("designer.layers.image")
