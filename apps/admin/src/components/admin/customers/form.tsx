@@ -28,10 +28,10 @@ import {
   InfoTooltip,
   Input,
   InputGroup,
+  InputGroupAddon,
+  InputGroupAddonClasses,
   InputGroupInput,
   InputGroupInputClasses,
-  InputGroupSuffixClasses,
-  InputSuffix,
   Label,
   PhoneInput,
   Textarea,
@@ -381,11 +381,11 @@ export const CustomerForm: React.FC<{
                                   }}
                                 />
                               </InputGroupInput>
-                              <InputSuffix
-                                className={InputGroupSuffixClasses()}
+                              <InputGroupAddon
+                                className={InputGroupAddonClasses()}
                               >
                                 %
-                              </InputSuffix>
+                              </InputGroupAddon>
                             </InputGroup>
                           </FormControl>
                           <FormMessage />
@@ -433,20 +433,20 @@ export const CustomerForm: React.FC<{
                                 )}
                                 {...field}
                               />
-                              <InputSuffix>
+                              <InputGroupAddon>
                                 <Button
                                   variant="secondary"
                                   size="icon"
                                   disabled={disabled}
                                   className={cn(
-                                    InputGroupSuffixClasses(),
+                                    InputGroupAddonClasses(),
                                     "px-2",
                                   )}
                                   onClick={() => onNameRemove(index)}
                                 >
                                   <Trash />
                                 </Button>
-                              </InputSuffix>
+                              </InputGroupAddon>
                             </InputGroup>
                           </FormControl>
                           <FormMessage />
@@ -491,20 +491,20 @@ export const CustomerForm: React.FC<{
                                 )}
                                 {...field}
                               />
-                              <InputSuffix>
+                              <InputGroupAddon>
                                 <Button
                                   variant="secondary"
                                   size="icon"
                                   disabled={disabled}
                                   className={cn(
-                                    InputGroupSuffixClasses(),
+                                    InputGroupAddonClasses(),
                                     "px-2",
                                   )}
                                   onClick={() => onEmailRemove(index)}
                                 >
                                   <Trash />
                                 </Button>
-                              </InputSuffix>
+                              </InputGroupAddon>
                             </InputGroup>
                           </FormControl>
                           <FormMessage />
@@ -546,19 +546,19 @@ export const CustomerForm: React.FC<{
                                 )}
                                 {...field}
                               />
-                              <InputSuffix>
+                              <InputGroupAddon>
                                 <Button
                                   variant="secondary"
                                   size="icon"
                                   className={cn(
-                                    InputGroupSuffixClasses(),
+                                    InputGroupAddonClasses(),
                                     "px-2",
                                   )}
                                   onClick={() => onPhoneRemove(index)}
                                 >
                                   <Trash />
                                 </Button>
-                              </InputSuffix>
+                              </InputGroupAddon>
                             </InputGroup>
                           </FormControl>
                           <FormMessage />

@@ -3,6 +3,7 @@
 import { clientApi, ClientApiError } from "@timelish/api-sdk";
 import { useI18n } from "@timelish/i18n";
 import type {
+  ApplyGiftCardsSuccessResponse,
   AppointmentAddon,
   AppointmentChoice,
   AppointmentFields,
@@ -20,14 +21,14 @@ import {
 import { Spinner, toast, useTimeZone } from "@timelish/ui";
 import { DateTime as LuxonDateTime } from "luxon";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useCallback, useMemo } from "react";
 import { WaitlistDate, WaitlistRequest } from "../../../../models/waitlist";
 import {
   WaitlistPublicKeys,
   WaitlistPublicNamespace,
   waitlistPublicNamespace,
 } from "../../../../translations/types";
-import { ScheduleContext, StepType } from "./context";
+import { ScheduleContext, ScheduleContextProps, StepType } from "./context";
 import { StepCard } from "./step-card";
 
 export type ScheduleProps = {
@@ -67,18 +68,18 @@ export const Schedule: React.FC<
 
   const errors = React.useMemo(
     () => ({
-      fetchTitle: i18n("availability_fetch_failed_title"),
-      fetchDescription: i18n("availability_fetch_failed_description"),
+      fetchTitle: i18n("booking.availability.fetchFailedTitle"),
+      fetchDescription: i18n("booking.availability.fetchFailedDescription"),
       fetchPaymentInformationTitle: i18n(
-        "payment_information_fetch_failed_title",
+        "booking.payment.informationFetchFailedTitle",
       ),
       fetchPaymentInformationDescription: i18n(
-        "payment_information_fetch_failed_description",
+        "booking.payment.informationFetchFailedDescription",
       ),
-      submitTitle: i18n("submit_event_failed_title"),
-      submitDescription: i18n("submit_event_failed_description"),
+      submitTitle: i18n("booking.submitEvent.failedTitle"),
+      submitDescription: i18n("booking.submitEvent.failedDescription"),
       timeNotAvailableDescription: i18n(
-        "submit_event_failed_time_not_available_description",
+        "booking.submitEvent.timeNotAvailableDescription",
       ),
       submitWaitlistTitle: t("block.errors.submit.title"),
       submitWaitlistDescription: t("block.errors.submit.description"),
@@ -116,6 +117,9 @@ export const Schedule: React.FC<
   ] = React.useState<boolean | undefined>(undefined);
 
   const [promoCode, setPromoCode] = React.useState<ApplyDiscountResponse>();
+  const [giftCards, setGiftCards] = React.useState<
+    ApplyGiftCardsSuccessResponse["giftCards"]
+  >([]);
   const [paymentInformation, setPaymentInformation] =
     React.useState<CollectPayment | null>();
 
@@ -175,7 +179,19 @@ export const Schedule: React.FC<
     dates: [],
   });
 
-  const onWaitlistSubmit = async () => {
+  const getTotalDuration = useCallback(() => {
+    if (!duration) return undefined;
+
+    return (
+      duration +
+      (selectedAddons || []).reduce(
+        (sum, addon) => sum + (addon.duration || 0),
+        0,
+      )
+    );
+  }, [duration, selectedAddons]);
+
+  const onWaitlistSubmit = useCallback(async () => {
     if (isEditor) return;
     if (!waitlistAppId) return;
 
@@ -214,71 +230,15 @@ export const Schedule: React.FC<
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const router = useRouter();
-
-  const getTotalDuration = () => {
-    if (!duration) return undefined;
-
-    return (
-      duration +
-      (selectedAddons || []).reduce(
-        (sum, addon) => sum + (addon.duration || 0),
-        0,
-      )
-    );
-  };
-
-  const fetchAvailability = async () => {
-    const totalDuration = getTotalDuration();
-    if (!totalDuration) return;
-    if (errors.fetchTitle === "availability_fetch_failed_title") return;
-
-    setIsLoading(true);
-
-    try {
-      const data = await clientApi.availability.getAvailability({
-        duration: totalDuration,
-      });
-
-      setAvailability(data);
-    } catch (e) {
-      console.error(e);
-
-      setAvailability([]);
-      toast.error(errors.fetchTitle, {
-        description: errors.fetchDescription,
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const checkDuplicateAppointments =
-    async (): Promise<CheckDuplicateAppointmentsResponse> => {
-      const request = getAppointmentRequest();
-      if (!request) throw new Error("Failed to build appointment request");
-
-      setIsLoading(true);
-
-      try {
-        const data = await clientApi.events.checkDuplicateAppointments(request);
-
-        return data;
-      } catch (e) {
-        console.error(e);
-        toast.error(errors.fetchTitle, {
-          description: errors.fetchDescription,
-        });
-
-        throw e;
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-  const getAppointmentRequest = (): AppointmentRequest | null => {
+  }, [
+    isEditor,
+    waitlistAppId,
+    waitlistTimes,
+    fields,
+    appointmentOption,
+    selectedAddons,
+  ]);
+  const getAppointmentRequest = useCallback((): AppointmentRequest | null => {
     if (!dateTime || !duration) return null;
     return {
       dateTime: LuxonDateTime.fromObject(
@@ -300,6 +260,7 @@ export const Schedule: React.FC<
       addonsIds: selectedAddons?.map((addon) => addon._id),
       promoCode: promoCode?.code,
       paymentIntentId: paymentInformation?.intent?._id,
+      giftCards: giftCards?.map((giftCard) => giftCard.code),
       fields: Object.entries(fields)
         .filter(([_, value]) => !((value as any) instanceof File))
         .reduce(
@@ -310,7 +271,86 @@ export const Schedule: React.FC<
           {} as AppointmentFields,
         ),
     };
-  };
+  }, [
+    dateTime,
+    duration,
+    appointmentOption,
+    selectedAddons,
+    promoCode,
+    paymentInformation,
+    fields,
+  ]);
+  const router = useRouter();
+
+  const fetchAvailability = useCallback(async () => {
+    const totalDuration = getTotalDuration();
+    if (!totalDuration) return;
+    if (errors.fetchTitle === "booking.availability.fetchFailedTitle") return;
+
+    setIsLoading(true);
+
+    try {
+      const data = await clientApi.availability.getAvailability({
+        duration: totalDuration,
+      });
+
+      setAvailability(data);
+    } catch (e) {
+      console.error(e);
+
+      setAvailability([]);
+      toast.error(errors.fetchTitle, {
+        description: errors.fetchDescription,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }, [getTotalDuration, errors.fetchTitle, errors.fetchDescription]);
+
+  const checkDuplicateAppointments =
+    useCallback(async (): Promise<CheckDuplicateAppointmentsResponse> => {
+      const request = getAppointmentRequest();
+      if (!request) throw new Error("Failed to build appointment request");
+
+      setIsLoading(true);
+
+      try {
+        const data = await clientApi.events.checkDuplicateAppointments(request);
+
+        return data;
+      } catch (e) {
+        console.error(e);
+        toast.error(errors.fetchTitle, {
+          description: errors.fetchDescription,
+        });
+
+        throw e;
+      } finally {
+        setIsLoading(false);
+      }
+    }, [getAppointmentRequest, errors.fetchTitle, errors.fetchDescription]);
+
+  const applyGiftCards = useCallback(
+    async (codes: string[], amount: number) => {
+      try {
+        const data = await clientApi.giftCards.applyGiftCards({
+          codes,
+          amount,
+        });
+
+        if (data.success) {
+          setGiftCards(data.giftCards);
+          return data.giftCards;
+        }
+
+        throw new Error(data.error);
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
+    },
+    [],
+  );
 
   React.useEffect(() => {
     if (initialStep === "calendar") {
@@ -318,35 +358,41 @@ export const Schedule: React.FC<
     }
   }, [initialStep, i18n]);
 
-  const fetchPaymentInformation = async (): Promise<CollectPayment | null> => {
-    const request = getAppointmentRequest();
-    if (!request) throw new Error("Failed to build appointment request");
+  const fetchPaymentInformation =
+    useCallback(async (): Promise<CollectPayment | null> => {
+      const request = getAppointmentRequest();
+      if (!request) throw new Error("Failed to build appointment request");
 
-    const intentId = paymentInformation?.intent?._id;
-    const body = {
-      request,
-      type: "deposit",
-    } satisfies CreateOrUpdatePaymentIntentRequest;
+      const intentId = paymentInformation?.intent?._id;
+      const body = {
+        request,
+        type: "deposit",
+      } satisfies CreateOrUpdatePaymentIntentRequest;
 
-    try {
-      setIsLoading(true);
-      const data = await (intentId
-        ? clientApi.payments.updatePaymentIntent(intentId, body)
-        : clientApi.payments.createPaymentIntent(body));
+      try {
+        setIsLoading(true);
+        const data = await (intentId
+          ? clientApi.payments.updatePaymentIntent(intentId, body)
+          : clientApi.payments.createPaymentIntent(body));
 
-      return data;
-    } catch (e) {
-      toast.error(errors.fetchPaymentInformationTitle, {
-        description: errors.fetchPaymentInformationDescription,
-      });
+        return data;
+      } catch (e) {
+        toast.error(errors.fetchPaymentInformationTitle, {
+          description: errors.fetchPaymentInformationDescription,
+        });
 
-      throw e;
-    } finally {
-      setIsLoading(false);
-    }
-  };
+        throw e;
+      } finally {
+        setIsLoading(false);
+      }
+    }, [
+      getAppointmentRequest,
+      errors.fetchPaymentInformationTitle,
+      errors.fetchPaymentInformationDescription,
+      paymentInformation?.intent?._id,
+    ]);
 
-  const onSubmit = async () => {
+  const onSubmit = useCallback(async () => {
     if (isEditor) return;
     setIsLoading(true);
 
@@ -402,57 +448,113 @@ export const Schedule: React.FC<
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [
+    getAppointmentRequest,
+    errors.submitTitle,
+    errors.submitDescription,
+    errors.timeNotAvailableDescription,
+    successPage,
+    isEditor,
+    router,
+    step,
+  ]);
 
   React.useEffect(() => {
     topRef?.current?.scrollIntoView();
   }, [step]);
 
+  const contextValue: ScheduleContextProps = useMemo(
+    () => ({
+      selectedAddons,
+      appointmentOption,
+      duration,
+      setDiscount: setPromoCode,
+      discount: promoCode,
+      step,
+      setStep,
+      fetchAvailability,
+      fields,
+      setFields,
+      onSubmit,
+      setDateTime,
+      setDuration,
+      setSelectedAddons,
+      dateTime,
+      goBack,
+      showPromoCode,
+      formFields,
+      availability,
+      giftCards,
+      setGiftCards,
+      applyGiftCards,
+      paymentInformation,
+      setPaymentInformation,
+      fetchPaymentInformation,
+      checkDuplicateAppointments,
+      confirmDuplicateAppointment,
+      setConfirmDuplicateAppointment,
+      closestDuplicateAppointment,
+      setClosestDuplicateAppointment,
+      duplicateAppointmentDoNotAllowScheduling,
+      setDuplicateAppointmentDoNotAllowScheduling,
+      isFormValid,
+      setIsFormValid,
+      className,
+      isEditor,
+      waitlistAppId,
+      onWaitlistSubmit,
+      waitlistTimes,
+      setWaitlistTimes,
+      isOnlyWaitlist,
+    }),
+    [
+      selectedAddons,
+      appointmentOption,
+      duration,
+      setPromoCode,
+      promoCode,
+      step,
+      setStep,
+      fetchAvailability,
+      fields,
+      setFields,
+      onSubmit,
+      setDateTime,
+      setDuration,
+      setSelectedAddons,
+      dateTime,
+      goBack,
+      showPromoCode,
+      formFields,
+      availability,
+      giftCards,
+      setGiftCards,
+      applyGiftCards,
+      paymentInformation,
+      setPaymentInformation,
+      fetchPaymentInformation,
+      checkDuplicateAppointments,
+      confirmDuplicateAppointment,
+      setConfirmDuplicateAppointment,
+      closestDuplicateAppointment,
+      setClosestDuplicateAppointment,
+      duplicateAppointmentDoNotAllowScheduling,
+      setDuplicateAppointmentDoNotAllowScheduling,
+      isFormValid,
+      setIsFormValid,
+      className,
+      isEditor,
+      waitlistAppId,
+      onWaitlistSubmit,
+      waitlistTimes,
+      setWaitlistTimes,
+      isOnlyWaitlist,
+    ],
+  );
   return (
     <div className="relative" id={id} {...props}>
       <div ref={topRef} />
-      <ScheduleContext.Provider
-        value={{
-          selectedAddons,
-          appointmentOption,
-          duration,
-          setDiscount: setPromoCode,
-          discount: promoCode,
-          step,
-          setStep,
-          fetchAvailability,
-          fields,
-          setFields,
-          onSubmit,
-          setDateTime,
-          setDuration,
-          setSelectedAddons,
-          dateTime,
-          goBack,
-          showPromoCode,
-          formFields,
-          availability,
-          paymentInformation,
-          setPaymentInformation,
-          fetchPaymentInformation,
-          checkDuplicateAppointments,
-          confirmDuplicateAppointment,
-          setConfirmDuplicateAppointment,
-          closestDuplicateAppointment,
-          setClosestDuplicateAppointment,
-          duplicateAppointmentDoNotAllowScheduling,
-          setDuplicateAppointmentDoNotAllowScheduling,
-          isFormValid,
-          setIsFormValid,
-          className,
-          isEditor,
-          waitlistAppId,
-          onWaitlistSubmit,
-          waitlistTimes,
-          setWaitlistTimes,
-          isOnlyWaitlist,
-        }}
-      >
+      <ScheduleContext.Provider value={contextValue}>
         <StepCard />
       </ScheduleContext.Provider>
 

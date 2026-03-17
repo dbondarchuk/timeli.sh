@@ -63,7 +63,8 @@
         "edit": "Edit Form",
         "viewResponses": "Form Responses",
         "archive": "Archive",
-        "unarchive": "Unarchive"
+        "unarchive": "Unarchive",
+        "clone": "Clone"
       },
       "archive": {
         "title": "Archive form",
@@ -322,6 +323,11 @@
         }
       }
     }
+  },
+  "notifications": {
+    "newResponse": "New form response",
+    "newResponseMessage": "A new form response has been created",
+    "viewResponse": "View response"
   },
   "handlers": {
     "formResponseCreated": "Forms - Form response created"

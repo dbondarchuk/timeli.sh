@@ -20,10 +20,15 @@ import {
   waitlistAdminNamespace,
 } from "../translations/types";
 import { DismissSelectedWaitlistEntriesButton } from "./dismiss-selected";
+import { NewEntryDialog } from "./new-entry";
 import { SettingsDialog } from "./settings";
 import { useWaitlistTableFilters } from "./use-table-filters";
 
-export const WaitlistTableAction: React.FC<{ appId: string }> = ({ appId }) => {
+export const WaitlistTableAction: React.FC<{
+  appId: string;
+  /** When set, customer filter is hidden and table is fixed to this customer (e.g. on customer tab). */
+  customerIdLock?: string;
+}> = ({ appId, customerIdLock }) => {
   const {
     statusFilter,
     setStatusFilter,
@@ -59,10 +64,12 @@ export const WaitlistTableAction: React.FC<{ appId: string }> = ({ appId }) => {
         setFilterValue={setStatusFilter as any}
         filterValue={statusFilter}
       />
-      <CustomersDataTableAsyncFilterBox
-        filterValue={customerFilter}
-        setFilterValue={setCustomerFilter}
-      />
+      {!customerIdLock && (
+        <CustomersDataTableAsyncFilterBox
+          filterValue={customerFilter}
+          setFilterValue={setCustomerFilter}
+        />
+      )}
       <OptionsDataTableAsyncFilterBox
         filterValue={optionFilter}
         setFilterValue={setOptionFilter}
@@ -106,6 +113,7 @@ export const WaitlistTableAction: React.FC<{ appId: string }> = ({ appId }) => {
         />
       </div>
       <div className="flex flex-wrap items-center gap-4 max-md:justify-between">
+        <NewEntryDialog appId={appId} customerIdLock={customerIdLock} />
         <DismissSelectedWaitlistEntriesButton
           selected={rowSelection}
           appId={appId}

@@ -23,10 +23,12 @@ export const PaymentCard: React.FC = () => {
   return (
     <div className="flex flex-col gap-4">
       <div className="mb-3">
-        <h2 className="mt-0 text-xl">{i18n(`${type}_fee_required_title`)}</h2>
+        <h2 className="mt-0 text-xl">
+          {i18n(`modification.feeRequired.${type}.title`)}
+        </h2>
       </div>
       <div className="text-sm mb-3">
-        {i18n(`${type}_fee_required_description`, {
+        {i18n(`modification.feeRequired.${type}.description`, {
           totalPrice: formatAmountString(appointment?.price ?? 0),
           amount: formatAmountString(paymentForm.intent.amount),
         })}

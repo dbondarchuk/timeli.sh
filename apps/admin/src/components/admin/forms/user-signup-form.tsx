@@ -12,10 +12,10 @@ import {
   FormMessage,
   Input,
   InputGroup,
+  InputGroupAddon,
+  InputGroupAddonClasses,
   InputGroupInput,
   InputGroupInputClasses,
-  InputGroupSuffixClasses,
-  InputSuffix,
   Link,
   useDebounceCacheFn,
 } from "@timelish/ui";
@@ -246,9 +246,9 @@ export const UserSignupForm = ({ publicDomain }: { publicDomain: string }) => {
                         {...field}
                       />
                     </InputGroupInput>
-                    <InputSuffix className={InputGroupSuffixClasses()}>
+                    <InputGroupAddon className={InputGroupAddonClasses()}>
                       .{publicDomain}
-                    </InputSuffix>
+                    </InputGroupAddon>
                   </InputGroup>
                 </FormControl>
                 <FormMessage />

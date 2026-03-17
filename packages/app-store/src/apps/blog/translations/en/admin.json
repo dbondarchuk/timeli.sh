@@ -12,7 +12,8 @@
     },
     "actions": {
       "create": "Create Post",
-      "edit": "Edit"
+      "edit": "Edit",
+      "clone": "Clone"
     },
     "delete": {
       "title": "Are you absolutely sure?",
@@ -42,8 +43,12 @@
     "slugPlaceholder": "post-slug",
     "content": "Content",
     "contentTooltip": "The main content of the blog post",
-    "isPublished": "Published",
-    "isPublishedDescription": "Whether this post is published and visible to the public",
+    "isPublished": {
+      "label": "Status",
+      "tooltip": "Whether this post is published and visible to the public",
+      "published": "Published",
+      "draft": "Draft"
+    },
     "publicationDate": "Publication Date",
     "publicationDateTooltip": "When this post should be published",
     "tags": "Tags",

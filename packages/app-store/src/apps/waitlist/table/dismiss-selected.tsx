@@ -2,8 +2,8 @@
 
 import { useI18n } from "@timelish/i18n";
 import { AlertModal, Button, Spinner, toastPromise } from "@timelish/ui";
+import { useReload } from "@timelish/ui-admin";
 import { X } from "lucide-react";
-import { useQueryState } from "nuqs";
 import React from "react";
 import { dismissWaitlistEntries } from "../actions";
 import { WaitlistEntry } from "../models";
@@ -24,7 +24,7 @@ export const DismissSelectedWaitlistEntriesButton: React.FC<{
     waitlistAdminNamespace,
   );
 
-  const [_, reload] = useQueryState("ts", { history: "replace" });
+  const { reload } = useReload();
   const action = async () => {
     try {
       setIsLoading(true);
@@ -42,7 +42,7 @@ export const DismissSelectedWaitlistEntriesButton: React.FC<{
         },
       );
 
-      reload(`${new Date().valueOf()}`);
+      reload();
       setIsOpen(false);
     } catch (error: any) {
       console.error(error);

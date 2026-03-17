@@ -106,21 +106,16 @@ export function zMinMaxLengthString(
   max: { length: number; message?: string },
 ) {
   return z
-    .union([
-      z
-        .string(min.message)
-        .min(min.length, min.message)
-        .max(max.length, max.message),
-      z.string().length(0),
-    ])
-    .transform((e) => (e === "" ? undefined : e));
+    .string(min.message)
+    .min(min.length, min.message)
+    .max(max.length, max.message);
 }
 
 export function zOptionalOrMinMaxLengthString(
   min: { length: number; message?: string },
   max: { length: number; message?: string },
 ) {
-  return zMinMaxLengthString(min, max).optional();
+  return asOptionalField(zMinMaxLengthString(min, max));
 }
 
 export function zOptionalOrMaxLengthString(
@@ -144,7 +139,7 @@ export function zPossiblyOptionalMinMaxLengthString(
   max: { length: number; message?: string },
 ) {
   const zString = zMinMaxLengthString(min, max);
-  return required ? zString : zString.optional();
+  return required ? zString : asOptionalField(zString);
 }
 
 export const zNonEmptyString = (
@@ -190,7 +185,10 @@ export function isValidObjectId(value: string): boolean {
 export const zObjectId = (message?: string) =>
   z
     .string(message ?? "validation.common.objectId.required")
-    .refine((s) => isValidObjectId(s), "validation.common.objectId.invalid");
+    .refine(
+      (s) => isValidObjectId(s),
+      message ?? "validation.common.objectId.invalid",
+    );
 
 /**
  * Builds a union schema for `data & { type }` from a list of { type, data } objects.

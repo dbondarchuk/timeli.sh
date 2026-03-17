@@ -9,13 +9,19 @@ import {
   ConnectedAppRequestError,
   ConnectedAppStatusWithText,
   DashboardNotification,
+  DemoArguments,
   IAppointmentHook,
+  ICommunicationTemplatesProvider,
   IConnectedApp,
   IConnectedAppProps,
   IDashboardNotifierApp,
+  IDemoArgumentsProvider,
   IEventHook,
+  TemplateTemplatesList,
 } from "@timelish/types";
 import {
+  CreateWaitlistEntryAction,
+  CreateWaitlistEntryActionType,
   DismissWaitlistEntriesAction,
   DismissWaitlistEntriesActionType,
   GetWaitlistEntriesAction,
@@ -33,6 +39,8 @@ import {
   waitlistRequestSchema,
 } from "../models";
 
+import { demoWaitlistEntry } from "../demo-arguments";
+import { WaitlistTemplates } from "../templates";
 import {
   WaitlistAdminAllKeys,
   WaitlistAdminKeys,
@@ -44,7 +52,12 @@ import {
 } from "./repository-service";
 
 export class WaitlistConnectedApp
-  implements IConnectedApp, IAppointmentHook, IDashboardNotifierApp
+  implements
+    IConnectedApp,
+    IAppointmentHook,
+    IDashboardNotifierApp,
+    IDemoArgumentsProvider,
+    ICommunicationTemplatesProvider
 {
   protected readonly loggerFactory: LoggerFactory;
 
@@ -85,6 +98,8 @@ export class WaitlistConnectedApp
         return this.processDismissWaitlistEntriesRequest(appData, data);
       case SetConfigurationActionType:
         return this.processSetConfigurationRequest(appData, data.configuration);
+      case CreateWaitlistEntryActionType:
+        return this.processCreateWaitlistEntryActionRequest(appData, data);
     }
   }
 
@@ -260,6 +275,16 @@ export class WaitlistConnectedApp
     ];
   }
 
+  public async getDemoEmailArguments(): Promise<DemoArguments> {
+    return {
+      waitlistEntry: demoWaitlistEntry,
+    };
+  }
+
+  public async getCommunicationTemplates(): Promise<TemplateTemplatesList> {
+    return WaitlistTemplates;
+  }
+
   protected getRepositoryService(appId: string, companyId: string) {
     return new WaitlistRepositoryService(
       appId,
@@ -357,6 +382,88 @@ export class WaitlistConnectedApp
       logger.error({ error }, "Error creating waitlist entry");
       return Response.json({ success: false, error }, { status: 500 });
     }
+  }
+
+  private async processCreateWaitlistEntryActionRequest(
+    appData: ConnectedAppData,
+    data: CreateWaitlistEntryAction,
+  ): Promise<WaitlistEntry> {
+    const logger = this.loggerFactory(
+      "processCreateWaitlistEntryActionRequest",
+    );
+    logger.debug({ data }, "Creating waitlist entry");
+
+    const repositoryService = this.getRepositoryService(
+      appData._id,
+      appData.companyId,
+    );
+
+    const option = await this.props.services.servicesService.getOption(
+      data.entry.optionId,
+    );
+    if (!option) {
+      logger.error({ optionId: data.entry.optionId }, "Option not found");
+      throw new ConnectedAppRequestError(
+        "option_not_found",
+        { data },
+        400,
+        "Option not found",
+      );
+    }
+
+    const addons = data.entry.addonsIds?.length
+      ? await this.props.services.servicesService.getAddonsById(
+          data.entry.addonsIds,
+        )
+      : undefined;
+
+    if (
+      data.entry.addonsIds?.length &&
+      !data.entry.addonsIds.every((id) => addons?.some((a) => a._id === id))
+    ) {
+      logger.error({ addonsIds: data.entry.addonsIds }, "Addons not found");
+      throw new ConnectedAppRequestError(
+        "addons_not_found",
+        { data },
+        400,
+        "Addons not found",
+      );
+    }
+
+    const { customerId, ...waitlistRequestData } = data.entry;
+
+    const customer =
+      await this.props.services.customersService.getCustomer(customerId);
+
+    if (!customer) {
+      logger.error({ customerId }, "Customer not found");
+      throw new ConnectedAppRequestError(
+        "customer_not_found",
+        { data },
+        400,
+        "Customer not found",
+      );
+    }
+
+    const duration = data.entry.duration
+      ? data.entry.duration
+      : (option.durationType === "fixed"
+          ? option.duration
+          : option.durationMin) +
+        (addons?.reduce((sum, addon) => sum + (addon.duration || 0), 0) ?? 0);
+
+    const waitlistRequest: WaitlistRequest = {
+      ...waitlistRequestData,
+      duration,
+      email: customer.email,
+      name: customer.name,
+      phone: customer.phone,
+    };
+
+    logger.debug({ waitlistRequest }, "Creating waitlist entry");
+    const result = await repositoryService.createWaitlistEntry(waitlistRequest);
+    logger.debug({ result }, "Waitlist entry created");
+    return result;
   }
 
   private async createWaitlistEntry(

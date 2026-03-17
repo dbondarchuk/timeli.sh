@@ -13,10 +13,10 @@ import {
   InfoTooltip,
   Input,
   InputGroup,
+  InputGroupAddon,
+  InputGroupAddonClasses,
   InputGroupInput,
   InputGroupInputClasses,
-  InputGroupSuffixClasses,
-  InputSuffix,
   Select,
   SelectContent,
   SelectItem,
@@ -243,9 +243,9 @@ export const FormFieldEditor: React.FC<{
                         {...field}
                       />
                     </InputGroupInput>
-                    <InputSuffix className={InputGroupSuffixClasses()}>
+                    <InputGroupAddon className={InputGroupAddonClasses()}>
                       MB
-                    </InputSuffix>
+                    </InputGroupAddon>
                   </InputGroup>
                 </FormControl>
                 <FormMessage />
@@ -315,9 +315,9 @@ export const FormFieldEditor: React.FC<{
                         {...field}
                       />
                     </InputGroupInput>
-                    <InputSuffix className={InputGroupSuffixClasses()}>
+                    <InputGroupAddon className={InputGroupAddonClasses()}>
                       {t("form.fields.multiSelect.choices")}
-                    </InputSuffix>
+                    </InputGroupAddon>
                   </InputGroup>
                 </FormControl>
                 <FormMessage />
@@ -348,9 +348,9 @@ export const FormFieldEditor: React.FC<{
                         {...field}
                       />
                     </InputGroupInput>
-                    <InputSuffix className={InputGroupSuffixClasses()}>
+                    <InputGroupAddon className={InputGroupAddonClasses()}>
                       {t("form.fields.multiSelect.choices")}
-                    </InputSuffix>
+                    </InputGroupAddon>
                   </InputGroup>
                 </FormControl>
                 <FormMessage />
@@ -385,9 +385,9 @@ export const FormFieldEditor: React.FC<{
                         {...field}
                       />
                     </InputGroupInput>
-                    <InputSuffix className={InputGroupSuffixClasses()}>
+                    <InputGroupAddon className={InputGroupAddonClasses()}>
                       {t("form.fields.text.characters")}
-                    </InputSuffix>
+                    </InputGroupAddon>
                   </InputGroup>
                 </FormControl>
                 <FormMessage />
@@ -420,9 +420,9 @@ export const FormFieldEditor: React.FC<{
                         {...field}
                       />
                     </InputGroupInput>
-                    <InputSuffix className={InputGroupSuffixClasses()}>
+                    <InputGroupAddon className={InputGroupAddonClasses()}>
                       {t("form.fields.text.characters")}
-                    </InputSuffix>
+                    </InputGroupAddon>
                   </InputGroup>
                 </FormControl>
                 <FormMessage />

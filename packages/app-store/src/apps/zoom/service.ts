@@ -19,7 +19,6 @@ import {
 } from "@timelish/types";
 import { encrypt, getAdminUrl, stripMarkdown } from "@timelish/utils";
 import { DateTime } from "luxon";
-import { env } from "process";
 import {
   ZOOM_API_BASE_URL,
   ZOOM_OAUTH_AUTHORIZATION_URL,
@@ -59,7 +58,7 @@ export class ZoomConnectedApp
     logger.debug({ appId }, "Generating Zoom login URL");
 
     try {
-      const clientId = env.ZOOM_APP_CLIENT_ID!;
+      const clientId = process.env.ZOOM_APP_CLIENT_ID!;
       const url = getAdminUrl();
       const redirectUri = `${url}/apps/oauth/zoom/redirect`;
 
@@ -126,8 +125,8 @@ export class ZoomConnectedApp
       logger.debug({ appId }, "Exchanging authorization code for tokens");
 
       const webAdminUrl = getAdminUrl();
-      const clientId = env.ZOOM_APP_CLIENT_ID!;
-      const clientSecret = env.ZOOM_APP_CLIENT_SECRET!;
+      const clientId = process.env.ZOOM_APP_CLIENT_ID!;
+      const clientSecret = process.env.ZOOM_APP_CLIENT_SECRET!;
 
       const redirectUri = `${webAdminUrl}/apps/oauth/zoom/redirect`;
       const authHeader = `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString("base64")}`;
@@ -251,8 +250,8 @@ export class ZoomConnectedApp
     try {
       const client = new ZoomApiClient(
         app,
-        env.ZOOM_APP_CLIENT_ID!,
-        env.ZOOM_APP_CLIENT_SECRET!,
+        process.env.ZOOM_APP_CLIENT_ID!,
+        process.env.ZOOM_APP_CLIENT_SECRET!,
         this.props.update,
       );
 
@@ -328,8 +327,8 @@ export class ZoomConnectedApp
 
     const client = new ZoomApiClient(
       app,
-      env.ZOOM_APP_CLIENT_ID!,
-      env.ZOOM_APP_CLIENT_SECRET!,
+      process.env.ZOOM_APP_CLIENT_ID!,
+      process.env.ZOOM_APP_CLIENT_SECRET!,
       this.props.update,
     );
 
@@ -430,8 +429,8 @@ export class ZoomConnectedApp
 
     const client = new ZoomApiClient(
       appData,
-      env.ZOOM_APP_CLIENT_ID!,
-      env.ZOOM_APP_CLIENT_SECRET!,
+      process.env.ZOOM_APP_CLIENT_ID!,
+      process.env.ZOOM_APP_CLIENT_SECRET!,
       this.props.update,
     );
 
@@ -525,8 +524,8 @@ export class ZoomConnectedApp
 
     const client = new ZoomApiClient(
       appData,
-      env.ZOOM_APP_CLIENT_ID!,
-      env.ZOOM_APP_CLIENT_SECRET!,
+      process.env.ZOOM_APP_CLIENT_ID!,
+      process.env.ZOOM_APP_CLIENT_SECRET!,
       this.props.update,
     );
 

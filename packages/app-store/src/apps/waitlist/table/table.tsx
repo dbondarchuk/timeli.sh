@@ -17,7 +17,11 @@ import {
 } from "../translations/types";
 import { columns } from "./columns";
 
-export const WaitlistTable: React.FC<{ appId: string }> = ({ appId }) => {
+export const WaitlistTable: React.FC<{
+  appId: string;
+  /** When set, entries are filtered to this customer only (e.g. on customer tab). */
+  customerIdLock?: string;
+}> = ({ appId, customerIdLock }) => {
   const t = useI18n<WaitlistAdminNamespace, WaitlistAdminKeys>(
     waitlistAdminNamespace,
   );
@@ -42,7 +46,9 @@ export const WaitlistTable: React.FC<{ appId: string }> = ({ appId }) => {
       const search = query.search || undefined;
       const limit = query.limit;
       const optionId = query.option;
-      const customerId = query.customer;
+      const customerId = customerIdLock
+        ? [customerIdLock]
+        : query.customer;
       const status = query.status;
       const start = query.start;
       const end = query.end;
@@ -57,7 +63,7 @@ export const WaitlistTable: React.FC<{ appId: string }> = ({ appId }) => {
 
       const res = await getWaitlistEntries(appId, {
         optionId: optionId || undefined,
-        customerId: customerId || undefined,
+        customerId: customerId?.length ? customerId : undefined,
         status,
         range,
         offset,
@@ -80,7 +86,7 @@ export const WaitlistTable: React.FC<{ appId: string }> = ({ appId }) => {
 
   React.useEffect(() => {
     fn(delayedQuery);
-  }, [delayedQuery]);
+  }, [delayedQuery, customerIdLock]);
 
   return loading ? (
     <DataTableSkeleton rowCount={10} columnCount={columns.length} />

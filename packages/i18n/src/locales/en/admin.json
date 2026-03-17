@@ -44,6 +44,10 @@
         "disabled": "Disabled",
         "active": "Active"
       },
+      "giftCardStatus": {
+        "inactive": "Inactive",
+        "active": "Active"
+      },
       "paymentStatus": {
         "paid": "Paid",
         "refunded": "Refunded",
@@ -56,6 +60,12 @@
         "paymentAdded": "Payment added",
         "paymentRefunded": "Payment refunded",
         "updated": "Updated"
+      },
+      "paymentMethod": {
+        "cash": "Cash",
+        "in-person-card": "In-person card",
+        "gift-card": "Gift card",
+        "online": "Online"
       },
       "filters": "Filters",
       "loading": "Loading"
@@ -89,6 +99,7 @@
     "addons": "Add-ons",
     "options": "Options",
     "discounts": "Discounts",
+    "giftCards": "Gift cards",
     "customers": "Customers",
     "website": "Website",
     "pages": "Pages",
@@ -645,6 +656,7 @@
         "edit": "Edit",
         "delete": "Delete",
         "view": "View",
+        "clone": "Clone",
         "copyRelativeUrl": "Copy relative url",
         "copyAbsoluteUrl": "Copy absolute url"
       },
@@ -713,7 +725,8 @@
           "openMenu": "Open menu",
           "actions": "Actions",
           "edit": "Edit",
-          "delete": "Delete"
+          "delete": "Delete",
+          "clone": "Clone"
         },
         "delete": {
           "title": "Are you absolutely sure?",
@@ -764,7 +777,8 @@
           "openMenu": "Open menu",
           "actions": "Actions",
           "edit": "Edit",
-          "delete": "Delete"
+          "delete": "Delete",
+          "clone": "Clone"
         },
         "delete": {
           "title": "Are you absolutely sure?",
@@ -840,7 +854,8 @@
         "pricePerHour": {
           "label": "Price per hour",
           "tooltip": "Price per hour of the option",
-          "placeholder": "Select price per hour"
+          "placeholder": "Select price per hour",
+          "suffix": "/hr"
         },
         "durationStep": {
           "label": "Duration step",
@@ -1207,6 +1222,113 @@
         "deleteSelected": "Delete selected"
       }
     },
+    "giftCards": {
+      "title": "Gift cards",
+      "description": "Manage gift cards",
+      "addNew": "Add New",
+      "new": "New",
+      "newTitle": "New gift card",
+      "newDescription": "Add new gift card",
+      "editDescription": "Edit gift card",
+      "table": {
+        "payments": {
+          "title": "Payments",
+          "description": "Payments made with this gift card",
+          "noPayments": "No payments found",
+          "addPayment": "Add payment"
+        },
+        "columns": {
+          "code": "Code",
+          "amount": "Amount",
+          "amountLeft": "Amount left",
+          "expiresAt": "Expires at",
+          "status": "Status",
+          "createdAt": "Created at",
+          "updatedAt": "Updated at",
+          "payments": "Payments",
+          "customer": "Customer"
+        },
+        "cellAction": {
+          "giftCardDeleted": "Gift card {code} was deleted.",
+          "giftCardSetActive": "Gift card {code} was activated.",
+          "giftCardSetInactive": "Gift card {code} was deactivated.",
+          "actions": "Actions",
+          "update": "Update",
+          "delete": "Delete",
+          "deleteFromSource": "Can be deleted only from {appName}",
+          "setActive": "Activate",
+          "setInactive": "Deactivate"
+        },
+        "statusBadges": {
+          "active": "Active",
+          "inactive": "Inactive",
+          "expired": "Expired",
+          "noAmountLeft": "No amount left"
+        }
+      },
+      "setStatusSelected": {
+        "setActive": "Activate",
+        "setInactive": "Deactivate",
+        "buttonActive": "Activate {count, plural, =1 {gift card} other {# gift cards}}",
+        "buttonInactive": "Deactivate {count, plural, =1 {gift card} other {# gift cards}}",
+        "confirmTitleActive": "Activate selected gift cards?",
+        "confirmTitleInactive": "Deactivate selected gift cards?",
+        "confirmDescription": "This will change the status of the selected gift cards.",
+        "successActive": "Selected gift cards have been activated.",
+        "successInactive": "Selected gift cards have been deactivated.",
+        "error": "There was a problem with your request.",
+        "cancel": "Cancel"
+      },
+      "deleteSelected": {
+        "success": "Selected gift cards have been deleted",
+        "error": "There was a problem with your request.",
+        "button": "Delete selected {count, plural, =1 {gift card} other {# gift cards}}",
+        "confirmTitle": "Are you absolutely sure?",
+        "confirmDescription": "This action cannot be undone. This will delete selected gift cards.",
+        "cancel": "Cancel",
+        "deleteSelected": "Delete selected"
+      },
+      "form": {
+        "code": {
+          "label": "Code",
+          "placeholder": "XXX-XXX-XXX",
+          "tooltip": "Unique code for the gift card",
+          "generateTooltip": "Generate a new code for the gift card",
+          "copied": "Code copied to clipboard",
+          "copyToClipboardTooltip": "Copy code to clipboard"
+        },
+        "amount": {
+          "label": "Amount",
+          "placeholder": "50",
+          "tooltip": "Amount of the gift card"
+        },
+        "expiresAt": {
+          "label": "Expires at",
+          "tooltip": "Date when gift card expires"
+        },
+        "paymentMethod": {
+          "label": "Payment method",
+          "tooltip": "Payment method used to buy the gift card"
+        },
+        "status": {
+          "label": "Status",
+          "tooltip": "Status of the gift card",
+          "options": {
+            "active": "Active",
+            "inactive": "Inactive"
+          }
+        },
+        "customerId": {
+          "label": "Customer",
+          "tooltip": "Customer who bought the gift card"
+        },
+        "toasts": {
+          "created": "Gift card created successfully",
+          "changesSaved": "Your changes were saved.",
+          "requestError": "There was a problem with your request."
+        }
+      }
+    },
     "addons": {
       "title": "Add-ons",
       "description": "Manage add-ons",
@@ -1288,6 +1410,9 @@
       "close": "Close"
     },
     "form": {
+      "subject": "Email subject",
+      "subjectTooltip": "Email subject that will be used to send the message",
+      "subjectPlaceholder": "Subject",
       "name": "Template name",
       "nameTooltip": "Unique template name",
       "namePlaceholder": "Template name",
@@ -1464,6 +1589,10 @@
     "appStore": "App Store",
     "noConnectedApps": "You do not have any connected apps",
     "defaultAppsForm": {
+      "payment": {
+        "label": "Payment processor",
+        "placeholder": "Disable payments"
+      },
       "emailSender": {
         "label": "Email sender",
         "placeholder": "Use default email sender"
@@ -1592,10 +1721,11 @@
         },
         "payments": {
           "enableDeposits": "Enable Deposits",
-          "enableDepositsTooltip": "Enables ability to ask for a deposit to book an appointment",
+          "enableDepositsTooltip": "Enables ability to ask for a deposit to book an appointment. Default payment app must be configured in the default apps section.",
           "enable": "Enable",
           "disable": "Disable",
           "paymentsApp": "Payments app",
+          "appointments": "appointments",
           "paymentsAppTooltip": "What payment processor to use for payments",
           "requireDeposit": "Require deposit",
           "requireDepositTooltip1": "If enabled, each customer will be required to pay a deposit to book an appointment",
@@ -2140,7 +2270,9 @@
   "payment": {
     "card": {
       "amount": "Amount",
+      "giftCardCode": "Gift card code",
       "transactionId": "Transaction ID",
+      "customer": "Customer",
       "timePaid": "Time paid",
       "timeRefunded": "Time refunded",
       "amountLeft": "Amount left",
@@ -2179,10 +2311,17 @@
         "method": {
           "label": "Method",
           "cash": "Cash",
-          "in-person-card": "Card"
+          "in-person-card": "Card",
+          "gift-card": "Gift card"
         },
         "type": {
           "label": "Type"
+        },
+        "giftCardId": {
+          "label": "Gift card"
+        },
+        "customerId": {
+          "label": "Customer"
         }
       }
     },
@@ -2196,7 +2335,8 @@
       "fullPayment": "Full payment",
       "deposit": "Deposit",
       "rescheduleFee": "Reschedule fee",
-      "cancellationFee": "Cancellation fee"
+      "cancellationFee": "Cancellation fee",
+      "giftCard": "Gift card purchase"
     },
     "types": {
       "deposit": "Deposit",
@@ -2208,7 +2348,8 @@
     },
     "methods": {
       "cash": "Cash",
-      "card": "Card"
+      "card": "Card",
+      "giftCard": "Gift card"
     },
     "feeTypes": {
       "transaction": "Transaction fee",
@@ -2373,6 +2514,8 @@
     }
   },
   "customerSelector": {
+    "placeholder": "Select customer",
+    "requestFailed": "Request to fetch customers has failed",
     "addNew": "Create new",
     "dialog": {
       "title": "Create new customer",
@@ -2384,5 +2527,10 @@
       },
       "confirm": "Create"
     }
+  },
+  "giftCardSelector": {
+    "amountLabel": "${amount} (amount left: ${amountLeft})",
+    "expiresAt": "Expires at {expiresAt}",
+    "placeholder": "Select gift card"
   }
 }

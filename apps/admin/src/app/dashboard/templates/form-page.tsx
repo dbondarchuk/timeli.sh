@@ -1,24 +1,31 @@
 import { getServicesContainer, getWebsiteUrl } from "@/app/utils";
 import { TemplateForm } from "@/components/admin/templates/form";
-import { TemplatesTemplate } from "@/components/admin/templates/templates/type";
 import { getI18nAsync } from "@timelish/i18n/server";
-import { CommunicationChannel, Template } from "@timelish/types";
-import { Breadcrumbs } from "@timelish/ui";
 import {
-  demoAppointment,
-  demoWaitlistEntry,
-  getAdminUrl,
-  getArguments,
-} from "@timelish/utils";
+  CommunicationChannel,
+  DemoArguments,
+  IDemoArgumentsProvider,
+  Template,
+  TemplatesTemplate,
+} from "@timelish/types";
+import { Breadcrumbs } from "@timelish/ui";
+import { demoAppointment, getAdminUrl, getArguments } from "@timelish/utils";
 import { notFound } from "next/navigation";
 import React from "react";
 import { getTemplate } from "./cached";
+import { getAllTemplates } from "./utils";
 
 export const TemplateFormPage: React.FC<
-  | {
+  | ({
       type: CommunicationChannel;
-      template?: TemplatesTemplate;
-    }
+    } & (
+      | {
+          templateId: string;
+        }
+      | {
+          cloneFromId: string;
+        }
+    ))
   | {
       id: string;
     }
@@ -33,6 +40,20 @@ export const TemplateFormPage: React.FC<
     "social",
   );
 
+  const demoEmailArgumentsArray =
+    await servicesContainer.connectedAppsService.executeHooks<
+      IDemoArgumentsProvider,
+      DemoArguments
+    >("demo-arguments-provider", async (app, service) => {
+      return (await service.getDemoEmailArguments?.(app.data)) ?? {};
+    });
+
+  const demoEmailArguments = demoEmailArgumentsArray
+    .filter((val) => !!val)
+    .reduce((acc, curr) => {
+      return { ...acc, ...curr };
+    }, {});
+
   const demoArguments = getArguments({
     appointment: demoAppointment,
     config,
@@ -40,15 +61,13 @@ export const TemplateFormPage: React.FC<
     websiteUrl,
     customer: demoAppointment.customer,
     locale: config.general.language,
-    additionalProperties: {
-      waitlistEntry: demoWaitlistEntry,
-    },
+    additionalProperties: demoEmailArguments,
   });
 
   let initialData: Template | undefined;
   let type: CommunicationChannel;
   let template: TemplatesTemplate | undefined;
-  if ("id" in props) {
+  if ("id" in props && props.id) {
     const data = await getTemplate(props.id);
     if (!data) {
       notFound();
@@ -56,9 +75,29 @@ export const TemplateFormPage: React.FC<
 
     initialData = data;
     type = data.type;
+  } else if ("cloneFromId" in props && props.cloneFromId) {
+    const data = await getTemplate(props.cloneFromId);
+    if (!data) {
+      notFound();
+    }
+
+    type = data.type;
+    template = data;
   } else {
-    type = props.type;
-    template = props.template;
+    type = "type" in props ? (props.type ?? "email") : "email";
+    if ("templateId" in props && props.templateId) {
+      const locale = config.general.language;
+      const allTemplates = await getAllTemplates(type, locale);
+
+      const possibleTemplate = allTemplates.find(
+        (template) => template.id === props.templateId,
+      )?.template;
+      if (!possibleTemplate) {
+        notFound();
+      }
+
+      template = possibleTemplate;
+    }
   }
 
   const breadcrumbItems = [

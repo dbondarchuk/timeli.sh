@@ -1,4 +1,5 @@
 import {
+  ApplyGiftCardsSuccessResponse,
   Availability,
   CollectPayment,
   DateTime,
@@ -62,6 +63,15 @@ export type ModifyAppointmentFormContextProps = {
   paymentInformation?: CollectPayment | null;
   setPaymentInformation: (form?: CollectPayment | null) => void;
   fetchPaymentInformation: () => Promise<CollectPayment | null>;
+
+  giftCards?: ApplyGiftCardsSuccessResponse["giftCards"];
+  setGiftCards: (
+    giftCards: ApplyGiftCardsSuccessResponse["giftCards"] | undefined,
+  ) => void;
+  applyGiftCards: (
+    codes: string[],
+    amount: number,
+  ) => Promise<ApplyGiftCardsSuccessResponse["giftCards"] | undefined>;
 
   goBack?: () => void;
 

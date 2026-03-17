@@ -24,7 +24,7 @@ import * as z from "zod";
 import { checkFormNameUnique, createForm, updateForm } from "../../actions";
 import {
   defaultOneLineLength,
-  FormModel,
+  FormUpdateModel,
   getFormSchemaWithUniqueCheck,
 } from "../../models";
 import {
@@ -36,7 +36,7 @@ import {
 import { FormFieldCard } from "./field-card";
 
 export const FormEditForm: React.FC<{
-  initialData?: FormModel;
+  initialData?: FormUpdateModel & { _id?: string; isArchived?: boolean };
   appId: string;
 }> = ({ initialData, appId }) => {
   const t = useI18n<FormsAdminNamespace, FormsAdminKeys>(formsAdminNamespace);
@@ -71,9 +71,7 @@ export const FormEditForm: React.FC<{
     },
   });
 
-  const name = form.watch("name");
-  const isNewForm = !initialData;
-  const isArchived = initialData?.isArchived ?? false;
+  const isArchived = !!initialData?._id && !initialData?.isArchived;
   const notificationsEnabled = form.watch("notifications.enabled");
   const fieldsDisabled = loading || isArchived;
 
@@ -218,7 +216,7 @@ export const FormEditForm: React.FC<{
                 return (
                   <FormItem>
                     <FormLabel>
-                      {t("form.notifications.enabled.label")}{" "}
+                      <span>{t("form.notifications.enabled.label")}</span>{" "}
                       <InfoTooltip>
                         {t("form.notifications.enabled.description")}
                       </InfoTooltip>
@@ -242,7 +240,7 @@ export const FormEditForm: React.FC<{
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      {t("form.notifications.email.label")}{" "}
+                      <span>{t("form.notifications.email.label")}</span>{" "}
                       <InfoTooltip>
                         {t("form.notifications.email.description")}
                       </InfoTooltip>
@@ -266,7 +264,7 @@ export const FormEditForm: React.FC<{
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    {t("form.requireCustomerId.label")}{" "}
+                    <span>{t("form.requireCustomerId.label")}</span>{" "}
                     <InfoTooltip>
                       {t("form.requireCustomerId.description")}
                     </InfoTooltip>

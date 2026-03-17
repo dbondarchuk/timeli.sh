@@ -69,6 +69,7 @@ export const CellAction: React.FC<CellActionProps> = ({ field }) => {
           <DropdownMenuLabel>
             {t("services.fields.table.cellAction.actions")}
           </DropdownMenuLabel>
+          <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
             <Link
               href={`/dashboard/services/fields/new?from=${field._id}`}
@@ -88,6 +89,7 @@ export const CellAction: React.FC<CellActionProps> = ({ field }) => {
               {t("services.fields.table.cellAction.update")}
             </Link>
           </DropdownMenuItem>
+          <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => setOpen(true)}>
             <Trash className="size-3.5" />{" "}
             {t("services.fields.table.cellAction.delete")}

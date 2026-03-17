@@ -9,12 +9,11 @@ import {
   InfoTooltip,
   Input,
   InputGroup,
+  InputGroupAddon,
+  InputGroupAddonClasses,
   InputGroupInput,
   InputGroupInputClasses,
-  InputGroupSuffixClasses,
-  InputSuffix,
 } from "@timelish/ui";
-import { AppSelector } from "@timelish/ui-admin";
 import { TabProps } from "./types";
 
 export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
@@ -41,11 +40,7 @@ export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
                 value={field.value}
                 onValueChange={(val) => {
                   field.onChange(val);
-                  if (val) {
-                    form.setValue("payments.paymentAppId", "" as any);
-                  }
                   field.onBlur();
-                  form.trigger("payments.paymentAppId");
                 }}
                 className="w-full"
                 trueLabel={t("settings.appointments.form.payments.enable")}
@@ -58,36 +53,6 @@ export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
       />
       {enablePayments && (
         <>
-          <FormField
-            control={form.control}
-            name="payments.paymentAppId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>
-                  {t("settings.appointments.form.payments.paymentsApp")}{" "}
-                  <InfoTooltip>
-                    {t(
-                      "settings.appointments.form.payments.paymentsAppTooltip",
-                    )}
-                  </InfoTooltip>
-                </FormLabel>
-                <FormControl className="grid">
-                  <AppSelector
-                    scope="payment"
-                    className="w-full"
-                    disabled={disabled}
-                    value={field.value}
-                    onItemSelect={(val) => {
-                      field.onChange(val);
-                      field.onBlur();
-                      form.trigger("payments.enabled");
-                    }}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
           {/* <div className="gap-2 flex flex-col md:grid md:grid-cols-2 md:gap-4 w-full"> */}
           <FormField
             control={form.control}
@@ -151,9 +116,9 @@ export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
                             {...field}
                           />
                         </InputGroupInput>
-                        <InputSuffix className={InputGroupSuffixClasses()}>
+                        <InputGroupAddon className={InputGroupAddonClasses()}>
                           %
-                        </InputSuffix>
+                        </InputGroupAddon>
                       </InputGroup>
                     </FormControl>
                     <FormMessage />
@@ -187,9 +152,11 @@ export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
                             {...field}
                           />
                         </InputGroupInput>
-                        <InputSuffix className={InputGroupSuffixClasses()}>
-                          appointments
-                        </InputSuffix>
+                        <InputGroupAddon className={InputGroupAddonClasses()}>
+                          {t(
+                            "settings.appointments.form.payments.appointments",
+                          )}
+                        </InputGroupAddon>
                       </InputGroup>
                     </FormControl>
                     <FormMessage />
@@ -217,13 +184,13 @@ export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
                 </FormLabel>
                 <FormControl>
                   <InputGroup>
-                    <InputSuffix
-                      className={InputGroupSuffixClasses({
+                    <InputGroupAddon
+                      className={InputGroupAddonClasses({
                         variant: "prefix",
                       })}
                     >
                       $
-                    </InputSuffix>
+                    </InputGroupAddon>
                     <InputGroupInput>
                       <Input
                         disabled={disabled}

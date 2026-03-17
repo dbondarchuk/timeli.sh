@@ -17,10 +17,10 @@ import {
   InfoTooltip,
   Input,
   InputGroup,
+  InputGroupAddon,
+  InputGroupAddonClasses,
   InputGroupInput,
   InputGroupInputClasses,
-  InputGroupSuffixClasses,
-  InputSuffix,
   Select,
   SelectContent,
   SelectItem,
@@ -220,9 +220,9 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
                     {...field}
                   />
                 </InputGroupInput>
-                <InputSuffix className={InputGroupSuffixClasses()}>
+                <InputGroupAddon className={InputGroupAddonClasses()}>
                   {t("settings.appointments.form.main.weeks")}
-                </InputSuffix>
+                </InputGroupAddon>
               </InputGroup>
             </FormControl>
             <FormMessage />
@@ -254,9 +254,9 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
                     {...field}
                   />
                 </InputGroupInput>
-                <InputSuffix className={InputGroupSuffixClasses()}>
+                <InputGroupAddon className={InputGroupAddonClasses()}>
                   {t("settings.appointments.form.main.hours")}
-                </InputSuffix>
+                </InputGroupAddon>
               </InputGroup>
             </FormControl>
             <FormMessage />
@@ -288,9 +288,9 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
                     {...field}
                   />
                 </InputGroupInput>
-                <InputSuffix className={InputGroupSuffixClasses()}>
+                <InputGroupAddon className={InputGroupAddonClasses()}>
                   {t("settings.appointments.form.main.minutes")}
-                </InputSuffix>
+                </InputGroupAddon>
               </InputGroup>
             </FormControl>
             <FormMessage />

@@ -283,7 +283,7 @@ export class TextBeltWebhookService {
           const defaultApps =
             await this.configurationService.getConfiguration("defaultApps");
           const textMessageResponderAppId =
-            defaultApps.textMessageResponder?.appId;
+            defaultApps.textMessageResponderAppId;
           if (textMessageResponderAppId) {
             const { app, service } =
               await this.connectedAppsService.getAppService<ITextMessageResponder>(

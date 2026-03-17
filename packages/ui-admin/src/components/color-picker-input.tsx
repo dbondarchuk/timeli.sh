@@ -5,9 +5,9 @@ import {
   cn,
   Input,
   InputGroup,
+  InputGroupAddonClasses,
   InputGroupInput,
   InputGroupInputClasses,
-  InputGroupSuffixClasses,
   InputProps,
   Popover,
   PopoverContent,
@@ -47,7 +47,7 @@ export const ColorPickerInput: React.FC<ColorPickerInputProps> = ({
     <InputGroup>
       <div
         className={cn(
-          InputGroupSuffixClasses({ variant: "prefix" }),
+          InputGroupAddonClasses({ variant: "prefix" }),
           "size-8",
           "transition-colors",
         )}
@@ -71,7 +71,7 @@ export const ColorPickerInput: React.FC<ColorPickerInputProps> = ({
             type="button"
             variant="ghost"
             disabled={disabled}
-            className={InputGroupSuffixClasses()}
+            className={InputGroupAddonClasses()}
           >
             <Palette size={16} />
           </Button>

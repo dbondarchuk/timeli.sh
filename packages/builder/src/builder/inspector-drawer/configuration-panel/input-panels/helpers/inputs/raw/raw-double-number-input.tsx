@@ -4,11 +4,11 @@ import {
   cn,
   Input,
   InputGroup,
+  InputGroupAddon,
+  InputGroupAddonClasses,
   InputGroupInput,
   InputGroupInputClasses,
-  InputGroupSuffixClasses,
   InputProps,
-  InputSuffix,
 } from "@timelish/ui";
 import { ResetButton } from "../reset-button";
 
@@ -69,14 +69,14 @@ export const RawDoubleNumberInput: React.FC<RawDoubleNumberInputProps> = ({
     >
       <InputGroup>
         {prefix1 && (
-          <InputSuffix
-            className={InputGroupSuffixClasses({
+          <InputGroupAddon
+            className={InputGroupAddonClasses({
               variant: "prefix",
               h: size,
             })}
           >
             {prefix1}
-          </InputSuffix>
+          </InputGroupAddon>
         )}
         <InputGroupInput>
           <Input
@@ -91,9 +91,9 @@ export const RawDoubleNumberInput: React.FC<RawDoubleNumberInputProps> = ({
             onChange={(e) => handleChange(e.target.value, false)}
           />
         </InputGroupInput>
-        <InputSuffix className={InputGroupSuffixClasses({ h: size })}>
+        <InputGroupAddon className={InputGroupAddonClasses({ h: size })}>
           {unit}
-        </InputSuffix>
+        </InputGroupAddon>
         {nullable && (
           <ResetButton
             size={size}
@@ -106,14 +106,14 @@ export const RawDoubleNumberInput: React.FC<RawDoubleNumberInputProps> = ({
       {x && <div>{x}</div>}
       <InputGroup>
         {prefix2 && (
-          <InputSuffix
-            className={InputGroupSuffixClasses({
+          <InputGroupAddon
+            className={InputGroupAddonClasses({
               variant: "prefix",
               h: size,
             })}
           >
             {prefix2}
-          </InputSuffix>
+          </InputGroupAddon>
         )}
         <InputGroupInput>
           <Input
@@ -128,9 +128,9 @@ export const RawDoubleNumberInput: React.FC<RawDoubleNumberInputProps> = ({
             onChange={(e) => handleChange(e.target.value, true)}
           />
         </InputGroupInput>
-        <InputSuffix className={InputGroupSuffixClasses({ h: size })}>
+        <InputGroupAddon className={InputGroupAddonClasses({ h: size })}>
           {unit}
-        </InputSuffix>
+        </InputGroupAddon>
         {nullable && (
           <ResetButton
             size={size}

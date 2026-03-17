@@ -38,17 +38,17 @@ export const ConfirmationCard = forwardRef<
               <CheckCircle2 className="w-6 h-6 text-primary" />
             </div>
             <h2 className="text-lg font-semibold text-foreground mb-2">
-              {i18n("confirmation_success_title")}
+              {i18n("booking.confirmation.successTitle")}
             </h2>
             <p className="text-sm text-muted-foreground mb-6">
-              {i18n("confirmation_success_message", {
+              {i18n("booking.confirmation.successMessage", {
                 name: appointment.fields.name,
                 service: appointment.option.name,
               })}
             </p>
             <div className="bg-muted/50 flex flex-col gap-2 rounded-lg p-4 text-left">
               <p className="text-sm text-muted-foreground">
-                {i18n("confirmation_success_appointment_details")}
+                {i18n("booking.confirmation.appointmentDetails")}
               </p>
               <p className="text-sm font-semibold text-foreground">
                 {appointment.option.name}
@@ -63,9 +63,9 @@ export const ConfirmationCard = forwardRef<
                 </>
               )}
               <p className="text-xs text-muted-foreground mt-1">
-                {i18n("confirmation_success_duration", {
+                {i18n("booking.confirmation.duration", {
                   duration: i18n(
-                    "duration_hour_minutes_format",
+                    "common.formats.durationHourMinutes",
                     durationToTime(appointment.totalDuration || 0),
                   ),
                 })}
@@ -105,7 +105,7 @@ export const ConfirmationCard = forwardRef<
                   variant="outline"
                   className="confirm-new-booking-button"
                 >
-                  {i18n("confirmation_new_booking_button")}
+                  {i18n("booking.confirmation.newBookingButton")}
                 </Link>
               </div>
             )}
@@ -113,7 +113,7 @@ export const ConfirmationCard = forwardRef<
         </div>
       ) : (
         <div className="relative text-center">
-          <h2>{i18n("appointment_fetch_failed_title")}</h2>
+          <h2>{i18n("modification.appointmentFetchFailed.title")}</h2>
         </div>
       )}
     </div>

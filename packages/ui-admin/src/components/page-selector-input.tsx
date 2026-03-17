@@ -6,9 +6,9 @@ import {
   Button,
   Input,
   InputGroup,
+  InputGroupAddonClasses,
   InputGroupInput,
   InputGroupInputClasses,
-  InputGroupSuffixClasses,
   inputVariants,
 } from "@timelish/ui";
 import { VariantProps } from "class-variance-authority";
@@ -70,7 +70,7 @@ export const PageSelectorInput: React.FC<PageSelectorInputProps> = ({
         variant="outline"
         disabled={disabled}
         size={rest.h}
-        className={InputGroupSuffixClasses({ h: rest.h })}
+        className={InputGroupAddonClasses({ h: rest.h })}
         onClick={openDialog}
       >
         {t("form.select")}

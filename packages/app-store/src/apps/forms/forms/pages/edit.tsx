@@ -1,7 +1,7 @@
 "use client";
 
 import { useI18n } from "@timelish/i18n";
-import { Spinner } from "@timelish/ui";
+import { AutoSkeleton, toast } from "@timelish/ui";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getFormById } from "../../actions";
@@ -27,6 +27,7 @@ export const FormsEditPage = ({ appId }: { appId: string }) => {
         const data = await getFormById(appId, formId);
         setForm(data);
       } catch (error) {
+        toast.error(t("app.pages.edit.notFound"));
         console.error("Error fetching form:", error);
       } finally {
         setLoading(false);
@@ -40,8 +41,10 @@ export const FormsEditPage = ({ appId }: { appId: string }) => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <Spinner />
+      <div className="flex flex-col flex-1 gap-8">
+        <AutoSkeleton loading>
+          <FormEditForm appId={appId} />
+        </AutoSkeleton>
       </div>
     );
   }
@@ -54,5 +57,9 @@ export const FormsEditPage = ({ appId }: { appId: string }) => {
     );
   }
 
-  return <FormEditForm initialData={form} appId={appId} />;
+  return (
+    <div className="flex flex-col flex-1 gap-8">
+      <FormEditForm initialData={form} appId={appId} />
+    </div>
+  );
 };

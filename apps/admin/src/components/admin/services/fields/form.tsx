@@ -24,10 +24,10 @@ import {
   InfoTooltip,
   Input,
   InputGroup,
+  InputGroupAddon,
+  InputGroupAddonClasses,
   InputGroupInput,
   InputGroupInputClasses,
-  InputGroupSuffixClasses,
-  InputSuffix,
   Select,
   SelectContent,
   SelectItem,
@@ -315,9 +315,9 @@ export const ServiceFieldForm: React.FC<{
                             {...field}
                           />
                         </InputGroupInput>
-                        <InputSuffix className={InputGroupSuffixClasses()}>
+                        <InputGroupAddon className={InputGroupAddonClasses()}>
                           MB
-                        </InputSuffix>
+                        </InputGroupAddon>
                       </InputGroup>
                     </FormControl>
                     <FormMessage />

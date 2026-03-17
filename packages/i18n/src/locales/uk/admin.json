@@ -44,6 +44,10 @@
         "disabled": "Вимкнено",
         "active": "Активна"
       },
+      "giftCardStatus": {
+        "inactive": "Неактивна",
+        "active": "Активна"
+      },
       "paymentStatus": {
         "paid": "Оплачено",
         "refunded": "Повернено",
@@ -56,6 +60,12 @@
         "paymentAdded": "Платіж додано",
         "paymentRefunded": "Платіж повернено",
         "updated": "Оновлено"
+      },
+      "paymentMethod": {
+        "cash": "Готівка",
+        "in-person-card": "Картка в особі",
+        "gift-card": "Подарункова карта",
+        "online": "Онлайн"
       },
       "filters": "Фільтри",
       "loading": "Завантаження"
@@ -89,6 +99,7 @@
     "addons": "Додатки",
     "options": "Опції",
     "discounts": "Знижки",
+    "giftCards": "Подарункові картки",
     "customers": "Клієнти",
     "website": "Веб-сайт",
     "pages": "Сторінки",
@@ -645,6 +656,7 @@
         "edit": "Редагувати",
         "delete": "Видалити",
         "view": "Переглянути",
+        "clone": "Клонувати",
         "copyRelativeUrl": "Копіювати відносний url",
         "copyAbsoluteUrl": "Копіювати абсолютний url"
       },
@@ -692,7 +704,8 @@
           "openMenu": "Відкрити меню",
           "actions": "Дії",
           "edit": "Редагувати",
-          "delete": "Видалити"
+          "delete": "Видалити",
+          "clone": "Клонувати"
         },
         "delete": {
           "title": "Ви абсолютно впевнені?",
@@ -773,7 +786,8 @@
           "openMenu": "Відкрити меню",
           "actions": "Дії",
           "edit": "Редагувати",
-          "delete": "Видалити"
+          "delete": "Видалити",
+          "clone": "Клонувати"
         }
       }
     }
@@ -840,7 +854,8 @@
         "pricePerHour": {
           "label": "Ціна за годину",
           "tooltip": "Ціна за годину опції",
-          "placeholder": "Вибрати ціну за годину"
+          "placeholder": "Вибрати ціну за годину",
+          "suffix": "/год"
         },
         "durationStep": {
           "label": "Крок тривалості",
@@ -1207,6 +1222,113 @@
         "deleteSelected": "Видалити вибрані"
       }
     },
+    "giftCards": {
+      "title": "Подарункові картки",
+      "description": "Керувати подарунковими картками",
+      "addNew": "Додати нову",
+      "new": "Нова",
+      "newTitle": "Нова подарункова картка",
+      "newDescription": "Додати нову подарункову картку",
+      "editDescription": "Редагувати подарункову картку",
+      "table": {
+        "payments": {
+          "title": "Платежі",
+          "description": "Платежі, здійснені цією подарунковою карткою",
+          "noPayments": "Платежі не знайдено",
+          "addPayment": "Додати платіж"
+        },
+        "columns": {
+          "code": "Код",
+          "amount": "Сума",
+          "amountLeft": "Залишок",
+          "expiresAt": "Дійсна до",
+          "status": "Статус",
+          "createdAt": "Створено",
+          "updatedAt": "Оновлено",
+          "payments": "Платежі",
+          "customer": "Клієнт"
+        },
+        "cellAction": {
+          "giftCardDeleted": "Подарункову картку {code} видалено.",
+          "giftCardSetActive": "Подарункову картку {code} позначено як активну.",
+          "giftCardSetInactive": "Подарункову картку {code} позначено як неактивну.",
+          "actions": "Дії",
+          "update": "Оновити",
+          "delete": "Видалити",
+          "deleteFromSource": "Можна видаляти тільки з {appName}",
+          "setActive": "Активувати",
+          "setInactive": "Деактивувати"
+        },
+        "statusBadges": {
+          "active": "Активна",
+          "inactive": "Неактивна",
+          "expired": "Закінчився",
+          "noAmountLeft": "Залишок закінчився"
+        }
+      },
+      "setStatusSelected": {
+        "setActive": "Активувати",
+        "setInactive": "Деактивувати",
+        "buttonActive": "Активувати {count, plural, =1 {подарункову картку} few {# подарункові картки} many {# подарункових карток} other {# подарункових карток}}",
+        "buttonInactive": "Деактивувати {count, plural, =1 {подарункову картку} few {# подарункові картки} many {# подарункових карток} other {# подарункових карток}}",
+        "confirmTitleActive": "Активувати вибрані подарункові картки?",
+        "confirmTitleInactive": "Деактивувати вибрані подарункові картки?",
+        "confirmDescription": "Це змінить статус вибраних подарункових карток.",
+        "successActive": "Вибрані подарункові картки активовано.",
+        "successInactive": "Вибрані подарункові картки деактивовано.",
+        "error": "Виникла проблема з вашим запитом.",
+        "cancel": "Скасувати"
+      },
+      "deleteSelected": {
+        "success": "Вибрані подарункові картки видалено",
+        "error": "Виникла проблема з вашим запитом.",
+        "button": "Видалити {count, plural, =1 {вибрану подарункову картку} few {вибрані # подарункові картки} many {вибраних # подарункових карток} other {вибраних # подарункових карток}}",
+        "confirmTitle": "Ви абсолютно впевнені?",
+        "confirmDescription": "Цю дію неможливо скасувати. Це видалить вибрані подарункові картки.",
+        "cancel": "Скасувати",
+        "deleteSelected": "Видалити вибрані"
+      },
+      "form": {
+        "code": {
+          "label": "Код",
+          "placeholder": "XXX-XXX-XXX",
+          "tooltip": "Унікальний код для подарункової картки",
+          "generateTooltip": "Згенерувати новий код для подарункової картки",
+          "copied": "Код скопійовано в буфер обміну",
+          "copyToClipboardTooltip": "Скопіювати код в буфер обміну"
+        },
+        "amount": {
+          "label": "Сума",
+          "placeholder": "50",
+          "tooltip": "Сума подарункової картки"
+        },
+        "expiresAt": {
+          "label": "Дійсна до",
+          "tooltip": "Дата закінчення терміну дії подарункової картки"
+        },
+        "paymentMethod": {
+          "label": "Спосіб оплати",
+          "tooltip": "Спосіб оплати при покупці подарункової картки"
+        },
+        "status": {
+          "label": "Статус",
+          "tooltip": "Статус подарункової картки",
+          "options": {
+            "active": "Активна",
+            "inactive": "Неактивна"
+          }
+        },
+        "customerId": {
+          "label": "Клієнт",
+          "tooltip": "Клієнт, який придбав подарункову картку"
+        },
+        "toasts": {
+          "created": "Подарункову картку успішно створено",
+          "changesSaved": "Ваші зміни збережено.",
+          "requestError": "Виникла проблема з вашим запитом."
+        }
+      }
+    },
     "addons": {
       "title": "Додатки",
       "description": "Керувати додатками",
@@ -1290,6 +1412,9 @@
     "form": {
       "name": "Назва шаблону",
       "nameTooltip": "Унікальна назва шаблону",
+      "subject": "Тема повідомлення",
+      "subjectPlaceholder": "Тема",
+      "subjectTooltip": "Тема повідомлення, яка буде використана для відправлення повідомлення",
       "namePlaceholder": "Назва шаблону",
       "validation": {
         "templateNotValid": "Шаблон недійсний"
@@ -1464,6 +1589,10 @@
     "appStore": "Магазин додатків",
     "noConnectedApps": "У вас немає підключених додатків",
     "defaultAppsForm": {
+      "payment": {
+        "label": "Платіжний процессор",
+        "placeholder": "Вимкнути платежі"
+      },
       "emailSender": {
         "label": "Відправник email",
         "placeholder": "Використовувати відправник email за замовчуванням"
@@ -1592,7 +1721,7 @@
         },
         "payments": {
           "enableDeposits": "Увімкнути завдатки",
-          "enableDepositsTooltip": "Увімкнути можливість просити завдаток для бронювання запису",
+          "enableDepositsTooltip": "Увімкнути можливість просити завдаток для бронювання запису. Платіжний додаток за замовчуванням повинен бути налаштований.",
           "enable": "Увімкнути",
           "disable": "Вимкнути",
           "paymentsApp": "Платіжний додаток",
@@ -1602,6 +1731,7 @@
           "requireDepositTooltip2": "Може бути перевизначено для кожного клієнта",
           "require": "Вимагати",
           "doNotRequire": "Не вимагати",
+          "appointments": "записів",
           "depositAmount": "Сума завдатку",
           "depositAmountTooltip": "<p>Сума завдатку у відсотках</p><p><strong>Приклад:</strong> Якщо встановлено 100, повна ціна має бути сплачена наперед</p><p><strong>Опціонально</strong></p>",
           "dontRequireIfCompletedMinNumberOfAppointments": "Мінімальна кількість записів для невимоги завдатку",
@@ -2140,7 +2270,9 @@
   "payment": {
     "card": {
       "amount": "Сума",
+      "giftCardCode": "Код подарункової картки",
       "transactionId": "ID транзакції",
+      "customer": "Клієнт",
       "timePaid": "Час оплати",
       "timeRefunded": "Час повернення",
       "refund": "Повернення",
@@ -2179,10 +2311,17 @@
         "method": {
           "label": "Спосіб",
           "cash": "Готівка",
-          "in-person-card": "Картка"
+          "in-person-card": "Картка",
+          "gift-card": "Подарункова картка"
         },
         "type": {
           "label": "Тип платежу"
+        },
+        "giftCardId": {
+          "label": "Подарункова картка"
+        },
+        "customerId": {
+          "label": "Клієнт"
         }
       }
     },
@@ -2196,7 +2335,8 @@
       "fullPayment": "Повна оплата",
       "deposit": "Депозит",
       "rescheduleFee": "Плата за перенесення",
-      "cancellationFee": "Плата за відміну"
+      "cancellationFee": "Плата за відміну",
+      "giftCard": "Покупка подарункової картки"
     },
     "types": {
       "deposit": "Депозит",
@@ -2208,7 +2348,8 @@
     },
     "methods": {
       "cash": "Готівка",
-      "card": "Картка"
+      "card": "Картка",
+      "giftCard": "Подарункова картка"
     },
     "feeTypes": {
       "transaction": "Комісія транзакції",
@@ -2374,6 +2515,8 @@
   },
   "customerSelector": {
     "addNew": "Створити нового",
+    "placeholder": "Вибрати клієнта",
+    "requestFailed": "Запит на отримання клієнтів не вдався",
     "dialog": {
       "title": "Створити нового клієнта",
       "description": "Введіть деталі нового клієнта",
@@ -2384,5 +2527,10 @@
       },
       "confirm": "Створити"
     }
+  },
+  "giftCardSelector": {
+    "amountLabel": "${amount} (залишок: ${amountLeft})",
+    "expiresAt": "Дійсна до {expiresAt}",
+    "placeholder": "Виберіть подарункову картку"
   }
 }

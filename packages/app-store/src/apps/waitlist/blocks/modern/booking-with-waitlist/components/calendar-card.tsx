@@ -56,7 +56,7 @@ const DayButton = (props: DayButtonProps) => {
         </div>
       </TooltipResponsiveTrigger>
       <TooltipResponsiveContent>
-        {t("no_avaialable_time_slots")}
+        {t("common.labels.noAvailableTimeSlots")}
       </TooltipResponsiveContent>
     </TooltipResponsive>
   ) : (
@@ -182,12 +182,12 @@ export const CalendarCard: React.FC = () => {
     [time],
   );
 
-  const timeZoneLabel = i18n.rich("select_timezone_label_format", {
+  const timeZoneLabel = i18n.rich("common.formats.selectTimezoneLabel", {
     timeZoneCombobox: () => (
       <Combobox
         values={timeZones}
         className="mx-2"
-        searchLabel={i18n("search_timezone_label")}
+        searchLabel={i18n("common.labels.searchTimezone")}
         customSearch={(search) =>
           timeZones.filter(
             (zone) =>
@@ -251,11 +251,11 @@ export const CalendarCard: React.FC = () => {
       {/* Time Slots */}
       <div className="available-times-container">
         <h4 className="text-sm font-medium text-foreground mb-3 available-times-title">
-          {i18n("available_times")}
+          {i18n("common.labels.availableTimes")}
         </h4>
         {isLoading ? (
           <div className="text-center py-4 text-xs text-muted-foreground loading-available-times-message">
-            {i18n("loading_available_times")}
+            {i18n("common.labels.loadingAvailableTimes")}
           </div>
         ) : adjustedAvailability.length > 0 && date ? (
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-7 gap-2 calendar-times-list">
@@ -273,7 +273,7 @@ export const CalendarCard: React.FC = () => {
           </div>
         ) : (
           <div className="text-center py-4 text-xs text-muted-foreground no-available-times-message">
-            {i18n("select_date_first_label")}
+            {i18n("common.labels.selectDateFirst")}
           </div>
         )}
       </div>

@@ -41,7 +41,7 @@ export const ConfirmationCard = forwardRef<
                 <div className="flex flex-row items-center">
                   <Timer className="mr-1" />
                   {i18n(
-                    "duration_hour_min_format",
+                    "common.formats.durationHourMin",
                     durationToTime(appointment.totalDuration),
                   )}
                 </div>
@@ -58,11 +58,11 @@ export const ConfirmationCard = forwardRef<
             <div className="relative text-center">
               <div className="mb-3">
                 <h2 className="text-lg font-bold">
-                  {i18n("confirmation_success_title")}
+                  {i18n("booking.confirmation.successTitle")}
                 </h2>
               </div>
               <div className="flex flex-row gap-2 justify-around flex-wrap">
-                {i18n("confirmation_success_message", {
+                {i18n("booking.confirmation.successMessage", {
                   name: appointment.fields.name,
                   service: appointment.option.name,
                 })}
@@ -73,7 +73,7 @@ export const ConfirmationCard = forwardRef<
       ) : (
         <CardContent>
           <div className="relative text-center">
-            <h2>{i18n("appointment_fetch_failed_title")}</h2>
+            <h2>{i18n("modification.appointmentFetchFailed.title")}</h2>
           </div>
         </CardContent>
       )}

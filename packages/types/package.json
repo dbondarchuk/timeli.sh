@@ -9,7 +9,10 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
-  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./fonts": "./src/configuration/styling/fonts.json"
+  },
   "devDependencies": {
     "@timelish/eslint-config": "*",
     "@timelish/typescript-config": "*",

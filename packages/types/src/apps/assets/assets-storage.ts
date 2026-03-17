@@ -14,7 +14,9 @@ import { Readable } from "stream";
 // }
 
 export interface IAssetsStorage {
-  getFile(filename: string): Promise<Readable | null>;
+  getFile(
+    filename: string,
+  ): Promise<{ stream: Readable; contentLength: number } | null>;
   saveFile(filename: string, file: Readable, fileLength: number): Promise<void>;
   deleteFile(filename: string): Promise<void>;
   deleteFiles(filenames: string[]): Promise<void>;

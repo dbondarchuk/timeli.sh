@@ -387,16 +387,6 @@ export class WaitlistNotificationsConnectedApp
         return;
       }
 
-      if (!data.customerNewEntrySubject) {
-        logger.warn(
-          { appId: appData._id, entryId: entry._id },
-          "No customer new entry subject configured, skipping email notification",
-        );
-        return;
-      }
-
-      const subject = templateSafeWithError(data.customerNewEntrySubject, args);
-
       const template = await this.props.services.templatesService.getTemplate(
         data.customerNewEntryTemplateId,
       );
@@ -409,6 +399,16 @@ export class WaitlistNotificationsConnectedApp
 
         return;
       }
+
+      if (template.type !== "email") {
+        logger.warn(
+          { appId: appData._id, entryId: entry._id },
+          "Template is not an email template, skipping email notification",
+        );
+        return;
+      }
+
+      const subject = templateSafeWithError(template.subject, args);
 
       logger.debug(
         { appId: appData._id, entryId: entry._id },

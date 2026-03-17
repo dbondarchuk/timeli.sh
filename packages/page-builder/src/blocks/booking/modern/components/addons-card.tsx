@@ -94,7 +94,7 @@ export const AddonsCard: React.FC = () => {
                       <p className="text-xs text-muted-foreground flex items-center gap-1 justify-end">
                         <Clock className="w-3 h-3" /> +
                         {t(
-                          "duration_hour_min_format",
+                          "common.formats.durationHourMin",
                           durationToTime(addon.duration),
                         )}
                       </p>

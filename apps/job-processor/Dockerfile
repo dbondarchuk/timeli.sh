@@ -53,6 +53,8 @@ COPY --from=builder --chown=job-processor:nodejs /app/apps/job-processor/package
 # Copy necessary node_modules for runtime
 COPY --from=builder /app/node_modules/@aws-sdk ./node_modules/@aws-sdk
 COPY --from=builder /app/node_modules/dotenv ./node_modules/dotenv
+COPY --from=builder /app/node_modules/@resvg ./node_modules/@resvg
+COPY --from=builder /app/node_modules/pdfkit/js/data ./dist/data
 
 USER job-processor
 

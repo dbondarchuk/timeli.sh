@@ -3,6 +3,7 @@
 import { clientApi, ClientApiError } from "@timelish/api-sdk";
 import { useI18n } from "@timelish/i18n";
 import type {
+  ApplyGiftCardsSuccessResponse,
   AppointmentAddon,
   AppointmentChoice,
   AppointmentFields,
@@ -53,18 +54,18 @@ export const Schedule: React.FC<
 
   const errors = React.useMemo(
     () => ({
-      fetchTitle: i18n("availability_fetch_failed_title"),
-      fetchDescription: i18n("availability_fetch_failed_description"),
+      fetchTitle: i18n("booking.availability.fetchFailedTitle"),
+      fetchDescription: i18n("booking.availability.fetchFailedDescription"),
       fetchPaymentInformationTitle: i18n(
-        "payment_information_fetch_failed_title",
+        "booking.payment.informationFetchFailedTitle",
       ),
       fetchPaymentInformationDescription: i18n(
-        "payment_information_fetch_failed_description",
+        "booking.payment.informationFetchFailedDescription",
       ),
-      submitTitle: i18n("submit_event_failed_title"),
-      submitDescription: i18n("submit_event_failed_description"),
+      submitTitle: i18n("booking.submitEvent.failedTitle"),
+      submitDescription: i18n("booking.submitEvent.failedDescription"),
       timeNotAvailableDescription: i18n(
-        "submit_event_failed_time_not_available_description",
+        "booking.submitEvent.timeNotAvailableDescription",
       ),
     }),
     [i18n],
@@ -100,6 +101,9 @@ export const Schedule: React.FC<
   ] = React.useState<boolean | undefined>(undefined);
 
   const [promoCode, setPromoCode] = React.useState<ApplyDiscountResponse>();
+  const [giftCards, setGiftCards] = React.useState<
+    ApplyGiftCardsSuccessResponse["giftCards"]
+  >([]);
   const [paymentInformation, setPaymentInformation] =
     React.useState<CollectPayment | null>();
 
@@ -169,7 +173,7 @@ export const Schedule: React.FC<
   const fetchAvailability = async () => {
     const totalDuration = getTotalDuration();
     if (!totalDuration) return;
-    if (errors.fetchTitle === "availability_fetch_failed_title") return;
+    if (errors.fetchTitle === "booking.availability.fetchFailedTitle") return;
 
     setIsLoading(true);
 
@@ -235,6 +239,7 @@ export const Schedule: React.FC<
       addonsIds: selectedAddons?.map((addon) => addon._id),
       promoCode: promoCode?.code,
       paymentIntentId: paymentInformation?.intent?._id,
+      giftCards: giftCards?.map((giftCard) => giftCard.code),
       fields: Object.entries(fields)
         .filter(([_, value]) => !((value as any) instanceof File))
         .reduce(
@@ -252,6 +257,25 @@ export const Schedule: React.FC<
       fetchAvailability();
     }
   }, [initialStep, i18n]);
+
+  const applyGiftCards = async (codes: string[], amount: number) => {
+    try {
+      const data = await clientApi.giftCards.applyGiftCards({
+        codes,
+        amount,
+      });
+
+      if (data.success) {
+        setGiftCards(data.giftCards);
+        return data.giftCards;
+      }
+
+      throw new Error(data.error);
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
 
   const fetchPaymentInformation = async (): Promise<CollectPayment | null> => {
     const request = getAppointmentRequest();
@@ -369,6 +393,9 @@ export const Schedule: React.FC<
           formFields,
           timeZone,
           availability,
+          giftCards,
+          setGiftCards,
+          applyGiftCards,
           paymentInformation,
           setPaymentInformation,
           fetchPaymentInformation,

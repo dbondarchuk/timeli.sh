@@ -70,7 +70,7 @@ export const getFields = (
       type: "name",
       data: defaultFieldLabels
         ? {
-            label: "form_name_label",
+            label: "common.labels.formName",
           }
         : undefined,
     },
@@ -80,7 +80,7 @@ export const getFields = (
       type: "email",
       data: defaultFieldLabels
         ? {
-            label: "form_email_label",
+            label: "common.labels.formEmail",
           }
         : undefined,
     },
@@ -90,7 +90,7 @@ export const getFields = (
       type: "phone",
       data: defaultFieldLabels
         ? {
-            label: "form_phone_label",
+            label: "common.labels.formPhone",
           }
         : undefined,
     },

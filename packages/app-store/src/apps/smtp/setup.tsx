@@ -2,6 +2,7 @@
 
 import { useI18n } from "@timelish/i18n";
 import {
+  AutoSkeleton,
   BooleanSelect,
   Form,
   FormControl,
@@ -26,7 +27,7 @@ import {
 export const SmtpAppSetup: React.FC<{ appId: string }> = ({ appId }) => {
   const t = useI18n<SmtpAdminNamespace, SmtpAdminKeys>(smtpAdminNamespace);
 
-  const { appStatus, form, isLoading, isValid, onSubmit } =
+  const { appStatus, form, isLoading, isDataLoading, isValid, onSubmit } =
     useConnectedAppSetup<SmtpConfiguration>({
       appId,
       appName: SmtpApp.name,
@@ -34,7 +35,7 @@ export const SmtpAppSetup: React.FC<{ appId: string }> = ({ appId }) => {
     });
 
   return (
-    <>
+    <AutoSkeleton loading={isDataLoading}>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
           <div className="flex flex-col items-center gap-4">
@@ -100,7 +101,7 @@ export const SmtpAppSetup: React.FC<{ appId: string }> = ({ appId }) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      {t("form.email.label")}{" "}
+                      <span>{t("form.email.label")}</span>{" "}
                       <InfoTooltip>{t("form.email.tooltip")}</InfoTooltip>
                     </FormLabel>
                     <FormControl>
@@ -120,7 +121,7 @@ export const SmtpAppSetup: React.FC<{ appId: string }> = ({ appId }) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      {t("form.authUser.label")}
+                      <span>{t("form.authUser.label")}</span>
                       <InfoTooltip>{t("form.authUser.tooltip")}</InfoTooltip>
                     </FormLabel>
                     <FormControl>
@@ -140,7 +141,7 @@ export const SmtpAppSetup: React.FC<{ appId: string }> = ({ appId }) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      {t("form.authPass.label")}
+                      <span>{t("form.authPass.label")}</span>
                       <InfoTooltip>{t("form.authPass.tooltip")}</InfoTooltip>
                     </FormLabel>
                     <FormControl>
@@ -169,6 +170,6 @@ export const SmtpAppSetup: React.FC<{ appId: string }> = ({ appId }) => {
           statusText={appStatus.statusText}
         />
       )}
-    </>
+    </AutoSkeleton>
   );
 };

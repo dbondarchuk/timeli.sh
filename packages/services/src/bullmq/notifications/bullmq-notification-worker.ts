@@ -139,7 +139,10 @@ export class BullMQNotificationWorker extends BaseBullMQClient {
 
     const email = jobData.data as Email;
     const notificationService = new SystemNotificationService(
-      new SmtpService(getSmtpConfiguration()),
+      new SmtpService(
+        getSmtpConfiguration(),
+        this.getServices("").assetsStorage,
+      ),
     );
 
     try {
@@ -384,7 +387,10 @@ export class BullMQNotificationWorker extends BaseBullMQClient {
 
   private getNotificationService(companyId: string): NotificationService {
     const services = this.getServices(companyId);
-    const defaultEmailService = new SmtpService(getSmtpConfiguration());
+    const defaultEmailService = new SmtpService(
+      getSmtpConfiguration(),
+      services.assetsStorage,
+    );
     const defaultTextMessageSender = new TextBeltService(
       getTextBeltConfiguration(),
     );

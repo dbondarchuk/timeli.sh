@@ -16,6 +16,7 @@ interface DataTableSearchProps {
     value: number | ((old: number) => number | null) | null,
     options?: Options | undefined,
   ) => Promise<URLSearchParams>;
+  placeholder?: string;
 }
 
 /*************  ✨ Command ⭐  *************/
@@ -45,6 +46,7 @@ export function DataTableSearch({
   searchQuery,
   setSearchQuery,
   setPage,
+  placeholder,
 }: DataTableSearchProps) {
   const t = useI18n("ui");
   const [isLoading, startTransition] = useTransition();
@@ -56,7 +58,9 @@ export function DataTableSearch({
 
   return (
     <Input
-      placeholder={t("dataTable.searchPlaceholder", { searchKey })}
+      placeholder={
+        placeholder ?? t("dataTable.searchPlaceholder", { searchKey })
+      }
       value={searchQuery ?? ""}
       onChange={(e) => handleSearch(e.target.value)}
       className={cn("w-full md:max-w-sm", isLoading && "animate-pulse")}

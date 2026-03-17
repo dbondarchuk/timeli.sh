@@ -42,7 +42,7 @@ export class NotificationService implements INotificationService {
     const defaultAppsConfiguration =
       await this.configurationService.getConfiguration("defaultApps");
 
-    const emailAppId = defaultAppsConfiguration?.emailSender?.appId;
+    const emailAppId = defaultAppsConfiguration?.emailSenderAppId;
 
     let sendMail: (email: Email, fromName?: string) => Promise<EmailResponse>;
     let useCustomerEmailApp = false;
@@ -127,7 +127,7 @@ export class NotificationService implements INotificationService {
     const defaultAppsConfiguration =
       await this.configurationService.getConfiguration("defaultApps");
     const textMessageSenderAppId =
-      defaultAppsConfiguration?.textMessageSender?.appId;
+      defaultAppsConfiguration?.textMessageSenderAppId;
 
     let sendTextMessage: (message: TextMessage) => Promise<TextMessageResponse>;
     if (textMessageSenderAppId) {

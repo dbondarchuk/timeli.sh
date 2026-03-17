@@ -1,0 +1,77 @@
+{
+  "designSelector": {
+    "placeholder": "Select a design"
+  },
+  "block": {
+    "title": "Purchase a Gift Card",
+    "description": "Buy a gift card for yourself or someone else",
+    "steps": {
+      "details": "Details",
+      "payment": "Payment"
+    },
+    "details": {
+      "design": "Design",
+      "amount": "Amount",
+      "yourName": "Your Name",
+      "email": "Email",
+      "phone": "Phone",
+      "sendToSomeoneElse": "Send this gift card to someone else",
+      "toName": "Recipient Name",
+      "toEmail": "Recipient Email",
+      "toEmailDescription": "If you don't want to send the gift card to another person, enter the same email as yours.",
+      "message": "Message",
+      "preview": "Preview",
+      "previewLabel": "PREVIEW",
+      "messagePlaceholder": "Enter a message for the recipient",
+      "previewLoading": "Generating preview...",
+      "previewPlaceholder": "Select a design and amount to see a preview...",
+      "previewError": "Failed to generate preview"
+    },
+    "buttons": {
+      "back": "Back",
+      "next": "Next",
+      "continueToPayment": "Continue to Payment"
+    },
+    "errors": {
+      "noAppId": "Configure this block with a Gift Card Studio app.",
+      "previewFailed": "Failed to generate preview",
+      "noDesigns": "No public designs found",
+      "createOrUpdateIntentFailed": "Failed to get payment information",
+      "purchaseFailed": "Failed to purchase gift card"
+    },
+    "payment": {
+      "pay": "Pay",
+      "title": "Payment",
+      "description": "A ${amount} gift card will be purchased for you. Please enter your payment information below.",
+      "total": "Total"
+    },
+    "success": {
+      "title": "Thank you!",
+      "description": "Your gift card has been purchased successfully. You will receive an email with the gift card and invoice shortly. If you chose to send the gift card to someone else, they will receive an email with the gift card shortly. If you have any questions, please contact us.",
+      "newPurchaseButton": "Purchase another gift card"
+    }
+  },
+  "validation": {
+    "purchase": {
+      "designId": {
+        "required": "Design is required"
+      },
+      "amount": {
+        "required": "Amount is required",
+        "min": "Amount must be at least ${min}",
+        "max": "Amount must be at most ${max}"
+      },
+      "name": {
+        "required": "Name is required",
+        "max": "Name must be less than 64 characters"
+      },
+      "sendToSomeoneElse": {
+        "required": "If sending to someone else, the recipient name and email are required"
+      },
+      "toName": {
+        "required": "To name is required",
+        "max": "To name must be less than 64 characters"
+      }
+    }
+  }
+}

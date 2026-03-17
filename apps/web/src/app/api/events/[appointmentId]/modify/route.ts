@@ -51,14 +51,53 @@ const processRescheduleRequest = async (
   }
 
   let paymentIntentId = request.paymentIntentId;
-  const config =
-    await servicesContainer.configurationService.getConfiguration("booking");
+  const { booking: config, defaultApps } =
+    await servicesContainer.configurationService.getConfigurations(
+      "booking",
+      "defaultApps",
+    );
+
+  const paymentAppId = defaultApps?.paymentAppId;
+
+  if (
+    information.action === "paymentRequired" &&
+    information.giftCards?.length
+  ) {
+    for (const giftCard of information.giftCards) {
+      const payment = await servicesContainer.paymentsService.createPayment({
+        amount: giftCard.appliedAmount,
+        status: "paid",
+        paidAt: new Date(),
+        appointmentId,
+        customerId,
+        description: "rescheduleFee",
+        method: "gift-card",
+        type: "rescheduleFee",
+        giftCardCode: giftCard.code,
+        giftCardId: giftCard.id,
+      });
+
+      await servicesContainer.eventsService.addAppointmentHistory({
+        appointmentId,
+        type: "paymentAdded",
+        data: {
+          payment: {
+            id: payment._id,
+            amount: payment.amount,
+            status: payment.status,
+            method: payment.method,
+            type: payment.type,
+          },
+        },
+      });
+    }
+  }
 
   if (
     information.action === "paymentRequired" &&
     information.paymentAmount > 0 &&
     config.payments?.enabled &&
-    config.payments?.paymentAppId
+    paymentAppId
   ) {
     if (!paymentIntentId) {
       logger.warn("Payment required but no payment intent provided");
@@ -105,9 +144,7 @@ const processRescheduleRequest = async (
     }
 
     const { name: appName } =
-      await servicesContainer.connectedAppsService.getApp(
-        config.payments?.paymentAppId,
-      );
+      await servicesContainer.connectedAppsService.getApp(paymentAppId);
 
     logger.debug({ appName, paymentIntentId }, "Creating payment");
 
@@ -121,7 +158,7 @@ const processRescheduleRequest = async (
       method: "online",
       intentId: paymentIntentId,
       appName,
-      appId: config.payments?.paymentAppId,
+      appId: paymentAppId,
       type: "rescheduleFee",
       fees: paymentIntent.fees,
     })) as OnlinePayment;
@@ -288,12 +325,49 @@ const processCancelRequest = async (
   }
 
   let paymentIntentId = request.paymentIntentId;
-  const config =
-    await servicesContainer.configurationService.getConfiguration("booking");
+  const { booking: config, defaultApps } =
+    await servicesContainer.configurationService.getConfigurations(
+      "booking",
+      "defaultApps",
+    );
+
+  const paymentAppId = defaultApps?.paymentAppId;
+
+  if (information.action === "payment" && information.giftCards?.length) {
+    for (const giftCard of information.giftCards) {
+      const payment = await servicesContainer.paymentsService.createPayment({
+        amount: giftCard.appliedAmount,
+        status: "paid",
+        paidAt: new Date(),
+        appointmentId,
+        customerId,
+        description: "cancellationFee",
+        method: "gift-card",
+        type: "cancellationFee",
+        giftCardCode: giftCard.code,
+        giftCardId: giftCard.id,
+      });
+
+      await servicesContainer.eventsService.addAppointmentHistory({
+        appointmentId,
+        type: "paymentAdded",
+        data: {
+          payment: {
+            id: payment._id,
+            amount: payment.amount,
+            status: payment.status,
+            method: payment.method,
+            type: payment.type,
+          },
+        },
+      });
+    }
+  }
+
   if (
     information.action === "payment" &&
     config.payments?.enabled &&
-    config.payments?.paymentAppId &&
+    paymentAppId &&
     information.paymentAmount > 0
   ) {
     if (!paymentIntentId) {
@@ -341,9 +415,7 @@ const processCancelRequest = async (
     }
 
     const { name: appName } =
-      await servicesContainer.connectedAppsService.getApp(
-        config.payments?.paymentAppId,
-      );
+      await servicesContainer.connectedAppsService.getApp(paymentAppId);
 
     logger.debug({ appName, paymentIntentId }, "Creating payment");
 
@@ -357,7 +429,7 @@ const processCancelRequest = async (
       method: "online",
       intentId: paymentIntentId,
       appName,
-      appId: config.payments?.paymentAppId,
+      appId: paymentAppId,
       type: "cancellationFee",
       fees: paymentIntent.fees,
     })) as OnlinePayment;

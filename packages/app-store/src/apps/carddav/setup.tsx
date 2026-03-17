@@ -9,10 +9,10 @@ import {
   cn,
   Input,
   InputGroup,
+  InputGroupAddon,
+  InputGroupAddonClasses,
   InputGroupInput,
   InputGroupInputClasses,
-  InputGroupSuffixClasses,
-  InputSuffix,
   Label,
   Spinner,
   toast,
@@ -196,17 +196,17 @@ export const CarddavAppSetup: React.FC<AppSetupProps> = ({
                     className={InputGroupInputClasses()}
                   />
                 </InputGroupInput>
-                <InputSuffix>
+                <InputGroupAddon>
                   <Button
                     variant="ghost"
-                    className={InputGroupSuffixClasses()}
+                    className={InputGroupAddonClasses()}
                     onClick={() => {
                       onCopy(configuration?.carddavUrl || "");
                     }}
                   >
                     <CopyIcon className="!size-3" />
                   </Button>
-                </InputSuffix>
+                </InputGroupAddon>
               </InputGroup>
             </div>
             <div className="grid gap-2 content-start w-full">
@@ -222,17 +222,17 @@ export const CarddavAppSetup: React.FC<AppSetupProps> = ({
                     className={InputGroupInputClasses()}
                   />
                 </InputGroupInput>
-                <InputSuffix>
+                <InputGroupAddon>
                   <Button
                     variant="ghost"
-                    className={InputGroupSuffixClasses()}
+                    className={InputGroupAddonClasses()}
                     onClick={() => {
                       onCopy(configuration?.username || "");
                     }}
                   >
                     <CopyIcon className="!size-3" />
                   </Button>
-                </InputSuffix>
+                </InputGroupAddon>
               </InputGroup>
             </div>
             <div className="grid gap-2 content-start w-full">
@@ -248,8 +248,8 @@ export const CarddavAppSetup: React.FC<AppSetupProps> = ({
                     className={InputGroupInputClasses()}
                   />
                 </InputGroupInput>
-                <InputSuffix>
-                  <ButtonGroup className={cn(InputGroupSuffixClasses(), "p-0")}>
+                <InputGroupAddon>
+                  <ButtonGroup className={cn(InputGroupAddonClasses(), "p-0")}>
                     <TooltipResponsive>
                       <TooltipResponsiveTrigger>
                         <Button
@@ -280,7 +280,7 @@ export const CarddavAppSetup: React.FC<AppSetupProps> = ({
                       <CopyIcon className="!size-3" />
                     </Button>
                   </ButtonGroup>
-                </InputSuffix>
+                </InputGroupAddon>
               </InputGroup>
             </div>
           </div>

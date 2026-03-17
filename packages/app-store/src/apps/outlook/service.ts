@@ -40,9 +40,20 @@ import {
 import { decrypt, encrypt, getAdminUrl } from "@timelish/utils";
 import { createEvent } from "ics";
 import { DateTime } from "luxon";
-import { env } from "process";
+import { Readable } from "stream";
 import { v4 } from "uuid";
 import { OutlookAdminAllKeys } from "./translations/types";
+
+export async function readableToBase64(readable: Readable): Promise<string> {
+  const chunks: Buffer[] = [];
+
+  for await (const chunk of readable) {
+    chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+  }
+
+  const buffer = Buffer.concat(chunks);
+  return buffer.toString("base64");
+}
 
 const offlineAccessScope = "offline_access";
 
@@ -401,12 +412,19 @@ export class OutlookConnectedApp
         );
 
         for (const attachment of email.attachments) {
+          const result = await this.props.services.assetsStorage.getFile(
+            attachment.storageFilename,
+          );
+          if (!result) {
+            throw new Error("Attachment not found");
+          }
+          const contentBytes = await readableToBase64(result.stream);
           attachments.push({
             // @ts-expect-error This is required
             "@odata.type": "#microsoft.graph.fileAttachment",
             name: attachment.filename,
             contentType: attachment.contentType,
-            contentBytes: attachment.content.toString("base64"),
+            contentBytes,
             contentId: attachment.cid,
           } satisfies FileAttachment);
         }
@@ -1041,10 +1059,10 @@ export class OutlookConnectedApp
   private getMsalClient() {
     const msalConfig: MsalConfig = {
       auth: {
-        clientId: env.OUTLOOK_APP_CLIENT_ID!,
-        clientSecret: env.OUTLOOK_APP_CLIENT_SECRET,
+        clientId: process.env.OUTLOOK_APP_CLIENT_ID!,
+        clientSecret: process.env.OUTLOOK_APP_CLIENT_SECRET!,
         authority: `https://login.microsoftonline.com/${
-          env.OUTLOOK_APP_TENNANT_ID || "common"
+          process.env.OUTLOOK_APP_TENNANT_ID || "common"
         }`,
       },
       system: {

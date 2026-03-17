@@ -52,6 +52,7 @@ type SearchProps =
 
 type BaseAppSelectorProps = {
   placeholder?: string;
+  searchLabel?: string;
   value?: string;
   disabled?: boolean;
   className?: string;
@@ -80,6 +81,7 @@ export const AppSelector: React.FC<AppSelectorProps> = ({
   appName,
   scope,
   placeholder,
+  searchLabel,
   disabled,
   className,
   excludeIds,
@@ -151,10 +153,11 @@ export const AppSelector: React.FC<AppSelectorProps> = ({
       disabled={disabled || isLoading}
       className={cn("flex font-normal text-base max-w-full min-w-0", className)}
       values={appValues(apps)}
+      placeholder={placeholder || t("common.selectApp")}
       searchLabel={
         isLoading
           ? t("common.loadingApps")
-          : placeholder || t("common.selectApp")
+          : searchLabel || t("common.selectApp")
       }
       value={value}
       customSearch={(search) =>

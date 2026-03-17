@@ -209,10 +209,12 @@ export class WaitlistRepositoryService {
       $or.push({ asSoonAsPossible: { $eq: true } });
 
       if (query.range?.start) {
+        dateConditions.$exists = true;
         dateConditions.$gte = query.range.start.toISOString().split("T")[0]; // YYYY-MM-DD
       }
 
       if (query.range?.end) {
+        dateConditions.$exists = true;
         dateConditions.$lte = query.range.end.toISOString().split("T")[0]; // YYYY-MM-DD
       }
 

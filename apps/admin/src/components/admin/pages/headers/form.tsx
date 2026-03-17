@@ -6,8 +6,8 @@ import { useI18n } from "@timelish/i18n";
 import {
   getPageHeaderSchemaWithUniqueNameCheck,
   LinkMenuItem,
-  PageHeader,
   pageHeaderShadowType,
+  PageHeaderUpdateModel,
 } from "@timelish/types";
 import {
   Breadcrumbs,
@@ -27,14 +27,14 @@ import {
 } from "@timelish/ui";
 import { SaveButton, Sortable } from "@timelish/ui-admin";
 import { useRouter } from "next/navigation";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import * as z from "zod";
 import { MenuItemCard } from "../../menu-item/menu-item-card";
 
-export const PageHeaderForm: React.FC<{ initialData?: PageHeader }> = ({
-  initialData,
-}) => {
+export const PageHeaderForm: React.FC<{
+  initialData?: PageHeaderUpdateModel & { _id?: string };
+}> = ({ initialData }) => {
   const t = useI18n("admin");
 
   const headerShadowValues = pageHeaderShadowType.map((value) => ({
@@ -54,7 +54,7 @@ export const PageHeaderForm: React.FC<{ initialData?: PageHeader }> = ({
 
   type PageFormValues = z.infer<typeof formSchema>;
 
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const form = useForm<PageFormValues>({
     resolver: zodResolver(formSchema),
@@ -63,24 +63,27 @@ export const PageHeaderForm: React.FC<{ initialData?: PageHeader }> = ({
     defaultValues: initialData || {},
   });
 
-  const breadcrumbItems = [
-    { title: t("assets.dashboard"), link: "/dashboard" },
-    { title: t("pages.title"), link: "/dashboard/pages" },
-    { title: t("pages.headers.title"), link: "/dashboard/pages/headers" },
-    {
-      title: initialData?.name || t("pages.headers.new"),
-      link: initialData?._id
-        ? `/dashboard/pages/headers/${initialData._id}`
-        : "/dashboard/pages/headers/new",
-    },
-  ];
+  const breadcrumbItems = useMemo(
+    () => [
+      { title: t("assets.dashboard"), link: "/dashboard" },
+      { title: t("pages.title"), link: "/dashboard/pages" },
+      { title: t("pages.headers.title"), link: "/dashboard/pages/headers" },
+      {
+        title: initialData?._id ? initialData.name : t("pages.headers.new"),
+        link: initialData?._id
+          ? `/dashboard/pages/headers/${initialData._id}`
+          : "/dashboard/pages/headers/new",
+      },
+    ],
+    [initialData?._id, initialData?.name, t],
+  );
 
   const onSubmit = async (data: PageFormValues) => {
     try {
       setLoading(true);
 
       const fn = async () => {
-        if (!initialData) {
+        if (!initialData?._id) {
           const { _id } = await adminApi.pageHeaders.createPageHeader(data);
           router.push(`/dashboard/pages/headers/${_id}`);
         } else {
@@ -131,9 +134,11 @@ export const PageHeaderForm: React.FC<{ initialData?: PageHeader }> = ({
         className="w-full space-y-8 relative"
       >
         <Heading
-          title={t(initialData ? "pages.headers.edit" : "pages.headers.new")}
+          title={t(
+            initialData?._id ? "pages.headers.edit" : "pages.headers.new",
+          )}
           description={t(
-            initialData
+            initialData?._id
               ? "pages.headers.managePageHeader"
               : "pages.headers.addNewPageHeader",
           )}

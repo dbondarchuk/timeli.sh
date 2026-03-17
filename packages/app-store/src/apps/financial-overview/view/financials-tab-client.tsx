@@ -16,6 +16,7 @@ import {
   Skeleton,
   useTimeZone,
 } from "@timelish/ui";
+import { useReload } from "@timelish/ui-admin";
 import { PaymentCard } from "@timelish/ui-admin-kit";
 import { DateTime } from "luxon";
 import { useQueryState } from "nuqs";
@@ -195,10 +196,7 @@ export const FinancialsTabClient: React.FC<FinancialsTabProps> = ({
     searchParams.end.withOptions({ shallow: false }),
   );
 
-  const [key, setKey] = useQueryState("key", {
-    history: "replace",
-    shallow: false,
-  });
+  const { reload } = useReload();
 
   const [timeGrouping, setTimeGrouping] = useQueryState(
     "timeGrouping",
@@ -947,9 +945,7 @@ export const FinancialsTabClient: React.FC<FinancialsTabProps> = ({
               <PaymentCard
                 key={payment._id}
                 payment={payment}
-                onDelete={() => {
-                  setKey(`${new Date().valueOf()}`);
-                }}
+                onDelete={reload}
               />
             ))
           ) : (

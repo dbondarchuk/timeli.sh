@@ -12,7 +12,6 @@ export type AppScope = Extandable<
   | "event-hook"
   | "customer-hook"
   | "payment-hook"
-  // | "assets-storage"
   | "scheduled"
   | "schedule"
   | "dashboard-tab"
@@ -22,6 +21,7 @@ export type AppScope = Extandable<
   | "availability-provider"
   | "meeting-url-provider"
   | "dashboard-notifier"
+  | "demo-arguments-provider"
 >;
 
 export type AppSetupProps = {

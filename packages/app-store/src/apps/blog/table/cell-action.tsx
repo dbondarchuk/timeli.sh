@@ -1,4 +1,5 @@
 "use client";
+import { useI18n } from "@timelish/i18n";
 import {
   AlertModal,
   Button,
@@ -6,15 +7,14 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
-  Link,
   toastPromise,
 } from "@timelish/ui";
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
-import { useQueryState } from "nuqs";
+import { useReload } from "@timelish/ui-admin";
+import { Copy, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
-
-import { useI18n } from "@timelish/i18n";
 import { deleteBlogPost } from "../actions";
 import { BlogPost } from "../models";
 import {
@@ -35,7 +35,7 @@ export const CellAction: React.FC<CellActionProps> = ({ blogPost, appId }) => {
 
   const tUi = useI18n("ui");
 
-  const [_, reload] = useQueryState("ts", { history: "replace" });
+  const { reload } = useReload();
 
   const onConfirm = async () => {
     try {
@@ -49,7 +49,7 @@ export const CellAction: React.FC<CellActionProps> = ({ blogPost, appId }) => {
       });
 
       setOpen(false);
-      reload(`${new Date().valueOf()}`);
+      reload();
     } catch (error: any) {
       setLoading(false);
       console.error(error);
@@ -78,6 +78,7 @@ export const CellAction: React.FC<CellActionProps> = ({ blogPost, appId }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>{tUi("actions.label")}</DropdownMenuLabel>
+          <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
             <Link
               href={`/dashboard/blog/edit?id=${blogPost._id}`}
@@ -86,6 +87,15 @@ export const CellAction: React.FC<CellActionProps> = ({ blogPost, appId }) => {
               <Pencil className="size-3.5" /> {t("table.actions.edit")}
             </Link>
           </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link
+              href={`/dashboard/blog/new?from=${blogPost._id}`}
+              className="text-foreground"
+            >
+              <Copy className="size-3.5" /> {t("table.actions.clone")}
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => setOpen(true)}>
             <Trash2 className="size-3.5" /> {t("table.delete.action")}
           </DropdownMenuItem>

@@ -1,6 +1,8 @@
 import { adminApi } from "@timelish/api-sdk";
 import { WithTotal } from "@timelish/types";
 import {
+  CreateWaitlistEntryActionType,
+  CreateWaitlistEntryRequest,
   DismissWaitlistEntriesActionType,
   GetWaitlistEntriesAction,
   GetWaitlistEntriesActionType,
@@ -91,6 +93,29 @@ export async function dismissWaitlistEntries(appId: string, ids: string[]) {
         error: error?.message || error?.toString(),
       },
       "Error dismissing waitlist entries",
+    );
+    throw error;
+  }
+}
+
+export async function createWaitlistEntry(
+  appId: string,
+  entry: CreateWaitlistEntryRequest,
+) {
+  const logger = loggerFactory("createWaitlistEntry");
+  logger.debug({ appId, entry }, "Creating waitlist entry");
+
+  try {
+    const result = await adminApi.apps.processRequest(appId, {
+      type: CreateWaitlistEntryActionType,
+      entry,
+    });
+    logger.info({ appId, entry }, "Successfully created waitlist entry");
+    return result;
+  } catch (error: any) {
+    logger.error(
+      { appId, entry, error: error?.message || error?.toString() },
+      "Error creating waitlist entry",
     );
     throw error;
   }

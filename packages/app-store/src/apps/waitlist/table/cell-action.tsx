@@ -1,4 +1,5 @@
 "use client";
+import { useI18n } from "@timelish/i18n";
 import {
   AlertModal,
   Button,
@@ -6,16 +7,15 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
-  Link,
   toastPromise,
 } from "@timelish/ui";
-import { CalendarPlus, MoreHorizontal, Send, X } from "lucide-react";
-import { useQueryState } from "nuqs";
-import { useState } from "react";
-
-import { useI18n } from "@timelish/i18n";
+import { useReload } from "@timelish/ui-admin";
 import { SendCommunicationDialog } from "@timelish/ui-admin-kit";
+import { CalendarPlus, MoreHorizontal, Send, X } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
 import { dismissWaitlistEntries } from "../actions";
 import { WaitlistEntry } from "../models";
 import {
@@ -43,7 +43,7 @@ export const CellAction: React.FC<CellActionProps> = ({
 
   const tUi = useI18n("ui");
 
-  const [_, reload] = useQueryState("ts", { history: "replace" });
+  const { reload } = useReload();
 
   const onConfirm = async () => {
     try {
@@ -57,7 +57,7 @@ export const CellAction: React.FC<CellActionProps> = ({
       });
 
       setOpen(false);
-      reload(`${new Date().valueOf()}`);
+      reload();
     } catch (error: any) {
       setLoading(false);
       console.error(error);
@@ -91,6 +91,7 @@ export const CellAction: React.FC<CellActionProps> = ({
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>{tUi("actions.label")}</DropdownMenuLabel>
+          <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
             <Link
               href={`/dashboard/waitlist/appointment/new?id=${waitlistEntry._id}`}
@@ -106,6 +107,7 @@ export const CellAction: React.FC<CellActionProps> = ({
             <Send className="size-3.5" />
             {t("table.actions.sendMessage")}
           </DropdownMenuItem>
+          <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => setOpen(true)}>
             <X className="size-3.5" /> {t("table.dismiss.action")}
           </DropdownMenuItem>

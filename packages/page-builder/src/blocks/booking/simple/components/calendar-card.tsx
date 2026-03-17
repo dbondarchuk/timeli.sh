@@ -45,7 +45,7 @@ const DayButton = (props: DayButtonProps) => {
         </div>
       </TooltipResponsiveTrigger>
       <TooltipResponsiveContent>
-        {t("no_avaialable_time_slots")}
+        {t("common.labels.noAvailableTimeSlots")}
       </TooltipResponsiveContent>
     </TooltipResponsive>
   ) : (
@@ -163,12 +163,12 @@ export const CalendarCard: React.FC = () => {
     [time],
   );
 
-  const timeZoneLabel = i18n.rich("select_timezone_label_format", {
+  const timeZoneLabel = i18n.rich("common.formats.selectTimezoneLabel", {
     timeZoneCombobox: () => (
       <Combobox
         values={timeZones}
         className="mx-2"
-        searchLabel={i18n("search_timezone_label")}
+        searchLabel={i18n("common.labels.searchTimezone")}
         customSearch={(search) =>
           timeZones.filter(
             (zone) =>
@@ -190,7 +190,7 @@ export const CalendarCard: React.FC = () => {
   return (
     <div className="relative text-center">
       <div className="mb-3">
-        <h2 className="text-xl">{i18n("select_date_time_label")}</h2>
+        <h2 className="text-xl">{i18n("common.labels.selectDateTime")}</h2>
       </div>
       <div className="mb-3 flex flex-col gap-4">
         <div className="flex flex-col md:flex-row gap-4 md:gap-10 not-prose">
@@ -218,7 +218,7 @@ export const CalendarCard: React.FC = () => {
           </div>
           <div className="flex flex-col gap-4 flex-1">
             {!date ? (
-              <h4>{i18n("select_date_first_label")}</h4>
+              <h4>{i18n("common.labels.selectDateFirst")}</h4>
             ) : (
               <>
                 <h4 className="">

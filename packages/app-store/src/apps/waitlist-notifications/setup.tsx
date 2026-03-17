@@ -16,11 +16,9 @@ import {
   Spinner,
 } from "@timelish/ui";
 import {
-  ArgumentsAutocomplete,
   ConnectedAppNameAndLogo,
   ConnectedAppStatusMessage,
   TemplateSelector,
-  useDemoArguments,
 } from "@timelish/ui-admin";
 import React from "react";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
@@ -48,11 +46,6 @@ export const WaitlistNotificationsAppSetup: React.FC<AppSetupProps> = ({
       onSuccess,
       onError,
     });
-
-  const demoArguments = useDemoArguments({
-    waitlistEntry: true,
-    noAppointment: true,
-  });
 
   const t = useI18n<
     WaitlistNotificationsAdminNamespace,
@@ -130,7 +123,6 @@ export const WaitlistNotificationsAppSetup: React.FC<AppSetupProps> = ({
                         field.onChange(val);
                         field.onBlur();
 
-                        form.trigger("customerNewEntrySubject");
                         form.trigger("customerNewEntryTemplateId");
                       }}
                     />
@@ -141,34 +133,6 @@ export const WaitlistNotificationsAppSetup: React.FC<AppSetupProps> = ({
             />
             {enableCustomerNotification && (
               <>
-                <FormField
-                  control={form.control}
-                  name="customerNewEntrySubject"
-                  render={({ field }) => (
-                    <FormItem className="w-full">
-                      <FormLabel>
-                        {t("setup.form.customerNewEntrySubject.label")}
-                        <InfoTooltip>
-                          {t("setup.form.customerNewEntrySubject.tooltip")}
-                        </InfoTooltip>
-                      </FormLabel>
-                      <FormControl>
-                        <ArgumentsAutocomplete
-                          asInput
-                          args={demoArguments}
-                          disabled={isLoading}
-                          value={field.value}
-                          onChange={(value) => {
-                            field.onChange(value);
-                            field.onBlur();
-                            form.trigger("notifyCustomerOnNewEntry");
-                          }}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
                 <FormField
                   control={form.control}
                   name="customerNewEntryTemplateId"

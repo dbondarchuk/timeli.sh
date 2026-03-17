@@ -63,7 +63,8 @@
         "edit": "Редагувати форму",
         "viewResponses": "Відповіді на форму",
         "archive": "Архівувати",
-        "unarchive": "Розархівувати"
+        "unarchive": "Розархівувати",
+        "clone": "Клонувати"
       },
       "archive": {
         "title": "Архівувати форму",
@@ -322,6 +323,11 @@
         }
       }
     }
+  },
+  "notifications": {
+    "newResponse": "Нова відповідь на форму",
+    "newResponseMessage": "У вас є нова відповідь на форму",
+    "viewResponse": "Переглянути відповідь"
   },
   "handlers": {
     "formResponseCreated": "Форми — відповідь на форму створено"

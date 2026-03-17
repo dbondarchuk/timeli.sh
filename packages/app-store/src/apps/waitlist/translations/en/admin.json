@@ -74,6 +74,9 @@
   "app": {
     "displayName": "Waitlist",
     "description": "Waitlist helps you capture and manage customer demand when your schedule is full.\nEasily allow clients to join a waiting list for specific services, dates, or times",
+    "customerTab": {
+      "waitlist": "Waitlist"
+    },
     "pages": {
       "main": {
         "label": "Waitlist",
@@ -88,6 +91,44 @@
       "dontDismissWaitlistOnAppointmentCreate": {
         "label": "Don't dismiss waitlist on appointment create",
         "tooltip": "Whether to disable dismissing waitlist entry when appointment was created from it"
+      }
+    }
+  },
+  "newEntry": {
+    "trigger": "New entry",
+    "title": "New waitlist entry",
+    "description": "Create a new waitlist entry",
+    "confirm": "Create",
+    "toasts": {
+      "success": "Waitlist entry created successfully",
+      "error": "Error creating waitlist entry"
+    },
+    "form": {
+      "customerId": {
+        "label": "Customer"
+      },
+      "optionId": {
+        "label": "Service"
+      },
+      "addonsIds": {
+        "label": "Addons"
+      },
+      "duration": {
+        "label": "Duration"
+      },
+      "note": {
+        "label": "Note",
+        "placeholder": "Note"
+      },
+      "when": {
+        "label": "When"
+      },
+      "asSoonAsPossible": {
+        "label": "As soon as possible"
+      },
+      "dates": {
+        "label": "Dates",
+        "label_count": "Dates ({count})"
       }
     }
   },
@@ -137,6 +178,23 @@
     "waitlistAppId": {
       "label": "Waitlist app",
       "tooltip": "The app that will be used to work with the waitlist. Required for the waitlist flow to work."
+    }
+  },
+  "validation": {
+    "createWaitlistEntry": {
+      "customerId": {
+        "required": "Customer is required"
+      },
+      "note": {
+        "max": "Note must be no more than 1024 characters long"
+      },
+      "asSoonAsPossible": {
+        "required": "As soon as possible is required"
+      },
+      "dates": {
+        "required": "Dates are required",
+        "max": "Dates must be no more than 30 dates"
+      }
     }
   }
 }

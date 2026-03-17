@@ -1,3 +1,5 @@
+import { APPOINTMENT_NOTIFICATIONS_APP_NAME } from "./apps/appointment-notifications/const";
+import { AppointmentNotificationsTranslations } from "./apps/appointment-notifications/translations";
 import { BLOG_APP_NAME } from "./apps/blog/const";
 import { BlogTranslations } from "./apps/blog/translations";
 import { BUSY_EVENTS_APP_NAME } from "./apps/busy-events/const";
@@ -18,6 +20,8 @@ import { FINANCIAL_OVERVIEW_APP_NAME } from "./apps/financial-overview/const";
 import { FinancialOverviewTranslations } from "./apps/financial-overview/translations";
 import { FORMS_APP_NAME } from "./apps/forms/const";
 import { FormsTranslations } from "./apps/forms/translations";
+import { GIFT_CARD_STUDIO_APP_NAME } from "./apps/gift-card-studio/const";
+import { GiftCardStudioTranslations } from "./apps/gift-card-studio/translations";
 import { GOOGLE_CALENDAR_APP_NAME } from "./apps/google-calendar/const";
 import { GoogleCalendarTranslations } from "./apps/google-calendar/translations";
 import { ICS_APP_NAME } from "./apps/ics/const";
@@ -26,8 +30,6 @@ import { OUTLOOK_APP_NAME } from "./apps/outlook/const";
 import { OutlookTranslations } from "./apps/outlook/translations";
 import { PAYPAL_APP_NAME } from "./apps/paypal/const";
 import { PaypalTranslations } from "./apps/paypal/translations";
-import { SCHEDULED_NOTIFICATIONS_APP_NAME } from "./apps/scheduled-notifications/const";
-import { ScheduledNotificationsTranslations } from "./apps/scheduled-notifications/translations";
 import { SMART_SCHEDULE_APP_NAME } from "./apps/smart-schedule/const";
 import { SmartScheduleTranslations } from "./apps/smart-schedule/translations";
 import { SMTP_APP_NAME } from "./apps/smtp/const";
@@ -79,7 +81,7 @@ export const AppsTranslations: Record<
   [ICS_APP_NAME]: IcsTranslations,
   [OUTLOOK_APP_NAME]: OutlookTranslations,
   [PAYPAL_APP_NAME]: PaypalTranslations,
-  [SCHEDULED_NOTIFICATIONS_APP_NAME]: ScheduledNotificationsTranslations,
+  [APPOINTMENT_NOTIFICATIONS_APP_NAME]: AppointmentNotificationsTranslations,
   [SMTP_APP_NAME]: SmtpTranslations,
   [TEXTBELT_APP_NAME]: TextBeltTranslations,
   [TEXT_MESSAGE_AUTO_REPLY_APP_NAME]: TextMessageAutoReplyTranslations,
@@ -92,4 +94,5 @@ export const AppsTranslations: Record<
   [URL_SCHEDULE_PROVIDER_APP_NAME]: UrlScheduleProviderTranslations,
   [ZOOM_APP_NAME]: ZoomTranslations,
   [FORMS_APP_NAME]: FormsTranslations,
+  [GIFT_CARD_STUDIO_APP_NAME]: GiftCardStudioTranslations,
 };

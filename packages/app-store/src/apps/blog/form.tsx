@@ -3,9 +3,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useI18n } from "@timelish/i18n";
 import { PlateEditor } from "@timelish/rte";
+import { DatabaseId } from "@timelish/types";
 import {
+  BooleanSelect,
   Breadcrumbs,
-  Checkbox,
   DateTimePicker,
   Form,
   FormControl,
@@ -30,10 +31,10 @@ import {
   createBlogPost,
   updateBlogPost,
 } from "./actions";
-import { BlogPost } from "./models";
 import {
   blogPostSchema,
   blogPostTagSchema,
+  BlogPostUpdateModel,
   getBlogPostSchemaWithUniqueCheck,
 } from "./models/blog-post";
 import {
@@ -55,7 +56,7 @@ const generateSlug = (title: string): string => {
 };
 
 export const BlogPostForm: React.FC<{
-  initialData?: BlogPost;
+  initialData?: BlogPostUpdateModel & Partial<DatabaseId>;
   appId: string;
 }> = ({ initialData, appId }) => {
   const t = useI18n<BlogAdminNamespace, BlogAdminKeys>(blogAdminNamespace);
@@ -93,7 +94,7 @@ export const BlogPostForm: React.FC<{
 
   const slug = form.watch("slug");
   const title = form.watch("title");
-  const isNewPost = !initialData;
+  const isNewPost = !initialData?._id;
 
   const breadcrumbItems = useMemo(
     () => [
@@ -182,7 +183,7 @@ export const BlogPostForm: React.FC<{
             render={({ field }) => (
               <FormItem className="lg:col-span-2 w-full flex-grow relative h-full">
                 <FormLabel>
-                  {t("form.content")}{" "}
+                  <span>{t("form.content")}</span>{" "}
                   <InfoTooltip>{t("form.contentTooltip")}</InfoTooltip>
                 </FormLabel>
                 <FormControl>
@@ -232,7 +233,7 @@ export const BlogPostForm: React.FC<{
                 return (
                   <FormItem>
                     <FormLabel>
-                      {t("form.publicationDate")}{" "}
+                      <span>{t("form.publicationDate")}</span>{" "}
                       <InfoTooltip>
                         {t("form.publicationDateTooltip")}
                       </InfoTooltip>
@@ -260,20 +261,24 @@ export const BlogPostForm: React.FC<{
               control={form.control}
               name="isPublished"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-center">
+                <FormItem className="w-full">
+                  <FormLabel>
+                    <span>{t("form.isPublished.label")}</span>{" "}
+                    <InfoTooltip>{t("form.isPublished.tooltip")}</InfoTooltip>
+                  </FormLabel>
                   <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
+                    <BooleanSelect
                       disabled={loading}
+                      trueLabel={t("form.isPublished.published")}
+                      falseLabel={t("form.isPublished.draft")}
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        field.onBlur();
+                      }}
+                      value={field.value}
                     />
                   </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel>{t("form.isPublished")}</FormLabel>
-                    <p className="text-sm text-muted-foreground">
-                      {t("form.isPublishedDescription")}
-                    </p>
-                  </div>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -284,7 +289,7 @@ export const BlogPostForm: React.FC<{
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    {t("form.tags")}{" "}
+                    <span>{t("form.tags")}</span>{" "}
                     <InfoTooltip>{t("form.tagsTooltip")}</InfoTooltip>
                   </FormLabel>
                   <FormControl>

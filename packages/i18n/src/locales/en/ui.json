@@ -14,7 +14,10 @@
     "placeholder": "Select option",
     "hours": "Hours",
     "minutes": "Minutes",
-    "seconds": "Seconds"
+    "seconds": "Seconds",
+    "toasts": {
+      "error": "There was a problem with your request."
+    }
   },
   "actions": {
     "delete": "Delete",
@@ -35,10 +38,6 @@
     "placeholder": "Select template",
     "requestFailed": "Request to fetch templates has failed",
     "loadingTemplates": "Loading templates..."
-  },
-  "customerSelector": {
-    "placeholder": "Select customer",
-    "requestFailed": "Request to fetch customers has failed"
   },
   "optionSelector": {
     "placeholder": "Select option",

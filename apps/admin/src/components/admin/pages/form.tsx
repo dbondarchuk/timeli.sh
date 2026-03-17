@@ -13,9 +13,9 @@ import { PageReader } from "@timelish/page-builder/reader";
 import {
   GeneralConfiguration,
   getPageSchemaWithUniqueCheck,
-  Page,
   PageFooter,
   PageHeader,
+  PageUpdateModel,
   SocialConfiguration,
 } from "@timelish/types";
 import {
@@ -28,10 +28,10 @@ import {
   FormMessage,
   Input,
   InputGroup,
+  InputGroupAddon,
+  InputGroupAddonClasses,
   InputGroupInput,
   InputGroupInputClasses,
-  InputGroupSuffixClasses,
-  InputSuffix,
   Link,
   toastPromise,
   useDebounceCacheFn,
@@ -58,7 +58,7 @@ const generateSlug = (title: string): string => {
 };
 
 export const PageForm: React.FC<{
-  initialData?: Page;
+  initialData?: PageUpdateModel & { _id?: string };
   config: {
     general: GeneralConfiguration;
     social: SocialConfiguration;
@@ -137,7 +137,7 @@ export const PageForm: React.FC<{
   const slug = form.watch("slug");
   const title = form.watch("title");
   const language = form.watch("language");
-  const isNewPage = !initialData;
+  const isNewPage = !initialData?._id;
 
   const { path, params } = useMemo(() => generateSlugPreview(slug), [slug]);
 
@@ -157,7 +157,7 @@ export const PageForm: React.FC<{
       { title: t("assets.dashboard"), link: "/dashboard" },
       { title: t("pages.title"), link: "/dashboard/pages" },
       {
-        title: title || t("pages.new"),
+        title: initialData?._id ? title : t("pages.new"),
         link: initialData?._id
           ? `/dashboard/pages/${initialData._id}`
           : "/dashboard/pages/new",
@@ -188,7 +188,7 @@ export const PageForm: React.FC<{
           data.language = undefined;
         }
 
-        if (!initialData) {
+        if (!initialData?._id) {
           const { _id } = await adminApi.pages.createPage(data);
           onFormSubmit();
 
@@ -366,9 +366,9 @@ export const PageForm: React.FC<{
                   <FormItem className="w-full">
                     <FormControl>
                       <InputGroup>
-                        <InputSuffix
+                        <InputGroupAddon
                           className={cn(
-                            InputGroupSuffixClasses({
+                            InputGroupAddonClasses({
                               variant: "prefix",
                               h: "sm",
                             }),
@@ -378,7 +378,7 @@ export const PageForm: React.FC<{
                           <span className="text-sm text-muted-foreground">
                             /
                           </span>
-                        </InputSuffix>
+                        </InputGroupAddon>
                         <InputGroupInput>
                           <Input
                             className={cn(
@@ -406,7 +406,7 @@ export const PageForm: React.FC<{
               />
             </div>
 
-            {initialData?.slug && (
+            {initialData?._id && initialData.slug && (
               <Link
                 button
                 href={`${websiteUrl}/${initialData.slug}?preview=true`}

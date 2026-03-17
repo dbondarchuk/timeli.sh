@@ -4,8 +4,12 @@ import { PageFooterForm } from "@/components/admin/pages/footers/form";
 import { getI18nAsync } from "@timelish/i18n/server";
 import { getLoggerFactory } from "@timelish/logger";
 import { Styling } from "@timelish/page-builder/reader";
+import { PageFooterUpdateModel } from "@timelish/types";
 import { formatArguments } from "@timelish/utils";
 import { Metadata } from "next";
+import { notFound } from "next/navigation";
+
+type Props = PageProps<"/dashboard/pages/footers/new">;
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getI18nAsync("admin");
@@ -14,10 +18,18 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function NewPageFooterPage() {
+export default async function NewPageFooterPage(props: Props) {
   const logger = getLoggerFactory("AdminPageFooters")("new-page-footer");
+  const { from: fromParam } = await props.searchParams;
+  const from = fromParam as string;
+
   const servicesContainer = await getServicesContainer();
-  logger.debug("Loading new page footer creation page");
+  logger.debug(
+    {
+      from,
+    },
+    "Loading new page footer creation page",
+  );
 
   const { general, social, styling } =
     await servicesContainer.configurationService.getConfigurations(
@@ -36,6 +48,19 @@ export default async function NewPageFooterPage() {
     appName: app.name,
   }));
 
+  let initialData: PageFooterUpdateModel | undefined = undefined;
+  if (from) {
+    logger.debug({ from }, "Cloning page footer");
+    const pageFooter = await servicesContainer.pagesService.getPageFooter(from);
+    if (!pageFooter) {
+      logger.warn({ from }, "Source page footer not found");
+      return notFound();
+    }
+
+    const { _id: _, updatedAt: __, ...pageFooterData } = pageFooter;
+    initialData = pageFooterData;
+  }
+
   logger.debug({ apps }, "Connected apps");
 
   const args = formatArguments(
@@ -50,7 +75,7 @@ export default async function NewPageFooterPage() {
   return (
     <PageContainer scrollable>
       <Styling styling={styling} />
-      <PageFooterForm args={args} apps={apps} />
+      <PageFooterForm initialData={initialData} args={args} apps={apps} />
     </PageContainer>
   );
 }

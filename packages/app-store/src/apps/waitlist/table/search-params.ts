@@ -1,3 +1,4 @@
+import { baseSearchParams } from "@timelish/api-sdk";
 import {
   createSerializer,
   parseAsArrayOf,
@@ -5,10 +6,6 @@ import {
   parseAsString,
   parseAsStringEnum,
 } from "nuqs";
-
-import { DateTime } from "luxon";
-
-import { baseSearchParams } from "@timelish/api-sdk";
 import { waitlistStatus } from "../models";
 
 export const searchParams = {
@@ -18,14 +15,12 @@ export const searchParams = {
   ]),
   customer: parseAsArrayOf(parseAsString),
   option: parseAsArrayOf(parseAsString),
-  start: parseAsIsoDateTime.withDefault(
-    DateTime.now().startOf("day").toJSDate(),
-  ),
+  start: parseAsIsoDateTime,
   end: parseAsIsoDateTime,
   sort: baseSearchParams.sort.withDefault([
     {
       id: "createdAt",
-      desc: false,
+      desc: true,
     },
   ]),
   ts: parseAsString,

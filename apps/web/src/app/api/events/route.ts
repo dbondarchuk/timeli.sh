@@ -208,6 +208,7 @@ export async function POST(request: NextRequest) {
       paymentIntentId,
       files,
       by: "customer",
+      giftCards: eventOrError.giftCards,
     });
 
     await trackBookingStepWithCustomer(

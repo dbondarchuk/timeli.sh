@@ -20,11 +20,6 @@
         "label": "Send customer email on new entry",
         "tooltip": "Send notification to customer when a new entry is added to the waitlist"
       },
-      "customerNewEntrySubject": {
-        "label": "Customer new entry email subject",
-        "tooltip": "Subject of the email, that your customers will see when a new entry is added to the waitlist",
-        "placeholder": "Email subject"
-      },
       "customerNewEntryTemplateId": {
         "label": "Customer new entry email template",
         "tooltip": "Template of the email, that your customers will see when a new entry is added to the waitlist",
@@ -34,11 +29,7 @@
   },
   "validation": {
     "notifyCustomerOnNewEntry": {
-      "required": "If you want to send customer email on new entry, you must fill in the customer new entry email subject and customer new entry email template"
-    },
-    "customerNewEntrySubject": {
-      "required": "Customer new entry email subject is required",
-      "max": "Customer new entry email subject must be at most 256 characters long"
+      "required": "If you want to send customer email on new entry, you must fill in the customer's new entry email template"
     },
     "customerNewEntryTemplateId": {
       "required": "Customer new entry email template is required"

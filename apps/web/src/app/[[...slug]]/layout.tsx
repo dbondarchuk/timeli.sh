@@ -88,27 +88,24 @@ export default async function RootLayout({
     tertiaryFont,
   );
 
-  const fontsRes = await fetch(fontsCssUrl, {
-    cache: "force-cache",
-  });
+  // const fontsRes = await fetch(fontsCssUrl, {
+  //   cache: "force-cache",
+  // });
 
-  const fonts = await fontsRes.text();
+  // const fonts = await fontsRes.text();
   const colors = getColorsCss(styling?.colors);
 
-  logger.debug(
-    { fontsLength: fonts.length, hasColors: !!colors },
-    "Generated styles",
-  );
+  logger.debug({ fontsCssUrl, hasColors: !!colors }, "Generated styles");
 
   return (
     <CookiesProvider>
       <html lang={locale} className="scroll-smooth">
         <head>
+          <link rel="stylesheet" href={fontsCssUrl} />
           <style
             dangerouslySetInnerHTML={{
               __html: `
             @layer base {
-              ${fonts}
 
               :root {
                 --font-primary: '${primaryFont}';

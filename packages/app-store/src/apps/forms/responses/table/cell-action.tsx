@@ -15,14 +15,14 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
   Label,
-  Link,
   toastPromise,
 } from "@timelish/ui";
-import { CustomerSelector } from "@timelish/ui-admin";
+import { CustomerSelector, useReload } from "@timelish/ui-admin";
 import { MoreHorizontal, Pencil, Trash2, UserPlus } from "lucide-react";
-import { useQueryState } from "nuqs";
+import Link from "next/link";
 import { useState } from "react";
 import { deleteFormResponse, reassignFormResponses } from "../../actions";
 import {
@@ -46,7 +46,7 @@ export const CellAction: React.FC<CellActionProps> = ({ response, appId }) => {
   >(response.customerId ?? undefined);
   const t = useI18n<FormsAdminNamespace, FormsAdminKeys>(formsAdminNamespace);
   const tUi = useI18n("ui");
-  const [_, reload] = useQueryState("ts", { history: "replace" });
+  const { reload } = useReload();
 
   const onConfirmDelete = async () => {
     try {
@@ -56,7 +56,7 @@ export const CellAction: React.FC<CellActionProps> = ({ response, appId }) => {
         error: t("responses.table.toast.deleteError"),
       });
       setDeleteOpen(false);
-      reload(`${new Date().valueOf()}`);
+      reload();
     } catch (error: any) {
       setLoading(false);
       console.error(error);
@@ -83,7 +83,7 @@ export const CellAction: React.FC<CellActionProps> = ({ response, appId }) => {
         },
       );
       setReassignOpen(false);
-      reload(`${new Date().valueOf()}`);
+      reload();
     } catch (error: any) {
       setLoading(false);
       console.error(error);
@@ -140,6 +140,7 @@ export const CellAction: React.FC<CellActionProps> = ({ response, appId }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>{tUi("actions.label")}</DropdownMenuLabel>
+          <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
             <Link
               href={`/dashboard/forms/responses/edit?id=${response._id}`}
@@ -158,6 +159,7 @@ export const CellAction: React.FC<CellActionProps> = ({ response, appId }) => {
             <UserPlus className="size-3.5" />{" "}
             {t("responses.table.actions.reassignCustomer")}
           </DropdownMenuItem>
+          <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => setDeleteOpen(true)}>
             <Trash2 className="size-3.5" />{" "}
             {t("responses.table.actions.delete")}

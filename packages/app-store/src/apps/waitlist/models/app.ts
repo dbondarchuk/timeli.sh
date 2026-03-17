@@ -3,10 +3,12 @@ import {
   querySchema,
   zObjectId,
   zTaggedUnion,
+  zUniqueArray,
 } from "@timelish/types";
 import * as z from "zod";
 
-import { waitlistStatus } from "./waitlist";
+import { WaitlistAdminAllKeys } from "../translations/types";
+import { waitlistRequestDates, waitlistStatus } from "./waitlist";
 
 export const waitlistConfigurationSchema = z.object({
   dontDismissWaitlistOnAppointmentCreate: z.coerce
@@ -68,6 +70,65 @@ export type SetConfigurationAction = z.infer<
 >;
 export const SetConfigurationActionType = "set-configuration" as const;
 
+// Create waitlist entry action
+export const createWaitlistEntryRequestSchema = z
+  .object({
+    customerId: zObjectId(
+      "app_waitlist_admin.validation.createWaitlistEntry.customerId.required" satisfies WaitlistAdminAllKeys,
+    ),
+    note: z
+      .string()
+      .max(
+        1024,
+        "app_waitlist_admin.validation.createWaitlistEntry.note.max" satisfies WaitlistAdminAllKeys,
+      )
+      .optional(),
+    optionId: zObjectId("validation.appointments.request.optionId.required"),
+    addonsIds: zUniqueArray(
+      z.array(zObjectId("validation.appointments.request.addonsIds.required")),
+      (x) => x,
+      "validation.appointments.request.addonsIds.unique",
+    ).optional(),
+    duration: z.coerce
+      .number<number>({
+        error: "validation.appointments.request.duration.required",
+      })
+      .int("validation.appointments.request.duration.positive")
+      .min(1, "validation.appointments.request.duration.positive")
+      .max(60 * 24 * 1, "validation.appointments.request.duration.max")
+      .optional(),
+  })
+  .and(
+    z
+      .object({
+        asSoonAsPossible: z.literal(false, {
+          error:
+            "app_waitlist_admin.validation.createWaitlistEntry.asSoonAsPossible.required" satisfies WaitlistAdminAllKeys,
+        }),
+        dates: waitlistRequestDates,
+      })
+      .or(
+        z.object({
+          asSoonAsPossible: z.literal(true, {
+            error:
+              "app_waitlist_admin.validation.createWaitlistEntry.asSoonAsPossible.required" satisfies WaitlistAdminAllKeys,
+          }),
+          dates: z.never().optional(),
+        }),
+      ),
+  );
+
+export type CreateWaitlistEntryRequest = z.infer<
+  typeof createWaitlistEntryRequestSchema
+>;
+export const createWaitlistEntryActionSchema = z.object({
+  entry: createWaitlistEntryRequestSchema,
+});
+
+export type CreateWaitlistEntryAction = z.infer<
+  typeof createWaitlistEntryActionSchema
+>;
+export const CreateWaitlistEntryActionType = "create-waitlist-entry" as const;
 // Request action
 
 export const requestActionSchema = zTaggedUnion([
@@ -78,6 +139,10 @@ export const requestActionSchema = zTaggedUnion([
     data: dismissWaitlistEntriesActionSchema,
   },
   { type: SetConfigurationActionType, data: setConfigurationActionSchema },
+  {
+    type: CreateWaitlistEntryActionType,
+    data: createWaitlistEntryActionSchema,
+  },
 ]);
 
 export type RequestAction = z.infer<typeof requestActionSchema>;

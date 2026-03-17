@@ -32,6 +32,12 @@
       "command": "yarn run dev --filter=@timelish/job-processor"
     },
     {
+      "name": "Next.js: debug notification sender server-side",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "yarn run dev --filter=@timelish/notification-sender"
+    },
+    {
       "name": "Next.js: debug client-side",
       "type": "chrome",
       "request": "launch",

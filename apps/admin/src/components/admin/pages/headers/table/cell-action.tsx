@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
   toastPromise,
 } from "@timelish/ui";
-import { Edit, MoreHorizontal, Trash } from "lucide-react";
+import { Copy, Edit, MoreHorizontal, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -74,7 +74,7 @@ export const CellAction: React.FC<CellActionProps> = ({ pageHeader }) => {
           <DropdownMenuLabel>
             {t("pages.headers.table.actions.actions")}
           </DropdownMenuLabel>
-
+          <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
             <Link
               href={`/dashboard/pages/headers/${pageHeader._id}`}
@@ -84,13 +84,25 @@ export const CellAction: React.FC<CellActionProps> = ({ pageHeader }) => {
               {t("pages.headers.table.actions.edit")}
             </Link>
           </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link
+              href={`/dashboard/pages/headers/new?from=${pageHeader._id}`}
+              className="text-foreground"
+            >
+              <Copy className="size-3.5" />{" "}
+              {t("pages.headers.table.actions.clone")}
+            </Link>
+          </DropdownMenuItem>
           {pageHeader.usedCount === 0 && (
-            <DropdownMenuItem onClick={() => setOpen(true)}>
-              <Trash className="size-3.5" />{" "}
-              {t("pages.headers.table.actions.delete")}
-            </DropdownMenuItem>
+            <>
+              <DropdownMenuSeparator />
+
+              <DropdownMenuItem onClick={() => setOpen(true)}>
+                <Trash className="size-3.5" />{" "}
+                {t("pages.headers.table.actions.delete")}
+              </DropdownMenuItem>
+            </>
           )}
-          <DropdownMenuSeparator />
         </DropdownMenuContent>
       </DropdownMenu>
     </>

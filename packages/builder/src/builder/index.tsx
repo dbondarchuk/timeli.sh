@@ -100,6 +100,7 @@ const BuilderFullScreenProvider = ({
         "flex flex-col w-full h-full min-h-full",
         fullScreen && "fixed inset-0 z-50 pointer-events-auto bg-background",
       )}
+      data-shimmer-no-children
     >
       {children}
     </div>

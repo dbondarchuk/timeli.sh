@@ -7,6 +7,7 @@ import * as communications from "./communications";
 import * as configuration from "./configuration";
 import * as customers from "./customers";
 import * as discounts from "./discounts";
+import * as giftCards from "./gift-cards";
 import * as pageFooters from "./page-footers";
 import * as pageHeaders from "./page-headers";
 import * as pages from "./pages";
@@ -36,6 +37,7 @@ export const adminApi = {
   schedule,
   apps,
   configuration,
+  giftCards,
 };
 
 export * from "./utils";

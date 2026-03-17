@@ -21,10 +21,10 @@ import {
   InfoTooltip,
   Input,
   InputGroup,
+  InputGroupAddon,
+  InputGroupAddonClasses,
   InputGroupInput,
   InputGroupInputClasses,
-  InputGroupSuffixClasses,
-  InputSuffix,
   toastPromise,
   useDebounceCacheFn,
 } from "@timelish/ui";
@@ -164,13 +164,13 @@ export const AddonForm: React.FC<{
                   <FormLabel>{t("services.addons.form.price")}</FormLabel>
                   <FormControl>
                     <InputGroup>
-                      <InputSuffix
-                        className={InputGroupSuffixClasses({
+                      <InputGroupAddon
+                        className={InputGroupAddonClasses({
                           variant: "prefix",
                         })}
                       >
                         $
-                      </InputSuffix>
+                      </InputGroupAddon>
                       <InputGroupInput>
                         <Input
                           disabled={loading}

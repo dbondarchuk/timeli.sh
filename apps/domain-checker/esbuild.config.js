@@ -25,6 +25,7 @@ const buildConfig = {
     "next/navigation",
     "next/image",
     "next/link",
+    "@resvg/resvg-js",
   ],
 };
 

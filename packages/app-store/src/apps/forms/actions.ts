@@ -6,19 +6,21 @@ import {
   CreateFormResponseActionType,
   DeleteFormActionType,
   DeleteFormResponseActionType,
-  DeleteSelectedFormsActionType,
   DeleteSelectedFormResponsesActionType,
-  ReassignFormResponsesActionType,
-  SetFormArchivedActionType,
-  SetFormsArchivedActionType,
+  DeleteSelectedFormsActionType,
   FormListModel,
   FormModel,
   FormResponseModel,
   FormUpdateModel,
   GetFormByIdActionType,
   GetFormResponseByIdActionType,
+  GetFormResponsesAction,
   GetFormResponsesActionType,
+  GetFormsAction,
   GetFormsActionType,
+  ReassignFormResponsesActionType,
+  SetFormArchivedActionType,
+  SetFormsArchivedActionType,
   UpdateFormActionType,
   UpdateFormResponseActionType,
   UpdateFormResponseModel,
@@ -36,14 +38,7 @@ const loggerFactory = (action: string) => ({
   },
 });
 
-export async function getForms(
-  appId: string,
-  query: Parameters<typeof adminApi.apps.processRequest>[1] extends {
-    type: typeof GetFormsActionType;
-  }
-    ? Parameters<typeof adminApi.apps.processRequest>[1]["query"]
-    : never,
-) {
+export async function getForms(appId: string, query: GetFormsAction["query"]) {
   const logger = loggerFactory("getForms");
   logger.debug({ appId, query }, "Getting forms");
 
@@ -166,7 +161,10 @@ export async function deleteSelectedForms(appId: string, ids: string[]) {
       ids,
     });
 
-    logger.info({ appId, count: ids.length }, "Successfully deleted selected forms");
+    logger.info(
+      { appId, count: ids.length },
+      "Successfully deleted selected forms",
+    );
     return result;
   } catch (error: any) {
     logger.error(
@@ -216,7 +214,10 @@ export async function setFormsArchived(
       ids,
       isArchived,
     });
-    logger.info({ appId, count: ids.length, isArchived }, "Forms archived state updated");
+    logger.info(
+      { appId, count: ids.length, isArchived },
+      "Forms archived state updated",
+    );
     return result;
   } catch (error: any) {
     logger.error(
@@ -229,11 +230,7 @@ export async function setFormsArchived(
 
 export async function getFormResponses(
   appId: string,
-  query: Parameters<typeof adminApi.apps.processRequest>[1] extends {
-    type: typeof GetFormResponsesActionType;
-  }
-    ? Parameters<typeof adminApi.apps.processRequest>[1]["query"]
-    : never,
+  query: GetFormResponsesAction["query"],
 ) {
   const logger = loggerFactory("getFormResponses");
   logger.debug({ appId, query }, "Getting form responses");
@@ -352,7 +349,10 @@ export async function deleteFormResponse(appId: string, id: string) {
   }
 }
 
-export async function deleteSelectedFormResponses(appId: string, ids: string[]) {
+export async function deleteSelectedFormResponses(
+  appId: string,
+  ids: string[],
+) {
   const logger = loggerFactory("deleteSelectedFormResponses");
   logger.debug({ appId, ids }, "Deleting selected form responses");
 
@@ -362,7 +362,10 @@ export async function deleteSelectedFormResponses(appId: string, ids: string[]) 
       ids,
     });
 
-    logger.info({ appId, count: ids.length }, "Successfully deleted selected form responses");
+    logger.info(
+      { appId, count: ids.length },
+      "Successfully deleted selected form responses",
+    );
     return result;
   } catch (error: any) {
     logger.error(
@@ -379,7 +382,10 @@ export async function reassignFormResponses(
   customerId: string | null,
 ) {
   const logger = loggerFactory("reassignFormResponses");
-  logger.debug({ appId, ids, customerId }, "Reassigning customer for form responses");
+  logger.debug(
+    { appId, ids, customerId },
+    "Reassigning customer for form responses",
+  );
 
   try {
     const result = await adminApi.apps.processRequest(appId, {

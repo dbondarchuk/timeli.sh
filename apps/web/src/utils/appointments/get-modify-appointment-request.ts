@@ -1,5 +1,6 @@
 import { getLoggerFactory } from "@timelish/logger";
 import {
+  ApplyGiftCardsSuccessResponse,
   CANCELLATION_NOT_ALLOWED_BY_POLICY_REASON,
   CANCELLATION_NOT_ALLOWED_REASON,
   MAX_RESCHEDULES_REACHED_REASON,
@@ -11,10 +12,44 @@ import {
 } from "@timelish/types";
 import { formatAmount, getPolicyForRequest } from "@timelish/utils";
 import { DateTime } from "luxon";
+import { applyGiftCards } from "../gift-cards/apply";
 import { getServicesContainer } from "../utils";
 
+async function applyGiftCardsToPaymentAmount(
+  paymentAmount: number,
+  giftCardCodes: string[] | undefined,
+): Promise<
+  | {
+      paymentAmount: number;
+      giftCards?: ApplyGiftCardsSuccessResponse["giftCards"];
+    }
+  | { error: { code: string; message: string; status: number } }
+> {
+  if (!giftCardCodes?.length) {
+    return { paymentAmount };
+  }
+  const result = await applyGiftCards(giftCardCodes, paymentAmount);
+  if (!result.success) {
+    return {
+      error: {
+        code: result.code ?? "failed_to_apply_gift_cards",
+        message: result.error ?? "Failed to apply gift cards",
+        status: 400,
+      },
+    };
+  }
+  const totalApplied = result.giftCards.reduce(
+    (sum, gc) => sum + gc.appliedAmount,
+    0,
+  );
+  return {
+    paymentAmount: Math.max(0, paymentAmount - totalApplied),
+    giftCards: result.giftCards,
+  };
+}
+
 export const getModifyAppointmentInformationRequestResult = async (
-  request: ModifyAppointmentInformationRequest,
+  request: ModifyAppointmentInformationRequest & { giftCards?: string[] },
 ): Promise<
   | { information: ModifyAppointmentInformation; customerId: string }
   | { error: { code: string; message: string; status: number } }
@@ -241,13 +276,20 @@ export const getModifyAppointmentInformationRequestResult = async (
 
       const paymentAmount = formatAmount(originalPrice - totalDeposits);
 
+      const giftCardResult = await applyGiftCardsToPaymentAmount(
+        paymentAmount,
+        request.giftCards,
+      );
+      if ("error" in giftCardResult) return giftCardResult;
+
       return {
         information: {
           ...appointmentInformation,
           allowed: true,
           action: "payment",
           paymentPolicy: policy.action,
-          paymentAmount: paymentAmount,
+          paymentAmount: giftCardResult.paymentAmount,
+          giftCards: giftCardResult.giftCards,
           ...appointmentInformation,
           type: "cancel",
         },
@@ -257,13 +299,20 @@ export const getModifyAppointmentInformationRequestResult = async (
 
     if (policy.action === "paymentRequired") {
       if (policy.paymentType === "amount") {
+        const giftCardResult = await applyGiftCardsToPaymentAmount(
+          policy.paymentAmount,
+          request.giftCards,
+        );
+        if ("error" in giftCardResult) return giftCardResult;
+
         return {
           information: {
             ...appointmentInformation,
             allowed: true,
             action: "payment",
             paymentPolicy: policy.action,
-            paymentAmount: policy.paymentAmount,
+            paymentAmount: giftCardResult.paymentAmount,
+            giftCards: giftCardResult.giftCards,
             ...appointmentInformation,
             type: "cancel",
           },
@@ -291,13 +340,20 @@ export const getModifyAppointmentInformationRequestResult = async (
         (originalPrice * (policy.paymentPercentage ?? 100)) / 100,
       );
 
+      const giftCardResult = await applyGiftCardsToPaymentAmount(
+        paymentAmount,
+        request.giftCards,
+      );
+      if ("error" in giftCardResult) return giftCardResult;
+
       return {
         information: {
           ...appointmentInformation,
           allowed: true,
           action: "payment",
           paymentPolicy: policy.action,
-          paymentAmount,
+          paymentAmount: giftCardResult.paymentAmount,
+          giftCards: giftCardResult.giftCards,
           ...appointmentInformation,
           type: "cancel",
         },
@@ -404,12 +460,19 @@ export const getModifyAppointmentInformationRequestResult = async (
 
     if (policy.action === "paymentRequired") {
       if (policy.paymentType === "amount") {
+        const giftCardResult = await applyGiftCardsToPaymentAmount(
+          policy.paymentAmount,
+          request.giftCards,
+        );
+        if ("error" in giftCardResult) return giftCardResult;
+
         return {
           information: {
             ...appointmentInformation,
             allowed: true,
             action: "paymentRequired",
-            paymentAmount: policy.paymentAmount,
+            paymentAmount: giftCardResult.paymentAmount,
+            giftCards: giftCardResult.giftCards,
             ...appointmentInformation,
             type: "reschedule",
             timeZone: appointment.timeZone,
@@ -438,11 +501,18 @@ export const getModifyAppointmentInformationRequestResult = async (
         (originalPrice * (policy.paymentPercentage ?? 100)) / 100,
       );
 
+      const giftCardResult = await applyGiftCardsToPaymentAmount(
+        paymentAmount,
+        request.giftCards,
+      );
+      if ("error" in giftCardResult) return giftCardResult;
+
       return {
         information: {
           allowed: true,
           action: policy.action,
-          paymentAmount: paymentAmount,
+          paymentAmount: giftCardResult.paymentAmount,
+          giftCards: giftCardResult.giftCards,
           ...appointmentInformation,
           type: "reschedule",
           timeZone: appointment.timeZone,

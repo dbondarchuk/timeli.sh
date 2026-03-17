@@ -1,5 +1,6 @@
 import {
   Appointment,
+  CommunicationChannel,
   okStatus,
   Template,
   TemplateListModel,
@@ -176,6 +177,23 @@ export const getDemoTemplateArguments = async (options?: {
   const data = await result.json<FormattedArguments<Appointment>>();
   console.debug("Demo template arguments retrieved successfully", {
     options,
+  });
+
+  return data;
+};
+
+export const getTemplateTemplates = async (type: CommunicationChannel) => {
+  console.debug("Getting template templates", {
+    type,
+  });
+
+  const result = await fetchAdminApi(`/templates/templates/${type}`);
+  const data =
+    await result.json<
+      { id: string; name: string; type: CommunicationChannel }[]
+    >();
+  console.debug("Template templates retrieved successfully", {
+    type,
   });
 
   return data;

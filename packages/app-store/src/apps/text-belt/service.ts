@@ -412,7 +412,7 @@ export default class TextBeltConnectedApp
       await this.props.services.configurationService.getConfiguration(
         "defaultApps",
       );
-    const textMessageResponderAppId = defaultApps.textMessageResponder?.appId;
+    const textMessageResponderAppId = defaultApps.textMessageResponderAppId;
 
     logger.debug(
       {
@@ -659,7 +659,7 @@ export default class TextBeltConnectedApp
               "defaultApps",
             );
           const textMessageResponderAppId =
-            defaultApps.textMessageResponder?.appId;
+            defaultApps.textMessageResponderAppId;
 
           if (textMessageResponderAppId) {
             logger.debug(

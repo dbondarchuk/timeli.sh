@@ -38,10 +38,10 @@ import {
   FormMessage,
   Input,
   InputGroup,
+  InputGroupAddon,
+  InputGroupAddonClasses,
   InputGroupInput,
   InputGroupInputClasses,
-  InputGroupSuffixClasses,
-  InputSuffix,
   MultiSelect,
   Spinner,
   Textarea,
@@ -753,13 +753,13 @@ export const AppointmentScheduleForm: React.FC<
                     <FormLabel>{t("appointments.form.price")}</FormLabel>
                     <FormControl>
                       <InputGroup>
-                        <InputSuffix
-                          className={InputGroupSuffixClasses({
+                        <InputGroupAddon
+                          className={InputGroupAddonClasses({
                             variant: "prefix",
                           })}
                         >
                           $
-                        </InputSuffix>
+                        </InputGroupAddon>
                         <InputGroupInput>
                           <Input
                             disabled={loading}

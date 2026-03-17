@@ -11,7 +11,7 @@ import { useI18n } from "@timelish/i18n";
 import { BlockProviderRegistry, PageBuilder } from "@timelish/page-builder";
 import {
   getPageFooterSchemaWithUniqueNameCheck,
-  PageFooter,
+  PageFooterUpdateModel,
 } from "@timelish/types";
 import {
   Breadcrumbs,
@@ -45,7 +45,7 @@ const baseNotAllowedBlocks = [
 ];
 
 export const PageFooterForm: React.FC<{
-  initialData?: PageFooter;
+  initialData?: PageFooterUpdateModel & { _id?: string };
   args: Record<string, any>;
   apps?: { appId: string; appName: string }[];
 }> = ({ initialData, args, apps }) => {
@@ -120,13 +120,13 @@ export const PageFooterForm: React.FC<{
         link: "/dashboard/pages/footers",
       },
       {
-        title: initialData?.name || t("pages.footers.new"),
+        title: initialData?._id ? initialData.name : t("pages.footers.new"),
         link: initialData?._id
           ? `/dashboard/pages/footers/${initialData._id}`
           : "/dashboard/pages/footers/new",
       },
     ],
-    [initialData, t],
+    [initialData?._id, initialData?.name, t],
   );
 
   const { setError, trigger } = form;
@@ -146,7 +146,7 @@ export const PageFooterForm: React.FC<{
       setLoading(true);
 
       const fn = async () => {
-        if (!initialData) {
+        if (!initialData?._id) {
           const { _id } = await adminApi.pageFooters.createPageFooter(data);
 
           onFormSubmit();
@@ -184,9 +184,11 @@ export const PageFooterForm: React.FC<{
         className="w-full space-y-8 relative"
       >
         <Heading
-          title={t(initialData ? "pages.footers.edit" : "pages.footers.new")}
+          title={t(
+            initialData?._id ? "pages.footers.edit" : "pages.footers.new",
+          )}
           description={t(
-            initialData
+            initialData?._id
               ? "pages.footers.managePageFooter"
               : "pages.footers.addNewPageFooter",
           )}

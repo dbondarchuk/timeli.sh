@@ -27,6 +27,7 @@ export type IComboboxItem = {
 type BaseComboboxProps = React.ButtonHTMLAttributes<any> & {
   values: IComboboxItem[];
   searchLabel?: string;
+  placeholder?: string;
   noResultsLabel?: string;
   value?: string;
   listClassName?: string;
@@ -249,13 +250,14 @@ export const Combobox: React.FC<ComboboxProps> = (props) => {
   let {
     listClassName,
     customSearch,
+    placeholder,
     searchLabel,
     onItemSelect,
     className,
     ...rest
   } = props;
   searchLabel = searchLabel || t("common.search");
-  let buttonLabel: React.ReactNode = searchLabel;
+  let buttonLabel: React.ReactNode = placeholder || t("common.search");
   if (value) {
     const selected = props.values.find((val) => val.value === value);
     buttonLabel = selected?.shortLabel || selected?.label || buttonLabel;
