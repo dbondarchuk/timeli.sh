@@ -421,7 +421,10 @@ export const GiftCardPurchaseBlockReader = forwardRef<
                         name="designId"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>{t("block.details.design")}</FormLabel>
+                            <FormLabel>
+                              {t("block.details.design")}
+                              <span className="ml-1">*</span>
+                            </FormLabel>
                             <FormControl>
                               <Select
                                 value={field.value}
@@ -457,7 +460,10 @@ export const GiftCardPurchaseBlockReader = forwardRef<
                       name="amount"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>{t("block.details.amount")}</FormLabel>
+                          <FormLabel>
+                            {t("block.details.amount")}
+                            <span className="ml-1">*</span>
+                          </FormLabel>
                           <FormControl>
                             <InputGroup>
                               <InputGroupAddon
@@ -502,7 +508,10 @@ export const GiftCardPurchaseBlockReader = forwardRef<
                       name="name"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>{t("block.details.yourName")}</FormLabel>
+                          <FormLabel>
+                            {t("block.details.yourName")}
+                            <span className="ml-1">*</span>
+                          </FormLabel>
                           <FormControl>
                             <Input {...field} disabled={isLoading} />
                           </FormControl>
@@ -515,7 +524,10 @@ export const GiftCardPurchaseBlockReader = forwardRef<
                       name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>{t("block.details.email")}</FormLabel>
+                          <FormLabel>
+                            {t("block.details.email")}
+                            <span className="ml-1">*</span>
+                          </FormLabel>
                           <FormControl>
                             <Input {...field} disabled={isLoading} />
                           </FormControl>
@@ -528,7 +540,10 @@ export const GiftCardPurchaseBlockReader = forwardRef<
                       name="phone"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>{t("block.details.phone")}</FormLabel>
+                          <FormLabel>
+                            {t("block.details.phone")}
+                            <span className="ml-1">*</span>
+                          </FormLabel>
                           <FormControl>
                             <PhoneInput
                               {...field}
@@ -572,7 +587,10 @@ export const GiftCardPurchaseBlockReader = forwardRef<
                           name="toName"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>{t("block.details.toName")}</FormLabel>
+                              <FormLabel>
+                                {t("block.details.toName")}
+                                <span className="ml-1">*</span>
+                              </FormLabel>
                               <FormControl>
                                 <Input
                                   {...field}
@@ -594,6 +612,7 @@ export const GiftCardPurchaseBlockReader = forwardRef<
                             <FormItem>
                               <FormLabel>
                                 {t("block.details.toEmail")}
+                                <span className="ml-1">*</span>
                               </FormLabel>
                               <FormControl>
                                 <Input
