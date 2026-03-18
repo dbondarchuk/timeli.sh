@@ -63,7 +63,7 @@ export const ServicesContainer: (companyId: string) => IServicesContainer =
       configurationService,
       assetsStorage,
     );
-    
+
     const jobService = new BullMQJobService(companyId, getBullMQJobConfig());
     const dashboardNotificationsService =
       new RedisDashboardNotificationPublisher(companyId, getRedisClient());
@@ -80,6 +80,7 @@ export const ServicesContainer: (companyId: string) => IServicesContainer =
     const servicesService = new ServicesService(
       companyId,
       configurationService,
+      jobService,
     );
     const paymentsService = new PaymentsService(
       companyId,
@@ -108,7 +109,11 @@ export const ServicesContainer: (companyId: string) => IServicesContainer =
       getBullMQNotificationConfig(),
     );
 
-    const giftCardsService = new GiftCardsService(companyId, paymentsService);
+    const giftCardsService = new GiftCardsService(
+      companyId,
+      paymentsService,
+      jobService,
+    );
 
     const services: IServicesContainer = {
       configurationService,

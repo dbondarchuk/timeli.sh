@@ -89,7 +89,7 @@
     "update": "Update <app></app>",
     "form": {
       "dontDismissWaitlistOnAppointmentCreate": {
-        "label": "Don't dismiss waitlist on appointment create",
+        "label": "Don't dismiss waitlist on appointment creation",
         "tooltip": "Whether to disable dismissing waitlist entry when appointment was created from it"
       }
     }

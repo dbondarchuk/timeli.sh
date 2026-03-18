@@ -82,7 +82,7 @@ export const SmtpAppSetup: React.FC<{ appId: string }> = ({ appId }) => {
                       <BooleanSelect
                         className="w-full"
                         {...field}
-                        value={field.value}
+                        value={field.value ?? false}
                         trueLabel={t("form.secure.yes")}
                         falseLabel={t("form.secure.no")}
                         onValueChange={(e) => {

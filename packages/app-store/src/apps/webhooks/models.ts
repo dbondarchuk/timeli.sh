@@ -15,6 +15,23 @@ export const webhookEventTypes = [
   "waitlist-entry.created",
   "waitlist-entries.dismissed",
   "form-response.created",
+  "gift-card.created",
+  "gift-card.updated",
+  "gift-card.deleted",
+  "gift-card.status_changed",
+  "discount.created",
+  "discount.updated",
+  "discount.deleted",
+  "discount.applied",
+  "service.created",
+  "service.updated",
+  "service.deleted",
+  "addon.created",
+  "addon.updated",
+  "addon.deleted",
+  "field.created",
+  "field.updated",
+  "field.deleted",
 ] as const;
 
 export type WebhookEventType = (typeof webhookEventTypes)[number];

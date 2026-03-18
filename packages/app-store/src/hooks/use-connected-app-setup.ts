@@ -41,6 +41,13 @@ export function useConnectedAppSetup<T extends FieldValues>({
     initialData as any,
   );
 
+  const form = useForm<T>({
+    resolver: zodResolver(schema),
+    mode: "all",
+    reValidateMode: "onChange",
+    defaultValues: {} as any,
+  });
+
   React.useEffect(() => {
     if (!existingAppId) return;
 
@@ -51,19 +58,13 @@ export function useConnectedAppSetup<T extends FieldValues>({
       const data = await adminApi.apps.getAppData(existingAppId);
       setInitialAppData(data);
 
+      form.reset(data);
       setIsDataLoading(false);
       setIsLoading(false);
     };
-
     setAppId(existingAppId);
     getInitialData();
-  }, [existingAppId]);
-
-  const form = useForm<T>({
-    resolver: zodResolver(schema),
-    mode: "all",
-    values: initialAppData,
-  });
+  }, [existingAppId, form]);
 
   const onSubmit = async (data: T) => {
     try {

@@ -15,6 +15,7 @@ export const webhooksApp: App<WebhooksAdminNamespace, WebhooksAdminKeys> = {
     "payment-hook",
     "waitlist-hook",
     "form-hook",
+    "gift-card-hook",
   ],
   description: {
     text: "app_webhooks_admin.app.description",

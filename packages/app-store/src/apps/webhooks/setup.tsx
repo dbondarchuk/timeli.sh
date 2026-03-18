@@ -3,8 +3,9 @@
 import { useI18n } from "@timelish/i18n";
 import { AppSetupProps } from "@timelish/types";
 import {
+  Badge,
   Button,
-  Checkbox,
+  Combobox,
   Form,
   FormControl,
   FormField,
@@ -14,11 +15,15 @@ import {
   InfoTooltip,
   Input,
   Spinner,
+  TooltipResponsive,
+  TooltipResponsiveContent,
+  TooltipResponsiveTrigger,
 } from "@timelish/ui";
 import {
   ConnectedAppNameAndLogo,
   ConnectedAppStatusMessage,
 } from "@timelish/ui-admin";
+import { X } from "lucide-react";
 import React, { useState } from "react";
 import * as z from "zod";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
@@ -104,7 +109,7 @@ export const WebhooksAppSetup: React.FC<AppSetupProps> = ({
                         !isEditingSecret && field.value === MASKED_SECRET
                       }
                       {...field}
-                      value={field.value === MASKED_SECRET ? "" : field.value}
+                      value={field.value}
                     />
                     {field.value === MASKED_SECRET && (
                       <Button
@@ -132,40 +137,64 @@ export const WebhooksAppSetup: React.FC<AppSetupProps> = ({
                   <InfoTooltip>{t("form.eventTypes.tooltip")}</InfoTooltip>
                 </FormLabel>
                 <FormControl>
-                  <div className="space-y-3">
-                    {webhookEventTypes.map((eventType) => (
-                      <div
-                        key={eventType}
-                        className="flex items-center space-x-3"
-                      >
-                        <Checkbox
-                          id={eventType}
-                          disabled={isLoading}
-                          checked={field.value?.includes(eventType) || false}
-                          onCheckedChange={(checked) => {
-                            const currentValues = field.value || [];
-                            if (checked) {
-                              field.onChange([...currentValues, eventType]);
-                            } else {
-                              field.onChange(
-                                currentValues.filter((et) => et !== eventType),
-                              );
-                            }
-                          }}
-                        />
-                        <div className="flex-1">
-                          <FormLabel
-                            htmlFor={eventType}
-                            className="text-sm font-medium cursor-pointer"
-                          >
-                            {t(`eventTypes.${eventType}.label`)}
-                          </FormLabel>
-                          <p className="text-xs text-gray-500">
-                            {t(`eventTypes.${eventType}.description`)}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
+                  <div className="flex flex-col gap-4">
+                    <Combobox
+                      values={webhookEventTypes
+                        .filter(
+                          (eventType) => !field.value?.includes(eventType),
+                        )
+                        .map((eventType) => ({
+                          value: eventType,
+                          shortLabel: t(`eventTypes.${eventType}.label`),
+                          label: (
+                            <div className="flex flex-col gap-2">
+                              <div className="text-sm font-medium">
+                                {t(`eventTypes.${eventType}.label`)}
+                              </div>
+                              <div className="text-xs text-muted-foreground">
+                                {t(`eventTypes.${eventType}.description`)}
+                              </div>
+                            </div>
+                          ),
+                        }))}
+                      value={""}
+                      placeholder={t("form.eventTypes.placeholder")}
+                      onItemSelect={(item) => {
+                        field.onChange([...(field.value || []), item]);
+                      }}
+                    />
+                    <div className="flex flex-row flex-wrap gap-2">
+                      {field.value?.map((eventType) => (
+                        <Badge
+                          key={eventType}
+                          variant="secondary"
+                          className="flex flex-row items-center gap-2"
+                        >
+                          <span>{t(`eventTypes.${eventType}.label`)}</span>
+                          <TooltipResponsive>
+                            <TooltipResponsiveTrigger>
+                              <Button
+                                variant="ghost-destructive"
+                                size="xs"
+                                className="p-0 hover:bg-transparent"
+                                onClick={() =>
+                                  field.onChange(
+                                    field.value?.filter(
+                                      (et) => et !== eventType,
+                                    ),
+                                  )
+                                }
+                              >
+                                <X className="size-2" />
+                              </Button>
+                            </TooltipResponsiveTrigger>
+                            <TooltipResponsiveContent>
+                              {t("form.unselectEvent")}
+                            </TooltipResponsiveContent>
+                          </TooltipResponsive>
+                        </Badge>
+                      ))}
+                    </div>
                   </div>
                 </FormControl>
                 <FormMessage />

@@ -4,7 +4,9 @@ import {
   GiftCardListModel,
   GiftCardStatus,
   GiftCardUpdateModel,
+  IGiftCardHook,
   IGiftCardsService,
+  IJobService,
   InPersonPaymentMethod,
   inPersonPaymentMethod,
   IPaymentsService,
@@ -28,6 +30,7 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
   public constructor(
     companyId: string,
     protected readonly paymentsService: IPaymentsService,
+    protected readonly jobService: IJobService,
   ) {
     super("GiftCardsService", companyId);
   }
@@ -67,8 +70,18 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
     );
     await giftCards.insertOne(dbGiftCard);
 
-    logger.debug({ giftCardId: dbGiftCard._id }, "Gift card created");
-    return (await this.getGiftCard(dbGiftCard._id)) as GiftCardListModel;
+    const newGiftCard = (await this.getGiftCard(
+      dbGiftCard._id,
+    )) as GiftCardListModel;
+
+    await this.jobService.enqueueHook<IGiftCardHook, "onGiftCardCreated">(
+      "gift-card-hook",
+      "onGiftCardCreated",
+      newGiftCard,
+    );
+
+    logger.debug({ giftCardId: newGiftCard._id }, "Gift card created");
+    return newGiftCard;
   }
 
   public async updateGiftCard(
@@ -172,8 +185,17 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
       throw new Error("Gift card not found");
     }
 
+    const updatedGiftCard = (await this.getGiftCard(id)) as GiftCardListModel;
+    await this.jobService.enqueueHook<IGiftCardHook, "onGiftCardUpdated">(
+      "gift-card-hook",
+      "onGiftCardUpdated",
+      updatedGiftCard,
+      giftCard,
+    );
+
     logger.debug({ id }, "Gift card updated");
-    return (await this.getGiftCard(id)) as GiftCardListModel;
+
+    return updatedGiftCard;
   }
 
   public async setGiftCardStatus(
@@ -201,8 +223,14 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
       return null;
     }
 
+    const updatedGiftCard = (await this.getGiftCard(id)) as GiftCardListModel;
+    await this.jobService.enqueueHook<
+      IGiftCardHook,
+      "onGiftCardsStatusChanged"
+    >("gift-card-hook", "onGiftCardsStatusChanged", [id], status);
+
     logger.debug({ id, status }, "Gift card status updated");
-    return (await this.getGiftCard(id)) as GiftCardListModel;
+    return updatedGiftCard;
   }
 
   public async setGiftCardsStatus(
@@ -223,6 +251,11 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
       { _id: { $in: ids }, companyId: this.companyId },
       { $set: { status, updatedAt: new Date() } },
     );
+
+    await this.jobService.enqueueHook<
+      IGiftCardHook,
+      "onGiftCardsStatusChanged"
+    >("gift-card-hook", "onGiftCardsStatusChanged", ids, status);
 
     logger.debug({ ids, status }, "Gift cards status updated");
   }
@@ -289,6 +322,12 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
 
     await giftCards.deleteOne({ _id: id, companyId: this.companyId });
     await this.paymentsService.deletePayment(giftCard.paymentId);
+
+    await this.jobService.enqueueHook<IGiftCardHook, "onGiftCardsDeleted">(
+      "gift-card-hook",
+      "onGiftCardsDeleted",
+      [id],
+    );
 
     logger.debug({ id }, "Gift card deleted");
     return giftCard;
@@ -388,6 +427,12 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
       _id: { $in: paymentIdsToDelete },
       companyId: this.companyId,
     });
+
+    await this.jobService.enqueueHook<IGiftCardHook, "onGiftCardsDeleted">(
+      "gift-card-hook",
+      "onGiftCardsDeleted",
+      giftCardIdsToDelete,
+    );
 
     logger.debug({ ids }, "Gift cards deleted");
   }

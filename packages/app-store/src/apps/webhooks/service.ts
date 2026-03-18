@@ -3,19 +3,35 @@ import {
   ApiRequest,
   ApiResponse,
   Appointment,
+  AppointmentAddon,
+  AppointmentAddonUpdateModel,
+  AppointmentOption,
+  AppointmentOptionUpdateModel,
   AppointmentStatus,
   ConnectedAppData,
   ConnectedAppRequestError,
   ConnectedAppStatusWithText,
   Customer,
   CustomerUpdateModel,
+  Discount,
+  DiscountUpdateModel,
+  GiftCardListModel,
+  GiftCardStatus,
+  GiftCardUpdateModel,
+  IAddonHook,
   IAppointmentHook,
   IConnectedApp,
   IConnectedAppProps,
   ICustomerHook,
+  IDiscountHook,
+  IFieldHook,
+  IGiftCardHook,
   IPaymentHook,
+  IServiceHook,
   Payment,
   PaymentUpdateModel,
+  ServiceField,
+  ServiceFieldUpdateModel,
 } from "@timelish/types";
 import { decrypt, encrypt } from "@timelish/utils";
 import crypto from "crypto";
@@ -25,6 +41,7 @@ import type { WaitlistEntry } from "../waitlist/models/waitlist";
 import type { IWaitlistHook } from "../waitlist/models/waitlist-hook";
 import {
   MASKED_SECRET,
+  WebhookEventType,
   WebhooksConfiguration,
   webhooksConfigurationSchema,
 } from "./models";
@@ -41,7 +58,12 @@ export class WebhooksConnectedApp
     ICustomerHook,
     IPaymentHook,
     IWaitlistHook,
-    IFormsHook
+    IFormsHook,
+    IGiftCardHook,
+    IDiscountHook,
+    IServiceHook,
+    IAddonHook,
+    IFieldHook
 {
   protected readonly loggerFactory: LoggerFactory;
 
@@ -276,9 +298,158 @@ export class WebhooksConnectedApp
     });
   }
 
+  // Gift Card Hooks
+  public async onGiftCardCreated(
+    appData: ConnectedAppData,
+    giftCard: GiftCardListModel,
+  ): Promise<void> {
+    await this.sendWebhook(appData, "gift-card.created", { giftCard });
+  }
+
+  public async onGiftCardUpdated(
+    appData: ConnectedAppData,
+    giftCard: GiftCardListModel,
+    update: Partial<GiftCardUpdateModel>,
+  ): Promise<void> {
+    await this.sendWebhook(appData, "gift-card.updated", { giftCard, update });
+  }
+
+  public async onGiftCardsDeleted(
+    appData: ConnectedAppData,
+    giftCardsIds: string[],
+  ): Promise<void> {
+    await this.sendWebhook(appData, "gift-card.deleted", { giftCardsIds });
+  }
+
+  public async onGiftCardsStatusChanged(
+    appData: ConnectedAppData,
+    giftCardsIds: string[],
+    status: GiftCardStatus,
+  ): Promise<void> {
+    await this.sendWebhook(appData, "gift-card.status_changed", {
+      giftCardsIds,
+      status,
+    });
+  }
+
+  // Discount Hooks
+
+  public async onDiscountCreated(
+    appData: ConnectedAppData,
+    discount: Discount,
+  ): Promise<void> {
+    await this.sendWebhook(appData, "discount.created", { discount });
+  }
+
+  public async onDiscountUpdated(
+    appData: ConnectedAppData,
+    discount: Discount,
+    update: Partial<DiscountUpdateModel>,
+  ): Promise<void> {
+    await this.sendWebhook(appData, "discount.updated", { discount, update });
+  }
+
+  public async onDiscountsDeleted(
+    appData: ConnectedAppData,
+    discountsIds: string[],
+  ): Promise<void> {
+    await this.sendWebhook(appData, "discount.deleted", { discountsIds });
+  }
+
+  public async onDiscountApplied(
+    appData: ConnectedAppData,
+    customer: Customer,
+    discount: {
+      id: string;
+      name: string;
+      value: number;
+      code: string;
+      dateTime: Date;
+      appointmentId?: string;
+      appointmentOptionId?: string;
+      appointmentAddonIds?: string[];
+      appointmentTotalPrice?: number;
+      appointmentDateTime?: Date;
+    },
+  ): Promise<void> {
+    await this.sendWebhook(appData, "discount.applied", { customer, discount });
+  }
+
+  // Service Hooks
+
+  public async onServiceCreated(
+    appData: ConnectedAppData,
+    service: AppointmentOption,
+  ): Promise<void> {
+    await this.sendWebhook(appData, "service.created", { service });
+  }
+
+  public async onServiceUpdated(
+    appData: ConnectedAppData,
+    service: AppointmentOption,
+    update: Partial<AppointmentOptionUpdateModel>,
+  ): Promise<void> {
+    await this.sendWebhook(appData, "service.updated", { service, update });
+  }
+
+  public async onServicesDeleted(
+    appData: ConnectedAppData,
+    servicesIds: string[],
+  ): Promise<void> {
+    await this.sendWebhook(appData, "service.deleted", { servicesIds });
+  }
+
+  // Addon Hooks
+
+  public async onAddonCreated(
+    appData: ConnectedAppData,
+    addon: AppointmentAddon,
+  ): Promise<void> {
+    await this.sendWebhook(appData, "addon.created", { addon });
+  }
+
+  public async onAddonUpdated(
+    appData: ConnectedAppData,
+    addon: AppointmentAddon,
+    update: Partial<AppointmentAddonUpdateModel>,
+  ): Promise<void> {
+    await this.sendWebhook(appData, "addon.updated", { addon, update });
+  }
+
+  public async onAddonsDeleted(
+    appData: ConnectedAppData,
+    addonsIds: string[],
+  ): Promise<void> {
+    await this.sendWebhook(appData, "addon.deleted", { addonsIds });
+  }
+
+  // Field Hooks
+
+  public async onFieldCreated(
+    appData: ConnectedAppData,
+    field: ServiceField,
+  ): Promise<void> {
+    await this.sendWebhook(appData, "field.created", { field });
+  }
+
+  public async onFieldUpdated(
+    appData: ConnectedAppData,
+    field: ServiceField,
+    update: Partial<ServiceFieldUpdateModel>,
+  ): Promise<void> {
+    await this.sendWebhook(appData, "field.updated", { field, update });
+  }
+
+  public async onFieldsDeleted(
+    appData: ConnectedAppData,
+    fieldsIds: string[],
+  ): Promise<void> {
+    await this.sendWebhook(appData, "field.deleted", { fieldsIds });
+  }
+
   private async sendWebhook(
     appData: ConnectedAppData<WebhooksConfiguration>,
-    eventType: string,
+    eventType: WebhookEventType,
     payload: any,
   ): Promise<void> {
     const logger = this.loggerFactory("sendWebhook");

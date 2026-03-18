@@ -13,7 +13,12 @@ import {
   DiscountUpdateModel,
   FieldsType,
   FieldType,
+  IAddonHook,
   IConfigurationService,
+  IDiscountHook,
+  IFieldHook,
+  IJobService,
+  IServiceHook,
   IServicesService,
   Query,
   ServiceField,
@@ -38,6 +43,7 @@ export class ServicesService extends BaseService implements IServicesService {
   public constructor(
     companyId: string,
     protected readonly configurationService: IConfigurationService,
+    protected readonly jobService: IJobService,
   ) {
     super("ServicesService", companyId);
   }
@@ -269,6 +275,12 @@ export class ServicesService extends BaseService implements IServicesService {
 
     await fields.insertOne(dbField);
 
+    await this.jobService.enqueueHook<IFieldHook, "onFieldCreated">(
+      "field-hook",
+      "onFieldCreated",
+      dbField,
+    );
+
     logger.debug(
       { fieldId: dbField._id, name: dbField.name },
       "Successfully created field",
@@ -295,7 +307,7 @@ export class ServicesService extends BaseService implements IServicesService {
 
     updateObj.updatedAt = DateTime.utc().toJSDate();
 
-    await fields.updateOne(
+    const { modifiedCount } = await fields.updateOne(
       {
         _id: id,
         companyId: this.companyId,
@@ -303,6 +315,20 @@ export class ServicesService extends BaseService implements IServicesService {
       {
         $set: updateObj,
       },
+    );
+
+    if (modifiedCount === 0) {
+      logger.warn({ fieldId: id }, "Field not found after update");
+      return;
+    }
+
+    const updatedField = await this.getField(id);
+
+    await this.jobService.enqueueHook<IFieldHook, "onFieldUpdated">(
+      "field-hook",
+      "onFieldUpdated",
+      updatedField!,
+      updateObj,
     );
 
     logger.debug({ fieldId: id, name: update.name }, "Field updated");
@@ -368,6 +394,12 @@ export class ServicesService extends BaseService implements IServicesService {
         return field;
       });
 
+      await this.jobService.enqueueHook<IFieldHook, "onFieldsDeleted">(
+        "field-hook",
+        "onFieldsDeleted",
+        [id],
+      );
+
       return result;
     } finally {
       await session.endSession();
@@ -427,6 +459,12 @@ export class ServicesService extends BaseService implements IServicesService {
               },
             },
           );
+
+        await this.jobService.enqueueHook<IFieldHook, "onFieldsDeleted">(
+          "field-hook",
+          "onFieldsDeleted",
+          ids,
+        );
 
         logger.debug(
           { fieldsDeletedCount, addonsModifiedCount, optionsModifiedCount },
@@ -636,6 +674,12 @@ export class ServicesService extends BaseService implements IServicesService {
 
     await addons.insertOne(dbAddon);
 
+    await this.jobService.enqueueHook<IAddonHook, "onAddonCreated">(
+      "addon-hook",
+      "onAddonCreated",
+      dbAddon,
+    );
+
     logger.debug({ addonId: dbAddon._id, name: dbAddon.name }, "Addon created");
 
     return dbAddon;
@@ -658,7 +702,7 @@ export class ServicesService extends BaseService implements IServicesService {
 
     updateObj.updatedAt = DateTime.utc().toJSDate();
 
-    await addons.updateOne(
+    const { modifiedCount } = await addons.updateOne(
       {
         _id: id,
         companyId: this.companyId,
@@ -666,6 +710,20 @@ export class ServicesService extends BaseService implements IServicesService {
       {
         $set: updateObj,
       },
+    );
+
+    if (modifiedCount === 0) {
+      logger.warn({ addonId: id }, "Addon not found after update");
+      return;
+    }
+
+    const updatedAddon = await this.getAddon(id);
+
+    await this.jobService.enqueueHook<IAddonHook, "onAddonUpdated">(
+      "addon-hook",
+      "onAddonUpdated",
+      updatedAddon!,
+      updateObj,
     );
 
     logger.debug({ addonId: id, name: update.name }, "Addon updated");
@@ -711,6 +769,12 @@ export class ServicesService extends BaseService implements IServicesService {
 
         logger.debug({ addonId: id, optionsModifiedCount }, "Addon deleted");
 
+        await this.jobService.enqueueHook<IAddonHook, "onAddonsDeleted">(
+          "addon-hook",
+          "onAddonsDeleted",
+          [id],
+        );
+
         return addon;
       });
 
@@ -754,6 +818,12 @@ export class ServicesService extends BaseService implements IServicesService {
               },
             },
           );
+
+        await this.jobService.enqueueHook<IAddonHook, "onAddonsDeleted">(
+          "addon-hook",
+          "onAddonsDeleted",
+          ids,
+        );
 
         logger.debug(
           { addonsDeletedCount, optionsModifiedCount },
@@ -962,6 +1032,12 @@ export class ServicesService extends BaseService implements IServicesService {
 
     await options.insertOne(dbOption);
 
+    await this.jobService.enqueueHook<IServiceHook, "onServiceCreated">(
+      "service-hook",
+      "onServiceCreated",
+      dbOption,
+    );
+
     logger.debug(
       { optionId: dbOption._id, name: dbOption.name },
       "Option created",
@@ -987,7 +1063,7 @@ export class ServicesService extends BaseService implements IServicesService {
 
     updateObj.updatedAt = DateTime.utc().toJSDate();
 
-    await options.updateOne(
+    const { modifiedCount } = await options.updateOne(
       {
         _id: id,
         companyId: this.companyId,
@@ -995,6 +1071,20 @@ export class ServicesService extends BaseService implements IServicesService {
       {
         $set: updateObj,
       },
+    );
+
+    if (modifiedCount === 0) {
+      logger.warn({ optionId: id }, "Option not found after update");
+      return;
+    }
+
+    const updatedOption = await this.getOption(id);
+
+    await this.jobService.enqueueHook<IServiceHook, "onServiceUpdated">(
+      "service-hook",
+      "onServiceUpdated",
+      updatedOption!,
+      updateObj,
     );
 
     logger.debug({ optionId: id, name: update.name }, "Option updated");
@@ -1040,6 +1130,12 @@ export class ServicesService extends BaseService implements IServicesService {
               },
             },
           );
+
+        await this.jobService.enqueueHook<IServiceHook, "onServicesDeleted">(
+          "service-hook",
+          "onServicesDeleted",
+          [id],
+        );
 
         logger.debug(
           { optionId: id, configurationsModifiedCount },
@@ -1095,6 +1191,12 @@ export class ServicesService extends BaseService implements IServicesService {
               },
             },
           );
+
+        await this.jobService.enqueueHook<IServiceHook, "onServicesDeleted">(
+          "service-hook",
+          "onServicesDeleted",
+          ids,
+        );
 
         logger.debug(
           { optionsDeletedCount, configurationsModifiedCount },
@@ -1403,6 +1505,12 @@ export class ServicesService extends BaseService implements IServicesService {
 
     await discounts.insertOne(dbDiscount);
 
+    await this.jobService.enqueueHook<IDiscountHook, "onDiscountCreated">(
+      "discount-hook",
+      "onDiscountCreated",
+      dbDiscount,
+    );
+
     logger.debug(
       { discountId: dbDiscount._id, name: dbDiscount.name },
       "Discount created",
@@ -1432,7 +1540,7 @@ export class ServicesService extends BaseService implements IServicesService {
 
     updateObj.updatedAt = DateTime.utc().toJSDate();
 
-    await discounts.updateOne(
+    const { modifiedCount } = await discounts.updateOne(
       {
         _id: id,
         companyId: this.companyId,
@@ -1440,6 +1548,20 @@ export class ServicesService extends BaseService implements IServicesService {
       {
         $set: updateObj,
       },
+    );
+
+    if (modifiedCount === 0) {
+      logger.warn({ discountId: id }, "Discount not found after update");
+      return;
+    }
+
+    const updatedDiscount = await this.getDiscount(id);
+
+    await this.jobService.enqueueHook<IDiscountHook, "onDiscountUpdated">(
+      "discount-hook",
+      "onDiscountUpdated",
+      updatedDiscount!,
+      updateObj,
     );
 
     logger.debug({ discountId: id, name: update.name }, "Discount updated");
@@ -1462,6 +1584,12 @@ export class ServicesService extends BaseService implements IServicesService {
       return null;
     }
 
+    await this.jobService.enqueueHook<IDiscountHook, "onDiscountsDeleted">(
+      "discount-hook",
+      "onDiscountsDeleted",
+      [id],
+    );
+
     logger.debug({ discountId: id }, "Discount deleted");
 
     return discount;
@@ -1480,6 +1608,12 @@ export class ServicesService extends BaseService implements IServicesService {
       },
       companyId: this.companyId,
     });
+
+    await this.jobService.enqueueHook<IDiscountHook, "onDiscountsDeleted">(
+      "discount-hook",
+      "onDiscountsDeleted",
+      ids,
+    );
 
     logger.debug({ ids, discountsDeletedCount }, "Discounts deleted");
   }

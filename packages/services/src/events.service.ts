@@ -38,6 +38,7 @@ import {
   type IConfigurationService,
   type IConnectedAppsService,
   type ICustomersService,
+  type IDiscountHook,
   type IEventsService,
   type IScheduleService,
   type Period,
@@ -1967,6 +1968,26 @@ export class EventsService extends BaseService implements IEventsService {
             payment: historyPayment,
           },
         });
+
+        if (dbEvent.discount) {
+          await this.jobService.enqueueHook<IDiscountHook, "onDiscountApplied">(
+            "discount-hook",
+            "onDiscountApplied",
+            customer,
+            {
+              id: dbEvent.discount.id,
+              name: dbEvent.discount.name,
+              value: dbEvent.discount.discountAmount,
+              code: dbEvent.discount.code,
+              dateTime: new Date(),
+              appointmentId: id,
+              appointmentOptionId: dbEvent.option?._id,
+              appointmentAddonIds: dbEvent.addons?.map((addon) => addon._id),
+              appointmentTotalPrice: dbEvent.totalPrice,
+              appointmentDateTime: dbEvent.dateTime,
+            },
+          );
+        }
 
         logger.debug(
           { appointmentId: id, customerName: customer.name, status },
