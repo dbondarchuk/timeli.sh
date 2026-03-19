@@ -53,13 +53,13 @@ module.exports = {
       await session.withTransaction(async () => {
         const configuration = db.collection("configuration");
 
-        // Best-effort rollback: unset only if values still match defaults.
+        // Best-effort rollback: unset
         await configuration.updateMany(
-          { key: "general", "value.country": "US" },
+          { key: "general" },
           { $unset: { "value.country": "" } },
         );
         await configuration.updateMany(
-          { key: "general", "value.currency": "USD" },
+          { key: "general" },
           { $unset: { "value.currency": "" } },
         );
       });
@@ -68,4 +68,3 @@ module.exports = {
     }
   },
 };
-
