@@ -68,7 +68,8 @@
         "online": "Online"
       },
       "filters": "Filters",
-      "loading": "Loading"
+      "loading": "Loading",
+      "unknown": "Unknown"
     },
     "buttons": {
       "delete": "Delete",

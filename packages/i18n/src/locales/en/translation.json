@@ -420,5 +420,10 @@
   "header": {
     "menu": "Menu",
     "close": "Close"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "description": "The page you are looking for does not exist.",
+    "button": "Go back to home"
   }
 }

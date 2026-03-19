@@ -264,7 +264,7 @@ export const RecentCommunications: React.FC<RecentCommunicationsProps> = ({
         participantType: ["customer"],
         page,
         limit: toLoad,
-        customerId: customerId ? [customerId] : undefined,
+        customer: customerId ? [customerId] : undefined,
         appointmentId,
         direction,
         channel,

@@ -30,7 +30,7 @@ export const communicationLogsSearchParams = {
   channel: parseAsArrayOf(
     parseAsStringLiteral(communicationChannels),
   ).withDefault([...communicationChannels]),
-  customerId: parseAsArrayOf(parseAsString),
+  customer: parseAsArrayOf(parseAsString),
   appointmentId: parseAsString,
   sort: baseSearchParams.sort.withDefault([
     {

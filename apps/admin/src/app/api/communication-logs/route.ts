@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
   const search = params.search ?? undefined;
   const limit = params.limit;
   const sort = params.sort;
-  const customerId = params.customerId ?? undefined;
+  const customerId = params.customer ?? undefined;
   const appointmentId = params.appointmentId ?? undefined;
   const direction = params.direction;
   const channel = params.channel;
