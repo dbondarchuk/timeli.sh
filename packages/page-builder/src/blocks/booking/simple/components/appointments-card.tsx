@@ -7,8 +7,9 @@ import {
   CardHeader,
   CardTitle,
   Markdown,
+  useCurrencyFormat,
 } from "@timelish/ui";
-import { durationToTime, formatAmountString } from "@timelish/utils";
+import { durationToTime } from "@timelish/utils";
 import { DollarSign, Timer } from "lucide-react";
 import React from "react";
 
@@ -23,6 +24,7 @@ export const AppointmentsCard: React.FC<
   AppointmentsCardProps & React.HTMLAttributes<HTMLDivElement>
 > = ({ options: meetings, className, id, onSelectOption, ...props }) => {
   const i18n = useI18n("translation");
+  const currencyFormat = useCurrencyFormat();
 
   const onKeyPress = React.useCallback(
     (id: string, event: React.KeyboardEvent<any>) => {
@@ -74,11 +76,11 @@ export const AppointmentsCard: React.FC<
                     <div
                       className="flex flex-row items-center"
                       aria-label={i18n("common.formats.formPriceLabel", {
-                        price: formatAmountString(option.price),
+                        price: currencyFormat(option.price),
                       })}
                     >
                       <DollarSign className="mr-1" aria-label="" />
-                      {formatAmountString(option.price)}
+                      {currencyFormat(option.price)}
                     </div>
                   )}
                   {option.durationType === "flexible" &&
@@ -86,12 +88,12 @@ export const AppointmentsCard: React.FC<
                       <div
                         className="flex flex-row items-center"
                         aria-label={i18n("common.formats.formPriceLabel", {
-                          price: formatAmountString(option.pricePerHour),
+                          price: currencyFormat(option.pricePerHour),
                         })}
                       >
                         <DollarSign className="mr-1" aria-label="" />
                         {i18n("booking.option.price_per_hour", {
-                          price: formatAmountString(option.pricePerHour),
+                          price: currencyFormat(option.pricePerHour),
                         })}
                       </div>
                     )}

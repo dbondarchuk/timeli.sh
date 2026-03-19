@@ -118,7 +118,7 @@ export const giftCardToRecipientEmailTemplate: TemplatesTemplate = {
                   id: "gift-card-studio-recipient-email-amount-uk",
                   children: [
                     {
-                      text: "Сума: ${{giftCard.amountPurchasedFormatted}}",
+                      text: "Сума: {{giftCard.amountPurchasedFormatted}}",
                       fontSize: "14px",
                     },
                   ],

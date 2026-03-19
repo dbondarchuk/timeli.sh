@@ -244,6 +244,7 @@ export const PageForm: React.FC<{
           now: new Date(),
         },
         language || config.general.language,
+        config.general.currency,
       ),
     [
       title,

@@ -1,10 +1,7 @@
 import { TranslationKeys, useI18n, useLocale } from "@timelish/i18n";
 import { Time, timeZones } from "@timelish/types";
-import {
-  durationToTime,
-  formatAmountString,
-  formatTimeLocale,
-} from "@timelish/utils";
+import { useCurrencyFormat } from "@timelish/ui";
+import { durationToTime, formatTimeLocale } from "@timelish/utils";
 import { TimeZone } from "@vvo/tzdb";
 import { Calendar, Clock, DollarSign, Globe2, Timer } from "lucide-react";
 import { HourNumbers, DateTime as Luxon, MinuteNumbers } from "luxon";
@@ -17,6 +14,7 @@ export const CardWithAppointmentInformation: React.FC<
   const i18n = useI18n("translation");
   const { dateTime, duration, price } = useScheduleContext();
   const locale = useLocale();
+  const currencyFormat = useCurrencyFormat();
 
   if (!dateTime) return children;
 
@@ -67,14 +65,17 @@ export const CardWithAppointmentInformation: React.FC<
           {!!duration && (
             <div className="flex items-center">
               <Timer className="mr-1" />
-              {i18n("common.formats.durationHourMinutes", durationToTime(duration))}
+              {i18n(
+                "common.formats.durationHourMinutes",
+                durationToTime(duration),
+              )}
             </div>
           )}
           {!!price && (
             <div className="flex items-center">
               <DollarSign className="mr-1" />
               {i18n("common.formats.formPriceLabel", {
-                price: formatAmountString(price),
+                price: currencyFormat(price),
               })}
             </div>
           )}

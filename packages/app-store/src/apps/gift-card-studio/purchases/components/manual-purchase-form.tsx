@@ -41,6 +41,7 @@ import {
   Textarea,
   toastPromise,
   useDebounce,
+  useCurrencySymbol,
 } from "@timelish/ui";
 import { CustomerSelector } from "@timelish/ui-admin";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
@@ -137,6 +138,7 @@ export const ManualPurchaseDialog: React.FC<{
     giftCardStudioAdminNamespace,
   );
   const tAdmin = useI18n("admin");
+  const currencySymbol = useCurrencySymbol();
   const [loading, setLoading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [previewLoading, setPreviewLoading] = useState(false);
@@ -361,7 +363,7 @@ export const ManualPurchaseDialog: React.FC<{
                             variant: "prefix",
                           })}
                         >
-                          $
+                          {currencySymbol}
                         </InputGroupAddon>
                         <InputGroupInput>
                           <Input

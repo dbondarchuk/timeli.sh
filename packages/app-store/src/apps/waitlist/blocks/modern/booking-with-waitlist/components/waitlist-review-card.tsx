@@ -1,6 +1,6 @@
 import { useFormatter, useI18n, useLocale } from "@timelish/i18n";
-import { Markdown } from "@timelish/ui";
-import { durationToTime, formatAmountString } from "@timelish/utils";
+import { Markdown, useCurrencyFormat } from "@timelish/ui";
+import { durationToTime } from "@timelish/utils";
 import { Calendar, Clock } from "lucide-react";
 import { formatDateRange, groupWaitlistDates } from "../../../../models/utils";
 import {
@@ -25,6 +25,7 @@ export const WaitlistReviewCard: React.FC = () => {
   const formatter = useFormatter();
 
   const i18n = useI18n("translation");
+  const currencyFormat = useCurrencyFormat();
   const t = useI18n<WaitlistPublicNamespace, WaitlistPublicKeys>(
     waitlistPublicNamespace,
   );
@@ -63,7 +64,7 @@ export const WaitlistReviewCard: React.FC = () => {
               <div className="text-right shrink-0 review-service-summary-price">
                 {!!selectedAppointmentOption.price && (
                   <p className="text-xs font-semibold text-foreground review-service-summary-price-amount">
-                    ${formatAmountString(selectedAppointmentOption.price)}
+                    {currencyFormat(selectedAppointmentOption.price)}
                   </p>
                 )}
                 {!!selectedAppointmentOption.duration && (
@@ -82,9 +83,7 @@ export const WaitlistReviewCard: React.FC = () => {
               <div className="text-right shrink-0 review-service-summary-price">
                 <p className="text-xs font-semibold text-foreground review-service-summary-price-amount">
                   {i18n("booking.option.price_per_hour", {
-                    price: formatAmountString(
-                      selectedAppointmentOption.pricePerHour,
-                    ),
+                    price: currencyFormat(selectedAppointmentOption.pricePerHour),
                   })}
                 </p>
               </div>
@@ -109,7 +108,7 @@ export const WaitlistReviewCard: React.FC = () => {
                   <div className="text-right shrink-0 review-addons-price">
                     {!!addon.price && (
                       <span className="text-xs font-medium text-foreground">
-                        +${formatAmountString(addon.price || 0)}
+                        +{currencyFormat(addon.price || 0)}
                       </span>
                     )}
                     {!!addon.duration && (
@@ -217,7 +216,7 @@ export const WaitlistReviewCard: React.FC = () => {
               </div>
               {!!price && price > 0 && (
                 <p className="text-lg font-bold text-foreground review-total-amount">
-                  ${formatAmountString(price)}
+                  {currencyFormat(price)}
                 </p>
               )}
             </div>

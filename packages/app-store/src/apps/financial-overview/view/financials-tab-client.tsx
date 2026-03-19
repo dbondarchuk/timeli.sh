@@ -14,6 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
   Skeleton,
+  useCurrencyFormat,
   useTimeZone,
 } from "@timelish/ui";
 import { useReload } from "@timelish/ui-admin";
@@ -175,12 +176,7 @@ export const FinancialsTabClient: React.FC<FinancialsTabProps> = ({
 
   const tAdmin = useI18n("admin");
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(amount);
-  };
+  const currencyFormat = useCurrencyFormat();
 
   const formatChartDate = (dateString: string) => {
     return DateTime.fromISO(dateString).toLocaleString(DateTime.DATE_SHORT);
@@ -298,7 +294,7 @@ export const FinancialsTabClient: React.FC<FinancialsTabProps> = ({
                 <Skeleton className="w-full h-10" />
               ) : (
                 <div className="text-2xl font-bold text-green-600">
-                  {formatCurrency(financialMetrics.estimatedRevenue)}
+                  {currencyFormat(financialMetrics.estimatedRevenue)}
                 </div>
               )}
             </CardContent>
@@ -315,7 +311,7 @@ export const FinancialsTabClient: React.FC<FinancialsTabProps> = ({
                 <Skeleton className="w-full h-10" />
               ) : (
                 <div className="text-2xl font-bold text-blue-600">
-                  {formatCurrency(financialMetrics.totalPayments)}
+                  {currencyFormat(financialMetrics.totalPayments)}
                 </div>
               )}
             </CardContent>
@@ -332,7 +328,7 @@ export const FinancialsTabClient: React.FC<FinancialsTabProps> = ({
                 <Skeleton className="w-full h-10" />
               ) : (
                 <div className="text-2xl font-bold text-purple-600">
-                  {formatCurrency(financialMetrics.netPayments)}
+                  {currencyFormat(financialMetrics.netPayments)}
                 </div>
               )}
             </CardContent>
@@ -395,12 +391,12 @@ export const FinancialsTabClient: React.FC<FinancialsTabProps> = ({
                     />
                     <YAxis
                       tick={{ fontSize: 12 }}
-                      tickFormatter={(value) => `$${value}`}
+                      tickFormatter={(value) => currencyFormat(value as number)}
                     />
                     <Tooltip
                       contentStyle={tooltipContentStyle}
                       formatter={(value, name) => [
-                        formatCurrency(value as number),
+                        currencyFormat(value as number),
                         name === "estimatedRevenue"
                           ? t("view.estimatedRevenue")
                           : name === "totalPayments"
@@ -537,7 +533,7 @@ export const FinancialsTabClient: React.FC<FinancialsTabProps> = ({
                           </span>
                           <span>
                             {t("view.estimatedRevenueFormat", {
-                              revenue: formatCurrency(props.payload.revenue),
+                              revenue: currencyFormat(props.payload.revenue),
                             })}
                           </span>
                         </div>

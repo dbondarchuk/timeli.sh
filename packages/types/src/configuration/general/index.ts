@@ -7,6 +7,8 @@ import {
   zNonEmptyString,
   zPhone,
 } from "../../utils";
+import { zCountry } from "../../utils/country";
+import { zCurrency } from "../../utils/currency";
 import { zTimeZone } from "../../utils/zTimeZone";
 
 export const generalConfigurationSchema = z.object({
@@ -39,6 +41,8 @@ export const generalConfigurationSchema = z.object({
   address: asOptionalField(
     z.string().max(1024, "configuration.general.address.max"),
   ),
+  country: zCountry,
+  currency: zCurrency,
   domain: asOptionalField(
     z
       .string()

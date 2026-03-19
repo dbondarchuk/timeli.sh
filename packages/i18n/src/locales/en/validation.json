@@ -456,6 +456,12 @@
       },
       "domain": {
         "invalid": "Domain must be a valid domain name"
+      },
+      "currency": {
+        "invalid": "Invalid currency"
+      },
+      "country": {
+        "invalid": "Invalid country"
       }
     },
     "resources": {

@@ -14,7 +14,7 @@ import {
 import { clientApi } from "@timelish/api-sdk";
 import { useI18n } from "@timelish/i18n";
 import { PaymentAppFormProps } from "@timelish/types";
-import { Button, Spinner, toast } from "@timelish/ui";
+import { Button, Spinner, toast, useCurrency } from "@timelish/ui";
 import React from "react";
 import { PaypalLogo } from "./logo";
 import { PaypalFormProps } from "./models";
@@ -82,13 +82,14 @@ export const PaypalForm: React.FC<PaymentAppFormProps<PaypalFormProps>> = ({
   );
 
   const [isPaying, setIsPaying] = React.useState(false);
+  const currency = useCurrency();
 
   const initialOptions: ReactPayPalScriptOptions = {
     clientId,
     enableFunding: "applepay",
     disableFunding: "paylater",
     buyerCountry: isSandbox ? "US" : undefined,
-    currency: "USD",
+    currency: currency,
     components: ["buttons", "applepay", "card-fields"],
   };
 

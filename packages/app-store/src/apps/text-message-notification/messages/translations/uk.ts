@@ -3,7 +3,7 @@ import { TextMessageNotificationMessage } from "../types";
 export const UkTextMessageNotificationMessages: TextMessageNotificationMessage =
   {
     newAppointmentRequested: `Привіт {{config.name}},
-{{customer.name}} запитав новий запис для {{option.name}} {{#duration.hours}}{{.}}год {{/duration.hours}}{{#duration.minutes}}{{.}}хв{{/duration.minutes}} на {{dateTime.full}}.{{#totalPriceFormatted}} Загальна ціна \${{.}}.{{/totalPriceFormatted}}{{#totalAmountPaidFormatted}} Сплачено \${{.}}.{{/totalAmountPaidFormatted}}
+{{customer.name}} запитав новий запис для {{option.name}} {{#duration.hours}}{{.}}год {{/duration.hours}}{{#duration.minutes}}{{.}}хв{{/duration.minutes}} на {{dateTime.full}}.{{#totalPriceFormatted}} Загальна ціна {{.}}.{{/totalPriceFormatted}}{{#totalAmountPaidFormatted}} Сплачено {{.}}.{{/totalAmountPaidFormatted}}
 Відповідайте{{#confirmed}} Y для підтвердження,{{/confirmed}} N для відхилення`,
     unknownAppointment: "Невідомий запис",
     unknownOption:

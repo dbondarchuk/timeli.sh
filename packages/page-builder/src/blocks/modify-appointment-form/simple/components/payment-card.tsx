@@ -4,11 +4,12 @@ import React from "react";
 
 import { PaymentAppForms } from "@timelish/app-store/payment-forms";
 import { useI18n } from "@timelish/i18n";
-import { formatAmountString } from "@timelish/utils";
+import { useCurrencyFormat } from "@timelish/ui";
 import { useModifyAppointmentFormContext } from "./context";
 
 export const PaymentCard: React.FC = () => {
   const i18n = useI18n("translation");
+  const currencyFormat = useCurrencyFormat();
   const {
     appointment,
     paymentInformation: paymentForm,
@@ -29,8 +30,8 @@ export const PaymentCard: React.FC = () => {
       </div>
       <div className="text-sm mb-3">
         {i18n(`modification.feeRequired.${type}.description`, {
-          totalPrice: formatAmountString(appointment?.price ?? 0),
-          amount: formatAmountString(paymentForm.intent.amount),
+          totalPrice: currencyFormat(appointment?.price ?? 0),
+          amount: currencyFormat(paymentForm.intent.amount),
         })}
       </div>
       <Form

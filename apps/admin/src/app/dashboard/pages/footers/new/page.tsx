@@ -70,6 +70,7 @@ export default async function NewPageFooterPage(props: Props) {
       now: new Date(),
     },
     general.language,
+    general.currency,
   );
 
   return (

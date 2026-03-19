@@ -1,7 +1,7 @@
 "use client";
 
 import { useI18n } from "@timelish/i18n";
-import { cn } from "@timelish/ui";
+import { cn, useCurrencyFormat } from "@timelish/ui";
 import { Lock } from "lucide-react";
 import { DateTime } from "luxon";
 import type React from "react";
@@ -451,6 +451,7 @@ function TextElementRenderer({
   zoom: number;
 }) {
   const { updateElement } = useEditorStore();
+  const currencyFormat = useCurrencyFormat();
   const [editValue, setEditValue] = useState(element.content);
   const t = useI18n<GiftCardStudioAdminNamespace, GiftCardStudioAdminKeys>(
     giftCardStudioAdminNamespace,
@@ -486,13 +487,15 @@ function TextElementRenderer({
         ? DateTime.now().toFormat(
             element.dateFormat ?? DEFAULT_EXPIRES_AT_DATE_FORMAT,
           )
-        : t.has(
-              `designer.sampleValues.${element.fieldKey}` as GiftCardStudioAdminKeys,
-            )
-          ? t(
-              `designer.sampleValues.${element.fieldKey}` as GiftCardStudioAdminKeys,
-            )
-          : element.fieldKey
+        : element.fieldKey === "amount"
+          ? currencyFormat(100)
+          : t.has(
+                `designer.sampleValues.${element.fieldKey}` as GiftCardStudioAdminKeys,
+              )
+            ? t(
+                `designer.sampleValues.${element.fieldKey}` as GiftCardStudioAdminKeys,
+              )
+            : element.fieldKey
       : element.fieldKey
         ? `[${element.fieldKey.toUpperCase()}]`
         : element.content;

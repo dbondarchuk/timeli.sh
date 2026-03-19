@@ -2,7 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { useI18n } from "@timelish/i18n";
-import { Button, Link, Spinner } from "@timelish/ui";
+import { Button, Link, Spinner, useCurrencyFormat } from "@timelish/ui";
 import {
   CustomerName,
   tableSortHeader,
@@ -138,7 +138,10 @@ export const columns: ColumnDef<PurchasedGiftCardListModel>[] = [
       "number",
       giftCardStudioAdminNamespace,
     ),
-    cell: ({ row }) => `$${row.original.amountPurchased}`,
+    cell: ({ row }) => {
+      const currencyFormat = useCurrencyFormat();
+      return currencyFormat(row.original.amountPurchased);
+    },
     sortingFn: tableSortNoopFunction,
   },
   // {

@@ -2,7 +2,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { useI18n, useLocale } from "@timelish/i18n";
 import { Discount } from "@timelish/types";
-import { Checkbox, Link } from "@timelish/ui";
+import { Checkbox, Link, useCurrencyFormat } from "@timelish/ui";
 import { tableSortHeader, tableSortNoopFunction } from "@timelish/ui-admin";
 import { DateTime } from "luxon";
 import { CellAction } from "./cell-action";
@@ -77,8 +77,13 @@ export const columns: ColumnDef<
     sortingFn: tableSortNoopFunction,
   },
   {
-    accessorFn: (discount) =>
-      discount.type === "amount" ? `$${discount.value}` : `${discount.value}%`,
+    cell: ({ row }) => {
+      const currencyFormat = useCurrencyFormat();
+      const discount = row.original;
+      return discount.type === "amount"
+        ? currencyFormat(discount.value)
+        : `${discount.value}%`;
+    },
     id: "value",
     header: tableSortHeader(
       "services.discounts.table.columns.value",

@@ -7,7 +7,7 @@ import {
 } from "@timelish/types";
 import {
   Args,
-  formatAmountString,
+  formatAmountWithCurrency,
   getAdminUrl,
   getArguments,
   getWebsiteUrl,
@@ -124,14 +124,21 @@ export class GiftCardStudioJobProcessor {
         throw new Error("Gift card not found");
       }
 
+      const { timeZone, language, currency } =
+        await this.services.configurationService.getConfiguration("general");
+
       let expiresAt: DateTime | null = null;
       if (giftCard.expiresAt) {
-        const { timeZone, language } =
-          await this.services.configurationService.getConfiguration("general");
         expiresAt = DateTime.fromJSDate(giftCard.expiresAt)
           .setZone(timeZone)
           .setLocale(language);
       }
+
+      const amountFormatted = formatAmountWithCurrency(
+        purchasedGiftCard.amountPurchased,
+        language,
+        currency,
+      );
 
       logger.debug(
         { appId: appData._id, purchasedGiftCardId, expiresAt },
@@ -141,7 +148,7 @@ export class GiftCardStudioJobProcessor {
       const generatedPng = await renderGiftCard({
         design: design.design,
         fields: {
-          amount: "$" + formatAmountString(purchasedGiftCard.amountPurchased),
+          amount: amountFormatted,
           code: giftCard.code,
           expiresAt,
           to: purchasedGiftCard.toName ?? giftCard.customer.name,
@@ -283,12 +290,15 @@ export class GiftCardStudioJobProcessor {
         ? await this.services.paymentsService.getPayment(giftCard.paymentId)
         : null;
 
-      const { name, address, phone, language, timeZone, logo } =
+      const { name, address, phone, language, timeZone, currency, logo } =
         await this.services.configurationService.getConfiguration("general");
 
       const issuedAt = DateTime.now().setZone(timeZone).setLocale(language);
-      const amountFormatted =
-        "$" + formatAmountString(purchasedGiftCard.amountPurchased);
+      const amountFormatted = formatAmountWithCurrency(
+        purchasedGiftCard.amountPurchased,
+        language,
+        currency,
+      );
 
       const invoiceNumber = `GC-${purchasedGiftCardId}`;
 
@@ -566,7 +576,7 @@ export class GiftCardStudioJobProcessor {
 
         // Total, amount paid and balance
         const amountPaid = amountFormatted;
-        const balance = "$0.00";
+        const balance = formatAmountWithCurrency(0, language, currency);
 
         doc.fontSize(10).fillColor("#111111").font("Helvetica-Bold");
         doc.text(t.totalLabel, totalsBoxX, totalsY, {

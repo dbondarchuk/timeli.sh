@@ -16,6 +16,7 @@ import {
   DialogTrigger,
   Link,
   ScrollArea,
+  useCurrencyFormat,
 } from "@timelish/ui";
 import { CustomerName } from "@timelish/ui-admin";
 import { GiftCardPaymentsDialog } from "@timelish/ui-admin-kit";
@@ -37,6 +38,7 @@ export const GiftCardDetailDialog: React.FC<{
     giftCardStudioAdminNamespace,
   );
   const tAdmin = useI18n("admin");
+  const currencyFormat = useCurrencyFormat();
 
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -161,7 +163,7 @@ export const GiftCardDetailDialog: React.FC<{
                     </span>
                   </dt>
                   <dd className="font-medium">
-                    <span>${purchase.amountPurchased}</span>
+                    <span>{currencyFormat(purchase.amountPurchased)}</span>
                   </dd>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
@@ -171,7 +173,7 @@ export const GiftCardDetailDialog: React.FC<{
                     </span>
                   </dt>
                   <dd className="font-medium">
-                    <span>${giftCard?.amountLeft ?? "—"}</span>
+                    <span>{currencyFormat(giftCard?.amountLeft ?? 0)}</span>
                   </dd>
                 </div>
                 {giftCard?.expiresAt && (

@@ -1,13 +1,20 @@
 import { adminApi } from "@timelish/api-sdk";
 import { useI18n } from "@timelish/i18n";
 import { AppointmentOption } from "@timelish/types";
-import { cn, ComboboxAsync, IComboboxItem, Skeleton } from "@timelish/ui";
-import { durationToTime, formatAmountString } from "@timelish/utils";
+import {
+  cn,
+  ComboboxAsync,
+  IComboboxItem,
+  Skeleton,
+  useCurrencyFormat,
+} from "@timelish/ui";
+import { durationToTime } from "@timelish/utils";
 import { Clock, DollarSign } from "lucide-react";
 import React from "react";
 
 const OptionLabel: React.FC<{ option: AppointmentOption }> = ({ option }) => {
   const t = useI18n("admin");
+  const currencyFormat = useCurrencyFormat();
   const time =
     option.durationType === "fixed" ? durationToTime(option.duration) : null;
   return (
@@ -21,15 +28,13 @@ const OptionLabel: React.FC<{ option: AppointmentOption }> = ({ option }) => {
       )}
       {option.durationType === "fixed" && option.price && (
         <div className="inline-flex gap-2 items-center text-xs italic">
-          <DollarSign size={16} /> ${option.price}
+          <DollarSign size={16} /> {currencyFormat(option.price)}
         </div>
       )}
       {option.durationType === "flexible" && option.pricePerHour && (
         <div className="inline-flex gap-2 items-center text-xs italic">
           <DollarSign size={16} />{" "}
-          {t("common.pricePerHour", {
-            price: formatAmountString(option.pricePerHour),
-          })}
+          {t("common.pricePerHour", { price: currencyFormat(option.pricePerHour) })}
         </div>
       )}
     </span>

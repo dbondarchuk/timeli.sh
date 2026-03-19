@@ -3,6 +3,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { languages, useI18n } from "@timelish/i18n";
 import {
+  countryOptions,
+  Currency,
+  currencyOptions,
+  CurrencySymbolMap,
   GeneralConfiguration,
   generalConfigurationSchema,
   zNonEmptyString,
@@ -43,9 +47,11 @@ export const GeneralSettingsForm: React.FC<{
   values: GeneralConfiguration;
 }> = ({ values }) => {
   const t = useI18n("admin");
+  const tUI = useI18n("ui");
   const form = useForm<GeneralConfiguration>({
     resolver: zodResolver(generalConfigurationSchema),
     mode: "all",
+    reValidateMode: "onChange",
     values,
   });
 
@@ -213,15 +219,50 @@ export const GeneralSettingsForm: React.FC<{
           />
           <FormField
             control={form.control}
-            name="domain"
+            name="country"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t("settings.general.form.domain")}</FormLabel>
+                <FormLabel>{t("settings.general.form.country")}</FormLabel>
                 <FormControl>
-                  <Input
+                  <Combobox
+                    values={countryOptions.map((country) => ({
+                      label: tUI(`country.${country}`),
+                      value: country,
+                    }))}
                     disabled={loading}
-                    placeholder={t("settings.general.form.domainPlaceholder")}
-                    {...field}
+                    value={field.value}
+                    onItemSelect={(value) => {
+                      field.onChange(value);
+                      field.onBlur();
+                    }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="currency"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("settings.general.form.currency")}</FormLabel>
+                <FormControl>
+                  <Combobox
+                    values={currencyOptions.map((currency: Currency) => ({
+                      label: t("settings.general.form.currencyLabelFormat", {
+                        currency: tUI(`currency.${currency}`),
+                        code: currency,
+                        symbol: CurrencySymbolMap[currency],
+                      }),
+                      value: currency,
+                    }))}
+                    disabled={loading}
+                    value={field.value}
+                    onItemSelect={(value) => {
+                      field.onChange(value);
+                      field.onBlur();
+                    }}
                   />
                 </FormControl>
                 <FormMessage />
@@ -243,6 +284,23 @@ export const GeneralSettingsForm: React.FC<{
                   <Input
                     disabled={loading}
                     placeholder={t("settings.general.form.addressPlaceholder")}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="domain"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("settings.general.form.domain")}</FormLabel>
+                <FormControl>
+                  <Input
+                    disabled={loading}
+                    placeholder={t("settings.general.form.domainPlaceholder")}
                     {...field}
                   />
                 </FormControl>

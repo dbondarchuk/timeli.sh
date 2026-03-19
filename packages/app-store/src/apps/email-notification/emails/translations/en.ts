@@ -47,15 +47,15 @@ Time: {{ dateTime.full }}
 Duration: {{#duration.hours}}{{.}} hr {{/duration.hours}}{{#duration.minutes}}{{.}} min{{/duration.minutes}}
 
 {{#discount}}
-Subtotal: \${{subTotalAmountFormatted}}
+Subtotal: {{subTotalAmountFormatted}}
 
-Discount: -\${{discountAmountFormatted}} {{code}} ([{{name}}]({{ adminUrl }}/dashboard/services/discounts/{{id}}))
+Discount: -{{discountAmountFormatted}} {{code}} ([{{name}}]({{ adminUrl }}/dashboard/services/discounts/{{id}}))
 
-Total: \${{totalPriceFormatted}}
+Total: {{totalPriceFormatted}}
 {{/discount}}
 {{^discount}}
 {{#totalPrice}}
-Total: \${{totalPriceFormatted}}
+Total: {{totalPriceFormatted}}
 {{/totalPrice}}
 {{/discount}}
 
@@ -63,17 +63,17 @@ Total: \${{totalPriceFormatted}}
 Payments:
 
 {{#payments}}
- 1. {{#appName}}{{.}}{{/appName}}{{^appName}}{{#isOnline}}Online{{/isOnline}}{{#isGiftCard}}Gift card {{#giftCardCode}}({{.}}){{/giftCardCode}}{{/isGiftCard}}{{#isCash}}Cash{{/isCash}}{{#isInPersonCard}}Card{{/isInPersonCard}}{{/appName}} ({{#isTips}}Tips{{/isTips}}{{#isOther}}Other{{/isOther}}{{#isDeposit}}Deposit{{/isDeposit}}{{#isRescheduleFee}}Reschedule fee{{/isRescheduleFee}}{{#isCancellationFee}}Cancellation fee{{/isCancellationFee}}{{#isPayment}}Payment{{/isPayment}}) on {{paidAt.full}}: \${{amountFormatted}} {{#totalAmountRefunded}} (-\${{totalAmountRefundedFormatted}} refunded, \${{amountLeftFormatted}} left) {{/totalAmountRefunded}}
+ 1. {{#appName}}{{.}}{{/appName}}{{^appName}}{{#isOnline}}Online{{/isOnline}}{{#isGiftCard}}Gift card {{#giftCardCode}}({{.}}){{/giftCardCode}}{{/isGiftCard}}{{#isCash}}Cash{{/isCash}}{{#isInPersonCard}}Card{{/isInPersonCard}}{{/appName}} ({{#isTips}}Tips{{/isTips}}{{#isOther}}Other{{/isOther}}{{#isDeposit}}Deposit{{/isDeposit}}{{#isRescheduleFee}}Reschedule fee{{/isRescheduleFee}}{{#isCancellationFee}}Cancellation fee{{/isCancellationFee}}{{#isPayment}}Payment{{/isPayment}}) on {{paidAt.full}}: {{amountFormatted}} {{#totalAmountRefunded}} (-{{totalAmountRefundedFormatted}} refunded, {{amountLeftFormatted}} left) {{/totalAmountRefunded}}
 {{/payments}}
 {{^payments}}
 - None
 {{/payments}}
 
-Total amount currently paid: \${{totalAmountLeftFormatted}}
+Total amount currently paid: {{totalAmountLeftFormatted}}
 {{/totalAmountLeft}}
 
 {{#totalAmountLeftToPay}}
-Total amount left to pay: \${{totalAmountLeftToPayFormatted}}
+Total amount left to pay: {{totalAmountLeftToPayFormatted}}
 {{/totalAmountLeftToPay}}
 `;
 

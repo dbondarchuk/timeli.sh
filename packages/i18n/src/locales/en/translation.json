@@ -19,7 +19,7 @@
       "customDurationLabel": "Duration: custom",
       "formDurationLabel": "Duration: {duration} min",
       "formDurationHourMinutesLabel": "Duration: {hours, plural, =0 {{minutes} min} other {# hr, {minutes} min}}",
-      "formPriceLabel": "Price: ${price}",
+      "formPriceLabel": "Price: {price}",
       "selectTimezoneLabel": "All times are in <timeZoneCombobox></timeZoneCombobox> time zone"
     },
     "labels": {
@@ -70,7 +70,7 @@
           "min_max": "Min: {min} • Max: {max}"
         }
       },
-      "price_per_hour": "${price}/hr"
+      "price_per_hour": "{price}/hr"
     },
     "addons": {
       "title": "Enhance Your Experience",
@@ -133,15 +133,15 @@
       "deposit": "Deposit (due now)",
       "fullPayment": "Full payment (due now)",
       "remainingBalance": "Remaining balance",
-      "remainingBalanceDescription": "The remaining balance of ${remainingBalance} will be due at the time of your appointment.",
+      "remainingBalanceDescription": "The remaining balance of {remainingBalance} will be due at the time of your appointment.",
       "giftCards": "Gift cards",
       "informationFetchFailedTitle": "Uh oh! Something went wrong.",
       "informationFetchFailedDescription": "Something went wrong while we were trying to get the information to book your appointment. Please contact us",
       "depositRequiredTitle": "Deposit is required",
-      "depositRequiredDescription": "In order to book this appointment, {percentage}% (${amount}) deposit is required. Please pay by using the form below",
-      "fixedAmountRequiredDescription": "In order to book this appointment, a ${amount} deposit is required. Please pay by using the form below",
+      "depositRequiredDescription": "In order to book this appointment, {percentage}% ({amount}) deposit is required. Please pay by using the form below",
+      "fixedAmountRequiredDescription": "In order to book this appointment, a {amount} deposit is required. Please pay by using the form below",
       "fullPaymentRequiredTitle": "Full payment is required",
-      "fullPaymentRequiredDescription": "In order to book this appointment, full payment of ${amount} is required. Please pay by using the form below"
+      "fullPaymentRequiredDescription": "In order to book this appointment, full payment of {amount} is required. Please pay by using the form below"
     },
     "promoCode": {
       "trigger": "Have a promo code?",
@@ -149,8 +149,8 @@
       "code": "Promo code",
       "codePlaceholder": "Enter promo code (e.g. XXX-XXX-XXX)",
       "description": "Up to 2 promo codes can be applied",
-      "success": "Promo code {code} (-${discount}) was successfully applied.",
-      "successMessage": "Promo code {code} (-${discount}) was successfully applied.",
+      "success": "Promo code {code} (-{discount}) was successfully applied.",
+      "successMessage": "Promo code {code} (-{discount}) was successfully applied.",
       "error": "Promo code {code} is not valid or has expired.",
       "errorInvalid": "Promo code is not valid.",
       "apply": "Apply"
@@ -160,21 +160,21 @@
       "title": "Gift card",
       "code": "Gift card code",
       "description": "Up to 2 gift cards can be applied",
-      "success": "Gift card {code} (-${appliedAmount}) was successfully applied.",
+      "success": "Gift card {code} (-{appliedAmount}) was successfully applied.",
       "error": "Gift card {code} is not valid or has expired.",
       "codeRequired": "Gift card code is required",
       "apply": "Apply",
       "codePlaceholder": "Enter gift card code (e.g. XXX-XXX-XXX)",
-      "giftCardAppliedAmount": "-${appliedAmount} applied.",
+      "giftCardAppliedAmount": "-{appliedAmount} applied.",
       "giftCardAmountLeftLabel": "Remaining balance on card after booking",
-      "giftCardAmountLeft": "${amountLeft} left on card",
+      "giftCardAmountLeft": "{amountLeft} left on card",
       "remove": "Remove gift card"
     },
     "confirmation": {
       "price": {
-        "original": "Subtotal: ${original}",
-        "discount": "Discount: -${discount}",
-        "total": "Total: ${total}"
+        "original": "Subtotal: {original}",
+        "discount": "Discount: -{discount}",
+        "total": "Total: {total}"
       },
       "successTitle": "Your request has been received!",
       "successMessage": "Thanks, {name}! Your request for {service} has been received and you will get confirmation shortly.",
@@ -295,8 +295,8 @@
         "checkboxLabel": "I confirm that I understand and want to cancel this appointment",
         "confirmationTitle": "Are you sure?",
         "confirmationForfeitDepositDescription": "Hi {name}, are you sure you want to cancel your appointment for <b>{service}</b> on <i>{dateTime}</i>?<br></br>If you do, your deposit <b>will not be refunded</b>.",
-        "partialRefundDescription": "Hi {name}, are you sure you want to cancel your appointment for <b>{service}</b> on <i>{dateTime}</i>?<br></br>If you do, <b>{refundPercentage}%</b> of your deposit{refundFees, plural, =1 {} other {{feesAmount, plural, =0 {} other { (except <b>${feesAmount} fees</b>)}}}} will be refunded (<b>${refundAmount}</b>).",
-        "fullRefundDescription": "Hi {name}, are you sure you want to cancel your appointment for <b>{service}</b> on <i>{dateTime}</i>?<br></br>If you do, your deposit{refundFees, plural, =1 {} other {{feesAmount, plural, =0 {} other { (except <b>${feesAmount} fees</b>)}}}} will be refunded <b>fully</b> (<b>${refundAmount}</b>).",
+        "partialRefundDescription": "Hi {name}, are you sure you want to cancel your appointment for <b>{service}</b> on <i>{dateTime}</i>?<br></br>If you do, <b>{refundPercentage}%</b> of your deposit{refundFees, plural, =1 {} other {{feesAmount, plural, =0 {} other { (except <b>{feesAmount} fees</b>)}}}} will be refunded (<b>{refundAmount}</b>).",
+        "fullRefundDescription": "Hi {name}, are you sure you want to cancel your appointment for <b>{service}</b> on <i>{dateTime}</i>?<br></br>If you do, your deposit{refundFees, plural, =1 {} other {{feesAmount, plural, =0 {} other { (except <b>{feesAmount} fees</b>)}}}} will be refunded <b>fully</b> (<b>{refundAmount}</b>).",
         "paymentPartialRequiredDescription": "Hi {name}, are you sure you want to cancel your appointment for <b>{service}</b> on <i>{dateTime}</i>?",
         "paymentFullPriceRequiredDescription": "Hi {name}, are you sure you want to cancel your appointment for <b>{service}</b> on <i>{dateTime}</i>?",
         "confirmationCheckboxLabel": "I confirm that I understand and want to cancel this appointment",
@@ -366,11 +366,11 @@
     "feeRequired": {
       "cancel": {
         "title": "Cancellation fee is required",
-        "description": "In order to cancel this appointment, a fee of ${amount} is required. Please pay by using the form below"
+        "description": "In order to cancel this appointment, a fee of {amount} is required. Please pay by using the form below"
       },
       "reschedule": {
         "title": "Reschedule fee is required",
-        "description": "In order to reschedule this appointment, a fee of ${amount} is required. Please pay by using the form below"
+        "description": "In order to reschedule this appointment, a fee of {amount} is required. Please pay by using the form below"
       }
     }
   },

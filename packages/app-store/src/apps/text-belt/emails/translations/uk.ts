@@ -55,16 +55,16 @@ Email: {{ fields.email }}
 
 {{#discount}}
 
-Промокод: {{code}} (-\${{discountAmountFormatted}}) ([{{name}}]({{ adminUrl }}/dashboard/services/discounts/{{id}}))
+Промокод: {{code}} (-{{discountAmountFormatted}}) ([{{name}}]({{ adminUrl }}/dashboard/services/discounts/{{id}}))
 
 {{/discount}} {{#totalPriceFormatted}}
 
-Ціна: \${{.}}
+Ціна: {{.}}
 
 {{/totalPriceFormatted}} 
 
 {{#payments}}
-Сплачено: \${{amountFormatted}} через {{appName}} {{paidAt}}
+ 1. {{#appName}}{{.}}{{/appName}}{{^appName}}{{#isOnline}}Онлайн{{/isOnline}}{{#isGiftCard}}Подарункова карта {{#giftCardCode}}({{.}}){{/giftCardCode}}{{/isGiftCard}}{{#isCash}}Готівка{{/isCash}}{{#isInPersonCard}}Картка{{/isInPersonCard}}{{/appName}} ({{#isTips}}Чаєві{{/isTips}}{{#isOther}}Інше{{/isOther}}{{#isDeposit}}Депозит{{/isDeposit}}{{#isRescheduleFee}}Плата за перенос{{/isRescheduleFee}}{{#isCancellationFee}}Плата за відміну{{/isCancellationFee}}{{#isPayment}}Платіж{{/isPayment}}) {{paidAt.full}}: {{amountFormatted}} {{#totalAmountRefunded}} (-{{totalAmountRefundedFormatted}} повернено, {{amountLeftFormatted}} залишилок) {{/totalAmountRefunded}}
 {{/payments}}
 
 {{/_id}}

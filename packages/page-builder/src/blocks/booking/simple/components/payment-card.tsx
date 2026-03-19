@@ -4,12 +4,14 @@ import React from "react";
 
 import { PaymentAppForms } from "@timelish/app-store/payment-forms";
 import { useI18n } from "@timelish/i18n";
-import { formatAmount, formatAmountString } from "@timelish/utils";
+import { formatAmount } from "@timelish/utils";
+import { useCurrencyFormat } from "@timelish/ui";
 import { CardWithAppointmentInformation } from "./card-with-info";
 import { useScheduleContext } from "./context";
 
 export const PaymentCard: React.FC = () => {
   const i18n = useI18n("translation");
+  const currencyFormat = useCurrencyFormat();
   const {
     paymentInformation: paymentForm,
     price,
@@ -37,7 +39,7 @@ export const PaymentCard: React.FC = () => {
             : "booking.payment.depositRequiredDescription",
           {
             percentage,
-            amount: formatAmountString(paymentForm.intent.amount),
+            amount: currencyFormat(paymentForm.intent.amount),
           },
         )}
       </div>

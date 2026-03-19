@@ -47,13 +47,14 @@ import {
   Textarea,
   toastPromise,
   use12HourFormat,
+  useCurrencyFormat,
+  useCurrencySymbol,
   useTimeZone,
 } from "@timelish/ui";
 import { CustomerSelector, PromoCodeSelector } from "@timelish/ui-admin";
 import {
   durationToTime,
   formatAmount,
-  formatAmountString,
   getDiscountAmount,
 } from "@timelish/utils";
 import { CalendarClock, Clock, DollarSign, X } from "lucide-react";
@@ -146,6 +147,8 @@ export const AppointmentScheduleForm: React.FC<
 > = ({ options, knownFields, from, isEdit, id, customer: propsCustomer }) => {
   const t = useI18n("admin");
   const timeZone = useTimeZone();
+  const currencyFormat = useCurrencyFormat();
+  const currencySymbol = useCurrencySymbol();
   const now = React.useMemo(
     () => DateTime.now().set({ second: 0 }).toJSDate(),
     [],
@@ -605,8 +608,8 @@ export const AppointmentScheduleForm: React.FC<
                                 </div>
                                 {x.durationType === "fixed" && !!x.price && (
                                   <div className="inline-flex items-center gap-1">
-                                    <DollarSign className="w-3 h-3" /> $
-                                    {x.price}
+                                    <DollarSign className="w-3 h-3" />{" "}
+                                    {currencyFormat(x.price)}
                                   </div>
                                 )}
                                 {x.durationType === "flexible" &&
@@ -614,9 +617,7 @@ export const AppointmentScheduleForm: React.FC<
                                     <div className="inline-flex items-center gap-1">
                                       <DollarSign className="w-3 h-3" />{" "}
                                       {t("common.pricePerHour", {
-                                        price: formatAmountString(
-                                          x.pricePerHour,
-                                        ),
+                                        price: currencyFormat(x.pricePerHour),
                                       })}
                                     </div>
                                   )}
@@ -758,7 +759,7 @@ export const AppointmentScheduleForm: React.FC<
                             variant: "prefix",
                           })}
                         >
-                          $
+                          {currencySymbol}
                         </InputGroupAddon>
                         <InputGroupInput>
                           <Input

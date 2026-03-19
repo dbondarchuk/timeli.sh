@@ -1,6 +1,6 @@
 import { useI18n, useLocale } from "@timelish/i18n";
-import { Button, cn, Spinner, Stepper, usePrevious } from "@timelish/ui";
-import { durationToTime, formatAmountString } from "@timelish/utils";
+import { Button, cn, Spinner, Stepper, useCurrencyFormat, usePrevious } from "@timelish/ui";
+import { durationToTime } from "@timelish/utils";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { DateTime } from "luxon";
 import { useEffect, useRef } from "react";
@@ -38,6 +38,7 @@ export const BookingLayout = ({
   } = ctx;
 
   const locale = useLocale();
+  const currencyFormat = useCurrencyFormat();
 
   const topRef = useRef<HTMLDivElement>(null);
   const scrollToTopRef = useRef(!!scrollToTop);
@@ -131,7 +132,7 @@ export const BookingLayout = ({
                       {t("booking.summary.estimates.amount")}
                     </p>
                     <p className="text-sm font-bold text-foreground flex items-center gap-2 amount-value">
-                      ${formatAmountString(price)}
+                      {currencyFormat(price)}
                     </p>
                   </div>
                 )}

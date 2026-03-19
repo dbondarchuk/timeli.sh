@@ -7,8 +7,9 @@ import {
   CollapsibleTrigger,
   Input,
   Spinner,
+  useCurrencyFormat,
 } from "@timelish/ui";
-import { durationToTime, formatAmountString } from "@timelish/utils";
+import { durationToTime } from "@timelish/utils";
 import { AlertTriangle, Gift, X } from "lucide-react";
 import { DateTime } from "luxon";
 import { useMemo, useState } from "react";
@@ -39,6 +40,7 @@ export const ReviewCard: React.FC = () => {
 
   const locale = useLocale();
   const formatter = useFormatter();
+  const currencyFormat = useCurrencyFormat();
 
   const t = useI18n("translation");
 
@@ -213,7 +215,7 @@ export const ReviewCard: React.FC = () => {
               {t("modification.review.originalPrice")}
             </span>
             <span className="font-medium text-foreground review-service-summary-item-value">
-              ${formatAmountString(appointment.price)}
+              {currencyFormat(appointment.price)}
             </span>
           </div>
         )}
@@ -223,7 +225,7 @@ export const ReviewCard: React.FC = () => {
               {t("modification.review.cancel.refundAmount")}
             </span>
             <span className="font-medium text-destructive review-service-summary-item-value review-cancel-refund-amount">
-              ${formatAmountString(appointment.refundAmount)}
+              {currencyFormat(appointment.refundAmount)}
             </span>
           </div>
         )}
@@ -234,7 +236,7 @@ export const ReviewCard: React.FC = () => {
                 {t(`modification.review.${type}.fee`)}
               </span>
               <span className="font-medium text-destructive review-service-summary-item-value review-cancel-payment-amount-required">
-                ${formatAmountString(paymentFee)}
+                {currencyFormat(paymentFee)}
               </span>
             </div>
             <div className="flex flex-col gap-2">
@@ -276,7 +278,8 @@ export const ReviewCard: React.FC = () => {
                           isLoadingGiftCards
                         }
                       >
-                        {isLoadingGiftCards && <Spinner />} {t("common.buttons.apply")}
+                        {isLoadingGiftCards && <Spinner />}{" "}
+                        {t("common.buttons.apply")}
                       </Button>
                     </div>
                     {!!giftCardError && (
@@ -297,7 +300,7 @@ export const ReviewCard: React.FC = () => {
                             </div>
                             <div className="text-green-800 font-semibold">
                               {t("booking.giftCard.giftCardAppliedAmount", {
-                                appliedAmount: formatAmountString(
+                                appliedAmount: currencyFormat(
                                   giftCard.appliedAmount,
                                 ),
                               })}
@@ -315,16 +318,12 @@ export const ReviewCard: React.FC = () => {
                         <div className="px-2 pb-2 pt-1 text-xs flex flex-row justify-between items-center w-full border-t border-t-green-300 text-green-500">
                           <span className="text-muted-foreground">
                             {t("booking.giftCard.giftCardAmountLeftLabel", {
-                              amountLeft: formatAmountString(
-                                giftCard.amountLeft,
-                              ),
+                              amountLeft: currencyFormat(giftCard.amountLeft),
                             })}
                           </span>
                           <span className="text-green-800 font-bold">
                             {t("booking.giftCard.giftCardAmountLeft", {
-                              amountLeft: formatAmountString(
-                                giftCard.amountLeft,
-                              ),
+                              amountLeft: currencyFormat(giftCard.amountLeft),
                             })}
                           </span>
                         </div>
@@ -340,7 +339,7 @@ export const ReviewCard: React.FC = () => {
                   {t("booking.review.price.giftCards")}
                 </span>
                 <span className="font-medium text-destructive review-service-summary-item-value">
-                  -(${formatAmountString(totalGiftCardsApplied)})
+                  -({currencyFormat(totalGiftCardsApplied)})
                 </span>
               </div>
             )}
@@ -349,7 +348,7 @@ export const ReviewCard: React.FC = () => {
                 {t("modification.payment.amountDue")}
               </span>
               <span className="font-medium text-foreground review-service-summary-item-value">
-                ${formatAmountString(totalAfterGiftCards)}
+                {currencyFormat(totalAfterGiftCards)}
               </span>
             </div>
           </>

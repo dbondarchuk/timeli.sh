@@ -9,8 +9,8 @@ import {
   Input,
   Label,
   Spinner,
+  useCurrencyFormat,
 } from "@timelish/ui";
-import { formatAmountString } from "@timelish/utils";
 import { Gift } from "lucide-react";
 import { DateTime as Luxon } from "luxon";
 import React from "react";
@@ -52,6 +52,7 @@ const getPaymentAmount = (
 
 export const ConfirmationCard: React.FC = () => {
   const i18n = useI18n("translation");
+  const currencyFormat = useCurrencyFormat();
   const {
     appointment,
     type,
@@ -167,8 +168,8 @@ export const ConfirmationCard: React.FC = () => {
                   locale,
                 }),
                 refundPercentage: appointment.refundPercentage,
-                refundAmount: formatAmountString(appointment.refundAmount),
-                feesAmount: formatAmountString(appointment.feesAmount),
+                refundAmount: currencyFormat(appointment.refundAmount),
+                feesAmount: currencyFormat(appointment.feesAmount),
                 refundFees: appointment.refundFees ? 1 : 0,
               }}
             />
@@ -189,8 +190,8 @@ export const ConfirmationCard: React.FC = () => {
                 ).toLocaleString(Luxon.DATETIME_FULL, {
                   locale,
                 }),
-                amount: formatAmountString(appointment.paymentAmount),
-                totalPrice: formatAmountString(appointment.price ?? 0),
+                amount: currencyFormat(appointment.paymentAmount),
+                totalPrice: currencyFormat(appointment.price ?? 0),
               }}
             />
           ) : (
@@ -222,7 +223,7 @@ export const ConfirmationCard: React.FC = () => {
                 {i18n(`modification.review.${type}.fee`)}
               </span>
               <span className="font-medium text-foreground">
-                ${formatAmountString(paymentAmount ?? 0)}
+                {currencyFormat(paymentAmount ?? 0)}
               </span>
             </div>
             <Collapsible
@@ -263,7 +264,8 @@ export const ConfirmationCard: React.FC = () => {
                         isLoadingGiftCards
                       }
                     >
-                      {isLoadingGiftCards && <Spinner />} {i18n("common.buttons.apply")}
+                      {isLoadingGiftCards && <Spinner />}{" "}
+                      {i18n("common.buttons.apply")}
                     </Button>
                   </div>
                   {!!giftCardError && (
@@ -280,7 +282,7 @@ export const ConfirmationCard: React.FC = () => {
                         <span>
                           {gc.code}{" "}
                           {i18n("booking.giftCard.giftCardAppliedAmount", {
-                            appliedAmount: formatAmountString(gc.appliedAmount),
+                            appliedAmount: currencyFormat(gc.appliedAmount),
                           })}
                         </span>
                         <Button
@@ -298,7 +300,7 @@ export const ConfirmationCard: React.FC = () => {
                             {i18n("booking.giftCard.giftCardAmountLeftLabel")}
                           </span>
                           <span className="text-green-800 font-bold">
-                            ${formatAmountString(gc.amountLeft)}
+                            {currencyFormat(gc.amountLeft)}
                           </span>
                         </div>
                       )}
@@ -313,7 +315,7 @@ export const ConfirmationCard: React.FC = () => {
                   {i18n("booking.review.price.giftCards")}
                 </span>
                 <span className="font-medium text-green-700">
-                  -${formatAmountString(totalGiftCardsApplied)}
+                  {currencyFormat(-1 * totalGiftCardsApplied)}
                 </span>
               </div>
             )}
@@ -322,7 +324,7 @@ export const ConfirmationCard: React.FC = () => {
                 {i18n("modification.payment.amountDue")}
               </span>
               <span className="text-foreground">
-                ${formatAmountString(totalAfterGiftCards)}
+                {currencyFormat(totalAfterGiftCards)}
               </span>
             </div>
           </div>

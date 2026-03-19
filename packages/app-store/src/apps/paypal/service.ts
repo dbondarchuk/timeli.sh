@@ -350,9 +350,14 @@ class PaypalConnectedApp
       //     },
       //   });
 
+      const { currency } =
+        await this.props.services.configurationService.getConfiguration(
+          "general",
+        );
+
       const { order, error } = await client.createOrder({
         amount: intent.amount,
-        currency: "USD",
+        currency: currency,
         intent: "CAPTURE",
       });
 
@@ -628,6 +633,11 @@ class PaypalConnectedApp
         "Processing PayPal refund with capture ID",
       );
 
+      const { currency } =
+        await this.props.services.configurationService.getConfiguration(
+          "general",
+        );
+
       // const clientRefund = this.getClient(appData);
       // const paymentsController = new PaymentsController(clientRefund);
       // const { result, ...refundHttpResponse } =
@@ -636,6 +646,7 @@ class PaypalConnectedApp
       const { ok: refundOk, error: refundError } = await client.refundPayment(
         captureId,
         amount,
+        currency,
       );
 
       if (!refundOk || refundError) {

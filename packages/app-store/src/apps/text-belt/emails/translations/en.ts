@@ -55,16 +55,16 @@ Duration: {{#duration.hours}}{{.}} hr {{/duration.hours}}{{#duration.minutes}}{{
 
 {{#discount}}
 
-Promo code: {{code}} (-\${{discountAmountFormatted}}) ([{{name}}]({{ adminUrl }}/dashboard/services/discounts/{{id}}))
+Promo code: {{code}} (-{{discountAmountFormatted}}) ([{{name}}]({{ adminUrl }}/dashboard/services/discounts/{{id}}))
 
 {{/discount}} {{#totalPriceFormatted}}
 
-Price: \${{.}}
+Price: {{.}}
 
 {{/totalPriceFormatted}} 
 
 {{#payments}}
-Amount paid: \${{amountFormatted}} via {{appName}} on {{paidAt}}
+ 1. {{#appName}}{{.}}{{/appName}}{{^appName}}{{#isOnline}}Online{{/isOnline}}{{#isGiftCard}}Gift card {{#giftCardCode}}({{.}}){{/giftCardCode}}{{/isGiftCard}}{{#isCash}}Cash{{/isCash}}{{#isInPersonCard}}Card{{/isInPersonCard}}{{/appName}} ({{#isTips}}Tips{{/isTips}}{{#isOther}}Other{{/isOther}}{{#isDeposit}}Deposit{{/isDeposit}}{{#isRescheduleFee}}Reschedule fee{{/isRescheduleFee}}{{#isCancellationFee}}Cancellation fee{{/isCancellationFee}}{{#isPayment}}Payment{{/isPayment}}) on {{paidAt.full}}: {{amountFormatted}} {{#totalAmountRefunded}} (-{{totalAmountRefundedFormatted}} refunded, {{amountLeftFormatted}} left) {{/totalAmountRefunded}}
 {{/payments}}
 
 {{/_id}}

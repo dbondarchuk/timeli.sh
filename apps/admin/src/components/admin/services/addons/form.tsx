@@ -27,6 +27,7 @@ import {
   InputGroupInputClasses,
   toastPromise,
   useDebounceCacheFn,
+  useCurrencySymbol,
 } from "@timelish/ui";
 import { SaveButton, Sortable } from "@timelish/ui-admin";
 import { useRouter } from "next/navigation";
@@ -39,6 +40,7 @@ export const AddonForm: React.FC<{
   initialData?: AppointmentAddonUpdateModel & Partial<DatabaseId>;
 }> = ({ initialData }) => {
   const t = useI18n("admin");
+  const currencySymbol = useCurrencySymbol();
 
   const cachedUniqueNameCheck = useDebounceCacheFn(
     adminApi.serviceAddons.checkServiceAddonUniqueName,
@@ -169,7 +171,7 @@ export const AddonForm: React.FC<{
                           variant: "prefix",
                         })}
                       >
-                        $
+                        {currencySymbol}
                       </InputGroupAddon>
                       <InputGroupInput>
                         <Input

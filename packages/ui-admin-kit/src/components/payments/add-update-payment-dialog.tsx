@@ -43,6 +43,7 @@ import {
   Textarea,
   toastPromise,
   use12HourFormat,
+  useCurrencySymbol,
   useTimeZone,
 } from "@timelish/ui";
 import { CustomerSelector, GiftCardSelector } from "@timelish/ui-admin";
@@ -69,6 +70,7 @@ export const AddUpdatePaymentDialog = ({
   ...props
 }: AddUpdatePaymentDialogProps) => {
   const t = useI18n("admin");
+  const currencySymbol = useCurrencySymbol();
   const router = useRouter();
 
   const timeZone = useTimeZone();
@@ -143,7 +145,7 @@ export const AddUpdatePaymentDialog = ({
           return;
         }
 
-        if (giftCard.amountLeft && giftCard.amountLeft < data.amount) {
+        if (!giftCard.amountLeft || giftCard.amountLeft < data.amount) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
             message:
@@ -337,7 +339,7 @@ export const AddUpdatePaymentDialog = ({
                             variant: "prefix",
                           })}
                         >
-                          $
+                          {currencySymbol}
                         </InputGroupAddon>
                         <InputGroupInput>
                           <Input

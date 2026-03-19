@@ -33,8 +33,9 @@ import {
   TooltipResponsive,
   TooltipResponsiveContent,
   TooltipResponsiveTrigger,
+  useCurrencyFormat,
 } from "@timelish/ui";
-import { formatAmount, formatAmountString } from "@timelish/utils";
+import { formatAmount } from "@timelish/utils";
 import {
   Check,
   CheckCircle,
@@ -151,6 +152,7 @@ const RefundDialog = ({
 }) => {
   const t = useI18n();
   const { method, ...rest } = payment;
+  const currencyFormat = useCurrencyFormat();
 
   const totalRefunded =
     payment.refunds?.reduce((acc, refund) => acc + refund.amount, 0) || 0;
@@ -237,7 +239,7 @@ const RefundDialog = ({
                   {t("admin.payment.card.originalAmount")}
                 </span>
                 <span className="font-semibold">
-                  ${formatAmountString(payment.amount)}
+                  {currencyFormat(payment.amount)}
                 </span>
               </div>
               <div className="flex justify-between">
@@ -245,7 +247,7 @@ const RefundDialog = ({
                   {t("admin.payment.card.totalRefunded")}
                 </span>
                 <span className="font-semibold">
-                  ${formatAmountString(totalRefunded)}
+                  {currencyFormat(totalRefunded)}
                 </span>
               </div>
               <div className="border-t pt-2 mt-2">
@@ -291,7 +293,7 @@ const RefundDialog = ({
             >
               {isRefundInProgress && <Spinner />}{" "}
               {t("admin.payment.card.confirmRefundButton", {
-                amount: formatAmountString(amount),
+                amountFormatted: currencyFormat(amount),
               })}
             </Button>
           </AlertDialogFooter>
@@ -326,6 +328,7 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
 
   const t = useI18n();
   const locale = useLocale();
+  const currencyFormat = useCurrencyFormat();
 
   const dateTime =
     typeof paidAt === "string"
@@ -429,7 +432,7 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
                 {t("admin.payment.card.amount")}
               </span>
               <span className="font-semibold text-base text-right">
-                ${formatAmountString(amount)}
+                {currencyFormat(amount)}
               </span>
             </div>
 
@@ -449,7 +452,7 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
                       {t(`admin.payment.feeTypes.${fee.type}`)}
                     </span>
                     <span className="text-foreground/60">
-                      -${formatAmountString(fee.amount)}
+                      {currencyFormat(-1 * fee.amount)}
                     </span>
                   </div>
                 ))}
@@ -573,7 +576,7 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
                   <TooltipResponsive>
                     <TooltipResponsiveTrigger>
                       <span className="text-xs text-foreground/60 underline decoration-dashed cursor-help">
-                        -${formatAmountString(totalRefunded)}
+                        {currencyFormat(-1 * totalRefunded)}
                       </span>
                     </TooltipResponsiveTrigger>
                     <TooltipResponsiveContent className="flex flex-col gap-2">
@@ -589,7 +592,7 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
                               locale,
                             })}
                           </span>
-                          <span>-${formatAmountString(refund.amount)}</span>
+                          <span>{currencyFormat(-1 * refund.amount)}</span>
                         </div>
                       ))}
                     </TooltipResponsiveContent>
@@ -601,7 +604,7 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
                     {t("admin.payment.card.amountLeft")}
                   </span>
                   <span className="font-semibold">
-                    ${formatAmountString(amount - totalRefunded)}
+                    {currencyFormat(amount - totalRefunded)}
                   </span>
                 </div>
               </>
@@ -654,12 +657,11 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
         <div className="flex justify-between items-center font-semibold">
           <span>{t("admin.payment.card.netAmount")}</span>
           <span className="text-base">
-            $
-            {(
+            {currencyFormat(
               amount -
-              (fees?.reduce((acc, fee) => acc + fee.amount, 0) || 0) -
-              totalRefunded
-            ).toFixed(2)}
+                (fees?.reduce((acc, fee) => acc + fee.amount, 0) || 0) -
+                totalRefunded,
+            )}
           </span>
         </div>
       </CardContent>

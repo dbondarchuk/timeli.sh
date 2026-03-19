@@ -13,11 +13,13 @@ import {
   InputGroupAddonClasses,
   InputGroupInput,
   InputGroupInputClasses,
+  useCurrencySymbol,
 } from "@timelish/ui";
 import { TabProps } from "./types";
 
 export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
   const t = useI18n("admin");
+  const currencySymbol = useCurrencySymbol();
   const enablePayments = form.watch("payments.enabled");
   const requireDeposit = form.watch("payments.requireDeposit");
   const depositPercentage = form.watch("payments.depositPercentage");
@@ -189,7 +191,7 @@ export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
                         variant: "prefix",
                       })}
                     >
-                      $
+                      {currencySymbol}
                     </InputGroupAddon>
                     <InputGroupInput>
                       <Input

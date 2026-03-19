@@ -2,8 +2,7 @@
 import { adminApi } from "@timelish/api-sdk";
 import { useI18n } from "@timelish/i18n";
 import { GiftCardListModel } from "@timelish/types";
-import { cn, ComboboxAsync, IComboboxItem, Skeleton } from "@timelish/ui";
-import { formatAmountString } from "@timelish/utils";
+import { cn, ComboboxAsync, IComboboxItem, Skeleton, useCurrencyFormat } from "@timelish/ui";
 import { Gift } from "lucide-react";
 import { DateTime } from "luxon";
 import React from "react";
@@ -13,6 +12,7 @@ const GiftCardShortLabel: React.FC<{
   row?: boolean;
 }> = ({ giftCard, row }) => {
   const t = useI18n("admin");
+  const currencyFormat = useCurrencyFormat();
   return (
     <div className="flex flex-row items-center gap-2 shrink overflow-hidden text-nowrap min-w-0 max-w-[var(--radix-popover-trigger-width)]">
       <Gift size={20} />
@@ -20,8 +20,8 @@ const GiftCardShortLabel: React.FC<{
         <div>{giftCard.code}</div>
         <div className="text-xs italic">
           {t("giftCardSelector.amountLabel", {
-            amount: formatAmountString(giftCard.amount),
-            amountLeft: formatAmountString(giftCard.amountLeft),
+            amount: currencyFormat(giftCard.amount),
+            amountLeft: currencyFormat(giftCard.amountLeft),
           })}
         </div>
         {giftCard.expiresAt && !row && (
