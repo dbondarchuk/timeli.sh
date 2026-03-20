@@ -16,8 +16,8 @@ import {
   TooltipResponsiveTrigger,
   useIsMobile,
   useTimeZone,
+  useCurrencyFormat,
 } from "@timelish/ui";
-import { formatAmountString } from "@timelish/utils";
 import {
   Banknote,
   BanknoteX,
@@ -64,6 +64,7 @@ const HistoryEntry: React.FC<{ entry: AppointmentHistoryEntry }> = ({
   const dateTime = DateTime.fromJSDate(entry.dateTime);
   const locale = useLocale();
   const timeZone = useTimeZone();
+  const currencyFormat = useCurrencyFormat();
 
   const isMobile = useIsMobile();
 
@@ -145,7 +146,7 @@ const HistoryEntry: React.FC<{ entry: AppointmentHistoryEntry }> = ({
               {!!entry.data.payment?.appName && (
                 <Badge variant="outline" className="text-xs">
                   {t("admin.appointments.history.payment", {
-                    amount: formatAmountString(entry.data.payment.amount),
+                    amount: currencyFormat(entry.data.payment.amount),
                     appName: t(
                       AvailableApps[entry.data.payment.appName].displayName,
                     ),
@@ -217,7 +218,7 @@ const HistoryEntry: React.FC<{ entry: AppointmentHistoryEntry }> = ({
           {entry.type === "paymentAdded" && (
             <>
               <Badge variant="default" className="text-xs">
-                ${formatAmountString(entry.data.payment.amount)}
+                {currencyFormat(entry.data.payment.amount)}
               </Badge>
               <Badge variant="outline" className="text-xs">
                 {t("admin.appointments.history.paymentType", {
@@ -237,12 +238,12 @@ const HistoryEntry: React.FC<{ entry: AppointmentHistoryEntry }> = ({
             <>
               <Badge variant="default" className="text-xs">
                 {t("admin.appointments.history.refundedAmount", {
-                  amount: formatAmountString(entry.data.refundedAmount),
+                  amount: currencyFormat(entry.data.refundedAmount),
                 })}
               </Badge>
               <Badge variant="secondary" className="text-xs">
                 {t("admin.appointments.history.totalRefunded", {
-                  amount: formatAmountString(entry.data.totalRefunded),
+                  amount: currencyFormat(entry.data.totalRefunded),
                 })}
               </Badge>
               <Badge variant="outline" className="text-xs">

@@ -31,8 +31,9 @@ import {
   Textarea,
   toast,
   useDebounce,
+  useCurrencyFormat,
+  useCurrencySymbol,
 } from "@timelish/ui";
-import { formatAmountString } from "@timelish/utils";
 import {
   CheckCircle2,
   ChevronLeft,
@@ -81,6 +82,8 @@ export const GiftCardPurchaseBlockReader = forwardRef<
   );
 
   const i18n = useI18n("translation");
+  const currencyFormat = useCurrencyFormat();
+  const currencySymbol = useCurrencySymbol();
 
   const [currentStep, setCurrentStep] =
     useState<(typeof STEPS)[number]>("details");
@@ -471,7 +474,7 @@ export const GiftCardPurchaseBlockReader = forwardRef<
                                   variant: "prefix",
                                 })}
                               >
-                                $
+                                {currencySymbol}
                               </InputGroupAddon>
                               <InputGroupInput>
                                 <Input
@@ -697,7 +700,7 @@ export const GiftCardPurchaseBlockReader = forwardRef<
                       <CreditCard className="w-6 h-6 text-primary" />
                     </div>
                     <p className="text-2xl font-bold text-foreground">
-                      ${formatAmountString(payment?.amount ?? amount)}
+                      {currencyFormat(payment?.amount ?? amount)}
                     </p>
                     <p className="text-sm text-muted-foreground mt-1">
                       {t("block.payment.total")}
@@ -710,7 +713,7 @@ export const GiftCardPurchaseBlockReader = forwardRef<
                         {t("block.payment.total")}
                       </span>
                       <span className="text-foreground payment-card-service-total-amount">
-                        ${formatAmountString(payment?.amount ?? amount)}
+                        {currencyFormat(payment?.amount ?? amount)}
                       </span>
                     </div>
                   </div>
@@ -752,7 +755,7 @@ export const GiftCardPurchaseBlockReader = forwardRef<
                 {t("block.details.amount")}
               </p>
               <p className="text-sm font-bold text-foreground flex items-center gap-2 amount-value">
-                ${formatAmountString(amount)}
+                {currencyFormat(amount)}
               </p>
             </div>
           )}

@@ -2,14 +2,13 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { useI18n, useLocale } from "@timelish/i18n";
 import { GiftCardListModel } from "@timelish/types";
-import { Badge, Button, Checkbox, Link } from "@timelish/ui";
+import { Badge, Button, Checkbox, Link, useCurrencyFormat } from "@timelish/ui";
 import {
   CustomerName,
   tableSortHeader,
   tableSortNoopFunction,
 } from "@timelish/ui-admin";
 import { GiftCardPaymentsDialog } from "@timelish/ui-admin-kit";
-import { formatAmount } from "@timelish/utils";
 import { DateTime } from "luxon";
 import { parseAsString, useQueryState } from "nuqs";
 import { useCallback } from "react";
@@ -113,7 +112,10 @@ export const columns: ColumnDef<GiftCardListModel>[] = [
     sortingFn: tableSortNoopFunction,
   },
   {
-    accessorFn: (giftCard) => `$${formatAmount(giftCard.amount)}`,
+    cell: ({ row }) => {
+      const currencyFormat = useCurrencyFormat();
+      return currencyFormat(row.original.amount);
+    },
     id: "amount",
     header: tableSortHeader(
       "services.giftCards.table.columns.amount",
@@ -123,7 +125,10 @@ export const columns: ColumnDef<GiftCardListModel>[] = [
     sortingFn: tableSortNoopFunction,
   },
   {
-    accessorFn: (giftCard) => `$${formatAmount(giftCard.amountLeft)}`,
+    cell: ({ row }) => {
+      const currencyFormat = useCurrencyFormat();
+      return currencyFormat(row.original.amountLeft);
+    },
     id: "amountLeft",
     header: tableSortHeader(
       "services.giftCards.table.columns.amountLeft",

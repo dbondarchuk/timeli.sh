@@ -18,7 +18,7 @@ const DesignLoader: React.FC = () => (
 
 const DesignLabel: React.FC<{ design: DesignListModel }> = ({ design }) => {
   return (
-    <div className="flex flex-row items-center gap-2 overflow-hidden text-nowrap pl-6 w-full py-1">
+    <div className="flex flex-row items-center gap-2 overflow-hidden text-nowrap w-full py-1">
       {!!design.isArchived && (
         <Archive className="size-3.5 shrink-0 text-muted-foreground" />
       )}{" "}

@@ -38,6 +38,7 @@ import {
   TooltipResponsiveTrigger,
   use12HourFormat,
   useDebounceCacheFn,
+  useCurrencySymbol,
 } from "@timelish/ui";
 import { CustomerSelector, SaveButton } from "@timelish/ui-admin";
 import { Copy, Dices } from "lucide-react";
@@ -67,6 +68,7 @@ export const GiftCardForm: React.FC<{
   initialData?: GiftCard;
 }> = ({ initialData }) => {
   const t = useI18n("admin");
+  const currencySymbol = useCurrencySymbol();
   const uses12HourFormat = use12HourFormat();
 
   const cachedGiftCardCodeCheck = useDebounceCacheFn(
@@ -268,7 +270,7 @@ export const GiftCardForm: React.FC<{
                         variant: "prefix",
                       })}
                     >
-                      $
+                      {currencySymbol}
                     </InputGroupAddon>
                     <InputGroupInput>
                       <Input

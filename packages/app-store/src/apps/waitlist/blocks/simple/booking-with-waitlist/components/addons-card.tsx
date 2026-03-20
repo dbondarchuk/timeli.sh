@@ -8,6 +8,7 @@ import {
   CardTitle,
   Checkbox,
   Markdown,
+  useCurrencyFormat,
 } from "@timelish/ui";
 import { durationToTime } from "@timelish/utils";
 import { DollarSign, Timer } from "lucide-react";
@@ -23,6 +24,8 @@ export const AddonsCard: React.FC = () => {
     setDiscount,
     className,
   } = useScheduleContext();
+
+  const currencyFormat = useCurrencyFormat();
 
   const onClick = (option: AppointmentAddon): void => {
     const index = (selectedAddons || []).findIndex(
@@ -80,11 +83,11 @@ export const AddonsCard: React.FC = () => {
                       <div
                         className="flex flex-row items-center"
                         aria-label={i18n("common.formats.formPriceLabel", {
-                          price: addon.price.toFixed(2).replace(/\.00$/, ""),
+                          price: currencyFormat(addon.price),
                         })}
                       >
                         <DollarSign className="mr-1" />
-                        {addon.price.toFixed(2).replace(/\.00$/, "")}
+                        {currencyFormat(addon.price)}
                       </div>
                     )}
                   </CardDescription>

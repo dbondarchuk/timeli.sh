@@ -18,9 +18,10 @@ import {
   Textarea,
   toastPromise,
   useTimeZone,
+  useCurrencyFormat,
 } from "@timelish/ui";
 import { CustomerName } from "@timelish/ui-admin";
-import { durationToTime, formatAmountString } from "@timelish/utils";
+import { durationToTime } from "@timelish/utils";
 import { DateTime } from "luxon";
 import { useRouter } from "next/navigation";
 import { Fragment, useState } from "react";
@@ -45,6 +46,7 @@ export const AppointmentDetails = ({
   const t = useI18n("admin");
   const locale = useLocale();
   const timeZone = useTimeZone();
+  const currencyFormat = useCurrencyFormat();
   const router = useRouter();
 
   const duration = durationToTime(appointment.totalDuration);
@@ -207,7 +209,7 @@ export const AppointmentDetails = ({
                     <>
                       <div>
                         {t("appointments.view.subtotal", {
-                          subtotal: formatAmountString(
+                          subtotal: currencyFormat(
                             (appointment.totalPrice || 0) +
                               (appointment.discount?.discountAmount || 0),
                           ),
@@ -215,7 +217,7 @@ export const AppointmentDetails = ({
                       </div>
                       <div className="text-destructive pb-2 border-b">
                         {t("appointments.view.discount", {
-                          discount: formatAmountString(
+                          discount: currencyFormat(
                             appointment.discount?.discountAmount || 0,
                           ),
                         })}
@@ -224,20 +226,20 @@ export const AppointmentDetails = ({
                   )}
                   <div className="font-semibold text-sm">
                     {t("appointments.view.total", {
-                      total: formatAmountString(appointment.totalPrice || 0),
+                      total: currencyFormat(appointment.totalPrice || 0),
                     })}
                   </div>
                   {!!totalPaid && (
                     <div>
                       {t("appointments.view.amountPaid", {
-                        amountPaid: formatAmountString(totalPaid),
+                        amountPaid: currencyFormat(totalPaid),
                       })}
                     </div>
                   )}
                   {appointment.status !== "declined" && (
                     <div className="font-semibold text-sm pt-2 border-t">
                       {t("appointments.view.amountDue", {
-                        amountDue: formatAmountString(totalAmountLeft),
+                        amountDue: currencyFormat(totalAmountLeft),
                       })}
                     </div>
                   )}
@@ -363,7 +365,7 @@ export const AppointmentDetails = ({
                           <>
                             <div>{t("appointments.view.price")}:</div>
                             <div className="col-span-2">
-                              ${formatAmountString(appointment.option.price)}
+                              {currencyFormat(appointment.option.price)}
                             </div>
                           </>
                         )}
@@ -407,8 +409,8 @@ export const AppointmentDetails = ({
                                   )}
                                   {!!addon.price && (
                                     <li>
-                                      {t("appointments.view.price")}: $
-                                      {formatAmountString(addon.price)}
+                                      {t("appointments.view.price")}:{" "}
+                                      {currencyFormat(addon.price)}
                                     </li>
                                   )}
                                 </ul>

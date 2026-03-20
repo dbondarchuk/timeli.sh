@@ -35,7 +35,7 @@ export function useCommunicationLogsTableFilters() {
 
   const [customerFilter, setCustomerFilter] = useQueryState(
     "customer",
-    communicationLogsSearchParams.customerId.withOptions({ shallow: false }),
+    communicationLogsSearchParams.customer.withOptions({ shallow: false }),
   );
 
   const [page, setPage] = useQueryState(

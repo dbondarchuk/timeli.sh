@@ -6,7 +6,7 @@ import React from "react";
 
 import InfiniteScroll from "react-infinite-scroll-component";
 
-import { cn } from "../utils";
+import { cn, transformChildrenToString } from "../utils";
 import { Button, ButtonProps } from "./button";
 import {
   Command,
@@ -237,6 +237,19 @@ export const ComboboxTrigger = React.forwardRef<
 
 ComboboxTrigger.displayName = "ComboboxTrigger";
 
+const defaultSearch = (values: IComboboxItem[], search: string) => {
+  return values.filter((value) => {
+    const s = search.toLocaleLowerCase();
+    const label = transformChildrenToString(value.label);
+    const shortLabel = transformChildrenToString(value.shortLabel);
+    return (
+      label.toLocaleLowerCase().includes(s) ||
+      shortLabel.toLocaleLowerCase().includes(s) ||
+      value.value.toLocaleLowerCase().includes(s)
+    );
+  });
+};
+
 export const Combobox: React.FC<ComboboxProps> = (props) => {
   const t = useI18n("ui");
   const [open, setOpen] = React.useState(false);
@@ -279,7 +292,8 @@ export const Combobox: React.FC<ComboboxProps> = (props) => {
 
   const propsValues = props.values;
   const values = React.useMemo(
-    () => (customSearch ? customSearch(search) : propsValues),
+    () =>
+      customSearch ? customSearch(search) : defaultSearch(propsValues, search),
     [customSearch, search, propsValues],
   );
 
@@ -303,13 +317,11 @@ export const Combobox: React.FC<ComboboxProps> = (props) => {
       <PopoverContent
         className={"min-w-max p-0 w-[var(--radix-popper-anchor-width)]"}
       >
-        <Command
-          shouldFilter={!props.customSearch}
-          filter={props.customSearch ? () => 1 : undefined}
-        >
+        <Command shouldFilter={false}>
           <CommandInput
             placeholder={searchLabel}
-            onValueChange={(search) => setSearch(search)}
+            value={search}
+            onValueChange={setSearch}
             className="text-xs"
           />
           {(!values || values.length) == 0 && (

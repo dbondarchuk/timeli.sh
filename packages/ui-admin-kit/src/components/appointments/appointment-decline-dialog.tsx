@@ -21,12 +21,13 @@ import {
   CurrencyPercentageInput,
   Label,
   ScrollArea,
+  useCurrencyFormat,
   Separator,
   TooltipResponsive,
   TooltipResponsiveContent,
   TooltipResponsiveTrigger,
 } from "@timelish/ui";
-import { formatAmount, formatAmountString } from "@timelish/utils";
+import { formatAmount } from "@timelish/utils";
 import { CalendarX2 } from "lucide-react";
 import { DateTime } from "luxon";
 import React, { useCallback, useEffect, useId } from "react";
@@ -60,6 +61,7 @@ const PaymentRefundCard = ({
 }) => {
   const t = useI18n();
   const locale = useLocale();
+  const currencyFormat = useCurrencyFormat();
 
   const dateTime =
     typeof payment.paidAt === "string"
@@ -177,7 +179,7 @@ const PaymentRefundCard = ({
               {t("admin.appointments.declineDialog.amount")}
             </span>
             <span className="font-semibold text-lg">
-              ${formatAmountString(payment.amount)}
+              {currencyFormat(payment.amount)}
             </span>
           </div>
           {payment.fees && payment.fees.length > 0 && (
@@ -196,7 +198,7 @@ const PaymentRefundCard = ({
                     {t(`admin.payment.feeTypes.${fee.type}`)}
                   </span>
                   <span className="font-semibold">
-                    ${formatAmountString(fee.amount)}
+                    {currencyFormat(fee.amount)}
                   </span>
                 </div>
               ))}
@@ -236,7 +238,7 @@ const PaymentRefundCard = ({
                 {t("admin.appointments.declineDialog.refunded")}
               </span>
               <span className="text-foreground/60">
-                ${formatAmountString(totalRefunded)}
+                {currencyFormat(totalRefunded)}
               </span>
             </div>
           )}
@@ -273,7 +275,7 @@ const PaymentRefundCard = ({
               />
             ) : (
               <span className="text-foreground/60">
-                ${formatAmountString(refundableAmount)}
+                {currencyFormat(refundableAmount)}
               </span>
             )}
           </div>
@@ -291,6 +293,7 @@ export const AppointmentDeclineDialog: React.FC<{
   onSuccess?: (status: AppointmentStatus) => void;
 }> = ({ appointment, open, trigger, onClose, onSuccess }) => {
   const t = useI18n();
+  const currencyFormat = useCurrencyFormat();
 
   const locale = useLocale();
   const [isLoading, setIsLoading] = React.useState(false);
@@ -484,15 +487,20 @@ export const AppointmentDeclineDialog: React.FC<{
                 onSuccess={onSuccess}
               >
                 <CalendarX2 size={20} />
-                {t("admin.appointments.declineDialog.declineAndRefund", {
-                  count: selectedPayments.length,
-                  amount: formatAmountString(
-                    selectedPayments.reduce(
-                      (acc, payment) => acc + payment.amount,
-                      0,
-                    ),
-                  ),
-                })}
+                {(() => {
+                  const amount = selectedPayments.reduce(
+                    (acc, payment) => acc + payment.amount,
+                    0,
+                  );
+                  return t(
+                    "admin.appointments.declineDialog.declineAndRefund",
+                    {
+                      count: selectedPayments.length,
+                      amount,
+                      amountFormatted: currencyFormat(amount),
+                    },
+                  );
+                })()}
               </AppointmentActionButton>
             </AlertDialogAction>
           )}

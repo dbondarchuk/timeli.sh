@@ -11,8 +11,9 @@ import {
   Markdown,
   Spinner,
   cn,
+  useCurrencyFormat,
 } from "@timelish/ui";
-import { durationToTime, formatAmountString, template } from "@timelish/utils";
+import { durationToTime, template } from "@timelish/utils";
 import { TimeZone } from "@vvo/tzdb";
 import {
   AlertTriangle,
@@ -53,6 +54,7 @@ export const ReviewCard: React.FC = () => {
   const locale = useLocale();
 
   const t = useI18n("translation");
+  const currencyFormat = useCurrencyFormat();
 
   if (!selectedAppointmentOption || !dateTime || !fields?.name) return null;
 
@@ -316,10 +318,10 @@ export const ReviewCard: React.FC = () => {
           {selectedAppointmentOption.durationType === "fixed" &&
             (!!selectedAppointmentOption.price ||
               !!selectedAppointmentOption.duration) && (
-              <div className="text-right shrink-0 review-service-summary-price">
+                  <div className="text-right shrink-0 review-service-summary-price">
                 {!!selectedAppointmentOption.price && (
                   <p className="text-xs font-semibold text-foreground review-service-summary-price-amount">
-                    ${formatAmountString(selectedAppointmentOption.price)}
+                    {currencyFormat(selectedAppointmentOption.price)}
                   </p>
                 )}
                 {!!selectedAppointmentOption.duration && (
@@ -338,9 +340,7 @@ export const ReviewCard: React.FC = () => {
               <div className="text-right shrink-0 review-service-summary-price">
                 <p className="text-xs font-semibold text-foreground review-service-summary-price-amount">
                   {t("booking.option.price_per_hour", {
-                    price: formatAmountString(
-                      selectedAppointmentOption.pricePerHour,
-                    ),
+                    price: currencyFormat(selectedAppointmentOption.pricePerHour),
                   })}
                 </p>
               </div>
@@ -365,7 +365,7 @@ export const ReviewCard: React.FC = () => {
                   <div className="text-right shrink-0 review-addons-price">
                     {!!addon.price && (
                       <span className="text-xs font-medium text-foreground">
-                        +${formatAmountString(addon.price || 0)}
+                        +{currencyFormat(addon.price || 0)}
                       </span>
                     )}
                     {!!addon.duration && (
@@ -481,7 +481,7 @@ export const ReviewCard: React.FC = () => {
                 </p>
               </div>
               <p className="font-bold text-foreground review-total-amount">
-                ${formatAmountString(basePrice)}
+                {currencyFormat(basePrice)}
               </p>
             </div>
             {showPromoCode && !!basePrice && (
@@ -538,7 +538,7 @@ export const ReviewCard: React.FC = () => {
                           !promoCodeError &&
                           t("booking.promoCode.success", {
                             code: discount.code,
-                            discount: formatAmountString(discountAmount),
+                            discount: currencyFormat(discountAmount),
                           })}
                       </p>
                     </div>
@@ -554,7 +554,7 @@ export const ReviewCard: React.FC = () => {
                   </p>
                 </div>
                 <p className="font-bold text-destructive review-total-amount">
-                  -(${formatAmountString(discountAmount)})
+                  {currencyFormat(-1 * discountAmount)}
                 </p>
               </div>
             )}
@@ -598,7 +598,8 @@ export const ReviewCard: React.FC = () => {
                             !giftCardCode || (giftCards?.length || 0) >= 2
                           }
                         >
-                          {isLoadingGiftCards && <Spinner />} {t("common.buttons.apply")}
+                          {isLoadingGiftCards && <Spinner />}{" "}
+                          {t("common.buttons.apply")}
                         </Button>
                       </div>
                       {!!giftCardError && (
@@ -620,9 +621,7 @@ export const ReviewCard: React.FC = () => {
                                 </div>
                                 <div className="text-green-800 font-semibold">
                                   {t("booking.giftCard.giftCardAppliedAmount", {
-                                    appliedAmount: formatAmountString(
-                                      giftCard.appliedAmount,
-                                    ),
+                                    appliedAmount: currencyFormat(giftCard.appliedAmount),
                                   })}
                                 </div>
                               </div>
@@ -639,16 +638,12 @@ export const ReviewCard: React.FC = () => {
                           <div className="px-2 pb-2 pt-1 text-xs flex flex-row justify-between items-center w-full border-t border-t-green-300 text-green-500 review-total-gift-cards-item-amount-left">
                             <div className="text-muted-foreground">
                               {t("booking.giftCard.giftCardAmountLeftLabel", {
-                                amountLeft: formatAmountString(
-                                  giftCard.amountLeft,
-                                ),
+                                amountLeft: currencyFormat(giftCard.amountLeft),
                               })}
                             </div>
                             <div className="text-green-800 font-bold">
                               {t("booking.giftCard.giftCardAmountLeft", {
-                                amountLeft: formatAmountString(
-                                  giftCard.amountLeft,
-                                ),
+                                amountLeft: currencyFormat(giftCard.amountLeft),
                               })}
                             </div>
                           </div>
@@ -667,7 +662,7 @@ export const ReviewCard: React.FC = () => {
                   </p>
                 </div>
                 <p className="font-bold text-destructive review-total-amount">
-                  -(${formatAmountString(totalGiftCardsApplied)})
+                  {currencyFormat(-1 * totalGiftCardsApplied)}
                 </p>
               </div>
             )}
@@ -678,7 +673,7 @@ export const ReviewCard: React.FC = () => {
                 </p>
               </div>
               <p className="text-lg font-bold text-foreground review-total-amount">
-                ${formatAmountString(totalAfterGiftCards)}
+                {currencyFormat(totalAfterGiftCards)}
               </p>
             </div>
           </div>

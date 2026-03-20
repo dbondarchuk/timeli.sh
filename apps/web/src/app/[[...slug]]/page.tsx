@@ -277,6 +277,7 @@ export default async function Page(props: Props) {
     const formattedArgs = formatArguments(
       args,
       rest.language || settings.language,
+      settings.currency,
     );
 
     const apps =

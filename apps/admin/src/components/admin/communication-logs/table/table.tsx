@@ -20,7 +20,7 @@ export const CommunicationLogsTable: React.FC<{
   const end = communicationLogsSearchParamsCache.get("end") || undefined;
   const sort = communicationLogsSearchParamsCache.get("sort");
   const customerIds =
-    communicationLogsSearchParamsCache.get("customerId") || undefined;
+    communicationLogsSearchParamsCache.get("customer") || undefined;
 
   const offset = (page - 1) * limit;
 

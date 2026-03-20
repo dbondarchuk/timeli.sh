@@ -22,6 +22,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  useCurrencySymbol,
 } from "@timelish/ui";
 import { AppSelector } from "@timelish/ui-admin";
 import { X } from "lucide-react";
@@ -32,6 +33,7 @@ const durationStepOptions = [1, 5, 10, 15, 20, 30, 60, 120, 180, 360] as const;
 
 export const GeneralTab: React.FC<TabProps> = ({ form, disabled }) => {
   const t = useI18n("admin");
+  const currencySymbol = useCurrencySymbol();
 
   const isOnline = form.watch("isOnline");
   const durationType = form.watch("durationType");
@@ -205,7 +207,7 @@ export const GeneralTab: React.FC<TabProps> = ({ form, disabled }) => {
                           variant: "prefix",
                         })}
                       >
-                        $
+                        {currencySymbol}
                       </InputGroupAddon>
                       <InputGroupInput>
                         <Input
@@ -338,7 +340,7 @@ export const GeneralTab: React.FC<TabProps> = ({ form, disabled }) => {
                           variant: "prefix",
                         })}
                       >
-                        $
+                        {currencySymbol}
                       </InputGroupAddon>
                       <InputGroupInput>
                         <Input

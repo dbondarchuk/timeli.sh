@@ -1,12 +1,12 @@
 import { PaymentAppForms } from "@timelish/app-store/payment-forms";
 import { useI18n } from "@timelish/i18n";
-import { cn } from "@timelish/ui";
-import { formatAmountString } from "@timelish/utils";
+import { cn, useCurrencyFormat } from "@timelish/ui";
 import { CreditCard } from "lucide-react";
 import { useModifyAppointmentFormContext } from "./context";
 
 export const PaymentCard: React.FC = () => {
   const t = useI18n("translation");
+  const currencyFormat = useCurrencyFormat();
 
   const {
     paymentInformation: paymentForm,
@@ -34,7 +34,7 @@ export const PaymentCard: React.FC = () => {
             <CreditCard className="w-6 h-6 text-primary" />
           </div>
           <p className="text-2xl font-bold text-foreground">
-            ${formatAmountString(paymentForm.intent.amount)}
+            {currencyFormat(paymentForm.intent.amount)}
           </p>
           <p className="text-sm text-muted-foreground mt-1">
             {t(`modification.payment.amountDue`)}

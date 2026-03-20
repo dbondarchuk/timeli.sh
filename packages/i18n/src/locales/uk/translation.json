@@ -19,7 +19,7 @@
       "customDurationLabel": "Тривалість: власна",
       "formDurationLabel": "Тривалість: {duration} хв",
       "formDurationHourMinutesLabel": "Тривалість: {hours, plural, =0 {{minutes} хв} other {# год, {minutes} хв}}",
-      "formPriceLabel": "Ціна: ${price}",
+      "formPriceLabel": "Ціна: {price}",
       "selectTimezoneLabel": "Весь час у <timeZoneCombobox></timeZoneCombobox> часовому поясі"
     },
     "labels": {
@@ -70,7 +70,7 @@
           "min_max": "Мін: {min} • Макс: {max}"
         }
       },
-      "price_per_hour": "${price}/год"
+      "price_per_hour": "{price}/год"
     },
     "addons": {
       "title": "Покращіть ваш досвід",
@@ -133,15 +133,15 @@
       "deposit": "Депозит (сплатити зараз)",
       "fullPayment": "Повна оплата (сплатити зараз)",
       "remainingBalance": "Залишок балансу",
-      "remainingBalanceDescription": "Залишок балансу ${remainingBalance} буде сплачено під час вашого запису.",
+      "remainingBalanceDescription": "Залишок балансу {remainingBalance} буде сплачено під час вашого запису.",
       "giftCards": "Подарункові картки",
       "informationFetchFailedTitle": "Ой! Щось пішло не так.",
       "informationFetchFailedDescription": "Щось пішло не так під час спроби отримати інформацію для бронювання вашої зустрічі. Будь ласка, зателефонуйте нам",
       "depositRequiredTitle": "Потрібен депозит",
-      "depositRequiredDescription": "Для бронювання цього запису потрібен депозит {percentage}% (${amount}). Будь ласка, оплатіть, використовуючи форму нижче",
-      "fixedAmountRequiredDescription": "Для бронювання цього запису потрібен депозит у розмірі ${amount}. Будь ласка, оплатіть, використовуючи форму нижче",
+      "depositRequiredDescription": "Для бронювання цього запису потрібен депозит {percentage}% ({amount}). Будь ласка, оплатіть, використовуючи форму нижче",
+      "fixedAmountRequiredDescription": "Для бронювання цього запису потрібен депозит у розмірі {amount}. Будь ласка, оплатіть, використовуючи форму нижче",
       "fullPaymentRequiredTitle": "Потрібна повна оплата",
-      "fullPaymentRequiredDescription": "Для бронювання цього запису потрібна повна оплата ${amount}. Будь ласка, оплатіть, використовуючи форму нижче"
+      "fullPaymentRequiredDescription": "Для бронювання цього запису потрібна повна оплата {amount}. Будь ласка, оплатіть, використовуючи форму нижче"
     },
     "promoCode": {
       "trigger": "Маєте промокод?",
@@ -149,8 +149,8 @@
       "code": "Промокод",
       "codePlaceholder": "Введіть промокод (наприклад XXX-XXX-XXX)",
       "description": "Можна застосувати до 2 промокодів",
-      "success": "Промокод {code} (-${discount}) успішно застосовано.",
-      "successMessage": "Промокод {code} (-${discount}) успішно застосовано.",
+      "success": "Промокод {code} (-{discount}) успішно застосовано.",
+      "successMessage": "Промокод {code} (-{discount}) успішно застосовано.",
       "error": "Промокод {code} недійсний або закінчився.",
       "errorInvalid": "Промокод недійсний.",
       "apply": "Застосувати"
@@ -160,21 +160,21 @@
       "title": "Подарункова картка",
       "code": "Код подарункової картки",
       "description": "Можна застосувати до 2 подарункових карток",
-      "success": "Подарункову картку {code} (-${appliedAmount}) успішно застосовано.",
+      "success": "Подарункову картку {code} (-{appliedAmount}) успішно застосовано.",
       "error": "Подарункова картка {code} недійсна або закінчилася.",
       "codeRequired": "Код подарункової картки обов'язковий",
       "apply": "Застосувати",
       "codePlaceholder": "Введіть код подарункової картки (наприклад XXX-XXX-XXX)",
-      "giftCardAppliedAmount": "-${appliedAmount} застосовано.",
+      "giftCardAppliedAmount": "-{appliedAmount} застосовано.",
       "giftCardAmountLeftLabel": "Залишок на картці після бронювання",
-      "giftCardAmountLeft": "${amountLeft} залишилось на картці",
+      "giftCardAmountLeft": "{amountLeft} залишилось на картці",
       "remove": "Видалити подарункову картку"
     },
     "confirmation": {
       "price": {
-        "original": "Підсумок: ${original}",
-        "discount": "Знижка: -${discount}",
-        "total": "Всього: ${total}"
+        "original": "Підсумок: {original}",
+        "discount": "Знижка: -{discount}",
+        "total": "Всього: {total}"
       },
       "successTitle": "Ваш запит отримано!",
       "successMessage": "Дякуємо, {name}! Ваш запит на {service} отримано, і ви незабаром отримаєте підтвердження.",
@@ -295,8 +295,8 @@
         "checkboxLabel": "Я підтверджую, що розумію та хочу скасувати цей запис",
         "confirmationTitle": "Ви впевнені?",
         "confirmationForfeitDepositDescription": "Привіт {name}, ви впевнені, що хочете скасувати ваш запис для <b>{service}</b> на <i>{dateTime}</i>?<br></br>Якщо ви це зробите, ваш депозит не буде повернений.",
-        "partialRefundDescription": "Привіт {name}, ви впевнені, що хочете скасувати ваш запис для <b>{service}</b> на <i>{dateTime}</i>?<br></br>Якщо ви це зробите, <b>{refundPercentage}%</b> вашого депозиту{refundFees, plural, =1 {} other {{feesAmount, plural, =0 {} other { (окрім <b>${feesAmount} комісій</b>)}}}} буде повернено (<b>${refundAmount}</b>).",
-        "fullRefundDescription": "Привіт {name}, ви впевнені, що хочете скасувати ваш запис для <b>{service}</b> на <i>{dateTime}</i>?<br></br>Якщо ви це зробите, ваш депозит{refundFees, plural, =1 {} other {{feesAmount, plural, =0 {} other { (окрім <b>${feesAmount} комісій</b>)}}}} буде повернений <b>в повному обсязі</b> (<b>${refundAmount}</b>).",
+        "partialRefundDescription": "Привіт {name}, ви впевнені, що хочете скасувати ваш запис для <b>{service}</b> на <i>{dateTime}</i>?<br></br>Якщо ви це зробите, <b>{refundPercentage}%</b> вашого депозиту{refundFees, plural, =1 {} other {{feesAmount, plural, =0 {} other { (окрім <b>{feesAmount} комісій</b>)}}}} буде повернено (<b>{refundAmount}</b>).",
+        "fullRefundDescription": "Привіт {name}, ви впевнені, що хочете скасувати ваш запис для <b>{service}</b> на <i>{dateTime}</i>?<br></br>Якщо ви це зробите, ваш депозит{refundFees, plural, =1 {} other {{feesAmount, plural, =0 {} other { (окрім <b>{feesAmount} комісій</b>)}}}} буде повернений <b>в повному обсязі</b> (<b>{refundAmount}</b>).",
         "paymentPartialRequiredDescription": "Привіт {name}, ви впевнені, що хочете скасувати ваш запис для <b>{service}</b> на <i>{dateTime}</i>?",
         "paymentFullPriceRequiredDescription": "Привіт {name}, ви впевнені, що хочете скасувати ваш запис для <b>{service}</b> на <i>{dateTime}</i>?",
         "confirmationCheckboxLabel": "Я підтверджую, що розумію та хочу скасувати цей запис",
@@ -366,11 +366,11 @@
     "feeRequired": {
       "cancel": {
         "title": "Потрібна плата за відміну запису",
-        "description": "Для відміни цього запису потрібна плата в сумі ${amount}. Будь ласка, оплатіть, використовуючи форму нижче"
+        "description": "Для відміни цього запису потрібна плата в сумі {amount}. Будь ласка, оплатіть, використовуючи форму нижче"
       },
       "reschedule": {
         "title": "Потрібна плата за перенесення запису",
-        "description": "Для перенесення цього запису потрібна плата в сумі ${amount}. Будь ласка, оплатіть, використовуючи форму нижче"
+        "description": "Для перенесення цього запису потрібна плата в сумі {amount}. Будь ласка, оплатіть, використовуючи форму нижче"
       }
     }
   },
@@ -420,5 +420,10 @@
   "header": {
     "menu": "Меню",
     "close": "Закрити"
+  },
+  "notFound": {
+    "title": "Сторінку не знайдено",
+    "description": "Сторінка, яку ви шукаєте, не існує.",
+    "button": "Повернутися на головну"
   }
 }

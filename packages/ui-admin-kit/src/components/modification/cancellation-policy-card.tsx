@@ -34,6 +34,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  useCurrencySymbol,
 } from "@timelish/ui";
 import { Trash } from "lucide-react";
 import React from "react";
@@ -57,6 +58,7 @@ export const CancellationPolicyCardContent: React.FC<
   } & ({ default: true; index?: never } | { default?: false; index: number })
 > = ({ form, disabled, default: isDefault, index, withDeposit, basePath }) => {
   const t = useI18n("admin");
+  const currencySymbol = useCurrencySymbol();
 
   const path = getPath(basePath, withDeposit, isDefault ?? false, index ?? 0);
 
@@ -323,7 +325,7 @@ export const CancellationPolicyCardContent: React.FC<
                           variant: "prefix",
                         })}
                       >
-                        $
+                        {currencySymbol}
                       </InputGroupAddon>
                       <InputGroupInput>
                         <Input

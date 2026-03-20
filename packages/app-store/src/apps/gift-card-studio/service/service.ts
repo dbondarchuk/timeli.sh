@@ -15,7 +15,7 @@ import {
   PaymentIntentUpdateModel,
   TemplateTemplatesList,
 } from "@timelish/types";
-import { formatAmountString } from "@timelish/utils";
+import { formatAmountWithCurrency } from "@timelish/utils";
 import { DateTime } from "luxon";
 import { DEFAULT_MAX_AMOUNT, DEFAULT_MIN_AMOUNT } from "../const";
 import { demoPurchasedGiftCard } from "../demo-arguments";
@@ -1423,12 +1423,18 @@ export class GiftCardStudioConnectedApp
     const logger = this.loggerFactory("generatePreviewImage");
     logger.debug({ designId: payload.designId }, "Generating preview image");
     const design = designDoc.design;
+    const { currency, language } =
+      await this.props.services.configurationService.getConfiguration(
+        "general",
+      );
+
+    const amountFormatted = formatAmountWithCurrency(
+      payload.amount,
+      language,
+      currency,
+    );
     const fields: FieldKeyValues = {
-      amount:
-        "$" +
-        (typeof payload.amount === "number"
-          ? formatAmountString(payload.amount)
-          : "0.00"),
+      amount: amountFormatted,
       code: payload.code ?? "PREVIEW",
       to: payload.toName ?? "",
       from: payload.name ?? "",
@@ -1454,22 +1460,21 @@ export class GiftCardStudioConnectedApp
         { error: e, designId: payload.designId },
         "Render failed, using fallback SVG preview",
       );
-      return this.generatePreviewImageFallback(payload);
+      return this.generatePreviewImageFallback({ ...payload, amountFormatted });
     }
   }
 
   private generatePreviewImageFallback(payload: {
-    amount: number;
+    amountFormatted: string;
     name: string;
     code: string;
   }): string {
-    const amount = Number(payload.amount);
     const name = String(payload.name ?? "");
     const code = String(payload.code ?? "PREVIEW");
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="250" viewBox="0 0 400 250">
       <rect width="400" height="250" fill="#f8fafc"/>
       <text x="20" y="30" font-family="sans-serif" font-size="16" fill="#0f172a">Gift Card Preview</text>
-      <text x="20" y="55" font-family="sans-serif" font-size="12" fill="#0f172a">Amount: $${amount}</text>
+      <text x="20" y="55" font-family="sans-serif" font-size="12" fill="#0f172a">Amount: ${escapeXml(payload.amountFormatted)}</text>
       <text x="20" y="75" font-family="sans-serif" font-size="12" fill="#0f172a">From: ${escapeXml(name || "—")}</text>
       <text x="20" y="95" font-family="sans-serif" font-size="12" fill="#0f172a">Code: ${escapeXml(code)}</text>
       <text x="20" y="130" font-family="sans-serif" font-size="14" font-weight="bold" fill="#dc2626">PREVIEW - NOT A REAL CARD</text>

@@ -1,6 +1,6 @@
 import { useI18n } from "@timelish/i18n";
 import { AppointmentChoice } from "@timelish/types";
-import { cn, Markdown, Skeleton } from "@timelish/ui";
+import { cn, Markdown, Skeleton, useCurrencyFormat } from "@timelish/ui";
 import { durationToTime, formatAmountString } from "@timelish/utils";
 import { Clock, Minus, Plus } from "lucide-react";
 import { useScheduleContext } from "./context";
@@ -19,6 +19,7 @@ export const AppointmentOptionCard: React.FC = () => {
   } = useScheduleContext();
 
   const t = useI18n("translation");
+  const currencyFormat = useCurrencyFormat();
 
   const onClick = (option: AppointmentChoice): void => {
     setSelectedAppointmentOption(option);
@@ -85,12 +86,12 @@ export const AppointmentOptionCard: React.FC = () => {
                           {!!currentPrice &&
                             (option.durationType === "fixed" ? (
                               <p className="text-sm font-semibold text-foreground">
-                                ${formatAmountString(currentPrice)}
+                                {currencyFormat(currentPrice)}
                               </p>
                             ) : (
                               <p className="text-sm font-semibold text-foreground">
                                 {t("booking.option.price_per_hour", {
-                                  price: formatAmountString(currentPrice),
+                                  price: currencyFormat(currentPrice),
                                 })}
                               </p>
                             ))}

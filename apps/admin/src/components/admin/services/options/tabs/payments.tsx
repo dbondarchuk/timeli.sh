@@ -22,12 +22,14 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  useCurrencySymbol,
 } from "@timelish/ui";
 import React from "react";
 import { TabProps } from "./types";
 
 export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
   const t = useI18n("admin");
+  const currencySymbol = useCurrencySymbol();
 
   const requireDeposit = form.watch("requireDeposit");
   const isAmountPaymentType = form.watch("paymentType") === "amount";
@@ -176,7 +178,7 @@ export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
                             variant: "prefix",
                           })}
                         >
-                          $
+                          {currencySymbol}
                         </InputGroupAddon>
                         <InputGroupInput>
                           <Input

@@ -68,7 +68,8 @@
         "online": "Online"
       },
       "filters": "Filters",
-      "loading": "Loading"
+      "loading": "Loading",
+      "unknown": "Unknown"
     },
     "buttons": {
       "delete": "Delete",
@@ -86,7 +87,7 @@
       "cancel": "Cancel",
       "leave": "Leave"
     },
-    "pricePerHour": "${price}/hr"
+    "pricePerHour": "{price}/hr"
   },
   "navigation": {
     "overview": "Overview",
@@ -201,7 +202,7 @@
       "timePaid": "Time paid",
       "fees": "Fees",
       "cancel": "Cancel",
-      "declineAndRefund": "Decline and refund {count, plural, =1 {payment} other {# payments}}{amount, plural, =0 {} other { for $#}}",
+      "declineAndRefund": "Decline and refund {count, plural, =1 {payment} other {# payments}}{amount, plural, =0 {} other { for {amountFormatted}}}",
       "decline": "Decline",
       "refunded": "Refunded",
       "refundableAmount": "Refundable amount",
@@ -267,11 +268,11 @@
       "requestedAt": "Requested at",
       "status": "Status",
       "price": "Price",
-      "subtotal": "Subtotal: ${subtotal}",
-      "total": "Total: ${total}",
-      "discount": "Discount: -(${discount})",
-      "amountPaid": "Amount paid: ${amountPaid}",
-      "amountDue": "Amount due: ${amountDue}",
+      "subtotal": "Subtotal: {subtotal}",
+      "total": "Total: {total}",
+      "discount": "Discount: -({discount})",
+      "amountPaid": "Amount paid: {amountPaid}",
+      "amountDue": "Amount due: {amountDue}",
       "customer": "Customer",
       "name": "Name",
       "email": "Email",
@@ -310,14 +311,14 @@
     "history": {
       "byUser": "By user",
       "byCustomer": "By customer",
-      "payment": "Payment ${amount} via {appName}",
+      "payment": "Payment {amount} via {appName}",
       "paymentType": "{type} via {appName}",
       "oldStatus": "Old status: {oldStatus}",
       "newStatus": "New status: {newStatus}",
       "oldDateTime": "Old date and time: {oldDateTime}",
       "newDateTime": "New date and time: {newDateTime}",
-      "refundedAmount": "Refunded ${amount}",
-      "totalRefunded": "Total refunded ${amount}",
+      "refundedAmount": "Refunded {amount}",
+      "totalRefunded": "Total refunded {amount}",
       "oldOption": "Old option: {oldOption}",
       "newOption": "New option: {newOption}"
     },
@@ -1649,6 +1650,13 @@
         "address": "Address",
         "addressTooltip": "Physical office address",
         "addressPlaceholder": "Physical office address",
+        "country": "Country",
+        "countryTooltip": "Country of the presence",
+        "countryPlaceholder": "Select country",
+        "currency": "Currency",
+        "currencyTooltip": "Currency that is used for payments",
+        "currencyPlaceholder": "Select currency",
+        "currencyLabelFormat": "{currency} ({code}, {symbol})",
         "logo": "Logo",
         "logoTooltip": "URL to image to be used as logo (for example in header)",
         "logoPlaceholder": "Logo URL",
@@ -2286,12 +2294,12 @@
       "totalRefunded": "Total Refunded",
       "refundAmount": "Refund Amount",
       "cancel": "Cancel",
-      "confirmRefundButton": "Confirm refund ${amount}",
+      "confirmRefundButton": "Confirm refund {amountFormatted}",
       "customerName": "Customer",
       "appointment": "Appointment",
       "delete": "Delete",
       "deleteConfirmTitle": "Are you absolutely sure?",
-      "deleteConfirmDescription": "Are you sure that you want to delete this payment for ${amount}, paid on {date}?",
+      "deleteConfirmDescription": "Are you sure that you want to delete this payment for {amountFormatted}, paid on {date}?",
       "deleteSuccess": "Payment was deleted",
       "update": "Update",
       "description": "Description",
@@ -2529,7 +2537,7 @@
     }
   },
   "giftCardSelector": {
-    "amountLabel": "${amount} (amount left: ${amountLeft})",
+    "amountLabel": "{amount} (amount left: {amountLeft})",
     "expiresAt": "Expires at {expiresAt}",
     "placeholder": "Select gift card"
   }

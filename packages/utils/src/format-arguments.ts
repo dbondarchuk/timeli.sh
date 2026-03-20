@@ -1,6 +1,7 @@
 import { Language } from "@timelish/i18n";
+import { Currency } from "@timelish/types";
 import { DateTime } from "luxon";
-import { formatAmountString } from "./currency";
+import { formatAmountWithCurrency } from "./currency";
 
 // Types for the formatted date/time properties
 type DateTimeFormatted = {
@@ -53,25 +54,36 @@ export type FormattedArguments<T> = {
 export function formatArguments<T extends Record<string, any>>(
   args: T,
   locale: Language,
+  currency: Currency,
   timeZone?: string,
 ): FormattedArguments<T> {
-  return processObject(args, locale, timeZone) as FormattedArguments<T>;
+  return processObject(
+    args,
+    locale,
+    currency,
+    timeZone,
+  ) as FormattedArguments<T>;
 }
 
-function processObject(obj: any, locale: Language, timeZone?: string): any {
+function processObject(
+  obj: any,
+  locale: Language,
+  currency: Currency,
+  timeZone?: string,
+): any {
   if (obj === null || obj === undefined) {
     return obj;
   }
 
   if (Array.isArray(obj)) {
-    return obj.map((item) => processObject(item, locale, timeZone));
+    return obj.map((item) => processObject(item, locale, currency, timeZone));
   }
 
   if (typeof obj === "object" && !isDate(obj) && !isLuxonDateTime(obj)) {
     const result: Record<string, any> = {};
 
     for (const [key, value] of Object.entries(obj)) {
-      result[key] = processObject(value, locale, timeZone);
+      result[key] = processObject(value, locale, currency, timeZone);
 
       // If the value is a Date or Luxon DateTime, replace with formatted object
       if (isDate(value) || isLuxonDateTime(value)) {
@@ -129,7 +141,11 @@ function processObject(obj: any, locale: Language, timeZone?: string): any {
           key.toLowerCase().includes("price")) &&
         !(`${key}Formatted` in obj)
       ) {
-        result[`${key}Formatted`] = formatAmountString(value);
+        result[`${key}Formatted`] = formatAmountWithCurrency(
+          value,
+          locale,
+          currency,
+        );
       }
     }
 

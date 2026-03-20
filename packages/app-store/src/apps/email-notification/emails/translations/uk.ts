@@ -47,15 +47,15 @@ Email: {{ fields.email }}
 Тривалість: {{#duration.hours}}{{.}} год {{/duration.hours}}{{#duration.minutes}}{{.}} хв{{/duration.minutes}}
 
 {{#discount}}
-Сумарна ціна: \${{subTotalAmountFormatted}}
+Сумарна ціна: {{subTotalAmountFormatted}}
 
-Знижка: -\${{discountAmountFormatted}} {{code}} ([{{name}}]({{ adminUrl }}/dashboard/services/discounts/{{id}}))
+Знижка: -{{discountAmountFormatted}} {{code}} ([{{name}}]({{ adminUrl }}/dashboard/services/discounts/{{id}}))
 
-Загальна ціна: \${{totalPriceFormatted}}
+Загальна ціна: {{totalPriceFormatted}}
 {{/discount}}
 {{^discount}}
 {{#totalPrice}}
-Загальна ціна: \${{totalPriceFormatted}}
+Загальна ціна: {{totalPriceFormatted}}
 {{/totalPrice}}
 {{/discount}}
 
@@ -63,17 +63,17 @@ Email: {{ fields.email }}
 Платежі:
 
 {{#payments}}
- 1. {{#appName}}{{.}}{{/appName}}{{^appName}}{{#isOnline}}Онлайн{{/isOnline}}{{#isGiftCard}}Подарункова карта {{#giftCardCode}}({{.}}){{/giftCardCode}}{{/isGiftCard}}{{#isCash}}Готівка{{/isCash}}{{#isInPersonCard}}Картка{{/isInPersonCard}}{{/appName}} ({{#isTips}}Чаєві{{/isTips}}{{#isOther}}Інше{{/isOther}}{{#isDeposit}}Депозит{{/isDeposit}}{{#isRescheduleFee}}Плата за перенос{{/isRescheduleFee}}{{#isCancellationFee}}Плата за відміну{{/isCancellationFee}}{{#isPayment}}Платіж{{/isPayment}}) {{paidAt.full}}: \${{amountFormatted}} {{#totalAmountRefunded}} (-\${{totalAmountRefundedFormatted}} повернено, \${{amountLeftFormatted}} залишилок) {{/totalAmountRefunded}}
+ 1. {{#appName}}{{.}}{{/appName}}{{^appName}}{{#isOnline}}Онлайн{{/isOnline}}{{#isGiftCard}}Подарункова карта {{#giftCardCode}}({{.}}){{/giftCardCode}}{{/isGiftCard}}{{#isCash}}Готівка{{/isCash}}{{#isInPersonCard}}Картка{{/isInPersonCard}}{{/appName}} ({{#isTips}}Чаєві{{/isTips}}{{#isOther}}Інше{{/isOther}}{{#isDeposit}}Депозит{{/isDeposit}}{{#isRescheduleFee}}Плата за перенос{{/isRescheduleFee}}{{#isCancellationFee}}Плата за відміну{{/isCancellationFee}}{{#isPayment}}Платіж{{/isPayment}}) {{paidAt.full}}: {{amountFormatted}} {{#totalAmountRefunded}} (-{{totalAmountRefundedFormatted}} повернено, {{amountLeftFormatted}} залишилок) {{/totalAmountRefunded}}
 {{/payments}}
 {{^payments}}
 - Жодного
 {{/payments}}
 
-Зараз сплачено: \${{totalAmountLeftFormatted}}
+Зараз сплачено: {{totalAmountLeftFormatted}}
 {{/totalAmountLeft}}
 
 {{#totalAmountLeftToPay}}
-Залишок до сплати: \${{totalAmountLeftToPayFormatted}}
+Залишок до сплати: {{totalAmountLeftToPayFormatted}}
 {{/totalAmountLeftToPay}}
 `;
 

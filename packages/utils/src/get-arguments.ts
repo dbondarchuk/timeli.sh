@@ -5,6 +5,7 @@ import {
   AppointmentStatus,
   AssetEntity,
   BookingConfiguration,
+  Currency,
   Customer,
   GeneralConfiguration,
   Payment,
@@ -48,6 +49,7 @@ type Props<
   adminUrl: string;
   websiteUrl: string;
   locale?: Language;
+  currency?: Currency;
   useAppointmentTimezone?: boolean;
   additionalProperties?: T;
 };
@@ -93,6 +95,7 @@ type ArgsProps = {
     url: string;
   }[];
   locale: Language;
+  currency: Currency;
   websiteUrl: string;
   adminUrl: string;
 };
@@ -119,6 +122,7 @@ export const getArguments = <
   customer,
   config,
   locale = config.general.language,
+  currency = config.general.currency,
   useAppointmentTimezone = false,
   additionalProperties,
   adminUrl,
@@ -237,6 +241,7 @@ export const getArguments = <
         ),
       ) || [],
     locale,
+    currency,
   };
 
   const baseArgs: BaseArgs<TAppointment> = {
@@ -254,7 +259,8 @@ export const getArguments = <
       ...baseArgs,
       ...(additionalProperties || {}),
     },
-    config.general.language,
+    locale,
+    currency,
     useAppointmentTimezone ? appointment?.timeZone : config.general.timeZone,
   ) as FormattedArguments<
     TAdditional extends undefined

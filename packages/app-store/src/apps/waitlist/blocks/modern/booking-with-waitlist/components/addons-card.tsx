@@ -1,6 +1,6 @@
 import { useI18n } from "@timelish/i18n";
 import { AppointmentAddon } from "@timelish/types";
-import { cn, Markdown } from "@timelish/ui";
+import { cn, Markdown, useCurrencyFormat } from "@timelish/ui";
 import { durationToTime, formatAmountString } from "@timelish/utils";
 import { Check, Clock } from "lucide-react";
 import { useScheduleContext } from "./context";
@@ -14,6 +14,7 @@ export const AddonsCard: React.FC = () => {
   } = useScheduleContext();
 
   const i18n = useI18n("translation");
+  const currencyFormat = useCurrencyFormat();
   if (!selectedAppointmentOption) return null;
 
   const onClick = (option: AppointmentAddon): void => {
@@ -86,7 +87,7 @@ export const AddonsCard: React.FC = () => {
                   <div className="text-right flex-shrink-0">
                     {!!addon.price && (
                       <p className="text-sm font-semibold text-foreground">
-                        +${formatAmountString(addon.price)}
+                        +{currencyFormat(addon.price)}
                       </p>
                     )}
                     {!!addon.duration && (

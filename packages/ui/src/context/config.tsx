@@ -1,5 +1,6 @@
 "use client";
-import { GeneralConfiguration } from "@timelish/types";
+import { CurrencySymbolMap, GeneralConfiguration } from "@timelish/types";
+import { formatAmountWithCurrency } from "@timelish/utils";
 import { createContext, useContext } from "react";
 
 export const ConfigContext = createContext<{
@@ -15,6 +16,8 @@ export const ConfigContext = createContext<{
     domain: "",
     language: "en",
     timeZone: "local",
+    currency: "USD",
+    country: "US",
   },
   websiteUrl: "",
 });
@@ -46,4 +49,20 @@ export const useWebsiteUrl = () => {
 export const useTimeZone = () => {
   const config = useConfig();
   return config.timeZone;
+};
+
+export const useCurrency = () => {
+  const config = useConfig();
+  return config.currency;
+};
+
+export const useCurrencySymbol = () => {
+  const config = useConfig();
+  return CurrencySymbolMap[config.currency];
+};
+
+export const useCurrencyFormat = () => {
+  const config = useConfig();
+  return (amount: number) =>
+    formatAmountWithCurrency(amount, config.language, config.currency);
 };

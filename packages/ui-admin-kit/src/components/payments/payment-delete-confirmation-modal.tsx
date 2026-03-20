@@ -14,6 +14,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
   Button,
+  useCurrencyFormat,
   Spinner,
   toastPromise,
 } from "@timelish/ui";
@@ -30,6 +31,7 @@ export const PaymentDeleteConfirmationModal = ({
   onDelete?: (payment: Payment) => void;
 }) => {
   const t = useI18n("admin");
+  const currencyFormat = useCurrencyFormat();
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
@@ -75,7 +77,7 @@ export const PaymentDeleteConfirmationModal = ({
           </AlertDialogTitle>
           <AlertDialogDescription>
             {t("payment.card.deleteConfirmDescription", {
-              amount: payment.amount,
+              amountFormatted: currencyFormat(payment.amount),
               date: DateTime.fromJSDate(payment.paidAt).toLocaleString(
                 DateTime.DATETIME_FULL,
               ),

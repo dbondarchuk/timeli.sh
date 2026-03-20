@@ -40,6 +40,7 @@ import {
   Label,
   toastPromise,
   use12HourFormat,
+  useCurrencySymbol,
   useDebounceCacheFn,
 } from "@timelish/ui";
 import {
@@ -233,6 +234,7 @@ export const DiscountForm: React.FC<{
   const t = useI18n();
   const timeFormat = t("ui.timePicker.format");
   const uses12HourFormat = use12HourFormat();
+  const currencySymbol = useCurrencySymbol();
 
   const cachedDiscountNameAndCodeCheck = useDebounceCacheFn(
     adminApi.discounts.checkDiscountNameAndCode,
@@ -417,7 +419,7 @@ export const DiscountForm: React.FC<{
                             variant: "prefix",
                           })}
                         >
-                          $
+                          {currencySymbol}
                         </InputGroupAddon>
                       )}
                       <InputGroupInput>

@@ -17,6 +17,7 @@ import {
   InputGroupInput,
   InputGroupInputClasses,
   toastPromise,
+  useCurrencySymbol,
 } from "@timelish/ui";
 import { SaveButton, TemplateSelector } from "@timelish/ui-admin";
 import React, { useEffect, useState } from "react";
@@ -39,6 +40,7 @@ export const GiftCardStudioSettingsPage: React.FC<{ appId: string }> = ({
   const t = useI18n<GiftCardStudioAdminNamespace, GiftCardStudioAdminKeys>(
     giftCardStudioAdminNamespace,
   );
+  const currencySymbol = useCurrencySymbol();
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
 
@@ -155,7 +157,7 @@ export const GiftCardStudioSettingsPage: React.FC<{ appId: string }> = ({
                         variant: "prefix",
                       })}
                     >
-                      $
+                      {currencySymbol}
                     </InputGroupAddon>
                     <InputGroupInput>
                       <Input
@@ -195,7 +197,7 @@ export const GiftCardStudioSettingsPage: React.FC<{ appId: string }> = ({
                         variant: "prefix",
                       })}
                     >
-                      $
+                      {currencySymbol}
                     </InputGroupAddon>
                     <InputGroupInput>
                       <Input

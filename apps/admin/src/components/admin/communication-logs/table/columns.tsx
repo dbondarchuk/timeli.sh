@@ -105,7 +105,10 @@ export const columns: ColumnDef<CommunicationLog>[] = [
       return t(
         typeof row.original.handledBy === "string"
           ? row.original.handledBy
-          : row.original.handledBy.key,
+          : typeof row.original.handledBy === "object" &&
+              row.original.handledBy.key
+            ? row.original.handledBy.key
+            : "admin.common.labels.unknown",
         typeof row.original.handledBy === "object" &&
           row.original.handledBy.args
           ? row.original.handledBy.args

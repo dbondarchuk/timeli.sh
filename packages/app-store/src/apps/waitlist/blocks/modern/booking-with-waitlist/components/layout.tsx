@@ -4,10 +4,11 @@ import {
   cn,
   Spinner,
   Stepper,
+  useCurrencyFormat,
   useIsMobile,
   usePrevious,
 } from "@timelish/ui";
-import { durationToTime, formatAmountString } from "@timelish/utils";
+import { durationToTime } from "@timelish/utils";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { DateTime } from "luxon";
 import { useEffect, useRef } from "react";
@@ -51,6 +52,7 @@ export const BookingWithWaitlistLayout = ({
   } = ctx;
 
   const locale = useLocale();
+  const currencyFormat = useCurrencyFormat();
 
   const topRef = useRef<HTMLDivElement>(null);
   const scrollToTopRef = useRef(!!scrollToTop);
@@ -152,7 +154,7 @@ export const BookingWithWaitlistLayout = ({
                       {i18n("booking.summary.estimates.amount")}
                     </p>
                     <p className="text-sm font-bold text-foreground flex items-center gap-2 amount-value">
-                      ${formatAmountString(price)}
+                      {currencyFormat(price)}
                     </p>
                   </div>
                 )}

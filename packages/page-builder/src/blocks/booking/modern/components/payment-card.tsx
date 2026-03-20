@@ -1,12 +1,13 @@
 import { PaymentAppForms } from "@timelish/app-store/payment-forms";
 import { useI18n } from "@timelish/i18n";
-import { cn } from "@timelish/ui";
-import { formatAmount, formatAmountString } from "@timelish/utils";
+import { cn, useCurrencyFormat } from "@timelish/ui";
+import { formatAmount } from "@timelish/utils";
 import { CreditCard } from "lucide-react";
 import { useScheduleContext } from "./context";
 
 export const PaymentCard: React.FC = () => {
   const t = useI18n("translation");
+  const currencyFormat = useCurrencyFormat();
 
   const {
     paymentInformation: paymentForm,
@@ -43,7 +44,7 @@ export const PaymentCard: React.FC = () => {
                 : "booking.payment.depositRequiredDescription",
             {
               percentage,
-              amount: formatAmountString(paymentForm.amountTotal),
+              amount: currencyFormat(paymentForm.amountTotal),
             },
           )}
         </p>
@@ -55,7 +56,7 @@ export const PaymentCard: React.FC = () => {
             <CreditCard className="w-6 h-6 text-primary" />
           </div>
           <p className="text-2xl font-bold text-foreground">
-            ${formatAmountString(paymentForm.amount)}
+            {currencyFormat(paymentForm.amount)}
           </p>
           <p className="text-sm text-muted-foreground mt-1">
             {t("booking.payment.amount.deposit")}
@@ -68,7 +69,7 @@ export const PaymentCard: React.FC = () => {
               {t("booking.payment.subtotal")}
             </span>
             <span className="text-foreground payment-card-service-total-amount">
-              ${formatAmountString(basePrice)}
+              {currencyFormat(basePrice)}
             </span>
           </div>
           {!!discountAmount && (
@@ -77,7 +78,7 @@ export const PaymentCard: React.FC = () => {
                 {t("booking.payment.discount")}
               </span>
               <span className="text-destructive payment-card-service-total-amount">
-                -(${formatAmountString(discountAmount)})
+                {currencyFormat(-1 * discountAmount)}
               </span>
             </div>
           )}
@@ -87,14 +88,13 @@ export const PaymentCard: React.FC = () => {
                 {t("booking.payment.giftCards")}
               </span>
               <span className="text-destructive payment-card-service-total-amount">
-                -($
-                {formatAmountString(
-                  paymentForm.giftCards.reduce(
-                    (acc, giftCard) => acc + giftCard.amountApplied,
-                    0,
-                  ),
+                {currencyFormat(
+                  -1 *
+                    paymentForm.giftCards.reduce(
+                      (acc, giftCard) => acc + giftCard.amountApplied,
+                      0,
+                    ),
                 )}
-                )
               </span>
             </div>
           )}
@@ -104,7 +104,7 @@ export const PaymentCard: React.FC = () => {
               {t("booking.payment.total")}
             </span>
             <span className="text-foreground payment-card-service-total-amount">
-              ${formatAmountString(price - paymentForm.amountPaid)}
+              {currencyFormat(price - paymentForm.amountPaid)}
             </span>
           </div>
           <div className="flex justify-between text-sm payment-card-deposit">
@@ -116,7 +116,7 @@ export const PaymentCard: React.FC = () => {
               )}
             </span>
             <span className="text-foreground payment-card-deposit-amount">
-              ${formatAmountString(paymentForm.intent.amount)}
+              {currencyFormat(paymentForm.intent.amount)}
             </span>
           </div>
           <div className="border-t pt-4 flex justify-between text-sm">
@@ -124,7 +124,7 @@ export const PaymentCard: React.FC = () => {
               {t("booking.payment.remainingBalance")}
             </span>
             <span className="font-semibold text-foreground payment-card-remaining-balance-amount">
-              ${formatAmountString(remainingBalance)}
+              {currencyFormat(remainingBalance)}
             </span>
           </div>
         </div>
@@ -132,7 +132,7 @@ export const PaymentCard: React.FC = () => {
         {!isFullPayment && (
           <p className="text-xs text-muted-foreground mb-4">
             {t("booking.payment.remainingBalanceDescription", {
-              remainingBalance: formatAmountString(remainingBalance),
+              remainingBalance: currencyFormat(remainingBalance),
             })}
           </p>
         )}

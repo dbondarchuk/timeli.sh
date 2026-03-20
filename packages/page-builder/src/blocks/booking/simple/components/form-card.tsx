@@ -19,19 +19,21 @@ import {
   Label,
   Spinner,
   cn,
+  useCurrencyFormat,
   usePrevious,
 } from "@timelish/ui";
 
 import { clientApi } from "@timelish/api-sdk";
 import { TranslationKeys, useI18n } from "@timelish/i18n";
 import { fieldSchemaMapper, fieldsComponentMap } from "@timelish/ui";
-import { deepEqual, formatAmountString } from "@timelish/utils";
+import { deepEqual } from "@timelish/utils";
 import { DateTime as Luxon } from "luxon";
 import { CardWithAppointmentInformation } from "./card-with-info";
 import { useScheduleContext } from "./context";
 
 export const FormCard: React.FC = () => {
   const i18n = useI18n("translation");
+  const currencyFormat = useCurrencyFormat();
   const {
     appointmentOption,
     selectedAddons,
@@ -233,7 +235,9 @@ export const FormCard: React.FC = () => {
 
             {showPromoCode && !!basePrice && (
               <FormItem>
-                <Label htmlFor="promo-code">{i18n("common.labels.formPromoCode")}</Label>
+                <Label htmlFor="promo-code">
+                  {i18n("common.labels.formPromoCode")}
+                </Label>
                 <div className="flex flex-row gap-2">
                   <Input
                     className="w-full flex-1"
@@ -263,7 +267,7 @@ export const FormCard: React.FC = () => {
                   {discount &&
                     i18n("booking.promoCode.successMessage", {
                       code: discount.code,
-                      discount: formatAmountString(discountAmount),
+                      discount: currencyFormat(discountAmount),
                     })}
                 </p>
               </FormItem>
@@ -301,7 +305,8 @@ export const FormCard: React.FC = () => {
                       isLoadingGiftCards
                     }
                   >
-                    {isLoadingGiftCards && <Spinner />} {i18n("common.buttons.apply")}
+                    {isLoadingGiftCards && <Spinner />}{" "}
+                    {i18n("common.buttons.apply")}
                   </Button>
                 </div>
                 {!!giftCardError && (
@@ -318,9 +323,7 @@ export const FormCard: React.FC = () => {
                       <span>
                         {giftCard.code}{" "}
                         {i18n("booking.giftCard.giftCardAppliedAmount", {
-                          appliedAmount: formatAmountString(
-                            giftCard.appliedAmount,
-                          ),
+                          appliedAmount: currencyFormat(giftCard.appliedAmount),
                         })}
                       </span>
                       <Button
@@ -337,7 +340,7 @@ export const FormCard: React.FC = () => {
                         {i18n("booking.giftCard.giftCardAmountLeftLabel")}
                       </span>
                       <span className="text-green-800 font-bold">
-                        ${formatAmountString(giftCard.amountLeft)}
+                        {currencyFormat(giftCard.amountLeft)}
                       </span>
                     </div>
                   </div>

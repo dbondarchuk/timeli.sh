@@ -8,6 +8,7 @@ import {
   TooltipResponsive,
   TooltipResponsiveContent,
   TooltipResponsiveTrigger,
+  useCurrencyFormat,
   useTimeZone,
 } from "@timelish/ui";
 import {
@@ -16,7 +17,7 @@ import {
   tableSortNoopFunction,
 } from "@timelish/ui-admin";
 import { AppointmentDialog } from "@timelish/ui-admin-kit";
-import { durationToTime, formatAmountString } from "@timelish/utils";
+import { durationToTime } from "@timelish/utils";
 import {
   CalendarCheck,
   CalendarClock,
@@ -331,22 +332,7 @@ export const columns: ColumnDef<Appointment>[] = [
   {
     cell: ({ row }) =>
       row.original.discount ? (
-        <TooltipResponsive>
-          <TooltipResponsiveTrigger>
-            <Link
-              variant="underline"
-              href={`/dashboard/services/discounts/${row.original.discount.id}`}
-            >
-              {row.original.discount.code}{" "}
-              <span className="text-sm">
-                -${formatAmountString(row.original.discount.discountAmount)}
-              </span>
-            </Link>
-          </TooltipResponsiveTrigger>
-          <TooltipResponsiveContent>
-            {row.original.discount.name}
-          </TooltipResponsiveContent>
-        </TooltipResponsive>
+        <DiscountCell appointment={row.original} />
       ) : null,
     id: "discount.name",
     header: tableSortHeader(
@@ -357,10 +343,7 @@ export const columns: ColumnDef<Appointment>[] = [
     sortingFn: tableSortNoopFunction,
   },
   {
-    accessorFn: (appointment) =>
-      appointment.totalPrice
-        ? `$${formatAmountString(appointment.totalPrice)}`
-        : null,
+    cell: ({ row }) => <TotalPriceCell appointment={row.original} />,
     id: "totalPrice",
     header: tableSortHeader(
       "appointments.table.columns.price",
@@ -372,3 +355,35 @@ export const columns: ColumnDef<Appointment>[] = [
 ];
 
 export const AppointmentsTableColumnsCount = columns.length;
+
+function DiscountCell({ appointment }: { appointment: Appointment }) {
+  const currencyFormat = useCurrencyFormat();
+
+  if (!appointment.discount) {
+    return null;
+  }
+
+  return (
+    <TooltipResponsive>
+      <TooltipResponsiveTrigger>
+        <Link
+          variant="underline"
+          href={`/dashboard/services/discounts/${appointment.discount.id}`}
+        >
+          {appointment.discount.code}{" "}
+          <span className="text-xs">
+            {currencyFormat(-1 * appointment.discount.discountAmount)}
+          </span>
+        </Link>
+      </TooltipResponsiveTrigger>
+      <TooltipResponsiveContent>
+        {appointment.discount.name}
+      </TooltipResponsiveContent>
+    </TooltipResponsive>
+  );
+}
+
+function TotalPriceCell({ appointment }: { appointment: Appointment }) {
+  const currencyFormat = useCurrencyFormat();
+  return appointment.totalPrice ? currencyFormat(appointment.totalPrice) : null;
+}

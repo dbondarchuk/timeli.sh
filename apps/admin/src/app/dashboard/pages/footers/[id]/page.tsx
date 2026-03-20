@@ -77,6 +77,7 @@ export default async function EditPageFooterPage(props: Props) {
       now: new Date(),
     },
     general.language,
+    general.currency,
   );
 
   return (

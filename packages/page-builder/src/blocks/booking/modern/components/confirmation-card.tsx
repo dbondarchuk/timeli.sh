@@ -1,12 +1,13 @@
 import { useI18n, useLocale } from "@timelish/i18n";
-import { Button, useTimeZone } from "@timelish/ui";
-import { durationToTime, formatAmountString } from "@timelish/utils";
+import { Button, useTimeZone, useCurrencyFormat } from "@timelish/ui";
+import { durationToTime } from "@timelish/utils";
 import { CheckCircle2 } from "lucide-react";
 import { DateTime } from "luxon";
 import { useScheduleContext } from "./context";
 
 export const ConfirmationCard: React.FC = () => {
   const i18n = useI18n("translation");
+  const currencyFormat = useCurrencyFormat();
 
   const {
     fields,
@@ -68,12 +69,12 @@ export const ConfirmationCard: React.FC = () => {
           <>
             <p className="text-xs text-muted-foreground mt-1">
               {i18n("booking.confirmation.price.original", {
-                original: formatAmountString(basePrice),
+                original: currencyFormat(basePrice),
               })}
             </p>
             <p className="text-xs text-muted-foreground mt-1">
               {i18n("booking.confirmation.price.discount", {
-                discount: formatAmountString(discountAmount),
+                discount: currencyFormat(discountAmount),
               })}
             </p>
           </>
@@ -81,7 +82,7 @@ export const ConfirmationCard: React.FC = () => {
         {!!basePrice && (
           <p className="text-sm font-semibold text-foreground mt-1">
             {i18n("booking.confirmation.price.total", {
-              total: formatAmountString(price),
+              total: currencyFormat(price),
             })}
           </p>
         )}
