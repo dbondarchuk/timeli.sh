@@ -76,11 +76,11 @@ export function Header() {
         <DrawerContent className="bg-background flex flex-col  h-full min-w-[100px] max-w-fit mt-24 fixed bottom-0 right-0 left-auto rounded-none">
           <DrawerHeader className="flex flex-row gap-2 items-center">
             <DrawerTitle className="text-base flex items-center gap-2">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg">
                 <Image src="/logo.png" alt="Timeli.sh" width={36} height={36} />
               </div>
-              <span className="text-xl font-semibold tracking-tight">
-                Timeli.sh
+              <span className="text-3xl font-bold tracking-tight">
+                timeli<span className="text-primary">.sh</span>
               </span>
             </DrawerTitle>
             <DrawerClose asChild className="">

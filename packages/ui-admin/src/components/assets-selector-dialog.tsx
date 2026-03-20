@@ -204,7 +204,7 @@ export const AssetSelectorDialog: React.FC<AssetSelectorProps> = ({
           onChange={(e) => setSearch(e.target.value)}
         />
       </div>
-      <ScrollArea className="w-full h-[80vh]">
+      <ScrollArea className="w-full max-h-[70svh]">
         <div className="flex flex-col gap-4">
           <div className="w-full flex flex-col gap-2 relative">
             <DndFileInput
