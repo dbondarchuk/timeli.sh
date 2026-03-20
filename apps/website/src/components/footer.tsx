@@ -34,10 +34,12 @@ export function Footer() {
         <div className="grid grid-cols-2 gap-8 lg:grid-cols-6">
           <div className="col-span-2">
             <Link href="/" className="flex items-center gap-2">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg">
                 <Image src="/logo.png" alt="Timeli.sh" width={36} height={36} />
               </div>
-              <span className="text-xl font-semibold">Timeli.sh</span>
+              <span className="text-3xl font-bold">
+                timeli<span className="text-primary">.sh</span>
+              </span>
             </Link>
             <p className="mt-4 max-w-xs text-sm text-muted-foreground leading-relaxed">
               The all-in-one appointment scheduling platform for modern
@@ -112,7 +114,12 @@ export function Footer() {
 
         <div className="mt-12 border-t border-border pt-8">
           <p className="text-center text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Timeli.sh. All rights reserved.
+            © {new Date().getFullYear()}{" "}
+            <span className="font-bold">
+              timeli
+              <span className="text-primary">.sh</span>
+            </span>
+            . All rights reserved.
           </p>
         </div>
       </div>

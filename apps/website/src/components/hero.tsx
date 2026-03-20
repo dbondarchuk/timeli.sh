@@ -2,6 +2,7 @@
 
 import { Link } from "@timelish/ui";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 
 const phrases = [
@@ -32,6 +33,11 @@ const screenshots = [
     url: "/email-builder.png",
     label: "Email Builder",
     path: "app.timelish.com/email-builder",
+  },
+  {
+    url: "/gift-card-designer.png",
+    label: "Gift Card Designer",
+    path: "app.timelish.com/gift-card-studio",
   },
   {
     url: "/app-store.png",
@@ -94,7 +100,7 @@ export function Hero() {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentScreenshot((prev) => (prev + 1) % screenshots.length);
-    }, 4000);
+    }, 6000);
     return () => clearInterval(interval);
   }, []);
 
@@ -111,6 +117,15 @@ export function Hero() {
           <ArrowRight className="h-3 w-3 text-muted-foreground" />
         </div>
 
+        <div className="flex justify-center">
+          <Image
+            src="/logo-animated-wordmark.svg"
+            alt="Timeli.sh"
+            width={340}
+            height={124}
+          />
+        </div>
+
         <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-6xl lg:text-7xl text-balance">
           Spend less time on bookings, more time on <TypewriterText />
         </h1>
@@ -118,7 +133,11 @@ export function Hero() {
         <p className="mt-6 text-lg leading-8 text-muted-foreground max-w-2xl mx-auto text-pretty">
           Let your clients book appointments online, 24/7. You get a beautiful
           booking website, automatic reminders, and even online payments. No
-          tech skills needed—if you can use email, you can use Timeli.sh.
+          tech skills needed—if you can use email, you can use{" "}
+          <span className="font-bold">
+            timeli
+            <span className="text-primary">.sh</span>
+          </span>
         </p>
 
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">

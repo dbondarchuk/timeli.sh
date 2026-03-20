@@ -24,7 +24,7 @@ const playfair = Playfair_Display({
 export const metadata: Metadata = {
   title: {
     default: "Dashboard",
-    template: "%s | Timeli.sh",
+    template: "%s | timeli.sh",
   },
   icons: {
     icon: "/icon.ico",

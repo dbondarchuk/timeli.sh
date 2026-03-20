@@ -135,10 +135,10 @@ const features = [
     details: {
       headline: "Create fans, not just clients",
       bullets: [
-        "Book in under 60 seconds",
         "Easy rescheduling and cancellation (by clients or you)",
         "Prevent duplicate bookings by clients by letting them know when they are already have an appointment",
         "Don't have open slots? Allow them to join the waitlist!",
+        "Allow customers to purchase gift cards for their friends and family",
       ],
       image: "/happy-client-booking-confirmation-screen-with-chec.jpg",
     },

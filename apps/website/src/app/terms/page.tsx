@@ -1,5 +1,6 @@
-import { ArrowLeft, Calendar } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 
 export const metadata: Metadata = {
@@ -15,10 +16,12 @@ export default function TermsPage() {
         <div className="mx-auto max-w-4xl px-6 py-6">
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center gap-2">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-                <Calendar className="h-5 w-5 text-primary-foreground" />
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg">
+                <Image src="/logo.png" alt="Timeli.sh" width={36} height={36} />
               </div>
-              <span className="text-xl font-semibold">Timeli.sh</span>
+              <span className="text-3xl font-bold tracking-tight">
+                timeli<span className="text-primary">.sh</span>
+              </span>
             </Link>
             <Link
               href="/"
@@ -47,11 +50,15 @@ export default function TermsPage() {
               Agreement to Terms
             </h2>
             <p className="text-muted-foreground leading-relaxed">
-              By accessing or using Timeli.sh, you agree to be bound by these
-              Terms of Service and all applicable laws and regulations. If you
-              do not agree with any of these terms, you are prohibited from
-              using or accessing this platform. The materials contained in this
-              platform are protected by applicable copyright and trademark law.
+              By accessing or using{" "}
+              <span className="font-bold">
+                timeli<span className="text-primary">.sh</span>
+              </span>
+              , you agree to be bound by these Terms of Service and all
+              applicable laws and regulations. If you do not agree with any of
+              these terms, you are prohibited from using or accessing this
+              platform. The materials contained in this platform are protected
+              by applicable copyright and trademark law.
             </p>
           </section>
 
@@ -60,7 +67,7 @@ export default function TermsPage() {
               Use License
             </h2>
             <p className="text-muted-foreground leading-relaxed mb-4">
-              Permission is granted to temporarily access and use Timeli.sh for
+              Permission is granted to temporarily access and use timeli.sh for
               personal or commercial business purposes, subject to the following
               conditions:
             </p>
@@ -99,7 +106,7 @@ export default function TermsPage() {
               Service Description
             </h2>
             <p className="text-muted-foreground leading-relaxed">
-              Timeli.sh provides an appointment scheduling platform that enables
+              timeli.sh provides an appointment scheduling platform that enables
               businesses to manage bookings, communicate with clients, process
               payments, and build booking websites. We reserve the right to
               modify, suspend, or discontinue any part of the service at any
@@ -147,7 +154,7 @@ export default function TermsPage() {
               Limitation of Liability
             </h2>
             <p className="text-muted-foreground leading-relaxed">
-              In no event shall Timeli.sh or its suppliers be liable for any
+              In no event shall timeli.sh or its suppliers be liable for any
               damages (including, without limitation, damages for loss of data
               or profit, or due to business interruption) arising out of the use
               or inability to use the service, even if we have been notified
@@ -160,7 +167,7 @@ export default function TermsPage() {
               Indemnification
             </h2>
             <p className="text-muted-foreground leading-relaxed">
-              You agree to indemnify, defend, and hold harmless Timeli.sh and
+              You agree to indemnify, defend, and hold harmless timeli.sh and
               its officers, directors, employees, agents, and suppliers from and
               against any claims, liabilities, damages, losses, and expenses
               arising out of or in any way connected with your access to or use
@@ -226,7 +233,12 @@ export default function TermsPage() {
       <footer className="border-t border-border bg-muted/30">
         <div className="mx-auto max-w-4xl px-6 py-8">
           <p className="text-center text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Timeli.sh. All rights reserved.
+            © {new Date().getFullYear()}{" "}
+            <span className="font-bold">
+              timeli
+              <span className="text-primary">.sh</span>
+            </span>
+            . All rights reserved.
           </p>
         </div>
       </footer>

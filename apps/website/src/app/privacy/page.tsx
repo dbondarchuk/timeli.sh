@@ -1,5 +1,6 @@
-import { ArrowLeft, Calendar } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 
 export const metadata: Metadata = {
@@ -15,10 +16,12 @@ export default function PrivacyPage() {
         <div className="mx-auto max-w-4xl px-6 py-6">
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center gap-2">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-                <Calendar className="h-5 w-5 text-primary-foreground" />
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg">
+                <Image src="/logo.png" alt="Timeli.sh" width={36} height={36} />
               </div>
-              <span className="text-xl font-semibold">Timeli.sh</span>
+              <span className="text-3xl font-bold tracking-tight">
+                timeli<span className="text-primary">.sh</span>
+              </span>
             </Link>
             <Link
               href="/"
@@ -47,11 +50,15 @@ export default function PrivacyPage() {
               Introduction
             </h2>
             <p className="text-muted-foreground leading-relaxed">
-              At Timeli.sh, we take your privacy seriously. This Privacy Policy
-              explains how we collect, use, disclose, and safeguard your
-              information when you use our appointment scheduling platform.
-              Please read this policy carefully to understand our practices
-              regarding your personal data.
+              At{" "}
+              <span className="font-bold">
+                timeli<span className="text-primary">.sh</span>
+              </span>
+              , we take your privacy seriously. This Privacy Policy explains how
+              we collect, use, disclose, and safeguard your information when you
+              use our appointment scheduling platform. Please read this policy
+              carefully to understand our practices regarding your personal
+              data.
             </p>
           </section>
 
@@ -187,7 +194,9 @@ export default function PrivacyPage() {
       <footer className="border-t border-border bg-muted/30">
         <div className="mx-auto max-w-4xl px-6 py-8">
           <p className="text-center text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Timeli.sh. All rights reserved.
+            © {new Date().getFullYear()}{" "}
+            <span className="font-bold">timeli</span>
+            <span className="text-primary">.sh</span>. All rights reserved.
           </p>
         </div>
       </footer>

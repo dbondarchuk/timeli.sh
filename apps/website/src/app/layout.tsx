@@ -8,7 +8,7 @@ const _inter = Inter({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Timeli.sh — All-in-One Appointment Scheduling Platform",
+  title: "timeli.sh — All-in-One Appointment Scheduling Platform",
   description:
     "The all-in-one appointment scheduling platform that helps you manage bookings, communicate with clients, and grow your business—all from one beautiful interface.",
 };
