@@ -13,10 +13,10 @@ const SelectGroup = SelectPrimitive.Group;
 const SelectValue = SelectPrimitive.Value;
 
 export const selectSizes = {
-  xs: "h-7 px-3 text-xs",
-  sm: "h-8 px-3 text-xs",
-  md: "h-9 px-5",
-  lg: "h-10 px-8",
+  xs: "h-7 px-3 text-base md:text-xs",
+  sm: "h-8 px-3 text-base md:text-xs",
+  md: "h-9 px-5 text-base md:text-sm",
+  lg: "h-10 px-8 text-base md:text-base",
 };
 
 const SelectTrigger = React.forwardRef<

@@ -17,10 +17,18 @@ import {
   useSidebar,
 } from "@timelish/ui";
 import { ChevronsUpDown } from "lucide-react";
+import { useRouter } from "next/navigation";
+
 export function UserNav() {
   const { data: session } = authClient.useSession();
 
   const { isMobile } = useSidebar();
+  const router = useRouter();
+  const logout = async () => {
+    await authClient.signOut();
+    router.push("/");
+  };
+
   const t = useI18n("admin");
   if (!session) {
     return null;
@@ -70,7 +78,7 @@ export function UserNav() {
             {/* <DropdownMenuGroup>
           </DropdownMenuGroup> */}
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => authClient.signOut()}>
+            <DropdownMenuItem onClick={logout}>
               {t("navigation.logout")}
             </DropdownMenuItem>
           </DropdownMenuContent>

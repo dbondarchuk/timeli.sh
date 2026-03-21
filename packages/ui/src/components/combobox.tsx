@@ -211,7 +211,7 @@ export const ComboboxTrigger = React.forwardRef<
         {...props}
         ref={ref}
         className={cn(
-          "justify-between flex-grow min-w-0 flex-shrink",
+          "justify-between flex-grow min-w-0 flex-shrink max-md:text-base",
           allowClear ? "rounded-r-none" : "",
         )}
       >
@@ -322,7 +322,7 @@ export const Combobox: React.FC<ComboboxProps> = (props) => {
             placeholder={searchLabel}
             value={search}
             onValueChange={setSearch}
-            className="text-xs"
+            className="text-base md:text-xs"
           />
           {(!values || values.length) == 0 && (
             <div className="py-6 text-center text-xs">

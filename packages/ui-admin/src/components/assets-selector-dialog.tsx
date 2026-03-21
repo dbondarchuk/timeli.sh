@@ -258,10 +258,10 @@ export const AssetSelectorDialog: React.FC<AssetSelectorProps> = ({
                 >
                   <AssetPreview asset={asset} />
                   <div className="flex flex-col gap-1 items-center text-center">
-                    <span className="text-muted-foreground">
+                    <span className="text-muted-foreground break-all">
                       {asset.description}
                     </span>
-                    <span>
+                    <span className="break-all">
                       {asset.filename?.substring(
                         asset.filename?.lastIndexOf("/") + 1,
                       )}

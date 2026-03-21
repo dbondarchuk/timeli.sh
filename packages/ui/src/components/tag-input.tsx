@@ -37,9 +37,9 @@ const tagInputVariant = cva(
   {
     variants: {
       h: {
-        xs: "min-h-7 px-1.5 py-1 text-xs",
-        sm: "min-h-8 px-2 py-1 text-xs",
-        md: "min-h-9 px-3 py-2 text-sm",
+        xs: "min-h-7 px-1.5 py-1 text-base md:text-xs",
+        sm: "min-h-8 px-2 py-1 text-base md:text-xs",
+        md: "min-h-9 px-3 py-2 text-base md:text-sm",
         lg: "min-h-10 px-4 py-3 text-base",
       },
     },

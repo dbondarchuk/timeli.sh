@@ -106,7 +106,9 @@ export default class FinancialOverviewService {
               input: "$payments",
               as: "p",
               cond: {
-                $not: { $in: ["$$p._id", "$giftCardPaymentIdList"] },
+                $not: {
+                  $in: ["$$p._id", { $ifNull: ["$giftCardPaymentIdList", []] }],
+                },
               },
             },
           },
@@ -403,7 +405,9 @@ export default class FinancialOverviewService {
               input: "$payments",
               as: "p",
               cond: {
-                $not: { $in: ["$$p._id", "$giftCardPaymentIdList"] },
+                $not: {
+                  $in: ["$$p._id", { $ifNull: ["$giftCardPaymentIdList", []] }],
+                },
               },
             },
           },
@@ -612,7 +616,9 @@ export default class FinancialOverviewService {
               input: "$payments",
               as: "p",
               cond: {
-                $not: { $in: ["$$p._id", "$giftCardPaymentIdList"] },
+                $not: {
+                  $in: ["$$p._id", { $ifNull: ["$giftCardPaymentIdList", []] }],
+                },
               },
             },
           },
