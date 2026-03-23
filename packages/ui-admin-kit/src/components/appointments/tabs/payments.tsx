@@ -35,7 +35,7 @@ export const PaymentsTab = ({ appointment }: PaymentsTabProps) => {
           appointment.payments = [...(appointment.payments || []), payment];
         }}
       >
-        <Button variant="primary" className="w-full">
+        <Button variant="primary" className="w-full" size="md">
           <BanknoteArrowUp /> {t("appointments.payments.addPayment")}
         </Button>
       </AddUpdatePaymentDialog>

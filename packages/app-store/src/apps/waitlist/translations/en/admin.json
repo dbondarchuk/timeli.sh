@@ -42,7 +42,7 @@
     "duration": "Duration",
     "addons": "Addons",
     "unknown": "Unknown",
-    "note": "Note",
+    "note": "Note from customer",
     "viewNote": "View note",
     "submitted": "Submitted {date}",
     "dismiss": "Dismiss",
@@ -50,6 +50,10 @@
     "sendMessage": "Send message",
     "viewAll": "View all",
     "dates": "Dates",
+    "byFormat": "by <link>{name}</link>",
+    "badge": "Waitlist",
+    "preferredAvailability": "Preferred availability",
+    "noSpecificDates": "No specific dates",
     "toast": {
       "dismissed": "Waitlist entry dismissed"
     },
@@ -58,6 +62,11 @@
         "morning": "Morning (before 12:00PM)",
         "afternoon": "Afternoon (12:00PM - 4:00PM)",
         "evening": "Evening (after 4:00PM)"
+      },
+      "short": {
+        "morning": "Morning",
+        "afternoon": "Afternoon",
+        "evening": "Evening"
       }
     }
   },

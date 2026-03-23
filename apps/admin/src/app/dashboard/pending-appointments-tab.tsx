@@ -27,7 +27,7 @@ export const PendingAppointmentsTab: React.FC = async () => {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:flex xl:flex-wrap gap-2">
           {pendingAppointments.items.map((appointment) => (
             <AppointmentCard
               key={appointment._id}

@@ -56,6 +56,7 @@ export const AppointmentActionButton = React.forwardRef<
     onSuccess?: (newStatus: AppointmentStatus) => void;
     beforeRequest?: () => Promise<void> | void;
     setIsLoading?: (isLoading: boolean) => void;
+    icon?: React.ComponentType<{ className?: string }>;
   }
 >(
   (
@@ -67,6 +68,7 @@ export const AppointmentActionButton = React.forwardRef<
       beforeRequest,
       onClick: originalOnClick,
       setIsLoading: propsSetIsLoading,
+      icon: Icon,
       ...props
     },
     ref,
@@ -108,7 +110,7 @@ export const AppointmentActionButton = React.forwardRef<
           props.className,
         )}
       >
-        {isLoading && <Spinner />}
+        {isLoading ? <Spinner /> : Icon ? <Icon /> : null}
         {props.children}
       </Button>
     );

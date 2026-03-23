@@ -3,8 +3,10 @@
 import type React from "react";
 
 import { useI18n } from "@timelish/i18n";
+import { formatAmountString } from "@timelish/utils";
 import { DollarSign, Percent } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { useCurrencyFormat, useCurrencySymbol } from "../context/config";
 import { Button } from "./button";
 import { Input } from "./input";
 
@@ -27,9 +29,8 @@ export function CurrencyPercentageInput({
   const [mode, setMode] = useState<"amount" | "percentage">("amount");
   const [inputValue, setInputValue] = useState(value.toFixed(2));
   const isUserInputRef = useRef(false);
-  const formatCurrency = (amount: number) => {
-    return amount.toFixed(2);
-  };
+  const currencySymbol = useCurrencySymbol();
+  const formatCurrency = useCurrencyFormat();
 
   const calculateAmount = (percentage: number) => {
     return (maxAmount * percentage) / 100;
@@ -75,7 +76,7 @@ export function CurrencyPercentageInput({
       setInputValue(percentage > 0 ? percentage.toFixed(2) : "");
     } else {
       // Convert to amount
-      setInputValue(value > 0 ? formatCurrency(value) : "");
+      setInputValue(value > 0 ? formatAmountString(value) : "");
     }
   };
 
@@ -86,7 +87,7 @@ export function CurrencyPercentageInput({
     }
 
     if (mode === "amount") {
-      setInputValue(value > 0 ? formatCurrency(value) : "");
+      setInputValue(value > 0 ? formatAmountString(value) : "");
     } else {
       const percentage = calculatePercentage(value);
       setInputValue(percentage > 0 ? percentage.toFixed(2) : "");
@@ -104,7 +105,7 @@ export function CurrencyPercentageInput({
         <div className="relative">
           <div className="pointer-events-none absolute inset-y-0 left-3 flex items-center">
             {mode === "amount" ? (
-              <DollarSign className="h-4 w-4 text-muted-foreground" />
+              <span className="text-muted-foreground">{currencySymbol}</span>
             ) : (
               <Percent className="h-4 w-4 text-muted-foreground" />
             )}
@@ -123,7 +124,7 @@ export function CurrencyPercentageInput({
           variant="outline"
           size="icon"
           onClick={toggleMode}
-          className="shrink-0 bg-transparent"
+          className="shrink-0"
         >
           {mode === "amount" ? (
             <Percent className="h-4 w-4" />

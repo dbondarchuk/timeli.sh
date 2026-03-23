@@ -55,6 +55,7 @@ import * as z from "zod";
 type AddUpdatePaymentDialogProps = {
   onSuccess?: (payment: Payment) => void;
   children: React.ReactNode;
+  amount?: number;
 } & (
   | { appointmentId?: string; customerId: string }
   | { giftCardId: string }
@@ -67,6 +68,7 @@ type AddUpdatePaymentDialogProps = {
 export const AddUpdatePaymentDialog = ({
   onSuccess,
   children: trigger,
+  amount: propsAmount,
   ...props
 }: AddUpdatePaymentDialogProps) => {
   const t = useI18n("admin");
@@ -84,7 +86,7 @@ export const AddUpdatePaymentDialog = ({
       ? {
           appointmentId: props.appointmentId,
           customerId: props.customerId,
-          amount: 0,
+          amount: propsAmount ?? 0,
           description: "",
           paidAt: new Date(),
           method: "cash",
@@ -94,7 +96,7 @@ export const AddUpdatePaymentDialog = ({
         ? {
             customerId: props.customerId,
             appointmentId: undefined,
-            amount: 0,
+            amount: propsAmount ?? 0,
             description: "",
             paidAt: new Date(),
             method: "cash",
@@ -104,7 +106,7 @@ export const AddUpdatePaymentDialog = ({
           ? {
               giftCardId: props.giftCardId,
               customerId: "",
-              amount: 0,
+              amount: propsAmount ?? 0,
               description: "",
               paidAt: new Date(),
               method: "gift-card",

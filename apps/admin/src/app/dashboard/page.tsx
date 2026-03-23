@@ -118,10 +118,10 @@ export default async function Page(params: Params) {
                 className="space-y-4 @container [contain:layout]"
               >
                 <div className="flex flex-col-reverse @6xl:flex-row gap-8">
-                  <div className="flex flex-col @6xl:basis-2/3 flex-shrink">
+                  <div className="flex flex-col @6xl:flex-1 flex-shrink">
                     <EventsCalendar />
                   </div>
-                  <div className="@lg:basis-1/3 flex flex-col gap-2 ">
+                  <div className="@6xl:flex-0 flex flex-col gap-2 ">
                     <h2 className="tracking-tight text-lg font-medium">
                       {tAdmin("dashboard.appointments.nextAppointments")}
                     </h2>
@@ -135,7 +135,7 @@ export default async function Page(params: Params) {
                         </>
                       }
                     >
-                      <NextAppointmentsCards />
+                      <NextAppointmentsCards className="flex-row @6xl:flex-col flex-wrap gap-2" />
                     </Suspense>
                   </div>
                 </div>

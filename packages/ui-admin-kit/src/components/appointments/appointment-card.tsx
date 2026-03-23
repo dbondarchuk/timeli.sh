@@ -3,30 +3,21 @@
 import { useI18n, useLocale } from "@timelish/i18n";
 import type { Appointment } from "@timelish/types";
 import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
   Button,
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-  Heading,
   Link,
+  use12HourFormat,
+  useCurrencyFormat,
 } from "@timelish/ui";
 import { durationToTime } from "@timelish/utils";
-import {
-  Calendar,
-  CalendarCheck2,
-  CalendarX2,
-  CheckCircle,
-  Clock,
-  DollarSign,
-  Presentation,
-  StickyNote,
-} from "lucide-react";
+import { CalendarCheck2, CalendarX2 } from "lucide-react";
 import { DateTime } from "luxon";
 import React from "react";
 import { AppointmentActionButton } from "./action-button";
 import { AppointmentDeclineDialog } from "./appointment-decline-dialog";
+import { APPOINTMENT_STATUS_STYLES } from "./const";
 
 export type AppointmentCardProps = {
   appointment: Appointment;
@@ -39,97 +30,145 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
 }) => {
   const t = useI18n("admin");
   const locale = useLocale();
+  const uses12HourFormat = use12HourFormat();
+  const currencyFormat = useCurrencyFormat();
 
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between pb-4">
-        <CardTitle className="w-full flex flex-row justify-between items-center">
-          <Heading
-            title={appointment.option.name}
-            description={t.rich("appointments.card.by", {
-              name: appointment.customer?.name ?? appointment.fields.name,
-              link: (chunks: any) => (
-                <Link
-                  href={`/dashboard/customers/${appointment.customerId}`}
-                  variant="underline"
-                >
-                  {chunks}
-                </Link>
-              ),
-            })}
-            href={`/dashboard/appointments/${appointment._id}`}
-          />
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="text-xs flex flex-col w-full @container [contain:layout]">
-        <dl className="divide-y">
-          <div className="py-1 flex flex-row gap-2 flex-wrap @sm:py-2 @sm:grid @sm:grid-cols-3 @sm:gap-4">
-            <dt className="flex self-center items-center gap-1">
-              <Presentation size={16} /> {t("appointments.card.appointment")}:
-            </dt>
-            <dd className="col-span-2">{appointment.option.name}</dd>
+    <div className="w-full flex flex-col md:max-w-sm rounded-lg border border-border bg-background overflow-hidden">
+      {/* Header */}
+      <div className="flex items-center justify-between px-5 py-4 border-b border-border">
+        <div className="flex items-center gap-3 min-w-0">
+          <Avatar>
+            <AvatarImage src={appointment.customer?.avatar} />
+            <AvatarFallback>
+              {(appointment.customer?.name ?? appointment.fields.name)
+                .split(" ")
+                .map((name) => name[0]?.toUpperCase())
+                .filter((name) => name)
+                .slice(0, 2)
+                .join("")}
+            </AvatarFallback>
+          </Avatar>
+          <div className="min-w-0">
+            <p className="text-xs text-muted-foreground truncate">
+              {t.rich("appointments.card.by", {
+                name: appointment.customer?.name ?? appointment.fields.name,
+                link: (chunks: any) => (
+                  <Link
+                    href={`/dashboard/customers/${appointment.customerId}`}
+                    variant="underline"
+                  >
+                    {chunks}
+                  </Link>
+                ),
+              })}
+            </p>
+            <p className="text-sm font-medium text-foreground truncate">
+              <Link
+                href={`/dashboard/appointments/${appointment._id}`}
+                variant="underline"
+              >
+                {appointment.option.name}
+              </Link>
+            </p>
           </div>
-          <div className="py-1 flex flex-row gap-2 flex-wrap @sm:py-2 @sm:grid @sm:grid-cols-3 @sm:gap-4">
-            <dt className="flex self-center items-center gap-1">
-              <CheckCircle size={16} /> {t("appointments.card.status")}:
-            </dt>
-            <dd className="col-span-2">
-              {t(`appointments.status.${appointment.status}`)}
-            </dd>
+        </div>
+        <span
+          className={`ml-3 shrink-0 text-xs font-medium px-2.5 py-1 rounded-full ${APPOINTMENT_STATUS_STYLES[appointment.status] ?? "bg-muted text-muted-foreground"}`}
+        >
+          {t(`appointments.status.${appointment.status}`)}
+        </span>
+      </div>
+
+      {/* Date & Time */}
+      <div className="px-5 py-4 border-b border-border grid grid-cols-2 gap-4">
+        <div>
+          <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
+            {t("appointments.card.date")}
+          </p>
+          <p className="text-sm font-medium text-foreground">
+            {DateTime.fromJSDate(appointment.dateTime, {
+              zone: timeZone,
+            }).toFormat("EEE, MMM d", { locale })}
+          </p>
+          <p className="text-xs text-muted-foreground">
+            {DateTime.fromJSDate(appointment.dateTime, {
+              zone: timeZone,
+            }).toFormat("yyyy", { locale })}
+          </p>
+        </div>
+        <div>
+          <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
+            {t("appointments.card.time")}
+          </p>
+          <p className="text-sm font-medium text-foreground">
+            {DateTime.fromJSDate(appointment.dateTime, {
+              zone: timeZone,
+            }).toFormat(uses12HourFormat ? "h:mm" : "HH:mm", { locale })}
+            –
+            {DateTime.fromJSDate(appointment.dateTime, {
+              zone: timeZone,
+            })
+              .plus({ minutes: appointment.totalDuration })
+              .toLocaleString(DateTime.TIME_SIMPLE, { locale })}
+          </p>
+          <p className="text-xs text-muted-foreground">
+            {t(
+              "common.timeDuration",
+              durationToTime(appointment.totalDuration),
+            )}
+          </p>
+        </div>
+      </div>
+
+      {/* Add-ons */}
+      {appointment.addons && appointment.addons.length > 0 && (
+        <div className="px-5 py-4 border-b border-border">
+          <p className="text-xs text-muted-foreground uppercase tracking-wide mb-2.5">
+            {t("appointments.card.addons")}
+          </p>
+          <div className="flex flex-wrap gap-1.5">
+            {appointment.addons.map((addon) => (
+              <span
+                key={addon._id}
+                className="text-xs px-2.5 py-1 rounded-full bg-blue-50 text-blue-600 border border-blue-100"
+              >
+                {addon.name}
+              </span>
+            ))}
           </div>
-          <div className="py-1 flex flex-row gap-2 flex-wrap @sm:py-2 @sm:grid @sm:grid-cols-3 @sm:gap-4">
-            <dt className="flex self-center items-center gap-1">
-              <Calendar size={16} /> {t("appointments.card.dateTime")}:
-            </dt>
-            <dd className="col-span-2">
-              {DateTime.fromJSDate(appointment.dateTime, {
-                zone: timeZone,
-              }).toLocaleString(DateTime.DATETIME_SHORT, { locale })}
-            </dd>
-          </div>
-          <div className="py-1 flex flex-row gap-2 flex-wrap @sm:py-2 @sm:grid @sm:grid-cols-3 @sm:gap-4">
-            <dt className="flex self-center items-center gap-1">
-              <Clock size={16} /> {t("appointments.card.duration")}:
-            </dt>
-            <dd className="col-span-2">
-              {t(
-                "common.timeDuration",
-                durationToTime(appointment.totalDuration),
-              )}
-            </dd>
-          </div>
-          <div className="py-1 flex flex-row gap-2 flex-wrap @sm:py-2 @sm:grid @sm:grid-cols-3 @sm:gap-4">
-            <dt className="flex self-center items-center gap-1">
-              <Calendar size={16} /> {t("appointments.card.endsAt")}:
-            </dt>
-            <dd className="col-span-2">
-              {DateTime.fromJSDate(appointment.dateTime, {
-                zone: timeZone,
-              })
-                .plus({ minutes: appointment.totalDuration })
-                .toLocaleString(DateTime.DATETIME_SHORT, { locale })}
-            </dd>
-          </div>
-          {appointment.totalPrice && (
-            <div className="py-1 flex flex-row gap-2 flex-wrap @sm:py-2 @sm:grid @sm:grid-cols-3 @sm:gap-4">
-              <dt className="flex self-center items-center gap-1">
-                <DollarSign size={16} /> {t("appointments.card.price")}:
-              </dt>
-              <dd className="col-span-2">${appointment.totalPrice}</dd>
-            </div>
-          )}
-          {appointment.note && (
-            <div className="py-1 flex flex-row gap-2 flex-wrap @sm:py-2 @sm:grid @sm:grid-cols-3 @sm:gap-4">
-              <dt className="flex self-center items-center gap-1">
-                <StickyNote size={16} /> {t("appointments.card.note")}:
-              </dt>
-              <dd className="col-span-2">{appointment.note}</dd>
-            </div>
-          )}
-        </dl>
-      </CardContent>
+        </div>
+      )}
+
+      {/* Note */}
+      {appointment.note && (
+        <div className="px-5 py-4 border-b border-border">
+          <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1.5">
+            {t("appointments.card.note")}
+          </p>
+          <p className="text-xs text-foreground leading-relaxed">
+            {appointment.note}
+          </p>
+        </div>
+      )}
+
+      <div className="flex-1" />
+
+      {/* Price */}
+      {appointment.totalPrice && (
+        <div className="px-5 py-3.5 border-b border-border flex items-center justify-between bg-muted">
+          <p className="text-sm text-muted-foreground">
+            {t("appointments.card.price")}
+          </p>
+          <p className="text-base font-medium text-foreground">
+            {currencyFormat(appointment.totalPrice)}
+          </p>
+        </div>
+      )}
+
+      {/* Actions */}
       {appointment.status !== "declined" && (
-        <CardFooter className="justify-end gap-2">
+        <div className="px-5 py-4 flex flex-col gap-2">
           <AppointmentDeclineDialog
             appointment={appointment}
             trigger={
@@ -146,13 +185,13 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
               variant="default"
               _id={appointment._id}
               status="confirmed"
+              icon={CalendarCheck2}
             >
-              <CalendarCheck2 size={20} />
               {t("appointments.card.confirm")}
             </AppointmentActionButton>
           )}
-        </CardFooter>
+        </div>
       )}
-    </Card>
+    </div>
   );
 };

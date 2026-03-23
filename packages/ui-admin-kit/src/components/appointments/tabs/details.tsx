@@ -5,10 +5,10 @@ import { adminApi } from "@timelish/api-sdk";
 import { AdminKeys, useI18n, useLocale } from "@timelish/i18n";
 import { Appointment, timeZones } from "@timelish/types";
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+  Button,
   Form,
   FormControl,
   FormField,
@@ -17,17 +17,23 @@ import {
   Link,
   Textarea,
   toastPromise,
-  useTimeZone,
+  use12HourFormat,
   useCurrencyFormat,
+  useTimeZone,
 } from "@timelish/ui";
 import { CustomerName } from "@timelish/ui-admin";
 import { durationToTime } from "@timelish/utils";
+import { CalendarCheck2, CalendarX2, Wallet } from "lucide-react";
 import { DateTime } from "luxon";
 import { useRouter } from "next/navigation";
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { AddUpdatePaymentDialog } from "../..";
+import { AppointmentActionButton } from "../action-button";
 import { AppointmentCalendar } from "../appointment-calendar";
+import { AppointmentDeclineDialog } from "../appointment-decline-dialog";
+import { APPOINTMENT_STATUS_STYLES } from "../const";
 
 const noteFormSchema = z.object({
   note: z.string().optional(),
@@ -47,6 +53,7 @@ export const AppointmentDetails = ({
   const locale = useLocale();
   const timeZone = useTimeZone();
   const currencyFormat = useCurrencyFormat();
+  const uses12HourFormat = use12HourFormat();
   const router = useRouter();
 
   const duration = durationToTime(appointment.totalDuration);
@@ -102,418 +109,476 @@ export const AppointmentDetails = ({
   };
 
   return (
-    <>
-      <div className="flex flex-col @4xl:grid grid-cols-2 gap-4">
-        <div className="flex flex-col gap-2 text-xs">
-          <dl className="divide-y">
-            <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-              <dt className="flex self-center">
-                {t("appointments.view.dateTime")}:
-              </dt>
-              <dd className="col-span-2">
-                <Accordion type="single" collapsible>
-                  <AccordionItem value="dateTime" className="border-none">
-                    <AccordionTrigger>
-                      {DateTime.fromJSDate(appointment.dateTime)
-                        .setZone(timeZone)
-                        .toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY, {
-                          locale,
-                        })}{" "}
-                      -{" "}
-                      {DateTime.fromJSDate(appointment.dateTime)
-                        .setZone(timeZone)
-                        .plus({ minutes: appointment.totalDuration })
-                        .toLocaleString(DateTime.TIME_SIMPLE, { locale })}
-                    </AccordionTrigger>
-                    <AccordionContent>
-                      <div className="grid grid-cols-2 gap-1 text-xs">
-                        <div>{t("appointments.view.dateAndTime")}:</div>
-                        <div>
-                          {DateTime.fromJSDate(appointment.dateTime)
-                            .setZone(timeZone)
-                            .toLocaleString(
-                              DateTime.DATETIME_MED_WITH_WEEKDAY,
-                              {
-                                locale,
-                              },
-                            )}
-                        </div>
-                        <div>{t("appointments.view.duration")}:</div>
-                        <div>
-                          {duration.hours > 0 && (
-                            <>
-                              {duration.hours} {t("appointments.view.hours")}
-                            </>
-                          )}
-                          {duration.hours > 0 && duration.minutes > 0 && <> </>}
-                          {duration.minutes > 0 && (
-                            <>
-                              {duration.minutes}{" "}
-                              {t("appointments.view.minutes")}
-                            </>
-                          )}
-                        </div>
-                        <div>{t("appointments.view.timezone")}:</div>
-                        <div>
-                          {
-                            timeZones.find(
-                              (tz) => tz.name === appointment.timeZone,
-                            )?.currentTimeFormat
-                          }{" "}
-                          <span className="text-sm text-muted-foreground">
-                            ({appointment.timeZone})
-                          </span>
-                        </div>
-                        <div>{t("appointments.view.endsAt")}:</div>
-                        <div>
-                          {DateTime.fromJSDate(appointment.dateTime)
-                            .setZone(timeZone)
-                            .plus({ minutes: appointment.totalDuration })
-                            .toLocaleString(
-                              DateTime.DATETIME_MED_WITH_WEEKDAY,
-                              { locale },
-                            )}{" "}
-                        </div>
-                        <div>{t("appointments.view.requestedAt")}:</div>
-                        <div>
-                          {DateTime.fromJSDate(appointment.createdAt)
-                            .setZone(timeZone)
-                            .toLocaleString(
-                              DateTime.DATETIME_MED_WITH_WEEKDAY,
-                              {
-                                locale,
-                              },
-                            )}
-                        </div>
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
-              </dd>
+    <div className="flex flex-col @4xl:grid grid-cols-2 gap-4">
+      <div className="w-full border border-border rounded-lg bg-background overflow-hidden flex flex-col">
+        {/* Header */}
+        <div className="flex items-center justify-between gap-3 px-5 py-4 border-b border-border">
+          <div className="flex items-center gap-3 min-w-0">
+            <Avatar>
+              <AvatarImage src={appointment.customer?.avatar} />
+              <AvatarFallback>
+                {(appointment.customer?.name ?? appointment.fields.name)
+                  .split(" ")
+                  .map((name) => name[0]?.toUpperCase())
+                  .filter((name) => name)
+                  .slice(0, 2)
+                  .join("")}
+              </AvatarFallback>
+            </Avatar>
+            <div className="min-w-0">
+              <p className="text-xs text-muted-foreground truncate">
+                <Link
+                  href={`/dashboard/customers/${appointment.customerId}`}
+                  variant="underline"
+                >
+                  <CustomerName customer={appointment.customer} />
+                </Link>
+              </p>
+              <p className="text-sm font-medium text-foreground truncate">
+                <Link
+                  href={`/dashboard/appointments/${appointment._id}`}
+                  variant="underline"
+                >
+                  {appointment.option.name}
+                </Link>
+              </p>
             </div>
-            <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-              <dt className="flex self-center">
-                {t("appointments.view.status")}
-              </dt>
-              <dd className="col-span-2">
-                {t(`appointments.status.${appointment.status}`)}
-              </dd>
-            </div>
-            {(!!appointment.totalPrice ||
-              !!appointment.discount ||
-              !!totalPaid) && (
-              <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt>{t("appointments.view.price")}</dt>
-                <dd className="col-span-2 flex flex-col gap-2">
-                  {!!appointment.discount && (
-                    <>
-                      <div>
-                        {t("appointments.view.subtotal", {
-                          subtotal: currencyFormat(
-                            (appointment.totalPrice || 0) +
-                              (appointment.discount?.discountAmount || 0),
-                          ),
-                        })}
-                      </div>
-                      <div className="text-destructive pb-2 border-b">
-                        {t("appointments.view.discount", {
-                          discount: currencyFormat(
-                            appointment.discount?.discountAmount || 0,
-                          ),
-                        })}
-                      </div>
-                    </>
-                  )}
-                  <div className="font-semibold text-sm">
-                    {t("appointments.view.total", {
-                      total: currencyFormat(appointment.totalPrice || 0),
-                    })}
-                  </div>
-                  {!!totalPaid && (
-                    <div>
-                      {t("appointments.view.amountPaid", {
-                        amountPaid: currencyFormat(totalPaid),
-                      })}
-                    </div>
-                  )}
-                  {appointment.status !== "declined" && (
-                    <div className="font-semibold text-sm pt-2 border-t">
-                      {t("appointments.view.amountDue", {
-                        amountDue: currencyFormat(totalAmountLeft),
-                      })}
-                    </div>
-                  )}
-                </dd>
-              </div>
-            )}
-            <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-              <dt className="flex self-center">
-                {t("appointments.view.customer")}
-              </dt>
-              <dd className="col-span-2">
-                <Accordion type="single" collapsible>
-                  <AccordionItem value="option" className="border-none">
-                    <AccordionTrigger className="text-left">
-                      <span>
-                        <CustomerName customer={appointment.customer} />{" "}
-                        {!appointment.customer.isDeleted && (
-                          <span className="text-xs text-muted-foreground">
-                            ({appointment.customer.email})
-                          </span>
-                        )}
-                      </span>
-                    </AccordionTrigger>
-                    <AccordionContent>
-                      <div className="grid grid-cols-3 gap-1 text-xs">
-                        <div>{t("appointments.view.name")}:</div>
-                        <div className="col-span-2">
-                          <Link
-                            variant="default"
-                            href={`/dashboard/customers/${appointment.customerId}`}
-                          >
-                            <CustomerName customer={appointment.customer} />
-                          </Link>
-                        </div>
-                        {!appointment.customer.isDeleted && (
-                          <>
-                            <div>{t("appointments.view.email")}:</div>
-                            <div className="col-span-2">
-                              {appointment.customer.email}
-                            </div>
-                            <div>{t("appointments.view.phone")}:</div>
-                            <div className="col-span-2">
-                              {appointment.customer.phone}
-                            </div>
-                          </>
-                        )}
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
-              </dd>
-            </div>
-            <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-              <dt className="flex self-center">
-                {t("appointments.view.fields")}
-              </dt>
-              <dd className="col-span-2">
-                <div className="grid grid-cols-3 gap-1 text-xs">
-                  <div>{t("appointments.view.name")}:</div>
-                  <div className="col-span-2">{name}</div>
-                  <div>{t("appointments.view.email")}:</div>
-                  <div className="col-span-2">{email}</div>
-                  <div>{t("appointments.view.phone")}:</div>
-                  <div className="col-span-2">{phone}</div>
-                  {Object.entries(restFields).map(([key, value]) => (
-                    <Fragment key={key}>
-                      <div>
-                        {appointment.fieldsLabels?.[key] ? (
-                          <>
-                            <span>{appointment.fieldsLabels?.[key]}</span>{" "}
-                            <span className="text-sm text-muted-foreground">
-                              ({key})
-                            </span>
-                          </>
-                        ) : (
-                          key
-                        )}
-                        :
-                      </div>
-                      <div className="col-span-2">
-                        {typeof value === "boolean"
-                          ? value
-                            ? t("appointments.view.yes")
-                            : t("appointments.view.no")
-                          : value.toString()}
-                      </div>
-                    </Fragment>
-                  ))}
-                </div>
-              </dd>
-            </div>
-            <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-              <dt className="flex self-center">
-                {t("appointments.view.selectedOption")}
-              </dt>
-              <dd className="col-span-2">
-                <Accordion type="single" collapsible>
-                  <AccordionItem value="option" className="border-none">
-                    <AccordionTrigger>
-                      {appointment.option.name}
-                    </AccordionTrigger>
-                    <AccordionContent>
-                      <div className="grid grid-cols-3 gap-1 text-xs">
-                        <div>{t("appointments.view.option")}:</div>
-                        <div className="col-span-2">
-                          <Link
-                            href={`/dashboard/services/options/${appointment.option._id}`}
-                            variant="default"
-                          >
-                            {appointment.option.name}
-                          </Link>
-                        </div>
-                        {!!appointment.option.duration && (
-                          <>
-                            <div>{t("appointments.view.duration")}:</div>
-                            <div className="col-span-2">
-                              {appointment.option.duration}{" "}
-                              {t("appointments.view.minutes")}
-                            </div>
-                          </>
-                        )}
-                        {!!appointment.option.price && (
-                          <>
-                            <div>{t("appointments.view.price")}:</div>
-                            <div className="col-span-2">
-                              {currencyFormat(appointment.option.price)}
-                            </div>
-                          </>
-                        )}
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
-              </dd>
-            </div>
-            {appointment.addons && appointment.addons.length > 0 && (
-              <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="flex self-center">
-                  {t("appointments.view.selectedAddons")}:
-                </dt>
-                <dd className="col-span-2">
-                  <Accordion type="single" collapsible>
-                    <AccordionItem value="addons" className="border-none">
-                      <AccordionTrigger className="text-left">
-                        {appointment.addons
-                          .map((addon) => addon.name)
-                          .join(", ")}
-                      </AccordionTrigger>
-                      <AccordionContent>
-                        <ul>
-                          {appointment.addons.map((addon, index) => (
-                            <li key={`${addon._id}-${index}`}>
-                              <Link
-                                href={`/dashboard/services/addons/${addon._id}`}
-                                variant="default"
-                              >
-                                {addon.name}
-                              </Link>
-                              {(addon.price || addon.duration) && (
-                                <ul className="pl-2">
-                                  {!!addon.duration && (
-                                    <li>
-                                      {t("appointments.view.duration")}:{" "}
-                                      {addon.duration}{" "}
-                                      {t("appointments.view.min")}
-                                    </li>
-                                  )}
-                                  {!!addon.price && (
-                                    <li>
-                                      {t("appointments.view.price")}:{" "}
-                                      {currencyFormat(addon.price)}
-                                    </li>
-                                  )}
-                                </ul>
-                              )}
-                            </li>
-                          ))}
-                        </ul>
-                      </AccordionContent>
-                    </AccordionItem>
-                  </Accordion>
-                </dd>
-              </div>
-            )}
-            {appointment.meetingInformation && (
-              <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="flex self-center">
-                  {t("appointments.view.meetingInformation.label")}
-                </dt>
-                <dd className="col-span-2">
-                  <dd className="col-span-2">
-                    <div className="grid grid-cols-3 gap-1 text-xs">
-                      <div>
-                        {t("appointments.view.meetingInformation.url")}:
-                      </div>
-                      <div className="col-span-2">
-                        <Link
-                          variant="default"
-                          target="_blank"
-                          href={appointment.meetingInformation.url}
-                        >
-                          {appointment.meetingInformation.url}
-                        </Link>
-                      </div>
-                      <div>
-                        {t("appointments.view.meetingInformation.type")}:
-                      </div>
-                      <div className="col-span-2">
-                        {t.has(
-                          `onlineMeeting.types.${appointment.meetingInformation.type}` as AdminKeys,
-                        )
-                          ? t(
-                              `onlineMeeting.types.${appointment.meetingInformation.type}` as AdminKeys,
-                            )
-                          : appointment.meetingInformation.type}
-                      </div>
-                      <div>
-                        {t("appointments.view.meetingInformation.meetingId")}:
-                      </div>
-                      <div className="col-span-2">
-                        {appointment.meetingInformation.meetingId}
-                      </div>
-                      {!!appointment.meetingInformation.meetingPassword && (
-                        <>
-                          <div>
-                            {t(
-                              "appointments.view.meetingInformation.meetingPassword",
-                            )}
-                            :
-                          </div>
-                          <div className="col-span-2">
-                            {appointment.meetingInformation.meetingPassword}
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  </dd>
-                </dd>
-              </div>
-            )}
-          </dl>
-        </div>
-        <div className="flex flex-col gap-2">
-          <AppointmentCalendar appointment={appointment} />
-        </div>
-      </div>
-
-      <Form {...noteForm}>
-        <form
-          onSubmit={noteForm.handleSubmit(onNoteSubmit)}
-          onBlur={noteForm.handleSubmit(onNoteSubmit)}
-          className="flex flex-col gap-2"
-        >
-          <div className="font-semibold flex flex-row gap-1 items-center">
-            {t("appointments.view.note")}
           </div>
-          <FormField
-            control={noteForm.control}
-            name="note"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Textarea
-                    disabled={loading}
-                    placeholder={t("appointments.view.note")}
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
+          <span
+            className={`shrink-0 text-xs font-medium px-2.5 py-1 rounded-full capitalize ${APPOINTMENT_STATUS_STYLES[appointment.status] ?? "bg-muted text-muted-foreground"}`}
+          >
+            {t(`appointments.status.${appointment.status}`)}
+          </span>
+        </div>
+
+        {/* Date & Time */}
+        <div className="grid grid-cols-2 gap-4 px-5 py-4 border-b border-border">
+          <div>
+            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-0.5">
+              {t("appointments.view.date")}
+            </p>
+            <p className="text-sm font-medium text-foreground">
+              {DateTime.fromJSDate(appointment.dateTime, {
+                zone: timeZone,
+              }).toLocaleString(DateTime.DATE_HUGE, { locale })}
+            </p>
+          </div>
+          <div>
+            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-0.5">
+              {t("appointments.view.time")}
+            </p>
+            <p className="text-sm font-medium text-foreground">
+              {DateTime.fromJSDate(appointment.dateTime, {
+                zone: timeZone,
+              }).toFormat(uses12HourFormat ? "h:mm" : "HH:mm", { locale })}
+              –
+              {DateTime.fromJSDate(appointment.dateTime, {
+                zone: timeZone,
+              })
+                .plus({ minutes: appointment.totalDuration })
+                .toLocaleString(DateTime.TIME_SIMPLE, { locale })}
+            </p>
+            <p className="text-xs text-muted-foreground">
+              {t(
+                "common.timeDuration",
+                durationToTime(appointment.totalDuration),
+              )}
+            </p>
+          </div>
+        </div>
+
+        {/* Payment */}
+        {!!appointment.totalPrice && (
+          <div className="px-5 py-4 border-b border-border">
+            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-2.5">
+              {t("appointments.view.payment.label")}
+            </p>
+            <div className="flex flex-row flex-wrap gap-2">
+              <div className="bg-background rounded-lg flex-1 p-3 border border-border">
+                <p className="text-xs text-muted-foreground mb-0.5">
+                  {t("appointments.view.payment.total")}
+                </p>
+                <p className="text-base font-medium text-foreground">
+                  {currencyFormat(
+                    appointment.totalPrice +
+                      (appointment.discount?.discountAmount || 0),
+                  )}
+                </p>
+              </div>
+              {appointment.discount && (
+                <div className="bg-background rounded-lg flex-1 p-3 border border-border">
+                  <p className="text-xs text-muted-foreground mb-0.5">
+                    {t("appointments.view.payment.discount")}
+                  </p>
+                  <p className="text-base font-medium text-foreground">
+                    {currencyFormat(-1 * appointment.discount.discountAmount)}
+                  </p>
+                </div>
+              )}
+              <div className="bg-background rounded-lg flex-1 p-3 border border-border">
+                <p className="text-xs text-muted-foreground mb-0.5">
+                  {t("appointments.view.payment.paid")}
+                </p>
+                <p className="text-base font-medium text-green-600">
+                  {currencyFormat(totalPaid)}
+                </p>
+              </div>
+              {appointment.status !== "declined" && (
+                <div className="bg-background rounded-lg flex-1 p-3 border border-border">
+                  <p className="text-xs text-muted-foreground mb-0.5">
+                    {t("appointments.view.payment.due")}
+                  </p>
+                  <p
+                    className={`text-base font-medium ${totalAmountLeft > 0 ? "text-destructive" : "text-foreground"}`}
+                  >
+                    {currencyFormat(totalAmountLeft)}
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Customer */}
+        <div className="px-5 py-4 border-b border-border">
+          <p className="text-xs text-muted-foreground uppercase tracking-wide mb-2.5">
+            {t("appointments.view.customer")}
+          </p>
+          <div className="flex flex-col gap-1.5">
+            <div className="flex justify-between items-center">
+              <span className="text-xs text-muted-foreground">
+                {t("appointments.view.name")}
+              </span>
+              <Link
+                href={`/dashboard/customers/${appointment.customerId}`}
+                variant="underline"
+                className="truncate text-ellipsis text-xs"
+              >
+                <CustomerName customer={appointment.customer} />
+              </Link>
+            </div>
+            {!appointment.customer.isDeleted && (
+              <>
+                <div className="flex justify-between items-center">
+                  <span className="text-xs text-muted-foreground">
+                    {t("appointments.view.email")}
+                  </span>
+                  <Link
+                    href={`mailto:${appointment.customer?.email}`}
+                    variant="underline"
+                    className="truncate text-ellipsis text-xs"
+                  >
+                    {appointment.customer.email}
+                  </Link>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-xs text-muted-foreground">
+                    {t("appointments.view.phone")}
+                  </span>
+                  <Link
+                    href={`tel:${appointment.customer?.phone}`}
+                    variant="underline"
+                    className="truncate text-ellipsis text-xs"
+                  >
+                    {appointment.customer.phone}
+                  </Link>
+                </div>
+              </>
             )}
-          />
-        </form>
-      </Form>
-    </>
+          </div>
+        </div>
+
+        {/* Service */}
+        <div className="px-5 py-4 border-b border-border">
+          <p className="text-xs text-muted-foreground uppercase tracking-wide mb-2.5">
+            {t("appointments.view.service")}
+          </p>
+          <div className="flex justify-between items-start">
+            <div>
+              <Link
+                href={`/dashboard/options/${appointment.option._id}`}
+                variant="underline"
+                className="truncate text-ellipsis text-xs"
+              >
+                {appointment.option.name}
+              </Link>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {t(
+                  "common.timeDuration",
+                  durationToTime(appointment.option.duration),
+                )}
+              </p>
+            </div>
+            {!!appointment.option.price && (
+              <span className="text-sm font-medium text-foreground shrink-0 ml-3">
+                {currencyFormat(appointment.option.price)}
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Add-ons */}
+        {appointment.addons && appointment.addons.length > 0 && (
+          <div className="px-5 py-4 border-b border-border">
+            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-2.5">
+              {t("appointments.view.addons")}
+            </p>
+            <div className="flex flex-col gap-2">
+              {appointment.addons.map((addon) => (
+                <div
+                  key={addon._id}
+                  className="flex justify-between items-start"
+                >
+                  <div>
+                    <Link
+                      href={`/dashboard/addons/${addon._id}`}
+                      variant="underline"
+                      className="truncate text-ellipsis text-xs"
+                    >
+                      {addon.name}
+                    </Link>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      {t(
+                        "common.timeDuration",
+                        durationToTime(addon.duration || 0),
+                      )}
+                    </p>
+                  </div>
+                  {!!addon.price && (
+                    <span className="text-sm font-medium text-foreground shrink-0 ml-3">
+                      {currencyFormat(addon.price)}
+                    </span>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/** Discount */}
+        {appointment.discount && (
+          <div className="px-5 py-4 border-b border-border">
+            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-2.5">
+              {t("appointments.view.discount.label")}
+            </p>
+            <div className="flex flex-col gap-2 text-xs text-muted-foreground">
+              <div className="flex justify-between items-center">
+                <span>{t("appointments.view.discount.name")}</span>
+                <Link
+                  href={`/dashboard/services/discounts/${appointment.discount.id}`}
+                  variant="underline"
+                  className="truncate text-ellipsis text-xs text-right"
+                >
+                  {appointment.discount.name}
+                </Link>
+              </div>
+              <div className="flex justify-between items-center">
+                <span>{t("appointments.view.discount.code")}</span>
+                <span className="text-xs font-medium text-foreground shrink-0 ml-3">
+                  {appointment.discount.code}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span>{t("appointments.view.discount.amount")}</span>
+                <span className="text-sm font-medium text-foreground shrink-0 ml-3">
+                  {currencyFormat(-1 * appointment.discount.discountAmount)}
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/** Fields */}
+        {appointment.fields && Object.keys(appointment.fields).length > 0 && (
+          <div className="px-5 py-4 border-b border-border">
+            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-2.5">
+              {t("appointments.view.fields")}
+            </p>
+            <div className="flex flex-col gap-2 text-xs text-muted-foreground">
+              <div className="flex justify-between items-center">
+                <span>{t("appointments.view.name")}</span>
+                <span className="text-foreground">
+                  {appointment.fields.name}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span>{t("appointments.view.email")}</span>
+                <span className="text-foreground">
+                  {appointment.fields.email}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span>{t("appointments.view.phone")}</span>
+                <span className="text-foreground">
+                  {appointment.fields.phone}
+                </span>
+              </div>
+              {Object.entries(restFields).map(([key, value]) => (
+                <div className="flex justify-between items-center" key={key}>
+                  <span>
+                    {appointment.fieldsLabels?.[key] ? (
+                      <>
+                        <span>{appointment.fieldsLabels?.[key]}</span>{" "}
+                        <span className="text-xs text-muted-foreground">
+                          ({key})
+                        </span>
+                      </>
+                    ) : (
+                      key
+                    )}
+                    :
+                  </span>
+                  <span className="text-foreground">
+                    {typeof value === "boolean"
+                      ? value
+                        ? t("appointments.view.yes")
+                        : t("appointments.view.no")
+                      : value.toString()}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/** Meeting info */}
+        {appointment.meetingInformation && (
+          <div className="px-5 py-4 border-b border-border">
+            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-2.5">
+              {t("appointments.view.meetingInformation.label")}
+            </p>
+            <div className="flex flex-col gap-2 text-xs text-muted-foreground">
+              <div className="flex justify-between items-center">
+                <span>{t("appointments.view.meetingInformation.url")}</span>
+                <Link
+                  href={appointment.meetingInformation.url}
+                  variant="underline"
+                  className="truncate text-ellipsis text-xs text-right"
+                  target="_blank"
+                >
+                  {appointment.meetingInformation.url}
+                </Link>
+              </div>
+
+              <div className="flex justify-between items-center">
+                <span>{t("appointments.view.meetingInformation.type")}</span>
+                <span>
+                  {t.has(
+                    `onlineMeeting.types.${appointment.meetingInformation.type}` as AdminKeys,
+                  )
+                    ? t(
+                        `onlineMeeting.types.${appointment.meetingInformation.type}` as AdminKeys,
+                      )
+                    : appointment.meetingInformation.type}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span>
+                  {t("appointments.view.meetingInformation.meetingId")}
+                </span>
+                <span>{appointment.meetingInformation.meetingId}</span>
+              </div>
+              {appointment.meetingInformation.meetingPassword && (
+                <div className="flex justify-between items-center">
+                  <span>
+                    {t("appointments.view.meetingInformation.meetingPassword")}
+                  </span>
+                  <span>{appointment.meetingInformation.meetingPassword}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Note */}
+        <Form {...noteForm}>
+          <form
+            onSubmit={noteForm.handleSubmit(onNoteSubmit)}
+            onBlur={noteForm.handleSubmit(onNoteSubmit)}
+            className="px-5 py-4 border-b border-border"
+          >
+            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1.5">
+              {t("appointments.view.note")}
+            </p>
+            <FormField
+              control={noteForm.control}
+              name="note"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Textarea
+                      disabled={loading}
+                      placeholder={t("appointments.view.note")}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </form>
+        </Form>
+
+        <div className="flex-1" />
+
+        {/* Timestamp */}
+        <div className="px-5 py-2.5 border-b border-border">
+          <p className="text-xs text-muted-foreground">
+            {t("appointments.view.requestedAtFormat", {
+              requestedAt: DateTime.fromJSDate(
+                appointment.createdAt,
+              ).toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY, { locale }),
+              timezone:
+                timeZones.find((tz) => tz.name === appointment.timeZone)
+                  ?.name || appointment.timeZone,
+            })}
+          </p>
+        </div>
+
+        {/* Actions */}
+        {appointment.status !== "declined" && (
+          <div className="px-5 py-4 flex flex-col gap-2">
+            {totalAmountLeft > 0 && (
+              <AddUpdatePaymentDialog
+                amount={totalAmountLeft}
+                appointmentId={appointment._id}
+                customerId={appointment.customerId}
+              >
+                <Button variant="brand-dark" size="md" className="w-full">
+                  <Wallet size={20} />
+                  {t("appointments.view.collectPayment", {
+                    amount: currencyFormat(totalAmountLeft),
+                  })}
+                </Button>
+              </AddUpdatePaymentDialog>
+            )}
+            <div className="flex flex-row gap-2 justify-between w-full">
+              <AppointmentDeclineDialog
+                appointment={appointment}
+                trigger={
+                  <Button variant="destructive" className="w-full">
+                    <CalendarX2 size={20} /> {t("appointments.view.decline")}
+                  </Button>
+                }
+              />
+              {appointment.status === "pending" && (
+                <AppointmentActionButton
+                  variant="default"
+                  _id={appointment._id}
+                  status="confirmed"
+                  icon={CalendarCheck2}
+                  className="w-full"
+                >
+                  {t("appointments.view.confirm")}
+                </AppointmentActionButton>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+      <div className="flex flex-col gap-2">
+        <AppointmentCalendar appointment={appointment} />
+      </div>
+    </div>
   );
 };

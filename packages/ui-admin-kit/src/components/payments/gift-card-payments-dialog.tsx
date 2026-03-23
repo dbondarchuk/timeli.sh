@@ -89,7 +89,7 @@ export const GiftCardPaymentsDialog: React.FC<{
                   ))}
             </div>
           ) : (
-            <div className="flex flex-col gap-2 bg-card p-4 rounded border py-2">
+            <div className="flex flex-col gap-2 bg-card p-4 rounded border py-2 mt-2">
               <div className="font-semibold flex flex-row gap-1 items-center">
                 {t("services.giftCards.table.payments.noPayments")}
               </div>

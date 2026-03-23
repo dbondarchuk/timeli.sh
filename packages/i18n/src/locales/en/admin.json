@@ -179,6 +179,8 @@
       "by": "By <link>{name}</link>",
       "appointment": "Appointment",
       "status": "Status",
+      "time": "Time",
+      "date": "Date",
       "dateTime": "Date & Time",
       "duration": "Duration",
       "hours": "hours",
@@ -187,7 +189,8 @@
       "price": "Price",
       "note": "Note",
       "decline": "Decline",
-      "confirm": "Confirm"
+      "confirm": "Confirm",
+      "addons": "Add-ons"
     },
     "declineDialog": {
       "title": "Decline appointment",
@@ -209,6 +212,8 @@
       "refundAmount": "Refund amount",
       "refundError": "One or more refund requests have failed.",
       "requestedByCustomer": "Requested by customer",
+      "giftCardCode": "Gift card code",
+      "paymentDescription": "Description",
       "refundFees": "Refund fees"
     },
     "rescheduleDialog": {
@@ -258,6 +263,8 @@
       "edit": "Edit",
       "decline": "Decline",
       "confirm": "Confirm",
+      "date": "Date",
+      "time": "Time",
       "dateTime": "Date & Time",
       "dateAndTime": "Date and time",
       "duration": "Duration",
@@ -266,13 +273,28 @@
       "timezone": "Timezone",
       "endsAt": "Ends at",
       "requestedAt": "Requested at",
+      "requestedAtFormat": "Requested {requestedAt} · {timezone}",
       "status": "Status",
       "price": "Price",
       "subtotal": "Subtotal: {subtotal}",
       "total": "Total: {total}",
-      "discount": "Discount: -({discount})",
+      "discount": {
+        "label": "Discount",
+        "name": "Name",
+        "amount": "Amount",
+        "code": "Code"
+      },
       "amountPaid": "Amount paid: {amountPaid}",
       "amountDue": "Amount due: {amountDue}",
+      "collectPayment": "Collect payment · {amount}",
+      "addons": "Add-ons",
+      "payment": {
+        "label": "Payment",
+        "total": "Total",
+        "paid": "Paid",
+        "discount": "Discount",
+        "due": "Due"
+      },
       "customer": "Customer",
       "name": "Name",
       "email": "Email",
@@ -280,6 +302,7 @@
       "fields": "Fields",
       "yes": "Yes",
       "no": "No",
+      "service": "Service",
       "selectedOption": "Selected option",
       "option": "Option",
       "description": "Description",
@@ -2310,8 +2333,8 @@
     "addUpdatePayment": {
       "addPayment": "Add payment",
       "updatePayment": "Update payment",
-      "addPaymentDescription": "Add an in-store payment to the appointment",
-      "updatePaymentDescription": "Update an in-store payment for the appointment",
+      "addPaymentDescription": "Add an in-store payment",
+      "updatePaymentDescription": "Update an in-store payment",
       "form": {
         "amount": "Amount",
         "description": "Description",

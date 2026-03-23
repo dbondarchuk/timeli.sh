@@ -179,6 +179,8 @@
       "by": "Від <link>{name}</link>",
       "appointment": "Запис",
       "status": "Статус",
+      "time": "Час",
+      "date": "Дата",
       "dateTime": "Дата та час",
       "duration": "Тривалість",
       "hours": "годин",
@@ -187,7 +189,8 @@
       "price": "Ціна",
       "note": "Примітка",
       "decline": "Відхилити",
-      "confirm": "Підтвердити"
+      "confirm": "Підтвердити",
+      "addons": "Додатки"
     },
     "declineDialog": {
       "title": "Відхилити запис",
@@ -209,6 +212,8 @@
       "refundAmount": "Сума повернення",
       "refundError": "Один або більше запитів на повернення не вдалися.",
       "requestedByCustomer": "Затребувано клієнтом",
+      "giftCardCode": "Код подарункової картки",
+      "paymentDescription": "Опис",
       "refundFees": "Повертати комісії"
     },
     "rescheduleDialog": {
@@ -258,6 +263,8 @@
       "edit": "Редагувати",
       "decline": "Відхилити",
       "confirm": "Підтвердити",
+      "date": "Дата",
+      "time": "Час",
       "dateTime": "Дата та час",
       "dateAndTime": "Дата та час",
       "duration": "Тривалість",
@@ -266,13 +273,28 @@
       "timezone": "Часовий пояс",
       "endsAt": "Закінчується о",
       "requestedAt": "Затребувано",
+      "requestedAtFormat": "Затребувано {requestedAt} · {timezone}",
+      "collectPayment": "Зібрати платеж · {amount}",
+      "addons": "Додатки",
       "status": "Статус",
       "price": "Ціна",
       "subtotal": "Сумарна ціна: {subtotal}",
       "total": "Загальна ціна: {total}",
-      "discount": "Знижка: -({discount})",
+      "discount": {
+        "label": "Знижка",
+        "name": "Назва",
+        "amount": "Сума",
+        "code": "Код"
+      },
       "amountPaid": "Сума оплачена: {amountPaid}",
       "amountDue": "Сума до сплати: {amountDue}",
+      "payment": {
+        "label": "Платежі",
+        "total": "Загальна сума",
+        "paid": "Оплачено",
+        "due": "До сплати",
+        "discount": "Знижка"
+      },
       "customer": "Клієнт",
       "name": "Ім'я",
       "email": "Email",
@@ -280,6 +302,7 @@
       "fields": "Поля",
       "yes": "Так",
       "no": "Ні",
+      "service": "Послуга",
       "selectedOption": "Вибрана опція",
       "option": "Опція",
       "description": "Опис",
@@ -2310,8 +2333,8 @@
     "addUpdatePayment": {
       "addPayment": "Додати платіж",
       "updatePayment": "Оновити платіж",
-      "addPaymentDescription": "Додати вхідний платіж до запису",
-      "updatePaymentDescription": "Оновити вхідний платіж для запису",
+      "addPaymentDescription": "Додати фізичний платіж",
+      "updatePaymentDescription": "Оновити фізичний платіж",
       "form": {
         "amount": "Сума",
         "description": "Опис",

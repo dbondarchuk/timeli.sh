@@ -14,18 +14,16 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
   Badge,
-  Card,
-  CardContent,
   Checkbox,
   cn,
   CurrencyPercentageInput,
   Label,
+  Link,
   ScrollArea,
-  useCurrencyFormat,
-  Separator,
   TooltipResponsive,
   TooltipResponsiveContent,
   TooltipResponsiveTrigger,
+  useCurrencyFormat,
 } from "@timelish/ui";
 import { formatAmount } from "@timelish/utils";
 import { CalendarX2 } from "lucide-react";
@@ -36,7 +34,6 @@ import {
   getPaymentMethod,
   getPaymentMethodIcon,
   getPaymentStatusColor,
-  getPaymentStatusIcon,
 } from "../payments";
 import { AppointmentActionButton } from "./action-button";
 
@@ -83,9 +80,9 @@ const PaymentRefundCard = ({
     payment.status === "paid" ||
     (payment.status === "refunded" && totalRefunded < payment.amount);
 
+  const totalRefundedAmount = payment.amount - totalRefunded;
   const refundableAmount =
-    payment.amount -
-    totalRefunded -
+    totalRefundedAmount -
     (!refundFees
       ? payment.fees?.reduce((acc, fee) => acc + fee.amount, 0) || 0
       : 0);
@@ -120,117 +117,132 @@ const PaymentRefundCard = ({
   }, [refundAmount, refundableAmount, commitValue]);
 
   return (
-    <Card
+    <div
       className={cn(
-        "w-full cursor-pointer",
+        "w-full flex flex-col rounded-lg border border-border bg-background overflow-hidden relative cursor-pointer",
         paymentState?.selected && "bg-blue-50 dark:bg-sky-600/20",
       )}
-      key={payment._id}
       onClick={() => isRefundable && setSelected(payment._id, refundableAmount)}
     >
-      <CardContent className="p-6 relative">
-        {isRefundable && (
-          <Checkbox
-            id={`payment-${payment._id}`}
-            checked={isSelected}
-            className="absolute top-1 left-1"
-          />
-        )}
+      {isRefundable && (
+        <Checkbox
+          id={`payment-${payment._id}`}
+          checked={isSelected}
+          className="absolute top-1 left-1 bg-background dark:bg-background"
+        />
+      )}
 
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex items-center space-x-3">
-            {getPaymentMethodIcon(
-              payment.method,
-              "appName" in payment ? payment.appName : undefined,
-            )}
-            <div>
-              <h3 className="font-semibold text-lg">
-                {t(
-                  getPaymentMethod(
-                    payment.method,
-                    "appName" in payment ? payment.appName : undefined,
-                  ),
-                )}
-              </h3>
-              <p className="text-sm text-gray-600">
-                {payment.description
-                  ? t.has(getPaymentDescription(payment.description))
-                    ? t(getPaymentDescription(payment.description))
-                    : payment.description
-                  : ""}
-              </p>
-            </div>
+      {/* Header */}
+      <div className="flex items-center justify-between px-5 py-4 border-b border-border">
+        <div className="flex items-center gap-3">
+          {getPaymentMethodIcon(
+            payment.method,
+            "appName" in payment ? payment.appName : undefined,
+          )}
+          <div>
+            <p className="text-sm font-medium text-foreground">
+              {t(
+                getPaymentMethod(
+                  payment.method,
+                  "appName" in payment ? payment.appName : undefined,
+                ),
+              )}
+            </p>
+            <p className="text-xs text-muted-foreground">
+              {t(`admin.common.labels.paymentMethod.${payment.method}`)}
+            </p>
           </div>
-          <Badge className={getPaymentStatusColor(payment.status)}>
-            <div className="flex items-center space-x-1">
-              {getPaymentStatusIcon(payment.status)}
-              <span className="capitalize">
-                {t(`admin.common.labels.paymentStatus.${payment.status}`)}
-              </span>
-            </div>
-          </Badge>
         </div>
+        <Badge className={getPaymentStatusColor(payment.status)}>
+          {t(`admin.common.labels.paymentStatus.${payment.status}`)}
+        </Badge>
+      </div>
 
-        <Separator className="my-4" />
-
-        <div className="space-y-3">
-          <div className="flex justify-between items-center">
-            <span className="text-foreground/80">
-              {t("admin.appointments.declineDialog.amount")}
-            </span>
-            <span className="font-semibold text-lg">
-              {currencyFormat(payment.amount)}
-            </span>
-          </div>
+      <div className="px-5 py-4 border-b border-border">
+        <div className="flex justify-between items-baseline mb-4">
+          <p className="text-xs text-muted-foreground uppercase tracking-wide">
+            {t("admin.appointments.declineDialog.amount")}
+          </p>
+          <p className="text-xl font-medium text-foreground">
+            {currencyFormat(payment.amount)}
+          </p>
+        </div>
+        <div className="flex flex-col gap-2.5">
           {payment.fees && payment.fees.length > 0 && (
             <>
-              <div className="flex justify-between items-center text-sm">
-                <span className="text-foreground/80">
+              <div className="flex justify-between items-center">
+                <span className="text-xs text-muted-foreground">
                   {t("admin.appointments.declineDialog.fees")}
                 </span>
               </div>
               {payment.fees.map((fee, index) => (
                 <div
-                  className="flex justify-between items-center text-sm pl-4"
+                  className="flex justify-between items-center pl-4"
                   key={fee.type + index + fee.amount}
                 >
-                  <span className="text-gray-600">
+                  <span className="text-xs text-muted-foreground">
                     {t(`admin.payment.feeTypes.${fee.type}`)}
                   </span>
-                  <span className="font-semibold">
-                    {currencyFormat(fee.amount)}
+                  <span className="text-xs font-medium text-foreground/60">
+                    {currencyFormat(-1 * fee.amount)}
                   </span>
                 </div>
               ))}
             </>
           )}
-
           {"externalId" in payment && (
-            <div className="flex justify-between items-center text-sm">
-              <span className="text-foreground/80">
+            <div className="flex justify-between items-center">
+              <span className="text-xs text-muted-foreground">
                 {t("admin.appointments.declineDialog.transactionId")}
               </span>
-              <span className="font-mono text-xs bg-muted px-2 py-1 rounded">
+              <code className="text-xs border border-border bg-muted font-mono px-2 py-0.5 rounded-lg">
                 {payment.externalId}
-              </span>
+              </code>
             </div>
           )}
-
-          <div className="flex justify-between items-center text-sm">
-            <span className="text-foreground/80">
+          {"giftCardCode" in payment && !!payment.giftCardId && (
+            <div className="flex justify-between items-center">
+              <span className="text-xs text-muted-foreground">
+                {t("admin.appointments.declineDialog.giftCardCode")}
+              </span>
+              <Link
+                href={`/dashboard/services/gift-cards/${payment.giftCardId}`}
+                variant="none"
+                className="text-xs font-mono text-blue-600 bg-blue-50 border border-blue-100 px-2 py-0.5 rounded-lg"
+              >
+                {payment.giftCardCode}
+              </Link>
+            </div>
+          )}
+          <div className="flex justify-between items-center">
+            <span className="text-xs text-muted-foreground">
               {t("admin.appointments.declineDialog.timePaid")}
             </span>
             <TooltipResponsive>
               <TooltipResponsiveTrigger>
-                <span className="text-sm text-foreground/60 underline decoration-dashed cursor-help">
+                <span className="text-xs text-foreground/60 underline decoration-dashed cursor-help">
                   {dateTime.setLocale(locale).toRelative()}
                 </span>
               </TooltipResponsiveTrigger>
               <TooltipResponsiveContent>
-                {dateTime.toLocaleString(DateTime.DATETIME_MED, { locale })}
+                {dateTime.toLocaleString(DateTime.DATETIME_MED, {
+                  locale,
+                })}
               </TooltipResponsiveContent>
             </TooltipResponsive>
           </div>
+          {payment.description && (
+            <div className="flex justify-between items-center">
+              <span className="text-xs text-muted-foreground">
+                {t("admin.appointments.declineDialog.paymentDescription")}
+              </span>
+              <span className="text-xs text-foreground/60">
+                {t.has(getPaymentDescription(payment.description))
+                  ? t(getPaymentDescription(payment.description))
+                  : payment.description}
+              </span>
+            </div>
+          )}
 
           {payment.status === "refunded" && (
             <div className="flex justify-between items-center text-sm">
@@ -247,7 +259,7 @@ const PaymentRefundCard = ({
             onClick={(e) => isSelected && e.stopPropagation()}
           >
             <div className="flex flex-col gap-2">
-              <span className="text-foreground/80">
+              <span className="text-foreground">
                 {t(
                   isSelected
                     ? "admin.appointments.declineDialog.refundAmount"
@@ -255,7 +267,7 @@ const PaymentRefundCard = ({
                 )}
               </span>
               {isSelected && (
-                <div className="flex flex-row gap-2">
+                <div className="flex flex-row gap-2 items-center">
                   <Checkbox
                     id={refundFeesId}
                     checked={refundFees}
@@ -274,14 +286,14 @@ const PaymentRefundCard = ({
                 onChange={commitValue}
               />
             ) : (
-              <span className="text-foreground/60">
-                {currencyFormat(refundableAmount)}
+              <span className="text-foreground">
+                {currencyFormat(totalRefundedAmount)}
               </span>
             )}
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 
@@ -406,11 +418,11 @@ export const AppointmentDeclineDialog: React.FC<{
         </AlertDialogHeader>
         <ScrollArea className="max-h-[60vh]">
           <div className="flex flex-col gap-4">
-            <div className="bg-muted text-foreground font-light rounded-lg p-4 flex flex-col gap-2">
+            <div className="bg-muted/30 dark:bg-muted/80 text-foreground font-normal rounded-lg p-4 flex flex-col gap-2">
               <h4 className="font-semibold mb-3">
                 {t("admin.appointments.declineDialog.appointmentDetails")}
               </h4>
-              <div className="space-y-2 text-sm">
+              <div className="space-y-2 text-xs text-muted-foreground">
                 <div className="flex justify-between">
                   <span className="">
                     {t("admin.appointments.declineDialog.customer")}
@@ -440,7 +452,7 @@ export const AppointmentDeclineDialog: React.FC<{
                 </div>
               </div>
             </div>
-            <div className="flex flex-row gap-2">
+            <div className="flex flex-row gap-2 items-center">
               <Checkbox
                 id="requestedByCustomer"
                 checked={requestedByCustomer}
@@ -485,8 +497,8 @@ export const AppointmentDeclineDialog: React.FC<{
                 beforeRequest={() => refundSelected()}
                 setIsLoading={setIsLoading}
                 onSuccess={onSuccess}
+                icon={CalendarX2}
               >
-                <CalendarX2 size={20} />
                 {(() => {
                   const amount = selectedPayments.reduce(
                     (acc, payment) => acc + payment.amount,
@@ -512,8 +524,8 @@ export const AppointmentDeclineDialog: React.FC<{
               disabled={isLoading}
               setIsLoading={setIsLoading}
               onSuccess={onSuccess}
+              icon={CalendarX2}
             >
-              <CalendarX2 size={20} />
               {t("admin.appointments.declineDialog.decline")}
             </AppointmentActionButton>
           </AlertDialogAction>

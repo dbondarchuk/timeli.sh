@@ -42,7 +42,7 @@
     "duration": "Тривалість",
     "addons": "Додатки",
     "unknown": "Невідомо",
-    "note": "Примітка",
+    "note": "Примітка від клієнта",
     "viewNote": "Переглянути примітку",
     "submitted": "Подано {date}",
     "dismiss": "Відхилити",
@@ -50,6 +50,10 @@
     "sendMessage": "Відправити повідомлення",
     "viewAll": "Переглянути все",
     "dates": "Дати",
+    "byFormat": "від <link>{name}</link>",
+    "badge": "Список очікування",
+    "preferredAvailability": "Бажаний час",
+    "noSpecificDates": "Немає конкретних дат",
     "toast": {
       "dismissed": "Запис списку очікування відхилено"
     },
@@ -58,6 +62,11 @@
         "morning": "Ранок (до 12:00)",
         "afternoon": "День (12:00 - 16:00)",
         "evening": "Вечір (після 16:00)"
+      },
+      "short": {
+        "morning": "Ранок",
+        "afternoon": "День",
+        "evening": "Вечір"
       }
     }
   },

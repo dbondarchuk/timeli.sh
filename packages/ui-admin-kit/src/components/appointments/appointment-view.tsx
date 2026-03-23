@@ -142,8 +142,9 @@ export const AppointmentView: React.FC<{
             status="confirmed"
             className="gap-2"
             onSuccess={updateStatus}
+            icon={CalendarCheck2}
           >
-            <CalendarCheck2 size={20} /> {t("appointments.view.confirm")}
+            {t("appointments.view.confirm")}
           </AppointmentActionButton>
         ) : null}
       </div>
