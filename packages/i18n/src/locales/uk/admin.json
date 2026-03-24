@@ -76,7 +76,8 @@
       "cancel": "Скасувати",
       "close": "Закрити",
       "addNew": "Додати новий",
-      "update": "Оновити"
+      "update": "Оновити",
+      "more": "Більше"
     },
     "optional": "Опціонально",
     "timeDuration": "{hours, plural, =0 {{minutes} хв} other {# год, {minutes} хв}}",

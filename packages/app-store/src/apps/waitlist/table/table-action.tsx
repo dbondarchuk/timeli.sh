@@ -11,6 +11,7 @@ import {
   OptionsDataTableAsyncFilterBox,
   useSelectedRowsStore,
 } from "@timelish/ui-admin";
+import { HeaderActionButtonsPortal } from "@timelish/ui-admin-kit";
 import { Settings2 } from "lucide-react";
 import React from "react";
 import { waitlistStatus } from "../models";
@@ -84,7 +85,7 @@ export const WaitlistTableAction: React.FC<{
   );
 
   return (
-    <div className="flex flex-col flex-wrap md:items-center justify-between gap-4 md:flex-row">
+    <div className="flex flex-row flex-wrap items-center justify-between gap-2">
       <div className="flex flex-1 md:flex-wrap items-center gap-4">
         <DataTableSearch
           searchKey="name"
@@ -112,14 +113,15 @@ export const WaitlistTableAction: React.FC<{
           onReset={resetFilters}
         />
       </div>
-      <div className="flex flex-wrap items-center gap-4 max-md:justify-between">
-        <NewEntryDialog appId={appId} customerIdLock={customerIdLock} />
+      <div className="flex flex-wrap items-center gap-2 max-md:justify-between">
         <DismissSelectedWaitlistEntriesButton
           selected={rowSelection}
           appId={appId}
         />
-        <SettingsDialog appId={appId} />
-        {/* TODO: Add add button */}
+        <HeaderActionButtonsPortal>
+          <NewEntryDialog appId={appId} customerIdLock={customerIdLock} />
+          {!customerIdLock && <SettingsDialog appId={appId} />}
+        </HeaderActionButtonsPortal>
       </div>
     </div>
   );

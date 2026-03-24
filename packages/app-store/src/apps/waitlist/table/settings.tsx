@@ -10,9 +10,6 @@ import {
   DialogTitle,
   DialogTrigger,
   ScrollArea,
-  TooltipResponsive,
-  TooltipResponsiveContent,
-  TooltipResponsiveTrigger,
 } from "@timelish/ui";
 import { Settings } from "lucide-react";
 import { useState } from "react";
@@ -31,18 +28,12 @@ export const SettingsDialog = ({ appId }: { appId: string }) => {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <TooltipResponsive>
-        <TooltipResponsiveTrigger>
-          <DialogTrigger asChild>
-            <Button variant="outline">
-              <Settings className="size-4" />
-            </Button>
-          </DialogTrigger>
-        </TooltipResponsiveTrigger>
-        <TooltipResponsiveContent>
-          {t("settings.tooltip")}
-        </TooltipResponsiveContent>
-      </TooltipResponsive>
+      <DialogTrigger asChild>
+        <Button variant="outline" aria-label={t("settings.tooltip")}>
+          <Settings className="size-4" />
+          <span className="max-md:hidden">{t("settings.tooltip")}</span>
+        </Button>
+      </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{t("settings.title")}</DialogTitle>

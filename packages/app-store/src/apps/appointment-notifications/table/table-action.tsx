@@ -15,6 +15,7 @@ import {
   DataTableSearch,
   useSelectedRowsStore,
 } from "@timelish/ui-admin";
+import { HeaderActionButtonsPortal } from "@timelish/ui-admin-kit";
 import { Plus, Settings2 } from "lucide-react";
 import React from "react";
 import { appointmentNotificationTypes } from "../models";
@@ -75,7 +76,7 @@ export const AppointmentNotificationsTableAction: React.FC<{
   );
 
   return (
-    <div className="flex flex-col flex-wrap md:items-center justify-between gap-4 md:flex-row">
+    <div className="flex flex-row flex-wrap items-center justify-between gap-2">
       <div className="flex flex-1 md:flex-wrap items-center gap-4">
         <DataTableSearch
           searchKey="name"
@@ -103,19 +104,22 @@ export const AppointmentNotificationsTableAction: React.FC<{
           onReset={resetFilters}
         />
       </div>
-      <div className="flex flex-wrap items-center gap-4 max-md:justify-between">
+      <div className="flex flex-wrap items-center gap-2 max-md:justify-between">
         <DeleteSelectedAppointmentNotificationsButton
           selected={rowSelection}
           appId={appId}
         />
-        <Link
-          button
-          variant="primary"
-          href="/dashboard/communications/appointment-notifications/new"
-        >
-          <Plus size={16} />{" "}
-          <span className="max-md:hidden">{t("table.actions.add")}</span>
-        </Link>
+        <HeaderActionButtonsPortal>
+          <Link
+            button
+            variant="primary"
+            href="/dashboard/communications/appointment-notifications/new"
+            aria-label={t("table.actions.add")}
+          >
+            <Plus size={16} />{" "}
+            <span className="max-md:hidden">{t("table.actions.add")}</span>
+          </Link>
+        </HeaderActionButtonsPortal>
       </div>
     </div>
   );

@@ -7,7 +7,8 @@ import {
   DataTableResetFilter,
   DataTableSearch,
 } from "@timelish/ui-admin";
-import { Settings2 } from "lucide-react";
+import { HeaderActionButtonsPortal } from "@timelish/ui-admin-kit";
+import { Settings2, ShoppingCart } from "lucide-react";
 import React from "react";
 import {
   GiftCardStudioAdminKeys,
@@ -50,10 +51,6 @@ export const PurchasesTableAction: React.FC<{
         filterValue={customerIdFilter}
         setFilterValue={setCustomerIdFilter}
       />
-      <DataTableResetFilter
-        isFilterActive={isAnyFilterActive}
-        onReset={resetFilters}
-      />
     </>
   );
 
@@ -69,7 +66,7 @@ export const PurchasesTableAction: React.FC<{
         />
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant="outline" size="icon" className="md:hidden">
+            <Button variant="outline" className="md:hidden">
               <Settings2 size={16} />
             </Button>
           </PopoverTrigger>
@@ -78,12 +75,23 @@ export const PurchasesTableAction: React.FC<{
           </PopoverContent>
         </Popover>
         <div className="hidden md:flex flex-row gap-4">{additionalFilters}</div>
+        <DataTableResetFilter
+          isFilterActive={isAnyFilterActive}
+          onReset={resetFilters}
+        />
       </div>
-      <div className="flex flex-wrap items-center gap-4">
-        <Button onClick={onOpenManualPurchase}>
-          {t("purchases.table.actions.create")}
+      <HeaderActionButtonsPortal>
+        <Button
+          onClick={onOpenManualPurchase}
+          variant="default"
+          aria-label={t("purchases.table.actions.create")}
+        >
+          <ShoppingCart size={16} />
+          <span className="max-md:hidden">
+            {t("purchases.table.actions.create")}
+          </span>
         </Button>
-      </div>
+      </HeaderActionButtonsPortal>
     </div>
   );
 };

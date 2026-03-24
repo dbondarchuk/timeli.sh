@@ -1,6 +1,10 @@
 import { getI18nAsync } from "@timelish/i18n/server";
 import { Breadcrumbs, Heading } from "@timelish/ui";
-import { AppointmentView } from "@timelish/ui-admin-kit";
+import {
+  AppointmentView,
+  AppointmentViewButtons,
+  AppointmentViewProvider,
+} from "@timelish/ui-admin-kit";
 import { notFound } from "next/navigation";
 import React from "react";
 import { AppointmentDeclineDialogWrapper } from "./appointment-decline-dialog";
@@ -27,21 +31,23 @@ export const AppointmentViewWrapper: React.FC<{
   ];
 
   return (
-    <div className="flex flex-1 flex-col gap-4">
-      <div className="flex flex-col gap-4 justify-between">
+    <AppointmentViewProvider appointment={appointment}>
+      <div className="flex flex-1 flex-col gap-4">
         <Breadcrumbs items={breadcrumbItems} />
-        <Heading
-          title={appointment.option.name}
-          description={t("appointments.detail.by", {
-            name: appointment.fields.name,
-          })}
-        />
-        {/* <Separator /> */}
+        <div className="flex flex-row gap-4 justify-between">
+          <Heading
+            title={appointment.option.name}
+            description={t("appointments.detail.by", {
+              name: appointment.fields.name,
+            })}
+          />
+          <AppointmentViewButtons />
+        </div>
+        <AppointmentView />
+        {shouldShowDeclineModal && (
+          <AppointmentDeclineDialogWrapper appointment={appointment} />
+        )}
       </div>
-      <AppointmentView appointment={appointment} />
-      {shouldShowDeclineModal && (
-        <AppointmentDeclineDialogWrapper appointment={appointment} />
-      )}
-    </div>
+    </AppointmentViewProvider>
   );
 };

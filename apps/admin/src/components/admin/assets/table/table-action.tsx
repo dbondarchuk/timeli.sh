@@ -50,7 +50,7 @@ export const AssetsTableAction: React.FC<{
   return (
     <div
       className={cn(
-        "flex flex-col flex-wrap md:items-center justify-between gap-4 md:flex-row",
+        "flex flex-row flex-wrap items-center justify-between gap-2",
         className,
       )}
     >

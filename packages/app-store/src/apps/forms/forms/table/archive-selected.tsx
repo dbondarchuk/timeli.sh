@@ -55,10 +55,13 @@ export const ArchiveSelectedFormsButton: React.FC<{
         variant="secondary"
         disabled={disabled || isLoading || !selected?.length}
         onClick={() => setIsOpen(true)}
+        aria-label={t("forms.table.archiveSelected.label", {
+          count: selected.length,
+        })}
       >
         {isLoading && <Spinner />}
-        <Archive className="mr-2 h-4 w-4" />
-        <span>
+        <Archive className="h-4 w-4" />
+        <span className="max-md:hidden">
           {t("forms.table.archiveSelected.label", { count: selected.length })}
         </span>
       </Button>

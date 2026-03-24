@@ -144,8 +144,9 @@ export const CustomerFileUpload: React.FC<{
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="default">
-          <Upload /> {t("common.buttons.addNew")}
+        <Button variant="default" aria-label={t("common.buttons.addNew")}>
+          <Upload />{" "}
+          <span className="max-md:hidden">{t("common.buttons.addNew")}</span>
         </Button>
       </DialogTrigger>
       <DialogContent>

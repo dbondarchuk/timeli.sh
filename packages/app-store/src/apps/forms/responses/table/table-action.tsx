@@ -1,7 +1,13 @@
 "use client";
 
 import { useI18n } from "@timelish/i18n";
-import { Button, Popover, PopoverContent, PopoverTrigger } from "@timelish/ui";
+import {
+  Button,
+  ButtonGroup,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@timelish/ui";
 import {
   CustomersDataTableAsyncFilterBox,
   DataTableRangeBox,
@@ -9,7 +15,8 @@ import {
   DataTableSearch,
   useSelectedRowsStore,
 } from "@timelish/ui-admin";
-import { Settings2 } from "lucide-react";
+import { HeaderActionButtonsPortal } from "@timelish/ui-admin-kit";
+import { Plus, Settings2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import {
@@ -59,7 +66,8 @@ export const ResponsesTableAction: React.FC<{
     router.push(`/dashboard/forms/responses/new?${params.toString()}`);
   };
 
-  const selectedFormId = formIdFilter?.length === 1 ? formIdFilter[0] : undefined;
+  const selectedFormId =
+    formIdFilter?.length === 1 ? formIdFilter[0] : undefined;
 
   const additionalFilters = (
     <>
@@ -83,16 +91,12 @@ export const ResponsesTableAction: React.FC<{
         setStartValue={setStartValue}
         setEndValue={setEndValue}
       />
-      <DataTableResetFilter
-        isFilterActive={isAnyFilterActive}
-        onReset={resetFilters}
-      />
     </>
   );
 
   return (
     <>
-      <div className="flex flex-col flex-wrap md:items-center justify-between gap-4 md:flex-row">
+      <div className="flex flex-row flex-wrap items-center justify-between gap-2">
         <div className="flex flex-1 md:flex-wrap items-center gap-4">
           <DataTableSearch
             searchKey="search"
@@ -122,20 +126,31 @@ export const ResponsesTableAction: React.FC<{
             onReset={resetFilters}
           />
         </div>
-        <div className="flex flex-wrap items-center gap-4 max-md:justify-between">
-          <ReassignSelectedFormResponsesButton
-            selected={rowSelection}
-            appId={appId}
-          />
-          <DeleteSelectedFormResponsesButton
-            selected={rowSelection}
-            appId={appId}
-          />
-          {!disableNewResponseLink && (
-            <Button onClick={() => setSelectFormOpen(true)}>
-              {t("responses.table.actions.create")}
-            </Button>
-          )}
+        <div className="flex flex-wrap items-center gap-2 max-md:justify-between">
+          <ButtonGroup>
+            <ReassignSelectedFormResponsesButton
+              selected={rowSelection}
+              appId={appId}
+            />
+            <DeleteSelectedFormResponsesButton
+              selected={rowSelection}
+              appId={appId}
+            />
+          </ButtonGroup>
+          <HeaderActionButtonsPortal>
+            {!disableNewResponseLink && (
+              <Button
+                onClick={() => setSelectFormOpen(true)}
+                variant="default"
+                aria-label={t("responses.table.actions.create")}
+              >
+                <Plus size={16} />
+                <span className="max-md:hidden">
+                  {t("responses.table.actions.create")}
+                </span>
+              </Button>
+            )}
+          </HeaderActionButtonsPortal>
         </div>
       </div>
       <SelectFormDialog

@@ -5,7 +5,6 @@ import { useI18n } from "@timelish/i18n";
 import { AppSetupProps, ConnectedAppStatusWithText } from "@timelish/types";
 import {
   Button,
-  ButtonGroup,
   cn,
   Input,
   InputGroup,
@@ -26,7 +25,7 @@ import {
   ConnectedAppNameAndLogo,
   ConnectedAppStatusMessage,
 } from "@timelish/ui-admin";
-import { CopyIcon, RotateCw } from "lucide-react";
+import { CopyIcon, Dices } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { CarddavApp } from "./app";
@@ -240,46 +239,49 @@ export const CarddavAppSetup: React.FC<AppSetupProps> = ({
                 {t("form.password.label")}
               </Label>
               <InputGroup>
+                <InputGroupAddon>
+                  <TooltipResponsive>
+                    <TooltipResponsiveTrigger>
+                      <Button
+                        variant="ghost"
+                        onClick={() => {
+                          onRegeneratePassword();
+                        }}
+                        className={InputGroupAddonClasses({
+                          variant: "prefix",
+                        })}
+                      >
+                        <Dices
+                          className={cn(
+                            "!size-3",
+                            isPasswordRegenerating && "animate-spin",
+                          )}
+                        />
+                      </Button>
+                    </TooltipResponsiveTrigger>
+                    <TooltipResponsiveContent>
+                      {t("form.password.regenerateTooltip")}
+                    </TooltipResponsiveContent>
+                  </TooltipResponsive>
+                </InputGroupAddon>
                 <InputGroupInput>
                   <Input
                     id="password"
                     value={configuration?.password}
                     readOnly
-                    className={InputGroupInputClasses()}
+                    className={InputGroupInputClasses({ variant: "both" })}
                   />
                 </InputGroupInput>
                 <InputGroupAddon>
-                  <ButtonGroup className={cn(InputGroupAddonClasses(), "p-0")}>
-                    <TooltipResponsive>
-                      <TooltipResponsiveTrigger>
-                        <Button
-                          variant="ghost"
-                          onClick={() => {
-                            onRegeneratePassword();
-                          }}
-                        >
-                          <RotateCw
-                            className={cn(
-                              "!size-3",
-                              isPasswordRegenerating && "animate-spin",
-                            )}
-                          />
-                        </Button>
-                      </TooltipResponsiveTrigger>
-                      <TooltipResponsiveContent>
-                        {t("form.password.regenerateTooltip")}
-                      </TooltipResponsiveContent>
-                    </TooltipResponsive>
-                    <Button
-                      variant="ghost"
-                      className="border-l-0 rounded-l-none"
-                      onClick={() => {
-                        onCopy(configuration?.password || "");
-                      }}
-                    >
-                      <CopyIcon className="!size-3" />
-                    </Button>
-                  </ButtonGroup>
+                  <Button
+                    variant="ghost"
+                    className={InputGroupAddonClasses({ variant: "suffix" })}
+                    onClick={() => {
+                      onCopy(configuration?.password || "");
+                    }}
+                  >
+                    <CopyIcon className="!size-3" />
+                  </Button>
                 </InputGroupAddon>
               </InputGroup>
             </div>

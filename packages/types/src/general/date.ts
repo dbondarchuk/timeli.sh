@@ -10,7 +10,7 @@ export type DateRange = z.infer<typeof dateRangeSchema>;
 /**
  * Sequential number of the week starting from January 5, 1970
  */
-export const weekIdentifierSchema = z.number().int().positive();
+export const weekIdentifierSchema = z.coerce.number<number>().int().positive();
 
 /**
  * Sequential number of the week starting from January 5, 1970

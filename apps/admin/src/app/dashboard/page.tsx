@@ -93,7 +93,7 @@ export default async function Page(params: Params) {
         </div>
         <Suspense>
           <TabsViaUrl defaultValue={defaultTab} className="space-y-4">
-            <ResponsiveTabsList className="w-full md:flex flex-col h-auto md:flex-row gap-2">
+            <ResponsiveTabsList className="w-full flex flex-row gap-2">
               <TabsTrigger value="overview">
                 {tAdmin("dashboard.tabs.overview")}
               </TabsTrigger>

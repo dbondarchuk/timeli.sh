@@ -47,6 +47,7 @@ export const InputGroupInputClasses = cva(
       variant: {
         suffix: ["border-r-0", "rounded-r-none"],
         prefix: ["border-l-0", "rounded-l-none"],
+        both: ["border-l-0", "border-r-0", "rounded-l-none", "rounded-r-none"],
       },
     },
     defaultVariants: {

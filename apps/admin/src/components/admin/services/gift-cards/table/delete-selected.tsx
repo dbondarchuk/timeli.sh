@@ -66,10 +66,16 @@ export const DeleteSelectedGiftCardsButton: React.FC<{
   return (
     <AlertDialog onOpenChange={setIsOpen} open={isOpen}>
       <AlertDialogTrigger asChild>
-        <Button variant="default" disabled={disabled}>
+        <Button
+          variant="destructive"
+          disabled={disabled}
+          aria-label={t("services.giftCards.deleteSelected.button", {
+            count: selected.length,
+          })}
+        >
           {isLoading && <Spinner />}
-          <Trash className="mr-2 h-4 w-4" />
-          <span>
+          <Trash className="h-4 w-4" />
+          <span className="max-md:hidden">
             {t("services.giftCards.deleteSelected.button", {
               count: selected.length,
             })}

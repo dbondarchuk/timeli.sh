@@ -1,5 +1,6 @@
 "use client";
 
+import { ButtonGroup } from "@timelish/ui";
 import {
   DataTableResetFilter,
   DataTableSearch,
@@ -20,7 +21,7 @@ export function CustomersTableAction() {
   const { rowSelection } = useSelectedRowsStore();
 
   return (
-    <div className="flex flex-col flex-wrap md:items-center justify-between gap-4 md:flex-row">
+    <div className="flex flex-row flex-wrap items-center justify-between gap-2">
       <div className="flex flex-1 md:flex-wrap items-center gap-4">
         <DataTableSearch
           searchKey="name"
@@ -34,8 +35,10 @@ export function CustomersTableAction() {
         />
       </div>
       <div className="flex flex-wrap items-center gap-4">
-        <MergeSelectedCustomersButton selected={rowSelection} />
-        <DeleteSelectedCustomersButton selected={rowSelection} />
+        <ButtonGroup>
+          <MergeSelectedCustomersButton selected={rowSelection} />
+          <DeleteSelectedCustomersButton selected={rowSelection} />
+        </ButtonGroup>
       </div>
     </div>
   );

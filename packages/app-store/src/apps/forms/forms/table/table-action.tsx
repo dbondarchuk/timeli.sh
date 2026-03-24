@@ -1,14 +1,22 @@
 "use client";
 
 import { useI18n } from "@timelish/i18n";
-import { Button, Popover, PopoverContent, PopoverTrigger } from "@timelish/ui";
+import {
+  Button,
+  ButtonGroup,
+  Link,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@timelish/ui";
 import {
   DataTableFilterBox,
   DataTableResetFilter,
   DataTableSearch,
   useSelectedRowsStore,
 } from "@timelish/ui-admin";
-import { Settings2 } from "lucide-react";
+import { HeaderActionButtonsPortal } from "@timelish/ui-admin-kit";
+import { Plus, RectangleEllipsis, Settings2 } from "lucide-react";
 import React from "react";
 import {
   FormsAdminKeys,
@@ -51,7 +59,7 @@ export const FormsTableAction: React.FC<{ appId: string }> = ({ appId }) => {
   );
 
   return (
-    <div className="flex flex-col flex-wrap md:items-center justify-between gap-4 md:flex-row">
+    <div className="flex flex-row flex-wrap items-center justify-between gap-2">
       <div className="flex flex-1 md:flex-wrap items-center gap-4">
         <DataTableSearch
           searchKey="name"
@@ -75,30 +83,48 @@ export const FormsTableAction: React.FC<{ appId: string }> = ({ appId }) => {
           onReset={resetFilters}
         />
       </div>
-      <div className="flex flex-wrap max-md:flex-row-reverse items-center gap-4 max-md:justify-between">
-        <UnarchiveSelectedFormsButton
-          selected={rowSelection}
-          appId={appId}
-          disabled={!allArchived}
-        />
-        <ArchiveSelectedFormsButton
-          selected={rowSelection}
-          appId={appId}
-          disabled={!allPublic}
-        />
-        <DeleteSelectedFormsButton
-          selected={rowSelection}
-          appId={appId}
-          disabled={!canDeleteAll}
-        />
-        <Button variant="outline" asChild>
-          <a href="/dashboard/forms/responses">
-            {t("forms.table.actions.viewResponses")}
-          </a>
-        </Button>
-        <Button asChild>
-          <a href="/dashboard/forms/new">{t("forms.table.actions.create")}</a>
-        </Button>
+      <div className="flex flex-wrap max-md:flex-row-reverse items-center gap-2 max-md:justify-between">
+        <ButtonGroup>
+          <UnarchiveSelectedFormsButton
+            selected={rowSelection}
+            appId={appId}
+            disabled={!allArchived}
+          />
+          <ArchiveSelectedFormsButton
+            selected={rowSelection}
+            appId={appId}
+            disabled={!allPublic}
+          />
+          <DeleteSelectedFormsButton
+            selected={rowSelection}
+            appId={appId}
+            disabled={!canDeleteAll}
+          />
+        </ButtonGroup>
+        <HeaderActionButtonsPortal>
+          <Link
+            href="/dashboard/forms/responses"
+            button
+            variant="outline"
+            aria-label={t("forms.table.actions.viewResponses")}
+          >
+            <RectangleEllipsis size={16} />
+            <span className="max-md:hidden">
+              {t("forms.table.actions.viewResponses")}
+            </span>
+          </Link>
+          <Link
+            href="/dashboard/forms/new"
+            button
+            variant="default"
+            aria-label={t("forms.table.actions.create")}
+          >
+            <Plus size={16} />
+            <span className="max-md:hidden">
+              {t("forms.table.actions.create")}
+            </span>
+          </Link>
+        </HeaderActionButtonsPortal>
       </div>
     </div>
   );

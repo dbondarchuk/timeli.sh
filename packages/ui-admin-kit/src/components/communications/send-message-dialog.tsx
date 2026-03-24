@@ -161,6 +161,10 @@ export const SendCommunicationDialog: React.FC<
       }
 
       form.setValue("content", template.value);
+      if (template.type === "email") {
+        form.setValue("subject", template.subject);
+      }
+
       setIsTemplateDialogOpen(false);
       setContentKey(new Date().getTime().toString());
     } catch (error) {

@@ -5,6 +5,10 @@ import { AppMenuItems } from "@timelish/app-store/menu-items";
 import { getI18nAsync } from "@timelish/i18n/server";
 import { getLoggerFactory } from "@timelish/logger";
 import { Breadcrumbs, Heading } from "@timelish/ui";
+import {
+  HeaderActionButtonsContainer,
+  HeaderActionButtonsProvider,
+} from "@timelish/ui-admin-kit";
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { cache } from "react";
@@ -105,7 +109,6 @@ export default async function Page(props: Props) {
   const logger = getLoggerFactory("AdminDashboardPage")("Page");
   const path = await getSlug(props);
   const searchParams = await props.searchParams;
-
   logger.debug(
     {
       slug: path,
@@ -119,16 +122,22 @@ export default async function Page(props: Props) {
 
   return (
     <PageContainer scrollable={!menuItem.notScrollable}>
-      <div className="flex flex-1 flex-col gap-4">
-        <div className="flex flex-col gap-4 justify-between">
+      <HeaderActionButtonsProvider>
+        <div className="flex flex-1 flex-col gap-4">
           <Breadcrumbs items={breadcrumbItems} />
-          {!menuItem.hideHeading && (
-            <Heading title={title} description={description} />
-          )}
-          {/* <Separator /> */}
+          <div className="flex flex-row items-center gap-4 justify-between">
+            {!menuItem.hideHeading && (
+              <Heading
+                title={title}
+                description={description}
+                className="flex-1"
+              />
+            )}
+            <HeaderActionButtonsContainer />
+          </div>
+          <menuItem.Page appId={appId} />
         </div>
-        <menuItem.Page appId={appId} />
-      </div>
+      </HeaderActionButtonsProvider>
     </PageContainer>
   );
 }

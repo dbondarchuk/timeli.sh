@@ -69,21 +69,29 @@ export const SetStatusSelectedGiftCardsButton: React.FC<{
   return (
     <AlertDialog onOpenChange={setIsOpen} open={isOpen}>
       <AlertDialogTrigger asChild>
-        <Button variant="outline" disabled={disabled}>
+        <Button
+          variant="outline"
+          disabled={disabled}
+          aria-label={t(buttonKey, { count: selected.length })}
+        >
           {isLoading && <Spinner />}
           {status === "active" ? (
-            <ToggleRight className="mr-2 h-4 w-4" />
+            <ToggleRight className="h-4 w-4" />
           ) : (
-            <ToggleLeft className="mr-2 h-4 w-4" />
+            <ToggleLeft className="h-4 w-4" />
           )}
-          <span>{t(buttonKey, { count: selected.length })}</span>
+          <span className="max-md:hidden">
+            {t(buttonKey, { count: selected.length })}
+          </span>
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{t(titleKey)}</AlertDialogTitle>
           <AlertDialogDescription>
-            <p>{t("services.giftCards.setStatusSelected.confirmDescription")}</p>
+            <p>
+              {t("services.giftCards.setStatusSelected.confirmDescription")}
+            </p>
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

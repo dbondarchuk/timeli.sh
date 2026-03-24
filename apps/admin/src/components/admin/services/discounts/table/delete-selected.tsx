@@ -55,12 +55,15 @@ export const DeleteSelectedDiscountsButton: React.FC<{
     <AlertDialog onOpenChange={setIsOpen} open={isOpen}>
       <AlertDialogTrigger asChild>
         <Button
-          variant="default"
+          variant="destructive"
+          aria-label={t("services.discounts.deleteSelected.button", {
+            count: selected.length,
+          })}
           disabled={isLoading || !selected || !selected.length}
         >
           {isLoading && <Spinner />}
-          <Trash className="mr-2 h-4 w-4" />
-          <span>
+          <Trash className="h-4 w-4" />
+          <span className="max-md:hidden">
             {t("services.discounts.deleteSelected.button", {
               count: selected.length,
             })}

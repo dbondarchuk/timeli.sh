@@ -112,7 +112,7 @@ export const OptionForm: React.FC<{
           className="space-y-4"
           orientation="vertical"
         >
-          <ResponsiveTabsList className="w-full flex-wrap h-auto">
+          <ResponsiveTabsList className="w-full flex flex-row gap-2">
             <TabsTrigger
               value="general"
               className={cn(

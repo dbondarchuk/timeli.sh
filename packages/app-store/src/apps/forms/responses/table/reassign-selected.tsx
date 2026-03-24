@@ -69,9 +69,12 @@ export const ReassignSelectedFormResponsesButton: React.FC<{
         variant="secondary"
         disabled={!selected?.length}
         onClick={() => setIsOpen(true)}
+        aria-label={t("responses.table.reassignSelected.label", {
+          count: selected.length,
+        })}
       >
-        <UserPlus className="mr-2 h-4 w-4" />
-        <span>
+        <UserPlus className="h-4 w-4" />
+        <span className="max-md:hidden">
           {t("responses.table.reassignSelected.label", {
             count: selected.length,
           })}

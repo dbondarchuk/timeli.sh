@@ -27,6 +27,9 @@ import {
 } from "@timelish/ui";
 import { CustomerName, DataTableSkeleton } from "@timelish/ui-admin";
 import {
+  HeaderActionButtonsContainer,
+  HeaderActionButtonsPortal,
+  HeaderActionButtonsProvider,
   RecentCommunications,
   SendCommunicationButton,
 } from "@timelish/ui-admin-kit";
@@ -180,136 +183,142 @@ export default async function CustomerPage(props: Props) {
 
   return (
     <PageContainer scrollable={scrollableTabs.includes(activeTab)}>
-      <div className="flex flex-1 flex-col gap-4">
-        <div className="flex flex-col gap-4 justify-between">
-          <Breadcrumbs items={breadcrumbItems} />
-          <Heading
-            title={<CustomerName customer={customer} />}
-            description={t("customers.manageCustomer")}
-          />
+      <HeaderActionButtonsProvider>
+        <div className="flex flex-1 flex-col gap-4">
+          <div className="flex flex-row items-center gap-4 justify-between">
+            <Breadcrumbs items={breadcrumbItems} />
+            <Heading
+              title={<CustomerName customer={customer} />}
+              description={t("customers.manageCustomer")}
+            />
 
-          {/* <Separator /> */}
-        </div>
-        <div className="flex flex-col gap-4 flex-1">
-          <TabsViaUrl
-            value={activeTab}
-            usePath={path}
-            className="flex-1 flex flex-col gap-4 tabs-url"
-          >
-            <ResponsiveTabsList className="w-full [&>a]:flex-1 bg-card border flex-wrap h-auto">
-              {allTabValues.map((tabValue) => (
-                <TabsTrigger value={tabValue} key={tabValue}>
-                  {getTabLabel(tabValue)}
-                </TabsTrigger>
-              ))}
-            </ResponsiveTabsList>
-            <TabsContent value={detailsTab}>
-              {activeTab === detailsTab && (
-                <CustomerForm initialData={customer} />
-              )}
-            </TabsContent>
-            {activeTab === appointmentsTab && (
-              <TabsContent
-                value={appointmentsTab}
-                className="flex flex-1 flex-col gap-4"
-              >
-                <div className="flex flex-col md:flex-row gap-2 w-full">
-                  <AppointmentsTableAction className="flex-1" />
-                  {!customer.isDeleted && (
-                    <Link
-                      button
-                      href={`/dashboard/appointments/new?customer=${params.id}`}
-                      variant="default"
-                    >
-                      <CalendarClock className="mr-2 h-4 w-4" />{" "}
-                      <span className="max-md:hidden">
-                        {t("customers.scheduleAppointment")}
-                      </span>
-                      <span className="md:hidden">
-                        {t("customers.addNewShort")}
-                      </span>
-                    </Link>
-                  )}
-                </div>
-                <Suspense
-                  key={key}
-                  fallback={
-                    <DataTableSkeleton
-                      columnCount={AppointmentsTableColumnsCount}
-                      rowCount={10}
-                    />
-                  }
-                >
-                  <AppointmentsTable customerId={params.id} />
-                </Suspense>
+            <HeaderActionButtonsContainer />
+          </div>
+          <div className="flex flex-col gap-4 flex-1">
+            <TabsViaUrl
+              value={activeTab}
+              usePath={path}
+              className="flex-1 flex flex-col gap-4 tabs-url"
+            >
+              <ResponsiveTabsList className="w-full flex flex-row gap-2">
+                {allTabValues.map((tabValue) => (
+                  <TabsTrigger value={tabValue} key={tabValue}>
+                    {getTabLabel(tabValue)}
+                  </TabsTrigger>
+                ))}
+              </ResponsiveTabsList>
+              <TabsContent value={detailsTab}>
+                {activeTab === detailsTab && (
+                  <CustomerForm initialData={customer} />
+                )}
               </TabsContent>
-            )}
-            {activeTab === filesTab && (
-              <TabsContent
-                value={filesTab}
-                className="flex flex-1 flex-col gap-4"
-              >
-                <div className="flex flex-col md:flex-row gap-2 w-full">
-                  <CustomerFilesTableAction />
-                  {!customer.isDeleted && (
-                    <CustomerFileUpload customerId={params.id} />
-                  )}
-                </div>
-                <Suspense
-                  key={key}
-                  fallback={
-                    <DataTableSkeleton columnCount={10} rowCount={10} />
-                  }
-                >
-                  <CustomerFiles
-                    customerId={params.id}
-                    search={serializeAssetsSearchParams({
-                      search: assetsSearchParamsCache.get("search"),
-                    })}
-                  />
-                </Suspense>
-              </TabsContent>
-            )}
-            {activeTab === communicationsTab && (
-              <TabsContent
-                value={communicationsTab}
-                className="flex flex-1 flex-col gap-4"
-              >
-                <div className="flex flex-col md:flex-row gap-2 w-full">
-                  <CommunicationLogsTableAction className="flex-1" />
-                  {!customer.isDeleted && (
-                    <SendCommunicationButton customerId={params.id} />
-                  )}
-                </div>
-                <Suspense
-                  key={key}
-                  fallback={
-                    <DataTableSkeleton columnCount={10} rowCount={10} />
-                  }
-                >
-                  <RecentCommunications customerId={params.id} />
-                </Suspense>
-              </TabsContent>
-            )}
-            {customerTabItems
-              .filter((item) => activeTab === item.href)
-              .map((item) => (
+              {activeTab === appointmentsTab && (
                 <TabsContent
-                  key={item.href}
-                  value={item.href}
+                  value={appointmentsTab}
                   className="flex flex-1 flex-col gap-4"
                 >
-                  {item.view({
-                    props: item.props,
-                    appId: item.appId,
-                    customer,
-                    searchParams,
-                  })}
+                  <div className="flex flex-col md:flex-row gap-2 w-full">
+                    <AppointmentsTableAction className="flex-1" />
+                    {!customer.isDeleted && (
+                      <HeaderActionButtonsPortal>
+                        <Link
+                          button
+                          href={`/dashboard/appointments/new?customer=${params.id}`}
+                          variant="default"
+                          aria-label={t("customers.scheduleAppointment")}
+                        >
+                          <CalendarClock className="h-4 w-4" />
+                          <span className="max-md:hidden">
+                            {t("customers.scheduleAppointment")}
+                          </span>
+                        </Link>
+                      </HeaderActionButtonsPortal>
+                    )}
+                  </div>
+                  <Suspense
+                    key={key}
+                    fallback={
+                      <DataTableSkeleton
+                        columnCount={AppointmentsTableColumnsCount}
+                        rowCount={10}
+                      />
+                    }
+                  >
+                    <AppointmentsTable customerId={params.id} />
+                  </Suspense>
                 </TabsContent>
-              ))}
-          </TabsViaUrl>
+              )}
+              {activeTab === filesTab && (
+                <TabsContent
+                  value={filesTab}
+                  className="flex flex-1 flex-col gap-4"
+                >
+                  <div className="flex flex-col md:flex-row gap-2 w-full">
+                    <CustomerFilesTableAction />
+                    {!customer.isDeleted && (
+                      <HeaderActionButtonsPortal>
+                        <CustomerFileUpload customerId={params.id} />
+                      </HeaderActionButtonsPortal>
+                    )}
+                  </div>
+                  <Suspense
+                    key={key}
+                    fallback={
+                      <DataTableSkeleton columnCount={10} rowCount={10} />
+                    }
+                  >
+                    <CustomerFiles
+                      customerId={params.id}
+                      search={serializeAssetsSearchParams({
+                        search: assetsSearchParamsCache.get("search"),
+                      })}
+                    />
+                  </Suspense>
+                </TabsContent>
+              )}
+              {activeTab === communicationsTab && (
+                <TabsContent
+                  value={communicationsTab}
+                  className="flex flex-1 flex-col gap-4"
+                >
+                  <div className="flex flex-col md:flex-row gap-2 w-full">
+                    <CommunicationLogsTableAction className="flex-1" />
+                    {!customer.isDeleted && (
+                      <HeaderActionButtonsPortal>
+                        <SendCommunicationButton customerId={params.id} />
+                      </HeaderActionButtonsPortal>
+                    )}
+                  </div>
+                  <Suspense
+                    key={key}
+                    fallback={
+                      <DataTableSkeleton columnCount={10} rowCount={10} />
+                    }
+                  >
+                    <RecentCommunications customerId={params.id} />
+                  </Suspense>
+                </TabsContent>
+              )}
+              {customerTabItems
+                .filter((item) => activeTab === item.href)
+                .map((item) => (
+                  <TabsContent
+                    key={item.href}
+                    value={item.href}
+                    className="flex flex-1 flex-col gap-4"
+                  >
+                    {item.view({
+                      props: item.props,
+                      appId: item.appId,
+                      customer,
+                      searchParams,
+                    })}
+                  </TabsContent>
+                ))}
+            </TabsViaUrl>
+          </div>
         </div>
-      </div>
+      </HeaderActionButtonsProvider>
     </PageContainer>
   );
 }

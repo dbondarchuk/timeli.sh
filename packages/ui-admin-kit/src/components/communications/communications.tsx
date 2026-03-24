@@ -219,8 +219,9 @@ export const SendCommunicationButton: React.FC<CustomerOrAppointment> = (
       {...props}
       onSuccess={() => router.replace(`?key=${new Date().getTime()}`)}
     >
-      <Button variant="primary">
-        <Send /> {t("communications.sendNew")}
+      <Button variant="primary" aria-label={t("communications.sendNew")}>
+        <Send />
+        <span className="max-md:hidden">{t("communications.sendNew")}</span>
       </Button>
     </SendCommunicationDialog>
   );

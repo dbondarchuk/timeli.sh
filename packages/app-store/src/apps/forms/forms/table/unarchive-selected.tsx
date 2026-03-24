@@ -55,10 +55,13 @@ export const UnarchiveSelectedFormsButton: React.FC<{
         variant="secondary"
         disabled={disabled || isLoading || !selected?.length}
         onClick={() => setIsOpen(true)}
+        aria-label={t("forms.table.unarchiveSelected.label", {
+          count: selected.length,
+        })}
       >
         {isLoading && <Spinner />}
-        <ArchiveRestore className="mr-2 h-4 w-4" />
-        <span>
+        <ArchiveRestore className="h-4 w-4" />
+        <span className="max-md:hidden">
           {t("forms.table.unarchiveSelected.label", { count: selected.length })}
         </span>
       </Button>

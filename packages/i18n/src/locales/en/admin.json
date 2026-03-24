@@ -76,7 +76,8 @@
       "cancel": "Cancel",
       "close": "Close",
       "addNew": "Add new",
-      "update": "Update"
+      "update": "Update",
+      "more": "More"
     },
     "optional": "Optional",
     "timeDuration": "{hours, plural, =0 {{minutes} min} other {# hr, {minutes} min}}",

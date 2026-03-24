@@ -5,7 +5,11 @@ import { useI18n } from "@timelish/i18n";
 import { Appointment, AppointmentStatus } from "@timelish/types";
 import {
   Button,
-  Link,
+  ButtonGroup,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
   ResponsiveTabsList,
   Tabs,
   TabsContent,
@@ -17,8 +21,10 @@ import {
   CalendarSearch,
   CalendarSync,
   CalendarX2,
+  MoreHorizontal,
   Send,
 } from "lucide-react";
+import NextLink from "next/link";
 import { useSearchParams } from "next/navigation";
 import React from "react";
 import { RecentCommunications } from "../communications/communications";
@@ -40,18 +46,38 @@ const views = [
 ] as const;
 type View = (typeof views)[number];
 
-export const AppointmentView: React.FC<{
+const AppointmentViewContext = React.createContext<{
   appointment: Appointment;
-  view?: View;
-}> = ({ appointment: propAppointment, view }) => {
-  const t = useI18n("admin");
+  setAppointment: React.Dispatch<React.SetStateAction<Appointment>>;
+  key: string;
+  setKey: (key: string) => void;
+}>({
+  appointment: null as unknown as Appointment,
+  setAppointment: () => {},
+  key: "",
+  setKey: () => {},
+});
 
-  const [key, setKey] = React.useState<string>();
-  const params = useSearchParams();
-  const defaultView = view ?? params.get("view") ?? "details";
-
+export const AppointmentViewProvider: React.FC<{
+  appointment: Appointment;
+  children: React.ReactNode;
+}> = ({ appointment: propAppointment, children }) => {
   const [appointment, setAppointment] = React.useState(propAppointment);
+  const [key, setKey] = React.useState<string>(new Date().getTime().toString());
+  return (
+    <AppointmentViewContext.Provider
+      value={{ appointment, setAppointment, key, setKey }}
+    >
+      {children}
+    </AppointmentViewContext.Provider>
+  );
+};
 
+export const AppointmentViewButtons: React.FC = () => {
+  const t = useI18n("admin");
+  const { appointment, setAppointment, key, setKey } = React.useContext(
+    AppointmentViewContext,
+  );
   const reschedule = ({
     dateTime,
     duration,
@@ -77,81 +103,125 @@ export const AppointmentView: React.FC<{
     setKey(new Date().getTime().toString());
   };
 
-  return (
-    <div className="flex flex-col gap-4 w-full @container [contain:layout]">
-      <div className="flex flex-row justify-end gap-2 flex-wrap [&>form]:hidden">
-        <SendCommunicationDialog
-          appointmentId={appointment._id}
-          onSuccess={() => setKey(new Date().getTime().toString())}
-        >
-          <Button variant="secondary">
-            <Send /> {t("appointments.view.sendMessage")}
-          </Button>
-        </SendCommunicationDialog>
-        <Link
-          className="inline-flex flex-row gap-2 items-center"
-          variant="outline"
-          button
-          href={`/dashboard/appointments/new?from=${appointment._id}`}
-        >
-          <CalendarSync size={20} /> {t("appointments.view.scheduleAgain")}
-        </Link>
+  const [isDeclineDialogOpen, setIsDeclineDialogOpen] = React.useState(false);
+  const [isRescheduleDialogOpen, setIsRescheduleDialogOpen] =
+    React.useState(false);
 
-        {appointment.status !== "declined" ? (
-          <>
-            <AppointmentRescheduleDialog
-              appointment={appointment}
-              onRescheduled={reschedule}
-              trigger={
-                <Button
-                  variant="outline"
-                  className="inline-flex flex-row gap-2 items-center"
+  return (
+    <div className="flex flex-row justify-end gap-2 flex-wrap [&>form]:hidden">
+      <SendCommunicationDialog
+        appointmentId={appointment._id}
+        onSuccess={() => setKey(new Date().getTime().toString())}
+      >
+        <Button variant="secondary">
+          <Send /> {t("appointments.view.sendMessage")}
+        </Button>
+      </SendCommunicationDialog>
+
+      <AppointmentDeclineDialog
+        appointment={appointment}
+        onSuccess={updateStatus}
+        open={isDeclineDialogOpen}
+        onClose={() => setIsDeclineDialogOpen(false)}
+      />
+      <AppointmentRescheduleDialog
+        appointment={appointment}
+        onRescheduled={reschedule}
+        open={isRescheduleDialogOpen}
+        onOpenChange={(open) => setIsRescheduleDialogOpen(open)}
+      />
+
+      {appointment.status !== "declined" ? (
+        <ButtonGroup>
+          {appointment.status === "pending" ? (
+            <AppointmentActionButton
+              variant="default"
+              _id={appointment._id}
+              status="confirmed"
+              className="gap-2"
+              onSuccess={updateStatus}
+              icon={CalendarCheck2}
+            >
+              {t("appointments.view.confirm")}
+            </AppointmentActionButton>
+          ) : (
+            <Button
+              variant="outline"
+              className="inline-flex flex-row gap-2 items-center"
+              onClick={() => setIsRescheduleDialogOpen(true)}
+            >
+              <CalendarSearch size={20} />
+              {t("appointments.view.reschedule")}
+            </Button>
+          )}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant={
+                  appointment.status === "pending" ? "default" : "outline"
+                }
+                className="inline-flex flex-row gap-2 items-center"
+                aria-label={t("common.buttons.more")}
+              >
+                <MoreHorizontal size={20} />
+              </Button>
+            </DropdownMenuTrigger>
+
+            <DropdownMenuContent>
+              <DropdownMenuItem asChild>
+                <NextLink
+                  className="inline-flex flex-row gap-2 items-center w-full"
+                  href={`/dashboard/appointments/new?from=${appointment._id}`}
+                >
+                  <CalendarSync size={20} />{" "}
+                  {t("appointments.view.scheduleAgain")}
+                </NextLink>
+              </DropdownMenuItem>
+              {appointment.status === "pending" && (
+                <DropdownMenuItem
+                  onClick={() => setIsRescheduleDialogOpen(true)}
                 >
                   <CalendarSearch size={20} />
                   {t("appointments.view.reschedule")}
-                </Button>
-              }
-            />
-            <Link
-              className="inline-flex flex-row gap-2 items-center"
-              variant="outline"
-              button
-              href={`/dashboard/appointments/${appointment._id}/edit`}
-            >
-              <CalendarCog size={20} /> {t("appointments.view.edit")}
-            </Link>
-            <AppointmentDeclineDialog
-              appointment={appointment}
-              onSuccess={updateStatus}
-              trigger={
-                <Button
-                  variant="destructive"
-                  className="inline-flex flex-row gap-2 items-center"
+                </DropdownMenuItem>
+              )}
+              <DropdownMenuItem asChild>
+                <NextLink
+                  className="inline-flex flex-row gap-2 items-center w-full"
+                  href={`/dashboard/appointments/${appointment._id}/edit`}
                 >
-                  <CalendarX2 size={20} /> {t("appointments.view.decline")}
-                </Button>
-              }
-            />
-          </>
-        ) : null}
+                  <CalendarCog size={20} /> {t("appointments.view.edit")}
+                </NextLink>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setIsDeclineDialogOpen(true)}
+                className="text-destructive-foreground bg-destructive hover:bg-destructive/90 focus:bg-destructive/90 hover:text-destructive-foreground focus:text-destructive-foreground"
+              >
+                <CalendarX2 size={20} />
+                {t("appointments.view.decline")}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </ButtonGroup>
+      ) : null}
+    </div>
+  );
+};
 
-        {appointment.status === "pending" ? (
-          <AppointmentActionButton
-            variant="default"
-            _id={appointment._id}
-            status="confirmed"
-            className="gap-2"
-            onSuccess={updateStatus}
-            icon={CalendarCheck2}
-          >
-            {t("appointments.view.confirm")}
-          </AppointmentActionButton>
-        ) : null}
-      </div>
+export const AppointmentView: React.FC<{
+  view?: View;
+}> = ({ view }) => {
+  const t = useI18n("admin");
 
+  const params = useSearchParams();
+  const defaultView = view ?? params.get("view") ?? "details";
+
+  const { appointment, key } = React.useContext(AppointmentViewContext);
+  return (
+    <div className="flex flex-col gap-4 w-full @container [contain:layout]">
       <Tabs defaultValue={defaultView} className="flex flex-col gap-2 mb-4">
         {/* <TabsList className="w-fit self-end"> */}
-        <ResponsiveTabsList className="w-full [&>button]:flex-1 bg-card border flex-wrap h-auto">
+        <ResponsiveTabsList className="w-full flex flex-row gap-2">
           <TabsTrigger value="details">
             {t("appointments.view.details")}
           </TabsTrigger>

@@ -82,17 +82,19 @@ export const InspectorDrawer: React.FC<{ extraTabs?: SidebarTab[] }> = ({
             onValueChange={(value) => setSidebarTab(value as any)}
           >
             <SelectBlockListener />
-            <ResponsiveTabsList className="w-full justify-between sticky top-0 z-10 flex-wrap h-auto items-center">
-              {allTabs.map((tab) => (
-                <TabsTrigger
-                  key={tab.value}
-                  value={tab.value}
-                  className="gap-2 flex-1"
-                >
-                  {tab.icon} {tab.label}
-                </TabsTrigger>
-              ))}
-            </ResponsiveTabsList>
+            <div className="w-full sticky top-0 z-10">
+              <ResponsiveTabsList className="w-full flex flex-row gap-2 items-center">
+                {allTabs.map((tab) => (
+                  <TabsTrigger
+                    key={tab.value}
+                    value={tab.value}
+                    className="gap-2 flex-1"
+                  >
+                    {tab.icon} {tab.label}
+                  </TabsTrigger>
+                ))}
+              </ResponsiveTabsList>
+            </div>
             <div className="max-h-[calc(100vh-120px)] overflow-y-auto">
               {allTabs.map((tab) => (
                 <TabsContent key={tab.value} value={tab.value}>

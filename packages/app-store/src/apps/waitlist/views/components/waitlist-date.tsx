@@ -46,12 +46,16 @@ export const WaitlistDate = ({ entry }: { entry: WaitlistEntry }) => {
                     zone: timeZone,
                   })
                     .setLocale(locale)
-                    .toLocaleString(DateTime.DATE_HUGE)}
+                    .toLocaleString(DateTime.DATE_MED)}
                 </p>
                 <div className="flex flex-wrap gap-1">
                   {dateEntry.time.map((timeSlot) => (
-                    <Badge key={timeSlot} variant="outline" className="text-xs">
-                      {t(`view.times.descriptions.${timeSlot}`)}
+                    <Badge
+                      key={timeSlot}
+                      variant="outline"
+                      className="text-xs "
+                    >
+                      {t(`view.times.short.${timeSlot}`)}
                     </Badge>
                   ))}
                 </div>

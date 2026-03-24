@@ -129,9 +129,9 @@ export const NewEntryDialog = ({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="primary">
+        <Button variant="primary" aria-label={t("newEntry.trigger")}>
           <Plus className="size-3.5" />
-          {t("newEntry.trigger")}
+          <span className="max-md:hidden">{t("newEntry.trigger")}</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[80%] flex flex-col max-h-[100%]">

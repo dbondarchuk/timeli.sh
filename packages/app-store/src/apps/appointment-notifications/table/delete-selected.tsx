@@ -58,10 +58,13 @@ export const DeleteSelectedAppointmentNotificationsButton: React.FC<{
         variant="destructive"
         disabled={isLoading || !selected || !selected.length}
         onClick={() => setIsOpen(true)}
+        aria-label={t("table.deleteSelected.label", {
+          count: selected.length,
+        })}
       >
         {isLoading && <Spinner />}
-        <Trash className="mr-2 h-4 w-4" />
-        <span>
+        <Trash className="h-4 w-4" />
+        <span className="max-md:hidden">
           {t("table.deleteSelected.label", {
             count: selected.length,
           })}

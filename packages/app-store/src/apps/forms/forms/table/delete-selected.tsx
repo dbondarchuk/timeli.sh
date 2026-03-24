@@ -56,10 +56,13 @@ export const DeleteSelectedFormsButton: React.FC<{
         variant="destructive"
         disabled={disabled || isLoading || !selected || !selected.length}
         onClick={() => setIsOpen(true)}
+        aria-label={t("forms.table.deleteSelected.label", {
+          count: selected.length,
+        })}
       >
         {isLoading && <Spinner />}
-        <Trash className="mr-2 h-4 w-4" />
-        <span>
+        <Trash className="h-4 w-4" />
+        <span className="max-md:hidden">
           {t("forms.table.deleteSelected.label", {
             count: selected.length,
           })}

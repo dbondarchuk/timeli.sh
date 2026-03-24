@@ -2,7 +2,13 @@
 
 import { useI18n } from "@timelish/i18n";
 import { giftCardStatus } from "@timelish/types";
-import { Button, Popover, PopoverContent, PopoverTrigger } from "@timelish/ui";
+import {
+  Button,
+  ButtonGroup,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@timelish/ui";
 import {
   CustomersDataTableAsyncFilterBox,
   DataTableFilterBox,
@@ -63,7 +69,7 @@ export function GiftCardsTableAction() {
   );
 
   return (
-    <div className="flex flex-col flex-wrap md:items-center justify-between gap-4 md:flex-row">
+    <div className="flex flex-row flex-wrap items-center justify-between gap-2">
       <div className="flex flex-1 md:flex-wrap items-center gap-4">
         <DataTableSearch
           searchKey="name"
@@ -92,15 +98,17 @@ export function GiftCardsTableAction() {
         />
       </div>
       <div className="flex flex-wrap items-center gap-4">
-        <SetStatusSelectedGiftCardsButton
-          selected={rowSelection}
-          status="active"
-        />
-        <SetStatusSelectedGiftCardsButton
-          selected={rowSelection}
-          status="inactive"
-        />
-        <DeleteSelectedGiftCardsButton selected={rowSelection} />
+        <ButtonGroup>
+          <SetStatusSelectedGiftCardsButton
+            selected={rowSelection}
+            status="active"
+          />
+          <SetStatusSelectedGiftCardsButton
+            selected={rowSelection}
+            status="inactive"
+          />
+          <DeleteSelectedGiftCardsButton selected={rowSelection} />
+        </ButtonGroup>
       </div>
     </div>
   );

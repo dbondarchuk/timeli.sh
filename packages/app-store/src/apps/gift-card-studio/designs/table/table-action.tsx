@@ -1,14 +1,22 @@
 "use client";
 
 import { useI18n } from "@timelish/i18n";
-import { Button, Popover, PopoverContent, PopoverTrigger } from "@timelish/ui";
+import {
+  Button,
+  ButtonGroup,
+  Link,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@timelish/ui";
 import {
   DataTableFilterBox,
   DataTableResetFilter,
   DataTableSearch,
   useSelectedRowsStore,
 } from "@timelish/ui-admin";
-import { Settings2 } from "lucide-react";
+import { HeaderActionButtonsPortal } from "@timelish/ui-admin-kit";
+import { Plus, Receipt, Settings2 } from "lucide-react";
 import React from "react";
 import {
   GiftCardStudioAdminKeys,
@@ -53,7 +61,31 @@ export const DesignsTableAction: React.FC<{ appId: string }> = ({ appId }) => {
     rowSelection.length > 0 && rowSelection.every((d) => !d.isArchived);
 
   return (
-    <div className="flex flex-col flex-wrap md:items-center justify-between gap-4 md:flex-row">
+    <div className="flex flex-row flex-wrap items-center justify-between gap-2">
+      <HeaderActionButtonsPortal>
+        <Link
+          href="/dashboard/gift-card-studio/purchases"
+          button
+          variant="outline"
+          aria-label={t("app.pages.purchases.title")}
+        >
+          <Receipt size={16} />
+          <span className="max-md:hidden">
+            {t("app.pages.purchases.title")}
+          </span>
+        </Link>
+        <Link
+          href="/dashboard/gift-card-studio/new"
+          button
+          variant="default"
+          aria-label={t("designs.table.actions.create")}
+        >
+          <Plus size={16} />
+          <span className="max-md:hidden">
+            {t("designs.table.actions.create")}
+          </span>
+        </Link>
+      </HeaderActionButtonsPortal>
       <div className="flex flex-1 md:flex-wrap items-center gap-4">
         <DataTableSearch
           searchKey="name"
@@ -63,7 +95,7 @@ export const DesignsTableAction: React.FC<{ appId: string }> = ({ appId }) => {
         />
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant="outline" size="icon" className="md:hidden">
+            <Button variant="outline" className="md:hidden">
               <Settings2 size={16} />
             </Button>
           </PopoverTrigger>
@@ -78,26 +110,23 @@ export const DesignsTableAction: React.FC<{ appId: string }> = ({ appId }) => {
         />
       </div>
       <div className="flex flex-wrap max-md:flex-row-reverse items-center gap-4 max-md:justify-between">
-        <UnarchiveSelectedDesignsButton
-          appId={appId}
-          selected={rowSelection}
-          disabled={!allArchived}
-        />
-        <ArchiveSelectedDesignsButton
-          appId={appId}
-          selected={rowSelection}
-          disabled={!allActive}
-        />
-        <DeleteSelectedDesignsButton
-          appId={appId}
-          selected={rowSelection}
-          disabled={!canDeleteAll}
-        />
-        <Button asChild>
-          <a href="/dashboard/gift-card-studio/new">
-            {t("designs.table.actions.create")}
-          </a>
-        </Button>
+        <ButtonGroup>
+          <UnarchiveSelectedDesignsButton
+            appId={appId}
+            selected={rowSelection}
+            disabled={!allArchived}
+          />
+          <ArchiveSelectedDesignsButton
+            appId={appId}
+            selected={rowSelection}
+            disabled={!allActive}
+          />
+          <DeleteSelectedDesignsButton
+            appId={appId}
+            selected={rowSelection}
+            disabled={!canDeleteAll}
+          />
+        </ButtonGroup>
       </div>
     </div>
   );

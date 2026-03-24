@@ -57,10 +57,13 @@ export const DismissSelectedWaitlistEntriesButton: React.FC<{
         variant="destructive"
         disabled={isLoading || !selected || !selected.length}
         onClick={() => setIsOpen(true)}
+        aria-label={t("table.dismiss.label", {
+          count: selected.length,
+        })}
       >
         {isLoading && <Spinner />}
-        <X className="mr-2 h-4 w-4" />
-        <span>
+        <X className="h-4 w-4" />
+        <span className="max-md:hidden">
           {t("table.dismiss.label", {
             count: selected.length,
           })}

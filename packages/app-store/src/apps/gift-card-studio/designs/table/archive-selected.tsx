@@ -56,11 +56,14 @@ export const ArchiveSelectedDesignsButton: React.FC<{
       <Button
         variant="secondary"
         disabled={disabled || isLoading || !selected?.length}
+        aria-label={t("designs.table.archiveSelected.label", {
+          count: selected.length,
+        })}
         onClick={() => setIsOpen(true)}
       >
         {isLoading && <Spinner />}
-        <Archive className="mr-2 h-4 w-4" />
-        <span>
+        <Archive className="h-4 w-4" />
+        <span className="max-xl:hidden">
           {t("designs.table.archiveSelected.label", { count: selected.length })}
         </span>
       </Button>
