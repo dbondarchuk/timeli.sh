@@ -126,7 +126,7 @@ export default async function Page(params: Params) {
                   <div className="flex flex-col @6xl:flex-1 flex-shrink">
                     <EventsCalendar />
                   </div>
-                  <div className="@6xl:flex-0 flex flex-col gap-2 justify-between">
+                  <div className="@6xl:flex-0 flex flex-col gap-2">
                     <div className="flex flex-row gap-2">
                       <h2 className="tracking-tight text-lg font-medium flex-1">
                         {tAdmin("dashboard.appointments.nextAppointments")}
