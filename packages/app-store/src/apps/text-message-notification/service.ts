@@ -176,7 +176,10 @@ export class TextMessageNotificationConnectedApp
         args,
       );
 
-      const phone = data?.phone || config.general.phone;
+      const user = await this.props.services.userService.getUser(
+        appData.userId,
+      );
+      const phone = data?.phone || user?.phone || config.general.phone;
       if (!phone) {
         logger.warn(
           { appId: appData._id, appointmentId: appointment._id },

@@ -19,8 +19,10 @@ export async function joinWaitlist(email: string) {
   });
   const serviceContainer = SystemServicesContainer();
   const emailTemplate = await renderUserEmailTemplate({
-    text: `
-Hi there! 👋
+    content: [
+      {
+        type: "text",
+        text: `Hi there! 👋
 
 Thanks for joining the **Timeli.sh** waitlist — we’re excited to have you on board!
 
@@ -38,7 +40,9 @@ Thanks for being early.
 
 — The Timeli.sh Team ✨
 `,
-    title: "🎉 You're on the Timeli.sh Waitlist!",
+      },
+      { type: "title", text: "🎉 You're on the Timeli.sh Waitlist!" },
+    ],
     previewText: "You're on the waitlist!",
   });
 

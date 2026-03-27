@@ -21,9 +21,13 @@ import React from "react";
 
 export type DeleteAppButtonProps = {
   appId: string;
+  children: React.ReactNode;
 };
 
-export const DeleteAppButton: React.FC<DeleteAppButtonProps> = ({ appId }) => {
+export const DeleteAppButton: React.FC<DeleteAppButtonProps> = ({
+  appId,
+  children,
+}) => {
   const router = useRouter();
   const t = useI18n("apps");
 
@@ -49,11 +53,7 @@ export const DeleteAppButton: React.FC<DeleteAppButtonProps> = ({ appId }) => {
 
   return (
     <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-      <AlertDialogTrigger asChild>
-        <Button variant="destructive">
-          <Unplug /> {t("common.disconnectApp")}
-        </Button>
-      </AlertDialogTrigger>
+      <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>

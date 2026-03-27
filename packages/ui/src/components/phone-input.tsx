@@ -2,6 +2,7 @@ import countries from "countries-phone-masks";
 import React from "react";
 import { Mask, MaskedInput } from "./masked-input";
 
+import { cn } from "../utils";
 import { Combobox } from "./combobox";
 import "./css/flags.css";
 import {
@@ -19,6 +20,7 @@ export type PhoneInputProps = {
   onBlur?: () => void;
   disabled?: boolean;
   className?: string;
+  inputClassName?: string;
 };
 
 export const PhoneInput: React.FC<PhoneInputProps> = ({
@@ -26,6 +28,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
   label,
   className,
   defaultCountry = "US",
+  inputClassName,
   ...props
 }) => {
   const [mask, setMask] = React.useState<Mask | undefined>(undefined);
@@ -113,7 +116,10 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
           {...props}
           disabled={disabled}
           mask={mask}
-          className={InputGroupInputClasses({ variant: "prefix" })}
+          className={cn(
+            InputGroupInputClasses({ variant: "prefix" }),
+            inputClassName,
+          )}
           placeholder={maskPlaceholder}
         />
       </InputGroupInput>

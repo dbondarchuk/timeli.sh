@@ -11,15 +11,15 @@
   },
   "main": "./src/index.ts",
   "devDependencies": {
+    "@timelish/eslint-config": "*",
+    "@timelish/tailwind-config": "*",
+    "@timelish/typescript-config": "*",
     "@types/node": "^20",
     "@types/prismjs": "^1.26.5",
     "@types/react": "19.0.2",
     "@types/react-dom": "19.0.2",
     "@types/react-window": "^1.8.8",
     "@types/sanitize-html": "^2.13.0",
-    "@timelish/eslint-config": "*",
-    "@timelish/tailwind-config": "*",
-    "@timelish/typescript-config": "*",
     "typescript": "5.5.4"
   },
   "dependencies": {
@@ -28,6 +28,7 @@
     "@emoji-mart/data": "1.2.1",
     "@faker-js/faker": "^9.5.0",
     "@radix-ui/react-toolbar": "^1.1.2",
+    "@timelish/ui": "*",
     "@udecode/cmdk": "^0.2.0",
     "@udecode/cn": "^44.0.1",
     "@udecode/plate": "^44.0.1",
@@ -59,7 +60,7 @@
     "@udecode/plate-layout": "^44.0.0",
     "@udecode/plate-line-height": "^44.0.0",
     "@udecode/plate-link": "^44.0.4",
-    "@udecode/plate-markdown": "^44.0.0",
+    "@udecode/plate-markdown": "^47.0.0",
     "@udecode/plate-math": "^44.0.0",
     "@udecode/plate-media": "^44.0.6",
     "@udecode/plate-mention": "^44.0.0",
@@ -72,7 +73,6 @@
     "@udecode/plate-table": "^44.0.0",
     "@udecode/plate-toggle": "^44.0.0",
     "@udecode/plate-trailing-block": "^44.0.0",
-    "@timelish/ui": "*",
     "ai": "^4.1.41",
     "date-fns": "^3.6.0",
     "html2canvas": "^1.4.1",
@@ -85,7 +85,9 @@
     "react-resizable-panels": "^2.1.7",
     "react-textarea-autosize": "^8.5.7",
     "react-tweet": "^3.2.1",
+    "rehype-raw": "^7.0.0",
     "remark-emoji": "^5.0.1",
+    "remark-mdx": "^3.1.1",
     "use-file-picker": "^2.1.2"
   }
 }

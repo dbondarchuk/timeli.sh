@@ -358,7 +358,11 @@ export class EmailNotificationConnectedApp
         "Generated event calendar content",
       );
 
-      const recipientEmail = data?.email || config.general.email;
+      const user = await this.props.services.userService.getUser(
+        appData.userId,
+      );
+
+      const recipientEmail = data?.email || user?.email || config.general.email;
 
       logger.debug(
         {

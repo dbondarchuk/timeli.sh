@@ -34,28 +34,51 @@ export const getEmailTemplate = async (
 
   const description = await renderUserEmailTemplate(
     {
-      ...templateContent,
-      topButtons: [
+      previewText: templateContent.previewText ?? templateContent.title,
+      content: [
         {
-          text: buttonTexts.viewAppointment,
-          url: `${url}/dashboard/appointments/${appointment._id}`,
+          type: "button",
+          button: {
+            text: buttonTexts.viewAppointment,
+            url: `${url}/dashboard/appointments/${appointment._id}`,
+          },
         },
-      ],
-      bottomButtons: [
-        appointment.status != "declined"
-          ? {
-              text: buttonTexts.decline,
-              url: `${url}/dashboard/appointments/${appointment._id}/decline`,
-              backgroundColor: "#ef4444",
-            }
-          : undefined,
-        appointment.status === "pending"
-          ? {
-              text: buttonTexts.confirm,
-              url: `${url}/dashboard/appointments/${appointment._id}/confirm`,
-              backgroundColor: "#0066ff",
-            }
-          : undefined,
+        {
+          type: "title",
+          text: templateContent.title,
+        },
+        {
+          type: "text",
+          text: templateContent.text,
+        },
+        {
+          type: "button",
+          button: {
+            text: buttonTexts.viewAppointment,
+            url: `${url}/dashboard/appointments/${appointment._id}`,
+          },
+        },
+        ...[
+          appointment.status != "declined"
+            ? {
+                text: buttonTexts.decline,
+                url: `${url}/dashboard/appointments/${appointment._id}/decline`,
+                backgroundColor: "#ef4444",
+              }
+            : undefined,
+          appointment.status === "pending"
+            ? {
+                text: buttonTexts.confirm,
+                url: `${url}/dashboard/appointments/${appointment._id}/confirm`,
+                backgroundColor: "#0066ff",
+              }
+            : undefined,
+        ]
+          .filter((button) => !!button)
+          .map((button) => ({
+            type: "button" as const,
+            button,
+          })),
       ],
     },
     args,

@@ -1,0 +1,42 @@
+import { AuthLayout } from "@/components/admin/auth/layout";
+import { UserResetPasswordForm } from "@/components/admin/auth/user-reset-password-form";
+import { getI18nAsync } from "@timelish/i18n/server";
+import { getLoggerFactory } from "@timelish/logger";
+import { Metadata } from "next";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import { auth } from "../../auth";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getI18nAsync("admin");
+  return {
+    title: t("auth.resetPassword.title"),
+  };
+}
+
+export default async function AuthenticationPage() {
+  const logger = getLoggerFactory("AdminPages")("reset-password");
+
+  logger.debug("Loading reset-password page");
+
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (session) {
+    redirect("/dashboard");
+  }
+
+  const t = await getI18nAsync("admin");
+
+  logger.debug("Reset-password page loaded");
+
+  return (
+    <AuthLayout
+      title={t("auth.resetPassword.title")}
+      description={t("auth.resetPassword.description")}
+    >
+      <UserResetPasswordForm />
+    </AuthLayout>
+  );
+}

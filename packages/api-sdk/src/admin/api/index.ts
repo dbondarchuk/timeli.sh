@@ -17,6 +17,7 @@ import * as serviceAddons from "./service-addons";
 import * as serviceFields from "./service-fields";
 import * as serviceOptions from "./service-options";
 import * as templates from "./templates";
+import * as users from "./users";
 
 export const adminApi = {
   calendar,
@@ -38,6 +39,7 @@ export const adminApi = {
   apps,
   configuration,
   giftCards,
+  users,
 };
 
 export * from "./utils";

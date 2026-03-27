@@ -27,16 +27,30 @@ export const getEmailTemplate = async (
 
   const description = await renderUserEmailTemplate(
     {
-      ...templateContent,
-      bottomButtons: [
+      previewText: templateContent.previewText ?? templateContent.title,
+      content: [
         {
-          text: buttonTexts.viewResponse,
-          url: `${adminUrl}/dashboard/forms/responses/edit?id=${formId}`,
+          type: "title",
+          text: templateContent.title,
         },
         {
-          text: buttonTexts.viewAllResponses,
-          url: `${adminUrl}/dashboard/forms/responses?formId=${formId}`,
-          backgroundColor: "#5d8be2",
+          type: "text",
+          text: templateContent.text,
+        },
+        {
+          type: "button",
+          button: {
+            text: buttonTexts.viewResponse,
+            url: `${adminUrl}/dashboard/forms/responses/edit?id=${formId}`,
+          },
+        },
+        {
+          type: "button",
+          button: {
+            text: buttonTexts.viewAllResponses,
+            url: `${adminUrl}/dashboard/forms/responses?formId=${formId}`,
+            backgroundColor: "#5d8be2",
+          },
         },
       ],
     },

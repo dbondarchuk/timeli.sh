@@ -52,6 +52,11 @@
     "loadingApps": "Завантаження додатків...",
     "selectApp": "Вибрати додаток"
   },
+  "installedApps": {
+    "searchPlaceholder": "Пошук встановлених додатків",
+    "noInstalledApps": "У вас немає встановлених додатків",
+    "noResults": "За вашим запитом додатків не знайдено"
+  },
   "scopes": {
     "calendar-read": "Джерело календаря",
     "calendar-write": "Сховище календаря",

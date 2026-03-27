@@ -4,12 +4,17 @@ import { getI18nAsync } from "@timelish/i18n/server";
 import { getLoggerFactory } from "@timelish/logger";
 import {
   Breadcrumbs,
+  Link,
   ResponsiveTabsList,
   Skeleton,
   TabsContent,
   TabsTrigger,
   TabsViaUrl,
+  TooltipResponsive,
+  TooltipResponsiveContent,
+  TooltipResponsiveTrigger,
 } from "@timelish/ui";
+import { CalendarPlus } from "lucide-react";
 import { Metadata } from "next";
 import { Suspense } from "react";
 import { getServicesContainer } from "../utils";
@@ -121,10 +126,28 @@ export default async function Page(params: Params) {
                   <div className="flex flex-col @6xl:flex-1 flex-shrink">
                     <EventsCalendar />
                   </div>
-                  <div className="@6xl:flex-0 flex flex-col gap-2 ">
-                    <h2 className="tracking-tight text-lg font-medium">
-                      {tAdmin("dashboard.appointments.nextAppointments")}
-                    </h2>
+                  <div className="@6xl:flex-0 flex flex-col gap-2 justify-between">
+                    <div className="flex flex-row gap-2">
+                      <h2 className="tracking-tight text-lg font-medium flex-1">
+                        {tAdmin("dashboard.appointments.nextAppointments")}
+                      </h2>
+                      <TooltipResponsive>
+                        <TooltipResponsiveTrigger>
+                          <Link
+                            href="/dashboard/appointments/new"
+                            button
+                            variant="default"
+                            aria-label={t("appointments.scheduleAppointment")}
+                            className="flex flex-row gap-2 items-center"
+                          >
+                            <CalendarPlus size={16} />
+                          </Link>
+                        </TooltipResponsiveTrigger>
+                        <TooltipResponsiveContent>
+                          {tAdmin("appointments.scheduleAppointment")}
+                        </TooltipResponsiveContent>
+                      </TooltipResponsive>
+                    </div>
                     <Suspense
                       key={key}
                       fallback={

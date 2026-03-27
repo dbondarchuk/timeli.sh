@@ -90,7 +90,7 @@ export const PROMPT_TEMPLATES = {
 
 export const aiPlugins = [
   cursorOverlayPlugin,
-  MarkdownPlugin.configure({ options: { indentList: true } }),
+  MarkdownPlugin,
   AIPlugin,
   AIChatPlugin.configure({
     options: {

@@ -12,52 +12,74 @@ import {
   FormMessage,
   Input,
   Link,
+  Spinner,
+  toast,
 } from "@timelish/ui";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-const formSchema = z.object({
-  email: z.email({ error: "common.email.invalid" }),
-  password: z.string(),
-});
+const formSchema = z
+  .object({
+    password: z
+      .string({ error: "admin.auth.validation.password.required" })
+      .min(8, { error: "admin.auth.validation.password.minLength" })
+      .max(128, { error: "admin.auth.validation.password.maxLength" }),
+    confirmPassword: z.string({
+      error: "admin.auth.validation.confirmPassword.required",
+    }),
+  })
+  .superRefine((data, ctx) => {
+    if (data.password !== data.confirmPassword) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["confirmPassword"],
+        message: "admin.auth.validation.confirmPassword.required",
+      });
+    }
+  });
 
 type UserFormValue = z.infer<typeof formSchema>;
+const defaultValues: UserFormValue = {
+  password: "",
+  confirmPassword: "",
+};
 
-export const UserAuthForm = () => {
+export const UserResetPasswordForm = () => {
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl");
+  const token = searchParams.get("token");
+  const router = useRouter();
+
   const [loading, setLoading] = useState(false);
   const t = useI18n("admin");
-  const defaultValues = {
-    email: "",
-    password: "",
-  };
+
   const form = useForm<UserFormValue>({
     resolver: zodResolver(formSchema),
     defaultValues,
   });
 
-  const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
-
   const onSubmit = async (data: UserFormValue) => {
+    if (!token) {
+      toast.error(t("auth.resetPassword.error"));
+      return;
+    }
+
     setLoading(true);
     try {
-      const response = await authClient.signIn.email({
-        email: data.email,
-        password: data.password,
-        callbackURL: callbackUrl ?? "/dashboard",
+      const response = await authClient.resetPassword({
+        newPassword: data.password,
+        token: token,
       });
 
       if (response.error?.message) {
-        setError(response.error?.message ?? null);
+        console.error(response.error);
+        toast.error(t("auth.resetPassword.error"));
+        return;
       }
 
-      if (response.data?.user) {
-        router.push(callbackUrl ?? "/dashboard");
-      }
+      toast.success(t("auth.resetPassword.success"));
+      router.push("/auth/signin");
     } finally {
       setLoading(false);
     }
@@ -72,14 +94,14 @@ export const UserAuthForm = () => {
         >
           <FormField
             control={form.control}
-            name="email"
+            name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t("auth.email")}</FormLabel>
+                <FormLabel>{t("auth.resetPassword.password")}</FormLabel>
                 <FormControl>
                   <Input
-                    type="email"
-                    placeholder={t("auth.email")}
+                    type="password"
+                    placeholder={t("auth.resetPassword.password")}
                     disabled={loading}
                     {...field}
                   />
@@ -91,14 +113,14 @@ export const UserAuthForm = () => {
 
           <FormField
             control={form.control}
-            name="password"
+            name="confirmPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t("auth.password")}</FormLabel>
+                <FormLabel>{t("auth.resetPassword.confirmPassword")}</FormLabel>
                 <FormControl>
                   <Input
                     type="password"
-                    placeholder={t("auth.password")}
+                    placeholder={t("auth.resetPassword.confirmPassword")}
                     disabled={loading}
                     {...field}
                   />
@@ -108,23 +130,23 @@ export const UserAuthForm = () => {
             )}
           />
 
-          {error && (
-            <p className="text-sm font-medium text-destructive">
-              {t("auth.email_or_password_incorrect")}
-            </p>
-          )}
-
-          <Button disabled={loading} className="ml-auto w-full" type="submit">
-            {t("auth.signIn")}
+          <Button
+            disabled={loading}
+            className="ml-auto w-full"
+            type="submit"
+            variant="brand-dark"
+          >
+            {loading && <Spinner />}
+            {t("auth.resetPassword.submit")}
           </Button>
         </form>
       </Form>
 
       <div className="text-center w-full text-sm">
-        {t.rich("auth.sign_in_sign_up_link", {
+        {t.rich("auth.forgotPassword.rememberPassword", {
           link: (chunks: any) => (
             <Link
-              href="/auth/signup"
+              href="/auth/signin"
               className="ml-auto w-full"
               variant="underline"
             >

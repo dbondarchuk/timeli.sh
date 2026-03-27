@@ -1271,7 +1271,11 @@ export class FormsConnectedApp implements IConnectedApp {
         throw new Error("Organization not found");
       }
 
-      const recipientEmail = form.notifications.email ?? config.general.email;
+      const user = await this.props.services.userService.getUser(
+        appData.userId,
+      );
+      const recipientEmail =
+        form.notifications.email ?? user?.email ?? config.general.email;
 
       if (!recipientEmail) {
         logger.debug(

@@ -1,16 +1,20 @@
 import { Language } from "@timelish/i18n";
-import { WithDatabaseId } from "../database";
+import type { ObjectId } from "mongodb";
 
 export type UserRole = "owner" | "admin" | "staff" | "viewer";
 
-export type User = WithDatabaseId<{
+export type User = {
+  _id: ObjectId;
   email: string;
   name: string;
-  passwordHash: string;
-  language: Language;
-  companyId: string; // Link user to company
+  organizationId: string; // Link user to organization
   role: UserRole;
   permissions: string[];
   createdAt: Date;
+  updatedAt: Date;
   lastLoginAt?: Date;
-}>;
+  language: Language;
+  image?: string | null;
+  bio?: string | null;
+  phone: string;
+};

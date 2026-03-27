@@ -1,5 +1,5 @@
 import { AllKeys, I18nNamespaces } from "@timelish/i18n";
-import { WithCompanyId, WithDatabaseId } from "../database";
+import { WithCompanyId, WithDatabaseId, WithUserId } from "../database";
 import { Prettify } from "../utils";
 export type ConnectedAppStatus = "pending" | "connected" | "failed";
 
@@ -26,17 +26,23 @@ export type ConnectedOauthAppTokens = {
   expiresOn: Date | undefined | null;
 };
 
-export type ConnectedAppAccount = (
-  | {
-      username: string;
-    }
-  | {
-      username?: string;
-      serverUrl: string;
-    }
-) & {
-  additional?: string;
-};
+export type ConnectedAppAccount = Prettify<
+  (
+    | {
+        username: string;
+      }
+    | {
+        username?: string;
+        serverUrl: string;
+      }
+    | {
+        targetAppName: string;
+        targetAppId: string;
+      }
+  ) & {
+    additional?: string;
+  }
+>;
 
 export class ConnectedAppError<
   T extends I18nNamespaces = I18nNamespaces,
@@ -66,13 +72,15 @@ export type ConnectedAppStatusWithText<
 
 export type ConnectedAppData<TData = any, TToken = any> = Prettify<
   WithCompanyId<
-    WithDatabaseId<
-      ConnectedAppStatusWithText & {
-        name: string;
-        account?: ConnectedAppAccount;
-        token?: TToken;
-        data?: TData;
-      }
+    WithUserId<
+      WithDatabaseId<
+        ConnectedAppStatusWithText & {
+          name: string;
+          account?: ConnectedAppAccount;
+          token?: TToken;
+          data?: TData;
+        }
+      >
     >
   >
 >;

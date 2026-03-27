@@ -7,6 +7,7 @@ import {
   AvatarImage,
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -17,6 +18,7 @@ import {
   useSidebar,
 } from "@timelish/ui";
 import { ChevronsUpDown } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export function UserNav() {
@@ -75,8 +77,13 @@ export function UserNav() {
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            {/* <DropdownMenuGroup>
-          </DropdownMenuGroup> */}
+            <DropdownMenuGroup>
+              <DropdownMenuItem asChild>
+                <Link href="/dashboard/users/me/profile">
+                  {t("navigation.profile")}
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={logout}>
               {t("navigation.logout")}

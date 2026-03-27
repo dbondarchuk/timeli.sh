@@ -214,15 +214,7 @@ export const createPlateStaticEditor = (
       BaseMentionPlugin,
       BaseCommentsPlugin,
       BaseTogglePlugin,
-      ...(options?.includeMarkdown
-        ? [
-            MarkdownPlugin.configure({
-              options: {
-                indentList: true,
-              },
-            }),
-          ]
-        : []),
+      ...(options?.includeMarkdown ? [MarkdownPlugin] : []),
     ],
     value: value,
   });

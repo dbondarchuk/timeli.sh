@@ -25,20 +25,31 @@ export const getEmailTemplate = async (
 
   const description = await renderUserEmailTemplate(
     {
-      ...templateContent,
-      bottomButtons: [
-        appointmentId
-          ? {
-              text: buttonTexts.viewAppointment,
-              url: `${url}/dashboard/appointments/${appointmentId}`,
-            }
-          : undefined,
-        customerId
-          ? {
-              text: buttonTexts.viewCustomer,
-              url: `${url}/dashboard/customers/${customerId}`,
-            }
-          : undefined,
+      previewText: templateContent.previewText ?? templateContent.title,
+      content: [
+        {
+          type: "title",
+          text: templateContent.title,
+        },
+        {
+          type: "text",
+          text: templateContent.text,
+        },
+        {
+          type: "button",
+          button: {
+            text: buttonTexts.viewAppointment,
+            url: `${url}/dashboard/appointments/${appointmentId}`,
+          },
+        },
+        {
+          type: "button",
+          button: {
+            text: buttonTexts.viewCustomer,
+            url: `${url}/dashboard/customers/${customerId}`,
+            backgroundColor: "#5d8be2",
+          },
+        },
       ],
     },
     args,

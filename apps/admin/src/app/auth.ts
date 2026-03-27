@@ -1,3 +1,5 @@
+import { sendEmail } from "@/utils/email/send-email";
+import { languages } from "@timelish/i18n";
 import { getRedisClient } from "@timelish/services";
 import {
   getDbConnection,
@@ -11,6 +13,12 @@ import { ObjectId } from "mongodb";
 import { ApiError } from "next/dist/server/api-utils";
 
 export const auth = betterAuth({
+  trustedOrigins: [
+    process.env.BETTER_AUTH_TRUST_HOST || process.env.AUTH_TRUST_HOST || "",
+    ...(process.env.NODE_ENV === "development"
+      ? ["http://localhost:3001"]
+      : []),
+  ],
   database: (options: any) => {
     return mongodbAdapter(getDbConnectionSync(), {
       usePlural: true,
@@ -46,27 +54,57 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     autoSignIn: true,
+    requireEmailVerification: true,
+    sendResetPassword: async ({ user, url, token }) => {
+      const language = (user as any).language || "en";
+      await sendEmail("resetPassword", user.email, language, {
+        url,
+        token,
+        name: user.name,
+      });
+    },
+  },
+  emailVerification: {
+    sendVerificationEmail: async ({ user, url, token }) => {
+      const language = (user as any).language || "en";
+      await sendEmail("emailVerification", user.email, language, {
+        url,
+        token,
+        name: user.name,
+      });
+    },
   },
   user: {
     additionalFields: {
-      organizationSlug: {
-        type: "string",
-        required: true,
-        unique: true,
-      },
       organizationId: {
         type: "string",
         input: false,
       },
-      organizationName: {
+      language: {
+        type: [...languages],
+        input: true,
+        default: "en",
+      },
+      phone: {
         type: "string",
         required: true,
-        unique: true,
+        input: true,
       },
-      language: {
+      bio: {
         type: "string",
-        input: false,
-        default: "en",
+        input: true,
+      },
+    },
+    changeEmail: {
+      enabled: true,
+      sendChangeEmailVerification: async ({ user, newEmail, url, token }) => {
+        const language = (user as any).language || "en";
+        await sendEmail("changeEmail", user.email, language, {
+          url,
+          token,
+          name: user.name,
+          newEmail,
+        });
       },
     },
   },
@@ -143,6 +181,7 @@ export const auth = betterAuth({
         ...session,
         user: {
           ...user,
+          phone: (user as any).phone || "",
           organizationId: organizationId,
           organizationName: organization.name,
           organizationSlug: organization.slug,

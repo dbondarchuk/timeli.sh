@@ -12,7 +12,7 @@ import {
 } from "../apps/connected-app.service";
 
 export interface IConnectedAppsService {
-  createNewApp(name: string): Promise<string>;
+  createNewApp(name: string, userId: string): Promise<string>;
   deleteApp(appId: string): Promise<void>;
   updateApp(appId: string, updateModel: ConnectedAppUpdateModel): Promise<void>;
   requestLoginUrl(appId: string): Promise<string>;

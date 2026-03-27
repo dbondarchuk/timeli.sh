@@ -225,7 +225,10 @@ export default class TextMessageResenderConnectedApp
         args,
       );
 
-      const phone = appData?.data?.phone || config.general.phone;
+      const user = await this.props.services.userService.getUser(
+        appData.userId,
+      );
+      const phone = appData?.data?.phone || user?.phone || config.general.phone;
       if (!phone) {
         logger.warn(
           { appId: appData._id, appointmentId: reply.data.appointmentId },
