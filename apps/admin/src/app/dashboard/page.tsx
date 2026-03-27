@@ -137,7 +137,9 @@ export default async function Page(params: Params) {
                             href="/dashboard/appointments/new"
                             button
                             variant="default"
-                            aria-label={t("appointments.scheduleAppointment")}
+                            aria-label={tAdmin(
+                              "appointments.scheduleAppointment",
+                            )}
                             className="flex flex-row gap-2 items-center"
                           >
                             <CalendarPlus size={16} />

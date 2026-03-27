@@ -192,12 +192,12 @@ const HistoryEntry: React.FC<{ entry: AppointmentHistoryEntry }> = ({
                 {t("admin.appointments.history.paymentType", {
                   type: t(`admin.payment.types.${entry.data.payment.type}`),
                   appName: entry.data.payment.appName
-                    ? t(
-                        `apps.${AvailableApps[entry.data.payment.appName].displayName}`,
-                      )
-                    : entry.data.payment.method === "cash"
-                      ? t("admin.payment.methods.cash")
-                      : t("admin.payment.methods.card"),
+                    ? t(AvailableApps[entry.data.payment.appName].displayName)
+                    : entry.data.payment.method === "gift-card"
+                      ? t("admin.payment.methods.giftCard")
+                      : entry.data.payment.method === "cash"
+                        ? t("admin.payment.methods.cash")
+                        : t("admin.payment.methods.card"),
                 })}
               </Badge>
             </>
