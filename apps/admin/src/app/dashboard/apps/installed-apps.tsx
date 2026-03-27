@@ -1,8 +1,8 @@
 import { getServicesContainer } from "@/app/utils";
-import { ConnectedAppRow } from "@/components/admin/apps/connected-app";
 import { AvailableApps } from "@timelish/app-store";
 import { getI18nAsync } from "@timelish/i18n/server";
 import React from "react";
+import { InstalledAppsClient } from "./installed-apps-client";
 
 export const InstalledApps: React.FC = async () => {
   const t = await getI18nAsync("admin");
@@ -11,12 +11,5 @@ export const InstalledApps: React.FC = async () => {
     (app) => AvailableApps[app.name] && !AvailableApps[app.name].isHidden,
   );
 
-  return (
-    <div className="grid grid-cols-1 gap-4">
-      {apps.map((app) => (
-        <ConnectedAppRow app={app} key={app._id} />
-      ))}
-      {apps.length === 0 && <div className="">{t("apps.noConnectedApps")}</div>}
-    </div>
-  );
+  return <InstalledAppsClient apps={apps} />;
 };

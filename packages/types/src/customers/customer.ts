@@ -29,9 +29,11 @@ export const customerSchema = z
     ),
     email: zEmail,
     phone: zPhone,
-    dateOfBirth: z.coerce.date<Date>().optional(),
-    avatar: asOptionalField(zAssetName),
-    note: asOptionalField(z.string().max(4096, "validation.customer.note.max")),
+    dateOfBirth: z.coerce.date<Date>().optional().nullable(),
+    avatar: asOptionalField(zAssetName).nullable(),
+    note: asOptionalField(
+      z.string().max(4096, "validation.customer.note.max"),
+    ).nullable(),
     knownNames: zUniqueArray(
       z.array(
         z
@@ -52,7 +54,7 @@ export const customerSchema = z
       (s) => s,
       "customer.knownPhones.unique",
     ),
-    dontAllowBookings: z.coerce.boolean<boolean>().optional(),
+    dontAllowBookings: z.coerce.boolean<boolean>().optional().nullable(),
   })
   .and(
     z

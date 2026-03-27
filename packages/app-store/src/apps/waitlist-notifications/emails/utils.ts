@@ -24,23 +24,38 @@ export const getEmailTemplate = async (
 
   const description = await renderUserEmailTemplate(
     {
-      ...templateContent,
-      topButtons: [
+      previewText: templateContent.previewText ?? templateContent.title,
+      content: [
         {
-          text: buttonTexts.viewWaitlist,
-          url: `${url}/dashboard/waitlist`,
-        },
-      ],
-      bottomButtons: [
-        {
-          text: buttonTexts.dismiss,
-          url: `${url}/dashboard/waitlist/dismiss?id=${entry._id}`,
-          backgroundColor: "#ef4444",
+          type: "button",
+          button: {
+            text: buttonTexts.viewWaitlist,
+            url: `${url}/dashboard/waitlist`,
+          },
         },
         {
-          text: buttonTexts.createAppointment,
-          url: `${url}/dashboard/waitlist/appointment/new?id=${entry._id}`,
-          backgroundColor: "#0066ff",
+          type: "title",
+          text: templateContent.title,
+        },
+        {
+          type: "text",
+          text: templateContent.text,
+        },
+        {
+          type: "button",
+          button: {
+            text: buttonTexts.dismiss,
+            url: `${url}/dashboard/waitlist/dismiss?id=${entry._id}`,
+            backgroundColor: "#ef4444",
+          },
+        },
+        {
+          type: "button",
+          button: {
+            text: buttonTexts.createAppointment,
+            url: `${url}/dashboard/waitlist/appointment/new?id=${entry._id}`,
+            backgroundColor: "#0066ff",
+          },
         },
       ],
     },

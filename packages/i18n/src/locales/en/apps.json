@@ -52,6 +52,11 @@
     "loadingApps": "Loading apps...",
     "selectApp": "Select app"
   },
+  "installedApps": {
+    "searchPlaceholder": "Search installed apps",
+    "noInstalledApps": "You do not have any installed apps",
+    "noResults": "No apps found for your search"
+  },
   "scopes": {
     "calendar-read": "Calendar source",
     "calendar-write": "Calendar store",

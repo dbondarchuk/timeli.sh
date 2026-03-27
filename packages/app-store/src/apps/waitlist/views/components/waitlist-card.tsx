@@ -72,7 +72,10 @@ export const WaitlistCard: React.FC<WaitlistCardProps> = ({ entry, appId }) => {
       <div className="flex items-center justify-between px-5 py-4 border-b border-border">
         <div className="flex items-center gap-3 min-w-0">
           <Avatar>
-            <AvatarImage src={entry.customer?.avatar} />
+            <AvatarImage
+              src={entry.customer?.avatar ?? undefined}
+              alt={entry.customer?.name ?? entry.name}
+            />
             <AvatarFallback>
               {(entry.customer?.name ?? entry.name)
                 .split(" ")

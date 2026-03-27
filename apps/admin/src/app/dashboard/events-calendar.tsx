@@ -22,7 +22,7 @@ type CookieValues = {
   [COOKIE_NAME]?: EventsCalendarView;
 };
 
-export const EventsCalendar = () => {
+export const EventsCalendar = ({ className }: { className?: string }) => {
   const [cookies, setCookies] = useCookies<typeof COOKIE_NAME, CookieValues>([
     COOKIE_NAME,
   ]);
@@ -46,9 +46,11 @@ export const EventsCalendar = () => {
   return (
     <div className="grid gap-3 w-full">
       <div className="flex flex-row gap-2 justify-between">
-        <Button onClick={() => setDate(DateTime.now())}>
-          {t("calendar.today")}
-        </Button>
+        <div className="flex flex-row gap-2">
+          <Button onClick={() => setDate(DateTime.now())}>
+            {t("calendar.today")}
+          </Button>
+        </div>
         <Select
           value={type}
           onValueChange={(value) => changeType(value as typeof type)}

@@ -1,6 +1,6 @@
 "use server";
 
-import { getServicesContainer } from "@/app/utils";
+import { getServicesContainer, getSession } from "@/app/utils";
 import { BaseAllKeys } from "@timelish/i18n";
 import { getLoggerFactory } from "@timelish/logger";
 import { ConnectedAppStatusWithText } from "@timelish/types";
@@ -55,8 +55,15 @@ export const installComplexApp = async (name: string) => {
 
   try {
     const servicesContainer = await getServicesContainer();
-    const appId =
-      await servicesContainer.connectedAppsService.createNewApp(name);
+    const session = await getSession();
+    if (!session) {
+      throw new Error("Unauthorized");
+    }
+
+    const appId = await servicesContainer.connectedAppsService.createNewApp(
+      name,
+      session.user.id,
+    );
 
     actionLogger.debug(
       {

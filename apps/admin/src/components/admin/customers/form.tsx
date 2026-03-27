@@ -32,7 +32,6 @@ import {
   InputGroupAddonClasses,
   InputGroupInput,
   InputGroupInputClasses,
-  Label,
   PhoneInput,
   Textarea,
   toastPromise,
@@ -158,32 +157,37 @@ export const CustomerForm: React.FC<{
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="w-full space-y-8 pb-4"
+        className="w-full space-y-6 pb-4"
       >
-        <div className="flex flex-col gap-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
+          <div className="flex flex-col gap-4 lg:col-span-4">
             <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">
+              <CardHeader className="border-b">
+                <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                   {t("customers.form.customerPhoto")}
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pt-6">
                 <FormField
                   control={form.control}
                   name="avatar"
                   render={({ field }) => (
-                    <div className="flex flex-col gap-4 justify-between">
-                      <div className="w-full relative justify-center flex flex-row">
-                        <img
-                          src={field.value ?? "/unknown-person.png"}
-                          alt={t("customers.form.customerPhotoAlt")}
-                          height={200}
-                          width={200}
-                        />
+                    <div className="flex flex-col gap-4 items-center">
+                      <img
+                        src={field.value ?? "/unknown-person.png"}
+                        alt={t("customers.form.customerPhotoAlt")}
+                        height={120}
+                        width={120}
+                        className="h-28 w-28 rounded-full object-cover"
+                      />
+                      <div className="text-center">
+                        <p className="text-xl font-semibold">{name}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {form.watch("email")}
+                        </p>
                       </div>
-                      {initialData?._id && !disabled && (
-                        <div className="w-full">
+                      {initialData?._id && !initialData?.isDeleted && (
+                        <div className="w-full flex gap-2">
                           <AssetSelectorDialog
                             accept={["image/*"]}
                             isOpen={avatarDialogOpen}
@@ -197,15 +201,29 @@ export const CustomerForm: React.FC<{
                             }
                           />
                           <Button
-                            className="w-full"
+                            type="button"
+                            className="flex-1"
                             variant="secondary"
                             disabled={disabled}
                             onClick={() => setAvatarDialogOpen(true)}
                           >
                             {t("customers.form.changePhoto")}
                           </Button>
+                          <Button
+                            type="button"
+                            className="flex-1"
+                            variant="outline"
+                            disabled={disabled || !field.value}
+                            onClick={() => {
+                              field.onChange(null);
+                              form.trigger("avatar");
+                            }}
+                          >
+                            {t("customers.form.remove")}
+                          </Button>
                         </div>
                       )}
+                      <FormMessage />
                     </div>
                   )}
                 />
@@ -213,381 +231,52 @@ export const CustomerForm: React.FC<{
             </Card>
 
             <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">
-                  {t("customers.form.personalInformation")}
+              <CardHeader className="border-b">
+                <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  {t("customers.form.notes")}
                 </CardTitle>
               </CardHeader>
-              <CardContent className="flex flex-col gap-4">
+              <CardContent className="pt-6 flex flex-col gap-4">
                 <FormField
                   control={form.control}
-                  name="name"
+                  name="note"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>{t("customers.form.name")}</FormLabel>
-
                       <FormControl>
-                        <Input
+                        <Textarea
+                          autoResize
                           disabled={disabled}
-                          placeholder={t("customers.form.namePlaceholder")}
+                          className="min-h-20"
+                          placeholder={t("customers.form.notesPlaceholder")}
                           {...field}
+                          value={field.value ?? ""}
                         />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{t("customers.form.email")}</FormLabel>
-
-                      <FormControl>
-                        <Input
-                          type="email"
-                          disabled={disabled}
-                          placeholder={t("customers.form.emailPlaceholder")}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="phone"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{t("customers.form.phone")}</FormLabel>
-
-                      <FormControl>
-                        <PhoneInput
-                          label={t("customers.form.phone")}
-                          disabled={disabled}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="dateOfBirth"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{t("customers.form.dateOfBirth")}</FormLabel>
-
-                      <FormControl>
-                        <DateTimeInput
-                          disabled={disabled}
-                          clearable
-                          format="MM/dd/yyyy"
-                          hideTime
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="dontAllowBookings"
-                  render={({ field }) => (
-                    <FormItem>
-                      <div className="flex flex-row items-center gap-2">
-                        <Checkbox
-                          id="dontAllowBookings"
-                          disabled={disabled}
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                        <FormLabel
-                          htmlFor="dontAllowBookings"
-                          className="cursor-pointer"
-                        >
-                          {t("customers.form.dontAllowAppointments")}{" "}
-                          <InfoTooltip>
-                            {t("customers.form.dontAllowAppointmentsTooltip")}
-                          </InfoTooltip>
-                        </FormLabel>
-                      </div>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="requireDeposit"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>
-                        {t("customers.form.requireDeposit")}{" "}
-                        <InfoTooltip>
-                          {t("customers.form.requireDepositTooltip")}
-                        </InfoTooltip>
-                      </FormLabel>
-                      <FormControl>
-                        <Combobox
-                          disabled={disabled}
-                          className="flex w-full font-normal text-base"
-                          values={isPaymentRequiredForCustomerTypes.map(
-                            (value) => ({
-                              value,
-                              label: t(`customers.form.${value}`),
-                            }),
-                          )}
-                          searchLabel={t("customers.form.selectOption")}
-                          value={field.value}
-                          onItemSelect={(item) => {
-                            field.onChange(item);
-                            field.onBlur();
-                          }}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                {requireDeposit === "always" && (
-                  <>
-                    <FormField
-                      control={form.control}
-                      name="depositPercentage"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>
-                            {t("customers.form.depositAmount")}{" "}
-                            <InfoTooltip>
-                              <p>{t("customers.form.depositAmountTooltip")}</p>
-                            </InfoTooltip>
-                          </FormLabel>
-                          <FormControl>
-                            <InputGroup>
-                              <InputGroupInput>
-                                <Input
-                                  disabled={disabled}
-                                  placeholder="20"
-                                  type="number"
-                                  className={InputGroupInputClasses()}
-                                  {...field}
-                                  onChange={(e) => {
-                                    field.onChange(e);
-                                    form.trigger("requireDeposit");
-                                  }}
-                                />
-                              </InputGroupInput>
-                              <InputGroupAddon
-                                className={InputGroupAddonClasses()}
-                              >
-                                %
-                              </InputGroupAddon>
-                            </InputGroup>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </>
-                )}
               </CardContent>
             </Card>
           </div>
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">
-                {t("customers.form.additionalInformation")}
+
+          <Card className="lg:col-span-8">
+            <CardHeader className="border-b">
+              <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                {t("customers.form.personalInformation")}
               </CardTitle>
             </CardHeader>
-
-            <CardContent className="flex flex-col gap-4">
-              <div className="flex flex-col gap-4 md:grid md:grid-cols-3">
-                <div className="flex flex-col gap-4">
-                  <Label>
-                    {t("customers.form.knownNames")}{" "}
-                    <InfoTooltip>
-                      {t("customers.form.knownNamesTooltip")}
-                    </InfoTooltip>
-                  </Label>
-                  {(knownNames || []).map((name, index) => (
-                    <FormField
-                      key={index}
-                      control={form.control}
-                      name={`knownNames.${index}`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <InputGroup>
-                              <Input
-                                disabled={disabled}
-                                placeholder={t(
-                                  "customers.form.namePlaceholder",
-                                )}
-                                className={cn(
-                                  InputGroupInputClasses(),
-                                  "flex-1",
-                                )}
-                                {...field}
-                              />
-                              <InputGroupAddon>
-                                <Button
-                                  variant="secondary"
-                                  size="icon"
-                                  disabled={disabled}
-                                  className={cn(
-                                    InputGroupAddonClasses(),
-                                    "px-2",
-                                  )}
-                                  onClick={() => onNameRemove(index)}
-                                >
-                                  <Trash />
-                                </Button>
-                              </InputGroupAddon>
-                            </InputGroup>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  ))}
-                  <Button
-                    variant="secondary"
-                    className="w-full"
-                    onClick={onAddName}
-                    disabled={disabled}
-                  >
-                    <PlusCircle /> {t("customers.form.addName")}
-                  </Button>
-                </div>
-                <div className="flex flex-col gap-4">
-                  <Label>
-                    {t("customers.form.knownEmails")}
-                    <InfoTooltip>
-                      {t("customers.form.knownEmailsTooltip")}
-                    </InfoTooltip>
-                  </Label>
-                  {(knownEmails || []).map((email, index) => (
-                    <FormField
-                      key={index}
-                      control={form.control}
-                      name={`knownEmails.${index}`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <InputGroup>
-                              <Input
-                                type="email"
-                                disabled={disabled}
-                                placeholder={t(
-                                  "customers.form.emailPlaceholder",
-                                )}
-                                className={cn(
-                                  InputGroupInputClasses(),
-                                  "flex-1",
-                                )}
-                                {...field}
-                              />
-                              <InputGroupAddon>
-                                <Button
-                                  variant="secondary"
-                                  size="icon"
-                                  disabled={disabled}
-                                  className={cn(
-                                    InputGroupAddonClasses(),
-                                    "px-2",
-                                  )}
-                                  onClick={() => onEmailRemove(index)}
-                                >
-                                  <Trash />
-                                </Button>
-                              </InputGroupAddon>
-                            </InputGroup>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  ))}
-                  <Button
-                    variant="secondary"
-                    className="w-full"
-                    onClick={onAddEmail}
-                    disabled={disabled}
-                  >
-                    <PlusCircle /> {t("customers.form.addEmail")}
-                  </Button>
-                </div>
-                <div className="flex flex-col gap-4">
-                  <Label>
-                    {t("customers.form.knownPhones")}{" "}
-                    <InfoTooltip>
-                      {t("customers.form.knownPhonesTooltip")}
-                    </InfoTooltip>
-                  </Label>
-                  {(knownPhones || []).map((phone, index) => (
-                    <FormField
-                      key={index}
-                      control={form.control}
-                      name={`knownPhones.${index}`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <InputGroup>
-                              <PhoneInput
-                                label={t("customers.form.phone")}
-                                disabled={loading}
-                                className={cn(
-                                  InputGroupInputClasses(),
-                                  "flex-1",
-                                )}
-                                {...field}
-                              />
-                              <InputGroupAddon>
-                                <Button
-                                  variant="secondary"
-                                  size="icon"
-                                  className={cn(
-                                    InputGroupAddonClasses(),
-                                    "px-2",
-                                  )}
-                                  onClick={() => onPhoneRemove(index)}
-                                >
-                                  <Trash />
-                                </Button>
-                              </InputGroupAddon>
-                            </InputGroup>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  ))}
-                  <Button
-                    variant="secondary"
-                    className="w-full"
-                    onClick={onAddPhone}
-                    disabled={disabled}
-                  >
-                    <PlusCircle /> {t("customers.form.addPhone")}
-                  </Button>
-                </div>
-              </div>
+            <CardContent className="pt-6 flex flex-col gap-4">
               <FormField
                 control={form.control}
-                name="note"
+                name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("customers.form.notes")}</FormLabel>
-
+                    <FormLabel>{t("customers.form.name")}</FormLabel>
                     <FormControl>
-                      <Textarea
-                        autoResize
+                      <Input
                         disabled={disabled}
-                        placeholder={t("customers.form.notesPlaceholder")}
+                        placeholder={t("customers.form.namePlaceholder")}
                         {...field}
                       />
                     </FormControl>
@@ -595,9 +284,334 @@ export const CustomerForm: React.FC<{
                   </FormItem>
                 )}
               />
+              <FormField
+                control={form.control}
+                name="dateOfBirth"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("customers.form.dateOfBirth")}</FormLabel>
+                    <FormControl>
+                      <DateTimeInput
+                        disabled={disabled}
+                        clearable
+                        format="MM/dd/yyyy"
+                        hideTime
+                        {...field}
+                        value={field.value ?? undefined}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("customers.form.phone")}</FormLabel>
+                    <FormControl>
+                      <PhoneInput
+                        label={t("customers.form.phone")}
+                        disabled={disabled}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("customers.form.email")}</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="email"
+                        disabled={disabled}
+                        placeholder={t("customers.form.emailPlaceholder")}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="dontAllowBookings"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex flex-row items-center gap-2">
+                      <Checkbox
+                        id="dontAllowBookings"
+                        disabled={disabled}
+                        checked={field.value ?? false}
+                        onCheckedChange={field.onChange}
+                      />
+                      <FormLabel
+                        htmlFor="dontAllowBookings"
+                        className="cursor-pointer"
+                      >
+                        {t("customers.form.dontAllowAppointments")}{" "}
+                        <InfoTooltip>
+                          {t("customers.form.dontAllowAppointmentsTooltip")}
+                        </InfoTooltip>
+                      </FormLabel>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="requireDeposit"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      {t("customers.form.requireDeposit")}{" "}
+                      <InfoTooltip>
+                        {t("customers.form.requireDepositTooltip")}
+                      </InfoTooltip>
+                    </FormLabel>
+                    <FormControl>
+                      <Combobox
+                        disabled={disabled}
+                        className="flex w-full font-normal text-base"
+                        values={isPaymentRequiredForCustomerTypes.map(
+                          (value) => ({
+                            value,
+                            label: t(`customers.form.${value}`),
+                          }),
+                        )}
+                        searchLabel={t("customers.form.selectOption")}
+                        value={field.value}
+                        onItemSelect={(item) => {
+                          field.onChange(item);
+                          field.onBlur();
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {requireDeposit === "always" && (
+                <FormField
+                  control={form.control}
+                  name="depositPercentage"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        {t("customers.form.depositAmount")}{" "}
+                        <InfoTooltip>
+                          <p>{t("customers.form.depositAmountTooltip")}</p>
+                        </InfoTooltip>
+                      </FormLabel>
+                      <FormControl>
+                        <InputGroup>
+                          <InputGroupInput>
+                            <Input
+                              disabled={disabled}
+                              placeholder="20"
+                              type="number"
+                              className={InputGroupInputClasses()}
+                              {...field}
+                              onChange={(e) => {
+                                field.onChange(e);
+                                form.trigger("requireDeposit");
+                              }}
+                            />
+                          </InputGroupInput>
+                          <InputGroupAddon className={InputGroupAddonClasses()}>
+                            %
+                          </InputGroupAddon>
+                        </InputGroup>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
             </CardContent>
           </Card>
         </div>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <Card>
+            <CardHeader className="border-b">
+              <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground flex items-center gap-2 justify-between">
+                <div>
+                  {t("customers.form.knownNames")}{" "}
+                  <InfoTooltip>
+                    {t("customers.form.knownNamesTooltip")}
+                  </InfoTooltip>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={onAddName}
+                  title={t("customers.form.addName")}
+                >
+                  <PlusCircle />
+                </Button>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pt-6 flex flex-col gap-4">
+              {(knownNames || []).map((name, index) => (
+                <FormField
+                  key={index}
+                  control={form.control}
+                  name={`knownNames.${index}`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <InputGroup>
+                          <Input
+                            disabled={disabled}
+                            placeholder={t("customers.form.namePlaceholder")}
+                            className={cn(InputGroupInputClasses(), "flex-1")}
+                            {...field}
+                          />
+                          <InputGroupAddon>
+                            <Button
+                              type="button"
+                              variant="secondary"
+                              size="icon"
+                              disabled={disabled}
+                              className={cn(InputGroupAddonClasses(), "px-2")}
+                              onClick={() => onNameRemove(index)}
+                            >
+                              <Trash />
+                            </Button>
+                          </InputGroupAddon>
+                        </InputGroup>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              ))}
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="border-b">
+              <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground flex items-center gap-2 justify-between">
+                <div>
+                  {t("customers.form.knownEmails")}{" "}
+                  <InfoTooltip>
+                    {t("customers.form.knownEmailsTooltip")}
+                  </InfoTooltip>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={onAddEmail}
+                  title={t("customers.form.addEmail")}
+                >
+                  <PlusCircle />
+                </Button>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pt-6 flex flex-col gap-4">
+              {(knownEmails || []).map((email, index) => (
+                <FormField
+                  key={index}
+                  control={form.control}
+                  name={`knownEmails.${index}`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <InputGroup>
+                          <Input
+                            type="email"
+                            disabled={disabled}
+                            placeholder={t("customers.form.emailPlaceholder")}
+                            className={cn(InputGroupInputClasses(), "flex-1")}
+                            {...field}
+                          />
+                          <InputGroupAddon>
+                            <Button
+                              type="button"
+                              variant="secondary"
+                              size="icon"
+                              disabled={disabled}
+                              className={cn(InputGroupAddonClasses(), "px-2")}
+                              onClick={() => onEmailRemove(index)}
+                            >
+                              <Trash />
+                            </Button>
+                          </InputGroupAddon>
+                        </InputGroup>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              ))}
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="border-b">
+              <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground flex items-center gap-2 justify-between">
+                <div>
+                  {t("customers.form.knownPhones")}{" "}
+                  <InfoTooltip>
+                    {t("customers.form.knownPhonesTooltip")}
+                  </InfoTooltip>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={onAddPhone}
+                  title={t("customers.form.addPhone")}
+                >
+                  <PlusCircle />
+                </Button>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pt-6 flex flex-col gap-4">
+              {(knownPhones || []).map((phone, index) => (
+                <FormField
+                  key={index}
+                  control={form.control}
+                  name={`knownPhones.${index}`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <InputGroup>
+                          <PhoneInput
+                            label={t("customers.form.phone")}
+                            disabled={loading}
+                            className={cn(
+                              "flex-1 focus:ring-0 focus:ring-offset-0 focus-within:ring-0 focus-within:ring-offset-0",
+                            )}
+                            inputClassName={InputGroupInputClasses()}
+                            {...field}
+                          />
+                          <InputGroupAddon>
+                            <Button
+                              type="button"
+                              variant="secondary"
+                              size="icon"
+                              className={cn(InputGroupAddonClasses(), "px-2")}
+                              onClick={() => onPhoneRemove(index)}
+                            >
+                              <Trash />
+                            </Button>
+                          </InputGroupAddon>
+                        </InputGroup>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              ))}
+            </CardContent>
+          </Card>
+        </div>
+
         <SaveButton form={form} disabled={disabled} />
       </form>
     </Form>

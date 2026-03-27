@@ -90,7 +90,7 @@ const plugins = [
       },
     },
   }),
-  MarkdownPlugin.configure({ options: { indentList: true } }),
+  MarkdownPlugin,
 ];
 
 export const AIChatEditor = memo(({ content }: { content: string }) => {

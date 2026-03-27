@@ -43,19 +43,19 @@ const CommunicationEntry: React.FC<{ entry: CommunicationLog }> = ({
   const locale = useLocale();
   const isMobile = useIsMobile();
   return (
-    <div className="flex flex-row w-full bg-card items-start space-x-4 p-4 border rounded-lg">
-      <div className="flex-shrink-0 mt-1">
-        {entry.channel === "email" ? (
-          <Mail className="size-5" />
-        ) : entry.channel === "text-message" ? (
-          <MessageSquare className="size-5" />
-        ) : (
-          <MailQuestion className="size-5" />
-        )}
-      </div>
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center justify-between">
-          <p className="font-medium text-sm">
+    <div className="w-full rounded-lg border bg-card">
+      <div className="flex items-center justify-between border-b p-4">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="flex-shrink-0">
+            {entry.channel === "email" ? (
+              <Mail className="size-5 text-muted-foreground" />
+            ) : entry.channel === "text-message" ? (
+              <MessageSquare className="size-5 text-muted-foreground" />
+            ) : (
+              <MailQuestion className="size-5 text-muted-foreground" />
+            )}
+          </div>
+          <p className="font-medium text-sm truncate">
             {entry.subject ??
               t(
                 typeof entry.handledBy === "string"
@@ -66,20 +66,20 @@ const CommunicationEntry: React.FC<{ entry: CommunicationLog }> = ({
                   : undefined,
               )}
           </p>
-          <div className="flex items-center space-x-2">
-            <TooltipResponsive>
-              <TooltipResponsiveTrigger>
-                <span className="text-xs text-gray-500 underline decoration-dashed cursor-help">
-                  {dateTime.setLocale(locale).toRelative()}
-                </span>
-              </TooltipResponsiveTrigger>
-              <TooltipResponsiveContent side={isMobile ? "bottom" : "left"}>
-                {dateTime.toLocaleString(DateTime.DATETIME_MED, { locale })}
-              </TooltipResponsiveContent>
-            </TooltipResponsive>
-          </div>
         </div>
-        <div className="inline-flex gap-1 text-sm mt-1 flex-wrap w-full">
+        <TooltipResponsive>
+          <TooltipResponsiveTrigger>
+            <span className="text-xs text-muted-foreground underline decoration-dashed cursor-help">
+              {dateTime.setLocale(locale).toRelative()}
+            </span>
+          </TooltipResponsiveTrigger>
+          <TooltipResponsiveContent side={isMobile ? "bottom" : "left"}>
+            {dateTime.toLocaleString(DateTime.DATETIME_MED, { locale })}
+          </TooltipResponsiveContent>
+        </TooltipResponsive>
+      </div>
+      <div className="p-4 pt-3">
+        <div className="inline-flex gap-1 text-sm flex-wrap w-full">
           <span className="break-all text-xs">
             {entry.text.length > 200
               ? entry.text.substring(0, 200) + "..."
@@ -87,7 +87,11 @@ const CommunicationEntry: React.FC<{ entry: CommunicationLog }> = ({
           </span>
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="link-dashed" className="px-0">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-auto px-1 py-0 text-xs text-muted-foreground hover:text-foreground"
+              >
                 {tAdmin("communications.viewMore")}
               </Button>
             </DialogTrigger>
@@ -116,7 +120,7 @@ const CommunicationEntry: React.FC<{ entry: CommunicationLog }> = ({
             </DialogContent>
           </Dialog>
         </div>
-        <div className="flex items-center gap-2 mt-2 flex-wrap">
+        <div className="flex items-center gap-2 mt-3 flex-wrap">
           <Badge variant="outline" className="text-xs">
             {tAdmin(`common.labels.channel.${entry.channel}`)}
           </Badge>
@@ -173,24 +177,17 @@ const CommunicationEntrySkeleton: React.FC<{ length?: number }> = ({
   length = 3,
 }) => {
   return Array.from({ length }).map((_, index) => (
-    <div
-      key={index}
-      className="flex flex-row w-full bg-card items-start space-x-4 p-4 border rounded-lg"
-    >
-      <div className="flex-shrink-0 mt-1">
-        <Skeleton className="size-5 rounded-full" />
+    <div key={index} className="w-full rounded-lg border bg-card">
+      <div className="flex items-center justify-between border-b p-4">
+        <div className="flex items-center gap-3 min-w-0">
+          <Skeleton className="size-5 rounded-full" />
+          <Skeleton className="w-32 h-5" />
+        </div>
+        <Skeleton className="w-16 h-4" />
       </div>
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center justify-between">
-          <Skeleton className="w-28 h-6" />
-          <div className="flex items-center space-x-2">
-            <Skeleton className="w-16 h-6" />
-          </div>
-        </div>
-        <div className="flex flex-row gap-1 text-sm mt-1">
-          <Skeleton className="w-full h-10" />
-        </div>
-        <div className="flex items-center space-x-2 mt-2 flex-wrap">
+      <div className="p-4 pt-3">
+        <Skeleton className="w-full h-10" />
+        <div className="flex items-center space-x-2 mt-3 flex-wrap">
           <Skeleton className="w-14 h-6" />
           <Skeleton className="w-14 h-6" />
           <Skeleton className="w-14 h-6" />

@@ -24,6 +24,7 @@ import { getS3Configuration } from "./s3-assets-storage/utils";
 import { ScheduleService } from "./schedule.service";
 import { ServicesService } from "./services.service";
 import { TemplatesService } from "./templates.service";
+import { UserService } from "./user.service";
 
 // BullMQ exports
 export * from "./bullmq";
@@ -45,6 +46,7 @@ export * from "./payments.service";
 export * from "./s3-assets-storage";
 export * from "./schedule.service";
 export * from "./services.service";
+export * from "./user.service";
 
 /**
  * ServicesContainer provides company-scoped services
@@ -68,6 +70,7 @@ export const ServicesContainer: (companyId: string) => IServicesContainer =
     const dashboardNotificationsService =
       new RedisDashboardNotificationPublisher(companyId, getRedisClient());
     const organizationService = new OrganizationService(companyId);
+    const userService = new UserService(companyId);
     const customersService = new CustomersService(companyId, jobService);
     const connectedAppsService = new CachedConnectedAppsService(
       companyId,
@@ -131,6 +134,7 @@ export const ServicesContainer: (companyId: string) => IServicesContainer =
       jobService,
       notificationService,
       organizationService,
+      userService,
       dashboardNotificationsService,
       giftCardsService,
     };

@@ -16,21 +16,20 @@ import {
   Spinner,
   toast,
 } from "@timelish/ui";
-import { RefreshCcw } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useMemo } from "react";
 
-export type AddOrUpdateAppButtonProps = {} & (
+export type AddOrUpdateAppButtonProps = { children: React.ReactNode } & (
   | {
       app: ConnectedApp;
     }
   | {
-      children: React.ReactNode;
       appType: string;
     }
 );
 
 export const AddOrUpdateAppButton: React.FC<AddOrUpdateAppButtonProps> = ({
+  children,
   ...props
 }) => {
   const router = useRouter();
@@ -45,17 +44,6 @@ export const AddOrUpdateAppButton: React.FC<AddOrUpdateAppButtonProps> = ({
   } else {
     appType = props.appType;
   }
-
-  // TODO: For some reason, sometimes on installed app list passed children are not rendered
-  // This is a workaround to ensure the button is rendered
-  const children =
-    "app" in props ? (
-      <Button variant="secondary">
-        <RefreshCcw /> {t("common.updateApp")}
-      </Button>
-    ) : (
-      props.children
-    );
 
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);

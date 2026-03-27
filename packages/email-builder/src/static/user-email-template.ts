@@ -1,5 +1,6 @@
+import { TReaderBlock, generateId as generateBlockId } from "@timelish/builder";
 import { deserializeMarkdown } from "@timelish/rte";
-import { template } from "@timelish/utils";
+import { templateSafeWithError } from "@timelish/utils";
 import { renderToStaticMarkup } from "./static";
 
 export type UserEmailTemplateButton = {
@@ -7,46 +8,152 @@ export type UserEmailTemplateButton = {
   url: string;
   textColor?: string;
   backgroundColor?: string;
+  fontSize?: number;
+  fontWeight?: "normal" | "bold";
+  textAlign?: "left" | "center" | "right";
 };
 
-export type UserEmailTemplateProps = {
-  title: string;
-  text: string;
-  previewText?: string;
+export type UserEmailTemplateContentBlock =
+  | {
+      type: "text";
+      text: string;
+    }
+  | {
+      type: "title";
+      text: string;
+      level?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+    }
+  | {
+      type: "image";
+      url: string;
+      alt: string;
+      linkHref?: string;
+      x?: number;
+      y?: number;
+      width?: number;
+      height?: number;
+    }
+  | {
+      type: "button";
+      button: UserEmailTemplateButton;
+    };
 
-  topButtons?: Array<UserEmailTemplateButton | undefined>;
-  bottomButtons?: Array<UserEmailTemplateButton | undefined>;
+export type UserEmailTemplateContentBlockType =
+  UserEmailTemplateContentBlock["type"];
+
+export type UserEmailTemplateProps = {
+  previewText: string;
+  content: Array<UserEmailTemplateContentBlock>;
+};
+
+const contentBlockTypeRenderMap: {
+  [key in UserEmailTemplateContentBlockType]: (
+    block: Extract<UserEmailTemplateContentBlock, { type: key }>,
+    args: Record<string, any>,
+    nextBlock: UserEmailTemplateContentBlock | undefined,
+    previousBlock: UserEmailTemplateContentBlock | undefined,
+  ) => TReaderBlock;
+} = {
+  text: (block, args) => ({
+    type: "Text",
+    id: generateBlockId(),
+    data: {
+      style: {
+        fontWeight: "normal",
+        padding: {
+          top: 16,
+          bottom: 0,
+          right: 24,
+          left: 24,
+        },
+      },
+      props: {
+        value: deserializeMarkdown(
+          templateSafeWithError(block.text, args, true),
+          {
+            allowHtml: true,
+          },
+        ),
+      },
+    },
+  }),
+  title: (block, args) => ({
+    type: "Heading",
+    id: generateBlockId(),
+    data: {
+      props: {
+        text: templateSafeWithError(block.text, args),
+        level: block.level,
+      },
+      style: {
+        textAlign: "center",
+        padding: {
+          top: 16,
+          bottom: 16,
+          right: 24,
+          left: 24,
+        },
+      },
+    },
+  }),
+  image: (block, args) => ({
+    type: "Image",
+    id: generateBlockId(),
+    data: {
+      props: {
+        url: templateSafeWithError(block.url, args, true),
+        alt: templateSafeWithError(block.alt, args, true),
+        contentAlignment: "middle",
+        linkHref: block.linkHref
+          ? templateSafeWithError(block.linkHref, args, true)
+          : undefined,
+        x: block.x,
+        y: block.y,
+        width: block.width,
+        height: block.height,
+      },
+    },
+  }),
+  button: ({ button }, args, nextBlock, previousBlock) => ({
+    type: "Button",
+    id: generateBlockId(),
+    data: {
+      props: {
+        text: templateSafeWithError(button.text, args),
+        url: templateSafeWithError(button.url, args, true),
+        width: "full",
+        size: "large",
+        buttonStyle: "rounded",
+        buttonTextColor: button.textColor ?? "#FFFFFF",
+        buttonBackgroundColor: button.backgroundColor ?? "#0066ff",
+      },
+      style: {
+        padding: {
+          top: previousBlock?.type === "button" ? 0 : 16,
+          bottom: nextBlock?.type === "button" ? 4 : 16,
+          left: 24,
+          right: 24,
+        },
+        fontWeight: button.fontWeight ?? "normal",
+        fontSize: button.fontSize ?? 16,
+        textAlign: button.textAlign ?? "center",
+      },
+    },
+  }),
 };
 
 export const renderUserEmailTemplate = async (
-  {
-    text,
-    topButtons: propsTopButtons,
-    bottomButtons: propsBottomButtons,
-    previewText,
-    title,
-  }: UserEmailTemplateProps,
+  { content, previewText }: UserEmailTemplateProps,
   args: Record<string, any> = {},
 ) => {
-  const topButtons =
-    propsTopButtons
-      ?.filter((b) => !!b)
-      .map((b) => ({
-        ...b,
-        backgroundColor: b.backgroundColor ?? "#0066ff",
-        textColor: b.textColor ?? "#FFFFFF",
-      })) || [];
-
-  const bottomButtons =
-    propsBottomButtons
-      ?.filter((b) => !!b)
-      .map((b) => ({
-        ...b,
-        backgroundColor: b.backgroundColor ?? "#0066ff",
-        textColor: b.textColor ?? "#FFFFFF",
-      })) || [];
-
-  const markdown = deserializeMarkdown(template(text, args));
+  const contentBlocks = content.map((block, index, array) =>
+    contentBlockTypeRenderMap[block.type](
+      block as any,
+      args,
+      array[index + 1],
+      array[index - 1],
+    ),
+  );
 
   const userEmailTemplate = {
     type: "EmailLayout",
@@ -57,7 +164,7 @@ export const renderUserEmailTemplate = async (
       canvasColor: "#FFFFFF",
       textColor: "#262626",
       fontFamily: "MODERN_SANS",
-      previewText: previewText ?? title,
+      previewText: previewText,
       maxWidth: 600,
       children: [
         {
@@ -68,7 +175,7 @@ export const renderUserEmailTemplate = async (
               url: "https://timelish.com/email-logo.png",
               alt: "Timeli.sh Logo",
               contentAlignment: "middle",
-              linkHref: "https://timelish.com",
+              linkHref: "https://app.timelish.com",
               x: 50,
               y: 50,
               width: 200,
@@ -106,359 +213,7 @@ export const renderUserEmailTemplate = async (
             },
           },
         },
-        ...topButtons.map((button, index) => ({
-          type: "Button",
-          data: {
-            props: {
-              text: button.text,
-              url: button.url,
-              width: "full",
-              size: "large",
-              buttonStyle: "rounded",
-              buttonTextColor: button.textColor,
-              buttonBackgroundColor: button.backgroundColor,
-            },
-            style: {
-              padding: {
-                top: index !== 0 ? 0 : 16,
-                bottom: index !== topButtons.length - 1 ? 4 : 16,
-                left: 24,
-                right: 24,
-              },
-              fontWeight: "normal",
-              fontSize: 16,
-              textAlign: "center",
-            },
-          },
-          id: `top-button-${index}`,
-        })),
-        // ...(topButtons && topButtons.length >= 2
-        //   ? [
-        //       {
-        //         type: "Columns",
-        //         data: {
-        //           props: {
-        //             contentAlignment: "middle",
-        //             columnsCount: 2,
-        //             columnsGap: 8,
-        //             columns: [
-        //               {
-        //                 children: [
-        //                   {
-        //                     type: "Button",
-        //                     data: {
-        //                       props: {
-        //                         text: topButtons[0].text,
-        //                         url: topButtons[0].url,
-        //                         width: "full",
-        //                         size: "large",
-        //                         buttonStyle: "rounded",
-        //                         buttonTextColor: topButtons[0].textColor,
-        //                         buttonBackgroundColor:
-        //                           topButtons[0].backgroundColor,
-        //                       },
-        //                       style: {
-        //                         padding: {
-        //                           top: 0,
-        //                           bottom: 0,
-        //                           left: 0,
-        //                           right: 0,
-        //                         },
-        //                         fontWeight: "normal",
-        //                         fontSize: 16,
-        //                         textAlign: "center",
-        //                       },
-        //                     },
-        //                     id: "block-b7ca72c1-48ea-4602-b68a-a4de733aeb68",
-        //                   },
-        //                 ],
-        //               },
-        //               {
-        //                 children: [
-        //                   {
-        //                     type: "Button",
-        //                     data: {
-        //                       props: {
-        //                         text: topButtons[1]!.text,
-        //                         url: topButtons[1]!.url,
-        //                         width: "full",
-        //                         size: "large",
-        //                         buttonStyle: "rounded",
-        //                         buttonTextColor: topButtons[1]!.textColor,
-        //                         buttonBackgroundColor:
-        //                           topButtons[1]!.backgroundColor,
-        //                       },
-        //                       style: {
-        //                         padding: {
-        //                           top: 0,
-        //                           bottom: 0,
-        //                           left: 0,
-        //                           right: 0,
-        //                         },
-        //                         fontWeight: "normal",
-        //                         fontSize: 16,
-        //                         textAlign: "center",
-        //                       },
-        //                     },
-        //                     id: "block-b7ca72c1-48ea-4602-b68a-a4de733aeb68",
-        //                   },
-        //                 ],
-        //               },
-        //               {
-        //                 children: [],
-        //               },
-        //             ],
-        //           },
-        //           style: {
-        //             padding: {
-        //               top: 16,
-        //               bottom: 16,
-        //               left: 24,
-        //               right: 24,
-        //             },
-        //           },
-        //         },
-        //         id: "block-2e0092fa-834c-4740-a279-b00c76cc93f4",
-        //       },
-        //     ]
-        //   : topButtons?.length === 1
-        //     ? [
-        //         {
-        //           type: "Button",
-        //           data: {
-        //             props: {
-        //               text: topButtons[0].text,
-        //               url: topButtons[0].url,
-        //               width: "full",
-        //               size: "large",
-        //               buttonStyle: "rounded",
-        //               buttonTextColor: topButtons[0].textColor,
-        //               buttonBackgroundColor: topButtons[0].backgroundColor,
-        //             },
-        //             style: {
-        //               padding: {
-        //                 top: 16,
-        //                 bottom: 16,
-        //                 left: 24,
-        //                 right: 24,
-        //               },
-        //               fontWeight: "normal",
-        //               fontSize: 16,
-        //               textAlign: "center",
-        //             },
-        //           },
-        //           id: "block-9675dca7-c1fd-431a-83dc-f9d0cbd15030",
-        //         },
-        //       ]
-        //     : []),
-        {
-          type: "Heading",
-          id: "block-1740076839739",
-          data: {
-            props: {
-              text: title,
-            },
-            style: {
-              textAlign: "center",
-              padding: {
-                top: 16,
-                bottom: 16,
-                right: 24,
-                left: 24,
-              },
-            },
-          },
-        },
-        {
-          type: "Text",
-          id: "block-1740076857419",
-          data: {
-            style: {
-              fontWeight: "normal",
-              padding: {
-                top: 16,
-                bottom: 0,
-                right: 24,
-                left: 24,
-              },
-            },
-            props: {
-              value: markdown,
-            },
-          },
-        },
-
-        ...bottomButtons.map((button, index) => ({
-          type: "Button",
-          data: {
-            props: {
-              text: button.text,
-              url: button.url,
-              width: "full",
-              size: "large",
-              buttonStyle: "rounded",
-              buttonTextColor: button.textColor,
-              buttonBackgroundColor: button.backgroundColor,
-            },
-            style: {
-              padding: {
-                top: index !== 0 ? 0 : 16,
-                bottom: index !== bottomButtons.length - 1 ? 4 : 16,
-                left: 24,
-                right: 24,
-              },
-              fontWeight: "normal",
-              fontSize: 16,
-              textAlign: "center",
-            },
-          },
-          id: `bottom-button-${index}`,
-        })),
-        // ...(bottomButtons && bottomButtons.length >= 2
-        //   ? [
-        //       {
-        //         type: "Columns",
-        //         data: {
-        //           props: {
-        //             contentAlignment: "middle",
-        //             columnsCount: 2,
-        //             columnsGap: 8,
-        //             columns: [
-        //               {
-        //                 children: [
-        //                   {
-        //                     type: "Button",
-        //                     data: {
-        //                       props: {
-        //                         text: bottomButtons[0].text,
-        //                         url: bottomButtons[0].url,
-        //                         width: "full",
-        //                         size: "large",
-        //                         buttonStyle: "rounded",
-        //                         buttonTextColor: bottomButtons[0].textColor,
-        //                         buttonBackgroundColor:
-        //                           bottomButtons[0].backgroundColor,
-        //                       },
-        //                       style: {
-        //                         padding: {
-        //                           top: 0,
-        //                           bottom: 0,
-        //                           left: 0,
-        //                           right: 0,
-        //                         },
-        //                         fontWeight: "normal",
-        //                         fontSize: 16,
-        //                         textAlign: "center",
-        //                       },
-        //                     },
-        //                     id: "block-b7ca72c1-48ea-4602-b68a-a4de733aeb68",
-        //                   },
-        //                 ],
-        //               },
-        //               {
-        //                 children: [
-        //                   {
-        //                     type: "Button",
-        //                     data: {
-        //                       props: {
-        //                         text: bottomButtons[1]!.text,
-        //                         url: bottomButtons[1]!.url,
-        //                         width: "full",
-        //                         size: "large",
-        //                         buttonStyle: "rounded",
-        //                         buttonTextColor: bottomButtons[1]!.textColor,
-        //                         buttonBackgroundColor:
-        //                           bottomButtons[1]!.backgroundColor,
-        //                       },
-        //                       style: {
-        //                         padding: {
-        //                           top: 0,
-        //                           bottom: 0,
-        //                           left: 0,
-        //                           right: 0,
-        //                         },
-        //                         fontWeight: "normal",
-        //                         fontSize: 16,
-        //                         textAlign: "center",
-        //                       },
-        //                     },
-        //                     id: "block-b7ca72c1-48ea-4602-b68a-a4de733aeb68",
-        //                   },
-        //                 ],
-        //               },
-        //               {
-        //                 children: [],
-        //               },
-        //             ],
-        //           },
-        //           style: {
-        //             padding: {
-        //               top: 16,
-        //               bottom: 16,
-        //               left: 24,
-        //               right: 24,
-        //             },
-        //           },
-        //         },
-        //         id: "block-2e0092fa-834c-4740-a279-b00c76cc93f4",
-        //       },
-        //     ]
-        //   : bottomButtons?.length === 1
-        //     ? [
-        //         {
-        //           type: "Button",
-        //           data: {
-        //             props: {
-        //               text: bottomButtons[0].text,
-        //               url: bottomButtons[0].url,
-        //               width: "full",
-        //               size: "large",
-        //               buttonStyle: "rounded",
-        //               buttonTextColor: bottomButtons[0].textColor,
-        //               buttonBackgroundColor: bottomButtons[0].backgroundColor,
-        //             },
-        //             style: {
-        //               padding: {
-        //                 top: 16,
-        //                 bottom: 16,
-        //                 left: 24,
-        //                 right: 24,
-        //               },
-        //               fontWeight: "normal",
-        //               fontSize: 16,
-        //               textAlign: "center",
-        //             },
-        //           },
-        //           id: "block-9675dca7-c1fd-431a-83dc-f9d0cbd15030",
-        //         },
-        //       ]
-        //     : []),
-        {
-          id: "block-16a45380-afc4-4a5f-ab8b-3eb5c32fc99c",
-          type: "OnlineMeeting",
-          data: {
-            props: {
-              title: "{{option.name}}",
-              whenText: "When:",
-              codeText: "Code:",
-              passwordText: "Password:",
-              buttonText: "Join Meeting",
-              linkText:
-                "Trouble joining? Copy & paste this link into your browser:",
-              buttonTextColor: "#FFFFFF",
-              buttonBackgroundColor: "#0b5cff",
-              type: "{{meetingInformation.type}}",
-            },
-            style: {
-              padding: {
-                top: 16,
-                bottom: 16,
-                left: 24,
-                right: 24,
-              },
-            },
-          },
-        },
+        ...contentBlocks,
         {
           type: "Text",
           id: "block-1740258119442",

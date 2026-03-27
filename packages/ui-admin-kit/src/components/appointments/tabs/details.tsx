@@ -115,7 +115,10 @@ export const AppointmentDetails = ({
         <div className="flex items-center justify-between gap-3 px-5 py-4 border-b border-border">
           <div className="flex items-center gap-3 min-w-0">
             <Avatar>
-              <AvatarImage src={appointment.customer?.avatar} />
+              <AvatarImage
+                src={appointment.customer?.avatar ?? undefined}
+                alt={appointment.customer?.name ?? appointment.fields.name}
+              />
               <AvatarFallback>
                 {(appointment.customer?.name ?? appointment.fields.name)
                   .split(" ")
@@ -495,7 +498,7 @@ export const AppointmentDetails = ({
           <form
             onSubmit={noteForm.handleSubmit(onNoteSubmit)}
             onBlur={noteForm.handleSubmit(onNoteSubmit)}
-            className="px-5 py-4 border-b border-border"
+            className="px-5 py-4 border-b border-border flex flex-col gap-2 flex-1"
           >
             <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1.5">
               {t("appointments.view.note")}
@@ -504,11 +507,13 @@ export const AppointmentDetails = ({
               control={noteForm.control}
               name="note"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="flex flex-col flex-1">
                   <FormControl>
                     <Textarea
                       disabled={loading}
                       placeholder={t("appointments.view.note")}
+                      className="flex-1 min-h-20"
+                      autoResize
                       {...field}
                     />
                   </FormControl>
@@ -518,8 +523,6 @@ export const AppointmentDetails = ({
             />
           </form>
         </Form>
-
-        <div className="flex-1" />
 
         {/* Timestamp */}
         <div className="px-5 py-2.5 border-b border-border">
@@ -576,7 +579,7 @@ export const AppointmentDetails = ({
           </div>
         )}
       </div>
-      <div className="flex flex-col gap-2">
+      <div className="w-full border border-border rounded-lg bg-background overflow-hidden p-1 flex flex-col gap-2">
         <AppointmentCalendar appointment={appointment} />
       </div>
     </div>

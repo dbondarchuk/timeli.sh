@@ -36,7 +36,7 @@ export class ConnectedAppsService
     super("ConnectedAppsService", companyId);
   }
 
-  public async createNewApp(name: string): Promise<string> {
+  public async createNewApp(name: string, userId: string): Promise<string> {
     const logger = this.loggerFactory("createNewApp");
     logger.debug({ name }, "Creating new app");
 
@@ -51,6 +51,7 @@ export class ConnectedAppsService
       status: "pending",
       statusText: "apps.common.statusText.pending" satisfies BaseAllKeys,
       name,
+      userId,
     };
 
     const db = await getDbConnection();
@@ -728,8 +729,23 @@ export class ConnectedAppsService
       logger.debug({ appName: app.name }, "Executing built-in app");
 
       try {
-        const service = new app.getService(this.companyId, this.getServices());
-        return await hook(getBuiltInAppData(this.companyId, app.name), service);
+        const services = this.getServices();
+        const service = new app.getService(this.companyId, services);
+        const user = await services.userService.getOrganizationAdminUser(
+          this.companyId,
+        );
+        if (!user) {
+          logger.error(
+            { appName: app.name },
+            "Organization admin user not found",
+          );
+          throw new Error("Organization admin user not found");
+        }
+
+        return await hook(
+          getBuiltInAppData(this.companyId, user._id.toString(), app.name),
+          service,
+        );
       } catch (error) {
         if (!ignoreErrors) {
           logger.error(

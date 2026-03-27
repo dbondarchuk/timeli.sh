@@ -1,4 +1,4 @@
-import { getServicesContainer } from "@/app/utils";
+import { getServicesContainer, getSession } from "@/app/utils";
 import { getLoggerFactory } from "@timelish/logger";
 import { NextRequest, NextResponse } from "next/server";
 import * as z from "zod";
@@ -53,6 +53,13 @@ export async function POST(request: NextRequest) {
   const logger = getLoggerFactory("AdminAPI/apps")("POST");
   const body = await request.json();
   const servicesContainer = await getServicesContainer();
+  const session = await getSession();
+  if (!session) {
+    return NextResponse.json(
+      { success: false, error: "Unauthorized", code: "unauthorized" },
+      { status: 401 },
+    );
+  }
 
   logger.debug(
     {
@@ -73,6 +80,7 @@ export async function POST(request: NextRequest) {
   try {
     const appId = await servicesContainer.connectedAppsService.createNewApp(
       data.type,
+      session.user.id,
     );
 
     logger.debug(

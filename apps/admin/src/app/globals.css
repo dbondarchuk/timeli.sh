@@ -15,8 +15,10 @@
     --brand: 216 100% 50%;
     --primary: 216 100% 50%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 215 80% 85%;
-    --secondary-foreground: 222 47% 11%;
+    --secondary: 214 94% 93%;
+    --secondary-foreground: 224 64% 33%;
+    /* --secondary: 210 40% 96%;
+    --secondary-foreground: 215 25% 26.7%; */
     --muted: 215 20% 92%;
     --muted-foreground: 222 30% 51%;
     --accent: 240 4.8% 95.9%;

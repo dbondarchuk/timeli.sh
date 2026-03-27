@@ -14,9 +14,9 @@ import {
   TooltipResponsive,
   TooltipResponsiveContent,
   TooltipResponsiveTrigger,
+  useCurrencyFormat,
   useIsMobile,
   useTimeZone,
-  useCurrencyFormat,
 } from "@timelish/ui";
 import {
   Banknote,
@@ -69,61 +69,29 @@ const HistoryEntry: React.FC<{ entry: AppointmentHistoryEntry }> = ({
   const isMobile = useIsMobile();
 
   return (
-    <div className="flex flex-row w-full bg-card items-start space-x-4 p-4 border rounded-lg">
-      <div className="flex-shrink-0 mt-1">
-        <HistoryEntryTypeIcon className="size-5" entry={entry} />
-      </div>
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center justify-between">
-          <p className="font-medium text-sm">
+    <div className="w-full rounded-lg border bg-card">
+      <div className="flex items-center justify-between border-b p-4">
+        <div className="flex items-center gap-3 min-w-0">
+          <HistoryEntryTypeIcon
+            className="size-5 text-muted-foreground flex-shrink-0"
+            entry={entry}
+          />
+          <p className="font-medium text-sm truncate">
             {t(`admin.common.labels.appointmentHistoryType.${entry.type}`)}
           </p>
-          <div className="flex items-center space-x-2">
-            <TooltipResponsive>
-              <TooltipResponsiveTrigger>
-                <span className="text-xs text-gray-500 underline decoration-dashed cursor-help">
-                  {dateTime.setLocale(locale).toRelative()}
-                </span>
-              </TooltipResponsiveTrigger>
-              <TooltipResponsiveContent side={isMobile ? "bottom" : "left"}>
-                {dateTime.toLocaleString(DateTime.DATETIME_MED, { locale })}
-              </TooltipResponsiveContent>
-            </TooltipResponsive>
-          </div>
         </div>
-        {/* <div className="inline-flex gap-1 text-sm mt-1 flex-wrap w-full">
-          <span className="break-all">{entry.text.substring(0, 200)}...</span>
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="link-dashed" className="px-0">
-                {t("communications.viewMore")}
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[80%] flex flex-col max-h-[100%]">
-              <DialogHeader>
-                <DialogTitle className="w-full flex flex-row justify-between items-center mt-2">
-                  {t("communications.logContent")}
-                </DialogTitle>
-              </DialogHeader>
-              <div className="flex-1 w-full overflow-auto">
-                {entry.channel === "email" && entry.html ? (
-                  <IFrame className="w-full h-[80vh]">
-                    <div dangerouslySetInnerHTML={{ __html: entry.html }} />
-                  </IFrame>
-                ) : (
-                  <Markdown markdown={entry.text} className="not-prose" />
-                )}
-              </div>
-              <DialogFooter className="flex-row !justify-between gap-2">
-                <DialogClose asChild>
-                  <Button variant="secondary">
-                    {t("common.buttons.close")}
-                  </Button>
-                </DialogClose>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        </div> */}
+        <TooltipResponsive>
+          <TooltipResponsiveTrigger>
+            <span className="text-xs text-muted-foreground underline decoration-dashed cursor-help">
+              {dateTime.setLocale(locale).toRelative()}
+            </span>
+          </TooltipResponsiveTrigger>
+          <TooltipResponsiveContent side={isMobile ? "bottom" : "left"}>
+            {dateTime.toLocaleString(DateTime.DATETIME_MED, { locale })}
+          </TooltipResponsiveContent>
+        </TooltipResponsive>
+      </div>
+      <div className="p-4 pt-3">
         <div className="flex items-center gap-2 mt-2 flex-wrap">
           {entry.type === "created" && (
             <>
@@ -295,24 +263,19 @@ const HistoryEntrySkeleton: React.FC<{ length?: number }> = ({
   length = 3,
 }) => {
   return Array.from({ length }).map((_, index) => (
-    <div
-      key={index}
-      className="flex flex-row w-full bg-card items-start space-x-4 p-4 border rounded-lg"
-    >
-      <div className="flex-shrink-0 mt-1">
-        <Skeleton className="size-5 rounded-full" />
-      </div>
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center justify-between">
-          <Skeleton className="w-28 h-6" />
-          <div className="flex items-center space-x-2">
-            <Skeleton className="w-16 h-6" />
-          </div>
+    <div key={index} className="w-full rounded-lg border bg-card">
+      <div className="flex items-center justify-between border-b p-4">
+        <div className="flex items-center gap-3 min-w-0">
+          <Skeleton className="size-5 rounded-full" />
+          <Skeleton className="w-32 h-5" />
         </div>
+        <Skeleton className="w-16 h-4" />
+      </div>
+      <div className="p-4 pt-3">
         {/* <div className="flex flex-row gap-1 text-sm mt-1">
           <Skeleton className="w-full h-10" />
         </div> */}
-        <div className="flex items-center space-x-2 mt-2 flex-wrap">
+        <div className="flex items-center space-x-2 flex-wrap">
           <Skeleton className="w-14 h-6" />
           <Skeleton className="w-14 h-6" />
           <Skeleton className="w-14 h-6" />

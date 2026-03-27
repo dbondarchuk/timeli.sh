@@ -6,6 +6,7 @@ export const CUSTOMERS_COLLECTION_NAME = "customers";
 export const APPOINTMENTS_COLLECTION_NAME = "appointments";
 export const APPOINTMENTS_HISTORY_COLLECTION_NAME = "appointments-history";
 export const ORGANIZATIONS_COLLECTION_NAME = "organizations";
+export const USERS_COLLECTION_NAME = "users";
 export const PAGES_COLLECTION_NAME = "pages";
 export const PAGE_HEADERS_COLLECTION_NAME = "page-headers";
 export const PAGE_FOOTERS_COLLECTION_NAME = "page-footers";

@@ -38,7 +38,8 @@ export const UserSignupForm = ({ publicDomain }: { publicDomain: string }) => {
             .min(1, { error: "admin.auth.validation.name.required" }),
           password: z
             .string({ error: "admin.auth.validation.password.required" })
-            .min(8, { error: "admin.auth.validation.password.minLength" }),
+            .min(8, { error: "admin.auth.validation.password.minLength" })
+            .max(128, { error: "admin.auth.validation.password.maxLength" }),
           confirmPassword: z.string({
             error: "admin.auth.validation.confirmPassword.required",
           }),
@@ -107,13 +108,17 @@ export const UserSignupForm = ({ publicDomain }: { publicDomain: string }) => {
 
   const onSubmit = async (data: UserFormValue) => {
     setLoading(true);
+    setError(null);
     try {
       const response = await authClient.signUp.email({
         email: data.email,
         password: data.password,
         name: data.name,
-        organizationName: data.organizationName,
-        organizationSlug: data.organizationSlug,
+        language: "en",
+        phone: "",
+        bio: "",
+        // organizationName: data.organizationName,
+        // organizationSlug: data.organizationSlug,
         callbackURL: callbackUrl ?? "/dashboard",
       });
 

@@ -39,7 +39,10 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
       <div className="flex items-center justify-between px-5 py-4 border-b border-border">
         <div className="flex items-center gap-3 min-w-0">
           <Avatar>
-            <AvatarImage src={appointment.customer?.avatar} />
+            <AvatarImage
+              src={appointment.customer?.avatar ?? undefined}
+              alt={appointment.customer?.name ?? appointment.fields.name}
+            />
             <AvatarFallback>
               {(appointment.customer?.name ?? appointment.fields.name)
                 .split(" ")

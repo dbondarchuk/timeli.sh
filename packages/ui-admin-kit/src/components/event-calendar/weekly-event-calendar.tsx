@@ -113,7 +113,7 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
       top: offset,
       behavior: "instant",
     });
-  }, [scrollRef]);
+  }, [scrollRef.current]);
 
   const getDates = (day: Date) => {
     switch (variant) {
@@ -339,13 +339,10 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
   );
 
   return (
-    <ScrollArea
-      className={cn("my-3 max-w-full grid", className)}
-      viewportRef={scrollAreaRef}
-    >
+    <div className="w-full flex flex-col gap-2">
       <div
         className={cn(
-          "flex flex-row items-center pb-2 bg-background sticky z-[5] top-0 h-12",
+          "flex flex-row items-center h-12",
           disableTimeChange ? "justify-center" : "justify-between",
         )}
       >
@@ -365,220 +362,228 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
           </Button>
         )}
       </div>
-      <div className="w-full h-full border-x border-b border-secondary">
-        <div
-          className={cn(
-            "px-2 grid grid-rows-1 gap-0 sticky top-12 bg-background z-[5] shadow-md  border-y border-secondary",
-            colsRepeatClass,
-            //colsRepeatClasses[dates.length as keyof typeof colsRepeatClasses]
-          )}
-          style={{
-            "--calendar-grid-cols": `100px repeat(${dates.length}, minmax(100px, 1fr))`,
-          }}
-        >
-          <div></div>
-          {dates.map((date, index) => {
-            return (
-              <Fragment key={`date-${date.toISO()}`}>
+      <ScrollArea
+        className={cn("mb-3 max-w-full grid", className)}
+        viewportRef={scrollAreaRef}
+      >
+        <div className="w-full h-full border-x border-b border-border my-px">
+          <div
+            className={cn(
+              "px-2 grid grid-rows-1 gap-0 sticky top-0 bg-background z-[5] shadow-md  border-y border-border",
+              colsRepeatClass,
+              //colsRepeatClasses[dates.length as keyof typeof colsRepeatClasses]
+            )}
+            style={{
+              "--calendar-grid-cols": `100px repeat(${dates.length}, minmax(100px, 1fr))`,
+            }}
+          >
+            <div></div>
+            {dates.map((date, index) => {
+              return (
+                <Fragment key={`date-${date.toISO()}`}>
+                  <div
+                    className={cn(
+                      "text-darkGray row-start-1 col-span-1 px-2 py-6 text-center text-[13px] text-xs",
+                      colStartClass,
+                    )}
+                    style={{
+                      "--calendar-col-start": timeSlotColCount + index + 1,
+                    }}
+                  >
+                    {date.toFormat("EEE, MMM dd", { locale })}
+                  </div>
+                  <div
+                    className={cn(
+                      "text-darkGray row-start-1 col-span-1 px-2 py-6 text-center text-[13px] text-xs border-r border-border",
+                      colStartClass,
+                    )}
+                    style={{
+                      "--calendar-col-start": timeSlotColCount + index,
+                    }}
+                  ></div>
+                </Fragment>
+              );
+            })}
+            <div
+              className={cn(
+                "text-darkGray row-start-1 col-span-1 px-2 py-6 text-center text-[13px] text-xs border-r border-border",
+                colStartClass,
+              )}
+              style={{
+                "--calendar-col-start": timeSlotColCount + dates.length,
+              }}
+            ></div>
+
+            {events
+              .filter(({ isMultiDay }) => isMultiDay)
+              .map((event, index) => {
+                const classes = getEventClassNames(event);
+                const calendarEvent = eventToCalendarEvent(event);
+                const {
+                  "--calendar-row-end": _,
+                  "--calendar-row-start": __,
+                  ...restStyles
+                } = classes.styles;
+                return (
+                  <EventPopover event={calendarEvent} key={`event-${index}`}>
+                    <div
+                      onClick={() => onEventClick?.(calendarEvent)}
+                      className={cn(
+                        classes.classes,
+                        dates[0].startOf("day") > event.start &&
+                          "rounded-l-none ",
+                        dates[dates.length - 1]
+                          .plus({ days: 1 })
+                          .startOf("day") < event.end && "rounded-r-none ",
+                        "mt-0.5",
+                      )}
+                      style={restStyles}
+                    >
+                      {event.title}
+                    </div>
+                  </EventPopover>
+                );
+              })}
+          </div>
+
+          <div
+            className={cn(
+              "mt-2 px-2 grid grid-rows-[var(--rows-repeat)] gap-0",
+              colsRepeatClass,
+            )}
+            style={{
+              "--calendar-grid-cols": `100px repeat(${dates.length}, minmax(100px, 1fr))`,
+              "--rows-repeat": `repeat(${timeSlots.length},${sizePerRow}px)`,
+            }}
+          >
+            {Array.from({ length: dates.length + 1 }).map((_, index) => {
+              return (
                 <div
+                  key={index}
                   className={cn(
-                    "text-darkGray row-start-1 col-span-1 px-2 py-6 text-center text-[13px] text-xs",
-                    colStartClass,
-                  )}
-                  style={{
-                    "--calendar-col-start": timeSlotColCount + index + 1,
-                  }}
-                >
-                  {date.toFormat("EEE, MMM dd", { locale })}
-                </div>
-                <div
-                  className={cn(
-                    "text-darkGray row-start-1 col-span-1 px-2 py-6 text-center text-[13px] text-xs border-r border-secondary",
+                    "text-darkGray row-start-1 row-span-full translate-y-[var(--translate-y)] col-span-1 py-6 text-center text-[13px] text-xs border-r border-border",
                     colStartClass,
                   )}
                   style={{
                     "--calendar-col-start": timeSlotColCount + index,
-                  }}
-                ></div>
-              </Fragment>
-            );
-          })}
-          <div
-            className={cn(
-              "text-darkGray row-start-1 col-span-1 px-2 py-6 text-center text-[13px] text-xs border-r border-secondary",
-              colStartClass,
-            )}
-            style={{
-              "--calendar-col-start": timeSlotColCount + dates.length,
-            }}
-          ></div>
-
-          {events
-            .filter(({ isMultiDay }) => isMultiDay)
-            .map((event, index) => {
-              const classes = getEventClassNames(event);
-              const calendarEvent = eventToCalendarEvent(event);
-              const {
-                "--calendar-row-end": _,
-                "--calendar-row-start": __,
-                ...restStyles
-              } = classes.styles;
-              return (
-                <EventPopover event={calendarEvent} key={`event-${index}`}>
-                  <div
-                    onClick={() => onEventClick?.(calendarEvent)}
-                    className={cn(
-                      classes.classes,
-                      dates[0].startOf("day") > event.start &&
-                        "rounded-l-none ",
-                      dates[dates.length - 1].plus({ days: 1 }).startOf("day") <
-                        event.end && "rounded-r-none ",
-                      "mt-0.5",
-                    )}
-                    style={restStyles}
-                  >
-                    {event.title}
-                  </div>
-                </EventPopover>
-              );
-            })}
-        </div>
-
-        <div
-          className={cn(
-            "mt-8 px-2 grid grid-rows-[var(--rows-repeat)] gap-0",
-            colsRepeatClass,
-          )}
-          style={{
-            "--calendar-grid-cols": `100px repeat(${dates.length}, minmax(100px, 1fr))`,
-            "--rows-repeat": `repeat(${timeSlots.length},${sizePerRow}px)`,
-          }}
-        >
-          {Array.from({ length: dates.length + 1 }).map((_, index) => {
-            return (
-              <div
-                key={index}
-                className={cn(
-                  "text-darkGray row-start-1 row-span-full translate-y-[var(--translate-y)] col-span-1 py-6 text-center text-[13px] text-xs border-r border-secondary",
-                  colStartClass,
-                )}
-                style={{
-                  "--calendar-col-start": timeSlotColCount + index,
-                  //"--translate-y": `-${sizePerRow * 2}px`,
-                }}
-              ></div>
-            );
-          })}
-          {timeSlots.map((time, index) => {
-            const timeObj = parseTime(time);
-            return (
-              <Fragment key={`time-slot-${time}`}>
-                <div
-                  className={cn(
-                    rowStartClass,
-                    "text-darkGray translate-y-[var(--translate-y)] text-xs leading-[30px] col-span-full border-t scroll-m-16",
-                    time.endsWith("00")
-                      ? "col-start-1 border-secondary"
-                      : "col-start-2 border-primary/20",
-                  )}
-                  style={{
-                    "--calendar-row-start": index + 1,
                     //"--translate-y": `-${sizePerRow * 2}px`,
                   }}
-                  data-time={time}
-                  ref={
-                    timeObj.hour === scrollToHour && timeObj.minute === 0
-                      ? scrollRef
-                      : undefined
-                  }
                 ></div>
-                <div
-                  className={cn(
-                    rowStartClass,
-                    "text-darkGray translate-y-[var(--translate-y)] text-xs leading-[30px] col-start-1",
-                  )}
-                  style={{
-                    "--calendar-row-start": index + 1,
-                    "--translate-y": time.endsWith("00")
-                      ? // ? "100%"
-                        "20px"
-                      : "",
-                    // : `-${sizePerRow}px`,
-                  }}
-                  suppressHydrationWarning
-                >
-                  {!time.endsWith("00") ? (
-                    <>&nbsp;</>
-                  ) : (
-                    DateTime.fromObject({
-                      ...timeObj,
-                      year: 2000,
-                      month: 1,
-                      day: 1,
-                    }).toLocaleString(DateTime.TIME_SIMPLE, { locale })
-                  )}
-                </div>
-              </Fragment>
-            );
-          })}
-
-          {Object.entries(schedule).map(([date, shifts]) =>
-            shifts.map((shift, index) => {
-              const { classes, styles } = getShiftClassNames(date, shift);
-              return (
-                <ShiftDisplay
-                  schedule={shifts}
-                  className={classes}
-                  style={styles}
-                  key={`${date}-${index}`}
-                />
-              );
-            }),
-          )}
-
-          {events
-            .filter((event) => {
-              const hours = event.end.diff(event.start, "hours").hours;
-              return hours < 24;
-            })
-            .map((event, index) => {
-              const { classes, styles } = getEventClassNames(event);
-              const calendarEvent = eventToCalendarEvent(event);
-              return (
-                <EventPopover
-                  key={`time-slot-event-${index}`}
-                  event={calendarEvent}
-                >
-                  <div
-                    data-id={event.id}
-                    onClick={() => onEventClick?.(calendarEvent)}
-                    className={classes}
-                    style={styles}
-                  >
-                    <div className="min-h-0 overflow-hidden">{event.title}</div>
-                    {event.end.diff(event.start, "minutes").minutes / 30 >
-                      1 && (
-                      <div
-                        className="pt-1 text-[10px]"
-                        suppressHydrationWarning
-                      >
-                        {event.start.toLocaleString(DateTime.TIME_SIMPLE, {
-                          locale,
-                        })}{" "}
-                        -{" "}
-                        {event.end.toLocaleString(DateTime.TIME_SIMPLE, {
-                          locale,
-                        })}
-                      </div>
-                    )}
-                  </div>
-                </EventPopover>
               );
             })}
-        </div>
-      </div>
+            {timeSlots.map((time, index) => {
+              const timeObj = parseTime(time);
+              return (
+                <Fragment key={`time-slot-${time}`}>
+                  <div
+                    className={cn(
+                      rowStartClass,
+                      "text-darkGray translate-y-[var(--translate-y)] text-xs leading-[30px] col-span-full border-t scroll-m-16",
+                      time.endsWith("00")
+                        ? "col-start-1 border-border"
+                        : "col-start-2 border-primary/20",
+                    )}
+                    style={{
+                      "--calendar-row-start": index + 1,
+                      //"--translate-y": `-${sizePerRow * 2}px`,
+                    }}
+                    data-time={time}
+                    ref={
+                      timeObj.hour === scrollToHour && timeObj.minute === 0
+                        ? scrollRef
+                        : undefined
+                    }
+                  ></div>
+                  <div
+                    className={cn(
+                      rowStartClass,
+                      "text-darkGray translate-y-[var(--translate-y)] text-xs leading-[30px] col-start-1",
+                    )}
+                    style={{
+                      "--calendar-row-start": index + 1,
+                      "--translate-y": time.endsWith("00")
+                        ? // ? "100%"
+                          "20px"
+                        : "",
+                      // : `-${sizePerRow}px`,
+                    }}
+                    suppressHydrationWarning
+                  >
+                    {!time.endsWith("00") ? (
+                      <>&nbsp;</>
+                    ) : (
+                      DateTime.fromObject({
+                        ...timeObj,
+                        year: 2000,
+                        month: 1,
+                        day: 1,
+                      }).toLocaleString(DateTime.TIME_SIMPLE, { locale })
+                    )}
+                  </div>
+                </Fragment>
+              );
+            })}
 
-      <ScrollBar orientation="horizontal" />
-    </ScrollArea>
+            {Object.entries(schedule).map(([date, shifts]) =>
+              shifts.map((shift, index) => {
+                const { classes, styles } = getShiftClassNames(date, shift);
+                return (
+                  <ShiftDisplay
+                    schedule={shifts}
+                    className={classes}
+                    style={styles}
+                    key={`${date}-${index}`}
+                  />
+                );
+              }),
+            )}
+
+            {events
+              .filter((event) => {
+                const hours = event.end.diff(event.start, "hours").hours;
+                return hours < 24;
+              })
+              .map((event, index) => {
+                const { classes, styles } = getEventClassNames(event);
+                const calendarEvent = eventToCalendarEvent(event);
+                return (
+                  <EventPopover
+                    key={`time-slot-event-${index}`}
+                    event={calendarEvent}
+                  >
+                    <div
+                      data-id={event.id}
+                      onClick={() => onEventClick?.(calendarEvent)}
+                      className={classes}
+                      style={styles}
+                    >
+                      <div className="min-h-0 overflow-hidden">
+                        {event.title}
+                      </div>
+                      {event.end.diff(event.start, "minutes").minutes / 30 >
+                        1 && (
+                        <div
+                          className="pt-1 text-[10px]"
+                          suppressHydrationWarning
+                        >
+                          {event.start.toLocaleString(DateTime.TIME_SIMPLE, {
+                            locale,
+                          })}{" "}
+                          -{" "}
+                          {event.end.toLocaleString(DateTime.TIME_SIMPLE, {
+                            locale,
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  </EventPopover>
+                );
+              })}
+          </div>
+        </div>
+
+        <ScrollBar orientation="horizontal" />
+      </ScrollArea>
+    </div>
   );
 };

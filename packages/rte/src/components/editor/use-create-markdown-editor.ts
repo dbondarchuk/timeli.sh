@@ -91,9 +91,7 @@ export const useCreateMarkdownEditor = (value?: string) => {
     ],
     value: (editor: PlateEditor) =>
       deserializeMd(editor, value || "", {
-        processor(processor) {
-          return processor.use(remarkEmoji) as any;
-        },
+        remarkPlugins: [remarkEmoji as any],
       }),
   });
 };

@@ -213,9 +213,10 @@ export default class TextBeltConnectedApp
           },
         );
 
+        const user = await this.props.services.userService.getUser(app.userId);
         await this.props.services.notificationService.sendEmail({
           email: {
-            to: config.email,
+            to: user?.email ?? config.email,
             subject,
             body: description,
           },

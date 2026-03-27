@@ -3,6 +3,7 @@ import {
   Appointment,
   AppointmentStatus,
   CalendarEvent,
+  ConnectedApp,
   ConnectedAppData,
   ConnectedAppError,
   ConnectedAppRequestError,
@@ -72,23 +73,30 @@ export class CalendarWriterConnectedApp
       );
     }
 
+    let targetApp: ConnectedApp;
+
     try {
-      const { name: appName } =
-        await this.props.services.connectedAppsService.getApp(data.appId);
+      targetApp = await this.props.services.connectedAppsService.getApp(
+        data.appId,
+      );
 
       logger.debug(
-        { appId: appData._id, targetAppId: data.appId, appName },
+        {
+          appId: appData._id,
+          targetAppId: data.appId,
+          targetAppName: targetApp.name,
+        },
         "Retrieved target app information",
       );
 
-      const app = AvailableApps[appName];
+      const app = AvailableApps[targetApp.name];
 
       if (!app.scope.includes("calendar-write")) {
         logger.error(
           {
             appId: appData._id,
             targetAppId: data.appId,
-            appName,
+            targetAppName: targetApp.name,
             scope: app.scope,
           },
           "Target app does not support calendar-write scope",
@@ -101,7 +109,11 @@ export class CalendarWriterConnectedApp
       }
 
       logger.debug(
-        { appId: appData._id, targetAppId: data.appId, appName },
+        {
+          appId: appData._id,
+          targetAppId: data.appId,
+          targetAppName: targetApp.name,
+        },
         "Target app supports calendar-write scope",
       );
     } catch (error: any) {
@@ -128,6 +140,10 @@ export class CalendarWriterConnectedApp
     this.props.update({
       data,
       ...status,
+      account: {
+        targetAppName: targetApp.name,
+        targetAppId: targetApp._id,
+      },
     });
 
     logger.info(

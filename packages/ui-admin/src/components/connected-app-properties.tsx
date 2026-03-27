@@ -8,6 +8,15 @@ export const ConnectedAppAccount: React.FC<{
   account: ConnectedApp["account"];
   className?: string;
 }> = ({ account, className }) => {
+  if (account && "targetAppName" in account) {
+    return (
+      <ConnectedAppNameAndLogo
+        appName={account.targetAppName}
+        nameClassName={cn("text-xs text-muted-foreground", className)}
+      />
+    );
+  }
+
   const parts = [
     (account as any)?.serverUrl,
     account?.username,
@@ -61,8 +70,8 @@ export const ConnectedAppNameAndLogo: React.FC<{
   const t = useI18n();
   return (
     <div className={cn("inline-flex items-center gap-2", className)}>
-      <App.Logo className={cn("size-4", logoClassName)} />
-      <span className={cn("text-sm", nameClassName)}>{t(App.displayName)}</span>
+      <App.Logo className={cn("size-3.5", logoClassName)} />
+      <span className={cn("text-xs", nameClassName)}>{t(App.displayName)}</span>
     </div>
   );
 };
