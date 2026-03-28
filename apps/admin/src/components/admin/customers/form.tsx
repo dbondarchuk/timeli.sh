@@ -17,7 +17,6 @@ import {
   CardTitle,
   Checkbox,
   cn,
-  Combobox,
   DateTimeInput,
   Form,
   FormControl,
@@ -33,6 +32,11 @@ import {
   InputGroupInput,
   InputGroupInputClasses,
   PhoneInput,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
   Textarea,
   toastPromise,
   useDebounceCacheFn,
@@ -159,108 +163,77 @@ export const CustomerForm: React.FC<{
         onSubmit={form.handleSubmit(onSubmit)}
         className="w-full space-y-6 pb-4"
       >
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
-          <div className="flex flex-col gap-4 lg:col-span-4">
-            <Card>
-              <CardHeader className="border-b">
-                <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                  {t("customers.form.customerPhoto")}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-6">
-                <FormField
-                  control={form.control}
-                  name="avatar"
-                  render={({ field }) => (
-                    <div className="flex flex-col gap-4 items-center">
-                      <img
-                        src={field.value ?? "/unknown-person.png"}
-                        alt={t("customers.form.customerPhotoAlt")}
-                        height={120}
-                        width={120}
-                        className="h-28 w-28 rounded-full object-cover"
-                      />
-                      <div className="text-center">
-                        <p className="text-xl font-semibold">{name}</p>
-                        <p className="text-sm text-muted-foreground">
-                          {form.watch("email")}
-                        </p>
-                      </div>
-                      {initialData?._id && !initialData?.isDeleted && (
-                        <div className="w-full flex gap-2">
-                          <AssetSelectorDialog
-                            accept={["image/*"]}
-                            isOpen={avatarDialogOpen}
-                            addTo={{
-                              customerId: initialData._id,
-                              description: `${name} - Customer Photo`,
-                            }}
-                            close={() => setAvatarDialogOpen(false)}
-                            onSelected={(asset) =>
-                              field.onChange(`/assets/${asset.filename}`)
-                            }
-                          />
-                          <Button
-                            type="button"
-                            className="flex-1"
-                            variant="secondary"
-                            disabled={disabled}
-                            onClick={() => setAvatarDialogOpen(true)}
-                          >
-                            {t("customers.form.changePhoto")}
-                          </Button>
-                          <Button
-                            type="button"
-                            className="flex-1"
-                            variant="outline"
-                            disabled={disabled || !field.value}
-                            onClick={() => {
-                              field.onChange(null);
-                              form.trigger("avatar");
-                            }}
-                          >
-                            {t("customers.form.remove")}
-                          </Button>
-                        </div>
-                      )}
-                      <FormMessage />
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-12">
+          <Card className="md:col-span-6 md:col-start-1 md:row-start-1">
+            <CardHeader className="border-b">
+              <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                {t("customers.form.customerPhoto")}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pt-6">
+              <FormField
+                control={form.control}
+                name="avatar"
+                render={({ field }) => (
+                  <div className="flex flex-col gap-4 items-center">
+                    <img
+                      src={field.value ?? "/unknown-person.png"}
+                      alt={t("customers.form.customerPhotoAlt")}
+                      height={120}
+                      width={120}
+                      className="h-28 w-28 rounded-full object-cover"
+                    />
+                    <div className="text-center">
+                      <p className="text-xl font-semibold">{name}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {form.watch("email")}
+                      </p>
                     </div>
-                  )}
-                />
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="border-b">
-                <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                  {t("customers.form.notes")}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-6 flex flex-col gap-4">
-                <FormField
-                  control={form.control}
-                  name="note"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Textarea
-                          autoResize
-                          disabled={disabled}
-                          className="min-h-20"
-                          placeholder={t("customers.form.notesPlaceholder")}
-                          {...field}
-                          value={field.value ?? ""}
+                    {initialData?._id && !initialData?.isDeleted && (
+                      <div className="w-full flex gap-2">
+                        <AssetSelectorDialog
+                          accept={["image/*"]}
+                          isOpen={avatarDialogOpen}
+                          addTo={{
+                            customerId: initialData._id,
+                            description: `${name} - Customer Photo`,
+                          }}
+                          close={() => setAvatarDialogOpen(false)}
+                          onSelected={(asset) =>
+                            field.onChange(`/assets/${asset.filename}`)
+                          }
                         />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </CardContent>
-            </Card>
-          </div>
+                        <Button
+                          type="button"
+                          className="flex-1"
+                          variant="secondary"
+                          disabled={disabled}
+                          onClick={() => setAvatarDialogOpen(true)}
+                        >
+                          {t("customers.form.changePhoto")}
+                        </Button>
+                        <Button
+                          type="button"
+                          className="flex-1"
+                          variant="outline"
+                          disabled={disabled || !field.value}
+                          onClick={() => {
+                            field.onChange(null);
+                            form.trigger("avatar");
+                          }}
+                        >
+                          {t("customers.form.remove")}
+                        </Button>
+                      </div>
+                    )}
+                    <FormMessage />
+                  </div>
+                )}
+              />
+            </CardContent>
+          </Card>
 
-          <Card className="lg:col-span-8">
+          <Card className="md:col-span-6 md:col-start-7 md:row-start-1 md:row-span-2">
             <CardHeader className="border-b">
               <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                 {t("customers.form.personalInformation")}
@@ -377,22 +350,27 @@ export const CustomerForm: React.FC<{
                       </InfoTooltip>
                     </FormLabel>
                     <FormControl>
-                      <Combobox
+                      <Select
                         disabled={disabled}
-                        className="flex w-full font-normal text-base"
-                        values={isPaymentRequiredForCustomerTypes.map(
-                          (value) => ({
-                            value,
-                            label: t(`customers.form.${value}`),
-                          }),
-                        )}
-                        searchLabel={t("customers.form.selectOption")}
                         value={field.value}
-                        onItemSelect={(item) => {
-                          field.onChange(item);
+                        onValueChange={(value) => {
+                          field.onChange(value);
                           field.onBlur();
                         }}
-                      />
+                      >
+                        <SelectTrigger>
+                          <SelectValue
+                            placeholder={t("customers.form.selectOption")}
+                          />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {isPaymentRequiredForCustomerTypes.map((value) => (
+                            <SelectItem key={value} value={value}>
+                              {t(`customers.form.${value}`)}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -435,6 +413,35 @@ export const CustomerForm: React.FC<{
                   )}
                 />
               )}
+            </CardContent>
+          </Card>
+
+          <Card className="md:col-span-6 md:col-start-1 md:row-start-2">
+            <CardHeader className="border-b">
+              <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                {t("customers.form.notes")}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pt-6 flex flex-col gap-4">
+              <FormField
+                control={form.control}
+                name="note"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Textarea
+                        autoResize
+                        disabled={disabled}
+                        className="min-h-20"
+                        placeholder={t("customers.form.notesPlaceholder")}
+                        {...field}
+                        value={field.value ?? ""}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </CardContent>
           </Card>
         </div>
