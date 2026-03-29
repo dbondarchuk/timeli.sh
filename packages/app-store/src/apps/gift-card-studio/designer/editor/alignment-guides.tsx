@@ -263,3 +263,33 @@ export function calculateSnappedPosition(
 
   return { x, y };
 }
+
+const CARDINAL_ROTATIONS = [0, 90, 180, 270] as const;
+const ROTATION_SNAP_THRESHOLD_DEG = 8;
+
+/** Snap angle to 0/90/180/270° when within threshold. Pass `disableSnap` (e.g. Alt) to keep free rotation. */
+export function snapRotationToCardinals(
+  rotation: number,
+  disableSnap: boolean,
+): number {
+  let r = rotation % 360;
+  if (r < 0) r += 360;
+
+  const normalized = ((Math.round(r) % 360) + 360) % 360;
+
+  if (disableSnap) {
+    return normalized;
+  }
+
+  for (const t of CARDINAL_ROTATIONS) {
+    const diff = Math.min(
+      Math.abs(normalized - t),
+      360 - Math.abs(normalized - t),
+    );
+    if (diff <= ROTATION_SNAP_THRESHOLD_DEG) {
+      return t;
+    }
+  }
+
+  return normalized;
+}

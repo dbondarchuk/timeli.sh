@@ -2,11 +2,17 @@
 
 import type React from "react";
 
-import { cn } from "@timelish/ui";
+import { useI18n } from "@timelish/i18n";
+import { cn, useIsMac } from "@timelish/ui";
 import { useEffect, useRef, useState } from "react";
+import {
+  GiftCardStudioAdminKeys,
+  GiftCardStudioAdminNamespace,
+  giftCardStudioAdminNamespace,
+} from "../../translations/types";
 import { isTypingInInput } from "../lib/keyboard";
 import { useEditorStore } from "../lib/store";
-import type { GroupElement } from "../lib/types";
+import type { Element, GroupElement } from "../lib/types";
 import { AlignmentGuides } from "./alignment-guides";
 import { CanvasElement } from "./canvas-element";
 import { EditorContextMenu } from "./context-menu";
@@ -14,6 +20,47 @@ import { GroupElementRenderer } from "./group-element";
 
 interface CanvasWorkspaceProps {
   allowGrouping?: boolean;
+}
+
+function getIdsTouchingMarquee(
+  elements: Element[],
+  minX: number,
+  minY: number,
+  maxX: number,
+  maxY: number,
+): string[] {
+  const groups = elements.filter((e) => e.type === "group") as GroupElement[];
+
+  return elements
+    .filter((el) => {
+      if (el.type === "group") {
+        const elMinX = el.position.x;
+        const elMinY = el.position.y;
+        const elMaxX = el.position.x + el.size.width;
+        const elMaxY = el.position.y + el.size.height;
+        return !(
+          elMaxX < minX ||
+          elMinX > maxX ||
+          elMaxY < minY ||
+          elMinY > maxY
+        );
+      }
+
+      const parentGroup = groups.find((g) => g.children?.includes(el.id));
+      if (parentGroup) return false;
+
+      const elMinX = el.position.x;
+      const elMinY = el.position.y;
+      const elMaxX = el.position.x + el.size.width;
+      const elMaxY = el.position.y + el.size.height;
+      return !(
+        elMaxX < minX ||
+        elMinX > maxX ||
+        elMaxY < minY ||
+        elMinY > maxY
+      );
+    })
+    .map((el) => el.id);
 }
 
 export function CanvasWorkspace({
@@ -32,14 +79,49 @@ export function CanvasWorkspace({
     selectedElements,
     disabled,
   } = useEditorStore();
+  const t = useI18n<GiftCardStudioAdminNamespace, GiftCardStudioAdminKeys>(
+    giftCardStudioAdminNamespace,
+  );
   const [isPanning, setIsPanning] = useState(false);
-  const [panStart, setPanStart] = useState({ x: 0, y: 0 });
+  const panSessionRef = useRef({
+    originClient: { x: 0, y: 0 },
+    originPan: { x: 0, y: 0 },
+  });
   const [isAltPressed, setIsAltPressed] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [isMarqueeSelecting, setIsMarqueeSelecting] = useState(false);
   const [marqueeStart, setMarqueeStart] = useState({ x: 0, y: 0 });
   const [marqueeEnd, setMarqueeEnd] = useState({ x: 0, y: 0 });
   const [marqueeHoverIds, setMarqueeHoverIds] = useState<string[]>([]);
+
+  const canvasBgPointersRef = useRef(
+    new Map<number, { clientX: number; clientY: number }>(),
+  );
+  const pinchLastRef = useRef<{
+    dist: number;
+    mid: { x: number; y: number };
+  } | null>(null);
+  const panPointerIdRef = useRef<number | null>(null);
+  const marqueeSessionRef = useRef(false);
+  const marqueeBoundsRef = useRef({
+    start: { x: 0, y: 0 },
+    end: { x: 0, y: 0 },
+  });
+  const isPanningRef = useRef(false);
+  const isMarqueeSelectingRef = useRef(false);
+
+  useEffect(() => {
+    isPanningRef.current = isPanning;
+  }, [isPanning]);
+  useEffect(() => {
+    isMarqueeSelectingRef.current = isMarqueeSelecting;
+  }, [isMarqueeSelecting]);
+  useEffect(() => {
+    marqueeBoundsRef.current = { start: marqueeStart, end: marqueeEnd };
+  }, [marqueeStart, marqueeEnd]);
+
+  const isMac = useIsMac();
+  const ctrl = isMac ? "⌘" : "Ctrl";
 
   const canvasTheme = design.canvas.theme || "light";
 
@@ -105,158 +187,176 @@ export function CanvasWorkspace({
     }
   };
 
-  const handleCanvasMouseDown = (e: React.MouseEvent) => {
-    if (mode === "preview") return;
-
-    if (e.button === 0 && e.target === e.currentTarget) {
-      // Left click on canvas background - start marquee selection
-      const rect = canvasRef.current?.getBoundingClientRect();
-      if (rect) {
-        const x = (e.clientX - rect.left) / zoom;
-        const y = (e.clientY - rect.top) / zoom;
-        setIsMarqueeSelecting(true);
-        setMarqueeStart({ x, y });
-        setMarqueeEnd({ x, y });
-      }
-    }
-  };
-
-  const handleMouseDown = (e: React.MouseEvent) => {
+  const handleContainerPointerDown = (e: React.PointerEvent) => {
+    if (disabled || mode === "preview") return;
+    if (e.pointerType !== "mouse") return;
     if (e.button === 1 || (e.button === 0 && e.shiftKey)) {
-      // Middle mouse button or shift + left click
+      e.preventDefault();
+      panSessionRef.current = {
+        originClient: { x: e.clientX, y: e.clientY },
+        originPan: { x: pan.x, y: pan.y },
+      };
       setIsPanning(true);
-      setPanStart({ x: e.clientX - pan.x, y: e.clientY - pan.y });
+      panPointerIdRef.current = e.pointerId;
     }
   };
 
-  const handleMouseMove = (e: MouseEvent) => {
-    if (isPanning) {
-      setPan({
-        x: e.clientX - panStart.x,
-        y: e.clientY - panStart.y,
-      });
-    } else if (isMarqueeSelecting) {
-      const rect = canvasRef.current?.getBoundingClientRect();
-      if (rect) {
-        const x = (e.clientX - rect.left) / zoom;
-        const y = (e.clientY - rect.top) / zoom;
-        setMarqueeEnd({ x, y });
+  const handleCanvasPointerDown = (e: React.PointerEvent) => {
+    if (disabled || mode === "preview") return;
+    if (e.target !== e.currentTarget) return;
+    if (e.pointerType === "mouse" && e.button !== 0) return;
 
-        // Calculate which elements are currently under the marquee
-        const minX = Math.min(marqueeStart.x, x);
-        const minY = Math.min(marqueeStart.y, y);
-        const maxX = Math.max(marqueeStart.x, x);
-        const maxY = Math.max(marqueeStart.y, y);
+    const rect = canvasRef.current?.getBoundingClientRect();
+    if (!rect) return;
 
-        const hoverIds = design.elements
-          .filter((el) => {
-            if (el.type === "group") {
-              const elMinX = el.position.x;
-              const elMinY = el.position.y;
-              const elMaxX = el.position.x + el.size.width;
-              const elMaxY = el.position.y + el.size.height;
-              return !(
-                elMaxX < minX ||
-                elMinX > maxX ||
-                elMaxY < minY ||
-                elMinY > maxY
-              );
-            }
+    const { zoom: z } = useEditorStore.getState();
+    const map = canvasBgPointersRef.current;
+    map.set(e.pointerId, { clientX: e.clientX, clientY: e.clientY });
 
-            const groups = design.elements.filter(
-              (e) => e.type === "group",
-            ) as any[];
-            const parentGroup = groups.find((g) => g.children?.includes(el.id));
-            if (parentGroup) return false;
-
-            const elMinX = el.position.x;
-            const elMinY = el.position.y;
-            const elMaxX = el.position.x + el.size.width;
-            const elMaxY = el.position.y + el.size.height;
-            return !(
-              elMaxX < minX ||
-              elMinX > maxX ||
-              elMaxY < minY ||
-              elMinY > maxY
-            );
-          })
-          .map((el) => el.id);
-
-        setMarqueeHoverIds(hoverIds);
-      }
+    if (map.size === 1) {
+      marqueeSessionRef.current = true;
+      pinchLastRef.current = null;
+      setIsMarqueeSelecting(true);
+      const x = (e.clientX - rect.left) / z;
+      const y = (e.clientY - rect.top) / z;
+      setMarqueeStart({ x, y });
+      setMarqueeEnd({ x, y });
+      marqueeBoundsRef.current = { start: { x, y }, end: { x, y } };
+    } else if (map.size === 2) {
+      marqueeSessionRef.current = false;
+      setIsMarqueeSelecting(false);
+      setMarqueeHoverIds([]);
+      const pts = [...map.values()];
+      const d = Math.hypot(
+        pts[0].clientX - pts[1].clientX,
+        pts[0].clientY - pts[1].clientY,
+      );
+      const mid = {
+        x: (pts[0].clientX + pts[1].clientX) / 2,
+        y: (pts[0].clientY + pts[1].clientY) / 2,
+      };
+      pinchLastRef.current = d > 0 ? { dist: d, mid } : { dist: 1, mid };
     }
-  };
-
-  const handleMouseUp = () => {
-    if (isMarqueeSelecting) {
-      // Calculate final selection when mouse is released
-      const minX = Math.min(marqueeStart.x, marqueeEnd.x);
-      const minY = Math.min(marqueeStart.y, marqueeEnd.y);
-      const maxX = Math.max(marqueeStart.x, marqueeEnd.x);
-      const maxY = Math.max(marqueeStart.y, marqueeEnd.y);
-
-      // Only select if marquee has some size (reduced threshold)
-      if (Math.abs(maxX - minX) > 1 || Math.abs(maxY - minY) > 1) {
-        const selectedIds = design.elements
-          .filter((el) => {
-            // Include groups in selection
-            if (el.type === "group") {
-              const elMinX = el.position.x;
-              const elMinY = el.position.y;
-              const elMaxX = el.position.x + el.size.width;
-              const elMaxY = el.position.y + el.size.height;
-              return !(
-                elMaxX < minX ||
-                elMinX > maxX ||
-                elMaxY < minY ||
-                elMinY > maxY
-              );
-            }
-
-            // Check if element is part of a group
-            const groups = design.elements.filter(
-              (e) => e.type === "group",
-            ) as any[];
-            const parentGroup = groups.find((g) => g.children?.includes(el.id));
-
-            // If in a group, skip (group will be selected instead)
-            if (parentGroup) return false;
-
-            const elMinX = el.position.x;
-            const elMinY = el.position.y;
-            const elMaxX = el.position.x + el.size.width;
-            const elMaxY = el.position.y + el.size.height;
-
-            // Check if element touches the marquee box
-            return !(
-              elMaxX < minX ||
-              elMinX > maxX ||
-              elMaxY < minY ||
-              elMinY > maxY
-            );
-          })
-          .map((el) => el.id);
-
-        useEditorStore.getState().selectMultiple(selectedIds);
-        preventUnselectionRef.current = true;
-      }
-    }
-
-    setIsPanning(false);
-    setIsMarqueeSelecting(false);
-    setMarqueeHoverIds([]);
   };
 
   useEffect(() => {
-    if (isPanning || isMarqueeSelecting) {
-      window.addEventListener("mousemove", handleMouseMove);
-      window.addEventListener("mouseup", handleMouseUp);
-      return () => {
-        window.removeEventListener("mousemove", handleMouseMove);
-        window.removeEventListener("mouseup", handleMouseUp);
-      };
-    }
-  }, [isPanning, isMarqueeSelecting, panStart, marqueeStart, marqueeEnd]);
+    if (disabled || mode === "preview") return;
+
+    const onGlobalPointerMove = (e: PointerEvent) => {
+      const map = canvasBgPointersRef.current;
+      if (map.has(e.pointerId)) {
+        map.set(e.pointerId, { clientX: e.clientX, clientY: e.clientY });
+      }
+
+      const store = useEditorStore.getState();
+      const z = store.zoom;
+
+      if (map.size >= 2 && pinchLastRef.current) {
+        const pts = [...map.values()];
+        if (pts.length < 2) return;
+        const d = Math.hypot(
+          pts[0].clientX - pts[1].clientX,
+          pts[0].clientY - pts[1].clientY,
+        );
+        const mid = {
+          x: (pts[0].clientX + pts[1].clientX) / 2,
+          y: (pts[0].clientY + pts[1].clientY) / 2,
+        };
+        const prev = pinchLastRef.current;
+        if (d > 0 && prev.dist > 0 && Number.isFinite(d / prev.dist)) {
+          store.setZoom(store.zoom * (d / prev.dist));
+        }
+        const dmidx = mid.x - prev.mid.x;
+        const dmidy = mid.y - prev.mid.y;
+        store.setPan({ x: store.pan.x + dmidx, y: store.pan.y + dmidy });
+        pinchLastRef.current = { dist: d > 0 ? d : prev.dist, mid };
+        return;
+      }
+
+      if (
+        isMarqueeSelectingRef.current &&
+        map.size === 1 &&
+        map.has(e.pointerId)
+      ) {
+        const rect = canvasRef.current?.getBoundingClientRect();
+        if (!rect) return;
+        const x = (e.clientX - rect.left) / z;
+        const y = (e.clientY - rect.top) / z;
+        setMarqueeEnd({ x, y });
+        const s = marqueeBoundsRef.current.start;
+        marqueeBoundsRef.current = { start: s, end: { x, y } };
+        const minX = Math.min(s.x, x);
+        const minY = Math.min(s.y, y);
+        const maxX = Math.max(s.x, x);
+        const maxY = Math.max(s.y, y);
+        const hoverIds = getIdsTouchingMarquee(
+          store.design.elements,
+          minX,
+          minY,
+          maxX,
+          maxY,
+        );
+        setMarqueeHoverIds(hoverIds);
+        return;
+      }
+
+      if (isPanningRef.current && panPointerIdRef.current === e.pointerId) {
+        const { originClient, originPan } = panSessionRef.current;
+        store.setPan({
+          x: originPan.x + (e.clientX - originClient.x),
+          y: originPan.y + (e.clientY - originClient.y),
+        });
+      }
+    };
+
+    const onGlobalPointerUp = (e: PointerEvent) => {
+      const map = canvasBgPointersRef.current;
+      if (map.has(e.pointerId)) {
+        map.delete(e.pointerId);
+        const remaining = map.size;
+        if (remaining < 2) {
+          pinchLastRef.current = null;
+        }
+        if (remaining === 0) {
+          if (marqueeSessionRef.current) {
+            const { start, end } = marqueeBoundsRef.current;
+            const minX = Math.min(start.x, end.x);
+            const minY = Math.min(start.y, end.y);
+            const maxX = Math.max(start.x, end.x);
+            const maxY = Math.max(start.y, end.y);
+            if (Math.abs(maxX - minX) > 1 || Math.abs(maxY - minY) > 1) {
+              const { design: d } = useEditorStore.getState();
+              const selectedIds = getIdsTouchingMarquee(
+                d.elements,
+                minX,
+                minY,
+                maxX,
+                maxY,
+              );
+              useEditorStore.getState().selectMultiple(selectedIds);
+              preventUnselectionRef.current = true;
+            }
+          }
+          marqueeSessionRef.current = false;
+          setIsMarqueeSelecting(false);
+          setMarqueeHoverIds([]);
+        }
+      }
+      if (panPointerIdRef.current === e.pointerId) {
+        panPointerIdRef.current = null;
+        setIsPanning(false);
+      }
+    };
+
+    window.addEventListener("pointermove", onGlobalPointerMove);
+    window.addEventListener("pointerup", onGlobalPointerUp);
+    window.addEventListener("pointercancel", onGlobalPointerUp);
+    return () => {
+      window.removeEventListener("pointermove", onGlobalPointerMove);
+      window.removeEventListener("pointerup", onGlobalPointerUp);
+      window.removeEventListener("pointercancel", onGlobalPointerUp);
+    };
+  }, [disabled, mode]);
 
   const handleWheel = (e: React.WheelEvent) => {
     if (e.ctrlKey || e.metaKey) {
@@ -265,8 +365,6 @@ export function CanvasWorkspace({
       useEditorStore.getState().setZoom(zoom + delta);
     }
   };
-
-  const { selectElement } = useEditorStore();
 
   const renderElements = () => {
     const renderedIds = new Set<string>();
@@ -365,13 +463,15 @@ export function CanvasWorkspace({
   return (
     <div
       ref={containerRef}
-      className={cn("flex-1 grid min-w-0 overflow-hidden relative bg-muted/30")}
+      className={cn(
+        "flex-1 grid min-h-0 min-w-0 overflow-hidden relative bg-muted/30",
+      )}
       id="gift-card-editor-canvas"
-      onMouseDown={handleMouseDown}
+      onPointerDown={handleContainerPointerDown}
       onWheel={handleWheel}
     >
-      <div className="w-full h-full overflow-auto p-12">
-        <div className="flex items-center justify-center min-w-full min-h-full">
+      <div className="h-full min-h-0 w-full overflow-auto overscroll-contain">
+        <div className="flex min-h-full w-max min-w-full box-border justify-center items-center p-4 sm:p-8 lg:p-12">
           <EditorContextMenu allowGrouping={allowGrouping}>
             <div
               ref={canvasRef}
@@ -385,10 +485,11 @@ export function CanvasWorkspace({
                 transform: `translate(${pan.x}px, ${pan.y}px)`,
                 userSelect: "none",
                 WebkitUserSelect: "none",
+                touchAction: mode === "edit" ? "none" : undefined,
                 overflow: mode === "preview" ? "hidden" : "visible",
               }}
               onClick={handleCanvasClick}
-              onMouseDown={handleCanvasMouseDown}
+              onPointerDown={handleCanvasPointerDown}
             >
               {renderElements()}
 
@@ -436,10 +537,17 @@ export function CanvasWorkspace({
       </div>
 
       {mode === "edit" && (
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/75 text-white text-xs px-3 py-2 rounded-lg pointer-events-none">
-          Shortcuts: Arrows (Move) • Shift+Arrows (Move 10px) • Ctrl+C (Copy) •
-          Ctrl+V (Paste) • Ctrl+Z (Undo) • Ctrl+Shift+Z (Redo) • Ctrl+D
-          (Duplicate) • Del (Delete)
+        <div className="absolute max-lg:hidden bottom-4 left-1/2 -translate-x-1/2 bg-black/75 text-white text-xs px-3 py-2 rounded-lg pointer-events-none">
+          {t("designer.shortcuts.label", {
+            arrows: t("designer.shortcuts.arrows"),
+            shiftArrows: t("designer.shortcuts.shiftArrows"),
+            ctrlC: t("designer.shortcuts.ctrlC", { ctrl }),
+            ctrlV: t("designer.shortcuts.ctrlV", { ctrl }),
+            ctrlZ: t("designer.shortcuts.ctrlZ", { ctrl }),
+            ctrlShiftZ: t("designer.shortcuts.ctrlShiftZ", { ctrl }),
+            ctrlD: t("designer.shortcuts.ctrlD", { ctrl }),
+            del: t("designer.shortcuts.del"),
+          })}
         </div>
       )}
     </div>

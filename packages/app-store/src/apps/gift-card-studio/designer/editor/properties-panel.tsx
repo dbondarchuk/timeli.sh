@@ -49,7 +49,7 @@ export function PropertiesPanel() {
   // Show message when multiple elements are selected
   if (selectedElements.length > 1) {
     return (
-      <div className="flex-1 border-b border-border p-4 overflow-auto">
+      <div className="flex-1 border-b border-border p-4 overflow-auto h-full">
         <h2 className="text-sm font-semibold mb-4 text-foreground">
           {t("designer.properties.title")}
         </h2>
@@ -69,7 +69,7 @@ export function PropertiesPanel() {
 
   if (!selectedElement) {
     return (
-      <div className="flex-1 border-b border-border p-4 overflow-auto">
+      <div className="flex-1 border-b border-border p-4 overflow-auto h-full">
         <h2 className="text-sm font-semibold mb-4 text-foreground">
           {t("designer.properties.canvasBackground")}
         </h2>
@@ -855,7 +855,7 @@ export function PropertiesPanel() {
   );
 
   return (
-    <div className="flex-1 border-b border-border p-4 overflow-auto">
+    <div className="flex-1 border-b border-border p-4 overflow-auto h-full">
       <h2 className="text-sm font-semibold mb-4 text-foreground">
         {t("designer.properties.title")}
       </h2>

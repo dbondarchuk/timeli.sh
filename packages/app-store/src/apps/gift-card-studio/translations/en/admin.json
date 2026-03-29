@@ -123,7 +123,15 @@
       "undo": "Undo",
       "redo": "Redo",
       "zoomOut": "Zoom Out",
-      "zoomIn": "Zoom In"
+      "zoomIn": "Zoom In",
+      "openElementsPanel": "Elements and shapes",
+      "openPropertiesPanel": "Properties and layers",
+      "closeElementsPanel": "Close elements panel",
+      "closePropertiesPanel": "Close properties panel"
+    },
+    "layout": {
+      "elementsSheetTitle": "Elements",
+      "propertiesSheetTitle": "Properties & layers"
     },
     "sidebar": {
       "elements": "Elements",
@@ -252,7 +260,18 @@
       "ungroup": "Ungroup",
       "group": "Group"
     },
-    "newTextDefault": "New Text"
+    "newTextDefault": "New Text",
+    "shortcuts": {
+      "label": "Shortcuts: {arrows} • {shiftArrows} • {ctrlC} • {ctrlV} • {ctrlZ} • {ctrlShiftZ} • {ctrlD} • {del}",
+      "arrows": "Arrows (Move)",
+      "shiftArrows": "Shift+Arrows (Move 10px)",
+      "ctrlC": "{ctrl}+C (Copy)",
+      "ctrlV": "{ctrl}+V (Paste)",
+      "ctrlZ": "{ctrl}+Z (Undo)",
+      "ctrlShiftZ": "{ctrl}+Shift+Z (Redo)",
+      "ctrlD": "{ctrl}+D (Duplicate)",
+      "del": "Del (Delete)"
+    }
   },
   "purchases": {
     "table": {

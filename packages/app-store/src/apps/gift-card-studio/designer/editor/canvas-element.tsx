@@ -22,7 +22,10 @@ import {
   type ShapeElement,
   type TextElement,
 } from "../lib/types";
-import { calculateSnappedPosition } from "./alignment-guides";
+import {
+  calculateSnappedPosition,
+  snapRotationToCardinals,
+} from "./alignment-guides";
 import { EditorContextMenu } from "./context-menu";
 
 interface CanvasElementProps {
@@ -52,12 +55,6 @@ export function CanvasElement({
 }: CanvasElementProps) {
   const elementRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
-  const [dragStart, setDragStart] = useState({
-    x: 0,
-    y: 0,
-    elementX: 0,
-    elementY: 0,
-  });
   const [isResizing, setIsResizing] = useState(false);
   const [resizeStart, setResizeStart] = useState({
     x: 0,
@@ -74,18 +71,18 @@ export function CanvasElement({
   });
   const [isEditingText, setIsEditingText] = useState(false);
   const [isAltPressed, setIsAltPressed] = useState(false);
+  const dragMoveLastRef = useRef({ x: 0, y: 0 });
+  const gesturePointerIdRef = useRef<number | null>(null);
 
   const { selectedElements, selectElement, updateElement, design } =
     useEditorStore();
   const isSelected = showSelection || selectedElements.includes(element.id);
 
-  const handleMouseDown = (
-    e: React.MouseEvent,
-    posX: number = element.position.x,
-    posY: number = element.position.y,
-  ) => {
+  const handlePointerDown = (e: React.PointerEvent) => {
     if (mode === "preview" || element.locked) return;
+    if (e.pointerType === "mouse" && e.button !== 0) return;
 
+    e.currentTarget.setPointerCapture(e.pointerId);
     e.stopPropagation();
 
     // Check if clicked element is already in selection
@@ -102,14 +99,10 @@ export function CanvasElement({
     // If element is in selection but not dragging, keep selection
 
     if (!isEditingText) {
+      gesturePointerIdRef.current = e.pointerId;
       setIsDragging(true);
       onDragStart?.();
-      setDragStart({
-        x: e.clientX,
-        y: e.clientY,
-        elementX: posX,
-        elementY: posY,
-      });
+      dragMoveLastRef.current = { x: e.clientX, y: e.clientY };
     }
   };
 
@@ -121,10 +114,13 @@ export function CanvasElement({
     }
   };
 
-  const handleResizeMouseDown = (e: React.MouseEvent) => {
+  const handleResizePointerDown = (e: React.PointerEvent) => {
     if (mode === "preview" || element.locked) return;
+    if (e.pointerType === "mouse" && e.button !== 0) return;
 
+    e.currentTarget.setPointerCapture(e.pointerId);
     e.stopPropagation();
+    gesturePointerIdRef.current = e.pointerId;
     setIsResizing(true);
 
     const textElement =
@@ -138,10 +134,13 @@ export function CanvasElement({
     });
   };
 
-  const handleRotateMouseDown = (e: React.MouseEvent) => {
+  const handleRotatePointerDown = (e: React.PointerEvent) => {
     if (mode === "preview" || element.locked) return;
+    if (e.pointerType === "mouse" && e.button !== 0) return;
 
+    e.currentTarget.setPointerCapture(e.pointerId);
     e.stopPropagation();
+    gesturePointerIdRef.current = e.pointerId;
     setIsRotating(true);
 
     const rect = elementRef.current?.getBoundingClientRect();
@@ -159,16 +158,18 @@ export function CanvasElement({
     }
   };
 
-  const handleMouseMove = (e: MouseEvent) => {
+  const handlePointerMove = (e: PointerEvent) => {
     if (isDragging) {
       e.preventDefault();
-      const deltaX = (e.clientX - dragStart.x) / zoom;
-      const deltaY = (e.clientY - dragStart.y) / zoom;
+      const z = useEditorStore.getState().zoom;
+      const deltaX = (e.clientX - dragMoveLastRef.current.x) / z;
+      const deltaY = (e.clientY - dragMoveLastRef.current.y) / z;
+      dragMoveLastRef.current = { x: e.clientX, y: e.clientY };
 
-      if (selectedElements.length > 1 || selectedElements.length === 1) {
-        // Move all selected elements or groups together
+      if (selectedElements.length > 0) {
         selectedElements.forEach((id) => {
-          const el = design.elements.find((el) => el.id === id);
+          const { design: liveDesign } = useEditorStore.getState();
+          const el = liveDesign.elements.find((el) => el.id === id);
           if (el && !el.locked) {
             const newPos = {
               x: el.position.x + deltaX,
@@ -176,18 +177,13 @@ export function CanvasElement({
             };
             const snappedPos = calculateSnappedPosition(
               { ...el, position: newPos },
-              design.elements,
-              design.canvas.width,
-              design.canvas.height,
+              liveDesign.elements,
+              liveDesign.canvas.width,
+              liveDesign.canvas.height,
               isAltPressed,
             );
             updateElement(id, { position: snappedPos });
           }
-        });
-        setDragStart({
-          ...dragStart,
-          x: e.clientX,
-          y: e.clientY,
         });
       }
     } else if (isResizing) {
@@ -268,11 +264,8 @@ export function CanvasElement({
           e.clientX - rotateStart.centerX,
         ) *
         (180 / Math.PI);
-      const newRotationBase = angle - rotateStart.angle;
-      let newRotation = Math.round(newRotationBase) % 360;
-      if (newRotation < 0) {
-        newRotation += 360;
-      }
+      const rawRotation = angle - rotateStart.angle;
+      const newRotation = snapRotationToCardinals(rawRotation, e.altKey);
 
       if (selectedElements.length > 1) {
         selectedElements.forEach((id) => {
@@ -291,7 +284,10 @@ export function CanvasElement({
     }
   };
 
-  const handleMouseUp = () => {
+  const handlePointerUp = (e: PointerEvent) => {
+    if (gesturePointerIdRef.current !== e.pointerId) return;
+    gesturePointerIdRef.current = null;
+
     if (isDragging || isResizing || isRotating) {
       useEditorStore.getState().pushHistory();
     }
@@ -303,19 +299,16 @@ export function CanvasElement({
     setIsRotating(false);
   };
 
-  const renderHandles = (
-    posX: number = element.position.x,
-    posY: number = element.position.y,
-  ) => (
+  const renderHandles = () => (
     <>
       <div
-        className="absolute -bottom-1 -right-1 w-3 h-3 bg-primary rounded-full cursor-se-resize border-2 border-white z-10"
-        onMouseDown={handleResizeMouseDown}
+        className="absolute -bottom-1 -right-1 w-3 h-3 bg-primary rounded-full cursor-se-resize border-2 border-white z-10 touch-none"
+        onPointerDown={handleResizePointerDown}
       />
 
       <div
-        className="absolute -top-6 left-1/2 -translate-x-1/2 w-3 h-3 bg-blue-500 rounded-full cursor-grab border-2 border-white z-10"
-        onMouseDown={handleRotateMouseDown}
+        className="absolute -top-6 left-1/2 -translate-x-1/2 w-3 h-3 bg-blue-500 rounded-full cursor-grab border-2 border-white z-10 touch-none"
+        onPointerDown={handleRotatePointerDown}
       />
       <div
         className="absolute -top-6 left-1/2 -translate-x-1/2 w-0.5 h-5 bg-blue-500"
@@ -379,11 +372,13 @@ export function CanvasElement({
 
   useEffect(() => {
     if (isDragging || isResizing || isRotating) {
-      window.addEventListener("mousemove", handleMouseMove);
-      window.addEventListener("mouseup", handleMouseUp);
+      window.addEventListener("pointermove", handlePointerMove);
+      window.addEventListener("pointerup", handlePointerUp);
+      window.addEventListener("pointercancel", handlePointerUp);
       return () => {
-        window.removeEventListener("mousemove", handleMouseMove);
-        window.removeEventListener("mouseup", handleMouseUp);
+        window.removeEventListener("pointermove", handlePointerMove);
+        window.removeEventListener("pointerup", handlePointerUp);
+        window.removeEventListener("pointercancel", handlePointerUp);
       };
     }
   }, [isDragging, isResizing, isRotating, isAltPressed]);
@@ -414,8 +409,9 @@ export function CanvasElement({
           opacity: element.opacity,
           userSelect: "none",
           WebkitUserSelect: "none",
+          touchAction: mode === "edit" && !isEditingText ? "none" : undefined,
         }}
-        onMouseDown={(e) => handleMouseDown(e, absoluteX, absoluteY)}
+        onPointerDown={handlePointerDown}
         onDoubleClick={handleDoubleClick}
       >
         {renderElement()}
@@ -424,8 +420,7 @@ export function CanvasElement({
           mode === "edit" &&
           !element.locked &&
           !isInGroup &&
-          renderHandles(absoluteX, absoluteY)}
-        {/* {isSelected && mode === "edit" && !element.locked  && renderHandles(absoluteX, absoluteY)} */}
+          renderHandles()}
 
         {isRequired && mode === "edit" && (
           <div className="absolute -top-2 -right-2 bg-primary rounded-full p-1">

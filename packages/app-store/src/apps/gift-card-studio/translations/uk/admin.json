@@ -123,7 +123,15 @@
       "undo": "Скасувати",
       "redo": "Повторити",
       "zoomOut": "Зменшити",
-      "zoomIn": "Збільшити"
+      "zoomIn": "Збільшити",
+      "openElementsPanel": "Елементи та фігури",
+      "openPropertiesPanel": "Властивості та шари",
+      "closeElementsPanel": "Закрити панель елементів",
+      "closePropertiesPanel": "Закрити панель властивостей"
+    },
+    "layout": {
+      "elementsSheetTitle": "Елементи",
+      "propertiesSheetTitle": "Властивості та шари"
     },
     "sidebar": {
       "elements": "Елементи",
@@ -252,7 +260,18 @@
       "ungroup": "Розгрупувати",
       "group": "Групувати"
     },
-    "newTextDefault": "Новий текст"
+    "newTextDefault": "Новий текст",
+    "shortcuts": {
+      "label": "Короткі команди: {arrows} • {shiftArrows} • {ctrlC} • {ctrlV} • {ctrlZ} • {ctrlShiftZ} • {ctrlD} • {del}",
+      "arrows": "Стрілки (Переміщення)",
+      "shiftArrows": "Shift+Стрілки (Переміщення 10px)",
+      "ctrlC": "{ctrl}+C (Копіювати)",
+      "ctrlV": "{ctrl}+V (Вставити)",
+      "ctrlZ": "{ctrl}+Z (Скасувати)",
+      "ctrlShiftZ": "{ctrl}+Shift+Z (Повторити)",
+      "ctrlD": "{ctrl}+D (Дублювати)",
+      "del": "Del (Видалити)"
+    }
   },
   "purchases": {
     "table": {

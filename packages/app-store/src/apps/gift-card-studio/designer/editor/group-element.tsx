@@ -12,6 +12,7 @@ import type {
   ShapeElement,
   TextElement,
 } from "../lib/types";
+import { snapRotationToCardinals } from "./alignment-guides";
 import { EditorContextMenu } from "./context-menu";
 
 interface GroupElementProps {
@@ -160,10 +161,12 @@ export function GroupElementRenderer({
     .filter(Boolean) as Element[];
 
   // ── Drag ──────────────────────────────────────────────────────────────────
-  const handleMouseDown = useCallback(
-    (e: React.MouseEvent) => {
-      if (mode === "preview" || e.button !== 0) return;
+  const handlePointerDown = useCallback(
+    (e: React.PointerEvent) => {
+      if (mode === "preview") return;
+      if (e.pointerType === "mouse" && e.button !== 0) return;
       e.stopPropagation();
+      (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
 
       if (e.shiftKey) {
         selectElement(element.id, true);
@@ -171,39 +174,55 @@ export function GroupElementRenderer({
         selectElement(element.id);
       }
 
-      const startX = e.clientX;
-      const startY = e.clientY;
-      const origX = element.position.x;
-      const origY = element.position.y;
+      const pointerId = e.pointerId;
+      const moveLast = { x: e.clientX, y: e.clientY };
 
-      const onMove = (ev: MouseEvent) => {
+      const onMove = (ev: PointerEvent) => {
+        if (ev.pointerId !== pointerId) return;
         ev.preventDefault();
-        const dx = (ev.clientX - startX) / zoom;
-        const dy = (ev.clientY - startY) / zoom;
+        const dx = (ev.clientX - moveLast.x) / zoom;
+        const dy = (ev.clientY - moveLast.y) / zoom;
+        moveLast.x = ev.clientX;
+        moveLast.y = ev.clientY;
+        const el = useEditorStore
+          .getState()
+          .design.elements.find((x) => x.id === element.id);
+        if (!el) return;
         updateElement(element.id, {
-          position: { x: origX + dx, y: origY + dy },
+          position: { x: el.position.x + dx, y: el.position.y + dy },
         });
       };
 
-      const onUp = () => {
+      const onUp = (ev: PointerEvent) => {
+        if (ev.pointerId !== pointerId) return;
         useEditorStore.getState().pushHistory();
-        window.removeEventListener("mousemove", onMove);
-        window.removeEventListener("mouseup", onUp);
+        window.removeEventListener("pointermove", onMove);
+        window.removeEventListener("pointerup", onUp);
+        window.removeEventListener("pointercancel", onUp);
+        try {
+          (e.currentTarget as HTMLElement).releasePointerCapture(pointerId);
+        } catch {
+          /* */
+        }
       };
 
-      window.addEventListener("mousemove", onMove);
-      window.addEventListener("mouseup", onUp);
+      window.addEventListener("pointermove", onMove);
+      window.addEventListener("pointerup", onUp);
+      window.addEventListener("pointercancel", onUp);
     },
-    [element, zoom, mode, selectedElements, selectElement, updateElement],
+    [element.id, zoom, mode, selectedElements, selectElement, updateElement],
   );
 
   // ── Resize (bottom-right handle) ──────────────────────────────────────────
   // Scale the group bounding box AND all children proportionally.
-  const handleResizeMouseDown = useCallback(
-    (e: React.MouseEvent) => {
+  const handleResizePointerDown = useCallback(
+    (e: React.PointerEvent) => {
+      if (e.pointerType === "mouse" && e.button !== 0) return;
       e.stopPropagation();
       e.preventDefault();
+      (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
 
+      const pointerId = e.pointerId;
       const startX = e.clientX;
       const startY = e.clientY;
       const startW = element.size.width;
@@ -225,7 +244,8 @@ export function GroupElementRenderer({
         styles: c.type === "text" ? (c as TextElement).styles : null,
       }));
 
-      const onMove = (ev: MouseEvent) => {
+      const onMove = (ev: PointerEvent) => {
+        if (ev.pointerId !== pointerId) return;
         ev.preventDefault();
         const dw = (ev.clientX - startX) / zoom;
         const dh = (ev.clientY - startY) / zoom;
@@ -257,23 +277,34 @@ export function GroupElementRenderer({
         });
       };
 
-      const onUp = () => {
+      const onUp = (ev: PointerEvent) => {
+        if (ev.pointerId !== pointerId) return;
         useEditorStore.getState().pushHistory();
-        window.removeEventListener("mousemove", onMove);
-        window.removeEventListener("mouseup", onUp);
+        window.removeEventListener("pointermove", onMove);
+        window.removeEventListener("pointerup", onUp);
+        window.removeEventListener("pointercancel", onUp);
+        try {
+          (e.currentTarget as HTMLElement).releasePointerCapture(pointerId);
+        } catch {
+          /* */
+        }
       };
 
-      window.addEventListener("mousemove", onMove);
-      window.addEventListener("mouseup", onUp);
+      window.addEventListener("pointermove", onMove);
+      window.addEventListener("pointerup", onUp);
+      window.addEventListener("pointercancel", onUp);
     },
     [element, zoom, children, updateElement],
   );
 
   // ── Rotate ────────────────────────────────────────────────────────────────
-  const handleRotateMouseDown = useCallback(
-    (e: React.MouseEvent) => {
+  const handleRotatePointerDown = useCallback(
+    (e: React.PointerEvent) => {
+      if (e.pointerType === "mouse" && e.button !== 0) return;
       e.stopPropagation();
       e.preventDefault();
+      (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+      const pointerId = e.pointerId;
       const rect = wrapperRef.current?.getBoundingClientRect();
       if (!rect) return;
       const centerX = rect.left + rect.width / 2;
@@ -282,22 +313,33 @@ export function GroupElementRenderer({
         Math.atan2(e.clientY - centerY, e.clientX - centerX) * (180 / Math.PI);
       const origRotation = element.rotation;
 
-      const onMove = (ev: MouseEvent) => {
+      const onMove = (ev: PointerEvent) => {
+        if (ev.pointerId !== pointerId) return;
         ev.preventDefault();
         const currentAngle =
           Math.atan2(ev.clientY - centerY, ev.clientX - centerX) *
           (180 / Math.PI);
+        const raw =
+          (origRotation + currentAngle - startAngle + 360) % 360;
         updateElement(element.id, {
-          rotation: (origRotation + currentAngle - startAngle + 360) % 360,
+          rotation: snapRotationToCardinals(raw, ev.altKey),
         });
       };
-      const onUp = () => {
+      const onUp = (ev: PointerEvent) => {
+        if (ev.pointerId !== pointerId) return;
         useEditorStore.getState().pushHistory();
-        window.removeEventListener("mousemove", onMove);
-        window.removeEventListener("mouseup", onUp);
+        window.removeEventListener("pointermove", onMove);
+        window.removeEventListener("pointerup", onUp);
+        window.removeEventListener("pointercancel", onUp);
+        try {
+          (e.currentTarget as HTMLElement).releasePointerCapture(pointerId);
+        } catch {
+          /* */
+        }
       };
-      window.addEventListener("mousemove", onMove);
-      window.addEventListener("mouseup", onUp);
+      window.addEventListener("pointermove", onMove);
+      window.addEventListener("pointerup", onUp);
+      window.addEventListener("pointercancel", onUp);
     },
     [element, updateElement],
   );
@@ -324,8 +366,9 @@ export function GroupElementRenderer({
           opacity: element.opacity,
           userSelect: "none",
           WebkitUserSelect: "none",
+          touchAction: mode === "edit" ? "none" : undefined,
         }}
-        onMouseDown={handleMouseDown}
+        onPointerDown={handlePointerDown}
       >
         {/* Children rendered with relative positions */}
         {children.map((child) => (
@@ -361,7 +404,7 @@ export function GroupElementRenderer({
             />
             {/* Rotate handle */}
             <div
-              className="absolute bg-white border-2 border-primary rounded-full cursor-crosshair z-20"
+              className="absolute bg-white border-2 border-primary rounded-full cursor-crosshair z-20 touch-none"
               style={{
                 width: HANDLE_SIZE,
                 height: HANDLE_SIZE,
@@ -369,18 +412,18 @@ export function GroupElementRenderer({
                 left: "50%",
                 transform: "translateX(-50%)",
               }}
-              onMouseDown={handleRotateMouseDown}
+              onPointerDown={handleRotatePointerDown}
             />
             {/* Resize handle (bottom-right) */}
             <div
-              className="absolute bg-white border-2 border-primary cursor-se-resize z-20"
+              className="absolute bg-white border-2 border-primary cursor-se-resize z-20 touch-none"
               style={{
                 width: HANDLE_SIZE,
                 height: HANDLE_SIZE,
                 bottom: -HANDLE_SIZE / 2,
                 right: -HANDLE_SIZE / 2,
               }}
-              onMouseDown={handleResizeMouseDown}
+              onPointerDown={handleResizePointerDown}
             />
           </>
         )}

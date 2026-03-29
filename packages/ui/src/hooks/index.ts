@@ -8,6 +8,7 @@ export * from "./use-debounce-cache-fn";
 export * from "./use-debounce-callback";
 export * from "./use-did-update-effect";
 export * from "./use-effect-debugger";
+export * from "./use-is-mac";
 export * from "./use-is-touch-device";
 export * from "./use-mobile";
 export * from "./use-mounted";
@@ -18,4 +19,3 @@ export * from "./use-throttle-callback";
 export * from "./use-unsaved-changes-prompt";
 export * from "./use-upload-file";
 export * from "./use-window-size";
-

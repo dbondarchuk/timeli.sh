@@ -161,7 +161,7 @@ export function LayersPanel({ allowGrouping = true }: LayersPanelProps = {}) {
   });
 
   return (
-    <div className="flex-1 p-4 overflow-auto">
+    <div className="flex-1 p-4 overflow-auto h-full">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-sm font-semibold text-foreground">
           {t("designer.layers.title")}

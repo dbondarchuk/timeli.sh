@@ -127,7 +127,7 @@ export function Sidebar() {
   };
 
   return (
-    <div className="w-64 border-r border-border bg-background flex flex-col p-4 gap-4 overflow-auto">
+    <div className="w-full min-w-0 bg-background flex flex-col p-3 sm:p-4 gap-3 sm:gap-4 overflow-auto">
       <div>
         <h2 className="text-sm font-semibold mb-3 text-foreground">
           {t("designer.sidebar.elements")}

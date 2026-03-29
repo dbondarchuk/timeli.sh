@@ -3,6 +3,7 @@
 import { useI18n } from "@timelish/i18n";
 import {
   Button,
+  cn,
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -15,6 +16,8 @@ import {
   CheckCircle,
   Edit3,
   Eye,
+  PanelLeft,
+  PanelRight,
   Redo,
   Undo,
   ZoomIn,
@@ -28,7 +31,19 @@ import {
 import { useEditorStore } from "../lib/store";
 import { CanvasSetupDialog } from "./canvas-setup-dialog";
 
-export function Toolbar() {
+export interface CanvasToolbarProps {
+  leftPanelOpen: boolean;
+  rightPanelOpen: boolean;
+  onToggleLeft: () => void;
+  onToggleRight: () => void;
+}
+
+export function Toolbar({
+  leftPanelOpen,
+  rightPanelOpen,
+  onToggleLeft,
+  onToggleRight,
+}: CanvasToolbarProps) {
   const {
     zoom,
     setZoom,
@@ -152,30 +167,54 @@ export function Toolbar() {
   // }
 
   return (
-    <div className="h-14 border-b border-border flex items-center justify-between px-4 gap-4 bg-background">
-      <div className="flex items-center gap-4">
-        <h1 className="text-lg font-semibold text-foreground">
+    <div className="min-h-11 shrink-0 border-b border-border flex flex-wrap items-center justify-between gap-x-2 gap-y-1.5 px-2 sm:px-3 py-1.5 sm:py-0 sm:h-12 sm:min-h-0 bg-background">
+      <div className="flex items-center gap-1.5 sm:gap-2 min-w-0 flex-1 sm:flex-none basis-[min-content] sm:basis-auto">
+        <TooltipResponsive>
+          <TooltipResponsiveTrigger>
+            <Button
+              variant={leftPanelOpen ? "secondary" : "ghost"}
+              size="icon"
+              className="shrink-0 size-8 sm:size-9"
+              aria-expanded={leftPanelOpen}
+              aria-label={
+                leftPanelOpen
+                  ? t("designer.toolbar.closeElementsPanel")
+                  : t("designer.toolbar.openElementsPanel")
+              }
+              onClick={onToggleLeft}
+            >
+              <PanelLeft className="size-4" />
+            </Button>
+          </TooltipResponsiveTrigger>
+          <TooltipResponsiveContent>
+            {leftPanelOpen
+              ? t("designer.toolbar.closeElementsPanel")
+              : t("designer.toolbar.openElementsPanel")}
+          </TooltipResponsiveContent>
+        </TooltipResponsive>
+        <h1 className="text-sm sm:text-base md:text-lg font-semibold text-foreground truncate min-w-0">
           {t("designs.form.design")}
         </h1>
         <CanvasSetupDialog />
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-0.5 sm:gap-1 md:gap-1.5 justify-end min-w-0">
         <Popover>
           <PopoverTrigger asChild>
             <Button
               variant="ghost"
               size="icon"
-              className={
+              className={cn(
+                "size-8 sm:size-9 shrink-0",
                 isValid
                   ? "text-green-600 hover:text-green-700"
-                  : "text-amber-600 hover:text-amber-700"
-              }
+                  : "text-amber-600 hover:text-amber-700",
+              )}
             >
               {isValid ? (
-                <CheckCircle className="w-4 h-4" />
+                <CheckCircle className="size-4" />
               ) : (
-                <AlertCircle className="w-4 h-4" />
+                <AlertCircle className="size-4" />
               )}
             </Button>
           </PopoverTrigger>
@@ -198,7 +237,7 @@ export function Toolbar() {
           </PopoverContent>
         </Popover>
 
-        <div className="w-px h-6 bg-border" />
+        <div className="w-px h-5 sm:h-6 bg-border shrink-0" />
 
         <TooltipResponsive>
           <TooltipResponsiveTrigger>
@@ -207,9 +246,9 @@ export function Toolbar() {
               size="icon"
               onClick={undo}
               disabled={!canUndo}
-              className="hover:bg-accent"
+              className="hover:bg-accent size-8 sm:size-9"
             >
-              <Undo className="w-4 h-4" />
+              <Undo className="size-4" />
             </Button>
           </TooltipResponsiveTrigger>
           <TooltipResponsiveContent>
@@ -223,9 +262,9 @@ export function Toolbar() {
               size="icon"
               onClick={redo}
               disabled={!canRedo}
-              className="hover:bg-accent"
+              className="hover:bg-accent size-8 sm:size-9"
             >
-              <Redo className="w-4 h-4" />
+              <Redo className="size-4" />
             </Button>
           </TooltipResponsiveTrigger>
           <TooltipResponsiveContent>
@@ -233,7 +272,7 @@ export function Toolbar() {
           </TooltipResponsiveContent>
         </TooltipResponsive>
 
-        <div className="w-px h-6 bg-border mx-2" />
+        <div className="w-px h-5 sm:h-6 bg-border mx-0.5 sm:mx-1 shrink-0" />
 
         <TooltipResponsive>
           <TooltipResponsiveTrigger>
@@ -241,16 +280,16 @@ export function Toolbar() {
               variant="ghost"
               size="icon"
               onClick={() => setZoom(zoom - 0.1)}
-              className="hover:bg-accent"
+              className="hover:bg-accent size-8 sm:size-9"
             >
-              <ZoomOut className="w-4 h-4" />
+              <ZoomOut className="size-4" />
             </Button>
           </TooltipResponsiveTrigger>
           <TooltipResponsiveContent>
             {t("designer.toolbar.zoomOut")}
           </TooltipResponsiveContent>
         </TooltipResponsive>
-        <span className="text-sm text-foreground w-16 text-center font-mono">
+        <span className="text-xs sm:text-sm text-foreground w-11 sm:w-14 text-center font-mono tabular-nums shrink-0">
           {Math.round(zoom * 100)}%
         </span>
         <TooltipResponsive>
@@ -259,35 +298,63 @@ export function Toolbar() {
               variant="ghost"
               size="icon"
               onClick={() => setZoom(zoom + 0.1)}
-              className="hover:bg-accent"
+              className="hover:bg-accent size-8 sm:size-9"
             >
-              <ZoomIn className="w-4 h-4" />
+              <ZoomIn className="size-4" />
             </Button>
           </TooltipResponsiveTrigger>
           <TooltipResponsiveContent>
             {t("designer.toolbar.zoomIn")}
           </TooltipResponsiveContent>
         </TooltipResponsive>
-        <div className="w-px h-6 bg-border mx-2" />
+        <div className="w-px h-5 sm:h-6 bg-border mx-0.5 sm:mx-1 shrink-0" />
 
         <Button
           variant={mode === "edit" ? "default" : "ghost"}
           size="sm"
+          className="h-8 px-2 sm:px-3 gap-1.5"
           onClick={() => setMode("edit")}
         >
-          <Edit3 className="w-4 h-4 mr-2" />
-          {t("designer.toolbar.edit")}
+          <Edit3 className="size-4 shrink-0" />
+          <span className="hidden sm:inline">{t("designer.toolbar.edit")}</span>
         </Button>
         <Button
           variant={mode === "preview" ? "default" : "ghost"}
           size="sm"
+          className="h-8 px-2 sm:px-3 gap-1.5"
           onClick={() => setMode("preview")}
         >
-          <Eye className="w-4 h-4 mr-2" />
-          {t("designer.toolbar.preview")}
+          <Eye className="size-4 shrink-0" />
+          <span className="hidden sm:inline">
+            {t("designer.toolbar.preview")}
+          </span>
         </Button>
 
-        <div className="w-px h-6 bg-border mx-2" />
+        <div className="w-px h-5 sm:h-6 bg-border mx-0.5 sm:mx-1 shrink-0" />
+
+        <TooltipResponsive>
+          <TooltipResponsiveTrigger>
+            <Button
+              variant={rightPanelOpen ? "secondary" : "ghost"}
+              size="icon"
+              className="shrink-0 size-8 sm:size-9"
+              aria-expanded={rightPanelOpen}
+              aria-label={
+                rightPanelOpen
+                  ? t("designer.toolbar.closePropertiesPanel")
+                  : t("designer.toolbar.openPropertiesPanel")
+              }
+              onClick={onToggleRight}
+            >
+              <PanelRight className="size-4" />
+            </Button>
+          </TooltipResponsiveTrigger>
+          <TooltipResponsiveContent>
+            {rightPanelOpen
+              ? t("designer.toolbar.closePropertiesPanel")
+              : t("designer.toolbar.openPropertiesPanel")}
+          </TooltipResponsiveContent>
+        </TooltipResponsive>
 
         {/* <input ref={fileInputRef} type="file" accept=".json" onChange={handleImportJSON} className="hidden" />
 

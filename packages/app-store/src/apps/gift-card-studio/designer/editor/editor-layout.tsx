@@ -1,6 +1,22 @@
 "use client";
 
-import { useEffect } from "react";
+import { useI18n } from "@timelish/i18n";
+import {
+  cn,
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@timelish/ui";
+import { useEffect, useLayoutEffect, useState } from "react";
+import {
+  GiftCardStudioAdminKeys,
+  GiftCardStudioAdminNamespace,
+  giftCardStudioAdminNamespace,
+} from "../../translations/types";
 import { EDITOR_FONTS } from "../lib/fonts";
 import { isTypingInInput } from "../lib/keyboard";
 import { useEditorStore } from "../lib/store";
@@ -9,6 +25,8 @@ import { LayersPanel } from "./layers-panel";
 import { PropertiesPanel } from "./properties-panel";
 import { Sidebar } from "./sidebar";
 import { Toolbar } from "./toolbar";
+
+const LG_MEDIA = "(min-width: 1024px)";
 
 interface EditorLayoutProps {
   allowGrouping?: boolean;
@@ -29,6 +47,27 @@ export function EditorLayout({
     updateElement,
     design,
   } = useEditorStore();
+
+  const t = useI18n<GiftCardStudioAdminNamespace, GiftCardStudioAdminKeys>(
+    giftCardStudioAdminNamespace,
+  );
+
+  const [isLgUp, setIsLgUp] = useState(false);
+  const [leftOpen, setLeftOpen] = useState(false);
+  const [rightOpen, setRightOpen] = useState(false);
+
+  useLayoutEffect(() => {
+    const mq = window.matchMedia(LG_MEDIA);
+    const sync = () => {
+      const lg = mq.matches;
+      setIsLgUp(lg);
+      setLeftOpen(lg);
+      setRightOpen(lg);
+    };
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
 
   // Inject Google Fonts stylesheet so previews render correctly
   useEffect(() => {
@@ -124,6 +163,37 @@ export function EditorLayout({
     design.elements,
   ]);
 
+  const toggleLeft = () => {
+    setLeftOpen((prev) => {
+      const next = !prev;
+      if (next && !isLgUp) setRightOpen(false);
+      return next;
+    });
+  };
+
+  const toggleRight = () => {
+    setRightOpen((prev) => {
+      const next = !prev;
+      if (next && !isLgUp) setLeftOpen(false);
+      return next;
+    });
+  };
+
+  const rightPanelInner = (
+    <ResizablePanelGroup
+      direction="vertical"
+      className="w-full min-w-0 flex flex-col min-h-0 h-full overflow-hidden"
+    >
+      <ResizablePanel minSize={10} className="overflow-y-auto">
+        <PropertiesPanel />
+      </ResizablePanel>
+      <ResizableHandle withHandle />
+      <ResizablePanel minSize={10} className="overflow-y-auto">
+        <LayersPanel allowGrouping={allowGrouping} />
+      </ResizablePanel>
+    </ResizablePanelGroup>
+  );
+
   return (
     <div
       className={
@@ -132,14 +202,74 @@ export function EditorLayout({
           : "h-screen flex flex-col bg-background"
       }
     >
-      <Toolbar />
-      <div className="flex-1 flex overflow-hidden">
-        <Sidebar />
-        <CanvasWorkspace allowGrouping={allowGrouping} />
-        <div className="w-80 border-l border-border flex flex-col">
-          <PropertiesPanel />
-          <LayersPanel allowGrouping={allowGrouping} />
+      <Toolbar
+        leftPanelOpen={leftOpen}
+        rightPanelOpen={rightOpen}
+        onToggleLeft={toggleLeft}
+        onToggleRight={toggleRight}
+      />
+      <div className="flex-1 flex overflow-hidden min-h-0">
+        {/* Desktop: docked left sidebar */}
+        <div
+          className={cn(
+            "hidden lg:flex shrink-0 border-r border-border bg-background overflow-hidden transition-[width] duration-200 ease-out",
+            leftOpen ? "w-64" : "w-0 border-transparent",
+          )}
+        >
+          <div className="w-64 h-full min-h-0 shrink-0 flex flex-col overflow-hidden">
+            <Sidebar />
+          </div>
         </div>
+
+        {!isLgUp && (
+          <Sheet open={leftOpen} onOpenChange={setLeftOpen}>
+            <SheetContent
+              side="left"
+              className="flex flex-col p-0 gap-0 w-[min(20rem,100vw)] sm:max-w-sm [&>button]:right-2 [&>button]:top-3"
+            >
+              <SheetHeader className="px-4 pt-4 pb-3 border-b shrink-0 space-y-0 text-left">
+                <SheetTitle className="text-base pr-8">
+                  {t("designer.layout.elementsSheetTitle")}
+                </SheetTitle>
+              </SheetHeader>
+              <div className="flex-1 min-h-0 overflow-auto">
+                <Sidebar />
+              </div>
+            </SheetContent>
+          </Sheet>
+        )}
+
+        <CanvasWorkspace allowGrouping={allowGrouping} />
+
+        {/* Desktop: docked right stack */}
+        <div
+          className={cn(
+            "hidden lg:flex shrink-0 border-l border-border bg-background overflow-hidden transition-[width] duration-200 ease-out",
+            rightOpen ? "w-80" : "w-0 border-transparent",
+          )}
+        >
+          <div className="w-80 h-full min-h-0 shrink-0 flex flex-col overflow-hidden">
+            {rightPanelInner}
+          </div>
+        </div>
+
+        {!isLgUp && (
+          <Sheet open={rightOpen} onOpenChange={setRightOpen}>
+            <SheetContent
+              side="right"
+              className="flex flex-col p-0 gap-0 w-[min(20rem,100vw)] sm:max-w-sm [&>button]:right-2 [&>button]:top-3"
+            >
+              <SheetHeader className="px-4 pt-4 pb-3 border-b shrink-0 space-y-0 text-left">
+                <SheetTitle className="text-base pr-8">
+                  {t("designer.layout.propertiesSheetTitle")}
+                </SheetTitle>
+              </SheetHeader>
+              <div className="flex-1 min-h-0 overflow-hidden flex flex-col">
+                {rightPanelInner}
+              </div>
+            </SheetContent>
+          </Sheet>
+        )}
       </div>
     </div>
   );

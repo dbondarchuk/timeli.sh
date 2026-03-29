@@ -16,12 +16,12 @@ import {
   Scissors,
   Trash2,
 } from "lucide-react";
-import { useEditorStore } from "../lib/store";
 import {
   GiftCardStudioAdminKeys,
   GiftCardStudioAdminNamespace,
   giftCardStudioAdminNamespace,
 } from "../../translations/types";
+import { useEditorStore } from "../lib/store";
 
 interface EditorContextMenuProps {
   children: React.ReactNode;
@@ -137,7 +137,7 @@ export function EditorContextMenu({
               <ArrowDown className="w-4 h-4 mr-2" />
               {t("designer.contextMenu.sendToBack")}
             </ContextMenuItem>
-            {allowGrouping && (
+            {allowGrouping && (isGroup || selectedElements.length > 1) && (
               <>
                 <ContextMenuSeparator />
                 {isGroup ? (
