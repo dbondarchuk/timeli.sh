@@ -598,7 +598,7 @@ function ShapeElementRenderer({ element }: { element: ShapeElement }) {
   const strokeWidth = styles.strokeWidth || 1;
 
   if (shapeType === "line") {
-    const linePaint = strokePaint ?? fillPaint;
+    const linePaint = fillPaint ?? strokePaint;
     const lineCss = resolvePaintCss(linePaint, "#000000");
     return (
       <div
