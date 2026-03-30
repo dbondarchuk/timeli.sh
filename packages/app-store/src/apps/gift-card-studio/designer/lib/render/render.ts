@@ -134,11 +134,30 @@ function renderTextNode(el: TextElement, fields: FieldKeyValues): object {
   };
 }
 
-function renderImageNode(el: ImageElement): object {
+function removeSvgComments(svg: string): string {
+  return svg.replace(/<!--[\s\S]*?-->/g, "");
+}
+
+async function renderImageNode(el: ImageElement): Promise<object | null> {
+  if (!el.src) return null;
+
+  let src = el.src;
+  if (el.src.endsWith(".svg")) {
+    try {
+      const svg = await fetch(el.src).then((res) => res.text());
+      const data = removeSvgComments(svg);
+      const base64 = Buffer.from(data).toString("base64");
+      src = `data:image/svg+xml;base64,${base64}`;
+    } catch (error) {
+      console.error(`Error optimizing SVG: ${error}`);
+      return null;
+    }
+  }
+
   return {
     type: "img",
     props: {
-      src: el.src,
+      src,
       style: {
         position: "absolute" as const,
         left: el.position.x,
@@ -192,9 +211,7 @@ async function renderIconNode(el: IconElement): Promise<object> {
 
   const isComponentLike =
     typeof icon === "function" ||
-    (typeof icon === "object" &&
-      icon !== null &&
-      "$$typeof" in icon);
+    (typeof icon === "object" && icon !== null && "$$typeof" in icon);
 
   if (!isComponentLike) {
     return {

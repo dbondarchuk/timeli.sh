@@ -3,16 +3,22 @@
 import type React from "react";
 
 import { useI18n } from "@timelish/i18n";
-import { cn, useIsMac } from "@timelish/ui";
-import { useEffect, useRef, useState } from "react";
+import type { UploadedFile } from "@timelish/types";
+import { cn, toast, useIsMac, useUploadFile } from "@timelish/ui";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   GiftCardStudioAdminKeys,
   GiftCardStudioAdminNamespace,
   giftCardStudioAdminNamespace,
 } from "../../translations/types";
-import { isTypingInInput } from "../lib/keyboard";
+import { GIFT_CARD_DESIGNER_CLIPBOARD_PREFIX } from "../lib/clipboard";
+import {
+  isEditableClipboardTarget,
+  isTypingInInput,
+} from "../lib/keyboard";
+import { elementSchema } from "../lib/schema";
 import { useEditorStore } from "../lib/store";
-import type { Element, GroupElement } from "../lib/types";
+import type { Element, GroupElement, ImageElement } from "../lib/types";
 import { AlignmentGuides } from "./alignment-guides";
 import { CanvasElement } from "./canvas-element";
 import { EditorContextMenu } from "./context-menu";
@@ -129,6 +135,121 @@ export function CanvasWorkspace({
     selectedElements.includes(el.id),
   );
 
+  const { uploadFile, isUploading: isUploadingImage } = useUploadFile({
+    onFileUploaded: useCallback((file: UploadedFile) => {
+      const store = useEditorStore.getState();
+      const { canvas } = store.design;
+      const defaultSize = 200;
+      const element: ImageElement = {
+        id: `element-${Date.now()}`,
+        type: "image",
+        src: file.url,
+        position: {
+          x: Math.max(0, (canvas.width - defaultSize) / 2),
+          y: Math.max(0, (canvas.height - defaultSize) / 2),
+        },
+        size: { width: defaultSize, height: defaultSize },
+        rotation: 0,
+        opacity: 1,
+        visible: true,
+        styles: { objectFit: "contain" },
+      };
+      store.addElement(element);
+      store.selectMultiple([element.id]);
+    }, []),
+  });
+
+  useEffect(() => {
+    const handleCopy = (e: ClipboardEvent) => {
+      if (isEditableClipboardTarget(e.target)) return;
+      const state = useEditorStore.getState();
+      if (state.disabled || state.mode === "preview") return;
+      if (state.selectedElements.length === 0) return;
+
+      const elements = state.design.elements.filter((el) =>
+        state.selectedElements.includes(el.id),
+      );
+      if (elements.length === 0) return;
+
+      e.clipboardData?.setData(
+        "text/plain",
+        GIFT_CARD_DESIGNER_CLIPBOARD_PREFIX + JSON.stringify(elements),
+      );
+      e.preventDefault();
+      state.copySelectedElements();
+    };
+
+    const handlePaste = (e: ClipboardEvent) => {
+      if (isEditableClipboardTarget(e.target)) return;
+      const state = useEditorStore.getState();
+      if (state.disabled || state.mode === "preview") return;
+
+      const items = e.clipboardData?.items;
+      const imageItems = Array.from(items || []).filter((item) =>
+        item.type.startsWith("image/"),
+      );
+
+      if (imageItems.length > 0) {
+        if (isUploadingImage) return;
+        const imageFile = imageItems[0]!.getAsFile();
+        if (imageFile && imageFile.size > 0) {
+          e.preventDefault();
+          e.stopPropagation();
+          const promise = uploadFile([{ file: imageFile }]);
+          toast.promise(promise, {
+            loading: t("designer.pasteImage.uploading"),
+            success: t("designer.pasteImage.success"),
+            error: t("designer.pasteImage.error"),
+          });
+        }
+        return;
+      }
+
+      const text = e.clipboardData?.getData("text/plain") ?? "";
+      if (text.startsWith(GIFT_CARD_DESIGNER_CLIPBOARD_PREFIX)) {
+        e.preventDefault();
+        e.stopPropagation();
+        try {
+          const raw = JSON.parse(
+            text.slice(GIFT_CARD_DESIGNER_CLIPBOARD_PREFIX.length),
+          );
+          if (!Array.isArray(raw)) return;
+          const parsed: Element[] = [];
+          for (const item of raw) {
+            const r = elementSchema.safeParse(item);
+            if (r.success) parsed.push(r.data);
+          }
+          if (parsed.length === 0) return;
+          useEditorStore.setState({ clipboardMultiple: parsed });
+          useEditorStore.getState().pasteElements();
+        } catch {
+          /* invalid clipboard */
+        }
+        return;
+      }
+
+      if (
+        state.clipboardMultiple.length > 0 ||
+        state.clipboard !== null
+      ) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (state.clipboardMultiple.length > 0) {
+          state.pasteElements();
+        } else {
+          state.pasteElement();
+        }
+      }
+    };
+
+    window.addEventListener("copy", handleCopy);
+    window.addEventListener("paste", handlePaste);
+    return () => {
+      window.removeEventListener("copy", handleCopy);
+      window.removeEventListener("paste", handlePaste);
+    };
+  }, [isUploadingImage, uploadFile, t]);
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Alt") {
@@ -139,28 +260,6 @@ export function CanvasWorkspace({
       // textarea, select, or contenteditable element (including properties panel
       // inputs and in-canvas text editing).
       if (isTypingInInput(e)) return;
-
-      // Copy shortcut (Cmd/Ctrl+C)
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "c") {
-        if (selectedElements.length > 0) {
-          e.preventDefault();
-          useEditorStore.getState().copySelectedElements();
-        }
-      }
-
-      // Paste shortcut (Cmd/Ctrl+V)
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "v") {
-        e.preventDefault();
-        useEditorStore.getState().pasteElements();
-      }
-
-      // Prevent default for editor shortcuts
-      if (
-        (e.metaKey || e.ctrlKey) &&
-        ["z", "y", "d", "c", "v"].includes(e.key.toLowerCase())
-      ) {
-        e.preventDefault();
-      }
     };
 
     const handleKeyUp = (e: KeyboardEvent) => {

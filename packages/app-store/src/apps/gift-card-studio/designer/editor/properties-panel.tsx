@@ -828,9 +828,11 @@ export function PropertiesPanel() {
         <Label className="text-xs text-foreground">
           {t("designer.properties.imageUrl")}
         </Label>
-        <Input
-          value={element.src}
-          onChange={(e) => updateElement(element.id, { src: e.target.value })}
+        <AssetSelectorInput
+          fullUrl
+          accept="image/*"
+          value={element.src || ""}
+          onChange={(value) => updateElement(element.id, { src: value })}
           className="h-8 text-sm"
           placeholder={t("designer.properties.imageUrlPlaceholder")}
         />

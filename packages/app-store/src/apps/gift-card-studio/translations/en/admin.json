@@ -133,6 +133,11 @@
       "elementsSheetTitle": "Elements",
       "propertiesSheetTitle": "Properties & layers"
     },
+    "pasteImage": {
+      "uploading": "Uploading image…",
+      "success": "Image added to design",
+      "error": "Image upload failed"
+    },
     "sidebar": {
       "elements": "Elements",
       "addText": "Add Text",

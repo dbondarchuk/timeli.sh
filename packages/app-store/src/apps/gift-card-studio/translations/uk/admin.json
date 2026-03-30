@@ -133,6 +133,11 @@
       "elementsSheetTitle": "Елементи",
       "propertiesSheetTitle": "Властивості та шари"
     },
+    "pasteImage": {
+      "uploading": "Завантаження зображення…",
+      "success": "Зображення додано до дизайну",
+      "error": "Не вдалося завантажити зображення"
+    },
     "sidebar": {
       "elements": "Елементи",
       "addText": "Додати текст",
