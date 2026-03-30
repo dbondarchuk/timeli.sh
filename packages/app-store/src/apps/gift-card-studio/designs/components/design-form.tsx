@@ -33,6 +33,7 @@ import {
   useIsValidDesign,
 } from "../../designer/design-editor";
 import { DesignValue } from "../../designer/lib/schema";
+import { Design } from "../../designer/lib/types";
 import {
   DesignUpdateModel,
   getDesignSchemaWithUniqueCheck,
@@ -67,7 +68,7 @@ export const DesignForm: React.FC<{
   );
 
   type FormValues = z.infer<typeof formSchema>;
-  const defaultDesign = useMemo(
+  const defaultDesign = useMemo<Design>(
     () => initialData?.design ?? getDefaultDesign(),
     [initialData?.design],
   );

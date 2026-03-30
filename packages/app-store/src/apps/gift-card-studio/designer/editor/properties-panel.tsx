@@ -3,6 +3,11 @@
 import { useI18n } from "@timelish/i18n";
 import {
   Button,
+  ComboboxAsync,
+  type IComboboxItem,
+  Icon,
+  type IconName,
+  iconNames,
   Input,
   Label,
   Select,
@@ -23,6 +28,7 @@ import {
 import { fontFamilyCss, getFamilyFromStoredFont } from "../lib/fonts";
 import { useEditorStore } from "../lib/store";
 import type {
+  IconElement,
   ImageElement,
   Paint,
   ShapeElement,
@@ -33,6 +39,13 @@ import {
   EXPIRES_AT_DATE_FORMATS,
 } from "../lib/types";
 import { FontSelect } from "./font-select";
+
+function formatLucideIconLabel(iconName: string): string {
+  return iconName
+    .split("-")
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
+}
 
 export function PropertiesPanel() {
   const { selectedElements, design, updateElement, bringToFront, sendToBack } =
@@ -854,6 +867,96 @@ export function PropertiesPanel() {
     </div>
   );
 
+  const renderIconProperties = (element: IconElement) => (
+    <div className="space-y-4">
+      <div>
+        <Label className="text-xs text-foreground">
+          {t("designer.properties.icon")}
+        </Label>
+        <ComboboxAsync
+          id="gift-card-designer-icon"
+          fetchItems={async (page, search) => {
+            const limit = 20;
+            let filteredIcons: IconName[] = [...iconNames];
+            const valueIndex = filteredIcons.indexOf(element.icon as IconName);
+            if (valueIndex !== -1) {
+              const currentIcon = filteredIcons[valueIndex]!;
+              filteredIcons.splice(valueIndex, 1);
+              filteredIcons.unshift(currentIcon);
+            }
+            if (search) {
+              const q = search.toLowerCase();
+              filteredIcons = filteredIcons.filter(
+                (iconName) =>
+                  iconName.toLowerCase().includes(q) ||
+                  formatLucideIconLabel(iconName).toLowerCase().includes(q),
+              );
+            }
+            const items: IComboboxItem[] = filteredIcons
+              .slice((page - 1) * limit, page * limit)
+              .map((iconName) => ({
+                value: iconName,
+                label: (
+                  <div className="flex flex-row gap-2 items-center">
+                    <Icon name={iconName} size={16} />
+                    <span>{formatLucideIconLabel(iconName)}</span>
+                  </div>
+                ),
+              }));
+            return {
+              items,
+              hasMore: page * limit < filteredIcons.length,
+            };
+          }}
+          value={element.icon}
+          size="sm"
+          className="w-full"
+          onChange={(value) => {
+            if (value)
+              updateElement(element.id, {
+                icon: value as IconElement["icon"],
+              });
+          }}
+        />
+      </div>
+      <div>
+        <Label className="text-xs text-foreground">
+          {t("designer.properties.color")}
+        </Label>
+        <Input
+          type="color"
+          value={element.styles?.color ?? "#000000"}
+          onChange={(e) =>
+            updateElement(element.id, {
+              styles: { ...element.styles, color: e.target.value },
+            })
+          }
+          className="h-8 w-full cursor-pointer"
+        />
+      </div>
+      <div>
+        <Label className="text-xs text-foreground">
+          {t("designer.properties.strokeWidth")}
+        </Label>
+        <Input
+          type="number"
+          min={0.1}
+          max={8}
+          step={0.1}
+          value={element.styles?.strokeWidth ?? 1}
+          onChange={(e) => {
+            const v = Number(e.target.value);
+            if (!Number.isFinite(v) || v < 0) return;
+            updateElement(element.id, {
+              styles: { ...element.styles, strokeWidth: v },
+            });
+          }}
+          className="h-8 w-full"
+        />
+      </div>
+    </div>
+  );
+
   return (
     <div className="flex-1 border-b border-border p-4 overflow-auto h-full">
       <h2 className="text-sm font-semibold mb-4 text-foreground">
@@ -1029,6 +1132,8 @@ export function PropertiesPanel() {
           renderShapeProperties(selectedElement as ShapeElement)}
         {selectedElement.type === "image" &&
           renderImageProperties(selectedElement as ImageElement)}
+        {selectedElement.type === "icon" &&
+          renderIconProperties(selectedElement as IconElement)}
       </div>
     </div>
   );

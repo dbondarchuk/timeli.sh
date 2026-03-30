@@ -50,13 +50,15 @@ export function LayersPanel({ allowGrouping = true }: LayersPanelProps = {}) {
         ? textElement?.fieldKey
           ? `${t.has(`designer.dynamicFields.${textElement.fieldKey}` as GiftCardStudioAdminKeys) ? t(`designer.dynamicFields.${textElement.fieldKey}` as GiftCardStudioAdminKeys) : textElement.content} [${t("designer.layers.dynamic")}]`
           : textElement?.content || t("designer.layers.text")
-        : element.type === "image"
-          ? t("designer.layers.image")
-          : element.type === "group"
-            ? t("designer.layers.groupLabel")
-            : element.shapeType && shapeTypeLabels[element.shapeType]
-              ? t(shapeTypeLabels[element.shapeType])
-              : t("designer.layers.shape");
+        : element.type === "icon"
+          ? t("designer.layers.icon")
+          : element.type === "image"
+            ? t("designer.layers.image")
+            : element.type === "group"
+              ? t("designer.layers.groupLabel")
+              : element.shapeType && shapeTypeLabels[element.shapeType]
+                ? t(shapeTypeLabels[element.shapeType])
+                : t("designer.layers.shape");
 
     return (
       <div key={element.id}>

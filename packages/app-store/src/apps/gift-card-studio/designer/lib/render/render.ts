@@ -7,6 +7,7 @@ import type {
   Element,
   FieldKey,
   GroupElement,
+  IconElement,
   ImageElement,
   Paint,
   ShapeElement,
@@ -152,6 +153,81 @@ function renderImageNode(el: ImageElement): object {
   };
 }
 
+let lucideReactPromise: Promise<typeof import("lucide-react")> | null = null;
+
+function loadLucideReact(): Promise<typeof import("lucide-react")> {
+  lucideReactPromise ??= import("lucide-react");
+  return lucideReactPromise;
+}
+
+/** Design icon ids are kebab-case; `lucide-react` named exports are PascalCase. */
+function iconIdToLucideExportKey(iconId: string): string {
+  return iconId
+    .split("-")
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+    .join("");
+}
+
+async function renderIconNode(el: IconElement): Promise<object> {
+  const lucide = await loadLucideReact();
+  const w = el.size.width;
+  const h = el.size.height;
+  const color = el.styles?.color ?? "#000000";
+  const strokeWU = el.styles?.strokeWidth ?? 2;
+  const iconName = iconIdToLucideExportKey(el.icon);
+  const icon = (lucide as Record<string, unknown>)[iconName];
+
+  const wrapperStyle = {
+    position: "absolute" as const,
+    display: "flex",
+    left: el.position.x,
+    top: el.position.y,
+    width: w,
+    height: h,
+    transform: `rotate(${el.rotation ?? 0}deg)`,
+    opacity: el.opacity,
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
+  };
+
+  const isComponentLike =
+    typeof icon === "function" ||
+    (typeof icon === "object" &&
+      icon !== null &&
+      "$$typeof" in icon);
+
+  if (!isComponentLike) {
+    return {
+      type: "div",
+      props: {
+        style: {
+          ...wrapperStyle,
+          backgroundColor: "#e5e5e5",
+          fontSize: Math.min(w, h) * 0.15,
+          color: "#737373",
+        },
+        children: "?",
+      },
+    };
+  }
+
+  return {
+    type: "div",
+    props: {
+      style: wrapperStyle,
+      children: {
+        type: icon,
+        props: {
+          width: w,
+          height: h,
+          color,
+          strokeWidth: strokeWU * (Math.min(w, h) / 24),
+        },
+      },
+    },
+  };
+}
+
 function renderShapeNode(el: ShapeElement): object {
   const { shapeType, styles } = el;
   const fillPaint =
@@ -212,14 +288,18 @@ function renderShapeNode(el: ShapeElement): object {
   return { type: "div", props: { style: shapeStyle } };
 }
 
-function renderGroupNode(
+async function renderGroupNode(
   group: GroupElement,
   allElements: Element[],
   fields: FieldKeyValues,
-): object {
+): Promise<object> {
   const children = group.children
     .map((id) => allElements.find((e) => e.id === id))
     .filter(Boolean) as Element[];
+
+  const rendered = await Promise.all(
+    children.map((child) => renderElement(child, allElements, fields)),
+  );
 
   return {
     type: "div",
@@ -234,25 +314,23 @@ function renderGroupNode(
         transform: `rotate(${group.rotation ?? 0}deg)`,
         opacity: group.opacity,
       },
-      children: children.map((child) =>
-        renderElement(child, allElements, fields, true),
-      ),
+      children: rendered.filter(Boolean),
     },
   };
 }
 
-function renderElement(
+async function renderElement(
   el: Element,
   allElements: Element[],
   fields: FieldKeyValues,
-  insideGroup = false,
-): object | null {
+): Promise<object | null> {
   if (el.visible === false) return null;
 
   // When inside a group, positions are already relative to group origin
   // so we create a wrapper only for the offset when not at root
   if (el.type === "text") return renderTextNode(el as TextElement, fields);
   if (el.type === "image") return renderImageNode(el as ImageElement);
+  if (el.type === "icon") return renderIconNode(el as IconElement);
   if (el.type === "shape") return renderShapeNode(el as ShapeElement);
   if (el.type === "group")
     return renderGroupNode(el as GroupElement, allElements, fields);
@@ -263,7 +341,10 @@ function renderElement(
 // Build the root satori element tree
 // ---------------------------------------------------------------------------
 
-function buildElementTree(design: Design, fields: FieldKeyValues): object {
+async function buildElementTree(
+  design: Design,
+  fields: FieldKeyValues,
+): Promise<object> {
   const { canvas, elements } = design;
 
   // Top-level elements (skip children that are part of a group)
@@ -278,6 +359,10 @@ function buildElementTree(design: Design, fields: FieldKeyValues): object {
 
   const bgStyle = backgroundToCss(canvas.background);
 
+  const rendered = await Promise.all(
+    topLevel.map((el) => renderElement(el, elements, fields)),
+  );
+
   return {
     type: "div",
     props: {
@@ -289,9 +374,7 @@ function buildElementTree(design: Design, fields: FieldKeyValues): object {
         overflow: "hidden",
         ...bgStyle,
       },
-      children: topLevel
-        .map((el) => renderElement(el, elements, fields))
-        .filter(Boolean),
+      children: rendered.filter(Boolean),
     },
   };
 }
@@ -353,7 +436,7 @@ export async function renderGiftCard({
   format = "pdf",
 }: RenderRequest): Promise<Buffer> {
   // 1. Build satori element tree
-  const tree = buildElementTree(
+  const tree = await buildElementTree(
     design,
     fields ?? {
       amount: "0.00",

@@ -1,6 +1,9 @@
+import type { IconName } from "@timelish/ui";
 import { DateTime } from "luxon";
 
-export type ElementType = "text" | "image" | "shape" | "group";
+export type { IconName };
+
+export type ElementType = "text" | "image" | "shape" | "icon" | "group";
 
 export type FieldValue = string | DateTime | number;
 export type FieldKey =
@@ -85,6 +88,12 @@ export interface ImageStyles {
   objectFit?: "contain" | "cover" | "fill";
 }
 
+export interface IconStyles {
+  color?: string;
+  /** Stroke width in Lucide/viewBox units (24×24); default 2 */
+  strokeWidth?: number;
+}
+
 export interface BaseElement {
   id: string;
   type: ElementType;
@@ -112,6 +121,12 @@ export interface ImageElement extends BaseElement {
   styles: ImageStyles;
 }
 
+export interface IconElement extends BaseElement {
+  type: "icon";
+  icon: string;
+  styles: IconStyles;
+}
+
 export interface ShapeElement extends BaseElement {
   type: "shape";
   shapeType: "rectangle" | "circle" | "line";
@@ -123,7 +138,12 @@ export interface GroupElement extends BaseElement {
   children: string[]; // IDs of child elements
 }
 
-export type Element = TextElement | ImageElement | ShapeElement | GroupElement;
+export type Element =
+  | TextElement
+  | ImageElement
+  | IconElement
+  | ShapeElement
+  | GroupElement;
 
 export interface CanvasBackground {
   type: "color" | "gradient" | "image";

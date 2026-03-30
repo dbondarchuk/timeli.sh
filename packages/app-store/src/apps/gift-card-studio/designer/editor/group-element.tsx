@@ -1,12 +1,14 @@
 "use client";
 
-import { cn } from "@timelish/ui";
+import { cn, Icon } from "@timelish/ui";
 import type React from "react";
 import { useCallback, useRef } from "react";
 import { useEditorStore } from "../lib/store";
 import type {
   Element,
   GroupElement as GroupElementType,
+  IconElement,
+  IconName,
   ImageElement,
   Paint,
   ShapeElement,
@@ -81,6 +83,26 @@ function ChildContent({ child }: { child: Element }) {
         }}
         draggable={false}
       />
+    );
+  }
+
+  if (child.type === "icon") {
+    const el = child as IconElement;
+    const color = el.styles?.color ?? "#000000";
+    const strokeWU = el.styles?.strokeWidth ?? 1;
+    const w = el.size.width;
+    const h = el.size.height;
+    const size = Math.min(w, h);
+    return (
+      <div className="w-full h-full flex items-center justify-center overflow-hidden">
+        <Icon
+          name={el.icon as IconName}
+          width={size}
+          height={size}
+          color={color}
+          strokeWidth={strokeWU * (size / 24)}
+        />
+      </div>
     );
   }
 
@@ -319,8 +341,7 @@ export function GroupElementRenderer({
         const currentAngle =
           Math.atan2(ev.clientY - centerY, ev.clientX - centerX) *
           (180 / Math.PI);
-        const raw =
-          (origRotation + currentAngle - startAngle + 360) % 360;
+        const raw = (origRotation + currentAngle - startAngle + 360) % 360;
         updateElement(element.id, {
           rotation: snapRotationToCardinals(raw, ev.altKey),
         });

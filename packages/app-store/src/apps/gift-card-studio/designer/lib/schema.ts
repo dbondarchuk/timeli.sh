@@ -86,6 +86,19 @@ export const imageElementSchema = baseElementSchema.extend({
   styles: imageStylesSchema,
 });
 
+// export const iconsEnum = z.enum(iconNames);
+const iconsEnum = z.string().min(1, "Icon is required");
+const iconStylesSchema = z.object({
+  color: z.string().optional(),
+  strokeWidth: z.number().nonnegative().optional(),
+});
+
+export const iconElementSchema = baseElementSchema.extend({
+  type: z.literal("icon"),
+  icon: iconsEnum,
+  styles: iconStylesSchema,
+});
+
 // Groups are defined lazily to support potential nesting in schema checks
 export const groupElementSchema = baseElementSchema.extend({
   type: z.literal("group"),
@@ -98,6 +111,7 @@ export const elementSchema = z.discriminatedUnion("type", [
   textElementSchema,
   shapeElementSchema,
   imageElementSchema,
+  iconElementSchema,
   groupElementSchema,
 ]);
 
@@ -173,7 +187,11 @@ export function validateGiftCardDesign(design: unknown): {
   const result = designSchema.safeParse(design);
   if (!result.success) {
     result.error.issues.forEach((issue) => {
-      errors.push(issue.path.length > 0 ? `${issue.path.join(".")}: ${issue.message}` : issue.message);
+      errors.push(
+        issue.path.length > 0
+          ? `${issue.path.join(".")}: ${issue.message}`
+          : issue.message,
+      );
     });
     return { success: false, errors, warnings };
   }
@@ -207,5 +225,6 @@ export type ElementValue = z.infer<typeof elementSchema>;
 export type TextElementValue = z.infer<typeof textElementSchema>;
 export type ShapeElementValue = z.infer<typeof shapeElementSchema>;
 export type ImageElementValue = z.infer<typeof imageElementSchema>;
+export type IconElementValue = z.infer<typeof iconElementSchema>;
 export type GroupElementValue = z.infer<typeof groupElementSchema>;
 export type PaintValue = z.infer<typeof paintSchema>;

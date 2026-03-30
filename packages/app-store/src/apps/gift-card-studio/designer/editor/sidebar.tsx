@@ -8,7 +8,15 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@timelish/ui";
-import { Circle, ImageIcon, Minus, Sparkles, Square, Type } from "lucide-react";
+import {
+  Circle,
+  ImageIcon,
+  Minus,
+  Smile,
+  Sparkles,
+  Square,
+  Type,
+} from "lucide-react";
 import {
   GiftCardStudioAdminKeys,
   GiftCardStudioAdminNamespace,
@@ -17,6 +25,7 @@ import {
 import { useEditorStore } from "../lib/store";
 import type {
   FieldKey,
+  IconElement,
   ImageElement,
   ShapeElement,
   TextElement,
@@ -94,6 +103,24 @@ export function Sidebar() {
     addElement(element);
   };
 
+  const addIconElement = () => {
+    const element: IconElement = {
+      id: `element-${Date.now()}`,
+      type: "icon",
+      icon: "star",
+      position: { x: 100, y: 100 },
+      size: { width: 64, height: 64 },
+      rotation: 0,
+      opacity: 1,
+      visible: true,
+      styles: {
+        color: "#000000",
+        strokeWidth: 1,
+      },
+    };
+    addElement(element);
+  };
+
   const addShape = (shapeType: "rectangle" | "circle" | "line") => {
     const element: ShapeElement = {
       id: `element-${Date.now()}`,
@@ -148,6 +175,14 @@ export function Sidebar() {
           >
             <ImageIcon className="w-4 h-4" />
             {t("designer.sidebar.addImage")}
+          </Button>
+          <Button
+            variant="outline"
+            className="w-full justify-start gap-2 bg-transparent"
+            onClick={addIconElement}
+          >
+            <Smile className="w-4 h-4" />
+            {t("designer.sidebar.addIcon")}
           </Button>
         </div>
       </div>

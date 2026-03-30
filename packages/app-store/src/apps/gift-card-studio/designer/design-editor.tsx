@@ -42,7 +42,7 @@ export function DesignEditor({
       pan: { x: 0, y: 0 },
       mode: "edit",
     });
-  }, [designId, initialDesign, disabled]);
+  }, [designId]);
 
   return <EditorLayout allowGrouping embedded />;
 }

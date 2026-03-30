@@ -1,7 +1,7 @@
 "use client";
 
 import { useI18n } from "@timelish/i18n";
-import { cn, useCurrencyFormat } from "@timelish/ui";
+import { cn, Icon, IconName, useCurrencyFormat } from "@timelish/ui";
 import { Lock } from "lucide-react";
 import { DateTime } from "luxon";
 import type React from "react";
@@ -17,6 +17,7 @@ import {
   DYNAMIC_FIELDS,
   FieldKey,
   type Element,
+  type IconElement,
   type ImageElement,
   type Paint,
   type ShapeElement,
@@ -335,6 +336,10 @@ export function CanvasElement({
         );
       case "image":
         return <ImageElementRenderer element={element as ImageElement} />;
+      case "icon":
+        return (
+          <IconElementRenderer element={element as IconElement} zoom={zoom} />
+        );
       case "shape":
         return <ShapeElementRenderer element={element as ShapeElement} />;
       default:
@@ -556,6 +561,31 @@ function ImageElementRenderer({ element }: { element: ImageElement }) {
         objectFit: element.styles.objectFit || "contain",
       }}
     />
+  );
+}
+
+function IconElementRenderer({
+  element,
+  zoom,
+}: {
+  element: IconElement;
+  zoom: number;
+}) {
+  const color = element.styles?.color ?? "#000000";
+  const strokeWU = element.styles?.strokeWidth ?? 1;
+  const w = element.size.width * zoom;
+  const h = element.size.height * zoom;
+  const size = Math.min(w, h);
+  return (
+    <div className="w-full h-full flex items-center justify-center pointer-events-none overflow-hidden">
+      <Icon
+        name={element.icon as IconName}
+        width={size}
+        height={size}
+        color={color}
+        strokeWidth={strokeWU * (size / 24)}
+      />
+    </div>
   );
 }
 
