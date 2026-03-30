@@ -7,6 +7,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  useWebsiteUrl,
 } from "@timelish/ui";
 import {
   Circle,
@@ -37,6 +38,8 @@ export function Sidebar() {
   const t = useI18n<GiftCardStudioAdminNamespace, GiftCardStudioAdminKeys>(
     giftCardStudioAdminNamespace,
   );
+
+  const websiteUrl = useWebsiteUrl();
 
   const addTextElement = () => {
     const element: TextElement = {
@@ -90,7 +93,7 @@ export function Sidebar() {
     const element: ImageElement = {
       id: `element-${Date.now()}`,
       type: "image",
-      src: "/placeholder.svg?height=200&width=200",
+      src: `${websiteUrl}/assets/placeholder/200x200.png`,
       position: { x: 100, y: 100 },
       size: { width: 200, height: 200 },
       rotation: 0,
