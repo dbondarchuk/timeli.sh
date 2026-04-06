@@ -41,6 +41,7 @@ import {
   type IDiscountHook,
   type IEventsService,
   type IScheduleService,
+  type IUserService,
   type Period,
   type Query,
   type WithTotal,
@@ -80,6 +81,7 @@ export class EventsService extends BaseService implements IEventsService {
     private readonly paymentsService: IPaymentsService,
     private readonly jobService: IJobService,
     private readonly dashboardNotificationsService: IDashboardNotificationsService,
+    private readonly userService: IUserService,
   ) {
     super("EventsService", companyId);
   }
@@ -887,9 +889,8 @@ export class EventsService extends BaseService implements IEventsService {
 
     const config = await this.configurationService.getConfiguration("booking");
 
-    const apps = await this.appsService.getAppsData(
-      config.calendarSources?.map((source) => source.appId) || [],
-    );
+    const calendarSourceAppIds = await this.getCalendarSourceAppIds(config);
+    const apps = await this.appsService.getAppsData(calendarSourceAppIds);
 
     const url = getAdminUrl();
     const skipUids = new Set(
@@ -1645,9 +1646,8 @@ export class EventsService extends BaseService implements IEventsService {
       "Declined appointments retrieved",
     );
 
-    const apps = await this.appsService.getAppsData(
-      config.calendarSources?.map((source) => source.appId) || [],
-    );
+    const calendarSourceAppIds = await this.getCalendarSourceAppIds(config);
+    const apps = await this.appsService.getAppsData(calendarSourceAppIds);
 
     const dbEventsPromise = this.getDbBusyTimes(start, end);
     const appsPromises = apps.map(async (app) => {
@@ -1701,6 +1701,18 @@ export class EventsService extends BaseService implements IEventsService {
     );
 
     return [...dbEvents, ...remoteEvents];
+  }
+
+  private async getCalendarSourceAppIds(config: BookingConfiguration) {
+    const user = await this.userService.getOrganizationAdminUser(this.companyId);
+    if (user?.calendarSources?.length) {
+      return user.calendarSources.map((source) => source.appId);
+    }
+
+    // Backward-compatible fallback while existing workspaces are migrated.
+    return (config as BookingConfiguration & {
+      calendarSources?: { appId: string }[];
+    }).calendarSources?.map((source) => source.appId) || [];
   }
 
   private async getDbBusyTimes(

@@ -395,31 +395,28 @@ async function ensureInstallAppointmentNotificationDefaults(
   );
 }
 
-async function ensureInstallBookingCalendarSources(
+async function ensureInstallUserCalendarSources(
   services: ReturnType<typeof ServicesContainer>,
+  userId: string,
 ): Promise<void> {
   const logger = getLoggerFactory("InstallActions")(
-    "ensureInstallBookingCalendarSources",
+    "ensureInstallUserCalendarSources",
   );
   const apps =
     await services.connectedAppsService.getAppsByScope("calendar-read");
   const connectedCalendarApps = apps.filter((a) => a.status === "connected");
   if (!connectedCalendarApps.length) {
-    logger.debug("No connected calendar apps; leaving booking calendarSources");
+    logger.debug("No connected calendar apps; leaving user calendarSources");
     return;
   }
 
-  const booking =
-    (await services.configurationService.getConfiguration("booking")) ?? null;
-  if (!booking || Object.keys(booking).length === 0) {
-    logger.error(
-      {},
-      "Booking configuration missing; cannot set calendarSources",
-    );
+  const user = await services.userService.getUser(userId);
+  if (!user) {
+    logger.error({ userId }, "User missing; cannot set calendarSources");
     return;
   }
 
-  const existingSources = booking.calendarSources ?? [];
+  const existingSources = user.calendarSources ?? [];
   const existingIds = new Set(existingSources.map((s) => s.appId));
   const toAdd = connectedCalendarApps
     .filter((a) => !existingIds.has(a._id))
@@ -430,13 +427,12 @@ async function ensureInstallBookingCalendarSources(
     return;
   }
 
-  await services.configurationService.setConfiguration("booking", {
-    ...booking,
+  await services.userService.updateUser(userId, {
     calendarSources: [...existingSources, ...toAdd],
   });
   logger.debug(
     { addedAppIds: toAdd.map((x) => x.appId) },
-    "Merged connected calendar apps into booking calendarSources",
+    "Merged connected calendar apps into user calendarSources",
   );
 }
 
@@ -599,7 +595,7 @@ export async function runCompleteInstallSetupSteps(args: {
 
   await ensureDefaultInstallSchedule(services);
 
-  await ensureInstallBookingCalendarSources(services);
+  await ensureInstallUserCalendarSources(services, userId);
 
   const bookingPaymentResult =
     await ensureInstallBookingPaymentsDefaultAppsAndCancellations(

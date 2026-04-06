@@ -1710,7 +1710,6 @@
       "form": {
         "tabs": {
           "main": "Main",
-          "calendarSources": "Calendar sources",
           "options": "Options",
           "payments": "Payments",
           "cancellations": "Cancellations",
@@ -1752,9 +1751,6 @@
             "twenty": "Every hour at XX:00, XX:20, XX:40",
             "thirty": "Every hour at XX:00, XX:30"
           }
-        },
-        "calendarSources": {
-          "title": "Calendar sources"
         },
         "options": {
           "title": "Options"
@@ -1842,15 +1838,6 @@
           }
         },
         "cards": {
-          "calendarSource": {
-            "app": "App",
-            "appTooltip": "Select supported app",
-            "remove": "Remove",
-            "deleteConfirmTitle": "Are you absolutely sure?",
-            "deleteConfirmDescription": "Are you sure you want to remove this calendar source?",
-            "cancel": "Cancel",
-            "delete": "Delete"
-          },
           "optionSelect": {
             "roleDescription": "Option",
             "moveOption": "Move option",
@@ -2616,6 +2603,22 @@
         "imagePlaceholder": "Select an avatar image",
         "bio": "Bio",
         "bioPlaceholder": "Tell us a bit about yourself",
+        "calendarSources": {
+          "title": "Calendar sources",
+          "add": "Add source",
+          "cards": {
+            "calendarSource": {
+              "app": "Calendar app",
+              "appTooltip": "Select the connected calendar app used as a busy-time source for your availability.",
+              "remove": "Remove",
+              "deleteConfirmTitle": "Are you absolutely sure?",
+              "deleteConfirmDescription": "Are you sure you want to remove this calendar source?",
+              "cancel": "Cancel",
+              "delete": "Delete",
+              "noAppSelected": "Please select a calendar app"
+            }
+          }
+        },
         "changePhoto": "Change photo",
         "removePhoto": "Remove"
       },

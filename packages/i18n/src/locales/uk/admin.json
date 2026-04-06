@@ -1710,7 +1710,6 @@
       "form": {
         "tabs": {
           "main": "Основні",
-          "calendarSources": "Джерела календаря",
           "options": "Опції",
           "payments": "Платежі",
           "cancellations": "Скасування",
@@ -1752,9 +1751,6 @@
             "twenty": "Кожну годину о XX:00, XX:20, XX:40",
             "thirty": "Кожну годину о XX:00, XX:30"
           }
-        },
-        "calendarSources": {
-          "title": "Джерела календаря"
         },
         "options": {
           "title": "Опції"
@@ -1842,15 +1838,6 @@
           }
         },
         "cards": {
-          "calendarSource": {
-            "app": "Додаток",
-            "appTooltip": "Вибрати підтримуваний додаток",
-            "remove": "Видалити",
-            "deleteConfirmTitle": "Ви абсолютно впевнені?",
-            "deleteConfirmDescription": "Ви впевнені, що хочете видалити це джерело календаря?",
-            "cancel": "Скасувати",
-            "delete": "Видалити"
-          },
           "optionSelect": {
             "roleDescription": "Опція",
             "moveOption": "Перемістити опцію",
@@ -2616,6 +2603,22 @@
         "imagePlaceholder": "Оберіть зображення аватара",
         "bio": "Біографія",
         "bioPlaceholder": "Розкажіть трохи про себе",
+        "calendarSources": {
+          "title": "Джерела календаря",
+          "add": "Додати джерело",
+          "cards": {
+            "calendarSource": {
+              "app": "Календарний додаток",
+              "appTooltip": "Виберіть підключений календарний додаток, який використовується як джерело зайнятого часу для вашої доступності.",
+              "remove": "Видалити",
+              "deleteConfirmTitle": "Ви абсолютно впевнені?",
+              "deleteConfirmDescription": "Ви впевнені, що хочете видалити це джерело календаря?",
+              "cancel": "Скасувати",
+              "delete": "Видалити",
+              "noAppSelected": "Будь ласка, виберіть календарний додаток"
+            }
+          }
+        },
         "changePhoto": "Змінити фото",
         "removePhoto": "Видалити"
       },

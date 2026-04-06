@@ -20,7 +20,6 @@ import { SaveButton } from "@timelish/ui-admin";
 import { useRouter } from "next/navigation";
 import React, { useCallback } from "react";
 import { useForm } from "react-hook-form";
-import { CalendarSourcesTab } from "./tabs/calendar-sources";
 import { CancellationsTab } from "./tabs/cancellations";
 import { MainTab } from "./tabs/main";
 import { OptionsTab } from "./tabs/options";
@@ -66,7 +65,6 @@ export const AppointmentsSettingsForm: React.FC<{
 
   const triggerValidation = useCallback(() => {
     form.trigger();
-    form.trigger("calendarSources");
     form.trigger("options");
     form.trigger("payments");
     form.trigger("cancellationsAndReschedules");
@@ -92,16 +90,6 @@ export const AppointmentsSettingsForm: React.FC<{
               className={cn(mainTabInvalid ? "text-destructive" : "")}
             >
               {t("settings.appointments.form.tabs.main")}
-            </TabsTrigger>
-            <TabsTrigger
-              value="calendarSources"
-              className={cn(
-                form.getFieldState("calendarSources").invalid
-                  ? "text-destructive"
-                  : "",
-              )}
-            >
-              {t("settings.appointments.form.tabs.calendarSources")}
             </TabsTrigger>
             <TabsTrigger
               value="options"
@@ -146,9 +134,6 @@ export const AppointmentsSettingsForm: React.FC<{
           </ResponsiveTabsList>
           <TabsContent value="main">
             <MainTab form={form} />
-          </TabsContent>
-          <TabsContent value="calendarSources">
-            <CalendarSourcesTab form={form} />
           </TabsContent>
           <TabsContent value="options">
             <OptionsTab form={form} />

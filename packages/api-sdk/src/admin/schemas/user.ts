@@ -1,6 +1,7 @@
 import { BaseAllKeys, languages } from "@timelish/i18n";
 import {
   asOptionalField,
+  calendarSourcesConfigurationSchema,
   zAssetName,
   zNonEmptyString,
   zPhone,
@@ -25,6 +26,7 @@ export const userUpdateSchema = z.object({
       .string()
       .max(1024, "admin.users.validation.bio.max" satisfies BaseAllKeys),
   ).nullable(),
+  calendarSources: calendarSourcesConfigurationSchema,
 });
 
 export type UserUpdate = z.infer<typeof userUpdateSchema>;

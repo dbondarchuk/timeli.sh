@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { adminApi, UserUpdate, userUpdateSchema } from "@timelish/api-sdk";
 import { languages, useI18n } from "@timelish/i18n";
 import { PlateMarkdownEditor } from "@timelish/rte";
+import { CalendarSourceConfiguration } from "@timelish/types";
 import {
   Button,
   Card,
@@ -25,10 +26,11 @@ import {
   toastPromise,
 } from "@timelish/ui";
 import { AssetSelectorDialog, SaveButton } from "@timelish/ui-admin";
-import { Lock, Mail } from "lucide-react";
+import { Lock, Mail, Plus } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
+import { CalendarSourceCard } from "./calendar-source-card";
 import { EmailChangeDialog } from "./email-change-dialog";
 import { PasswordChangeDialog } from "./password-change-dialog";
 
@@ -49,6 +51,17 @@ export const ProfileForm: React.FC<{
     mode: "all",
     reValidateMode: "onChange",
     values: { ...values },
+  });
+  const {
+    fields: calendarSourceFields,
+    append: appendCalendarSource,
+    remove: removeCalendarSource,
+    update: updateCalendarSource,
+    insert: insertCalendarSource,
+  } = useFieldArray({
+    control: form.control,
+    name: "calendarSources",
+    keyName: "fields_id",
   });
 
   const onSubmit = async (data: UserUpdate) => {
@@ -82,6 +95,10 @@ export const ProfileForm: React.FC<{
 
   const image = form.watch("image");
   const name = form.watch("name");
+  const calendarSourceIds = React.useMemo(
+    () => calendarSourceFields.map((x) => x.fields_id),
+    [calendarSourceFields],
+  );
 
   return (
     <Form {...form}>
@@ -236,32 +253,78 @@ export const ProfileForm: React.FC<{
             </CardContent>
           </Card>
         </div>
-        <Card>
-          <CardHeader className="border-b">
-            <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-              {t("users.profile.form.bio")}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="pt-6">
-            <FormField
-              control={form.control}
-              name="bio"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <PlateMarkdownEditor
-                      {...field}
-                      value={field.value ?? ""}
-                      disabled={loading}
-                      placeholder={t("users.profile.form.bioPlaceholder")}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </CardContent>
-        </Card>
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+          <Card>
+            <CardHeader className="border-b">
+              <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                {t("users.profile.form.bio")}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pt-6">
+              <FormField
+                control={form.control}
+                name="bio"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <PlateMarkdownEditor
+                        {...field}
+                        value={field.value ?? ""}
+                        disabled={loading}
+                        placeholder={t("users.profile.form.bioPlaceholder")}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="border-b">
+              <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground flex items-center justify-between">
+                <span>{t("users.profile.form.calendarSources.title")}</span>
+                <Button
+                  variant="ghost"
+                  title={t("users.profile.form.calendarSources.add")}
+                  onClick={() =>
+                    appendCalendarSource({
+                      type: "ics",
+                    } as Partial<CalendarSourceConfiguration> as CalendarSourceConfiguration)
+                  }
+                >
+                  <Plus />
+                </Button>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pt-6 flex flex-grow flex-col gap-4">
+              {calendarSourceFields.map((item, index) => (
+                <CalendarSourceCard
+                  form={form}
+                  item={item as unknown as CalendarSourceConfiguration}
+                  key={item.fields_id}
+                  name={`calendarSources.${index}`}
+                  disabled={loading}
+                  remove={() => removeCalendarSource(index)}
+                  clone={() =>
+                    insertCalendarSource(index + 1, {
+                      ...form.getValues(`calendarSources.${index}`)!,
+                    })
+                  }
+                  update={(newValue) => updateCalendarSource(index, newValue)}
+                  excludeIds={form
+                    .getValues("calendarSources")
+                    ?.map(({ appId }) => appId)
+                    .filter(
+                      (appId) =>
+                        appId !==
+                        form.getValues(`calendarSources.${index}`)?.appId,
+                    )}
+                />
+              ))}
+            </CardContent>
+          </Card>
+        </div>
         <Card>
           <CardHeader className="border-b">
             <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">

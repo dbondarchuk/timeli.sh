@@ -101,6 +101,7 @@ export const ServicesContainer: (companyId: string) => IServicesContainer =
       paymentsService,
       jobService,
       dashboardNotificationsService,
+      userService,
     );
 
     const pagesService = new PagesService(companyId);

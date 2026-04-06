@@ -50,14 +50,10 @@ export async function PATCH(request: Request) {
     );
   }
 
-  const { bio, image, ...rest } = data;
+  const { bio, calendarSources, ...rest } = data;
   const authBody: Record<string, any> = {
     ...rest,
   };
-
-  if ("image" in data) {
-    authBody.image = data.image ?? undefined;
-  }
 
   if (Object.keys(rest).length > 0) {
     logger.debug({ rest }, "Updating auth fields");
@@ -65,9 +61,16 @@ export async function PATCH(request: Request) {
   }
 
   const servicesContainer = await getServicesContainer();
+  const userPatch: Record<string, unknown> = {};
   if ("bio" in data) {
-    logger.debug({ bio }, "Updating bio");
-    await servicesContainer.userService.updateUser(session.user.id, { bio });
+    userPatch.bio = bio;
+  }
+  if ("calendarSources" in data) {
+    userPatch.calendarSources = calendarSources;
+  }
+  if (Object.keys(userPatch).length > 0) {
+    logger.debug({ userPatch }, "Updating user profile fields");
+    await servicesContainer.userService.updateUser(session.user.id, userPatch);
   }
 
   const user = await servicesContainer.userService.getUser(session.user.id);
