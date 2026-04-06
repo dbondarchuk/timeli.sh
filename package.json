@@ -20,6 +20,7 @@
     "migration:new": "migrate-mongo create",
     "migration:down": "migrate-mongo down",
     "check-translations": "turbo run check-translations --",
+    "translate": "turbo run translate --",
     "prepare": "husky",
     "postinstall": "patch-package"
   },

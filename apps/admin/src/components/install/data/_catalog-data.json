@@ -1,0 +1,4371 @@
+{
+  "beauty": {
+    "hair_stylist": {
+      "tags": [
+        "beauty",
+        "hair",
+        "salon"
+      ],
+      "services": [
+        {
+          "id": "women_s_haircut_style",
+          "durations": [
+            45,
+            60
+          ],
+          "prices": [
+            45,
+            60,
+            85
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "women_s_haircut_style-addon-beauty-1",
+              "duration": 10,
+              "suggestedPrice": 11
+            },
+            {
+              "id": "women_s_haircut_style-addon-hair-2",
+              "duration": 15,
+              "suggestedPrice": 18
+            }
+          ]
+        },
+        {
+          "id": "men_s_haircut",
+          "durations": [
+            25,
+            40
+          ],
+          "prices": [
+            20,
+            35,
+            50
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "men_s_haircut-addon-beauty-1",
+              "duration": 10,
+              "suggestedPrice": 5
+            }
+          ]
+        },
+        {
+          "id": "full_color",
+          "durations": [
+            90,
+            120
+          ],
+          "prices": [
+            80,
+            120,
+            180
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "full_color-addon-beauty-1",
+              "duration": 10,
+              "suggestedPrice": 20
+            },
+            {
+              "id": "full_color-addon-hair-2",
+              "duration": 15,
+              "suggestedPrice": 32
+            }
+          ]
+        }
+      ]
+    },
+    "nail_technician": {
+      "tags": [
+        "beauty",
+        "nails",
+        "spa"
+      ],
+      "services": [
+        {
+          "id": "basic_manicure",
+          "durations": [
+            30
+          ],
+          "prices": [
+            18,
+            25,
+            35
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "basic_manicure-addon-beauty-1",
+              "duration": 10,
+              "suggestedPrice": 5
+            },
+            {
+              "id": "basic_manicure-addon-nails-2",
+              "duration": 15,
+              "suggestedPrice": 7
+            }
+          ]
+        },
+        {
+          "id": "gel_manicure",
+          "durations": [
+            45,
+            60
+          ],
+          "prices": [
+            30,
+            40,
+            55
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "gel_manicure-addon-beauty-1",
+              "duration": 10,
+              "suggestedPrice": 8
+            },
+            {
+              "id": "gel_manicure-addon-nails-2",
+              "duration": 15,
+              "suggestedPrice": 12
+            }
+          ]
+        },
+        {
+          "id": "acrylic_full_set",
+          "durations": [
+            75,
+            90
+          ],
+          "prices": [
+            50,
+            70,
+            95
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "acrylic_full_set-addon-beauty-1",
+              "duration": 10,
+              "suggestedPrice": 13
+            },
+            {
+              "id": "acrylic_full_set-addon-nails-2",
+              "duration": 15,
+              "suggestedPrice": 20
+            }
+          ]
+        }
+      ]
+    },
+    "esthetician": {
+      "tags": [
+        "beauty",
+        "skin",
+        "spa"
+      ],
+      "services": [
+        {
+          "id": "classic_facial",
+          "durations": [
+            60
+          ],
+          "prices": [
+            65,
+            85,
+            110
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "classic_facial-addon-beauty-1",
+              "duration": 10,
+              "suggestedPrice": 16
+            },
+            {
+              "id": "classic_facial-addon-skin-2",
+              "duration": 15,
+              "suggestedPrice": 26
+            }
+          ]
+        },
+        {
+          "id": "microdermabrasion",
+          "durations": [
+            45,
+            60
+          ],
+          "prices": [
+            85,
+            110,
+            140
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "microdermabrasion-addon-beauty-1",
+              "duration": 10,
+              "suggestedPrice": 21
+            },
+            {
+              "id": "microdermabrasion-addon-skin-2",
+              "duration": 15,
+              "suggestedPrice": 34
+            }
+          ]
+        },
+        {
+          "id": "acne_treatment",
+          "durations": [
+            45,
+            60
+          ],
+          "prices": [
+            70,
+            95,
+            120
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "acne_treatment-addon-beauty-1",
+              "duration": 10,
+              "suggestedPrice": 18
+            },
+            {
+              "id": "acne_treatment-addon-skin-2",
+              "duration": 15,
+              "suggestedPrice": 28
+            }
+          ]
+        }
+      ]
+    },
+    "makeup_artist": {
+      "tags": [
+        "beauty",
+        "makeup",
+        "events"
+      ],
+      "services": [
+        {
+          "id": "natural_day_makeup",
+          "durations": [
+            45
+          ],
+          "prices": [
+            50,
+            70,
+            95
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "natural_day_makeup-addon-beauty-1",
+              "duration": 10,
+              "suggestedPrice": 13
+            },
+            {
+              "id": "natural_day_makeup-addon-makeup-2",
+              "duration": 15,
+              "suggestedPrice": 20
+            }
+          ]
+        },
+        {
+          "id": "bridal_makeup",
+          "durations": [
+            90,
+            120
+          ],
+          "prices": [
+            150,
+            220,
+            320
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "bridal_makeup-addon-beauty-1",
+              "duration": 10,
+              "suggestedPrice": 38
+            },
+            {
+              "id": "bridal_makeup-addon-makeup-2",
+              "duration": 15,
+              "suggestedPrice": 60
+            }
+          ]
+        },
+        {
+          "id": "event_glam",
+          "durations": [
+            60,
+            90
+          ],
+          "prices": [
+            80,
+            110,
+            150
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "event_glam-addon-beauty-1",
+              "duration": 10,
+              "suggestedPrice": 20
+            },
+            {
+              "id": "event_glam-addon-makeup-2",
+              "duration": 15,
+              "suggestedPrice": 32
+            }
+          ]
+        }
+      ]
+    },
+    "lash_technician": {
+      "tags": [
+        "beauty",
+        "lashes",
+        "spa"
+      ],
+      "services": [
+        {
+          "id": "classic_lash_extensions",
+          "durations": [
+            60,
+            75
+          ],
+          "prices": [
+            70,
+            95,
+            130
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "classic_lash_extensions-addon-beauty-1",
+              "duration": 10,
+              "suggestedPrice": 18
+            },
+            {
+              "id": "classic_lash_extensions-addon-lashes-2",
+              "duration": 15,
+              "suggestedPrice": 28
+            }
+          ]
+        },
+        {
+          "id": "volume_lash_extensions",
+          "durations": [
+            90,
+            120
+          ],
+          "prices": [
+            110,
+            140,
+            180
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "volume_lash_extensions-addon-beauty-1",
+              "duration": 10,
+              "suggestedPrice": 28
+            },
+            {
+              "id": "volume_lash_extensions-addon-lashes-2",
+              "duration": 15,
+              "suggestedPrice": 44
+            }
+          ]
+        },
+        {
+          "id": "lash_fill",
+          "durations": [
+            45
+          ],
+          "prices": [
+            40,
+            55,
+            75
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "lash_fill-addon-beauty-1",
+              "duration": 10,
+              "suggestedPrice": 10
+            },
+            {
+              "id": "lash_fill-addon-lashes-2",
+              "duration": 15,
+              "suggestedPrice": 16
+            }
+          ]
+        }
+      ]
+    },
+    "brow_artist": {
+      "tags": [
+        "beauty",
+        "brows",
+        "spa"
+      ],
+      "services": [
+        {
+          "id": "brow_shaping",
+          "durations": [
+            30
+          ],
+          "prices": [
+            18,
+            30,
+            45
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "brow_shaping-addon-beauty-1",
+              "duration": 10,
+              "suggestedPrice": 5
+            },
+            {
+              "id": "brow_shaping-addon-brows-2",
+              "duration": 15,
+              "suggestedPrice": 7
+            }
+          ]
+        },
+        {
+          "id": "brow_lamination",
+          "durations": [
+            45,
+            60
+          ],
+          "prices": [
+            45,
+            60,
+            85
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "brow_lamination-addon-beauty-1",
+              "duration": 10,
+              "suggestedPrice": 11
+            },
+            {
+              "id": "brow_lamination-addon-brows-2",
+              "duration": 15,
+              "suggestedPrice": 18
+            }
+          ]
+        },
+        {
+          "id": "tint_shape",
+          "durations": [
+            30,
+            45
+          ],
+          "prices": [
+            25,
+            35,
+            50
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "tint_shape-addon-beauty-1",
+              "duration": 10,
+              "suggestedPrice": 6
+            },
+            {
+              "id": "tint_shape-addon-brows-2",
+              "duration": 15,
+              "suggestedPrice": 10
+            }
+          ]
+        }
+      ]
+    },
+    "spray_tan_technician": {
+      "tags": [
+        "beauty",
+        "tan",
+        "spa"
+      ],
+      "services": [
+        {
+          "id": "full_body_spray_tan",
+          "durations": [
+            30
+          ],
+          "prices": [
+            30,
+            45,
+            60
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "full_body_spray_tan-addon-beauty-1",
+              "duration": 10,
+              "suggestedPrice": 8
+            },
+            {
+              "id": "full_body_spray_tan-addon-tan-2",
+              "duration": 15,
+              "suggestedPrice": 12
+            }
+          ]
+        },
+        {
+          "id": "express_spray_tan",
+          "durations": [
+            20
+          ],
+          "prices": [
+            25,
+            35,
+            45
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "express_spray_tan-addon-beauty-1",
+              "duration": 10,
+              "suggestedPrice": 6
+            }
+          ]
+        },
+        {
+          "id": "touch_up",
+          "durations": [
+            20
+          ],
+          "prices": [
+            20,
+            30
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "touch_up-addon-beauty-1",
+              "duration": 10,
+              "suggestedPrice": 5
+            }
+          ]
+        }
+      ]
+    },
+    "waxing_specialist": {
+      "tags": [
+        "beauty",
+        "waxing",
+        "spa"
+      ],
+      "services": [
+        {
+          "id": "bikini_wax",
+          "durations": [
+            30
+          ],
+          "prices": [
+            30,
+            40,
+            55
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "bikini_wax-addon-beauty-1",
+              "duration": 10,
+              "suggestedPrice": 8
+            },
+            {
+              "id": "bikini_wax-addon-waxing-2",
+              "duration": 15,
+              "suggestedPrice": 12
+            }
+          ]
+        },
+        {
+          "id": "full_body_wax",
+          "durations": [
+            90,
+            120
+          ],
+          "prices": [
+            120,
+            150,
+            200
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "full_body_wax-addon-beauty-1",
+              "duration": 10,
+              "suggestedPrice": 30
+            },
+            {
+              "id": "full_body_wax-addon-waxing-2",
+              "duration": 15,
+              "suggestedPrice": 48
+            }
+          ]
+        },
+        {
+          "id": "underarm_wax",
+          "durations": [
+            20
+          ],
+          "prices": [
+            15,
+            25,
+            35
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "underarm_wax-addon-beauty-1",
+              "duration": 10,
+              "suggestedPrice": 5
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "coaching": {
+    "life_coach": {
+      "tags": [
+        "coaching",
+        "personal",
+        "wellness"
+      ],
+      "services": [
+        {
+          "id": "discovery_session",
+          "durations": [
+            30,
+            45
+          ],
+          "prices": [
+            35,
+            55,
+            80
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "discovery_session-addon-coaching-1",
+              "duration": 10,
+              "suggestedPrice": 9
+            },
+            {
+              "id": "discovery_session-addon-personal-2",
+              "duration": 15,
+              "suggestedPrice": 14
+            }
+          ]
+        },
+        {
+          "id": "coaching_session",
+          "durations": [
+            45,
+            60
+          ],
+          "prices": [
+            60,
+            85,
+            120
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "coaching_session-addon-coaching-1",
+              "duration": 10,
+              "suggestedPrice": 15
+            },
+            {
+              "id": "coaching_session-addon-personal-2",
+              "duration": 15,
+              "suggestedPrice": 24
+            }
+          ]
+        }
+      ]
+    },
+    "business_coach": {
+      "tags": [
+        "coaching",
+        "business",
+        "strategy"
+      ],
+      "services": [
+        {
+          "id": "strategy_audit",
+          "durations": [
+            60,
+            90
+          ],
+          "prices": [
+            150,
+            220,
+            350
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "strategy_audit-addon-coaching-1",
+              "duration": 10,
+              "suggestedPrice": 38
+            },
+            {
+              "id": "strategy_audit-addon-business-2",
+              "duration": 15,
+              "suggestedPrice": 60
+            }
+          ]
+        },
+        {
+          "id": "executive_coaching",
+          "durations": [
+            60
+          ],
+          "prices": [
+            200,
+            300,
+            450
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "executive_coaching-addon-coaching-1",
+              "duration": 10,
+              "suggestedPrice": 50
+            },
+            {
+              "id": "executive_coaching-addon-business-2",
+              "duration": 15,
+              "suggestedPrice": 80
+            }
+          ]
+        },
+        {
+          "id": "team_workshop",
+          "durations": [
+            120,
+            180
+          ],
+          "prices": [
+            400,
+            600
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "team_workshop-addon-coaching-1",
+              "duration": 10,
+              "suggestedPrice": 100
+            },
+            {
+              "id": "team_workshop-addon-business-2",
+              "duration": 15,
+              "suggestedPrice": 160
+            }
+          ]
+        }
+      ]
+    },
+    "career_coach": {
+      "tags": [
+        "coaching",
+        "career",
+        "jobs"
+      ],
+      "services": [
+        {
+          "id": "resume_review",
+          "durations": [
+            45
+          ],
+          "prices": [
+            60,
+            80
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "resume_review-addon-coaching-1",
+              "duration": 10,
+              "suggestedPrice": 15
+            },
+            {
+              "id": "resume_review-addon-career-2",
+              "duration": 15,
+              "suggestedPrice": 24
+            }
+          ]
+        },
+        {
+          "id": "interview_prep",
+          "durations": [
+            60,
+            90
+          ],
+          "prices": [
+            80,
+            120
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "interview_prep-addon-coaching-1",
+              "duration": 10,
+              "suggestedPrice": 20
+            },
+            {
+              "id": "interview_prep-addon-career-2",
+              "duration": 15,
+              "suggestedPrice": 32
+            }
+          ]
+        },
+        {
+          "id": "career_strategy_session",
+          "durations": [
+            60
+          ],
+          "prices": [
+            100,
+            150
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "career_strategy_session-addon-coaching-1",
+              "duration": 10,
+              "suggestedPrice": 25
+            },
+            {
+              "id": "career_strategy_session-addon-career-2",
+              "duration": 15,
+              "suggestedPrice": 40
+            }
+          ]
+        }
+      ]
+    },
+    "health_coach": {
+      "tags": [
+        "coaching",
+        "health",
+        "wellness"
+      ],
+      "services": [
+        {
+          "id": "initial_health_assessment",
+          "durations": [
+            60
+          ],
+          "prices": [
+            60,
+            85
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "initial_health_assessment-addon-coaching-1",
+              "duration": 10,
+              "suggestedPrice": 15
+            },
+            {
+              "id": "initial_health_assessment-addon-health-2",
+              "duration": 15,
+              "suggestedPrice": 24
+            }
+          ]
+        },
+        {
+          "id": "follow_up_coaching",
+          "durations": [
+            30,
+            45
+          ],
+          "prices": [
+            40,
+            60
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "follow_up_coaching-addon-coaching-1",
+              "duration": 10,
+              "suggestedPrice": 10
+            },
+            {
+              "id": "follow_up_coaching-addon-health-2",
+              "duration": 15,
+              "suggestedPrice": 16
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "creative": {
+    "photographer": {
+      "tags": [
+        "creative",
+        "photo",
+        "events"
+      ],
+      "services": [
+        {
+          "id": "portrait_session",
+          "durations": [
+            60,
+            90
+          ],
+          "prices": [
+            150,
+            220,
+            300
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "portrait_session-addon-creative-1",
+              "duration": 10,
+              "suggestedPrice": 38
+            },
+            {
+              "id": "portrait_session-addon-photo-2",
+              "duration": 15,
+              "suggestedPrice": 60
+            }
+          ]
+        },
+        {
+          "id": "event_photography_per_hour",
+          "durations": [
+            60,
+            120
+          ],
+          "prices": [
+            120,
+            180,
+            250
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "event_photography_per_hour-addon-creative-1",
+              "duration": 10,
+              "suggestedPrice": 30
+            },
+            {
+              "id": "event_photography_per_hour-addon-photo-2",
+              "duration": 15,
+              "suggestedPrice": 48
+            }
+          ]
+        },
+        {
+          "id": "product_shoot",
+          "durations": [
+            120,
+            240
+          ],
+          "prices": [
+            300,
+            500,
+            800
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "product_shoot-addon-creative-1",
+              "duration": 10,
+              "suggestedPrice": 75
+            },
+            {
+              "id": "product_shoot-addon-photo-2",
+              "duration": 15,
+              "suggestedPrice": 120
+            }
+          ]
+        }
+      ]
+    },
+    "videographer": {
+      "tags": [
+        "creative",
+        "video",
+        "events"
+      ],
+      "services": [
+        {
+          "id": "promo_video_up_to_2_min",
+          "durations": [
+            180,
+            240
+          ],
+          "prices": [
+            600,
+            900,
+            1500
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "promo_video_up_to_2_min-addon-creative-1",
+              "duration": 10,
+              "suggestedPrice": 150
+            },
+            {
+              "id": "promo_video_up_to_2_min-addon-video-2",
+              "duration": 15,
+              "suggestedPrice": 240
+            }
+          ]
+        },
+        {
+          "id": "event_videography",
+          "durations": [
+            180,
+            360
+          ],
+          "prices": [
+            500,
+            900,
+            1400
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "event_videography-addon-creative-1",
+              "duration": 10,
+              "suggestedPrice": 125
+            },
+            {
+              "id": "event_videography-addon-video-2",
+              "duration": 15,
+              "suggestedPrice": 200
+            }
+          ]
+        },
+        {
+          "id": "interview_recording",
+          "durations": [
+            60,
+            120
+          ],
+          "prices": [
+            200,
+            350
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "interview_recording-addon-creative-1",
+              "duration": 10,
+              "suggestedPrice": 50
+            },
+            {
+              "id": "interview_recording-addon-video-2",
+              "duration": 15,
+              "suggestedPrice": 80
+            }
+          ]
+        }
+      ]
+    },
+    "graphic_designer": {
+      "tags": [
+        "creative",
+        "design",
+        "freelance"
+      ],
+      "services": [
+        {
+          "id": "logo_design_basic",
+          "durations": [
+            60,
+            120
+          ],
+          "prices": [
+            200,
+            350,
+            600
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "logo_design_basic-addon-creative-1",
+              "duration": 10,
+              "suggestedPrice": 50
+            },
+            {
+              "id": "logo_design_basic-addon-design-2",
+              "duration": 15,
+              "suggestedPrice": 80
+            }
+          ]
+        },
+        {
+          "id": "brand_kit",
+          "durations": [
+            120,
+            240
+          ],
+          "prices": [
+            600,
+            900,
+            1500
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "brand_kit-addon-creative-1",
+              "duration": 10,
+              "suggestedPrice": 150
+            },
+            {
+              "id": "brand_kit-addon-design-2",
+              "duration": 15,
+              "suggestedPrice": 240
+            }
+          ]
+        },
+        {
+          "id": "social_media_graphics_pack",
+          "durations": [
+            60,
+            120
+          ],
+          "prices": [
+            120,
+            220,
+            350
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "social_media_graphics_pack-addon-creative-1",
+              "duration": 10,
+              "suggestedPrice": 30
+            },
+            {
+              "id": "social_media_graphics_pack-addon-design-2",
+              "duration": 15,
+              "suggestedPrice": 48
+            }
+          ]
+        }
+      ]
+    },
+    "illustrator": {
+      "tags": [
+        "creative",
+        "illustration",
+        "freelance"
+      ],
+      "services": [
+        {
+          "id": "custom_illustration_single",
+          "durations": [
+            60,
+            120
+          ],
+          "prices": [
+            100,
+            200,
+            350
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "custom_illustration_single-addon-creative-1",
+              "duration": 10,
+              "suggestedPrice": 25
+            },
+            {
+              "id": "custom_illustration_single-addon-illustration-2",
+              "duration": 15,
+              "suggestedPrice": 40
+            }
+          ]
+        },
+        {
+          "id": "series_of_illustrations",
+          "durations": [
+            240,
+            360
+          ],
+          "prices": [
+            500,
+            900,
+            1400
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "series_of_illustrations-addon-creative-1",
+              "duration": 10,
+              "suggestedPrice": 125
+            },
+            {
+              "id": "series_of_illustrations-addon-illustration-2",
+              "duration": 15,
+              "suggestedPrice": 200
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "education": {
+    "tutor": {
+      "tags": [
+        "education",
+        "teaching",
+        "tutor"
+      ],
+      "services": [
+        {
+          "id": "one_on_one_tutoring",
+          "durations": [
+            60
+          ],
+          "prices": [
+            30,
+            45,
+            65
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "one_on_one_tutoring-addon-education-1",
+              "duration": 10,
+              "suggestedPrice": 8
+            },
+            {
+              "id": "one_on_one_tutoring-addon-teaching-2",
+              "duration": 15,
+              "suggestedPrice": 12
+            }
+          ]
+        },
+        {
+          "id": "exam_prep_per_session",
+          "durations": [
+            90,
+            120
+          ],
+          "prices": [
+            60,
+            90,
+            130
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "exam_prep_per_session-addon-education-1",
+              "duration": 10,
+              "suggestedPrice": 15
+            },
+            {
+              "id": "exam_prep_per_session-addon-teaching-2",
+              "duration": 15,
+              "suggestedPrice": 24
+            }
+          ]
+        },
+        {
+          "id": "homework_help",
+          "durations": [
+            30,
+            60
+          ],
+          "prices": [
+            20,
+            35,
+            50
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "homework_help-addon-education-1",
+              "duration": 10,
+              "suggestedPrice": 5
+            },
+            {
+              "id": "homework_help-addon-teaching-2",
+              "duration": 15,
+              "suggestedPrice": 8
+            }
+          ]
+        }
+      ]
+    },
+    "music_teacher": {
+      "tags": [
+        "education",
+        "music",
+        "lessons"
+      ],
+      "services": [
+        {
+          "id": "private_lesson_30min",
+          "durations": [
+            30
+          ],
+          "prices": [
+            25,
+            35,
+            50
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "private_lesson_30min-addon-education-1",
+              "duration": 10,
+              "suggestedPrice": 6
+            },
+            {
+              "id": "private_lesson_30min-addon-music-2",
+              "duration": 15,
+              "suggestedPrice": 10
+            }
+          ]
+        },
+        {
+          "id": "advanced_lesson_60min",
+          "durations": [
+            60
+          ],
+          "prices": [
+            45,
+            70,
+            95
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "advanced_lesson_60min-addon-education-1",
+              "duration": 10,
+              "suggestedPrice": 11
+            },
+            {
+              "id": "advanced_lesson_60min-addon-music-2",
+              "duration": 15,
+              "suggestedPrice": 18
+            }
+          ]
+        },
+        {
+          "id": "monthly_lesson_package",
+          "durations": [
+            60
+          ],
+          "prices": [
+            160,
+            220
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "monthly_lesson_package-addon-education-1",
+              "duration": 10,
+              "suggestedPrice": 40
+            },
+            {
+              "id": "monthly_lesson_package-addon-music-2",
+              "duration": 15,
+              "suggestedPrice": 64
+            }
+          ]
+        }
+      ]
+    },
+    "language_tutor": {
+      "tags": [
+        "education",
+        "language",
+        "lessons"
+      ],
+      "services": [
+        {
+          "id": "conversational_session",
+          "durations": [
+            45,
+            60
+          ],
+          "prices": [
+            25,
+            40,
+            60
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "conversational_session-addon-education-1",
+              "duration": 10,
+              "suggestedPrice": 6
+            },
+            {
+              "id": "conversational_session-addon-language-2",
+              "duration": 15,
+              "suggestedPrice": 10
+            }
+          ]
+        },
+        {
+          "id": "grammar_writing",
+          "durations": [
+            60
+          ],
+          "prices": [
+            30,
+            50
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "grammar_writing-addon-education-1",
+              "duration": 10,
+              "suggestedPrice": 8
+            },
+            {
+              "id": "grammar_writing-addon-language-2",
+              "duration": 15,
+              "suggestedPrice": 12
+            }
+          ]
+        },
+        {
+          "id": "exam_prep",
+          "durations": [
+            90
+          ],
+          "prices": [
+            60,
+            90
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "exam_prep-addon-education-1",
+              "duration": 10,
+              "suggestedPrice": 15
+            },
+            {
+              "id": "exam_prep-addon-language-2",
+              "duration": 15,
+              "suggestedPrice": 24
+            }
+          ]
+        }
+      ]
+    },
+    "dance_instructor": {
+      "tags": [
+        "education",
+        "dance",
+        "classes"
+      ],
+      "services": [
+        {
+          "id": "private_dance_lesson",
+          "durations": [
+            60
+          ],
+          "prices": [
+            40,
+            60,
+            85
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "private_dance_lesson-addon-education-1",
+              "duration": 10,
+              "suggestedPrice": 10
+            },
+            {
+              "id": "private_dance_lesson-addon-dance-2",
+              "duration": 15,
+              "suggestedPrice": 16
+            }
+          ]
+        },
+        {
+          "id": "group_class",
+          "durations": [
+            45,
+            60
+          ],
+          "prices": [
+            12,
+            18,
+            25
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "group_class-addon-education-1",
+              "duration": 10,
+              "suggestedPrice": 5
+            },
+            {
+              "id": "group_class-addon-dance-2",
+              "duration": 15,
+              "suggestedPrice": 5
+            }
+          ]
+        },
+        {
+          "id": "choreography_session",
+          "durations": [
+            90,
+            120
+          ],
+          "prices": [
+            120,
+            200
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "choreography_session-addon-education-1",
+              "duration": 10,
+              "suggestedPrice": 30
+            },
+            {
+              "id": "choreography_session-addon-dance-2",
+              "duration": 15,
+              "suggestedPrice": 48
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "event": {
+    "event_planner": {
+      "tags": [
+        "events",
+        "planning",
+        "weddings"
+      ],
+      "services": [
+        {
+          "id": "consultation",
+          "durations": [
+            60
+          ],
+          "prices": [
+            80,
+            120,
+            200
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "consultation-addon-events-1",
+              "duration": 10,
+              "suggestedPrice": 20
+            },
+            {
+              "id": "consultation-addon-planning-2",
+              "duration": 15,
+              "suggestedPrice": 32
+            }
+          ]
+        },
+        {
+          "id": "partial_planning_package",
+          "durations": [
+            120
+          ],
+          "prices": [
+            500,
+            800
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "partial_planning_package-addon-events-1",
+              "duration": 10,
+              "suggestedPrice": 125
+            },
+            {
+              "id": "partial_planning_package-addon-planning-2",
+              "duration": 15,
+              "suggestedPrice": 200
+            }
+          ]
+        },
+        {
+          "id": "full_service_planning",
+          "durations": [
+            240
+          ],
+          "prices": [
+            2000,
+            3500
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "full_service_planning-addon-events-1",
+              "duration": 10,
+              "suggestedPrice": 500
+            },
+            {
+              "id": "full_service_planning-addon-planning-2",
+              "duration": 15,
+              "suggestedPrice": 800
+            }
+          ]
+        }
+      ]
+    },
+    "dj": {
+      "tags": [
+        "events",
+        "music",
+        "party"
+      ],
+      "services": [
+        {
+          "id": "event_dj_per_hour",
+          "durations": [
+            60,
+            180
+          ],
+          "prices": [
+            80,
+            120,
+            200
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "event_dj_per_hour-addon-events-1",
+              "duration": 10,
+              "suggestedPrice": 20
+            },
+            {
+              "id": "event_dj_per_hour-addon-music-2",
+              "duration": 15,
+              "suggestedPrice": 32
+            }
+          ]
+        },
+        {
+          "id": "ceremony_dj",
+          "durations": [
+            60
+          ],
+          "prices": [
+            200,
+            300
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "ceremony_dj-addon-events-1",
+              "duration": 10,
+              "suggestedPrice": 50
+            },
+            {
+              "id": "ceremony_dj-addon-music-2",
+              "duration": 15,
+              "suggestedPrice": 80
+            }
+          ]
+        },
+        {
+          "id": "mc_dj_package",
+          "durations": [
+            180,
+            360
+          ],
+          "prices": [
+            400,
+            700
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "mc_dj_package-addon-events-1",
+              "duration": 10,
+              "suggestedPrice": 100
+            },
+            {
+              "id": "mc_dj_package-addon-music-2",
+              "duration": 15,
+              "suggestedPrice": 160
+            }
+          ]
+        }
+      ]
+    },
+    "photobooth_operator": {
+      "tags": [
+        "events",
+        "photo",
+        "entertainment"
+      ],
+      "services": [
+        {
+          "id": "basic_booth_2_hours",
+          "durations": [
+            120
+          ],
+          "prices": [
+            250,
+            350
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "basic_booth_2_hours-addon-events-1",
+              "duration": 10,
+              "suggestedPrice": 63
+            },
+            {
+              "id": "basic_booth_2_hours-addon-photo-2",
+              "duration": 15,
+              "suggestedPrice": 100
+            }
+          ]
+        },
+        {
+          "id": "custom_backdrop",
+          "durations": [
+            60,
+            120
+          ],
+          "prices": [
+            150,
+            250
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "custom_backdrop-addon-events-1",
+              "duration": 10,
+              "suggestedPrice": 38
+            },
+            {
+              "id": "custom_backdrop-addon-photo-2",
+              "duration": 15,
+              "suggestedPrice": 60
+            }
+          ]
+        },
+        {
+          "id": "booth_package_4_hours",
+          "durations": [
+            240
+          ],
+          "prices": [
+            400,
+            600
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "booth_package_4_hours-addon-events-1",
+              "duration": 10,
+              "suggestedPrice": 100
+            },
+            {
+              "id": "booth_package_4_hours-addon-photo-2",
+              "duration": 15,
+              "suggestedPrice": 160
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "fitness": {
+    "personal_trainer": {
+      "tags": [
+        "fitness",
+        "trainer",
+        "coaching"
+      ],
+      "services": [
+        {
+          "id": "initial_fitness_assessment",
+          "durations": [
+            60
+          ],
+          "prices": [
+            50,
+            75,
+            100
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "initial_fitness_assessment-addon-fitness-1",
+              "duration": 10,
+              "suggestedPrice": 13
+            },
+            {
+              "id": "initial_fitness_assessment-addon-trainer-2",
+              "duration": 15,
+              "suggestedPrice": 20
+            }
+          ]
+        },
+        {
+          "id": "one_on_one_training",
+          "durations": [
+            45,
+            60
+          ],
+          "prices": [
+            40,
+            60,
+            85
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "one_on_one_training-addon-fitness-1",
+              "duration": 10,
+              "suggestedPrice": 10
+            },
+            {
+              "id": "one_on_one_training-addon-trainer-2",
+              "duration": 15,
+              "suggestedPrice": 16
+            }
+          ]
+        },
+        {
+          "id": "nutrition_training_plan",
+          "durations": [
+            60
+          ],
+          "prices": [
+            120,
+            160,
+            220
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "nutrition_training_plan-addon-fitness-1",
+              "duration": 10,
+              "suggestedPrice": 30
+            },
+            {
+              "id": "nutrition_training_plan-addon-trainer-2",
+              "duration": 15,
+              "suggestedPrice": 48
+            }
+          ]
+        }
+      ]
+    },
+    "yoga_instructor": {
+      "tags": [
+        "fitness",
+        "yoga",
+        "wellness"
+      ],
+      "services": [
+        {
+          "id": "private_yoga_session",
+          "durations": [
+            60
+          ],
+          "prices": [
+            40,
+            60,
+            85
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "private_yoga_session-addon-fitness-1",
+              "duration": 10,
+              "suggestedPrice": 10
+            },
+            {
+              "id": "private_yoga_session-addon-yoga-2",
+              "duration": 15,
+              "suggestedPrice": 16
+            }
+          ]
+        },
+        {
+          "id": "small_group_class",
+          "durations": [
+            45,
+            60
+          ],
+          "prices": [
+            15,
+            20
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "small_group_class-addon-fitness-1",
+              "duration": 10,
+              "suggestedPrice": 5
+            },
+            {
+              "id": "small_group_class-addon-yoga-2",
+              "duration": 15,
+              "suggestedPrice": 6
+            }
+          ]
+        },
+        {
+          "id": "yoga_workshop",
+          "durations": [
+            120,
+            180
+          ],
+          "prices": [
+            80,
+            120,
+            160
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "yoga_workshop-addon-fitness-1",
+              "duration": 10,
+              "suggestedPrice": 20
+            },
+            {
+              "id": "yoga_workshop-addon-yoga-2",
+              "duration": 15,
+              "suggestedPrice": 32
+            }
+          ]
+        }
+      ]
+    },
+    "pilates_instructor": {
+      "tags": [
+        "fitness",
+        "pilates",
+        "wellness"
+      ],
+      "services": [
+        {
+          "id": "mat_pilates_private",
+          "durations": [
+            50,
+            60
+          ],
+          "prices": [
+            45,
+            65,
+            90
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "mat_pilates_private-addon-fitness-1",
+              "duration": 10,
+              "suggestedPrice": 11
+            },
+            {
+              "id": "mat_pilates_private-addon-pilates-2",
+              "duration": 15,
+              "suggestedPrice": 18
+            }
+          ]
+        },
+        {
+          "id": "reformer_session",
+          "durations": [
+            45,
+            60
+          ],
+          "prices": [
+            55,
+            75,
+            110
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "reformer_session-addon-fitness-1",
+              "duration": 10,
+              "suggestedPrice": 14
+            },
+            {
+              "id": "reformer_session-addon-pilates-2",
+              "duration": 15,
+              "suggestedPrice": 22
+            }
+          ]
+        }
+      ]
+    },
+    "group_fitness_instructor": {
+      "tags": [
+        "fitness",
+        "group",
+        "classes"
+      ],
+      "services": [
+        {
+          "id": "bootcamp_class",
+          "durations": [
+            45
+          ],
+          "prices": [
+            12,
+            18
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "bootcamp_class-addon-fitness-1",
+              "duration": 10,
+              "suggestedPrice": 5
+            },
+            {
+              "id": "bootcamp_class-addon-group-2",
+              "duration": 15,
+              "suggestedPrice": 5
+            }
+          ]
+        },
+        {
+          "id": "circuit_training",
+          "durations": [
+            45,
+            60
+          ],
+          "prices": [
+            12,
+            20
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "circuit_training-addon-fitness-1",
+              "duration": 10,
+              "suggestedPrice": 5
+            },
+            {
+              "id": "circuit_training-addon-group-2",
+              "duration": 15,
+              "suggestedPrice": 5
+            }
+          ]
+        },
+        {
+          "id": "corporate_wellness_session",
+          "durations": [
+            60
+          ],
+          "prices": [
+            120,
+            200
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "corporate_wellness_session-addon-fitness-1",
+              "duration": 10,
+              "suggestedPrice": 30
+            },
+            {
+              "id": "corporate_wellness_session-addon-group-2",
+              "duration": 15,
+              "suggestedPrice": 48
+            }
+          ]
+        }
+      ]
+    },
+    "running_coach": {
+      "tags": [
+        "fitness",
+        "running",
+        "coaching"
+      ],
+      "services": [
+        {
+          "id": "gait_analysis_plan",
+          "durations": [
+            60
+          ],
+          "prices": [
+            60,
+            90
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "gait_analysis_plan-addon-fitness-1",
+              "duration": 10,
+              "suggestedPrice": 15
+            },
+            {
+              "id": "gait_analysis_plan-addon-running-2",
+              "duration": 15,
+              "suggestedPrice": 24
+            }
+          ]
+        },
+        {
+          "id": "one_on_one_coaching",
+          "durations": [
+            45,
+            60
+          ],
+          "prices": [
+            45,
+            70,
+            95
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "one_on_one_coaching-addon-fitness-1",
+              "duration": 10,
+              "suggestedPrice": 11
+            },
+            {
+              "id": "one_on_one_coaching-addon-running-2",
+              "duration": 15,
+              "suggestedPrice": 18
+            }
+          ]
+        },
+        {
+          "id": "group_run_session",
+          "durations": [
+            60
+          ],
+          "prices": [
+            8,
+            12
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "group_run_session-addon-fitness-1",
+              "duration": 10,
+              "suggestedPrice": 5
+            },
+            {
+              "id": "group_run_session-addon-running-2",
+              "duration": 15,
+              "suggestedPrice": 5
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "home-services": {
+    "cleaner": {
+      "tags": [
+        "home",
+        "services",
+        "cleaning"
+      ],
+      "services": [
+        {
+          "id": "standard_home_cleaning",
+          "durations": [
+            60,
+            120
+          ],
+          "prices": [
+            60,
+            100,
+            150
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "standard_home_cleaning-addon-home-1",
+              "duration": 10,
+              "suggestedPrice": 15
+            },
+            {
+              "id": "standard_home_cleaning-addon-services-2",
+              "duration": 15,
+              "suggestedPrice": 24
+            }
+          ]
+        },
+        {
+          "id": "deep_clean",
+          "durations": [
+            180,
+            240
+          ],
+          "prices": [
+            180,
+            250,
+            350
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "deep_clean-addon-home-1",
+              "duration": 10,
+              "suggestedPrice": 45
+            },
+            {
+              "id": "deep_clean-addon-services-2",
+              "duration": 15,
+              "suggestedPrice": 72
+            }
+          ]
+        },
+        {
+          "id": "move_out_cleaning",
+          "durations": [
+            180,
+            240
+          ],
+          "prices": [
+            160,
+            220,
+            300
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "move_out_cleaning-addon-home-1",
+              "duration": 10,
+              "suggestedPrice": 40
+            },
+            {
+              "id": "move_out_cleaning-addon-services-2",
+              "duration": 15,
+              "suggestedPrice": 64
+            }
+          ]
+        }
+      ]
+    },
+    "handyman": {
+      "tags": [
+        "home",
+        "services",
+        "repairs"
+      ],
+      "services": [
+        {
+          "id": "small_repair_visit",
+          "durations": [
+            60,
+            90
+          ],
+          "prices": [
+            60,
+            90,
+            130
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "small_repair_visit-addon-home-1",
+              "duration": 10,
+              "suggestedPrice": 15
+            },
+            {
+              "id": "small_repair_visit-addon-services-2",
+              "duration": 15,
+              "suggestedPrice": 24
+            }
+          ]
+        },
+        {
+          "id": "assembly_service",
+          "durations": [
+            60,
+            120
+          ],
+          "prices": [
+            50,
+            80,
+            120
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "assembly_service-addon-home-1",
+              "duration": 10,
+              "suggestedPrice": 13
+            },
+            {
+              "id": "assembly_service-addon-services-2",
+              "duration": 15,
+              "suggestedPrice": 20
+            }
+          ]
+        }
+      ]
+    },
+    "electrician": {
+      "tags": [
+        "home",
+        "services",
+        "electric"
+      ],
+      "services": [
+        {
+          "id": "diagnostic_visit",
+          "durations": [
+            60
+          ],
+          "prices": [
+            80,
+            120,
+            160
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "diagnostic_visit-addon-home-1",
+              "duration": 10,
+              "suggestedPrice": 20
+            },
+            {
+              "id": "diagnostic_visit-addon-services-2",
+              "duration": 15,
+              "suggestedPrice": 32
+            }
+          ]
+        },
+        {
+          "id": "repair_per_hour",
+          "durations": [
+            60,
+            120
+          ],
+          "prices": [
+            80,
+            120
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "repair_per_hour-addon-home-1",
+              "duration": 10,
+              "suggestedPrice": 20
+            },
+            {
+              "id": "repair_per_hour-addon-services-2",
+              "duration": 15,
+              "suggestedPrice": 32
+            }
+          ]
+        },
+        {
+          "id": "installation",
+          "durations": [
+            120,
+            240
+          ],
+          "prices": [
+            200,
+            320,
+            500
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "installation-addon-home-1",
+              "duration": 10,
+              "suggestedPrice": 50
+            },
+            {
+              "id": "installation-addon-services-2",
+              "duration": 15,
+              "suggestedPrice": 80
+            }
+          ]
+        }
+      ]
+    },
+    "plumber": {
+      "tags": [
+        "home",
+        "services",
+        "plumbing"
+      ],
+      "services": [
+        {
+          "id": "leak_repair",
+          "durations": [
+            60
+          ],
+          "prices": [
+            80,
+            120,
+            180
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "leak_repair-addon-home-1",
+              "duration": 10,
+              "suggestedPrice": 20
+            },
+            {
+              "id": "leak_repair-addon-services-2",
+              "duration": 15,
+              "suggestedPrice": 32
+            }
+          ]
+        },
+        {
+          "id": "fixture_installation",
+          "durations": [
+            60,
+            120
+          ],
+          "prices": [
+            90,
+            140,
+            220
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "fixture_installation-addon-home-1",
+              "duration": 10,
+              "suggestedPrice": 23
+            },
+            {
+              "id": "fixture_installation-addon-services-2",
+              "duration": 15,
+              "suggestedPrice": 36
+            }
+          ]
+        },
+        {
+          "id": "drain_cleaning",
+          "durations": [
+            45,
+            90
+          ],
+          "prices": [
+            70,
+            100,
+            150
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "drain_cleaning-addon-home-1",
+              "duration": 10,
+              "suggestedPrice": 18
+            },
+            {
+              "id": "drain_cleaning-addon-services-2",
+              "duration": 15,
+              "suggestedPrice": 28
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "medical": {
+    "general_practitioner": {
+      "tags": [
+        "medical",
+        "health",
+        "clinic"
+      ],
+      "services": [
+        {
+          "id": "new_patient_visit",
+          "durations": [
+            30,
+            45
+          ],
+          "prices": [
+            80,
+            120,
+            160
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "new_patient_visit-addon-medical-1",
+              "duration": 10,
+              "suggestedPrice": 20
+            },
+            {
+              "id": "new_patient_visit-addon-health-2",
+              "duration": 15,
+              "suggestedPrice": 32
+            }
+          ]
+        },
+        {
+          "id": "follow_up_visit",
+          "durations": [
+            15,
+            30
+          ],
+          "prices": [
+            40,
+            65,
+            90
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "follow_up_visit-addon-medical-1",
+              "duration": 10,
+              "suggestedPrice": 10
+            }
+          ]
+        },
+        {
+          "id": "telehealth_consultation",
+          "durations": [
+            15,
+            30
+          ],
+          "prices": [
+            40,
+            60
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "telehealth_consultation-addon-medical-1",
+              "duration": 10,
+              "suggestedPrice": 10
+            }
+          ]
+        }
+      ]
+    },
+    "dentist": {
+      "tags": [
+        "medical",
+        "dental",
+        "clinic"
+      ],
+      "services": [
+        {
+          "id": "initial_exam_cleaning",
+          "durations": [
+            45,
+            60
+          ],
+          "prices": [
+            80,
+            120,
+            160
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "initial_exam_cleaning-addon-medical-1",
+              "duration": 10,
+              "suggestedPrice": 20
+            },
+            {
+              "id": "initial_exam_cleaning-addon-dental-2",
+              "duration": 15,
+              "suggestedPrice": 32
+            }
+          ]
+        },
+        {
+          "id": "cavity_filling",
+          "durations": [
+            45,
+            60
+          ],
+          "prices": [
+            120,
+            180,
+            250
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "cavity_filling-addon-medical-1",
+              "duration": 10,
+              "suggestedPrice": 30
+            },
+            {
+              "id": "cavity_filling-addon-dental-2",
+              "duration": 15,
+              "suggestedPrice": 48
+            }
+          ]
+        },
+        {
+          "id": "emergency_visit",
+          "durations": [
+            30,
+            60
+          ],
+          "prices": [
+            150,
+            220
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "emergency_visit-addon-medical-1",
+              "duration": 10,
+              "suggestedPrice": 38
+            },
+            {
+              "id": "emergency_visit-addon-dental-2",
+              "duration": 15,
+              "suggestedPrice": 60
+            }
+          ]
+        }
+      ]
+    },
+    "optometrist": {
+      "tags": [
+        "medical",
+        "vision",
+        "clinic"
+      ],
+      "services": [
+        {
+          "id": "comprehensive_eye_exam",
+          "durations": [
+            45
+          ],
+          "prices": [
+            60,
+            90,
+            120
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "comprehensive_eye_exam-addon-medical-1",
+              "duration": 10,
+              "suggestedPrice": 15
+            },
+            {
+              "id": "comprehensive_eye_exam-addon-vision-2",
+              "duration": 15,
+              "suggestedPrice": 24
+            }
+          ]
+        },
+        {
+          "id": "contact_lens_fitting",
+          "durations": [
+            30,
+            45
+          ],
+          "prices": [
+            50,
+            80
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "contact_lens_fitting-addon-medical-1",
+              "duration": 10,
+              "suggestedPrice": 13
+            },
+            {
+              "id": "contact_lens_fitting-addon-vision-2",
+              "duration": 15,
+              "suggestedPrice": 20
+            }
+          ]
+        },
+        {
+          "id": "follow_up_exam",
+          "durations": [
+            15,
+            30
+          ],
+          "prices": [
+            40,
+            60
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "follow_up_exam-addon-medical-1",
+              "duration": 10,
+              "suggestedPrice": 10
+            }
+          ]
+        }
+      ]
+    },
+    "physiotherapist": {
+      "tags": [
+        "medical",
+        "rehab",
+        "therapy"
+      ],
+      "services": [
+        {
+          "id": "assessment_plan",
+          "durations": [
+            60
+          ],
+          "prices": [
+            80,
+            120
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "assessment_plan-addon-medical-1",
+              "duration": 10,
+              "suggestedPrice": 20
+            },
+            {
+              "id": "assessment_plan-addon-rehab-2",
+              "duration": 15,
+              "suggestedPrice": 32
+            }
+          ]
+        },
+        {
+          "id": "therapy_session",
+          "durations": [
+            45,
+            60
+          ],
+          "prices": [
+            60,
+            85,
+            110
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "therapy_session-addon-medical-1",
+              "duration": 10,
+              "suggestedPrice": 15
+            },
+            {
+              "id": "therapy_session-addon-rehab-2",
+              "duration": 15,
+              "suggestedPrice": 24
+            }
+          ]
+        },
+        {
+          "id": "post_op_rehab_package",
+          "durations": [
+            45
+          ],
+          "prices": [
+            220,
+            300
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "post_op_rehab_package-addon-medical-1",
+              "duration": 10,
+              "suggestedPrice": 55
+            },
+            {
+              "id": "post_op_rehab_package-addon-rehab-2",
+              "duration": 15,
+              "suggestedPrice": 88
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "meetings": {
+    "general_meeting": {
+      "tags": [
+        "meetings",
+        "business",
+        "calls"
+      ],
+      "services": [
+        {
+          "id": "intro_call",
+          "durations": [
+            15,
+            30
+          ],
+          "prices": [],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "intro_call-addon-meetings-1",
+              "duration": 10,
+              "suggestedPrice": 15
+            }
+          ]
+        },
+        {
+          "id": "discovery_call",
+          "durations": [
+            30,
+            45
+          ],
+          "prices": [],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "discovery_call-addon-meetings-1",
+              "duration": 10,
+              "suggestedPrice": 15
+            },
+            {
+              "id": "discovery_call-addon-business-2",
+              "duration": 15,
+              "suggestedPrice": 25
+            }
+          ]
+        },
+        {
+          "id": "follow_up_meeting",
+          "durations": [
+            30,
+            60
+          ],
+          "prices": [],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "follow_up_meeting-addon-meetings-1",
+              "duration": 10,
+              "suggestedPrice": 15
+            },
+            {
+              "id": "follow_up_meeting-addon-business-2",
+              "duration": 15,
+              "suggestedPrice": 25
+            }
+          ]
+        }
+      ]
+    },
+    "interview_slot": {
+      "tags": [
+        "meetings",
+        "hiring",
+        "recruiting"
+      ],
+      "services": [
+        {
+          "id": "initial_screening",
+          "durations": [
+            15,
+            30
+          ],
+          "prices": [],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "initial_screening-addon-meetings-1",
+              "duration": 10,
+              "suggestedPrice": 15
+            }
+          ]
+        },
+        {
+          "id": "technical_interview",
+          "durations": [
+            45,
+            60
+          ],
+          "prices": [],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "technical_interview-addon-meetings-1",
+              "duration": 10,
+              "suggestedPrice": 15
+            },
+            {
+              "id": "technical_interview-addon-hiring-2",
+              "duration": 15,
+              "suggestedPrice": 25
+            }
+          ]
+        },
+        {
+          "id": "final_interview",
+          "durations": [
+            60,
+            90
+          ],
+          "prices": [],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "final_interview-addon-meetings-1",
+              "duration": 10,
+              "suggestedPrice": 15
+            },
+            {
+              "id": "final_interview-addon-hiring-2",
+              "duration": 15,
+              "suggestedPrice": 25
+            }
+          ]
+        }
+      ]
+    },
+    "demo_call": {
+      "tags": [
+        "meetings",
+        "sales",
+        "demo"
+      ],
+      "services": [
+        {
+          "id": "quick_demo",
+          "durations": [
+            15,
+            30
+          ],
+          "prices": [],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "quick_demo-addon-meetings-1",
+              "duration": 10,
+              "suggestedPrice": 15
+            }
+          ]
+        },
+        {
+          "id": "full_demo_q_a",
+          "durations": [
+            45,
+            60
+          ],
+          "prices": [],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "full_demo_q_a-addon-meetings-1",
+              "duration": 10,
+              "suggestedPrice": 15
+            },
+            {
+              "id": "full_demo_q_a-addon-sales-2",
+              "duration": 15,
+              "suggestedPrice": 25
+            }
+          ]
+        },
+        {
+          "id": "pilot_kickoff",
+          "durations": [
+            60,
+            90
+          ],
+          "prices": [],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "pilot_kickoff-addon-meetings-1",
+              "duration": 10,
+              "suggestedPrice": 15
+            },
+            {
+              "id": "pilot_kickoff-addon-sales-2",
+              "duration": 15,
+              "suggestedPrice": 25
+            }
+          ]
+        }
+      ]
+    },
+    "cohort_onboarding": {
+      "tags": [
+        "meetings",
+        "onboarding",
+        "product"
+      ],
+      "services": [
+        {
+          "id": "new_user_onboarding",
+          "durations": [
+            30,
+            60
+          ],
+          "prices": [],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "new_user_onboarding-addon-meetings-1",
+              "duration": 10,
+              "suggestedPrice": 15
+            },
+            {
+              "id": "new_user_onboarding-addon-onboarding-2",
+              "duration": 15,
+              "suggestedPrice": 25
+            }
+          ]
+        },
+        {
+          "id": "team_onboarding",
+          "durations": [
+            60,
+            90
+          ],
+          "prices": [],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "team_onboarding-addon-meetings-1",
+              "duration": 10,
+              "suggestedPrice": 15
+            },
+            {
+              "id": "team_onboarding-addon-onboarding-2",
+              "duration": 15,
+              "suggestedPrice": 25
+            }
+          ]
+        },
+        {
+          "id": "training_workshop",
+          "durations": [
+            90,
+            180
+          ],
+          "prices": [],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "training_workshop-addon-meetings-1",
+              "duration": 10,
+              "suggestedPrice": 15
+            },
+            {
+              "id": "training_workshop-addon-onboarding-2",
+              "duration": 15,
+              "suggestedPrice": 25
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "misc": {
+    "photography_consult": {
+      "tags": [
+        "creative",
+        "consulting",
+        "photography"
+      ],
+      "services": [
+        {
+          "id": "portfolio_review",
+          "durations": [
+            45,
+            60
+          ],
+          "prices": [
+            60,
+            90,
+            130
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "portfolio_review-addon-creative-1",
+              "duration": 10,
+              "suggestedPrice": 15
+            },
+            {
+              "id": "portfolio_review-addon-consulting-2",
+              "duration": 15,
+              "suggestedPrice": 24
+            }
+          ]
+        },
+        {
+          "id": "creative_direction_session",
+          "durations": [
+            60,
+            90
+          ],
+          "prices": [
+            120,
+            180,
+            260
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "creative_direction_session-addon-creative-1",
+              "duration": 10,
+              "suggestedPrice": 30
+            },
+            {
+              "id": "creative_direction_session-addon-consulting-2",
+              "duration": 15,
+              "suggestedPrice": 48
+            }
+          ]
+        }
+      ]
+    },
+    "translation_service": {
+      "tags": [
+        "services",
+        "translation",
+        "language"
+      ],
+      "services": [
+        {
+          "id": "document_translation_per_500_words",
+          "durations": [
+            30
+          ],
+          "prices": [
+            20,
+            35,
+            50
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "document_translation_per_500_words-addon-services-1",
+              "duration": 10,
+              "suggestedPrice": 5
+            },
+            {
+              "id": "document_translation_per_500_words-addon-translation-2",
+              "duration": 15,
+              "suggestedPrice": 8
+            }
+          ]
+        },
+        {
+          "id": "localization_consultation",
+          "durations": [
+            60
+          ],
+          "prices": [
+            80,
+            120
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "localization_consultation-addon-services-1",
+              "duration": 10,
+              "suggestedPrice": 20
+            },
+            {
+              "id": "localization_consultation-addon-translation-2",
+              "duration": 15,
+              "suggestedPrice": 32
+            }
+          ]
+        }
+      ]
+    },
+    "virtual_assistant": {
+      "tags": [
+        "services",
+        "virtual",
+        "assistant"
+      ],
+      "services": [
+        {
+          "id": "task_block_1_hour",
+          "durations": [
+            60
+          ],
+          "prices": [
+            20,
+            35,
+            50
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "task_block_1_hour-addon-services-1",
+              "duration": 10,
+              "suggestedPrice": 5
+            },
+            {
+              "id": "task_block_1_hour-addon-virtual-2",
+              "duration": 15,
+              "suggestedPrice": 8
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "pet": {
+    "dog_walker": {
+      "tags": [
+        "pets",
+        "dog",
+        "care"
+      ],
+      "services": [
+        {
+          "id": "30_min_walk",
+          "durations": [
+            30
+          ],
+          "prices": [
+            12,
+            18,
+            25
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "30_min_walk-addon-pets-1",
+              "duration": 10,
+              "suggestedPrice": 5
+            },
+            {
+              "id": "30_min_walk-addon-dog-2",
+              "duration": 15,
+              "suggestedPrice": 5
+            }
+          ]
+        },
+        {
+          "id": "60_min_walk",
+          "durations": [
+            60
+          ],
+          "prices": [
+            20,
+            30,
+            45
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "60_min_walk-addon-pets-1",
+              "duration": 10,
+              "suggestedPrice": 5
+            },
+            {
+              "id": "60_min_walk-addon-dog-2",
+              "duration": 15,
+              "suggestedPrice": 8
+            }
+          ]
+        },
+        {
+          "id": "pet_sitting_overnight",
+          "durations": [
+            720
+          ],
+          "prices": [
+            60,
+            90,
+            130
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "pet_sitting_overnight-addon-pets-1",
+              "duration": 10,
+              "suggestedPrice": 15
+            },
+            {
+              "id": "pet_sitting_overnight-addon-dog-2",
+              "duration": 15,
+              "suggestedPrice": 24
+            }
+          ]
+        }
+      ]
+    },
+    "pet_groomer": {
+      "tags": [
+        "pets",
+        "grooming",
+        "care"
+      ],
+      "services": [
+        {
+          "id": "full_groom",
+          "durations": [
+            90,
+            120
+          ],
+          "prices": [
+            50,
+            80,
+            120
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "full_groom-addon-pets-1",
+              "duration": 10,
+              "suggestedPrice": 13
+            },
+            {
+              "id": "full_groom-addon-grooming-2",
+              "duration": 15,
+              "suggestedPrice": 20
+            }
+          ]
+        },
+        {
+          "id": "bath_brush",
+          "durations": [
+            45,
+            60
+          ],
+          "prices": [
+            30,
+            45,
+            65
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "bath_brush-addon-pets-1",
+              "duration": 10,
+              "suggestedPrice": 8
+            },
+            {
+              "id": "bath_brush-addon-grooming-2",
+              "duration": 15,
+              "suggestedPrice": 12
+            }
+          ]
+        },
+        {
+          "id": "nail_trim",
+          "durations": [
+            15,
+            20
+          ],
+          "prices": [
+            12,
+            20,
+            30
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "nail_trim-addon-pets-1",
+              "duration": 10,
+              "suggestedPrice": 5
+            }
+          ]
+        }
+      ]
+    },
+    "veterinarian": {
+      "tags": [
+        "pets",
+        "veterinary",
+        "medical"
+      ],
+      "services": [
+        {
+          "id": "wellness_exam",
+          "durations": [
+            30,
+            45
+          ],
+          "prices": [
+            50,
+            80,
+            120
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "wellness_exam-addon-pets-1",
+              "duration": 10,
+              "suggestedPrice": 13
+            },
+            {
+              "id": "wellness_exam-addon-veterinary-2",
+              "duration": 15,
+              "suggestedPrice": 20
+            }
+          ]
+        },
+        {
+          "id": "sick_visit",
+          "durations": [
+            30,
+            45
+          ],
+          "prices": [
+            60,
+            100,
+            150
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "sick_visit-addon-pets-1",
+              "duration": 10,
+              "suggestedPrice": 15
+            },
+            {
+              "id": "sick_visit-addon-veterinary-2",
+              "duration": 15,
+              "suggestedPrice": 24
+            }
+          ]
+        },
+        {
+          "id": "vaccination_visit",
+          "durations": [
+            15,
+            30
+          ],
+          "prices": [
+            20,
+            40,
+            60
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "vaccination_visit-addon-pets-1",
+              "duration": 10,
+              "suggestedPrice": 5
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "professional": {
+    "consultant": {
+      "tags": [
+        "professional",
+        "consulting",
+        "business"
+      ],
+      "services": [
+        {
+          "id": "strategy_session",
+          "durations": [
+            60,
+            90
+          ],
+          "prices": [
+            150,
+            250,
+            400
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "strategy_session-addon-professional-1",
+              "duration": 10,
+              "suggestedPrice": 38
+            },
+            {
+              "id": "strategy_session-addon-consulting-2",
+              "duration": 15,
+              "suggestedPrice": 60
+            }
+          ]
+        },
+        {
+          "id": "project_advisory",
+          "durations": [
+            60,
+            120
+          ],
+          "prices": [
+            200,
+            350,
+            600
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "project_advisory-addon-professional-1",
+              "duration": 10,
+              "suggestedPrice": 50
+            },
+            {
+              "id": "project_advisory-addon-consulting-2",
+              "duration": 15,
+              "suggestedPrice": 80
+            }
+          ]
+        },
+        {
+          "id": "workshop_facilitation",
+          "durations": [
+            120,
+            240
+          ],
+          "prices": [
+            500,
+            800
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "workshop_facilitation-addon-professional-1",
+              "duration": 10,
+              "suggestedPrice": 125
+            },
+            {
+              "id": "workshop_facilitation-addon-consulting-2",
+              "duration": 15,
+              "suggestedPrice": 200
+            }
+          ]
+        }
+      ]
+    },
+    "accountant": {
+      "tags": [
+        "professional",
+        "finance",
+        "accounting"
+      ],
+      "services": [
+        {
+          "id": "tax_consultation",
+          "durations": [
+            30,
+            60
+          ],
+          "prices": [
+            80,
+            120,
+            180
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "tax_consultation-addon-professional-1",
+              "duration": 10,
+              "suggestedPrice": 20
+            },
+            {
+              "id": "tax_consultation-addon-finance-2",
+              "duration": 15,
+              "suggestedPrice": 32
+            }
+          ]
+        },
+        {
+          "id": "bookkeeping_setup",
+          "durations": [
+            120
+          ],
+          "prices": [
+            250,
+            400
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "bookkeeping_setup-addon-professional-1",
+              "duration": 10,
+              "suggestedPrice": 63
+            },
+            {
+              "id": "bookkeeping_setup-addon-finance-2",
+              "duration": 15,
+              "suggestedPrice": 100
+            }
+          ]
+        },
+        {
+          "id": "monthly_accounting_support",
+          "durations": [
+            60
+          ],
+          "prices": [
+            150,
+            250,
+            350
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "monthly_accounting_support-addon-professional-1",
+              "duration": 10,
+              "suggestedPrice": 38
+            },
+            {
+              "id": "monthly_accounting_support-addon-finance-2",
+              "duration": 15,
+              "suggestedPrice": 60
+            }
+          ]
+        }
+      ]
+    },
+    "lawyer": {
+      "tags": [
+        "professional",
+        "legal"
+      ],
+      "services": [
+        {
+          "id": "initial_consultation",
+          "durations": [
+            30,
+            60
+          ],
+          "prices": [
+            120,
+            180,
+            250
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "initial_consultation-addon-professional-1",
+              "duration": 10,
+              "suggestedPrice": 30
+            },
+            {
+              "id": "initial_consultation-addon-legal-2",
+              "duration": 15,
+              "suggestedPrice": 48
+            }
+          ]
+        },
+        {
+          "id": "contract_review",
+          "durations": [
+            60,
+            90
+          ],
+          "prices": [
+            200,
+            300,
+            450
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "contract_review-addon-professional-1",
+              "duration": 10,
+              "suggestedPrice": 50
+            },
+            {
+              "id": "contract_review-addon-legal-2",
+              "duration": 15,
+              "suggestedPrice": 80
+            }
+          ]
+        },
+        {
+          "id": "retainer_package_monthly",
+          "durations": [
+            60
+          ],
+          "prices": [
+            1000,
+            1500
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "retainer_package_monthly-addon-professional-1",
+              "duration": 10,
+              "suggestedPrice": 250
+            },
+            {
+              "id": "retainer_package_monthly-addon-legal-2",
+              "duration": 15,
+              "suggestedPrice": 400
+            }
+          ]
+        }
+      ]
+    },
+    "real_estate_agent": {
+      "tags": [
+        "professional",
+        "real_estate",
+        "sales"
+      ],
+      "services": [
+        {
+          "id": "home_listing_consultation",
+          "durations": [
+            60
+          ],
+          "prices": [
+            100,
+            150
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "home_listing_consultation-addon-professional-1",
+              "duration": 10,
+              "suggestedPrice": 25
+            },
+            {
+              "id": "home_listing_consultation-addon-real_estate-2",
+              "duration": 15,
+              "suggestedPrice": 40
+            }
+          ]
+        },
+        {
+          "id": "open_house_appointment",
+          "durations": [
+            60,
+            120
+          ],
+          "prices": [
+            0
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "open_house_appointment-addon-professional-1",
+              "duration": 10
+            },
+            {
+              "id": "open_house_appointment-addon-real_estate-2",
+              "duration": 15
+            }
+          ]
+        },
+        {
+          "id": "buyer_consultation",
+          "durations": [
+            45,
+            60
+          ],
+          "prices": [
+            0
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "buyer_consultation-addon-professional-1",
+              "duration": 10
+            },
+            {
+              "id": "buyer_consultation-addon-real_estate-2",
+              "duration": 15
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "welness": {
+    "massage_therapist": {
+      "tags": [
+        "wellness",
+        "massage",
+        "spa"
+      ],
+      "services": [
+        {
+          "id": "swedish_massage",
+          "durations": [
+            60,
+            90
+          ],
+          "prices": [
+            70,
+            85,
+            110
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "swedish_massage-addon-wellness-1",
+              "duration": 10,
+              "suggestedPrice": 18
+            },
+            {
+              "id": "swedish_massage-addon-massage-2",
+              "duration": 15,
+              "suggestedPrice": 28
+            }
+          ]
+        },
+        {
+          "id": "deep_tissue_massage",
+          "durations": [
+            60,
+            90
+          ],
+          "prices": [
+            80,
+            95,
+            120
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "deep_tissue_massage-addon-wellness-1",
+              "duration": 10,
+              "suggestedPrice": 20
+            },
+            {
+              "id": "deep_tissue_massage-addon-massage-2",
+              "duration": 15,
+              "suggestedPrice": 32
+            }
+          ]
+        },
+        {
+          "id": "hot_stone_massage",
+          "durations": [
+            75,
+            90
+          ],
+          "prices": [
+            95,
+            120,
+            150
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "hot_stone_massage-addon-wellness-1",
+              "duration": 10,
+              "suggestedPrice": 24
+            },
+            {
+              "id": "hot_stone_massage-addon-massage-2",
+              "duration": 15,
+              "suggestedPrice": 38
+            }
+          ]
+        }
+      ]
+    },
+    "acupuncturist": {
+      "tags": [
+        "wellness",
+        "acupuncture",
+        "therapy"
+      ],
+      "services": [
+        {
+          "id": "initial_consultation_treatment",
+          "durations": [
+            60,
+            90
+          ],
+          "prices": [
+            70,
+            90,
+            110
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "initial_consultation_treatment-addon-wellness-1",
+              "duration": 10,
+              "suggestedPrice": 18
+            },
+            {
+              "id": "initial_consultation_treatment-addon-acupuncture-2",
+              "duration": 15,
+              "suggestedPrice": 28
+            }
+          ]
+        },
+        {
+          "id": "follow_up_session",
+          "durations": [
+            45,
+            60
+          ],
+          "prices": [
+            50,
+            65,
+            80
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "follow_up_session-addon-wellness-1",
+              "duration": 10,
+              "suggestedPrice": 13
+            },
+            {
+              "id": "follow_up_session-addon-acupuncture-2",
+              "duration": 15,
+              "suggestedPrice": 20
+            }
+          ]
+        },
+        {
+          "id": "cupping_therapy",
+          "durations": [
+            30,
+            45
+          ],
+          "prices": [
+            40,
+            55,
+            70
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "cupping_therapy-addon-wellness-1",
+              "duration": 10,
+              "suggestedPrice": 10
+            },
+            {
+              "id": "cupping_therapy-addon-acupuncture-2",
+              "duration": 15,
+              "suggestedPrice": 16
+            }
+          ]
+        }
+      ]
+    },
+    "chiropractor": {
+      "tags": [
+        "wellness",
+        "chiropractic",
+        "health"
+      ],
+      "services": [
+        {
+          "id": "initial_assessment",
+          "durations": [
+            45,
+            60
+          ],
+          "prices": [
+            90,
+            110,
+            140
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "initial_assessment-addon-wellness-1",
+              "duration": 10,
+              "suggestedPrice": 23
+            },
+            {
+              "id": "initial_assessment-addon-chiropractic-2",
+              "duration": 15,
+              "suggestedPrice": 36
+            }
+          ]
+        },
+        {
+          "id": "adjustment_session",
+          "durations": [
+            30,
+            45
+          ],
+          "prices": [
+            50,
+            65,
+            85
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "adjustment_session-addon-wellness-1",
+              "duration": 10,
+              "suggestedPrice": 13
+            },
+            {
+              "id": "adjustment_session-addon-chiropractic-2",
+              "duration": 15,
+              "suggestedPrice": 20
+            }
+          ]
+        },
+        {
+          "id": "therapeutic_package_3_sessions",
+          "durations": [
+            45
+          ],
+          "prices": [
+            140,
+            180,
+            220
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "therapeutic_package_3_sessions-addon-wellness-1",
+              "duration": 10,
+              "suggestedPrice": 35
+            },
+            {
+              "id": "therapeutic_package_3_sessions-addon-chiropractic-2",
+              "duration": 15,
+              "suggestedPrice": 56
+            }
+          ]
+        }
+      ]
+    },
+    "physical_therapist": {
+      "tags": [
+        "wellness",
+        "rehab",
+        "health"
+      ],
+      "services": [
+        {
+          "id": "initial_evaluation",
+          "durations": [
+            60
+          ],
+          "prices": [
+            100,
+            130,
+            160
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "initial_evaluation-addon-wellness-1",
+              "duration": 10,
+              "suggestedPrice": 25
+            },
+            {
+              "id": "initial_evaluation-addon-rehab-2",
+              "duration": 15,
+              "suggestedPrice": 40
+            }
+          ]
+        },
+        {
+          "id": "therapy_session",
+          "durations": [
+            45,
+            60
+          ],
+          "prices": [
+            70,
+            90,
+            120
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "therapy_session-addon-wellness-1",
+              "duration": 10,
+              "suggestedPrice": 18
+            },
+            {
+              "id": "therapy_session-addon-rehab-2",
+              "duration": 15,
+              "suggestedPrice": 28
+            }
+          ]
+        },
+        {
+          "id": "telehealth_follow_up",
+          "durations": [
+            30
+          ],
+          "prices": [
+            40,
+            55
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "telehealth_follow_up-addon-wellness-1",
+              "duration": 10,
+              "suggestedPrice": 10
+            },
+            {
+              "id": "telehealth_follow_up-addon-rehab-2",
+              "duration": 15,
+              "suggestedPrice": 16
+            }
+          ]
+        }
+      ]
+    },
+    "nutritionist": {
+      "tags": [
+        "wellness",
+        "nutrition",
+        "health"
+      ],
+      "services": [
+        {
+          "id": "initial_nutrition_consultation",
+          "durations": [
+            60
+          ],
+          "prices": [
+            70,
+            95,
+            130
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "initial_nutrition_consultation-addon-wellness-1",
+              "duration": 10,
+              "suggestedPrice": 18
+            },
+            {
+              "id": "initial_nutrition_consultation-addon-nutrition-2",
+              "duration": 15,
+              "suggestedPrice": 28
+            }
+          ]
+        },
+        {
+          "id": "follow_up_coaching",
+          "durations": [
+            30,
+            45
+          ],
+          "prices": [
+            40,
+            55,
+            75
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "follow_up_coaching-addon-wellness-1",
+              "duration": 10,
+              "suggestedPrice": 10
+            },
+            {
+              "id": "follow_up_coaching-addon-nutrition-2",
+              "duration": 15,
+              "suggestedPrice": 16
+            }
+          ]
+        },
+        {
+          "id": "meal_plan_4_week",
+          "durations": [
+            30
+          ],
+          "prices": [
+            120,
+            160,
+            220
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "meal_plan_4_week-addon-wellness-1",
+              "duration": 10,
+              "suggestedPrice": 30
+            },
+            {
+              "id": "meal_plan_4_week-addon-nutrition-2",
+              "duration": 15,
+              "suggestedPrice": 48
+            }
+          ]
+        }
+      ]
+    },
+    "sleep_coach": {
+      "tags": [
+        "wellness",
+        "sleep",
+        "coaching"
+      ],
+      "services": [
+        {
+          "id": "sleep_assessment",
+          "durations": [
+            60
+          ],
+          "prices": [
+            70,
+            95
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "sleep_assessment-addon-wellness-1",
+              "duration": 10,
+              "suggestedPrice": 18
+            },
+            {
+              "id": "sleep_assessment-addon-sleep-2",
+              "duration": 15,
+              "suggestedPrice": 28
+            }
+          ]
+        },
+        {
+          "id": "coaching_session",
+          "durations": [
+            45
+          ],
+          "prices": [
+            50,
+            70
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "coaching_session-addon-wellness-1",
+              "duration": 10,
+              "suggestedPrice": 13
+            },
+            {
+              "id": "coaching_session-addon-sleep-2",
+              "duration": 15,
+              "suggestedPrice": 20
+            }
+          ]
+        },
+        {
+          "id": "family_sleep_plan",
+          "durations": [
+            60
+          ],
+          "prices": [
+            120,
+            160
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "family_sleep_plan-addon-wellness-1",
+              "duration": 10,
+              "suggestedPrice": 30
+            },
+            {
+              "id": "family_sleep_plan-addon-sleep-2",
+              "duration": 15,
+              "suggestedPrice": 48
+            }
+          ]
+        }
+      ]
+    },
+    "holistic_practitioner": {
+      "tags": [
+        "wellness",
+        "holistic",
+        "therapy"
+      ],
+      "services": [
+        {
+          "id": "integrative_session",
+          "durations": [
+            60
+          ],
+          "prices": [
+            70,
+            95,
+            120
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "integrative_session-addon-wellness-1",
+              "duration": 10,
+              "suggestedPrice": 18
+            },
+            {
+              "id": "integrative_session-addon-holistic-2",
+              "duration": 15,
+              "suggestedPrice": 28
+            }
+          ]
+        },
+        {
+          "id": "energy_balancing",
+          "durations": [
+            45
+          ],
+          "prices": [
+            50,
+            70
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "energy_balancing-addon-wellness-1",
+              "duration": 10,
+              "suggestedPrice": 13
+            },
+            {
+              "id": "energy_balancing-addon-holistic-2",
+              "duration": 15,
+              "suggestedPrice": 20
+            }
+          ]
+        },
+        {
+          "id": "wellness_package_3_sessions",
+          "durations": [
+            60
+          ],
+          "prices": [
+            200,
+            260
+          ],
+          "recommended": false,
+          "addons": [
+            {
+              "id": "wellness_package_3_sessions-addon-wellness-1",
+              "duration": 10,
+              "suggestedPrice": 50
+            },
+            {
+              "id": "wellness_package_3_sessions-addon-holistic-2",
+              "duration": 15,
+              "suggestedPrice": 80
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

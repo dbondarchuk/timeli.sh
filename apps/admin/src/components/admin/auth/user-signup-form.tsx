@@ -1,9 +1,11 @@
 "use client";
 import { authClient } from "@/app/auth-client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useI18n } from "@timelish/i18n";
+import { BaseAllKeys, languages, useI18n } from "@timelish/i18n";
+import { zEmail, zPhone } from "@timelish/types";
 import {
   Button,
+  Combobox,
   Form,
   FormControl,
   FormField,
@@ -11,64 +13,54 @@ import {
   FormLabel,
   FormMessage,
   Input,
-  InputGroup,
-  InputGroupAddon,
-  InputGroupAddonClasses,
-  InputGroupInput,
-  InputGroupInputClasses,
   Link,
-  useDebounceCacheFn,
+  PhoneInput,
+  toast,
 } from "@timelish/ui";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { checkOrganizationSlug } from "./actions";
 
 export const UserSignupForm = ({ publicDomain }: { publicDomain: string }) => {
-  const debounceCheckSlug = useDebounceCacheFn(checkOrganizationSlug, 300);
-
   const formSchema = useMemo(
     () =>
       z
         .object({
-          email: z.email({ error: "common.email.invalid" }),
+          email: zEmail,
+          phone: zPhone,
+          language: z.enum(languages, {
+            error:
+              "admin.auth.validation.language.invalid" satisfies BaseAllKeys,
+          }),
           name: z
-            .string({ error: "admin.auth.validation.name.required" })
-            .min(1, { error: "admin.auth.validation.name.required" }),
+            .string({
+              error:
+                "admin.auth.validation.name.required" satisfies BaseAllKeys,
+            })
+            .min(1, {
+              error:
+                "admin.auth.validation.name.required" satisfies BaseAllKeys,
+            })
+            .max(256, {
+              error: "admin.auth.validation.name.max" satisfies BaseAllKeys,
+            }),
           password: z
-            .string({ error: "admin.auth.validation.password.required" })
-            .min(8, { error: "admin.auth.validation.password.minLength" })
-            .max(128, { error: "admin.auth.validation.password.maxLength" }),
+            .string({
+              error:
+                "admin.auth.validation.password.required" satisfies BaseAllKeys,
+            })
+            .min(8, {
+              error:
+                "admin.auth.validation.password.minLength" satisfies BaseAllKeys,
+            })
+            .max(128, {
+              error:
+                "admin.auth.validation.password.maxLength" satisfies BaseAllKeys,
+            }),
           confirmPassword: z.string({
             error: "admin.auth.validation.confirmPassword.required",
           }),
-          organizationName: z
-            .string({
-              error: "admin.auth.validation.organizationName.required",
-            })
-            .min(1, {
-              error: "admin.auth.validation.organizationName.required",
-            }),
-          organizationSlug: z
-            .string({
-              error: "admin.auth.validation.organizationSlug.required",
-            })
-            .min(3, {
-              error: "admin.auth.validation.organizationSlug.length",
-            })
-            .max(20, {
-              error: "admin.auth.validation.organizationSlug.length",
-            })
-            .regex(/^[a-z0-9]+$/, {
-              error: "admin.auth.validation.organizationSlug.regex",
-            })
-            .refine((slug) => slug.length >= 3 && slug.length <= 20, {
-              error: "admin.auth.validation.organizationSlug.length",
-            })
-            .refine(async (slug) => await debounceCheckSlug(slug), {
-              error: "admin.auth.validation.organizationSlug.unique",
-            }),
         })
         .superRefine((data, ctx) => {
           if (data.password !== data.confirmPassword) {
@@ -79,7 +71,7 @@ export const UserSignupForm = ({ publicDomain }: { publicDomain: string }) => {
             });
           }
         }),
-    [debounceCheckSlug],
+    [],
   );
 
   type UserFormValue = z.infer<typeof formSchema>;
@@ -96,8 +88,8 @@ export const UserSignupForm = ({ publicDomain }: { publicDomain: string }) => {
       name: "",
       password: "",
       confirmPassword: "",
-      organizationName: "",
-      organizationSlug: "",
+      language: "en",
+      phone: "",
     },
     mode: "all",
     reValidateMode: "onChange",
@@ -114,21 +106,27 @@ export const UserSignupForm = ({ publicDomain }: { publicDomain: string }) => {
         email: data.email,
         password: data.password,
         name: data.name,
-        language: "en",
-        phone: "",
+        language: data.language,
+        phone: data.phone,
         bio: "",
         // organizationName: data.organizationName,
         // organizationSlug: data.organizationSlug,
-        callbackURL: callbackUrl ?? "/dashboard",
+        callbackURL: callbackUrl ?? "/install",
       });
 
       if (response.error?.message) {
-        setError(response.error?.message ?? null);
+        if (response.error.code === "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL") {
+          toast.error(t("auth.signUp.toasts.userAlreadyExists"));
+        } else {
+          toast.error(t("auth.signUp.toasts.error"));
+        }
+
         return;
       }
 
       if (response.data?.user) {
-        router.push(callbackUrl ?? "/dashboard");
+        toast.success(t("auth.signUp.toasts.success"));
+        router.push(callbackUrl ?? "/install");
       }
     } finally {
       setLoading(false);
@@ -147,11 +145,11 @@ export const UserSignupForm = ({ publicDomain }: { publicDomain: string }) => {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t("auth.email")}</FormLabel>
+                <FormLabel>{t("auth.signUp.email")}</FormLabel>
                 <FormControl>
                   <Input
                     type="email"
-                    placeholder={t("auth.email")}
+                    placeholder={t("auth.signUp.emailPlaceholder")}
                     disabled={loading}
                     {...field}
                   />
@@ -166,11 +164,11 @@ export const UserSignupForm = ({ publicDomain }: { publicDomain: string }) => {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t("auth.password")}</FormLabel>
+                <FormLabel>{t("auth.signUp.password")}</FormLabel>
                 <FormControl>
                   <Input
                     type="password"
-                    placeholder={t("auth.password")}
+                    placeholder={t("auth.signUp.passwordPlaceholder")}
                     disabled={loading}
                     {...field}
                   />
@@ -185,11 +183,11 @@ export const UserSignupForm = ({ publicDomain }: { publicDomain: string }) => {
             name="confirmPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t("auth.confirmPassword")}</FormLabel>
+                <FormLabel>{t("auth.signUp.confirmPassword")}</FormLabel>
                 <FormControl>
                   <Input
                     type="password"
-                    placeholder={t("auth.password")}
+                    placeholder={t("auth.signUp.confirmPasswordPlaceholder")}
                     disabled={loading}
                     {...field}
                   />
@@ -204,10 +202,10 @@ export const UserSignupForm = ({ publicDomain }: { publicDomain: string }) => {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t("auth.name")}</FormLabel>
+                <FormLabel>{t("auth.signUp.name")}</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder={t("auth.name")}
+                    placeholder={t("auth.signUp.namePlaceholder")}
                     disabled={loading}
                     {...field}
                   />
@@ -219,13 +217,13 @@ export const UserSignupForm = ({ publicDomain }: { publicDomain: string }) => {
 
           <FormField
             control={form.control}
-            name="organizationName"
+            name="phone"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t("auth.organizationName")}</FormLabel>
+                <FormLabel>{t("auth.signUp.phone")}</FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder={t("auth.organizationName")}
+                  <PhoneInput
+                    label={t("auth.signUp.phone")}
                     disabled={loading}
                     {...field}
                   />
@@ -237,38 +235,33 @@ export const UserSignupForm = ({ publicDomain }: { publicDomain: string }) => {
 
           <FormField
             control={form.control}
-            name="organizationSlug"
+            name="language"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t("auth.organizationSlug")}</FormLabel>
+                <FormLabel>{t("auth.signUp.language")}</FormLabel>
                 <FormControl>
-                  <InputGroup>
-                    <InputGroupInput>
-                      <Input
-                        placeholder={t("auth.organizationSlug")}
-                        disabled={loading}
-                        className={InputGroupInputClasses()}
-                        {...field}
-                      />
-                    </InputGroupInput>
-                    <InputGroupAddon className={InputGroupAddonClasses()}>
-                      .{publicDomain}
-                    </InputGroupAddon>
-                  </InputGroup>
+                  <Combobox
+                    className="w-full"
+                    placeholder={t("auth.signUp.languagePlaceholder")}
+                    values={languages.map((language) => ({
+                      label: t(`common.labels.languages.${language}`),
+                      value: language,
+                    }))}
+                    value={field.value}
+                    onItemSelect={(value) => {
+                      field.onChange(value);
+                      field.onBlur();
+                    }}
+                    disabled={loading}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-
-          {error && (
-            <p className="text-sm font-medium text-destructive">
-              {t("auth.sign_up_error")}
-            </p>
-          )}
 
           <Button disabled={loading} className="ml-auto w-full" type="submit">
-            {t("auth.signUp")}
+            {t("auth.signUp.submit")}
           </Button>
         </form>
       </Form>

@@ -15,7 +15,7 @@ const getOrganizationIdAndSlug = async () => {
       unauthorized();
     }
 
-    redirect("/auth/login");
+    redirect("/auth/signin");
   }
 
   return { organizationId, organizationSlug };
@@ -34,7 +34,7 @@ export const getSession = cache(async () => {
       unauthorized();
     }
 
-    redirect("/auth/login");
+    redirect("/auth/signin");
   }
 
   return session;

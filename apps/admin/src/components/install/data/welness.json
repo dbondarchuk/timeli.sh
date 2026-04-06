@@ -1,0 +1,664 @@
+{
+  "massage_therapist": {
+    "label": "Massage Therapist",
+    "tags": [
+      "wellness",
+      "massage",
+      "spa"
+    ],
+    "services": [
+      {
+        "name": "Swedish Massage",
+        "durations": [
+          60,
+          90
+        ],
+        "prices": [
+          70,
+          85,
+          110
+        ],
+        "description": "**Relaxing full-body massage** focused on tension release and circulation. Ideal for stress relief and general wellness.",
+        "addons": [
+          {
+            "id": "swedish_massage-addon-wellness-1",
+            "name": "Aromatherapy blend",
+            "description": "**Custom essential-oil mix** diffused or applied lightly during massage.",
+            "duration": 10,
+            "suggestedPrice": 18
+          },
+          {
+            "id": "swedish_massage-addon-massage-2",
+            "name": "Scalp or foot focus",
+            "description": "**Extra minutes** on scalp massage or detailed foot work.",
+            "duration": 15,
+            "suggestedPrice": 28
+          }
+        ]
+      },
+      {
+        "name": "Deep Tissue Massage",
+        "durations": [
+          60,
+          90
+        ],
+        "prices": [
+          80,
+          95,
+          120
+        ],
+        "description": "**Focused deeper pressure** to address chronic muscle tension. Recommended for athletes and clients with persistent pain.",
+        "addons": [
+          {
+            "id": "deep_tissue_massage-addon-wellness-1",
+            "name": "Extended care segment",
+            "description": "**Additional hands-on or coaching time** within Deep Tissue Massage.",
+            "duration": 10,
+            "suggestedPrice": 20
+          },
+          {
+            "id": "deep_tissue_massage-addon-massage-2",
+            "name": "Home practice plan",
+            "description": "**Guidance sheet** to support progress after Deep Tissue Massage.",
+            "duration": 15,
+            "suggestedPrice": 32
+          }
+        ]
+      },
+      {
+        "name": "Hot Stone Massage",
+        "durations": [
+          75,
+          90
+        ],
+        "prices": [
+          95,
+          120,
+          150
+        ],
+        "description": "**Warm stone therapy** to relax muscles and improve blood flow. A soothing, restorative experience with heat therapy.",
+        "addons": [
+          {
+            "id": "hot_stone_massage-addon-wellness-1",
+            "name": "Extended care segment",
+            "description": "**Additional hands-on or coaching time** within Hot Stone Massage.",
+            "duration": 10,
+            "suggestedPrice": 24
+          },
+          {
+            "id": "hot_stone_massage-addon-massage-2",
+            "name": "Home practice plan",
+            "description": "**Guidance sheet** to support progress after Hot Stone Massage.",
+            "duration": 15,
+            "suggestedPrice": 38
+          }
+        ]
+      }
+    ]
+  },
+  "acupuncturist": {
+    "label": "Acupuncturist",
+    "tags": [
+      "wellness",
+      "acupuncture",
+      "therapy"
+    ],
+    "services": [
+      {
+        "name": "Initial Consultation & Treatment",
+        "durations": [
+          60,
+          90
+        ],
+        "prices": [
+          70,
+          90,
+          110
+        ],
+        "description": "**Comprehensive intake with first treatment** to address presenting concerns. Includes individualized acupuncture plan.",
+        "addons": [
+          {
+            "id": "initial_consultation_treatment-addon-wellness-1",
+            "name": "Extended care segment",
+            "description": "**Additional hands-on or coaching time** within Initial Consultation & Treatment.",
+            "duration": 10,
+            "suggestedPrice": 18
+          },
+          {
+            "id": "initial_consultation_treatment-addon-acupuncture-2",
+            "name": "Home practice plan",
+            "description": "**Guidance sheet** to support progress after Initial Consultation & Treatment.",
+            "duration": 15,
+            "suggestedPrice": 28
+          }
+        ]
+      },
+      {
+        "name": "Follow-up Session",
+        "durations": [
+          45,
+          60
+        ],
+        "prices": [
+          50,
+          65,
+          80
+        ],
+        "description": "**Maintenance acupuncture session** tailored to ongoing treatment goals. Focus on symptom management and balance.",
+        "addons": [
+          {
+            "id": "follow_up_session-addon-wellness-1",
+            "name": "Extended care segment",
+            "description": "**Additional hands-on or coaching time** within Follow-up Session.",
+            "duration": 10,
+            "suggestedPrice": 13
+          },
+          {
+            "id": "follow_up_session-addon-acupuncture-2",
+            "name": "Home practice plan",
+            "description": "**Guidance sheet** to support progress after Follow-up Session.",
+            "duration": 15,
+            "suggestedPrice": 20
+          }
+        ]
+      },
+      {
+        "name": "Cupping Therapy",
+        "durations": [
+          30,
+          45
+        ],
+        "prices": [
+          40,
+          55,
+          70
+        ],
+        "description": "**Therapeutic cupping** to release tight muscles and encourage circulation. Often used alongside acupuncture.",
+        "addons": [
+          {
+            "id": "cupping_therapy-addon-wellness-1",
+            "name": "Extended care segment",
+            "description": "**Additional hands-on or coaching time** within Cupping Therapy.",
+            "duration": 10,
+            "suggestedPrice": 10
+          },
+          {
+            "id": "cupping_therapy-addon-acupuncture-2",
+            "name": "Home practice plan",
+            "description": "**Guidance sheet** to support progress after Cupping Therapy.",
+            "duration": 15,
+            "suggestedPrice": 16
+          }
+        ]
+      }
+    ]
+  },
+  "chiropractor": {
+    "label": "Chiropractor",
+    "tags": [
+      "wellness",
+      "chiropractic",
+      "health"
+    ],
+    "services": [
+      {
+        "name": "Initial Assessment",
+        "durations": [
+          45,
+          60
+        ],
+        "prices": [
+          90,
+          110,
+          140
+        ],
+        "description": "**Full neuromuscular and spinal assessment** with targeted recommendations. Discusses care plan and expected outcomes.",
+        "addons": [
+          {
+            "id": "initial_assessment-addon-wellness-1",
+            "name": "Extended care segment",
+            "description": "**Additional hands-on or coaching time** within Initial Assessment.",
+            "duration": 10,
+            "suggestedPrice": 23
+          },
+          {
+            "id": "initial_assessment-addon-chiropractic-2",
+            "name": "Home practice plan",
+            "description": "**Guidance sheet** to support progress after Initial Assessment.",
+            "duration": 15,
+            "suggestedPrice": 36
+          }
+        ]
+      },
+      {
+        "name": "Adjustment Session",
+        "durations": [
+          30,
+          45
+        ],
+        "prices": [
+          50,
+          65,
+          85
+        ],
+        "description": "**Spinal and joint adjustments** to restore mobility and reduce pain. Includes soft-tissue recommendations and exercise tips.",
+        "addons": [
+          {
+            "id": "adjustment_session-addon-wellness-1",
+            "name": "Extended care segment",
+            "description": "**Additional hands-on or coaching time** within Adjustment Session.",
+            "duration": 10,
+            "suggestedPrice": 13
+          },
+          {
+            "id": "adjustment_session-addon-chiropractic-2",
+            "name": "Home practice plan",
+            "description": "**Guidance sheet** to support progress after Adjustment Session.",
+            "duration": 15,
+            "suggestedPrice": 20
+          }
+        ]
+      },
+      {
+        "name": "Therapeutic Package (3 sessions)",
+        "durations": [
+          45
+        ],
+        "prices": [
+          140,
+          180,
+          220
+        ],
+        "description": "**Discounted session package** for concentrated treatment plans. Ideal when ongoing care is recommended.",
+        "addons": [
+          {
+            "id": "therapeutic_package_3_sessions-addon-wellness-1",
+            "name": "Extended care segment",
+            "description": "**Additional hands-on or coaching time** within Therapeutic Package (3 sessions).",
+            "duration": 10,
+            "suggestedPrice": 35
+          },
+          {
+            "id": "therapeutic_package_3_sessions-addon-chiropractic-2",
+            "name": "Home practice plan",
+            "description": "**Guidance sheet** to support progress after Therapeutic Package (3 sessions).",
+            "duration": 15,
+            "suggestedPrice": 56
+          }
+        ]
+      }
+    ]
+  },
+  "physical_therapist": {
+    "label": "Physical Therapist",
+    "tags": [
+      "wellness",
+      "rehab",
+      "health"
+    ],
+    "services": [
+      {
+        "name": "Initial Evaluation",
+        "durations": [
+          60
+        ],
+        "prices": [
+          100,
+          130,
+          160
+        ],
+        "description": "**Detailed movement and function assessment** with personalized rehab plan. Includes home exercise prescription.",
+        "addons": [
+          {
+            "id": "initial_evaluation-addon-wellness-1",
+            "name": "Extended care segment",
+            "description": "**Additional hands-on or coaching time** within Initial Evaluation.",
+            "duration": 10,
+            "suggestedPrice": 25
+          },
+          {
+            "id": "initial_evaluation-addon-rehab-2",
+            "name": "Home practice plan",
+            "description": "**Guidance sheet** to support progress after Initial Evaluation.",
+            "duration": 15,
+            "suggestedPrice": 40
+          }
+        ]
+      },
+      {
+        "name": "Therapy Session",
+        "durations": [
+          45,
+          60
+        ],
+        "prices": [
+          70,
+          90,
+          120
+        ],
+        "description": "**Hands-on therapy** focusing on mobility and strength. Uses manual therapy and guided exercises to support recovery.",
+        "addons": [
+          {
+            "id": "therapy_session-addon-wellness-1",
+            "name": "Extended care segment",
+            "description": "**Additional hands-on or coaching time** within Therapy Session.",
+            "duration": 10,
+            "suggestedPrice": 18
+          },
+          {
+            "id": "therapy_session-addon-rehab-2",
+            "name": "Home practice plan",
+            "description": "**Guidance sheet** to support progress after Therapy Session.",
+            "duration": 15,
+            "suggestedPrice": 28
+          }
+        ]
+      },
+      {
+        "name": "Telehealth Follow-up",
+        "durations": [
+          30
+        ],
+        "prices": [
+          40,
+          55
+        ],
+        "description": "**Remote follow-up session** to review progress and adjust home exercises. Convenient for ongoing guidance.",
+        "addons": [
+          {
+            "id": "telehealth_follow_up-addon-wellness-1",
+            "name": "Form video review",
+            "description": "**Asynchronous review** of a movement clip you upload before the call.",
+            "duration": 10,
+            "suggestedPrice": 10
+          },
+          {
+            "id": "telehealth_follow_up-addon-rehab-2",
+            "name": "Printed HEP packet",
+            "description": "**Mail-friendly exercise handout** when you need paper, not just email.",
+            "duration": 15,
+            "suggestedPrice": 16
+          }
+        ]
+      }
+    ]
+  },
+  "nutritionist": {
+    "label": "Nutritionist",
+    "tags": [
+      "wellness",
+      "nutrition",
+      "health"
+    ],
+    "services": [
+      {
+        "name": "Initial Nutrition Consultation",
+        "durations": [
+          60
+        ],
+        "prices": [
+          70,
+          95,
+          130
+        ],
+        "description": "**Comprehensive dietary review** and goal setting. Includes personalized recommendations and a starter meal plan.",
+        "addons": [
+          {
+            "id": "initial_nutrition_consultation-addon-wellness-1",
+            "name": "Extended care segment",
+            "description": "**Additional hands-on or coaching time** within Initial Nutrition Consultation.",
+            "duration": 10,
+            "suggestedPrice": 18
+          },
+          {
+            "id": "initial_nutrition_consultation-addon-nutrition-2",
+            "name": "Home practice plan",
+            "description": "**Guidance sheet** to support progress after Initial Nutrition Consultation.",
+            "duration": 15,
+            "suggestedPrice": 28
+          }
+        ]
+      },
+      {
+        "name": "Follow-up Coaching",
+        "durations": [
+          30,
+          45
+        ],
+        "prices": [
+          40,
+          55,
+          75
+        ],
+        "description": "**Ongoing coaching sessions** to track progress and refine strategies. Practical tips for better habits and consistency.",
+        "addons": [
+          {
+            "id": "follow_up_coaching-addon-wellness-1",
+            "name": "Extended care segment",
+            "description": "**Additional hands-on or coaching time** within Follow-up Coaching.",
+            "duration": 10,
+            "suggestedPrice": 10
+          },
+          {
+            "id": "follow_up_coaching-addon-nutrition-2",
+            "name": "Home practice plan",
+            "description": "**Guidance sheet** to support progress after Follow-up Coaching.",
+            "duration": 15,
+            "suggestedPrice": 16
+          }
+        ]
+      },
+      {
+        "name": "Meal Plan (4-week)",
+        "durations": [
+          30
+        ],
+        "prices": [
+          120,
+          160,
+          220
+        ],
+        "description": "**Tailored 4-week meal plan** with recipes and shopping lists. Designed to support specific goals like weight management or performance.",
+        "addons": [
+          {
+            "id": "meal_plan_4_week-addon-wellness-1",
+            "name": "Extended care segment",
+            "description": "**Additional hands-on or coaching time** within Meal Plan (4-week).",
+            "duration": 10,
+            "suggestedPrice": 30
+          },
+          {
+            "id": "meal_plan_4_week-addon-nutrition-2",
+            "name": "Home practice plan",
+            "description": "**Guidance sheet** to support progress after Meal Plan (4-week).",
+            "duration": 15,
+            "suggestedPrice": 48
+          }
+        ]
+      }
+    ]
+  },
+  "sleep_coach": {
+    "label": "Sleep Coach",
+    "tags": [
+      "wellness",
+      "sleep",
+      "coaching"
+    ],
+    "services": [
+      {
+        "name": "Sleep Assessment",
+        "durations": [
+          60
+        ],
+        "prices": [
+          70,
+          95
+        ],
+        "description": "**Assessment of sleep patterns and habits** with tailored recommendations. Includes a practical action plan for immediate improvements.",
+        "addons": [
+          {
+            "id": "sleep_assessment-addon-wellness-1",
+            "name": "Extended care segment",
+            "description": "**Additional hands-on or coaching time** within Sleep Assessment.",
+            "duration": 10,
+            "suggestedPrice": 18
+          },
+          {
+            "id": "sleep_assessment-addon-sleep-2",
+            "name": "Home practice plan",
+            "description": "**Guidance sheet** to support progress after Sleep Assessment.",
+            "duration": 15,
+            "suggestedPrice": 28
+          }
+        ]
+      },
+      {
+        "name": "Coaching Session",
+        "durations": [
+          45
+        ],
+        "prices": [
+          50,
+          70
+        ],
+        "description": "**Guided coaching** to implement better sleep routines and behaviors. Useful for ongoing support and adjustments.",
+        "addons": [
+          {
+            "id": "coaching_session-addon-wellness-1",
+            "name": "Extended care segment",
+            "description": "**Additional hands-on or coaching time** within Coaching Session.",
+            "duration": 10,
+            "suggestedPrice": 13
+          },
+          {
+            "id": "coaching_session-addon-sleep-2",
+            "name": "Home practice plan",
+            "description": "**Guidance sheet** to support progress after Coaching Session.",
+            "duration": 15,
+            "suggestedPrice": 20
+          }
+        ]
+      },
+      {
+        "name": "Family Sleep Plan",
+        "durations": [
+          60
+        ],
+        "prices": [
+          120,
+          160
+        ],
+        "description": "**Personalized sleep strategy for families** with actionable steps. Covers routines, environment, and child-focused guidance.",
+        "addons": [
+          {
+            "id": "family_sleep_plan-addon-wellness-1",
+            "name": "Extended care segment",
+            "description": "**Additional hands-on or coaching time** within Family Sleep Plan.",
+            "duration": 10,
+            "suggestedPrice": 30
+          },
+          {
+            "id": "family_sleep_plan-addon-sleep-2",
+            "name": "Home practice plan",
+            "description": "**Guidance sheet** to support progress after Family Sleep Plan.",
+            "duration": 15,
+            "suggestedPrice": 48
+          }
+        ]
+      }
+    ]
+  },
+  "holistic_practitioner": {
+    "label": "Holistic Practitioner",
+    "tags": [
+      "wellness",
+      "holistic",
+      "therapy"
+    ],
+    "services": [
+      {
+        "name": "Integrative Session",
+        "durations": [
+          60
+        ],
+        "prices": [
+          70,
+          95,
+          120
+        ],
+        "description": "**Personalized integrative wellness session** combining modalities suited to your needs. Holistic recommendations and follow-up plan included.",
+        "addons": [
+          {
+            "id": "integrative_session-addon-wellness-1",
+            "name": "Extended care segment",
+            "description": "**Additional hands-on or coaching time** within Integrative Session.",
+            "duration": 10,
+            "suggestedPrice": 18
+          },
+          {
+            "id": "integrative_session-addon-holistic-2",
+            "name": "Home practice plan",
+            "description": "**Guidance sheet** to support progress after Integrative Session.",
+            "duration": 15,
+            "suggestedPrice": 28
+          }
+        ]
+      },
+      {
+        "name": "Energy Balancing",
+        "durations": [
+          45
+        ],
+        "prices": [
+          50,
+          70
+        ],
+        "description": "**Energy-based session** aimed at restoring balance and calm. Gentle techniques suited for relaxation and mental clarity.",
+        "addons": [
+          {
+            "id": "energy_balancing-addon-wellness-1",
+            "name": "Extended care segment",
+            "description": "**Additional hands-on or coaching time** within Energy Balancing.",
+            "duration": 10,
+            "suggestedPrice": 13
+          },
+          {
+            "id": "energy_balancing-addon-holistic-2",
+            "name": "Home practice plan",
+            "description": "**Guidance sheet** to support progress after Energy Balancing.",
+            "duration": 15,
+            "suggestedPrice": 20
+          }
+        ]
+      },
+      {
+        "name": "Wellness Package (3 sessions)",
+        "durations": [
+          60
+        ],
+        "prices": [
+          200,
+          260
+        ],
+        "description": "**Multi-session package** for sustained support and progress. Best for clients committed to ongoing holistic care.",
+        "addons": [
+          {
+            "id": "wellness_package_3_sessions-addon-wellness-1",
+            "name": "Extended care segment",
+            "description": "**Additional hands-on or coaching time** within Wellness Package (3 sessions).",
+            "duration": 10,
+            "suggestedPrice": 50
+          },
+          {
+            "id": "wellness_package_3_sessions-addon-holistic-2",
+            "name": "Home practice plan",
+            "description": "**Guidance sheet** to support progress after Wellness Package (3 sessions).",
+            "duration": 15,
+            "suggestedPrice": 80
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -9,6 +9,10 @@
     "selectAll": "Вибрати все",
     "selectRow": "Вибрати рядок",
     "labels": {
+      "languages": {
+        "en": "English",
+        "uk": "Українська"
+      },
       "channel": {
         "text-message": "Текстове повідомлення",
         "email": "Електронна пошта"
@@ -1519,13 +1523,6 @@
         "fonts": {
           "seeOnGoogleFonts": "Переглянути на Google Fonts",
           "variants": {
-            "label": "Варіанти: {variants}",
-            "regular": "Звичайний",
-            "italic": "Курсив",
-            "bold": "Жирний",
-            "medium": "Середній",
-            "semibold": "Напівжирний",
-            "extrabold": "Дуже жирний",
             "100": "100",
             "200": "200",
             "300": "300",
@@ -1535,6 +1532,13 @@
             "700": "700",
             "800": "800",
             "900": "900",
+            "label": "Варіанти: {variants}",
+            "regular": "Звичайний",
+            "italic": "Курсив",
+            "bold": "Жирний",
+            "medium": "Середній",
+            "semibold": "Напівжирний",
+            "extrabold": "Дуже жирний",
             "100italic": "100 Курсив",
             "200italic": "200 Курсив",
             "300italic": "300 Курсив",
@@ -2067,31 +2071,6 @@
       "pendingAppointments": "Очікуючі записи"
     }
   },
-  "install": {
-    "page": {
-      "title": "Встановлення",
-      "description": "Швидко налаштуйте ваш веб-сайт"
-    },
-    "form": {
-      "websiteName": "Назва веб-сайту",
-      "websiteNamePlaceholder": "Назва веб-сайту",
-      "websiteTitle": "Заголовок веб-сайту",
-      "websiteTitlePlaceholder": "Заголовок веб-сайту",
-      "emailAddress": "Email адреса",
-      "emailAddressPlaceholder": "Ваша email адреса",
-      "websiteUrl": "URL веб-сайту",
-      "websiteUrlPlaceholder": "URL веб-сайту",
-      "install": "Встановити",
-      "pleaseWait": "Будь ласка, зачекайте...",
-      "success": "Ви успішно створили ваш веб-сайт!",
-      "error": "Виникла проблема з вашим запитом.",
-      "fixErrors": "Будь ласка, виправте помилки у формі встановлення."
-    },
-    "layout": {
-      "title": "Timeli.sh - Встановлення",
-      "description": "Встановлення timelish"
-    }
-  },
   "communications": {
     "viewMore": "Показати більше",
     "logContent": "Вміст повідомлення",
@@ -2155,9 +2134,6 @@
   "auth": {
     "email": "Email",
     "password": "Пароль",
-    "signUp": "Зареєструватися",
-    "signUpDescription": "Створити обліковий запис для початку",
-    "sign_up_error": "Виникла проблема з вашим запитом.",
     "email_or_password_incorrect": "Email або пароль неправильний",
     "verification": {
       "notVerified": "Ваша електронна адреса не була підтверджена. Будь ласка, перевірте вашу електронну пошту для посилання на підтвердження.",
@@ -2173,10 +2149,6 @@
     "signInDescription": "Введіть ваш email нижче, щоб увійти в ваш обліковий запис",
     "quote": "Я люблю це!",
     "quoteAuthor": "Олеся Бондарчук",
-    "confirmPassword": "Підтвердити пароль",
-    "name": "Ваше ім'я",
-    "organizationName": "Назва бізнесу",
-    "organizationSlug": "Піддомен",
     "forgotPasswordLink": "<link>Забули пароль?</link>",
     "forgotPassword": {
       "title": "Забули пароль",
@@ -2199,9 +2171,35 @@
       "error": "Виникла проблема з вашим запитом. Будь ласка, спробуйте знову.",
       "success": "Пароль успішно змінено. Ви можете тепер увійти в ваш обліковий запис."
     },
+    "signUp": {
+      "title": "Зареєструватися",
+      "description": "Створити обліковий запис для початку",
+      "name": "Ім'я",
+      "namePlaceholder": "Ваше ім'я",
+      "language": "Мова",
+      "languagePlaceholder": "Виберіть мову",
+      "email": "Email",
+      "emailPlaceholder": "Ваш email",
+      "password": "Пароль",
+      "passwordPlaceholder": "Ваш пароль",
+      "phone": "Телефон",
+      "phonePlaceholder": "Ваш телефон",
+      "confirmPassword": "Підтвердити пароль",
+      "confirmPasswordPlaceholder": "Підтвердіть ваш пароль",
+      "submit": "Зареєструватися",
+      "toasts": {
+        "success": "Ми надіслали вам посилання на підтвердження. Будь ласка, перевірте вашу електронну пошту для посилання на підтвердження.",
+        "error": "Виникла проблема з вашим запитом. Будь ласка, спробуйте знову.",
+        "userAlreadyExists": "Користувач з таким email вже існує. Будь ласка, використовуйте інший email."
+      }
+    },
     "validation": {
       "name": {
-        "required": "Ім'я обов'язкове"
+        "required": "Ім'я обов'язкове",
+        "max": "Ім'я має містити не більше 256 символів"
+      },
+      "language": {
+        "invalid": "Невідома мова"
       },
       "confirmPassword": {
         "required": "Паролі не збігаються"

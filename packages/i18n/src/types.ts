@@ -1,6 +1,7 @@
 import type admin from "./locales/en/admin.json";
 import type apps from "./locales/en/apps.json";
 import type builder from "./locales/en/builder.json";
+import type install from "./locales/en/install.json";
 import type translation from "./locales/en/translation.json";
 import type ui from "./locales/en/ui.json";
 import type validation from "./locales/en/validation.json";
@@ -16,6 +17,7 @@ type Leaves<T> = T extends object
 export type BaseI18nNamespaces =
   | "translation"
   | "admin"
+  | "install"
   | "ui"
   | "apps"
   | "validation"
@@ -25,6 +27,7 @@ export type I18nNamespaces = BaseI18nNamespaces | (string & {});
 
 export type TranslationKeys = Leaves<typeof translation>;
 export type AdminKeys = Leaves<typeof admin>;
+export type InstallKeys = Leaves<typeof install>;
 export type UiKeys = Leaves<typeof ui>;
 export type AppsKeys = Leaves<typeof apps>;
 export type ValidationKeys = Leaves<typeof validation>;
@@ -33,6 +36,7 @@ export type BuilderKeys = Leaves<typeof builder>;
 export type I18nKeys =
   | TranslationKeys
   | AdminKeys
+  | InstallKeys
   | UiKeys
   | AppsKeys
   | ValidationKeys
@@ -45,17 +49,19 @@ type _I18nKey<
   ? TranslationKeys
   : T extends "admin"
     ? AdminKeys
-    : T extends "ui"
-      ? UiKeys
-      : T extends "apps"
-        ? AppsKeys
-        : T extends "validation"
-          ? ValidationKeys
-          : T extends "builder"
-            ? BuilderKeys
-            : NonNullable<CustomKeys> extends never
-              ? string
-              : NonNullable<CustomKeys>;
+    : T extends "install"
+      ? InstallKeys
+      : T extends "ui"
+        ? UiKeys
+        : T extends "apps"
+          ? AppsKeys
+          : T extends "validation"
+            ? ValidationKeys
+            : T extends "builder"
+              ? BuilderKeys
+              : NonNullable<CustomKeys> extends never
+                ? string
+                : NonNullable<CustomKeys>;
 
 export type AllKeys<
   T extends I18nNamespaces = I18nNamespaces,

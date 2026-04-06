@@ -33,6 +33,10 @@
     "check-translations": {
       "dependsOn": ["^check-translations"],
       "cache": false
+    },
+    "translate": {
+      "dependsOn": ["^translate"],
+      "cache": false
     }
   }
 }

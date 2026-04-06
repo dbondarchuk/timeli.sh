@@ -39,18 +39,46 @@ import {
   toastPromise,
 } from "@timelish/ui";
 import { ColorPickerInput, NonSortable, SaveButton } from "@timelish/ui-admin";
+import { getWebfontPreviewFilename } from "@timelish/utils";
 import { Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { updateStylingConfiguration } from "./actions";
+
+function FontPreviewThumb({ family }: { family: string }) {
+  const [failed, setFailed] = useState(false);
+  if (failed) {
+    return (
+      <span
+        className="inline-block h-8 w-[168px] max-w-[min(168px,100%)] shrink-0 rounded border border-dashed border-muted-foreground/25 bg-muted/25"
+        aria-hidden
+      />
+    );
+  }
+  return (
+    <img
+      src={`/fonts/preview/${getWebfontPreviewFilename(family)}`}
+      alt=""
+      width={168}
+      height={32}
+      className="h-8 max-w-[168px] shrink-0 rounded border border-border/50 bg-zinc-50 object-contain object-left dark:bg-zinc-950"
+      loading="lazy"
+      decoding="async"
+      onError={() => setFailed(true)}
+    />
+  );
+}
 
 const FontLabel = ({ font }: { font: string }) => {
   const t = useI18n("admin");
   const formatter = useFormatter();
   return (
     <div className="flex flex-col gap-0.5">
-      <span>{font}</span>
+      <span className="flex min-w-0 items-center gap-2 py-0.5">
+        <FontPreviewThumb family={font} />
+        <span className="truncate text-sm">{font}</span>
+      </span>
       <span className="text-xs text-muted-foreground">
         {t("appearance.styling.form.fonts.variants.label", {
           variants: formatter.list(

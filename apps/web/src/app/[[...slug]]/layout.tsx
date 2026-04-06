@@ -6,7 +6,12 @@ import NextScript from "next/script";
 
 import { CookiesProvider } from "@/components/cookies-provider";
 import { getLoggerFactory } from "@timelish/logger";
-import { buildGoogleFontsUrl, getColorsCss } from "@timelish/utils";
+import {
+  buildGoogleFontsUrl,
+  DEFAULT_WEB_PRIMARY_FONT,
+  DEFAULT_WEB_SECONDARY_FONT,
+  getColorsCss,
+} from "@timelish/utils";
 
 import { getServicesContainer, getWebsiteUrl } from "@/utils/utils";
 import { NextIntlClientProvider } from "next-intl";
@@ -78,8 +83,9 @@ export default async function RootLayout({
     );
   }
 
-  const primaryFont = styling?.fonts?.primary || "Montserrat";
-  const secondaryFont = styling?.fonts?.secondary || "Playfair Display";
+  const primaryFont = styling?.fonts?.primary || DEFAULT_WEB_PRIMARY_FONT;
+  const secondaryFont =
+    styling?.fonts?.secondary || DEFAULT_WEB_SECONDARY_FONT;
   const tertiaryFont = styling?.fonts?.tertiary;
 
   const fontsCssUrl = buildGoogleFontsUrl(

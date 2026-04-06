@@ -1,5 +1,11 @@
 import { fontsOptions } from "@timelish/types";
 
+export { getWebfontPreviewFilename } from "./font-preview-filename";
+
+/** Primary / secondary fonts when styling has no overrides (web booking layout). */
+export const DEFAULT_WEB_PRIMARY_FONT = "Montserrat";
+export const DEFAULT_WEB_SECONDARY_FONT = "Playfair Display";
+
 export const buildGoogleFontsUrl = (
   ...fonts: (string | undefined)[]
 ): string => {

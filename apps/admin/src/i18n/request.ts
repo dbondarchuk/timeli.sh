@@ -7,14 +7,21 @@ import { headers } from "next/headers";
 const config = getConfig(
   async (baseLocale: string | undefined) => {
     const headersList = await headers();
+    const isInstallPath = headersList.get("x-is-install-path") === "true";
+
     if (baseLocale) {
-      return { locale: baseLocale, includeAdmin: true };
+      return {
+        locale: baseLocale,
+        includeAdmin: true,
+        includeInstall: isInstallPath,
+      };
     }
 
     if (headersList.get("x-locale")) {
       return {
         locale: headersList.get("x-locale") as string,
         includeAdmin: true,
+        includeInstall: isInstallPath,
       };
     }
 
@@ -28,8 +35,8 @@ const config = getConfig(
 
     const companyId = session?.user.organizationId;
 
-    let locale = session.user.language || "en";
-    return { locale, includeAdmin: true };
+    let locale = (session.user as { language?: string }).language || "en";
+    return { locale, includeAdmin: true, includeInstall: isInstallPath };
   },
   async () => {
     const headersList = await headers();

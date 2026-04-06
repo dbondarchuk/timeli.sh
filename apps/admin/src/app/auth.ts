@@ -5,7 +5,10 @@ import {
   getDbConnection,
   getDbConnectionSync,
 } from "@timelish/services/database";
-import type { WithDatabaseId } from "@timelish/types";
+import type {
+  Organization as OrganizationDbModel,
+  WithDatabaseId,
+} from "@timelish/types";
 import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { customSession, Organization, organization } from "better-auth/plugins";
@@ -112,44 +115,51 @@ export const auth = betterAuth({
     user: {
       create: {
         before: async (user) => {
-          const db = await getDbConnection();
+          //   const db = await getDbConnection();
 
-          const { organizationSlug, organizationName, ...userData } = user;
-          if (!organizationSlug) {
-            throw new ApiError(400, "Organization slug is required");
-          }
+          //   const { organizationSlug, organizationName, ...userData } = user;
+          //   if (!organizationSlug) {
+          //     throw new ApiError(400, "Organization slug is required");
+          //   }
 
-          if (!organizationName) {
-            throw new ApiError(400, "Organization name is required");
-          }
+          //   if (!organizationName) {
+          //     throw new ApiError(400, "Organization name is required");
+          //   }
 
-          const organization = await db
-            .collection<Organization>("organization")
-            .findOne({
-              slug: organizationSlug,
-            });
+          //   const organization = await db
+          //     .collection<Organization>("organization")
+          //     .findOne({
+          //       slug: organizationSlug,
+          //     });
 
-          if (organization) {
-            throw new ApiError(400, "Organization already exists");
-          }
+          //   if (organization) {
+          //     throw new ApiError(400, "Organization already exists");
+          //   }
 
-          const organizationId = new ObjectId().toString();
-          await db
-            .collection<
-              WithDatabaseId<Omit<Organization, "id">>
-            >("organizations")
-            .insertOne({
-              slug: organizationSlug as string,
-              name: organizationName as string,
-              createdAt: new Date(),
-              _id: organizationId,
-            });
+          //   const organizationId = new ObjectId().toString();
+          //   await db
+          //     .collection<
+          //       WithDatabaseId<Omit<Organization, "id">>
+          //     >("organizations")
+          //     .insertOne({
+          //       slug: organizationSlug as string,
+          //       name: organizationName as string,
+          //       createdAt: new Date(),
+          //       _id: organizationId,
+          //     });
 
+          //   return {
+          //     data: {
+          //       ...userData,
+          //       organizationId,
+          //       language: "en",
+          //     },
+          //   };
+          // },
           return {
             data: {
-              ...userData,
-              organizationId,
-              language: "en",
+              ...user,
+              organizationId: "",
             },
           };
         },
@@ -161,14 +171,39 @@ export const auth = betterAuth({
       organizationLimit: 1,
     }),
     customSession(async ({ user, session }) => {
-      const organizationId = (user as any).organizationId as string;
+      let organizationId = (user as any).organizationId as string;
+      const db = await getDbConnection();
       if (!organizationId) {
-        throw new ApiError(400, "Organization ID is required");
+        const userDbModel = await db.collection<User>("users").findOne({
+          _id: new ObjectId(user.id),
+        });
+
+        if (!userDbModel) {
+          throw new ApiError(400, "User not found");
+        }
+
+        if (!userDbModel.organizationId) {
+          return {
+            ...session,
+            user: {
+              ...user,
+              organizationId: "",
+              organizationInstalled: false,
+              phone: (user as any).phone || "",
+              language: (user as any).language || "en",
+              organizationName: "",
+              organizationSlug: "",
+            },
+          };
+        }
+
+        organizationId = userDbModel.organizationId;
       }
 
-      const db = await getDbConnection();
       const organization = await db
-        .collection<WithDatabaseId<Organization>>("organizations")
+        .collection<
+          WithDatabaseId<OrganizationDbModel & Organization>
+        >("organizations")
         .findOne({
           _id: organizationId,
         });
@@ -182,6 +217,7 @@ export const auth = betterAuth({
         user: {
           ...user,
           phone: (user as any).phone || "",
+          organizationInstalled: organization.isInstalled,
           organizationId: organizationId,
           organizationName: organization.name,
           organizationSlug: organization.slug,

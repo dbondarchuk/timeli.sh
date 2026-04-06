@@ -108,7 +108,7 @@ export { ICS_APP_NAME } from "./apps/ics/const";
 export { OUTLOOK_APP_NAME } from "./apps/outlook/const";
 export { PAYPAL_APP_NAME } from "./apps/paypal/const";
 // export { S3_ASSETS_STORAGE_APP_NAME } from "./apps/s3-assets-storage/const";
-export { APPOINTMENT_NOTIFICATIONS_APP_NAME as SCHEDULED_NOTIFICATIONS_APP_NAME } from "./apps/appointment-notifications/const";
+export { APPOINTMENT_NOTIFICATIONS_APP_NAME } from "./apps/appointment-notifications/const";
 export { FORMS_APP_NAME } from "./apps/forms/const";
 export { GIFT_CARD_STUDIO_APP_NAME } from "./apps/gift-card-studio/const";
 export { SMART_SCHEDULE_APP_NAME } from "./apps/smart-schedule/const";

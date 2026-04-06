@@ -112,6 +112,21 @@ export class WaitlistNotificationsConnectedApp
     }
   }
 
+  public async install(appData: ConnectedAppData): Promise<void> {
+    const logger = this.loggerFactory("install");
+    logger.debug(
+      { appId: appData._id },
+      "Installing waitlist notifications app",
+    );
+
+    this.props.update({
+      data: {
+        notifyOnNewEntry: true,
+        notifyCustomerOnNewEntry: false,
+      } satisfies WaitlistNotificationsConfiguration,
+    });
+  }
+
   public async unInstall(appData: ConnectedAppData): Promise<void> {
     const logger = this.loggerFactory("unInstall");
     logger.debug(

@@ -226,7 +226,7 @@ export const appointmentConfirmedEmailTemplate: TemplatesTemplate = {
                   align: "start",
                   children: [
                     {
-                      text: "Price: ${{totalPriceFormatted}}",
+                      text: "Price: {{totalPriceFormatted}}",
                       fontSize: "14px",
                     },
                   ],

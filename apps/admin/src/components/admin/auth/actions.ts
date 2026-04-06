@@ -1,15 +1,20 @@
 "use server";
 
-import { getDbConnection } from "@timelish/services/database";
-import { Organization } from "better-auth/plugins/organization";
+import { StaticOrganizationService } from "@timelish/services";
 
-export async function checkOrganizationSlug(slug: string) {
-  const db = await getDbConnection();
-  const organization = await db
-    .collection<Organization>("organization")
-    .findOne({
-      slug,
-    });
-
-  return !organization;
+export async function checkOrganizationSlug(
+  slug: string,
+  currentOrganizationId?: string | null,
+) {
+  const existing = await new StaticOrganizationService().getOrganizationBySlug(
+    slug,
+  );
+  if (!existing) return true;
+  if (
+    currentOrganizationId &&
+    String(existing._id) === String(currentOrganizationId)
+  ) {
+    return true;
+  }
+  return false;
 }

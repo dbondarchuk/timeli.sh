@@ -190,7 +190,9 @@ export default class AppointmentNotificationsConnectedApp
       { appId: appData._id },
       "Installing appointment notifications app",
     );
+
     await this.repository.installAppointmentNotificationsApp();
+
     logger.debug(
       { appId: appData._id },
       "Appointment notifications app installed successfully",

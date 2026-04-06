@@ -22,7 +22,6 @@ export const textMessagesTemplatesSchema = z.record(
 );
 
 export const customerTextMessageNotificationConfigurationSchema = z.object({
-  sendNewRequestNotifications: z.coerce.boolean<boolean>().optional(),
   templates: textMessagesTemplatesSchema,
 });
 

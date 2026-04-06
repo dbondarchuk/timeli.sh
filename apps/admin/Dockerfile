@@ -79,6 +79,8 @@ RUN find ./packages/app-store/src/apps -type f ! -path "*/translations/*" -delet
     find ./packages/app-store/src/apps -type f ! -name "*.json" -delete && \
     find ./packages/app-store/src/apps -type d -empty -delete
 
+# Copy install defaults
+COPY --from=builder /app/apps/admin/src/components/install/defaults ./apps/admin/src/components/install/defaults
 
 # Install migrate-mongo
 # RUN npm install -g migrate-mongo 

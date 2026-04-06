@@ -11,9 +11,10 @@ import {
   SidebarProvider,
 } from "@timelish/ui";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { CookiesProvider } from "../../components/cookies-provider";
-import { getServicesContainer, getWebsiteUrl } from "../utils";
+import { getServicesContainer, getSession, getWebsiteUrl } from "../utils";
 import { NotificationsToastStream } from "./notifications-toast-stream";
 
 const SIDEBAR_COOKIE_NAME = "admin-sidebar-open";
@@ -23,6 +24,16 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const session = await getSession();
+
+  if (!session) {
+    redirect("/auth/signin");
+  }
+
+  if (!session.user.organizationId || !session.user.organizationInstalled) {
+    redirect("/install");
+  }
+
   const servicesContainer = await getServicesContainer();
 
   const cookieStore = await cookies();

@@ -9,6 +9,10 @@
     "selectAll": "Select all",
     "selectRow": "Select row",
     "labels": {
+      "languages": {
+        "en": "English",
+        "uk": "Українська"
+      },
       "channel": {
         "text-message": "Text message",
         "email": "Email"
@@ -1519,13 +1523,6 @@
         "fonts": {
           "seeOnGoogleFonts": "See on Google Fonts",
           "variants": {
-            "label": "Variants: {variants}",
-            "regular": "Regular",
-            "italic": "Italic",
-            "bold": "Bold",
-            "medium": "Medium",
-            "semibold": "Semi-bold",
-            "extrabold": "Extra-bold",
             "100": "100",
             "200": "200",
             "300": "300",
@@ -1535,6 +1532,13 @@
             "700": "700",
             "800": "800",
             "900": "900",
+            "label": "Variants: {variants}",
+            "regular": "Regular",
+            "italic": "Italic",
+            "bold": "Bold",
+            "medium": "Medium",
+            "semibold": "Semi-bold",
+            "extrabold": "Extra-bold",
             "100italic": "100 Italic",
             "200italic": "200 Italic",
             "300italic": "300 Italic",
@@ -2067,31 +2071,6 @@
       "pendingAppointments": "Pending Appointments"
     }
   },
-  "install": {
-    "page": {
-      "title": "Install",
-      "description": "Quickly set up your website"
-    },
-    "form": {
-      "websiteName": "Website Name",
-      "websiteNamePlaceholder": "Website name",
-      "websiteTitle": "Website Title",
-      "websiteTitlePlaceholder": "Website title",
-      "emailAddress": "Email address",
-      "emailAddressPlaceholder": "Your email address",
-      "websiteUrl": "Website URL",
-      "websiteUrlPlaceholder": "Website url",
-      "install": "Install",
-      "pleaseWait": "Please wait...",
-      "success": "You have successfully created your website!",
-      "error": "There was a problem with your request.",
-      "fixErrors": "Please fix errors in installation form."
-    },
-    "layout": {
-      "title": "Timeli.sh - Install",
-      "description": "Installation of timelish"
-    }
-  },
   "communications": {
     "viewMore": "View more",
     "logContent": "Message content",
@@ -2160,15 +2139,8 @@
     "sign_in_sign_up_link": "Don't have an account? <link>Sign up</link> now!",
     "sign_up_sign_in_link": "Already have an account? <link>Sign in</link> now!",
     "signInDescription": "Enter your email below to sign into your account",
-    "signUp": "Sign up",
-    "signUpDescription": "Create an account to get started",
     "quote": "I love it!",
     "quoteAuthor": "Olesia Bondarchuk",
-    "confirmPassword": "Confirm password",
-    "name": "Your name",
-    "organizationName": "Business name",
-    "organizationSlug": "Subdomain",
-    "sign_up_error": "There was a problem with your request. Please try again.",
     "forgotPasswordLink": "<link>Forgot your password?</link>",
     "verification": {
       "notVerified": "Your email has not been verified. Please check your email for a verification link.",
@@ -2199,9 +2171,35 @@
       "error": "There was a problem with your request. Please try again.",
       "success": "Password reset successfully. You can now sign in to your account."
     },
+    "signUp": {
+      "title": "Sign up",
+      "description": "Create an account to get started",
+      "name": "Name",
+      "namePlaceholder": "Your name",
+      "language": "Language",
+      "languagePlaceholder": "Select language",
+      "email": "Email",
+      "emailPlaceholder": "Your email",
+      "phone": "Phone",
+      "phonePlaceholder": "Your phone",
+      "password": "Password",
+      "passwordPlaceholder": "Your password",
+      "confirmPassword": "Confirm password",
+      "confirmPasswordPlaceholder": "Confirm your password",
+      "submit": "Sign up",
+      "toasts": {
+        "success": "We sent you an email with a verification link. Please check your email and click the link to verify your account.",
+        "error": "There was a problem with your request. Please try again.",
+        "userAlreadyExists": "A user with this email already exists. Please use another email."
+      }
+    },
     "validation": {
       "name": {
-        "required": "Name is required"
+        "required": "Name is required",
+        "max": "Name must be no more than 256 characters long"
+      },
+      "language": {
+        "invalid": "Unknown language"
       },
       "confirmPassword": {
         "required": "Passwords do not match"
