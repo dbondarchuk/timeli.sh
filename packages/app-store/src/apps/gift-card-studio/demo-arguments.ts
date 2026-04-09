@@ -12,7 +12,7 @@ export const demoPurchasedGiftCard: Omit<
 > = {
   _id: "purchased-gift-card-1234",
   appId: "gift-card-studio-app-1234",
-  companyId: "company-1",
+  organizationId: "organization-1",
   createdAt: new Date(),
   updatedAt: new Date(),
   designId: "design-1234",

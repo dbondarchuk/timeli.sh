@@ -78,8 +78,11 @@ const getSource = cache(async (slug?: string, preview = false) => {
   }
 
   // read route params
-  const settings =
-    await servicesContainer.configurationService.getConfiguration("general");
+  const { general, brand } =
+    await servicesContainer.configurationService.getConfigurations(
+      "general",
+      "brand",
+    );
 
   logger.debug(
     {
@@ -92,7 +95,7 @@ const getSource = cache(async (slug?: string, preview = false) => {
     "Successfully retrieved page source",
   );
 
-  return { page, settings, params };
+  return { page, general, brand, params };
 });
 
 export async function generateMetadata(
@@ -115,30 +118,30 @@ export async function generateMetadata(
       "Processing metadata generation request",
     );
 
-    const { page, settings } = await getSource(
+    const { page, general, brand } = await getSource(
       params.slug?.join("/"),
       !!searchParams?.preview,
     );
 
     logger.debug(
       {
-        siteTitle: settings.title,
-        siteDescription: settings.description?.substring(0, 100) + "...",
+        siteTitle: brand.title,
+        siteDescription: brand.description?.substring(0, 100) + "...",
       },
       "Retrieved general configuration",
     );
 
     const title = page.doNotCombine?.title
       ? page.title
-      : [page.title, settings.title].filter((x) => !!x).join(" | ");
+      : [page.title, brand.title].filter((x) => !!x).join(" | ");
 
     const description = page.doNotCombine?.description
       ? page.description
-      : [settings.description, page.description].filter((x) => !!x).join("\n");
+      : [brand.description, page.description].filter((x) => !!x).join("\n");
 
     const keywords = page.doNotCombine?.keywords
       ? page.keywords
-      : [settings.keywords, page.keywords].filter((x) => !!x).join(", ");
+      : [brand.keywords, page.keywords].filter((x) => !!x).join(", ");
 
     logger.debug(
       {
@@ -157,7 +160,7 @@ export async function generateMetadata(
       description,
       keywords,
       icons: {
-        icon: settings.favicon || "/icon.ico",
+        icon: brand.favicon || "/icon.ico",
       },
     };
   } catch (error: any) {
@@ -205,7 +208,7 @@ export default async function Page(props: Props) {
       "Processing page render request",
     );
 
-    const { page, settings, params } = await getSource(
+    const { page, general, brand, params } = await getSource(
       routeParams.slug?.join("/"),
       !!searchParams?.preview,
     );
@@ -241,7 +244,8 @@ export default async function Page(props: Props) {
     const args: Record<string, any> = {
       page: rest,
       isPage: true,
-      general: settings,
+      general: general,
+      brand: brand,
       social: social,
       now: new Date(),
       path: routeParams.slug?.join("/") || "",
@@ -276,8 +280,8 @@ export default async function Page(props: Props) {
 
     const formattedArgs = formatArguments(
       args,
-      rest.language || settings.language,
-      settings.currency,
+      rest.language || brand.language,
+      general.currency,
     );
 
     const apps =
@@ -312,7 +316,7 @@ export default async function Page(props: Props) {
       <>
         <Styling styling={styling} />
         {header && (
-          <Header name={settings.name} logo={settings.logo} config={header} />
+          <Header name={general.name} logo={brand.logo} config={header} />
         )}
         <PageReader
           document={content}

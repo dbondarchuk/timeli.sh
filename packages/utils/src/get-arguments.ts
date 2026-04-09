@@ -5,6 +5,7 @@ import {
   AppointmentStatus,
   AssetEntity,
   BookingConfiguration,
+  BrandConfiguration,
   Currency,
   Customer,
   GeneralConfiguration,
@@ -44,6 +45,7 @@ type Props<
   config: {
     booking: BookingConfiguration;
     general: GeneralConfiguration;
+    brand: BrandConfiguration;
     social: SocialConfiguration;
   };
   adminUrl: string;
@@ -89,7 +91,7 @@ type ArgsProps = {
     hours: number;
     minutes: number;
   };
-  config: GeneralConfiguration;
+  config: GeneralConfiguration & BrandConfiguration;
   socials: {
     type: SocialLinkType;
     url: string;
@@ -121,7 +123,7 @@ export const getArguments = <
   appointment,
   customer,
   config,
-  locale = config.general.language,
+  locale = config.brand.language,
   currency = config.general.currency,
   useAppointmentTimezone = false,
   additionalProperties,
@@ -227,6 +229,7 @@ export const getArguments = <
       : undefined,
     config: {
       ...config.general,
+      ...config.brand,
     },
     adminUrl,
     websiteUrl,

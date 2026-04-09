@@ -1,0 +1,309 @@
+{
+  "general_meeting": {
+    "label": "General Meeting",
+    "tags": [
+      "meetings",
+      "business",
+      "calls"
+    ],
+    "services": [
+      {
+        "name": "Intro Call",
+        "durations": [
+          15,
+          30
+        ],
+        "description": "**A short introductory call** to connect and evaluate fit. Perfect for quick introductions or discovery.",
+        "addons": [
+          {
+            "id": "intro_call-addon-meetings-1",
+            "name": "Goals questionnaire",
+            "description": "**Short intake** so your intro call starts with context and a clear agenda.",
+            "duration": 10,
+            "suggestedPrice": 15
+          }
+        ]
+      },
+      {
+        "name": "Discovery Call",
+        "durations": [
+          30,
+          45
+        ],
+        "description": "**A deeper conversation** to explore needs and next steps. Useful for client intake and scoping.",
+        "addons": [
+          {
+            "id": "discovery_call-addon-meetings-1",
+            "name": "Agenda & pre-read",
+            "description": "**Topic outline and materials** shared ahead of your Discovery Call.",
+            "duration": 10,
+            "suggestedPrice": 15
+          },
+          {
+            "id": "discovery_call-addon-business-2",
+            "name": "Written recap",
+            "description": "**Summary of decisions and next steps** after your Discovery Call.",
+            "duration": 15,
+            "suggestedPrice": 25
+          }
+        ]
+      },
+      {
+        "name": "Follow-up Meeting",
+        "durations": [
+          30,
+          60
+        ],
+        "description": "**A follow-up session** to review progress and agree on next actions. Ideal for ongoing project touchpoints.",
+        "addons": [
+          {
+            "id": "follow_up_meeting-addon-meetings-1",
+            "name": "Agenda & pre-read",
+            "description": "**Topic outline and materials** shared ahead of your Follow-up Meeting.",
+            "duration": 10,
+            "suggestedPrice": 15
+          },
+          {
+            "id": "follow_up_meeting-addon-business-2",
+            "name": "Written recap",
+            "description": "**Summary of decisions and next steps** after your Follow-up Meeting.",
+            "duration": 15,
+            "suggestedPrice": 25
+          }
+        ]
+      }
+    ]
+  },
+  "interview_slot": {
+    "label": "Interview Slot",
+    "tags": [
+      "meetings",
+      "hiring",
+      "recruiting"
+    ],
+    "services": [
+      {
+        "name": "Initial Screening",
+        "durations": [
+          15,
+          30
+        ],
+        "description": "**Short screening interview** to evaluate basic fit and availability. Efficient for early-stage hiring.",
+        "addons": [
+          {
+            "id": "initial_screening-addon-meetings-1",
+            "name": "Structured scorecard",
+            "description": "**Role-specific rubric** used during screening for consistent, fair notes.",
+            "duration": 10,
+            "suggestedPrice": 15
+          }
+        ]
+      },
+      {
+        "name": "Technical Interview",
+        "durations": [
+          45,
+          60
+        ],
+        "description": "**In-depth technical interview** focusing on skills and problem-solving. May include live tasks or questions.",
+        "addons": [
+          {
+            "id": "technical_interview-addon-meetings-1",
+            "name": "Structured scorecard",
+            "description": "**Role-specific rubric** for consistent notes during Technical Interview.",
+            "duration": 10,
+            "suggestedPrice": 15
+          },
+          {
+            "id": "technical_interview-addon-hiring-2",
+            "name": "Hiring team debrief template",
+            "description": "**Written summary format** for stakeholders after Technical Interview.",
+            "duration": 15,
+            "suggestedPrice": 25
+          }
+        ]
+      },
+      {
+        "name": "Final Interview",
+        "durations": [
+          60,
+          90
+        ],
+        "description": "**Comprehensive final interview** with multiple stakeholders. Used for final hiring decisions and role fit.",
+        "addons": [
+          {
+            "id": "final_interview-addon-meetings-1",
+            "name": "Structured scorecard",
+            "description": "**Role-specific rubric** for consistent notes during Final Interview.",
+            "duration": 10,
+            "suggestedPrice": 15
+          },
+          {
+            "id": "final_interview-addon-hiring-2",
+            "name": "Hiring team debrief template",
+            "description": "**Written summary format** for stakeholders after Final Interview.",
+            "duration": 15,
+            "suggestedPrice": 25
+          }
+        ]
+      }
+    ]
+  },
+  "demo_call": {
+    "label": "Product Demo",
+    "tags": [
+      "meetings",
+      "sales",
+      "demo"
+    ],
+    "services": [
+      {
+        "name": "Quick Demo",
+        "durations": [
+          15,
+          30
+        ],
+        "description": "**Short product walkthrough** highlighting main features. Great for initial interest and qualification.",
+        "addons": [
+          {
+            "id": "quick_demo-addon-meetings-1",
+            "name": "Stakeholder loop-in",
+            "description": "**5-minute slot** to brief a second decision-maker who joins briefly at the end.",
+            "duration": 10,
+            "suggestedPrice": 15
+          }
+        ]
+      },
+      {
+        "name": "Full Demo & Q&A",
+        "durations": [
+          45,
+          60
+        ],
+        "description": "**Comprehensive demo** including deep feature exploration and Q&A. Useful for decision-makers.",
+        "addons": [
+          {
+            "id": "full_demo_q_a-addon-meetings-1",
+            "name": "Custom use-case build",
+            "description": "**Short configuration** showing your data or workflow in the demo for Full Demo & Q&A.",
+            "duration": 10,
+            "suggestedPrice": 15
+          },
+          {
+            "id": "full_demo_q_a-addon-sales-2",
+            "name": "Security & admin FAQ",
+            "description": "**Extra Q&A block** on IT, SSO, or compliance for Full Demo & Q&A.",
+            "duration": 15,
+            "suggestedPrice": 25
+          }
+        ]
+      },
+      {
+        "name": "Pilot Kickoff",
+        "durations": [
+          60,
+          90
+        ],
+        "description": "**Kickoff for trial or pilot projects** with setup and next steps. Ensures alignment and success criteria.",
+        "addons": [
+          {
+            "id": "pilot_kickoff-addon-meetings-1",
+            "name": "Custom use-case build",
+            "description": "**Short configuration** showing your data or workflow in the demo for Pilot Kickoff.",
+            "duration": 10,
+            "suggestedPrice": 15
+          },
+          {
+            "id": "pilot_kickoff-addon-sales-2",
+            "name": "Security & admin FAQ",
+            "description": "**Extra Q&A block** on IT, SSO, or compliance for Pilot Kickoff.",
+            "duration": 15,
+            "suggestedPrice": 25
+          }
+        ]
+      }
+    ]
+  },
+  "cohort_onboarding": {
+    "label": "Onboarding Session",
+    "tags": [
+      "meetings",
+      "onboarding",
+      "product"
+    ],
+    "services": [
+      {
+        "name": "New User Onboarding",
+        "durations": [
+          30,
+          60
+        ],
+        "description": "**Guided onboarding session** to get started quickly. Covers key features and setup steps.",
+        "addons": [
+          {
+            "id": "new_user_onboarding-addon-meetings-1",
+            "name": "Sandbox environment setup",
+            "description": "**Pre-loaded test space** before New User Onboarding so time is hands-on.",
+            "duration": 10,
+            "suggestedPrice": 15
+          },
+          {
+            "id": "new_user_onboarding-addon-onboarding-2",
+            "name": "Recording & resource links",
+            "description": "**Session recording** (if allowed) plus links shared after New User Onboarding.",
+            "duration": 15,
+            "suggestedPrice": 25
+          }
+        ]
+      },
+      {
+        "name": "Team Onboarding",
+        "durations": [
+          60,
+          90
+        ],
+        "description": "**Group onboarding for teams** including role-specific setup. Helps integrate the platform into workflows.",
+        "addons": [
+          {
+            "id": "team_onboarding-addon-meetings-1",
+            "name": "Sandbox environment setup",
+            "description": "**Pre-loaded test space** before Team Onboarding so time is hands-on.",
+            "duration": 10,
+            "suggestedPrice": 15
+          },
+          {
+            "id": "team_onboarding-addon-onboarding-2",
+            "name": "Recording & resource links",
+            "description": "**Session recording** (if allowed) plus links shared after Team Onboarding.",
+            "duration": 15,
+            "suggestedPrice": 25
+          }
+        ]
+      },
+      {
+        "name": "Training Workshop",
+        "durations": [
+          90,
+          180
+        ],
+        "description": "**Hands-on training workshop** for deeper adoption and use cases. Includes Q&A and follow-up resources.",
+        "addons": [
+          {
+            "id": "training_workshop-addon-meetings-1",
+            "name": "Sandbox environment setup",
+            "description": "**Pre-loaded test space** before Training Workshop so time is hands-on.",
+            "duration": 10,
+            "suggestedPrice": 15
+          },
+          {
+            "id": "training_workshop-addon-onboarding-2",
+            "name": "Recording & resource links",
+            "description": "**Session recording** (if allowed) plus links shared after Training Workshop.",
+            "duration": 15,
+            "suggestedPrice": 25
+          }
+        ]
+      }
+    ]
+  }
+}

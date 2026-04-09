@@ -3,8 +3,8 @@ import {
   asOptinalNumberField,
   communicationChannels,
   querySchema,
-  WithCompanyId,
   WithDatabaseId,
+  WithOrganizationId,
   zObjectId,
   zTaggedUnion,
 } from "@timelish/types";
@@ -298,7 +298,7 @@ export type AppointmentNotificationUpdateModel = z.infer<
   typeof appointmentNotificationSchema
 >;
 
-export type AppointmentNotification = WithCompanyId<
+export type AppointmentNotification = WithOrganizationId<
   WithDatabaseId<AppointmentNotificationUpdateModel>
 > & {
   appId: string;

@@ -1,7 +1,7 @@
 import { EmailTemplates } from "../types";
 
 const notifyReplyText = `
-Hi {{config.name}},
+Hi {{name}},
 
 There was a reply to text message message from {{reply.from}}.
 
@@ -71,7 +71,7 @@ Price: {{.}}
 `;
 
 const notifyLowQuotaText = `
-Hi {{config.name}},
+Hi {{name}},
 
 Your TextBelt quota is low. Please add more credits.
 

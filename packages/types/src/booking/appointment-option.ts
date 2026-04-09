@@ -5,7 +5,7 @@ import {
   appointmentWithDepositCancellationSchema,
   appointmentWithoutDepositCancellationSchema,
 } from "../configuration/booking/cancellation";
-import { WithCompanyId, WithDatabaseId } from "../database";
+import { WithDatabaseId, WithOrganizationId } from "../database";
 import {
   asOptinalNumberField,
   zNonEmptyString,
@@ -297,7 +297,7 @@ export type AppointmentOptionUpdateModel = Prettify<
 >;
 
 export type AppointmentOption = Prettify<
-  WithCompanyId<
+  WithOrganizationId<
     WithDatabaseId<
       AppointmentOptionUpdateModel & {
         updatedAt: Date;
@@ -378,7 +378,7 @@ export type AppointmentAddonUpdateModel = z.infer<
 >;
 
 export type AppointmentAddon = Prettify<
-  WithCompanyId<
+  WithOrganizationId<
     WithDatabaseId<
       AppointmentAddonUpdateModel & {
         updatedAt: Date;

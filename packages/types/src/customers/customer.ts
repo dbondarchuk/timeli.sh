@@ -1,5 +1,5 @@
 import * as z from "zod";
-import { WithCompanyId, WithDatabaseId } from "../database";
+import { WithDatabaseId, WithOrganizationId } from "../database";
 import {
   asOptionalField,
   zAssetName,
@@ -113,7 +113,7 @@ export const getCustomerSchemaWithUniqueCheck = (
 
 export type CustomerUpdateModel = z.infer<typeof customerSchema>;
 export type Customer = Prettify<
-  WithCompanyId<WithDatabaseId<CustomerUpdateModel>> &
+  WithOrganizationId<WithDatabaseId<CustomerUpdateModel>> &
     (
       | {
           isDeleted?: false;

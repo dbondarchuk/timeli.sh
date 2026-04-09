@@ -151,7 +151,9 @@ export const FormCard: React.FC = () => {
             name="dateTime"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Date & Time</FormLabel>
+                <FormLabel>
+                  {i18n("modification.form.dateTime.label")}
+                </FormLabel>
                 <FormControl>
                   <DateTimePicker
                     {...field}

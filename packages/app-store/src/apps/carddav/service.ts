@@ -26,8 +26,8 @@ function generatePassword(): string {
   return crypto.randomBytes(12).toString("hex");
 }
 
-function generateCarddavUrl(companyId: string, appId: string): string {
-  return `https://${process.env.APPS_EXTERNAL_DOMAIN}/api/apps/${companyId}/${appId}`;
+function generateCarddavUrl(organizationId: string, appId: string): string {
+  return `https://${process.env.APPS_EXTERNAL_DOMAIN}/api/apps/${organizationId}/${appId}`;
 }
 
 /* (Keep your escapeVCardText and customerToVCard helpers unchanged) */
@@ -133,7 +133,7 @@ export default class CarddavConnectedApp
   public constructor(protected readonly props: IConnectedAppProps) {
     this.loggerFactory = getLoggerFactory(
       "CarddavConnectedApp",
-      props.companyId,
+      props.organizationId,
     );
   }
 
@@ -220,7 +220,7 @@ export default class CarddavConnectedApp
     const configuration: CarddavConfiguration = {
       username,
       password: decrypt(appData.data.password),
-      carddavUrl: generateCarddavUrl(appData.companyId, appData._id),
+      carddavUrl: generateCarddavUrl(appData.organizationId, appData._id),
     };
 
     logger.debug(
@@ -256,7 +256,7 @@ export default class CarddavConnectedApp
     };
 
     const username = await this.getUsername(appData);
-    const carddavUrl = generateCarddavUrl(appData.companyId, appData._id);
+    const carddavUrl = generateCarddavUrl(appData.organizationId, appData._id);
     await this.props.update({
       account: {
         username,
@@ -290,7 +290,7 @@ export default class CarddavConnectedApp
 
   /**
    * Main entry — old behavior preserved but improved
-   * slug: array of path pieces after /api/apps/{companyId}/{appId}/
+   * slug: array of path pieces after /api/apps/{organizationId}/{appId}/
    */
   public async processAppExternalCall(
     appData: ConnectedAppData,
@@ -382,7 +382,7 @@ export default class CarddavConnectedApp
     const logger = this.loggerFactory("handlePropfind");
     logger.debug({ appId: appData._id, path }, "Handling PROPFIND request");
 
-    const basePath = `/api/apps/${appData.companyId}/${appData._id}`;
+    const basePath = `/api/apps/${appData.organizationId}/${appData._id}`;
     const depth = (request.headers.get("depth") || "0").toLowerCase(); // "0" or "1" (string)
     const depthIs0 = depth === "0";
 
@@ -393,7 +393,7 @@ export default class CarddavConnectedApp
 ${inner}
 </D:multistatus>`;
 
-    // ROOT (e.g., /api/apps/{companyId}/{appId}/)
+    // ROOT (e.g., /api/apps/{organizationId}/{appId}/)
     if (path === "") {
       // At Depth:0 return only the resource's props.
       // At Depth:1 include a child entry for addressbooks/ (discovery)
@@ -450,7 +450,7 @@ ${inner}
           <D:principal/>
         </D:resourcetype>
 
-        <D:displayname>Company Principal</D:displayname>
+        <D:displayname>Organization Principal</D:displayname>
 
         <D:principal-URL>
           <D:href>${basePath}/principal/</D:href>
@@ -621,7 +621,7 @@ ${inner}
     const logger = this.loggerFactory("handleReport");
     logger.debug({ appId: appData._id, path }, "Handling REPORT request");
 
-    const basePath = `/api/apps/${appData.companyId}/${appData._id}`;
+    const basePath = `/api/apps/${appData.organizationId}/${appData._id}`;
 
     // Only support REPORT on the customers collection
     if (path !== "addressbook/customers") {

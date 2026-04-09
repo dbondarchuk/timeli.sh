@@ -6,18 +6,18 @@ import {
   ISystemNotificationService,
   TextMessageNotificationRequest,
   TextMessageResponse,
-  WithCompanyId,
+  WithOrganizationId,
 } from "@timelish/types";
 import { Job } from "bullmq";
 import { BaseBullMQClient } from "../base-bullmq-client";
 import { BullMQNotificationConfig } from "./types";
 
-export type EmailJobData = WithCompanyId<{
+export type EmailJobData = WithOrganizationId<{
   type: "email";
   data: EmailNotificationRequest;
 }>;
 
-export type TextMessageJobData = WithCompanyId<{
+export type TextMessageJobData = WithOrganizationId<{
   type: "text-message";
   data: TextMessageNotificationRequest;
 }>;
@@ -39,10 +39,13 @@ export class BullMQNotificationService
   protected readonly config: BullMQNotificationConfig;
 
   constructor(
-    protected readonly companyId: string,
+    protected readonly organizationId: string,
     config: BullMQNotificationConfig,
   ) {
-    super(config, getLoggerFactory("BullMQNotificationService", companyId));
+    super(
+      config,
+      getLoggerFactory("BullMQNotificationService", organizationId),
+    );
 
     this.config = config;
     this.initializeQueues();
@@ -71,7 +74,7 @@ export class BullMQNotificationService
     const jobData: EmailJobData = {
       type: "email",
       data,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     };
 
     try {
@@ -110,7 +113,7 @@ export class BullMQNotificationService
     const jobData: TextMessageJobData = {
       type: "text-message",
       data,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     };
 
     try {
@@ -202,7 +205,7 @@ export class BullMQNotificationService
     const jobData: EmailJobData = {
       type: "email",
       data,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     };
 
     const queue = this.getQueue(this.config.queues.email.name);
@@ -242,7 +245,7 @@ export class BullMQNotificationService
     const jobData: TextMessageJobData = {
       type: "text-message",
       data,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     };
 
     const queue = this.getQueue(this.config.queues.textMessage.name);

@@ -1,5 +1,5 @@
 import * as z from "zod";
-import { WithCompanyId, WithDatabaseId } from "../database";
+import { WithDatabaseId, WithOrganizationId } from "../database";
 import { zObjectId } from "../utils";
 import { Prettify } from "../utils/helpers";
 import {
@@ -76,7 +76,7 @@ export type CreateOrUpdatePaymentIntentRequest = z.infer<
 >;
 
 export type PaymentIntent = Prettify<
-  WithCompanyId<
+  WithOrganizationId<
     WithDatabaseId<
       PaymentIntentUpdateModel & {
         createdAt: Date;
@@ -147,7 +147,7 @@ export type PaymentUpdateModel = {
 );
 
 export type Payment = Prettify<
-  WithCompanyId<
+  WithOrganizationId<
     WithDatabaseId<
       PaymentUpdateModel & {
         updatedAt: Date;

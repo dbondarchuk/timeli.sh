@@ -34,8 +34,8 @@ export async function startBullMQNotificationSenderApp(): Promise<void> {
     logger.info({ config }, "BullMQ configuration loaded");
 
     // Create and start the worker
-    const worker = new BullMQNotificationWorker(config, (companyId) =>
-      ServicesContainer(companyId),
+    const worker = new BullMQNotificationWorker(config, (organizationId) =>
+      ServicesContainer(organizationId),
     );
 
     // Set up graceful shutdown handlers

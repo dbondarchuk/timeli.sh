@@ -29,7 +29,10 @@ export default class SmtpConnectedApp
   protected readonly loggerFactory: LoggerFactory;
 
   public constructor(protected readonly props: IConnectedAppProps) {
-    this.loggerFactory = getLoggerFactory("SmtpConnectedApp", props.companyId);
+    this.loggerFactory = getLoggerFactory(
+      "SmtpConnectedApp",
+      props.organizationId,
+    );
   }
 
   public async processAppData(

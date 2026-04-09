@@ -1,6 +1,6 @@
 import { AssetEntity } from "../assets/entity";
 import { Customer } from "../customers/customer";
-import { WithCompanyId, WithDatabaseId } from "../database";
+import { WithDatabaseId, WithOrganizationId } from "../database";
 import { Prettify } from "../utils/helpers";
 import {
   AppointmentEvent,
@@ -17,7 +17,7 @@ export const appointmentStatuses = [
 export type AppointmentStatus = (typeof appointmentStatuses)[number];
 
 export type AppointmentEntity = Prettify<
-  WithCompanyId<
+  WithOrganizationId<
     WithDatabaseId<
       AppointmentEvent & {
         status: AppointmentStatus;

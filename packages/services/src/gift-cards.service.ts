@@ -28,11 +28,11 @@ import { BaseService } from "./services/base.service";
 
 export class GiftCardsService extends BaseService implements IGiftCardsService {
   public constructor(
-    companyId: string,
+    organizationId: string,
     protected readonly paymentsService: IPaymentsService,
     protected readonly jobService: IJobService,
   ) {
-    super("GiftCardsService", companyId);
+    super("GiftCardsService", organizationId);
   }
 
   public async createGiftCard(
@@ -47,7 +47,7 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
       status: "active";
     } = {
       ...giftCard,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
       _id: new ObjectId().toString(),
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -104,7 +104,7 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
 
     const db = await getDbConnection();
     const giftCards = db.collection<GiftCard>(GIFT_CARDS_COLLECTION_NAME);
-    const { _id, companyId, createdAt, status, ...updateObj } =
+    const { _id, organizationId, createdAt, status, ...updateObj } =
       giftCard as GiftCard;
 
     const existingGiftCard = await this.getGiftCard(id);
@@ -136,7 +136,7 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
           {
             $match: {
               giftCardId: id,
-              companyId: this.companyId,
+              organizationId: this.organizationId,
               method: "gift-card",
             },
           },
@@ -165,13 +165,13 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
       }
 
       await payments.updateOne(
-        { _id: payment._id, companyId: this.companyId },
+        { _id: payment._id, organizationId: this.organizationId },
         { $set: { amount: giftCard.amount } },
       );
     }
 
     const result = await giftCards.updateOne(
-      { _id: id, companyId: this.companyId },
+      { _id: id, organizationId: this.organizationId },
       {
         $set: {
           ...updateObj,
@@ -214,7 +214,7 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
     const db = await getDbConnection();
     const giftCards = db.collection<GiftCard>(GIFT_CARDS_COLLECTION_NAME);
     const result = await giftCards.updateOne(
-      { _id: id, companyId: this.companyId },
+      { _id: id, organizationId: this.organizationId },
       { $set: { status, updatedAt: new Date() } },
     );
 
@@ -248,7 +248,7 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
     const db = await getDbConnection();
     const giftCards = db.collection<GiftCard>(GIFT_CARDS_COLLECTION_NAME);
     await giftCards.updateMany(
-      { _id: { $in: ids }, companyId: this.companyId },
+      { _id: { $in: ids }, organizationId: this.organizationId },
       { $set: { status, updatedAt: new Date() } },
     );
 
@@ -304,7 +304,7 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
         {
           $match: {
             _id: id,
-            companyId: this.companyId,
+            organizationId: this.organizationId,
             method: "gift-card",
             giftCardId: id,
           },
@@ -320,7 +320,7 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
       return null;
     }
 
-    await giftCards.deleteOne({ _id: id, companyId: this.companyId });
+    await giftCards.deleteOne({ _id: id, organizationId: this.organizationId });
     await this.paymentsService.deletePayment(giftCard.paymentId);
 
     await this.jobService.enqueueHook<IGiftCardHook, "onGiftCardsDeleted">(
@@ -348,7 +348,7 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
         {
           $match: {
             _id: { $in: ids },
-            companyId: this.companyId,
+            organizationId: this.organizationId,
           },
         },
         {
@@ -360,7 +360,7 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
             pipeline: [
               {
                 $match: {
-                  companyId: this.companyId,
+                  organizationId: this.organizationId,
                 },
               },
             ],
@@ -403,7 +403,7 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
           $match: {
             method: "gift-card",
             giftCardId: { $in: giftCardIdsToDelete },
-            companyId: this.companyId,
+            organizationId: this.organizationId,
           },
         },
       ])
@@ -418,14 +418,14 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
 
     await giftCards.deleteMany({
       _id: { $in: giftCardIdsToDelete },
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     });
 
     logger.debug({ paymentIdsToDelete }, "Deleting payments");
 
     await payments.deleteMany({
       _id: { $in: paymentIdsToDelete },
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     });
 
     await this.jobService.enqueueHook<IGiftCardHook, "onGiftCardsDeleted">(
@@ -508,7 +508,7 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
     ) || { createdAt: -1 };
 
     const filter: Filter<GiftCardListModel> = {
-      companyId: this.companyId,
+      organizationId: this.organizationId,
       isDeleted: { $ne: true },
     };
 
@@ -599,7 +599,7 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
                     {
                       $match: {
                         _id: { $in: query.priorityIds },
-                        companyId: this.companyId,
+                        organizationId: this.organizationId,
                       },
                     },
                   ],
@@ -682,7 +682,7 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
         {
           $match: {
             giftCardId: id,
-            companyId: this.companyId,
+            organizationId: this.organizationId,
             method: "gift-card",
           },
         },
@@ -729,7 +729,11 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
     const result = await giftCards
       .aggregate([
         {
-          $match: { code, _id: { $ne: id }, companyId: this.companyId },
+          $match: {
+            code,
+            _id: { $ne: id },
+            organizationId: this.organizationId,
+          },
         },
       ])
       .hasNext();
@@ -746,7 +750,7 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
     return [
       {
         $match: {
-          companyId: this.companyId,
+          organizationId: this.organizationId,
         },
       },
       {
@@ -758,7 +762,7 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
           pipeline: [
             {
               $match: {
-                companyId: this.companyId,
+                organizationId: this.organizationId,
                 method: "gift-card",
               },
             },
@@ -774,7 +778,7 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
       //     pipeline: [
       //       {
       //         $match: {
-      //           companyId: this.companyId,
+      //           organizationId: this.organizationId,
       //           method: "gift-card",
       //         },
       //       },
@@ -789,7 +793,7 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
       //     pipeline: [
       //       {
       //         $match: {
-      //           companyId: this.companyId,
+      //           organizationId: this.organizationId,
       //           $expr: {
       //             $in: ["$_id", "$$paymentAppointmentIds"],
       //           },
@@ -807,7 +811,7 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
       //     pipeline: [
       //       {
       //         $match: {
-      //           companyId: this.companyId,
+      //           organizationId: this.organizationId,
       //           $expr: {
       //             $in: ["$_id", "$$paymentCustomerIds"],
       //           },
@@ -880,7 +884,7 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
           pipeline: [
             {
               $match: {
-                companyId: this.companyId,
+                organizationId: this.organizationId,
               },
             },
           ],
@@ -895,7 +899,7 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
           pipeline: [
             {
               $match: {
-                companyId: this.companyId,
+                organizationId: this.organizationId,
               },
             },
           ],

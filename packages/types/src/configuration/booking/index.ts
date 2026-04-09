@@ -1,6 +1,5 @@
 import * as z from "zod";
 import { asOptinalNumberField, zObjectId } from "../../utils";
-import { calendarSourcesConfigurationSchema } from "./calendar-source";
 import { appointmentCancellationRescheduleSchema } from "./cancellation";
 import { paymentsConfigurationSchema } from "./payments";
 
@@ -82,7 +81,6 @@ export const generalBookingConfigurationSchema = z.object({
   allowPromoCode: z.enum(allowPromoCodeType),
   payments: paymentsConfigurationSchema,
   cancellationsAndReschedules: appointmentCancellationRescheduleSchema,
-  calendarSources: calendarSourcesConfigurationSchema,
   options: appointOptionsSchema,
 });
 

@@ -24,7 +24,7 @@ export default class SmartScheduleConnectedApp
   public constructor(protected readonly props: IConnectedAppProps) {
     this.loggerFactory = getLoggerFactory(
       "SmartScheduleConnectedApp",
-      props.companyId,
+      props.organizationId,
     );
   }
 

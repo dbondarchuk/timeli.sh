@@ -1,10 +1,15 @@
 "use client";
-import { CurrencySymbolMap, GeneralConfiguration } from "@timelish/types";
+import {
+  BrandConfiguration,
+  CurrencySymbolMap,
+  GeneralConfiguration,
+} from "@timelish/types";
 import { formatAmountWithCurrency } from "@timelish/utils";
 import { createContext, useContext } from "react";
 
 export const ConfigContext = createContext<{
-  config: GeneralConfiguration;
+  config: GeneralConfiguration &
+    BrandConfiguration & { domain: string | null | undefined };
   websiteUrl: string;
 }>({
   config: {
@@ -24,15 +29,24 @@ export const ConfigContext = createContext<{
 
 export const ConfigProvider = ({
   children,
-  config,
+  generalConfiguration,
+  brandConfiguration,
+  domain,
   websiteUrl,
 }: {
   children: React.ReactNode;
-  config: GeneralConfiguration;
+  generalConfiguration: GeneralConfiguration;
+  brandConfiguration: BrandConfiguration;
+  domain: string | null | undefined;
   websiteUrl: string;
 }) => {
   return (
-    <ConfigContext.Provider value={{ config, websiteUrl }}>
+    <ConfigContext.Provider
+      value={{
+        config: { ...generalConfiguration, ...brandConfiguration, domain },
+        websiteUrl,
+      }}
+    >
       {children}
     </ConfigContext.Provider>
   );

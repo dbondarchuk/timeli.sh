@@ -10,32 +10,32 @@ import { auth } from "../../auth";
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getI18nAsync("admin");
   return {
-    title: t("auth.signUp"),
+    title: t("auth.signUp.title"),
   };
 }
 
-export default async function AuthenticationPage() {
-  const logger = getLoggerFactory("AdminPages")("signin");
+export default async function SignupPage() {
+  const logger = getLoggerFactory("AdminPages")("signup");
   const publicDomain = process.env.PUBLIC_DOMAIN!;
 
-  logger.debug("Loading signin page");
+  logger.debug("Loading signup page");
 
   const session = await auth.api.getSession({
     headers: await headers(),
   });
 
   if (session) {
-    redirect("/dashboard");
+    redirect(session.user.organizationId ? "/dashboard" : "/install");
   }
 
   const t = await getI18nAsync("admin");
 
-  logger.debug("Signin page loaded");
+  logger.debug("Signup page loaded");
 
   return (
     <AuthLayout
-      title={t("auth.signUp")}
-      description={t("auth.signUpDescription")}
+      title={t("auth.signUp.title")}
+      description={t("auth.signUp.description")}
     >
       <UserSignupForm publicDomain={publicDomain} />
     </AuthLayout>

@@ -53,11 +53,11 @@ export class BuiltInBookingTrackingApp implements IEventHook, IScheduledCore {
   protected readonly redis: Redis;
 
   public constructor(
-    protected readonly companyId: string,
+    protected readonly organizationId: string,
     protected readonly services: IServicesContainer,
   ) {
-    this.loggerFactory = getLoggerFactory("BookingTrackingApp", companyId);
-    this.repository = new BookingTrackingRepository(companyId);
+    this.loggerFactory = getLoggerFactory("BookingTrackingApp", organizationId);
+    this.repository = new BookingTrackingRepository(organizationId);
     this.redis = getRedisClient();
   }
 
@@ -129,7 +129,7 @@ export class BuiltInBookingTrackingApp implements IEventHook, IScheduledCore {
 
     const logger = this.loggerFactory("scheduleAbandonedBookingsJobIfNeeded");
     try {
-      const jobId = getAbandonedBookingsJobId(this.companyId);
+      const jobId = getAbandonedBookingsJobId(this.organizationId);
       const job = await this.services.jobService.getDeduplicatedJob(jobId);
 
       if (job) {
@@ -265,7 +265,7 @@ export class BuiltInBookingTrackingApp implements IEventHook, IScheduledCore {
     convertedAppName?: string;
   } | null> {
     const logger = this.loggerFactory("getActiveSession");
-    const redisKey = getRedisKey(this.companyId, sessionId);
+    const redisKey = getRedisKey(this.organizationId, sessionId);
 
     try {
       const existing = await this.redis.get(redisKey);
@@ -327,7 +327,7 @@ export class BuiltInBookingTrackingApp implements IEventHook, IScheduledCore {
    */
   private async markSessionAsProcessed(sessionId: string): Promise<void> {
     const logger = this.loggerFactory("markSessionAsProcessed");
-    const redisKey = getRedisKey(this.companyId, sessionId);
+    const redisKey = getRedisKey(this.organizationId, sessionId);
 
     try {
       const existing = await this.redis.get(redisKey);
@@ -360,7 +360,7 @@ export class BuiltInBookingTrackingApp implements IEventHook, IScheduledCore {
     metadata?: BookingTrackingMetadata,
   ): Promise<void> {
     const logger = this.loggerFactory("trackBookingStep");
-    const redisKey = getRedisKey(this.companyId, sessionId);
+    const redisKey = getRedisKey(this.organizationId, sessionId);
     const now = new Date().toISOString();
 
     try {
@@ -453,8 +453,8 @@ export class BuiltInBookingTrackingApp implements IEventHook, IScheduledCore {
     const cutoffTime = new Date(now.getTime() - abandonAfterSeconds * 1000);
 
     try {
-      // Scan for all booking sessions for this company
-      const pattern = `${REDIS_KEY_PREFIX}:${this.companyId}:*`;
+      // Scan for all booking sessions for this organization
+      const pattern = `${REDIS_KEY_PREFIX}:${this.organizationId}:*`;
       const keys: string[] = [];
       let cursor = "0";
 
@@ -474,7 +474,7 @@ export class BuiltInBookingTrackingApp implements IEventHook, IScheduledCore {
         [];
 
       for (const key of keys) {
-        // Extract sessionId from key: booking:session:{companyId}:{sessionId}
+        // Extract sessionId from key: booking:session:{organizationId}:{sessionId}
         const keyParts = key.split(":");
         if (keyParts.length < 4) continue;
         const sessionId = keyParts[3];

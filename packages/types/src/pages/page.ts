@@ -1,6 +1,6 @@
 import { languages } from "@timelish/i18n";
 import * as z from "zod";
-import { WithCompanyId, WithDatabaseId } from "../database";
+import { WithDatabaseId, WithOrganizationId } from "../database";
 import { Prettify, zNonEmptyString } from "../utils";
 
 export const pageTagSchema = zNonEmptyString(
@@ -78,7 +78,7 @@ export const getPageSchemaWithUniqueCheck = (
 export type PageUpdateModel = z.infer<typeof pageSchema>;
 
 export type Page = Prettify<
-  WithCompanyId<WithDatabaseId<PageUpdateModel>> & {
+  WithOrganizationId<WithDatabaseId<PageUpdateModel>> & {
     createdAt: Date;
     updatedAt: Date;
   }

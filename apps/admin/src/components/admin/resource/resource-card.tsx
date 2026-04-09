@@ -137,25 +137,28 @@ export const ResourceCard = ({
       })}
     >
       <CardHeader className="justify-between relative flex flex-row border-b px-3 py-3 w-full items-center">
-        <Button
-          type="button"
-          variant={"ghost"}
-          {...attributes}
-          {...listeners}
-          className="-ml-2 h-auto cursor-grab p-1 text-secondary-foreground/50"
-        >
-          <span className="sr-only">{t("resource.card.moveResource")}</span>
-          <GripVertical />
-        </Button>
-        <span
-          className={cn(
-            !resourceSourceTypeLabels[itemSourceType] ? "text-destructive" : "",
-          )}
-        >
-          {itemSourceType
-            ? resourceSourceTypeLabels[itemSourceType]
-            : t("resource.card.invalid")}
-        </span>
+        <div className="flex flex-row items-center gap-2">
+          <Button
+            type="button"
+            variant={"ghost"}
+            {...attributes}
+            {...listeners}
+            className="-ml-2 h-auto cursor-grab p-1 text-secondary-foreground/50"
+          >
+            <span className="sr-only">{t("resource.card.moveResource")}</span>
+            <GripVertical />
+          </Button>
+          <span
+            className={cn(
+              "text-xs font-semibold uppercase tracking-wide text-muted-foreground",
+              !resourceSourceTypeLabels[itemSourceType] && "text-destructive",
+            )}
+          >
+            {itemSourceType
+              ? resourceSourceTypeLabels[itemSourceType]
+              : t("resource.card.invalid")}
+          </span>
+        </div>
         <div className="flex flex-row gap-2">
           <AlertDialog>
             <AlertDialogTrigger asChild>

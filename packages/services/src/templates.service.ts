@@ -15,8 +15,8 @@ import { getDbConnection } from "./database";
 import { BaseService } from "./services/base.service";
 
 export class TemplatesService extends BaseService implements ITemplatesService {
-  constructor(companyId: string) {
-    super("TemplatesService", companyId);
+  constructor(organizationId: string) {
+    super("TemplatesService", organizationId);
   }
 
   public async getTemplate(_id: string): Promise<Template | null> {
@@ -27,7 +27,7 @@ export class TemplatesService extends BaseService implements ITemplatesService {
 
     const template = await templates.findOne({
       _id,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     });
 
     logger.debug({ _id, template }, "Template found");
@@ -53,7 +53,7 @@ export class TemplatesService extends BaseService implements ITemplatesService {
     ) || { updatedAt: -1 };
 
     const filter: Filter<Template> = {
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     };
 
     if (query.type) {
@@ -129,7 +129,7 @@ export class TemplatesService extends BaseService implements ITemplatesService {
     logger.debug({ template }, "Creating template");
     const dbTemplate: Template = {
       ...template,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
       _id: new ObjectId().toString(),
       updatedAt: DateTime.utc().toJSDate(),
     };
@@ -163,7 +163,7 @@ export class TemplatesService extends BaseService implements ITemplatesService {
     const db = await getDbConnection();
     const templates = db.collection<Template>(TEMPLATES_COLLECTION_NAME);
 
-    const { _id, companyId, ...updateObj } = update as Template; // Remove fields in case it slips here
+    const { _id, organizationId, ...updateObj } = update as Template; // Remove fields in case it slips here
 
     if (!this.checkUniqueName(update.name, id)) {
       logger.error(
@@ -178,7 +178,7 @@ export class TemplatesService extends BaseService implements ITemplatesService {
     await templates.updateOne(
       {
         _id: id,
-        companyId: this.companyId,
+        organizationId: this.organizationId,
       },
       {
         $set: updateObj,
@@ -196,7 +196,7 @@ export class TemplatesService extends BaseService implements ITemplatesService {
 
     const template = await templates.findOneAndDelete({
       _id: id,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     });
 
     logger.debug({ id, templateDeleted: !!template }, "Template delete result");
@@ -214,7 +214,7 @@ export class TemplatesService extends BaseService implements ITemplatesService {
       _id: {
         $in: ids,
       },
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     });
 
     logger.debug({ ids, deletedCount }, "Templates deleted");
@@ -228,7 +228,7 @@ export class TemplatesService extends BaseService implements ITemplatesService {
 
     const filter: Filter<Template> = {
       name,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     };
 
     if (id) {

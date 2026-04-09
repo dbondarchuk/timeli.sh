@@ -4,8 +4,8 @@ import {
   PaymentMethod,
   Prettify,
   WithAppId,
-  WithCompanyId,
   WithDatabaseId,
+  WithOrganizationId,
   zEmail,
   zObjectId,
 } from "@timelish/types";
@@ -36,7 +36,7 @@ export type PurchasedGiftCardUpdateModel = z.infer<
 >;
 
 export type PurchasedGiftCardModel = Prettify<
-  WithCompanyId<
+  WithOrganizationId<
     WithDatabaseId<WithAppId<PurchasedGiftCardUpdateModel>> & {
       createdAt: Date;
       updatedAt: Date;

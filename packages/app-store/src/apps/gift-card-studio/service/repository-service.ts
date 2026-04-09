@@ -26,13 +26,13 @@ export class GiftCardStudioRepositoryService {
 
   public constructor(
     protected readonly appId: string,
-    protected readonly companyId: string,
+    protected readonly organizationId: string,
     protected readonly getDbConnection: IConnectedAppProps["getDbConnection"],
     protected readonly services: IConnectedAppProps["services"],
   ) {
     this.loggerFactory = getLoggerFactory(
       "GiftCardStudioRepositoryService",
-      this.companyId,
+      this.organizationId,
     );
   }
 
@@ -45,7 +45,7 @@ export class GiftCardStudioRepositoryService {
       ...design,
       _id: new ObjectId().toString(),
       appId: this.appId,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -69,7 +69,7 @@ export class GiftCardStudioRepositoryService {
     const { modifiedCount } = await db
       .collection<DesignModel>(GIFT_CARD_DESIGNS_COLLECTION_NAME)
       .updateOne(
-        { _id: id, companyId: this.companyId, appId: this.appId },
+        { _id: id, organizationId: this.organizationId, appId: this.appId },
         {
           $set: {
             ...design,
@@ -97,7 +97,7 @@ export class GiftCardStudioRepositoryService {
     const { modifiedCount } = await db
       .collection<DesignModel>(GIFT_CARD_DESIGNS_COLLECTION_NAME)
       .updateOne(
-        { _id: id, companyId: this.companyId, appId: this.appId },
+        { _id: id, organizationId: this.organizationId, appId: this.appId },
         { $set: { updatedAt: new Date(), isArchived } },
       );
 
@@ -121,7 +121,11 @@ export class GiftCardStudioRepositoryService {
     const { modifiedCount } = await db
       .collection<DesignModel>(GIFT_CARD_DESIGNS_COLLECTION_NAME)
       .updateMany(
-        { _id: { $in: ids }, companyId: this.companyId, appId: this.appId },
+        {
+          _id: { $in: ids },
+          organizationId: this.organizationId,
+          appId: this.appId,
+        },
         { $set: { updatedAt: new Date(), isArchived } },
       );
 
@@ -152,7 +156,7 @@ export class GiftCardStudioRepositoryService {
 
     const $and: Filter<DesignModel>[] = [
       {
-        companyId: this.companyId,
+        organizationId: this.organizationId,
         appId: this.appId,
       },
     ];
@@ -191,7 +195,7 @@ export class GiftCardStudioRepositoryService {
             pipeline: [
               {
                 $match: {
-                  companyId: this.companyId,
+                  organizationId: this.organizationId,
                 },
               },
             ],
@@ -211,7 +215,7 @@ export class GiftCardStudioRepositoryService {
                     {
                       $match: {
                         _id: { $in: query.priorityIds },
-                        companyId: this.companyId,
+                        organizationId: this.organizationId,
                       },
                     },
                   ],
@@ -274,7 +278,7 @@ export class GiftCardStudioRepositoryService {
       .collection<DesignModel>(GIFT_CARD_DESIGNS_COLLECTION_NAME)
       .findOne({
         _id: id,
-        companyId: this.companyId,
+        organizationId: this.organizationId,
         appId: this.appId,
       });
 
@@ -297,7 +301,7 @@ export class GiftCardStudioRepositoryService {
         {
           $match: {
             designId: id,
-            companyId: this.companyId,
+            organizationId: this.organizationId,
             appId: this.appId,
           },
         },
@@ -311,7 +315,11 @@ export class GiftCardStudioRepositoryService {
 
     const { deletedCount } = await db
       .collection<DesignModel>(GIFT_CARD_DESIGNS_COLLECTION_NAME)
-      .deleteOne({ _id: id, companyId: this.companyId, appId: this.appId });
+      .deleteOne({
+        _id: id,
+        organizationId: this.organizationId,
+        appId: this.appId,
+      });
 
     if (deletedCount === 0) {
       logger.warn({ id }, "Design not found");
@@ -333,7 +341,7 @@ export class GiftCardStudioRepositoryService {
         {
           $match: {
             designId: { $in: ids },
-            companyId: this.companyId,
+            organizationId: this.organizationId,
             appId: this.appId,
           },
         },
@@ -349,7 +357,7 @@ export class GiftCardStudioRepositoryService {
       .collection<DesignModel>(GIFT_CARD_DESIGNS_COLLECTION_NAME)
       .deleteMany({
         _id: { $in: ids },
-        companyId: this.companyId,
+        organizationId: this.organizationId,
         appId: this.appId,
       });
 
@@ -371,7 +379,7 @@ export class GiftCardStudioRepositoryService {
     const db = await this.getDbConnection();
     const filter: Filter<DesignModel> = {
       name,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
       appId: this.appId,
     };
     if (id) {
@@ -391,7 +399,7 @@ export class GiftCardStudioRepositoryService {
   public async createPurchasedGiftCard(
     doc: Omit<
       PurchasedGiftCardModel,
-      "_id" | "createdAt" | "updatedAt" | "appId" | "companyId"
+      "_id" | "createdAt" | "updatedAt" | "appId" | "organizationId"
     >,
   ): Promise<PurchasedGiftCardModel> {
     const logger = this.loggerFactory("createPurchasedGiftCard");
@@ -402,7 +410,7 @@ export class GiftCardStudioRepositoryService {
       ...doc,
       _id: new ObjectId().toString(),
       appId: this.appId,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -434,7 +442,7 @@ export class GiftCardStudioRepositoryService {
     const { modifiedCount } = await db
       .collection<PurchasedGiftCardModel>(PURCHASED_GIFT_CARDS_COLLECTION_NAME)
       .updateOne(
-        { _id: id, companyId: this.companyId, appId: this.appId },
+        { _id: id, organizationId: this.organizationId, appId: this.appId },
         { $set: { ...update, updatedAt: new Date() } },
       );
 
@@ -463,7 +471,7 @@ export class GiftCardStudioRepositoryService {
 
     const $and: Filter<PurchasedGiftCardListModel>[] = [
       {
-        companyId: this.companyId,
+        organizationId: this.organizationId,
         appId: this.appId,
       },
     ];
@@ -522,7 +530,7 @@ export class GiftCardStudioRepositoryService {
             localField: "customerId",
             foreignField: "_id",
             as: "customers",
-            pipeline: [{ $match: { companyId: this.companyId } }],
+            pipeline: [{ $match: { organizationId: this.organizationId } }],
           },
         },
         {
@@ -539,7 +547,7 @@ export class GiftCardStudioRepositoryService {
             localField: "giftCardId",
             foreignField: "_id",
             as: "giftCards",
-            pipeline: [{ $match: { companyId: this.companyId } }],
+            pipeline: [{ $match: { organizationId: this.organizationId } }],
           },
         },
         {
@@ -560,7 +568,7 @@ export class GiftCardStudioRepositoryService {
             pipeline: [
               {
                 $match: {
-                  companyId: this.companyId,
+                  organizationId: this.organizationId,
                 },
               },
             ],
@@ -573,7 +581,12 @@ export class GiftCardStudioRepositoryService {
             foreignField: "giftCardId",
             as: "giftCardPayments",
             pipeline: [
-              { $match: { companyId: this.companyId, method: "gift-card" } },
+              {
+                $match: {
+                  organizationId: this.organizationId,
+                  method: "gift-card",
+                },
+              },
             ],
           },
         },
@@ -637,7 +650,7 @@ export class GiftCardStudioRepositoryService {
     const db = await this.getDbConnection();
     const filter: Filter<PurchasedGiftCardModel> = {
       _id: id,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
       appId: this.appId,
       cardGenerationStatus: "completed",
       [type === "customer"
@@ -688,14 +701,20 @@ export class GiftCardStudioRepositoryService {
         PURCHASED_GIFT_CARDS_COLLECTION_NAME,
       )
       .aggregate([
-        { $match: { _id: id, companyId: this.companyId, appId: this.appId } },
+        {
+          $match: {
+            _id: id,
+            organizationId: this.organizationId,
+            appId: this.appId,
+          },
+        },
         {
           $lookup: {
             from: CUSTOMERS_COLLECTION_NAME,
             localField: "customerId",
             foreignField: "_id",
             as: "customers",
-            pipeline: [{ $match: { companyId: this.companyId } }],
+            pipeline: [{ $match: { organizationId: this.organizationId } }],
           },
         },
         {
@@ -712,7 +731,7 @@ export class GiftCardStudioRepositoryService {
             localField: "giftCardId",
             foreignField: "_id",
             as: "giftCards",
-            pipeline: [{ $match: { companyId: this.companyId } }],
+            pipeline: [{ $match: { organizationId: this.organizationId } }],
           },
         },
         {
@@ -733,7 +752,7 @@ export class GiftCardStudioRepositoryService {
             pipeline: [
               {
                 $match: {
-                  companyId: this.companyId,
+                  organizationId: this.organizationId,
                 },
               },
             ],
@@ -746,7 +765,12 @@ export class GiftCardStudioRepositoryService {
             foreignField: "giftCardId",
             as: "giftCardPayments",
             pipeline: [
-              { $match: { companyId: this.companyId, method: "gift-card" } },
+              {
+                $match: {
+                  organizationId: this.organizationId,
+                  method: "gift-card",
+                },
+              },
             ],
           },
         },
@@ -812,7 +836,11 @@ export class GiftCardStudioRepositoryService {
 
     const { deletedCount } = await db
       .collection<PurchasedGiftCardModel>(PURCHASED_GIFT_CARDS_COLLECTION_NAME)
-      .deleteOne({ _id: id, companyId: this.companyId, appId: this.appId });
+      .deleteOne({
+        _id: id,
+        organizationId: this.organizationId,
+        appId: this.appId,
+      });
 
     if (deletedCount === 0) {
       logger.warn({ id }, "Purchased gift card not found");
@@ -834,10 +862,18 @@ export class GiftCardStudioRepositoryService {
         GIFT_CARD_DESIGNS_COLLECTION_NAME,
       );
       const designIndexes: Record<string, Record<string, 1>> = {
-        companyId_appId_1: { companyId: 1, appId: 1 },
-        companyId_appId_isArchived_1: { companyId: 1, appId: 1, isArchived: 1 },
-        companyId_appId_name_1: { companyId: 1, appId: 1, name: 1 },
-        companyId_appId_createdAt_1: { companyId: 1, appId: 1, createdAt: 1 },
+        organizationId_appId_1: { organizationId: 1, appId: 1 },
+        organizationId_appId_isArchived_1: {
+          organizationId: 1,
+          appId: 1,
+          isArchived: 1,
+        },
+        organizationId_appId_name_1: { organizationId: 1, appId: 1, name: 1 },
+        organizationId_appId_createdAt_1: {
+          organizationId: 1,
+          appId: 1,
+          createdAt: 1,
+        },
       };
       for (const [name, index] of Object.entries(designIndexes)) {
         if (!(await designsCollection.indexExists(name))) {
@@ -850,10 +886,22 @@ export class GiftCardStudioRepositoryService {
         PURCHASED_GIFT_CARDS_COLLECTION_NAME,
       );
       const purchaseIndexes: Record<string, Record<string, 1>> = {
-        companyId_appId_1: { companyId: 1, appId: 1 },
-        companyId_appId_designId_1: { companyId: 1, appId: 1, designId: 1 },
-        companyId_appId_customerId_1: { companyId: 1, appId: 1, customerId: 1 },
-        companyId_appId_createdAt_1: { companyId: 1, appId: 1, createdAt: 1 },
+        organizationId_appId_1: { organizationId: 1, appId: 1 },
+        organizationId_appId_designId_1: {
+          organizationId: 1,
+          appId: 1,
+          designId: 1,
+        },
+        organizationId_appId_customerId_1: {
+          organizationId: 1,
+          appId: 1,
+          customerId: 1,
+        },
+        organizationId_appId_createdAt_1: {
+          organizationId: 1,
+          appId: 1,
+          createdAt: 1,
+        },
       };
       for (const [name, index] of Object.entries(purchaseIndexes)) {
         if (!(await purchasesCollection.indexExists(name))) {
@@ -872,10 +920,10 @@ export class GiftCardStudioRepositoryService {
     const db = await this.getDbConnection();
     await db
       .collection(GIFT_CARD_DESIGNS_COLLECTION_NAME)
-      .deleteMany({ appId: this.appId, companyId: this.companyId });
+      .deleteMany({ appId: this.appId, organizationId: this.organizationId });
     await db
       .collection(PURCHASED_GIFT_CARDS_COLLECTION_NAME)
-      .deleteMany({ appId: this.appId, companyId: this.companyId });
+      .deleteMany({ appId: this.appId, organizationId: this.organizationId });
 
     logger.debug("Gift Card Studio app uninstalled");
   }

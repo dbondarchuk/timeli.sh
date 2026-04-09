@@ -63,7 +63,7 @@ export default class CaldavConnectedApp
   public constructor(protected readonly props: IConnectedAppProps) {
     this.loggerFactory = getLoggerFactory(
       "CaldavConnectedApp",
-      props.companyId,
+      props.organizationId,
     );
   }
 

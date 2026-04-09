@@ -134,8 +134,10 @@ TabsViaUrl.displayName = TabsPrimitive.Tabs.displayName;
 
 const TabsList = React.forwardRef<
   React.ElementRef<typeof TabsPrimitive.List>,
-  React.ComponentPropsWithoutRef<typeof TabsPrimitive.List>
->(({ className, ...props }, ref) => {
+  React.ComponentPropsWithoutRef<typeof TabsPrimitive.List> & {
+    dontScrollIntoView?: boolean;
+  }
+>(({ className, dontScrollIntoView, ...props }, ref) => {
   const tabsListRef = useRef<HTMLDivElement | null>(null);
   const hasSeededInitialIndicator = useRef(false);
   const [indicatorStyle, setIndicatorStyle] = useState({
@@ -156,11 +158,13 @@ const TabsList = React.forwardRef<
     const activeRect = activeTab.getBoundingClientRect();
     const tabsRect = tabsListRef.current.getBoundingClientRect();
 
-    activeTab.scrollIntoView({
-      behavior: "smooth",
-      block: "center",
-      inline: "center",
-    });
+    if (!dontScrollIntoView) {
+      activeTab.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+        inline: "center",
+      });
+    }
 
     requestAnimationFrame(() => {
       setIndicatorStyle({
@@ -170,7 +174,7 @@ const TabsList = React.forwardRef<
         height: activeRect.height,
       });
     });
-  }, []);
+  }, [dontScrollIntoView]);
 
   const seedIndicatorFromFirstTab = React.useCallback(() => {
     if (!tabsListRef.current || hasSeededInitialIndicator.current) return;
@@ -287,7 +291,9 @@ TabsContent.displayName = TabsPrimitive.Content.displayName;
 
 const ResponsiveTabsList = React.forwardRef<
   React.ElementRef<typeof TabsPrimitive.List>,
-  React.ComponentPropsWithoutRef<typeof TabsPrimitive.List>
+  React.ComponentPropsWithoutRef<typeof TabsPrimitive.List> & {
+    dontScrollIntoView?: boolean;
+  }
 >(({ className, ...props }, ref) => {
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);

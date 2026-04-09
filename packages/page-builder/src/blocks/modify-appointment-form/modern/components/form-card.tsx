@@ -101,7 +101,7 @@ export const FormCard: React.FC = () => {
       const timeObj = parseTime(time);
       const dateTime = DateTime.fromJSDate(date)
         .set({ hour: timeObj.hour, minute: timeObj.minute })
-        .setZone(timeZone)
+        .setZone(timeZone, { keepLocalTime: true })
         .toJSDate();
       setFields({ ...rest, dateTime } as ModifyAppointmentFields);
       setSearchError(undefined);

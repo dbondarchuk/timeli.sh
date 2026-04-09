@@ -492,7 +492,7 @@ export const AppointmentScheduleForm: React.FC<
         knownNames: [],
         knownPhones: [],
       },
-      companyId: "unknown",
+      organizationId: "unknown",
     } as unknown as Appointment;
   }, [
     dateTime,

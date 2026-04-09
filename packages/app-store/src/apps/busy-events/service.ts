@@ -39,7 +39,7 @@ export default class BusyEventsConnectedApp
   public constructor(protected readonly props: IConnectedAppProps) {
     this.loggerFactory = getLoggerFactory(
       "BusyEventsConnectedApp",
-      props.companyId,
+      props.organizationId,
     );
   }
 
@@ -55,7 +55,7 @@ export default class BusyEventsConnectedApp
     logger.debug({ appId: appData._id }, "Busy events collection created");
 
     const indexes = {
-      companyId_appId_week_1: { companyId: 1, appId: 1, week: 1 },
+      organizationId_appId_week_1: { organizationId: 1, appId: 1, week: 1 },
       appId_week_1: { appId: 1, week: 1 },
     };
 
@@ -91,7 +91,7 @@ export default class BusyEventsConnectedApp
       logger.debug({ appId: appData._id }, "Deleting busy events");
       const deleteResult = await collection.deleteMany({
         appId: appData._id,
-        companyId: appData.companyId,
+        organizationId: appData.organizationId,
       });
 
       logger.info(
@@ -220,7 +220,7 @@ export default class BusyEventsConnectedApp
       const result = await collection.findOne({
         appId,
         week: weekIdentifier,
-        companyId: this.props.companyId,
+        organizationId: this.props.organizationId,
       });
 
       const schedule = result?.schedule || [];
@@ -258,7 +258,7 @@ export default class BusyEventsConnectedApp
       );
 
       const updateResult = await events.updateOne(
-        { week, appId, companyId: this.props.companyId },
+        { week, appId, organizationId: this.props.organizationId },
         {
           $set: {
             schedule,
@@ -336,7 +336,7 @@ export default class BusyEventsConnectedApp
           week: {
             $in: weeks,
           },
-          companyId: this.props.companyId,
+          organizationId: this.props.organizationId,
         })
         .toArray();
 

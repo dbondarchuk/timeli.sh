@@ -97,7 +97,6 @@ services:
       - redis
       - timelish-job-processor
       - timelish-notification-sender
-      - timelish-admin
 
   timelish-notification-sender:
     build:

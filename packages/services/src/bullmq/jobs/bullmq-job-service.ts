@@ -1,11 +1,11 @@
 import { getLoggerFactory } from "@timelish/logger";
 import {
   AppScope,
-  CompanyJobRequest,
   HookJobRequest,
   IJobService,
   Job,
   JobRequest,
+  OrganizationJobRequest,
 } from "@timelish/types";
 import { BaseBullMQClient } from "../base-bullmq-client";
 import { BullMQJobConfig } from "./types";
@@ -15,10 +15,10 @@ export class BullMQJobService extends BaseBullMQClient implements IJobService {
   protected readonly config: BullMQJobConfig;
 
   constructor(
-    protected readonly companyId: string,
+    protected readonly organizationId: string,
     config: BullMQJobConfig,
   ) {
-    super(config, getLoggerFactory("BullMQJobService", companyId));
+    super(config, getLoggerFactory("BullMQJobService", organizationId));
     this.config = config;
     this.initializeQueues();
   }
@@ -45,8 +45,8 @@ export class BullMQJobService extends BaseBullMQClient implements IJobService {
         "job",
         serializeJobData({
           ...jobRequest,
-          companyId: this.companyId,
-        } satisfies CompanyJobRequest),
+          organizationId: this.organizationId,
+        } satisfies OrganizationJobRequest),
         {
           jobId: jobRequest.id,
           priority: 0,
@@ -135,7 +135,7 @@ export class BullMQJobService extends BaseBullMQClient implements IJobService {
           id: job.id!,
           createdAt: new Date(),
         }))
-        .filter((job) => job.companyId === this.companyId);
+        .filter((job) => job.organizationId === this.organizationId);
     } catch (error) {
       logger.error({ error }, "Failed to get jobs");
       throw error;

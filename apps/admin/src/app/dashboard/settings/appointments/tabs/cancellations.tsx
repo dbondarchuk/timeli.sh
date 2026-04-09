@@ -4,6 +4,7 @@ import {
   AppointmentWithoutDepositCancellationPolicyRow,
 } from "@timelish/types";
 import {
+  Badge,
   BooleanSelect,
   Card,
   CardContent,
@@ -62,14 +63,14 @@ const CancellationSection: React.FC<TabProps & { withDeposit: boolean }> = ({
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>
+      <CardHeader className="border-b">
+        <CardTitle className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
           {t(
             `cancellationsAndReschedules.cancellationPolicy.${withDeposit ? "withDeposit" : "withoutDeposit"}.title`,
           )}
         </CardTitle>
       </CardHeader>
-      <CardContent className="flex flex-col gap-4">
+      <CardContent className="flex flex-col gap-4 py-6">
         <FormField
           control={form.control}
           name={`${baseName}.enabled`}
@@ -151,27 +152,53 @@ const CancellationSection: React.FC<TabProps & { withDeposit: boolean }> = ({
                 </FormItem>
               )}
             />
-            <h3 className="text-sm font-semibold">
-              {t(
-                "cancellationsAndReschedules.cancellationPolicy.default.title",
-              )}{" "}
-              <InfoTooltip>
-                {t(
-                  "cancellationsAndReschedules.cancellationPolicy.default.tooltip",
-                )}
-              </InfoTooltip>
-            </h3>
-            <CancellationPolicyCardContent
-              basePath="cancellationsAndReschedules.cancellations"
-              withDeposit={withDeposit}
-              form={form}
-              disabled={disabled}
-              default
-            />
+            <Card>
+              <CardHeader className="border-b">
+                <CardTitle className="flex min-w-0 flex-1 flex-col items-start gap-0.5 text-xs text-muted-foreground">
+                  <span className="font-semibold uppercase tracking-wide">
+                    {t(
+                      "cancellationsAndReschedules.cancellationPolicy.default.title",
+                    )}
+                  </span>
+                  <span>
+                    {t(
+                      "cancellationsAndReschedules.cancellationPolicy.default.label",
+                    )}
+                  </span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="py-6 grid grid-cols-1 gap-4">
+                <CancellationPolicyCardContent
+                  basePath="cancellationsAndReschedules.cancellations"
+                  withDeposit={withDeposit}
+                  form={form}
+                  disabled={disabled}
+                  default
+                />
+              </CardContent>
+            </Card>
             <NonSortable
-              title={t(
-                "cancellationsAndReschedules.cancellationPolicy.policies.title",
+              addButtonText={t(
+                "cancellationsAndReschedules.cancellationPolicy.policies.add",
               )}
+              className="border-none shadow-none [&>div]:border-none [&>div]:py-2 [&>div]:px-0"
+              title={
+                <div className="flex flex-row items-center gap-2">
+                  <span>
+                    {t(
+                      "cancellationsAndReschedules.cancellationPolicy.policies.title",
+                    )}
+                  </span>
+                  <Badge
+                    variant="secondary"
+                    className="text-xs normal-case hidden md:block"
+                  >
+                    {t(
+                      "cancellationsAndReschedules.cancellationPolicy.policies.badge",
+                    )}
+                  </Badge>
+                </div>
+              }
               ids={ids}
               onAdd={addNew}
             >

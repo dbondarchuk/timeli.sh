@@ -30,7 +30,7 @@ export default class UrlBusyEventsConnectedApp
   public constructor(protected readonly props: IConnectedAppProps) {
     this.loggerFactory = getLoggerFactory(
       "UrlBusyEventsConnectedApp",
-      props.companyId,
+      props.organizationId,
     );
   }
 

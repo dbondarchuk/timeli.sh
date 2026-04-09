@@ -24,7 +24,10 @@ export default class IcsConnectedApp
   protected readonly loggerFactory: LoggerFactory;
 
   public constructor(protected readonly props: IConnectedAppProps) {
-    this.loggerFactory = getLoggerFactory("IcsConnectedApp", props.companyId);
+    this.loggerFactory = getLoggerFactory(
+      "IcsConnectedApp",
+      props.organizationId,
+    );
   }
 
   public async processRequest(

@@ -45,7 +45,10 @@ export class BlogConnectedApp implements IConnectedApp {
   protected readonly loggerFactory: LoggerFactory;
 
   public constructor(protected readonly props: IConnectedAppProps) {
-    this.loggerFactory = getLoggerFactory("BlogConnectedApp", props.companyId);
+    this.loggerFactory = getLoggerFactory(
+      "BlogConnectedApp",
+      props.organizationId,
+    );
   }
 
   public async processRequest(
@@ -121,7 +124,7 @@ export class BlogConnectedApp implements IConnectedApp {
     try {
       const repositoryService = this.getRepositoryService(
         appData._id,
-        appData.companyId,
+        appData.organizationId,
       );
 
       await repositoryService.install();
@@ -144,10 +147,10 @@ export class BlogConnectedApp implements IConnectedApp {
     );
   }
 
-  protected getRepositoryService(appId: string, companyId: string) {
+  protected getRepositoryService(appId: string, organizationId: string) {
     return new BlogRepositoryService(
       appId,
-      companyId,
+      organizationId,
       this.props.getDbConnection,
       this.props.services,
     );
@@ -163,7 +166,7 @@ export class BlogConnectedApp implements IConnectedApp {
     try {
       const repositoryService = this.getRepositoryService(
         appData._id,
-        appData.companyId,
+        appData.organizationId,
       );
 
       const result = await repositoryService.getBlogPosts(data.query);
@@ -189,7 +192,7 @@ export class BlogConnectedApp implements IConnectedApp {
     try {
       const repositoryService = this.getRepositoryService(
         appData._id,
-        appData.companyId,
+        appData.organizationId,
       );
       const result = await repositoryService.getBlogPost(data.id, data.slug);
 
@@ -211,7 +214,7 @@ export class BlogConnectedApp implements IConnectedApp {
     try {
       const repositoryService = this.getRepositoryService(
         appData._id,
-        appData.companyId,
+        appData.organizationId,
       );
 
       const isUnique = await repositoryService.checkBlogPostSlugUnique(
@@ -246,7 +249,7 @@ export class BlogConnectedApp implements IConnectedApp {
     try {
       const repositoryService = this.getRepositoryService(
         appData._id,
-        appData.companyId,
+        appData.organizationId,
       );
 
       const isUnique = await repositoryService.checkBlogPostSlugUnique(
@@ -282,7 +285,7 @@ export class BlogConnectedApp implements IConnectedApp {
     try {
       const repositoryService = this.getRepositoryService(
         appData._id,
-        appData.companyId,
+        appData.organizationId,
       );
 
       const result = await repositoryService.deleteBlogPost(data.id);
@@ -316,7 +319,7 @@ export class BlogConnectedApp implements IConnectedApp {
     try {
       const repositoryService = this.getRepositoryService(
         appData._id,
-        appData.companyId,
+        appData.organizationId,
       );
 
       const result = await repositoryService.deleteBlogPosts(data.ids);
@@ -339,7 +342,7 @@ export class BlogConnectedApp implements IConnectedApp {
     try {
       const repositoryService = this.getRepositoryService(
         appData._id,
-        appData.companyId,
+        appData.organizationId,
       );
 
       const result = await repositoryService.getBlogTags(
@@ -368,7 +371,7 @@ export class BlogConnectedApp implements IConnectedApp {
     try {
       const repositoryService = this.getRepositoryService(
         appData._id,
-        appData.companyId,
+        appData.organizationId,
       );
 
       const result = await repositoryService.checkBlogPostSlugUnique(

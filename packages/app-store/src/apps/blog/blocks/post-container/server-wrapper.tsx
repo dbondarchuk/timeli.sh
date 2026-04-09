@@ -93,9 +93,9 @@ export const BlogPostContainerServerWrapper = async ({
 
   // Fetch post by slug from database
   const headersList = await headers();
-  const companyId = headersList.get("x-company-id") as string;
+  const organizationId = headersList.get("x-organization-id") as string;
 
-  if (!companyId) {
+  if (!organizationId) {
     error = "app_blog_public.blogPostNotFound" satisfies BlogPublicAllKeys;
     return (
       <BlogPostContainerComponent
@@ -113,7 +113,7 @@ export const BlogPostContainerServerWrapper = async ({
     );
   }
 
-  const servicesContainer = ServicesContainer(companyId);
+  const servicesContainer = ServicesContainer(organizationId);
 
   // Get app service props to access getDbConnection
   const appServiceProps =
@@ -122,7 +122,7 @@ export const BlogPostContainerServerWrapper = async ({
   // Create repository service directly
   const repositoryService = new BlogRepositoryService(
     appId,
-    companyId,
+    organizationId,
     appServiceProps.getDbConnection,
     appServiceProps.services,
   );

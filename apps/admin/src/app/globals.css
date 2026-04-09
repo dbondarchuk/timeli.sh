@@ -211,3 +211,7 @@
   opacity: 0.6;
   cursor: text;
 }
+
+.appear {
+  @apply animate-in fade-in-10 slide-in-from-top-10 duration-500;
+}

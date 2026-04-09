@@ -5,7 +5,7 @@ import { Button, Spinner } from "@timelish/ui";
 import { cva } from "class-variance-authority";
 import { Save } from "lucide-react";
 import React from "react";
-import { UseFormReturn } from "react-hook-form";
+import { UseFormReturn, useFormState } from "react-hook-form";
 // import {
 //   AlertDialog,
 //   AlertDialogCancel,
@@ -35,13 +35,15 @@ export const SaveButton: React.FC<SaveButtonProps> = ({
   text,
 }) => {
   const t = useI18n("ui");
+
   const {
     isValid,
-    isDirty,
-    isLoading: formIsLoading,
+    isLoading: isFormLoading,
     errors,
-    isSubmitted,
-  } = form.formState;
+    isDirty,
+  } = useFormState({
+    control: form.control,
+  });
 
   const classes = cva([
     "flex flex-row gap-2 items-center ml-auto self-end fixed bottom-4 right-4 z-50",
@@ -65,7 +67,9 @@ export const SaveButton: React.FC<SaveButtonProps> = ({
   //       </AlertDialogTrigger>
   //       <AlertDialogContent>
   //         <AlertDialogHeader>
-  //           <AlertDialogTitle>{t("saveButton.fixErrorsTitle")}</AlertDialogTitle>
+  //           <AlertDialogTitle>
+  //             {t("saveButton.fixErrorsTitle")}
+  //           </AlertDialogTitle>
   //           <AlertDialogDescription>
   //             {Object.entries(errors)
   //               .filter(([_, error]) => !!error?.message)
@@ -84,7 +88,7 @@ export const SaveButton: React.FC<SaveButtonProps> = ({
   //   );
   // }
 
-  const isLoading = propsIsLoading || formIsLoading;
+  const isLoading = propsIsLoading || isFormLoading;
 
   return (
     <Button

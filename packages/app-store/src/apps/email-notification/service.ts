@@ -36,7 +36,7 @@ export class EmailNotificationConnectedApp
   public constructor(protected readonly props: IConnectedAppProps) {
     this.loggerFactory = getLoggerFactory(
       "EmailNotificationConnectedApp",
-      props.companyId,
+      props.organizationId,
     );
   }
 
@@ -285,6 +285,7 @@ export class EmailNotificationConnectedApp
         await this.props.services.configurationService.getConfigurations(
           "booking",
           "general",
+          "brand",
           "social",
         );
 
@@ -297,10 +298,10 @@ export class EmailNotificationConnectedApp
         appointment,
         config,
         adminUrl: getAdminUrl(),
-        websiteUrl: getWebsiteUrl(organization.slug, config.general.domain),
+        websiteUrl: getWebsiteUrl(organization.slug, organization.domain),
         customer: appointment.customer,
         useAppointmentTimezone: true,
-        locale: config.general.language,
+        locale: config.brand.language,
       });
 
       logger.debug(
@@ -316,7 +317,7 @@ export class EmailNotificationConnectedApp
         eventTitle,
       } = await getEmailTemplate(
         status,
-        config.general.language,
+        config.brand.language,
         getAdminUrl(),
         appointment,
         args,

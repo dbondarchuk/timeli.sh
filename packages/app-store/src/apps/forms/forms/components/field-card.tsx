@@ -106,20 +106,27 @@ export const FormFieldCard: FC<FormFieldCardProps> = ({
       })}
     >
       <CardHeader className="justify-between relative flex flex-row border-b px-3 py-3 w-full items-center">
-        <Button
-          type="button"
-          disabled={disabled}
-          variant={"ghost"}
-          {...attributes}
-          {...listeners}
-          className="-ml-2 h-auto cursor-grab p-1 text-secondary-foreground/50"
-        >
-          <span className="sr-only">{t("form.fields.moveField")}</span>
-          <GripVertical />
-        </Button>
-        <span className={cn(invalid ? "text-destructive" : "")}>
-          {label || t("form.fields.invalid")}
-        </span>
+        <div className="flex flex-row items-center gap-2">
+          <Button
+            type="button"
+            disabled={disabled}
+            variant={"ghost"}
+            {...attributes}
+            {...listeners}
+            className="-ml-2 h-auto cursor-grab p-1 text-secondary-foreground/50"
+          >
+            <span className="sr-only">{t("form.fields.moveField")}</span>
+            <GripVertical />
+          </Button>
+          <span
+            className={cn(
+              "text-xs font-semibold uppercase tracking-wide text-muted-foreground",
+              invalid ? "text-destructive" : "",
+            )}
+          >
+            {label || t("form.fields.invalid")}
+          </span>
+        </div>
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button

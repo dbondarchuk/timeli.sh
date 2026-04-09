@@ -3,7 +3,7 @@ import type { AppScope, ConnectedAppData } from "@timelish/types";
 import { BuiltInApps } from "./apps";
 
 export const getBuiltInAppData = (
-  companyId: string,
+  organizationId: string,
   userId: string,
   name: keyof typeof BuiltInApps,
 ): ConnectedAppData => {
@@ -13,7 +13,7 @@ export const getBuiltInAppData = (
     name: name,
     _id: name,
     userId: userId,
-    companyId: companyId,
+    organizationId: organizationId,
   };
 };
 

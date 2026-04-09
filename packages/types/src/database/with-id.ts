@@ -3,6 +3,6 @@ export type DatabaseId = {
 };
 
 export type WithDatabaseId<T> = T & DatabaseId;
-export type WithCompanyId<T> = T & { companyId: string };
+export type WithOrganizationId<T> = T & { organizationId: string };
 export type WithAppId<T> = T & { appId: string };
 export type WithUserId<T> = T & { userId: string };

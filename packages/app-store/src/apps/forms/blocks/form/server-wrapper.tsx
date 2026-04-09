@@ -38,9 +38,9 @@ export const FormBlockServerWrapper = async ({
   );
 
   const headersList = await headers();
-  const companyId = headersList.get("x-company-id") as string | null;
+  const organizationId = headersList.get("x-organization-id") as string | null;
 
-  if (!companyId) {
+  if (!organizationId) {
     return (
       <FormBlockComponent
         form={null}
@@ -53,11 +53,13 @@ export const FormBlockServerWrapper = async ({
   }
 
   const appServiceProps =
-    ServicesContainer(companyId).connectedAppsService.getAppServiceProps(appId);
+    ServicesContainer(organizationId).connectedAppsService.getAppServiceProps(
+      appId,
+    );
 
   const repositoryService = new FormsRepositoryService(
     appId,
-    companyId,
+    organizationId,
     appServiceProps.getDbConnection,
     appServiceProps.services,
   );

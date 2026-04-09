@@ -1,0 +1,445 @@
+{
+  "personal_trainer": {
+    "label": "Personal Trainer",
+    "tags": [
+      "fitness",
+      "trainer",
+      "coaching"
+    ],
+    "services": [
+      {
+        "name": "Initial Fitness Assessment",
+        "durations": [
+          60
+        ],
+        "prices": [
+          50,
+          75,
+          100
+        ],
+        "description": "**Comprehensive fitness assessment** including baseline tests and goal setting. Provides a personalized training plan.",
+        "addons": [
+          {
+            "id": "initial_fitness_assessment-addon-fitness-1",
+            "name": "Movement screen add-on",
+            "description": "**Quick mobility or posture checks** layered into Initial Fitness Assessment.",
+            "duration": 10,
+            "suggestedPrice": 13
+          },
+          {
+            "id": "initial_fitness_assessment-addon-trainer-2",
+            "name": "Take-home training plan",
+            "description": "**Exercises or pacing** to use between Initial Fitness Assessment sessions.",
+            "duration": 15,
+            "suggestedPrice": 20
+          }
+        ]
+      },
+      {
+        "name": "One-on-One Training",
+        "durations": [
+          45,
+          60
+        ],
+        "prices": [
+          40,
+          60,
+          85
+        ],
+        "description": "**Individual training sessions** focused on strength, mobility, or conditioning. Tailored workouts and progress tracking.",
+        "addons": [
+          {
+            "id": "one_on_one_training-addon-fitness-1",
+            "name": "Movement screen add-on",
+            "description": "**Quick mobility or posture checks** layered into One-on-One Training.",
+            "duration": 10,
+            "suggestedPrice": 10
+          },
+          {
+            "id": "one_on_one_training-addon-trainer-2",
+            "name": "Take-home training plan",
+            "description": "**Exercises or pacing** to use between One-on-One Training sessions.",
+            "duration": 15,
+            "suggestedPrice": 16
+          }
+        ]
+      },
+      {
+        "name": "Nutrition + Training Plan",
+        "durations": [
+          60
+        ],
+        "prices": [
+          120,
+          160,
+          220
+        ],
+        "description": "**Combined coaching package** with training and nutrition guidance. Includes follow-up check-ins and plan adjustments.",
+        "addons": [
+          {
+            "id": "nutrition_training_plan-addon-fitness-1",
+            "name": "Movement screen add-on",
+            "description": "**Quick mobility or posture checks** layered into Nutrition + Training Plan.",
+            "duration": 10,
+            "suggestedPrice": 30
+          },
+          {
+            "id": "nutrition_training_plan-addon-trainer-2",
+            "name": "Take-home training plan",
+            "description": "**Exercises or pacing** to use between Nutrition + Training Plan sessions.",
+            "duration": 15,
+            "suggestedPrice": 48
+          }
+        ]
+      }
+    ]
+  },
+  "yoga_instructor": {
+    "label": "Yoga Instructor",
+    "tags": [
+      "fitness",
+      "yoga",
+      "wellness"
+    ],
+    "services": [
+      {
+        "name": "Private Yoga Session",
+        "durations": [
+          60
+        ],
+        "prices": [
+          40,
+          60,
+          85
+        ],
+        "description": "**Personalized yoga practice** adapted to your level and goals. Focus on breath, alignment, and mobility.",
+        "addons": [
+          {
+            "id": "private_yoga_session-addon-fitness-1",
+            "name": "Movement screen add-on",
+            "description": "**Quick mobility or posture checks** layered into Private Yoga Session.",
+            "duration": 10,
+            "suggestedPrice": 10
+          },
+          {
+            "id": "private_yoga_session-addon-yoga-2",
+            "name": "Take-home training plan",
+            "description": "**Exercises or pacing** to use between Private Yoga Session sessions.",
+            "duration": 15,
+            "suggestedPrice": 16
+          }
+        ]
+      },
+      {
+        "name": "Small Group Class",
+        "durations": [
+          45,
+          60
+        ],
+        "prices": [
+          15,
+          20
+        ],
+        "description": "**Intimate group sessions** with shared instruction and attention. Great for friends or small teams.",
+        "addons": [
+          {
+            "id": "small_group_class-addon-fitness-1",
+            "name": "Movement screen add-on",
+            "description": "**Quick mobility or posture checks** layered into Small Group Class.",
+            "duration": 10,
+            "suggestedPrice": 5
+          },
+          {
+            "id": "small_group_class-addon-yoga-2",
+            "name": "Take-home training plan",
+            "description": "**Exercises or pacing** to use between Small Group Class sessions.",
+            "duration": 15,
+            "suggestedPrice": 6
+          }
+        ]
+      },
+      {
+        "name": "Yoga Workshop",
+        "durations": [
+          120,
+          180
+        ],
+        "prices": [
+          80,
+          120,
+          160
+        ],
+        "description": "**Deep-dive workshop** on techniques and practice. Ideal for improving form and understanding principles.",
+        "addons": [
+          {
+            "id": "yoga_workshop-addon-fitness-1",
+            "name": "Movement screen add-on",
+            "description": "**Quick mobility or posture checks** layered into Yoga Workshop.",
+            "duration": 10,
+            "suggestedPrice": 20
+          },
+          {
+            "id": "yoga_workshop-addon-yoga-2",
+            "name": "Take-home training plan",
+            "description": "**Exercises or pacing** to use between Yoga Workshop sessions.",
+            "duration": 15,
+            "suggestedPrice": 32
+          }
+        ]
+      }
+    ]
+  },
+  "pilates_instructor": {
+    "label": "Pilates Instructor",
+    "tags": [
+      "fitness",
+      "pilates",
+      "wellness"
+    ],
+    "services": [
+      {
+        "name": "Mat Pilates Private",
+        "durations": [
+          50,
+          60
+        ],
+        "prices": [
+          45,
+          65,
+          90
+        ],
+        "description": "**Focused mat-based Pilates session** to strengthen core and improve posture. Includes tailored progressions.",
+        "addons": [
+          {
+            "id": "mat_pilates_private-addon-fitness-1",
+            "name": "Movement screen add-on",
+            "description": "**Quick mobility or posture checks** layered into Mat Pilates Private.",
+            "duration": 10,
+            "suggestedPrice": 11
+          },
+          {
+            "id": "mat_pilates_private-addon-pilates-2",
+            "name": "Take-home training plan",
+            "description": "**Exercises or pacing** to use between Mat Pilates Private sessions.",
+            "duration": 15,
+            "suggestedPrice": 18
+          }
+        ]
+      },
+      {
+        "name": "Reformer Session",
+        "durations": [
+          45,
+          60
+        ],
+        "prices": [
+          55,
+          75,
+          110
+        ],
+        "description": "**Equipment-based reformer session** for stability and strength. Helpful for rehabilitation and performance.",
+        "addons": [
+          {
+            "id": "reformer_session-addon-fitness-1",
+            "name": "Movement screen add-on",
+            "description": "**Quick mobility or posture checks** layered into Reformer Session.",
+            "duration": 10,
+            "suggestedPrice": 14
+          },
+          {
+            "id": "reformer_session-addon-pilates-2",
+            "name": "Take-home training plan",
+            "description": "**Exercises or pacing** to use between Reformer Session sessions.",
+            "duration": 15,
+            "suggestedPrice": 22
+          }
+        ]
+      }
+    ]
+  },
+  "group_fitness_instructor": {
+    "label": "Group Fitness Instructor",
+    "tags": [
+      "fitness",
+      "group",
+      "classes"
+    ],
+    "services": [
+      {
+        "name": "Bootcamp Class",
+        "durations": [
+          45
+        ],
+        "prices": [
+          12,
+          18
+        ],
+        "description": "**High-intensity group bootcamp** combining cardio and strength. Suitable for participants of varied fitness.",
+        "addons": [
+          {
+            "id": "bootcamp_class-addon-fitness-1",
+            "name": "Movement screen add-on",
+            "description": "**Quick mobility or posture checks** layered into Bootcamp Class.",
+            "duration": 10,
+            "suggestedPrice": 5
+          },
+          {
+            "id": "bootcamp_class-addon-group-2",
+            "name": "Take-home training plan",
+            "description": "**Exercises or pacing** to use between Bootcamp Class sessions.",
+            "duration": 15,
+            "suggestedPrice": 5
+          }
+        ]
+      },
+      {
+        "name": "Circuit Training",
+        "durations": [
+          45,
+          60
+        ],
+        "prices": [
+          12,
+          20
+        ],
+        "description": "**Structured circuit class** with station-based workouts. Balanced for strength and conditioning.",
+        "addons": [
+          {
+            "id": "circuit_training-addon-fitness-1",
+            "name": "Movement screen add-on",
+            "description": "**Quick mobility or posture checks** layered into Circuit Training.",
+            "duration": 10,
+            "suggestedPrice": 5
+          },
+          {
+            "id": "circuit_training-addon-group-2",
+            "name": "Take-home training plan",
+            "description": "**Exercises or pacing** to use between Circuit Training sessions.",
+            "duration": 15,
+            "suggestedPrice": 5
+          }
+        ]
+      },
+      {
+        "name": "Corporate Wellness Session",
+        "durations": [
+          60
+        ],
+        "prices": [
+          120,
+          200
+        ],
+        "description": "**On-site or virtual group wellness** tailored for teams. Focus on mobility, energy, and stress reduction.",
+        "addons": [
+          {
+            "id": "corporate_wellness_session-addon-fitness-1",
+            "name": "Movement screen add-on",
+            "description": "**Quick mobility or posture checks** layered into Corporate Wellness Session.",
+            "duration": 10,
+            "suggestedPrice": 30
+          },
+          {
+            "id": "corporate_wellness_session-addon-group-2",
+            "name": "Take-home training plan",
+            "description": "**Exercises or pacing** to use between Corporate Wellness Session sessions.",
+            "duration": 15,
+            "suggestedPrice": 48
+          }
+        ]
+      }
+    ]
+  },
+  "running_coach": {
+    "label": "Running Coach",
+    "tags": [
+      "fitness",
+      "running",
+      "coaching"
+    ],
+    "services": [
+      {
+        "name": "Gait Analysis & Plan",
+        "durations": [
+          60
+        ],
+        "prices": [
+          60,
+          90
+        ],
+        "description": "**Running form analysis** and personalized training plan. Helps prevent injury and improve efficiency.",
+        "addons": [
+          {
+            "id": "gait_analysis_plan-addon-fitness-1",
+            "name": "Movement screen add-on",
+            "description": "**Quick mobility or posture checks** layered into Gait Analysis & Plan.",
+            "duration": 10,
+            "suggestedPrice": 15
+          },
+          {
+            "id": "gait_analysis_plan-addon-running-2",
+            "name": "Take-home training plan",
+            "description": "**Exercises or pacing** to use between Gait Analysis & Plan sessions.",
+            "duration": 15,
+            "suggestedPrice": 24
+          }
+        ]
+      },
+      {
+        "name": "One-on-One Coaching",
+        "durations": [
+          45,
+          60
+        ],
+        "prices": [
+          45,
+          70,
+          95
+        ],
+        "description": "**Individual coaching sessions** focusing on pace, endurance, and drills. Tailored to race goals or fitness levels.",
+        "addons": [
+          {
+            "id": "one_on_one_coaching-addon-fitness-1",
+            "name": "Movement screen add-on",
+            "description": "**Quick mobility or posture checks** layered into One-on-One Coaching.",
+            "duration": 10,
+            "suggestedPrice": 11
+          },
+          {
+            "id": "one_on_one_coaching-addon-running-2",
+            "name": "Take-home training plan",
+            "description": "**Exercises or pacing** to use between One-on-One Coaching sessions.",
+            "duration": 15,
+            "suggestedPrice": 18
+          }
+        ]
+      },
+      {
+        "name": "Group Run Session",
+        "durations": [
+          60
+        ],
+        "prices": [
+          8,
+          12
+        ],
+        "description": "**Community running session** with coach-led pacing and drills. Great for motivation and technique practice.",
+        "addons": [
+          {
+            "id": "group_run_session-addon-fitness-1",
+            "name": "Movement screen add-on",
+            "description": "**Quick mobility or posture checks** layered into Group Run Session.",
+            "duration": 10,
+            "suggestedPrice": 5
+          },
+          {
+            "id": "group_run_session-addon-running-2",
+            "name": "Take-home training plan",
+            "description": "**Exercises or pacing** to use between Group Run Session sessions.",
+            "duration": 15,
+            "suggestedPrice": 5
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -34,7 +34,7 @@ export default class TextMessageAutoReplyConnectedApp
   public constructor(protected readonly props: IConnectedAppProps) {
     this.loggerFactory = getLoggerFactory(
       "TextMessageAutoReplyConnectedApp",
-      props.companyId,
+      props.organizationId,
     );
   }
 
@@ -167,6 +167,7 @@ export default class TextMessageAutoReplyConnectedApp
         await this.props.services.configurationService.getConfigurations(
           "booking",
           "general",
+          "brand",
           "social",
         );
 
@@ -183,10 +184,7 @@ export default class TextMessageAutoReplyConnectedApp
       }
 
       const adminUrl = getAdminUrl();
-      const websiteUrl = getWebsiteUrl(
-        organization.slug,
-        config.general.domain,
-      );
+      const websiteUrl = getWebsiteUrl(organization.slug, organization.domain);
 
       const args = getArguments({
         appointment,
@@ -196,7 +194,7 @@ export default class TextMessageAutoReplyConnectedApp
         additionalProperties: {
           reply,
         },
-        locale: config.general.language,
+        locale: config.brand.language,
         adminUrl,
         websiteUrl,
       });

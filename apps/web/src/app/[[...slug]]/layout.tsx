@@ -1,16 +1,21 @@
-import { ConfigProvider, SonnerToaster, Toaster } from "@timelish/ui";
-
-import { Resource } from "@timelish/types";
-
-import NextScript from "next/script";
-
 import { CookiesProvider } from "@/components/cookies-provider";
+import {
+  getOrganizationDomain,
+  getServicesContainer,
+  getWebsiteUrl,
+} from "@/utils/utils";
 import { getLoggerFactory } from "@timelish/logger";
-import { buildGoogleFontsUrl, getColorsCss } from "@timelish/utils";
-
-import { getServicesContainer, getWebsiteUrl } from "@/utils/utils";
+import { Resource } from "@timelish/types";
+import { ConfigProvider, SonnerToaster, Toaster } from "@timelish/ui";
+import {
+  buildGoogleFontsUrl,
+  DEFAULT_WEB_PRIMARY_FONT,
+  DEFAULT_WEB_SECONDARY_FONT,
+  getColorsCss,
+} from "@timelish/utils";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale } from "next-intl/server";
+import NextScript from "next/script";
 
 import "../globals.css";
 
@@ -54,9 +59,10 @@ export default async function RootLayout({
   logger.debug("Starting root layout render");
 
   const servicesContainer = await getServicesContainer();
-  const { general, scripts, styling } =
+  const { general, brand, scripts, styling } =
     await servicesContainer.configurationService.getConfigurations(
       "general",
+      "brand",
       "scripts",
       "styling",
     );
@@ -69,7 +75,7 @@ export default async function RootLayout({
     "Retrieved configurations",
   );
 
-  if (!general) {
+  if (!general || !general.name) {
     logger.debug("No general configuration found, returning minimal layout");
     return (
       <html>
@@ -78,9 +84,10 @@ export default async function RootLayout({
     );
   }
 
-  const primaryFont = styling?.fonts?.primary || "Montserrat";
-  const secondaryFont = styling?.fonts?.secondary || "Playfair Display";
+  const primaryFont = styling?.fonts?.primary || DEFAULT_WEB_PRIMARY_FONT;
+  const secondaryFont = styling?.fonts?.secondary || DEFAULT_WEB_SECONDARY_FONT;
   const tertiaryFont = styling?.fonts?.tertiary;
+  const organizationDomain = await getOrganizationDomain();
 
   const fontsCssUrl = buildGoogleFontsUrl(
     primaryFont,
@@ -117,10 +124,10 @@ export default async function RootLayout({
           `,
             }}
           />
-          {general.favicon && (
+          {brand.favicon && (
             <link
               rel="icon"
-              href={general.favicon}
+              href={brand.favicon}
               type="image/x-icon"
               sizes="any"
             />
@@ -134,7 +141,12 @@ export default async function RootLayout({
         </head>
         {/* <TwLoad /> */}
         <body className="font-primary">
-          <ConfigProvider config={general} websiteUrl={websiteUrl}>
+          <ConfigProvider
+            generalConfiguration={general}
+            brandConfiguration={brand}
+            domain={organizationDomain}
+            websiteUrl={websiteUrl}
+          >
             <NextIntlClientProvider>
               <main className="min-h-screen max-w-none">{children}</main>
               {scripts?.footer?.map((resource, index) => (

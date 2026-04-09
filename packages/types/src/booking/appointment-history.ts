@@ -1,4 +1,4 @@
-import { WithCompanyId, WithDatabaseId } from "../database";
+import { WithDatabaseId, WithOrganizationId } from "../database";
 import { Prettify } from "../utils/helpers";
 import { Appointment, AppointmentStatus } from "./appointment";
 import { AppointmentDiscount } from "./appointment-event";
@@ -88,7 +88,7 @@ type AppointmentHistoryEvent = {
 }[keyof AppointmentHistoryTypes];
 
 export type AppointmentHistoryEntry = Prettify<
-  WithCompanyId<
+  WithOrganizationId<
     WithDatabaseId<
       {
         appointmentId: string;

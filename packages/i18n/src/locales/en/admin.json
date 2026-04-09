@@ -9,6 +9,10 @@
     "selectAll": "Select all",
     "selectRow": "Select row",
     "labels": {
+      "languages": {
+        "en": "English",
+        "uk": "Українська"
+      },
       "channel": {
         "text-message": "Text message",
         "email": "Email"
@@ -115,6 +119,7 @@
     "footer": "Footer",
     "settings": "Settings",
     "general": "General",
+    "brand": "Brand",
     "social": "Social",
     "scripts": "Scripts",
     "communications": "Communications",
@@ -968,13 +973,13 @@
             }
           },
           "withDeposit": {
-            "title": "With deposit",
+            "title": "For appointments with deposit",
             "description": "Configure cancellation policy for option when deposit is required",
             "enabled": "Enabled",
             "enabledTooltip": "Whether to allow cancellation for option when deposit is required"
           },
           "withoutDeposit": {
-            "title": "Without deposit",
+            "title": "For appointments without deposit",
             "description": "Configure cancellation policy for option when deposit is not required",
             "enabled": "Enabled",
             "enabledTooltip": "Whether to allow cancellation for option when deposit is not required"
@@ -1202,7 +1207,7 @@
         "addNew": "Add new",
         "optionsLabel": "Any of following options:",
         "addonsLabel": "Any of following add-on bundles:",
-        "andLabel": "And",
+        "withLabel": "With",
         "removeLimitTitle": "Are you absolutely sure?",
         "removeLimitDescription": "Are you sure you want to remove this limit?",
         "limitToDescription": "You can limit this discount to specific options and add-ons",
@@ -1519,13 +1524,6 @@
         "fonts": {
           "seeOnGoogleFonts": "See on Google Fonts",
           "variants": {
-            "label": "Variants: {variants}",
-            "regular": "Regular",
-            "italic": "Italic",
-            "bold": "Bold",
-            "medium": "Medium",
-            "semibold": "Semi-bold",
-            "extrabold": "Extra-bold",
             "100": "100",
             "200": "200",
             "300": "300",
@@ -1535,6 +1533,13 @@
             "700": "700",
             "800": "800",
             "900": "900",
+            "label": "Variants: {variants}",
+            "regular": "Regular",
+            "italic": "Italic",
+            "bold": "Bold",
+            "medium": "Medium",
+            "semibold": "Semi-bold",
+            "extrabold": "Extra-bold",
             "100italic": "100 Italic",
             "200italic": "200 Italic",
             "300italic": "300 Italic",
@@ -1659,22 +1664,13 @@
   "settings": {
     "general": {
       "title": "General Settings",
-      "description": "Adjust general settings",
+      "description": "Business name, contact details, location, and regional defaults for your organization.",
       "form": {
-        "name": "Name",
-        "namePlaceholder": "Website name",
-        "title": "Title",
-        "titlePlaceholder": "Website title",
-        "description": "Description",
-        "descriptionPlaceholder": "Website description",
-        "keywords": "Keywords",
-        "keywordsTooltip": "Website keywords separated by comma",
-        "keywordValidation": "Keyword must be at least 2 characters",
+        "name": "Business name",
+        "namePlaceholder": "Your business name",
         "phone": "Phone number",
         "email": "Email address",
         "emailPlaceholder": "Your email address",
-        "domain": "Custom domain",
-        "domainPlaceholder": "example.com",
         "address": "Address",
         "addressTooltip": "Physical office address",
         "addressPlaceholder": "Physical office address",
@@ -1685,15 +1681,73 @@
         "currencyTooltip": "Currency that is used for payments",
         "currencyPlaceholder": "Select currency",
         "currencyLabelFormat": "{currency} ({code}, {symbol})",
-        "logo": "Logo",
-        "logoTooltip": "URL to image to be used as logo (for example in header)",
-        "logoPlaceholder": "Logo URL",
-        "language": "Language",
-        "favicon": "Favicon",
-        "faviconTooltip": "URL to image to be used as favicon (icon that is shown in browser tab)",
-        "faviconPlaceholder": "Favicon URL",
         "timeZone": "Time zone",
         "selectTimeZone": "Select time zone",
+        "customDomain": {
+          "title": "Custom domain",
+          "empty": "No custom domain configured",
+          "label": "Domain",
+          "placeholder": "example.com",
+          "change": "Change domain",
+          "save": "Save domain",
+          "dialog": {
+            "title": "Change custom domain",
+            "description": "Set the public domain for your organization."
+          },
+          "toasts": {
+            "changesSaved": "Custom domain saved.",
+            "requestError": "There was a problem updating custom domain."
+          }
+        },
+        "toasts": {
+          "changesSaved": "Your changes were saved.",
+          "requestError": "There was a problem with your request."
+        }
+      }
+    },
+    "brand": {
+      "title": "Site & brand",
+      "description": "Business details, website and SEO, social links, and styling.",
+      "form": {
+        "visualSectionTitle": "Visual identity",
+        "websiteSectionTitle": "Website",
+        "seoSectionTitle": "SEO",
+        "title": "Site title",
+        "titlePlaceholder": "Title shown in the browser and search results",
+        "description": "Meta description",
+        "descriptionPlaceholder": "Short description for search engines",
+        "keywords": "Keywords",
+        "keywordsTooltip": "Website keywords to help search engines understand your site",
+        "keywordValidation": "Keyword must be at least 2 characters",
+        "domain": "Custom domain",
+        "domainTooltip": "Optional. Your public site domain without https://",
+        "domainPlaceholder": "example.com",
+        "logo": "Logo",
+        "logoTooltip": "Image used in the site header and previews",
+        "logoPlaceholder": "Logo URL",
+        "noLogo": "No logo",
+        "favicon": "Favicon",
+        "faviconTooltip": "Icon shown in browser tabs",
+        "faviconPlaceholder": "Favicon URL",
+        "language": "Default site language",
+        "timeliAddress": {
+          "sectionTitle": "Your Timeli.sh address",
+          "websiteUrlLabel": "Website URL",
+          "connectCustomDomain": "Connect custom domain",
+          "disconnectCustomDomain": "Disconnect custom domain",
+          "organizationSlugLabel": "Organization slug",
+          "updateSlugComingSoon": "Update slug (coming soon)",
+          "connectDialogTitle": "Connect custom domain",
+          "connectDialogDescription": "Connect your own domain to Timeli.sh to take full control of your brand.",
+          "connectDialogDnsTitle": "Configure DNS first",
+          "connectDialogDnsARecord": "At your DNS provider, create an A record for @ (apex) or your subdomain pointing to {ip}.",
+          "connectDialogDnsCname": "Or create a CNAME or ALIAS record pointing to {host} — the hostname for your Timeli.sh site.",
+          "domainLabel": "Domain",
+          "connectButton": "Connect",
+          "copyWebsiteUrlAriaLabel": "Copy website URL",
+          "websiteUrlCopied": "Website URL copied to clipboard.",
+          "websiteUrlCopyFailed": "Could not copy the URL."
+        },
         "toasts": {
           "changesSaved": "Your changes were saved.",
           "requestError": "There was a problem with your request."
@@ -1706,7 +1760,6 @@
       "form": {
         "tabs": {
           "main": "Main",
-          "calendarSources": "Calendar sources",
           "options": "Options",
           "payments": "Payments",
           "cancellations": "Cancellations",
@@ -1748,9 +1801,6 @@
             "twenty": "Every hour at XX:00, XX:20, XX:40",
             "thirty": "Every hour at XX:00, XX:30"
           }
-        },
-        "calendarSources": {
-          "title": "Calendar sources"
         },
         "options": {
           "title": "Options"
@@ -1818,35 +1868,28 @@
           },
           "cancellationPolicy": {
             "default": {
-              "title": "Default Policy",
-              "tooltip": "Configure default policy that will be applied if no other policy is applicable"
+              "title": "Default Rule",
+              "tooltip": "Configure default rule that will be applied if no other rule is applicable"
             },
             "policies": {
-              "title": "Policies",
-              "add": "Add policy"
-            }
+              "title": "Override Rules",
+              "add": "Add rule"
+            },
+            "policy": "Rule"
           },
           "reschedulePolicy": {
             "default": {
-              "title": "Default Policy",
-              "tooltip": "Configure default policy that will be applied if no other policy is applicable"
+              "title": "Default Rule",
+              "tooltip": "Configure default rule that will be applied if no other rule is applicable"
             },
             "policies": {
-              "title": "Policies",
-              "add": "Add policy"
-            }
+              "title": "Override Rules",
+              "add": "Add rule"
+            },
+            "policy": "Rule"
           }
         },
         "cards": {
-          "calendarSource": {
-            "app": "App",
-            "appTooltip": "Select supported app",
-            "remove": "Remove",
-            "deleteConfirmTitle": "Are you absolutely sure?",
-            "deleteConfirmDescription": "Are you sure you want to remove this calendar source?",
-            "cancel": "Cancel",
-            "delete": "Delete"
-          },
           "optionSelect": {
             "roleDescription": "Option",
             "moveOption": "Move option",
@@ -2067,31 +2110,6 @@
       "pendingAppointments": "Pending Appointments"
     }
   },
-  "install": {
-    "page": {
-      "title": "Install",
-      "description": "Quickly set up your website"
-    },
-    "form": {
-      "websiteName": "Website Name",
-      "websiteNamePlaceholder": "Website name",
-      "websiteTitle": "Website Title",
-      "websiteTitlePlaceholder": "Website title",
-      "emailAddress": "Email address",
-      "emailAddressPlaceholder": "Your email address",
-      "websiteUrl": "Website URL",
-      "websiteUrlPlaceholder": "Website url",
-      "install": "Install",
-      "pleaseWait": "Please wait...",
-      "success": "You have successfully created your website!",
-      "error": "There was a problem with your request.",
-      "fixErrors": "Please fix errors in installation form."
-    },
-    "layout": {
-      "title": "Timeli.sh - Install",
-      "description": "Installation of timelish"
-    }
-  },
   "communications": {
     "viewMore": "View more",
     "logContent": "Message content",
@@ -2160,15 +2178,8 @@
     "sign_in_sign_up_link": "Don't have an account? <link>Sign up</link> now!",
     "sign_up_sign_in_link": "Already have an account? <link>Sign in</link> now!",
     "signInDescription": "Enter your email below to sign into your account",
-    "signUp": "Sign up",
-    "signUpDescription": "Create an account to get started",
     "quote": "I love it!",
     "quoteAuthor": "Olesia Bondarchuk",
-    "confirmPassword": "Confirm password",
-    "name": "Your name",
-    "organizationName": "Business name",
-    "organizationSlug": "Subdomain",
-    "sign_up_error": "There was a problem with your request. Please try again.",
     "forgotPasswordLink": "<link>Forgot your password?</link>",
     "verification": {
       "notVerified": "Your email has not been verified. Please check your email for a verification link.",
@@ -2199,9 +2210,35 @@
       "error": "There was a problem with your request. Please try again.",
       "success": "Password reset successfully. You can now sign in to your account."
     },
+    "signUp": {
+      "title": "Sign up",
+      "description": "Create an account to get started",
+      "name": "Name",
+      "namePlaceholder": "Your name",
+      "language": "Language",
+      "languagePlaceholder": "Select language",
+      "email": "Email",
+      "emailPlaceholder": "Your email",
+      "phone": "Phone",
+      "phonePlaceholder": "Your phone",
+      "password": "Password",
+      "passwordPlaceholder": "Your password",
+      "confirmPassword": "Confirm password",
+      "confirmPasswordPlaceholder": "Confirm your password",
+      "submit": "Sign up",
+      "toasts": {
+        "success": "We sent you an email with a verification link. Please check your email and click the link to verify your account.",
+        "error": "There was a problem with your request. Please try again.",
+        "userAlreadyExists": "A user with this email already exists. Please use another email."
+      }
+    },
     "validation": {
       "name": {
-        "required": "Name is required"
+        "required": "Name is required",
+        "max": "Name must be no more than 256 characters long"
+      },
+      "language": {
+        "invalid": "Unknown language"
       },
       "confirmPassword": {
         "required": "Passwords do not match"
@@ -2431,6 +2468,13 @@
     "handledBy": "Text message reply - notify user"
   },
   "cancellationsAndReschedules": {
+    "timeBeforeAppointment": {
+      "header": "When it's at least {duration} before the appointment",
+      "week": "{count, plural, =1 {1 week} other {# weeks}}",
+      "day": "{count, plural, =1 {1 day} other {# days}}",
+      "hour": "{count, plural, =1 {1 hour} other {# hours}}",
+      "minute": "{count, plural, =0 {0 minutes} =1 {1 minute} other {# minutes}}"
+    },
     "cancellationPolicy": {
       "title": "Cancellations",
       "withDeposit": {
@@ -2449,13 +2493,16 @@
         }
       },
       "default": {
-        "title": "Default Policy",
-        "tooltip": "Configure default policy that will be applied if no other policy is applicable"
+        "title": "Default Rule",
+        "tooltip": "Configure default policy that will be applied if no other policy is applicable",
+        "label": "Applies when no other rule is applicable"
       },
       "policies": {
-        "title": "Policies",
-        "add": "Add policy"
+        "title": "Override Rules",
+        "add": "Add rule",
+        "badge": "Time-based rules"
       },
+      "policy": "Rule",
       "action": {
         "label": "Action",
         "tooltip": "Configure action to be taken when a cancellation is requested",
@@ -2513,13 +2560,16 @@
       "title": "Reschedules",
       "enabledTooltip": "Enables ability for customers to reschedule an appointment on their own",
       "default": {
-        "title": "Default Policy",
-        "tooltip": "Configure default policy that will be applied if no other policy is applicable"
+        "title": "Default Rule",
+        "tooltip": "Configure default rule that will be applied if no other rule is applicable",
+        "label": "Applies when no other rule is applicable"
       },
       "policies": {
-        "title": "Policies",
-        "add": "Add policy"
+        "title": "Override Rules",
+        "add": "Add rule",
+        "badge": "Time-based rules"
       },
+      "policy": "Rule",
       "action": {
         "label": "Action",
         "tooltip": "Configure action to be taken when a reschedule is requested",
@@ -2618,6 +2668,22 @@
         "imagePlaceholder": "Select an avatar image",
         "bio": "Bio",
         "bioPlaceholder": "Tell us a bit about yourself",
+        "calendarSources": {
+          "title": "Calendar sources",
+          "add": "Add source",
+          "cards": {
+            "calendarSource": {
+              "app": "Calendar app",
+              "appTooltip": "Select the connected calendar app used as a busy-time source for your availability.",
+              "remove": "Remove",
+              "deleteConfirmTitle": "Are you absolutely sure?",
+              "deleteConfirmDescription": "Are you sure you want to remove this calendar source?",
+              "cancel": "Cancel",
+              "delete": "Delete",
+              "noAppSelected": "Please select a calendar app"
+            }
+          }
+        },
         "changePhoto": "Change photo",
         "removePhoto": "Remove"
       },

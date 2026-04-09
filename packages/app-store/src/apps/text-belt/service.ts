@@ -101,7 +101,7 @@ export default class TextBeltConnectedApp
   public constructor(protected readonly props: IConnectedAppProps) {
     this.loggerFactory = getLoggerFactory(
       "TextBeltConnectedApp",
-      props.companyId,
+      props.organizationId,
     );
   }
 
@@ -131,9 +131,10 @@ export default class TextBeltConnectedApp
     );
 
     try {
-      const config =
-        await this.props.services.configurationService.getConfiguration(
+      const { general, brand } =
+        await this.props.services.configurationService.getConfigurations(
           "general",
+          "brand",
         );
 
       const apiKey = decrypt(app.data.apiKey);
@@ -144,7 +145,7 @@ export default class TextBeltConnectedApp
         key: apiKey,
         phone: message.phone,
         sender: message.sender,
-        replyWebhookUrl: `${url}/apps/${this.props.companyId}/${app._id}/webhook`,
+        replyWebhookUrl: `${url}/apps/${this.props.organizationId}/${app._id}/webhook`,
         webhookData: message.data
           ? `${message.data.appId ?? ""}|${message.data.appointmentId ?? ""}|${message.data.customerId ?? ""}|${message.data.data ?? ""}`
           : undefined,
@@ -203,20 +204,20 @@ export default class TextBeltConnectedApp
       });
 
       if (response.quotaRemaining < 100) {
+        const user = await this.props.services.userService.getUser(app.userId);
         const { template: description, subject } = await getEmailTemplate(
           "user-notify-low-quota",
-          config.language,
+          user?.language ?? brand.language,
           url,
           {
             quotaRemaining: response.quotaRemaining,
-            config,
+            name: user?.name ?? general.name,
           },
         );
 
-        const user = await this.props.services.userService.getUser(app.userId);
         await this.props.services.notificationService.sendEmail({
           email: {
-            to: user?.email ?? config.email,
+            to: user?.email ?? general.email,
             subject,
             body: description,
           },
@@ -563,6 +564,7 @@ export default class TextBeltConnectedApp
       await this.props.services.configurationService.getConfigurations(
         "booking",
         "general",
+        "brand",
         "social",
       );
 
@@ -579,7 +581,7 @@ export default class TextBeltConnectedApp
     }
 
     const adminUrl = getAdminUrl();
-    const websiteUrl = getWebsiteUrl(organization.slug, config.general.domain);
+    const websiteUrl = getWebsiteUrl(organization.slug, organization.domain);
 
     const args = getArguments({
       appointment,
@@ -592,7 +594,7 @@ export default class TextBeltConnectedApp
           message: reply.message?.trim(),
         },
       },
-      locale: config.general.language,
+      locale: config.brand.language,
       adminUrl,
       websiteUrl,
     });
@@ -600,7 +602,7 @@ export default class TextBeltConnectedApp
     const url = getAdminUrl();
     const { template: description, subject } = await getEmailTemplate(
       "user-notify-reply",
-      config.general.language,
+      config.brand.language,
       url,
       args,
       appointment?._id,

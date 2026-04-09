@@ -43,7 +43,7 @@ export default class AppointmentNotificationsConnectedApp
     this.jobProcessor = new AppointmentNotificationsJobProcessor(props);
     this.loggerFactory = getLoggerFactory(
       "AppointmentNotificationsConnectedApp",
-      props.companyId,
+      props.organizationId,
     );
   }
 
@@ -190,7 +190,9 @@ export default class AppointmentNotificationsConnectedApp
       { appId: appData._id },
       "Installing appointment notifications app",
     );
+
     await this.repository.installAppointmentNotificationsApp();
+
     logger.debug(
       { appId: appData._id },
       "Appointment notifications app installed successfully",

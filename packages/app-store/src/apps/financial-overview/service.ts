@@ -12,7 +12,7 @@ export default class FinancialOverviewService implements IConnectedApp {
   public constructor(protected readonly props: IConnectedAppProps) {
     this.loggerFactory = getLoggerFactory(
       "FinancialOverviewService",
-      props.companyId,
+      props.organizationId,
     );
   }
 

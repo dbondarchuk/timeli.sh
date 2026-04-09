@@ -3,6 +3,7 @@ import { AllKeys } from "@timelish/i18n";
 import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
 import {
   BookingConfiguration,
+  BrandConfiguration,
   ConnectedAppData,
   ConnectedAppRequestError,
   ConnectedAppStatusWithText,
@@ -39,7 +40,7 @@ export class WaitlistNotificationsConnectedApp
   public constructor(protected readonly props: IConnectedAppProps) {
     this.loggerFactory = getLoggerFactory(
       "WaitlistNotificationsConnectedApp",
-      props.companyId,
+      props.organizationId,
     );
   }
 
@@ -112,6 +113,21 @@ export class WaitlistNotificationsConnectedApp
     }
   }
 
+  public async install(appData: ConnectedAppData): Promise<void> {
+    const logger = this.loggerFactory("install");
+    logger.debug(
+      { appId: appData._id },
+      "Installing waitlist notifications app",
+    );
+
+    this.props.update({
+      data: {
+        notifyOnNewEntry: true,
+        notifyCustomerOnNewEntry: false,
+      } satisfies WaitlistNotificationsConfiguration,
+    });
+  }
+
   public async unInstall(appData: ConnectedAppData): Promise<void> {
     const logger = this.loggerFactory("unInstall");
     logger.debug(
@@ -169,6 +185,7 @@ export class WaitlistNotificationsConnectedApp
         await this.props.services.configurationService.getConfigurations(
           "booking",
           "general",
+          "brand",
           "social",
         );
 
@@ -210,6 +227,7 @@ export class WaitlistNotificationsConnectedApp
     config: {
       booking: BookingConfiguration;
       general: GeneralConfiguration;
+      brand: BrandConfiguration;
       social: SocialConfiguration;
     },
   ) {
@@ -236,16 +254,13 @@ export class WaitlistNotificationsConnectedApp
       }
 
       const adminUrl = getAdminUrl();
-      const websiteUrl = getWebsiteUrl(
-        organization.slug,
-        config.general.domain,
-      );
+      const websiteUrl = getWebsiteUrl(organization.slug, organization.domain);
       const args = getArguments({
         appointment: null,
         config,
         customer: entry.customer,
         useAppointmentTimezone: true,
-        locale: config.general.language,
+        locale: config.brand.language,
         additionalProperties: {
           waitlistEntry: getWaitlistEntryArgs(entry),
         },
@@ -263,7 +278,7 @@ export class WaitlistNotificationsConnectedApp
       const url = getAdminUrl();
       const { template: description, subject } = await getEmailTemplate(
         initiator,
-        config.general.language,
+        config.brand.language,
         url,
         entry,
         args,
@@ -329,6 +344,7 @@ export class WaitlistNotificationsConnectedApp
     config: {
       booking: BookingConfiguration;
       general: GeneralConfiguration;
+      brand: BrandConfiguration;
       social: SocialConfiguration;
     },
   ) {
@@ -355,16 +371,13 @@ export class WaitlistNotificationsConnectedApp
       }
 
       const adminUrl = getAdminUrl();
-      const websiteUrl = getWebsiteUrl(
-        organization.slug,
-        config.general.domain,
-      );
+      const websiteUrl = getWebsiteUrl(organization.slug, organization.domain);
       const args = getArguments({
         appointment: null,
         config,
         customer: entry.customer,
         useAppointmentTimezone: true,
-        locale: config.general.language,
+        locale: config.brand.language,
         additionalProperties: {
           waitlistEntry: getWaitlistEntryArgs(entry),
         },

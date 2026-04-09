@@ -41,6 +41,7 @@ import {
   type IDiscountHook,
   type IEventsService,
   type IScheduleService,
+  type IUserService,
   type Period,
   type Query,
   type WithTotal,
@@ -70,7 +71,7 @@ import { BaseService } from "./services/base.service";
 
 export class EventsService extends BaseService implements IEventsService {
   constructor(
-    companyId: string,
+    organizationId: string,
     private readonly configurationService: IConfigurationService,
     private readonly appsService: IConnectedAppsService,
     private readonly assetsService: IAssetsService,
@@ -80,8 +81,9 @@ export class EventsService extends BaseService implements IEventsService {
     private readonly paymentsService: IPaymentsService,
     private readonly jobService: IJobService,
     private readonly dashboardNotificationsService: IDashboardNotificationsService,
+    private readonly userService: IUserService,
   ) {
-    super("EventsService", companyId);
+    super("EventsService", organizationId);
   }
 
   public async getAvailability(duration: number): Promise<Availability> {
@@ -199,8 +201,15 @@ export class EventsService extends BaseService implements IEventsService {
       "Creating event",
     );
 
-    const { booking: config, general: generalConfig } =
-      await this.configurationService.getConfigurations("booking", "general");
+    const {
+      booking: config,
+      general: generalConfig,
+      brand: brandConfig,
+    } = await this.configurationService.getConfigurations(
+      "booking",
+      "general",
+      "brand",
+    );
 
     if (!force) {
       const isAvailable = await this.verifyTimeAvailability(
@@ -362,7 +371,7 @@ export class EventsService extends BaseService implements IEventsService {
               name: appointment.customer.name,
               service: appointment.option.name,
               dateTime: DateTime.fromJSDate(appointment.dateTime)
-                .setLocale(generalConfig.language)
+                .setLocale(brandConfig.language)
                 .setZone(generalConfig.timeZone)
                 .toLocaleString(DateTime.DATETIME_HUGE),
               durationHours: duration.hours,
@@ -540,7 +549,7 @@ export class EventsService extends BaseService implements IEventsService {
     const filter: Filter<AppointmentEntity> = {
       status: "pending",
       dateTime: minimumDate ? { $gte: minimumDate } : undefined,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     };
 
     const collection = db.collection<AppointmentEntity>(
@@ -605,7 +614,7 @@ export class EventsService extends BaseService implements IEventsService {
     const db = await getDbConnection();
     const filter: Filter<Appointment> = {
       status: "pending",
-      companyId: this.companyId,
+      organizationId: this.organizationId,
       dateTime: after
         ? {
             $gte: after,
@@ -690,7 +699,7 @@ export class EventsService extends BaseService implements IEventsService {
         ...this.aggregateJoin,
         {
           $match: {
-            companyId: this.companyId,
+            organizationId: this.organizationId,
             endAt: {
               $gte: date,
             },
@@ -739,7 +748,7 @@ export class EventsService extends BaseService implements IEventsService {
       {},
     ) || { dateTime: -1 };
 
-    const filter: Filter<Appointment> = { companyId: this.companyId };
+    const filter: Filter<Appointment> = { organizationId: this.organizationId };
     if (query.range?.start || query.range?.end) {
       filter.dateTime = {};
 
@@ -887,9 +896,8 @@ export class EventsService extends BaseService implements IEventsService {
 
     const config = await this.configurationService.getConfiguration("booking");
 
-    const apps = await this.appsService.getAppsData(
-      config.calendarSources?.map((source) => source.appId) || [],
-    );
+    const calendarSourceAppIds = await this.getCalendarSourceAppIds(config);
+    const apps = await this.appsService.getAppsData(calendarSourceAppIds);
 
     const url = getAdminUrl();
     const skipUids = new Set(
@@ -954,7 +962,7 @@ export class EventsService extends BaseService implements IEventsService {
         {
           $match: {
             _id: id,
-            companyId: this.companyId,
+            organizationId: this.organizationId,
           },
         },
         ...this.aggregateJoin,
@@ -993,7 +1001,7 @@ export class EventsService extends BaseService implements IEventsService {
 
     const filter: Filter<Appointment>[] = [
       {
-        companyId: this.companyId,
+        organizationId: this.organizationId,
         dateTime: {
           $gte: dateTime.startOf("minute").toJSDate(),
           $lte: dateTime.endOf("minute").toJSDate(),
@@ -1078,7 +1086,7 @@ export class EventsService extends BaseService implements IEventsService {
       .updateOne(
         {
           _id: id,
-          companyId: this.companyId,
+          organizationId: this.organizationId,
         },
         {
           $set: {
@@ -1150,7 +1158,7 @@ export class EventsService extends BaseService implements IEventsService {
       .updateOne(
         {
           _id: id,
-          companyId: this.companyId,
+          organizationId: this.organizationId,
         },
         {
           $set: {
@@ -1180,7 +1188,7 @@ export class EventsService extends BaseService implements IEventsService {
       .collection<AppointmentEntity>(APPOINTMENTS_COLLECTION_NAME)
       .findOne({
         _id: appointmentId,
-        companyId: this.companyId,
+        organizationId: this.organizationId,
       });
 
     if (!event) {
@@ -1253,7 +1261,7 @@ export class EventsService extends BaseService implements IEventsService {
       .updateOne(
         {
           _id: id,
-          companyId: this.companyId,
+          organizationId: this.organizationId,
         },
         {
           $set: {
@@ -1327,7 +1335,7 @@ export class EventsService extends BaseService implements IEventsService {
     ) || { dateTime: -1 };
 
     const filter: Filter<AppointmentHistoryEntry> = {
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     };
 
     if (query.appointmentId) {
@@ -1392,7 +1400,7 @@ export class EventsService extends BaseService implements IEventsService {
   }
 
   public async addAppointmentHistory(
-    entry: Omit<AppointmentHistoryEntry, "_id" | "dateTime" | "companyId">,
+    entry: Omit<AppointmentHistoryEntry, "_id" | "dateTime" | "organizationId">,
   ): Promise<string> {
     const logger = this.loggerFactory("addAppointmentHistory");
     logger.debug({ entry }, "Adding appointment history");
@@ -1402,7 +1410,7 @@ export class EventsService extends BaseService implements IEventsService {
       ...entry,
       _id: new ObjectId().toString(),
       dateTime: new Date(),
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     } as AppointmentHistoryEntry;
 
     await db
@@ -1645,9 +1653,8 @@ export class EventsService extends BaseService implements IEventsService {
       "Declined appointments retrieved",
     );
 
-    const apps = await this.appsService.getAppsData(
-      config.calendarSources?.map((source) => source.appId) || [],
-    );
+    const calendarSourceAppIds = await this.getCalendarSourceAppIds(config);
+    const apps = await this.appsService.getAppsData(calendarSourceAppIds);
 
     const dbEventsPromise = this.getDbBusyTimes(start, end);
     const appsPromises = apps.map(async (app) => {
@@ -1703,6 +1710,22 @@ export class EventsService extends BaseService implements IEventsService {
     return [...dbEvents, ...remoteEvents];
   }
 
+  private async getCalendarSourceAppIds(config: BookingConfiguration) {
+    const user = await this.userService.getOrganizationAdminUser();
+    if (user?.calendarSources?.length) {
+      return user.calendarSources.map((source) => source.appId);
+    }
+
+    // Backward-compatible fallback while existing workspaces are migrated.
+    return (
+      (
+        config as BookingConfiguration & {
+          calendarSources?: { appId: string }[];
+        }
+      ).calendarSources?.map((source) => source.appId) || []
+    );
+  }
+
   private async getDbBusyTimes(
     start: DateTime,
     end: DateTime,
@@ -1715,7 +1738,7 @@ export class EventsService extends BaseService implements IEventsService {
     const events = await db
       .collection<AppointmentEntity>(APPOINTMENTS_COLLECTION_NAME)
       .find({
-        companyId: this.companyId,
+        organizationId: this.organizationId,
         dateTime: {
           $gte: start.minus({ days: 1 }).toJSDate(),
           $lte: end.plus({ days: 1 }).toJSDate(),
@@ -1759,7 +1782,7 @@ export class EventsService extends BaseService implements IEventsService {
     const ids = await db
       .collection<AppointmentEntity>(APPOINTMENTS_COLLECTION_NAME)
       .find({
-        companyId: this.companyId,
+        organizationId: this.organizationId,
         dateTime: {
           $gte: start.minus({ days: 1 }).toJSDate(),
           $lte: end.plus({ days: 1 }).toJSDate(),
@@ -1833,7 +1856,7 @@ export class EventsService extends BaseService implements IEventsService {
 
         const dbEvent: AppointmentEntity = {
           _id: id,
-          companyId: this.companyId,
+          organizationId: this.organizationId,
           ...event,
           meetingInformation,
           dateTime: DateTime.fromJSDate(event.dateTime)
@@ -2043,7 +2066,7 @@ export class EventsService extends BaseService implements IEventsService {
         };
 
         await appointments.updateOne(
-          { _id: id, companyId: this.companyId },
+          { _id: id, organizationId: this.organizationId },
           { $set: dbEvent },
         );
 

@@ -14,7 +14,7 @@ const appointmentId = "hjsjrlklfsdnx";
 const customerId = "customer-1234";
 export const demoAppointment: Appointment = {
   _id: appointmentId,
-  companyId: "company-1",
+  organizationId: "organization-1",
   createdAt: new Date(2024, 10, 20, 9, 0, 0),
   dateTime: new Date(2024, 10, 20, 9, 0, 0),
   status: "confirmed",
@@ -49,7 +49,7 @@ export const demoAppointment: Appointment = {
       appointmentId,
       description: "Image 1",
       hash: "hash1",
-      companyId: "company-1",
+      organizationId: "organization-1",
     },
     {
       _id: v4(),
@@ -60,7 +60,7 @@ export const demoAppointment: Appointment = {
       appointmentId,
       description: "Image 2",
       hash: "hash2",
-      companyId: "company-1",
+      organizationId: "organization-1",
     },
     {
       _id: v4(),
@@ -71,7 +71,7 @@ export const demoAppointment: Appointment = {
       appointmentId,
       description: "Video 1",
       hash: "hash3",
-      companyId: "company-1",
+      organizationId: "organization-1",
     },
     {
       _id: v4(),
@@ -82,7 +82,7 @@ export const demoAppointment: Appointment = {
       appointmentId,
       description: "Video 2",
       hash: "hash4",
-      companyId: "company-1",
+      organizationId: "organization-1",
     },
   ],
   addons: [
@@ -120,7 +120,7 @@ export const demoAppointment: Appointment = {
     knownNames: [],
     knownPhones: [],
     requireDeposit: "inherit",
-    companyId: "company-1",
+    organizationId: "organization-1",
   },
   discount: {
     id: "12345",
@@ -143,7 +143,7 @@ export const demoAppointment: Appointment = {
       appId: "app-1234",
       updatedAt: new Date(),
       type: "deposit",
-      companyId: "company-1",
+      organizationId: "organization-1",
     },
     {
       _id: "payment-1235",
@@ -165,7 +165,7 @@ export const demoAppointment: Appointment = {
         },
       ],
       type: "deposit",
-      companyId: "company-1",
+      organizationId: "organization-1",
     },
   ],
 };

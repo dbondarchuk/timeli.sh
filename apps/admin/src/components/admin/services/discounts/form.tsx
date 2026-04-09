@@ -21,6 +21,9 @@ import {
   AlertDialogTrigger,
   BooleanSelect,
   Button,
+  Card,
+  CardContent,
+  CardHeader,
   cn,
   Combobox,
   DateTimeInput,
@@ -74,157 +77,170 @@ const DiscountLimitCard: React.FC<{
   });
 
   return (
-    <div className="flex flex-col gap-4 md:items-center md:grid md:grid-cols-[minmax(0,_1fr),50px,minmax(0,_1fr),50px] bg-card px-2 py-4 border rounded">
-      <div className="flex flex-col gap-4">
-        <Label>{t("services.discounts.form.optionsLabel")}</Label>
-        {(options.fields || []).map((option, optionsIndex) => (
-          <FormField
-            key={optionsIndex}
-            control={form.control}
-            name={`limitTo.${index}.options.${optionsIndex}`}
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <InputGroup>
-                    <OptionSelector
-                      className={cn(
-                        InputGroupInputClasses(),
-                        "[&>button]:rounded-r-none [&>button]:border-r-0  w-full flex-1",
-                      )}
-                      onItemSelect={(id) => {
-                        field.onChange({ id });
-                        field.onBlur();
-                      }}
-                      value={field.value?.id}
-                      disabled={disabled}
-                    />
-                    <InputGroupAddon>
-                      <Button
-                        variant="ghost-destructive"
-                        size="icon"
-                        className={cn(InputGroupAddonClasses(), "px-2")}
-                        onClick={() => options.remove(optionsIndex)}
-                      >
-                        <Trash />
-                      </Button>
-                    </InputGroupAddon>
-                  </InputGroup>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        ))}
-        {!options.fields?.length && (
-          <div className="text-sm">
-            {t("services.discounts.form.anyOption")}
-          </div>
-        )}
-        <Button
-          variant="outline"
-          className="w-full"
-          onClick={() => options.append({ id: null as any })}
-        >
-          <PlusCircle /> {t("services.discounts.form.addNew")}
-        </Button>
-      </div>
-      <Label>{t("services.discounts.form.andLabel")}</Label>
-      <div className="flex flex-col gap-4">
-        <Label>{t("services.discounts.form.addonsLabel")}</Label>
-        {(addons.fields || []).map((addon, addonsIndex) => (
-          <FormField
-            key={addonsIndex}
-            control={form.control}
-            name={`limitTo.${index}.addons.${addonsIndex}`}
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <div className="flex flex-row gap-2">
-                    <InputGroup className="w-full">
-                      <AddonSelector
-                        multi
-                        // className={cn(
-                        //   InputGroupInputClasses(),
-                        //   "[&>button]:rounded-r-none [&>button]:border-r-0  w-full flex-1"
-                        // )}
-                        onItemSelect={(ids) => {
-                          field.onChange({ ids: ids.map((id) => ({ id })) });
-                          field.onBlur();
-                        }}
-                        value={field.value?.ids?.map((v) => v.id) ?? []}
-                        disabled={disabled}
+    <Card>
+      <CardHeader className="justify-between relative flex flex-row border-b px-3 py-3 w-full items-center">
+        <div className="flex flex-row items-center gap-2">
+          <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            {t("services.discounts.form.limitTo")}
+          </span>
+        </div>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              disabled={disabled}
+              variant="ghost-destructive"
+              size="icon"
+              className="self-start max-md:w-full"
+              type="button"
+              title={t("services.discounts.form.removeLimit")}
+            >
+              <Trash />{" "}
+              <span className="md:hidden">
+                {t("services.discounts.form.removeLimit")}
+              </span>
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>
+                {t("services.discounts.form.removeLimitTitle")}
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                <p>{t("services.discounts.form.removeLimitDescription")}</p>
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>
+                {t("services.discounts.form.cancel")}
+              </AlertDialogCancel>
+              <AlertDialogAction asChild variant="destructive">
+                <Button onClick={remove}>
+                  {t("services.discounts.form.delete")}
+                </Button>
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </CardHeader>
+      <CardContent className="py-6 flex flex-col gap-4 md:items-center md:grid md:grid-cols-[minmax(0,_1fr),50px,minmax(0,_1fr)]">
+        <div className="flex flex-col gap-4">
+          <Label>{t("services.discounts.form.optionsLabel")}</Label>
+          {(options.fields || []).map((option, optionsIndex) => (
+            <FormField
+              key={optionsIndex}
+              control={form.control}
+              name={`limitTo.${index}.options.${optionsIndex}`}
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <InputGroup>
+                      <OptionSelector
                         className={cn(
                           InputGroupInputClasses(),
                           "[&>button]:rounded-r-none [&>button]:border-r-0  w-full flex-1",
                         )}
+                        onItemSelect={(id) => {
+                          field.onChange({ id });
+                          field.onBlur();
+                        }}
+                        value={field.value?.id}
+                        disabled={disabled}
                       />
                       <InputGroupAddon>
                         <Button
                           variant="ghost-destructive"
                           size="icon"
-                          onClick={() => addons.remove(addonsIndex)}
                           className={cn(InputGroupAddonClasses(), "px-2")}
+                          onClick={() => options.remove(optionsIndex)}
                         >
                           <Trash />
                         </Button>
                       </InputGroupAddon>
                     </InputGroup>
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        ))}
-        {!addons.fields?.length && (
-          <div className="text-sm">{t("services.discounts.form.anyAddon")}</div>
-        )}
-        <Button
-          variant="outline"
-          className="w-full"
-          onClick={() => addons.append({ ids: [] })}
-        >
-          <PlusCircle /> {t("services.discounts.form.addNew")}
-        </Button>
-      </div>
-      <AlertDialog>
-        <AlertDialogTrigger asChild>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          ))}
+          {!options.fields?.length && (
+            <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground text-center">
+              {t("services.discounts.form.anyOption")}
+            </div>
+          )}
           <Button
-            disabled={disabled}
-            variant="ghost-destructive"
-            size="icon"
-            className="self-start max-md:w-full"
-            type="button"
-            title={t("services.discounts.form.removeLimit")}
+            variant="outline"
+            className="w-full"
+            onClick={() => options.append({ id: null as any })}
           >
-            <Trash />{" "}
-            <span className="md:hidden">
-              {t("services.discounts.form.removeLimit")}
-            </span>
+            <PlusCircle /> {t("services.discounts.form.addNew")}
           </Button>
-        </AlertDialogTrigger>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              {t("services.discounts.form.removeLimitTitle")}
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              <p>{t("services.discounts.form.removeLimitDescription")}</p>
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>
-              {t("services.discounts.form.cancel")}
-            </AlertDialogCancel>
-            <AlertDialogAction asChild variant="destructive">
-              <Button onClick={remove}>
-                {t("services.discounts.form.delete")}
-              </Button>
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </div>
+        </div>
+        <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground text-center">
+          {t("services.discounts.form.withLabel")}
+        </Label>
+        <div className="flex flex-col gap-4">
+          <Label>{t("services.discounts.form.addonsLabel")}</Label>
+          {(addons.fields || []).map((addon, addonsIndex) => (
+            <FormField
+              key={addonsIndex}
+              control={form.control}
+              name={`limitTo.${index}.addons.${addonsIndex}`}
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <div className="flex flex-row gap-2">
+                      <InputGroup className="w-full">
+                        <AddonSelector
+                          multi
+                          // className={cn(
+                          //   InputGroupInputClasses(),
+                          //   "[&>button]:rounded-r-none [&>button]:border-r-0  w-full flex-1"
+                          // )}
+                          onItemSelect={(ids) => {
+                            field.onChange({ ids: ids.map((id) => ({ id })) });
+                            field.onBlur();
+                          }}
+                          value={field.value?.ids?.map((v) => v.id) ?? []}
+                          disabled={disabled}
+                          className={cn(
+                            InputGroupInputClasses(),
+                            "[&>button]:rounded-r-none [&>button]:border-r-0  w-full flex-1",
+                          )}
+                        />
+                        <InputGroupAddon>
+                          <Button
+                            variant="ghost-destructive"
+                            size="icon"
+                            onClick={() => addons.remove(addonsIndex)}
+                            className={cn(InputGroupAddonClasses(), "px-2")}
+                          >
+                            <Trash />
+                          </Button>
+                        </InputGroupAddon>
+                      </InputGroup>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          ))}
+          {!addons.fields?.length && (
+            <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground text-center">
+              {t("services.discounts.form.anyAddon")}
+            </div>
+          )}
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={() => addons.append({ ids: [] })}
+          >
+            <PlusCircle /> {t("services.discounts.form.addNew")}
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 

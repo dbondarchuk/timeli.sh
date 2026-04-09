@@ -51,12 +51,12 @@
 //   private _communicationLogsService?: CommunicationLogsService;
 //   private _notificationService?: BullMQNotificationService;
 
-//   constructor(private companyId: string) {}
+//   constructor(private organizationId: string) {}
 
 //   get configurationService(): IConfigurationService {
 //     if (!this._configurationService) {
 //       this._configurationService = new CachedConfigurationService(
-//         this.companyId,
+//         this.organizationId,
 //       );
 //     }
 //     return this._configurationService;
@@ -65,7 +65,7 @@
 //   get assetsService(): IAssetsService {
 //     if (!this._assetsService) {
 //       this._assetsService = new AssetsService(
-//         this.companyId,
+//         this.organizationId,
 //         this.configurationService,
 //       );
 //     }
@@ -75,7 +75,7 @@
 //   get jobService(): IJobService {
 //     if (!this._jobService) {
 //       this._jobService = new BullMQJobService(
-//         this.companyId,
+//         this.organizationId,
 //         getBullMQJobConfig(),
 //       );
 //     }
@@ -84,7 +84,7 @@
 
 //   get organizationService(): IOrganizationService {
 //     if (!this._organizationService) {
-//       this._organizationService = new OrganizationService(this.companyId);
+//       this._organizationService = new OrganizationService(this.organizationId);
 //     }
 //     return this._organizationService;
 //   }
@@ -92,7 +92,7 @@
 //   get customersService(): ICustomersService {
 //     if (!this._customersService) {
 //       this._customersService = new CustomersService(
-//         this.companyId,
+//         this.organizationId,
 //         this.jobService,
 //       );
 //     }
@@ -102,7 +102,7 @@
 //   get connectedAppsService(): IConnectedAppsService {
 //     if (!this._connectedAppsService) {
 //       this._connectedAppsService = new CachedConnectedAppsService(
-//         this.companyId,
+//         this.organizationId,
 //         () => this,
 //       );
 //     }
@@ -122,7 +122,7 @@
 //   get servicesService(): IServicesService {
 //     if (!this._servicesService) {
 //       this._servicesService = new ServicesService(
-//         this.companyId,
+//         this.organizationId,
 //         this.configurationService,
 //       );
 //     }
@@ -132,7 +132,7 @@
 //   get paymentsService(): IPaymentsService {
 //     if (!this._paymentsService) {
 //       this._paymentsService = new PaymentsService(
-//         this.companyId,
+//         this.organizationId,
 //         this.connectedAppsService,
 //         this.jobService,
 //       );
@@ -143,7 +143,7 @@
 //   get eventsService(): IEventsService {
 //     if (!this._eventsService) {
 //       this._eventsService = new EventsService(
-//         this.companyId,
+//         this.organizationId,
 //         this.configurationService,
 //         this.connectedAppsService,
 //         this.assetsService,
@@ -159,14 +159,14 @@
 
 //   get pagesService(): IPagesService {
 //     if (!this._pagesService) {
-//       this._pagesService = new PagesService(this.companyId);
+//       this._pagesService = new PagesService(this.organizationId);
 //     }
 //     return this._pagesService;
 //   }
 
 //   get templatesService(): ITemplatesService {
 //     if (!this._templatesService) {
-//       this._templatesService = new TemplatesService(this.companyId);
+//       this._templatesService = new TemplatesService(this.organizationId);
 //     }
 //     return this._templatesService;
 //   }
@@ -174,7 +174,7 @@
 //   get communicationLogsService(): ICommunicationLogsService {
 //     if (!this._communicationLogsService) {
 //       this._communicationLogsService = new CommunicationLogsService(
-//         this.companyId,
+//         this.organizationId,
 //       );
 //     }
 //     return this._communicationLogsService;
@@ -183,7 +183,7 @@
 //   get notificationService(): INotificationService {
 //     if (!this._notificationService) {
 //       this._notificationService = new BullMQNotificationService(
-//         this.companyId,
+//         this.organizationId,
 //         getBullMQNotificationConfig(),
 //       );
 //     }

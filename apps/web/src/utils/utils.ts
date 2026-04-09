@@ -2,14 +2,19 @@ import { ServicesContainer } from "@timelish/services";
 import { headers } from "next/headers";
 import { cache } from "react";
 
-export const getCompanyId = cache(async () => {
+export const getOrganizationId = cache(async () => {
   const headersList = await headers();
-  return headersList.get("x-company-id") as string;
+  return headersList.get("x-organization-id") as string;
+});
+
+export const getOrganizationDomain = cache(async () => {
+  const headersList = await headers();
+  return headersList.get("x-organization-domain") as string;
 });
 
 export const getServicesContainer = cache(async () => {
-  const companyId = await getCompanyId();
-  return ServicesContainer(companyId);
+  const organizationId = await getOrganizationId();
+  return ServicesContainer(organizationId);
 });
 
 export const getWebsiteUrl = cache(async () => {

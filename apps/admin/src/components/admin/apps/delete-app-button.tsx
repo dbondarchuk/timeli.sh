@@ -67,6 +67,7 @@ export const DeleteAppButton: React.FC<DeleteAppButtonProps> = ({
           <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
           <Button
             disabled={isLoading}
+            variant="destructive"
             onClick={disconnectApp}
             className="flex flex-row gap-1 items-center"
           >

@@ -19,7 +19,11 @@ import {
 import { useRouter } from "next/navigation";
 import React, { useCallback, useMemo } from "react";
 
-export type AddOrUpdateAppButtonProps = { children: React.ReactNode } & (
+export type AddOrUpdateAppButtonProps = {
+  children: React.ReactNode;
+  /** When true, a new connection only refreshes the page (install wizard); default sends users to /dashboard/apps. */
+  refreshOnClose?: boolean;
+} & (
   | {
       app: ConnectedApp;
     }
@@ -30,6 +34,7 @@ export type AddOrUpdateAppButtonProps = { children: React.ReactNode } & (
 
 export const AddOrUpdateAppButton: React.FC<AddOrUpdateAppButtonProps> = ({
   children,
+  refreshOnClose = false,
   ...props
 }) => {
   const router = useRouter();
@@ -58,11 +63,13 @@ export const AddOrUpdateAppButton: React.FC<AddOrUpdateAppButtonProps> = ({
       setIsLoading(false);
       if (app) {
         router.refresh();
+      } else if (refreshOnClose) {
+        router.refresh();
       } else if (redirect) {
         router.push("/dashboard/apps");
       }
     },
-    [app, router],
+    [app, refreshOnClose, router],
   );
 
   const setupProps: AppSetupProps = useMemo(
@@ -102,8 +109,6 @@ export const AddOrUpdateAppButton: React.FC<AddOrUpdateAppButtonProps> = ({
   };
 
   const title = app ? t("common.updateApp") : t("common.connectNewApp");
-
-  console.log(appType);
 
   return (
     <Dialog open={isOpen} onOpenChange={onDialogOpenChange}>

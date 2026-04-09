@@ -1,7 +1,7 @@
 import {
   Prettify,
-  WithCompanyId,
   WithDatabaseId,
+  WithOrganizationId,
   zNonEmptyString,
   zUniqueArray,
 } from "@timelish/types";
@@ -63,7 +63,7 @@ export const getBlogPostSchemaWithUniqueCheck = (
 
 export type BlogPostUpdateModel = z.infer<typeof blogPostSchema>;
 
-export type BlogPostEntity = WithCompanyId<
+export type BlogPostEntity = WithOrganizationId<
   WithDatabaseId<BlogPostUpdateModel>
 > & {
   appId: string;

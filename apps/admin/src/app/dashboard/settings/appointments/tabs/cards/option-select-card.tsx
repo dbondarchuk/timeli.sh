@@ -12,6 +12,9 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
   Button,
+  Card,
+  CardContent,
+  CardHeader,
   cn,
   FormControl,
   FormField,
@@ -91,9 +94,8 @@ export const OptionSelectCard: React.FC<OptionSelectProps> = ({
   });
 
   return (
-    <div
+    <Card
       className={cn(
-        "flex flex-row gap-2 px-2 py-4 bg-card border rounded",
         variants({
           dragging: isOverlay ? "overlay" : isDragging ? "over" : undefined,
         }),
@@ -101,20 +103,65 @@ export const OptionSelectCard: React.FC<OptionSelectProps> = ({
       ref={setNodeRef}
       style={style}
     >
-      <Button
-        type="button"
-        variant={"ghost"}
-        {...attributes}
-        {...listeners}
-        className="h-auto cursor-grab p-1 text-secondary-foreground/50"
-      >
-        <></>
-        <span className="sr-only">
-          {t("settings.appointments.form.cards.optionSelect.moveOption")}
-        </span>
-        <GripVertical />
-      </Button>
-      <div className="grid grid-cols-1 gap-2 flex-grow w-full">
+      <CardHeader className="justify-between relative flex flex-row border-b px-3 py-3 w-full items-center">
+        <div className="flex flex-row items-center gap-2">
+          <Button
+            type="button"
+            variant={"ghost"}
+            {...attributes}
+            {...listeners}
+            className="h-auto cursor-grab p-1 text-secondary-foreground/50"
+          >
+            <></>
+            <span className="sr-only">
+              {t("settings.appointments.form.cards.optionSelect.moveOption")}
+            </span>
+            <GripVertical />
+          </Button>
+          <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            {t("settings.appointments.form.cards.optionSelect.option")}
+          </span>
+        </div>
+        <div className="flex flex-row items-start">
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                disabled={disabled}
+                variant="ghost-destructive"
+                size="icon"
+                type="button"
+              >
+                <Trash />
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>
+                  {t(
+                    "settings.appointments.form.cards.optionSelect.deleteConfirmTitle",
+                  )}
+                </AlertDialogTitle>
+                <AlertDialogDescription>
+                  {t(
+                    "settings.appointments.form.cards.optionSelect.deleteConfirmDescription",
+                  )}
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>
+                  {t("settings.appointments.form.cards.optionSelect.cancel")}
+                </AlertDialogCancel>
+                <AlertDialogAction asChild variant="destructive">
+                  <Button onClick={remove}>
+                    {t("settings.appointments.form.cards.optionSelect.delete")}
+                  </Button>
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
+      </CardHeader>
+      <CardContent className="py-6 grid grid-cols-1 gap-2 flex-grow w-full">
         <FormField
           control={form.control}
           name={`${name}.id`}
@@ -123,7 +170,6 @@ export const OptionSelectCard: React.FC<OptionSelectProps> = ({
               <FormLabel>
                 {t("settings.appointments.form.cards.optionSelect.option")}
               </FormLabel>
-
               <FormControl>
                 <OptionSelector
                   disabled={disabled}
@@ -137,45 +183,7 @@ export const OptionSelectCard: React.FC<OptionSelectProps> = ({
             </FormItem>
           )}
         />
-      </div>
-      <div className="flex flex-row items-start">
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button
-              disabled={disabled}
-              variant="ghost-destructive"
-              size="icon"
-              type="button"
-            >
-              <Trash />
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>
-                {t(
-                  "settings.appointments.form.cards.optionSelect.deleteConfirmTitle",
-                )}
-              </AlertDialogTitle>
-              <AlertDialogDescription>
-                {t(
-                  "settings.appointments.form.cards.optionSelect.deleteConfirmDescription",
-                )}
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>
-                {t("settings.appointments.form.cards.optionSelect.cancel")}
-              </AlertDialogCancel>
-              <AlertDialogAction asChild variant="destructive">
-                <Button onClick={remove}>
-                  {t("settings.appointments.form.cards.optionSelect.delete")}
-                </Button>
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 };

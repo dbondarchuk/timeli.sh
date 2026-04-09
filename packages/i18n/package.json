@@ -8,7 +8,8 @@
     "type-check:ci": "tsc-absolute --pretty --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "check-translations": "node scripts/check-translations.js"
+    "check-translations": "node scripts/check-translations.js",
+    "translate": "node scripts/translate-missing-locale-keys.js"
   },
   "exports": {
     ".": "./src/index.ts",

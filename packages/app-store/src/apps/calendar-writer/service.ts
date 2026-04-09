@@ -42,7 +42,7 @@ export class CalendarWriterConnectedApp
   public constructor(protected readonly props: IConnectedAppProps) {
     this.loggerFactory = getLoggerFactory(
       "CalendarWriterConnectedApp",
-      props.companyId,
+      props.organizationId,
     );
   }
 
@@ -331,6 +331,7 @@ export class CalendarWriterConnectedApp
         await this.props.services.configurationService.getConfigurations(
           "booking",
           "general",
+          "brand",
           "social",
         );
       logger.debug(
@@ -349,17 +350,14 @@ export class CalendarWriterConnectedApp
       }
 
       const adminUrl = getAdminUrl();
-      const websiteUrl = getWebsiteUrl(
-        organization.slug,
-        config.general.domain,
-      );
+      const websiteUrl = getWebsiteUrl(organization.slug, organization.domain);
 
       const args = getArguments({
         appointment,
         config,
         customer: appointment.customer,
         useAppointmentTimezone: true,
-        locale: config.general.language,
+        locale: config.brand.language,
         adminUrl,
         websiteUrl,
       });
@@ -369,7 +367,7 @@ export class CalendarWriterConnectedApp
       const url = getAdminUrl();
       const { template: description, subject } = await getEmailTemplate(
         status,
-        config.general.language,
+        config.brand.language,
         url,
         appointment,
         args,

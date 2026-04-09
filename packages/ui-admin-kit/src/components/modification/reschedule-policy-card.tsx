@@ -1,4 +1,6 @@
-import { useI18n } from "@timelish/i18n";
+"use client";
+
+import { useI18n, useLocale } from "@timelish/i18n";
 import {
   appointmentReschedulePolicyActionType,
   modificationPaymentCalculationType,
@@ -15,6 +17,10 @@ import {
   AlertDialogTrigger,
   BooleanSelect,
   Button,
+  Card,
+  CardContent,
+  CardHeader,
+  cn,
   DurationInput,
   FormControl,
   FormField,
@@ -36,8 +42,9 @@ import {
   useCurrencySymbol,
 } from "@timelish/ui";
 import { Trash } from "lucide-react";
-import React from "react";
-import { UseFormReturn } from "react-hook-form";
+import React, { useEffect } from "react";
+import { UseFormReturn, useFormState } from "react-hook-form";
+import { formatTimeBeforeAppointmentRuleHeader } from "./time-before-appointment-rule-header";
 
 export const ReschedulePolicyCardContent: React.FC<
   {
@@ -335,10 +342,98 @@ export const ReschedulePolicyCard: React.FC<
   } & ({ default: true; index?: never } | { default?: false; index: number })
 > = ({ form, disabled, default: isDefault, index, remove, basePath }) => {
   const t = useI18n("admin");
+  const listLocale = useLocale();
+
+  const path = isDefault
+    ? `${basePath}.defaultPolicy`
+    : (`${basePath}.policies.${index}` as const);
+  const { isValid } = useFormState({ control: form.control, name: path });
+  const minutesToAppointment = form.watch(
+    `${path}.minutesToAppointment` as any,
+  ) as number | null | undefined;
+
+  const ruleAppliesDescription =
+    (isDefault ?? false)
+      ? t("cancellationsAndReschedules.reschedulePolicy.default.label")
+      : formatTimeBeforeAppointmentRuleHeader(
+          minutesToAppointment,
+          t,
+          listLocale,
+        );
+
+  const value = form.watch(`${path}.minutesToAppointment`);
+  useEffect(() => {
+    if (value) {
+      form.trigger(basePath as any);
+    }
+  }, [form, basePath, value]);
 
   return (
-    <div className="flex flex-col gap-2 px-2 py-4 bg-card border rounded w-full">
-      <div className="grid grid-cols-1 gap-2 w-full relative">
+    <Card>
+      <CardHeader className="justify-between relative flex flex-row border-b px-6 py-3 w-full items-center gap-4">
+        <div className="flex min-w-0 flex-1 flex-col items-start gap-0.5">
+          <span
+            className={cn(
+              "text-xs font-semibold uppercase tracking-wide text-muted-foreground",
+              !isValid && "text-destructive",
+            )}
+          >
+            {t("cancellationsAndReschedules.reschedulePolicy.policy")}
+          </span>
+          {!!minutesToAppointment && (
+            <span
+              className={cn(
+                "text-xs font-medium leading-snug text-muted-foreground",
+                !isValid && "text-destructive",
+              )}
+            >
+              {ruleAppliesDescription}
+            </span>
+          )}
+        </div>
+        <div className="flex flex-row items-start">
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                disabled={disabled}
+                variant="ghost-destructive"
+                size="icon"
+                type="button"
+                title={t("cancellationsAndReschedules.reschedulePolicy.remove")}
+              >
+                <Trash />
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>
+                  {t(
+                    "cancellationsAndReschedules.reschedulePolicy.deleteConfirmTitle",
+                  )}
+                </AlertDialogTitle>
+                <AlertDialogDescription>
+                  <p>
+                    {t(
+                      "cancellationsAndReschedules.reschedulePolicy.deleteReschedulePolicyConfirmDescription",
+                    )}
+                  </p>
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>
+                  {t("cancellationsAndReschedules.reschedulePolicy.cancel")}
+                </AlertDialogCancel>
+                <AlertDialogAction asChild variant="destructive">
+                  <Button onClick={remove}>
+                    {t("cancellationsAndReschedules.reschedulePolicy.delete")}
+                  </Button>
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
+      </CardHeader>
+      <CardContent className="py-6 grid grid-cols-1 gap-4 w-full relative">
         <ReschedulePolicyCardContent
           form={form}
           disabled={disabled}
@@ -346,52 +441,7 @@ export const ReschedulePolicyCard: React.FC<
           index={index}
           basePath={basePath}
         />
-      </div>
-      <div className="flex flex-row items-start">
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button
-              disabled={disabled}
-              variant="ghost-destructive"
-              size="icon"
-              type="button"
-              className="w-full hover:z-[1]"
-              title={t("cancellationsAndReschedules.reschedulePolicy.remove")}
-            >
-              <Trash />{" "}
-              <span>
-                {t("cancellationsAndReschedules.reschedulePolicy.remove")}
-              </span>
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>
-                {t(
-                  "cancellationsAndReschedules.reschedulePolicy.deleteConfirmTitle",
-                )}
-              </AlertDialogTitle>
-              <AlertDialogDescription>
-                <p>
-                  {t(
-                    "cancellationsAndReschedules.reschedulePolicy.deleteReschedulePolicyConfirmDescription",
-                  )}
-                </p>
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>
-                {t("cancellationsAndReschedules.reschedulePolicy.cancel")}
-              </AlertDialogCancel>
-              <AlertDialogAction asChild variant="destructive">
-                <Button onClick={remove}>
-                  {t("cancellationsAndReschedules.reschedulePolicy.delete")}
-                </Button>
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 };

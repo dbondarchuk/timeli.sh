@@ -1,6 +1,6 @@
 import * as z from "zod";
 import { menuItemsWithSubMenuSchema } from "../configuration/styling/menu-item";
-import { WithCompanyId, WithDatabaseId } from "../database";
+import { WithDatabaseId, WithOrganizationId } from "../database";
 import { Prettify } from "../utils";
 
 export const pageHeaderShadowType = ["none", "static", "on-scroll"] as const;
@@ -29,7 +29,7 @@ export const getPageHeaderSchemaWithUniqueNameCheck = (
 export type PageHeaderUpdateModel = z.infer<typeof pageHeaderSchema>;
 
 export type PageHeader = Prettify<
-  WithCompanyId<WithDatabaseId<PageHeaderUpdateModel>> & {
+  WithOrganizationId<WithDatabaseId<PageHeaderUpdateModel>> & {
     updatedAt: Date;
   }
 >;

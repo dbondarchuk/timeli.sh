@@ -4,8 +4,8 @@ import {
   asOptionalField,
   Customer,
   Prettify,
-  WithCompanyId,
   WithDatabaseId,
+  WithOrganizationId,
   zEmail,
   zNonEmptyString,
   zObjectId,
@@ -118,7 +118,7 @@ export type WaitlistRequest = Prettify<z.infer<typeof waitlistRequestSchema>>;
 export const waitlistStatus = ["active", "dismissed"] as const;
 export type WaitlistStatus = (typeof waitlistStatus)[number];
 
-export type WaitlistEntryEntity = WithCompanyId<
+export type WaitlistEntryEntity = WithOrganizationId<
   WithDatabaseId<WaitlistRequest>
 > & {
   createdAt: Date;

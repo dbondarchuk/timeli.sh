@@ -2,9 +2,11 @@ import { getRequestConfig } from "next-intl/server";
 import { mergeObjects } from "./utils";
 
 export const getConfig = (
-  getLocale: (
-    baseLocale: string | undefined,
-  ) => Promise<{ locale: string; includeAdmin: boolean }>,
+  getLocale: (baseLocale: string | undefined) => Promise<{
+    locale: string;
+    includeAdmin: boolean;
+    includeInstall?: boolean;
+  }>,
   getMessages?: () => Promise<{
     public: (locale: string) => Promise<Record<string, Record<string, any>>>;
     admin: (locale: string) => Promise<Record<string, Record<string, any>>>;
@@ -12,7 +14,8 @@ export const getConfig = (
   }>,
 ) =>
   getRequestConfig(async ({ locale: baseLocale }) => {
-    const { locale, includeAdmin } = await getLocale(baseLocale);
+    const { locale, includeAdmin, includeInstall } =
+      await getLocale(baseLocale);
 
     const externalMessages = await getMessages?.();
     const publicMessages = await externalMessages?.public(locale);
@@ -36,6 +39,12 @@ export const getConfig = (
         ...messages,
         ...(adminMessages || {}),
       };
+    }
+
+    if (includeInstall) {
+      messages.install = (
+        await import(`./locales/${locale}/install.json`)
+      ).default;
     }
 
     const overrideEntries = await externalMessages?.overrides(locale);

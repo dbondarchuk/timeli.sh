@@ -68,7 +68,10 @@ export class FormsConnectedApp implements IConnectedApp {
   protected readonly loggerFactory: LoggerFactory;
 
   public constructor(protected readonly props: IConnectedAppProps) {
-    this.loggerFactory = getLoggerFactory("FormsConnectedApp", props.companyId);
+    this.loggerFactory = getLoggerFactory(
+      "FormsConnectedApp",
+      props.organizationId,
+    );
   }
 
   public async processRequest(
@@ -138,7 +141,7 @@ export class FormsConnectedApp implements IConnectedApp {
     try {
       const repositoryService = this.getRepositoryService(
         appData._id,
-        appData.companyId,
+        appData.organizationId,
       );
       await repositoryService.install();
       logger.info({ appId: appData._id }, "Forms app installed successfully");
@@ -158,7 +161,7 @@ export class FormsConnectedApp implements IConnectedApp {
     try {
       const repositoryService = this.getRepositoryService(
         appData._id,
-        appData.companyId,
+        appData.organizationId,
       );
       await repositoryService.unInstall(appData._id);
       logger.info({ appId: appData._id }, "Forms app uninstalled successfully");
@@ -288,7 +291,7 @@ export class FormsConnectedApp implements IConnectedApp {
 
     const repositoryService = this.getRepositoryService(
       appData._id,
-      appData.companyId,
+      appData.organizationId,
     );
 
     const json = formData.get("json") as string;
@@ -572,10 +575,10 @@ export class FormsConnectedApp implements IConnectedApp {
     );
   }
 
-  protected getRepositoryService(appId: string, companyId: string) {
+  protected getRepositoryService(appId: string, organizationId: string) {
     return new FormsRepositoryService(
       appId,
-      companyId,
+      organizationId,
       this.props.getDbConnection,
       this.props.services,
     );
@@ -603,7 +606,7 @@ export class FormsConnectedApp implements IConnectedApp {
 
     const repositoryService = this.getRepositoryService(
       appData._id,
-      appData.companyId,
+      appData.organizationId,
     );
 
     const isUnique = await repositoryService.checkFormNameUnique(
@@ -635,7 +638,7 @@ export class FormsConnectedApp implements IConnectedApp {
 
     const repositoryService = this.getRepositoryService(
       appData._id,
-      appData.companyId,
+      appData.organizationId,
     );
 
     const isUnique = await repositoryService.checkFormNameUnique(
@@ -682,7 +685,7 @@ export class FormsConnectedApp implements IConnectedApp {
 
     const repositoryService = this.getRepositoryService(
       appData._id,
-      appData.companyId,
+      appData.organizationId,
     );
 
     const result = await repositoryService.deleteForm(data.id);
@@ -709,7 +712,7 @@ export class FormsConnectedApp implements IConnectedApp {
 
     const repositoryService = this.getRepositoryService(
       appData._id,
-      appData.companyId,
+      appData.organizationId,
     );
 
     const result = await repositoryService.getForms(data.query);
@@ -732,7 +735,7 @@ export class FormsConnectedApp implements IConnectedApp {
 
     const repositoryService = this.getRepositoryService(
       appData._id,
-      appData.companyId,
+      appData.organizationId,
     );
 
     const result = await repositoryService.getFormById(data.id);
@@ -762,7 +765,7 @@ export class FormsConnectedApp implements IConnectedApp {
 
     const repositoryService = this.getRepositoryService(
       appData._id,
-      appData.companyId,
+      appData.organizationId,
     );
 
     const result = await repositoryService.getFormResponses(data.query);
@@ -785,7 +788,7 @@ export class FormsConnectedApp implements IConnectedApp {
 
     const repositoryService = this.getRepositoryService(
       appData._id,
-      appData.companyId,
+      appData.organizationId,
     );
 
     const result = await repositoryService.getFormResponseById(data.id);
@@ -810,7 +813,7 @@ export class FormsConnectedApp implements IConnectedApp {
     const logger = this.loggerFactory("processUpdateFormResponseRequest");
     const repositoryService = this.getRepositoryService(
       appData._id,
-      appData.companyId,
+      appData.organizationId,
     );
 
     const formResponse = await repositoryService.getFormResponseById(data.id);
@@ -917,7 +920,7 @@ export class FormsConnectedApp implements IConnectedApp {
 
     const repositoryService = this.getRepositoryService(
       appData._id,
-      appData.companyId,
+      appData.organizationId,
     );
 
     const result = await repositoryService.deleteFormResponse(data.id);
@@ -947,7 +950,7 @@ export class FormsConnectedApp implements IConnectedApp {
 
     const repositoryService = this.getRepositoryService(
       appData._id,
-      appData.companyId,
+      appData.organizationId,
     );
 
     const result = await repositoryService.deleteForms(data.ids);
@@ -969,7 +972,7 @@ export class FormsConnectedApp implements IConnectedApp {
 
     const repositoryService = this.getRepositoryService(
       appData._id,
-      appData.companyId,
+      appData.organizationId,
     );
 
     const result = await repositoryService.deleteFormResponses(data.ids);
@@ -989,7 +992,7 @@ export class FormsConnectedApp implements IConnectedApp {
 
     const repositoryService = this.getRepositoryService(
       appData._id,
-      appData.companyId,
+      appData.organizationId,
     );
 
     if (data.customerId) {
@@ -1046,7 +1049,7 @@ export class FormsConnectedApp implements IConnectedApp {
 
     const repositoryService = this.getRepositoryService(
       appData._id,
-      appData.companyId,
+      appData.organizationId,
     );
 
     return repositoryService.setFormArchived(data.id, data.isArchived);
@@ -1064,7 +1067,7 @@ export class FormsConnectedApp implements IConnectedApp {
 
     const repositoryService = this.getRepositoryService(
       appData._id,
-      appData.companyId,
+      appData.organizationId,
     );
 
     return repositoryService.setFormsArchived(data.ids, data.isArchived);
@@ -1082,7 +1085,7 @@ export class FormsConnectedApp implements IConnectedApp {
 
     const repositoryService = this.getRepositoryService(
       appData._id,
-      appData.companyId,
+      appData.organizationId,
     );
 
     const result = await repositoryService.checkFormNameUnique(
@@ -1115,7 +1118,7 @@ export class FormsConnectedApp implements IConnectedApp {
 
     const repositoryService = this.getRepositoryService(
       appData._id,
-      appData.companyId,
+      appData.organizationId,
     );
 
     // Get form to check notification settings
@@ -1258,6 +1261,7 @@ export class FormsConnectedApp implements IConnectedApp {
         await this.props.services.configurationService.getConfigurations(
           "booking",
           "general",
+          "brand",
           "social",
         );
 
@@ -1285,12 +1289,9 @@ export class FormsConnectedApp implements IConnectedApp {
         return;
       }
 
-      const language = config.general.language ?? "en";
+      const language = config.brand.language ?? "en";
       const adminUrl = getAdminUrl();
-      const websiteUrl = getWebsiteUrl(
-        organization.slug,
-        config.general.domain,
-      );
+      const websiteUrl = getWebsiteUrl(organization.slug, organization.domain);
 
       const listFormat = new Intl.ListFormat(locale, { style: "short" });
       const formatAnswerValue = (

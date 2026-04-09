@@ -31,9 +31,10 @@ export default async function NewPageFooterPage(props: Props) {
     "Loading new page footer creation page",
   );
 
-  const { general, social, styling } =
+  const { general, brand, social, styling } =
     await servicesContainer.configurationService.getConfigurations(
       "general",
+      "brand",
       "social",
       "styling",
     );
@@ -66,10 +67,11 @@ export default async function NewPageFooterPage(props: Props) {
   const args = formatArguments(
     {
       general,
+      brand,
       social,
       now: new Date(),
     },
-    general.language,
+    brand.language,
     general.currency,
   );
 

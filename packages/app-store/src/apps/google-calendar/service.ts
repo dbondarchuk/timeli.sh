@@ -95,7 +95,7 @@ class GoogleCalendarConnectedApp
   public constructor(protected readonly props: IConnectedAppProps) {
     this.loggerFactory = getLoggerFactory(
       "GoogleCalendarConnectedApp",
-      props.companyId,
+      props.organizationId,
     );
   }
 

@@ -3,6 +3,7 @@ import {
   Appointment,
   AppointmentStatus,
   BookingConfiguration,
+  BrandConfiguration,
   ConnectedAppData,
   ConnectedAppRequestError,
   ConnectedAppStatusWithText,
@@ -41,7 +42,7 @@ export class TextMessageNotificationConnectedApp
   public constructor(protected readonly props: IConnectedAppProps) {
     this.loggerFactory = getLoggerFactory(
       "TextMessageNotificationConnectedApp",
-      props.companyId,
+      props.organizationId,
     );
   }
 
@@ -129,6 +130,7 @@ export class TextMessageNotificationConnectedApp
         await this.props.services.configurationService.getConfigurations(
           "booking",
           "general",
+          "brand",
           "social",
         );
 
@@ -151,16 +153,13 @@ export class TextMessageNotificationConnectedApp
       }
 
       const adminUrl = getAdminUrl();
-      const websiteUrl = getWebsiteUrl(
-        organization.slug,
-        config.general.domain,
-      );
+      const websiteUrl = getWebsiteUrl(organization.slug, organization.domain);
 
       const args = getArguments({
         appointment,
         config,
         customer: appointment.customer,
-        locale: config.general.language,
+        locale: config.brand.language,
         additionalProperties: {
           confirmed,
           totalAmountPaidFormatted,
@@ -170,7 +169,7 @@ export class TextMessageNotificationConnectedApp
       });
 
       const body = template(
-        TextMessageNotificationMessages[config.general.language]
+        TextMessageNotificationMessages[config.brand.language]
           .newAppointmentRequested ??
           TextMessageNotificationMessages["en"].newAppointmentRequested,
         args,
@@ -297,6 +296,7 @@ export class TextMessageNotificationConnectedApp
         await this.props.services.configurationService.getConfigurations(
           "general",
           "booking",
+          "brand",
           "social",
         );
 
@@ -311,11 +311,11 @@ export class TextMessageNotificationConnectedApp
         );
 
         const body = template(
-          TextMessageNotificationMessages[config.general.language]
+          TextMessageNotificationMessages[config.brand.language]
             .unknownAppointment ??
             TextMessageNotificationMessages["en"].unknownAppointment,
           {
-            config: config.general,
+            config,
           },
         );
 
@@ -393,19 +393,19 @@ export class TextMessageNotificationConnectedApp
         const adminUrl = getAdminUrl();
         const websiteUrl = getWebsiteUrl(
           organization.slug,
-          config.general.domain,
+          organization.domain,
         );
 
         const args = getArguments({
           appointment,
           config,
-          locale: config.general.language,
+          locale: config.brand.language,
           adminUrl,
           websiteUrl,
         });
 
         const body = template(
-          TextMessageNotificationMessages[config.general.language]
+          TextMessageNotificationMessages[config.brand.language]
             .unknownAppointment ??
             TextMessageNotificationMessages["en"].unknownOption,
           args,
@@ -453,6 +453,7 @@ export class TextMessageNotificationConnectedApp
     reply: TextMessageReply,
     config: {
       general: GeneralConfiguration;
+      brand: BrandConfiguration;
       booking: BookingConfiguration;
       social: SocialConfiguration;
     },
@@ -485,21 +486,18 @@ export class TextMessageNotificationConnectedApp
       }
 
       const adminUrl = getAdminUrl();
-      const websiteUrl = getWebsiteUrl(
-        organization.slug,
-        config.general.domain,
-      );
+      const websiteUrl = getWebsiteUrl(organization.slug, organization.domain);
 
       const args = getArguments({
         appointment,
         config,
-        locale: config.general.language,
+        locale: config.brand.language,
         adminUrl,
         websiteUrl,
       });
 
       const responseBody = template(
-        TextMessageNotificationMessages[config.general.language][
+        TextMessageNotificationMessages[config.brand.language][
           newStatus === "confirmed"
             ? "appointmentConfirmed"
             : "appointmentDeclined"

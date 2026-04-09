@@ -1,6 +1,6 @@
 import * as z from "zod";
 import { communicationChannels } from "../communication";
-import { WithCompanyId, WithDatabaseId } from "../database";
+import { WithDatabaseId, WithOrganizationId } from "../database";
 import { Prettify, zNonEmptyString } from "../utils";
 
 /** Template schema for template creation and update */
@@ -67,7 +67,7 @@ export type TemplateUpdateModel = z.infer<typeof templateSchema>;
 
 /** Communication template */
 export type Template = Prettify<
-  WithCompanyId<WithDatabaseId<TemplateUpdateModel>> & {
+  WithOrganizationId<WithDatabaseId<TemplateUpdateModel>> & {
     updatedAt: Date;
   }
 >;

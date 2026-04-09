@@ -249,6 +249,9 @@
         "label": "Time",
         "placeholder": "Select time"
       },
+      "dateTime": {
+        "label": "Date & Time"
+      },
       "notAllowed": {
         "cancel": {
           "title": "Cancellation is not allowed for this appointment",

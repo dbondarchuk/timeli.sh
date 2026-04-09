@@ -30,7 +30,7 @@ export interface ITextMessageSenderApp {
 
 export interface ITextMessageSender {
   sendTextMessage: (
-    companyId: string,
+    organizationId: string,
     message: TextMessage,
   ) => Promise<TextMessageResponse>;
 }

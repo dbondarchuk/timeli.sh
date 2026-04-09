@@ -46,7 +46,10 @@ export class ZoomConnectedApp
   protected readonly loggerFactory: LoggerFactory;
 
   public constructor(protected readonly props: IConnectedAppProps) {
-    this.loggerFactory = getLoggerFactory("ZoomConnectedApp", props.companyId);
+    this.loggerFactory = getLoggerFactory(
+      "ZoomConnectedApp",
+      props.organizationId,
+    );
   }
 
   processRequest?:

@@ -22,14 +22,18 @@ export class AppointmentNotificationsRepository {
   public constructor(protected readonly props: IConnectedAppProps) {
     this.loggerFactory = getLoggerFactory(
       "AppointmentNotificationsRepository",
-      props.companyId,
+      props.organizationId,
     );
   }
 
   public async getAppointmentNotification(appId: string, id: string) {
     const logger = this.loggerFactory("getAppointmentNotification");
     logger.debug(
-      { appId, companyId: this.props.companyId, appointmentNotificationId: id },
+      {
+        appId,
+        organizationId: this.props.organizationId,
+        appointmentNotificationId: id,
+      },
       "Getting appointment notification",
     );
 
@@ -42,7 +46,7 @@ export class AppointmentNotificationsRepository {
         )
         .findOne({
           appId,
-          companyId: this.props.companyId,
+          organizationId: this.props.organizationId,
           _id: id,
         });
 
@@ -206,7 +210,7 @@ export class AppointmentNotificationsRepository {
         ...appointmentNotification,
         appId,
         _id: new ObjectId().toString(),
-        companyId: this.props.companyId,
+        organizationId: this.props.organizationId,
         updatedAt: DateTime.utc().toJSDate(),
       };
 
@@ -343,7 +347,7 @@ export class AppointmentNotificationsRepository {
 
       await appointmentNotifications.deleteMany({
         appId,
-        companyId: this.props.companyId,
+        organizationId: this.props.organizationId,
         _id: {
           $in: ids,
         },
@@ -467,10 +471,18 @@ export class AppointmentNotificationsRepository {
     );
 
     const indexes = {
-      companyId_appId_updatedAt_1: { companyId: 1, appId: 1, updatedAt: 1 },
-      companyId_appId_type_1: { companyId: 1, appId: 1, type: 1 },
-      companyId_appId_channel_1: { companyId: 1, appId: 1, channel: 1 },
-      companyId_appId_name_1: { companyId: 1, appId: 1, name: 1 },
+      organizationId_appId_updatedAt_1: {
+        organizationId: 1,
+        appId: 1,
+        updatedAt: 1,
+      },
+      organizationId_appId_type_1: { organizationId: 1, appId: 1, type: 1 },
+      organizationId_appId_channel_1: {
+        organizationId: 1,
+        appId: 1,
+        channel: 1,
+      },
+      organizationId_appId_name_1: { organizationId: 1, appId: 1, name: 1 },
     };
 
     for (const [name, index] of Object.entries(indexes)) {

@@ -1,5 +1,6 @@
 import { Language } from "@timelish/i18n";
 import type { ObjectId } from "mongodb";
+import type { CalendarSourcesConfiguration } from "../configuration/booking/calendar-source";
 
 export type UserRole = "owner" | "admin" | "staff" | "viewer";
 
@@ -17,4 +18,5 @@ export type User = {
   image?: string | null;
   bio?: string | null;
   phone: string;
+  calendarSources?: CalendarSourcesConfiguration;
 };

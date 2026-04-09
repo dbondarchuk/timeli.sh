@@ -29,13 +29,13 @@ export class TextBeltService implements ITextMessageSender {
   constructor(private readonly configuration: TextBeltConfiguration) {}
 
   public async sendTextMessage(
-    companyId: string,
+    organizationId: string,
     message: TextMessage,
   ): Promise<TextMessageResponse> {
     const logger = this.loggerFactory("sendTextMessage");
     logger.debug(
       {
-        companyId,
+        organizationId,
         phone: maskify(message.phone),
         sender: message.sender,
         messageLength: message.message.length,
@@ -52,7 +52,7 @@ export class TextBeltService implements ITextMessageSender {
         key: this.configuration.apiKey,
         phone: message.phone,
         sender: message.sender,
-        replyWebhookUrl: `${url}/apps/textbelt/${companyId}/webhook`,
+        replyWebhookUrl: `${url}/apps/textbelt/${organizationId}/webhook`,
         webhookData: message.data
           ? `${message.data.appId ?? ""}|${message.data.appointmentId ?? ""}|${message.data.customerId ?? ""}|${message.data.data ?? ""}`
           : undefined,

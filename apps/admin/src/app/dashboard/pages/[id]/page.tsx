@@ -37,10 +37,11 @@ export default async function EditPagesPage(props: Props) {
   );
 
   const page = await getPage(params.id);
-  const { styling, general, social } =
+  const { styling, general, brand, social } =
     await servicesContainer.configurationService.getConfigurations(
       "styling",
       "general",
+      "brand",
       "social",
     );
 
@@ -77,7 +78,7 @@ export default async function EditPagesPage(props: Props) {
         <Styling styling={styling} />
         <PageForm
           initialData={page}
-          config={{ general, social }}
+          config={{ general, brand, social }}
           apps={apps}
           websiteUrl={websiteUrl}
         />

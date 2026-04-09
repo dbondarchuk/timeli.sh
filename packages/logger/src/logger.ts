@@ -2,7 +2,7 @@ import pino from "pino";
 import { cache } from "react";
 import { getBaseLoggerFactory } from "./base-factory";
 
-const _getLoggerFactory = cache(async (companyId?: string | null) => {
+const _getLoggerFactory = cache(async (organizationId?: string | null) => {
   try {
     // Try to import next/headers dynamically to avoid issues in client components
     const { headers } = await import("next/headers");
@@ -10,7 +10,7 @@ const _getLoggerFactory = cache(async (companyId?: string | null) => {
     return getBaseLoggerFactory(
       headersList.get("x-correlation-id"),
       headersList.get("x-session-id"),
-      companyId || headersList.get("x-company-id"),
+      organizationId || headersList.get("x-organization-id"),
     );
   } catch {
     // Fallback for client-side or when next/headers is not available
@@ -34,10 +34,10 @@ const promiseHandler: ProxyHandler<any> = {
 export type LoggerFactory = (functionName?: string) => pino.Logger;
 
 export const getLoggerFactory = cache(
-  (moduleName: string, companyId?: string | null): LoggerFactory => {
+  (moduleName: string, organizationId?: string | null): LoggerFactory => {
     return (functionName?: string) => {
       const logger: pino.Logger = new Proxy(
-        _getLoggerFactory(companyId).then((l) =>
+        _getLoggerFactory(organizationId).then((l) =>
           l.child(
             {},
             {

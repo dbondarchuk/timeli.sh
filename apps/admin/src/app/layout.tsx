@@ -1,5 +1,5 @@
 import Providers from "@/components/admin/layout/providers";
-import { SonnerToaster, Toaster } from "@timelish/ui";
+import { SonnerToaster } from "@timelish/ui";
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale } from "next-intl/server";
@@ -47,8 +47,7 @@ export default async function RootLayout({
         <NextIntlClientProvider>
           <NextTopLoader showSpinner={false} color="hsl(var(--primary))" />
           <Providers>
-            <Toaster />
-            <SonnerToaster />
+            <SonnerToaster richColors position="top-right" />
             {children}
           </Providers>
         </NextIntlClientProvider>

@@ -43,7 +43,7 @@ export class AppointmentNotificationsJobProcessor {
     this.repository = new AppointmentNotificationsRepository(props);
     this.loggerFactory = getLoggerFactory(
       "AppointmentNotificationsJobProcessor",
-      props.companyId,
+      props.organizationId,
     );
   }
 
@@ -140,6 +140,7 @@ export class AppointmentNotificationsJobProcessor {
         await this.props.services.configurationService.getConfigurations(
           "booking",
           "general",
+          "brand",
           "social",
         );
 
@@ -154,17 +155,14 @@ export class AppointmentNotificationsJobProcessor {
       }
 
       const adminUrl = getAdminUrl();
-      const websiteUrl = getWebsiteUrl(
-        organization.slug,
-        config.general.domain,
-      );
+      const websiteUrl = getWebsiteUrl(organization.slug, organization.domain);
 
       const args = getArguments({
         appointment,
         config,
         customer: appointment.customer,
         useAppointmentTimezone: true,
-        locale: config.general.language,
+        locale: config.brand.language,
         adminUrl,
         websiteUrl,
       });

@@ -12,6 +12,9 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
   Button,
+  Card,
+  CardContent,
+  CardHeader,
   cn,
   FormControl,
   FormField,
@@ -89,9 +92,8 @@ export const AddonSelectCard: React.FC<AddonSelectProps> = ({
   });
 
   return (
-    <div
+    <Card
       className={cn(
-        "flex flex-row gap-2 px-2 py-4 border rounded",
         variants({
           dragging: isOverlay ? "overlay" : isDragging ? "over" : undefined,
         }),
@@ -99,20 +101,61 @@ export const AddonSelectCard: React.FC<AddonSelectProps> = ({
       ref={setNodeRef}
       style={style}
     >
-      <Button
-        type="button"
-        variant={"ghost"}
-        {...attributes}
-        {...listeners}
-        className="h-auto cursor-grab p-1 text-secondary-foreground/50"
-      >
-        <></>
-        <span className="sr-only">
-          {t("services.addonSelectCard.moveAddon")}
-        </span>
-        <GripVertical />
-      </Button>
-      <div className="grid grid-cols-1 gap-2 flex-grow w-full">
+      <CardHeader className="justify-between relative flex flex-row border-b px-3 py-3 w-full items-center">
+        <div className="flex flex-row items-center gap-2">
+          <Button
+            type="button"
+            variant={"ghost"}
+            {...attributes}
+            {...listeners}
+            className="h-auto cursor-grab p-1 text-secondary-foreground/50"
+          >
+            <></>
+            <span className="sr-only">
+              {t("services.addonSelectCard.moveAddon")}
+            </span>
+            <GripVertical />
+          </Button>
+          <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            {t("services.addonSelectCard.addon")}
+          </span>
+        </div>
+        <div className="flex flex-row items-start">
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                disabled={disabled}
+                variant="ghost-destructive"
+                size="icon"
+                type="button"
+              >
+                <Trash />
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>
+                  {t("services.addonSelectCard.deleteConfirmTitle")}
+                </AlertDialogTitle>
+                <AlertDialogDescription>
+                  {t("services.addonSelectCard.deleteConfirmDescription")}
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>
+                  {t("services.addonSelectCard.cancel")}
+                </AlertDialogCancel>
+                <AlertDialogAction asChild variant="destructive">
+                  <Button onClick={remove}>
+                    {t("services.addonSelectCard.delete")}
+                  </Button>
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
+      </CardHeader>
+      <CardContent className="py-6 grid grid-cols-1 gap-2 flex-grow w-full">
         <FormField
           control={form.control}
           name={`${name}.id`}
@@ -133,41 +176,7 @@ export const AddonSelectCard: React.FC<AddonSelectProps> = ({
             </FormItem>
           )}
         />
-      </div>
-      <div className="flex flex-row items-start">
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button
-              disabled={disabled}
-              variant="ghost-destructive"
-              size="icon"
-              type="button"
-            >
-              <Trash />
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>
-                {t("services.addonSelectCard.deleteConfirmTitle")}
-              </AlertDialogTitle>
-              <AlertDialogDescription>
-                {t("services.addonSelectCard.deleteConfirmDescription")}
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>
-                {t("services.addonSelectCard.cancel")}
-              </AlertDialogCancel>
-              <AlertDialogAction asChild variant="destructive">
-                <Button onClick={remove}>
-                  {t("services.addonSelectCard.delete")}
-                </Button>
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 };

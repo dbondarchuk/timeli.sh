@@ -5,8 +5,8 @@ import {
   Prettify,
   querySchema,
   WithAppId,
-  WithCompanyId,
   WithDatabaseId,
+  WithOrganizationId,
   zEmail,
   zNonEmptyString,
   zObjectId,
@@ -58,7 +58,7 @@ export const getFormSchemaWithUniqueCheck = (
 export type FormUpdateModel = z.infer<typeof formSchemaBase>;
 
 export type FormModel = Prettify<
-  WithCompanyId<
+  WithOrganizationId<
     WithDatabaseId<WithAppId<FormUpdateModel>> & {
       createdAt: Date;
       updatedAt: Date;
@@ -114,7 +114,7 @@ export type UpdateFormResponseModelWithNormalizedAnswers = Omit<
 };
 
 export type FormResponseModel = Prettify<
-  WithCompanyId<
+  WithOrganizationId<
     WithDatabaseId<WithAppId<UpdateFormResponseModelWithNormalizedAnswers>> & {
       createdAt: Date;
       updatedAt: Date;

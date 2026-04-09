@@ -16,13 +16,13 @@ export class BlogRepositoryService {
 
   public constructor(
     protected readonly appId: string,
-    protected readonly companyId: string,
+    protected readonly organizationId: string,
     protected readonly getDbConnection: IConnectedAppProps["getDbConnection"],
     protected readonly services: IConnectedAppProps["services"],
   ) {
     this.loggerFactory = getLoggerFactory(
       "BlogRepositoryService",
-      this.companyId,
+      this.organizationId,
     );
   }
 
@@ -37,7 +37,7 @@ export class BlogRepositoryService {
       appId: this.appId,
       createdAt: new Date(),
       updatedAt: new Date(),
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     } satisfies BlogPostEntity;
 
     await db
@@ -60,7 +60,7 @@ export class BlogRepositoryService {
     const { modifiedCount } = await db
       .collection<BlogPostEntity>(BLOG_POSTS_COLLECTION_NAME)
       .updateOne(
-        { _id: id, companyId: this.companyId },
+        { _id: id, organizationId: this.organizationId },
         {
           $set: {
             ...post,
@@ -87,7 +87,7 @@ export class BlogRepositoryService {
     const db = await this.getDbConnection();
     const { deletedCount } = await db
       .collection<BlogPostEntity>(BLOG_POSTS_COLLECTION_NAME)
-      .deleteOne({ _id: id, companyId: this.companyId });
+      .deleteOne({ _id: id, organizationId: this.organizationId });
 
     if (deletedCount === 0) {
       logger.warn({ id }, "Blog post not found");
@@ -109,7 +109,7 @@ export class BlogRepositoryService {
         _id: {
           $in: ids,
         },
-        companyId: this.companyId,
+        organizationId: this.organizationId,
       });
 
     if (deletedCount !== ids.length) {
@@ -145,7 +145,7 @@ export class BlogRepositoryService {
 
     const $and: Filter<BlogPost>[] = [
       {
-        companyId: this.companyId,
+        organizationId: this.organizationId,
         appId: this.appId,
       },
     ];
@@ -233,7 +233,7 @@ export class BlogRepositoryService {
 
     const db = await this.getDbConnection();
     const filter: Filter<BlogPost> = {
-      companyId: this.companyId,
+      organizationId: this.organizationId,
       appId: this.appId,
     };
 
@@ -270,7 +270,7 @@ export class BlogRepositoryService {
       .aggregate([
         {
           $match: {
-            companyId: this.companyId,
+            organizationId: this.organizationId,
             appId: this.appId,
             isPublished: true,
             tags: { $exists: true, $ne: [] },
@@ -314,7 +314,7 @@ export class BlogRepositoryService {
     logger.debug({ slug, id }, "Checking blog post slug uniqueness");
     const filter: Filter<BlogPost> = {
       slug,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
       appId: this.appId,
     };
     if (id) {
@@ -347,14 +347,26 @@ export class BlogRepositoryService {
     logger.debug("Blog posts collection created");
 
     const indexes = {
-      companyId_appId_1: { companyId: 1, appId: 1 },
-      companyId_appId_slug_1: { companyId: 1, appId: 1, slug: 1 },
-      companyId_appId_isPublished_1: { companyId: 1, appId: 1, isPublished: 1 },
-      companyId_appId_tags_1: { companyId: 1, appId: 1, tags: 1 },
-      companyId_appId_createdAt_1: { companyId: 1, appId: 1, createdAt: 1 },
-      companyId_appId_updatedAt_1: { companyId: 1, appId: 1, updatedAt: 1 },
-      companyId_appId_publicationDate_1: {
-        companyId: 1,
+      organizationId_appId_1: { organizationId: 1, appId: 1 },
+      organizationId_appId_slug_1: { organizationId: 1, appId: 1, slug: 1 },
+      organizationId_appId_isPublished_1: {
+        organizationId: 1,
+        appId: 1,
+        isPublished: 1,
+      },
+      organizationId_appId_tags_1: { organizationId: 1, appId: 1, tags: 1 },
+      organizationId_appId_createdAt_1: {
+        organizationId: 1,
+        appId: 1,
+        createdAt: 1,
+      },
+      organizationId_appId_updatedAt_1: {
+        organizationId: 1,
+        appId: 1,
+        updatedAt: 1,
+      },
+      organizationId_appId_publicationDate_1: {
+        organizationId: 1,
         appId: 1,
         publicationDate: 1,
       },

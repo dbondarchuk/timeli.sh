@@ -14,7 +14,7 @@ export interface IAssetsService {
   createAsset(
     asset: Omit<
       AssetEntity,
-      "_id" | "uploadedAt" | "size" | "hash" | "companyId"
+      "_id" | "uploadedAt" | "size" | "hash" | "organizationId"
     >,
     file: File,
   ): Promise<AssetEntity>;

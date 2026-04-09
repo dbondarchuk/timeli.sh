@@ -6,6 +6,7 @@ import {
   Card,
   CardContent,
   CardHeader,
+  CardTitle,
   ScrollArea,
 } from "@timelish/ui";
 import { cva } from "class-variance-authority";
@@ -22,6 +23,7 @@ export type NonSortableProps = {
   allCollapsed?: boolean;
   collapse?: () => void;
   className?: string;
+  addButtonText?: string;
 };
 
 export function NonSortable({
@@ -34,6 +36,7 @@ export function NonSortable({
   collapse,
   onAdd,
   className,
+  addButtonText,
 }: NonSortableProps) {
   const variants = cva(
     "h-fit max-h-[75vh] max-w-full bg-card flex flex-col flex-shrink-0 snap-center w-full",
@@ -41,33 +44,33 @@ export function NonSortable({
 
   return (
     <Card className={variants({ className })}>
-      <CardHeader className="justify-between flex flex-row items-center border-b p-4 text-left font-semibold space-y-0">
-        <div className="hidden md:block">&nbsp;</div>
-        {title}
-        <div className="flex flex-row gap-2 items-center">
-          {collapse && (
+      <CardHeader className="border-b">
+        <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground flex items-center justify-between">
+          <span>{title}</span>
+          <div className="flex flex-row gap-2 items-center">
+            {collapse && (
+              <Button
+                type="button"
+                disabled={disabled}
+                variant="ghost"
+                size="icon"
+                onClick={collapse}
+                aria-label={allCollapsed ? "Expand all" : "Collapse all"}
+              >
+                <ChevronsUpDown />
+              </Button>
+            )}
             <Button
               type="button"
-              disabled={disabled}
+              disabled={disabled || disabledAdd}
               variant="ghost"
-              size="icon"
-              onClick={collapse}
-              aria-label={allCollapsed ? "Expand all" : "Collapse all"}
+              onClick={onAdd}
+              aria-label={addButtonText ?? "Add a new item"}
             >
-              <ChevronsUpDown />
+              <Plus /> {addButtonText}
             </Button>
-          )}
-          <Button
-            type="button"
-            disabled={disabled || disabledAdd}
-            variant="ghost"
-            size="icon"
-            onClick={onAdd}
-            aria-label="Add a new item"
-          >
-            <Plus />
-          </Button>
-        </div>
+          </div>
+        </CardTitle>
       </CardHeader>
       <CardContent className="overflow-x-hidden p-2">
         <ScrollArea className="h-full">

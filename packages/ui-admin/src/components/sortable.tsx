@@ -15,6 +15,7 @@ import {
   Card,
   CardContent,
   CardHeader,
+  CardTitle,
   cn,
   ScrollArea,
 } from "@timelish/ui";
@@ -88,41 +89,42 @@ export function Sortable({
 
   return (
     <Card className={variants({ className })}>
-      <CardHeader className="justify-between flex flex-row items-center border-b p-4 text-left font-semibold space-y-0">
-        <div className="hidden md:block">&nbsp;</div>
-        <div
-          className={cn(
-            "flex flex-col gap-1 text-center",
-            isInvalid ? "text-destructive" : "",
-          )}
-        >
-          <div>{title}</div>
-          {invalidMessage && <div className="text-xs">{invalidMessage}</div>}
-        </div>
-        <div className="flex flex-row gap-2 items-center">
-          {collapse && (
+      <CardHeader className="border-b">
+        <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground flex items-center justify-between">
+          <div
+            className={cn(
+              "flex flex-col gap-1 text-center text-xs font-semibold uppercase tracking-wide text-muted-foreground",
+              isInvalid ? "text-destructive" : "",
+            )}
+          >
+            <div>{title}</div>
+            {invalidMessage && <div className="text-xs">{invalidMessage}</div>}
+          </div>
+          <div className="flex flex-row gap-2 items-center">
+            {collapse && (
+              <Button
+                type="button"
+                disabled={disabled}
+                variant="ghost"
+                onClick={collapse}
+                size="icon"
+                aria-label={allCollapsed ? "Expand all" : "Collapse all"}
+              >
+                <ChevronsUpDown />
+              </Button>
+            )}
             <Button
               type="button"
               disabled={disabled}
               variant="ghost"
-              onClick={collapse}
+              onClick={onAdd}
               size="icon"
-              aria-label={allCollapsed ? "Expand all" : "Collapse all"}
+              aria-label="Add a new item"
             >
-              <ChevronsUpDown />
+              <Plus />
             </Button>
-          )}
-          <Button
-            type="button"
-            disabled={disabled}
-            variant="ghost"
-            onClick={onAdd}
-            size="icon"
-            aria-label="Add a new item"
-          >
-            <Plus />
-          </Button>
-        </div>
+          </div>
+        </CardTitle>
       </CardHeader>
       <DndContext sensors={sensors} onDragOver={onDragOver}>
         <CardContent className="overflow-x-hidden p-2">

@@ -27,7 +27,7 @@ export default class UrlScheduleProviderConnectedApp
   public constructor(protected readonly props: IConnectedAppProps) {
     this.loggerFactory = getLoggerFactory(
       "UrlScheduleProviderConnectedApp",
-      props.companyId,
+      props.organizationId,
     );
   }
 

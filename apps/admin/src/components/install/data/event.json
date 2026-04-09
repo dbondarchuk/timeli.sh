@@ -1,0 +1,280 @@
+{
+  "event_planner": {
+    "label": "Event Planner",
+    "tags": [
+      "events",
+      "planning",
+      "weddings"
+    ],
+    "services": [
+      {
+        "name": "Consultation",
+        "durations": [
+          60
+        ],
+        "prices": [
+          80,
+          120,
+          200
+        ],
+        "description": "**Initial planning consultation** to discuss vision and budget. Includes next steps and potential timelines.",
+        "addons": [
+          {
+            "id": "consultation-addon-events-1",
+            "name": "Site walk-through",
+            "description": "**Venue or layout check** in addition to Consultation.",
+            "duration": 10,
+            "suggestedPrice": 20
+          },
+          {
+            "id": "consultation-addon-planning-2",
+            "name": "Run-of-show buffer",
+            "description": "**Reserved time** for last-minute changes around Consultation.",
+            "duration": 15,
+            "suggestedPrice": 32
+          }
+        ]
+      },
+      {
+        "name": "Partial Planning Package",
+        "durations": [
+          120
+        ],
+        "prices": [
+          500,
+          800
+        ],
+        "description": "**Partial planning support** for specific parts of an event. Includes vendor coordination and logistics.",
+        "addons": [
+          {
+            "id": "partial_planning_package-addon-events-1",
+            "name": "Site walk-through",
+            "description": "**Venue or layout check** in addition to Partial Planning Package.",
+            "duration": 10,
+            "suggestedPrice": 125
+          },
+          {
+            "id": "partial_planning_package-addon-planning-2",
+            "name": "Run-of-show buffer",
+            "description": "**Reserved time** for last-minute changes around Partial Planning Package.",
+            "duration": 15,
+            "suggestedPrice": 200
+          }
+        ]
+      },
+      {
+        "name": "Full-Service Planning",
+        "durations": [
+          240
+        ],
+        "prices": [
+          2000,
+          3500
+        ],
+        "description": "**End-to-end planning** and management for large events. Ensures smooth execution and vendor oversight.",
+        "addons": [
+          {
+            "id": "full_service_planning-addon-events-1",
+            "name": "Site walk-through",
+            "description": "**Venue or layout check** in addition to Full-Service Planning.",
+            "duration": 10,
+            "suggestedPrice": 500
+          },
+          {
+            "id": "full_service_planning-addon-planning-2",
+            "name": "Run-of-show buffer",
+            "description": "**Reserved time** for last-minute changes around Full-Service Planning.",
+            "duration": 15,
+            "suggestedPrice": 800
+          }
+        ]
+      }
+    ]
+  },
+  "dj": {
+    "label": "DJ",
+    "tags": [
+      "events",
+      "music",
+      "party"
+    ],
+    "services": [
+      {
+        "name": "Event DJ (per hour)",
+        "durations": [
+          60,
+          180
+        ],
+        "prices": [
+          80,
+          120,
+          200
+        ],
+        "description": "**DJ services for events** with professional sound and playlist curation. Packages available for multi-hour events.",
+        "addons": [
+          {
+            "id": "event_dj_per_hour-addon-events-1",
+            "name": "Site walk-through",
+            "description": "**Venue or layout check** in addition to Event DJ (per hour).",
+            "duration": 10,
+            "suggestedPrice": 20
+          },
+          {
+            "id": "event_dj_per_hour-addon-music-2",
+            "name": "Run-of-show buffer",
+            "description": "**Reserved time** for last-minute changes around Event DJ (per hour).",
+            "duration": 15,
+            "suggestedPrice": 32
+          }
+        ]
+      },
+      {
+        "name": "Ceremony DJ",
+        "durations": [
+          60
+        ],
+        "prices": [
+          200,
+          300
+        ],
+        "description": "**DJ services for ceremonies** with timing, cues, and audio setup. Ensures smooth transitions and sound quality.",
+        "addons": [
+          {
+            "id": "ceremony_dj-addon-events-1",
+            "name": "Site walk-through",
+            "description": "**Venue or layout check** in addition to Ceremony DJ.",
+            "duration": 10,
+            "suggestedPrice": 50
+          },
+          {
+            "id": "ceremony_dj-addon-music-2",
+            "name": "Run-of-show buffer",
+            "description": "**Reserved time** for last-minute changes around Ceremony DJ.",
+            "duration": 15,
+            "suggestedPrice": 80
+          }
+        ]
+      },
+      {
+        "name": "MC & DJ Package",
+        "durations": [
+          180,
+          360
+        ],
+        "prices": [
+          400,
+          700
+        ],
+        "description": "**Combined MC and DJ service** to host and provide music for your event. Includes planning and timeline coordination.",
+        "addons": [
+          {
+            "id": "mc_dj_package-addon-events-1",
+            "name": "Site walk-through",
+            "description": "**Venue or layout check** in addition to MC & DJ Package.",
+            "duration": 10,
+            "suggestedPrice": 100
+          },
+          {
+            "id": "mc_dj_package-addon-music-2",
+            "name": "Run-of-show buffer",
+            "description": "**Reserved time** for last-minute changes around MC & DJ Package.",
+            "duration": 15,
+            "suggestedPrice": 160
+          }
+        ]
+      }
+    ]
+  },
+  "photobooth_operator": {
+    "label": "Photobooth Operator",
+    "tags": [
+      "events",
+      "photo",
+      "entertainment"
+    ],
+    "services": [
+      {
+        "name": "Basic Booth (2 hours)",
+        "durations": [
+          120
+        ],
+        "prices": [
+          250,
+          350
+        ],
+        "description": "**Photo booth rental** including props and on-site operator. Fun addition to parties and weddings.",
+        "addons": [
+          {
+            "id": "basic_booth_2_hours-addon-events-1",
+            "name": "Site walk-through",
+            "description": "**Venue or layout check** in addition to Basic Booth (2 hours).",
+            "duration": 10,
+            "suggestedPrice": 63
+          },
+          {
+            "id": "basic_booth_2_hours-addon-photo-2",
+            "name": "Run-of-show buffer",
+            "description": "**Reserved time** for last-minute changes around Basic Booth (2 hours).",
+            "duration": 15,
+            "suggestedPrice": 100
+          }
+        ]
+      },
+      {
+        "name": "Custom Backdrop",
+        "durations": [
+          60,
+          120
+        ],
+        "prices": [
+          150,
+          250
+        ],
+        "description": "**Custom backdrop design and installation** for branded or themed events. Enhances photo experience.",
+        "addons": [
+          {
+            "id": "custom_backdrop-addon-events-1",
+            "name": "Site walk-through",
+            "description": "**Venue or layout check** in addition to Custom Backdrop.",
+            "duration": 10,
+            "suggestedPrice": 38
+          },
+          {
+            "id": "custom_backdrop-addon-photo-2",
+            "name": "Run-of-show buffer",
+            "description": "**Reserved time** for last-minute changes around Custom Backdrop.",
+            "duration": 15,
+            "suggestedPrice": 60
+          }
+        ]
+      },
+      {
+        "name": "Booth Package (4 hours)",
+        "durations": [
+          240
+        ],
+        "prices": [
+          400,
+          600
+        ],
+        "description": "**Extended booth package** for half-day events. Includes digital copies and basic printing if needed.",
+        "addons": [
+          {
+            "id": "booth_package_4_hours-addon-events-1",
+            "name": "Site walk-through",
+            "description": "**Venue or layout check** in addition to Booth Package (4 hours).",
+            "duration": 10,
+            "suggestedPrice": 100
+          },
+          {
+            "id": "booth_package_4_hours-addon-photo-2",
+            "name": "Run-of-show buffer",
+            "description": "**Reserved time** for last-minute changes around Booth Package (4 hours).",
+            "duration": 15,
+            "suggestedPrice": 160
+          }
+        ]
+      }
+    ]
+  }
+}

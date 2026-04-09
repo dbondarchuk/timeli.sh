@@ -98,7 +98,7 @@ export class GiftCardStudioConnectedApp
   public constructor(protected readonly props: IConnectedAppProps) {
     this.loggerFactory = getLoggerFactory(
       "GiftCardStudioConnectedApp",
-      props.companyId,
+      props.organizationId,
     );
   }
 
@@ -124,7 +124,7 @@ export class GiftCardStudioConnectedApp
     }
     const data = parsed.data;
 
-    const repo = this.getRepositoryService(appData._id, appData.companyId);
+    const repo = this.getRepositoryService(appData._id, appData.organizationId);
 
     switch (data.type) {
       case CreateDesignActionType:
@@ -221,7 +221,7 @@ export class GiftCardStudioConnectedApp
     const logger = this.loggerFactory("install");
     logger.debug({ appId: appData._id }, "Installing Gift Card Studio");
 
-    const repo = this.getRepositoryService(appData._id, appData.companyId);
+    const repo = this.getRepositoryService(appData._id, appData.organizationId);
     await repo.install();
     logger.debug(
       { appId: appData._id },
@@ -231,8 +231,7 @@ export class GiftCardStudioConnectedApp
     try {
       const { configurationService, templatesService } = this.props.services;
 
-      const { language } =
-        await configurationService.getConfiguration("general");
+      const { language } = await configurationService.getConfiguration("brand");
 
       let purchaserTemplateId: string | undefined;
       let recipientTemplateId: string | undefined;
@@ -346,7 +345,7 @@ export class GiftCardStudioConnectedApp
     const logger = this.loggerFactory("unInstall");
     logger.debug({ appId: appData._id }, "Uninstalling Gift Card Studio");
 
-    const repo = this.getRepositoryService(appData._id, appData.companyId);
+    const repo = this.getRepositoryService(appData._id, appData.organizationId);
     await repo.unInstall();
     logger.info({ appId: appData._id }, "Gift Card Studio uninstalled");
   }
@@ -375,7 +374,7 @@ export class GiftCardStudioConnectedApp
       logger.debug("Getting init options");
       const designs = await this.getRepositoryService(
         appData._id,
-        appData.companyId,
+        appData.organizationId,
       ).getDesigns({
         limit: undefined,
         sort: [{ id: "createdAt", desc: true }],
@@ -417,9 +416,9 @@ export class GiftCardStudioConnectedApp
       "Processing Gift Card Studio job",
     );
 
-    const repo = this.getRepositoryService(appData._id, appData.companyId);
+    const repo = this.getRepositoryService(appData._id, appData.organizationId);
     const jobProcessor = new GiftCardStudioJobProcessor(
-      appData.companyId,
+      appData.organizationId,
       this.props.services,
       repo,
     );
@@ -431,10 +430,10 @@ export class GiftCardStudioConnectedApp
     );
   }
 
-  private getRepositoryService(appId: string, companyId: string) {
+  private getRepositoryService(appId: string, organizationId: string) {
     return new GiftCardStudioRepositoryService(
       appId,
-      companyId,
+      organizationId,
       this.props.getDbConnection,
       this.props.services,
     );
@@ -822,7 +821,7 @@ export class GiftCardStudioConnectedApp
             purchasedGiftCardId: data.id,
           };
 
-    const repo = this.getRepositoryService(appData._id, appData.companyId);
+    const repo = this.getRepositoryService(appData._id, appData.organizationId);
     const purchased = await repo.getPurchasedGiftCardById(data.id);
     if (!purchased) {
       logger.warn({ purchasedId: data.id }, "Purchased gift card not found");
@@ -882,7 +881,7 @@ export class GiftCardStudioConnectedApp
     }
 
     const jobProcessor = new GiftCardStudioJobProcessor(
-      appData.companyId,
+      appData.organizationId,
       this.props.services,
       repo,
     );
@@ -1130,7 +1129,7 @@ export class GiftCardStudioConnectedApp
       "Gift card created, creating purchased gift card",
     );
 
-    const repo = this.getRepositoryService(appData._id, appData.companyId);
+    const repo = this.getRepositoryService(appData._id, appData.organizationId);
 
     const purchased = await repo.createPurchasedGiftCard({
       designId,
@@ -1355,7 +1354,10 @@ export class GiftCardStudioConnectedApp
         );
       }
 
-      const repo = this.getRepositoryService(appData._id, appData.companyId);
+      const repo = this.getRepositoryService(
+        appData._id,
+        appData.organizationId,
+      );
       const design = await repo.getDesignById(designId as string);
       if (!design) {
         logger.debug({ designId }, "Preview rejected: design not found");
@@ -1423,15 +1425,16 @@ export class GiftCardStudioConnectedApp
     const logger = this.loggerFactory("generatePreviewImage");
     logger.debug({ designId: payload.designId }, "Generating preview image");
     const design = designDoc.design;
-    const { currency, language } =
-      await this.props.services.configurationService.getConfiguration(
+    const { general, brand } =
+      await this.props.services.configurationService.getConfigurations(
         "general",
+        "brand",
       );
 
     const amountFormatted = formatAmountWithCurrency(
       payload.amount,
-      language,
-      currency,
+      brand.language,
+      general.currency,
     );
     const fields: FieldKeyValues = {
       amount: amountFormatted,

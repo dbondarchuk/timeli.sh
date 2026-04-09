@@ -1,7 +1,7 @@
 import { AllKeys, BaseAllKeys } from "@timelish/i18n";
 import * as z from "zod";
 import { Customer } from "../customers";
-import { WithCompanyId, WithDatabaseId } from "../database";
+import { WithDatabaseId, WithOrganizationId } from "../database";
 import { Prettify, zNonEmptyString, zObjectId, zUniqueArray } from "../utils";
 import { Payment } from "./payment";
 
@@ -45,7 +45,7 @@ export const getGiftCardSchemaWithUniqueCheck = (
 
 export type GiftCardUpdateModel = z.infer<typeof giftCardSchema>;
 export type GiftCard = Prettify<
-  WithCompanyId<
+  WithOrganizationId<
     WithDatabaseId<GiftCardUpdateModel> & {
       createdAt: Date;
       updatedAt: Date;

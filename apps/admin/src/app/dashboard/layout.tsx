@@ -11,9 +11,15 @@ import {
   SidebarProvider,
 } from "@timelish/ui";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { CookiesProvider } from "../../components/cookies-provider";
-import { getServicesContainer, getWebsiteUrl } from "../utils";
+import {
+  getOrganizationIdAndSlug,
+  getServicesContainer,
+  getSession,
+  getWebsiteUrl,
+} from "../utils";
 import { NotificationsToastStream } from "./notifications-toast-stream";
 
 const SIDEBAR_COOKIE_NAME = "admin-sidebar-open";
@@ -23,16 +29,33 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const session = await getSession();
+
+  if (!session) {
+    redirect("/auth/signin");
+  }
+
+  if (!session.user.organizationId || !session.user.organizationInstalled) {
+    redirect("/install");
+  }
+
   const servicesContainer = await getServicesContainer();
 
   const cookieStore = await cookies();
   const sidebarDefaultOpen =
     cookieStore.get(SIDEBAR_COOKIE_NAME)?.value === "true";
 
-  const { name, logo } =
-    await servicesContainer.configurationService.getConfiguration("general");
+  const { general, brand } =
+    await servicesContainer.configurationService.getConfigurations(
+      "general",
+      "brand",
+    );
+
+  const name = general.name;
+  const logo = brand.logo;
 
   const websiteUrl = await getWebsiteUrl();
+  const { organizationDomain } = await getOrganizationIdAndSlug();
 
   const groups: NavItemGroup[] = [
     ...navItems.map((x) => ({
@@ -98,12 +121,14 @@ export default async function DashboardLayout({
       });
     });
 
-  const config =
-    await servicesContainer.configurationService.getConfiguration("general");
-
   return (
     <div className="flex">
-      <ConfigProvider config={config} websiteUrl={websiteUrl}>
+      <ConfigProvider
+        generalConfiguration={general}
+        brandConfiguration={brand}
+        domain={organizationDomain}
+        websiteUrl={websiteUrl}
+      >
         <SidebarProvider
           defaultOpen={sidebarDefaultOpen}
           cookieName={SIDEBAR_COOKIE_NAME}

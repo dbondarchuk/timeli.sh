@@ -2,12 +2,17 @@
 
 const fs = require("fs");
 const path = require("path");
+const { spawnSync } = require("child_process");
 
 // Configuration
 const LOCALES_DIR = path.join(__dirname, "../src/locales");
 const APPS_DIR = path.join(__dirname, "../../app-store/src/apps");
 const BASE_LOCALE = "en"; // Use English as the base locale to compare against
 const CONFIG_FILE = path.join(__dirname, "../.i18n-check.json");
+const TRANSLATE_SCRIPT = path.join(
+  __dirname,
+  "translate-missing-locale-keys.js",
+);
 
 // Load configuration file if it exists
 let config = {
@@ -17,6 +22,11 @@ let config = {
   checkApps: true, // New option to enable/disable app translation checking
   ignoreExtraKeys: [],
   ignoreMissingKeys: [],
+};
+
+let cliOptions = {
+  fix: false,
+  provider: "google",
 };
 
 try {
@@ -523,13 +533,239 @@ function printReport(report, appReport = null) {
 }
 
 /**
+ * Apply fixes for missing translations by invoking translation script.
+ * Fix mode addresses both missing and extra keys/files.
+ * @param {Object} report - Central translation report
+ * @param {Object} appReport - App translation report
+ */
+function applyFixes(report, appReport = null) {
+  const cleanupResult = cleanupExtras(report, appReport);
+  const targets = new Map();
+
+  // Central translation targets: "<locale>/<filename>" => [target, locale]
+  for (const [locale, files] of Object.entries(report.missing || {})) {
+    for (const [filename, missingKeys] of Object.entries(files || {})) {
+      if (!missingKeys || missingKeys.length === 0) continue;
+      const dedupeKey = `central:${locale}:${filename}`;
+      targets.set(dedupeKey, [filename, locale]);
+    }
+  }
+
+  // App translation targets: "<app>/<filename>" + locale
+  if (appReport) {
+    for (const [appName, locales] of Object.entries(appReport.missing || {})) {
+      for (const [locale, files] of Object.entries(locales || {})) {
+        for (const [filename, missingKeys] of Object.entries(files || {})) {
+          if (!missingKeys || missingKeys.length === 0) continue;
+          const dedupeKey = `app:${appName}:${locale}:${filename}`;
+          const target = `${appName}/${filename}`;
+          targets.set(dedupeKey, [target, locale]);
+        }
+      }
+    }
+  }
+
+  if (targets.size === 0) {
+    if (cleanupResult.changed === 0) {
+      console.log("\n🛠️  --fix: no missing or extra translations to fix.");
+    } else {
+      console.log(
+        `\n🛠️  --fix: cleaned ${cleanupResult.changed} extra item(s); no missing translations to translate.`,
+      );
+    }
+    return { attempted: 0, failed: 0, changed: cleanupResult.changed };
+  }
+
+  console.log(`\n🛠️  --fix: attempting fixes for ${targets.size} target(s)...`);
+  let attempted = 0;
+  let failed = 0;
+
+  for (const [target, locale] of targets.values()) {
+    attempted++;
+    console.log(
+      `\n➡️  Fixing ${target} (${locale}) using ${cliOptions.provider}...`,
+    );
+    const result = spawnSync(
+      process.execPath,
+      [TRANSLATE_SCRIPT, target, locale, `--provider=${cliOptions.provider}`],
+      { stdio: "inherit" },
+    );
+
+    if (result.status !== 0) {
+      failed++;
+      console.log(`❌ Fix failed for ${target} (${locale})`);
+    } else {
+      console.log(`✅ Fixed ${target} (${locale})`);
+    }
+  }
+
+  return {
+    attempted,
+    failed,
+    changed: cleanupResult.changed + attempted - failed,
+  };
+}
+
+/**
+ * Cleanup extra keys/files reported by the checker.
+ * @param {Object} report - Central translation report
+ * @param {Object} appReport - App translation report
+ * @returns {{changed: number}} Number of applied cleanup changes
+ */
+function cleanupExtras(report, appReport = null) {
+  let changed = 0;
+
+  // Central locale extras
+  for (const [locale, files] of Object.entries(report.extra || {})) {
+    for (const [filename, extraKeys] of Object.entries(files || {})) {
+      const localeFilePath = path.join(LOCALES_DIR, locale, filename);
+      if (!Array.isArray(extraKeys) || extraKeys.length === 0) continue;
+
+      if (extraKeys.includes("EXTRA_FILE")) {
+        if (fs.existsSync(localeFilePath)) {
+          fs.unlinkSync(localeFilePath);
+          changed++;
+          console.log(`🧹 Removed extra file: ${localeFilePath}`);
+        }
+        continue;
+      }
+
+      if (!fs.existsSync(localeFilePath)) continue;
+      const localeContent = loadJsonSafely(localeFilePath);
+      if (!localeContent || typeof localeContent !== "object") continue;
+
+      let fileChanged = false;
+      for (const keyPath of extraKeys) {
+        if (removeKeyByPath(localeContent, keyPath)) {
+          fileChanged = true;
+          changed++;
+          console.log(
+            `🧹 Removed extra key: ${locale}/${filename} -> ${keyPath}`,
+          );
+        }
+      }
+
+      if (fileChanged) {
+        writeJsonFile(localeFilePath, localeContent);
+      }
+    }
+  }
+
+  // App locale extras
+  if (appReport) {
+    for (const [appName, locales] of Object.entries(appReport.extra || {})) {
+      for (const [locale, files] of Object.entries(locales || {})) {
+        for (const [filename, extraKeys] of Object.entries(files || {})) {
+          const appFilePath = path.join(
+            APPS_DIR,
+            appName,
+            "translations",
+            locale,
+            filename,
+          );
+          if (!Array.isArray(extraKeys) || extraKeys.length === 0) continue;
+
+          if (extraKeys.includes("EXTRA_FILE")) {
+            if (fs.existsSync(appFilePath)) {
+              fs.unlinkSync(appFilePath);
+              changed++;
+              console.log(`🧹 Removed extra app file: ${appFilePath}`);
+            }
+            continue;
+          }
+
+          if (!fs.existsSync(appFilePath)) continue;
+          const localeContent = loadJsonSafely(appFilePath);
+          if (!localeContent || typeof localeContent !== "object") continue;
+
+          let fileChanged = false;
+          for (const keyPath of extraKeys) {
+            if (removeKeyByPath(localeContent, keyPath)) {
+              fileChanged = true;
+              changed++;
+              console.log(
+                `🧹 Removed extra app key: ${appName}/${locale}/${filename} -> ${keyPath}`,
+              );
+            }
+          }
+
+          if (fileChanged) {
+            writeJsonFile(appFilePath, localeContent);
+          }
+        }
+      }
+    }
+  }
+
+  return { changed };
+}
+
+function loadJsonSafely(filePath) {
+  try {
+    const content = fs.readFileSync(filePath, "utf8");
+    return JSON.parse(content);
+  } catch {
+    return null;
+  }
+}
+
+function writeJsonFile(filePath, content) {
+  fs.writeFileSync(filePath, `${JSON.stringify(content, null, 2)}\n`, "utf8");
+}
+
+/**
+ * Remove a dot-path key from object and cleanup empty parent objects.
+ * @param {Object} obj - Object to mutate
+ * @param {string} keyPath - Dot-separated path
+ * @returns {boolean} true when key existed and was removed
+ */
+function removeKeyByPath(obj, keyPath) {
+  const parts = String(keyPath).split(".");
+  const stack = [];
+  let current = obj;
+
+  for (let i = 0; i < parts.length - 1; i++) {
+    const key = parts[i];
+    if (!current || typeof current !== "object" || !(key in current)) {
+      return false;
+    }
+    stack.push([current, key]);
+    current = current[key];
+  }
+
+  const leaf = parts[parts.length - 1];
+  if (!current || typeof current !== "object" || !(leaf in current)) {
+    return false;
+  }
+  delete current[leaf];
+
+  // Cleanup empty objects from leaf to root
+  for (let i = stack.length - 1; i >= 0; i--) {
+    const [parent, key] = stack[i];
+    const value = parent[key];
+    if (
+      value &&
+      typeof value === "object" &&
+      !Array.isArray(value) &&
+      Object.keys(value).length === 0
+    ) {
+      delete parent[key];
+    } else {
+      break;
+    }
+  }
+
+  return true;
+}
+
+/**
  * Main function
  */
 function main() {
   try {
     console.log("🔍 Checking translations...");
 
-    const report = checkTranslations();
+    let report = checkTranslations();
     let appReport = null;
 
     if (config.checkApps) {
@@ -538,6 +774,19 @@ function main() {
     }
 
     printReport(report, appReport);
+
+    if (cliOptions.fix) {
+      const fixResult = applyFixes(report, appReport);
+      if (fixResult.attempted > 0 || fixResult.changed > 0) {
+        console.log("\n🔁 Re-checking translations after --fix...");
+        report = checkTranslations();
+        appReport = config.checkApps ? checkAppTranslations() : null;
+        printReport(report, appReport);
+      }
+      if (fixResult.failed > 0) {
+        console.log(`\n⚠️  ${fixResult.failed} fix target(s) failed.`);
+      }
+    }
 
     // Determine if we should exit with error code based on config
     let shouldFail = false;
@@ -588,6 +837,17 @@ process.argv.slice(2).forEach((arg) => {
     config.checkApps = false;
   } else if (arg === "--check-apps") {
     config.checkApps = true;
+  } else if (arg === "--fix") {
+    cliOptions.fix = true;
+  } else if (arg.startsWith("--provider=")) {
+    const provider = arg.slice("--provider=".length).trim();
+    if (!["google", "mymemory"].includes(provider)) {
+      console.error(
+        `❌ Invalid provider "${provider}". Use --provider=google or --provider=mymemory.`,
+      );
+      process.exit(1);
+    }
+    cliOptions.provider = provider;
   } else if (arg === "--help" || arg === "-h") {
     console.log(`
 Usage: yarn check-translations [options]
@@ -599,6 +859,8 @@ Options:
   --fail-on-missing      Fail the build if missing translations are found (default)
   --skip-apps            Skip checking app translations (only check central translations)
   --check-apps           Check app translations (default)
+  --fix                  Auto-fix missing + extra translations, then re-check
+  --provider=<name>      Translation provider for --fix: google (default) or mymemory
   --help, -h             Show this help message
 
 Examples:
@@ -606,6 +868,8 @@ Examples:
   yarn check-translations --skip-apps        # Only check central translations
   yarn check-translations --no-fail-on-extra # Don't fail on extra translations
   yarn check-translations --fail-on-extra    # Fail on both missing and extra
+  yarn check-translations --fix              # Auto-fix missing/extra translations and re-check
+  yarn check-translations --fix --provider=mymemory
 `);
     process.exit(0);
   }

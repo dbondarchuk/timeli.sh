@@ -1,7 +1,7 @@
 import {
   asOptinalNumberField,
-  WithCompanyId,
   WithDatabaseId,
+  WithOrganizationId,
   zNonEmptyString,
   zOptionalOrMinMaxLengthString,
   zUniqueArray,
@@ -52,7 +52,7 @@ export type FormsFields<
 export type FormsFieldsWithId<
   TData extends Record<string, any> | undefined = undefined,
 > = WithDatabaseId<
-  WithCompanyId<FormsField<TData> & { appId: string; formId: string }>
+  WithOrganizationId<FormsField<TData> & { appId: string; formId: string }>
 >[];
 
 export type FormsFieldOptionsData = {
