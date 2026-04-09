@@ -119,6 +119,7 @@
     "footer": "Footer",
     "settings": "Settings",
     "general": "General",
+    "brand": "Brand",
     "social": "Social",
     "scripts": "Scripts",
     "communications": "Communications",
@@ -972,13 +973,13 @@
             }
           },
           "withDeposit": {
-            "title": "With deposit",
+            "title": "For appointments with deposit",
             "description": "Configure cancellation policy for option when deposit is required",
             "enabled": "Enabled",
             "enabledTooltip": "Whether to allow cancellation for option when deposit is required"
           },
           "withoutDeposit": {
-            "title": "Without deposit",
+            "title": "For appointments without deposit",
             "description": "Configure cancellation policy for option when deposit is not required",
             "enabled": "Enabled",
             "enabledTooltip": "Whether to allow cancellation for option when deposit is not required"
@@ -1206,7 +1207,7 @@
         "addNew": "Add new",
         "optionsLabel": "Any of following options:",
         "addonsLabel": "Any of following add-on bundles:",
-        "andLabel": "And",
+        "withLabel": "With",
         "removeLimitTitle": "Are you absolutely sure?",
         "removeLimitDescription": "Are you sure you want to remove this limit?",
         "limitToDescription": "You can limit this discount to specific options and add-ons",
@@ -1663,22 +1664,13 @@
   "settings": {
     "general": {
       "title": "General Settings",
-      "description": "Adjust general settings",
+      "description": "Business name, contact details, location, and regional defaults for your organization.",
       "form": {
-        "name": "Name",
-        "namePlaceholder": "Website name",
-        "title": "Title",
-        "titlePlaceholder": "Website title",
-        "description": "Description",
-        "descriptionPlaceholder": "Website description",
-        "keywords": "Keywords",
-        "keywordsTooltip": "Website keywords separated by comma",
-        "keywordValidation": "Keyword must be at least 2 characters",
+        "name": "Business name",
+        "namePlaceholder": "Your business name",
         "phone": "Phone number",
         "email": "Email address",
         "emailPlaceholder": "Your email address",
-        "domain": "Custom domain",
-        "domainPlaceholder": "example.com",
         "address": "Address",
         "addressTooltip": "Physical office address",
         "addressPlaceholder": "Physical office address",
@@ -1689,15 +1681,73 @@
         "currencyTooltip": "Currency that is used for payments",
         "currencyPlaceholder": "Select currency",
         "currencyLabelFormat": "{currency} ({code}, {symbol})",
-        "logo": "Logo",
-        "logoTooltip": "URL to image to be used as logo (for example in header)",
-        "logoPlaceholder": "Logo URL",
-        "language": "Language",
-        "favicon": "Favicon",
-        "faviconTooltip": "URL to image to be used as favicon (icon that is shown in browser tab)",
-        "faviconPlaceholder": "Favicon URL",
         "timeZone": "Time zone",
         "selectTimeZone": "Select time zone",
+        "customDomain": {
+          "title": "Custom domain",
+          "empty": "No custom domain configured",
+          "label": "Domain",
+          "placeholder": "example.com",
+          "change": "Change domain",
+          "save": "Save domain",
+          "dialog": {
+            "title": "Change custom domain",
+            "description": "Set the public domain for your organization."
+          },
+          "toasts": {
+            "changesSaved": "Custom domain saved.",
+            "requestError": "There was a problem updating custom domain."
+          }
+        },
+        "toasts": {
+          "changesSaved": "Your changes were saved.",
+          "requestError": "There was a problem with your request."
+        }
+      }
+    },
+    "brand": {
+      "title": "Site & brand",
+      "description": "Business details, website and SEO, social links, and styling.",
+      "form": {
+        "visualSectionTitle": "Visual identity",
+        "websiteSectionTitle": "Website",
+        "seoSectionTitle": "SEO",
+        "title": "Site title",
+        "titlePlaceholder": "Title shown in the browser and search results",
+        "description": "Meta description",
+        "descriptionPlaceholder": "Short description for search engines",
+        "keywords": "Keywords",
+        "keywordsTooltip": "Website keywords to help search engines understand your site",
+        "keywordValidation": "Keyword must be at least 2 characters",
+        "domain": "Custom domain",
+        "domainTooltip": "Optional. Your public site domain without https://",
+        "domainPlaceholder": "example.com",
+        "logo": "Logo",
+        "logoTooltip": "Image used in the site header and previews",
+        "logoPlaceholder": "Logo URL",
+        "noLogo": "No logo",
+        "favicon": "Favicon",
+        "faviconTooltip": "Icon shown in browser tabs",
+        "faviconPlaceholder": "Favicon URL",
+        "language": "Default site language",
+        "timeliAddress": {
+          "sectionTitle": "Your Timeli.sh address",
+          "websiteUrlLabel": "Website URL",
+          "connectCustomDomain": "Connect custom domain",
+          "disconnectCustomDomain": "Disconnect custom domain",
+          "organizationSlugLabel": "Organization slug",
+          "updateSlugComingSoon": "Update slug (coming soon)",
+          "connectDialogTitle": "Connect custom domain",
+          "connectDialogDescription": "Connect your own domain to Timeli.sh to take full control of your brand.",
+          "connectDialogDnsTitle": "Configure DNS first",
+          "connectDialogDnsARecord": "At your DNS provider, create an A record for @ (apex) or your subdomain pointing to {ip}.",
+          "connectDialogDnsCname": "Or create a CNAME or ALIAS record pointing to {host} — the hostname for your Timeli.sh site (your default URL is {baseUrl}).",
+          "domainLabel": "Domain",
+          "connectButton": "Connect",
+          "copyWebsiteUrlAriaLabel": "Copy website URL",
+          "websiteUrlCopied": "Website URL copied to clipboard.",
+          "websiteUrlCopyFailed": "Could not copy the URL."
+        },
         "toasts": {
           "changesSaved": "Your changes were saved.",
           "requestError": "There was a problem with your request."
@@ -1818,23 +1868,25 @@
           },
           "cancellationPolicy": {
             "default": {
-              "title": "Default Policy",
-              "tooltip": "Configure default policy that will be applied if no other policy is applicable"
+              "title": "Default Rule",
+              "tooltip": "Configure default rule that will be applied if no other rule is applicable"
             },
             "policies": {
-              "title": "Policies",
-              "add": "Add policy"
-            }
+              "title": "Override Rules",
+              "add": "Add rule"
+            },
+            "policy": "Rule"
           },
           "reschedulePolicy": {
             "default": {
-              "title": "Default Policy",
-              "tooltip": "Configure default policy that will be applied if no other policy is applicable"
+              "title": "Default Rule",
+              "tooltip": "Configure default rule that will be applied if no other rule is applicable"
             },
             "policies": {
-              "title": "Policies",
-              "add": "Add policy"
-            }
+              "title": "Override Rules",
+              "add": "Add rule"
+            },
+            "policy": "Rule"
           }
         },
         "cards": {
@@ -2416,6 +2468,13 @@
     "handledBy": "Text message reply - notify user"
   },
   "cancellationsAndReschedules": {
+    "timeBeforeAppointment": {
+      "header": "When it's at least {duration} before the appointment",
+      "week": "{count, plural, =1 {1 week} other {# weeks}}",
+      "day": "{count, plural, =1 {1 day} other {# days}}",
+      "hour": "{count, plural, =1 {1 hour} other {# hours}}",
+      "minute": "{count, plural, =0 {0 minutes} =1 {1 minute} other {# minutes}}"
+    },
     "cancellationPolicy": {
       "title": "Cancellations",
       "withDeposit": {
@@ -2434,13 +2493,16 @@
         }
       },
       "default": {
-        "title": "Default Policy",
-        "tooltip": "Configure default policy that will be applied if no other policy is applicable"
+        "title": "Default Rule",
+        "tooltip": "Configure default policy that will be applied if no other policy is applicable",
+        "label": "Applies when no other rule is applicable"
       },
       "policies": {
-        "title": "Policies",
-        "add": "Add policy"
+        "title": "Override Rules",
+        "add": "Add rule",
+        "badge": "Time-based rules"
       },
+      "policy": "Rule",
       "action": {
         "label": "Action",
         "tooltip": "Configure action to be taken when a cancellation is requested",
@@ -2498,13 +2560,16 @@
       "title": "Reschedules",
       "enabledTooltip": "Enables ability for customers to reschedule an appointment on their own",
       "default": {
-        "title": "Default Policy",
-        "tooltip": "Configure default policy that will be applied if no other policy is applicable"
+        "title": "Default Rule",
+        "tooltip": "Configure default rule that will be applied if no other rule is applicable",
+        "label": "Applies when no other rule is applicable"
       },
       "policies": {
-        "title": "Policies",
-        "add": "Add policy"
+        "title": "Override Rules",
+        "add": "Add rule",
+        "badge": "Time-based rules"
       },
+      "policy": "Rule",
       "action": {
         "label": "Action",
         "tooltip": "Configure action to be taken when a reschedule is requested",

@@ -312,6 +312,7 @@ export default class CustomerTextMessageNotificationConnectedApp
         await this.props.services.configurationService.getConfigurations(
           "booking",
           "general",
+          "brand",
           "social",
         );
 
@@ -364,17 +365,14 @@ export default class CustomerTextMessageNotificationConnectedApp
       }
 
       const adminUrl = getAdminUrl();
-      const websiteUrl = getWebsiteUrl(
-        organization.slug,
-        config.general.domain,
-      );
+      const websiteUrl = getWebsiteUrl(organization.slug, organization.domain);
 
       const args = getArguments({
         appointment,
         config,
         customer: appointment.customer,
         useAppointmentTimezone: true,
-        locale: config.general.language,
+        locale: config.brand.language,
         adminUrl,
         websiteUrl,
       });

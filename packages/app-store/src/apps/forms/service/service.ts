@@ -1258,6 +1258,7 @@ export class FormsConnectedApp implements IConnectedApp {
         await this.props.services.configurationService.getConfigurations(
           "booking",
           "general",
+          "brand",
           "social",
         );
 
@@ -1285,12 +1286,9 @@ export class FormsConnectedApp implements IConnectedApp {
         return;
       }
 
-      const language = config.general.language ?? "en";
+      const language = config.brand.language ?? "en";
       const adminUrl = getAdminUrl();
-      const websiteUrl = getWebsiteUrl(
-        organization.slug,
-        config.general.domain,
-      );
+      const websiteUrl = getWebsiteUrl(organization.slug, organization.domain);
 
       const listFormat = new Intl.ListFormat(locale, { style: "short" });
       const formatAnswerValue = (

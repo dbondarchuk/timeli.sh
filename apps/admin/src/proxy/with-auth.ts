@@ -32,6 +32,12 @@ export const withAuth: MiddlewareProxy = (next) => {
         ?.organizationSlug || "",
     );
 
+    request.headers.set(
+      "x-organization-domain",
+      (session?.user as { organizationDomain?: string } | undefined)
+        ?.organizationDomain || "",
+    );
+
     return next(request, event);
   };
 };

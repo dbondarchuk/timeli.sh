@@ -10,6 +10,8 @@ import {
 import { getDbConnection } from "./database";
 import { BaseService } from "./services/base.service";
 
+const DOMAIN_ALREADY_IN_USE_ERROR = "domain_already_in_use";
+
 export class OrganizationService
   extends BaseService
   implements IOrganizationService
@@ -31,6 +33,51 @@ export class OrganizationService
       return null;
     }
     return organization;
+  }
+
+  public async setDomain(domain?: string | null): Promise<void> {
+    const logger = this.loggerFactory("setDomain");
+    const normalized = domain?.trim().toLowerCase();
+    logger.debug({ domain: normalized }, "Setting organization domain");
+    const db = await getDbConnection();
+    const organizations = db.collection<Organization>(
+      ORGANIZATIONS_COLLECTION_NAME,
+    );
+
+    if (normalized) {
+      const existingOrganization = await organizations.findOne({
+        _id: { $ne: this.companyId },
+        domain: normalized,
+      });
+
+      // Legacy fallback for domains stored in brand configuration.
+      const configuration = db.collection<ConfigurationOptionWithCompanyId<"brand">>(
+        CONFIGURATION_COLLECTION_NAME,
+      );
+      const existingBrandDomain = await configuration.findOne({
+        companyId: { $ne: this.companyId },
+        key: "brand",
+        "value.domain": normalized,
+      });
+
+      if (existingOrganization || existingBrandDomain) {
+        logger.warn({ domain: normalized }, "Domain is already in use");
+        const error = new Error(DOMAIN_ALREADY_IN_USE_ERROR);
+        error.name = DOMAIN_ALREADY_IN_USE_ERROR;
+        throw error;
+      }
+
+      await organizations.updateOne(
+        { _id: this.companyId },
+        { $set: { domain: normalized } },
+      );
+      return;
+    }
+
+    await organizations.updateOne(
+      { _id: this.companyId },
+      { $unset: { domain: "" } },
+    );
   }
 }
 
@@ -54,36 +101,15 @@ export class StaticOrganizationService {
   public async getOrganizationByDomain(
     domain: string,
   ): Promise<Organization | null> {
-    // console.debug("Getting organization by domain");
     const db = await getDbConnection();
-    const organizations = db.collection<
-      ConfigurationOptionWithCompanyId<"general">
-    >(CONFIGURATION_COLLECTION_NAME);
-
-    const configuration = await organizations.findOne({
-      key: "general",
-      "value.domain": domain,
-    });
-
-    if (!configuration) {
-      // console.warn({ domain }, "Configuration not found by domain");
-      return null;
-    }
-
-    const companyId = configuration.companyId;
-    if (!companyId) {
-      // console.warn({ domain }, "Company ID not found by domain");
-      return null;
-    }
-
-    const organization = await new OrganizationService(
-      companyId,
-    ).getOrganization();
+    const organizations = db.collection<Organization>(
+      ORGANIZATIONS_COLLECTION_NAME,
+    );
+    const organization = await organizations.findOne({ domain });
     if (!organization) {
-      // console.warn({ companyId }, "Organization not found by company ID");
+      // console.warn({ domain }, "Organization not found by domain");
       return null;
     }
-
     return organization;
   }
 }

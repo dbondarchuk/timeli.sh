@@ -241,6 +241,9 @@
         "label": "Номер телефону",
         "placeholder": "+1234567890"
       },
+      "dateTime": {
+        "label": "Дата та час"
+      },
       "date": {
         "label": "Дата та час",
         "placeholder": "Виберіть дату"

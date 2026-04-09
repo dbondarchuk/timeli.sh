@@ -13,6 +13,9 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
   Button,
+  Card,
+  CardContent,
+  CardHeader,
   cn,
   FormControl,
   FormField,
@@ -98,10 +101,11 @@ export const SelectFieldOptionCard: React.FC<SelectFieldOptionProps> = ({
     },
   });
 
+  const option = form.getValues(`${name}.option`);
+
   return (
-    <div
+    <Card
       className={cn(
-        "flex flex-row gap-2 px-2 py-4 bg-background rounded",
         variants({
           dragging: isOverlay ? "overlay" : isDragging ? "over" : undefined,
         }),
@@ -109,21 +113,61 @@ export const SelectFieldOptionCard: React.FC<SelectFieldOptionProps> = ({
       ref={setNodeRef}
       style={style}
     >
-      <Button
-        type="button"
-        variant={"ghost"}
-        disabled={disabled}
-        {...attributes}
-        {...listeners}
-        className="h-auto cursor-grab p-1 text-secondary-foreground/50"
-      >
-        <></>
-        <span className="sr-only">
-          {t("form.fields.select.options.moveOption")}
-        </span>
-        <GripVertical />
-      </Button>
-      <div className="flex flex-col md:flex-row gap-2 flex-grow w-full">
+      <CardHeader className="justify-between relative flex flex-row border-b px-3 py-3 w-full items-center">
+        <div className="flex flex-row items-center gap-2">
+          <Button
+            type="button"
+            variant={"ghost"}
+            disabled={disabled}
+            {...attributes}
+            {...listeners}
+            className="h-auto cursor-grab p-1 text-secondary-foreground/50"
+          >
+            <span className="sr-only">
+              {t("form.fields.select.options.moveOption")}
+            </span>
+            <GripVertical />
+          </Button>
+          <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            {option || t("form.fields.select.options.option")}
+          </span>
+        </div>
+        <div className="flex flex-row items-center">
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                disabled={disabled}
+                variant="ghost-destructive"
+                size="icon"
+                type="button"
+              >
+                <Trash size={20} />
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>
+                  {t("form.fields.select.options.deleteConfirmTitle")}
+                </AlertDialogTitle>
+                <AlertDialogDescription>
+                  {t("form.fields.select.options.deleteConfirmDescription")}
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>
+                  {tAdmin("common.buttons.cancel")}
+                </AlertDialogCancel>
+                <AlertDialogAction asChild variant="destructive">
+                  <Button onClick={remove}>
+                    {tAdmin("common.buttons.delete")}
+                  </Button>
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
+      </CardHeader>
+      <CardContent className="py-6 flex flex-col md:flex-row gap-2 flex-grow w-full">
         <FormField
           control={form.control}
           name={`${name}.option`}
@@ -138,41 +182,7 @@ export const SelectFieldOptionCard: React.FC<SelectFieldOptionProps> = ({
             </FormItem>
           )}
         />
-      </div>
-      <div className="flex flex-row items-center">
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button
-              disabled={disabled}
-              variant="ghost-destructive"
-              size="icon"
-              type="button"
-            >
-              <Trash size={20} />
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>
-                {t("form.fields.select.options.deleteConfirmTitle")}
-              </AlertDialogTitle>
-              <AlertDialogDescription>
-                {t("form.fields.select.options.deleteConfirmDescription")}
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>
-                {tAdmin("common.buttons.cancel")}
-              </AlertDialogCancel>
-              <AlertDialogAction asChild variant="destructive">
-                <Button onClick={remove}>
-                  {tAdmin("common.buttons.delete")}
-                </Button>
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 };

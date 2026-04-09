@@ -201,8 +201,15 @@ export class EventsService extends BaseService implements IEventsService {
       "Creating event",
     );
 
-    const { booking: config, general: generalConfig } =
-      await this.configurationService.getConfigurations("booking", "general");
+    const {
+      booking: config,
+      general: generalConfig,
+      brand: brandConfig,
+    } = await this.configurationService.getConfigurations(
+      "booking",
+      "general",
+      "brand",
+    );
 
     if (!force) {
       const isAvailable = await this.verifyTimeAvailability(
@@ -364,7 +371,7 @@ export class EventsService extends BaseService implements IEventsService {
               name: appointment.customer.name,
               service: appointment.option.name,
               dateTime: DateTime.fromJSDate(appointment.dateTime)
-                .setLocale(generalConfig.language)
+                .setLocale(brandConfig.language)
                 .setZone(generalConfig.timeZone)
                 .toLocaleString(DateTime.DATETIME_HUGE),
               durationHours: duration.hours,
@@ -1704,15 +1711,21 @@ export class EventsService extends BaseService implements IEventsService {
   }
 
   private async getCalendarSourceAppIds(config: BookingConfiguration) {
-    const user = await this.userService.getOrganizationAdminUser(this.companyId);
+    const user = await this.userService.getOrganizationAdminUser(
+      this.companyId,
+    );
     if (user?.calendarSources?.length) {
       return user.calendarSources.map((source) => source.appId);
     }
 
     // Backward-compatible fallback while existing workspaces are migrated.
-    return (config as BookingConfiguration & {
-      calendarSources?: { appId: string }[];
-    }).calendarSources?.map((source) => source.appId) || [];
+    return (
+      (
+        config as BookingConfiguration & {
+          calendarSources?: { appId: string }[];
+        }
+      ).calendarSources?.map((source) => source.appId) || []
+    );
   }
 
   private async getDbBusyTimes(

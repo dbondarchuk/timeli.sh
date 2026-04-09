@@ -95,10 +95,11 @@ export async function POST(request: NextRequest) {
   const config = await servicesContainer.configurationService.getConfigurations(
     "booking",
     "general",
+    "brand",
     "social",
   );
 
-  const locale = config.general.language;
+  const locale = config.brand.language;
   const adminUrl = getAdminUrl();
   const websiteUrl = await getWebsiteUrl();
   const args = getArguments({

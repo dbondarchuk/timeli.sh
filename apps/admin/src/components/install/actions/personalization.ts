@@ -5,7 +5,7 @@ import { getLoggerFactory } from "@timelish/logger";
 import { ServicesContainer } from "@timelish/services";
 import {
   fontName,
-  type GeneralConfiguration,
+  type BrandConfiguration,
   type StylingConfiguration,
   zAssetName,
 } from "@timelish/types";
@@ -79,14 +79,18 @@ export async function applyInstallPersonalization(
   await services.configurationService.setConfiguration("styling", newStyling);
   logger.debug({ organizationId }, "Applied styling configuration");
 
-  const general =
-    await services.configurationService.getConfiguration("general");
-  if (!general) {
-    logger.error({ organizationId }, "General configuration not found");
-    return { ok: false, code: "no_general" };
+  const brand =
+    await services.configurationService.getConfiguration("brand");
+  if (!brand) {
+    logger.error({ organizationId }, "Brand configuration not found");
+    return { ok: false, code: "no_brand" };
   }
-  const newGeneral: GeneralConfiguration = { ...general, logo, favicon: logo };
-  await services.configurationService.setConfiguration("general", newGeneral);
+  const newBrand: BrandConfiguration = {
+    ...brand,
+    logo: logo ?? brand.logo,
+    favicon: logo ?? brand.favicon,
+  };
+  await services.configurationService.setConfiguration("brand", newBrand);
 
   logger.debug({ organizationId }, "Applied install personalization");
   return { ok: true };

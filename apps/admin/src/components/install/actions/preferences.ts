@@ -113,15 +113,22 @@ export async function completeInstallSetup(
   const services = ServicesContainer(organizationId);
   const general =
     (await services.configurationService.getConfiguration("general")) ?? null;
+  const brand =
+    (await services.configurationService.getConfiguration("brand")) ?? null;
   if (!general) {
     logger.error({ organizationId }, "General configuration not found");
     return { ok: false, code: "no_general" };
   }
 
-  const installLanguage = general.language;
+  const legacyGeneral = general as Record<string, unknown>;
+  const installLanguage =
+    brand?.language ??
+    (typeof legacyGeneral.language === "string"
+      ? legacyGeneral.language
+      : undefined);
   if (!installLanguage || !languages.includes(installLanguage)) {
     logger.error(
-      { organizationId, language: general.language },
+      { organizationId, language: installLanguage },
       "Invalid website language for install defaults",
     );
     return { ok: false, code: "invalid_language" };
@@ -129,7 +136,8 @@ export async function completeInstallSetup(
 
   const businessName =
     (typeof general.name === "string" && general.name.trim()) ||
-    (typeof general.title === "string" && general.title.trim()) ||
+    (typeof brand?.title === "string" && brand.title.trim()) ||
+    (typeof legacyGeneral.title === "string" && legacyGeneral.title.trim()) ||
     "Timeli.sh";
 
   const hasAddress =

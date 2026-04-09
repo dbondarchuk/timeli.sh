@@ -231,8 +231,7 @@ export class GiftCardStudioConnectedApp
     try {
       const { configurationService, templatesService } = this.props.services;
 
-      const { language } =
-        await configurationService.getConfiguration("general");
+      const { language } = await configurationService.getConfiguration("brand");
 
       let purchaserTemplateId: string | undefined;
       let recipientTemplateId: string | undefined;
@@ -1423,15 +1422,16 @@ export class GiftCardStudioConnectedApp
     const logger = this.loggerFactory("generatePreviewImage");
     logger.debug({ designId: payload.designId }, "Generating preview image");
     const design = designDoc.design;
-    const { currency, language } =
-      await this.props.services.configurationService.getConfiguration(
+    const { general, brand } =
+      await this.props.services.configurationService.getConfigurations(
         "general",
+        "brand",
       );
 
     const amountFormatted = formatAmountWithCurrency(
       payload.amount,
-      language,
-      currency,
+      brand.language,
+      general.currency,
     );
     const fields: FieldKeyValues = {
       amount: amountFormatted,

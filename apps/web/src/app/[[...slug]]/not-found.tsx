@@ -19,19 +19,19 @@ export async function generateMetadata(): Promise<Metadata> {
 
   const t = await getI18nAsync("translation");
   const servicesContainer = await getServicesContainer();
-  const settings =
-    await servicesContainer.configurationService.getConfiguration("general");
+  const brand =
+    await servicesContainer.configurationService.getConfiguration("brand");
 
   try {
-    const title = [t("notFound.title"), settings.title]
+    const title = [t("notFound.title"), brand.title]
       .filter((x) => !!x)
       .join(" | ");
 
-    const description = [t("notFound.description"), settings.description]
+    const description = [t("notFound.description"), brand.description]
       .filter((x) => !!x)
       .join("\n");
 
-    const keywords = settings.keywords;
+    const keywords = brand.keywords;
 
     logger.debug(
       {
@@ -47,7 +47,7 @@ export async function generateMetadata(): Promise<Metadata> {
       description,
       keywords,
       icons: {
-        icon: settings.favicon || "/icon.ico",
+        icon: brand.favicon || "/icon.ico",
       },
     };
   } catch (error: any) {

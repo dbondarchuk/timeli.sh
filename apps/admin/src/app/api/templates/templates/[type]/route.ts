@@ -21,7 +21,7 @@ export async function GET(
 
   const servicesContainer = await getServicesContainer();
   const { language } =
-    await servicesContainer.configurationService.getConfiguration("general");
+    await servicesContainer.configurationService.getConfiguration("brand");
 
   const allTemplates = (
     await getAllTemplates(type as CommunicationChannel, language)

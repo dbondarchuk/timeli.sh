@@ -11,6 +11,7 @@ import { Language, useI18n } from "@timelish/i18n";
 import { BlockProviderRegistry, PageBuilder } from "@timelish/page-builder";
 import { PageReader } from "@timelish/page-builder/reader";
 import {
+  BrandConfiguration,
   GeneralConfiguration,
   getPageSchemaWithUniqueCheck,
   PageFooter,
@@ -61,6 +62,7 @@ export const PageForm: React.FC<{
   initialData?: PageUpdateModel & { _id?: string };
   config: {
     general: GeneralConfiguration;
+    brand: BrandConfiguration;
     social: SocialConfiguration;
   };
   apps?: { appId: string; appName: string }[];
@@ -224,6 +226,7 @@ export const PageForm: React.FC<{
     "fullWidth",
   ]);
   const demoAppointment = useDemoArguments();
+
   const args = useMemo(
     () =>
       formatArguments(
@@ -241,9 +244,10 @@ export const PageForm: React.FC<{
           appointment: demoAppointment,
           social: config.social,
           general: config.general,
+          brand: config.brand,
           now: new Date(),
         },
-        language || config.general.language,
+        language || config.brand.language,
         config.general.currency,
       ),
     [
@@ -256,7 +260,11 @@ export const PageForm: React.FC<{
       tags,
       fullWidth,
       demoAppointment,
-      config,
+      config.social,
+      config.general,
+      config.brand,
+      config.brand.language,
+      config.general.currency,
     ],
   );
 
@@ -306,7 +314,7 @@ export const PageForm: React.FC<{
       ? {
           config: header,
           name: config.general.name,
-          logo: config.general.logo,
+          logo: config.brand.logo,
         }
       : undefined;
   }, [header, config]);

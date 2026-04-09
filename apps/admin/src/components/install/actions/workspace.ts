@@ -6,7 +6,15 @@ import { getLoggerFactory } from "@timelish/logger";
 import { StaticOrganizationService } from "@timelish/services";
 import { CONFIGURATION_COLLECTION_NAME, ORGANIZATIONS_COLLECTION_NAME } from "@timelish/services/collections";
 import { getDbConnection } from "@timelish/services/database";
-import { generalConfigurationSchema, type ConfigurationOption, type Organization, zCountry, zCurrency, zTimeZone } from "@timelish/types";
+import {
+  brandConfigurationSchema,
+  generalConfigurationSchema,
+  type ConfigurationOption,
+  type Organization,
+  zCountry,
+  zCurrency,
+  zTimeZone,
+} from "@timelish/types";
 import { ObjectId } from "mongodb";
 import { headers } from "next/headers";
 import * as z from "zod";
@@ -99,20 +107,25 @@ export async function createWorkspace(
 
   const generalValue = generalConfigurationSchema.parse({
     name: parsed.businessName,
-    title: parsed.businessName,
-    description: `${parsed.businessName} — Book online with Timeli.sh.`,
-    keywords: `${parsed.businessName}, booking`,
     address: parsed.address || "",
     email: session.user.email,
     phone: session.user.phone,
     country: parsed.country,
     currency: parsed.currency,
-    language: parsed.language,
     timeZone: parsed.timeZone,
   });
 
+  const brandValue = brandConfigurationSchema.parse({
+    title: parsed.businessName,
+    description: `${parsed.businessName} — Book online with Timeli.sh.`,
+    keywords: `${parsed.businessName}, booking`,
+    language: parsed.language,
+  });
+
   const configurations = db.collection<
-    ConfigurationOption<"general"> | ConfigurationOption<"booking">
+    | ConfigurationOption<"general">
+    | ConfigurationOption<"brand">
+    | ConfigurationOption<"booking">
   >(CONFIGURATION_COLLECTION_NAME);
   await configurations.updateOne(
     { key: "general", companyId: orgId },
@@ -120,6 +133,13 @@ export async function createWorkspace(
     { upsert: true },
   );
   logger.debug({ orgId }, "Stored general configuration");
+
+  await configurations.updateOne(
+    { key: "brand", companyId: orgId },
+    { $set: { key: "brand", companyId: orgId, value: brandValue } },
+    { upsert: true },
+  );
+  logger.debug({ orgId }, "Stored brand configuration");
 
   const existingBooking = await configurations.findOne({
     key: "booking",

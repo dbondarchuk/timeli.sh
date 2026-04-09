@@ -87,6 +87,8 @@ export async function getInstallWorkspaceSnapshot(): Promise<InstallWorkspaceSer
   const services = ServicesContainer(orgId);
   const general =
     await services.configurationService.getConfiguration("general");
+  const brand =
+    await services.configurationService.getConfiguration("brand");
   const styling =
     (await services.configurationService.getConfiguration("styling")) ?? null;
   const businessName =
@@ -95,9 +97,15 @@ export async function getInstallWorkspaceSnapshot(): Promise<InstallWorkspaceSer
     "";
   const slug = typeof org.slug === "string" ? org.slug : "";
 
+  const legacyGeneral = general as Record<string, unknown> | null;
+  const installLanguage =
+    brand?.language ??
+    (typeof legacyGeneral?.language === "string"
+      ? legacyGeneral.language
+      : undefined);
   const generalPick = installGeneralWorkspaceSchema.safeParse({
     timeZone: general?.timeZone,
-    language: general?.language,
+    language: installLanguage,
     country: general?.country,
     currency: general?.currency,
   });
@@ -123,8 +131,13 @@ export async function getInstallWorkspaceSnapshot(): Promise<InstallWorkspaceSer
     const fs = fontName.safeParse(styling.fonts.secondary);
     if (fs.success) out.secondaryFont = fs.data;
   }
-  if (general?.logo && typeof general.logo === "string")
-    out.installLogo = general.logo;
+  if (brand?.logo && typeof brand.logo === "string")
+    out.installLogo = brand.logo;
+  else if (
+    typeof legacyGeneral?.logo === "string" &&
+    legacyGeneral.logo.length > 0
+  )
+    out.installLogo = legacyGeneral.logo;
   logger.debug({ orgId }, "Resolved workspace snapshot");
   return out;
 }

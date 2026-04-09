@@ -75,7 +75,7 @@
     "react-dom": "19.0.0",
     "react-dropzone": "^14.2.3",
     "react-file-icon": "^1.5.0",
-    "react-hook-form": "^7.65.0",
+    "react-hook-form": "^7.72.1",
     "react-infinite-scroll-component": "^6.1.0",
     "react-intersection-observer": "^9.16.0",
     "react-markdown": "^9.0.1",

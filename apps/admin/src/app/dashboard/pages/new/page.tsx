@@ -34,10 +34,11 @@ export default async function NewPagesPage(props: Props) {
   const websiteUrl = await getWebsiteUrl();
   logger.debug("Loading new page creation page");
 
-  const { styling, general, social } =
+  const { styling, general, brand, social } =
     await servicesContainer.configurationService.getConfigurations(
       "styling",
       "general",
+      "brand",
       "social",
     );
 
@@ -72,7 +73,7 @@ export default async function NewPagesPage(props: Props) {
     <PageContainer scrollable>
       <Styling styling={styling} />
       <PageForm
-        config={{ general, social }}
+        config={{ general, brand, social }}
         apps={apps}
         websiteUrl={websiteUrl}
         initialData={initialData}

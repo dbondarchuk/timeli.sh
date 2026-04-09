@@ -7,6 +7,11 @@ export const getCompanyId = cache(async () => {
   return headersList.get("x-company-id") as string;
 });
 
+export const getOrganizationDomain = cache(async () => {
+  const headersList = await headers();
+  return headersList.get("x-organization-domain") as string;
+});
+
 export const getServicesContainer = cache(async () => {
   const companyId = await getCompanyId();
   return ServicesContainer(companyId);

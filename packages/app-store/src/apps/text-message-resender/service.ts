@@ -136,6 +136,7 @@ export default class TextMessageResenderConnectedApp
         await this.props.services.configurationService.getConfigurations(
           "booking",
           "general",
+          "brand",
           "social",
         );
 
@@ -202,15 +203,12 @@ export default class TextMessageResenderConnectedApp
       }
 
       const adminUrl = getAdminUrl();
-      const websiteUrl = getWebsiteUrl(
-        organization.slug,
-        config.general.domain,
-      );
+      const websiteUrl = getWebsiteUrl(organization.slug, organization.domain);
       const args = getArguments({
         appointment,
         config,
         customer,
-        locale: config.general.language,
+        locale: config.brand.language,
         additionalProperties: {
           reply,
         },
@@ -219,7 +217,7 @@ export default class TextMessageResenderConnectedApp
       });
 
       const body = template(
-        TextMessageResenderMessages[config.general.language]
+        TextMessageResenderMessages[config.brand.language]
           .resendToUserFromCustomer ??
           TextMessageResenderMessages["en"].resendToUserFromCustomer,
         args,

@@ -37,6 +37,7 @@ export const TemplateFormPage: React.FC<
   const config = await servicesContainer.configurationService.getConfigurations(
     "booking",
     "general",
+    "brand",
     "social",
   );
 
@@ -60,7 +61,7 @@ export const TemplateFormPage: React.FC<
     adminUrl,
     websiteUrl,
     customer: demoAppointment.customer,
-    locale: config.general.language,
+    locale: config.brand.language,
     additionalProperties: demoEmailArguments,
   });
 
@@ -86,7 +87,7 @@ export const TemplateFormPage: React.FC<
   } else {
     type = "type" in props ? (props.type ?? "email") : "email";
     if ("templateId" in props && props.templateId) {
-      const locale = config.general.language;
+      const locale = config.brand.language;
       const allTemplates = await getAllTemplates(type, locale);
 
       const possibleTemplate = allTemplates.find(

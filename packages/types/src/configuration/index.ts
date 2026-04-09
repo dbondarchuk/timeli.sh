@@ -5,6 +5,7 @@ import {
   defaultAppsConfigurationSchema,
 } from "./apps";
 import { BookingConfiguration, bookingConfigurationSchema } from "./booking";
+import { BrandConfiguration, brandConfigurationSchema } from "./brand";
 import { GeneralConfiguration, generalConfigurationSchema } from "./general";
 import { ScheduleConfiguration, scheduleConfigurationSchema } from "./schedule";
 import { ScriptsConfiguration, scriptsConfigurationSchema } from "./scripts";
@@ -13,6 +14,7 @@ import { StylingConfiguration, stylingConfigurationSchema } from "./styling";
 
 export * from "./apps";
 export * from "./booking";
+export * from "./brand";
 export * from "./general";
 export * from "./resources";
 export * from "./schedule";
@@ -22,6 +24,7 @@ export * from "./styling";
 
 export type Configuration = {
   general: GeneralConfiguration;
+  brand: BrandConfiguration;
   social: SocialConfiguration;
   booking: BookingConfiguration;
   defaultApps: DefaultAppsConfiguration;
@@ -45,6 +48,7 @@ export const configurationSchemaMap: Record<
   z.ZodSchema<Configuration[ConfigurationKey]>
 > = {
   general: generalConfigurationSchema,
+  brand: brandConfigurationSchema,
   social: socialConfigurationSchema,
   booking: bookingConfigurationSchema,
   defaultApps: defaultAppsConfigurationSchema,

@@ -52,9 +52,10 @@ export default async function EditPageFooterPage(props: Props) {
     "Page footer edit page loaded",
   );
 
-  const { general, social, styling } =
+  const { general, brand, social, styling } =
     await servicesContainer.configurationService.getConfigurations(
       "general",
+      "brand",
       "social",
       "styling",
     );
@@ -73,10 +74,11 @@ export default async function EditPageFooterPage(props: Props) {
   const args = formatArguments(
     {
       general,
+      brand,
       social,
       now: new Date(),
     },
-    general.language,
+    brand.language,
     general.currency,
   );
 

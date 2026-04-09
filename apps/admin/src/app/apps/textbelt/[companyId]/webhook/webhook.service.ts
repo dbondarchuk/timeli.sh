@@ -190,6 +190,7 @@ export class TextBeltWebhookService {
     const config = await this.configurationService.getConfigurations(
       "booking",
       "general",
+      "brand",
       "social",
     );
 
@@ -205,7 +206,7 @@ export class TextBeltWebhookService {
     }
 
     const adminUrl = getAdminUrl();
-    const websiteUrl = getWebsiteUrl(organization.slug, config.general.domain);
+    const websiteUrl = getWebsiteUrl(organization.slug, organization.domain);
 
     const args = getArguments({
       appointment,
@@ -218,7 +219,7 @@ export class TextBeltWebhookService {
           message: reply.message?.trim(),
         },
       },
-      locale: config.general.language,
+      locale: config.brand.language,
       adminUrl,
       websiteUrl,
     });
@@ -227,7 +228,7 @@ export class TextBeltWebhookService {
     const { template: description, subject } =
       await getTextBeltWebhookEmailTemplate(
         "user-notify-reply",
-        config.general.language,
+        config.brand.language,
         url,
         args,
         appointment?._id,

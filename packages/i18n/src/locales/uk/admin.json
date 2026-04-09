@@ -10,7 +10,7 @@
     "selectRow": "Вибрати рядок",
     "labels": {
       "languages": {
-        "en": "English",
+        "en": "англійська",
         "uk": "Українська"
       },
       "channel": {
@@ -26,7 +26,7 @@
         "customer": "Клієнт"
       },
       "fieldType": {
-        "email": "Email",
+        "email": "Електронна пошта",
         "name": "Ім'я",
         "phone": "Телефон",
         "oneLine": "Один рядок",
@@ -119,6 +119,7 @@
     "footer": "Підвал",
     "settings": "Налаштування",
     "general": "Загальні",
+    "brand": "Бренд",
     "social": "Соціальні мережі",
     "scripts": "Скрипти",
     "communications": "Комунікації",
@@ -171,7 +172,7 @@
         "selectedAddons": "Вибрані додатки",
         "note": "Примітка",
         "customerName": "Ім'я",
-        "customerEmail": "Email",
+        "customerEmail": "Електронна пошта",
         "customerPhone": "Телефон",
         "online": "Онлайн",
         "meetingLink": "Приєднатися до зустрічі"
@@ -304,7 +305,7 @@
       },
       "customer": "Клієнт",
       "name": "Ім'я",
-      "email": "Email",
+      "email": "Електронна пошта",
       "phone": "Телефон",
       "fields": "Поля",
       "yes": "Так",
@@ -533,7 +534,7 @@
       "additionalInformation": "Додаткова інформація",
       "name": "Ім'я",
       "namePlaceholder": "Ім'я клієнта",
-      "email": "Email",
+      "email": "Електронна пошта",
       "emailPlaceholder": "Email клієнта",
       "phone": "Телефон",
       "phonePlaceholder": "Телефон клієнта",
@@ -568,7 +569,7 @@
     "table": {
       "columns": {
         "name": "Ім'я",
-        "email": "Email",
+        "email": "Електронна пошта",
         "phone": "Телефон",
         "address": "Адреса",
         "appointments": "Записи",
@@ -671,7 +672,7 @@
     "table": {
       "columns": {
         "title": "Заголовок",
-        "slug": "Slug",
+        "slug": "Слимак",
         "published": "Опубліковано",
         "publishDate": "Дата публікації",
         "createdAt": "Створено",
@@ -972,13 +973,13 @@
             }
           },
           "withDeposit": {
-            "title": "З завдатком",
+            "title": "Для записів з завдатком",
             "description": "Налаштувати політику скасування для опції, коли завдаток вимагається",
             "enabled": "Увімкнено",
             "enabledTooltip": "Чи дозволяти скасування для опції, коли завдаток вимагається"
           },
           "withoutDeposit": {
-            "title": "Без завдатку",
+            "title": "Для записів без завдатку",
             "description": "Налаштувати політику скасування для опції, коли завдаток не вимагається",
             "enabled": "Увімкнено",
             "enabledTooltip": "Чи дозволяти скасування для опції, коли завдаток не вимагається"
@@ -1206,7 +1207,7 @@
         "addNew": "Додати нове",
         "optionsLabel": "Будь-яка з наступних опцій:",
         "addonsLabel": "Будь-який з наступних пакетів додатків:",
-        "andLabel": "І",
+        "withLabel": "З",
         "removeLimitTitle": "Ви абсолютно впевнені?",
         "removeLimitDescription": "Ви впевнені, що хочете видалити це обмеження?",
         "limitToDescription": "Ви можете обмежити цю знижку до конкретних опцій та додатків",
@@ -1322,7 +1323,7 @@
       "form": {
         "code": {
           "label": "Код",
-          "placeholder": "XXX-XXX-XXX",
+          "placeholder": "ХХХ-ХХХ-ХХХ",
           "tooltip": "Унікальний код для подарункової картки",
           "generateTooltip": "Згенерувати новий код для подарункової картки",
           "copied": "Код скопійовано в буфер обміну",
@@ -1663,22 +1664,13 @@
   "settings": {
     "general": {
       "title": "Загальні налаштування",
-      "description": "Налаштувати загальні параметри",
+      "description": "Назва бізнесу, контакти, адреса та регіональні параметри організації.",
       "form": {
-        "name": "Назва",
-        "namePlaceholder": "Назва веб-сайту",
-        "title": "Заголовок",
-        "titlePlaceholder": "Заголовок веб-сайту",
-        "description": "Опис",
-        "descriptionPlaceholder": "Опис веб-сайту",
-        "keywords": "Ключові слова",
-        "keywordsTooltip": "Ключові слова веб-сайту, розділені комами",
-        "keywordValidation": "Ключове слово повинно містити щонайменше 2 символи",
+        "name": "Назва бізнесу",
+        "namePlaceholder": "Назва вашого бізнесу",
         "phone": "Номер телефону",
         "email": "Email адреса",
         "emailPlaceholder": "Ваша email адреса",
-        "domain": "Власний домен",
-        "domainPlaceholder": "example.com",
         "address": "Адреса",
         "addressTooltip": "Фізична адреса офісу",
         "addressPlaceholder": "Фізична адреса офісу",
@@ -1688,16 +1680,74 @@
         "currency": "Валюта",
         "currencyTooltip": "Валюта, яка використовується для платежів",
         "currencyPlaceholder": "Вибрати валюту",
-        "currencyLabelFormat": "{currency} ({code}, {symbol})",
-        "logo": "Логотип",
-        "logoTooltip": "URL до зображення, яке буде використовуватися як логотип (наприклад, в заголовку)",
-        "logoPlaceholder": "URL логотипу",
-        "language": "Мова",
-        "favicon": "Favicon",
-        "faviconTooltip": "URL до зображення, яке буде використовуватися як favicon (іконка, яка показується на вкладці браузера)",
-        "faviconPlaceholder": "URL favicon",
+        "currencyLabelFormat": "{валюта} ({код}, {символ})",
         "timeZone": "Часовий пояс",
         "selectTimeZone": "Вибрати часовий пояс",
+        "customDomain": {
+          "title": "Власний домен",
+          "empty": "Власний домен не налаштовано",
+          "label": "Домен",
+          "placeholder": "example.com",
+          "change": "Змінити домен",
+          "save": "Зберегти домен",
+          "dialog": {
+            "title": "Змінити власний домен",
+            "description": "Вкажіть публічний домен для вашої організації."
+          },
+          "toasts": {
+            "changesSaved": "Власний домен збережено.",
+            "requestError": "Не вдалося оновити власний домен."
+          }
+        },
+        "toasts": {
+          "changesSaved": "Ваші зміни були збережені.",
+          "requestError": "Виникла проблема з вашим запитом."
+        }
+      }
+    },
+    "brand": {
+      "title": "Сайт і бренд",
+      "description": "Бізнес-дані, сайт і SEO, соцмережі та стиль",
+      "form": {
+        "visualSectionTitle": "Візуальна ідентичність",
+        "websiteSectionTitle": "Веб-сайт",
+        "seoSectionTitle": "SEO",
+        "title": "Заголовок сайту",
+        "titlePlaceholder": "Заголовок у браузері та в пошуку",
+        "description": "Мета-опис",
+        "descriptionPlaceholder": "Короткий опис для пошукових систем",
+        "keywords": "Ключові слова",
+        "keywordsTooltip": "Ключові слова для пошукових систем, які допоможуть вашому сайту краще зрозумітися в пошуку",
+        "keywordValidation": "Ключове слово повинно містити щонайменше 2 символи",
+        "domain": "Власний домен",
+        "domainTooltip": "Необов'язково. Публічний домен без https://",
+        "domainPlaceholder": "example.com",
+        "logo": "Логотип",
+        "logoTooltip": "Зображення у шапці сайту та прев'ю",
+        "logoPlaceholder": "URL логотипу",
+        "noLogo": "Без логотипу",
+        "favicon": "Favicon",
+        "faviconTooltip": "Іконка на вкладці браузера",
+        "faviconPlaceholder": "URL favicon",
+        "language": "Мова сайту за замовчуванням",
+        "timeliAddress": {
+          "sectionTitle": "Ваша адреса Timeli.sh",
+          "websiteUrlLabel": "URL веб-сайту",
+          "connectCustomDomain": "Підключити власний домен",
+          "disconnectCustomDomain": "Від'єднати власний домен",
+          "organizationSlugLabel": "Слаг організації",
+          "updateSlugComingSoon": "Оновити слаг (незабаром)",
+          "connectDialogTitle": "Підключити власний домен",
+          "connectDialogDescription": "Підключіть власний домен до Timeli.sh, щоб повністю контролювати свій бренд.",
+          "connectDialogDnsTitle": "Спочатку налаштуйте DNS",
+          "connectDialogDnsARecord": "У панелі DNS створіть A-запис для @ (кореня) або вашого піддомену зі значенням {ip}.",
+          "connectDialogDnsCname": "Або додайте CNAME або ALIAS на {host} — це ім’я хоста вашого сайту в Timeli.sh (зазвичай він відкривається за адресою {baseUrl}).",
+          "domainLabel": "Домен",
+          "connectButton": "Підключити",
+          "copyWebsiteUrlAriaLabel": "Копіювати URL веб-сайту",
+          "websiteUrlCopied": "URL веб-сайту скопійовано.",
+          "websiteUrlCopyFailed": "Не вдалося скопіювати URL."
+        },
         "toasts": {
           "changesSaved": "Ваші зміни були збережені.",
           "requestError": "Виникла проблема з вашим запитом."
@@ -1822,9 +1872,10 @@
               "tooltip": "Налаштувати політику за замовчуванням, яка буде застосована, якщо інша політика не застосовна"
             },
             "policies": {
-              "title": "Політики",
+              "title": "Перевизначені політики",
               "add": "Додати політику"
-            }
+            },
+            "policy": "Політика"
           },
           "reschedulePolicy": {
             "default": {
@@ -1832,9 +1883,10 @@
               "tooltip": "Налаштувати політику за замовчуванням, яка буде застосована, якщо інша політика не застосовна"
             },
             "policies": {
-              "title": "Політики",
+              "title": "Перевизначені політики",
               "add": "Додати політику"
-            }
+            },
+            "policy": "правило"
           }
         },
         "cards": {
@@ -2119,7 +2171,7 @@
     "sun": "Нд"
   },
   "auth": {
-    "email": "Email",
+    "email": "Електронна пошта",
     "password": "Пароль",
     "email_or_password_incorrect": "Email або пароль неправильний",
     "verification": {
@@ -2140,7 +2192,7 @@
     "forgotPassword": {
       "title": "Забули пароль",
       "description": "Введіть ваш email нижче, щоб скинути ваш пароль",
-      "email": "Email",
+      "email": "Електронна пошта",
       "emailPlaceholder": "Ваш email",
       "submit": "Підтвердити",
       "error": "Виникла проблема з вашим запитом. Будь ласка, спробуйте знову.",
@@ -2165,7 +2217,7 @@
       "namePlaceholder": "Ваше ім'я",
       "language": "Мова",
       "languagePlaceholder": "Виберіть мову",
-      "email": "Email",
+      "email": "Електронна пошта",
       "emailPlaceholder": "Ваш email",
       "password": "Пароль",
       "passwordPlaceholder": "Ваш пароль",
@@ -2280,7 +2332,7 @@
       "prefixIcon": "Префікс іконка",
       "suffixIcon": "Суфікс іконка",
       "additionalClasses": "Додаткові класи",
-      "additionalClassesPlaceholder": "font-bold"
+      "additionalClassesPlaceholder": "жирний шрифт"
     },
     "card": {
       "moveMenuItem": "Перемістити пункт меню",
@@ -2416,6 +2468,13 @@
     "handledBy": "Відповідь на текстове повідомлення - повідомити користувача"
   },
   "cancellationsAndReschedules": {
+    "timeBeforeAppointment": {
+      "header": "Коли до запису залишилось принаймні {duration}",
+      "week": "{count, plural, one {# тиждень} few {# тижні} many {# тижнів} other {# тижнів}}",
+      "day": "{count, plural, one {# день} few {# дні} many {# днів} other {# днів}}",
+      "hour": "{count, plural, one {# година} few {# години} many {# годин} other {# годин}}",
+      "minute": "{count, plural, =0 {0 хвилин} one {# хвилина} few {# хвилини} many {# хвилин} other {# хвилин}}"
+    },
     "cancellationPolicy": {
       "title": "Скасування",
       "withDeposit": {
@@ -2434,13 +2493,16 @@
         }
       },
       "default": {
-        "title": "Політика за замовчуванням",
-        "tooltip": "Налаштувати політику за замовчуванням, яка буде застосована, якщо інша політика не застосовна"
+        "title": "Правило за замовчуванням",
+        "tooltip": "Налаштувати правило за замовчуванням, яка буде застосована, якщо інша правило не застосовна",
+        "label": "Застосовується, якщо інша правило не застосовна"
       },
       "policies": {
-        "title": "Політики",
-        "add": "Додати політику"
+        "title": "Перевизначені правила",
+        "add": "Додати правило",
+        "badge": "Час-базові правила"
       },
+      "policy": "Правило",
       "action": {
         "label": "Дія",
         "tooltip": "Налаштувати дію, яку слід вжити при запиті на скасування",
@@ -2498,13 +2560,16 @@
       "title": "Перенесення",
       "enabledTooltip": "Увімкнути можливість клієнтам переносити запис самостійно",
       "default": {
-        "title": "Політика за замовчуванням",
-        "tooltip": "Налаштувати політику за замовчуванням, яка буде застосована, якщо інша політика не застосовна"
+        "title": "Правило за замовчуванням",
+        "tooltip": "Налаштувати правило за замовчуванням, яка буде застосована, якщо інша правило не застосовна",
+        "label": "Застосовується, якщо інша правило не застосовна"
       },
       "policies": {
-        "title": "Політики",
-        "add": "Додати політику"
+        "title": "Перевизначені правила",
+        "add": "Додати правило",
+        "badge": "Час-базові правила"
       },
+      "policy": "Правило",
       "action": {
         "label": "Дія",
         "tooltip": "Налаштувати дію, яку слід вжити при запиті на перенесення",
@@ -2574,7 +2639,7 @@
       "description": "Введіть деталі нового клієнта",
       "form": {
         "name": "Ім'я",
-        "email": "Email",
+        "email": "Електронна пошта",
         "phone": "Телефон"
       },
       "confirm": "Створити"
@@ -2594,7 +2659,7 @@
         "detailsSectionTitle": "Дані профілю",
         "name": "Ім'я",
         "namePlaceholder": "Введіть ваше ім'я",
-        "email": "Email",
+        "email": "Електронна пошта",
         "emailPlaceholder": "Введіть ваш email",
         "phone": "Телефон",
         "language": "Мова",
@@ -2634,7 +2699,7 @@
         "title": "Зміна email",
         "description": "Оновіть вашу email адресу для використання в акаунті",
         "form": {
-          "email": "Email",
+          "email": "Електронна пошта",
           "emailPlaceholder": "Введіть вашу нову email адресу",
           "helpText": "Ви зараз використовуєте email адресу {currentEmail}"
         },

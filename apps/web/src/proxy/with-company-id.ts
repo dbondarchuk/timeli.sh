@@ -38,7 +38,6 @@ export const withCompanyId: MiddlewareProxy = (next) => {
 
       companyId = organization._id;
       slug = organization.slug;
-
       request.headers.set("x-organization-domain", hostname);
     }
 

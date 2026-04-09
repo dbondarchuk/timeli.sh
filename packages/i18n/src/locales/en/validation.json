@@ -432,8 +432,8 @@
     },
     "general": {
       "name": {
-        "min": "Website name must be at least 3 characters long",
-        "max": "Website name must be at most 64 characters long"
+        "min": "Business name must be at least 3 characters long",
+        "max": "Business name must be at most 64 characters long"
       },
       "title": {
         "min": "Website title must be at least 3 characters long",
@@ -462,6 +462,26 @@
       },
       "country": {
         "invalid": "Invalid country"
+      }
+    },
+    "brand": {
+      "title": {
+        "min": "Site title must be at least 3 characters long",
+        "max": "Site title must be at most 64 characters long"
+      },
+      "description": {
+        "min": "Meta description must be at least 3 characters long",
+        "max": "Meta description must be at most 1024 characters long"
+      },
+      "keywords": {
+        "min": "Keywords must be at least 3 characters long",
+        "max": "Keywords must be at most 1024 characters long"
+      },
+      "domain": {
+        "invalid": "Domain must be a valid domain name"
+      },
+      "language": {
+        "invalid": "Invalid language"
       }
     },
     "resources": {

@@ -12,8 +12,8 @@ const config = getConfig(
     let locale =
       baseLocale ||
       headersList.get("x-locale") ||
-      (await servicesContainer.configurationService.getConfiguration("general"))
-        .language ||
+      (await servicesContainer.configurationService.getConfiguration("brand"))
+        ?.language ||
       "en";
 
     return { locale, includeAdmin: false };

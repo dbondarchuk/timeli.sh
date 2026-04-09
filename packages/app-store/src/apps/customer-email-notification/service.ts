@@ -288,6 +288,7 @@ export default class CustomerEmailNotificationConnectedApp
         await this.props.services.configurationService.getConfigurations(
           "booking",
           "general",
+          "brand",
           "social",
         );
 
@@ -310,10 +311,10 @@ export default class CustomerEmailNotificationConnectedApp
         appointment,
         config,
         adminUrl: getAdminUrl(),
-        websiteUrl: getWebsiteUrl(organization.slug, config.general.domain),
+        websiteUrl: getWebsiteUrl(organization.slug, organization.domain),
         customer: appointment.customer,
         useAppointmentTimezone: true,
-        locale: config.general.language,
+        locale: config.brand.language,
       });
 
       const data = appData.data as CustomerEmailNotificationConfiguration;

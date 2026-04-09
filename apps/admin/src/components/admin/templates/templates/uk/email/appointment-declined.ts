@@ -37,7 +37,7 @@ export const appointmentDeclinedEmailTemplate: TemplatesTemplate = {
             props: {
               size: 83,
               shape: "circle",
-              imageUrl: "{{websiteUrl}}{{config.logo}}",
+              imageUrl: "{{websiteUrl}}{{brand.logo}}",
             },
           },
         },

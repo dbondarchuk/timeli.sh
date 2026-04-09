@@ -124,20 +124,23 @@ export class GiftCardStudioJobProcessor {
         throw new Error("Gift card not found");
       }
 
-      const { timeZone, language, currency } =
-        await this.services.configurationService.getConfiguration("general");
+      const { general, brand } =
+        await this.services.configurationService.getConfigurations(
+          "general",
+          "brand",
+        );
 
       let expiresAt: DateTime | null = null;
       if (giftCard.expiresAt) {
         expiresAt = DateTime.fromJSDate(giftCard.expiresAt)
-          .setZone(timeZone)
-          .setLocale(language);
+          .setZone(general.timeZone)
+          .setLocale(brand.language);
       }
 
       const amountFormatted = formatAmountWithCurrency(
         purchasedGiftCard.amountPurchased,
-        language,
-        currency,
+        brand.language,
+        general.currency,
       );
 
       logger.debug(
@@ -290,35 +293,43 @@ export class GiftCardStudioJobProcessor {
         ? await this.services.paymentsService.getPayment(giftCard.paymentId)
         : null;
 
-      const { name, address, phone, language, timeZone, currency, logo } =
-        await this.services.configurationService.getConfiguration("general");
+      const { general, brand } =
+        await this.services.configurationService.getConfigurations(
+          "general",
+          "brand",
+        );
 
-      const issuedAt = DateTime.now().setZone(timeZone).setLocale(language);
+      const issuedAt = DateTime.now()
+        .setZone(general.timeZone)
+        .setLocale(brand.language);
       const amountFormatted = formatAmountWithCurrency(
         purchasedGiftCard.amountPurchased,
-        language,
-        currency,
+        brand.language,
+        general.currency,
       );
 
       const invoiceNumber = `GC-${purchasedGiftCardId}`;
 
       const t =
-        giftCardStudioInvoiceTranslations[language] ??
+        giftCardStudioInvoiceTranslations[brand.language] ??
         giftCardStudioInvoiceTranslations.en;
 
       let logoBuffer: Buffer | null = null;
-      if (logo) {
+      if (brand.logo) {
         try {
-          if (logo.startsWith("http://") || logo.startsWith("https://")) {
-            const response = await fetch(logo);
+          if (
+            brand.logo.startsWith("http://") ||
+            brand.logo.startsWith("https://")
+          ) {
+            const response = await fetch(brand.logo);
             if (response.ok) {
               const arrayBuffer = await response.arrayBuffer();
               logoBuffer = Buffer.from(arrayBuffer);
             }
           } else {
-            const logoFilename = logo.startsWith("/assets/")
-              ? logo.slice(8)
-              : logo;
+            const logoFilename = brand.logo.startsWith("/assets/")
+              ? brand.logo.slice(8)
+              : brand.logo;
             const logoResult =
               await this.services.assetsStorage.getFile(logoFilename);
             if (logoResult) {
@@ -374,15 +385,15 @@ export class GiftCardStudioJobProcessor {
 
         y += 26;
 
-        if (address || phone) {
+        if (general.address || general.phone) {
           doc.fontSize(10).fillColor("#555555");
-          doc.text(address ?? "", leftX, y, {
+          doc.text(general.address ?? "", leftX, y, {
             width: contentWidth / 2,
             align: "left",
           });
           y += 14;
-          if (phone) {
-            doc.text(phone, leftX, y, {
+          if (general.phone) {
+            doc.text(general.phone, leftX, y, {
               width: contentWidth / 2,
               align: "left",
             });
@@ -576,7 +587,11 @@ export class GiftCardStudioJobProcessor {
 
         // Total, amount paid and balance
         const amountPaid = amountFormatted;
-        const balance = formatAmountWithCurrency(0, language, currency);
+        const balance = formatAmountWithCurrency(
+          0,
+          brand.language,
+          general.currency,
+        );
 
         doc.fontSize(10).fillColor("#111111").font("Helvetica-Bold");
         doc.text(t.totalLabel, totalsBoxX, totalsY, {
@@ -909,6 +924,7 @@ export class GiftCardStudioJobProcessor {
     const config = await this.services.configurationService.getConfigurations(
       "booking",
       "general",
+      "brand",
       "social",
     );
     const organization =
@@ -918,7 +934,7 @@ export class GiftCardStudioJobProcessor {
     }
 
     const adminUrl = getAdminUrl();
-    const websiteUrl = getWebsiteUrl(organization.slug, config.general.domain);
+    const websiteUrl = getWebsiteUrl(organization.slug, organization.domain);
 
     const { customer, ...giftCard } = purchasedGiftCard;
 
@@ -928,7 +944,7 @@ export class GiftCardStudioJobProcessor {
       config,
       adminUrl,
       websiteUrl,
-      locale: config.general.language,
+      locale: config.brand.language,
       additionalProperties: {
         giftCard,
       },

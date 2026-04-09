@@ -37,7 +37,7 @@ export const giftCardToCustomerEmailTemplate: TemplatesTemplate = {
             props: {
               size: 80,
               shape: "circle",
-              imageUrl: "{{websiteUrl}}{{config.logo}}",
+              imageUrl: "{{websiteUrl}}{{brand.logo}}",
             },
           },
         },

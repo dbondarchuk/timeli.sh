@@ -25,8 +25,12 @@ import {
   toast,
   toastPromise,
 } from "@timelish/ui";
-import { AssetSelectorDialog, SaveButton } from "@timelish/ui-admin";
-import { Lock, Mail, Plus } from "lucide-react";
+import {
+  AssetSelectorDialog,
+  NonSortable,
+  SaveButton,
+} from "@timelish/ui-admin";
+import { Lock, Mail } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
@@ -280,24 +284,17 @@ export const ProfileForm: React.FC<{
               />
             </CardContent>
           </Card>
-          <Card>
-            <CardHeader className="border-b">
-              <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground flex items-center justify-between">
-                <span>{t("users.profile.form.calendarSources.title")}</span>
-                <Button
-                  variant="ghost"
-                  title={t("users.profile.form.calendarSources.add")}
-                  onClick={() =>
-                    appendCalendarSource({
-                      type: "ics",
-                    } as Partial<CalendarSourceConfiguration> as CalendarSourceConfiguration)
-                  }
-                >
-                  <Plus />
-                </Button>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pt-6 flex flex-grow flex-col gap-4">
+
+          <NonSortable
+            title={t("users.profile.form.calendarSources.title")}
+            ids={calendarSourceIds}
+            onAdd={() =>
+              appendCalendarSource({
+                type: "ics",
+              } as Partial<CalendarSourceConfiguration> as CalendarSourceConfiguration)
+            }
+          >
+            <div className="flex flex-grow flex-col gap-4">
               {calendarSourceFields.map((item, index) => (
                 <CalendarSourceCard
                   form={form}
@@ -322,8 +319,8 @@ export const ProfileForm: React.FC<{
                     )}
                 />
               ))}
-            </CardContent>
-          </Card>
+            </div>
+          </NonSortable>
         </div>
         <Card>
           <CardHeader className="border-b">

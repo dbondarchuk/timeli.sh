@@ -12,6 +12,9 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
   Button,
+  Card,
+  CardContent,
+  CardHeader,
   FormControl,
   FormField,
   FormItem,
@@ -61,22 +64,24 @@ export const CalendarSourceCard: React.FC<CalendarSourceCardProps> = ({
   const appDisplayName = appName ? AvailableApps[appName].displayName : null;
 
   return (
-    <div className="w-full rounded-xl border border-border/60 bg-muted/20 p-4">
-      <div className="flex flex-row items-center gap-2 justify-between">
-        <div className="min-w-0 text-xs font-medium text-muted-foreground truncate">
-          {appDisplayName ? (
-            tAll.has(appDisplayName) ? (
-              tAll(appDisplayName)
+    <Card>
+      <CardHeader className="justify-between relative flex flex-row border-b px-3 py-3 w-full items-center">
+        <div className="flex flex-row items-center gap-2">
+          <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            {appDisplayName ? (
+              tAll.has(appDisplayName) ? (
+                tAll(appDisplayName)
+              ) : (
+                appDisplayName
+              )
             ) : (
-              appDisplayName
-            )
-          ) : (
-            <span className="text-destructive">
-              {t(
-                "users.profile.form.calendarSources.cards.calendarSource.noAppSelected",
-              )}
-            </span>
-          )}
+              <span className="text-destructive">
+                {t(
+                  "users.profile.form.calendarSources.cards.calendarSource.noAppSelected",
+                )}
+              </span>
+            )}
+          </div>
         </div>
         <div className="flex flex-row items-start md:pl-3">
           <AlertDialog>
@@ -124,8 +129,8 @@ export const CalendarSourceCard: React.FC<CalendarSourceCardProps> = ({
             </AlertDialogContent>
           </AlertDialog>
         </div>
-      </div>
-      <div className="mt-2 grid grid-cols-1 gap-2 w-full">
+      </CardHeader>
+      <CardContent className="py-6 grid grid-cols-1 gap-2 w-full">
         <FormField
           control={form.control}
           name={`${name}.appId`}
@@ -160,7 +165,7 @@ export const CalendarSourceCard: React.FC<CalendarSourceCardProps> = ({
             </FormItem>
           )}
         />
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 };

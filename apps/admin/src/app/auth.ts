@@ -193,6 +193,7 @@ export const auth = betterAuth({
               language: (user as any).language || "en",
               organizationName: "",
               organizationSlug: "",
+              organizationDomain: "",
             },
           };
         }
@@ -221,6 +222,7 @@ export const auth = betterAuth({
           organizationId: organizationId,
           organizationName: organization.name,
           organizationSlug: organization.slug,
+          organizationDomain: organization.domain,
           language: (user as any).language || "en",
         },
       };

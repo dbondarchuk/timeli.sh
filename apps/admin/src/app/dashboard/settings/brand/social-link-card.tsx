@@ -33,7 +33,7 @@ import {
 } from "@timelish/ui";
 import { cva } from "class-variance-authority";
 import { GripVertical, Trash } from "lucide-react";
-import { FieldPath, UseFormReturn } from "react-hook-form";
+import { FieldPath, FieldValues, UseFormReturn } from "react-hook-form";
 
 const socialTypeValues = Object.entries(socialTypeLabels).map(
   ([value, label]) => ({
@@ -42,12 +42,14 @@ const socialTypeValues = Object.entries(socialTypeLabels).map(
   }),
 );
 
-export type SocialLinkCardProps = {
+export type SocialLinkCardProps<
+  TFieldValues extends FieldValues = SocialConfiguration,
+> = {
   item: SocialLink & {
     fields_id: string;
   };
-  name: FieldPath<SocialConfiguration>;
-  form: UseFormReturn<SocialConfiguration>;
+  name: FieldPath<TFieldValues>;
+  form: UseFormReturn<TFieldValues>;
   disabled?: boolean;
   isOverlay?: boolean;
   remove: () => void;
@@ -60,14 +62,16 @@ export interface SocialLinkDragData {
   item: SocialLink;
 }
 
-export const SocialLinkCard: React.FC<SocialLinkCardProps> = ({
+export function SocialLinkCard<
+  TFieldValues extends FieldValues = SocialConfiguration,
+>({
   item,
   form,
   name,
   disabled,
   isOverlay,
   remove,
-}) => {
+}: SocialLinkCardProps<TFieldValues>) {
   const t = useI18n("admin");
   const {
     setNodeRef,
@@ -101,13 +105,9 @@ export const SocialLinkCard: React.FC<SocialLinkCardProps> = ({
     },
   });
 
-  const type = form.getValues(
-    `${name}.type` as FieldPath<SocialConfiguration>,
-  ) as SocialLinkType;
-
-  const hasError = form.getFieldState(
-    name as FieldPath<SocialConfiguration>,
-  ).invalid;
+  const type = form.getValues(`${name}.type` as FieldPath<TFieldValues>) as
+    | SocialLinkType
+    | undefined;
 
   return (
     <Card
@@ -118,26 +118,30 @@ export const SocialLinkCard: React.FC<SocialLinkCardProps> = ({
       })}
     >
       <CardHeader className="justify-between relative flex flex-row items-center border-b px-3 py-3 w-full">
-        <Button
-          type="button"
-          variant={"ghost"}
-          {...attributes}
-          {...listeners}
-          className="-ml-2 h-auto cursor-grab p-1 text-secondary-foreground/50"
-        >
-          <></>
-          <span className="sr-only">
-            {t("settings.social.form.card.moveOption")}
-          </span>
-          <GripVertical />
-        </Button>
-        <div
-          className={cn(
-            "w-full text-center flex flex-col",
-            !type && "text-destructive",
-          )}
-        >
-          {socialTypeLabels[type] || t("settings.social.form.card.invalidType")}
+        <div className="flex flex-row items-center gap-2">
+          <Button
+            type="button"
+            variant={"ghost"}
+            {...attributes}
+            {...listeners}
+            className="-ml-2 h-auto cursor-grab p-1 text-secondary-foreground/50"
+          >
+            <></>
+            <span className="sr-only">
+              {t("settings.social.form.card.moveOption")}
+            </span>
+            <GripVertical />
+          </Button>
+          <div
+            className={cn(
+              "w-full text-center flex flex-col text-xs font-semibold uppercase tracking-wide text-muted-foreground",
+              !type && "text-destructive",
+            )}
+          >
+            {type && socialTypeLabels[type]
+              ? socialTypeLabels[type]
+              : t("settings.social.form.card.invalidType")}
+          </div>
         </div>
         <div className="flex flex-row gap-2">
           <AlertDialog>
@@ -178,7 +182,7 @@ export const SocialLinkCard: React.FC<SocialLinkCardProps> = ({
       <CardContent className="px-3 pb-6 pt-3 text-left relative grid md:grid-cols-2 gap-4">
         <FormField
           control={form.control}
-          name={`${name}.type` as FieldPath<SocialConfiguration>}
+          name={`${name}.type` as FieldPath<TFieldValues>}
           render={({ field }) => (
             <FormItem>
               <FormLabel>{t("settings.social.form.card.type")}</FormLabel>
@@ -197,7 +201,7 @@ export const SocialLinkCard: React.FC<SocialLinkCardProps> = ({
         />
         <FormField
           control={form.control}
-          name={`${name}.url` as FieldPath<SocialConfiguration>}
+          name={`${name}.url` as FieldPath<TFieldValues>}
           render={({ field }) => (
             <FormItem>
               <FormLabel>
@@ -221,4 +225,4 @@ export const SocialLinkCard: React.FC<SocialLinkCardProps> = ({
       </CardContent>
     </Card>
   );
-};
+}

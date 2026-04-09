@@ -106,6 +106,11 @@ export async function replaceServices(
         isOnline: false,
         isAutoConfirm: "inherit",
         duplicateAppointmentCheck: { enabled: false },
+        cancellationPolicy: {
+          withDeposit: { type: "inherit" },
+          withoutDeposit: { type: "inherit" },
+        },
+        reschedulePolicy: { type: "inherit" },
       };
     } else {
       const bounds = getFlexibleDurationBounds(d);
@@ -126,6 +131,17 @@ export async function replaceServices(
         isOnline: false,
         isAutoConfirm: "inherit",
         duplicateAppointmentCheck: { enabled: false },
+        cancellationPolicy: {
+          withDeposit: {
+            type: "inherit",
+          },
+          withoutDeposit: {
+            type: "inherit",
+          },
+        },
+        reschedulePolicy: {
+          type: "inherit",
+        },
       };
     }
 

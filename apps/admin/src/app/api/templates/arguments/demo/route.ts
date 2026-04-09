@@ -26,6 +26,7 @@ export async function GET(request: NextRequest) {
   const config = await servicesContainer.configurationService.getConfigurations(
     "booking",
     "general",
+    "brand",
     "social",
   );
 
@@ -39,7 +40,7 @@ export async function GET(request: NextRequest) {
         : undefined,
     config,
     customer: demoAppointment.customer,
-    locale: config.general.language,
+    locale: config.brand.language,
     additionalProperties: {},
     adminUrl,
     websiteUrl,

@@ -1,7 +1,7 @@
 import { EmailTemplates } from "../types";
 
 const notifyReplyText = `
-Привіт {{config.name}},
+Привіт {{name}},
 
 Була отримана відповідь на текстове повідомлення від {{reply.from}}.
 
@@ -71,7 +71,7 @@ Email: {{ fields.email }}
 `;
 
 const notifyLowQuotaText = `
-Привіт {{config.name}},
+Привіт {{name}},
 
 Ваш ліміт TextBelt майже вичерпаний. Будь ласка, поповніть кредити.
 
