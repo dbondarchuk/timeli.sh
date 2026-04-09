@@ -83,7 +83,10 @@ export const InspectorDrawer: React.FC<{ extraTabs?: SidebarTab[] }> = ({
           >
             <SelectBlockListener />
             <div className="w-full sticky top-0 z-10">
-              <ResponsiveTabsList className="w-full flex flex-row gap-2 items-center">
+              <ResponsiveTabsList
+                dontScrollIntoView
+                className="w-full flex flex-row gap-2 items-center"
+              >
                 {allTabs.map((tab) => (
                   <TabsTrigger
                     key={tab.value}
