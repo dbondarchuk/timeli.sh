@@ -11,14 +11,14 @@ import { BaseService } from "../services/base.service";
 
 export type SaveBookingResultData = Omit<
   BookingTrackingEvent,
-  "_id" | "companyId" | "createdAt" | "updatedAt" | "sessionId" | "steps"
+  "_id" | "organizationId" | "createdAt" | "updatedAt" | "sessionId" | "steps"
 > & {
   steps: Record<BookingStep, string>;
 };
 
 export class BookingTrackingRepository extends BaseService {
-  public constructor(companyId: string) {
-    super("BookingTrackingRepository", companyId);
+  public constructor(organizationId: string) {
+    super("BookingTrackingRepository", organizationId);
   }
 
   /**
@@ -50,7 +50,7 @@ export class BookingTrackingRepository extends BaseService {
     const bookingResult: BookingTrackingEvent = {
       _id: new ObjectId().toString(),
       sessionId,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
       startedAt: new Date(data.startedAt),
       lastSeenAt: new Date(data.lastSeenAt),
       abandonedAt: data.abandonedAt ? new Date(data.abandonedAt) : null,
@@ -103,7 +103,9 @@ export class BookingTrackingRepository extends BaseService {
     );
 
     // Build filter
-    const filter: Filter<BookingTrackingEvent> = this.withCompanyFilter({});
+    const filter: Filter<BookingTrackingEvent> = this.withOrganizationFilter(
+      {},
+    );
 
     if (query?.status && query.status.length > 0) {
       filter.status = { $in: query.status };
@@ -185,7 +187,7 @@ export class BookingTrackingRepository extends BaseService {
     );
 
     const event = await collection.findOne(
-      this.withCompanyFilter({ sessionId }),
+      this.withOrganizationFilter({ sessionId }),
     );
 
     if (!event) {

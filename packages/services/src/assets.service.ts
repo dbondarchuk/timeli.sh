@@ -38,11 +38,11 @@ async function getFileHash(file: File): Promise<string> {
 
 export class AssetsService extends BaseService implements IAssetsService {
   public constructor(
-    companyId: string,
+    organizationId: string,
     protected readonly configurationService: IConfigurationService,
     protected readonly storage: IAssetsStorage,
   ) {
-    super("AssetsService", companyId);
+    super("AssetsService", organizationId);
   }
 
   public async getAsset(id: string): Promise<Asset | null> {
@@ -57,7 +57,7 @@ export class AssetsService extends BaseService implements IAssetsService {
         {
           $match: {
             _id: id,
-            companyId: this.companyId,
+            organizationId: this.organizationId,
           },
         },
         ...this.aggregateJoin,
@@ -103,7 +103,7 @@ export class AssetsService extends BaseService implements IAssetsService {
     ) || { uploadedAt: -1 };
 
     const filter: Filter<Asset> = {
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     };
 
     if (query.search) {
@@ -153,7 +153,7 @@ export class AssetsService extends BaseService implements IAssetsService {
       .aggregate([
         {
           $match: {
-            companyId: this.companyId,
+            organizationId: this.organizationId,
           },
         },
         ...this.aggregateJoin,
@@ -228,7 +228,7 @@ export class AssetsService extends BaseService implements IAssetsService {
 
         const existing = await assets.findOne({
           filename,
-          companyId: this.companyId,
+          organizationId: this.organizationId,
         });
 
         if (!!existing) {
@@ -242,7 +242,7 @@ export class AssetsService extends BaseService implements IAssetsService {
           hash,
           appointmentId: asset.appointmentId,
           customerId: asset.customerId,
-          companyId: this.companyId,
+          organizationId: this.organizationId,
         });
 
         if (!!existingWithSameHash) {
@@ -263,7 +263,7 @@ export class AssetsService extends BaseService implements IAssetsService {
         const dbAsset: Asset = {
           ...asset,
           filename,
-          companyId: this.companyId,
+          organizationId: this.organizationId,
           _id: new ObjectId().toString(),
           uploadedAt: DateTime.utc().toJSDate(),
           size: file.size,
@@ -297,7 +297,7 @@ export class AssetsService extends BaseService implements IAssetsService {
     await assets.updateOne(
       {
         _id: assetId,
-        companyId: this.companyId,
+        organizationId: this.organizationId,
       },
       {
         $set: updateObj,
@@ -357,7 +357,7 @@ export class AssetsService extends BaseService implements IAssetsService {
             _id: {
               $in: assetsIds,
             },
-            companyId: this.companyId,
+            organizationId: this.organizationId,
           })
           .toArray();
 
@@ -365,7 +365,7 @@ export class AssetsService extends BaseService implements IAssetsService {
           _id: {
             $in: assetsIds,
           },
-          companyId: this.companyId,
+          organizationId: this.organizationId,
         });
 
         logger.debug(
@@ -396,7 +396,7 @@ export class AssetsService extends BaseService implements IAssetsService {
 
     const filter: Filter<AssetEntity> = {
       filename,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     };
 
     if (_id) {
@@ -432,7 +432,7 @@ export class AssetsService extends BaseService implements IAssetsService {
 
     const asset = await assets.findOne({
       filename,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     });
 
     if (!asset) {
@@ -465,7 +465,7 @@ export class AssetsService extends BaseService implements IAssetsService {
           pipeline: [
             {
               $match: {
-                companyId: this.companyId,
+                organizationId: this.organizationId,
               },
             },
           ],
@@ -480,7 +480,7 @@ export class AssetsService extends BaseService implements IAssetsService {
           pipeline: [
             {
               $match: {
-                companyId: this.companyId,
+                organizationId: this.organizationId,
               },
             },
           ],
@@ -505,7 +505,7 @@ export class AssetsService extends BaseService implements IAssetsService {
           pipeline: [
             {
               $match: {
-                companyId: this.companyId,
+                organizationId: this.organizationId,
               },
             },
           ],

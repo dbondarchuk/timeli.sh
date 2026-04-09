@@ -36,7 +36,7 @@ export class EmailNotificationConnectedApp
   public constructor(protected readonly props: IConnectedAppProps) {
     this.loggerFactory = getLoggerFactory(
       "EmailNotificationConnectedApp",
-      props.companyId,
+      props.organizationId,
     );
   }
 

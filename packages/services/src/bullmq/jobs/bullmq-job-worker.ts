@@ -1,12 +1,12 @@
 import { getLoggerFactory } from "@timelish/logger";
 import {
   AppJobRequest,
-  CompanyJobRequest,
   CoreJobRequest,
   HookJobRequest,
   IScheduled,
   IServicesContainer,
-  WithCompanyId,
+  OrganizationJobRequest,
+  WithOrganizationId,
 } from "@timelish/types";
 import { Job } from "bullmq";
 import { BuiltInApps } from "../../built-in/apps";
@@ -19,7 +19,9 @@ export class BullMQJobWorker extends BaseBullMQClient {
 
   constructor(
     config: BullMQJobConfig,
-    protected readonly getServices: (companyId: string) => IServicesContainer,
+    protected readonly getServices: (
+      organizationId: string,
+    ) => IServicesContainer,
   ) {
     super(config, getLoggerFactory("BullMQJobWorker"));
     this.config = config;
@@ -42,7 +44,7 @@ export class BullMQJobWorker extends BaseBullMQClient {
     logger.info("BullMQ job workers initialized");
   }
 
-  private async processJob(job: Job<CompanyJobRequest>): Promise<void> {
+  private async processJob(job: Job<OrganizationJobRequest>): Promise<void> {
     const logger = this.loggerFactory("processJob");
     const jobData = reviveJobData(job.data);
 
@@ -234,19 +236,19 @@ export class BullMQJobWorker extends BaseBullMQClient {
 
   private async processAppJob(
     jobId: string,
-    jobData: WithCompanyId<AppJobRequest>,
+    jobData: WithOrganizationId<AppJobRequest>,
   ): Promise<void> {
     const logger = this.loggerFactory("processAppJob");
 
     try {
       logger.info({ jobId, jobData }, "Processing app job");
-      const companyId = jobData.companyId;
-      if (!companyId) {
-        throw new Error("companyId is required in job data");
+      const organizationId = jobData.organizationId;
+      if (!organizationId) {
+        throw new Error("organizationId is required in job data");
       }
 
       const { app, service } = await this.getServices(
-        companyId,
+        organizationId,
       ).connectedAppsService.getAppService<IScheduled>(jobData.appId);
 
       if (service.processJob) {
@@ -263,18 +265,18 @@ export class BullMQJobWorker extends BaseBullMQClient {
 
   private async processHookJob(
     jobId: string,
-    jobData: WithCompanyId<HookJobRequest>,
+    jobData: WithOrganizationId<HookJobRequest>,
   ): Promise<void> {
     const logger = this.loggerFactory("processHookJob");
 
     try {
       logger.info({ jobId, jobData }, "Processing hook job");
-      const companyId = jobData.companyId;
-      if (!companyId) {
-        throw new Error("companyId is required in job data");
+      const organizationId = jobData.organizationId;
+      if (!organizationId) {
+        throw new Error("organizationId is required in job data");
       }
 
-      await this.getServices(companyId).connectedAppsService.executeHooks<
+      await this.getServices(organizationId).connectedAppsService.executeHooks<
         any,
         void
       >(jobData.scope, async (app, service) => {
@@ -304,13 +306,13 @@ export class BullMQJobWorker extends BaseBullMQClient {
 
   private async processCoreJob(
     jobId: string,
-    jobData: WithCompanyId<CoreJobRequest>,
+    jobData: WithOrganizationId<CoreJobRequest>,
   ): Promise<void> {
     const logger = this.loggerFactory("processCoreJob");
     logger.info({ jobId, jobData }, "Processing core job");
-    const companyId = jobData.companyId;
-    if (!companyId) {
-      throw new Error("companyId is required in job data");
+    const organizationId = jobData.organizationId;
+    if (!organizationId) {
+      throw new Error("organizationId is required in job data");
     }
 
     const coreApp = BuiltInApps[jobData.appId];
@@ -323,8 +325,8 @@ export class BullMQJobWorker extends BaseBullMQClient {
     }
 
     const service = new coreApp.getService(
-      companyId,
-      this.getServices(companyId),
+      organizationId,
+      this.getServices(organizationId),
     );
 
     if (!service.processJob) {

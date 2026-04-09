@@ -6,10 +6,10 @@ export const dynamic = "force-dynamic";
 
 const processWebhook = async (
   request: NextRequest,
-  { params }: RouteContext<"/apps/[companyId]/[appId]/webhook">,
+  { params }: RouteContext<"/apps/[organizationId]/[appId]/webhook">,
 ) => {
   const logger = getLoggerFactory("API/apps-webhook")("processWebhook");
-  const { appId, companyId } = await params;
+  const { appId, organizationId } = await params;
 
   logger.debug(
     {
@@ -25,7 +25,7 @@ const processWebhook = async (
     return NextResponse.json({ error: "AppId is required" }, { status: 400 });
   }
 
-  const service = ServicesContainer(companyId).connectedAppsService;
+  const service = ServicesContainer(organizationId).connectedAppsService;
 
   try {
     const result = await service.processWebhook(appId, request);

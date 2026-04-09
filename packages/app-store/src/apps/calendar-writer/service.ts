@@ -42,7 +42,7 @@ export class CalendarWriterConnectedApp
   public constructor(protected readonly props: IConnectedAppProps) {
     this.loggerFactory = getLoggerFactory(
       "CalendarWriterConnectedApp",
-      props.companyId,
+      props.organizationId,
     );
   }
 

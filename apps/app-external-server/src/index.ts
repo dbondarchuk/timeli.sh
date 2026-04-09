@@ -57,7 +57,7 @@ async function startServer(): Promise<void> {
         "Incoming request",
       );
 
-      // Match pattern: /api/apps/[companyId]/[appId]/[...slug]
+      // Match pattern: /api/apps/[organizationId]/[appId]/[...slug]
       const match = pathname.match(
         /^\/api\/apps\/([^/]+)\/([^/]+)(?:\/(.*))?$/,
       );
@@ -67,19 +67,19 @@ async function startServer(): Promise<void> {
           JSON.stringify({
             error: "Not found",
             message:
-              "Expected path format: /api/apps/{companyId}/{appId}/[...slug]",
+              "Expected path format: /api/apps/{organizationId}/{appId}/[...slug]",
           }),
         );
         return;
       }
 
-      const companyId = match[1];
+      const organizationId = match[1];
       const appId = match[2];
       const slugPath = match[3] || "";
       const slug = slugPath ? slugPath.split("/").filter(Boolean) : [];
 
       // Get services container
-      const servicesContainer = ServicesContainer(companyId);
+      const servicesContainer = ServicesContainer(organizationId);
 
       // Convert Node.js request to Web API Request
       const body = await new Promise<Buffer>((resolve, reject) => {

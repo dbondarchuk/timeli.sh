@@ -43,7 +43,7 @@ export class AppointmentNotificationsJobProcessor {
     this.repository = new AppointmentNotificationsRepository(props);
     this.loggerFactory = getLoggerFactory(
       "AppointmentNotificationsJobProcessor",
-      props.companyId,
+      props.organizationId,
     );
   }
 

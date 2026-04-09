@@ -1,7 +1,7 @@
 import { AllKeys } from "@timelish/i18n";
 import { AppointmentEntity } from "../booking";
 import { Customer } from "../customers";
-import { WithCompanyId, WithDatabaseId } from "../database";
+import { WithDatabaseId, WithOrganizationId } from "../database";
 import { Prettify } from "../utils";
 
 export const emailCommunicationChannel = "email" as const;
@@ -22,7 +22,7 @@ export type CommunicationParticipantType =
   (typeof communicationParticipantTypeSchema)[number];
 
 export type CommunicationLogEntity = Prettify<
-  WithCompanyId<
+  WithOrganizationId<
     WithDatabaseId<{
       direction: CommunicationDirection;
       channel: CommunicationChannel;

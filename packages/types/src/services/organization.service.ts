@@ -1,4 +1,4 @@
-import { Organization } from "../users/organization";
+import { Organization } from "../organizations";
 
 export interface IOrganizationService {
   getOrganization(): Promise<Organization | null>;

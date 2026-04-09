@@ -3,44 +3,47 @@ import { Filter } from "mongodb";
 import pino from "pino";
 
 /**
- * Base service that provides company isolation
- * All services should extend this to automatically filter by companyId
+ * Base service that provides organization isolation
+ * All services should extend this to automatically filter by organizationId
  */
 export abstract class BaseService {
-  protected readonly companyId: string;
+  protected readonly organizationId: string;
   protected readonly loggerFactory: (functionName?: string) => pino.Logger;
 
-  constructor(serviceName: string, companyId: string) {
-    this.companyId = companyId;
-    this.loggerFactory = getLoggerFactory(serviceName, this.companyId);
+  constructor(serviceName: string, organizationId: string) {
+    this.organizationId = organizationId;
+    this.loggerFactory = getLoggerFactory(serviceName, this.organizationId);
   }
 
   /**
-   * Add companyId filter to any MongoDB filter
-   * Ensures all queries are scoped to the company
+   * Add organizationId filter to any MongoDB filter
+   * Ensures all queries are scoped to the organization
    */
-  protected withCompanyFilter<T>(filter: Filter<T>): Filter<T> {
+  protected withOrganizationFilter<T>(filter: Filter<T>): Filter<T> {
     return {
-      $and: [{ companyId: this.companyId }, filter],
+      $and: [{ organizationId: this.organizationId }, filter],
     } as Filter<T>;
   }
 
   /**
-   * Verify that a document belongs to the company
-   * Throws an error if the document's companyId doesn't match
+   * Verify that a document belongs to the organization
+   * Throws an error if the document's organizationId doesn't match
    */
-  protected verifyCompanyOwnership(
-    documentCompanyId: string | undefined,
+  protected verifyOrganizationOwnership(
+    documentOrganizationId: string | undefined,
   ): void {
-    if (!documentCompanyId || documentCompanyId !== this.companyId) {
-      throw new Error("Document does not belong to the company");
+    if (
+      !documentOrganizationId ||
+      documentOrganizationId !== this.organizationId
+    ) {
+      throw new Error("Document does not belong to the organization");
     }
   }
 
   /**
-   * Get the current company ID
+   * Get the current organization ID
    */
-  public getCompanyId(): string {
-    return this.companyId;
+  public getOrganizationId(): string {
+    return this.organizationId;
   }
 }

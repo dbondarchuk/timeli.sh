@@ -1741,7 +1741,7 @@
           "connectDialogDescription": "Connect your own domain to Timeli.sh to take full control of your brand.",
           "connectDialogDnsTitle": "Configure DNS first",
           "connectDialogDnsARecord": "At your DNS provider, create an A record for @ (apex) or your subdomain pointing to {ip}.",
-          "connectDialogDnsCname": "Or create a CNAME or ALIAS record pointing to {host} — the hostname for your Timeli.sh site (your default URL is {baseUrl}).",
+          "connectDialogDnsCname": "Or create a CNAME or ALIAS record pointing to {host} — the hostname for your Timeli.sh site.",
           "domainLabel": "Domain",
           "connectButton": "Connect",
           "copyWebsiteUrlAriaLabel": "Copy website URL",

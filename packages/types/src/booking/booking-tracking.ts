@@ -40,7 +40,7 @@ export type BookingTrackingEventData = {
 export type BookingTrackingEvent = {
   _id: string;
   sessionId: string;
-  companyId: string;
+  organizationId: string;
   startedAt: Date;
   lastSeenAt: Date;
   abandonedAt?: Date | null;

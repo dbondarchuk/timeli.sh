@@ -6,7 +6,7 @@ import { auth } from "./auth";
 
 export const getOrganizationIdAndSlug = async () => {
   const headersList = await headers();
-  const organizationId = headersList.get("x-company-id") as string;
+  const organizationId = headersList.get("x-organization-id") as string;
   const organizationSlug = headersList.get("x-organization-slug") as string;
   const organizationDomain = headersList.get("x-organization-domain") as string;
   if (!organizationId || !organizationSlug) {
@@ -52,7 +52,7 @@ export const getServicesContainer = cache(async () => {
   return servicesContainer;
 });
 
-export const getCompanyId = cache(async () => {
+export const getOrganizationId = cache(async () => {
   const { organizationId } = await getOrganizationIdAndSlug();
   return organizationId;
 });

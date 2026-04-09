@@ -2,10 +2,10 @@
  * Irreversibly deletes an organization and related data from MongoDB.
  *
  * Usage (from repo root):
- *   node apps/admin/scripts/purge-organization.mjs <companyId> [--yes] [--slug=<slug>]
+ *   node apps/admin/scripts/purge-organization.mjs <organizationId> [--yes] [--slug=<slug>]
  *
  * Or from apps/admin:
- *   node scripts/purge-organization.mjs <companyId> [--yes] [--slug=<slug>]
+ *   node scripts/purge-organization.mjs <organizationId> [--yes] [--slug=<slug>]
  *
  * Without --yes / --slug you will be prompted:
  *   1) Type exactly: yes
@@ -17,7 +17,7 @@
  * S3_ACCESS_KEY, S3_SECRET_KEY, plus optional S3_ENDPOINT and S3_FORCE_PATH_STYLE=true.
  * Deletes all objects under prefix `{organizationId}/` after MongoDB purge succeeds.
  *
- * @typedef {{ companyId: string | null, yes: boolean, slug: string | null }} CliOpts
+ * @typedef {{ organizationId: string | null, yes: boolean, slug: string | null }} CliOpts
  */
 
 import {
@@ -51,15 +51,15 @@ loadEnvIfPresent(path.resolve(__dirname, ".."));
 /** @param {string[]} argv */
 function parseArgs(argv) {
   /** @type {CliOpts} */
-  const out = { companyId: null, yes: false, slug: null };
+  const out = { organizationId: null, yes: false, slug: null };
   for (let i = 2; i < argv.length; i++) {
     const a = argv[i];
     if (a === "--yes" || a === "-y") {
       out.yes = true;
       continue;
     }
-    if (a.startsWith("--company-id=")) {
-      out.companyId = a.slice("--company-id=".length);
+    if (a.startsWith("--organization-id=")) {
+      out.organizationId = a.slice("--organization-id=".length);
       continue;
     }
     if (a.startsWith("--slug=")) {
@@ -70,8 +70,8 @@ function parseArgs(argv) {
       out.slug = argv[++i] ?? null;
       continue;
     }
-    if (!a.startsWith("-") && !out.companyId) {
-      out.companyId = a;
+    if (!a.startsWith("-") && !out.organizationId) {
+      out.organizationId = a;
     }
   }
   return out;
@@ -131,9 +131,9 @@ async function purgeOrganization(db, organizationId) {
     }
 
     const coll = db.collection(name);
-    const r1 = await coll.deleteMany({ companyId: organizationId });
+    const r1 = await coll.deleteMany({ organizationId: organizationId });
     if (r1.deletedCount > 0) {
-      summary[`${name} (companyId)`] = r1.deletedCount;
+      summary[`${name} (organizationId)`] = r1.deletedCount;
     }
 
     const r2 = await coll.deleteMany({
@@ -197,7 +197,7 @@ async function purgeOrganization(db, organizationId) {
  * Remove all S3 assets for the org (keys: `{organizationId}/...` per S3AssetsStorageService).
  * @param {string} organizationId
  */
-async function purgeCompanyS3Prefix(organizationId) {
+async function purgeOrganizationS3Prefix(organizationId) {
   const bucket = process.env.S3_BUCKET?.trim();
   if (!bucket) {
     console.log("\nS3_BUCKET not set — skipping S3 object deletion.");
@@ -238,6 +238,8 @@ async function purgeCompanyS3Prefix(organizationId) {
       ? list.NextContinuationToken
       : undefined;
 
+    console.log(`Deleting ${keys} objects from S3`);
+
     for (let i = 0; i < keys.length; i += 1000) {
       const batch = keys.slice(i, i + 1000);
       await client.send(
@@ -260,10 +262,10 @@ async function purgeCompanyS3Prefix(organizationId) {
 
 async function main() {
   const opts = parseArgs(process.argv);
-  const companyIdArg = opts.companyId?.trim();
-  if (!companyIdArg) {
+  const organizationIdArg = opts.organizationId?.trim();
+  if (!organizationIdArg) {
     console.error(
-      "Usage: node purge-organization.mjs <companyId> [--yes] [--slug=<slug>]",
+      "Usage: node purge-organization.mjs <organizationId> [--yes] [--slug=<slug>]",
     );
     process.exit(1);
   }
@@ -285,14 +287,14 @@ async function main() {
   try {
     let orgDoc = await db
       .collection("organizations")
-      .findOne({ _id: companyIdArg });
-    if (!orgDoc && ObjectId.isValid(companyIdArg)) {
+      .findOne({ _id: organizationIdArg });
+    if (!orgDoc && ObjectId.isValid(organizationIdArg)) {
       orgDoc = await db
         .collection("organizations")
-        .findOne({ _id: new ObjectId(companyIdArg) });
+        .findOne({ _id: new ObjectId(organizationIdArg) });
     }
     if (!orgDoc) {
-      console.error(`No organization with _id matching: ${companyIdArg}`);
+      console.error(`No organization with _id matching: ${organizationIdArg}`);
       process.exit(1);
     }
 
@@ -337,7 +339,7 @@ async function main() {
       rl.close();
     }
 
-    await purgeCompanyS3Prefix(organizationId);
+    await purgeOrganizationS3Prefix(organizationId);
     await purgeOrganization(db, organizationId);
     console.log("\nDone.");
   } finally {

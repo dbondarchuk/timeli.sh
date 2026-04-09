@@ -20,11 +20,11 @@ import { BaseService } from "./services/base.service";
 
 export class PaymentsService extends BaseService implements IPaymentsService {
   public constructor(
-    companyId: string,
+    organizationId: string,
     protected readonly connectedAppsService: IConnectedAppsService,
     protected readonly jobService: IJobService,
   ) {
-    super("PaymentsService", companyId);
+    super("PaymentsService", organizationId);
   }
 
   public async createIntent(
@@ -52,7 +52,7 @@ export class PaymentsService extends BaseService implements IPaymentsService {
 
     const dbIntent = {
       ...intent,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
       _id: new ObjectId().toString(),
       status: "created",
       createdAt: new Date(),
@@ -88,7 +88,7 @@ export class PaymentsService extends BaseService implements IPaymentsService {
 
     const intent = await intents.findOne({
       _id: id,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     });
 
     if (!intent) {
@@ -124,7 +124,7 @@ export class PaymentsService extends BaseService implements IPaymentsService {
 
     const intent = await intents.findOne({
       externalId,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     });
 
     if (!intent) {
@@ -155,7 +155,7 @@ export class PaymentsService extends BaseService implements IPaymentsService {
 
     const {
       _id: _,
-      companyId: __,
+      organizationId: __,
       paidAt,
       ...updateObj
     } = update as PaymentIntent; // Remove fields in case it slips here
@@ -176,7 +176,7 @@ export class PaymentsService extends BaseService implements IPaymentsService {
     await intents.updateOne(
       {
         _id: id,
-        companyId: this.companyId,
+        organizationId: this.organizationId,
       },
       {
         $set,
@@ -185,7 +185,7 @@ export class PaymentsService extends BaseService implements IPaymentsService {
 
     const updatedIntent = await intents.findOne({
       _id: id,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     });
 
     if (!updatedIntent) {
@@ -222,7 +222,7 @@ export class PaymentsService extends BaseService implements IPaymentsService {
 
     const dbPayment: Payment = {
       ...payment,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
       _id: new ObjectId().toString(),
       updatedAt: new Date(),
     };
@@ -253,7 +253,7 @@ export class PaymentsService extends BaseService implements IPaymentsService {
 
     const payment = await payments.findOne({
       _id: id,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     });
 
     if (!payment) {
@@ -288,7 +288,7 @@ export class PaymentsService extends BaseService implements IPaymentsService {
 
     const paymentsCollection = db.collection<Payment>(PAYMENTS_COLLECTION_NAME);
     const payments = await paymentsCollection
-      .find({ appointmentId, companyId: this.companyId })
+      .find({ appointmentId, organizationId: this.organizationId })
       .toArray();
 
     if (payments.length === 0) {
@@ -310,7 +310,7 @@ export class PaymentsService extends BaseService implements IPaymentsService {
     const logger = this.loggerFactory("updatePayment");
     logger.debug({ paymentId: id, update }, "Updating payment");
 
-    const { _id: _, companyId: __, ...updateObj } = update as Payment; // Remove fields in case it slips here
+    const { _id: _, organizationId: __, ...updateObj } = update as Payment; // Remove fields in case it slips here
     const db = await getDbConnection();
     const payments = db.collection<Payment>(PAYMENTS_COLLECTION_NAME);
 
@@ -322,7 +322,7 @@ export class PaymentsService extends BaseService implements IPaymentsService {
     await payments.updateOne(
       {
         _id: id,
-        companyId: this.companyId,
+        organizationId: this.organizationId,
       },
       {
         $set,
@@ -331,7 +331,7 @@ export class PaymentsService extends BaseService implements IPaymentsService {
 
     const updatedPayment = await payments.findOne({
       _id: id,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     });
 
     if (!updatedPayment) {
@@ -364,7 +364,7 @@ export class PaymentsService extends BaseService implements IPaymentsService {
 
     const payment = await payments.findOneAndDelete({
       _id: id,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     });
     if (!payment) {
       logger.warn({ paymentId: id }, "Payment not found");

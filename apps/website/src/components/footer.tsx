@@ -8,7 +8,7 @@ const footerLinks = {
     { name: "Integrations", href: "#integrations" },
     // { name: "API", href: "#" },
   ],
-  //   company: [
+  //   organization: [
   //     { name: "About", href: "#" },
   //     { name: "Blog", href: "#" },
   //     { name: "Careers", href: "#" },
@@ -64,9 +64,9 @@ export function Footer() {
           </div>
 
           {/* <div>
-            <h3 className="text-sm font-semibold text-foreground">Company</h3>
+            <h3 className="text-sm font-semibold text-foreground">Organization</h3>
             <ul className="mt-4 space-y-3">
-              {footerLinks.company.map((link) => (
+              {footerLinks.organization.map((link) => (
                 <li key={link.name}>
                   <Link
                     href={link.href}

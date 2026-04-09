@@ -1,5 +1,5 @@
 import * as z from "zod";
-import { WithCompanyId, WithDatabaseId } from "../database";
+import { WithDatabaseId, WithOrganizationId } from "../database";
 import {
   asOptinalNumberField,
   zNonEmptyString,
@@ -115,7 +115,7 @@ export const discountSchema = z
 
 export type DiscountUpdateModel = z.infer<typeof discountSchema>;
 export type Discount = Prettify<
-  WithCompanyId<
+  WithOrganizationId<
     WithDatabaseId<DiscountUpdateModel> & {
       updatedAt: Date;
     }

@@ -1,5 +1,5 @@
 import * as z from "zod";
-import { WithCompanyId, WithDatabaseId } from "../database";
+import { WithDatabaseId, WithOrganizationId } from "../database";
 import { Prettify } from "../utils";
 
 export const pageFooterSchema = z.object({
@@ -23,7 +23,7 @@ export const getPageFooterSchemaWithUniqueNameCheck = (
 export type PageFooterUpdateModel = z.infer<typeof pageFooterSchema>;
 
 export type PageFooter = Prettify<
-  WithCompanyId<WithDatabaseId<PageFooterUpdateModel>> & {
+  WithOrganizationId<WithDatabaseId<PageFooterUpdateModel>> & {
     updatedAt: Date;
   }
 >;

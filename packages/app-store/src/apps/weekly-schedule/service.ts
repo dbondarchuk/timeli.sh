@@ -34,7 +34,7 @@ export default class WeeklyScheduleConnectedApp
   public constructor(protected readonly props: IConnectedAppProps) {
     this.loggerFactory = getLoggerFactory(
       "WeeklyScheduleConnectedApp",
-      props.companyId,
+      props.organizationId,
     );
   }
 
@@ -150,7 +150,7 @@ export default class WeeklyScheduleConnectedApp
     );
 
     const indexes = {
-      companyId_appId_week_1: { companyId: 1, appId: 1, week: 1 },
+      organizationId_appId_week_1: { organizationId: 1, appId: 1, week: 1 },
       appId_week_1: { appId: 1, week: 1 },
     };
 

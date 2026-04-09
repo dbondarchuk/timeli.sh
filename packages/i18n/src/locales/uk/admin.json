@@ -1741,7 +1741,7 @@
           "connectDialogDescription": "Підключіть власний домен до Timeli.sh, щоб повністю контролювати свій бренд.",
           "connectDialogDnsTitle": "Спочатку налаштуйте DNS",
           "connectDialogDnsARecord": "У панелі DNS створіть A-запис для @ (кореня) або вашого піддомену зі значенням {ip}.",
-          "connectDialogDnsCname": "Або додайте CNAME або ALIAS на {host} — це ім’я хоста вашого сайту в Timeli.sh (зазвичай він відкривається за адресою {baseUrl}).",
+          "connectDialogDnsCname": "Або додайте CNAME або ALIAS на {host} — це ім’я хоста вашого сайту в Timeli.sh.",
           "domainLabel": "Домен",
           "connectButton": "Підключити",
           "copyWebsiteUrlAriaLabel": "Копіювати URL веб-сайту",

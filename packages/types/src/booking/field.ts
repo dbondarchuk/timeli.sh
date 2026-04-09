@@ -1,6 +1,6 @@
 import * as z from "zod";
 
-import { WithCompanyId, WithDatabaseId } from "../database";
+import { WithDatabaseId, WithOrganizationId } from "../database";
 import {
   asOptinalNumberField,
   Prettify,
@@ -124,7 +124,7 @@ export type FieldsSchema = z.infer<typeof fieldsSchema>;
 
 export type ServiceFieldUpdateModel = FieldSchema;
 export type ServiceField = Prettify<
-  WithCompanyId<
+  WithOrganizationId<
     WithDatabaseId<ServiceFieldUpdateModel> & {
       updatedAt: Date;
     }

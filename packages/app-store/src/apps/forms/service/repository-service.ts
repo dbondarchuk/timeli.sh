@@ -22,13 +22,13 @@ export class FormsRepositoryService {
 
   public constructor(
     protected readonly appId: string,
-    protected readonly companyId: string,
+    protected readonly organizationId: string,
     protected readonly getDbConnection: IConnectedAppProps["getDbConnection"],
     protected readonly services: IConnectedAppProps["services"],
   ) {
     this.loggerFactory = getLoggerFactory(
       "FormsRepositoryService",
-      this.companyId,
+      this.organizationId,
     );
   }
 
@@ -41,7 +41,7 @@ export class FormsRepositoryService {
       ...form,
       _id: new ObjectId().toString(),
       appId: this.appId,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
       createdAt: new Date(),
       updatedAt: new Date(),
       isArchived: false,
@@ -64,7 +64,7 @@ export class FormsRepositoryService {
     const { modifiedCount } = await db
       .collection<FormModel>(FORMS_COLLECTION_NAME)
       .updateOne(
-        { _id: id, companyId: this.companyId, appId: this.appId },
+        { _id: id, organizationId: this.organizationId, appId: this.appId },
         {
           $set: {
             ...form,
@@ -89,7 +89,11 @@ export class FormsRepositoryService {
     const db = await this.getDbConnection();
     const count = await db
       .collection<FormResponseModel>(FORM_RESPONSES_COLLECTION_NAME)
-      .countDocuments({ formId, companyId: this.companyId, appId: this.appId });
+      .countDocuments({
+        formId,
+        organizationId: this.organizationId,
+        appId: this.appId,
+      });
     logger.debug({ formId, count }, "Form response count");
     return count;
   }
@@ -105,7 +109,7 @@ export class FormsRepositoryService {
     const { modifiedCount } = await db
       .collection<FormModel>(FORMS_COLLECTION_NAME)
       .updateOne(
-        { _id: id, companyId: this.companyId, appId: this.appId },
+        { _id: id, organizationId: this.organizationId, appId: this.appId },
         { $set: { updatedAt: new Date(), isArchived } },
       );
 
@@ -130,7 +134,7 @@ export class FormsRepositoryService {
       .updateMany(
         {
           _id: { $in: ids },
-          companyId: this.companyId,
+          organizationId: this.organizationId,
           appId: this.appId,
         },
         { $set: { updatedAt: new Date(), isArchived } },
@@ -149,7 +153,11 @@ export class FormsRepositoryService {
       .collection<FormResponseModel>(FORM_RESPONSES_COLLECTION_NAME)
       .aggregate([
         {
-          $match: { formId: id, companyId: this.companyId, appId: this.appId },
+          $match: {
+            formId: id,
+            organizationId: this.organizationId,
+            appId: this.appId,
+          },
         },
       ])
       .hasNext();
@@ -161,7 +169,11 @@ export class FormsRepositoryService {
 
     const { deletedCount } = await db
       .collection<FormModel>(FORMS_COLLECTION_NAME)
-      .deleteOne({ _id: id, companyId: this.companyId, appId: this.appId });
+      .deleteOne({
+        _id: id,
+        organizationId: this.organizationId,
+        appId: this.appId,
+      });
 
     if (deletedCount === 0) {
       logger.warn({ id }, "Form not found");
@@ -184,7 +196,7 @@ export class FormsRepositoryService {
         {
           $match: {
             formId: { $in: ids },
-            companyId: this.companyId,
+            organizationId: this.organizationId,
             appId: this.appId,
           },
         },
@@ -200,7 +212,7 @@ export class FormsRepositoryService {
       .collection<FormModel>(FORMS_COLLECTION_NAME)
       .deleteMany({
         _id: { $in: ids },
-        companyId: this.companyId,
+        organizationId: this.organizationId,
         appId: this.appId,
       });
 
@@ -226,7 +238,7 @@ export class FormsRepositoryService {
 
     const $and: Filter<FormModel>[] = [
       {
-        companyId: this.companyId,
+        organizationId: this.organizationId,
         appId: this.appId,
       },
     ];
@@ -264,7 +276,7 @@ export class FormsRepositoryService {
             pipeline: [
               {
                 $match: {
-                  companyId: this.companyId,
+                  organizationId: this.organizationId,
                 },
               },
               {
@@ -294,7 +306,7 @@ export class FormsRepositoryService {
                     {
                       $match: {
                         _id: { $in: query.priorityIds },
-                        companyId: this.companyId,
+                        organizationId: this.organizationId,
                       },
                     },
                   ],
@@ -376,7 +388,7 @@ export class FormsRepositoryService {
       .aggregate([
         {
           $match: {
-            companyId: this.companyId,
+            organizationId: this.organizationId,
             appId: this.appId,
             requireCustomerId: true,
             ...(ids?.length ? { _id: { $in: ids } } : {}),
@@ -396,7 +408,7 @@ export class FormsRepositoryService {
     const db = await this.getDbConnection();
     const form = await db.collection<FormModel>(FORMS_COLLECTION_NAME).findOne({
       _id: id,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
       appId: this.appId,
     });
 
@@ -479,7 +491,7 @@ export class FormsRepositoryService {
       formId,
       _id: new ObjectId().toString(),
       appId: this.appId,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
       customerId: response.customerId ?? undefined,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -515,7 +527,7 @@ export class FormsRepositoryService {
 
     const $and: Filter<FormResponseModel>[] = [
       {
-        companyId: this.companyId,
+        organizationId: this.organizationId,
         appId: this.appId,
       },
     ];
@@ -567,7 +579,7 @@ export class FormsRepositoryService {
             pipeline: [
               {
                 $match: {
-                  companyId: this.companyId,
+                  organizationId: this.organizationId,
                 },
               },
             ],
@@ -650,7 +662,7 @@ export class FormsRepositoryService {
       .collection<FormResponseModel>(FORM_RESPONSES_COLLECTION_NAME)
       .findOne({
         _id: id,
-        companyId: this.companyId,
+        organizationId: this.organizationId,
         appId: this.appId,
       });
 
@@ -669,7 +681,7 @@ export class FormsRepositoryService {
     const { modifiedCount } = await db
       .collection<FormResponseModel>(FORM_RESPONSES_COLLECTION_NAME)
       .updateOne(
-        { _id: id, companyId: this.companyId, appId: this.appId },
+        { _id: id, organizationId: this.organizationId, appId: this.appId },
         {
           $set: {
             updatedAt: new Date(),
@@ -694,7 +706,11 @@ export class FormsRepositoryService {
     const db = await this.getDbConnection();
     const { deletedCount } = await db
       .collection<FormResponseModel>(FORM_RESPONSES_COLLECTION_NAME)
-      .deleteOne({ _id: id, companyId: this.companyId, appId: this.appId });
+      .deleteOne({
+        _id: id,
+        organizationId: this.organizationId,
+        appId: this.appId,
+      });
 
     if (deletedCount === 0) {
       logger.warn({ id }, "Form response not found");
@@ -726,7 +742,7 @@ export class FormsRepositoryService {
       .updateMany(
         {
           _id: { $in: ids },
-          companyId: this.companyId,
+          organizationId: this.organizationId,
           appId: this.appId,
         },
         updateDoc,
@@ -749,7 +765,7 @@ export class FormsRepositoryService {
       .collection<FormResponseModel>(FORM_RESPONSES_COLLECTION_NAME)
       .deleteMany({
         _id: { $in: ids },
-        companyId: this.companyId,
+        organizationId: this.organizationId,
         appId: this.appId,
       });
 
@@ -765,7 +781,7 @@ export class FormsRepositoryService {
     logger.debug({ name, id }, "Checking form name uniqueness");
     const filter: Filter<FormModel> = {
       name,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
       appId: this.appId,
     };
 
@@ -792,10 +808,10 @@ export class FormsRepositoryService {
     const db = await this.getDbConnection();
     await db
       .collection(FORMS_COLLECTION_NAME)
-      .deleteMany({ appId, companyId: this.companyId });
+      .deleteMany({ appId, organizationId: this.organizationId });
     await db
       .collection(FORM_RESPONSES_COLLECTION_NAME)
-      .deleteMany({ appId, companyId: this.companyId });
+      .deleteMany({ appId, organizationId: this.organizationId });
 
     logger.debug({ appId }, "Forms app uninstalled");
   }
@@ -811,11 +827,23 @@ export class FormsRepositoryService {
     logger.debug("Forms collection created");
 
     const formsIndexes: Record<string, Record<string, 1>> = {
-      companyId_appId_1: { companyId: 1, appId: 1 },
-      companyId_appId_isArchived_1: { companyId: 1, appId: 1, isArchived: 1 },
-      companyId_appId_name_1: { companyId: 1, appId: 1, name: 1 },
-      companyId_appId_createdAt_1: { companyId: 1, appId: 1, createdAt: 1 },
-      companyId_appId_updatedAt_1: { companyId: 1, appId: 1, updatedAt: 1 },
+      organizationId_appId_1: { organizationId: 1, appId: 1 },
+      organizationId_appId_isArchived_1: {
+        organizationId: 1,
+        appId: 1,
+        isArchived: 1,
+      },
+      organizationId_appId_name_1: { organizationId: 1, appId: 1, name: 1 },
+      organizationId_appId_createdAt_1: {
+        organizationId: 1,
+        appId: 1,
+        createdAt: 1,
+      },
+      organizationId_appId_updatedAt_1: {
+        organizationId: 1,
+        appId: 1,
+        updatedAt: 1,
+      },
     };
 
     for (const [name, index] of Object.entries(formsIndexes)) {
@@ -835,12 +863,20 @@ export class FormsRepositoryService {
     logger.debug("Form-responses collection created");
 
     const responsesIndexes: Record<string, Record<string, 1>> = {
-      companyId_appId_1: { companyId: 1, appId: 1 },
-      companyId_appId_formId_1: { companyId: 1, appId: 1, formId: 1 },
-      companyId_appId_customerId_1: { companyId: 1, appId: 1, customerId: 1 },
-      companyId_appId_createdAt_1: { companyId: 1, appId: 1, createdAt: 1 },
-      companyId_appId_formId_createdAt_1: {
-        companyId: 1,
+      organizationId_appId_1: { organizationId: 1, appId: 1 },
+      organizationId_appId_formId_1: { organizationId: 1, appId: 1, formId: 1 },
+      organizationId_appId_customerId_1: {
+        organizationId: 1,
+        appId: 1,
+        customerId: 1,
+      },
+      organizationId_appId_createdAt_1: {
+        organizationId: 1,
+        appId: 1,
+        createdAt: 1,
+      },
+      organizationId_appId_formId_createdAt_1: {
+        organizationId: 1,
         appId: 1,
         formId: 1,
         createdAt: 1,

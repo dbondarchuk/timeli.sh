@@ -426,7 +426,6 @@ export const BrandTab: React.FC<{
                         "settings.brand.form.timeliAddress.connectDialogDnsCname",
                         {
                           host: timeliBaseHost,
-                          baseUrl: timeliBaseUrl,
                         },
                       )}
                     </p>

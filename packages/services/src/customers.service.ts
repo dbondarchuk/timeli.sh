@@ -8,7 +8,7 @@ import {
   Leaves,
   Query,
   WithTotal,
-  type ICustomersService
+  type ICustomersService,
 } from "@timelish/types";
 import { buildSearchQuery, escapeRegex } from "@timelish/utils";
 import { Filter, ObjectId, Sort } from "mongodb";
@@ -21,10 +21,10 @@ import { BaseService } from "./services/base.service";
 
 export class CustomersService extends BaseService implements ICustomersService {
   public constructor(
-    companyId: string,
+    organizationId: string,
     private readonly jobService: IJobService,
   ) {
-    super("CustomersService", companyId);
+    super("CustomersService", organizationId);
   }
 
   public async getCustomer(
@@ -40,7 +40,7 @@ export class CustomersService extends BaseService implements ICustomersService {
 
     const customer = await collection.findOne({
       _id: id,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     });
 
     if (!customer) {
@@ -70,7 +70,7 @@ export class CustomersService extends BaseService implements ICustomersService {
     const collection = db.collection<Customer>(CUSTOMERS_COLLECTION_NAME);
     const customers = await collection
       .find({
-        companyId: this.companyId,
+        organizationId: this.organizationId,
       })
       .toArray();
 
@@ -96,7 +96,7 @@ export class CustomersService extends BaseService implements ICustomersService {
     ) || { "lastAppointment.dateTime": -1 };
 
     const filter: Filter<Customer> = {
-      companyId: this.companyId,
+      organizationId: this.organizationId,
       isDeleted: { $ne: true },
     };
 
@@ -126,7 +126,7 @@ export class CustomersService extends BaseService implements ICustomersService {
                     _id: {
                       $in: query.priorityIds,
                     },
-                    companyId: this.companyId,
+                    organizationId: this.organizationId,
                   },
                 },
               ],
@@ -177,7 +177,7 @@ export class CustomersService extends BaseService implements ICustomersService {
       .aggregate([
         {
           $match: {
-            companyId: this.companyId,
+            organizationId: this.organizationId,
           },
         },
         ...priorityStages,
@@ -191,7 +191,7 @@ export class CustomersService extends BaseService implements ICustomersService {
               {
                 $match: {
                   status: { $ne: "declined" },
-                  companyId: this.companyId,
+                  organizationId: this.organizationId,
                 },
               },
             ],
@@ -350,7 +350,7 @@ export class CustomersService extends BaseService implements ICustomersService {
 
     const customer = await collection.findOne({
       $or: queries,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
       isDeleted: { $ne: true },
     });
 
@@ -388,7 +388,7 @@ export class CustomersService extends BaseService implements ICustomersService {
 
     const customer = await collection.findOne({
       $or,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
       isDeleted: { $ne: true },
     });
 
@@ -426,7 +426,7 @@ export class CustomersService extends BaseService implements ICustomersService {
 
     const createdCustomer: Customer = {
       ...customer,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
       _id: id,
     };
 
@@ -469,7 +469,7 @@ export class CustomersService extends BaseService implements ICustomersService {
     await collection.updateOne(
       {
         _id: id,
-        companyId: this.companyId,
+        organizationId: this.organizationId,
       },
       {
         $set: updateObj,
@@ -479,7 +479,7 @@ export class CustomersService extends BaseService implements ICustomersService {
     // Get the updated customer for hooks
     const updatedCustomer = await collection.findOne({
       _id: id,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
       isDeleted: { $ne: true },
     });
     if (!updatedCustomer) {
@@ -616,7 +616,7 @@ export class CustomersService extends BaseService implements ICustomersService {
 
     const customer = await collection.findOne({
       _id: id,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     });
 
     if (!customer) {
@@ -632,7 +632,7 @@ export class CustomersService extends BaseService implements ICustomersService {
     await collection.updateOne(
       {
         _id: id,
-        companyId: this.companyId,
+        organizationId: this.organizationId,
       },
       {
         $set: {
@@ -682,7 +682,7 @@ export class CustomersService extends BaseService implements ICustomersService {
           $in: ids,
         },
         isDeleted: { $ne: true },
-        companyId: this.companyId,
+        organizationId: this.organizationId,
       })
       .toArray();
 
@@ -741,7 +741,7 @@ export class CustomersService extends BaseService implements ICustomersService {
 
     const target = await collection.findOne({
       _id: targetId,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     });
 
     if (!target) {
@@ -761,7 +761,7 @@ export class CustomersService extends BaseService implements ICustomersService {
         _id: {
           $in: ids,
         },
-        companyId: this.companyId,
+        organizationId: this.organizationId,
       })
       .toArray();
 
@@ -828,7 +828,7 @@ export class CustomersService extends BaseService implements ICustomersService {
     await collection.updateOne(
       {
         _id: targetId,
-        companyId: this.companyId,
+        organizationId: this.organizationId,
       },
       {
         $set: update,
@@ -840,7 +840,10 @@ export class CustomersService extends BaseService implements ICustomersService {
     const collections = await db.collections();
 
     for (const collection of collections) {
-      logger.debug({ collectionName: collection.collectionName }, "Updating collection");
+      logger.debug(
+        { collectionName: collection.collectionName },
+        "Updating collection",
+      );
       const { modifiedCount } = await collection.updateMany(
         {
           customerId: {
@@ -853,8 +856,11 @@ export class CustomersService extends BaseService implements ICustomersService {
           },
         },
       );
-      
-      logger.debug({ collectionName: collection.collectionName, modifiedCount }, "Updated collection");
+
+      logger.debug(
+        { collectionName: collection.collectionName, modifiedCount },
+        "Updated collection",
+      );
     }
 
     logger.debug({ targetId, ids }, "Deleting merged customers");
@@ -886,7 +892,7 @@ export class CustomersService extends BaseService implements ICustomersService {
     const customers = db.collection<Customer>(CUSTOMERS_COLLECTION_NAME);
 
     const emailFilter: Filter<Customer> = {
-      companyId: this.companyId,
+      organizationId: this.organizationId,
       $or: [
         {
           email: { $in: emails },
@@ -901,7 +907,7 @@ export class CustomersService extends BaseService implements ICustomersService {
     };
 
     const phoneFilter: Filter<Customer> = {
-      companyId: this.companyId,
+      organizationId: this.organizationId,
       $or: [
         {
           phone: { $in: phones },

@@ -13,8 +13,8 @@ export class ConfigurationService
   extends BaseService
   implements IConfigurationService
 {
-  public constructor(companyId: string) {
-    super("ConfigurationService", companyId);
+  public constructor(organizationId: string) {
+    super("ConfigurationService", organizationId);
   }
 
   public async getConfiguration<T extends ConfigurationKey>(
@@ -30,7 +30,7 @@ export class ConfigurationService
     const value = await configurations.findOne({
       // @ts-ignore Correct key
       key,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     });
 
     if (!value?.value) {
@@ -57,7 +57,7 @@ export class ConfigurationService
         key: {
           $in: keys,
         },
-        companyId: this.companyId,
+        organizationId: this.organizationId,
       })
       .toArray();
 
@@ -99,12 +99,12 @@ export class ConfigurationService
       {
         // @ts-ignore Correct key
         key,
-        companyId: this.companyId,
+        organizationId: this.organizationId,
       },
       {
         $set: {
           key,
-          companyId: this.companyId,
+          organizationId: this.organizationId,
           value: configuration,
         },
       },

@@ -1,8 +1,8 @@
 import {
   Prettify,
   WithAppId,
-  WithCompanyId,
   WithDatabaseId,
+  WithOrganizationId,
   zNonEmptyString,
 } from "@timelish/types";
 import * as z from "zod";
@@ -42,7 +42,7 @@ export const getDesignSchemaWithUniqueCheck = (
 export type DesignUpdateModel = z.infer<typeof designSchemaBase>;
 
 export type DesignModel = Prettify<
-  WithCompanyId<
+  WithOrganizationId<
     WithDatabaseId<WithAppId<DesignUpdateModel>> & {
       createdAt: Date;
       updatedAt: Date;

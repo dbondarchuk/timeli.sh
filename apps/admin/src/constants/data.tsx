@@ -5,6 +5,7 @@ import {
   Blocks,
   BookUser,
   Boxes,
+  Building,
   CalendarClock,
   CalendarFold,
   CalendarRange,
@@ -184,7 +185,7 @@ export const navItems: NavItemGroup[] = [
             id: "settings-brand",
             title: "admin.navigation.brand",
             href: "/dashboard/settings/brand",
-            icon: <Paintbrush />,
+            icon: <Building />,
             label: "admin.navigation.brand",
           },
           {

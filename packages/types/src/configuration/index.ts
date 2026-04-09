@@ -1,5 +1,5 @@
 import * as z from "zod";
-import { WithCompanyId } from "../database";
+import { WithOrganizationId } from "../database";
 import {
   DefaultAppsConfiguration,
   defaultAppsConfigurationSchema,
@@ -40,8 +40,8 @@ export type ConfigurationOption<T extends ConfigurationKey> = {
   value: Configuration[T];
 };
 
-export type ConfigurationOptionWithCompanyId<T extends ConfigurationKey> =
-  WithCompanyId<ConfigurationOption<T>>;
+export type ConfigurationOptionWithOrganizationId<T extends ConfigurationKey> =
+  WithOrganizationId<ConfigurationOption<T>>;
 
 export const configurationSchemaMap: Record<
   ConfigurationKey,

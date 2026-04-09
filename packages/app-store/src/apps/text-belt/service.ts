@@ -101,7 +101,7 @@ export default class TextBeltConnectedApp
   public constructor(protected readonly props: IConnectedAppProps) {
     this.loggerFactory = getLoggerFactory(
       "TextBeltConnectedApp",
-      props.companyId,
+      props.organizationId,
     );
   }
 
@@ -145,7 +145,7 @@ export default class TextBeltConnectedApp
         key: apiKey,
         phone: message.phone,
         sender: message.sender,
-        replyWebhookUrl: `${url}/apps/${this.props.companyId}/${app._id}/webhook`,
+        replyWebhookUrl: `${url}/apps/${this.props.organizationId}/${app._id}/webhook`,
         webhookData: message.data
           ? `${message.data.appId ?? ""}|${message.data.appointmentId ?? ""}|${message.data.customerId ?? ""}|${message.data.data ?? ""}`
           : undefined,

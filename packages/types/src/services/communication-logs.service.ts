@@ -10,7 +10,7 @@ import { DateRange } from "../general";
 
 export interface ICommunicationLogsService {
   log(
-    log: Omit<CommunicationLogEntity, "dateTime" | "_id" | "companyId">,
+    log: Omit<CommunicationLogEntity, "dateTime" | "_id" | "organizationId">,
   ): Promise<void>;
   getCommunicationLogs(
     query: Query & {

@@ -49,31 +49,34 @@ export * from "./services.service";
 export * from "./user.service";
 
 /**
- * ServicesContainer provides company-scoped services
- * Each service must be created with a companyId to ensure proper isolation
+ * ServicesContainer provides organization-scoped services
+ * Each service must be created with a organizationId to ensure proper isolation
  */
 
-export const ServicesContainer: (companyId: string) => IServicesContainer =
-  cache((companyId: string) => {
-    const configurationService = new CachedConfigurationService(companyId);
+export const ServicesContainer: (organizationId: string) => IServicesContainer =
+  cache((organizationId: string) => {
+    const configurationService = new CachedConfigurationService(organizationId);
     const assetsStorage = new S3AssetsStorageService(
-      companyId,
+      organizationId,
       getS3Configuration(),
     );
     const assetsService = new AssetsService(
-      companyId,
+      organizationId,
       configurationService,
       assetsStorage,
     );
 
-    const jobService = new BullMQJobService(companyId, getBullMQJobConfig());
+    const jobService = new BullMQJobService(
+      organizationId,
+      getBullMQJobConfig(),
+    );
     const dashboardNotificationsService =
-      new RedisDashboardNotificationPublisher(companyId, getRedisClient());
-    const organizationService = new OrganizationService(companyId);
-    const userService = new UserService(companyId);
-    const customersService = new CustomersService(companyId, jobService);
+      new RedisDashboardNotificationPublisher(organizationId, getRedisClient());
+    const organizationService = new OrganizationService(organizationId);
+    const userService = new UserService(organizationId);
+    const customersService = new CustomersService(organizationId, jobService);
     const connectedAppsService = new CachedConnectedAppsService(
-      companyId,
+      organizationId,
       () => services,
     );
     const scheduleService = new ScheduleService(
@@ -81,17 +84,17 @@ export const ServicesContainer: (companyId: string) => IServicesContainer =
       configurationService,
     );
     const servicesService = new ServicesService(
-      companyId,
+      organizationId,
       configurationService,
       jobService,
     );
     const paymentsService = new PaymentsService(
-      companyId,
+      organizationId,
       connectedAppsService,
       jobService,
     );
     const eventsService = new EventsService(
-      companyId,
+      organizationId,
       configurationService,
       connectedAppsService,
       assetsService,
@@ -104,17 +107,19 @@ export const ServicesContainer: (companyId: string) => IServicesContainer =
       userService,
     );
 
-    const pagesService = new PagesService(companyId);
+    const pagesService = new PagesService(organizationId);
 
-    const templatesService = new TemplatesService(companyId);
-    const communicationLogsService = new CommunicationLogsService(companyId);
+    const templatesService = new TemplatesService(organizationId);
+    const communicationLogsService = new CommunicationLogsService(
+      organizationId,
+    );
     const notificationService = new BullMQNotificationService(
-      companyId,
+      organizationId,
       getBullMQNotificationConfig(),
     );
 
     const giftCardsService = new GiftCardsService(
-      companyId,
+      organizationId,
       paymentsService,
       jobService,
     );

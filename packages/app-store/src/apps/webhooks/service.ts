@@ -70,7 +70,7 @@ export class WebhooksConnectedApp
   public constructor(protected readonly props: IConnectedAppProps) {
     this.loggerFactory = getLoggerFactory(
       "WebhooksConnectedApp",
-      props.companyId,
+      props.organizationId,
     );
   }
 

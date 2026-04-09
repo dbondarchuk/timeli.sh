@@ -29,13 +29,13 @@ export default class FinancialOverviewService {
   protected readonly loggerFactory: LoggerFactory;
 
   public constructor(
-    protected readonly companyId: string,
+    protected readonly organizationId: string,
     protected readonly getDbConnection: IConnectedAppProps["getDbConnection"],
     protected readonly services: IConnectedAppProps["services"],
   ) {
     this.loggerFactory = getLoggerFactory(
       "FinancialOverviewService",
-      companyId,
+      organizationId,
     );
   }
 
@@ -51,7 +51,7 @@ export default class FinancialOverviewService {
     // Build match criteria for date filtering
     const $and: any[] = [
       {
-        companyId: this.companyId,
+        organizationId: this.organizationId,
       },
     ];
 
@@ -86,7 +86,7 @@ export default class FinancialOverviewService {
         $lookup: {
           from: GIFT_CARDS_COLLECTION_NAME,
           pipeline: [
-            { $match: { companyId: this.companyId } },
+            { $match: { organizationId: this.organizationId } },
             { $project: { paymentId: 1, _id: 0 } },
           ],
           as: "giftCardPaymentIds",
@@ -257,7 +257,7 @@ export default class FinancialOverviewService {
     // Build match criteria for date filtering
     const $and: Filter<Payment>[] = [
       {
-        companyId: this.companyId,
+        organizationId: this.organizationId,
       },
     ];
 
@@ -350,7 +350,7 @@ export default class FinancialOverviewService {
     // Build match criteria for date filtering
     const $and: any[] = [
       {
-        companyId: this.companyId,
+        organizationId: this.organizationId,
       },
     ];
 
@@ -385,7 +385,7 @@ export default class FinancialOverviewService {
         $lookup: {
           from: GIFT_CARDS_COLLECTION_NAME,
           pipeline: [
-            { $match: { companyId: this.companyId } },
+            { $match: { organizationId: this.organizationId } },
             { $project: { paymentId: 1, _id: 0 } },
           ],
           as: "giftCardPaymentIds",
@@ -561,7 +561,7 @@ export default class FinancialOverviewService {
     // Build match criteria for date filtering
     const $and: any[] = [
       {
-        companyId: this.companyId,
+        organizationId: this.organizationId,
       },
     ];
 
@@ -596,7 +596,7 @@ export default class FinancialOverviewService {
         $lookup: {
           from: GIFT_CARDS_COLLECTION_NAME,
           pipeline: [
-            { $match: { companyId: this.companyId } },
+            { $match: { organizationId: this.organizationId } },
             { $project: { paymentId: 1, _id: 0 } },
           ],
           as: "giftCardPaymentIds",
@@ -745,7 +745,7 @@ export default class FinancialOverviewService {
     // Build match criteria for date filtering
     const $and: any[] = [
       {
-        companyId: this.companyId,
+        organizationId: this.organizationId,
       },
     ];
 
@@ -862,7 +862,7 @@ export default class FinancialOverviewService {
 
     // Build match filter
     const matchFilter: Filter<BookingTrackingEvent> = {
-      companyId: this.companyId,
+      organizationId: this.organizationId,
       // Exclude entries that only requested options
       lastStep: { $ne: "OPTIONS_REQUESTED" },
     };
@@ -929,7 +929,7 @@ export default class FinancialOverviewService {
 
     // Build match filter
     const matchFilter: Filter<BookingTrackingEvent> = {
-      companyId: this.companyId,
+      organizationId: this.organizationId,
       status: "abandoned",
       // Exclude entries that only requested options
       lastStep: { $ne: "OPTIONS_REQUESTED" },
@@ -1001,7 +1001,7 @@ export default class FinancialOverviewService {
 
     // Build match filter
     const matchFilter: Filter<BookingTrackingEvent> = {
-      companyId: this.companyId,
+      organizationId: this.organizationId,
       // Exclude entries that only requested options
       lastStep: { $ne: "OPTIONS_REQUESTED" },
     };
@@ -1081,7 +1081,7 @@ export default class FinancialOverviewService {
 
     // Build match filter
     const matchFilter: Filter<BookingTrackingEvent> = {
-      companyId: this.companyId,
+      organizationId: this.organizationId,
       status: "converted",
     };
 

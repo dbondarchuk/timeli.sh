@@ -35,7 +35,7 @@ export default class CustomerTextMessageNotificationConnectedApp
   public constructor(protected readonly props: IConnectedAppProps) {
     this.loggerFactory = getLoggerFactory(
       "CustomerTextMessageNotificationConnectedApp",
-      props.companyId,
+      props.organizationId,
     );
   }
 

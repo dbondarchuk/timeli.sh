@@ -9,10 +9,13 @@ export const ABANDONED_BOOKINGS_JOB_TYPE = "processAbandonedBookings";
 export const REDIS_TTL_SECONDS = 60 * 60 * 24 * 2; // 2 days
 export const REDIS_KEY_PREFIX = "booking:session";
 
-export const getRedisKey = (companyId: string, sessionId: string): string => {
-  return `${REDIS_KEY_PREFIX}:${companyId}:${sessionId}`;
+export const getRedisKey = (
+  organizationId: string,
+  sessionId: string,
+): string => {
+  return `${REDIS_KEY_PREFIX}:${organizationId}:${sessionId}`;
 };
 
-export const getAbandonedBookingsJobId = (companyId: string): string => {
-  return `${ABANDONED_BOOKINGS_JOB_ID}-${companyId}`;
+export const getAbandonedBookingsJobId = (organizationId: string): string => {
+  return `${ABANDONED_BOOKINGS_JOB_ID}-${organizationId}`;
 };

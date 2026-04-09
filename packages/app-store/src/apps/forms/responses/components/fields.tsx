@@ -324,7 +324,7 @@ const FileField: React.FC<AnswerFieldProps<"file">> = ({
                 uploadedAt: new Date(),
                 hash: "",
                 _id: "",
-                companyId: "",
+                organizationId: "",
               }}
             />
           )}

@@ -4,16 +4,19 @@ import { auth } from "@/app/auth";
 import { languages } from "@timelish/i18n";
 import { getLoggerFactory } from "@timelish/logger";
 import { StaticOrganizationService } from "@timelish/services";
-import { CONFIGURATION_COLLECTION_NAME, ORGANIZATIONS_COLLECTION_NAME } from "@timelish/services/collections";
+import {
+  CONFIGURATION_COLLECTION_NAME,
+  ORGANIZATIONS_COLLECTION_NAME,
+} from "@timelish/services/collections";
 import { getDbConnection } from "@timelish/services/database";
 import {
   brandConfigurationSchema,
   generalConfigurationSchema,
-  type ConfigurationOption,
-  type Organization,
   zCountry,
   zCurrency,
   zTimeZone,
+  type ConfigurationOption,
+  type Organization,
 } from "@timelish/types";
 import { ObjectId } from "mongodb";
 import { headers } from "next/headers";
@@ -42,7 +45,10 @@ export async function createWorkspace(
   logger.debug({ input }, "Creating workspace");
   const workspaceInputSchemaResult = workspaceInputSchema.safeParse(input);
   if (!workspaceInputSchemaResult.success) {
-    logger.error({ error: workspaceInputSchemaResult.error }, "Invalid workspace input");
+    logger.error(
+      { error: workspaceInputSchemaResult.error },
+      "Invalid workspace input",
+    );
     return { ok: false, code: "invalid_input" };
   }
   const parsed = workspaceInputSchemaResult.data;
@@ -71,10 +77,12 @@ export async function createWorkspace(
       logger.error({ slug: parsed.slug, orgId }, "Slug taken");
       return { ok: false, code: "slug_taken" };
     }
-    await db.collection<Organization>(ORGANIZATIONS_COLLECTION_NAME).updateOne(
-      { _id: orgId },
-      { $set: { slug: parsed.slug, name: parsed.businessName } },
-    );
+    await db
+      .collection<Organization>(ORGANIZATIONS_COLLECTION_NAME)
+      .updateOne(
+        { _id: orgId },
+        { $set: { slug: parsed.slug, name: parsed.businessName } },
+      );
   } else {
     const taken = await new StaticOrganizationService().getOrganizationBySlug(
       parsed.slug,
@@ -84,17 +92,19 @@ export async function createWorkspace(
       return { ok: false, code: "slug_taken" };
     }
     orgId = new ObjectId().toString();
-    await db.collection<{
-      _id: string;
-      slug: string;
-      name: string;
-      createdAt: Date;
-    }>(ORGANIZATIONS_COLLECTION_NAME).insertOne({
-      _id: orgId,
-      slug: parsed.slug,
-      name: parsed.businessName,
-      createdAt: new Date(),
-    });
+    await db
+      .collection<{
+        _id: string;
+        slug: string;
+        name: string;
+        createdAt: Date;
+      }>(ORGANIZATIONS_COLLECTION_NAME)
+      .insertOne({
+        _id: orgId,
+        slug: parsed.slug,
+        name: parsed.businessName,
+        createdAt: new Date(),
+      });
   }
 
   const adapter = (await auth.$context).adapter;
@@ -103,7 +113,10 @@ export async function createWorkspace(
     where: [{ field: "id", operator: "eq", value: session.user.id }],
     update: { organizationId: orgId },
   });
-  logger.debug({ orgId, userId: session.user.id }, "Assigned user to organization");
+  logger.debug(
+    { orgId, userId: session.user.id },
+    "Assigned user to organization",
+  );
 
   const generalValue = generalConfigurationSchema.parse({
     name: parsed.businessName,
@@ -128,30 +141,33 @@ export async function createWorkspace(
     | ConfigurationOption<"booking">
   >(CONFIGURATION_COLLECTION_NAME);
   await configurations.updateOne(
-    { key: "general", companyId: orgId },
-    { $set: { key: "general", companyId: orgId, value: generalValue } },
+    { key: "general", organizationId: orgId },
+    { $set: { key: "general", organizationId: orgId, value: generalValue } },
     { upsert: true },
   );
   logger.debug({ orgId }, "Stored general configuration");
 
   await configurations.updateOne(
-    { key: "brand", companyId: orgId },
-    { $set: { key: "brand", companyId: orgId, value: brandValue } },
+    { key: "brand", organizationId: orgId },
+    { $set: { key: "brand", organizationId: orgId, value: brandValue } },
     { upsert: true },
   );
   logger.debug({ orgId }, "Stored brand configuration");
 
   const existingBooking = await configurations.findOne({
     key: "booking",
-    companyId: orgId,
+    organizationId: orgId,
   } as any);
-  if (!existingBooking?.value || Object.keys(existingBooking.value).length === 0) {
+  if (
+    !existingBooking?.value ||
+    Object.keys(existingBooking.value).length === 0
+  ) {
     await configurations.updateOne(
-      { key: "booking", companyId: orgId },
+      { key: "booking", organizationId: orgId },
       {
         $set: {
           key: "booking",
-          companyId: orgId,
+          organizationId: orgId,
           value: getDefaultBookingConfiguration(),
         },
       },
@@ -163,4 +179,3 @@ export async function createWorkspace(
   logger.debug({ orgId }, "Created or updated workspace");
   return { ok: true, updated: wasExistingOrg };
 }
-

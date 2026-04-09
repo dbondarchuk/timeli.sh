@@ -40,7 +40,7 @@ export class WaitlistNotificationsConnectedApp
   public constructor(protected readonly props: IConnectedAppProps) {
     this.loggerFactory = getLoggerFactory(
       "WaitlistNotificationsConnectedApp",
-      props.companyId,
+      props.organizationId,
     );
   }
 

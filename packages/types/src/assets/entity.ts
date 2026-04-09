@@ -1,8 +1,8 @@
-import { WithCompanyId, WithDatabaseId } from "../database";
+import { WithDatabaseId, WithOrganizationId } from "../database";
 import { Prettify } from "../utils";
 
 export type AssetEntity = Prettify<
-  WithCompanyId<
+  WithOrganizationId<
     WithDatabaseId<{
       filename: string;
       size: number;

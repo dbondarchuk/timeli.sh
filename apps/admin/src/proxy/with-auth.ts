@@ -25,7 +25,10 @@ export const withAuth: MiddlewareProxy = (next) => {
       }
     }
 
-    request.headers.set("x-company-id", session?.user.organizationId || "");
+    request.headers.set(
+      "x-organization-id",
+      session?.user.organizationId || "",
+    );
     request.headers.set(
       "x-organization-slug",
       (session?.user as { organizationSlug?: string } | undefined)

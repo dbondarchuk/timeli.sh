@@ -86,10 +86,10 @@ export const BlogPostsContainerServerWrapper = async ({
 
   // Get services and fetch posts
   const headersList = await headers();
-  const companyId = headersList.get("x-company-id") as string;
+  const organizationId = headersList.get("x-organization-id") as string;
 
-  if (!companyId) {
-    // Fallback to empty array if no companyId
+  if (!organizationId) {
+    // Fallback to empty array if no organizationId
     return (
       <BlogPostsContainerComponent
         posts={[]}
@@ -107,7 +107,7 @@ export const BlogPostsContainerServerWrapper = async ({
     );
   }
 
-  const servicesContainer = ServicesContainer(companyId);
+  const servicesContainer = ServicesContainer(organizationId);
 
   // Get app service props to access getDbConnection
   const appServiceProps =
@@ -116,7 +116,7 @@ export const BlogPostsContainerServerWrapper = async ({
   // Create repository service directly
   const repositoryService = new BlogRepositoryService(
     appId,
-    companyId,
+    organizationId,
     appServiceProps.getDbConnection,
     appServiceProps.services,
   );

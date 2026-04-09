@@ -52,7 +52,7 @@ export class TextBeltWebhookService {
   protected readonly loggerFactory = getLoggerFactory("TextBeltWebhookService");
 
   constructor(
-    private readonly companyId: string,
+    private readonly organizationId: string,
     private readonly configuration: TextBeltConfiguration,
     private readonly configurationService: IConfigurationService,
     private readonly connectedAppsService: IConnectedAppsService,
@@ -65,7 +65,10 @@ export class TextBeltWebhookService {
 
   public async processWebhook(request: ApiRequest): Promise<ApiResponse> {
     const logger = this.loggerFactory("processWebhook");
-    logger.debug({ companyId: this.companyId }, "Processing TextBelt webhook");
+    logger.debug(
+      { organizationId: this.organizationId },
+      "Processing TextBelt webhook",
+    );
 
     try {
       const bodyText = await request.text();

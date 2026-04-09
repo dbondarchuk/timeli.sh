@@ -97,7 +97,7 @@ export class OutlookConnectedApp
   public constructor(protected readonly props: IConnectedAppProps) {
     this.loggerFactory = getLoggerFactory(
       "OutlookConnectedApp",
-      props.companyId,
+      props.organizationId,
     );
   }
 

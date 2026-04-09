@@ -17,10 +17,13 @@ export class S3AssetsStorageService implements IAssetsStorage {
   protected readonly loggerFactory: LoggerFactory;
 
   public constructor(
-    protected readonly companyId: string,
+    protected readonly organizationId: string,
     protected readonly s3Configuration: S3Configuration,
   ) {
-    this.loggerFactory = getLoggerFactory("S3AssetsStorageService", companyId);
+    this.loggerFactory = getLoggerFactory(
+      "S3AssetsStorageService",
+      organizationId,
+    );
   }
 
   public async getFile(
@@ -299,6 +302,6 @@ export class S3AssetsStorageService implements IAssetsStorage {
   }
 
   private getKey(filename: string) {
-    return `${this.companyId}/${filename}`;
+    return `${this.organizationId}/${filename}`;
   }
 }

@@ -26,13 +26,13 @@ import { getFileName } from "./utils";
 export class GiftCardStudioJobProcessor {
   protected readonly loggerFactory: LoggerFactory;
   public constructor(
-    protected readonly companyId: string,
+    protected readonly organizationId: string,
     protected readonly services: IServicesContainer,
     protected readonly repository: GiftCardStudioRepositoryService,
   ) {
     this.loggerFactory = getLoggerFactory(
       "GiftCardStudioJobProcessor",
-      companyId,
+      organizationId,
     );
   }
 
@@ -376,9 +376,9 @@ export class GiftCardStudioJobProcessor {
           y += 50;
         }
 
-        // Header: company name on the left
+        // Header: organization name on the left
         doc.fontSize(20).fillColor("#111111");
-        doc.text(name ?? t.invoiceTitle, leftX, y, {
+        doc.text(general.name ?? t.invoiceTitle, leftX, y, {
           width: contentWidth / 2,
           align: "left",
         });

@@ -90,7 +90,7 @@ const FilePreview: FC<AnswerPreviewProps> = ({ answer }) => {
         uploadedAt: new Date(),
         hash: "",
         _id: "",
-        companyId: "",
+        organizationId: "",
       }}
     />
   );

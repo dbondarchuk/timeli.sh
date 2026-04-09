@@ -23,7 +23,7 @@ export class NotificationService implements INotificationService {
   protected readonly loggerFactory = getLoggerFactory("NotificationService");
 
   constructor(
-    private readonly companyId: string,
+    private readonly organizationId: string,
     private readonly configurationService: IConfigurationService,
     private readonly connectedAppService: IConnectedAppsService,
     private readonly communicationLogService: ICommunicationLogsService,
@@ -148,7 +148,7 @@ export class NotificationService implements INotificationService {
       );
       sendTextMessage = async (message: TextMessage) =>
         await this.defaultTextMessageSender.sendTextMessage(
-          this.companyId,
+          this.organizationId,
           message,
         );
     }

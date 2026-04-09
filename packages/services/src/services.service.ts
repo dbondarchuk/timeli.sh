@@ -41,11 +41,11 @@ import { BaseService } from "./services/base.service";
 
 export class ServicesService extends BaseService implements IServicesService {
   public constructor(
-    companyId: string,
+    organizationId: string,
     protected readonly configurationService: IConfigurationService,
     protected readonly jobService: IJobService,
   ) {
-    super("ServicesService", companyId);
+    super("ServicesService", organizationId);
   }
 
   /** Fields */
@@ -59,7 +59,7 @@ export class ServicesService extends BaseService implements IServicesService {
 
     const field = await fields.findOne({
       _id: id,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     });
 
     if (!field) {
@@ -91,7 +91,7 @@ export class ServicesService extends BaseService implements IServicesService {
     ) || { updatedAt: -1 };
 
     const filter: Filter<ServiceField> = {
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     };
 
     if (query.type) {
@@ -126,7 +126,7 @@ export class ServicesService extends BaseService implements IServicesService {
                   pipeline: [
                     {
                       $match: {
-                        companyId: this.companyId,
+                        organizationId: this.organizationId,
                       },
                     },
                     {
@@ -147,7 +147,7 @@ export class ServicesService extends BaseService implements IServicesService {
                   pipeline: [
                     {
                       $match: {
-                        companyId: this.companyId,
+                        organizationId: this.organizationId,
                       },
                     },
                     {
@@ -219,7 +219,7 @@ export class ServicesService extends BaseService implements IServicesService {
         name: {
           $in: names,
         },
-        companyId: this.companyId,
+        organizationId: this.organizationId,
       })
       .toArray();
 
@@ -240,7 +240,7 @@ export class ServicesService extends BaseService implements IServicesService {
         _id: {
           $in: ids,
         },
-        companyId: this.companyId,
+        organizationId: this.organizationId,
       })
       .toArray();
 
@@ -260,7 +260,7 @@ export class ServicesService extends BaseService implements IServicesService {
 
     const dbField: ServiceField = {
       ...field,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
       _id: new ObjectId().toString(),
       updatedAt: DateTime.utc().toJSDate(),
     };
@@ -299,7 +299,7 @@ export class ServicesService extends BaseService implements IServicesService {
     const db = await getDbConnection();
     const fields = db.collection<ServiceField>(FIELDS_COLLECTION_NAME);
 
-    const { _id, companyId, ...updateObj } = update as ServiceField; // Remove fields in case it slips here
+    const { _id, organizationId, ...updateObj } = update as ServiceField; // Remove fields in case it slips here
 
     if (!this.checkFieldUniqueName(update.name, id)) {
       throw new Error("Name already exists");
@@ -310,7 +310,7 @@ export class ServicesService extends BaseService implements IServicesService {
     const { modifiedCount } = await fields.updateOne(
       {
         _id: id,
-        companyId: this.companyId,
+        organizationId: this.organizationId,
       },
       {
         $set: updateObj,
@@ -348,7 +348,7 @@ export class ServicesService extends BaseService implements IServicesService {
 
         const field = await fields.findOneAndDelete({
           _id: id,
-          companyId: this.companyId,
+          organizationId: this.organizationId,
         });
         if (!field) {
           logger.warn({ fieldId: id }, "Field not found");
@@ -361,7 +361,7 @@ export class ServicesService extends BaseService implements IServicesService {
         );
         const { modifiedCount: addonsModifiedCount } = await addons.updateMany(
           {
-            companyId: this.companyId,
+            organizationId: this.organizationId,
           },
           {
             $pull: {
@@ -375,7 +375,7 @@ export class ServicesService extends BaseService implements IServicesService {
         const { modifiedCount: optionsModifiedCount } =
           await options.updateMany(
             {
-              companyId: this.companyId,
+              organizationId: this.organizationId,
             },
             {
               $pull: {
@@ -422,7 +422,7 @@ export class ServicesService extends BaseService implements IServicesService {
           _id: {
             $in: ids,
           },
-          companyId: this.companyId,
+          organizationId: this.organizationId,
         });
 
         const addons = db.collection<AppointmentAddon>(ADDONS_COLLECTION_NAME);
@@ -431,7 +431,7 @@ export class ServicesService extends BaseService implements IServicesService {
         );
         const { modifiedCount: addonsModifiedCount } = await addons.updateMany(
           {
-            companyId: this.companyId,
+            organizationId: this.organizationId,
           },
           {
             $pull: {
@@ -447,7 +447,7 @@ export class ServicesService extends BaseService implements IServicesService {
         const { modifiedCount: optionsModifiedCount } =
           await options.updateMany(
             {
-              companyId: this.companyId,
+              organizationId: this.organizationId,
             },
             {
               $pull: {
@@ -488,7 +488,7 @@ export class ServicesService extends BaseService implements IServicesService {
 
     const filter: Filter<ServiceField> = {
       name,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     };
 
     if (id) {
@@ -513,7 +513,7 @@ export class ServicesService extends BaseService implements IServicesService {
 
     const result = await addons.findOne({
       _id: id,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     });
 
     if (!result) {
@@ -537,7 +537,7 @@ export class ServicesService extends BaseService implements IServicesService {
         _id: {
           $in: ids,
         },
-        companyId: this.companyId,
+        organizationId: this.organizationId,
       })
       .toArray();
 
@@ -563,7 +563,7 @@ export class ServicesService extends BaseService implements IServicesService {
     ) || { updatedAt: -1 };
 
     const filter: Filter<AppointmentAddon> = {
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     };
 
     if (query.search) {
@@ -592,7 +592,7 @@ export class ServicesService extends BaseService implements IServicesService {
                   pipeline: [
                     {
                       $match: {
-                        companyId: this.companyId,
+                        organizationId: this.organizationId,
                       },
                     },
                     {
@@ -660,7 +660,7 @@ export class ServicesService extends BaseService implements IServicesService {
     logger.debug({ addon }, "Creating addon");
     const dbAddon: AppointmentAddon = {
       ...addon,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
       _id: new ObjectId().toString(),
       updatedAt: DateTime.utc().toJSDate(),
     };
@@ -694,7 +694,7 @@ export class ServicesService extends BaseService implements IServicesService {
     const db = await getDbConnection();
     const addons = db.collection<AppointmentAddon>(ADDONS_COLLECTION_NAME);
 
-    const { _id, companyId, ...updateObj } = update as AppointmentAddon; // Remove fields in case it slips here
+    const { _id, organizationId, ...updateObj } = update as AppointmentAddon; // Remove fields in case it slips here
 
     if (!this.checkAddonUniqueName(update.name, id)) {
       throw new Error("Name already exists");
@@ -705,7 +705,7 @@ export class ServicesService extends BaseService implements IServicesService {
     const { modifiedCount } = await addons.updateOne(
       {
         _id: id,
-        companyId: this.companyId,
+        organizationId: this.organizationId,
       },
       {
         $set: updateObj,
@@ -742,7 +742,7 @@ export class ServicesService extends BaseService implements IServicesService {
 
         const addon = await addons.findOneAndDelete({
           _id: id,
-          companyId: this.companyId,
+          organizationId: this.organizationId,
         });
         if (!addon) {
           logger.warn({ addonId: id }, "Addon not found");
@@ -756,7 +756,7 @@ export class ServicesService extends BaseService implements IServicesService {
         const { modifiedCount: optionsModifiedCount } =
           await options.updateMany(
             {
-              companyId: this.companyId,
+              organizationId: this.organizationId,
             },
             {
               $pull: {
@@ -799,7 +799,7 @@ export class ServicesService extends BaseService implements IServicesService {
           _id: {
             $in: ids,
           },
-          companyId: this.companyId,
+          organizationId: this.organizationId,
         });
 
         const options = db.collection<AppointmentOption>(
@@ -807,7 +807,7 @@ export class ServicesService extends BaseService implements IServicesService {
         );
         const { modifiedCount: optionsModifiedCount } =
           await options.updateMany(
-            { companyId: this.companyId },
+            { organizationId: this.organizationId },
             {
               $pull: {
                 addons: {
@@ -846,7 +846,7 @@ export class ServicesService extends BaseService implements IServicesService {
 
     const filter: Filter<AppointmentAddon> = {
       name,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     };
 
     if (id) {
@@ -870,7 +870,7 @@ export class ServicesService extends BaseService implements IServicesService {
 
     const option = await options.findOne({
       _id: id,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     });
 
     if (!option) {
@@ -897,7 +897,9 @@ export class ServicesService extends BaseService implements IServicesService {
       {},
     ) || { updatedAt: -1 };
 
-    const filter: Filter<AppointmentOption> = { companyId: this.companyId };
+    const filter: Filter<AppointmentOption> = {
+      organizationId: this.organizationId,
+    };
 
     if (query.search) {
       const $regex = new RegExp(escapeRegex(query.search), "i");
@@ -922,7 +924,7 @@ export class ServicesService extends BaseService implements IServicesService {
                     _id: {
                       $in: query.priorityIds,
                     },
-                    companyId: this.companyId,
+                    organizationId: this.organizationId,
                   },
                 },
               ],
@@ -1018,7 +1020,7 @@ export class ServicesService extends BaseService implements IServicesService {
     logger.debug({ addon }, "Creating option");
     const dbOption: AppointmentOption = {
       ...addon,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
       _id: new ObjectId().toString(),
       updatedAt: DateTime.utc().toJSDate(),
     };
@@ -1055,7 +1057,7 @@ export class ServicesService extends BaseService implements IServicesService {
     const db = await getDbConnection();
     const options = db.collection<AppointmentOption>(OPTIONS_COLLECTION_NAME);
 
-    const { _id, companyId, ...updateObj } = update as AppointmentOption; // Remove fields in case it slips here
+    const { _id, organizationId, ...updateObj } = update as AppointmentOption; // Remove fields in case it slips here
 
     if (!this.checkOptionUniqueName(update.name, id)) {
       throw new Error("Name already exists");
@@ -1066,7 +1068,7 @@ export class ServicesService extends BaseService implements IServicesService {
     const { modifiedCount } = await options.updateOne(
       {
         _id: id,
-        companyId: this.companyId,
+        organizationId: this.organizationId,
       },
       {
         $set: updateObj,
@@ -1105,7 +1107,7 @@ export class ServicesService extends BaseService implements IServicesService {
 
         const option = await options.findOneAndDelete({
           _id: id,
-          companyId: this.companyId,
+          organizationId: this.organizationId,
         });
         if (!option) {
           logger.warn({ optionId: id }, "Option not found");
@@ -1120,7 +1122,7 @@ export class ServicesService extends BaseService implements IServicesService {
           await configurations.updateOne(
             {
               key: "booking",
-              companyId: this.companyId,
+              organizationId: this.organizationId,
             },
             {
               $pull: {
@@ -1168,7 +1170,7 @@ export class ServicesService extends BaseService implements IServicesService {
           _id: {
             $in: ids,
           },
-          companyId: this.companyId,
+          organizationId: this.organizationId,
         });
 
         const configurations = db.collection<ConfigurationOption<"booking">>(
@@ -1179,7 +1181,7 @@ export class ServicesService extends BaseService implements IServicesService {
           await configurations.updateOne(
             {
               key: "booking",
-              companyId: this.companyId,
+              organizationId: this.organizationId,
             },
             {
               $pull: {
@@ -1219,7 +1221,7 @@ export class ServicesService extends BaseService implements IServicesService {
 
     const filter: Filter<AppointmentOption> = {
       name,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     };
 
     if (id) {
@@ -1243,7 +1245,7 @@ export class ServicesService extends BaseService implements IServicesService {
 
     const result = await discounts.findOne({
       _id: id,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     });
 
     if (!result) {
@@ -1263,7 +1265,7 @@ export class ServicesService extends BaseService implements IServicesService {
 
     const result = await discounts.findOne({
       codes: code,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     });
 
     if (!result) {
@@ -1303,7 +1305,7 @@ export class ServicesService extends BaseService implements IServicesService {
 
     const $and: Filter<Discount>[] = [
       {
-        companyId: this.companyId,
+        organizationId: this.organizationId,
       },
     ];
 
@@ -1372,7 +1374,7 @@ export class ServicesService extends BaseService implements IServicesService {
                     _id: {
                       $in: query.priorityIds,
                     },
-                    companyId: this.companyId,
+                    organizationId: this.organizationId,
                   },
                 },
               ],
@@ -1430,7 +1432,7 @@ export class ServicesService extends BaseService implements IServicesService {
             pipeline: [
               {
                 $match: {
-                  companyId: this.companyId,
+                  organizationId: this.organizationId,
                 },
               },
             ],
@@ -1490,7 +1492,7 @@ export class ServicesService extends BaseService implements IServicesService {
     logger.debug({ discount }, "Creating discount");
     const dbDiscount: Discount = {
       ...discount,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
       _id: new ObjectId().toString(),
       updatedAt: DateTime.utc().toJSDate(),
     };
@@ -1528,7 +1530,7 @@ export class ServicesService extends BaseService implements IServicesService {
     const db = await getDbConnection();
     const discounts = db.collection<Discount>(DISCOUNTS_COLLECTION_NAME);
 
-    const { _id, companyId, ...updateObj } = update as Discount; // Remove fields in case it slips here
+    const { _id, organizationId, ...updateObj } = update as Discount; // Remove fields in case it slips here
 
     if (!this.checkDiscountUniqueNameAndCode(update.name, update.codes, id)) {
       logger.error(
@@ -1543,7 +1545,7 @@ export class ServicesService extends BaseService implements IServicesService {
     const { modifiedCount } = await discounts.updateOne(
       {
         _id: id,
-        companyId: this.companyId,
+        organizationId: this.organizationId,
       },
       {
         $set: updateObj,
@@ -1576,7 +1578,7 @@ export class ServicesService extends BaseService implements IServicesService {
 
     const discount = await discounts.findOneAndDelete({
       _id: id,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     });
 
     if (!discount) {
@@ -1606,7 +1608,7 @@ export class ServicesService extends BaseService implements IServicesService {
       _id: {
         $in: ids,
       },
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     });
 
     await this.jobService.enqueueHook<IDiscountHook, "onDiscountsDeleted">(
@@ -1631,10 +1633,12 @@ export class ServicesService extends BaseService implements IServicesService {
 
     const nameFilter: Filter<Discount> = {
       name,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     };
 
-    const codeFilter: Filter<Discount> = { companyId: this.companyId };
+    const codeFilter: Filter<Discount> = {
+      organizationId: this.organizationId,
+    };
 
     if (id) {
       nameFilter._id = {
@@ -1800,7 +1804,7 @@ export class ServicesService extends BaseService implements IServicesService {
     if (discount.maxUsage) {
       const usage = await appointments.countDocuments({
         "discount.id": discount._id,
-        companyId: this.companyId,
+        organizationId: this.organizationId,
         status: {
           $in: ["confirmed", "pending"],
         },
@@ -1816,7 +1820,7 @@ export class ServicesService extends BaseService implements IServicesService {
       const usage = await appointments.countDocuments({
         "discount.id": discount._id,
         customerId: request.customerId,
-        companyId: this.companyId,
+        organizationId: this.organizationId,
         status: {
           $in: ["confirmed", "pending"],
         },
@@ -1853,7 +1857,7 @@ export class ServicesService extends BaseService implements IServicesService {
             $and: [
               {
                 enabled: true,
-                companyId: this.companyId,
+                organizationId: this.organizationId,
               },
               {
                 $or: [

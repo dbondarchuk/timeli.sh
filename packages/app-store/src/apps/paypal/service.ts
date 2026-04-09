@@ -41,7 +41,7 @@ class PaypalConnectedApp
   public constructor(protected readonly props: IConnectedAppProps) {
     this.loggerFactory = getLoggerFactory(
       "PaypalConnectedApp",
-      props.companyId,
+      props.organizationId,
     );
   }
 

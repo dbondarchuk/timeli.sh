@@ -5,7 +5,7 @@ import { getRedisClient } from "../redis-client";
 
 type Client = {
   id: string;
-  companyId: string;
+  organizationId: string;
   send: (data: DashboardNotification) => void;
 };
 
@@ -22,65 +22,68 @@ class DashboardNotificationRealtimeBroker {
     this.redisClient.on("message", this.onMessage.bind(this));
   }
 
-  subscribeCompany(companyId: string) {
-    const logger = this.loggerFactory("subscribeCompany");
-    logger.info({ companyId }, "Subscribing to company");
-    if (!this.subscribers.has(companyId)) {
-      this.subscribers.set(companyId, new Set());
-      this.redisClient.subscribe(`dashboard:notifications:${companyId}`);
-      logger.info({ companyId }, "Subscribed to company");
+  subscribeOrganization(organizationId: string) {
+    const logger = this.loggerFactory("subscribeOrganization");
+    logger.info({ organizationId }, "Subscribing to organization");
+    if (!this.subscribers.has(organizationId)) {
+      this.subscribers.set(organizationId, new Set());
+      this.redisClient.subscribe(`dashboard:notifications:${organizationId}`);
+      logger.info({ organizationId }, "Subscribed to organization");
     } else {
-      logger.info({ companyId }, "Already subscribed to company");
+      logger.info({ organizationId }, "Already subscribed to organization");
     }
   }
 
-  unsubscribeCompany(companyId: string) {
-    const logger = this.loggerFactory("unsubscribeCompany");
-    logger.info({ companyId }, "Unsubscribing from company");
-    const clients = this.subscribers.get(companyId);
+  unsubscribeOrganization(organizationId: string) {
+    const logger = this.loggerFactory("unsubscribeOrganization");
+    logger.info({ organizationId }, "Unsubscribing from organization");
+    const clients = this.subscribers.get(organizationId);
     if (clients && clients.size === 0) {
-      this.redisClient.unsubscribe(`dashboard:notifications:${companyId}`);
-      this.subscribers.delete(companyId);
-      logger.info({ companyId }, "Unsubscribed from company");
+      this.redisClient.unsubscribe(`dashboard:notifications:${organizationId}`);
+      this.subscribers.delete(organizationId);
+      logger.info({ organizationId }, "Unsubscribed from organization");
     } else {
-      logger.info({ companyId }, "Not subscribed to company");
+      logger.info({ organizationId }, "Not subscribed to organization");
     }
   }
 
-  registerClient(companyId: string, client: Client) {
+  registerClient(organizationId: string, client: Client) {
     const logger = this.loggerFactory("registerClient");
-    logger.info({ companyId, clientId: client.id }, "Registering client");
-    this.subscribeCompany(companyId);
-    const set = this.subscribers.get(companyId)!;
+    logger.info({ organizationId, clientId: client.id }, "Registering client");
+    this.subscribeOrganization(organizationId);
+    const set = this.subscribers.get(organizationId)!;
     set.add(client);
-    logger.info({ companyId, clientId: client.id }, "Registered client");
+    logger.info({ organizationId, clientId: client.id }, "Registered client");
   }
 
-  unregisterClient(companyId: string, client: Client) {
+  unregisterClient(organizationId: string, client: Client) {
     const logger = this.loggerFactory("unregisterClient");
-    logger.info({ companyId, clientId: client.id }, "Unregistering client");
-    const set = this.subscribers.get(companyId);
+    logger.info(
+      { organizationId, clientId: client.id },
+      "Unregistering client",
+    );
+    const set = this.subscribers.get(organizationId);
     if (!set) return;
     set.delete(client);
-    if (set.size === 0) this.unsubscribeCompany(companyId);
-    logger.info({ companyId, clientId: client.id }, "Unregistered client");
+    if (set.size === 0) this.unsubscribeOrganization(organizationId);
+    logger.info({ organizationId, clientId: client.id }, "Unregistered client");
   }
 
   private onMessage(channel: string, raw: string) {
     const logger = this.loggerFactory("onMessage");
     logger.info({ channel, raw }, "Received message");
 
-    const companyId = channel.split(":").pop()!;
-    const clients = this.subscribers.get(companyId);
+    const organizationId = channel.split(":").pop()!;
+    const clients = this.subscribers.get(organizationId);
     if (!clients) {
-      logger.info({ companyId }, "No clients found");
+      logger.info({ organizationId }, "No clients found");
       return;
     }
 
     const data = JSON.parse(raw);
     for (const client of clients) client.send(data);
     logger.info(
-      { companyId, clients: clients.size },
+      { organizationId, clients: clients.size },
       "Sent message to clients",
     );
   }

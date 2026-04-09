@@ -42,7 +42,7 @@ export class TextMessageNotificationConnectedApp
   public constructor(protected readonly props: IConnectedAppProps) {
     this.loggerFactory = getLoggerFactory(
       "TextMessageNotificationConnectedApp",
-      props.companyId,
+      props.organizationId,
     );
   }
 

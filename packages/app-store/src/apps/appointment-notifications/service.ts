@@ -43,7 +43,7 @@ export default class AppointmentNotificationsConnectedApp
     this.jobProcessor = new AppointmentNotificationsJobProcessor(props);
     this.loggerFactory = getLoggerFactory(
       "AppointmentNotificationsConnectedApp",
-      props.companyId,
+      props.organizationId,
     );
   }
 

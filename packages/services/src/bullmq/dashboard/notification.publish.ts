@@ -12,12 +12,12 @@ export class RedisDashboardNotificationPublisher
   protected readonly loggerFactory: LoggerFactory;
 
   public constructor(
-    protected readonly companyId: string,
+    protected readonly organizationId: string,
     protected readonly redisClient: Redis,
   ) {
     this.loggerFactory = getLoggerFactory(
       "RedisDashboardNotificationPublisher",
-      companyId,
+      organizationId,
     );
   }
 
@@ -28,7 +28,7 @@ export class RedisDashboardNotificationPublisher
     logger.info({ notification }, "Publishing notification");
 
     const count = await this.redisClient.publish(
-      `dashboard:notifications:${this.companyId}`,
+      `dashboard:notifications:${this.organizationId}`,
       JSON.stringify(notification),
     );
 

@@ -23,12 +23,12 @@ export class CommunicationLogsService
   extends BaseService
   implements ICommunicationLogsService
 {
-  public constructor(companyId: string) {
-    super("CommunicationLogsService", companyId);
+  public constructor(organizationId: string) {
+    super("CommunicationLogsService", organizationId);
   }
 
   public async log(
-    log: Omit<CommunicationLogEntity, "dateTime" | "_id" | "companyId">,
+    log: Omit<CommunicationLogEntity, "dateTime" | "_id" | "organizationId">,
   ) {
     const {
       channel,
@@ -56,7 +56,7 @@ export class CommunicationLogsService
     const _id = new ObjectId().toString();
     await collection.insertOne({
       ...log,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
       dateTime: new Date(),
       _id,
     });
@@ -88,7 +88,7 @@ export class CommunicationLogsService
     ) || { dateTime: -1 };
 
     const filter: Filter<CommunicationLog> = {
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     };
 
     if (query.range?.start || query.range?.end) {
@@ -152,7 +152,7 @@ export class CommunicationLogsService
       .aggregate([
         {
           $match: {
-            companyId: this.companyId,
+            organizationId: this.organizationId,
           },
         },
         {
@@ -164,7 +164,7 @@ export class CommunicationLogsService
             pipeline: [
               {
                 $match: {
-                  companyId: this.companyId,
+                  organizationId: this.organizationId,
                 },
               },
             ],
@@ -179,7 +179,7 @@ export class CommunicationLogsService
             pipeline: [
               {
                 $match: {
-                  companyId: this.companyId,
+                  organizationId: this.organizationId,
                 },
               },
             ],
@@ -204,7 +204,7 @@ export class CommunicationLogsService
             pipeline: [
               {
                 $match: {
-                  companyId: this.companyId,
+                  organizationId: this.organizationId,
                 },
               },
             ],
@@ -273,7 +273,7 @@ export class CommunicationLogsService
     const collection = db.collection<CommunicationLog>(LOG_COLLECTION_NAME);
 
     const { deletedCount } = await collection.deleteMany({
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     });
 
     logger.debug({ deletedCount }, "Cleared all logs");
@@ -289,7 +289,7 @@ export class CommunicationLogsService
       _id: {
         $in: ids,
       },
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     });
 
     logger.debug({ ids, deletedCount }, "Cleared selected logs");
@@ -305,7 +305,7 @@ export class CommunicationLogsService
       dateTime: {
         $lt: maxDate,
       },
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     });
 
     logger.debug({ maxDate, deletedCount }, "Cleared old logs");

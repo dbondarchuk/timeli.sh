@@ -1,5 +1,5 @@
 import { AllKeys, I18nNamespaces } from "@timelish/i18n";
-import { WithCompanyId, WithDatabaseId, WithUserId } from "../database";
+import { WithDatabaseId, WithOrganizationId, WithUserId } from "../database";
 import { Prettify } from "../utils";
 export type ConnectedAppStatus = "pending" | "connected" | "failed";
 
@@ -71,7 +71,7 @@ export type ConnectedAppStatusWithText<
 };
 
 export type ConnectedAppData<TData = any, TToken = any> = Prettify<
-  WithCompanyId<
+  WithOrganizationId<
     WithUserId<
       WithDatabaseId<
         ConnectedAppStatusWithText & {

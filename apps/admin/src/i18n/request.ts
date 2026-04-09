@@ -33,7 +33,7 @@ const config = getConfig(
       return { locale: "en", includeAdmin: true };
     }
 
-    const companyId = session?.user.organizationId;
+    const organizationId = session?.user.organizationId;
 
     let locale = (session.user as { language?: string }).language || "en";
     return { locale, includeAdmin: true, includeInstall: isInstallPath };
@@ -52,12 +52,12 @@ const config = getConfig(
       };
     }
 
-    const companyId = session.user.organizationId;
+    const organizationId = session.user.organizationId;
     const installedApps = Array.from(
       new Set(
-        (await ServicesContainer(companyId).connectedAppsService.getApps()).map(
-          (app) => app.name,
-        ),
+        (
+          await ServicesContainer(organizationId).connectedAppsService.getApps()
+        ).map((app) => app.name),
       ),
     );
 

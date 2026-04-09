@@ -30,10 +30,10 @@ export class ConnectedAppsService
   implements IConnectedAppsService
 {
   public constructor(
-    companyId: string,
+    organizationId: string,
     protected readonly getServices: () => IServicesContainer,
   ) {
-    super("ConnectedAppsService", companyId);
+    super("ConnectedAppsService", organizationId);
   }
 
   public async createNewApp(name: string, userId: string): Promise<string> {
@@ -47,7 +47,7 @@ export class ConnectedAppsService
 
     const app: ConnectedAppData = {
       _id: new ObjectId().toString(),
-      companyId: this.companyId,
+      organizationId: this.organizationId,
       status: "pending",
       statusText: "apps.common.statusText.pending" satisfies BaseAllKeys,
       name,
@@ -91,7 +91,7 @@ export class ConnectedAppsService
 
     await collection.deleteOne({
       _id: appId,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     });
 
     logger.debug({ appId, appName: app.name }, "Successfully deleted app");
@@ -108,7 +108,7 @@ export class ConnectedAppsService
 
     const app = await collection.findOne({
       _id: appId,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     });
 
     if (!app) {
@@ -119,7 +119,7 @@ export class ConnectedAppsService
     await collection.updateOne(
       {
         _id: appId,
-        companyId: this.companyId,
+        organizationId: this.organizationId,
       },
       {
         $set: {
@@ -142,7 +142,7 @@ export class ConnectedAppsService
 
     const app = await collection.findOne({
       _id: appId,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     });
 
     if (!app) {
@@ -201,8 +201,8 @@ export class ConnectedAppsService
 
     const app = await collection.findOne({
       _id: result.appId,
-      // WARNING: This is a workaround to allow OAuth redirects to be processed without a companyId
-      //companyId: this.companyId,
+      // WARNING: This is a workaround to allow OAuth redirects to be processed without a organizationId
+      //organizationId: this.organizationId,
     });
 
     if (!app) {
@@ -219,8 +219,8 @@ export class ConnectedAppsService
       await collection.updateOne(
         {
           _id: result.appId,
-          // WARNING: This is a workaround to allow OAuth redirects to be processed without a companyId
-          //companyId: this.companyId,
+          // WARNING: This is a workaround to allow OAuth redirects to be processed without a organizationId
+          //organizationId: this.organizationId,
         },
         {
           $set: {
@@ -237,8 +237,8 @@ export class ConnectedAppsService
       await collection.updateOne(
         {
           _id: result.appId,
-          // WARNING: This is a workaround to allow OAuth redirects to be processed without a companyId
-          //companyId: this.companyId,
+          // WARNING: This is a workaround to allow OAuth redirects to be processed without a organizationId
+          //organizationId: this.organizationId,
         },
         {
           $set: {
@@ -435,7 +435,7 @@ export class ConnectedAppsService
 
     const result = await collection.findOne({
       _id: appId,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     });
 
     if (!result) {
@@ -458,7 +458,7 @@ export class ConnectedAppsService
     );
 
     const result = await collection
-      .find({ companyId: this.companyId })
+      .find({ organizationId: this.organizationId })
       .toArray();
 
     logger.debug({ count: result.length }, "Returning all apps");
@@ -485,7 +485,7 @@ export class ConnectedAppsService
     const result = await collection
       .find({
         name: appName,
-        companyId: this.companyId,
+        organizationId: this.organizationId,
       })
       .toArray();
 
@@ -516,7 +516,7 @@ export class ConnectedAppsService
         name: {
           $in: possibleAppNames,
         },
-        companyId: this.companyId,
+        organizationId: this.organizationId,
       })
       .toArray();
 
@@ -544,7 +544,7 @@ export class ConnectedAppsService
         name: {
           $in: possibleAppNames,
         },
-        companyId: this.companyId,
+        organizationId: this.organizationId,
       })
       .map((app) => ({ id: app._id, name: app.name }))
       .toArray();
@@ -563,7 +563,7 @@ export class ConnectedAppsService
 
     const result = await collection.findOne({
       _id: appId,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     });
 
     if (!result) {
@@ -588,7 +588,7 @@ export class ConnectedAppsService
         _id: {
           $in: appIds,
         },
-        companyId: this.companyId,
+        organizationId: this.organizationId,
       })
       .toArray();
 
@@ -608,7 +608,7 @@ export class ConnectedAppsService
 
     const app = await collection.findOne({
       _id: appId,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     });
 
     if (!app) {
@@ -629,7 +629,7 @@ export class ConnectedAppsService
       update: (updateModel) => this.updateApp(appId, updateModel),
       services: this.getServices(),
       getDbConnection: getDbConnection,
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     };
   }
 
@@ -644,7 +644,7 @@ export class ConnectedAppsService
       }
 
       return {
-        companyId: this.companyId,
+        organizationId: this.organizationId,
         update: async (updateModel) => {
           logger.error(
             { appName },
@@ -730,10 +730,8 @@ export class ConnectedAppsService
 
       try {
         const services = this.getServices();
-        const service = new app.getService(this.companyId, services);
-        const user = await services.userService.getOrganizationAdminUser(
-          this.companyId,
-        );
+        const service = new app.getService(this.organizationId, services);
+        const user = await services.userService.getOrganizationAdminUser();
         if (!user) {
           logger.error(
             { appName: app.name },
@@ -743,7 +741,7 @@ export class ConnectedAppsService
         }
 
         return await hook(
-          getBuiltInAppData(this.companyId, user._id.toString(), app.name),
+          getBuiltInAppData(this.organizationId, user._id.toString(), app.name),
           service,
         );
       } catch (error) {
@@ -779,7 +777,9 @@ export class CachedConnectedAppsService extends ConnectedAppsService {
     const collection = db.collection<ConnectedAppData>(
       CONNECTED_APPS_COLLECTION_NAME,
     );
-    const apps = await collection.find({ companyId: this.companyId }).toArray();
+    const apps = await collection
+      .find({ organizationId: this.organizationId })
+      .toArray();
     logger.debug({ count: apps.length }, "Returning apps");
 
     return apps;

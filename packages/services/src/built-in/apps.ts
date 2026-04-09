@@ -7,7 +7,10 @@ export const BuiltInApps: Record<
   {
     scopes?: AppScope[];
     scheduled?: boolean;
-    getService: new (companyId: string, services: IServicesContainer) => any;
+    getService: new (
+      organizationId: string,
+      services: IServicesContainer,
+    ) => any;
   }
 > = {
   [BOOKING_TRACKING_APP_ID]: {

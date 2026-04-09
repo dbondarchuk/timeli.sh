@@ -23,7 +23,9 @@ export class BullMQNotificationWorker extends BaseBullMQClient {
 
   constructor(
     config: BullMQNotificationConfig,
-    protected readonly getServices: (companyId: string) => IServicesContainer,
+    protected readonly getServices: (
+      organizationId: string,
+    ) => IServicesContainer,
   ) {
     super(config, getLoggerFactory("BullMQNotificationWorker"));
     this.config = config;
@@ -83,12 +85,12 @@ export class BullMQNotificationWorker extends BaseBullMQClient {
     }
 
     const emailData = jobData.data as EmailNotificationRequest;
-    const companyId = jobData.companyId;
-    if (!companyId) {
-      throw new Error("companyId is required in job data");
+    const organizationId = jobData.organizationId;
+    if (!organizationId) {
+      throw new Error("organizationId is required in job data");
     }
 
-    const notificationService = this.getNotificationService(companyId);
+    const notificationService = this.getNotificationService(organizationId);
 
     try {
       logger.info(
@@ -102,7 +104,7 @@ export class BullMQNotificationWorker extends BaseBullMQClient {
           subject: emailData.email.subject,
           appointmentId: emailData.appointmentId,
           customerId: emailData.customerId,
-          companyId,
+          organizationId,
         },
         "Processing email notification job",
       );
@@ -189,11 +191,11 @@ export class BullMQNotificationWorker extends BaseBullMQClient {
     }
 
     const textData = jobData.data as TextMessageNotificationRequest;
-    const companyId = jobData.companyId;
-    if (!companyId) {
-      throw new Error("companyId is required in job data");
+    const organizationId = jobData.organizationId;
+    if (!organizationId) {
+      throw new Error("organizationId is required in job data");
     }
-    const notificationService = this.getNotificationService(companyId);
+    const notificationService = this.getNotificationService(organizationId);
 
     try {
       logger.info(
@@ -205,7 +207,7 @@ export class BullMQNotificationWorker extends BaseBullMQClient {
           sender: textData.sender,
           appointmentId: textData.appointmentId,
           customerId: textData.customerId,
-          companyId,
+          organizationId,
         },
         "Processing text message notification job",
       );
@@ -385,8 +387,8 @@ export class BullMQNotificationWorker extends BaseBullMQClient {
     }
   }
 
-  private getNotificationService(companyId: string): NotificationService {
-    const services = this.getServices(companyId);
+  private getNotificationService(organizationId: string): NotificationService {
+    const services = this.getServices(organizationId);
     const defaultEmailService = new SmtpService(
       getSmtpConfiguration(),
       services.assetsStorage,
@@ -396,7 +398,7 @@ export class BullMQNotificationWorker extends BaseBullMQClient {
     );
 
     return new NotificationService(
-      companyId,
+      organizationId,
       services.configurationService,
       services.connectedAppsService,
       services.communicationLogsService,

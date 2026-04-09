@@ -23,13 +23,13 @@ export class WaitlistRepositoryService {
 
   public constructor(
     protected readonly appId: string,
-    protected readonly companyId: string,
+    protected readonly organizationId: string,
     protected readonly getDbConnection: IConnectedAppProps["getDbConnection"],
     protected readonly services: IConnectedAppProps["services"],
   ) {
     this.loggerFactory = getLoggerFactory(
       "WaitlistRepositoryService",
-      this.companyId,
+      this.organizationId,
     );
   }
 
@@ -50,7 +50,7 @@ export class WaitlistRepositoryService {
       createdAt: new Date(),
       updatedAt: new Date(),
       status: "active",
-      companyId: this.companyId,
+      organizationId: this.organizationId,
     } satisfies WaitlistEntryEntity;
 
     await db
@@ -113,7 +113,7 @@ export class WaitlistRepositoryService {
 
     const $and: Filter<WaitlistEntryEntity>[] = [
       {
-        companyId: this.companyId,
+        organizationId: this.organizationId,
       },
       {
         status: "active",
@@ -197,7 +197,7 @@ export class WaitlistRepositoryService {
 
     const $and: Filter<WaitlistEntry>[] = [
       {
-        companyId: this.companyId,
+        organizationId: this.organizationId,
       },
     ];
     if (query.range?.start || query.range?.end) {
@@ -333,7 +333,7 @@ export class WaitlistRepositoryService {
       .aggregate([
         ...this.waitlistAggregateJoin,
         {
-          $match: { _id: id, companyId: this.companyId },
+          $match: { _id: id, organizationId: this.organizationId },
         },
       ])
       .next();
@@ -376,7 +376,7 @@ export class WaitlistRepositoryService {
     const { modifiedCount } = await db
       .collection<WaitlistEntryEntity>(WAITLIST_COLLECTION_NAME)
       .updateMany(
-        { _id: { $in: ids }, companyId: this.companyId },
+        { _id: { $in: ids }, organizationId: this.organizationId },
         { $set: { status: "dismissed", updatedAt: new Date() } },
       );
 
@@ -423,12 +423,15 @@ export class WaitlistRepositoryService {
     );
 
     const indexes = {
-      companyId_createdAt_1: { companyId: 1, createdAt: 1 },
-      companyId_status_1: { companyId: 1, status: 1 },
-      companyId_customerId_1: { companyId: 1, customerId: 1 },
-      companyId_optionId_1: { companyId: 1, optionId: 1 },
-      companyId_asSoonAsPossible_1: { companyId: 1, asSoonAsPossible: 1 },
-      companyId_dates_date_1: { companyId: 1, "dates.date": 1 },
+      organizationId_createdAt_1: { organizationId: 1, createdAt: 1 },
+      organizationId_status_1: { organizationId: 1, status: 1 },
+      organizationId_customerId_1: { organizationId: 1, customerId: 1 },
+      organizationId_optionId_1: { organizationId: 1, optionId: 1 },
+      organizationId_asSoonAsPossible_1: {
+        organizationId: 1,
+        asSoonAsPossible: 1,
+      },
+      organizationId_dates_date_1: { organizationId: 1, "dates.date": 1 },
     };
 
     for (const [name, index] of Object.entries(indexes)) {

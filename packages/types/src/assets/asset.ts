@@ -1,12 +1,12 @@
 import * as z from "zod";
 import { AppointmentEntity } from "../booking/appointment";
 import { Customer } from "../customers/customer";
-import { WithCompanyId, WithDatabaseId } from "../database";
+import { WithDatabaseId, WithOrganizationId } from "../database";
 import { Prettify, zObjectId } from "../utils";
 import { AssetEntity } from "./entity";
 
 export type Asset = Prettify<
-  WithCompanyId<
+  WithOrganizationId<
     WithDatabaseId<
       AssetEntity & {
         appointment?: AppointmentEntity & {

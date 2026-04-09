@@ -1,4 +1,4 @@
-import { getCompanyId, getServicesContainer } from "@/app/utils";
+import { getOrganizationId, getServicesContainer } from "@/app/utils";
 import { BaseAllKeys } from "@timelish/i18n";
 import { getLoggerFactory } from "@timelish/logger";
 import { getDashboardNotificationRealtimeBroker } from "@timelish/services";
@@ -53,7 +53,7 @@ const getPendingAppointmentsNotifications = async (date?: Date) => {
 export async function GET(request: NextRequest) {
   const logger = getLoggerFactory("AdminAPI/notifications")("GET");
   const servicesContainer = await getServicesContainer();
-  const companyId = await getCompanyId();
+  const organizationId = await getOrganizationId();
 
   logger.debug("Starting notifications SSE stream");
 
@@ -119,18 +119,18 @@ export async function GET(request: NextRequest) {
 
       const client = {
         id: v4(),
-        companyId,
+        organizationId,
         send: (data: DashboardNotification) => {
           logger.debug({ data }, "Received notification");
           controller.enqueue(`data: ${JSON.stringify(data)}\n\n`);
         },
       };
 
-      broker.registerClient(companyId, client);
+      broker.registerClient(organizationId, client);
 
       request.signal.addEventListener("abort", () => {
         logger.debug("SSE stream aborted by client");
-        broker.unregisterClient(companyId, client);
+        broker.unregisterClient(organizationId, client);
         controller.close();
       });
     },

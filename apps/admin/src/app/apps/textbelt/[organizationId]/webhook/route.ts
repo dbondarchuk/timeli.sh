@@ -10,32 +10,32 @@ export const dynamic = "force-dynamic";
 
 const processWebhook = async (
   request: NextRequest,
-  { params }: RouteContext<"/apps/textbelt/[companyId]/webhook">,
+  { params }: RouteContext<"/apps/textbelt/[organizationId]/webhook">,
 ) => {
-  const { companyId } = await params;
+  const { organizationId } = await params;
   const logger = getLoggerFactory("API/textbelt-webhook")("processWebhook");
 
   logger.debug(
     {
       url: request.url,
       method: request.method,
-      companyId,
+      organizationId,
     },
     "Processing built-in TextBelt webhook request",
   );
 
-  if (!companyId) {
-    logger.warn("Missing required companyId parameter");
+  if (!organizationId) {
+    logger.warn("Missing required organizationId parameter");
     return NextResponse.json(
-      { error: "companyId is required" },
+      { error: "organizationId is required" },
       { status: 400 },
     );
   }
 
-  const services = ServicesContainer(companyId);
+  const services = ServicesContainer(organizationId);
 
   const webhookService = new TextBeltWebhookService(
-    companyId,
+    organizationId,
     getTextBeltConfiguration(),
     services.configurationService,
     services.connectedAppsService,
@@ -52,13 +52,13 @@ const processWebhook = async (
     if (result) {
       logger.debug(
         {
-          companyId,
+          organizationId,
           status: result.status,
         },
         "Successfully processed webhook",
       );
     } else {
-      logger.warn({ companyId }, "No webhook handler found");
+      logger.warn({ organizationId }, "No webhook handler found");
     }
 
     return (
@@ -67,7 +67,7 @@ const processWebhook = async (
   } catch (error: any) {
     logger.error(
       {
-        companyId,
+        organizationId,
         error: error?.message || error?.toString(),
       },
       "Error processing webhook",

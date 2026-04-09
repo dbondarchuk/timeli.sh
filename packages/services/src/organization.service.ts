@@ -1,5 +1,5 @@
 import {
-  ConfigurationOptionWithCompanyId,
+  ConfigurationOptionWithOrganizationId,
   IOrganizationService,
   Organization,
 } from "@timelish/types";
@@ -16,8 +16,8 @@ export class OrganizationService
   extends BaseService
   implements IOrganizationService
 {
-  public constructor(companyId: string) {
-    super("OrganizationService", companyId);
+  public constructor(organizationId: string) {
+    super("OrganizationService", organizationId);
   }
 
   public async getOrganization(): Promise<Organization | null> {
@@ -27,9 +27,14 @@ export class OrganizationService
     const organizations = db.collection<Organization>(
       ORGANIZATIONS_COLLECTION_NAME,
     );
-    const organization = await organizations.findOne({ _id: this.companyId });
+    const organization = await organizations.findOne({
+      _id: this.organizationId,
+    });
     if (!organization) {
-      logger.warn({ companyId: this.companyId }, "Organization not found");
+      logger.warn(
+        { organizationId: this.organizationId },
+        "Organization not found",
+      );
       return null;
     }
     return organization;
@@ -46,16 +51,16 @@ export class OrganizationService
 
     if (normalized) {
       const existingOrganization = await organizations.findOne({
-        _id: { $ne: this.companyId },
+        _id: { $ne: this.organizationId },
         domain: normalized,
       });
 
       // Legacy fallback for domains stored in brand configuration.
-      const configuration = db.collection<ConfigurationOptionWithCompanyId<"brand">>(
-        CONFIGURATION_COLLECTION_NAME,
-      );
+      const configuration = db.collection<
+        ConfigurationOptionWithOrganizationId<"brand">
+      >(CONFIGURATION_COLLECTION_NAME);
       const existingBrandDomain = await configuration.findOne({
-        companyId: { $ne: this.companyId },
+        organizationId: { $ne: this.organizationId },
         key: "brand",
         "value.domain": normalized,
       });
@@ -68,14 +73,14 @@ export class OrganizationService
       }
 
       await organizations.updateOne(
-        { _id: this.companyId },
+        { _id: this.organizationId },
         { $set: { domain: normalized } },
       );
       return;
     }
 
     await organizations.updateOne(
-      { _id: this.companyId },
+      { _id: this.organizationId },
       { $unset: { domain: "" } },
     );
   }
