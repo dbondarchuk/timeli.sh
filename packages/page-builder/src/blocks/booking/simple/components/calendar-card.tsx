@@ -9,6 +9,7 @@ import {
   TooltipResponsive,
   TooltipResponsiveContent,
   TooltipResponsiveTrigger,
+  useTimeZone,
 } from "@timelish/ui";
 import { areTimesEqual, formatTimeLocale } from "@timelish/utils";
 import { getTimeZones } from "@vvo/tzdb";
@@ -60,16 +61,20 @@ export const CalendarCard: React.FC = () => {
     dateTime,
     setDateTime,
     setDiscount: setPromoCode,
-    timeZone: propsTimeZone,
     availability,
-    setStep,
+    useClientTimezone,
   } = useScheduleContext();
 
   const [date, setDate] = React.useState<Date | undefined>(dateTime?.date);
   const [time, setTime] = React.useState<Time | undefined>(dateTime?.time);
 
+  const configTimeZone = useTimeZone();
+  const defaultTimeZone = useClientTimezone
+    ? DateTime.now().zoneName
+    : configTimeZone;
+
   const [timeZone, setTimeZone] = React.useState<string>(
-    dateTime?.timeZone || propsTimeZone,
+    dateTime?.timeZone || defaultTimeZone,
   );
 
   const changeDate = (date: Date | undefined) => {

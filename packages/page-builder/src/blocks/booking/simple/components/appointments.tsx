@@ -16,6 +16,7 @@ export type AppointmentsProps = {
   className?: string;
   id?: string;
   isEditor?: boolean;
+  useClientTimezone?: boolean;
 };
 
 export const Appointments: React.FC<
@@ -29,6 +30,7 @@ export const Appointments: React.FC<
   className,
   id,
   isEditor,
+  useClientTimezone,
   ...props
 }) => {
   const fromQuery = useSearchParams().get("option");
@@ -55,6 +57,7 @@ export const Appointments: React.FC<
           showPromoCode={showPromoCode}
           id={id}
           isEditor={isEditor}
+          useClientTimezone={useClientTimezone}
           {...props}
         />
       )}

@@ -68,13 +68,17 @@ export const CalendarCard: React.FC = () => {
     availability,
     setStep,
     waitlistAppId,
+    useClientTimezone,
   } = useScheduleContext();
 
   const t = useI18n<WaitlistPublicNamespace, WaitlistPublicKeys>(
     waitlistPublicNamespace,
   );
 
-  const defaultTimeZone = useTimeZone();
+  const configTimeZone = useTimeZone();
+  const defaultTimeZone = useClientTimezone
+    ? DateTime.now().zoneName
+    : configTimeZone;
 
   const [date, setDate] = React.useState<Date | undefined>(dateTime?.date);
   const [time, setTime] = React.useState<Time | undefined>(dateTime?.time);

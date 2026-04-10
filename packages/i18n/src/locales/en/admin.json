@@ -1773,6 +1773,8 @@
           "availabilityProviderAppTooltip": "Select optional app to provide your availability.<br></br>If no app is selected, base availability app will be applied.",
           "autoConfirmAppointments": "Auto confirm appointments",
           "autoConfirmTooltip": "Select this option if you want to auto confirm all appointments created by customers.<br></br>By default, you will need to manually confirm each appointment.",
+          "useClientTimezone": "Use client timezone",
+          "useClientTimezoneTooltip": "Select this option if you want to default to the client's timezone for booking page.<br></br>By default, the timezone will be the timezone of the business.",
           "showPromoCodeField": "Show promo code field",
           "showPromoCodeTooltip": "Configure whether the promo code field should be shown during the booking",
           "maxWeeksInFuture": "Maximum number of weeks into the future",

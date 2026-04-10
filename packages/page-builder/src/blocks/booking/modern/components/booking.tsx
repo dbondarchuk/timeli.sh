@@ -58,6 +58,7 @@ export const Booking: React.FC<
       scrollToTop={scrollToTop ?? false}
       hideTitle={hideTitle ?? false}
       hideSteps={hideSteps ?? false}
+      useClientTimezone={response?.useClientTimezone ?? false}
     />
   );
 };

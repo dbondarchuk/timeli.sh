@@ -37,6 +37,7 @@ export type Step = {
 
 export type ScheduleContextProps = {
   appointmentOption: AppointmentChoice;
+  useClientTimezone?: boolean;
 
   selectedAddons: AppointmentAddon[];
   setSelectedAddons: (addons: AppointmentAddon[]) => void;
@@ -75,9 +76,7 @@ export type ScheduleContextProps = {
   setDiscount: (promoCode?: ApplyDiscountResponse) => void;
 
   giftCards?: ApplyGiftCardsSuccessResponse["giftCards"];
-  setGiftCards: (
-    giftCards: ApplyGiftCardsSuccessResponse["giftCards"],
-  ) => void;
+  setGiftCards: (giftCards: ApplyGiftCardsSuccessResponse["giftCards"]) => void;
   applyGiftCards: (
     codes: string[],
     amount: number,

@@ -171,6 +171,31 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
       />
       <FormField
         control={form.control}
+        name="useClientTimezone"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>
+              {t("settings.appointments.form.main.useClientTimezone")}{" "}
+              <InfoTooltip>
+                <I18nRichText
+                  namespace="admin"
+                  text="settings.appointments.form.main.useClientTimezoneTooltip"
+                />
+              </InfoTooltip>
+            </FormLabel>
+            <FormControl>
+              <BooleanSelect
+                value={field.value}
+                onValueChange={field.onChange}
+                className="w-full"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={form.control}
         name="allowPromoCode"
         render={({ field }) => (
           <FormItem>

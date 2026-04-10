@@ -447,6 +447,7 @@ async function ensureDefaultInstallSchedule(
   const hasWorkingHours = Boolean(
     existing?.schedule?.some((day) => day.shifts?.length > 0),
   );
+
   if (hasWorkingHours) {
     logger.debug("Schedule already has working hours; skipping default");
     return;
@@ -456,6 +457,106 @@ async function ensureDefaultInstallSchedule(
     getDefaultScheduleConfiguration(),
   );
   logger.debug("Applied default schedule configuration");
+}
+
+async function ensureInstallDefaultScripts(
+  services: ReturnType<typeof ServicesContainer>,
+): Promise<void> {
+  const logger = getLoggerFactory("InstallActions")(
+    "ensureInstallDefaultScripts",
+  );
+
+  const existing =
+    (await services.configurationService.getConfiguration("scripts")) ?? null;
+  if (existing) {
+    logger.debug("Scripts already installed; skipping default");
+    return;
+  }
+
+  await services.configurationService.setConfiguration("scripts", {
+    header: [],
+    footer: [],
+  });
+
+  logger.debug("Applied default scripts configuration");
+}
+
+async function ensureInstallDefaultSocial(
+  services: ReturnType<typeof ServicesContainer>,
+): Promise<void> {
+  const logger = getLoggerFactory("InstallActions")(
+    "ensureInstallDefaultSocial",
+  );
+  const existing =
+    (await services.configurationService.getConfiguration("social")) ?? null;
+  if (existing) {
+    logger.debug("Social already installed; skipping default");
+    return;
+  }
+  await services.configurationService.setConfiguration("social", {
+    links: [],
+  });
+  logger.debug("Applied default social configuration");
+}
+
+async function ensureInstallDefaultStyling(
+  services: ReturnType<typeof ServicesContainer>,
+): Promise<void> {
+  const logger = getLoggerFactory("InstallActions")(
+    "ensureInstallDefaultStyling",
+  );
+  const existing =
+    (await services.configurationService.getConfiguration("styling")) ?? null;
+  if (existing) {
+    logger.debug("Styling already installed; skipping default");
+    return;
+  }
+
+  await services.configurationService.setConfiguration("styling", {
+    colors: [],
+    fonts: {
+      primary: "Montserrat",
+      secondary: "Playfair Display",
+      tertiary: "Roboto",
+    },
+    css: [],
+  });
+  logger.debug("Applied default styling configuration");
+}
+
+async function ensureInstallDefaultApps(
+  services: ReturnType<typeof ServicesContainer>,
+): Promise<void> {
+  const logger = getLoggerFactory("InstallActions")("ensureInstallDefaultApps");
+  const existing =
+    (await services.configurationService.getConfiguration("defaultApps")) ??
+    null;
+  if (existing) {
+    logger.debug("Default apps already installed; skipping default");
+    return;
+  }
+
+  await services.configurationService.setConfiguration("defaultApps", {
+    paymentAppId: undefined,
+    emailSenderAppId: undefined,
+    textMessageSenderAppId: undefined,
+    textMessageResponderAppId: undefined,
+  });
+
+  logger.debug("Applied default apps configuration");
+}
+
+async function ensureInstallDefaultConfigurations(
+  services: ReturnType<typeof ServicesContainer>,
+): Promise<void> {
+  const logger = getLoggerFactory("InstallActions")(
+    "ensureInstallDefaultConfigurations",
+  );
+  await ensureInstallDefaultScripts(services);
+  await ensureInstallDefaultSocial(services);
+  await ensureInstallDefaultStyling(services);
+  await ensureInstallDefaultApps(services);
+  logger.debug("Applied default configurations");
 }
 
 export async function runCompleteInstallSetupSteps(args: {
@@ -613,6 +714,8 @@ export async function runCompleteInstallSetupSteps(args: {
     "Ensuring install customer notification templates",
   );
   await ensureInstallAppointmentNotificationDefaults(services, language, prefs);
+
+  await ensureInstallDefaultConfigurations(services);
 
   logger.debug({ language, businessName }, "Install setup steps completed");
   return { ok: true };

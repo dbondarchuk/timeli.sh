@@ -775,18 +775,6 @@ export const footerDefaultPage = (
                                                         content: [
                                                           {
                                                             text: "{{general.email}}",
-                                                            marks: {
-                                                              underline: true,
-                                                              color: "#0f172a",
-                                                              backgroundColor:
-                                                                "#ffffff",
-                                                              fontSize: 14,
-                                                              fontFamily:
-                                                                "Montserrat",
-                                                              fontWeight: 400,
-                                                              letterSpacing:
-                                                                "normal",
-                                                            },
                                                           },
                                                         ],
                                                       },
@@ -1582,6 +1570,157 @@ export const footerDefaultPage = (
                   },
                 },
                 id: "block-a74a7eb1-caf1-4438-b9d7-084ee4629450",
+              },
+              {
+                id: "block-23fb4d28-b36b-456c-89b3-7137c10a95b7",
+                type: "InlineContainer",
+                data: {
+                  style: {
+                    padding: [
+                      {
+                        value: {
+                          top: {
+                            value: 0,
+                            unit: "rem",
+                          },
+                          bottom: {
+                            value: 0,
+                            unit: "rem",
+                          },
+                          left: {
+                            value: 0,
+                            unit: "rem",
+                          },
+                          right: {
+                            value: 0,
+                            unit: "rem",
+                          },
+                        },
+                      },
+                    ],
+                    display: [
+                      {
+                        value: "inline-flex",
+                      },
+                    ],
+                    flexDirection: [
+                      {
+                        value: "row",
+                      },
+                    ],
+                    alignItems: [
+                      {
+                        value: "center",
+                      },
+                    ],
+                    justifyContent: [
+                      {
+                        value: "center",
+                      },
+                    ],
+                    gap: [
+                      {
+                        value: {
+                          value: 0.5,
+                          unit: "rem",
+                        },
+                      },
+                    ],
+                  },
+                  props: {
+                    children: [
+                      {
+                        id: "block-7bf35ac5-5580-4511-92a1-468f40cc2904",
+                        type: "InlineText",
+                        data: {
+                          props: {
+                            text: [
+                              {
+                                type: "paragraph",
+                                content: [
+                                  {
+                                    text: "Created using",
+                                  },
+                                ],
+                              },
+                            ],
+                          },
+                          style: {},
+                        },
+                      },
+                      {
+                        id: "block-6b94bb08-b7bb-4003-bf58-09446dcce72e",
+                        type: "Link",
+                        data: {
+                          props: {
+                            url: "https://timelish.com",
+                            target: "_blank",
+                            children: [
+                              {
+                                type: "InlineText",
+                                id: "block-899b53eb-03ae-42f1-aad7-8cdfd82fe8da",
+                                data: {
+                                  props: {
+                                    text: [
+                                      {
+                                        type: "paragraph",
+                                        content: [
+                                          {
+                                            text: "Timeli.sh",
+                                          },
+                                        ],
+                                      },
+                                    ],
+                                  },
+                                },
+                              },
+                            ],
+                          },
+                          style: {
+                            color: [
+                              {
+                                value: "var(--value-primary-color)",
+                              },
+                            ],
+                            fontSize: [
+                              {
+                                value: {
+                                  value: 1,
+                                  unit: "rem",
+                                },
+                              },
+                            ],
+                            fontWeight: [
+                              {
+                                value: "normal",
+                              },
+                            ],
+                            textAlign: [
+                              {
+                                value: "left",
+                              },
+                            ],
+                            width: [
+                              {
+                                value: "max-content",
+                              },
+                            ],
+                            display: [
+                              {
+                                value: "inline",
+                              },
+                            ],
+                            transition: [
+                              {
+                                value: "color 0.2s ease",
+                              },
+                            ],
+                          },
+                        },
+                      },
+                    ],
+                  },
+                },
               },
               {
                 type: "Container",

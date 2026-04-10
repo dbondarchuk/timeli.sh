@@ -73,6 +73,7 @@ export const generalBookingConfigurationSchema = z.object({
       .min(0, "configuration.booking.breakDuration.min")
       .max(120, "configuration.booking.breakDuration.max"),
   ),
+  useClientTimezone: z.coerce.boolean<boolean>().optional(),
   slotStart: slotStartSchema.optional(),
   customSlotTimes: z.array(customTimeSlotSchema).optional(),
   scheduleAppId: z.string().optional(),

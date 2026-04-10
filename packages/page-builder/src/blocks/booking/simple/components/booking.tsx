@@ -47,6 +47,7 @@ export const Booking: React.FC<
       successPage={successPage ?? undefined}
       fieldsSchema={response.fieldsSchema}
       showPromoCode={response.showPromoCode}
+      useClientTimezone={response.useClientTimezone}
       isEditor={isEditor}
     />
   );

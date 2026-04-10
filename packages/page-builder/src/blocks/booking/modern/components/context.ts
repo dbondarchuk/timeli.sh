@@ -44,6 +44,8 @@ export type ScheduleContextProps = {
   isLoading: boolean;
   setIsLoading: (isLoading: boolean) => void;
 
+  useClientTimezone?: boolean;
+
   selectedAppointmentOption?: AppointmentChoice;
   setSelectedAppointmentOption: (option?: AppointmentChoice) => void;
 
@@ -84,9 +86,7 @@ export type ScheduleContextProps = {
   setDiscount: (promoCode?: ApplyDiscountResponse) => void;
 
   giftCards?: ApplyGiftCardsSuccessResponse["giftCards"];
-  setGiftCards: (
-    giftCards: ApplyGiftCardsSuccessResponse["giftCards"],
-  ) => void;
+  setGiftCards: (giftCards: ApplyGiftCardsSuccessResponse["giftCards"]) => void;
   applyGiftCards: (
     codes: string[],
     amount: number,

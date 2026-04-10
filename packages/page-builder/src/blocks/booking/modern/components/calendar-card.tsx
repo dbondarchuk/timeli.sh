@@ -68,11 +68,14 @@ export const CalendarCard: React.FC = () => {
     setDateTime,
     setDiscount: setPromoCode,
     availability,
-    setCurrentStep,
     isLoading,
+    useClientTimezone,
   } = useScheduleContext();
 
-  const defaultTimeZone = useTimeZone();
+  const configTimeZone = useTimeZone();
+  const defaultTimeZone = useClientTimezone
+    ? DateTime.now().zoneName
+    : configTimeZone;
 
   const [date, setDate] = React.useState<Date | undefined>(dateTime?.date);
   const [time, setTime] = React.useState<Time | undefined>(dateTime?.time);

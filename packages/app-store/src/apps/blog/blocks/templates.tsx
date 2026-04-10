@@ -128,11 +128,6 @@ const getLinkPropsDefaults = () => ({
         value: "left",
       },
     ],
-    width: [
-      {
-        value: "max-content",
-      },
-    ],
     display: [
       {
         value: "inline",

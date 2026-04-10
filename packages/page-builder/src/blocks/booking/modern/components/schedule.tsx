@@ -37,6 +37,7 @@ export type ScheduleProps = {
   scrollToTop?: boolean;
   hideTitle?: boolean;
   hideSteps?: boolean;
+  useClientTimezone?: boolean;
 };
 
 export const Schedule: React.FC<
@@ -53,6 +54,7 @@ export const Schedule: React.FC<
   scrollToTop,
   hideTitle,
   hideSteps,
+  useClientTimezone,
   ...props
 }) => {
   const t = useI18n("translation");
@@ -441,6 +443,7 @@ export const Schedule: React.FC<
         setIsFormValid,
         isEditor,
         handleNewBooking,
+        useClientTimezone,
       }}
     >
       <BookingLayout

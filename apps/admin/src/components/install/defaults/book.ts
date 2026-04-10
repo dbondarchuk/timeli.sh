@@ -300,10 +300,6 @@ export const bookDefaultPage = (
                         children: [
                           {
                             text: bookLabels.policiesText,
-                            fontSize: "0.75rem",
-                            italic: true,
-                            backgroundColor: "rgb(255, 255, 255)",
-                            color: "rgb(2, 8, 23)",
                           },
                         ],
                         type: "p",

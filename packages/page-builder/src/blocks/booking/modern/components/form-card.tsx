@@ -1,26 +1,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { clientApi } from "@timelish/api-sdk";
-import { TranslationKeys, useI18n } from "@timelish/i18n";
+import { useI18n } from "@timelish/i18n";
+import { AppointmentFields, getFields } from "@timelish/types";
 import {
-  ApplyDiscountRequest,
-  AppointmentFields,
-  getFields,
-} from "@timelish/types";
-import {
-  Button,
-  cn,
   fieldSchemaMapper,
   fieldsComponentMap,
   Form,
-  FormItem,
-  Input,
-  Label,
-  Spinner,
   usePrevious,
 } from "@timelish/ui";
-import { deepEqual, formatAmountString } from "@timelish/utils";
-import { DateTime } from "luxon";
-import React, { useEffect, useMemo, useState } from "react";
+import { deepEqual } from "@timelish/utils";
+import React, { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { useScheduleContext } from "./context";
@@ -30,17 +18,12 @@ export const FormCard: React.FC = () => {
 
   const {
     selectedAppointmentOption,
-    selectedAddons,
     dateTime,
     fields: propsFields,
     setFields,
     formFields,
-    discount,
-    showPromoCode,
     setDiscount,
-    discountAmount,
     setIsFormValid,
-    basePrice,
   } = useScheduleContext();
 
   if (!dateTime || !selectedAppointmentOption) return null;
@@ -111,7 +94,6 @@ export const FormCard: React.FC = () => {
                 {fieldsMap[field.type](field, form.control)}
               </React.Fragment>
             ))}
-
           </div>
         </form>
       </Form>

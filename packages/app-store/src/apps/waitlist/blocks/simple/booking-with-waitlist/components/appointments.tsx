@@ -18,6 +18,7 @@ export type AppointmentsProps = {
   isEditor?: boolean;
   appId?: string;
   isOnlyWaitlist: boolean;
+  useClientTimezone: boolean;
 };
 
 export const Appointments: React.FC<
@@ -33,6 +34,7 @@ export const Appointments: React.FC<
   isEditor,
   appId,
   isOnlyWaitlist,
+  useClientTimezone,
   ...props
 }) => {
   const fromQuery = useSearchParams().get("option");
@@ -61,6 +63,7 @@ export const Appointments: React.FC<
           waitlistAppId={appId}
           isEditor={isEditor}
           isOnlyWaitlist={isOnlyWaitlist}
+          useClientTimezone={useClientTimezone}
           {...props}
         />
       )}

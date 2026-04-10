@@ -40,6 +40,7 @@ export type Step = {
 
 export type ScheduleContextProps = {
   appointmentOption: AppointmentChoice;
+  useClientTimezone: boolean;
 
   selectedAddons: AppointmentAddon[];
   setSelectedAddons: (addons: AppointmentAddon[]) => void;

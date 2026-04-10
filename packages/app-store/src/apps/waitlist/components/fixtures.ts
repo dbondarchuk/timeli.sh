@@ -124,4 +124,5 @@ export const demoBookingOptionsResponse: GetAppointmentOptionsResponse = {
   ],
   fieldsSchema: {},
   showPromoCode: true,
+  useClientTimezone: false,
 };
