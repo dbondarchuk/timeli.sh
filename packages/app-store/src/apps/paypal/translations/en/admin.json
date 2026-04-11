@@ -2,7 +2,7 @@
   "title": "PayPal",
   "app": {
     "displayName": "PayPal",
-    "description": "Accept PayPal payments for your appointments."
+    "description": "**PayPal** is a payment service people use to pay online with their **PayPal balance**, a linked **bank account**, or **cards** saved in PayPal.\n\n**Timeli.sh** connects to your **business PayPal** account so clients can **pay when they book** using PayPal’s checkout, and the payment is completed through PayPal."
   },
   "form": {
     "clientId": {

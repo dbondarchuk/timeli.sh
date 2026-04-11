@@ -103,7 +103,7 @@ export const AppDetails: React.FC<AppDetailsProps> = async ({ appName }) => {
                   <CarouselNext className="relative translate-y-0 rounded-none border-none right-0 top-0" />
                 </div>
               </div> */}
-            <CarouselContent className="h-full">
+            <CarouselContent className="h-full items-center">
               {AppImages[app.name].map((image, index) => (
                 <CarouselItem
                   key={index}
