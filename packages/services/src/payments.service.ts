@@ -278,6 +278,33 @@ export class PaymentsService extends BaseService implements IPaymentsService {
     return payment;
   }
 
+  public async getPaymentByExternalId(externalId: string): Promise<Payment | null> {
+    const logger = this.loggerFactory("getPaymentByExternalId");
+    logger.debug({ externalId }, "Getting payment by external id");
+
+    const db = await getDbConnection();
+    const payments = db.collection<Payment>(PAYMENTS_COLLECTION_NAME);
+
+    const payment = await payments.findOne({
+      externalId,
+      organizationId: this.organizationId,
+    });
+
+    if (!payment) {
+      logger.warn({ externalId }, "Payment not found by external id");
+    } else {
+      logger.debug(
+        {
+          externalId,
+          paymentId: payment._id,
+        },
+        "Payment found by external id",
+      );
+    }
+
+    return payment;
+  }
+
   public async getAppointmentPayments(
     appointmentId: string,
   ): Promise<Payment[]> {

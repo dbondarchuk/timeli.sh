@@ -1,0 +1,110 @@
+"use client";
+
+import { adminApi } from "@timelish/api-sdk";
+import { useI18n } from "@timelish/i18n";
+import { AppSetupProps, ConnectedApp } from "@timelish/types";
+import { Button, Spinner } from "@timelish/ui";
+import {
+  ConnectedAppNameAndLogo,
+  ConnectedAppStatusMessage,
+} from "@timelish/ui-admin";
+import React from "react";
+import { SquareApp } from "./app";
+import {
+  SquareAdminAllKeys,
+  SquareAdminKeys,
+  squareAdminNamespace,
+  SquareAdminNamespace,
+} from "./translations/types";
+
+export const SquareAppSetup: React.FC<AppSetupProps> = ({
+  onSuccess,
+  onError,
+  appId: existingAppId,
+}) => {
+  const t = useI18n<SquareAdminNamespace, SquareAdminKeys>(squareAdminNamespace);
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  const [app, setApp] = React.useState<ConnectedApp | undefined>(undefined);
+  const [timer, setTimer] = React.useState<NodeJS.Timeout>();
+
+  const getStatus = async (appId: string) => {
+    const status = await adminApi.apps.getAppStatus(appId);
+    setApp(() => status);
+
+    if (status.status === "pending") {
+      const id = setTimeout(() => getStatus(appId), 1000);
+      setTimer(id);
+      return;
+    }
+
+    setIsLoading(false);
+
+    if (status.status === "connected") {
+      onSuccess();
+      return;
+    }
+
+    onError(status.statusText);
+  };
+
+  React.useEffect(() => {
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [timer]);
+
+  const connectApp = async () => {
+    try {
+      setIsLoading(true);
+
+      let appId: string;
+      if (app?._id || existingAppId) {
+        appId = (app?._id || existingAppId)!;
+        await adminApi.apps.setAppStatus(appId, {
+          status: "pending",
+          statusText:
+            "app_square_admin.form.pendingAuthorization" satisfies SquareAdminAllKeys,
+        });
+      } else {
+        appId = await adminApi.apps.addNewApp(SquareApp.name);
+      }
+
+      const loginUrl = await adminApi.apps.getAppLoginUrl(appId);
+
+      getStatus(appId);
+      window.open(loginUrl, "_blank", "popup=true");
+    } catch (e: any) {
+      onError(e?.message);
+
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <>
+      <div className="flex items-center gap-4">
+        <Button
+          type="button"
+          variant="default"
+          onClick={connectApp}
+          disabled={isLoading}
+          className="inline-flex gap-2 items-center w-full"
+        >
+          {isLoading && <Spinner />}
+          <span className="inline-flex gap-2 items-center">
+            {t.rich(existingAppId ? "form.reconnect" : "form.connect", {
+              app: () => <ConnectedAppNameAndLogo appName={SquareApp.name} />,
+            })}
+          </span>
+        </Button>
+      </div>
+      {app && (
+        <ConnectedAppStatusMessage
+          status={app.status}
+          statusText={app.statusText}
+        />
+      )}
+    </>
+  );
+};

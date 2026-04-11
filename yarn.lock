@@ -3981,6 +3981,20 @@
     "@smithy/types" "^4.2.0"
     tslib "^2.6.2"
 
+"@square/web-payments-sdk-types@^1.68.1":
+  version "1.83.2"
+  resolved "https://registry.yarnpkg.com/@square/web-payments-sdk-types/-/web-payments-sdk-types-1.83.2.tgz#964e8aacf5569115268b626883b64d053d62f865"
+  integrity sha512-ZjESE8w4xxJuVVqnnIgjhDkucYHp9631uw8eHmqLJMFyBiQFSvcCwLVgqHPB6GF4IiePW+anGQKts+EkWTOCEw==
+  dependencies:
+    typescript "5.1.6"
+
+"@square/web-sdk@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@square/web-sdk/-/web-sdk-2.1.0.tgz#f57ad38aadf8bdd84d95e71e3c02d93777424854"
+  integrity sha512-eeecdVyKAM01ak6zw2i1oKqOO1vMYqH/aH36XbXqleFeDImmfz9OnhrrIll8WuVN4YGSzWajUrqC8qtvQd878Q==
+  dependencies:
+    "@square/web-payments-sdk-types" "^1.68.1"
+
 "@standard-schema/spec@1.0.0", "@standard-schema/spec@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@standard-schema/spec/-/spec-1.0.0.tgz#f193b73dc316c4170f2e82a881da0f550d551b9c"
@@ -3990,6 +4004,11 @@
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/@standard-schema/utils/-/utils-0.3.0.tgz#3d5e608f16c2390c10528e98e59aef6bf73cae7b"
   integrity sha512-e7Mew686owMaPJVNNLs55PUvgz371nKgwsc4vxE49zsODpJEnxgxRo2y/OKrqueavXgZNMDVj3DdHFlaSAeU8g==
+
+"@stitches/react@^1.2.8":
+  version "1.2.8"
+  resolved "https://registry.yarnpkg.com/@stitches/react/-/react-1.2.8.tgz#954f8008be8d9c65c4e58efa0937f32388ce3a38"
+  integrity sha512-9g9dWI4gsSVe8bNLlb+lMkBYsnIKCZTmvqvDG+Avnn69XfmHZKiaMrx7cgTaddq7aTPPmXiTsbFcUy0xgI4+wA==
 
 "@swc/helpers@0.5.15", "@swc/helpers@^0.5.3":
   version "0.5.15"
@@ -12398,6 +12417,14 @@ react-smooth@^4.0.4:
     prop-types "^15.8.1"
     react-transition-group "^4.4.5"
 
+react-square-web-payments-sdk@^3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/react-square-web-payments-sdk/-/react-square-web-payments-sdk-3.3.0.tgz#7ddb50926513b0433b1e4dde4739a991f1aa2b2f"
+  integrity sha512-VtYMXHTajt+XQYInBW2j4vSNNlrPUNnft395snH6LjEKCrxSvmXjvjJHN1I8PgIjUpQ/prlR5YyREIaoO5l2TQ==
+  dependencies:
+    "@square/web-sdk" "^2.1.0"
+    "@stitches/react" "^1.2.8"
+
 react-string-replace@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/react-string-replace/-/react-string-replace-1.1.1.tgz#8413a598c60e397fe77df3464f2889f00ba25989"
@@ -14191,6 +14218,11 @@ typed-array-length@^1.0.7:
     is-typed-array "^1.1.13"
     possible-typed-array-names "^1.0.0"
     reflect.getprototypeof "^1.0.6"
+
+typescript@5.1.6:
+  version "5.1.6"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.1.6.tgz#02f8ac202b6dad2c0dd5e0913745b47a37998274"
+  integrity sha512-zaWCozRZ6DLEWAWFrVDz1H6FVXzUSfTy5FUMWsQlU8Ym5JP9eO4xkTIROFCQvhQf61z6O/G6ugw3SgAnvvm+HA==
 
 typescript@5.5.4:
   version "5.5.4"

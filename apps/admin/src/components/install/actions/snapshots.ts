@@ -11,6 +11,7 @@ import {
   ICS_APP_NAME,
   OUTLOOK_APP_NAME,
   PAYPAL_APP_NAME,
+  SQUARE_APP_NAME,
 } from "@timelish/app-store";
 import { languages } from "@timelish/i18n";
 import { getLoggerFactory } from "@timelish/logger";
@@ -31,7 +32,7 @@ const INSTALL_CALENDAR_APP_NAMES = new Set([
   OUTLOOK_APP_NAME,
   CALDAV_APP_NAME,
 ]);
-const INSTALL_PAYMENT_APP_NAMES = new Set([PAYPAL_APP_NAME]);
+const INSTALL_PAYMENT_APP_NAMES = new Set([PAYPAL_APP_NAME, SQUARE_APP_NAME]);
 
 const installGeneralWorkspaceSchema = z.object({
   timeZone: zTimeZone,

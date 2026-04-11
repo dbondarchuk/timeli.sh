@@ -16,8 +16,8 @@ import { useState } from "react";
 
 const navigation = [
   { name: "Features", href: "#features" },
-  { name: "Pricing", href: "#pricing" },
   { name: "Integrations", href: "#integrations" },
+  { name: "Pricing", href: "#pricing" },
 ];
 
 export function Header() {

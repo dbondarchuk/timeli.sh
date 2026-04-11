@@ -4,7 +4,7 @@ import { AddOrUpdateAppButton } from "@/components/admin/apps/add-or-update-app-
 import { DeleteAppButton } from "@/components/admin/apps/delete-app-button";
 import { saveInstallPreferences } from "@/components/install/actions";
 import { useInstallWizard } from "@/components/install/install-wizard-context";
-import { PAYPAL_APP_NAME } from "@timelish/app-store";
+import { PAYPAL_APP_NAME, SQUARE_APP_NAME } from "@timelish/app-store";
 import { useI18n } from "@timelish/i18n";
 import type { ConnectedApp } from "@timelish/types";
 import {
@@ -22,8 +22,13 @@ import { ConnectedAppNameAndLogo } from "@timelish/ui-admin";
 import { Unplug } from "lucide-react";
 import { useMemo } from "react";
 
-function pickPaypalApp(apps: ConnectedApp[]): ConnectedApp | undefined {
-  const matches = apps.filter((a) => a.name === PAYPAL_APP_NAME);
+const INSTALL_PAYMENT_APP_NAMES = [PAYPAL_APP_NAME, SQUARE_APP_NAME] as const;
+
+function pickPaymentApp(
+  apps: ConnectedApp[],
+  name: (typeof INSTALL_PAYMENT_APP_NAMES)[number],
+): ConnectedApp | undefined {
+  const matches = apps.filter((a) => a.name === name);
   if (!matches.length) return undefined;
   return (
     matches.find((a) => a.status === "connected") ??
@@ -32,13 +37,27 @@ function pickPaypalApp(apps: ConnectedApp[]): ConnectedApp | undefined {
   );
 }
 
+function isPaymentAppSlotTaken(app: ConnectedApp | undefined): boolean {
+  return app?.status === "connected" || app?.status === "pending";
+}
+
 export function StepPayments() {
   const t = useI18n("install");
   const tApps = useI18n("apps");
   const { p, setP, setStep, paymentApps } = useInstallWizard();
-  const paypalApp = useMemo(() => pickPaypalApp(paymentApps), [paymentApps]);
+  const paypalApp = useMemo(
+    () => pickPaymentApp(paymentApps, PAYPAL_APP_NAME),
+    [paymentApps],
+  );
+  const squareApp = useMemo(
+    () => pickPaymentApp(paymentApps, SQUARE_APP_NAME),
+    [paymentApps],
+  );
   const paypalConnected = paypalApp?.status === "connected";
-  const canContinue = !p.acceptPayments || paypalConnected;
+  const squareConnected = squareApp?.status === "connected";
+  const paypalSlotTaken = isPaymentAppSlotTaken(paypalApp);
+  const squareSlotTaken = isPaymentAppSlotTaken(squareApp);
+  const canContinue = !p.acceptPayments || paypalConnected || squareConnected;
 
   const onContinue = async () => {
     if (!canContinue) {
@@ -70,6 +89,86 @@ export function StepPayments() {
     setP((prev) => ({ ...prev, step: 6 }));
   };
 
+  const renderPaymentCard = (
+    appName: (typeof INSTALL_PAYMENT_APP_NAMES)[number],
+    descriptionKey: "wizard.payments.paypalDesc" | "wizard.payments.squareDesc",
+    app: ConnectedApp | undefined,
+  ) => {
+    const connected = app?.status === "connected";
+    const thisSlotTaken = isPaymentAppSlotTaken(app);
+    const otherSlotTaken =
+      appName === PAYPAL_APP_NAME ? squareSlotTaken : paypalSlotTaken;
+    const blockConnectOrUpdate = otherSlotTaken && !thisSlotTaken;
+    return (
+      <Card>
+        <CardHeader>
+          <ConnectedAppNameAndLogo
+            appName={appName}
+            nameClassName="text-base font-semibold"
+            logoClassName="size-9 shrink-0"
+          />
+          <CardDescription className="mt-2">
+            {t(descriptionKey)}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <span className="text-sm">
+              {connected
+                ? t("wizard.integrations.connected")
+                : t("wizard.integrations.notConnected")}
+            </span>
+            {app ? (
+              <div className="flex items-center gap-2">
+                <AddOrUpdateAppButton app={app} refreshOnClose>
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    disabled={blockConnectOrUpdate}
+                    title={
+                      blockConnectOrUpdate
+                        ? t("wizard.payments.onePaymentAppHint")
+                        : undefined
+                    }
+                  >
+                    {tApps("common.updateApp")}
+                  </Button>
+                </AddOrUpdateAppButton>
+                {(app.status === "connected" || app.status === "pending") && (
+                  <DeleteAppButton appId={app._id}>
+                    <Button size="sm" variant="outline-destructive">
+                      <Unplug />
+                      {tApps("common.disconnect")}
+                    </Button>
+                  </DeleteAppButton>
+                )}
+              </div>
+            ) : (
+              <AddOrUpdateAppButton appType={appName} refreshOnClose>
+                <Button
+                  size="sm"
+                  disabled={blockConnectOrUpdate}
+                  title={
+                    blockConnectOrUpdate
+                      ? t("wizard.payments.onePaymentAppHint")
+                      : undefined
+                  }
+                >
+                  {t("wizard.integrations.connect")}
+                </Button>
+              </AddOrUpdateAppButton>
+            )}
+          </div>
+          {blockConnectOrUpdate ? (
+            <p className="text-xs text-muted-foreground">
+              {t("wizard.payments.onePaymentAppHint")}
+            </p>
+          ) : null}
+        </CardContent>
+      </Card>
+    );
+  };
+
   return (
     <div className="space-y-6">
       <div>
@@ -96,54 +195,16 @@ export function StepPayments() {
       </label>
       {p.acceptPayments ? (
         <div className="grid gap-4">
-          <Card>
-            <CardHeader>
-              <ConnectedAppNameAndLogo
-                appName={PAYPAL_APP_NAME}
-                nameClassName="text-base font-semibold"
-                logoClassName="size-9 shrink-0"
-              />
-              <CardDescription>
-                {t("wizard.payments.paypalDesc")}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <span className="text-sm">
-                  {paypalConnected
-                    ? t("wizard.integrations.connected")
-                    : t("wizard.integrations.notConnected")}
-                </span>
-                {paypalApp ? (
-                  <div className="flex items-center gap-2">
-                    <AddOrUpdateAppButton app={paypalApp} refreshOnClose>
-                      <Button size="sm" variant="secondary">
-                        {tApps("common.updateApp")}
-                      </Button>
-                    </AddOrUpdateAppButton>
-                    {(paypalApp.status === "connected" ||
-                      paypalApp.status === "pending") && (
-                      <DeleteAppButton appId={paypalApp._id}>
-                        <Button size="sm" variant="outline-destructive">
-                          <Unplug />
-                          {tApps("common.disconnect")}
-                        </Button>
-                      </DeleteAppButton>
-                    )}
-                  </div>
-                ) : (
-                  <AddOrUpdateAppButton
-                    appType={PAYPAL_APP_NAME}
-                    refreshOnClose
-                  >
-                    <Button size="sm">
-                      {t("wizard.integrations.connect")}
-                    </Button>
-                  </AddOrUpdateAppButton>
-                )}
-              </div>
-            </CardContent>
-          </Card>
+          {renderPaymentCard(
+            PAYPAL_APP_NAME,
+            "wizard.payments.paypalDesc",
+            paypalApp,
+          )}
+          {renderPaymentCard(
+            SQUARE_APP_NAME,
+            "wizard.payments.squareDesc",
+            squareApp,
+          )}
           <div>
             <label className="flex cursor-pointer items-center justify-between rounded-lg border p-4">
               <span className="font-medium">

@@ -62,4 +62,11 @@ export interface IOAuthConnectedApp<TData = any, TToken = any>
     request: ApiRequest,
     data?: any,
   ) => Promise<ConnectedAppResponse>;
+  /**
+   * Called after OAuth redirect succeeded and the connected app document was saved.
+   * Use for vendor-side setup (e.g. webhooks) that needs the persisted app id and tokens.
+   */
+  afterOAuthConnected?: (
+    appData: ConnectedAppData<TData, TToken>,
+  ) => Promise<void>;
 }

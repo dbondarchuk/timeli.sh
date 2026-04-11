@@ -29,7 +29,9 @@ import { IcsTranslations } from "./apps/ics/translations";
 import { OUTLOOK_APP_NAME } from "./apps/outlook/const";
 import { OutlookTranslations } from "./apps/outlook/translations";
 import { PAYPAL_APP_NAME } from "./apps/paypal/const";
+import { SQUARE_APP_NAME } from "./apps/square/const";
 import { PaypalTranslations } from "./apps/paypal/translations";
+import { SquareTranslations } from "./apps/square/translations";
 import { SMART_SCHEDULE_APP_NAME } from "./apps/smart-schedule/const";
 import { SmartScheduleTranslations } from "./apps/smart-schedule/translations";
 import { SMTP_APP_NAME } from "./apps/smtp/const";
@@ -81,6 +83,7 @@ export const AppsTranslations: Record<
   [ICS_APP_NAME]: IcsTranslations,
   [OUTLOOK_APP_NAME]: OutlookTranslations,
   [PAYPAL_APP_NAME]: PaypalTranslations,
+  [SQUARE_APP_NAME]: SquareTranslations,
   [APPOINTMENT_NOTIFICATIONS_APP_NAME]: AppointmentNotificationsTranslations,
   [SMTP_APP_NAME]: SmtpTranslations,
   [TEXTBELT_APP_NAME]: TextBeltTranslations,

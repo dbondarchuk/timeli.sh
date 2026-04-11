@@ -225,3 +225,22 @@
 .animate-blink {
   animation: blink 1s infinite;
 }
+
+@keyframes marquee-scroll {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.animate-marquee-scroll {
+  animation: marquee-scroll 40s linear infinite;
+}
+
+/* @media (prefers-reduced-motion: reduce) {
+  .animate-marquee-scroll {
+    animation: none; 
+  }
+} */

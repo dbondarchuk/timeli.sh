@@ -97,9 +97,16 @@ export class ConnectedAppsService
     logger.debug({ appId, appName: app.name }, "Successfully deleted app");
   }
 
-  public async updateApp(appId: string, updateModel: ConnectedAppUpdateModel) {
+  public async updateApp(
+    appId: string,
+    updateModel: ConnectedAppUpdateModel,
+    organizationId?: string,
+  ) {
     const logger = this.loggerFactory("updateApp");
-    logger.debug({ appId }, "Updating app");
+    logger.debug(
+      { appId, overrideOrganizationId: organizationId },
+      "Updating app",
+    );
 
     const db = await getDbConnection();
     const collection = db.collection<ConnectedAppData>(
@@ -108,18 +115,21 @@ export class ConnectedAppsService
 
     const app = await collection.findOne({
       _id: appId,
-      organizationId: this.organizationId,
+      organizationId: organizationId ?? this.organizationId,
     });
 
     if (!app) {
-      logger.error({ appId }, "App not found");
+      logger.error(
+        { appId, overrideOrganizationId: organizationId },
+        "App not found",
+      );
       throw new Error("App not found");
     }
 
     await collection.updateOne(
       {
         _id: appId,
-        organizationId: this.organizationId,
+        organizationId: organizationId ?? this.organizationId,
       },
       {
         $set: {
@@ -128,7 +138,10 @@ export class ConnectedAppsService
       },
     );
 
-    logger.debug({ appId, appName: app.name }, "Successfully updated app");
+    logger.debug(
+      { appId, appName: app.name, overrideOrganizationId: organizationId },
+      "Successfully updated app",
+    );
   }
 
   public async requestLoginUrl(appId: string): Promise<string> {
@@ -249,6 +262,29 @@ export class ConnectedAppsService
           },
         },
       );
+
+      const connectedApp = await collection.findOne({
+        _id: result.appId,
+      });
+      if (connectedApp) {
+        const postConnectService = AvailableAppServices[connectedApp.name](
+          this.getAppServiceProps(result.appId, connectedApp.organizationId),
+        ) as any as IOAuthConnectedApp;
+        if (typeof postConnectService.afterOAuthConnected === "function") {
+          try {
+            await postConnectService.afterOAuthConnected(connectedApp);
+          } catch (error: unknown) {
+            logger.error(
+              {
+                appId: result.appId,
+                appName: connectedApp.name,
+                error: error instanceof Error ? error.message : String(error),
+              },
+              "afterOAuthConnected hook failed",
+            );
+          }
+        }
+      }
     }
 
     logger.debug(
@@ -624,12 +660,16 @@ export class ConnectedAppsService
     return { app, service };
   }
 
-  public getAppServiceProps(appId: string): IConnectedAppProps {
+  public getAppServiceProps(
+    appId: string,
+    organizationId?: string,
+  ): IConnectedAppProps {
     return {
-      update: (updateModel) => this.updateApp(appId, updateModel),
+      update: (updateModel) =>
+        this.updateApp(appId, updateModel, organizationId),
       services: this.getServices(),
       getDbConnection: getDbConnection,
-      organizationId: this.organizationId,
+      organizationId: organizationId ?? this.organizationId,
     };
   }
 
