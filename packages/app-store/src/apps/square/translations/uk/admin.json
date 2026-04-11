@@ -1,0 +1,39 @@
+{
+  "title": "Square",
+  "app": {
+    "displayName": "Square",
+    "description": "**Square** — платіжний сервіс, яким користуються бізнеси, щоб приймати **кредитні та дебетові картки** й **цифрові гаманці** (зокрема **Google Pay**, де це доступно) в інтернеті.\n\n**Timeli.sh** підключається до вашого облікового запису Square, щоб клієнти могли **оплатити під час бронювання** — карткою та Google Pay на сторінці оплати, а сам платіж проходить через Square."
+  },
+  "form": {
+    "connect": "Підключити <app></app>",
+    "reconnect": "Підключити знову <app></app>",
+    "pendingAuthorization": "Очікується авторизація Square…"
+  },
+  "statusText": {
+    "redirect_missing_app_id": "У відповіді авторизації немає ідентифікатора застосунку",
+    "redirect_missing_code": "У відповіді авторизації немає коду",
+    "access_denied": "Доступ Square відхилено",
+    "oauth_error": "Square повернув помилку OAuth",
+    "not_authorized": "Square не повернув потрібні токени",
+    "no_locations": "Для цього облікового запису не знайдено локацій Square",
+    "missing_oauth_config": "OAuth Square не налаштовано на сервері",
+    "token_refresh_failed": "Не вдалося оновити токен доступу Square",
+    "app_not_configured": "Square не підключено",
+    "payment_failed": "Square не зміг обробити платіж",
+    "payment_incomplete": "Платіж Square не завершено"
+  },
+  "validation": {
+    "locationId": {
+      "required": "Потрібен ідентифікатор локації Square"
+    },
+    "merchantId": {
+      "required": "Потрібен ідентифікатор продавця Square"
+    },
+    "paymentIntentId": {
+      "required": "Потрібен ідентифікатор платіжного наміру"
+    },
+    "sourceId": {
+      "required": "Потрібен ідентифікатор джерела оплати"
+    }
+  }
+}

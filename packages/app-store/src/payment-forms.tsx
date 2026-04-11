@@ -2,10 +2,13 @@ import { PaymentAppFormProps } from "@timelish/types";
 import type { ReactNode } from "react";
 import { PAYPAL_APP_NAME } from "./apps/paypal/const";
 import { PaypalForm } from "./apps/paypal/form";
+import { SQUARE_APP_NAME } from "./apps/square/const";
+import { SquareForm } from "./apps/square/form";
 
 export const PaymentAppForms: Record<
   string,
   (props: PaymentAppFormProps<any>) => ReactNode
 > = {
   [PAYPAL_APP_NAME]: (props) => <PaypalForm {...props} />,
+  [SQUARE_APP_NAME]: (props) => <SquareForm {...props} />,
 };

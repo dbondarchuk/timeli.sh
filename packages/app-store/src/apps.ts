@@ -33,6 +33,8 @@ import { PaypalApp } from "./apps/paypal/app";
 import { PAYPAL_APP_NAME } from "./apps/paypal/const";
 import { SmartScheduleApp } from "./apps/smart-schedule/app";
 import { SMART_SCHEDULE_APP_NAME } from "./apps/smart-schedule/const";
+import { SquareApp } from "./apps/square/app";
+import { SQUARE_APP_NAME } from "./apps/square/const";
 import { SmtpApp } from "./apps/smtp/app";
 import { SMTP_APP_NAME } from "./apps/smtp/const";
 import { TextBeltApp } from "./apps/text-belt/app";
@@ -80,6 +82,7 @@ export const AvailableApps: Record<string, App> = {
   [TEXT_MESSAGE_AUTO_REPLY_APP_NAME]: TextMessageAutoReplyApp,
   [TEXT_MESSAGE_RESENDER_APP_NAME]: TextMessageResenderApp,
   [PAYPAL_APP_NAME]: PaypalApp,
+  [SQUARE_APP_NAME]: SquareApp,
   [BLOG_APP_NAME]: BlogApp,
   [WAITLIST_APP_NAME]: WaitlistApp,
   [WAITLIST_NOTIFICATIONS_APP_NAME]: WaitlistNotificationsApp,
@@ -107,6 +110,7 @@ export { GOOGLE_CALENDAR_APP_NAME } from "./apps/google-calendar/const";
 export { ICS_APP_NAME } from "./apps/ics/const";
 export { OUTLOOK_APP_NAME } from "./apps/outlook/const";
 export { PAYPAL_APP_NAME } from "./apps/paypal/const";
+export { SQUARE_APP_NAME } from "./apps/square/const";
 // export { S3_ASSETS_STORAGE_APP_NAME } from "./apps/s3-assets-storage/const";
 export { APPOINTMENT_NOTIFICATIONS_APP_NAME } from "./apps/appointment-notifications/const";
 export { FORMS_APP_NAME } from "./apps/forms/const";
