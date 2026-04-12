@@ -82,7 +82,8 @@
     "meeting-url-provider": "Meeting URL provider",
     "dashboard-notifier": "Dashboard notifier",
     "booking-tracking-hook": "Booking tracking",
-    "demo-arguments-provider": "Demo arguments provider"
+    "demo-arguments-provider": "Demo arguments provider",
+    "sitemap-items-provider": "Sitemap items provider"
   },
   "status": {
     "connected": "Connected",

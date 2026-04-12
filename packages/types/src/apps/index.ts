@@ -20,4 +20,5 @@ export * from "./payment-hooks";
 export * from "./schedule";
 export * from "./scheduled";
 export * from "./services-hooks";
+export * from "./sitemap-items-provider";
 export * from "./text-message";

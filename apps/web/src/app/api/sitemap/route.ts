@@ -1,14 +1,27 @@
 import { getServicesContainer, getWebsiteUrl } from "@/utils/utils";
+import { AvailableAppServices } from "@timelish/app-store/services";
 import { getLoggerFactory } from "@timelish/logger";
+import type { ISitemapItemsProvider, SitemapUrlEntry } from "@timelish/types";
+import { pageSlugHasPlaceholder } from "@timelish/types";
 import { NextRequest } from "next/server";
 
-type Sitemap = {
-  url: string;
-  lastModified: Date;
-  priority: number;
-}[];
+const SITEMAP_ITEMS_PROVIDER_SCOPE = "sitemap-items-provider" as const;
 
-function generateSiteMap(pages: Sitemap) {
+function getSitemapProviderService(
+  service: unknown,
+): ISitemapItemsProvider | null {
+  if (!service || typeof service !== "object") return null;
+  const s = service as Partial<ISitemapItemsProvider>;
+  if (
+    typeof s.provideSitemapUrls !== "function" &&
+    typeof s.expandPlaceholderPageSitemapItems !== "function"
+  ) {
+    return null;
+  }
+  return s as ISitemapItemsProvider;
+}
+
+function generateSiteMap(pages: SitemapUrlEntry[]) {
   return `<?xml version="1.0" encoding="UTF-8"?>
    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
      ${pages
@@ -37,30 +50,88 @@ export async function GET(req: NextRequest) {
     "Processing sitemap.xml request",
   );
 
-  const url = await getWebsiteUrl();
+  const websiteUrl = await getWebsiteUrl();
   const servicesContainer = await getServicesContainer();
+
+  const sitemapApps =
+    await servicesContainer.connectedAppsService.getAppsByScopeWithData(
+      SITEMAP_ITEMS_PROVIDER_SCOPE,
+    );
+  const connectedSitemapApps = sitemapApps.filter(
+    (a) => a.status === "connected",
+  );
+
+  const providerEntries: SitemapUrlEntry[] = [];
+
+  for (const appData of connectedSitemapApps) {
+    const factory = AvailableAppServices[appData.name];
+    if (!factory) continue;
+    const service = factory(
+      servicesContainer.connectedAppsService.getAppServiceProps(appData._id),
+    );
+    const provider = getSitemapProviderService(service);
+    if (provider?.provideSitemapUrls) {
+      const urls = await provider.provideSitemapUrls(appData, websiteUrl);
+      if (urls?.length) providerEntries.push(...urls);
+    }
+  }
 
   const pages = await servicesContainer.pagesService.getPages({
     publishStatus: [true],
   });
 
-  const sitemap: Sitemap = [
+  const pageEntries: SitemapUrlEntry[] = [];
+
+  for (const page of pages.items) {
+    if (pageSlugHasPlaceholder(page.slug)) {
+      const fullPage = await servicesContainer.pagesService.getPage(page._id);
+      if (!fullPage) continue;
+
+      const expanded: SitemapUrlEntry[] = [];
+      for (const appData of connectedSitemapApps) {
+        const factory = AvailableAppServices[appData.name];
+        if (!factory) continue;
+        const service = factory(
+          servicesContainer.connectedAppsService.getAppServiceProps(
+            appData._id,
+          ),
+        );
+        const provider = getSitemapProviderService(service);
+        if (!provider?.expandPlaceholderPageSitemapItems) continue;
+        const part = await provider.expandPlaceholderPageSitemapItems(
+          appData,
+          websiteUrl,
+          fullPage,
+        );
+
+        if (part?.length) expanded.push(...part);
+      }
+      if (expanded.length > 0) pageEntries.push(...expanded);
+    } else {
+      pageEntries.push({
+        url: `${websiteUrl}/${page.slug}`,
+        lastModified: page.updatedAt,
+        priority: 0.8,
+      });
+    }
+  }
+
+  const sitemap: SitemapUrlEntry[] = [
     {
-      url,
+      url: websiteUrl,
       lastModified: new Date(),
       priority: 1,
     },
-    ...pages.items.map((page) => ({
-      url: `${url}/${page.slug}`,
-      lastModified: page.updatedAt,
-      priority: 0.8,
-    })),
+    ...providerEntries,
+    ...pageEntries,
   ];
 
   logger.debug(
     {
-      baseUrl: url,
+      baseUrl: websiteUrl,
       pageCount: pages.items.length,
+      providerUrlCount: providerEntries.length,
+      pageUrlCount: pageEntries.length,
       totalUrls: sitemap.length,
     },
     "Successfully generated sitemap",

@@ -7,6 +7,9 @@ import {
   ConnectedAppStatusWithText,
   IConnectedApp,
   IConnectedAppProps,
+  ISitemapItemsProvider,
+  Page,
+  SitemapUrlEntry,
 } from "@timelish/types";
 import {
   BlogConfiguration,
@@ -36,12 +39,13 @@ import {
   BlogAdminKeys,
   BlogAdminNamespace,
 } from "../translations/types";
+import { expandBlogPlaceholderPageSitemapItems } from "./blog-sitemap";
 import {
   BLOG_POSTS_COLLECTION_NAME,
   BlogRepositoryService,
 } from "./repository-service";
 
-export class BlogConnectedApp implements IConnectedApp {
+export class BlogConnectedApp implements IConnectedApp, ISitemapItemsProvider {
   protected readonly loggerFactory: LoggerFactory;
 
   public constructor(protected readonly props: IConnectedAppProps) {
@@ -448,5 +452,18 @@ export class BlogConnectedApp implements IConnectedApp {
 
       throw error;
     }
+  }
+
+  public async expandPlaceholderPageSitemapItems(
+    appData: ConnectedAppData,
+    websiteUrl: string,
+    page: Page,
+  ): Promise<SitemapUrlEntry[] | undefined> {
+    return expandBlogPlaceholderPageSitemapItems(
+      this.props,
+      websiteUrl,
+      page,
+      appData,
+    );
   }
 }

@@ -27,6 +27,7 @@ export type AppScope = Extandable<
   | "meeting-url-provider"
   | "dashboard-notifier"
   | "demo-arguments-provider"
+  | "sitemap-items-provider"
 >;
 
 export type AppSetupProps = {
