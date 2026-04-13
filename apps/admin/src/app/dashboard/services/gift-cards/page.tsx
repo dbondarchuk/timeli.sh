@@ -1,5 +1,4 @@
 import PageContainer from "@/components/admin/layout/page-container";
-import { GiftCardsTableColumnsCount } from "@/components/admin/services/gift-cards/table/columns";
 import { GiftCardsTable } from "@/components/admin/services/gift-cards/table/table";
 import { GiftCardsTableAction } from "@/components/admin/services/gift-cards/table/table-action";
 import {
@@ -65,12 +64,7 @@ export default async function GiftCardsPage(props: Params) {
         <GiftCardsTableAction />
         <Suspense
           key={key}
-          fallback={
-            <DataTableSkeleton
-              columnCount={GiftCardsTableColumnsCount}
-              rowCount={10}
-            />
-          }
+          fallback={<DataTableSkeleton columnCount={11} rowCount={10} />}
         >
           <GiftCardsTable />
         </Suspense>

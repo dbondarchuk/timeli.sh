@@ -1,5 +1,4 @@
 import { getServicesContainer } from "@/app/utils";
-import { AppointmentsTableColumnsCount } from "@/components/admin/appointments/table/columns";
 import { AppointmentsTable } from "@/components/admin/appointments/table/table";
 import { AppointmentsTableAction } from "@/components/admin/appointments/table/table-action";
 import { CommunicationLogsTableAction } from "@/components/admin/communication-logs/table/table-action";
@@ -238,10 +237,7 @@ export default async function CustomerPage(props: Props) {
                   <Suspense
                     key={key}
                     fallback={
-                      <DataTableSkeleton
-                        columnCount={AppointmentsTableColumnsCount}
-                        rowCount={10}
-                      />
+                      <DataTableSkeleton columnCount={9} rowCount={10} />
                     }
                   >
                     <AppointmentsTable customerId={params.id} />

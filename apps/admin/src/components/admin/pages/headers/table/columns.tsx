@@ -86,5 +86,3 @@ export const columns: ColumnDef<PageHeaderListModel>[] = [
     cell: ({ row }) => <CellAction pageHeader={row.original} />,
   },
 ];
-
-export const PageHeadersTableColumnsCount = columns.length;

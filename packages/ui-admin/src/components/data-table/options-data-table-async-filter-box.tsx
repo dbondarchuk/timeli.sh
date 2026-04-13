@@ -5,7 +5,7 @@ import React from "react";
 import { adminApi } from "@timelish/api-sdk";
 import { useI18n } from "@timelish/i18n";
 import { AppointmentOption } from "@timelish/types";
-import { Skeleton } from "@timelish/ui";
+import { Skeleton, useDebounceCacheFn } from "@timelish/ui";
 import { durationToTime } from "@timelish/utils";
 import {
   AsyncFilterBoxOption,
@@ -52,24 +52,27 @@ export const OptionsDataTableAsyncFilterBox: React.FC<
   const t = useI18n("admin");
   const title = propsTitle ?? t("appointments.table.columns.option");
 
-  const getOptions = async (page: number, search?: string) => {
-    const limit = 10;
-    const result = await adminApi.serviceOptions.getServiceOptions({
-      page,
-      limit,
-      search,
-      priorityId: rest.filterValue ?? undefined,
-    });
+  const getOptions = useDebounceCacheFn(
+    async (page: number, search?: string) => {
+      const limit = 10;
+      const result = await adminApi.serviceOptions.getServiceOptions({
+        page,
+        limit,
+        search,
+        priorityId: rest.filterValue ?? undefined,
+      });
 
-    return {
-      items: result.items.map((option) => ({
-        label: <OptionShortLabel option={option} />,
-        shortLabel: option.name,
-        value: option._id,
-      })) satisfies AsyncFilterBoxOption[],
-      hasMore: page * limit < result.total,
-    };
-  };
+      return {
+        items: result.items.map((option) => ({
+          label: <OptionShortLabel option={option} />,
+          shortLabel: option.name,
+          value: option._id,
+        })) satisfies AsyncFilterBoxOption[],
+        hasMore: page * limit < result.total,
+      };
+    },
+    300,
+  );
 
   return (
     <DataTableAsyncFilterBox

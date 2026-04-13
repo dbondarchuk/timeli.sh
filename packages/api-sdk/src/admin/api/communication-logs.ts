@@ -1,4 +1,9 @@
-import { CommunicationLog, okStatus, WithTotal } from "@timelish/types";
+import {
+  CommunicationLog,
+  CommunicationLogContentPayload,
+  okStatus,
+  WithTotal,
+} from "@timelish/types";
 import {
   CommunicationLogsSearchParams,
   serializeCommunicationLogsSearchParams,
@@ -27,6 +32,11 @@ export const getCommunicationLogs = async (
   });
 
   return data;
+};
+
+export const getCommunicationLogContent = async (logId: string) => {
+  const result = await fetchAdminApi(`/communication-logs/${logId}`);
+  return result.json<CommunicationLogContentPayload>();
 };
 
 export const clearAllCommunicationLogs = async () => {

@@ -2114,6 +2114,7 @@
   },
   "communications": {
     "viewMore": "View more",
+    "payloadLoadError": "Could not load the full message.",
     "logContent": "Message content",
     "handler": "Handler: {handler}",
     "data": "Data",

@@ -2,15 +2,19 @@ import {
   CommunicationChannel,
   CommunicationDirection,
   CommunicationLog,
+  CommunicationLogContentPayload,
+  CommunicationLogCreateInput,
   CommunicationLogEntity,
   CommunicationParticipantType,
   DateRange,
+  IAssetsStorage,
   ICommunicationLogsService,
   Query,
   WithTotal,
 } from "@timelish/types";
-import { buildSearchQuery, escapeRegex } from "@timelish/utils";
+import { buildSearchQuery, escapeRegex, stream2buffer } from "@timelish/utils";
 import { Filter, ObjectId, Sort } from "mongodb";
+import { Readable } from "stream";
 import {
   APPOINTMENTS_COLLECTION_NAME,
   CUSTOMERS_COLLECTION_NAME,
@@ -19,17 +23,40 @@ import {
 import { getDbConnection } from "./database";
 import { BaseService } from "./services/base.service";
 
+type CommunicationLogSearchable = CommunicationLog & { text?: string };
+
+const COMMUNICATION_LOG_PREVIEW_MAX_LENGTH = 50;
+
+const communicationLogPayloadFilename = (logId: string) =>
+  `communication-logs/${logId}.json`;
+
+function communicationLogTextPreview(
+  text: string,
+  maxLength = COMMUNICATION_LOG_PREVIEW_MAX_LENGTH,
+): string {
+  const normalized = text.replace(/\s+/g, " ").trim();
+  if (normalized.length <= maxLength) {
+    return normalized;
+  }
+  return normalized.slice(0, maxLength);
+}
+
+function communicationLogHasPayloadData(data: unknown): boolean {
+  return data !== undefined && data !== null;
+}
+
 export class CommunicationLogsService
   extends BaseService
   implements ICommunicationLogsService
 {
-  public constructor(organizationId: string) {
+  public constructor(
+    organizationId: string,
+    private readonly assetsStorage: IAssetsStorage,
+  ) {
     super("CommunicationLogsService", organizationId);
   }
 
-  public async log(
-    log: Omit<CommunicationLogEntity, "dateTime" | "_id" | "organizationId">,
-  ) {
+  public async log(log: CommunicationLogCreateInput) {
     const {
       channel,
       direction,
@@ -37,6 +64,11 @@ export class CommunicationLogsService
       customerId,
       participantType,
       participant,
+      text,
+      html,
+      data,
+      subject,
+      handledBy,
     } = log;
     const logArgs = {
       channel,
@@ -54,14 +86,99 @@ export class CommunicationLogsService
       db.collection<CommunicationLogEntity>(LOG_COLLECTION_NAME);
 
     const _id = new ObjectId().toString();
+    const payload: CommunicationLogContentPayload = {
+      text,
+      ...(html !== undefined ? { html } : {}),
+      ...(data !== undefined ? { data } : {}),
+    };
+    const json = JSON.stringify(payload);
+    const body = Buffer.from(json, "utf8");
+
+    await this.assetsStorage.saveFile(
+      communicationLogPayloadFilename(_id),
+      Readable.from(body),
+      body.length,
+    );
+
     await collection.insertOne({
-      ...log,
+      direction,
+      channel,
+      participant,
+      participantType,
+      handledBy,
+      subject,
+      appointmentId,
+      customerId,
+      preview: communicationLogTextPreview(text),
+      hasPayloadData: communicationLogHasPayloadData(data),
       organizationId: this.organizationId,
       dateTime: new Date(),
       _id,
     });
 
     logger.debug({ logArgs, _id }, "Successfully logged new communication");
+  }
+
+  public async getCommunicationLogContent(
+    logId: string,
+  ): Promise<CommunicationLogContentPayload | null> {
+    const logger = this.loggerFactory("getCommunicationLogContent");
+    const db = await getDbConnection();
+
+    logger.debug({ logId }, "Getting communication log content");
+
+    const doc = await db
+      .collection<CommunicationLogEntity>(LOG_COLLECTION_NAME)
+      .findOne({
+        _id: logId,
+        organizationId: this.organizationId,
+      });
+
+    if (!doc) {
+      logger.warn({ logId }, "Communication log not found");
+      return null;
+    }
+
+    if (
+      doc.text !== undefined ||
+      doc.html !== undefined ||
+      doc.data !== undefined
+    ) {
+      logger.debug({ logId }, "Using legacy inline content");
+      return {
+        text: doc.text ?? "",
+        ...(doc.html !== undefined ? { html: doc.html } : {}),
+        ...(doc.data !== undefined ? { data: doc.data } : {}),
+      };
+    }
+
+    logger.debug({ logId }, "Getting communication log content from S3");
+    const file = await this.assetsStorage.getFile(
+      communicationLogPayloadFilename(logId),
+    );
+
+    if (!file) {
+      logger.error({ logId }, "Communication log payload missing in storage");
+      return null;
+    }
+
+    logger.debug({ logId }, "Parsing communication log content from S3");
+
+    const raw = await stream2buffer(file.stream);
+    logger.debug(
+      { logId },
+      "Successfully parsed communication log content from S3",
+    );
+    try {
+      return JSON.parse(raw.toString("utf8")) as CommunicationLogContentPayload;
+    } catch (error) {
+      logger.error(
+        { logId, error },
+        "Failed to parse communication log payload",
+      );
+      logger.debug({ logId }, "Failed to parse communication log payload");
+      return null;
+    }
   }
 
   public async getCommunicationLogs(
@@ -87,7 +204,7 @@ export class CommunicationLogsService
       {},
     ) || { dateTime: -1 };
 
-    const filter: Filter<CommunicationLog> = {
+    const filter: Filter<CommunicationLogSearchable> = {
       organizationId: this.organizationId,
     };
 
@@ -133,11 +250,11 @@ export class CommunicationLogsService
 
     if (query.search) {
       const $regex = new RegExp(escapeRegex(query.search), "i");
-      const queries = buildSearchQuery<CommunicationLog>(
+      const queries = buildSearchQuery<CommunicationLogSearchable>(
         { $regex },
         "channel",
         "participant",
-        // "handledBy",
+        "preview",
         "text",
         "appointment.option.name",
         "customer.name",
@@ -249,9 +366,17 @@ export class CommunicationLogsService
       ])
       .toArray();
 
+    const rawItems = (result.paginatedResults ||
+      []) as (CommunicationLogEntity & {
+      appointment?: CommunicationLog["appointment"];
+      customer?: CommunicationLog["customer"];
+    })[];
+
+    const items = rawItems.map((row) => this.toListRow(row));
+
     const response = {
       total: result.totalCount?.[0]?.count || 0,
-      items: result.paginatedResults || [],
+      items,
     };
 
     logger.debug(
@@ -265,13 +390,46 @@ export class CommunicationLogsService
     return response;
   }
 
+  private toListRow(
+    doc: CommunicationLogEntity & {
+      appointment?: CommunicationLog["appointment"];
+      customer?: CommunicationLog["customer"];
+    },
+  ): CommunicationLog {
+    const { text, html, data, appointment, customer, ...meta } = doc;
+    const preview =
+      doc.preview ??
+      communicationLogTextPreview(typeof text === "string" ? text : "");
+    const hasPayloadData =
+      doc.hasPayloadData ?? communicationLogHasPayloadData(data);
+
+    return {
+      ...meta,
+      preview,
+      hasPayloadData,
+      appointment,
+      customer,
+    };
+  }
+
   public async clearAllLogs() {
     const logger = this.loggerFactory("clearAllLogs");
     logger.debug("Clearing all logs");
 
     const db = await getDbConnection();
-    const collection = db.collection<CommunicationLog>(LOG_COLLECTION_NAME);
+    const collection =
+      db.collection<CommunicationLogEntity>(LOG_COLLECTION_NAME);
 
+    const ids = await collection
+      .find({ organizationId: this.organizationId })
+      .project<{ _id: string }>({ _id: 1 })
+      .map((d) => d._id)
+      .toArray();
+
+    logger.debug({ ids }, "Deleting payload files");
+    await this.deletePayloadFiles(ids);
+
+    logger.debug({ ids }, "Deleting logs");
     const { deletedCount } = await collection.deleteMany({
       organizationId: this.organizationId,
     });
@@ -283,8 +441,13 @@ export class CommunicationLogsService
     const logger = this.loggerFactory("clearSelectedLogs");
     logger.debug({ ids }, "Clearing selected logs");
     const db = await getDbConnection();
-    const collection = db.collection<CommunicationLog>(LOG_COLLECTION_NAME);
+    const collection =
+      db.collection<CommunicationLogEntity>(LOG_COLLECTION_NAME);
 
+    logger.debug({ ids }, "Deleting payload files");
+    await this.deletePayloadFiles(ids);
+
+    logger.debug({ ids }, "Deleting logs");
     const { deletedCount } = await collection.deleteMany({
       _id: {
         $in: ids,
@@ -299,8 +462,25 @@ export class CommunicationLogsService
     const logger = this.loggerFactory("clearOldLogs");
     logger.debug({ maxDate }, "Clearing old logs");
     const db = await getDbConnection();
-    const collection = db.collection<CommunicationLog>(LOG_COLLECTION_NAME);
+    const collection =
+      db.collection<CommunicationLogEntity>(LOG_COLLECTION_NAME);
 
+    logger.debug({ maxDate }, "Finding old logs");
+    const ids = await collection
+      .find({
+        dateTime: {
+          $lt: maxDate,
+        },
+        organizationId: this.organizationId,
+      })
+      .project<{ _id: string }>({ _id: 1 })
+      .map((d) => d._id)
+      .toArray();
+
+    logger.debug({ maxDate, ids }, "Deleting payload files");
+    await this.deletePayloadFiles(ids);
+
+    logger.debug({ maxDate }, "Deleting logs");
     const { deletedCount } = await collection.deleteMany({
       dateTime: {
         $lt: maxDate,
@@ -309,5 +489,23 @@ export class CommunicationLogsService
     });
 
     logger.debug({ maxDate, deletedCount }, "Cleared old logs");
+  }
+
+  private async deletePayloadFiles(ids: string[]) {
+    const logger = this.loggerFactory("deletePayloadFiles");
+    if (!ids.length) {
+      logger.debug({ ids }, "No payload files to delete");
+      return;
+    }
+
+    logger.debug({ fileCount: ids.length }, "Deleting payload files");
+    await this.assetsStorage.deleteFiles(
+      ids.map(communicationLogPayloadFilename),
+    );
+
+    logger.debug(
+      { fileCount: ids.length },
+      "Successfully deleted payload files",
+    );
   }
 }

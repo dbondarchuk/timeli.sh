@@ -11,6 +11,7 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
+  useDebounceCacheFn,
 } from "@timelish/ui";
 import {
   AsyncFilterBoxOption,
@@ -56,24 +57,27 @@ export const DiscountsDataTableAsyncFilterBox: React.FC<
   const t = useI18n("admin");
   const title = propsTitle ?? t("appointments.table.columns.discount");
 
-  const getDiscounts = async (page: number, search?: string) => {
-    const limit = 10;
-    const result = await adminApi.discounts.getDiscounts({
-      page,
-      limit,
-      search,
-      priorityId: rest.filterValue ?? undefined,
-    });
+  const getDiscounts = useDebounceCacheFn(
+    async (page: number, search?: string) => {
+      const limit = 10;
+      const result = await adminApi.discounts.getDiscounts({
+        page,
+        limit,
+        search,
+        priorityId: rest.filterValue ?? undefined,
+      });
 
-    return {
-      items: result.items.map((discount) => ({
-        label: <DiscountShortLabel discount={discount} />,
-        shortLabel: discount.name,
-        value: discount._id,
-      })) satisfies AsyncFilterBoxOption[],
-      hasMore: page * limit < result.total,
-    };
-  };
+      return {
+        items: result.items.map((discount) => ({
+          label: <DiscountShortLabel discount={discount} />,
+          shortLabel: discount.name,
+          value: discount._id,
+        })) satisfies AsyncFilterBoxOption[],
+        hasMore: page * limit < result.total,
+      };
+    },
+    300,
+  );
 
   return (
     <DataTableAsyncFilterBox

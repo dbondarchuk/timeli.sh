@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { useI18n } from "@timelish/i18n";
 import {
   AsyncFilterBoxOption,
@@ -8,6 +7,7 @@ import {
   DataTableAsyncFilterBox,
 } from "@timelish/ui-admin";
 import { Lock } from "lucide-react";
+import React from "react";
 import { getForms } from "../../actions";
 import {
   FormsAdminKeys,
@@ -59,7 +59,8 @@ export const FormsDataTableAsyncFilterBox: React.FC<
             value: form._id,
           };
         }) satisfies AsyncFilterBoxOption[],
-        hasMore: (result.items?.length ?? 0) + (page - 1) * limit < result.total,
+        hasMore:
+          (result.items?.length ?? 0) + (page - 1) * limit < result.total,
       };
     },
     [appId, rest.filterValue],

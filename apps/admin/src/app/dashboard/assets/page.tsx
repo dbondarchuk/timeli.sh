@@ -1,4 +1,3 @@
-import { AssetsTableColumnsCount } from "@/components/admin/assets/table/columns";
 import { AssetsTable } from "@/components/admin/assets/table/table";
 import { AssetsTableAction } from "@/components/admin/assets/table/table-action";
 import PageContainer from "@/components/admin/layout/page-container";
@@ -54,12 +53,7 @@ export default async function AssetsPage(props: Params) {
         <AssetsTableAction showCustomerFilter />
         <Suspense
           key={key}
-          fallback={
-            <DataTableSkeleton
-              columnCount={AssetsTableColumnsCount}
-              rowCount={10}
-            />
-          }
+          fallback={<DataTableSkeleton columnCount={10} rowCount={10} />}
         >
           <AssetsTable />
         </Suspense>

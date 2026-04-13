@@ -1,5 +1,4 @@
 import PageContainer from "@/components/admin/layout/page-container";
-import { PageFootersTableColumnsCount } from "@/components/admin/pages/footers/table/columns";
 import { PageFootersTable } from "@/components/admin/pages/footers/table/table";
 import { PageFootersTableAction } from "@/components/admin/pages/footers/table/table-action";
 import {
@@ -62,12 +61,7 @@ export default async function PageFootersPage(props: Params) {
         <PageFootersTableAction />
         <Suspense
           key={key}
-          fallback={
-            <DataTableSkeleton
-              columnCount={PageFootersTableColumnsCount}
-              rowCount={10}
-            />
-          }
+          fallback={<DataTableSkeleton columnCount={5} rowCount={10} />}
         >
           <PageFootersTable />
         </Suspense>

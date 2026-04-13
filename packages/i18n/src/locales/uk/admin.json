@@ -2114,6 +2114,7 @@
   },
   "communications": {
     "viewMore": "Показати більше",
+    "payloadLoadError": "Не вдалося завантажити повний текст повідомлення.",
     "logContent": "Вміст повідомлення",
     "handler": "Обробник: {handler}",
     "data": "Дані",

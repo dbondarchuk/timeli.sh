@@ -112,6 +112,7 @@ export const ServicesContainer: (organizationId: string) => IServicesContainer =
     const templatesService = new TemplatesService(organizationId);
     const communicationLogsService = new CommunicationLogsService(
       organizationId,
+      assetsStorage,
     );
     const notificationService = new BullMQNotificationService(
       organizationId,

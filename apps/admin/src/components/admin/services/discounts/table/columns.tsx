@@ -176,5 +176,3 @@ export const columns: ColumnDef<
     cell: ({ row }) => <CellAction discount={row.original} />,
   },
 ];
-
-export const DiscountsTableColumnsCount = columns.length;

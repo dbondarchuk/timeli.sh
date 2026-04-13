@@ -1,5 +1,4 @@
 import PageContainer from "@/components/admin/layout/page-container";
-import { DiscountsTableColumnsCount } from "@/components/admin/services/discounts/table/columns";
 import { DiscountsTable } from "@/components/admin/services/discounts/table/table";
 import { DiscountsTableAction } from "@/components/admin/services/discounts/table/table-action";
 import {
@@ -65,12 +64,7 @@ export default async function DiscountsPage(props: Params) {
         <DiscountsTableAction />
         <Suspense
           key={key}
-          fallback={
-            <DataTableSkeleton
-              columnCount={DiscountsTableColumnsCount}
-              rowCount={10}
-            />
-          }
+          fallback={<DataTableSkeleton columnCount={11} rowCount={10} />}
         >
           <DiscountsTable />
         </Suspense>

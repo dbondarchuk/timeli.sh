@@ -2,16 +2,15 @@ import {
   CommunicationChannel,
   CommunicationDirection,
   CommunicationLog,
-  CommunicationLogEntity,
+  CommunicationLogContentPayload,
+  CommunicationLogCreateInput,
   CommunicationParticipantType,
 } from "../communication";
 import { Query, WithTotal } from "../database";
 import { DateRange } from "../general";
 
 export interface ICommunicationLogsService {
-  log(
-    log: Omit<CommunicationLogEntity, "dateTime" | "_id" | "organizationId">,
-  ): Promise<void>;
+  log(log: CommunicationLogCreateInput): Promise<void>;
   getCommunicationLogs(
     query: Query & {
       direction?: CommunicationDirection[];
@@ -22,6 +21,9 @@ export interface ICommunicationLogsService {
       appointmentId?: string;
     },
   ): Promise<WithTotal<CommunicationLog>>;
+  getCommunicationLogContent(
+    logId: string,
+  ): Promise<CommunicationLogContentPayload | null>;
   clearAllLogs(): Promise<void>;
   clearSelectedLogs(ids: string[]): Promise<void>;
   clearOldLogs(maxDate: Date): Promise<void>;

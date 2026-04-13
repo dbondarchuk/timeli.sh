@@ -1,4 +1,3 @@
-import { CommunicationLogsTableColumnsCount } from "@/components/admin/communication-logs/table/columns";
 import { CommunicationLogsTable } from "@/components/admin/communication-logs/table/table";
 import { CommunicationLogsTableAction } from "@/components/admin/communication-logs/table/table-action";
 import PageContainer from "@/components/admin/layout/page-container";
@@ -60,12 +59,7 @@ export default async function CommunicationLogsPage(props: Params) {
         />
         <Suspense
           key={key}
-          fallback={
-            <DataTableSkeleton
-              columnCount={CommunicationLogsTableColumnsCount}
-              rowCount={10}
-            />
-          }
+          fallback={<DataTableSkeleton columnCount={12} rowCount={10} />}
         >
           <CommunicationLogsTable />
         </Suspense>

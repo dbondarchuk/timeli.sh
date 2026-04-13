@@ -1,5 +1,4 @@
 import PageContainer from "@/components/admin/layout/page-container";
-import { PagesTableColumnsCount } from "@/components/admin/pages/table/columns";
 import { PagesTable } from "@/components/admin/pages/table/table";
 import { PagesTableAction } from "@/components/admin/pages/table/table-action";
 import {
@@ -57,12 +56,7 @@ export default async function PagesPage(props: Params) {
         <PagesTableAction />
         <Suspense
           key={key}
-          fallback={
-            <DataTableSkeleton
-              columnCount={PagesTableColumnsCount}
-              rowCount={10}
-            />
-          }
+          fallback={<DataTableSkeleton columnCount={9} rowCount={10} />}
         >
           <PagesTable />
         </Suspense>

@@ -2,26 +2,13 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { useI18n, useLocale } from "@timelish/i18n";
 import { CommunicationLog } from "@timelish/types";
-import {
-  Button,
-  Checkbox,
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  IFrame,
-  Link,
-  Markdown,
-} from "@timelish/ui";
+import { Button, Checkbox, Link } from "@timelish/ui";
 import {
   CustomerName,
   tableSortHeader,
   tableSortNoopFunction,
 } from "@timelish/ui-admin";
-import JsonView from "@uiw/react-json-view";
+import { CommunicationLogPayloadDialog } from "@timelish/ui-admin-kit";
 import { DateTime } from "luxon";
 
 export const columns: ColumnDef<CommunicationLog>[] = [
@@ -143,46 +130,23 @@ export const columns: ColumnDef<CommunicationLog>[] = [
     sortingFn: tableSortNoopFunction,
     cell: ({ row }) => {
       const t = useI18n("admin");
-      if (row.original.text.length < 50) return row.original.text;
+      const { preview, _id, channel } = row.original;
+      if (preview.length < 50) return preview;
 
       return (
         <div className="flex flex-col gap-1">
-          <span>{row.original.text.substring(0, 50)}...</span>
-          <Dialog>
-            <DialogTrigger asChild>
+          <span>{preview.substring(0, 50)}...</span>
+          <CommunicationLogPayloadDialog
+            logId={_id}
+            channel={channel}
+            mode="body"
+            title={t("communicationLogs.table.actions.logContent")}
+            trigger={
               <Button variant="link-dashed">
                 {t("communicationLogs.table.actions.viewMore")}
               </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[80%] flex flex-col max-h-[100%]">
-              <DialogHeader>
-                <DialogTitle className="w-full flex flex-row justify-between items-center mt-2">
-                  {t("communicationLogs.table.actions.logContent")}
-                </DialogTitle>
-              </DialogHeader>
-              <div className="flex-1 w-full overflow-auto">
-                {row.original.channel === "email" && row.original.html ? (
-                  <IFrame className="w-full h-[80vh]">
-                    <div
-                      dangerouslySetInnerHTML={{ __html: row.original.html }}
-                    />
-                  </IFrame>
-                ) : (
-                  <Markdown
-                    markdown={row.original.text}
-                    className="not-prose"
-                  />
-                )}
-              </div>
-              <DialogFooter className="flex-row !justify-between gap-2">
-                <DialogClose asChild>
-                  <Button variant="secondary">
-                    {t("communicationLogs.table.actions.close")}
-                  </Button>
-                </DialogClose>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+            }
+          />
         </div>
       );
     },
@@ -196,33 +160,20 @@ export const columns: ColumnDef<CommunicationLog>[] = [
     enableSorting: false,
     cell: ({ row }) => {
       const t = useI18n("admin");
-      if (!row.original.data) return null;
+      if (!row.original.hasPayloadData) return null;
       return (
         <div className="flex flex-col gap-1">
-          <Dialog>
-            <DialogTrigger asChild>
+          <CommunicationLogPayloadDialog
+            logId={row.original._id}
+            channel={row.original.channel}
+            mode="data"
+            title={t("communicationLogs.table.actions.logData")}
+            trigger={
               <Button variant="link-dashed">
                 {t("communicationLogs.table.actions.view")}
               </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[80%] flex flex-col max-h-[100%]">
-              <DialogHeader>
-                <DialogTitle className="w-full flex flex-row justify-between items-center mt-2">
-                  {t("communicationLogs.table.actions.logData")}
-                </DialogTitle>
-              </DialogHeader>
-              <div className="flex-1 w-full overflow-auto">
-                <JsonView value={row.original.data} />
-              </div>
-              <DialogFooter className="flex-row !justify-between gap-2">
-                <DialogClose asChild>
-                  <Button variant="secondary">
-                    {t("communicationLogs.table.actions.close")}
-                  </Button>
-                </DialogClose>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+            }
+          />
         </div>
       );
     },
@@ -287,5 +238,3 @@ export const columns: ColumnDef<CommunicationLog>[] = [
     },
   },
 ];
-
-export const CommunicationLogsTableColumnsCount = columns.length;

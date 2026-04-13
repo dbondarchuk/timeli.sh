@@ -169,5 +169,3 @@ export const columns: ColumnDef<Asset>[] = [
     cell: ({ row }) => <CellAction asset={row.original} />,
   },
 ];
-
-export const AssetsTableColumnsCount = columns.length;

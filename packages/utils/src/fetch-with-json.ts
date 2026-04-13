@@ -49,12 +49,29 @@ export function parseJSON<T = any>(
   });
 }
 
+export type FetchWithJsonResponse = Response & {
+  json: <T = any>(options?: JsonParseOptions) => Promise<T>;
+};
+
+/**
+ * Build a Response with the same `json()` behavior as {@link fetchWithJson}.
+ * Useful when replaying a cached body without hitting the network.
+ */
+export function responseWithJsonBody(
+  bodyText: string,
+  init?: ResponseInit,
+): FetchWithJsonResponse {
+  const response = new Response(bodyText, init);
+  response.json = async <T = any>(options?: JsonParseOptions) => {
+    return parseJSON<T>(bodyText, options);
+  };
+  return response as FetchWithJsonResponse;
+}
+
 export async function fetchWithJson(
   input: RequestInfo | URL,
   init?: RequestInit,
-): Promise<
-  Response & { json: <T = any>(options?: JsonParseOptions) => Promise<T> }
-> {
+): Promise<FetchWithJsonResponse> {
   const response = await fetch(input, init);
 
   //   const enhancedResponse = Object.assign(response, {
@@ -71,5 +88,5 @@ export async function fetchWithJson(
     const text = await response.text();
     return parseJSON<T>(text, options);
   };
-  return response;
+  return response as FetchWithJsonResponse;
 }

@@ -86,5 +86,3 @@ export const columns: ColumnDef<PageFooterListModel>[] = [
     cell: ({ row }) => <CellAction pageFooter={row.original} />,
   },
 ];
-
-export const PageFootersTableColumnsCount = columns.length;

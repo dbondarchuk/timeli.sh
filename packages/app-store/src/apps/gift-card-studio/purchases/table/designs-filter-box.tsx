@@ -26,7 +26,7 @@ const DesignLabel: React.FC<{ design: DesignListModel }> = ({ design }) => {
 
 const DesignLoader: React.FC<{}> = ({}) => {
   return (
-    <div className="flex flex-row items-center gap-2 overflow-hidden text-nowrap w-full py-1 pl-6flex flex-col gap-2 overflow-hidden text-nowrap pl-6">
+    <div className="flex flex-row items-center gap-2 overflow-hidden text-nowrap w-full py-1 pl-6">
       <Skeleton className="w-40 h-5" />
     </div>
   );

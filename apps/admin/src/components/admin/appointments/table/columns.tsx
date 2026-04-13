@@ -354,8 +354,6 @@ export const columns: ColumnDef<Appointment>[] = [
   },
 ];
 
-export const AppointmentsTableColumnsCount = columns.length;
-
 function DiscountCell({ appointment }: { appointment: Appointment }) {
   const currencyFormat = useCurrencyFormat();
 

@@ -1,5 +1,6 @@
 import {
   DeleteObjectCommand,
+  DeleteObjectsCommand,
   GetObjectCommand,
   HeadObjectCommand,
   PutObjectCommand,
@@ -178,10 +179,30 @@ export class S3AssetsStorageService implements IAssetsStorage {
     );
 
     try {
-      await Promise.all(filenames.map((filename) => this.deleteFile(filename)));
+      let totalDeleted = 0;
+      const client = this.getClient();
+      const bucket = this.getBucketName();
+      for (let i = 0; i < filenames.length; i += 1000) {
+        const batch = filenames.slice(i, i + 1000);
+        logger.debug(
+          { startIndex: i, batchCount: batch.length },
+          "Deleting batch of files from S3",
+        );
 
-      logger.info(
-        { fileCount: filenames.length },
+        await client.send(
+          new DeleteObjectsCommand({
+            Bucket: bucket,
+            Delete: {
+              Objects: batch.map((Key) => ({ Key })),
+              Quiet: true,
+            },
+          }),
+        );
+        totalDeleted += batch.length;
+      }
+
+      logger.debug(
+        { fileCount: filenames.length, totalDeleted },
         "Successfully deleted all files from S3",
       );
     } catch (error: any) {

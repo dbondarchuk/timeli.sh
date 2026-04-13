@@ -119,5 +119,3 @@ export const columns: ColumnDef<Page>[] = [
     cell: ({ row }) => <CellAction page={row.original} />,
   },
 ];
-
-export const PagesTableColumnsCount = columns.length;

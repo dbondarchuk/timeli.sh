@@ -241,5 +241,3 @@ export const columns: ColumnDef<GiftCardListModel>[] = [
     cell: ({ row }) => <CellAction giftCard={row.original} />,
   },
 ];
-
-export const GiftCardsTableColumnsCount = columns.length;

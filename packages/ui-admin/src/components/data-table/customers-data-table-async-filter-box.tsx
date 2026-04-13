@@ -6,7 +6,7 @@ import React from "react";
 import { adminApi } from "@timelish/api-sdk";
 import { useI18n } from "@timelish/i18n";
 import { CustomerListModel } from "@timelish/types";
-import { Skeleton } from "@timelish/ui";
+import { Skeleton, useDebounceCacheFn } from "@timelish/ui";
 import {
   AsyncFilterBoxOption,
   AsyncFilterBoxProps,
@@ -61,24 +61,27 @@ export const CustomersDataTableAsyncFilterBox: React.FC<
   const t = useI18n("admin");
   const title = propsTitle ?? t("appointments.table.columns.customer");
 
-  const getCustomers = async (page: number, search?: string) => {
-    const limit = 10;
-    const result = await adminApi.customers.getCustomers({
-      page,
-      limit,
-      search,
-      priorityId: rest.filterValue ?? undefined,
-    });
+  const getCustomers = useDebounceCacheFn(
+    async (page: number, search?: string) => {
+      const limit = 10;
+      const result = await adminApi.customers.getCustomers({
+        page,
+        limit,
+        search,
+        priorityId: rest.filterValue ?? undefined,
+      });
 
-    return {
-      items: result.items.map((customer) => ({
-        label: <CustomerShortLabel customer={customer} />,
-        shortLabel: customer.name,
-        value: customer._id,
-      })) satisfies AsyncFilterBoxOption[],
-      hasMore: page * limit < result.total,
-    };
-  };
+      return {
+        items: result.items.map((customer) => ({
+          label: <CustomerShortLabel customer={customer} />,
+          shortLabel: customer.name,
+          value: customer._id,
+        })) satisfies AsyncFilterBoxOption[],
+        hasMore: page * limit < result.total,
+      };
+    },
+    100,
+  );
 
   return (
     <DataTableAsyncFilterBox

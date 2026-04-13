@@ -1,4 +1,3 @@
-import { AppointmentsTableColumnsCount } from "@/components/admin/appointments/table/columns";
 import { AppointmentsTable } from "@/components/admin/appointments/table/table";
 import { AppointmentsTableAction } from "@/components/admin/appointments/table/table-action";
 import PageContainer from "@/components/admin/layout/page-container";
@@ -72,12 +71,7 @@ export default async function AppointmentsPage(props: Params) {
         <AppointmentsTableAction showCustomerFilter />
         <Suspense
           key={key}
-          fallback={
-            <DataTableSkeleton
-              columnCount={AppointmentsTableColumnsCount}
-              rowCount={10}
-            />
-          }
+          fallback={<DataTableSkeleton columnCount={9} rowCount={10} />}
         >
           <AppointmentsTable />
         </Suspense>

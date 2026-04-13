@@ -1,5 +1,4 @@
 import PageContainer from "@/components/admin/layout/page-container";
-import { PageHeadersTableColumnsCount } from "@/components/admin/pages/headers/table/columns";
 import { PageHeadersTable } from "@/components/admin/pages/headers/table/table";
 import { PageHeadersTableAction } from "@/components/admin/pages/headers/table/table-action";
 import {
@@ -64,12 +63,7 @@ export default async function PageHeadersPage(props: Params) {
         <PageHeadersTableAction />
         <Suspense
           key={key}
-          fallback={
-            <DataTableSkeleton
-              columnCount={PageHeadersTableColumnsCount}
-              rowCount={10}
-            />
-          }
+          fallback={<DataTableSkeleton columnCount={5} rowCount={10} />}
         >
           <PageHeadersTable />
         </Suspense>

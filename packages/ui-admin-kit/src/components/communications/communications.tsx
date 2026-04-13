@@ -10,15 +10,6 @@ import {
 import {
   Badge,
   Button,
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  IFrame,
-  Markdown,
   Skeleton,
   toast,
   TooltipResponsive,
@@ -26,12 +17,12 @@ import {
   TooltipResponsiveTrigger,
   useIsMobile,
 } from "@timelish/ui";
-import JsonView from "@uiw/react-json-view";
 import { Mail, MailQuestion, MessageSquare, Send } from "lucide-react";
 import { DateTime } from "luxon";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useInView } from "react-intersection-observer";
+import { CommunicationLogPayloadDialog } from "./communication-log-payload-dialog";
 import { SendCommunicationDialog } from "./send-message-dialog";
 
 const CommunicationEntry: React.FC<{ entry: CommunicationLog }> = ({
@@ -81,12 +72,16 @@ const CommunicationEntry: React.FC<{ entry: CommunicationLog }> = ({
       <div className="p-4 pt-3">
         <div className="inline-flex gap-1 text-sm flex-wrap w-full">
           <span className="break-all text-xs">
-            {entry.text.length > 200
-              ? entry.text.substring(0, 200) + "..."
-              : entry.text}
+            {entry.preview.length > 200
+              ? entry.preview.substring(0, 200) + "..."
+              : entry.preview}
           </span>
-          <Dialog>
-            <DialogTrigger asChild>
+          <CommunicationLogPayloadDialog
+            logId={entry._id}
+            channel={entry.channel}
+            mode="body"
+            title={tAdmin("communications.logContent")}
+            trigger={
               <Button
                 variant="ghost"
                 size="sm"
@@ -94,31 +89,8 @@ const CommunicationEntry: React.FC<{ entry: CommunicationLog }> = ({
               >
                 {tAdmin("communications.viewMore")}
               </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[80%] flex flex-col max-h-[100%]">
-              <DialogHeader>
-                <DialogTitle className="w-full flex flex-row justify-between items-center mt-2">
-                  {tAdmin("communications.logContent")}
-                </DialogTitle>
-              </DialogHeader>
-              <div className="flex-1 w-full overflow-auto">
-                {entry.channel === "email" && entry.html ? (
-                  <IFrame className="w-full h-[80vh]">
-                    <div dangerouslySetInnerHTML={{ __html: entry.html }} />
-                  </IFrame>
-                ) : (
-                  <Markdown markdown={entry.text} className="not-prose" />
-                )}
-              </div>
-              <DialogFooter className="flex-row !justify-between gap-2">
-                <DialogClose asChild>
-                  <Button variant="secondary">
-                    {tAdmin("common.buttons.close")}
-                  </Button>
-                </DialogClose>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+            }
+          />
         </div>
         <div className="flex items-center gap-2 mt-3 flex-wrap">
           <Badge variant="outline" className="text-xs">
@@ -139,32 +111,20 @@ const CommunicationEntry: React.FC<{ entry: CommunicationLog }> = ({
               ),
             })}
           </Badge>
-          {entry.data && (
+          {entry.hasPayloadData && (
             <div className="flex flex-col gap-1">
-              <Dialog>
-                <DialogTrigger>
-                  <Badge variant="default">
+              <CommunicationLogPayloadDialog
+                logId={entry._id}
+                channel={entry.channel}
+                mode="data"
+                title={tAdmin("communications.logData")}
+                triggerAsChild={false}
+                trigger={
+                  <Badge variant="default" className="cursor-pointer">
                     {tAdmin("communications.data")}
                   </Badge>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[80%] flex flex-col max-h-[100%]">
-                  <DialogHeader>
-                    <DialogTitle className="w-full flex flex-row justify-between items-center mt-2">
-                      {tAdmin("communications.logData")}
-                    </DialogTitle>
-                  </DialogHeader>
-                  <div className="flex-1 w-full overflow-auto">
-                    <JsonView value={entry.data} />
-                  </div>
-                  <DialogFooter className="flex-row !justify-between gap-2">
-                    <DialogClose asChild>
-                      <Button variant="secondary">
-                        {tAdmin("common.buttons.close")}
-                      </Button>
-                    </DialogClose>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
+                }
+              />
             </div>
           )}
         </div>
