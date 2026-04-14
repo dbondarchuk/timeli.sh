@@ -35,11 +35,19 @@ export const formatTime = (time: Time) =>
     .toString()
     .padStart(2, "0")}`;
 
-export const formatTimeLocale = (time: Time, locale?: string) =>
-  DateTime.fromObject({ hour: time.hour, minute: time.minute }).toLocaleString(
-    DateTime.TIME_SIMPLE,
-    { locale },
-  );
+export const formatTimeLocale = (
+  time: Time | Date | DateTime,
+  locale?: string,
+) => {
+  const dateTime =
+    time instanceof Date
+      ? DateTime.fromJSDate(time)
+      : time instanceof DateTime
+        ? time
+        : DateTime.fromObject(time);
+
+  return dateTime.toLocaleString(DateTime.TIME_SIMPLE, { locale });
+};
 
 export const durationToTime = (minutes: number) => {
   const duration = Duration.fromObject({ minutes }).shiftTo("hours", "minutes");

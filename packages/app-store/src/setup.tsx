@@ -8,6 +8,7 @@ import { EmailNotificationAppSetup } from "./apps/email-notification/setup";
 import { FinancialOverviewAppSetup } from "./apps/financial-overview/setup";
 import { GoogleAppSetup } from "./apps/google-calendar/setup";
 import { IcsAppSetup } from "./apps/ics/setup";
+import { MyCabinetAppSetup } from "./apps/my-cabinet/setup";
 import { OutlookAppSetup } from "./apps/outlook/setup";
 import { PaypalAppSetup } from "./apps/paypal/setup";
 import { SquareAppSetup } from "./apps/square/setup";
@@ -31,6 +32,7 @@ import { EMAIL_NOTIFICATION_APP_NAME } from "./apps/email-notification/const";
 import { FINANCIAL_OVERVIEW_APP_NAME } from "./apps/financial-overview/const";
 import { GOOGLE_CALENDAR_APP_NAME } from "./apps/google-calendar/const";
 import { ICS_APP_NAME } from "./apps/ics/const";
+import { MY_CABINET_APP_NAME } from "./apps/my-cabinet/const";
 import { OUTLOOK_APP_NAME } from "./apps/outlook/const";
 import { PAYPAL_APP_NAME } from "./apps/paypal/const";
 import { SQUARE_APP_NAME } from "./apps/square/const";
@@ -82,4 +84,5 @@ export const AppSetups: Record<string, BasicAppSetup> = {
   ),
   [WEBHOOKS_APP_NAME]: (props) => <WebhooksAppSetup {...props} />,
   [ZOOM_APP_NAME]: (props) => <ZoomAppSetup {...props} />,
+  [MY_CABINET_APP_NAME]: (props) => <MyCabinetAppSetup {...props} />,
 };

@@ -26,6 +26,7 @@ export async function POST(
       await servicesContainer.connectedAppsService.processFormRequest(
         id,
         formData,
+        request,
       );
 
     logger.debug(

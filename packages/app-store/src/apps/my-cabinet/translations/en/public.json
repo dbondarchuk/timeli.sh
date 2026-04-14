@@ -1,0 +1,86 @@
+{
+  "errors": {
+    "appNotConfigured": {
+      "title": "My Cabinet is not configured",
+      "description": "Please select a My Cabinet app instance in the block settings."
+    }
+  },
+  "block": {
+    "title": "My Cabinet",
+    "auth": {
+      "descriptionEmailOnly": "Input your email to check and manage your appointments.",
+      "descriptionEmailOrPhone": "Input your email or phone to check and manage your appointments.",
+      "type": {
+        "email": "Email",
+        "phone": "Phone"
+      },
+      "emailPlaceholder": "Email",
+      "phonePlaceholder": "Phone",
+      "requestOtp": "Send code",
+      "requestOtpBlocked": "Request new code in {minutes, plural, =0 {{seconds} s} other {#:{seconds}}}",
+      "secondsLeft": "{seconds} seconds",
+      "minutesLeft": "{time} minutes",
+      "verifyOtp": "Verify code",
+      "otpHint": "Enter the 6-digit code from your email",
+      "otpSent": "If we found a match, we sent a code",
+      "otpInvalid": "Invalid code",
+      "emailInvalid": "Please enter a valid email address.",
+      "phoneInvalid": "Please enter a valid phone number.",
+      "requestOtpError": "Something went wrong. Please try again.",
+      "verifyOtpError": "OTP verification failed. Please check your code and try again."
+    },
+    "appointments": {
+      "heading": "My appointments",
+      "welcome": "Welcome back,",
+      "counts": "{upcoming} upcoming · {completed} completed",
+      "customerFallback": "Customer",
+      "upcoming": "Upcoming appointments",
+      "past": "Past appointments",
+      "prev": "Prev",
+      "next": "Next",
+      "page": "Page {page}",
+      "duration": "Duration",
+      "time": "Time",
+      "price": "Price",
+      "amountDue": "Amount Due",
+      "timeEnd": "End",
+      "loadError": "Something went wrong loading your appointments.",
+      "emptyUpcoming": "No upcoming appointments",
+      "emptyPast": "No past appointments",
+      "appointmentFallback": "Appointment",
+      "reschedule": "Reschedule",
+      "cancel": "Cancel",
+      "joinMeeting": "Join Meeting",
+      "meetingDetails": "Online Meeting",
+      "meetingId": "Meeting ID",
+      "meetingPassword": "Password",
+      "meetingUrl": "Link",
+      "copy": "Copy {label}",
+      "copied": "{label} copied"
+    },
+    "modify": {
+      "title": "Modify appointment",
+      "step": {
+        "calendar": "Calendar",
+        "review": "Review",
+        "payment": "Payment",
+        "success": "Success"
+      },
+      "selectedAppointment": "Selected appointment",
+      "selectedAction": "Selected action",
+      "originalDateTime": "Original date and time",
+      "newDateTime": "New date and time",
+      "amountDue": "Amount due",
+      "paymentPlaceholder": "Payment form will be shown here",
+      "payAndConfirm": "Pay and confirm",
+      "next": "Next",
+      "actionCancel": "Cancel",
+      "actionReschedule": "Reschedule",
+      "rescheduleDateLabel": "New date and time",
+      "submit": "Confirm",
+      "back": "Back to appointments",
+      "backToAppointments": "Back to my appointments",
+      "completed": "Done"
+    }
+  }
+}

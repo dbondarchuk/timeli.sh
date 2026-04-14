@@ -139,7 +139,7 @@ export const WaitlistCard: React.FC<WaitlistCardProps> = ({ entry, appId }) => {
                       zone: timeZone,
                     })
                       .setLocale(locale)
-                      .toFormat("EEE MMM d")}
+                      .toFormat("EEE, MMM d")}
                   </div>
                   <div className="flex flex-wrap gap-1.5">
                     {time.map((timeSlot) => (
@@ -180,7 +180,7 @@ export const WaitlistCard: React.FC<WaitlistCardProps> = ({ entry, appId }) => {
                                   zone: timeZone,
                                 })
                                   .setLocale(locale)
-                                  .toFormat("EEE MMM d")}
+                                  .toFormat("EEE, MMM d")}
                               </div>
                               <div className="flex flex-wrap gap-1.5">
                                 {dateEntry.time.map((timeSlot) => (

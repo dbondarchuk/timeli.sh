@@ -26,6 +26,7 @@ export async function POST(
       await servicesContainer.connectedAppsService.processStaticRequest(
         appName,
         body,
+        request,
       );
 
     logger.debug(

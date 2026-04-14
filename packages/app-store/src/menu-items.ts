@@ -13,6 +13,8 @@ import { FORMS_APP_NAME } from "./apps/forms/const";
 import { FormsMenuItems } from "./apps/forms/menu-items";
 import { GIFT_CARD_STUDIO_APP_NAME } from "./apps/gift-card-studio/const";
 import { GiftCardStudioMenuItems } from "./apps/gift-card-studio/menu-items";
+import { MY_CABINET_APP_NAME } from "./apps/my-cabinet/const";
+import { MyCabinetMenuItems } from "./apps/my-cabinet/menu-items";
 import { SMTP_APP_NAME } from "./apps/smtp/const";
 import { SmtpMenuItems } from "./apps/smtp/menu-items";
 import { WAITLIST_APP_NAME } from "./apps/waitlist/const";
@@ -32,4 +34,5 @@ export const AppMenuItems: Record<string, AppMenuItem[]> = {
   [APPOINTMENT_NOTIFICATIONS_APP_NAME]: AppointmentNotificationsMenuItems,
   [FORMS_APP_NAME]: FormsMenuItems,
   [GIFT_CARD_STUDIO_APP_NAME]: GiftCardStudioMenuItems,
+  [MY_CABINET_APP_NAME]: MyCabinetMenuItems,
 };

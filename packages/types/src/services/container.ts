@@ -1,3 +1,4 @@
+import type { Redis } from "ioredis";
 import type { IAssetsStorage } from "../apps/assets/assets-storage";
 import type { IAssetsService } from "./assets.service";
 import type { ICommunicationLogsService } from "./communication-logs.service";
@@ -38,4 +39,5 @@ export type IServicesContainer = {
   userService: IUserService;
   dashboardNotificationsService: IDashboardNotificationsService;
   giftCardsService: IGiftCardsService;
+  redisClient: Redis;
 };

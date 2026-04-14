@@ -105,7 +105,11 @@
       "displayName": "Blog Post Title"
     },
     "postContent": {
-      "displayName": "Blog Post Content"
+      "displayName": "Blog Post Content",
+      "showShort": {
+        "label": "Show Short Content",
+        "description": "Whether to show the short content of the blog post"
+      }
     },
     "postTag": {
       "displayName": "Blog Post Tag",
