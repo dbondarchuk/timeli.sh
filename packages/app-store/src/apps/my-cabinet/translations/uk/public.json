@@ -57,7 +57,12 @@
       "meetingPassword": "Пароль",
       "meetingUrl": "Посилання",
       "copy": "Копіювати {label}",
-      "copied": "{label} скопійовано"
+      "copied": "{label} скопійовано",
+      "status": {
+        "pending": "Очікує",
+        "confirmed": "Підтверджено",
+        "declined": "Відхилено"
+      }
     },
     "modify": {
       "title": "Змінити запис",

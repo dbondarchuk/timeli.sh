@@ -1,7 +1,7 @@
 "use client";
 
 import { useI18n, useLocale } from "@timelish/i18n";
-import type { Appointment } from "@timelish/types";
+import type { Appointment, AppointmentStatus } from "@timelish/types";
 import {
   Button,
   cn,
@@ -92,14 +92,18 @@ const STATUS_STYLES: Record<string, string> = {
   declined: "bg-destructive/15 text-destructive",
 };
 
-const StatusBadge = ({ status }: { status?: string }) => {
+const StatusBadge = ({ status }: { status?: AppointmentStatus }) => {
+  const t = useI18n<MyCabinetPublicNamespace, MyCabinetPublicKeys>(
+    myCabinetPublicNamespace,
+  );
+
   if (!status) return null;
   const cls = STATUS_STYLES[status] ?? "bg-muted text-muted-foreground";
   return (
     <span
-      className={`px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wide appointment-item-status ${cls}`}
+      className={`px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wide ${cls} appointment-item-status`}
     >
-      {status}
+      {t(`block.appointments.status.${status}`)}
     </span>
   );
 };
@@ -230,36 +234,34 @@ const AppointmentItem = ({
               )}
             </div>
 
-            <div className="flex gap-2 shrink-0 flex-wrap w-full md:w-auto justify-end appointment-item-actions">
-              {isUpcoming && (
-                <>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="appointment-item-reschedule"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      window.location.hash = `reschedule:${item._id}`;
-                    }}
-                  >
-                    {t("block.appointments.reschedule")}
-                  </Button>
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    className="appointment-item-cancel"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      window.location.hash = `cancel:${item._id}`;
-                    }}
-                  >
-                    {t("block.appointments.cancel")}
-                  </Button>
-                </>
-              )}
-            </div>
+            {isUpcoming && item.status !== "declined" && (
+              <div className="flex gap-2 shrink-0 flex-wrap w-full md:w-auto justify-end appointment-item-actions">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="appointment-item-reschedule"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    window.location.hash = `reschedule:${item._id}`;
+                  }}
+                >
+                  {t("block.appointments.reschedule")}
+                </Button>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  className="appointment-item-cancel"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    window.location.hash = `cancel:${item._id}`;
+                  }}
+                >
+                  {t("block.appointments.cancel")}
+                </Button>
+              </div>
+            )}
           </div>
-          {item.meetingInformation && (
+          {item.meetingInformation && item.status !== "declined" && (
             <div className="w-full rounded-lg bg-muted/50 border border-border/50 px-4 py-3 space-y-2 appointment-item-meeting">
               <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground appointment-item-meeting-label">
                 {t("block.appointments.meetingDetails")}

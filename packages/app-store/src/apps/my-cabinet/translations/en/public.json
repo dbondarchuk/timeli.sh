@@ -57,7 +57,12 @@
       "meetingPassword": "Password",
       "meetingUrl": "Link",
       "copy": "Copy {label}",
-      "copied": "{label} copied"
+      "copied": "{label} copied",
+      "status": {
+        "pending": "Pending",
+        "confirmed": "Confirmed",
+        "declined": "Declined"
+      }
     },
     "modify": {
       "title": "Modify appointment",

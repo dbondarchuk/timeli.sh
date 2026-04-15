@@ -1,9 +1,9 @@
 import { renderToStaticMarkup } from "@timelish/email-builder/static";
 import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
 import {
-  Appointment,
   ApiRequest,
   ApiResponse,
+  Appointment,
   ConnectedAppData,
   ConnectedAppRequestError,
   ConnectedAppStatusWithText,
@@ -288,7 +288,9 @@ export class MyCabinetConnectedApp
       return this.checkSession(appData, request);
     }
 
-    const appointmentByIdMatch = action.match(/^cabinet\/appointments\/([^/]+)$/);
+    const appointmentByIdMatch = action.match(
+      /^cabinet\/appointments\/([^/]+)$/,
+    );
     if (request.method === "GET" && appointmentByIdMatch) {
       return this.getAppointmentById(appData, request, appointmentByIdMatch[1]);
     }
@@ -800,7 +802,8 @@ export class MyCabinetConnectedApp
     const [upcoming, past] = await Promise.all([
       this.props.services.eventsService.getAppointments({
         customerId: payload.customerId,
-        status: ["confirmed", "pending"],
+        // Show all appointments for now
+        // status: ["confirmed", "pending"],
         range: { start: now },
         limit: 20,
         sort: [{ id: "dateTime", desc: false }],
@@ -872,7 +875,12 @@ export class MyCabinetConnectedApp
     const upcomingCount = upcoming.total ?? upcoming.items.length;
     const pastCount = past.total ?? past.items.length;
     logger.debug(
-      { appId: appData._id, customerId: authorized.customerId, upcomingCount, pastCount },
+      {
+        appId: appData._id,
+        customerId: authorized.customerId,
+        upcomingCount,
+        pastCount,
+      },
       "Returning appointments summary",
     );
     return Response.json({
@@ -942,7 +950,13 @@ export class MyCabinetConnectedApp
     );
     const offset = (page - 1) * limit;
     logger.debug(
-      { appId: appData._id, customerId: authorized.customerId, page, limit, offset },
+      {
+        appId: appData._id,
+        customerId: authorized.customerId,
+        page,
+        limit,
+        offset,
+      },
       "Fetching past appointments",
     );
     const now = new Date();
@@ -995,7 +1009,11 @@ export class MyCabinetConnectedApp
     );
 
     logger.debug(
-      { appId: appData._id, customerId: authorized.customerId, found: !!customer },
+      {
+        appId: appData._id,
+        customerId: authorized.customerId,
+        found: !!customer,
+      },
       "Returning session check result",
     );
 
@@ -1083,7 +1101,10 @@ export class MyCabinetConnectedApp
       "Returning appointment by id",
     );
 
-    return Response.json({ success: true, appointment: this.sanitizeAppointment(appointment) });
+    return Response.json({
+      success: true,
+      appointment: this.sanitizeAppointment(appointment),
+    });
   }
 
   private sanitizeAppointment(appointment: Appointment) {
@@ -1155,7 +1176,11 @@ export class MyCabinetConnectedApp
       );
     }
     logger.debug(
-      { appId: appData._id, customerId: payload.customerId, sessionId: payload.sessionId },
+      {
+        appId: appData._id,
+        customerId: payload.customerId,
+        sessionId: payload.sessionId,
+      },
       "Session authorized",
     );
     return { customerId: payload.customerId, sessionId: payload.sessionId };
