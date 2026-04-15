@@ -9,7 +9,6 @@ import {
   TooltipResponsive,
   TooltipResponsiveContent,
   TooltipResponsiveTrigger,
-  useTimeZone,
 } from "@timelish/ui";
 import { areTimesEqual, formatTimeLocale } from "@timelish/utils";
 import { getTimeZones } from "@vvo/tzdb";
@@ -57,17 +56,18 @@ const DayButton = (props: DayButtonProps) => {
 export const CalendarCard: React.FC = () => {
   const t = useI18n("translation");
   const locale = useLocale();
-  const { dateTime, setDateTime, appointment, availability, isLoading } =
-    useModifyAppointmentFormContext();
-
-  const configTimeZone = useTimeZone();
+  const {
+    dateTime,
+    setDateTime,
+    appointment,
+    availability,
+    isLoading,
+    timeZone,
+    setTimeZone,
+  } = useModifyAppointmentFormContext();
 
   const [date, setDate] = React.useState<Date | undefined>(dateTime?.date);
   const [time, setTime] = React.useState<Time | undefined>(dateTime?.time);
-
-  const [timeZone, setTimeZone] = React.useState<string>(
-    dateTime?.timeZone || appointment?.timeZone || configTimeZone,
-  );
 
   const changeDate = (date: Date | undefined) => {
     setDate(date);
@@ -138,8 +138,8 @@ export const CalendarCard: React.FC = () => {
   const minDate = React.useMemo(() => dates[0], [dates]);
   const maxDate = React.useMemo(() => dates[dates.length - 1], [dates]);
 
-  const changeTimeZone = (timeZone: string) => {
-    setTimeZone(timeZone);
+  const changeTimeZone = (tz: string) => {
+    setTimeZone(tz);
     setDate(undefined);
     setTime(undefined);
   };

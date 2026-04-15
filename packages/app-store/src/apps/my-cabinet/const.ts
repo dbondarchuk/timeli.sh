@@ -1,0 +1,9 @@
+export const MY_CABINET_APP_NAME = "my-cabinet";
+
+export const MY_CABINET_SESSION_COOKIE = "my_cabinet_session";
+
+export const MY_CABINET_OTP_RESEND_COOLDOWN_SECONDS = 60;
+export const MY_CABINET_OTP_MAX_REQUESTS = 5;
+
+export const MY_CABINET_OTP_TTL_SECONDS =
+  MY_CABINET_OTP_RESEND_COOLDOWN_SECONDS * MY_CABINET_OTP_MAX_REQUESTS;

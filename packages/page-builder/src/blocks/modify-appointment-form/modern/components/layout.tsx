@@ -31,6 +31,7 @@ export const ModifyAppointmentFormLayout = ({
     currentStepIndex,
     appointment,
     newDateTime,
+    timeZone,
   } = ctx;
 
   const locale = useLocale();
@@ -128,7 +129,7 @@ export const ModifyAppointmentFormLayout = ({
                     </p>
                     <p className="text-sm font-bold text-foreground flex items-center gap-2 line-through date-time-value">
                       {DateTime.fromJSDate(appointment.dateTime)
-                        .setZone(appointment.timeZone)
+                        .setZone(timeZone)
                         .toLocaleString(DateTime.DATETIME_FULL, { locale })}
                     </p>
                   </div>

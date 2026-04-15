@@ -10,7 +10,7 @@ import type {
   ModifyAppointmentRequest,
 } from "@timelish/types";
 import { Availability, ModifyAppointmentInformation } from "@timelish/types";
-import { Spinner, toast } from "@timelish/ui";
+import { Spinner, toast, useTimeZone, useUseClientTimezone } from "@timelish/ui";
 import { DateTime as LuxonDateTime } from "luxon";
 import React, { useMemo } from "react";
 import { ModifyAppointmentFields, ModifyAppointmentType } from "../../types";
@@ -28,6 +28,12 @@ export const ModifyAppointmentForm: React.FC<
 > = ({ className, id, isEditor, ...props }) => {
   const i18n = useI18n("translation");
   const [type, setType] = React.useState<ModifyAppointmentType>();
+
+  const configTimeZone = useTimeZone();
+  const useClientTimezone = useUseClientTimezone();
+  const [timeZone, setTimeZone] = React.useState<string>(
+    useClientTimezone ? LuxonDateTime.now().zoneName! : configTimeZone,
+  );
 
   const errors = React.useMemo(
     () => ({
@@ -316,6 +322,8 @@ export const ModifyAppointmentForm: React.FC<
           giftCards,
           setGiftCards,
           applyGiftCards,
+          timeZone,
+          setTimeZone,
         }}
       >
         <StepCard />

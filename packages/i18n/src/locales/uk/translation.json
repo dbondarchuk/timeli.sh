@@ -321,6 +321,7 @@
       "newDate": "Нова дата",
       "originalTime": "Оригінальний час",
       "newTime": "Новий час",
+      "timezone": "Часовий пояс",
       "duration": "Тривалість",
       "originalPrice": "Оригінальна ціна",
       "confirm": "Підтвердити"

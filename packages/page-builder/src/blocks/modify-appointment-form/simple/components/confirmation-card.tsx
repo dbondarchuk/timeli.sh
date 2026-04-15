@@ -62,6 +62,7 @@ export const ConfirmationCard: React.FC = () => {
     giftCards: contextGiftCards,
     setGiftCards,
     applyGiftCards,
+    timeZone,
   } = useModifyAppointmentFormContext();
 
   const [giftCardCode, setGiftCardCode] = React.useState("");
@@ -164,7 +165,7 @@ export const ConfirmationCard: React.FC = () => {
                 service: (appointment as any).optionName,
                 dateTime: Luxon.fromJSDate(
                   (appointment as any).dateTime,
-                ).toLocaleString(Luxon.DATETIME_FULL, {
+                ).setZone(timeZone).toLocaleString(Luxon.DATETIME_FULL, {
                   locale,
                 }),
                 refundPercentage: appointment.refundPercentage,
@@ -187,7 +188,7 @@ export const ConfirmationCard: React.FC = () => {
                 service: (appointment as any).optionName,
                 dateTime: Luxon.fromJSDate(
                   (appointment as any).dateTime,
-                ).toLocaleString(Luxon.DATETIME_FULL, {
+                ).setZone(timeZone).toLocaleString(Luxon.DATETIME_FULL, {
                   locale,
                 }),
                 amount: currencyFormat(appointment.paymentAmount),
@@ -203,7 +204,7 @@ export const ConfirmationCard: React.FC = () => {
                 service: (appointment as any).optionName,
                 dateTime: Luxon.fromJSDate(
                   (appointment as any).dateTime,
-                ).toLocaleString(Luxon.DATETIME_FULL, {
+                ).setZone(timeZone).toLocaleString(Luxon.DATETIME_FULL, {
                   locale,
                 }),
                 newDateTime: newDateTime?.toLocaleString(Luxon.DATETIME_FULL, {

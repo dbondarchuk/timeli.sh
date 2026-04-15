@@ -27,6 +27,8 @@ import { GOOGLE_CALENDAR_APP_NAME } from "../apps/google-calendar/const";
 import GoogleCalendarConnectedApp from "../apps/google-calendar/service";
 import { ICS_APP_NAME } from "../apps/ics/const";
 import IcsConnectedApp from "../apps/ics/service";
+import { MY_CABINET_APP_NAME } from "../apps/my-cabinet/const";
+import { MyCabinetConnectedApp } from "../apps/my-cabinet/service";
 import { OUTLOOK_APP_NAME } from "../apps/outlook/const";
 import OutlookConnectedApp from "../apps/outlook/service";
 import { PAYPAL_APP_NAME } from "../apps/paypal/const";
@@ -103,5 +105,6 @@ export const AvailableAppServices: Record<
   [ZOOM_APP_NAME]: (props) => new ZoomConnectedApp(props),
   [FORMS_APP_NAME]: (props) => new FormsConnectedApp(props),
   [GIFT_CARD_STUDIO_APP_NAME]: (props) => new GiftCardStudioConnectedApp(props),
+  [MY_CABINET_APP_NAME]: (props) => new MyCabinetConnectedApp(props),
 };
 export { AvailableApps as ServiceAvailableApps } from "../apps";

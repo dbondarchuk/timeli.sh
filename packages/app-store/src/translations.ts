@@ -26,6 +26,8 @@ import { GOOGLE_CALENDAR_APP_NAME } from "./apps/google-calendar/const";
 import { GoogleCalendarTranslations } from "./apps/google-calendar/translations";
 import { ICS_APP_NAME } from "./apps/ics/const";
 import { IcsTranslations } from "./apps/ics/translations";
+import { MY_CABINET_APP_NAME } from "./apps/my-cabinet/const";
+import { MyCabinetTranslations } from "./apps/my-cabinet/translations";
 import { OUTLOOK_APP_NAME } from "./apps/outlook/const";
 import { OutlookTranslations } from "./apps/outlook/translations";
 import { PAYPAL_APP_NAME } from "./apps/paypal/const";
@@ -98,4 +100,5 @@ export const AppsTranslations: Record<
   [ZOOM_APP_NAME]: ZoomTranslations,
   [FORMS_APP_NAME]: FormsTranslations,
   [GIFT_CARD_STUDIO_APP_NAME]: GiftCardStudioTranslations,
+  [MY_CABINET_APP_NAME]: MyCabinetTranslations,
 };

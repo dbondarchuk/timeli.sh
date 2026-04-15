@@ -50,8 +50,6 @@ export type ScheduleContextProps = {
   isLoading: boolean;
   setIsLoading: (isLoading: boolean) => void;
 
-  useClientTimezone?: boolean;
-
   flow: FlowType;
   setFlow: (flow: FlowType) => void;
 

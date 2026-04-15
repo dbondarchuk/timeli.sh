@@ -34,7 +34,6 @@ export type ScheduleProps = {
   className?: string;
   id?: string;
   isEditor?: boolean;
-  useClientTimezone?: boolean;
 };
 
 export const Schedule: React.FC<
@@ -48,7 +47,6 @@ export const Schedule: React.FC<
   className,
   id,
   isEditor,
-  useClientTimezone,
   ...props
 }) => {
   const i18n = useI18n("translation");
@@ -412,7 +410,6 @@ export const Schedule: React.FC<
           setIsFormValid,
           className,
           isEditor,
-          useClientTimezone,
         }}
       >
         <StepCard />

@@ -396,7 +396,7 @@ export class ConnectedAppsService
     return result;
   }
 
-  public async processRequest(appId: string, data: any): Promise<any> {
+  public async processRequest(appId: string, data: any, request: ApiRequest): Promise<any> {
     const logger = this.loggerFactory("processRequest");
     logger.debug({ appId, data }, "Processing request");
     const app = await this.getApp(appId);
@@ -414,13 +414,13 @@ export class ConnectedAppsService
       throw new Error(`App ${app.name} does not implement processRequest`);
     }
 
-    const result = await appService.processRequest(app, data);
+    const result = await appService.processRequest(app, data, request);
 
     logger.debug({ appId }, "Returning request response");
     return result;
   }
 
-  public async processStaticRequest(appName: string, data: any): Promise<any> {
+  public async processStaticRequest(appName: string, data: any, request: ApiRequest): Promise<any> {
     const logger = this.loggerFactory("processStaticRequest");
     logger.debug({ appName }, "Processing static request");
     const appService = AvailableAppServices[appName](
@@ -433,12 +433,13 @@ export class ConnectedAppsService
     }
 
     logger.debug({ appName }, "Returning static request response");
-    return await appService.processStaticRequest(data);
+    return await appService.processStaticRequest(data, request);
   }
 
   public async processFormRequest(
     appId: string,
     formData: FormData,
+    request: ApiRequest,
   ): Promise<any> {
     const logger = this.loggerFactory("processFormRequest");
     logger.debug({ appId, formData }, "Processing form request");
@@ -455,7 +456,7 @@ export class ConnectedAppsService
       throw new Error(`App ${app.name} does not implement processFormRequest`);
     }
 
-    const result = await appService.processFormRequest(app, formData);
+    const result = await appService.processFormRequest(app, formData, request);
 
     logger.debug({ appId }, "Returning form request response");
     return result;

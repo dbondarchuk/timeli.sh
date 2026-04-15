@@ -16,15 +16,15 @@ import { getTimeZones } from "@vvo/tzdb";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { BrandTab } from "./tabs/brand";
-import { GeneralTab } from "./tabs/business";
-import { SocialTab } from "./tabs/social";
-import { StylingTab } from "./tabs/styling";
 import { saveSiteSettingsAction } from "./actions";
 import {
   siteSettingsFormSchema,
   SiteSettingsFormValues,
 } from "./site-settings-schema";
+import { BrandTab } from "./tabs/brand";
+import { GeneralTab } from "./tabs/general";
+import { SocialTab } from "./tabs/social";
+import { StylingTab } from "./tabs/styling";
 
 const timeZoneValues: IComboboxItem[] = getTimeZones().map((zone) => ({
   label: `GMT${zone.currentTimeFormat}`,

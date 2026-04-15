@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 import {
+  Combobox,
   DateTimePicker,
   Form,
   FormControl,
@@ -15,6 +16,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  IComboboxItem,
   Input,
   PhoneInput,
   SimpleTimePicker,
@@ -22,7 +24,6 @@ import {
   ToggleGroupItem,
   use12HourFormat,
   usePrevious,
-  useTimeZone,
 } from "@timelish/ui";
 
 import {
@@ -33,9 +34,16 @@ import {
 } from "@timelish/i18n";
 import { HourNumbers, MinuteNumbers } from "@timelish/types";
 import { deepEqual, formatTime, parseTime } from "@timelish/utils";
+import { getTimeZones } from "@vvo/tzdb";
 import { Mail, Phone } from "lucide-react";
 import { ModifyAppointmentFields } from "../../types";
 import { useModifyAppointmentFormContext } from "./context";
+
+const timeZones: IComboboxItem[] = getTimeZones().map((zone) => ({
+  label: `GMT${zone.currentTimeFormat}`,
+  shortLabel: zone.alternativeName,
+  value: zone.name,
+}));
 
 const initialDate = DateTime.now().startOf("day").toJSDate();
 
@@ -64,6 +72,8 @@ export const FormCard: React.FC = () => {
     setSearchError,
     type: modifyType,
     appointment,
+    timeZone,
+    setTimeZone,
   } = useModifyAppointmentFormContext();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -90,13 +100,13 @@ export const FormCard: React.FC = () => {
   });
 
   const uses12HourFormat = use12HourFormat();
-  const timeZone = useTimeZone();
   const locale = useLocale();
 
   const values = form.watch();
   const previousValues = usePrevious(values, values);
+  const previousTimeZone = usePrevious(timeZone, timeZone);
   React.useEffect(() => {
-    if (!deepEqual(values, previousValues)) {
+    if (!deepEqual(values, previousValues) || timeZone !== previousTimeZone) {
       const { date, time, ...rest } = values;
       const timeObj = parseTime(time);
       const dateTime = DateTime.fromJSDate(date)
@@ -106,7 +116,7 @@ export const FormCard: React.FC = () => {
       setFields({ ...rest, dateTime } as ModifyAppointmentFields);
       setSearchError(undefined);
     }
-  }, [values, setSearchError]);
+  }, [values, timeZone, setSearchError]);
 
   const isFormValid = form.formState.isValid;
   React.useEffect(() => {
@@ -261,6 +271,26 @@ export const FormCard: React.FC = () => {
               )}
             />
           </div>
+          <p className="text-xs text-muted-foreground text-center">
+            {t.rich("common.formats.selectTimezoneLabel", {
+              timeZoneCombobox: () => (
+                <Combobox
+                  values={timeZones}
+                  className="mx-1"
+                  searchLabel={t("common.labels.searchTimezone")}
+                  customSearch={(search) =>
+                    timeZones.filter((zone) =>
+                      (zone.label as string)
+                        .toLocaleLowerCase()
+                        .includes(search.toLocaleLowerCase()),
+                    )
+                  }
+                  value={timeZone}
+                  onItemSelect={(value) => setTimeZone(value)}
+                />
+              ),
+            })}
+          </p>
           {searchError && (
             <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-xs">
               <I18nRichText

@@ -23,6 +23,7 @@ export const ConfigContext = createContext<{
     timeZone: "local",
     currency: "USD",
     country: "US",
+    useClientTimezone: false,
   },
   websiteUrl: "",
 });
@@ -63,6 +64,11 @@ export const useWebsiteUrl = () => {
 export const useTimeZone = () => {
   const config = useConfig();
   return config.timeZone;
+};
+
+export const useUseClientTimezone = () => {
+  const config = useConfig();
+  return config.useClientTimezone;
 };
 
 export const useCurrency = () => {

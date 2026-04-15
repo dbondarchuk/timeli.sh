@@ -321,6 +321,7 @@
       "newDate": "New Date",
       "originalTime": "Original Time",
       "newTime": "New Time",
+      "timezone": "Timezone",
       "duration": "Duration",
       "originalPrice": "Original Price",
       "confirm": "Confirm"

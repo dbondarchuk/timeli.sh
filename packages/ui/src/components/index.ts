@@ -35,6 +35,7 @@ export * from "./icon";
 export * from "./iframe";
 export * from "./info-tooltip";
 export * from "./input";
+export * from "./input-otp";
 export * from "./input-group";
 export * from "./label";
 export * from "./link";

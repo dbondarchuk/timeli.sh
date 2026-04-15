@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 import {
+  Combobox,
   DateTimePicker,
   Form,
   FormControl,
@@ -15,6 +16,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  IComboboxItem,
   Input,
   PhoneInput,
   Select,
@@ -24,13 +26,20 @@ import {
   SelectValue,
   use12HourFormat,
   usePrevious,
-  useTimeZone,
 } from "@timelish/ui";
 
 import { useI18n } from "@timelish/i18n";
+import { getTimeZones } from "@vvo/tzdb";
 import { deepEqual } from "@timelish/utils";
 import { ModifyAppointmentFields } from "../../types";
 import { useModifyAppointmentFormContext } from "./context";
+
+
+const timeZones: IComboboxItem[] = getTimeZones().map((zone) => ({
+  label: `GMT${zone.currentTimeFormat}`,
+  shortLabel: zone.alternativeName,
+  value: zone.name,
+}));
 
 const formSchema = z.discriminatedUnion("type", [
   z.object({
@@ -52,6 +61,8 @@ export const FormCard: React.FC = () => {
     setFields,
     setIsFormValid,
     type: modifyType,
+    timeZone,
+    setTimeZone,
   } = useModifyAppointmentFormContext();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -66,7 +77,6 @@ export const FormCard: React.FC = () => {
   });
 
   const uses12HourFormat = use12HourFormat();
-  const timeZone = useTimeZone();
 
   const values = form.watch();
   const previousValues = usePrevious(values, values);
@@ -175,6 +185,26 @@ export const FormCard: React.FC = () => {
               </FormItem>
             )}
           />
+          <p className="text-xs text-muted-foreground">
+            {i18n.rich("common.formats.selectTimezoneLabel", {
+              timeZoneCombobox: () => (
+                <Combobox
+                  values={timeZones}
+                  className="mx-1"
+                  searchLabel={i18n("common.labels.searchTimezone")}
+                  customSearch={(search) =>
+                    timeZones.filter((zone) =>
+                      (zone.label as string)
+                        .toLocaleLowerCase()
+                        .includes(search.toLocaleLowerCase()),
+                    )
+                  }
+                  value={timeZone}
+                  onItemSelect={(value) => setTimeZone(value)}
+                />
+              ),
+            })}
+          </p>
         </div>
       </form>
     </Form>

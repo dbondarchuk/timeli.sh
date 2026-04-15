@@ -60,6 +60,9 @@ export type ModifyAppointmentFormContextProps = {
   confirmedByUser: boolean;
   setConfirmedByUser: (confirmedByUser: boolean) => void;
 
+  timeZone: string;
+  setTimeZone: (timeZone: string) => void;
+
   paymentInformation?: CollectPayment | null;
   setPaymentInformation: (form?: CollectPayment | null) => void;
   fetchPaymentInformation: () => Promise<CollectPayment | null>;

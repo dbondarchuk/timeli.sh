@@ -26,6 +26,7 @@ export async function POST(
     const result = await servicesContainer.connectedAppsService.processRequest(
       id,
       body,
+      request,
     );
 
     logger.debug(

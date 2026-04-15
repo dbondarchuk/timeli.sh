@@ -105,7 +105,11 @@
       "displayName": "Заголовок запису блогу"
     },
     "postContent": {
-      "displayName": "Вміст запису блогу"
+      "displayName": "Вміст запису блогу",
+      "showShort": {
+        "label": "Показати короткий вміст",
+        "description": "Чи показувати короткий вміст запису блогу"
+      }
     },
     "postTag": {
       "displayName": "Тег запису блогу",

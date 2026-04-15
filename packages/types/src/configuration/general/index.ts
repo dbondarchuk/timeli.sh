@@ -1,10 +1,5 @@
 import * as z from "zod";
-import {
-  asOptionalField,
-  zEmail,
-  zNonEmptyString,
-  zPhone,
-} from "../../utils";
+import { asOptionalField, zEmail, zNonEmptyString, zPhone } from "../../utils";
 import { zCountry } from "../../utils/country";
 import { zCurrency } from "../../utils/currency";
 import { zTimeZone } from "../../utils/zTimeZone";
@@ -24,6 +19,7 @@ export const generalConfigurationSchema = z.object({
   country: zCountry,
   currency: zCurrency,
   timeZone: zTimeZone,
+  useClientTimezone: z.coerce.boolean<boolean>().optional(),
 });
 
 export type GeneralConfiguration = z.infer<typeof generalConfigurationSchema>;

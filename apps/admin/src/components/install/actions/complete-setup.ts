@@ -18,6 +18,7 @@ import { languages } from "@timelish/i18n";
 import { getI18nAsync } from "@timelish/i18n/server";
 import { getLoggerFactory } from "@timelish/logger";
 import { ServicesContainer } from "@timelish/services";
+import type { ApiRequest } from "@timelish/types";
 import {
   bookingConfigurationSchema,
   type PaymentsConfiguration,
@@ -249,15 +250,19 @@ async function ensureInstallCustomerNotificationTemplates(
           { appId: emailApp._id },
           "Configuring customer email notifications",
         );
-        await services.connectedAppsService.processRequest(emailApp._id, {
-          event: { templateId: map["appointment-confirmed-email"] },
-          templates: {
-            pending: { templateId: map["appointment-created-email"] },
-            confirmed: { templateId: map["appointment-confirmed-email"] },
-            declined: { templateId: map["appointment-declined-email"] },
-            rescheduled: { templateId: map["appointment-rescheduled-email"] },
+        await services.connectedAppsService.processRequest(
+          emailApp._id,
+          {
+            event: { templateId: map["appointment-confirmed-email"] },
+            templates: {
+              pending: { templateId: map["appointment-created-email"] },
+              confirmed: { templateId: map["appointment-confirmed-email"] },
+              declined: { templateId: map["appointment-declined-email"] },
+              rescheduled: { templateId: map["appointment-rescheduled-email"] },
+            },
           },
-        });
+          null as unknown as ApiRequest,
+        );
         logger.debug(
           { appId: emailApp._id },
           "Configured customer email notifications",
@@ -299,19 +304,25 @@ async function ensureInstallCustomerNotificationTemplates(
           { appId: smsApp._id },
           "Configuring customer text notifications",
         );
-        await services.connectedAppsService.processRequest(smsApp._id, {
-          sendNewRequestNotifications: true,
-          templates: {
-            pending: { templateId: map["appointment-created-text-message"] },
-            confirmed: {
-              templateId: map["appointment-confirmed-text-message"],
-            },
-            declined: { templateId: map["appointment-declined-text-message"] },
-            rescheduled: {
-              templateId: map["appointment-rescheduled-text-message"],
+        await services.connectedAppsService.processRequest(
+          smsApp._id,
+          {
+            sendNewRequestNotifications: true,
+            templates: {
+              pending: { templateId: map["appointment-created-text-message"] },
+              confirmed: {
+                templateId: map["appointment-confirmed-text-message"],
+              },
+              declined: {
+                templateId: map["appointment-declined-text-message"],
+              },
+              rescheduled: {
+                templateId: map["appointment-rescheduled-text-message"],
+              },
             },
           },
-        });
+          null as unknown as ApiRequest,
+        );
         logger.debug(
           { appId: smsApp._id },
           "Configured customer text notifications",
@@ -371,24 +382,29 @@ async function ensureInstallAppointmentNotificationDefaults(
       type: "check-unique-name",
       name: defaultName,
     },
+    null as unknown as ApiRequest,
   )) as boolean;
   if (!isUnique) return;
 
   logger.debug({ appId: app._id }, "Creating appointment notification default");
-  await services.connectedAppsService.processRequest(app._id, {
-    type: "create-appointment-notification",
-    appointmentNotification: {
-      name: defaultName,
-      type: "timeBefore",
-      weeks: 0,
-      days: 1,
-      hours: 0,
-      minutes: 0,
-      appointmentCount: { type: "none" },
-      channel: "email",
-      templateId,
+  await services.connectedAppsService.processRequest(
+    app._id,
+    {
+      type: "create-appointment-notification",
+      appointmentNotification: {
+        name: defaultName,
+        type: "timeBefore",
+        weeks: 0,
+        days: 1,
+        hours: 0,
+        minutes: 0,
+        appointmentCount: { type: "none" },
+        channel: "email",
+        templateId,
+      },
     },
-  });
+    null as unknown as ApiRequest,
+  );
   logger.debug(
     { appId: app._id, templateId, defaultName },
     "Created appointment notification default",
@@ -685,9 +701,13 @@ export async function runCompleteInstallSetupSteps(args: {
     );
 
     logger.debug({ writerId: writer._id }, "Configuring calendar writer app");
-    await services.connectedAppsService.processRequest(writer._id, {
-      appId: targetId,
-    });
+    await services.connectedAppsService.processRequest(
+      writer._id,
+      {
+        appId: targetId,
+      },
+      null as unknown as ApiRequest,
+    );
 
     logger.debug({ writerId: writer._id }, "Configured calendar writer app");
   }

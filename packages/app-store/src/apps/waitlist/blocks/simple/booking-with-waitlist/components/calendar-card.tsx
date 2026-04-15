@@ -10,6 +10,7 @@ import {
   TooltipResponsiveContent,
   TooltipResponsiveTrigger,
   useTimeZone,
+  useUseClientTimezone,
 } from "@timelish/ui";
 import { areTimesEqual, formatTimeLocale } from "@timelish/utils";
 import { getTimeZones } from "@vvo/tzdb";
@@ -68,7 +69,6 @@ export const CalendarCard: React.FC = () => {
     availability,
     setStep,
     waitlistAppId,
-    useClientTimezone,
   } = useScheduleContext();
 
   const t = useI18n<WaitlistPublicNamespace, WaitlistPublicKeys>(
@@ -76,6 +76,7 @@ export const CalendarCard: React.FC = () => {
   );
 
   const configTimeZone = useTimeZone();
+  const useClientTimezone = useUseClientTimezone();
   const defaultTimeZone = useClientTimezone
     ? DateTime.now().zoneName
     : configTimeZone;

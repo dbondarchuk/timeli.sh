@@ -66,12 +66,14 @@ export const ServicesContainer: (organizationId: string) => IServicesContainer =
       assetsStorage,
     );
 
+    const redisClient = getRedisClient();
     const jobService = new BullMQJobService(
       organizationId,
       getBullMQJobConfig(),
     );
+
     const dashboardNotificationsService =
-      new RedisDashboardNotificationPublisher(organizationId, getRedisClient());
+      new RedisDashboardNotificationPublisher(organizationId, redisClient);
     const organizationService = new OrganizationService(organizationId);
     const userService = new UserService(organizationId);
     const customersService = new CustomersService(organizationId, jobService);
@@ -144,6 +146,7 @@ export const ServicesContainer: (organizationId: string) => IServicesContainer =
       userService,
       dashboardNotificationsService,
       giftCardsService,
+      redisClient,
     };
 
     return services;

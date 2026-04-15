@@ -27,6 +27,8 @@ import { GoogleCalendarApp } from "./apps/google-calendar/app";
 import { GOOGLE_CALENDAR_APP_NAME } from "./apps/google-calendar/const";
 import { IcsApp } from "./apps/ics/app";
 import { ICS_APP_NAME } from "./apps/ics/const";
+import { MyCabinetApp } from "./apps/my-cabinet/app";
+import { MY_CABINET_APP_NAME } from "./apps/my-cabinet/const";
 import { OutlookApp } from "./apps/outlook/app";
 import { OUTLOOK_APP_NAME } from "./apps/outlook/const";
 import { PaypalApp } from "./apps/paypal/app";
@@ -94,6 +96,7 @@ export const AvailableApps: Record<string, App> = {
   [ZOOM_APP_NAME]: ZoomApp,
   [FORMS_APP_NAME]: FormsApp,
   [GIFT_CARD_STUDIO_APP_NAME]: GiftCardStudioApp,
+  [MY_CABINET_APP_NAME]: MyCabinetApp,
 };
 
 export { BLOG_APP_NAME } from "./apps/blog/const";
@@ -108,6 +111,7 @@ export { EMAIL_NOTIFICATION_APP_NAME } from "./apps/email-notification/const";
 export { FINANCIAL_OVERVIEW_APP_NAME } from "./apps/financial-overview/const";
 export { GOOGLE_CALENDAR_APP_NAME } from "./apps/google-calendar/const";
 export { ICS_APP_NAME } from "./apps/ics/const";
+export { MY_CABINET_APP_NAME } from "./apps/my-cabinet/const";
 export { OUTLOOK_APP_NAME } from "./apps/outlook/const";
 export { PAYPAL_APP_NAME } from "./apps/paypal/const";
 export { SQUARE_APP_NAME } from "./apps/square/const";
