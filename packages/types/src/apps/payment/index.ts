@@ -8,6 +8,9 @@ export interface IPaymentProcessor {
     payment: Payment,
     amount: number,
   ) => Promise<{ success: boolean; error?: string }>;
+  getApplePayDomainAssociation?: (
+    appData: ConnectedAppData,
+  ) => Promise<string | null>;
 }
 
 export type PaymentAppFormProps<T extends Record<string, any>> = {

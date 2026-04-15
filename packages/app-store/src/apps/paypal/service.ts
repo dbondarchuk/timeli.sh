@@ -14,6 +14,7 @@ import {
   PaymentFee,
 } from "@timelish/types";
 import { decrypt, encrypt, maskify } from "@timelish/utils";
+import { APPLE_PAY_DOMAIN_ASSOCIATION } from "./apple-pay";
 import { PaypalClient } from "./client";
 import { PAYPAL_APP_NAME } from "./const";
 import {
@@ -284,6 +285,18 @@ class PaypalConnectedApp
 
   //   return client;
   // }
+
+  public async getApplePayDomainAssociation(
+    appData: ConnectedAppData,
+  ): Promise<string | null> {
+    const logger = this.loggerFactory("getApplePayDomainAssociation");
+    logger.debug(
+      { appId: appData._id },
+      "Fetching Apple Pay domain association from PayPal",
+    );
+
+    return APPLE_PAY_DOMAIN_ASSOCIATION;
+  }
 
   public getFormProps(
     appData: ConnectedAppData<PaypalConfiguration>,

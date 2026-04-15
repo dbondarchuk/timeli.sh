@@ -908,7 +908,8 @@ export class MyCabinetConnectedApp
     const now = new Date();
     const upcoming = await this.props.services.eventsService.getAppointments({
       customerId: authorized.customerId,
-      status: ["confirmed", "pending"],
+      // Show all appointments for now
+      // status: ["confirmed", "pending"],
       range: { start: now },
       limit: 20,
       sort: [{ id: "dateTime", desc: false }],

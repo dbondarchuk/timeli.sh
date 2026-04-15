@@ -33,6 +33,13 @@ interface PaypalGooglePayConfig {
   merchantInfo: google.payments.api.MerchantInfo;
 }
 
+interface PaypalApplePayConfig {
+  isEligible: boolean;
+  merchantCountry: string;
+  supportedNetworks: string[];
+  merchantCapabilities: ApplePayJS.ApplePayMerchantCapability[];
+}
+
 declare module "@paypal/paypal-js" {
   interface PayPalNamespace {
     Googlepay?: () => {
@@ -42,8 +49,182 @@ declare module "@paypal/paypal-js" {
         paymentMethodData: google.payments.api.PaymentData["paymentMethodData"];
       }) => Promise<{ status: string }>;
     };
+    Applepay?: () => {
+      config: () => Promise<PaypalApplePayConfig>;
+      validateMerchant: (options: {
+        validationUrl: string;
+        displayName: string;
+      }) => Promise<{ merchantSession: unknown }>;
+      confirmOrder: (options: {
+        orderId: string;
+        token: ApplePayJS.ApplePayPaymentToken;
+        billingContact?: ApplePayJS.ApplePayPaymentContact;
+        shippingContact?: ApplePayJS.ApplePayPaymentContact;
+      }) => Promise<{ status: string }>;
+    };
   }
 }
+
+const ApplePaySection: React.FC<{
+  intent: PaymentAppFormProps<PaypalFormProps>["intent"];
+  onSubmit: () => void;
+  t: ReturnType<typeof useI18n<PaypalPublicNamespace, PaypalPublicKeys>>;
+}> = ({ intent, onSubmit, t }) => {
+  const [{ isResolved }] = usePayPalScriptReducer();
+  const [isAvailable, setIsAvailable] = React.useState(false);
+  const [applePayConfig, setApplePayConfig] =
+    React.useState<PaypalApplePayConfig | null>(null);
+  const currency = useCurrency();
+  const orgConfig = useConfig();
+
+  React.useEffect(() => {
+    if (!isResolved || !window.paypal?.Applepay) return;
+    if (
+      typeof ApplePaySession === "undefined" ||
+      !ApplePaySession.canMakePayments()
+    )
+      return;
+
+    window.paypal
+      .Applepay()
+      .config()
+      .then((cfg) => {
+        if (cfg.isEligible) {
+          setApplePayConfig(cfg);
+          setIsAvailable(true);
+        }
+      })
+      .catch(() => {});
+  }, [isResolved]);
+
+  const handleClick = React.useCallback(() => {
+    if (!applePayConfig || !window.paypal?.Applepay) return;
+
+    const paymentRequest: ApplePayJS.ApplePayPaymentRequest = {
+      countryCode: applePayConfig.merchantCountry,
+      currencyCode: currency,
+      merchantCapabilities: applePayConfig.merchantCapabilities,
+      supportedNetworks: applePayConfig.supportedNetworks,
+      total: {
+        label: (orgConfig as any).businessName ?? "Checkout",
+        type: "final",
+        amount: formatAmountString(intent.amount),
+      },
+    };
+
+    const session = new ApplePaySession(3, paymentRequest);
+
+    session.onvalidatemerchant = async (event) => {
+      try {
+        const { merchantSession } = await window.paypal!
+          .Applepay!().validateMerchant({
+          validationUrl: event.validationURL,
+          displayName: (orgConfig as any).businessName ?? "Checkout",
+        });
+        session.completeMerchantValidation(merchantSession);
+      } catch (err) {
+        console.error("Apple Pay merchant validation failed", err);
+        session.abort();
+      }
+    };
+
+    session.onpaymentauthorized = async (event) => {
+      let sheetCompleted = false;
+      try {
+        const orderData = await clientApi.apps.callAppApi<{
+          id: string;
+          debug_id?: string;
+          details?: { issue: string; description: string }[];
+        }>({
+          appId: intent.appId,
+          path: "orders",
+          method: "POST",
+          body: { paymentIntentId: intent._id },
+        });
+
+        if (!orderData.id) {
+          const errorDetail = orderData?.details?.[0];
+          throw new Error(
+            errorDetail
+              ? `${errorDetail.issue} ${errorDetail.description}`
+              : "Failed to create order",
+          );
+        }
+
+        const { status } = await window.paypal!.Applepay!().confirmOrder({
+          orderId: orderData.id,
+          token: event.payment.token,
+          billingContact: event.payment.billingContact,
+          shippingContact: event.payment.shippingContact,
+        });
+
+        if (status !== "APPROVED") {
+          throw new Error(`Unexpected payment status: ${status}`);
+        }
+
+        // Dismiss the sheet before the capture call so Apple Pay doesn't time out
+        session.completePayment(ApplePaySession.STATUS_SUCCESS);
+        sheetCompleted = true;
+
+        const captureData = await clientApi.apps.callAppApi<PaypalOrder>({
+          appId: intent.appId,
+          path: "orders/capture",
+          method: "POST",
+          body: { orderId: orderData.id, paymentIntentId: intent._id },
+        });
+
+        const transaction =
+          captureData?.purchase_units?.[0]?.payments?.captures?.[0] ||
+          captureData?.purchase_units?.[0]?.payments?.authorizations?.[0];
+
+        if (
+          captureData.status !== "COMPLETED" ||
+          !transaction ||
+          transaction.status !== "COMPLETED"
+        ) {
+          throw new Error(JSON.stringify(captureData));
+        }
+
+        onSubmit();
+      } catch (err) {
+        console.error("Apple Pay payment failed", err);
+        if (!sheetCompleted) {
+          session.completePayment(ApplePaySession.STATUS_FAILURE);
+        }
+        toast.error(t("toast.payment_failed"), {
+          description: t("toast.payment_failed_description"),
+        });
+      }
+    };
+
+    session.begin();
+  }, [applePayConfig, currency, orgConfig, intent, onSubmit, t]);
+
+  if (!isAvailable) return null;
+
+  return (
+    <div className="flex flex-col gap-2">
+      {/* <div className="items-center flex my-px text-center">
+        <div className="bg-muted flex-1 h-px mx-2" />
+        <span className="text-sm text-muted-foreground uppercase">
+          {t("form.ui.or")}
+        </span>
+        <div className="bg-muted flex-1 h-px mx-2" />
+      </div> */}
+      <button
+        type="button"
+        onClick={handleClick}
+        style={{
+          WebkitAppearance: "-apple-pay-button" as any,
+          height: "2.5rem",
+          width: "100%",
+          cursor: "pointer",
+          border: "none",
+        }}
+      />
+    </div>
+  );
+};
 
 const GooglePaySection: React.FC<{
   intent: PaymentAppFormProps<PaypalFormProps>["intent"];
@@ -158,7 +339,7 @@ const GooglePaySection: React.FC<{
 
   return (
     <div className={isVisible ? undefined : "contents"}>
-      {isVisible && (
+      {/* {isVisible && (
         <div className="items-center flex my-px text-center">
           <div className="bg-muted flex-1 h-px mx-2" />
           <span className="text-sm text-muted-foreground uppercase">
@@ -166,7 +347,7 @@ const GooglePaySection: React.FC<{
           </span>
           <div className="bg-muted flex-1 h-px mx-2" />
         </div>
-      )}
+      )} */}
       <GooglePayButton
         className="w-full"
         environment={isSandbox ? "TEST" : "PRODUCTION"}
@@ -360,7 +541,10 @@ export const PaypalForm: React.FC<PaymentAppFormProps<PaypalFormProps>> = ({
             ...buttonStyle,
             disableMaxWidth: true,
           }}
+          className="flex flex-col gap-2"
         />
+
+        <ApplePaySection intent={intent} onSubmit={onSubmit} t={t} />
 
         <GooglePaySection
           intent={intent}

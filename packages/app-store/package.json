@@ -29,6 +29,7 @@
     "@timelish/eslint-config": "*",
     "@timelish/tailwind-config": "*",
     "@timelish/typescript-config": "*",
+    "@types/applepayjs": "^14.0.9",
     "@types/nodemailer": "^6.4.15",
     "@types/pdfkit": "^0.17.5",
     "@types/react": "19.0.2",
