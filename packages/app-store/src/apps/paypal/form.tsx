@@ -60,7 +60,7 @@ declare module "@paypal/paypal-js" {
         token: ApplePayJS.ApplePayPaymentToken;
         billingContact?: ApplePayJS.ApplePayPaymentContact;
         shippingContact?: ApplePayJS.ApplePayPaymentContact;
-      }) => Promise<{ status: string }>;
+      }) => Promise<unknown>;
     };
   }
 }
@@ -152,16 +152,12 @@ const ApplePaySection: React.FC<{
           );
         }
 
-        const { status } = await window.paypal!.Applepay!().confirmOrder({
+        await window.paypal!.Applepay!().confirmOrder({
           orderId: orderData.id,
           token: event.payment.token,
           billingContact: event.payment.billingContact,
           shippingContact: event.payment.shippingContact,
         });
-
-        if (status !== "APPROVED") {
-          throw new Error(`Unexpected payment status: ${status}`);
-        }
 
         // Dismiss the sheet before the capture call so Apple Pay doesn't time out
         session.completePayment(ApplePaySession.STATUS_SUCCESS);
