@@ -402,5 +402,4 @@ export type GetAppointmentOptionsResponse = {
   options: AppointmentChoice[];
   fieldsSchema: Record<string, FieldSchema>;
   showPromoCode: boolean;
-  useClientTimezone: boolean;
 };

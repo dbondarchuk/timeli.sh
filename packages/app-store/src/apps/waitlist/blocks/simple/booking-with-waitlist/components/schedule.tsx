@@ -42,7 +42,6 @@ export type ScheduleProps = {
   isEditor?: boolean;
   waitlistAppId?: string;
   isOnlyWaitlist: boolean;
-  useClientTimezone: boolean;
 };
 
 export const Schedule: React.FC<
@@ -58,7 +57,6 @@ export const Schedule: React.FC<
   isEditor,
   waitlistAppId,
   isOnlyWaitlist,
-  useClientTimezone,
   ...props
 }) => {
   const i18n = useI18n("translation");
@@ -508,7 +506,6 @@ export const Schedule: React.FC<
       waitlistTimes,
       setWaitlistTimes,
       isOnlyWaitlist,
-      useClientTimezone,
     }),
     [
       selectedAddons,
@@ -552,7 +549,6 @@ export const Schedule: React.FC<
       waitlistTimes,
       setWaitlistTimes,
       isOnlyWaitlist,
-      useClientTimezone,
     ],
   );
   return (

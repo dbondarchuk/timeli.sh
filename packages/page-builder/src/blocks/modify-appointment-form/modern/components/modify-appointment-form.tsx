@@ -10,7 +10,7 @@ import type {
   ModifyAppointmentRequest,
 } from "@timelish/types";
 import { Availability, ModifyAppointmentInformation } from "@timelish/types";
-import { toast } from "@timelish/ui";
+import { toast, useTimeZone, useUseClientTimezone } from "@timelish/ui";
 import { DateTime as LuxonDateTime } from "luxon";
 import React, { useMemo } from "react";
 import { ModifyAppointmentFields, ModifyAppointmentType } from "../../types";
@@ -39,6 +39,12 @@ export const ModifyAppointmentForm: React.FC<
 }) => {
   const i18n = useI18n("translation");
   const [type, setType] = React.useState<ModifyAppointmentType>();
+
+  const configTimeZone = useTimeZone();
+  const useClientTimezone = useUseClientTimezone();
+  const [timeZone, setTimeZone] = React.useState<string>(
+    useClientTimezone ? LuxonDateTime.now().zoneName! : configTimeZone,
+  );
 
   const errors = React.useMemo(
     () => ({
@@ -325,14 +331,16 @@ export const ModifyAppointmentForm: React.FC<
         className,
         isEditor,
         isModificationConfirmed,
-        isLoading,
-        setIsLoading,
-        searchError,
-        setSearchError,
-        giftCards,
-        setGiftCards,
-        applyGiftCards,
-      }}
+          isLoading,
+          setIsLoading,
+          searchError,
+          setSearchError,
+          giftCards,
+          setGiftCards,
+          applyGiftCards,
+          timeZone,
+          setTimeZone,
+        }}
     >
       <ModifyAppointmentFormLayout
         scrollToTop={scrollToTop ?? false}

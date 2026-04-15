@@ -44,8 +44,6 @@ export type ScheduleContextProps = {
   isLoading: boolean;
   setIsLoading: (isLoading: boolean) => void;
 
-  useClientTimezone?: boolean;
-
   selectedAppointmentOption?: AppointmentChoice;
   setSelectedAppointmentOption: (option?: AppointmentChoice) => void;
 

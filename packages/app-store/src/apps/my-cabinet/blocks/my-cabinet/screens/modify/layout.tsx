@@ -27,6 +27,7 @@ export const CabinetModifyLayout = ({
     currentStepIndex,
     appointment,
     newDateTime,
+    timeZone,
   } = ctx;
 
   const locale = useLocale();
@@ -100,7 +101,7 @@ export const CabinetModifyLayout = ({
                     </p>
                     <p className="text-sm font-bold text-foreground flex items-center gap-2 line-through">
                       {DateTime.fromJSDate(appointment.dateTime)
-                        .setZone(appointment.timeZone)
+                        .setZone(timeZone)
                         .toLocaleString(DateTime.DATETIME_FULL, { locale })}
                     </p>
                   </div>
@@ -111,9 +112,11 @@ export const CabinetModifyLayout = ({
                       {t("modification.summary.estimates.newDateTime")}
                     </p>
                     <p className="text-sm font-bold text-foreground flex items-center gap-2">
-                      {newDateTime.toLocaleString(DateTime.DATETIME_FULL, {
-                        locale,
-                      })}
+                      {newDateTime
+                        .setZone(timeZone)
+                        .toLocaleString(DateTime.DATETIME_FULL, {
+                          locale,
+                        })}
                     </p>
                   </div>
                 )}

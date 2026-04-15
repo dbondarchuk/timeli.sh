@@ -80,7 +80,6 @@ export const BookingWithWaitlist: React.FC<
       successPage={successPage ?? undefined}
       fieldsSchema={response?.fieldsSchema ?? {}}
       showPromoCode={response?.showPromoCode ?? false}
-      useClientTimezone={response?.useClientTimezone ?? false}
       isEditor={isEditor}
       waitlistAppId={appId}
       isOnlyWaitlist={isOnlyWaitlist ?? false}

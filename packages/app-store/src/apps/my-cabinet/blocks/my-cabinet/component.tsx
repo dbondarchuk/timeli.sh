@@ -6,7 +6,8 @@ import {
   ReplaceOriginalColors,
   generateClassName,
 } from "@timelish/page-builder-base/reader";
-import { Skeleton, cn } from "@timelish/ui";
+import { DateTime as LuxonDateTime } from "luxon";
+import { Skeleton, cn, toast, useTimeZone, useUseClientTimezone } from "@timelish/ui";
 import { useEffect, useState } from "react";
 import {
   MyCabinetPublicKeys,
@@ -15,6 +16,7 @@ import {
 } from "../../translations/types";
 import { checkSessionAction } from "./actions";
 import { CustomerProfileContext } from "./customer-profile-context";
+import { SessionExpiredContext } from "./session-expired-context";
 import { MyCabinetBlockReaderProps, styles } from "./schema";
 import { AppointmentsScreen } from "./screens/appointments-screen";
 import { AuthScreen } from "./screens/auth-screen";
@@ -59,10 +61,16 @@ export const MyCabinetBlockComponent = ({
   );
 
   const className = generateClassName();
+  const configTimeZone = useTimeZone();
+  const useClientTimezone = useUseClientTimezone();
+
   const [isSessionChecked, setIsSessionChecked] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [customerProfile, setCustomerProfile] =
     useState<CustomerProfile | null>(null);
+  const [timezone, setTimeZone] = useState<string>(
+    useClientTimezone ? (LuxonDateTime.now().zoneName ?? configTimeZone) : configTimeZone,
+  );
   const [hashState, setHashState] = useState<HashState>({ screen: "list" });
 
   useEffect(() => {
@@ -94,6 +102,13 @@ export const MyCabinetBlockComponent = ({
   const handleAuthenticated = (profile: CustomerProfile) => {
     setCustomerProfile(profile);
     setIsAuthenticated(true);
+  };
+
+  const handleSessionExpired = () => {
+    setIsAuthenticated(false);
+    setCustomerProfile(null);
+    window.location.hash = "";
+    toast.error(t("errors.sessionExpired"));
   };
 
   const wrapper = (children: React.ReactNode) => (
@@ -142,7 +157,8 @@ export const MyCabinetBlockComponent = ({
           <Skeleton className="h-10 w-full" />
         </div>
       ) : (
-        <CustomerProfileContext.Provider value={customerProfile}>
+        <SessionExpiredContext.Provider value={handleSessionExpired}>
+        <CustomerProfileContext.Provider value={{ customer: customerProfile, timezone, setTimeZone }}>
           {!isAuthenticated ? (
             <AuthScreen appId={appId} onAuthenticated={handleAuthenticated} />
           ) : hashState.screen === "list" ? (
@@ -157,6 +173,7 @@ export const MyCabinetBlockComponent = ({
             />
           )}
         </CustomerProfileContext.Provider>
+        </SessionExpiredContext.Provider>
       )}
     </>,
   );

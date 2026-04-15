@@ -70,6 +70,9 @@ export type CabinetModifyContextProps = {
   className?: string;
   isEditor?: boolean;
 
+  timeZone: string;
+  setTimeZone: (timeZone: string) => void;
+
   isLoading: boolean;
   setIsLoading: (isLoading: boolean) => void;
 };

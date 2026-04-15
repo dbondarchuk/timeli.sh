@@ -1,32 +1,21 @@
 import { useI18n, useLocale } from "@timelish/i18n";
 import { timeZones } from "@timelish/types";
-import { useTimeZone } from "@timelish/ui";
-import { TimeZone } from "@vvo/tzdb";
 import { CheckCircle2 } from "lucide-react";
 import { DateTime } from "luxon";
 import { useModifyAppointmentFormContext } from "./context";
 
 export const ConfirmationCard: React.FC = () => {
   const t = useI18n("translation");
-  const { appointment, type, newDateTime, dateTime } =
+  const { appointment, type, newDateTime, timeZone: selectedTimeZone } =
     useModifyAppointmentFormContext();
-  const defaultTimeZone = useTimeZone();
   const locale = useLocale();
 
   if (!appointment) return null;
 
-  let timeZone: TimeZone | undefined = timeZones.find((tz) => {
-    const timeZoneName =
-      dateTime?.timeZone || appointment.timeZone || defaultTimeZone;
-    return timeZoneName === tz.name || tz.group.includes(timeZoneName);
-  });
-
-  if (!timeZone) {
-    const defaultZone = DateTime.now().zoneName;
-    timeZone = timeZones.find((tz) => {
-      return defaultZone === tz.name || tz.group.includes(defaultZone || "");
-    });
-  }
+  const timeZoneInfo = timeZones.find(
+    (tz) =>
+      selectedTimeZone === tz.name || tz.group.includes(selectedTimeZone),
+  );
 
   return (
     <div className="text-center py-8">
@@ -48,7 +37,7 @@ export const ConfirmationCard: React.FC = () => {
         </p>
         <p className="text-xs text-foreground line-through">
           {DateTime.fromJSDate(appointment.dateTime)
-            .setZone(appointment.timeZone)
+            .setZone(selectedTimeZone)
             .toLocaleString(DateTime.DATETIME_HUGE, { locale })}
         </p>
         {type === "reschedule" && newDateTime && (
@@ -58,7 +47,7 @@ export const ConfirmationCard: React.FC = () => {
             </p>
             <p className="text-xs text-muted-foreground mt-1">
               {t("common.formats.timezone", {
-                timezone: timeZone?.currentTimeFormat || "",
+                timezone: timeZoneInfo?.currentTimeFormat || "",
               })}
             </p>
           </>

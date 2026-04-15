@@ -1,7 +1,7 @@
 "use client";
 
 import { clientApi, ClientApiError } from "@timelish/api-sdk";
-import { useI18n } from "@timelish/i18n";
+import { TranslationKeys, useI18n } from "@timelish/i18n";
 import type {
   ApplyGiftCardsSuccessResponse,
   Availability,
@@ -9,17 +9,20 @@ import type {
   CreateOrUpdatePaymentIntentRequest,
   DateTime,
   ModifyAppointmentInformation,
+  ModifyAppointmentReason,
   ModifyAppointmentRequest,
   ModifyAppointmentType,
 } from "@timelish/types";
-import { AutoSkeleton, toast } from "@timelish/ui";
+import { AutoSkeleton, Button, cn, toast } from "@timelish/ui";
 import { DateTime as LuxonDateTime } from "luxon";
 import React, { useMemo } from "react";
-import { useCustomerProfile } from "../../customer-profile-context";
 import {
   getAppointmentByIdAction,
   getModifyInformationAction,
+  SessionExpiredError,
 } from "../../actions";
+import { useCustomerProfile } from "../../customer-profile-context";
+import { useOnSessionExpired } from "../../session-expired-context";
 import { CabinetModifyContext, StepType } from "./context";
 import { CabinetModifyLayout } from "./layout";
 
@@ -63,14 +66,19 @@ export const CabinetModifyScreen: React.FC<CabinetModifyScreenProps> = ({
     [i18n, action],
   );
 
-  const customerProfile = useCustomerProfile();
+  const { customer: customerProfile, timezone, setTimeZone } = useCustomerProfile();
+  const onSessionExpired = useOnSessionExpired();
   const contact = React.useMemo(() => {
-    if (customerProfile?.email) return { type: "email" as const, email: customerProfile.email };
-    if (customerProfile?.phone) return { type: "phone" as const, phone: customerProfile.phone };
+    if (customerProfile?.email)
+      return { type: "email" as const, email: customerProfile.email };
+    if (customerProfile?.phone)
+      return { type: "phone" as const, phone: customerProfile.phone };
     return undefined;
   }, [customerProfile]);
 
   const [isInitialLoading, setIsInitialLoading] = React.useState(true);
+  const [notAllowedReason, setNotAllowedReason] =
+    React.useState<ModifyAppointmentReason | null>(null);
 
   const [currentStep, setCurrentStep] = React.useState<StepType>(
     action === "reschedule" ? "calendar" : "review",
@@ -150,12 +158,22 @@ export const CabinetModifyScreen: React.FC<CabinetModifyScreenProps> = ({
         });
 
         if (!mounted) return;
+
+        if (!modifyInfo.allowed) {
+          setNotAllowedReason(modifyInfo.reason);
+          return;
+        }
+
         setAppointment(modifyInfo);
 
-        if (action === "reschedule" && modifyInfo?.allowed) {
+        if (action === "reschedule") {
           await fetchAvailability(modifyInfo);
         }
-      } catch {
+      } catch (error) {
+        if (error instanceof SessionExpiredError) {
+          onSessionExpired();
+          return;
+        }
         if (mounted) {
           toast.error(errors.fetchTitle, {
             description: errors.fetchDescription,
@@ -196,50 +214,49 @@ export const CabinetModifyScreen: React.FC<CabinetModifyScreenProps> = ({
     return { type: "phone", phone: contact.phone, dateTime: dt };
   };
 
-  const fetchPaymentInformation =
-    async (): Promise<CollectPayment | null> => {
-      const fields = getFields();
-      if (!fields) throw new Error("Contact info not available");
-      const intentId = paymentInformation?.intent?._id;
+  const fetchPaymentInformation = async (): Promise<CollectPayment | null> => {
+    const fields = getFields();
+    if (!fields) throw new Error("Contact info not available");
+    const intentId = paymentInformation?.intent?._id;
 
-      try {
-        let request: ModifyAppointmentRequest;
-        if (action === "reschedule") {
-          if (!newDateTime) throw new Error("Date time is required");
-          request = {
-            dateTime: newDateTime.toUTC().toJSDate(),
-            type: action,
-            fields,
-            giftCards: giftCards?.map((g) => g.code),
-          } satisfies ModifyAppointmentRequest;
-        } else {
-          request = {
-            type: action,
-            fields,
-            giftCards: giftCards?.map((g) => g.code),
-          } satisfies ModifyAppointmentRequest;
-        }
-
-        const body = {
-          request,
-          type: action === "reschedule" ? "rescheduleFee" : "cancellationFee",
-        } satisfies CreateOrUpdatePaymentIntentRequest;
-
-        setIsLoading(true);
-        const response = await (intentId
-          ? clientApi.payments.updatePaymentIntent(intentId, body)
-          : clientApi.payments.createPaymentIntent(body));
-
-        return response;
-      } catch (e) {
-        toast.error(errors.fetchPaymentInformationTitle, {
-          description: errors.fetchPaymentInformationDescription,
-        });
-        throw e;
-      } finally {
-        setIsLoading(false);
+    try {
+      let request: ModifyAppointmentRequest;
+      if (action === "reschedule") {
+        if (!newDateTime) throw new Error("Date time is required");
+        request = {
+          dateTime: newDateTime.toUTC().toJSDate(),
+          type: action,
+          fields,
+          giftCards: giftCards?.map((g) => g.code),
+        } satisfies ModifyAppointmentRequest;
+      } else {
+        request = {
+          type: action,
+          fields,
+          giftCards: giftCards?.map((g) => g.code),
+        } satisfies ModifyAppointmentRequest;
       }
-    };
+
+      const body = {
+        request,
+        type: action === "reschedule" ? "rescheduleFee" : "cancellationFee",
+      } satisfies CreateOrUpdatePaymentIntentRequest;
+
+      setIsLoading(true);
+      const response = await (intentId
+        ? clientApi.payments.updatePaymentIntent(intentId, body)
+        : clientApi.payments.createPaymentIntent(body));
+
+      return response;
+    } catch (e) {
+      toast.error(errors.fetchPaymentInformationTitle, {
+        description: errors.fetchPaymentInformationDescription,
+      });
+      throw e;
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const onSubmit = async () => {
     if (!appointment || !appointment.allowed) return;
@@ -280,6 +297,38 @@ export const CabinetModifyScreen: React.FC<CabinetModifyScreenProps> = ({
     }
   };
 
+  if (notAllowedReason) {
+    const reasonKey =
+      `modification.form.searchError.notAllowed.reason.${notAllowedReason}` as TranslationKeys;
+    const reasonText = i18n.has(reasonKey) ? i18n(reasonKey) : notAllowedReason;
+    return (
+      <div
+        className={cn(
+          "max-w-3xl mx-auto text-center py-12 space-y-4 modify-not-allowed-container",
+          className,
+        )}
+      >
+        <h2 className="text-lg font-bold text-foreground modify-not-allowed-title">
+          {i18n(`modification.form.notAllowed.${action}.title`)}
+        </h2>
+        <p className="text-sm text-muted-foreground modify-not-allowed-reason">
+          {reasonText}
+        </p>
+        <Button
+          type="button"
+          className="modify-not-allowed-back"
+          variant="link-underline"
+          size="md"
+          onClick={() => {
+            window.location.hash = "";
+          }}
+        >
+          {i18n("common.buttons.back")}
+        </Button>
+      </div>
+    );
+  }
+
   return (
     <AutoSkeleton loading={isInitialLoading}>
       <CabinetModifyContext.Provider
@@ -306,6 +355,8 @@ export const CabinetModifyScreen: React.FC<CabinetModifyScreenProps> = ({
           giftCards,
           setGiftCards,
           applyGiftCards,
+          timeZone: timezone,
+          setTimeZone,
           className,
           isEditor,
         }}

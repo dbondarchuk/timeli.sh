@@ -1554,7 +1554,6 @@ export class EventsService extends BaseService implements IEventsService {
       options: choices,
       fieldsSchema: configFields,
       showPromoCode: showPromoCode,
-      useClientTimezone: config.useClientTimezone ?? false,
     };
 
     return response;

@@ -1,5 +1,5 @@
-import { useFormatter, useI18n, useLocale } from "@timelish/i18n";
-import { ModifyAppointmentInformation } from "@timelish/types";
+import { TranslationKeys, useFormatter, useI18n, useLocale } from "@timelish/i18n";
+import { ModifyAppointmentInformation, timeZones } from "@timelish/types";
 import {
   Button,
   Collapsible,
@@ -36,6 +36,7 @@ export const ReviewCard: React.FC = () => {
     giftCards,
     setGiftCards,
     applyGiftCards,
+    timeZone,
   } = useModifyAppointmentFormContext();
 
   const locale = useLocale();
@@ -52,6 +53,14 @@ export const ReviewCard: React.FC = () => {
   const paymentFee = useMemo(
     () => (appointment ? getPaymentFee(appointment) : 0),
     [appointment],
+  );
+
+  const timeZoneInfo = useMemo(
+    () =>
+      timeZones.find(
+        (tz) => timeZone === tz.name || tz.group.includes(timeZone),
+      ),
+    [timeZone],
   );
   const totalGiftCardsApplied =
     giftCards?.reduce((sum, gc) => sum + gc.appliedAmount, 0) ?? 0;
@@ -164,7 +173,7 @@ export const ReviewCard: React.FC = () => {
           </span>
           <span className="font-medium text-muted-foreground line-through review-service-summary-item-value">
             {DateTime.fromJSDate(appointment.dateTime)
-              .setZone(appointment.timeZone)
+              .setZone(timeZone)
               .toLocaleString(DateTime.DATE_HUGE, { locale })}
           </span>
         </div>
@@ -174,7 +183,7 @@ export const ReviewCard: React.FC = () => {
           </span>
           <span className="font-medium text-muted-foreground line-through review-service-summary-item-value">
             {DateTime.fromJSDate(appointment.dateTime)
-              .setZone(appointment.timeZone)
+              .setZone(timeZone)
               .toLocaleString(DateTime.TIME_SIMPLE, { locale })}
           </span>
         </div>
@@ -198,6 +207,16 @@ export const ReviewCard: React.FC = () => {
             </div>
           </>
         )}
+        <div className="flex justify-between py-2 border-b border-border review-service-summary-item review-timezone-item">
+          <span className="text-muted-foreground review-service-summary-item-label inline-flex items-center gap-1.5">
+            {t("modification.review.timezone" as TranslationKeys)}
+          </span>
+          <span className="font-medium text-foreground review-service-summary-item-value">
+            {t("common.formats.timezone", {
+              timezone: timeZoneInfo?.currentTimeFormat || "",
+            })}
+          </span>
+        </div>
         <div className="flex justify-between py-2 border-b border-border review-service-summary-item">
           <span className="text-muted-foreground review-service-summary-item-label">
             {t("modification.review.duration")}

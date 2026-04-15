@@ -8,12 +8,22 @@ import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
+  Combobox,
+  IComboboxItem,
   Skeleton,
   toast,
   useCurrencyFormat,
 } from "@timelish/ui";
-import { durationToTime, formatTimeLocale } from "@timelish/utils";
-import { Check, ChevronDown, Copy, Sparkles, Video } from "lucide-react";
+import { durationToTime } from "@timelish/utils";
+import { getTimeZones } from "@vvo/tzdb";
+import {
+  Check,
+  ChevronDown,
+  Copy,
+  Globe2,
+  Sparkles,
+  Video,
+} from "lucide-react";
 import { DateTime } from "luxon";
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -25,8 +35,16 @@ import {
   getAppointmentsSummaryAction,
   getPastAppointmentsAction,
   getUpcomingAppointmentsAction,
+  SessionExpiredError,
 } from "../actions";
 import { useCustomerProfile } from "../customer-profile-context";
+import { useOnSessionExpired } from "../session-expired-context";
+
+const tzOptions: IComboboxItem[] = getTimeZones().map((zone) => ({
+  label: `GMT${zone.currentTimeFormat}`,
+  shortLabel: zone.alternativeName,
+  value: zone.name,
+}));
 
 type AppointmentsScreenProps = {
   appId: string;
@@ -89,9 +107,11 @@ const StatusBadge = ({ status }: { status?: string }) => {
 const AppointmentItem = ({
   item,
   isUpcoming,
+  timeZone,
 }: {
   item: Appointment;
   isUpcoming: boolean;
+  timeZone: string;
 }) => {
   const t = useI18n<MyCabinetPublicNamespace, MyCabinetPublicKeys>(
     myCabinetPublicNamespace,
@@ -103,12 +123,12 @@ const AppointmentItem = ({
 
   const serviceName =
     item.option?.name ?? t("block.appointments.appointmentFallback");
-  const dateLabel = DateTime.fromJSDate(item.dateTime).toFormat(
-    "EEE, MMM d, yyyy",
-    { locale },
-  );
-  const timeLabel = formatTimeLocale(item.dateTime, locale);
-  const endTimeLabel = formatTimeLocale(item.endAt, locale);
+  const dt = DateTime.fromJSDate(item.dateTime).setZone(timeZone);
+  const dateLabel = dt.setLocale(locale).toFormat("EEE, MMM d, yyyy");
+  const timeLabel = dt.toLocaleString(DateTime.TIME_SIMPLE, { locale });
+  const endTimeLabel = DateTime.fromJSDate(item.endAt)
+    .setZone(timeZone)
+    .toLocaleString(DateTime.TIME_SIMPLE, { locale });
   const durationLabel = i18n(
     "common.formats.durationHourMin",
     durationToTime(item.totalDuration),
@@ -327,7 +347,13 @@ export const AppointmentsScreen = ({ appId }: AppointmentsScreenProps) => {
   const t = useI18n<MyCabinetPublicNamespace, MyCabinetPublicKeys>(
     myCabinetPublicNamespace,
   );
-  const customerProfile = useCustomerProfile();
+  const i18n = useI18n("translation");
+  const {
+    customer: customerProfile,
+    timezone,
+    setTimeZone,
+  } = useCustomerProfile();
+  const onSessionExpired = useOnSessionExpired();
 
   const [isLoading, setIsLoading] = useState(true);
   const [upcomingCount, setUpcomingCount] = useState(0);
@@ -354,7 +380,11 @@ export const AppointmentsScreen = ({ appId }: AppointmentsScreenProps) => {
         setPast(pastRes.items ?? []);
         setPastPage(1);
         setHasPastNextPage(!!pastRes.hasNextPage);
-      } catch {
+      } catch (error) {
+        if (error instanceof SessionExpiredError) {
+          onSessionExpired();
+          return;
+        }
         if (mounted) toast.error(t("block.appointments.loadError"));
       } finally {
         if (mounted) setIsLoading(false);
@@ -373,7 +403,11 @@ export const AppointmentsScreen = ({ appId }: AppointmentsScreenProps) => {
       setPast(response.items ?? []);
       setPastPage(page);
       setHasPastNextPage(!!response.hasNextPage);
-    } catch {
+    } catch (error) {
+      if (error instanceof SessionExpiredError) {
+        onSessionExpired();
+        return;
+      }
       toast.error(t("block.appointments.loadError"));
     } finally {
       setIsPastPageLoading(false);
@@ -384,22 +418,44 @@ export const AppointmentsScreen = ({ appId }: AppointmentsScreenProps) => {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6 appointments-container">
-      <div className="space-y-1 appointments-header">
-        <h3 className="text-2xl font-semibold text-foreground appointments-welcome-text">
-          {t("block.appointments.welcome")}
-        </h3>
-        <h3 className="text-3xl font-bold text-foreground appointments-customer-name">
-          {customerProfile?.name ?? t("block.appointments.customerFallback")}
-        </h3>
-        <div className="text-sm text-muted-foreground appointments-counts">
-          {isLoading ? (
-            <Skeleton className="w-32 h-4" />
-          ) : (
-            t("block.appointments.counts", {
-              upcoming: upcomingCount,
-              completed: pastCount,
-            })
-          )}
+      <div className="flex flex-col md:flex-row items-start justify-between gap-4 appointments-header">
+        <div className="space-y-1 flex-1 min-w-0">
+          <h3 className="text-2xl font-semibold text-foreground appointments-welcome-text">
+            {t("block.appointments.welcome")}
+          </h3>
+          <h3 className="text-3xl font-bold text-foreground appointments-customer-name">
+            {customerProfile?.name ?? t("block.appointments.customerFallback")}
+          </h3>
+          <div className="text-sm text-muted-foreground appointments-counts">
+            {isLoading ? (
+              <Skeleton className="w-32 h-4" />
+            ) : (
+              t("block.appointments.counts", {
+                upcoming: upcomingCount,
+                completed: pastCount,
+              })
+            )}
+          </div>
+        </div>
+        <div className="shrink-0 pt-1 appointments-timezone-selector">
+          <div className="flex items-center gap-1 text-xs text-muted-foreground">
+            <Globe2 className="size-3.5 shrink-0" />
+            <Combobox
+              values={tzOptions}
+              searchLabel={i18n("common.labels.searchTimezone")}
+              customSearch={(search) =>
+                tzOptions.filter((z) =>
+                  (z.label as string)
+                    .toLocaleLowerCase()
+                    .includes(search.toLocaleLowerCase()),
+                )
+              }
+              value={timezone}
+              onItemSelect={(value) => setTimeZone(value)}
+              className="text-xs"
+              size="xs"
+            />
+          </div>
         </div>
       </div>
 
@@ -415,7 +471,12 @@ export const AppointmentsScreen = ({ appId }: AppointmentsScreenProps) => {
           </div>
         ) : (
           upcoming.map((item) => (
-            <AppointmentItem key={item._id} item={item} isUpcoming />
+            <AppointmentItem
+              key={item._id}
+              item={item}
+              isUpcoming
+              timeZone={timezone}
+            />
           ))
         )}
       </div>
@@ -433,12 +494,17 @@ export const AppointmentsScreen = ({ appId }: AppointmentsScreenProps) => {
         ) : (
           <>
             {past.map((item) => (
-              <AppointmentItem key={item._id} item={item} isUpcoming={false} />
+              <AppointmentItem
+                key={item._id}
+                item={item}
+                isUpcoming={false}
+                timeZone={timezone}
+              />
             ))}
             <div className="flex items-center justify-center gap-2 pt-2 appointments-pagination">
               <Button
-                variant="outline"
-                size="sm"
+                variant="link-underline"
+                size="md"
                 className="appointments-prev-button"
                 disabled={!canGoPrev || isPastPageLoading}
                 onClick={() => loadPastPage(pastPage - 1)}
@@ -449,8 +515,8 @@ export const AppointmentsScreen = ({ appId }: AppointmentsScreenProps) => {
                 {t("block.appointments.page", { page: pastPage })}
               </div>
               <Button
-                variant="outline"
-                size="sm"
+                variant="link-underline"
+                size="md"
                 className="appointments-next-button"
                 disabled={!hasPastNextPage || isPastPageLoading}
                 onClick={() => loadPastPage(pastPage + 1)}

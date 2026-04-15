@@ -1,4 +1,4 @@
-import { clientApi } from "@timelish/api-sdk";
+import { clientApi, ClientApiError } from "@timelish/api-sdk";
 import type { ModifyAppointmentType } from "@timelish/types";
 import type {
   AppointmentListResponse,
@@ -12,6 +12,23 @@ import type {
   RequestOtpResponse,
   VerifyOtpResponse,
 } from "./types";
+
+export class SessionExpiredError extends Error {
+  constructor() {
+    super("Session expired");
+  }
+}
+
+async function cabinetCall<T>(fn: () => Promise<T>): Promise<T> {
+  try {
+    return await fn();
+  } catch (error) {
+    if (error instanceof ClientApiError && error.status === 401) {
+      throw new SessionExpiredError();
+    }
+    throw error;
+  }
+}
 
 export const checkSessionAction = async (
   appId: string,
@@ -59,66 +76,72 @@ export const verifyOtpAction = async (
 
 export const getAppointmentsAction = async (
   appId: string,
-): Promise<GetAppointmentsResponse> => {
-  return clientApi.apps.callAppApi<GetAppointmentsResponse>({
-    appId,
-    path: "cabinet/appointments",
-    method: "GET",
-  });
-};
+): Promise<GetAppointmentsResponse> =>
+  cabinetCall(() =>
+    clientApi.apps.callAppApi<GetAppointmentsResponse>({
+      appId,
+      path: "cabinet/appointments",
+      method: "GET",
+    }),
+  );
 
 export const getAppointmentsSummaryAction = async (
   appId: string,
-): Promise<AppointmentSummaryResponse> => {
-  return clientApi.apps.callAppApi<AppointmentSummaryResponse>({
-    appId,
-    path: "cabinet/appointments/summary",
-    method: "GET",
-  });
-};
+): Promise<AppointmentSummaryResponse> =>
+  cabinetCall(() =>
+    clientApi.apps.callAppApi<AppointmentSummaryResponse>({
+      appId,
+      path: "cabinet/appointments/summary",
+      method: "GET",
+    }),
+  );
 
 export const getUpcomingAppointmentsAction = async (
   appId: string,
-): Promise<AppointmentListResponse> => {
-  return clientApi.apps.callAppApi<AppointmentListResponse>({
-    appId,
-    path: "cabinet/appointments/upcoming",
-    method: "GET",
-  });
-};
+): Promise<AppointmentListResponse> =>
+  cabinetCall(() =>
+    clientApi.apps.callAppApi<AppointmentListResponse>({
+      appId,
+      path: "cabinet/appointments/upcoming",
+      method: "GET",
+    }),
+  );
 
 export const getPastAppointmentsAction = async (
   appId: string,
   page: number,
   limit = 10,
-): Promise<AppointmentListResponse> => {
-  return clientApi.apps.callAppApi<AppointmentListResponse>({
-    appId,
-    path: `cabinet/appointments/past?page=${page}&limit=${limit}`,
-    method: "GET",
-  });
-};
+): Promise<AppointmentListResponse> =>
+  cabinetCall(() =>
+    clientApi.apps.callAppApi<AppointmentListResponse>({
+      appId,
+      path: `cabinet/appointments/past?page=${page}&limit=${limit}`,
+      method: "GET",
+    }),
+  );
 
 export const getCustomerMeAction = async (
   appId: string,
-): Promise<CustomerMeResponse> => {
-  return clientApi.apps.callAppApi<CustomerMeResponse>({
-    appId,
-    path: "cabinet/me",
-    method: "GET",
-  });
-};
+): Promise<CustomerMeResponse> =>
+  cabinetCall(() =>
+    clientApi.apps.callAppApi<CustomerMeResponse>({
+      appId,
+      path: "cabinet/me",
+      method: "GET",
+    }),
+  );
 
 export const getAppointmentByIdAction = async (
   appId: string,
   appointmentId: string,
-): Promise<AppointmentResponse> => {
-  return clientApi.apps.callAppApi<AppointmentResponse>({
-    appId,
-    path: `cabinet/appointments/${appointmentId}`,
-    method: "GET",
-  });
-};
+): Promise<AppointmentResponse> =>
+  cabinetCall(() =>
+    clientApi.apps.callAppApi<AppointmentResponse>({
+      appId,
+      path: `cabinet/appointments/${appointmentId}`,
+      method: "GET",
+    }),
+  );
 
 export const getModifyInformationAction = async (args: {
   type: ModifyAppointmentType;
