@@ -105,6 +105,7 @@ const ApplePaySection: React.FC<{
       currencyCode: currency,
       merchantCapabilities: applePayConfig.merchantCapabilities,
       supportedNetworks: applePayConfig.supportedNetworks,
+      requiredBillingContactFields: ["postalAddress", "name"],
       total: {
         label: (orgConfig as any).businessName ?? "Checkout",
         type: "final",
