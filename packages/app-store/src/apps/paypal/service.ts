@@ -14,7 +14,10 @@ import {
   PaymentFee,
 } from "@timelish/types";
 import { decrypt, encrypt, maskify } from "@timelish/utils";
-import { APPLE_PAY_DOMAIN_ASSOCIATION } from "./apple-pay";
+import {
+  APPLE_PAY_DOMAIN_ASSOCIATION_PRODUCTION,
+  APPLE_PAY_DOMAIN_ASSOCIATION_SANDBOX,
+} from "./apple-pay";
 import { PaypalClient } from "./client";
 import { PAYPAL_APP_NAME } from "./const";
 import {
@@ -295,7 +298,9 @@ class PaypalConnectedApp
       "Fetching Apple Pay domain association from PayPal",
     );
 
-    return APPLE_PAY_DOMAIN_ASSOCIATION;
+    return this.environment === Environment.Sandbox
+      ? APPLE_PAY_DOMAIN_ASSOCIATION_SANDBOX
+      : APPLE_PAY_DOMAIN_ASSOCIATION_PRODUCTION;
   }
 
   public getFormProps(
