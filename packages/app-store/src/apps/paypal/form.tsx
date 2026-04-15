@@ -1,5 +1,6 @@
 "use client";
 
+import GooglePayButton from "@google-pay/button-react";
 import {
   PayPalButtons,
   PayPalCardFieldsProvider,
@@ -10,11 +11,13 @@ import {
   PayPalScriptProvider,
   ReactPayPalScriptOptions,
   usePayPalCardFields,
+  usePayPalScriptReducer,
 } from "@paypal/react-paypal-js";
 import { clientApi } from "@timelish/api-sdk";
 import { useI18n } from "@timelish/i18n";
 import { PaymentAppFormProps } from "@timelish/types";
-import { Button, Spinner, toast, useCurrency } from "@timelish/ui";
+import { Button, Spinner, toast, useConfig, useCurrency } from "@timelish/ui";
+import { formatAmountString } from "@timelish/utils";
 import React from "react";
 import { PaypalLogo } from "./logo";
 import { PaypalFormProps } from "./models";
@@ -24,6 +27,158 @@ import {
   paypalPublicNamespace,
 } from "./translations/types";
 import { PaypalOrder } from "./types";
+
+interface PaypalGooglePayConfig {
+  allowedPaymentMethods: google.payments.api.PaymentMethodSpecification[];
+  merchantInfo: google.payments.api.MerchantInfo;
+}
+
+declare module "@paypal/paypal-js" {
+  interface PayPalNamespace {
+    Googlepay?: () => {
+      config: () => Promise<PaypalGooglePayConfig>;
+      confirmOrder: (options: {
+        orderId: string;
+        paymentMethodData: google.payments.api.PaymentData["paymentMethodData"];
+      }) => Promise<{ status: string }>;
+    };
+  }
+}
+
+const GooglePaySection: React.FC<{
+  intent: PaymentAppFormProps<PaypalFormProps>["intent"];
+  onSubmit: () => void;
+  isSandbox: boolean;
+  t: ReturnType<typeof useI18n<PaypalPublicNamespace, PaypalPublicKeys>>;
+}> = ({ intent, onSubmit, isSandbox, t }) => {
+  const [{ isResolved }] = usePayPalScriptReducer();
+  const [googlePayConfig, setGooglePayConfig] =
+    React.useState<PaypalGooglePayConfig | null>(null);
+  const [isVisible, setIsVisible] = React.useState(false);
+  const currency = useCurrency();
+  const config = useConfig();
+
+  React.useEffect(() => {
+    if (!isResolved || !window.paypal?.Googlepay) return;
+    window.paypal
+      .Googlepay()
+      .config()
+      .then(setGooglePayConfig)
+      .catch(() => {});
+  }, [isResolved]);
+
+  const handlePaymentAuthorized = React.useCallback(
+    async (
+      paymentData: google.payments.api.PaymentData,
+    ): Promise<google.payments.api.PaymentAuthorizationResult> => {
+      try {
+        const orderData = await clientApi.apps.callAppApi<{
+          id: string;
+          debug_id?: string;
+          details?: { issue: string; description: string }[];
+        }>({
+          appId: intent.appId,
+          path: "orders",
+          method: "POST",
+          body: { paymentIntentId: intent._id },
+        });
+
+        if (!orderData.id) {
+          const errorDetail = orderData?.details?.[0];
+          throw new Error(
+            errorDetail
+              ? `${errorDetail.issue} ${errorDetail.description}`
+              : "Failed to create order",
+          );
+        }
+
+        const { status } = await window.paypal!.Googlepay!().confirmOrder({
+          orderId: orderData.id,
+          paymentMethodData: paymentData.paymentMethodData,
+        });
+
+        if (status !== "APPROVED") {
+          throw new Error(`Unexpected payment status: ${status}`);
+        }
+
+        const captureData = await clientApi.apps.callAppApi<PaypalOrder>({
+          appId: intent.appId,
+          path: "orders/capture",
+          method: "POST",
+          body: { orderId: orderData.id, paymentIntentId: intent._id },
+        });
+
+        const transaction =
+          captureData?.purchase_units?.[0]?.payments?.captures?.[0] ||
+          captureData?.purchase_units?.[0]?.payments?.authorizations?.[0];
+
+        if (
+          captureData.status !== "COMPLETED" ||
+          !transaction ||
+          transaction.status !== "COMPLETED"
+        ) {
+          throw new Error(JSON.stringify(captureData));
+        }
+
+        onSubmit();
+        return { transactionState: "SUCCESS" };
+      } catch (error) {
+        console.error("Google Pay payment failed", error);
+        toast.error(t("toast.payment_failed"), {
+          description: t("toast.payment_failed_description"),
+        });
+        return {
+          transactionState: "ERROR",
+          error: {
+            reason: "OTHER_ERROR",
+            intent: "PAYMENT_AUTHORIZATION",
+            message: t("toast.payment_failed"),
+          },
+        };
+      }
+    },
+    [intent, onSubmit, t],
+  );
+
+  if (!googlePayConfig) return null;
+
+  const paymentRequest: google.payments.api.PaymentDataRequest = {
+    apiVersion: 2,
+    apiVersionMinor: 0,
+    allowedPaymentMethods: googlePayConfig.allowedPaymentMethods,
+    merchantInfo: googlePayConfig.merchantInfo,
+    callbackIntents: ["PAYMENT_AUTHORIZATION"],
+    transactionInfo: {
+      totalPriceStatus: "FINAL",
+      totalPrice: formatAmountString(intent.amount),
+      currencyCode: currency,
+      countryCode: config.country,
+    },
+  };
+
+  return (
+    <div className={isVisible ? undefined : "contents"}>
+      {isVisible && (
+        <div className="items-center flex my-px text-center">
+          <div className="bg-muted flex-1 h-px mx-2" />
+          <span className="text-sm text-muted-foreground uppercase">
+            {t("form.ui.or")}
+          </span>
+          <div className="bg-muted flex-1 h-px mx-2" />
+        </div>
+      )}
+      <GooglePayButton
+        className="w-full"
+        environment={isSandbox ? "TEST" : "PRODUCTION"}
+        paymentRequest={paymentRequest}
+        onPaymentAuthorized={handlePaymentAuthorized}
+        onReadyToPayChange={({ isReadyToPay }) => setIsVisible(isReadyToPay)}
+        buttonSizeMode="fill"
+        buttonType="pay"
+      />
+    </div>
+  );
+};
 
 const SubmitPayment: React.FC<{
   isPaying: boolean;
@@ -90,7 +245,7 @@ export const PaypalForm: React.FC<PaymentAppFormProps<PaypalFormProps>> = ({
     disableFunding: "paylater",
     buyerCountry: isSandbox ? "US" : undefined,
     currency: currency,
-    components: ["buttons", "applepay", "card-fields"],
+    components: ["buttons", "applepay", "googlepay", "card-fields"],
   };
 
   const [billingAddress, setBillingAddress] = React.useState({
@@ -205,6 +360,13 @@ export const PaypalForm: React.FC<PaymentAppFormProps<PaypalFormProps>> = ({
             ...buttonStyle,
             disableMaxWidth: true,
           }}
+        />
+
+        <GooglePaySection
+          intent={intent}
+          onSubmit={onSubmit}
+          isSandbox={isSandbox}
+          t={t}
         />
 
         <div className="items-center flex my-px text-center">

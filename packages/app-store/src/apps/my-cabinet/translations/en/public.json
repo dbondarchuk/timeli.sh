@@ -9,8 +9,8 @@
   "block": {
     "title": "My Cabinet",
     "auth": {
-      "descriptionEmailOnly": "Input your email to check and manage your appointments.",
-      "descriptionEmailOrPhone": "Input your email or phone to check and manage your appointments.",
+      "descriptionEmailOnly": "Enter your email to check and manage your appointments.",
+      "descriptionEmailOrPhone": "Enter your email or phone to check and manage your appointments.",
       "type": {
         "email": "Email",
         "phone": "Phone"
