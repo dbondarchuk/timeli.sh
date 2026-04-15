@@ -26,6 +26,8 @@ export const paypalConfigurationSchema = z.object({
     256,
     "app_paypal_admin.validation.secretKey.max" satisfies PaypalAdminAllKeys,
   ),
+  enableGooglePay: z.boolean(),
+  enableApplePay: z.boolean(),
   buttonStyle: z.object({
     shape: z.enum(paypalButtonsShape, {
       message:

@@ -54,6 +54,8 @@ class PaypalConnectedApp
   ): Promise<PaypalConfiguration> {
     return {
       ...appData,
+      enableGooglePay: appData.enableGooglePay ?? false,
+      enableApplePay: appData.enableApplePay ?? false,
       secretKey: appData.secretKey ? MASKED_SECRET_KEY : "",
       clientId: appData.clientId ? MASKED_SECRET_KEY : "",
     };

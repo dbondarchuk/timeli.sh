@@ -48,6 +48,14 @@
         }
       }
     },
+    "googlePay": {
+      "label": "Enable Google Pay",
+      "description": "Let customers pay with Google Pay through PayPal. You must first <link>enable Google Pay in your PayPal account</link>."
+    },
+    "applePay": {
+      "label": "Enable Apple Pay",
+      "description": "Let customers pay with Apple Pay through PayPal. You must first <link>enable Apple Pay in your PayPal account</link> and ensure your domain is verified."
+    },
     "selectPlaceholder": "Select view",
     "connectWith": "Connect with <app></app>"
   },

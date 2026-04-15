@@ -48,6 +48,14 @@
         }
       }
     },
+    "googlePay": {
+      "label": "Увімкнути Google Pay",
+      "description": "Дозвольте клієнтам платити через Google Pay в PayPal. Спочатку потрібно <link>увімкнути Google Pay у вашому обліковому записі PayPal</link>."
+    },
+    "applePay": {
+      "label": "Увімкнути Apple Pay",
+      "description": "Дозвольте клієнтам платити через Apple Pay в PayPal. Спочатку потрібно <link>увімкнути Apple Pay у вашому обліковому записі PayPal</link> та підтвердити домен."
+    },
     "selectPlaceholder": "Вибрати вигляд",
     "connectWith": "Підключитися з <app></app>"
   },

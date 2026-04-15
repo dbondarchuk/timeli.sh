@@ -412,6 +412,8 @@ export const PaypalForm: React.FC<PaymentAppFormProps<PaypalFormProps>> = ({
   intent,
   onSubmit,
   isSandbox,
+  enableApplePay,
+  enableGooglePay,
 }) => {
   const t = useI18n<PaypalPublicNamespace, PaypalPublicKeys>(
     paypalPublicNamespace,
@@ -420,13 +422,24 @@ export const PaypalForm: React.FC<PaymentAppFormProps<PaypalFormProps>> = ({
   const [isPaying, setIsPaying] = React.useState(false);
   const currency = useCurrency();
 
+  const enabledFunding = [enableApplePay ? "applepay" : null]
+    .filter(Boolean)
+    .join(",");
+
+  const components: ReactPayPalScriptOptions["components"] = [
+    "buttons",
+    ...(enableApplePay ? (["applepay"] as const) : []),
+    ...(enableGooglePay ? (["googlepay"] as const) : []),
+    "card-fields",
+  ];
+
   const initialOptions: ReactPayPalScriptOptions = {
     clientId,
-    enableFunding: "applepay",
+    ...(enabledFunding ? { enableFunding: enabledFunding } : {}),
     disableFunding: "paylater",
     buyerCountry: isSandbox ? "US" : undefined,
     currency: currency,
-    components: ["buttons", "applepay", "googlepay", "card-fields"],
+    components,
   };
 
   const [billingAddress, setBillingAddress] = React.useState({
@@ -544,14 +557,18 @@ export const PaypalForm: React.FC<PaymentAppFormProps<PaypalFormProps>> = ({
           className="flex flex-col gap-2"
         />
 
-        <ApplePaySection intent={intent} onSubmit={onSubmit} t={t} />
+        {enableApplePay && (
+          <ApplePaySection intent={intent} onSubmit={onSubmit} t={t} />
+        )}
 
-        <GooglePaySection
-          intent={intent}
-          onSubmit={onSubmit}
-          isSandbox={isSandbox}
-          t={t}
-        />
+        {enableGooglePay && (
+          <GooglePaySection
+            intent={intent}
+            onSubmit={onSubmit}
+            isSandbox={isSandbox}
+            t={t}
+          />
+        )}
 
         <div className="items-center flex my-px text-center">
           <div className="bg-muted flex-1 h-px mx-2" />

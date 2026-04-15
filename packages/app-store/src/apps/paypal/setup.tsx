@@ -4,8 +4,10 @@ import { useI18n } from "@timelish/i18n";
 import { AppSetupProps } from "@timelish/types";
 import {
   Button,
+  Checkbox,
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -62,7 +64,7 @@ export const PaypalAppSetup: React.FC<AppSetupProps> = ({
     <>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
-          <div className="flex flex-col items-center gap-2">
+          <div className="flex flex-col items-center gap-4">
             <FormField
               control={form.control}
               name="clientId"
@@ -224,6 +226,82 @@ export const PaypalAppSetup: React.FC<AppSetupProps> = ({
                       </SelectContent>
                     </Select>
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="enableGooglePay"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <div className="flex items-center gap-2">
+                    <FormControl>
+                      <Checkbox
+                        id="enableGooglePay"
+                        checked={field.value ?? false}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <FormLabel
+                      className="cursor-pointer"
+                      htmlFor="enableGooglePay"
+                    >
+                      {t("form.googlePay.label")}
+                    </FormLabel>
+                  </div>
+                  <FormDescription>
+                    {t.rich("form.googlePay.description", {
+                      link: (chunks: React.ReactNode) => (
+                        <a
+                          href="https://developer.paypal.com/docs/checkout/apm/google-pay/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="underline font-medium"
+                        >
+                          {chunks}
+                        </a>
+                      ),
+                    })}
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="enableApplePay"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <div className="flex items-center gap-2">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value ?? false}
+                        onCheckedChange={field.onChange}
+                        id="enableApplePay"
+                      />
+                    </FormControl>
+                    <FormLabel
+                      className="cursor-pointer"
+                      htmlFor="enableApplePay"
+                    >
+                      {t("form.applePay.label")}
+                    </FormLabel>
+                  </div>
+                  <FormDescription>
+                    {t.rich("form.applePay.description", {
+                      link: (chunks: React.ReactNode) => (
+                        <a
+                          href="https://developer.paypal.com/docs/checkout/apm/apple-pay/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="underline font-medium"
+                        >
+                          {chunks}
+                        </a>
+                      ),
+                    })}
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
