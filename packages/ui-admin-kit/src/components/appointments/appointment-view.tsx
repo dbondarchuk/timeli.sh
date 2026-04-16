@@ -32,6 +32,7 @@ import { SendCommunicationDialog } from "../communications/send-message-dialog";
 import { AppointmentActionButton } from "./action-button";
 import { AppointmentDeclineDialog } from "./appointment-decline-dialog";
 import { AppointmentRescheduleDialog } from "./appointment-reschedule-dialog";
+import { AppointmentViewContext } from "./context";
 import { AppointmentDetails } from "./tabs/details";
 import { AppointmentFiles } from "./tabs/files";
 import { AppointmentHistory } from "./tabs/history";
@@ -45,18 +46,6 @@ const views = [
   "history",
 ] as const;
 type View = (typeof views)[number];
-
-const AppointmentViewContext = React.createContext<{
-  appointment: Appointment;
-  setAppointment: React.Dispatch<React.SetStateAction<Appointment>>;
-  key: string;
-  setKey: (key: string) => void;
-}>({
-  appointment: null as unknown as Appointment,
-  setAppointment: () => {},
-  key: "",
-  setKey: () => {},
-});
 
 export const AppointmentViewProvider: React.FC<{
   appointment: Appointment;

@@ -399,6 +399,12 @@ export const AppointmentDeclineDialog: React.FC<{
     }
   };
 
+  const handleSuccess = (status: AppointmentStatus) => {
+    onSuccess?.(status);
+    setPaymentsIdsSelectionState({});
+    onOpenChange(false);
+  };
+
   return (
     <AlertDialog
       open={open}
@@ -416,7 +422,7 @@ export const AppointmentDeclineDialog: React.FC<{
             {t("admin.appointments.declineDialog.description")}
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <ScrollArea className="max-h-[60vh]">
+        <ScrollArea className="max-h-[60svh]">
           <div className="flex flex-col gap-4">
             <div className="bg-muted/30 dark:bg-muted/80 text-foreground font-normal rounded-lg p-4 flex flex-col gap-2">
               <h4 className="font-semibold mb-3">
@@ -496,7 +502,7 @@ export const AppointmentDeclineDialog: React.FC<{
                 className="mt-2 sm:mt-0"
                 beforeRequest={() => refundSelected()}
                 setIsLoading={setIsLoading}
-                onSuccess={onSuccess}
+                onSuccess={handleSuccess}
                 icon={CalendarX2}
               >
                 {(() => {
@@ -523,7 +529,7 @@ export const AppointmentDeclineDialog: React.FC<{
               requestedByCustomer={requestedByCustomer}
               disabled={isLoading}
               setIsLoading={setIsLoading}
-              onSuccess={onSuccess}
+              onSuccess={handleSuccess}
               icon={CalendarX2}
             >
               {t("admin.appointments.declineDialog.decline")}

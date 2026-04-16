@@ -117,7 +117,7 @@ export const AddOrUpdateAppButton: React.FC<AddOrUpdateAppButtonProps> = ({
         <DialogHeader className="px-1">
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
-        <div className="w-full overflow-y-auto px-1">
+        <div className="w-full overflow-y-auto max-h-[70svh] px-1">
           <div className="flex flex-col gap-4 py-4 relative w-full">
             {AppSetupElement}
             {isLoading && (

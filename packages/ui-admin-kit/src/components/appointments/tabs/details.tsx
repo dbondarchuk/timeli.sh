@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { adminApi } from "@timelish/api-sdk";
 import { AdminKeys, useI18n, useLocale } from "@timelish/i18n";
-import { Appointment, timeZones } from "@timelish/types";
+import { Appointment, AppointmentStatus, timeZones } from "@timelish/types";
 import {
   Avatar,
   AvatarFallback,
@@ -26,7 +26,7 @@ import { durationToTime } from "@timelish/utils";
 import { CalendarCheck2, CalendarX2, Wallet } from "lucide-react";
 import { DateTime } from "luxon";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { AddUpdatePaymentDialog } from "../..";
@@ -34,6 +34,7 @@ import { AppointmentActionButton } from "../action-button";
 import { AppointmentCalendar } from "../appointment-calendar";
 import { AppointmentDeclineDialog } from "../appointment-decline-dialog";
 import { APPOINTMENT_STATUS_STYLES } from "../const";
+import { AppointmentViewContext } from "../context";
 
 const noteFormSchema = z.object({
   note: z.string().optional(),
@@ -55,6 +56,16 @@ export const AppointmentDetails = ({
   const currencyFormat = useCurrencyFormat();
   const uses12HourFormat = use12HourFormat();
   const router = useRouter();
+
+  const { setAppointment, setKey } = useContext(AppointmentViewContext);
+  const updateStatus = (newStatus: AppointmentStatus) => {
+    setAppointment((prev) => ({
+      ...prev,
+      status: newStatus,
+    }));
+
+    setKey(new Date().getTime().toString());
+  };
 
   const duration = durationToTime(appointment.totalDuration);
   const paidPayments = appointment.payments?.filter(
@@ -558,6 +569,7 @@ export const AppointmentDetails = ({
             <div className="flex flex-row gap-2 justify-between w-full">
               <AppointmentDeclineDialog
                 appointment={appointment}
+                onSuccess={updateStatus}
                 trigger={
                   <Button variant="destructive" className="w-full">
                     <CalendarX2 size={20} /> {t("appointments.view.decline")}
@@ -566,6 +578,7 @@ export const AppointmentDetails = ({
               />
               {appointment.status === "pending" && (
                 <AppointmentActionButton
+                  onSuccess={updateStatus}
                   variant="default"
                   _id={appointment._id}
                   status="confirmed"

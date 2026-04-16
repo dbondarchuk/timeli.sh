@@ -13,7 +13,6 @@ import {
   FormLabel,
   FormMessage,
   Input,
-  ScrollArea,
   Select,
   SelectContent,
   SelectItem,
@@ -62,7 +61,7 @@ export const PaypalAppSetup: React.FC<AppSetupProps> = ({
   );
 
   return (
-    <ScrollArea className="max-h-[70dvh]">
+    <>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
           <div className="flex flex-col items-center gap-4">
@@ -331,6 +330,6 @@ export const PaypalAppSetup: React.FC<AppSetupProps> = ({
           statusText={appStatus.statusText}
         />
       )}
-    </ScrollArea>
+    </>
   );
 };
