@@ -14,6 +14,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { CookiesProvider } from "../../components/cookies-provider";
+import { organizationHasInstallBillingAccess } from "@/lib/billing/install-billing-access";
 import {
   getOrganizationIdAndSlug,
   getServicesContainer,
@@ -36,6 +37,12 @@ export default async function DashboardLayout({
   }
 
   if (!session.user.organizationId || !session.user.organizationInstalled) {
+    const billingOk = await organizationHasInstallBillingAccess(
+      session.user.organizationId,
+    );
+    if (!billingOk) {
+      redirect("/checkout");
+    }
     redirect("/install");
   }
 

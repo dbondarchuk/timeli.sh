@@ -4,10 +4,11 @@ import { auth } from "@/app/auth";
 import { getLoggerFactory } from "@timelish/logger";
 import { ServicesContainer } from "@timelish/services";
 import {
+  asOptionalField,
   fontName,
+  zAssetName,
   type BrandConfiguration,
   type StylingConfiguration,
-  zAssetName,
 } from "@timelish/types";
 import { headers } from "next/headers";
 import * as z from "zod";
@@ -21,7 +22,7 @@ const installPersonalizationInputSchema = z.object({
   secondaryColorHex: installHexColor,
   primaryFont: fontName,
   secondaryFont: fontName,
-  installLogo: zAssetName.optional().nullable(),
+  installLogo: asOptionalField(zAssetName).nullable(),
 });
 
 export type InstallPersonalizationInput = z.infer<
@@ -79,8 +80,7 @@ export async function applyInstallPersonalization(
   await services.configurationService.setConfiguration("styling", newStyling);
   logger.debug({ organizationId }, "Applied styling configuration");
 
-  const brand =
-    await services.configurationService.getConfiguration("brand");
+  const brand = await services.configurationService.getConfiguration("brand");
   if (!brand) {
     logger.error({ organizationId }, "Brand configuration not found");
     return { ok: false, code: "no_brand" };

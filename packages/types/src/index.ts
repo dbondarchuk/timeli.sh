@@ -2,6 +2,7 @@ export * from "./admin";
 export * from "./apps";
 export * from "./assets";
 export * from "./booking";
+export * from "./billing";
 export * from "./communication";
 export * from "./customers";
 export * from "./database";

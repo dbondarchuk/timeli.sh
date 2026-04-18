@@ -14,6 +14,8 @@
   },
   "dependencies": {
     "@mdx-js/react": "^3.0.1",
+    "@polar-sh/better-auth": "^1.8.3",
+    "@polar-sh/sdk": "^0.47.0",
     "@timelish/api-sdk": "*",
     "@timelish/app-store": "*",
     "@timelish/email-builder": "*",
@@ -28,7 +30,7 @@
     "@timelish/ui-admin-kit": "*",
     "@timelish/utils": "*",
     "@vvo/tzdb": "^6.142.0",
-    "better-auth": "^1.3.33",
+    "better-auth": "^1.6.5",
     "class-variance-authority": "^0.7.1",
     "copy-text-to-clipboard": "^3.2.0",
     "dotenv": "^16.4.5",
@@ -55,17 +57,17 @@
     "shiki": "^1.24.2"
   },
   "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2",
     "@timelish/eslint-config": "*",
     "@timelish/tailwind-config": "*",
     "@timelish/typescript-config": "*",
     "@types/color": "^4.2.0",
     "@types/node": "^20",
     "@types/react": "19.0.2",
-    "@resvg/resvg-js": "^2.6.2",
     "@types/react-file-icon": "^1.0.4",
     "postcss": "^8",
-    "satori": "^0.25.0",
     "raw-loader": "^4.0.2",
+    "satori": "^0.25.0",
     "tailwindcss": "^3.4.3",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^5"

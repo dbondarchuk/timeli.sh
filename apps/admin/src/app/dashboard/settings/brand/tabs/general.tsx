@@ -26,16 +26,20 @@ import {
 } from "@timelish/ui";
 import { UseFormReturn } from "react-hook-form";
 import { SiteSettingsFormValues } from "../site-settings-schema";
+import type { OrganizationBillingSubscriptionDetails } from "@timelish/types";
+import { GeneralBillingCard } from "./general-billing-card";
 
 export const GeneralTab: React.FC<{
   form: UseFormReturn<SiteSettingsFormValues>;
   loading: boolean;
   timeZoneValues: IComboboxItem[];
-}> = ({ form, loading, timeZoneValues }) => {
+  billingSubscriptionDetails: OrganizationBillingSubscriptionDetails;
+}> = ({ form, loading, timeZoneValues, billingSubscriptionDetails }) => {
   const t = useI18n("admin");
   const tUI = useI18n("ui");
 
   return (
+    <>
     <Card>
       <CardHeader className="border-b">
         <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
@@ -226,5 +230,7 @@ export const GeneralTab: React.FC<{
         </div>
       </CardContent>
     </Card>
+    <GeneralBillingCard details={billingSubscriptionDetails} />
+    </>
   );
 };

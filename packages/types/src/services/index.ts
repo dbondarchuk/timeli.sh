@@ -1,3 +1,4 @@
+export type * from "./billing.service";
 export type * from "./assets.service";
 export type * from "./communication-logs.service";
 export type * from "./configuration.service";

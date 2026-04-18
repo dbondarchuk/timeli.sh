@@ -8,6 +8,7 @@ import type { ICustomersService } from "./customers.service";
 import type { IEventsService } from "./events.service";
 import type { IGiftCardsService } from "./gift-cards.service";
 import type { IJobService } from "./job.service";
+import type { IBillingService } from "./billing.service";
 import type {
   IDashboardNotificationsService,
   INotificationService,
@@ -39,5 +40,6 @@ export type IServicesContainer = {
   userService: IUserService;
   dashboardNotificationsService: IDashboardNotificationsService;
   giftCardsService: IGiftCardsService;
+  billingService: IBillingService;
   redisClient: Redis;
 };

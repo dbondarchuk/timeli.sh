@@ -6,7 +6,13 @@ import { Button, Progress, Spinner, toast } from "@timelish/ui";
 import { Mail } from "lucide-react";
 import { useState } from "react";
 
-export function StepVerify({ email }: { email: string }) {
+export function StepVerify({
+  email,
+  callbackURL = "/install",
+}: {
+  email: string;
+  callbackURL?: string;
+}) {
   const t = useI18n("install");
   const [resendLoading, setResendLoading] = useState(false);
 
@@ -15,7 +21,7 @@ export function StepVerify({ email }: { email: string }) {
     try {
       const r = await authClient.sendVerificationEmail({
         email,
-        callbackURL: "/install",
+        callbackURL,
       });
       if (r.error?.message) {
         toast.error(t("wizard.verify.resendError"));

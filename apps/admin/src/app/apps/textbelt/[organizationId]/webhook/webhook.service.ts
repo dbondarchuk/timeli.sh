@@ -5,6 +5,7 @@ import { TextBeltConfiguration } from "@timelish/services";
 import {
   ApiRequest,
   ApiResponse,
+  IBillingService,
   ICommunicationLogsService,
   IConfigurationService,
   IConnectedAppsService,
@@ -61,6 +62,7 @@ export class TextBeltWebhookService {
     private readonly communicationLogsService: ICommunicationLogsService,
     private readonly notificationService: INotificationService,
     private readonly organizationService: IOrganizationService,
+    private readonly billingService: IBillingService,
   ) {}
 
   public async processWebhook(request: ApiRequest): Promise<ApiResponse> {
@@ -116,6 +118,11 @@ export class TextBeltWebhookService {
         },
         "Received TextBelt reply webhook",
       );
+
+      void this.billingService.recordSmsCreditUsage({
+        direction: "inbound",
+        textId: reply.textId,
+      });
 
       const parts = (reply?.data || "").split("|", 4);
 

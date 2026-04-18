@@ -3,6 +3,37 @@
     "title": "Set up your account",
     "description": "Set up your account to get started"
   },
+  "checkout": {
+    "pageTitle": "Choose a plan",
+    "pageDescription": "Subscribe before finishing workspace setup",
+    "title": "Choose your plan",
+    "subtitle": "Subscriptions are billed securely through Polar. You can manage billing anytime from your Polar customer portal.",
+    "includedLabel": "What's included",
+    "pricePerMonth": "/ month",
+    "pricePerYear": "/ year",
+    "pricePerWeek": "/ week",
+    "pricePerDay": "/ day",
+    "disclaimer": "Cancel anytime. No hidden fees.",
+    "cta": "Continue to checkout",
+    "plans": {
+      "pro": {
+        "title": "Pro subscription",
+        "subtitle": "Everything you need to scale",
+        "cta": "Subscribe to Pro",
+        "benefits": {
+          "smsCredits": "100 SMS credits included every month",
+          "bookings": "Unlimited bookings & clients",
+          "branding": "Custom booking page with your branding",
+          "domain": "Use your own domain name",
+          "calendar": "Calendar sync (Google, Outlook, CalDAV)",
+          "payments": "Payment integrations (PayPal, Square)",
+          "emailNotifications": "Email notifications",
+          "textNotifications": "Text message notifications"
+        }
+      }
+    },
+    "checkoutError": "Could not start checkout. Try again shortly."
+  },
   "wizard": {
     "progressLabel": "Your setup progress",
     "common": {

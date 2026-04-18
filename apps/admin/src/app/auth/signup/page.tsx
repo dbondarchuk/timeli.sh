@@ -25,7 +25,8 @@ export default async function SignupPage() {
   });
 
   if (session) {
-    redirect(session.user.organizationId ? "/dashboard" : "/install");
+    const u = session.user as { organizationInstalled?: boolean };
+    redirect(u.organizationInstalled ? "/dashboard" : "/checkout");
   }
 
   const t = await getI18nAsync("admin");

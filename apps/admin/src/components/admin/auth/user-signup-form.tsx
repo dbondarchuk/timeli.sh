@@ -111,7 +111,7 @@ export const UserSignupForm = ({ publicDomain }: { publicDomain: string }) => {
         bio: "",
         // organizationName: data.organizationName,
         // organizationSlug: data.organizationSlug,
-        callbackURL: callbackUrl ?? "/install",
+        callbackURL: callbackUrl ?? "/checkout",
       });
 
       if (response.error?.message) {
@@ -126,7 +126,7 @@ export const UserSignupForm = ({ publicDomain }: { publicDomain: string }) => {
 
       if (response.data?.user) {
         toast.success(t("auth.signUp.toasts.success"));
-        router.push(callbackUrl ?? "/install");
+        router.push(callbackUrl ?? "/checkout");
       }
     } finally {
       setLoading(false);

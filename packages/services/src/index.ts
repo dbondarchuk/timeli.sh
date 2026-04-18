@@ -1,6 +1,8 @@
 import { IServicesContainer } from "@timelish/types";
 import { cache } from "react";
 import { AssetsService } from "./assets.service";
+import { PolarBillingService } from "./billing/polar-billing.service";
+import { getPolarClient } from "./billing/utils";
 import {
   BullMQJobService,
   BullMQNotificationService,
@@ -33,6 +35,7 @@ export * from "./bullmq";
 export * from "./text-message";
 
 export * from "./assets.service";
+export * from "./billing";
 export * from "./communication-logs.service";
 export * from "./configuration.service";
 export * from "./connected-apps.service";
@@ -127,6 +130,12 @@ export const ServicesContainer: (organizationId: string) => IServicesContainer =
       jobService,
     );
 
+    const billingService = new PolarBillingService(
+      organizationId,
+      organizationService,
+      getPolarClient(),
+    );
+
     const services: IServicesContainer = {
       configurationService,
       assetsStorage,
@@ -146,6 +155,7 @@ export const ServicesContainer: (organizationId: string) => IServicesContainer =
       userService,
       dashboardNotificationsService,
       giftCardsService,
+      billingService,
       redisClient,
     };
 

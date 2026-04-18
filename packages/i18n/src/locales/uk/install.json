@@ -3,6 +3,39 @@
     "title": "Встановлення",
     "description": "Швидко налаштуйте ваш веб-сайт"
   },
+  "checkout": {
+    "pageTitle": "Оберіть тариф",
+    "pageDescription": "Оформіть підписку перед завершенням налаштування",
+    "title": "Оберіть тариф",
+    "subtitle": "Підписки безпечно оплачуються через Polar. Керувати білінгом можна в будь-який час у клієнтському порталі Polar.",
+    "includedLabel": "Що входить",
+
+    "checkoutError": "Не вдалося почати оформлення. Спробуйте пізніше.",
+
+    "pricePerMonth": "/ місяць",
+    "pricePerYear": "/ рік",
+    "pricePerWeek": "/ тиждень",
+    "pricePerDay": "/ день",
+    "disclaimer": "Скасуйте будь-коли. Без прихованих платежів.",
+    "cta": "Перейти до оплати",
+    "plans": {
+      "pro": {
+        "title": "Підписка Pro",
+        "subtitle": "Усе, щоб масштабуватись",
+        "cta": "Підписатись на Pro",
+        "benefits": {
+          "smsCredits": "100 SMS-кредитів щомісяця",
+          "bookings": "Необмежені бронювання та клієнти",
+          "branding": "Сторінка бронювання з вашим брендом",
+          "domain": "Використовуйте ваш домен",
+          "calendar": "Синхронізація календаря (Google, Outlook, CalDAV)",
+          "payments": "Інтеграції оплат (PayPal, Square)",
+          "emailNotifications": "Email-сповіщення",
+          "textNotifications": "SMS-сповіщення"
+        }
+      }
+    }
+  },
   "wizard": {
     "progressLabel": "Прогрес налаштування",
     "common": {

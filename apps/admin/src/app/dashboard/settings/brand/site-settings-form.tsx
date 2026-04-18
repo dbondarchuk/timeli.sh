@@ -23,6 +23,7 @@ import {
 } from "./site-settings-schema";
 import { BrandTab } from "./tabs/brand";
 import { GeneralTab } from "./tabs/general";
+import type { OrganizationBillingSubscriptionDetails } from "@timelish/types";
 import { SocialTab } from "./tabs/social";
 import { StylingTab } from "./tabs/styling";
 
@@ -40,6 +41,7 @@ export const SiteSettingsForm: React.FC<{
   timeliBaseHost: string;
   timeliBaseUrl: string;
   customDomainARecordIp?: string;
+  billingSubscriptionDetails: OrganizationBillingSubscriptionDetails;
 }> = ({
   values,
   initialBrandLanguage,
@@ -49,6 +51,7 @@ export const SiteSettingsForm: React.FC<{
   timeliBaseHost,
   timeliBaseUrl,
   customDomainARecordIp,
+  billingSubscriptionDetails,
 }) => {
   const t = useI18n("admin");
   const router = useRouter();
@@ -109,6 +112,7 @@ export const SiteSettingsForm: React.FC<{
                 form={form}
                 loading={loading}
                 timeZoneValues={timeZoneValues}
+                billingSubscriptionDetails={billingSubscriptionDetails}
               />
             </div>
           </TabsContent>
