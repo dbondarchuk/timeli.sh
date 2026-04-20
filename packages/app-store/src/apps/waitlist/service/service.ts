@@ -310,7 +310,7 @@ export class WaitlistConnectedApp
     logger.debug({ data }, "Creating waitlist entry");
 
     const options =
-      await this.props.services.eventsService.getAppointmentOptions();
+      await this.props.services.bookingService.getAppointmentOptions();
     const option = options.options.find((o) => o._id === data.optionId);
     if (!option) {
       logger.error({ data }, "Option not found");

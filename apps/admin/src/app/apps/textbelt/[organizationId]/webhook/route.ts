@@ -39,7 +39,7 @@ const processWebhook = async (
     getTextBeltConfiguration(),
     services.configurationService,
     services.connectedAppsService,
-    services.eventsService,
+    services.bookingService,
     services.customersService,
     services.communicationLogsService,
     services.notificationService,

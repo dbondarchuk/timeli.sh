@@ -11,7 +11,7 @@ export const NextAppointmentsCards: React.FC<{ className?: string }> = async ({
   const t = await getI18nAsync("admin");
   const servicesContainer = await getServicesContainer();
   const nextAppointments =
-    await servicesContainer.eventsService.getNextAppointments(
+    await servicesContainer.bookingService.getNextAppointments(
       DateTime.now().toJSDate(),
       3,
     );

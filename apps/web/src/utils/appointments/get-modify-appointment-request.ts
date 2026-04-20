@@ -61,7 +61,7 @@ export const getModifyAppointmentInformationRequestResult = async (
   logger.debug({ request }, "Finding appointment");
 
   const servicesContainer = await getServicesContainer();
-  const appointment = await servicesContainer.eventsService.findAppointment(
+  const appointment = await servicesContainer.bookingService.findAppointment(
     request.fields,
     ["confirmed", "pending"],
   );
@@ -136,7 +136,7 @@ export const getModifyAppointmentInformationRequestResult = async (
 
     if (featureConfig.doNotAllowIfRescheduled) {
       const appointmentHistory =
-        await servicesContainer.eventsService.getAppointmentHistory({
+        await servicesContainer.bookingService.getAppointmentHistory({
           appointmentId: appointment._id,
           type: "rescheduled",
           limit: 0, // we don't need to get history entries, we only need to check the total number of reschedules
@@ -409,7 +409,7 @@ export const getModifyAppointmentInformationRequestResult = async (
 
     if (featureConfig.maxReschedules) {
       const appointmentHistory =
-        await servicesContainer.eventsService.getAppointmentHistory({
+        await servicesContainer.bookingService.getAppointmentHistory({
           appointmentId: appointment._id,
           type: "rescheduled",
           limit: 0, // we don't need to get history entries, we only need to check the total number of reschedules

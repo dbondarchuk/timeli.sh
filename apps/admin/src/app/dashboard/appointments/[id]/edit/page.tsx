@@ -52,7 +52,7 @@ export default async function NewAssetsPage(props: Props) {
         .filter((f) => !!f) || [],
   }));
 
-  const appointment = await servicesContainer.eventsService.getAppointment(id);
+  const appointment = await servicesContainer.bookingService.getAppointment(id);
 
   if (!appointment) {
     logger.warn({ id }, "Appointment not found");

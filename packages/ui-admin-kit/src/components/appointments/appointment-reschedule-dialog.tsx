@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogProps } from "@radix-ui/react-dialog";
 import { adminApi } from "@timelish/api-sdk";
 import { useI18n } from "@timelish/i18n";
-import { Appointment, Event } from "@timelish/types";
+import { Appointment, CalendarEvent } from "@timelish/types";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -87,7 +87,9 @@ export const AppointmentRescheduleDialog: React.FC<
   const [confirmOverlap, setConfirmOverlap] = React.useState(false);
   const [openDialog, setOpenDialog] = React.useState(false);
   const [openConfirmDialog, setOpenConfirmDialog] = React.useState(false);
-  const [calendarEvents, setCalendarEvents] = React.useState<Event[]>([]);
+  const [calendarEvents, setCalendarEvents] = React.useState<CalendarEvent[]>(
+    [],
+  );
 
   const isOpen = rest.open;
 

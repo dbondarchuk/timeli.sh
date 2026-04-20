@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
   logger.debug({ duration }, "Fetching availability");
 
   const availability =
-    await servicesContainer.eventsService.getAvailability(duration);
+    await servicesContainer.bookingService.getAvailability(duration);
 
   logger.debug(
     {

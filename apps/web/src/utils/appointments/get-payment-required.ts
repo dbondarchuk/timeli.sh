@@ -446,7 +446,7 @@ const getCustomerCompletedAppointments = async (
   customerId?: string,
 ) => {
   if (!customerId) return 0;
-  const result = await servicesContainer.eventsService.getAppointments({
+  const result = await servicesContainer.bookingService.getAppointments({
     customerId: customerId,
     limit: 0,
     status: ["confirmed"],

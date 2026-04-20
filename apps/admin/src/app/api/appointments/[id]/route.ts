@@ -22,7 +22,7 @@ export async function GET(
     "Processing get appointment API request",
   );
 
-  const appointment = await servicesContainer.eventsService.getAppointment(id);
+  const appointment = await servicesContainer.bookingService.getAppointment(id);
 
   if (!appointment) {
     logger.warn({ id }, "Appointment not found");
@@ -195,12 +195,15 @@ export async function PUT(
         : undefined,
   };
 
-  const appointment = await servicesContainer.eventsService.updateEvent(id, {
-    event: appointmentEvent,
-    confirmed,
-    files,
-    doNotNotifyCustomer,
-  });
+  const appointment = await servicesContainer.bookingService.updateAppointment(
+    id,
+    {
+      event: appointmentEvent,
+      confirmed,
+      files,
+      doNotNotifyCustomer,
+    },
+  );
 
   logger.debug(
     {

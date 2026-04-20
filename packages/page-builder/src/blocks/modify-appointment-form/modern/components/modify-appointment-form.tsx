@@ -126,7 +126,7 @@ export const ModifyAppointmentForm: React.FC<
         throw new Error("Type is required");
       }
 
-      const data = await clientApi.events.getModifyAppointmentInformation({
+      const data = await clientApi.booking.getModifyAppointmentInformation({
         type,
         fields,
       });
@@ -267,7 +267,7 @@ export const ModifyAppointmentForm: React.FC<
         throw new Error("Date time is required");
       }
 
-      await clientApi.events.modifyAppointment(appointment.id, {
+      await clientApi.booking.modifyAppointment(appointment.id, {
         type,
         dateTime: newDateTime?.toUTC().toJSDate() as Date,
         fields,
@@ -331,16 +331,16 @@ export const ModifyAppointmentForm: React.FC<
         className,
         isEditor,
         isModificationConfirmed,
-          isLoading,
-          setIsLoading,
-          searchError,
-          setSearchError,
-          giftCards,
-          setGiftCards,
-          applyGiftCards,
-          timeZone,
-          setTimeZone,
-        }}
+        isLoading,
+        setIsLoading,
+        searchError,
+        setSearchError,
+        giftCards,
+        setGiftCards,
+        applyGiftCards,
+        timeZone,
+        setTimeZone,
+      }}
     >
       <ModifyAppointmentFormLayout
         scrollToTop={scrollToTop ?? false}

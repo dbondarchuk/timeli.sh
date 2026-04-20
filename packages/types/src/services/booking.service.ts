@@ -6,7 +6,7 @@ import {
   AppointmentHistoryEntry,
   AppointmentStatus,
   Availability,
-  Event,
+  CalendarEvent,
   GetAppointmentOptionsResponse,
   ModifyAppointmentInformationRequest,
   Period,
@@ -14,11 +14,11 @@ import {
 import { Query, WithTotal } from "../database";
 import { DateRange } from "../general";
 
-export interface IEventsService {
+export interface IBookingService {
   getAvailability(duration: number): Promise<Availability>;
   getBusyEventsInTimeFrame(start: Date, end: Date): Promise<Period[]>;
   getBusyEvents(): Promise<Period[]>;
-  createEvent(args: {
+  createAppointment(args: {
     event: AppointmentEvent;
     confirmed?: boolean;
     force?: boolean;
@@ -27,7 +27,7 @@ export interface IEventsService {
     by: "customer" | "user";
     giftCards?: ApplyGiftCardsSuccessResponse["giftCards"];
   }): Promise<Appointment>;
-  updateEvent(
+  updateAppointment(
     id: string,
     args: {
       event: AppointmentEvent;
@@ -55,11 +55,11 @@ export interface IEventsService {
       discountId?: string | string[];
     },
   ): Promise<WithTotal<Appointment>>;
-  getEvents(
+  getCalendarEvents(
     start: Date,
     end: Date,
     status: AppointmentStatus[],
-  ): Promise<Event[]>;
+  ): Promise<CalendarEvent[]>;
   getAppointment(id: string): Promise<Appointment | null>;
   findAppointment(
     fields: ModifyAppointmentInformationRequest["fields"],

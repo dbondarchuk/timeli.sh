@@ -13,7 +13,7 @@ export type CalendarEventVariant =
   | "tertiary"
   | "destructive";
 
-export type CalendarEvent = {
+export type EventCalendarEvent = {
   id?: string;
   start: Date;
   end: Date;
@@ -23,12 +23,12 @@ export type CalendarEvent = {
 
 type BaseEventCalendarProps = {
   date?: Date;
-  events?: CalendarEvent[];
+  events?: EventCalendarEvent[];
   className?: string;
   disableTimeChange?: boolean;
   schedule?: Record<string, DaySchedule>;
   onRangeChange?: (start: Date, end: Date) => void;
-  onEventClick?: (event: CalendarEvent) => void;
+  onEventClick?: (event: EventCalendarEvent) => void;
 };
 
 type BaseWeeklyEventCalendarProps = BaseEventCalendarProps & {
@@ -58,7 +58,7 @@ export type MonthlyEventCalendarProps = BaseEventCalendarProps & {
 
 export type AgendaEventCalendarProps = BaseEventCalendarProps & {
   daysToShow?: number;
-  renderEvent?: (event: CalendarEvent) => ReactNode;
+  renderEvent?: (event: EventCalendarEvent) => ReactNode;
 };
 
 export type EventCalendarProps =

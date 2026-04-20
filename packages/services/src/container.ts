@@ -10,7 +10,7 @@
 // import { CachedConfigurationService } from "./configuration.service";
 // import { CachedConnectedAppsService } from "./connected-apps.service";
 // import { CustomersService } from "./customers.service";
-// import { EventsService } from "./events.service";
+// import { bookingService } from "./events.service";
 // import { OrganizationService } from "./organization.service";
 // import { PagesService } from "./pages.service";
 // import { PaymentsService } from "./payments.service";
@@ -24,7 +24,7 @@
 //   IConfigurationService,
 //   IConnectedAppsService,
 //   ICustomersService,
-//   IEventsService,
+//   IbookingService,
 //   IJobService,
 //   INotificationService,
 //   IOrganizationService,
@@ -45,7 +45,7 @@
 //   private _scheduleService?: ScheduleService;
 //   private _servicesService?: ServicesService;
 //   private _paymentsService?: PaymentsService;
-//   private _eventsService?: EventsService;
+//   private _bookingService?: bookingService;
 //   private _pagesService?: PagesService;
 //   private _templatesService?: TemplatesService;
 //   private _communicationLogsService?: CommunicationLogsService;
@@ -140,9 +140,9 @@
 //     return this._paymentsService;
 //   }
 
-//   get eventsService(): IEventsService {
-//     if (!this._eventsService) {
-//       this._eventsService = new EventsService(
+//   get bookingService(): IbookingService {
+//     if (!this._bookingService) {
+//       this._bookingService = new bookingService(
 //         this.organizationId,
 //         this.configurationService,
 //         this.connectedAppsService,
@@ -154,7 +154,7 @@
 //         this.jobService,
 //       );
 //     }
-//     return this._eventsService;
+//     return this._bookingService;
 //   }
 
 //   get pagesService(): IPagesService {

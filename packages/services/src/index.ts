@@ -3,6 +3,7 @@ import { cache } from "react";
 import { AssetsService } from "./assets.service";
 import { PolarBillingService } from "./billing/polar-billing.service";
 import { getPolarClient } from "./billing/utils";
+import { BookingService } from "./booking.service";
 import {
   BullMQJobService,
   BullMQNotificationService,
@@ -16,7 +17,6 @@ import { CommunicationLogsService } from "./communication-logs.service";
 import { CachedConfigurationService } from "./configuration.service";
 import { CachedConnectedAppsService } from "./connected-apps.service";
 import { CustomersService } from "./customers.service";
-import { EventsService } from "./events.service";
 import { GiftCardsService } from "./gift-cards.service";
 import { OrganizationService } from "./organization.service";
 import { PagesService } from "./pages.service";
@@ -36,12 +36,12 @@ export * from "./text-message";
 
 export * from "./assets.service";
 export * from "./billing";
+export * from "./booking.service";
 export * from "./communication-logs.service";
 export * from "./configuration.service";
 export * from "./connected-apps.service";
 export * from "./customers.service";
 export * from "./email";
-export * from "./events.service";
 export * from "./gift-cards.service";
 export * from "./organization.service";
 export * from "./pages.service";
@@ -98,7 +98,7 @@ export const ServicesContainer: (organizationId: string) => IServicesContainer =
       connectedAppsService,
       jobService,
     );
-    const eventsService = new EventsService(
+    const bookingService = new BookingService(
       organizationId,
       configurationService,
       connectedAppsService,
@@ -140,7 +140,7 @@ export const ServicesContainer: (organizationId: string) => IServicesContainer =
       configurationService,
       assetsStorage,
       assetsService,
-      eventsService,
+      bookingService,
       pagesService,
       customersService,
       servicesService,

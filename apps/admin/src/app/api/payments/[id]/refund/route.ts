@@ -60,7 +60,7 @@ export async function POST(
       "Adding appointment history",
     );
 
-    await servicesContainer.eventsService.addAppointmentHistory({
+    await servicesContainer.bookingService.addAppointmentHistory({
       type: "paymentRefunded",
       data: {
         payment: {

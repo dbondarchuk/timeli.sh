@@ -10,7 +10,7 @@ import { DateTime } from "luxon";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
-  const logger = getLoggerFactory("API/event-duplicate")("POST");
+  const logger = getLoggerFactory("API/booking/duplicate")("POST");
   const servicesContainer = await getServicesContainer();
   logger.debug(
     {
@@ -115,7 +115,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const closestAppointments =
-      await servicesContainer.eventsService.getAppointments({
+      await servicesContainer.bookingService.getAppointments({
         optionId: appointmentRequest.optionId,
         customerId: eventOrError.customer._id,
         range,

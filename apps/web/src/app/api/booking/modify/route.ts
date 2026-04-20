@@ -4,7 +4,7 @@ import { modifyAppointmentInformationRequestSchema } from "@timelish/types";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
-  const logger = getLoggerFactory("API/event/modify")("POST");
+  const logger = getLoggerFactory("API/booking/modify")("POST");
 
   logger.debug(
     {

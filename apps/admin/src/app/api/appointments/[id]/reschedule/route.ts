@@ -40,7 +40,7 @@ export async function PATCH(
     );
   }
 
-  await servicesContainer.eventsService.rescheduleAppointment(
+  await servicesContainer.bookingService.rescheduleAppointment(
     id,
     data.dateTime,
     data.duration,

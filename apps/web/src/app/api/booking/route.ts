@@ -9,7 +9,7 @@ import {
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
-  const logger = getLoggerFactory("API/event")("POST");
+  const logger = getLoggerFactory("API/booking")("POST");
   const servicesContainer = await getServicesContainer();
   logger.debug(
     {
@@ -203,7 +203,7 @@ export async function POST(request: NextRequest) {
       },
     };
 
-    const result = await servicesContainer.eventsService.createEvent({
+    const result = await servicesContainer.bookingService.createAppointment({
       event: eventWithSessionId,
       paymentIntentId,
       files,

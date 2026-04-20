@@ -10,10 +10,10 @@ import {
   AppointmentEventRequest,
   AppointmentFields,
   asOptinalNumberField,
+  CalendarEvent,
   Customer,
   CustomerListModel,
   Discount,
-  Event,
   Field,
   getFields,
   Prettify,
@@ -278,7 +278,9 @@ export const AppointmentScheduleForm: React.FC<
 
   const [loading, setLoading] = React.useState(false);
   const [confirmOverlap, setConfirmOverlap] = React.useState(false);
-  const [calendarEvents, setCalendarEvents] = React.useState<Event[]>([]);
+  const [calendarEvents, setCalendarEvents] = React.useState<CalendarEvent[]>(
+    [],
+  );
   const customerId = form.watch("customerId");
   const [customer, setCustomer] = React.useState<
     CustomerListModel | undefined

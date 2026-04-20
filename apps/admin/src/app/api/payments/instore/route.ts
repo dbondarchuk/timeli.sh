@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
   let customerId: string | undefined;
 
   if (payment.appointmentId) {
-    const appointment = await servicesContainer.eventsService.getAppointment(
+    const appointment = await servicesContainer.bookingService.getAppointment(
       payment.appointmentId,
     );
 

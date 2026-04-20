@@ -2,7 +2,7 @@ import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
 import {
   Appointment,
   AppointmentStatus,
-  CalendarEvent,
+  CalendarWriterEvent,
   ConnectedApp,
   ConnectedAppData,
   ConnectedAppError,
@@ -399,7 +399,7 @@ export class CalendarWriterConnectedApp
         newStatus = status;
       }
 
-      const event: CalendarEvent = {
+      const event: CalendarWriterEvent = {
         id: appointment._id,
         title: subject,
         description: {

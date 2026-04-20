@@ -1,6 +1,6 @@
 import { Appointment } from "./appointment";
 
-export type Event =
+export type CalendarEvent =
   | Appointment
   | {
       uid: string;

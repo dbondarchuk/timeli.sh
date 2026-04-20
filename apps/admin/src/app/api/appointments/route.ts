@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
     "Fetching appointments with parameters",
   );
 
-  const res = await servicesContainer.eventsService.getAppointments({
+  const res = await servicesContainer.bookingService.getAppointments({
     offset,
     limit,
     search,
@@ -207,7 +207,7 @@ export async function POST(request: NextRequest) {
         : undefined,
   };
 
-  const appointment = await servicesContainer.eventsService.createEvent({
+  const appointment = await servicesContainer.bookingService.createAppointment({
     event: appointmentEvent,
     confirmed,
     force: true,

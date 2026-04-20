@@ -10,9 +10,9 @@ import {
   AppointmentEvent,
   AppointmentOnlineMeetingInformation,
   CalendarBusyTime,
-  CalendarEvent,
-  CalendarEventAttendee,
-  CalendarEventResult,
+  CalendarWriterEvent,
+  CalendarWriterEventAttendee,
+  CalendarWriterEventResult,
   ConnectedAppData,
   ConnectedAppError,
   ConnectedAppRequestError,
@@ -51,7 +51,7 @@ const requiredScopes = [
 ];
 
 const attendeeStatusToResponseStatusMap: Record<
-  CalendarEventAttendee["status"],
+  CalendarWriterEventAttendee["status"],
   string
 > = {
   confirmed: "accepted",
@@ -60,7 +60,10 @@ const attendeeStatusToResponseStatusMap: Record<
   organizer: "accepted",
 };
 
-const evetStatusToGoogleEventStatus: Record<CalendarEvent["status"], string> = {
+const evetStatusToGoogleEventStatus: Record<
+  CalendarWriterEvent["status"],
+  string
+> = {
   confirmed: "accepted",
   declined: "cancelled",
   pending: "tentative",
@@ -430,8 +433,8 @@ class GoogleCalendarConnectedApp
 
   public async createEvent(
     app: ConnectedAppData<GoogleCalendarConfiguration>,
-    event: CalendarEvent,
-  ): Promise<CalendarEventResult> {
+    event: CalendarWriterEvent,
+  ): Promise<CalendarWriterEventResult> {
     const logger = this.loggerFactory("createEvent");
     logger.debug(
       {
@@ -497,8 +500,8 @@ class GoogleCalendarConnectedApp
   public async updateEvent(
     app: ConnectedAppData<GoogleCalendarConfiguration>,
     uid: string,
-    event: CalendarEvent,
-  ): Promise<CalendarEventResult> {
+    event: CalendarWriterEvent,
+  ): Promise<CalendarWriterEventResult> {
     const logger = this.loggerFactory("updateEvent");
     logger.debug(
       {
@@ -685,7 +688,7 @@ class GoogleCalendarConnectedApp
     }
   }
 
-  private getGoogleEvent(event: CalendarEvent): calendar_v3.Schema$Event {
+  private getGoogleEvent(event: CalendarWriterEvent): calendar_v3.Schema$Event {
     const logger = this.loggerFactory("getGoogleEvent");
     logger.debug(
       {

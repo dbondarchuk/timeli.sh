@@ -32,7 +32,7 @@ export async function POST(
     );
   }
 
-  const result = await servicesContainer.eventsService.addAppointmentFiles(
+  const result = await servicesContainer.bookingService.addAppointmentFiles(
     id,
     files,
   );

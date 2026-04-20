@@ -288,7 +288,7 @@ export class TextMessageNotificationConnectedApp
       }
 
       const appointment =
-        await this.props.services.eventsService.getAppointment(
+        await this.props.services.bookingService.getAppointment(
           reply.data.appointmentId,
         );
 
@@ -470,7 +470,7 @@ export class TextMessageNotificationConnectedApp
     );
 
     try {
-      await this.props.services.eventsService.changeAppointmentStatus(
+      await this.props.services.bookingService.changeAppointmentStatus(
         appointment._id,
         newStatus,
       );

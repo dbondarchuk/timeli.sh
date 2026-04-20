@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
   await trackBookingStep(request, "OPTIONS_REQUESTED");
 
   const response =
-    await servicesContainer.eventsService.getAppointmentOptions();
+    await servicesContainer.bookingService.getAppointmentOptions();
 
   logger.debug(
     {

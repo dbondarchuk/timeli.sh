@@ -11,10 +11,10 @@ import { CalendarClock, Clock, Timer } from "lucide-react";
 import { DateTime } from "luxon";
 import React from "react";
 import { EventVariantClasses } from "./styles";
-import { CalendarEvent } from "./types";
+import { EventCalendarEvent } from "./types";
 
 export type EventPopoverProps = {
-  event: CalendarEvent;
+  event: EventCalendarEvent;
   children: React.ReactNode;
 };
 

@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
   );
 
   const [events, schedule] = await Promise.all([
-    servicesContainer.eventsService.getEvents(start, end, statuses),
+    servicesContainer.bookingService.getCalendarEvents(start, end, statuses),
     servicesContainer.scheduleService.getSchedule(start, end),
   ]);
 

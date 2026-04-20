@@ -20,9 +20,9 @@ import {
   AppointmentEvent,
   AppointmentOnlineMeetingInformation,
   CalendarBusyTime,
-  CalendarEvent,
-  CalendarEventAttendee,
-  CalendarEventResult,
+  CalendarWriterEvent,
+  CalendarWriterEventAttendee,
+  CalendarWriterEventResult,
   ConnectedAppData,
   ConnectedAppError,
   ConnectedAppResponse,
@@ -68,7 +68,7 @@ const requiredScopes = [
 ];
 
 const attendeeStatusToResponseStatusMap: Record<
-  CalendarEventAttendee["status"],
+  CalendarWriterEventAttendee["status"],
   ResponseType
 > = {
   confirmed: "accepted",
@@ -505,8 +505,8 @@ export class OutlookConnectedApp
 
   public async createEvent(
     app: ConnectedAppData,
-    event: CalendarEvent,
-  ): Promise<CalendarEventResult> {
+    event: CalendarWriterEvent,
+  ): Promise<CalendarWriterEventResult> {
     const logger = this.loggerFactory("createEvent");
     logger.debug(
       {
@@ -571,8 +571,8 @@ export class OutlookConnectedApp
   public async updateEvent(
     app: ConnectedAppData,
     uid: string,
-    event: CalendarEvent,
-  ): Promise<CalendarEventResult> {
+    event: CalendarWriterEvent,
+  ): Promise<CalendarWriterEventResult> {
     const logger = this.loggerFactory("updateEvent");
     logger.debug(
       {
@@ -773,7 +773,7 @@ export class OutlookConnectedApp
     }
   }
 
-  private getOutlookEvent(event: CalendarEvent): OutlookEvent {
+  private getOutlookEvent(event: CalendarWriterEvent): OutlookEvent {
     const logger = this.loggerFactory("getOutlookEvent");
     logger.debug(
       {

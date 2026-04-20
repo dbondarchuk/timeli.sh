@@ -18,7 +18,7 @@ export default async function Page(props: Props) {
 
   switch (params.status) {
     case "confirm":
-      await servicesContainer.eventsService.changeAppointmentStatus(
+      await servicesContainer.bookingService.changeAppointmentStatus(
         params.id,
         "confirmed",
       );
@@ -34,7 +34,7 @@ export default async function Page(props: Props) {
       redirect(`/dashboard/appointments/${params.id}`);
 
     case "decline":
-      // await ServicesContainer.EventsService().changeAppointmentStatus(
+      // await ServicesContainer.bookingService().changeAppointmentStatus(
       //   params.id,
       //   "declined"
       // );

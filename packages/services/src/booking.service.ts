@@ -28,18 +28,18 @@ import {
   type Asset,
   type Availability,
   type BookingConfiguration,
+  type CalendarEvent,
   type DateRange,
   type DaySchedule,
-  type Event,
   type GeneralConfiguration,
   type IAppointmentHook,
   type IAssetsService,
+  type IBookingService,
   type ICalendarBusyTimeProvider,
   type IConfigurationService,
   type IConnectedAppsService,
   type ICustomersService,
   type IDiscountHook,
-  type IEventsService,
   type IScheduleService,
   type IUserService,
   type Period,
@@ -69,7 +69,7 @@ import {
 } from "./collections";
 import { BaseService } from "./services/base.service";
 
-export class EventsService extends BaseService implements IEventsService {
+export class BookingService extends BaseService implements IBookingService {
   constructor(
     organizationId: string,
     private readonly configurationService: IConfigurationService,
@@ -83,7 +83,7 @@ export class EventsService extends BaseService implements IEventsService {
     private readonly dashboardNotificationsService: IDashboardNotificationsService,
     private readonly userService: IUserService,
   ) {
-    super("EventsService", organizationId);
+    super("bookingService", organizationId);
   }
 
   public async getAvailability(duration: number): Promise<Availability> {
@@ -163,7 +163,7 @@ export class EventsService extends BaseService implements IEventsService {
     return events;
   }
 
-  public async createEvent({
+  public async createAppointment({
     event,
     confirmed: propsConfirmed,
     force = false,
@@ -180,7 +180,7 @@ export class EventsService extends BaseService implements IEventsService {
     by: "customer" | "user";
     giftCards?: ApplyGiftCardsSuccessResponse["giftCards"];
   }): Promise<Appointment> {
-    const logger = this.loggerFactory("createEvent");
+    const logger = this.loggerFactory("createAppointment");
     logger.debug(
       {
         event: {
@@ -401,7 +401,7 @@ export class EventsService extends BaseService implements IEventsService {
     return appointment;
   }
 
-  public async updateEvent(
+  public async updateAppointment(
     appointmentId: string,
     {
       event,
@@ -415,7 +415,7 @@ export class EventsService extends BaseService implements IEventsService {
       doNotNotifyCustomer?: boolean;
     },
   ): Promise<Appointment> {
-    const logger = this.loggerFactory("updateEvent");
+    const logger = this.loggerFactory("updateAppointment");
     logger.debug(
       {
         event: {
@@ -878,12 +878,12 @@ export class EventsService extends BaseService implements IEventsService {
     return response;
   }
 
-  public async getEvents(
+  public async getCalendarEvents(
     start: Date,
     end: Date,
     status: AppointmentStatus[],
-  ): Promise<Event[]> {
-    const logger = this.loggerFactory("getEvents");
+  ): Promise<CalendarEvent[]> {
+    const logger = this.loggerFactory("getCalendarEvents");
     logger.debug({ start, end, status }, "Getting events");
 
     const appointments = await this.getAppointments({
@@ -918,7 +918,7 @@ export class EventsService extends BaseService implements IEventsService {
     });
 
     const appsResponse = await Promise.all(appsPromises);
-    const appsEvents: Event[] = appsResponse
+    const appsEvents: CalendarEvent[] = appsResponse
       .flat()
       .map((event) => ({
         title: event.title || "Busy",

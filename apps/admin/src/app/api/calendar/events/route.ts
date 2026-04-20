@@ -7,7 +7,7 @@ import { NextRequest, NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
-  const logger = getLoggerFactory("AdminAPI/events")("GET");
+  const logger = getLoggerFactory("AdminAPI/calendar/events")("GET");
   const servicesContainer = await getServicesContainer();
   logger.debug(
     {
@@ -56,7 +56,7 @@ export async function GET(request: NextRequest) {
     "Fetching events with parameters",
   );
 
-  let events = await servicesContainer.eventsService.getEvents(
+  let events = await servicesContainer.bookingService.getCalendarEvents(
     start.toJSDate(),
     end.toJSDate(),
     statuses,

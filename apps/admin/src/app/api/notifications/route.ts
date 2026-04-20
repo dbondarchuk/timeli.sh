@@ -10,7 +10,7 @@ import { v4 } from "uuid";
 const getPendingAppointmentsNotifications = async (date?: Date) => {
   const servicesContainer = await getServicesContainer();
   const { totalCount, newCount } =
-    await servicesContainer.eventsService.getPendingAppointmentsCount(
+    await servicesContainer.bookingService.getPendingAppointmentsCount(
       new Date(),
       date,
     );

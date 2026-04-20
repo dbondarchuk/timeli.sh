@@ -34,7 +34,7 @@ const processRescheduleRequest = async (
   );
 
   const isAvailable =
-    await servicesContainer.eventsService.verifyTimeAvailability(
+    await servicesContainer.bookingService.verifyTimeAvailability(
       request.dateTime,
       information.duration,
     );
@@ -77,7 +77,7 @@ const processRescheduleRequest = async (
         giftCardId: giftCard.id,
       });
 
-      await servicesContainer.eventsService.addAppointmentHistory({
+      await servicesContainer.bookingService.addAppointmentHistory({
         appointmentId,
         type: "paymentAdded",
         data: {
@@ -163,7 +163,7 @@ const processRescheduleRequest = async (
       fees: paymentIntent.fees,
     })) as OnlinePayment;
 
-    await servicesContainer.eventsService.addAppointmentHistory({
+    await servicesContainer.bookingService.addAppointmentHistory({
       appointmentId,
       type: "paymentAdded",
       data: {
@@ -198,7 +198,7 @@ const processRescheduleRequest = async (
     }
   }
 
-  await servicesContainer.eventsService.rescheduleAppointment(
+  await servicesContainer.bookingService.rescheduleAppointment(
     appointmentId,
     request.dateTime,
     information.duration,
@@ -229,7 +229,7 @@ const processCancelRequest = async (
   >,
   customerId: string,
 ) => {
-  const logger = getLoggerFactory("API/event/[appointmentId]/modify")(
+  const logger = getLoggerFactory("API/booking/[appointmentId]/modify")(
     "processCancelRequest",
   );
   const servicesContainer = await getServicesContainer();
@@ -348,7 +348,7 @@ const processCancelRequest = async (
         giftCardId: giftCard.id,
       });
 
-      await servicesContainer.eventsService.addAppointmentHistory({
+      await servicesContainer.bookingService.addAppointmentHistory({
         appointmentId,
         type: "paymentAdded",
         data: {
@@ -434,7 +434,7 @@ const processCancelRequest = async (
       fees: paymentIntent.fees,
     })) as OnlinePayment;
 
-    await servicesContainer.eventsService.addAppointmentHistory({
+    await servicesContainer.bookingService.addAppointmentHistory({
       appointmentId,
       type: "paymentAdded",
       data: {
@@ -469,7 +469,7 @@ const processCancelRequest = async (
     }
   }
 
-  await servicesContainer.eventsService.changeAppointmentStatus(
+  await servicesContainer.bookingService.changeAppointmentStatus(
     appointmentId,
     "declined",
   );
@@ -483,11 +483,11 @@ const processCancelRequest = async (
   });
 };
 
-export async function POST(
+export async function PUT(
   request: NextRequest,
-  { params }: RouteContext<"/api/events/[appointmentId]/modify">,
+  { params }: RouteContext<"/api/booking/[appointmentId]/modify">,
 ) {
-  const logger = getLoggerFactory("API/event/[appointmentId]/modify")("POST");
+  const logger = getLoggerFactory("API/booking/[appointmentId]/modify")("PUT");
   const { appointmentId } = await params;
 
   logger.debug(

@@ -6,11 +6,11 @@ import {
   ApiRequest,
   ApiResponse,
   IBillingService,
+  IBookingService,
   ICommunicationLogsService,
   IConfigurationService,
   IConnectedAppsService,
   ICustomersService,
-  IEventsService,
   INotificationService,
   IOrganizationService,
   ITextMessageResponder,
@@ -57,7 +57,7 @@ export class TextBeltWebhookService {
     private readonly configuration: TextBeltConfiguration,
     private readonly configurationService: IConfigurationService,
     private readonly connectedAppsService: IConnectedAppsService,
-    private readonly eventsService: IEventsService,
+    private readonly bookingService: IBookingService,
     private readonly customersService: ICustomersService,
     private readonly communicationLogsService: ICommunicationLogsService,
     private readonly notificationService: INotificationService,
@@ -142,7 +142,7 @@ export class TextBeltWebhookService {
       );
 
       const appointment = appointmentId
-        ? await this.eventsService.getAppointment(appointmentId)
+        ? await this.bookingService.getAppointment(appointmentId)
         : null;
 
       const customer = customerId

@@ -37,7 +37,7 @@ export async function PATCH(
     );
   }
 
-  await servicesContainer.eventsService.changeAppointmentStatus(
+  await servicesContainer.bookingService.changeAppointmentStatus(
     id,
     data.status,
     data.by,
