@@ -252,7 +252,8 @@ export class BullMQJobWorker extends BaseBullMQClient {
       const services = this.getServices(organizationId);
       const builtIn = BuiltInApps[jobData.appId as keyof typeof BuiltInApps];
       if (builtIn?.scheduled) {
-        const user = await services.userService.getOrganizationAdminUser();
+        const users = await services.userService.getOrganizationAdminUsers();
+        const user = users[0];
         if (!user) {
           throw new Error("Organization admin user not found");
         }
@@ -266,14 +267,18 @@ export class BullMQJobWorker extends BaseBullMQClient {
           await service.processJob(appData, jobData);
           logger.info({ jobId }, "Job completed successfully");
         } else {
-          logger.error({ jobId }, "Built-in service does not implement processJob");
+          logger.error(
+            { jobId },
+            "Built-in service does not implement processJob",
+          );
         }
         return;
       }
 
-      const { app, service } = await services.connectedAppsService.getAppService<IScheduled>(
-        jobData.appId,
-      );
+      const { app, service } =
+        await services.connectedAppsService.getAppService<IScheduled>(
+          jobData.appId,
+        );
 
       if (service.processJob) {
         await service.processJob(app, jobData);
@@ -305,7 +310,8 @@ export class BullMQJobWorker extends BaseBullMQClient {
 
       const builtIn = BuiltInApps[jobData.appId];
       if (builtIn) {
-        const user = await services.userService.getOrganizationAdminUser();
+        const users = await services.userService.getOrganizationAdminUsers();
+        const user = users[0];
         if (!user) {
           throw new Error("Organization admin user not found");
         }
@@ -331,7 +337,10 @@ export class BullMQJobWorker extends BaseBullMQClient {
 
       logger.info({ jobId }, "Event delivery job completed successfully");
     } catch (error) {
-      logger.error({ error, jobId, jobData }, "Failed to process event delivery job");
+      logger.error(
+        { error, jobId, jobData },
+        "Failed to process event delivery job",
+      );
       throw error;
     }
   }

@@ -1657,7 +1657,8 @@ export class BookingService extends BaseService implements IBookingService {
   }
 
   private async getCalendarSourceAppIds(config: BookingConfiguration) {
-    const user = await this.userService.getOrganizationAdminUser();
+    const users = await this.userService.getOrganizationAdminUsers();
+    const user = users[0];
     if (user?.calendarSources?.length) {
       return user.calendarSources.map((source) => source.appId);
     }

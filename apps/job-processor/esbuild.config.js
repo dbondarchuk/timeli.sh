@@ -27,6 +27,9 @@ const buildConfig = {
     "next/link",
     "@resvg/resvg-js",
   ],
+  alias: {
+    "next-intl/core": path.resolve(__dirname, "src/i18n/config.ts"),
+  },
 };
 
 // Build function

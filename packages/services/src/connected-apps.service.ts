@@ -173,7 +173,10 @@ export class ConnectedAppsService
       },
     );
 
-    if (typeof updateModel.status !== "undefined" && updateModel.status !== app.status) {
+    if (
+      typeof updateModel.status !== "undefined" &&
+      updateModel.status !== app.status
+    ) {
       const eventType =
         updateModel.status === "failed"
           ? APP_FAILED_EVENT_TYPE
@@ -831,7 +834,8 @@ export class ConnectedAppsService
       try {
         const services = this.getServices();
         const service = new app.getService(this.organizationId, services);
-        const user = await services.userService.getOrganizationAdminUser();
+        const users = await services.userService.getOrganizationAdminUsers();
+        const user = users[0];
         if (!user) {
           logger.error(
             { appName: app.name },

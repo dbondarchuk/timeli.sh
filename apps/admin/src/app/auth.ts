@@ -7,9 +7,10 @@ import {
   getDbConnection,
   getDbConnectionSync,
 } from "@timelish/services/database";
-import type {
-  Organization as OrganizationDbModel,
-  WithDatabaseId,
+import {
+  USER_ROLES,
+  type Organization as OrganizationDbModel,
+  type WithDatabaseId,
 } from "@timelish/types";
 import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
@@ -113,6 +114,11 @@ export const auth = betterAuth({
       bio: {
         type: "string",
         input: true,
+      },
+      role: {
+        type: [...USER_ROLES],
+        input: false,
+        defaultValue: "owner",
       },
     },
     changeEmail: {

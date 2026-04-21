@@ -2,7 +2,8 @@ import { Language } from "@timelish/i18n";
 import type { ObjectId } from "mongodb";
 import type { CalendarSourcesConfiguration } from "../configuration/booking/calendar-source";
 
-export type UserRole = "owner" | "admin" | "staff" | "viewer";
+export const USER_ROLES = ["owner", "admin", "staff", "viewer"] as const;
+export type UserRole = (typeof USER_ROLES)[number];
 
 export type User = {
   _id: ObjectId;

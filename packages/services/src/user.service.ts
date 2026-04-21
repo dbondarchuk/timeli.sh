@@ -80,33 +80,37 @@ export class UserService extends BaseService implements IUserService {
     return updatedUser;
   }
 
-  public async getOrganizationAdminUser(): Promise<User | null> {
+  public async getOrganizationAdminUsers(): Promise<User[]> {
     const logger = this.loggerFactory("getOrganizationAdminUser");
     logger.debug(
       { organizationId: this.organizationId },
       "Getting organization admin user",
     );
     const db = await getDbConnection();
-    const users = db.collection<User>(USERS_COLLECTION_NAME);
+    const collection = db.collection<User>(USERS_COLLECTION_NAME);
     // const user = await users.findOne({ organizationId: organizationId, role: "admin" });
 
     // TODO: Implement the logic to get the organization admin user once we have multiple users per organization
-    const user = await users.findOne({
-      organizationId: this.organizationId,
-    });
+    const users = await collection
+      .find({
+        organizationId: this.organizationId,
+        role: { $in: ["admin", "owner"] },
+      })
+      .sort({ createdAt: 1 })
+      .toArray();
 
-    if (!user) {
+    if (!users.length) {
       logger.warn(
         { organizationId: this.organizationId },
-        "Organization admin user not found",
+        "Organization admin users not found",
       );
-      return null;
+      return [];
     }
 
     logger.debug(
       { organizationId: this.organizationId },
-      "Organization admin user found",
+      "Organization admin users found",
     );
-    return user;
+    return users;
   }
 }
