@@ -1,5 +1,5 @@
-import { AppScope } from "../apps/app";
 import { WithOrganizationId } from "../database";
+import type { EventEnvelope } from "../events/envelope";
 
 export type BaseJobRequest = {
   id?: string;
@@ -16,20 +16,15 @@ export type AppJobRequest<T = any> = BaseJobRequest & {
   payload: T;
 };
 
-export type HookJobRequest = BaseJobRequest & {
-  type: "hook";
-  scope: AppScope;
-  method: string;
-  args: any[];
-};
-
-export type CoreJobRequest<T = any> = BaseJobRequest & {
-  type: "core";
+/** Delivers an {@link EventEnvelope} to a single app subscriber (built-in or connected). */
+export type EventDeliveryJobRequest = BaseJobRequest & {
+  type: "event";
   appId: string;
-  payload: T;
+  eventType: string;
+  envelope: EventEnvelope;
 };
 
-export type JobRequest = AppJobRequest | HookJobRequest | CoreJobRequest;
+export type JobRequest = AppJobRequest | EventDeliveryJobRequest;
 export type OrganizationJobRequest = WithOrganizationId<JobRequest>;
 
 export type Job = JobRequest & {

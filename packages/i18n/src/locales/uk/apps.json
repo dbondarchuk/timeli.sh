@@ -50,7 +50,12 @@
     "disconnectError": "Виникла проблема з вашим запитом.",
     "requestFailed": "Запит не вдався.",
     "loadingApps": "Завантаження додатків...",
-    "selectApp": "Вибрати додаток"
+    "selectApp": "Вибрати додаток",
+    "eventSubscriptions": {
+      "viewPatterns": "Підписки на події",
+      "modalTitle": "Шаблони подій",
+      "modalDescription": "Додаток обробляє події організації, тип яких відповідає одному з цих шаблонів (у тому числі з масками на кшталт *)."
+    }
   },
   "installedApps": {
     "searchPlaceholder": "Пошук встановлених додатків",
@@ -63,14 +68,7 @@
     "mail-send": "Email",
     "text-message-send": "Текстове повідомлення",
     "text-message-respond": "Відповідач текстових повідомлень",
-    "appointment-hook": "Хуки записів",
-    "customer-hook": "Хуки клієнтів",
-    "payment-hook": "Хуки платежів",
-    "gift-card-hook": "Хуки подарункових карток",
-    "service-hook": "Хуки послуг",
-    "addon-hook": "Хуки додатків",
-    "field-hook": "Хуки полів",
-    "discount-hook": "Хуки знижок",
+    "event-subscriber": "Підписка на події",
     "scheduled": "Заплановані",
     "schedule": "Постачальник розкладу",
     "assets-storage": "Сховище ресурсів",
@@ -81,7 +79,6 @@
     "availability-provider": "Постачальник доступності",
     "meeting-url-provider": "Постачальник URL зустрічі",
     "dashboard-notifier": "Сповіщувач панелі керування",
-    "booking-tracking-hook": "Відстеження бронювань",
     "demo-arguments-provider": "Постачальник демонстраційних аргументів",
     "sitemap-items-provider": "Постачальник елементів sitemap"
   },

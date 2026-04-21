@@ -95,9 +95,122 @@
     },
     "pricePerHour": "{price}/hr"
   },
+  "platformEvents": {
+    "customer": {
+      "created": {
+        "title": "New customer",
+        "description": "{customerName}"
+      },
+      "updated": {
+        "title": "Customer updated",
+        "description": "{customerName}"
+      },
+      "deleted": {
+        "title": "Customers removed",
+        "description": "{count, plural, =1 {# customer} other {# customers}} — {names}"
+      }
+    },
+    "payment": {
+      "created": {
+        "title": "Payment recorded",
+        "description": "{type} · {amount}"
+      },
+      "updated": {
+        "title": "Payment updated",
+        "description": "{status} · {amount}"
+      },
+      "deleted": {
+        "title": "Payment removed",
+        "description": "{amount}"
+      },
+      "refunded": {
+        "title": "Payment refunded",
+        "description": "{refundAmount} of {amount}"
+      }
+    },
+    "giftCard": {
+      "created": {
+        "title": "Gift card issued",
+        "description": "{code}"
+      },
+      "updated": {
+        "title": "Gift card updated",
+        "description": "{code}"
+      },
+      "statusChanged": {
+        "title": "Gift card status changed",
+        "description": "{count, plural, =1 {# card} other {# cards}} → {status}"
+      },
+      "deleted": {
+        "title": "Gift cards removed",
+        "description": "{count, plural, =1 {# card} other {# cards}}"
+      }
+    },
+    "field": {
+      "created": {
+        "title": "Field created",
+        "description": "{name}"
+      },
+      "updated": {
+        "title": "Field updated",
+        "description": "{name}"
+      },
+      "deleted": {
+        "title": "Fields removed",
+        "description": "{count, plural, =1 {# field} other {# fields}}"
+      }
+    },
+    "addon": {
+      "created": {
+        "title": "Add-on created",
+        "description": "{name}"
+      },
+      "updated": {
+        "title": "Add-on updated",
+        "description": "{name}"
+      },
+      "deleted": {
+        "title": "Add-ons removed",
+        "description": "{count, plural, =1 {# add-on} other {# add-ons}}"
+      }
+    },
+    "appointmentOption": {
+      "created": {
+        "title": "Service option created",
+        "description": "{name}"
+      },
+      "updated": {
+        "title": "Service option updated",
+        "description": "{name}"
+      },
+      "deleted": {
+        "title": "Service options removed",
+        "description": "{count, plural, =1 {# option} other {# options}}"
+      }
+    },
+    "discount": {
+      "created": {
+        "title": "Discount created",
+        "description": "{name}"
+      },
+      "updated": {
+        "title": "Discount updated",
+        "description": "{name}"
+      },
+      "deleted": {
+        "title": "Discounts removed",
+        "description": "{count, plural, =1 {# discount} other {# discounts}}"
+      },
+      "applied": {
+        "title": "Discount applied",
+        "description": "{customerName} · {discountName} ({value})"
+      }
+    }
+  },
   "navigation": {
     "overview": "Overview",
     "dashboard": "Dashboard",
+    "activity": "Activity",
     "appointments": "Appointments",
     "schedule": "Schedule",
     "defaultSchedule": "Default schedule",
@@ -399,10 +512,38 @@
       "changesSaved": "Your changes were saved.",
       "requestError": "There was a problem with your request."
     },
+    "events": {
+      "created": {
+        "title": "New appointment",
+        "description": "{customerName} requested {serviceName}"
+      },
+      "updated": {
+        "title": "Appointment updated",
+        "description": "{customerName} — {serviceName}"
+      },
+      "rescheduled": {
+        "title": "Appointment rescheduled",
+        "description": "{customerName} — {serviceName}"
+      },
+      "statusChanged": {
+        "title": "Appointment status changed",
+        "description": "{customerName}: {oldStatus} → {newStatus}"
+      }
+    },
     "notifications": {
       "appointmentCreated": {
         "title": "New appointment requested",
         "message": "A new appointment has been requested by {name} for {service} on {dateTime} for {durationHours, plural, =0 {{durationMinutes} min} other {# hr, {durationMinutes} min}}",
+        "action": "View"
+      },
+      "appointmentRescheduled": {
+        "title": "Appointment was rescheduled",
+        "message": "{name} rescheduled {service}.",
+        "action": "View"
+      },
+      "appointmentCancelled": {
+        "title": "Appointment was cancelled",
+        "message": "{name} cancelled {service}.",
         "action": "View"
       }
     }
@@ -466,6 +607,51 @@
       "copied": "Copied",
       "relativeUrlCopied": "Asset relative url '{url}' was copied to clipboard.",
       "absoluteUrlCopied": "Asset absolute url '{url}' was copied to clipboard."
+    }
+  },
+  "activity": {
+    "actor": {
+      "system": "System",
+      "user": "User: {name}",
+      "customer": "Customer: <link></link>"
+    },
+    "page": {
+      "description": "Organization-wide timeline of notable events."
+    },
+    "header": {
+      "openFeed": "Open activity feed",
+      "recent": "Recent activity",
+      "empty": "No recent activity yet.",
+      "viewAll": "View all activity"
+    },
+    "severity": {
+      "info": "Info",
+      "success": "Success",
+      "warning": "Warning",
+      "error": "Error"
+    },
+    "table": {
+      "searchPlaceholder": "Search by event type, title or description…",
+      "dateRange": "Date range",
+      "filters": {
+        "severity": "Severity",
+        "actor": "Actor",
+        "eventType": "Event type",
+        "actorKind": {
+          "system": "System",
+          "user": "User",
+          "customer": "Customer"
+        }
+      },
+      "columns": {
+        "createdAt": "Date",
+        "severity": "Severity",
+        "actor": "Actor",
+        "eventType": "Event type",
+        "title": "Title",
+        "description": "Description",
+        "link": "Link"
+      }
     }
   },
   "communicationLogs": {
@@ -1658,6 +1844,31 @@
       "migrate": "Migrate",
       "toasts": {
         "requestError": "Your request has failed"
+      }
+    },
+    "events": {
+      "installed": {
+        "title": "App installed",
+        "description": "{appDisplayName} was installed."
+      },
+      "connected": {
+        "title": "App connected",
+        "description": "{appDisplayName} connected."
+      },
+      "uninstalled": {
+        "title": "App uninstalled",
+        "description": "{appDisplayName} was uninstalled."
+      },
+      "failed": {
+        "title": "App failed",
+        "description": "{appDisplayName} failed to connect."
+      }
+    },
+    "notifications": {
+      "failed": {
+        "title": "App connection failed",
+        "message": "{appDisplayName} failed to connect. Check app settings.",
+        "action": "Open apps"
       }
     }
   },

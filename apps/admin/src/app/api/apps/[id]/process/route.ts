@@ -1,4 +1,4 @@
-import { getServicesContainer } from "@/app/utils";
+import { getServicesContainer, getSession } from "@/app/utils";
 import { getLoggerFactory } from "@timelish/logger";
 import { ConnectedAppRequestError } from "@timelish/types";
 import { parseJSON } from "@timelish/utils";
@@ -23,10 +23,12 @@ export async function POST(
   );
 
   try {
+    const session = await getSession();
     const result = await servicesContainer.connectedAppsService.processRequest(
       id,
       body,
       request,
+      session.user.id,
     );
 
     logger.debug(

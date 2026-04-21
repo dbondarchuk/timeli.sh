@@ -1,9 +1,4 @@
 {
-  "apps": {
-    "scopes": {
-      "waitlist-hook": "Waitlist hook"
-    }
-  },
   "admin": {
     "bookingTracking": {
       "convertedTo": {

@@ -1,6 +1,12 @@
 import {
+  ADDON_CREATED_EVENT_TYPE,
+  ADDON_DELETED_EVENT_TYPE,
+  ADDON_UPDATED_EVENT_TYPE,
   AddonsType,
   ApplyCustomerDiscountRequest,
+  APPOINTMENT_OPTION_CREATED_EVENT_TYPE,
+  APPOINTMENT_OPTION_DELETED_EVENT_TYPE,
+  APPOINTMENT_OPTION_UPDATED_EVENT_TYPE,
   AppointmentAddon,
   AppointmentAddonUpdateModel,
   AppointmentEntity,
@@ -9,21 +15,36 @@ import {
   ConfigurationOption,
   DateRange,
   Discount,
+  DISCOUNT_CREATED_EVENT_TYPE,
+  DISCOUNT_DELETED_EVENT_TYPE,
+  DISCOUNT_UPDATED_EVENT_TYPE,
   DiscountType,
   DiscountUpdateModel,
+  FIELD_CREATED_EVENT_TYPE,
+  FIELD_DELETED_EVENT_TYPE,
+  FIELD_UPDATED_EVENT_TYPE,
   FieldsType,
   FieldType,
-  IAddonHook,
   IConfigurationService,
-  IDiscountHook,
-  IFieldHook,
-  IJobService,
-  IServiceHook,
+  IEventService,
   IServicesService,
   Query,
   ServiceField,
   ServiceFieldUpdateModel,
   WithTotal,
+  type AddonCreatedPayload,
+  type AddonDeletedPayload,
+  type AddonUpdatedPayload,
+  type AppointmentOptionCreatedPayload,
+  type AppointmentOptionDeletedPayload,
+  type AppointmentOptionUpdatedPayload,
+  type DiscountCreatedPayload,
+  type DiscountDeletedPayload,
+  type DiscountUpdatedPayload,
+  type EventSource,
+  type FieldCreatedPayload,
+  type FieldDeletedPayload,
+  type FieldUpdatedPayload,
 } from "@timelish/types";
 import { buildSearchQuery, escapeRegex } from "@timelish/utils";
 import { DateTime } from "luxon";
@@ -43,7 +64,7 @@ export class ServicesService extends BaseService implements IServicesService {
   public constructor(
     organizationId: string,
     protected readonly configurationService: IConfigurationService,
-    protected readonly jobService: IJobService,
+    protected readonly eventService: IEventService,
   ) {
     super("ServicesService", organizationId);
   }
@@ -251,6 +272,7 @@ export class ServicesService extends BaseService implements IServicesService {
 
   public async createField(
     field: ServiceFieldUpdateModel,
+    source: EventSource,
   ): Promise<ServiceField> {
     const logger = this.loggerFactory("createField");
     logger.debug(
@@ -275,10 +297,12 @@ export class ServicesService extends BaseService implements IServicesService {
 
     await fields.insertOne(dbField);
 
-    await this.jobService.enqueueHook<IFieldHook, "onFieldCreated">(
-      "field-hook",
-      "onFieldCreated",
-      dbField,
+    await this.eventService.emit(
+      FIELD_CREATED_EVENT_TYPE,
+      {
+        field: dbField,
+      } satisfies FieldCreatedPayload,
+      source,
     );
 
     logger.debug(
@@ -292,6 +316,7 @@ export class ServicesService extends BaseService implements IServicesService {
   public async updateField(
     id: string,
     update: ServiceFieldUpdateModel,
+    source: EventSource,
   ): Promise<void> {
     const logger = this.loggerFactory("updateField");
     logger.debug({ id, update }, "Updating field");
@@ -324,17 +349,22 @@ export class ServicesService extends BaseService implements IServicesService {
 
     const updatedField = await this.getField(id);
 
-    await this.jobService.enqueueHook<IFieldHook, "onFieldUpdated">(
-      "field-hook",
-      "onFieldUpdated",
-      updatedField!,
-      updateObj,
+    await this.eventService.emit(
+      FIELD_UPDATED_EVENT_TYPE,
+      {
+        field: updatedField!,
+        update: updateObj,
+      } satisfies FieldUpdatedPayload,
+      source,
     );
 
     logger.debug({ fieldId: id, name: update.name }, "Field updated");
   }
 
-  public async deleteField(id: string): Promise<ServiceField | null> {
+  public async deleteField(
+    id: string,
+    source: EventSource,
+  ): Promise<ServiceField | null> {
     const logger = this.loggerFactory("deleteField");
     logger.debug({ id }, "Deleting field");
 
@@ -394,10 +424,12 @@ export class ServicesService extends BaseService implements IServicesService {
         return field;
       });
 
-      await this.jobService.enqueueHook<IFieldHook, "onFieldsDeleted">(
-        "field-hook",
-        "onFieldsDeleted",
-        [id],
+      await this.eventService.emit(
+        FIELD_DELETED_EVENT_TYPE,
+        {
+          fieldIds: [id],
+        } satisfies FieldDeletedPayload,
+        source,
       );
 
       return result;
@@ -406,7 +438,7 @@ export class ServicesService extends BaseService implements IServicesService {
     }
   }
 
-  public async deleteFields(ids: string[]): Promise<void> {
+  public async deleteFields(ids: string[], source: EventSource): Promise<void> {
     const logger = this.loggerFactory("deleteFields");
     logger.debug({ ids }, "Deleting fields");
 
@@ -460,10 +492,12 @@ export class ServicesService extends BaseService implements IServicesService {
             },
           );
 
-        await this.jobService.enqueueHook<IFieldHook, "onFieldsDeleted">(
-          "field-hook",
-          "onFieldsDeleted",
-          ids,
+        await this.eventService.emit(
+          FIELD_DELETED_EVENT_TYPE,
+          {
+            fieldIds: ids,
+          } satisfies FieldDeletedPayload,
+          source,
         );
 
         logger.debug(
@@ -655,6 +689,7 @@ export class ServicesService extends BaseService implements IServicesService {
 
   public async createAddon(
     addon: AppointmentAddonUpdateModel,
+    source: EventSource,
   ): Promise<AppointmentAddon> {
     const logger = this.loggerFactory("createAddon");
     logger.debug({ addon }, "Creating addon");
@@ -674,10 +709,12 @@ export class ServicesService extends BaseService implements IServicesService {
 
     await addons.insertOne(dbAddon);
 
-    await this.jobService.enqueueHook<IAddonHook, "onAddonCreated">(
-      "addon-hook",
-      "onAddonCreated",
-      dbAddon,
+    await this.eventService.emit(
+      ADDON_CREATED_EVENT_TYPE,
+      {
+        addon: dbAddon,
+      } satisfies AddonCreatedPayload,
+      source,
     );
 
     logger.debug({ addonId: dbAddon._id, name: dbAddon.name }, "Addon created");
@@ -688,6 +725,7 @@ export class ServicesService extends BaseService implements IServicesService {
   public async updateAddon(
     id: string,
     update: AppointmentAddonUpdateModel,
+    source: EventSource,
   ): Promise<void> {
     const logger = this.loggerFactory("updateAddon");
     logger.debug({ id, update }, "Updating addon");
@@ -719,17 +757,22 @@ export class ServicesService extends BaseService implements IServicesService {
 
     const updatedAddon = await this.getAddon(id);
 
-    await this.jobService.enqueueHook<IAddonHook, "onAddonUpdated">(
-      "addon-hook",
-      "onAddonUpdated",
-      updatedAddon!,
-      updateObj,
+    await this.eventService.emit(
+      ADDON_UPDATED_EVENT_TYPE,
+      {
+        addon: updatedAddon!,
+        update: updateObj,
+      } satisfies AddonUpdatedPayload,
+      source,
     );
 
     logger.debug({ addonId: id, name: update.name }, "Addon updated");
   }
 
-  public async deleteAddon(id: string): Promise<AppointmentAddon | null> {
+  public async deleteAddon(
+    id: string,
+    source: EventSource,
+  ): Promise<AppointmentAddon | null> {
     const logger = this.loggerFactory("deleteAddon");
     logger.debug({ id }, "Deleting addon");
     const client = await getDbClient();
@@ -769,10 +812,12 @@ export class ServicesService extends BaseService implements IServicesService {
 
         logger.debug({ addonId: id, optionsModifiedCount }, "Addon deleted");
 
-        await this.jobService.enqueueHook<IAddonHook, "onAddonsDeleted">(
-          "addon-hook",
-          "onAddonsDeleted",
-          [id],
+        await this.eventService.emit(
+          ADDON_DELETED_EVENT_TYPE,
+          {
+            addonIds: [id],
+          } satisfies AddonDeletedPayload,
+          source,
         );
 
         return addon;
@@ -784,7 +829,7 @@ export class ServicesService extends BaseService implements IServicesService {
     }
   }
 
-  public async deleteAddons(ids: string[]): Promise<void> {
+  public async deleteAddons(ids: string[], source: EventSource): Promise<void> {
     const logger = this.loggerFactory("deleteAddons");
     logger.debug({ ids }, "Deleting addons");
     const client = await getDbClient();
@@ -819,10 +864,12 @@ export class ServicesService extends BaseService implements IServicesService {
             },
           );
 
-        await this.jobService.enqueueHook<IAddonHook, "onAddonsDeleted">(
-          "addon-hook",
-          "onAddonsDeleted",
-          ids,
+        await this.eventService.emit(
+          ADDON_DELETED_EVENT_TYPE,
+          {
+            addonIds: ids,
+          } satisfies AddonDeletedPayload,
+          source,
         );
 
         logger.debug(
@@ -1015,6 +1062,7 @@ export class ServicesService extends BaseService implements IServicesService {
 
   public async createOption(
     addon: AppointmentOptionUpdateModel,
+    source: EventSource,
   ): Promise<AppointmentOption> {
     const logger = this.loggerFactory("createOption");
     logger.debug({ addon }, "Creating option");
@@ -1034,10 +1082,12 @@ export class ServicesService extends BaseService implements IServicesService {
 
     await options.insertOne(dbOption);
 
-    await this.jobService.enqueueHook<IServiceHook, "onServiceCreated">(
-      "service-hook",
-      "onServiceCreated",
-      dbOption,
+    await this.eventService.emit(
+      APPOINTMENT_OPTION_CREATED_EVENT_TYPE,
+      {
+        option: dbOption,
+      } satisfies AppointmentOptionCreatedPayload,
+      source,
     );
 
     logger.debug(
@@ -1051,6 +1101,7 @@ export class ServicesService extends BaseService implements IServicesService {
   public async updateOption(
     id: string,
     update: AppointmentOptionUpdateModel,
+    source: EventSource,
   ): Promise<void> {
     const logger = this.loggerFactory("updateOption");
     logger.debug({ id, update }, "Updating option");
@@ -1082,17 +1133,22 @@ export class ServicesService extends BaseService implements IServicesService {
 
     const updatedOption = await this.getOption(id);
 
-    await this.jobService.enqueueHook<IServiceHook, "onServiceUpdated">(
-      "service-hook",
-      "onServiceUpdated",
-      updatedOption!,
-      updateObj,
+    await this.eventService.emit(
+      APPOINTMENT_OPTION_UPDATED_EVENT_TYPE,
+      {
+        option: updatedOption!,
+        update: updateObj,
+      } satisfies AppointmentOptionUpdatedPayload,
+      source,
     );
 
     logger.debug({ optionId: id, name: update.name }, "Option updated");
   }
 
-  public async deleteOption(id: string): Promise<AppointmentOption | null> {
+  public async deleteOption(
+    id: string,
+    source: EventSource,
+  ): Promise<AppointmentOption | null> {
     const logger = this.loggerFactory("deleteOption");
     logger.debug({ id }, "Deleting option");
     const client = await getDbClient();
@@ -1133,10 +1189,12 @@ export class ServicesService extends BaseService implements IServicesService {
             },
           );
 
-        await this.jobService.enqueueHook<IServiceHook, "onServicesDeleted">(
-          "service-hook",
-          "onServicesDeleted",
-          [id],
+        await this.eventService.emit(
+          APPOINTMENT_OPTION_DELETED_EVENT_TYPE,
+          {
+            optionIds: [id],
+          } satisfies AppointmentOptionDeletedPayload,
+          source,
         );
 
         logger.debug(
@@ -1153,7 +1211,10 @@ export class ServicesService extends BaseService implements IServicesService {
     }
   }
 
-  public async deleteOptions(ids: string[]): Promise<void> {
+  public async deleteOptions(
+    ids: string[],
+    source: EventSource,
+  ): Promise<void> {
     const logger = this.loggerFactory("deleteOptions");
     logger.debug({ ids }, "Deleting options");
     const client = await getDbClient();
@@ -1194,10 +1255,12 @@ export class ServicesService extends BaseService implements IServicesService {
             },
           );
 
-        await this.jobService.enqueueHook<IServiceHook, "onServicesDeleted">(
-          "service-hook",
-          "onServicesDeleted",
-          ids,
+        await this.eventService.emit(
+          APPOINTMENT_OPTION_DELETED_EVENT_TYPE,
+          {
+            optionIds: ids,
+          } satisfies AppointmentOptionDeletedPayload,
+          source,
         );
 
         logger.debug(
@@ -1487,6 +1550,7 @@ export class ServicesService extends BaseService implements IServicesService {
 
   public async createDiscount(
     discount: DiscountUpdateModel,
+    source: EventSource,
   ): Promise<Discount> {
     const logger = this.loggerFactory("createDiscount");
     logger.debug({ discount }, "Creating discount");
@@ -1507,10 +1571,12 @@ export class ServicesService extends BaseService implements IServicesService {
 
     await discounts.insertOne(dbDiscount);
 
-    await this.jobService.enqueueHook<IDiscountHook, "onDiscountCreated">(
-      "discount-hook",
-      "onDiscountCreated",
-      dbDiscount,
+    await this.eventService.emit(
+      DISCOUNT_CREATED_EVENT_TYPE,
+      {
+        discount: dbDiscount,
+      } satisfies DiscountCreatedPayload,
+      source,
     );
 
     logger.debug(
@@ -1524,6 +1590,7 @@ export class ServicesService extends BaseService implements IServicesService {
   public async updateDiscount(
     id: string,
     update: DiscountUpdateModel,
+    source: EventSource,
   ): Promise<void> {
     const logger = this.loggerFactory("updateDiscount");
     logger.debug({ id, update }, "Updating discount");
@@ -1559,17 +1626,22 @@ export class ServicesService extends BaseService implements IServicesService {
 
     const updatedDiscount = await this.getDiscount(id);
 
-    await this.jobService.enqueueHook<IDiscountHook, "onDiscountUpdated">(
-      "discount-hook",
-      "onDiscountUpdated",
-      updatedDiscount!,
-      updateObj,
+    await this.eventService.emit(
+      DISCOUNT_UPDATED_EVENT_TYPE,
+      {
+        discount: updatedDiscount!,
+        update: updateObj,
+      } satisfies DiscountUpdatedPayload,
+      source,
     );
 
     logger.debug({ discountId: id, name: update.name }, "Discount updated");
   }
 
-  public async deleteDiscount(id: string): Promise<Discount | null> {
+  public async deleteDiscount(
+    id: string,
+    source: EventSource,
+  ): Promise<Discount | null> {
     const logger = this.loggerFactory("deleteDiscount");
     logger.debug({ id }, "Deleting discount");
     const db = await getDbConnection();
@@ -1586,10 +1658,12 @@ export class ServicesService extends BaseService implements IServicesService {
       return null;
     }
 
-    await this.jobService.enqueueHook<IDiscountHook, "onDiscountsDeleted">(
-      "discount-hook",
-      "onDiscountsDeleted",
-      [id],
+    await this.eventService.emit(
+      DISCOUNT_DELETED_EVENT_TYPE,
+      {
+        discountIds: [id],
+      } satisfies DiscountDeletedPayload,
+      source,
     );
 
     logger.debug({ discountId: id }, "Discount deleted");
@@ -1597,7 +1671,10 @@ export class ServicesService extends BaseService implements IServicesService {
     return discount;
   }
 
-  public async deleteDiscounts(ids: string[]): Promise<void> {
+  public async deleteDiscounts(
+    ids: string[],
+    source: EventSource,
+  ): Promise<void> {
     const logger = this.loggerFactory("deleteDiscounts");
     logger.debug({ ids }, "Deleting discounts");
     const db = await getDbConnection();
@@ -1611,10 +1688,12 @@ export class ServicesService extends BaseService implements IServicesService {
       organizationId: this.organizationId,
     });
 
-    await this.jobService.enqueueHook<IDiscountHook, "onDiscountsDeleted">(
-      "discount-hook",
-      "onDiscountsDeleted",
-      ids,
+    await this.eventService.emit(
+      DISCOUNT_DELETED_EVENT_TYPE,
+      {
+        discountIds: ids,
+      } satisfies DiscountDeletedPayload,
+      source,
     );
 
     logger.debug({ ids, discountsDeletedCount }, "Discounts deleted");

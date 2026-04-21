@@ -19,7 +19,8 @@
     "eventTypes": {
       "label": "Event Types",
       "tooltip": "Select which events should trigger webhooks to this URL",
-      "placeholder": "Select events"
+      "placeholder": "Select events",
+      "loading": "Loading event types…"
     },
     "connect": "Connect with <app></app>",
     "unselectEvent": "Unselect event"
@@ -27,146 +28,150 @@
   "eventTypes": {
     "appointment": {
       "created": {
-        "label": "Appointment Created",
-        "description": "Triggered when a new appointment is created"
-      },
-      "status_changed": {
-        "label": "Appointment Status Changed",
-        "description": "Triggered when appointment status changes"
+        "label": "Appointment created",
+        "description": "Emitted when a new appointment is created"
       },
       "rescheduled": {
-        "label": "Appointment Rescheduled",
-        "description": "Triggered when appointment is rescheduled"
+        "label": "Appointment updated",
+        "description": "Emitted when an appointment is updated (full event save, including reschedule fields)"
+      },
+      "slotRescheduled": {
+        "label": "Appointment rescheduled",
+        "description": "Emitted when only appointment time or duration changes"
+      },
+      "statusChanged": {
+        "label": "Appointment status changed",
+        "description": "Emitted when appointment status changes"
       }
     },
     "customer": {
       "created": {
-        "label": "Customer Created",
-        "description": "Triggered when a new customer is created"
+        "label": "Customer created",
+        "description": "Emitted when a new customer is created"
       },
       "updated": {
-        "label": "Customer Updated",
-        "description": "Triggered when customer information is updated"
-      }
-    },
-    "customers": {
+        "label": "Customer updated",
+        "description": "Emitted when customer data is updated"
+      },
       "deleted": {
-        "label": "Customers Deleted",
-        "description": "Triggered when customers are deleted"
+        "label": "Customers deleted",
+        "description": "Emitted when one or more customers are deleted"
       }
     },
     "payment": {
       "created": {
-        "label": "Payment Created",
-        "description": "Triggered when a new payment is created"
+        "label": "Payment created",
+        "description": "Emitted when a payment is created"
       },
       "updated": {
-        "label": "Payment Updated",
-        "description": "Triggered when payment information is updated"
+        "label": "Payment updated",
+        "description": "Emitted when a payment is updated"
       },
       "deleted": {
-        "label": "Payment Deleted",
-        "description": "Triggered when a payment is deleted"
+        "label": "Payment deleted",
+        "description": "Emitted when a payment is deleted"
       },
       "refunded": {
-        "label": "Payment Refunded",
-        "description": "Triggered when a payment is refunded"
+        "label": "Payment refunded",
+        "description": "Emitted when a payment is refunded"
       }
     },
-    "waitlist-entry": {
+    "giftCard": {
       "created": {
-        "label": "Waitlist Entry Created",
-        "description": "Triggered when a waitlist entry is created (Waitlist app is required)"
-      }
-    },
-    "waitlist-entries": {
-      "dismissed": {
-        "label": "Waitlist Entries Dismissed",
-        "description": "Triggered when a waitlist entries are dismissed (Waitlist app is required)"
-      }
-    },
-    "form-response": {
-      "created": {
-        "label": "Form Response Created",
-        "description": "Triggered when a form response is created (Forms app is required)"
-      }
-    },
-    "gift-card": {
-      "created": {
-        "label": "Gift Card Created",
-        "description": "Triggered when a gift card is created"
+        "label": "Gift card created",
+        "description": "Emitted when a gift card is created"
       },
       "updated": {
-        "label": "Gift Card Updated",
-        "description": "Triggered when a gift card is updated"
+        "label": "Gift card updated",
+        "description": "Emitted when a gift card is updated"
       },
       "deleted": {
-        "label": "Gift Cards Deleted",
-        "description": "Triggered when a gift cards are deleted"
+        "label": "Gift cards deleted",
+        "description": "Emitted when gift cards are deleted"
       },
-      "status_changed": {
-        "label": "Gift Cards Status Changed",
-        "description": "Triggered when a gift cards status changes"
-      }
-    },
-    "discount": {
-      "created": {
-        "label": "Discount Created",
-        "description": "Triggered when a discount is created"
-      },
-      "updated": {
-        "label": "Discount Updated",
-        "description": "Triggered when a discount is updated"
-      },
-      "deleted": {
-        "label": "Discounts Deleted",
-        "description": "Triggered when discounts are deleted"
-      },
-      "applied": {
-        "label": "Discount Applied",
-        "description": "Triggered when a discount is applied"
-      }
-    },
-    "service": {
-      "created": {
-        "label": "Service Created",
-        "description": "Triggered when a service is created"
-      },
-      "updated": {
-        "label": "Service Updated",
-        "description": "Triggered when a service is updated"
-      },
-      "deleted": {
-        "label": "Services Deleted",
-        "description": "Triggered when services are deleted"
-      }
-    },
-    "addon": {
-      "created": {
-        "label": "Addon Created",
-        "description": "Triggered when an addon is created"
-      },
-      "updated": {
-        "label": "Addon Updated",
-        "description": "Triggered when an addon is updated"
-      },
-      "deleted": {
-        "label": "Addons Deleted",
-        "description": "Triggered when addons are deleted"
+      "statusChanged": {
+        "label": "Gift cards status changed",
+        "description": "Emitted when gift card status changes"
       }
     },
     "field": {
       "created": {
-        "label": "Field Created",
-        "description": "Triggered when a field is created"
+        "label": "Field created",
+        "description": "Emitted when a booking field is created"
       },
       "updated": {
-        "label": "Field Updated",
-        "description": "Triggered when a field is updated"
+        "label": "Field updated",
+        "description": "Emitted when a booking field is updated"
       },
       "deleted": {
-        "label": "Fields Deleted",
-        "description": "Triggered when fields are deleted"
+        "label": "Fields deleted",
+        "description": "Emitted when booking fields are deleted"
+      }
+    },
+    "addon": {
+      "created": {
+        "label": "Addon created",
+        "description": "Emitted when an addon is created"
+      },
+      "updated": {
+        "label": "Addon updated",
+        "description": "Emitted when an addon is updated"
+      },
+      "deleted": {
+        "label": "Addons deleted",
+        "description": "Emitted when addons are deleted"
+      }
+    },
+    "appointmentOption": {
+      "created": {
+        "label": "Appointment option created",
+        "description": "Emitted when a service/option is created"
+      },
+      "updated": {
+        "label": "Appointment option updated",
+        "description": "Emitted when a service/option is updated"
+      },
+      "deleted": {
+        "label": "Appointment options deleted",
+        "description": "Emitted when services/options are deleted"
+      }
+    },
+    "discount": {
+      "created": {
+        "label": "Discount created",
+        "description": "Emitted when a discount is created"
+      },
+      "updated": {
+        "label": "Discount updated",
+        "description": "Emitted when a discount is updated"
+      },
+      "deleted": {
+        "label": "Discounts deleted",
+        "description": "Emitted when discounts are deleted"
+      },
+      "applied": {
+        "label": "Discount applied to appointment",
+        "description": "Emitted when a discount is applied during booking"
+      }
+    },
+    "waitlist": {
+      "entry": {
+        "created": {
+          "label": "Waitlist entry created",
+          "description": "Emitted when a waitlist entry is created (Waitlist app)"
+        },
+        "dismissed": {
+          "label": "Waitlist entries dismissed",
+          "description": "Emitted when waitlist entries are dismissed (Waitlist app)"
+        }
+      }
+    },
+    "form": {
+      "response": {
+        "created": {
+          "label": "Form response created",
+          "description": "Emitted when a form response is submitted (Forms app)"
+        }
       }
     }
   },

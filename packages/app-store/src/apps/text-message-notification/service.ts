@@ -7,16 +7,18 @@ import {
   ConnectedAppData,
   ConnectedAppRequestError,
   ConnectedAppStatusWithText,
+  EventEnvelope,
   GeneralConfiguration,
-  IAppointmentHook,
   IConnectedApp,
   IConnectedAppProps,
+  IEventSubscriber,
   ITextMessageResponder,
   RespondResult,
   SocialConfiguration,
   TextMessageReply,
 } from "@timelish/types";
 import {
+  dispatchAppointmentEventPayload,
   formatAmountString,
   getAdminUrl,
   getArguments,
@@ -35,7 +37,7 @@ import {
 } from "./translations/types";
 
 export class TextMessageNotificationConnectedApp
-  implements IConnectedApp, IAppointmentHook, ITextMessageResponder
+  implements IConnectedApp, IEventSubscriber, ITextMessageResponder
 {
   protected readonly loggerFactory: LoggerFactory;
 
@@ -44,6 +46,48 @@ export class TextMessageNotificationConnectedApp
       "TextMessageNotificationConnectedApp",
       props.organizationId,
     );
+  }
+
+  public async onEvent(
+    appData: ConnectedAppData,
+    envelope: EventEnvelope,
+  ): Promise<void> {
+    await dispatchAppointmentEventPayload(envelope, {
+      onAppointmentCreated: (appointment, confirmed) =>
+        this.onAppointmentCreated(appData, appointment, confirmed),
+      onAppointmentFullRescheduled: (
+        appointment,
+        newTime,
+        newDuration,
+        _oldTime,
+        _oldDuration,
+        _doNotNotify,
+        _source,
+      ) =>
+        this.onAppointmentRescheduled(
+          appData,
+          appointment,
+          newTime,
+          newDuration,
+        ),
+      onAppointmentSlotRescheduled: (
+        appointment,
+        newTime,
+        newDuration,
+        _oldTime,
+        _oldDuration,
+        _doNotNotify,
+        _source,
+      ) =>
+        this.onAppointmentRescheduled(
+          appData,
+          appointment,
+          newTime,
+          newDuration,
+        ),
+      onAppointmentStatusChanged: (appointment, newStatus, _oldStatus, _source) =>
+        this.onAppointmentStatusChanged(appData, appointment, newStatus),
+    });
   }
 
   public async processRequest(
@@ -473,6 +517,7 @@ export class TextMessageNotificationConnectedApp
       await this.props.services.bookingService.changeAppointmentStatus(
         appointment._id,
         newStatus,
+        { type: "customer" },
       );
 
       const organization =

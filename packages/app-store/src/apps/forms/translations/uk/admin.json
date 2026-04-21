@@ -196,6 +196,12 @@
     "dialog": {
       "cancel": "Скасувати",
       "continue": "Продовжити"
+    },
+    "events": {
+      "responseCreated": {
+        "title": "Відповідь на форму надіслано",
+        "description": "{formName} · відповідь"
+      }
     }
   },
   "form": {
@@ -253,7 +259,7 @@
         "description": "Тип поля",
         "labels": {
           "name": "Ім'я",
-          "email": "Email",
+          "email": "Електронна пошта",
           "phone": "Телефон",
           "oneLine": "Один рядок",
           "multiLine": "Кілька рядків",
@@ -305,7 +311,7 @@
         "accept": {
           "label": "Дозволені типи файлів",
           "description": "Дозволені типи файлів для завантаження",
-          "placeholder": "image/*, video/*, audio/*"
+          "placeholder": "зображення/*, відео/*, аудіо/*"
         }
       },
       "text": {

@@ -17,6 +17,7 @@ import { ArrowLeft } from "lucide-react";
 // import Image from "next/image";
 import React from "react";
 import { AddOrUpdateAppButton } from "../add-or-update-app-dialog";
+import { AppEventSubscriptionsDialog } from "./app-event-subscriptions-dialog";
 import { getInstalledApps } from "./actions";
 import { InstallComplexAppButton } from "./install-complex-app-button";
 
@@ -64,6 +65,18 @@ export const AppDetails: React.FC<AppDetailsProps> = async ({ appName }) => {
                   : scope}
               </span>
             ))}
+            {!!app.subscribeTo?.length && (
+              <AppEventSubscriptionsDialog
+                patterns={[...app.subscribeTo].sort()}
+                triggerLabel={t(
+                  "apps.common.eventSubscriptions.viewPatterns" as any,
+                )}
+                title={t("apps.common.eventSubscriptions.modalTitle" as any)}
+                description={t(
+                  "apps.common.eventSubscriptions.modalDescription" as any,
+                )}
+              />
+            )}
           </div>
           <div>
             {app.type !== "complex" && app.type !== "system" ? (

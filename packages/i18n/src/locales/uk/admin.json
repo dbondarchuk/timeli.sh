@@ -95,9 +95,122 @@
     },
     "pricePerHour": "{price}/год"
   },
+  "platformEvents": {
+    "customer": {
+      "created": {
+        "title": "Новий клієнт",
+        "description": "{customerName}"
+      },
+      "updated": {
+        "title": "Клієнта оновлено",
+        "description": "{customerName}"
+      },
+      "deleted": {
+        "title": "Клієнтів видалено",
+        "description": "{count, plural, =1 {# клієнт} few {# клієнти} other {# клієнтів}} — {names}"
+      }
+    },
+    "payment": {
+      "created": {
+        "title": "Платіж записано",
+        "description": "{type} · {amount}"
+      },
+      "updated": {
+        "title": "Платіж оновлено",
+        "description": "{status} · {amount}"
+      },
+      "deleted": {
+        "title": "Платіж видалено",
+        "description": "{amount}"
+      },
+      "refunded": {
+        "title": "Повернення платежу",
+        "description": "{refundAmount} з {amount}"
+      }
+    },
+    "giftCard": {
+      "created": {
+        "title": "Подарункову карту видано",
+        "description": "{code}"
+      },
+      "updated": {
+        "title": "Подарункову карту оновлено",
+        "description": "{code}"
+      },
+      "statusChanged": {
+        "title": "Змінено статус карток",
+        "description": "{count, plural, =1 {# карта} few {# карти} other {# карт}} → {status}"
+      },
+      "deleted": {
+        "title": "Подарункові карти видалено",
+        "description": "{count, plural, =1 {# карта} few {# карти} other {# карт}}"
+      }
+    },
+    "field": {
+      "created": {
+        "title": "Поле створено",
+        "description": "{name}"
+      },
+      "updated": {
+        "title": "Поле оновлено",
+        "description": "{name}"
+      },
+      "deleted": {
+        "title": "Поля видалено",
+        "description": "{count, plural, =1 {# поле} few {# поля} other {# полів}}"
+      }
+    },
+    "addon": {
+      "created": {
+        "title": "Додаток створено",
+        "description": "{name}"
+      },
+      "updated": {
+        "title": "Додаток оновлено",
+        "description": "{name}"
+      },
+      "deleted": {
+        "title": "Додатки видалено",
+        "description": "{count, plural, =1 {# додаток} few {# додатки} other {# додатків}}"
+      }
+    },
+    "appointmentOption": {
+      "created": {
+        "title": "Опцію послуги створено",
+        "description": "{name}"
+      },
+      "updated": {
+        "title": "Опцію послуги оновлено",
+        "description": "{name}"
+      },
+      "deleted": {
+        "title": "Опції послуг видалено",
+        "description": "{count, plural, =1 {# опція} few {# опції} other {# опцій}}"
+      }
+    },
+    "discount": {
+      "created": {
+        "title": "Знижку створено",
+        "description": "{name}"
+      },
+      "updated": {
+        "title": "Знижку оновлено",
+        "description": "{name}"
+      },
+      "deleted": {
+        "title": "Знижки видалено",
+        "description": "{count, plural, =1 {# знижка} few {# знижки} other {# знижок}}"
+      },
+      "applied": {
+        "title": "Знижку застосовано",
+        "description": "{customerName} · {discountName} ({value})"
+      }
+    }
+  },
   "navigation": {
     "overview": "Огляд",
     "dashboard": "Панель керування",
+    "activity": "Активність",
     "appointments": "Записи",
     "schedule": "Розклад",
     "defaultSchedule": "Розклад за замовчуванням",
@@ -399,10 +512,38 @@
       "oldOption": "Стара опція: {oldOption}",
       "newOption": "Нова опція: {newOption}"
     },
+    "events": {
+      "created": {
+        "title": "Новий запис",
+        "description": "{customerName} створив(ла) запит на {serviceName}"
+      },
+      "updated": {
+        "title": "Запис оновлено",
+        "description": "{customerName} — {serviceName}"
+      },
+      "rescheduled": {
+        "title": "Запис перенесено",
+        "description": "{customerName} — {serviceName}"
+      },
+      "statusChanged": {
+        "title": "Змінено статус запису",
+        "description": "{customerName}: {oldStatus} → {newStatus}"
+      }
+    },
     "notifications": {
       "appointmentCreated": {
         "title": "Запис створений",
         "message": "Запис створений для {name} на {service} {dateTime} {durationHours, plural, =0 {{durationMinutes} хв} other {# год, {durationMinutes} хв}}",
+        "action": "Переглянути"
+      },
+      "appointmentRescheduled": {
+        "title": "Запис перенесений",
+        "message": "{name} перенес {service}.",
+        "action": "Переглянути"
+      },
+      "appointmentCancelled": {
+        "title": "Запис скасовано",
+        "message": "{name} скасував {service}.",
         "action": "Переглянути"
       }
     }
@@ -466,6 +607,51 @@
       "copied": "Скопійовано",
       "relativeUrlCopied": "Відносний url ресурсу '{url}' скопійовано в буфер обміну.",
       "absoluteUrlCopied": "Абсолютний url ресурсу '{url}' скопійовано в буфер обміну."
+    }
+  },
+  "activity": {
+    "actor": {
+      "system": "Система",
+      "user": "Користувач: {name}",
+      "customer": "Клієнт: <link></link>"
+    },
+    "page": {
+      "description": "Хронологія важливих подій організації."
+    },
+    "header": {
+      "openFeed": "Відкрити стрічку активності",
+      "recent": "Остання активність",
+      "empty": "Поки немає активності.",
+      "viewAll": "Уся активність"
+    },
+    "severity": {
+      "info": "Інфо",
+      "success": "Успіх",
+      "warning": "Попередження",
+      "error": "Помилка"
+    },
+    "table": {
+      "searchPlaceholder": "Пошук за типом події, заголовком або опису…",
+      "dateRange": "Період",
+      "filters": {
+        "severity": "Важливість",
+        "actor": "Актор",
+        "eventType": "Тип події",
+        "actorKind": {
+          "system": "Система",
+          "user": "Користувач",
+          "customer": "Клієнт"
+        }
+      },
+      "columns": {
+        "createdAt": "Дата",
+        "severity": "Важливість",
+        "actor": "Актор",
+        "eventType": "Тип події",
+        "title": "Заголовок",
+        "description": "Опис",
+        "link": "Посилання"
+      }
     }
   },
   "communicationLogs": {
@@ -1658,6 +1844,31 @@
       "migrate": "Мігрувати",
       "toasts": {
         "requestError": "Ваш запит не вдався"
+      }
+    },
+    "events": {
+      "installed": {
+        "title": "Застосунок встановлено",
+        "description": "{appDisplayName} встановлено."
+      },
+      "connected": {
+        "title": "Застосунок підключено",
+        "description": "{appDisplayName} підключено."
+      },
+      "uninstalled": {
+        "title": "Застосунок видалено",
+        "description": "{appDisplayName} видалено."
+      },
+      "failed": {
+        "title": "Застосунок не вдалося підключити",
+        "description": "{appDisplayName} не вдалося підключити."
+      }
+    },
+    "notifications": {
+      "failed": {
+        "title": "Підключення застосунку не вдалося",
+        "message": "{appDisplayName} не вдалося підключити. Перевірте налаштування застосунку.",
+        "action": "Відкрити застосунки"
       }
     }
   },

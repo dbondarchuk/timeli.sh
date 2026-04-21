@@ -1,9 +1,4 @@
 {
-  "apps": {
-    "scopes": {
-      "waitlist-hook": "Хук черги"
-    }
-  },
   "admin": {
     "bookingTracking": {
       "convertedTo": {

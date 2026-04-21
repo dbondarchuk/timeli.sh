@@ -827,6 +827,7 @@ export class GiftCardStudioRepositoryService {
 
     const deletedGiftCard = await this.services.giftCardsService.deleteGiftCard(
       giftCard.giftCardId,
+      { actor: "system" },
       this.appId,
     );
     if (!deletedGiftCard) {

@@ -1,0 +1,228 @@
+import type { Appointment, AppointmentStatus } from "../booking/appointment";
+import type {
+  AppointmentAddon,
+  AppointmentAddonUpdateModel,
+  AppointmentOption,
+  AppointmentOptionUpdateModel,
+} from "../booking/appointment-option";
+import type { Discount, DiscountUpdateModel } from "../booking/discount";
+import type {
+  GiftCardListModel,
+  GiftCardStatus,
+  GiftCardUpdateModel,
+} from "../booking/gift-card";
+import type { Payment, PaymentUpdateModel } from "../booking/payment";
+import type { ServiceField, ServiceFieldUpdateModel } from "../booking/field";
+import type { Customer, CustomerUpdateModel } from "../customers/customer";
+import {
+  APP_INSTALLED_EVENT_TYPE,
+  APP_UNINSTALLED_EVENT_TYPE,
+  APP_CONNECTED_EVENT_TYPE,
+  APP_FAILED_EVENT_TYPE,
+  ADDON_CREATED_EVENT_TYPE,
+  ADDON_DELETED_EVENT_TYPE,
+  ADDON_UPDATED_EVENT_TYPE,
+  APPOINTMENT_CREATED_EVENT_TYPE,
+  APPOINTMENT_OPTION_CREATED_EVENT_TYPE,
+  APPOINTMENT_OPTION_DELETED_EVENT_TYPE,
+  APPOINTMENT_OPTION_UPDATED_EVENT_TYPE,
+  APPOINTMENT_RESCHEDULED_EVENT_TYPE,
+  APPOINTMENT_SLOT_RESCHEDULED_EVENT_TYPE,
+  APPOINTMENT_STATUS_CHANGED_EVENT_TYPE,
+  CUSTOMER_CREATED_EVENT_TYPE,
+  CUSTOMER_DELETED_EVENT_TYPE,
+  CUSTOMER_UPDATED_EVENT_TYPE,
+  DISCOUNT_APPLIED_EVENT_TYPE,
+  DISCOUNT_CREATED_EVENT_TYPE,
+  DISCOUNT_DELETED_EVENT_TYPE,
+  DISCOUNT_UPDATED_EVENT_TYPE,
+  FIELD_CREATED_EVENT_TYPE,
+  FIELD_DELETED_EVENT_TYPE,
+  FIELD_UPDATED_EVENT_TYPE,
+  GIFT_CARD_CREATED_EVENT_TYPE,
+  GIFT_CARD_DELETED_EVENT_TYPE,
+  GIFT_CARD_STATUS_CHANGED_EVENT_TYPE,
+  GIFT_CARD_UPDATED_EVENT_TYPE,
+  PAYMENT_CREATED_EVENT_TYPE,
+  PAYMENT_DELETED_EVENT_TYPE,
+  PAYMENT_REFUNDED_EVENT_TYPE,
+  PAYMENT_UPDATED_EVENT_TYPE,
+} from "./core-events";
+
+/** Emitted with {@link APPOINTMENT_CREATED_EVENT_TYPE}. */
+export type AppointmentCreatedPayload = {
+  appointment: Appointment;
+  confirmed: boolean;
+};
+
+/** Emitted with {@link APPOINTMENT_RESCHEDULED_EVENT_TYPE} (full appointment update). */
+export type AppointmentRescheduledPayload = {
+  updatedAppointment: Appointment;
+  dateTime: Date;
+  totalDuration: number;
+  previousDateTime: Date;
+  previousTotalDuration: number;
+  doNotNotifyCustomer?: boolean;
+};
+
+/** Emitted with {@link APPOINTMENT_SLOT_RESCHEDULED_EVENT_TYPE} (time/duration delta reschedule). */
+export type AppointmentSlotRescheduledPayload = {
+  appointment: Appointment;
+  newTime: Date;
+  newDuration: number;
+  oldTime?: Date;
+  oldDuration?: number;
+  doNotNotifyCustomer?: boolean;
+};
+
+/** Emitted with {@link APPOINTMENT_STATUS_CHANGED_EVENT_TYPE}. */
+export type AppointmentStatusChangedPayload = {
+  appointment: Appointment;
+  newStatus: AppointmentStatus;
+  oldStatus?: AppointmentStatus;
+};
+
+/** Emitted with {@link DISCOUNT_APPLIED_EVENT_TYPE}. */
+export type DiscountAppliedPayload = {
+  customer: Customer;
+  discount: {
+    id: string;
+    name: string;
+    value: number;
+    code?: string;
+    dateTime: Date;
+    appointmentId: string;
+    appointmentOptionId?: string;
+    appointmentAddonIds?: string[];
+    appointmentTotalPrice: number;
+    appointmentDateTime: Date;
+  };
+};
+
+export type CustomerCreatedPayload = { customer: Customer };
+
+export type CustomerUpdatedPayload = {
+  customer: Customer;
+  update: CustomerUpdateModel;
+};
+
+export type CustomerDeletedPayload = { customers: Customer[] };
+
+export type PaymentCreatedPayload = { payment: Payment };
+
+export type PaymentUpdatedPayload = {
+  payment: Payment;
+  update: Partial<PaymentUpdateModel>;
+};
+
+export type PaymentDeletedPayload = { payment: Payment };
+
+export type PaymentRefundedPayload = { payment: Payment; amount: number };
+
+export type GiftCardCreatedPayload = { giftCard: GiftCardListModel };
+
+export type GiftCardUpdatedPayload = {
+  giftCard: GiftCardListModel;
+  previous: GiftCardUpdateModel;
+};
+
+export type GiftCardStatusChangedPayload = {
+  ids: string[];
+  status: GiftCardStatus;
+};
+
+export type GiftCardDeletedPayload = { giftCardIds: string[] };
+
+export type FieldCreatedPayload = { field: ServiceField };
+
+export type FieldUpdatedPayload = {
+  field: ServiceField;
+  update: Partial<ServiceFieldUpdateModel>;
+};
+
+export type FieldDeletedPayload = { fieldIds: string[] };
+
+export type AddonCreatedPayload = { addon: AppointmentAddon };
+
+export type AddonUpdatedPayload = {
+  addon: AppointmentAddon;
+  update: Partial<AppointmentAddonUpdateModel>;
+};
+
+export type AddonDeletedPayload = { addonIds: string[] };
+
+export type AppointmentOptionCreatedPayload = { option: AppointmentOption };
+
+export type AppointmentOptionUpdatedPayload = {
+  option: AppointmentOption;
+  update: Partial<AppointmentOptionUpdateModel>;
+};
+
+export type AppointmentOptionDeletedPayload = { optionIds: string[] };
+
+export type DiscountCreatedPayload = { discount: Discount };
+
+export type DiscountUpdatedPayload = {
+  discount: Discount;
+  update: Partial<DiscountUpdateModel>;
+};
+
+export type DiscountDeletedPayload = { discountIds: string[] };
+
+export type AppInstalledPayload = {
+  appId: string;
+  appName: string;
+};
+
+export type AppUninstalledPayload = {
+  appId: string;
+  appName: string;
+};
+
+export type AppConnectedPayload = {
+  appId: string;
+  appName: string;
+};
+
+export type AppFailedPayload = {
+  appId: string;
+  appName: string;
+};
+
+/** Maps core platform event type strings to their payload shapes (services emits). */
+export type CoreEventPayloadByType = {
+  [CUSTOMER_CREATED_EVENT_TYPE]: CustomerCreatedPayload;
+  [CUSTOMER_UPDATED_EVENT_TYPE]: CustomerUpdatedPayload;
+  [CUSTOMER_DELETED_EVENT_TYPE]: CustomerDeletedPayload;
+  [PAYMENT_CREATED_EVENT_TYPE]: PaymentCreatedPayload;
+  [PAYMENT_UPDATED_EVENT_TYPE]: PaymentUpdatedPayload;
+  [PAYMENT_DELETED_EVENT_TYPE]: PaymentDeletedPayload;
+  [PAYMENT_REFUNDED_EVENT_TYPE]: PaymentRefundedPayload;
+  [GIFT_CARD_CREATED_EVENT_TYPE]: GiftCardCreatedPayload;
+  [GIFT_CARD_UPDATED_EVENT_TYPE]: GiftCardUpdatedPayload;
+  [GIFT_CARD_STATUS_CHANGED_EVENT_TYPE]: GiftCardStatusChangedPayload;
+  [GIFT_CARD_DELETED_EVENT_TYPE]: GiftCardDeletedPayload;
+  [FIELD_CREATED_EVENT_TYPE]: FieldCreatedPayload;
+  [FIELD_UPDATED_EVENT_TYPE]: FieldUpdatedPayload;
+  [FIELD_DELETED_EVENT_TYPE]: FieldDeletedPayload;
+  [ADDON_CREATED_EVENT_TYPE]: AddonCreatedPayload;
+  [ADDON_UPDATED_EVENT_TYPE]: AddonUpdatedPayload;
+  [ADDON_DELETED_EVENT_TYPE]: AddonDeletedPayload;
+  [APPOINTMENT_OPTION_CREATED_EVENT_TYPE]: AppointmentOptionCreatedPayload;
+  [APPOINTMENT_OPTION_UPDATED_EVENT_TYPE]: AppointmentOptionUpdatedPayload;
+  [APPOINTMENT_OPTION_DELETED_EVENT_TYPE]: AppointmentOptionDeletedPayload;
+  [DISCOUNT_CREATED_EVENT_TYPE]: DiscountCreatedPayload;
+  [DISCOUNT_UPDATED_EVENT_TYPE]: DiscountUpdatedPayload;
+  [DISCOUNT_DELETED_EVENT_TYPE]: DiscountDeletedPayload;
+  [DISCOUNT_APPLIED_EVENT_TYPE]: DiscountAppliedPayload;
+  [APPOINTMENT_CREATED_EVENT_TYPE]: AppointmentCreatedPayload;
+  [APPOINTMENT_RESCHEDULED_EVENT_TYPE]: AppointmentRescheduledPayload;
+  [APPOINTMENT_SLOT_RESCHEDULED_EVENT_TYPE]: AppointmentSlotRescheduledPayload;
+  [APPOINTMENT_STATUS_CHANGED_EVENT_TYPE]: AppointmentStatusChangedPayload;
+  [APP_INSTALLED_EVENT_TYPE]: AppInstalledPayload;
+  [APP_UNINSTALLED_EVENT_TYPE]: AppUninstalledPayload;
+  [APP_CONNECTED_EVENT_TYPE]: AppConnectedPayload;
+  [APP_FAILED_EVENT_TYPE]: AppFailedPayload;
+};
+
+export type CoreEventTypeString = keyof CoreEventPayloadByType;

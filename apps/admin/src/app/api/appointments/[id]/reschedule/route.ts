@@ -1,4 +1,4 @@
-import { getServicesContainer } from "@/app/utils";
+import { getServicesContainer, getSession } from "@/app/utils";
 import { getLoggerFactory } from "@timelish/logger";
 import { okStatus } from "@timelish/types";
 import { NextRequest, NextResponse } from "next/server";
@@ -18,6 +18,7 @@ export async function PATCH(
     "PATCH",
   );
   const servicesContainer = await getServicesContainer();
+  const session = await getSession();
   const { id } = await params;
 
   logger.debug(
@@ -44,6 +45,7 @@ export async function PATCH(
     id,
     data.dateTime,
     data.duration,
+    { type: "user", userId: session.user.id },
     data.doNotNotifyCustomer,
   );
 

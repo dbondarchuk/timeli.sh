@@ -1,7 +1,5 @@
 import { getLoggerFactory } from "@timelish/logger";
 import {
-  AppScope,
-  HookJobRequest,
   IJobService,
   Job,
   JobRequest,
@@ -162,31 +160,5 @@ export class BullMQJobService extends BaseBullMQClient implements IJobService {
     failed: number;
   }> {
     return this.getQueueStats(this.config.queues.job.name);
-  }
-
-  public async enqueueHook<
-    T extends Record<string, (...args: any[]) => Promise<void>>,
-    M extends keyof T & string,
-  >(scope: AppScope, method: M, ...args: Parameters<T[M]>): Promise<Job> {
-    const logger = this.loggerFactory("enqueueHook");
-    try {
-      logger.info({ scope, method }, "Enqueuing hook");
-
-      const jobRequest: HookJobRequest = {
-        type: "hook",
-        executeAt: "now",
-        scope,
-        method,
-        args,
-      };
-
-      const job = await this.scheduleJob(jobRequest);
-
-      logger.info({ scope, method }, "Hook enqueued");
-      return job;
-    } catch (error) {
-      logger.error({ error, scope, method, args }, "Failed to enqueue hook");
-      throw error;
-    }
   }
 }

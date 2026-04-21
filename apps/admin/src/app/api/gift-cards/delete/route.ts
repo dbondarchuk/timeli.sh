@@ -1,4 +1,4 @@
-import { getServicesContainer } from "@/app/utils";
+import { getActor, getServicesContainer } from "@/app/utils";
 import { bulkDeleteSchema } from "@timelish/api-sdk";
 import { getLoggerFactory } from "@timelish/logger";
 import { okStatus } from "@timelish/types";
@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   const logger = getLoggerFactory("AdminAPI/gift-cards/delete")("POST");
-
+  const actor = await getActor();
   const servicesContainer = await getServicesContainer();
   logger.debug(
     {
@@ -27,7 +27,8 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  await servicesContainer.giftCardsService.deleteGiftCards(data.ids);
+  await servicesContainer.giftCardsService.deleteGiftCards(data.ids, actor);
+
   logger.debug({ ids: data.ids }, "Gift cards deleted successfully");
   return NextResponse.json(okStatus, { status: 200 });
 }

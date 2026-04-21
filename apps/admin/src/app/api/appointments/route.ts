@@ -1,4 +1,4 @@
-import { getServicesContainer } from "@/app/utils";
+import { getServicesContainer, getSession } from "@/app/utils";
 import { appointmentsSearchParamsLoader } from "@timelish/api-sdk";
 import { getLoggerFactory } from "@timelish/logger";
 import { AppointmentEvent, appointmentEventSchema } from "@timelish/types";
@@ -68,6 +68,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   const logger = getLoggerFactory("AdminAPI/appointments")("POST");
   const servicesContainer = await getServicesContainer();
+  const session = await getSession();
 
   logger.debug(
     {
@@ -212,7 +213,7 @@ export async function POST(request: NextRequest) {
     confirmed,
     force: true,
     files,
-    by: "user",
+    actor: { type: "user", userId: session.user.id },
   });
 
   logger.debug(

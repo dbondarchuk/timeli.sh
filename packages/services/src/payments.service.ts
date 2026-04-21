@@ -1,14 +1,22 @@
 import {
   IConnectedAppsService,
-  IJobService,
-  IPaymentHook,
+  IEventService,
   IPaymentProcessor,
   IPaymentsService,
   OnlinePaymentMethod,
   Payment,
+  PAYMENT_CREATED_EVENT_TYPE,
+  PAYMENT_DELETED_EVENT_TYPE,
+  PAYMENT_REFUNDED_EVENT_TYPE,
+  PAYMENT_UPDATED_EVENT_TYPE,
   PaymentIntent,
   PaymentIntentUpdateModel,
   PaymentUpdateModel,
+  type EventSource,
+  type PaymentCreatedPayload,
+  type PaymentDeletedPayload,
+  type PaymentRefundedPayload,
+  type PaymentUpdatedPayload,
 } from "@timelish/types";
 import { ObjectId } from "mongodb";
 import {
@@ -22,7 +30,7 @@ export class PaymentsService extends BaseService implements IPaymentsService {
   public constructor(
     organizationId: string,
     protected readonly connectedAppsService: IConnectedAppsService,
-    protected readonly jobService: IJobService,
+    protected readonly eventService: IEventService,
   ) {
     super("PaymentsService", organizationId);
   }
@@ -200,7 +208,10 @@ export class PaymentsService extends BaseService implements IPaymentsService {
     return updatedIntent;
   }
 
-  public async createPayment(payment: PaymentUpdateModel): Promise<Payment> {
+  public async createPayment(
+    payment: PaymentUpdateModel,
+    source: EventSource,
+  ): Promise<Payment> {
     const logger = this.loggerFactory("createPayment");
     logger.debug(
       {
@@ -234,11 +245,12 @@ export class PaymentsService extends BaseService implements IPaymentsService {
       "Successfully created payment, executing hooks",
     );
 
-    // Execute payment hooks
-    await this.jobService.enqueueHook<IPaymentHook, "onPaymentCreated">(
-      "payment-hook",
-      "onPaymentCreated",
-      dbPayment,
+    await this.eventService.emit(
+      PAYMENT_CREATED_EVENT_TYPE,
+      {
+        payment: dbPayment,
+      } satisfies PaymentCreatedPayload,
+      source,
     );
 
     return dbPayment;
@@ -278,7 +290,9 @@ export class PaymentsService extends BaseService implements IPaymentsService {
     return payment;
   }
 
-  public async getPaymentByExternalId(externalId: string): Promise<Payment | null> {
+  public async getPaymentByExternalId(
+    externalId: string,
+  ): Promise<Payment | null> {
     const logger = this.loggerFactory("getPaymentByExternalId");
     logger.debug({ externalId }, "Getting payment by external id");
 
@@ -333,6 +347,7 @@ export class PaymentsService extends BaseService implements IPaymentsService {
   public async updatePayment(
     id: string,
     update: Partial<PaymentUpdateModel>,
+    source: EventSource,
   ): Promise<Payment> {
     const logger = this.loggerFactory("updatePayment");
     logger.debug({ paymentId: id, update }, "Updating payment");
@@ -371,18 +386,22 @@ export class PaymentsService extends BaseService implements IPaymentsService {
       "Successfully updated payment, executing hooks",
     );
 
-    // Execute payment hooks
-    await this.jobService.enqueueHook<IPaymentHook, "onPaymentUpdated">(
-      "payment-hook",
-      "onPaymentUpdated",
-      updatedPayment,
-      update,
+    await this.eventService.emit(
+      PAYMENT_UPDATED_EVENT_TYPE,
+      {
+        payment: updatedPayment,
+        update,
+      } satisfies PaymentUpdatedPayload,
+      source,
     );
 
     return updatedPayment;
   }
 
-  public async deletePayment(id: string): Promise<Payment | null> {
+  public async deletePayment(
+    id: string,
+    source: EventSource,
+  ): Promise<Payment | null> {
     const logger = this.loggerFactory("deletePayment");
     logger.debug({ paymentId: id }, "Deleting payment");
 
@@ -403,11 +422,12 @@ export class PaymentsService extends BaseService implements IPaymentsService {
       "Successfully deleted payment, executing hooks",
     );
 
-    // Execute payment hooks
-    await this.jobService.enqueueHook<IPaymentHook, "onPaymentDeleted">(
-      "payment-hook",
-      "onPaymentDeleted",
-      payment,
+    await this.eventService.emit(
+      PAYMENT_DELETED_EVENT_TYPE,
+      {
+        payment,
+      } satisfies PaymentDeletedPayload,
+      source,
     );
 
     return payment;
@@ -416,6 +436,7 @@ export class PaymentsService extends BaseService implements IPaymentsService {
   public async refundPayment(
     id: string,
     amount: number,
+    source: EventSource,
   ): Promise<
     | { success: false; error: string; status: number }
     | { success: true; updatedPayment: Payment }
@@ -477,15 +498,16 @@ export class PaymentsService extends BaseService implements IPaymentsService {
     }
 
     if (payment.method === "gift-card") {
-      return this.refundGiftCardPayment(payment, amount);
+      return this.refundGiftCardPayment(payment, amount, source);
     }
 
-    return this.refundOnlinePayment(payment, amount);
+    return this.refundOnlinePayment(payment, amount, source);
   }
 
   private async refundGiftCardPayment(
     payment: Payment,
     amount: number,
+    source: EventSource,
   ): Promise<
     | { success: false; error: string; status: number }
     | { success: true; updatedPayment: Payment }
@@ -496,22 +518,30 @@ export class PaymentsService extends BaseService implements IPaymentsService {
       "Processing gift card payment refund",
     );
 
-    const updatedPayment = await this.updatePayment(payment._id, {
-      status: "refunded",
-      refunds: [...(payment.refunds || []), { amount, refundedAt: new Date() }],
-    });
+    const updatedPayment = await this.updatePayment(
+      payment._id,
+      {
+        status: "refunded",
+        refunds: [
+          ...(payment.refunds || []),
+          { amount, refundedAt: new Date() },
+        ],
+      },
+      source,
+    );
 
     logger.debug(
       { paymentId: payment._id, amount },
       "Successfully processed gift card payment refund, executing hooks",
     );
 
-    // Execute payment hooks
-    await this.jobService.enqueueHook<IPaymentHook, "onPaymentRefunded">(
-      "payment-hook",
-      "onPaymentRefunded",
-      updatedPayment,
-      amount,
+    await this.eventService.emit(
+      PAYMENT_REFUNDED_EVENT_TYPE,
+      {
+        payment: updatedPayment,
+        amount,
+      } satisfies PaymentRefundedPayload,
+      source,
     );
 
     return { success: true, updatedPayment };
@@ -520,6 +550,7 @@ export class PaymentsService extends BaseService implements IPaymentsService {
   private async refundOnlinePayment(
     payment: Extract<Payment, { method: OnlinePaymentMethod }>,
     amount: number,
+    source: EventSource,
   ): Promise<
     | { success: false; error: string; status: number }
     | { success: true; updatedPayment: Payment }
@@ -546,25 +577,30 @@ export class PaymentsService extends BaseService implements IPaymentsService {
 
       const result = await service.refundPayment(app, payment, amount);
       if (result.success) {
-        const updatedPayment = await this.updatePayment(payment._id, {
-          status: "refunded",
-          refunds: [
-            ...(payment.refunds || []),
-            { amount, refundedAt: new Date() },
-          ],
-        });
+        const updatedPayment = await this.updatePayment(
+          payment._id,
+          {
+            status: "refunded",
+            refunds: [
+              ...(payment.refunds || []),
+              { amount, refundedAt: new Date() },
+            ],
+          },
+          source,
+        );
 
         logger.debug(
           { paymentId: payment._id, amount },
           "Successfully processed payment refund, executing hooks",
         );
 
-        // Execute payment hooks
-        await this.jobService.enqueueHook<IPaymentHook, "onPaymentRefunded">(
-          "payment-hook",
-          "onPaymentRefunded",
-          updatedPayment,
-          amount,
+        await this.eventService.emit(
+          PAYMENT_REFUNDED_EVENT_TYPE,
+          {
+            payment: updatedPayment,
+            amount,
+          } satisfies PaymentRefundedPayload,
+          source,
         );
 
         return { success: true, updatedPayment };

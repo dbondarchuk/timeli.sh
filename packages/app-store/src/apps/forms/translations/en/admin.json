@@ -196,6 +196,12 @@
     "dialog": {
       "cancel": "Cancel",
       "continue": "Continue"
+    },
+    "events": {
+      "responseCreated": {
+        "title": "Form response submitted",
+        "description": "{formName} · response"
+      }
     }
   },
   "form": {

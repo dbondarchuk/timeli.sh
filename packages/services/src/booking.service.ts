@@ -2,20 +2,24 @@ import { getDbClient, getDbConnection } from "./database";
 
 import { AvailableAppServices } from "@timelish/app-store/services";
 
-import { BaseAllKeys } from "@timelish/i18n";
 import {
   ApplyGiftCardsSuccessResponse,
   Appointment,
+  APPOINTMENT_CREATED_EVENT_TYPE,
+  APPOINTMENT_RESCHEDULED_EVENT_TYPE,
+  APPOINTMENT_SLOT_RESCHEDULED_EVENT_TYPE,
+  APPOINTMENT_STATUS_CHANGED_EVENT_TYPE,
   AppointmentChoice,
   AppointmentEntity,
   AppointmentHistoryEntry,
   AppointmentOnlineMeetingInformation,
   AppointmentTimeNotAvaialbleError,
+  bookingActorToEventSource,
+  DISCOUNT_APPLIED_EVENT_TYPE,
   FieldSchema,
   GetAppointmentOptionsResponse,
   IAvailabilityProvider,
-  IDashboardNotificationsService,
-  IJobService,
+  IEventService,
   IMeetingUrlProvider,
   IPaymentsService,
   IServicesService,
@@ -23,23 +27,27 @@ import {
   Payment,
   PaymentHistory,
   TimeSlot,
+  type AppointmentCreatedPayload,
   type AppointmentEvent,
+  type AppointmentRescheduledPayload,
+  type AppointmentSlotRescheduledPayload,
   type AppointmentStatus,
+  type AppointmentStatusChangedPayload,
   type Asset,
   type Availability,
   type BookingConfiguration,
+  type BookingEventActor,
   type CalendarEvent,
   type DateRange,
   type DaySchedule,
+  type DiscountAppliedPayload,
   type GeneralConfiguration,
-  type IAppointmentHook,
   type IAssetsService,
   type IBookingService,
   type ICalendarBusyTimeProvider,
   type IConfigurationService,
   type IConnectedAppsService,
   type ICustomersService,
-  type IDiscountHook,
   type IScheduleService,
   type IUserService,
   type Period,
@@ -48,7 +56,6 @@ import {
 } from "@timelish/types";
 import {
   buildSearchQuery,
-  durationToTime,
   escapeRegex,
   fileNameToMimeType,
   getAdminUrl,
@@ -69,6 +76,16 @@ import {
 } from "./collections";
 import { BaseService } from "./services/base.service";
 
+function historyActorFields(actor: BookingEventActor): {
+  by: "customer" | "user";
+  userId?: string;
+} {
+  if (actor.type === "user") {
+    return { by: "user", userId: actor.userId };
+  }
+  return { by: "customer" };
+}
+
 export class BookingService extends BaseService implements IBookingService {
   constructor(
     organizationId: string,
@@ -79,8 +96,7 @@ export class BookingService extends BaseService implements IBookingService {
     private readonly scheduleService: IScheduleService,
     private readonly servicesService: IServicesService,
     private readonly paymentsService: IPaymentsService,
-    private readonly jobService: IJobService,
-    private readonly dashboardNotificationsService: IDashboardNotificationsService,
+    private readonly eventService: IEventService,
     private readonly userService: IUserService,
   ) {
     super("bookingService", organizationId);
@@ -169,7 +185,7 @@ export class BookingService extends BaseService implements IBookingService {
     force = false,
     files,
     paymentIntentId,
-    by,
+    actor,
     giftCards,
   }: {
     event: AppointmentEvent;
@@ -177,7 +193,7 @@ export class BookingService extends BaseService implements IBookingService {
     force?: boolean;
     files?: Record<string, File>;
     paymentIntentId?: string;
-    by: "customer" | "user";
+    actor: BookingEventActor;
     giftCards?: ApplyGiftCardsSuccessResponse["giftCards"];
   }): Promise<Appointment> {
     const logger = this.loggerFactory("createAppointment");
@@ -201,15 +217,8 @@ export class BookingService extends BaseService implements IBookingService {
       "Creating event",
     );
 
-    const {
-      booking: config,
-      general: generalConfig,
-      brand: brandConfig,
-    } = await this.configurationService.getConfigurations(
-      "booking",
-      "general",
-      "brand",
-    );
+    const { booking: config, general: generalConfig } =
+      await this.configurationService.getConfigurations("booking", "general");
 
     if (!force) {
       const isAvailable = await this.verifyTimeAvailability(
@@ -324,7 +333,7 @@ export class BookingService extends BaseService implements IBookingService {
     const appointment = await this.saveEvent(
       appointmentId,
       event,
-      by,
+      actor,
       assets.length ? assets : undefined,
       paymentIntentId,
       meetingInformation,
@@ -338,55 +347,16 @@ export class BookingService extends BaseService implements IBookingService {
       "Event saved, executing hooks",
     );
 
-    await this.jobService.enqueueHook<IAppointmentHook, "onAppointmentCreated">(
-      "appointment-hook",
-      "onAppointmentCreated",
-      appointment,
-      confirmed,
-      by,
+    await this.eventService.emit(
+      APPOINTMENT_CREATED_EVENT_TYPE,
+      {
+        appointment,
+        confirmed,
+      } satisfies AppointmentCreatedPayload,
+      bookingActorToEventSource(actor, {
+        customerId: appointment.customer._id,
+      }),
     );
-
-    const pendingAppointments = await this.getPendingAppointmentsCount(
-      new Date(),
-    );
-
-    const duration = durationToTime(appointment.totalDuration);
-    if (by === "customer") {
-      await this.dashboardNotificationsService.publishNotification({
-        type: "appointment-created",
-        badges: [
-          {
-            key: "pending_appointments",
-            count: pendingAppointments.totalCount,
-          },
-        ],
-        toast: {
-          type: "info",
-          title: {
-            key: "admin.appointments.notifications.appointmentCreated.title" satisfies BaseAllKeys,
-          },
-          message: {
-            key: "admin.appointments.notifications.appointmentCreated.message" satisfies BaseAllKeys,
-            args: {
-              name: appointment.customer.name,
-              service: appointment.option.name,
-              dateTime: DateTime.fromJSDate(appointment.dateTime)
-                .setLocale(brandConfig.language)
-                .setZone(generalConfig.timeZone)
-                .toLocaleString(DateTime.DATETIME_HUGE),
-              durationHours: duration.hours,
-              durationMinutes: duration.minutes,
-            },
-          },
-          action: {
-            label: {
-              key: "admin.appointments.notifications.appointmentCreated.action" satisfies BaseAllKeys,
-            },
-            href: `/dashboard/appointments/${appointment._id}`,
-          },
-        },
-      });
-    }
 
     logger.debug(
       {
@@ -408,11 +378,13 @@ export class BookingService extends BaseService implements IBookingService {
       confirmed: propsConfirmed,
       files,
       doNotNotifyCustomer,
+      actor,
     }: {
       event: AppointmentEvent;
       confirmed?: boolean;
       files?: Record<string, File>;
       doNotNotifyCustomer?: boolean;
+      actor: BookingEventActor;
     },
   ): Promise<Appointment> {
     const logger = this.loggerFactory("updateAppointment");
@@ -494,33 +466,20 @@ export class BookingService extends BaseService implements IBookingService {
     }
 
     logger.debug({ appointmentId }, "Event saved, executing hooks");
-    await this.jobService.enqueueHook<
-      IAppointmentHook,
-      "onAppointmentRescheduled"
-    >(
-      "appointment-hook",
-      "onAppointmentRescheduled",
-      updatedAppointment,
-      event.dateTime,
-      event.totalDuration,
-      updatedAppointment.dateTime,
-      updatedAppointment.totalDuration,
-      doNotNotifyCustomer,
+    await this.eventService.emit(
+      APPOINTMENT_RESCHEDULED_EVENT_TYPE,
+      {
+        updatedAppointment,
+        dateTime: event.dateTime,
+        totalDuration: event.totalDuration,
+        previousDateTime: appointment.dateTime,
+        previousTotalDuration: appointment.totalDuration,
+        doNotNotifyCustomer,
+      } satisfies AppointmentRescheduledPayload,
+      bookingActorToEventSource(actor, {
+        customerId: updatedAppointment.customer._id,
+      }),
     );
-
-    const pendingAppointments = await this.getPendingAppointmentsCount(
-      new Date(),
-    );
-
-    await this.dashboardNotificationsService.publishNotification({
-      type: "appointment-updated",
-      badges: [
-        {
-          key: "pending_appointments",
-          count: pendingAppointments.totalCount,
-        },
-      ],
-    });
 
     logger.debug(
       {
@@ -1053,7 +1012,7 @@ export class BookingService extends BaseService implements IBookingService {
   public async changeAppointmentStatus(
     id: string,
     newStatus: AppointmentStatus,
-    by: "customer" | "user" = "user",
+    actor: BookingEventActor,
   ) {
     const logger = this.loggerFactory("changeAppointmentStatus");
     logger.debug(
@@ -1108,35 +1067,21 @@ export class BookingService extends BaseService implements IBookingService {
       data: {
         oldStatus,
         newStatus,
-        by,
+        ...historyActorFields(actor),
       },
     });
 
-    await this.jobService.enqueueHook<
-      IAppointmentHook,
-      "onAppointmentStatusChanged"
-    >(
-      "appointment-hook",
-      "onAppointmentStatusChanged",
-      appointment,
-      newStatus,
-      oldStatus,
-      by,
+    await this.eventService.emit(
+      APPOINTMENT_STATUS_CHANGED_EVENT_TYPE,
+      {
+        appointment,
+        newStatus,
+        oldStatus,
+      } satisfies AppointmentStatusChangedPayload,
+      bookingActorToEventSource(actor, {
+        customerId: appointment.customer._id,
+      }),
     );
-
-    const pendingAppointments = await this.getPendingAppointmentsCount(
-      new Date(),
-    );
-
-    await this.dashboardNotificationsService.publishNotification({
-      type: "appointment-status-changed",
-      badges: [
-        {
-          key: "pending_appointments",
-          count: pendingAppointments.totalCount,
-        },
-      ],
-    });
 
     logger.debug(
       { appointmentId: id, oldStatus, newStatus },
@@ -1233,8 +1178,8 @@ export class BookingService extends BaseService implements IBookingService {
     id: string,
     newTime: Date,
     newDuration: number,
+    actor: BookingEventActor,
     doNotNotifyCustomer?: boolean,
-    by: "customer" | "user" = "user",
   ) {
     const logger = this.loggerFactory("rescheduleAppointment");
     logger.debug(
@@ -1277,7 +1222,7 @@ export class BookingService extends BaseService implements IBookingService {
       data: {
         oldDateTime: oldTime,
         newDateTime: newTime,
-        by,
+        ...historyActorFields(actor),
       },
     });
 
@@ -1291,18 +1236,19 @@ export class BookingService extends BaseService implements IBookingService {
       "Appointment rescheduled in db",
     );
 
-    await this.jobService.enqueueHook<
-      IAppointmentHook,
-      "onAppointmentRescheduled"
-    >(
-      "appointment-hook",
-      "onAppointmentRescheduled",
-      appointment,
-      newTime,
-      newDuration,
-      oldTime,
-      oldDuration,
-      doNotNotifyCustomer,
+    await this.eventService.emit(
+      APPOINTMENT_SLOT_RESCHEDULED_EVENT_TYPE,
+      {
+        appointment,
+        newTime,
+        newDuration,
+        oldTime,
+        oldDuration,
+        doNotNotifyCustomer,
+      } satisfies AppointmentSlotRescheduledPayload,
+      bookingActorToEventSource(actor, {
+        customerId: appointment.customer._id,
+      }),
     );
 
     logger.debug(
@@ -1805,7 +1751,7 @@ export class BookingService extends BaseService implements IBookingService {
   private async saveEvent(
     id: string,
     event: AppointmentEvent,
-    by: "customer" | "user",
+    actor: BookingEventActor,
     files?: Asset[],
     paymentIntentId?: string,
     meetingInformation?: AppointmentOnlineMeetingInformation,
@@ -1839,7 +1785,12 @@ export class BookingService extends BaseService implements IBookingService {
 
         const customer = await this.customersService.getOrUpsertCustomer(
           event.fields,
+          bookingActorToEventSource(actor),
         );
+
+        const paymentSource = bookingActorToEventSource(actor, {
+          customerId: customer._id,
+        });
 
         if (customer.dontAllowBookings && !force) {
           logger.error(
@@ -1896,22 +1847,25 @@ export class BookingService extends BaseService implements IBookingService {
               "Payment intent is paid, adding to payments",
             );
 
-            const payment = await this.paymentsService.createPayment({
-              appId,
-              appName,
-              amount,
-              intentId,
-              paidAt: paidAt ?? new Date(),
-              appointmentId: id,
-              customerId: customer._id,
-              description:
-                amount === event.totalPrice ? "full_payment" : "deposit",
-              status: "paid",
-              method: "online",
-              type: "deposit",
-              externalId: externalId,
-              fees,
-            });
+            const payment = await this.paymentsService.createPayment(
+              {
+                appId,
+                appName,
+                amount,
+                intentId,
+                paidAt: paidAt ?? new Date(),
+                appointmentId: id,
+                customerId: customer._id,
+                description:
+                  amount === event.totalPrice ? "full_payment" : "deposit",
+                status: "paid",
+                method: "online",
+                type: "deposit",
+                externalId: externalId,
+                fees,
+              },
+              paymentSource,
+            );
 
             payments.push(payment);
           } else {
@@ -1934,18 +1888,21 @@ export class BookingService extends BaseService implements IBookingService {
 
         if (giftCards) {
           for (const giftCard of giftCards) {
-            const payment = await this.paymentsService.createPayment({
-              amount: giftCard.appliedAmount,
-              status: "paid",
-              paidAt: new Date(),
-              customerId: customer._id,
-              description: "giftCard",
-              appointmentId: id,
-              type: "payment",
-              method: "gift-card",
-              giftCardCode: giftCard.code,
-              giftCardId: giftCard.id,
-            });
+            const payment = await this.paymentsService.createPayment(
+              {
+                amount: giftCard.appliedAmount,
+                status: "paid",
+                paidAt: new Date(),
+                customerId: customer._id,
+                description: "giftCard",
+                appointmentId: id,
+                type: "payment",
+                method: "gift-card",
+                giftCardCode: giftCard.code,
+                giftCardId: giftCard.id,
+              },
+              paymentSource,
+            );
 
             payments.push(payment);
           }
@@ -1986,29 +1943,33 @@ export class BookingService extends BaseService implements IBookingService {
           appointmentId: id,
           type: "created",
           data: {
-            by,
+            ...historyActorFields(actor),
             confirmed: status === "confirmed",
             payment: historyPayment,
           },
         });
 
         if (dbEvent.discount) {
-          await this.jobService.enqueueHook<IDiscountHook, "onDiscountApplied">(
-            "discount-hook",
-            "onDiscountApplied",
-            customer,
+          await this.eventService.emit(
+            DISCOUNT_APPLIED_EVENT_TYPE,
             {
-              id: dbEvent.discount.id,
-              name: dbEvent.discount.name,
-              value: dbEvent.discount.discountAmount,
-              code: dbEvent.discount.code,
-              dateTime: new Date(),
-              appointmentId: id,
-              appointmentOptionId: dbEvent.option?._id,
-              appointmentAddonIds: dbEvent.addons?.map((addon) => addon._id),
-              appointmentTotalPrice: dbEvent.totalPrice,
-              appointmentDateTime: dbEvent.dateTime,
-            },
+              customer,
+              discount: {
+                id: dbEvent.discount.id,
+                name: dbEvent.discount.name,
+                value: dbEvent.discount.discountAmount,
+                code: dbEvent.discount.code,
+                dateTime: new Date(),
+                appointmentId: id,
+                appointmentOptionId: dbEvent.option?._id,
+                appointmentAddonIds: dbEvent.addons?.map((addon) => addon._id),
+                appointmentTotalPrice: dbEvent.totalPrice ?? 0,
+                appointmentDateTime: dbEvent.dateTime,
+              },
+            } satisfies DiscountAppliedPayload,
+            bookingActorToEventSource(actor, {
+              customerId: customer._id,
+            }),
           );
         }
 

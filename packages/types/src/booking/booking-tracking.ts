@@ -26,7 +26,8 @@ export type BookingTrackingMetadata = {
   convertedAppName?: string; // Name of the app that did the conversion
 };
 
-export const BOOKING_TRACKING_STEP_EVENT_TYPE = "BOOKING_STEP_EVENT" as const;
+/** Dot-scoped event name (e.g. `booking.tracking.*` patterns). */
+export const BOOKING_TRACKING_STEP_EVENT_TYPE = "booking.tracking.step" as const;
 
 export type BookingTrackingEventData = {
   sessionId: string;

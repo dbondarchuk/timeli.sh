@@ -1,4 +1,4 @@
-import { getServicesContainer } from "@/app/utils";
+import { getActor, getServicesContainer } from "@/app/utils";
 import { setGiftCardStatusSchema } from "@timelish/api-sdk";
 import { getLoggerFactory } from "@timelish/logger";
 import { okStatus } from "@timelish/types";
@@ -24,6 +24,7 @@ export async function PUT(
   );
 
   const body = await request.json();
+  const actor = await getActor();
   const { data, success, error } = setGiftCardStatusSchema.safeParse(body);
 
   if (!success) {
@@ -41,6 +42,7 @@ export async function PUT(
   const result = await servicesContainer.giftCardsService.setGiftCardStatus(
     id,
     data.status,
+    actor,
   );
 
   if (!result) {

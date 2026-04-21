@@ -17,7 +17,7 @@ export const getBuiltInAppData = (
   };
 };
 
-export const getBuiltInAppsHooks = (scope: AppScope) => {
+export const getBuiltInAppsForScope = (scope: AppScope) => {
   return Object.entries(BuiltInApps)
     .filter(([_, app]) => app.scopes?.includes(scope))
     .map(([name, app]) => {

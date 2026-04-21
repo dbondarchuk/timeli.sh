@@ -1,30 +1,17 @@
 "use client";
 
+import {
+  useActivityFeedStore,
+  useNotificationsStore,
+} from "@/notifications/store";
 import { BASE_ADMIN_API_URL } from "@timelish/api-sdk";
 import { useI18n } from "@timelish/i18n";
 import { DashboardNotification } from "@timelish/types";
-import { Badge, toast } from "@timelish/ui";
+import { Badge, toast, useTimeZone } from "@timelish/ui";
+import { resolvedI18nText } from "@timelish/ui-admin";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { create } from "zustand";
-
-export type NotificationsContextProps = {
-  badges: Record<string, number>;
-  setBadges: (
-    setter: (prev: Record<string, number>) => Record<string, number>,
-  ) => void;
-};
-
-export const useNotificationsStore = create<NotificationsContextProps>(
-  (set) => ({
-    badges: {} as Record<string, number>,
-    setBadges: (setter) => {
-      return set((state) => ({
-        badges: setter(state.badges),
-      }));
-    },
-  }),
-);
+import { authClient } from "../auth-client";
 
 export const PendingAppointmentsBadge: React.FC = () => {
   return (
@@ -46,6 +33,10 @@ export const DashboardTabNotificationsBadge: React.FC<{
 
 export const NotificationsToastStream: React.FC = () => {
   const { setBadges } = useNotificationsStore();
+  const { addPreviews } = useActivityFeedStore();
+  const { data: session } = authClient.useSession();
+  const userId = session?.user?.id ?? "";
+  const timeZone = useTimeZone();
   const router = useRouter();
   const t = useI18n();
 
@@ -78,15 +69,20 @@ export const NotificationsToastStream: React.FC = () => {
         });
       }
 
+      if (data.activityFeed?.preview) {
+        addPreviews(
+          data.activityFeed.preview,
+          userId,
+          data.activityFeed.highestSeverity,
+        );
+      }
+
       if (data.toast) {
-        toast(t(data.toast.title.key, data.toast.title.args), {
-          description: t(data.toast.message.key, data.toast.message.args),
+        toast(resolvedI18nText(data.toast.title, t, timeZone), {
+          description: resolvedI18nText(data.toast.message, t, timeZone),
           action: data.toast.action
             ? {
-                label: t(
-                  data.toast.action.label.key,
-                  data.toast.action.label.args,
-                ),
+                label: resolvedI18nText(data.toast.action.label, t, timeZone),
                 onClick: () => {
                   router.push(data.toast!.action!.href);
                 },
@@ -106,7 +102,7 @@ export const NotificationsToastStream: React.FC = () => {
     return () => {
       eventSource.close();
     };
-  }, [t, setBadges, router]);
+  }, [t, setBadges, addPreviews, router, userId, timeZone]);
 
   return null;
 };

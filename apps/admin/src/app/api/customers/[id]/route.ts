@@ -1,4 +1,4 @@
-import { getServicesContainer } from "@/app/utils";
+import { getActor, getServicesContainer } from "@/app/utils";
 import { getLoggerFactory } from "@timelish/logger";
 import { customerSchema, okStatus } from "@timelish/types";
 import { NextRequest, NextResponse } from "next/server";
@@ -72,6 +72,7 @@ export async function PUT(
 ) {
   const logger = getLoggerFactory("AdminAPI/customers/[id]")("PUT");
   const servicesContainer = await getServicesContainer();
+  const actor = await getActor();
   const { id } = await params;
   const body = await request.json();
 
@@ -97,7 +98,7 @@ export async function PUT(
   }
 
   try {
-    await servicesContainer.customersService.updateCustomer(id, data);
+    await servicesContainer.customersService.updateCustomer(id, data, actor);
 
     logger.debug(
       {
@@ -136,6 +137,7 @@ export async function DELETE(
 ) {
   const logger = getLoggerFactory("AdminAPI/customers/[id]")("DELETE");
   const servicesContainer = await getServicesContainer();
+  const actor = await getActor();
   const { id } = await params;
 
   logger.debug(
@@ -146,8 +148,10 @@ export async function DELETE(
   );
 
   try {
-    const customer =
-      await servicesContainer.customersService.deleteCustomer(id);
+    const customer = await servicesContainer.customersService.deleteCustomer(
+      id,
+      actor,
+    );
 
     if (!customer) {
       logger.warn({ customerId: id }, "Customer not found for deletion");

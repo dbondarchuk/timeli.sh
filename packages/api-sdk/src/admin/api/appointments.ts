@@ -81,7 +81,9 @@ export async function changeStatus(
       method: "PATCH",
       body: JSON.stringify({
         status: newStatus,
-        by: requestedByCustomer ? "customer" : "user",
+        ...(requestedByCustomer !== undefined
+          ? { requestedByCustomer }
+          : {}),
       }),
     });
 

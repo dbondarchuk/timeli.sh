@@ -148,6 +148,16 @@
     "newEntry": "New waitlist request",
     "newEntryMessage": "You have a new waitlist request"
   },
+  "activity": {
+    "newEntry": {
+      "title": "New waitlist request",
+      "description": "{customerName} has requested to be added to the waitlist for {serviceName}"
+    },
+    "entriesDismissed": {
+      "title": "Waitlist entries dismissed",
+      "description": "{count, plural, =1 {One waitlist entry was dismissed} other {# waitlist entries were dismissed}}"
+    }
+  },
   "handlers": {
     "newWaitlistEntry": "Waitlist Notification - New Entry"
   },

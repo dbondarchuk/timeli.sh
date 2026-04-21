@@ -1,4 +1,4 @@
-import { getServicesContainer } from "@/app/utils";
+import { getActor, getServicesContainer } from "@/app/utils";
 import { getLoggerFactory } from "@timelish/logger";
 import { fieldSchema, okStatus } from "@timelish/types";
 import { NextRequest, NextResponse } from "next/server";
@@ -69,6 +69,7 @@ export async function PUT(
   { params }: RouteContext<"/api/services/fields/[id]">,
 ) {
   const logger = getLoggerFactory("AdminAPI/services/fields/[id]")("PUT");
+  const actor = await getActor();
   const servicesContainer = await getServicesContainer();
   const { id } = await params;
   const body = await request.json();
@@ -95,7 +96,7 @@ export async function PUT(
   }
 
   try {
-    await servicesContainer.servicesService.updateField(id, data);
+    await servicesContainer.servicesService.updateField(id, data, actor);
 
     logger.debug(
       {
@@ -133,6 +134,7 @@ export async function DELETE(
   { params }: RouteContext<"/api/services/fields/[id]">,
 ) {
   const logger = getLoggerFactory("AdminAPI/services/fields/[id]")("DELETE");
+  const actor = await getActor();
   const servicesContainer = await getServicesContainer();
   const { id } = await params;
 
@@ -144,7 +146,10 @@ export async function DELETE(
   );
 
   try {
-    const field = await servicesContainer.servicesService.deleteField(id);
+    const field = await servicesContainer.servicesService.deleteField(
+      id,
+      actor,
+    );
 
     if (!field) {
       logger.warn({ fieldId: id }, "Service field not found for deletion");

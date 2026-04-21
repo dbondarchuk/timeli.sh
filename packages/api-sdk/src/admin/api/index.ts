@@ -1,3 +1,4 @@
+import * as activities from "./activities";
 import * as appointments from "./appointments";
 import * as apps from "./apps";
 import * as assets from "./assets";
@@ -22,6 +23,7 @@ import * as users from "./users";
 
 export const adminApi = {
   calendar,
+  activities,
   appointments,
   assets,
   payments,

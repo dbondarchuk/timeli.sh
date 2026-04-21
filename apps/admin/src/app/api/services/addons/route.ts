@@ -1,4 +1,4 @@
-import { getServicesContainer } from "@/app/utils";
+import { getActor, getServicesContainer } from "@/app/utils";
 import { serviceAddonsSearchParamsLoader } from "@timelish/api-sdk";
 import { getLoggerFactory } from "@timelish/logger";
 import { appointmentAddonSchema } from "@timelish/types";
@@ -64,6 +64,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   const logger = getLoggerFactory("AdminAPI/services/addons")("POST");
+  const actor = await getActor();
   const servicesContainer = await getServicesContainer();
   const body = await request.json();
   const { data, error, success } = appointmentAddonSchema.safeParse(body);
@@ -75,7 +76,10 @@ export async function POST(request: NextRequest) {
     );
   }
   try {
-    const result = await servicesContainer.servicesService.createAddon(data);
+    const result = await servicesContainer.servicesService.createAddon(
+      data,
+      actor,
+    );
     return NextResponse.json(result, { status: 201 });
   } catch (error: any) {
     return NextResponse.json(

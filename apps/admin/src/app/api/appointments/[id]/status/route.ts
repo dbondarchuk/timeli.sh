@@ -1,4 +1,4 @@
-import { getServicesContainer } from "@/app/utils";
+import { getServicesContainer, getSession } from "@/app/utils";
 import { getLoggerFactory } from "@timelish/logger";
 import { appointmentStatuses, okStatus } from "@timelish/types";
 import { NextRequest, NextResponse } from "next/server";
@@ -6,7 +6,8 @@ import * as z from "zod";
 
 const schema = z.object({
   status: z.enum(appointmentStatuses).exclude(["pending"]),
-  by: z.enum(["customer", "user"]),
+  /** When true, attributes the change to the customer (e.g. cancel link). Otherwise the signed-in admin user. */
+  requestedByCustomer: z.boolean().optional(),
 });
 
 export async function PATCH(
@@ -15,6 +16,7 @@ export async function PATCH(
 ) {
   const logger = getLoggerFactory("AdminAPI/appointments/[id]/status")("PATCH");
   const servicesContainer = await getServicesContainer();
+  const session = await getSession();
   const { id } = await params;
 
   logger.debug(
@@ -37,17 +39,21 @@ export async function PATCH(
     );
   }
 
+  const actor = data.requestedByCustomer
+    ? ({ type: "customer" } as const)
+    : ({ type: "user", userId: session.user.id } as const);
+
   await servicesContainer.bookingService.changeAppointmentStatus(
     id,
     data.status,
-    data.by,
+    actor,
   );
 
   logger.debug(
     {
       appointmentId: id,
       newStatus: data.status,
-      by: data.by,
+      requestedByCustomer: data.requestedByCustomer ?? false,
     },
     "Appointment status changed successfully",
   );

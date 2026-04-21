@@ -7,25 +7,38 @@ import {
 import { Query } from "../database/query";
 import { WithTotal } from "../database/with-total";
 import { DateRange } from "../general/date";
+import type { EventSource } from "../events/envelope";
 
 export type IGiftCardsService = {
   createGiftCard(
     giftCard: Omit<GiftCardUpdateModel, "status">,
+    source: EventSource,
   ): Promise<GiftCardListModel>;
   updateGiftCard(
     id: string,
     giftCard: GiftCardUpdateModel,
+    source: EventSource,
   ): Promise<GiftCardListModel | null>;
   setGiftCardStatus(
     id: string,
     status: GiftCardStatus,
+    source: EventSource,
   ): Promise<GiftCardListModel | null>;
-  setGiftCardsStatus(ids: string[], status: GiftCardStatus): Promise<void>;
+  setGiftCardsStatus(
+    ids: string[],
+    status: GiftCardStatus,
+    source: EventSource,
+  ): Promise<void>;
   deleteGiftCard(
     id: string,
+    source: EventSource,
     sourceAppId?: string,
   ): Promise<GiftCardListModel | null>;
-  deleteGiftCards(ids: string[], sourceAppId?: string): Promise<void>;
+  deleteGiftCards(
+    ids: string[],
+    source: EventSource,
+    sourceAppId?: string,
+  ): Promise<void>;
   getGiftCard(id: string): Promise<GiftCardListModel | null>;
   getGiftCardByCode(code: string): Promise<GiftCardListModel | null>;
   getGiftCards(

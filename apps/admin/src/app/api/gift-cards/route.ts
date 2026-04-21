@@ -1,4 +1,4 @@
-import { getServicesContainer } from "@/app/utils";
+import { getActor, getServicesContainer } from "@/app/utils";
 import { giftCardsSearchParamsLoader } from "@timelish/api-sdk";
 import { getLoggerFactory } from "@timelish/logger";
 import { giftCardSchema } from "@timelish/types";
@@ -60,6 +60,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   const logger = getLoggerFactory("AdminAPI/gift-cards")("POST");
   const servicesContainer = await getServicesContainer();
+  const actor = await getActor();
   logger.debug(
     {
       url: request.url,
@@ -80,8 +81,10 @@ export async function POST(request: NextRequest) {
   }
 
   logger.debug({ giftCard: data }, "Creating gift card");
-  const giftCard =
-    await servicesContainer.giftCardsService.createGiftCard(data);
+  const giftCard = await servicesContainer.giftCardsService.createGiftCard(
+    data,
+    actor,
+  );
 
   logger.debug({ giftCardId: giftCard._id }, "Gift card created successfully");
   return NextResponse.json(giftCard, { status: 201 });

@@ -1,8 +1,9 @@
 import { getLoggerFactory } from "@timelish/logger";
 import {
   AppJobRequest,
-  CoreJobRequest,
-  HookJobRequest,
+  EventDeliveryJobRequest,
+  EventEnvelope,
+  IEventSubscriber,
   IScheduled,
   IServicesContainer,
   OrganizationJobRequest,
@@ -10,6 +11,7 @@ import {
 } from "@timelish/types";
 import { Job } from "bullmq";
 import { BuiltInApps } from "../../built-in/apps";
+import { getBuiltInAppData } from "../../built-in/utils";
 import { BaseBullMQClient } from "../base-bullmq-client";
 import { BullMQJobConfig } from "./types";
 import { reviveJobData } from "./utils";
@@ -63,11 +65,8 @@ export class BullMQJobWorker extends BaseBullMQClient {
         case "app":
           await this.processAppJob(job.id!, jobData);
           break;
-        case "hook":
-          await this.processHookJob(job.id!, jobData);
-          break;
-        case "core":
-          await this.processCoreJob(job.id!, jobData);
+        case "event":
+          await this.processEventDeliveryJob(job.id!, jobData);
           break;
         default:
           throw new Error(`Invalid job type: ${(jobData as any).type}`);
@@ -141,25 +140,27 @@ export class BullMQJobWorker extends BaseBullMQClient {
    * Start the worker and keep it running until it crashes or is stopped
    * This method will block until the worker encounters a fatal error
    */
-  public async run(): Promise<void> {
+  public async run(options?: { registerSignals?: boolean }): Promise<void> {
     const logger = this.loggerFactory("runUntilCrash");
+    const registerSignals = options?.registerSignals !== false;
 
     try {
       await this.start();
       logger.info("BullMQ job worker started successfully");
 
-      // Set up graceful shutdown handlers
-      const gracefulShutdown = async (signal: string) => {
-        logger.info(
-          { signal },
-          "Received shutdown signal, stopping worker gracefully",
-        );
-        await this.stop();
-        process.exit(0);
-      };
+      if (registerSignals) {
+        const gracefulShutdown = async (signal: string) => {
+          logger.info(
+            { signal },
+            "Received shutdown signal, stopping worker gracefully",
+          );
+          await this.stop();
+          process.exit(0);
+        };
 
-      process.on("SIGINT", () => gracefulShutdown("SIGINT"));
-      process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
+        process.on("SIGINT", () => gracefulShutdown("SIGINT"));
+        process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
+      }
 
       // Keep the process alive and wait for worker errors
       await new Promise<void>((resolve, reject) => {
@@ -206,6 +207,7 @@ export class BullMQJobWorker extends BaseBullMQClient {
   public async runWithRestart(
     maxRestarts: number = 10,
     restartDelay: number = 5000,
+    options?: { registerSignals?: boolean },
   ): Promise<void> {
     const logger = this.loggerFactory("runWithRestart");
     let restartCount = 0;
@@ -213,7 +215,7 @@ export class BullMQJobWorker extends BaseBullMQClient {
     while (restartCount < maxRestarts) {
       try {
         logger.info({ restartCount, maxRestarts }, "Starting worker");
-        await this.run();
+        await this.run(options);
       } catch (error) {
         restartCount++;
         logger.error(
@@ -247,9 +249,31 @@ export class BullMQJobWorker extends BaseBullMQClient {
         throw new Error("organizationId is required in job data");
       }
 
-      const { app, service } = await this.getServices(
-        organizationId,
-      ).connectedAppsService.getAppService<IScheduled>(jobData.appId);
+      const services = this.getServices(organizationId);
+      const builtIn = BuiltInApps[jobData.appId as keyof typeof BuiltInApps];
+      if (builtIn?.scheduled) {
+        const user = await services.userService.getOrganizationAdminUser();
+        if (!user) {
+          throw new Error("Organization admin user not found");
+        }
+        const appData = getBuiltInAppData(
+          organizationId,
+          user._id.toString(),
+          jobData.appId as keyof typeof BuiltInApps,
+        );
+        const service = new builtIn.getService(organizationId, services);
+        if (typeof service.processJob === "function") {
+          await service.processJob(appData, jobData);
+          logger.info({ jobId }, "Job completed successfully");
+        } else {
+          logger.error({ jobId }, "Built-in service does not implement processJob");
+        }
+        return;
+      }
+
+      const { app, service } = await services.connectedAppsService.getAppService<IScheduled>(
+        jobData.appId,
+      );
 
       if (service.processJob) {
         await service.processJob(app, jobData);
@@ -263,79 +287,52 @@ export class BullMQJobWorker extends BaseBullMQClient {
     }
   }
 
-  private async processHookJob(
+  private async processEventDeliveryJob(
     jobId: string,
-    jobData: WithOrganizationId<HookJobRequest>,
+    jobData: WithOrganizationId<EventDeliveryJobRequest>,
   ): Promise<void> {
-    const logger = this.loggerFactory("processHookJob");
+    const logger = this.loggerFactory("processEventDeliveryJob");
 
     try {
-      logger.info({ jobId, jobData }, "Processing hook job");
+      logger.info({ jobId, jobData }, "Processing event delivery job");
       const organizationId = jobData.organizationId;
       if (!organizationId) {
         throw new Error("organizationId is required in job data");
       }
 
-      await this.getServices(organizationId).connectedAppsService.executeHooks<
-        any,
-        void
-      >(jobData.scope, async (app, service) => {
-        try {
-          const method = service[jobData.method];
-          if (!method) {
-            logger.warn({ jobId, jobData }, "Method not found");
-            return;
-          }
+      const envelope = reviveJobData(jobData.envelope) as EventEnvelope;
+      const services = this.getServices(organizationId);
 
-          logger.info(
-            { jobId, jobData, method, type: service.constructor.name },
-            "Executing method",
-          );
-          return await method.apply(service, [app, ...jobData.args]);
-        } catch (error) {
-          logger.error({ error, jobId, jobData }, "Failed to execute method");
+      const builtIn = BuiltInApps[jobData.appId];
+      if (builtIn) {
+        const user = await services.userService.getOrganizationAdminUser();
+        if (!user) {
+          throw new Error("Organization admin user not found");
         }
-      });
+        const appData = getBuiltInAppData(
+          organizationId,
+          user._id.toString(),
+          jobData.appId as keyof typeof BuiltInApps,
+        );
+        const service = new builtIn.getService(organizationId, services);
+        const subscriber = service as IEventSubscriber;
+        if (typeof subscriber.onEvent === "function") {
+          await subscriber.onEvent(appData, envelope);
+        }
+      } else {
+        const { service, app } =
+          await services.connectedAppsService.getAppService(jobData.appId);
 
-      logger.info({ jobId }, "Job completed successfully");
+        const subscriber = service as IEventSubscriber;
+        if (typeof subscriber.onEvent === "function") {
+          await subscriber.onEvent(app, envelope);
+        }
+      }
+
+      logger.info({ jobId }, "Event delivery job completed successfully");
     } catch (error) {
-      logger.error({ error, jobId, jobData }, "Failed to process hook job");
+      logger.error({ error, jobId, jobData }, "Failed to process event delivery job");
       throw error;
     }
-  }
-
-  private async processCoreJob(
-    jobId: string,
-    jobData: WithOrganizationId<CoreJobRequest>,
-  ): Promise<void> {
-    const logger = this.loggerFactory("processCoreJob");
-    logger.info({ jobId, jobData }, "Processing core job");
-    const organizationId = jobData.organizationId;
-    if (!organizationId) {
-      throw new Error("organizationId is required in job data");
-    }
-
-    const coreApp = BuiltInApps[jobData.appId];
-    if (!coreApp) {
-      throw new Error(`Core app ${jobData.appId} not found`);
-    }
-
-    if (!coreApp.scheduled) {
-      throw new Error(`Core app ${jobData.appId} is not scheduled`);
-    }
-
-    const service = new coreApp.getService(
-      organizationId,
-      this.getServices(organizationId),
-    );
-
-    if (!service.processJob) {
-      throw new Error(
-        `Core app ${jobData.appId} does not implement processJob`,
-      );
-    }
-
-    await service.processJob(jobData);
-    logger.info({ jobId }, "Job completed successfully");
   }
 }

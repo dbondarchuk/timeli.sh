@@ -23,6 +23,10 @@ const processRescheduleRequest = async (
   );
   const servicesContainer = await getServicesContainer();
   const appointmentId = information.id;
+  const customerSource = {
+    actor: "customer" as const,
+    actorId: customerId,
+  };
   logger.debug(
     {
       appointmentId,
@@ -64,18 +68,21 @@ const processRescheduleRequest = async (
     information.giftCards?.length
   ) {
     for (const giftCard of information.giftCards) {
-      const payment = await servicesContainer.paymentsService.createPayment({
-        amount: giftCard.appliedAmount,
-        status: "paid",
-        paidAt: new Date(),
-        appointmentId,
-        customerId,
-        description: "rescheduleFee",
-        method: "gift-card",
-        type: "rescheduleFee",
-        giftCardCode: giftCard.code,
-        giftCardId: giftCard.id,
-      });
+      const payment = await servicesContainer.paymentsService.createPayment(
+        {
+          amount: giftCard.appliedAmount,
+          status: "paid",
+          paidAt: new Date(),
+          appointmentId,
+          customerId,
+          description: "rescheduleFee",
+          method: "gift-card",
+          type: "rescheduleFee",
+          giftCardCode: giftCard.code,
+          giftCardId: giftCard.id,
+        },
+        customerSource,
+      );
 
       await servicesContainer.bookingService.addAppointmentHistory({
         appointmentId,
@@ -148,20 +155,23 @@ const processRescheduleRequest = async (
 
     logger.debug({ appName, paymentIntentId }, "Creating payment");
 
-    const payment = (await servicesContainer.paymentsService.createPayment({
-      amount: information.paymentAmount,
-      status: "paid",
-      paidAt: new Date(),
-      appointmentId,
-      customerId,
-      description: "rescheduleFee",
-      method: "online",
-      intentId: paymentIntentId,
-      appName,
-      appId: paymentAppId,
-      type: "rescheduleFee",
-      fees: paymentIntent.fees,
-    })) as OnlinePayment;
+    const payment = (await servicesContainer.paymentsService.createPayment(
+      {
+        amount: information.paymentAmount,
+        status: "paid",
+        paidAt: new Date(),
+        appointmentId,
+        customerId,
+        description: "rescheduleFee",
+        method: "online",
+        intentId: paymentIntentId,
+        appName,
+        appId: paymentAppId,
+        type: "rescheduleFee",
+        fees: paymentIntent.fees,
+      },
+      customerSource,
+    )) as OnlinePayment;
 
     await servicesContainer.bookingService.addAppointmentHistory({
       appointmentId,
@@ -202,6 +212,7 @@ const processRescheduleRequest = async (
     appointmentId,
     request.dateTime,
     information.duration,
+    { type: "customer" },
     false,
   );
 
@@ -234,6 +245,10 @@ const processCancelRequest = async (
   );
   const servicesContainer = await getServicesContainer();
   const appointmentId = information.id;
+  const customerSource = {
+    actor: "customer" as const,
+    actorId: customerId,
+  };
 
   logger.debug({ appointmentId }, "Processing cancel request");
 
@@ -291,6 +306,7 @@ const processCancelRequest = async (
         const result = await servicesContainer.paymentsService.refundPayment(
           payment._id,
           amountToRefund,
+          customerSource,
         );
 
         if (result.success) {
@@ -335,18 +351,21 @@ const processCancelRequest = async (
 
   if (information.action === "payment" && information.giftCards?.length) {
     for (const giftCard of information.giftCards) {
-      const payment = await servicesContainer.paymentsService.createPayment({
-        amount: giftCard.appliedAmount,
-        status: "paid",
-        paidAt: new Date(),
-        appointmentId,
-        customerId,
-        description: "cancellationFee",
-        method: "gift-card",
-        type: "cancellationFee",
-        giftCardCode: giftCard.code,
-        giftCardId: giftCard.id,
-      });
+      const payment = await servicesContainer.paymentsService.createPayment(
+        {
+          amount: giftCard.appliedAmount,
+          status: "paid",
+          paidAt: new Date(),
+          appointmentId,
+          customerId,
+          description: "cancellationFee",
+          method: "gift-card",
+          type: "cancellationFee",
+          giftCardCode: giftCard.code,
+          giftCardId: giftCard.id,
+        },
+        customerSource,
+      );
 
       await servicesContainer.bookingService.addAppointmentHistory({
         appointmentId,
@@ -419,20 +438,23 @@ const processCancelRequest = async (
 
     logger.debug({ appName, paymentIntentId }, "Creating payment");
 
-    const payment = (await servicesContainer.paymentsService.createPayment({
-      amount: information.paymentAmount,
-      status: "paid",
-      paidAt: new Date(),
-      appointmentId,
-      customerId,
-      description: "cancellationFee",
-      method: "online",
-      intentId: paymentIntentId,
-      appName,
-      appId: paymentAppId,
-      type: "cancellationFee",
-      fees: paymentIntent.fees,
-    })) as OnlinePayment;
+    const payment = (await servicesContainer.paymentsService.createPayment(
+      {
+        amount: information.paymentAmount,
+        status: "paid",
+        paidAt: new Date(),
+        appointmentId,
+        customerId,
+        description: "cancellationFee",
+        method: "online",
+        intentId: paymentIntentId,
+        appName,
+        appId: paymentAppId,
+        type: "cancellationFee",
+        fees: paymentIntent.fees,
+      },
+      customerSource,
+    )) as OnlinePayment;
 
     await servicesContainer.bookingService.addAppointmentHistory({
       appointmentId,
@@ -472,6 +494,7 @@ const processCancelRequest = async (
   await servicesContainer.bookingService.changeAppointmentStatus(
     appointmentId,
     "declined",
+    { type: "customer" },
   );
 
   logger.debug({ appointmentId }, "Appointment cancelled successfully");

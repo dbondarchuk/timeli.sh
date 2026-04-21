@@ -552,6 +552,15 @@ class GoogleCalendarConnectedApp
         { appId: app._id, eventId: event.id, uid, error },
         "Error updating event in Google Calendar",
       );
+
+      await this.props.update({
+        status: "failed",
+        statusText:
+          error instanceof ConnectedAppError
+            ? error.key
+            : ("app_google-calendar_admin.statusText.error_updating_calendar_event" satisfies GoogleCalendarAdminAllKeys),
+      });
+
       throw error;
     }
   }
@@ -593,6 +602,15 @@ class GoogleCalendarConnectedApp
         { appId: app._id, uid, error },
         "Error deleting event from Google Calendar",
       );
+
+      await this.props.update({
+        status: "failed",
+        statusText:
+          error instanceof ConnectedAppError
+            ? error.key
+            : ("app_google-calendar_admin.statusText.error_deleting_calendar_event" satisfies GoogleCalendarAdminAllKeys),
+      });
+
       throw error;
     }
   }
@@ -684,6 +702,15 @@ class GoogleCalendarConnectedApp
         { appId: app._id, error },
         "Error getting Google Calendar list",
       );
+
+      await this.props.update({
+        status: "failed",
+        statusText:
+          error instanceof ConnectedAppError
+            ? error.key
+            : ("app_google-calendar_admin.statusText.error_retrieving_calendar_list" satisfies GoogleCalendarAdminAllKeys),
+      });
+
       throw error;
     }
   }
@@ -854,6 +881,15 @@ class GoogleCalendarConnectedApp
         { start: start.toISO(), end: end.toISO(), calendarId, error },
         "Error getting events from Google Calendar",
       );
+
+      await this.props.update({
+        status: "failed",
+        statusText:
+          error instanceof ConnectedAppError
+            ? error.key
+            : ("app_google-calendar_admin.statusText.error_getting_busy_times" satisfies GoogleCalendarAdminAllKeys),
+      });
+
       throw error;
     }
   }

@@ -27,13 +27,19 @@ export interface IConnectedApp<TData = any, TToken = any> {
   processRequest?: (
     appData: ConnectedAppData<TData, TToken>,
     data: any,
-    request: ApiRequest,
+    request?: ApiRequest,
+    userId?: string,
   ) => Promise<any>;
-  processStaticRequest?: (data: any, request: ApiRequest) => Promise<any>;
+  processStaticRequest?: (
+    data: any,
+    request?: ApiRequest,
+    userId?: string,
+  ) => Promise<any>;
   processFormRequest?: (
     appData: ConnectedAppData<TData, TToken>,
     formData: FormData,
-    request: ApiRequest,
+    request?: ApiRequest,
+    userId?: string,
   ) => Promise<any>;
   install?: (appData: ConnectedAppData<TData, TToken>) => Promise<void>;
   unInstall?: (appData: ConnectedAppData<TData, TToken>) => Promise<void>;

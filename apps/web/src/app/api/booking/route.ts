@@ -207,7 +207,7 @@ export async function POST(request: NextRequest) {
       event: eventWithSessionId,
       paymentIntentId,
       files,
-      by: "customer",
+      actor: { type: "customer" },
       giftCards: eventOrError.giftCards,
     });
 

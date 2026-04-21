@@ -71,6 +71,8 @@ export async function replaceServices(
     return { ok: false, code: "unauthorized" };
   }
 
+  const source = { actor: "user" as const, actorId: session.user.id };
+
   const services = ServicesContainer(organizationId);
   let booking =
     (await services.configurationService.getConfiguration("booking")) ?? null;
@@ -85,7 +87,8 @@ export async function replaceServices(
   for (const id of oldIds) {
     const opt = await services.servicesService.getOption(id);
     const addonIds = opt?.addons?.map((a) => a.id).filter(Boolean) ?? [];
-    if (addonIds.length) await services.servicesService.deleteAddons(addonIds);
+    if (addonIds.length)
+      await services.servicesService.deleteAddons(addonIds, source);
   }
 
   const newIds: string[] = [];
@@ -146,10 +149,11 @@ export async function replaceServices(
     }
 
     try {
-      const created = await services.servicesService.createOption(option);
+      const created = await services.servicesService.createOption(option, source);
       newIds.push(created._id);
     } catch (e) {
-      if (newIds.length) await services.servicesService.deleteOptions(newIds);
+      if (newIds.length)
+        await services.servicesService.deleteOptions(newIds, source);
       const msg = e instanceof Error ? e.message : "";
       if (msg.includes("Name already exists"))
         return { ok: false, code: "duplicate_name" };
@@ -158,7 +162,8 @@ export async function replaceServices(
     }
   }
 
-  if (oldIds.length) await services.servicesService.deleteOptions(oldIds);
+  if (oldIds.length)
+    await services.servicesService.deleteOptions(oldIds, source);
 
   const fresh =
     (await services.configurationService.getConfiguration("booking")) ?? null;
@@ -192,6 +197,9 @@ export async function createAddons(
     logger.error({ session, organizationId }, "Unauthorized");
     return { ok: false, code: "unauthorized" };
   }
+
+  const source = { actor: "user" as const, actorId: session.user.id };
+
   const parsedAddons = addonsInputSchema.safeParse(addons);
   if (!parsedAddons.success) {
     logger.error({ error: parsedAddons.error }, "Invalid addons input");
@@ -201,7 +209,7 @@ export async function createAddons(
   const services = ServicesContainer(organizationId);
   const ids: string[] = [];
   for (const addon of parsedAddons.data) {
-    const created = await services.servicesService.createAddon(addon);
+    const created = await services.servicesService.createAddon(addon, source);
     ids.push(created._id);
   }
   logger.debug({ organizationId, createdCount: ids.length }, "Created addons");
@@ -225,6 +233,9 @@ export async function replaceAddonsForOption(
     logger.error({ session, organizationId }, "Unauthorized");
     return { ok: false, code: "unauthorized" };
   }
+
+  const source = { actor: "user" as const, actorId: session.user.id };
+
   const parsedAddons = addonsInputSchema.safeParse(addons);
   if (!parsedAddons.success) {
     logger.error({ error: parsedAddons.error }, "Invalid addons input");
@@ -239,7 +250,8 @@ export async function replaceAddonsForOption(
   }
 
   const oldIds = existing.addons?.map((a) => a.id).filter(Boolean) ?? [];
-  if (oldIds.length) await services.servicesService.deleteAddons(oldIds);
+  if (oldIds.length)
+    await services.servicesService.deleteAddons(oldIds, source);
   if (!parsedAddons.data.length) {
     logger.debug({ optionId }, "Removed addons and left option without addons");
     return { ok: true, ids: [] };
@@ -247,7 +259,7 @@ export async function replaceAddonsForOption(
 
   const ids: string[] = [];
   for (const addon of parsedAddons.data) {
-    const created = await services.servicesService.createAddon(addon);
+    const created = await services.servicesService.createAddon(addon, source);
     ids.push(created._id);
   }
   logger.debug(

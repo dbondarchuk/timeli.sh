@@ -31,6 +31,7 @@ import {
   EmailResponse,
   ICalendarBusyTimeProvider,
   ICalendarWriter,
+  IConnectedApp,
   IConnectedAppProps,
   IMailSenderApp,
   IMeetingUrlProvider,
@@ -101,9 +102,8 @@ export class OutlookConnectedApp
     );
   }
 
-  processRequest?:
-    | ((appData: ConnectedAppData, data: any) => Promise<any>)
-    | undefined;
+  /** OAuth-only; admin does not call processRequest for Outlook. */
+  processRequest?: IConnectedApp["processRequest"];
 
   public async getLoginUrl(appId: string): Promise<string> {
     const logger = this.loggerFactory("getLoginUrl");

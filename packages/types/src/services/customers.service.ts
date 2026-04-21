@@ -5,6 +5,7 @@ import {
   CustomerUpdateModel,
 } from "../customers";
 import { Query, WithTotal } from "../database";
+import type { EventSource } from "../events/envelope";
 
 export interface ICustomersService {
   getCustomer(
@@ -28,17 +29,27 @@ export interface ICustomersService {
     searches: { search: string; field: CustomerSearchField }[],
   ): Promise<Customer | null>;
 
-  createCustomer(customer: CustomerUpdateModel): Promise<Customer>;
-  updateCustomer(id: string, update: CustomerUpdateModel): Promise<void>;
+  createCustomer(
+    customer: CustomerUpdateModel,
+    source: EventSource,
+  ): Promise<Customer>;
+  updateCustomer(
+    id: string,
+    update: CustomerUpdateModel,
+    source: EventSource,
+  ): Promise<void>;
 
-  getOrUpsertCustomer(fields: {
-    name: string;
-    email: string;
-    phone: string;
-  }): Promise<Customer>;
+  getOrUpsertCustomer(
+    fields: {
+      name: string;
+      email: string;
+      phone: string;
+    },
+    source: EventSource,
+  ): Promise<Customer>;
 
-  deleteCustomer(id: string): Promise<Customer | null>;
-  deleteCustomers(ids: string[]): Promise<void>;
+  deleteCustomer(id: string, source: EventSource): Promise<Customer | null>;
+  deleteCustomers(ids: string[], source: EventSource): Promise<void>;
 
   mergeCustomers(targetId: string, ids: string[]): Promise<void>;
 

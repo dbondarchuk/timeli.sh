@@ -3,6 +3,7 @@ import { cache } from "react";
 import { AssetsService } from "./assets.service";
 import { PolarBillingService } from "./billing/polar-billing.service";
 import { getPolarClient } from "./billing/utils";
+import { ActivityService } from "./activity.service";
 import { BookingService } from "./booking.service";
 import {
   BullMQJobService,
@@ -12,6 +13,7 @@ import {
   getBullMQNotificationConfig,
   RedisDashboardNotificationPublisher,
 } from "./bullmq";
+import { BullMQEventService, getBullMQEventConfig } from "./events";
 import { getRedisClient } from "./bullmq/redis-client";
 import { CommunicationLogsService } from "./communication-logs.service";
 import { CachedConfigurationService } from "./configuration.service";
@@ -30,10 +32,12 @@ import { UserService } from "./user.service";
 
 // BullMQ exports
 export * from "./bullmq";
+export * from "./events";
 
 // Text message exports
 export * from "./text-message";
 
+export * from "./activity.service";
 export * from "./assets.service";
 export * from "./billing";
 export * from "./booking.service";
@@ -75,11 +79,21 @@ export const ServicesContainer: (organizationId: string) => IServicesContainer =
       getBullMQJobConfig(),
     );
 
+    const eventService = new BullMQEventService(
+      organizationId,
+      getBullMQEventConfig(),
+    );
+
     const dashboardNotificationsService =
       new RedisDashboardNotificationPublisher(organizationId, redisClient);
     const organizationService = new OrganizationService(organizationId);
     const userService = new UserService(organizationId);
-    const customersService = new CustomersService(organizationId, jobService);
+    const customersService = new CustomersService(organizationId, eventService);
+    const activityService = new ActivityService(
+      organizationId,
+      dashboardNotificationsService,
+      redisClient,
+    );
     const connectedAppsService = new CachedConnectedAppsService(
       organizationId,
       () => services,
@@ -91,12 +105,12 @@ export const ServicesContainer: (organizationId: string) => IServicesContainer =
     const servicesService = new ServicesService(
       organizationId,
       configurationService,
-      jobService,
+      eventService,
     );
     const paymentsService = new PaymentsService(
       organizationId,
       connectedAppsService,
-      jobService,
+      eventService,
     );
     const bookingService = new BookingService(
       organizationId,
@@ -107,8 +121,7 @@ export const ServicesContainer: (organizationId: string) => IServicesContainer =
       scheduleService,
       servicesService,
       paymentsService,
-      jobService,
-      dashboardNotificationsService,
+      eventService,
       userService,
     );
 
@@ -127,7 +140,7 @@ export const ServicesContainer: (organizationId: string) => IServicesContainer =
     const giftCardsService = new GiftCardsService(
       organizationId,
       paymentsService,
-      jobService,
+      eventService,
     );
 
     const billingService = new PolarBillingService(
@@ -137,6 +150,7 @@ export const ServicesContainer: (organizationId: string) => IServicesContainer =
     );
 
     const services: IServicesContainer = {
+      activityService,
       configurationService,
       assetsStorage,
       assetsService,
@@ -150,6 +164,7 @@ export const ServicesContainer: (organizationId: string) => IServicesContainer =
       connectedAppsService,
       paymentsService,
       jobService,
+      eventService,
       notificationService,
       organizationService,
       userService,

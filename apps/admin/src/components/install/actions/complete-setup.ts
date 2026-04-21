@@ -199,6 +199,7 @@ async function ensureInstallCustomerNotificationTemplates(
   services: ReturnType<typeof ServicesContainer>,
   language: (typeof languages)[number],
   prefs: InstallPreferences,
+  userId: string,
 ): Promise<void> {
   const logger = getLoggerFactory("InstallActions")(
     "ensureInstallCustomerNotificationTemplates",
@@ -262,6 +263,7 @@ async function ensureInstallCustomerNotificationTemplates(
             },
           },
           null as unknown as ApiRequest,
+          userId,
         );
         logger.debug(
           { appId: emailApp._id },
@@ -322,6 +324,7 @@ async function ensureInstallCustomerNotificationTemplates(
             },
           },
           null as unknown as ApiRequest,
+          userId,
         );
         logger.debug(
           { appId: smsApp._id },
@@ -336,6 +339,7 @@ async function ensureInstallAppointmentNotificationDefaults(
   services: ReturnType<typeof ServicesContainer>,
   language: (typeof languages)[number],
   prefs: InstallPreferences,
+  userId: string,
 ): Promise<void> {
   const logger = getLoggerFactory("InstallActions")(
     "ensureInstallAppointmentNotificationDefaults",
@@ -383,6 +387,7 @@ async function ensureInstallAppointmentNotificationDefaults(
       name: defaultName,
     },
     null as unknown as ApiRequest,
+    userId,
   )) as boolean;
   if (!isUnique) return;
 
@@ -404,6 +409,7 @@ async function ensureInstallAppointmentNotificationDefaults(
       },
     },
     null as unknown as ApiRequest,
+    userId,
   );
   logger.debug(
     { appId: app._id, templateId, defaultName },
@@ -707,6 +713,7 @@ export async function runCompleteInstallSetupSteps(args: {
         appId: targetId,
       },
       null as unknown as ApiRequest,
+      userId,
     );
 
     logger.debug({ writerId: writer._id }, "Configured calendar writer app");
@@ -727,13 +734,23 @@ export async function runCompleteInstallSetupSteps(args: {
     return bookingPaymentResult;
   }
 
-  await ensureInstallCustomerNotificationTemplates(services, language, prefs);
+  await ensureInstallCustomerNotificationTemplates(
+    services,
+    language,
+    prefs,
+    userId,
+  );
 
   logger.debug(
     { language, businessName },
     "Ensuring install customer notification templates",
   );
-  await ensureInstallAppointmentNotificationDefaults(services, language, prefs);
+  await ensureInstallAppointmentNotificationDefaults(
+    services,
+    language,
+    prefs,
+    userId,
+  );
 
   await ensureInstallDefaultConfigurations(services);
 

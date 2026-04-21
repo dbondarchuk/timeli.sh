@@ -6,10 +6,11 @@ import {
   BookingTrackingEventData,
   BookingTrackingMetadata,
   ConnectedAppData,
-  CoreJobRequest,
-  IEventHook,
-  IScheduledCore,
+  EventEnvelope,
+  IEventSubscriber,
+  IScheduled,
   IServicesContainer,
+  JobRequest,
 } from "@timelish/types";
 import { Redis } from "ioredis";
 import { DateTime } from "luxon";
@@ -45,7 +46,7 @@ type BookingSession = {
   convertedAppName?: string;
 };
 
-export class BuiltInBookingTrackingApp implements IEventHook, IScheduledCore {
+export class BuiltInBookingTrackingApp implements IEventSubscriber, IScheduled {
   private jobScheduled = false;
 
   protected readonly loggerFactory: LoggerFactory;
@@ -63,15 +64,16 @@ export class BuiltInBookingTrackingApp implements IEventHook, IScheduledCore {
 
   public async onEvent(
     _: ConnectedAppData,
-    event: string,
-    data: BookingTrackingEventData,
+    envelope: EventEnvelope,
   ): Promise<void> {
     const logger = this.loggerFactory("onEvent");
-    logger.debug({ event, data }, "Tracking booking step");
-    if (event !== BOOKING_TRACKING_STEP_EVENT_TYPE) {
-      logger.debug({ event, data }, "Skipping event, unknown event type");
+    logger.debug({ envelope }, "Tracking booking step");
+    if (envelope.type !== BOOKING_TRACKING_STEP_EVENT_TYPE) {
+      logger.debug({ type: envelope.type }, "Skipping event, unknown event type");
       return;
     }
+
+    const data = envelope.payload as BookingTrackingEventData;
 
     try {
       const { sessionId, step, metadata } = data;
@@ -114,7 +116,7 @@ export class BuiltInBookingTrackingApp implements IEventHook, IScheduledCore {
 
       logger.debug({ sessionId, step, metadata }, "Booking step tracked");
     } catch (error) {
-      logger.error({ error, event, data }, "Failed to track booking step");
+      logger.error({ error, envelope }, "Failed to track booking step");
       throw error;
     }
   }
@@ -137,13 +139,13 @@ export class BuiltInBookingTrackingApp implements IEventHook, IScheduledCore {
         return;
       }
 
-      // Schedule the job as a hook job that calls this app's method
+      // Schedule as an app job that calls this built-in app's method
       const nextTime = DateTime.now().plus({
         seconds: ABANDONED_BOOKINGS_JOB_SCHEDULE_INTERVAL_SECONDS,
       });
 
       await this.services.jobService.scheduleJob({
-        type: "core",
+        type: "app",
         executeAt: nextTime.toJSDate(),
         appId: BOOKING_TRACKING_APP_ID,
         payload: {
@@ -165,9 +167,17 @@ export class BuiltInBookingTrackingApp implements IEventHook, IScheduledCore {
   /**
    * Process abandoned bookings - called by scheduled job
    */
-  public async processJob(jobData: CoreJobRequest): Promise<void> {
+  public async processJob(
+    _appData: ConnectedAppData,
+    jobData: JobRequest,
+  ): Promise<void> {
     const logger = this.loggerFactory("processJob");
     logger.debug({ jobData }, "Processing abandoned bookings");
+
+    if (jobData.type !== "app") {
+      logger.debug({ jobData }, "Skipping job, not an app job");
+      return;
+    }
 
     if (jobData.payload.type !== ABANDONED_BOOKINGS_JOB_TYPE) {
       logger.debug({ jobData }, "Skipping job, unknown job type");

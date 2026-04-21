@@ -1,4 +1,4 @@
-import { getServicesContainer } from "@/app/utils";
+import { getActor, getServicesContainer } from "@/app/utils";
 import { refundPaymentSchema } from "@timelish/api-sdk";
 import { getLoggerFactory } from "@timelish/logger";
 import { NextRequest, NextResponse } from "next/server";
@@ -9,6 +9,7 @@ export async function POST(
 ) {
   const logger = getLoggerFactory("AdminAPI/payment-refund")("POST");
   const servicesContainer = await getServicesContainer();
+  const actor = await getActor();
   const { id: paymentId } = await params;
 
   const body = await request.json();
@@ -34,6 +35,7 @@ export async function POST(
   const result = await servicesContainer.paymentsService.refundPayment(
     paymentId,
     amount,
+    actor,
   );
 
   if (!result.success) {

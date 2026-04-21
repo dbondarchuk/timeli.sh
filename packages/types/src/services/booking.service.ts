@@ -6,6 +6,7 @@ import {
   AppointmentHistoryEntry,
   AppointmentStatus,
   Availability,
+  BookingEventActor,
   CalendarEvent,
   GetAppointmentOptionsResponse,
   ModifyAppointmentInformationRequest,
@@ -24,7 +25,7 @@ export interface IBookingService {
     force?: boolean;
     files?: Record<string, File>;
     paymentIntentId?: string;
-    by: "customer" | "user";
+    actor: BookingEventActor;
     giftCards?: ApplyGiftCardsSuccessResponse["giftCards"];
   }): Promise<Appointment>;
   updateAppointment(
@@ -34,6 +35,7 @@ export interface IBookingService {
       confirmed?: boolean;
       files?: Record<string, File>;
       doNotNotifyCustomer?: boolean;
+      actor: BookingEventActor;
     },
   ): Promise<Appointment>;
   getPendingAppointmentsCount(
@@ -68,7 +70,7 @@ export interface IBookingService {
   changeAppointmentStatus(
     id: string,
     newStatus: AppointmentStatus,
-    by?: "customer" | "user",
+    actor: BookingEventActor,
   ): Promise<void>;
   updateAppointmentNote(id: string, note?: string): Promise<void>;
   addAppointmentFiles(id: string, files: File[]): Promise<AssetEntity[]>;
@@ -76,8 +78,8 @@ export interface IBookingService {
     id: string,
     newTime: Date,
     newDuration: number,
+    actor: BookingEventActor,
     doNotNotifyCustomer?: boolean,
-    by?: "customer" | "user",
   ): Promise<void>;
 
   getAppointmentHistory(

@@ -1,13 +1,19 @@
 import {
   Customer,
+  CUSTOMER_CREATED_EVENT_TYPE,
+  CUSTOMER_DELETED_EVENT_TYPE,
+  CUSTOMER_UPDATED_EVENT_TYPE,
   CustomerListModel,
   CustomerSearchField,
   CustomerUpdateModel,
-  ICustomerHook,
-  IJobService,
+  IEventService,
   Leaves,
   Query,
   WithTotal,
+  type CustomerCreatedPayload,
+  type CustomerDeletedPayload,
+  type CustomerUpdatedPayload,
+  type EventSource,
   type ICustomersService,
 } from "@timelish/types";
 import { buildSearchQuery, escapeRegex } from "@timelish/utils";
@@ -22,7 +28,7 @@ import { BaseService } from "./services/base.service";
 export class CustomersService extends BaseService implements ICustomersService {
   public constructor(
     organizationId: string,
-    private readonly jobService: IJobService,
+    private readonly eventService: IEventService,
   ) {
     super("CustomersService", organizationId);
   }
@@ -406,6 +412,7 @@ export class CustomersService extends BaseService implements ICustomersService {
 
   public async createCustomer(
     customer: CustomerUpdateModel,
+    source: EventSource,
   ): Promise<Customer> {
     const logger = this.loggerFactory("createCustomer");
     logger.debug(
@@ -438,10 +445,12 @@ export class CustomersService extends BaseService implements ICustomersService {
     );
 
     // Execute customer hooks
-    await this.jobService.enqueueHook<ICustomerHook, "onCustomerCreated">(
-      "customer-hook",
-      "onCustomerCreated",
-      createdCustomer,
+    await this.eventService.emit(
+      CUSTOMER_CREATED_EVENT_TYPE,
+      {
+        customer: createdCustomer,
+      } satisfies CustomerCreatedPayload,
+      source,
     );
 
     return createdCustomer;
@@ -450,6 +459,7 @@ export class CustomersService extends BaseService implements ICustomersService {
   public async updateCustomer(
     id: string,
     update: CustomerUpdateModel,
+    source: EventSource,
   ): Promise<void> {
     const logger = this.loggerFactory("updateCustomer");
     logger.debug(
@@ -493,23 +503,28 @@ export class CustomersService extends BaseService implements ICustomersService {
     );
 
     // Execute customer hooks
-    await this.jobService.enqueueHook<ICustomerHook, "onCustomerUpdated">(
-      "customer-hook",
-      "onCustomerUpdated",
-      updatedCustomer,
-      update,
+    await this.eventService.emit(
+      CUSTOMER_UPDATED_EVENT_TYPE,
+      {
+        customer: updatedCustomer,
+        update,
+      } satisfies CustomerUpdatedPayload,
+      source,
     );
   }
 
-  public async getOrUpsertCustomer({
-    name,
-    email,
-    phone,
-  }: {
-    name: string;
-    email: string;
-    phone: string;
-  }): Promise<Customer> {
+  public async getOrUpsertCustomer(
+    {
+      name,
+      email,
+      phone,
+    }: {
+      name: string;
+      email: string;
+      phone: string;
+    },
+    source: EventSource,
+  ): Promise<Customer> {
     const logger = this.loggerFactory("getOrUpsertCustomer");
 
     logger.debug(
@@ -531,11 +546,15 @@ export class CustomersService extends BaseService implements ICustomersService {
         "Found existing customer",
       );
 
-      await this.updateCustomerIfNeeded(existingCustomer, {
-        name,
-        email,
-        phone,
-      });
+      await this.updateCustomerIfNeeded(
+        existingCustomer,
+        {
+          name,
+          email,
+          phone,
+        },
+        source,
+      );
 
       return existingCustomer;
     }
@@ -555,7 +574,7 @@ export class CustomersService extends BaseService implements ICustomersService {
       requireDeposit: "inherit",
     };
 
-    const newCustomer = await this.createCustomer(customer);
+    const newCustomer = await this.createCustomer(customer, source);
 
     logger.debug(
       { customerId: newCustomer._id, customerName: newCustomer.name },
@@ -568,6 +587,7 @@ export class CustomersService extends BaseService implements ICustomersService {
   private async updateCustomerIfNeeded(
     customer: Customer,
     updatedFields: { name: string; email: string; phone: string },
+    source: EventSource,
   ): Promise<void> {
     const logger = this.loggerFactory("updateCustomerIfNeeded");
 
@@ -600,13 +620,16 @@ export class CustomersService extends BaseService implements ICustomersService {
         { customerId: customer._id, updatedFields: { name, email, phone } },
         "Updating customer with new information",
       );
-      await this.updateCustomer(customer._id, customer);
+      await this.updateCustomer(customer._id, customer, source);
     } else {
       logger.debug({ customerId: customer._id }, "No customer update needed");
     }
   }
 
-  public async deleteCustomer(id: string): Promise<Customer | null> {
+  public async deleteCustomer(
+    id: string,
+    source: EventSource,
+  ): Promise<Customer | null> {
     const logger = this.loggerFactory("deleteCustomer");
     logger.debug({ customerId: id }, "Deleting customer");
 
@@ -660,16 +683,21 @@ export class CustomersService extends BaseService implements ICustomersService {
     );
 
     // Execute customer hooks
-    await this.jobService.enqueueHook<ICustomerHook, "onCustomersDeleted">(
-      "customer-hook",
-      "onCustomersDeleted",
-      [customer],
+    await this.eventService.emit(
+      CUSTOMER_DELETED_EVENT_TYPE,
+      {
+        customers: [customer],
+      } satisfies CustomerDeletedPayload,
+      source,
     );
 
     return customer;
   }
 
-  public async deleteCustomers(ids: string[]): Promise<void> {
+  public async deleteCustomers(
+    ids: string[],
+    source: EventSource,
+  ): Promise<void> {
     const logger = this.loggerFactory("deleteCustomers");
     logger.debug({ customerIds: ids }, "Deleting multiple customers");
 
@@ -722,10 +750,12 @@ export class CustomersService extends BaseService implements ICustomersService {
     );
 
     // Execute customer hooks
-    await this.jobService.enqueueHook<ICustomerHook, "onCustomersDeleted">(
-      "customer-hook",
-      "onCustomersDeleted",
-      customersToDelete,
+    await this.eventService.emit(
+      CUSTOMER_DELETED_EVENT_TYPE,
+      {
+        customers: customersToDelete,
+      } satisfies CustomerDeletedPayload,
+      source,
     );
   }
 

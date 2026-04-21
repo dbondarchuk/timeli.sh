@@ -12,7 +12,8 @@ export const AppointmentNotificationsApp: App<
 > = {
   name: APPOINTMENT_NOTIFICATIONS_APP_NAME,
   displayName: "app_appointment-notifications_admin.app.displayName",
-  scope: ["scheduled", "appointment-hook", "communication-templates-provider"],
+  subscribeTo: ["appointment.*"],
+  scope: ["scheduled", "event-subscriber", "communication-templates-provider"],
   type: "complex",
   category: ["apps.categories.notifications"],
   Logo: ({ className }) => <BellRing className={className} />,

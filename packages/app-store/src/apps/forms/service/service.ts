@@ -7,6 +7,7 @@ import {
   ConnectedAppRequestError,
   Customer,
   CustomerSearchField,
+  type EventSource,
   IConnectedApp,
   IConnectedAppProps,
 } from "@timelish/types";
@@ -59,7 +60,7 @@ import {
   UpdateFormResponseAction,
   UpdateFormResponseActionType,
 } from "../models";
-import { FORMS_HOOK_NAME, IFormsHook } from "../models/hook";
+import { FORM_RESPONSE_CREATED_EVENT_TYPE } from "../events";
 import { getFormResponseSchema } from "../models/utils";
 import { FormsAdminAllKeys } from "../translations/types";
 import { FormsRepositoryService } from "./repository-service";
@@ -77,12 +78,23 @@ export class FormsConnectedApp implements IConnectedApp {
   public async processRequest(
     appData: ConnectedAppData,
     request: RequestAction,
+    apiRequest?: ApiRequest,
+    userId?: string,
   ): Promise<any> {
     const logger = this.loggerFactory("processRequest");
     logger.debug(
       { appId: appData._id, type: request.type },
       "Processing forms request",
     );
+
+    if (apiRequest === undefined || userId === undefined) {
+      throw new ConnectedAppRequestError(
+        "invalid_forms_request",
+        { request },
+        400,
+        "Missing request context",
+      );
+    }
 
     const { data, success, error } = requestActionSchema.safeParse(request);
     if (!success) {
@@ -125,7 +137,7 @@ export class FormsConnectedApp implements IConnectedApp {
       case SetFormsArchivedActionType:
         return this.processSetFormsArchivedRequest(appData, data);
       case CreateFormResponseActionType:
-        return this.processCreateFormResponseRequest(appData, data);
+        return this.processCreateFormResponseRequest(appData, data, userId);
       case CheckFormNameUniqueActionType:
         return this.processCheckFormNameUniqueRequest(appData, data);
       default:
@@ -444,39 +456,42 @@ export class FormsConnectedApp implements IConnectedApp {
             { formId },
             "Creating customer from name and email/phone",
           );
-          customer = await this.props.services.customersService.createCustomer({
-            name: result.data[nameFields[0]] as string,
-            email:
-              emailFields.length > 0
-                ? (result.data[emailFields[0]] as string)
-                : "",
-            phone:
-              phoneFields.length > 0
-                ? (result.data[phoneFields[0]] as string)
-                : "",
-            knownNames:
-              nameFields.length > 0
-                ? nameFields
-                    .slice(1)
-                    .map((fieldName) => result.data[fieldName] as string)
-                    .filter(Boolean)
-                : [],
-            knownEmails:
-              emailFields.length > 0
-                ? emailFields
-                    .slice(1)
-                    .map((fieldName) => result.data[fieldName] as string)
-                    .filter(Boolean)
-                : [],
-            knownPhones:
-              phoneFields.length > 0
-                ? phoneFields
-                    .slice(1)
-                    .map((fieldName) => result.data[fieldName] as string)
-                    .filter(Boolean)
-                : [],
-            requireDeposit: "inherit",
-          });
+          customer = await this.props.services.customersService.createCustomer(
+            {
+              name: result.data[nameFields[0]] as string,
+              email:
+                emailFields.length > 0
+                  ? (result.data[emailFields[0]] as string)
+                  : "",
+              phone:
+                phoneFields.length > 0
+                  ? (result.data[phoneFields[0]] as string)
+                  : "",
+              knownNames:
+                nameFields.length > 0
+                  ? nameFields
+                      .slice(1)
+                      .map((fieldName) => result.data[fieldName] as string)
+                      .filter(Boolean)
+                  : [],
+              knownEmails:
+                emailFields.length > 0
+                  ? emailFields
+                      .slice(1)
+                      .map((fieldName) => result.data[fieldName] as string)
+                      .filter(Boolean)
+                  : [],
+              knownPhones:
+                phoneFields.length > 0
+                  ? phoneFields
+                      .slice(1)
+                      .map((fieldName) => result.data[fieldName] as string)
+                      .filter(Boolean)
+                  : [],
+              requireDeposit: "inherit",
+            },
+            { actor: "customer" },
+          );
 
           logger.debug(
             { formId, customerId: customer._id },
@@ -547,27 +562,6 @@ export class FormsConnectedApp implements IConnectedApp {
 
     await this.enqueueFormResponseHook(response, form, customer);
     await this.sendEmailNotification(appData, response, form, customer);
-
-    await this.props.services.dashboardNotificationsService.publishNotification(
-      {
-        type: "form-response-created",
-        toast: {
-          type: "info",
-          title: {
-            key: "app_forms_admin.notifications.newResponse" satisfies FormsAdminAllKeys,
-          },
-          message: {
-            key: "app_forms_admin.notifications.newResponseMessage" satisfies FormsAdminAllKeys,
-          },
-          action: {
-            label: {
-              key: "app_forms_admin.notifications.viewResponse" satisfies FormsAdminAllKeys,
-            },
-            href: `/dashboard/forms/responses?formId=${form._id}`,
-          },
-        },
-      },
-    );
 
     return Response.json(
       { success: true, responseId: response._id },
@@ -1106,9 +1100,24 @@ export class FormsConnectedApp implements IConnectedApp {
     return result;
   }
 
+  private formResponseEventSource(
+    formResponse: FormResponseModel,
+    customer: Customer | null | undefined,
+    userId?: string,
+  ): EventSource {
+    if (userId) {
+      return { actor: "user", actorId: userId };
+    }
+    const cid = formResponse.customerId ?? customer?._id;
+    return cid
+      ? { actor: "customer", actorId: cid }
+      : { actor: "customer" };
+  }
+
   private async processCreateFormResponseRequest(
     appData: ConnectedAppData,
     data: CreateFormResponseAction,
+    userId: string,
   ) {
     const logger = this.loggerFactory("processCreateFormResponseRequest");
     logger.debug(
@@ -1225,7 +1234,7 @@ export class FormsConnectedApp implements IConnectedApp {
       customerId: customer?._id,
     });
 
-    await this.enqueueFormResponseHook(created, form, customer);
+    await this.enqueueFormResponseHook(created, form, customer, userId);
 
     logger.debug(
       { formId: form._id, responseId: created._id },
@@ -1381,14 +1390,25 @@ export class FormsConnectedApp implements IConnectedApp {
     formResponse: FormResponseModel,
     form: FormModel,
     customer?: Customer | null,
+    userId?: string,
   ) {
     const logger = this.loggerFactory("enqueueFormResponseHook");
     // Enqueue hook for apps that want to react to form submissions
     try {
-      await this.props.services.jobService.enqueueHook<
-        IFormsHook,
-        "onFormResponseCreated"
-      >(FORMS_HOOK_NAME, "onFormResponseCreated", formResponse, form, customer);
+      const source = this.formResponseEventSource(
+        formResponse,
+        customer,
+        userId,
+      );
+      await this.props.services.eventService.emit(
+        FORM_RESPONSE_CREATED_EVENT_TYPE,
+        {
+          formResponse,
+          form,
+          customer,
+        },
+        source,
+      );
       logger.debug(
         { formId: form._id, responseId: formResponse._id },
         "Form response hook enqueued",

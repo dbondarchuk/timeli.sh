@@ -45,6 +45,11 @@ export const getSession = cache(async () => {
   return session;
 });
 
+export const getActor = cache(async () => {
+  const session = await getSession();
+  return { actor: "user" as const, actorId: session.user.id };
+});
+
 export const getServicesContainer = cache(async () => {
   const { organizationId } = await getOrganizationIdAndSlug();
 

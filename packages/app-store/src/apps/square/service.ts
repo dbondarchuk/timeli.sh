@@ -974,7 +974,7 @@ class SquareConnectedApp
     );
 
     if (payment) {
-      await ps.updatePayment(payment._id, { fees });
+      await ps.updatePayment(payment._id, { fees }, { actor: "system" });
       logger.debug(
         {
           appId: this.props.organizationId,
