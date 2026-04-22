@@ -50,6 +50,16 @@ RUN adduser --system --uid 1001 job-processor
 COPY --from=builder --chown=job-processor:nodejs /app/apps/job-processor/dist ./dist
 COPY --from=builder --chown=job-processor:nodejs /app/apps/job-processor/package.json ./package.json
 
+# Copy of i18n jsons
+COPY --from=builder /app/packages/i18n ./packages/i18n
+COPY --from=builder /app/packages/types ./packages/types
+
+# Copy apps translation JSONs (preserving directory structure)
+COPY --from=builder /app/packages/app-store/src/apps ./packages/app-store/src/apps
+RUN find ./packages/app-store/src/apps -type f ! -path "*/translations/*" -delete && \
+    find ./packages/app-store/src/apps -type f ! -name "*.json" -delete && \
+    find ./packages/app-store/src/apps -type d -empty -delete
+
 # Copy necessary node_modules for runtime
 COPY --from=builder /app/node_modules/@aws-sdk ./node_modules/@aws-sdk
 COPY --from=builder /app/node_modules/dotenv ./node_modules/dotenv

@@ -1,3 +1,4 @@
+import { getLoggerFactory } from "@timelish/logger";
 import { claimEventHandler } from "../claim-event-handler";
 import { resolveEventDefinition } from "../event-registry";
 import type { EventHandler } from "./types";
@@ -5,6 +6,7 @@ import type { EventHandler } from "./types";
 export const notificationHandler: EventHandler = {
   name: "notifications",
   async run({ envelope, services, redis, getDbConnection }) {
+    const logger = getLoggerFactory("Events/NotificationHandler")("run");
     const def = resolveEventDefinition(envelope.type);
     if (!def) {
       return;
@@ -18,13 +20,21 @@ export const notificationHandler: EventHandler = {
         "email",
       );
       if (claimed) {
-        const email = await def.emailNotifications(
-          envelope,
-          services,
-          getDbConnection,
-        );
-        if (email) {
-          await services.notificationService.sendEmail(email);
+        try {
+          const emails = await def.emailNotifications(
+            envelope,
+            services,
+            getDbConnection,
+          );
+          if (emails && emails.length > 0) {
+            await Promise.all(
+              emails.map((email) =>
+                services.notificationService.sendEmail(email),
+              ),
+            );
+          }
+        } catch (error) {
+          logger.error({ error }, "Error sending email notifications");
         }
       }
     }
@@ -37,13 +47,21 @@ export const notificationHandler: EventHandler = {
         "sms",
       );
       if (claimed) {
-        const sms = await def.smsNotifications(
-          envelope,
-          services,
-          getDbConnection,
-        );
-        if (sms) {
-          await services.notificationService.sendTextMessage(sms);
+        try {
+          const smses = await def.smsNotifications(
+            envelope,
+            services,
+            getDbConnection,
+          );
+          if (smses && smses.length > 0) {
+            await Promise.all(
+              smses.map((sms) =>
+                services.notificationService.sendTextMessage(sms),
+              ),
+            );
+          }
+        } catch (error) {
+          logger.error({ error }, "Error sending SMS notifications");
         }
       }
     }

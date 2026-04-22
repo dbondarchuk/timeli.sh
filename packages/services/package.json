@@ -25,6 +25,8 @@
   },
   "dependencies": {
     "@polar-sh/sdk": "^0.47.0",
+    "@timelish/email-builder": "*",
+    "@timelish/i18n": "*",
     "@timelish/types": "*",
     "@timelish/logger": "*",
     "@timelish/utils": "*",

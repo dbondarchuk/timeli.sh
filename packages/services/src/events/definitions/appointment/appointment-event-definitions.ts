@@ -69,7 +69,7 @@ export const APPOINTMENT_EVENT_DEFINITIONS: Record<string, EventDefinition> = {
               service: payload.appointment.option.name,
               dt_dateTime: {
                 value: payload.appointment.dateTime.toISOString(),
-                format: "DATETIME_FULL",
+                format: "DATETIME_HUGE",
               },
               durationHours: duration.hours,
               durationMinutes: duration.minutes,

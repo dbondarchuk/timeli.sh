@@ -187,6 +187,8 @@ export type AppConnectedPayload = {
 export type AppFailedPayload = {
   appId: string;
   appName: string;
+  /** Connected-app owner; used for failure notifications. */
+  userId: string;
 };
 
 /** Maps core platform event type strings to their payload shapes (services emits). */

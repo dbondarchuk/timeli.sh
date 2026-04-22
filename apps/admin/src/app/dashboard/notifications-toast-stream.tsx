@@ -1,17 +1,17 @@
 "use client";
 
+import { authClient } from "@/app/auth-client";
 import {
   useActivityFeedStore,
   useNotificationsStore,
 } from "@/notifications/store";
 import { BASE_ADMIN_API_URL } from "@timelish/api-sdk";
-import { useI18n } from "@timelish/i18n";
+import { useI18n, useLocale } from "@timelish/i18n";
 import { DashboardNotification } from "@timelish/types";
 import { Badge, toast, useTimeZone } from "@timelish/ui";
 import { resolvedI18nText } from "@timelish/ui-admin";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { authClient } from "../auth-client";
 
 export const PendingAppointmentsBadge: React.FC = () => {
   return (
@@ -37,6 +37,7 @@ export const NotificationsToastStream: React.FC = () => {
   const { data: session } = authClient.useSession();
   const userId = session?.user?.id ?? "";
   const timeZone = useTimeZone();
+  const locale = useLocale();
   const router = useRouter();
   const t = useI18n();
 
@@ -78,11 +79,26 @@ export const NotificationsToastStream: React.FC = () => {
       }
 
       if (data.toast) {
-        toast(resolvedI18nText(data.toast.title, t, timeZone), {
-          description: resolvedI18nText(data.toast.message, t, timeZone),
+        const method =
+          typeof toast[data.toast.type] === "function"
+            ? toast[data.toast.type]
+            : toast;
+
+        method(resolvedI18nText(data.toast.title, t, timeZone, locale), {
+          description: resolvedI18nText(
+            data.toast.message,
+            t,
+            timeZone,
+            locale,
+          ),
           action: data.toast.action
             ? {
-                label: resolvedI18nText(data.toast.action.label, t, timeZone),
+                label: resolvedI18nText(
+                  data.toast.action.label,
+                  t,
+                  timeZone,
+                  locale,
+                ),
                 onClick: () => {
                   router.push(data.toast!.action!.href);
                 },

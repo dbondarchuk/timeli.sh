@@ -3,6 +3,8 @@ import { getLoggerFactory } from "@timelish/logger";
 import { IPaymentProcessor } from "@timelish/types";
 import { NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   const logger = getLoggerFactory(
     "API/.well-known/apple-developer-merchantid-domain-association",

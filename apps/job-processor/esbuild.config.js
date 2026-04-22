@@ -1,9 +1,27 @@
-const esbuild = require("esbuild");
-const { spawn } = require("child_process");
-const path = require("path");
+import { spawn } from "child_process";
+import { build as _build, context as _context } from "esbuild";
+import { createRequire } from "module";
+import { dirname, join } from "path";
+import { fileURLToPath } from "url";
+
+const require = createRequire(import.meta.url);
+
+const nextIntlServerPlugin = {
+  name: "next-intl-server",
+  setup(build) {
+    build.onResolve({ filter: /^next-intl\/server$/ }, (args) => {
+      // Resolve via the main entry instead of package.json
+      const pkgMain = require.resolve("next-intl");
+      const pkgDir = dirname(pkgMain);
+      const target = join(pkgDir, `server.react-server.js`);
+
+      return { path: target };
+    });
+  },
+};
 
 const buildConfig = {
-  entryPoints: ["src/index.ts"],
+  entryPoints: ["src/index.ts", "src/i18n/config.ts"],
   bundle: true,
   platform: "node",
   target: "node21",
@@ -11,6 +29,7 @@ const buildConfig = {
   outdir: "dist",
   sourcemap: true,
   logLevel: "info",
+  plugins: [nextIntlServerPlugin],
   // Exclude CSS files entirely from the bundle
   loader: {
     ".css": "empty",
@@ -28,14 +47,14 @@ const buildConfig = {
     "@resvg/resvg-js",
   ],
   alias: {
-    "next-intl/core": path.resolve(__dirname, "src/i18n/config.ts"),
+    "next-intl/config": "./src/i18n/config.ts",
   },
 };
 
 // Build function
 async function build() {
   try {
-    await esbuild.build(buildConfig);
+    await _build(buildConfig);
     console.log("✅ Build completed successfully");
   } catch (error) {
     console.error("❌ Build failed:", error);
@@ -46,7 +65,7 @@ async function build() {
 // Watch function for development
 async function watch() {
   try {
-    const context = await esbuild.context(buildConfig);
+    const context = await _context(buildConfig);
     await context.watch();
     console.log("👀 Watching for changes...");
   } catch (error) {
@@ -61,14 +80,14 @@ let appProcess = null;
 async function dev() {
   try {
     // Initial build
-    await esbuild.build(buildConfig);
+    await _build(buildConfig);
     console.log("✅ Initial build completed");
 
     // Start the app
     startApp();
 
     // Watch for changes
-    const context = await esbuild.context(buildConfig);
+    const context = await _context(buildConfig);
     await context.watch();
 
     console.log("👀 Watching for changes...");
@@ -103,7 +122,7 @@ function startApp() {
 }
 
 // Run build, watch, or dev if this file is executed directly
-if (require.main === module) {
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const args = process.argv.slice(2);
   if (args.includes("--dev")) {
     dev();
@@ -114,4 +133,4 @@ if (require.main === module) {
   }
 }
 
-module.exports = { buildConfig, build, watch, dev };
+export default { buildConfig, build, watch, dev };

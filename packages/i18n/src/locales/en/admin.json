@@ -1870,6 +1870,16 @@
         "message": "{appDisplayName} failed to connect. Check app settings.",
         "action": "Open apps"
       }
+    },
+    "emails": {
+      "failed": {
+        "subject": "{appDisplayName} — connection failed",
+        "preview": "{appDisplayName} could not stay connected",
+        "title": "We could not keep your app connected",
+        "body": "Hello,\n\n**{appDisplayName}** reported a connection problem or did not finish setup successfully. Open **Apps** in your dashboard to review credentials and settings, then try connecting again.\n\nIf everything already looks correct, you can ignore this email.",
+        "button": "Open apps",
+        "handledBy": "App connection failed: {appDisplayName}"
+      }
     }
   },
   "settings": {

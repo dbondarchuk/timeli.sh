@@ -1,5 +1,7 @@
 import { AvailableApps } from "@timelish/app-store";
-import { BaseAllKeys } from "@timelish/i18n";
+import { renderUserEmailTemplate } from "@timelish/email-builder/static";
+import { BaseAllKeys, fallbackLanguage, type Language } from "@timelish/i18n";
+import { getI18nAsync } from "@timelish/i18n/server";
 import {
   APP_CONNECTED_EVENT_TYPE,
   APP_FAILED_EVENT_TYPE,
@@ -11,6 +13,7 @@ import {
   type AppUninstalledPayload,
   type EventDefinition,
 } from "@timelish/types";
+import { getAdminUrl } from "@timelish/utils";
 
 export const APP_EVENT_DEFINITIONS: Record<string, EventDefinition> = {
   [APP_INSTALLED_EVENT_TYPE]: {
@@ -143,7 +146,90 @@ export const APP_EVENT_DEFINITIONS: Record<string, EventDefinition> = {
         },
       };
     },
-    emailNotifications: false,
+    emailNotifications: async (envelope, services) => {
+      const payload = envelope.payload as AppFailedPayload;
+      let ownerUserId = payload.userId;
+
+      if (!ownerUserId) {
+        try {
+          const app = await services.connectedAppsService.getApp(payload.appId);
+          ownerUserId = app.userId;
+        } catch {
+          return null;
+        }
+      }
+
+      if (!ownerUserId) {
+        return null;
+      }
+
+      const owner = await services.userService.getUser(ownerUserId);
+      if (!owner?.email) {
+        return null;
+      }
+
+      const locale: Language =
+        owner.language === "uk" || owner.language === "en"
+          ? owner.language
+          : fallbackLanguage;
+
+      const t = await getI18nAsync({ locale });
+
+      const organization = await services.organizationService.getOrganization();
+      const organizationLabel =
+        organization?.name?.trim() || organization?.slug || "";
+
+      const appDisplayNameKey = AvailableApps[payload.appName]?.displayName;
+      const appDisplayName = t.has(appDisplayNameKey)
+        ? t(appDisplayNameKey)
+        : payload.appName;
+
+      const interpolation = { appDisplayName };
+      const layoutArgs = {
+        config: organizationLabel ? { name: organizationLabel } : {},
+      };
+
+      const subject = t("admin.apps.emails.failed.subject", interpolation);
+      const body = await renderUserEmailTemplate(
+        {
+          previewText: t("admin.apps.emails.failed.preview", interpolation),
+          content: [
+            {
+              type: "title",
+              text: t("admin.apps.emails.failed.title", interpolation),
+              level: "h2",
+            },
+            {
+              type: "text",
+              text: t("admin.apps.emails.failed.body", interpolation),
+            },
+            {
+              type: "button",
+              button: {
+                text: t("admin.apps.emails.failed.button"),
+                url: `${getAdminUrl()}/dashboard/apps`,
+              },
+            },
+          ],
+        },
+        layoutArgs,
+      );
+
+      return [
+        {
+          email: {
+            to: owner.email,
+            subject,
+            body,
+          },
+          handledBy: {
+            key: "admin.apps.emails.failed.handledBy" satisfies BaseAllKeys,
+            args: { appDisplayName },
+          },
+          participantType: "user" as const,
+        },
+      ];
+    },
     smsNotifications: false,
   },
 };

@@ -189,6 +189,7 @@ export class ConnectedAppsService
           {
             appId: app._id,
             appName: app.name,
+            userId: app.userId,
           },
           { actor: "system" },
         );

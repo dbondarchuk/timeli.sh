@@ -40,9 +40,9 @@ export type EventDefinition<TPayload = any> = {
         services: IConnectedAppProps["services"],
         getDbConnection: IConnectedAppProps["getDbConnection"],
       ) =>
-        | EmailNotificationRequest
+        | EmailNotificationRequest[]
         | null
-        | Promise<EmailNotificationRequest | null>);
+        | Promise<EmailNotificationRequest[] | null>);
   smsNotifications?:
     | false
     | ((
@@ -50,9 +50,9 @@ export type EventDefinition<TPayload = any> = {
         services: IConnectedAppProps["services"],
         getDbConnection: IConnectedAppProps["getDbConnection"],
       ) =>
-        | TextMessageNotificationRequest
+        | TextMessageNotificationRequest[]
         | null
-        | Promise<TextMessageNotificationRequest | null>);
+        | Promise<TextMessageNotificationRequest[] | null>);
 };
 
 export type AppEventConfig = {

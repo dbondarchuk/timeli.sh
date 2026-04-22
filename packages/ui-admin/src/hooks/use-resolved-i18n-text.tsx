@@ -1,6 +1,6 @@
 "use client";
 
-import { I18nFn, useI18n } from "@timelish/i18n";
+import { I18nFn, useI18n, useLocale } from "@timelish/i18n";
 import { DATE_TIME_FORMATS, DateTimeFormat } from "@timelish/types";
 import { useTimeZone } from "@timelish/ui";
 import { DateTime } from "luxon";
@@ -11,12 +11,13 @@ const DT_PREFIX = "dt_";
 function resolveArgs<T extends any>(
   t: I18nFn<undefined, undefined>,
   timeZone: string,
+  locale: string,
   args?: T,
 ): T {
   if (!args) return args as T;
   if (typeof args === "object") {
     if (Array.isArray(args)) {
-      return args.map((arg) => resolveArgs(t, timeZone, arg)) as T;
+      return args.map((arg) => resolveArgs(t, timeZone, locale, arg)) as T;
     }
 
     return Object.fromEntries(
@@ -36,7 +37,7 @@ function resolveArgs<T extends any>(
         ) {
           return [
             key.substring(DT_PREFIX.length),
-            DateTime.fromISO(value as any)
+            DateTime.fromISO(value.value as any)
               .setZone(value.timeZone ?? timeZone)
               .toLocaleString(
                 value.format
@@ -47,7 +48,7 @@ function resolveArgs<T extends any>(
           ];
         }
 
-        return [key, resolveArgs(t, timeZone, value)];
+        return [key, resolveArgs(t, timeZone, locale, value)];
       }),
     ) as T;
   }
@@ -69,6 +70,7 @@ export function resolvedI18nText(
   field: Field,
   t: I18nFn<undefined, undefined>,
   timeZone: string,
+  locale: string,
 ): string {
   if (field === undefined || field === null) {
     return "";
@@ -87,7 +89,7 @@ export function resolvedI18nText(
       args?: Record<string, unknown>;
     };
     return t.has(key as any)
-      ? t(key as any, resolveArgs(t, timeZone, args))
+      ? t(key as any, resolveArgs(t, timeZone, locale, args))
       : key;
   }
   return "";
@@ -96,7 +98,8 @@ export function resolvedI18nText(
 export function useResolvedI18nText(field: Field): string {
   const t = useI18n();
   const timeZone = useTimeZone();
-  return resolvedI18nText(field, t, timeZone);
+  const locale = useLocale();
+  return resolvedI18nText(field, t, timeZone, locale);
 }
 
 export const ResolvedI18nText = ({ text }: { text: Field }) => {

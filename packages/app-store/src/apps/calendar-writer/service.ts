@@ -540,6 +540,8 @@ export class CalendarWriterConnectedApp
         },
         "Successfully processed calendar event",
       );
+
+      throw new Error("test");
     } catch (error: any) {
       logger.error(
         { appId: appData._id, appointmentId: appointment._id, status, error },

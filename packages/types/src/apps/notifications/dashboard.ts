@@ -29,7 +29,7 @@ export type DashboardNotification = {
     highestSeverity?: ActivitySeverity | null;
   };
   toast?: {
-    type: "info" | "warning" | "error";
+    type: "info" | "success" | "warning" | "error";
     title: {
       key: AllKeys;
       args?: Record<string, any>;
