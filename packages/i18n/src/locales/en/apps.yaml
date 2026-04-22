@@ -1,0 +1,110 @@
+common:
+  details: Details
+  statusMessage: "Status: {status}, {statusText}"
+  featured: Featured
+  addApp: Add app
+  alreadyInstalled: Already installed
+  appStore: App store
+  addNewApps: Add new apps
+  search: Search
+  mostPopular: Most Popular
+  allApps: All apps
+  all: All
+  statusText:
+    successfully_set_up: Successfully set up
+    error: Something went wrong
+    pending: Pending
+    connected: Connected
+    installed: Installed
+  usesTemplatedValues: "* Uses templated values"
+  toasts:
+    saved: Saved!
+    error: There was a problem with your request.
+  openMenu: Open menu
+  selectAll: Select all
+  selectRow: Select row
+  connectedAppSetup:
+    success:
+      title: Success!
+      description: Your app was successfully connected
+    error:
+      title: Uh oh! Something went wrong.
+      description: The request to connect the app has failed. Please try again.
+  defaultDescription: Update {appName} settings
+  updateApp: Update app
+  connectNewApp: Connect new app
+  close: Close
+  pleaseWait: Please wait...
+  disconnectApp: Disconnect app
+  disconnect: Disconnect
+  disconnectConfirmTitle: Are you absolutely sure?
+  disconnectConfirmDescription:
+    This action cannot be undone. This will remove this
+    app and may break services that are using it.
+  cancel: Cancel
+  appDisconnected: App was successfully disconnected.
+  disconnectError: There was a problem with your request.
+  requestFailed: Request failed.
+  loadingApps: Loading apps...
+  selectApp: Select app
+  eventSubscriptions:
+    viewPatterns: Subscribed events
+    modalTitle: Event patterns
+    modalDescription:
+      This app receives organization events whose type matches one
+      of these patterns (including wildcards such as *).
+installedApps:
+  searchPlaceholder: Search installed apps
+  noInstalledApps: You do not have any installed apps
+  noResults: No apps found for your search
+scopes:
+  calendar-read: Calendar source
+  calendar-write: Calendar store
+  mail-send: Email
+  text-message-send: Text message
+  text-message-respond: Text message responder
+  event-subscriber: Event subscriber
+  scheduled: Scheduled
+  schedule: Schedule provider
+  assets-storage: Assets storage
+  payment: Payments
+  dashboard-tab: Dashboard tab
+  customer-tab: Customer tab
+  ui-components: UI components
+  availability-provider: Availability provider
+  meeting-url-provider: Meeting URL provider
+  dashboard-notifier: Dashboard notifier
+  demo-arguments-provider: Demo arguments provider
+  sitemap-items-provider: Sitemap items provider
+status:
+  connected: Connected
+  failed: Connection failed
+  pending: Pending
+categories:
+  notifications: Notifications
+  schedule: Schedule
+  storage: Storage
+  calendar: Calendar
+  communications: Communications
+  utilities: Utilities
+  payment: Payments
+  appointments: Appointments
+  customers: Customers
+  content: Content
+fileSystemAssetsStorage:
+  title: File system assets storage
+  displayName: File system assets storage
+  description: Store assets in the file system.
+  statusText:
+    successfully_set_up: Successfully set up
+    error_processing_configuration: Error processing file system assets storage configuration
+    file_not_found: File {filename} does not exist
+    file_saved: File {filename} saved successfully
+    file_deleted: File {filename} deleted successfully
+    error_getting_file: Error getting file {filename}
+    error_saving_file: Error saving file {filename}
+    error_deleting_file: Error deleting file {filename}
+communications:
+  handledBy:
+    customer: Send Customer Message
+    appointment: Send Appointment Message

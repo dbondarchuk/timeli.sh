@@ -42,3 +42,5 @@ next-env.d.ts
 
 .env
 *.translation-cache.json
+
+*.generated.ts

@@ -1,7 +1,7 @@
 import { AllKeys } from "@timelish/i18n";
 import { Leaves } from "@timelish/types";
-import type adminKeys from "./en/admin.json";
-import type publicKeys from "./en/public.json";
+import type adminKeys from "./en/admin.generated";
+import type publicKeys from "./en/public.generated";
 
 export type BlogAdminKeys = Leaves<typeof adminKeys>;
 export const blogAdminNamespace = "app_blog_admin" as const;

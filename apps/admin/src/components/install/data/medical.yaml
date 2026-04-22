@@ -1,0 +1,245 @@
+general_practitioner:
+  label: General Practitioner
+  tags:
+    - medical
+    - health
+    - clinic
+  services:
+    - name: New Patient Visit
+      durations:
+        - 30
+        - 45
+      prices:
+        - 80
+        - 120
+        - 160
+      description: "**Comprehensive initial visit** to review health history and concerns. Includes examination and basic testing if needed."
+      addons:
+        - id: new_patient_visit-addon-medical-1
+          name: Extended clinical time
+          description: "**Additional provider minutes** when New Patient Visit needs deeper review."
+          duration: 10
+          suggestedPrice: 20
+        - id: new_patient_visit-addon-health-2
+          name: After-visit instructions
+          description: "**Detailed written care steps** tailored to New Patient Visit."
+          duration: 15
+          suggestedPrice: 32
+    - name: Follow-up Visit
+      durations:
+        - 15
+        - 30
+      prices:
+        - 40
+        - 65
+        - 90
+      description: "**Short follow-up** to review test results or medication adjustments. Efficient and focused care."
+      addons:
+        - id: follow_up_visit-addon-medical-1
+          name: Extended clinical time
+          description: "**Additional provider minutes** when Follow-up Visit needs deeper review."
+          duration: 10
+          suggestedPrice: 10
+    - name: Telehealth Consultation
+      durations:
+        - 15
+        - 30
+      prices:
+        - 40
+        - 60
+      description: "**Remote consultation** for non-urgent medical concerns. Convenient for quick follow-ups and triage."
+      addons:
+        - id: telehealth_consultation-addon-medical-1
+          name: Extended clinical time
+          description: "**Additional provider minutes** when Telehealth Consultation needs deeper review."
+          duration: 10
+          suggestedPrice: 10
+dentist:
+  label: Dentist
+  tags:
+    - medical
+    - dental
+    - clinic
+  services:
+    - name: Initial Exam & Cleaning
+      durations:
+        - 45
+        - 60
+      prices:
+        - 80
+        - 120
+        - 160
+      description: "**Comprehensive dental exam** with professional cleaning. Includes oral health advice and recommended follow-up."
+      addons:
+        - id: initial_exam_cleaning-addon-medical-1
+          name: Extended clinical time
+          description: "**Additional provider minutes** when Initial Exam & Cleaning needs deeper review."
+          duration: 10
+          suggestedPrice: 20
+        - id: initial_exam_cleaning-addon-dental-2
+          name: After-visit instructions
+          description: "**Detailed written care steps** tailored to Initial Exam & Cleaning."
+          duration: 15
+          suggestedPrice: 32
+    - name: Cavity Filling
+      durations:
+        - 45
+        - 60
+      prices:
+        - 120
+        - 180
+        - 250
+      description: "**Restorative procedure** to treat cavities. Includes local anesthesia and post-op care instructions."
+      addons:
+        - id: cavity_filling-addon-medical-1
+          name: Extended clinical time
+          description: "**Additional provider minutes** when Cavity Filling needs deeper review."
+          duration: 10
+          suggestedPrice: 30
+        - id: cavity_filling-addon-dental-2
+          name: After-visit instructions
+          description: "**Detailed written care steps** tailored to Cavity Filling."
+          duration: 15
+          suggestedPrice: 48
+    - name: Emergency Visit
+      durations:
+        - 30
+        - 60
+      prices:
+        - 150
+        - 220
+      description: "**Urgent dental care** for pain or trauma. Prompt assessment and temporary or definitive treatment provided."
+      addons:
+        - id: emergency_visit-addon-medical-1
+          name: Extended clinical time
+          description: "**Additional provider minutes** when Emergency Visit needs deeper review."
+          duration: 10
+          suggestedPrice: 38
+        - id: emergency_visit-addon-dental-2
+          name: After-visit instructions
+          description: "**Detailed written care steps** tailored to Emergency Visit."
+          duration: 15
+          suggestedPrice: 60
+optometrist:
+  label: Optometrist
+  tags:
+    - medical
+    - vision
+    - clinic
+  services:
+    - name: Comprehensive Eye Exam
+      durations:
+        - 45
+      prices:
+        - 60
+        - 90
+        - 120
+      description: "**Complete vision and eye health exam** including refraction. Recommendations for glasses, contacts, or referrals included."
+      addons:
+        - id: comprehensive_eye_exam-addon-medical-1
+          name: Extended clinical time
+          description: "**Additional provider minutes** when Comprehensive Eye Exam needs deeper review."
+          duration: 10
+          suggestedPrice: 15
+        - id: comprehensive_eye_exam-addon-vision-2
+          name: After-visit instructions
+          description: "**Detailed written care steps** tailored to Comprehensive Eye Exam."
+          duration: 15
+          suggestedPrice: 24
+    - name: Contact Lens Fitting
+      durations:
+        - 30
+        - 45
+      prices:
+        - 50
+        - 80
+      description: "**Professional contact lens fitting** with trial lenses and instruction. Ensures comfort and proper prescription."
+      addons:
+        - id: contact_lens_fitting-addon-medical-1
+          name: Extended clinical time
+          description: "**Additional provider minutes** when Contact Lens Fitting needs deeper review."
+          duration: 10
+          suggestedPrice: 13
+        - id: contact_lens_fitting-addon-vision-2
+          name: After-visit instructions
+          description: "**Detailed written care steps** tailored to Contact Lens Fitting."
+          duration: 15
+          suggestedPrice: 20
+    - name: Follow-up Exam
+      durations:
+        - 15
+        - 30
+      prices:
+        - 40
+        - 60
+      description: "**Quick follow-up** to assess fit or treatment progress. Efficient check to ensure optimal outcomes."
+      addons:
+        - id: follow_up_exam-addon-medical-1
+          name: Extended clinical time
+          description: "**Additional provider minutes** when Follow-up Exam needs deeper review."
+          duration: 10
+          suggestedPrice: 10
+physiotherapist:
+  label: Physiotherapist
+  tags:
+    - medical
+    - rehab
+    - therapy
+  services:
+    - name: Assessment & Plan
+      durations:
+        - 60
+      prices:
+        - 80
+        - 120
+      description: "**Initial movement and injury assessment** with rehab plan. Includes hands-on testing and home exercise program."
+      addons:
+        - id: assessment_plan-addon-medical-1
+          name: Extended clinical time
+          description: "**Additional provider minutes** when Assessment & Plan needs deeper review."
+          duration: 10
+          suggestedPrice: 20
+        - id: assessment_plan-addon-rehab-2
+          name: After-visit instructions
+          description: "**Detailed written care steps** tailored to Assessment & Plan."
+          duration: 15
+          suggestedPrice: 32
+    - name: Therapy Session
+      durations:
+        - 45
+        - 60
+      prices:
+        - 60
+        - 85
+        - 110
+      description: "**Targeted therapy session** aimed at restoring function and reducing pain. Incorporates manual techniques and exercise."
+      addons:
+        - id: therapy_session-addon-medical-1
+          name: Extended clinical time
+          description: "**Additional provider minutes** when Therapy Session needs deeper review."
+          duration: 10
+          suggestedPrice: 15
+        - id: therapy_session-addon-rehab-2
+          name: After-visit instructions
+          description: "**Detailed written care steps** tailored to Therapy Session."
+          duration: 15
+          suggestedPrice: 24
+    - name: Post-op Rehab Package
+      durations:
+        - 45
+      prices:
+        - 220
+        - 300
+      description: "**Structured post-operative rehabilitation** across multiple visits. Focused on restoring mobility and strength."
+      addons:
+        - id: post_op_rehab_package-addon-medical-1
+          name: Extended clinical time
+          description: "**Additional provider minutes** when Post-op Rehab Package needs deeper review."
+          duration: 10
+          suggestedPrice: 55
+        - id: post_op_rehab_package-addon-rehab-2
+          name: After-visit instructions
+          description: "**Detailed written care steps** tailored to Post-op Rehab Package."
+          duration: 15
+          suggestedPrice: 88
+

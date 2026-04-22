@@ -7,7 +7,8 @@
   ],
   "scripts": {
     "build": "turbo run build",
-    "prebuild": "turbo run check-translations && turbo run lint",
+    "prebuild": "turbo run generate-locales && turbo run check-translations && turbo run lint",
+    "predev": "turbo run generate-locales",
     "start": "turbo run start",
     "dev": "turbo run dev",
     "typegen": "turbo run typegen",

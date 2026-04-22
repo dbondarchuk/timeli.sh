@@ -1,0 +1,219 @@
+life_coach:
+  label: Life Coach
+  tags:
+    - coaching
+    - personal
+    - wellness
+  services:
+    - name: Discovery Session
+      durations:
+        - 30
+        - 45
+      prices:
+        - 35
+        - 55
+        - 80
+      description: "**Introductory discovery session** to clarify goals and fit. Includes suggested next steps and a short action plan."
+      addons:
+        - id: discovery_session-addon-coaching-1
+          name: Pre-session worksheet
+          description: "**Prep prompts** so Discovery Session starts with clarity."
+          duration: 10
+          suggestedPrice: 9
+        - id: discovery_session-addon-personal-2
+          name: Between-session check-in
+          description: "**Short accountability touchpoint** between full Discovery Session meetings."
+          duration: 15
+          suggestedPrice: 14
+    - name: Coaching Session
+      durations:
+        - 45
+        - 60
+      prices:
+        - 60
+        - 85
+        - 120
+      description: "**Focused coaching session** to tackle priorities and accountability. Practical tools and follow-up actions included."
+      addons:
+        - id: coaching_session-addon-coaching-1
+          name: Pre-session worksheet
+          description: "**Prep prompts** so Coaching Session starts with clarity."
+          duration: 10
+          suggestedPrice: 15
+        - id: coaching_session-addon-personal-2
+          name: Between-session check-in
+          description: "**Short accountability touchpoint** between full Coaching Session meetings."
+          duration: 15
+          suggestedPrice: 24
+business_coach:
+  label: Business Coach
+  tags:
+    - coaching
+    - business
+    - strategy
+  services:
+    - name: Strategy Audit
+      durations:
+        - 60
+        - 90
+      prices:
+        - 150
+        - 220
+        - 350
+      description: "**High-level strategy review** with actionable recommendations. Includes prioritized next steps for growth or efficiency."
+      addons:
+        - id: strategy_audit-addon-coaching-1
+          name: Pre-session worksheet
+          description: "**Prep prompts** so Strategy Audit starts with clarity."
+          duration: 10
+          suggestedPrice: 38
+        - id: strategy_audit-addon-business-2
+          name: Between-session check-in
+          description: "**Short accountability touchpoint** between full Strategy Audit meetings."
+          duration: 15
+          suggestedPrice: 60
+    - name: Executive Coaching
+      durations:
+        - 60
+      prices:
+        - 200
+        - 300
+        - 450
+      description: "**One-on-one executive coaching** focusing on leadership and decision-making. Tailored to professional development goals."
+      addons:
+        - id: executive_coaching-addon-coaching-1
+          name: Pre-session worksheet
+          description: "**Prep prompts** so Executive Coaching starts with clarity."
+          duration: 10
+          suggestedPrice: 50
+        - id: executive_coaching-addon-business-2
+          name: Between-session check-in
+          description: "**Short accountability touchpoint** between full Executive Coaching meetings."
+          duration: 15
+          suggestedPrice: 80
+    - name: Team Workshop
+      durations:
+        - 120
+        - 180
+      prices:
+        - 400
+        - 600
+      description: "**Interactive team workshop** to align goals and improve collaboration. Includes exercises and follow-up resources."
+      addons:
+        - id: team_workshop-addon-coaching-1
+          name: Pre-session worksheet
+          description: "**Prep prompts** so Team Workshop starts with clarity."
+          duration: 10
+          suggestedPrice: 100
+        - id: team_workshop-addon-business-2
+          name: Between-session check-in
+          description: "**Short accountability touchpoint** between full Team Workshop meetings."
+          duration: 15
+          suggestedPrice: 160
+career_coach:
+  label: Career Coach
+  tags:
+    - coaching
+    - career
+    - jobs
+  services:
+    - name: Resume Review
+      durations:
+        - 45
+      prices:
+        - 60
+        - 80
+      description: "**Professional resume review** with concrete edits and suggestions. Helps highlight strengths and tailor to roles."
+      addons:
+        - id: resume_review-addon-coaching-1
+          name: Pre-session worksheet
+          description: "**Prep prompts** so Resume Review starts with clarity."
+          duration: 10
+          suggestedPrice: 15
+        - id: resume_review-addon-career-2
+          name: Between-session check-in
+          description: "**Short accountability touchpoint** between full Resume Review meetings."
+          duration: 15
+          suggestedPrice: 24
+    - name: Interview Prep
+      durations:
+        - 60
+        - 90
+      prices:
+        - 80
+        - 120
+      description: "**Mock interviews and feedback** tailored to the role and industry. Practical tips to improve performance."
+      addons:
+        - id: interview_prep-addon-coaching-1
+          name: Pre-session worksheet
+          description: "**Prep prompts** so Interview Prep starts with clarity."
+          duration: 10
+          suggestedPrice: 20
+        - id: interview_prep-addon-career-2
+          name: Between-session check-in
+          description: "**Short accountability touchpoint** between full Interview Prep meetings."
+          duration: 15
+          suggestedPrice: 32
+    - name: Career Strategy Session
+      durations:
+        - 60
+      prices:
+        - 100
+        - 150
+      description: "**Long-form strategy session** for role targeting and growth planning. Includes recommended action steps."
+      addons:
+        - id: career_strategy_session-addon-coaching-1
+          name: Pre-session worksheet
+          description: "**Prep prompts** so Career Strategy Session starts with clarity."
+          duration: 10
+          suggestedPrice: 25
+        - id: career_strategy_session-addon-career-2
+          name: Between-session check-in
+          description: "**Short accountability touchpoint** between full Career Strategy Session meetings."
+          duration: 15
+          suggestedPrice: 40
+health_coach:
+  label: Health Coach
+  tags:
+    - coaching
+    - health
+    - wellness
+  services:
+    - name: Initial Health Assessment
+      durations:
+        - 60
+      prices:
+        - 60
+        - 85
+      description: "**Comprehensive health intake** with lifestyle and goal review. Tailored plan and small achievable steps provided."
+      addons:
+        - id: initial_health_assessment-addon-coaching-1
+          name: Pre-session worksheet
+          description: "**Prep prompts** so Initial Health Assessment starts with clarity."
+          duration: 10
+          suggestedPrice: 15
+        - id: initial_health_assessment-addon-health-2
+          name: Between-session check-in
+          description: "**Short accountability touchpoint** between full Initial Health Assessment meetings."
+          duration: 15
+          suggestedPrice: 24
+    - name: Follow-up Coaching
+      durations:
+        - 30
+        - 45
+      prices:
+        - 40
+        - 60
+      description: "**Regular check-ins** to support goals and troubleshoot obstacles. Focused accountability and adjustments."
+      addons:
+        - id: follow_up_coaching-addon-coaching-1
+          name: Pre-session worksheet
+          description: "**Prep prompts** so Follow-up Coaching starts with clarity."
+          duration: 10
+          suggestedPrice: 10
+        - id: follow_up_coaching-addon-health-2
+          name: Between-session check-in
+          description: "**Short accountability touchpoint** between full Follow-up Coaching meetings."
+          duration: 15
+          suggestedPrice: 16
+

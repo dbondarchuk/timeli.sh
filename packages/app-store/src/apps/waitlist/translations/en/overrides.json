@@ -1,9 +1,0 @@
-{
-  "admin": {
-    "bookingTracking": {
-      "convertedTo": {
-        "waitlist": "Waitlist"
-      }
-    }
-  }
-}

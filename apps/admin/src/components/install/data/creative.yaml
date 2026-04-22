@@ -1,0 +1,248 @@
+photographer:
+  label: Photographer
+  tags:
+    - creative
+    - photo
+    - events
+  services:
+    - name: Portrait Session
+      durations:
+        - 60
+        - 90
+      prices:
+        - 150
+        - 220
+        - 300
+      description: "**Professional portrait session** with editing included. Suitable for headshots, portraits, and branding photos."
+      addons:
+        - id: portrait_session-addon-creative-1
+          name: Extra revision round
+          description: "**One more polish pass** on deliverables from Portrait Session."
+          duration: 10
+          suggestedPrice: 38
+        - id: portrait_session-addon-photo-2
+          name: Rush delivery
+          description: "**Faster turnaround** when Portrait Session deadlines are tight."
+          duration: 15
+          suggestedPrice: 60
+    - name: Event Photography (per hour)
+      durations:
+        - 60
+        - 120
+      prices:
+        - 120
+        - 180
+        - 250
+      description: "**Event coverage by the hour** with optional packages. Includes basic editing and a delivery timeline."
+      addons:
+        - id: event_photography_per_hour-addon-creative-1
+          name: Extra revision round
+          description: "**One more polish pass** on deliverables from Event Photography (per hour)."
+          duration: 10
+          suggestedPrice: 30
+        - id: event_photography_per_hour-addon-photo-2
+          name: Rush delivery
+          description: "**Faster turnaround** when Event Photography (per hour) deadlines are tight."
+          duration: 15
+          suggestedPrice: 48
+    - name: Product Shoot
+      durations:
+        - 120
+        - 240
+      prices:
+        - 300
+        - 500
+        - 800
+      description: "**Studio or on-location product photography** for e-commerce and catalogs. Includes professional lighting and retouching."
+      addons:
+        - id: product_shoot-addon-creative-1
+          name: Extra revision round
+          description: "**One more polish pass** on deliverables from Product Shoot."
+          duration: 10
+          suggestedPrice: 75
+        - id: product_shoot-addon-photo-2
+          name: Rush delivery
+          description: "**Faster turnaround** when Product Shoot deadlines are tight."
+          duration: 15
+          suggestedPrice: 120
+videographer:
+  label: Videographer
+  tags:
+    - creative
+    - video
+    - events
+  services:
+    - name: Promo Video (up to 2 min)
+      durations:
+        - 180
+        - 240
+      prices:
+        - 600
+        - 900
+        - 1500
+      description: "**Short promotional video** for brand or product. Includes editing and basic motion graphics."
+      addons:
+        - id: promo_video_up_to_2_min-addon-creative-1
+          name: Extra revision round
+          description: "**One more polish pass** on deliverables from Promo Video (up to 2 min)."
+          duration: 10
+          suggestedPrice: 150
+        - id: promo_video_up_to_2_min-addon-video-2
+          name: Rush delivery
+          description: "**Faster turnaround** when Promo Video (up to 2 min) deadlines are tight."
+          duration: 15
+          suggestedPrice: 240
+    - name: Event Videography
+      durations:
+        - 180
+        - 360
+      prices:
+        - 500
+        - 900
+        - 1400
+      description: "**Coverage for events** with post-production included. Delivers highlight reels and full-length footage."
+      addons:
+        - id: event_videography-addon-creative-1
+          name: Extra revision round
+          description: "**One more polish pass** on deliverables from Event Videography."
+          duration: 10
+          suggestedPrice: 125
+        - id: event_videography-addon-video-2
+          name: Rush delivery
+          description: "**Faster turnaround** when Event Videography deadlines are tight."
+          duration: 15
+          suggestedPrice: 200
+    - name: Interview Recording
+      durations:
+        - 60
+        - 120
+      prices:
+        - 200
+        - 350
+      description: "**Professional interview capture** with multi-camera or single-camera setups. Includes basic editing."
+      addons:
+        - id: interview_recording-addon-creative-1
+          name: Extra revision round
+          description: "**One more polish pass** on deliverables from Interview Recording."
+          duration: 10
+          suggestedPrice: 50
+        - id: interview_recording-addon-video-2
+          name: Rush delivery
+          description: "**Faster turnaround** when Interview Recording deadlines are tight."
+          duration: 15
+          suggestedPrice: 80
+graphic_designer:
+  label: Graphic Designer
+  tags:
+    - creative
+    - design
+    - freelance
+  services:
+    - name: Logo Design (basic)
+      durations:
+        - 60
+        - 120
+      prices:
+        - 200
+        - 350
+        - 600
+      description: "**Simple logo concept and files** for immediate brand use. Includes a few variations and minor revisions."
+      addons:
+        - id: logo_design_basic-addon-creative-1
+          name: Extra revision round
+          description: "**One more polish pass** on deliverables from Logo Design (basic)."
+          duration: 10
+          suggestedPrice: 50
+        - id: logo_design_basic-addon-design-2
+          name: Rush delivery
+          description: "**Faster turnaround** when Logo Design (basic) deadlines are tight."
+          duration: 15
+          suggestedPrice: 80
+    - name: Brand Kit
+      durations:
+        - 120
+        - 240
+      prices:
+        - 600
+        - 900
+        - 1500
+      description: "**Comprehensive brand kit** including logo, color palette, and fonts. Designed for consistent identity across channels."
+      addons:
+        - id: brand_kit-addon-creative-1
+          name: Extra revision round
+          description: "**One more polish pass** on deliverables from Brand Kit."
+          duration: 10
+          suggestedPrice: 150
+        - id: brand_kit-addon-design-2
+          name: Rush delivery
+          description: "**Faster turnaround** when Brand Kit deadlines are tight."
+          duration: 15
+          suggestedPrice: 240
+    - name: Social Media Graphics (pack)
+      durations:
+        - 60
+        - 120
+      prices:
+        - 120
+        - 220
+        - 350
+      description: "**Custom social media templates** optimized for platforms. Delivered as editable files for quick updates."
+      addons:
+        - id: social_media_graphics_pack-addon-creative-1
+          name: Extra revision round
+          description: "**One more polish pass** on deliverables from Social Media Graphics (pack)."
+          duration: 10
+          suggestedPrice: 30
+        - id: social_media_graphics_pack-addon-design-2
+          name: Rush delivery
+          description: "**Faster turnaround** when Social Media Graphics (pack) deadlines are tight."
+          duration: 15
+          suggestedPrice: 48
+illustrator:
+  label: Illustrator
+  tags:
+    - creative
+    - illustration
+    - freelance
+  services:
+    - name: Custom Illustration (single)
+      durations:
+        - 60
+        - 120
+      prices:
+        - 100
+        - 200
+        - 350
+      description: "**One-off custom illustration** tailored to your brief. Delivered as high-resolution files ready for use."
+      addons:
+        - id: custom_illustration_single-addon-creative-1
+          name: Extra revision round
+          description: "**One more polish pass** on deliverables from Custom Illustration (single)."
+          duration: 10
+          suggestedPrice: 25
+        - id: custom_illustration_single-addon-illustration-2
+          name: Rush delivery
+          description: "**Faster turnaround** when Custom Illustration (single) deadlines are tight."
+          duration: 15
+          suggestedPrice: 40
+    - name: Series of Illustrations
+      durations:
+        - 240
+        - 360
+      prices:
+        - 500
+        - 900
+        - 1400
+      description: "**Multi-piece illustration series** for books, campaigns, or websites. Includes revisions and style matching."
+      addons:
+        - id: series_of_illustrations-addon-creative-1
+          name: Extra revision round
+          description: "**One more polish pass** on deliverables from Series of Illustrations."
+          duration: 10
+          suggestedPrice: 125
+        - id: series_of_illustrations-addon-illustration-2
+          name: Rush delivery
+          description: "**Faster turnaround** when Series of Illustrations deadlines are tight."
+          duration: 15
+          suggestedPrice: 200
+

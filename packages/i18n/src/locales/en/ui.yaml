@@ -1,0 +1,230 @@
+common:
+  openMenu: Open menu
+  selectAll: Select all
+  selectRow: Select row
+  close: Close
+  clear: Clear
+  move: Move
+  search: Search
+  noResults: No results found
+  requestFailed: Request has failed.
+  save: Save
+  cancel: Cancel
+  placeholder: Select option
+  hours: Hours
+  minutes: Minutes
+  seconds: Seconds
+  toasts:
+    error: There was a problem with your request.
+actions:
+  delete: Delete
+  update: Update
+  label: Actions
+table:
+  filters: Filters
+booleanSelect:
+  "yes": "Yes"
+  "no": "No"
+multiSelect:
+  placeholder: Select options
+templateSelector:
+  placeholder: Select template
+  requestFailed: Request to fetch templates has failed
+  loadingTemplates: Loading templates...
+optionSelector:
+  placeholder: Select option
+  requestFailed: Request to fetch options has failed
+assetSelector:
+  title: Select asset
+  upload: Upload
+pageSelector:
+  title: Select page
+promoCodeSelector:
+  placeholder: Select promo code
+  notActive: Not active
+  requestFailed: Request to fetch promo codes has failed
+alertModal:
+  defaultTitle: Are you sure?
+  defaultDescription: This action cannot be undone.
+  continueButton: Continue
+saveButton:
+  defaultText: Save
+  fixErrorsTitle: Please fix following errors
+  fixErrorsDescription: "Please fix the following errors before saving:"
+toast:
+  close: Close
+form:
+  submit: Submit
+  reset: Reset
+  confirm: Confirm
+  back: Back
+  next: Next
+  previous: Previous
+  addItem: Add item
+  select: Select
+dateRangePicker:
+  placeholder: Select date range
+  rangeOptions:
+    thisMonth: This Month
+    lastMonth: Last Month
+    thisWeek: This Week
+    lastWeek: Last Week
+    nextWeek: Next Week
+    nextMonth: Next Month
+    thisYear: This Year
+    lastYear: Last Year
+    allTime: All Time
+dialog:
+  close: Close
+loading:
+  loading: Loading...
+  saving: Saving...
+  deleting: Deleting...
+  updating: Updating...
+validation:
+  required: This field is required
+  invalid: Invalid value
+  minLength: "Minimum length is {min} characters"
+  maxLength: "Maximum length is {max} characters"
+  email: Please enter a valid email address
+  url: Please enter a valid URL
+calendar:
+  mon: Mon
+  tue: Tue
+  wed: Wed
+  thu: Thu
+  fri: Fri
+  sat: Sat
+  sun: Sun
+  monday: Monday
+  tuesday: Tuesday
+  wednesday: Wednesday
+  thursday: Thursday
+  friday: Friday
+  saturday: Saturday
+  sunday: Sunday
+  month: Month
+  year: Year
+  previousMonth: Previous month
+  nextMonth: Next month
+  today: Today
+sidebar:
+  toggleSidebar: Toggle Sidebar
+durationInput:
+  hr: hr
+  min: min
+  sec: sec
+  weeks: weeks
+  days: days
+dataTable:
+  searchPlaceholder: Search...
+  selectedRows: "{selected} of {total} row(s) selected."
+  previous: Previous
+  next: Next
+  rowsPerPage: Rows per page
+  showingEntries: "Showing {start} to {end} of {total} entries"
+  noEntriesFound: No entries found
+  pageOf: "Page {page} of {totalPages}"
+  noPages: No pages
+  goToFirstPage: Go to first page
+  goToPreviousPage: Go to previous page
+  goToNextPage: Go to next page
+  goToLastPage: Go to last page
+  resetFilters: Reset filters
+  selectedCount: "{selected} selected"
+breadcrumb:
+  more: More
+carousel:
+  previousSlide: Previous slide
+  nextSlide: Next slide
+dndFileInput:
+  dropFilesHere: Drop the files here ...
+  dragAndDropOrClick: "Drag 'n' drop some files here, or click to select files"
+markdownTooltip:
+  supports: "This field supports {type}"
+  learnMore: Learn more
+scheduler:
+  invalidTimeRange: Invalid time range
+  startTimeBeforeEndTime: Start time must be before end time
+  shifts: "{count, plural, =1 {1 shift} other {# shifts}}"
+  startTime: Start Time
+  endTime: End Time
+  edit: Edit
+  addShift: Add Shift
+timePicker:
+  seconds: Seconds
+  am: AM
+  pm: PM
+  format: "MM/dd/yyyy hh:mm a"
+currencyInput:
+  amount: "Amount: {amount}"
+  max: "Max: {max}"
+stepper:
+  step_of_total: "Step {step} of {total}"
+currency:
+  USD: United States Dollar
+  EUR: Euro
+  GBP: British Pound
+  JPY: Japanese Yen
+  CAD: Canadian Dollar
+  AUD: Australian Dollar
+  CHF: Swiss Franc
+  CNY: Chinese Yuan
+  HKD: Hong Kong Dollar
+  INR: Indian Rupee
+  MXN: Mexican Peso
+  NZD: New Zealand Dollar
+  SEK: Swedish Krona
+  SGD: Singapore Dollar
+  NOK: Norwegian Krone
+  TRY: Turkish Lira
+  ZAR: South African Rand
+  PLN: Polish Zloty
+  CZK: Czech Koruna
+  HUF: Hungarian Forint
+  ILS: Israeli Shekel
+  ISK: Icelandic Krona
+country:
+  US: United States
+  CA: Canada
+  GB: United Kingdom
+  JP: Japan
+  AU: Australia
+  CH: Switzerland
+  CN: China
+  HK: Hong Kong
+  IN: India
+  MX: Mexico
+  NZ: New Zealand
+  SE: Sweden
+  SG: Singapore
+  "NO": Norway
+  TR: Turkey
+  ZA: South Africa
+  IS: Iceland
+  LV: Latvia
+  LT: Lithuania
+  LU: Luxembourg
+  MT: Malta
+  NL: Netherlands
+  PL: Poland
+  PT: Portugal
+  RO: Romania
+  SK: Slovakia
+  SI: Slovenia
+  SM: San Marino
+  UA: Ukraine
+  AT: Austria
+  BE: Belgium
+  BG: Bulgaria
+  CY: Cyprus
+  DE: Germany
+  DK: Denmark
+  EE: Estonia
+  ES: Spain
+  FI: Finland
+  FR: France
+  GR: Greece
+  HR: Croatia
+  IE: Ireland
+  IT: Italy

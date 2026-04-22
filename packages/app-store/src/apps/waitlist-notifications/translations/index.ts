@@ -1,11 +1,12 @@
+import {
+  localeNamespaceLoaders,
+  resolveMessageLocale,
+} from "./locale-namespace-loaders.generated";
+
 export const WaitlistNotificationsTranslations = {
   admin: async (locale: string) => {
-    switch (locale) {
-      case "uk":
-        return (await import("./uk/admin.json")).default;
-      case "en":
-      default:
-        return (await import("./en/admin.json")).default;
-    }
+    const l = resolveMessageLocale(locale);
+    const { namespaceLoaders } = await localeNamespaceLoaders[l]();
+    return (await namespaceLoaders.admin()).default;
   },
 };

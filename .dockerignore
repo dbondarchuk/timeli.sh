@@ -34,6 +34,8 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+*.generated.ts
+
 /apps/web/data
 /apps/web/public/upload
 

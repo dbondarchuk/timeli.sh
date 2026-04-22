@@ -1,10 +1,10 @@
-import type admin from "./locales/en/admin.json";
-import type apps from "./locales/en/apps.json";
-import type builder from "./locales/en/builder.json";
-import type install from "./locales/en/install.json";
-import type translation from "./locales/en/translation.json";
-import type ui from "./locales/en/ui.json";
-import type validation from "./locales/en/validation.json";
+import type admin from "./locales/en/admin.generated";
+import type apps from "./locales/en/apps.generated";
+import type builder from "./locales/en/builder.generated";
+import type install from "./locales/en/install.generated";
+import type translation from "./locales/en/translation.generated";
+import type ui from "./locales/en/ui.generated";
+import type validation from "./locales/en/validation.generated";
 
 type Leaves<T> = T extends object
   ? {

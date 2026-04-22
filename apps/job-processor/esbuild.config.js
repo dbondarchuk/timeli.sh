@@ -21,7 +21,7 @@ const nextIntlServerPlugin = {
 };
 
 const buildConfig = {
-  entryPoints: ["src/index.ts", "src/i18n/config.ts"],
+  entryPoints: ["src/index.ts"],
   bundle: true,
   platform: "node",
   target: "node21",
@@ -48,6 +48,7 @@ const buildConfig = {
   ],
   alias: {
     "next-intl/config": "./src/i18n/config.ts",
+    "next/headers": "./src/i18n/headers.ts",
   },
 };
 
