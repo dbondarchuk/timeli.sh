@@ -6,13 +6,13 @@ import {
   AppointmentHistoryEntry,
   AppointmentStatus,
   Availability,
-  BookingEventActor,
   CalendarEvent,
   GetAppointmentOptionsResponse,
   ModifyAppointmentInformationRequest,
   Period,
 } from "../booking";
 import { Query, WithTotal } from "../database";
+import type { EventSource } from "../events/envelope";
 import { DateRange } from "../general";
 
 export interface IBookingService {
@@ -25,7 +25,7 @@ export interface IBookingService {
     force?: boolean;
     files?: Record<string, File>;
     paymentIntentId?: string;
-    actor: BookingEventActor;
+    eventSource: EventSource;
     giftCards?: ApplyGiftCardsSuccessResponse["giftCards"];
   }): Promise<Appointment>;
   updateAppointment(
@@ -35,7 +35,7 @@ export interface IBookingService {
       confirmed?: boolean;
       files?: Record<string, File>;
       doNotNotifyCustomer?: boolean;
-      actor: BookingEventActor;
+      eventSource: EventSource;
     },
   ): Promise<Appointment>;
   getPendingAppointmentsCount(
@@ -70,15 +70,19 @@ export interface IBookingService {
   changeAppointmentStatus(
     id: string,
     newStatus: AppointmentStatus,
-    actor: BookingEventActor,
+    eventSource: EventSource,
   ): Promise<void>;
   updateAppointmentNote(id: string, note?: string): Promise<void>;
-  addAppointmentFiles(id: string, files: File[]): Promise<AssetEntity[]>;
+  addAppointmentFiles(
+    id: string,
+    files: File[],
+    source: EventSource,
+  ): Promise<AssetEntity[]>;
   rescheduleAppointment(
     id: string,
     newTime: Date,
     newDuration: number,
-    actor: BookingEventActor,
+    eventSource: EventSource,
     doNotNotifyCustomer?: boolean,
   ): Promise<void>;
 

@@ -7,9 +7,11 @@ import {
   ConnectedAppRequestError,
   Customer,
   CustomerSearchField,
+  customerEventSource,
   type EventSource,
   IConnectedApp,
   IConnectedAppProps,
+  systemEventSource,
 } from "@timelish/types";
 import {
   fileNameToMimeType,
@@ -518,6 +520,9 @@ export class FormsConnectedApp implements IConnectedApp {
           "Processing file answer",
         );
         const filename = `forms/${form._id}/${uuidv4()}-${value.name}`;
+        const fileSource = customer?._id
+          ? customerEventSource(customer._id)
+          : systemEventSource;
         const asset = await this.props.services.assetsService.createAsset(
           {
             filename,
@@ -529,6 +534,7 @@ export class FormsConnectedApp implements IConnectedApp {
             customerId: customer?._id,
           },
           value,
+          fileSource,
         );
         logger.debug(
           { formId, name, value: value.name, assetId: asset._id },

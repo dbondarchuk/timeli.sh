@@ -14,7 +14,7 @@ import {
   AppointmentHistoryEntry,
   AppointmentOnlineMeetingInformation,
   AppointmentTimeNotAvaialbleError,
-  bookingActorToEventSource,
+  Customer,
   DISCOUNT_APPLIED_EVENT_TYPE,
   FieldSchema,
   GetAppointmentOptionsResponse,
@@ -36,11 +36,11 @@ import {
   type Asset,
   type Availability,
   type BookingConfiguration,
-  type BookingEventActor,
   type CalendarEvent,
   type DateRange,
   type DaySchedule,
   type DiscountAppliedPayload,
+  type EventSource,
   type GeneralConfiguration,
   type IAssetsService,
   type IBookingService,
@@ -76,14 +76,25 @@ import {
 } from "./collections";
 import { BaseService } from "./services/base.service";
 
-function historyActorFields(actor: BookingEventActor): {
+function historyActorFields(eventSource: EventSource): {
   by: "customer" | "user";
   userId?: string;
 } {
-  if (actor.type === "user") {
-    return { by: "user", userId: actor.userId };
+  if (eventSource.actor === "user") {
+    return { by: "user", userId: eventSource.actorId };
   }
   return { by: "customer" };
+}
+
+function enrichEventSourceWithCustomerId(
+  eventSource: EventSource,
+  customerId: string,
+): EventSource {
+  if (eventSource.actor === "customer") {
+    return { ...eventSource, actorId: customerId };
+  }
+
+  return eventSource;
 }
 
 export class BookingService extends BaseService implements IBookingService {
@@ -185,7 +196,7 @@ export class BookingService extends BaseService implements IBookingService {
     force = false,
     files,
     paymentIntentId,
-    actor,
+    eventSource,
     giftCards,
   }: {
     event: AppointmentEvent;
@@ -193,7 +204,7 @@ export class BookingService extends BaseService implements IBookingService {
     force?: boolean;
     files?: Record<string, File>;
     paymentIntentId?: string;
-    actor: BookingEventActor;
+    eventSource: EventSource;
     giftCards?: ApplyGiftCardsSuccessResponse["giftCards"];
   }): Promise<Appointment> {
     const logger = this.loggerFactory("createAppointment");
@@ -238,6 +249,16 @@ export class BookingService extends BaseService implements IBookingService {
       }
     }
 
+    const customer = await this.customersService.getOrUpsertCustomer(
+      event.fields,
+      eventSource,
+    );
+
+    const enrichedEventSource = enrichEventSourceWithCustomerId(
+      eventSource,
+      customer._id,
+    );
+
     const appointmentId = new ObjectId().toString();
     const assets: Asset[] = [];
     if (files) {
@@ -257,6 +278,7 @@ export class BookingService extends BaseService implements IBookingService {
             description: `${event.fields.name} - ${event.option.name} - ${fieldId}`,
           },
           file,
+          enrichedEventSource,
         );
 
         assets.push(asset);
@@ -333,7 +355,8 @@ export class BookingService extends BaseService implements IBookingService {
     const appointment = await this.saveEvent(
       appointmentId,
       event,
-      actor,
+      enrichedEventSource,
+      customer,
       assets.length ? assets : undefined,
       paymentIntentId,
       meetingInformation,
@@ -353,9 +376,7 @@ export class BookingService extends BaseService implements IBookingService {
         appointment,
         confirmed,
       } satisfies AppointmentCreatedPayload,
-      bookingActorToEventSource(actor, {
-        customerId: appointment.customer._id,
-      }),
+      eventSource,
     );
 
     logger.debug(
@@ -378,13 +399,13 @@ export class BookingService extends BaseService implements IBookingService {
       confirmed: propsConfirmed,
       files,
       doNotNotifyCustomer,
-      actor,
+      eventSource,
     }: {
       event: AppointmentEvent;
       confirmed?: boolean;
       files?: Record<string, File>;
       doNotNotifyCustomer?: boolean;
-      actor: BookingEventActor;
+      eventSource: EventSource;
     },
   ): Promise<Appointment> {
     const logger = this.loggerFactory("updateAppointment");
@@ -418,6 +439,11 @@ export class BookingService extends BaseService implements IBookingService {
       throw new Error("Appointment is declined");
     }
 
+    const enrichedEventSource = enrichEventSourceWithCustomerId(
+      eventSource,
+      appointment.customerId,
+    );
+
     const assets: Asset[] = [];
     if (files) {
       logger.debug(
@@ -436,6 +462,7 @@ export class BookingService extends BaseService implements IBookingService {
             description: `${event.fields.name} - ${event.option.name} - ${fieldId}`,
           },
           file,
+          eventSource,
         );
 
         assets.push(asset);
@@ -476,9 +503,7 @@ export class BookingService extends BaseService implements IBookingService {
         previousTotalDuration: appointment.totalDuration,
         doNotNotifyCustomer,
       } satisfies AppointmentRescheduledPayload,
-      bookingActorToEventSource(actor, {
-        customerId: updatedAppointment.customer._id,
-      }),
+      enrichedEventSource,
     );
 
     logger.debug(
@@ -1012,7 +1037,7 @@ export class BookingService extends BaseService implements IBookingService {
   public async changeAppointmentStatus(
     id: string,
     newStatus: AppointmentStatus,
-    actor: BookingEventActor,
+    eventSource: EventSource,
   ) {
     const logger = this.loggerFactory("changeAppointmentStatus");
     logger.debug(
@@ -1038,6 +1063,11 @@ export class BookingService extends BaseService implements IBookingService {
       );
       return;
     }
+
+    const enrichedEventSource = enrichEventSourceWithCustomerId(
+      eventSource,
+      appointment.customerId,
+    );
 
     const db = await getDbConnection();
     await db
@@ -1067,7 +1097,7 @@ export class BookingService extends BaseService implements IBookingService {
       data: {
         oldStatus,
         newStatus,
-        ...historyActorFields(actor),
+        ...historyActorFields(enrichedEventSource),
       },
     });
 
@@ -1078,9 +1108,7 @@ export class BookingService extends BaseService implements IBookingService {
         newStatus,
         oldStatus,
       } satisfies AppointmentStatusChangedPayload,
-      bookingActorToEventSource(actor, {
-        customerId: appointment.customer._id,
-      }),
+      enrichedEventSource,
     );
 
     logger.debug(
@@ -1121,6 +1149,7 @@ export class BookingService extends BaseService implements IBookingService {
   public async addAppointmentFiles(
     appointmentId: string,
     files: File[],
+    source: EventSource,
   ): Promise<Asset[]> {
     const logger = this.loggerFactory("addAppointmentFiles");
     logger.debug(
@@ -1160,6 +1189,7 @@ export class BookingService extends BaseService implements IBookingService {
             description: `${event.fields.name} - ${event.option.name}`,
           },
           file,
+          source,
         );
 
         assets.push({ ...asset, appointment: event });
@@ -1178,7 +1208,7 @@ export class BookingService extends BaseService implements IBookingService {
     id: string,
     newTime: Date,
     newDuration: number,
-    actor: BookingEventActor,
+    eventSource: EventSource,
     doNotNotifyCustomer?: boolean,
   ) {
     const logger = this.loggerFactory("rescheduleAppointment");
@@ -1199,6 +1229,10 @@ export class BookingService extends BaseService implements IBookingService {
 
     const oldTime = appointment.dateTime;
     const oldDuration = appointment.totalDuration;
+    const enrichedEventSource = enrichEventSourceWithCustomerId(
+      eventSource,
+      appointment.customerId,
+    );
 
     const db = await getDbConnection();
     await db
@@ -1222,7 +1256,7 @@ export class BookingService extends BaseService implements IBookingService {
       data: {
         oldDateTime: oldTime,
         newDateTime: newTime,
-        ...historyActorFields(actor),
+        ...historyActorFields(enrichedEventSource),
       },
     });
 
@@ -1246,9 +1280,7 @@ export class BookingService extends BaseService implements IBookingService {
         oldDuration,
         doNotNotifyCustomer,
       } satisfies AppointmentSlotRescheduledPayload,
-      bookingActorToEventSource(actor, {
-        customerId: appointment.customer._id,
-      }),
+      enrichedEventSource,
     );
 
     logger.debug(
@@ -1752,7 +1784,8 @@ export class BookingService extends BaseService implements IBookingService {
   private async saveEvent(
     id: string,
     event: AppointmentEvent,
-    actor: BookingEventActor,
+    eventSource: EventSource,
+    customer: Customer,
     files?: Asset[],
     paymentIntentId?: string,
     meetingInformation?: AppointmentOnlineMeetingInformation,
@@ -1783,28 +1816,6 @@ export class BookingService extends BaseService implements IBookingService {
         const appointments = db.collection<AppointmentEntity>(
           APPOINTMENTS_COLLECTION_NAME,
         );
-
-        const customer = await this.customersService.getOrUpsertCustomer(
-          event.fields,
-          bookingActorToEventSource(actor),
-        );
-
-        const paymentSource = bookingActorToEventSource(actor, {
-          customerId: customer._id,
-        });
-
-        if (customer.dontAllowBookings && !force) {
-          logger.error(
-            { appointmentId: id, customerName: customer.name },
-            "Customer is not allowed to make appointments",
-          );
-          console.error(
-            `Customer ${customer.name} is not allowed to make appointments`,
-          );
-          throw new Error(
-            `Customer ${customer.name} is not allowed to make appointments`,
-          );
-        }
 
         const dbEvent: AppointmentEntity = {
           _id: id,
@@ -1865,7 +1876,7 @@ export class BookingService extends BaseService implements IBookingService {
                 externalId: externalId,
                 fees,
               },
-              paymentSource,
+              eventSource,
             );
 
             payments.push(payment);
@@ -1902,7 +1913,7 @@ export class BookingService extends BaseService implements IBookingService {
                 giftCardCode: giftCard.code,
                 giftCardId: giftCard.id,
               },
-              paymentSource,
+              eventSource,
             );
 
             payments.push(payment);
@@ -1944,7 +1955,7 @@ export class BookingService extends BaseService implements IBookingService {
           appointmentId: id,
           type: "created",
           data: {
-            ...historyActorFields(actor),
+            ...historyActorFields(eventSource),
             confirmed: status === "confirmed",
             payment: historyPayment,
           },
@@ -1968,9 +1979,7 @@ export class BookingService extends BaseService implements IBookingService {
                 appointmentDateTime: dbEvent.dateTime,
               },
             } satisfies DiscountAppliedPayload,
-            bookingActorToEventSource(actor, {
-              customerId: customer._id,
-            }),
+            eventSource,
           );
         }
 

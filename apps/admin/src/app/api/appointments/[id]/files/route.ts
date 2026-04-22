@@ -1,4 +1,4 @@
-import { getServicesContainer } from "@/app/utils";
+import { getActor, getServicesContainer } from "@/app/utils";
 import { getLoggerFactory } from "@timelish/logger";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -32,9 +32,11 @@ export async function POST(
     );
   }
 
+  const actor = await getActor();
   const result = await servicesContainer.bookingService.addAppointmentFiles(
     id,
     files,
+    actor,
   );
 
   logger.debug(

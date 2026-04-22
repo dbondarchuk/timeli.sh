@@ -5,7 +5,7 @@ import type { Language } from "@timelish/i18n";
 import { getI18nAsync } from "@timelish/i18n/server";
 import { getLoggerFactory } from "@timelish/logger";
 import { deserializeMarkdown } from "@timelish/rte";
-import type { IServicesContainer } from "@timelish/types";
+import { systemEventSource, type IServicesContainer } from "@timelish/types";
 import { bookDefaultPage } from "../defaults/book";
 import { footerDefaultPage } from "../defaults/footer";
 import { homeDefaultPage, TemplateServiceArg } from "../defaults/home";
@@ -171,12 +171,19 @@ async function upsertDefaultHeader(
   };
 
   if (existing) {
-    await pagesService.updatePageHeader(existing._id, headerData);
+    await pagesService.updatePageHeader(
+      existing._id,
+      headerData,
+      systemEventSource,
+    );
     logger.debug({ headerId: existing._id }, "Updated default header");
     return existing._id;
   }
 
-  const created = await pagesService.createPageHeader(headerData);
+  const created = await pagesService.createPageHeader(
+    headerData,
+    systemEventSource,
+  );
   logger.debug({ headerId: created._id }, "Created default header");
   return created._id;
 }
@@ -206,12 +213,19 @@ async function upsertDefaultFooter(
   };
 
   if (existing) {
-    await pagesService.updatePageFooter(existing._id, footerData);
+    await pagesService.updatePageFooter(
+      existing._id,
+      footerData,
+      systemEventSource,
+    );
     logger.debug({ footerId: existing._id }, "Updated default footer");
     return existing._id;
   }
 
-  const created = await pagesService.createPageFooter(footerData);
+  const created = await pagesService.createPageFooter(
+    footerData,
+    systemEventSource,
+  );
   logger.debug({ footerId: created._id }, "Created default footer");
   return created._id;
 }
@@ -247,7 +261,7 @@ async function upsertDefaultHomePage(
   };
 
   if (homePage) {
-    await pagesService.updatePage(homePage._id, pageData);
+    await pagesService.updatePage(homePage._id, pageData, systemEventSource);
     logger.debug(
       { pageId: homePage._id, slug: "home" },
       "Updated default home page",
@@ -255,7 +269,7 @@ async function upsertDefaultHomePage(
     return;
   }
 
-  await pagesService.createPage(pageData);
+  await pagesService.createPage(pageData, systemEventSource);
   logger.debug({ slug: "home" }, "Created default home page");
 }
 
@@ -292,7 +306,7 @@ async function upsertDefaultBookPage(
   };
 
   if (bookPage) {
-    await pagesService.updatePage(bookPage._id, pageData);
+    await pagesService.updatePage(bookPage._id, pageData, systemEventSource);
     logger.debug(
       { pageId: bookPage._id, slug: "book" },
       "Updated default book page",
@@ -300,7 +314,7 @@ async function upsertDefaultBookPage(
     return;
   }
 
-  await pagesService.createPage(pageData);
+  await pagesService.createPage(pageData, systemEventSource);
   logger.debug({ slug: "book" }, "Created default book page");
 }
 
@@ -335,7 +349,11 @@ async function upsertDefaultModifyPage(
   };
 
   if (modifyPage) {
-    await pagesService.updatePage(modifyPage._id, pageData);
+    await pagesService.updatePage(
+      modifyPage._id,
+      pageData,
+      systemEventSource,
+    );
     logger.debug(
       { pageId: modifyPage._id, slug: "book/modify" },
       "Updated default modify page",
@@ -343,7 +361,7 @@ async function upsertDefaultModifyPage(
     return;
   }
 
-  await pagesService.createPage(pageData);
+  await pagesService.createPage(pageData, systemEventSource);
   logger.debug({ slug: "book/modify" }, "Created default modify page");
 }
 

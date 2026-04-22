@@ -1,6 +1,7 @@
 "use server";
 
 import { auth } from "@/app/auth";
+import { getActor } from "@/app/utils";
 import type { InstallServiceServerSnapshot } from "@/components/install/types";
 import { getLoggerFactory } from "@timelish/logger";
 import { ServicesContainer } from "@timelish/services";
@@ -71,7 +72,7 @@ export async function replaceServices(
     return { ok: false, code: "unauthorized" };
   }
 
-  const source = { actor: "user" as const, actorId: session.user.id };
+  const source = await getActor();
 
   const services = ServicesContainer(organizationId);
   let booking =
@@ -171,10 +172,14 @@ export async function replaceServices(
     fresh && Object.keys(fresh).length > 0
       ? fresh
       : getDefaultBookingConfiguration();
-  await services.configurationService.setConfiguration("booking", {
-    ...base,
-    options: newIds.map((id) => ({ id })),
-  });
+  await services.configurationService.setConfiguration(
+    "booking",
+    {
+      ...base,
+      options: newIds.map((id) => ({ id })),
+    },
+    source,
+  );
   logger.debug(
     { organizationId, oldCount: oldIds.length, newCount: newIds.length },
     "Replaced services",
@@ -198,7 +203,7 @@ export async function createAddons(
     return { ok: false, code: "unauthorized" };
   }
 
-  const source = { actor: "user" as const, actorId: session.user.id };
+  const source = await getActor();
 
   const parsedAddons = addonsInputSchema.safeParse(addons);
   if (!parsedAddons.success) {
@@ -234,7 +239,7 @@ export async function replaceAddonsForOption(
     return { ok: false, code: "unauthorized" };
   }
 
-  const source = { actor: "user" as const, actorId: session.user.id };
+  const source = await getActor();
 
   const parsedAddons = addonsInputSchema.safeParse(addons);
   if (!parsedAddons.success) {

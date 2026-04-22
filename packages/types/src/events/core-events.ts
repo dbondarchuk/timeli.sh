@@ -49,3 +49,25 @@ export const APP_INSTALLED_EVENT_TYPE = "app.installed" as const;
 export const APP_UNINSTALLED_EVENT_TYPE = "app.uninstalled" as const;
 export const APP_CONNECTED_EVENT_TYPE = "app.connected" as const;
 export const APP_FAILED_EVENT_TYPE = "app.failed" as const;
+
+export const TEMPLATE_CREATED_EVENT_TYPE = "template.created" as const;
+export const TEMPLATE_UPDATED_EVENT_TYPE = "template.updated" as const;
+export const TEMPLATE_DELETED_EVENT_TYPE = "template.deleted" as const;
+
+export const PAGE_CREATED_EVENT_TYPE = "page.created" as const;
+export const PAGE_UPDATED_EVENT_TYPE = "page.updated" as const;
+export const PAGE_DELETED_EVENT_TYPE = "page.deleted" as const;
+
+export const PAGE_HEADER_CREATED_EVENT_TYPE = "pageHeader.created" as const;
+export const PAGE_HEADER_UPDATED_EVENT_TYPE = "pageHeader.updated" as const;
+export const PAGE_HEADER_DELETED_EVENT_TYPE = "pageHeader.deleted" as const;
+
+export const PAGE_FOOTER_CREATED_EVENT_TYPE = "pageFooter.created" as const;
+export const PAGE_FOOTER_UPDATED_EVENT_TYPE = "pageFooter.updated" as const;
+export const PAGE_FOOTER_DELETED_EVENT_TYPE = "pageFooter.deleted" as const;
+
+export const SETTINGS_UPDATED_EVENT_TYPE = "settings.updated" as const;
+
+export const ASSET_CREATED_EVENT_TYPE = "asset.created" as const;
+export const ASSET_UPDATED_EVENT_TYPE = "asset.updated" as const;
+export const ASSET_DELETED_EVENT_TYPE = "asset.deleted" as const;

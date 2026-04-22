@@ -1,4 +1,5 @@
 import { Query, WithTotal } from "../database";
+import type { EventSource } from "../events/envelope";
 import {
   Page,
   PageFooter,
@@ -25,10 +26,14 @@ export interface IPagesService {
       tags?: string[];
     },
   ): Promise<WithTotal<PageListModel>>;
-  createPage(page: PageUpdateModel): Promise<Page>;
-  updatePage(id: string, update: PageUpdateModel): Promise<void>;
-  deletePage(id: string): Promise<Page | null>;
-  deletePages(ids: string[]): Promise<void>;
+  createPage(page: PageUpdateModel, source: EventSource): Promise<Page>;
+  updatePage(
+    id: string,
+    update: PageUpdateModel,
+    source: EventSource,
+  ): Promise<void>;
+  deletePage(id: string, source: EventSource): Promise<Page | null>;
+  deletePages(ids: string[], source: EventSource): Promise<void>;
   checkUniqueSlug(slug: string, id?: string): Promise<boolean>;
 
   /** Page Headers */
@@ -37,10 +42,17 @@ export interface IPagesService {
   getPageHeaders(
     query: Query & { priorityIds?: string[] },
   ): Promise<WithTotal<PageHeaderListModel>>;
-  createPageHeader(pageHeader: PageHeaderUpdateModel): Promise<PageHeader>;
-  updatePageHeader(id: string, update: PageHeaderUpdateModel): Promise<void>;
-  deletePageHeader(id: string): Promise<PageHeader | null>;
-  deletePageHeaders(ids: string[]): Promise<void>;
+  createPageHeader(
+    pageHeader: PageHeaderUpdateModel,
+    source: EventSource,
+  ): Promise<PageHeader>;
+  updatePageHeader(
+    id: string,
+    update: PageHeaderUpdateModel,
+    source: EventSource,
+  ): Promise<void>;
+  deletePageHeader(id: string, source: EventSource): Promise<PageHeader | null>;
+  deletePageHeaders(ids: string[], source: EventSource): Promise<void>;
   checkUniquePageHeaderName(name: string, id?: string): Promise<boolean>;
 
   /** Page Footers */
@@ -49,9 +61,16 @@ export interface IPagesService {
   getPageFooters(
     query: Query & { priorityIds?: string[] },
   ): Promise<WithTotal<PageFooterListModel>>;
-  createPageFooter(pageFooter: PageFooterUpdateModel): Promise<PageFooter>;
-  updatePageFooter(id: string, update: PageFooterUpdateModel): Promise<void>;
-  deletePageFooter(id: string): Promise<PageFooter | null>;
-  deletePageFooters(ids: string[]): Promise<void>;
+  createPageFooter(
+    pageFooter: PageFooterUpdateModel,
+    source: EventSource,
+  ): Promise<PageFooter>;
+  updatePageFooter(
+    id: string,
+    update: PageFooterUpdateModel,
+    source: EventSource,
+  ): Promise<void>;
+  deletePageFooter(id: string, source: EventSource): Promise<PageFooter | null>;
+  deletePageFooters(ids: string[], source: EventSource): Promise<void>;
   checkUniquePageFooterName(name: string, id?: string): Promise<boolean>;
 }

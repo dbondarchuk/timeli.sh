@@ -1,4 +1,4 @@
-import { getServicesContainer } from "@/app/utils";
+import { getActor, getServicesContainer } from "@/app/utils";
 import { getLoggerFactory } from "@timelish/logger";
 import { okStatus, pageSchema } from "@timelish/types";
 import { NextRequest, NextResponse } from "next/server";
@@ -84,8 +84,9 @@ export async function PUT(
     "Updating page",
   );
 
+  const actor = await getActor();
   try {
-    await servicesContainer.pagesService.updatePage(id, data);
+    await servicesContainer.pagesService.updatePage(id, data, actor);
 
     logger.debug(
       {
@@ -142,8 +143,9 @@ export async function DELETE(
     "Deleting page",
   );
 
+  const actor = await getActor();
   try {
-    const page = await servicesContainer.pagesService.deletePage(id);
+    const page = await servicesContainer.pagesService.deletePage(id, actor);
 
     if (!page) {
       logger.warn({ pageId: id }, "Page not found for deletion");

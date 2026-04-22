@@ -1,6 +1,7 @@
 "use server";
 
 import { auth } from "@/app/auth";
+import { getActor } from "@/app/utils";
 import { getLoggerFactory } from "@timelish/logger";
 import { ServicesContainer } from "@timelish/services";
 import {
@@ -57,6 +58,7 @@ export async function applyInstallPersonalization(
 
   const logo = parsed.data.installLogo?.trim();
   const services = ServicesContainer(organizationId);
+  const eventSource = await getActor();
   const existingStyling =
     (await services.configurationService.getConfiguration("styling")) ?? {};
   const otherColors = (existingStyling.colors ?? []).filter(
@@ -77,7 +79,11 @@ export async function applyInstallPersonalization(
     },
   };
 
-  await services.configurationService.setConfiguration("styling", newStyling);
+  await services.configurationService.setConfiguration(
+    "styling",
+    newStyling,
+    eventSource,
+  );
   logger.debug({ organizationId }, "Applied styling configuration");
 
   const brand = await services.configurationService.getConfiguration("brand");
@@ -90,7 +96,11 @@ export async function applyInstallPersonalization(
     logo: logo ?? brand.logo,
     favicon: logo ?? brand.favicon,
   };
-  await services.configurationService.setConfiguration("brand", newBrand);
+  await services.configurationService.setConfiguration(
+    "brand",
+    newBrand,
+    eventSource,
+  );
 
   logger.debug({ organizationId }, "Applied install personalization");
   return { ok: true };

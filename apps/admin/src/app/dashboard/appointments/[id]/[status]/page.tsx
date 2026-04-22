@@ -22,7 +22,7 @@ export default async function Page(props: Props) {
       await servicesContainer.bookingService.changeAppointmentStatus(
         params.id,
         "confirmed",
-        { type: "user" as const, userId: actor.actorId },
+        actor,
       );
 
       logger.debug(

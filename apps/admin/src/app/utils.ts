@@ -1,4 +1,5 @@
 import { ServicesContainer } from "@timelish/services";
+import { userEventSource } from "@timelish/types";
 import { headers } from "next/headers";
 import { redirect, unauthorized } from "next/navigation";
 import { cache } from "react";
@@ -47,7 +48,7 @@ export const getSession = cache(async () => {
 
 export const getActor = cache(async () => {
   const session = await getSession();
-  return { actor: "user" as const, actorId: session.user.id };
+  return userEventSource(session.user.id);
 });
 
 export const getServicesContainer = cache(async () => {

@@ -1,5 +1,15 @@
 import {
+  IEventService,
   IPagesService,
+  PAGE_CREATED_EVENT_TYPE,
+  PAGE_DELETED_EVENT_TYPE,
+  PAGE_FOOTER_CREATED_EVENT_TYPE,
+  PAGE_FOOTER_DELETED_EVENT_TYPE,
+  PAGE_FOOTER_UPDATED_EVENT_TYPE,
+  PAGE_HEADER_CREATED_EVENT_TYPE,
+  PAGE_HEADER_DELETED_EVENT_TYPE,
+  PAGE_HEADER_UPDATED_EVENT_TYPE,
+  PAGE_UPDATED_EVENT_TYPE,
   Page,
   PageFooter,
   PageFooterListModel,
@@ -12,6 +22,16 @@ import {
   PageUpdateModel,
   Query,
   WithTotal,
+  type EventSource,
+  type PageCreatedPayload,
+  type PageDeletedPayload,
+  type PageFooterCreatedPayload,
+  type PageFooterDeletedPayload,
+  type PageFooterUpdatedPayload,
+  type PageHeaderCreatedPayload,
+  type PageHeaderDeletedPayload,
+  type PageHeaderUpdatedPayload,
+  type PageUpdatedPayload,
 } from "@timelish/types";
 import { buildSearchQuery, escapeRegex } from "@timelish/utils";
 import { DateTime } from "luxon";
@@ -25,7 +45,10 @@ import { getDbConnection } from "./database";
 import { BaseService } from "./services/base.service";
 
 export class PagesService extends BaseService implements IPagesService {
-  public constructor(organizationId: string) {
+  public constructor(
+    organizationId: string,
+    protected readonly eventService: IEventService,
+  ) {
     super("PagesService", organizationId);
   }
 
@@ -292,7 +315,10 @@ export class PagesService extends BaseService implements IPagesService {
     return response;
   }
 
-  public async createPage(page: PageUpdateModel): Promise<Page> {
+  public async createPage(
+    page: PageUpdateModel,
+    source: EventSource,
+  ): Promise<Page> {
     const logger = this.loggerFactory("createPage");
     logger.debug(
       { page: { slug: page.slug, title: page.title } },
@@ -317,6 +343,12 @@ export class PagesService extends BaseService implements IPagesService {
 
     await pages.insertOne(dbPage);
 
+    await this.eventService.emit(
+      PAGE_CREATED_EVENT_TYPE,
+      { page: dbPage } satisfies PageCreatedPayload,
+      source,
+    );
+
     logger.debug(
       { pageId: dbPage._id, slug: dbPage.slug },
       "Successfully created page",
@@ -325,7 +357,11 @@ export class PagesService extends BaseService implements IPagesService {
     return dbPage;
   }
 
-  public async updatePage(id: string, update: PageUpdateModel): Promise<void> {
+  public async updatePage(
+    id: string,
+    update: PageUpdateModel,
+    source: EventSource,
+  ): Promise<void> {
     const logger = this.loggerFactory("updatePage");
     logger.debug(
       { pageId: id, update: { slug: update.slug, title: update.title } },
@@ -354,10 +390,22 @@ export class PagesService extends BaseService implements IPagesService {
       },
     );
 
+    const page = await this.getPage(id);
+    if (page) {
+      await this.eventService.emit(
+        PAGE_UPDATED_EVENT_TYPE,
+        { page } satisfies PageUpdatedPayload,
+        source,
+      );
+    }
+
     logger.debug({ pageId: id }, "Successfully updated page");
   }
 
-  public async deletePage(id: string): Promise<Page | null> {
+  public async deletePage(
+    id: string,
+    source: EventSource,
+  ): Promise<Page | null> {
     const logger = this.loggerFactory("deletePage");
     logger.debug({ pageId: id }, "Deleting page");
 
@@ -381,10 +429,19 @@ export class PagesService extends BaseService implements IPagesService {
 
     logger.debug({ pageId: id, slug: page.slug }, "Successfully deleted page");
 
+    await this.eventService.emit(
+      PAGE_DELETED_EVENT_TYPE,
+      { pageIds: [id] } satisfies PageDeletedPayload,
+      source,
+    );
+
     return page;
   }
 
-  public async deletePages(ids: string[]): Promise<void> {
+  public async deletePages(
+    ids: string[],
+    source: EventSource,
+  ): Promise<void> {
     const logger = this.loggerFactory("deletePages");
     logger.debug({ pageIds: ids }, "Deleting multiple pages");
 
@@ -415,6 +472,14 @@ export class PagesService extends BaseService implements IPagesService {
       { pageIds: ids, count: deletedCount },
       "Successfully deleted multiple pages",
     );
+
+    if (ids.length) {
+      await this.eventService.emit(
+        PAGE_DELETED_EVENT_TYPE,
+        { pageIds: ids } satisfies PageDeletedPayload,
+        source,
+      );
+    }
   }
 
   public async checkUniqueSlug(slug: string, id?: string): Promise<boolean> {
@@ -635,6 +700,7 @@ export class PagesService extends BaseService implements IPagesService {
 
   public async createPageHeader(
     pageHeader: PageHeaderUpdateModel,
+    source: EventSource,
   ): Promise<PageHeader> {
     const logger = this.loggerFactory("createPageHeader");
     logger.debug(
@@ -654,6 +720,12 @@ export class PagesService extends BaseService implements IPagesService {
 
     await pageHeaders.insertOne(dbPageHeader);
 
+    await this.eventService.emit(
+      PAGE_HEADER_CREATED_EVENT_TYPE,
+      { pageHeader: dbPageHeader } satisfies PageHeaderCreatedPayload,
+      source,
+    );
+
     logger.debug(
       { pageHeaderId: dbPageHeader._id, name: dbPageHeader.name },
       "Successfully created page header",
@@ -665,6 +737,7 @@ export class PagesService extends BaseService implements IPagesService {
   public async updatePageHeader(
     id: string,
     update: PageHeaderUpdateModel,
+    source: EventSource,
   ): Promise<void> {
     const logger = this.loggerFactory("updatePageHeader");
     logger.debug(
@@ -689,10 +762,22 @@ export class PagesService extends BaseService implements IPagesService {
       },
     );
 
+    const pageHeader = await this.getPageHeader(id);
+    if (pageHeader) {
+      await this.eventService.emit(
+        PAGE_HEADER_UPDATED_EVENT_TYPE,
+        { pageHeader } satisfies PageHeaderUpdatedPayload,
+        source,
+      );
+    }
+
     logger.debug({ pageHeaderId: id }, "Successfully updated page header");
   }
 
-  public async deletePageHeader(id: string): Promise<PageHeader | null> {
+  public async deletePageHeader(
+    id: string,
+    source: EventSource,
+  ): Promise<PageHeader | null> {
     const logger = this.loggerFactory("deletePageHeader");
     logger.debug({ pageHeaderId: id }, "Deleting page header");
 
@@ -709,10 +794,22 @@ export class PagesService extends BaseService implements IPagesService {
     }
 
     logger.debug({ pageHeaderId: id }, "Successfully deleted page header");
+
+    if (pageHeader) {
+      await this.eventService.emit(
+        PAGE_HEADER_DELETED_EVENT_TYPE,
+        { pageHeaderIds: [id] } satisfies PageHeaderDeletedPayload,
+        source,
+      );
+    }
+
     return pageHeader;
   }
 
-  public async deletePageHeaders(ids: string[]): Promise<void> {
+  public async deletePageHeaders(
+    ids: string[],
+    source: EventSource,
+  ): Promise<void> {
     const logger = this.loggerFactory("deletePageHeaders");
     logger.debug({ pageHeaderIds: ids }, "Deleting multiple page headers");
 
@@ -730,6 +827,14 @@ export class PagesService extends BaseService implements IPagesService {
       { pageHeaderIds: ids, count: deletedCount },
       "Successfully deleted multiple page headers",
     );
+
+    if (ids.length) {
+      await this.eventService.emit(
+        PAGE_HEADER_DELETED_EVENT_TYPE,
+        { pageHeaderIds: ids } satisfies PageHeaderDeletedPayload,
+        source,
+      );
+    }
   }
 
   public async checkUniquePageHeaderName(
@@ -956,6 +1061,7 @@ export class PagesService extends BaseService implements IPagesService {
 
   public async createPageFooter(
     pageFooter: PageFooterUpdateModel,
+    source: EventSource,
   ): Promise<PageFooter> {
     const logger = this.loggerFactory("createPageFooter");
     logger.debug(
@@ -975,6 +1081,12 @@ export class PagesService extends BaseService implements IPagesService {
 
     await pageFooters.insertOne(dbPageFooter);
 
+    await this.eventService.emit(
+      PAGE_FOOTER_CREATED_EVENT_TYPE,
+      { pageFooter: dbPageFooter } satisfies PageFooterCreatedPayload,
+      source,
+    );
+
     logger.debug(
       { pageFooterId: dbPageFooter._id, name: dbPageFooter.name },
       "Successfully created page footer",
@@ -986,6 +1098,7 @@ export class PagesService extends BaseService implements IPagesService {
   public async updatePageFooter(
     id: string,
     update: PageFooterUpdateModel,
+    source: EventSource,
   ): Promise<void> {
     const logger = this.loggerFactory("updatePageFooter");
     logger.debug(
@@ -1014,10 +1127,22 @@ export class PagesService extends BaseService implements IPagesService {
       },
     );
 
+    const pageFooter = await this.getPageFooter(id);
+    if (pageFooter) {
+      await this.eventService.emit(
+        PAGE_FOOTER_UPDATED_EVENT_TYPE,
+        { pageFooter } satisfies PageFooterUpdatedPayload,
+        source,
+      );
+    }
+
     logger.debug({ pageFooterId: id }, "Successfully updated page footer");
   }
 
-  public async deletePageFooter(id: string): Promise<PageFooter | null> {
+  public async deletePageFooter(
+    id: string,
+    source: EventSource,
+  ): Promise<PageFooter | null> {
     const logger = this.loggerFactory("deletePageFooter");
     logger.debug({ pageFooterId: id }, "Deleting page footer");
 
@@ -1035,10 +1160,21 @@ export class PagesService extends BaseService implements IPagesService {
 
     logger.debug({ pageFooterId: id }, "Successfully deleted page footer");
 
+    if (pageFooter) {
+      await this.eventService.emit(
+        PAGE_FOOTER_DELETED_EVENT_TYPE,
+        { pageFooterIds: [id] } satisfies PageFooterDeletedPayload,
+        source,
+      );
+    }
+
     return pageFooter;
   }
 
-  public async deletePageFooters(ids: string[]): Promise<void> {
+  public async deletePageFooters(
+    ids: string[],
+    source: EventSource,
+  ): Promise<void> {
     const logger = this.loggerFactory("deletePageFooters");
     logger.debug({ pageFooterIds: ids }, "Deleting multiple page footers");
 
@@ -1056,6 +1192,14 @@ export class PagesService extends BaseService implements IPagesService {
       { pageFooterIds: ids, count: deletedCount },
       "Successfully deleted multiple page footers",
     );
+
+    if (ids.length) {
+      await this.eventService.emit(
+        PAGE_FOOTER_DELETED_EVENT_TYPE,
+        { pageFooterIds: ids } satisfies PageFooterDeletedPayload,
+        source,
+      );
+    }
   }
 
   public async checkUniquePageFooterName(

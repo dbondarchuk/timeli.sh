@@ -159,6 +159,60 @@ platformEvents:
     applied:
       title: Знижку застосовано
       description: "{customerName} · {discountName} ({value})"
+  template:
+    created:
+      title: Шаблон створено
+      description: "{name}"
+    updated:
+      title: Шаблон оновлено
+      description: "{name}"
+    deleted:
+      title: Шаблони видалено
+      description: "{count, plural, =1 {# шаблон} few {# шаблони} other {# шаблонів}}"
+  page:
+    created:
+      title: Сторінку створено
+      description: "{title}"
+    updated:
+      title: Сторінку оновлено
+      description: "{title}"
+    deleted:
+      title: Сторінки видалено
+      description: "{count, plural, =1 {# сторінка} few {# сторінки} other {# сторінок}}"
+  pageHeader:
+    created:
+      title: Шапку створено
+      description: "{name}"
+    updated:
+      title: Шапку оновлено
+      description: "{name}"
+    deleted:
+      title: Шапки видалено
+      description: "{count, plural, =1 {# шапка} few {# шапки} other {# шапок}}"
+  pageFooter:
+    created:
+      title: Підвал створено
+      description: "{name}"
+    updated:
+      title: Підвал оновлено
+      description: "{name}"
+    deleted:
+      title: Підвали видалено
+      description: "{count, plural, =1 {# підвал} few {# підвали} other {# підвалів}}"
+  settings:
+    updated:
+      title: Налаштування оновлено
+      description: "{key}"
+  asset:
+    created:
+      title: Ассет завантажено
+      description: "{filename}"
+    updated:
+      title: Ассет оновлено
+      description: "{filename}"
+    deleted:
+      title: Ассети видалено
+      description: "{count, plural, =1 {# ассет} few {# ассети} other {# ассетів}}"
 navigation:
   overview: Огляд
   dashboard: Панель керування

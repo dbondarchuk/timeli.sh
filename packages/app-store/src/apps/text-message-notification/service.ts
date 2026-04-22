@@ -85,8 +85,12 @@ export class TextMessageNotificationConnectedApp
           newTime,
           newDuration,
         ),
-      onAppointmentStatusChanged: (appointment, newStatus, _oldStatus, _source) =>
-        this.onAppointmentStatusChanged(appData, appointment, newStatus),
+      onAppointmentStatusChanged: (
+        appointment,
+        newStatus,
+        _oldStatus,
+        _source,
+      ) => this.onAppointmentStatusChanged(appData, appointment, newStatus),
     });
   }
 
@@ -517,7 +521,7 @@ export class TextMessageNotificationConnectedApp
       await this.props.services.bookingService.changeAppointmentStatus(
         appointment._id,
         newStatus,
-        { type: "customer" },
+        { actor: "customer" },
       );
 
       const organization =

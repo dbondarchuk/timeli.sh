@@ -1,4 +1,4 @@
-import { getServicesContainer } from "@/app/utils";
+import { getActor, getServicesContainer } from "@/app/utils";
 import { getLoggerFactory } from "@timelish/logger";
 import { okStatus, pageFooterSchema } from "@timelish/types";
 import { NextRequest, NextResponse } from "next/server";
@@ -91,8 +91,9 @@ export async function PUT(
     "Updating page footer",
   );
 
+  const actor = await getActor();
   try {
-    await servicesContainer.pagesService.updatePageFooter(id, data);
+    await servicesContainer.pagesService.updatePageFooter(id, data, actor);
 
     logger.debug(
       {
@@ -147,8 +148,12 @@ export async function DELETE(
     "Deleting page footer",
   );
 
+  const actor = await getActor();
   try {
-    const footer = await servicesContainer.pagesService.deletePageFooter(id);
+    const footer = await servicesContainer.pagesService.deletePageFooter(
+      id,
+      actor,
+    );
 
     if (!footer) {
       logger.warn({ pageFooterId: id }, "Page footer not found for deletion");

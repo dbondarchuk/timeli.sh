@@ -13,6 +13,7 @@ import {
   IPaymentProcessor,
   IScheduled,
   PaymentIntentUpdateModel,
+  systemEventSource,
   TemplateTemplatesList,
 } from "@timelish/types";
 import { formatAmountWithCurrency } from "@timelish/utils";
@@ -281,10 +282,13 @@ export class GiftCardStudioConnectedApp
           "Unique name generated for Gift Card Studio template",
         );
 
-        const created = await templatesService.createTemplate({
-          ...source,
-          name: uniqueName,
-        });
+        const created = await templatesService.createTemplate(
+          {
+            ...source,
+            name: uniqueName,
+          },
+          systemEventSource,
+        );
 
         logger.debug(
           {

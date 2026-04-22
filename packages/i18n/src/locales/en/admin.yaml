@@ -157,6 +157,60 @@ platformEvents:
     applied:
       title: Discount applied
       description: "{customerName} · {discountName} ({value})"
+  template:
+    created:
+      title: Template created
+      description: "{name}"
+    updated:
+      title: Template updated
+      description: "{name}"
+    deleted:
+      title: Templates removed
+      description: "{count, plural, =1 {# template} other {# templates}}"
+  page:
+    created:
+      title: Page created
+      description: "{title}"
+    updated:
+      title: Page updated
+      description: "{title}"
+    deleted:
+      title: Pages removed
+      description: "{count, plural, =1 {# page} other {# pages}}"
+  pageHeader:
+    created:
+      title: Header created
+      description: "{name}"
+    updated:
+      title: Header updated
+      description: "{name}"
+    deleted:
+      title: Headers removed
+      description: "{count, plural, =1 {# header} other {# headers}}"
+  pageFooter:
+    created:
+      title: Footer created
+      description: "{name}"
+    updated:
+      title: Footer updated
+      description: "{name}"
+    deleted:
+      title: Footers removed
+      description: "{count, plural, =1 {# footer} other {# footers}}"
+  settings:
+    updated:
+      title: Settings updated
+      description: "{key}"
+  asset:
+    created:
+      title: Asset uploaded
+      description: "{filename}"
+    updated:
+      title: Asset updated
+      description: "{filename}"
+    deleted:
+      title: Assets removed
+      description: "{count, plural, =1 {# asset} other {# assets}}"
 navigation:
   overview: Overview
   dashboard: Dashboard

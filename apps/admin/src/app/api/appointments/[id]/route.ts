@@ -1,4 +1,4 @@
-import { getServicesContainer, getSession } from "@/app/utils";
+import { getActor, getServicesContainer } from "@/app/utils";
 import { getLoggerFactory } from "@timelish/logger";
 import { AppointmentEvent, appointmentEventSchema } from "@timelish/types";
 import { NextRequest, NextResponse } from "next/server";
@@ -52,7 +52,6 @@ export async function PUT(
 ) {
   const logger = getLoggerFactory("AdminAPI/appointments/[id]")("PUT");
   const servicesContainer = await getServicesContainer();
-  const session = await getSession();
 
   const { id } = await params;
 
@@ -65,6 +64,7 @@ export async function PUT(
     "Processing update appointment API request",
   );
 
+  const eventSource = await getActor();
   const formData = await request.formData();
   const appointmentJson = formData.get("appointment") as string;
   if (!appointmentJson) {
@@ -203,7 +203,7 @@ export async function PUT(
       confirmed,
       files,
       doNotNotifyCustomer,
-      actor: { type: "user", userId: session.user.id },
+      eventSource,
     },
   );
 

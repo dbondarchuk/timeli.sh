@@ -12,6 +12,7 @@ import {
   IConnectedApp,
   IConnectedAppProps,
   IDemoArgumentsProvider,
+  systemEventSource,
   TemplateTemplatesList,
 } from "@timelish/types";
 import {
@@ -175,10 +176,13 @@ export class MyCabinetConnectedApp
         const uniqueName = await getUniqueName(source.name);
         if (!uniqueName) continue;
 
-        const created = await templatesService.createTemplate({
-          ...source,
-          name: uniqueName,
-        });
+        const created = await templatesService.createTemplate(
+          {
+            ...source,
+            name: uniqueName,
+          },
+          systemEventSource,
+        );
 
         logger.debug(
           {

@@ -212,7 +212,7 @@ const processRescheduleRequest = async (
     appointmentId,
     request.dateTime,
     information.duration,
-    { type: "customer" },
+    { actor: "customer" },
     false,
   );
 
@@ -494,7 +494,7 @@ const processCancelRequest = async (
   await servicesContainer.bookingService.changeAppointmentStatus(
     appointmentId,
     "declined",
-    { type: "customer" },
+    { actor: "customer" },
   );
 
   logger.debug({ appointmentId }, "Appointment cancelled successfully");

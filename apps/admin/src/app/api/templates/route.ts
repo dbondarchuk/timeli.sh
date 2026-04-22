@@ -1,4 +1,4 @@
-import { getServicesContainer } from "@/app/utils";
+import { getActor, getServicesContainer } from "@/app/utils";
 import { templateSearchParamsLoader } from "@timelish/api-sdk";
 import { getLoggerFactory } from "@timelish/logger";
 import { templateSchema } from "@timelish/types";
@@ -85,8 +85,11 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const template =
-    await servicesContainer.templatesService.createTemplate(data);
+  const actor = await getActor();
+  const template = await servicesContainer.templatesService.createTemplate(
+    data,
+    actor,
+  );
 
   return NextResponse.json(template);
 }

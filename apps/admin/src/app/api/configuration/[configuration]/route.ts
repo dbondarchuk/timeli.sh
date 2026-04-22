@@ -1,4 +1,4 @@
-import { getServicesContainer } from "@/app/utils";
+import { getActor, getServicesContainer } from "@/app/utils";
 import { getLoggerFactory } from "@timelish/logger";
 import { getPolarClient } from "@timelish/services";
 import {
@@ -77,9 +77,11 @@ export async function PUT(
     );
   }
 
+  const actor = await getActor();
   await servicesContainer.configurationService.setConfiguration(
     configurationKey as ConfigurationKey,
     data,
+    actor,
   );
 
   if (configurationKey === "general") {

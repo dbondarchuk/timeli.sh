@@ -62,17 +62,6 @@ export * from "./user.service";
 
 export const ServicesContainer: (organizationId: string) => IServicesContainer =
   cache((organizationId: string) => {
-    const configurationService = new CachedConfigurationService(organizationId);
-    const assetsStorage = new S3AssetsStorageService(
-      organizationId,
-      getS3Configuration(),
-    );
-    const assetsService = new AssetsService(
-      organizationId,
-      configurationService,
-      assetsStorage,
-    );
-
     const redisClient = getRedisClient();
     const jobService = new BullMQJobService(
       organizationId,
@@ -82,6 +71,21 @@ export const ServicesContainer: (organizationId: string) => IServicesContainer =
     const eventService = new BullMQEventService(
       organizationId,
       getBullMQEventConfig(),
+    );
+
+    const configurationService = new CachedConfigurationService(
+      organizationId,
+      eventService,
+    );
+    const assetsStorage = new S3AssetsStorageService(
+      organizationId,
+      getS3Configuration(),
+    );
+    const assetsService = new AssetsService(
+      organizationId,
+      configurationService,
+      assetsStorage,
+      eventService,
     );
 
     const dashboardNotificationsService =
@@ -125,9 +129,9 @@ export const ServicesContainer: (organizationId: string) => IServicesContainer =
       userService,
     );
 
-    const pagesService = new PagesService(organizationId);
+    const pagesService = new PagesService(organizationId, eventService);
 
-    const templatesService = new TemplatesService(organizationId);
+    const templatesService = new TemplatesService(organizationId, eventService);
     const communicationLogsService = new CommunicationLogsService(
       organizationId,
       assetsStorage,

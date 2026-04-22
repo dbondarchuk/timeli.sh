@@ -14,11 +14,18 @@ import type {
 import type { Payment, PaymentUpdateModel } from "../booking/payment";
 import type { ServiceField, ServiceFieldUpdateModel } from "../booking/field";
 import type { Customer, CustomerUpdateModel } from "../customers/customer";
+import type { Asset, AssetEntity, AssetUpdate } from "../assets";
+import type { ConfigurationKey } from "../configuration";
+import type { Page, PageFooter, PageHeader } from "../pages";
+import type { Template } from "../templates";
 import {
   APP_INSTALLED_EVENT_TYPE,
   APP_UNINSTALLED_EVENT_TYPE,
   APP_CONNECTED_EVENT_TYPE,
   APP_FAILED_EVENT_TYPE,
+  ASSET_CREATED_EVENT_TYPE,
+  ASSET_DELETED_EVENT_TYPE,
+  ASSET_UPDATED_EVENT_TYPE,
   ADDON_CREATED_EVENT_TYPE,
   ADDON_DELETED_EVENT_TYPE,
   ADDON_UPDATED_EVENT_TYPE,
@@ -47,6 +54,19 @@ import {
   PAYMENT_DELETED_EVENT_TYPE,
   PAYMENT_REFUNDED_EVENT_TYPE,
   PAYMENT_UPDATED_EVENT_TYPE,
+  PAGE_CREATED_EVENT_TYPE,
+  PAGE_DELETED_EVENT_TYPE,
+  PAGE_UPDATED_EVENT_TYPE,
+  PAGE_FOOTER_CREATED_EVENT_TYPE,
+  PAGE_FOOTER_DELETED_EVENT_TYPE,
+  PAGE_FOOTER_UPDATED_EVENT_TYPE,
+  PAGE_HEADER_CREATED_EVENT_TYPE,
+  PAGE_HEADER_DELETED_EVENT_TYPE,
+  PAGE_HEADER_UPDATED_EVENT_TYPE,
+  SETTINGS_UPDATED_EVENT_TYPE,
+  TEMPLATE_CREATED_EVENT_TYPE,
+  TEMPLATE_DELETED_EVENT_TYPE,
+  TEMPLATE_UPDATED_EVENT_TYPE,
 } from "./core-events";
 
 /** Emitted with {@link APPOINTMENT_CREATED_EVENT_TYPE}. */
@@ -191,6 +211,28 @@ export type AppFailedPayload = {
   userId: string;
 };
 
+export type TemplateCreatedPayload = { template: Template };
+export type TemplateUpdatedPayload = { template: Template };
+export type TemplateDeletedPayload = { templateIds: string[] };
+
+export type PageCreatedPayload = { page: Page };
+export type PageUpdatedPayload = { page: Page };
+export type PageDeletedPayload = { pageIds: string[] };
+
+export type PageHeaderCreatedPayload = { pageHeader: PageHeader };
+export type PageHeaderUpdatedPayload = { pageHeader: PageHeader };
+export type PageHeaderDeletedPayload = { pageHeaderIds: string[] };
+
+export type PageFooterCreatedPayload = { pageFooter: PageFooter };
+export type PageFooterUpdatedPayload = { pageFooter: PageFooter };
+export type PageFooterDeletedPayload = { pageFooterIds: string[] };
+
+export type SettingsUpdatedPayload = { key: ConfigurationKey };
+
+export type AssetCreatedPayload = { asset: AssetEntity };
+export type AssetUpdatedPayload = { asset: Asset; update: Partial<AssetUpdate> };
+export type AssetDeletedPayload = { assetIds: string[] };
+
 /** Maps core platform event type strings to their payload shapes (services emits). */
 export type CoreEventPayloadByType = {
   [CUSTOMER_CREATED_EVENT_TYPE]: CustomerCreatedPayload;
@@ -225,6 +267,22 @@ export type CoreEventPayloadByType = {
   [APP_UNINSTALLED_EVENT_TYPE]: AppUninstalledPayload;
   [APP_CONNECTED_EVENT_TYPE]: AppConnectedPayload;
   [APP_FAILED_EVENT_TYPE]: AppFailedPayload;
+  [TEMPLATE_CREATED_EVENT_TYPE]: TemplateCreatedPayload;
+  [TEMPLATE_UPDATED_EVENT_TYPE]: TemplateUpdatedPayload;
+  [TEMPLATE_DELETED_EVENT_TYPE]: TemplateDeletedPayload;
+  [PAGE_CREATED_EVENT_TYPE]: PageCreatedPayload;
+  [PAGE_UPDATED_EVENT_TYPE]: PageUpdatedPayload;
+  [PAGE_DELETED_EVENT_TYPE]: PageDeletedPayload;
+  [PAGE_HEADER_CREATED_EVENT_TYPE]: PageHeaderCreatedPayload;
+  [PAGE_HEADER_UPDATED_EVENT_TYPE]: PageHeaderUpdatedPayload;
+  [PAGE_HEADER_DELETED_EVENT_TYPE]: PageHeaderDeletedPayload;
+  [PAGE_FOOTER_CREATED_EVENT_TYPE]: PageFooterCreatedPayload;
+  [PAGE_FOOTER_UPDATED_EVENT_TYPE]: PageFooterUpdatedPayload;
+  [PAGE_FOOTER_DELETED_EVENT_TYPE]: PageFooterDeletedPayload;
+  [SETTINGS_UPDATED_EVENT_TYPE]: SettingsUpdatedPayload;
+  [ASSET_CREATED_EVENT_TYPE]: AssetCreatedPayload;
+  [ASSET_UPDATED_EVENT_TYPE]: AssetUpdatedPayload;
+  [ASSET_DELETED_EVENT_TYPE]: AssetDeletedPayload;
 };
 
 export type CoreEventTypeString = keyof CoreEventPayloadByType;
