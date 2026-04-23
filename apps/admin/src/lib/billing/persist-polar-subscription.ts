@@ -1,7 +1,12 @@
 import type { Subscription } from "@polar-sh/sdk/models/components/subscription";
 import { ORGANIZATIONS_COLLECTION_NAME } from "@timelish/services/collections";
 import { getDbConnection } from "@timelish/services/database";
-import type { Organization } from "@timelish/types";
+import {
+  parseOrganizationSubscriptionStatus,
+  type Organization,
+} from "@timelish/types";
+
+import { emitSubscriptionStatusChangedEvent } from "./emit-subscription-status-event";
 
 export function organizationIdFromPolarSubscriptionMetadata(
   metadata: Subscription["metadata"],
@@ -18,15 +23,30 @@ export async function persistPolarSubscriptionToOrganization(
   const orgId = organizationIdFromPolarSubscriptionMetadata(subscription.metadata);
   if (!orgId) return;
 
+  const newStatus = parseOrganizationSubscriptionStatus(subscription.status);
   const db = await getDbConnection();
-  await db.collection<Organization>(ORGANIZATIONS_COLLECTION_NAME).updateOne(
+  const col = db.collection<Organization>(ORGANIZATIONS_COLLECTION_NAME);
+
+  const before = await col.findOne({ _id: orgId });
+  const oldStatus = before?.polarSubscriptionStatus ?? null;
+
+  await col.updateOne(
     { _id: orgId },
     {
       $set: {
         polarSubscriptionId: subscription.id,
-        polarSubscriptionStatus: String(subscription.status),
+        ...(newStatus ? { polarSubscriptionStatus: newStatus } : {}),
         polarSubscriptionProductId: subscription.productId,
       },
     },
   );
+
+  if (newStatus && oldStatus !== newStatus) {
+    await emitSubscriptionStatusChangedEvent(orgId, {
+      oldStatus,
+      newStatus,
+      subscriptionId: subscription.id,
+      productName: subscription.product?.name ?? null,
+    });
+  }
 }

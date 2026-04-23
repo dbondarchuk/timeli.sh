@@ -213,6 +213,49 @@ platformEvents:
     deleted:
       title: Ассети видалено
       description: "{count, plural, =1 {# ассет} few {# ассети} other {# ассетів}}"
+  subscription:
+    statusChanged:
+      title: Зміна статусу підписки
+      description: "{product} · {oldStatus} → {newStatus}"
+  billing:
+    smsCreditsLow:
+      title: Мало SMS-кредитів
+      description: "Баланс SMS зменшився до {balance}. Поповніть кредити, щоб уникнути зупинки відправлень."
+    smsCreditsExhausted:
+      title: SMS-кредити вичерпано
+      description: "Баланс SMS досяг {balance}. Поповніть кредити, щоб відправка повідомлень працювала далі."
+billing:
+  emails:
+    subscriptionAlert:
+      subject: Потрібна увага — оновлення підписки
+      preview: Статус плану змінився
+      title: Оновлення статусу підписки
+      body: "Статус підписки тепер {newStatus} (раніше {oldStatus}) для {product}. Перевірте білінг, щоб уникнути переривання сервісу."
+      button: Відкрити білінг
+      handledBy: Білінг (підписка)
+    smsCreditsLow:
+      subject: Мало кредитів SMS
+      preview: Залишилось 10 кредитів SMS
+      title: Низький залишок SMS-кредитів
+      body: "Залишок вбудованих SMS: {balance} кредитів. Додайте кредити або змініть додаток відправки в налаштуваннях."
+      button: Відкрити білінг
+      handledBy: Білінг (залишок SMS)
+    smsCreditsExhausted:
+      subject: Кредити SMS вичерпано
+      preview: Кредити SMS закінчились
+      title: Кредити SMS вичерпано
+      body: "Вбудовані SMS кредитів не залишилось. Додайте кредити або інший додаток для відправки."
+      button: Відкрити білінг
+      handledBy: Білінг (залишок SMS)
+  notifications:
+    smsCreditsLow:
+      title: Мало SMS-кредитів
+      message: "Залишок SMS зараз {balance}. Поповніть кредити, щоб уникнути перебоїв у доставці."
+      action: Відкрити білінг
+    smsCreditsExhausted:
+      title: SMS-кредити вичерпано
+      message: "Залишок SMS: {balance}. Додайте кредити або змініть додаток-відправник."
+      action: Відкрити білінг
 navigation:
   overview: Огляд
   dashboard: Панель керування
@@ -1790,18 +1833,21 @@ settings:
     description: "Назва бізнесу, контакти, адреса та регіональні параметри організації."
     billing:
       sectionTitle: Підписка та оплата
-      statusLabel: Статус
-      statusFeesExempt: Підписка не потрібна
-      statusFeesExemptHint: Цей робочий простір звільнено від оплати підписки Timeli.sh.
-      statusNone: Немає запису про підписку
-      statusActive: Активна
-      statusTrialing: Пробний період
-      statusPastDue: Прострочено
-      statusCanceled: Скасовано
-      statusIncomplete: Незавершено
-      statusUnpaid: Не сплачено
-      statusRevoked: Відкликано
-      statusOther: "{status}"
+      status:
+        none: Немає запису про підписку
+        active: Активна
+        trialing: Пробний період
+        past_due: Прострочено
+        canceled: Скасовано
+        incomplete: Незавершено
+        incomplete_expired: Незавершено (закінчився)
+        unpaid: Не сплачено
+        revoked: Відкликано
+        other: "{status}"
+        label: Статус
+        feesExempt:
+          label: Підписка не потрібна
+          hint: Цей робочий простір звільнено від оплати підписки Timeli.sh.
       openPortal: Відкрити портал оплати
       choosePlan: Обрати тариф
       portalError: Не вдалося відкрити портал оплати. Спробуйте пізніше.

@@ -1,4 +1,5 @@
 import { OrganizationBillingSmsBenefit } from "./sms";
+import { OrganizationSubscriptionStatus } from "./subscription-status";
 
 export type BillingInterval = "month" | "year" | "week" | "day";
 
@@ -18,7 +19,7 @@ export type OrganizationBillingSubscriptionDetails = {
   feesExempt: boolean;
   subscriptionId: string | null;
   subscriptionName: string | null;
-  status: string | null;
+  status: OrganizationSubscriptionStatus | null;
   subscriptionPrice: BillingSubscriptionPrice | null;
   nextCycleDate: Date | null;
   benefits: {

@@ -15,6 +15,7 @@ import type { Payment, PaymentUpdateModel } from "../booking/payment";
 import type { ServiceField, ServiceFieldUpdateModel } from "../booking/field";
 import type { Customer, CustomerUpdateModel } from "../customers/customer";
 import type { Asset, AssetEntity, AssetUpdate } from "../assets";
+import type { OrganizationSubscriptionStatus } from "../billing";
 import type { ConfigurationKey } from "../configuration";
 import type { Page, PageFooter, PageHeader } from "../pages";
 import type { Template } from "../templates";
@@ -64,6 +65,9 @@ import {
   PAGE_HEADER_DELETED_EVENT_TYPE,
   PAGE_HEADER_UPDATED_EVENT_TYPE,
   SETTINGS_UPDATED_EVENT_TYPE,
+  SMS_CREDITS_EXHAUSTED_EVENT_TYPE,
+  SMS_CREDITS_LOW_EVENT_TYPE,
+  SUBSCRIPTION_STATUS_CHANGED_EVENT_TYPE,
   TEMPLATE_CREATED_EVENT_TYPE,
   TEMPLATE_DELETED_EVENT_TYPE,
   TEMPLATE_UPDATED_EVENT_TYPE,
@@ -233,6 +237,17 @@ export type AssetCreatedPayload = { asset: AssetEntity };
 export type AssetUpdatedPayload = { asset: Asset; update: Partial<AssetUpdate> };
 export type AssetDeletedPayload = { assetIds: string[] };
 
+export type SubscriptionStatusChangedPayload = {
+  oldStatus: OrganizationSubscriptionStatus | null;
+  newStatus: OrganizationSubscriptionStatus;
+  subscriptionId: string;
+  productName: string | null;
+};
+
+export type SmsCreditsThresholdPayload = {
+  balance: number;
+};
+
 /** Maps core platform event type strings to their payload shapes (services emits). */
 export type CoreEventPayloadByType = {
   [CUSTOMER_CREATED_EVENT_TYPE]: CustomerCreatedPayload;
@@ -283,6 +298,9 @@ export type CoreEventPayloadByType = {
   [ASSET_CREATED_EVENT_TYPE]: AssetCreatedPayload;
   [ASSET_UPDATED_EVENT_TYPE]: AssetUpdatedPayload;
   [ASSET_DELETED_EVENT_TYPE]: AssetDeletedPayload;
+  [SUBSCRIPTION_STATUS_CHANGED_EVENT_TYPE]: SubscriptionStatusChangedPayload;
+  [SMS_CREDITS_LOW_EVENT_TYPE]: SmsCreditsThresholdPayload;
+  [SMS_CREDITS_EXHAUSTED_EVENT_TYPE]: SmsCreditsThresholdPayload;
 };
 
 export type CoreEventTypeString = keyof CoreEventPayloadByType;

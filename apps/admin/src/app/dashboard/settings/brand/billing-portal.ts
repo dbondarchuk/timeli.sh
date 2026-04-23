@@ -1,19 +1,23 @@
 "use server";
 
 import { auth } from "@/app/auth";
+import { getServicesContainer } from "@/app/utils";
 import { resolveAppOrigin } from "@/lib/resolve-app-origin";
+import { getLoggerFactory } from "@timelish/logger";
 import { getPolarClient } from "@timelish/services";
-import { ORGANIZATIONS_COLLECTION_NAME } from "@timelish/services/collections";
-import { getDbConnection } from "@timelish/services/database";
-import type { Organization } from "@timelish/types";
 import { headers } from "next/headers";
 
 export async function createPolarBillingPortalSession(): Promise<
   { ok: true; url: string } | { ok: false; code: string }
 > {
+  const logger = getLoggerFactory("BillingPortal")(
+    "createPolarBillingPortalSession",
+  );
+
   const headersList = await headers();
   const session = await auth.api.getSession({ headers: headersList });
   if (!session?.user?.id) {
+    logger.error("Unauthorized");
     return { ok: false, code: "unauthorized" };
   }
 
@@ -21,18 +25,15 @@ export async function createPolarBillingPortalSession(): Promise<
     session.user as { organizationId?: string }
   ).organizationId?.trim();
   if (!organizationId) {
+    logger.error({ userId: session.user.id }, "No organization id");
     return { ok: false, code: "no_org" };
   }
 
-  const db = await getDbConnection();
-  const org = await db
-    .collection<Organization>(ORGANIZATIONS_COLLECTION_NAME)
-    .findOne(
-      { _id: organizationId },
-      { projection: { feesExempt: 1, name: 1 } },
-    );
+  const services = await getServicesContainer();
+  const org = await services.organizationService.getOrganization();
 
   if (org?.feesExempt === true) {
+    logger.error({ organizationId }, "Organization is fees exempt");
     return { ok: false, code: "fees_exempt" };
   }
 
@@ -48,15 +49,26 @@ export async function createPolarBillingPortalSession(): Promise<
   const origin = await resolveAppOrigin();
   const returnUrl = `${origin}/dashboard/settings/brand`;
 
+  logger.debug({ returnUrl }, "Creating Polar billing portal session");
   try {
     const portalSession = await polarBilling.createCustomerBillingPortalSession(
       {
         externalCustomerId: organizationId,
+        externalMemberId: session.user.id,
         returnUrl,
       },
     );
+
+    logger.debug(
+      { url: portalSession.customerPortalUrl, organizationId },
+      "Created Polar billing portal session",
+    );
     return { ok: true, url: portalSession.customerPortalUrl };
-  } catch {
+  } catch (error) {
+    logger.error(
+      { error, organizationId },
+      "Error creating Polar billing portal session",
+    );
     return { ok: false, code: "polar_error" };
   }
 }

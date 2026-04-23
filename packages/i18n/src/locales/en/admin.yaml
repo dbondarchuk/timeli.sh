@@ -211,6 +211,49 @@ platformEvents:
     deleted:
       title: Assets removed
       description: "{count, plural, =1 {# asset} other {# assets}}"
+  subscription:
+    statusChanged:
+      title: Subscription status changed
+      description: "{product} · {oldStatus} → {newStatus}"
+  billing:
+    smsCreditsLow:
+      title: SMS credits are low
+      description: "SMS balance dropped to {balance}. Consider topping up before credits run out."
+    smsCreditsExhausted:
+      title: SMS credits exhausted
+      description: "SMS balance reached {balance}. Top up credits to keep message delivery running."
+billing:
+  emails:
+    subscriptionAlert:
+      subject: Action needed — subscription update
+      preview: Your plan status changed
+      title: Subscription status update
+      body: "Your subscription status is now {newStatus} (previously {oldStatus}) for {product}. Review billing to avoid service interruption."
+      button: Open billing settings
+      handledBy: Billing (subscription)
+    smsCreditsLow:
+      subject: SMS credits running low
+      preview: You have 10 SMS credits left
+      title: Low SMS credit balance
+      body: "Your built-in text messaging balance is now {balance} credits. Add credits or change your default sender in settings."
+      button: Open billing settings
+      handledBy: Billing (SMS balance)
+    smsCreditsExhausted:
+      subject: SMS credits used up
+      preview: You have no SMS credits left
+      title: SMS credits exhausted
+      body: "Your built-in text messaging balance is 0. Add credits or use another sender app to keep sending texts."
+      button: Open billing settings
+      handledBy: Billing (SMS balance)
+  notifications:
+    smsCreditsLow:
+      title: SMS credits are low
+      message: "SMS balance is now {balance}. Top up to avoid delivery interruptions."
+      action: Open billing settings
+    smsCreditsExhausted:
+      title: SMS credits exhausted
+      message: "SMS balance is {balance}. Add credits or switch sender app to keep sending texts."
+      action: Open billing settings
 navigation:
   overview: Overview
   dashboard: Dashboard
@@ -1794,18 +1837,21 @@ settings:
       your organization.
     billing:
       sectionTitle: Subscription & billing
-      statusLabel: Status
-      statusFeesExempt: No subscription required
-      statusFeesExemptHint: This workspace is exempt from Timeli.sh subscription billing.
-      statusNone: No subscription on file
-      statusActive: Active
-      statusTrialing: Trialing
-      statusPastDue: Past due
-      statusCanceled: Canceled
-      statusIncomplete: Incomplete
-      statusUnpaid: Unpaid
-      statusRevoked: Revoked
-      statusOther: "{status}"
+      status:
+        active: Active
+        trialing: Trialing
+        past_due: Past due
+        canceled: Canceled
+        incomplete: Incomplete
+        incomplete_expired: Incomplete expired
+        unpaid: Unpaid
+        revoked: Revoked
+        other: "{status}"
+        none: No subscription on file
+        label: Status
+        feesExempt:
+          label: No subscription required
+          hint: This workspace is exempt from Timeli.sh subscription billing.
       openPortal: Open billing portal
       choosePlan: Choose a plan
       portalError: Could not open the billing portal. Try again later.

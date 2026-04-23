@@ -175,6 +175,12 @@ export class PolarClientWrapper {
     return this.polar.customerSessions.create(body);
   }
 
+  getCustomer(
+    externalCustomerId: string,
+  ): ReturnType<Polar["customers"]["getExternal"]> {
+    return this.polar.customers.getExternal({ externalId: externalCustomerId });
+  }
+
   async syncTeamCustomerFromGeneralSettings(
     input: BillingSyncTeamCustomerFromGeneralInput,
   ): Promise<void> {

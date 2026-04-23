@@ -2,7 +2,10 @@
 
 import { createPolarBillingPortalSession } from "@/app/dashboard/settings/brand/billing-portal";
 import { useI18n, useLocale } from "@timelish/i18n";
-import type { OrganizationBillingSubscriptionDetails } from "@timelish/types";
+import {
+  OrganizationBillingSubscriptionDetails,
+  OrganizationSubscriptionStatus,
+} from "@timelish/types";
 import {
   Button,
   Card,
@@ -11,22 +14,23 @@ import {
   CardTitle,
   Spinner,
   toast,
+  TooltipResponsive,
+  TooltipResponsiveContent,
+  TooltipResponsiveTrigger,
 } from "@timelish/ui";
 import { ExternalLink } from "lucide-react";
 import { DateTime } from "luxon";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
-function formatMediumDate(iso: string | null, locale: string): string | null {
-  if (!iso) return null;
-  const dt = DateTime.fromISO(iso, { zone: "utc" });
-  if (!dt.isValid) return null;
-  return dt.setLocale(locale).toLocaleString(DateTime.DATE_MED);
-}
-
-function hasActiveLikeSubscription(status: string | null | undefined): boolean {
-  const s = status?.trim().toLowerCase();
-  return s === "active" || s === "trialing" || s === "past_due";
+function hasActiveLikeSubscription(
+  status: OrganizationSubscriptionStatus | null | undefined,
+): boolean {
+  return (
+    status === OrganizationSubscriptionStatus.Active ||
+    status === OrganizationSubscriptionStatus.Trialing ||
+    status === OrganizationSubscriptionStatus.PastDue
+  );
 }
 
 export function GeneralBillingCard({
@@ -61,30 +65,19 @@ export function GeneralBillingCard({
   let primary: string;
   let secondary: string | undefined;
   if (details.feesExempt) {
-    primary = t("settings.general.billing.statusFeesExempt");
-    secondary = t("settings.general.billing.statusFeesExemptHint");
+    primary = t("settings.general.billing.status.feesExempt.label");
+    secondary = t("settings.general.billing.status.feesExempt.hint");
   } else {
-    const raw = details.status?.trim();
-    if (!raw) {
-      primary = t("settings.general.billing.statusNone");
+    if (!details.status) {
+      primary = t("settings.general.billing.status.none");
       secondary = undefined;
     } else {
-      const s = raw.toLowerCase();
       secondary = undefined;
-      if (s === "active") primary = t("settings.general.billing.statusActive");
-      else if (s === "trialing")
-        primary = t("settings.general.billing.statusTrialing");
-      else if (s === "past_due")
-        primary = t("settings.general.billing.statusPastDue");
-      else if (s === "canceled")
-        primary = t("settings.general.billing.statusCanceled");
-      else if (s === "incomplete" || s === "incomplete_expired") {
-        primary = t("settings.general.billing.statusIncomplete");
-      } else if (s === "unpaid")
-        primary = t("settings.general.billing.statusUnpaid");
-      else if (s === "revoked")
-        primary = t("settings.general.billing.statusRevoked");
-      else primary = t("settings.general.billing.statusOther", { status: raw });
+      primary = t.has(`settings.general.billing.status.${details.status}`)
+        ? t(`settings.general.billing.status.${details.status}`)
+        : t("settings.general.billing.status.other", {
+            status: details.status,
+          });
     }
   }
 
@@ -121,7 +114,7 @@ export function GeneralBillingCard({
         <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
           <div className="flex min-w-0 flex-1 flex-col gap-1">
             <span className="text-xs uppercase tracking-wide text-muted-foreground">
-              {t("settings.general.billing.statusLabel")}
+              {t("settings.general.billing.status.label")}
             </span>
             <span className="text-sm font-medium text-foreground">
               {primary}
@@ -129,27 +122,31 @@ export function GeneralBillingCard({
             {secondary ? (
               <span className="text-sm text-muted-foreground">{secondary}</span>
             ) : null}
-            {!details.feesExempt ? (
-              <span className="text-xs text-muted-foreground">
-                {t("settings.general.billing.portalReturnHint")}
-              </span>
-            ) : null}
           </div>
           {details.feesExempt ? null : (
             <div className="flex shrink-0 flex-col gap-2 sm:flex-row sm:items-center">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => void openPortal()}
-                disabled={opening}
-              >
-                {opening ? (
-                  <Spinner className="mr-2 h-4 w-4 animate-spin" />
-                ) : (
-                  <ExternalLink className="mr-2 h-4 w-4" />
-                )}
-                {t("settings.general.billing.openPortal")}
-              </Button>
+              <div className="flex flex-col gap-2">
+                <TooltipResponsive>
+                  <TooltipResponsiveTrigger>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={openPortal}
+                      disabled={opening}
+                    >
+                      {opening ? (
+                        <Spinner className="mr-2 h-4 w-4 animate-spin" />
+                      ) : (
+                        <ExternalLink className="mr-2 h-4 w-4" />
+                      )}
+                      {t("settings.general.billing.openPortal")}
+                    </Button>
+                  </TooltipResponsiveTrigger>
+                  <TooltipResponsiveContent>
+                    {t("settings.general.billing.portalReturnHint")}
+                  </TooltipResponsiveContent>
+                </TooltipResponsive>
+              </div>
               {showChoosePlan ? (
                 <Button type="button" variant="secondary" asChild>
                   <Link href="/checkout">

@@ -7,6 +7,7 @@ import {
   ICommunicationLogsService,
   IConfigurationService,
   IConnectedAppsService,
+  IEventService,
   IMailSender,
   IMailSenderApp,
   INotificationService,
@@ -21,6 +22,8 @@ import {
 import { maskify } from "@timelish/utils";
 import { convert } from "html-to-text";
 
+import { maybeEmitSmsCreditThresholdEvent } from "./billing/sms-credit-threshold-notify";
+
 export class NotificationService implements INotificationService {
   protected readonly loggerFactory = getLoggerFactory("NotificationService");
 
@@ -32,6 +35,7 @@ export class NotificationService implements INotificationService {
     private readonly defaultEmailService: IMailSender,
     private readonly defaultTextMessageSender: ITextMessageSender,
     private readonly billingService: IBillingService,
+    private readonly eventService: IEventService,
   ) {}
 
   public async sendEmail({
@@ -157,16 +161,30 @@ export class NotificationService implements INotificationService {
       }
 
       sendTextMessage = async (message: TextMessage) => {
+        const creditsBefore = await this.billingService.getSmsCreditBalance();
+        const previousBalance = creditsBefore.feesExempt
+          ? null
+          : creditsBefore.balance;
+
         const response = await this.defaultTextMessageSender.sendTextMessage(
           this.organizationId,
           message,
         );
 
         if (!response.error) {
-          void this.billingService.recordSmsCreditUsage({
+          await this.billingService.recordSmsCreditUsage({
             direction: "outbound",
             textId: response.textId,
           });
+          if (previousBalance !== null) {
+            // One successful built-in message consumes one credit; avoid re-fetching Polar meter.
+            const newBalance = Math.max(0, previousBalance - 1);
+            await maybeEmitSmsCreditThresholdEvent({
+              eventService: this.eventService,
+              previousBalance,
+              newBalance,
+            });
+          }
         }
         return response;
       };

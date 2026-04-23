@@ -29,4 +29,5 @@ export const dashboardUrls = {
   settings: "/dashboard/settings",
   asset: (id: string) => `/dashboard/assets/${id}`,
   assets: "/dashboard/assets",
+  billing: "/dashboard/settings/brand",
 };

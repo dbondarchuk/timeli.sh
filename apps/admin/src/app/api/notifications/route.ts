@@ -13,6 +13,7 @@ import { v4 } from "uuid";
 
 const getActivityFeedNotifications = async (userId: string) => {
   const servicesContainer = await getServicesContainer();
+
   const [preview, highestSeverity] = await Promise.all([
     servicesContainer.activityService.getActivityPreview(3),
     servicesContainer.activityService.getHighestSeveritySinceLastRead(userId),

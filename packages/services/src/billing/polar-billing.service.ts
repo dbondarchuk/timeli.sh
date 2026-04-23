@@ -6,6 +6,7 @@ import type {
   OrganizationBillingSubscriptionDetails,
   SmsCreditsState,
 } from "@timelish/types";
+import { parseOrganizationSubscriptionStatus } from "@timelish/types";
 import { BaseService } from "../services/base.service";
 import type { PolarClientWrapper } from "./polar-client-wrapper";
 
@@ -149,7 +150,7 @@ export class PolarBillingService
       };
 
       const subscriptionName = sub.product?.name ?? null;
-      const status = String(sub.status);
+      const status = parseOrganizationSubscriptionStatus(sub.status);
       const nextCycleEnd = sub.currentPeriodEnd ?? null;
 
       let sms: OrganizationBillingSubscriptionDetails["benefits"]["sms"] = null;

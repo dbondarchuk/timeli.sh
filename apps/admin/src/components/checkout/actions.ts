@@ -1,11 +1,10 @@
 "use server";
 
 import { auth } from "@/app/auth";
+import { getServicesContainer } from "@/app/utils";
 import { resolveAppOrigin } from "@/lib/resolve-app-origin";
+import { getLoggerFactory } from "@timelish/logger";
 import { getPolarClient } from "@timelish/services";
-import { ORGANIZATIONS_COLLECTION_NAME } from "@timelish/services/collections";
-import { getDbConnection } from "@timelish/services/database";
-import type { Organization } from "@timelish/types";
 import { headers } from "next/headers";
 import * as z from "zod";
 
@@ -23,8 +22,13 @@ const createCheckoutInputSchema = z.object({
 export async function createPolarCheckoutSession(
   input: z.infer<typeof createCheckoutInputSchema>,
 ): Promise<{ ok: true; url: string } | { ok: false; code: string }> {
+  const logger = getLoggerFactory("Checkout")("createPolarCheckoutSession");
+
+  logger.debug({ input }, "Creating Polar checkout session");
+
   const parsed = createCheckoutInputSchema.safeParse(input);
   if (!parsed.success) {
+    logger.error({ input, errors: parsed.error.message }, "Invalid input");
     return { ok: false, code: "invalid_input" };
   }
 
@@ -33,9 +37,11 @@ export async function createPolarCheckoutSession(
   const session = await auth.api.getSession({ headers: headersList });
 
   if (!session?.user?.id) {
+    logger.error({ userId: session?.user?.id }, "Unauthorized");
     return { ok: false, code: "unauthorized" };
   }
   if (!(session.user as { emailVerified?: boolean }).emailVerified) {
+    logger.error({ userId: session.user.id }, "Email not verified");
     return { ok: false, code: "email_not_verified" };
   }
 
@@ -51,12 +57,11 @@ export async function createPolarCheckoutSession(
   const origin = await resolveAppOrigin();
   const successUrl = `${origin}/install?checkout_id={CHECKOUT_ID}`;
 
-  const db = await getDbConnection();
-  const org = await db
-    .collection<Organization>(ORGANIZATIONS_COLLECTION_NAME)
-    .findOne({ _id: organizationId }, { projection: { name: 1 } });
+  const services = await getServicesContainer();
+  const org = await services.organizationService.getOrganization();
 
   const polarBilling = getPolarClient();
+  logger.debug({ organizationId }, "Ensuring Polar team customer");
   await polarBilling.ensureTeamCustomerForOrganization({
     organizationId,
     ownerUserId: session.user.id,
@@ -66,6 +71,10 @@ export async function createPolarCheckoutSession(
   });
 
   try {
+    logger.debug(
+      { products, organizationId },
+      "Creating Polar checkout session",
+    );
     const checkoutSession = await polarBilling.createCheckoutSession({
       products,
       metadata: {
@@ -77,8 +86,16 @@ export async function createPolarCheckoutSession(
       returnUrl: `${origin}/checkout`,
     });
 
+    logger.debug(
+      { url: checkoutSession.url, organizationId },
+      "Created Polar checkout session",
+    );
     return { ok: true, url: checkoutSession.url };
-  } catch {
+  } catch (error) {
+    logger.error(
+      { error, organizationId },
+      "Error creating Polar checkout session",
+    );
     return { ok: false, code: "polar_checkout_failed" };
   }
 }

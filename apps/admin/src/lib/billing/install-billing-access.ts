@@ -2,12 +2,20 @@ import { persistPolarSubscriptionToOrganization } from "@/lib/billing/persist-po
 import { getPolarClient } from "@timelish/services";
 import { ORGANIZATIONS_COLLECTION_NAME } from "@timelish/services/collections";
 import { getDbConnection } from "@timelish/services/database";
-import type { Organization } from "@timelish/types";
+import {
+  OrganizationSubscriptionStatus,
+  parseOrganizationSubscriptionStatus,
+  type Organization,
+} from "@timelish/types";
 
-const ALLOWED_STATUSES = new Set(["active", "trialing", "past_due"]);
+const ALLOWED_STATUSES = new Set<OrganizationSubscriptionStatus>([
+  OrganizationSubscriptionStatus.Active,
+  OrganizationSubscriptionStatus.Trialing,
+  OrganizationSubscriptionStatus.PastDue,
+]);
 
 export function isPolarSubscriptionStatusAllowed(
-  status: string | undefined,
+  status: OrganizationSubscriptionStatus | undefined,
 ): boolean {
   if (!status) return false;
   return ALLOWED_STATUSES.has(status);
@@ -48,7 +56,9 @@ export async function organizationHasInstallBillingAccess(
     const sub = page.result.items[0];
     if (sub) {
       await persistPolarSubscriptionToOrganization(sub);
-      return isPolarSubscriptionStatusAllowed(String(sub.status));
+      return isPolarSubscriptionStatusAllowed(
+        parseOrganizationSubscriptionStatus(sub.status) ?? undefined,
+      );
     }
   } catch {
     /* ignore */

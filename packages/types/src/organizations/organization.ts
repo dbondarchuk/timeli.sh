@@ -1,4 +1,5 @@
 import { WithDatabaseId } from "../database";
+import { OrganizationSubscriptionStatus } from "../billing";
 
 export type Organization = WithDatabaseId<{
   slug: string;
@@ -8,6 +9,6 @@ export type Organization = WithDatabaseId<{
   feesExempt?: boolean;
   /** Polar subscription id (org-level billing via checkout metadata.referenceId). */
   polarSubscriptionId?: string;
-  polarSubscriptionStatus?: string;
+  polarSubscriptionStatus?: OrganizationSubscriptionStatus;
   polarSubscriptionProductId?: string;
 }>;

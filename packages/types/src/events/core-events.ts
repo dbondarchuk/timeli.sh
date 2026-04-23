@@ -71,3 +71,13 @@ export const SETTINGS_UPDATED_EVENT_TYPE = "settings.updated" as const;
 export const ASSET_CREATED_EVENT_TYPE = "asset.created" as const;
 export const ASSET_UPDATED_EVENT_TYPE = "asset.updated" as const;
 export const ASSET_DELETED_EVENT_TYPE = "asset.deleted" as const;
+
+/** Polar / billing subscription status changed (persisted to organization). */
+export const SUBSCRIPTION_STATUS_CHANGED_EVENT_TYPE =
+  "subscription.statusChanged" as const;
+
+/** SMS credits reached low threshold (10). */
+export const SMS_CREDITS_LOW_EVENT_TYPE = "billing.smsCreditsLow" as const;
+/** SMS credits exhausted (0). */
+export const SMS_CREDITS_EXHAUSTED_EVENT_TYPE =
+  "billing.smsCreditsExhausted" as const;
