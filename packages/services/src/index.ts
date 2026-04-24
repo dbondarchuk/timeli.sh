@@ -100,7 +100,13 @@ export const ServicesContainer: (organizationId: string) => IServicesContainer =
     );
     const connectedAppsService = new CachedConnectedAppsService(
       organizationId,
-      () => services,
+      (orgId) => {
+        if (!orgId || orgId === organizationId) {
+          return services;
+        }
+
+        return ServicesContainer(orgId);
+      },
     );
     const scheduleService = new ScheduleService(
       connectedAppsService,

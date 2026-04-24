@@ -35,7 +35,9 @@ export class ConnectedAppsService
 {
   public constructor(
     organizationId: string,
-    protected readonly getServices: () => IServicesContainer,
+    protected readonly getServices: (
+      organizationId?: string,
+    ) => IServicesContainer,
   ) {
     super("ConnectedAppsService", organizationId);
   }
@@ -352,7 +354,11 @@ export class ConnectedAppsService
       this.getAppServiceProps(appId),
     ) as IConnectedAppWithWebhook;
 
-    if (!("processWebhook" in appService)) {
+    if (
+      !("processWebhook" in appService) ||
+      !appService.processWebhook ||
+      typeof appService.processWebhook !== "function"
+    ) {
       logger.debug(
         { appId, appName: app.name },
         "App does not process webhooks",
@@ -367,6 +373,48 @@ export class ConnectedAppsService
 
     const result = await appService.processWebhook(app, request);
     logger.debug({ appId }, "Returning webhook response");
+    return result;
+  }
+
+  public async processStaticWebhook(appName: string, request: ApiRequest) {
+    const logger = this.loggerFactory("processStaticWebhook");
+    logger.debug(
+      { appName, request: { method: request.method, url: request.url } },
+      "Processing static app webhook",
+    );
+
+    const app = ServiceAvailableApps[appName];
+    if (!app) {
+      logger.error({ appName }, "App not found");
+      throw new Error("App not found");
+    }
+
+    const service = AvailableAppServices[appName](
+      this.getAppServiceProps(""),
+    ) as IConnectedAppWithWebhook;
+
+    if (
+      !("processStaticWebhook" in service) ||
+      !service.processStaticWebhook ||
+      typeof service.processStaticWebhook !== "function"
+    ) {
+      logger.debug({ appName }, "App does not process webhooks");
+      return Response.json(
+        {
+          error: `App ${appName} does not process webhooks`,
+        },
+        { status: 405 },
+      );
+    }
+
+    const result = await service.processStaticWebhook(
+      request,
+      (organizationId) =>
+        this.getServices(
+          organizationId,
+        ).connectedAppsService.getAppServiceProps(organizationId),
+    );
+    logger.debug({ appName }, "Returning static app webhook response");
     return result;
   }
 

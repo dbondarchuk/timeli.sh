@@ -75,7 +75,7 @@ function verifySquareWebhookSignature(
 
 function parsePaymentUpdatedWebhook(body: unknown): {
   merchantId?: string;
-  payment?: SquarePaymentProcessingFees & { id?: string };
+  payment?: SquarePaymentProcessingFees & { id?: string; order_id?: string };
 } | null {
   if (!body || typeof body !== "object") {
     return null;
@@ -310,107 +310,45 @@ class SquareConnectedApp
     };
   }
 
-  public async afterOAuthConnected(
-    appData: ConnectedAppData<SquareMerchantData>,
-  ): Promise<void> {
-    await this.ensurePaymentUpdatedWebhookSubscription(appData);
-  }
-
-  public async unInstall(
-    appData: ConnectedAppData<SquareMerchantData>,
-  ): Promise<void> {
-    const logger = this.loggerFactory("unInstall");
-    const subId = appData.data?.webhookSubscriptionId;
-    if (!subId) {
-      return;
-    }
-    const appToken = this.getSquareApplicationAccessToken();
-    if (!appToken) {
-      logger.warn(
-        { appId: appData._id },
-        "SQUARE_APP_ACCESS_TOKEN missing; cannot delete Square webhook subscription",
-      );
-      return;
-    }
-    try {
-      const res = await fetch(
-        `${squareApiBaseUrl()}/v2/webhooks/subscriptions/${encodeURIComponent(subId)}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${appToken}`,
-            "Square-Version": SQUARE_API_VERSION,
-          },
-        },
-      );
-      if (!res.ok) {
-        const json = (await res.json()) as { errors?: unknown[] };
-        logger.warn(
-          { appId: appData._id, status: res.status, json },
-          "Square DeleteWebhookSubscription returned non-OK",
-        );
-      }
-    } catch (e: unknown) {
-      logger.warn(
-        {
-          appId: appData._id,
-          error: e instanceof Error ? e.message : String(e),
-        },
-        "Square DeleteWebhookSubscription failed",
-      );
-    }
-  }
-
-  public async processWebhook(
-    appData: ConnectedAppData<SquareMerchantData>,
+  public async processStaticWebhook(
     request: ApiRequest,
+    getOrganizationServiceContainer: (
+      organizationId: string,
+    ) => IConnectedAppProps,
   ): Promise<ApiResponse> {
-    const logger = this.loggerFactory("processWebhook");
+    const logger = this.loggerFactory("processStaticWebhook");
 
     logger.debug(
       {
         url: request.url,
         method: request.method,
-        appId: appData._id,
       },
       "Processing Square webhook",
     );
 
     if (request.method.toUpperCase() !== "POST") {
+      logger.debug(
+        {
+          method: request.method,
+        },
+        "Square webhook method not supported",
+      );
+
       return new Response(null, { status: 405 });
     }
 
     const rawBody = await request.text();
-    const notificationUrl = this.squarePaymentUpdatedWebhookUrl(
-      appData.organizationId,
-      appData._id,
-    );
 
-    const encKey = appData.data?.webhookSignatureKey;
-    if (!encKey) {
-      logger.warn(
-        { appId: appData._id },
-        "Missing webhook signature key on app",
-      );
+    const signatureKey = process.env.SQUARE_APP_WEBHOOK_SIGNATURE_KEY;
+    if (!signatureKey) {
+      logger.warn("Missing webhook signature key on app");
       return Response.json(
         { error: "webhook_not_configured" },
         { status: 503 },
       );
     }
 
-    let signatureKey: string;
-    try {
-      signatureKey = decrypt(encKey);
-    } catch (e: unknown) {
-      logger.error(
-        {
-          appId: appData._id,
-          error: e instanceof Error ? e.message : String(e),
-        },
-        "Failed to decrypt Square webhook signature key",
-      );
-      return Response.json({ error: "webhook_misconfigured" }, { status: 503 });
-    }
+    const notificationUrl = `${getAdminUrl()}/apps/webhook/square`;
 
     const sig =
       request.headers.get("x-square-hmacsha256-signature") ??
@@ -420,92 +358,71 @@ class SquareConnectedApp
       !verifySquareWebhookSignature(signatureKey, notificationUrl, rawBody, sig)
     ) {
       logger.warn(
-        { appId: appData._id },
+        { notificationUrl },
         "Square webhook signature verification failed",
       );
       return Response.json({ error: "invalid_signature" }, { status: 403 });
     }
 
-    logger.debug(
-      {
-        appId: appData._id,
-        notificationUrl,
-      },
-      "Square webhook signature verification successful",
-    );
+    logger.debug("Square webhook signature verification successful");
 
     let parsedJson: unknown;
     try {
       parsedJson = rawBody.length ? JSON.parse(rawBody) : null;
     } catch {
-      logger.warn({ appId: appData._id }, "Square webhook body is not JSON");
+      logger.warn("Square webhook body is not JSON");
       return Response.json({ error: "invalid_body" }, { status: 400 });
     }
 
     const paymentEvent = parsePaymentUpdatedWebhook(parsedJson);
     if (!paymentEvent) {
-      logger.warn(
-        { appId: appData._id },
-        "Square webhook payment event is not valid",
-      );
+      logger.warn("Square webhook payment event is not valid");
 
       return Response.json({ ok: true });
     }
 
-    if (
-      paymentEvent.merchantId &&
-      appData.data?.merchantId &&
-      paymentEvent.merchantId !== appData.data.merchantId
-    ) {
-      logger.warn(
-        {
-          appId: appData._id,
-          eventMerchantId: paymentEvent.merchantId,
-          appMerchantId: appData.data.merchantId,
-        },
-        "Square webhook merchant_id mismatch",
-      );
-      return Response.json({ error: "merchant_mismatch" }, { status: 403 });
+    if (!paymentEvent.merchantId) {
+      logger.warn("Square webhook merchant_id is missing");
+      return Response.json({ error: "merchant_id_missing" }, { status: 403 });
     }
 
     logger.debug(
       {
-        appId: appData._id,
         paymentEvent,
       },
       "Square webhook payment event",
     );
 
     const squarePaymentId = paymentEvent.payment?.id;
-    if (!squarePaymentId || !paymentEvent.payment) {
-      logger.warn(
-        { appId: appData._id },
-        "Square webhook payment event is not valid",
-      );
+    const squareOrderId = paymentEvent.payment?.order_id;
+    if (!squarePaymentId || !squareOrderId || !paymentEvent.payment) {
+      logger.warn("Square webhook payment event is not valid");
       return Response.json({ ok: true });
     }
 
     const fees = this.processingFeesFromSquarePayment(paymentEvent.payment);
+
     if (!fees.length) {
-      logger.debug(
-        { appId: appData._id },
-        "Square webhook payment event has no fees",
-      );
+      logger.debug("Square webhook payment event has no fees");
       return Response.json({ ok: true });
     }
 
     logger.debug(
       {
-        appId: appData._id,
         fees,
       },
       "Square webhook fees",
     );
 
-    await this.applyFeeUpdatesFromWebhook(squarePaymentId, fees);
+    await this.applyFeeUpdatesFromWebhook(
+      squarePaymentId,
+      squareOrderId,
+      fees,
+      getOrganizationServiceContainer,
+    );
+
     logger.debug(
       {
-        appId: appData._id,
         squarePaymentId,
       },
       "Square webhook fees applied successfully",
@@ -620,6 +537,10 @@ class SquareConnectedApp
         },
         location_id: appData.data.locationId,
         reference_id: intent._id,
+        metadata: {
+          organizationId: appData.organizationId,
+          appId: appData._id,
+        },
       }),
     });
 
@@ -851,110 +772,40 @@ class SquareConnectedApp
     return t && t.length > 0 ? t : null;
   }
 
-  protected squarePaymentUpdatedWebhookUrl(
-    organizationId: string,
-    appId: string,
-  ): string {
-    const base = getAdminUrl().replace(/\/+$/, "");
-    return `${base}/apps/${organizationId}/${appId}/webhook`;
-  }
-
-  /** Square subscription `name` max length 64; includes org and connected app id. */
-  protected squarePaymentUpdatedWebhookName(
-    organizationId: string,
-    appId: string,
-  ): string {
-    const raw = `Square payments org:${organizationId} app:${appId}`;
-    return raw.length > 64 ? raw.slice(0, 64) : raw;
-  }
-
-  protected async listAllWebhookSubscriptions(
-    appToken: string,
-  ): Promise<SquareWebhookSubscription[] | null> {
-    const out: SquareWebhookSubscription[] = [];
-    let cursor: string | undefined;
-    do {
-      const u = new URL(`${squareApiBaseUrl()}/v2/webhooks/subscriptions`);
-      if (cursor) {
-        u.searchParams.set("cursor", cursor);
-      }
-      u.searchParams.set("limit", "100");
-      const res = await fetch(u.toString(), {
-        headers: {
-          Authorization: `Bearer ${appToken}`,
-          "Square-Version": SQUARE_API_VERSION,
-        },
-      });
-      const json = (await res.json()) as {
-        subscriptions?: SquareWebhookSubscription[];
-        cursor?: string;
-        errors?: unknown[];
-      };
-      if (!res.ok || json.errors?.length) {
-        return null;
-      }
-      if (json.subscriptions?.length) {
-        out.push(...json.subscriptions);
-      }
-      cursor = json.cursor || undefined;
-    } while (cursor);
-    return out;
-  }
-
-  protected async persistWebhookSubscriptionData(
-    appData: ConnectedAppData<SquareMerchantData>,
-    subscriptionId: string,
-    signatureKeyPlain: string,
-  ): Promise<void> {
-    const logger = this.loggerFactory("persistWebhookSubscriptionData");
-    const merged = {
-      ...appData.data,
-      webhookSubscriptionId: subscriptionId,
-      webhookSignatureKey: encrypt(signatureKeyPlain),
-    };
-    const parsed = squareMerchantDataSchema.safeParse(merged);
-    if (!parsed.success) {
-      logger.error(
-        { appId: appData._id, issues: parsed.error.issues },
-        "Merged Square merchant data failed validation",
-      );
-      return;
-    }
-
-    await this.props.update({ data: parsed.data });
-
-    logger.debug(
-      {
-        appId: appData._id,
-        subscriptionId,
-      },
-      "Square webhook subscription data persisted successfully",
-    );
-  }
-
   protected async applyFeeUpdatesFromWebhook(
     squarePaymentId: string,
+    squareOrderId: string,
     fees: PaymentFee[],
+    getOrganizationServiceContainer: (
+      organizationId: string,
+    ) => IConnectedAppProps,
   ): Promise<void> {
     const logger = this.loggerFactory("applyFeeUpdatesFromWebhook");
-    const ps = this.props.services.paymentsService;
-    const payment = await ps.getPaymentByExternalId(squarePaymentId);
+
     logger.debug(
       {
-        appId: this.props.organizationId,
         squarePaymentId,
         fees,
       },
       "Square webhook fees",
     );
 
-    if (payment?.fees?.length === fees.length) {
+    // TODO: figure out how to get the organization id from the webhook
+    const db = await this.props.getDbConnection();
+    const payments = db.collection<Payment>("payments");
+    const payment = await payments.findOne({ externalId: squarePaymentId });
+
+    if (!payment) {
+      logger.warn("Square webhook payment not found");
+      return;
+    }
+
+    if (payment.fees?.length === fees.length) {
       const a = JSON.stringify(payment.fees);
       const b = JSON.stringify(fees);
       if (a === b) {
         logger.debug(
           {
-            appId: this.props.organizationId,
             squarePaymentId,
             fees,
           },
@@ -966,230 +817,62 @@ class SquareConnectedApp
 
     logger.debug(
       {
-        appId: this.props.organizationId,
         squarePaymentId,
+        organizationId: payment.organizationId,
         fees,
       },
       "Square webhook fees are different, updating payment",
     );
 
-    if (payment) {
-      await ps.updatePayment(payment._id, { fees }, { actor: "system" });
-      logger.debug(
-        {
-          appId: this.props.organizationId,
-          squarePaymentId,
-          fees,
-        },
-        "Square webhook fees updated successfully",
-      );
-      return;
-    }
+    const paymentService = getOrganizationServiceContainer(
+      payment.organizationId,
+    ).services.paymentsService;
 
-    const intent = await ps.getIntentByExternalId(squarePaymentId);
-    if (intent) {
-      logger.debug(
-        {
-          appId: this.props.organizationId,
-          squarePaymentId,
-          fees,
-        },
-        "Square webhook intent found",
-      );
+    await paymentService.updatePayment(
+      payment._id,
+      { fees },
+      { actor: "system" },
+    );
 
-      if (intent.fees?.length === fees.length) {
-        const a = JSON.stringify(intent.fees);
-        const b = JSON.stringify(fees);
-        if (a === b) {
-          logger.debug(
-            {
-              appId: this.props.organizationId,
-              squarePaymentId,
-              fees,
-            },
-            "Square webhook fees are the same, skipping update",
-          );
-          return;
-        }
-      }
-
-      await ps.updateIntent(intent._id, { fees });
-      logger.debug(
-        {
-          appId: this.props.organizationId,
-          squarePaymentId,
-          fees,
-        },
-        "Square webhook intent updated successfully",
-      );
-    }
+    logger.debug(
+      {
+        organizationId: payment.organizationId,
+        squarePaymentId,
+        fees,
+      },
+      "Square webhook fees updated successfully",
+    );
   }
 
-  protected async ensurePaymentUpdatedWebhookSubscription(
-    appData: ConnectedAppData<SquareMerchantData>,
-  ): Promise<void> {
-    const logger = this.loggerFactory(
-      "ensurePaymentUpdatedWebhookSubscription",
-    );
-
-    logger.debug(
-      {
-        appId: appData._id,
+  protected async fetchOrderFromSquare(
+    accessToken: string,
+    orderId: string,
+  ): Promise<{ metadata?: Record<string, string> } | null> {
+    const logger = this.loggerFactory("fetchOrderFromSquare");
+    const res = await fetch(`${squareApiBaseUrl()}/v2/orders/${orderId}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Square-Version": SQUARE_API_VERSION,
       },
-      "Ensuring Square payment updated webhook subscription",
-    );
+    });
 
-    const appToken = this.getSquareApplicationAccessToken();
-    if (!appToken) {
-      logger.warn(
-        { appId: appData._id },
-        "SQUARE_APP_ACCESS_TOKEN is not set; skipping Square webhook subscription (add Sandbox/Production access token from Square Developer → your application)",
-      );
-      return;
+    if (!res.ok) {
+      logger.error("Square fetch order failed");
+      throw new Error("Square fetch order failed");
     }
 
-    const notificationUrl = this.squarePaymentUpdatedWebhookUrl(
-      appData.organizationId,
-      appData._id,
-    );
-    const name = this.squarePaymentUpdatedWebhookName(
-      appData.organizationId,
-      appData._id,
-    );
-
-    logger.debug(
-      {
-        appId: appData._id,
-        notificationUrl,
-        name,
-      },
-      "Square payment updated webhook subscription",
-    );
-
-    const all = await this.listAllWebhookSubscriptions(appToken);
-    if (!all) {
-      logger.error(
-        { appId: appData._id },
-        "Square ListWebhookSubscriptions failed",
-      );
-      return;
-    }
-
-    const existing = all.find((s) => s.notification_url === notificationUrl);
-
-    // Update does not return a new `signature_key`; delete and recreate so we always persist a key from Create.
-    if (existing?.id) {
-      logger.debug(
-        {
-          appId: appData._id,
-          subscriptionId: existing.id,
-        },
-        "Square existing webhook subscription found",
-      );
-
-      const delRes = await fetch(
-        `${squareApiBaseUrl()}/v2/webhooks/subscriptions/${encodeURIComponent(existing.id)}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${appToken}`,
-            "Square-Version": SQUARE_API_VERSION,
-          },
-        },
-      );
-      if (!delRes.ok) {
-        const errJson = (await delRes.json().catch(() => ({}))) as {
-          errors?: unknown[];
-        };
-        logger.error(
-          {
-            appId: appData._id,
-            status: delRes.status,
-            errJson,
-            subscriptionId: existing.id,
-          },
-          "Square DeleteWebhookSubscription failed (cannot recreate without removing existing)",
-        );
-        return;
-      }
-      logger.debug(
-        { appId: appData._id, subscriptionId: existing.id },
-        "Removed existing Square webhook subscription for recreate",
-      );
-    }
-
-    const createRes = await fetch(
-      `${squareApiBaseUrl()}/v2/webhooks/subscriptions`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${appToken}`,
-          "Content-Type": "application/json",
-          "Square-Version": SQUARE_API_VERSION,
-        },
-        body: JSON.stringify({
-          idempotency_key: crypto.randomUUID().replace(/-/g, "").slice(0, 45),
-          subscription: {
-            name,
-            enabled: true,
-            event_types: ["payment.updated"],
-            notification_url: notificationUrl,
-            api_version: SQUARE_API_VERSION,
-          },
-        }),
-      },
-    );
-
-    const createJson = (await createRes.json()) as {
-      subscription?: SquareWebhookSubscription;
-      errors?: { detail?: string }[];
+    const json = (await res.json()) as {
+      order?: { metadata?: Record<string, string> };
+      errors?: { detail?: string; code?: string }[];
     };
 
-    if (
-      !createRes.ok ||
-      createJson.errors?.length ||
-      !createJson.subscription?.id
-    ) {
-      logger.error(
-        {
-          appId: appData._id,
-          status: createRes.status,
-          errors: createJson.errors,
-        },
-        "Square CreateWebhookSubscription failed",
-      );
-      return;
+    if (!json.order) {
+      logger.error("Square fetch order failed");
+      throw new Error("Square fetch order failed");
     }
 
-    logger.debug(
-      {
-        appId: appData._id,
-        subscription: createJson.subscription,
-      },
-      "Square created webhook subscription",
-    );
-
-    const sub = createJson.subscription;
-    if (!sub.id || !sub.signature_key) {
-      logger.error(
-        { appId: appData._id },
-        "Square CreateWebhookSubscription missing id or signature_key",
-      );
-      return;
-    }
-
-    await this.persistWebhookSubscriptionData(
-      appData,
-      sub.id,
-      sub.signature_key,
-    );
-    logger.debug(
-      {
-        appId: appData._id,
-        subscriptionId: sub.id,
-      },
-      "Square webhook subscription data persisted",
-    );
+    return json.order;
   }
 
   /**

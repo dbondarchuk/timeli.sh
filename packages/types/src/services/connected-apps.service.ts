@@ -21,6 +21,10 @@ export interface IConnectedAppsService {
     appId: string,
     request: ApiRequest,
   ): Promise<ApiResponse | undefined>;
+  processStaticWebhook(
+    appName: string,
+    request: ApiRequest,
+  ): Promise<ApiResponse | undefined>;
   processAppCall(
     appId: string,
     slug: string[],
