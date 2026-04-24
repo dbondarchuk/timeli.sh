@@ -1,4 +1,5 @@
 import { persistPolarSubscriptionToOrganization } from "@/lib/billing/persist-polar-subscription";
+import { applyPolarOrderPaidToSmsBalances } from "@/lib/billing/polar-order-paid-sms";
 import { sendEmail } from "@/utils/email/send-email";
 import { polar, portal, webhooks } from "@polar-sh/better-auth";
 import { languages, type Language } from "@timelish/i18n";
@@ -218,6 +219,9 @@ export const auth = betterAuth({
           onSubscriptionUncanceled: async ({ data }) => {
             await persistPolarSubscriptionToOrganization(data);
           },
+          onOrderPaid: async ({ data }) => {
+            await applyPolarOrderPaidToSmsBalances(data);
+          },
           onPayload: async ({ data }) => {
             console.log("onPayloadReceived", data);
           },
@@ -251,6 +255,7 @@ export const auth = betterAuth({
               organizationName: "",
               organizationSlug: "",
               organizationDomain: "",
+              role: (user as any).role || "owner",
             },
           };
         }
@@ -281,6 +286,7 @@ export const auth = betterAuth({
           organizationSlug: organization.slug,
           organizationDomain: organization.domain,
           language: (user as any).language || "en",
+          role: (user as any).role || "owner",
         },
       };
     }),

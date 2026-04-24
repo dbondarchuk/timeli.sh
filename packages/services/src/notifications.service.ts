@@ -22,8 +22,6 @@ import {
 import { maskify } from "@timelish/utils";
 import { convert } from "html-to-text";
 
-import { maybeEmitSmsCreditThresholdEvent } from "./billing/sms-credit-threshold-notify";
-
 export class NotificationService implements INotificationService {
   protected readonly loggerFactory = getLoggerFactory("NotificationService");
 
@@ -154,18 +152,14 @@ export class NotificationService implements INotificationService {
         "No app-based text message sender app is configured, using default text message sender service",
       );
 
-      const credits = await this.billingService.getSmsCreditBalance();
-      if (!credits.feesExempt && credits.balance <= 0) {
+      const availableTotal =
+        await this.billingService.getCurrentSmsBalanceTotal();
+      if (availableTotal !== null && availableTotal < 1) {
         logger.warn("Sms credits exhausted");
         throw new SmsCreditsExhaustedError();
       }
 
       sendTextMessage = async (message: TextMessage) => {
-        const creditsBefore = await this.billingService.getSmsCreditBalance();
-        const previousBalance = creditsBefore.feesExempt
-          ? null
-          : creditsBefore.balance;
-
         const response = await this.defaultTextMessageSender.sendTextMessage(
           this.organizationId,
           message,
@@ -176,15 +170,6 @@ export class NotificationService implements INotificationService {
             direction: "outbound",
             textId: response.textId,
           });
-          if (previousBalance !== null) {
-            // One successful built-in message consumes one credit; avoid re-fetching Polar meter.
-            const newBalance = Math.max(0, previousBalance - 1);
-            await maybeEmitSmsCreditThresholdEvent({
-              eventService: this.eventService,
-              previousBalance,
-              newBalance,
-            });
-          }
         }
         return response;
       };

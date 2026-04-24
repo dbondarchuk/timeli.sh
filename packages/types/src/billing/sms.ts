@@ -5,25 +5,26 @@ export type BillingRecordSmsUsageInput = {
   textId?: string;
 };
 
-/** SMS meter benefit snapshot (numeric; format in UI with locale). */
+export type BillingConsumeSmsInput = BillingRecordSmsUsageInput & {
+  /** Units to consume (e.g. 1 per message). */
+  amount: number;
+};
+
+/** SMS credits on the subscription period plus optional purchased top-up pool. */
 export type OrganizationBillingSmsBenefit = {
-  balance: number;
-  /** Consumed units in the current cycle. */
-  amountUsed: number;
-  /** Credited / allowance units for the cycle. */
-  totalAmount: number;
-  /** Date for cycle refresh. */
+  included: number;
+  topup: number;
   nextRefreshDate: Date | null;
+  /**
+   * SMS units granted each billing period from the subscribed product’s `meter_credit`
+   * (same source as `setIncludedSmsCredits` on renewals). `null` if unknown.
+   */
+  includedPerCycle: number | null;
 };
 
 export type SmsCreditsState = Prettify<
-  | ({ feesExempt: false } & Omit<
-      OrganizationBillingSmsBenefit,
-      "nextRefreshDate"
-    >)
-  | ({ feesExempt: true } & Partial<
-      Omit<OrganizationBillingSmsBenefit, "nextRefreshDate">
-    >)
+  | { feesExempt: false; included: number; topup: number }
+  | { feesExempt: true; included?: number; topup?: number }
 >;
 
 export class SmsCreditsExhaustedError extends Error {

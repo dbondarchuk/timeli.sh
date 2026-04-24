@@ -67,6 +67,7 @@ import {
   SETTINGS_UPDATED_EVENT_TYPE,
   SMS_CREDITS_EXHAUSTED_EVENT_TYPE,
   SMS_CREDITS_LOW_EVENT_TYPE,
+  SMS_TOPUP_PURCHASED_EVENT_TYPE,
   SUBSCRIPTION_STATUS_CHANGED_EVENT_TYPE,
   TEMPLATE_CREATED_EVENT_TYPE,
   TEMPLATE_DELETED_EVENT_TYPE,
@@ -248,6 +249,11 @@ export type SmsCreditsThresholdPayload = {
   balance: number;
 };
 
+export type SmsTopupPurchasedPayload = {
+  /** Credits added to the org top-up pool. */
+  credits: number;
+};
+
 /** Maps core platform event type strings to their payload shapes (services emits). */
 export type CoreEventPayloadByType = {
   [CUSTOMER_CREATED_EVENT_TYPE]: CustomerCreatedPayload;
@@ -301,6 +307,7 @@ export type CoreEventPayloadByType = {
   [SUBSCRIPTION_STATUS_CHANGED_EVENT_TYPE]: SubscriptionStatusChangedPayload;
   [SMS_CREDITS_LOW_EVENT_TYPE]: SmsCreditsThresholdPayload;
   [SMS_CREDITS_EXHAUSTED_EVENT_TYPE]: SmsCreditsThresholdPayload;
+  [SMS_TOPUP_PURCHASED_EVENT_TYPE]: SmsTopupPurchasedPayload;
 };
 
 export type CoreEventTypeString = keyof CoreEventPayloadByType;

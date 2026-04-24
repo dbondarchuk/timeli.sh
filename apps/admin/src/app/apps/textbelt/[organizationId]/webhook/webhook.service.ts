@@ -2,7 +2,6 @@ import { getTextBeltWebhookEmailTemplate } from "@timelish/app-store/exports";
 import { BaseAllKeys } from "@timelish/i18n";
 import { getLoggerFactory } from "@timelish/logger";
 import { TextBeltConfiguration } from "@timelish/services";
-import { maybeEmitSmsCreditThresholdEvent } from "@timelish/services";
 import {
   ApiRequest,
   ApiResponse,
@@ -122,25 +121,10 @@ export class TextBeltWebhookService {
         "Received TextBelt reply webhook",
       );
 
-      const beforeCredits = await this.billingService.getSmsCreditBalance();
-      const previousBalance = beforeCredits.feesExempt
-        ? null
-        : beforeCredits.balance;
-
       await this.billingService.recordSmsCreditUsage({
         direction: "inbound",
         textId: reply.textId,
       });
-
-      if (previousBalance !== null) {
-        // One inbound message consumes one credit; avoid re-fetching Polar meter.
-        const newBalance = Math.max(0, previousBalance - 1);
-        await maybeEmitSmsCreditThresholdEvent({
-          eventService: this.eventService,
-          previousBalance,
-          newBalance,
-        });
-      }
 
       const parts = (reply?.data || "").split("|", 4);
 

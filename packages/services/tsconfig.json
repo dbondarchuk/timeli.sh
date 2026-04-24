@@ -7,6 +7,9 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src"],
+  "include": [
+    "src",
+    "../../apps/admin/src/lib/billing/polar-order-paid-sms.ts"
+  ],
   "exclude": ["node_modules", "dist"]
 }

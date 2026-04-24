@@ -224,6 +224,9 @@ platformEvents:
     smsCreditsExhausted:
       title: SMS-кредити вичерпано
       description: "Баланс SMS досяг {balance}. Поповніть кредити, щоб відправка повідомлень працювала далі."
+    smsTopupPurchased:
+      title: Додано SMS-докупку
+      description: "На рахунок додано {credits, plural, one {кредит} few {# кредити} many {# кредитів} other {# кредиту}} (докупка)."
 billing:
   emails:
     subscriptionAlert:
@@ -237,15 +240,17 @@ billing:
       subject: Мало кредитів SMS
       preview: Залишилось 10 кредитів SMS
       title: Низький залишок SMS-кредитів
-      body: "Залишок вбудованих SMS: {balance} кредитів. Додайте кредити або змініть додаток відправки в налаштуваннях."
+      body: "Залишок SMS: {balance} кредитів. Якщо ви хочете надсилати більше повідомлень, купіть більше кредитів у налаштуваннях білінгу."
       button: Відкрити білінг
+      purchaseButton: Купити SMS-кредити
       handledBy: Білінг (залишок SMS)
     smsCreditsExhausted:
       subject: Кредити SMS вичерпано
       preview: Кредити SMS закінчились
       title: Кредити SMS вичерпано
-      body: "Вбудовані SMS кредитів не залишилось. Додайте кредити або інший додаток для відправки."
+      body: "Залишок SMS: 0. Якщо ви хочете надсилати більше повідомлень, купіть більше кредитів у налаштуваннях білінгу."
       button: Відкрити білінг
+      purchaseButton: Купити SMS-кредити
       handledBy: Білінг (залишок SMS)
   notifications:
     smsCreditsLow:
@@ -254,7 +259,11 @@ billing:
       action: Відкрити білінг
     smsCreditsExhausted:
       title: SMS-кредити вичерпано
-      message: "Залишок SMS: {balance}. Додайте кредити або змініть додаток-відправник."
+      message: "Залишок SMS: {balance}. Якщо ви хочете надсилати більше повідомлень, купіть більше кредитів у налаштуваннях білінгу."
+      action: Відкрити білінг
+    smsTopupPurchased:
+      title: SMS-докупку завершено
+      message: "Додано {credits, plural, one {кредит} few {# кредити} many {# кредитів} other {# кредиту}}. Використовуються після включеного обсягу підписки."
       action: Відкрити білінг
 navigation:
   overview: Огляд
@@ -1851,7 +1860,7 @@ settings:
       openPortal: Відкрити портал оплати
       choosePlan: Обрати тариф
       portalError: Не вдалося відкрити портал оплати. Спробуйте пізніше.
-      portalReturnHint: Після керування оплатою в Polar ви повернетесь сюди.
+      portalReturnHint: Після керування оплатою у порталі оплати ви повернетесь сюди.
       planLabel: Тариф
       priceLabel: Вартість
       nextBillingLabel: Наступне списання
@@ -1860,11 +1869,32 @@ settings:
         year: "{price}/ рік"
         week: "{price}/ тиждень"
         day: "{price}/ день"
-      smsCreditsSectionTitle: SMS-кредити (поточний цикл)
-      smsCreditsCredited: Нараховано
-      smsCreditsConsumed: Використано
-      smsCreditsBalance: Залишок
-      smsCreditsNextCycle: Наступний цикл
+      smsCreditsSectionTitle: SMS-кредити
+      smsIncluded:
+        title: Включено (підписка)
+        balanceLabel: Залишок
+        perCycleLabel: Кредитів за цикл
+        nextCycleLabel: Наступний цикл
+      smsTopupPool:
+        title: Докупка
+        balanceLabel: Залишок
+        usageHint: Ці кредити використовуються після вичерпання включеного обсягу в поточному циклі та не згорають.
+        depletionOrderHint: Спочатку використовуються кредити підписки, потім баланс докупки.
+      smsTopup:
+        buyButton: Купити SMS-кредити
+        dialogTitle: Купівля SMS-кредитів
+        dialogSubtitle: Оберіть пакет, щоб додати SMS-кредити на акаунт.
+        dialogCreditsNote: Кредити не згорають. Разова оплата — користуйтесь коли завгодно.
+        bestValueBadge: Вигідно
+        securePaymentLabel: Безпечна оплата
+        billedOnceNoSubscription: Одноразовий платіж · без підписки
+        savePercent: Економія {percent}%
+        continue: Далі
+        loadError: Не вдалося завантажити продукти. Спробуйте пізніше будь ласка.
+        empty: Поки немає продуктів для докупки.
+        creditsLine: "{count} повідомлень"
+        checkoutError: Не вдалося почати оформлення. Спробуйте пізніше будь ласка.
+        purchaseSuccess: Покупка обробляється. Оновлення балансу докупки може зайняти мить.
     form:
       name: Назва бізнесу
       namePlaceholder: Назва вашого бізнесу

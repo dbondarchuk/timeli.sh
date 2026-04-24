@@ -30,4 +30,6 @@ export const dashboardUrls = {
   asset: (id: string) => `/dashboard/assets/${id}`,
   assets: "/dashboard/assets",
   billing: "/dashboard/settings/brand",
+  /** Brand settings; opens the SMS top-up purchase dialog (see `SmsTopupPurchaseDialog`). */
+  billingPurchaseSmsTopup: "/dashboard/settings/brand?purchase_sms_topup=true",
 };

@@ -1,6 +1,7 @@
 "use client";
 
 import { createPolarBillingPortalSession } from "@/app/dashboard/settings/brand/billing-portal";
+import { SmsTopupPurchaseDialog } from "@/app/dashboard/settings/brand/tabs/sms-topup-purchase-dialog";
 import { useI18n, useLocale } from "@timelish/i18n";
 import {
   OrganizationBillingSubscriptionDetails,
@@ -21,7 +22,8 @@ import {
 import { ExternalLink } from "lucide-react";
 import { DateTime } from "luxon";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { parseAsBoolean, useQueryState } from "nuqs";
+import { useEffect, useMemo, useState } from "react";
 
 function hasActiveLikeSubscription(
   status: OrganizationSubscriptionStatus | null | undefined,
@@ -41,6 +43,18 @@ export function GeneralBillingCard({
   const t = useI18n("admin");
   const locale = useLocale();
   const [opening, setOpening] = useState(false);
+  const [smsPurchased, setSmsPurchased] = useQueryState(
+    "sms_topup",
+    parseAsBoolean
+      .withDefault(false)
+      .withOptions({ shallow: true, history: "replace" }),
+  );
+
+  useEffect(() => {
+    if (!smsPurchased) return;
+    toast.success(t("settings.general.billing.smsTopup.purchaseSuccess"));
+    setSmsPurchased(false);
+  }, [t, smsPurchased, setSmsPurchased]);
 
   const subscriptionPriceLabel = useMemo(() => {
     const price = details.subscriptionPrice;
@@ -194,47 +208,76 @@ export function GeneralBillingCard({
           </div>
         ) : null}
         {details.benefits.sms ? (
-          <div className="flex flex-col gap-3 border-t pt-4">
+          <div className="flex flex-col gap-4 border-t pt-4">
             <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
               {t("settings.general.billing.smsCreditsSectionTitle")}
             </span>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              <div className="flex min-w-0 flex-col gap-1">
-                <span className="text-xs uppercase tracking-wide text-muted-foreground">
-                  {t("settings.general.billing.smsCreditsCredited")}
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="flex flex-col gap-3 rounded-lg border bg-muted/30 p-3">
+                <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  {t("settings.general.billing.smsIncluded.title")}
                 </span>
-                <span className="text-sm font-medium text-foreground">
-                  {numberFormatter.format(details.benefits.sms.totalAmount)}
-                </span>
+                <div className="grid sm:grid-cols-3 gap-3">
+                  <div className="flex min-w-0 flex-col gap-1">
+                    <span className="text-xs uppercase tracking-wide text-muted-foreground">
+                      {t("settings.general.billing.smsIncluded.balanceLabel")}
+                    </span>
+                    <span className="text-sm font-medium text-foreground">
+                      {numberFormatter.format(details.benefits.sms.included)}
+                    </span>
+                  </div>
+                  {details.benefits.sms.includedPerCycle != null ? (
+                    <div className="flex min-w-0 flex-col gap-1">
+                      <span className="text-xs uppercase tracking-wide text-muted-foreground">
+                        {t(
+                          "settings.general.billing.smsIncluded.perCycleLabel",
+                        )}
+                      </span>
+                      <span className="text-sm font-medium text-foreground">
+                        {numberFormatter.format(
+                          details.benefits.sms.includedPerCycle,
+                        )}
+                      </span>
+                    </div>
+                  ) : null}
+                  <div className="flex min-w-0 flex-col gap-1">
+                    <span className="text-xs uppercase tracking-wide text-muted-foreground">
+                      {t("settings.general.billing.smsIncluded.nextCycleLabel")}
+                    </span>
+                    <span className="text-sm font-medium text-foreground">
+                      {details.benefits.sms.nextRefreshDate
+                        ? DateTime.fromJSDate(
+                            details.benefits.sms.nextRefreshDate,
+                          )
+                            .setLocale(locale)
+                            .toLocaleString(DateTime.DATE_MED)
+                        : "—"}
+                    </span>
+                  </div>
+                </div>
               </div>
-              <div className="flex min-w-0 flex-col gap-1">
-                <span className="text-xs uppercase tracking-wide text-muted-foreground">
-                  {t("settings.general.billing.smsCreditsConsumed")}
+              <div className="flex flex-col gap-3 rounded-lg border bg-muted/30 p-3">
+                <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  {t("settings.general.billing.smsTopupPool.title")}
                 </span>
-                <span className="text-sm font-medium text-foreground">
-                  {numberFormatter.format(details.benefits.sms.amountUsed)}
-                </span>
+                <div className="flex min-w-0 flex-col gap-1">
+                  <span className="text-xs uppercase tracking-wide text-muted-foreground">
+                    {t("settings.general.billing.smsTopupPool.balanceLabel")}
+                  </span>
+                  <span className="text-sm font-medium text-foreground">
+                    {numberFormatter.format(details.benefits.sms.topup)}
+                  </span>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {t("settings.general.billing.smsTopupPool.usageHint")}
+                </p>
               </div>
-              <div className="flex min-w-0 flex-col gap-1">
-                <span className="text-xs uppercase tracking-wide text-muted-foreground">
-                  {t("settings.general.billing.smsCreditsBalance")}
-                </span>
-                <span className="text-sm font-medium text-foreground">
-                  {numberFormatter.format(details.benefits.sms.balance)}
-                </span>
-              </div>
-              <div className="flex min-w-0 flex-col gap-1">
-                <span className="text-xs uppercase tracking-wide text-muted-foreground">
-                  {t("settings.general.billing.smsCreditsNextCycle")}
-                </span>
-                <span className="text-sm font-medium text-foreground">
-                  {details.benefits.sms.nextRefreshDate
-                    ? DateTime.fromJSDate(details.benefits.sms.nextRefreshDate)
-                        .setLocale(locale)
-                        .toLocaleString(DateTime.DATE_MED)
-                    : "—"}
-                </span>
-              </div>
+            </div>
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-xs text-muted-foreground sm:max-w-prose">
+                {t("settings.general.billing.smsTopupPool.depletionOrderHint")}
+              </p>
+              <SmsTopupPurchaseDialog canPurchase />
             </div>
           </div>
         ) : null}

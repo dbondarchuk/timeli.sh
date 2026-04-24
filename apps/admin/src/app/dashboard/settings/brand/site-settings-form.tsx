@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useI18n } from "@timelish/i18n";
+import type { OrganizationBillingSubscriptionDetails } from "@timelish/types";
 import {
   Form,
   IComboboxItem,
@@ -23,7 +24,6 @@ import {
 } from "./site-settings-schema";
 import { BrandTab } from "./tabs/brand";
 import { GeneralTab } from "./tabs/general";
-import type { OrganizationBillingSubscriptionDetails } from "@timelish/types";
 import { SocialTab } from "./tabs/social";
 import { StylingTab } from "./tabs/styling";
 

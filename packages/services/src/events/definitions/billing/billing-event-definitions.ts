@@ -2,13 +2,15 @@ import { renderUserEmailTemplate } from "@timelish/email-builder/static";
 import { BaseAllKeys } from "@timelish/i18n";
 import { getI18nAsync } from "@timelish/i18n/server";
 import {
-  type EventEnvelope,
-  type IServicesContainer,
   SMS_CREDITS_EXHAUSTED_EVENT_TYPE,
   SMS_CREDITS_LOW_EVENT_TYPE,
+  SMS_TOPUP_PURCHASED_EVENT_TYPE,
   type EmailNotificationRequest,
   type EventDefinition,
+  type EventEnvelope,
+  type IServicesContainer,
   type SmsCreditsThresholdPayload,
+  type SmsTopupPurchasedPayload,
 } from "@timelish/types";
 import { getAdminUrl } from "@timelish/utils";
 
@@ -40,7 +42,8 @@ async function buildSmsCreditThresholdEmails(
   if (!admins.length) return null;
 
   const organization = await services.organizationService.getOrganization();
-  const organizationLabel = organization?.name?.trim() || organization?.slug || "";
+  const organizationLabel =
+    organization?.name?.trim() || organization?.slug || "";
   const layoutArgs = {
     config: organizationLabel ? { name: organizationLabel } : {},
   };
@@ -69,8 +72,17 @@ async function buildSmsCreditThresholdEmails(
           {
             type: "button",
             button: {
-              text: t(`${keyPrefix}.button`),
+              text: t(`${keyPrefix}.button`, interpolation),
               url: `${getAdminUrl()}${dashboardUrls.billing}`,
+            },
+          },
+          {
+            type: "button",
+            button: {
+              text: t(`${keyPrefix}.purchaseButton`, interpolation),
+              url: `${getAdminUrl()}${dashboardUrls.billingPurchaseSmsTopup}`,
+              textColor: "#ffffff",
+              backgroundColor: "#059669",
             },
           },
         ],
@@ -183,6 +195,53 @@ export const BILLING_EVENT_DEFINITIONS: Record<string, EventDefinition> = {
     },
     emailNotifications: async (envelope, services) =>
       await buildSmsCreditThresholdEmails(envelope, services),
+    smsNotifications: false,
+  },
+  [SMS_TOPUP_PURCHASED_EVENT_TYPE]: {
+    type: SMS_TOPUP_PURCHASED_EVENT_TYPE,
+    recordActivity: (envelope) => {
+      const { credits } = envelope.payload as SmsTopupPurchasedPayload;
+      return {
+        eventId: envelope.id,
+        eventType: envelope.type,
+        title: {
+          key: "admin.platformEvents.billing.smsTopupPurchased.title" as BaseAllKeys,
+        },
+        description: {
+          key: "admin.platformEvents.billing.smsTopupPurchased.description" as BaseAllKeys,
+          args: { credits },
+        },
+        source: envelope.source,
+        severity: "success",
+        link: dashboardUrls.billing,
+      };
+    },
+    dashboardNotification: async (envelope) => {
+      const { credits } = envelope.payload as SmsTopupPurchasedPayload;
+
+      // Wait for 5 seconds to make sure the user gets the notification
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+      return {
+        type: "billing-sms-topup-purchased",
+        toast: {
+          type: "success" as const,
+          title: {
+            key: "admin.billing.notifications.smsTopupPurchased.title" as BaseAllKeys,
+          },
+          message: {
+            key: "admin.billing.notifications.smsTopupPurchased.message" as BaseAllKeys,
+            args: { credits },
+          },
+          action: {
+            label: {
+              key: "admin.billing.notifications.smsTopupPurchased.action" as BaseAllKeys,
+            },
+            href: dashboardUrls.billing,
+          },
+        },
+      };
+    },
+    emailNotifications: false,
     smsNotifications: false,
   },
 };

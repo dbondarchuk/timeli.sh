@@ -14,7 +14,7 @@ export const withLogger: MiddlewareProxy = (next) => {
     request.headers.append("x-correlation-id", correlationId);
     request.headers.append("x-session-id", sessionId);
 
-    const logger = getBaseLoggerFactory(correlationId);
+    const logger = getBaseLoggerFactory({ correlationId });
 
     logger.debug(
       { url: request.url, method: request.method, correlationId },

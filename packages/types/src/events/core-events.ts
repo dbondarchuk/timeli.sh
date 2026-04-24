@@ -81,3 +81,6 @@ export const SMS_CREDITS_LOW_EVENT_TYPE = "billing.smsCreditsLow" as const;
 /** SMS credits exhausted (0). */
 export const SMS_CREDITS_EXHAUSTED_EVENT_TYPE =
   "billing.smsCreditsExhausted" as const;
+/** One-time SMS top-up credits added (Polar one-time `meter_credit` product). */
+export const SMS_TOPUP_PURCHASED_EVENT_TYPE =
+  "billing.smsTopupPurchased" as const;

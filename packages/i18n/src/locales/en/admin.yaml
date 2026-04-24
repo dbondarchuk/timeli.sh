@@ -222,6 +222,9 @@ platformEvents:
     smsCreditsExhausted:
       title: SMS credits exhausted
       description: "SMS balance reached {balance}. Top up credits to keep message delivery running."
+    smsTopupPurchased:
+      title: SMS top-up added
+      description: "Added {credits, plural, =1 {1 top-up message credit} other {# top-up message credits}} to your account."
 billing:
   emails:
     subscriptionAlert:
@@ -235,15 +238,17 @@ billing:
       subject: SMS credits running low
       preview: You have 10 SMS credits left
       title: Low SMS credit balance
-      body: "Your built-in text messaging balance is now {balance} credits. Add credits or change your default sender in settings."
+      body: "Your text messaging balance is now {balance} credits. If you want to send more messages, purchase more credits in billing settings."
       button: Open billing settings
+      purchaseButton: Buy SMS credits
       handledBy: Billing (SMS balance)
     smsCreditsExhausted:
       subject: SMS credits used up
       preview: You have no SMS credits left
       title: SMS credits exhausted
-      body: "Your built-in text messaging balance is 0. Add credits or use another sender app to keep sending texts."
+      body: "Your text messaging balance is 0. If you want to send more messages, purchase more credits in billing settings."
       button: Open billing settings
+      purchaseButton: Buy SMS credits
       handledBy: Billing (SMS balance)
   notifications:
     smsCreditsLow:
@@ -252,7 +257,11 @@ billing:
       action: Open billing settings
     smsCreditsExhausted:
       title: SMS credits exhausted
-      message: "SMS balance is {balance}. Add credits or switch sender app to keep sending texts."
+      message: "SMS balance is {balance}. If you want to send more messages, purchase more credits in billing settings."
+      action: Open billing settings
+    smsTopupPurchased:
+      title: SMS top-up complete
+      message: "Added {credits, plural, =1 {1 top-up message credit} other {# top-up message credits}}. They are used after your included subscription pool."
       action: Open billing settings
 navigation:
   overview: Overview
@@ -1864,11 +1873,32 @@ settings:
         year: "{price}/ year"
         week: "{price}/ week"
         day: "{price}/ day"
-      smsCreditsSectionTitle: SMS credits (this cycle)
-      smsCreditsCredited: Credited
-      smsCreditsConsumed: Used
-      smsCreditsBalance: Balance
-      smsCreditsNextCycle: Next cycle
+      smsCreditsSectionTitle: SMS credits
+      smsIncluded:
+        title: Included (subscription)
+        balanceLabel: Balance
+        perCycleLabel: Credits per cycle
+        nextCycleLabel: Next cycle
+      smsTopupPool:
+        title: Top-up
+        balanceLabel: Balance
+        usageHint: These credits are used after your included amount for this cycle is used and never expire.
+        depletionOrderHint: Messages use your included subscription credits first, then any top-up balance.
+      smsTopup:
+        buyButton: Buy SMS credits
+        dialogTitle: Purchase SMS credits
+        dialogSubtitle: Choose a top-up option to add SMS credits to your account.
+        dialogCreditsNote: Credits never expire. Pay once, use anytime.
+        bestValueBadge: Best value
+        securePaymentLabel: Secure payment
+        billedOnceNoSubscription: Billed once · No subscription
+        savePercent: Save {percent}%
+        continue: Continue
+        loadError: Could not load products. Please try again.
+        empty: No SMS top-up products are available yet.
+        creditsLine: "{count} messages"
+        checkoutError: Could not start checkout. Try again later.
+        purchaseSuccess: Your purchase is processing. It may take a moment for top-up balance to update.
     form:
       name: Business name
       namePlaceholder: Your business name

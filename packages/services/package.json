@@ -12,7 +12,8 @@
   "exports": {
     ".": "./src/index.ts",
     "./collections": "./src/collections.ts",
-    "./database": "./src/database/index.ts"
+    "./database": "./src/database/index.ts",
+    "./billing": "./src/billing/index.ts"
   },
   "devDependencies": {
     "@timelish/eslint-config": "*",

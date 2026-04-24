@@ -21,7 +21,7 @@ export default async function Page() {
   const t = await getI18nAsync("admin");
 
   const servicesContainer = await getServicesContainer();
-  const { organizationDomain, organizationSlug } =
+  const { organizationId, organizationDomain, organizationSlug } =
     await getOrganizationIdAndSlug();
 
   const billingSubscriptionDetails =

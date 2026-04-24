@@ -8,9 +8,11 @@ export async function resolveAppOrigin(): Promise<string> {
     process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "");
   if (fromEnv) return fromEnv;
 
-  const h = await headers();
-  const host = h.get("x-forwarded-host") ?? h.get("host");
+  if (process.env.ADMIN_DOMAIN) return `https://${process.env.ADMIN_DOMAIN}`;
+
+  const headerList = await headers();
+  const host = headerList.get("x-forwarded-host") ?? headerList.get("host");
   if (!host) return "http://localhost:3001";
-  const proto = h.get("x-forwarded-proto") ?? "http";
+  const proto = headerList.get("x-forwarded-proto") ?? "http";
   return `${proto}://${host}`;
 }
