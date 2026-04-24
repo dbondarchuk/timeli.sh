@@ -8,12 +8,15 @@ checkout:
   subtitle: >-
     Subscriptions are billed securely through Polar. You can manage billing
     anytime from your Polar customer portal.
+  trialAndCancellation: >-
+    Every plan includes a 7-day free trial, then the price shown. You can cancel
+    anytime from your billing portal—no long-term contract, no hidden fees.
   includedLabel: What's included
   pricePerMonth: / month
   pricePerYear: / year
   pricePerWeek: / week
   pricePerDay: / day
-  disclaimer: Cancel anytime. No hidden fees.
+  disclaimer: 7-day free trial. Cancel anytime. No hidden fees.
   cta: Continue to checkout
   plans:
     pro:

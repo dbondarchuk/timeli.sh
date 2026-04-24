@@ -557,6 +557,11 @@ appointments:
   actionButton:
     changesSaved: Your changes were saved.
     requestError: There was a problem with your request.
+  subscriptionPastDue:
+    title: Subscription past due
+    description: Your subscription payment is past due. Creating and changing bookings is temporarily disabled until billing is current.
+    openSettings: Open settings
+    openingPortal: Opening billing portal…
   events:
     created:
       title: New appointment
@@ -2360,6 +2365,12 @@ table:
   filters:
     status: Status
 dashboard:
+  subscriptionPastDueBanner:
+    message: Subscription payment past due — new bookings and changes are currently blocked.
+    goToSettings: Go to settings →
+  subscriptionInactive:
+    title: Subscription cancelled
+    description: This workspace subscription is not active. Contact us to restore access.
   appointments:
     noAppointments: No appointments are scheduled
     noPendingAppointments: No pending appointments

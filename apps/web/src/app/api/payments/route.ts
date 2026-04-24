@@ -1,4 +1,5 @@
 import { trackBookingStepWithCustomer } from "@/utils/booking-tracking";
+import { isSubscriptionPastDue } from "@/utils/subscription-access";
 import { getLoggerFactory } from "@timelish/logger";
 import {
   CollectPayment,
@@ -17,6 +18,18 @@ export async function POST(request: NextRequest) {
     },
     "Processing payments API request",
   );
+
+  const subscriptionStatus = request.headers.get("x-subscription-status");
+  if (isSubscriptionPastDue(subscriptionStatus)) {
+    return Response.json(
+      {
+        success: false,
+        code: "subscription_past_due",
+        message: "Something went wrong, please contact us.",
+      },
+      { status: 402 },
+    );
+  }
 
   try {
     const body = (await request

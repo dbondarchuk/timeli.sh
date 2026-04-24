@@ -376,7 +376,7 @@ export class BookingService extends BaseService implements IBookingService {
         appointment,
         confirmed,
       } satisfies AppointmentCreatedPayload,
-      eventSource,
+      enrichedEventSource,
     );
 
     logger.debug(

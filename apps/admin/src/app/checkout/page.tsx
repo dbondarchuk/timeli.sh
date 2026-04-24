@@ -172,6 +172,9 @@ export default async function CheckoutPage() {
             {t("checkout.title")}
           </h1>
           <p className="text-muted-foreground">{t("checkout.subtitle")}</p>
+          <p className="text-sm text-muted-foreground">
+            {t("checkout.trialAndCancellation")}
+          </p>
         </div>
         <CheckoutPlans organizationId={orgIdForCheckout} plans={plans} />
       </main>

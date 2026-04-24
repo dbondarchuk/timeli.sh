@@ -256,6 +256,8 @@ export const auth = betterAuth({
               organizationSlug: "",
               organizationDomain: "",
               role: (user as any).role || "owner",
+              subscriptionStatus: "active",
+              feesExempt: false,
             },
           };
         }
@@ -287,6 +289,8 @@ export const auth = betterAuth({
           organizationDomain: organization.domain,
           language: (user as any).language || "en",
           role: (user as any).role || "owner",
+          subscriptionStatus: organization.polarSubscriptionStatus || "active",
+          feesExempt: !!organization.feesExempt,
         },
       };
     }),

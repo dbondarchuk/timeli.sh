@@ -1,7 +1,7 @@
 "use client";
 
-import { createPolarBillingPortalSession } from "@/app/dashboard/settings/brand/billing-portal";
 import { SmsTopupPurchaseDialog } from "@/app/dashboard/settings/brand/tabs/sms-topup-purchase-dialog";
+import { adminApi } from "@timelish/api-sdk";
 import { useI18n, useLocale } from "@timelish/i18n";
 import {
   OrganizationBillingSubscriptionDetails,
@@ -108,13 +108,15 @@ export function GeneralBillingCard({
 
   const openPortal = async () => {
     setOpening(true);
-    const result = await createPolarBillingPortalSession();
-    if (!result.ok) {
+    try {
+      const result = await adminApi.billing.getBillingPortalUrl();
+      window.location.assign(result);
+    } catch (error) {
       toast.error(t("settings.general.billing.portalError"));
       setOpening(false);
-      return;
+    } finally {
+      setOpening(false);
     }
-    window.location.assign(result.url);
   };
 
   return (

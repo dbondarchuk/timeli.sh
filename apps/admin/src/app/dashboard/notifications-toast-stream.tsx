@@ -35,7 +35,7 @@ export const NotificationsToastStream: React.FC = () => {
   const { setBadges } = useNotificationsStore();
   const { addPreviews } = useActivityFeedStore();
   const { data: session } = authClient.useSession();
-  const userId = session?.user?.id ?? "";
+
   const timeZone = useTimeZone();
   const locale = useLocale();
   const router = useRouter();
@@ -43,7 +43,17 @@ export const NotificationsToastStream: React.FC = () => {
 
   const lastDate = React.useRef<Date | undefined>(undefined);
 
+  // when session updates, we need to remember last user id to avoid unnecessary re-renders
+  const userId = React.useRef<string>("");
+  if (session?.user?.id) {
+    userId.current = session.user.id;
+  }
+
   React.useEffect(() => {
+    if (!userId.current) {
+      return;
+    }
+
     const dateQueryParam = lastDate.current
       ? `?date=${lastDate.current.toISOString()}`
       : "";
@@ -73,7 +83,7 @@ export const NotificationsToastStream: React.FC = () => {
       if (data.activityFeed?.preview) {
         addPreviews(
           data.activityFeed.preview,
-          userId,
+          userId.current,
           data.activityFeed.highestSeverity,
         );
       }
@@ -118,7 +128,7 @@ export const NotificationsToastStream: React.FC = () => {
     return () => {
       eventSource.close();
     };
-  }, [t, setBadges, addPreviews, router, userId, timeZone]);
+  }, [t, setBadges, addPreviews, router, userId.current, timeZone]);
 
   return null;
 };

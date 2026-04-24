@@ -25,6 +25,17 @@ import {
 import { getDbConnection } from "./database";
 import { BaseService } from "./services/base.service";
 
+function enrichEventSourceWithCustomerId(
+  eventSource: EventSource,
+  customerId: string,
+): EventSource {
+  if (eventSource.actor === "customer") {
+    return { ...eventSource, actorId: customerId };
+  }
+
+  return eventSource;
+}
+
 export class CustomersService extends BaseService implements ICustomersService {
   public constructor(
     organizationId: string,
@@ -450,7 +461,7 @@ export class CustomersService extends BaseService implements ICustomersService {
       {
         customer: createdCustomer,
       } satisfies CustomerCreatedPayload,
-      source,
+      enrichEventSourceWithCustomerId(source, id),
     );
 
     return createdCustomer;
@@ -509,7 +520,7 @@ export class CustomersService extends BaseService implements ICustomersService {
         customer: updatedCustomer,
         update,
       } satisfies CustomerUpdatedPayload,
-      source,
+      enrichEventSourceWithCustomerId(source, id),
     );
   }
 

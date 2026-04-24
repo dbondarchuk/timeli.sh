@@ -6,6 +6,10 @@ import { AppointmentStatus, okStatus } from "@timelish/types";
 import { Button, ButtonProps, cn, Spinner, toastPromise } from "@timelish/ui";
 import { useRouter } from "next/navigation";
 import React from "react";
+import {
+  isSubscriptionPastDueError,
+  SubscriptionPastDueDialog,
+} from "./subscription-past-due-dialog";
 
 export const changeStatus = async (
   _id: string,
@@ -16,6 +20,7 @@ export const changeStatus = async (
   onSuccess?: (newStatus: AppointmentStatus) => void,
   beforeRequest?: () => Promise<void> | void,
   requestedByCustomer?: boolean,
+  onPastDue?: () => void,
 ) => {
   setIsLoading(true);
 
@@ -41,6 +46,10 @@ export const changeStatus = async (
     refresh();
     onSuccess?.(status);
   } catch (error) {
+    if (isSubscriptionPastDueError(error)) {
+      onPastDue?.();
+      return;
+    }
     console.error(error);
   } finally {
     setIsLoading(false);
@@ -74,6 +83,7 @@ export const AppointmentActionButton = React.forwardRef<
     ref,
   ) => {
     const [isLoading, stateSetIsLoading] = React.useState(false);
+    const [isPastDueDialogOpen, setIsPastDueDialogOpen] = React.useState(false);
     const router = useRouter();
 
     const setIsLoading = (loading: boolean) => {
@@ -96,23 +106,30 @@ export const AppointmentActionButton = React.forwardRef<
         },
         beforeRequest,
         requestedByCustomer,
+        () => setIsPastDueDialogOpen(true),
       );
     };
 
     return (
-      <Button
-        {...props}
-        disabled={isLoading || props.disabled}
-        ref={ref}
-        onClick={onClick}
-        className={cn(
-          "inline-flex flex-row gap-1 items-center",
-          props.className,
-        )}
-      >
-        {isLoading ? <Spinner /> : Icon ? <Icon /> : null}
-        {props.children}
-      </Button>
+      <>
+        <Button
+          {...props}
+          disabled={isLoading || props.disabled}
+          ref={ref}
+          onClick={onClick}
+          className={cn(
+            "inline-flex flex-row gap-1 items-center",
+            props.className,
+          )}
+        >
+          {isLoading ? <Spinner /> : Icon ? <Icon /> : null}
+          {props.children}
+        </Button>
+        <SubscriptionPastDueDialog
+          open={isPastDueDialogOpen}
+          onOpenChange={setIsPastDueDialogOpen}
+        />
+      </>
     );
   },
 );

@@ -2,6 +2,7 @@ import * as activities from "./activities";
 import * as appointments from "./appointments";
 import * as apps from "./apps";
 import * as assets from "./assets";
+import * as billing from "./billing";
 import * as calendar from "./calendar";
 import * as communicationLogs from "./communication-logs";
 import * as communications from "./communications";
@@ -22,6 +23,7 @@ import * as templates from "./templates";
 import * as users from "./users";
 
 export const adminApi = {
+  billing,
   calendar,
   activities,
   appointments,

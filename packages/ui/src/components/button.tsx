@@ -40,6 +40,7 @@ export const buttonSizes = {
   md: "h-9 rounded-md px-5",
   lg: "h-10 rounded-md px-8",
   xl: "h-11 rounded-md px-10",
+  "2xl": "h-12 rounded-md px-12 text-lg [&>svg]:size-5",
   icon: "h-8 w-8",
 };
 

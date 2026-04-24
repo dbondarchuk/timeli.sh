@@ -1,5 +1,3 @@
-"use server";
-
 import { auth } from "@/app/auth";
 import { getServicesContainer } from "@/app/utils";
 import { resolveAppOrigin } from "@/lib/resolve-app-origin";
@@ -10,7 +8,7 @@ import { headers } from "next/headers";
 export async function createPolarBillingPortalSession(): Promise<
   { ok: true; url: string } | { ok: false; code: string }
 > {
-  const logger = getLoggerFactory("BillingPortal")(
+  const logger = getLoggerFactory("API/billing/portal")(
     "createPolarBillingPortalSession",
   );
 

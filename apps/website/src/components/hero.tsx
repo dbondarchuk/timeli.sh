@@ -1,5 +1,6 @@
 "use client";
 
+import { getSignUpUrl } from "@/lib/admin-app-urls";
 import { Link } from "@timelish/ui";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import Image from "next/image";
@@ -95,6 +96,7 @@ function TypewriterText() {
 }
 
 export function Hero() {
+  const signUpUrl = getSignUpUrl();
   const [currentScreenshot, setCurrentScreenshot] = useState(0);
 
   useEffect(() => {
@@ -109,13 +111,16 @@ export function Hero() {
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(45%_40%_at_50%_60%,hsl(216_100%_50%_/_0.08),transparent)]" />
 
       <div className="mx-auto max-w-4xl text-center">
-        <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-border bg-muted/50 px-4 py-1.5 text-sm">
+        <a
+          href={signUpUrl}
+          className="mb-8 inline-flex items-center gap-2 rounded-full border border-border bg-muted/50 px-4 py-1.5 text-sm transition-colors hover:bg-muted"
+        >
           <span className="flex h-2 w-2 rounded-full bg-gradient-primary animate-pulse" />
           <span className="text-muted-foreground">
-            Coming soon — Join the waitlist
+            7-day free trial on Pro — create your account
           </span>
           <ArrowRight className="h-3 w-3 text-muted-foreground" />
-        </div>
+        </a>
 
         <div className="flex justify-center">
           <Image
@@ -145,10 +150,10 @@ export function Hero() {
             size="lg"
             className="gap-2 px-8 border-0 hover:opacity-90"
             variant="brand-dark"
-            href="#waitlist"
+            href={signUpUrl}
             button
           >
-            Join the Waitlist
+            Start free trial
             <ArrowRight className="h-4 w-4" />
           </Link>
           {/* <Button size="lg" variant="outline" className="gap-2 bg-transparent">
@@ -160,15 +165,15 @@ export function Hero() {
         <div className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-muted-foreground">
           <div className="flex items-center gap-2">
             <CheckCircle2 className="h-4 w-4 text-primary" />
-            <span>Discounts for early members</span>
+            <span>7-day free trial on Pro</span>
           </div>
           <div className="flex items-center gap-2">
             <CheckCircle2 className="h-4 w-4 text-primary" />
-            <span>No credit card needed</span>
+            <span>Cancel anytime</span>
           </div>
           <div className="flex items-center gap-2">
             <CheckCircle2 className="h-4 w-4 text-primary" />
-            <span>Be the first to know</span>
+            <span>Your own booking page in minutes</span>
           </div>
         </div>
       </div>

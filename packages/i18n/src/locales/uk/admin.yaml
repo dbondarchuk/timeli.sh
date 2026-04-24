@@ -539,6 +539,11 @@ appointments:
   actionButton:
     changesSaved: Ваші зміни були збережені.
     requestError: Виникла проблема з вашим запитом.
+  subscriptionPastDue:
+    title: Прострочена оплата підписки
+    description: Оплата підписки прострочена. Створення та зміну записів тимчасово вимкнено, доки не буде вирішено питання з оплатою.
+    openSettings: Відкрити налаштування
+    openingPortal: Відкриваємо портал оплати…
   history:
     byUser: Користувачем
     byCustomer: Клієнтом
@@ -2345,6 +2350,12 @@ table:
   filters:
     status: Статус
 dashboard:
+  subscriptionPastDueBanner:
+    message: Прострочена оплата підписки — нові записи та зміни тимчасово заблоковані.
+    goToSettings: До налаштувань →
+  subscriptionInactive:
+    title: Підписку скасовано
+    description: Підписка цього робочого простору неактивна. Зв’яжіться з нами, щоб відновити доступ.
   appointments:
     noAppointments: Записи не заплановані
     noPendingAppointments: Немає очікуючих записів

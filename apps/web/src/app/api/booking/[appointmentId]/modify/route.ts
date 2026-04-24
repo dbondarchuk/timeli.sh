@@ -1,4 +1,5 @@
 import { getModifyAppointmentInformationRequestResult } from "@/utils/appointments/get-modify-appointment-request";
+import { isSubscriptionPastDue } from "@/utils/subscription-access";
 import { getServicesContainer } from "@/utils/utils";
 import { getLoggerFactory } from "@timelish/logger";
 import {
@@ -521,6 +522,18 @@ export async function PUT(
     },
     "Processing API request to modify appointment",
   );
+
+  const subscriptionStatus = request.headers.get("x-subscription-status");
+  if (isSubscriptionPastDue(subscriptionStatus)) {
+    return NextResponse.json(
+      {
+        success: false,
+        code: "subscription_past_due",
+        message: "Something went wrong, please contact us.",
+      },
+      { status: 402 },
+    );
+  }
 
   const json = await request.json();
 

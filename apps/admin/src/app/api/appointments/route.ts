@@ -1,4 +1,5 @@
 import { getActor, getServicesContainer } from "@/app/utils";
+import { getSubscriptionBlockingResponseForAppointmentWriteActions } from "@/utils/subscription/subscription-access";
 import { appointmentsSearchParamsLoader } from "@timelish/api-sdk";
 import { getLoggerFactory } from "@timelish/logger";
 import { AppointmentEvent, appointmentEventSchema } from "@timelish/types";
@@ -77,6 +78,12 @@ export async function POST(request: NextRequest) {
     },
     "Processing create appointment API request",
   );
+
+  const blockedResponse =
+    await getSubscriptionBlockingResponseForAppointmentWriteActions();
+  if (blockedResponse) {
+    return blockedResponse;
+  }
 
   const formData = await request.formData();
   const appointmentJson = formData.get("appointment") as string;

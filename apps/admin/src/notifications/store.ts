@@ -64,7 +64,7 @@ export const useActivityFeedStore = create<ActivityFeedStore>((set, get) => ({
           : currentHighestSeverity;
 
     set({
-      previews: newPreviews.slice(-3),
+      previews: newPreviews.slice(0, 3),
       highestSeverity: newHighestSeverity,
     });
   },

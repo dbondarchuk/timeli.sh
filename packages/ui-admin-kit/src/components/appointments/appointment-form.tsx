@@ -64,6 +64,10 @@ import React from "react";
 import { useForm, useFormState } from "react-hook-form";
 import * as z from "zod";
 import { AppointmentCalendar } from "./appointment-calendar";
+import {
+  isSubscriptionPastDueError,
+  SubscriptionPastDueDialog,
+} from "./subscription-past-due-dialog";
 
 export const appointmentFromSchema = z.object({
   optionId: z.string().optional(),
@@ -289,6 +293,7 @@ export const AppointmentScheduleForm: React.FC<
   const [discount, setDiscount] = React.useState<
     (Discount & { code: string }) | undefined
   >();
+  const [isPastDueDialogOpen, setIsPastDueDialogOpen] = React.useState(false);
 
   const [disabledFields, setDisabledFields] = React.useState<Set<String>>(
     new Set(),
@@ -432,6 +437,10 @@ export const AppointmentScheduleForm: React.FC<
 
       router.push(`/dashboard/appointments/${appointmentId}`);
     } catch (error: any) {
+      if (isSubscriptionPastDueError(error)) {
+        setIsPastDueDialogOpen(true);
+        return;
+      }
       console.error(error);
     } finally {
       setLoading(false);
@@ -573,6 +582,10 @@ export const AppointmentScheduleForm: React.FC<
 
   return (
     <Form {...form}>
+      <SubscriptionPastDueDialog
+        open={isPastDueDialogOpen}
+        onOpenChange={setIsPastDueDialogOpen}
+      />
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="flex flex-col gap-4 w-full">
           <div className="flex flex-col md:grid md:grid-cols-2 gap-2">

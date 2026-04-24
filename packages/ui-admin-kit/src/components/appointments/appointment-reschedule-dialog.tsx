@@ -44,6 +44,10 @@ import React from "react";
 import { useForm, useFormState } from "react-hook-form";
 import * as z from "zod";
 import { AppointmentCalendar } from "./appointment-calendar";
+import {
+  isSubscriptionPastDueError,
+  SubscriptionPastDueDialog,
+} from "./subscription-past-due-dialog";
 
 export type AppointmentRescheduleDialogProps = DialogProps & {
   appointment: Appointment;
@@ -87,6 +91,7 @@ export const AppointmentRescheduleDialog: React.FC<
   const [confirmOverlap, setConfirmOverlap] = React.useState(false);
   const [openDialog, setOpenDialog] = React.useState(false);
   const [openConfirmDialog, setOpenConfirmDialog] = React.useState(false);
+  const [isPastDueDialogOpen, setIsPastDueDialogOpen] = React.useState(false);
   const [calendarEvents, setCalendarEvents] = React.useState<CalendarEvent[]>(
     [],
   );
@@ -123,6 +128,10 @@ export const AppointmentRescheduleDialog: React.FC<
 
       router.refresh();
     } catch (error: any) {
+      if (isSubscriptionPastDueError(error)) {
+        setIsPastDueDialogOpen(true);
+        return;
+      }
       console.error(error);
     } finally {
       setLoading(false);
@@ -173,6 +182,10 @@ export const AppointmentRescheduleDialog: React.FC<
 
   return (
     <Dialog {...rest} open={openDialog} onOpenChange={openCloseDialog}>
+      <SubscriptionPastDueDialog
+        open={isPastDueDialogOpen}
+        onOpenChange={setIsPastDueDialogOpen}
+      />
       {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>

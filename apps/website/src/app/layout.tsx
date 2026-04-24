@@ -1,11 +1,10 @@
 import { SonnerToaster } from "@timelish/ui";
 import type { Metadata } from "next";
-import { Geist_Mono, Inter } from "next/font/google";
+import { Inter } from "next/font/google";
 import type React from "react";
 import "./globals.css";
 
-const _inter = Inter({ subsets: ["latin"] });
-const _geistMono = Geist_Mono({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "timeli.sh — All-in-One Appointment Scheduling Platform",
@@ -20,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth">
-      <body className={`font-sans antialiased`}>
+      <body className={`${inter.className} antialiased`}>
         {children}
         <SonnerToaster />
       </body>

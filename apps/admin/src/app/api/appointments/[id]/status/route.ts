@@ -1,4 +1,5 @@
 import { getActor, getServicesContainer } from "@/app/utils";
+import { getSubscriptionBlockingResponseForAppointmentWriteActions } from "@/utils/subscription/subscription-access";
 import { getLoggerFactory } from "@timelish/logger";
 import { appointmentStatuses, okStatus } from "@timelish/types";
 import { NextRequest, NextResponse } from "next/server";
@@ -26,6 +27,12 @@ export async function PATCH(
     },
     "Processing appointment status update API request",
   );
+
+  const blockedResponse =
+    await getSubscriptionBlockingResponseForAppointmentWriteActions();
+  if (blockedResponse) {
+    return blockedResponse;
+  }
 
   const body = await request.json();
   const { data, success, error } = schema.safeParse(body);
