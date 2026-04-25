@@ -7,8 +7,8 @@ import { Integrations } from "@/components/integrations";
 import { Pricing } from "@/components/pricing";
 import { Stats } from "@/components/stats";
 import { Testimonials } from "@/components/testimonials";
-import { Waitlist } from "@/components/waitlist";
-import { WaitlistBanner } from "@/components/waitlist-banner";
+import { GetStartedCta } from "@/components/get-started-cta";
+import { SignupBanner } from "@/components/signup-banner";
 
 export default function LandingPage() {
   return (
@@ -16,14 +16,14 @@ export default function LandingPage() {
       <Header />
       <main>
         <Hero />
-        <WaitlistBanner />
+        <SignupBanner />
         <Stats />
         <Features />
         <HowItWorks />
         <Integrations />
         <Testimonials />
         <Pricing />
-        <Waitlist />
+        <GetStartedCta />
       </main>
       <Footer />
     </div>

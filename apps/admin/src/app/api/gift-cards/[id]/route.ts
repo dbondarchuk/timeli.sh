@@ -1,4 +1,4 @@
-import { getServicesContainer } from "@/app/utils";
+import { getActor, getServicesContainer } from "@/app/utils";
 import { getLoggerFactory } from "@timelish/logger";
 import { giftCardSchema, okStatus } from "@timelish/types";
 import { NextRequest, NextResponse } from "next/server";
@@ -50,6 +50,7 @@ export async function PUT(
 ) {
   const logger = getLoggerFactory("AdminAPI/gift-cards/[id]")("PUT");
   const servicesContainer = await getServicesContainer();
+  const actor = await getActor();
   const { id } = await params;
 
   logger.debug(
@@ -76,7 +77,7 @@ export async function PUT(
     );
   }
 
-  await servicesContainer.giftCardsService.updateGiftCard(id, data);
+  await servicesContainer.giftCardsService.updateGiftCard(id, data, actor);
 
   logger.debug(
     { giftCardId: id, giftCardCode: data.code },
@@ -91,7 +92,7 @@ export async function DELETE(
   { params }: RouteContext<"/api/gift-cards/[id]">,
 ) {
   const logger = getLoggerFactory("AdminAPI/gift-cards/[id]")("DELETE");
-
+  const actor = await getActor();
   const servicesContainer = await getServicesContainer();
   const { id } = await params;
 
@@ -104,7 +105,10 @@ export async function DELETE(
     "Processing delete gift card by ID API request",
   );
 
-  const result = await servicesContainer.giftCardsService.deleteGiftCard(id);
+  const result = await servicesContainer.giftCardsService.deleteGiftCard(
+    id,
+    actor,
+  );
 
   if (!result) {
     logger.warn({ giftCardId: id }, "Gift card not found");

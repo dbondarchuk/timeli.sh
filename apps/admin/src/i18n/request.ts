@@ -33,8 +33,6 @@ const config = getConfig(
       return { locale: "en", includeAdmin: true };
     }
 
-    const organizationId = session?.user.organizationId;
-
     let locale = (session.user as { language?: string }).language || "en";
     return { locale, includeAdmin: true, includeInstall: isInstallPath };
   },

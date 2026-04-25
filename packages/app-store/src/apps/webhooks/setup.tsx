@@ -1,5 +1,6 @@
 "use client";
 
+import { adminApi } from "@timelish/api-sdk";
 import { useI18n } from "@timelish/i18n";
 import { AppSetupProps } from "@timelish/types";
 import {
@@ -24,13 +25,13 @@ import {
   ConnectedAppStatusMessage,
 } from "@timelish/ui-admin";
 import { X } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import * as z from "zod";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
 import { webhooksApp } from "./app";
 import {
+  LIST_SELECTABLE_EVENT_TYPES_REQUEST_TYPE,
   MASKED_SECRET,
-  webhookEventTypes,
   webhooksConfigurationSchema,
 } from "./models";
 import {
@@ -49,6 +50,43 @@ export const WebhooksAppSetup: React.FC<AppSetupProps> = ({
   );
 
   const [isEditingSecret, setIsEditingSecret] = useState(false);
+  const [selectableEventTypes, setSelectableEventTypes] = useState<string[]>(
+    [],
+  );
+  const [eventTypesLoading, setEventTypesLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await adminApi.apps.processStaticRequest<{
+          eventTypes: string[];
+        }>("webhooks", { type: LIST_SELECTABLE_EVENT_TYPES_REQUEST_TYPE });
+        if (
+          cancelled ||
+          !res ||
+          typeof res !== "object" ||
+          !Array.isArray((res as { eventTypes?: string[] }).eventTypes)
+        ) {
+          return;
+        }
+        setSelectableEventTypes(
+          (res as { eventTypes: string[] }).eventTypes ?? [],
+        );
+      } catch {
+        if (!cancelled) {
+          setSelectableEventTypes([]);
+        }
+      } finally {
+        if (!cancelled) {
+          setEventTypesLoading(false);
+        }
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const { appStatus, form, isLoading, isValid, onSubmit } =
     useConnectedAppSetup<z.infer<typeof webhooksConfigurationSchema>>({
@@ -139,26 +177,24 @@ export const WebhooksAppSetup: React.FC<AppSetupProps> = ({
                 <FormControl>
                   <div className="flex flex-col gap-4">
                     <Combobox
-                      values={webhookEventTypes
+                      values={selectableEventTypes
                         .filter(
                           (eventType) => !field.value?.includes(eventType),
                         )
                         .map((eventType) => ({
                           value: eventType,
-                          shortLabel: t(`eventTypes.${eventType}.label`),
+                          shortLabel: eventType,
                           label: (
-                            <div className="flex flex-col gap-2">
-                              <div className="text-sm font-medium">
-                                {t(`eventTypes.${eventType}.label`)}
-                              </div>
-                              <div className="text-xs text-muted-foreground">
-                                {t(`eventTypes.${eventType}.description`)}
-                              </div>
-                            </div>
+                            <span className="font-mono text-sm">{eventType}</span>
                           ),
                         }))}
                       value={""}
-                      placeholder={t("form.eventTypes.placeholder")}
+                      placeholder={
+                        eventTypesLoading
+                          ? t("form.eventTypes.loading")
+                          : t("form.eventTypes.placeholder")
+                      }
+                      disabled={eventTypesLoading}
                       onItemSelect={(item) => {
                         field.onChange([...(field.value || []), item]);
                       }}
@@ -170,7 +206,7 @@ export const WebhooksAppSetup: React.FC<AppSetupProps> = ({
                           variant="secondary"
                           className="flex flex-row items-center gap-2"
                         >
-                          <span>{t(`eventTypes.${eventType}.label`)}</span>
+                          <span className="font-mono text-sm">{eventType}</span>
                           <TooltipResponsive>
                             <TooltipResponsiveTrigger>
                               <Button

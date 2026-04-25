@@ -1,6 +1,7 @@
 import { getLoggerFactory } from "@timelish/logger";
 import { NextRequest } from "next/server";
 import { createOrUpdateIntent } from "../../../../utils/payments/createIntent";
+import { isSubscriptionPastDue } from "@/utils/subscription-access";
 
 export async function PUT(
   request: NextRequest,
@@ -17,6 +18,18 @@ export async function PUT(
     },
     "Processing payment intent API request",
   );
+
+  const subscriptionStatus = request.headers.get("x-subscription-status");
+  if (isSubscriptionPastDue(subscriptionStatus)) {
+    return Response.json(
+      {
+        success: false,
+        code: "subscription_past_due",
+        message: "Something went wrong, please contact us.",
+      },
+      { status: 402 },
+    );
+  }
 
   try {
     const result = await createOrUpdateIntent(request, intentId);

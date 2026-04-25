@@ -1,18 +1,18 @@
 import { AppointmentStatus } from "../../booking";
 import { ConnectedAppData } from "../connected-app.data";
 
-export type CalendarEventResult = {
+export type CalendarWriterEventResult = {
   uid: string;
 };
 
-export type CalendarEventAttendee = {
+export type CalendarWriterEventAttendee = {
   name: string;
   email: string;
   status: "organizer" | "tentative" | "confirmed" | "declined";
   type: "required" | "optional" | "resource";
 };
 
-export type CalendarEvent = {
+export type CalendarWriterEvent = {
   id: string;
   title: string;
   description: {
@@ -29,20 +29,20 @@ export type CalendarEvent = {
   startTime: Date;
   duration: number;
   timeZone: string;
-  attendees: CalendarEventAttendee[];
+  attendees: CalendarWriterEventAttendee[];
 };
 
 export interface ICalendarWriter {
   createEvent(
     app: ConnectedAppData,
-    event: CalendarEvent,
-  ): Promise<CalendarEventResult>;
+    event: CalendarWriterEvent,
+  ): Promise<CalendarWriterEventResult>;
 
   updateEvent(
     app: ConnectedAppData,
     uid: string,
-    event: CalendarEvent,
-  ): Promise<CalendarEventResult>;
+    event: CalendarWriterEvent,
+  ): Promise<CalendarWriterEventResult>;
 
   deleteEvent(
     app: ConnectedAppData,

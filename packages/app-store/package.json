@@ -22,7 +22,8 @@
     "./setup": "./src/setup.tsx",
     "./images": "./src/images.ts",
     "./payment-forms": "./src/payment-forms.tsx",
-    "./exports": "./src/exports.ts"
+    "./exports": "./src/exports.ts",
+    "./app-events": "./src/app-events/index.ts"
   },
   "devDependencies": {
     "@microsoft/microsoft-graph-types": "^2.40.0",

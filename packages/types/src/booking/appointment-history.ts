@@ -19,6 +19,8 @@ export type PaymentHistory = {
 type AppointmentHistoryTypes = {
   created: {
     by: "customer" | "user";
+    /** Present when {@link by} is `"user"`. */
+    userId?: string;
     confirmed: boolean;
     payment?: PaymentHistory;
   };
@@ -26,11 +28,13 @@ type AppointmentHistoryTypes = {
     oldStatus: AppointmentStatus;
     newStatus: AppointmentStatus;
     by: "customer" | "user";
+    userId?: string;
   };
   rescheduled: {
     oldDateTime: Date;
     newDateTime: Date;
     by: "customer" | "user";
+    userId?: string;
   };
   paymentAdded: {
     payment: PaymentHistory;

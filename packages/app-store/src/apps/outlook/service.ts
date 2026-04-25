@@ -20,9 +20,9 @@ import {
   AppointmentEvent,
   AppointmentOnlineMeetingInformation,
   CalendarBusyTime,
-  CalendarEvent,
-  CalendarEventAttendee,
-  CalendarEventResult,
+  CalendarWriterEvent,
+  CalendarWriterEventAttendee,
+  CalendarWriterEventResult,
   ConnectedAppData,
   ConnectedAppError,
   ConnectedAppResponse,
@@ -31,6 +31,7 @@ import {
   EmailResponse,
   ICalendarBusyTimeProvider,
   ICalendarWriter,
+  IConnectedApp,
   IConnectedAppProps,
   IMailSenderApp,
   IMeetingUrlProvider,
@@ -68,7 +69,7 @@ const requiredScopes = [
 ];
 
 const attendeeStatusToResponseStatusMap: Record<
-  CalendarEventAttendee["status"],
+  CalendarWriterEventAttendee["status"],
   ResponseType
 > = {
   confirmed: "accepted",
@@ -101,9 +102,8 @@ export class OutlookConnectedApp
     );
   }
 
-  processRequest?:
-    | ((appData: ConnectedAppData, data: any) => Promise<any>)
-    | undefined;
+  /** OAuth-only; admin does not call processRequest for Outlook. */
+  processRequest?: IConnectedApp["processRequest"];
 
   public async getLoginUrl(appId: string): Promise<string> {
     const logger = this.loggerFactory("getLoginUrl");
@@ -505,8 +505,8 @@ export class OutlookConnectedApp
 
   public async createEvent(
     app: ConnectedAppData,
-    event: CalendarEvent,
-  ): Promise<CalendarEventResult> {
+    event: CalendarWriterEvent,
+  ): Promise<CalendarWriterEventResult> {
     const logger = this.loggerFactory("createEvent");
     logger.debug(
       {
@@ -571,8 +571,8 @@ export class OutlookConnectedApp
   public async updateEvent(
     app: ConnectedAppData,
     uid: string,
-    event: CalendarEvent,
-  ): Promise<CalendarEventResult> {
+    event: CalendarWriterEvent,
+  ): Promise<CalendarWriterEventResult> {
     const logger = this.loggerFactory("updateEvent");
     logger.debug(
       {
@@ -773,7 +773,7 @@ export class OutlookConnectedApp
     }
   }
 
-  private getOutlookEvent(event: CalendarEvent): OutlookEvent {
+  private getOutlookEvent(event: CalendarWriterEvent): OutlookEvent {
     const logger = this.loggerFactory("getOutlookEvent");
     logger.debug(
       {

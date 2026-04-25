@@ -1,6 +1,6 @@
 version: "3.9"
 services:
-  timelish-admin:
+  admin:
     build:
       context: .
       dockerfile: apps/admin/Dockerfile
@@ -46,10 +46,10 @@ services:
     depends_on:
       - mongodb
       - redis
-      - timelish-job-processor
-      - timelish-notification-sender
+      - job-processor
+      - notification-sender
 
-  timelish-web:
+  web:
     build:
       context: .
       dockerfile: apps/web/Dockerfile
@@ -91,11 +91,11 @@ services:
     depends_on:
       - mongodb
       - redis
-      - timelish-job-processor
-      - timelish-notification-sender
-      - timelish-admin
+      - job-processor
+      - notification-sender
+      - admin
 
-  timelish-notification-sender:
+  notification-sender:
     build:
       context: .
       dockerfile: apps/notification-sender/Dockerfile
@@ -142,7 +142,7 @@ services:
       - mongodb
       - redis
 
-  timelish-job-processor:
+  job-processor:
     build:
       context: .
       dockerfile: apps/job-processor/Dockerfile
@@ -181,7 +181,7 @@ services:
       - mongodb
       - redis
 
-  timelish-app-external-server:
+  app-external-server:
     build:
       context: .
       dockerfile: apps/app-external-server/Dockerfile
@@ -222,7 +222,7 @@ services:
       - mongodb
       - redis
 
-  timelish-domain-checker:
+  domain-checker:
     build:
       context: .
       dockerfile: apps/domain-checker/Dockerfile

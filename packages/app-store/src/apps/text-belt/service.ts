@@ -343,7 +343,7 @@ export default class TextBeltConnectedApp
       );
 
       const appointment = appointmentId
-        ? await this.props.services.eventsService.getAppointment(appointmentId)
+        ? await this.props.services.bookingService.getAppointment(appointmentId)
         : null;
 
       const customer = customerId

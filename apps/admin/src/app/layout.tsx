@@ -41,7 +41,7 @@ export default async function RootLayout({
   return (
     <html lang={locale} suppressHydrationWarning>
       <body
-        className={`${montserrat.variable} ${playfair.variable} ${inter.className} overflow-hidden `}
+        className={`${montserrat.variable} ${playfair.variable} ${inter.className} overflow-hidden`}
         suppressHydrationWarning
       >
         <NextIntlClientProvider>

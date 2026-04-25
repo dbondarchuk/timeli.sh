@@ -1,0 +1,230 @@
+common:
+  openMenu: Відкрити меню
+  selectAll: Вибрати все
+  selectRow: Вибрати рядок
+  close: Закрити
+  clear: Очистити
+  move: Перемістити
+  search: Пошук
+  noResults: Результатів не знайдено
+  requestFailed: Запит не вдався.
+  save: Зберегти
+  cancel: Скасувати
+  placeholder: Вибрати опцію
+  hours: Години
+  minutes: Хвилини
+  seconds: Секунди
+  toasts:
+    error: Виникла проблема з вашим запитом.
+actions:
+  delete: Видалити
+  update: Оновити
+  label: Дії
+table:
+  filters: Фільтри
+booleanSelect:
+  "yes": Так
+  "no": Ні
+multiSelect:
+  placeholder: Вибрати опції
+templateSelector:
+  placeholder: Вибрати шаблон
+  requestFailed: Запит на отримання шаблонів не вдався
+  loadingTemplates: Завантаження шаблонів...
+optionSelector:
+  placeholder: Вибрати опцію
+  requestFailed: Запит на отримання опцій не вдався
+assetSelector:
+  title: Вибрати ресурс
+  upload: Завантажити
+pageSelector:
+  title: Вибрати сторінку
+promoCodeSelector:
+  placeholder: Вибрати промо-код
+  notActive: Не активний
+  requestFailed: Запит на отримання промо-кодів не вдався
+alertModal:
+  defaultTitle: Ви впевнені?
+  defaultDescription: Цю дію неможливо скасувати.
+  continueButton: Продовжити
+saveButton:
+  defaultText: Зберегти
+  fixErrorsTitle: "Будь ласка, виправте наступні помилки"
+  fixErrorsDescription: "Будь ласка, виправте наступні помилки перед збереженням:"
+toast:
+  close: Закрити
+form:
+  submit: Надіслати
+  reset: Скинути
+  confirm: Підтвердити
+  back: Назад
+  next: Далі
+  previous: Попередній
+  addItem: Додати елемент
+  select: Вибрати
+dateRangePicker:
+  placeholder: Вибрати діапазон дат
+  rangeOptions:
+    thisMonth: Цей місяць
+    lastMonth: Минулий місяць
+    thisWeek: Цей тиждень
+    lastWeek: Минулий тиждень
+    nextWeek: Наступний тиждень
+    nextMonth: Наступний місяць
+    thisYear: Цей рік
+    lastYear: Минулий рік
+    allTime: За весь час
+dialog:
+  close: Закрити
+loading:
+  loading: Завантаження...
+  saving: Збереження...
+  deleting: Видалення...
+  updating: Оновлення...
+validation:
+  required: Це поле обов'язкове
+  invalid: Недійсне значення
+  minLength: "Мінімальна довжина {min} символів"
+  maxLength: "Максимальна довжина {max} символів"
+  email: "Будь ласка, введіть дійсну email адресу"
+  url: "Будь ласка, введіть дійсний URL"
+calendar:
+  mon: Пн
+  tue: Вт
+  wed: Ср
+  thu: Чт
+  fri: Пт
+  sat: Сб
+  sun: Нд
+  monday: Понеділок
+  tuesday: Вівторок
+  wednesday: Середа
+  thursday: Четвер
+  friday: П'ятниця
+  saturday: Субота
+  sunday: Неділя
+  month: Місяць
+  year: Рік
+  previousMonth: Попередній місяць
+  nextMonth: Наступний місяць
+  today: Сьогодні
+sidebar:
+  toggleSidebar: Перемкнути бічну панель
+durationInput:
+  hr: год
+  min: хв
+  sec: сек
+  weeks: тижнів
+  days: днів
+dataTable:
+  searchPlaceholder: Пошук...
+  selectedRows: "Вибрано {selected} з {total} рядка(ів)."
+  previous: Попередній
+  next: Наступний
+  rowsPerPage: Рядків на сторінку
+  showingEntries: "Показано {start} до {end} з {total} записів"
+  noEntriesFound: Записів не знайдено
+  pageOf: "Сторінка {page} з {totalPages}"
+  noPages: Немає сторінок
+  goToFirstPage: Перейти на першу сторінку
+  goToPreviousPage: Перейти на попередню сторінку
+  goToNextPage: Перейти на наступну сторінку
+  goToLastPage: Перейти на останню сторінку
+  resetFilters: Скинути фільтри
+  selectedCount: "{selected} вибрано"
+breadcrumb:
+  more: Більше
+carousel:
+  previousSlide: Попередній слайд
+  nextSlide: Наступний слайд
+dndFileInput:
+  dropFilesHere: Перетягніть файли сюди ...
+  dragAndDropOrClick: Перетягніть файли сюди або клікніть для вибору файлів
+markdownTooltip:
+  supports: "Це поле підтримує {type}"
+  learnMore: Дізнатися більше
+scheduler:
+  invalidTimeRange: Недійсний часовий діапазон
+  startTimeBeforeEndTime: Час початку повинен бути раніше часу закінчення
+  shifts: "{count, plural, =1 {1 зміна} other {# змін}}"
+  startTime: Час початку
+  endTime: Час закінчення
+  edit: Редагувати
+  addShift: Додати зміну
+timePicker:
+  seconds: Секунди
+  am: ДП
+  pm: ПП
+  format: "dd/MM/yyyy HH:mm"
+currencyInput:
+  amount: "Сума: {amount}"
+  max: "Максимум: {max}"
+stepper:
+  step_of_total: "Крок {step} з {total}"
+currency:
+  USD: Долар США
+  EUR: Євро
+  GBP: Британський фунт стерлінгів
+  JPY: Японська єна
+  CAD: Канадський долар
+  AUD: Австралійський долар
+  CHF: Швейцарський франк
+  CNY: Китайський юань
+  HKD: Гонконгський долар
+  INR: Індійська рупія
+  MXN: Мексиканський песо
+  NZD: Новозеландський долар
+  SEK: Шведська крона
+  SGD: Сінгапурський долар
+  NOK: Норвезька крона
+  TRY: Турецька ліра
+  ZAR: Рандал
+  PLN: Польський злотий
+  CZK: Чеська крона
+  HUF: Угорський форинт
+  ILS: Ізраїльський шекель
+  ISK: Ісландська крона
+country:
+  US: США
+  CA: Канада
+  GB: Велика Британія
+  JP: Японія
+  AU: Австралія
+  CH: Швейцарія
+  CN: Китай
+  HK: Гонконг
+  IN: Індія
+  MX: Мексика
+  NZ: Нова Зеландія
+  SE: Швеція
+  SG: Сінгапур
+  "NO": Норвегія
+  TR: Туреччина
+  ZA: ПАР
+  IS: Ісландія
+  LV: Латвія
+  LT: Литва
+  LU: Люксембург
+  MT: Мальта
+  NL: Нідерланди
+  PL: Польща
+  PT: Португалія
+  RO: Румунія
+  SK: Словаччина
+  SI: Словенія
+  SM: Сан-Маріно
+  UA: Україна
+  AT: Австрія
+  BE: Бельгія
+  BG: Болгарія
+  CY: Кіпр
+  DE: Німеччина
+  DK: Данія
+  EE: Естонія
+  ES: Іспанія
+  FI: Фінляндія
+  FR: Франція
+  GR: Греція
+  HR: Хорватія
+  IE: Ірландія
+  IT: Італія

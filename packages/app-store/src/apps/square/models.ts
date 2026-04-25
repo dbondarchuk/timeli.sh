@@ -9,10 +9,6 @@ export const squareMerchantDataSchema = z.object({
   merchantId: zNonEmptyString(
     "app_square_admin.validation.merchantId.required" satisfies SquareAdminAllKeys,
   ),
-  /** Square Webhook Subscriptions API subscription id (application-level). */
-  webhookSubscriptionId: z.string().optional(),
-  /** Encrypted Square webhook signature key for this subscription. */
-  webhookSignatureKey: z.string().optional(),
 });
 
 export type SquareMerchantData = z.infer<typeof squareMerchantDataSchema>;

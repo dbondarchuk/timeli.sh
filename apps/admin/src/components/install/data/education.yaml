@@ -1,0 +1,258 @@
+tutor:
+  label: Tutor
+  tags:
+    - education
+    - teaching
+    - tutor
+  services:
+    - name: One-on-One Tutoring
+      durations:
+        - 60
+      prices:
+        - 30
+        - 45
+        - 65
+      description: "**Personalized tutoring session** tailored to the student's level. Focused on comprehension and practical exercises."
+      addons:
+        - id: one_on_one_tutoring-addon-education-1
+          name: Practice set
+          description: "**Targeted exercises** matched to what you cover in One-on-One Tutoring."
+          duration: 10
+          suggestedPrice: 8
+        - id: one_on_one_tutoring-addon-teaching-2
+          name: Progress summary
+          description: "**Short written recap** for a parent or sponsor after One-on-One Tutoring."
+          duration: 15
+          suggestedPrice: 12
+    - name: Exam Prep (per session)
+      durations:
+        - 90
+        - 120
+      prices:
+        - 60
+        - 90
+        - 130
+      description: "**Targeted exam preparation** with strategies and practice exams. Designed to improve confidence and performance."
+      addons:
+        - id: exam_prep_per_session-addon-education-1
+          name: Practice set
+          description: "**Targeted exercises** matched to what you cover in Exam Prep (per session)."
+          duration: 10
+          suggestedPrice: 15
+        - id: exam_prep_per_session-addon-teaching-2
+          name: Progress summary
+          description: "**Short written recap** for a parent or sponsor after Exam Prep (per session)."
+          duration: 15
+          suggestedPrice: 24
+    - name: Homework Help
+      durations:
+        - 30
+        - 60
+      prices:
+        - 20
+        - 35
+        - 50
+      description: "**Quick homework assistance** to tackle questions and reinforce skills. Great for last-minute help and guidance."
+      addons:
+        - id: homework_help-addon-education-1
+          name: Practice set
+          description: "**Targeted exercises** matched to what you cover in Homework Help."
+          duration: 10
+          suggestedPrice: 5
+        - id: homework_help-addon-teaching-2
+          name: Progress summary
+          description: "**Short written recap** for a parent or sponsor after Homework Help."
+          duration: 15
+          suggestedPrice: 8
+music_teacher:
+  label: Music Teacher
+  tags:
+    - education
+    - music
+    - lessons
+  services:
+    - name: Private Lesson (30min)
+      durations:
+        - 30
+      prices:
+        - 25
+        - 35
+        - 50
+      description: "**Focused private lesson** for instrument or voice. Includes technique, repertoire, and practice guidance."
+      addons:
+        - id: private_lesson_30min-addon-education-1
+          name: Practice set
+          description: "**Targeted exercises** matched to what you cover in Private Lesson (30min)."
+          duration: 10
+          suggestedPrice: 6
+        - id: private_lesson_30min-addon-music-2
+          name: Progress summary
+          description: "**Short written recap** for a parent or sponsor after Private Lesson (30min)."
+          duration: 15
+          suggestedPrice: 10
+    - name: Advanced Lesson (60min)
+      durations:
+        - 60
+      prices:
+        - 45
+        - 70
+        - 95
+      description: "**Extended session for advanced students** with deeper repertoire work. Includes performance coaching and critique."
+      addons:
+        - id: advanced_lesson_60min-addon-education-1
+          name: Practice set
+          description: "**Targeted exercises** matched to what you cover in Advanced Lesson (60min)."
+          duration: 10
+          suggestedPrice: 11
+        - id: advanced_lesson_60min-addon-music-2
+          name: Progress summary
+          description: "**Short written recap** for a parent or sponsor after Advanced Lesson (60min)."
+          duration: 15
+          suggestedPrice: 18
+    - name: Monthly Lesson Package
+      durations:
+        - 60
+      prices:
+        - 160
+        - 220
+      description: "**Bundle of lessons for steady progress** and structured learning. Ideal for regular students."
+      addons:
+        - id: monthly_lesson_package-addon-education-1
+          name: Practice set
+          description: "**Targeted exercises** matched to what you cover in Monthly Lesson Package."
+          duration: 10
+          suggestedPrice: 40
+        - id: monthly_lesson_package-addon-music-2
+          name: Progress summary
+          description: "**Short written recap** for a parent or sponsor after Monthly Lesson Package."
+          duration: 15
+          suggestedPrice: 64
+language_tutor:
+  label: Language Tutor
+  tags:
+    - education
+    - language
+    - lessons
+  services:
+    - name: Conversational Session
+      durations:
+        - 45
+        - 60
+      prices:
+        - 25
+        - 40
+        - 60
+      description: "**Practice-focused conversation** to build fluency and confidence. Useful for learners at all levels."
+      addons:
+        - id: conversational_session-addon-education-1
+          name: Practice set
+          description: "**Targeted exercises** matched to what you cover in Conversational Session."
+          duration: 10
+          suggestedPrice: 6
+        - id: conversational_session-addon-language-2
+          name: Progress summary
+          description: "**Short written recap** for a parent or sponsor after Conversational Session."
+          duration: 15
+          suggestedPrice: 10
+    - name: Grammar & Writing
+      durations:
+        - 60
+      prices:
+        - 30
+        - 50
+      description: "**Structured lessons** focusing on grammar and writing skills. Includes exercises and feedback."
+      addons:
+        - id: grammar_writing-addon-education-1
+          name: Practice set
+          description: "**Targeted exercises** matched to what you cover in Grammar & Writing."
+          duration: 10
+          suggestedPrice: 8
+        - id: grammar_writing-addon-language-2
+          name: Progress summary
+          description: "**Short written recap** for a parent or sponsor after Grammar & Writing."
+          duration: 15
+          suggestedPrice: 12
+    - name: Exam Prep
+      durations:
+        - 90
+      prices:
+        - 60
+        - 90
+      description: "**Preparation for language proficiency exams** with targeted practice. Includes mock tests and review."
+      addons:
+        - id: exam_prep-addon-education-1
+          name: Practice set
+          description: "**Targeted exercises** matched to what you cover in Exam Prep."
+          duration: 10
+          suggestedPrice: 15
+        - id: exam_prep-addon-language-2
+          name: Progress summary
+          description: "**Short written recap** for a parent or sponsor after Exam Prep."
+          duration: 15
+          suggestedPrice: 24
+dance_instructor:
+  label: Dance Instructor
+  tags:
+    - education
+    - dance
+    - classes
+  services:
+    - name: Private Dance Lesson
+      durations:
+        - 60
+      prices:
+        - 40
+        - 60
+        - 85
+      description: "**One-on-one dance instruction** tailored to style and ability. Focus on technique, choreography, and performance."
+      addons:
+        - id: private_dance_lesson-addon-education-1
+          name: Practice set
+          description: "**Targeted exercises** matched to what you cover in Private Dance Lesson."
+          duration: 10
+          suggestedPrice: 10
+        - id: private_dance_lesson-addon-dance-2
+          name: Progress summary
+          description: "**Short written recap** for a parent or sponsor after Private Dance Lesson."
+          duration: 15
+          suggestedPrice: 16
+    - name: Group Class
+      durations:
+        - 45
+        - 60
+      prices:
+        - 12
+        - 18
+        - 25
+      description: "**Community group dance class** with instructor-led routines. Great for fitness and learning new styles."
+      addons:
+        - id: group_class-addon-education-1
+          name: Practice set
+          description: "**Targeted exercises** matched to what you cover in Group Class."
+          duration: 10
+          suggestedPrice: 5
+        - id: group_class-addon-dance-2
+          name: Progress summary
+          description: "**Short written recap** for a parent or sponsor after Group Class."
+          duration: 15
+          suggestedPrice: 5
+    - name: Choreography Session
+      durations:
+        - 90
+        - 120
+      prices:
+        - 120
+        - 200
+      description: "**Custom choreography creation** for performances or events. Includes mapping and practice guidance."
+      addons:
+        - id: choreography_session-addon-education-1
+          name: Practice set
+          description: "**Targeted exercises** matched to what you cover in Choreography Session."
+          duration: 10
+          suggestedPrice: 30
+        - id: choreography_session-addon-dance-2
+          name: Progress summary
+          description: "**Short written recap** for a parent or sponsor after Choreography Session."
+          duration: 15
+          suggestedPrice: 48
+

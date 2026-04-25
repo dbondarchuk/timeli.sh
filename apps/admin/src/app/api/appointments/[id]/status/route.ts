@@ -1,4 +1,5 @@
-import { getServicesContainer } from "@/app/utils";
+import { getActor, getServicesContainer } from "@/app/utils";
+import { getSubscriptionBlockingResponseForAppointmentWriteActions } from "@/utils/subscription/subscription-access";
 import { getLoggerFactory } from "@timelish/logger";
 import { appointmentStatuses, okStatus } from "@timelish/types";
 import { NextRequest, NextResponse } from "next/server";
@@ -6,7 +7,8 @@ import * as z from "zod";
 
 const schema = z.object({
   status: z.enum(appointmentStatuses).exclude(["pending"]),
-  by: z.enum(["customer", "user"]),
+  /** When true, attributes the change to the customer (e.g. cancel link). Otherwise the signed-in admin user. */
+  requestedByCustomer: z.boolean().optional(),
 });
 
 export async function PATCH(
@@ -26,6 +28,12 @@ export async function PATCH(
     "Processing appointment status update API request",
   );
 
+  const blockedResponse =
+    await getSubscriptionBlockingResponseForAppointmentWriteActions();
+  if (blockedResponse) {
+    return blockedResponse;
+  }
+
   const body = await request.json();
   const { data, success, error } = schema.safeParse(body);
 
@@ -37,17 +45,21 @@ export async function PATCH(
     );
   }
 
-  await servicesContainer.eventsService.changeAppointmentStatus(
+  const eventSource = data.requestedByCustomer
+    ? ({ actor: "customer" } as const)
+    : await getActor();
+
+  await servicesContainer.bookingService.changeAppointmentStatus(
     id,
     data.status,
-    data.by,
+    eventSource,
   );
 
   logger.debug(
     {
       appointmentId: id,
       newStatus: data.status,
-      by: data.by,
+      requestedByCustomer: data.requestedByCustomer ?? false,
     },
     "Appointment status changed successfully",
   );

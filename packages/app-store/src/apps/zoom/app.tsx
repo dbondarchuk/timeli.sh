@@ -6,7 +6,8 @@ import { ZoomAdminKeys, ZoomAdminNamespace } from "./translations/types";
 export const ZoomApp: App<ZoomAdminNamespace, ZoomAdminKeys> = {
   name: ZOOM_APP_NAME,
   displayName: "app_zoom_admin.app.displayName",
-  scope: ["meeting-url-provider", "calendar-read", "appointment-hook"],
+  subscribeTo: ["appointment.*"],
+  scope: ["meeting-url-provider", "calendar-read", "event-subscriber"],
   type: "oauth",
   category: ["apps.categories.communications", "apps.categories.calendar"],
   Logo: ({ className }) => <ZoomLogo className={className} />,

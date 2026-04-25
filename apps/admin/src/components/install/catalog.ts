@@ -2,14 +2,13 @@ import {
   defaultDurationFromTemplate,
   defaultPriceFromTemplate,
 } from "./constants";
-import type { CatalogProfessionDef } from "./types";
 import raw from "./data/_catalog-data.json";
+import type { CatalogProfessionDef } from "./types";
 
 export const INSTALL_CATALOG_DATA = raw as unknown as Record<
   string,
   Record<string, CatalogProfessionDef>
 >;
-
 
 export const INSTALL_CATEGORY_IDS = Object.keys(INSTALL_CATALOG_DATA).sort();
 
@@ -90,7 +89,9 @@ export function professionMatchesSearch(
 ) {
   const q = query.trim().toLowerCase();
   if (!q) return true;
-  const label = t(catalogProfessionLabelKey(categoryId, professionId)).toLowerCase();
+  const label = t(
+    catalogProfessionLabelKey(categoryId, professionId),
+  ).toLowerCase();
   const catLabel = t(catalogCategoryLabelKey(categoryId)).toLowerCase();
   const prof = getCatalogProfession(categoryId, professionId);
   const tagMatch =

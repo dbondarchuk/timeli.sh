@@ -1,6 +1,6 @@
 "use server";
 
-import { getServicesContainer } from "@/app/utils";
+import { getActor, getServicesContainer } from "@/app/utils";
 import { getLoggerFactory } from "@timelish/logger";
 import { DefaultAppsConfiguration } from "@timelish/types";
 
@@ -20,9 +20,11 @@ export async function updateDefaultAppsConfiguration(
   );
 
   try {
+    const source = await getActor();
     await servicesContainer.configurationService.setConfiguration(
       "defaultApps",
       data,
+      source,
     );
 
     actionLogger.debug(

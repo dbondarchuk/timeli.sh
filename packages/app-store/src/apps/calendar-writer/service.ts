@@ -2,19 +2,22 @@ import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
 import {
   Appointment,
   AppointmentStatus,
-  CalendarEvent,
+  CalendarWriterEvent,
   ConnectedApp,
   ConnectedAppData,
   ConnectedAppError,
   ConnectedAppRequestError,
   ConnectedAppStatusWithText,
-  IAppointmentHook,
+  EventEnvelope,
+  EventSource,
   ICalendarWriter,
   IConnectedApp,
   IConnectedAppProps,
+  IEventSubscriber,
 } from "@timelish/types";
 import {
   AppointmentStatusToICalMethodMap,
+  dispatchAppointmentEventPayload,
   getAdminUrl,
   getArguments,
   getIcsEventUid,
@@ -35,7 +38,7 @@ import {
 } from "./translations/types";
 
 export class CalendarWriterConnectedApp
-  implements IConnectedApp, IAppointmentHook
+  implements IConnectedApp, IEventSubscriber
 {
   protected readonly loggerFactory: LoggerFactory;
 
@@ -44,6 +47,62 @@ export class CalendarWriterConnectedApp
       "CalendarWriterConnectedApp",
       props.organizationId,
     );
+  }
+
+  public async onEvent(
+    appData: ConnectedAppData,
+    envelope: EventEnvelope,
+  ): Promise<void> {
+    await dispatchAppointmentEventPayload(envelope, {
+      onAppointmentCreated: (appointment, confirmed) =>
+        this.onAppointmentCreated(appData, appointment, confirmed),
+      onAppointmentFullRescheduled: (
+        appointment,
+        newTime,
+        newDuration,
+        oldTime,
+        oldDuration,
+        doNotNotifyCustomer,
+        source,
+      ) =>
+        this.onAppointmentRescheduled(
+          appData,
+          appointment,
+          newTime,
+          newDuration,
+          source,
+          oldTime,
+          oldDuration,
+          doNotNotifyCustomer,
+        ),
+      onAppointmentSlotRescheduled: (
+        appointment,
+        newTime,
+        newDuration,
+        oldTime,
+        oldDuration,
+        doNotNotifyCustomer,
+        source,
+      ) =>
+        this.onAppointmentRescheduled(
+          appData,
+          appointment,
+          newTime,
+          newDuration,
+          source,
+          oldTime,
+          oldDuration,
+          doNotNotifyCustomer,
+        ),
+      onAppointmentStatusChanged: (appointment, newStatus, oldStatus, source) =>
+        this.onAppointmentStatusChanged(
+          appData,
+          appointment,
+          newStatus,
+          oldStatus,
+          source,
+        ),
+    });
   }
 
   public async processRequest(
@@ -197,8 +256,8 @@ export class CalendarWriterConnectedApp
     appData: ConnectedAppData,
     appointment: Appointment,
     newStatus: AppointmentStatus,
-    oldStatus?: AppointmentStatus,
-    by?: "customer" | "user",
+    oldStatus: AppointmentStatus | undefined,
+    source: EventSource,
   ): Promise<void> {
     const logger = this.loggerFactory("onAppointmentStatusChanged");
     logger.debug(
@@ -207,14 +266,14 @@ export class CalendarWriterConnectedApp
         appointmentId: appointment._id,
         newStatus,
         oldStatus,
-        by,
+        source,
       },
       "Appointment status changed, updating calendar event",
     );
 
     try {
       const status =
-        by === "customer" && newStatus === "declined"
+        source.actor === "customer" && newStatus === "declined"
           ? "cancelledByCustomer"
           : newStatus;
       await this.makeEvent(appData, appointment, status, newStatus);
@@ -225,7 +284,7 @@ export class CalendarWriterConnectedApp
           appointmentId: appointment._id,
           newStatus,
           oldStatus,
-          by,
+          source,
         },
         "Successfully updated calendar event for status change",
       );
@@ -255,10 +314,10 @@ export class CalendarWriterConnectedApp
     appointment: Appointment,
     newTime: Date,
     newDuration: number,
+    source: EventSource,
     oldTime?: Date,
     oldDuration?: number,
     doNotNotifyCustomer?: boolean,
-    by?: "customer" | "user",
   ): Promise<void> {
     const logger = this.loggerFactory("onAppointmentRescheduled");
     logger.debug(
@@ -275,7 +334,7 @@ export class CalendarWriterConnectedApp
       await this.makeEvent(
         appData,
         appointment,
-        by === "customer" ? "rescheduledByCustomer" : "rescheduled",
+        source.actor === "customer" ? "rescheduledByCustomer" : "rescheduled",
         "Rescheduled",
       );
 
@@ -300,7 +359,7 @@ export class CalendarWriterConnectedApp
         "Error updating calendar event for rescheduled appointment",
       );
 
-      this.props.update({
+      await this.props.update({
         status: "failed",
         statusText:
           "app_calendar-writer_admin.statusText.error_updating_calendar_event_for_rescheduled_appointment" satisfies CalendarWriterAdminAllKeys,
@@ -399,7 +458,7 @@ export class CalendarWriterConnectedApp
         newStatus = status;
       }
 
-      const event: CalendarEvent = {
+      const event: CalendarWriterEvent = {
         id: appointment._id,
         title: subject,
         description: {
@@ -468,7 +527,7 @@ export class CalendarWriterConnectedApp
           { appId: appData._id, appointmentId: appointment._id, status },
           "Updating calendar event",
         );
-        service.updateEvent(app, uid, event);
+        await service.updateEvent(app, uid, event);
       }
 
       logger.info(

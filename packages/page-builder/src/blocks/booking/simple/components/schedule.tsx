@@ -203,7 +203,8 @@ export const Schedule: React.FC<
       setIsLoading(true);
 
       try {
-        const data = await clientApi.events.checkDuplicateAppointments(request);
+        const data =
+          await clientApi.booking.checkDuplicateAppointments(request);
         return data;
       } catch (e) {
         console.error(e);
@@ -319,7 +320,10 @@ export const Schedule: React.FC<
         ),
       );
 
-      const { id } = await clientApi.events.createEvent(eventBody, files);
+      const { id } = await clientApi.booking.createAppointment(
+        eventBody,
+        files,
+      );
 
       if (successPage) {
         const expireDate = LuxonDateTime.now().plus({ minutes: 1 });

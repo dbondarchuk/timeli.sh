@@ -1,8 +1,8 @@
 import { AllKeys } from "@timelish/i18n";
 import { Leaves } from "@timelish/types";
 import { SQUARE_APP_NAME } from "../const";
-import type adminKeys from "./en/admin.json";
-import type publicKeys from "./en/public.json";
+import type adminKeys from "./en/admin.generated";
+import type publicKeys from "./en/public.generated";
 
 export type SquareAdminKeys = Leaves<typeof adminKeys>;
 export const squareAdminNamespace = `app_${SQUARE_APP_NAME}_admin` as const;

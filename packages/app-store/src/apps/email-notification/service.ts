@@ -5,12 +5,15 @@ import {
   ConnectedAppData,
   ConnectedAppRequestError,
   ConnectedAppStatusWithText,
-  IAppointmentHook,
+  EventEnvelope,
+  EventSource,
   IConnectedApp,
   IConnectedAppProps,
+  IEventSubscriber,
 } from "@timelish/types";
 import {
   AppointmentStatusToICalMethodMap,
+  dispatchAppointmentEventPayload,
   getAdminUrl,
   getArguments,
   getEventCalendarContent,
@@ -29,7 +32,7 @@ import {
 } from "./translations/types";
 
 export class EmailNotificationConnectedApp
-  implements IConnectedApp, IAppointmentHook
+  implements IConnectedApp, IEventSubscriber
 {
   protected readonly loggerFactory: LoggerFactory;
 
@@ -38,6 +41,62 @@ export class EmailNotificationConnectedApp
       "EmailNotificationConnectedApp",
       props.organizationId,
     );
+  }
+
+  public async onEvent(
+    appData: ConnectedAppData,
+    envelope: EventEnvelope,
+  ): Promise<void> {
+    await dispatchAppointmentEventPayload(envelope, {
+      onAppointmentCreated: (appointment, confirmed) =>
+        this.onAppointmentCreated(appData, appointment, confirmed),
+      onAppointmentFullRescheduled: (
+        appointment,
+        newTime,
+        newDuration,
+        oldTime,
+        oldDuration,
+        doNotNotifyCustomer,
+        source,
+      ) =>
+        this.onAppointmentRescheduled(
+          appData,
+          appointment,
+          newTime,
+          newDuration,
+          source,
+          oldTime,
+          oldDuration,
+          doNotNotifyCustomer,
+        ),
+      onAppointmentSlotRescheduled: (
+        appointment,
+        newTime,
+        newDuration,
+        oldTime,
+        oldDuration,
+        doNotNotifyCustomer,
+        source,
+      ) =>
+        this.onAppointmentRescheduled(
+          appData,
+          appointment,
+          newTime,
+          newDuration,
+          source,
+          oldTime,
+          oldDuration,
+          doNotNotifyCustomer,
+        ),
+      onAppointmentStatusChanged: (appointment, newStatus, oldStatus, source) =>
+        this.onAppointmentStatusChanged(
+          appData,
+          appointment,
+          newStatus,
+          oldStatus,
+          source,
+        ),
+    });
   }
 
   public async processRequest(
@@ -147,24 +206,34 @@ export class EmailNotificationConnectedApp
     appData: ConnectedAppData,
     appointment: Appointment,
     newStatus: AppointmentStatus,
-    oldStatus?: AppointmentStatus,
-    by?: "customer" | "user",
+    oldStatus: AppointmentStatus | undefined,
+    source: EventSource,
   ): Promise<void> {
     const logger = this.loggerFactory("onAppointmentStatusChanged");
     logger.debug(
-      { appId: appData._id, appointmentId: appointment._id, newStatus, by },
+      {
+        appId: appData._id,
+        appointmentId: appointment._id,
+        newStatus,
+        source,
+      },
       "Appointment status changed, sending email notification",
     );
 
     const status =
-      by === "customer" && newStatus === "declined"
+      source.actor === "customer" && newStatus === "declined"
         ? "cancelledByCustomer"
         : newStatus;
     try {
       await this.sendNotification(appData, appointment, status, newStatus);
 
       logger.info(
-        { appId: appData._id, appointmentId: appointment._id, newStatus, by },
+        {
+          appId: appData._id,
+          appointmentId: appointment._id,
+          newStatus,
+          source,
+        },
         "Successfully sent email notification for status change",
       );
     } catch (error: any) {
@@ -193,10 +262,10 @@ export class EmailNotificationConnectedApp
     appointment: Appointment,
     newTime: Date,
     newDuration: number,
+    source: EventSource,
     oldTime?: Date,
     oldDuration?: number,
     doNotNotifyCustomer?: boolean,
-    by?: "customer" | "user",
   ): Promise<void> {
     const logger = this.loggerFactory("onAppointmentRescheduled");
     logger.debug(
@@ -219,7 +288,7 @@ export class EmailNotificationConnectedApp
       await this.sendNotification(
         appData,
         newAppointment,
-        by === "customer" ? "rescheduledByCustomer" : "rescheduled",
+        source.actor === "customer" ? "rescheduledByCustomer" : "rescheduled",
         "rescheduled",
       );
 

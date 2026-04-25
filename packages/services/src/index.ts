@@ -1,6 +1,10 @@
 import { IServicesContainer } from "@timelish/types";
 import { cache } from "react";
+import { ActivityService } from "./activity.service";
 import { AssetsService } from "./assets.service";
+import { PolarBillingService } from "./billing/polar-billing.service";
+import { getPolarClient } from "./billing/utils";
+import { BookingService } from "./booking.service";
 import {
   BullMQJobService,
   BullMQNotificationService,
@@ -14,7 +18,7 @@ import { CommunicationLogsService } from "./communication-logs.service";
 import { CachedConfigurationService } from "./configuration.service";
 import { CachedConnectedAppsService } from "./connected-apps.service";
 import { CustomersService } from "./customers.service";
-import { EventsService } from "./events.service";
+import { BullMQEventService, getBullMQEventConfig } from "./events";
 import { GiftCardsService } from "./gift-cards.service";
 import { OrganizationService } from "./organization.service";
 import { PagesService } from "./pages.service";
@@ -28,17 +32,20 @@ import { UserService } from "./user.service";
 
 // BullMQ exports
 export * from "./bullmq";
+export * from "./events";
 
 // Text message exports
 export * from "./text-message";
 
+export * from "./activity.service";
 export * from "./assets.service";
+export * from "./billing";
+export * from "./booking.service";
 export * from "./communication-logs.service";
 export * from "./configuration.service";
 export * from "./connected-apps.service";
 export * from "./customers.service";
 export * from "./email";
-export * from "./events.service";
 export * from "./gift-cards.service";
 export * from "./organization.service";
 export * from "./pages.service";
@@ -55,7 +62,21 @@ export * from "./user.service";
 
 export const ServicesContainer: (organizationId: string) => IServicesContainer =
   cache((organizationId: string) => {
-    const configurationService = new CachedConfigurationService(organizationId);
+    const redisClient = getRedisClient();
+    const jobService = new BullMQJobService(
+      organizationId,
+      getBullMQJobConfig(),
+    );
+
+    const eventService = new BullMQEventService(
+      organizationId,
+      getBullMQEventConfig(),
+    );
+
+    const configurationService = new CachedConfigurationService(
+      organizationId,
+      eventService,
+    );
     const assetsStorage = new S3AssetsStorageService(
       organizationId,
       getS3Configuration(),
@@ -64,22 +85,28 @@ export const ServicesContainer: (organizationId: string) => IServicesContainer =
       organizationId,
       configurationService,
       assetsStorage,
-    );
-
-    const redisClient = getRedisClient();
-    const jobService = new BullMQJobService(
-      organizationId,
-      getBullMQJobConfig(),
+      eventService,
     );
 
     const dashboardNotificationsService =
       new RedisDashboardNotificationPublisher(organizationId, redisClient);
     const organizationService = new OrganizationService(organizationId);
     const userService = new UserService(organizationId);
-    const customersService = new CustomersService(organizationId, jobService);
+    const customersService = new CustomersService(organizationId, eventService);
+    const activityService = new ActivityService(
+      organizationId,
+      dashboardNotificationsService,
+      redisClient,
+    );
     const connectedAppsService = new CachedConnectedAppsService(
       organizationId,
-      () => services,
+      (orgId) => {
+        if (!orgId || orgId === organizationId) {
+          return services;
+        }
+
+        return ServicesContainer(orgId);
+      },
     );
     const scheduleService = new ScheduleService(
       connectedAppsService,
@@ -88,14 +115,14 @@ export const ServicesContainer: (organizationId: string) => IServicesContainer =
     const servicesService = new ServicesService(
       organizationId,
       configurationService,
-      jobService,
+      eventService,
     );
     const paymentsService = new PaymentsService(
       organizationId,
       connectedAppsService,
-      jobService,
+      eventService,
     );
-    const eventsService = new EventsService(
+    const bookingService = new BookingService(
       organizationId,
       configurationService,
       connectedAppsService,
@@ -104,14 +131,13 @@ export const ServicesContainer: (organizationId: string) => IServicesContainer =
       scheduleService,
       servicesService,
       paymentsService,
-      jobService,
-      dashboardNotificationsService,
+      eventService,
       userService,
     );
 
-    const pagesService = new PagesService(organizationId);
+    const pagesService = new PagesService(organizationId, eventService);
 
-    const templatesService = new TemplatesService(organizationId);
+    const templatesService = new TemplatesService(organizationId, eventService);
     const communicationLogsService = new CommunicationLogsService(
       organizationId,
       assetsStorage,
@@ -124,14 +150,22 @@ export const ServicesContainer: (organizationId: string) => IServicesContainer =
     const giftCardsService = new GiftCardsService(
       organizationId,
       paymentsService,
-      jobService,
+      eventService,
+    );
+
+    const billingService = new PolarBillingService(
+      organizationId,
+      organizationService,
+      eventService,
+      getPolarClient(),
     );
 
     const services: IServicesContainer = {
+      activityService,
       configurationService,
       assetsStorage,
       assetsService,
-      eventsService,
+      bookingService,
       pagesService,
       customersService,
       servicesService,
@@ -141,11 +175,13 @@ export const ServicesContainer: (organizationId: string) => IServicesContainer =
       connectedAppsService,
       paymentsService,
       jobService,
+      eventService,
       notificationService,
       organizationService,
       userService,
       dashboardNotificationsService,
       giftCardsService,
+      billingService,
       redisClient,
     };
 

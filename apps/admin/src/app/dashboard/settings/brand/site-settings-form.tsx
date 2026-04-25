@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useI18n } from "@timelish/i18n";
+import type { OrganizationBillingSubscriptionDetails } from "@timelish/types";
 import {
   Form,
   IComboboxItem,
@@ -40,6 +41,7 @@ export const SiteSettingsForm: React.FC<{
   timeliBaseHost: string;
   timeliBaseUrl: string;
   customDomainARecordIp?: string;
+  billingSubscriptionDetails: OrganizationBillingSubscriptionDetails;
 }> = ({
   values,
   initialBrandLanguage,
@@ -49,6 +51,7 @@ export const SiteSettingsForm: React.FC<{
   timeliBaseHost,
   timeliBaseUrl,
   customDomainARecordIp,
+  billingSubscriptionDetails,
 }) => {
   const t = useI18n("admin");
   const router = useRouter();
@@ -109,6 +112,7 @@ export const SiteSettingsForm: React.FC<{
                 form={form}
                 loading={loading}
                 timeZoneValues={timeZoneValues}
+                billingSubscriptionDetails={billingSubscriptionDetails}
               />
             </div>
           </TabsContent>

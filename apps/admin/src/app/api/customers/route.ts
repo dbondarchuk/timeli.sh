@@ -1,4 +1,4 @@
-import { getServicesContainer } from "@/app/utils";
+import { getActor, getServicesContainer } from "@/app/utils";
 import { customersSearchParamsLoader } from "@timelish/api-sdk";
 import { getLoggerFactory } from "@timelish/logger";
 import { customerSchema } from "@timelish/types";
@@ -68,6 +68,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   const logger = getLoggerFactory("AdminAPI/customers")("POST");
   const servicesContainer = await getServicesContainer();
+  const actor = await getActor();
   const body = await request.json();
   const { data, error, success } = customerSchema.safeParse(body);
   if (!success) {
@@ -78,8 +79,10 @@ export async function POST(request: NextRequest) {
     );
   }
   try {
-    const result =
-      await servicesContainer.customersService.createCustomer(data);
+    const result = await servicesContainer.customersService.createCustomer(
+      data,
+      actor,
+    );
     return NextResponse.json(result, { status: 201 });
   } catch (error: any) {
     return NextResponse.json(

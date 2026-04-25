@@ -110,7 +110,10 @@ export async function createWorkspace(
   const adapter = (await auth.$context).adapter;
   await adapter.update({
     model: "users",
-    where: [{ field: "id", operator: "eq", value: session.user.id }],
+    where: [
+      // @ts-ignore
+      { field: "id", operator: "eq", value: new ObjectId(session.user.id) },
+    ],
     update: { organizationId: orgId },
   });
   logger.debug(
@@ -126,6 +129,7 @@ export async function createWorkspace(
     country: parsed.country,
     currency: parsed.currency,
     timeZone: parsed.timeZone,
+    useClientTimezone: true,
   });
 
   const brandValue = brandConfigurationSchema.parse({

@@ -69,7 +69,7 @@ export default async function NewAppointmentPage(props: Props) {
   }));
 
   const appointment = searchParams?.from
-    ? await servicesContainer.eventsService.getAppointment(searchParams.from)
+    ? await servicesContainer.bookingService.getAppointment(searchParams.from)
     : undefined;
 
   const from: AppointmentScheduleFormFrom | undefined = appointment

@@ -10,9 +10,9 @@ import {
   AppointmentEvent,
   AppointmentOnlineMeetingInformation,
   CalendarBusyTime,
-  CalendarEvent,
-  CalendarEventAttendee,
-  CalendarEventResult,
+  CalendarWriterEvent,
+  CalendarWriterEventAttendee,
+  CalendarWriterEventResult,
   ConnectedAppData,
   ConnectedAppError,
   ConnectedAppRequestError,
@@ -51,7 +51,7 @@ const requiredScopes = [
 ];
 
 const attendeeStatusToResponseStatusMap: Record<
-  CalendarEventAttendee["status"],
+  CalendarWriterEventAttendee["status"],
   string
 > = {
   confirmed: "accepted",
@@ -60,7 +60,10 @@ const attendeeStatusToResponseStatusMap: Record<
   organizer: "accepted",
 };
 
-const evetStatusToGoogleEventStatus: Record<CalendarEvent["status"], string> = {
+const evetStatusToGoogleEventStatus: Record<
+  CalendarWriterEvent["status"],
+  string
+> = {
   confirmed: "accepted",
   declined: "cancelled",
   pending: "tentative",
@@ -430,8 +433,8 @@ class GoogleCalendarConnectedApp
 
   public async createEvent(
     app: ConnectedAppData<GoogleCalendarConfiguration>,
-    event: CalendarEvent,
-  ): Promise<CalendarEventResult> {
+    event: CalendarWriterEvent,
+  ): Promise<CalendarWriterEventResult> {
     const logger = this.loggerFactory("createEvent");
     logger.debug(
       {
@@ -497,8 +500,8 @@ class GoogleCalendarConnectedApp
   public async updateEvent(
     app: ConnectedAppData<GoogleCalendarConfiguration>,
     uid: string,
-    event: CalendarEvent,
-  ): Promise<CalendarEventResult> {
+    event: CalendarWriterEvent,
+  ): Promise<CalendarWriterEventResult> {
     const logger = this.loggerFactory("updateEvent");
     logger.debug(
       {
@@ -549,6 +552,15 @@ class GoogleCalendarConnectedApp
         { appId: app._id, eventId: event.id, uid, error },
         "Error updating event in Google Calendar",
       );
+
+      await this.props.update({
+        status: "failed",
+        statusText:
+          error instanceof ConnectedAppError
+            ? error.key
+            : ("app_google-calendar_admin.statusText.error_updating_calendar_event" satisfies GoogleCalendarAdminAllKeys),
+      });
+
       throw error;
     }
   }
@@ -590,6 +602,15 @@ class GoogleCalendarConnectedApp
         { appId: app._id, uid, error },
         "Error deleting event from Google Calendar",
       );
+
+      await this.props.update({
+        status: "failed",
+        statusText:
+          error instanceof ConnectedAppError
+            ? error.key
+            : ("app_google-calendar_admin.statusText.error_deleting_calendar_event" satisfies GoogleCalendarAdminAllKeys),
+      });
+
       throw error;
     }
   }
@@ -681,11 +702,20 @@ class GoogleCalendarConnectedApp
         { appId: app._id, error },
         "Error getting Google Calendar list",
       );
+
+      await this.props.update({
+        status: "failed",
+        statusText:
+          error instanceof ConnectedAppError
+            ? error.key
+            : ("app_google-calendar_admin.statusText.error_retrieving_calendar_list" satisfies GoogleCalendarAdminAllKeys),
+      });
+
       throw error;
     }
   }
 
-  private getGoogleEvent(event: CalendarEvent): calendar_v3.Schema$Event {
+  private getGoogleEvent(event: CalendarWriterEvent): calendar_v3.Schema$Event {
     const logger = this.loggerFactory("getGoogleEvent");
     logger.debug(
       {
@@ -851,6 +881,15 @@ class GoogleCalendarConnectedApp
         { start: start.toISO(), end: end.toISO(), calendarId, error },
         "Error getting events from Google Calendar",
       );
+
+      await this.props.update({
+        status: "failed",
+        statusText:
+          error instanceof ConnectedAppError
+            ? error.key
+            : ("app_google-calendar_admin.statusText.error_getting_busy_times" satisfies GoogleCalendarAdminAllKeys),
+      });
+
       throw error;
     }
   }

@@ -1,9 +1,0 @@
-{
-  "admin": {
-    "onlineMeeting": {
-      "types": {
-        "zoom": "Zoom"
-      }
-    }
-  }
-}

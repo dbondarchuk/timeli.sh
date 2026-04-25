@@ -16,7 +16,10 @@ export const withLocale: MiddlewareProxy = (next) => {
       request.headers.set("x-locale", locale);
     }
 
-    const isInstallPath = request.nextUrl.pathname.startsWith("/install");
+    const isInstallPath =
+      request.nextUrl.pathname.startsWith("/install") ||
+      request.nextUrl.pathname.startsWith("/checkout");
+
     request.headers.set("x-is-admin-path", "true");
     request.headers.set("x-pathname", nextUrl.pathname);
     request.headers.set("x-is-install-path", isInstallPath ? "true" : "false");

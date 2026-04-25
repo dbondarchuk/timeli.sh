@@ -107,7 +107,13 @@ export function InstallWizard({
         );
         if (initialVerified) {
           if (parsedStep !== undefined && parsedStep !== "verify") {
-            setStep(parsedStep);
+            if (typeof parsedStep === "number") {
+              let s = parsedStep;
+              if (s > 6) s = 6;
+              setStep(s >= 1 && s <= 6 ? s : 1);
+            } else {
+              setStep(parsedStep);
+            }
           } else {
             setStep(1);
           }
@@ -153,12 +159,10 @@ export function InstallWizard({
     try {
       if (raw) {
         const parsed = JSON.parse(raw) as { step?: WizardStep };
-        if (
-          typeof parsed.step === "number" &&
-          parsed.step >= 1 &&
-          parsed.step <= 6
-        ) {
-          next = parsed.step;
+        if (typeof parsed.step === "number") {
+          let s = parsed.step;
+          if (s > 6) s = 6;
+          if (s >= 1 && s <= 6) next = s;
         }
       }
     } catch {

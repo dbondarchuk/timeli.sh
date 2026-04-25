@@ -1,8 +1,10 @@
-import { getServicesContainer } from "@/app/utils";
+import { getActor, getServicesContainer } from "@/app/utils";
 import { getLoggerFactory } from "@timelish/logger";
+import { getPolarClient } from "@timelish/services";
 import {
   ConfigurationKey,
   configurationSchemaMap,
+  type GeneralConfiguration,
   okStatus,
 } from "@timelish/types";
 import { NextRequest, NextResponse } from "next/server";
@@ -75,10 +77,26 @@ export async function PUT(
     );
   }
 
+  const actor = await getActor();
   await servicesContainer.configurationService.setConfiguration(
     configurationKey as ConfigurationKey,
     data,
+    actor,
   );
+
+  if (configurationKey === "general") {
+    const organization =
+      await servicesContainer.organizationService.getOrganization();
+
+    if (organization && !organization.feesExempt) {
+      const general = data as GeneralConfiguration;
+      await getPolarClient().syncTeamCustomerFromGeneralSettings({
+        organizationId: organization._id,
+        name: general.name,
+        email: general.email,
+      });
+    }
+  }
 
   logger.debug({ configurationKey, data }, "Configuration updated");
   return NextResponse.json(okStatus);

@@ -1,7 +1,15 @@
 "use server";
 
-import { getServicesContainer } from "@/app/utils";
+import {
+  getActor,
+  getOrganizationId,
+  getServicesContainer,
+} from "@/app/utils";
 import { getLoggerFactory } from "@timelish/logger";
+import { getPolarClient } from "@timelish/services";
+import { ORGANIZATIONS_COLLECTION_NAME } from "@timelish/services/collections";
+import { getDbConnection } from "@timelish/services/database";
+import type { Organization } from "@timelish/types";
 import { siteSettingsFormSchema } from "./site-settings-schema";
 
 export type SaveSiteSettingsResult =
@@ -22,14 +30,29 @@ export async function saveSiteSettingsAction(
   }
 
   const services = await getServicesContainer();
+  const source = await getActor();
   const d = parsed.data;
 
   try {
-    await services.configurationService.setConfiguration("general", d.general);
-    await services.configurationService.setConfiguration("brand", d.brand);
-    await services.configurationService.setConfiguration("social", d.social);
-    await services.configurationService.setConfiguration("styling", d.styling);
+    await services.configurationService.setConfiguration("general", d.general, source);
+    await services.configurationService.setConfiguration("brand", d.brand, source);
+    await services.configurationService.setConfiguration("social", d.social, source);
+    await services.configurationService.setConfiguration("styling", d.styling, source);
     logger.debug("Persisted site settings (general, brand, social, styling)");
+
+    const organizationId = await getOrganizationId();
+    const db = await getDbConnection();
+    const org = await db
+      .collection<Organization>(ORGANIZATIONS_COLLECTION_NAME)
+      .findOne({ _id: organizationId }, { projection: { feesExempt: 1 } });
+
+    if (org?.feesExempt !== true) {
+      await getPolarClient().syncTeamCustomerFromGeneralSettings({
+        organizationId,
+        name: d.general.name,
+        email: d.general.email,
+      });
+    }
   } catch (error) {
     logger.error(
       { error: error instanceof Error ? error.message : String(error) },

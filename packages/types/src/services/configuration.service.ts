@@ -3,6 +3,7 @@ import {
   ConfigurationKey,
   ConfigurationOption,
 } from "../configuration";
+import type { EventSource } from "../events/envelope";
 
 export interface IConfigurationService {
   getConfiguration<T extends ConfigurationKey>(
@@ -16,5 +17,6 @@ export interface IConfigurationService {
   setConfiguration<T extends ConfigurationKey>(
     key: T,
     configuration: ConfigurationOption<T>["value"],
+    source: EventSource,
   ): Promise<void>;
 }

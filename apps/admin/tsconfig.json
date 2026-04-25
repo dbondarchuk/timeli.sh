@@ -2,6 +2,8 @@
   "extends": ["@timelish/typescript-config/nextjs.json"],
   "compilerOptions": {
     "baseUrl": ".",
+    "declaration": false,
+    "declarationMap": false,
     "paths": {
       "@/*": ["./src/*"]
     }
@@ -12,7 +14,8 @@
     "src/**/*.tsx",
     "src/types/*.d.ts",
     "next.config.mjs",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "../../packages/ui-admin/src/hooks/use-resolved-i18n-text.tsx"
   ],
   "exclude": [
     "node_modules",

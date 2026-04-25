@@ -467,7 +467,9 @@ export class FormsRepositoryService {
     if (name) payload.name = name;
 
     const customer =
-      await this.services.customersService.getOrUpsertCustomer(payload);
+      await this.services.customersService.getOrUpsertCustomer(payload, {
+        actor: "customer",
+      });
 
     logger.debug(
       { customerId: customer._id },

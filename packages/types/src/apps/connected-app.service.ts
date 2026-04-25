@@ -1,4 +1,5 @@
 import { ConnectedAppData, ConnectedAppResponse } from "./connected-app.data";
+import { IConnectedAppProps } from "./connected-app.props";
 
 export interface ApiRequest extends Request {
   // query: Partial<{
@@ -27,13 +28,19 @@ export interface IConnectedApp<TData = any, TToken = any> {
   processRequest?: (
     appData: ConnectedAppData<TData, TToken>,
     data: any,
-    request: ApiRequest,
+    request?: ApiRequest,
+    userId?: string,
   ) => Promise<any>;
-  processStaticRequest?: (data: any, request: ApiRequest) => Promise<any>;
+  processStaticRequest?: (
+    data: any,
+    request?: ApiRequest,
+    userId?: string,
+  ) => Promise<any>;
   processFormRequest?: (
     appData: ConnectedAppData<TData, TToken>,
     formData: FormData,
-    request: ApiRequest,
+    request?: ApiRequest,
+    userId?: string,
   ) => Promise<any>;
   install?: (appData: ConnectedAppData<TData, TToken>) => Promise<void>;
   unInstall?: (appData: ConnectedAppData<TData, TToken>) => Promise<void>;
@@ -51,10 +58,16 @@ export interface IConnectedApp<TData = any, TToken = any> {
 
 export interface IConnectedAppWithWebhook<TData = any, TToken = any>
   extends IConnectedApp<TData, TToken> {
-  processWebhook(
+  processWebhook?: (
     appData: ConnectedAppData<TData, TToken>,
     request: ApiRequest,
-  ): Promise<ApiResponse>;
+  ) => Promise<ApiResponse>;
+  processStaticWebhook?: (
+    request: ApiRequest,
+    getOrganizationServiceContainer: (
+      organizationId: string,
+    ) => IConnectedAppProps,
+  ) => Promise<ApiResponse>;
 }
 
 export interface IOAuthConnectedApp<TData = any, TToken = any>

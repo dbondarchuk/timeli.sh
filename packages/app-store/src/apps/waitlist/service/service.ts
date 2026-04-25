@@ -10,15 +10,17 @@ import {
   ConnectedAppStatusWithText,
   DashboardNotification,
   DemoArguments,
-  IAppointmentHook,
+  type EventSource,
+  EventEnvelope,
   ICommunicationTemplatesProvider,
   IConnectedApp,
   IConnectedAppProps,
+  IEventSubscriber,
   IDashboardNotifierApp,
   IDemoArgumentsProvider,
-  IEventHook,
   TemplateTemplatesList,
 } from "@timelish/types";
+import { dispatchAppointmentEventPayload } from "@timelish/utils";
 import {
   CreateWaitlistEntryAction,
   CreateWaitlistEntryActionType,
@@ -54,7 +56,7 @@ import {
 export class WaitlistConnectedApp
   implements
     IConnectedApp,
-    IAppointmentHook,
+    IEventSubscriber,
     IDashboardNotifierApp,
     IDemoArgumentsProvider,
     ICommunicationTemplatesProvider
@@ -68,15 +70,37 @@ export class WaitlistConnectedApp
     );
   }
 
+  public async onEvent(
+    appData: ConnectedAppData,
+    envelope: EventEnvelope,
+  ): Promise<void> {
+    await dispatchAppointmentEventPayload(envelope, {
+      onAppointmentCreated: (appointment, confirmed) =>
+        this.onAppointmentCreated(appData, appointment, confirmed),
+    });
+  }
+
   public async processRequest(
     appData: ConnectedAppData,
     request: RequestAction,
+    httpRequest?: ApiRequest,
+    userId?: string,
   ): Promise<any> {
+    void httpRequest;
     const logger = this.loggerFactory("processRequest");
     logger.debug(
       { appId: appData._id },
       "Processing waitlist notification request",
     );
+
+    if (userId === undefined) {
+      throw new ConnectedAppRequestError(
+        "invalid_waitlist_request",
+        { request },
+        400,
+        "Missing user context",
+      );
+    }
 
     const { data, success, error } = requestActionSchema.safeParse(request);
     if (!success) {
@@ -95,11 +119,15 @@ export class WaitlistConnectedApp
       case GetWaitlistEntriesActionType:
         return this.processGetWaitlistEntriesRequest(appData, data);
       case DismissWaitlistEntriesActionType:
-        return this.processDismissWaitlistEntriesRequest(appData, data);
+        return this.processDismissWaitlistEntriesRequest(appData, data, userId);
       case SetConfigurationActionType:
         return this.processSetConfigurationRequest(appData, data.configuration);
       case CreateWaitlistEntryActionType:
-        return this.processCreateWaitlistEntryActionRequest(appData, data);
+        return this.processCreateWaitlistEntryActionRequest(
+          appData,
+          data,
+          userId,
+        );
     }
   }
 
@@ -126,6 +154,7 @@ export class WaitlistConnectedApp
       const collection = db.collection<WaitlistEntry>(WAITLIST_COLLECTION_NAME);
       await collection.deleteMany({
         appId: appData._id,
+        organizationId: this.props.organizationId,
       });
 
       const count = await collection.countDocuments({});
@@ -218,7 +247,9 @@ export class WaitlistConnectedApp
       "Waitlist entry found, dismissing waitlist entry",
     );
 
-    await repositoryService.dismissWaitlistEntry(result._id);
+    await repositoryService.dismissWaitlistEntry(result._id, {
+      actor: "system",
+    });
 
     logger.debug(
       { appId: appData._id, waitlistId: appointment.data.waitlistId },
@@ -310,7 +341,7 @@ export class WaitlistConnectedApp
     logger.debug({ data }, "Creating waitlist entry");
 
     const options =
-      await this.props.services.eventsService.getAppointmentOptions();
+      await this.props.services.bookingService.getAppointmentOptions();
     const option = options.options.find((o) => o._id === data.optionId);
     if (!option) {
       logger.error({ data }, "Option not found");
@@ -353,14 +384,13 @@ export class WaitlistConnectedApp
             },
           };
 
-          await this.props.services.jobService.enqueueHook<
-            IEventHook,
-            "onEvent"
-          >(
-            "event-hook",
-            "onEvent",
+          await this.props.services.eventService.emit(
             BOOKING_TRACKING_STEP_EVENT_TYPE,
             eventData,
+            {
+              actor: "customer",
+              actorId: result.customer._id,
+            },
           );
 
           logger.debug(
@@ -387,6 +417,7 @@ export class WaitlistConnectedApp
   private async processCreateWaitlistEntryActionRequest(
     appData: ConnectedAppData,
     data: CreateWaitlistEntryAction,
+    userId: string,
   ): Promise<WaitlistEntry> {
     const logger = this.loggerFactory(
       "processCreateWaitlistEntryActionRequest",
@@ -461,7 +492,11 @@ export class WaitlistConnectedApp
     };
 
     logger.debug({ waitlistRequest }, "Creating waitlist entry");
-    const result = await repositoryService.createWaitlistEntry(waitlistRequest);
+    const source: EventSource = { actor: "user", actorId: userId };
+    const result = await repositoryService.createWaitlistEntry(
+      waitlistRequest,
+      source,
+    );
     logger.debug({ result }, "Waitlist entry created");
     return result;
   }
@@ -477,7 +512,9 @@ export class WaitlistConnectedApp
       appData._id,
       appData.organizationId,
     );
-    const result = await repositoryService.createWaitlistEntry(entry);
+    const result = await repositoryService.createWaitlistEntry(entry, {
+      actor: "customer",
+    });
     logger.debug({ result }, "Waitlist entry created");
 
     return result;
@@ -486,6 +523,7 @@ export class WaitlistConnectedApp
   private async processDismissWaitlistEntriesRequest(
     appData: ConnectedAppData,
     data: DismissWaitlistEntriesAction,
+    userId: string,
   ) {
     const logger = this.loggerFactory("processDismissWaitlistEntriesRequest");
     logger.debug(
@@ -498,7 +536,11 @@ export class WaitlistConnectedApp
         appData._id,
         appData.organizationId,
       );
-      const result = await repositoryService.dismissWaitlistEntries(data.ids);
+      const source: EventSource = { actor: "user", actorId: userId };
+      const result = await repositoryService.dismissWaitlistEntries(
+        data.ids,
+        source,
+      );
       logger.debug(
         { appId: appData._id },
         "Successfully dismissed waitlist entries",

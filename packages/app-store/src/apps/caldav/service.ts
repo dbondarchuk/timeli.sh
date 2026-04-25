@@ -1,9 +1,9 @@
 import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
 import {
   CalendarBusyTime,
-  CalendarEvent,
-  CalendarEventAttendee,
-  CalendarEventResult,
+  CalendarWriterEvent,
+  CalendarWriterEventAttendee,
+  CalendarWriterEventResult,
   ConnectedAppData,
   ConnectedAppError,
   ConnectedAppRequestError,
@@ -32,7 +32,7 @@ import {
 import { CaldavAdminKeys, CaldavAdminNamespace } from "./translations/types";
 
 const attendeeStatusToPartStatusMap: Record<
-  CalendarEventAttendee["status"],
+  CalendarWriterEventAttendee["status"],
   IcsAttendeePartStatusType
 > = {
   confirmed: "ACCEPTED",
@@ -42,7 +42,7 @@ const attendeeStatusToPartStatusMap: Record<
 };
 
 const evetStatusToIcsEventStatus: Record<
-  CalendarEvent["status"],
+  CalendarWriterEvent["status"],
   IcsEventStatusType
 > = {
   confirmed: "CONFIRMED",
@@ -440,8 +440,8 @@ export default class CaldavConnectedApp
 
   public async createEvent(
     app: ConnectedAppData,
-    event: CalendarEvent,
-  ): Promise<CalendarEventResult> {
+    event: CalendarWriterEvent,
+  ): Promise<CalendarWriterEventResult> {
     const logger = this.loggerFactory("createEvent");
     logger.debug(
       { appId: app._id, eventId: event.id, eventTitle: event.title },
@@ -507,8 +507,8 @@ export default class CaldavConnectedApp
   public async updateEvent(
     app: ConnectedAppData,
     uid: string,
-    event: CalendarEvent,
-  ): Promise<CalendarEventResult> {
+    event: CalendarWriterEvent,
+  ): Promise<CalendarWriterEventResult> {
     const logger = this.loggerFactory("updateEvent");
     logger.debug(
       { appId: app._id, eventId: event.id, uid, eventTitle: event.title },
@@ -627,7 +627,7 @@ export default class CaldavConnectedApp
     }
   }
 
-  protected getEventIcs(event: CalendarEvent) {
+  protected getEventIcs(event: CalendarWriterEvent) {
     const logger = this.loggerFactory("getEventIcs");
     logger.debug(
       {

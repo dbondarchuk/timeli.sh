@@ -7,5 +7,6 @@
       "source.organizeImports": "explicit"
     }
   },
-  "svg.preview.background": "dark-transparent"
+  "svg.preview.background": "dark-transparent",
+  "js/ts.tsserver.experimental.enableProjectDiagnostics": true
 }

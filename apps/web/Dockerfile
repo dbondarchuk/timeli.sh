@@ -67,17 +67,6 @@ COPY --from=builder /app/apps/web/public ./apps/web/public
 RUN mkdir .next
 RUN chown nextjs:nodejs .next
 
-# Copy of i18n jsons
-COPY --from=builder /app/packages/i18n ./packages/i18n
-COPY --from=builder /app/packages/types ./packages/types
-
-# Copy apps translation JSONs (preserving directory structure)
-COPY --from=builder /app/packages/app-store/src/apps ./packages/app-store/src/apps
-RUN find ./packages/app-store/src/apps -type f ! -path "*/translations/*" -delete && \
-    find ./packages/app-store/src/apps -type f ! -name "*.json" -delete && \
-    find ./packages/app-store/src/apps -type d -empty -delete
-
-
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./

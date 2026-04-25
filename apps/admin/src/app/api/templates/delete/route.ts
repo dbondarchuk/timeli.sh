@@ -1,4 +1,4 @@
-import { getServicesContainer } from "@/app/utils";
+import { getActor, getServicesContainer } from "@/app/utils";
 import { bulkDeleteSchema } from "@timelish/api-sdk";
 import { getLoggerFactory } from "@timelish/logger";
 import { okStatus } from "@timelish/types";
@@ -25,7 +25,8 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  await servicesContainer.templatesService.deleteTemplates(data.ids);
+  const actor = await getActor();
+  await servicesContainer.templatesService.deleteTemplates(data.ids, actor);
   logger.debug("Templates deleted successfully", {
     ids: data.ids,
   });

@@ -4,14 +4,12 @@ import {
   BookingStep,
   BookingTrackingEventData,
   BookingTrackingMetadata,
-  IEventHook,
 } from "@timelish/types";
 import { NextRequest } from "next/server";
 import { getServicesContainer } from "./utils";
 
 /**
- * Tracks a booking step in core service and calls booking-tracking-hook apps
- * Handles step revisiting (updates lastSeenAt but doesn't duplicate steps)
+ * Tracks a booking step and emits `booking.tracking.step` for subscribers (e.g. built-in tracking).
  */
 export async function trackBookingStep(
   request: NextRequest,
@@ -21,14 +19,12 @@ export async function trackBookingStep(
   const logger = getLoggerFactory("BookingTracking")("trackBookingStep");
 
   try {
-    // Extract session ID from headers (set by with-logger middleware)
     const sessionId = request.headers.get("x-session-id");
     if (!sessionId) {
       logger.debug("No session ID found, skipping tracking");
       return;
     }
 
-    // Get services container
     const servicesContainer = await getServicesContainer();
     const eventData: BookingTrackingEventData = {
       sessionId,
@@ -36,21 +32,17 @@ export async function trackBookingStep(
       metadata,
     };
 
-    // Also call hooks asynchronously for apps that want to react (don't block the request)
-    // This will enqueue a job that calls all apps with booking-tracking-hook scope
-    await servicesContainer.jobService.enqueueHook<IEventHook, "onEvent">(
-      "event-hook",
-      "onEvent",
+    await servicesContainer.eventService.emit(
       BOOKING_TRACKING_STEP_EVENT_TYPE,
       eventData,
+      { actor: "customer", actorId: metadata?.customerId },
     );
 
     logger.debug(
       { sessionId, step, metadata },
-      "Booking step tracked in core service and hooks enqueued",
+      "Booking step tracked and event emitted",
     );
   } catch (error) {
-    // Don't fail the request if tracking fails
     logger.error({ error, step }, "Failed to track booking step");
   }
 }
@@ -73,7 +65,6 @@ export async function trackBookingStepWithCustomer(
   },
   metadata?: BookingTrackingMetadata,
 ): Promise<void> {
-  // Try to find customer by email if available
   let customerId: string | undefined;
   if (appointmentRequest?.fields?.email && appointmentRequest?.fields?.phone) {
     try {
@@ -83,7 +74,7 @@ export async function trackBookingStepWithCustomer(
         appointmentRequest.fields.phone,
       );
       customerId = customer?._id;
-    } catch (error) {
+    } catch {
       // Ignore errors - customer might not exist yet
     }
   }

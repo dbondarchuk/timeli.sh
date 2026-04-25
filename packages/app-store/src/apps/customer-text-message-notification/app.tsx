@@ -12,7 +12,8 @@ export const CustomerTextMessageNotificationApp: App<
 > = {
   name: CUSTOMER_TEXT_MESSAGE_NOTIFICATION_APP_NAME,
   displayName: "app_customer-text-message-notification_admin.app.displayName",
-  scope: ["appointment-hook"],
+  subscribeTo: ["appointment.*"],
+  scope: ["event-subscriber"],
   type: "complex",
   category: ["apps.categories.notifications"],
   Logo: ({ className }) => <Send className={className} />,

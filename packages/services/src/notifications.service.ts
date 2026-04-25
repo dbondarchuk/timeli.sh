@@ -3,15 +3,18 @@ import {
   Email,
   EmailNotificationRequest,
   EmailResponse,
+  IBillingService,
   ICommunicationLogsService,
   IConfigurationService,
   IConnectedAppsService,
+  IEventService,
   IMailSender,
   IMailSenderApp,
   INotificationService,
   ISystemNotificationService,
   ITextMessageSender,
   ITextMessageSenderApp,
+  SmsCreditsExhaustedError,
   TextMessage,
   TextMessageNotificationRequest,
   TextMessageResponse,
@@ -29,6 +32,8 @@ export class NotificationService implements INotificationService {
     private readonly communicationLogService: ICommunicationLogsService,
     private readonly defaultEmailService: IMailSender,
     private readonly defaultTextMessageSender: ITextMessageSender,
+    private readonly billingService: IBillingService,
+    private readonly eventService: IEventService,
   ) {}
 
   public async sendEmail({
@@ -146,11 +151,28 @@ export class NotificationService implements INotificationService {
       logger.debug(
         "No app-based text message sender app is configured, using default text message sender service",
       );
-      sendTextMessage = async (message: TextMessage) =>
-        await this.defaultTextMessageSender.sendTextMessage(
+
+      const availableTotal =
+        await this.billingService.getCurrentSmsBalanceTotal();
+      if (availableTotal !== null && availableTotal < 1) {
+        logger.warn("Sms credits exhausted");
+        throw new SmsCreditsExhaustedError();
+      }
+
+      sendTextMessage = async (message: TextMessage) => {
+        const response = await this.defaultTextMessageSender.sendTextMessage(
           this.organizationId,
           message,
         );
+
+        if (!response.error) {
+          await this.billingService.recordSmsCreditUsage({
+            direction: "outbound",
+            textId: response.textId,
+          });
+        }
+        return response;
+      };
     }
 
     try {
@@ -165,16 +187,29 @@ export class NotificationService implements INotificationService {
         throw Error(response.error);
       }
 
-      logger.info(
-        {
-          textMessageSender: "built-in-textbelt",
-          textMessageSenderParticipant: handledBy,
-          textMessageSenderPhone: maskify(trimmedPhone),
-          appointmentId,
-          customerId,
-        },
-        "Text Message sent via built-in TextBelt",
-      );
+      if (textMessageSenderAppId) {
+        logger.info(
+          {
+            textMessageSenderAppId,
+            textMessageSenderParticipant: handledBy,
+            textMessageSenderPhone: maskify(trimmedPhone),
+            appointmentId,
+            customerId,
+          },
+          "Text Message sent via app-based sender",
+        );
+      } else {
+        logger.info(
+          {
+            textMessageSender: "built-in-textbelt",
+            textMessageSenderParticipant: handledBy,
+            textMessageSenderPhone: maskify(trimmedPhone),
+            appointmentId,
+            customerId,
+          },
+          "Text Message sent via built-in TextBelt",
+        );
+      }
 
       this.communicationLogService.log({
         direction: "outbound",
@@ -190,10 +225,7 @@ export class NotificationService implements INotificationService {
 
       return response;
     } catch (error) {
-      logger.error(
-        { error },
-        "Error sending Text Message via built-in TextBelt",
-      );
+      logger.error({ error }, "Error sending text message");
       throw error;
     }
   }

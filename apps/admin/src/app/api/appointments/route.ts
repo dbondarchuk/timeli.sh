@@ -1,4 +1,5 @@
-import { getServicesContainer } from "@/app/utils";
+import { getActor, getServicesContainer } from "@/app/utils";
+import { getSubscriptionBlockingResponseForAppointmentWriteActions } from "@/utils/subscription/subscription-access";
 import { appointmentsSearchParamsLoader } from "@timelish/api-sdk";
 import { getLoggerFactory } from "@timelish/logger";
 import { AppointmentEvent, appointmentEventSchema } from "@timelish/types";
@@ -45,7 +46,7 @@ export async function GET(request: NextRequest) {
     "Fetching appointments with parameters",
   );
 
-  const res = await servicesContainer.eventsService.getAppointments({
+  const res = await servicesContainer.bookingService.getAppointments({
     offset,
     limit,
     search,
@@ -68,6 +69,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   const logger = getLoggerFactory("AdminAPI/appointments")("POST");
   const servicesContainer = await getServicesContainer();
+  const eventSource = await getActor();
 
   logger.debug(
     {
@@ -76,6 +78,12 @@ export async function POST(request: NextRequest) {
     },
     "Processing create appointment API request",
   );
+
+  const blockedResponse =
+    await getSubscriptionBlockingResponseForAppointmentWriteActions();
+  if (blockedResponse) {
+    return blockedResponse;
+  }
 
   const formData = await request.formData();
   const appointmentJson = formData.get("appointment") as string;
@@ -207,12 +215,12 @@ export async function POST(request: NextRequest) {
         : undefined,
   };
 
-  const appointment = await servicesContainer.eventsService.createEvent({
+  const appointment = await servicesContainer.bookingService.createAppointment({
     event: appointmentEvent,
     confirmed,
     force: true,
     files,
-    by: "user",
+    eventSource,
   });
 
   logger.debug(

@@ -1,11 +1,12 @@
 /**
  * Adds `addons` (name, description, duration, suggestedPrice, id) to each
- * service in install data/*.json when missing. Safe to re-run (skips services
+ * service in install data/*.yaml when missing. Safe to re-run (skips services
  * that already have a non-empty `addons` array).
  */
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { parse as parseYaml, stringify as stringifyYaml } from "yaml";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const dir = path.join(__dirname, "../src/components/install/data");
@@ -74,15 +75,15 @@ function buildAddonsForService(svc, tags, cat, serviceId) {
   return addons;
 }
 
-const files = fs.readdirSync(dir).filter((f) => f.endsWith(".json"));
+const files = fs.readdirSync(dir).filter((f) => f.endsWith(".yaml"));
 let touched = 0;
 
 for (const f of files) {
   if (f.startsWith("_")) continue;
   const full = path.join(dir, f);
   if (fs.statSync(full).size < 4) continue;
-  const cat = f.replace(/\.json$/, "");
-  const j = JSON.parse(fs.readFileSync(full, "utf8"));
+  const cat = f.replace(/\.yaml$/, "");
+  const j = parseYaml(fs.readFileSync(full, "utf8"));
   let changed = false;
 
   for (const prof of Object.values(j)) {
@@ -104,7 +105,11 @@ for (const f of files) {
   }
 
   if (changed) {
-    fs.writeFileSync(full, `${JSON.stringify(j, null, 2)}\n`, "utf8");
+    fs.writeFileSync(
+      full,
+      `${stringifyYaml(j, { lineWidth: 0 })}\n`,
+      "utf8",
+    );
     touched++;
     console.log("updated", f);
   }

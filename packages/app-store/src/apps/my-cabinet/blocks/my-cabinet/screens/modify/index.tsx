@@ -66,7 +66,11 @@ export const CabinetModifyScreen: React.FC<CabinetModifyScreenProps> = ({
     [i18n, action],
   );
 
-  const { customer: customerProfile, timezone, setTimeZone } = useCustomerProfile();
+  const {
+    customer: customerProfile,
+    timezone,
+    setTimeZone,
+  } = useCustomerProfile();
   const onSessionExpired = useOnSessionExpired();
   const contact = React.useMemo(() => {
     if (customerProfile?.email)
@@ -265,7 +269,7 @@ export const CabinetModifyScreen: React.FC<CabinetModifyScreenProps> = ({
 
     setIsLoading(true);
     try {
-      await clientApi.events.modifyAppointment(appointment.id, {
+      await clientApi.booking.modifyAppointment(appointment.id, {
         type: action,
         dateTime: newDateTime?.toUTC().toJSDate() as Date,
         fields,

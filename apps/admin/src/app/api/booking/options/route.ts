@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
   );
 
   const response =
-    await servicesContainer.eventsService.getAppointmentOptions();
+    await servicesContainer.bookingService.getAppointmentOptions();
 
   logger.debug(
     {

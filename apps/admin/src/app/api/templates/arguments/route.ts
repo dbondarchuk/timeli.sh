@@ -62,7 +62,7 @@ export async function GET(request: NextRequest) {
 
   if (appointmentId) {
     appointment =
-      await servicesContainer.eventsService.getAppointment(appointmentId);
+      await servicesContainer.bookingService.getAppointment(appointmentId);
     if (!appointment) {
       logger.warn({ appointmentId }, "Appointment not found");
       return NextResponse.json(

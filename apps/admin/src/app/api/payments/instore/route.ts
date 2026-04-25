@@ -1,4 +1,4 @@
-import { getServicesContainer } from "@/app/utils";
+import { getActor, getServicesContainer } from "@/app/utils";
 import { getLoggerFactory } from "@timelish/logger";
 import {
   inStorePaymentUpdateModelSchema,
@@ -8,6 +8,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   const logger = getLoggerFactory("AdminAPI/payments/instore")("POST");
+  const actor = await getActor();
   const servicesContainer = await getServicesContainer();
   logger.debug(
     {
@@ -36,7 +37,7 @@ export async function POST(request: NextRequest) {
   let customerId: string | undefined;
 
   if (payment.appointmentId) {
-    const appointment = await servicesContainer.eventsService.getAppointment(
+    const appointment = await servicesContainer.bookingService.getAppointment(
       payment.appointmentId,
     );
 
@@ -159,8 +160,10 @@ export async function POST(request: NextRequest) {
     };
   }
 
-  const result =
-    await servicesContainer.paymentsService.createPayment(paymentUpdateModel);
+  const result = await servicesContainer.paymentsService.createPayment(
+    paymentUpdateModel,
+    actor,
+  );
 
   logger.debug(
     { appointmentId: payment.appointmentId, payment },

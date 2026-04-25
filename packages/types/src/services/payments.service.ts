@@ -4,6 +4,7 @@ import {
   PaymentIntentUpdateModel,
   PaymentUpdateModel,
 } from "../booking";
+import type { EventSource } from "../events/envelope";
 
 export interface IPaymentsService {
   createIntent(
@@ -18,7 +19,10 @@ export interface IPaymentsService {
     update: Partial<PaymentIntentUpdateModel>,
   ): Promise<PaymentIntent>;
 
-  createPayment(payment: PaymentUpdateModel): Promise<Payment>;
+  createPayment(
+    payment: PaymentUpdateModel,
+    source: EventSource,
+  ): Promise<Payment>;
 
   getPayment(id: string): Promise<Payment | null>;
   getPaymentByExternalId(externalId: string): Promise<Payment | null>;
@@ -27,13 +31,15 @@ export interface IPaymentsService {
   updatePayment(
     id: string,
     update: Partial<PaymentUpdateModel>,
+    source: EventSource,
   ): Promise<Payment>;
 
-  deletePayment(id: string): Promise<Payment | null>;
+  deletePayment(id: string, source: EventSource): Promise<Payment | null>;
 
   refundPayment(
     id: string,
     amount: number,
+    source: EventSource,
   ): Promise<
     | { success: false; error: string; status: number }
     | { success: true; updatedPayment: Payment }

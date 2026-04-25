@@ -1,15 +1,14 @@
+import { Language } from "@timelish/i18n";
 import { giftCardStudioInvoiceTranslationsEn } from "./en/invoice";
-import { knownLocales } from "./index";
 import { giftCardStudioInvoiceTranslationsUk } from "./uk/invoice";
 
-type KnownLocales = (typeof knownLocales)[number];
 type GiftCardStudioInvoiceTranslations = Record<
   keyof typeof giftCardStudioInvoiceTranslationsEn,
   string
 >;
 
 export const giftCardStudioInvoiceTranslations: Record<
-  KnownLocales,
+  Language,
   GiftCardStudioInvoiceTranslations
 > = {
   en: giftCardStudioInvoiceTranslationsEn,

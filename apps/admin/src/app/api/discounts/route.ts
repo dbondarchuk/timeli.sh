@@ -1,4 +1,4 @@
-import { getServicesContainer } from "@/app/utils";
+import { getActor, getServicesContainer } from "@/app/utils";
 import { discountsSearchParamsLoader } from "@timelish/api-sdk";
 import { getLoggerFactory } from "@timelish/logger";
 import { discountSchema } from "@timelish/types";
@@ -59,6 +59,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   const logger = getLoggerFactory("AdminAPI/discounts")("POST");
+  const actor = await getActor();
   const servicesContainer = await getServicesContainer();
   logger.debug(
     {
@@ -80,7 +81,10 @@ export async function POST(request: NextRequest) {
   }
 
   logger.debug({ discount: data }, "Creating discount");
-  const discount = await servicesContainer.servicesService.createDiscount(data);
+  const discount = await servicesContainer.servicesService.createDiscount(
+    data,
+    actor,
+  );
 
   logger.debug({ discountId: discount._id }, "Discount created successfully");
   return NextResponse.json(discount, { status: 201 });

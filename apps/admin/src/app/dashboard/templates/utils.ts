@@ -19,7 +19,7 @@ export const getAllTemplates = async (
 
   const servicesContainer = await getServicesContainer();
   const communicationTemplates =
-    await servicesContainer.connectedAppsService.executeHooks<
+    await servicesContainer.connectedAppsService.invokeAppsByScope<
       ICommunicationTemplatesProvider,
       TemplateTemplatesList
     >("communication-templates-provider", async (app, service) => {

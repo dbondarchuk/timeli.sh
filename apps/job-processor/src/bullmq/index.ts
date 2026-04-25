@@ -1,7 +1,10 @@
 import { getLoggerFactory } from "@timelish/logger";
 import {
+  BullMQEventConfig,
+  BullMQEventWorker,
   BullMQJobConfig,
   BullMQJobWorker,
+  getBullMQEventConfig,
   getBullMQJobConfig,
   ServicesContainer,
 } from "@timelish/services";
@@ -30,26 +33,25 @@ export async function startBullMQJobProcessorApp(): Promise<void> {
   try {
     // Get BullMQ configuration from environment variables
     const config: BullMQJobConfig = getBullMQJobConfig();
+    const eventConfig: BullMQEventConfig = getBullMQEventConfig();
 
-    logger.info({ config }, "BullMQ configuration loaded");
+    logger.info({ config, eventConfig }, "BullMQ configuration loaded");
 
-    // Create and start the worker
-    const worker = new BullMQJobWorker(config, (organizationId) =>
+    const jobWorker = new BullMQJobWorker(config, (organizationId) =>
+      ServicesContainer(organizationId),
+    );
+    const eventWorker = new BullMQEventWorker(eventConfig, (organizationId) =>
       ServicesContainer(organizationId),
     );
 
-    // Set up graceful shutdown handlers
     const gracefulShutdown = async (signal: string) => {
       logger.info(
         { signal },
-        "Received shutdown signal, stopping worker gracefully",
+        "Received shutdown signal, stopping workers gracefully",
       );
-      await worker.stop();
+      await Promise.all([jobWorker.stop(), eventWorker.stop()]);
       process.exit(0);
     };
-
-    process.on("SIGINT", () => gracefulShutdown("SIGINT"));
-    process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
 
     // Handle unhandled promise rejections
     process.on("unhandledRejection", (reason, promise) => {
@@ -66,18 +68,29 @@ export async function startBullMQJobProcessorApp(): Promise<void> {
     // Choose the run mode based on environment
     const runMode = process.env.BULLMQ_RUN_MODE || "crash";
 
+    process.on("SIGINT", () => gracefulShutdown("SIGINT"));
+    process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
+
+    const signalOpts = { registerSignals: false as const };
+
     if (runMode === "restart") {
       const maxRestarts = parseInt(process.env.BULLMQ_MAX_RESTARTS || "10");
       const restartDelay = parseInt(process.env.BULLMQ_RESTART_DELAY || "5000");
 
       logger.info(
         { maxRestarts, restartDelay },
-        "Starting worker with automatic restart",
+        "Starting workers with automatic restart",
       );
-      await worker.runWithRestart(maxRestarts, restartDelay);
+      await Promise.all([
+        jobWorker.runWithRestart(maxRestarts, restartDelay, signalOpts),
+        eventWorker.runWithRestart(maxRestarts, restartDelay, signalOpts),
+      ]);
     } else {
-      logger.info("Starting worker (will crash on fatal error)");
-      await worker.run();
+      logger.info("Starting workers (will crash on fatal error)");
+      await Promise.all([
+        jobWorker.run(signalOpts),
+        eventWorker.run(signalOpts),
+      ]);
     }
   } catch (error) {
     logger.error({ error }, "Fatal error in BullMQ Job Processor App");

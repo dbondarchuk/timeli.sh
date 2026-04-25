@@ -1,0 +1,166 @@
+pageTitle: Список очікування (з додатку)
+table:
+  columns:
+    status: Статус
+    createdAt: Створено
+    dateAndTime: Дата та час
+    createAppointment: Створити запис
+    customer: Клієнт
+    option: Послуга
+    note: Примітка
+  actions:
+    createAppointment: Створити запис
+    sendMessage: Відправити повідомлення
+    viewNote: Переглянути примітку
+    close: Закрити
+  dismiss:
+    label: Відхилити {count, plural, =1 {запис списку очікування} few {# записи списку очікування} many {# записів списку очікування} other {# записів списку очікування}}
+    title: Ви абсолютно впевнені?
+    description: Цю дію неможливо скасувати. Це відхилить запис списку очікування
+    confirm: Відхилити
+    cancel: Скасувати
+    action: Відхилити
+  toast:
+    waitlist_entry_dismissed: Запис списку очікування успішно відхилено
+    error_deleting_waitlist_entry: Помилка відхилення запису списку очікування
+    waitlist_entries_dismissed: Записи списку очікування успішно відхилено
+    error_deleting_waitlist_entries: Помилка відхилення записів списку очікування
+    error_loading_waitlist_entries: Помилка завантаження записів списку очікування
+statuses:
+  active: Активний
+  dismissed: Відхилено
+view:
+  asSoonAsPossible: Якнайшвидше
+  dateTimeTitle: Дата та час
+  duration: Тривалість
+  addons: Додатки
+  unknown: Невідомо
+  note: Примітка від клієнта
+  viewNote: Переглянути примітку
+  submitted: Подано {date}
+  dismiss: Відхилити
+  createAppointment: Створити запис
+  sendMessage: Відправити повідомлення
+  viewAll: Переглянути все
+  dates: Дати
+  byFormat: від <link>{name}</link>
+  badge: Список очікування
+  preferredAvailability: Бажаний час
+  noSpecificDates: Немає конкретних дат
+  toast:
+    dismissed: Запис списку очікування відхилено
+  times:
+    descriptions:
+      morning: Ранок (до 12:00)
+      afternoon: День (12:00 - 16:00)
+      evening: Вечір (після 16:00)
+    short:
+      morning: Ранок
+      afternoon: День
+      evening: Вечір
+settings:
+  tooltip: Налаштування
+  title: Налаштування
+  description: Налаштувати параметри сповіщень списку очікування
+tab:
+  title: Список очікування
+  noWaitlistEntries: Немає записів списку очікування
+  caughtUp: Ви впоралися з усіма запитами. Молодець!
+app:
+  displayName: Список очікування
+  description: |-
+    Список очікування допомагає вам захоплювати та керувати попитом клієнтів, коли ваш розклад заповнений.
+    Легко дозволяйте клієнтам приєднуватися до списку очікування для конкретних послуг, дат або часу
+  customerTab:
+    waitlist: Список очікування
+  pages:
+    main:
+      label: Список очікування
+      title: Список очікування
+      description: Керувати записами списку очікування
+setup:
+  update: Оновити <app></app>
+  form:
+    dontDismissWaitlistOnAppointmentCreate:
+      label: Не відхиляти список очікування при створенні запису
+      tooltip: Чи відхиляти список очікування при створенні запису з нього
+newEntry:
+  trigger: Новий запис
+  title: Новий запис списку очікування
+  description: Створити новий запис списку очікування
+  confirm: Створити
+  toasts:
+    success: Запис списку очікування успішно створено
+    error: Помилка створення запису списку очікування
+  form:
+    customerId:
+      label: Клієнт
+    optionId:
+      label: Послуга
+    addonsIds:
+      label: Додатки
+    duration:
+      label: Тривалість
+    note:
+      label: Примітка
+      placeholder: Примітка
+    when:
+      label: Коли
+    asSoonAsPossible:
+      label: Якнайшвидше
+    dates:
+      label: Дати
+      label_count: Дати ({count})
+handlers:
+  newWaitlistEntry: Сповіщення списку очікування - Новий запис
+statusText:
+  successfully_set_up: Сповіщення списку очікування успішно налаштовано
+  error_processing_configuration: Помилка обробки конфігурації сповіщень списку очікування
+notifications:
+  newEntries: Нові записи списку очікування
+  viewWaitlist: Переглянути
+  message: У вас є {count, plural, =1 {один новий запис списку очікування} few {# нових записів списку очікування} many {# нових записів списку очікування} other {# нових записів списку очікування}}
+  newEntry: Новий запис списку очікування
+  newEntryMessage: У вас є новий запис списку очікування
+activity:
+  newEntry:
+    title: Новий запис списку очікування
+    description: "{customerName} має запит на додавання до списку очікування для {serviceName}"
+  entriesDismissed:
+    title: Записи списку очікування відхилено
+    description: "{count, plural, =1 {Один запис списку очікування був відхилено} few {# записів списку очікування були відхилені} many {# записів списку очікування були відхилені} other {# записів списку очікування були відхилені}}"
+block:
+  simple:
+    waitlist:
+      displayName: Список очікування (Простий)
+    bookingWithWaitlist:
+      displayName: Форма бронювання зі списком очікування (Проста)
+  modern:
+    waitlist:
+      displayName: Список очікування (Сучасний)
+    bookingWithWaitlist:
+      displayName: Форма бронювання зі списком очікування (Сучасна)
+  shortcuts:
+    gap:
+      label: Відступ
+      gaps:
+        none: Немає
+        small: Малий
+        medium: Середній
+        large: Великий
+        x-large: Дуже великий
+  waitlistAppId:
+    label: Застосунок списку очікування
+    tooltip: Застосунок, який буде використовуватися для роботи зі списком очікування. Необхідний для роботи потоку списку очікування.
+validation:
+  createWaitlistEntry:
+    customerId:
+      required: Клієнт обов'язковий
+    note:
+      max: Примітка не повинна перевищувати 1024 символи
+    asSoonAsPossible:
+      required: Потрібно вказати «якнайшвидше»
+    dates:
+      required: Дати обов'язкові
+      max: Максимум 30 дат
+

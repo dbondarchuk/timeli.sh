@@ -1,5 +1,5 @@
 import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
-import { IConnectedAppProps, Query, WithTotal } from "@timelish/types";
+import { IConnectedAppProps, Query, WithTotal, systemEventSource } from "@timelish/types";
 import { escapeRegex } from "@timelish/utils";
 import { ObjectId, type Filter, type Sort } from "mongodb";
 import {
@@ -413,7 +413,7 @@ export class BlogRepositoryService {
       logger.debug(
         `Blog page ${page.title} (${page.slug}) is unique. Creating...`,
       );
-      await this.services.pagesService.createPage(page);
+      await this.services.pagesService.createPage(page, systemEventSource);
       logger.debug(`Blog page ${page.title} (${page.slug}) created`);
     }
 

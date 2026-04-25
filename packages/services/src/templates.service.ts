@@ -1,11 +1,19 @@
 import {
   CommunicationChannel,
+  IEventService,
   ITemplatesService,
   Query,
+  TEMPLATE_CREATED_EVENT_TYPE,
+  TEMPLATE_DELETED_EVENT_TYPE,
+  TEMPLATE_UPDATED_EVENT_TYPE,
   Template,
   TemplateListModel,
   TemplateUpdateModel,
   WithTotal,
+  type EventSource,
+  type TemplateCreatedPayload,
+  type TemplateDeletedPayload,
+  type TemplateUpdatedPayload,
 } from "@timelish/types";
 import { buildSearchQuery, escapeRegex } from "@timelish/utils";
 import { DateTime } from "luxon";
@@ -15,7 +23,10 @@ import { getDbConnection } from "./database";
 import { BaseService } from "./services/base.service";
 
 export class TemplatesService extends BaseService implements ITemplatesService {
-  constructor(organizationId: string) {
+  constructor(
+    organizationId: string,
+    protected readonly eventService: IEventService,
+  ) {
     super("TemplatesService", organizationId);
   }
 
@@ -124,6 +135,7 @@ export class TemplatesService extends BaseService implements ITemplatesService {
 
   public async createTemplate(
     template: TemplateUpdateModel,
+    source: EventSource,
   ): Promise<Template> {
     const logger = this.loggerFactory("createTemplate");
     logger.debug({ template }, "Creating template");
@@ -143,6 +155,12 @@ export class TemplatesService extends BaseService implements ITemplatesService {
 
     await templates.insertOne(dbTemplate);
 
+    await this.eventService.emit(
+      TEMPLATE_CREATED_EVENT_TYPE,
+      { template: dbTemplate } satisfies TemplateCreatedPayload,
+      source,
+    );
+
     logger.debug(
       { templateId: dbTemplate._id, name: dbTemplate.name },
       "Template created",
@@ -154,6 +172,7 @@ export class TemplatesService extends BaseService implements ITemplatesService {
   public async updateTemplate(
     id: string,
     update: TemplateUpdateModel,
+    source: EventSource,
   ): Promise<void> {
     const logger = this.loggerFactory("updateTemplate");
     logger.debug(
@@ -185,10 +204,22 @@ export class TemplatesService extends BaseService implements ITemplatesService {
       },
     );
 
+    const template = await this.getTemplate(id);
+    if (template) {
+      await this.eventService.emit(
+        TEMPLATE_UPDATED_EVENT_TYPE,
+        { template } satisfies TemplateUpdatedPayload,
+        source,
+      );
+    }
+
     logger.debug({ id, update }, "Template updated");
   }
 
-  public async deleteTemplate(id: string): Promise<Template | null> {
+  public async deleteTemplate(
+    id: string,
+    source: EventSource,
+  ): Promise<Template | null> {
     const logger = this.loggerFactory("deleteTemplate");
     logger.debug({ id }, "Deleting template");
     const db = await getDbConnection();
@@ -201,10 +232,21 @@ export class TemplatesService extends BaseService implements ITemplatesService {
 
     logger.debug({ id, templateDeleted: !!template }, "Template delete result");
 
+    if (template) {
+      await this.eventService.emit(
+        TEMPLATE_DELETED_EVENT_TYPE,
+        { templateIds: [id] } satisfies TemplateDeletedPayload,
+        source,
+      );
+    }
+
     return template;
   }
 
-  public async deleteTemplates(ids: string[]): Promise<void> {
+  public async deleteTemplates(
+    ids: string[],
+    source: EventSource,
+  ): Promise<void> {
     const logger = this.loggerFactory("deleteTemplates");
     logger.debug({ ids }, "Deleting templates");
     const db = await getDbConnection();
@@ -218,6 +260,14 @@ export class TemplatesService extends BaseService implements ITemplatesService {
     });
 
     logger.debug({ ids, deletedCount }, "Templates deleted");
+
+    if (ids.length) {
+      await this.eventService.emit(
+        TEMPLATE_DELETED_EVENT_TYPE,
+        { templateIds: ids } satisfies TemplateDeletedPayload,
+        source,
+      );
+    }
   }
 
   public async checkUniqueName(name: string, id?: string): Promise<boolean> {

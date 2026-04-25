@@ -12,6 +12,7 @@ import {
 import { ServiceField, ServiceFieldUpdateModel } from "../configuration";
 import { Query, WithTotal } from "../database";
 import { DateRange } from "../general";
+import type { EventSource } from "../events/envelope";
 
 export type IdName = {
   _id: string;
@@ -42,10 +43,17 @@ export interface IServicesService {
   ): Promise<WithTotal<FieldsType<T>>>;
   getFieldsById(ids: string[]): Promise<ServiceField[]>;
   getFieldsByNames(names: string[]): Promise<ServiceField[]>;
-  createField(field: ServiceFieldUpdateModel): Promise<ServiceField>;
-  updateField(id: string, update: ServiceFieldUpdateModel): Promise<void>;
-  deleteField(id: string): Promise<ServiceField | null>;
-  deleteFields(ids: string[]): Promise<void>;
+  createField(
+    field: ServiceFieldUpdateModel,
+    source: EventSource,
+  ): Promise<ServiceField>;
+  updateField(
+    id: string,
+    update: ServiceFieldUpdateModel,
+    source: EventSource,
+  ): Promise<void>;
+  deleteField(id: string, source: EventSource): Promise<ServiceField | null>;
+  deleteFields(ids: string[], source: EventSource): Promise<void>;
   checkFieldUniqueName(name: string, id?: string): Promise<boolean>;
 
   /** Addons */
@@ -55,10 +63,17 @@ export interface IServicesService {
     includeUsage?: T,
   ): Promise<WithTotal<AddonsType<T>>>;
   getAddonsById(ids: string[]): Promise<AppointmentAddon[]>;
-  createAddon(addon: AppointmentAddonUpdateModel): Promise<AppointmentAddon>;
-  updateAddon(id: string, update: AppointmentAddonUpdateModel): Promise<void>;
-  deleteAddon(id: string): Promise<AppointmentAddon | null>;
-  deleteAddons(ids: string[]): Promise<void>;
+  createAddon(
+    addon: AppointmentAddonUpdateModel,
+    source: EventSource,
+  ): Promise<AppointmentAddon>;
+  updateAddon(
+    id: string,
+    update: AppointmentAddonUpdateModel,
+    source: EventSource,
+  ): Promise<void>;
+  deleteAddon(id: string, source: EventSource): Promise<AppointmentAddon | null>;
+  deleteAddons(ids: string[], source: EventSource): Promise<void>;
   checkAddonUniqueName(name: string, id?: string): Promise<boolean>;
 
   /** Options */
@@ -66,10 +81,20 @@ export interface IServicesService {
   getOptions(
     query: Query & { priorityIds?: string[] },
   ): Promise<WithTotal<AppointmentOption>>;
-  createOption(addon: AppointmentOptionUpdateModel): Promise<AppointmentOption>;
-  updateOption(id: string, update: AppointmentOptionUpdateModel): Promise<void>;
-  deleteOption(id: string): Promise<AppointmentOption | null>;
-  deleteOptions(ids: string[]): Promise<void>;
+  createOption(
+    addon: AppointmentOptionUpdateModel,
+    source: EventSource,
+  ): Promise<AppointmentOption>;
+  updateOption(
+    id: string,
+    update: AppointmentOptionUpdateModel,
+    source: EventSource,
+  ): Promise<void>;
+  deleteOption(
+    id: string,
+    source: EventSource,
+  ): Promise<AppointmentOption | null>;
+  deleteOptions(ids: string[], source: EventSource): Promise<void>;
   checkOptionUniqueName(name: string, id?: string): Promise<boolean>;
 
   /** Discounts */
@@ -90,10 +115,17 @@ export interface IServicesService {
       }
     >
   >;
-  createDiscount(discount: DiscountUpdateModel): Promise<Discount>;
-  updateDiscount(id: string, update: DiscountUpdateModel): Promise<void>;
-  deleteDiscount(id: string): Promise<Discount | null>;
-  deleteDiscounts(ids: string[]): Promise<void>;
+  createDiscount(
+    discount: DiscountUpdateModel,
+    source: EventSource,
+  ): Promise<Discount>;
+  updateDiscount(
+    id: string,
+    update: DiscountUpdateModel,
+    source: EventSource,
+  ): Promise<void>;
+  deleteDiscount(id: string, source: EventSource): Promise<Discount | null>;
+  deleteDiscounts(ids: string[], source: EventSource): Promise<void>;
   checkDiscountUniqueNameAndCode(
     name?: string,
     codes?: string[],

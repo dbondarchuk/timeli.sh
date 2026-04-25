@@ -1,4 +1,8 @@
-import { getOrganizationId, getServicesContainer } from "@/app/utils";
+import {
+  getOrganizationId,
+  getServicesContainer,
+  getSession,
+} from "@/app/utils";
 import { BaseAllKeys } from "@timelish/i18n";
 import { getLoggerFactory } from "@timelish/logger";
 import { getDashboardNotificationRealtimeBroker } from "@timelish/services";
@@ -7,10 +11,24 @@ import { DateTime } from "luxon";
 import { NextRequest } from "next/server";
 import { v4 } from "uuid";
 
+const getActivityFeedNotifications = async (userId: string) => {
+  const servicesContainer = await getServicesContainer();
+
+  const [preview, highestSeverity] = await Promise.all([
+    servicesContainer.activityService.getActivityPreview(3),
+    servicesContainer.activityService.getHighestSeveritySinceLastRead(userId),
+  ]);
+
+  return {
+    type: "activity-feed",
+    activityFeed: { preview, highestSeverity },
+  } satisfies DashboardNotification;
+};
+
 const getPendingAppointmentsNotifications = async (date?: Date) => {
   const servicesContainer = await getServicesContainer();
   const { totalCount, newCount } =
-    await servicesContainer.eventsService.getPendingAppointmentsCount(
+    await servicesContainer.bookingService.getPendingAppointmentsCount(
       new Date(),
       date,
     );
@@ -55,6 +73,9 @@ export async function GET(request: NextRequest) {
   const servicesContainer = await getServicesContainer();
   const organizationId = await getOrganizationId();
 
+  const session = await getSession();
+  const userId = session.user.id;
+
   logger.debug("Starting notifications SSE stream");
 
   const encoder = new TextEncoder();
@@ -73,23 +94,25 @@ export async function GET(request: NextRequest) {
   ) => {
     logger.debug("Getting pending appointments notifications");
     const count = await getPendingAppointmentsNotifications(lastDate);
+    const activityFeed = await getActivityFeedNotifications(userId);
 
-    let notifications: DashboardNotification[] = [count];
+    let notifications: DashboardNotification[] = [count, activityFeed];
 
-    logger.debug("Executing dashboard notifier hooks");
-    const results = await servicesContainer.connectedAppsService.executeHooks<
-      IDashboardNotifierApp,
-      DashboardNotification[]
-    >(
-      "dashboard-notifier",
-      async (app, service) => {
-        return await service.getInitialNotifications(app, lastDate);
-      },
-      {
-        concurrencyLimit: 10,
-        ignoreErrors: true,
-      },
-    );
+    logger.debug("Invoking dashboard notifier apps");
+    const results =
+      await servicesContainer.connectedAppsService.invokeAppsByScope<
+        IDashboardNotifierApp,
+        DashboardNotification[]
+      >(
+        "dashboard-notifier",
+        async (app, service) => {
+          return await service.getInitialNotifications(app, lastDate);
+        },
+        {
+          concurrencyLimit: 10,
+          ignoreErrors: true,
+        },
+      );
 
     const filteredResults = results
       .filter(Boolean)

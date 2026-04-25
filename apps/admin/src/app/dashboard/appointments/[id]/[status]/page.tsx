@@ -1,4 +1,4 @@
-import { getServicesContainer } from "@/app/utils";
+import { getActor, getServicesContainer } from "@/app/utils";
 import { getLoggerFactory } from "@timelish/logger";
 import { notFound, redirect } from "next/navigation";
 
@@ -7,6 +7,7 @@ type Props = PageProps<"/dashboard/appointments/[id]/[status]">;
 export default async function Page(props: Props) {
   const logger = getLoggerFactory("AdminPages")("appointment-status-change");
   const params = await props.params;
+  const actor = await getActor();
   const servicesContainer = await getServicesContainer();
   logger.debug(
     {
@@ -18,9 +19,10 @@ export default async function Page(props: Props) {
 
   switch (params.status) {
     case "confirm":
-      await servicesContainer.eventsService.changeAppointmentStatus(
+      await servicesContainer.bookingService.changeAppointmentStatus(
         params.id,
         "confirmed",
+        actor,
       );
 
       logger.debug(
@@ -34,7 +36,7 @@ export default async function Page(props: Props) {
       redirect(`/dashboard/appointments/${params.id}`);
 
     case "decline":
-      // await ServicesContainer.EventsService().changeAppointmentStatus(
+      // await ServicesContainer.bookingService().changeAppointmentStatus(
       //   params.id,
       //   "declined"
       // );

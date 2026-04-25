@@ -1,3 +1,4 @@
+export * from "./appointment-event-dispatch";
 export * from "./assets";
 export * from "./cancellation-policy";
 export * from "./colors";

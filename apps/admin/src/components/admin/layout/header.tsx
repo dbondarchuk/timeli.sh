@@ -2,6 +2,7 @@ import { getWebsiteUrl } from "@/app/utils";
 import { getI18nAsync } from "@timelish/i18n/server";
 import { Link, Separator, SidebarTrigger } from "@timelish/ui";
 import { Globe2 } from "lucide-react";
+import { ActivityFeedHeaderButton } from "./activity-feed-header-button";
 import { BreadcrumbsRender } from "./breadcrumbs";
 import ThemeToggle from "./theme-toggle/theme-toggle";
 
@@ -22,6 +23,7 @@ export default async function Header({}: {}) {
         </div>
 
         <div className="flex items-center gap-2">
+          <ActivityFeedHeaderButton />
           <ThemeToggle />
           <Link
             href={websiteUrl}

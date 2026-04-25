@@ -1,7 +1,7 @@
 import { AllKeys } from "@timelish/i18n";
 import { Leaves } from "@timelish/types";
 import { URL_SCHEDULE_PROVIDER_APP_NAME } from "../const";
-import type admin from "./en/admin.json";
+import type admin from "./en/admin.generated";
 
 export type UrlScheduleProviderAdminKeys = Leaves<typeof admin>;
 export const urlScheduleProviderAdminNamespace =

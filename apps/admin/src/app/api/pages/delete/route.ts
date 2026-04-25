@@ -1,4 +1,4 @@
-import { getServicesContainer } from "@/app/utils";
+import { getActor, getServicesContainer } from "@/app/utils";
 import { bulkDeleteSchema } from "@timelish/api-sdk";
 import { getLoggerFactory } from "@timelish/logger";
 import { okStatus } from "@timelish/types";
@@ -33,8 +33,9 @@ export async function POST(request: NextRequest) {
     "Deleting pages",
   );
 
+  const actor = await getActor();
   try {
-    await servicesContainer.pagesService.deletePages(data.ids);
+    await servicesContainer.pagesService.deletePages(data.ids, actor);
 
     logger.debug(
       {

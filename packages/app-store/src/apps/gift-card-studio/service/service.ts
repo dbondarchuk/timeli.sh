@@ -13,6 +13,7 @@ import {
   IPaymentProcessor,
   IScheduled,
   PaymentIntentUpdateModel,
+  systemEventSource,
   TemplateTemplatesList,
 } from "@timelish/types";
 import { formatAmountWithCurrency } from "@timelish/utils";
@@ -281,10 +282,13 @@ export class GiftCardStudioConnectedApp
           "Unique name generated for Gift Card Studio template",
         );
 
-        const created = await templatesService.createTemplate({
-          ...source,
-          name: uniqueName,
-        });
+        const created = await templatesService.createTemplate(
+          {
+            ...source,
+            name: uniqueName,
+          },
+          systemEventSource,
+        );
 
         logger.debug(
           {
@@ -617,15 +621,23 @@ export class GiftCardStudioConnectedApp
     const code = await this.generateUniqueGiftCardCode();
     const paidAt = new Date();
 
-    const payment = await this.props.services.paymentsService.createPayment({
-      amount: purchase.amountPurchased,
-      status: "paid",
-      paidAt,
-      customerId: purchase.customerId,
-      description: "giftCard",
-      type: "payment",
-      method: purchase.paymentType,
-    });
+    const customerSource = {
+      actor: "customer" as const,
+      actorId: purchase.customerId,
+    };
+
+    const payment = await this.props.services.paymentsService.createPayment(
+      {
+        amount: purchase.amountPurchased,
+        status: "paid",
+        paidAt,
+        customerId: purchase.customerId,
+        description: "giftCard",
+        type: "payment",
+        method: purchase.paymentType,
+      },
+      customerSource,
+    );
 
     logger.debug(
       {
@@ -636,20 +648,23 @@ export class GiftCardStudioConnectedApp
       "Payment created",
     );
 
-    const giftCard = await this.props.services.giftCardsService.createGiftCard({
-      code,
-      amount: purchase.amountPurchased,
-      customerId: purchase.customerId,
-      paymentId: payment._id,
-      expiresAt: DateTime.now()
-        .plus({ months: settings.expirationMonths ?? 12 })
-        .endOf("day")
-        .toJSDate(),
-      source: {
-        appName: appData.name,
-        appId: appData._id,
+    const giftCard = await this.props.services.giftCardsService.createGiftCard(
+      {
+        code,
+        amount: purchase.amountPurchased,
+        customerId: purchase.customerId,
+        paymentId: payment._id,
+        expiresAt: DateTime.now()
+          .plus({ months: settings.expirationMonths ?? 12 })
+          .endOf("day")
+          .toJSDate(),
+        source: {
+          appName: appData.name,
+          appId: appData._id,
+        },
       },
-    });
+      customerSource,
+    );
 
     logger.debug(
       { giftCardId: giftCard._id, code, amount: purchase.amountPurchased },
@@ -1067,11 +1082,14 @@ export class GiftCardStudioConnectedApp
     }
 
     const customer =
-      await this.props.services.customersService.getOrUpsertCustomer({
-        email,
-        phone,
-        name,
-      });
+      await this.props.services.customersService.getOrUpsertCustomer(
+        {
+          email,
+          phone,
+          name,
+        },
+        { actor: "customer" },
+      );
 
     if (intent.customerId !== customer._id) {
       logger.debug(
@@ -1089,18 +1107,26 @@ export class GiftCardStudioConnectedApp
       "Intent found, creating payment",
     );
 
-    const payment = await this.props.services.paymentsService.createPayment({
-      amount,
-      customerId: customer._id,
-      description: "giftCard",
-      type: "payment",
-      method: "online",
-      status: "paid",
-      paidAt: new Date(),
-      intentId,
-      appId: intent.appId,
-      appName: intent.appName,
-    });
+    const purchaseSource = {
+      actor: "customer" as const,
+      actorId: customer._id,
+    };
+
+    const payment = await this.props.services.paymentsService.createPayment(
+      {
+        amount,
+        customerId: customer._id,
+        description: "giftCard",
+        type: "payment",
+        method: "online",
+        status: "paid",
+        paidAt: new Date(),
+        intentId,
+        appId: intent.appId,
+        appName: intent.appName,
+      },
+      purchaseSource,
+    );
 
     logger.debug(
       { paymentId: payment._id },
@@ -1109,20 +1135,23 @@ export class GiftCardStudioConnectedApp
 
     const code = await this.generateUniqueGiftCardCode();
 
-    const giftCard = await this.props.services.giftCardsService.createGiftCard({
-      code,
-      amount,
-      customerId: customer._id,
-      paymentId: payment._id,
-      expiresAt: DateTime.now()
-        .plus({ months: settings.expirationMonths ?? 12 })
-        .endOf("day")
-        .toJSDate(),
-      source: {
-        appName: appData.name,
-        appId: appData._id,
+    const giftCard = await this.props.services.giftCardsService.createGiftCard(
+      {
+        code,
+        amount,
+        customerId: customer._id,
+        paymentId: payment._id,
+        expiresAt: DateTime.now()
+          .plus({ months: settings.expirationMonths ?? 12 })
+          .endOf("day")
+          .toJSDate(),
+        source: {
+          appName: appData.name,
+          appId: appData._id,
+        },
       },
-    });
+      purchaseSource,
+    );
 
     logger.debug(
       { giftCardId: giftCard._id, code, amount },
@@ -1259,11 +1288,14 @@ export class GiftCardStudioConnectedApp
 
     const formProps = service.getFormProps(app);
     const customer =
-      await this.props.services.customersService.getOrUpsertCustomer({
-        email,
-        phone,
-        name,
-      });
+      await this.props.services.customersService.getOrUpsertCustomer(
+        {
+          email,
+          phone,
+          name,
+        },
+        { actor: "customer" },
+      );
 
     const intentUpdate = {
       amount,

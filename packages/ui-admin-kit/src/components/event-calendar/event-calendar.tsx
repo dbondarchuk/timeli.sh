@@ -2,7 +2,7 @@
 
 import { adminApi } from "@timelish/api-sdk";
 import { useI18n } from "@timelish/i18n";
-import { Appointment, DaySchedule, Event } from "@timelish/types";
+import { Appointment, CalendarEvent, DaySchedule } from "@timelish/types";
 import { useTimeZone } from "@timelish/ui";
 import {
   CheckCircle,
@@ -15,12 +15,12 @@ import React from "react";
 import { AppointmentDialog } from "../appointments/appointment-dialog";
 import { AgendaEventCalendar } from "./agenda-event-calendar";
 import { MonthlyEventCalendar } from "./monthly-event-calendar";
-import { CalendarEvent, EventCalendarProps } from "./types";
+import { EventCalendarEvent, EventCalendarProps } from "./types";
 import { WeeklyEventCalendar } from "./weekly-event-calendar";
 
 export const EventCalendar: React.FC<EventCalendarProps> = (props) => {
   const t = useI18n("admin");
-  const [events, setEvents] = React.useState<Event[]>([]);
+  const [events, setEvents] = React.useState<CalendarEvent[]>([]);
   const [appointment, setAppointment] = React.useState<
     Appointment | undefined
   >();
@@ -47,7 +47,7 @@ export const EventCalendar: React.FC<EventCalendarProps> = (props) => {
     setEvents(result.events || []);
   };
 
-  const calendarEvents: CalendarEvent[] = React.useMemo(
+  const calendarEvents: EventCalendarEvent[] = React.useMemo(
     () =>
       events.map((app) => {
         const start = DateTime.fromJSDate(app.dateTime);
@@ -74,7 +74,7 @@ export const EventCalendar: React.FC<EventCalendarProps> = (props) => {
     [events, t],
   );
 
-  const onEventClick = ({ id }: CalendarEvent) => {
+  const onEventClick = ({ id }: EventCalendarEvent) => {
     if (!id) {
       return;
     }
@@ -92,7 +92,7 @@ export const EventCalendar: React.FC<EventCalendarProps> = (props) => {
   };
 
   const renderEventAgenda = React.useCallback(
-    (event: CalendarEvent) => {
+    (event: EventCalendarEvent) => {
       if (!event.id) {
         return null;
       }

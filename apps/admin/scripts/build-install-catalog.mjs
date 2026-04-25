@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { parse as parseYaml } from "yaml";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const dir = path.join(__dirname, "../src/components/install/data");
@@ -13,7 +14,7 @@ function slug(s) {
     .slice(0, 64);
 }
 
-const files = fs.readdirSync(dir).filter((f) => f.endsWith(".json"));
+const files = fs.readdirSync(dir).filter((f) => f.endsWith(".yaml"));
 const catalog = {};
 const en = {};
 const tagSet = new Set();
@@ -22,8 +23,8 @@ for (const f of files) {
   if (f.startsWith("_")) continue;
   const full = path.join(dir, f);
   if (fs.statSync(full).size < 4) continue;
-  const cat = f.replace(/\.json$/, "");
-  const j = JSON.parse(fs.readFileSync(full, "utf8"));
+  const cat = f.replace(/\.yaml$/, "");
+  const j = parseYaml(fs.readFileSync(full, "utf8"));
   catalog[cat] = {};
   en[cat] = {};
   for (const [profKey, prof] of Object.entries(j)) {

@@ -5,9 +5,10 @@ import {
   ConnectedAppData,
   ConnectedAppRequestError,
   ConnectedAppStatusWithText,
-  IAppointmentHook,
+  EventEnvelope,
   IConnectedApp,
   IConnectedAppProps,
+  IEventSubscriber,
 } from "@timelish/types";
 import {
   CustomerTextMessageNotificationConfiguration,
@@ -20,6 +21,7 @@ import {
 } from "./translations/types";
 
 import {
+  dispatchAppointmentEventPayload,
   getAdminUrl,
   getArguments,
   getPhoneField,
@@ -28,7 +30,7 @@ import {
 } from "@timelish/utils";
 
 export default class CustomerTextMessageNotificationConnectedApp
-  implements IConnectedApp, IAppointmentHook
+  implements IConnectedApp, IEventSubscriber
 {
   protected readonly loggerFactory: LoggerFactory;
 
@@ -37,6 +39,58 @@ export default class CustomerTextMessageNotificationConnectedApp
       "CustomerTextMessageNotificationConnectedApp",
       props.organizationId,
     );
+  }
+
+  public async onEvent(
+    appData: ConnectedAppData,
+    envelope: EventEnvelope,
+  ): Promise<void> {
+    await dispatchAppointmentEventPayload(envelope, {
+      onAppointmentCreated: (appointment, confirmed) =>
+        this.onAppointmentCreated(appData, appointment, confirmed),
+      onAppointmentFullRescheduled: (
+        appointment,
+        newTime,
+        newDuration,
+        oldTime,
+        oldDuration,
+        doNotNotifyCustomer,
+        _source,
+      ) =>
+        this.onAppointmentRescheduled(
+          appData,
+          appointment,
+          newTime,
+          newDuration,
+          oldTime,
+          oldDuration,
+          doNotNotifyCustomer,
+        ),
+      onAppointmentSlotRescheduled: (
+        appointment,
+        newTime,
+        newDuration,
+        oldTime,
+        oldDuration,
+        doNotNotifyCustomer,
+        _source,
+      ) =>
+        this.onAppointmentRescheduled(
+          appData,
+          appointment,
+          newTime,
+          newDuration,
+          oldTime,
+          oldDuration,
+          doNotNotifyCustomer,
+        ),
+      onAppointmentStatusChanged: (appointment, newStatus, oldStatus, _source) =>
+        this.onAppointmentStatusChanged(
+          appData,
+          appointment,
+          newStatus,
+        ),
+    });
   }
 
   public async processRequest(

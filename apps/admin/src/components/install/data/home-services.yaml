@@ -1,0 +1,246 @@
+cleaner:
+  label: Cleaner
+  tags:
+    - home
+    - services
+    - cleaning
+  services:
+    - name: Standard Home Cleaning
+      durations:
+        - 60
+        - 120
+      prices:
+        - 60
+        - 100
+        - 150
+      description: "**Routine cleaning service** covering surfaces, vacuuming, and bathrooms. Ideal for regular upkeep."
+      addons:
+        - id: standard_home_cleaning-addon-home-1
+          name: Inside oven or fridge
+          description: "**Deep clean of one appliance interior** added to your standard clean."
+          duration: 10
+          suggestedPrice: 15
+        - id: standard_home_cleaning-addon-services-2
+          name: Eco product upgrade
+          description: "**Green-certified products** for the whole visit when you prefer them."
+          duration: 15
+          suggestedPrice: 24
+    - name: Deep Clean
+      durations:
+        - 180
+        - 240
+      prices:
+        - 180
+        - 250
+        - 350
+      description: "**Thorough deep clean** for kitchens, bathrooms, and overlooked areas. Best for occasional refreshes or move-ins."
+      addons:
+        - id: deep_clean-addon-home-1
+          name: Interior windows (reachable)
+          description: "**Glass and tracks** for rooms included in the deep clean."
+          duration: 10
+          suggestedPrice: 45
+        - id: deep_clean-addon-services-2
+          name: Tile & grout scrub
+          description: "**Focused scrub** on bathroom or kitchen grout lines."
+          duration: 15
+          suggestedPrice: 72
+    - name: Move-out Cleaning
+      durations:
+        - 180
+        - 240
+      prices:
+        - 160
+        - 220
+        - 300
+      description: "**Move-out cleaning** to prepare a home for new tenants. Includes detailed cleaning and final touches."
+      addons:
+        - id: move_out_cleaning-addon-home-1
+          name: Cabinet interiors
+          description: "**Empty-cabinet wipe-down** before handover or inspection."
+          duration: 10
+          suggestedPrice: 40
+        - id: move_out_cleaning-addon-services-2
+          name: Garage sweep
+          description: "**Basic garage floor sweep** and spot mop if cleared first."
+          duration: 15
+          suggestedPrice: 64
+handyman:
+  label: Handyman
+  tags:
+    - home
+    - services
+    - repairs
+  services:
+    - name: Small Repair Visit
+      durations:
+        - 60
+        - 90
+      prices:
+        - 60
+        - 90
+        - 130
+      description: "**Quick handyman visit** to fix minor issues like fixtures or small installations. Efficient and practical."
+      addons:
+        - id: small_repair_visit-addon-home-1
+          name: Materials & supplies
+          description: "**Parts, cleaners, or hardware** used for Small Repair Visit, itemized where applicable."
+          duration: 10
+          suggestedPrice: 15
+        - id: small_repair_visit-addon-services-2
+          name: Priority scheduling
+          description: "**Earlier or wider arrival window** when booking Small Repair Visit."
+          duration: 15
+          suggestedPrice: 24
+    - name: Assembly Service
+      durations:
+        - 60
+        - 120
+      prices:
+        - 50
+        - 80
+        - 120
+      description: "**Furniture or equipment assembly** with experience and tools. Includes clean-up after completion."
+      addons:
+        - id: assembly_service-addon-home-1
+          name: Materials & supplies
+          description: "**Parts, cleaners, or hardware** used for Assembly Service, itemized where applicable."
+          duration: 10
+          suggestedPrice: 13
+        - id: assembly_service-addon-services-2
+          name: Priority scheduling
+          description: "**Earlier or wider arrival window** when booking Assembly Service."
+          duration: 15
+          suggestedPrice: 20
+electrician:
+  label: Electrician
+  tags:
+    - home
+    - services
+    - electric
+  services:
+    - name: Diagnostic Visit
+      durations:
+        - 60
+      prices:
+        - 80
+        - 120
+        - 160
+      description: "**Troubleshooting and diagnostic service** to identify electrical issues. Includes a summary and recommended fixes."
+      addons:
+        - id: diagnostic_visit-addon-home-1
+          name: Materials & supplies
+          description: "**Parts, cleaners, or hardware** used for Diagnostic Visit, itemized where applicable."
+          duration: 10
+          suggestedPrice: 20
+        - id: diagnostic_visit-addon-services-2
+          name: Priority scheduling
+          description: "**Earlier or wider arrival window** when booking Diagnostic Visit."
+          duration: 15
+          suggestedPrice: 32
+    - name: Repair (per hour)
+      durations:
+        - 60
+        - 120
+      prices:
+        - 80
+        - 120
+      description: "**Skilled repair work** for wiring, outlets, or fixtures. Charged by hour or per-job based on scope."
+      addons:
+        - id: repair_per_hour-addon-home-1
+          name: Materials & supplies
+          description: "**Parts, cleaners, or hardware** used for Repair (per hour), itemized where applicable."
+          duration: 10
+          suggestedPrice: 20
+        - id: repair_per_hour-addon-services-2
+          name: Priority scheduling
+          description: "**Earlier or wider arrival window** when booking Repair (per hour)."
+          duration: 15
+          suggestedPrice: 32
+    - name: Installation
+      durations:
+        - 120
+        - 240
+      prices:
+        - 200
+        - 320
+        - 500
+      description: "**Full installation services** for appliances or lighting. Includes safety checks and clean-up."
+      addons:
+        - id: installation-addon-home-1
+          name: Materials & supplies
+          description: "**Parts, cleaners, or hardware** used for Installation, itemized where applicable."
+          duration: 10
+          suggestedPrice: 50
+        - id: installation-addon-services-2
+          name: Priority scheduling
+          description: "**Earlier or wider arrival window** when booking Installation."
+          duration: 15
+          suggestedPrice: 80
+plumber:
+  label: Plumber
+  tags:
+    - home
+    - services
+    - plumbing
+  services:
+    - name: Leak Repair
+      durations:
+        - 60
+      prices:
+        - 80
+        - 120
+        - 180
+      description: "**Fast leak detection and repair** to prevent water damage. Includes testing and follow-up advice."
+      addons:
+        - id: leak_repair-addon-home-1
+          name: Parts & materials
+          description: "**Supply lines, washers, or sealant** used on site, itemized."
+          duration: 10
+          suggestedPrice: 20
+        - id: leak_repair-addon-services-2
+          name: After-hours emergency
+          description: "**Priority evening or weekend arrival** when you need water back fast."
+          duration: 15
+          suggestedPrice: 32
+    - name: Fixture Installation
+      durations:
+        - 60
+        - 120
+      prices:
+        - 90
+        - 140
+        - 220
+      description: "**Professional installation of sinks or toilets** with proper sealing and testing. Ensures long-term reliability."
+      addons:
+        - id: fixture_installation-addon-home-1
+          name: Materials & supplies
+          description: "**Parts, cleaners, or hardware** used for Fixture Installation, itemized where applicable."
+          duration: 10
+          suggestedPrice: 23
+        - id: fixture_installation-addon-services-2
+          name: Priority scheduling
+          description: "**Earlier or wider arrival window** when booking Fixture Installation."
+          duration: 15
+          suggestedPrice: 36
+    - name: Drain Cleaning
+      durations:
+        - 45
+        - 90
+      prices:
+        - 70
+        - 100
+        - 150
+      description: "**Effective drain clearing** using professional tools. Ideal for slow or blocked drains."
+      addons:
+        - id: drain_cleaning-addon-home-1
+          name: Materials & supplies
+          description: "**Parts, cleaners, or hardware** used for Drain Cleaning, itemized where applicable."
+          duration: 10
+          suggestedPrice: 18
+        - id: drain_cleaning-addon-services-2
+          name: Priority scheduling
+          description: "**Earlier or wider arrival window** when booking Drain Cleaning."
+          duration: 15
+          suggestedPrice: 28
+

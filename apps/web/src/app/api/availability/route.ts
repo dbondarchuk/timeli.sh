@@ -1,4 +1,5 @@
 import { trackBookingStep } from "@/utils/booking-tracking";
+import { isSubscriptionPastDue } from "@/utils/subscription-access";
 import { getServicesContainer } from "@/utils/utils";
 import { availabilitySearchParamsLoader } from "@timelish/api-sdk";
 import { getLoggerFactory } from "@timelish/logger";
@@ -15,6 +16,18 @@ export async function GET(request: NextRequest) {
     },
     "Processing availability API request",
   );
+
+  const subscriptionStatus = request.headers.get("x-subscription-status");
+  if (isSubscriptionPastDue(subscriptionStatus)) {
+    return NextResponse.json(
+      {
+        success: false,
+        code: "subscription_past_due",
+        message: "Something went wrong, please contact us.",
+      },
+      { status: 402 },
+    );
+  }
 
   const params = availabilitySearchParamsLoader(request.nextUrl.searchParams);
   const duration = params.duration;
@@ -39,7 +52,7 @@ export async function GET(request: NextRequest) {
   logger.debug({ duration }, "Fetching availability");
 
   const availability =
-    await servicesContainer.eventsService.getAvailability(duration);
+    await servicesContainer.bookingService.getAvailability(duration);
 
   logger.debug(
     {
