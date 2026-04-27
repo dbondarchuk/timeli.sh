@@ -8,14 +8,24 @@ import {
   ConnectedAppError,
   ConnectedAppResponse,
   ConnectedOauthAppTokens,
+  EventEnvelope,
+  IEventSubscriber,
   IConnectedAppProps,
   IConnectedAppWithWebhook,
   IOAuthConnectedApp,
+  ORGANIZATION_DOMAIN_CHANGED_EVENT_TYPE,
+  OrganizationDomainChangedPayload,
   IPaymentProcessor,
   Payment,
   PaymentFee,
 } from "@timelish/types";
-import { decrypt, encrypt, getAdminUrl } from "@timelish/utils";
+import {
+  decrypt,
+  encrypt,
+  getAdminUrl,
+  getWebsiteDomain,
+} from "@timelish/utils";
+import { getApplePayDomainAssociation } from "./apple-pay";
 import { SQUARE_APP_NAME } from "./const";
 import {
   SquareFormProps,
@@ -110,7 +120,8 @@ class SquareConnectedApp
   implements
     IOAuthConnectedApp<SquareMerchantData>,
     IPaymentProcessor,
-    IConnectedAppWithWebhook<SquareMerchantData>
+    IConnectedAppWithWebhook<SquareMerchantData>,
+    IEventSubscriber
 {
   protected readonly loggerFactory: LoggerFactory;
 
@@ -288,6 +299,40 @@ class SquareConnectedApp
     }
   }
 
+  public async afterOAuthConnected(
+    appData: ConnectedAppData<SquareMerchantData>,
+  ): Promise<void> {
+    const logger = this.loggerFactory("afterOAuthConnected");
+    logger.debug({ appId: appData._id }, "Square after OAuth connected");
+    await this.registerApplePayDomain(appData);
+    logger.debug(
+      { appId: appData._id },
+      "Square Apple Pay domain registered successfully",
+    );
+  }
+
+  public async onEvent(
+    appData: ConnectedAppData<SquareMerchantData>,
+    envelope: EventEnvelope,
+  ): Promise<void> {
+    if (envelope.type !== ORGANIZATION_DOMAIN_CHANGED_EVENT_TYPE) {
+      return;
+    }
+
+    const logger = this.loggerFactory("onEvent");
+    const payload = envelope.payload as OrganizationDomainChangedPayload;
+    logger.debug(
+      {
+        appId: appData._id,
+        previousDomain: payload.previousDomain,
+        newDomain: payload.newDomain,
+      },
+      "Organization domain changed, re-registering Square Apple Pay domain",
+    );
+
+    await this.registerApplePayDomain(appData);
+  }
+
   public getFormProps(
     appData: ConnectedAppData<SquareMerchantData>,
   ): SquareFormProps {
@@ -308,6 +353,12 @@ class SquareConnectedApp
       locationId: appData.data.locationId,
       isSandbox: isSquareSandbox(),
     };
+  }
+
+  public async getApplePayDomainAssociation(
+    appData: ConnectedAppData<SquareMerchantData>,
+  ): Promise<string | null> {
+    return getApplePayDomainAssociation(isSquareSandbox());
   }
 
   public async processStaticWebhook(
@@ -873,6 +924,66 @@ class SquareConnectedApp
     }
 
     return json.order;
+  }
+
+  protected async registerApplePayDomain(
+    appData: ConnectedAppData<SquareMerchantData>,
+  ) {
+    const logger = this.loggerFactory("registerApplePayDomain");
+    logger.debug({ appId: appData._id }, "Registering Square Apple Pay domain");
+
+    const organization =
+      await this.props.services.organizationService.getOrganization();
+    if (!organization) {
+      throw new ConnectedAppError(
+        "app_square_admin.statusText.apple_pay_domain_registration_failed" satisfies SquareAdminAllKeys,
+      );
+    }
+
+    const domain = getWebsiteDomain(organization);
+    logger.debug({ domain }, "Registering Square Apple Pay domain");
+
+    const accessToken = await this.getMerchantAccessToken(appData);
+    const res = await fetch(`${squareApiBaseUrl()}/v2/apple-pay/domains`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        domain_name: domain,
+      }),
+    });
+
+    if (!res.ok) {
+      const responseBody = await res.text();
+      logger.error(
+        {
+          appId: appData._id,
+          responseBody,
+          status: res.status,
+        },
+        "Square register Apple Pay domain failed",
+      );
+
+      throw new Error("Square register Apple Pay domain failed");
+    }
+
+    const json = (await res.json()) as {
+      status?: "PENDING" | "VERIFIED";
+      errors?: { detail?: string; code?: string }[];
+    };
+
+    if (!json.status) {
+      throw new ConnectedAppError(
+        "app_square_admin.statusText.apple_pay_domain_registration_failed" satisfies SquareAdminAllKeys,
+      );
+    }
+
+    logger.debug(
+      { appId: appData._id, status: json.status },
+      "Square Apple Pay domain registered successfully",
+    );
   }
 
   /**

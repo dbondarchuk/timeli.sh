@@ -316,8 +316,12 @@ export class ConnectedAppsService
         _id: result.appId,
       });
       if (connectedApp) {
+        const props = this.getServices(
+          connectedApp.organizationId,
+        ).connectedAppsService.getAppServiceProps(connectedApp.organizationId);
+
         const postConnectService = AvailableAppServices[connectedApp.name](
-          this.getAppServiceProps(result.appId, connectedApp.organizationId),
+          props,
         ) as any as IOAuthConnectedApp;
         if (typeof postConnectService.afterOAuthConnected === "function") {
           try {

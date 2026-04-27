@@ -85,12 +85,12 @@ export default class CustomerEmailNotificationConnectedApp
           oldDuration,
           doNotNotifyCustomer,
         ),
-      onAppointmentStatusChanged: (appointment, newStatus, oldStatus, _source) =>
-        this.onAppointmentStatusChanged(
-          appData,
-          appointment,
-          newStatus,
-        ),
+      onAppointmentStatusChanged: (
+        appointment,
+        newStatus,
+        oldStatus,
+        _source,
+      ) => this.onAppointmentStatusChanged(appData, appointment, newStatus),
     });
   }
 
@@ -365,7 +365,7 @@ export default class CustomerEmailNotificationConnectedApp
         appointment,
         config,
         adminUrl: getAdminUrl(),
-        websiteUrl: getWebsiteUrl(organization.slug, organization.domain),
+        websiteUrl: getWebsiteUrl(organization),
         customer: appointment.customer,
         useAppointmentTimezone: true,
         locale: config.brand.language,

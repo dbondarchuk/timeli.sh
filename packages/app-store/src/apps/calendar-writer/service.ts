@@ -409,7 +409,7 @@ export class CalendarWriterConnectedApp
       }
 
       const adminUrl = getAdminUrl();
-      const websiteUrl = getWebsiteUrl(organization.slug, organization.domain);
+      const websiteUrl = getWebsiteUrl(organization);
 
       const args = getArguments({
         appointment,

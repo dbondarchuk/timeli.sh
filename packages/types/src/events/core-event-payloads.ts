@@ -24,6 +24,7 @@ import {
   APP_UNINSTALLED_EVENT_TYPE,
   APP_CONNECTED_EVENT_TYPE,
   APP_FAILED_EVENT_TYPE,
+  ORGANIZATION_DOMAIN_CHANGED_EVENT_TYPE,
   ASSET_CREATED_EVENT_TYPE,
   ASSET_DELETED_EVENT_TYPE,
   ASSET_UPDATED_EVENT_TYPE,
@@ -216,6 +217,11 @@ export type AppFailedPayload = {
   userId: string;
 };
 
+export type OrganizationDomainChangedPayload = {
+  previousDomain: string | null;
+  newDomain: string | null;
+};
+
 export type TemplateCreatedPayload = { template: Template };
 export type TemplateUpdatedPayload = { template: Template };
 export type TemplateDeletedPayload = { templateIds: string[] };
@@ -288,6 +294,7 @@ export type CoreEventPayloadByType = {
   [APP_UNINSTALLED_EVENT_TYPE]: AppUninstalledPayload;
   [APP_CONNECTED_EVENT_TYPE]: AppConnectedPayload;
   [APP_FAILED_EVENT_TYPE]: AppFailedPayload;
+  [ORGANIZATION_DOMAIN_CHANGED_EVENT_TYPE]: OrganizationDomainChangedPayload;
   [TEMPLATE_CREATED_EVENT_TYPE]: TemplateCreatedPayload;
   [TEMPLATE_UPDATED_EVENT_TYPE]: TemplateUpdatedPayload;
   [TEMPLATE_DELETED_EVENT_TYPE]: TemplateDeletedPayload;

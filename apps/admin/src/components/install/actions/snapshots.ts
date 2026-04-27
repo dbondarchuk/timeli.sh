@@ -15,7 +15,7 @@ import {
 } from "@timelish/app-store";
 import { languages } from "@timelish/i18n";
 import { getLoggerFactory } from "@timelish/logger";
-import { OrganizationService, ServicesContainer } from "@timelish/services";
+import { ServicesContainer } from "@timelish/services";
 import {
   fontName,
   zCountry,
@@ -78,18 +78,17 @@ export async function getInstallWorkspaceSnapshot(): Promise<InstallWorkspaceSer
     return null;
   }
 
-  const org = await new OrganizationService(orgId).getOrganization();
+  const services = ServicesContainer(orgId);
+  const org = await services.organizationService.getOrganization();
   if (!org) {
     logger.error({ orgId }, "Organization not found");
     return null;
   }
 
   const orgRecord = org as typeof org & { name?: string };
-  const services = ServicesContainer(orgId);
   const general =
     await services.configurationService.getConfiguration("general");
-  const brand =
-    await services.configurationService.getConfiguration("brand");
+  const brand = await services.configurationService.getConfiguration("brand");
   const styling =
     (await services.configurationService.getConfiguration("styling")) ?? null;
   const businessName =
@@ -204,7 +203,8 @@ export async function getInstallPreferencesSnapshot(): Promise<InstallPreference
     return null;
   }
 
-  const org = await new OrganizationService(organizationId).getOrganization();
+  const services = ServicesContainer(organizationId);
+  const org = await services.organizationService.getOrganization();
   if (!org) {
     logger.error({ organizationId }, "Organization not found");
     return null;

@@ -203,6 +203,10 @@ platformEvents:
     updated:
       title: Налаштування оновлено
       description: "{key}"
+  organization:
+    domainChanged:
+      title: Домен організації змінено
+      description: "{previousDomain} → {newDomain}"
   asset:
     created:
       title: Ассет завантажено

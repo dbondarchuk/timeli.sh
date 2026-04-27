@@ -90,7 +90,10 @@ export const ServicesContainer: (organizationId: string) => IServicesContainer =
 
     const dashboardNotificationsService =
       new RedisDashboardNotificationPublisher(organizationId, redisClient);
-    const organizationService = new OrganizationService(organizationId);
+    const organizationService = new OrganizationService(
+      organizationId,
+      eventService,
+    );
     const userService = new UserService(organizationId);
     const customersService = new CustomersService(organizationId, eventService);
     const activityService = new ActivityService(

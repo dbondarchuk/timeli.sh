@@ -49,6 +49,8 @@ export const APP_INSTALLED_EVENT_TYPE = "app.installed" as const;
 export const APP_UNINSTALLED_EVENT_TYPE = "app.uninstalled" as const;
 export const APP_CONNECTED_EVENT_TYPE = "app.connected" as const;
 export const APP_FAILED_EVENT_TYPE = "app.failed" as const;
+export const ORGANIZATION_DOMAIN_CHANGED_EVENT_TYPE =
+  "organization.domainChanged" as const;
 
 export const TEMPLATE_CREATED_EVENT_TYPE = "template.created" as const;
 export const TEMPLATE_UPDATED_EVENT_TYPE = "template.updated" as const;

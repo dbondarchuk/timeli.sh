@@ -10,6 +10,7 @@ import { CUSTOMER_EVENT_DEFINITIONS } from "./customer/customer-event-definition
 import { DISCOUNT_EVENT_DEFINITIONS } from "./discount/discount-event-definitions";
 import { FIELD_EVENT_DEFINITIONS } from "./field/field-event-definitions";
 import { GIFT_CARD_EVENT_DEFINITIONS } from "./gift-card/gift-card-event-definitions";
+import { ORGANIZATION_EVENT_DEFINITIONS } from "./organization/organization-event-definitions";
 import { PAGE_EVENT_DEFINITIONS } from "./page/page-event-definitions";
 import { PAGE_FOOTER_EVENT_DEFINITIONS } from "./page/page-footer-event-definitions";
 import { PAGE_HEADER_EVENT_DEFINITIONS } from "./page/page-header-event-definitions";
@@ -25,6 +26,7 @@ export const DOMAIN_EVENT_DEFINITIONS: Record<string, EventDefinition> = {
   ...CUSTOMER_EVENT_DEFINITIONS,
   ...PAYMENT_EVENT_DEFINITIONS,
   ...GIFT_CARD_EVENT_DEFINITIONS,
+  ...ORGANIZATION_EVENT_DEFINITIONS,
   ...FIELD_EVENT_DEFINITIONS,
   ...ADDON_EVENT_DEFINITIONS,
   ...APPOINTMENT_OPTION_EVENT_DEFINITIONS,

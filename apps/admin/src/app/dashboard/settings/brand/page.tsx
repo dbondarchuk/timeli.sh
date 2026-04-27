@@ -36,10 +36,10 @@ export default async function Page() {
     );
   const websiteUrl = await getWebsiteUrl();
   const publicDomain = process.env.PUBLIC_DOMAIN ?? "";
-  const timeliBaseHost = publicDomain
+  const baseHost = publicDomain
     ? `${organizationSlug}.${publicDomain}`
     : organizationSlug;
-  const timeliBaseUrl = `https://${timeliBaseHost}`;
+  const baseUrl = `https://${baseHost}`;
   const customDomainARecordIp =
     process.env.CUSTOM_DOMAIN_A_RECORD_IP?.trim() || undefined;
 
@@ -75,8 +75,8 @@ export default async function Page() {
           customDomain={organizationDomain}
           organizationSlug={organizationSlug}
           websiteUrl={websiteUrl}
-          timeliBaseHost={timeliBaseHost}
-          timeliBaseUrl={timeliBaseUrl}
+          timeliBaseHost={baseHost}
+          timeliBaseUrl={baseUrl}
           customDomainARecordIp={customDomainARecordIp}
           billingSubscriptionDetails={billingSubscriptionDetails}
         />

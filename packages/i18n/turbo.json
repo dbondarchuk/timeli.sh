@@ -4,6 +4,18 @@
   "tasks": {
     "build": {
       "outputs": ["dist/**", "dist/**"]
+    },
+    "generate-locales": {
+      "cache": false
+    },
+    "typegen": {
+      "cache": false
+    },
+    "check-translations": {
+      "cache": false
+    },
+    "translate": {
+      "cache": false
     }
   }
 }

@@ -367,7 +367,7 @@ export class EmailNotificationConnectedApp
         appointment,
         config,
         adminUrl: getAdminUrl(),
-        websiteUrl: getWebsiteUrl(organization.slug, organization.domain),
+        websiteUrl: getWebsiteUrl(organization),
         customer: appointment.customer,
         useAppointmentTimezone: true,
         locale: config.brand.language,

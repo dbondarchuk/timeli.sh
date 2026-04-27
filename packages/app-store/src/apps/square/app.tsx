@@ -1,4 +1,4 @@
-import { App } from "@timelish/types";
+import { App, ORGANIZATION_DOMAIN_CHANGED_EVENT_TYPE } from "@timelish/types";
 import { SQUARE_APP_NAME } from "./const";
 import { SquareLogo } from "./logo";
 import { SquareAdminKeys, SquareAdminNamespace } from "./translations/types";
@@ -9,6 +9,7 @@ export const SquareApp: App<SquareAdminNamespace, SquareAdminKeys> = {
   scope: ["payment"],
   type: "oauth",
   category: ["apps.categories.payment"],
+  subscribeTo: [ORGANIZATION_DOMAIN_CHANGED_EVENT_TYPE],
   Logo: ({ className }) => <SquareLogo className={className} />,
   isFeatured: true,
   description: {

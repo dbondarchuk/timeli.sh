@@ -21,6 +21,7 @@ statusText:
   app_not_configured: Square не підключено
   payment_failed: Square не зміг обробити платіж
   payment_incomplete: Платіж Square не завершено
+  apple_pay_domain_registration_failed: Не вдалося зареєструвати домен Apple Pay
 validation:
   locationId:
     required: Потрібен ідентифікатор локації Square
@@ -30,4 +31,3 @@ validation:
     required: Потрібен ідентифікатор платіжного наміру
   sourceId:
     required: Потрібен ідентифікатор джерела оплати
-

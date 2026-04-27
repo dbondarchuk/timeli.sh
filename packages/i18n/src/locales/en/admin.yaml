@@ -201,6 +201,10 @@ platformEvents:
     updated:
       title: Settings updated
       description: "{key}"
+  organization:
+    domainChanged:
+      title: Organization domain changed
+      description: "{previousDomain} → {newDomain}"
   asset:
     created:
       title: Asset uploaded

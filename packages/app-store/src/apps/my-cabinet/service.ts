@@ -420,6 +420,16 @@ export class MyCabinetConnectedApp
       this.props.services.organizationService.getOrganization(),
     ]);
 
+    if (!organization) {
+      return Response.json(
+        {
+          success: false,
+          error: "organization_not_found",
+        },
+        { status: 404 },
+      );
+    }
+
     logger.debug(
       { appId: appData._id, organizationSlug: organization?.slug },
       "Fetched config and organization for template args",
@@ -429,7 +439,7 @@ export class MyCabinetConnectedApp
       customer,
       config,
       adminUrl: getAdminUrl(),
-      websiteUrl: getWebsiteUrl(organization?.slug, organization?.domain),
+      websiteUrl: getWebsiteUrl(organization),
       additionalProperties: { otp: code },
     });
 

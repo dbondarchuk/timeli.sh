@@ -21,6 +21,7 @@ statusText:
   app_not_configured: Square is not connected
   payment_failed: Square could not process the payment
   payment_incomplete: Square payment did not complete
+  apple_pay_domain_registration_failed: Could not register Apple Pay domain
 validation:
   locationId:
     required: Square location id is required
@@ -30,4 +31,3 @@ validation:
     required: Payment intent id is required
   sourceId:
     required: Payment source id is required
-

@@ -84,12 +84,12 @@ export default class CustomerTextMessageNotificationConnectedApp
           oldDuration,
           doNotNotifyCustomer,
         ),
-      onAppointmentStatusChanged: (appointment, newStatus, oldStatus, _source) =>
-        this.onAppointmentStatusChanged(
-          appData,
-          appointment,
-          newStatus,
-        ),
+      onAppointmentStatusChanged: (
+        appointment,
+        newStatus,
+        oldStatus,
+        _source,
+      ) => this.onAppointmentStatusChanged(appData, appointment, newStatus),
     });
   }
 
@@ -419,7 +419,7 @@ export default class CustomerTextMessageNotificationConnectedApp
       }
 
       const adminUrl = getAdminUrl();
-      const websiteUrl = getWebsiteUrl(organization.slug, organization.domain);
+      const websiteUrl = getWebsiteUrl(organization);
 
       const args = getArguments({
         appointment,

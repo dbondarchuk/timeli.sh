@@ -1,4 +1,4 @@
-import { getServicesContainer } from "@/app/utils";
+import { getActor, getServicesContainer } from "@/app/utils";
 import { organizationDomainSchema } from "@timelish/api-sdk";
 import { getLoggerFactory } from "@timelish/logger";
 import { okStatus } from "@timelish/types";
@@ -23,7 +23,10 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    await servicesContainer.organizationService.setDomain(data.domain);
+    await servicesContainer.organizationService.setDomain(
+      data.domain,
+      await getActor(),
+    );
   } catch (error) {
     if (error instanceof Error && error.name === "domain_already_in_use") {
       logger.warn({ customDomain: data.domain }, "Domain is already in use");
@@ -47,7 +50,7 @@ export async function DELETE() {
     "DELETE",
   );
   const servicesContainer = await getServicesContainer();
-  await servicesContainer.organizationService.setDomain(undefined);
+  await servicesContainer.organizationService.setDomain(undefined, await getActor());
   logger.debug("Custom domain removed");
   return NextResponse.json(okStatus, { status: 200 });
 }

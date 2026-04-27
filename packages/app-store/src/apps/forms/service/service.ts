@@ -6,8 +6,8 @@ import {
   ConnectedAppData,
   ConnectedAppRequestError,
   Customer,
-  CustomerSearchField,
   customerEventSource,
+  CustomerSearchField,
   type EventSource,
   IConnectedApp,
   IConnectedAppProps,
@@ -22,6 +22,7 @@ import {
 } from "@timelish/utils";
 import { v4 as uuidv4 } from "uuid";
 import { getEmailTemplate } from "../emails/utils";
+import { FORM_RESPONSE_CREATED_EVENT_TYPE } from "../events";
 import {
   CheckFormNameUniqueAction,
   CheckFormNameUniqueActionType,
@@ -62,7 +63,6 @@ import {
   UpdateFormResponseAction,
   UpdateFormResponseActionType,
 } from "../models";
-import { FORM_RESPONSE_CREATED_EVENT_TYPE } from "../events";
 import { getFormResponseSchema } from "../models/utils";
 import { FormsAdminAllKeys } from "../translations/types";
 import { FormsRepositoryService } from "./repository-service";
@@ -1115,9 +1115,7 @@ export class FormsConnectedApp implements IConnectedApp {
       return { actor: "user", actorId: userId };
     }
     const cid = formResponse.customerId ?? customer?._id;
-    return cid
-      ? { actor: "customer", actorId: cid }
-      : { actor: "customer" };
+    return cid ? { actor: "customer", actorId: cid } : { actor: "customer" };
   }
 
   private async processCreateFormResponseRequest(
@@ -1306,7 +1304,7 @@ export class FormsConnectedApp implements IConnectedApp {
 
       const language = config.brand.language ?? "en";
       const adminUrl = getAdminUrl();
-      const websiteUrl = getWebsiteUrl(organization.slug, organization.domain);
+      const websiteUrl = getWebsiteUrl(organization);
 
       const listFormat = new Intl.ListFormat(locale, { style: "short" });
       const formatAnswerValue = (
