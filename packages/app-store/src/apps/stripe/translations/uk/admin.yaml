@@ -1,0 +1,30 @@
+title: Stripe
+app:
+  displayName: Stripe
+  description: |-
+    **Stripe** дозволяє бізнесам приймати **картки**, **гаманці** та інші способи оплати онлайн.
+
+    **Timeli.sh** підключається до вашого облікового запису **Stripe** через **Stripe Connect**, щоб клієнти могли **оплачувати під час запису**.
+form:
+  connect: Підключити <app></app>
+  reconnect: Підключити знову <app></app>
+  pendingAuthorization: Очікування авторизації Stripe…
+statusText:
+  redirect_missing_app_id: У відповіді авторизації немає ідентифікатора додатка
+  redirect_missing_code: У відповіді авторизації немає коду
+  access_denied: Доступ Stripe заборонено
+  oauth_error: Stripe повернув помилку OAuth
+  not_authorized: Stripe не повернув потрібні токени
+  missing_oauth_config: OAuth Stripe Connect не налаштовано на сервері
+  token_refresh_failed: Не вдалося оновити токен доступу Stripe
+  app_not_configured: Stripe не підключено
+  payment_failed: Stripe не зміг обробити платіж
+  payment_incomplete: Платіж Stripe не завершено
+  webhook_not_configured: Вебхуки Stripe не налаштовано на сервері
+  invalid_webhook_signature: Недійсний підпис вебхука Stripe
+  apple_pay_domain_registration_failed: Не вдалося зареєструвати домен Apple Pay у Stripe
+validation:
+  accountId:
+    required: Потрібен ідентифікатор облікового запису Stripe
+  paymentIntentId:
+    required: Потрібен ідентифікатор платіжного наміру

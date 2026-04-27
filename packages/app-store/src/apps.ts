@@ -37,6 +37,8 @@ import { SmartScheduleApp } from "./apps/smart-schedule/app";
 import { SMART_SCHEDULE_APP_NAME } from "./apps/smart-schedule/const";
 import { SquareApp } from "./apps/square/app";
 import { SQUARE_APP_NAME } from "./apps/square/const";
+import { StripeApp } from "./apps/stripe/app";
+import { STRIPE_APP_NAME } from "./apps/stripe/const";
 import { SmtpApp } from "./apps/smtp/app";
 import { SMTP_APP_NAME } from "./apps/smtp/const";
 import { TextBeltApp } from "./apps/text-belt/app";
@@ -85,6 +87,7 @@ export const AvailableApps: Record<string, App> = {
   [TEXT_MESSAGE_RESENDER_APP_NAME]: TextMessageResenderApp,
   [PAYPAL_APP_NAME]: PaypalApp,
   [SQUARE_APP_NAME]: SquareApp,
+  [STRIPE_APP_NAME]: StripeApp,
   [BLOG_APP_NAME]: BlogApp,
   [WAITLIST_APP_NAME]: WaitlistApp,
   [WAITLIST_NOTIFICATIONS_APP_NAME]: WaitlistNotificationsApp,
@@ -115,6 +118,7 @@ export { MY_CABINET_APP_NAME } from "./apps/my-cabinet/const";
 export { OUTLOOK_APP_NAME } from "./apps/outlook/const";
 export { PAYPAL_APP_NAME } from "./apps/paypal/const";
 export { SQUARE_APP_NAME } from "./apps/square/const";
+export { STRIPE_APP_NAME } from "./apps/stripe/const";
 // export { S3_ASSETS_STORAGE_APP_NAME } from "./apps/s3-assets-storage/const";
 export { APPOINTMENT_NOTIFICATIONS_APP_NAME } from "./apps/appointment-notifications/const";
 export { FORMS_APP_NAME } from "./apps/forms/const";

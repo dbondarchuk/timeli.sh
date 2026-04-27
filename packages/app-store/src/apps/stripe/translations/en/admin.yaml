@@ -1,0 +1,30 @@
+title: Stripe
+app:
+  displayName: Stripe
+  description: |-
+    **Stripe** lets businesses accept **cards**, **wallets**, and other payment methods online.
+
+    **Timeli.sh** connects to your **Stripe** account through **Stripe Connect** so clients can **pay when they book**.
+form:
+  connect: Connect <app></app>
+  reconnect: Reconnect <app></app>
+  pendingAuthorization: Waiting for Stripe authorization…
+statusText:
+  redirect_missing_app_id: Authorization response is missing the app id
+  redirect_missing_code: Authorization response is missing the authorization code
+  access_denied: Stripe access was denied
+  oauth_error: Stripe returned an OAuth error
+  not_authorized: Stripe did not return the required tokens
+  missing_oauth_config: Stripe Connect OAuth is not configured on the server
+  token_refresh_failed: Could not refresh the Stripe access token
+  app_not_configured: Stripe is not connected
+  payment_failed: Stripe could not process the payment
+  payment_incomplete: Stripe payment did not complete
+  webhook_not_configured: Stripe webhooks are not configured on the server
+  invalid_webhook_signature: Invalid Stripe webhook signature
+  apple_pay_domain_registration_failed: Could not register Apple Pay domain with Stripe
+validation:
+  accountId:
+    required: Stripe account id is required
+  paymentIntentId:
+    required: Payment intent id is required

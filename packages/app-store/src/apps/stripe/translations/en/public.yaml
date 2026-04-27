@@ -1,0 +1,7 @@
+form:
+  payButton: Pay now
+  totalLabel: Total
+  or: or
+toast:
+  payment_failed: Payment failed
+  payment_failed_description: We could not charge your card. Please try again.

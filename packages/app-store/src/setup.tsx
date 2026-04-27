@@ -12,6 +12,7 @@ import { MyCabinetAppSetup } from "./apps/my-cabinet/setup";
 import { OutlookAppSetup } from "./apps/outlook/setup";
 import { PaypalAppSetup } from "./apps/paypal/setup";
 import { SquareAppSetup } from "./apps/square/setup";
+import { StripeAppSetup } from "./apps/stripe/setup";
 import { SmartScheduleAppSetup } from "./apps/smart-schedule/setup";
 import { TextBeltAppSetup } from "./apps/text-belt/setup";
 import { TextMessageAutoReplyAppSetup } from "./apps/text-message-auto-reply/setup";
@@ -36,6 +37,7 @@ import { MY_CABINET_APP_NAME } from "./apps/my-cabinet/const";
 import { OUTLOOK_APP_NAME } from "./apps/outlook/const";
 import { PAYPAL_APP_NAME } from "./apps/paypal/const";
 import { SQUARE_APP_NAME } from "./apps/square/const";
+import { STRIPE_APP_NAME } from "./apps/stripe/const";
 import { SMART_SCHEDULE_APP_NAME } from "./apps/smart-schedule/const";
 import { TEXTBELT_APP_NAME } from "./apps/text-belt/const";
 import { TEXT_MESSAGE_AUTO_REPLY_APP_NAME } from "./apps/text-message-auto-reply/const";
@@ -63,6 +65,7 @@ export const AppSetups: Record<string, BasicAppSetup> = {
   [OUTLOOK_APP_NAME]: (props) => <OutlookAppSetup {...props} />,
   [PAYPAL_APP_NAME]: (props) => <PaypalAppSetup {...props} />,
   [SQUARE_APP_NAME]: (props) => <SquareAppSetup {...props} />,
+  [STRIPE_APP_NAME]: (props) => <StripeAppSetup {...props} />,
   [SMART_SCHEDULE_APP_NAME]: (props) => <SmartScheduleAppSetup {...props} />,
   [TEXTBELT_APP_NAME]: (props) => <TextBeltAppSetup {...props} />,
   [TEXT_MESSAGE_AUTO_REPLY_APP_NAME]: (props) => (

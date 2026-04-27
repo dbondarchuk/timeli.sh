@@ -31,7 +31,7 @@ checkout:
         branding: Сторінка бронювання з вашим брендом
         domain: Використовуйте ваш домен
         calendar: "Синхронізація календаря (Google, Outlook, CalDAV)"
-        payments: "Інтеграції оплат (PayPal, Square)"
+        payments: "Інтеграції оплат (PayPal, Square, Stripe)"
         emailNotifications: Email-сповіщення
         textNotifications: SMS-сповіщення
 wizard:
@@ -225,10 +225,12 @@ wizard:
     acceptPayments: Приймати онлайн-оплату
     acceptPaymentsHint: Підключіть провайдера оплати.
     cardPayments: Оплата карткою
-    stripeDesc: Підключіть провайдера (наприклад PayPal) через магазин.
     browseProviders: Оглянути додатки для оплати
     paypalDesc: Оплата через PayPal.
     squareDesc: Оплата карткою через Square.
+    stripeDesc: >-
+      Оплата картками, Apple Pay, Google Pay та іншим через Stripe (Stripe
+      Connect).
     paymentAppRequired: "Підключіть платіжний додаток, щоб продовжити з онлайн-оплатою."
     onePaymentAppHint: >-
       Одночасно можна підключити лише один платіжний додаток. Спочатку

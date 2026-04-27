@@ -29,7 +29,7 @@ checkout:
         branding: Custom booking page with your branding
         domain: Use your own domain name
         calendar: "Calendar sync (Google, Outlook, CalDAV)"
-        payments: "Payment integrations (PayPal, Square)"
+        payments: "Payment integrations (PayPal, Square, Stripe)"
         emailNotifications: Email notifications
         textNotifications: Text message notifications
   checkoutError: Could not start checkout. Try again shortly.
@@ -225,12 +225,12 @@ wizard:
     acceptPayments: Accept online payments
     acceptPaymentsHint: Connect your payment provider.
     cardPayments: Card payments
-    stripeDesc: >-
-      Connect a payment provider (for example PayPal or other supported apps)
-      from the store.
     browseProviders: Browse payment apps
     paypalDesc: Let clients pay with PayPal.
     squareDesc: Let clients pay with Square.
+    stripeDesc: >-
+      Let clients pay with Stripe (cards, Apple Pay, Google Pay, and more) via
+      Stripe Connect.
     paymentAppRequired: Connect a payment app to continue with online payments.
     onePaymentAppHint: >-
       Only one payment app can be connected. Disconnect the other provider

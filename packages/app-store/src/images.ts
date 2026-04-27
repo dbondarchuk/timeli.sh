@@ -10,6 +10,8 @@ import { PAYPAL_APP_NAME } from "./apps/paypal/const";
 import { PaypalImages } from "./apps/paypal/images";
 import { SQUARE_APP_NAME } from "./apps/square/const";
 import { SquareImages } from "./apps/square/images";
+import { STRIPE_APP_NAME } from "./apps/stripe/const";
+import { StripeImages } from "./apps/stripe/images";
 import { TEXTBELT_APP_NAME } from "./apps/text-belt/const";
 import { TextBeltImages } from "./apps/text-belt/images";
 import { WAITLIST_APP_NAME } from "./apps/waitlist/const";
@@ -27,4 +29,5 @@ export const AppImages: Record<string, string[]> = {
   [WAITLIST_APP_NAME]: WaitlistImages,
   [ZOOM_APP_NAME]: ZoomImages,
   [SQUARE_APP_NAME]: SquareImages,
+  [STRIPE_APP_NAME]: StripeImages,
 };
