@@ -125,36 +125,40 @@ export const CarddavAppSetup: React.FC<AppSetupProps> = ({
     try {
       setIsLoading(true);
 
-      const promise = new Promise<ConnectedAppStatusWithText>(
-        async (resolve, reject) => {
-          const _appId =
-            appId || (await adminApi.apps.addNewApp(CarddavApp.name));
-          setAppId(_appId);
+      const promise = new Promise<{
+        appId: string;
+        status: ConnectedAppStatusWithText;
+      }>(async (resolve, reject) => {
+        const _appId =
+          appId || (await adminApi.apps.addNewApp(CarddavApp.name));
+        setAppId(_appId);
 
-          const { data, ...status } = (await adminApi.apps.processRequest(
-            _appId,
-            {
-              type: "install",
-            } satisfies CarddavRequest,
-          )) as CarddavRequestInstallActionResponse;
+        const { data, ...status } = (await adminApi.apps.processRequest(
+          _appId,
+          {
+            type: "install",
+          } satisfies CarddavRequest,
+        )) as CarddavRequestInstallActionResponse;
 
-          setAppStatus(status);
+        setAppStatus(status);
 
-          if (status.status === "failed") {
-            reject(status.statusText);
-            return;
-          }
+        if (status.status === "failed") {
+          reject(status.statusText);
+          return;
+        }
 
-          if (status.status === "connected") {
-            resolve(status);
-          }
+        if (status.status === "connected") {
+          resolve({ appId: _appId, status });
 
           setConfiguration(data);
           router.refresh();
-        },
-      );
+          return;
+        }
 
-      await toastPromise(promise, {
+        reject(new Error("Unknown status"));
+      });
+
+      const { appId } = await toastPromise(promise, {
         success: {
           message: tApps("common.connectedAppSetup.success.title"),
           description: tApps("common.connectedAppSetup.success.description"),
@@ -165,7 +169,7 @@ export const CarddavAppSetup: React.FC<AppSetupProps> = ({
         },
       });
 
-      onSuccess(!existingAppId);
+      onSuccess(appId);
     } catch (e: any) {
       onError?.(e instanceof Error ? e.message : e?.toString());
     } finally {

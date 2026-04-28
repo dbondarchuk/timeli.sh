@@ -1,9 +1,13 @@
 "use server";
 
-import { getServicesContainer, getSession } from "@/app/utils";
+import { getActor, getServicesContainer, getSession } from "@/app/utils";
 import { BaseAllKeys } from "@timelish/i18n";
 import { getLoggerFactory } from "@timelish/logger";
-import { ConnectedAppStatusWithText } from "@timelish/types";
+import {
+  ConnectedAppStatusWithText,
+  DefaultAppsConfiguration,
+  DefaultAppScope,
+} from "@timelish/types";
 
 const logger = getLoggerFactory("AppStoreActions");
 
@@ -144,4 +148,48 @@ export const setAppStatus = async (
     );
     throw error;
   }
+};
+
+const DEFAULT_SCOPE_TO_CONFIG_FIELD: Partial<
+  Record<DefaultAppScope, keyof DefaultAppsConfiguration>
+> = {
+  payment: "paymentAppId",
+  "mail-send": "emailSenderAppId",
+  "text-message-send": "textMessageSenderAppId",
+  "text-message-respond": "textMessageResponderAppId",
+};
+
+export const setDefaultAppByScope = async (
+  appId: string,
+  scope: DefaultAppScope,
+) => {
+  const actionLogger = logger("setDefaultAppByScope");
+
+  const field = DEFAULT_SCOPE_TO_CONFIG_FIELD[scope];
+  if (!field) {
+    throw new Error(`Unsupported default app scope: ${scope}`);
+  }
+
+  actionLogger.debug({ appId, scope, field }, "Setting default app by scope");
+
+  const servicesContainer = await getServicesContainer();
+  const actor = await getActor();
+  const current =
+    await servicesContainer.configurationService.getConfiguration(
+      "defaultApps",
+    );
+  const next: DefaultAppsConfiguration = {
+    ...(current ?? {}),
+    [field]: appId,
+  };
+
+  await servicesContainer.configurationService.setConfiguration(
+    "defaultApps",
+    next,
+    actor,
+  );
+
+  actionLogger.debug({ appId, scope, field }, "Default app set by scope");
+
+  return { success: true, field };
 };

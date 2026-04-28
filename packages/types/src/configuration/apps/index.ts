@@ -11,3 +11,12 @@ export const defaultAppsConfigurationSchema = z.object({
 export type DefaultAppsConfiguration = z.infer<
   typeof defaultAppsConfigurationSchema
 >;
+
+export const defaultAppScopes = [
+  "payment",
+  "mail-send",
+  "text-message-send",
+  "text-message-respond",
+] as const;
+
+export type DefaultAppScope = (typeof defaultAppScopes)[number];

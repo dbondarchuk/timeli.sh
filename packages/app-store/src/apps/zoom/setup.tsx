@@ -39,7 +39,7 @@ export const ZoomAppSetup: React.FC<AppSetupProps> = ({
     setIsLoading(false);
 
     if (status.status === "connected") {
-      onSuccess();
+      onSuccess(appId);
       return;
     }
 

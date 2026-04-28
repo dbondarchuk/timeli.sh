@@ -72,10 +72,7 @@ export function StepPayments() {
   const squareSlotTaken = isPaymentAppSlotTaken(squareApp);
   const stripeSlotTaken = isPaymentAppSlotTaken(stripeApp);
   const canContinue =
-    !p.acceptPayments ||
-    paypalConnected ||
-    squareConnected ||
-    stripeConnected;
+    !p.acceptPayments || paypalConnected || squareConnected || stripeConnected;
 
   const onContinue = async () => {
     if (!canContinue) {
@@ -143,7 +140,11 @@ export function StepPayments() {
             </span>
             {app ? (
               <div className="flex items-center gap-2">
-                <AddOrUpdateAppButton app={app} refreshOnClose>
+                <AddOrUpdateAppButton
+                  app={app}
+                  refreshOnClose
+                  dontAskToSetDefault
+                >
                   <Button
                     size="sm"
                     variant="secondary"
@@ -167,7 +168,11 @@ export function StepPayments() {
                 )}
               </div>
             ) : (
-              <AddOrUpdateAppButton appType={appName} refreshOnClose>
+              <AddOrUpdateAppButton
+                appType={appName}
+                refreshOnClose
+                dontAskToSetDefault
+              >
                 <Button
                   size="sm"
                   disabled={blockConnectOrUpdate}

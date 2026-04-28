@@ -22,7 +22,9 @@ export const StripeAppSetup: React.FC<AppSetupProps> = ({
   onError,
   appId: existingAppId,
 }) => {
-  const t = useI18n<StripeAdminNamespace, StripeAdminKeys>(stripeAdminNamespace);
+  const t = useI18n<StripeAdminNamespace, StripeAdminKeys>(
+    stripeAdminNamespace,
+  );
   const [isLoading, setIsLoading] = React.useState(false);
 
   const [app, setApp] = React.useState<ConnectedApp | undefined>(undefined);
@@ -41,7 +43,7 @@ export const StripeAppSetup: React.FC<AppSetupProps> = ({
     setIsLoading(false);
 
     if (status.status === "connected") {
-      onSuccess();
+      onSuccess(appId);
       return;
     }
 

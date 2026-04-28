@@ -100,7 +100,11 @@ function CalendarIntegrationCard({
           </div>
           {connected ? (
             <div className="flex items-center gap-2">
-              <AddOrUpdateAppButton app={connected} refreshOnClose>
+              <AddOrUpdateAppButton
+                app={connected}
+                refreshOnClose
+                dontAskToSetDefault
+              >
                 <Button size="sm" variant="secondary">
                   {tApps("common.updateApp")}
                 </Button>
@@ -116,7 +120,11 @@ function CalendarIntegrationCard({
               ) : null}
             </div>
           ) : (
-            <AddOrUpdateAppButton appType={appName} refreshOnClose>
+            <AddOrUpdateAppButton
+              appType={appName}
+              refreshOnClose
+              dontAskToSetDefault
+            >
               <Button size="sm" variant="default" disabled={blockNewConnect}>
                 {t("wizard.integrations.connect")}
               </Button>

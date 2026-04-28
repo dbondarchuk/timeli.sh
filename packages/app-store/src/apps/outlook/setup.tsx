@@ -41,7 +41,7 @@ export const OutlookAppSetup: React.FC<AppSetupProps> = ({
     setIsLoading(false);
 
     if (status.status === "connected") {
-      onSuccess();
+      onSuccess(appId);
       return;
     }
 

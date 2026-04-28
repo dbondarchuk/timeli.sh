@@ -3,8 +3,20 @@
 import { AvailableApps } from "@timelish/app-store";
 import { AppSetups } from "@timelish/app-store/setup";
 import { useI18n } from "@timelish/i18n";
-import { AppSetupProps, ConnectedApp } from "@timelish/types";
 import {
+  AppSetupProps,
+  ConnectedApp,
+  DefaultAppScope,
+  defaultAppScopes,
+} from "@timelish/types";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
   Button,
   Dialog,
   DialogClose,
@@ -15,14 +27,17 @@ import {
   DialogTrigger,
   Spinner,
   toast,
+  toastPromise,
 } from "@timelish/ui";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useMemo } from "react";
+import { setDefaultAppByScope } from "./store/actions";
 
 export type AddOrUpdateAppButtonProps = {
   children: React.ReactNode;
   /** When true, a new connection only refreshes the page (install wizard); default sends users to /dashboard/apps. */
   refreshOnClose?: boolean;
+  dontAskToSetDefault?: boolean;
 } & (
   | {
       app: ConnectedApp;
@@ -35,6 +50,7 @@ export type AddOrUpdateAppButtonProps = {
 export const AddOrUpdateAppButton: React.FC<AddOrUpdateAppButtonProps> = ({
   children,
   refreshOnClose = false,
+  dontAskToSetDefault = false,
   ...props
 }) => {
   const router = useRouter();
@@ -52,6 +68,17 @@ export const AddOrUpdateAppButton: React.FC<AddOrUpdateAppButtonProps> = ({
 
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [pendingDefaultPrompt, setPendingDefaultPrompt] = React.useState<{
+    appId: string;
+    scope: DefaultAppScope;
+  } | null>(null);
+  const [settingDefault, setSettingDefault] = React.useState(false);
+
+  const defaultScope = useMemo(() => {
+    const currentApp = AvailableApps[appType];
+    if (!currentApp) return undefined;
+    return defaultAppScopes.find((scope) => currentApp.scope.includes(scope));
+  }, [appType]);
 
   const openDialog = () => {
     setIsOpen(true);
@@ -74,9 +101,19 @@ export const AddOrUpdateAppButton: React.FC<AddOrUpdateAppButtonProps> = ({
 
   const setupProps: AppSetupProps = useMemo(
     () => ({
-      onSuccess: (doNotCloseDialog?: boolean) => {
+      onSuccess: (appId: string, doNotCloseDialog?: boolean) => {
         toast.success(t("common.connectedAppSetup.success.description"));
-        if (!doNotCloseDialog) {
+        if (app || !defaultScope || dontAskToSetDefault) {
+          if (!doNotCloseDialog) {
+            closeDialog(true);
+          }
+          return;
+        }
+
+        if (appId) {
+          setPendingDefaultPrompt({ appId, scope: defaultScope });
+          setIsOpen(false);
+        } else if (!doNotCloseDialog) {
           closeDialog(true);
         }
       },
@@ -93,6 +130,27 @@ export const AddOrUpdateAppButton: React.FC<AddOrUpdateAppButtonProps> = ({
     }),
     [app?._id, t, closeDialog],
   );
+
+  const onSetDefault = async () => {
+    if (!pendingDefaultPrompt) return;
+    try {
+      setSettingDefault(true);
+      await toastPromise(
+        setDefaultAppByScope(
+          pendingDefaultPrompt.appId,
+          pendingDefaultPrompt.scope,
+        ),
+        {
+          success: t("common.defaultAppPrompt.toasts.setSuccess"),
+          error: t("common.defaultAppPrompt.toasts.setError"),
+        },
+      );
+    } finally {
+      setSettingDefault(false);
+      setPendingDefaultPrompt(null);
+      closeDialog(true);
+    }
+  };
 
   const AppSetupElement = React.useMemo(() => {
     if (!appType) return null;
@@ -111,33 +169,79 @@ export const AddOrUpdateAppButton: React.FC<AddOrUpdateAppButtonProps> = ({
   const title = app ? t("common.updateApp") : t("common.connectNewApp");
 
   return (
-    <Dialog open={isOpen} onOpenChange={onDialogOpenChange}>
-      <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="w-full sm:max-w-lg" aria-description={title}>
-        <DialogHeader className="px-1">
-          <DialogTitle>{title}</DialogTitle>
-        </DialogHeader>
-        <div className="w-full overflow-y-auto max-h-[70svh] px-1">
-          <div className="flex flex-col gap-4 py-4 relative w-full">
-            {AppSetupElement}
-            {isLoading && (
-              <div className="absolute top-0 left-0 right-0 bottom-0 flex justify-center items-center bg-white opacity-50">
-                <div role="status">
-                  <Spinner className="w-20 h-20" />
-                  <span className="sr-only">{t("common.pleaseWait")}</span>
+    <>
+      <Dialog open={isOpen} onOpenChange={onDialogOpenChange}>
+        <DialogTrigger asChild>{children}</DialogTrigger>
+        <DialogContent className="w-full sm:max-w-lg" aria-description={title}>
+          <DialogHeader className="px-1">
+            <DialogTitle>{title}</DialogTitle>
+          </DialogHeader>
+          <div className="w-full overflow-y-auto max-h-[70svh] px-1">
+            <div className="flex flex-col gap-4 py-4 relative w-full">
+              {AppSetupElement}
+              {isLoading && (
+                <div className="absolute top-0 left-0 right-0 bottom-0 flex justify-center items-center bg-white opacity-50">
+                  <div role="status">
+                    <Spinner className="w-20 h-20" />
+                    <span className="sr-only">{t("common.pleaseWait")}</span>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
-        </div>
-        <DialogFooter className="px-1">
-          <DialogClose asChild>
-            <Button type="button" variant="secondary">
-              {t("common.close")}
+          <DialogFooter className="px-1">
+            <DialogClose asChild>
+              <Button type="button" variant="secondary">
+                {t("common.close")}
+              </Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      <AlertDialog
+        open={!!pendingDefaultPrompt}
+        onOpenChange={(open) => {
+          if (!open && !settingDefault) {
+            setPendingDefaultPrompt(null);
+            closeDialog(true);
+          }
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {t("common.defaultAppPrompt.title")}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("common.defaultAppPrompt.description", {
+                target: pendingDefaultPrompt
+                  ? t(
+                      `common.defaultAppPrompt.targets.${pendingDefaultPrompt.scope}` as any,
+                    )
+                  : "",
+              })}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel
+              disabled={settingDefault}
+              onClick={() => {
+                setPendingDefaultPrompt(null);
+                closeDialog(true);
+              }}
+            >
+              {t("common.defaultAppPrompt.actions.skip")}
+            </AlertDialogCancel>
+            <Button
+              disabled={settingDefault || !pendingDefaultPrompt}
+              onClick={onSetDefault}
+            >
+              {settingDefault && <Spinner />}
+              {t("common.defaultAppPrompt.actions.setDefault")}
             </Button>
-          </DialogClose>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 };

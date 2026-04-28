@@ -2,10 +2,26 @@
 
 import { AvailableApps } from "@timelish/app-store";
 import { BaseAllKeys, useI18n } from "@timelish/i18n";
-import { Button, toastPromise } from "@timelish/ui";
+import { ComplexApp, DefaultAppScope, defaultAppScopes } from "@timelish/types";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  Button,
+  Spinner,
+  toastPromise,
+} from "@timelish/ui";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { installComplexApp, setAppStatus } from "./actions";
+import {
+  installComplexApp,
+  setAppStatus,
+  setDefaultAppByScope,
+} from "./actions";
 
 export const InstallComplexAppButton: React.FC<{
   appName: string;
@@ -14,21 +30,40 @@ export const InstallComplexAppButton: React.FC<{
   const app = React.useMemo(() => AvailableApps[appName], [appName]);
   const router = useRouter();
   const t = useI18n("apps");
+  const [pendingDefaultPrompt, setPendingDefaultPrompt] = React.useState<{
+    appId: string;
+    scope: DefaultAppScope;
+  } | null>(null);
+  const [settingDefault, setSettingDefault] = React.useState(false);
+
+  const defaultScope = React.useMemo(() => {
+    return defaultAppScopes.find((scope) => app.scope.includes(scope));
+  }, [app.scope]);
+
+  const finishInstallNavigation = React.useCallback(async () => {
+    if (app.type === "complex" && app.settingsHref) {
+      router.push(`/dashboard/${app.settingsHref}`);
+    } else if (app.type === "system") {
+      router.refresh();
+    }
+  }, [(app as ComplexApp).settingsHref, app.type, router]);
 
   const installComplex = async () => {
     if (app.type !== "complex" && app.type !== "system") return;
 
     const installFn = async () => {
       const appId = await installComplexApp(appName);
-      if (app.type === "complex" && app.settingsHref) {
-        router.push(`/dashboard/${app.settingsHref}`);
-      } else if (app.type === "system") {
+      if (app.type === "system") {
         await setAppStatus(appId, {
           status: "connected",
           statusText: "apps.common.statusText.installed" satisfies BaseAllKeys,
         });
+      }
 
-        router.refresh();
+      if (defaultScope) {
+        setPendingDefaultPrompt({ appId, scope: defaultScope });
+      } else {
+        await finishInstallNavigation();
       }
     };
 
@@ -42,14 +77,79 @@ export const InstallComplexAppButton: React.FC<{
     }
   };
   return (
-    <Button
-      variant="default"
-      disabled={app.dontAllowMultiple && installed > 0}
-      onClick={installComplex}
-    >
-      {app.dontAllowMultiple && installed > 0
-        ? t("common.alreadyInstalled")
-        : t("common.addApp")}
-    </Button>
+    <>
+      <Button
+        variant="default"
+        disabled={app.dontAllowMultiple && installed > 0}
+        onClick={installComplex}
+      >
+        {app.dontAllowMultiple && installed > 0
+          ? t("common.alreadyInstalled")
+          : t("common.addApp")}
+      </Button>
+      <AlertDialog
+        open={!!pendingDefaultPrompt}
+        onOpenChange={(open) => {
+          if (!open && !settingDefault) {
+            setPendingDefaultPrompt(null);
+            void finishInstallNavigation();
+          }
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {t("common.defaultAppPrompt.title")}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("common.defaultAppPrompt.description", {
+                target: pendingDefaultPrompt
+                  ? t(
+                      `common.defaultAppPrompt.targets.${pendingDefaultPrompt.scope}` as any,
+                    )
+                  : "",
+              })}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel
+              disabled={settingDefault}
+              onClick={async () => {
+                setPendingDefaultPrompt(null);
+                await finishInstallNavigation();
+              }}
+            >
+              {t("common.defaultAppPrompt.actions.skip")}
+            </AlertDialogCancel>
+            <Button
+              disabled={settingDefault || !pendingDefaultPrompt}
+              onClick={async () => {
+                if (!pendingDefaultPrompt) return;
+                try {
+                  setSettingDefault(true);
+                  await toastPromise(
+                    setDefaultAppByScope(
+                      pendingDefaultPrompt.appId,
+                      pendingDefaultPrompt.scope,
+                    ),
+                    {
+                      success: t("common.defaultAppPrompt.toasts.setSuccess"),
+                      error: t("common.defaultAppPrompt.toasts.setError"),
+                    },
+                  );
+                } finally {
+                  setSettingDefault(false);
+                  setPendingDefaultPrompt(null);
+                  await finishInstallNavigation();
+                }
+              }}
+            >
+              {settingDefault && <Spinner />}
+              {t("common.defaultAppPrompt.actions.setDefault")}
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 };
