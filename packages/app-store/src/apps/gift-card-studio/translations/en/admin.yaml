@@ -1,6 +1,8 @@
 app:
   displayName: Gift Card Studio
   description: Manage gift card designs and sell gift cards through your website.
+  uninstallError:
+    has_purchases: Cannot remove Gift Card Studio because purchases created with this app exist
   pages:
     main:
       title: Designs

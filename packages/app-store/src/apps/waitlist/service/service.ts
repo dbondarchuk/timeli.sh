@@ -8,6 +8,7 @@ import {
   ConnectedAppData,
   ConnectedAppRequestError,
   ConnectedAppStatusWithText,
+  ConnectedAppUninstallResult,
   DashboardNotification,
   DemoArguments,
   type EventSource,
@@ -145,7 +146,9 @@ export class WaitlistConnectedApp
     logger.debug({ appId: appData._id }, "Waitlist app installed successfully");
   }
 
-  public async unInstall(appData: ConnectedAppData): Promise<void> {
+  public async unInstall(
+    appData: ConnectedAppData,
+  ): Promise<ConnectedAppUninstallResult> {
     const logger = this.loggerFactory("unInstall");
     logger.debug({ appId: appData._id }, "Uninstalling follow-ups app");
 
@@ -166,6 +169,7 @@ export class WaitlistConnectedApp
         { appId: appData._id },
         "Successfully uninstalled waitlist app",
       );
+      return { success: true, code: "ok" };
     } catch (error: any) {
       logger.error(
         { appId: appData._id, error: error?.message || error?.toString() },

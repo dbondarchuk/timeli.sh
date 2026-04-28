@@ -99,7 +99,7 @@ export function useConnectedAppSetup<T extends FieldValues>({
         reject(new Error("Unknown status"));
       });
 
-      const { appId: newAppId } = await toastPromise(promise, {
+      const { appId: resultAppId } = await toastPromise(promise, {
         success: {
           message: t("common.connectedAppSetup.success.title"),
           description:
@@ -112,7 +112,7 @@ export function useConnectedAppSetup<T extends FieldValues>({
         },
       });
 
-      onSuccess?.(newAppId);
+      onSuccess?.(resultAppId);
     } catch (e: any) {
       onError?.(e instanceof Error ? e.message : e?.toString());
     } finally {

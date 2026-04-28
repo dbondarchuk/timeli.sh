@@ -23,6 +23,7 @@ statusText:
   webhook_not_configured: Stripe webhooks are not configured on the server
   invalid_webhook_signature: Invalid Stripe webhook signature
   apple_pay_domain_registration_failed: Could not register Apple Pay domain with Stripe
+  cannot_uninstall_has_payments: Cannot remove Stripe because payments created with this app exist
 validation:
   accountId:
     required: Stripe account id is required

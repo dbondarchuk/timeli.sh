@@ -1,6 +1,8 @@
 app:
   displayName: Gift Card Studio
   description: Керуйте дизайнами подарункових карт та продавайте їх через сайт.
+  uninstallError:
+    has_purchases: Неможливо видалити Gift Card Studio, оскільки існують покупки, створені через цей додаток
   pages:
     main:
       title: Дизайни

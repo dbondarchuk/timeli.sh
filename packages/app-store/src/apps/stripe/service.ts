@@ -5,6 +5,7 @@ import {
   ConnectedAppData,
   ConnectedAppError,
   ConnectedAppResponse,
+  ConnectedAppUninstallResult,
   ConnectedOauthAppTokens,
   EventEnvelope,
   IConnectedAppProps,
@@ -1399,6 +1400,33 @@ class StripeConnectedApp
     );
 
     return Response.json({ received: true });
+  }
+
+  public async unInstall(
+    appData: ConnectedAppData<StripeAccountData>,
+  ): Promise<ConnectedAppUninstallResult> {
+    const logger = this.loggerFactory("unInstall");
+    const db = await this.props.getDbConnection();
+    const payment = await db.collection("payments").findOne({
+      organizationId: appData.organizationId,
+      appId: appData._id,
+    });
+
+    if (payment) {
+      logger.warn(
+        { appId: appData._id },
+        "Cannot uninstall Stripe app: payments exist",
+      );
+      return {
+        success: false,
+        code: "cannot_uninstall_has_payments",
+        error: {
+          key: "app_stripe_admin.statusText.cannot_uninstall_has_payments" satisfies StripeAdminAllKeys,
+        },
+      };
+    }
+
+    return { success: true, code: "ok" };
   }
 }
 

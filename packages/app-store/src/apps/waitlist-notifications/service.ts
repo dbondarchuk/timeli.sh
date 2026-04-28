@@ -7,6 +7,7 @@ import {
   ConnectedAppData,
   ConnectedAppRequestError,
   ConnectedAppStatusWithText,
+  ConnectedAppUninstallResult,
   EventEnvelope,
   GeneralConfiguration,
   IConnectedApp,
@@ -144,7 +145,9 @@ export class WaitlistNotificationsConnectedApp
     });
   }
 
-  public async unInstall(appData: ConnectedAppData): Promise<void> {
+  public async unInstall(
+    appData: ConnectedAppData,
+  ): Promise<ConnectedAppUninstallResult> {
     const logger = this.loggerFactory("unInstall");
     logger.debug(
       { appId: appData._id },
@@ -155,6 +158,7 @@ export class WaitlistNotificationsConnectedApp
       { appId: appData._id },
       "Successfully uninstalled waitlist notifications app",
     );
+    return { success: true, code: "ok" };
   }
 
   private async handleWaitlistEntryCreated(

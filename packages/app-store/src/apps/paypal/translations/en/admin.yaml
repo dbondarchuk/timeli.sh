@@ -60,6 +60,7 @@ statusText:
   payment_refunded: PayPal payment refunded successfully
   app_not_configured: PayPal app is not configured
   no_data: No PayPal configuration data provided
+  cannot_uninstall_has_payments: Cannot remove PayPal because payments created with this app exist
 toast:
   configuration_saved: PayPal configuration saved successfully
   configuration_error: Error saving PayPal configuration

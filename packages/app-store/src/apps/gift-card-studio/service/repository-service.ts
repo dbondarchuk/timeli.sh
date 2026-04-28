@@ -928,4 +928,15 @@ export class GiftCardStudioRepositoryService {
 
     logger.debug("Gift Card Studio app uninstalled");
   }
+
+  public async hasPurchases(): Promise<boolean> {
+    const db = await this.getDbConnection();
+    const purchase = await db
+      .collection<PurchasedGiftCardModel>(PURCHASED_GIFT_CARDS_COLLECTION_NAME)
+      .findOne({
+        appId: this.appId,
+        organizationId: this.organizationId,
+      });
+    return !!purchase;
+  }
 }

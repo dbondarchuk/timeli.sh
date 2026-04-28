@@ -162,7 +162,7 @@ export function StepPayments() {
                   <DeleteAppButton appId={app._id}>
                     <Button size="sm" variant="outline-destructive">
                       <Unplug />
-                      {tApps("common.disconnect")}
+                      {tApps("common.disconnect.label")}
                     </Button>
                   </DeleteAppButton>
                 )}

@@ -36,14 +36,18 @@ common:
   close: Закрити
   pleaseWait: "Будь ласка, зачекайте..."
   disconnectApp: Відключити додаток
-  disconnect: Відключити
-  disconnectConfirmTitle: Ви абсолютно впевнені?
-  disconnectConfirmDescription: >-
-    Цю дію неможливо скасувати. Це видалить цей додаток і може порушити сервіси,
-    які його використовують.
-  cancel: Скасувати
-  appDisconnected: Додаток було успішно відключено.
-  disconnectError: Виникла проблема з вашим запитом.
+  disconnect:
+    trigger: Відключити додаток
+    label: Відключити
+    confirmationDialog:
+      title: Ви абсолютно впевнені?
+      description: Цю дію неможливо скасувати. Це видалить цей додаток і може порушити сервіси, які його використовують.
+      cancel: Скасувати
+    toast:
+      success: Додаток було успішно відключено.
+      error:
+        title: Ой! Щось пішло не так.
+        defaultDescription: Виникла проблема з вашим запитом.
   requestFailed: Запит не вдався.
   loadingApps: Завантаження додатків...
   selectApp: Вибрати додаток

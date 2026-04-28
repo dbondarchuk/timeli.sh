@@ -9,11 +9,12 @@ import {
   ApiRequest,
   ApiResponse,
   IConnectedApp,
+  ConnectedAppUninstallResult,
 } from "../apps/connected-app.service";
 
 export interface IConnectedAppsService {
   createNewApp(name: string, userId: string): Promise<string>;
-  deleteApp(appId: string): Promise<void>;
+  deleteApp(appId: string): Promise<ConnectedAppUninstallResult>;
   updateApp(appId: string, updateModel: ConnectedAppUpdateModel): Promise<void>;
   requestLoginUrl(appId: string): Promise<string>;
   processRedirect(name: string, request: ApiRequest, data?: any): Promise<void>;

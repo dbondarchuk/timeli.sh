@@ -5,6 +5,7 @@ import {
   ConnectedAppData,
   ConnectedAppRequestError,
   ConnectedAppStatusWithText,
+  ConnectedAppUninstallResult,
   EventEnvelope,
   ICommunicationTemplatesProvider,
   IConnectedApp,
@@ -213,7 +214,9 @@ export default class AppointmentNotificationsConnectedApp
     );
   }
 
-  public async unInstall(appData: ConnectedAppData): Promise<void> {
+  public async unInstall(
+    appData: ConnectedAppData,
+  ): Promise<ConnectedAppUninstallResult> {
     const logger = this.loggerFactory("unInstall");
     logger.debug(
       { appId: appData._id },
@@ -226,6 +229,7 @@ export default class AppointmentNotificationsConnectedApp
       { appId: appData._id },
       "Successfully uninstalled appointment notifications app",
     );
+    return { success: true, code: "ok" };
   }
 
   public async processJob(

@@ -114,7 +114,7 @@ function CalendarIntegrationCard({
                 <DeleteAppButton appId={connected._id}>
                   <Button size="sm" variant="outline-destructive">
                     <Unplug />
-                    {tApps("common.disconnect")}
+                    {tApps("common.disconnect.label")}
                   </Button>
                 </DeleteAppButton>
               ) : null}

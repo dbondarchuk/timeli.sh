@@ -2,6 +2,7 @@ import {
   AppScope,
   ConnectedApp,
   ConnectedAppData,
+  ConnectedAppUninstallResult,
   ConnectedAppStatusWithText,
   okStatus,
 } from "@timelish/types";
@@ -165,9 +166,11 @@ export const deleteApp = async (appId: string) => {
     method: "DELETE",
   });
 
-  const data = await response.json<void>();
+  const data = await response.json<ConnectedAppUninstallResult>();
   console.debug("App deleted", {
     appId,
+    success: data.success,
+    code: data.code,
   });
 
   return data;

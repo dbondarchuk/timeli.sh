@@ -5,6 +5,7 @@ import {
   CollectPayment,
   ConnectedAppData,
   ConnectedAppRequestError,
+  ConnectedAppUninstallResult,
   DemoArguments,
   ICommunicationTemplatesProvider,
   IConnectedApp,
@@ -65,6 +66,7 @@ import {
 } from "../models/public";
 import { GiftCardStudioSettings } from "../models/settings";
 import { GiftCardStudioTemplates } from "../templates";
+import { GiftCardStudioAdminAllKeys } from "../translations/types";
 import { GiftCardStudioJobProcessor } from "./job-processor";
 import { GiftCardStudioRepositoryService } from "./repository-service";
 import { getFileName } from "./utils";
@@ -345,13 +347,32 @@ export class GiftCardStudioConnectedApp
     logger.info({ appId: appData._id }, "Gift Card Studio installed");
   }
 
-  public async unInstall(appData: ConnectedAppData): Promise<void> {
+  public async unInstall(
+    appData: ConnectedAppData,
+  ): Promise<ConnectedAppUninstallResult> {
     const logger = this.loggerFactory("unInstall");
     logger.debug({ appId: appData._id }, "Uninstalling Gift Card Studio");
 
     const repo = this.getRepositoryService(appData._id, appData.organizationId);
+    const hasPurchases = await repo.hasPurchases();
+    if (hasPurchases) {
+      logger.warn(
+        { appId: appData._id },
+        "Cannot uninstall Gift Card Studio: purchases exist",
+      );
+
+      return {
+        success: false,
+        code: "cannot_uninstall_gift_card_has_purchases",
+        error: {
+          key: "app_gift-card-studio_admin.app.uninstallError.has_purchases" satisfies GiftCardStudioAdminAllKeys,
+        },
+      };
+    }
+
     await repo.unInstall();
     logger.info({ appId: appData._id }, "Gift Card Studio uninstalled");
+    return { success: true, code: "ok" };
   }
 
   public async processAppCall(

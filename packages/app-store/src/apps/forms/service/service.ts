@@ -5,6 +5,7 @@ import {
   ApiResponse,
   ConnectedAppData,
   ConnectedAppRequestError,
+  ConnectedAppUninstallResult,
   Customer,
   customerEventSource,
   CustomerSearchField,
@@ -168,7 +169,9 @@ export class FormsConnectedApp implements IConnectedApp {
     }
   }
 
-  public async unInstall(appData: ConnectedAppData): Promise<void> {
+  public async unInstall(
+    appData: ConnectedAppData,
+  ): Promise<ConnectedAppUninstallResult> {
     const logger = this.loggerFactory("unInstall");
     logger.debug({ appId: appData._id }, "Uninstalling forms app");
 
@@ -186,6 +189,7 @@ export class FormsConnectedApp implements IConnectedApp {
       );
       throw error;
     }
+    return { success: true, code: "ok" };
   }
 
   public async processAppCall(

@@ -22,6 +22,7 @@ statusText:
   payment_failed: Square не зміг обробити платіж
   payment_incomplete: Платіж Square не завершено
   apple_pay_domain_registration_failed: Не вдалося зареєструвати домен Apple Pay
+  cannot_uninstall_has_payments: Неможливо видалити Square, оскільки існують платежі, створені через цей додаток
 validation:
   locationId:
     required: Потрібен ідентифікатор локації Square

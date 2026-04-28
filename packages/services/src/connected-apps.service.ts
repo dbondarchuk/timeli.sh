@@ -23,6 +23,7 @@ import {
   DefaultAppScope,
   defaultAppScopes,
   IConnectedApp,
+  ConnectedAppUninstallResult,
   IConnectedAppProps,
   IConnectedAppsService,
   IConnectedAppWithWebhook,
@@ -118,7 +119,7 @@ export class ConnectedAppsService
     return app._id;
   }
 
-  public async deleteApp(appId: string): Promise<void> {
+  public async deleteApp(appId: string): Promise<ConnectedAppUninstallResult> {
     const logger = this.loggerFactory("deleteApp");
     logger.debug({ appId }, "Deleting app");
     const db = await getDbConnection();
@@ -129,7 +130,14 @@ export class ConnectedAppsService
     const { app, service } = await this.getAppService(appId);
     if (service.unInstall) {
       logger.debug({ appId, appName: app.name }, "Running uninstall");
-      await service.unInstall(app);
+      const uninstallResult = await service.unInstall(app);
+      if (!uninstallResult.success) {
+        logger.warn(
+          { appId, appName: app.name, uninstallResult },
+          "App uninstall blocked by app service",
+        );
+        return uninstallResult;
+      }
     }
 
     await collection.deleteOne({
@@ -146,6 +154,7 @@ export class ConnectedAppsService
     );
 
     logger.debug({ appId, appName: app.name }, "Successfully deleted app");
+    return { success: true, code: "ok" };
   }
 
   public async updateApp(

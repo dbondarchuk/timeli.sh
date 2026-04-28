@@ -60,6 +60,7 @@ statusText:
   payment_refunded: Платіж PayPal успішно повернено
   app_not_configured: Додаток PayPal не налаштований
   no_data: Не надано даних конфігурації PayPal
+  cannot_uninstall_has_payments: Неможливо видалити PayPal, оскільки існують платежі, створені через цей додаток
 toast:
   configuration_saved: Конфігурацію PayPal успішно збережено
   configuration_error: Помилка збереження конфігурації PayPal

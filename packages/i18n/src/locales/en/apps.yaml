@@ -36,14 +36,18 @@ common:
   close: Close
   pleaseWait: Please wait...
   disconnectApp: Disconnect app
-  disconnect: Disconnect
-  disconnectConfirmTitle: Are you absolutely sure?
-  disconnectConfirmDescription:
-    This action cannot be undone. This will remove this
-    app and may break services that are using it.
-  cancel: Cancel
-  appDisconnected: App was successfully disconnected.
-  disconnectError: There was a problem with your request.
+  disconnect:
+    trigger: Disconnect app
+    label: Disconnect
+    confirmationDialog:
+      title: Are you absolutely sure?
+      description: This action cannot be undone. This will remove this app and may break services that are using it.
+      cancel: Cancel
+    toast:
+      success: App was successfully disconnected.
+      error:
+        title: Uh oh! Something went wrong.
+        defaultDescription: There was a problem with your request.
   requestFailed: Request failed.
   loadingApps: Loading apps...
   selectApp: Select app

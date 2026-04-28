@@ -1,3 +1,4 @@
+import { AllKeys } from "@timelish/i18n";
 import { ConnectedAppData, ConnectedAppResponse } from "./connected-app.data";
 import { IConnectedAppProps } from "./connected-app.props";
 
@@ -12,6 +13,17 @@ export interface ApiRequest extends Request {
 }
 
 export interface ApiResponse extends Response {}
+
+export type ConnectedAppUninstallResult = {
+  success: boolean;
+  code: string;
+  error?:
+    | string
+    | {
+        key: AllKeys;
+        args?: Record<string, any>;
+      };
+};
 // type Send<T> = (body: T) => void;
 // export interface ApiResponse<Data = any> {
 //   send: Send<Data>;
@@ -43,7 +55,9 @@ export interface IConnectedApp<TData = any, TToken = any> {
     userId?: string,
   ) => Promise<any>;
   install?: (appData: ConnectedAppData<TData, TToken>) => Promise<void>;
-  unInstall?: (appData: ConnectedAppData<TData, TToken>) => Promise<void>;
+  unInstall?: (
+    appData: ConnectedAppData<TData, TToken>,
+  ) => Promise<ConnectedAppUninstallResult>;
   processAppCall?: (
     appData: ConnectedAppData<TData, TToken>,
     slug: string[],

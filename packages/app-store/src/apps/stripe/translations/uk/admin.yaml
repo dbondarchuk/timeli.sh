@@ -23,6 +23,7 @@ statusText:
   webhook_not_configured: Вебхуки Stripe не налаштовано на сервері
   invalid_webhook_signature: Недійсний підпис вебхука Stripe
   apple_pay_domain_registration_failed: Не вдалося зареєструвати домен Apple Pay у Stripe
+  cannot_uninstall_has_payments: Неможливо видалити Stripe, оскільки існують платежі, створені через цей додаток
 validation:
   accountId:
     required: Потрібен ідентифікатор облікового запису Stripe

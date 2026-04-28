@@ -7,15 +7,16 @@ import {
   ConnectedAppData,
   ConnectedAppError,
   ConnectedAppResponse,
+  ConnectedAppUninstallResult,
   ConnectedOauthAppTokens,
   EventEnvelope,
-  IEventSubscriber,
   IConnectedAppProps,
   IConnectedAppWithWebhook,
+  IEventSubscriber,
   IOAuthConnectedApp,
+  IPaymentProcessor,
   ORGANIZATION_DOMAIN_CHANGED_EVENT_TYPE,
   OrganizationDomainChangedPayload,
-  IPaymentProcessor,
   Payment,
   PaymentFee,
 } from "@timelish/types";
@@ -1263,6 +1264,33 @@ class SquareConnectedApp
     );
 
     return accessToken;
+  }
+
+  public async unInstall(
+    appData: ConnectedAppData<SquareMerchantData>,
+  ): Promise<ConnectedAppUninstallResult> {
+    const logger = this.loggerFactory("unInstall");
+    const db = await this.props.getDbConnection();
+    const payment = await db.collection("payments").findOne({
+      organizationId: appData.organizationId,
+      appId: appData._id,
+    });
+
+    if (payment) {
+      logger.warn(
+        { appId: appData._id },
+        "Cannot uninstall Square app: payments exist",
+      );
+      return {
+        success: false,
+        code: "cannot_uninstall_has_payments",
+        error: {
+          key: "app_square_admin.statusText.cannot_uninstall_has_payments" satisfies SquareAdminAllKeys,
+        },
+      };
+    }
+
+    return { success: true, code: "ok" };
   }
 }
 

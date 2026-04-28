@@ -5,6 +5,7 @@ import {
   ConnectedAppData,
   ConnectedAppRequestError,
   ConnectedAppStatusWithText,
+  ConnectedAppUninstallResult,
   EventEnvelope,
   IConnectedApp,
   IConnectedAppProps,
@@ -115,7 +116,9 @@ export class WebhooksConnectedApp implements IConnectedApp, IEventSubscriber {
     return status;
   }
 
-  public async unInstall(appData: ConnectedAppData): Promise<void> {
+  public async unInstall(
+    appData: ConnectedAppData,
+  ): Promise<ConnectedAppUninstallResult> {
     const logger = this.loggerFactory("unInstall");
     logger.debug({ appId: appData._id }, "Uninstalling webhooks app");
 
@@ -124,6 +127,7 @@ export class WebhooksConnectedApp implements IConnectedApp, IEventSubscriber {
       { appId: appData._id },
       "Successfully uninstalled webhooks app",
     );
+    return { success: true, code: "ok" };
   }
 
   public async processAppCall(

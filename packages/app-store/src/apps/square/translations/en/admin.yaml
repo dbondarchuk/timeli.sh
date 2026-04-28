@@ -22,6 +22,7 @@ statusText:
   payment_failed: Square could not process the payment
   payment_incomplete: Square payment did not complete
   apple_pay_domain_registration_failed: Could not register Apple Pay domain
+  cannot_uninstall_has_payments: Cannot remove Square because payments created with this app exist
 validation:
   locationId:
     required: Square location id is required
