@@ -2,7 +2,11 @@
 
 import { AvailableApps } from "@timelish/app-store";
 import { BaseAllKeys, useI18n } from "@timelish/i18n";
-import { ComplexApp, DefaultAppScope, defaultAppScopes } from "@timelish/types";
+import {
+  ComplexApp,
+  DefaultAppToInstallScope,
+  defaultAppToInstallScopes,
+} from "@timelish/types";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -12,6 +16,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   Button,
+  Checkbox,
+  Label,
   Spinner,
   toastPromise,
 } from "@timelish/ui";
@@ -32,14 +38,17 @@ export const InstallComplexAppButton: React.FC<{
   const t = useI18n("apps");
   const [pendingDefaultPrompt, setPendingDefaultPrompt] = React.useState<{
     appId: string;
-    scope: DefaultAppScope;
+    scopes: DefaultAppToInstallScope[];
   } | null>(null);
+  const [selectedScopes, setSelectedScopes] = React.useState<
+    DefaultAppToInstallScope[]
+  >([]);
   const [settingDefault, setSettingDefault] = React.useState(false);
-  const isCalendarSourcePrompt =
-    pendingDefaultPrompt?.scope === "calendar-read";
 
-  const defaultScope = React.useMemo(() => {
-    return defaultAppScopes.find((scope) => app.scope.includes(scope));
+  const defaultScopes = React.useMemo(() => {
+    return defaultAppToInstallScopes.filter((scope) =>
+      app.scope.includes(scope),
+    );
   }, [app.scope]);
 
   const finishInstallNavigation = React.useCallback(async () => {
@@ -62,8 +71,9 @@ export const InstallComplexAppButton: React.FC<{
         });
       }
 
-      if (defaultScope) {
-        setPendingDefaultPrompt({ appId, scope: defaultScope });
+      if (defaultScopes.length) {
+        setPendingDefaultPrompt({ appId, scopes: defaultScopes });
+        setSelectedScopes(defaultScopes);
       } else {
         await finishInstallNavigation();
       }
@@ -78,6 +88,25 @@ export const InstallComplexAppButton: React.FC<{
       console.error(`Failed to set up app: ${error}`);
     }
   };
+
+  const onSetDefault = async () => {
+    if (!pendingDefaultPrompt) return;
+    try {
+      setSettingDefault(true);
+      await toastPromise(
+        setDefaultAppByScope(pendingDefaultPrompt.appId, selectedScopes),
+        {
+          success: t("common.installTargetsPrompt.toasts.setSuccess"),
+          error: t("common.installTargetsPrompt.toasts.setError"),
+        },
+      );
+    } finally {
+      setSettingDefault(false);
+      setPendingDefaultPrompt(null);
+      await finishInstallNavigation();
+    }
+  };
+
   return (
     <>
       <Button
@@ -101,21 +130,30 @@ export const InstallComplexAppButton: React.FC<{
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              {isCalendarSourcePrompt
-                ? t("common.calendarSourcePrompt.title")
-                : t("common.defaultAppPrompt.title")}
+              {t("common.installTargetsPrompt.title")}
             </AlertDialogTitle>
             <AlertDialogDescription>
-              {isCalendarSourcePrompt
-                ? t("common.calendarSourcePrompt.description")
-                : t("common.defaultAppPrompt.description", {
-                    target: pendingDefaultPrompt
-                      ? t(
-                          `common.defaultAppPrompt.targets.${pendingDefaultPrompt.scope}` as any,
-                        )
-                      : "",
-                  })}
+              {t("common.installTargetsPrompt.description")}
             </AlertDialogDescription>
+            <div className="flex flex-col gap-2 pt-2">
+              {pendingDefaultPrompt?.scopes.map((scope) => (
+                <Label key={scope} className="flex items-center gap-2 text-sm">
+                  <Checkbox
+                    checked={selectedScopes.includes(scope)}
+                    onCheckedChange={(checked) => {
+                      setSelectedScopes((prev) =>
+                        checked
+                          ? [...prev, scope]
+                          : prev.filter((s) => s !== scope),
+                      );
+                    }}
+                  />
+                  <span>
+                    {t(`common.installTargetsPrompt.targets.${scope}`)}
+                  </span>
+                </Label>
+              ))}
+            </div>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel
@@ -125,41 +163,18 @@ export const InstallComplexAppButton: React.FC<{
                 await finishInstallNavigation();
               }}
             >
-              {isCalendarSourcePrompt
-                ? t("common.calendarSourcePrompt.actions.skip")
-                : t("common.defaultAppPrompt.actions.skip")}
+              {t("common.installTargetsPrompt.actions.skip")}
             </AlertDialogCancel>
             <Button
-              disabled={settingDefault || !pendingDefaultPrompt}
-              onClick={async () => {
-                if (!pendingDefaultPrompt) return;
-                try {
-                  setSettingDefault(true);
-                  await toastPromise(
-                    setDefaultAppByScope(
-                      pendingDefaultPrompt.appId,
-                      pendingDefaultPrompt.scope,
-                    ),
-                    {
-                      success: isCalendarSourcePrompt
-                        ? t("common.calendarSourcePrompt.toasts.setSuccess")
-                        : t("common.defaultAppPrompt.toasts.setSuccess"),
-                      error: isCalendarSourcePrompt
-                        ? t("common.calendarSourcePrompt.toasts.setError")
-                        : t("common.defaultAppPrompt.toasts.setError"),
-                    },
-                  );
-                } finally {
-                  setSettingDefault(false);
-                  setPendingDefaultPrompt(null);
-                  await finishInstallNavigation();
-                }
-              }}
+              disabled={
+                settingDefault ||
+                !pendingDefaultPrompt ||
+                !selectedScopes.length
+              }
+              onClick={onSetDefault}
             >
               {settingDefault && <Spinner />}
-              {isCalendarSourcePrompt
-                ? t("common.calendarSourcePrompt.actions.add")
-                : t("common.defaultAppPrompt.actions.setDefault")}
+              {t("common.installTargetsPrompt.actions.apply")}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

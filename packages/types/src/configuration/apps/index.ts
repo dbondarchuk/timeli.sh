@@ -17,7 +17,22 @@ export const defaultAppScopes = [
   "mail-send",
   "text-message-send",
   "text-message-respond",
-  "calendar-read",
+] as const;
+
+export const calendarSourceScopes = ["calendar-read"] as const;
+export const bookingProviderScopes = [
+  "schedule",
+  "availability-provider",
 ] as const;
 
 export type DefaultAppScope = (typeof defaultAppScopes)[number];
+export type CalendarSourceScope = (typeof calendarSourceScopes)[number];
+export type BookingProviderScope = (typeof bookingProviderScopes)[number];
+
+export const defaultAppToInstallScopes = [
+  ...defaultAppScopes,
+  ...calendarSourceScopes,
+  ...bookingProviderScopes,
+] as const;
+export type DefaultAppToInstallScope =
+  (typeof defaultAppToInstallScopes)[number];

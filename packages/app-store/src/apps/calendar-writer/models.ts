@@ -11,3 +11,7 @@ export const calendarWriterConfigurationSchema = z.object({
 export type CalendarWriterConfiguration = z.infer<
   typeof calendarWriterConfigurationSchema
 >;
+
+export type CalendarWriterStoredConfiguration = {
+  appId: string | null;
+};

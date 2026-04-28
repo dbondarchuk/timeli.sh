@@ -13,7 +13,7 @@ export const CalendarWriterApp: App<
   name: CALENDAR_WRITER_APP_NAME,
   displayName: "app_calendar-writer_admin.app.displayName",
   category: ["apps.categories.notifications"],
-  subscribeTo: ["appointment.*"],
+  subscribeTo: ["appointment.*", "app.uninstalled"],
   scope: ["event-subscriber"],
   type: "basic",
   Logo: ({ className }) => <CalendarPlus className={className} />,

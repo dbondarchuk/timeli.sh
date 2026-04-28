@@ -6,8 +6,8 @@ import { useI18n } from "@timelish/i18n";
 import {
   AppSetupProps,
   ConnectedApp,
-  DefaultAppScope,
-  defaultAppScopes,
+  DefaultAppToInstallScope,
+  defaultAppToInstallScopes,
 } from "@timelish/types";
 import {
   AlertDialog,
@@ -18,6 +18,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   Button,
+  Checkbox,
   Dialog,
   DialogClose,
   DialogContent,
@@ -25,6 +26,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  Label,
   Spinner,
   toast,
   toastPromise,
@@ -70,16 +72,19 @@ export const AddOrUpdateAppButton: React.FC<AddOrUpdateAppButtonProps> = ({
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [pendingDefaultPrompt, setPendingDefaultPrompt] = React.useState<{
     appId: string;
-    scope: DefaultAppScope;
+    scopes: DefaultAppToInstallScope[];
   } | null>(null);
+  const [selectedScopes, setSelectedScopes] = React.useState<
+    DefaultAppToInstallScope[]
+  >([]);
   const [settingDefault, setSettingDefault] = React.useState(false);
-  const isCalendarSourcePrompt =
-    pendingDefaultPrompt?.scope === "calendar-read";
 
-  const defaultScope = useMemo(() => {
+  const defaultScopes = useMemo(() => {
     const currentApp = AvailableApps[appType];
     if (!currentApp) return undefined;
-    return defaultAppScopes.find((scope) => currentApp.scope.includes(scope));
+    return defaultAppToInstallScopes.filter((scope) =>
+      currentApp.scope.includes(scope),
+    );
   }, [appType]);
 
   const openDialog = () => {
@@ -105,7 +110,7 @@ export const AddOrUpdateAppButton: React.FC<AddOrUpdateAppButtonProps> = ({
     () => ({
       onSuccess: (appId: string, doNotCloseDialog?: boolean) => {
         toast.success(t("common.connectedAppSetup.success.description"));
-        if (app || !defaultScope || dontAskToSetDefault) {
+        if (app || !defaultScopes?.length || dontAskToSetDefault) {
           if (!doNotCloseDialog) {
             closeDialog(true);
           }
@@ -113,7 +118,8 @@ export const AddOrUpdateAppButton: React.FC<AddOrUpdateAppButtonProps> = ({
         }
 
         if (appId) {
-          setPendingDefaultPrompt({ appId, scope: defaultScope });
+          setPendingDefaultPrompt({ appId, scopes: defaultScopes });
+          setSelectedScopes(defaultScopes);
           setIsOpen(false);
         } else if (!doNotCloseDialog) {
           closeDialog(true);
@@ -138,17 +144,10 @@ export const AddOrUpdateAppButton: React.FC<AddOrUpdateAppButtonProps> = ({
     try {
       setSettingDefault(true);
       await toastPromise(
-        setDefaultAppByScope(
-          pendingDefaultPrompt.appId,
-          pendingDefaultPrompt.scope,
-        ),
+        setDefaultAppByScope(pendingDefaultPrompt.appId, selectedScopes),
         {
-          success: isCalendarSourcePrompt
-            ? t("common.calendarSourcePrompt.toasts.setSuccess")
-            : t("common.defaultAppPrompt.toasts.setSuccess"),
-          error: isCalendarSourcePrompt
-            ? t("common.calendarSourcePrompt.toasts.setError")
-            : t("common.defaultAppPrompt.toasts.setError"),
+          success: t("common.installTargetsPrompt.toasts.setSuccess"),
+          error: t("common.installTargetsPrompt.toasts.setError"),
         },
       );
     } finally {
@@ -216,21 +215,30 @@ export const AddOrUpdateAppButton: React.FC<AddOrUpdateAppButtonProps> = ({
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              {isCalendarSourcePrompt
-                ? t("common.calendarSourcePrompt.title")
-                : t("common.defaultAppPrompt.title")}
+              {t("common.installTargetsPrompt.title")}
             </AlertDialogTitle>
             <AlertDialogDescription>
-              {isCalendarSourcePrompt
-                ? t("common.calendarSourcePrompt.description")
-                : t("common.defaultAppPrompt.description", {
-                    target: pendingDefaultPrompt
-                      ? t(
-                          `common.defaultAppPrompt.targets.${pendingDefaultPrompt.scope}` as any,
-                        )
-                      : "",
-                  })}
+              {t("common.installTargetsPrompt.description")}
             </AlertDialogDescription>
+            <div className="flex flex-col gap-2 pt-2">
+              {pendingDefaultPrompt?.scopes.map((scope) => (
+                <Label key={scope} className="flex items-center gap-2 text-sm">
+                  <Checkbox
+                    checked={selectedScopes.includes(scope)}
+                    onCheckedChange={(checked) => {
+                      setSelectedScopes((prev) =>
+                        checked
+                          ? [...prev, scope]
+                          : prev.filter((s) => s !== scope),
+                      );
+                    }}
+                  />
+                  <span>
+                    {t(`common.installTargetsPrompt.targets.${scope}`)}
+                  </span>
+                </Label>
+              ))}
+            </div>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel
@@ -240,18 +248,18 @@ export const AddOrUpdateAppButton: React.FC<AddOrUpdateAppButtonProps> = ({
                 closeDialog(true);
               }}
             >
-              {isCalendarSourcePrompt
-                ? t("common.calendarSourcePrompt.actions.skip")
-                : t("common.defaultAppPrompt.actions.skip")}
+              {t("common.installTargetsPrompt.actions.skip")}
             </AlertDialogCancel>
             <Button
-              disabled={settingDefault || !pendingDefaultPrompt}
+              disabled={
+                settingDefault ||
+                !pendingDefaultPrompt ||
+                !selectedScopes.length
+              }
               onClick={onSetDefault}
             >
               {settingDefault && <Spinner />}
-              {isCalendarSourcePrompt
-                ? t("common.calendarSourcePrompt.actions.add")
-                : t("common.defaultAppPrompt.actions.setDefault")}
+              {t("common.installTargetsPrompt.actions.apply")}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

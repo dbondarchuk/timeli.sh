@@ -11,21 +11,33 @@ import {
   APP_INSTALLED_EVENT_TYPE,
   APP_UNINSTALLED_EVENT_TYPE,
   AppScope,
+  BookingConfiguration,
+  BookingProviderScope,
+  bookingProviderScopes,
+  CalendarSourceScope,
+  calendarSourceScopes,
   ConnectedApp,
   ConnectedAppData,
   ConnectedAppUpdateModel,
+  DefaultAppsConfiguration,
+  DefaultAppScope,
+  defaultAppScopes,
   IConnectedApp,
   IConnectedAppProps,
   IConnectedAppsService,
   IConnectedAppWithWebhook,
   IOAuthConnectedApp,
   IServicesContainer,
+  User,
 } from "@timelish/types";
 import { ObjectId } from "mongodb";
 import pLimit from "p-limit";
 import { cache } from "react";
 import { getBuiltInAppData, getBuiltInAppsForScope } from "./built-in/utils";
-import { CONNECTED_APPS_COLLECTION_NAME } from "./collections";
+import {
+  CONNECTED_APPS_COLLECTION_NAME,
+  USERS_COLLECTION_NAME,
+} from "./collections";
 import { getDbConnection } from "./database";
 import { BaseService } from "./services/base.service";
 
@@ -125,6 +137,8 @@ export class ConnectedAppsService
       organizationId: this.organizationId,
     });
 
+    await this.cleanupAppReferences(appId, app);
+
     await this.getServices().eventService.emit(
       APP_UNINSTALLED_EVENT_TYPE,
       { appId: app._id, appName: app.name },
@@ -202,6 +216,108 @@ export class ConnectedAppsService
       { appId, appName: app.name, overrideOrganizationId: organizationId },
       "Successfully updated app",
     );
+  }
+
+  private async cleanupAppReferences(appId: string, app: ConnectedAppData) {
+    const logger = this.loggerFactory("cleanupAppReferences");
+    const services = this.getServices();
+    const scopes = ServiceAvailableApps[app.name]?.scope ?? [];
+
+    logger.debug(
+      { appId, appName: app.name, scopes },
+      "Cleaning app references",
+    );
+
+    if (
+      scopes.some((scope) =>
+        defaultAppScopes.includes(scope as DefaultAppScope),
+      )
+    ) {
+      const currentDefaultApps =
+        await services.configurationService.getConfiguration("defaultApps");
+      const nextDefaultApps: DefaultAppsConfiguration = {
+        ...(currentDefaultApps ?? {}),
+      };
+      let hasDefaultAppsChanges = false;
+
+      if (nextDefaultApps.paymentAppId === appId) {
+        delete nextDefaultApps.paymentAppId;
+        hasDefaultAppsChanges = true;
+      }
+      if (nextDefaultApps.emailSenderAppId === appId) {
+        delete nextDefaultApps.emailSenderAppId;
+        hasDefaultAppsChanges = true;
+      }
+      if (nextDefaultApps.textMessageSenderAppId === appId) {
+        delete nextDefaultApps.textMessageSenderAppId;
+        hasDefaultAppsChanges = true;
+      }
+      if (nextDefaultApps.textMessageResponderAppId === appId) {
+        delete nextDefaultApps.textMessageResponderAppId;
+        hasDefaultAppsChanges = true;
+      }
+
+      if (hasDefaultAppsChanges) {
+        await services.configurationService.setConfiguration(
+          "defaultApps",
+          nextDefaultApps,
+          { actor: "system" },
+        );
+        logger.debug({ appId }, "Removed app from default apps configuration");
+      }
+    }
+
+    if (
+      scopes.some((scope) =>
+        bookingProviderScopes.includes(scope as BookingProviderScope),
+      )
+    ) {
+      const currentBooking =
+        await services.configurationService.getConfiguration("booking");
+
+      const nextBooking: BookingConfiguration = {
+        ...(currentBooking as BookingConfiguration),
+      };
+
+      let hasBookingChanges = false;
+
+      if (nextBooking.scheduleAppId === appId) {
+        delete nextBooking.scheduleAppId;
+        hasBookingChanges = true;
+      }
+
+      if (nextBooking.availabilityProviderAppId === appId) {
+        delete nextBooking.availabilityProviderAppId;
+        hasBookingChanges = true;
+      }
+
+      if (hasBookingChanges) {
+        await services.configurationService.setConfiguration(
+          "booking",
+          nextBooking,
+          { actor: "system" },
+        );
+        logger.debug(
+          { appId },
+          "Removed app from booking schedule/availability providers",
+        );
+      }
+    }
+
+    if (
+      scopes.some((scope) =>
+        calendarSourceScopes.includes(scope as CalendarSourceScope),
+      )
+    ) {
+      const db = await getDbConnection();
+      const users = db.collection<User>(USERS_COLLECTION_NAME);
+      await users.updateMany(
+        { organizationId: this.organizationId },
+        { $pull: { calendarSources: { appId } } },
+      );
+
+      logger.debug({ appId }, "Removed app from user calendar sources");
+    }
   }
 
   public async requestLoginUrl(appId: string): Promise<string> {

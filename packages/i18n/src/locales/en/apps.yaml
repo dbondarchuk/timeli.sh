@@ -53,30 +53,23 @@ common:
     modalDescription:
       This app receives organization events whose type matches one
       of these patterns (including wildcards such as *).
-  defaultAppPrompt:
-    title: Set as default app?
-    description: Do you want to set this app as the default for {target}?
+  installTargetsPrompt:
+    title: Use this app for these targets?
+    description: Select where you want to use this newly installed app.
     targets:
-      payment: payments
-      mail-send: email sending
-      text-message-send: text message sending
-      text-message-respond: text message responses
-      calendar-read: calendar sources
+      payment: Payments processing
+      mail-send: Email sending
+      text-message-send: Text message sending
+      text-message-respond: Text message responses
+      calendar-read: Calendar sources
+      schedule: Schedule provider
+      availability-provider: Availability provider
     actions:
       skip: Not now
-      setDefault: Set as default
+      apply: Apply selected
     toasts:
-      setSuccess: Default app updated.
-      setError: There was a problem updating default app.
-  calendarSourcePrompt:
-    title: Add this app to calendar sources?
-    description: Do you want to add this app to your calendar sources now?
-    actions:
-      skip: Not now
-      add: Add to calendar sources
-    toasts:
-      setSuccess: Calendar sources updated.
-      setError: There was a problem updating calendar sources.
+      setSuccess: App targets updated.
+      setError: There was a problem updating app targets.
 installedApps:
   searchPlaceholder: Search installed apps
   noInstalledApps: You do not have any installed apps

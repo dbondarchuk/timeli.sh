@@ -1,7 +1,9 @@
 import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
 import {
+  APP_UNINSTALLED_EVENT_TYPE,
   Appointment,
   AppointmentStatus,
+  AppUninstalledPayload,
   CalendarWriterEvent,
   ConnectedApp,
   ConnectedAppData,
@@ -27,6 +29,7 @@ import { convert } from "html-to-text";
 import {
   CalendarWriterConfiguration,
   calendarWriterConfigurationSchema,
+  CalendarWriterStoredConfiguration,
 } from "./models";
 
 import { AvailableApps } from "../../apps";
@@ -53,6 +56,14 @@ export class CalendarWriterConnectedApp
     appData: ConnectedAppData,
     envelope: EventEnvelope,
   ): Promise<void> {
+    if (envelope.type === APP_UNINSTALLED_EVENT_TYPE) {
+      await this.onAppUninstalled(
+        appData,
+        envelope as EventEnvelope<AppUninstalledPayload>,
+      );
+      return;
+    }
+
     await dispatchAppointmentEventPayload(envelope, {
       onAppointmentCreated: (appointment, confirmed) =>
         this.onAppointmentCreated(appData, appointment, confirmed),
@@ -102,6 +113,44 @@ export class CalendarWriterConnectedApp
           oldStatus,
           source,
         ),
+    });
+  }
+
+  private async onAppUninstalled(
+    appData: ConnectedAppData,
+    envelope: EventEnvelope<AppUninstalledPayload>,
+  ): Promise<void> {
+    const logger = this.loggerFactory("onAppUninstalled");
+    const data = (appData.data ??
+      {}) as Partial<CalendarWriterStoredConfiguration>;
+
+    if (!data.appId || data.appId !== envelope.payload.appId) {
+      logger.debug(
+        {
+          appId: appData._id,
+          removedTargetAppId: envelope.payload.appId,
+        },
+        "Skipping calendar writer uninstall: target app not configured or not the same as the uninstalled app",
+      );
+
+      return;
+    }
+
+    logger.warn(
+      {
+        appId: appData._id,
+        removedTargetAppId: envelope.payload.appId,
+      },
+      "Configured calendar target app was removed, clearing configuration",
+    );
+
+    await this.props.update({
+      data: {
+        appId: null,
+      },
+      status: "failed",
+      statusText:
+        "app_calendar-writer_admin.statusText.target_app_removed_select_new_app" satisfies CalendarWriterAdminAllKeys,
     });
   }
 
@@ -421,7 +470,14 @@ export class CalendarWriterConnectedApp
         websiteUrl,
       });
 
-      const data = appData.data as CalendarWriterConfiguration;
+      const data = appData.data as CalendarWriterStoredConfiguration;
+      if (!data?.appId) {
+        logger.warn(
+          { appId: appData._id, appointmentId: appointment._id },
+          "Skipping calendar write: no target app configured",
+        );
+        return;
+      }
 
       const url = getAdminUrl();
       const { template: description, subject } = await getEmailTemplate(

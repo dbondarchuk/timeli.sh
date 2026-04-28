@@ -5,6 +5,7 @@ app:
 statusText:
   successfully_set_up: Successfully set up
   calendar_app_not_found: Calendar app is not found or does not support write
+  target_app_removed_select_new_app: Target app was removed, please select a new app
   error_creating_calendar_event_for_new_appointment: Error creating calendar event for new appointment
   error_updating_calendar_event_for_status_change: Error updating calendar event for status change
   error_updating_calendar_event_for_rescheduled_appointment: Error updating calendar event for rescheduled appointment

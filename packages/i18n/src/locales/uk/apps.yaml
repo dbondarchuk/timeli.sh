@@ -53,30 +53,23 @@ common:
     modalDescription: >-
       Додаток обробляє події організації, тип яких відповідає одному з цих
       шаблонів (у тому числі з масками на кшталт *).
-  defaultAppPrompt:
-    title: Встановити як додаток за замовчуванням?
-    description: Хочете встановити цей додаток як додаток за замовчуванням для {target}?
+  installTargetsPrompt:
+    title: Використати цей додаток для цих цілей?
+    description: Оберіть, де ви хочете використовувати щойно встановлений додаток.
     targets:
-      payment: платежів
-      mail-send: надсилання email
-      text-message-send: надсилання текстових повідомлень
-      text-message-respond: відповідей на текстові повідомлення
-      calendar-read: джерел календаря
+      payment: Обробка платежів
+      mail-send: Відправка email
+      text-message-send: Відправка текстових повідомлень
+      text-message-respond: Відповідь на текстові повідомлення
+      calendar-read: Джерело календаря
+      schedule: Постачальник розкладу
+      availability-provider: Постачальник доступності
     actions:
+      apply: Застосувати вибране
       skip: Не зараз
-      setDefault: Встановити за замовчуванням
     toasts:
-      setSuccess: Додаток за замовчуванням оновлено.
-      setError: Не вдалося оновити додаток за замовчуванням.
-  calendarSourcePrompt:
-    title: Додати цей додаток до джерел календаря?
-    description: Хочете додати цей додаток до ваших джерел календаря зараз?
-    actions:
-      skip: Не зараз
-      add: Додати до джерел календаря
-    toasts:
-      setSuccess: Джерела календаря оновлено.
-      setError: Не вдалося оновити джерела календаря.
+      setSuccess: Цілі додатка оновлено.
+      setError: Не вдалося оновити цілі додатка.
 installedApps:
   searchPlaceholder: Пошук встановлених додатків
   noInstalledApps: У вас немає встановлених додатків

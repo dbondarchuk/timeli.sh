@@ -53,7 +53,7 @@ export const SmartScheduleAppSetup: React.FC<AppSetupProps> = ({
     <>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
-          <div className="flex flex-col items-center gap-2 w-full">
+          <div className="flex flex-col items-center gap-4 w-full">
             {/* <div className="gap-2 flex flex-col md:grid md:grid-cols-2 md:gap-4 w-full"> */}
             <FormField
               control={form.control}
