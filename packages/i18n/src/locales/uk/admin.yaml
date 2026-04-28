@@ -1055,6 +1055,12 @@ services:
     title: Послуги
     description: "Керувати послугами, які ви надаєте"
     addNew: Додати нову
+    addFromTemplate: Додати з шаблону
+    addFromTemplateDialog:
+      title: Додати нову опцію з шаблону
+      description: Оберіть професію та шаблон, щоб заповнити нову опцію.
+      pickServiceLabel: Виберіть шаблон послуги, щоб заповнити нову опцію.
+    createFromTemplate: Створити
     new: Нова
     newTitle: Нова опція послуги
     newDescription: "Додати нову послугу, яку ви надаєте"
@@ -1245,6 +1251,16 @@ services:
       toasts:
         changesSaved: Ваші зміни були збережені.
         requestError: Виникла проблема з вашим запитом.
+      addToAvailabilityDialog:
+        title: Додати цю опцію до доступних для запису?
+        description: Зробити <em>{name}</em> доступною для записів зараз?
+        manageHint: Ви завжди можете керувати доступними опціями в <link>Налаштування -> Записи</link>
+        actions:
+          skip: Не зараз
+          add: Додати до доступних опцій
+        toasts:
+          added: Доступність опції оновлено.
+          requestError: Виникла проблема з вашим запитом.
     table:
       columns:
         name: Назва

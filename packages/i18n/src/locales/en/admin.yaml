@@ -1069,6 +1069,12 @@ services:
     title: Services
     description: Manage services that you provide
     addNew: Add New
+    addFromTemplate: Add from template
+    addFromTemplateDialog:
+      title: Add new option from template
+      description: Pick a profession and template to prefill the new option.
+      pickServiceLabel: Pick a service template to prefill the new option.
+    createFromTemplate: Create
     new: New
     newTitle: New service option
     newDescription: Add new service that you provide
@@ -1263,6 +1269,16 @@ services:
       toasts:
         changesSaved: Your changes were saved.
         requestError: There was a problem with your request.
+      addToAvailabilityDialog:
+        title: Add this option to booking availability?
+        description: Do you want to make <em>{name}</em> available for appointments now?
+        manageHint: You can always manage available options in <link>Settings -> Appointments</link>
+        actions:
+          skip: Not now
+          add: Add to available options
+        toasts:
+          added: Option availability has been updated.
+          requestError: There was a problem with your request.
     table:
       columns:
         name: Name

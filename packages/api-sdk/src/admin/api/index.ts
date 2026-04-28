@@ -3,6 +3,7 @@ import * as appointments from "./appointments";
 import * as apps from "./apps";
 import * as assets from "./assets";
 import * as billing from "./billing";
+import * as booking from "./booking";
 import * as calendar from "./calendar";
 import * as communicationLogs from "./communication-logs";
 import * as communications from "./communications";
@@ -46,6 +47,7 @@ export const adminApi = {
   giftCards,
   organization,
   users,
+  booking,
 };
 
 export * from "./utils";
