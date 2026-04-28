@@ -73,6 +73,8 @@ export const AddOrUpdateAppButton: React.FC<AddOrUpdateAppButtonProps> = ({
     scope: DefaultAppScope;
   } | null>(null);
   const [settingDefault, setSettingDefault] = React.useState(false);
+  const isCalendarSourcePrompt =
+    pendingDefaultPrompt?.scope === "calendar-read";
 
   const defaultScope = useMemo(() => {
     const currentApp = AvailableApps[appType];
@@ -141,8 +143,12 @@ export const AddOrUpdateAppButton: React.FC<AddOrUpdateAppButtonProps> = ({
           pendingDefaultPrompt.scope,
         ),
         {
-          success: t("common.defaultAppPrompt.toasts.setSuccess"),
-          error: t("common.defaultAppPrompt.toasts.setError"),
+          success: isCalendarSourcePrompt
+            ? t("common.calendarSourcePrompt.toasts.setSuccess")
+            : t("common.defaultAppPrompt.toasts.setSuccess"),
+          error: isCalendarSourcePrompt
+            ? t("common.calendarSourcePrompt.toasts.setError")
+            : t("common.defaultAppPrompt.toasts.setError"),
         },
       );
     } finally {
@@ -210,16 +216,20 @@ export const AddOrUpdateAppButton: React.FC<AddOrUpdateAppButtonProps> = ({
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              {t("common.defaultAppPrompt.title")}
+              {isCalendarSourcePrompt
+                ? t("common.calendarSourcePrompt.title")
+                : t("common.defaultAppPrompt.title")}
             </AlertDialogTitle>
             <AlertDialogDescription>
-              {t("common.defaultAppPrompt.description", {
-                target: pendingDefaultPrompt
-                  ? t(
-                      `common.defaultAppPrompt.targets.${pendingDefaultPrompt.scope}` as any,
-                    )
-                  : "",
-              })}
+              {isCalendarSourcePrompt
+                ? t("common.calendarSourcePrompt.description")
+                : t("common.defaultAppPrompt.description", {
+                    target: pendingDefaultPrompt
+                      ? t(
+                          `common.defaultAppPrompt.targets.${pendingDefaultPrompt.scope}` as any,
+                        )
+                      : "",
+                  })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -230,14 +240,18 @@ export const AddOrUpdateAppButton: React.FC<AddOrUpdateAppButtonProps> = ({
                 closeDialog(true);
               }}
             >
-              {t("common.defaultAppPrompt.actions.skip")}
+              {isCalendarSourcePrompt
+                ? t("common.calendarSourcePrompt.actions.skip")
+                : t("common.defaultAppPrompt.actions.skip")}
             </AlertDialogCancel>
             <Button
               disabled={settingDefault || !pendingDefaultPrompt}
               onClick={onSetDefault}
             >
               {settingDefault && <Spinner />}
-              {t("common.defaultAppPrompt.actions.setDefault")}
+              {isCalendarSourcePrompt
+                ? t("common.calendarSourcePrompt.actions.add")
+                : t("common.defaultAppPrompt.actions.setDefault")}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

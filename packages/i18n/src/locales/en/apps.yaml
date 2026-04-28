@@ -61,12 +61,22 @@ common:
       mail-send: email sending
       text-message-send: text message sending
       text-message-respond: text message responses
+      calendar-read: calendar sources
     actions:
       skip: Not now
       setDefault: Set as default
     toasts:
       setSuccess: Default app updated.
       setError: There was a problem updating default app.
+  calendarSourcePrompt:
+    title: Add this app to calendar sources?
+    description: Do you want to add this app to your calendar sources now?
+    actions:
+      skip: Not now
+      add: Add to calendar sources
+    toasts:
+      setSuccess: Calendar sources updated.
+      setError: There was a problem updating calendar sources.
 installedApps:
   searchPlaceholder: Search installed apps
   noInstalledApps: You do not have any installed apps

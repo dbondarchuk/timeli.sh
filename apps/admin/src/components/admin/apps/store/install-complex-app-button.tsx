@@ -35,6 +35,8 @@ export const InstallComplexAppButton: React.FC<{
     scope: DefaultAppScope;
   } | null>(null);
   const [settingDefault, setSettingDefault] = React.useState(false);
+  const isCalendarSourcePrompt =
+    pendingDefaultPrompt?.scope === "calendar-read";
 
   const defaultScope = React.useMemo(() => {
     return defaultAppScopes.find((scope) => app.scope.includes(scope));
@@ -99,16 +101,20 @@ export const InstallComplexAppButton: React.FC<{
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              {t("common.defaultAppPrompt.title")}
+              {isCalendarSourcePrompt
+                ? t("common.calendarSourcePrompt.title")
+                : t("common.defaultAppPrompt.title")}
             </AlertDialogTitle>
             <AlertDialogDescription>
-              {t("common.defaultAppPrompt.description", {
-                target: pendingDefaultPrompt
-                  ? t(
-                      `common.defaultAppPrompt.targets.${pendingDefaultPrompt.scope}` as any,
-                    )
-                  : "",
-              })}
+              {isCalendarSourcePrompt
+                ? t("common.calendarSourcePrompt.description")
+                : t("common.defaultAppPrompt.description", {
+                    target: pendingDefaultPrompt
+                      ? t(
+                          `common.defaultAppPrompt.targets.${pendingDefaultPrompt.scope}` as any,
+                        )
+                      : "",
+                  })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -119,7 +125,9 @@ export const InstallComplexAppButton: React.FC<{
                 await finishInstallNavigation();
               }}
             >
-              {t("common.defaultAppPrompt.actions.skip")}
+              {isCalendarSourcePrompt
+                ? t("common.calendarSourcePrompt.actions.skip")
+                : t("common.defaultAppPrompt.actions.skip")}
             </AlertDialogCancel>
             <Button
               disabled={settingDefault || !pendingDefaultPrompt}
@@ -133,8 +141,12 @@ export const InstallComplexAppButton: React.FC<{
                       pendingDefaultPrompt.scope,
                     ),
                     {
-                      success: t("common.defaultAppPrompt.toasts.setSuccess"),
-                      error: t("common.defaultAppPrompt.toasts.setError"),
+                      success: isCalendarSourcePrompt
+                        ? t("common.calendarSourcePrompt.toasts.setSuccess")
+                        : t("common.defaultAppPrompt.toasts.setSuccess"),
+                      error: isCalendarSourcePrompt
+                        ? t("common.calendarSourcePrompt.toasts.setError")
+                        : t("common.defaultAppPrompt.toasts.setError"),
                     },
                   );
                 } finally {
@@ -145,7 +157,9 @@ export const InstallComplexAppButton: React.FC<{
               }}
             >
               {settingDefault && <Spinner />}
-              {t("common.defaultAppPrompt.actions.setDefault")}
+              {isCalendarSourcePrompt
+                ? t("common.calendarSourcePrompt.actions.add")
+                : t("common.defaultAppPrompt.actions.setDefault")}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

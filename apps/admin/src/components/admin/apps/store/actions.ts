@@ -165,6 +165,33 @@ export const setDefaultAppByScope = async (
 ) => {
   const actionLogger = logger("setDefaultAppByScope");
 
+  if (scope === "calendar-read") {
+    actionLogger.debug({ appId, scope }, "Adding app to user calendar sources");
+    const servicesContainer = await getServicesContainer();
+    const session = await getSession();
+    if (!session?.user?.id) {
+      throw new Error("Unauthorized");
+    }
+
+    const user = await servicesContainer.userService.getUser(session.user.id);
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const currentSources = user.calendarSources ?? [];
+    if (currentSources.some((source) => source.appId === appId)) {
+      actionLogger.debug({ appId, scope }, "App already in calendar sources");
+      return { success: true, field: "calendarSources", alreadyPresent: true };
+    }
+
+    await servicesContainer.userService.updateUser(session.user.id, {
+      calendarSources: [...currentSources, { appId }],
+    });
+
+    actionLogger.debug({ appId, scope }, "App added to user calendar sources");
+    return { success: true, field: "calendarSources" };
+  }
+
   const field = DEFAULT_SCOPE_TO_CONFIG_FIELD[scope];
   if (!field) {
     throw new Error(`Unsupported default app scope: ${scope}`);

@@ -17,6 +17,7 @@ export const defaultAppScopes = [
   "mail-send",
   "text-message-send",
   "text-message-respond",
+  "calendar-read",
 ] as const;
 
 export type DefaultAppScope = (typeof defaultAppScopes)[number];
