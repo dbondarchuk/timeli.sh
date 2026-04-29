@@ -50,6 +50,7 @@ export function InstallWizard({
   preferencesFromServer: InstallPreferencesServerState | null;
 }) {
   const { data: session, refetch } = authClient.useSession();
+  const topRef = useRef<HTMLDivElement>(null);
 
   const [hydrated, setHydrated] = useState(false);
   const [step, setStep] = useState<WizardStep>("verify");
@@ -193,6 +194,11 @@ export function InstallWizard({
     scheduleSlugCheck(p.slug);
   }, [hydrated, verified, organizationId, p.slug, scheduleSlugCheck]);
 
+  useEffect(() => {
+    if (!hydrated) return;
+    topRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [hydrated, step]);
+
   if (!hydrated) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
@@ -228,6 +234,7 @@ export function InstallWizard({
         preferencesFromServer,
       }}
     >
+      <div ref={topRef} />
       <div className="flex min-h-screen flex-col bg-muted/30">
         <StepInstallHeader stepNum={typeof step === "number" ? step : 1} />
         <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 py-8 md:px-8">

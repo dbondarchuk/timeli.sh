@@ -23,7 +23,9 @@ const linkSizes = {
 };
 
 export const linkClasses = cva(
-  ["text-primary", "hover:text-gray-800", "transition-all"],
+  [
+    "text-primary hover:text-primary/80 active:text-primary/80 focus:text-primary/80  transition-all",
+  ],
   {
     variants: {
       variant: linkVariants,
@@ -44,9 +46,11 @@ export const LinkVariants = Object.keys(
 export type LinkSize = VariantProps<typeof linkClasses>["size"];
 export const LinkSizes = Object.keys(linkSizes) as (keyof typeof linkSizes)[];
 
-type BaseProps = Omit<React.ComponentProps<typeof NextLink>, "as"> &
+type BaseProps = Omit<React.ComponentProps<"a">, "as" | "href"> &
   TextVariants & {
     target?: "_blank" | "_parent" | "_self" | "_top";
+    hardNavigate?: boolean;
+    href: string;
   };
 
 type BaseLinkProps = BaseProps & {
@@ -89,8 +93,9 @@ export const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(
       });
     }
 
+    const Component = props.hardNavigate ? "a" : NextLink;
     return (
-      <NextLink
+      <Component
         ref={ref}
         {...passProps}
         className={cn(classes, textClasses, props.className)}

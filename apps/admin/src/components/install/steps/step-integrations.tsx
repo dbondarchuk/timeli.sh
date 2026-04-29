@@ -193,6 +193,8 @@ export function StepIntegrations() {
       optBlog: p.optBlog,
       optForms: p.optForms,
       optGiftCardStudio: p.optGiftCardStudio,
+      optMyCabinet: p.optMyCabinet,
+      autoConfirmBookings: p.autoConfirmBookings,
       allowCancelReschedule: p.allowCancelReschedule,
       acceptPayments: p.acceptPayments,
       depositEnabled: p.depositEnabled,
@@ -300,8 +302,8 @@ export function StepIntegrations() {
                     <SelectItem key={app._id} value={app._id}>
                       <ConnectedAppNameAndLogo
                         appName={app.name}
-                        nameClassName="text-xs text-muted-foreground"
-                        logoClassName="size-4 shrink-0"
+                        logoClassName="size-3.5"
+                        nameClassName="text-xs leading-[normal]"
                       />
                     </SelectItem>
                   ))}
@@ -347,6 +349,11 @@ export function StepIntegrations() {
             key: "optGiftCardStudio" as const,
             label: t("wizard.integrations.giftCardStudio"),
             desc: t("wizard.integrations.giftCardStudioDesc"),
+          },
+          {
+            key: "optMyCabinet" as const,
+            label: t("wizard.integrations.myCabinet"),
+            desc: t("wizard.integrations.myCabinetDesc"),
           },
         ].map((row) => (
           <label

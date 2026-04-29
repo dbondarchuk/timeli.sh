@@ -4,6 +4,7 @@ import { Header } from "@/components/header";
 import { Hero } from "@/components/hero";
 import { HowItWorks } from "@/components/how-it-works";
 import { Integrations } from "@/components/integrations";
+import { Compare } from "@/components/compare";
 import { Pricing } from "@/components/pricing";
 import { Stats } from "@/components/stats";
 import { Testimonials } from "@/components/testimonials";
@@ -23,6 +24,7 @@ export default function LandingPage() {
         <Integrations />
         <Testimonials />
         <Pricing />
+        <Compare />
         <GetStartedCta />
       </main>
       <Footer />

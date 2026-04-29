@@ -7,13 +7,13 @@ import { headers } from "next/headers";
 const config = getConfig(
   async (baseLocale: string | undefined) => {
     const headersList = await headers();
-    const isInstallPath = headersList.get("x-is-install-path") === "true";
+    // const isInstallPath = headersList.get("x-is-install-path") === "true";
 
     if (baseLocale) {
       return {
         locale: baseLocale,
         includeAdmin: true,
-        includeInstall: isInstallPath,
+        includeInstall: true,
       };
     }
 
@@ -21,7 +21,7 @@ const config = getConfig(
       return {
         locale: headersList.get("x-locale") as string,
         includeAdmin: true,
-        includeInstall: isInstallPath,
+        includeInstall: true,
       };
     }
 
@@ -34,7 +34,7 @@ const config = getConfig(
     }
 
     let locale = (session.user as { language?: string }).language || "en";
-    return { locale, includeAdmin: true, includeInstall: isInstallPath };
+    return { locale, includeAdmin: true, includeInstall: true };
   },
   async () => {
     const headersList = await headers();

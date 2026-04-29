@@ -168,19 +168,18 @@ wizard:
   integrations:
     title: Connect calendar & apps
     subtitle: >-
-      Sync calendars from here — no need to open the full app store. You can
-      manage every connection later under Dashboard → Apps.
+      Connect calendars and apps here. You can manage every connection later under Dashboard → Apps.
     google: Google Calendar
     googleDesc: Sync busy times from your Google calendars.
-    googleLimit: Connect your Google Calendar to sync availability.
+    googleLimit: Connect your Google Calendar for two-way sync.
     apple: Apple Calendar (ICS)
     appleDesc: Subscribe or publish availability using standard calendar feeds.
     appleLimit: ICS feeds are often read-only; perfect for blocking time.
     outlook: Outlook / Microsoft 365
-    outlookDesc: Connect your work or personal calendar for accurate availability.
+    outlookDesc: Connect your work or personal calendar for two-way sync.
     outlookLimit: Permissions vary by tenant; review the connection screen for details.
     caldavDesc: >-
-      Connect a CalDAV server to sync availability (standard protocol used by
+      Connect a CalDAV server for two-way sync (standard protocol used by
       many calendar apps).
     caldavLimit: >-
       Uses your server URL and credentials; see the setup form for required
@@ -188,23 +187,23 @@ wizard:
     connect: Connect
     connected: Connected
     notConnected: Not connected
-    inviteHow: How should you receive event invites?
-    inviteNone: Do not send invites
-    inviteEmail: Send me invites by email
-    inviteCalendarWriter: Write invites to my calendar (Calendar Writer)
+    inviteHow: How should we deliver bookings to your calendar?
+    inviteNone: Do not send bookings to my calendar
+    inviteEmail: Send bookings to my calendar by email
+    inviteCalendarWriter: Write bookings to my calendar directly
     calendarWriterDisabled: >-
       Connect Google, Outlook, or CalDAV first. ICS is read-only and cannot be
       used for Calendar Writer.
-    calendarWriterTarget: Calendar app used by Calendar Writer
+    calendarWriterTarget: Calendar to add bookings to
     calendarWriterPickApp: Select connected calendar
     calendarWriterSelectRequired: Select a connected calendar app to continue.
     optionalApps: Optional apps
     customerEmailNotifications: Customer email notifications
     customerEmailNotificationsDesc: Send booking confirmations and updates to customers by email.
     customerTextNotifications: Customer text message notifications
-    customerTextNotificationsDesc: Send booking updates and reminders to customers by SMS.
-    appointmentNotifications: Appointment notifications
-    appointmentNotificationsDesc: Use one app for both reminders and follow-ups.
+    customerTextNotificationsDesc: Send booking confirmation and updates to customers by SMS.
+    appointmentNotifications: Appointment reminders and follow-ups
+    appointmentNotificationsDesc: Send reminders and follow-ups to customers by email and SMS.
     waitlist: Waitlist
     waitlistDesc: Let customers join a waitlist for unavailable times.
     waitlistNotifications: Waitlist notifications
@@ -214,10 +213,13 @@ wizard:
     forms: Forms
     formsDesc: "Create intake forms, contact forms, and more."
     giftCardStudio: Gift Card Studio
-    giftCardStudioDesc: Sell and manage gift cards.
+    giftCardStudioDesc: Design, sell, and manage gift cards.
+    myCabinet: My account
+    myCabinetDesc: >-
+      Let customers sign in with email or phone OTP to manage their
+      appointments.
     skipHint: >-
-      Skipping connections will not block setup. Add or change apps anytime from
-      Dashboard → Apps.
+      You can add or change apps anytime from the Dashboard → Apps section.
     saveError: Could not save integration choices. Try again.
   payments:
     title: Payments & policies
@@ -238,6 +240,8 @@ wizard:
     deposit: Require a deposit
     depositPercent: Deposit percentage
     depositHelp: Deposits help protect your time; exact rules stay editable later.
+    autoConfirmBookings: Auto-confirm bookings
+    autoConfirmBookingsHint: Automatically confirm new bookings without manual approval.
     cancelPolicy: Allow cancellations and reschedules
     cancelHelp: You can define windows and fees in appointment settings later.
     flex: All of this can be changed anytime — we are just getting you started.
@@ -257,6 +261,7 @@ wizard:
       header:
         bookLabel: Book
         blogLabel: Blog
+        myCabinetLabel: My appointments
       footer:
         contactUsLabel: Contact us
         phoneLabel: Phone
@@ -272,12 +277,17 @@ wizard:
         bookNowLabel: Book now
         ourServicesLabel: Our services
         galleryLabel: Gallery
+        learnMoreLabel: Learn more
       book:
         bookNowLabel: Book now
         manageYourAppointment: Manage your appointment
         policiesText: "By booking, you agree to our booking policies."
       appointmentNotifications:
         defaultReminderName: Appointment reminder (1 day before)
+      giftCards:
+        title: Gift cards
+      myCabinet:
+        title: My appointments
   errors:
     fixStep: Please complete the required fields before continuing.
     slugTaken: That booking address is no longer available.

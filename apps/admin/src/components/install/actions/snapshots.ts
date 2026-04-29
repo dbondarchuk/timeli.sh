@@ -58,7 +58,9 @@ const installPreferencesSchema = z.object({
   optBlog: z.boolean().default(false),
   optForms: z.boolean().default(false),
   optGiftCardStudio: z.boolean().default(false),
+  optMyCabinet: z.boolean().default(false),
   allowCancelReschedule: z.boolean().default(false),
+  autoConfirmBookings: z.boolean().default(false),
   acceptPayments: z.boolean().default(false),
   depositEnabled: z.boolean().default(false),
   depositPercent: z.string().default("25"),
@@ -118,7 +120,7 @@ export async function getInstallWorkspaceSnapshot(): Promise<InstallWorkspaceSer
   const out: InstallWorkspaceServerState = {};
   if (businessName) out.businessName = businessName;
   if (typeof general?.address === "string") out.address = general.address;
-  if (slug) out.slug = slug;
+  if (slug && !slug.startsWith("pending-")) out.slug = slug;
   if (generalPick.success) Object.assign(out, generalPick.data);
 
   const hexOk = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;

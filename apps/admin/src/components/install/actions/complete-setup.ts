@@ -10,6 +10,7 @@ import {
   EMAIL_NOTIFICATION_APP_NAME,
   FORMS_APP_NAME,
   GIFT_CARD_STUDIO_APP_NAME,
+  MY_CABINET_APP_NAME,
   WAITLIST_APP_NAME,
   WAITLIST_NOTIFICATIONS_APP_NAME,
 } from "@timelish/app-store";
@@ -31,10 +32,14 @@ import {
   getInstallEnabledCancellationsAndReschedules,
 } from "../default-booking";
 import { getDefaultScheduleConfiguration } from "../default-schedule";
-import { createInstallDefaultPages } from "./create-default-pages";
+import {
+  createInstallDefaultPages,
+  upsertInstallMyCabinetDefaultPage,
+} from "./create-default-pages";
 
 type InstallPreferences = {
   allowCancelReschedule: boolean;
+  autoConfirmBookings: boolean;
   acceptPayments: boolean;
   depositEnabled: boolean;
   depositPercent: string;
@@ -48,6 +53,7 @@ type InstallPreferences = {
   optBlog: boolean;
   optForms: boolean;
   optGiftCardStudio: boolean;
+  optMyCabinet: boolean;
 };
 
 function buildInstallPaymentsConfiguration(
@@ -113,6 +119,7 @@ async function ensureInstallBookingPaymentsDefaultAppsAndCancellations(
   const nextBooking = {
     ...booking,
     payments,
+    autoConfirm: prefs.autoConfirmBookings,
     cancellationsAndReschedules,
   };
 
@@ -629,13 +636,14 @@ export async function runCompleteInstallSetupSteps(args: {
   );
 
   logger.debug({ language, businessName }, "Creating install default pages");
-  await createInstallDefaultPages({
+  const layout = await createInstallDefaultPages({
     services,
     language,
     businessName,
     hasAddress,
     isCancelRescheduleEnabled: prefs.allowCancelReschedule,
     isBlogEnabled: prefs.optBlog,
+    isMyCabinetEnabled: prefs.optMyCabinet,
   });
 
   const installSet = new Set<string>();
@@ -685,6 +693,10 @@ export async function runCompleteInstallSetupSteps(args: {
       "Adding gift card studio app",
     );
     installSet.add(GIFT_CARD_STUDIO_APP_NAME);
+  }
+  if (prefs.optMyCabinet) {
+    logger.debug({ appName: MY_CABINET_APP_NAME }, "Adding My Cabinet app");
+    installSet.add(MY_CABINET_APP_NAME);
   }
   if (prefs.inviteMode === "email") {
     logger.debug(
@@ -780,6 +792,16 @@ export async function runCompleteInstallSetupSteps(args: {
     prefs,
     userId,
   );
+
+  if (prefs.optMyCabinet) {
+    await upsertInstallMyCabinetDefaultPage(services, {
+      businessName,
+      language,
+      headerId: layout.headerId,
+      footerId: layout.footerId,
+      myCabinetLabels: layout.labels.myCabinetLabels,
+    });
+  }
 
   await ensureInstallDefaultConfigurations(services);
 

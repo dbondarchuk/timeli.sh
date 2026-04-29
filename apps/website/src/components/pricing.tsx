@@ -8,19 +8,19 @@ export function Pricing() {
   const plans = [
     {
       name: "Pro",
-      price: "$20",
+      price: "$29",
       period: "/month",
       description: "Everything you need to run and grow your booking business",
       features: [
-        "Unlimited bookings and clients",
-        "Custom booking page with your branding",
-        "Use your own domain or a timeli.sh subdomain",
-        "Calendar sync (Google, Outlook, CalDAV)",
-        "Payments (PayPal, Square, and more)",
-        "Email and text message notifications",
+        "Full website builder — design and publish your site, no code needed",
+        "Beautiful booking page, fully branded to your business",
+        "Accept payments online — Square, Stripe, PayPal, and more",
+        "Automatic email & SMS reminders to cut no-shows",
+        "Your own domain or a free timeli.sh subdomain",
+        "Unlimited bookings and clients, always",
+        "Branded gift cards, discounts & promotions",
+        "Client self-service portal for bookings and profiles",
         "100 SMS credits included every month",
-        "Waitlist for busy times",
-        "And much more!",
       ],
       cta: "Start free trial",
       ctaLink: signUpUrl,
@@ -29,15 +29,18 @@ export function Pricing() {
     },
     {
       name: "Team",
-      price: "$25",
-      period: "/person/month",
+      price: "$59",
+      period: "/month",
       description: "For businesses with staff and more advanced needs",
       features: [
         "Everything in Pro",
-        "Multiple team members and roles",
-        "Reporting and business insights",
-        "Deeper integrations and workflows",
-        "Dedicated support for your org",
+        "Up to 5 team members, +$12/mo per additional",
+        "Individual calendars and availability per staff member",
+        "Clients can book a specific person or the next available",
+        "Team performance and booking analytics",
+        "Centralized dashboard to manage your whole team",
+        "Custom permissions — control what each staff member can see",
+        "Dedicated support",
       ],
       highlighted: false,
       comingSoon: true,
@@ -59,7 +62,7 @@ export function Pricing() {
           </p>
         </div>
 
-        <div className="mx-auto mt-16 grid max-w-4xl grid-cols-1 gap-8 lg:grid-cols-2">
+        <div className="mx-auto mt-16 grid max-w-5xl grid-cols-1 gap-8 lg:grid-cols-2">
           {plans.map((plan, index) => (
             <div
               key={index}
@@ -152,6 +155,7 @@ export function Pricing() {
             </div>
           ))}
         </div>
+
       </div>
     </section>
   );

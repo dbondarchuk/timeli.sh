@@ -1165,7 +1165,7 @@ export const footerDefaultPage = (
                                 type: "Link",
                                 data: {
                                   props: {
-                                    url: "/book now",
+                                    url: "/book",
                                     target: "_self",
                                     children: [
                                       {

@@ -19,6 +19,7 @@ const navigation = [
   { name: "Features", href: "#features" },
   { name: "Integrations", href: "#integrations" },
   { name: "Pricing", href: "#pricing" },
+  { name: "Compare", href: "#compare" },
 ];
 
 export function Header() {

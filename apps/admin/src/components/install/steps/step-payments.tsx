@@ -91,7 +91,9 @@ export function StepPayments() {
       optBlog: p.optBlog,
       optForms: p.optForms,
       optGiftCardStudio: p.optGiftCardStudio,
+      optMyCabinet: p.optMyCabinet,
       allowCancelReschedule: p.allowCancelReschedule,
+      autoConfirmBookings: p.autoConfirmBookings,
       acceptPayments: p.acceptPayments,
       depositEnabled: p.depositEnabled,
       depositPercent: p.depositPercent,
@@ -278,6 +280,22 @@ export function StepPayments() {
           </div>
         </div>
       ) : null}
+      <label className="flex cursor-pointer items-center justify-between rounded-lg border p-4">
+        <div>
+          <span className="font-medium">
+            {t("wizard.payments.autoConfirmBookings")}
+          </span>
+          <p className="text-xs text-muted-foreground">
+            {t("wizard.payments.autoConfirmBookingsHint")}
+          </p>
+        </div>
+        <Switch
+          checked={p.autoConfirmBookings}
+          onCheckedChange={(c) =>
+            setP((prev) => ({ ...prev, autoConfirmBookings: Boolean(c) }))
+          }
+        />
+      </label>
       <label className="flex cursor-pointer items-center justify-between rounded-lg border p-4">
         <div>
           <span className="font-medium">

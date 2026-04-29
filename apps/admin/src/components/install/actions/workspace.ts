@@ -162,10 +162,8 @@ export async function createWorkspace(
     key: "booking",
     organizationId: orgId,
   } as any);
-  if (
-    !existingBooking?.value ||
-    Object.keys(existingBooking.value).length === 0
-  ) {
+  if (!existingBooking?.value || Object.keys(existingBooking.value).length === 0) {
+    logger.debug({ orgId }, "No booking config found, applying defaults");
     await configurations.updateOne(
       { key: "booking", organizationId: orgId },
       {

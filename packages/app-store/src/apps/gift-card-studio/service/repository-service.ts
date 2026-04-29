@@ -862,6 +862,7 @@ export class GiftCardStudioRepositoryService {
       const designsCollection = db.collection(
         GIFT_CARD_DESIGNS_COLLECTION_NAME,
       );
+
       const designIndexes: Record<string, Record<string, 1>> = {
         organizationId_appId_1: { organizationId: 1, appId: 1 },
         organizationId_appId_isArchived_1: {
@@ -876,6 +877,7 @@ export class GiftCardStudioRepositoryService {
           createdAt: 1,
         },
       };
+
       for (const [name, index] of Object.entries(designIndexes)) {
         if (!(await designsCollection.indexExists(name))) {
           await designsCollection.createIndex(index, { name });
@@ -886,6 +888,7 @@ export class GiftCardStudioRepositoryService {
       const purchasesCollection = db.collection(
         PURCHASED_GIFT_CARDS_COLLECTION_NAME,
       );
+
       const purchaseIndexes: Record<string, Record<string, 1>> = {
         organizationId_appId_1: { organizationId: 1, appId: 1 },
         organizationId_appId_designId_1: {
@@ -904,6 +907,7 @@ export class GiftCardStudioRepositoryService {
           createdAt: 1,
         },
       };
+
       for (const [name, index] of Object.entries(purchaseIndexes)) {
         if (!(await purchasesCollection.indexExists(name))) {
           await purchasesCollection.createIndex(index, { name });

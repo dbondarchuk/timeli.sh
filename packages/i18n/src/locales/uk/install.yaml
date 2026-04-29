@@ -168,41 +168,41 @@ wizard:
   integrations:
     title: Календар і додатки
     subtitle: >-
-      Підключайте календарі тут — повний магазин відкривати не потрібно. Усі
+      Підключайте календарі та додатки тут. Усі
       зв'язки можна змінити пізніше в Панелі → Додатки.
     google: Календар Google
     googleDesc: Синхронізуйте зайнятість з Google календарями.
-    googleLimit: Зазвичай лише читання для зайнятості; запис залежить від додатка.
+    googleLimit: Підключіть Google календар для двосторонньої синхронізації.
     apple: Календар Apple (ICS)
     appleDesc: Підписка або публікація через ICS.
     appleLimit: ICS частіше лише для читання — зручно блокувати час.
     outlook: Outlook / Microsoft 365 Календар
-    outlookDesc: Підключення робочого календаря.
+    outlookDesc: Підключіть робочий або особистий календар для двосторонньої синхронізації.
     outlookLimit: Права залежать від організації; див. екран підключення.
     caldavDesc: >-
-      Сервер CalDAV для синхронізації зайнятості (стандартний протокол багатьох
+      Підключіть сервер CalDAV для двосторонньої синхронізації (стандартний протокол багатьох
       календарів).
     caldavLimit: Потрібні URL сервера та облікові дані; форма покаже поля.
     connect: Підключити
     connected: Підключено
     notConnected: Не підключено
-    inviteHow: Як ви хочете отримувати запрошення на події?
-    inviteNone: Не надсилати запрошення
-    inviteEmail: Надсилати мені запрошення на email
-    inviteCalendarWriter: Записувати запрошення в мій календар (Calendar Writer)
+    inviteHow: Як ми повинні доставляти записи до вашого календаря?
+    inviteNone: Не надсилати записи до мого календаря
+    inviteEmail: Надсилати записи до мого календаря електронною поштою
+    inviteCalendarWriter: Записувати записи до мого календаря безпосередньо
     calendarWriterDisabled: >-
       Спочатку підключіть Google, Outlook або CalDAV. ICS лише для читання і не
-      підходить для Calendar Writer.
-    calendarWriterTarget: Календарний додаток для Calendar Writer
+      підходить для запису запитів.
+    calendarWriterTarget: Календар для запису запитів
     calendarWriterPickApp: Оберіть підключений календар
-    calendarWriterSelectRequired: "Оберіть підключений календарний додаток, щоб продовжити."
+    calendarWriterSelectRequired: Оберіть підключений календарний додаток, щоб продовжити.
     optionalApps: Додаткові додатки
     customerEmailNotifications: Email-сповіщення для клієнтів
     customerEmailNotificationsDesc: Надсилайте клієнтам підтвердження та оновлення записів email-ом.
     customerTextNotifications: SMS-сповіщення для клієнтів
-    customerTextNotificationsDesc: Надсилайте клієнтам оновлення записів і нагадування SMS-ами.
-    appointmentNotifications: Сповіщення про записи
-    appointmentNotificationsDesc: Один додаток для нагадувань і follow-up повідомлень.
+    customerTextNotificationsDesc: Надсилайте клієнтам підтвердження та оновлення записів SMS-ами.
+    appointmentNotifications: Сповіщення про нагадування та follow-up про записи
+    appointmentNotificationsDesc: Надсилайте клієнтам нагадування та follow-up повідомлення електронною поштою та SMS-ами.
     waitlist: Лист очікування
     waitlistDesc: Дозвольте клієнтам ставати в чергу на недоступні слоти.
     waitlistNotifications: Сповіщення листа очікування
@@ -214,10 +214,12 @@ wizard:
     forms: Форми
     formsDesc: "Створюйте форми для введення даних, контактні форми та інші."
     giftCardStudio: Студія подарункових сертифікатів
-    giftCardStudioDesc: Продавайте та керуйте подарунковими сертифікатами.
+    giftCardStudioDesc: Створюйте, продавайте та керуйте подарунковими сертифікатами.
+    myCabinet: Мій обліковий запис
+    myCabinetDesc: >-
+      Клієнти зможуть увійти за email або SMS-кодом OTP, щоб керувати записами.
     skipHint: >-
-      Пропуск підключень не блокує налаштування. Додавати або змінювати додатки
-      можна будь-коли в Панелі → Додатки.
+      Додавати або змінювати додатки можна будь-коли в розділі Панелі → Додатки.
     saveError: Не вдалося зберегти вибір інтеграцій. Спробуйте ще раз.
   payments:
     title: Оплата та правила
@@ -238,6 +240,8 @@ wizard:
     deposit: Передоплата (депозит)
     depositPercent: Відсоток передоплати
     depositHelp: Депозит захищає ваш час; умови можна змінити пізніше.
+    autoConfirmBookings: Автопідтвердження записів
+    autoConfirmBookingsHint: Автоматично підтверджувати нові записи без ручного схвалення.
     cancelPolicy: Дозволити скасування та перенесення
     cancelHelp: Точні вікна та штрафи — у налаштуваннях записів.
     flex: Усе це можна змінити будь-коли — ми лише робимо старт.
@@ -257,6 +261,7 @@ wizard:
       header:
         bookLabel: Записатися
         blogLabel: Блог
+        myCabinetLabel: Мої записи
       footer:
         contactUsLabel: Зв'яжіться з нами
         phoneLabel: Телефон
@@ -272,12 +277,17 @@ wizard:
         bookNowLabel: Записатися
         ourServicesLabel: Наші послуги
         galleryLabel: Галерея
+        learnMoreLabel: Докладніше
       book:
         bookNowLabel: Записатися
         manageYourAppointment: Керування записом
         policiesText: "Бронюючи, ви погоджуєтесь із нашими правилами запису."
       appointmentNotifications:
         defaultReminderName: Нагадування про запис (за 1 день)
+      giftCards:
+        title: Подарункові картки
+      myCabinet:
+        title: Мої записи
   errors:
     fixStep: Заповніть обов'язкові поля.
     slugTaken: Ця адреса вже зайнята.

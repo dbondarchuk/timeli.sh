@@ -1,6 +1,10 @@
 "use server";
 
-import { WAITLIST_APP_NAME } from "@timelish/app-store";
+import {
+  GIFT_CARD_STUDIO_APP_NAME,
+  MY_CABINET_APP_NAME,
+  WAITLIST_APP_NAME,
+} from "@timelish/app-store";
 import type { Language } from "@timelish/i18n";
 import { getI18nAsync } from "@timelish/i18n/server";
 import { getLoggerFactory } from "@timelish/logger";
@@ -8,16 +12,30 @@ import { deserializeMarkdown } from "@timelish/rte";
 import { systemEventSource, type IServicesContainer } from "@timelish/types";
 import { bookDefaultPage } from "../defaults/book";
 import { footerDefaultPage } from "../defaults/footer";
+import { giftCardsDefaultPage } from "../defaults/gift-cards";
 import { homeDefaultPage, TemplateServiceArg } from "../defaults/home";
 import { modifyDefaultPage } from "../defaults/modify";
+import { myCabinetDefaultPage } from "../defaults/my-cabinet";
+import { serviceDefaultPage } from "../defaults/service";
 
 type CompleteInstallPagesInput = {
   services: IServicesContainer;
   isCancelRescheduleEnabled: boolean;
   isBlogEnabled: boolean;
+  isMyCabinetEnabled: boolean;
   language: Language;
   businessName: string;
   hasAddress: boolean;
+};
+
+const generateSlug = (title: string): string => {
+  return title
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "") // Remove special characters except spaces and hyphens
+    .replace(/\s+/g, "-") // Replace spaces with hyphens
+    .replace(/-+/g, "-") // Replace multiple hyphens with single hyphen
+    .replace(/^-+|-+$/g, ""); // Remove leading/trailing hyphens
 };
 
 const DEFAULT_HEADER_NAME = "Default Header";
@@ -63,6 +81,7 @@ async function getInstallPageDefaultsLabels(language: Language) {
   return {
     headerBookLabel: t("wizard.finish.pageDefaults.header.bookLabel"),
     headerBlogLabel: t("wizard.finish.pageDefaults.header.blogLabel"),
+    headerMyCabinetLabel: t("wizard.finish.pageDefaults.header.myCabinetLabel"),
     footer: {
       contactUsLabel: t("wizard.finish.pageDefaults.footer.contactUsLabel"),
       phoneLabel: t("wizard.finish.pageDefaults.footer.phoneLabel"),
@@ -83,6 +102,7 @@ async function getInstallPageDefaultsLabels(language: Language) {
       bookNowLabel: t("wizard.finish.pageDefaults.home.bookNowLabel"),
       ourServicesLabel: t("wizard.finish.pageDefaults.home.ourServicesLabel"),
       galleryLabel: t("wizard.finish.pageDefaults.home.galleryLabel"),
+      learnMoreLabel: t("wizard.finish.pageDefaults.home.learnMoreLabel"),
     },
     bookLabels: {
       bookNowLabel: t("wizard.finish.pageDefaults.book.bookNowLabel"),
@@ -90,6 +110,12 @@ async function getInstallPageDefaultsLabels(language: Language) {
         "wizard.finish.pageDefaults.book.manageYourAppointment",
       ),
       policiesText: t("wizard.finish.pageDefaults.book.policiesText"),
+    },
+    giftCardStudioLabels: {
+      title: t("wizard.finish.pageDefaults.giftCards.title"),
+    },
+    myCabinetLabels: {
+      title: t("wizard.finish.pageDefaults.myCabinet.title"),
     },
   };
 }
@@ -114,10 +140,13 @@ async function getTemplateServices(
       typeof option.description === "string" ? option.description : "";
     const descriptionPlate = deserializeMarkdown(descriptionMarkdown);
 
+    const slug = generateSlug(option.name ?? "");
     output.push({
       id: optionId,
       name: String(option.name ?? "").trim() || "Service",
       description: descriptionPlate,
+      slug,
+      pageSlug: `service/${slug}`,
     });
   }
 
@@ -128,8 +157,10 @@ async function getTemplateServices(
 async function upsertDefaultHeader(
   services: IServicesContainer,
   isBlogEnabled: boolean,
+  isMyCabinetEnabled: boolean,
   bookLabel: string,
   blogLabel: string,
+  myCabinetLabel: string,
 ): Promise<string> {
   const logger = getLoggerFactory("InstallActions")("upsertDefaultHeader");
   logger.debug("Upserting default header");
@@ -155,6 +186,17 @@ async function upsertDefaultHeader(
               type: "button" as const,
               label: blogLabel,
               url: "/blog",
+              variant: "ghost" as const,
+              size: "default" as const,
+            },
+          ]
+        : []),
+      ...(isMyCabinetEnabled
+        ? [
+            {
+              type: "button" as const,
+              label: myCabinetLabel,
+              url: "/my-cabinet",
               variant: "ghost" as const,
               size: "default" as const,
             },
@@ -349,11 +391,7 @@ async function upsertDefaultModifyPage(
   };
 
   if (modifyPage) {
-    await pagesService.updatePage(
-      modifyPage._id,
-      pageData,
-      systemEventSource,
-    );
+    await pagesService.updatePage(modifyPage._id, pageData, systemEventSource);
     logger.debug(
       { pageId: modifyPage._id, slug: "book/modify" },
       "Updated default modify page",
@@ -365,9 +403,201 @@ async function upsertDefaultModifyPage(
   logger.debug({ slug: "book/modify" }, "Created default modify page");
 }
 
+async function upsertDefaultGiftCardsPage(
+  services: IServicesContainer,
+  args: {
+    businessName: string;
+    language: Language;
+    headerId: string;
+    footerId: string;
+    giftCardStudioLabels: Record<string, string>;
+  },
+): Promise<void> {
+  const logger = getLoggerFactory("InstallActions")(
+    "upsertDefaultGiftCardsPage",
+  );
+  logger.debug("Upserting default gift cards page");
+  const giftCardStudioApp = (
+    await services.connectedAppsService.getAppsByApp(GIFT_CARD_STUDIO_APP_NAME)
+  )[0];
+
+  if (!giftCardStudioApp) {
+    logger.debug("Gift card studio app not installed");
+    return;
+  }
+
+  const giftCardStudioAppId = giftCardStudioApp._id;
+
+  const pagesService = services.pagesService;
+  const giftCardsPage = await pagesService.getPageBySlug("gift-cards");
+
+  const giftCardsContent = giftCardsDefaultPage(
+    giftCardStudioAppId,
+    args.giftCardStudioLabels,
+  );
+
+  const pageData = {
+    title: args.giftCardStudioLabels.title || "Gift cards",
+    description: `${args.businessName} purchase gift cards`,
+    keywords: `${args.businessName}, gift cards`,
+    slug: "gift-cards",
+    published: true,
+    publishDate: new Date(),
+    headerId: args.headerId,
+    footerId: args.footerId,
+    content: giftCardsContent,
+  };
+
+  if (giftCardsPage) {
+    await pagesService.updatePage(
+      giftCardsPage._id,
+      pageData,
+      systemEventSource,
+    );
+    logger.debug(
+      { pageId: giftCardsPage._id, slug: "gift-cards" },
+      "Updated default gift cards page",
+    );
+    return;
+  }
+
+  await pagesService.createPage(pageData, systemEventSource);
+  logger.debug({ slug: "gift-cards" }, "Created default gift cards page");
+}
+
+export async function upsertInstallMyCabinetDefaultPage(
+  services: IServicesContainer,
+  args: {
+    businessName: string;
+    language: Language;
+    headerId: string;
+    footerId: string;
+    myCabinetLabels: { title: string };
+  },
+): Promise<void> {
+  const logger = getLoggerFactory("InstallActions")(
+    "upsertInstallMyCabinetDefaultPage",
+  );
+  logger.debug({}, "Upserting My Cabinet install default page");
+
+  const myCabinetApp = (
+    await services.connectedAppsService.getAppsByApp(MY_CABINET_APP_NAME)
+  )[0];
+
+  if (!myCabinetApp) {
+    logger.debug("My Cabinet app not installed; skipping page");
+    return;
+  }
+
+  const pagesService = services.pagesService;
+  const existing = await pagesService.getPageBySlug("my-cabinet");
+
+  const title = args.myCabinetLabels.title;
+  const content = myCabinetDefaultPage(myCabinetApp._id, { title });
+
+  const pageData = {
+    title,
+    description: `${args.businessName} customer account`,
+    keywords: `${args.businessName}, account, appointments`,
+    slug: "my-cabinet",
+    published: true,
+    publishDate: new Date(),
+    headerId: args.headerId,
+    footerId: args.footerId,
+    content,
+  };
+
+  if (existing) {
+    await pagesService.updatePage(existing._id, pageData, systemEventSource);
+    logger.debug(
+      { pageId: existing._id, slug: "my-cabinet" },
+      "Updated default My Cabinet page",
+    );
+    return;
+  }
+
+  await pagesService.createPage(pageData, systemEventSource);
+  logger.debug({ slug: "my-cabinet" }, "Created default My Cabinet page");
+}
+
+async function upsertDefaultServicesPage(
+  services: IServicesContainer,
+  args: {
+    businessName: string;
+    language: Language;
+    headerId: string;
+    footerId: string;
+    services: TemplateServiceArg[];
+    bookLabels: Record<string, string>;
+  },
+): Promise<void> {
+  const logger = getLoggerFactory("InstallActions")(
+    "upsertDefaultServicesPage",
+  );
+  logger.debug("Upserting default services pages for each service");
+  const pagesService = services.pagesService;
+
+  for (const service of args.services) {
+    logger.debug(
+      { serviceId: service.id, serviceName: service.name },
+      "Upserting default services page for service",
+    );
+
+    const servicesPage = await pagesService.getPageBySlug(service.pageSlug);
+
+    const servicesContent = serviceDefaultPage(service, args.bookLabels);
+
+    const pageData = {
+      title: service.name,
+      description: `${args.businessName} ${service.name}`,
+      keywords: `${args.businessName}, service, ${service.name}`,
+      slug: service.pageSlug,
+      published: true,
+      publishDate: new Date(),
+      headerId: args.headerId,
+      footerId: args.footerId,
+      content: servicesContent,
+    };
+
+    if (servicesPage) {
+      await pagesService.updatePage(
+        servicesPage._id,
+        pageData,
+        systemEventSource,
+      );
+      logger.debug(
+        {
+          pageId: servicesPage._id,
+          slug: service.pageSlug,
+          serviceId: service.id,
+          serviceName: service.name,
+        },
+        "Updated default services page for service",
+      );
+      continue;
+    }
+
+    await pagesService.createPage(pageData, systemEventSource);
+    logger.debug(
+      {
+        slug: service.pageSlug,
+        serviceId: service.id,
+        serviceName: service.name,
+      },
+      "Created default services page for service",
+    );
+  }
+
+  logger.debug("Created default services pages for each service");
+}
+
 export async function createInstallDefaultPages(
   input: CompleteInstallPagesInput,
-): Promise<void> {
+): Promise<{
+  headerId: string;
+  footerId: string;
+  labels: Awaited<ReturnType<typeof getInstallPageDefaultsLabels>>;
+}> {
   const logger = getLoggerFactory("InstallActions")(
     "createInstallDefaultPages",
   );
@@ -378,9 +608,12 @@ export async function createInstallDefaultPages(
   const headerId = await upsertDefaultHeader(
     input.services,
     input.isBlogEnabled,
+    input.isMyCabinetEnabled,
     labels.headerBookLabel,
     labels.headerBlogLabel,
+    labels.headerMyCabinetLabel,
   );
+
   const footerId = await upsertDefaultFooter(
     input.services,
     input.hasAddress,
@@ -415,5 +648,24 @@ export async function createInstallDefaultPages(
       bookLabels: labels.bookLabels,
     },
   );
+
+  await upsertDefaultServicesPage(input.services, {
+    businessName: input.businessName,
+    language: input.language,
+    headerId,
+    footerId,
+    services: templateServices,
+    bookLabels: labels.bookLabels,
+  });
+
+  await upsertDefaultGiftCardsPage(input.services, {
+    businessName: input.businessName,
+    language: input.language,
+    headerId,
+    footerId,
+    giftCardStudioLabels: labels.giftCardStudioLabels,
+  });
+
   logger.debug({ language: input.language }, "Created install default pages");
+  return { headerId, footerId, labels };
 }

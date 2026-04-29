@@ -2,9 +2,8 @@
 
 import { useInstallWizard } from "@/components/install/install-wizard-context";
 import { useI18n } from "@timelish/i18n";
-import { Button, cn, Spinner, toast } from "@timelish/ui";
+import { Button, cn, Link, Spinner, toast } from "@timelish/ui";
 import { CheckCircle2, XCircle } from "lucide-react";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { completeInstallSetup } from "../actions";
 import { STORAGE_KEY } from "../constants";
@@ -48,7 +47,9 @@ export function StepFinish() {
         optBlog: p.optBlog,
         optForms: p.optForms,
         optGiftCardStudio: p.optGiftCardStudio,
+        optMyCabinet: p.optMyCabinet,
         allowCancelReschedule: p.allowCancelReschedule,
+        autoConfirmBookings: p.autoConfirmBookings,
         acceptPayments: p.acceptPayments,
         depositEnabled: p.depositEnabled,
         depositPercent: p.depositPercent,
@@ -135,17 +136,17 @@ export function StepFinish() {
             {t("wizard.finish.readySubtitle")}
           </p>
           <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
-            <Button asChild>
-              <Link href="/dashboard">{t("wizard.finish.ctaDashboard")}</Link>
-            </Button>
-            <Button variant="outline" asChild>
-              <Link
-                href={bookingPreview}
-                target={p.slug && publicDomain ? "_blank" : undefined}
-              >
-                {t("wizard.finish.ctaBooking")}
-              </Link>
-            </Button>
+            <Link button variant="default" href="/dashboard" hardNavigate>
+              {t("wizard.finish.ctaDashboard")}
+            </Link>
+            <Link
+              button
+              variant="outline"
+              href={bookingPreview}
+              target={p.slug && publicDomain ? "_blank" : undefined}
+            >
+              {t("wizard.finish.ctaBooking")}
+            </Link>
           </div>
         </div>
       )}

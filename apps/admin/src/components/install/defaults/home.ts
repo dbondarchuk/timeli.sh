@@ -2,6 +2,8 @@ export type TemplateServiceArg = {
   id: string;
   name: string;
   description: any;
+  slug: string;
+  pageSlug: string;
 };
 
 export const homeDefaultPage = (
@@ -1382,6 +1384,85 @@ export const homeDefaultPage = (
                                           },
                                         },
                                         id: `block-service-${service.id}-description`,
+                                      },
+                                      {
+                                        type: "Text",
+                                        data: {
+                                          props: {
+                                            value: [
+                                              {
+                                                type: "p",
+                                                id: "8avldAUN0v",
+                                                children: [
+                                                  {
+                                                    text: "",
+                                                  },
+                                                  {
+                                                    children: [
+                                                      {
+                                                        text: homeLabels.learnMoreLabel,
+                                                        fontSize: "20px",
+                                                      },
+                                                    ],
+                                                    type: "a",
+                                                    url: `/${service.pageSlug}`,
+                                                    id: "HpOUEl0B2V",
+                                                  },
+                                                  {
+                                                    text: "",
+                                                  },
+                                                ],
+                                              },
+                                            ],
+                                          },
+                                          style: {
+                                            padding: [
+                                              {
+                                                value: {
+                                                  top: {
+                                                    value: 1,
+                                                    unit: "rem",
+                                                  },
+                                                  bottom: {
+                                                    value: 1,
+                                                    unit: "rem",
+                                                  },
+                                                  left: {
+                                                    value: 1.5,
+                                                    unit: "rem",
+                                                  },
+                                                  right: {
+                                                    value: 1.5,
+                                                    unit: "rem",
+                                                  },
+                                                },
+                                              },
+                                            ],
+                                            fontSize: [
+                                              {
+                                                value: {
+                                                  unit: "rem",
+                                                  value: 0.8,
+                                                },
+                                              },
+                                            ],
+                                            textAlign: [
+                                              {
+                                                breakpoint: [],
+                                                state: [],
+                                                value: "center",
+                                              },
+                                            ],
+                                            fontWeight: [
+                                              {
+                                                breakpoint: [],
+                                                state: [],
+                                                value: "200",
+                                              },
+                                            ],
+                                          },
+                                        },
+                                        id: `block-service-${service.id}-learn-more`,
                                       },
                                       {
                                         type: "Button",

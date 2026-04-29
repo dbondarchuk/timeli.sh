@@ -18,9 +18,7 @@ export const withLocale: MiddlewareProxy = (next) => {
 
     const isInstallPath =
       request.nextUrl.pathname.startsWith("/install") ||
-      request.nextUrl.pathname.startsWith("/checkout") ||
-      // We need to include this path in the install path because it's used to add options
-      request.nextUrl.pathname.startsWith("/dashboard/services/options");
+      request.nextUrl.pathname.startsWith("/checkout");
 
     request.headers.set("x-is-admin-path", "true");
     request.headers.set("x-pathname", nextUrl.pathname);

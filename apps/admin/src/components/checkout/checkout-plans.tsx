@@ -7,9 +7,6 @@ import { Button, Spinner, toast } from "@timelish/ui";
 import { Check, Sparkles } from "lucide-react";
 import { useState } from "react";
 
-const ACCENT = "#1d63a8";
-const PRICE_BG = "#f9f7f2";
-
 export type CheckoutPlanView = {
   productId: string;
   slug: PolarBillingPlanSlug;
@@ -61,10 +58,7 @@ export function CheckoutPlans({
           className="flex flex-col rounded-xl border border-neutral-200/80 bg-card p-6 shadow-sm md:p-7"
         >
           <div className="mb-5 flex gap-3">
-            <div
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-white shadow-sm"
-              style={{ backgroundColor: ACCENT }}
-            >
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent text-accent-foreground shadow-sm">
               <Sparkles className="h-5 w-5" strokeWidth={2} />
             </div>
             <div className="min-w-0 flex-1 pt-0.5">
@@ -80,12 +74,9 @@ export function CheckoutPlans({
           </div>
 
           {plan.priceAmount ? (
-            <div
-              className="mb-5 rounded-lg px-4 py-4"
-              style={{ backgroundColor: PRICE_BG }}
-            >
-              <p className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0">
-                <span className="text-3xl font-bold tracking-tight text-foreground tabular-nums">
+            <div className="mb-5 rounded-lg bg-accent px-4 py-4">
+              <p className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0 text-accent-foreground">
+                <span className="text-3xl font-bold tracking-tight tabular-nums">
                   {plan.priceAmount}
                 </span>
                 {plan.pricePeriod ? (
@@ -106,10 +97,7 @@ export function CheckoutPlans({
                 key={`${plan.productId}-${i}`}
                 className="flex items-center gap-3 rounded-lg border border-neutral-200/90 bg-background px-3 py-2.5 text-sm leading-snug text-foreground"
               >
-                <span
-                  className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-white"
-                  style={{ backgroundColor: ACCENT }}
-                >
+                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent text-accent-foreground">
                   <Check className="h-3 w-3" strokeWidth={3} />
                 </span>
                 <span>{line}</span>
@@ -118,14 +106,13 @@ export function CheckoutPlans({
           </ul>
 
           <Button
-            className="w-full rounded-lg border-0 bg-[#1d63a8] font-semibold text-white shadow-sm hover:bg-[#174d86]"
+            className="w-full rounded-lg border-0"
+            variant="brand-dark"
             size="lg"
             onClick={() => void startCheckout(plan.productId)}
             disabled={loadingId !== null}
           >
-            {loadingId === plan.productId ? (
-              <Spinner className="mr-2 h-4 w-4 animate-spin text-white" />
-            ) : null}
+            {loadingId === plan.productId ? <Spinner /> : null}
             {t.has(`checkout.plans.${plan.slug}.cta`)
               ? t(`checkout.plans.${plan.slug}.cta`)
               : t("checkout.cta")}
