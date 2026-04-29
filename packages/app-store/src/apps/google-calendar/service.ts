@@ -64,7 +64,7 @@ const evetStatusToGoogleEventStatus: Record<
   CalendarWriterEvent["status"],
   string
 > = {
-  confirmed: "accepted",
+  confirmed: "confirmed",
   declined: "cancelled",
   pending: "tentative",
 };
@@ -493,6 +493,15 @@ class GoogleCalendarConnectedApp
         { appId: app._id, eventId: event.id, error },
         "Error creating event in Google Calendar",
       );
+
+      this.props.update({
+        status: "failed",
+        statusText:
+          error instanceof ConnectedAppError
+            ? error.key
+            : ("app_google-calendar_admin.statusText.error_creating_calendar_event" satisfies GoogleCalendarAdminAllKeys),
+      });
+
       throw error;
     }
   }
@@ -746,7 +755,10 @@ class GoogleCalendarConnectedApp
         dateTime: end.toISO(),
         timeZone: event.timeZone,
       },
-      location: event.location.address ?? event.location.name,
+      location:
+        event.location.onlineUrl ??
+        event.location.address ??
+        event.location.name,
       extendedProperties: {
         private: {
           uid: event.uid,

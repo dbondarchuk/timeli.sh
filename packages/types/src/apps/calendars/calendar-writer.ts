@@ -25,6 +25,7 @@ export type CalendarWriterEvent = {
   location: {
     address?: string;
     name: string;
+    onlineUrl?: string;
   };
   startTime: Date;
   duration: number;

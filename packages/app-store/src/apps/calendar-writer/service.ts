@@ -527,6 +527,9 @@ export class CalendarWriterConnectedApp
         location: {
           name: config.general.name,
           address: config.general.address,
+          onlineUrl: appointment.option.isOnline
+            ? appointment.meetingInformation?.url
+            : undefined,
         },
         startTime: appointment.dateTime,
         duration: appointment.totalDuration,

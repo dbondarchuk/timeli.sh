@@ -667,7 +667,10 @@ export default class CaldavConnectedApp
             .replace(/(\r\n|\r|\n){2,}/g, "$1\n")
             .replace(/\r\n/g, "\n"),
           url: event.description.url,
-          location: event.location.address ?? event.location.name,
+          location:
+            event.location.onlineUrl ??
+            event.location.address ??
+            event.location.name,
           stamp: {
             date: DateTime.utc().toJSDate(),
           },
