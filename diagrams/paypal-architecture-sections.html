@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content="diagram-md-to-html.mjs (markdown + mermaid)" />
+    <title>PayPal Integration Architecture (Sectioned)</title>
+    <style>
+      :root {
+        color-scheme: light;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        background: #fff;
+        color: #111;
+      }
+      .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 32px;
+      }
+      h1, h2, h3 {
+        page-break-after: avoid;
+      }
+      @media print {
+        h2 {
+          break-before: page;
+          page-break-before: always;
+        }
+        h2:first-of-type {
+          break-before: auto;
+          page-break-before: auto;
+        }
+      }
+      p, li {
+        line-height: 1.5;
+      }
+      pre {
+        background: #f7f7f7;
+        padding: 12px;
+        border-radius: 8px;
+        overflow-x: auto;
+      }
+      code {
+        font-family: Consolas, Monaco, monospace;
+      }
+      .mermaid {
+        page-break-inside: avoid;
+        margin: 16px 0 28px;
+        text-align: center;
+      }
+      .mermaid svg {
+        max-width: 100% !important;
+        max-height: 600px !important;
+        height: auto !important;
+      }
+      hr {
+        border: none;
+        border-top: 1px solid #ddd;
+        margin: 28px 0;
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script type="module">
+      import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+      mermaid.initialize({
+        startOnLoad: false,
+        securityLevel: "loose",
+        flowchart: { useMaxWidth: true, htmlLabels: true },
+      });
+
+      const raw = JSON.parse(document.getElementById("source").textContent);
+      const parsed = marked.parse(raw, { gfm: true, breaks: false });
+      const output = document.getElementById("output");
+      output.innerHTML = parsed;
+
+      const mermaidCodeBlocks = output.querySelectorAll("pre > code.language-mermaid");
+      mermaidCodeBlocks.forEach((codeBlock) => {
+        const pre = codeBlock.parentElement;
+        if (!pre?.parentElement) return;
+        const wrapper = document.createElement("div");
+        wrapper.className = "mermaid";
+        wrapper.textContent = codeBlock.textContent || "";
+        pre.parentElement.replaceChild(wrapper, pre);
+      });
+
+      await mermaid.run({ querySelector: ".mermaid" });
+    </script>
+  </head>
+  <body>
+    <div class="container" id="output"></div>
+    <script id="source" type="application/json">"# PayPal Integration Architecture (Sectioned)\n\n## 1) Scope and Capabilities\n\nPayPal app (`paypal`) is a **basic** app (not OAuth) with:\n\n- `payment`\n\n`PaypalConnectedApp` implements:\n\n- Configuration processing (`processRequest`) for client/secret + button options.\n- Payment app calls (`processAppCall`) for order create/capture.\n- Refund processing (`refundPayment`).\n\nUnlike OAuth apps, PayPal credentials are entered in setup form and stored encrypted in app data.\n\n---\n\n## 2) Main Components\n\n```mermaid\nflowchart LR\n  Admin[\"Admin UI (apps/admin)\"]\n  Web[\"Web checkout routes (apps/web)\"]\n  CAS[\"ConnectedAppsService\"]\n  Payments[\"PaymentsService\"]\n  PayPalApp[\"PaypalConnectedApp\"]\n  Mongo[(\"MongoDB intents/payments/connected_apps\")]\n  PayPalAPI[\"PayPal API\"]\n\n  Admin --> CAS --> PayPalApp\n  CAS --> Mongo\n  Web --> CAS --> PayPalApp\n  PayPalApp <--> PayPalAPI\n  PayPalApp --> Payments --> Mongo\n```\n\n---\n\n## 3) Configuration + Secret Handling\n\n`processRequest(...)`:\n\n- Validates app configuration payload.\n- Encrypts `clientId` / `secretKey` before persistence.\n- Supports masked secret behavior in update forms (`MASKED_SECRET_KEY`) so unchanged secrets are not re-entered.\n\nAt runtime, service decrypts credentials to call PayPal API.\n\n---\n\n## 4) Checkout App Calls\n\n`processAppCall(...)` handles:\n\n- `POST /orders` -> `createOrder(...)`\n- `POST /orders/capture` -> `captureOrder(...)`\n\nFlow:\n\n1. Lookup internal payment intent.\n2. Create/capture PayPal order.\n3. Write external IDs and status updates via `PaymentsService.updateIntent(...)`.\n\n---\n\n## 5) Refund Flow\n\n- `PaymentsService.refundPayment(...)` delegates to app `refundPayment(...)`.\n- PayPal app retrieves order/capture details and submits capture refund.\n- Result is returned to internal payment pipeline for final state updates.\n\n---\n\n## 6) App Roles (Admin / Web / Workers)\n\n- **`apps/admin`**: configuration form entry and updates (client/secret/button settings).\n- **`apps/web`**: checkout app calls for create/capture flows.\n- **`apps/job-processor`**: not required for core PayPal create/capture flow.\n- **`apps/notification-sender`**: unrelated to PayPal processor calls.\n"</script>
+  </body>
+</html>
