@@ -22,7 +22,9 @@ export const SquareAppSetup: React.FC<AppSetupProps> = ({
   onError,
   appId: existingAppId,
 }) => {
-  const t = useI18n<SquareAdminNamespace, SquareAdminKeys>(squareAdminNamespace);
+  const t = useI18n<SquareAdminNamespace, SquareAdminKeys>(
+    squareAdminNamespace,
+  );
   const [isLoading, setIsLoading] = React.useState(false);
 
   const [app, setApp] = React.useState<ConnectedApp | undefined>(undefined);
@@ -41,7 +43,7 @@ export const SquareAppSetup: React.FC<AppSetupProps> = ({
     setIsLoading(false);
 
     if (status.status === "connected") {
-      onSuccess();
+      onSuccess(appId);
       return;
     }
 

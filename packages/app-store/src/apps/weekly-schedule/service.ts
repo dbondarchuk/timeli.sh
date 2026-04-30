@@ -3,6 +3,7 @@ import {
   ConnectedAppData,
   ConnectedAppRequestError,
   ConnectedAppStatusWithText,
+  ConnectedAppUninstallResult,
   DaySchedule,
   IConnectedApp,
   IConnectedAppProps,
@@ -172,7 +173,9 @@ export default class WeeklyScheduleConnectedApp
     );
   }
 
-  public async unInstall(appData: ConnectedAppData): Promise<void> {
+  public async unInstall(
+    appData: ConnectedAppData,
+  ): Promise<ConnectedAppUninstallResult> {
     const logger = this.loggerFactory("unInstall");
     logger.info({ appId: appData._id }, "Uninstalling weekly schedule app");
 
@@ -209,6 +212,7 @@ export default class WeeklyScheduleConnectedApp
         { appId: appData._id },
         "Successfully uninstalled weekly schedule app",
       );
+      return { success: true, code: "ok" };
     } catch (error: any) {
       logger.error(
         { appId: appData._id, error },

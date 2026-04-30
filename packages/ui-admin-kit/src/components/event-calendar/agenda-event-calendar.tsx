@@ -12,11 +12,11 @@ import { DateTime } from "luxon";
 import React from "react";
 import { EventPopover } from "./event-popover";
 import { EventVariantClasses } from "./styles";
-import { AgendaEventCalendarProps, CalendarEvent } from "./types";
+import { AgendaEventCalendarProps, EventCalendarEvent } from "./types";
 
 type EventsByDate = {
   date: DateTime;
-  events: CalendarEvent[];
+  events: EventCalendarEvent[];
 };
 
 export const AgendaEventCalendar: React.FC<AgendaEventCalendarProps> = ({
@@ -64,7 +64,7 @@ export const AgendaEventCalendar: React.FC<AgendaEventCalendarProps> = ({
   // Group events by date
   const getEventsByDate = (): EventsByDate[] => {
     const eventsByDate: EventsByDate[] = [];
-    const dateMap = new Map<string, CalendarEvent[]>();
+    const dateMap = new Map<string, EventCalendarEvent[]>();
 
     // Create a range of dates to show
     const dateRange: DateTime[] = [];

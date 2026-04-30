@@ -3,6 +3,10 @@ import {
   ConfigurationKey,
   ConfigurationOption,
   IConfigurationService,
+  IEventService,
+  SETTINGS_UPDATED_EVENT_TYPE,
+  type EventSource,
+  type SettingsUpdatedPayload,
 } from "@timelish/types";
 import { cache } from "react";
 import { CONFIGURATION_COLLECTION_NAME } from "./collections";
@@ -13,7 +17,10 @@ export class ConfigurationService
   extends BaseService
   implements IConfigurationService
 {
-  public constructor(organizationId: string) {
+  public constructor(
+    organizationId: string,
+    protected readonly eventService: IEventService,
+  ) {
     super("ConfigurationService", organizationId);
   }
 
@@ -86,6 +93,7 @@ export class ConfigurationService
   public async setConfiguration<T extends ConfigurationKey>(
     key: T,
     configuration: ConfigurationOption<T>["value"],
+    source: EventSource,
   ): Promise<void> {
     const logger = this.loggerFactory("setConfiguration");
     logger.debug({ key }, "Setting configuration");
@@ -114,10 +122,20 @@ export class ConfigurationService
     );
 
     logger.debug({ key, updateResult }, "Set configuration");
+
+    await this.eventService.emit(
+      SETTINGS_UPDATED_EVENT_TYPE,
+      { key } satisfies SettingsUpdatedPayload,
+      source,
+    );
   }
 }
 
 export class CachedConfigurationService extends ConfigurationService {
+  public constructor(organizationId: string, eventService: IEventService) {
+    super(organizationId, eventService);
+  }
+
   private cachedGetConfiguration: ConfigurationService["getConfiguration"] =
     cache(async (option) => await super.getConfiguration(option));
 

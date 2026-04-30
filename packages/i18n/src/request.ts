@@ -1,5 +1,9 @@
 import { getRequestConfig } from "next-intl/server";
 import { mergeObjects } from "./utils";
+import {
+  localeNamespaceLoaders,
+  resolveMessageLocale,
+} from "./locales/locale-namespace-loaders.generated";
 
 export const getConfig = (
   getLocale: (baseLocale: string | undefined) => Promise<{
@@ -17,22 +21,33 @@ export const getConfig = (
     const { locale, includeAdmin, includeInstall } =
       await getLocale(baseLocale);
 
+    const r = resolveMessageLocale(locale);
+    const { namespaceLoaders } = await localeNamespaceLoaders[r]();
+
     const externalMessages = await getMessages?.();
     const publicMessages = await externalMessages?.public(locale);
+
+    const [translation, ui, validation] = await Promise.all([
+      namespaceLoaders.translation(),
+      namespaceLoaders.ui(),
+      namespaceLoaders.validation(),
+    ]);
     let messages: Record<string, any> = {
-      translation: (await import(`./locales/${locale}/translation.json`))
-        .default,
-      ui: (await import(`./locales/${locale}/ui.json`)).default,
-      validation: (await import(`./locales/${locale}/validation.json`)).default,
+      translation: translation.default,
+      ui: ui.default,
+      validation: validation.default,
       ...(publicMessages || {}),
     };
 
     if (includeAdmin) {
-      messages.admin = (await import(`./locales/${locale}/admin.json`)).default;
-      messages.builder = (
-        await import(`./locales/${locale}/builder.json`)
-      ).default;
-      messages.apps = (await import(`./locales/${locale}/apps.json`)).default;
+      const [admin, builder, apps] = await Promise.all([
+        namespaceLoaders.admin(),
+        namespaceLoaders.builder(),
+        namespaceLoaders.apps(),
+      ]);
+      messages.admin = admin.default;
+      messages.builder = builder.default;
+      messages.apps = apps.default;
 
       const adminMessages = await externalMessages?.admin(locale);
       messages = {
@@ -42,9 +57,7 @@ export const getConfig = (
     }
 
     if (includeInstall) {
-      messages.install = (
-        await import(`./locales/${locale}/install.json`)
-      ).default;
+      messages.install = (await namespaceLoaders.install()).default;
     }
 
     const overrideEntries = await externalMessages?.overrides(locale);

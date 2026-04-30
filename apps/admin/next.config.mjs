@@ -21,6 +21,7 @@ const nextConfig = {
   ],
   experimental: {
     webpackMemoryOptimizations: true,
+    turbopackScopeHoisting: false,
     serverActions: {
       bodySizeLimit: "150mb",
     },

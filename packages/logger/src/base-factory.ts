@@ -1,11 +1,17 @@
 import pino from "pino";
 import { format } from "util";
 
-export const getBaseLoggerFactory = (
-  correlationId?: string | null,
-  sessionId?: string | null,
-  organizationId?: string | null,
-) => {
+export const getBaseLoggerFactory = ({
+  correlationId,
+  sessionId,
+  organizationId,
+  userId,
+}: {
+  correlationId?: string | null;
+  sessionId?: string | null;
+  organizationId?: string | null;
+  userId?: string | null;
+}) => {
   const logger = pino({
     level: process.env.LOG_LEVEL || "info",
     redact: {
@@ -32,6 +38,7 @@ export const getBaseLoggerFactory = (
         correlationId,
         sessionId,
         organizationId,
+        userId,
       }),
     },
     timestamp: pino.stdTimeFunctions.isoTime,

@@ -404,6 +404,8 @@ export class BullMQNotificationWorker extends BaseBullMQClient {
       services.communicationLogsService,
       defaultEmailService,
       defaultTextMessageSender,
+      services.billingService,
+      services.eventService,
     );
   }
 }

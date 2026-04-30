@@ -1,0 +1,39 @@
+navigation:
+  title: My Cabinet
+common:
+  yes: Yes
+  no: No
+app:
+  displayName: My Cabinet
+  description: Customer sign-in cabinet for appointments
+form:
+  otpEmailTemplateId:
+    label: OTP email template
+    description: Template used when sending one-time verification codes by email.
+  allowPhoneLogin:
+    label: Allow login with phone number
+    description: If enabled, customers can request OTP via phone number too.
+  otpTextTemplateId:
+    label: OTP text message template
+    description: Template used when sending one-time verification codes by text message.
+statusText:
+  successfully_set_up: Successfully set up My Cabinet
+  error_processing_configuration: Error processing My Cabinet configuration
+validation:
+  otpEmailTemplateId:
+    required: OTP email template is required
+  otpTextTemplateId:
+    required_when_phone_enabled: OTP text template is required when phone login is enabled
+block:
+  displayName: My Cabinet
+  category: Booking
+  showTitle:
+    label: Show title
+  scrollToTop:
+    label: Scroll to top on step change
+  myCabinetAppId:
+    label: My Cabinet app
+    helperText: Select which My Cabinet app instance this block should use.
+handlers:
+  otp: My Cabinet OTP
+

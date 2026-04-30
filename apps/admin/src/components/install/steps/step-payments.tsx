@@ -4,7 +4,11 @@ import { AddOrUpdateAppButton } from "@/components/admin/apps/add-or-update-app-
 import { DeleteAppButton } from "@/components/admin/apps/delete-app-button";
 import { saveInstallPreferences } from "@/components/install/actions";
 import { useInstallWizard } from "@/components/install/install-wizard-context";
-import { PAYPAL_APP_NAME, SQUARE_APP_NAME } from "@timelish/app-store";
+import {
+  PAYPAL_APP_NAME,
+  SQUARE_APP_NAME,
+  STRIPE_APP_NAME,
+} from "@timelish/app-store";
 import { useI18n } from "@timelish/i18n";
 import type { ConnectedApp } from "@timelish/types";
 import {
@@ -22,7 +26,11 @@ import { ConnectedAppNameAndLogo } from "@timelish/ui-admin";
 import { Unplug } from "lucide-react";
 import { useMemo } from "react";
 
-const INSTALL_PAYMENT_APP_NAMES = [PAYPAL_APP_NAME, SQUARE_APP_NAME] as const;
+const INSTALL_PAYMENT_APP_NAMES = [
+  PAYPAL_APP_NAME,
+  SQUARE_APP_NAME,
+  STRIPE_APP_NAME,
+] as const;
 
 function pickPaymentApp(
   apps: ConnectedApp[],
@@ -53,11 +61,18 @@ export function StepPayments() {
     () => pickPaymentApp(paymentApps, SQUARE_APP_NAME),
     [paymentApps],
   );
+  const stripeApp = useMemo(
+    () => pickPaymentApp(paymentApps, STRIPE_APP_NAME),
+    [paymentApps],
+  );
   const paypalConnected = paypalApp?.status === "connected";
   const squareConnected = squareApp?.status === "connected";
+  const stripeConnected = stripeApp?.status === "connected";
   const paypalSlotTaken = isPaymentAppSlotTaken(paypalApp);
   const squareSlotTaken = isPaymentAppSlotTaken(squareApp);
-  const canContinue = !p.acceptPayments || paypalConnected || squareConnected;
+  const stripeSlotTaken = isPaymentAppSlotTaken(stripeApp);
+  const canContinue =
+    !p.acceptPayments || paypalConnected || squareConnected || stripeConnected;
 
   const onContinue = async () => {
     if (!canContinue) {
@@ -76,7 +91,9 @@ export function StepPayments() {
       optBlog: p.optBlog,
       optForms: p.optForms,
       optGiftCardStudio: p.optGiftCardStudio,
+      optMyCabinet: p.optMyCabinet,
       allowCancelReschedule: p.allowCancelReschedule,
+      autoConfirmBookings: p.autoConfirmBookings,
       acceptPayments: p.acceptPayments,
       depositEnabled: p.depositEnabled,
       depositPercent: p.depositPercent,
@@ -91,13 +108,18 @@ export function StepPayments() {
 
   const renderPaymentCard = (
     appName: (typeof INSTALL_PAYMENT_APP_NAMES)[number],
-    descriptionKey: "wizard.payments.paypalDesc" | "wizard.payments.squareDesc",
+    descriptionKey:
+      | "wizard.payments.paypalDesc"
+      | "wizard.payments.squareDesc"
+      | "wizard.payments.stripeDesc",
     app: ConnectedApp | undefined,
   ) => {
     const connected = app?.status === "connected";
     const thisSlotTaken = isPaymentAppSlotTaken(app);
     const otherSlotTaken =
-      appName === PAYPAL_APP_NAME ? squareSlotTaken : paypalSlotTaken;
+      (appName !== PAYPAL_APP_NAME && paypalSlotTaken) ||
+      (appName !== SQUARE_APP_NAME && squareSlotTaken) ||
+      (appName !== STRIPE_APP_NAME && stripeSlotTaken);
     const blockConnectOrUpdate = otherSlotTaken && !thisSlotTaken;
     return (
       <Card>
@@ -120,7 +142,11 @@ export function StepPayments() {
             </span>
             {app ? (
               <div className="flex items-center gap-2">
-                <AddOrUpdateAppButton app={app} refreshOnClose>
+                <AddOrUpdateAppButton
+                  app={app}
+                  refreshOnClose
+                  dontAskToSetDefault
+                >
                   <Button
                     size="sm"
                     variant="secondary"
@@ -138,13 +164,17 @@ export function StepPayments() {
                   <DeleteAppButton appId={app._id}>
                     <Button size="sm" variant="outline-destructive">
                       <Unplug />
-                      {tApps("common.disconnect")}
+                      {tApps("common.disconnect.label")}
                     </Button>
                   </DeleteAppButton>
                 )}
               </div>
             ) : (
-              <AddOrUpdateAppButton appType={appName} refreshOnClose>
+              <AddOrUpdateAppButton
+                appType={appName}
+                refreshOnClose
+                dontAskToSetDefault
+              >
                 <Button
                   size="sm"
                   disabled={blockConnectOrUpdate}
@@ -205,6 +235,11 @@ export function StepPayments() {
             "wizard.payments.squareDesc",
             squareApp,
           )}
+          {renderPaymentCard(
+            STRIPE_APP_NAME,
+            "wizard.payments.stripeDesc",
+            stripeApp,
+          )}
           <div>
             <label className="flex cursor-pointer items-center justify-between rounded-lg border p-4">
               <span className="font-medium">
@@ -245,6 +280,22 @@ export function StepPayments() {
           </div>
         </div>
       ) : null}
+      <label className="flex cursor-pointer items-center justify-between rounded-lg border p-4">
+        <div>
+          <span className="font-medium">
+            {t("wizard.payments.autoConfirmBookings")}
+          </span>
+          <p className="text-xs text-muted-foreground">
+            {t("wizard.payments.autoConfirmBookingsHint")}
+          </p>
+        </div>
+        <Switch
+          checked={p.autoConfirmBookings}
+          onCheckedChange={(c) =>
+            setP((prev) => ({ ...prev, autoConfirmBookings: Boolean(c) }))
+          }
+        />
+      </label>
       <label className="flex cursor-pointer items-center justify-between rounded-lg border p-4">
         <div>
           <span className="font-medium">

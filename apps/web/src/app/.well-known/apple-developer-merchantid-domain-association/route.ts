@@ -3,6 +3,8 @@ import { getLoggerFactory } from "@timelish/logger";
 import { IPaymentProcessor } from "@timelish/types";
 import { NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   const logger = getLoggerFactory(
     "API/.well-known/apple-developer-merchantid-domain-association",
@@ -18,11 +20,27 @@ export async function GET() {
         "defaultApps",
       );
 
-    const paymentAppId = defaultApps?.paymentAppId;
+    let paymentAppId = defaultApps?.paymentAppId;
 
     if (!paymentAppId) {
-      logger.debug("No default payment app configured");
-      return new NextResponse(null, { status: 404 });
+      logger.warn(
+        "No default payment app configured, trying to find a payment app",
+      );
+
+      const paymentApps =
+        await servicesContainer.connectedAppsService.getAppsByScope("payment");
+
+      if (paymentApps.length === 0) {
+        logger.error("No payment apps installed, returning 404");
+        return new NextResponse(null, { status: 404 });
+      }
+
+      paymentAppId = paymentApps[0]._id;
+
+      logger.debug(
+        { paymentAppId, paymentAppName: paymentApps[0].name },
+        "Found payment app",
+      );
     }
 
     const { app, service } =

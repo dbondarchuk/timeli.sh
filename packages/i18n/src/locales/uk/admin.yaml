@@ -1,0 +1,2981 @@
+common:
+  usesTemplatedValues: "* Використовує шаблонні значення"
+  toasts:
+    saved: Збережено!
+    error: Виникла проблема з вашим запитом.
+  openMenu: Відкрити меню
+  selectAll: Вибрати все
+  selectRow: Вибрати рядок
+  labels:
+    languages:
+      en: англійська
+      uk: Українська
+    channel:
+      text-message: Текстове повідомлення
+      email: Електронна пошта
+    direction:
+      inbound: Вхідний
+      outbound: Вихідний
+    participantType:
+      user: Користувач
+      customer: Клієнт
+    fieldType:
+      email: Електронна пошта
+      name: Ім'я
+      phone: Телефон
+      oneLine: Один рядок
+      multiLine: Кілька рядків
+      checkbox: Прапорець
+      select: Вибрати
+      file: Файл
+    allowPromoCodeType:
+      always: Завжди
+      never: Ніколи
+      allow-if-has-active: Тільки якщо є активні знижки
+    discountType:
+      amount: Фіксована сума
+      percentage: Відсоток
+    discountStatus:
+      disabled: Вимкнено
+      active: Активна
+    giftCardStatus:
+      inactive: Неактивна
+      active: Активна
+    paymentStatus:
+      paid: Оплачено
+      refunded: Повернено
+      pending: Очікує
+    appointmentHistoryType:
+      statusChanged: Статус змінено
+      rescheduled: Перенесено
+      created: Створено
+      paymentAdded: Платіж додано
+      paymentRefunded: Платіж повернено
+      updated: Оновлено
+    paymentMethod:
+      cash: Готівка
+      in-person-card: Картка в особі
+      gift-card: Подарункова карта
+      online: Онлайн
+    filters: Фільтри
+    loading: Завантаження
+    unknown: Невідомо
+  buttons:
+    delete: Видалити
+    cancel: Скасувати
+    close: Закрити
+    addNew: Додати новий
+    update: Оновити
+    more: Більше
+    save: Зберегти
+  optional: Опціонально
+  timeDuration: "{hours, plural, =0 {{minutes} хв} other {# год, {minutes} хв}}"
+  custom: Власний
+  navigationGuard:
+    title: "Ви впевнені, що хочете покинути цю сторінку?"
+    description: "У вас є незбережені зміни. Ви впевнені, що хочете покинути цю сторінку?"
+    cancel: Скасувати
+    leave: Покинути
+  pricePerHour: "{price}/год"
+platformEvents:
+  customer:
+    created:
+      title: Новий клієнт
+      description: "{customerName}"
+    updated:
+      title: Клієнта оновлено
+      description: "{customerName}"
+    deleted:
+      title: Клієнтів видалено
+      description: >-
+        {count, plural, =1 {# клієнт} few {# клієнти} other {# клієнтів}} —
+        {names}
+  payment:
+    created:
+      title: Платіж записано
+      description: "{type} · {amount}"
+    updated:
+      title: Платіж оновлено
+      description: "{status} · {amount}"
+    deleted:
+      title: Платіж видалено
+      description: "{amount}"
+    refunded:
+      title: Повернення платежу
+      description: "{refundAmount} з {amount}"
+  giftCard:
+    created:
+      title: Подарункову карту видано
+      description: "{code}"
+    updated:
+      title: Подарункову карту оновлено
+      description: "{code}"
+    statusChanged:
+      title: Змінено статус карток
+      description: "{count, plural, =1 {# карта} few {# карти} other {# карт}} → {status}"
+    deleted:
+      title: Подарункові карти видалено
+      description: "{count, plural, =1 {# карта} few {# карти} other {# карт}}"
+  field:
+    created:
+      title: Поле створено
+      description: "{name}"
+    updated:
+      title: Поле оновлено
+      description: "{name}"
+    deleted:
+      title: Поля видалено
+      description: "{count, plural, =1 {# поле} few {# поля} other {# полів}}"
+  addon:
+    created:
+      title: Додаток створено
+      description: "{name}"
+    updated:
+      title: Додаток оновлено
+      description: "{name}"
+    deleted:
+      title: Додатки видалено
+      description: "{count, plural, =1 {# додаток} few {# додатки} other {# додатків}}"
+  appointmentOption:
+    created:
+      title: Опцію послуги створено
+      description: "{name}"
+    updated:
+      title: Опцію послуги оновлено
+      description: "{name}"
+    deleted:
+      title: Опції послуг видалено
+      description: "{count, plural, =1 {# опція} few {# опції} other {# опцій}}"
+  discount:
+    created:
+      title: Знижку створено
+      description: "{name}"
+    updated:
+      title: Знижку оновлено
+      description: "{name}"
+    deleted:
+      title: Знижки видалено
+      description: "{count, plural, =1 {# знижка} few {# знижки} other {# знижок}}"
+    applied:
+      title: Знижку застосовано
+      description: "{customerName} · {discountName} ({value})"
+  template:
+    created:
+      title: Шаблон створено
+      description: "{name}"
+    updated:
+      title: Шаблон оновлено
+      description: "{name}"
+    deleted:
+      title: Шаблони видалено
+      description: "{count, plural, =1 {# шаблон} few {# шаблони} other {# шаблонів}}"
+  page:
+    created:
+      title: Сторінку створено
+      description: "{title}"
+    updated:
+      title: Сторінку оновлено
+      description: "{title}"
+    deleted:
+      title: Сторінки видалено
+      description: "{count, plural, =1 {# сторінка} few {# сторінки} other {# сторінок}}"
+  pageHeader:
+    created:
+      title: Шапку створено
+      description: "{name}"
+    updated:
+      title: Шапку оновлено
+      description: "{name}"
+    deleted:
+      title: Шапки видалено
+      description: "{count, plural, =1 {# шапка} few {# шапки} other {# шапок}}"
+  pageFooter:
+    created:
+      title: Підвал створено
+      description: "{name}"
+    updated:
+      title: Підвал оновлено
+      description: "{name}"
+    deleted:
+      title: Підвали видалено
+      description: "{count, plural, =1 {# підвал} few {# підвали} other {# підвалів}}"
+  settings:
+    updated:
+      title: Налаштування оновлено
+      description: "{key}"
+  organization:
+    domainChanged:
+      title: Домен організації змінено
+      description: "{previousDomain} → {newDomain}"
+  asset:
+    created:
+      title: Ассет завантажено
+      description: "{filename}"
+    updated:
+      title: Ассет оновлено
+      description: "{filename}"
+    deleted:
+      title: Ассети видалено
+      description: "{count, plural, =1 {# ассет} few {# ассети} other {# ассетів}}"
+  subscription:
+    statusChanged:
+      title: Зміна статусу підписки
+      description: "{product} · {oldStatus} → {newStatus}"
+  billing:
+    smsCreditsLow:
+      title: Мало SMS-кредитів
+      description: "Баланс SMS зменшився до {balance}. Поповніть кредити, щоб уникнути зупинки відправлень."
+    smsCreditsExhausted:
+      title: SMS-кредити вичерпано
+      description: "Баланс SMS досяг {balance}. Поповніть кредити, щоб відправка повідомлень працювала далі."
+    smsTopupPurchased:
+      title: Додано SMS-докупку
+      description: "На рахунок додано {credits, plural, one {кредит} few {# кредити} many {# кредитів} other {# кредиту}} (докупка)."
+billing:
+  emails:
+    subscriptionAlert:
+      subject: Потрібна увага — оновлення підписки
+      preview: Статус плану змінився
+      title: Оновлення статусу підписки
+      body: "Статус підписки тепер {newStatus} (раніше {oldStatus}) для {product}. Перевірте білінг, щоб уникнути переривання сервісу."
+      button: Відкрити білінг
+      handledBy: Білінг (підписка)
+    smsCreditsLow:
+      subject: Мало кредитів SMS
+      preview: Залишилось 10 кредитів SMS
+      title: Низький залишок SMS-кредитів
+      body: "Залишок SMS: {balance} кредитів. Якщо ви хочете надсилати більше повідомлень, купіть більше кредитів у налаштуваннях білінгу."
+      button: Відкрити білінг
+      purchaseButton: Купити SMS-кредити
+      handledBy: Білінг (залишок SMS)
+    smsCreditsExhausted:
+      subject: Кредити SMS вичерпано
+      preview: Кредити SMS закінчились
+      title: Кредити SMS вичерпано
+      body: "Залишок SMS: 0. Якщо ви хочете надсилати більше повідомлень, купіть більше кредитів у налаштуваннях білінгу."
+      button: Відкрити білінг
+      purchaseButton: Купити SMS-кредити
+      handledBy: Білінг (залишок SMS)
+  notifications:
+    smsCreditsLow:
+      title: Мало SMS-кредитів
+      message: "Залишок SMS зараз {balance}. Поповніть кредити, щоб уникнути перебоїв у доставці."
+      action: Відкрити білінг
+    smsCreditsExhausted:
+      title: SMS-кредити вичерпано
+      message: "Залишок SMS: {balance}. Якщо ви хочете надсилати більше повідомлень, купіть більше кредитів у налаштуваннях білінгу."
+      action: Відкрити білінг
+    smsTopupPurchased:
+      title: SMS-докупку завершено
+      message: "Додано {credits, plural, one {кредит} few {# кредити} many {# кредитів} other {# кредиту}}. Використовуються після включеного обсягу підписки."
+      action: Відкрити білінг
+navigation:
+  overview: Огляд
+  dashboard: Панель керування
+  activity: Активність
+  appointments: Записи
+  schedule: Розклад
+  defaultSchedule: Розклад за замовчуванням
+  services: Послуги
+  fields: Поля
+  addons: Додатки
+  options: Опції
+  discounts: Знижки
+  giftCards: Подарункові картки
+  customers: Клієнти
+  website: Веб-сайт
+  pages: Сторінки
+  pageHeaders: Заголовки
+  pageFooters: Підвали
+  assets: Ресурси
+  appearance: Зовнішній вигляд
+  styling: Стилізація
+  header: Заголовок
+  footer: Підвал
+  settings: Налаштування
+  general: Загальні
+  brand: Бренд
+  social: Соціальні мережі
+  scripts: Скрипти
+  communications: Комунікації
+  templates: Шаблони
+  logs: Журнал комунікацій
+  communicationLogs: Журнал комунікацій
+  monitorMessages: Моніторинг усіх надісланих та отриманих повідомлень
+  apps: Додатки
+  installedApps: Встановлені додатки
+  store: Магазин
+  defaultApps: Додатки за замовчуванням
+  logout: Вийти
+  viewWebsite: Переглянути веб-сайт
+  profile: Профіль
+themeToggle:
+  toggleTheme: Переключити тему
+  light: Світла
+  dark: Темна
+  system: Системна
+appointments:
+  title: Записи
+  scheduleAppointment: Запланувати запис
+  addNew: Додати новий
+  status:
+    pending: Очікує підтвердження
+    confirmed: Підтверджено
+    declined: Відхилено
+    rescheduled: Перенесено
+  table:
+    filters:
+      status: Статус
+      tooltip: Фільтри
+    columns:
+      status: Статус
+      statusAriaLabel: "Статус: {status}"
+      option: Опція
+      customer: Клієнт
+      dateTime: Дата та час
+      requestedAt: Затребувано
+      duration: Тривалість
+      discount: Знижка
+      price: Ціна
+      optionName: Назва опції
+      optionPrice: Ціна опції
+      optionDuration: Тривалість опції
+      selectedAddons: Вибрані додатки
+      note: Примітка
+      customerName: Ім'я
+      customerEmail: Електронна пошта
+      customerPhone: Телефон
+      online: Онлайн
+      meetingLink: Приєднатися до зустрічі
+  dialog:
+    viewFullInfo: Переглянути повну інформацію про запис
+    by: Від
+    close: Закрити
+  card:
+    by: "Від <link>{name}</link>"
+    appointment: Запис
+    status: Статус
+    time: Час
+    date: Дата
+    dateTime: Дата та час
+    duration: Тривалість
+    hours: годин
+    minutes: хвилин
+    endsAt: Закінчується о
+    price: Ціна
+    note: Примітка
+    decline: Відхилити
+    confirm: Підтвердити
+    addons: Додатки
+  declineDialog:
+    title: Відхилити запис
+    description: Цю дію неможливо скасувати. Це назавжди відхилить цей запис.
+    appointmentDetails: Деталі запису
+    customer: Клієнт
+    service: Послуга
+    dateTime: Дата та час
+    refundPayments: Повернути платежі
+    amount: Сума
+    transactionId: ID транзакції
+    timePaid: Час оплати
+    fees: Комісії
+    cancel: Скасувати
+    declineAndRefund: >-
+      Відхилити та повернути {count, plural, =1 {платіж} few {# платежі} many {#
+      платежів} other {# платежів}}{amount, plural, =0 {} other { на суму
+      {amountFormatted}}}
+    decline: Відхилити
+    refunded: Повернено
+    refundableAmount: "Сума, що може бути повернена"
+    refundAmount: Сума повернення
+    refundError: Один або більше запитів на повернення не вдалися.
+    requestedByCustomer: Затребувано клієнтом
+    giftCardCode: Код подарункової картки
+    paymentDescription: Опис
+    refundFees: Повертати комісії
+  rescheduleDialog:
+    title: Перенести запис
+    by: від
+    dateTime: Дата та час
+    duration: Тривалість
+    doNotNotifyCustomer: Не повідомляти клієнта
+    doNotNotifyCustomerDescription: "Якщо ввімкнено, клієнт не буде повідомлений про перенесення запису"
+    confirmOverlap: Підтвердити накладення
+    confirmOverlapDescription: >-
+      Я розумію, що перенесення цього запису створить накладення в моєму
+      розкладі
+    close: Закрити
+    reschedule: Перенести
+    confirmTitle: Ви абсолютно впевнені?
+    confirmDescription: Цю дію неможливо скасувати. Це перенесе цей запис.
+    cancel: Скасувати
+    success: Запис було успішно перенесено.
+    error: Виникла проблема з вашим запитом.
+  addFile:
+    success: Файл було успішно додано.
+    error: Виникла проблема з вашим запитом.
+    upload: Завантажити
+    pleaseWait: "Будь ласка, зачекайте..."
+  calendar:
+    loading: Завантаження
+    eventTitle: "{customer} для {service}"
+  new:
+    title: Новий запис
+    description: Створити новий запис від імені клієнта
+    waitlistEntry: Запис списку очікування
+    waitlistEntryDescription: Переглянути інформацію про запис списку очікування
+  edit:
+    title: Редагувати запис
+    description: Редагувати існуючий запис
+  view:
+    noteUpdated: Примітку до запису було оновлено.
+    requestError: Виникла проблема з вашим запитом.
+    changesSaved: Ваші зміни були збережені.
+    sendMessage: Надіслати повідомлення
+    scheduleAgain: Запланувати знову
+    reschedule: Перенести
+    edit: Редагувати
+    decline: Відхилити
+    confirm: Підтвердити
+    date: Дата
+    time: Час
+    dateTime: Дата та час
+    dateAndTime: Дата та час
+    duration: Тривалість
+    hours: годин
+    minutes: хвилин
+    timezone: Часовий пояс
+    endsAt: Закінчується о
+    requestedAt: Затребувано
+    requestedAtFormat: "Затребувано {requestedAt} · {timezone}"
+    collectPayment: "Зібрати платеж · {amount}"
+    addons: Додатки
+    status: Статус
+    price: Ціна
+    subtotal: "Сумарна ціна: {subtotal}"
+    total: "Загальна ціна: {total}"
+    discount:
+      label: Знижка
+      name: Назва
+      amount: Сума
+      code: Код
+    amountPaid: "Сума оплачена: {amountPaid}"
+    amountDue: "Сума до сплати: {amountDue}"
+    payment:
+      label: Платежі
+      total: Загальна сума
+      paid: Оплачено
+      due: До сплати
+      discount: Знижка
+    customer: Клієнт
+    name: Ім'я
+    email: Електронна пошта
+    phone: Телефон
+    fields: Поля
+    "yes": Так
+    "no": Ні
+    service: Послуга
+    selectedOption: Вибрана опція
+    option: Опція
+    description: Опис
+    selectedAddons: Вибрані додатки
+    meetingInformation:
+      label: Онлайн зустріч
+      url: URL
+      type: Тип
+      meetingId: ID зустрічі
+      meetingPassword: Пароль зустрічі
+    min: хв
+    note: Примітка
+    files: Файли
+    upload: Завантажити
+    removeAppointmentFile: Видалити файл запису
+    confirmTitle: Ви абсолютно впевнені?
+    confirmRemoveFile: "Ви впевнені, що хочете видалити цей файл?"
+    cancel: Скасувати
+    delete: Видалити
+    payments: Платежі
+    communications: Комунікації
+    history: Історія
+    details: Деталі
+  payments:
+    addPayment: Додати платіж
+    noPayments: Немає платежів
+  detail:
+    by: "Від {name}"
+  form:
+    dateTimeRequired: Дата та час обов'язкові
+    durationRequired: Тривалість обов'язкова
+    durationInteger: Повинно бути цілим числом
+    durationMin: Мінімальна тривалість 1 хвилина
+    durationMax: Максимальна тривалість 10 днів
+    priceNumber: Загальна ціна повинна бути числом
+    priceMin: Мінімальна ціна 0
+    optionRequired: Опція повинна бути вибрана
+    addonRequired: Додаток повинен бути вибраний
+    nameRequired: Ім'я обов'язкове
+    emailValid: Повинен бути дійсний email
+    phoneRequired: Телефон обов'язковий
+    phoneValid: Потрібен дійсний номер телефону
+    scheduledSuccess: Запис було успішно заплановано
+    requestError: Виникла проблема з вашим запитом.
+    appointmentType: Тип запису
+    selectOption: Вибрати опцію
+    min: хв
+    custom: Власний
+    dateTime: Дата та час
+    addons: Додатки
+    selectAddons: Вибрати додатки...
+    customer: Клієнт
+    discount: Знижка
+    duration: Тривалість
+    price: Ціна
+    note: Примітка
+    confirmAppointment: Підтвердити запис
+    confirmAppointmentDescription: Позначити запис як підтверджений
+    confirmOverlap: Підтвердити накладення
+    confirmOverlapDescription: "Я розумію, що планування цього запису створить накладення в моєму розкладі"
+    scheduleAppointment: Створити запис
+    doNotNotifyCustomer: Не повідомляти клієнта
+    doNotNotifyCustomerDescription: "Якщо ввімкнено, клієнт не буде повідомлений про зміну запису"
+    updateAppointment: Оновити запис
+    updatedSuccess: Запис було успішно оновлено
+  actionButton:
+    changesSaved: Ваші зміни були збережені.
+    requestError: Виникла проблема з вашим запитом.
+  subscriptionPastDue:
+    title: Прострочена оплата підписки
+    description: Оплата підписки прострочена. Створення та зміну записів тимчасово вимкнено, доки не буде вирішено питання з оплатою.
+    openSettings: Відкрити налаштування
+    openingPortal: Відкриваємо портал оплати…
+  history:
+    byUser: Користувачем
+    byCustomer: Клієнтом
+    payment: "Платіж {amount} через {appName}"
+    paymentType: "{type} через {appName}"
+    oldStatus: "Старий статус: {oldStatus}"
+    newStatus: "Новий статус: {newStatus}"
+    oldDateTime: "Старий час: {oldDateTime}"
+    newDateTime: "Новий час: {newDateTime}"
+    refundedAmount: "Повернено {amount}"
+    totalRefunded: "Всього повернено {amount}"
+    oldOption: "Стара опція: {oldOption}"
+    newOption: "Нова опція: {newOption}"
+  events:
+    created:
+      title: Новий запис
+      description: "{customerName} створив(ла) запит на {serviceName}"
+    updated:
+      title: Запис оновлено
+      description: "{customerName} — {serviceName}"
+    rescheduled:
+      title: Запис перенесено
+      description: "{customerName} — {serviceName}"
+    statusChanged:
+      title: Змінено статус запису
+      description: "{customerName}: {oldStatus} → {newStatus}"
+  notifications:
+    appointmentCreated:
+      title: Запис створений
+      message: >-
+        Запис створений для {name} на {service} {dateTime} {durationHours,
+        plural, =0 {{durationMinutes} хв} other {# год, {durationMinutes} хв}}
+      action: Переглянути
+    appointmentRescheduled:
+      title: Запис перенесений
+      message: "{name} перенес {service}."
+      action: Переглянути
+    appointmentCancelled:
+      title: Запис скасовано
+      message: "{name} скасував {service}."
+      action: Переглянути
+assets:
+  title: Ресурси
+  new: Новий ресурс
+  edit: Редагувати ресурс
+  uploadNewAssets: Завантажити нові ресурси
+  addNew: Додати новий
+  dashboard: Панель керування
+  newPage: Новий
+  editPage: Редагувати
+  form:
+    asset: Ресурс
+    fileName: Назва файлу
+    fileNamePlaceholder: Назва файлу ресурсу
+    description: Опис
+    descriptionPlaceholder: Опис ресурсу
+    assetName: Назва ресурсу
+  table:
+    columns:
+      preview: Попередній перегляд
+      fileName: Назва файлу
+      fileType: Тип файлу
+      fileSize: Розмір файлу
+      description: Опис
+      appointment: Запис
+      customer: Клієнт
+      uploadTime: Час завантаження
+      actions: Дії
+    actions:
+      selectAll: Вибрати все
+      selectRow: Вибрати рядок
+      openMenu: Відкрити меню
+      actions: Дії
+      update: Оновити
+      delete: Видалити
+      copyRelativeUrl: Копіювати відносний url
+      copyAbsoluteUrl: Копіювати абсолютний url
+      download: Завантажити
+    delete:
+      title: Ви абсолютно впевнені?
+      description: Цю дію неможливо скасувати. Це видалить вибрані ресурси
+      confirm: Видалити вибрані
+      cancel: Скасувати
+      selectedCount: >-
+        Видалити вибрані {count, plural, =1 {ресурс} few {# ресурси} many {#
+        ресурсів} other {# ресурсів}}
+      success: Вибрані ресурси були видалені
+      error: Виникла проблема з вашим запитом.
+    filters:
+      filters: Фільтри
+  toasts:
+    changesSaved: Ваші зміни були збережені.
+    assetDeleted: "Ресурс {filename} було успішно видалено."
+    copied: Скопійовано
+    relativeUrlCopied: "Відносний url ресурсу '{url}' скопійовано в буфер обміну."
+    absoluteUrlCopied: "Абсолютний url ресурсу '{url}' скопійовано в буфер обміну."
+activity:
+  actor:
+    system: Система
+    user: "Користувач: {name}"
+    customer: "Клієнт: <link></link>"
+  page:
+    description: Хронологія важливих подій організації.
+  header:
+    openFeed: Відкрити стрічку активності
+    recent: Остання активність
+    empty: Поки немає активності.
+    viewAll: Уся активність
+  severity:
+    info: Інфо
+    success: Успіх
+    warning: Попередження
+    error: Помилка
+  table:
+    searchPlaceholder: "Пошук за типом події, заголовком або опису…"
+    dateRange: Період
+    filters:
+      severity: Важливість
+      actor: Актор
+      eventType: Тип події
+      actorKind:
+        system: Система
+        user: Користувач
+        customer: Клієнт
+    columns:
+      createdAt: Дата
+      severity: Важливість
+      actor: Актор
+      eventType: Тип події
+      title: Заголовок
+      description: Опис
+      link: Посилання
+communicationLogs:
+  title: Журнал комунікацій
+  clearAll: Очистити все
+  clearSelected: Очистити вибрані
+  clearAllTitle: Ви абсолютно впевнені?
+  clearAllDescription: Цю дію неможливо скасувати. Це видалить весь журнал комунікацій
+  clearSelectedTitle: Ви абсолютно впевнені?
+  clearSelectedDescription: Цю дію неможливо скасувати. Це видалить вибрані записи журналу комунікацій
+  cancel: Скасувати
+  logsCleared: Ваші журнали були очищені
+  selectedLogsCleared: Вибрані журнали були очищені
+  clearSelectedCount: >-
+    Очистити {count, plural, =1 {вибраний запис} few {вибрані # записи} many
+    {вибраних # записів} other {вибраних # записів}}
+  table:
+    columns:
+      direction: Напрямок
+      channel: Канал
+      participantType: Учасник
+      participant: Учасник
+      handler: Обробник
+      subject: Тема
+      content: Вміст
+      data: Дані
+      dateTime: Дата та час
+      appointment: Запис
+      customer: Клієнт
+    actions:
+      selectAll: Вибрати все
+      selectRow: Вибрати рядок
+      viewMore: Показати більше
+      view: Переглянути
+      close: Закрити
+      logContent: Вміст повідомлення
+      logData: Дані журналу
+    filters:
+      filters: Фільтри
+      direction: Напрямок
+      channel: Канал
+      participant: Учасник
+      status: Статус
+customers:
+  title: Клієнти
+  new: Новий клієнт
+  edit: Редагувати клієнта
+  addNew: Додати новий
+  addNewCustomer: Додати нового клієнта
+  manageCustomers: Керувати вашими клієнтами
+  manageCustomer: Керувати клієнтом
+  scheduleAppointment: Запланувати запис
+  addNewShort: Додати новий
+  details: Деталі
+  appointments: Записи
+  files: Файли
+  communications: Комунікації
+  deletedCustomer: Видалений клієнт
+  form:
+    customerPhoto: Фото клієнта
+    personalInformation: Особиста інформація
+    contactInformation: Контактна інформація
+    additionalInformation: Додаткова інформація
+    name: Ім'я
+    namePlaceholder: Ім'я клієнта
+    email: Електронна пошта
+    emailPlaceholder: Email клієнта
+    phone: Телефон
+    phonePlaceholder: Телефон клієнта
+    address: Адреса
+    addressPlaceholder: Адреса клієнта
+    notes: Примітки
+    notesPlaceholder: Примітки про клієнта
+    dateOfBirth: Дата народження
+    dontAllowAppointments: Не дозволяти записи
+    dontAllowAppointmentsTooltip: >-
+      Якщо відмічено, клієнт не зможе робити записи. Запис може бути зроблений
+      тільки вами
+    requireDeposit: Вимагати завдаток
+    requireDepositTooltip: Чи повинен цей клієнт платити завдаток
+    depositAmount: Сума завдатку
+    depositAmountTooltip: >-
+      Сума завдатку у відсотках. Якщо встановлено 100, повна ціна має бути
+      сплачена наперед
+    selectOption: Вибрати опцію
+    always: Завжди
+    never: Ніколи
+    inherit: "Те саме, що вибрана опція або загальна конфігурація"
+    knownNames: Відомі імена
+    knownNamesTooltip: Альтернативні імена надаються клієнтами під час запиту на запис
+    knownEmails: Відомі email
+    knownEmailsTooltip: >-
+      Альтернативні email допомагають зіставляти записи за альтернативними
+      email, які може використовувати клієнт
+    knownPhones: Відомі телефони
+    knownPhonesTooltip: >-
+      Альтернативні телефони допомагають зіставляти записи за альтернативними
+      номерами телефонів, які може використовувати клієнт
+    addName: Додати ім'я
+    addEmail: Додати email
+    addPhone: Додати телефон
+    remove: Видалити
+    changePhoto: Змінити фото
+    customerPhotoAlt: Фото клієнта
+  table:
+    columns:
+      name: Ім'я
+      email: Електронна пошта
+      phone: Телефон
+      address: Адреса
+      appointments: Записи
+      lastAppointment: Останній запис
+      nextAppointment: Наступний запис
+      createdAt: Створено
+      actions: Дії
+    actions:
+      selectAll: Вибрати все
+      selectRow: Вибрати рядок
+      openMenu: Відкрити меню
+      actions: Дії
+      edit: Редагувати
+      delete: Видалити
+      merge: Об'єднати
+    delete:
+      title: Ви абсолютно впевнені?
+      description: Цю дію неможливо скасувати. Це видалить вибраних клієнтів
+      confirm: Видалити вибраних
+      cancel: Скасувати
+      selectedCount: >-
+        Видалити {count, plural, =1 {вибраного клієнта} few {вибраних #
+        клієнтів} many {вибраних # клієнтів} other {вибраних # клієнтів}}
+      success: Вибрані клієнти були видалені
+      error: Виникла проблема з вашим запитом.
+      cannotDeleteWithAppointments: "Неможливо видалити клієнтів, які мають призначені записи"
+      deleteSelectedCustomers: Видалити вибраних клієнтів
+    merge:
+      title: Ви абсолютно впевнені?
+      description: Цю дію неможливо скасувати. Це об'єднає вибраних клієнтів у цільового
+      confirm: Об'єднати вибраних
+      cancel: Скасувати
+      selectedCount: >-
+        Об'єднати {count, plural, =1 {вибраного клієнта} few {вибраних #
+        клієнти} many {вибраних # клієнтів} other {вибраних # клієнтів}}
+      success: Вибрані клієнти були об'єднані
+      error: Виникла проблема з вашим запитом.
+      targetCustomer: Цільовий клієнт
+    filters:
+      filters: Фільтри
+  uploadFiles:
+    title: Завантажити файли
+    description: Завантажте файли для вашого клієнта
+    descriptionPlaceholder: Опис файлу
+    upload: Завантажити
+  toasts:
+    changesSaved: Ваші зміни були збережені.
+    customerCreated: Клієнта успішно створено.
+    customerUpdated: Клієнта успішно оновлено.
+    customerDeleted: "Клієнта {name} було видалено."
+pages:
+  title: Сторінки
+  new: Нова сторінка
+  edit: Редагувати сторінку
+  addNew: Додати нову
+  addNewPage: Додати нову сторінку
+  managePages: Керувати сторінками
+  viewPage: Переглянути сторінку
+  form:
+    pageContent: Вміст сторінки
+    pageContentTooltip: Вміст сторінки у форматі MDX. Дізнатися більше про MDX
+    learnMoreAboutMdx: Дізнатися більше про MDX
+    pageSlug: Адреса сторінки
+    pageSlugTooltip: >-
+      Відносний URL сторінки. Наприклад, сторінка з адресою 'my-new-page' буде
+      доступна за повноюадресою 'yourdomain.com/my-new-page'
+    pageSlugPlaceholder: Адреса сторінки
+    published: Опубліковано?
+    publishedTooltip: Чи видима сторінка для ваших відвідувачів
+    publishDate: Дата публікації
+    publishDateTooltip: >-
+      Дата публікації буде використовуватися для SEO, для визначення
+      хронологічного порядку та для визначення, чи вона видима для відвідувачів
+    tags: Теги
+    tagsPlaceholder: "Введіть теги, розділені комами"
+    tagsTooltip: Теги сторінки для легкого розрізнення
+    title: Заголовок
+    titlePlaceholder: Заголовок сторінки
+    doNotCombineTitle: Не об'єднувати заголовок
+    doNotCombineTitleTooltip: >-
+      Чи повинен заголовок сторінки об'єднуватися з заголовком веб-сайту для SEO
+      як 'Заголовок сторінки | Назва веб-сайту'
+    description: Опис
+    descriptionPlaceholder: Опис сторінки
+    descriptionTooltip: >-
+      Також використовується компонентом списку сторінок (тобто списком блогу)
+      для показу попереднього перегляду
+    doNotCombineDescription: Не об'єднувати опис
+    doNotCombineDescriptionTooltip: Чи повинен опис сторінки об'єднуватися з описом веб-сайту для SEO
+    keywords: Ключові слова
+    keywordsTooltip: "Ключові слова сторінки, розділені комами"
+    keywordValidation: Ключове слово повинно містити щонайменше 2 символи
+    doNotCombineKeywords: Не об'єднувати ключові слова
+    doNotCombineKeywordsTooltip: >-
+      Чи повинні ключові слова сторінки об'єднуватися з ключовими словами
+      веб-сайту
+    fullWidthPage: Сторінка на всю ширину
+    fullWidthPageTooltip: "Якщо увімкнено, сторінка не буде обгорнута в елемент Container"
+    language: Мова
+    defaultLanguage: За замовчуванням
+    settingsTabLabel: Налаштування
+    header: Заголовок
+    footer: Підвал
+  table:
+    columns:
+      title: Заголовок
+      slug: Слимак
+      published: Опубліковано
+      publishDate: Дата публікації
+      createdAt: Створено
+      updatedAt: Оновлено
+      tags: Теги
+      actions: Дії
+    actions:
+      selectAll: Вибрати все
+      selectRow: Вибрати рядок
+      openMenu: Відкрити меню
+      actions: Дії
+      edit: Редагувати
+      delete: Видалити
+      view: Переглянути
+      clone: Клонувати
+      copyRelativeUrl: Копіювати відносний url
+      copyAbsoluteUrl: Копіювати абсолютний url
+    delete:
+      title: Ви абсолютно впевнені?
+      description: Цю дію неможливо скасувати. Це видалить вибрані сторінки
+      confirm: Видалити вибрані
+      cancel: Скасувати
+      selectedCount: >-
+        Видалити {count, plural, =1 {вибрану сторінку} few {вибрані # сторінки}
+        many {вибрані # сторінки} other {вибрані # сторінок}}
+      success: Вибрані сторінки були видалені
+      error: Виникла проблема з вашим запитом.
+    filters:
+      filters: Фільтри
+      status: Статус
+      published: Опубліковано
+      draft: Чернетка
+  toasts:
+    changesSaved: Ваші зміни були збережені.
+    pageCreated: Сторінку успішно створено.
+    pageUpdated: Сторінку успішно оновлено.
+    pageDeleted: "Сторінку '{title}' було видалено."
+    relativeUrlCopied: "Відносний url сторінки '{url}' скопійовано в буфер обміну."
+    absoluteUrlCopied: "Абсолютний url сторінки '{url}' скопійовано в буфер обміну."
+  headers:
+    title: Заголовки сторінок
+    managePageHeaders: Керувати заголовками сторінок
+    managePageHeader: Керувати заголовком сторінки
+    addNewPageHeader: Додати новий заголовок сторінки
+    new: Новий заголовок
+    addNew: Додати новий
+    edit: Редагувати заголовок
+    table:
+      columns:
+        name: Назва
+        usedCount: Використано у сторінках
+        updatedAt: Оновлено
+      actions:
+        selectAll: Вибрати все
+        selectRow: Вибрати рядок
+        openMenu: Відкрити меню
+        actions: Дії
+        edit: Редагувати
+        delete: Видалити
+        clone: Клонувати
+      delete:
+        title: Ви абсолютно впевнені?
+        description: Цю дію неможливо скасувати. Це видалить вибрані заголовки
+        confirm: Видалити вибрані
+        cancel: Скасувати
+        selectedCount: >-
+          Видалити {count, plural, =1 {вибраний заголовок} few {вибрані #
+          заголовки} many {вибрані # заголовки} other {вибрані # заголовки}}
+        success: Вибрані заголовки були видалені
+        error: Виникла проблема з вашим запитом.
+    form:
+      name: Назва
+      namePlaceholder: Назва заголовка
+      nameTooltip: Унікальна назва заголовка
+      menuTooltip: Елементи меню для заголовка
+      showLogoTooltip: Чи повинен показуватися логотип в заголовку
+      sticky: Закріплений
+      stickyTooltip: Чи повинен заголовок рухатися з прокруткою сторінки
+      stickyHeader: Закріплений заголовок
+      stickyHeaderDescription: Чи повинен заголовок рухатися з прокруткою сторінки
+      showLogo: Показати логотип
+      showLogoDescription: Чи повинен логотип показуватися в заголовку
+      headerShadow: Тінь заголовка
+      selectShadowType: Вибрати тип тіні
+      menu: Меню
+    shadowType:
+      none: Немає
+      static: Статичний
+      on-scroll: При прокрутці
+    toasts:
+      pageHeaderDeleted: "Заголовок сторінки '{name}' було видалено."
+      changesSaved: Ваші зміни були збережені.
+    usedOnPages: "Використано у {count, plural, =1 {сторінці} other {# сторінках}}"
+  footers:
+    title: Підвали сторінок
+    new: Новий підвал
+    edit: Редагувати підвал
+    addNew: Додати новий
+    addNewPageFooter: Додати новий підвал сторінки
+    managePageFooters: Керувати підвалами сторінок
+    managePageFooter: Керувати підвалом сторінки
+    usedOnPages: "Використано у {count, plural, =1 {сторінці} other {# сторінках}}"
+    form:
+      name: Назва
+      namePlaceholder: Назва підвалу
+      nameTooltip: Унікальна назва підвалу
+      content: Вміст
+    toasts:
+      pageFooterDeleted: "Підвал сторінки '{name}' було видалено."
+      changesSaved: Ваші зміни були збережені.
+      requestError: Виникла проблема з вашим запитом.
+    table:
+      columns:
+        name: Назва
+        usedCount: Використано у сторінках
+        updatedAt: Оновлено
+        actions: Дії
+      delete:
+        title: Ви абсолютно впевнені?
+        description: Цю дію неможливо скасувати. Це видалить вибрані підвали
+        confirm: Видалити вибрані
+        cancel: Скасувати
+        selectedCount: >-
+          Видалити {count, plural, =1 {вибраний підвал} few {вибрані # підвали}
+          many {вибрані # підвали} other {вибрані # підвали}}
+        success: Вибрані підвали були видалені
+        error: Виникла проблема з вашим запитом.
+      actions:
+        selectAll: Вибрати все
+        selectRow: Вибрати рядок
+        openMenu: Відкрити меню
+        actions: Дії
+        edit: Редагувати
+        delete: Видалити
+        clone: Клонувати
+services:
+  fieldSelector:
+    loading: Завантаження полів...
+    selectField: Вибрати поле
+  fieldSelectCard:
+    moveField: "Перемістити поле {type}"
+    field: Поле
+    required: Обов'язкове
+    requiredTooltip: Позначає поле як обов'язкове
+    deleteConfirmTitle: Ви абсолютно впевнені?
+    deleteConfirmDescription: "Ви впевнені, що хочете видалити це поле з цього {type}?"
+    cancel: Скасувати
+    delete: Видалити
+  addonSelectCard:
+    moveAddon: Перемістити додаток опції
+    addon: Додаток
+    deleteConfirmTitle: Ви абсолютно впевнені?
+    deleteConfirmDescription: "Ви впевнені, що хочете видалити цей додаток з цієї опції?"
+    cancel: Скасувати
+    delete: Видалити
+  addonSelector:
+    loading: Завантаження додатків...
+    selectAddon: Вибрати додаток
+  options:
+    title: Послуги
+    description: "Керувати послугами, які ви надаєте"
+    addNew: Додати нову
+    addFromTemplate: Додати з шаблону
+    addFromTemplateDialog:
+      title: Додати нову опцію з шаблону
+      description: Оберіть професію та шаблон, щоб заповнити нову опцію.
+      pickServiceLabel: Виберіть шаблон послуги, щоб заповнити нову опцію.
+    createFromTemplate: Створити
+    new: Нова
+    newTitle: Нова опція послуги
+    newDescription: "Додати нову послугу, яку ви надаєте"
+    editDescription: Редагувати опцію
+    form:
+      name: Назва
+      namePlaceholder: Назва опції
+      description: Короткий опис
+      descriptionTooltip: "Короткий текст, який буде видимий під час бронювання"
+      duration: Тривалість
+      price: Ціна
+      durationType:
+        label: Тип тривалості
+        tooltip: Тип тривалості опції
+        fixed: Фіксована
+        flexible: Гнучка
+        placeholder: Вибрати тип тривалості
+      durationMin:
+        label: Мінімальна тривалість
+        tooltip: Мінімальна тривалість опції
+        placeholder: Вибрати мінімальну тривалість
+      durationMax:
+        label: Максимальна тривалість
+        tooltip: Максимальна тривалість опції
+        placeholder: Вибрати максимальну тривалість
+      pricePerHour:
+        label: Ціна за годину
+        tooltip: Ціна за годину опції
+        placeholder: Вибрати ціну за годину
+        suffix: /год
+      durationStep:
+        label: Крок тривалості
+        tooltip: Крок тривалості опції
+        placeholder: Вибрати крок тривалості
+        steps:
+          "1": 1 хвилина
+          "5": 5 хвилин
+          "10": 10 хвилин
+          "15": 15 хвилин
+          "20": 20 хвилин
+          "30": 30 хвилин
+          "60": 1 година
+          "120": 2 години
+          "180": 3 години
+          "360": 6 годин
+      isAutoConfirm:
+        label: Автоматично підтверджувати
+        tooltip: Чи повинна ця опція автоматично підтверджуватися
+        always: Завжди
+        never: Ніколи
+        inherit: "Так само, як у загальній конфігурації"
+      onlineSettings:
+        title: Налаштування віртуального запису
+        isOnline:
+          label: Тип запису
+          tooltip: >-
+            Вказує, чи проводиться ця запис через відео чи аудіо дзвінок,
+            телефонний дзвінок тощо
+          labels:
+            "false": В особистому контакті
+            "true": Віртуальний
+        meetingUrlProviderAppId:
+          label: Додаток постачальника URL зустрічі
+          tooltip: "Додаток, який буде використовуватися для надання URL зустрічі"
+      paymentSettings:
+        title: Налаштування платежів
+        paymentType:
+          label: Тип розрахунку депозиту
+          tooltip: "Виберіть, чи повинна ця опція вимагати завдаток у відсотках чи сумі"
+          labels:
+            amount: Сума
+            percentage: Відсоток
+          placeholder: Вибрати тип розрахунку депозиту
+        depositAmount:
+          label: Сума завдатку
+          tooltip: >-
+            Сума завдатку у відсотках<br></br>Якщо встановлено 100, повна ціна
+            має бути сплачена наперед<br></br>Може бути перевизначено для
+            кожного клієнта
+        depositPercentage:
+          label: Відсоток завдатку
+          tooltip: >-
+            Відсоток завдатку<br></br>Якщо встановлено 100, повна ціна має бути
+            сплачена наперед<br></br>Може бути перевизначено для кожного клієнта
+        requireDeposit:
+          label: Вимагати завдаток
+          tooltip: >-
+            Чи повинна ця опція вимагати завдаток<br></br>Потребує налаштованого
+            платіжного додатку
+          always: "Завжди, якщо не вимагається для клієнта"
+          never: "Ніколи, якщо не вимагається для клієнта"
+          inherit: "Так само, як у загальній конфігурації, або для клієнта"
+      cancellationPolicy:
+        title: Скасування
+        type:
+          label: Тип політики скасування
+          tooltip: Тип політики скасування
+          inherit: "Так само, як у загальній конфігурації"
+          custom: Власна політика
+          placeholder: Вибрати тип політики скасування
+        enabled:
+          label: Увімкнено
+          tooltip: Чи дозволяти скасування для опції
+          labels:
+            disabled: Вимкнено
+            enabled: Увімкнено
+        withDeposit:
+          title: Для записів з завдатком
+          description: "Налаштувати політику скасування для опції, коли завдаток вимагається"
+          enabled: Увімкнено
+          enabledTooltip: "Чи дозволяти скасування для опції, коли завдаток вимагається"
+        withoutDeposit:
+          title: Для записів без завдатку
+          description: >-
+            Налаштувати політику скасування для опції, коли завдаток не
+            вимагається
+          enabled: Увімкнено
+          enabledTooltip: "Чи дозволяти скасування для опції, коли завдаток не вимагається"
+      reschedulePolicy:
+        title: Перенесення
+        type:
+          label: Тип політики перенесення
+          tooltip: Тип політики перенесення
+          inherit: "Так само, як у загальній конфігурації"
+          custom: Власна політика
+          placeholder: Вибрати тип політики перенесення
+        enabled:
+          label: Увімкнено
+          tooltip: Чи дозволяти перенесення для опції
+          labels:
+            disabled: Вимкнено
+            enabled: Увімкнено
+        default:
+          title: Політика за замовчуванням
+          tooltip: >-
+            Налаштувати політику за замовчуванням, яка буде застосована, якщо
+            інша політика не застосовна
+      selectOption: Вибрати опцію
+      fields: Поля
+      addons: Додатки
+      tabs:
+        general: Загальне
+        payments: Платежі
+        virtual: Віртуальне
+        duplicates: Дублікати
+        fields: Поля
+        addons: Додатки
+      duplicateAppointmentCheck:
+        title: Дублюючі записи на ту саму послугу
+        enabled: Перевіряти наявність дублюючого запису
+        enabledTooltip: >-
+          Запитувати у клієнтів підтвердження, або не дозволяти запис, якщо в
+          них уже є майбутній запис на цю саму послугу поблизу вибраної
+          дати/часу
+        doNotAllowScheduling:
+          label: Дія
+          tooltip: >-
+            Що робити, якщо клієнт вже має майбутній запис на цю саму послугу
+            поблизу вибраної дати/часу
+          labels:
+            "false": Запитати підтвердження
+            "true": Не дозволяти запис
+        days: Діапазон днів
+        daysSuffix: дн.
+        daysTooltip: >-
+          Кількість днів до або після вибраної дати/часу для перевірки наявності
+          запису
+        message: Повідомлення для підтвердження
+        messageTooltip: >-
+          Текст, який відображатиметься клієнту.<br></br>Можливі
+          змінні:<br></br>- <i>'{{days}}'</i>: діапазон днів<br></br>-
+          <i>'{{name}}'</i>: ім’я клієнта<br></br>- <i>'{{service}}'</i>: назва
+          послуги<br></br>- <i>'{{date}}'</i>: дата вже наявного запису
+        messageExamples:
+          label: Приклади <chevron></chevron>
+          friendly: >-
+            Привіт, '{{name}}'! Ви вже маєте запис на '{{service}}' '{{date}}' у
+            межах '{{days}}' днів. Бажаєте створити ще один такий самий запис?
+          neutral: >-
+            У вас уже заплановано '{{service}}' на '{{date}}' (у межах
+            '{{days}}' днів). Ви хочете зробити ще один запис на цю ж послугу?
+          formal: >-
+            Вітаємо, '{{name}}'! У нашій системі є ваш запис на '{{service}}'
+            '{{date}}'. Ви впевнені, що хочете створити ще один запис на цю саму
+            послугу у межах '{{days}}' днів?
+      validation:
+        nameUnique: Назва опції повинна бути унікальною
+      toasts:
+        changesSaved: Ваші зміни були збережені.
+        requestError: Виникла проблема з вашим запитом.
+      addToAvailabilityDialog:
+        title: Додати цю опцію до доступних для запису?
+        description: Зробити <em>{name}</em> доступною для записів зараз?
+        manageHint: Ви завжди можете керувати доступними опціями в <link>Налаштування -> Записи</link>
+        actions:
+          skip: Не зараз
+          add: Додати до доступних опцій
+        toasts:
+          added: Доступність опції оновлено.
+          requestError: Виникла проблема з вашим запитом.
+    table:
+      columns:
+        name: Назва
+        updatedAt: Оновлено
+        cellAction:
+          optionDeleted: "Опцію '{name}' було видалено."
+          deleteError: Виникла проблема з вашим запитом.
+          actions: Дії
+          update: Оновити
+          delete: Видалити
+          clone: Клонувати
+    deleteSelected:
+      success: Вибрані опції були видалені
+      error: Виникла проблема з вашим запитом.
+      button: >-
+        Видалити {count, plural, =1 {вибрану опцію} few {вибрані # опції} many
+        {вибраних # опцій} other {вибраних # опцій}}
+      confirmTitle: Ви абсолютно впевнені?
+      confirmDescription: Цю дію неможливо скасувати.
+      cancel: Скасувати
+      deleteSelected: Видалити вибрані
+  fields:
+    title: Поля
+    description: Керувати власними полями
+    addNew: Додати нове
+    new: Нове
+    newTitle: Нове поле
+    newDescription: Додати нове власне поле
+    editDescription: Редагувати власне поле
+    form:
+      name: Назва
+      namePlaceholder: Назва поля
+      nameTooltip: "Унікальний ID поля. Може містити тільки літери, цифри та підкреслення"
+      label: Мітка
+      labelPlaceholder: Мітка поля
+      labelTooltip: "Мітка, яка буде показана користувачу"
+      type: Тип
+      typePlaceholder: Вибрати тип поля
+      typeTooltip: Тип поля
+      description: Опис
+      descriptionPlaceholder: Опис поля
+      descriptionTooltip: Короткий опис для поля
+      required: Обов'язкове
+      requiredTooltip: Позначає поле як обов'язкове
+      options: Опції
+      addOption: Додати опцію
+      fileTypes: Типи файлів
+      fileTypesTooltip: Дозволені типи файлів для завантаження
+      validation:
+        nameUnique: Назва поля повинна бути унікальною
+      toasts:
+        changesSaved: Ваші зміни були збережені.
+        requestError: Виникла проблема з вашим запитом.
+      optionsTitle: Опції
+      maxSizeMbLabel: Макс. розмір файлу (МБ)
+      maxSizeMbTooltip: Максимальний дозволений розмір файлу в мегабайтах.
+      maxSizeMbPlaceholder: "5"
+      acceptedFilesLabel: Прийнятні файли
+      acceptedFilesTooltip: Список прийнятних файлів та типів файлів. Дивіться MDN для деталей.
+      acceptedFilesPlaceholder: "Натисніть кнопку плюс, щоб додати новий тип файлу"
+    table:
+      columns:
+        name: Назва
+        type: Тип
+        label: Мітка
+        updatedAt: Оновлено
+        addons: Додатки
+        options: Опції
+        addonsInDialog: "{label} в додатках"
+        optionsInDialog: "{label} в опціях"
+      cellAction:
+        fieldDeleted: "Поле опції '{label}' було видалено."
+        deleteError: Виникла проблема з вашим запитом.
+        actions: Дії
+        update: Оновити
+        delete: Видалити
+        clone: Клонувати
+    deleteSelected:
+      success: Вибрані поля були видалені
+      error: Виникла проблема з вашим запитом.
+      button: >-
+        Видалити {count, plural, =1 {вибране поле} few {вибрані # поля} many
+        {вибраних # поля} other {вибраних # поля}}
+      confirmTitle: Ви абсолютно впевнені?
+      confirmDescription: >-
+        Цю дію неможливо скасувати. Це видалить вибрані поля та видалить їх з
+        усіх опцій та додатків, які їх використовують
+      cancel: Скасувати
+      deleteSelected: Видалити вибрані
+    selectFieldOptionCard:
+      moveOption: Перемістити опцію
+      option: Опція
+      deleteConfirmTitle: Ви абсолютно впевнені?
+      deleteConfirmDescription: "Ви впевнені, що хочете видалити цю опцію?"
+  discounts:
+    title: Знижки
+    description: Керувати знижками
+    addNew: Додати нову
+    new: Нова
+    newTitle: Нова знижка
+    newDescription: Додати нову знижку
+    editDescription: Редагувати знижку
+    form:
+      name: Назва
+      namePlaceholder: Назва знижки
+      nameTooltip: Унікальна назва знижки
+      description: Опис
+      descriptionPlaceholder: Опис знижки
+      descriptionTooltip: Короткий опис для знижки
+      type: Тип
+      typePlaceholder: Вибрати тип знижки
+      typeTooltip: Тип знижки
+      value: Значення
+      valuePlaceholder: Значення знижки
+      valueTooltip: Сума або відсоток знижки
+      enabled: Увімкнено
+      enabledTooltip: Чи активна ця знижка
+      status: Статус
+      active: Активна
+      disabled: Вимкнено
+      codes: Коди
+      codesPlaceholder: Коди знижок
+      codesTooltip: "Коди, які можна використовувати для застосування цієї знижки"
+      addCode: Додати код
+      removeCode: Видалити код
+      startDate: Дата початку
+      startDatePlaceholder: Коли знижка стає активною
+      startDateTooltip: "Дата, коли знижка починає діяти"
+      endDate: Дата закінчення
+      endDatePlaceholder: Коли знижка закінчується
+      endDateTooltip: "Дата, коли знижка перестає діяти"
+      appointmentStartDate: Найраніша дата запису для знижки
+      appointmentStartDateTooltip: >-
+        Найраніша дата запису (включно), для якої можна застосувати цю знижку.
+        Записи, заплановані до цієї дати, не будуть мати право на знижку.
+      appointmentEndDate: Найпізніша дата запису для знижки
+      appointmentEndDateTooltip: >-
+        Найпізніша дата запису (включно), для якої можна застосувати цю знижку.
+        Записи, заплановані після цієї дати, не будуть мати право на знижку.
+      maxUsage: Максимальна кількість використань
+      maxUsageTooltip: >-
+        Загальна кількість разів, яку можна використати цю знижку серед усіх
+        клієнтів. Після досягнення цього ліміту знижка більше не буде доступна.
+      maxUsagePerCustomer: Максимальна кількість використань на клієнта
+      maxUsagePerCustomerTooltip: >-
+        Максимальна кількість разів, яку окремий клієнт може використати цю
+        знижку. Подальші спроби використання знижки цим клієнтом будуть
+        відхилені після досягнення цього ліміту.
+      limitTo: Обмежити до
+      limitToTooltip: Обмежити знижку до конкретних опцій та додатків
+      addLimit: Додати обмеження
+      removeLimit: Видалити обмеження
+      anyOption: Будь-яка опція
+      anyAddon: Будь-який додаток
+      anyOptionOrAddon: Будь-яка опція або додаток
+      addNew: Додати нове
+      optionsLabel: "Будь-яка з наступних опцій:"
+      addonsLabel: "Будь-який з наступних пакетів додатків:"
+      withLabel: З
+      removeLimitTitle: Ви абсолютно впевнені?
+      removeLimitDescription: "Ви впевнені, що хочете видалити це обмеження?"
+      limitToDescription: Ви можете обмежити цю знижку до конкретних опцій та додатків
+      cancel: Скасувати
+      delete: Видалити
+      validation:
+        nameUnique: Назва знижки повинна бути унікальною
+        codeUnique: Код знижки повинен бути унікальним
+      toasts:
+        changesSaved: Ваші зміни були збережені.
+        requestError: Виникла проблема з вашим запитом.
+    table:
+      columns:
+        name: Назва
+        codes: Коди
+        type: Тип
+        value: Значення
+        enabled: Статус
+        startDate: Від
+        endDate: До
+        usedCount: Загальне використання
+        updatedAt: Оновлено
+      cellAction:
+        discountDeleted: "Знижку {name} було видалено."
+        deleteError: Виникла проблема з вашим запитом.
+        actions: Дії
+        update: Оновити
+        delete: Видалити
+        clone: Клонувати
+    deleteSelected:
+      success: Вибрані знижки були видалені
+      error: Виникла проблема з вашим запитом.
+      button: >-
+        Видалити {count, plural, =1 {вибрану знижку} few {вибрані # знижки} many
+        {вибраних # знижок} other {вибраних # знижок}}
+      confirmTitle: Ви абсолютно впевнені?
+      confirmDescription: Цю дію неможливо скасувати. Це видалить вибрані знижки.
+      confirmDescription2: "Це не вплине на існуючі записи, які використовують ці знижки"
+      cancel: Скасувати
+      deleteSelected: Видалити вибрані
+  giftCards:
+    title: Подарункові картки
+    description: Керувати подарунковими картками
+    addNew: Додати нову
+    new: Нова
+    newTitle: Нова подарункова картка
+    newDescription: Додати нову подарункову картку
+    editDescription: Редагувати подарункову картку
+    table:
+      payments:
+        title: Платежі
+        description: "Платежі, здійснені цією подарунковою карткою"
+        noPayments: Платежі не знайдено
+        addPayment: Додати платіж
+      columns:
+        code: Код
+        amount: Сума
+        amountLeft: Залишок
+        expiresAt: Дійсна до
+        status: Статус
+        createdAt: Створено
+        updatedAt: Оновлено
+        payments: Платежі
+        customer: Клієнт
+      cellAction:
+        giftCardDeleted: "Подарункову картку {code} видалено."
+        giftCardSetActive: "Подарункову картку {code} позначено як активну."
+        giftCardSetInactive: "Подарункову картку {code} позначено як неактивну."
+        actions: Дії
+        update: Оновити
+        delete: Видалити
+        deleteFromSource: "Можна видаляти тільки з {appName}"
+        setActive: Активувати
+        setInactive: Деактивувати
+      statusBadges:
+        active: Активна
+        inactive: Неактивна
+        expired: Закінчився
+        noAmountLeft: Залишок закінчився
+    setStatusSelected:
+      setActive: Активувати
+      setInactive: Деактивувати
+      buttonActive: >-
+        Активувати {count, plural, =1 {подарункову картку} few {# подарункові
+        картки} many {# подарункових карток} other {# подарункових карток}}
+      buttonInactive: >-
+        Деактивувати {count, plural, =1 {подарункову картку} few {# подарункові
+        картки} many {# подарункових карток} other {# подарункових карток}}
+      confirmTitleActive: Активувати вибрані подарункові картки?
+      confirmTitleInactive: Деактивувати вибрані подарункові картки?
+      confirmDescription: Це змінить статус вибраних подарункових карток.
+      successActive: Вибрані подарункові картки активовано.
+      successInactive: Вибрані подарункові картки деактивовано.
+      error: Виникла проблема з вашим запитом.
+      cancel: Скасувати
+    deleteSelected:
+      success: Вибрані подарункові картки видалено
+      error: Виникла проблема з вашим запитом.
+      button: >-
+        Видалити {count, plural, =1 {вибрану подарункову картку} few {вибрані #
+        подарункові картки} many {вибраних # подарункових карток} other
+        {вибраних # подарункових карток}}
+      confirmTitle: Ви абсолютно впевнені?
+      confirmDescription: Цю дію неможливо скасувати. Це видалить вибрані подарункові картки.
+      cancel: Скасувати
+      deleteSelected: Видалити вибрані
+    form:
+      code:
+        label: Код
+        placeholder: ХХХ-ХХХ-ХХХ
+        tooltip: Унікальний код для подарункової картки
+        generateTooltip: Згенерувати новий код для подарункової картки
+        copied: Код скопійовано в буфер обміну
+        copyToClipboardTooltip: Скопіювати код в буфер обміну
+      amount:
+        label: Сума
+        placeholder: "50"
+        tooltip: Сума подарункової картки
+      expiresAt:
+        label: Дійсна до
+        tooltip: Дата закінчення терміну дії подарункової картки
+      paymentMethod:
+        label: Спосіб оплати
+        tooltip: Спосіб оплати при покупці подарункової картки
+      status:
+        label: Статус
+        tooltip: Статус подарункової картки
+        options:
+          active: Активна
+          inactive: Неактивна
+      customerId:
+        label: Клієнт
+        tooltip: "Клієнт, який придбав подарункову картку"
+      toasts:
+        created: Подарункову картку успішно створено
+        changesSaved: Ваші зміни збережено.
+        requestError: Виникла проблема з вашим запитом.
+  addons:
+    title: Додатки
+    description: Керувати додатками
+    addNew: Додати новий
+    new: Новий
+    newTitle: Новий додаток
+    newDescription: Додати новий додаток
+    editDescription: Редагувати додаток
+    form:
+      name: Назва
+      namePlaceholder: Назва додатку
+      nameTooltip: Унікальна назва додатку
+      description: Короткий опис
+      descriptionTooltip: "Короткий текст, який буде видимий під час бронювання"
+      duration: Тривалість
+      durationTooltip: Тривалість додатку
+      price: Ціна
+      pricePlaceholder: "20"
+      priceTooltip: Ціна додатку
+      fields: Поля
+      fieldsTooltip: "Поля, необхідні для цього додатку"
+      validation:
+        nameUnique: Назва додатку повинна бути унікальною
+      toasts:
+        changesSaved: Ваші зміни були збережені.
+        requestError: Виникла проблема з вашим запитом.
+    table:
+      columns:
+        name: Назва
+        updatedAt: Оновлено
+        options: Опції
+        optionsInDialog: "{name} в опціях"
+      cellAction:
+        addonDeleted: "Додаток '{name}' було видалено."
+        deleteError: Виникла проблема з вашим запитом.
+        actions: Дії
+        update: Оновити
+        delete: Видалити
+        clone: Клонувати
+    deleteSelected:
+      success: Вибрані додатки були видалені
+      error: Виникла проблема з вашим запитом.
+      button: >-
+        Видалити {count, plural, =1 {вибраний додаток} few {вибрані # додатки}
+        many {вибраних # додатків} other {вибраних # додатків}}
+      confirmTitle: Ви абсолютно впевнені?
+      confirmDescription: >-
+        Цю дію неможливо скасувати. Це видалить вибрані додатки та видалить їх з
+        усіх опцій, які їх використовують
+      cancel: Скасувати
+      deleteSelected: Видалити вибрані
+templates:
+  page:
+    title: Шаблони комунікацій
+  formPage:
+    typeTemplates: "Шаблони {type}"
+    new: Новий
+  newPage:
+    title: "Новий шаблон {type}"
+  editPage:
+    title: Оновити шаблон
+    clone: Клонувати
+  addNew:
+    emptyTemplate: Порожній шаблон
+    add: Додати
+    addNewTemplate: Додати новий шаблон
+    type: Тип
+    selectTemplateType: Вибрати тип шаблону
+    template: Шаблон
+    close: Закрити
+  form:
+    name: Назва шаблону
+    nameTooltip: Унікальна назва шаблону
+    subject: Тема повідомлення
+    subjectPlaceholder: Тема
+    subjectTooltip: "Тема повідомлення, яка буде використана для відправлення повідомлення"
+    namePlaceholder: Назва шаблону
+    validation:
+      templateNotValid: Шаблон недійсний
+    toasts:
+      changesSaved: Ваші зміни були збережені.
+      requestError: Виникла проблема з вашим запитом.
+  textMessageBuilder:
+    content: Вміст текстового повідомлення
+    viewContext: Переглянути контекст
+    contextValues: Значення контексту
+    copied: Скопійовано
+    copyPath: Копіювати шлях
+    close: Закрити
+    characterCount: "{count, plural, =1 {1 символ} other {# символів}}"
+    preview: Попередній перегляд
+  table:
+    filters:
+      type: Тип
+      filters: Фільтри
+    columns:
+      type: Тип
+      name: Назва
+      updatedAt: Оновлено
+    cellAction:
+      templateDeleted: "Шаблон '{name}' було видалено."
+      deleteError: Виникла проблема з вашим запитом.
+      actions: Дії
+      update: Оновити
+      delete: Видалити
+      clone: Клонувати
+    deleteSelected:
+      success: Вибрані шаблони були видалені
+      error: Виникла проблема з вашим запитом.
+      button: >-
+        Видалити {count, plural, =1 {вибраний шаблон} few {вибрані # шаблони}
+        many {вибраних # шаблонів} other {вибраних # шаблонів}}
+      confirmTitle: Ви абсолютно впевнені?
+      confirmDescription: >-
+        Цю дію неможливо скасувати. Це видалить вибрані шаблони та може порушити
+        сповіщення, які їх використовують
+      cancel: Скасувати
+      deleteSelected: Видалити вибрані
+appearance:
+  styling:
+    title: Стилізація
+    description: Налаштувати загальну стилізацію
+    form:
+      primaryFont: Основний шрифт
+      secondaryFont: Додатковий шрифт
+      tertiaryFont: Третій шрифт
+      selectFont: Вибрати шрифт
+      colorOverrides: Перевизначення кольорів
+      invalidField: Недійсне поле
+      duplicateType: Дублікат типу
+      remove: Видалити
+      deleteConfirmTitle: Ви абсолютно впевнені?
+      deleteConfirmDescription: "Ви впевнені, що хочете видалити це перевизначення кольору?"
+      cancel: Скасувати
+      delete: Видалити
+      type: Тип
+      selectColorOverrideType: Вибрати тип перевизначення кольору
+      color: Колір
+      colorTooltip: "Колір в CSS форматі (HEX, rgb, rgba, hsl)"
+      additionalCss: Додатковий CSS
+      toasts:
+        changesSaved: Ваші зміни були збережені.
+        requestError: Виникла проблема з вашим запитом.
+      fonts:
+        seeOnGoogleFonts: Переглянути на Google Fonts
+        variants:
+          "100": "100"
+          "200": "200"
+          "300": "300"
+          "400": "400"
+          "500": "500"
+          "600": "600"
+          "700": "700"
+          "800": "800"
+          "900": "900"
+          label: "Варіанти: {variants}"
+          regular: Звичайний
+          italic: Курсив
+          bold: Жирний
+          medium: Середній
+          semibold: Напівжирний
+          extrabold: Дуже жирний
+          100italic: 100 Курсив
+          200italic: 200 Курсив
+          300italic: 300 Курсив
+          400italic: 400 Курсив
+          500italic: 500 Курсив
+          600italic: 600 Курсив
+          700italic: 700 Курсив
+          800italic: 800 Курсив
+          900italic: 900 Курсив
+        subsets:
+          label: "Субдистрибутиви: {subsets}"
+          latin: Латини
+          latin-ext: Латини (розширені)
+          vietnamese: В'єтнамські
+          cyrillic: Кирилиця
+          cyrillic-ext: Кирилиця (розширені)
+          greek: Грецький
+          greek-ext: Грецький (розширені)
+          hebrew: Іврит
+          math: Математика
+          symbols: Символи
+        category:
+          label: "Категорія: {category}"
+          sans-serif: Безшрифтові
+          serif: Шрифтові
+          monospace: Моноширинні
+          display: Дисплей
+          handwriting: Рукопис
+          script: Скрипт
+          fantasy: Фантазія
+    colors:
+      default: За замовчуванням
+      custom: Власний колір
+      background: Фон
+      foreground: Текст
+      card: Картка
+      card-foreground: Текст картки
+      popover: Спливаюче вікно
+      popover-foreground: Текст спливаючого вікна
+      primary: Основний
+      primary-foreground: Основний текст
+      secondary: Додатковий
+      secondary-foreground: Додатковий текст
+      muted: Приглушений
+      muted-foreground: Приглушений текст
+      accent: Акцент
+      accent-foreground: Акцентний текст
+      destructive: Руйнівний
+      destructive-foreground: Руйнівний текст
+  footer:
+    title: Підвал
+    description: Налаштувати посилання в підвалі
+    form:
+      useCustomFooter: Використовувати власний підвал
+      footerContent: Вміст підвалу
+      preview: Попередній перегляд
+      contactUsLabel: Мітка 'Зв'язатися з нами'
+      contactUsLabelTooltip: За замовчуванням 'Зв'язатися з нами'
+      contactUsPlaceholder: Зв'язатися з нами
+      links: Посилання
+      toasts:
+        changesSaved: Ваші зміни були збережені.
+        requestError: Виникла проблема з вашим запитом.
+apps:
+  heading: Підключені додатки
+  description: Керувати вашими підключеними додатками
+  defaultApps: Додатки за замовчуванням
+  appStore: Магазин додатків
+  searchPlaceholder: Пошук встановлених додатків
+  noResults: За вашим запитом додатків не знайдено
+  noConnectedApps: У вас немає підключених додатків
+  defaultAppsForm:
+    payment:
+      label: Платіжний процессор
+      placeholder: Вимкнути платежі
+    emailSender:
+      label: Відправник email
+      placeholder: Використовувати відправник email за замовчуванням
+    textMessageSender:
+      label: Відправник текстових повідомлень
+      placeholder: Використовувати відправник текстових повідомлень за замовчуванням
+    textMessageResponder:
+      label: Відповідач текстових повідомлень
+      tooltip: >-
+        Якщо не обробляється відправником, буде використовуватися як додаток за
+        замовчуванням для відповіді на текстові повідомлення (наприклад,
+        автовідповідь). Опціонально.
+    assetsStorage: Сховище ресурсів
+    toasts:
+      changesSaved: Ваші зміни були збережені.
+      requestError: Виникла проблема з вашим запитом.
+  defaultAppsDescription: Вибрати додатки за замовчуванням
+  migrateAssetsDialog:
+    migrateAssets: Мігрувати ресурси
+    title: Мігрувати існуючі ресурси
+    description: Мігрувати ваші існуючі ресурси з попереднього сховища
+    sourceApp: Джерельний додаток сховища ресурсів
+    done: "Виконано: {count}"
+    success: "Успішно: {count}"
+    error: "Помилка: {count}"
+    total: "Всього: {count}"
+    migrate: Мігрувати
+    toasts:
+      requestError: Ваш запит не вдався
+  events:
+    installed:
+      title: Застосунок встановлено
+      description: "{appDisplayName} встановлено."
+    connected:
+      title: Застосунок підключено
+      description: "{appDisplayName} підключено."
+    uninstalled:
+      title: Застосунок видалено
+      description: "{appDisplayName} видалено."
+    failed:
+      title: Застосунок не вдалося підключити
+      description: "{appDisplayName} не вдалося підключити."
+  notifications:
+    failed:
+      title: Підключення застосунку не вдалося
+      message: >-
+        {appDisplayName} не вдалося підключити. Перевірте налаштування
+        застосунку.
+      action: Відкрити застосунки
+  emails:
+    failed:
+      subject: "{appDisplayName} — не вдалося підключити"
+      preview: "{appDisplayName} не вдалося залишити в підключеному стані"
+      title: Не вдалося залишити застосунок підключеним
+      body: >-
+        Вітаємо,
+
+
+        **{appDisplayName}** повідомив про проблему з підключенням або не
+        завершив налаштування. Відкрийте розділ **Застосунки** у панелі
+        керування, перевірте облікові дані та параметри, а потім спробуйте
+        підключити знову.
+
+
+        Якщо все уже виглядає коректно, цей лист можна ігнорувати.
+      button: Відкрити застосунки
+      handledBy: "Не вдалося підключити застосунок: {appDisplayName}"
+settings:
+  general:
+    title: Загальні налаштування
+    description: "Назва бізнесу, контакти, адреса та регіональні параметри організації."
+    billing:
+      sectionTitle: Підписка та оплата
+      status:
+        none: Немає запису про підписку
+        active: Активна
+        trialing: Пробний період
+        past_due: Прострочено
+        canceled: Скасовано
+        incomplete: Незавершено
+        incomplete_expired: Незавершено (закінчився)
+        unpaid: Не сплачено
+        revoked: Відкликано
+        other: "{status}"
+        label: Статус
+        feesExempt:
+          label: Підписка не потрібна
+          hint: Цей робочий простір звільнено від оплати підписки Timeli.sh.
+      openPortal: Відкрити портал оплати
+      choosePlan: Обрати тариф
+      portalError: Не вдалося відкрити портал оплати. Спробуйте пізніше.
+      portalReturnHint: Після керування оплатою у порталі оплати ви повернетесь сюди.
+      planLabel: Тариф
+      priceLabel: Вартість
+      nextBillingLabel: Наступне списання
+      priceWithIntervalLabel:
+        month: "{price}/ місяць"
+        year: "{price}/ рік"
+        week: "{price}/ тиждень"
+        day: "{price}/ день"
+      smsCreditsSectionTitle: SMS-кредити
+      smsIncluded:
+        title: Включено (підписка)
+        balanceLabel: Залишок
+        perCycleLabel: Кредитів за цикл
+        nextCycleLabel: Наступний цикл
+      smsTopupPool:
+        title: Докупка
+        balanceLabel: Залишок
+        usageHint: Ці кредити використовуються після вичерпання включеного обсягу в поточному циклі та не згорають.
+        depletionOrderHint: Спочатку використовуються кредити підписки, потім баланс докупки.
+      smsTopup:
+        buyButton: Купити SMS-кредити
+        dialogTitle: Купівля SMS-кредитів
+        dialogSubtitle: Оберіть пакет, щоб додати SMS-кредити на акаунт.
+        dialogCreditsNote: Кредити не згорають. Разова оплата — користуйтесь коли завгодно.
+        bestValueBadge: Вигідно
+        securePaymentLabel: Безпечна оплата
+        billedOnceNoSubscription: Одноразовий платіж · без підписки
+        savePercent: Економія {percent}%
+        continue: Далі
+        loadError: Не вдалося завантажити продукти. Спробуйте пізніше будь ласка.
+        empty: Поки немає продуктів для докупки.
+        creditsLine: "{count} повідомлень"
+        checkoutError: Не вдалося почати оформлення. Спробуйте пізніше будь ласка.
+        purchaseSuccess: Покупка обробляється. Оновлення балансу докупки може зайняти мить.
+    form:
+      name: Назва бізнесу
+      namePlaceholder: Назва вашого бізнесу
+      phone: Номер телефону бізнесу
+      email: Email адреса бізнесу
+      emailPlaceholder: Ваша email адреса бізнесу
+      address: Адреса
+      addressTooltip: Фізична адреса офісу
+      addressPlaceholder: Фізична адреса офісу
+      country: Країна
+      countryTooltip: Країна присутності
+      countryPlaceholder: Вибрати країну
+      currency: Валюта
+      currencyTooltip: "Валюта, яка використовується для платежів"
+      currencyPlaceholder: Вибрати валюту
+      currencyLabelFormat: "{валюта} ({код}, {символ})"
+      timeZone: Часовий пояс
+      selectTimeZone: Вибрати часовий пояс
+      useClientTimezone: Використовувати часовий пояс клієнта
+      useClientTimezoneTooltip: >-
+        Виберіть цю опцію, якщо хочете використовувати часовий пояс клієнта для
+        сторінок бронювання та зміни запису.<br></br>За замовчуванням буде
+        використовуватися часовий пояс бізнесу.
+      customDomain:
+        title: Власний домен
+        empty: Власний домен не налаштовано
+        label: Домен
+        placeholder: example.com
+        change: Змінити домен
+        save: Зберегти домен
+        dialog:
+          title: Змінити власний домен
+          description: Вкажіть публічний домен для вашої організації.
+        toasts:
+          changesSaved: Власний домен збережено.
+          requestError: Не вдалося оновити власний домен.
+      toasts:
+        changesSaved: Ваші зміни були збережені.
+        requestError: Виникла проблема з вашим запитом.
+  brand:
+    title: Сайт і бренд
+    description: "Бізнес-дані, сайт і SEO, соцмережі та стиль"
+    form:
+      visualSectionTitle: Візуальна ідентичність
+      websiteSectionTitle: Веб-сайт
+      seoSectionTitle: SEO
+      title: Заголовок сайту
+      titlePlaceholder: Заголовок у браузері та в пошуку
+      description: Мета-опис
+      descriptionPlaceholder: Короткий опис для пошукових систем
+      keywords: Ключові слова
+      keywordsTooltip: >-
+        Ключові слова для пошукових систем, які допоможуть вашому сайту краще
+        зрозумітися в пошуку
+      keywordValidation: Ключове слово повинно містити щонайменше 2 символи
+      domain: Власний домен
+      domainTooltip: "Необов'язково. Публічний домен без https://"
+      domainPlaceholder: example.com
+      logo: Логотип
+      logoTooltip: Зображення у шапці сайту та прев'ю
+      logoPlaceholder: URL логотипу
+      noLogo: Без логотипу
+      favicon: Favicon
+      faviconTooltip: Іконка на вкладці браузера
+      faviconPlaceholder: URL favicon
+      language: Мова сайту за замовчуванням
+      timeliAddress:
+        sectionTitle: Ваша адреса Timeli.sh
+        websiteUrlLabel: URL веб-сайту
+        connectCustomDomain: Підключити власний домен
+        disconnectCustomDomain: Від'єднати власний домен
+        organizationSlugLabel: Слаг організації
+        updateSlugComingSoon: Оновити слаг (незабаром)
+        connectDialogTitle: Підключити власний домен
+        connectDialogDescription: >-
+          Підключіть власний домен до Timeli.sh, щоб повністю контролювати свій
+          бренд.
+        connectDialogDnsTitle: Спочатку налаштуйте DNS
+        connectDialogDnsARecord: >-
+          У панелі DNS створіть A-запис для @ (кореня) або вашого піддомену зі
+          значенням {ip}.
+        connectDialogDnsCname: >-
+          Або додайте CNAME або ALIAS на {host} — це ім’я хоста вашого сайту в
+          Timeli.sh.
+        domainLabel: Домен
+        connectButton: Підключити
+        copyWebsiteUrlAriaLabel: Копіювати URL веб-сайту
+        websiteUrlCopied: URL веб-сайту скопійовано.
+        websiteUrlCopyFailed: Не вдалося скопіювати URL.
+      toasts:
+        changesSaved: Ваші зміни були збережені.
+        requestError: Виникла проблема з вашим запитом.
+  appointments:
+    title: Налаштування записів
+    description: Налаштувати параметри записів
+    form:
+      tabs:
+        main: Основні
+        options: Опції
+        payments: Платежі
+        cancellations: Скасування
+        reschedules: Перенесення
+      main:
+        add: Додати
+        scheduleProviderApp: Додаток постачальника розкладу
+        scheduleProviderAppTooltip: >-
+          Вибрати додатковий додаток для надання вашого робочого
+          розкладу.<br></br>Якщо додаток не вибрано, буде застосовано базовий
+          розклад.
+        availabilityProviderApp: Додаток постачальника доступності
+        availabilityProviderAppTooltip: >-
+          Вибрати додатковий додаток для надання вашої доступності.<br></br>Якщо
+          додаток не вибрано, буде застосовано базовий додаток доступності.
+        autoConfirmAppointments: Автоматично підтверджувати записи
+        autoConfirmTooltip: >-
+          Виберіть цю опцію, якщо хочете автоматично підтверджувати всі записи,
+          створені клієнтами.<br></br>За замовчуванням вам потрібно буде вручну
+          підтверджувати кожен запис.
+        showPromoCodeField: Показати поле промокоду
+        showPromoCodeTooltip: "Налаштувати, чи повинно поле промокоду показуватися під час бронювання"
+        maxWeeksInFuture: Максимальна кількість тижнів у майбутньому
+        maxWeeksInFutureTooltip: >-
+          Визначає максимальну кількість тижнів у майбутньому, на яку користувач
+          може запланувати записи.<br></br><b>Приклад:</b> Якщо встановлено 6,
+          користувачі можуть планувати події тільки на 6 тижнів вперед від
+          поточної дати.<br></br><b>За замовчуванням:</b> 8 тижнів.
+        minBreakTime: Мінімальний час перерви
+        minBreakTimeTooltip: >-
+          Визначає мінімальний необхідний часовий інтервал, який повинен
+          залишатися доступним до та після запланованого часового
+          слоту.<br></br>Це поле забезпечує буферний період до та після кожного
+          слоту для розміщення перерв, часу підготовки або для запобігання
+          конфліктів розкладу.<br></br><b>Приклад:</b> Якщо встановлено 30,
+          повинно бути щонайменше 30 хвилин вільного часу до та після кожного
+          запланованого слоту перед початком наступного слоту.<br></br><b>За
+          замовчуванням:</b> 0 хвилин.
+        minHoursBeforeBooking: Мінімальна кількість годин до бронювання
+        minHoursBeforeBookingTooltip: >-
+          Визначає мінімальну кількість годин, необхідну заздалегідь для
+          бронювання.<br></br>Цей параметр допомагає забезпечити, щоб
+          користувачі не могли забронювати запис з меншим попередженням, ніж
+          встановлений часовий проміжок, дозволяючи вам відповідно
+          підготуватися.<br></br><b>Приклад:</b> Якщо встановлено 24, бронювання
+          може бути зроблено тільки якщо це щонайменше 24 години до бажаного
+          часу початку.<br></br><b>За замовчуванням:</b> 0 годин.
+        allowedSlotStartTimes: Дозволені часи початку слотів
+        allowedSlotStartTimesTooltip: "Визначає, в які часи дозволено починати записи"
+        customTimeSlots: Власні часові слоти
+        customTimeSlotsTooltip: "Визначає, в якій час дозволено починати записи"
+        customTimeSlotsPlaceholder: "Натисніть кнопку плюс, щоб додати часовий слот"
+        selectStep: Вибрати крок
+        example: Приклад
+        default: За замовчуванням
+        weeks: тижнів
+        minutes: хвилин
+        hours: годин
+        stepLabels:
+          everyHour: "Кожну годину о XX:00"
+          custom: Власний
+          five: >-
+            Кожну годину о XX:05, XX:10, XX:15, XX:20, XX:25, XX:30, XX:35,
+            XX:40, XX:45, XX:50, XX:55
+          ten: "Кожну годину о XX:00, XX:10, XX:20, XX:30, XX:40, XX:50"
+          fifteen: "Кожну годину о XX:00, XX:15, XX:30, XX:45"
+          twenty: "Кожну годину о XX:00, XX:20, XX:40"
+          thirty: "Кожну годину о XX:00, XX:30"
+      options:
+        title: Опції
+      payments:
+        enableDeposits: Увімкнути завдатки
+        enableDepositsTooltip: >-
+          Увімкнути можливість просити завдаток для бронювання запису. Платіжний
+          додаток за замовчуванням повинен бути налаштований.
+        enable: Увімкнути
+        disable: Вимкнути
+        paymentsApp: Платіжний додаток
+        paymentsAppTooltip: Який платіжний процесор використовувати для платежів
+        requireDeposit: Вимагати завдаток
+        requireDepositTooltip1: >-
+          Якщо увімкнено, кожен клієнт буде зобов'язаний внести завдаток для
+          бронювання запису
+        requireDepositTooltip2: Може бути перевизначено для кожного клієнта
+        require: Вимагати
+        doNotRequire: Не вимагати
+        appointments: записів
+        depositAmount: Сума завдатку
+        depositAmountTooltip: >-
+          <p>Сума завдатку у відсотках</p><p><strong>Приклад:</strong> Якщо
+          встановлено 100, повна ціна має бути сплачена
+          наперед</p><p><strong>Опціонально</strong></p>
+        dontRequireIfCompletedMinNumberOfAppointments: Мінімальна кількість записів для невимоги завдатку
+        dontRequireIfCompletedMinNumberOfAppointmentsTooltip: >-
+          <p>Не вимагати завдаток для клієнтів, які мають принаймні вказану
+          кількість завершених записів</p><p><strong>Приклад:</strong> Якщо
+          встановлено 3, клієнти, які роблять свій перший, другий або третій
+          запис, будуть зобов'язані сплатити завдаток. Клієнти, які роблять свій
+          четвертий або наступні записи, не будуть зобов'язані сплачувати
+          завдаток, якщо це не вимагається окремо для цього
+          клієнта</p><p><strong>Опціонально</strong></p>
+        fullPaymentAmountThreshold: Мінімальна сума для вимоги повної оплати
+        fullPaymentAmountThresholdTooltip: >-
+          <p>Якщо розрахована сума завдатку менша за цю суму, клієнтам буде
+          вимагатися сплатити <strong>повну ціну запису</strong> замість
+          часткового завдатку.</p><p><strong>Приклад:</strong> Якщо поріг
+          становить $5 і завдаток становить $2, клієнт сплатить повну ціну
+          запису.</p><p><strong>Опціонально</strong></p>
+      cancellationsAndReschedules:
+        title: Скасування та перенесення
+        cancellations:
+          title: Скасування
+          withDeposit:
+            title: Для записів з завдатком
+          withoutDeposit:
+            title: Для записів без завдатку
+          enabledTooltip: Увімкнути можливість клієнтам скасовувати запис самостійно
+          doNotAllowIfRescheduled:
+            label: "Дозволяти, якщо перенесено"
+            tooltip: "Налаштувати, чи можна скасувати запис, якщо він був перенесений"
+            labels:
+              "true": Не дозволяти
+              "false": Дозволяти
+        reschedules:
+          title: Перенесення
+          enabledTooltip: Увімкнути можливість клієнтам переносити запис самостійно
+          minutesToAppointment:
+            label: Мінімальний час до запису
+            tooltip: Налаштувати мінімальний час до запису для дозволу перенесення
+          maxReschedules:
+            label: Максимальна кількість перенесень
+            tooltip: "Налаштувати, скільки разів клієнт може переносити запис"
+        enabled:
+          label: Увімкнено
+          selectPlaceholder: Вибрати опцію
+          labels:
+            disabled: Вимкнено
+            enabled: Увімкнено
+            notAllowedWithoutDeposit: Не дозволено без завдатку
+        cancellationPolicy:
+          default:
+            title: Політика за замовчуванням
+            tooltip: >-
+              Налаштувати політику за замовчуванням, яка буде застосована, якщо
+              інша політика не застосовна
+          policies:
+            title: Перевизначені політики
+            add: Додати політику
+          policy: Політика
+        reschedulePolicy:
+          default:
+            title: Політика за замовчуванням
+            tooltip: >-
+              Налаштувати політику за замовчуванням, яка буде застосована, якщо
+              інша політика не застосовна
+          policies:
+            title: Перевизначені політики
+            add: Додати політику
+          policy: правило
+      cards:
+        optionSelect:
+          roleDescription: Опція
+          moveOption: Перемістити опцію
+          option: Опція
+          deleteConfirmTitle: Ви абсолютно впевнені?
+          deleteConfirmDescription: "Ви впевнені, що хочете видалити цю опцію зі списку доступних опцій?"
+          cancel: Скасувати
+          delete: Видалити
+        optionSelector:
+          time: "{hours}год {minutes}хв"
+          requestFailed: Запит не вдався.
+          loadingOptions: Завантаження опцій...
+          selectOption: Вибрати опцію
+        cancellationPolicy:
+          action:
+            label: Дія
+            tooltip: "Налаштувати дію, яку слід вжити при запиті на скасування"
+            placeholder: Вибрати дію
+            labels:
+              notAllowed: Не дозволено
+              forfeitDeposit: Втратити завдаток
+              partialRefund: Часткове повернення
+              fullRefund: Повне повернення
+              paymentRequired: Потрібна оплата
+              paymentToFullPriceRequired: Потрібна оплата до повної ціни
+              allowed: Дозволено
+          paymentType:
+            label: Тип розрахунку платежу
+            tooltip: >-
+              Виберіть, чи платеж має бути фіксованою сумою чи відсотком від
+              ціни
+            labels:
+              amount: Фіксована сума
+              percentage: Відсоток від ціни
+            placeholder: Вибрати тип розрахунку платежу
+          refundFees:
+            label: Повертати комісії
+            tooltip: >-
+              Налаштувати, чи потрібно повертати комісії при запиті на
+              скасування
+          refundPercentage:
+            label: Відсоток повернення
+            tooltip: >-
+              Налаштувати відсоток завдатку, який буде повернено при запиті на
+              скасування
+          paymentPercentage:
+            label: Відсоток оплати
+            tooltip: >-
+              Налаштувати відсоток ціни запису, який потрібно буде сплатити при
+              запиті на скасування
+          calculateFromOriginalPrice:
+            label: Використовувати ціну без знижок для розрахунку платежу
+            tooltip: >-
+              Використовує ціну запису без знижок замість зниженої загальної
+              суми
+          paymentAmount:
+            label: Сума платежу
+            tooltip: >-
+              Налаштувати суму, яка буде потрібна для сплати при запиті на
+              скасування
+          minutesToAppointment:
+            label: Найраніший час застосування
+            tooltip: >-
+              Найраніший час, коли цю політику можна застосувати. Якщо є інша
+              політика з більшим значенням і запис є достатньо далеко вперед, та
+              політика буде застосована замість неї.
+          remove: Видалити
+          deleteConfirmTitle: Ви абсолютно впевнені?
+          deleteCancellationPolicyConfirmDescription: "Ви впевнені, що хочете видалити цю політику скасування?"
+          cancel: Скасувати
+          delete: Видалити
+        reschedulePolicy:
+          action:
+            label: Дія
+            tooltip: "Налаштувати дію, яку слід вжити при запиті на перенесення"
+            placeholder: Вибрати дію
+            labels:
+              notAllowed: Не дозволено
+              allowed: Дозволено
+              paymentRequired: Потрібна оплата
+          paymentType:
+            label: Тип розрахунку платежу
+            tooltip: >-
+              Виберіть, чи платеж має бути фіксованою сумою чи відсотком від
+              ціни
+            labels:
+              amount: Фіксована сума
+              percentage: Відсоток від ціни
+            placeholder: Вибрати тип розрахунку платежу
+          paymentAmount:
+            label: Сума платежу
+            tooltip: >-
+              Налаштувати суму, яка буде потрібна для сплати при запиті на
+              скасування
+          paymentPercentage:
+            label: Відсоток оплати
+            tooltip: >-
+              Налаштувати відсоток ціни запису, який потрібно буде сплатити при
+              запиті на перенесення
+          calculateFromOriginalPrice:
+            label: Використовувати ціну без знижок для розрахунку платежу
+            tooltip: >-
+              Використовує ціну запису без знижок замість зниженої загальної
+              суми
+          minutesToAppointment:
+            label: Найраніший час застосування
+            tooltip: >-
+              Найраніший час, коли цю політику можна застосувати. Якщо є інша
+              політика з більшим значенням і запис є достатньо далеко вперед, та
+              політика буде застосована замість неї.
+          remove: Видалити
+          deleteConfirmTitle: Ви абсолютно впевнені?
+          deleteReschedulePolicyConfirmDescription: "Ви впевнені, що хочете видалити цю політику перенесення?"
+          cancel: Скасувати
+          delete: Видалити
+      toasts:
+        changesSaved: Ваші зміни були збережені.
+        requestError: Виникла проблема з вашим запитом.
+  social:
+    title: Налаштування соціальних мереж
+    description: Налаштувати параметри соціальних посилань
+    form:
+      socialLinks: Соціальні посилання
+      card:
+        roleDescription: Соціальне посилання
+        moveOption: Перемістити соціальне посилання
+        invalidType: Недійсний тип
+        remove: Видалити
+        deleteConfirmTitle: Ви абсолютно впевнені?
+        deleteConfirmDescription: "Ви впевнені, що хочете видалити це посилання?"
+        cancel: Скасувати
+        delete: Видалити
+        type: Тип
+        selectType: Вибрати тип соціального посилання
+        url: Url
+        urlTooltip: Повне посилання на ваш профіль
+      toasts:
+        changesSaved: Ваші зміни були збережені.
+        requestError: Виникла проблема з вашим запитом.
+  schedule:
+    title: Розклад за замовчуванням
+    description: Встановити ваш базовий розклад
+    form:
+      toasts:
+        changesSaved: Ваші зміни були збережені.
+        requestError: Виникла проблема з вашим запитом.
+  scripts:
+    title: Скрипти
+    description: Додати додаткові сторонні скрипти до веб-сайту
+    form:
+      headerScripts: Скрипти заголовка
+      footerScripts: Скрипти підвалу
+      toasts:
+        changesSaved: Ваші зміни були збережені.
+        requestError: Виникла проблема з вашим запитом.
+form:
+  dateTimeRequired: Дата та час обов'язкові
+  durationRequired: Тривалість обов'язкова
+  durationInteger: Повинно бути цілим числом
+  durationMin: Мінімальна тривалість 1 хвилина
+  durationMax: Максимальна тривалість 10 днів
+  priceNumber: Загальна ціна повинна бути числом
+  priceMin: Мінімальна ціна 0
+  optionRequired: Опція повинна бути вибрана
+  addonRequired: Додаток повинен бути вибраний
+  nameRequired: Ім'я обов'язкове
+  emailValid: Повинен бути дійсний email
+  phoneRequired: Телефон обов'язковий
+  phoneValid: Потрібен дійсний номер телефону
+  scheduledSuccess: Запис було успішно заплановано
+  requestError: Виникла проблема з вашим запитом.
+  appointmentType: Тип запису
+  selectOption: Вибрати опцію
+  min: хв
+  custom: Власний
+  dateTime: Дата та час
+  addons: Додатки
+  selectAddons: Вибрати додатки...
+  customer: Клієнт
+  discount: Знижка
+  duration: Тривалість
+  price: Ціна
+  note: Примітка
+  confirmAppointment: Підтвердити запис
+  confirmAppointmentDescription: Позначити запис як підтверджений
+  confirmOverlap: Підтвердити перекриття
+  confirmOverlapDescription: "Я розумію, що планування цього запису створить перекриття в моєму розкладі"
+  scheduleAppointment: Запланувати запис
+table:
+  filters:
+    status: Статус
+dashboard:
+  subscriptionPastDueBanner:
+    message: Прострочена оплата підписки — нові записи та зміни тимчасово заблоковані.
+    goToSettings: До налаштувань →
+  subscriptionInactive:
+    title: Підписку скасовано
+    description: Підписка цього робочого простору неактивна. Зв’яжіться з нами, щоб відновити доступ.
+  appointments:
+    noAppointments: Записи не заплановані
+    noPendingAppointments: Немає очікуючих записів
+    caughtUp: Ви впоралися з усіма запитами. Молодець!
+    pendingToast: Нові очікуючі записи
+    pendingToastMessage: >-
+      У вас {count, plural, =1 {один очікуючий запис} few {# очікуючі записи}
+      other {# очікуючих записів}}
+    view: Переглянути
+    nextAppointments: Наступні записи
+  tabs:
+    overview: Огляд
+    pendingAppointments: Очікуючі записи
+communications:
+  viewMore: Показати більше
+  payloadLoadError: Не вдалося завантажити повний текст повідомлення.
+  logContent: Вміст повідомлення
+  handler: "Обробник: {handler}"
+  data: Дані
+  logData: Дані журналу
+  sendNew: Надіслати нове
+  requestError: Виникла проблема з вашим запитом.
+  sendNewMessage: Надіслати нове повідомлення
+  sendNewMessageDescription: Надіслати новий email або текстове повідомлення клієнту
+  closeDialogWarning: "Ви втратите весь вміст, якщо закриєте діалог"
+  contentNotValid: Вміст недійсний
+  messageSent: Ваше повідомлення було успішно надіслано.
+  wrongTemplateType: Неправильний тип шаблону
+  channel: Канал
+  selectTemplate: Вибрати шаблон
+  selectExistingTemplate: Вибрати існуючий шаблон
+  template: Шаблон
+  attention: Увага
+  templateReplaceWarning: Вибір шаблону замінить ваш поточний вміст.
+  select: Вибрати
+  emailSubject: Тема email
+  emailSubjectDescription: "Тема email, яку побачать ваші клієнти."
+  usesTemplatedValues: "* Використовує шаблонні значення"
+  subject: Тема
+  content: Вміст
+  send: Надіслати
+calendar:
+  today: Сьогодні
+  selectView: Вибрати вигляд
+  monthly: Щомісячно
+  weekly: Щотижнево
+  daily: Щодня
+  agenda: Порядок денний
+  eventTitle: "{customer} для {service}"
+  appointment: Запис
+  status: Статус
+  price: Ціна
+  note: Примітка
+  loading: Завантаження
+  workingHours: Робочі години
+  workingDay: Робочий день
+  work: Робота
+  hour: год
+  minute: хв
+  event: подія
+  events: подій
+  noEventsScheduled: Немає запланованих подій
+  noEventsInRange: Немає подій у вибраному діапазоні дат
+  collapseAll: Згорнути все
+  expandAll: Розгорнути все
+  mon: Пн
+  tue: Вт
+  wed: Ср
+  thu: Чт
+  fri: Пт
+  sat: Сб
+  sun: Нд
+auth:
+  email: Електронна пошта
+  password: Пароль
+  email_or_password_incorrect: Email або пароль неправильний
+  verification:
+    notVerified: >-
+      Ваша електронна адреса не була підтверджена. Будь ласка, перевірте вашу
+      електронну пошту для посилання на підтвердження.
+    resendVerificationEmail: Надіслати повторно посилання на підтвердження
+    success: >-
+      Посилання на підтвердження електронної адреси надіслано. Будь ласка,
+      перевірте вашу електронну пошту для посилання на підтвердження.
+    error: "Виникла проблема з вашим запитом. Будь ласка, спробуйте знову."
+    invalidToken: "Недійсний токен. Будь ласка, запитайте нове посилання на підтвердження."
+    verified: >-
+      Ваша електронна адреса була успішно підтверджена. Ви можете тепер увійти в
+      ваш обліковий запис.
+  signIn: Увійти
+  sign_in_sign_up_link: Немає облікового запису? <link>Зареєструйтеся</link> зараз!
+  sign_up_sign_in_link: Вже маєте обліковий запис? <link>Увійдіть</link> зараз!
+  signInDescription: "Введіть ваш email нижче, щоб увійти в ваш обліковий запис"
+  quote: Я люблю це!
+  quoteAuthor: Олеся Бондарчук
+  forgotPasswordLink: <link>Забули пароль?</link>
+  forgotPassword:
+    title: Забули пароль
+    description: "Введіть ваш email нижче, щоб скинути ваш пароль"
+    email: Електронна пошта
+    emailPlaceholder: Ваш email
+    submit: Підтвердити
+    error: "Виникла проблема з вашим запитом. Будь ласка, спробуйте знову."
+    success: >-
+      Посилання на скидання пароля надіслано. Будь ласка, перевірте вашу
+      електронну пошту для посилання на скидання пароля.
+    rememberPassword: Пам'ятаєте пароль? <link>Увійти</link>
+  resetPassword:
+    title: Зміна пароля
+    description: "Введіть ваш новий пароль нижче, щоб змінити ваш пароль"
+    password: Новий пароль
+    passwordPlaceholder: Ваш новий пароль
+    confirmPassword: Підтвердити пароль
+    confirmPasswordPlaceholder: Підтвердіть ваш новий пароль
+    submit: Підтвердити
+    error: "Виникла проблема з вашим запитом. Будь ласка, спробуйте знову."
+    success: Пароль успішно змінено. Ви можете тепер увійти в ваш обліковий запис.
+  signUp:
+    title: Зареєструватися
+    description: Створити обліковий запис для початку
+    name: Ім'я
+    namePlaceholder: Ваше ім'я
+    language: Мова
+    languagePlaceholder: Виберіть мову
+    email: Електронна пошта
+    emailPlaceholder: Ваш email
+    password: Пароль
+    passwordPlaceholder: Ваш пароль
+    phone: Телефон
+    phonePlaceholder: Ваш телефон
+    confirmPassword: Підтвердити пароль
+    confirmPasswordPlaceholder: Підтвердіть ваш пароль
+    submit: Зареєструватися
+    toasts:
+      success: >-
+        Ми надіслали вам посилання на підтвердження. Будь ласка, перевірте вашу
+        електронну пошту для посилання на підтвердження.
+      error: "Виникла проблема з вашим запитом. Будь ласка, спробуйте знову."
+      userAlreadyExists: >-
+        Користувач з таким email вже існує. Будь ласка, використовуйте інший
+        email.
+  validation:
+    name:
+      required: Ім'я обов'язкове
+      max: Ім'я має містити не більше 256 символів
+    language:
+      invalid: Невідома мова
+    confirmPassword:
+      required: Паролі не збігаються
+    password:
+      required: Пароль обов'язковий
+      minLength: Пароль повинен бути не менше 8 символів
+      maxLength: Пароль повинен бути не більше 128 символів
+    organizationName:
+      required: Назва бізнесу обов'язкова
+    organizationSlug:
+      required: Піддомен обов'язковий
+      regex: Піддомен повинен містити лише латинські маленькі букви та цифри
+      unique: Піддомен вже зайнятий
+      length: Піддомен повинен бути між 3 і 20 символами
+menuItem:
+  labels:
+    icon: Іконка
+    link: Посилання
+    button: Кнопка
+    submenu: Підменю
+  linkVariants:
+    none: Немає
+    default: Типовий
+    underline: Підкреслення
+    standalone: Стандартний
+    dashed: Пунктирний
+  buttonVariants:
+    default: Типовий
+    primary: Основний
+    secondary: Допоміжний
+    destructive: Деструктивний
+    outline: Контурний
+    ghost: Прихований
+    link: Посилання
+    link-underline: Посилання з підкресленням
+    link-dashed: Посилання з пунктирним підкресленням
+  sizes:
+    none: Немає
+    icon: Іконка
+    xs: Дуже маленький
+    default: Типовий
+    sm: Маленький
+    md: Середній
+    lg: Великий
+    xl: Дуже великий
+  weights:
+    default: Типовий
+    light: Легкий
+    thin: Дуже легкий
+    normal: Нормальний
+    medium: Середній
+    semibold: Напівжирний
+    bold: Жирний
+    extrabold: Дуже жирний
+    black: Чорний
+    extralight: Дуже легкий
+  fonts:
+    default: Типовий
+    primary: Основний
+    secondary: Допоміжний
+    tertiary: Третійний
+  fields:
+    url: Url
+    urlPlaceholder: Посилання
+    label: Текст
+    labelPlaceholder: Текст
+    icon: Іконка
+    variant: Варіант
+    selectVariant: Вибрати варіант посилання
+    size: Розмір
+    selectSize: Вибрати розмір
+    selectButtonVariant: Вибрати варіант кнопки
+    textFont: Шрифт тексту
+    selectTextFont: Вибрати шрифт тексту
+    textSize: Розмір тексту
+    selectTextSize: Вибрати розмір тексту
+    textWeight: Товщина тексту
+    selectTextWeight: Вибрати товщину тексту
+    prefixIcon: Префікс іконка
+    suffixIcon: Суфікс іконка
+    additionalClasses: Додаткові класи
+    additionalClassesPlaceholder: жирний шрифт
+  card:
+    moveMenuItem: Перемістити пункт меню
+    itemType: Тип елемента
+    selectType: Вибрати тип
+    invalid: Недійсний
+  subMenu:
+    title: Підменю
+    moveMenuItem: Перемістити пункт меню
+    invalid: Недійсний
+  iconSelect:
+    selectIcon: Вибрати іконку
+  types:
+    icon: Іконка
+    link: Посилання
+    button: Кнопка
+    submenu: Підменю
+resource:
+  card:
+    moveResource: Перемістити ресурс
+    sourceType: Тип джерела
+    selectSourceType: Вибрати тип джерела
+    url: Url
+    urlPlaceholder: Url
+    value: Значення
+    invalid: Недійсний
+    remove: Видалити
+    deleteConfirmTitle: Ви абсолютно впевнені?
+    deleteConfirmDescription: "Ви впевнені, що хочете видалити цей ресурс?"
+    cancel: Скасувати
+    delete: Видалити
+payment:
+  card:
+    amount: Сума
+    giftCardCode: Код подарункової картки
+    transactionId: ID транзакції
+    customer: Клієнт
+    timePaid: Час оплати
+    timeRefunded: Час повернення
+    refund: Повернення
+    refunded: Повернено
+    amountLeft: Залишилок
+    confirmRefund: Підтвердити повернення
+    confirmRefundDescription: Цю дію неможливо скасувати
+    refundDetails: Деталі повернення
+    paymentMethod: Спосіб оплати
+    originalAmount: Початкова сума
+    totalRefunded: Повернена сума
+    refundAmount: Сума повернення
+    cancel: Скасувати
+    confirmRefundButton: "Підтвердити повернення {amountFormatted}"
+    customerName: Клієнт
+    appointment: Запис
+    delete: Видалити
+    deleteConfirmTitle: Ви абсолютно впевнені?
+    deleteConfirmDescription: >-
+      Ви впевнені, що хочете видалити цей платіж на суму {amountFormatted},
+      оплачений о {date}?
+    deleteSuccess: Платіж був видалений
+    update: Оновити
+    description: Опис
+    fees: Комісії
+    netAmount: Чиста сума
+    refundFees: Повертати комісії
+  addUpdatePayment:
+    addPayment: Додати платіж
+    updatePayment: Оновити платіж
+    addPaymentDescription: Додати фізичний платіж
+    updatePaymentDescription: Оновити фізичний платіж
+    form:
+      amount: Сума
+      description: Опис
+      paidAt: Дата та час оплати
+      method:
+        label: Спосіб
+        cash: Готівка
+        in-person-card: Картка
+        gift-card: Подарункова картка
+      type:
+        label: Тип платежу
+      giftCardId:
+        label: Подарункова картка
+      customerId:
+        label: Клієнт
+  toasts:
+    refundSuccess: Оплату повернено
+    refundSuccessDescription: Оплату було успішно повернено
+    refundError: Повернення оплати не вдалося
+    refundErrorDescription: Повернення оплати не вдалося. Дивіться деталі в консолі браузера
+  descriptions:
+    fullPayment: Повна оплата
+    deposit: Депозит
+    rescheduleFee: Плата за перенесення
+    cancellationFee: Плата за відміну
+    giftCard: Покупка подарункової картки
+  types:
+    deposit: Депозит
+    rescheduleFee: Плата за перенесення
+    cancellationFee: Плата за відміну
+    payment: Платіж
+    tips: Чаеві
+    other: Інше
+  methods:
+    cash: Готівка
+    card: Картка
+    giftCard: Подарункова картка
+  feeTypes:
+    transaction: Комісія транзакції
+    platform: Комісія платформи
+    other: Інше
+onlineMeeting:
+  types: {}
+textbelt-webhook:
+  handledBy: Відповідь на текстове повідомлення - повідомити користувача
+cancellationsAndReschedules:
+  timeBeforeAppointment:
+    header: "Коли до запису залишилось принаймні {duration}"
+    week: >-
+      {count, plural, one {# тиждень} few {# тижні} many {# тижнів} other {#
+      тижнів}}
+    day: "{count, plural, one {# день} few {# дні} many {# днів} other {# днів}}"
+    hour: >-
+      {count, plural, one {# година} few {# години} many {# годин} other {#
+      годин}}
+    minute: >-
+      {count, plural, =0 {0 хвилин} one {# хвилина} few {# хвилини} many {#
+      хвилин} other {# хвилин}}
+  cancellationPolicy:
+    title: Скасування
+    withDeposit:
+      title: Для записів з завдатком
+    withoutDeposit:
+      title: Для записів без завдатку
+    enabledTooltip: Увімкнути можливість клієнтам скасовувати запис самостійно
+    doNotAllowIfRescheduled:
+      label: "Дозволяти, якщо перенесено"
+      tooltip: "Налаштувати, чи можна скасувати запис, якщо він був перенесений"
+      labels:
+        "true": Не дозволяти
+        "false": Дозволяти
+    default:
+      title: Правило за замовчуванням
+      tooltip: >-
+        Налаштувати правило за замовчуванням, яка буде застосована, якщо інша
+        правило не застосовна
+      label: "Застосовується, якщо інша правило не застосовна"
+    policies:
+      title: Перевизначені правила
+      add: Додати правило
+      badge: Час-базові правила
+    policy: Правило
+    action:
+      label: Дія
+      tooltip: "Налаштувати дію, яку слід вжити при запиті на скасування"
+      placeholder: Вибрати дію
+      labels:
+        notAllowed: Не дозволено
+        forfeitDeposit: Втратити завдаток
+        partialRefund: Часткове повернення
+        fullRefund: Повне повернення
+        paymentRequired: Потрібна оплата
+        paymentToFullPriceRequired: Потрібна оплата до повної ціни
+        allowed: Дозволено
+    paymentType:
+      label: Тип розрахунку платежу
+      tooltip: "Виберіть, чи платеж має бути фіксованою сумою чи відсотком від ціни"
+      labels:
+        amount: Фіксована сума
+        percentage: Відсоток від ціни
+      placeholder: Вибрати тип розрахунку платежу
+    refundFees:
+      label: Повертати комісії
+      tooltip: "Налаштувати, чи потрібно повертати комісії при запиті на скасування"
+    refundPercentage:
+      label: Відсоток повернення
+      tooltip: >-
+        Налаштувати відсоток завдатку, який буде повернено при запиті на
+        скасування
+    calculateFromOriginalPrice:
+      label: Використовувати ціну без знижок для розрахунку платежу
+      tooltip: Використовує ціну запису без знижок замість зниженої загальної суми
+    paymentPercentage:
+      label: Відсоток оплати
+      tooltip: >-
+        Налаштувати відсоток ціни запису, який потрібно буде сплатити при запиті
+        на скасування
+    paymentAmount:
+      label: Сума платежу
+      tooltip: "Налаштувати суму, яка буде потрібна для сплати при запиті на скасування"
+    minutesToAppointment:
+      label: Найраніший час застосування
+      tooltip: >-
+        Найраніший час, коли цю політику можна застосувати. Якщо є інша політика
+        з більшим значенням і запис є достатньо далеко вперед, та політика буде
+        застосована замість неї.
+    remove: Видалити
+    deleteConfirmTitle: Ви абсолютно впевнені?
+    deleteCancellationPolicyConfirmDescription: "Ви впевнені, що хочете видалити цю політику скасування?"
+    cancel: Скасувати
+    delete: Видалити
+  reschedulePolicy:
+    title: Перенесення
+    enabledTooltip: Увімкнути можливість клієнтам переносити запис самостійно
+    default:
+      title: Правило за замовчуванням
+      tooltip: >-
+        Налаштувати правило за замовчуванням, яка буде застосована, якщо інша
+        правило не застосовна
+      label: "Застосовується, якщо інша правило не застосовна"
+    policies:
+      title: Перевизначені правила
+      add: Додати правило
+      badge: Час-базові правила
+    policy: Правило
+    action:
+      label: Дія
+      tooltip: "Налаштувати дію, яку слід вжити при запиті на перенесення"
+      placeholder: Вибрати дію
+      labels:
+        notAllowed: Не дозволено
+        allowed: Дозволено
+        paymentRequired: Потрібна оплата
+    paymentType:
+      label: Тип розрахунку платежу
+      tooltip: "Виберіть, чи платеж має бути фіксованою сумою чи відсотком від ціни"
+      labels:
+        amount: Фіксована сума
+        percentage: Відсоток від ціни
+      placeholder: Вибрати тип розрахунку платежу
+    calculateFromOriginalPrice:
+      label: Використовувати ціну без знижок для розрахунку платежу
+      tooltip: Використовує ціну запису без знижок замість зниженої загальної суми
+    paymentAmount:
+      label: Сума платежу
+      tooltip: "Налаштувати суму, яка буде потрібна для сплати при запиті на перенесення"
+    paymentPercentage:
+      label: Відсоток оплати
+      tooltip: >-
+        Налаштувати відсоток ціни запису, який потрібно буде сплатити при запиті
+        на перенесення
+    minutesToAppointment:
+      label: Найраніший час застосування
+      tooltip: >-
+        Найраніший час, коли цю політику можна застосувати. Якщо є інша політика
+        з більшим значенням і запис є достатньо далеко вперед, та політика буде
+        застосована замість неї.
+    remove: Видалити
+    deleteConfirmTitle: Ви абсолютно впевнені?
+    deleteReschedulePolicyConfirmDescription: "Ви впевнені, що хочете видалити цю політику перенесення?"
+    cancel: Скасувати
+    delete: Видалити
+    maxReschedules:
+      label: Максимальна кількість перенесень
+      tooltip: "Налаштувати, скільки разів клієнт може переносити запис"
+  enabled:
+    label: Увімкнено
+    selectPlaceholder: Вибрати опцію
+    labels:
+      disabled: Вимкнено
+      enabled: Увімкнено
+      notAllowedWithoutDeposit: Не дозволено без завдатку
+bookingTracking:
+  convertedTo:
+    appointment: Запис
+customerSelector:
+  addNew: Створити нового
+  placeholder: Вибрати клієнта
+  requestFailed: Запит на отримання клієнтів не вдався
+  dialog:
+    title: Створити нового клієнта
+    description: Введіть деталі нового клієнта
+    form:
+      name: Ім'я
+      email: Електронна пошта
+      phone: Телефон
+    confirm: Створити
+giftCardSelector:
+  amountLabel: "{amount} (залишок: {amountLeft})"
+  expiresAt: "Дійсна до {expiresAt}"
+  placeholder: Виберіть подарункову картку
+users:
+  profile:
+    title: Профіль
+    description: Керуйте даними вашого акаунта та налаштуваннями
+    form:
+      photoSectionTitle: Фото профілю
+      detailsSectionTitle: Дані профілю
+      name: Ім'я
+      namePlaceholder: Введіть ваше ім'я
+      email: Електронна пошта
+      emailPlaceholder: Введіть ваш email
+      phone: Телефон
+      language: Мова
+      image: Фото
+      imageAlt: Фото профілю
+      imagePlaceholder: Оберіть зображення аватара
+      bio: Біографія
+      bioPlaceholder: Розкажіть трохи про себе
+      calendarSources:
+        title: Джерела календаря
+        add: Додати джерело
+        cards:
+          calendarSource:
+            app: Календарний додаток
+            appTooltip: >-
+              Виберіть підключений календарний додаток, який використовується як
+              джерело зайнятого часу для вашої доступності.
+            remove: Видалити
+            deleteConfirmTitle: Ви абсолютно впевнені?
+            deleteConfirmDescription: "Ви впевнені, що хочете видалити це джерело календаря?"
+            cancel: Скасувати
+            delete: Видалити
+            noAppSelected: "Будь ласка, виберіть календарний додаток"
+      changePhoto: Змінити фото
+      removePhoto: Видалити
+    security:
+      title: Акаунт і безпека
+      email: Email адреса
+      changeEmail: Змінити email
+      password: Пароль
+      passwordDescription: Оновіть ваш пароль для використання в акаунті
+      changePassword: Змінити пароль
+    emailChange:
+      title: Зміна email
+      description: Оновіть вашу email адресу для використання в акаунті
+      form:
+        email: Електронна пошта
+        emailPlaceholder: Введіть вашу нову email адресу
+        helpText: "Ви зараз використовуєте email адресу {currentEmail}"
+      confirm: Підтвердити
+      toasts:
+        emailSent: >-
+          Посилання для підтвердження зміни email було надіслано на вашу
+          попередню email адресу. Будь ласка, перевірте вашу email і натисніть
+          на посилання для підтвердження зміни.
+        emailChangedSuccessfully: >-
+          Ваша email адреса була успішно змінена. Ви отримаєте нове посилання
+          для підтвердження зміни на вашу нову email адресу.
+        error: "Виникла проблема з вашим запитом. Будь ласка, спробуйте знову."
+        emailAlreadyInUse: Email адреса вже використовується
+        emailIsTheSame: "Email адреса є такою ж, як і попередня"
+    passwordChange:
+      title: Зміна пароля
+      description: Оновіть ваш пароль для використання в акаунті
+      form:
+        currentPassword: Поточний пароль
+        currentPasswordPlaceholder: Введіть ваш поточний пароль
+        newPassword: Новий пароль
+        newPasswordPlaceholder: Введіть ваш новий пароль
+        confirmPassword: Підтвердіть новий пароль
+        confirmPasswordPlaceholder: Підтвердіть ваш новий пароль
+      confirm: Підтвердити
+      toasts:
+        passwordChangedSuccessfully: Ваш пароль був успішно змінений.
+        error: "Виникла проблема з вашим запитом. Будь ласка, спробуйте знову."
+        invalidPassword: Поточний пароль є невірним
+      validation:
+        currentPassword:
+          required: Поточний пароль є обов'язковим
+        newPassword:
+          required: Новий пароль є обов'язковим
+          minLength: Новий пароль повинен містити не менше 8 символів
+          maxLength: Новий пароль повинен містити не більше 128 символів
+        confirmPassword:
+          required: Підтвердження пароля не збігається з новим паролем
+    toasts:
+      changesSaved: Ваші зміни були збережені.
+      requestError: Виникла проблема з вашим запитом.
+  validation:
+    name:
+      required: Ім'я має містити щонайменше 2 символи
+      max: Ім'я має містити не більше 256 символів
+    language:
+      invalid: Невідома мова
+    bio:
+      max: Біографія має містити не більше 1024 символів

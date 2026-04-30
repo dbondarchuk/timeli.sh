@@ -26,7 +26,12 @@ import {
 } from "@timelish/ui";
 import { getTimeZones } from "@vvo/tzdb";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useState } from "react";
+
+const timeZones: IComboboxItem[] = getTimeZones().map((zone) => ({
+  label: `GMT${zone.currentTimeFormat}`,
+  value: zone.name,
+}));
 
 export function StepBusiness() {
   const t = useI18n("install");
@@ -62,13 +67,6 @@ export function StepBusiness() {
     },
     [organizationId, setSlugCheck],
   );
-
-  const timeZoneValues: IComboboxItem[] = useMemo(() => {
-    return getTimeZones().map((zone) => ({
-      value: zone.name,
-      label: zone.name.replace(/_/g, " "),
-    }));
-  }, []);
 
   const preview =
     p.slug && publicDomain
@@ -201,7 +199,7 @@ export function StepBusiness() {
         <div className="flex flex-col gap-2">
           <Label>{t("wizard.business.timeZone")}</Label>
           <Combobox
-            values={timeZoneValues}
+            values={timeZones}
             value={p.timeZone}
             onItemSelect={(v) => {
               if (!v) return;

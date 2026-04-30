@@ -142,16 +142,22 @@ export const GeneralTab: React.FC<TabProps> = ({ form, disabled }) => {
 
                     if (value === "fixed") {
                       form.setValue("duration", 30, { shouldValidate: true });
+                      form.trigger("duration");
                     } else {
                       form.setValue("durationMin", 15, {
                         shouldValidate: true,
                       });
+                      form.trigger("durationMin");
+
                       form.setValue("durationMax", 4 * 60, {
                         shouldValidate: true,
                       });
+                      form.trigger("durationMax");
+
                       form.setValue("durationStep", 15, {
                         shouldValidate: true,
                       });
+                      form.trigger("durationStep");
                     }
 
                     field.onBlur();

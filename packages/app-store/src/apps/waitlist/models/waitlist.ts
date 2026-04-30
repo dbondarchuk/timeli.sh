@@ -121,6 +121,7 @@ export type WaitlistStatus = (typeof waitlistStatus)[number];
 export type WaitlistEntryEntity = WithOrganizationId<
   WithDatabaseId<WaitlistRequest>
 > & {
+  appId: string;
   createdAt: Date;
   updatedAt: Date;
   customerId: string;

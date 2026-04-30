@@ -12,6 +12,7 @@ import {
   IConnectedApp,
   IConnectedAppProps,
   IDemoArgumentsProvider,
+  systemEventSource,
   TemplateTemplatesList,
 } from "@timelish/types";
 import {
@@ -175,10 +176,13 @@ export class MyCabinetConnectedApp
         const uniqueName = await getUniqueName(source.name);
         if (!uniqueName) continue;
 
-        const created = await templatesService.createTemplate({
-          ...source,
-          name: uniqueName,
-        });
+        const created = await templatesService.createTemplate(
+          {
+            ...source,
+            name: uniqueName,
+          },
+          systemEventSource,
+        );
 
         logger.debug(
           {
@@ -416,6 +420,16 @@ export class MyCabinetConnectedApp
       this.props.services.organizationService.getOrganization(),
     ]);
 
+    if (!organization) {
+      return Response.json(
+        {
+          success: false,
+          error: "organization_not_found",
+        },
+        { status: 404 },
+      );
+    }
+
     logger.debug(
       { appId: appData._id, organizationSlug: organization?.slug },
       "Fetched config and organization for template args",
@@ -425,7 +439,7 @@ export class MyCabinetConnectedApp
       customer,
       config,
       adminUrl: getAdminUrl(),
-      websiteUrl: getWebsiteUrl(organization?.slug, organization?.domain),
+      websiteUrl: getWebsiteUrl(organization),
       additionalProperties: { otp: code },
     });
 
@@ -800,7 +814,7 @@ export class MyCabinetConnectedApp
 
     const now = new Date();
     const [upcoming, past] = await Promise.all([
-      this.props.services.eventsService.getAppointments({
+      this.props.services.bookingService.getAppointments({
         customerId: payload.customerId,
         // Show all appointments for now
         // status: ["confirmed", "pending"],
@@ -808,7 +822,7 @@ export class MyCabinetConnectedApp
         limit: 20,
         sort: [{ id: "dateTime", desc: false }],
       }),
-      this.props.services.eventsService.getAppointments({
+      this.props.services.bookingService.getAppointments({
         customerId: payload.customerId,
         range: { end: now },
         limit: 20,
@@ -860,13 +874,13 @@ export class MyCabinetConnectedApp
     );
     const now = new Date();
     const [upcoming, past] = await Promise.all([
-      this.props.services.eventsService.getAppointments({
+      this.props.services.bookingService.getAppointments({
         customerId: authorized.customerId,
         status: ["confirmed", "pending"],
         range: { start: now },
         limit: 1,
       }),
-      this.props.services.eventsService.getAppointments({
+      this.props.services.bookingService.getAppointments({
         customerId: authorized.customerId,
         range: { end: now },
         limit: 1,
@@ -906,7 +920,7 @@ export class MyCabinetConnectedApp
       "Fetching upcoming appointments",
     );
     const now = new Date();
-    const upcoming = await this.props.services.eventsService.getAppointments({
+    const upcoming = await this.props.services.bookingService.getAppointments({
       customerId: authorized.customerId,
       // Show all appointments for now
       // status: ["confirmed", "pending"],
@@ -961,7 +975,7 @@ export class MyCabinetConnectedApp
       "Fetching past appointments",
     );
     const now = new Date();
-    const past = await this.props.services.eventsService.getAppointments({
+    const past = await this.props.services.bookingService.getAppointments({
       customerId: authorized.customerId,
       range: { end: now },
       limit,
@@ -1080,7 +1094,7 @@ export class MyCabinetConnectedApp
     if (authorized instanceof Response) return authorized;
 
     const appointment =
-      await this.props.services.eventsService.getAppointment(appointmentId);
+      await this.props.services.bookingService.getAppointment(appointmentId);
 
     if (!appointment || appointment.customerId !== authorized.customerId) {
       logger.warn(

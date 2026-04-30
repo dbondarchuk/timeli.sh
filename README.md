@@ -36,6 +36,7 @@ Timeli.sh is a powerful appointment scheduling system designed for businesses, s
 **💳 Payments Made Easy**
 
 - Accept deposits and full payments via PayPal
+- Accept card payments via Square
 - Process partial refunds when needed
 - Secure payment processing built right in
 - Financial overview dashboard to track revenue
@@ -47,6 +48,7 @@ Timeli.sh is a powerful appointment scheduling system designed for businesses, s
 - Follow up after services
 - Customize email templates to match your brand
 - Schedule notifications for specific times
+- Built-in appointment and customer notification apps
 
 **📱 Text Message Notifications**
 
@@ -54,6 +56,7 @@ Timeli.sh is a powerful appointment scheduling system designed for businesses, s
 - Set up auto-replies for common questions
 - Resend important messages if needed
 - Keep clients informed via their preferred channel
+- Subscription-aware SMS credits and billing controls
 
 **🌐 Complete Website Builder**
 
@@ -72,6 +75,22 @@ Timeli.sh is a powerful appointment scheduling system designed for businesses, s
 - Automatically notify waitlist clients when slots open
 - Manage high-demand services efficiently
 - Turn cancellations into new bookings instantly
+
+**💸 Revenue & Conversion Tools**
+
+- **Discounts**: Create promotional discounts to boost conversions for selected services
+- **Gift Cards**: Sell prepaid value your clients can redeem during booking/payment
+- **Gift Card Studio**: Design and manage branded gift card experiences from the admin
+- **Forms**: Capture intake details, requirements, and lead data with customizable forms
+- **My Cabinet**: Give clients a self-service area to manage profile and booking-related flows
+- Combine these tools with bookings, reminders, and payments to increase retention and repeat visits
+
+**🎁 Gift Cards & Client Experience**
+
+- Build and sell branded gift cards
+- Collect intake details with customizable forms
+- Offer a client cabinet for self-service flows
+- Publish content pages (blog/custom pages) next to booking pages
 
 **⚙️ Flexible Booking Policies**
 
@@ -136,8 +155,31 @@ Timeli.sh is a powerful appointment scheduling system designed for businesses, s
 ### Payment Processing
 
 - **PayPal**: Accept payments securely through PayPal
+- **Square**: Accept online payments through Square
 - Support for deposits, full payments, and refunds
 - Sandbox mode for testing
+
+### App Store Modules (Built-in)
+
+Timeli.sh ships with modular apps that can be enabled per organization:
+
+- **Scheduling & Availability**: `weekly-schedule`, `smart-schedule`, `busy-events`, `url-busy-events`, `url-schedule-provider`, `waitlist`
+- **Calendar Providers**: `google-calendar`, `outlook`, `caldav`, `carddav`, `ics`, `calendar-writer`
+- **Payments & Billing**: `paypal`, `square`, `financial-overview`
+- **Notifications**: `appointment-notifications`, `email-notification`, `customer-email-notification`, `text-message-notification`, `customer-text-message-notification`, `text-message-auto-reply`, `text-message-resender`, `waitlist-notifications`
+- **Website & Client UX**: `forms`, `blog`, `gift-card-studio`, `my-cabinet`
+- **Infra & Automation**: `smtp`, `text-belt`, `webhooks`
+
+### Subscription & Access Control
+
+- **Current plans**: Pro (live) and Team (coming soon)
+- **Trial**: 7-day free trial on Pro
+- **Subscription statuses**:
+  - `active` / `trialing`: full access
+  - `past_due`: booking and payment actions are blocked until billing is resolved
+  - Other inactive statuses: protected flows return billing-required responses
+- **Public web behavior**: unknown/inactive organizations are routed to a branded marketing-style fallback page
+- **Admin behavior**: in-app billing state UX with portal-first recovery actions
 
 ## 💼 Business Management
 
@@ -204,10 +246,16 @@ Timeli.sh is a powerful appointment scheduling system designed for businesses, s
    - Configure refund policies
 
 6. **Share Your Booking Website**
+
    - Share your website link with clients
    - Add it to your email signature
    - Share on social media
    - Start accepting bookings 24/7!
+
+7. **Manage Subscription**
+   - Complete checkout (Pro, 7-day free trial)
+   - Open the billing portal anytime from the admin app
+   - Update payment method if subscription becomes past due
 
 ### Common Use Cases
 
@@ -310,7 +358,7 @@ Make Timeli.sh yours:
 - **API Access**: Build custom integrations
 - **Scheduled Notifications**: Time-based automated messages
 - **Financial Reporting**: Detailed revenue tracking
-- **Custom Integrations**: Connect to external calendar systems, aps, etc.
+- **Custom Integrations**: Connect to external calendar systems, apps, etc.
 
 ---
 
@@ -341,7 +389,7 @@ Timeli.sh is built as a modern multi-tenant monorepo using:
 
    ```bash
    git clone <repository-url>
-   cd vivid
+   cd timeli.sh
    yarn install
    ```
 
@@ -366,6 +414,7 @@ Configure your environment with:
 - `MONGODB_URI`: Database connection
 - `PUBLIC_DOMAIN`: Your booking page domain
 - `ADMIN_DOMAIN`: Admin dashboard domain
+- `NEXT_PUBLIC_ADMIN_DOMAIN`: Public website CTA target for sign-up/sign-in links
 - `SECRET_KEY`: Encryption key
 - Integration credentials (Google Calendar, Outlook, Zoom, PayPal, etc.)
 
@@ -374,10 +423,11 @@ See `docker-compose.yaml` for all available configuration options.
 ### Project Structure
 
 ```
-vivid/
+timeli.sh/
 ├── apps/
 │   ├── admin/              # Admin dashboard
 │   ├── web/                # Public booking pages
+│   ├── website/            # Marketing website
 │   ├── notification-sender/ # Notification service
 │   ├── job-processor/      # Background jobs
 │   └── ...

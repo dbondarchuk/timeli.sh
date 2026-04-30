@@ -1,4 +1,4 @@
-import { getServicesContainer } from "@/app/utils";
+import { getActor, getServicesContainer } from "@/app/utils";
 import { pageFootersSearchParamsLoader } from "@timelish/api-sdk";
 import { getLoggerFactory } from "@timelish/logger";
 import { pageFooterSchema } from "@timelish/types";
@@ -88,8 +88,12 @@ export async function POST(request: NextRequest) {
     "Creating new page footer",
   );
 
+  const actor = await getActor();
   try {
-    const result = await servicesContainer.pagesService.createPageFooter(data);
+    const result = await servicesContainer.pagesService.createPageFooter(
+      data,
+      actor,
+    );
 
     logger.debug(
       {

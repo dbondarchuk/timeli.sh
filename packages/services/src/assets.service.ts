@@ -1,14 +1,22 @@
 import { getDbClient, getDbConnection } from "./database";
 
 import {
+  ASSET_CREATED_EVENT_TYPE,
+  ASSET_DELETED_EVENT_TYPE,
+  ASSET_UPDATED_EVENT_TYPE,
   Asset,
   AssetEntity,
   AssetUpdate,
   IAssetsService,
   IAssetsStorage,
   IConfigurationService,
+  IEventService,
   Query,
   WithTotal,
+  type AssetCreatedPayload,
+  type AssetDeletedPayload,
+  type AssetUpdatedPayload,
+  type EventSource,
 } from "@timelish/types";
 import { buildSearchQuery, escapeRegex } from "@timelish/utils";
 import { createHash } from "crypto";
@@ -41,6 +49,7 @@ export class AssetsService extends BaseService implements IAssetsService {
     organizationId: string,
     protected readonly configurationService: IConfigurationService,
     protected readonly storage: IAssetsStorage,
+    protected readonly eventService: IEventService,
   ) {
     super("AssetsService", organizationId);
   }
@@ -206,6 +215,7 @@ export class AssetsService extends BaseService implements IAssetsService {
   public async createAsset(
     asset: Omit<Asset, "_id" | "uploadedAt" | "size" | "hash">,
     file: File,
+    source: EventSource,
   ): Promise<AssetEntity> {
     const args = {
       fileName: asset.filename,
@@ -272,6 +282,12 @@ export class AssetsService extends BaseService implements IAssetsService {
 
         await assets.insertOne(dbAsset);
 
+        await this.eventService.emit(
+          ASSET_CREATED_EVENT_TYPE,
+          { asset: dbAsset } satisfies AssetCreatedPayload,
+          source,
+        );
+
         logger.debug(args, "Asset successfully created");
 
         return dbAsset;
@@ -284,6 +300,7 @@ export class AssetsService extends BaseService implements IAssetsService {
   public async updateAsset(
     assetId: string,
     update: AssetUpdate,
+    source: EventSource,
   ): Promise<void> {
     const logger = this.loggerFactory("updateAsset");
     logger.debug({ assetId }, "Updating asset");
@@ -304,10 +321,22 @@ export class AssetsService extends BaseService implements IAssetsService {
       },
     );
 
+    const asset = await this.getAsset(assetId);
+    if (asset) {
+      await this.eventService.emit(
+        ASSET_UPDATED_EVENT_TYPE,
+        { asset, update: updateObj } satisfies AssetUpdatedPayload,
+        source,
+      );
+    }
+
     logger.debug({ assetId }, "Asset was successfully updated");
   }
 
-  public async deleteAsset(assetId: string): Promise<Asset | null> {
+  public async deleteAsset(
+    assetId: string,
+    source: EventSource,
+  ): Promise<Asset | null> {
     const logger = this.loggerFactory("deleteAsset");
     logger.debug({ assetId }, "Deleting asset");
 
@@ -333,6 +362,12 @@ export class AssetsService extends BaseService implements IAssetsService {
         await this.storage.deleteFile(asset.filename);
         logger.debug({ assetId, fileName: asset.filename }, "File deleted");
 
+        await this.eventService.emit(
+          ASSET_DELETED_EVENT_TYPE,
+          { assetIds: [assetId] } satisfies AssetDeletedPayload,
+          source,
+        );
+
         return asset;
       });
     } finally {
@@ -340,7 +375,10 @@ export class AssetsService extends BaseService implements IAssetsService {
     }
   }
 
-  public async deleteAssets(assetsIds: string[]): Promise<Asset[]> {
+  public async deleteAssets(
+    assetsIds: string[],
+    source: EventSource,
+  ): Promise<Asset[]> {
     const logger = this.loggerFactory("deleteAssets");
     logger.debug({ assetsIds }, "Deleting assets");
 
@@ -376,6 +414,16 @@ export class AssetsService extends BaseService implements IAssetsService {
         await this.storage.deleteFiles(toRemove.map((asset) => asset.filename));
 
         logger.debug({ assetsIds, deletedCount }, "Files deleted");
+
+        if (toRemove.length) {
+          await this.eventService.emit(
+            ASSET_DELETED_EVENT_TYPE,
+            {
+              assetIds: toRemove.map((a) => a._id),
+            } satisfies AssetDeletedPayload,
+            source,
+          );
+        }
 
         return toRemove;
       });

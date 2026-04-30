@@ -1,4 +1,4 @@
-import { getServicesContainer } from "@/app/utils";
+import { getActor, getServicesContainer } from "@/app/utils";
 import { getLoggerFactory } from "@timelish/logger";
 import { AppointmentEvent, appointmentEventSchema } from "@timelish/types";
 import { NextRequest, NextResponse } from "next/server";
@@ -22,7 +22,7 @@ export async function GET(
     "Processing get appointment API request",
   );
 
-  const appointment = await servicesContainer.eventsService.getAppointment(id);
+  const appointment = await servicesContainer.bookingService.getAppointment(id);
 
   if (!appointment) {
     logger.warn({ id }, "Appointment not found");
@@ -64,6 +64,7 @@ export async function PUT(
     "Processing update appointment API request",
   );
 
+  const eventSource = await getActor();
   const formData = await request.formData();
   const appointmentJson = formData.get("appointment") as string;
   if (!appointmentJson) {
@@ -195,12 +196,16 @@ export async function PUT(
         : undefined,
   };
 
-  const appointment = await servicesContainer.eventsService.updateEvent(id, {
-    event: appointmentEvent,
-    confirmed,
-    files,
-    doNotNotifyCustomer,
-  });
+  const appointment = await servicesContainer.bookingService.updateAppointment(
+    id,
+    {
+      event: appointmentEvent,
+      confirmed,
+      files,
+      doNotNotifyCustomer,
+      eventSource,
+    },
+  );
 
   logger.debug(
     {

@@ -6,12 +6,14 @@ import {
   ConnectedAppData,
   ConnectedAppRequestError,
   ConnectedAppStatusWithText,
-  IAppointmentHook,
+  EventEnvelope,
   IConnectedApp,
   IConnectedAppProps,
+  IEventSubscriber,
 } from "@timelish/types";
 import {
   AppointmentStatusToICalMethodMap,
+  dispatchAppointmentEventPayload,
   getAdminUrl,
   getArguments,
   getEventCalendarContent,
@@ -29,7 +31,7 @@ import {
 } from "./translations/types";
 
 export default class CustomerEmailNotificationConnectedApp
-  implements IConnectedApp, IAppointmentHook
+  implements IConnectedApp, IEventSubscriber
 {
   protected readonly loggerFactory: LoggerFactory;
 
@@ -38,6 +40,58 @@ export default class CustomerEmailNotificationConnectedApp
       "CustomerEmailNotificationConnectedApp",
       props.organizationId,
     );
+  }
+
+  public async onEvent(
+    appData: ConnectedAppData,
+    envelope: EventEnvelope,
+  ): Promise<void> {
+    await dispatchAppointmentEventPayload(envelope, {
+      onAppointmentCreated: (appointment, confirmed) =>
+        this.onAppointmentCreated(appData, appointment, confirmed),
+      onAppointmentFullRescheduled: (
+        appointment,
+        newTime,
+        newDuration,
+        oldTime,
+        oldDuration,
+        doNotNotifyCustomer,
+        _source,
+      ) =>
+        this.onAppointmentRescheduled(
+          appData,
+          appointment,
+          newTime,
+          newDuration,
+          oldTime,
+          oldDuration,
+          doNotNotifyCustomer,
+        ),
+      onAppointmentSlotRescheduled: (
+        appointment,
+        newTime,
+        newDuration,
+        oldTime,
+        oldDuration,
+        doNotNotifyCustomer,
+        _source,
+      ) =>
+        this.onAppointmentRescheduled(
+          appData,
+          appointment,
+          newTime,
+          newDuration,
+          oldTime,
+          oldDuration,
+          doNotNotifyCustomer,
+        ),
+      onAppointmentStatusChanged: (
+        appointment,
+        newStatus,
+        oldStatus,
+        _source,
+      ) => this.onAppointmentStatusChanged(appData, appointment, newStatus),
+    });
   }
 
   public async processRequest(
@@ -311,7 +365,7 @@ export default class CustomerEmailNotificationConnectedApp
         appointment,
         config,
         adminUrl: getAdminUrl(),
-        websiteUrl: getWebsiteUrl(organization.slug, organization.domain),
+        websiteUrl: getWebsiteUrl(organization),
         customer: appointment.customer,
         useAppointmentTimezone: true,
         locale: config.brand.language,

@@ -1,9 +1,12 @@
+export type * from "./activity.service";
 export type * from "./assets.service";
+export type * from "./billing.service";
+export type * from "./booking.service";
 export type * from "./communication-logs.service";
 export type * from "./configuration.service";
+export type * from "./event.service";
 export type * from "./connected-apps.service";
 export type * from "./customers.service";
-export type * from "./events.service";
 export type * from "./gift-cards.service";
 export type * from "./job.service";
 export type * from "./notification.service";

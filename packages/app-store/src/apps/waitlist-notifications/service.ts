@@ -7,9 +7,12 @@ import {
   ConnectedAppData,
   ConnectedAppRequestError,
   ConnectedAppStatusWithText,
+  ConnectedAppUninstallResult,
+  EventEnvelope,
   GeneralConfiguration,
   IConnectedApp,
   IConnectedAppProps,
+  IEventSubscriber,
   SocialConfiguration,
 } from "@timelish/types";
 import {
@@ -20,8 +23,11 @@ import {
   templateSafeWithError,
 } from "@timelish/utils";
 import { DateTime } from "luxon";
+import {
+  WAITLIST_ENTRY_CREATED_EVENT_TYPE,
+  type WaitlistEntryCreatedEvent,
+} from "../waitlist/models/events";
 import { WaitlistEntry, waitlistTime } from "../waitlist/models/waitlist";
-import { IWaitlistHook } from "../waitlist/models/waitlist-hook";
 import { getEmailTemplate } from "./emails/utils";
 import {
   WaitlistNotificationsConfiguration,
@@ -33,7 +39,7 @@ import {
 } from "./translations/types";
 
 export class WaitlistNotificationsConnectedApp
-  implements IConnectedApp, IWaitlistHook
+  implements IConnectedApp, IEventSubscriber
 {
   protected readonly loggerFactory: LoggerFactory;
 
@@ -42,6 +48,17 @@ export class WaitlistNotificationsConnectedApp
       "WaitlistNotificationsConnectedApp",
       props.organizationId,
     );
+  }
+
+  public async onEvent(
+    appData: ConnectedAppData,
+    envelope: EventEnvelope,
+  ): Promise<void> {
+    if (envelope.type !== WAITLIST_ENTRY_CREATED_EVENT_TYPE) {
+      return;
+    }
+    const { entry } = envelope.payload as WaitlistEntryCreatedEvent["payload"];
+    await this.handleWaitlistEntryCreated(appData, entry);
   }
 
   public async processRequest(
@@ -128,7 +145,9 @@ export class WaitlistNotificationsConnectedApp
     });
   }
 
-  public async unInstall(appData: ConnectedAppData): Promise<void> {
+  public async unInstall(
+    appData: ConnectedAppData,
+  ): Promise<ConnectedAppUninstallResult> {
     const logger = this.loggerFactory("unInstall");
     logger.debug(
       { appId: appData._id },
@@ -139,13 +158,14 @@ export class WaitlistNotificationsConnectedApp
       { appId: appData._id },
       "Successfully uninstalled waitlist notifications app",
     );
+    return { success: true, code: "ok" };
   }
 
-  public async onWaitlistEntryCreated(
+  private async handleWaitlistEntryCreated(
     appData: ConnectedAppData,
     entry: WaitlistEntry,
   ): Promise<void> {
-    const logger = this.loggerFactory("onWaitlistEntryCreated");
+    const logger = this.loggerFactory("handleWaitlistEntryCreated");
 
     logger.debug(
       {
@@ -254,7 +274,7 @@ export class WaitlistNotificationsConnectedApp
       }
 
       const adminUrl = getAdminUrl();
-      const websiteUrl = getWebsiteUrl(organization.slug, organization.domain);
+      const websiteUrl = getWebsiteUrl(organization);
       const args = getArguments({
         appointment: null,
         config,
@@ -371,7 +391,7 @@ export class WaitlistNotificationsConnectedApp
       }
 
       const adminUrl = getAdminUrl();
-      const websiteUrl = getWebsiteUrl(organization.slug, organization.domain);
+      const websiteUrl = getWebsiteUrl(organization);
       const args = getArguments({
         appointment: null,
         config,

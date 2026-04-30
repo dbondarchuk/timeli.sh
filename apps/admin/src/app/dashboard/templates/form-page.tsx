@@ -42,7 +42,7 @@ export const TemplateFormPage: React.FC<
   );
 
   const demoEmailArgumentsArray =
-    await servicesContainer.connectedAppsService.executeHooks<
+    await servicesContainer.connectedAppsService.invokeAppsByScope<
       IDemoArgumentsProvider,
       DemoArguments
     >("demo-arguments-provider", async (app, service) => {

@@ -1,0 +1,101 @@
+import { AssetEntity } from "../assets";
+import {
+  ApplyGiftCardsSuccessResponse,
+  Appointment,
+  AppointmentEvent,
+  AppointmentHistoryEntry,
+  AppointmentStatus,
+  Availability,
+  CalendarEvent,
+  GetAppointmentOptionsResponse,
+  ModifyAppointmentInformationRequest,
+  Period,
+} from "../booking";
+import { Query, WithTotal } from "../database";
+import type { EventSource } from "../events/envelope";
+import { DateRange } from "../general";
+
+export interface IBookingService {
+  getAvailability(duration: number): Promise<Availability>;
+  getBusyEventsInTimeFrame(start: Date, end: Date): Promise<Period[]>;
+  getBusyEvents(): Promise<Period[]>;
+  createAppointment(args: {
+    event: AppointmentEvent;
+    confirmed?: boolean;
+    force?: boolean;
+    files?: Record<string, File>;
+    paymentIntentId?: string;
+    eventSource: EventSource;
+    giftCards?: ApplyGiftCardsSuccessResponse["giftCards"];
+  }): Promise<Appointment>;
+  updateAppointment(
+    id: string,
+    args: {
+      event: AppointmentEvent;
+      confirmed?: boolean;
+      files?: Record<string, File>;
+      doNotNotifyCustomer?: boolean;
+      eventSource: EventSource;
+    },
+  ): Promise<Appointment>;
+  getPendingAppointmentsCount(
+    minimumDate?: Date,
+    createdAfter?: Date,
+  ): Promise<{ totalCount: number; newCount: number }>;
+  getPendingAppointments(
+    limit?: number,
+    after?: Date,
+  ): Promise<WithTotal<Appointment>>;
+  getNextAppointments(date: Date, limit?: number): Promise<Appointment[]>;
+  getAppointments(
+    query: Query & {
+      range?: DateRange;
+      endRange?: DateRange;
+      status?: AppointmentStatus[];
+      optionId?: string | string[];
+      customerId?: string | string[];
+      discountId?: string | string[];
+    },
+  ): Promise<WithTotal<Appointment>>;
+  getCalendarEvents(
+    start: Date,
+    end: Date,
+    status: AppointmentStatus[],
+  ): Promise<CalendarEvent[]>;
+  getAppointment(id: string): Promise<Appointment | null>;
+  findAppointment(
+    fields: ModifyAppointmentInformationRequest["fields"],
+    status?: AppointmentStatus[],
+  ): Promise<Appointment | null>;
+  changeAppointmentStatus(
+    id: string,
+    newStatus: AppointmentStatus,
+    eventSource: EventSource,
+  ): Promise<void>;
+  updateAppointmentNote(id: string, note?: string): Promise<void>;
+  addAppointmentFiles(
+    id: string,
+    files: File[],
+    source: EventSource,
+  ): Promise<AssetEntity[]>;
+  rescheduleAppointment(
+    id: string,
+    newTime: Date,
+    newDuration: number,
+    eventSource: EventSource,
+    doNotNotifyCustomer?: boolean,
+  ): Promise<void>;
+
+  getAppointmentHistory(
+    query: Query & {
+      appointmentId: string;
+      type?: AppointmentHistoryEntry["type"];
+    },
+  ): Promise<WithTotal<AppointmentHistoryEntry>>;
+  addAppointmentHistory(
+    entry: Omit<AppointmentHistoryEntry, "_id" | "dateTime" | "organizationId">,
+  ): Promise<string>;
+
+  verifyTimeAvailability(dateTime: Date, duration: number): Promise<boolean>;
+  getAppointmentOptions(): Promise<GetAppointmentOptionsResponse>;
+}

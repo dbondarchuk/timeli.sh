@@ -13,16 +13,19 @@ import { Menu, X } from "lucide-react";
 import Image from "next/image";
 import NextLink from "next/link";
 import { useState } from "react";
+import { getSignInUrl, getSignUpUrl } from "@/lib/admin-app-urls";
 
 const navigation = [
   { name: "Features", href: "#features" },
   { name: "Integrations", href: "#integrations" },
   { name: "Pricing", href: "#pricing" },
+  { name: "Compare", href: "#compare" },
 ];
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const adminUrl = `https://${process.env.NEXT_PUBLIC_ADMIN_DOMAIN}`;
+  const signInUrl = getSignInUrl();
+  const signUpUrl = getSignUpUrl();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -59,11 +62,11 @@ export function Header() {
           ))}
         </div>
         <div className="hidden md:flex md:flex-1 md:justify-end md:gap-x-4">
-          <Link href={adminUrl} variant="ghost" size="sm" button>
+          <Link href={signInUrl} variant="ghost" size="sm" button>
             Log in
           </Link>
-          <Link size="sm" variant="brand" href="#waitlist" button>
-            Join the waitlist
+          <Link size="sm" variant="brand" href={signUpUrl} button>
+            Get started
           </Link>
         </div>
       </nav>
@@ -111,15 +114,15 @@ export function Header() {
                 </div>
                 <div className="py-6 space-y-3">
                   <Link
-                    href={adminUrl}
+                    href={signInUrl}
                     variant="outline"
                     className="w-full bg-transparent"
                     button
                   >
                     Log in
                   </Link>
-                  <Link href="#waitlist" button className="w-full">
-                    Join the waitlist
+                  <Link href={signUpUrl} button className="w-full">
+                    Get started
                   </Link>
                 </div>
               </div>

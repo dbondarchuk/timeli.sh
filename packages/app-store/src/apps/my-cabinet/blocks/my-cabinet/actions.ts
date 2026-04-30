@@ -149,7 +149,7 @@ export const getModifyInformationAction = async (args: {
     | { type: "email"; email: string; dateTime: Date }
     | { type: "phone"; phone: string; dateTime: Date };
 }): Promise<ModifyInformation> => {
-  return clientApi.events.getModifyAppointmentInformation(args);
+  return clientApi.booking.getModifyAppointmentInformation(args);
 };
 
 export const submitModifyAction = async (
@@ -162,5 +162,5 @@ export const submitModifyAction = async (
       | { type: "phone"; phone: string; dateTime: Date };
   },
 ): Promise<void> => {
-  await clientApi.events.modifyAppointment(appointmentId, payload as any);
+  await clientApi.booking.modifyAppointment(appointmentId, payload as any);
 };

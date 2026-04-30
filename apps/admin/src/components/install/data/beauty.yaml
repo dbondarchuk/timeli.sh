@@ -1,0 +1,506 @@
+hair_stylist:
+  label: Hair Stylist
+  tags:
+    - beauty
+    - hair
+    - salon
+  services:
+    - name: Women's Haircut & Style
+      durations:
+        - 45
+        - 60
+      description: "**A personalized haircut** tailored to your style and face shape. Includes wash, precision cut, and blowout for a finished look."
+      addons:
+        - id: women_s_haircut_style-addon-beauty-1
+          name: Toning gloss refresh
+          description: "**Semi-permanent gloss** to revive shine and tone between full visits."
+          duration: 10
+          suggestedPrice: 11
+        - id: women_s_haircut_style-addon-hair-2
+          name: Deep conditioning mask
+          description: "**Intensive moisture treatment** after your cut for softer, smoother hair."
+          duration: 15
+          suggestedPrice: 18
+      prices:
+        - 45
+        - 60
+        - 85
+    - name: Men's Haircut
+      durations:
+        - 25
+        - 40
+      description: "**A clean, precise haircut** including consultation and styling. Perfect for regular maintenance and updated looks."
+      addons:
+        - id: men_s_haircut-addon-beauty-1
+          name: Beard trim & line-up
+          description: "**Clean edges and beard shaping** so your haircut and beard match."
+          duration: 10
+          suggestedPrice: 5
+      prices:
+        - 20
+        - 35
+        - 50
+    - name: Full Color
+      durations:
+        - 90
+        - 120
+      description: "**Complete color application** with consultation and professional finishing. Ideal for full head color or major transformations."
+      addons:
+        - id: full_color-addon-beauty-1
+          name: Bond-building treatment
+          description: "**Strengthening step** to help protect hair during chemical processing."
+          duration: 10
+          suggestedPrice: 20
+        - id: full_color-addon-hair-2
+          name: Root refresh add-on
+          description: "**Small focused root touch-up** when booked together with a full color (scope-limited)."
+          duration: 15
+          suggestedPrice: 32
+      prices:
+        - 80
+        - 120
+        - 180
+nail_technician:
+  label: Nail Technician
+  tags:
+    - beauty
+    - nails
+    - spa
+  services:
+    - name: Basic Manicure
+      durations:
+        - 30
+      description: "**Nail shaping and care** including cuticle treatment and polish. A quick and refreshing maintenance service."
+      addons:
+        - id: basic_manicure-addon-beauty-1
+          name: Paraffin wax dip
+          description: "**Warm wax treatment** for softer hands and cuticles before polish."
+          duration: 10
+          suggestedPrice: 5
+        - id: basic_manicure-addon-nails-2
+          name: Nail art accent
+          description: "**Simple design or French tips** on two accent nails."
+          duration: 15
+          suggestedPrice: 7
+      prices:
+        - 18
+        - 25
+        - 35
+    - name: Gel Manicure
+      durations:
+        - 45
+        - 60
+      description: "**Durable gel polish application** with professional curing. Includes nail prep and long-lasting finish."
+      addons:
+        - id: gel_manicure-addon-beauty-1
+          name: Gel removal
+          description: "**Safe soak-off** when removing existing gel before a new set."
+          duration: 10
+          suggestedPrice: 8
+        - id: gel_manicure-addon-nails-2
+          name: Extended hand massage
+          description: "**Extra massage time** beyond the standard gel service."
+          duration: 15
+          suggestedPrice: 12
+      prices:
+        - 30
+        - 40
+        - 55
+    - name: Acrylic Full Set
+      durations:
+        - 75
+        - 90
+      description: "**Acrylic nail enhancement** with custom shaping and polish. Ideal for clients wanting additional length or design."
+      addons:
+        - id: acrylic_full_set-addon-beauty-1
+          name: Length or shape upgrade
+          description: "**Longer extensions or specialty shape** when discussed in advance."
+          duration: 10
+          suggestedPrice: 13
+        - id: acrylic_full_set-addon-nails-2
+          name: Crystal or foil accents
+          description: "**Decorative accents** on a few nails for events or photos."
+          duration: 15
+          suggestedPrice: 20
+      prices:
+        - 50
+        - 70
+        - 95
+esthetician:
+  label: Esthetician
+  tags:
+    - beauty
+    - skin
+    - spa
+  services:
+    - name: Classic Facial
+      durations:
+        - 60
+      description: "**Deep-clean facial treatment** to refresh skin tone and texture. Includes cleansing, exfoliation, mask, and moisturizing."
+      addons:
+        - id: classic_facial-addon-beauty-1
+          name: High-frequency treatment
+          description: "**Device add-on** often used on breakout-prone or congested areas."
+          duration: 10
+          suggestedPrice: 16
+        - id: classic_facial-addon-skin-2
+          name: LED boost
+          description: "**Targeted LED session** to support calming or brightening goals."
+          duration: 15
+          suggestedPrice: 26
+      prices:
+        - 65
+        - 85
+        - 110
+    - name: Microdermabrasion
+      durations:
+        - 45
+        - 60
+      description: "**Non-invasive resurfacing** to reduce fine lines and uneven texture. Includes pre- and post-care guidance."
+      addons:
+        - id: microdermabrasion-addon-beauty-1
+          name: Cooling mask
+          description: "**Soothing mask** after exfoliation to calm redness."
+          duration: 10
+          suggestedPrice: 21
+        - id: microdermabrasion-addon-skin-2
+          name: Neck & décolleté
+          description: "**Extend resurfacing** to neck and upper chest in the same visit."
+          duration: 15
+          suggestedPrice: 34
+      prices:
+        - 85
+        - 110
+        - 140
+    - name: Acne Treatment
+      durations:
+        - 45
+        - 60
+      description: "**Targeted acne therapy** using clinical-grade products and careful extraction when needed. Aimed to calm skin and reduce breakouts."
+      addons:
+        - id: acne_treatment-addon-beauty-1
+          name: High-frequency focus
+          description: "**Extra time on congested zones** with antibacterial setting."
+          duration: 10
+          suggestedPrice: 18
+        - id: acne_treatment-addon-skin-2
+          name: Cryo globe massage
+          description: "**Cool massage** to soothe skin after extractions."
+          duration: 15
+          suggestedPrice: 28
+      prices:
+        - 70
+        - 95
+        - 120
+makeup_artist:
+  label: Makeup Artist
+  tags:
+    - beauty
+    - makeup
+    - events
+  services:
+    - name: Natural Day Makeup
+      durations:
+        - 45
+      description: "**Fresh, natural makeup** designed for daytime events and meetings. Includes skin prep and longwear products."
+      addons:
+        - id: natural_day_makeup-addon-beauty-1
+          name: Natural strip lashes
+          description: "**Lightweight lashes** for subtle definition in daylight."
+          duration: 10
+          suggestedPrice: 13
+        - id: natural_day_makeup-addon-makeup-2
+          name: Mini touch-up kit
+          description: "**Blotting papers and lip sample** to refresh after your appointment."
+          duration: 15
+          suggestedPrice: 20
+      prices:
+        - 50
+        - 70
+        - 95
+    - name: Bridal Makeup
+      durations:
+        - 90
+        - 120
+      description: "**Comprehensive bridal makeup** with trial and day-of application. Ensures long-lasting, photo-ready results."
+      addons:
+        - id: bridal_makeup-addon-beauty-1
+          name: Second look trial
+          description: "**Alternate lip or eye direction** so you can compare before the wedding."
+          duration: 10
+          suggestedPrice: 38
+        - id: bridal_makeup-addon-makeup-2
+          name: Day-of timeline sync
+          description: "**Short scheduling review** with hair and photo timing in mind."
+          duration: 15
+          suggestedPrice: 60
+      prices:
+        - 150
+        - 220
+        - 320
+    - name: Event Glam
+      durations:
+        - 60
+        - 90
+      description: "**Bold evening makeup** perfect for photos and special events. Includes lashes and setting for durability."
+      addons:
+        - id: event_glam-addon-beauty-1
+          name: Full glam lashes
+          description: "**Dramatic lash application** for evening lighting and photos."
+          duration: 10
+          suggestedPrice: 20
+        - id: event_glam-addon-makeup-2
+          name: Pre-event stay buffer
+          description: "**Extra finishing minutes** right before you step out."
+          duration: 15
+          suggestedPrice: 32
+      prices:
+        - 80
+        - 110
+        - 150
+lash_technician:
+  label: Lash Technician
+  tags:
+    - beauty
+    - lashes
+    - spa
+  services:
+    - name: Classic Lash Extensions
+      durations:
+        - 60
+        - 75
+      description: "**Natural-looking lash extensions** applied one-by-one for subtle enhancement. Includes lash mapping and aftercare guidance."
+      addons:
+        - id: classic_lash_extensions-addon-beauty-1
+          name: Bottom lash fill
+          description: "**Light bottom-lash enhancement** for balanced framing."
+          duration: 10
+          suggestedPrice: 18
+        - id: classic_lash_extensions-addon-lashes-2
+          name: Sensitive adhesive upgrade
+          description: "**Gentle adhesive** when eyes are easily irritated."
+          duration: 15
+          suggestedPrice: 28
+      prices:
+        - 70
+        - 95
+        - 130
+    - name: Volume Lash Extensions
+      durations:
+        - 90
+        - 120
+      description: "**Full-volume lash set** for a dramatic finish. Custom fans and lightweight technique for comfort."
+      addons:
+        - id: volume_lash_extensions-addon-beauty-1
+          name: Mega-volume mix
+          description: "**Denser fans** in selected areas for extra drama."
+          duration: 10
+          suggestedPrice: 28
+        - id: volume_lash_extensions-addon-lashes-2
+          name: Lash bath tutorial
+          description: "**Quick lesson** on cleaning extensions without damaging them."
+          duration: 15
+          suggestedPrice: 44
+      prices:
+        - 110
+        - 140
+        - 180
+    - name: Lash Fill
+      durations:
+        - 45
+      description: "**Maintenance refill** to restore fullness and replace grown-out lashes. Best every 2–3 weeks."
+      addons:
+        - id: lash_fill-addon-beauty-1
+          name: Color tint refresh
+          description: "**Deepen or cool-tone** your natural lashes between full sets."
+          duration: 10
+          suggestedPrice: 10
+        - id: lash_fill-addon-lashes-2
+          name: Steam removal add-on
+          description: "**Safe removal session** when starting fresh with a new style."
+          duration: 15
+          suggestedPrice: 16
+      prices:
+        - 40
+        - 55
+        - 75
+brow_artist:
+  label: Brow Artist
+  tags:
+    - beauty
+    - brows
+    - spa
+  services:
+    - name: Brow Shaping
+      durations:
+        - 30
+      description: "**Precise brow shaping** via waxing or tweezing according to your preference. Includes consultation on arch and thickness."
+      addons:
+        - id: brow_shaping-addon-beauty-1
+          name: Brow tint
+          description: "**Vegetable-based tint** to deepen brow color for several weeks."
+          duration: 10
+          suggestedPrice: 5
+        - id: brow_shaping-addon-brows-2
+          name: Brow mapping
+          description: "**Precise outline and symmetry** check before wax or threading."
+          duration: 15
+          suggestedPrice: 7
+      prices:
+        - 18
+        - 30
+        - 45
+    - name: Brow Lamination
+      durations:
+        - 45
+        - 60
+      description: "**Brow lamination** for fuller shape and uniform direction. Great for taming unruly hairs and enhancing shape."
+      addons:
+        - id: brow_lamination-addon-beauty-1
+          name: Product or tool upgrade
+          description: "**Premium product or focused technique** to boost results during Brow Lamination."
+          duration: 10
+          suggestedPrice: 11
+        - id: brow_lamination-addon-brows-2
+          name: Extended finishing
+          description: "**Extra detail time** at the end of Brow Lamination."
+          duration: 15
+          suggestedPrice: 18
+      prices:
+        - 45
+        - 60
+        - 85
+    - name: Tint & Shape
+      durations:
+        - 30
+        - 45
+      description: "**Tinting and shaping** to enhance natural brow color and symmetry. A quick complement to a full beauty routine."
+      addons:
+        - id: tint_shape-addon-beauty-1
+          name: Product or tool upgrade
+          description: "**Premium product or focused technique** to boost results during Tint & Shape."
+          duration: 10
+          suggestedPrice: 6
+        - id: tint_shape-addon-brows-2
+          name: Extended finishing
+          description: "**Extra detail time** at the end of Tint & Shape."
+          duration: 15
+          suggestedPrice: 10
+      prices:
+        - 25
+        - 35
+        - 50
+spray_tan_technician:
+  label: Spray Tan Technician
+  tags:
+    - beauty
+    - tan
+    - spa
+  services:
+    - name: Full Body Spray Tan
+      durations:
+        - 30
+      description: "**Custom spray tan shade** matched to skin tone and desired depth. Includes aftercare instructions for best longevity."
+      addons:
+        - id: full_body_spray_tan-addon-beauty-1
+          name: Product or tool upgrade
+          description: "**Premium product or focused technique** to boost results during Full Body Spray Tan."
+          duration: 10
+          suggestedPrice: 8
+        - id: full_body_spray_tan-addon-tan-2
+          name: Extended finishing
+          description: "**Extra detail time** at the end of Full Body Spray Tan."
+          duration: 15
+          suggestedPrice: 12
+      prices:
+        - 30
+        - 45
+        - 60
+    - name: Express Spray Tan
+      durations:
+        - 20
+      description: "**Quick-develop tan** for clients short on time. Slightly faster development while still providing a natural finish."
+      addons:
+        - id: express_spray_tan-addon-beauty-1
+          name: Product or tool upgrade
+          description: "**Premium product or focused technique** to boost results during Express Spray Tan."
+          duration: 10
+          suggestedPrice: 6
+      prices:
+        - 25
+        - 35
+        - 45
+    - name: Touch-up
+      durations:
+        - 20
+      description: "**Quick touch-up** to refresh faded areas before events. Fast and convenient."
+      addons:
+        - id: touch_up-addon-beauty-1
+          name: Product or tool upgrade
+          description: "**Premium product or focused technique** to boost results during Touch-up."
+          duration: 10
+          suggestedPrice: 5
+      prices:
+        - 20
+        - 30
+waxing_specialist:
+  label: Waxing Specialist
+  tags:
+    - beauty
+    - waxing
+    - spa
+  services:
+    - name: Bikini Wax
+      durations:
+        - 30
+      description: "**Careful bikini waxing** with high hygiene standards. Includes soothing post-care advice for comfort."
+      addons:
+        - id: bikini_wax-addon-beauty-1
+          name: Post-wax calming gel
+          description: "**Soothing application** after sensitive-area waxing."
+          duration: 10
+          suggestedPrice: 8
+        - id: bikini_wax-addon-waxing-2
+          name: Ingrown spot treatment
+          description: "**Gentle exfoliation** on problem spots in the bikini line."
+          duration: 15
+          suggestedPrice: 12
+      prices:
+        - 30
+        - 40
+        - 55
+    - name: Full Body Wax
+      durations:
+        - 90
+        - 120
+      description: "**Comprehensive waxing across multiple areas** performed efficiently. Recommended for experienced waxing clients."
+      addons:
+        - id: full_body_wax-addon-beauty-1
+          name: Product or tool upgrade
+          description: "**Premium product or focused technique** to boost results during Full Body Wax."
+          duration: 10
+          suggestedPrice: 30
+        - id: full_body_wax-addon-waxing-2
+          name: Extended finishing
+          description: "**Extra detail time** at the end of Full Body Wax."
+          duration: 15
+          suggestedPrice: 48
+      prices:
+        - 120
+        - 150
+        - 200
+    - name: Underarm Wax
+      durations:
+        - 20
+      description: "**Quick underarm waxing** with gentle techniques. Fast and effective for smooth results."
+      addons:
+        - id: underarm_wax-addon-beauty-1
+          name: Product or tool upgrade
+          description: "**Premium product or focused technique** to boost results during Underarm Wax."
+          duration: 10
+          suggestedPrice: 5
+      prices:
+        - 15
+        - 25
+        - 35
+

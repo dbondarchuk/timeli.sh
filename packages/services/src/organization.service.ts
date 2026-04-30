@@ -1,12 +1,11 @@
 import {
-  ConfigurationOptionWithOrganizationId,
+  EventSource,
+  IEventService,
   IOrganizationService,
+  ORGANIZATION_DOMAIN_CHANGED_EVENT_TYPE,
   Organization,
 } from "@timelish/types";
-import {
-  CONFIGURATION_COLLECTION_NAME,
-  ORGANIZATIONS_COLLECTION_NAME,
-} from "./collections";
+import { ORGANIZATIONS_COLLECTION_NAME } from "./collections";
 import { getDbConnection } from "./database";
 import { BaseService } from "./services/base.service";
 
@@ -16,7 +15,10 @@ export class OrganizationService
   extends BaseService
   implements IOrganizationService
 {
-  public constructor(organizationId: string) {
+  public constructor(
+    organizationId: string,
+    protected readonly eventService: IEventService,
+  ) {
     super("OrganizationService", organizationId);
   }
 
@@ -40,7 +42,10 @@ export class OrganizationService
     return organization;
   }
 
-  public async setDomain(domain?: string | null): Promise<void> {
+  public async setDomain(
+    domain: string | null | undefined,
+    source: EventSource,
+  ): Promise<void> {
     const logger = this.loggerFactory("setDomain");
     const normalized = domain?.trim().toLowerCase();
     logger.debug({ domain: normalized }, "Setting organization domain");
@@ -49,39 +54,36 @@ export class OrganizationService
       ORGANIZATIONS_COLLECTION_NAME,
     );
 
-    if (normalized) {
-      const existingOrganization = await organizations.findOne({
-        _id: { $ne: this.organizationId },
-        domain: normalized,
-      });
+    const organization = await organizations.findOne({
+      _id: this.organizationId,
+    });
+    if (!organization) {
+      logger.error(
+        { organizationId: this.organizationId, domain },
+        "Organization not found",
+      );
 
-      // Legacy fallback for domains stored in brand configuration.
-      const configuration = db.collection<
-        ConfigurationOptionWithOrganizationId<"brand">
-      >(CONFIGURATION_COLLECTION_NAME);
-      const existingBrandDomain = await configuration.findOne({
-        organizationId: { $ne: this.organizationId },
-        key: "brand",
-        "value.domain": normalized,
-      });
+      throw new Error("Organization not found");
+    }
 
-      if (existingOrganization || existingBrandDomain) {
-        logger.warn({ domain: normalized }, "Domain is already in use");
-        const error = new Error(DOMAIN_ALREADY_IN_USE_ERROR);
-        error.name = DOMAIN_ALREADY_IN_USE_ERROR;
-        throw error;
-      }
-
-      await organizations.updateOne(
-        { _id: this.organizationId },
-        { $set: { domain: normalized } },
+    const previousDomain = organization.domain ?? null;
+    if (previousDomain === normalized) {
+      logger.warn(
+        { domain: normalized, previousDomain },
+        "Domain is already in use",
       );
       return;
     }
 
     await organizations.updateOne(
       { _id: this.organizationId },
-      { $unset: { domain: "" } },
+      { $set: { domain: normalized || null } },
+    );
+
+    await this.eventService.emit(
+      ORGANIZATION_DOMAIN_CHANGED_EVENT_TYPE,
+      { previousDomain, newDomain: null },
+      source,
     );
   }
 }

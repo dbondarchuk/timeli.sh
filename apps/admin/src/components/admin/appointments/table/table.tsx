@@ -23,7 +23,7 @@ export const AppointmentsTable: React.FC<{ customerId?: string }> = async ({
   const offset = (page - 1) * limit;
 
   const servicesContainer = await getServicesContainer();
-  const res = await servicesContainer.eventsService.getAppointments({
+  const res = await servicesContainer.bookingService.getAppointments({
     range: { start, end },
     status,
     offset,

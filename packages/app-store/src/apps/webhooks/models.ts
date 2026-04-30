@@ -1,40 +1,11 @@
 import * as z from "zod";
 import { WebhooksAdminAllKeys } from "./translations/types";
 
-export const webhookEventTypes = [
-  "appointment.created",
-  "appointment.status_changed",
-  "appointment.rescheduled",
-  "customer.created",
-  "customer.updated",
-  "customers.deleted",
-  "payment.created",
-  "payment.updated",
-  "payment.deleted",
-  "payment.refunded",
-  "waitlist-entry.created",
-  "waitlist-entries.dismissed",
-  "form-response.created",
-  "gift-card.created",
-  "gift-card.updated",
-  "gift-card.deleted",
-  "gift-card.status_changed",
-  "discount.created",
-  "discount.updated",
-  "discount.deleted",
-  "discount.applied",
-  "service.created",
-  "service.updated",
-  "service.deleted",
-  "addon.created",
-  "addon.updated",
-  "addon.deleted",
-  "field.created",
-  "field.updated",
-  "field.deleted",
-] as const;
+/** Discriminator for webhooks `processStaticRequest` to list aggregated event type strings (see `webhooks/selectable-event-types`). */
+export const LIST_SELECTABLE_EVENT_TYPES_REQUEST_TYPE =
+  "listSelectableEventTypes" as const;
 
-export type WebhookEventType = (typeof webhookEventTypes)[number];
+export type WebhookEventType = string;
 
 export const webhooksConfigurationSchema = z.object({
   url: z
@@ -53,7 +24,7 @@ export const webhooksConfigurationSchema = z.object({
     )
     .optional(),
   eventTypes: z
-    .array(z.enum(webhookEventTypes))
+    .array(z.string().min(1))
     .min(
       1,
       "app_webhooks_admin.validation.eventTypes.required" satisfies WebhooksAdminAllKeys,

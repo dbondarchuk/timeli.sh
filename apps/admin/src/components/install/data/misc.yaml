@@ -1,0 +1,118 @@
+photography_consult:
+  label: Photography Consult
+  tags:
+    - creative
+    - consulting
+    - photography
+  services:
+    - name: Portfolio Review
+      durations:
+        - 45
+        - 60
+      prices:
+        - 60
+        - 90
+        - 130
+      description: "**Professional portfolio review** with feedback and suggestions. Helpful for building stronger presentations."
+      addons:
+        - id: portfolio_review-addon-creative-1
+          name: Scope clarification
+          description: "**Extra time up front** to lock requirements for Portfolio Review."
+          duration: 10
+          suggestedPrice: 15
+        - id: portfolio_review-addon-consulting-2
+          name: Hand-off package
+          description: "**Files or checklist** delivered after Portfolio Review."
+          duration: 15
+          suggestedPrice: 24
+    - name: Creative Direction Session
+      durations:
+        - 60
+        - 90
+      prices:
+        - 120
+        - 180
+        - 260
+      description: "**Creative direction consulting** for shoots and campaigns. Includes mood boards and recommended approaches."
+      addons:
+        - id: creative_direction_session-addon-creative-1
+          name: Scope clarification
+          description: "**Extra time up front** to lock requirements for Creative Direction Session."
+          duration: 10
+          suggestedPrice: 30
+        - id: creative_direction_session-addon-consulting-2
+          name: Hand-off package
+          description: "**Files or checklist** delivered after Creative Direction Session."
+          duration: 15
+          suggestedPrice: 48
+translation_service:
+  label: Translation Service
+  tags:
+    - services
+    - translation
+    - language
+  services:
+    - name: Document Translation (per 500 words)
+      durations:
+        - 30
+      prices:
+        - 20
+        - 35
+        - 50
+      description: "**Professional translation per word or segment** with careful review. Fast turnaround and accuracy-focused."
+      addons:
+        - id: document_translation_per_500_words-addon-services-1
+          name: Certified translation stamp
+          description: "**Notarized or certified page** when authorities require it."
+          duration: 10
+          suggestedPrice: 5
+        - id: document_translation_per_500_words-addon-translation-2
+          name: Same-day rush
+          description: "**Expedited turnaround** when your deadline is tight."
+          duration: 15
+          suggestedPrice: 8
+    - name: Localization Consultation
+      durations:
+        - 60
+      prices:
+        - 80
+        - 120
+      description: "**Advice on localization strategy** and content adaptation. Helps reach regional audiences effectively."
+      addons:
+        - id: localization_consultation-addon-services-1
+          name: Scope clarification
+          description: "**Extra time up front** to lock requirements for Localization Consultation."
+          duration: 10
+          suggestedPrice: 20
+        - id: localization_consultation-addon-translation-2
+          name: Hand-off package
+          description: "**Files or checklist** delivered after Localization Consultation."
+          duration: 15
+          suggestedPrice: 32
+virtual_assistant:
+  label: Virtual Assistant
+  tags:
+    - services
+    - virtual
+    - assistant
+  services:
+    - name: Task Block (1 hour)
+      durations:
+        - 60
+      prices:
+        - 20
+        - 35
+        - 50
+      description: "**Short task block** for admin, research, and scheduling. Efficient option for discrete tasks."
+      addons:
+        - id: task_block_1_hour-addon-services-1
+          name: Calendar audit
+          description: "**Inbox and calendar sweep** bundled into your hour when you need it."
+          duration: 10
+          suggestedPrice: 5
+        - id: task_block_1_hour-addon-virtual-2
+          name: Travel booking pass
+          description: "**One itinerary build** with confirmations in your hour."
+          duration: 15
+          suggestedPrice: 8
+

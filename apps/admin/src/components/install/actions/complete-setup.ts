@@ -10,6 +10,7 @@ import {
   EMAIL_NOTIFICATION_APP_NAME,
   FORMS_APP_NAME,
   GIFT_CARD_STUDIO_APP_NAME,
+  MY_CABINET_APP_NAME,
   WAITLIST_APP_NAME,
   WAITLIST_NOTIFICATIONS_APP_NAME,
 } from "@timelish/app-store";
@@ -21,6 +22,7 @@ import { ServicesContainer } from "@timelish/services";
 import type { ApiRequest } from "@timelish/types";
 import {
   bookingConfigurationSchema,
+  systemEventSource,
   type PaymentsConfiguration,
   type TemplateUpdateModel,
 } from "@timelish/types";
@@ -30,10 +32,14 @@ import {
   getInstallEnabledCancellationsAndReschedules,
 } from "../default-booking";
 import { getDefaultScheduleConfiguration } from "../default-schedule";
-import { createInstallDefaultPages } from "./create-default-pages";
+import {
+  createInstallDefaultPages,
+  upsertInstallMyCabinetDefaultPage,
+} from "./create-default-pages";
 
 type InstallPreferences = {
   allowCancelReschedule: boolean;
+  autoConfirmBookings: boolean;
   acceptPayments: boolean;
   depositEnabled: boolean;
   depositPercent: string;
@@ -47,6 +53,7 @@ type InstallPreferences = {
   optBlog: boolean;
   optForms: boolean;
   optGiftCardStudio: boolean;
+  optMyCabinet: boolean;
 };
 
 function buildInstallPaymentsConfiguration(
@@ -112,6 +119,7 @@ async function ensureInstallBookingPaymentsDefaultAppsAndCancellations(
   const nextBooking = {
     ...booking,
     payments,
+    autoConfirm: prefs.autoConfirmBookings,
     cancellationsAndReschedules,
   };
 
@@ -124,16 +132,24 @@ async function ensureInstallBookingPaymentsDefaultAppsAndCancellations(
     return { ok: false, code: "booking_config_invalid" };
   }
 
-  await services.configurationService.setConfiguration("booking", parsed.data);
+  await services.configurationService.setConfiguration(
+    "booking",
+    parsed.data,
+    systemEventSource,
+  );
 
   if (prefs.acceptPayments && paymentAppId) {
     const existing =
       (await services.configurationService.getConfiguration("defaultApps")) ??
       {};
-    await services.configurationService.setConfiguration("defaultApps", {
-      ...existing,
-      paymentAppId,
-    });
+    await services.configurationService.setConfiguration(
+      "defaultApps",
+      {
+        ...existing,
+        paymentAppId,
+      },
+      systemEventSource,
+    );
     logger.debug({ paymentAppId }, "Set default payment app from install");
   }
 
@@ -187,7 +203,10 @@ async function ensureTemplateByName(
     );
     return exact._id;
   }
-  const created = await services.templatesService.createTemplate(template);
+  const created = await services.templatesService.createTemplate(
+    template,
+    systemEventSource,
+  );
   logger.debug(
     { templateId: created._id, name: template.name },
     "Template created",
@@ -199,6 +218,7 @@ async function ensureInstallCustomerNotificationTemplates(
   services: ReturnType<typeof ServicesContainer>,
   language: (typeof languages)[number],
   prefs: InstallPreferences,
+  userId: string,
 ): Promise<void> {
   const logger = getLoggerFactory("InstallActions")(
     "ensureInstallCustomerNotificationTemplates",
@@ -262,6 +282,7 @@ async function ensureInstallCustomerNotificationTemplates(
             },
           },
           null as unknown as ApiRequest,
+          userId,
         );
         logger.debug(
           { appId: emailApp._id },
@@ -322,6 +343,7 @@ async function ensureInstallCustomerNotificationTemplates(
             },
           },
           null as unknown as ApiRequest,
+          userId,
         );
         logger.debug(
           { appId: smsApp._id },
@@ -336,6 +358,7 @@ async function ensureInstallAppointmentNotificationDefaults(
   services: ReturnType<typeof ServicesContainer>,
   language: (typeof languages)[number],
   prefs: InstallPreferences,
+  userId: string,
 ): Promise<void> {
   const logger = getLoggerFactory("InstallActions")(
     "ensureInstallAppointmentNotificationDefaults",
@@ -383,6 +406,7 @@ async function ensureInstallAppointmentNotificationDefaults(
       name: defaultName,
     },
     null as unknown as ApiRequest,
+    userId,
   )) as boolean;
   if (!isUnique) return;
 
@@ -404,6 +428,7 @@ async function ensureInstallAppointmentNotificationDefaults(
       },
     },
     null as unknown as ApiRequest,
+    userId,
   );
   logger.debug(
     { appId: app._id, templateId, defaultName },
@@ -471,6 +496,7 @@ async function ensureDefaultInstallSchedule(
   await services.configurationService.setConfiguration(
     "schedule",
     getDefaultScheduleConfiguration(),
+    systemEventSource,
   );
   logger.debug("Applied default schedule configuration");
 }
@@ -489,10 +515,14 @@ async function ensureInstallDefaultScripts(
     return;
   }
 
-  await services.configurationService.setConfiguration("scripts", {
-    header: [],
-    footer: [],
-  });
+  await services.configurationService.setConfiguration(
+    "scripts",
+    {
+      header: [],
+      footer: [],
+    },
+    systemEventSource,
+  );
 
   logger.debug("Applied default scripts configuration");
 }
@@ -509,9 +539,13 @@ async function ensureInstallDefaultSocial(
     logger.debug("Social already installed; skipping default");
     return;
   }
-  await services.configurationService.setConfiguration("social", {
-    links: [],
-  });
+  await services.configurationService.setConfiguration(
+    "social",
+    {
+      links: [],
+    },
+    systemEventSource,
+  );
   logger.debug("Applied default social configuration");
 }
 
@@ -528,15 +562,19 @@ async function ensureInstallDefaultStyling(
     return;
   }
 
-  await services.configurationService.setConfiguration("styling", {
-    colors: [],
-    fonts: {
-      primary: "Montserrat",
-      secondary: "Playfair Display",
-      tertiary: "Roboto",
+  await services.configurationService.setConfiguration(
+    "styling",
+    {
+      colors: [],
+      fonts: {
+        primary: "Montserrat",
+        secondary: "Playfair Display",
+        tertiary: "Roboto",
+      },
+      css: [],
     },
-    css: [],
-  });
+    systemEventSource,
+  );
   logger.debug("Applied default styling configuration");
 }
 
@@ -552,12 +590,16 @@ async function ensureInstallDefaultApps(
     return;
   }
 
-  await services.configurationService.setConfiguration("defaultApps", {
-    paymentAppId: undefined,
-    emailSenderAppId: undefined,
-    textMessageSenderAppId: undefined,
-    textMessageResponderAppId: undefined,
-  });
+  await services.configurationService.setConfiguration(
+    "defaultApps",
+    {
+      paymentAppId: undefined,
+      emailSenderAppId: undefined,
+      textMessageSenderAppId: undefined,
+      textMessageResponderAppId: undefined,
+    },
+    systemEventSource,
+  );
 
   logger.debug("Applied default apps configuration");
 }
@@ -594,13 +636,14 @@ export async function runCompleteInstallSetupSteps(args: {
   );
 
   logger.debug({ language, businessName }, "Creating install default pages");
-  await createInstallDefaultPages({
+  const layout = await createInstallDefaultPages({
     services,
     language,
     businessName,
     hasAddress,
     isCancelRescheduleEnabled: prefs.allowCancelReschedule,
     isBlogEnabled: prefs.optBlog,
+    isMyCabinetEnabled: prefs.optMyCabinet,
   });
 
   const installSet = new Set<string>();
@@ -650,6 +693,10 @@ export async function runCompleteInstallSetupSteps(args: {
       "Adding gift card studio app",
     );
     installSet.add(GIFT_CARD_STUDIO_APP_NAME);
+  }
+  if (prefs.optMyCabinet) {
+    logger.debug({ appName: MY_CABINET_APP_NAME }, "Adding My Cabinet app");
+    installSet.add(MY_CABINET_APP_NAME);
   }
   if (prefs.inviteMode === "email") {
     logger.debug(
@@ -707,6 +754,7 @@ export async function runCompleteInstallSetupSteps(args: {
         appId: targetId,
       },
       null as unknown as ApiRequest,
+      userId,
     );
 
     logger.debug({ writerId: writer._id }, "Configured calendar writer app");
@@ -727,13 +775,33 @@ export async function runCompleteInstallSetupSteps(args: {
     return bookingPaymentResult;
   }
 
-  await ensureInstallCustomerNotificationTemplates(services, language, prefs);
+  await ensureInstallCustomerNotificationTemplates(
+    services,
+    language,
+    prefs,
+    userId,
+  );
 
   logger.debug(
     { language, businessName },
     "Ensuring install customer notification templates",
   );
-  await ensureInstallAppointmentNotificationDefaults(services, language, prefs);
+  await ensureInstallAppointmentNotificationDefaults(
+    services,
+    language,
+    prefs,
+    userId,
+  );
+
+  if (prefs.optMyCabinet) {
+    await upsertInstallMyCabinetDefaultPage(services, {
+      businessName,
+      language,
+      headerId: layout.headerId,
+      footerId: layout.footerId,
+      myCabinetLabels: layout.labels.myCabinetLabels,
+    });
+  }
 
   await ensureInstallDefaultConfigurations(services);
 

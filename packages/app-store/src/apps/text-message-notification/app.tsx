@@ -12,7 +12,8 @@ export const TextMessageNotificationApp: App<
 > = {
   name: TEXT_MESSAGE_NOTIFICATION_APP_NAME,
   displayName: "app_text-message-notification_admin.app.displayName",
-  scope: ["appointment-hook"],
+  subscribeTo: ["appointment.*"],
+  scope: ["event-subscriber"],
   category: ["apps.categories.notifications"],
   type: "basic",
   Logo: ({ className }) => <SendHorizonal className={className} />,

@@ -1,0 +1,189 @@
+dog_walker:
+  label: Dog Walker
+  tags:
+    - pets
+    - dog
+    - care
+  services:
+    - name: 30-min Walk
+      durations:
+        - 30
+      prices:
+        - 12
+        - 18
+        - 25
+      description: "**Short neighborhood walk** for exercise and bathroom breaks. Includes pick-up and drop-off when arranged."
+      addons:
+        - id: 30_min_walk-addon-pets-1
+          name: Second dog (same walk)
+          description: "**Leash walk for another dog** in the same household during this visit."
+          duration: 10
+          suggestedPrice: 5
+        - id: 30_min_walk-addon-dog-2
+          name: Feeding & water refill
+          description: "**Meal service** plus fresh water and a short note to you after the walk."
+          duration: 15
+          suggestedPrice: 5
+    - name: 60-min Walk
+      durations:
+        - 60
+      prices:
+        - 20
+        - 30
+        - 45
+      description: "**Extended walk** with playtime and basic training. Great for energetic or large-breed dogs."
+      addons:
+        - id: 60_min_walk-addon-pets-1
+          name: Park play extension
+          description: "**Extra playtime** at an approved park or green space."
+          duration: 10
+          suggestedPrice: 5
+        - id: 60_min_walk-addon-dog-2
+          name: Paw wipe & brush-out
+          description: "**Quick clean-up** before drop-off so less dirt comes indoors."
+          duration: 15
+          suggestedPrice: 8
+    - name: Pet Sitting (overnight)
+      durations:
+        - 720
+      prices:
+        - 60
+        - 90
+        - 130
+      description: "**Overnight pet sitting** with feeding, walking, and in-home presence. Provides peace of mind while away."
+      addons:
+        - id: pet_sitting_overnight-addon-pets-1
+          name: Medication administration
+          description: "**Scheduled meds** per your written instructions during the stay."
+          duration: 10
+          suggestedPrice: 15
+        - id: pet_sitting_overnight-addon-dog-2
+          name: Plant or mail check
+          description: "**Light household checks** agreed in advance for peace of mind."
+          duration: 15
+          suggestedPrice: 24
+pet_groomer:
+  label: Pet Groomer
+  tags:
+    - pets
+    - grooming
+    - care
+  services:
+    - name: Full Groom
+      durations:
+        - 90
+        - 120
+      prices:
+        - 50
+        - 80
+        - 120
+      description: "**Comprehensive grooming** including bath, trim, and nail care. Tailored by breed and coat type."
+      addons:
+        - id: full_groom-addon-pets-1
+          name: De-shedding treatment
+          description: "**Extra undercoat removal** for heavy shedders."
+          duration: 10
+          suggestedPrice: 13
+        - id: full_groom-addon-grooming-2
+          name: Teeth brushing
+          description: "**Pet-safe brushing** to freshen breath the same day as grooming."
+          duration: 15
+          suggestedPrice: 20
+    - name: Bath & Brush
+      durations:
+        - 45
+        - 60
+      prices:
+        - 30
+        - 45
+        - 65
+      description: "**Quick bath and brush** to freshen coat and remove loose hair. Good for regular maintenance."
+      addons:
+        - id: bath_brush-addon-pets-1
+          name: Flea rinse
+          description: "**Medicated or gentle rinse** when your pet needs extra protection."
+          duration: 10
+          suggestedPrice: 8
+        - id: bath_brush-addon-grooming-2
+          name: Nail grind
+          description: "**Smooth nail edges** after a bath for quieter steps."
+          duration: 15
+          suggestedPrice: 12
+    - name: Nail Trim
+      durations:
+        - 15
+        - 20
+      prices:
+        - 12
+        - 20
+        - 30
+      description: "**Nail trimming service** for comfort and health. Can be combined with other grooming services."
+      addons:
+        - id: nail_trim-addon-pets-1
+          name: Ear cleaning
+          description: "**Gentle ear wipe** and inspection during the same visit."
+          duration: 10
+          suggestedPrice: 5
+veterinarian:
+  label: Veterinarian
+  tags:
+    - pets
+    - veterinary
+    - medical
+  services:
+    - name: Wellness Exam
+      durations:
+        - 30
+        - 45
+      prices:
+        - 50
+        - 80
+        - 120
+      description: "**Routine health check** for pets including vaccinations and basic screening. Helps maintain long-term wellness."
+      addons:
+        - id: wellness_exam-addon-pets-1
+          name: Senior bloodwork panel
+          description: "**Lab draw add-on** when age or history warrants screening."
+          duration: 10
+          suggestedPrice: 13
+        - id: wellness_exam-addon-veterinary-2
+          name: Travel health certificate
+          description: "**Documentation** for airlines or border rules when applicable."
+          duration: 15
+          suggestedPrice: 20
+    - name: Sick Visit
+      durations:
+        - 30
+        - 45
+      prices:
+        - 60
+        - 100
+        - 150
+      description: "**Urgent assessment for illness or injury** with diagnosis and treatment plan. Includes follow-up recommendations."
+      addons:
+        - id: sick_visit-addon-pets-1
+          name: IV fluid support
+          description: "**Hydration therapy** when the clinician recommends it same-day."
+          duration: 10
+          suggestedPrice: 15
+        - id: sick_visit-addon-veterinary-2
+          name: Priority recheck slot
+          description: "**Faster follow-up visit** within the practice’s policy window."
+          duration: 15
+          suggestedPrice: 24
+    - name: Vaccination Visit
+      durations:
+        - 15
+        - 30
+      prices:
+        - 20
+        - 40
+        - 60
+      description: "**Preventive vaccination visit** to protect against common diseases. Includes record updates and guidance."
+      addons:
+        - id: vaccination_visit-addon-pets-1
+          name: Microchip placement
+          description: "**ID chip** during the same appointment when requested."
+          duration: 10
+          suggestedPrice: 5
+

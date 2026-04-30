@@ -2,12 +2,12 @@
 
 import { adminApi } from "@timelish/api-sdk";
 import { useI18n } from "@timelish/i18n";
-import { Appointment, DaySchedule, Event } from "@timelish/types";
+import { Appointment, CalendarEvent, DaySchedule } from "@timelish/types";
 import { cn } from "@timelish/ui";
 import { DateTime, HourNumbers } from "luxon";
 import React from "react";
 import {
-  CalendarEvent,
+  EventCalendarEvent,
   WeeklyEventCalendar,
   WeeklyEventCalendarProps,
 } from "../event-calendar";
@@ -15,12 +15,12 @@ import {
 export const AppointmentCalendar: React.FC<
   Pick<WeeklyEventCalendarProps, "className"> & {
     appointment: Appointment;
-    onEventsLoad?: (events: Event[]) => void;
+    onEventsLoad?: (events: CalendarEvent[]) => void;
   }
 > = ({ appointment, onEventsLoad, ...props }) => {
   const t = useI18n("admin");
-  const [apiEvents, setApiEvents] = React.useState<Event[]>([]);
-  const [events, setEvents] = React.useState<Event[]>([]);
+  const [apiEvents, setApiEvents] = React.useState<CalendarEvent[]>([]);
+  const [events, setEvents] = React.useState<CalendarEvent[]>([]);
   const [schedule, setSchedule] = React.useState<Record<string, DaySchedule>>(
     {},
   );
@@ -65,7 +65,7 @@ export const AppointmentCalendar: React.FC<
     );
   }, [appointmentDate]);
 
-  const calendarEvents: CalendarEvent[] = React.useMemo(
+  const calendarEvents: EventCalendarEvent[] = React.useMemo(
     () =>
       events.map((app) => {
         const start = DateTime.fromJSDate(app.dateTime);

@@ -5,6 +5,7 @@ import {
   ConnectedAppData,
   ConnectedAppRequestError,
   ConnectedAppStatusWithText,
+  ConnectedAppUninstallResult,
   IConnectedApp,
   IConnectedAppProps,
   ISitemapItemsProvider,
@@ -95,7 +96,9 @@ export class BlogConnectedApp implements IConnectedApp, ISitemapItemsProvider {
     }
   }
 
-  public async unInstall(appData: ConnectedAppData): Promise<void> {
+  public async unInstall(
+    appData: ConnectedAppData,
+  ): Promise<ConnectedAppUninstallResult> {
     const logger = this.loggerFactory("unInstall");
     logger.debug({ appId: appData._id }, "Uninstalling blog app");
 
@@ -112,6 +115,7 @@ export class BlogConnectedApp implements IConnectedApp, ISitemapItemsProvider {
       }
 
       logger.info({ appId: appData._id }, "Successfully uninstalled blog app");
+      return { success: true, code: "ok" };
     } catch (error: any) {
       logger.error(
         { appId: appData._id, error: error?.message || error?.toString() },

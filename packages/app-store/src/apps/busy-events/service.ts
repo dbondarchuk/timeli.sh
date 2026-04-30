@@ -5,6 +5,7 @@ import {
   ConnectedAppData,
   ConnectedAppRequestError,
   ConnectedAppStatusWithText,
+  ConnectedAppUninstallResult,
   ICalendarBusyTimeProvider,
   IConnectedApp,
   IConnectedAppProps,
@@ -78,7 +79,9 @@ export default class BusyEventsConnectedApp
     );
   }
 
-  public async unInstall(appData: ConnectedAppData): Promise<void> {
+  public async unInstall(
+    appData: ConnectedAppData,
+  ): Promise<ConnectedAppUninstallResult> {
     const logger = this.loggerFactory("unInstall");
     logger.debug({ appId: appData._id }, "Starting uninstall");
 
@@ -111,6 +114,7 @@ export default class BusyEventsConnectedApp
       }
 
       logger.info({ appId: appData._id }, "Successfully uninstalled");
+      return { success: true, code: "ok" };
     } catch (error) {
       logger.error({ appId: appData._id, error }, "Error during uninstall");
       throw error;

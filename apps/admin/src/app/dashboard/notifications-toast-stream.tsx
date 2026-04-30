@@ -1,30 +1,17 @@
 "use client";
 
+import { authClient } from "@/app/auth-client";
+import {
+  useActivityFeedStore,
+  useNotificationsStore,
+} from "@/notifications/store";
 import { BASE_ADMIN_API_URL } from "@timelish/api-sdk";
-import { useI18n } from "@timelish/i18n";
+import { useI18n, useLocale } from "@timelish/i18n";
 import { DashboardNotification } from "@timelish/types";
-import { Badge, toast } from "@timelish/ui";
+import { Badge, toast, useTimeZone } from "@timelish/ui";
+import { resolvedI18nText } from "@timelish/ui-admin";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { create } from "zustand";
-
-export type NotificationsContextProps = {
-  badges: Record<string, number>;
-  setBadges: (
-    setter: (prev: Record<string, number>) => Record<string, number>,
-  ) => void;
-};
-
-export const useNotificationsStore = create<NotificationsContextProps>(
-  (set) => ({
-    badges: {} as Record<string, number>,
-    setBadges: (setter) => {
-      return set((state) => ({
-        badges: setter(state.badges),
-      }));
-    },
-  }),
-);
 
 export const PendingAppointmentsBadge: React.FC = () => {
   return (
@@ -46,12 +33,27 @@ export const DashboardTabNotificationsBadge: React.FC<{
 
 export const NotificationsToastStream: React.FC = () => {
   const { setBadges } = useNotificationsStore();
+  const { addPreviews } = useActivityFeedStore();
+  const { data: session } = authClient.useSession();
+
+  const timeZone = useTimeZone();
+  const locale = useLocale();
   const router = useRouter();
   const t = useI18n();
 
   const lastDate = React.useRef<Date | undefined>(undefined);
 
+  // when session updates, we need to remember last user id to avoid unnecessary re-renders
+  const userId = React.useRef<string>("");
+  if (session?.user?.id) {
+    userId.current = session.user.id;
+  }
+
   React.useEffect(() => {
+    if (!userId.current) {
+      return;
+    }
+
     const dateQueryParam = lastDate.current
       ? `?date=${lastDate.current.toISOString()}`
       : "";
@@ -78,14 +80,34 @@ export const NotificationsToastStream: React.FC = () => {
         });
       }
 
+      if (data.activityFeed?.preview) {
+        addPreviews(
+          data.activityFeed.preview,
+          userId.current,
+          data.activityFeed.highestSeverity,
+        );
+      }
+
       if (data.toast) {
-        toast(t(data.toast.title.key, data.toast.title.args), {
-          description: t(data.toast.message.key, data.toast.message.args),
+        const method =
+          typeof toast[data.toast.type] === "function"
+            ? toast[data.toast.type]
+            : toast;
+
+        method(resolvedI18nText(data.toast.title, t, timeZone, locale), {
+          description: resolvedI18nText(
+            data.toast.message,
+            t,
+            timeZone,
+            locale,
+          ),
           action: data.toast.action
             ? {
-                label: t(
-                  data.toast.action.label.key,
-                  data.toast.action.label.args,
+                label: resolvedI18nText(
+                  data.toast.action.label,
+                  t,
+                  timeZone,
+                  locale,
                 ),
                 onClick: () => {
                   router.push(data.toast!.action!.href);
@@ -106,7 +128,7 @@ export const NotificationsToastStream: React.FC = () => {
     return () => {
       eventSource.close();
     };
-  }, [t, setBadges, router]);
+  }, [t, setBadges, addPreviews, router, userId.current, timeZone]);
 
   return null;
 };

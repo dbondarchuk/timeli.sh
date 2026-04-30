@@ -226,7 +226,7 @@ export const renderUserEmailTemplate = async (
                   id: "FcuEZnvN7_",
                   children: [
                     {
-                      text: "©",
+                      text: `© ${new Date().getFullYear()}`,
                       fontSize: "11px",
                       color: "#999999",
                     },

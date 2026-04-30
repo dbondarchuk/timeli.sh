@@ -34,6 +34,10 @@
       "dependsOn": ["^check-translations"],
       "cache": false
     },
+    "generate-locales": {
+      "dependsOn": ["^generate-locales"],
+      "cache": false
+    },
     "translate": {
       "dependsOn": ["^translate"],
       "cache": false

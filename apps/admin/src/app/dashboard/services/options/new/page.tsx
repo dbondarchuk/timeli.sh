@@ -1,6 +1,15 @@
 import { getServicesContainer } from "@/app/utils";
 import PageContainer from "@/components/admin/layout/page-container";
 import { OptionForm } from "@/components/admin/services/options/form";
+import {
+  catalogServiceDescriptionKey,
+  catalogServiceNameKey,
+  getCatalogProfession,
+} from "@/components/install/catalog";
+import {
+  defaultDurationFromTemplate,
+  defaultPriceFromTemplate,
+} from "@/components/install/constants";
 import { getI18nAsync } from "@timelish/i18n/server";
 import { getLoggerFactory } from "@timelish/logger";
 import { AppointmentOptionUpdateModel } from "@timelish/types";
@@ -20,12 +29,15 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function NewOptionPage(props: Props) {
   const logger = getLoggerFactory("AdminPages")("new-service-option");
   const t = await getI18nAsync("admin");
-  const { from: fromParam } = await props.searchParams;
+  const tInstall = await getI18nAsync("install");
+  const { from: fromParam, template: templateParam } = await props.searchParams;
   const from = fromParam as string;
+  const template = templateParam as string;
 
   logger.debug(
     {
       fromOptionId: from,
+      template,
     },
     "Loading new service option page",
   );
@@ -65,11 +77,64 @@ export default async function NewOptionPage(props: Props) {
       },
       "Using source option as template",
     );
+  } else if (template) {
+    const [categoryId, professionId, serviceId] = template.split(":");
+    const profession = getCatalogProfession(categoryId, professionId);
+    const serviceTemplate = profession?.services.find(
+      (s) => s.id === serviceId,
+    );
+    if (!serviceTemplate) {
+      logger.warn(
+        { template },
+        "Template not found for service option creation",
+      );
+      notFound();
+    }
+
+    const name = tInstall(
+      catalogServiceNameKey(categoryId, professionId, serviceId) as any,
+    ).slice(0, 256);
+    const description = tInstall(
+      catalogServiceDescriptionKey(categoryId, professionId, serviceId) as any,
+    ).slice(0, 1024);
+
+    const defaultPrice = defaultPriceFromTemplate(serviceTemplate.prices ?? []);
+
+    initialData = {
+      name,
+      description,
+      durationType: "fixed",
+      duration: defaultDurationFromTemplate(serviceTemplate.durations),
+      price: defaultPrice ? Number(defaultPrice) : undefined,
+      requireDeposit: "inherit",
+      isOnline: false,
+      isAutoConfirm: "inherit",
+      duplicateAppointmentCheck: {
+        enabled: false,
+      },
+      cancellationPolicy: {
+        withDeposit: { type: "inherit" },
+        withoutDeposit: { type: "inherit" },
+      },
+      reschedulePolicy: {
+        type: "inherit",
+      },
+    };
+
+    logger.debug(
+      {
+        template,
+        serviceTemplateId: serviceId,
+        optionName: name,
+      },
+      "Using install service template as initial data",
+    );
   }
 
   logger.debug(
     {
       fromOptionId: from,
+      template,
       hasInitialData: !!initialData,
     },
     "New service option page loaded",

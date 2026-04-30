@@ -2,44 +2,19 @@ import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
 import {
   ApiRequest,
   ApiResponse,
-  Appointment,
-  AppointmentAddon,
-  AppointmentAddonUpdateModel,
-  AppointmentOption,
-  AppointmentOptionUpdateModel,
-  AppointmentStatus,
   ConnectedAppData,
   ConnectedAppRequestError,
   ConnectedAppStatusWithText,
-  Customer,
-  CustomerUpdateModel,
-  Discount,
-  DiscountUpdateModel,
-  GiftCardListModel,
-  GiftCardStatus,
-  GiftCardUpdateModel,
-  IAddonHook,
-  IAppointmentHook,
+  ConnectedAppUninstallResult,
+  EventEnvelope,
   IConnectedApp,
   IConnectedAppProps,
-  ICustomerHook,
-  IDiscountHook,
-  IFieldHook,
-  IGiftCardHook,
-  IPaymentHook,
-  IServiceHook,
-  Payment,
-  PaymentUpdateModel,
-  ServiceField,
-  ServiceFieldUpdateModel,
+  IEventSubscriber,
 } from "@timelish/types";
 import { decrypt, encrypt } from "@timelish/utils";
 import crypto from "crypto";
-import type { FormModel, FormResponseModel } from "../forms/models/form";
-import type { IFormsHook } from "../forms/models/hook";
-import type { WaitlistEntry } from "../waitlist/models/waitlist";
-import type { IWaitlistHook } from "../waitlist/models/waitlist-hook";
 import {
+  LIST_SELECTABLE_EVENT_TYPES_REQUEST_TYPE,
   MASKED_SECRET,
   WebhookEventType,
   WebhooksConfiguration,
@@ -50,21 +25,9 @@ import {
   WebhooksAdminKeys,
   WebhooksAdminNamespace,
 } from "./translations/types";
+import { getWebhookSelectableEventTypes } from "./selectable-event-types";
 
-export class WebhooksConnectedApp
-  implements
-    IConnectedApp,
-    IAppointmentHook,
-    ICustomerHook,
-    IPaymentHook,
-    IWaitlistHook,
-    IFormsHook,
-    IGiftCardHook,
-    IDiscountHook,
-    IServiceHook,
-    IAddonHook,
-    IFieldHook
-{
+export class WebhooksConnectedApp implements IConnectedApp, IEventSubscriber {
   protected readonly loggerFactory: LoggerFactory;
 
   public constructor(protected readonly props: IConnectedAppProps) {
@@ -83,22 +46,39 @@ export class WebhooksConnectedApp
     };
   }
 
+  public async processStaticRequest(
+    data: any,
+  ): Promise<{ eventTypes: string[] }> {
+    if (data?.type !== LIST_SELECTABLE_EVENT_TYPES_REQUEST_TYPE) {
+      throw new ConnectedAppRequestError(
+        "invalid_webhooks_static_request",
+        { data },
+        400,
+        "Unsupported static request",
+      );
+    }
+    return {
+      eventTypes: await getWebhookSelectableEventTypes(this.props),
+    };
+  }
+
   public async processRequest(
     appData: ConnectedAppData,
-    data: WebhooksConfiguration,
+    data: unknown,
   ): Promise<
     ConnectedAppStatusWithText<WebhooksAdminNamespace, WebhooksAdminKeys>
   > {
     const logger = this.loggerFactory("processRequest");
+
     logger.debug(
       { appId: appData._id },
       "Processing webhooks configuration request",
     );
 
-    const { success, error } = webhooksConfigurationSchema.safeParse(data);
-    if (!success) {
+    const parsed = webhooksConfigurationSchema.safeParse(data);
+    if (!parsed.success) {
       logger.warn(
-        { appId: appData._id, error },
+        { appId: appData._id, error: parsed.error },
         "Invalid webhooks configuration data",
       );
 
@@ -106,15 +86,17 @@ export class WebhooksConnectedApp
         "invalid_webhooks_configuration",
         { data },
         400,
-        error.message,
+        parsed.error.message,
       );
     }
 
+    const nextData = { ...parsed.data };
+
     // Handle secret encryption
-    if (data.secret === MASKED_SECRET && appData?.data?.secret) {
-      data.secret = appData.data.secret;
-    } else if (data.secret) {
-      data.secret = encrypt(data.secret);
+    if (nextData.secret === MASKED_SECRET && appData?.data?.secret) {
+      nextData.secret = appData.data.secret;
+    } else if (nextData.secret) {
+      nextData.secret = encrypt(nextData.secret);
     }
 
     const status: ConnectedAppStatusWithText<
@@ -126,7 +108,7 @@ export class WebhooksConnectedApp
     };
 
     this.props.update({
-      data,
+      data: nextData,
       ...status,
     });
 
@@ -134,7 +116,9 @@ export class WebhooksConnectedApp
     return status;
   }
 
-  public async unInstall(appData: ConnectedAppData): Promise<void> {
+  public async unInstall(
+    appData: ConnectedAppData,
+  ): Promise<ConnectedAppUninstallResult> {
     const logger = this.loggerFactory("unInstall");
     logger.debug({ appId: appData._id }, "Uninstalling webhooks app");
 
@@ -143,6 +127,7 @@ export class WebhooksConnectedApp
       { appId: appData._id },
       "Successfully uninstalled webhooks app",
     );
+    return { success: true, code: "ok" };
   }
 
   public async processAppCall(
@@ -156,329 +141,51 @@ export class WebhooksConnectedApp
     );
   }
 
-  // Appointment Hooks
-  public async onAppointmentCreated(
-    appData: ConnectedAppData,
-    appointment: Appointment,
-    confirmed: boolean,
-  ): Promise<void> {
-    await this.sendWebhook(appData, "appointment.created", {
-      appointment,
-      confirmed,
-    });
-  }
-
-  public async onAppointmentStatusChanged(
-    appData: ConnectedAppData,
-    appointment: Appointment,
-    newStatus: AppointmentStatus,
-    oldStatus?: AppointmentStatus,
-    by?: "customer" | "user",
-  ): Promise<void> {
-    await this.sendWebhook(appData, "appointment.status_changed", {
-      appointment,
-      newStatus,
-      oldStatus,
-      by,
-    });
-  }
-
-  public async onAppointmentRescheduled(
-    appData: ConnectedAppData,
-    appointment: Appointment,
-    newTime: Date,
-    newDuration: number,
-    oldTime?: Date,
-    oldDuration?: number,
-    doNotNotifyCustomer?: boolean,
-  ): Promise<void> {
-    await this.sendWebhook(appData, "appointment.rescheduled", {
-      appointment,
-      newTime,
-      newDuration,
-      oldTime,
-      oldDuration,
-      doNotNotifyCustomer,
-    });
-  }
-
-  // Customer Hooks
-  public async onCustomerCreated(
-    appData: ConnectedAppData,
-    customer: Customer,
-  ): Promise<void> {
-    await this.sendWebhook(appData, "customer.created", { customer });
-  }
-
-  public async onCustomerUpdated(
-    appData: ConnectedAppData,
-    customer: Customer,
-    update: CustomerUpdateModel,
-  ): Promise<void> {
-    await this.sendWebhook(appData, "customer.updated", {
-      customer,
-      update,
-    });
-  }
-
-  public async onCustomersDeleted(
-    appData: ConnectedAppData,
-    customers: Customer[],
-  ): Promise<void> {
-    await this.sendWebhook(appData, "customers.deleted", { customers });
-  }
-
-  // Payment Hooks
-  public async onPaymentCreated(
-    appData: ConnectedAppData,
-    payment: Payment,
-  ): Promise<void> {
-    await this.sendWebhook(appData, "payment.created", { payment });
-  }
-
-  public async onPaymentUpdated(
-    appData: ConnectedAppData,
-    payment: Payment,
-    update: Partial<PaymentUpdateModel>,
-  ): Promise<void> {
-    await this.sendWebhook(appData, "payment.updated", {
-      payment,
-      update,
-    });
-  }
-
-  public async onPaymentDeleted(
-    appData: ConnectedAppData,
-    payment: Payment,
-  ): Promise<void> {
-    await this.sendWebhook(appData, "payment.deleted", { payment });
-  }
-
-  public async onPaymentRefunded(
-    appData: ConnectedAppData,
-    payment: Payment,
-    refundAmount: number,
-  ): Promise<void> {
-    await this.sendWebhook(appData, "payment.refunded", {
-      payment,
-      refundAmount,
-    });
-  }
-
-  // Waitlist Hooks
-  public async onWaitlistEntryCreated(
-    appData: ConnectedAppData,
-    waitlistEntry: WaitlistEntry,
-  ): Promise<void> {
-    await this.sendWebhook(appData, "waitlist-entry.created", {
-      waitlistEntry,
-    });
-  }
-
-  public async onWaitlistEntryDismissed(
-    appData: ConnectedAppData,
-    waitlistEntries: WaitlistEntry[],
-  ): Promise<void> {
-    await this.sendWebhook(appData, "waitlist-entries.dismissed", {
-      waitlistEntries,
-    });
-  }
-
-  // Form Hooks
-  public async onFormResponseCreated(
-    appData: ConnectedAppData,
-    response: FormResponseModel,
-    form: FormModel,
-    customer?: Customer | null,
-  ): Promise<void> {
-    await this.sendWebhook(appData, "form-response.created", {
-      response,
-      form,
-      customer,
-    });
-  }
-
-  // Gift Card Hooks
-  public async onGiftCardCreated(
-    appData: ConnectedAppData,
-    giftCard: GiftCardListModel,
-  ): Promise<void> {
-    await this.sendWebhook(appData, "gift-card.created", { giftCard });
-  }
-
-  public async onGiftCardUpdated(
-    appData: ConnectedAppData,
-    giftCard: GiftCardListModel,
-    update: Partial<GiftCardUpdateModel>,
-  ): Promise<void> {
-    await this.sendWebhook(appData, "gift-card.updated", { giftCard, update });
-  }
-
-  public async onGiftCardsDeleted(
-    appData: ConnectedAppData,
-    giftCardsIds: string[],
-  ): Promise<void> {
-    await this.sendWebhook(appData, "gift-card.deleted", { giftCardsIds });
-  }
-
-  public async onGiftCardsStatusChanged(
-    appData: ConnectedAppData,
-    giftCardsIds: string[],
-    status: GiftCardStatus,
-  ): Promise<void> {
-    await this.sendWebhook(appData, "gift-card.status_changed", {
-      giftCardsIds,
-      status,
-    });
-  }
-
-  // Discount Hooks
-
-  public async onDiscountCreated(
-    appData: ConnectedAppData,
-    discount: Discount,
-  ): Promise<void> {
-    await this.sendWebhook(appData, "discount.created", { discount });
-  }
-
-  public async onDiscountUpdated(
-    appData: ConnectedAppData,
-    discount: Discount,
-    update: Partial<DiscountUpdateModel>,
-  ): Promise<void> {
-    await this.sendWebhook(appData, "discount.updated", { discount, update });
-  }
-
-  public async onDiscountsDeleted(
-    appData: ConnectedAppData,
-    discountsIds: string[],
-  ): Promise<void> {
-    await this.sendWebhook(appData, "discount.deleted", { discountsIds });
-  }
-
-  public async onDiscountApplied(
-    appData: ConnectedAppData,
-    customer: Customer,
-    discount: {
-      id: string;
-      name: string;
-      value: number;
-      code: string;
-      dateTime: Date;
-      appointmentId?: string;
-      appointmentOptionId?: string;
-      appointmentAddonIds?: string[];
-      appointmentTotalPrice?: number;
-      appointmentDateTime?: Date;
-    },
-  ): Promise<void> {
-    await this.sendWebhook(appData, "discount.applied", { customer, discount });
-  }
-
-  // Service Hooks
-
-  public async onServiceCreated(
-    appData: ConnectedAppData,
-    service: AppointmentOption,
-  ): Promise<void> {
-    await this.sendWebhook(appData, "service.created", { service });
-  }
-
-  public async onServiceUpdated(
-    appData: ConnectedAppData,
-    service: AppointmentOption,
-    update: Partial<AppointmentOptionUpdateModel>,
-  ): Promise<void> {
-    await this.sendWebhook(appData, "service.updated", { service, update });
-  }
-
-  public async onServicesDeleted(
-    appData: ConnectedAppData,
-    servicesIds: string[],
-  ): Promise<void> {
-    await this.sendWebhook(appData, "service.deleted", { servicesIds });
-  }
-
-  // Addon Hooks
-
-  public async onAddonCreated(
-    appData: ConnectedAppData,
-    addon: AppointmentAddon,
-  ): Promise<void> {
-    await this.sendWebhook(appData, "addon.created", { addon });
-  }
-
-  public async onAddonUpdated(
-    appData: ConnectedAppData,
-    addon: AppointmentAddon,
-    update: Partial<AppointmentAddonUpdateModel>,
-  ): Promise<void> {
-    await this.sendWebhook(appData, "addon.updated", { addon, update });
-  }
-
-  public async onAddonsDeleted(
-    appData: ConnectedAppData,
-    addonsIds: string[],
-  ): Promise<void> {
-    await this.sendWebhook(appData, "addon.deleted", { addonsIds });
-  }
-
-  // Field Hooks
-
-  public async onFieldCreated(
-    appData: ConnectedAppData,
-    field: ServiceField,
-  ): Promise<void> {
-    await this.sendWebhook(appData, "field.created", { field });
-  }
-
-  public async onFieldUpdated(
-    appData: ConnectedAppData,
-    field: ServiceField,
-    update: Partial<ServiceFieldUpdateModel>,
-  ): Promise<void> {
-    await this.sendWebhook(appData, "field.updated", { field, update });
-  }
-
-  public async onFieldsDeleted(
-    appData: ConnectedAppData,
-    fieldsIds: string[],
-  ): Promise<void> {
-    await this.sendWebhook(appData, "field.deleted", { fieldsIds });
-  }
-
-  private async sendWebhook(
+  public async onEvent(
     appData: ConnectedAppData<WebhooksConfiguration>,
-    eventType: WebhookEventType,
-    payload: any,
+    envelope: EventEnvelope,
   ): Promise<void> {
-    const logger = this.loggerFactory("sendWebhook");
+    await this.relayEvent(appData, envelope);
+  }
+
+  private async relayEvent(
+    appData: ConnectedAppData<WebhooksConfiguration>,
+    envelope: EventEnvelope,
+  ): Promise<void> {
+    const logger = this.loggerFactory("relayEvent");
     const config = appData.data;
 
     if (!config) {
       logger.warn(
-        { appId: appData._id, eventType },
+        { appId: appData._id, type: envelope.type },
         "No webhooks configuration found",
       );
       return;
     }
 
-    // Check if this event type is enabled for this webhook
-    if (!config.eventTypes.includes(eventType as any)) {
+    const eventType = envelope.type as WebhookEventType;
+    if (!config.eventTypes.includes(eventType)) {
       logger.debug(
-        { appId: appData._id, eventType },
-        "Event type not enabled for this webhook",
+        { appId: appData._id, type: envelope.type },
+        "Event type not selected for this webhook",
       );
       return;
     }
 
-    const body = JSON.stringify(payload);
+    const body = JSON.stringify({
+      id: envelope.id,
+      type: envelope.type,
+      organizationId: envelope.organizationId,
+      payload: envelope.payload,
+      createdAt: envelope.createdAt,
+      source: envelope.source,
+    });
+
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
-      "X-Webhook-Event": eventType,
+      "X-Webhook-Event": envelope.type,
     };
 
-    // Add signature if secret is provided
     if (config.secret) {
       const decryptedSecret = decrypt(config.secret);
       const signature = this.generateSignature(body, decryptedSecret);
@@ -487,7 +194,7 @@ export class WebhooksConnectedApp
 
     try {
       logger.debug(
-        { appId: appData._id, eventType, url: config.url },
+        { appId: appData._id, type: envelope.type, url: config.url },
         "Sending webhook",
       );
 
@@ -501,7 +208,7 @@ export class WebhooksConnectedApp
         logger.error(
           {
             appId: appData._id,
-            eventType,
+            type: envelope.type,
             url: config.url,
             status: response.status,
             statusText: response.statusText,
@@ -523,7 +230,7 @@ export class WebhooksConnectedApp
         logger.info(
           {
             appId: appData._id,
-            eventType,
+            type: envelope.type,
             url: config.url,
             status: response.status,
           },
@@ -534,7 +241,7 @@ export class WebhooksConnectedApp
       logger.error(
         {
           appId: appData._id,
-          eventType,
+          type: envelope.type,
           url: config.url,
           error: error?.message || error?.toString(),
         },

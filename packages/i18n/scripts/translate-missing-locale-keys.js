@@ -17,6 +17,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { parse as parseYaml, stringify as stringifyYaml } from "yaml";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const i18nDir = path.join(__dirname, "..");
@@ -48,13 +49,13 @@ const cachePath = path.join(__dirname, `en-${language}.translation-cache.json`);
 const cache = loadCache(cachePath);
 
 const resolved = resolveTarget(target, language);
-const english = loadJsonStrict(resolved.enPath);
+const english = loadSourceStrict(resolved.enPath);
 const { object: localeObject, created } = loadOrInitializeLocaleObject(
   resolved.localePath,
   english,
 );
 if (created) {
-  writeJson(resolved.localePath, localeObject);
+  writeLocale(resolved.localePath, localeObject);
 }
 
 const tasks = [];
@@ -85,7 +86,7 @@ for (const task of tasks) {
   });
 
   setAtPath(localeObject, task.path, translated);
-  writeJson(resolved.localePath, localeObject);
+  writeLocale(resolved.localePath, localeObject);
 
   translatedCount++;
   process.stdout.write(
@@ -135,7 +136,7 @@ function resolveTarget(rawTarget, language) {
   // App short path format: "<app>/<file>" (for example "waitlist/admin")
   if (target.includes("/")) {
     const [appName, ...rest] = target.split("/");
-    const filePart = ensureJson(rest.join("/"));
+    const filePart = ensureAppLocaleFile(appName, rest.join("/"));
     const enPath = path.join(appsDir, appName, "translations/en", filePart);
     if (fs.existsSync(enPath)) {
       return {
@@ -152,7 +153,7 @@ function resolveTarget(rawTarget, language) {
   }
 
   // Core locale file format: "admin", "install", "admin.json"
-  const fileName = ensureJson(path.basename(target));
+  const fileName = ensureCoreLocaleFilename(target);
   const coreEnPath = path.join(localesDir, "en", fileName);
   if (fs.existsSync(coreEnPath)) {
     return {
@@ -166,7 +167,7 @@ function resolveTarget(rawTarget, language) {
   const directPath = path.isAbsolute(rawTarget)
     ? rawTarget
     : path.resolve(process.cwd(), rawTarget);
-  if (fs.existsSync(directPath) && directPath.endsWith(".json")) {
+  if (fs.existsSync(directPath) && /\.(json|yaml|yml)$/.test(directPath)) {
     const normalizedDirect = path.normalize(directPath);
     const enSegment = `${path.sep}en${path.sep}`;
     if (normalizedDirect.includes(enSegment)) {
@@ -182,8 +183,8 @@ function resolveTarget(rawTarget, language) {
   }
 
   throw new Error(
-    `Could not resolve "${rawTarget}" to an English source JSON.\n` +
-      `Try a core file (e.g. "admin"), app short path (e.g. "waitlist/admin"), or direct path to an /en/*.json file.`,
+    `Could not resolve "${rawTarget}" to an English source locale file.\n` +
+      `Try a core file (e.g. "admin"), app short path (e.g. "waitlist/admin"), or direct path to an /en/*.{yaml,yml,json} file.`,
   );
 }
 
@@ -194,8 +195,83 @@ function normalizeTarget(value) {
     .replace(/^\/+|\/+$/g, "");
 }
 
-function ensureJson(value) {
-  return value.endsWith(".json") ? value : `${value}.json`;
+function isEmptyRootObject(obj) {
+  return (
+    !obj ||
+    (typeof obj === "object" &&
+      !Array.isArray(obj) &&
+      Object.keys(obj).length === 0)
+  );
+}
+
+function loadDataFromPath(filePath, filename) {
+  if (filename.endsWith(".yaml") || filename.endsWith(".yml")) {
+    if (!fs.existsSync(filePath)) {
+      const jsonPath = filePath.replace(/\.(yaml|yml)$/, ".json");
+      if (fs.existsSync(jsonPath)) {
+        return JSON.parse(fs.readFileSync(jsonPath, "utf8"));
+      }
+      throw new Error(`File not found: ${filePath} (or ${jsonPath})`);
+    }
+    const raw = fs.readFileSync(filePath, "utf8");
+    let doc = null;
+    if (raw.trim()) {
+      doc = parseYaml(raw);
+    }
+    if (
+      doc != null &&
+      typeof doc === "object" &&
+      !Array.isArray(doc) &&
+      !isEmptyRootObject(doc)
+    ) {
+      return doc;
+    }
+    const jsonPath = filePath.replace(/\.(yaml|yml)$/, ".json");
+    if (fs.existsSync(jsonPath)) {
+      return JSON.parse(fs.readFileSync(jsonPath, "utf8"));
+    }
+    return {};
+  }
+  if (!fs.existsSync(filePath)) {
+    throw new Error(`File not found: ${filePath}`);
+  }
+  return JSON.parse(fs.readFileSync(filePath, "utf8"));
+}
+
+function loadSourceStrict(filePath) {
+  const filename = path.basename(filePath);
+  try {
+    return loadDataFromPath(filePath, filename);
+  } catch (error) {
+    throw new Error(`Failed to read source at "${filePath}": ${error.message}`);
+  }
+}
+
+/**
+ * @param {string} appName
+ * @param {string} filePart
+ */
+function ensureAppLocaleFile(appName, filePart) {
+  const rest = (filePart || "admin").replace(/\.(json|yaml|yml)$/, "");
+  for (const ext of [".yaml", ".yml", ".json"]) {
+    const p = path.join(appsDir, appName, "translations/en", rest + ext);
+    if (fs.existsSync(p)) {
+      return rest + ext;
+    }
+  }
+  return `${rest}.yaml`;
+}
+
+function ensureCoreLocaleFilename(target) {
+  const raw = String(target).trim();
+  const base = path.basename(raw).replace(/\.(json|yaml|yml)$/, "");
+  for (const ext of [".yaml", ".yml", ".json"]) {
+    const p = path.join(localesDir, "en", base + ext);
+    if (fs.existsSync(p)) {
+      return base + ext;
+    }
+  }
+  return `${base}.yaml`;
 }
 
 function loadOrInitializeLocaleObject(localePath, englishObject) {
@@ -203,6 +279,8 @@ function loadOrInitializeLocaleObject(localePath, englishObject) {
   if (!fs.existsSync(dirPath)) {
     fs.mkdirSync(dirPath, { recursive: true });
   }
+
+  const fileName = path.basename(localePath);
 
   if (!fs.existsSync(localePath)) {
     return { object: structuredClone(englishObject), created: true };
@@ -213,19 +291,24 @@ function loadOrInitializeLocaleObject(localePath, englishObject) {
     return { object: structuredClone(englishObject), created: true };
   }
 
-  return { object: JSON.parse(content), created: false };
-}
-
-function loadJsonStrict(filePath) {
-  try {
-    return JSON.parse(fs.readFileSync(filePath, "utf8"));
-  } catch (error) {
-    throw new Error(`Failed to read JSON at "${filePath}": ${error.message}`);
+  const data = loadDataFromPath(localePath, fileName);
+  if (isEmptyRootObject(data)) {
+    return { object: structuredClone(englishObject), created: true };
   }
+
+  return { object: data, created: false };
 }
 
-function writeJson(filePath, value) {
-  fs.writeFileSync(filePath, JSON.stringify(value, null, 2) + "\n", "utf8");
+function writeLocale(filePath, value) {
+  if (filePath.endsWith(".yaml") || filePath.endsWith(".yml")) {
+    fs.writeFileSync(
+      filePath,
+      `${stringifyYaml(value, { lineWidth: 0 })}\n`,
+      "utf8",
+    );
+  } else {
+    fs.writeFileSync(filePath, JSON.stringify(value, null, 2) + "\n", "utf8");
+  }
 }
 
 function collectTranslationTasks(enNode, localeNode, currentPath, tasks) {

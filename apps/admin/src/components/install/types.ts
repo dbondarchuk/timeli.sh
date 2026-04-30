@@ -44,6 +44,7 @@ export type PersistedState = {
   language: Language;
   country: Country;
   currency: Currency;
+  autoConfirmBookings: boolean;
   professionId: string;
   serviceTemplateId: string;
   /** Bookable services (services step); persisted to localStorage and synced to DB on Continue. */
@@ -71,6 +72,7 @@ export type PersistedState = {
   optBlog: boolean;
   optForms: boolean;
   optGiftCardStudio: boolean;
+  optMyCabinet: boolean;
   acceptPayments: boolean;
   paymentStripe: boolean;
   paymentPaypal: boolean;
@@ -118,7 +120,9 @@ export type InstallPreferencesServerState = Partial<
     | "optBlog"
     | "optForms"
     | "optGiftCardStudio"
+    | "optMyCabinet"
     | "acceptPayments"
+    | "autoConfirmBookings"
     | "depositEnabled"
     | "depositPercent"
     | "allowCancelReschedule"

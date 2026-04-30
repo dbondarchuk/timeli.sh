@@ -1,6 +1,6 @@
 version: "3.9"
 services:
-  timelish-admin:
+  admin:
     build:
       context: .
       dockerfile: apps/admin/Dockerfile
@@ -40,10 +40,10 @@ services:
     ports:
       - "3001:3001"
     depends_on:
-      - timelish-job-processor
-      - timelish-notification-sender
+      - job-processor
+      - notification-sender
 
-  timelish-web:
+  web:
     build:
       context: .
       dockerfile: apps/web/Dockerfile
@@ -79,11 +79,11 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - timelish-job-processor
-      - timelish-notification-sender
-      - timelish-admin
+      - job-processor
+      - notification-sender
+      - admin
 
-  timelish-notification-sender:
+  notification-sender:
     build:
       context: .
       dockerfile: apps/notification-sender/Dockerfile
@@ -125,7 +125,7 @@ services:
       - TEXTBELT_API_KEY=${TEXTBELT_API_KEY}
     restart: unless-stopped
 
-  timelish-job-processor:
+  job-processor:
     build:
       context: .
       dockerfile: apps/job-processor/Dockerfile
@@ -159,7 +159,7 @@ services:
       - S3_FORCE_PATH_STYLE=${S3_FORCE_PATH_STYLE:-true}
     restart: unless-stopped
 
-  timelish-app-external-server:
+  app-external-server:
     build:
       context: .
       dockerfile: apps/app-external-server/Dockerfile
@@ -195,7 +195,7 @@ services:
     ports:
       - "5556:5556"
 
-  timelish-domain-checker:
+  domain-checker:
     build:
       context: .
       dockerfile: apps/domain-checker/Dockerfile

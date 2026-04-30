@@ -1,8 +1,22 @@
-export const getWebsiteUrl = (organizationSlug?: string, domain?: string) => {
+export const getWebsiteDomain = ({
+  domain,
+  slug,
+}: {
+  domain?: string | null;
+  slug: string;
+}) => {
+  return domain ? domain : `${slug}.${process.env.PUBLIC_DOMAIN}`;
+};
+
+export const getWebsiteUrl = ({
+  slug,
+  domain,
+}: {
+  slug: string;
+  domain?: string | null;
+}) => {
   const schema = domain?.startsWith("localhost") ? "http" : "https";
-  return domain
-    ? `${schema}://${domain}`
-    : `${schema}://${organizationSlug}.${process.env.PUBLIC_DOMAIN}`;
+  return `${schema}://${getWebsiteDomain({ domain, slug })}`;
 };
 
 export const getAdminUrl = () => {

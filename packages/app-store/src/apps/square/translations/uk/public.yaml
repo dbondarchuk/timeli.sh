@@ -1,0 +1,11 @@
+form:
+  totalLabel: Сума до сплати
+  or: або
+  payButton: Оплатити карткою
+  loading: Завантаження форми оплати…
+  loadError: Не вдалося завантажити форму оплати Square
+  tokenizeError: Не вдалося токенізувати картку
+toast:
+  payment_failed: Платіж не вдався
+  payment_failed_description: Оплату не вдалося завершити. Спробуйте ще раз або зв’яжіться з нами.
+

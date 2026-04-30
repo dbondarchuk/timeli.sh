@@ -1,4 +1,4 @@
-import { DaySchedule, Event } from "@timelish/types";
+import { CalendarEvent, DaySchedule } from "@timelish/types";
 import {
   CalendarSearchParams,
   serializeCalendarSearchParams,
@@ -14,7 +14,7 @@ export const getCalendar = async (searchParams: CalendarSearchParams) => {
   const result = await fetchAdminApi(`/calendar${serializedSearchParams}`);
 
   const data = await result.json<{
-    events: Event[];
+    events: CalendarEvent[];
     schedule: Record<string, DaySchedule>;
   }>();
 

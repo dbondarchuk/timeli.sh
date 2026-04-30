@@ -1,0 +1,92 @@
+tab:
+  title: Financial overview
+app:
+  displayName: Financial overview
+  description: |-
+    **Financial Overview** adds a dedicated dashboard tab with clear, easy-to-understand financial metrics, giving you a quick snapshot of your revenue, payments, and overall performance at a glance.
+
+    In addition to your financial totals, it helps you understand how customers move through your booking process — showing how many people complete a booking and where others may drop off before finishing. This makes it easier to spot friction, improve your booking experience, and increase successful appointments.
+
+    ### What you can see
+    - Total revenue and payments over time  
+    - Number of completed appointments  
+    - How many customers start a booking but don’t finish  
+    - Where customers commonly stop during the booking process  
+    - Trends over selected time ranges
+
+    ### Why it’s useful
+    - See your business performance in one place  
+    - Understand what’s working and what needs improvement  
+    - Identify steps that may be causing customers to leave  
+    - Make informed decisions without digging into complex reports
+view:
+  title: Financial overview
+  estimatedRevenue: Estimated Revenue
+  totalPayments: Total Payments
+  netPayments: Net Payments
+  activeAppointments: Active Appointments
+  declinedAppointments: Declined Appointments
+  recentPayments: Recent Payments
+  paymentMethods: Payment Methods
+  noPayments: No payments found
+  amount: Amount
+  status: Status
+  date: Date
+  customer: Customer
+  service: Service
+  dateRange: Date Range
+  rangeOptions:
+    thisMonth: This Month
+    lastMonth: Last Month
+    thisWeek: This Week
+    lastWeek: Last Week
+    thisYear: This Year
+    lastYear: Last Year
+    allTime: All Time
+    custom: Custom Range
+  refunded: Refunded
+  refundDate: Refund Date
+  refundAmount: Refund Amount
+  viewAppointment: View Appointment
+  revenueAndPayments: Revenue and Payments
+  appointmentStatusDistribution: Appointment Status
+  serviceDistribution: Options
+  appointmentsCount: "{count, plural, =1 {1 appointment} other {# appointments}}"
+  estimatedRevenueFormat: "Estimated revenue: {revenue}"
+  financialOverview: Financial Overview
+  customerAcquisitionVsRetention: New vs Returning Customers
+  timeGrouping:
+    label: Time Grouping
+    daily: Daily
+    weekly: Weekly
+    monthly: Monthly
+  bookingTracking:
+    title: Booking Completion Tracking
+    totalBookings: Total Started Bookings
+    abandoned: Abandoned
+    abandonmentRate: Abandonment Rate
+    completionVsAbandonment: Completion vs Abandonment Over Time
+    abandonmentByStep:
+      title: Abandonment by Step
+      count: "{count, plural, =1 {1 abandoned} other {# abandoned}}"
+      percentage: "{percentage}% of all abandonments"
+      noData: No abandonment data available
+    converted: Converted
+    conversionRate: Conversion Rate
+    conversionByType:
+      title: Conversion by Type
+      count: "{count, plural, =1 {1 converted} other {# converted}}"
+      percentage: "{percentage}% of all conversions"
+      noData: No conversion data available
+    bookingSteps:
+      optionsRequested: Options Requested
+      availabilityChecked: Availability Checked
+      duplicateChecked: Duplicate Checked
+      paymentChecked: Payment Checked
+      formSubmitted: Form Submitted
+      bookingConverted: Booking Converted
+setup:
+  connect: Connect with <app></app>
+statusText:
+  successfully_set_up: Successfully set up financial overview
+

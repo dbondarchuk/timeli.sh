@@ -1,13 +1,17 @@
+import { persistPolarSubscriptionToOrganization } from "@/lib/billing/persist-polar-subscription";
+import { applyPolarOrderPaidToSmsBalances } from "@/lib/billing/polar-order-paid-sms";
 import { sendEmail } from "@/utils/email/send-email";
-import { languages } from "@timelish/i18n";
-import { getRedisClient } from "@timelish/services";
+import { polar, portal, webhooks } from "@polar-sh/better-auth";
+import { languages, type Language } from "@timelish/i18n";
+import { getPolarClient, getRedisClient } from "@timelish/services";
 import {
   getDbConnection,
   getDbConnectionSync,
 } from "@timelish/services/database";
-import type {
-  Organization as OrganizationDbModel,
-  WithDatabaseId,
+import {
+  USER_ROLES,
+  type Organization as OrganizationDbModel,
+  type WithDatabaseId,
 } from "@timelish/types";
 import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
@@ -16,15 +20,30 @@ import { ObjectId } from "mongodb";
 import { ApiError } from "next/dist/server/api-utils";
 
 export const auth = betterAuth({
-  trustedOrigins: [
-    process.env.BETTER_AUTH_TRUST_HOST || process.env.AUTH_TRUST_HOST || "",
-    ...(process.env.NODE_ENV === "development"
-      ? ["http://localhost:3001"]
-      : []),
-  ],
+  trustedOrigins: async (request) => {
+    const defaultOrigins = [
+      process.env.BETTER_AUTH_TRUST_HOST || process.env.AUTH_TRUST_HOST || "",
+      ...(process.env.NODE_ENV === "development"
+        ? ["http://localhost:3001"]
+        : []),
+    ];
+    // request is undefined during initialization and auth.api calls
+    if (!request) {
+      return defaultOrigins;
+    }
+
+    // Dynamic logic based on the request
+    const url = new URL(request.url);
+    if (url.pathname.startsWith("/api/auth/polar/webhooks")) {
+      return ["*"];
+    }
+
+    return defaultOrigins;
+  },
   database: (options: any) => {
     return mongodbAdapter(getDbConnectionSync(), {
       usePlural: true,
+      transaction: false,
     })(options);
   },
   secondaryStorage: {
@@ -43,10 +62,10 @@ export const auth = betterAuth({
     },
   },
   advanced: {
-    database: {
-      generateId: () => new ObjectId().toString(),
-    },
-    generateId: () => new ObjectId().toString(),
+    // database: {
+    //   generateId: () => new ObjectId().toString(),
+    // },
+    // generateId: () => new ObjectId().toString(),
     defaultCookieAttributes: {
       secure: true,
       httpOnly: true,
@@ -86,7 +105,7 @@ export const auth = betterAuth({
       language: {
         type: [...languages],
         input: true,
-        default: "en",
+        defaultValue: "en",
       },
       phone: {
         type: "string",
@@ -97,11 +116,16 @@ export const auth = betterAuth({
         type: "string",
         input: true,
       },
+      role: {
+        type: [...USER_ROLES],
+        input: false,
+        defaultValue: "owner",
+      },
     },
     changeEmail: {
       enabled: true,
-      sendChangeEmailVerification: async ({ user, newEmail, url, token }) => {
-        const language = (user as any).language || "en";
+      sendChangeEmailConfirmation: async ({ user, newEmail, url, token }) => {
+        const language = ((user as any).language || "en") as Language;
         await sendEmail("changeEmail", user.email, language, {
           url,
           token,
@@ -170,6 +194,40 @@ export const auth = betterAuth({
     organization({
       organizationLimit: 1,
     }),
+    polar({
+      client: getPolarClient().client,
+      createCustomerOnSignUp: false,
+      use: [
+        portal(),
+        webhooks({
+          secret: process.env.POLAR_WEBHOOK_SECRET!,
+          onSubscriptionCreated: async ({ data }) => {
+            await persistPolarSubscriptionToOrganization(data);
+          },
+          onSubscriptionUpdated: async ({ data }) => {
+            await persistPolarSubscriptionToOrganization(data);
+          },
+          onSubscriptionActive: async ({ data }) => {
+            await persistPolarSubscriptionToOrganization(data);
+          },
+          onSubscriptionCanceled: async ({ data }) => {
+            await persistPolarSubscriptionToOrganization(data);
+          },
+          onSubscriptionRevoked: async ({ data }) => {
+            await persistPolarSubscriptionToOrganization(data);
+          },
+          onSubscriptionUncanceled: async ({ data }) => {
+            await persistPolarSubscriptionToOrganization(data);
+          },
+          onOrderPaid: async ({ data }) => {
+            await applyPolarOrderPaidToSmsBalances(data);
+          },
+          onPayload: async ({ data }) => {
+            console.log("onPayloadReceived", data);
+          },
+        }),
+      ],
+    }),
     customSession(async ({ user, session }) => {
       let organizationId = (user as any).organizationId as string;
       const db = await getDbConnection();
@@ -182,7 +240,10 @@ export const auth = betterAuth({
           throw new ApiError(400, "User not found");
         }
 
-        if (!userDbModel.organizationId) {
+        const orgIdFromDb = (userDbModel as User & { organizationId?: string })
+          .organizationId;
+
+        if (!orgIdFromDb) {
           return {
             ...session,
             user: {
@@ -194,11 +255,14 @@ export const auth = betterAuth({
               organizationName: "",
               organizationSlug: "",
               organizationDomain: "",
+              role: (user as any).role || "owner",
+              subscriptionStatus: "active",
+              feesExempt: false,
             },
           };
         }
 
-        organizationId = userDbModel.organizationId;
+        organizationId = orgIdFromDb;
       }
 
       const organization = await db
@@ -224,6 +288,9 @@ export const auth = betterAuth({
           organizationSlug: organization.slug,
           organizationDomain: organization.domain,
           language: (user as any).language || "en",
+          role: (user as any).role || "owner",
+          subscriptionStatus: organization.polarSubscriptionStatus || "active",
+          feesExempt: !!organization.feesExempt,
         },
       };
     }),

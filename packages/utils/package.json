@@ -22,6 +22,7 @@
     "typescript": "5.5.4"
   },
   "dependencies": {
+    "@timelish/types": "*",
     "color": "^5.0.0",
     "content-type": "1.0.4",
     "fast-equals": "^5.2.2",

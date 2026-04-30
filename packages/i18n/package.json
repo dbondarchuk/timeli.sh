@@ -8,6 +8,8 @@
     "type-check:ci": "tsc-absolute --pretty --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "generate-locales": "node scripts/generate-locales-from-yaml.mjs",
+    "typegen": "node scripts/generate-locales-from-yaml.mjs",
     "check-translations": "node scripts/check-translations.js",
     "translate": "node scripts/translate-missing-locale-keys.js"
   },
@@ -22,6 +24,7 @@
     "typescript": "5.5.4"
   },
   "dependencies": {
-    "next-intl": "^4.3.9"
+    "next-intl": "^4.3.9",
+    "yaml": "^2.7.0"
   }
 }

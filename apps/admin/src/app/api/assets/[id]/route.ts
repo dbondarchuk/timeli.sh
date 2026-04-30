@@ -1,4 +1,4 @@
-import { getServicesContainer, getWebsiteUrl } from "@/app/utils";
+import { getActor, getServicesContainer, getWebsiteUrl } from "@/app/utils";
 import { getLoggerFactory } from "@timelish/logger";
 import { assetUpdateSchema, okStatus, UploadedFile } from "@timelish/types";
 import { NextRequest, NextResponse } from "next/server";
@@ -96,8 +96,9 @@ export async function PATCH(
     "Updating asset",
   );
 
+  const actor = await getActor();
   try {
-    await servicesContainer.assetsService.updateAsset(id, data);
+    await servicesContainer.assetsService.updateAsset(id, data, actor);
 
     logger.debug(
       {
@@ -141,8 +142,9 @@ export async function DELETE(
     "Deleting asset",
   );
 
+  const actor = await getActor();
   try {
-    const asset = await servicesContainer.assetsService.deleteAsset(id);
+    const asset = await servicesContainer.assetsService.deleteAsset(id, actor);
 
     if (!asset) {
       logger.warn({ assetId: id }, "Asset not found for deletion");

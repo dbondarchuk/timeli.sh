@@ -1,4 +1,5 @@
-import { getServicesContainer } from "@/app/utils";
+import { getActor, getServicesContainer } from "@/app/utils";
+import { getSubscriptionBlockingResponseForAppointmentWriteActions } from "@/utils/subscription/subscription-access";
 import { getLoggerFactory } from "@timelish/logger";
 import { okStatus } from "@timelish/types";
 import { NextRequest, NextResponse } from "next/server";
@@ -18,6 +19,7 @@ export async function PATCH(
     "PATCH",
   );
   const servicesContainer = await getServicesContainer();
+  const eventSource = await getActor();
   const { id } = await params;
 
   logger.debug(
@@ -28,6 +30,12 @@ export async function PATCH(
     },
     "Processing appointment reschedule API request",
   );
+
+  const blockedResponse =
+    await getSubscriptionBlockingResponseForAppointmentWriteActions();
+  if (blockedResponse) {
+    return blockedResponse;
+  }
 
   const body = await request.json();
   const { data, success, error } = schema.safeParse(body);
@@ -40,10 +48,11 @@ export async function PATCH(
     );
   }
 
-  await servicesContainer.eventsService.rescheduleAppointment(
+  await servicesContainer.bookingService.rescheduleAppointment(
     id,
     data.dateTime,
     data.duration,
+    eventSource,
     data.doNotNotifyCustomer,
   );
 

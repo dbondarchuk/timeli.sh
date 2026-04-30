@@ -1,7 +1,7 @@
 import { AllKeys } from "@timelish/i18n";
 import { Leaves } from "@timelish/types";
 import { SMTP_APP_NAME } from "../const";
-import type admin from "./en/admin.json";
+import type admin from "./en/admin.generated";
 
 export type SmtpAdminKeys = Leaves<typeof admin>;
 export const smtpAdminNamespace = `app_${SMTP_APP_NAME}_admin` as const;

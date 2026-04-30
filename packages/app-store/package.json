@@ -22,7 +22,8 @@
     "./setup": "./src/setup.tsx",
     "./images": "./src/images.ts",
     "./payment-forms": "./src/payment-forms.tsx",
-    "./exports": "./src/exports.ts"
+    "./exports": "./src/exports.ts",
+    "./app-events": "./src/app-events/index.ts"
   },
   "devDependencies": {
     "@microsoft/microsoft-graph-types": "^2.40.0",
@@ -61,7 +62,10 @@
     "nodemailer": "^6.9.14",
     "pdfkit": "^0.17.2",
     "react": "19.0.0",
+    "@stripe/react-stripe-js": "^3.1.0",
+    "@stripe/stripe-js": "^5.2.0",
     "react-square-web-payments-sdk": "^3.3.0",
+    "stripe": "^17.3.0",
     "satori": "^0.25.0",
     "ts-ics": "2.4.0",
     "tsdav": "2.1.2"

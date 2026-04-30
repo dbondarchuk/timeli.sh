@@ -71,7 +71,7 @@ const features = [
     details: {
       headline: "Secure payments, happy clients",
       bullets: [
-        "Accept credit cards and PayPal",
+        "Accept credit cards, Google Pay, and Apple Pay via PayPal, Square, and Stripe",
         "Require deposits or full payment upfront",
         "Automatic refunds based on your policy",
         "See all your earnings in one dashboard",

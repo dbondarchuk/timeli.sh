@@ -10,7 +10,10 @@ export const PendingAppointmentsTab: React.FC = async () => {
   const servicesContainer = await getServicesContainer();
   const beforeNow = DateTime.now().minus({ hours: 1 }).toJSDate();
   const pendingAppointments =
-    await servicesContainer.eventsService.getPendingAppointments(20, beforeNow);
+    await servicesContainer.bookingService.getPendingAppointments(
+      20,
+      beforeNow,
+    );
 
   const { timeZone } =
     await servicesContainer.configurationService.getConfiguration("general");

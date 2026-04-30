@@ -1,4 +1,4 @@
-import { getServicesContainer } from "@/app/utils";
+import { getActor, getServicesContainer } from "@/app/utils";
 import { pagesSearchParamsLoader } from "@timelish/api-sdk";
 import { getLoggerFactory } from "@timelish/logger";
 import { PageListModelWithUrl, pageSchema } from "@timelish/types";
@@ -100,8 +100,9 @@ export async function POST(request: NextRequest) {
     "Creating new page",
   );
 
+  const actor = await getActor();
   try {
-    const result = await servicesContainer.pagesService.createPage(data);
+    const result = await servicesContainer.pagesService.createPage(data, actor);
 
     logger.debug(
       {

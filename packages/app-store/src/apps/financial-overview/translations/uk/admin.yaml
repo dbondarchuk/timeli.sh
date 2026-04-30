@@ -1,0 +1,92 @@
+tab:
+  title: Фінансовий огляд
+app:
+  displayName: Фінансовий огляд
+  description: |-
+    **Фінансовий огляд** додає окрему вкладку в панелі керування з простими та зрозумілими фінансовими показниками, щоб ви могли швидко оцінити свій дохід, платежі та загальну ефективність бізнесу.
+
+    Окрім фінансових підсумків, розділ допомагає зрозуміти, як клієнти проходять процес запису — скільки з них успішно завершують бронювання та на якому етапі інші припиняють його. Це дозволяє знаходити проблемні місця, покращувати процес запису та збільшувати кількість підтверджених зустрічей.
+
+    ### Що ви побачите
+    - Загальний дохід і платежі за вибраний період  
+    - Кількість завершених записів  
+    - Скільки клієнтів почали запис, але не завершили його  
+    - Етапи, на яких клієнти найчастіше зупиняються  
+    - Динаміку показників за різні періоди часу  
+
+    ### Чому це корисно
+    - Уся ключова інформація про бізнес в одному місці  
+    - Розуміння того, що працює добре, а що потребує покращення  
+    - Виявлення етапів, які можуть відлякувати клієнтів  
+    - Прийняття рішень на основі зрозумілих даних, без складних звітів
+view:
+  title: Фінансовий огляд
+  estimatedRevenue: Очікуваний дохід
+  totalPayments: Загальні платежі
+  netPayments: Чисті платежі
+  activeAppointments: Активні записи
+  declinedAppointments: Відхилені записи
+  recentPayments: Останні платежі
+  paymentMethods: Способи оплати
+  noPayments: Платежі не знайдено
+  amount: Сума
+  status: Статус
+  date: Дата
+  customer: Клієнт
+  service: Послуга
+  dateRange: Діапазон дат
+  rangeOptions:
+    thisMonth: Цей місяць
+    lastMonth: Минулий місяць
+    thisWeek: Цей тиждень
+    lastWeek: Минулий тиждень
+    thisYear: Цей рік
+    lastYear: Минулий рік
+    allTime: За весь час
+    custom: Довільний діапазон
+  refunded: Повернено
+  refundDate: Дата повернення
+  refundAmount: Сума повернення
+  viewAppointment: Переглянути запис
+  revenueAndPayments: Дохід та платежі
+  appointmentStatusDistribution: Статус записів
+  serviceDistribution: Опції
+  appointmentsCount: "{count, plural, =1 {1 запис} few {# записи} many {# записів} other {# записів}}"
+  estimatedRevenueFormat: "Очікуваний дохід: {revenue}"
+  financialOverview: Фінансовий огляд
+  customerAcquisitionVsRetention: Нові проти постійних клієнтів
+  timeGrouping:
+    label: Групування за часом
+    daily: Щоденно
+    weekly: Щотижня
+    monthly: Щомісяця
+  bookingTracking:
+    title: Відстеження завершення бронювань
+    totalBookings: Всього початих бронювань
+    abandoned: Покинуто
+    abandonmentRate: Відсоток відмови
+    completionVsAbandonment: Завершення проти відмови за часом
+    abandonmentByStep:
+      title: Відмова за етапами
+      count: "{count, plural, =1 {1 покинуто} few {# покинуто} many {# покинуто} other {# покинуто}}"
+      percentage: "{percentage}% від усіх відмов"
+      noData: Немає даних про відмови
+    converted: Конвертовано
+    conversionRate: Відсоток конвертації
+    conversionByType:
+      title: Конвертація за типом
+      count: "{count, plural, =1 {1 конвертовано} few {# конвертовано} many {# конвертовано} other {# конвертовано}}"
+      percentage: "{percentage}% від усіх конвертацій"
+      noData: Немає даних про конвертацію
+    bookingSteps:
+      optionsRequested: Запит опцій
+      availabilityChecked: Перевірка доступності
+      duplicateChecked: Перевірка дублікатів
+      paymentChecked: Перевірка оплати
+      formSubmitted: Форма відправлена
+      bookingConverted: Бронювання конвертовано
+setup:
+  connect: Підключитися з <app></app>
+statusText:
+  successfully_set_up: Фінансовий огляд успішно налаштовано
+

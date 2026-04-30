@@ -1,4 +1,4 @@
-import { getServicesContainer, getWebsiteUrl } from "@/app/utils";
+import { getActor, getServicesContainer, getWebsiteUrl } from "@/app/utils";
 import { assetsSearchParamsLoader } from "@timelish/api-sdk";
 import { getLoggerFactory } from "@timelish/logger";
 import { UploadedFile } from "@timelish/types";
@@ -117,6 +117,7 @@ export async function POST(request: NextRequest) {
     bucket = getCustomerBucket(customerId);
   }
 
+  const actor = await getActor();
   try {
     const asset = await servicesContainer.assetsService.createAsset(
       {
@@ -127,6 +128,7 @@ export async function POST(request: NextRequest) {
         customerId,
       },
       file,
+      actor,
     );
 
     logger.debug(

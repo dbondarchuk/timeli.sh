@@ -9,16 +9,21 @@ import {
   ApiRequest,
   ApiResponse,
   IConnectedApp,
+  ConnectedAppUninstallResult,
 } from "../apps/connected-app.service";
 
 export interface IConnectedAppsService {
   createNewApp(name: string, userId: string): Promise<string>;
-  deleteApp(appId: string): Promise<void>;
+  deleteApp(appId: string): Promise<ConnectedAppUninstallResult>;
   updateApp(appId: string, updateModel: ConnectedAppUpdateModel): Promise<void>;
   requestLoginUrl(appId: string): Promise<string>;
   processRedirect(name: string, request: ApiRequest, data?: any): Promise<void>;
   processWebhook(
     appId: string,
+    request: ApiRequest,
+  ): Promise<ApiResponse | undefined>;
+  processStaticWebhook(
+    appName: string,
     request: ApiRequest,
   ): Promise<ApiResponse | undefined>;
   processAppCall(
@@ -31,21 +36,28 @@ export interface IConnectedAppsService {
     slug: string[],
     request: Request,
   ): Promise<Response | undefined>;
-  processRequest(appId: string, data: any, request: ApiRequest): Promise<any>;
+  processRequest(
+    appId: string,
+    data: any,
+    request: ApiRequest,
+    userId: string,
+  ): Promise<any>;
   processStaticRequest(
     appName: string,
     data: any,
     request: ApiRequest,
+    userId: string,
   ): Promise<any>;
   processFormRequest(
     appId: string,
     formData: FormData,
     request: ApiRequest,
+    userId: string,
   ): Promise<any>;
   getAppStatus(appId: string): Promise<ConnectedApp>;
   getApps(): Promise<ConnectedApp[]>;
   getAppsByScope(...scope: AppScope[]): Promise<ConnectedApp[]>;
-  getAppsByApp(appName: string): Promise<ConnectedApp[]>;
+  getAppsByApp(...appNames: string[]): Promise<ConnectedApp[]>;
   getAppsByScopeWithData(...scope: AppScope[]): Promise<ConnectedAppData[]>;
   getAppsByType(type: App["type"]): Promise<{ id: string; name: string }[]>;
   getApp(appId: string): Promise<ConnectedAppData>;
@@ -55,9 +67,9 @@ export interface IConnectedAppsService {
   ): Promise<{ service: IConnectedApp & T; app: ConnectedAppData }>;
   getAppServiceProps(appId: string): IConnectedAppProps;
 
-  executeHooks<T, TReturn = void>(
+  invokeAppsByScope<T, TReturn = void>(
     scope: AppScope,
-    hook: (app: ConnectedAppData, service: T) => Promise<TReturn>,
+    callback: (app: ConnectedAppData, service: T) => Promise<TReturn>,
     options?: {
       concurrencyLimit?: number;
       ignoreErrors?: boolean;

@@ -1,9 +1,20 @@
 "use server";
 
-import { getServicesContainer, getSession } from "@/app/utils";
+import { getActor, getServicesContainer, getSession } from "@/app/utils";
 import { BaseAllKeys } from "@timelish/i18n";
 import { getLoggerFactory } from "@timelish/logger";
-import { ConnectedAppStatusWithText } from "@timelish/types";
+import {
+  BookingConfiguration,
+  BookingProviderScope,
+  bookingProviderScopes,
+  CalendarSourceScope,
+  calendarSourceScopes,
+  ConnectedAppStatusWithText,
+  DefaultAppsConfiguration,
+  DefaultAppScope,
+  defaultAppScopes,
+  DefaultAppToInstallScope,
+} from "@timelish/types";
 
 const logger = getLoggerFactory("AppStoreActions");
 
@@ -144,4 +155,142 @@ export const setAppStatus = async (
     );
     throw error;
   }
+};
+
+const DEFAULT_SCOPE_TO_CONFIG_FIELD: Partial<
+  Record<DefaultAppScope, keyof DefaultAppsConfiguration>
+> = {
+  payment: "paymentAppId",
+  "mail-send": "emailSenderAppId",
+  "text-message-send": "textMessageSenderAppId",
+  "text-message-respond": "textMessageResponderAppId",
+};
+
+export const setDefaultAppByScope = async (
+  appId: string,
+  scopes: DefaultAppToInstallScope[],
+) => {
+  const actionLogger = logger("setDefaultAppByScope");
+  const servicesContainer = await getServicesContainer();
+  const actor = await getActor();
+  const uniqueScopes = [...new Set(scopes)];
+
+  actionLogger.debug(
+    { appId, scopes: uniqueScopes },
+    "Setting default app by scope",
+  );
+
+  if (
+    uniqueScopes.some((scope) =>
+      calendarSourceScopes.includes(scope as CalendarSourceScope),
+    )
+  ) {
+    actionLogger.debug(
+      { appId, scopes: uniqueScopes },
+      "Setting calendar source app",
+    );
+    const session = await getSession();
+    if (!session?.user?.id) {
+      throw new Error("Unauthorized");
+    }
+
+    const user = await servicesContainer.userService.getUser(session.user.id);
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const currentSources = user.calendarSources ?? [];
+    if (!currentSources.some((source) => source.appId === appId)) {
+      await servicesContainer.userService.updateUser(session.user.id, {
+        calendarSources: [...currentSources, { appId }],
+      });
+
+      actionLogger.debug(
+        { appId, scopes: uniqueScopes },
+        "Calendar source app set",
+      );
+    }
+  }
+
+  if (
+    uniqueScopes.some((scope) =>
+      bookingProviderScopes.includes(scope as BookingProviderScope),
+    )
+  ) {
+    actionLogger.debug(
+      { appId, scopes: uniqueScopes },
+      "Setting booking provider app",
+    );
+    const currentBooking =
+      await servicesContainer.configurationService.getConfiguration("booking");
+    const nextBooking: BookingConfiguration = {
+      ...(currentBooking as BookingConfiguration),
+    };
+    let hasBookingChanges = false;
+
+    if (uniqueScopes.includes("schedule")) {
+      nextBooking.scheduleAppId = appId;
+      hasBookingChanges = true;
+    }
+    if (uniqueScopes.includes("availability-provider")) {
+      nextBooking.availabilityProviderAppId = appId;
+      hasBookingChanges = true;
+    }
+
+    if (hasBookingChanges) {
+      actionLogger.debug(
+        { appId, scopes: uniqueScopes },
+        "Setting booking provider app",
+      );
+      await servicesContainer.configurationService.setConfiguration(
+        "booking",
+        nextBooking,
+        actor,
+      );
+    } else {
+      actionLogger.debug(
+        { appId, scopes: uniqueScopes },
+        "No booking provider app changes",
+      );
+    }
+  }
+
+  const defaultScopes = uniqueScopes.filter((scope) =>
+    defaultAppScopes.includes(scope as DefaultAppScope),
+  ) as DefaultAppScope[];
+
+  if (defaultScopes.length) {
+    actionLogger.debug(
+      { appId, scopes: uniqueScopes },
+      "Setting default app by scope",
+    );
+    const currentDefaultApps =
+      await servicesContainer.configurationService.getConfiguration(
+        "defaultApps",
+      );
+
+    const nextDefaultApps: DefaultAppsConfiguration = {
+      ...(currentDefaultApps ?? {}),
+    };
+
+    for (const scope of defaultScopes) {
+      const field = DEFAULT_SCOPE_TO_CONFIG_FIELD[scope];
+      if (!field) continue;
+      nextDefaultApps[field] = appId;
+    }
+
+    await servicesContainer.configurationService.setConfiguration(
+      "defaultApps",
+      nextDefaultApps,
+      actor,
+    );
+
+    actionLogger.debug({ appId, scopes: uniqueScopes }, "Default app set");
+  }
+
+  actionLogger.debug(
+    { appId, scopes: uniqueScopes },
+    "App install targets applied",
+  );
+  return { success: true };
 };

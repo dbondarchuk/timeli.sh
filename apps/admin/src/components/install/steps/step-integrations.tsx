@@ -100,7 +100,11 @@ function CalendarIntegrationCard({
           </div>
           {connected ? (
             <div className="flex items-center gap-2">
-              <AddOrUpdateAppButton app={connected} refreshOnClose>
+              <AddOrUpdateAppButton
+                app={connected}
+                refreshOnClose
+                dontAskToSetDefault
+              >
                 <Button size="sm" variant="secondary">
                   {tApps("common.updateApp")}
                 </Button>
@@ -110,13 +114,17 @@ function CalendarIntegrationCard({
                 <DeleteAppButton appId={connected._id}>
                   <Button size="sm" variant="outline-destructive">
                     <Unplug />
-                    {tApps("common.disconnect")}
+                    {tApps("common.disconnect.label")}
                   </Button>
                 </DeleteAppButton>
               ) : null}
             </div>
           ) : (
-            <AddOrUpdateAppButton appType={appName} refreshOnClose>
+            <AddOrUpdateAppButton
+              appType={appName}
+              refreshOnClose
+              dontAskToSetDefault
+            >
               <Button size="sm" variant="default" disabled={blockNewConnect}>
                 {t("wizard.integrations.connect")}
               </Button>
@@ -185,6 +193,8 @@ export function StepIntegrations() {
       optBlog: p.optBlog,
       optForms: p.optForms,
       optGiftCardStudio: p.optGiftCardStudio,
+      optMyCabinet: p.optMyCabinet,
+      autoConfirmBookings: p.autoConfirmBookings,
       allowCancelReschedule: p.allowCancelReschedule,
       acceptPayments: p.acceptPayments,
       depositEnabled: p.depositEnabled,
@@ -292,8 +302,8 @@ export function StepIntegrations() {
                     <SelectItem key={app._id} value={app._id}>
                       <ConnectedAppNameAndLogo
                         appName={app.name}
-                        nameClassName="text-xs text-muted-foreground"
-                        logoClassName="size-4 shrink-0"
+                        logoClassName="size-3.5"
+                        nameClassName="text-xs leading-[normal]"
                       />
                     </SelectItem>
                   ))}
@@ -339,6 +349,11 @@ export function StepIntegrations() {
             key: "optGiftCardStudio" as const,
             label: t("wizard.integrations.giftCardStudio"),
             desc: t("wizard.integrations.giftCardStudioDesc"),
+          },
+          {
+            key: "optMyCabinet" as const,
+            label: t("wizard.integrations.myCabinet"),
+            desc: t("wizard.integrations.myCabinetDesc"),
           },
         ].map((row) => (
           <label

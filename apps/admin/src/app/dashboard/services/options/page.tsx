@@ -1,4 +1,5 @@
 import PageContainer from "@/components/admin/layout/page-container";
+import { AddOptionSplitButton } from "@/components/admin/services/options/add-option-button";
 import { OptionsTable } from "@/components/admin/services/options/table/table";
 import { OptionsTableAction } from "@/components/admin/services/options/table/table-action";
 import {
@@ -7,9 +8,8 @@ import {
 } from "@timelish/api-sdk";
 import { getI18nAsync } from "@timelish/i18n/server";
 import { getLoggerFactory } from "@timelish/logger";
-import { Breadcrumbs, Heading, Link } from "@timelish/ui";
+import { Breadcrumbs, Heading } from "@timelish/ui";
 import { DataTableSkeleton } from "@timelish/ui-admin";
-import { Plus } from "lucide-react";
 import { Metadata } from "next";
 import { Suspense } from "react";
 
@@ -52,13 +52,7 @@ export default async function OptionsPage(props: Params) {
               description={t("services.options.description")}
             />
 
-            <Link
-              button
-              href={"/dashboard/services/options/new"}
-              variant="default"
-            >
-              <Plus className="mr-2 h-4 w-4" /> {t("services.options.addNew")}
-            </Link>
+            <AddOptionSplitButton />
           </div>
           {/* <Separator /> */}
         </div>

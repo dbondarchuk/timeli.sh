@@ -3,6 +3,7 @@
 const fs = require("fs");
 const path = require("path");
 const { spawnSync } = require("child_process");
+const YAML = require("yaml");
 
 // Configuration
 const LOCALES_DIR = path.join(__dirname, "../src/locales");
@@ -101,32 +102,154 @@ function getLocales() {
     .map((dirent) => dirent.name);
 }
 
+function isEmptyRootObject(obj) {
+  return (
+    !obj ||
+    (typeof obj === "object" &&
+      !Array.isArray(obj) &&
+      Object.keys(obj).length === 0)
+  );
+}
+
+/**
+ * For one locale directory, one file per namespace — prefer .yaml / .yml over .json.
+ * @param {string} dirPath
+ * @returns {string[]}
+ */
+function getPreferredTranslationFilenamesInDir(dirPath) {
+  if (!fs.existsSync(dirPath)) {
+    return [];
+  }
+  const byStem = new Map();
+  for (const f of fs.readdirSync(dirPath)) {
+    if (f.startsWith(".") || f.endsWith(".generated.ts")) {
+      continue;
+    }
+    if (!/\.(json|yaml|yml)$/.test(f)) {
+      continue;
+    }
+    const stem = f.replace(/\.(json|yaml|yml)$/, "");
+    const isYaml = f.endsWith(".yaml") || f.endsWith(".yml");
+    const current = byStem.get(stem);
+    if (!current) {
+      byStem.set(stem, f);
+    } else {
+      const curIsYaml = current.endsWith(".yaml") || current.endsWith(".yml");
+      if (isYaml && !curIsYaml) {
+        byStem.set(stem, f);
+      }
+    }
+  }
+  return Array.from(byStem.values()).sort();
+}
+
 /**
  * Get all translation files for a locale
  * @param {string} locale - The locale code
  * @returns {string[]} - Array of translation file names
  */
 function getTranslationFiles(locale) {
-  const localeDir = path.join(LOCALES_DIR, locale);
-  return fs
-    .readdirSync(localeDir)
-    .filter((file) => file.endsWith(".json"))
-    .sort();
+  return getPreferredTranslationFilenamesInDir(path.join(LOCALES_DIR, locale));
+}
+
+/**
+ * Load a locale file from YAML, or from .json if YAML is still empty/comment-only.
+ * @param {string} filePath
+ * @param {string} filename
+ * @returns {Object}
+ */
+function loadDataFromPath(filePath, filename) {
+  if (filename.endsWith(".yaml") || filename.endsWith(".yml")) {
+    if (!fs.existsSync(filePath)) {
+      const jsonPath = filePath.replace(/\.(yaml|yml)$/, ".json");
+      if (fs.existsSync(jsonPath)) {
+        return JSON.parse(fs.readFileSync(jsonPath, "utf8"));
+      }
+      throw new Error(`File not found: ${filePath} (or ${jsonPath})`);
+    }
+    const raw = fs.readFileSync(filePath, "utf8");
+    let doc = null;
+    if (raw.trim()) {
+      try {
+        doc = YAML.parse(raw);
+      } catch (e) {
+        throw new Error(
+          `Invalid YAML: ${filePath}: ${e?.message || String(e)}`,
+        );
+      }
+    }
+    if (
+      doc != null &&
+      typeof doc === "object" &&
+      !Array.isArray(doc) &&
+      !isEmptyRootObject(doc)
+    ) {
+      return doc;
+    }
+    const jsonPath = filePath.replace(/\.(yaml|yml)$/, ".json");
+    if (fs.existsSync(jsonPath)) {
+      return JSON.parse(fs.readFileSync(jsonPath, "utf8"));
+    }
+    return {};
+  }
+  if (!fs.existsSync(filePath)) {
+    throw new Error(`File not found: ${filePath}`);
+  }
+  const content = fs.readFileSync(filePath, "utf8");
+  return JSON.parse(content);
+}
+
+/**
+ * Where key removals / writes should go when a logical filename is e.g. admin.yaml
+ * (JSON still holds data until YAML is fully migrated).
+ * @param {string} filePath
+ * @param {string} filename
+ * @returns {{ path: string, format: 'yaml' | 'json' }}
+ */
+function getStorageWriteTargetForPath(filePath, filename) {
+  if (filename.endsWith(".yaml") || filename.endsWith(".yml")) {
+    const jsonPath = filePath.replace(/\.(yaml|yml)$/, ".json");
+    let doc;
+    if (fs.existsSync(filePath)) {
+      const raw = fs.readFileSync(filePath, "utf8");
+      if (raw.trim()) {
+        try {
+          doc = YAML.parse(raw);
+        } catch {
+          doc = null;
+        }
+      }
+    }
+    const yamlHasData =
+      doc != null &&
+      typeof doc === "object" &&
+      !Array.isArray(doc) &&
+      !isEmptyRootObject(doc);
+    if (yamlHasData) {
+      return { path: filePath, format: "yaml" };
+    }
+    if (fs.existsSync(jsonPath)) {
+      return { path: jsonPath, format: "json" };
+    }
+    return { path: filePath, format: "yaml" };
+  }
+  return { path: filePath, format: "json" };
 }
 
 /**
  * Load and parse a translation file
  * @param {string} locale - The locale code
  * @param {string} filename - The translation file name
- * @returns {Object} - Parsed JSON content
+ * @returns {Object} - Parsed content
  */
 function loadTranslationFile(locale, filename) {
   const filePath = path.join(LOCALES_DIR, locale, filename);
   try {
-    const content = fs.readFileSync(filePath, "utf8");
-    return JSON.parse(content);
+    return loadDataFromPath(filePath, filename);
   } catch (error) {
-    throw new Error(`Failed to load ${filePath}: ${error.message}`);
+    throw new Error(
+      `Failed to load ${filePath} via loadTranslationFile: ${error.message}`,
+    );
   }
 }
 
@@ -165,10 +288,7 @@ function getAppTranslationFiles(appName) {
 
   for (const locale of locales) {
     const localeDir = path.join(appDir, locale);
-    result[locale] = fs
-      .readdirSync(localeDir)
-      .filter((file) => file.endsWith(".json"))
-      .sort();
+    result[locale] = getPreferredTranslationFilenamesInDir(localeDir);
   }
 
   return result;
@@ -190,10 +310,11 @@ function loadAppTranslationFile(appName, locale, filename) {
     filename,
   );
   try {
-    const content = fs.readFileSync(filePath, "utf8");
-    return JSON.parse(content);
+    return loadDataFromPath(filePath, filename);
   } catch (error) {
-    throw new Error(`Failed to load ${filePath}: ${error.message}`);
+    throw new Error(
+      `Failed to load ${filePath} via loadAppTranslationFile: ${error.message}`,
+    );
   }
 }
 
@@ -630,8 +751,15 @@ function cleanupExtras(report, appReport = null) {
         continue;
       }
 
-      if (!fs.existsSync(localeFilePath)) continue;
-      const localeContent = loadJsonSafely(localeFilePath);
+      if (!fs.existsSync(localeFilePath) && !filename.match(/\.(yaml|yml)$/)) {
+        continue;
+      }
+      let localeContent;
+      try {
+        localeContent = loadTranslationFile(locale, filename);
+      } catch {
+        continue;
+      }
       if (!localeContent || typeof localeContent !== "object") continue;
 
       let fileChanged = false;
@@ -646,7 +774,15 @@ function cleanupExtras(report, appReport = null) {
       }
 
       if (fileChanged) {
-        writeJsonFile(localeFilePath, localeContent);
+        const target = getStorageWriteTargetForPath(
+          path.join(LOCALES_DIR, locale, filename),
+          filename,
+        );
+        if (target.format === "yaml") {
+          writeYamlFile(target.path, localeContent);
+        } else {
+          writeJsonFile(target.path, localeContent);
+        }
       }
     }
   }
@@ -674,8 +810,15 @@ function cleanupExtras(report, appReport = null) {
             continue;
           }
 
-          if (!fs.existsSync(appFilePath)) continue;
-          const localeContent = loadJsonSafely(appFilePath);
+          if (!fs.existsSync(appFilePath) && !filename.match(/\.(yaml|yml)$/)) {
+            continue;
+          }
+          let localeContent;
+          try {
+            localeContent = loadAppTranslationFile(appName, locale, filename);
+          } catch {
+            continue;
+          }
           if (!localeContent || typeof localeContent !== "object") continue;
 
           let fileChanged = false;
@@ -690,7 +833,12 @@ function cleanupExtras(report, appReport = null) {
           }
 
           if (fileChanged) {
-            writeJsonFile(appFilePath, localeContent);
+            const target = getStorageWriteTargetForPath(appFilePath, filename);
+            if (target.format === "yaml") {
+              writeYamlFile(target.path, localeContent);
+            } else {
+              writeJsonFile(target.path, localeContent);
+            }
           }
         }
       }
@@ -700,17 +848,16 @@ function cleanupExtras(report, appReport = null) {
   return { changed };
 }
 
-function loadJsonSafely(filePath) {
-  try {
-    const content = fs.readFileSync(filePath, "utf8");
-    return JSON.parse(content);
-  } catch {
-    return null;
-  }
-}
-
 function writeJsonFile(filePath, content) {
   fs.writeFileSync(filePath, `${JSON.stringify(content, null, 2)}\n`, "utf8");
+}
+
+function writeYamlFile(filePath, content) {
+  fs.writeFileSync(
+    filePath,
+    `${YAML.stringify(content, { lineWidth: 0 })}\n`,
+    "utf8",
+  );
 }
 
 /**

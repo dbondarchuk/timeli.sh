@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { parse as parseYaml, stringify as stringifyYaml } from "yaml";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, "../../..");
@@ -8,8 +9,62 @@ const enSource = path.join(
   root,
   "apps/admin/src/components/install/data/_catalog-en-source.json",
 );
-const installEn = path.join(root, "packages/i18n/src/locales/en/install.json");
-const installUk = path.join(root, "packages/i18n/src/locales/uk/install.json");
+const installEnYaml = path.join(
+  root,
+  "packages/i18n/src/locales/en/install.yaml",
+);
+const installUkYaml = path.join(
+  root,
+  "packages/i18n/src/locales/uk/install.yaml",
+);
+
+function isEmptyRootObject(obj) {
+  return (
+    !obj ||
+    (typeof obj === "object" &&
+      !Array.isArray(obj) &&
+      Object.keys(obj).length === 0)
+  );
+}
+
+/**
+ * @param {string} yamlPath
+ */
+function loadInstallYaml(yamlPath) {
+  if (!fs.existsSync(yamlPath)) {
+    return {};
+  }
+  const raw = fs.readFileSync(yamlPath, "utf8");
+  if (!raw.trim()) {
+    return {};
+  }
+  try {
+    const doc = parseYaml(raw);
+    if (
+      doc != null &&
+      typeof doc === "object" &&
+      !Array.isArray(doc) &&
+      !isEmptyRootObject(doc)
+    ) {
+      return doc;
+    }
+  } catch {
+    return {};
+  }
+  return {};
+}
+
+/**
+ * @param {string} yamlPath
+ * @param {object} data
+ */
+function writeInstallYaml(yamlPath, data) {
+  fs.writeFileSync(
+    yamlPath,
+    `${stringifyYaml(data, { lineWidth: 0 })}\n`,
+    "utf8",
+  );
+}
 
 function buildCatalogTree(en) {
   const categories = {};
@@ -59,12 +114,12 @@ const catalogBlock = {
   ...professions,
 };
 
-const installEnObj = JSON.parse(fs.readFileSync(installEn, "utf8"));
+const installEnObj = loadInstallYaml(installEnYaml);
 const mergedEn = deepMergeInstallCatalog(installEnObj, catalogBlock);
-fs.writeFileSync(installEn, JSON.stringify(mergedEn, null, 2) + "\n");
+writeInstallYaml(installEnYaml, mergedEn);
 
-const installUkObj = JSON.parse(fs.readFileSync(installUk, "utf8"));
+const installUkObj = loadInstallYaml(installUkYaml);
 const mergedUk = deepMergeInstallCatalog(installUkObj, catalogBlock);
-fs.writeFileSync(installUk, JSON.stringify(mergedUk, null, 2) + "\n");
+writeInstallYaml(installUkYaml, mergedUk);
 
-console.log("Merged catalog into en and uk install.json");
+console.log("Merged catalog into en and uk install.yaml");

@@ -5,13 +5,16 @@ import {
   ConnectedAppData,
   ConnectedAppRequestError,
   ConnectedAppStatusWithText,
-  IAppointmentHook,
+  ConnectedAppUninstallResult,
+  EventEnvelope,
   ICommunicationTemplatesProvider,
   IConnectedApp,
   IConnectedAppProps,
+  IEventSubscriber,
   IScheduled,
   TemplateTemplatesList,
 } from "@timelish/types";
+import { dispatchAppointmentEventPayload } from "@timelish/utils";
 import { AppointmentNotificationsJobProcessor } from "./job-processor";
 import {
   AppointmentNotification,
@@ -31,7 +34,7 @@ export default class AppointmentNotificationsConnectedApp
   implements
     IConnectedApp,
     IScheduled,
-    IAppointmentHook,
+    IEventSubscriber,
     ICommunicationTemplatesProvider
 {
   protected readonly loggerFactory: LoggerFactory;
@@ -45,6 +48,18 @@ export default class AppointmentNotificationsConnectedApp
       "AppointmentNotificationsConnectedApp",
       props.organizationId,
     );
+  }
+
+  public async onEvent(
+    appData: ConnectedAppData,
+    envelope: EventEnvelope,
+  ): Promise<void> {
+    await dispatchAppointmentEventPayload(envelope, {
+      onAppointmentCreated: (appointment, confirmed) =>
+        this.onAppointmentCreated(appData, appointment, confirmed),
+      onAppointmentStatusChanged: (appointment, _newStatus, _oldStatus, _source) =>
+        this.onAppointmentStatusChanged(appData, appointment),
+    });
   }
 
   public async processRequest(
@@ -199,7 +214,9 @@ export default class AppointmentNotificationsConnectedApp
     );
   }
 
-  public async unInstall(appData: ConnectedAppData): Promise<void> {
+  public async unInstall(
+    appData: ConnectedAppData,
+  ): Promise<ConnectedAppUninstallResult> {
     const logger = this.loggerFactory("unInstall");
     logger.debug(
       { appId: appData._id },
@@ -212,6 +229,7 @@ export default class AppointmentNotificationsConnectedApp
       { appId: appData._id },
       "Successfully uninstalled appointment notifications app",
     );
+    return { success: true, code: "ok" };
   }
 
   public async processJob(
@@ -266,32 +284,6 @@ export default class AppointmentNotificationsConnectedApp
   ): Promise<void> {
     const logger = this.loggerFactory("onAppointmentStatusChanged");
     logger.debug({ appId: appData._id, appointment }, "On appointment updated");
-
-    await this.props.services.jobService.scheduleJob({
-      type: "app",
-      executeAt: "now",
-      appId: appData._id,
-      payload: {
-        type: "update-appointment",
-        appointmentId: appointment._id,
-      } satisfies AppointmentNotificationsJobPayload,
-    });
-
-    logger.info(
-      { appId: appData._id, appointment },
-      "Successfully appointment appointment notifications update appointment job",
-    );
-  }
-
-  public async onAppointmentReappointment(
-    appData: ConnectedAppData,
-    appointment: Appointment,
-  ): Promise<void> {
-    const logger = this.loggerFactory("onAppointmentReappointment");
-    logger.debug(
-      { appId: appData._id, appointment },
-      "On appointment reappointment",
-    );
 
     await this.props.services.jobService.scheduleJob({
       type: "app",

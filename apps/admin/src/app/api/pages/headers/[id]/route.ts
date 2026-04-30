@@ -1,4 +1,4 @@
-import { getServicesContainer } from "@/app/utils";
+import { getActor, getServicesContainer } from "@/app/utils";
 import { getLoggerFactory } from "@timelish/logger";
 import { okStatus, pageHeaderSchema } from "@timelish/types";
 import { NextRequest, NextResponse } from "next/server";
@@ -91,8 +91,9 @@ export async function PUT(
     "Updating page header",
   );
 
+  const actor = await getActor();
   try {
-    await servicesContainer.pagesService.updatePageHeader(id, data);
+    await servicesContainer.pagesService.updatePageHeader(id, data, actor);
 
     logger.debug(
       {
@@ -147,8 +148,12 @@ export async function DELETE(
     "Deleting page header",
   );
 
+  const actor = await getActor();
   try {
-    const header = await servicesContainer.pagesService.deletePageHeader(id);
+    const header = await servicesContainer.pagesService.deletePageHeader(
+      id,
+      actor,
+    );
 
     if (!header) {
       logger.warn({ pageHeaderId: id }, "Page header not found for deletion");

@@ -1,4 +1,4 @@
-import { getServicesContainer } from "@/app/utils";
+import { getActor, getServicesContainer } from "@/app/utils";
 import { serviceOptionsSearchParamsLoader } from "@timelish/api-sdk";
 import { getLoggerFactory } from "@timelish/logger";
 import { appointmentOptionSchema } from "@timelish/types";
@@ -64,6 +64,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   const logger = getLoggerFactory("AdminAPI/services/options")("POST");
+  const actor = await getActor();
   const servicesContainer = await getServicesContainer();
   logger.debug(
     {
@@ -103,7 +104,10 @@ export async function POST(request: NextRequest) {
   );
 
   try {
-    const result = await servicesContainer.servicesService.createOption(data);
+    const result = await servicesContainer.servicesService.createOption(
+      data,
+      actor,
+    );
 
     logger.debug(
       {

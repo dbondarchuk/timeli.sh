@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
   let appointment: Appointment | null = null;
 
   if ("appointmentId" in data) {
-    appointment = await servicesContainer.eventsService.getAppointment(
+    appointment = await servicesContainer.bookingService.getAppointment(
       data.appointmentId,
     );
 

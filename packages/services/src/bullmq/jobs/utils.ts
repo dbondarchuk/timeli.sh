@@ -60,6 +60,10 @@ export function reviveJobData<T>(value: T): T {
     return new Date(value) as any;
   }
 
+  if (value && value instanceof Date) {
+    return value;
+  }
+
   if (value && typeof value === "object") {
     const result: any = {};
     for (const [k, v] of Object.entries(value)) {

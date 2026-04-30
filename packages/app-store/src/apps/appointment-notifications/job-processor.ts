@@ -105,7 +105,7 @@ export class AppointmentNotificationsJobProcessor {
 
     try {
       const appointment =
-        await this.props.services.eventsService.getAppointment(appointmentId);
+        await this.props.services.bookingService.getAppointment(appointmentId);
       const appointmentNotification =
         await this.repository.getAppointmentNotification(
           appData._id,
@@ -155,7 +155,7 @@ export class AppointmentNotificationsJobProcessor {
       }
 
       const adminUrl = getAdminUrl();
-      const websiteUrl = getWebsiteUrl(organization.slug, organization.domain);
+      const websiteUrl = getWebsiteUrl(organization);
 
       const args = getArguments({
         appointment,
@@ -197,7 +197,7 @@ export class AppointmentNotificationsJobProcessor {
         );
 
         const appointments =
-          await this.props.services.eventsService.getAppointments({
+          await this.props.services.bookingService.getAppointments({
             customerId: appointment.customer._id,
             status: ["confirmed"],
             limit: 0,
@@ -622,7 +622,7 @@ export class AppointmentNotificationsJobProcessor {
 
     try {
       const appointment =
-        await this.props.services.eventsService.getAppointment(appointmentId);
+        await this.props.services.bookingService.getAppointment(appointmentId);
 
       if (!appointment) {
         logger.warn(
@@ -743,7 +743,7 @@ export class AppointmentNotificationsJobProcessor {
     logger.debug({ offset, limit, date }, "Getting appointments batch");
 
     const appointments =
-      await this.props.services.eventsService.getAppointments({
+      await this.props.services.bookingService.getAppointments({
         status: ["confirmed"],
         range: {
           start: date,

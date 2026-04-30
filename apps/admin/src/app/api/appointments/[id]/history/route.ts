@@ -47,7 +47,7 @@ export async function GET(
     "Fetching appointment history with parameters",
   );
 
-  const res = await servicesContainer.eventsService.getAppointmentHistory({
+  const res = await servicesContainer.bookingService.getAppointmentHistory({
     offset,
     limit,
     search,

@@ -19,7 +19,7 @@ import { DateTime, HourNumbers, SecondNumbers } from "luxon";
 import React, { CSSProperties, Fragment, useCallback } from "react";
 import { EventPopover } from "./event-popover";
 import { EventVariantClasses } from "./styles";
-import { CalendarEvent, WeeklyEventCalendarProps } from "./types";
+import { EventCalendarEvent, WeeklyEventCalendarProps } from "./types";
 
 const colStartClass = "col-start-[var(--calendar-col-start)]";
 const colSpanClass = "col-end-[var(--calendar-col-end)]";
@@ -187,7 +187,9 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
     };
   });
 
-  const eventToCalendarEvent = (event: (typeof events)[0]): CalendarEvent => ({
+  const eventToCalendarEvent = (
+    event: (typeof events)[0],
+  ): EventCalendarEvent => ({
     ...event,
     start: event.start.toJSDate(),
     end: event.end.toJSDate(),

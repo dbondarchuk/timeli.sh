@@ -1,7 +1,10 @@
-import { Button } from "@timelish/ui";
+import { Link } from "@timelish/ui";
 import { ArrowRight } from "lucide-react";
+import { getSignUpUrl } from "@/lib/admin-app-urls";
 
 export function CTA() {
+  const signUpUrl = getSignUpUrl();
+
   return (
     <section className="bg-gradient-dark px-6 py-24 sm:py-32 lg:px-8">
       <div className="mx-auto max-w-3xl text-center">
@@ -10,23 +13,28 @@ export function CTA() {
         </h2>
         <p className="mt-4 text-lg text-white/80">
           Join thousands of people who stopped chasing bookings and started
-          focusing on what they do best. Your free account is waiting.
+          focusing on what they do best. Pro includes a 7-day free trial—cancel
+          anytime.
         </p>
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Button
+          <Link
+            href={signUpUrl}
             size="lg"
-            className="gap-2 px-8 bg-white text-foreground hover:bg-white/90"
+            className="gap-2 border-0 bg-white px-8 text-foreground hover:bg-white/90"
+            button
           >
-            Get Started — It's Free
+            Create account
             <ArrowRight className="h-4 w-4" />
-          </Button>
-          <Button
+          </Link>
+          <Link
+            href="#pricing"
             size="lg"
             variant="outline"
-            className="bg-transparent text-white border-white/30 hover:bg-white/10 hover:text-white"
+            className="border-white/30 bg-transparent text-white hover:bg-white/10 hover:text-white"
+            button
           >
-            See It In Action
-          </Button>
+            See pricing
+          </Link>
         </div>
       </div>
     </section>

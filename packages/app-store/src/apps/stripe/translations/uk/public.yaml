@@ -1,0 +1,7 @@
+form:
+  payButton: Сплатити зараз
+  totalLabel: Разом
+  or: або
+toast:
+  payment_failed: Платіж не вдався
+  payment_failed_description: Не вдалося списати кошти. Спробуйте ще раз.

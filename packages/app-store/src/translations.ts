@@ -34,6 +34,8 @@ import { PAYPAL_APP_NAME } from "./apps/paypal/const";
 import { SQUARE_APP_NAME } from "./apps/square/const";
 import { PaypalTranslations } from "./apps/paypal/translations";
 import { SquareTranslations } from "./apps/square/translations";
+import { STRIPE_APP_NAME } from "./apps/stripe/const";
+import { StripeTranslations } from "./apps/stripe/translations";
 import { SMART_SCHEDULE_APP_NAME } from "./apps/smart-schedule/const";
 import { SmartScheduleTranslations } from "./apps/smart-schedule/translations";
 import { SMTP_APP_NAME } from "./apps/smtp/const";
@@ -86,6 +88,7 @@ export const AppsTranslations: Record<
   [OUTLOOK_APP_NAME]: OutlookTranslations,
   [PAYPAL_APP_NAME]: PaypalTranslations,
   [SQUARE_APP_NAME]: SquareTranslations,
+  [STRIPE_APP_NAME]: StripeTranslations,
   [APPOINTMENT_NOTIFICATIONS_APP_NAME]: AppointmentNotificationsTranslations,
   [SMTP_APP_NAME]: SmtpTranslations,
   [TEXTBELT_APP_NAME]: TextBeltTranslations,

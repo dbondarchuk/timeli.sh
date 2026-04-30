@@ -35,6 +35,8 @@ import { PAYPAL_APP_NAME } from "../apps/paypal/const";
 import PaypalConnectedApp from "../apps/paypal/service";
 import { SQUARE_APP_NAME } from "../apps/square/const";
 import SquareConnectedApp from "../apps/square/service";
+import { STRIPE_APP_NAME } from "../apps/stripe/const";
+import StripeConnectedApp from "../apps/stripe/service";
 import { SMART_SCHEDULE_APP_NAME } from "../apps/smart-schedule/const";
 import SmartScheduleConnectedApp from "../apps/smart-schedule/service";
 import { SMTP_APP_NAME } from "../apps/smtp/const";
@@ -92,6 +94,7 @@ export const AvailableAppServices: Record<
     new ScheduledNotificationsConnectedApp(props),
   [PAYPAL_APP_NAME]: (props) => new PaypalConnectedApp(props),
   [SQUARE_APP_NAME]: (props) => new SquareConnectedApp(props),
+  [STRIPE_APP_NAME]: (props) => new StripeConnectedApp(props),
   [BLOG_APP_NAME]: (props) => new BlogConnectedApp(props),
   [WAITLIST_APP_NAME]: (props) => new WaitlistConnectedApp(props),
   [WAITLIST_NOTIFICATIONS_APP_NAME]: (props) =>

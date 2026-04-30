@@ -343,7 +343,7 @@ export default class TextBeltConnectedApp
       );
 
       const appointment = appointmentId
-        ? await this.props.services.eventsService.getAppointment(appointmentId)
+        ? await this.props.services.bookingService.getAppointment(appointmentId)
         : null;
 
       const customer = customerId
@@ -581,7 +581,7 @@ export default class TextBeltConnectedApp
     }
 
     const adminUrl = getAdminUrl();
-    const websiteUrl = getWebsiteUrl(organization.slug, organization.domain);
+    const websiteUrl = getWebsiteUrl(organization);
 
     const args = getArguments({
       appointment,

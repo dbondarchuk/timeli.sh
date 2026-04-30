@@ -1,4 +1,4 @@
-import { getServicesContainer } from "@/app/utils";
+import { getActor, getServicesContainer } from "@/app/utils";
 import { bulkDeleteSchema } from "@timelish/api-sdk";
 import { getLoggerFactory } from "@timelish/logger";
 import { okStatus } from "@timelish/types";
@@ -6,6 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   const logger = getLoggerFactory("AdminAPI/services/addons/delete")("POST");
+  const actor = await getActor();
   const servicesContainer = await getServicesContainer();
   const body = await request.json();
 
@@ -27,7 +28,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    await servicesContainer.servicesService.deleteAddons(data.ids);
+    await servicesContainer.servicesService.deleteAddons(data.ids, actor);
 
     logger.debug(
       {

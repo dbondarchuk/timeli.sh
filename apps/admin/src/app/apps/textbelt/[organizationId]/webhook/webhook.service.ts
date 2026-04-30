@@ -5,11 +5,13 @@ import { TextBeltConfiguration } from "@timelish/services";
 import {
   ApiRequest,
   ApiResponse,
+  IBillingService,
+  IBookingService,
   ICommunicationLogsService,
   IConfigurationService,
   IConnectedAppsService,
   ICustomersService,
-  IEventsService,
+  IEventService,
   INotificationService,
   IOrganizationService,
   ITextMessageResponder,
@@ -56,11 +58,13 @@ export class TextBeltWebhookService {
     private readonly configuration: TextBeltConfiguration,
     private readonly configurationService: IConfigurationService,
     private readonly connectedAppsService: IConnectedAppsService,
-    private readonly eventsService: IEventsService,
+    private readonly bookingService: IBookingService,
     private readonly customersService: ICustomersService,
     private readonly communicationLogsService: ICommunicationLogsService,
     private readonly notificationService: INotificationService,
     private readonly organizationService: IOrganizationService,
+    private readonly billingService: IBillingService,
+    private readonly eventService: IEventService,
   ) {}
 
   public async processWebhook(request: ApiRequest): Promise<ApiResponse> {
@@ -117,6 +121,11 @@ export class TextBeltWebhookService {
         "Received TextBelt reply webhook",
       );
 
+      await this.billingService.recordSmsCreditUsage({
+        direction: "inbound",
+        textId: reply.textId,
+      });
+
       const parts = (reply?.data || "").split("|", 4);
 
       const appId = parts[0] || undefined;
@@ -135,7 +144,7 @@ export class TextBeltWebhookService {
       );
 
       const appointment = appointmentId
-        ? await this.eventsService.getAppointment(appointmentId)
+        ? await this.bookingService.getAppointment(appointmentId)
         : null;
 
       const customer = customerId
@@ -209,7 +218,7 @@ export class TextBeltWebhookService {
     }
 
     const adminUrl = getAdminUrl();
-    const websiteUrl = getWebsiteUrl(organization.slug, organization.domain);
+    const websiteUrl = getWebsiteUrl(organization);
 
     const args = getArguments({
       appointment,

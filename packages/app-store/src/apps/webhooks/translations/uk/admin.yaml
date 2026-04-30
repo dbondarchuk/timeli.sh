@@ -1,0 +1,141 @@
+title: Вебхуки
+app:
+  displayName: Вебхуки
+  description: |-
+    Вебхуки дозволяють підключити ваш акаунт до зовнішніх систем та автоматизувати робочі процеси в реальному часі.
+    Миттєво надсилайте події записів, клієнтів або платежів до ваших власних додатків або сторонніх сервісів — забезпечуючи потужні інтеграції та безшовну синхронізацію даних.
+form:
+  url:
+    label: URL вебхука
+    placeholder: https://your-server.com/webhook
+    tooltip: Введіть URL, куди будуть надсилатися події вебхуків через POST запити
+  secret:
+    label: Секрет вебхука (опціонально)
+    placeholder: Введіть секрет вебхука
+    tooltip: Якщо надано, корисне навантаження вебхуків буде підписано з HMAC-SHA256. Залиште порожнім, щоб надсилати вебхуки без підписів.
+    editButton: Редагувати секрет
+  eventTypes:
+    label: Типи подій
+    tooltip: Оберіть, які події повинні запускати вебхуки на цю URL
+    placeholder: Виберіть події
+    loading: Завантаження типів подій…
+  connect: Підключитися з <app></app>
+  unselectEvent: Вилучити подію
+eventTypes:
+  appointment:
+    created:
+      label: Запис створено
+      description: Подія під час створення нового запису
+    rescheduled:
+      label: Запис оновлено
+      description: Подія під час оновлення запису (повне збереження події, зокрема полів слоту)
+    slotRescheduled:
+      label: Запис перенесено
+      description: Подія під час зміни лише часу або тривалості запису
+    statusChanged:
+      label: Статус запису змінено
+      description: Подія під час зміни статусу запису
+  customer:
+    created:
+      label: Клієнта створено
+      description: Подія під час створення клієнта
+    updated:
+      label: Клієнта оновлено
+      description: Подія під час оновлення даних клієнта
+    deleted:
+      label: Клієнтів видалено
+      description: Подія під час видалення одного або кількох клієнтів
+  payment:
+    created:
+      label: Платіж створено
+      description: Подія під час створення платежу
+    updated:
+      label: Платіж оновлено
+      description: Подія під час оновлення платежу
+    deleted:
+      label: Платіж видалено
+      description: Подія під час видалення платежу
+    refunded:
+      label: Платіж повернуто
+      description: Подія під час повернення платежу
+  giftCard:
+    created:
+      label: Подарункову карту створено
+      description: Подія під час створення подарункової карти
+    updated:
+      label: Подарункову карту оновлено
+      description: Подія під час оновлення подарункової карти
+    deleted:
+      label: Подарункові карти видалено
+      description: Подія під час видалення подарункових карток
+    statusChanged:
+      label: Статус подарункових карток змінено
+      description: Подія під час зміни статусу карток
+  field:
+    created:
+      label: Поле створено
+      description: Подія під час створення поля запису
+    updated:
+      label: Поле оновлено
+      description: Подія під час оновлення поля запису
+    deleted:
+      label: Поля видалено
+      description: Подія під час видалення полів запису
+  addon:
+    created:
+      label: Додаток створено
+      description: Подія під час створення додатка
+    updated:
+      label: Додаток оновлено
+      description: Подія під час оновлення додатка
+    deleted:
+      label: Додатки видалено
+      description: Подія під час видалення додатків
+  appointmentOption:
+    created:
+      label: Варіант послуги створено
+      description: Подія під час створення послуги/варіанту
+    updated:
+      label: Варіант послуги оновлено
+      description: Подія під час оновлення послуги/варіанту
+    deleted:
+      label: Варіанти послуг видалено
+      description: Подія під час видалення послуг/варіантів
+  discount:
+    created:
+      label: Знижку створено
+      description: Подія під час створення знижки
+    updated:
+      label: Знижку оновлено
+      description: Подія під час оновлення знижки
+    deleted:
+      label: Знижки видалено
+      description: Подія під час видалення знижок
+    applied:
+      label: Знижку застосовано до запису
+      description: Подія під час застосування знижки під час бронювання
+  waitlist:
+    entry:
+      created:
+        label: Запис списку очікування створено
+        description: Подія з додатка списку очікування
+      dismissed:
+        label: Записи списку очікування відхилено
+        description: Подія з додатка списку очікування
+  form:
+    response:
+      created:
+        label: Відповідь на форму створено
+        description: Подія з додатка форм
+statusText:
+  successfullyConfigured: Вебхук успішно налаштовано
+  webhook_request_failed: "Помилка надсилання вебхука: {status} {statusText}"
+validation:
+  url:
+    invalid: Будь ласка, введіть дійсну URL
+    max: URL вебхука не може бути більше 2048 символів
+  secret:
+    max: Секрет вебхука не може бути більше 256 символів
+  eventTypes:
+    required: Будь ласка, оберіть принаймні один тип події
+

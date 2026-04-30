@@ -14,8 +14,8 @@ import {
 } from "./catalog";
 import { emptyPersisted, newInstallServiceClientId } from "./constants";
 import type {
-  InstallServiceDraftItem,
   InstallPreferencesServerState,
+  InstallServiceDraftItem,
   InstallServiceServerSnapshot,
   InstallWorkspaceServerState,
   PersistedState,
@@ -32,8 +32,7 @@ export function applyInstallCalendarSnapshot(
     return;
   }
   const map = new Map(apps.map((a) => [a.name, a]));
-  const isConnected = (name: string) =>
-    map.get(name)?.status === "connected";
+  const isConnected = (name: string) => map.get(name)?.status === "connected";
   merged.googleCal = isConnected(GOOGLE_CALENDAR_APP_NAME);
   merged.appleCal = isConnected(ICS_APP_NAME);
   merged.outlookCal = isConnected(OUTLOOK_APP_NAME);
@@ -52,14 +51,10 @@ function normalizeInstallDraft(
     name: typeof raw.name === "string" ? raw.name : "",
     description: typeof raw.description === "string" ? raw.description : "",
     duration:
-      typeof raw.duration === "number" && raw.duration >= 1
-        ? raw.duration
-        : 60,
+      typeof raw.duration === "number" && raw.duration >= 1 ? raw.duration : 60,
     price: typeof raw.price === "string" ? raw.price : "",
-    pricePerHour:
-      typeof raw.pricePerHour === "string" ? raw.pricePerHour : "",
-    priceType:
-      raw.priceType === "per_hour" ? "per_hour" : "fixed",
+    pricePerHour: typeof raw.pricePerHour === "string" ? raw.pricePerHour : "",
+    priceType: raw.priceType === "per_hour" ? "per_hour" : "fixed",
     source: raw.source === "template" ? "template" : "custom",
     businessCategory: raw.businessCategory,
     professionId: raw.professionId,
@@ -141,8 +136,14 @@ export function sanitizePersisted(
     if (typeof s.optGiftCardStudio === "boolean") {
       fromDb.optGiftCardStudio = s.optGiftCardStudio;
     }
+    if (typeof s.optMyCabinet === "boolean") {
+      fromDb.optMyCabinet = s.optMyCabinet;
+    }
     if (typeof s.acceptPayments === "boolean") {
       fromDb.acceptPayments = s.acceptPayments;
+    }
+    if (typeof s.autoConfirmBookings === "boolean") {
+      fromDb.autoConfirmBookings = s.autoConfirmBookings;
     }
     if (typeof s.depositEnabled === "boolean") {
       fromDb.depositEnabled = s.depositEnabled;
@@ -220,17 +221,11 @@ export function sanitizePersisted(
     merged.serviceTemplateId = seed.serviceTemplateId;
   }
 
-  let prof = getCatalogProfession(
-    merged.businessCategory,
-    merged.professionId,
-  );
+  let prof = getCatalogProfession(merged.businessCategory, merged.professionId);
   if (!prof) {
     const ids = getProfessionIds(merged.businessCategory);
     merged.professionId = ids[0] ?? "";
-    prof = getCatalogProfession(
-      merged.businessCategory,
-      merged.professionId,
-    );
+    prof = getCatalogProfession(merged.businessCategory, merged.professionId);
   }
 
   let tmpl = getServiceTemplate(
@@ -244,7 +239,8 @@ export function sanitizePersisted(
   }
 
   const addonIds = (tmpl?.addons ?? []).map((a) => a.id);
-  const rawSel = (partialMerged as Partial<PersistedState>).serviceSelectedAddonIds;
+  const rawSel = (partialMerged as Partial<PersistedState>)
+    .serviceSelectedAddonIds;
   const allowed = new Set(addonIds);
   if (rawSel === undefined) {
     merged.serviceSelectedAddonIds = [];

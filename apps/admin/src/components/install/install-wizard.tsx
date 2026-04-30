@@ -50,6 +50,7 @@ export function InstallWizard({
   preferencesFromServer: InstallPreferencesServerState | null;
 }) {
   const { data: session, refetch } = authClient.useSession();
+  const topRef = useRef<HTMLDivElement>(null);
 
   const [hydrated, setHydrated] = useState(false);
   const [step, setStep] = useState<WizardStep>("verify");
@@ -107,7 +108,13 @@ export function InstallWizard({
         );
         if (initialVerified) {
           if (parsedStep !== undefined && parsedStep !== "verify") {
-            setStep(parsedStep);
+            if (typeof parsedStep === "number") {
+              let s = parsedStep;
+              if (s > 6) s = 6;
+              setStep(s >= 1 && s <= 6 ? s : 1);
+            } else {
+              setStep(parsedStep);
+            }
           } else {
             setStep(1);
           }
@@ -153,12 +160,10 @@ export function InstallWizard({
     try {
       if (raw) {
         const parsed = JSON.parse(raw) as { step?: WizardStep };
-        if (
-          typeof parsed.step === "number" &&
-          parsed.step >= 1 &&
-          parsed.step <= 6
-        ) {
-          next = parsed.step;
+        if (typeof parsed.step === "number") {
+          let s = parsed.step;
+          if (s > 6) s = 6;
+          if (s >= 1 && s <= 6) next = s;
         }
       }
     } catch {
@@ -188,6 +193,11 @@ export function InstallWizard({
     if (!hydrated || !verified || !p.slug) return;
     scheduleSlugCheck(p.slug);
   }, [hydrated, verified, organizationId, p.slug, scheduleSlugCheck]);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    topRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [hydrated, step]);
 
   if (!hydrated) {
     return (
@@ -224,6 +234,7 @@ export function InstallWizard({
         preferencesFromServer,
       }}
     >
+      <div ref={topRef} />
       <div className="flex min-h-screen flex-col bg-muted/30">
         <StepInstallHeader stepNum={typeof step === "number" ? step : 1} />
         <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 py-8 md:px-8">

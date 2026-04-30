@@ -1,9 +1,12 @@
-const knownLocales = ["en", "uk"];
+import {
+  localeNamespaceLoaders,
+  resolveMessageLocale,
+} from "./locale-namespace-loaders.generated";
+
 export const CalendarWriterTranslations = {
   admin: async (locale: string) => {
-    if (!knownLocales.includes(locale)) {
-      return (await import(`./en/admin.json`)).default;
-    }
-    return (await import(`./${locale}/admin.json`)).default;
+    const l = resolveMessageLocale(locale);
+    const { namespaceLoaders } = await localeNamespaceLoaders[l]();
+    return (await namespaceLoaders.admin()).default;
   },
 };

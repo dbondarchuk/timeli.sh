@@ -1,4 +1,4 @@
-import { getServicesContainer } from "@/app/utils";
+import { getActor, getServicesContainer } from "@/app/utils";
 import { pageHeadersSearchParamsLoader } from "@timelish/api-sdk";
 import { getLoggerFactory } from "@timelish/logger";
 import { pageHeaderSchema } from "@timelish/types";
@@ -88,8 +88,12 @@ export async function POST(request: NextRequest) {
     "Creating new page header",
   );
 
+  const actor = await getActor();
   try {
-    const result = await servicesContainer.pagesService.createPageHeader(data);
+    const result = await servicesContainer.pagesService.createPageHeader(
+      data,
+      actor,
+    );
 
     logger.debug(
       {

@@ -1,8 +1,8 @@
 import { AllKeys } from "@timelish/i18n";
 import { Leaves } from "@timelish/types";
 import { BUSY_EVENTS_APP_NAME } from "../const";
-import type adminKeys from "./en/admin.json";
-import type publicKeys from "./en/public.json";
+import type adminKeys from "./en/admin.generated";
+import type publicKeys from "./en/public.generated";
 
 export type BusyEventsAdminKeys = Leaves<typeof adminKeys>;
 export const busyEventsAdminNamespace =

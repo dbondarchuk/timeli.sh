@@ -2,16 +2,25 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { adminApi } from "@timelish/api-sdk";
-import { useI18n } from "@timelish/i18n";
+import { I18nRichText, useI18n } from "@timelish/i18n";
 import {
   AppointmentOptionUpdateModel,
   DatabaseId,
   getAppointmentOptionSchemaWithUniqueCheck,
 } from "@timelish/types";
 import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  Button,
   cn,
   Form,
   ResponsiveTabsList,
+  Spinner,
   Tabs,
   TabsContent,
   TabsTrigger,
@@ -19,6 +28,7 @@ import {
   useDebounceCacheFn,
 } from "@timelish/ui";
 import { SaveButton } from "@timelish/ui-admin";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useCallback } from "react";
 import { useForm } from "react-hook-form";
@@ -49,6 +59,13 @@ export const OptionForm: React.FC<{
   type FormValues = z.infer<typeof formSchema>;
 
   const [loading, setLoading] = React.useState(false);
+  const [showAvailabilityDialog, setShowAvailabilityDialog] =
+    React.useState(false);
+  const [newOption, setNewOption] = React.useState<{
+    id: string;
+    name: string;
+  } | null>(null);
+  const [availabilityLoading, setAvailabilityLoading] = React.useState(false);
   const router = useRouter();
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -70,6 +87,49 @@ export const OptionForm: React.FC<{
 
   React.useEffect(() => triggerValidation(), [triggerValidation]);
 
+  const handleAvailabilityDialogOpenChange = useCallback(
+    (open: boolean) => {
+      if (open || !availabilityLoading) {
+        setShowAvailabilityDialog(open);
+      }
+    },
+    [availabilityLoading],
+  );
+
+  const navigateToOptionEdit = useCallback(() => {
+    if (!newOption?.id) return;
+    router.push(`/dashboard/services/options/${newOption.id}`);
+  }, [newOption?.id, router]);
+
+  const onSkipAddingToAvailability = useCallback(() => {
+    setShowAvailabilityDialog(false);
+    navigateToOptionEdit();
+  }, [navigateToOptionEdit]);
+
+  const onAddToAvailability = useCallback(async () => {
+    if (!newOption?.id) return;
+    try {
+      setAvailabilityLoading(true);
+      await toastPromise(
+        adminApi.booking.addBookingAvailableOption(newOption.id),
+        {
+          success: t(
+            "services.options.form.addToAvailabilityDialog.toasts.added",
+          ),
+          error: t(
+            "services.options.form.addToAvailabilityDialog.toasts.requestError",
+          ),
+        },
+      );
+      setShowAvailabilityDialog(false);
+      navigateToOptionEdit();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setAvailabilityLoading(false);
+    }
+  }, [navigateToOptionEdit, newOption?.id, t]);
+
   const onSubmit = async (data: FormValues) => {
     try {
       setLoading(true);
@@ -78,7 +138,8 @@ export const OptionForm: React.FC<{
         if (!initialData?._id) {
           const { _id } =
             await adminApi.serviceOptions.createServiceOption(data);
-          router.push(`/dashboard/services/options/${_id}`);
+          setNewOption({ id: _id, name: data.name });
+          setShowAvailabilityDialog(true);
         } else {
           await adminApi.serviceOptions.updateServiceOption(
             initialData._id,
@@ -209,8 +270,59 @@ export const OptionForm: React.FC<{
             <ReschedulesTab form={form} disabled={loading} />
           </TabsContent>
         </Tabs>
-        <SaveButton form={form} disabled={loading} />
+        <SaveButton form={form} disabled={loading || availabilityLoading} />
       </form>
+      <AlertDialog
+        open={showAvailabilityDialog}
+        onOpenChange={handleAvailabilityDialogOpenChange}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {t("services.options.form.addToAvailabilityDialog.title")}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              <I18nRichText
+                namespace="admin"
+                text="services.options.form.addToAvailabilityDialog.description"
+                args={{
+                  name: newOption?.name ?? "",
+                }}
+              />
+            </AlertDialogDescription>
+            <AlertDialogDescription>
+              {t.rich(
+                "services.options.form.addToAvailabilityDialog.manageHint",
+                {
+                  link: (children: React.ReactNode) => (
+                    <Link
+                      className="underline underline-offset-4"
+                      href="/dashboard/settings/appointments"
+                    >
+                      {children}
+                    </Link>
+                  ),
+                },
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel
+              disabled={availabilityLoading}
+              onClick={onSkipAddingToAvailability}
+            >
+              {t("services.options.form.addToAvailabilityDialog.actions.skip")}
+            </AlertDialogCancel>
+            <Button
+              disabled={availabilityLoading}
+              onClick={onAddToAvailability}
+            >
+              {availabilityLoading && <Spinner />}
+              {t("services.options.form.addToAvailabilityDialog.actions.add")}
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Form>
   );
 };

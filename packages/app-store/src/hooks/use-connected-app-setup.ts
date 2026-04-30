@@ -13,7 +13,7 @@ export type UseConnectedAppSetupProps<T extends FieldValues> = {
   schema: ZodType<T, T>;
   successText?: string;
   errorText?: string;
-  onSuccess?: () => void;
+  onSuccess?: (appId: string) => void;
   onError?: (error: string) => void;
   processDataForSubmit?: (data: T) => any;
   initialData?: T;
@@ -70,32 +70,36 @@ export function useConnectedAppSetup<T extends FieldValues>({
     try {
       setIsLoading(true);
 
-      const promise = new Promise<ConnectedAppStatusWithText>(
-        async (resolve, reject) => {
-          const _appId = appId || (await adminApi.apps.addNewApp(appName));
-          setAppId(_appId);
+      const promise = new Promise<{
+        appId: string;
+        status: ConnectedAppStatusWithText;
+      }>(async (resolve, reject) => {
+        const _appId = appId || (await adminApi.apps.addNewApp(appName));
+        setAppId(_appId);
 
-          const processedData = processDataForSubmit?.(data) || data;
+        const processedData = processDataForSubmit?.(data) || data;
 
-          const status = (await adminApi.apps.processRequest(
-            _appId,
-            processedData,
-          )) as ConnectedAppStatusWithText;
+        const status = (await adminApi.apps.processRequest(
+          _appId,
+          processedData,
+        )) as ConnectedAppStatusWithText;
 
-          setAppStatus(status);
+        setAppStatus(status);
 
-          if (status.status === "failed") {
-            reject(status.statusText);
-            return;
-          }
+        if (status.status === "failed") {
+          reject(status.statusText);
+          return;
+        }
 
-          if (status.status === "connected") {
-            resolve(status);
-          }
-        },
-      );
+        if (status.status === "connected") {
+          resolve({ appId: _appId, status });
+          return;
+        }
 
-      await toastPromise(promise, {
+        reject(new Error("Unknown status"));
+      });
+
+      const { appId: resultAppId } = await toastPromise(promise, {
         success: {
           message: t("common.connectedAppSetup.success.title"),
           description:
@@ -108,7 +112,7 @@ export function useConnectedAppSetup<T extends FieldValues>({
         },
       });
 
-      onSuccess?.();
+      onSuccess?.(resultAppId);
     } catch (e: any) {
       onError?.(e instanceof Error ? e.message : e?.toString());
     } finally {

@@ -9,7 +9,7 @@ import {
   zPossiblyOptionalMinMaxLengthString,
 } from "@timelish/types";
 import { Control } from "react-hook-form";
-import { z, ZodSchema } from "zod";
+import { z, ZodSchema, ZodTypeAny } from "zod";
 import { CheckboxField } from "./checkbox-field";
 import { EmailField } from "./email";
 import { FileField } from "./file";
@@ -33,15 +33,20 @@ export const fieldsSchemaMap: Record<FieldType, (field: Field) => ZodSchema> = {
       .email("validation.email.invalid" satisfies TranslationKeys)
       .max(256, "validation.email.max" satisfies TranslationKeys),
   phone: (field: Field) =>
-    zPossiblyOptionalMinMaxLengthString(
-      field.required,
-      {
-        length: 1,
-        message: "validation.phone.required" satisfies TranslationKeys,
-      },
-      { length: 32, message: "validation.phone.max" satisfies TranslationKeys },
+    (
+      zPossiblyOptionalMinMaxLengthString(
+        field.required,
+        {
+          length: 1,
+          message: "validation.phone.required" satisfies TranslationKeys,
+        },
+        {
+          length: 32,
+          message: "validation.phone.max" satisfies TranslationKeys,
+        },
+      ) as ZodTypeAny
     ).refine(
-      (s) => !s?.includes("_"),
+      (s: unknown) => typeof s !== "string" || !s.includes("_"),
       "validation.phone.invalid" satisfies TranslationKeys,
     ),
   oneLine: (field: Field) =>

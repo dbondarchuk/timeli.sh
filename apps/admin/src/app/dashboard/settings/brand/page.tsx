@@ -5,7 +5,6 @@ import {
 } from "@/app/utils";
 import PageContainer from "@/components/admin/layout/page-container";
 import { getI18nAsync } from "@timelish/i18n/server";
-import { getLoggerFactory } from "@timelish/logger";
 import { Breadcrumbs, Heading } from "@timelish/ui";
 import { Metadata } from "next";
 import { SiteSettingsForm } from "./site-settings-form";
@@ -19,13 +18,15 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Page() {
-  const logger = getLoggerFactory("AdminPages")("site-settings");
   const t = await getI18nAsync("admin");
 
-  logger.debug("Loading aggregate site settings page");
   const servicesContainer = await getServicesContainer();
-  const { organizationDomain, organizationSlug } =
+  const { organizationId, organizationDomain, organizationSlug } =
     await getOrganizationIdAndSlug();
+
+  const billingSubscriptionDetails =
+    await servicesContainer.billingService.getSubscriptionDetails();
+
   const { general, brand, social, styling } =
     await servicesContainer.configurationService.getConfigurations(
       "general",
@@ -35,10 +36,10 @@ export default async function Page() {
     );
   const websiteUrl = await getWebsiteUrl();
   const publicDomain = process.env.PUBLIC_DOMAIN ?? "";
-  const timeliBaseHost = publicDomain
+  const baseHost = publicDomain
     ? `${organizationSlug}.${publicDomain}`
     : organizationSlug;
-  const timeliBaseUrl = `https://${timeliBaseHost}`;
+  const baseUrl = `https://${baseHost}`;
   const customDomainARecordIp =
     process.env.CUSTOM_DOMAIN_A_RECORD_IP?.trim() || undefined;
 
@@ -74,9 +75,10 @@ export default async function Page() {
           customDomain={organizationDomain}
           organizationSlug={organizationSlug}
           websiteUrl={websiteUrl}
-          timeliBaseHost={timeliBaseHost}
-          timeliBaseUrl={timeliBaseUrl}
+          timeliBaseHost={baseHost}
+          timeliBaseUrl={baseUrl}
           customDomainARecordIp={customDomainARecordIp}
+          billingSubscriptionDetails={billingSubscriptionDetails}
         />
       </div>
     </PageContainer>

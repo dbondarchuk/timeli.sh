@@ -8,20 +8,12 @@ export type AppScope = Extandable<
   | "mail-send"
   | "text-message-send"
   | "text-message-respond"
-  | "appointment-hook"
-  | "event-hook"
-  | "customer-hook"
-  | "payment-hook"
+  | "event-subscriber"
   | "scheduled"
   | "schedule"
   | "dashboard-tab"
   | "customer-tab"
   | "payment"
-  | "gift-card-hook"
-  | "service-hook"
-  | "addon-hook"
-  | "field-hook"
-  | "discount-hook"
   | "ui-components"
   | "availability-provider"
   | "meeting-url-provider"
@@ -31,7 +23,7 @@ export type AppScope = Extandable<
 >;
 
 export type AppSetupProps = {
-  onSuccess: (doNotCloseDialog?: boolean) => void;
+  onSuccess: (appId: string, doNotCloseDialog?: boolean) => void;
   onError: (
     error: string | { key: string; args?: Record<string, any> },
   ) => void;
@@ -54,6 +46,11 @@ type BaseApp<
   displayName: AllKeys<T, CustomKeys>;
   category: (AllKeys<T, CustomKeys> | AllKeys<"apps">)[];
   scope: AppScope[];
+  /**
+   * Event bus patterns this app receives (see `eventPatternMatches`), e.g.
+   * `appointment.*`, `customer.*`, `payment.*`, `giftCard.*`.
+   */
+  subscribeTo?: string[];
   description: {
     text: AllKeys<T, CustomKeys>;
   };

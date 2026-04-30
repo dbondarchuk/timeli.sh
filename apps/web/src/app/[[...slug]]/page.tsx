@@ -258,7 +258,7 @@ export default async function Page(props: Props) {
     const appointmentId = cookieStore.get("appointment_id")?.value;
     if (appointmentId) {
       const appointment =
-        await servicesContainer.eventsService.getAppointment(appointmentId);
+        await servicesContainer.bookingService.getAppointment(appointmentId);
       if (
         appointment &&
         DateTime.fromJSDate(appointment.createdAt).diffNow().toMillis() <

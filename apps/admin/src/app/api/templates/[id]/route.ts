@@ -1,4 +1,4 @@
-import { getServicesContainer } from "@/app/utils";
+import { getActor, getServicesContainer } from "@/app/utils";
 import { getLoggerFactory } from "@timelish/logger";
 import { okStatus, templateSchema } from "@timelish/types";
 import { NextRequest, NextResponse } from "next/server";
@@ -73,7 +73,8 @@ export async function PUT(
     );
   }
 
-  await servicesContainer.templatesService.updateTemplate(id, data);
+  const actor = await getActor();
+  await servicesContainer.templatesService.updateTemplate(id, data, actor);
   logger.debug("Template updated successfully", {
     templateId: id,
     templateName: data.name,
@@ -100,7 +101,11 @@ export async function DELETE(
     "Processing delete template by ID API request",
   );
 
-  const result = await servicesContainer.templatesService.deleteTemplate(id);
+  const actor = await getActor();
+  const result = await servicesContainer.templatesService.deleteTemplate(
+    id,
+    actor,
+  );
 
   if (!result) {
     logger.warn({ templateId: id }, "Template not found");

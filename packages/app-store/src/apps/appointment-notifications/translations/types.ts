@@ -1,7 +1,7 @@
 import { AllKeys } from "@timelish/i18n";
 import { Leaves } from "@timelish/types";
 import { APPOINTMENT_NOTIFICATIONS_APP_NAME } from "../const";
-import type adminKeys from "./en/admin.json";
+import type adminKeys from "./en/admin.generated";
 
 export type AppointmentNotificationsAdminKeys = Leaves<typeof adminKeys>;
 export const appointmentNotificationsAdminNamespace =

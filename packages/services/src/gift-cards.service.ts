@@ -1,12 +1,15 @@
 import {
   DateRange,
+  GIFT_CARD_CREATED_EVENT_TYPE,
+  GIFT_CARD_DELETED_EVENT_TYPE,
+  GIFT_CARD_STATUS_CHANGED_EVENT_TYPE,
+  GIFT_CARD_UPDATED_EVENT_TYPE,
   GiftCard,
   GiftCardListModel,
   GiftCardStatus,
   GiftCardUpdateModel,
-  IGiftCardHook,
+  IEventService,
   IGiftCardsService,
-  IJobService,
   InPersonPaymentMethod,
   inPersonPaymentMethod,
   IPaymentsService,
@@ -14,6 +17,11 @@ import {
   PaymentSummary,
   Query,
   WithTotal,
+  type EventSource,
+  type GiftCardCreatedPayload,
+  type GiftCardDeletedPayload,
+  type GiftCardStatusChangedPayload,
+  type GiftCardUpdatedPayload,
 } from "@timelish/types";
 import { buildSearchQuery, escapeRegex } from "@timelish/utils";
 import { Filter, ObjectId, Sort } from "mongodb";
@@ -30,13 +38,14 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
   public constructor(
     organizationId: string,
     protected readonly paymentsService: IPaymentsService,
-    protected readonly jobService: IJobService,
+    protected readonly eventService: IEventService,
   ) {
     super("GiftCardsService", organizationId);
   }
 
   public async createGiftCard(
     giftCard: Omit<GiftCardUpdateModel, "status">,
+    source: EventSource,
   ): Promise<GiftCardListModel> {
     const logger = this.loggerFactory("createGiftCard");
     logger.debug({ giftCard }, "Creating gift card");
@@ -74,10 +83,12 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
       dbGiftCard._id,
     )) as GiftCardListModel;
 
-    await this.jobService.enqueueHook<IGiftCardHook, "onGiftCardCreated">(
-      "gift-card-hook",
-      "onGiftCardCreated",
-      newGiftCard,
+    await this.eventService.emit(
+      GIFT_CARD_CREATED_EVENT_TYPE,
+      {
+        giftCard: newGiftCard,
+      } satisfies GiftCardCreatedPayload,
+      source,
     );
 
     logger.debug({ giftCardId: newGiftCard._id }, "Gift card created");
@@ -87,6 +98,7 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
   public async updateGiftCard(
     id: string,
     giftCard: GiftCardUpdateModel,
+    source: EventSource,
   ): Promise<GiftCardListModel | null> {
     const logger = this.loggerFactory("updateGiftCard");
     logger.debug({ id, giftCard }, "Updating gift card");
@@ -186,11 +198,13 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
     }
 
     const updatedGiftCard = (await this.getGiftCard(id)) as GiftCardListModel;
-    await this.jobService.enqueueHook<IGiftCardHook, "onGiftCardUpdated">(
-      "gift-card-hook",
-      "onGiftCardUpdated",
-      updatedGiftCard,
-      giftCard,
+    await this.eventService.emit(
+      GIFT_CARD_UPDATED_EVENT_TYPE,
+      {
+        giftCard: updatedGiftCard,
+        previous: giftCard,
+      } satisfies GiftCardUpdatedPayload,
+      source,
     );
 
     logger.debug({ id }, "Gift card updated");
@@ -201,6 +215,7 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
   public async setGiftCardStatus(
     id: string,
     status: GiftCardStatus,
+    source: EventSource,
   ): Promise<GiftCardListModel | null> {
     const logger = this.loggerFactory("setGiftCardStatus");
     logger.debug({ id, status }, "Setting gift card status");
@@ -224,10 +239,14 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
     }
 
     const updatedGiftCard = (await this.getGiftCard(id)) as GiftCardListModel;
-    await this.jobService.enqueueHook<
-      IGiftCardHook,
-      "onGiftCardsStatusChanged"
-    >("gift-card-hook", "onGiftCardsStatusChanged", [id], status);
+    await this.eventService.emit(
+      GIFT_CARD_STATUS_CHANGED_EVENT_TYPE,
+      {
+        ids: [id],
+        status,
+      } satisfies GiftCardStatusChangedPayload,
+      source,
+    );
 
     logger.debug({ id, status }, "Gift card status updated");
     return updatedGiftCard;
@@ -236,6 +255,7 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
   public async setGiftCardsStatus(
     ids: string[],
     status: GiftCardStatus,
+    source: EventSource,
   ): Promise<void> {
     const logger = this.loggerFactory("setGiftCardsStatus");
     logger.debug({ ids, status }, "Setting gift cards status");
@@ -252,16 +272,21 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
       { $set: { status, updatedAt: new Date() } },
     );
 
-    await this.jobService.enqueueHook<
-      IGiftCardHook,
-      "onGiftCardsStatusChanged"
-    >("gift-card-hook", "onGiftCardsStatusChanged", ids, status);
+    await this.eventService.emit(
+      GIFT_CARD_STATUS_CHANGED_EVENT_TYPE,
+      {
+        ids,
+        status,
+      } satisfies GiftCardStatusChangedPayload,
+      source,
+    );
 
     logger.debug({ ids, status }, "Gift cards status updated");
   }
 
   public async deleteGiftCard(
     id: string,
+    source: EventSource,
     sourceAppId?: string,
   ): Promise<GiftCardListModel | null> {
     const logger = this.loggerFactory("deleteGiftCard");
@@ -321,12 +346,14 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
     }
 
     await giftCards.deleteOne({ _id: id, organizationId: this.organizationId });
-    await this.paymentsService.deletePayment(giftCard.paymentId);
+    await this.paymentsService.deletePayment(giftCard.paymentId, source);
 
-    await this.jobService.enqueueHook<IGiftCardHook, "onGiftCardsDeleted">(
-      "gift-card-hook",
-      "onGiftCardsDeleted",
-      [id],
+    await this.eventService.emit(
+      GIFT_CARD_DELETED_EVENT_TYPE,
+      {
+        giftCardIds: [id],
+      } satisfies GiftCardDeletedPayload,
+      source,
     );
 
     logger.debug({ id }, "Gift card deleted");
@@ -335,6 +362,7 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
 
   public async deleteGiftCards(
     ids: string[],
+    source: EventSource,
     sourceAppId?: string,
   ): Promise<void> {
     const logger = this.loggerFactory("deleteGiftCards");
@@ -428,10 +456,12 @@ export class GiftCardsService extends BaseService implements IGiftCardsService {
       organizationId: this.organizationId,
     });
 
-    await this.jobService.enqueueHook<IGiftCardHook, "onGiftCardsDeleted">(
-      "gift-card-hook",
-      "onGiftCardsDeleted",
-      giftCardIdsToDelete,
+    await this.eventService.emit(
+      GIFT_CARD_DELETED_EVENT_TYPE,
+      {
+        giftCardIds: giftCardIdsToDelete,
+      } satisfies GiftCardDeletedPayload,
+      source,
     );
 
     logger.debug({ ids }, "Gift cards deleted");

@@ -36,7 +36,7 @@ export async function PATCH(
     );
   }
 
-  await servicesContainer.eventsService.updateAppointmentNote(id, data.note);
+  await servicesContainer.bookingService.updateAppointmentNote(id, data.note);
 
   logger.debug(
     {

@@ -5,6 +5,7 @@ const INTEGRATIONS = [
   { name: "Zoom", logo: "/logos/zoom.svg" },
   { name: "PayPal", logo: "/logos/paypal.svg" },
   { name: "Square", logo: "/logos/square.svg" },
+  { name: "Stripe", logo: "/logos/stripe.svg" },
 ] as const;
 
 function IntegrationCard({

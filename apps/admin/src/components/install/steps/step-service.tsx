@@ -47,7 +47,7 @@ import {
   toast,
 } from "@timelish/ui";
 import { durationToTime, formatAmountWithCurrency } from "@timelish/utils";
-import { Plus, Trash2 } from "lucide-react";
+import { ArrowLeft, Plus, Trash2 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 function ServiceTemplateDialog({
@@ -186,13 +186,17 @@ function ServiceTemplateDialog({
                 variant="ghost"
                 size="sm"
                 className="h-8 px-2"
+                title={t("wizard.service.backToProfessions")}
                 onClick={() => {
                   setPickCategory(null);
                   setPickProfession(null);
                 }}
               >
-                {t("wizard.service.backToProfessions")}
+                <ArrowLeft />
               </Button>
+              <span className="text-sm text-muted-foreground">
+                {tAny(catalogProfessionLabelKey(pickCategory, pickProfession))}
+              </span>
             </div>
             <Label>{t("wizard.service.pickMain")}</Label>
             <div className="flex max-h-[min(40vh,16rem)] flex-col gap-2 overflow-y-auto">

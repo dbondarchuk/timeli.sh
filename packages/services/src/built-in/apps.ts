@@ -14,7 +14,7 @@ export const BuiltInApps: Record<
   }
 > = {
   [BOOKING_TRACKING_APP_ID]: {
-    scopes: ["event-hook"],
+    scopes: ["event-subscriber"],
     scheduled: true,
     getService: BuiltInBookingTrackingApp,
   },

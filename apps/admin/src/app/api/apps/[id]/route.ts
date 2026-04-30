@@ -66,16 +66,18 @@ export async function DELETE(
   );
 
   try {
-    await servicesContainer.connectedAppsService.deleteApp(id);
+    const result = await servicesContainer.connectedAppsService.deleteApp(id);
 
-    logger.debug(
-      {
-        appId: id,
-      },
-      "App deleted successfully",
-    );
+    if (result.success) {
+      logger.debug({ appId: id, result }, "App deleted successfully");
+    } else {
+      logger.warn(
+        { appId: id, result },
+        "App delete blocked by uninstall check",
+      );
+    }
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json(result, { status: result.success ? 200 : 405 });
   } catch (error: any) {
     logger.error(
       {

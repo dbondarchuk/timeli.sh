@@ -4,6 +4,7 @@ import {
   IConnectedAppProps,
   Query,
   WithTotal,
+  type EventSource,
 } from "@timelish/types";
 import { buildSearchQuery, escapeRegex } from "@timelish/utils";
 import { ObjectId, type Filter, type Sort } from "mongodb";
@@ -13,8 +14,10 @@ import {
   WaitlistRequest,
   WaitlistStatus,
 } from "../models";
-import { IWaitlistHook } from "../models/waitlist-hook";
-import { WaitlistAdminAllKeys } from "../translations/types";
+import {
+  WAITLIST_ENTRIES_DISMISSED_EVENT_TYPE,
+  WAITLIST_ENTRY_CREATED_EVENT_TYPE,
+} from "../models/events";
 
 export const WAITLIST_COLLECTION_NAME = "waitlist";
 
@@ -35,17 +38,21 @@ export class WaitlistRepositoryService {
 
   public async createWaitlistEntry(
     entry: WaitlistRequest,
+    source: EventSource,
   ): Promise<WaitlistEntry> {
     const logger = this.loggerFactory("createWaitlistEntry");
     logger.debug({ entry }, "Creating waitlist entry");
 
-    const customer =
-      await this.services.customersService.getOrUpsertCustomer(entry);
+    const customer = await this.services.customersService.getOrUpsertCustomer(
+      entry,
+      source,
+    );
 
     const db = await this.getDbConnection();
     const waitlistEntry = {
       ...entry,
       _id: new ObjectId().toString(),
+      appId: this.appId,
       customerId: customer._id,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -66,36 +73,18 @@ export class WaitlistRepositoryService {
 
     logger.debug({ waitlistEntry }, "Waitlist entry created, executing hooks");
 
-    await this.services.jobService.enqueueHook<
-      IWaitlistHook,
-      "onWaitlistEntryCreated"
-    >("waitlist-hook", "onWaitlistEntryCreated", entity!);
+    const emitSource: EventSource =
+      source.actor === "customer"
+        ? { actor: "customer", actorId: customer._id }
+        : source;
 
-    const waitlistEntriesCount = await this.getWaitlistEntriesCount(new Date());
-    await this.services.dashboardNotificationsService.publishNotification({
-      type: "waitlist-entry-created",
-      badges: [
-        {
-          key: "waitlist_entries",
-          count: waitlistEntriesCount.totalCount,
-        },
-      ],
-      toast: {
-        type: "info",
-        title: {
-          key: "app_waitlist_admin.notifications.newEntry" satisfies WaitlistAdminAllKeys,
-        },
-        message: {
-          key: "app_waitlist_admin.notifications.newEntryMessage" satisfies WaitlistAdminAllKeys,
-        },
-        action: {
-          label: {
-            key: "app_waitlist_admin.notifications.viewWaitlist" satisfies WaitlistAdminAllKeys,
-          },
-          href: `/dashboard?activeTab=waitlist&key=${Date.now()}`,
-        },
+    await this.services.eventService.emit(
+      WAITLIST_ENTRY_CREATED_EVENT_TYPE,
+      {
+        entry: entity!,
       },
-    });
+      emitSource,
+    );
 
     return entity!;
   }
@@ -114,6 +103,7 @@ export class WaitlistRepositoryService {
     const $and: Filter<WaitlistEntryEntity>[] = [
       {
         organizationId: this.organizationId,
+        appId: this.appId,
       },
       {
         status: "active",
@@ -198,6 +188,7 @@ export class WaitlistRepositoryService {
     const $and: Filter<WaitlistEntry>[] = [
       {
         organizationId: this.organizationId,
+        appId: this.appId,
       },
     ];
     if (query.range?.start || query.range?.end) {
@@ -333,7 +324,11 @@ export class WaitlistRepositoryService {
       .aggregate([
         ...this.waitlistAggregateJoin,
         {
-          $match: { _id: id, organizationId: this.organizationId },
+          $match: {
+            _id: id,
+            organizationId: this.organizationId,
+            appId: this.appId,
+          },
         },
       ])
       .next();
@@ -350,7 +345,10 @@ export class WaitlistRepositoryService {
     return waitlistEntry as WaitlistEntry | null;
   }
 
-  public async dismissWaitlistEntry(id: string): Promise<WaitlistEntry | null> {
+  public async dismissWaitlistEntry(
+    id: string,
+    source: EventSource,
+  ): Promise<WaitlistEntry | null> {
     const logger = this.loggerFactory("dismissWaitlistEntry");
     logger.debug({ waitlistEntryId: id }, "Dismissing waitlist entry by id");
 
@@ -360,12 +358,15 @@ export class WaitlistRepositoryService {
       return null;
     }
 
-    await this.dismissWaitlistEntries([id]);
+    await this.dismissWaitlistEntries([id], source);
 
     return entity;
   }
 
-  public async dismissWaitlistEntries(ids: string[]): Promise<void> {
+  public async dismissWaitlistEntries(
+    ids: string[],
+    source: EventSource,
+  ): Promise<void> {
     const logger = this.loggerFactory("dismissWaitlistEntries");
     logger.debug(
       { waitlistEntryIds: ids },
@@ -376,7 +377,11 @@ export class WaitlistRepositoryService {
     const { modifiedCount } = await db
       .collection<WaitlistEntryEntity>(WAITLIST_COLLECTION_NAME)
       .updateMany(
-        { _id: { $in: ids }, organizationId: this.organizationId },
+        {
+          _id: { $in: ids },
+          organizationId: this.organizationId,
+          appId: this.appId,
+        },
         { $set: { status: "dismissed", updatedAt: new Date() } },
       );
 
@@ -396,21 +401,13 @@ export class WaitlistRepositoryService {
       "Waitlist entries dismissed, executing hooks",
     );
 
-    await this.services.jobService.enqueueHook<
-      IWaitlistHook,
-      "onWaitlistEntryDismissed"
-    >("waitlist-hook", "onWaitlistEntryDismissed", waitlistEntries.items);
-
-    const waitlistEntriesCount = await this.getWaitlistEntriesCount(new Date());
-    await this.services.dashboardNotificationsService.publishNotification({
-      type: "waitlist-entries",
-      badges: [
-        {
-          key: "waitlist_entries",
-          count: waitlistEntriesCount.totalCount,
-        },
-      ],
-    });
+    await this.services.eventService.emit(
+      WAITLIST_ENTRIES_DISMISSED_EVENT_TYPE,
+      {
+        entries: waitlistEntries.items,
+      },
+      source,
+    );
   }
 
   public async installWaitlistApp() {
@@ -423,15 +420,32 @@ export class WaitlistRepositoryService {
     );
 
     const indexes = {
-      organizationId_createdAt_1: { organizationId: 1, createdAt: 1 },
-      organizationId_status_1: { organizationId: 1, status: 1 },
-      organizationId_customerId_1: { organizationId: 1, customerId: 1 },
-      organizationId_optionId_1: { organizationId: 1, optionId: 1 },
-      organizationId_asSoonAsPossible_1: {
+      organizationId_appId_createdAt_1: {
         organizationId: 1,
+        appId: 1,
+        createdAt: 1,
+      },
+      organizationId_appId_status_1: { organizationId: 1, appId: 1, status: 1 },
+      organizationId_appId_customerId_1: {
+        organizationId: 1,
+        appId: 1,
+        customerId: 1,
+      },
+      organizationId_appId_optionId_1: {
+        organizationId: 1,
+        appId: 1,
+        optionId: 1,
+      },
+      organizationId_appId_asSoonAsPossible_1: {
+        organizationId: 1,
+        appId: 1,
         asSoonAsPossible: 1,
       },
-      organizationId_dates_date_1: { organizationId: 1, "dates.date": 1 },
+      organizationId_appId_dates_date_1: {
+        organizationId: 1,
+        appId: 1,
+        "dates.date": 1,
+      },
     };
 
     for (const [name, index] of Object.entries(indexes)) {

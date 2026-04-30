@@ -1,4 +1,4 @@
-import { getServicesContainer } from "@/app/utils";
+import { getActor, getServicesContainer } from "@/app/utils";
 import { getLoggerFactory } from "@timelish/logger";
 import { inStorePaymentUpdateModelSchema } from "@timelish/types";
 import { NextRequest, NextResponse } from "next/server";
@@ -9,6 +9,7 @@ export async function PUT(
 ) {
   const logger = getLoggerFactory("AdminAPI/payments/instore/[id]")("PUT");
   const servicesContainer = await getServicesContainer();
+  const actor = await getActor();
   const id = (await params).id;
   logger.debug(
     {
@@ -76,6 +77,7 @@ export async function PUT(
   const result = await servicesContainer.paymentsService.updatePayment(
     id,
     update,
+    actor,
   );
 
   logger.debug(
@@ -92,6 +94,7 @@ export async function DELETE(
 ) {
   const logger = getLoggerFactory("AdminAPI/payments/instore/[id]")("DELETE");
   const servicesContainer = await getServicesContainer();
+  const actor = await getActor();
   const id = (await params).id;
   logger.debug(
     { url: request.url, method: request.method, id },
@@ -143,7 +146,7 @@ export async function DELETE(
     );
   }
 
-  await servicesContainer.paymentsService.deletePayment(id);
+  await servicesContainer.paymentsService.deletePayment(id, actor);
 
   logger.debug(
     { paymentId: id },

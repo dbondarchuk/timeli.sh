@@ -7,6 +7,7 @@ import {
   ConnectedAppError,
   ConnectedAppRequestError,
   ConnectedAppStatusWithText,
+  ConnectedAppUninstallResult,
   IConnectedApp,
   IConnectedAppProps,
   IPaymentProcessor,
@@ -831,6 +832,33 @@ class PaypalConnectedApp
           process.env.PAYPAL_ENVIRONMENT?.toLocaleLowerCase() === "sandbox"
         ? Environment.Sandbox
         : Environment.Production;
+  }
+
+  public async unInstall(
+    appData: ConnectedAppData,
+  ): Promise<ConnectedAppUninstallResult> {
+    const logger = this.loggerFactory("unInstall");
+    const db = await this.props.getDbConnection();
+    const payment = await db.collection("payments").findOne({
+      organizationId: appData.organizationId,
+      appId: appData._id,
+    });
+
+    if (payment) {
+      logger.warn(
+        { appId: appData._id },
+        "Cannot uninstall PayPal app: payments exist",
+      );
+      return {
+        success: false,
+        code: "cannot_uninstall_has_payments",
+        error: {
+          key: "app_paypal_admin.statusText.cannot_uninstall_has_payments" satisfies PaypalAdminAllKeys,
+        },
+      };
+    }
+
+    return { success: true, code: "ok" };
   }
 }
 

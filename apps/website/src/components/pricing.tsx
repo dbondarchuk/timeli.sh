@@ -1,61 +1,52 @@
-import { Link } from "@timelish/ui";
+import { getSignUpUrl } from "@/lib/admin-app-urls";
+import { Button, Link } from "@timelish/ui";
 import { Check } from "lucide-react";
 
-const plans = [
-  {
-    name: "Free",
-    price: "$0",
-    description: "Great for trying it out",
-    features: [
-      "Your own booking page",
-      "Up to 50 bookings a month",
-      "Email confirmations and reminders",
-      "Calendar sync",
-      "Full branding control",
-      "Free subdomain (yourname.timeli.sh)",
-    ],
-    cta: "Join the Waitlist",
-    ctaLink: "#waitlist",
-    highlighted: false,
-  },
-  {
-    name: "Pro",
-    price: "$19",
-    period: "/month",
-    description: "Most popular choice",
-    features: [
-      "Everything in Free",
-      "Unlimited bookings",
-      "Take payments online",
-      "Text message confirmations and reminders",
-      "50 free SMS credits per month",
-      "Waitlist for busy times",
-      "Use your own domain name",
-      "Priority help when you need it",
-    ],
-    cta: "Join the Waitlist",
-    ctaLink: "#waitlist",
-    highlighted: true,
-  },
-  {
-    name: "Team",
-    price: "$25",
-    period: "/person/month",
-    description: "For businesses with staff",
-    features: [
-      "Everything in Pro",
-      "Multiple team members",
-      "See how you're doing",
-      "Connect other tools",
-      "Dedicated support person",
-    ],
-    cta: "Talk to Us",
-    ctaLink: "mailto:sales@timelish.com",
-    highlighted: false,
-  },
-];
-
 export function Pricing() {
+  const signUpUrl = getSignUpUrl();
+
+  const plans = [
+    {
+      name: "Pro",
+      price: "$29",
+      period: "/month",
+      description: "Everything you need to run and grow your booking business",
+      features: [
+        "Full website builder — design and publish your site, no code needed",
+        "Beautiful booking page, fully branded to your business",
+        "Accept payments online — Square, Stripe, PayPal, and more",
+        "Automatic email & SMS reminders to cut no-shows",
+        "Your own domain or a free timeli.sh subdomain",
+        "Unlimited bookings and clients, always",
+        "Branded gift cards, discounts & promotions",
+        "Client self-service portal for bookings and profiles",
+        "100 SMS credits included every month",
+      ],
+      cta: "Start free trial",
+      ctaLink: signUpUrl,
+      highlighted: true,
+      comingSoon: false,
+    },
+    {
+      name: "Team",
+      price: "$59",
+      period: "/month",
+      description: "For businesses with staff and more advanced needs",
+      features: [
+        "Everything in Pro",
+        "Up to 5 team members, +$12/mo per additional",
+        "Individual calendars and availability per staff member",
+        "Clients can book a specific person or the next available",
+        "Team performance and booking analytics",
+        "Centralized dashboard to manage your whole team",
+        "Custom permissions — control what each staff member can see",
+        "Dedicated support",
+      ],
+      highlighted: false,
+      comingSoon: true,
+    },
+  ] as const;
+
   return (
     <section id="pricing" className="px-6 py-24 sm:py-32 lg:px-8">
       <div className="mx-auto max-w-7xl">
@@ -67,11 +58,11 @@ export function Pricing() {
             Simple pricing, no surprises
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Start free. Upgrade when you're ready. Cancel anytime.
+            7-day free trial, then a simple monthly plan. Cancel anytime.
           </p>
         </div>
 
-        <div className="mx-auto mt-16 grid max-w-5xl grid-cols-1 gap-8 lg:grid-cols-3">
+        <div className="mx-auto mt-16 grid max-w-5xl grid-cols-1 gap-8 lg:grid-cols-2">
           {plans.map((plan, index) => (
             <div
               key={index}
@@ -79,12 +70,20 @@ export function Pricing() {
                 plan.highlighted
                   ? "border-primary bg-primary/5 shadow-lg ring-1 ring-primary"
                   : "border-border bg-card"
-              }`}
+              } ${plan.comingSoon ? "border-dashed" : ""}`}
             >
-              {plan.highlighted && (
+              {plan.highlighted && !plan.comingSoon && (
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2">
                   <span className="inline-flex items-center rounded-full bg-gradient-primary px-4 py-1 text-xs font-semibold text-white">
-                    Most Popular
+                    Everything included
+                  </span>
+                </div>
+              )}
+
+              {plan.comingSoon && (
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                  <span className="inline-flex items-center rounded-full border border-border bg-muted px-4 py-1 text-xs font-semibold text-muted-foreground">
+                    Coming soon
                   </span>
                 </div>
               )}
@@ -96,13 +95,23 @@ export function Pricing() {
                 <p className="mt-1 text-sm text-muted-foreground">
                   {plan.description}
                 </p>
-                <div className="mt-4 flex items-baseline">
-                  <span className="text-4xl font-bold text-foreground">
-                    {plan.price}
-                  </span>
-                  {plan.period && (
-                    <span className="text-muted-foreground">{plan.period}</span>
-                  )}
+                <div className="mt-4">
+                  <div className="flex items-baseline gap-0.5">
+                    <span
+                      className={`text-4xl font-bold tabular-nums ${
+                        plan.comingSoon
+                          ? "text-muted-foreground"
+                          : "text-foreground"
+                      }`}
+                    >
+                      {plan.price}
+                    </span>
+                    {"period" in plan && plan.period ? (
+                      <span className="text-muted-foreground">
+                        {plan.period}
+                      </span>
+                    ) : null}
+                  </div>
                 </div>
               </div>
 
@@ -112,23 +121,41 @@ export function Pricing() {
                     key={featureIndex}
                     className="flex items-start gap-3 text-sm"
                   >
-                    <Check className="h-5 w-5 flex-shrink-0 text-primary" />
+                    <Check
+                      className={`h-5 w-5 flex-shrink-0 ${
+                        plan.comingSoon
+                          ? "text-muted-foreground"
+                          : "text-primary"
+                      }`}
+                    />
                     <span className="text-foreground">{feature}</span>
                   </li>
                 ))}
               </ul>
 
-              <Link
-                href={plan.ctaLink}
-                className="mt-8 w-full"
-                variant={plan.highlighted ? "brand" : "outline"}
-                button
-              >
-                {plan.cta}
-              </Link>
+              {plan.comingSoon ? (
+                <Button
+                  className="mt-8 w-full"
+                  size="lg"
+                  variant="outline"
+                  disabled
+                >
+                  Coming soon
+                </Button>
+              ) : "cta" in plan && "ctaLink" in plan ? (
+                <Link
+                  href={plan.ctaLink}
+                  className="mt-8 w-full"
+                  variant={plan.highlighted ? "brand" : "outline"}
+                  button
+                >
+                  {plan.cta}
+                </Link>
+              ) : null}
             </div>
           ))}
         </div>
+
       </div>
     </section>
   );

@@ -1,7 +1,7 @@
 import { AllKeys } from "@timelish/i18n";
 import { Leaves } from "@timelish/types";
 import { CARDDAV_APP_NAME } from "../const";
-import type adminKeys from "./en/admin.json";
+import type adminKeys from "./en/admin.generated";
 
 export type CarddavAdminKeys = Leaves<typeof adminKeys>;
 export const carddavAdminNamespace = `app_${CARDDAV_APP_NAME}_admin` as const;

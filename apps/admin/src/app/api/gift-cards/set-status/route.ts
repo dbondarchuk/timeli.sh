@@ -1,4 +1,4 @@
-import { getServicesContainer } from "@/app/utils";
+import { getActor, getServicesContainer } from "@/app/utils";
 import { setGiftCardsStatusSchema } from "@timelish/api-sdk";
 import { getLoggerFactory } from "@timelish/logger";
 import { okStatus } from "@timelish/types";
@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 export async function POST(request: NextRequest) {
   const logger = getLoggerFactory("AdminAPI/gift-cards/set-status")("POST");
   const servicesContainer = await getServicesContainer();
-
+  const actor = await getActor();
   logger.debug(
     {
       url: request.url,
@@ -36,6 +36,7 @@ export async function POST(request: NextRequest) {
   await servicesContainer.giftCardsService.setGiftCardsStatus(
     data.ids,
     data.status,
+    actor,
   );
 
   logger.debug(

@@ -7,6 +7,7 @@ import { Spinner, toast, useConfig, useCurrency } from "@timelish/ui";
 import { formatAmountString } from "@timelish/utils";
 import React from "react";
 import {
+  ApplePay,
   CreditCard,
   GooglePay,
   PaymentForm,
@@ -159,6 +160,7 @@ export const SquareForm: React.FC<PaymentAppFormProps<SquareFormProps>> = ({
           buttonSizeMode="fill"
           buttonType="long"
         />
+        <ApplePay />
         <div className="items-center flex my-px text-center">
           <div className="bg-muted flex-1 h-px mx-2" />
           <span className="text-sm text-muted-foreground uppercase">

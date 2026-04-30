@@ -10,14 +10,22 @@ import {
   ConnectedAppError,
   ConnectedAppResponse,
   ConnectedOauthAppTokens,
-  IAppointmentHook,
+  EventEnvelope,
+  EventSource,
   ICalendarBusyTimeProvider,
+  IConnectedApp,
   IConnectedAppProps,
+  IEventSubscriber,
   IMeetingUrlProvider,
   IOAuthConnectedApp,
   WithDatabaseId,
 } from "@timelish/types";
-import { encrypt, getAdminUrl, stripMarkdown } from "@timelish/utils";
+import {
+  dispatchAppointmentEventPayload,
+  encrypt,
+  getAdminUrl,
+  stripMarkdown,
+} from "@timelish/utils";
 import { DateTime } from "luxon";
 import {
   ZOOM_API_BASE_URL,
@@ -41,9 +49,12 @@ export class ZoomConnectedApp
     IOAuthConnectedApp,
     IMeetingUrlProvider,
     ICalendarBusyTimeProvider,
-    IAppointmentHook
+    IEventSubscriber
 {
   protected readonly loggerFactory: LoggerFactory;
+
+  /** OAuth-only; admin does not call processRequest for Zoom. */
+  processRequest?: IConnectedApp["processRequest"];
 
   public constructor(protected readonly props: IConnectedAppProps) {
     this.loggerFactory = getLoggerFactory(
@@ -52,9 +63,58 @@ export class ZoomConnectedApp
     );
   }
 
-  processRequest?:
-    | ((appData: ConnectedAppData, data: any) => Promise<any>)
-    | undefined;
+  public async onEvent(
+    appData: ConnectedAppData,
+    envelope: EventEnvelope,
+  ): Promise<void> {
+    await dispatchAppointmentEventPayload(envelope, {
+      onAppointmentFullRescheduled: (
+        appointment,
+        newTime,
+        newDuration,
+        oldTime,
+        oldDuration,
+        doNotNotifyCustomer,
+        _source,
+      ) =>
+        this.onAppointmentRescheduled(
+          appData,
+          appointment,
+          newTime,
+          newDuration,
+          oldTime,
+          oldDuration,
+          doNotNotifyCustomer,
+          _source,
+        ),
+      onAppointmentSlotRescheduled: (
+        appointment,
+        newTime,
+        newDuration,
+        oldTime,
+        oldDuration,
+        doNotNotifyCustomer,
+        _source,
+      ) =>
+        this.onAppointmentRescheduled(
+          appData,
+          appointment,
+          newTime,
+          newDuration,
+          oldTime,
+          oldDuration,
+          doNotNotifyCustomer,
+          _source,
+        ),
+      onAppointmentStatusChanged: (appointment, newStatus, oldStatus, _source) =>
+        this.onAppointmentStatusChanged(
+          appData,
+          appointment,
+          newStatus,
+          oldStatus,
+        ),
+    });
+  }
 
   public async getLoginUrl(appId: string): Promise<string> {
     const logger = this.loggerFactory("getLoginUrl");
@@ -408,6 +468,8 @@ export class ZoomConnectedApp
     newDuration: number,
     oldTime?: Date,
     oldDuration?: number,
+    _doNotNotifyCustomer?: boolean,
+    _source?: EventSource,
   ) {
     const logger = this.loggerFactory("onAppointmentRescheduled");
     if (appointment.meetingInformation?.type !== "zoom") {
@@ -505,8 +567,7 @@ export class ZoomConnectedApp
     appData: ConnectedAppData,
     appointment: Appointment,
     newStatus: AppointmentStatus,
-    oldStatus?: AppointmentStatus,
-    by?: "customer" | "user",
+    _oldStatus?: AppointmentStatus,
   ) {
     const logger = this.loggerFactory("onAppointmentStatusChanged");
     if (appointment.meetingInformation?.type !== "zoom") {

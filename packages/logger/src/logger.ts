@@ -7,14 +7,15 @@ const _getLoggerFactory = cache(async (organizationId?: string | null) => {
     // Try to import next/headers dynamically to avoid issues in client components
     const { headers } = await import("next/headers");
     const headersList = await headers();
-    return getBaseLoggerFactory(
-      headersList.get("x-correlation-id"),
-      headersList.get("x-session-id"),
-      organizationId || headersList.get("x-organization-id"),
-    );
+    return getBaseLoggerFactory({
+      correlationId: headersList.get("x-correlation-id"),
+      sessionId: headersList.get("x-session-id"),
+      organizationId: organizationId || headersList.get("x-organization-id"),
+      userId: headersList.get("x-user-id"),
+    });
   } catch {
     // Fallback for client-side or when next/headers is not available
-    return getBaseLoggerFactory();
+    return getBaseLoggerFactory({ organizationId });
   }
 });
 
