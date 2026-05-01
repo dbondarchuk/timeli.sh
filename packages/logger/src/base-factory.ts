@@ -6,11 +6,17 @@ export const getBaseLoggerFactory = ({
   sessionId,
   organizationId,
   userId,
+  hostname,
+  url,
+  method,
 }: {
   correlationId?: string | null;
   sessionId?: string | null;
   organizationId?: string | null;
   userId?: string | null;
+  hostname?: string | null;
+  url?: string | null;
+  method?: string | null;
 }) => {
   const logger = pino({
     level: process.env.LOG_LEVEL || "info",
@@ -39,6 +45,9 @@ export const getBaseLoggerFactory = ({
         sessionId,
         organizationId,
         userId,
+        hostname,
+        url,
+        method,
       }),
     },
     timestamp: pino.stdTimeFunctions.isoTime,

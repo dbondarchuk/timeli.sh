@@ -7,4 +7,4 @@ export const config = {
   runtime: "nodejs", // Now stable!
 };
 
-export default chainProxy([withOrganizationId, withLogger, withLocale]);
+export default chainProxy([withLogger, withOrganizationId, withLocale]);

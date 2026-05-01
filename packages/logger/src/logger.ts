@@ -12,6 +12,9 @@ const _getLoggerFactory = cache(async (organizationId?: string | null) => {
       sessionId: headersList.get("x-session-id"),
       organizationId: organizationId || headersList.get("x-organization-id"),
       userId: headersList.get("x-user-id"),
+      hostname: headersList.get("x-forwarded-host") || headersList.get("host"),
+      url: headersList.get("x-request-url"),
+      method: headersList.get("x-request-method"),
     });
   } catch {
     // Fallback for client-side or when next/headers is not available

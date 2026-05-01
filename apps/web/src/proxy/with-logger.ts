@@ -4,11 +4,7 @@ import { MiddlewareProxy } from "./types";
 
 export const withLogger: MiddlewareProxy = (next) => {
   return async (request: NextRequest, event: NextFetchEvent) => {
-    if (
-      /^(\/_next\/static|\/_next\/image|\/favicon.ico)/.test(
-        request.nextUrl.pathname,
-      )
-    )
+    if (request.nextUrl.pathname.startsWith("/_next"))
       return next(request, event);
 
     const correlationId = crypto.randomUUID();
@@ -18,6 +14,8 @@ export const withLogger: MiddlewareProxy = (next) => {
     const sessionId = originalSessionId?.value || crypto.randomUUID();
     request.headers.append("x-correlation-id", correlationId);
     request.headers.append("x-session-id", sessionId);
+    request.headers.append("x-request-url", request.url);
+    request.headers.append("x-request-method", request.method);
 
     const logger = getBaseLoggerFactory({ correlationId });
     logger.debug(

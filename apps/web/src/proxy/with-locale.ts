@@ -3,11 +3,7 @@ import { MiddlewareProxy } from "./types";
 
 export const withLocale: MiddlewareProxy = (next) => {
   return async (request: NextRequest, event: NextFetchEvent) => {
-    if (
-      /^(\/_next\/static|\/_next\/image|\/favicon.ico)/.test(
-        request.nextUrl.pathname,
-      )
-    )
+    if (request.nextUrl.pathname.startsWith("/_next"))
       return next(request, event);
 
     const { nextUrl } = request;
