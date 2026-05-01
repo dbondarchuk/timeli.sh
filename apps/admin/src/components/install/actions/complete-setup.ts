@@ -485,14 +485,15 @@ async function ensureDefaultInstallSchedule(
   );
   const existing =
     (await services.configurationService.getConfiguration("schedule")) ?? null;
-  const hasWorkingHours = Boolean(
-    existing?.schedule?.some((day) => day.shifts?.length > 0),
+  const hasWorkingHours = existing?.schedule?.some(
+    (day) => day.shifts?.length > 0,
   );
 
   if (hasWorkingHours) {
     logger.debug("Schedule already has working hours; skipping default");
     return;
   }
+
   await services.configurationService.setConfiguration(
     "schedule",
     getDefaultScheduleConfiguration(),
@@ -509,7 +510,10 @@ async function ensureInstallDefaultScripts(
   );
 
   const existing =
-    (await services.configurationService.getConfiguration("scripts")) ?? null;
+    Object.keys(
+      (await services.configurationService.getConfiguration("scripts")) ?? {},
+    ).length > 0;
+
   if (existing) {
     logger.debug("Scripts already installed; skipping default");
     return;
@@ -533,12 +537,17 @@ async function ensureInstallDefaultSocial(
   const logger = getLoggerFactory("InstallActions")(
     "ensureInstallDefaultSocial",
   );
+
   const existing =
-    (await services.configurationService.getConfiguration("social")) ?? null;
+    Object.keys(
+      (await services.configurationService.getConfiguration("social")) ?? {},
+    ).length > 0;
+
   if (existing) {
     logger.debug("Social already installed; skipping default");
     return;
   }
+
   await services.configurationService.setConfiguration(
     "social",
     {
@@ -546,6 +555,7 @@ async function ensureInstallDefaultSocial(
     },
     systemEventSource,
   );
+
   logger.debug("Applied default social configuration");
 }
 
@@ -555,8 +565,12 @@ async function ensureInstallDefaultStyling(
   const logger = getLoggerFactory("InstallActions")(
     "ensureInstallDefaultStyling",
   );
+
   const existing =
-    (await services.configurationService.getConfiguration("styling")) ?? null;
+    Object.keys(
+      (await services.configurationService.getConfiguration("styling")) ?? {},
+    ).length > 0;
+
   if (existing) {
     logger.debug("Styling already installed; skipping default");
     return;
@@ -575,6 +589,7 @@ async function ensureInstallDefaultStyling(
     },
     systemEventSource,
   );
+
   logger.debug("Applied default styling configuration");
 }
 
@@ -583,8 +598,11 @@ async function ensureInstallDefaultApps(
 ): Promise<void> {
   const logger = getLoggerFactory("InstallActions")("ensureInstallDefaultApps");
   const existing =
-    (await services.configurationService.getConfiguration("defaultApps")) ??
-    null;
+    Object.keys(
+      (await services.configurationService.getConfiguration("defaultApps")) ??
+        {},
+    ).length > 0;
+
   if (existing) {
     logger.debug("Default apps already installed; skipping default");
     return;
