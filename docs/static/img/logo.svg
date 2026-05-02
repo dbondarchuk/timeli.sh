@@ -1,0 +1,25 @@
+<svg width="80" height="80" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4374ef"/>
+      <stop offset="100%" stop-color="#73a8f2"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 3x3 grid, step=26, start=14, radius=11 — bigger + tighter -->
+
+  <!-- Row 1 — full top bar -->
+  <circle cx="14" cy="14" r="11" fill="url(#g)"/>
+  <circle cx="40" cy="14" r="11" fill="url(#g)"/>
+  <circle cx="66" cy="14" r="11" fill="url(#g)"/>
+
+  <!-- Row 2 — center only -->
+  <circle cx="14" cy="40" r="11" fill="#1a1a2e" opacity="0.12"/>
+  <circle cx="40" cy="40" r="11" fill="url(#g)"/>
+  <circle cx="66" cy="40" r="11" fill="#1a1a2e" opacity="0.12"/>
+
+  <!-- Row 3 — center only -->
+  <circle cx="14" cy="66" r="11" fill="#1a1a2e" opacity="0.12"/>
+  <circle cx="40" cy="66" r="11" fill="url(#g)"/>
+  <circle cx="66" cy="66" r="11" fill="#1a1a2e" opacity="0.12"/>
+</svg>

@@ -14,12 +14,10 @@ const footerLinks = {
   //     { name: "Careers", href: "#" },
   //     { name: "Contact", href: "#" },
   //   ],
-  // resources: [
-  //   { name: "Documentation", href: "#" },
-  //   { name: "Help Center", href: "#" },
-  //   { name: "Community", href: "#" },
-  //   { name: "Status", href: "#" },
-  // ],
+  resources: [
+    { name: "Documentation", href: "https://docs.timelish.com" },
+    { name: "Support", href: "/support" },
+  ],
   legal: [
     { name: "Privacy", href: "/privacy" },
     { name: "Terms", href: "/terms" },
@@ -78,7 +76,7 @@ export function Footer() {
               ))}
             </ul>
           </div> */}
-          {/* 
+
           <div>
             <h3 className="text-sm font-semibold text-foreground">Resources</h3>
             <ul className="mt-4 space-y-3">
@@ -93,7 +91,7 @@ export function Footer() {
                 </li>
               ))}
             </ul>
-          </div> */}
+          </div>
 
           <div>
             <h3 className="text-sm font-semibold text-foreground">Legal</h3>
