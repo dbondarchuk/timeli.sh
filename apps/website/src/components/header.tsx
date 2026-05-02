@@ -1,5 +1,6 @@
 "use client";
 
+import { getSignInUrl, getSignUpUrl } from "@/lib/admin-app-urls";
 import {
   Button,
   Drawer,
@@ -13,7 +14,6 @@ import { Menu, X } from "lucide-react";
 import Image from "next/image";
 import NextLink from "next/link";
 import { useState } from "react";
-import { getSignInUrl, getSignUpUrl } from "@/lib/admin-app-urls";
 
 const navigation = [
   { name: "Features", href: "#features" },
@@ -62,6 +62,14 @@ export function Header() {
           ))}
         </div>
         <div className="hidden md:flex md:flex-1 md:justify-end md:gap-x-4">
+          <Link
+            href="https://docs.timelish.com"
+            variant="ghost"
+            size="sm"
+            button
+          >
+            Docs
+          </Link>
           <Link href={signInUrl} variant="ghost" size="sm" button>
             Log in
           </Link>

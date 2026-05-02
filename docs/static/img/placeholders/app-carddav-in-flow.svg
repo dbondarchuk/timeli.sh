@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img" aria-label="Screenshot placeholder">
+  <rect width="960" height="540" fill="#e8eef5"/>
+  <rect x="32" y="32" width="896" height="476" fill="#f8fafc" stroke="#0066ff" stroke-width="2" stroke-dasharray="14 10" rx="10"/>
+  <text x="480" y="260" text-anchor="middle" font-family="system-ui,Segoe UI,sans-serif" font-size="20" fill="#64748b">Screenshot placeholder</text>
+  <text x="480" y="292" text-anchor="middle" font-family="system-ui,Segoe UI,sans-serif" font-size="14" fill="#94a3b8">Replace this file in static/img/placeholders/</text>
+</svg>

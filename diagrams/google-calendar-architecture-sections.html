@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content="diagram-md-to-html.mjs (markdown + mermaid)" />
+    <title>Google Calendar Integration Architecture (Sectioned)</title>
+    <style>
+      :root {
+        color-scheme: light;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        background: #fff;
+        color: #111;
+      }
+      .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 32px;
+      }
+      h1, h2, h3 {
+        page-break-after: avoid;
+      }
+      @media print {
+        h2 {
+          break-before: page;
+          page-break-before: always;
+        }
+        h2:first-of-type {
+          break-before: auto;
+          page-break-before: auto;
+        }
+      }
+      p, li {
+        line-height: 1.5;
+      }
+      pre {
+        background: #f7f7f7;
+        padding: 12px;
+        border-radius: 8px;
+        overflow-x: auto;
+      }
+      code {
+        font-family: Consolas, Monaco, monospace;
+      }
+      .mermaid {
+        page-break-inside: avoid;
+        margin: 16px 0 28px;
+        text-align: center;
+      }
+      .mermaid svg {
+        max-width: 100% !important;
+        max-height: 600px !important;
+        height: auto !important;
+      }
+      hr {
+        border: none;
+        border-top: 1px solid #ddd;
+        margin: 28px 0;
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script type="module">
+      import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+      mermaid.initialize({
+        startOnLoad: false,
+        securityLevel: "loose",
+        flowchart: { useMaxWidth: true, htmlLabels: true },
+      });
+
+      const raw = JSON.parse(document.getElementById("source").textContent);
+      const parsed = marked.parse(raw, { gfm: true, breaks: false });
+      const output = document.getElementById("output");
+      output.innerHTML = parsed;
+
+      const mermaidCodeBlocks = output.querySelectorAll("pre > code.language-mermaid");
+      mermaidCodeBlocks.forEach((codeBlock) => {
+        const pre = codeBlock.parentElement;
+        if (!pre?.parentElement) return;
+        const wrapper = document.createElement("div");
+        wrapper.className = "mermaid";
+        wrapper.textContent = codeBlock.textContent || "";
+        pre.parentElement.replaceChild(wrapper, pre);
+      });
+
+      await mermaid.run({ querySelector: ".mermaid" });
+    </script>
+  </head>
+  <body>
+    <div class="container" id="output"></div>
+    <script id="source" type="application/json">"# Google Calendar Integration Architecture (Sectioned)\n\n## 1) Scope and Capabilities\n\nGoogle Calendar app (`google-calendar`) is an **OAuth** integration with these scopes in app definition:\n\n- `calendar-read`\n- `calendar-write`\n- `meeting-url-provider`\n\nImplemented by `GoogleCalendarConnectedApp`, which provides:\n\n- OAuth connect/redirect handling.\n- Busy-time reads for availability.\n- Calendar writer operations (create/update/delete events).\n- Meeting URL generation via Google Meet.\n- Setup actions (`get-calendar-list`, `set-calendar`, etc.) for selecting target calendar.\n\n---\n\n## 2) Main Components\n\n```mermaid\nflowchart LR\n  Admin[\"Admin UI (apps/admin)\"]\n  Web[\"Booking API (apps/web)\"]\n  CAS[\"ConnectedAppsService\"]\n  Booking[\"BookingService\"]\n  GCal[\"GoogleCalendarConnectedApp\"]\n  Mongo[(\"MongoDB connected_apps / appointments\")]\n  GoogleOAuth[\"Google OAuth\"]\n  GoogleCalendar[\"Google Calendar API\"]\n  GoogleMeet[\"Google Meet API\"]\n\n  Admin --> CAS --> GCal\n  GCal <--> GoogleOAuth\n  GCal <--> GoogleCalendar\n  GCal <--> GoogleMeet\n  CAS --> Mongo\n  Web --> Booking --> GCal\n  Booking --> Mongo\n```\n\n---\n\n## 3) OAuth + Token Lifecycle\n\n1. Admin starts connect flow.\n2. `getLoginUrl()` builds OAuth URL.\n3. `processRedirect()` exchanges code for tokens.\n4. Access/refresh tokens are encrypted before persistence.\n5. Runtime calls decrypt tokens; refresh path rotates and re-encrypts.\n\nEncryption behavior in service:\n\n- Stores encrypted: `access_token`, `refresh_token`.\n- Runtime decrypt for API usage.\n- On refresh, writes encrypted rotated tokens back to connected app.\n\n---\n\n## 4) Availability (Busy Events) on Web\n\nGoogle Calendar contributes to availability through `calendar-read`:\n\n- `BookingService.getAvailability()` -> `getBusyTimes()`.\n- `BookingService` resolves `calendarSources` configured by admin.\n- For each source app, it calls `ICalendarBusyTimeProvider.getBusyTimes(...)`.\n- For Google Calendar source, `GoogleCalendarConnectedApp.getBusyTimes(...)` is used.\n\nResult: external Google events block public booking slots.\n\n---\n\n## 5) Meeting URL Flow (Google Meet)\n\nFor online options with this app selected as `meetingUrlProviderAppId`:\n\n- `BookingService.createAppointment()` calls `service.getMeetingUrl(...)`.\n- `GoogleCalendarConnectedApp.getMeetingUrl(...)` creates a Meet space via Google Meet API.\n- Appointment stores `meetingInformation` (url/id/type).\n\n---\n\n## 6) Calendar Writer Flow\n\nGoogle app supports calendar write actions used by internal calendar writer flows:\n\n- `createEvent(...)`\n- `updateEvent(...)`\n- delete event operations in service\n\nThis keeps external Google calendar in sync with appointment lifecycle when configured.\n\n---\n\n## 7) App Roles (Admin / Web / Job Processor / Notification Sender)\n\n- **`apps/admin`**: OAuth connect + calendar selection (`get-calendar-list`, `set-calendar`).\n- **`apps/web`**: booking-time meeting link creation + availability reads (busy events).\n- **`apps/job-processor`**: not the primary path for Google meeting creation/busy-time reads; those are synchronous service calls.\n- **`apps/notification-sender`**: no direct Google API calls; sends notifications with already-persisted appointment data.\n"</script>
+  </body>
+</html>

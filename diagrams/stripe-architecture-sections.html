@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content="diagram-md-to-html.mjs (markdown + mermaid)" />
+    <title>Stripe Integration Architecture (Sectioned)</title>
+    <style>
+      :root {
+        color-scheme: light;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        background: #fff;
+        color: #111;
+      }
+      .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 32px;
+      }
+      h1, h2, h3 {
+        page-break-after: avoid;
+      }
+      @media print {
+        h2 {
+          break-before: page;
+          page-break-before: always;
+        }
+        h2:first-of-type {
+          break-before: auto;
+          page-break-before: auto;
+        }
+      }
+      p, li {
+        line-height: 1.5;
+      }
+      pre {
+        background: #f7f7f7;
+        padding: 12px;
+        border-radius: 8px;
+        overflow-x: auto;
+      }
+      code {
+        font-family: Consolas, Monaco, monospace;
+      }
+      .mermaid {
+        page-break-inside: avoid;
+        margin: 16px 0 28px;
+        text-align: center;
+      }
+      .mermaid svg {
+        max-width: 100% !important;
+        max-height: 600px !important;
+        height: auto !important;
+      }
+      hr {
+        border: none;
+        border-top: 1px solid #ddd;
+        margin: 28px 0;
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script type="module">
+      import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+      mermaid.initialize({
+        startOnLoad: false,
+        securityLevel: "loose",
+        flowchart: { useMaxWidth: true, htmlLabels: true },
+      });
+
+      const raw = JSON.parse(document.getElementById("source").textContent);
+      const parsed = marked.parse(raw, { gfm: true, breaks: false });
+      const output = document.getElementById("output");
+      output.innerHTML = parsed;
+
+      const mermaidCodeBlocks = output.querySelectorAll("pre > code.language-mermaid");
+      mermaidCodeBlocks.forEach((codeBlock) => {
+        const pre = codeBlock.parentElement;
+        if (!pre?.parentElement) return;
+        const wrapper = document.createElement("div");
+        wrapper.className = "mermaid";
+        wrapper.textContent = codeBlock.textContent || "";
+        pre.parentElement.replaceChild(wrapper, pre);
+      });
+
+      await mermaid.run({ querySelector: ".mermaid" });
+    </script>
+  </head>
+  <body>
+    <div class="container" id="output"></div>
+    <script id="source" type="application/json">"# Stripe Integration Architecture (Sectioned)\n\n## 1) Scope and Capabilities\n\nStripe app (`stripe`) is an **OAuth** payment integration with:\n\n- `payment`\n- subscribes to `ORGANIZATION_DOMAIN_CHANGED_EVENT_TYPE`\n\n`StripeConnectedApp` implements:\n\n- OAuth connect/redirect.\n- Payment processor endpoints (`processAppCall`) for create/confirm payment intent.\n- Static webhook processing (`processStaticWebhook`) for Stripe events.\n- Refund processing (`refundPayment`).\n- Event subscriber behavior (`onEvent`) for domain-change Apple Pay registration refresh.\n\n---\n\n## 2) Main Components\n\n```mermaid\nflowchart LR\n  Admin[\"Admin UI (apps/admin)\"]\n  Web[\"Web checkout routes (apps/web)\"]\n  CAS[\"ConnectedAppsService\"]\n  Payments[\"PaymentsService\"]\n  StripeApp[\"StripeConnectedApp\"]\n  Mongo[(\"MongoDB intents/payments/connected_apps\")]\n  StripeOAuth[\"Stripe Connect OAuth\"]\n  StripeAPI[\"Stripe API\"]\n  Webhook[\"/apps/webhook/stripe\"]\n  Job[\"apps/job-processor (domain-change events)\"]\n\n  Admin --> CAS --> StripeApp\n  StripeApp <--> StripeOAuth\n  Web --> CAS --> StripeApp\n  StripeApp <--> StripeAPI\n  StripeAPI --> Webhook --> CAS --> StripeApp\n  StripeApp --> Payments --> Mongo\n  CAS --> Mongo\n  Job --> StripeApp\n```\n\n---\n\n## 3) OAuth + Token Storage\n\nOAuth redirect flow stores encrypted token fields in connected app record:\n\n- `token.accessToken` encrypted.\n- `token.refreshToken` encrypted.\n- Connected Stripe account ID stored in app data.\n\nThis app uses connected-account context to execute payment operations.\n\n---\n\n## 4) Checkout App Calls\n\n`processAppCall(...)` handles payment endpoints:\n\n- `create-payment-intent`\n- `confirm-payment`\n\nFlow:\n\n1. Web/API calls `/apps/{appId}/...` route.\n2. `ConnectedAppsService.processAppCall(...)` dispatches to Stripe app.\n3. Stripe app updates internal payment intent (`PaymentsService.updateIntent`), including external Stripe IDs.\n\n---\n\n## 5) Webhooks + Fee Synchronization\n\n`processStaticWebhook(...)` validates signature and handles Stripe events such as:\n\n- `payment_intent.succeeded`\n- `payment_intent.payment_failed`\n- charge-related fee events\n\nWebhook path resolves internal intent/payment and updates statuses/fees in MongoDB via `PaymentsService`.\n\n---\n\n## 6) Refund Flow\n\n- `PaymentsService.refundPayment(...)` delegates to app-specific `refundPayment(...)` for online Stripe payments.\n- Stripe app executes Stripe refund API calls and reports success/failure.\n\n---\n\n## 7) Event-Driven Domain Handling\n\nStripe app subscribes to organization domain changes:\n\n- `onEvent(...)` listens for domain change.\n- Re-registers Apple Pay domain (also run after OAuth connect via `afterOAuthConnected`).\n\nThis event path is typically executed via queued event delivery (job processor pipeline).\n"</script>
+  </body>
+</html>

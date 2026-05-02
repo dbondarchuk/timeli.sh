@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content="diagram-md-to-html.mjs (markdown + mermaid)" />
+    <title>Outlook Integration Architecture (Sectioned)</title>
+    <style>
+      :root {
+        color-scheme: light;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        background: #fff;
+        color: #111;
+      }
+      .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 32px;
+      }
+      h1, h2, h3 {
+        page-break-after: avoid;
+      }
+      @media print {
+        h2 {
+          break-before: page;
+          page-break-before: always;
+        }
+        h2:first-of-type {
+          break-before: auto;
+          page-break-before: auto;
+        }
+      }
+      p, li {
+        line-height: 1.5;
+      }
+      pre {
+        background: #f7f7f7;
+        padding: 12px;
+        border-radius: 8px;
+        overflow-x: auto;
+      }
+      code {
+        font-family: Consolas, Monaco, monospace;
+      }
+      .mermaid {
+        page-break-inside: avoid;
+        margin: 16px 0 28px;
+        text-align: center;
+      }
+      .mermaid svg {
+        max-width: 100% !important;
+        max-height: 600px !important;
+        height: auto !important;
+      }
+      hr {
+        border: none;
+        border-top: 1px solid #ddd;
+        margin: 28px 0;
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script type="module">
+      import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+      mermaid.initialize({
+        startOnLoad: false,
+        securityLevel: "loose",
+        flowchart: { useMaxWidth: true, htmlLabels: true },
+      });
+
+      const raw = JSON.parse(document.getElementById("source").textContent);
+      const parsed = marked.parse(raw, { gfm: true, breaks: false });
+      const output = document.getElementById("output");
+      output.innerHTML = parsed;
+
+      const mermaidCodeBlocks = output.querySelectorAll("pre > code.language-mermaid");
+      mermaidCodeBlocks.forEach((codeBlock) => {
+        const pre = codeBlock.parentElement;
+        if (!pre?.parentElement) return;
+        const wrapper = document.createElement("div");
+        wrapper.className = "mermaid";
+        wrapper.textContent = codeBlock.textContent || "";
+        pre.parentElement.replaceChild(wrapper, pre);
+      });
+
+      await mermaid.run({ querySelector: ".mermaid" });
+    </script>
+  </head>
+  <body>
+    <div class="container" id="output"></div>
+    <script id="source" type="application/json">"# Outlook Integration Architecture (Sectioned)\n\n## 1) Scope and Capabilities\n\nOutlook app (`outlook`) is an **OAuth** integration with:\n\n- `calendar-read`\n- `calendar-write`\n- `mail-send`\n- `meeting-url-provider`\n\n`OutlookConnectedApp` implements:\n\n- OAuth connect/redirect.\n- Busy-time reads from Microsoft Graph.\n- Calendar writer create/update.\n- Mail sending (`sendMail`).\n- Meeting URL generation (`/me/onlineMeetings`).\n\n---\n\n## 2) Main Components\n\n```mermaid\nflowchart LR\n  Admin[\"Admin UI (apps/admin)\"]\n  Web[\"Booking API (apps/web)\"]\n  CAS[\"ConnectedAppsService\"]\n  Booking[\"BookingService\"]\n  Outlook[\"OutlookConnectedApp\"]\n  Mongo[(\"MongoDB connected_apps / appointments\")]\n  MSOAuth[\"Microsoft OAuth (MSAL)\"]\n  Graph[\"Microsoft Graph API\"]\n\n  Admin --> CAS --> Outlook\n  Outlook <--> MSOAuth\n  Outlook <--> Graph\n  CAS --> Mongo\n  Web --> Booking --> Outlook\n  Booking --> Mongo\n```\n\n---\n\n## 3) OAuth + Token Lifecycle\n\n1. Admin starts OAuth connect.\n2. `getLoginUrl()` returns Microsoft authorization URL.\n3. `processRedirect()` exchanges auth code for tokens.\n4. Tokens are encrypted before storing in connected app token payload.\n5. Runtime decrypts token for Graph calls and refreshes/rotates when needed.\n\n---\n\n## 4) Availability and Booking\n\nOutlook provides busy-time data through `getBusyTimes(...)`.\n\nPath:\n\n- `apps/web /api/availability` -> `BookingService.getAvailability()`.\n- `BookingService.getBusyTimes(...)` aggregates DB events + source apps.\n- Outlook source app returns busy events; these block booking slots.\n\n---\n\n## 5) Meeting URL + Mail\n\nFor online options using Outlook as meeting provider:\n\n- `BookingService` calls `getMeetingUrl(...)`.\n- Outlook app creates online meeting via Graph `/me/onlineMeetings`.\n\nFor notification/mail use cases with Outlook app:\n\n- `sendMail(...)` sends mail through Graph `/me/sendMail`.\n- Supports attachments and ICS payload handling in service.\n\n---\n\n## 6) Calendar Writer Sync\n\nOutlook app exposes:\n\n- `createEvent(...)`\n- `updateEvent(...)`\n\nThese are used for calendar synchronization scenarios where appointments are reflected in external Outlook calendar.\n\n---\n\n## 7) App Roles (Admin / Web / Job Processor / Notification Sender)\n\n- **`apps/admin`**: OAuth install/reconnect and status polling.\n- **`apps/web`**: busy-time reads for availability + meeting URL generation during booking.\n- **`apps/job-processor`**: not the main path for Outlook meeting creation or availability; those happen in normal service calls.\n- **`apps/notification-sender`**: no direct Outlook API calls unless app-specific notifications route through configured mail sender elsewhere.\n"</script>
+  </body>
+</html>
