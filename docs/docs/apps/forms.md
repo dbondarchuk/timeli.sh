@@ -1,53 +1,56 @@
 ---
 sidebar_position: 36
-description: Embed intake questionnaires waivers branching logic file uploads HIPAA aware patterns gated.
+description: Build intake forms, place them where Timelish allows, and review responses.
 ---
 
 # Forms
 
-Flexible data capture enriching appointments screening risk reducing desk chaos validation webhooks synergy.
+**Forms** is a builder for questionnaires, intake sheets, consent pages, file uploads **when Timelish supports them**, validations, and branching. Publish each form wherever Timelish offers a hook **often beside booking flows or site blocks**. Answers collect under **Form responses** where staff can read, export, or delete rows according to your retention policy.
 
 ## Adding the App
 
-1. Regulatory classification PHI PII storage encryption keys BAA linkage if sensitive.
-2. **Apps** → **App Store** → **Forms** build draft sandbox mobile UX.
-3. Map fields CRM appointment merge tags validations regex.
-4. Accessibility audit keyboard screenreader contrast.
+1. Open **Apps**, open **Store**, install **Forms**.
+2. Click **New form** scaffold questions branching files **when your tenant exposes those controls**.
+3. Publish or embed wherever Timelish indicates **booking flows website widgets** wording follows your dashboard.
+4. Submit answers yourself sanity-check grids.
 
-Spam flood **[Apps troubleshooting](/docs/apps/troubleshooting)** captcha rate limit.
+Discuss sensitive health or legal wording with your adviser before you publish. **[Apps troubleshooting](/docs/apps/troubleshooting)** covers technical save login or permission errors rather than clinical policy.
 
-### App-specific requirement
+### Data retention
 
-Minor consent parental lawful basis documented cross border transfer instruments.
+Discuss how long raw answers linger export cycles deletion rights with counsel **especially for medical style questions**.
 
 ## Usage
 
-### Intake allergies contraindications
+### Collect health or preference questions before arrival
 
-**What it is for:** Clinician preparedness safety.
+**Use this when:** You want less clipboards in the lobby.
 
-### Liability waiver e-signature evidence hash optional
+**You need:** Copy reviewed for accuracy and lawful basis if sensitive data applies.
 
-**What it is for:** Risk posture.
+### Attach waivers or agreements
 
-### Personality fit matching coach client
+**Use this when:** You need a signed acknowledgement before services start.
 
-**What it is for:** Experience tailoring ethical boundaries.
+**You need:** Advice on electronic signature rules wherever you operate.
 
-### File upload lesion photo dermatology guarded vault
+### Optional uploads for clinicians or stylists
 
-**What it is for:** Tele consult prep minimal necessary.
+**Use this when:** Visual references shorten consultations.
 
-### Conditional branching skip irrelevant harassment prevention tact
+**You need:** Strict access rules aligned with retention policy.
 
-**What it is for:** UX kindness.
+### Branch forms so guests only see relevant questions
 
-*(Prerequisites: retention schedule purge automation DSAR playbook.)*
+**Use this when:** Long forms overwhelm people.
+
+**You need:** Conditional logic wired correctly in builder.
 
 ## Removing the App
 
-1. **Installed apps** archive export responses legal hold consult counsel purge.
+1. Export responses when legal bookkeeping demands evidence.
+2. Open **Installed apps**, uninstall **Forms**.
 
-### After you disconnect
+### What changes afterward
 
-embedded forms cease responses locked historic dataset policy.
+Embeds cease collecting new answers archival timelines ask Timelish support if unsure.

@@ -1,69 +1,50 @@
 ---
 sidebar_position: 26
-description: Customer-facing email for booking updates receipts and policy messages from your brand.
+description: Send branded templated emails to clients when their booking moves through each stage.
 ---
 
 # Customer email notification
 
-Focus layer on external guest messaging distinct from staff-only alerts sharing templates variables branding.
+This App sends emails **to clients** tied to appointments. You pick templates for stages such as pending, confirmed, declined, or rescheduled so customers always hear from you through your chosen wording.
 
 ## Adding the App
 
-1. Install **SMTP** or equivalent deliverability backbone.
-2. **Apps** → **App Store** → **Customer email notification** enable.
-3. Map From reply-to legal footer variables.
-4. Preview mobile desktop dark mode sanity.
+1. Confirm outbound email ready (often **[SMTP](/docs/apps/smtp)**) so replies look like `@yourbiz.com`.
+2. Open **Apps**, then **Store**, and install **Customer email notification**.
+3. For each lifecycle stage Timelish shows (pending confirmed declined rescheduled patterns may vary), attach the matching email template supplied by Timelish or your workspace.
+4. Save and trigger a sandbox booking path to preview copy.
 
-Rendering oddities **[Apps troubleshooting](/docs/apps/troubleshooting)** embed assets HTTPS.
+Problems sending? **[Apps troubleshooting](/docs/apps/troubleshooting)**
 
-### App-specific requirement
+### Good to know
 
-Capture lawful basis marketing vs transactional classifications store evidence.
+Promotional broadcasts differ from transactional appointment mail; follow consent rules where you operate.
 
 ## Usage
 
-### Booking confirmation with ICS attach optional
+### Confirm politely when you accept an appointment
 
-**What it is for:** Calendar friction drop.
+**Use this when:** Clients need confidence the slot is theirs.
 
-**Prerequisites:** ICS feature enabled companion calendar App.
+**You need:** A confirmed-stage template pointing to correct branding and contact links.
 
-### Reschedule apology proactive credit note
+### Explain gently when something is declined or changed
 
-**What it is for:** Trust rebuilding.
+**Use this when:** You must soften bad news yet stay clear on next steps.
 
-**Prerequisites:** Compensation policy scripted.
+**You need:** Copy approved by whoever owns voice and legal tone.
 
-### Receipt after payment success
+### Reschedule notices with ICS or links optional
 
-**What it is for:** Accounting peace.
+**Use this when:** New time deserves an email restatement.
 
-**Prerequisites:** Payment processor events reliable.
-
-### Reminder sequencing T-7 T-1 T-2h
-
-**What it is for:** Behaviour nudge optimisation.
-
-**Prerequisites:**Timezone clarity traveller crossing zones.
-
-### Localised language templating
-
-**What it is for:** Multilingual markets.
-
-**Prerequisites:** Translator workflow content parity.
+**You need:** Template placeholders still valid after product updates.
 
 ## Removing the App
 
-1. **Installed apps** disconnect customer outbound email strand.
+1. Open **Apps**, then **Installed apps**.
+2. Remove **Customer email notification**.
 
-### After you disconnect
+### What changes afterward
 
-customers stop branded emails fallback may still be bare system messages clarify expectations publicly.
-
-### Data handling
-
-Historical send logs metadata persist retention horizons support legal.
-
-### SMTP overlap
-
-Removing this App alone keeps SMTP usable other mail modules unaffected.
+Customers stop receiving this automated template path. Announce another channel so they are not guessing.

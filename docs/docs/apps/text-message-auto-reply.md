@@ -1,57 +1,44 @@
 ---
 sidebar_position: 32
-description: Auto-respond inbound SMS with hours booking links disclaimers escalating to humans when smart routing allows.
+description: Send one automatic SMS reply when someone texts your business number.
 ---
 
 # Text message auto reply
 
-Keeps conversational SMS humane after hours acknowledges receipt routes urgent keywords optional integration handoff ticketing.
+When inbound texts reach Timelish through your texting setup, this App can send **one automatic reply** using a template you write. Common uses: confirm hours, thank the sender, share a booking link, or say staff will answer later.
 
 ## Adding the App
 
-1. Ensure inbound-capable SMS number leased configured at carrier Twilio analogue.
-2. **Apps** → **App Store** → **Text message auto reply** wire inbound webhook handshake.
-3. Script templates variable slots tone guard hallucination disclaimers automation transparency.
-4. Test keyword matrix HELP STOP mandatory.
+1. Complete whatever inbound SMS setup your tenancy requires (often tied to Textbelt or similar). Follow on-screen banners until Timelish shows the path is ready.
+2. Open **Apps**, then **Store**, and install **Text message auto reply**.
+3. Choose the **auto reply template**. Write clear simple language. Mention that a human will follow up when that is true.
+4. Send a test inbound text and confirm you get only one polite loop (no endless reply chains).
 
-Webhook 5xx **[Apps troubleshooting](/docs/apps/troubleshooting)** signature validation clock.
+Template required errors mean you left the body empty. See **[Apps troubleshooting](/docs/apps/troubleshooting)** if webhooks fail silently.
 
-### App-specific requirement
+### Good to know
 
-Disclose bot nature jurisdiction mandatory some regions outlaw deceptive chatbots undisclosed.
+If local law requires stating that a bot replied, add that text yourself in the template.
 
 ## Usage
 
-### After-hours acknowledgement promise human morning
+### After-hours reassurance
 
-**What it is for:** Expectation soothe.
+**Use this when:** You close at night but clients still text promotions or short codes.
 
-### Booking deeplink shorten track UTM optional
+**You need:** Correct hours in the message plus a link to self-serve booking.
 
-**What it is for:** Self-service capture idle window.
+### Share a secure booking link calmly
 
-### Emergency escalate keyword 911 clinician triage pseudo example
+**Use this when:** Voice mail points people to text instead of call.
 
-**What it is for:** Safety valve never replace true emergency dispatch clarity.
-
-### Multilingual branching detect carrier charset limitations cautious
-
-**What it is for:** Diverse neighbourhoods.
-
-### Rate-limit repeat texter nuisance loop guard
-
-**What it is for:** Cost abuse prevention sentiment harm reduction.
-
-*(Prerequisites: stable inbound webhook capacity knowledge base FAQs maintained staff override path.)*
+**You need:** HTTPS links that work on mobile.
 
 ## Removing the App
 
-1. **Apps** inbound route revert manual or uninstall module.
+1. Open **Apps**, then **Installed apps**.
+2. Remove **Text message auto reply**.
 
-### After you disconnect
+### What changes afterward
 
-silence inbound may confuse customers advertise change voicemail fallback.
-
-### Data handling
-
-message bodies possibly retention classify HIPAA caution.
+Inbound texts are no longer answered automatically. Update voicemail and website copy if you promised instant replies.

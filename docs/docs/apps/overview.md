@@ -1,38 +1,30 @@
 ---
 sidebar_position: 1
-description: How Timelish Apps work how we document them and where to get help.
+description: What Apps are, where to manage them, and how each guide is written.
 ---
 
 # Apps
 
-**Apps** extend your Timelish workspace. They connect calendars meetings email SMS payments storefront blocks and automation helpers so bookings stay accurate and clients get the right messages.
+**Apps** connect your Timelish workspace to the tools you already use: calendars, video meetings, email, texts, payments, and extra website features. They help keep your schedule accurate and your clients informed.
 
-You install and manage Apps under **Apps** in the admin sidebar:
+In the admin sidebar, open **Apps**. You will use three areas often:
 
-- **App Store** - add a new App.
-- **Installed apps** - reconnect change settings or remove.
-- **Default apps** - choose which App runs first when more than one could apply (for example calendars or payment capture).
+- **Installed apps** lists what is already connected. Open an App here to change settings, reconnect, or remove it.
+- **Store** is where you add new Apps (you may also see a button labelled **App Store** on the Installed apps screen).
+- **Default apps** picks which App wins when more than one could apply (for example, which calendar or payment method to use first).
 
-If something fails while adding an App start with **[Apps troubleshooting](/docs/apps/troubleshooting)**.
+If setup or reconnect fails, start with **[Apps troubleshooting](/docs/apps/troubleshooting)**.
 
-## How every App in this help center is documented
+## How each App page is organized
 
-Each App page follows the same backbone so you always know what to read first.
+Every App guide uses the same sections.
 
-### Adding the App (required)
+**Adding the App.** Steps to connect or turn it on inside Timelish, plus a link to troubleshooting when something breaks.
 
-Step-by-step for first-time connection inside Timelish. Every page links to **[Apps troubleshooting](/docs/apps/troubleshooting)** for when the flow breaks.
+**Usage.** Simple examples of what you might do, and what should already be in place.
 
-### Usage (required)
+**Removing the App.** How to turn it off in Timelish, what changes for your daily work, and a short note about data. Other companies (Google, Microsoft, Stripe, PayPal, Zoom, and similar) may still hold their own copies until you remove data in those accounts too.
 
-Clear **use cases** for each main action or feature plus **prerequisites** (for example another App already connected the right plan legal consent for SMS).
+## App not listed here
 
-### Removing the App (required)
-
-How to disconnect or delete the App from **your Timelish workspace** what **de-authorizing** means for day-to-day bookings and what data Timelish typically clears on our side. Vendor-side consoles (Google Stripe Microsoft and so on) may still hold their own records until you remove data there too.
-
-App-specific requirements called out on that App's page when they matter.
-
-## Need an App you do not see
-
-Ask **Timelish support** the catalog grows with demand and some Apps appear only for certain regions or plans.
+Some Apps depend on your region or plan. Contact **Timelish support** if you need one you do not see.

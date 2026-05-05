@@ -1,54 +1,49 @@
 ---
 sidebar_position: 16
-description: Define weekly recurring hours exceptions and closures that drive online booking availability.
+description: Set week-by-week work hours so booking shows real availability.
 ---
 
 # Weekly schedule
 
-Central place to shape when each service location or teammate accepts online bookings respecting holidays and staggered shifts without editing every appointment manually.
+Weekly schedule is where you set **when you accept bookings** across the days of each week. You can copy a week forward, repeat a pattern, reset to defaults, or set one-off weeks for holidays and special cases. It is the base layer that online booking uses before finer rules apply.
 
 ## Adding the App
 
-1. Open **Apps** → **App Store** enable **Weekly schedule** if surfaced as modular App sometimes folded into defaults still treated as configurable module.
-2. Accept installation no vendor OAuth expected.
-3. Open schedule editor choose scope location role or practitioner per product vocabulary.
+1. Open **Apps**, then **Store**, and install **Weekly schedule**.
+2. Open the weekly schedule screens from **Apps** or scheduling (your admin menu may group it under the same area).
+3. Choose the week you are editing, set open hours per day, and save.
 
-Broken editor states **[Apps troubleshooting](/docs/apps/troubleshooting)** though usually local cache.
+If the grid will not save, see **[Apps troubleshooting](/docs/apps/troubleshooting)** (often a network or permission issue).
+
+### Good to know
+
+Your workspace **time zone** should be correct in settings. Wrong time zones create odd gaps on the public booking page.
 
 ## Usage
 
-### Set baseline open hours
+### Set normal business hours
 
-**What it is for:** Consumers only see realistic slots Tuesdays 09:00-17:00 etc.
+**Use this when:** You open and close at steady times most weeks.
 
-**Prerequisites:** Workspace timezone settled under settings misalignment causes phantom gaps.
+**You need:** Which location or person the row applies to, if your business has more than one.
 
-### Exceptions for single days
+### Handle a holiday week
 
-**What it is for:** Early close storms national holiday.
+**Use this when:** One week should differ from your default pattern.
 
-**Prerequisites:** Announce staff because historical bookings unaffected only future availability.
+**You need:** Use the week picker, edit that week only, or reset it later if you copied the wrong pattern.
 
-### Per-service durations coupling
+### Copy or repeat a week
 
-**What it is for:** Longer massages shrink counts per afternoon automatically when buffer rules align.
+**Use this when:** Several future weeks should match a template you already built.
 
-**Prerequisites:** Service durations configured before expecting honest capacity math.
-
-### Multi-location divergence
-
-**What it is for:** Flagship weekday weekend pop-up reversed pattern.
-
-**Prerequisites:** Naming clarity which entity schedule edits target.
+**You need:** Care with “replace existing” options so you do not overwrite weeks you meant to keep.
 
 ## Removing the App
 
-1. **Installed apps** → **Weekly schedule** uninstall if reversible some deployments lock because core omit removal contact support.
+1. Open **Apps**, then **Installed apps**.
+2. Remove **Weekly schedule** only if your workspace allows it. Some sites treat it as core; if removal is blocked, ask support.
 
-### After you disconnect
+### What changes afterward
 
-If uninstall allowed online booking availability may revert to naive rules or halt confirm with success modal implications.
-
-### Operational note
-
-Print or screenshot last known pattern before drastic removal auditors like paper trail.
+Booking may fall back to a very simple rule or need another way to define hours. Export or screenshot important weeks before you remove it, if your team relies on them.

@@ -1,54 +1,46 @@
 ---
 sidebar_position: 17
-description: Advanced scheduling preferences buffers travel automatic spacing and optimisation helpers.
+description: Tune how Timelish picks time slots so availability feels smarter for your team.
 ---
 
 # Smart schedule
 
-Adds intelligence atop base hours padding travel recovery automatic spacing fairness across teammates depending on SKU.
+Smart schedule shapes **how** Timelish fills open time: for example, whether it may skip breaks when nothing else fits, prefers back-to-back appointments, favors later starts, allows slightly unconventional start times for a tighter day, or gives priority to a specific service when demand matters.
 
 ## Adding the App
 
-1. Confirm **Weekly schedule** or equivalent base grid exists pointless smart layer without scaffold.
-2. **Apps** → **App Store** → **Smart schedule** install toggle.
-3. Walk assistant defining buffers travel minutes weighting fairness knobs save.
+1. Finish your base hours with **[Weekly schedule](/docs/apps/weekly-schedule)** (or equivalent) first. Smart schedule refines suggestions; it does not replace core hours alone.
+2. Open **Apps**, then **Store**, and install **Smart schedule**.
+3. Open its settings and turn options on or off using the hints next to each switch.
+4. Save. Try a few test bookings on the public page to see if slots feel right.
 
-Misaligned behaviour revisit **[Apps troubleshooting](/docs/apps/troubleshooting)** for stuck pending rare.
+If settings will not save, see **[Apps troubleshooting](/docs/apps/troubleshooting)**.
 
 ## Usage
 
-### Automatic buffer between back-to-back clients
+### Fill the day with fewer awkward gaps
 
-**What it is for:** Sanitation paperwork breathing room.
+**Use this when:** You want more back-to-back bookings when possible.
 
-**Prerequisites:** Base durations accurate overstated buffer shrinks day wastefully.
+**You need:** Realistic service lengths and breaks, or the optimiser may pack the day too tight.
 
-### Weight fair distribution among practitioners
+### Protect breaks unless there is no other choice
 
-**What it is for:** Balanced paychecks contentious teams.
+**Use this when:** Breaks matter for meals or clean-up, but you still want a booking if nothing else works.
 
-**Prerequisites:** Honest calendars else weighting sabotaged.
+**You need:** Clear team agreement on when “skip break” is acceptable.
 
-### Travel time crossing geo tiles
+### Prioritise one high-value service
 
-**What it is for:** Mobile hairdressers chiropractors vans.
+**Use this when:** Certain services should win open slots when the optimiser chooses.
 
-**Prerequisites:** Accurate geography per appointment type.
-
-### Adaptive compression slow days vs jam days
-
-**What it is for:** Revenue maximisation when demand spikes.
-
-**Prerequisites:** Leadership monitors burnout metrics.
+**You need:** That service set in the “preferred service” field when your UI offers it.
 
 ## Removing the App
 
-1. **Installed apps** → Smart schedule uninstall revert to plain grid.
+1. Open **Apps**, then **Installed apps**.
+2. Remove or disable **Smart schedule**.
 
-### After you disconnect
+### What changes afterward
 
-Buffers fairness travel rules stop applying instantly review upcoming week manual.
-
-### Historical nuance
-
-Past appointments keep recorded buffer metadata read-only housekeeping optional.
+Timelish falls back to simpler slot picking. Your weekly hours and other calendar rules still apply.

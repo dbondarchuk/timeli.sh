@@ -1,61 +1,42 @@
 ---
 sidebar_position: 29
-description: SMS credits routing through Textbelt compatible carriers for transactional texts from Timelish.
+description: Connect Textbelt so Timelish can send SMS using Textbelt credit you buy.
 ---
 
-# Textbelt
+# Textbelt SMS
 
-Funds Textbelt-compatible SMS pathways when your deployment uses that aggregator model simple HTTP credits.
+**Textbelt** is an external SMS provider. This App stores your Textbelt **API key**, shows how much sending credit you have left, and lets other Timelish texting features send through Textbelt.
 
 ## Adding the App
 
-1. Purchase Textbelt key top-up credits monitor balance dashboard.
-2. **Apps** → **App Store** → **Textbelt** paste API keys region flags.
-3. Run send test sanctioned personal phone.
-4. Log delivery receipts failures map error codes throttle.
+1. Sign up at Textbelt, buy message credit, and copy your **API key**.
+2. In Timelish, open **Apps**, then **Store**, and install **Textbelt SMS**.
+3. Paste the key, save, and wait until the panel shows a healthy connection or remaining credits.
+4. Add another App that actually sends texts (for example customer or staff notifications) if Timelish prompts you.
 
-Credits zero **[Apps troubleshooting](/docs/apps/troubleshooting)** plus vendor status page.
+If the key fails or credit reads zero, verify your Textbelt account and **[Apps troubleshooting](/docs/apps/troubleshooting)**.
 
-### App-specific requirement
+### Good to know
 
-Country regulatory 10 DLC registration SHAFT content prohibitions abide.
+Follow local SMS laws. You usually need consent, clear opt-out language, and honest sender identity. Legal questions belong with your adviser, not only with Textbelt help pages.
 
 ## Usage
 
-### Reminder blast complement email
+### Predictable pay-as-you-go texting
 
-**What it is for:** Higher open rates.
+**Use this when:** You want to top up credit before busy seasons.
 
-**Prerequisites:** Opt-in evidence stored.
-
-### OTP style short code optional path
-
-**What it is for:** Sensitive actions verify handset.
-
-**Prerequisites:** TTL short rotate templates.
-
-### After-hours outage broadcast
-
-**What it is for:** Safety closure snow.
-
-**Prerequisites:** Recipient list segmented avoid spam accusation.
-
-### Two-way conversational optional bridge
-
-**What it is for:** Lightweight Q&A inbound parse separate App maybe.
-
-### Cost guard rails daily ceilings
-
-**What it is for:** Budget predictability CFO calm.
+**You need:** Enough balance before large campaigns so messages are not cut off mid-day.
 
 ## Removing the App
 
-1. **Installed apps** remove Textbelt linkage keys.
+1. Open **Apps**, then **Installed apps**.
+2. Open **Textbelt SMS** and remove the key or uninstall the App.
 
-### After you disconnect
+### What changes afterward
 
-SMS queue halts reroute notices email voice.
+Timelish stops sending SMS through Textbelt until you connect it again.
 
-### Credits
+### Outside Timelish
 
-Unused prepaid credits linger at Textbelt vendor not Timelish refund policy theirs.
+Delete unused API keys inside Textbelt so old keys cannot be misused. Unused prepaid credit follows Textbelt refund rules, not Timelish.

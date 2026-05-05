@@ -1,67 +1,67 @@
 ---
 sidebar_position: 2
-description: Fix common App connection problems in Timelish reconnect flows permissions and browsers.
+description: Simple fixes when an App stays on Pending, sign-in fails, or sync stops.
 ---
 
 # Apps troubleshooting
 
-Use this page when an App stuck on **Pending** loops sign-in screens or suddenly stops syncing.
+Use this guide when an App shows **Pending**, sign-in loops, or suddenly stops working.
 
-## Before you troubleshoot
+## Before you start
 
-1. Confirm you are in the correct **Timelish workspace**.
-2. Try the same steps in another browser or a private/incognito window.
-3. Pause browser extensions that block cookies pop-ups or third-party scripts temporarily.
+1. Make sure you opened the right **Timelish workspace**.
+2. Try another browser or a private (incognito) window.
+3. Temporarily turn off extensions that block cookies or pop-ups.
 
-## Sign-in windows close or stay blank
+## Sign-in window closes or stays blank
 
-**Symptoms:** Partner sign-in never finishes or flashes away.
+**What you might see:** Sign-in never finishes, or the window flashes and closes.
 
-**Things to try:**
+**Try this:**
 
-- Allow pop-ups for your Timelish admin domain.
-- Disable strict tracking protection for the sign-in moment.
-- Retry on a different browser or device.
+- Allow pop-ups for your Timelish admin site.
+- Try again with strict tracking protection relaxed just for that step.
+- Use another browser or device.
 
-If it still fails capture a short screen recording and contact support with the App name and approximate time.
+If it still fails, record a short screen video and contact support. Say which App you used and roughly what time you tried.
 
-## Endless Pending or Disconnected
+## Stuck on Pending or Disconnected
 
-**Symptoms:** The App card never shows success or flips back to error after a day.
+**What you might see:** The App never connects, or it worked before and now shows an error.
 
-**Things to try:**
+**Try this:**
 
-- Open **Installed apps** choose **Reconnect** and complete every screen.
-- Check email for security alerts from Google Microsoft Stripe PayPal Zoom or your mail host.
-- If your IT team controls access ask them to approve Timelish as a third-party app where required.
+- Open **Apps**, then **Installed apps**. Open the App and use **Reconnect**. Complete every screen.
+- Check email for security messages from Google, Microsoft, Stripe, PayPal, Zoom, or your email host.
+- If your company manages access to outside apps, ask IT to allow Timelish.
 
-## Permissions or scope errors
+## Permission or access errors
 
-**Symptoms:** The vendor says Timelish lacks access to calendar mail payments or meetings.
+**What you might see:** The other service says Timelish cannot access calendar, mail, payments, or meetings.
 
-**Things to try:**
+**Try this:**
 
-- Use **Reconnect** and accept all requested permissions for that App.
-- If you previously denied access revoke the old connection at the vendor uninstall the App in Timelish then add it again cleanly.
+- Use **Reconnect** and accept **all** permissions the App asks for.
+- If you denied access earlier, remove the old connection at that service if needed. Then remove the App in Timelish and add it again from **Store**.
 
-## Credentials for SMTP or CalDAV reject
+## SMTP or calendar server sign-in fails
 
-**Symptoms:** Test send fails or calendars stay empty.
+**What you might see:** A test email does not send, or a calendar stays empty.
 
-**Things to try:**
+**Try this:**
 
-- Re-copy host port username and password from your provider help article.
-- Toggle between recommended ports and encryption modes TLS versus SSL as your host documents.
-- Confirm the account allows sign-in from automation not only webmail.
+- Copy host, port, username, and password again from your provider’s help article.
+- Try the encryption option they recommend (often labelled TLS or SSL).
+- Confirm the mailbox allows sign-in from apps, not only normal web login.
 
-## Payments App shows live but checkout still fails
+## Payments look connected but checkout still fails
 
-**Things to try:**
+**Try this:**
 
-- Stripe Square PayPal each have their own dashboard for account status compliance and webhooks follow their alerts first.
-- Confirm the App is chosen under **Default apps** or **Appointment settings** where checkout expects a processor.
-- Run a small test payment before announcing go-live.
+- Open Stripe, Square, or PayPal in their own dashboards and fix any alerts (identity checks, compliance, limits).
+- In Timelish, check **Default apps** and booking or payment settings so the processor you expect is selected.
+- Run a small test payment before you invite clients to pay.
 
 ## Still stuck
 
-Contact **Timelish support** through the channel your plan provides. Include App name workspace region rough timestamp and what you already tried from this page so support can reply faster.
+Contact **Timelish support** using the channel your plan includes. Share the App name, your workspace, when it failed, and what you tried from this page.

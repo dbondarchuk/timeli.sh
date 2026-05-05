@@ -1,65 +1,46 @@
 ---
 sidebar_position: 28
-description: Email people on waitlists when openings appear expiring prompts fair ordering.
+description: Notify staff and optionally clients when someone joins your waitlist.
 ---
 
 # Waitlist notifications
 
-Automates fairness messaging expiry nudges when slots free due cancellations expansions prioritisation configurable.
+Works together with **[Waitlist](/docs/apps/waitlist)**. After you turn it on, Timelish can email **your team** when a new row is added and can email **the customer** who joined. You assign an email template to the customer-facing message when that option is on.
 
 ## Adding the App
 
-1. Install core **Waitlist** feature interplay dependency.
-2. **Apps** → **App Store** → **Waitlist notifications** enable.
-3. Template urgency politeness TTL click confirm token.
-4. Dry run seeded waiters staging.
+1. Install **[Waitlist](/docs/apps/waitlist)** first so the waitlist captures names and details.
+2. Connect **[SMTP](/docs/apps/smtp)** or whichever option your workspace uses until “email sender configured” banners clear.
+3. Open **Apps**, then **Store**, and install **Waitlist notifications**.
+4. Toggle **email me when a new entry arrives** when you want an internal ping.
+5. Toggle **email the customer when they join** if you want an automatic acknowledgement, then choose the template the form asks for.
+6. Save and add a pretend waitlist entry to test both mails.
 
-Loops see **[Apps troubleshooting](/docs/apps/troubleshooting)** for token-link or clock-skew problems.
+Problems? See **[Apps troubleshooting](/docs/apps/troubleshooting)**.
 
-### App-specific requirement
+### Good to know
 
-Honour marketing versus transactional classifications double opt nuances regions.
+Some regions treat unsolicited mail strictly. Decide with counsel whether the customer email is transactional or marketing where you operate.
 
 ## Usage
 
-### First-confirm wins opening blast
+### Let the desk react fast when demand spikes
 
-**What it is for:** Speed fairness transparent rule.
+**Use this when:** Staff should phone people back quickly from a monitored inbox.
 
-**Prerequisites:** Accurate throughput avoid oversell concurrency guard.
+**You need:** A shared address that stays staffed during open hours.
 
-### Ranked sequential offer graceful degrade
+### Send “you are on the list” reassurance
 
-**What it is for:** VIP loyalty nuanced.
+**Use this when:** People worry their submission vanished.
 
-**Prerequisites:** Policy published avoid discrimination perception.
-
-### Multi-service bundle coordination
-
-**What it is for:** Couples massage pair seat.
-
-**Prerequisites:** Matching logic prerequisites satisfied.
-
-### Abandoned offer recycle next waiter
-
-**What it is for:** Slot utilisation.
-
-**Prerequisites:** Timeout tuned human reaction baseline.
-
-### Analytics capture funnel
-
-**What it is for:** Measure conversion bottleneck.
-
-**Prerequisites:** UTM cleanliness.
+**You need:** Warm copy plus honest timing on when you normally reach out.
 
 ## Removing the App
 
-1. **Installed apps** remove waitlist emailing automation.
+1. Open **Apps**, then **Installed apps**.
+2. Remove **Waitlist notifications**.
 
-### After you disconnect
+### What changes afterward
 
-manual phone outreach burden staff communicate change publicly.
-
-### Data handling
-
-waiter contact rows remain GDPR delete flows separate module.
+Automatic mails from this pipeline stop **Waitlist** itself stays until you uninstall it separately.

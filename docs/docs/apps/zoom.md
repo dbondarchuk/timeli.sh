@@ -1,65 +1,47 @@
 ---
 sidebar_position: 20
-description: Attach Zoom Meeting links details and lifecycle to bookings that Timelish manages.
+description: Add Zoom meeting details to bookings that use Zoom in Timelish.
 ---
 
 # Zoom
 
-Connects Zoom so appointments issue meeting URLs join prompts and updates when reschedule flows fire.
+Connect Zoom so Timelish can attach meeting details when you offer online appointments through Zoom.
 
 ## Adding the App
 
-1. Open **Apps** → **App Store** select **Zoom** install start OAuth . 
-2. Sign in Zoom account permitting meeting creation organisational SSO may intervene.
-3. Approve scopes meeting create read update branding optional.
-4. Return Timelish map default behaviour per service templates.
-5. Test booking emits meeting join info.
+1. Open **Apps**, then **Store**, and install **Zoom**.
+2. Sign in to Zoom when Timelish asks. Finish every permission screen.
+3. Return to **Installed apps** and confirm Zoom shows as connected.
 
-OAuth loops **[Apps troubleshooting](/docs/apps/troubleshooting)** including clearing stale Zoom Marketplace installs.
+If OAuth loops or Zoom asks for admin approval first, see **[Apps troubleshooting](/docs/apps/troubleshooting)**.
 
-### App-specific requirement
+### Good to know
 
-Zoom plan must allow API scheduled meetings licences per host baseline compliance.
+Your Zoom account must allow creating scheduled meetings via apps. Paid plans often differ from basic accounts; check Zoom’s own notices in their dashboard.
 
 ## Usage
 
-### Auto meeting for virtual consults
+### Add a Zoom link to virtual appointments
 
-**What it is for:** Telehealth tutors consultants.
+**Use this when:** Clients should join from a calendar invite or reminder.
 
-**Prerequisites:** Service flagged virtual template references Zoom.
+**You need:** Services or workflows in Timelish set up for Zoom where your product exposes that choice.
 
-### Alternate hosts panelists
+### Keep meeting details updated when bookings move
 
-**What it is for:** Complex workshops rotating facilitators.
+**Use this when:** Rescheduling should refresh the Zoom session details.
 
-**Prerequisites:** Zoom roles configured meeting options.
-
-### Waiting room hygiene
-
-**What it is for:** Healthcare privacy regulators.
-
-**Prerequisites:** Zoom account security templates aligned.
-
-### Recording disclaimer automation
-
-**What it is for:** Legal compliance reminder email footers synergy.
-
-**Prerequisites:** Jurisdiction advice recorded.
+**You need:** Zoom still connected with valid permissions.
 
 ## Removing the App
 
-1. **Installed apps** → Zoom disconnect uninstall confirm.
-2. Optionally remove Timelish from Zoom Marketplace installed apps list.
+1. Open **Apps**, then **Installed apps**.
+2. Open **Zoom** and disconnect or uninstall.
 
-### After you disconnect
+### What changes afterward
 
-New bookings stop receiving Zoom links existing meetings may persist until manually deleted inside Zoom.
+New bookings stop receiving Zoom links from Timelish. Old meetings already created may still live in Zoom until you delete them in the Zoom portal.
 
-### Data handling
+### Outside Timelish
 
-Timelish stops calling Zoom APIs stored join metadata may remain in historical appointment records until purged by retention consult support for GDPR specifics.
-
-### Zoom-side cleanup
-
-Cancel future meetings revoke OAuth in Zoom portal for hardened security stance.
+Visit Zoom **Account**, **Apps**, or integrations and remove Timelish if your security checklist requires it. Turning off Zoom in Timelish does not erase past meetings automatically.

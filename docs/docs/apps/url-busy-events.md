@@ -1,54 +1,48 @@
 ---
 sidebar_position: 15
-description: Pull busy intervals from a URL feed that Timelish treats like dynamic blocks.
+description: Pull busy times from your own web address so Timelish can block those slots.
 ---
 
 # URL busy events
 
-Fetches occupancy or busy snippets from HTTP endpoint your engineering team or vendor publishes shape documented in onboarding PDF.
+This App is for teams that run a small **API** on their side. Timelish calls your URL and asks, in effect, “When is busy?” Your server answers with busy intervals so Timelish can hide those times from booking. Start and end times are sent as query parameters in a standard ISO date format.
 
 ## Adding the App
 
-1. Confirm URL returns machine-readable intervals JSON CSV iCal snippet per integration contract.
-2. **Apps** → **App Store** → **URL busy events** paste endpoint optional auth headers if UI supports vaulting secrets safely.
-3. Test fetch handshake fix 403 401 swiftly.
-4. Set poll interval respecting provider rate-limit guidance.
+1. Agree with your developer or vendor on the exact URL and response format Timelish expects.
+2. Open **Apps**, then **Store**, and install **URL busy events**.
+3. Enter the **URL**. Add optional **headers** (for example an API key) if your server needs them.
+4. Save and confirm the App connects. Fix format or auth errors with your technical contact.
 
-Parse errors consult **[Apps troubleshooting](/docs/apps/troubleshooting)** and your endpoint owner jointly.
+If Timelish cannot read the response, see **[Apps troubleshooting](/docs/apps/troubleshooting)** and check server logs on your side.
 
-### App-specific requirement
+### Good to know
 
-Endpoint HTTPS mandatory clock skew tolerant endpoints include cache headers stale data shrinks usefulness.
+This is not a normal “paste an ICS link” setup. If you only have a calendar link, use **[ICS Feed](/docs/apps/ics-feed)** instead.
 
 ## Usage
 
-### Industrial capacity signal
+### Keep Timelish in sync with another scheduling system
 
-**What it is for:** Manufacturing floor PLC publishes utilisation percentages mapped to blackout windows.
+**Use this when:** Another product already knows when people are busy and can expose that over HTTP.
 
-**Prerequisites:** Contract schema stable monitoring alerts on failure.
+**You need:** A stable HTTPS endpoint, correct response shape, and someone who can fix outages quickly.
 
-### Workforce management export
+### Send a secret token with each request
 
-**What it is for:** HRIS emits JSON shift overlaps feeding Timelish.
+**Use this when:** Your endpoint must reject anonymous callers.
 
-**Prerequisites:** Data classification approved outside HRIS SOC boundary.
-
-### Seasonal kiosk bookings
-
-**What it is for:** Pop-up kiosk software toggles slug endpoint open closed.
-
-**Prerequisites:** Fail-safe default idle open-hours if endpoint offline.
+**You need:** Headers filled in safely; treat values like passwords.
 
 ## Removing the App
 
-1. **Installed apps** → URL busy events configuration.
-2. Delete keys URLs disable scheduler save.
+1. Open **Apps**, then **Installed apps**.
+2. Open **URL busy events** and delete the URL / headers or disconnect the App.
 
-### After you disconnect
+### What changes afterward
 
-Polling stops backlog clears busy overlay derived from endpoint vanishes.
+Timelish stops calling your server for busy times. Availability falls back to your other rules (weekly schedule, calendar Apps, manual busy blocks).
 
-### Secure the old endpoint
+### Outside Timelish
 
-If URL held shared secret rotate at origin Timelish no longer calls rotate anyway best practice hygiene.
+Rotate or revoke any API keys you gave Timelish. Your server stays under your control.

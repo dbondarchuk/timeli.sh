@@ -1,70 +1,54 @@
 ---
 sidebar_position: 21
-description: Charge cards Apple Pay wallets and reconcile payouts through Stripe alongside Timelish checkout.
+description: Accept card and wallet payments through Stripe inside Timelish checkout.
 ---
 
 # Stripe
 
-Brings Stripe Checkout PaymentIntents Saved payment methods Radar rules into Timelish booking flows invoicing tipping where enabled.
+Stripe lets you charge clients when Timelish collects payment at checkout, deposit, tipping, or similar flows your workspace supports.
 
 ## Adding the App
 
-1. Open **Apps** → **App Store** choose **Stripe** begin connect.
-2. Sign in Stripe dashboard account business profile complete.
-3. Approve OAuth or Connect onboarding supply tax identity when prompted.
-4. Return Timelish set default payment App if multiple exist webhook health indicator green.
+1. Open **Apps**, then **Store**, and install **Stripe**.
+2. Sign in or create Stripe as guided. Stripe may ask for business details, banking, identity checks, or industry questions.
+3. Finish until Timelish shows Stripe as connected with no onboarding warnings in Stripe’s dashboard.
+4. Under **Apps** » **Default apps**, pick Stripe if checkout should prefer it when more than one payment App exists.
 
-Onboarding stalled **[Apps troubleshooting](/docs/apps/troubleshooting)** plus Stripe Dashboard requirements banner.
+Incomplete Stripe onboarding blocks live charges even if Timelish looks connected. See **[Apps troubleshooting](/docs/apps/troubleshooting)** and Stripe’s own requirement banners.
 
-### App-specific requirement
+### Good to know
 
-Business must pass Stripe KYB some categories need manual review delaying live charges.
+Fraud controls, payouts, refunds, disputes, tax, and payouts are reviewed in Stripe’s dashboard first. Timelish sends charges; Stripe remains the processor of record.
 
 ## Usage
 
-### Card capture at booking checkout
+### Take payment when someone books online
 
-**What it is for:** Immediate payment deposits retainers.
+**Use this when:** You want upfront payment before the visit.
 
-**Prerequisites:** Service price currency matches Stripe enabled methods.
+**You need:** Prices set in Timelish, Stripe live mode on, cards or wallets enabled in Stripe settings.
 
-### Save payment method frictionless reschedule
+### Refund from a booking
 
-**What it is for:** Returning clients smoother.
+**Use this when:** Policies allow money back after cancel or complaint.
 
-**Prerequisites:** Compliance text visible privacy policy linkage.
+**You need:** Permissions in Timelish for finance-friendly roles and cleared funds timing from Stripe rules.
 
-### Refund partial full from booking record
+### Reconcile payouts with bookkeeping
 
-**What it is for:** Cancellations policy enforcement.
+**Use this when:** Accounting needs payouts to match bookings.
 
-**Prerequisites:** Roles allow finance reversal audit trail intact.
-
-### Payout reconciliation export
-
-**What it is for:** Accounting ties Timelish order IDs Stripe balance transactions.
-
-**Prerequisites:** Bookkeeper understands fee structure.
-
-### Radar fraud tuning
-
-**What it is for:** High risk categories travel luxury.
-
-**Prerequisites:** Radar rules authored in Stripe not Timelish.
+**You need:** Export habits from Stripe; Timelish holds booking detail, Stripe holds payout and fees.
 
 ## Removing the App
 
-1. **Installed apps** → Stripe disconnect revoke.
-2. Set another payment processor default before going live.
+1. Open **Apps**, then **Installed apps**.
+2. Disconnect Stripe or uninstall the App before you flip customers to another processor.
 
-### After you disconnect
+### What changes afterward
 
-New charges fail until replacement integrated historical payment references kept for accounting legal horizons.
+New payments through Timelish do not ride Stripe unless you connect it again or choose another processor. Past charges stay in Stripe for statements and audits.
 
-### Data handling
+### Outside Timelish
 
-Timelish clears active tokens linkage does not wipe Stripe Ledger customers remain in Stripe until deleted there obey finance retention.
-
-### Stripe-side cleanup
-
-Close Connect relationship archive API keys revoke webhooks referencing Timelish if rotating vendors.
+In Stripe Dashboard you can deactivate API keys, revoke access, or disconnect the Timelish integration if your procedure requires.

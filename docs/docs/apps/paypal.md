@@ -1,59 +1,48 @@
 ---
 sidebar_position: 23
-description: Offer PayPal and related wallet buttons through PayPal commerce integrations where supported.
+description: Offer PayPal and related wallet buttons where Timelish supports PayPal checkout.
 ---
 
 # PayPal
 
-Adds PayPal wallet flows complements cards for international clients trusting PayPal brand.
+PayPal lets clients pay with PayPal balances, linked bank, or eligible cards alongside your other processors when your checkout supports PayPal through this integration.
 
 ## Adding the App
 
-1. **Apps** → **App Store** → **PayPal** start linking.
-2. Sign in PayPal Business account grant permissions.
-3. Choose live vs sandbox for testing reconcile webhooks handshake.
-4. Mark default tender if coexistence Stripe Square.
+1. Open **Apps**, then **Store**, and install **PayPal**.
+2. Sign in with a **business-ready** PayPal account. Finish email, phone, and identity steps PayPal asks for.
+3. Connect until Timelish shows PayPal successfully linked.
+4. If you offer more than one way to pay, open **Default apps** and verify which processor should lead.
 
-Merchant holds **[Apps troubleshooting](/docs/apps/troubleshooting)** compliance holds common.
+PayPal frequently pauses payouts for verification. Resolve messages in PayPal itself. **[Apps troubleshooting](/docs/apps/troubleshooting)** helps with redirects and Pending states.
 
-### App-specific requirement
+### Good to know
 
-Business verified address confirmed micro branding optional.
+PayPal refunds and settlements follow PayPal timelines, which differ from instant card capture.
 
 ## Usage
 
-### Express checkout redirection
+### Let overseas clients choose a wallet they trust
 
-**What it is for:** Lower friction trusting PayPal balance.
+**Use this when:** Your audience prefers PayPal for buyer protection familiarity.
 
-**Prerequisites:** Return URLs whitelisted HTTPS.
+**You need:** PayPal commerce features enabled on your PayPal dashboard for the flows you expose.
 
-### Subscriptions installments partner programs
+### Run specials with PayPal funding offers
 
-**What it is for:** Installment SKU marketing.
+**Use this when:** Marketing runs PayPal-specific campaigns.
 
-**Prerequisites:** PayPal programme enrollment separate contract.
-
-### Refund timelines differing network rules
-
-**What it is for:** Policy aligned messaging customer service scripts.
-
-**Prerequisites:** Training staff bank settlement delays.
-
-### Multi-currency storefront
-
-**What it is for:** Cross border tutors.
-
-**Prerequisites:** FX acceptance pricing strategy.
+**You need:** Promo rules honoured in PayPal and legal copy on your site.
 
 ## Removing the App
 
-1. **Installed apps** → PayPal revoke disconnect.
+1. Open **Apps**, then **Installed apps**.
+2. Disconnect PayPal and choose another processor if checkout must stay open.
 
-### After you disconnect
+### What changes afterward
 
-PayPal unavailable at checkout unfinished carts may linger notify marketing.
+PayPal disappears as a checkout option unless you reconnect. Orders already paid settle under PayPal’s normal lifecycle.
 
-### PayPal hygiene
+### Outside Timelish
 
-Revoke REST app credentials unlink Timelish IPN webhooks dusty.
+Revoke REST credentials or unlink Timelish in PayPal merchant settings if auditors require a formal disconnect.

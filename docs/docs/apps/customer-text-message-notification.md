@@ -1,57 +1,44 @@
 ---
 sidebar_position: 31
-description: SMS customers about bookings reminders changes marketing where compliant with carrier rules.
+description: Text customers when their booking status changes.
 ---
 
 # Customer text message notification
 
-Guest-visible texts parallel email channel respecting TCPA equivalents consent artefacts quiet hours personalization tokens.
+Sends **SMS to clients** when their appointment moves between major states (for example pending confirmed declined rescheduled wording may differ on your screen). Each state can have its own message body; empty fields usually mean “do not send for that state”.
 
 ## Adding the App
 
-1. Regulatory counsel brief marketing vs transactional delineation documented.
-2. Install underlying SMS quota App **Textbelt** or institutional equivalent funded.
-3. **Apps** → **App Store** → **Customer text message notification** enable templates STOP HELP compliance keywords.
-4. Seed opt-in checkpoints booking forms kiosk QR.
+1. Install **[Textbelt SMS](/docs/apps/text-belt)** and verify you have quota.
+2. Open **Apps**, then **Store**, and add **Customer text message notification**.
+3. Fill the template boxes for the states you actually use. Leave others blank to stay silent.
+4. Book a private test path and confirm wording plus STOP language meet your region.
 
-STOP storm **[Apps troubleshooting](/docs/apps/troubleshooting)** template missing footer.
+If sending fails **[Apps troubleshooting](/docs/apps/troubleshooting)** helps with carrier blocks or mis-typed numbers.
 
-### App-specific requirement
+### Good to know
 
-10 DLC brand campaign throughput US major carriers mandates.
+Some countries require registration for business texting. Research local carrier rules before broadcasting.
 
 ## Usage
 
-### Reminder ladder email fails SMS catches
+### Quick SMS confirmations for mobile-first clients
 
-**What it is for:** Attendance uplift.
+**Use this when:** Guests read texts faster than inbox mail.
 
-### Day-of directional parking gate code
+**You need:** Booking records with correct mobile numbers recorded at booking time.
 
-**What it is for:** Friction logistics.
+### Gentle decline or reschedule texts
 
-### Payment link shorten secure domain
+**Use this when:** Tone should feel personal even on bad news.
 
-**What it is for:** Faster collection.
-
-### Review ask post visit measured cadence
-
-**What it is for:** Reputation growth ethical spacing.
-
-### Localised slang tone brand voice youthful studio
-
-**What it is for:** Differentiation cautious clarity first.
-
-*(Prerequisites rows: lawful consent handset valid international format currency compliance.)*
+**You need:** Short honest copy plus instructions on what to do next.
 
 ## Removing the App
 
-1. **Installed apps** remove customer texting automation.
+1. Open **Apps**, then **Installed apps**.
+2. Remove **Customer text message notification**.
 
-### After you disconnect
+### What changes afterward
 
-Tell customers how you now reach them; avoid leaving people expecting SMS with no alternate channel configured.
-
-### Data handling
-
-subscriber numbers stored until erased via privacy tooling historical send logs timelines.
+Clients stop automatic status SMS from this layer. Tell them how you will reach them if they expect texts.

@@ -1,56 +1,48 @@
 ---
 sidebar_position: 13
-description: Connect RFC CalDAV calendars with server URL credentials and sync schedules.
+description: Connect a CalDAV calendar with a server address and sign-in.
 ---
 
-# CalDAV
+# CalDAV Calendar
 
-For providers that expose CalDAV ownCloud Nextcloud Fastmail niche hosts Timelish creates events over HTTPS using standard credentials.
+**CalDAV** is a standard way to host calendars on a server (some business mail hosts, Nextcloud-style setups, or specialist providers use it). Timelish can connect with a server URL plus sign-in, then read and write appointments like other calendar Apps.
 
 ## Adding the App
 
-1. Gather server base URL HTTPS port encryption mode username app password or token from host docs.
-2. Open **Apps** → **App Store** pick **CalDAV**.
-3. Enter connection fields run **Test connection** if present . Fix typo TLS mismatch before saving.
-4. Map default calendar folders when UI asks writable calendar must permit component creation.
-5. Save watch status chip until synced.
+1. Collect the **CalDAV server URL**, username, and password (or app password) from your provider’s documentation.
+2. Open **Apps**, then **Store**, and install **CalDAV Calendar**.
+3. Enter the fields. Use **Test** or save, then fix any errors about the URL, TLS, or wrong password.
+4. Choose the calendar on that server where Timelish should work, when the picker appears.
 
-Repeated auth failures **[Apps troubleshooting](/docs/apps/troubleshooting)** especially TLS app-password sections.
+Connection errors are often wrong port, encryption type, or a host that blocks outside access. Try **[Apps troubleshooting](/docs/apps/troubleshooting)** and your provider’s support article.
 
-### App-specific requirement
+### Good to know
 
-Self-signed certificates need trust installed on Timelish edge many teams instead use LetsEncrypt public chain.
+Self-signed certificates can fail until the host uses a normal trusted certificate chain (for example LetsEncrypt).
 
 ## Usage
 
-### Two-way bookings on self-managed servers
+### Use a calendar you host yourself
 
-**What it is for:** Privacy-conscious teams keep infra in-house.
+**Use this when:** Policy says customer data stays on your infrastructure.
 
-**Prerequisites:** CalDAV ACL allows event insert update delete quotas not exhausted.
+**You need:** A CalDAV server that allows Timelish to create and update events, not read-only locks.
 
-### Alternate stack for redundancy
+### Add a mailbox calendar that speaks CalDAV
 
-**What it is for:** Secondary calendar survives Google outages.
+**Use this when:** Your vendor gives you a CalDAV URL instead of Google or Outlook.
 
-**Prerequisites:** Reliable uptime monitoring because silent failures lurk.
-
-### Multi-resource salons
-
-**What it is for:** Each stylist gets own CalDAV user bind separate App installs if product requires.
-
-**Prerequisites:** Licensing covers multiple connections.
+**You need:** Accurate server details and quotas that are not full.
 
 ## Removing the App
 
-1. **Installed apps** → choose CalDAV instance.
-2. Disconnect delete credentials wipe fields confirm.
-3. Verify no orphaned background jobs referencing same host remain if UI warns.
+1. Open **Apps**, then **Installed apps**.
+2. Open **CalDAV Calendar** and disconnect or uninstall.
 
-### After you disconnect
+### What changes afterward
 
-Writes stop deletes stop reads stop Timelish forgets credential blobs per retention policy.
+Timelish stops syncing with that server. Timelish clears stored credentials for that connection according to product policy.
 
-### Host-side housekeeping
+### Outside Timelish
 
-Rotate the app-password you disclosed revoke token at vendor Timelish no longer contacts server.
+Change or revoke the password you shared so nothing else can use it. Past events stored on your server remain until you delete them there.

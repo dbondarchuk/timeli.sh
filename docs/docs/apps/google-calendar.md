@@ -1,62 +1,56 @@
 ---
 sidebar_position: 10
-description: Connect Google Calendar to Timelish for availability sync and Meet links.
+description: Sync Timelish appointments with Google Calendar and optional Google Meet.
 ---
 
 # Google Calendar
 
-Lets Timelish read and write bookings on Google Calendar, attach Google Meet when you enable it, and keep staff busy times accurate.
+Connect Google Calendar so new bookings show on your calendar, busy time stays truthful, and you can attach Google Meet to online appointments when Timelish and your workspace support it.
 
 ## Adding the App
 
-1. Open **Apps** → **App Store** and choose **Google Calendar**.
-2. Select **Install** or **Connect** confirm you agree to calendar access for bookings.
-3. Sign in with the Google account whose calendar powers this workspace finish any two-step prompts.
-4. Approve scopes listed on the consent screen incomplete approval leaves the App on **Pending**.
-5. When the card shows success open **Appointment settings** or **Installed apps** to pick this calendar connection as your active provider if prompted.
+1. Open **Apps**, then **Store**.
+2. Find **Google Calendar** and install or connect it.
+3. Sign in with the Google account whose calendar drives this workspace. Finish any two-step prompts Google asks for.
+4. On the consent screen approve every permission Timelish lists. Incomplete approval commonly leaves the App on **Pending**.
+5. Pick the calendar you want for appointments whenever Timelish asks.
 
-Forgot a step stuck on Pending or bouncing sign-in loops see **[Apps troubleshooting](/docs/apps/troubleshooting)**.
+If setup loops or hangs, read **[Apps troubleshooting](/docs/apps/troubleshooting)**.
 
-### App-specific requirement
+### Good to know
 
-Busy-workspace admins should use a calendar mailbox they control, not a generic shared inbox, unless your policy allows delegated calendar creation.
+Use a mailbox you actively control unless your workplace policy deliberately uses a delegated shared calendar owned by trusted admins.
 
 ## Usage
 
-### Keep appointment blocks on Google Calendar
+### See Timelish bookings alongside other Google events
 
-**What it is for:** Staff see the same bookings in Timelish and Google clients.
+**Use this when:** You plan the day strictly inside Google Calendar.
 
-**Prerequisites:** Google Workspace or Gmail account calendars stay enabled Gmail deliverability unaffected.
+**You need:** A Gmail or Google Workspace account with calendar permission.
 
-### Automatically add Meet links
+### Honour busy time from secondary calendars you already keep in Google
 
-**What it is for:** Video conferencing links populate on events your clients receive.
+**Use this when:** Personal or departmental calendars block availability.
 
-**Prerequisites:** Organisation policy allows Meet creation calendars not restricted from conferencing.
+**You need:** Those calendars must be readable by the signing-in account, and Timelish must retain the scopes that allow availability checks.
 
-### Block times pulled from secondary calendars
+### Attach Meet links guests can open safely
 
-**What it is for:** Personal or resource calendars subtract availability without copying events manually.
+**Use this when:** You sell video visits or consults.
 
-**Prerequisites:** Those calendars are shared readable to the connecting account scopes include them.
-
-### Two-way deletes or reschedule
-
-**What it is for:** Cancellations in either system stay aligned.
-
-**Prerequisites:** Conflicting automation outside Timelish is paused edits happen on the authoritative calendar.
+**You need:** Google Meet activated for those accounts plus any organisation rules satisfied.
 
 ## Removing the App
 
-1. Open **Installed apps**.
-2. Open **Google Calendar** choose disconnect uninstall or trash per the buttons shown.
-3. Confirm so Timelish revokes OAuth tokens.
+1. Open **Apps**, then **Installed apps**.
+2. Open **Google Calendar** and disconnect uninstall or trash depending on wording shown.
+3. Confirm so Timelish revokes ongoing access.
 
-### After you disconnect
+### What changes afterward
 
-Booking creation halts unless another calendar App is configured. Timelish stops pushing updates to Google and stops reading availability from those calendars.
+Booking creation may stall until you reconnect Google or activate another calendar App. Visit **Default apps** if Timelish now needs a replacement default calendar.
 
-### Vendor-side cleanup
+### Outside Google
 
-Inside **Google Account** → **Security** → **Third-party apps** remove Timelish if you want the connection gone everywhere. History already written on Google calendars remains until you delete those events.
+Customers can revoke Timelish under Google **Account security**. Events already sitting on Google stay until somebody deletes them in Google.

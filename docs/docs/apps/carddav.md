@@ -1,53 +1,46 @@
 ---
 sidebar_position: 40
-description: Sync contacts to CardDAV servers for unified address books across devices and CRM hygiene.
+description: Share Timelish contacts with trusted CardDAV desktop or phone apps.
 ---
 
-# CardDAV
+# CardDAV contacts
 
-Keeps customer practitioner contact cards aligned with standards-based servers Nextcloud iCloud enterprise variants depending host.
+Use this App when approved contact programs should read the people you already store inside Timelish. After you turn it on, Timelish shows a CardDAV **URL**, **username**, and **password** (plus a button to **regenerate** the password if needed). That information is what you type into compatible desktop or phone apps.
+
+This is different from **[CalDAV calendar](/docs/apps/caldav)**. CalDAV is for calendars. CardDAV is for **contact cards**.
 
 ## Adding the App
 
-1. Gather CardDAV URL credentials app tokens TLS posture.
-2. **Apps** → **App Store** → **CardDAV** test handshake map address book containers conflict strategy server-wins client-wins.
-3. Dry run limited cohort privacy review minimise fields exported.
-4. Schedule sync cadence rate friendly.
+1. Decide with leadership or counsel whether sharing the full directory is acceptable.
+2. Open **Apps**, open **Store**, and install **CardDAV contacts** (**Store** text may shorten the name to **CardDAV**).
+3. Copy the credentials only into devices you trust. Do not paste them into public chats.
+4. Regenerate the password when a laptop leaves your team or whenever you suspect leakage.
 
-Duplication storm **[Apps troubleshooting](/docs/apps/troubleshooting)** VCard merge semantics.
+If two systems show different names for the same client, expect to clean up duplicates on both sides. Sign-in problems start with **[Apps troubleshooting](/docs/apps/troubleshooting)**.
 
-### App-specific requirement
+### Good to know
 
-GDPR export minimise purpose limitation store legal basis per contact field.
+Treat CardDAV login like a privileged key. Rotate it on a schedule your security team likes and train staff not to forward it.
 
 ## Usage
 
-### Unified staff mobile native contacts app
+### Show client names on inbound calls
 
-**What it is for:** Caller ID recognition.
+**Use this when:** Reception uses handsets that read synced contacts.
 
-### CRM enrichment push optional downstream marketing cautious consent
+### Keep a permitted CRM fresh
 
-**What it is for:** Lifecycle orchestration ethical.
+**Use this when:** Your policy allows sync but forbids manual spreadsheets.
 
-### De-duplication heuristics fuzzy match human review queue
+### Honour do-not-contact preferences everywhere
 
-**What it is for:** Cleanhouse.
+**Use this when:** Marketing opt-outs must stay consistent across Timelish and other tools.
 
-### Suppression do-not-contact honour propagation
+## Removing the App
 
-**What it is for:** Compliance soul.
+1. Open **Apps**, then **Installed apps**.
+2. Disconnect **CardDAV contacts**, regenerate the password, then remove saved profiles on each device that used the old login.
 
-*(Prerequisites: monitoring diff logs rollback snapshot.)*
+### What changes afterward
 
-## Removing CardDAV
-
-1. **Installed apps** disconnect cease sync.
-
-### After you disconnect
-
-Timelish stops pushing contact diffs server may retain prior merged cards until manual cleanup.
-
-### Server hygiene
-
-Revoke credentials rotate app password.
+Remote programs stop receiving updates. Older copies may linger on phones or laptops until someone deletes them manually.

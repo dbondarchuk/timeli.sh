@@ -1,57 +1,38 @@
 ---
 sidebar_position: 38
-description: Customer self-service portal reschedule cancel history receipts profile branded My account surfaces.
+description: Clients sign in with a short code to see bookings and simple self-help.
 ---
 
-# My Cabinet (My account)
+# My Cabinet
 
-Gives returning clients autonomy reduces support load reinforces trust recurring revenue clarity.
+Some workspaces still label this **My account** in menus. It is the same feature. Returning clients prove who they are with a **short code** sent **by email** or, optionally, **by text**. Once verified, they view appointments confirmations receipts and whichever self-help steps you granted in your wider settings.
 
 ## Adding the App
 
-1. SSO passwordless pathways optional OAuth social cautiously phishing aware.
-2. **Apps** → **App Store** → **My Cabinet** customise theme copy legal links accessibility.
-3. Map allowed actions reschedule window cancellation fee surfacing GDPR export.
-4. Test persona journeys mobile.
+1. Complete the mandatory **OTP email template**. OTP means **one-time password**. Keep the message short polite and readable.
+2. If you toggle **Allow login with phone**, add an **OTP text template** and verify **[Textbelt SMS](/docs/apps/text-belt)** already sends messages reliably.
+3. Open **Apps**, open **Store**, install **My Cabinet**, then customise colours wording legal banners and accessibility knobs as offered.
+4. Test in private browsing. Confirm codes arrive and check Spam or Promotions folders.
 
-Auth loops **[Apps troubleshooting](/docs/apps/troubleshooting)** cookie SameSite MFA.
+Stale logins or cookie issues start with **[Apps troubleshooting](/docs/apps/troubleshooting)**.
 
-### App-specific requirement
+### Good to know
 
-Children accounts parental gateways jurisdiction dependent.
+Discuss data export deletion and marketing consent with your adviser wherever privacy rules matter.
 
 ## Usage
 
-### Reschedule inside policy windows only
+### Let guests reschedule alone inside humane windows.
 
-**What it is for:** Reduce inbound calls.
+### Offer receipt downloads without staff forwarding mail.
 
-### Download receipts invoices
-
-**What it is for:** Accounting self-serve travellers.
-
-### Update contact preferences granular channel
-
-**What it is for:** Respect unsubscribe nuance lawful.
-
-### Payment method vaulted update security challenge
-
-**What it is for:** Friction balance fraud.
-
-### Loyalty milestones optional gamification restrained
-
-**What it is for:** Engagement without dark patterns ethics.
-
-*(Prerequisites: parity between staff edits client portal concurrency messaging.)*
+### Publish a concierge phone lane when OTP fails analogue guests may need help.
 
 ## Removing the App
 
-1. Communicate deprecation timeline offer alternate manage booking link.
+1. Announce a change window plus alternate ways to reach you calmly.
+2. Open **Installed apps**, uninstall **My Cabinet**.
 
-### After you disconnect
+### What changes afterward
 
-clients lose self-service escalate support capacity plan.
-
-### Data handling
-
-profiles remain backbone CRM until privacy erase flows portal cosmetic gone.
+Clients lose DIY sign-in admins may answer more inbox phone traffic until habits settle.

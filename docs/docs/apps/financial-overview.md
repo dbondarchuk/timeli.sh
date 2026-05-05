@@ -1,49 +1,46 @@
 ---
 sidebar_position: 39
-description: Consolidated dashboards revenue fees tips taxes payout gaps exports accounting handoff.
+description: A dashboard that summarizes revenue, payments, and checkout drop-off cues.
 ---
 
 # Financial Overview
 
-Operational finance snapshot not replacement for authoritative ledger nuanced drilldown thresholds alerting.
+Financial Overview adds a dedicated area in Timelish where you glance at totals such as payments received, appointments completed, and how many shoppers start checkout but abandon before paying. Charts usually respect filters like date ranges and locations when those filters exist.
+
+It is meant for operators who want a quick heartbeat. **It is not a tax ledger** and **it is not a substitute for discussing numbers with your accountant**.
 
 ## Adding the App
 
-1. Permissions segregate sensitive payroll commission eyes least privilege CFO controller.
-2. **Apps** → **App Store** → **Financial Overview** map charts taxes tips processor fees bridging multi tender.
-3. Timezone aggregation boundary clarifications DST caution.
-4. Validate sample week tie bank deposits lag awareness.
+1. Give access only to people who should see totals (owners, finance leads, trusted supervisors).
+2. Open **Apps**, open **Store**, and install **Financial overview** (capitalisation follows your storefront card).
+3. Confirm your workspace time zone looks correct inside general settings odd offsets skew dashboards.
+4. Compare one week inside Timelish with one week inside Stripe, Square, or PayPal. Small differences are normal while banks still settle.
 
-Stale numbers **[Apps troubleshooting](/docs/apps/troubleshooting)** webhook stalled settlement delay educate.
+Strange zeros or charts that never update begin with **[Apps troubleshooting](/docs/apps/troubleshooting)** and your payment processor status pages.
 
-### App-specific requirement
+### Good to know
 
-Regulatory disclaimers Timelish not tax advisor annotate footers.
+Footers and help text may remind you that Timelish does not provide tax advice. Treat every total as guidance until your finance team signs off.
 
 ## Usage
 
-### Daily flash revenue pacing target
+### Daily check-in on cash flow without exporting spreadsheets first
 
-**What it is for:** Manager huddle succinct.
+**Use this when:** You want the quick story before you deep dive.
 
-### Fee leakage radar misconfigured SKU tax class
+### Spot checkout steps where clients give up
 
-**What it is for:** Margin rescue.
+**Use this when:** Your website flow needs improvement and you want evidence.
 
-### Payout anomaly detection drifting chargeback spike
+### Compare locations without shaming staff
 
-**What it is for:** Early warning CFO calm.
-
-### Multi-location leaderboard healthy competition beware morale harm ethical framing
-
-**What it is for:** Motivate transparently kindly.
-
-*(Prerequisites: chart of accounts mapping discipline refresh cadence SLA.)*
+**Use this when:** You need trends, not blame. Share numbers carefully with teams.
 
 ## Removing the App
 
-1. **Installed apps** uninstall dashboards sensitive eyes narrow.
+1. Open **Apps**, then **Installed apps**.
+2. Remove **Financial overview**.
 
-### After you disconnect
+### What changes afterward
 
-raw transactions still exist underlying modules reporting elsewhere optional.
+The tab disappears. Underlying appointments and payments stay in Timelish. Other reports or exports you already use keep working.

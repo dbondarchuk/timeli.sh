@@ -1,49 +1,45 @@
 ---
 sidebar_position: 14
-description: Create Timelish busy blocks without syncing an external calendar.
+description: Block specific dates and times in Timelish so clients cannot book you then.
 ---
 
 # Busy events
 
-Lets staff mark downtime training travel directly inside Timelish so bookings avoid those stretches without a third-party calendar.
+Busy events are simple blocks you create inside Timelish: lunch breaks, transit, holidays, meetings, or any time clients should **not** be able to book you. No outside calendar account is required.
 
 ## Adding the App
 
-1. Open **Apps** → **App Store** choose **Busy events**.
-2. Enable or install accept defaults there is usually no OAuth.
-3. Configure who may create blocks if role toggles exist.
+1. Open **Apps**, then **Store**.
+2. Install **Busy events** (there is usually nothing to sign in to).
+3. Open the **Busy events** screens from Apps or scheduling (labels match your workspace) to create blocks.
 
-Nothing to connect see **[Apps troubleshooting](/docs/apps/troubleshooting)** only if UI errors appear rare.
+If the screens do not appear, refresh or contact support. See **[Apps troubleshooting](/docs/apps/troubleshooting)** if you see unexpected errors.
 
 ## Usage
 
-### Block lunch or admin time
+### Block lunch or breaks
 
-**What it is for:** Keep online bookers from sliding into midday gaps.
+**Use this when:** You want the booking page closed for fixed daily gaps.
 
-**Prerequisites:** Staff permissions include busy tooling.
+**You need:** Permission to manage busy blocks for that location or person.
 
-### Overnight maintenance windows
+### Block a vacation day or training
 
-**What it is for:** Studios close deep clean windows repeatable weekly patterns when UI supports recurrence.
+**Use this when:** The whole day or several days should be unavailable.
 
-**Prerequisites:** Understand timezone pinned to workspace locale.
+**You need:** The right week or date range selected so you do not block the wrong week.
 
-### One-off blackout days
+### Recurring closures
 
-**What it is for:** Holidays retreats conference travel.
+**Use this when:** The same blackout repeats (for example every Monday morning).
 
-**Prerequisites:** Announce to team because external calendars still oblivious.
+**You need:** Your workspace supports recurrence on busy events; if not, add blocks manually per week.
 
 ## Removing the App
 
-1. **Installed apps** → **Busy events** uninstall.
-2. Confirm.
+1. Open **Apps**, then **Installed apps**.
+2. Remove or uninstall **Busy events** if your workspace allows it.
 
-### After you disconnect
+### What changes afterward
 
-Historical busy artefacts may linger read-only purge policy depends on retention consult support if auditors need proof.
-
-### Difference from calendar Apps
-
-Deleting busy events integration does not remove Google Outlook CalDAV linkage those stay separate installs.
+You may lose the in-product busy block tool. Past blocks may still appear in history depending on retention. Google or Outlook sync is separate; removing Busy events does not remove those calendar Apps.

@@ -1,53 +1,44 @@
 ---
 sidebar_position: 33
-description: Retry or manually resend SMS that failed ephemeral carrier blips numbering typos capped safety.
+description: Forward customer SMS replies to your phone so you see the thread without opening admin.
 ---
 
 # Text message resender
 
-Operational safety net inspecting failure classes queuing restrained retries respecting compliance cooldown windows.
+When customers **reply** to business texts, this App forwards that reply to **your phone number** (or another number you enter) so you can keep chatting from your handset. It is meant for personal follow-up, not as a full help desk.
 
 ## Adding the App
 
-1. Baseline SMS transport healthy otherwise nothing to resend.
-2. **Apps** → **App Store** → **Text message resender** enable.
-3. Configure max attempts backoff duplicate suppression auditing.
-4. Dry run flagged synthetic failure telemetry.
+1. Ensure **[Textbelt SMS](/docs/apps/text-belt)** stays healthy and inbound replies are already reaching Timelish.
+2. Open **Apps**, then **Store**, and install **Text message resender**.
+3. Optionally set a **phone override** field if forwards should reach a teammate or shared handset.
+4. Save. Ask a coworker’s phone to reply to an outbound SMS and confirm you receive the forwarded copy.
 
-Throttle loops **[Apps troubleshooting](/docs/apps/troubleshooting)** shadow bans carriers.
+Forwarded texts sometimes land silently if the phone filters unknown senders. Check **[Apps troubleshooting](/docs/apps/troubleshooting)** and device Focus modes.
 
-### App-specific requirement
+### Good to know
 
-Do not escalate marketing without fresh consent classify retries transactional only ethically.
+Treat forwarded messages like client data lock handsets respect privacy trainings.
 
 ## Usage
 
-### Automatic transient carrier 5xx backoff
+### Owner moves between appointments without dashboards
 
-**What it is for:** Reliability humane.
+**Use this when:** You still need conversational SMS slips.
 
-### Manual moderator resend typo corrected number hygiene
+**You need:** Discipline responding from official lines so chats stay searchable later if required.
 
-**What it is for:** Human QA gate.
+### Rotating coordinator phone nightly
 
-### Burst disaster renotify storm cautious caps
+**Use this when:** One duty person carries the baton.
 
-**What it is for:** Safety closure reiterate calmly.
-
-### Forensic reconstruct timeline incident response
-
-**What it is for:** Post-mortem SOC2 narrative.
-
-*(Prerequisites: observability dashboards alert noise tuned.)*
+**You need:** Update override numbers when shifts change nightly checklist item.
 
 ## Removing the App
 
-1. **Installed apps** uninstall resend tooling.
+1. Open **Apps**, then **Installed apps**.
+2. Remove **Text message resender**.
 
-### After you disconnect
+### What changes afterward
 
-once failed stays failed escalate human procedure.
-
-### Logs trails
-
-immutable audit persists investigations.
+Customer replies stay inside Timelish only. Nobody receives automatic phone forwards until you reinstall this App.

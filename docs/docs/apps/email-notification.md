@@ -1,69 +1,50 @@
 ---
 sidebar_position: 25
-description: Email reminders confirmations and internal notices using Timelish templates and your mail path.
+description: Receive email updates about bookings on your inbox, often with a calendar attachment.
 ---
 
 # Email notification
 
-Delivers templated emails for reminders confirmations follow-ups routed through SMTP App or vendor default whichever active.
+Email notification emails **you or your chosen address** when appointment activity happens: new bookings, updates, cancellations, and similar milestones. Messages can include an **attached calendar invite** so you can tap **Add to calendar** on your phone.
 
 ## Adding the App
 
-1. Prefer **SMTP** installed deliverability predictable else accept shared transport limits.
-2. **Apps** → **App Store** enable **Email notification**.
-3. Pick templates tones quiet hours jurisdictions marketing unsubscribe compliance.
-4. Send self test verify inbox not spam.
+1. Prefer **[SMTP](/docs/apps/smtp)** if you send from your own domain. Shared Timelish mail works only when your workspace already has outbound email configured elsewhere.
+2. Open **Apps**, then **Store**, and install **Email notification**.
+3. Enter **Send to email** when you want a different inbox than your account default (leave blank to use your primary email).
+4. Save until the setup reports success.
 
-No mail **[Apps troubleshooting](/docs/apps/troubleshooting)** check SMTP DKIM quotas.
+If nothing arrives, see **[Apps troubleshooting](/docs/apps/troubleshooting)** and check SMTP or spam folders.
 
-### App-specific requirement
+### Good to know
 
-Transactional vs promotional classification laws CAN-SPAM GDPR consent vary consult counsel promotional paths.
+This App speaks to staff or internal mailboxes. Messages **to paying clients** about their bookings use **[Customer email notification](/docs/apps/customer-email-notification)** unless your workspace routes differently.
 
 ## Usage
 
-### Appointment reminder cascade
+### Get an email the moment someone books online
 
-**What it is for:** Reduce no-show gentle nudges.
+**Use this when:** You want a fast inbox alert without opening admin all day.
 
-**Prerequisites:** Accurate attendee email captured booking channel.
+**You need:** A reachable email address or mailbox.
 
-### Internal staff escalation
+### Attach calendar files for quick adds
 
-**What it is for:** Manager heads-up VIP booking.
+**Use this when:** You live by Google Calendar Apple Calendar Outlook from inbox actions.
 
-**Prerequisites:** Routing rules mailbox monitored.
+**You need:** A mail client that displays attachments.
 
-### Post-visit gratitude survey
+### Route alerts to operations@ instead of owners@
 
-**What it is for:** NPS uplift.
+**Use this when:** Front desk should triage confirmations.
 
-**Prerequisites:** Survey link HTTPS stable.
-
-### Waitlist drip educational
-
-**What it is for:** Nurture dormant interest.
-
-**Prerequisites:** Honour marketing consent flags.
-
-### Failover SMS reference optional cross-link
-
-**What it is for:** Multi-channel redundancy.
-
-**Prerequisites:** SMS App installed quotas funded.
+**You need:** The typed address spelled correctly plus deliverability basics (not treated as spam).
 
 ## Removing the App
 
-1. **Installed apps** → Email notification uninstall halt sends.
+1. Open **Apps**, then **Installed apps**.
+2. Open **Email notification** and remove or uninstall it.
 
-### After you disconnect
+### What changes afterward
 
-Automated sends from this layer stop configure another channel where continuity is required.
-
-### Data handling
-
-Unsent queued messages drop active templates remain until an admin deletes them or the workspace export policy runs.
-
-### Provider hygiene
-
-If you use **[SMTP](/docs/apps/smtp)** separately turning off Email notification alone does not remove SMTP verify newsletter footers tracking links elsewhere still lawful.
+You stop receiving these automatic mailbox updates. Appointment changes still occur in Timelish; monitoring moves to dashboards or manual checks.

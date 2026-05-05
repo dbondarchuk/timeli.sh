@@ -1,69 +1,54 @@
 ---
 sidebar_position: 24
-description: Send Timelish system and optional customer email through your SMTP server DKIM SPF aligned.
+description: Send outgoing email through your own SMTP mail server instead of Timelish shared mail only.
 ---
 
 # SMTP
 
-Routes outbound mail transactional reminders receipts through SMTP you control instead of shared Timelish pool improving deliverability brand alignment.
+SMTP is the standard path for outbound mail servers. Connecting SMTP lets transactional email (confirmations, reminders, staff notices) appear to come **from your domain** when Timelish supports sending through providers like Google Workspace, Microsoft 365, custom hosts, or transactional vendors.
 
 ## Adding the App
 
-1. Collect SMTP host port encryption username password or SASL OAuth if supported.
-2. **Apps** → **App Store** → **SMTP** enter fields.
-3. Run **Send test email** DMARC testers external.
-4. Save align SPF DKIM PTR with IT guidance.
+1. Collect SMTP **host**, **port**, encryption (TLS vs SSL per host docs), **username**, and **password** or **app password** from your mail provider’s guide.
+2. Open **Apps**, then **Store**, and install **SMTP**.
+3. Enter the fields exactly as your host describes.
+4. Run **Send test email** inside Timelish and check inbox plus spam folders.
 
-Relay denied **[Apps troubleshooting](/docs/apps/troubleshooting)** often IP allowlist throttle.
+Mis-typed passwords, blocked ports, and missing SPF/DKIM/DMARC are the usual suspects. **[Apps troubleshooting](/docs/apps/troubleshooting)** walks through retries.
 
-### App-specific requirement
+### Good to know
 
-Some providers disallow consumer Gmail SMTP use approved transactional vendors instead.
+Consumer Gmail SMTP is often discouraged; many teams use Workspace with an app password or a dedicated transactional sender.
 
 ## Usage
 
-### Branded transactional From domain
+### Branded confirmations from `@yourbiz.com`
 
-**What it is for:** hello@business.com cohesion.
+**Use this when:** Clients should recognise your domain in the sender field.
 
-**Prerequisites:** DNS DKIM TXT published verified.
+**You need:** DNS records (often SPF plus DKIM) published and verified according to Timelish and your host.
 
-### Burst appointment change notices
+### High volume reminders on busy days
 
-**What it is for:** Storm reschedule power outage.
+**Use this when:** You anticipate many appointment updates in one burst.
 
-**Prerequisites:** Throttle awareness provider caps.
+**You need:** Sending limits high enough from your SMTP provider.
 
-### HIPAA conscious routing
+### Sensitive industries with strict mail rules
 
-**What it is for:** Healthcare BAA pathway with HIPAA capable host.
+**Use this when:** Policy requires routing through servers you audit.
 
-**Prerequisites:** Signed agreements logging retention.
-
-### Fallback when shared pool flagged
-
-**What it is for:** Recover deliverability reputational ding.
-
-**Prerequisites:** Separate IP warming plan.
-
-### Per-workspace segregation multi brand
-
-**What it is for:** Franchises isolation.
-
-**Prerequisites:** Unique credentials DKIM selectors.
+**You need:** Appropriate agreements with whoever hosts the mailbox service.
 
 ## Removing the App
 
-1. **Installed apps** → SMTP purge credentials uninstall.
+1. Open **Apps**, then **Installed apps**.
+2. Remove SMTP credentials by disconnecting **SMTP**.
 
-### After you disconnect
+### What changes afterward
 
-Mail routes back provider default waterfall check critical templates still dispatch.
+Outbound mail falls back to whatever default Timelish uses when SMTP is unavailable. Scheduled messages queued only for SMTP may stop until you reconnect.
 
-### Data handling
+### Outside Timelish
 
-Timelish forgets SMTP secrets message bodies remain in audit logs lifecycle policy.
-
-### Mail host cleanup
-
-Delete service account created delete allowlist IP egress references.
+Delete service accounts created only for SMTP and remove Timelish from allowlists once you migrate away.

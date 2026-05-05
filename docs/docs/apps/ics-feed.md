@@ -1,56 +1,48 @@
 ---
 sidebar_position: 12
-description: Subscribe to an ICS URL so external calendars mark you busy inside Timelish.
+description: Block time in Timelish using an external calendar link in ICS format.
 ---
 
-# ICS feed
+# ICS Feed
 
-Reads a hosted calendar subscription URL ICS and merges those busy intervals into scheduling without full calendar write-back.
+If another system gives you a subscribe link to a calendar (often ending in `.ics` or shared as a stable URL), Timelish can read it and treat those events as **busy** time. This helps online booking avoid clashes without a full two-way Google or Outlook connection.
 
 ## Adding the App
 
-1. Obtain the HTTPS ICS URL from the source system airfare tools partner studios personal calendar exports.
-2. Open **Apps** → **App Store** choose **ICS feed**.
-3. Paste the subscription URL nickname it if prompted.
-4. Save run the built-in preview or tester if offered so you know fetch works.
-5. Tell Timelish how often to refresh some hosts throttle frequent pulls obey their limits.
+1. Copy the full **ICS** link from the other calendar or product. It should start with `https://`.
+2. Open **Apps**, then **Store**, and install **ICS Feed**.
+3. Paste the link where the form asks for the ICS URL.
+4. Save and wait for a success message. Open **Installed apps** if you need to edit the link later.
 
-Stale data or handshake errors **[Apps troubleshooting](/docs/apps/troubleshooting)**.
+If the calendar never loads, see **[Apps troubleshooting](/docs/apps/troubleshooting)**. Common issues are a wrong URL, a private link Timelish cannot reach, or the host blocking frequent checks.
 
-### App-specific requirement
+### Good to know
 
-Feeds must stay publicly reachable or allowlisted IP endpoints private VPN-only URLs fail from cloud workers.
+Some hosts limit how often a link can be refreshed. Very old data in Timelish usually means the feed is slow or blocked.
 
 ## Usage
 
-### Block staff when another product owns their timetable
+### Show school, side-job, or partner calendars as busy
 
-**What it is for:** Side gigs school rosters coop calendars subtract availability.
+**Use this when:** You keep another calendar elsewhere but still want Timelish to block those hours.
 
-**Prerequisites:** Source publishes valid ICS TTL headers not password unless Timelish supports auth for that tier.
+**You need:** A working ICS URL that stays online and allows Timelish’s servers to fetch it.
 
-### Overlay partner locations
+### Combine more than one busy source
 
-**What it is for:** Contractors share ICS read-only avoids duplicating calendars.
+**Use this when:** Busy time should include several feeds.
 
-**Prerequisites:** Sharing policy allows ICS distribution.
-
-### Layer multiple ICS feeds
-
-**What it is for:** Busy union across family personal brand calendars.
-
-**Prerequisites:** Naming each feed cleanly because troubleshooting depends on URLs.
+**You need:** Either multiple setups if your workspace allows, or one combined feed from the other product.
 
 ## Removing the App
 
-1. Open **Installed apps** → ICS feed instances.
-2. Delete or disconnect the feed you no longer mirror.
-3. Confirm removal.
+1. Open **Apps**, then **Installed apps**.
+2. Open **ICS Feed** and remove or disconnect that calendar link.
 
-### After you disconnect
+### What changes afterward
 
-Timelish ignores that external busy overlay immediately future booking checks no longer subtract those intervals.
+Timelish stops using that feed for busy time. It does not delete anything on the calendar that hosts the link.
 
-### Source-side expectation
+### Outside Timelish
 
-Upstream calendar continues unchanged cancel sharing at vendor if secrecy matters Timelish never wrote back upstream.
+Turn off sharing at the original calendar if you want the link to die everywhere. Timelish never wrote back to that calendar through this App.

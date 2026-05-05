@@ -1,59 +1,44 @@
 ---
 sidebar_position: 30
-description: Operational SMS to staff about bookings outages and escalation chains using your SMS transport.
+description: Text yourself when bookings change so you stay informed away from the desk.
 ---
 
 # Text message notification
 
-Sends SMS to internal numbers—practitioners managers or ops lines—when booking events thresholds or operational alerts occur so the team reacts without refreshing the admin inbox alone.
+Sends **SMS to you or an override number** when appointment events happen: new requests, confirmations, declines, reschedules depending on how your workspace wires handlers. It parallels **[Email notification](/docs/apps/email-notification)** but reaches your phone.
 
 ## Adding the App
 
-1. Configure an SMS transport your workspace supports—for example **[Textbelt](/docs/apps/text-belt)** —with credits allowances and compliant use.
-2. Open **Apps** → **App Store** and enable **Text message notification**.
-3. Add E.164 phone numbers per role verify each device receives a **Send test**.
-4. Set quiet hours and escalation order if the UI exposes them so overnight pings stay intentional.
+1. Install **[Textbelt SMS](/docs/apps/text-belt)** first and confirm you have texting credit.
+2. Open **Apps**, then **Store**, and add **Text message notification** (**Text message appointment notifications** naming may appear internally same idea).
+3. Optional: type a **phone override** if alerts should go to a shared operations line instead of your profile phone.
+4. Save and trigger a test booking to prove delivery.
 
-Delivery failures **[Apps troubleshooting](/docs/apps/troubleshooting)** plus carrier DND and short-code blocks.
+See **[Apps troubleshooting](/docs/apps/troubleshooting)** when nothing arrives.
 
-### App-specific requirement
+### Good to know
 
-Employer and regional rules may require documented consent before operational texts to personal phones.
+Each text subtracts Textbelt credit. Keep rules lean if you book hundreds per day.
 
 ## Usage
 
-### Ping staff when a new booking arrives
+### Mobile owners who rarely read email onsite
 
-**What it is for:** Same-day responsiveness without staring at email.
+**Use this when:** Phones buzz faster than laptops.
 
-**Prerequisites:** Numbers current role mapping accurate SMS transport healthy.
+**You need:** Correct country codes on numbers and phones that accept short business texts.
 
-### Escalate a likely no-show
+### Escalate urgent changes to on-call staff
 
-**What it is for:** Recover the slot by calling alternate waiters.
+**Use this when:** Overnight auto-booking must ping a duty phone.
 
-**Prerequisites:** Timing rules tuned so escalations fire only after your policy threshold.
-
-### Broadcast an internal closure
-
-**What it is for:** Snow power outage staffing emergency.
-
-**Prerequisites:** Recipient group maintained avoid texting customers accidentally via this channel.
-
-### On-call rotations
-
-**What it is for:** Fair hand-offs when only one responder should wake up.
-
-**Prerequisites:** Calendar or ladder configuration kept up when people swap shifts.
+**You need:** Agreement on who owns the override number when it rotates.
 
 ## Removing the App
 
-1. Open **Installed apps** → **Text message notification** uninstall or toggle off.
+1. Open **Apps**, then **Installed apps**.
+2. Remove **Text message notification**.
 
-### After you disconnect
+### What changes afterward
 
-Operational SMS alerts stop reassure the team via email Slack or pager path so nothing critical goes silent.
-
-### Data handling
-
-Timelish clears active notification targets per retention policy historic delivery logs may remain for auditing until purged.
+You lose automatic SMS pings. Watch email or open admin for live activity.

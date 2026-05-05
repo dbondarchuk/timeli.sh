@@ -1,64 +1,48 @@
 ---
 sidebar_position: 37
-description: Sell and redeem gift cards in Timelish with branding denominations and reconciliation against your payment setup.
+description: Sell gift cards on your website and track balances inside Timelish.
 ---
 
 # Gift Card Studio
 
-Lets clients buy stored-value gifts you can redeem toward bookings or retail. Use it when gifting is core to holidays corporate programs or packages that should feel on-brand.
+Gift Card Studio sells **gift cards** on your public site. Visitors pay online using **Stripe**, **Square**, or **PayPal** (**whichever you already connected**). You manage **designs**, **sold cards**, and **redemptions** inside Timelish screens such as Designs, Purchased gift cards, and Settings.
 
 ## Adding the App
 
-1. Confirm local rules on expiry disclosures unclaimed balances and accounting treatment with your finance adviser if needed.
-2. Open **Apps** → **App Store** choose **Gift Card Studio** finish install.
-3. Set artwork denominations velocity limits and any fraud alerts your team expects.
-4. Connect the payment processor you already use (**Stripe**, **Square**, or **PayPal** per your workspace) so purchases settle correctly.
+1. Connect **[Stripe](/docs/apps/stripe)**, **[Square](/docs/apps/square)**, **or [PayPal](/docs/apps/paypal)** first. Resolve any alerts inside their dashboards, then run a tiny test checkout.
+2. Open **Apps**, open **Store**, and install **Gift Card Studio**.
+3. Finish the **Design** and **pricing** workflow your tenant shows (**Create design**, optional **Purchases** practise path).
+4. Buy a cheap real gift card, then redeem it with the same workflow staff will daily.
 
-If checkout errors persist see **[Apps troubleshooting](/docs/apps/troubleshooting)** and your processor dashboard.
+If checkout fails unexpectedly, **[Apps troubleshooting](/docs/apps/troubleshooting)** collects common fixes.
 
-### App-specific requirement
+### Removing Gift Card Studio is blocked while purchases remain
 
-Gift cards tie into payments and bookkeeping—map how you recognise revenue breakage and refunds before going live.
+Expect an uninstall error referencing existing purchases honour balances bookkeeping exports refunds until Timelish allows removal.
+
+### Accountants need a say first
+
+Discuss **VAT sales tax breakage expiry legal copy** wherever you operate.
 
 ## Usage
 
-### Sell digital gifts by email or SMS
+### Sell holiday gifting without handwritten paper vouchers
 
-**What it is for:** Buyers send a branded code or link recipients redeem online.
+**Use this when:** You want prepaid revenue spikes your website can fulfil alone.
 
-**Prerequisites:** **[Customer email notification](/docs/apps/customer-email-notification)** and/or **[Customer text message notification](/docs/apps/customer-text-message-notification)** if you automate delivery—or a clear manual fulfilment workflow.
+### Support corporate buys of many passes
 
-### Corporate bulk programmes
+**Use this when:** A single buyer clears checkout for teammates or gifting programmes.
 
-**What it is for:** Employers buy many cards under one invoice or approval flow.
+### Keep front desk redemption smooth on busy Saturdays
 
-**Prerequisites:** Pricing tax and purchaser identity checks meet your policies.
-
-### Track partial balances and reminders
-
-**What it is for:** Reduce forgotten value leftover on cards.
-
-**Prerequisites:** Staff knows how redemption affects reporting in **Financial Overview**.
-
-### Reduce fraud across sudden bulk purchases
-
-**What it is for:** Pause or review suspicious bursts before issuance.
-
-**Prerequisites:** Alerts reviewed by someone on-call escalation path documented.
+**Use this when:** Queues spike and handheld codes must stay trustworthy.
 
 ## Removing the App
 
-1. Open **Installed apps** choose **Gift Card Studio** uninstall or disconnect as labelled.
-2. Decide how open balances are honoured—you may owe clients service until liabilities are settled.
+1. Export purchase ledgers reconcile obligations wait until uninstall is allowed (**product error disappears**).
+2. Open **Installed apps**, remove **Gift Card Studio**.
 
-### After you disconnect
+### What changes afterward
 
-Sales of new cards stop redemption may be limited by product behaviour confirm in UI banners support if unsure.
-
-### Data handling
-
-Timelish retains historical gift-card records per retention policies your workspace uses for invoicing audits and disputes.
-
-### Processor and legal hygiene
-
-Pause marketing pages advertising cards archive exports for finance revoke unused API privileges at your payment vendor if directed by security.
+Selling new cards pauses redeemed cards follow support guidance for legacy balances.

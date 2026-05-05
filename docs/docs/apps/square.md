@@ -1,66 +1,55 @@
 ---
 sidebar_position: 22
-description: Take in-person keyed and online Square payments synced with catalogue items where mapped.
+description: Take payments through Square at checkout or with Square hardware aligned to your studio.
 ---
 
 # Square
 
-Link Square terminals online APIs catalog sync for unified retail service hybrid studios.
+Connect Square when your business collects money through Square for online checkout, saved cards, terminals, gift cards mapped in Square, or similar flows exposed in Timelish.
 
 ## Adding the App
 
-1. Open **Apps** → **App Store** pick **Square** connect.
-2. OAuth into Square Seller account consent locations permissions.
-3. Map locations catalogue SKUs tipping taxes per onboarding wizard.
-4. Run test sandbox transaction flip live toggle when readiness checklist satisfied.
+1. Open **Apps**, then **Store**, and install **Square**.
+2. Sign in with your Square Seller account and approve access.
+3. Map locations or catalog items when the wizard asks so Timelish and Square agree on basics.
+4. Run a tiny test transaction in Sandbox or Live as your onboarding suggests.
+5. Set **Default apps** if multiple payment processors exist.
 
-Scopes errors **[Apps troubleshooting](/docs/apps/troubleshooting)** plus Square Seller Dashboard alerts.
+Square may flag compliance or risky categories. Resolve alerts in Square first. **[Apps troubleshooting](/docs/apps/troubleshooting)** covers generic connection loops.
 
-### App-specific requirement
+### Good to know
 
-Some regions locales limited verify Square sells payment services in jurisdiction.
+Regional availability differs. Confirm Square sells and settles in your country before you rely on it for every client.
 
 ## Usage
 
-### Card present countertop after service
+### Card present checkout after visit
 
-**What it is for:** Physical spa checkout.
+**Use this when:** You tap or insert cards on a Square reader at the desk.
 
-**Prerequisites:** Hardware paired reader firmware current.
+**You need:** Hardware paired, firmware current, staff trained on reader errors.
 
-### Online prepay mirror inventory
+### Online prepay for classes or limited seats
 
-**What it is for:** Limited seat classes.
+**Use this when:** You want payment before the slot is confirmed.
 
-**Prerequisites:** Item counts accurate oversell guard rails.
+**You need:** Inventory or capacity settings that match how you sell out.
 
-### Gift card redemption
+### Gift cards through Square
 
-**What it is for:** Stored value branding.
+**Use this when:** Redemption should hit Square ledgers.
 
-**Prerequisites:** Square gift card SKU configured mapping.
-
-### House accounts invoicing hybrids
-
-**What it is for:** B2B slow pay agreements.
-
-**Prerequisites:** Accounts receivable process outside Square still monitored.
-
-### Disputes evidence upload
-
-**What it is for:** Chargeback defence.
-
-**Prerequisites:** Internal photos logs attached timely.
+**You need:** Gift items configured in Square and linked the way Timelish expects.
 
 ## Removing the App
 
-1. **Installed apps** → Square disconnect uninstall.
-2. Replace default tender path.
+1. Open **Apps**, then **Installed apps**.
+2. Disconnect Square and point **Default apps** at another processor if you still take payments.
 
-### After you disconnect
+### What changes afterward
 
-Readers stop receiving Timelish initiated payment intents reconciliation gaps if mid-day.
+Timelish stops creating new Square payments. Open Square tabs (disputes, payouts) still live in Square until closed.
 
-### Square-side housekeeping
+### Outside Timelish
 
-Deactivate integration token remove Timelish from Square Developer apps optional archive catalog mapping notes.
+Remove or rotate Timelish in Square Developer or connected apps screens if compliance asks for a clean revoke.

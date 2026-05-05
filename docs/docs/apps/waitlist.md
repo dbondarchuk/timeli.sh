@@ -1,49 +1,31 @@
 ---
 sidebar_position: 35
-description: Waitlist pipelines priorities fairness analytics bridging demand overflow and cancellations.
+description: Capture visitors who still want appointments when calendars look busy.
 ---
 
 # Waitlist
 
-Let clients join interest queues open notification paths optional fee holds audit transparency.
+Waitlist gathers people who showed interest **even though** no ideal slot existed right away. Inside Timelish you review each row, dismiss entries that faded, or invite someone straight into booking **when your admin screens expose those actions**. Optionally add **[Waitlist notifications](/docs/apps/waitlist-notifications)** so staff emails and optional customer confirmations send automatically.
 
 ## Adding the App
 
-1. Policies published refund priority tie-break ethically sound.
-2. **Apps** → **App Store** → **Waitlist** install configure capacity caps duplicate detection.
-3. Pair **Waitlist notifications** email SMS symmetry.
-4. Pilot sandbox seeds.
+1. Open **Apps**, open **Store**, and install **Waitlist**.
+2. Visit your booking page, join the wait path yourself, verify a matching row arrives in admin.
+3. Add **[Waitlist notifications](/docs/apps/waitlist-notifications)** if you rely on inbox alerts troubleshooting lives in **[Apps troubleshooting](/docs/apps/troubleshooting)**.
 
-Ethical backlash **[Apps troubleshooting](/docs/apps/troubleshooting)** perception fairness messaging.
+### Be transparent publicly
 
-### App-specific requirement
-
-Payment hold jurisdictions regulated gift card escrow counsel.
+Explain how you prioritise **first arrival**, **loyalty tiers**, optional paid holds **consult counsel if unsure**.
 
 ## Usage
 
-### Fair overflow demand hot classes
+### Decide when to hire or expand schedules that always queue.
 
-**What it is for:** Revenue maxim ethical.
+### Quickly refill surprise openings by calling people still waiting kindly.
 
-### Paid priority optional controversial transparent
-
-**What it is for:** Monetise scarcity cautiously disclose.
-
-### Preference metadata accessibility needs
-
-**What it is for:** Match right resource.
-
-### Bulk historical import migration rival platform
-
-**What it is for:** Transition continuity tooling optional.
-
-*(Prerequisites: analytics funnel instrumentation staff training playbook.)*
+### Housekeeping stale rows so reporting stays earnest.
 
 ## Removing the App
 
-1. **Installed apps** dismantle queues notify active waiters refund holds policy.
-
-### After you disconnect
-
-signup UI hides archival analytics export optionally.
+1. Export a spreadsheet if bookkeeping wants proof historical trend.
+2. Uninstall hides public signup existing rows archival policy clarify with Timelish support.

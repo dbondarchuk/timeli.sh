@@ -5,7 +5,7 @@ description: Welcome to the Timelish product documentation.
 
 # Get started with Timeli.sh
 
-Learn how to create your organization, connect a calendar, build your booking website, and accept your first appointment — in under 10 minutes.
+Learn how to create your organization, connect a calendar, build your booking website, and accept your first appointment, in under 10 minutes.
 
 This guide walks you through everything you need to go from a fresh Timeli.sh account to a live booking page: setting up your organization, syncing your calendar, adding services, building your website, configuring notifications, and sharing your booking link with clients.
 

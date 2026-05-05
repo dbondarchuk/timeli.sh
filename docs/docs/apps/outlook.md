@@ -1,56 +1,56 @@
 ---
 sidebar_position: 11
-description: Connect Microsoft Outlook or Microsoft 365 calendars to Timelish.
+description: Sync Timelish appointments with Microsoft Outlook or Microsoft 365 calendars.
 ---
 
 # Outlook
 
-Syncs bookings with Outlook calendar so Microsoft 365 workplaces keep one source of truth for busy times Teams links when configured through your tenancy.
+Connect Outlook so bookings appear on your Microsoft calendar and your free or busy time stays aligned with Timelish.
 
 ## Adding the App
 
-1. Open **Apps** → **App Store** locate **Outlook** or labelled Microsoft Calendar integration.
-2. Choose **Install** start the connection wizard.
-3. Sign in with the Microsoft work or personal account admins use policies that consent to delegated calendar scopes.
-4. Accept every permission Outlook shows partial consent fails the handshake.
-5. Return to Timelish wait until status is healthy then pick this connection under calendars or defaults.
+1. Open **Apps**, then **Store**.
+2. Find **Outlook** (Microsoft calendar) and install or connect it.
+3. Sign in with the Microsoft account your business uses. Complete any security prompts.
+4. Accept the permissions Timelish requests. Skipping steps often leaves the App stuck.
+5. Pick the calendar you want for appointments, if asked.
+6. Confirm the App shows as connected. Use **Default apps** if you must choose it over other calendars.
 
-If admin consent banners appear see **[Apps troubleshooting](/docs/apps/troubleshooting)** and involve Microsoft 365 admin center.
+Corporate accounts sometimes need admin approval first. If sign-in fails, see **[Apps troubleshooting](/docs/apps/troubleshooting)**.
 
-### App-specific requirement
+### Good to know
 
-Conditional Access or Intune blocks must allow Timelish as a SaaS relay same as other third-party SaaS integrations.
+Company rules (Microsoft Entra, Conditional Access) can block third-party apps until IT allows Timelish.
 
 ## Usage
 
-### Maintain Outlook events for services
+### Put Timelish appointments on Outlook
 
-**What it is for:** Confirmed bookings land on Outlook everyone uses desktop web or Teams schedule views.
+**Use this when:** Staff use Outlook on desktop, web, or mobile for the day’s work.
 
-**Prerequisites:** Mailbox licensed for Outlook calendar room resources optional.
+**You need:** A Microsoft account with a calendar and permission to let Timelish update it.
 
-### Honour organisation busy rules
+### Keep busy time honest across the team
 
-**What it is for:** Exchange busy data prevents double booking across subsidiaries.
+**Use this when:** You want Timelish to respect meetings that already live in Exchange or Outlook.
 
-**Prerequisites:** Connecting account owns or delegates those calendars.
+**You need:** The connected account can see the calendars that matter for availability.
 
-### Leverage Teams join links
+### Online meeting links
 
-**What it is for:** Virtual meetings populate like native Outlook meetings when your template maps them.
+**Use this when:** You want video links on events the way Microsoft allows for your tenant.
 
-**Prerequisites:** Tenant policy permits online meetings auto creation licensing covers Teams.
+**You need:** Tenant settings and licenses that support online meetings.
 
 ## Removing the App
 
-1. Navigate **Installed apps** → Outlook Microsoft connection.
-2. Choose disconnect revoke or uninstall following on-screen wording.
-3. Confirm your choice.
+1. Open **Apps**, then **Installed apps**.
+2. Open **Outlook** and disconnect or remove it.
 
-### After you disconnect
+### What changes afterward
 
-Outlook stops updating from Timelish new bookings rely on another calendar path or manual entry.
+Timelish stops updating that Microsoft calendar. Choose another calendar App or expect to manage some steps by hand.
 
-### Vendor-side cleanup
+### Outside Timelish
 
-In **Azure AD** Enterprise apps or Outlook connected apps revoke Timelish access if your security team insists delete ghost events separately on the mailbox.
+In Microsoft 365 or Azure AD, an admin can revoke Timelish. Old events already on the mailbox stay until someone deletes them.

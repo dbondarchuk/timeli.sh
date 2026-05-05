@@ -1,60 +1,54 @@
 ---
 sidebar_position: 18
-description: Publish Timelish availability or bookings outward as ICS subscription links for downstream consumers.
+description: Write Timelish appointments into a connected calendar you select.
 ---
 
-# Calendar writer
+# Calendar Writer
 
-Exposes ICS feeds teammates embed in personal devices partner apps or reporting sinks read-only outbound mirror.
+Calendar Writer keeps an external calendar up to date when appointments change in Timelish. After you connect it, Timelish **adds, updates, or removes** calendar events on the calendar App you pick (for example **Google Calendar**, **Outlook**, or **CalDAV Calendar**) whenever appointments are created, rescheduled, or canceled.
 
 ## Adding the App
 
-1. **Apps** → **App Store** → **Calendar writer** enable.
-2. Generate feed tokens per persona or pooled secret depending security model.
-3. Distribute HTTPS URLs expiry rules optional rolling tokens.
-4. Document consumer refresh cadence Apple slow Google medium.
+1. Connect the calendar you want to receive events first (for example **Google Calendar** or **Outlook**) from **Store**, if it is not already installed.
+2. Open **Apps**, then **Store**, and install **Calendar Writer**.
+3. In setup, open the **Calendar storage** (or similar) dropdown and pick the connected calendar App that should receive appointment events.
+4. Save or **Add** / **Update** to finish.
 
-Token leak rotation **[Apps troubleshooting](/docs/apps/troubleshooting)** for stuck regeneration UI.
+If the list is empty, you need a calendar connection that allows writing. Errors about the target calendar often mean that App was removed; pick a new one. See **[Apps troubleshooting](/docs/apps/troubleshooting)**.
 
-### App-specific requirement
+### Good to know
 
-Anyone with URL reads whatever scope you mapped classify URLs like passwords.
+This App does **not** replace your main calendar connection. You still usually connect Google or Outlook as the source of busy time. Calendar Writer is the bridge that pushes **appointment-shaped events** into the calendar you select.
 
 ## Usage
 
-### Personal practitioner subscribe on iPhone
+### One shared Google or Outlook calendar for the whole desk
 
-**What it is for:** Side calendar outside Timelish still shows bookings.
+**Use this when:** Everyone should see bookings on one team calendar view.
 
-**Prerequisites:** Staff understands delay minutes inherent to consumer polling.
+**You need:** A calendar App connected and chosen in Calendar Writer, with permission to create events.
 
-### Franchise rollup dashboard
+### Staff each see their own external calendar filled
 
-**What it is for:** BI tool ingesting ICS parses counts.
+**Use this when:** Each provider has their own mailbox calendar.
 
-**Prerequisites:** Parser tolerates quirks repeating rules notes.
+**You need:** Separate calendar connections per person if your workspace model works that way, and Writer pointed at each.
 
-### Share limited busy mask without titles
+### Keep CalDAV hosted copy updated
 
-**What it is for:** Privacy first leaders hide client names externally.
+**Use this when:** Your policy stores events on a CalDAV server.
 
-**Prerequisites:** Choose masking template if offered.
-
-### Partner agency visibility
-
-**What it is for:** External coordinator sees tentative holds.
-
-**Prerequisites:** Contract governs SLA refresh frequency.
+**You need:** **[CalDAV Calendar](/docs/apps/caldav)** connected and chosen as the write target.
 
 ## Removing the App
 
-1. **Installed apps** → Calendar writer revoke feeds tokens.
-2. Confirm consumers receive 403 afterwards.
+1. Open **Apps**, then **Installed apps**.
+2. Open **Calendar Writer** and remove or uninstall it.
 
-### After you disconnect
+### What changes afterward
 
-Published endpoints stop emitting Timelish severs linkage cached copies on phones decay naturally.
+New changes in Timelish no longer create or update events on that target calendar through Calendar Writer. Existing events already written may stay on the calendar until you delete them manually.
 
-### Security hygiene
+### Outside Timelish
 
-If URL leaked before shutdown rotate any downstream stored secrets consumers clear subscriptions.
+The calendar you wrote to (Google, Microsoft, your CalDAV host) still holds whatever was created there. Removing Calendar Writer in Timelish does not bulk-delete those past events.

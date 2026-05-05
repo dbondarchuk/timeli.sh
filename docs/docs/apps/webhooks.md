@@ -1,57 +1,48 @@
 ---
 sidebar_position: 41
-description: Outbound HTTPS events from Timelish to your automation stack CRM data warehouse audit pipelines.
+description: Send booking and payment signals to your own secure web URL for automation.
 ---
 
 # Webhooks
 
-Carries near-real-time signals booking lifecycle payments forms waitlist with signed payloads optional retry semantics idempotency guidance.
+Webhooks asks Timelish to call a **website address that you host** whenever certain events occur. Examples include new appointments, status changes, or payment updates (**the full checklist appears inside the Webhooks form**). Each request is usually an HTTPS POST with JSON data. You may add a **secret** so your server can confirm the message truly came from Timelish.
+
+You need someone comfortable with servers or integrations. They deploy the URL, reply with a fast success signal (usually within a fraction of a second), then finish heavy work afterward.
 
 ## Adding the App
 
-1. Endpoint HTTPS certificate valid auth HMAC shared secret rotation playbook.
-2. **Apps** → **App Store** → **Webhooks** register URL choose event subset least privilege.
-3. Implement the receiver so it answers with HTTP **2xx** within about **300 ms**, then queue heavy work asynchronously, verify signatures, and guard against replays.
-4. Staging shadow traffic parallel logging diff.
+1. Build or subscribe to HTTPS hosting that trusts modern certificates and keeps logs.
+2. Open **Apps**, open **Store**, install **Webhooks**.
+3. Enter **Webhook URL**, pick only the events you need, optionally add **secret**, save.
+4. Trigger a rehearsal booking or payment that matches one of your selected events. Watch server logs for the payload and confirm signature checks if you use them.
 
-Signature mismatch **[Apps troubleshooting](/docs/apps/troubleshooting)** clock skew body canonicalisation.
+If nothing arrives or signatures fail, open **[Apps troubleshooting](/docs/apps/troubleshooting)** with your technical partner.
 
-### App-specific requirement
+### Good to know
 
-PII minimisation payload choose fields intentionally regulatory transport logs redact.
+Collect only the smallest amount of personal data your automation truly needs and follow guidance from privacy counsel where required.
 
 ## Usage
 
-### CRM opportunity stage advance
+### Push each booking into an internal database or spreadsheet
 
-**What it is for:** Sales orchestration.
+**Use this when:** You already maintain reporting outside Timelish.
 
-### Data warehouse append-only lakehouse bronze layer
+### Hand off to automation tools your company approves
 
-**What it is for:** Analytics gravity.
+**Use this when:** Zapier, Make, or similar is allowed by policy and security review.
 
-### Slack teams notification bridge optional fan-out
+### Send your own email or chat ping from your server
 
-**What it is for:** Human awareness.
+**Use this when:** You want Slack or SMS fan-out under your control.
 
-### Inventory ERP decrement services consumable
+## Removing the App
 
-**What it is for:** Stockout prevention.
+1. Open **Apps**, then **Installed apps**.
+2. Delete the Webhooks entry or uninstall the App.
+3. Rotate any shared secret and remove firewall allow rules that only existed for Timelish.
 
-### Security SIEM anomaly booking velocity fraud
+### What changes afterward
 
-**What it is for:** SOC enrichment.
+Timelish stops calling your automation. Processes that depended on continual pushes may pause until you replace them or poll data another way.
 
-*(Prerequisites: observability dead-letter queue DLQ oncall runbook.)*
-
-## Removing Webhooks
-
-1. **Installed apps** delete endpoints secrets rotate.
-
-### After you disconnect
-
-Timelish stops emission consumers quiet confirm no silent dependency automation stall.
-
-### Consumer cleanup
-
-Remove HMAC secrets archive integration monitor alerts.

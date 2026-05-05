@@ -1,60 +1,48 @@
 ---
 sidebar_position: 19
-description: Consume an external timetable URL published by another system to influence Timelish slot generation.
+description: Pull open hours or schedule data from your own web address for calendar integration.
 ---
 
 # URL schedule provider
 
-Pull schedule truth from vendor HTTP endpoint whose schema onboarding describes distinct from ICS busy overlay.
+This App is for teams with a **developer or vendor** who exposes schedule data over HTTP. Timelish calls your URL with a time range (start and end as standard ISO query parameters) and expects a response that describes available schedule information for calendar integration. It is different from **[URL busy events](/docs/apps/url-busy-events)**, which only supplies busy blocks.
 
 ## Adding the App
 
-1. Obtain authenticated URL methodology headers API key vault.
-2. **Apps** → **App Store** → **URL schedule provider** paste connectivity test passes.
-3. Map fields practitioner service location correlation keys mismatches cause phantom availability.
-4. Set polling honour vendor SLA.
+1. Confirm the contract with your technical partner: URL, headers, and JSON (or similar) shape Timelish accepts.
+2. Open **Apps**, then **Store**, and install **URL schedule provider**.
+3. Enter the **URL** and optional **headers** (for example a bearer token).
+4. Save until the App reports connected. Parse or auth errors must be fixed on your server or in the values you typed.
 
-Schema mismatch **[Apps troubleshooting](/docs/apps/troubleshooting)** plus vendor logs.
+See **[Apps troubleshooting](/docs/apps/troubleshooting)** if the App never connects.
 
-### App-specific requirement
+### Good to know
 
-Contract version pin breaking upstream changes guarded via feature flags.
+If you only need to block time from a regular calendar file, **[ICS Feed](/docs/apps/ics-feed)** is usually simpler and does not need custom code.
 
 ## Usage
 
-### Enterprise roster system owns shifts
+### Single source of truth lives in another system
 
-**What it is for:** Respect mother HR schedule.
+**Use this when:** HR, franchise HQ, or another tool already defines when services may run.
 
-**Prerequisites:** Stable staff IDs bridging Timelish users.
+**You need:** Reliable hosting and monitoring. If your endpoint is down, booking may break or fall back depending on product behaviour.
 
-### Pop-up kiosk generator
+### Authenticated schedule API
 
-**What it is for:** Kiosk SaaS toggles JSON windows.
+**Use this when:** Random internet traffic must not read your schedule.
 
-**Prerequisites:** Fallback open-hours if stale.
-
-### Franchise mandated template hours
-
-**What it is for:** Corporate dictates core grid franchisee cannot drift.
-
-**Prerequisites:** Legal acknowledgement local labour law overrides handled manually.
-
-### Seasonal athletics league
-
-**What it is for:** League API exposes practice windows clinics align.
-
-**Prerequisites:** DST awareness encoded upstream.
+**You need:** Headers that stay secret; rotate them if they leak.
 
 ## Removing the App
 
-1. **Installed apps** dismantle credential blocks URL entries.
-2. Save confirm worker cancellation.
+1. Open **Apps**, then **Installed apps**.
+2. Open **URL schedule provider** and clear the URL / headers or uninstall.
 
-### After you disconnect
+### What changes afterward
 
-Timelish no longer imports upstream grid local weekly schedule authoritative again.
+Timelish stops asking your server for schedule data. Your weekly hours and other calendar Apps take over again.
 
-### Mutual cleanup
+### Outside Timelish
 
-Deactivate API keys shared with Timelish on vendor dashboard.
+Revoke keys or tokens you issued for Timelish. Update your server so old tokens cannot be reused.

@@ -1,57 +1,44 @@
 ---
 sidebar_position: 34
-description: Publish studio stories updates and SEO pages through Timelish website blocks wired to appointments.
+description: Publish articles and updates on your public Timelish website.
 ---
 
 # Blog
 
-Content layer driving organic traffic FAQs culture posts cross-linking booking CTAs cohesion brand voice.
+The Blog lets you publish **readable posts** on your website (news, FAQs, announcements, promotions, seasonal stories). Visitors browse them like any normal article page tied to your brand.
 
 ## Adding the App
 
-1. Domain DNS CMS path confirm slug strategy.
-2. **Apps** → **App Store** → **Blog** enable editor roles moderation workflow preview mobile.
-3. Theme typography heading hierarchy accessibility contrasts.
-4. Seed categories tags analytics pixel optional lawful.
+1. Open **Apps**, then **Store**, and install **Blog**.
+2. Open the Blog editor from **Apps** or your website section (**exact menu wording can vary**).
+3. Create your first post: add title, web address (**slug**), body text, and choose **Draft** or **Published**.
+4. Open that post on a phone and on a laptop to confirm it reads well and images load.
 
-Broken editor **[Apps troubleshooting](/docs/apps/troubleshooting)** cache CSP assets.
+Broken previews or saves that never finish often trace to browser extensions or cache. Swap browsers first. Still broken? See **[Apps troubleshooting](/docs/apps/troubleshooting)**.
 
-### App-specific requirement
+### Good to know
 
-Copyright media releases model talent consent stored.
+Large photos slow phones down. Compress images before upload. Obtain permission whenever a post shows recognizable clients or staff.
 
 ## Usage
 
-### Long-form cornerstone services education
+### Explain a new package in depth
 
-**What it is for:** SEO depth.
+**Use this when:** Booking pages stay short but people need the full story.
 
-### Announce seasonal promo booking surge
+### Share closure dates or relocation notices
 
-**What it is for:** Revenue lift coordination inventory.
+**Use this when:** Everyone should read the same official wording.
 
-### Staff spotlight hiring pipeline
+### Teach clients how to prepare for a session
 
-**What it is for:** Culture recruiting.
-
-### Guest practitioner takeover cross promotion
-
-**What it is for:** Collab neighbourhood symbiosis.
-
-### Legal policy updates conspicuous publication
-
-**What it is for:** Compliance defensibility.
-
-*(Prerequisites: editorial calendar governance spellcheck slug uniqueness structured data validated.)*
+**Use this when:** Better prep lowers cancellations.
 
 ## Removing the App
 
-1. **Installed apps** disable blog routing.
+1. Open **Apps**, then **Installed apps**.
+2. Remove **Blog** if permitted.
 
-### After you disconnect
+### What changes afterward
 
-historic URLs 404 unless redirects crafted export content static archive externally.
-
-### Data handling
-
-articles remain database until purge request migrate via support.
+Public blog URLs may show errors until you unpublish posts or rebuild navigation. Export important articles first if you need an archive.
