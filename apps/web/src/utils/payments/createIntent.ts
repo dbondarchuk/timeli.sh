@@ -363,8 +363,8 @@ export const createOrUpdateIntent = async (
 
   if (!createOrUpdatePaymentIntentRequestSuccess) {
     logger.error(
-      { createOrUpdatePaymentIntentRequestError },
-      "Invalid payment type",
+      { createOrUpdatePaymentIntentRequestError, body },
+      "Invalid payment request",
     );
 
     return NextResponse.json(
