@@ -38,7 +38,6 @@ import {
   ZoomCreateMeetingResponse,
   ZoomMeeting,
   ZoomMeetingsResponse,
-  ZoomUserSettings,
 } from "./types";
 
 const settingsApiFilterResp =
@@ -106,7 +105,12 @@ export class ZoomConnectedApp
           doNotNotifyCustomer,
           _source,
         ),
-      onAppointmentStatusChanged: (appointment, newStatus, oldStatus, _source) =>
+      onAppointmentStatusChanged: (
+        appointment,
+        newStatus,
+        oldStatus,
+        _source,
+      ) =>
         this.onAppointmentStatusChanged(
           appData,
           appointment,
@@ -706,37 +710,6 @@ export class ZoomConnectedApp
     return responseBody;
   }
 
-  private async getUserSettings(client: ZoomApiClient) {
-    const logger = this.loggerFactory("getUserSettings");
-    logger.debug("Retrieving zoom user settings");
-    try {
-      const response = await client.fetch(
-        `/users/me/settings?custom_query_fields=${settingsApiFilterResp}`,
-      );
-
-      if (response.status !== 200) {
-        logger.error(
-          { response: response.status },
-          "Failed to retrieve zoom user settings",
-        );
-
-        throw new ConnectedAppError(
-          "app_zoom_admin.statusText.oauth_error" satisfies ZoomAdminAllKeys,
-        );
-      }
-
-      logger.debug("Successfully retrieved zoom user settings");
-      const responseBody = (await response.json()) as ZoomUserSettings;
-      return responseBody;
-    } catch (err: any) {
-      logger.error(
-        { error: err?.message || err?.toString() || "Unknown error" },
-        "Error retrieving zoom user settings",
-      );
-      throw err;
-    }
-  }
-
   private async translateEvent(
     client: ZoomApiClient,
     appointment: AppointmentEvent,
@@ -745,9 +718,6 @@ export class ZoomConnectedApp
       appointment.option._id,
     );
     const description = option?.description;
-
-    const userSettings = await this.getUserSettings(client);
-    const waitingRoomEnabled = userSettings?.in_meeting?.waiting_room ?? false;
 
     return {
       agenda: this.truncateAgenda(description),
@@ -760,22 +730,16 @@ export class ZoomConnectedApp
         }),
       type: 2, // 2 for scheduled meeting
       timezone: appointment.timeZone,
-      password:
-        userSettings?.schedule_meeting
-          ?.default_password_for_scheduled_meetings ?? undefined,
       settings: {
         host_video: true,
         participant_video: true,
-        join_before_host: !waitingRoomEnabled,
         mute_upon_entry: false,
         watermark: false,
         use_pmi: false,
         approval_type: 2,
         audio: "both",
-        auto_recording: userSettings?.recording?.auto_recording ?? "none",
         enforce_login: false,
         registrants_email_notification: true,
-        waiting_room: waitingRoomEnabled,
       },
     };
   }
