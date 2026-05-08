@@ -37,6 +37,7 @@ export const GoogleAppSetup: React.FC<AppSetupProps> = ({
   const [timer, setTimer] = React.useState<NodeJS.Timeout>();
 
   const appId = app?._id ?? existingAppId;
+  const appStatus = app?.status;
 
   const primaryCalendar: CalendarListItem = {
     id: "primary",
@@ -51,7 +52,7 @@ export const GoogleAppSetup: React.FC<AppSetupProps> = ({
     React.useState<string>("primary");
 
   React.useEffect(() => {
-    if (!appId) return;
+    if (!appId || appStatus === "pending") return;
 
     const fn = async () => {
       setIsLoading(true);
