@@ -1,4 +1,4 @@
-import { getServicesContainer } from "@/utils/utils";
+import { getOrganizationId, getServicesContainer } from "@/utils/utils";
 import { AppsBlocksReaders } from "@timelish/app-store/blocks/readers";
 import { getLoggerFactory } from "@timelish/logger";
 import {
@@ -28,6 +28,15 @@ class NotFoundError extends Error {
 
 const getSource = cache(async (slug?: string, preview = false) => {
   const logger = getLoggerFactory("PageComponent")("getSource");
+  const organizationId = await getOrganizationId();
+  if (!organizationId) {
+    logger.warn(
+      "No organization ID found, redirecting to organization not found",
+    );
+
+    redirect("/organization-not-found");
+  }
+
   const servicesContainer = await getServicesContainer();
 
   logger.debug({ slug, preview }, "Getting page source");
@@ -41,6 +50,11 @@ const getSource = cache(async (slug?: string, preview = false) => {
   }
 
   logger.debug({ slug, preview }, "Retrieving page by slug");
+
+  if (slug.startsWith("_next/")) {
+    logger.warn({ slug }, "Skipping _next/ route");
+    throw new NotFoundError("Cannot access _next/ route");
+  }
 
   const result = await servicesContainer.pagesService.resolvePage(slug);
   if (!result) {
@@ -118,7 +132,7 @@ export async function generateMetadata(
       "Processing metadata generation request",
     );
 
-    const { page, general, brand } = await getSource(
+    const { page, brand } = await getSource(
       params.slug?.join("/"),
       !!searchParams?.preview,
     );

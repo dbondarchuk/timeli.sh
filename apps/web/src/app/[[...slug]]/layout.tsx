@@ -1,6 +1,7 @@
 import { CookiesProvider } from "@/components/cookies-provider";
 import {
   getOrganizationDomain,
+  getOrganizationId,
   getServicesContainer,
   getWebsiteUrl,
 } from "@/utils/utils";
@@ -15,6 +16,7 @@ import {
 } from "@timelish/utils";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale } from "next-intl/server";
+import { redirect } from "next/navigation";
 import NextScript from "next/script";
 
 import "../globals.css";
@@ -57,6 +59,15 @@ export default async function RootLayout({
 }>) {
   const logger = getLoggerFactory("RootLayout")("RootLayout");
   logger.debug("Starting root layout render");
+
+  const organizationId = await getOrganizationId();
+  if (!organizationId) {
+    logger.warn(
+      "No organization ID found, redirecting to organization not found",
+    );
+
+    redirect("/organization-not-found");
+  }
 
   const servicesContainer = await getServicesContainer();
   const { general, brand, scripts, styling } =
