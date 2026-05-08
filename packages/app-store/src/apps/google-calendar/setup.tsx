@@ -77,7 +77,7 @@ export const GoogleAppSetup: React.FC<AppSetupProps> = ({
     };
 
     fn();
-  }, [appId, t]);
+  }, [appId, t, appStatus]);
 
   const updateCalendarObject = async (calendar?: CalendarListItem) => {
     if (!appId || !calendar) return;
