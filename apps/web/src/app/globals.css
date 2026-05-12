@@ -104,7 +104,7 @@
 @layer special {
 }
 
-@layer code-highlight {
+/* @layer code-highlight {
   h3 code {
     @apply !text-lg md:!text-xl;
   }
@@ -191,7 +191,7 @@
     pre {
     @apply !rounded-t-none;
   }
-}
+} */
 
 @layer utilities {
   .min-h-screen {

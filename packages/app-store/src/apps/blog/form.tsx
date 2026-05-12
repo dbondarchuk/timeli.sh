@@ -187,7 +187,7 @@ export const BlogPostForm: React.FC<{
                   <InfoTooltip>{t("form.contentTooltip")}</InfoTooltip>
                 </FormLabel>
                 <FormControl>
-                  <div className="min-h-[400px] border rounded-md">
+                  <div className="min-h-[400px] border rounded-md min-w-0">
                     <PlateEditor
                       className="bg-background px-4 sm:px-4 pb-24 min-h-[400px]"
                       disabled={loading}

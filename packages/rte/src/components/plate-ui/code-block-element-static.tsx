@@ -5,6 +5,7 @@ import { cn } from "@timelish/ui";
 import { SlateElement } from "@udecode/plate";
 
 import "./code-block-element.css";
+import { languages } from "./prism";
 
 export const CodeBlockElementStatic = ({
   children,
@@ -19,9 +20,18 @@ export const CodeBlockElementStatic = ({
 
   return (
     <SlateElement className={cn(className, "py-1", state.className)} {...props}>
-      <pre className="overflow-x-auto rounded-md bg-muted px-6 py-8 font-mono text-sm leading-[normal] [tab-size:2]">
+      <pre className="overflow-x-auto rounded-md bg-muted px-6 py-8 font-mono text-sm leading-[normal] [tab-size:2] line-numbers">
         <code>{children}</code>
       </pre>
+      <div
+        className="absolute top-2 right-2 z-10 flex items-center gap-1 select-none text-xs text-muted-foreground"
+        contentEditable={false}
+      >
+        {element.lang
+          ? languages.find((language) => language.value === element.lang)
+              ?.label || element.lang
+          : "Plain Text"}
+      </div>
     </SlateElement>
   );
 };
