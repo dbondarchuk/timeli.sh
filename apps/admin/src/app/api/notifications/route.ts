@@ -166,7 +166,7 @@ export async function GET(request: NextRequest) {
     headers: {
       Connection: "keep-alive",
       "Content-Encoding": "none",
-      "Cache-Control": "no-cache, no-transform",
+      "Cache-Control": "private, no-cache, no-transform",
       "Content-Type": "text/event-stream; charset=utf-8",
     },
   });

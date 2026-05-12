@@ -108,8 +108,5 @@ export async function GET(request: NextRequest) {
     "Successfully retrieved template arguments",
   );
 
-  const headers = new Headers();
-  headers.append("Cache-Control", "max-age=10");
-
-  return NextResponse.json(args, { headers });
+  return NextResponse.json(args);
 }

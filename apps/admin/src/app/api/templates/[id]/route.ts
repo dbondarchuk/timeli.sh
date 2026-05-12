@@ -41,7 +41,7 @@ export async function GET(
   );
 
   const headers = new Headers();
-  headers.append("Cache-Control", "max-age=10");
+  headers.append("Cache-Control", "private, max-age=10");
 
   return NextResponse.json(template, { headers });
 }

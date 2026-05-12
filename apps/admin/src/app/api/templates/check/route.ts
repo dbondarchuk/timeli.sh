@@ -54,7 +54,7 @@ export async function GET(request: NextRequest) {
     { isUnique },
     {
       headers: new Headers({
-        "Cache-Control": "max-age=10",
+        "Cache-Control": "private, max-age=10",
       }),
     },
   );
