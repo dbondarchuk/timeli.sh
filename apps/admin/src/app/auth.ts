@@ -69,7 +69,7 @@ export const auth = betterAuth({
     defaultCookieAttributes: {
       secure: true,
       httpOnly: true,
-      sameSite: "none",
+      sameSite: "lax",
       maxAge: 60 * 60 * 24 * 30, // 30 days
     },
   },
