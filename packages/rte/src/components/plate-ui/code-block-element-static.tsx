@@ -4,6 +4,8 @@ import type { TCodeBlockElement } from "@udecode/plate-code-block";
 import { cn } from "@timelish/ui";
 import { SlateElement } from "@udecode/plate";
 
+import "./code-block-element.css";
+
 export const CodeBlockElementStatic = ({
   children,
   className,
