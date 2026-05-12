@@ -158,7 +158,7 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
       <div className="flex-1" />
 
       {/* Price */}
-      {appointment.totalPrice && (
+      {!!appointment.totalPrice && (
         <div className="px-5 py-3.5 border-b border-border flex items-center justify-between bg-muted">
           <p className="text-sm text-muted-foreground">
             {t("appointments.card.price")}
