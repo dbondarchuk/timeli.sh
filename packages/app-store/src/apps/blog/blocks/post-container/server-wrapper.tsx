@@ -33,6 +33,14 @@ export const BlogPostContainerServerWrapper = async ({
     "../../service/repository-service"
   );
 
+  const logger = (await import("@timelish/logger")).getLoggerFactory(
+    "BlogPostContainerServerWrapper",
+  )("render");
+  logger.info(
+    { slug: args?.slug, hasPost: !!(args?._item ?? args?.post) },
+    "Rendering blog post container",
+  );
+
   const children = props?.children ?? [];
 
   // Get postUrl from props
@@ -51,6 +59,10 @@ export const BlogPostContainerServerWrapper = async ({
   // If post already exists, use it
   if (post) {
     const postLink = generatePostLink(post.slug);
+    logger.info(
+      { title: post.title, id: post._id, slug: post.slug, postLink },
+      "Post already exists",
+    );
     return (
       <BlogPostContainerComponent
         args={args}
@@ -71,10 +83,14 @@ export const BlogPostContainerServerWrapper = async ({
   const slug = args?.params?.slug;
   if (!slug || !appId) {
     if (!slug) {
+      logger.info({ slug, appId }, "No slug provided");
       error = "app_blog_public.notInBlogContext" satisfies BlogPublicAllKeys;
     } else {
+      logger.info({ slug, appId }, "No appId provided");
       error = "app_blog_public.blogPostNotFound" satisfies BlogPublicAllKeys;
     }
+
+    logger.info({ slug, appId, error }, "Returning error");
     return (
       <BlogPostContainerComponent
         args={args}
@@ -97,6 +113,7 @@ export const BlogPostContainerServerWrapper = async ({
 
   if (!organizationId) {
     error = "app_blog_public.blogPostNotFound" satisfies BlogPublicAllKeys;
+    logger.info({ organizationId, error }, "No organizationId provided");
     return (
       <BlogPostContainerComponent
         args={args}
@@ -119,6 +136,8 @@ export const BlogPostContainerServerWrapper = async ({
   const appServiceProps =
     servicesContainer.connectedAppsService.getAppServiceProps(appId);
 
+  logger.info({ appId, organizationId }, "Creating repository service");
+
   // Create repository service directly
   const repositoryService = new BlogRepositoryService(
     appId,
@@ -134,6 +153,16 @@ export const BlogPostContainerServerWrapper = async ({
   }
 
   const postLink = generatePostLink(fetchedPost?.slug);
+
+  logger.info(
+    {
+      postLink,
+      title: fetchedPost?.title,
+      id: fetchedPost?._id,
+      slug: fetchedPost?.slug,
+    },
+    "Post link generated",
+  );
 
   return (
     <BlogPostContainerComponent

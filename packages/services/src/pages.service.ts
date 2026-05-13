@@ -105,7 +105,15 @@ export class PagesService extends BaseService implements IPagesService {
     // 1️⃣ Try exact match first
     const exact = candidates.find((p) => p.slug === slug);
     if (exact) {
-      logger.debug({ rawSlug, page: exact }, "Exact match found");
+      logger.debug(
+        {
+          rawSlug,
+          pageSlug: exact.slug,
+          pageId: exact._id,
+          pageTitle: exact.title,
+        },
+        "Exact match found",
+      );
       return { page: exact, params: {} };
     }
 
@@ -113,7 +121,15 @@ export class PagesService extends BaseService implements IPagesService {
     const matches: PageMatchResult[] = [];
 
     for (const page of candidates) {
-      logger.debug({ rawSlug, page }, "Checking page");
+      logger.debug(
+        {
+          rawSlug,
+          pageSlug: page.slug,
+          pageId: page._id,
+          pageTitle: page.title,
+        },
+        "Checking page",
+      );
       if (!page.slug.includes("[")) continue; // skip static pages
 
       const patternParts = page.slug.split("/");
@@ -152,7 +168,7 @@ export class PagesService extends BaseService implements IPagesService {
       }
 
       if (match) {
-        logger.debug({ rawSlug, page, params }, "Match found");
+        logger.debug({ rawSlug, params }, "Match found");
         matches.push({ page, params });
       }
     }
@@ -174,7 +190,10 @@ export class PagesService extends BaseService implements IPagesService {
       return aDynamic - bDynamic;
     });
 
-    logger.debug({ rawSlug, page: matches[0] }, "Page match result");
+    logger.debug(
+      { rawSlug, pageSlug: matches[0]?.page?.slug },
+      "Page match result",
+    );
     return matches[0];
   }
 
@@ -438,10 +457,7 @@ export class PagesService extends BaseService implements IPagesService {
     return page;
   }
 
-  public async deletePages(
-    ids: string[],
-    source: EventSource,
-  ): Promise<void> {
+  public async deletePages(ids: string[], source: EventSource): Promise<void> {
     const logger = this.loggerFactory("deletePages");
     logger.debug({ pageIds: ids }, "Deleting multiple pages");
 

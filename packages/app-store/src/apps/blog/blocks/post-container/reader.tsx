@@ -1,3 +1,5 @@
+import { Skeleton } from "@timelish/ui";
+import { Suspense } from "react";
 import { BlogPostContainerEditorWrapper } from "./editor-wrapper";
 import { BlogPostContainerReaderProps } from "./schema";
 import { BlogPostContainerServerWrapper } from "./server-wrapper";
@@ -28,13 +30,15 @@ export const BlogPostContainerReader = ({
   }
 
   return (
-    <BlogPostContainerServerWrapper
-      props={props}
-      style={style}
-      blockBase={block.base}
-      restProps={rest}
-      appId={appId}
-      args={args}
-    />
+    <Suspense fallback={<Skeleton className="w-full h-full min-h-96" />}>
+      <BlogPostContainerServerWrapper
+        props={props}
+        style={style}
+        blockBase={block.base}
+        restProps={rest}
+        appId={appId}
+        args={args}
+      />
+    </Suspense>
   );
 };

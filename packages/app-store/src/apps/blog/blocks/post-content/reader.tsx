@@ -58,7 +58,10 @@ export const BlogPostContentReader = ({
           </span>
         ) : (
           <>
-            <PlateStaticEditor value={displayContent} />
+            <PlateStaticEditor
+              value={displayContent}
+              chunkTopLevelBlocks={!isEditor && !showShort ? 5 : undefined}
+            />
             {showShort && (
               <a
                 href={args?.postLink || "#"}

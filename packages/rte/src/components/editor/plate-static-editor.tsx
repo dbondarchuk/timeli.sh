@@ -157,6 +157,50 @@ import { TableRowElementStatic } from "../plate-ui/table-row-element-static";
 import { TocElementStatic } from "../plate-ui/toc-element-static";
 import { ToggleElementStatic } from "../plate-ui/toggle-element-static";
 
+import { chunkPlateValueByTopLevelBlocks } from "./chunk-plate-value";
+
+const PLATE_STATIC_EDITOR_COMPONENTS = {
+  [BaseAudioPlugin.key]: MediaAudioElementStatic,
+  [BaseBlockquotePlugin.key]: BlockquoteElementStatic,
+  [BaseBoldPlugin.key]: withProps(SlateLeaf, { as: "strong" }),
+  [BaseCodeBlockPlugin.key]: CodeBlockElementStatic,
+  [BaseCodeLinePlugin.key]: CodeLineElementStatic,
+  [BaseCodePlugin.key]: CodeLeafStatic,
+  [BaseCodeSyntaxPlugin.key]: CodeSyntaxLeafStatic,
+  [BaseColumnItemPlugin.key]: ColumnElementStatic,
+  [BaseColumnPlugin.key]: ColumnGroupElementStatic,
+  [BaseCommentsPlugin.key]: CommentLeafStatic,
+  [BaseDatePlugin.key]: DateElementStatic,
+  [BaseEquationPlugin.key]: EquationElementStatic,
+  [BaseFilePlugin.key]: MediaFileElementStatic,
+  [BaseHighlightPlugin.key]: HighlightLeafStatic,
+  [BaseHorizontalRulePlugin.key]: HrElementStatic,
+  [BaseImagePlugin.key]: ImageElementStatic,
+  [BaseInlineEquationPlugin.key]: InlineEquationElementStatic,
+  [BaseItalicPlugin.key]: withProps(SlateLeaf, { as: "em" }),
+  [BaseKbdPlugin.key]: KbdLeafStatic,
+  [BaseLinkPlugin.key]: LinkElementStatic,
+  [BaseMentionPlugin.key]: MentionElementStatic,
+  [BaseParagraphPlugin.key]: ParagraphElementStatic,
+  [BaseStrikethroughPlugin.key]: withProps(SlateLeaf, { as: "del" }),
+  [BaseSubscriptPlugin.key]: withProps(SlateLeaf, { as: "sub" }),
+  [BaseSuperscriptPlugin.key]: withProps(SlateLeaf, { as: "sup" }),
+  [BaseTableCellHeaderPlugin.key]: TableCellHeaderStaticElement,
+  [BaseTableCellPlugin.key]: TableCellElementStatic,
+  [BaseTablePlugin.key]: TableElementStatic,
+  [BaseTableRowPlugin.key]: TableRowElementStatic,
+  [BaseTocPlugin.key]: TocElementStatic,
+  [BaseTogglePlugin.key]: ToggleElementStatic,
+  [BaseUnderlinePlugin.key]: withProps(SlateLeaf, { as: "u" }),
+  [BaseVideoPlugin.key]: MediaVideoElementStatic,
+  [HEADING_KEYS.h1]: withProps(HeadingElementStatic, { variant: "h1" }),
+  [HEADING_KEYS.h2]: withProps(HeadingElementStatic, { variant: "h2" }),
+  [HEADING_KEYS.h3]: withProps(HeadingElementStatic, { variant: "h3" }),
+  [HEADING_KEYS.h4]: withProps(HeadingElementStatic, { variant: "h4" }),
+  [HEADING_KEYS.h5]: withProps(HeadingElementStatic, { variant: "h5" }),
+  [HEADING_KEYS.h6]: withProps(HeadingElementStatic, { variant: "h6" }),
+} as const;
+
 export type PlateStaticEditorProps = {
   value?: Value;
   style?: React.CSSProperties;
@@ -164,6 +208,12 @@ export type PlateStaticEditorProps = {
   id?: string;
   onClick?: () => void;
   ref?: React.Ref<HTMLDivElement>;
+  /**
+   * When set, documents with more than this many top-level blocks are rendered as
+   * several {@link PlateStatic} trees (slices of the value) so each commit stays smaller.
+   * Styling matches a single editor: the outer shell gets `variant` padding; chunks use `none`.
+   */
+  chunkTopLevelBlocks?: number;
 } & VariantProps<typeof editorVariants>;
 
 export const createPlateStaticEditor = (
@@ -276,61 +326,53 @@ export const PlateStaticEditor: React.FC<PlateStaticEditorProps> = ({
   className,
   id,
   variant,
+  chunkTopLevelBlocks,
   ...rest
 }) => {
-  const editorStatic = createPlateStaticEditor(value);
+  const slices = React.useMemo(() => {
+    if (!Array.isArray(value)) {
+      return [value] as const;
+    }
+    const size =
+      chunkTopLevelBlocks != null && chunkTopLevelBlocks > 0
+        ? chunkTopLevelBlocks
+        : 0;
+    if (!size) {
+      return [value] as Value[];
+    }
+    return chunkPlateValueByTopLevelBlocks(value as Value, size);
+  }, [value, chunkTopLevelBlocks]);
 
-  const components = {
-    [BaseAudioPlugin.key]: MediaAudioElementStatic,
-    [BaseBlockquotePlugin.key]: BlockquoteElementStatic,
-    [BaseBoldPlugin.key]: withProps(SlateLeaf, { as: "strong" }),
-    [BaseCodeBlockPlugin.key]: CodeBlockElementStatic,
-    [BaseCodeLinePlugin.key]: CodeLineElementStatic,
-    [BaseCodePlugin.key]: CodeLeafStatic,
-    [BaseCodeSyntaxPlugin.key]: CodeSyntaxLeafStatic,
-    [BaseColumnItemPlugin.key]: ColumnElementStatic,
-    [BaseColumnPlugin.key]: ColumnGroupElementStatic,
-    [BaseCommentsPlugin.key]: CommentLeafStatic,
-    [BaseDatePlugin.key]: DateElementStatic,
-    [BaseEquationPlugin.key]: EquationElementStatic,
-    [BaseFilePlugin.key]: MediaFileElementStatic,
-    [BaseHighlightPlugin.key]: HighlightLeafStatic,
-    [BaseHorizontalRulePlugin.key]: HrElementStatic,
-    [BaseImagePlugin.key]: ImageElementStatic,
-    [BaseInlineEquationPlugin.key]: InlineEquationElementStatic,
-    [BaseItalicPlugin.key]: withProps(SlateLeaf, { as: "em" }),
-    [BaseKbdPlugin.key]: KbdLeafStatic,
-    [BaseLinkPlugin.key]: LinkElementStatic,
-    // [BaseMediaEmbedPlugin.key]: MediaEmbedElementStatic,
-    [BaseMentionPlugin.key]: MentionElementStatic,
-    [BaseParagraphPlugin.key]: ParagraphElementStatic,
-    [BaseStrikethroughPlugin.key]: withProps(SlateLeaf, { as: "del" }),
-    [BaseSubscriptPlugin.key]: withProps(SlateLeaf, { as: "sub" }),
-    [BaseSuperscriptPlugin.key]: withProps(SlateLeaf, { as: "sup" }),
-    [BaseTableCellHeaderPlugin.key]: TableCellHeaderStaticElement,
-    [BaseTableCellPlugin.key]: TableCellElementStatic,
-    [BaseTablePlugin.key]: TableElementStatic,
-    [BaseTableRowPlugin.key]: TableRowElementStatic,
-    [BaseTocPlugin.key]: TocElementStatic,
-    [BaseTogglePlugin.key]: ToggleElementStatic,
-    [BaseUnderlinePlugin.key]: withProps(SlateLeaf, { as: "u" }),
-    [BaseVideoPlugin.key]: MediaVideoElementStatic,
-    [HEADING_KEYS.h1]: withProps(HeadingElementStatic, { variant: "h1" }),
-    [HEADING_KEYS.h2]: withProps(HeadingElementStatic, { variant: "h2" }),
-    [HEADING_KEYS.h3]: withProps(HeadingElementStatic, { variant: "h3" }),
-    [HEADING_KEYS.h4]: withProps(HeadingElementStatic, { variant: "h4" }),
-    [HEADING_KEYS.h5]: withProps(HeadingElementStatic, { variant: "h5" }),
-    [HEADING_KEYS.h6]: withProps(HeadingElementStatic, { variant: "h6" }),
-  };
+  const editors = React.useMemo(
+    () => slices.map((slice) => createPlateStaticEditor(slice)),
+    [slices],
+  );
+
+  const isChunked = editors.length > 1;
+
+  if (!isChunked) {
+    return (
+      <PlateStatic
+        editor={editors[0]!}
+        components={PLATE_STATIC_EDITOR_COMPONENTS}
+        style={style}
+        className={cn(editorVariants({ variant }), className)}
+        id={id}
+        {...rest}
+      />
+    );
+  }
 
   return (
-    <PlateStatic
-      editor={editorStatic}
-      components={components}
-      style={style}
-      className={cn(editorVariants({ variant }), className)}
-      id={id}
-      {...rest}
-    />
+    <div className={cn(className)} style={style} id={id} {...rest}>
+      {editors.map((editor, index) => (
+        <PlateStatic
+          key={index}
+          editor={editor}
+          components={PLATE_STATIC_EDITOR_COMPONENTS}
+          className={editorVariants({ variant })}
+        />
+      ))}
+    </div>
   );
 };

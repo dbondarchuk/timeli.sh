@@ -1869,7 +1869,6 @@ export const BLOG_PAGES: (
                       },
                     },
                   },
-                  null,
                   {
                     type: "BlogPostPublishDate",
                     id: "block-63c1fb7d-b54f-4777-b170-9eb2fc906fc3",

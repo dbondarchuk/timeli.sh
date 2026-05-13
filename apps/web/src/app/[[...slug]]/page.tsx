@@ -201,6 +201,7 @@ export default async function Page(props: Props) {
   const logger = getLoggerFactory("PageComponent")("Page");
 
   logger.debug({ hasProps: !!props }, "Rendering page component");
+  const start = performance.now();
 
   try {
     const searchParams = await props.searchParams;
@@ -364,5 +365,10 @@ export default async function Page(props: Props) {
 
     // Re-throw to let Next.js handle the error
     throw error;
+  } finally {
+    logger.debug(
+      { duration: `${performance.now() - start}ms` },
+      "Page rendering completed",
+    );
   }
 }

@@ -51,15 +51,17 @@ export const BlogPostContainerEditorWrapper = ({
     <>
       <BlockStyle name={className} styleDefinitions={styles} styles={style} />
       <div className={cn(className, base?.className)} id={base?.id}>
-        {children.map((child) => (
-          <ReaderBlock
-            key={child.id}
-            {...restProps}
-            block={child}
-            args={newArgs}
-            isEditor={true}
-          />
-        ))}
+        {children
+          .filter((child) => !!child)
+          .map((child) => (
+            <ReaderBlock
+              key={child.id}
+              {...restProps}
+              block={child}
+              args={newArgs}
+              isEditor={true}
+            />
+          ))}
       </div>
     </>
   );

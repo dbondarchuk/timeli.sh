@@ -19,8 +19,8 @@ export const withLogger: MiddlewareProxy = (next) => {
 
     const logger = getBaseLoggerFactory({ correlationId });
     logger.debug(
-      { url: request.url, method: request.method, correlationId },
-      "Incoming request",
+      { requestUrl: request.url, requestMethod: request.method, correlationId },
+      `Incoming request`,
     );
 
     // const start = performance.now();
