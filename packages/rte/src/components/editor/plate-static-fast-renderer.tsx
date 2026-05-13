@@ -122,6 +122,22 @@ function stringFromDescendants(nodes: Descendant[]): string {
   return s;
 }
 
+/**
+ * Some persisted values store a line as `{ type: "code_line", text: "..." }`. Slate
+ * classifies that as a {@link Text} node (`Text.isText` is true), not an {@link Element},
+ * so {@link renderBlock} would skip it. Rewrap as a real `code_line` element.
+ */
+function normalizeCodeBlockChildForRender(child: Descendant): Descendant {
+  if (!Text.isText(child)) return child;
+  const leaf = child as TText & { type?: unknown; id?: unknown };
+  if (leaf.type !== BaseCodeLinePlugin.key) return child;
+  return {
+    type: BaseCodeLinePlugin.key,
+    children: [{ text: leaf.text }],
+    ...(typeof leaf.id === "string" ? { id: leaf.id } : {}),
+  } as Descendant;
+}
+
 function collectHeadings(nodes: Descendant[]): Heading[] {
   const out: Heading[] = [];
   const walk = (list: Descendant[]) => {
@@ -454,7 +470,7 @@ function renderBlock(
         <div key={pathKey} className="cursor-text py-6">
           <hr className="h-0.5 rounded-sm border-none bg-muted bg-clip-content" />
           {ph}
-        </div>
+        </div>  
       );
     case BaseCodeBlockPlugin.key: {
       const lang = (el.lang as string | undefined) ?? "";
@@ -470,7 +486,13 @@ function renderBlock(
         >
           <pre className="overflow-x-auto rounded-md bg-muted px-6 py-8 font-mono text-sm leading-[normal] [tab-size:2] line-numbers">
             <code>
-              {ch.map((c, i) => renderBlock(c, `${pathKey}-cl-${i}`, lineCtx))}
+              {ch.map((c, i) =>
+                renderBlock(
+                  normalizeCodeBlockChildForRender(c),
+                  `${pathKey}-cl-${i}`,
+                  lineCtx,
+                ),
+              )}
             </code>
           </pre>
           <div className="absolute top-2 right-2 z-10 flex items-center gap-1 select-none text-xs text-muted-foreground">
@@ -481,7 +503,10 @@ function renderBlock(
     }
     case BaseCodeLinePlugin.key: {
       const lang = ctx.codeBlockLang ?? "";
-      const lineText = stringFromDescendants(ch);
+      const fromChildren = stringFromDescendants(ch);
+      const rawLegacy = (el as unknown as { text?: unknown }).text;
+      const legacyTop = typeof rawLegacy === "string" ? rawLegacy : "";
+      const lineText = fromChildren || legacyTop;
       const highlighted =
         lineText.length > 0
           ? renderHighlightedCodeLineSegments(lineText, lang, pathKey)
