@@ -1,5 +1,8 @@
 import type { SlateRenderElementProps } from "@udecode/plate";
 import type { TIndentElement } from "@udecode/plate-indent";
+import type { CSSProperties } from "react";
+
+import { cn } from "@timelish/ui";
 
 export const FireMarker = (
   props: Omit<SlateRenderElementProps, "children">,
@@ -21,7 +24,14 @@ export const FireMarker = (
 };
 
 export const FireLiComponent = (props: SlateRenderElementProps) => {
-  const { children } = props;
+  const { children, style, className } = props as SlateRenderElementProps & {
+    style?: CSSProperties;
+    className?: string;
+  };
 
-  return <li className="list-none">{children}</li>;
+  return (
+    <li className={cn("list-none", className)} style={style}>
+      {children}
+    </li>
+  );
 };

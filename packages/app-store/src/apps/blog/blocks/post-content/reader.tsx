@@ -60,7 +60,9 @@ export const BlogPostContentReader = ({
           <>
             <PlateStaticEditor
               value={displayContent}
-              chunkTopLevelBlocks={!isEditor && !showShort ? 5 : undefined}
+              // renderMode={
+              //   !isEditor && !showShort ? "fast" : "plate"
+              // }
             />
             {showShort && (
               <a

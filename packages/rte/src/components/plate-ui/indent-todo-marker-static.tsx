@@ -20,13 +20,17 @@ export const TodoMarkerStatic = ({
 export const TodoLiStatic = ({
   children,
   element,
+  style,
+  className,
 }: SlateRenderElementProps) => {
   return (
     <li
       className={cn(
         "list-none",
         (element.checked as boolean) && "text-muted-foreground line-through",
+        className,
       )}
+      style={style}
     >
       {children}
     </li>

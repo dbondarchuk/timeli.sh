@@ -156,8 +156,8 @@ import { TableElementStatic } from "../plate-ui/table-element-static";
 import { TableRowElementStatic } from "../plate-ui/table-row-element-static";
 import { TocElementStatic } from "../plate-ui/toc-element-static";
 import { ToggleElementStatic } from "../plate-ui/toggle-element-static";
-
 import { chunkPlateValueByTopLevelBlocks } from "./chunk-plate-value";
+import { PlateStaticFastRenderer } from "./plate-static-fast-renderer";
 
 const PLATE_STATIC_EDITOR_COMPONENTS = {
   [BaseAudioPlugin.key]: MediaAudioElementStatic,
@@ -207,11 +207,16 @@ export type PlateStaticEditorProps = {
   className?: string;
   id?: string;
   onClick?: () => void;
-  ref?: React.Ref<HTMLDivElement>;
+  /**
+   * `plate` uses {@link PlateStatic} (full parity). `fast` uses a lightweight DOM walk
+   * that mirrors our static element classes (better for very large read-only documents).
+   */
+  renderMode?: "plate" | "fast";
   /**
    * When set, documents with more than this many top-level blocks are rendered as
    * several {@link PlateStatic} trees (slices of the value) so each commit stays smaller.
    * Styling matches a single editor: the outer shell gets `variant` padding; chunks use `none`.
+   * Ignored when {@link PlateStaticEditorProps.renderMode} is `"fast"` (the fast path always renders the full value).
    */
   chunkTopLevelBlocks?: number;
 } & VariantProps<typeof editorVariants>;
@@ -254,8 +259,10 @@ export const createPlateStaticEditor = (
         inject: {
           targetPlugins: [
             BaseParagraphPlugin.key,
+            ...HEADING_LEVELS,
             BaseBlockquotePlugin.key,
             BaseCodeBlockPlugin.key,
+            BaseTogglePlugin.key,
           ],
         },
       }),
@@ -313,66 +320,124 @@ export const createPlateStaticEditor = (
       BaseFilePlugin,
       BaseImagePlugin,
       BaseMentionPlugin,
-      BaseCommentsPlugin,
       BaseTogglePlugin,
       ...(options?.includeMarkdown ? [MarkdownPlugin] : []),
     ],
     value: value,
   });
 
-export const PlateStaticEditor: React.FC<PlateStaticEditorProps> = ({
-  value,
-  style,
-  className,
-  id,
-  variant,
-  chunkTopLevelBlocks,
-  ...rest
-}) => {
-  const slices = React.useMemo(() => {
-    if (!Array.isArray(value)) {
-      return [value] as const;
-    }
-    const size =
-      chunkTopLevelBlocks != null && chunkTopLevelBlocks > 0
-        ? chunkTopLevelBlocks
-        : 0;
-    if (!size) {
-      return [value] as Value[];
-    }
-    return chunkPlateValueByTopLevelBlocks(value as Value, size);
-  }, [value, chunkTopLevelBlocks]);
-
-  const editors = React.useMemo(
-    () => slices.map((slice) => createPlateStaticEditor(slice)),
-    [slices],
-  );
-
-  const isChunked = editors.length > 1;
-
-  if (!isChunked) {
-    return (
-      <PlateStatic
-        editor={editors[0]!}
-        components={PLATE_STATIC_EDITOR_COMPONENTS}
-        style={style}
-        className={cn(editorVariants({ variant }), className)}
-        id={id}
-        {...rest}
-      />
-    );
-  }
-
+export const PlateStaticEditorFast = React.forwardRef<
+  HTMLDivElement,
+  Omit<PlateStaticEditorProps, "renderMode" | "chunkTopLevelBlocks">
+>(({ value, style, className, id, variant, onClick, ...rest }, ref) => {
   return (
-    <div className={cn(className)} style={style} id={id} {...rest}>
-      {editors.map((editor, index) => (
-        <PlateStatic
-          key={index}
-          editor={editor}
-          components={PLATE_STATIC_EDITOR_COMPONENTS}
-          className={editorVariants({ variant })}
-        />
-      ))}
-    </div>
+    <PlateStaticFastRenderer
+      ref={ref}
+      value={(value ?? []) as Value}
+      variant={variant}
+      className={className}
+      style={style}
+      id={id}
+      onClick={onClick}
+      {...rest}
+    />
   );
-};
+});
+PlateStaticEditorFast.displayName = "PlateStaticEditorFast";
+
+export const PlateStaticEditorPlate = React.forwardRef<
+  HTMLDivElement,
+  Omit<PlateStaticEditorProps, "renderMode">
+>(
+  (
+    {
+      value,
+      style,
+      className,
+      id,
+      variant,
+      chunkTopLevelBlocks,
+      onClick,
+      ...rest
+    },
+    ref,
+  ) => {
+    const slices = React.useMemo((): Value[] => {
+      const v = (value ?? []) as Value;
+      if (!Array.isArray(v)) {
+        return [v as Value];
+      }
+      const size =
+        chunkTopLevelBlocks != null && chunkTopLevelBlocks > 0
+          ? chunkTopLevelBlocks
+          : 0;
+      if (!size) {
+        return [v as Value];
+      }
+      return chunkPlateValueByTopLevelBlocks(v as Value, size);
+    }, [value, chunkTopLevelBlocks]);
+
+    const editors = React.useMemo(
+      () => slices.map((slice) => createPlateStaticEditor(slice)),
+      [slices],
+    );
+
+    const isChunked = editors.length > 1;
+
+    if (!isChunked) {
+      return (
+        <div
+          ref={ref}
+          style={style}
+          className={cn(editorVariants({ variant }), className)}
+          id={id}
+          onClick={onClick}
+          {...rest}
+        >
+          <PlateStatic
+            editor={editors[0]!}
+            components={PLATE_STATIC_EDITOR_COMPONENTS}
+          />
+        </div>
+      );
+    }
+
+    return (
+      <div
+        ref={ref}
+        className={cn(className)}
+        style={style}
+        id={id}
+        onClick={onClick}
+        {...rest}
+      >
+        {editors.map((editor, index) => (
+          <PlateStatic
+            key={index}
+            editor={editor}
+            components={PLATE_STATIC_EDITOR_COMPONENTS}
+            className={editorVariants({ variant })}
+          />
+        ))}
+      </div>
+    );
+  },
+);
+PlateStaticEditorPlate.displayName = "PlateStaticEditorPlate";
+
+export const PlateStaticEditor = React.forwardRef<
+  HTMLDivElement,
+  PlateStaticEditorProps
+>(({ renderMode = "fast", chunkTopLevelBlocks, ...props }, ref) => {
+  if (renderMode === "fast") {
+    return <PlateStaticEditorFast ref={ref} {...props} />;
+  }
+  return (
+    <PlateStaticEditorPlate
+      ref={ref}
+      {...props}
+      chunkTopLevelBlocks={chunkTopLevelBlocks}
+    />
+  );
+});
+PlateStaticEditor.displayName = "PlateStaticEditor";
