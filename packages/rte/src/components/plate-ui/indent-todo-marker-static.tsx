@@ -1,7 +1,6 @@
-import type { SlateRenderElementProps } from "@udecode/plate";
-
 import { cn } from "@timelish/ui";
-
+import type { SlateRenderElementProps } from "@udecode/plate";
+import type { CSSProperties } from "react";
 import { CheckboxStatic } from "./checkbox-static";
 
 export const TodoMarkerStatic = ({
@@ -22,7 +21,10 @@ export const TodoLiStatic = ({
   element,
   style,
   className,
-}: SlateRenderElementProps) => {
+}: SlateRenderElementProps & {
+  style?: CSSProperties;
+  className?: string;
+}) => {
   return (
     <li
       className={cn(
