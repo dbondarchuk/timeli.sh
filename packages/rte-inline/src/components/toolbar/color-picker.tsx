@@ -81,7 +81,7 @@ export const ColorPickerButton = ({
           onChange={(c) => {
             const color = c.hex;
             onChange(color);
-            onClose();
+            // onClose();
           }}
           presetColors={false}
           className="!shadow-none"
@@ -100,7 +100,7 @@ export const ColorPickerButton = ({
                     style={{ backgroundColor: color }}
                     onClick={() => {
                       onChange(color);
-                      onClose();
+                      // onClose();
                     }}
                     type="button"
                   />
@@ -115,7 +115,7 @@ export const ColorPickerButton = ({
             className="w-full text-xs"
             onClick={() => {
               onChange("inherit");
-              onClose();
+              // onClose();
             }}
           >
             {t("rte.common.inherit")}

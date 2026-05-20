@@ -2,15 +2,18 @@
 
 import { useI18n } from "@timelish/i18n";
 import { ToolbarButton, ToolbarGroup } from "@timelish/ui";
-import { ArrowDown, ArrowUp, Copy, Trash } from "lucide-react";
+import { ArrowDown, ArrowUp, ArrowUpFromLine, Copy, Trash } from "lucide-react";
 import { useCallback, useEffect, useMemo } from "react";
 import {
   useBlockDisableOptions,
   useBlockEditorDisableOptions,
+  useBlockParentData,
   useDispatchAction,
+  useDocument,
   useRootBlockId,
   useSelectedBlockId,
 } from "../../../documents/editor/context";
+import { getMoveBlockOutTarget } from "../../../documents/helpers/blocks";
 import { usePortalContext } from "../portal-context";
 import { ToolbarCopyPasteGroup } from "./toolbar-copy-paste-group";
 
@@ -19,9 +22,16 @@ export const ToolbarBlockGroups = () => {
   const dispatchAction = useDispatchAction();
   const selectedBlockId = useSelectedBlockId();
   const rootBlockId = useRootBlockId();
+  const document = useDocument();
   const disable = useBlockDisableOptions(selectedBlockId);
   const canDoBlockActions = selectedBlockId && selectedBlockId !== rootBlockId;
   const editorDisableOptions = useBlockEditorDisableOptions(selectedBlockId);
+  const parentData = useBlockParentData(selectedBlockId);
+  const parentInGrandparent = useBlockParentData(parentData?.parentBlockId ?? null);
+  const canMoveOut =
+    !!canDoBlockActions &&
+    !disable?.move &&
+    !!parentInGrandparent?.parentBlockId;
 
   const isMac = useMemo(() => {
     return navigator.userAgent?.toLocaleLowerCase().includes("mac");
@@ -138,6 +148,23 @@ export const ToolbarBlockGroups = () => {
           }
         >
           <ArrowDown />
+        </ToolbarButton>
+        <ToolbarButton
+          tooltip={t("baseBuilder.builderToolbar.moveOut")}
+          disabled={!canMoveOut}
+          onClick={() => {
+            const target = getMoveBlockOutTarget(document, blockId);
+            if (!target) return;
+            dispatchAction({
+              type: "move-block",
+              value: {
+                blockId,
+                ...target,
+              },
+            });
+          }}
+        >
+          <ArrowUpFromLine />
         </ToolbarButton>
       </ToolbarGroup>
       <ToolbarCopyPasteGroup

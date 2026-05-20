@@ -1,10 +1,12 @@
-import { AllKeys } from "@timelish/i18n";
+import { AllKeys, I18nFn } from "@timelish/i18n";
 import * as z from "zod";
 import { TEditorBlock } from "./editor/core";
 
 export type BaseZodDictionary = {
   [name: string]: z.ZodTypeAny;
 };
+
+import type { SelectedSlotRef } from "./embedded-slot";
 
 export type ConfigurationProps<T> = {
   data: T;
@@ -13,6 +15,8 @@ export type ConfigurationProps<T> = {
   onBaseChange: (base: BaseBlockProps) => void;
   metadata: Record<string, any> | undefined;
   onMetadataChange: (metadata: Record<string, any> | undefined) => void;
+  /** Set when the user selected an embedded slot on this block (not a child block). */
+  selectedSlot?: SelectedSlotRef | null;
 };
 
 export type BaseBlockProps = {
@@ -52,7 +56,7 @@ export type TemplateDefinition = {
   displayName: AllKeys;
   icon: React.ReactNode;
   category: AllKeys;
-  getBlock: () => TEditorBlock;
+  getBlock: (t: I18nFn<undefined, undefined>) => TEditorBlock;
 };
 
 export type TemplatesConfiguration = Record<string, TemplateDefinition>;
@@ -64,9 +68,14 @@ export type EditorDocumentBlocksDictionary<T extends BuilderSchema = any> = {
     Editor: React.ComponentType<EditorProps<z.infer<T[K]>>>;
     Configuration: React.ComponentType<ConfigurationProps<z.infer<T[K]>>>;
     Toolbar?: React.ComponentType<ConfigurationProps<z.infer<T[K]>>>;
-    defaultValue: z.infer<T[K]> | (() => z.infer<T[K]>);
+    defaultValue:
+      | z.infer<T[K]>
+      | (() => z.infer<T[K]>)
+      | ((t: I18nFn<undefined, undefined>) => z.infer<T[K]>);
     category: AllKeys;
     allowedIn?: BlockFilterRule;
+    /** When true, block is omitted from the blocks panel (e.g. child-only or template-only blocks). */
+    hideInBlocksPanel?: boolean;
     tags?: string[];
     capabilities?: string[];
     disable?: BlockEditorDisableOptions;

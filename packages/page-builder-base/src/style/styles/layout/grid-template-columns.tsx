@@ -10,7 +10,7 @@ import {
 import { Grid3X3 } from "lucide-react";
 import * as z from "zod";
 import { StyleDefinition } from "../../types";
-import { GridTemplateColumnsDialog } from "./grid-template-columns-dialog";
+import { GridTemplateTracksDialog } from "./grid-template-tracks-dialog";
 
 const GridTemplateColumnsSchema = z.string();
 
@@ -38,7 +38,8 @@ export const gridTemplateColumnsStyle = {
           h="sm"
         />
       </InputGroupInput>
-      <GridTemplateColumnsDialog
+      <GridTemplateTracksDialog
+        track="columns"
         value={value || ""}
         onChange={onChange}
         trigger={

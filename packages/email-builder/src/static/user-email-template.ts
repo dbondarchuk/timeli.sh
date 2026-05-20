@@ -155,6 +155,8 @@ export const renderUserEmailTemplate = async (
     ),
   );
 
+  const appUrl = `https://${process.env.ADMIN_DOMAIN ?? "app.timelish.com"}`;
+
   const userEmailTemplate = {
     type: "EmailLayout",
     id: "block-1740257042800",
@@ -172,10 +174,10 @@ export const renderUserEmailTemplate = async (
           type: "Image",
           data: {
             props: {
-              url: "https://timelish.com/email-logo.png",
+              url: `${appUrl}/email-logo.png`,
               alt: "Timeli.sh Logo",
               contentAlignment: "middle",
-              linkHref: "https://app.timelish.com",
+              linkHref: appUrl,
               x: 50,
               y: 50,
               width: 200,

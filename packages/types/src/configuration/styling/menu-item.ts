@@ -56,7 +56,13 @@ export const TextWeights = [
 //   error: "configuration.styling.menuItem.icon.required",
 // });
 
-export const menuItemTypes = ["icon", "link", "button", "submenu"] as const;
+export const menuItemTypes = [
+  "icon",
+  "link",
+  "button",
+  "submenu",
+  "spacer",
+] as const;
 export const menuItemTypesEnum = z.enum(menuItemTypes);
 export type MenuItemType = (typeof menuItemTypes)[number];
 
@@ -73,12 +79,15 @@ export const baseMenuItemSchema = z.object({
     .string({ error: "validation.common.url.invalid" })
     .min(1, "validation.common.url.invalid")
     .max(2048, "validation.common.url.max"),
-  label: z
-    .string({
-      error: "validation.configuration.styling.menuItem.label.required",
-    })
-    .min(1, "validation.configuration.styling.menuItem.label.required")
-    .max(256, "validation.configuration.styling.menuItem.label.max"),
+  label: z.union([
+    z
+      .string({
+        error: "validation.configuration.styling.menuItem.label.required",
+      })
+      .min(1, "validation.configuration.styling.menuItem.label.required")
+      .max(256, "validation.configuration.styling.menuItem.label.max"),
+    z.array(z.any()).optional(),
+  ]),
   className: z.string().optional(),
 });
 
@@ -143,6 +152,12 @@ export const buttonMenuItemSchema = z.object({
 
 export type ButtonMenuItem = z.infer<typeof buttonMenuItemSchema>;
 
+export const spacerMenuItemSchema = z.object({
+  type: menuItemTypesEnum.extract(["spacer"]),
+});
+
+export type SpacerMenuItem = z.infer<typeof spacerMenuItemSchema>;
+
 export const subMenuItemSchema = linkMenuItemSchema;
 
 export type SubMenuItem = z.infer<typeof subMenuItemSchema>;
@@ -161,6 +176,7 @@ export const menuItemSchema = z.discriminatedUnion("type", [
   iconMenuItemSchema,
   linkMenuItemSchema,
   buttonMenuItemSchema,
+  spacerMenuItemSchema,
 ]);
 
 export type MenuItem = z.infer<typeof menuItemSchema>;

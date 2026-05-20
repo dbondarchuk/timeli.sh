@@ -1,6 +1,7 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useI18n } from "@timelish/i18n";
+import { StaticText } from "@timelish/rte-inline/reader";
 import {
   MenuItem,
   MenuItemType,
@@ -144,9 +145,11 @@ export function MenuItemCard({
               !itemType ? "text-destructive" : "",
             )}
           >
-            {itemLabel ||
-              t(`menuItem.labels.${itemType}`) ||
-              t("menuItem.card.invalid")}
+            {itemLabel ? (
+              <StaticText value={itemLabel ?? ""} inline />
+            ) : (
+              t(`menuItem.labels.${itemType}`) || t("menuItem.card.invalid")
+            )}
           </span>
         </div>
         <Button

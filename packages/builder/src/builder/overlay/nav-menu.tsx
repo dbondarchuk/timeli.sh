@@ -8,15 +8,19 @@ import {
   ToolbarGroup,
   useIsMobile,
 } from "@timelish/ui";
-import { ArrowDown, ArrowUp, Copy, Slash, Trash } from "lucide-react";
+import { ArrowDown, ArrowUp, ArrowUpFromLine, Copy, Slash, Trash } from "lucide-react";
 import React, { memo, useCallback, useMemo } from "react";
 import {
   useBlockHierarchy,
+  useBlockParentData,
   useBlocks,
   useDispatchAction,
+  useDocument,
+  useRootBlockId,
   useSetSelectedBlockId,
 } from "../../documents/editor/context";
 import { BlockDisableOptions } from "../../documents/editor/core";
+import { getMoveBlockOutTarget } from "../../documents/helpers/blocks";
 import { usePortalContext } from "../template-panel/portal-context";
 
 type Props = {
@@ -32,6 +36,14 @@ export const NavMenu: React.FC<Props> = memo(({ blockId, disable }) => {
   const dispatchAction = useDispatchAction();
   const tBuilder = useI18n("builder");
   const t = useI18n();
+  const document = useDocument();
+  const rootBlockId = useRootBlockId();
+  const parentData = useBlockParentData(blockId);
+  const parentInGrandparent = useBlockParentData(parentData?.parentBlockId ?? null);
+  const canMoveOut =
+    blockId !== rootBlockId &&
+    !disable?.move &&
+    !!parentInGrandparent?.parentBlockId;
 
   const { document: documentElement } = usePortalContext();
   const isMobile = useIsMobile(documentElement?.defaultView);
@@ -84,6 +96,22 @@ export const NavMenu: React.FC<Props> = memo(({ blockId, disable }) => {
     });
   }, [blockId, dispatchAction]);
 
+  const handleMoveOutClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      const target = getMoveBlockOutTarget(document, blockId);
+      if (!target) return;
+      dispatchAction({
+        type: "move-block",
+        value: {
+          blockId,
+          ...target,
+        },
+      });
+    },
+    [blockId, dispatchAction, document],
+  );
+
   return (
     <>
       <Toolbar
@@ -110,6 +138,13 @@ export const NavMenu: React.FC<Props> = memo(({ blockId, disable }) => {
               tooltip={tBuilder("baseBuilder.navMenu.moveDown")}
             >
               <ArrowDown fontSize="small" />
+            </ToolbarButton>
+            <ToolbarButton
+              disabled={!canMoveOut}
+              onClick={handleMoveOutClick}
+              tooltip={tBuilder("baseBuilder.navMenu.moveOut")}
+            >
+              <ArrowUpFromLine fontSize="small" />
             </ToolbarButton>
           </ToolbarGroup>
         )}

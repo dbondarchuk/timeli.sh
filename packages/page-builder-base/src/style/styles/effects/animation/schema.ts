@@ -36,6 +36,7 @@ export const animationNameKeys = [
   "hinge",
   "rollIn",
   "rollOut",
+  "blink",
 ] as const;
 
 export const animationNameKeyMap = {
@@ -73,6 +74,7 @@ export const animationNameKeyMap = {
   hinge: "hinge",
   rollIn: "rollIn",
   rollOut: "rollOut",
+  blink: "blink",
 } as const;
 
 // Animation direction options

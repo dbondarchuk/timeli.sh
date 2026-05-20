@@ -228,3 +228,10 @@ country:
   HR: Хорватія
   IE: Ірландія
   IT: Італія
+marketingFeaturesShowcase:
+  learnMore: Дізнатися більше
+  clickToClose: Натисніть, щоб закрити
+marketingBrowserCarousel:
+  goToSlide: "Перейти до слайду {slide}"
+  imageAlt: "Прев’ю: {name}"
+  emptySlides: "Немає слайдів"

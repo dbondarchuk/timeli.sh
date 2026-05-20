@@ -14,7 +14,12 @@ import {
   StyleDictionary,
   StyleVariant,
 } from "../style/types";
-import { CSSPreview, SearchBar, StyleCategoryComponent } from "./components";
+import {
+  CSSPreview,
+  SearchBar,
+  StyleCategoryComponent,
+  StylesClipboardToolbar,
+} from "./components";
 import { BaseBlockProps } from "./components/base-block-props";
 
 interface StylesConfigurationPanelProps<T extends BaseStyleDictionary> {
@@ -242,13 +247,21 @@ export const StylesConfigurationPanel = <T extends BaseStyleDictionary>({
         />
       )}
 
-      {/* Search */}
-      <SearchBar
-        searchTerm={searchTerm}
-        onSearchChange={setSearchTerm}
-        availableStyles={availableStyles}
-        onAddStyle={addStyle}
-      />
+      {/* Copy / paste styles */}
+      <div className="flex items-center gap-2">
+        <StylesClipboardToolbar
+          styles={styles}
+          onStylesChange={onStylesChange}
+          availableStyles={availableStyles}
+        />
+        <SearchBar
+          searchTerm={searchTerm}
+          onSearchChange={setSearchTerm}
+          availableStyles={availableStyles}
+          onAddStyle={addStyle}
+          className="flex-1 min-w-0"
+        />
+      </div>
 
       {/* Categories */}
       {filteredCategories.map(([category, categoryStyles]) => (

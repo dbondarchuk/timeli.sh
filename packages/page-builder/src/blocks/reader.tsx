@@ -20,6 +20,10 @@ import { InlineContainerReader } from "./inline-container/reader";
 import { InlineText } from "./inline-text/reader";
 import { LightboxReader } from "./lightbox/reader";
 import { Link } from "./link/reader";
+import { MarketingBrowserCarouselReader } from "./marketing-browser-carousel/reader";
+import { MarketingFeatureItemReader } from "./marketing-feature-item/reader";
+import { MarketingFeaturesShowcaseReader } from "./marketing-features-showcase/reader";
+import { MarketingScrollingLogosReader } from "./marketing-scrolling-logos/reader";
 import { ModifyAppointmentFormReader as ModifyAppointmentFormModernReader } from "./modify-appointment-form/modern/reader";
 import { ModifyAppointmentFormReader as ModifyAppointmentFormSimpleReader } from "./modify-appointment-form/simple/reader";
 import { PageHeroReader } from "./page-hero/reader";
@@ -28,7 +32,9 @@ import { PopupReader } from "./popup/reader";
 import { RedirectReader } from "./redirect/reader";
 import { EditorBlocksSchema } from "./schema";
 import { SpacerReader } from "./spacer/reader";
+import { TableReader } from "./table/reader";
 import { TextReader } from "./text/reader";
+import { TypewriterTextReader } from "./typewriter-text/reader";
 import { Video } from "./video";
 import { YouTubeVideoReader } from "./youtube-video/reader";
 
@@ -98,6 +104,9 @@ export const ReaderBlocks: ReaderDocumentBlocksDictionary<
   InlineText: {
     Reader: InlineText,
   },
+  TypewriterText: {
+    Reader: TypewriterTextReader,
+  },
   YouTubeVideo: {
     Reader: YouTubeVideoReader,
   },
@@ -127,5 +136,20 @@ export const ReaderBlocks: ReaderDocumentBlocksDictionary<
   },
   ModifyAppointmentFormModern: {
     Reader: ModifyAppointmentFormModernReader,
+  },
+  MarketingScrollingLogos: {
+    Reader: MarketingScrollingLogosReader,
+  },
+  MarketingFeatureItem: {
+    Reader: MarketingFeatureItemReader,
+  },
+  MarketingFeaturesShowcase: {
+    Reader: MarketingFeaturesShowcaseReader,
+  },
+  Table: {
+    Reader: TableReader,
+  },
+  MarketingBrowserCarousel: {
+    Reader: MarketingBrowserCarouselReader,
   },
 };

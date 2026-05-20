@@ -1,3 +1,4 @@
+"use client";
 import { JSX, useCallback, useId } from "react";
 
 import { cn, FormDescription, Label } from "@timelish/ui";
@@ -5,12 +6,17 @@ import { ArgumentsAutocomplete } from "@timelish/ui-admin";
 import React from "react";
 import { useEditorArgs } from "../../../../../../documents/editor/context";
 import { ResetButton } from "./reset-button";
+import { useDebouncedParentCommit } from "./use-debounced-parent-commit";
 
 type Props = {
   label: React.ReactNode;
   rows?: number;
   placeholder?: string;
   helperText?: string | JSX.Element;
+  /**
+   * Milliseconds to debounce parent `onChange`. Omit or `0` for immediate updates on each keystroke.
+   */
+  debounceMs?: number;
 } & (
   | {
       defaultValue: string;
@@ -23,6 +29,7 @@ type Props = {
       nullable: true;
     }
 );
+
 export const TextInput: React.FC<Props> = ({
   helperText,
   label,
@@ -30,23 +37,36 @@ export const TextInput: React.FC<Props> = ({
   rows,
   defaultValue,
   nullable,
+  debounceMs = 100,
   onChange,
 }) => {
   const [value, setValue] = React.useState(defaultValue);
+
+  const { schedule, flush, discardPending } = useDebouncedParentCommit<string>({
+    delayMs: debounceMs,
+    commit: useCallback(
+      (v) => {
+        onChange(v as any);
+      },
+      [onChange],
+    ),
+  });
+
   React.useEffect(() => {
+    discardPending();
     setValue(defaultValue);
-  }, [defaultValue, setValue]);
+  }, [defaultValue, discardPending]);
 
   const args = useEditorArgs();
   const isMultiline = typeof rows === "number" && rows > 1;
   const id = useId();
 
   const onChangeCallback = useCallback(
-    (value: string) => {
-      setValue(value);
-      onChange(value);
+    (next: string) => {
+      setValue(next);
+      schedule(next);
     },
-    [onChange],
+    [schedule],
   );
 
   return (
@@ -63,11 +83,13 @@ export const TextInput: React.FC<Props> = ({
           h="sm"
           id={id}
           onChange={onChangeCallback}
+          onBlur={debounceMs > 0 ? flush : undefined}
         />
         {nullable && (
           <ResetButton
             size="sm"
             onClick={() => {
+              discardPending();
               setValue(null);
               onChange(null);
             }}

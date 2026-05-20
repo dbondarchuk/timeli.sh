@@ -1,7 +1,6 @@
 import type { MarkPlugin } from "../types";
 import { fontWeightPlugin } from "./plugin";
 
-export { fontWeightPlugin };
 export { FontWeightToolbarButton } from "./toolbar";
-export { renderFontWeight } from "./render";
+export { fontWeightPlugin };
 export type { MarkPlugin };

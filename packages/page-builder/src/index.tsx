@@ -7,6 +7,7 @@ import {
   SidebarTab,
   TEditorConfiguration,
 } from "@timelish/builder";
+import { useI18n } from "@timelish/i18n";
 import { Header } from "@timelish/page-builder-base";
 import { PageHeader, UploadedFile } from "@timelish/types";
 import { deepMemo } from "@timelish/ui";
@@ -19,6 +20,7 @@ import { EditorBlocks, RootBlock } from "./blocks";
 import { ImagePropsDefaults } from "./blocks/image";
 import { ReaderBlocks } from "./blocks/reader";
 import { EditorBlocksSchema } from "./blocks/schema";
+import { marketingEditorTemplates } from "./templates/marketing";
 
 export * from "./block-providers/editor";
 
@@ -65,6 +67,7 @@ export const PageBuilder = deepMemo(
     notAllowedBlocks,
     blockRegistry,
   }: PageBuilderProps) => {
+    const t = useI18n();
     const headerComponent = useMemo(
       () =>
         header ? (
@@ -72,6 +75,7 @@ export const PageBuilder = deepMemo(
             name={header.name}
             logo={header.logo}
             config={header.config}
+            headerId={header.config._id}
             className="-top-8"
           />
         ) : null,
@@ -94,13 +98,30 @@ export const PageBuilder = deepMemo(
       return resolveProviders(blockRegistry || { providers: [] });
     }, [blockRegistry]);
 
+    const editorTemplates = useMemo(() => {
+      if (!notAllowedBlocks?.length) return marketingEditorTemplates;
+      return Object.fromEntries(
+        Object.entries(marketingEditorTemplates).filter(([, def]) => {
+          try {
+            const rootType = def.getBlock(t).type as string;
+            return !notAllowedBlocks.includes(rootType);
+          } catch {
+            return true;
+          }
+        }),
+      );
+    }, [notAllowedBlocks, t]);
+
     return (
       <Builder
         defaultValue={value}
         onChange={onChange}
         onIsValidChange={onIsValidChange}
         args={args}
-        templates={resolvedBlocks.templates}
+        templates={{
+          ...editorTemplates,
+          ...resolvedBlocks.templates,
+        }}
         schemas={{ ...EditorBlocksSchema, ...resolvedBlocks.schemas }}
         editorBlocks={
           {

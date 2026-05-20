@@ -2,6 +2,7 @@ import {
   backgroundColorShortcut,
   colorShortcut,
   fontFamilyShortcut,
+  fontSizeShortcut,
   Shortcut,
 } from "@timelish/page-builder-base";
 import { AllStylesSchemas, COLORS } from "@timelish/page-builder-base/style";
@@ -304,6 +305,7 @@ export const buttonShortcuts: Shortcut<AllStylesSchemas>[] = [
       },
     ],
   },
+  fontSizeShortcut as Shortcut<AllStylesSchemas>,
   backgroundColorShortcut,
   fontFamilyShortcut as Shortcut<AllStylesSchemas>,
   colorShortcut,

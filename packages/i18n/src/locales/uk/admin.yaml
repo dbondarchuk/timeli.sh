@@ -975,6 +975,34 @@ pages:
       stickyHeaderDescription: Чи повинен заголовок рухатися з прокруткою сторінки
       showLogo: Показати логотип
       showLogoDescription: Чи повинен логотип показуватися в заголовку
+      logoSize:
+        label: Розмір логотипу
+        tooltip: Розмір логотипу
+        values:
+          small: Маленький
+          medium: Середній
+          large: Великий
+          x-large: Очень великий
+      logoNameFontSize:
+        label: Розмір шрифту назви логотипу
+        tooltip: Розмір шрифту назви логотипу
+        values:
+          small: Маленький
+          medium: Середній
+          large: Великий
+          x-large: Очень великий
+      logoNameFontWeight:
+        label: Шрифт назви логотипу
+        tooltip: Шрифт назви логотипу
+        values:
+          light: Легкий
+          regular: Звичайний
+          medium: Середній
+          semibold: Напівжирний
+          bold: Жирний
+      customLogoText:
+        label: Власний текст логотипу
+        tooltip: Власний текст, який буде показаний замість назви бренду
       headerShadow: Тінь заголовка
       selectShadowType: Вибрати тип тіні
       menu: Меню
@@ -985,7 +1013,7 @@ pages:
     toasts:
       pageHeaderDeleted: "Заголовок сторінки '{name}' було видалено."
       changesSaved: Ваші зміни були збережені.
-    usedOnPages: "Використано у {count, plural, =1 {сторінці} other {# сторінках}}"
+    usedOnPages: "Використано у {count, plural, =1 {одній сторінці} other {# сторінках}}"
   footers:
     title: Підвали сторінок
     new: Новий підвал
@@ -994,7 +1022,7 @@ pages:
     addNewPageFooter: Додати новий підвал сторінки
     managePageFooters: Керувати підвалами сторінок
     managePageFooter: Керувати підвалом сторінки
-    usedOnPages: "Використано у {count, plural, =1 {сторінці} other {# сторінках}}"
+    usedOnPages: "Використано у {count, plural, =1 {одній сторінці} other {# сторінках}}"
     form:
       name: Назва
       namePlaceholder: Назва підвалу
@@ -2541,6 +2569,7 @@ menuItem:
     icon: Іконка
     link: Посилання
     button: Кнопка
+    spacer: Пробіл
     submenu: Підменю
   linkVariants:
     none: Немає

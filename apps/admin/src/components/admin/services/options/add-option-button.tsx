@@ -14,6 +14,7 @@ import { Language, useI18n, useLocale } from "@timelish/i18n";
 import {
   Badge,
   Button,
+  cn,
   Dialog,
   DialogContent,
   DialogDescription,
@@ -152,7 +153,12 @@ export function AddOptionSplitButton() {
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-2">
+          <div
+            className={cn(
+              "space-y-2",
+              !!pickProfession && !!pickCategory && "hidden",
+            )}
+          >
             <Label htmlFor="option-template-search">
               {tInstall("wizard.service.searchProfessions")}
             </Label>

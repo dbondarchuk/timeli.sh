@@ -2,7 +2,9 @@ import {
   backgroundColorShortcut,
   colorShortcut,
   fontFamilyShortcut,
+  fontSizeShortcut,
   Shortcut,
+  textAlignmentShortcut,
 } from "@timelish/page-builder-base";
 import { AllStylesSchemas, COLORS } from "@timelish/page-builder-base/style";
 import { Link } from "lucide-react";
@@ -79,6 +81,8 @@ export const linkShortcuts: Shortcut<AllStylesSchemas>[] = [
       },
     ],
   },
+  fontSizeShortcut as Shortcut<AllStylesSchemas>,
+  textAlignmentShortcut as Shortcut<AllStylesSchemas>,
   backgroundColorShortcut,
   fontFamilyShortcut as Shortcut<AllStylesSchemas>,
   colorShortcut,

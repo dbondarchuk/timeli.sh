@@ -1,8 +1,10 @@
-import React from "react";
+"use client";
+import React, { useCallback, useEffect, useState } from "react";
 
 import { Label } from "@timelish/ui";
 import { RawSliderInput } from "./raw/raw-slider-input";
 import { ResetButton } from "./reset-button";
+import { useDebouncedParentCommit } from "./use-debounced-parent-commit";
 
 type SliderInputProps = {
   label: string;
@@ -12,6 +14,11 @@ type SliderInputProps = {
   units: string;
   min?: number;
   max?: number;
+  /**
+   * Milliseconds to debounce parent `onChange` while dragging. Omit or `0` for immediate updates.
+   * When debounced, parent still receives the final value on pointer release (`onValueCommit`) and on unmount.
+   */
+  debounceMs?: number;
 } & (
   | {
       defaultValue: number;
@@ -30,12 +37,25 @@ export const SliderInput: React.FC<SliderInputProps> = ({
   defaultValue,
   onChange,
   nullable,
+  debounceMs = 100,
   ...props
 }) => {
-  const [value, setValue] = React.useState(defaultValue);
-  React.useEffect(() => {
+  const [value, setValue] = useState(defaultValue);
+
+  const { schedule, flush, discardPending } = useDebouncedParentCommit<number>({
+    delayMs: debounceMs,
+    commit: useCallback(
+      (v: number) => {
+        onChange(v as any);
+      },
+      [onChange],
+    ),
+  });
+
+  useEffect(() => {
+    discardPending();
     setValue(defaultValue);
-  }, [defaultValue, setValue]);
+  }, [defaultValue, discardPending]);
 
   return (
     <div className="flex flex-col gap-2">
@@ -43,15 +63,17 @@ export const SliderInput: React.FC<SliderInputProps> = ({
       <div className="flex w-full">
         <RawSliderInput
           value={value}
-          setValue={(value: number) => {
-            setValue(value);
-            onChange(value);
+          setValue={(next: number) => {
+            setValue(next);
+            schedule(next);
           }}
+          onCommit={debounceMs > 0 ? flush : undefined}
           {...props}
         />
         {nullable && (
           <ResetButton
             onClick={() => {
+              discardPending();
               setValue(null);
               onChange(null);
             }}

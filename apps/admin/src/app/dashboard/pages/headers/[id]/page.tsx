@@ -4,6 +4,7 @@ import { getServicesContainer } from "@/app/utils";
 import { PageHeaderForm } from "@/components/admin/pages/headers/form";
 import { getI18nAsync } from "@timelish/i18n/server";
 import { getLoggerFactory } from "@timelish/logger";
+import { Styling } from "@timelish/page-builder/reader";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { cache } from "react";
@@ -42,6 +43,10 @@ export default async function EditPageHeaderPage(props: Props) {
     return notFound();
   }
 
+  const servicesContainer = await getServicesContainer();
+  const styling =
+    await servicesContainer.configurationService.getConfiguration("styling");
+
   logger.debug(
     {
       pageHeaderId: params.id,
@@ -52,9 +57,8 @@ export default async function EditPageHeaderPage(props: Props) {
 
   return (
     <PageContainer scrollable>
-      <div className="flex flex-1 flex-col gap-4">
-        <PageHeaderForm initialData={pageHeader} />
-      </div>
+      <Styling styling={styling} />
+      <PageHeaderForm initialData={pageHeader} />
     </PageContainer>
   );
 }

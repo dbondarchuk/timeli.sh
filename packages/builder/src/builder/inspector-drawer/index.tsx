@@ -1,5 +1,6 @@
 import {
   useSelectedBlockId,
+  useSelectedSlot,
   useSelectedSidebarTab,
   useSetSidebarTab,
 } from "../../documents/editor/context";
@@ -31,14 +32,15 @@ export type SidebarTab = {
 
 const SelectBlockListener: React.FC = memo(() => {
   const selectedBlockId = useSelectedBlockId();
+  const selectedSlot = useSelectedSlot();
   const setSidebarTab = useSetSidebarTab();
   useEffect(() => {
-    if (selectedBlockId) {
+    if (selectedBlockId || selectedSlot) {
       setSidebarTab(ConfigurationPanelTab);
     } else {
       setSidebarTab(StylesPanelTab);
     }
-  }, [selectedBlockId, setSidebarTab]);
+  }, [selectedBlockId, selectedSlot, setSidebarTab]);
   return null;
 });
 

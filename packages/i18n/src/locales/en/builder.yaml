@@ -12,6 +12,7 @@ baseBuilder:
     redo: Redo (⌘+⇧+Z)
     moveUp: Move selected block up
     moveDown: Move selected block down
+    moveOut: Move out of parent (insert after parent)
     clone: Clone selected block
     delete: Delete selected block
     copy: Copy selected block
@@ -47,6 +48,7 @@ baseBuilder:
   navMenu:
     moveUp: Move up
     moveDown: Move down
+    moveOut: Move out of parent (insert after parent)
     clone: Clone
     delete: Delete
   blocks:
@@ -66,6 +68,12 @@ baseBuilder:
 pageBuilder:
   styles:
     searchPlaceholder: Search styles...
+    copyStyles: Copy styles
+    pasteStyles: Paste styles
+    pasteStylesEmpty: Copy styles from another block first
+    copyStylesSuccess: Styles copied
+    pasteStylesSuccess: Pasted {count, plural, =1 {1 style} other {# styles}}
+    pasteStylesNoCompatible: No compatible styles to paste on this block
     generatedCSS: Generated CSS
     variants: Variants
     addVariant: Add Variant
@@ -144,9 +152,17 @@ pageBuilder:
       justifyContent: Justify Content
       justifyItems: Justify Items
       alignItems: Align Items
+      alignContent: Align Content
       flexWrap: Flex Wrap
       flexBasis: Flex Basis
+      flexGrow: Flex Grow
+      flexShrink: Flex Shrink
       gridTemplateColumns: Grid Template Columns
+      gridTemplateRows: Grid Template Rows
+      gridColumnStart: Grid Column Start
+      gridColumnEnd: Grid Column End
+      gridRowStart: Grid Row Start
+      gridRowEnd: Grid Row End
       transform: Transform
       transition: Transition
       animation: Animation
@@ -164,6 +180,7 @@ pageBuilder:
       filter: Filter
       objectFit: Object Fit
       objectPosition: Object Position
+      fill: Fill
       verticalAlign: Vertical Align
       zoom: Zoom
     shortcuts: Quick Settings
@@ -222,6 +239,36 @@ pageBuilder:
       applyTemplate: Apply Template
       column: column
       columns: columns
+    gridTemplateRowsDialog:
+      title: Grid Template Rows
+      description: Generate CSS Grid row template or enter a custom value.
+      responsive: Responsive (auto-fit)
+      responsiveDescription: Rows automatically fit content and wrap to new columns
+      fixed: Fixed rows
+      fixedDescription: Fixed number of equal-height rows
+      masonry: Masonry (auto-fill)
+      masonryDescription: Rows fill available space and create masonry-like layout
+      sidebar: Header/footer layout
+      sidebarDescription: Fixed header or footer with flexible main content area
+      hero: Hero section
+      heroDescription: Single full-height row for hero content
+      magazine: Magazine layout
+      magazineDescription: Featured content with smaller stacked rows
+      gallery: Photo gallery
+      galleryDescription: Optimized for image galleries and portfolios
+      dashboard: Dashboard grid
+      dashboardDescription: Compact grid for dashboard widgets and cards
+      custom: Custom template
+      customDescription: Enter custom CSS Grid template syntax
+      minSize: Minimum row height (px)
+      trackCount: Number of rows
+      sidebarSize: Header/footer size (px)
+      customTemplate: Custom template
+      preview: Preview
+      cancel: Cancel
+      applyTemplate: Apply Template
+      track: row
+      tracks: rows
     fontFamily:
       default: Default
       inherit: Inherit
@@ -254,6 +301,14 @@ pageBuilder:
       flex-end: Flex End
       center: Center
       baseline: Baseline
+      stretch: Stretch
+    alignContent:
+      flex-start: Flex Start
+      flex-end: Flex End
+      center: Center
+      space-between: Space Between
+      space-around: Space Around
+      space-evenly: Space Evenly
       stretch: Stretch
     transform:
       none: None
@@ -382,6 +437,7 @@ pageBuilder:
       hinge: Hinge
       rollIn: Roll In
       rollOut: Roll Out
+      blink: Blink
     animationKeywords:
       infinite: Infinite
       custom: Custom
@@ -551,6 +607,7 @@ pageBuilder:
     colors:
       default: Default
       transparent: Transparent
+      currentColor: Current color
       custom: Custom Color
       background: Background
       foreground: Text
@@ -670,6 +727,65 @@ pageBuilder:
     title: Basic Properties
     id: ID
     className: CSS Classes
+  marketingDefaults:
+    templates:
+      sectionIntro:
+        eyebrow: Eyebrow
+        sectionTitle: Section title
+        body: Supporting sentence that explains what this section is about.
+      statCell:
+        value: "12"
+        label: Label
+        supporting: Short supporting line.
+      step:
+        number: "01"
+        title: Step title
+        bullets: "- Bullet one\n- Bullet two\n- Bullet three"
+      testimonial:
+        quote: '"Quote from a happy customer about how great the product is."'
+        name: Name
+        role: Role or company
+      ctaBand:
+        title: Ready to get started?
+        body: Tell people what happens next.
+        secondaryButton: Secondary
+      logoCard:
+        logoAlt: Logo
+        name: Brand name
+      planCard:
+        badge: Pro
+        name: Pro plan
+        price: $29/month
+        footnote: 7-day free trial
+        features: "• Unlimited bookings\n• Website builder\n• SMS reminders"
+        cta: Get started
+    announcementBar:
+      message: "7-day free trial on Pro — create your account"
+    scrollingLogos:
+      screenReaderText: "Scrolling logos include: Example, Sample."
+      sampleCardName: Brand name
+    browserCarousel:
+      slide1Label: Dashboard
+      slide1Address: app.timelish.com/dashboard
+      slide2Label: Booking website
+      slide2Address: yourname.timeli.sh
+      slide3Label: Page builder
+      slide3Address: app.timelish.com/page-builder
+    featureItem:
+      title: Feature title
+      description: Short description of the feature for the card face.
+      detailHeadline: Detail headline
+      bullet1: First supporting point
+      bullet2: Second supporting point
+  templates:
+    marketing:
+      sectionIntro: Section intro
+      statCell: Stat cell
+      step: Step
+      testimonialCard: Testimonial
+      ctaBand: Call to action
+      logoCard: Logo card
+      planCard: Plan card
   blocks:
     categories:
       text: Text
@@ -679,6 +795,7 @@ pageBuilder:
       booking: Booking
       content: Content
       navigation: Navigation
+      marketing: Marketing
     heading:
       displayName: Heading
       content: Content
@@ -1125,6 +1242,19 @@ pageBuilder:
       displayName: Inline text
       placeholder: Text here
       url: Link URL
+    typewriterText:
+      displayName: Typewriter text
+      editorHint: Edit phrases in settings
+      phrases: Phrases
+      phraseNumber: "Phrase {number}"
+      addPhrase: Add phrase
+      removePhrase: Remove phrase
+      reorder: Reorder
+      typeDelay: Delay between characters (typing)
+      deleteDelay: Delay between characters (deleting)
+      pauseAfterPhrase: Pause after phrase completes
+      showCursor: Show blinking cursor
+      milliseconds: ms
     accordion:
       displayName: Accordion
       allowMultipleOpen: Allow Multiple Items Open
@@ -1190,6 +1320,58 @@ pageBuilder:
       editorRedirectText: "You will be redirected to {url}"
       errors:
         url: URL is required
+    marketingScrollingLogos:
+      displayName: Scrolling logos
+      screenReaderText: Accessibility description
+      items: Logos
+    marketingFeatureItem:
+      displayName: Feature item
+      cardIcon: Icon
+      title: Title
+      description: Description
+      detailHeadline: Detail headline
+      detailBullets: Detail bullets
+    marketingFeaturesShowcase:
+      displayName: Features showcase
+      features: Features
+    table:
+      displayName: Table
+      rowCount: Rows
+      columnCount: Columns
+      rowsUnit: rows
+      columnsUnit: columns
+      reorderColumn: Reorder column
+      reorderRow: Reorder row
+      columnNumber: "Column {number}"
+      mergedCell: Spanned by cell above or left
+      resizeFillRemainingWidth: Double-click to fill remaining width
+      resizeFillRemainingHeight: Double-click to fill remaining height
+      spanSettings: Cell span
+      colspan: Column span
+      rowspan: Row span
+      shortcuts:
+        align: Alignment
+      align:
+        start: Start
+        center: Center
+      sizePicker:
+        tooltip: Table size
+        dimensions: "{rowCount} × {colCount}"
+    marketingBrowserCarousel:
+      displayName: Browser carousel
+      slides: Slides
+      addSlide: Add slide
+      removeSlide: Remove slide
+      reorder: Reorder
+      slideNumber: "Slide {number}"
+      slideTabLabel: Tab label
+      slideImageUrl: Image URL
+      slideAddressBar: Address bar
+      showTabs: Show tab bar
+      showDots: Show dot indicators
+      showBrowserChrome: Show browser frame (window chrome)
+      autoRotate: Auto-advance interval
+      milliseconds: ms (0 = off)
     modifyAppointmentForm:
       modern:
         displayName: Modify Appointment Form (Modern)
@@ -1208,7 +1390,19 @@ pageBuilder:
     backgroundColor: Background Color
     backgroundImage: Background Image
     color: Text Color
+    fill: Fill
     fontFamily: Font Family
+    fontSize:
+      label: Font size
+      options:
+        xs: Extra small
+        sm: Small
+        base: Base
+        lg: Large
+        xl: Extra large
+        2xl: 2XL
+        3xl: 3XL
+        4xl: 4XL
   styleInputs:
     color:
       unknownType: Unknown color type

@@ -13,10 +13,14 @@ import {
   useRef,
 } from "react";
 import { useCookies } from "react-cookie";
+import {
+  isEditorBlockLike,
+  isSlotLikeObject,
+  SelectedSlotRef,
+} from "../embedded-slot";
 import { cloneBlock, validateBlocks } from "../helpers/blocks";
 import { ReaderDocumentBlocksDictionary } from "../reader/core";
 import {
-  BlockFilterRule,
   BlockFilterRuleResult,
   BuilderSchema,
   EditorDocumentBlocksDictionary,
@@ -82,6 +86,7 @@ type EditorState = {
   onChange?: (document: TEditorConfiguration) => void;
 
   selectedBlockId: string | null;
+  selectedSlot: SelectedSlotRef | null;
   selectedView: View;
   showBlocksPanel: boolean;
   selectedSidebarTab: "block-configuration" | "styles";
@@ -106,6 +111,7 @@ type EditorState = {
   actions: {
     dispatch: (action: EditorHistoryEntry) => void;
     setSelectedBlockId: (selectedBlockId: string | null) => void;
+    setSelectedSlot: (selectedSlot: SelectedSlotRef | null) => void;
     setShowBlocksPanel: (showBlocksPanel: boolean) => void;
     toggleShowBlocksPanel: () => void;
     setSelectedSidebarTab: (
@@ -136,7 +142,7 @@ type EditorState = {
     setAllowedRule: (
       blockId: string,
       property: string,
-      rule: BlockFilterRule,
+      rule: BlockFilterRuleResult,
     ) => void;
     setDocument: (document: TEditorConfiguration) => void;
     setOnChange: (onChange: (document: TEditorConfiguration) => void) => void;
@@ -208,6 +214,7 @@ const createEditorStateStore = ({
     },
     getImageBlock,
     selectedBlockId: null,
+    selectedSlot: null,
     showBlocksPanel: false,
     selectedSidebarTab: "styles",
     selectedView: DEFAULT_VIEW,
@@ -224,7 +231,10 @@ const createEditorStateStore = ({
     allowedRules: {},
     actions: {
       setSelectedBlockId: (selectedBlockId: string | null) => {
-        set({ selectedBlockId });
+        set({ selectedBlockId, selectedSlot: null });
+      },
+      setSelectedSlot: (selectedSlot: SelectedSlotRef | null) => {
+        set({ selectedSlot, selectedBlockId: null });
       },
       setShowBlocksPanel: (showBlocksPanel: boolean) => {
         set({ showBlocksPanel });
@@ -318,7 +328,7 @@ const createEditorStateStore = ({
       setAllowedRule: (
         blockId: string,
         property: string,
-        rule: BlockFilterRule,
+        rule: BlockFilterRuleResult,
       ) => {
         set({
           allowedRules: {
@@ -645,7 +655,42 @@ function buildIndexes(
         // Handle arrays that might contain blocks
         const childBlockIds: string[] = [];
         value.forEach((item: any, index: number) => {
-          if (item && typeof item === "object" && "id" in item && item.id) {
+          if (isSlotLikeObject(item)) {
+            const childrenPath = buildNextPath(
+              currentPath,
+              prop,
+              index.toString(),
+              "children",
+            );
+            let parentProperty = childrenPath;
+            if (parentProperty.startsWith("data.")) {
+              parentProperty = parentProperty.slice(5);
+            }
+            const slotChildIds: string[] = [];
+            item.children.forEach((child: any, childIndex: number) => {
+              if (isEditorBlockLike(child)) {
+                slotChildIds.push(child.id);
+                extractIndexes(
+                  child,
+                  parentBlockId,
+                  parentProperty,
+                  childIndex,
+                  depth + 1,
+                  childrenPath,
+                );
+              }
+            });
+            if (slotChildIds.length > 0) {
+              indexes[blockId].childrenBlockIds[parentProperty] = slotChildIds;
+            }
+          } else if (
+            item &&
+            typeof item === "object" &&
+            "id" in item &&
+            item.id &&
+            "type" in item &&
+            item.type
+          ) {
             // This is a block - build the parentProperty path
             const parentProperty = buildParentPropertyPath(currentPath, prop);
             childBlockIds.push(item.id);
@@ -667,11 +712,38 @@ function buildIndexes(
           const parentProperty = buildParentPropertyPath(currentPath, prop);
           indexes[blockId].childrenBlockIds[parentProperty] = childBlockIds;
         }
+        // } else if (
+        //   isSlotLikeObject(value) &&
+        //   !isBlockRootPropsKey(currentPath, prop)
+        // ) {
+        //   let parentProperty = buildNextPath(currentPath, prop, "children");
+        //   if (parentProperty.startsWith("data.")) {
+        //     parentProperty = parentProperty.slice(5);
+        //   }
+        //   const slotChildIds: string[] = [];
+        //   value.children.forEach((child: any, childIndex: number) => {
+        //     if (isEditorBlockLike(child)) {
+        //       slotChildIds.push(child.id);
+        //       extractIndexes(
+        //         child,
+        //         parentBlockId,
+        //         parentProperty,
+        //         childIndex,
+        //         depth + 1,
+        //         parentProperty,
+        //       );
+        //     }
+        //   });
+        //   if (slotChildIds.length > 0) {
+        //     indexes[blockId].childrenBlockIds[parentProperty] = slotChildIds;
+        //   }
       } else if (
         value &&
         typeof value === "object" &&
         "id" in value &&
-        value.id
+        value.id &&
+        "type" in value &&
+        (value as { type: string }).type
       ) {
         // This is a direct block - build the parentProperty path
         const parentProperty = buildParentPropertyPath(currentPath, prop);
@@ -855,6 +927,23 @@ export function useRootBlockId() {
 export function useSelectedBlockId() {
   const store = useEditorStateStore();
   return useStore(store, (s) => s.selectedBlockId);
+}
+
+/** Parent block id when inspecting a block or an embedded slot on that block. */
+export function useInspectBlockId() {
+  const selectedBlockId = useSelectedBlockId();
+  const selectedSlot = useSelectedSlot();
+  return selectedBlockId ?? selectedSlot?.blockId ?? null;
+}
+
+export function useSelectedSlot() {
+  const store = useEditorStateStore();
+  return useStore(store, (s) => s.selectedSlot);
+}
+
+export function useSetSelectedSlot() {
+  const store = useEditorStateStore();
+  return useStore(store, (s) => s.actions.setSelectedSlot);
 }
 
 export function useSelectedBlockType() {
@@ -1182,6 +1271,20 @@ export function useBlock(blockId: string | null) {
       return (
         (s.indexes[blockId] ?? s.templateBlockIndexes?.[blockId])
           ?.noChildrenBlock || null
+      );
+    }),
+  );
+}
+
+/** Full document block (includes nested children). Use for structural prop edits. */
+export function useDocumentBlock(blockId: string | null) {
+  const store = useEditorStateStore();
+  return useStore(
+    store,
+    useDeep((s) => {
+      if (!blockId) return null;
+      return (
+        (s.indexes[blockId] ?? s.templateBlockIndexes?.[blockId])?.block || null
       );
     }),
   );

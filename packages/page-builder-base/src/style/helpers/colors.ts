@@ -25,6 +25,11 @@ export const COLORS_LIST = [
     label: "builder.pageBuilder.styles.colors.transparent",
     value: "transparent",
   },
+  {
+    key: "currentColor",
+    label: "builder.pageBuilder.styles.colors.currentColor",
+    value: "currentColor",
+  },
 ];
 
 export const getColorStyle = (
@@ -34,5 +39,7 @@ export const getColorStyle = (
   color
     ? color === "transparent"
       ? "transparent"
-      : `hsl(${color}${opacityVar ? `/var(${opacityVar},1)` : ""})`
+      : color === "currentColor"
+        ? "currentColor"
+        : `hsl(${color}${opacityVar ? `/var(${opacityVar},1)` : ""})`
     : undefined;

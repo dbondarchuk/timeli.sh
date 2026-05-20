@@ -14,7 +14,7 @@ import {
   useDebounceCallback,
 } from "@timelish/ui";
 import { Minus, Plus } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRTEContext } from "../../context/rte-context";
 import {
   adjustFontSizesInRange,
@@ -33,6 +33,7 @@ export function FontSizeToolbarButton() {
     value,
     onChange,
     editorRef,
+    registerPopoverRef,
   } = useRTEContext();
   const { marks: activeMarks, hasMixed } = getActiveMarks();
   const t = useI18n("builder");
@@ -105,6 +106,15 @@ export function FontSizeToolbarButton() {
     onChange(normalizeRichText(newValue));
   };
 
+  const handlePopoverContentRef = useCallback(
+    (element: HTMLElement | null) => {
+      if (registerPopoverRef) {
+        return registerPopoverRef(element);
+      }
+    },
+    [registerPopoverRef],
+  );
+
   if (disabledFeatures?.includes("fontSize")) return null;
 
   return (
@@ -124,7 +134,7 @@ export function FontSizeToolbarButton() {
           )}
         </ToolbarButton>
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
+      <DropdownMenuContent ref={handlePopoverContentRef}>
         <div className="mb-2 flex items-center gap-1">
           <Button
             variant="outline"

@@ -10,7 +10,7 @@ import {
 } from "react";
 
 import { BlockFilterRuleResult } from "../types";
-import { useBlock, useSetBlockDisableOptions } from "./context";
+import { useBlock, useSetAllowedRule, useSetBlockDisableOptions } from "./context";
 import { BlockDisableOptions, TEditorBlock } from "./core";
 import { CoreEditorBlock } from "./core.block";
 
@@ -76,6 +76,7 @@ export const EditorBlock = memo(
     allow,
   }: EditorBlockProps) => {
     const setBlockDisableOptions = useSetBlockDisableOptions();
+    const setAllowedRule = useSetAllowedRule();
     const isCurrentOverlay = useIsCurrentBlockOverlay();
     const ref = useRef<HTMLElement>(null);
 
@@ -94,6 +95,17 @@ export const EditorBlock = memo(
       if (isOvelayBlock) return;
       setBlockDisableOptions(blockId, disable);
     }, [blockId, disable, setBlockDisableOptions]);
+
+    useEffect(() => {
+      if (isOvelayBlock || !allow) return;
+      setAllowedRule(parentBlockId, parentProperty, allow);
+    }, [
+      allow,
+      isOvelayBlock,
+      parentBlockId,
+      parentProperty,
+      setAllowedRule,
+    ]);
 
     const blockContext = useMemo(
       () => ({

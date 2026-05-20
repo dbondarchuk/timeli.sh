@@ -27,6 +27,7 @@ import { CurrencySymbolMap, type Currency } from "@timelish/types";
 import {
   Badge,
   Button,
+  cn,
   Dialog,
   DialogContent,
   DialogDescription,
@@ -116,7 +117,12 @@ function ServiceTemplateDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-2">
+        <div
+          className={cn(
+            "space-y-2",
+            !!pickProfession && !!pickCategory && "hidden",
+          )}
+        >
           <Label htmlFor="install-template-search">
             {t("wizard.service.searchProfessions")}
           </Label>

@@ -9,6 +9,7 @@ import {
   ToolbarButton,
 } from "@timelish/ui";
 import { TypeOutline } from "lucide-react";
+import { useCallback } from "react";
 import { useRTEContext } from "../../context/rte-context";
 
 const FONT_WEIGHT_KEYS = [
@@ -43,6 +44,15 @@ export function FontWeightToolbarButton() {
     }
   };
 
+  const handlePopoverContentRef = useCallback(
+    (element: HTMLElement | null) => {
+      if (context.registerPopoverRef) {
+        return context.registerPopoverRef(element);
+      }
+    },
+    [context.registerPopoverRef],
+  );
+
   if (context.disabledFeatures?.includes("fontWeight")) return null;
   return (
     <DropdownMenu>
@@ -56,7 +66,7 @@ export function FontWeightToolbarButton() {
           <TypeOutline className="h-3.5 w-3.5" />
         </ToolbarButton>
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
+      <DropdownMenuContent ref={handlePopoverContentRef}>
         {FONT_WEIGHT_KEYS.map((weight) => (
           <DropdownMenuCheckboxItem
             key={weight.value}

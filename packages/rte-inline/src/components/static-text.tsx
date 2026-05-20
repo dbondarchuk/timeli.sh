@@ -19,8 +19,11 @@ export const StaticText = forwardRef<
     { value, inline = false, className = "", id, onClick }: StaticTextProps,
     ref,
   ) => {
-    const richTextValue =
-      typeof value === "string" ? stringToRichText(value) : value;
+    const richTextValue = !value
+      ? stringToRichText("")
+      : typeof value === "string"
+        ? stringToRichText(value)
+        : value;
     const html = richTextToHtml(richTextValue, inline);
 
     return inline ? (

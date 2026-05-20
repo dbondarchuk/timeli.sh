@@ -9,6 +9,7 @@ import {
   ToolbarButton,
 } from "@timelish/ui";
 import { Type } from "lucide-react";
+import { useCallback } from "react";
 import { useRTEContext } from "../../context/rte-context";
 
 export const FONT_FAMILIES: {
@@ -98,6 +99,14 @@ export function FontFamilyToolbarButton() {
   };
 
   const t = useI18n("builder");
+  const handlePopoverContentRef = useCallback(
+    (element: HTMLElement | null) => {
+      if (context.registerPopoverRef) {
+        return context.registerPopoverRef(element);
+      }
+    },
+    [context.registerPopoverRef],
+  );
 
   if (context.disabledFeatures?.includes("fontFamily")) return null;
   return (
@@ -114,7 +123,7 @@ export function FontFamilyToolbarButton() {
           <Type className="h-3.5 w-3.5" />
         </ToolbarButton>
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
+      <DropdownMenuContent ref={handlePopoverContentRef}>
         {FONT_FAMILIES.map((font) => (
           <DropdownMenuCheckboxItem
             key={font.value}

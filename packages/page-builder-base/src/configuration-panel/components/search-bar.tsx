@@ -1,5 +1,5 @@
 import { useI18n } from "@timelish/i18n";
-import { Button, Input } from "@timelish/ui";
+import { Button, cn, Input } from "@timelish/ui";
 import { Plus, Search, X } from "lucide-react";
 import {
   BaseStyleDictionary,
@@ -13,6 +13,7 @@ interface SearchBarProps<T extends BaseStyleDictionary> {
   onSearchChange: (searchTerm: string) => void;
   availableStyles: StyleDictionary<T>;
   onAddStyle: (style: StyleDefinition<T[keyof T]>) => void;
+  className?: string;
 }
 
 export const SearchBar = <T extends BaseStyleDictionary>({
@@ -20,11 +21,12 @@ export const SearchBar = <T extends BaseStyleDictionary>({
   onSearchChange,
   availableStyles,
   onAddStyle,
+  className,
 }: SearchBarProps<T>) => {
   const t = useI18n("builder");
 
   return (
-    <div className="flex items-center gap-2">
+    <div className={cn("flex items-center gap-2", className)}>
       <div className="relative flex-grow">
         <Search
           className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground z-[1]"

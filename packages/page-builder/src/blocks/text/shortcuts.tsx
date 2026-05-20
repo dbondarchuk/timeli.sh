@@ -2,52 +2,15 @@ import {
   backgroundColorShortcut,
   colorShortcut,
   fontFamilyShortcut,
+  fontSizeShortcut,
   Shortcut,
+  textAlignmentShortcut,
 } from "@timelish/page-builder-base";
 import { AllStylesSchemas, COLORS } from "@timelish/page-builder-base/style";
-import {
-  AlignLeft,
-  Bold,
-  CaseSensitive,
-  Space,
-  TypeOutline,
-} from "lucide-react";
+import { Bold, Space, TypeOutline } from "lucide-react";
 
 export const textShortcuts: Shortcut<AllStylesSchemas>[] = [
-  {
-    label: "builder.pageBuilder.blocks.text.shortcuts.size",
-    icon: ({ className }) => <CaseSensitive className={className} />,
-    options: [
-      {
-        label: "builder.pageBuilder.blocks.text.sizes.small",
-        value: "small",
-        targetStyles: {
-          fontSize: { value: 0.875, unit: "rem" },
-        },
-      },
-      {
-        label: "builder.pageBuilder.blocks.text.sizes.medium",
-        value: "medium",
-        targetStyles: {
-          fontSize: { value: 1, unit: "rem" },
-        },
-      },
-      {
-        label: "builder.pageBuilder.blocks.text.sizes.large",
-        value: "large",
-        targetStyles: {
-          fontSize: { value: 1.125, unit: "rem" },
-        },
-      },
-      {
-        label: "builder.pageBuilder.blocks.text.sizes.x-large",
-        value: "x-large",
-        targetStyles: {
-          fontSize: { value: 1.25, unit: "rem" },
-        },
-      },
-    ],
-  },
+  fontSizeShortcut as Shortcut<AllStylesSchemas>,
   {
     label: "builder.pageBuilder.blocks.text.shortcuts.weight",
     icon: ({ className }) => <Bold className={className} />,
@@ -82,40 +45,7 @@ export const textShortcuts: Shortcut<AllStylesSchemas>[] = [
       },
     ],
   },
-  {
-    label: "builder.pageBuilder.blocks.text.shortcuts.alignment",
-    icon: ({ className }) => <AlignLeft className={className} />,
-    options: [
-      {
-        label: "builder.pageBuilder.blocks.text.alignments.left",
-        value: "left",
-        targetStyles: {
-          textAlign: "left",
-        },
-      },
-      {
-        label: "builder.pageBuilder.blocks.text.alignments.center",
-        value: "center",
-        targetStyles: {
-          textAlign: "center",
-        },
-      },
-      {
-        label: "builder.pageBuilder.blocks.text.alignments.right",
-        value: "right",
-        targetStyles: {
-          textAlign: "right",
-        },
-      },
-      {
-        label: "builder.pageBuilder.blocks.text.alignments.justify",
-        value: "justify",
-        targetStyles: {
-          textAlign: "justify",
-        },
-      },
-    ],
-  },
+  textAlignmentShortcut as Shortcut<AllStylesSchemas>,
   {
     label: "builder.pageBuilder.blocks.text.shortcuts.style",
     icon: ({ className }) => <TypeOutline className={className} />,

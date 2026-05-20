@@ -41,6 +41,7 @@ interface EditableTextProps {
   onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
   documentElement?: Document;
   portalContainer?: string;
+  disabled?: boolean;
 }
 
 // Inner component that uses the context
@@ -64,6 +65,7 @@ const EditableTextInner = forwardRef<
       portalContainer = "body",
       richTextValue,
       popoverRefs,
+      disabled = false,
     },
     ref,
   ) => {
@@ -311,7 +313,6 @@ const EditableTextInner = forwardRef<
 
       const html = editorRef.current.innerHTML;
 
-      console.log(html);
       const newValue = parseHTMLToRichText(html);
       const normalized = normalizeRichText(newValue);
 
@@ -702,13 +703,17 @@ const EditableTextInner = forwardRef<
           placeholder={placeholder}
           id={id}
           onClick={onClick}
+          disabled={disabled}
         />
 
         {showToolbar &&
           typeof defaultView !== "undefined" &&
           createPortal(
             <div ref={toolbarRef}>
-              <FloatingToolbar position={toolbarPosition} />
+              <FloatingToolbar
+                position={toolbarPosition}
+                documentElement={documentElement}
+              />
             </div>,
             portalContainerElement,
           )}

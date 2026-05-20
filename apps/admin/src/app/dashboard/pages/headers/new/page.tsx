@@ -3,6 +3,7 @@ import PageContainer from "@/components/admin/layout/page-container";
 import { PageHeaderForm } from "@/components/admin/pages/headers/form";
 import { getI18nAsync } from "@timelish/i18n/server";
 import { getLoggerFactory } from "@timelish/logger";
+import { Styling } from "@timelish/page-builder/reader";
 import { PageHeaderUpdateModel } from "@timelish/types";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -20,6 +21,9 @@ export default async function NewPageHeaderPage(props: Props) {
   const logger = getLoggerFactory("AdminPageHeaders")("new-page-header");
   const { from: fromParam } = await props.searchParams;
   const from = fromParam as string;
+  const servicesContainer = await getServicesContainer();
+  const styling =
+    await servicesContainer.configurationService.getConfiguration("styling");
 
   logger.debug(
     {
@@ -51,6 +55,7 @@ export default async function NewPageHeaderPage(props: Props) {
 
   return (
     <PageContainer scrollable>
+      <Styling styling={styling} />
       <PageHeaderForm initialData={initialData} />
     </PageContainer>
   );

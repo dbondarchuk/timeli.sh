@@ -5,6 +5,7 @@ import {
   TEditorBlock,
 } from "@timelish/builder";
 import {
+  AppWindow,
   ArrowBigRightDash,
   Calendar,
   CalendarCheck,
@@ -15,12 +16,15 @@ import {
   Copy,
   CopyPlus,
   Film,
+  GalleryHorizontal,
   GalleryHorizontalEnd,
   GalleryThumbnails,
   Heading,
   Image,
   Images,
+  Layers,
   Layout,
+  LayoutGrid,
   LetterText,
   Link,
   RectangleHorizontal,
@@ -29,7 +33,9 @@ import {
   SquareMousePointer,
   SquareSquare,
   Star,
+  Table as TableIcon,
   Text,
+  Type,
   Zap,
 } from "lucide-react";
 import {
@@ -157,6 +163,30 @@ import {
   LightboxPropsDefaults,
 } from "./lightbox";
 import {
+  MarketingBrowserCarouselConfiguration,
+  MarketingBrowserCarouselEditor,
+  MarketingBrowserCarouselPropsDefaults,
+  MarketingBrowserCarouselToolbar,
+} from "./marketing-browser-carousel";
+import {
+  MarketingFeatureItemConfiguration,
+  MarketingFeatureItemEditor,
+  MarketingFeatureItemPropsDefaults,
+  MarketingFeatureItemToolbar,
+} from "./marketing-feature-item";
+import {
+  MarketingFeaturesShowcaseConfiguration,
+  MarketingFeaturesShowcaseEditor,
+  MarketingFeaturesShowcasePropsDefaults,
+  MarketingFeaturesShowcaseToolbar,
+} from "./marketing-features-showcase";
+import {
+  MarketingScrollingLogosConfiguration,
+  MarketingScrollingLogosEditor,
+  MarketingScrollingLogosPropsDefaults,
+  MarketingScrollingLogosToolbar,
+} from "./marketing-scrolling-logos";
+import {
   ModifyAppointmentFormConfiguration as ModifyAppointmentFormModernConfiguration,
   ModifyAppointmentFormEditor as ModifyAppointmentFormModernEditor,
   ModifyAppointmentFormPropsDefaults as ModifyAppointmentFormModernPropsDefaults,
@@ -198,11 +228,23 @@ import {
 } from "./spacer";
 import { SpacerEditor } from "./spacer/editor";
 import {
+  TableConfiguration,
+  TableEditor,
+  TablePropsDefaults,
+  TableToolbar,
+} from "./table";
+import {
   TextConfiguration,
   TextEditor,
   TextPropsDefaults,
   TextToolbar,
 } from "./text";
+import {
+  TypewriterTextConfiguration,
+  TypewriterTextEditor,
+  TypewriterTextPropsDefaults,
+  TypewriterTextToolbar,
+} from "./typewriter-text";
 import {
   VideoConfiguration,
   VideoEditor,
@@ -515,6 +557,26 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     capabilities: ["text", "inline"],
     tags: ["text", "inline"],
   },
+  TypewriterText: {
+    displayName:
+      "builder.pageBuilder.blocks.typewriterText.displayName" satisfies BaseAllKeys,
+    icon: <Type className="size-4" />,
+    Editor: TypewriterTextEditor,
+    Configuration: TypewriterTextConfiguration,
+    Toolbar: TypewriterTextToolbar,
+    defaultValue: TypewriterTextPropsDefaults,
+    category:
+      "builder.pageBuilder.blocks.categories.text" satisfies BaseAllKeys,
+    disable: {
+      keyboardShortcuts: {
+        delete: true,
+        moveUp: true,
+        moveDown: true,
+      },
+    },
+    capabilities: ["text", "inline"],
+    tags: ["text", "typewriter", "inline"],
+  },
   Accordion: {
     displayName:
       "builder.pageBuilder.blocks.accordion.displayName" satisfies BaseAllKeys,
@@ -654,6 +716,74 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
       "builder.pageBuilder.blocks.categories.booking" satisfies BaseAllKeys,
     capabilities: ["booking", "block"],
     tags: ["booking", "confirmation"],
+  },
+  MarketingScrollingLogos: {
+    displayName:
+      "builder.pageBuilder.blocks.marketingScrollingLogos.displayName" satisfies BaseAllKeys,
+    icon: <GalleryHorizontal />,
+    Editor: MarketingScrollingLogosEditor,
+    Configuration: MarketingScrollingLogosConfiguration,
+    Toolbar: MarketingScrollingLogosToolbar,
+    defaultValue: MarketingScrollingLogosPropsDefaults,
+    category:
+      "builder.pageBuilder.blocks.categories.marketing" satisfies BaseAllKeys,
+    capabilities: ["marketing", "layout", "block"],
+    tags: ["marketing", "logos"],
+  },
+  MarketingFeatureItem: {
+    displayName:
+      "builder.pageBuilder.blocks.marketingFeatureItem.displayName" satisfies BaseAllKeys,
+    icon: <Layers />,
+    Editor: MarketingFeatureItemEditor,
+    Configuration: MarketingFeatureItemConfiguration,
+    Toolbar: MarketingFeatureItemToolbar,
+    defaultValue: MarketingFeatureItemPropsDefaults,
+    category:
+      "builder.pageBuilder.blocks.categories.marketing" satisfies BaseAllKeys,
+    capabilities: ["marketing", "block"],
+    tags: ["marketing", "feature"],
+    allowedIn: {
+      type: ["MarketingFeaturesShowcase"],
+    },
+  },
+  MarketingFeaturesShowcase: {
+    displayName:
+      "builder.pageBuilder.blocks.marketingFeaturesShowcase.displayName" satisfies BaseAllKeys,
+    icon: <LayoutGrid />,
+    Editor: MarketingFeaturesShowcaseEditor,
+    Configuration: MarketingFeaturesShowcaseConfiguration,
+    Toolbar: MarketingFeaturesShowcaseToolbar,
+    defaultValue: MarketingFeaturesShowcasePropsDefaults,
+    category:
+      "builder.pageBuilder.blocks.categories.marketing" satisfies BaseAllKeys,
+    capabilities: ["marketing", "layout", "block"],
+    tags: ["marketing", "features"],
+  },
+  Table: {
+    displayName:
+      "builder.pageBuilder.blocks.table.displayName" satisfies BaseAllKeys,
+    icon: <TableIcon />,
+    Editor: TableEditor,
+    Configuration: TableConfiguration,
+    Toolbar: TableToolbar,
+    defaultValue: TablePropsDefaults,
+    category:
+      "builder.pageBuilder.blocks.categories.layout" satisfies BaseAllKeys,
+    capabilities: ["layout", "block"],
+    tags: ["layout", "table"],
+  },
+  MarketingBrowserCarousel: {
+    displayName:
+      "builder.pageBuilder.blocks.marketingBrowserCarousel.displayName" satisfies BaseAllKeys,
+    icon: <AppWindow />,
+    Editor: MarketingBrowserCarouselEditor,
+    Configuration: MarketingBrowserCarouselConfiguration,
+    Toolbar: MarketingBrowserCarouselToolbar,
+    defaultValue: MarketingBrowserCarouselPropsDefaults,
+    category:
+      "builder.pageBuilder.blocks.categories.marketing" satisfies BaseAllKeys,
+    capabilities: ["marketing", "layout", "block"],
+    tags: ["marketing", "carousel", "media"],
   },
 };
 

@@ -2,26 +2,33 @@
 
 import { ToolbarGroup } from "@timelish/ui";
 import { useCallback, useMemo } from "react";
+import { useSelectedSlotStyleHandlers } from "../../inspector-drawer/slot-styles-panel";
 import {
+  useBlock,
   useBlocks,
   useDispatchAction,
   useRootBlock,
   useRootBlockId,
   useRootBlockType,
   useSelectedBlock,
+  useSelectedSlot,
 } from "../../../documents/editor/context";
 
 export const ToolbarBlockToolbarGroup = () => {
-  const _selectedBlock = useSelectedBlock();
+  const selectedBlock = useSelectedBlock();
+  const selectedSlot = useSelectedSlot();
+  const slotParentBlock = useBlock(selectedSlot?.blockId ?? "");
+  const { styles: slotStyles, setStyles: setSlotStyles } =
+    useSelectedSlotStyleHandlers();
   const rootBlockId = useRootBlockId();
   const rootBlock = useRootBlock();
-  const selectedBlock = _selectedBlock ?? rootBlock;
+  const inspectBlock = selectedBlock ?? slotParentBlock ?? rootBlock;
   const dispatchAction = useDispatchAction();
   const rootBlockType = useRootBlockType();
   const blocks = useBlocks();
 
-  const blockType = selectedBlock.type || rootBlockType;
-  const blockId = selectedBlock?.id || rootBlockId;
+  const blockType = inspectBlock?.type || rootBlockType;
+  const blockId = inspectBlock?.id || rootBlockId;
 
   const BlockToolbar = useMemo(
     () => blocks[blockType]?.Toolbar,
@@ -48,24 +55,43 @@ export const ToolbarBlockToolbarGroup = () => {
     [dispatchAction, blockId],
   );
 
+  const toolbarData = useMemo(() => {
+    const data = inspectBlock?.data ?? {};
+    if (selectedSlot) {
+      return { ...data, style: slotStyles };
+    }
+    return data;
+  }, [inspectBlock?.data, selectedSlot, slotStyles]);
+
+  const setToolbarData = useCallback(
+    (data: unknown) => {
+      if (selectedSlot) {
+        setSlotStyles((data as { style?: Record<string, unknown> }).style ?? {});
+        return;
+      }
+      setBlockData(data);
+    },
+    [selectedSlot, setSlotStyles, setBlockData],
+  );
+
   if (!BlockToolbar) {
     return null;
   }
 
-  const blockData = selectedBlock?.data ?? {};
   return (
     <ToolbarGroup>
       {BlockToolbar && (
         <BlockToolbar
-          data={blockData}
-          setData={setBlockData}
-          base={selectedBlock?.base}
-          metadata={selectedBlock?.metadata}
+          data={toolbarData}
+          setData={setToolbarData}
+          base={inspectBlock?.base}
+          metadata={inspectBlock?.metadata}
           onMetadataChange={setMetadata}
+          selectedSlot={selectedSlot}
           onBaseChange={(base) => {
             dispatchAction({
               type: "set-block-base",
-              value: { blockId: selectedBlock!.id, base },
+              value: { blockId: inspectBlock!.id, base },
             });
           }}
         />
