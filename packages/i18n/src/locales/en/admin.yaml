@@ -956,6 +956,34 @@ pages:
       stickyTooltip: Whether to make the page header sticky
       showLogo: Show logo
       showLogoDescription: Should be logo showed in header
+      logoSize:
+        label: Logo size
+        tooltip: Size of the logo
+        values:
+          small: Small
+          medium: Medium
+          large: Large
+          x-large: X-large
+      logoNameFontSize:
+        label: Logo font size
+        tooltip: Font size of the logo name
+        values:
+          small: Small
+          medium: Medium
+          large: Large
+          x-large: X-large
+      logoNameFontWeight:
+        label: Logo name font weight
+        tooltip: Font weight of the logo name
+        values:
+          light: Light
+          regular: Regular
+          medium: Medium
+          semibold: Semibold
+          bold: Bold
+      customLogoText:
+        label: Custom logo text
+        tooltip: Custom text to be shown instead of the business brand name
       stickyHeader: Sticky header
       stickyHeaderDescription: Should header move with the page scroll
       headerShadow: Header shadow
@@ -993,7 +1021,7 @@ pages:
     toasts:
       pageHeaderDeleted: Page header '{name}' was deleted.
       changesSaved: Your changes were saved.
-    usedOnPages: Used on {count, plural, =1 {page} other {# pages}}
+    usedOnPages: Used on {count, plural, =1 {one page} other {# pages}}
   footers:
     title: Page footers
     new: New page footer
@@ -1002,7 +1030,7 @@ pages:
     addNewPageFooter: Add new page footer
     managePageFooters: Manage page footers
     managePageFooter: Manage page footer
-    usedOnPages: Used on {count, plural, =1 {page} other {# pages}}
+    usedOnPages: Used on {count, plural, =1 {one page} other {# pages}}
     form:
       name: Name
       namePlaceholder: Page footer name
@@ -2552,6 +2580,7 @@ menuItem:
     icon: Icon
     link: Link
     button: Button
+    spacer: Spacer
     submenu: Submenu
   linkVariants:
     none: None

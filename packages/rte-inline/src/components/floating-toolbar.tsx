@@ -7,12 +7,13 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  mergeRefs,
   Toolbar,
   ToolbarButton,
   ToolbarGroup,
 } from "@timelish/ui";
 import { Eraser, MoreHorizontal, Redo2, Undo2 } from "lucide-react";
-import { forwardRef, useEffect, useRef, useState } from "react";
+import { forwardRef, useCallback, useEffect, useRef, useState } from "react";
 import { useRTEContext } from "../context/rte-context";
 import type { TextMark } from "../lib/rich-text-types";
 import { BackgroundColorToolbarButton } from "../plugins/backgroundColor/toolbar";
@@ -65,15 +66,24 @@ export const FloatingToolbar = forwardRef<HTMLDivElement, FloatingToolbarProps>(
       if (y < 10) y = position.top + 60;
 
       setAdjustedPosition({ top: y, left: x });
-    }, [position]);
+    }, [position, toolbarRef.current]);
 
     const isDisabled = (
       feature: keyof TextMark | "clearFormat" | "undo" | "redo",
     ) => (rteContext.disabledFeatures || []).includes(feature as any);
 
+    const handlePopoverContentRef = useCallback(
+      (element: HTMLElement | null) => {
+        if (rteContext.registerPopoverRef) {
+          return rteContext.registerPopoverRef(element);
+        }
+      },
+      [rteContext.registerPopoverRef],
+    );
+
     return (
       <Toolbar
-        ref={ref}
+        ref={mergeRefs(ref, toolbarRef)}
         className="absolute z-[30] animate-in fade-in-0 zoom-in-95"
         style={{
           left: `${adjustedPosition.left}px`,
@@ -139,7 +149,7 @@ export const FloatingToolbar = forwardRef<HTMLDivElement, FloatingToolbarProps>(
                   <MoreHorizontal className="h-3.5 w-3.5" />
                 </ToolbarButton>
               </DropdownMenuTrigger>
-              <DropdownMenuContent>
+              <DropdownMenuContent ref={handlePopoverContentRef}>
                 <DropdownMenuGroup>
                   <StrikethroughToolbarButton />
                   <SuperscriptToolbarButton />

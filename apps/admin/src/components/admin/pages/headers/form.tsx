@@ -3,15 +3,21 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { adminApi } from "@timelish/api-sdk";
 import { useI18n } from "@timelish/i18n";
+import { EditableText } from "@timelish/rte-inline";
 import {
   getPageHeaderSchemaWithUniqueNameCheck,
   LinkMenuItem,
+  pageHeaderLogoNameFontSize,
+  pageHeaderLogoNameFontWeight,
+  pageHeaderLogoSize,
   pageHeaderShadowType,
   PageHeaderUpdateModel,
 } from "@timelish/types";
 import {
   Breadcrumbs,
+  Button,
   Checkbox,
+  cn,
   Combobox,
   Form,
   FormControl,
@@ -21,11 +27,18 @@ import {
   FormLabel,
   FormMessage,
   Heading,
+  InfoTooltip,
   Input,
+  InputGroup,
+  InputGroupAddon,
+  InputGroupAddonClasses,
+  InputGroupInput,
+  InputGroupInputClasses,
   toastPromise,
   useDebounceCacheFn,
 } from "@timelish/ui";
 import { SaveButton, Sortable } from "@timelish/ui-admin";
+import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useMemo, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
@@ -191,6 +204,150 @@ export const PageHeaderForm: React.FC<{
                         </FormDescription>
                       </div>
                     </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="logoSize"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      {t("pages.headers.form.logoSize.label")}{" "}
+                      <InfoTooltip>
+                        {t("pages.headers.form.logoSize.tooltip")}
+                      </InfoTooltip>
+                    </FormLabel>
+                    <FormControl>
+                      <Combobox
+                        allowClear
+                        values={pageHeaderLogoSize.map((size) => ({
+                          label: t(
+                            `pages.headers.form.logoSize.values.${size}`,
+                          ),
+                          value: size,
+                        }))}
+                        className="w-full"
+                        value={field.value}
+                        onItemSelect={(val) => {
+                          field.onChange(val);
+                          field.onBlur();
+                        }}
+                        disabled={loading}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="logoNameFontSize"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      {t("pages.headers.form.logoNameFontSize.label")}{" "}
+                      <InfoTooltip>
+                        {t("pages.headers.form.logoNameFontSize.tooltip")}
+                      </InfoTooltip>
+                    </FormLabel>
+                    <FormControl>
+                      <Combobox
+                        allowClear
+                        values={pageHeaderLogoNameFontSize.map((size) => ({
+                          label: t(
+                            `pages.headers.form.logoNameFontSize.values.${size}`,
+                          ),
+                          value: size,
+                        }))}
+                        className="w-full"
+                        value={field.value}
+                        onItemSelect={(val) => {
+                          field.onChange(val);
+                          field.onBlur();
+                        }}
+                        disabled={loading}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="logoNameFontWeight"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      {t("pages.headers.form.logoNameFontWeight.label")}{" "}
+                      <InfoTooltip>
+                        {t("pages.headers.form.logoNameFontWeight.tooltip")}
+                      </InfoTooltip>
+                    </FormLabel>
+                    <FormControl>
+                      <Combobox
+                        allowClear
+                        values={pageHeaderLogoNameFontWeight.map((size) => ({
+                          label: t(
+                            `pages.headers.form.logoNameFontWeight.values.${size}`,
+                          ),
+                          value: size,
+                        }))}
+                        className="w-full"
+                        value={field.value}
+                        onItemSelect={(val) => {
+                          field.onChange(val);
+                          field.onBlur();
+                        }}
+                        disabled={loading}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="customLogoText"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      {t("pages.headers.form.customLogoText.label")}{" "}
+                      <InfoTooltip>
+                        {t("pages.headers.form.customLogoText.tooltip")}
+                      </InfoTooltip>
+                    </FormLabel>
+                    <FormControl>
+                      <InputGroup>
+                        <InputGroupInput>
+                          <EditableText
+                            value={field.value ?? ""}
+                            onChange={field.onChange}
+                            className={cn(
+                              "w-full border border-input rounded-md p-2 text-sm sm:text-xs h-8",
+                              InputGroupInputClasses({ variant: "suffix" }),
+                            )}
+                            disabled={loading}
+                            inline
+                          />
+                        </InputGroupInput>
+                        <InputGroupAddon>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            disabled={loading}
+                            className={cn(
+                              InputGroupAddonClasses({
+                                variant: "suffix",
+                              }),
+                            )}
+                          >
+                            <X className="w-4 h-4" />
+                          </Button>
+                        </InputGroupAddon>
+                      </InputGroup>
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}

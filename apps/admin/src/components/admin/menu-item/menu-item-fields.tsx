@@ -1,6 +1,7 @@
 "use client";
 
 import { BaseAllKeys, I18nText, useI18n } from "@timelish/i18n";
+import { EditableText } from "@timelish/rte-inline";
 import {
   ButtonSizes,
   ButtonVariants,
@@ -245,6 +246,10 @@ export const MenuItemFields: React.FC<MenuItemFieldsProps> = ({
     } as Partial<SubMenuItem> as SubMenuItem);
   };
 
+  if (type === "spacer") {
+    return null;
+  }
+
   return (
     <>
       <div className="grid md:grid-cols-2 gap-4">
@@ -276,10 +281,13 @@ export const MenuItemFields: React.FC<MenuItemFieldsProps> = ({
             <FormItem>
               <FormLabel>{t("menuItem.fields.label")}</FormLabel>
               <FormControl>
-                <Input
-                  disabled={disabled}
+                <EditableText
+                  value={field.value ?? ""}
+                  onChange={field.onChange}
                   placeholder={t("menuItem.fields.labelPlaceholder")}
-                  {...field}
+                  className="w-full border border-input rounded-md p-2 text-sm sm:text-xs h-8"
+                  disabled={disabled}
+                  inline
                 />
               </FormControl>
               <FormMessage />

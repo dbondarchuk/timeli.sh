@@ -1,9 +1,12 @@
 import { useI18n } from "@timelish/i18n";
-import { useCallback, useMemo } from "react";
+import { useDebounceCallback } from "@timelish/ui";
+import { useMemo } from "react";
 import {
+  useBlock,
   useBlocks,
   useDispatchAction,
   useSelectedBlock,
+  useSelectedSlot,
 } from "../../../documents/editor/context";
 import { BaseBlockProps } from "../../../documents/types";
 import { BaseSidebarPanel } from "./input-panels/helpers/base-sidebar-panel";
@@ -20,9 +23,11 @@ export const ConfigurationPanelTab = "block-configuration";
 
 export const ConfigurationPanel: React.FC = () => {
   const selectedBlock = useSelectedBlock();
+  const selectedSlot = useSelectedSlot();
+  const slotParentBlock = useBlock(selectedSlot?.blockId ?? "");
 
-  const selectedBlockId = selectedBlock?.id;
-  const selectedBlockType = selectedBlock?.type;
+  const inspectBlockId = selectedBlock?.id ?? selectedSlot?.blockId;
+  const inspectBlockType = selectedBlock?.type ?? slotParentBlock?.type;
 
   const dispatchAction = useDispatchAction();
 
@@ -30,45 +35,50 @@ export const ConfigurationPanel: React.FC = () => {
   const tBuilder = useI18n("builder");
   const t = useI18n();
 
-  const setBlock = useCallback(
+  const setBlock = useDebounceCallback(
     (data: any) => {
-      if (!selectedBlockId) return;
+      if (!inspectBlockId) return;
       dispatchAction({
         type: "set-block-data",
-        value: { blockId: selectedBlockId, data },
+        value: { blockId: inspectBlockId, data },
       });
     },
-    [dispatchAction, selectedBlockId],
+    [dispatchAction, inspectBlockId],
+    100,
   );
 
-  const setBase = useCallback(
+  const setBase = useDebounceCallback(
     (base: BaseBlockProps) => {
-      if (!selectedBlockId) return;
+      if (!inspectBlockId) return;
       dispatchAction({
         type: "set-block-base",
-        value: { blockId: selectedBlockId, base },
+        value: { blockId: inspectBlockId, base },
       });
     },
-    [dispatchAction, selectedBlockId],
+    [dispatchAction, inspectBlockId],
+    100,
   );
 
-  const setMetadata = useCallback(
+  const setMetadata = useDebounceCallback(
     (metadata: Record<string, any> | undefined) => {
-      if (!selectedBlockId) return;
+      if (!inspectBlockId) return;
       dispatchAction({
         type: "set-block-metadata",
-        value: { blockId: selectedBlockId, metadata },
+        value: { blockId: inspectBlockId, metadata },
       });
     },
-    [dispatchAction, selectedBlockId],
+    [dispatchAction, inspectBlockId],
+    100,
   );
 
   const Panel = useMemo(
-    () => (selectedBlockType ? blocks[selectedBlockType]?.Configuration : null),
-    [blocks, selectedBlockType],
+    () => (inspectBlockType ? blocks[inspectBlockType]?.Configuration : null),
+    [blocks, inspectBlockType],
   );
 
-  if (!selectedBlockId || !Panel) {
+  const inspectBlock = selectedBlock ?? slotParentBlock;
+
+  if (!inspectBlockId || !Panel || !inspectBlock) {
     return renderMessage(
       tBuilder(
         "baseBuilder.inspector.configurationPanel.clickOnBlockToInspect",
@@ -76,18 +86,23 @@ export const ConfigurationPanel: React.FC = () => {
     );
   }
 
-  const { data, id, base, metadata } = selectedBlock;
+  const { data, id, base, metadata } = inspectBlock;
+
+  const panelTitle = selectedSlot
+    ? `${t(blocks[inspectBlock.type].displayName)} · ${selectedSlot.slotKey}`
+    : t(blocks[inspectBlock.type].displayName);
 
   return (
-    <BaseSidebarPanel title={t(blocks[selectedBlock.type].displayName)}>
+    <BaseSidebarPanel title={panelTitle}>
       <Panel
         data={data}
         setData={setBlock}
-        key={id}
+        key={selectedSlot ? `${id}-${selectedSlot.slotKey}` : id}
         base={base}
         onBaseChange={setBase}
         metadata={metadata}
         onMetadataChange={setMetadata}
+        selectedSlot={selectedSlot}
       />
     </BaseSidebarPanel>
   );

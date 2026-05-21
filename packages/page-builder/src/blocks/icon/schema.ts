@@ -39,5 +39,10 @@ export const IconPropsDefaults = {
         value: { value: 1, unit: "rem" },
       },
     ],
+    fill: [
+      {
+        value: "transparent",
+      },
+    ],
   },
 } as const satisfies IconProps;

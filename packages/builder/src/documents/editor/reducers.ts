@@ -9,8 +9,42 @@ import {
   moveBlockToIndexInLevel,
   swapBlockInLevel,
 } from "../helpers/blocks";
+import { coerceArray } from "../helpers/coerce-array";
 import { TEditorConfiguration } from "./core";
 import { EditorHistoryEntry } from "./history";
+
+/**
+ * Table cell slots are stored in flat row-major order. Inserts/removes reorder
+ * indices, so merging by index corrupts the grid — merge by slot id in source order.
+ */
+function mergeEmbeddedSlotCellArrays(
+  targetValue: unknown,
+  sourceValue: unknown[],
+): unknown[] {
+  const targetArr = coerceArray(targetValue);
+  const byId = new Map<string, unknown>();
+  for (const item of targetArr) {
+    if (
+      item &&
+      typeof item === "object" &&
+      "id" in item &&
+      typeof (item as { id: unknown }).id === "string"
+    ) {
+      byId.set((item as { id: string }).id, item);
+    }
+  }
+  return sourceValue.map((src) => {
+    if (!src || typeof src !== "object" || !("id" in src)) {
+      return src;
+    }
+    const id = (src as { id: string }).id;
+    const tgt = byId.get(id);
+    if (tgt && typeof tgt === "object") {
+      return deepMerge(tgt, src);
+    }
+    return src;
+  });
+}
 
 /**
  * Deep merge function that preserves nested structures
@@ -41,6 +75,48 @@ function deepMerge(target: any, source: any): any {
         if (key === "children" && targetValue && Array.isArray(targetValue)) {
           // Preserve children array structure
           result[key] = targetValue;
+        } else if (
+          (key === "cellBlocks" || key === "cells") &&
+          Array.isArray(sourceValue)
+        ) {
+          result[key] = mergeEmbeddedSlotCellArrays(targetValue, sourceValue);
+        } else if (
+          (key === "colspan" || key === "rowspan") &&
+          Array.isArray(sourceValue)
+        ) {
+          // Index-aligned with flat cells; follow source order/length on grid edits.
+          result[key] = sourceValue;
+        } else if (
+          key === "children" &&
+          targetValue &&
+          Array.isArray(targetValue) &&
+          sourceValue.some(
+            (item) =>
+              item &&
+              typeof item === "object" &&
+              "id" in item &&
+              "type" in item,
+          )
+        ) {
+          const max = Math.max(sourceValue.length, targetValue.length);
+          result[key] = Array.from({ length: max }, (_, i) => {
+            const src = sourceValue[i];
+            const tgt = targetValue[i];
+            if (!src) return tgt;
+            if (!tgt) return src;
+            if (
+              typeof src === "object" &&
+              typeof tgt === "object" &&
+              "id" in src &&
+              "id" in tgt &&
+              (src as { id: unknown }).id === (tgt as { id: unknown }).id &&
+              "type" in src &&
+              "type" in tgt
+            ) {
+              return deepMerge(tgt, src);
+            }
+            return src ?? tgt;
+          });
         } else {
           // For other arrays, merge or replace based on context
           result[key] = sourceValue;

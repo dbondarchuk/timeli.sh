@@ -12,6 +12,7 @@ baseBuilder:
     redo: Повторити (⌘+⇧+Z)
     moveUp: Перемістити вибраний блок вгору
     moveDown: Перемістити вибраний блок вниз
+    moveOut: Винести з батьківського (вставити після батька)
     clone: Клонувати вибраний блок
     delete: Видалити вибраний блок
     copy: Копіювати вибраний блок
@@ -49,6 +50,7 @@ baseBuilder:
   navMenu:
     moveUp: Перемістити вгору
     moveDown: Перемістити вниз
+    moveOut: Винести з батьківського (вставити після батька)
     clone: Клонувати
     delete: Видалити
   blocks:
@@ -68,6 +70,12 @@ baseBuilder:
 pageBuilder:
   styles:
     searchPlaceholder: Пошук стилів...
+    copyStyles: Копіювати стилі
+    pasteStyles: Вставити стилі
+    pasteStylesEmpty: Спочатку скопіюйте стилі з іншого блоку
+    copyStylesSuccess: Стилі скопійовано
+    pasteStylesSuccess: Вставлено {count, plural, =1 {# стиль} few {# стилів} other {# стилів}}
+    pasteStylesNoCompatible: Немає сумісних стилів для вставки в цей блок
     generatedCSS: Згенерований CSS
     variants: Варіанти
     addVariant: Додати варіант
@@ -146,9 +154,17 @@ pageBuilder:
       justifyContent: Вирівнювання по горизонталі
       justifyItems: Вирівнювання елементів
       alignItems: Вирівнювання по вертикалі
+      alignContent: Вирівнювання вмісту
       flexWrap: Перенос Flex
       flexBasis: Базова ширина Flex
+      flexGrow: Розтягування Flex
+      flexShrink: Стиснення Flex
       gridTemplateColumns: Шаблон колонок сітки
+      gridTemplateRows: Шаблон рядків сітки
+      gridColumnStart: Початок колонки сітки
+      gridColumnEnd: Кінець колонки сітки
+      gridRowStart: Початок рядка сітки
+      gridRowEnd: Кінець рядка сітки
       transform: Трансформація
       transition: Перехід
       animation: Анімація
@@ -166,6 +182,7 @@ pageBuilder:
       filter: Фільтр
       objectFit: Заповнення контейнера
       objectPosition: Позиція об'єкта
+      fill: Заливка
       verticalAlign: Вертикальне вирівнювання
       zoom: Масштаб
     shortcuts: Швидкі налаштування
@@ -234,6 +251,40 @@ pageBuilder:
       applyTemplate: Застосувати шаблон
       column: колонка
       columns: колонок
+    gridTemplateRowsDialog:
+      title: Шаблон рядків сітки
+      description: Згенерувати шаблон рядків CSS Grid або ввести власне значення.
+      responsive: Адаптивний (автоматичне припасування)
+      responsiveDescription: >-
+        Рядки автоматично припасовуються до контенту та переносяться в нові
+        колонки
+      fixed: Фіксовані рядки
+      fixedDescription: Фіксована кількість рядків однакової висоти
+      masonry: Кам'яна кладка (автоматичне заповнення)
+      masonryDescription: >-
+        Рядки заповнюють доступний простір і створюють макет типу кам'яної
+        кладки
+      sidebar: Макет з шапкою/підвалом
+      sidebarDescription: Фіксована шапка або підвал з гнучкою областю основного контенту
+      hero: Головна секція
+      heroDescription: Один рядок повної висоти для головного контенту
+      magazine: Макет журналу
+      magazineDescription: Основний контент з меншими вкладеними рядками
+      gallery: Фотогалерея
+      galleryDescription: Оптимізовано для галерей зображень та портфоліо
+      dashboard: Сітка панелі керування
+      dashboardDescription: Компактна сітка для віджетів та карток панелі керування
+      custom: Власний шаблон
+      customDescription: Введіть власний синтаксис шаблону CSS Grid
+      minSize: Мінімальна висота рядка (пкс)
+      trackCount: Кількість рядків
+      sidebarSize: Розмір шапки/підвалу (пкс)
+      customTemplate: Власний шаблон
+      preview: Попередній перегляд
+      cancel: Скасувати
+      applyTemplate: Застосувати шаблон
+      track: рядок
+      tracks: рядків
     flexDirection:
       row: Рядок
       row-reverse: Рядок навпаки
@@ -256,6 +307,14 @@ pageBuilder:
       flex-end: Кінець Flex
       center: По центру
       baseline: Базова лінія
+      stretch: Розтягнути
+    alignContent:
+      flex-start: Початок Flex
+      flex-end: Кінець Flex
+      center: По центру
+      space-between: Простір між
+      space-around: Простір навколо
+      space-evenly: Рівномірний простір
       stretch: Розтягнути
     flexWrap:
       nowrap: Без переносу
@@ -388,6 +447,7 @@ pageBuilder:
       hinge: Петля
       rollIn: Котіння в
       rollOut: Котіння з
+      blink: Миготіння
     animationKeywords:
       infinite: Нескінченно
       custom: Власне
@@ -559,6 +619,7 @@ pageBuilder:
     colors:
       default: За замовчуванням
       transparent: Прозорий
+      currentColor: Поточний колір
       custom: Власний колір
       background: Фон
       foreground: Текст
@@ -678,6 +739,65 @@ pageBuilder:
     title: Базові властивості
     id: ID
     className: CSS класи
+  marketingDefaults:
+    templates:
+      sectionIntro:
+        eyebrow: Надзаголовок
+        sectionTitle: Заголовок секції
+        body: Пояснювальне речення про зміст цієї секції.
+      statCell:
+        value: "12"
+        label: Підпис
+        supporting: Короткий підтримуючий рядок.
+      step:
+        number: "01"
+        title: Назва кроку
+        bullets: "- Пункт один\n- Пункт два\n- Пункт три"
+      testimonial:
+        quote: '"Цитата задоволеного клієнта про те, наскільки класний продукт."'
+        name: Ім’я
+        role: Посада чи компанія
+      ctaBand:
+        title: Готові почати?
+        body: Розкажіть, що буде далі.
+        secondaryButton: Додаткова дія
+      logoCard:
+        logoAlt: Логотип
+        name: Назва бренду
+      planCard:
+        badge: Pro
+        name: Тариф Pro
+        price: $29/міс
+        footnote: 7-денна проба
+        features: "• Необмежені записи\n• Конструктор сайту\n• SMS-нагадування"
+        cta: Почати
+    announcementBar:
+      message: "7-денна пробна версія Pro — створіть обліковий запис"
+    scrollingLogos:
+      screenReaderText: "Бігучі логотипи: Приклад, Зразок."
+      sampleCardName: Назва бренду
+    browserCarousel:
+      slide1Label: Панель керування
+      slide1Address: app.timelish.com/dashboard
+      slide2Label: Сайт для записів
+      slide2Address: yourname.timeli.sh
+      slide3Label: Конструктор сторінок
+      slide3Address: app.timelish.com/page-builder
+    featureItem:
+      title: Назва функції
+      description: Короткий опис функції на картці.
+      detailHeadline: Заголовок деталей
+      bullet1: Перший аргумент
+      bullet2: Другий аргумент
+  templates:
+    marketing:
+      sectionIntro: Вступна секція
+      statCell: Показник
+      step: Крок
+      testimonialCard: Відгук
+      ctaBand: Заклик до дії
+      logoCard: Картка з логотипом
+      planCard: Тарифний план
   blocks:
     categories:
       text: Текст
@@ -687,6 +807,7 @@ pageBuilder:
       booking: Форма бронювання
       content: Контент
       navigation: Навігація
+      marketing: Маркетинг
     heading:
       displayName: Заголовок
       content: Контент
@@ -1135,6 +1256,19 @@ pageBuilder:
       displayName: Рядковий текст
       placeholder: Текст тут
       url: URL посилання
+    typewriterText:
+      displayName: Текст друкарської машинки
+      editorHint: Редагуйте фрази в налаштуваннях
+      phrases: Фрази
+      phraseNumber: "Фраза {number}"
+      addPhrase: Додати фразу
+      removePhrase: Видалити фразу
+      reorder: Перемістити
+      typeDelay: Затримка між символами (набір)
+      deleteDelay: Затримка між символами (видалення)
+      pauseAfterPhrase: Пауза після завершення фрази
+      showCursor: Показувати курсор
+      milliseconds: мс
     accordion:
       displayName: Акордеон
       allowMultipleOpen: Дозволити кілька відкритих елементів
@@ -1200,6 +1334,58 @@ pageBuilder:
       editorRedirectText: "Ви будете перенаправлені до {url}"
       errors:
         url: URL є обов'язковим
+    marketingScrollingLogos:
+      displayName: Бігучі логотипи
+      screenReaderText: Опис для читалки
+      items: Логотипи
+    marketingFeatureItem:
+      displayName: Елемент переваги
+      cardIcon: Іконка
+      title: Заголовок
+      description: Опис
+      detailHeadline: Заголовок деталей
+      detailBullets: Список деталей
+    marketingFeaturesShowcase:
+      displayName: Блок переваг
+      features: Переваги
+    table:
+      displayName: Таблиця
+      rowCount: Рядки
+      columnCount: Колонки
+      rowsUnit: рядків
+      columnsUnit: колонок
+      reorderColumn: Змінити порядок колонки
+      reorderRow: Змінити порядок рядка
+      columnNumber: "Колонка {number}"
+      mergedCell: Об’єднано з коміркою зверху або зліва
+      resizeFillRemainingWidth: Подвійний клік — заповнити ширину, що лишилась
+      resizeFillRemainingHeight: Подвійний клік — заповнити висоту, що лишилась
+      spanSettings: Об’єднання комірки
+      colspan: Колонки
+      rowspan: Рядки
+      shortcuts:
+        align: Вирівнювання
+      align:
+        start: Початок
+        center: По центру
+      sizePicker:
+        tooltip: Розмір таблиці
+        dimensions: "{rowCount} × {colCount}"
+    marketingBrowserCarousel:
+      displayName: Карусель у вікні браузера
+      slides: Слайди
+      addSlide: Додати слайд
+      removeSlide: Видалити слайд
+      reorder: Перемістити
+      slideNumber: "Слайд {number}"
+      slideTabLabel: Підпис вкладки
+      slideImageUrl: URL зображення
+      slideAddressBar: Текст у рядку адреси
+      showTabs: Показувати панель вкладок
+      showDots: Показувати індикатори-крапки
+      showBrowserChrome: Показувати рамку браузера (кнопки та адресний рядок)
+      autoRotate: Інтервал автопрокрутки
+      milliseconds: мс (0 = вимкнено)
     modifyAppointmentForm:
       modern:
         displayName: Форма перенесення або скасування прийому (Сучасна)
@@ -1218,7 +1404,19 @@ pageBuilder:
     backgroundColor: Колір фону
     backgroundImage: Фонове зображення
     color: Колір тексту
+    fill: Заливка
     fontFamily: Шрифт
+    fontSize:
+      label: Розмір шрифту
+      options:
+        xs: Дуже малий
+        sm: Малий
+        base: Базовий
+        lg: Великий
+        xl: Дуже великий
+        2xl: 2XL
+        3xl: 3XL
+        4xl: 4XL
   styleInputs:
     color:
       unknownType: Невідомий тип кольору

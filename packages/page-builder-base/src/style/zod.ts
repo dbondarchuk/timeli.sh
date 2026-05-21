@@ -9,6 +9,7 @@ export const zColorCustom = z
     message: "builder.pageBuilder.styleInputs.color.unknownType",
   });
 export const zTransparentColor = z.literal("transparent");
+export const zCurrentColor = z.literal("currentColor");
 const colorPresetVars = COLOR_NAMES.map((c) => `var(--value-${c}-color)`);
 const [zColorPresetVarsFirst, ...zColorPresetVars] = colorPresetVars;
 export const zColorPreset = z.enum(
@@ -18,9 +19,12 @@ export const zColorPreset = z.enum(
   },
 );
 
-export const zColor = z.union([zColorCustom, zColorPreset, zTransparentColor], {
-  message: "builder.pageBuilder.styleInputs.color.unknownType",
-});
+export const zColor = z.union(
+  [zColorCustom, zColorPreset, zTransparentColor, zCurrentColor],
+  {
+    message: "builder.pageBuilder.styleInputs.color.unknownType",
+  },
+);
 export const zColorNullable = zColor.optional().nullable();
 
 export const units = ["px", "rem", "%", "vh", "vw"] as const;

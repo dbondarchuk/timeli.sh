@@ -32,15 +32,16 @@ type DraggableBlockItemProps = {
 const DraggableBlockItem: React.FC<DraggableBlockItemProps> = memo(
   ({ blockType, blockConfig, isTemplate }) => {
     const templates = useTemplates();
+    const t = useI18n();
 
     const templateBlock = useMemo(() => {
       if (!isTemplate) return null;
       const template = templates?.[blockType];
       if (template) {
-        return template.getBlock();
+        return template.getBlock(t);
       }
       return null;
-    }, [blockType, templates, isTemplate]);
+    }, [blockType, templates, isTemplate, t]);
 
     const { isDragging, ref } = useDraggable({
       id: `template-${blockType}`,
@@ -73,8 +74,6 @@ const DraggableBlockItem: React.FC<DraggableBlockItemProps> = memo(
     //      blockConfig,
     //    },
     //  });
-
-    const t = useI18n();
 
     return (
       <>
@@ -203,6 +202,11 @@ export const BlocksPanel = genericMemo(
 
           // Don't show root block type
           if (rootBlockType === type) return false;
+
+          if (blockType === "block" && config.hideInBlocksPanel) {
+            return false;
+          }
+
           if (debouncedSearchQuery.trim()) {
             const query = debouncedSearchQuery.trim();
             const name = config.displayName.toLocaleLowerCase();

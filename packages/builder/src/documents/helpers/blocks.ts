@@ -2,6 +2,8 @@ import * as z from "zod";
 
 import { resolve } from "@timelish/utils";
 import { TEditorBlock, TEditorConfiguration } from "../editor/core";
+import { isEmbeddedSlot, isSlotLikeObject } from "../embedded-slot";
+import { coerceArray } from "./coerce-array";
 import { BuilderSchema } from "../types";
 import { generateId } from "./block-id";
 
@@ -14,7 +16,31 @@ const findChildrenProps = (
   for (const prop of Object.keys(obj)) {
     if (prop === "children" && Array.isArray(obj[prop]))
       result.push({ children: obj[prop], property: parentProps.join(".") });
-    else result.push(...findChildrenProps(obj[prop], [...parentProps, prop]));
+    else if (prop === "cellBlocks" && Array.isArray(obj[prop]))
+      result.push({
+        children: obj[prop],
+        property: [...parentProps, prop].join("."),
+      });
+    else if (prop === "cells") {
+      coerceArray<unknown>(obj[prop]).forEach((item: unknown, index: number) => {
+        if (isSlotLikeObject(item)) {
+          result.push({
+            children: item.children,
+            property: [...parentProps, prop, String(index), "children"].join(
+              ".",
+            ),
+          });
+        }
+      });
+    } else if (
+      isSlotLikeObject(obj[prop]) &&
+      !(prop === "props" && parentProps.length === 0)
+    ) {
+      result.push({
+        children: (obj[prop] as { children: unknown[] }).children,
+        property: [...parentProps, prop, "children"].join("."),
+      });
+    } else result.push(...findChildrenProps(obj[prop], [...parentProps, prop]));
   }
 
   return result;
@@ -25,6 +51,8 @@ const findChildrenProp = (obj: any): any[] => {
   const result = [];
   for (const prop of Object.keys(obj)) {
     if (prop === "children" && Array.isArray(obj[prop])) result.push(obj);
+    else if (prop === "cellBlocks" && Array.isArray(obj[prop]))
+      result.push({ children: obj[prop] });
     else result.push(...findChildrenProp(obj[prop]));
   }
 
@@ -67,16 +95,27 @@ export const insertBlockInLevel = (
   property: string | undefined | null,
   index: number | "last",
 ) => {
-  const prop = property
-    ? resolve(block, property, true) || resolve(block, `data.${property}`, true)
-    : findChildrenProp(block)[0];
-  if (!prop) return;
+  const resolved =
+    property !== undefined && property !== null && property !== ""
+      ? resolve(block, property, true) ||
+        resolve(block, `data.${property}`, true)
+      : findChildrenProp(block)[0];
+  if (!resolved) return;
 
-  if (!prop.children) prop.children = [];
-  if (index === "last" || index >= (prop.children as any[]).length) {
-    (prop.children as any[]).push(newBlock);
+  if (Array.isArray(resolved)) {
+    if (index === "last" || index >= resolved.length) {
+      resolved.push(newBlock);
+    } else {
+      resolved.splice(index, 0, newBlock);
+    }
+    return;
+  }
+
+  if (!resolved.children) resolved.children = [];
+  if (index === "last" || index >= (resolved.children as any[]).length) {
+    (resolved.children as any[]).push(newBlock);
   } else {
-    (prop.children as any[]).splice(index, 0, newBlock);
+    (resolved.children as any[]).splice(index, 0, newBlock);
   }
 };
 
@@ -392,3 +431,28 @@ export const findParentBlock = (
 ) => {
   return recursiveFindParentBlock(document, blockId, document, "");
 };
+
+/** Move block to grandparent level, inserted immediately after its current parent. */
+export function getMoveBlockOutTarget(
+  document: TEditorConfiguration,
+  blockId: string,
+): {
+  parentBlockId: string;
+  parentBlockProperty?: string;
+  index: number;
+} | null {
+  const parent = findParentBlock(document, blockId);
+  if (!parent) return null;
+
+  const parentInGrandparent = findParentBlock(document, parent.block.id);
+  if (!parentInGrandparent?.block.id) return null;
+
+  // Parent is already the document root — nowhere to lift to.
+  if (parent.block.id === document.id) return null;
+
+  return {
+    parentBlockId: parentInGrandparent.block.id,
+    parentBlockProperty: parentInGrandparent.property || undefined,
+    index: parentInGrandparent.index + 1,
+  };
+}

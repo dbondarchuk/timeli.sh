@@ -27,7 +27,9 @@ export const ColorExtendedInput: React.FC<Props> = ({
   const getSelectValue = (value?: string | null) =>
     !value && nullable
       ? "default"
-      : value?.startsWith("var") || value === "transparent"
+      : value?.startsWith("var") ||
+          value === "transparent" ||
+          value === "currentColor"
         ? value
         : "custom";
 

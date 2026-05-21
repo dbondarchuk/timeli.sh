@@ -1,4 +1,14 @@
-import { ALL_STYLES, getStylesSchema } from "@timelish/page-builder-base/style";
+import {
+  fillStyle,
+  getAllStylesWithAdditionalStyles,
+  getStylesSchema,
+} from "@timelish/page-builder-base/style";
 
-export const styles = ALL_STYLES;
+export const styles = getAllStylesWithAdditionalStyles({
+  fill: fillStyle,
+});
+
 export const zStyles = getStylesSchema(styles);
+export type IconStylesSchema = {
+  [key in keyof typeof styles]: (typeof styles)[key]["schema"];
+};

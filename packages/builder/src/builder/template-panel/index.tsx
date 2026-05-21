@@ -6,6 +6,7 @@ import {
   PointerSensor,
 } from "@dnd-kit/react";
 import { effect } from "@dnd-kit/state";
+import { useI18n } from "@timelish/i18n";
 import { Tabs, useThrottleCallback } from "@timelish/ui";
 import { ComponentProps, memo } from "react";
 import {
@@ -77,6 +78,7 @@ const sensors = [
 
 export const TemplatePanel: React.FC<TemplatePanelProps> = memo(
   ({ args, readerBlocks, header, footer }) => {
+    const t = useI18n();
     const dispatchAction = useDispatchAction();
     const setActiveDragBlock = useSetActiveDragBlockId();
     const setActiveOverBlock = useSetActiveOverBlockContextId();
@@ -106,7 +108,7 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = memo(
             type: blockData.blockType,
             data:
               typeof blockData.blockConfig.defaultValue === "function"
-                ? blockData.blockConfig.defaultValue()
+                ? blockData.blockConfig.defaultValue(t)
                 : blockData.blockConfig.defaultValue,
             metadata: blockData.blockConfig.defaultMetadata,
           };
@@ -116,7 +118,7 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = memo(
         } else if (blockData?.type === "composite-template") {
           const template = templates?.[blockData.blockType];
           if (template) {
-            const newBlock = template.getBlock();
+            const newBlock = template.getBlock(t);
             setActiveDragBlock(newBlock.id, newBlock);
             return;
           }
@@ -211,7 +213,7 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = memo(
             type: blockData.blockType,
             data:
               typeof blockData.blockConfig.defaultValue === "function"
-                ? blockData.blockConfig.defaultValue()
+                ? blockData.blockConfig.defaultValue(t)
                 : blockData.blockConfig.defaultValue,
             metadata: blockData.blockConfig.defaultMetadata,
           };
@@ -230,7 +232,7 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = memo(
         } else if (blockData?.type === "composite-template") {
           const template = templates?.[blockData.blockType];
           if (template) {
-            const newBlock = template.getBlock();
+            const newBlock = template.getBlock(t);
             dispatchAction({
               type: "add-block",
               value: {

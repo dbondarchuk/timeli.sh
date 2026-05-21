@@ -1,7 +1,6 @@
 import type { MarkPlugin } from "../types";
 import { fontFamilyPlugin } from "./plugin";
 
-export { fontFamilyPlugin };
 export { FontFamilyToolbarButton } from "./toolbar";
-export { renderFontFamily } from "./render";
+export { fontFamilyPlugin };
 export type { MarkPlugin };

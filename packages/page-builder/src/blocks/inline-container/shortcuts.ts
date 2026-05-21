@@ -3,7 +3,9 @@ import {
   backgroundImageShortcut,
   colorShortcut,
   fontFamilyShortcut,
+  fontSizeShortcut,
   Shortcut,
+  textAlignmentShortcut,
 } from "@timelish/page-builder-base";
 import { AllStylesSchemas } from "@timelish/page-builder-base/style";
 import {
@@ -225,6 +227,8 @@ export const inlineContainerShortcuts: Shortcut<AllStylesSchemas>[] = [
     ],
   },
 
+  fontSizeShortcut as Shortcut<AllStylesSchemas>,
+  textAlignmentShortcut as Shortcut<AllStylesSchemas>,
   backgroundColorShortcut,
   backgroundImageShortcut as Shortcut<AllStylesSchemas>,
   fontFamilyShortcut as Shortcut<AllStylesSchemas>,

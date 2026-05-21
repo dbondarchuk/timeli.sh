@@ -18,7 +18,10 @@ export function stringToRichText(text: string): RichTextValue {
 }
 
 // Convert RichTextValue to plain string
-export function richTextToString(value: RichTextValue): string {
+export function richTextToString(
+  value: RichTextValue | string | undefined,
+): string {
+  if (!value || typeof value === "string") return value ?? "";
   return value
     .map((block) => block.content.map((node) => node.text).join(""))
     .join("\n");

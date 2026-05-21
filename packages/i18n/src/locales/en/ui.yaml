@@ -228,3 +228,10 @@ country:
   HR: Croatia
   IE: Ireland
   IT: Italy
+marketingFeaturesShowcase:
+  learnMore: Learn more
+  clickToClose: Click to close
+marketingBrowserCarousel:
+  goToSlide: "Go to slide {slide}"
+  imageAlt: "{name} preview"
+  emptySlides: "No slides added yet"

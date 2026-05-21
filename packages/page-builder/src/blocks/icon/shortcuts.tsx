@@ -1,8 +1,8 @@
 import { colorShortcut, Shortcut } from "@timelish/page-builder-base";
-import { AllStylesSchemas } from "@timelish/page-builder-base/style";
-import { MoveDiagonal2 } from "lucide-react";
+import { MoveDiagonal2, Paintbrush2 } from "lucide-react";
+import { IconStylesSchema } from "./styles";
 
-export const iconShortcuts: Shortcut<AllStylesSchemas>[] = [
+export const iconShortcuts: Shortcut<IconStylesSchema>[] = [
   {
     label: "builder.pageBuilder.blocks.icon.size",
     icon: ({ className }) => <MoveDiagonal2 className={className} />,
@@ -51,4 +51,10 @@ export const iconShortcuts: Shortcut<AllStylesSchemas>[] = [
     ],
   },
   colorShortcut,
+  {
+    label: "builder.pageBuilder.shortcuts.fill",
+    icon: ({ className }) => <Paintbrush2 className={className} />,
+    inputType: "color",
+    targetStyle: "fill",
+  },
 ];

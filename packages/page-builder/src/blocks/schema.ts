@@ -19,6 +19,10 @@ import { InlineContainerPropsSchema } from "./inline-container/schema";
 import { InlineTextPropsSchema } from "./inline-text/schema";
 import { LightboxPropsSchema } from "./lightbox/schema";
 import { LinkPropsSchema } from "./link/schema";
+import { MarketingBrowserCarouselPropsSchema } from "./marketing-browser-carousel/schema";
+import { MarketingFeatureItemPropsSchema } from "./marketing-feature-item/schema";
+import { MarketingFeaturesShowcasePropsSchema } from "./marketing-features-showcase/schema";
+import { MarketingScrollingLogosPropsSchema } from "./marketing-scrolling-logos/schema";
 import { ModifyAppointmentFormPropsSchema as ModifyAppointmentFormModernPropsSchema } from "./modify-appointment-form/modern/schema";
 import { ModifyAppointmentFormPropsSchema as ModifyAppointmentFormSimplePropsSchema } from "./modify-appointment-form/simple/schema";
 import { PageHeroPropsSchema } from "./page-hero/schema";
@@ -26,7 +30,9 @@ import { PageLayoutPropsSchema } from "./page-layout/schema";
 import { PopupPropsSchema } from "./popup/schema";
 import { RedirectPropsSchema } from "./redirect/schema";
 import { SpacerPropsSchema } from "./spacer/schema";
+import { TablePropsSchema } from "./table/schema";
 import { TextPropsSchema } from "./text/schema";
+import { TypewriterTextPropsSchema } from "./typewriter-text/schema";
 import { VideoPropsSchema } from "./video/schema";
 import { YouTubeVideoPropsSchema } from "./youtube-video/schema";
 
@@ -51,6 +57,7 @@ export const EditorBlocksSchema = {
   YouTubeVideo: YouTubeVideoPropsSchema,
   Popup: PopupPropsSchema,
   InlineText: InlineTextPropsSchema,
+  TypewriterText: TypewriterTextPropsSchema,
   Accordion: AccordionPropsSchema,
   AccordionItem: AccordionItemPropsSchema,
   InlineContainer: InlineContainerPropsSchema,
@@ -63,6 +70,11 @@ export const EditorBlocksSchema = {
   ModifyAppointmentFormModern: ModifyAppointmentFormModernPropsSchema,
   BookingConfirmationSimple: BookingConfirmationSimplePropsSchema,
   BookingConfirmationModern: BookingConfirmationModernPropsSchema,
+  MarketingScrollingLogos: MarketingScrollingLogosPropsSchema,
+  MarketingFeatureItem: MarketingFeatureItemPropsSchema,
+  MarketingFeaturesShowcase: MarketingFeaturesShowcasePropsSchema,
+  Table: TablePropsSchema,
+  MarketingBrowserCarousel: MarketingBrowserCarouselPropsSchema,
 } as {
   Image: typeof ImagePropsSchema;
   Button: typeof ButtonPropsSchema;
@@ -83,6 +95,7 @@ export const EditorBlocksSchema = {
   YouTubeVideo: typeof YouTubeVideoPropsSchema;
   Popup: typeof PopupPropsSchema;
   InlineText: typeof InlineTextPropsSchema;
+  TypewriterText: typeof TypewriterTextPropsSchema;
   Accordion: typeof AccordionPropsSchema;
   AccordionItem: typeof AccordionItemPropsSchema;
   InlineContainer: typeof InlineContainerPropsSchema;
@@ -95,4 +108,9 @@ export const EditorBlocksSchema = {
   ModifyAppointmentFormModern: typeof ModifyAppointmentFormModernPropsSchema;
   BookingConfirmationSimple: typeof BookingConfirmationSimplePropsSchema;
   BookingConfirmationModern: typeof BookingConfirmationModernPropsSchema;
+  MarketingScrollingLogos: typeof MarketingScrollingLogosPropsSchema;
+  MarketingFeatureItem: typeof MarketingFeatureItemPropsSchema;
+  MarketingFeaturesShowcase: typeof MarketingFeaturesShowcasePropsSchema;
+  Table: typeof TablePropsSchema;
+  MarketingBrowserCarousel: typeof MarketingBrowserCarouselPropsSchema;
 };

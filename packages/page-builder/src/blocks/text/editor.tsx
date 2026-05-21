@@ -60,7 +60,7 @@ export const TextEditor = ({ props, style }: TextProps) => {
         isEditor
       />
       <div
-        className={cn(className, base?.className)}
+        className={cn("w-full", className, base?.className)}
         id={base?.id}
         {...overlayProps}
       >

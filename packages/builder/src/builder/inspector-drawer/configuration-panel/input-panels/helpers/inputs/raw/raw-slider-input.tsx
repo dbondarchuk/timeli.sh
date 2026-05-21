@@ -11,12 +11,14 @@ type SliderInputProps = {
 
   value?: number | null;
   setValue: (v: number) => void;
+  onCommit?: (v: number) => void;
 };
 
 export const RawSliderInput: React.FC<SliderInputProps> = ({
   iconLabel,
   value,
   setValue,
+  onCommit,
   units,
   ...props
 }) => {
@@ -25,7 +27,7 @@ export const RawSliderInput: React.FC<SliderInputProps> = ({
       <div className="min-w-6 shrink-0">{iconLabel}</div>
       <Slider
         {...props}
-        value={value ? [value] : undefined}
+        value={value != null ? [value] : undefined}
         onValueChange={(val) => {
           if (typeof val[0] !== "number") {
             throw new Error(
@@ -35,6 +37,14 @@ export const RawSliderInput: React.FC<SliderInputProps> = ({
 
           setValue(val[0]);
         }}
+        onValueCommit={
+          onCommit
+            ? (val) => {
+                if (typeof val[0] !== "number") return;
+                onCommit(val[0]);
+              }
+            : undefined
+        }
       />
       <div className={cn("text-right shrink-0", units ? "min-w-8" : "min-w-4")}>
         <Text className="font-secondary text-secondary-foreground">

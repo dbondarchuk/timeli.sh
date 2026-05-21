@@ -3,6 +3,7 @@ export { AddVariantButton } from "./add-variant-button";
 export { BreakpointSelector } from "./breakpoint-selector";
 export { CSSPreview } from "./css-preview";
 export { SearchBar } from "./search-bar";
+export { StylesClipboardToolbar } from "./styles-clipboard-toolbar";
 export { StateSelector } from "./state-selector";
 export { StyleCategoryComponent } from "./style-category";
 export { StyleCategoryStyle } from "./style-category-style";
