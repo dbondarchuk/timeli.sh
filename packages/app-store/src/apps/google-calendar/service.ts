@@ -46,7 +46,7 @@ const accessType = "offline";
 // Redirect request won't contain offline access
 const requiredScopes = [
   "https://www.googleapis.com/auth/userinfo.email",
-  "https://www.googleapis.com/auth/calendar",
+  "https://www.googleapis.com/auth/calendar.events",
   "https://www.googleapis.com/auth/meetings.space.created",
 ];
 
