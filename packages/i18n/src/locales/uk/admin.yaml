@@ -1796,6 +1796,7 @@ appearance:
       accent-foreground: Акцентний текст
       destructive: Руйнівний
       destructive-foreground: Руйнівний текст
+      border: Бордюр
   footer:
     title: Підвал
     description: Налаштувати посилання в підвалі

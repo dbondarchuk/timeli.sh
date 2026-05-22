@@ -5,6 +5,7 @@ import { useI18n } from "@timelish/i18n";
 import { StylesConfigurationPanel } from "@timelish/page-builder-base";
 import { deepMemo, Label, Textarea } from "@timelish/ui";
 import { useCallback } from "react";
+import { HtmlMonacoEditorDialog } from "./html-monaco-editor-dialog";
 import { CustomHTMLProps } from "./schema";
 import { styles } from "./styles";
 
@@ -27,6 +28,8 @@ export const CustomHTMLConfiguration = deepMemo(
       [setData, data],
     );
 
+    const html = data.props?.html ?? "";
+
     return (
       <StylesConfigurationPanel
         styles={data.style ?? {}}
@@ -36,13 +39,19 @@ export const CustomHTMLConfiguration = deepMemo(
         onBaseChange={onBaseChange}
       >
         <div className="flex flex-col gap-2">
-          <Label htmlFor="html">
-            {t("pageBuilder.blocks.customHtml.html")}
-          </Label>
+          <div className="flex items-center justify-between gap-2">
+            <Label htmlFor="html">
+              {t("pageBuilder.blocks.customHtml.html")}
+            </Label>
+            <HtmlMonacoEditorDialog
+              value={html}
+              onApply={(nextHtml) => updateProps({ ...data.props, html: nextHtml })}
+            />
+          </div>
           <Textarea
             id="html"
-            value={data.props?.html ?? ""}
-            className="w-full text-xs"
+            value={html}
+            className="w-full text-xs font-mono min-h-[120px]"
             onChange={(e) =>
               updateProps({ ...data.props, html: e.target.value })
             }

@@ -8,9 +8,12 @@ import {
   StyleVariant,
 } from "../../style/types";
 import {
+  getStateCssSelector,
   isParentTarget,
+  isPseudoElementState,
   isSelectorTarget,
   isSelfTarget,
+  isViewState,
   parentLevelKeys,
   StateWithTarget,
 } from "../../style/zod";
@@ -59,11 +62,16 @@ export const StyleVariantComponent = <T extends BaseStyleDictionary>({
     if (variant.state?.length) {
       const stateLabels = (variant.state as StateWithTarget[]).map(
         (stateWithParent) => {
-          const stateLabel = (
-            stateWithParent.state === "default"
-              ? ""
-              : `:${t(`builder.pageBuilder.styles.states.${stateWithParent.state}`)}`
-          ).toLocaleLowerCase();
+          const stateLabel = (() => {
+            if (stateWithParent.state === "default") return "";
+            if (
+              isPseudoElementState(stateWithParent.state) ||
+              isViewState(stateWithParent.state)
+            ) {
+              return getStateCssSelector(stateWithParent.state);
+            }
+            return `:${t(`builder.pageBuilder.styles.states.${stateWithParent.state}`)}`;
+          })().toLocaleLowerCase();
 
           if (isSelfTarget(stateWithParent)) {
             return stateWithParent.state === "default"

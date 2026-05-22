@@ -1,6 +1,5 @@
 import { useI18n } from "@timelish/i18n";
-import { useDebounceCallback } from "@timelish/ui";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import {
   useBlock,
   useBlocks,
@@ -35,7 +34,7 @@ export const ConfigurationPanel: React.FC = () => {
   const tBuilder = useI18n("builder");
   const t = useI18n();
 
-  const setBlock = useDebounceCallback(
+  const setBlock = useCallback(
     (data: any) => {
       if (!inspectBlockId) return;
       dispatchAction({
@@ -44,10 +43,9 @@ export const ConfigurationPanel: React.FC = () => {
       });
     },
     [dispatchAction, inspectBlockId],
-    100,
   );
 
-  const setBase = useDebounceCallback(
+  const setBase = useCallback(
     (base: BaseBlockProps) => {
       if (!inspectBlockId) return;
       dispatchAction({
@@ -56,10 +54,9 @@ export const ConfigurationPanel: React.FC = () => {
       });
     },
     [dispatchAction, inspectBlockId],
-    100,
   );
 
-  const setMetadata = useDebounceCallback(
+  const setMetadata = useCallback(
     (metadata: Record<string, any> | undefined) => {
       if (!inspectBlockId) return;
       dispatchAction({
@@ -68,7 +65,6 @@ export const ConfigurationPanel: React.FC = () => {
       });
     },
     [dispatchAction, inspectBlockId],
-    100,
   );
 
   const Panel = useMemo(

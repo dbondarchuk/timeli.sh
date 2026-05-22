@@ -1,6 +1,7 @@
 import {
   BlockStyle,
   generateClassName,
+  ReplaceOriginalColors,
 } from "@timelish/page-builder-base/reader";
 import { cn } from "@timelish/ui";
 import { MarketingBrowserCarouselClient } from "./marketing-browser-carousel.client";
@@ -25,6 +26,7 @@ export const MarketingBrowserCarouselReader = ({
         styles={style}
         isEditor={isEditor}
       />
+      <ReplaceOriginalColors />
       <MarketingBrowserCarouselClient
         className={cn(className, base?.className)}
         id={base?.id}

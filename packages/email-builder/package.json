@@ -25,6 +25,7 @@
     "typescript": "5.5.4"
   },
   "dependencies": {
+    "@monaco-editor/react": "^4.6.0",
     "@timelish/builder": "*",
     "@timelish/rte": "*",
     "@timelish/ui": "*",

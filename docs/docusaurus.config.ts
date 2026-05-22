@@ -44,6 +44,7 @@ const config: Config = {
       logo: {
         alt: "Timelish",
         src: "img/navbar-logo.svg",
+        srcDark: "img/navbar-logo-dark.svg",
       },
       items: [
         {

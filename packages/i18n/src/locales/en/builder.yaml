@@ -106,6 +106,7 @@ pageBuilder:
       misc: Miscellaneous
     properties:
       customCss: Custom CSS
+      content: Content
       color: Text Color
       backgroundColor: Background Color
       backgroundImage: Background Image
@@ -302,6 +303,10 @@ pageBuilder:
       center: Center
       baseline: Baseline
       stretch: Stretch
+    contentInput:
+      helperText: >-
+        For text values, wrap them in quotes (use "" for empty content, or " "
+        for a space). Keywords like none work without quotes.
     alignContent:
       flex-start: Flex Start
       flex-end: Flex End
@@ -532,6 +537,8 @@ pageBuilder:
       focus: Focus
       active: Active
       disabled: Disabled
+      before: Before (::before)
+      after: After (::after)
       inView: In View
       firstTimeInView: First Time In View
       notInView: Not In View
@@ -601,6 +608,8 @@ pageBuilder:
       toTopLeft: To Top Left
       toBottomRight: To Bottom Right
       toBottomLeft: To Bottom Left
+      customDirection: Custom angle
+      customAngle: Angle
       colors: Colors
       addColor: Add Color
       removeColor: Remove Color
@@ -625,6 +634,7 @@ pageBuilder:
       accent-foreground: Accent Text
       destructive: Destructive
       destructive-foreground: Destructive Text
+      border: Border
     aspectRatio:
       initial: Initial
       inherit: Inherit
@@ -749,6 +759,10 @@ pageBuilder:
         title: Ready to get started?
         body: Tell people what happens next.
         secondaryButton: Secondary
+      badge:
+        label: New
+      banner:
+        message: Your announcement or promo message here.
       logoCard:
         logoAlt: Logo
         name: Brand name
@@ -784,6 +798,8 @@ pageBuilder:
       step: Step
       testimonialCard: Testimonial
       ctaBand: Call to action
+      badge: Badge
+      banner: Banner
       logoCard: Logo card
       planCard: Plan card
   blocks:
@@ -1280,6 +1296,10 @@ pageBuilder:
     customHtml:
       displayName: Custom HTML
       html: HTML
+      openEditor: Open editor
+      editorTitle: HTML editor
+      editorApply: Apply
+      editorCancel: Cancel
       errors:
         required: HTML is required
     beforeAfterSlider:
@@ -1520,6 +1540,10 @@ emailBuilder:
     customHtml:
       displayName: Custom HTML
       html: HTML
+      openEditor: Open editor
+      editorTitle: HTML editor
+      editorApply: Apply
+      editorCancel: Cancel
       errors:
         required: HTML is required
     container:
@@ -1726,3 +1750,4 @@ rte:
       accent-foreground: Accent text
       destructive: Destructive
       destructive-foreground: Destructive text
+      border: Border

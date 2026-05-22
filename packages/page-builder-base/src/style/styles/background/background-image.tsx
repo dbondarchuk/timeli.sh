@@ -1,4 +1,4 @@
-import { useI18n } from "@timelish/i18n";
+import { BuilderKeys, useI18n } from "@timelish/i18n";
 import {
   Button,
   Label,
@@ -7,6 +7,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  Slider,
 } from "@timelish/ui";
 import { AssetSelectorInput } from "@timelish/ui-admin";
 import { Image, Plus, Trash2 } from "lucide-react";
@@ -16,24 +17,50 @@ import { COLORS, getColorStyle } from "../../helpers/colors";
 import { StyleDefinition } from "../../types";
 import { zColor } from "../../zod";
 
+const gradientDirectionOptions = [
+  "to-right",
+  "to-left",
+  "to-top",
+  "to-bottom",
+  "to-top-right",
+  "to-top-left",
+  "to-bottom-right",
+  "to-bottom-left",
+  "custom",
+] as const;
+
+const gradientDirectionOptionsLabels: Record<GradientDirection, BuilderKeys> = {
+  "to-right": "pageBuilder.styles.backgroundImage.toRight",
+  "to-left": "pageBuilder.styles.backgroundImage.toLeft",
+  "to-top": "pageBuilder.styles.backgroundImage.toTop",
+  "to-bottom": "pageBuilder.styles.backgroundImage.toBottom",
+  "to-top-right": "pageBuilder.styles.backgroundImage.toTopRight",
+  "to-top-left": "pageBuilder.styles.backgroundImage.toTopLeft",
+  "to-bottom-right": "pageBuilder.styles.backgroundImage.toBottomRight",
+  "to-bottom-left": "pageBuilder.styles.backgroundImage.toBottomLeft",
+  custom: "pageBuilder.styles.backgroundImage.customDirection",
+};
+
+type GradientDirection = (typeof gradientDirectionOptions)[number];
+
 const BackgroundImageSchema = z.object({
   type: z.enum(["url", "gradient", "none"]),
   value: z.string().optional(),
   gradientType: z.enum(["linear", "radial"]).optional(),
-  gradientDirection: z
-    .enum([
-      "to-right",
-      "to-left",
-      "to-top",
-      "to-bottom",
-      "to-top-right",
-      "to-top-left",
-      "to-bottom-right",
-      "to-bottom-left",
-    ])
-    .optional(),
+  gradientDirection: z.enum(gradientDirectionOptions).optional(),
+  gradientAngle: z.coerce.number<number>().min(0).max(360).optional(),
   gradientColors: z.array(zColor).optional(),
 });
+
+const getLinearGradientDirection = (
+  value: z.infer<typeof BackgroundImageSchema>,
+) => {
+  if (value.gradientDirection === "custom") {
+    return `${value.gradientAngle ?? 0}deg`;
+  }
+
+  return (value.gradientDirection || "to-right").replaceAll("-", " ");
+};
 
 export const backgroundImageStyle = {
   name: "backgroundImage",
@@ -62,10 +89,7 @@ export const backgroundImageStyle = {
       if (value.gradientType === "radial") {
         return `background-image: radial-gradient(circle, ${colors});`;
       } else {
-        const direction = (value.gradientDirection || "to-right").replaceAll(
-          "-",
-          " ",
-        );
+        const direction = getLinearGradientDirection(value);
 
         return `background-image: linear-gradient(${direction}, ${colors});`;
       }
@@ -180,46 +204,68 @@ export const backgroundImageStyle = {
             </div>
 
             {value.gradientType === "linear" && (
-              <div className="space-y-1">
-                <Label className="text-xs">
-                  {t("pageBuilder.styles.backgroundImage.direction")}
-                </Label>
-                <Select
-                  value={value.gradientDirection || "to-right"}
-                  onValueChange={(val) =>
-                    handleChange("gradientDirection", val)
-                  }
-                >
-                  <SelectTrigger size="sm">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="to-right">
-                      {t("pageBuilder.styles.backgroundImage.toRight")}
-                    </SelectItem>
-                    <SelectItem value="to-left">
-                      {t("pageBuilder.styles.backgroundImage.toLeft")}
-                    </SelectItem>
-                    <SelectItem value="to-top">
-                      {t("pageBuilder.styles.backgroundImage.toTop")}
-                    </SelectItem>
-                    <SelectItem value="to-bottom">
-                      {t("pageBuilder.styles.backgroundImage.toBottom")}
-                    </SelectItem>
-                    <SelectItem value="to-top-right">
-                      {t("pageBuilder.styles.backgroundImage.toTopRight")}
-                    </SelectItem>
-                    <SelectItem value="to-top-left">
-                      {t("pageBuilder.styles.backgroundImage.toTopLeft")}
-                    </SelectItem>
-                    <SelectItem value="to-bottom-right">
-                      {t("pageBuilder.styles.backgroundImage.toBottomRight")}
-                    </SelectItem>
-                    <SelectItem value="to-bottom-left">
-                      {t("pageBuilder.styles.backgroundImage.toBottomLeft")}
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
+              <div className="space-y-2">
+                <div className="space-y-1">
+                  <Label className="text-xs">
+                    {t("pageBuilder.styles.backgroundImage.direction")}
+                  </Label>
+                  <Select
+                    value={
+                      value.gradientDirection === "custom"
+                        ? "custom"
+                        : value.gradientDirection || "to-right"
+                    }
+                    onValueChange={(val: GradientDirection) => {
+                      if (val === "custom") {
+                        onChange({
+                          ...value,
+                          gradientDirection: "custom",
+                          gradientAngle: value.gradientAngle ?? 90,
+                        });
+                      } else {
+                        onChange({
+                          ...value,
+                          gradientDirection: val,
+                          gradientAngle: undefined,
+                        });
+                      }
+                    }}
+                  >
+                    <SelectTrigger size="sm">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {gradientDirectionOptions.map((option) => (
+                        <SelectItem key={option} value={option}>
+                          {t(gradientDirectionOptionsLabels[option])}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {value.gradientDirection === "custom" && (
+                  <div className="space-y-1">
+                    <Label className="text-xs">
+                      {t("pageBuilder.styles.backgroundImage.customAngle")}
+                    </Label>
+                    <div className="flex items-center gap-3">
+                      <Slider
+                        min={0}
+                        max={360}
+                        step={1}
+                        value={[value.gradientAngle ?? 0]}
+                        onValueChange={(val) =>
+                          handleChange("gradientAngle", val[0] ?? 0)
+                        }
+                        className="flex-1"
+                      />
+                      <span className="text-xs text-muted-foreground tabular-nums shrink-0 w-10 text-right">
+                        {value.gradientAngle ?? 0}°
+                      </span>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 

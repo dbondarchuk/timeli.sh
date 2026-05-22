@@ -57,10 +57,7 @@ export const CalendarDateRangePicker: React.FC<
           <Button
             id="date"
             variant={"outline"}
-            className={cn(
-              "w-full justify-start text-left font-normal",
-              !date && "text-muted-foreground",
-            )}
+            className={cn("w-full justify-start text-left font-normal")}
           >
             <CalendarIcon className="mr-2 size-3.5" />
             {date?.start ? (

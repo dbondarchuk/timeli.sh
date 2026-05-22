@@ -91,11 +91,11 @@ const config = {
       },
       backgroundImage: {
         "gradient-primary":
-          "linear-gradient(135deg, hsl(223, 84%, 60%) 0%, hsl(215, 83%, 70%) 100%)",
+          "linear-gradient(135deg, hsl(40, 29%, 33%) 0%, hsl(39.5, 60%, 57.8%) 100%)",
         "gradient-accent":
-          "linear-gradient(135deg, hsl(215, 83%, 70%) 0%, hsl(223, 84%, 60%) 100%)",
+          "linear-gradient(135deg, hsl(39.5, 60%, 57.8%) 0%, hsl(39, 39%, 48%) 100%)",
         "gradient-dark":
-          "linear-gradient(145deg, hsl(222, 47%, 12%) 0%, hsl(223, 84%, 40%) 100%)",
+          "linear-gradient(145deg, hsl(222, 47%, 12%) 0%, hsl(39.5, 60%, 57.8%) 100%)",
       },
       keyframes: {
         "accordion-down": {

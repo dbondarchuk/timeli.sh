@@ -1806,6 +1806,7 @@ appearance:
       accent-foreground: Accent Text
       destructive: Destructive
       destructive-foreground: Destructive Text
+      border: Border
   footer:
     title: Footer
     description: Adjust links in footer

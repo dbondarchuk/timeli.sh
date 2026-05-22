@@ -55,6 +55,7 @@ export const colors = [
   "accent-foreground",
   "destructive",
   "destructive-foreground",
+  "border",
 ] as const;
 
 export const colorsLabels: Record<(typeof colors)[number], string> = {
@@ -74,6 +75,7 @@ export const colorsLabels: Record<(typeof colors)[number], string> = {
   "accent-foreground": "Accent text",
   destructive: "Destructive",
   "destructive-foreground": "Destructive text",
+  border: "Border",
 };
 
 export const colorsEnum = z.enum(colors, {

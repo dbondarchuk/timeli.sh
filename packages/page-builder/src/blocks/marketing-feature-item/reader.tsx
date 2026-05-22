@@ -2,6 +2,7 @@ import {
   BlockStyle,
   generateClassName,
   ReaderEmbeddedSlotChildren,
+  ReplaceOriginalColors,
 } from "@timelish/page-builder-base/reader";
 import { cn } from "@timelish/ui";
 import { MarketingFeatureItemReaderProps } from "./schema";
@@ -20,6 +21,7 @@ export const MarketingFeatureItemReader = ({
   return (
     <>
       <BlockStyle name={className} styleDefinitions={styles} styles={style} />
+      <ReplaceOriginalColors />
       <div
         className={cn(
           "flex flex-col gap-4 rounded-2xl border border-border bg-card p-6",

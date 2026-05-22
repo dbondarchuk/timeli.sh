@@ -1,7 +1,11 @@
 "use client";
 
 import { useBlockEditor, useCurrentBlock } from "@timelish/builder";
-import { BlockStyle, useClassName } from "@timelish/page-builder-base";
+import {
+  BlockStyle,
+  ReplaceOriginalColors,
+  useClassName,
+} from "@timelish/page-builder-base";
 import { cn } from "@timelish/ui";
 import { MarketingBrowserCarouselClient } from "./marketing-browser-carousel.client";
 import type { MarketingBrowserCarouselProps } from "./schema";
@@ -24,6 +28,7 @@ export const MarketingBrowserCarouselEditor = ({
         styles={style}
         isEditor
       />
+      <ReplaceOriginalColors />
       <MarketingBrowserCarouselClient
         className={cn(className, base?.className)}
         id={base?.id}

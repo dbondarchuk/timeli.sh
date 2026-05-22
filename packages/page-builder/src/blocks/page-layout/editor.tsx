@@ -8,7 +8,10 @@ import {
   useCurrentBlock,
   useSetSelectedBlockId,
 } from "@timelish/builder";
-import { getFontFamily } from "@timelish/page-builder-base";
+import {
+  getFontFamily,
+  ReplaceOriginalColors,
+} from "@timelish/page-builder-base";
 import { COLORS, getColorStyle } from "@timelish/page-builder-base/style";
 import { cn } from "@timelish/ui";
 import { PageLayoutProps } from "./schema";
@@ -42,6 +45,7 @@ export const PageLayoutEditor = () => {
           setSelectedBlockId(null);
         }}
       >
+        <ReplaceOriginalColors />
         <div
           className={cn(
             "w-full flex flex-col",

@@ -8,5 +8,8 @@
     }
   },
   "svg.preview.background": "dark-transparent",
-  "js/ts.tsserver.experimental.enableProjectDiagnostics": true
+  "js/ts.tsserver.experimental.enableProjectDiagnostics": true,
+  "[svg]": {
+    "editor.defaultFormatter": "jock.svg"
+  }
 }

@@ -4,6 +4,7 @@ import { ConfigurationProps } from "@timelish/builder";
 import { useI18n } from "@timelish/i18n";
 import { deepMemo, Label, Textarea } from "@timelish/ui";
 import { useCallback } from "react";
+import { HtmlMonacoEditorDialog } from "./html-monaco-editor-dialog";
 import { CustomHTMLProps } from "./schema";
 
 export const CustomHTMLConfiguration = deepMemo(
@@ -15,16 +16,26 @@ export const CustomHTMLConfiguration = deepMemo(
       [setData, data],
     );
 
+    const html = data.props?.html ?? "";
+
     return (
       <>
         <div className="flex flex-col gap-2">
-          <Label htmlFor="html">
-            {t("emailBuilder.blocks.customHtml.html")}
-          </Label>
+          <div className="flex items-center justify-between gap-2">
+            <Label htmlFor="html">
+              {t("emailBuilder.blocks.customHtml.html")}
+            </Label>
+            <HtmlMonacoEditorDialog
+              value={html}
+              onApply={(nextHtml) =>
+                updateProps({ ...data.props, html: nextHtml })
+              }
+            />
+          </div>
           <Textarea
             id="html"
-            value={data.props?.html ?? ""}
-            className="w-full text-xs"
+            value={html}
+            className="w-full text-xs font-mono min-h-[120px]"
             onChange={(e) =>
               updateProps({ ...data.props, html: e.target.value })
             }

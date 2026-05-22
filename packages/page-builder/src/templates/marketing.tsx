@@ -1,17 +1,25 @@
-import { generateId, TEditorBlock, TemplatesConfiguration } from "@timelish/builder";
+import {
+  generateId,
+  TEditorBlock,
+  TemplatesConfiguration,
+} from "@timelish/builder";
 import type { BaseAllKeys, I18nFn } from "@timelish/i18n";
+import { COLORS } from "@timelish/page-builder-base/style";
 import {
   BarChart3,
+  CreditCard,
+  Flag,
   LayoutTemplate,
   ListOrdered,
-  MessageSquareQuote,
-  CreditCard,
   Megaphone,
+  MessageSquareQuote,
   Puzzle,
+  Sparkles,
 } from "lucide-react";
 import { ButtonPropsDefaults } from "../blocks/button";
 import { ContainerPropsDefaults } from "../blocks/container";
 import { HeadingPropsDefaults } from "../blocks/heading/schema";
+import { IconPropsDefaults } from "../blocks/icon/schema";
 import { ImagePropsDefaults } from "../blocks/image/schema";
 import { InlineContainerPropsDefaults } from "../blocks/inline-container";
 import { InlineTextPropsDefaults } from "../blocks/inline-text";
@@ -31,7 +39,9 @@ const eyebrowInline = (t: I18nFn<undefined, undefined>): TEditorBlock => ({
   data: {
     ...InlineTextPropsDefaults,
     props: {
-      text: t("builder.pageBuilder.marketingDefaults.templates.sectionIntro.eyebrow"),
+      text: t(
+        "builder.pageBuilder.marketingDefaults.templates.sectionIntro.eyebrow",
+      ),
     },
     style: {
       ...InlineTextPropsDefaults.style,
@@ -82,7 +92,10 @@ const titleHeading = (
   };
 };
 
-const bodyText = (t: I18nFn<undefined, undefined>, textKey: BaseAllKeys): TEditorBlock => ({
+const bodyText = (
+  t: I18nFn<undefined, undefined>,
+  textKey: BaseAllKeys,
+): TEditorBlock => ({
   type: "Text",
   id: generateId(),
   data: {
@@ -97,7 +110,9 @@ const planCtaButton = (
   t: I18nFn<undefined, undefined>,
   btn: ReturnType<typeof ButtonPropsDefaults>,
 ) => {
-  const label = t("builder.pageBuilder.marketingDefaults.templates.planCard.cta");
+  const label = t(
+    "builder.pageBuilder.marketingDefaults.templates.planCard.cta",
+  );
   const child = btn.props?.children?.[0];
   if (child?.type !== "InlineContainer" || !child.data?.props?.children?.[0]) {
     return btn;
@@ -250,7 +265,8 @@ export const marketingEditorTemplates: TemplatesConfiguration = {
     },
   },
   Step: {
-    displayName: "builder.pageBuilder.templates.marketing.step" satisfies BaseAllKeys,
+    displayName:
+      "builder.pageBuilder.templates.marketing.step" satisfies BaseAllKeys,
     icon: <ListOrdered />,
     category,
     getBlock: (t: I18nFn<undefined, undefined>): TEditorBlock => {
@@ -461,9 +477,7 @@ export const marketingEditorTemplates: TemplatesConfiguration = {
                           },
                           style: {
                             ...btn.style,
-                            backgroundColor: [
-                              { value: "transparent" },
-                            ],
+                            backgroundColor: [{ value: "transparent" }],
                           },
                         },
                       },
@@ -569,6 +583,157 @@ export const marketingEditorTemplates: TemplatesConfiguration = {
                 type: "Button",
                 id: generateId(),
                 data: btn,
+              },
+            ],
+          },
+        },
+      };
+    },
+  },
+  Badge: {
+    displayName:
+      "builder.pageBuilder.templates.marketing.badge" satisfies BaseAllKeys,
+    icon: <Sparkles />,
+    category,
+    getBlock: (t: I18nFn<undefined, undefined>): TEditorBlock => {
+      const id = generateId();
+      const iconDefaults = IconPropsDefaults;
+      return {
+        type: "InlineContainer",
+        id,
+        data: {
+          ...InlineContainerPropsDefaults,
+          style: {
+            ...InlineContainerPropsDefaults.style,
+            display: [{ value: "inline-flex" }],
+            flexDirection: [{ value: "row" }],
+            alignItems: [{ value: "center" }],
+            justifyContent: [{ value: "center" }],
+            gap: [{ value: { value: 0.5, unit: "rem" } }],
+            width: [{ value: "max-content" }],
+            padding: [
+              {
+                value: {
+                  top: { value: 0.625, unit: "rem" },
+                  bottom: { value: 0.625, unit: "rem" },
+                  left: { value: 1.5, unit: "rem" },
+                  right: { value: 1.5, unit: "rem" },
+                },
+              },
+            ],
+            backgroundColor: [{ value: COLORS.primary.value }],
+            color: [{ value: COLORS["primary-foreground"].value }],
+            borderRadius: [{ value: { value: 1.25, unit: "rem" } }],
+          },
+          props: {
+            children: [
+              {
+                type: "Icon",
+                id: generateId(),
+                data: {
+                  ...iconDefaults,
+                  props: {
+                    icon: "sparkles",
+                  },
+                  style: {
+                    ...iconDefaults.style,
+                    width: [{ value: { value: 0.875, unit: "rem" } }],
+                    height: [{ value: { value: 0.875, unit: "rem" } }],
+                    fill: [{ value: "currentColor" }],
+                    flexShrink: [{ value: "0" }],
+                  },
+                },
+              },
+              {
+                type: "InlineText",
+                id: generateId(),
+                data: {
+                  props: {
+                    text: t(
+                      "builder.pageBuilder.marketingDefaults.templates.badge.label",
+                    ),
+                  },
+                  style: {
+                    fontSize: [{ value: { value: 0.875, unit: "rem" } }],
+                    fontWeight: [{ value: "600" }],
+                    color: [{ value: "inherit" }],
+                  },
+                },
+              },
+            ],
+          },
+        },
+      };
+    },
+  },
+  Banner: {
+    displayName:
+      "builder.pageBuilder.templates.marketing.banner" satisfies BaseAllKeys,
+    icon: <Flag />,
+    category,
+    getBlock: (t: I18nFn<undefined, undefined>): TEditorBlock => {
+      const id = generateId();
+      const iconDefaults = IconPropsDefaults;
+      return {
+        type: "Container",
+        id,
+        data: {
+          ...ContainerPropsDefaults,
+          style: {
+            ...ContainerPropsDefaults.style,
+            display: [{ value: "flex" }],
+            flexDirection: [{ value: "row" }],
+            alignItems: [{ value: "center" }],
+            justifyContent: [{ value: "flex-start" }],
+            gap: [{ value: { value: 0.75, unit: "rem" } }],
+            width: [{ value: { value: 100, unit: "%" } }],
+            padding: [
+              {
+                value: {
+                  top: { value: 1, unit: "rem" },
+                  bottom: { value: 1, unit: "rem" },
+                  left: { value: 1.25, unit: "rem" },
+                  right: { value: 1.25, unit: "rem" },
+                },
+              },
+            ],
+            backgroundColor: [{ value: COLORS.primary.value }],
+            color: [{ value: COLORS["primary-foreground"].value }],
+            borderRadius: roundedLg(),
+          },
+          props: {
+            children: [
+              {
+                type: "Icon",
+                id: generateId(),
+                data: {
+                  ...iconDefaults,
+                  props: {
+                    icon: "megaphone",
+                  },
+                  style: {
+                    ...iconDefaults.style,
+                    width: [{ value: { value: 1.25, unit: "rem" } }],
+                    height: [{ value: { value: 1.25, unit: "rem" } }],
+                    fill: [{ value: "currentColor" }],
+                    flexShrink: [{ value: "0" }],
+                  },
+                },
+              },
+              {
+                type: "InlineText",
+                id: generateId(),
+                data: {
+                  props: {
+                    text: t(
+                      "builder.pageBuilder.marketingDefaults.templates.banner.message",
+                    ),
+                  },
+                  style: {
+                    fontSize: [{ value: { value: 0.875, unit: "rem" } }],
+                    fontWeight: [{ value: "500" }],
+                  },
+                },
               },
             ],
           },

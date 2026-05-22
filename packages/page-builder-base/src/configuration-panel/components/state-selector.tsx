@@ -18,9 +18,12 @@ import {
 import { Plus } from "lucide-react";
 import React, { useState } from "react";
 import {
+  getStateCssSelector,
   isParentTarget,
+  isPseudoElementState,
   isSelectorTarget,
   isSelfTarget,
+  isViewState,
   State,
   states,
   StateTarget,
@@ -119,11 +122,16 @@ export const StateSelector: React.FC<StateSelectorProps> = ({
   };
 
   const getStateLabel = (stateWithParent: StateWithTarget) => {
-    const stateLabel = (
-      stateWithParent.state === "default"
-        ? ""
-        : `:${t(`pageBuilder.styles.states.${stateWithParent.state}` as BuilderKeys)}`
-    ).toLocaleLowerCase();
+    const stateLabel = (() => {
+      if (stateWithParent.state === "default") return "";
+      if (isPseudoElementState(stateWithParent.state)) {
+        return getStateCssSelector(stateWithParent.state);
+      }
+      if (isViewState(stateWithParent.state)) {
+        return getStateCssSelector(stateWithParent.state);
+      }
+      return `:${t(`pageBuilder.styles.states.${stateWithParent.state}` as BuilderKeys)}`;
+    })().toLocaleLowerCase();
 
     if (isSelfTarget(stateWithParent)) {
       return stateWithParent.state === "default"

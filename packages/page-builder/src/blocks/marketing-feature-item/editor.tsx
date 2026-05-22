@@ -6,7 +6,11 @@ import {
   useBlockEditor,
   useCurrentBlock,
 } from "@timelish/builder";
-import { BlockStyle, useClassName } from "@timelish/page-builder-base";
+import {
+  BlockStyle,
+  ReplaceOriginalColors,
+  useClassName,
+} from "@timelish/page-builder-base";
 import { cn } from "@timelish/ui";
 import { MarketingFeatureItemProps } from "./schema";
 import { styles } from "./styles";
@@ -26,6 +30,7 @@ export const MarketingFeatureItemEditor = ({
   return (
     <>
       <BlockStyle name={className} styleDefinitions={styles} styles={style} />
+      <ReplaceOriginalColors />
       <div
         className={cn(
           "flex flex-col gap-4 rounded-2xl border border-border bg-card p-6",

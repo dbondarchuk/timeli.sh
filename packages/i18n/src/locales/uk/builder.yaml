@@ -108,6 +108,7 @@ pageBuilder:
       misc: Різноманітне
     properties:
       customCss: Власний CSS
+      content: Вміст
       color: Колір тексту
       backgroundColor: Колір фону
       backgroundImage: Фонове зображення
@@ -308,6 +309,10 @@ pageBuilder:
       center: По центру
       baseline: Базова лінія
       stretch: Розтягнути
+    contentInput:
+      helperText: >-
+        Для текстових значень беріть їх у лапки ("" для порожнього вмісту, або "
+        " для пробілу). Ключові слова на кшталт none — без лапок.
     alignContent:
       flex-start: Початок Flex
       flex-end: Кінець Flex
@@ -544,6 +549,8 @@ pageBuilder:
       focus: Фокус
       active: Активний
       disabled: Вимкнений
+      before: До (::before)
+      after: Після (::after)
       inView: У видимості
       notInView: Не у видимості
       firstTimeInView: Перший раз у видимості
@@ -613,6 +620,8 @@ pageBuilder:
       toTopLeft: Вгору вліво
       toBottomRight: Вниз вправо
       toBottomLeft: Вниз вліво
+      customDirection: Власний кут
+      customAngle: Кут
       colors: Кольори
       addColor: Додати колір
       removeColor: Видалити колір
@@ -637,6 +646,7 @@ pageBuilder:
       accent-foreground: Акцентний текст
       destructive: Руйнівний
       destructive-foreground: Руйнівний текст
+      border: Бордюр
     aspectRatio:
       initial: Початковий
       inherit: Успадкувати
@@ -761,6 +771,10 @@ pageBuilder:
         title: Готові почати?
         body: Розкажіть, що буде далі.
         secondaryButton: Додаткова дія
+      badge:
+        label: Нове
+      banner:
+        message: Ваше оголошення або промо-повідомлення.
       logoCard:
         logoAlt: Логотип
         name: Назва бренду
@@ -796,6 +810,8 @@ pageBuilder:
       step: Крок
       testimonialCard: Відгук
       ctaBand: Заклик до дії
+      badge: Бейдж
+      banner: Банер
       logoCard: Картка з логотипом
       planCard: Тарифний план
   blocks:
@@ -1294,6 +1310,10 @@ pageBuilder:
     customHtml:
       displayName: Власний HTML
       html: HTML
+      openEditor: Відкрити редактор
+      editorTitle: Редактор HTML
+      editorApply: Застосувати
+      editorCancel: Скасувати
       errors:
         required: HTML є обов'язковим
     beforeAfterSlider:
@@ -1534,6 +1554,10 @@ emailBuilder:
     customHtml:
       displayName: Власний HTML
       html: HTML
+      openEditor: Відкрити редактор
+      editorTitle: Редактор HTML
+      editorApply: Застосувати
+      editorCancel: Скасувати
       errors:
         required: HTML є обов'язковим
     container:
@@ -1740,3 +1764,4 @@ rte:
       accent-foreground: Акцентний текст
       destructive: Руйнівний
       destructive-foreground: Руйнівний текст
+      border: Бордюр

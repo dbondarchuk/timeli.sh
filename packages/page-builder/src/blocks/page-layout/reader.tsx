@@ -1,7 +1,8 @@
 import { ReaderBlock, ReaderProps } from "@timelish/builder";
 import {
-  ReaderProvider,
   getFontFamily,
+  ReaderProvider,
+  ReplaceOriginalColors,
 } from "@timelish/page-builder-base/reader";
 import { COLORS, getColorStyle } from "@timelish/page-builder-base/style";
 import { cn } from "@timelish/ui";
@@ -33,6 +34,7 @@ export const PageLayoutReader = ({
           flexDirection: "column",
         }}
       >
+        <ReplaceOriginalColors />
         <div
           className={cn(
             "w-full flex flex-col",

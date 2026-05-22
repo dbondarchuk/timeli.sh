@@ -112,12 +112,16 @@ export type Breakpoint = z.infer<typeof zBreakpoint>;
 export const viewStates = ["inView", "notInView", "firstTimeInView"] as const;
 export type ViewState = (typeof viewStates)[number];
 
+export const pseudoElementStates = ["before", "after"] as const;
+export type PseudoElementState = (typeof pseudoElementStates)[number];
+
 export const states = [
   "default",
   "hover",
   "focus",
   "active",
   "disabled",
+  ...pseudoElementStates,
   ...viewStates,
 ] as const;
 export const zState = z.enum(states);
@@ -125,6 +129,19 @@ export type State = z.infer<typeof zState>;
 
 export const isViewState = (state: State): state is ViewState =>
   viewStates.includes(state as ViewState);
+
+export const isPseudoElementState = (
+  state: State,
+): state is PseudoElementState =>
+  pseudoElementStates.includes(state as PseudoElementState);
+
+/** CSS selector fragment for a state (e.g. `:hover`, `::before`, `[data-parent-0-inView="true"]`). */
+export const getStateCssSelector = (state: State): string => {
+  if (state === "default") return "";
+  if (isViewState(state)) return `[data-parent-0-${state}="true"]`;
+  if (isPseudoElementState(state)) return `::${state}`;
+  return `:${state}`;
+};
 
 export const parentLevelKeys = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as const;
 
@@ -161,27 +178,21 @@ export type StateWithTarget = z.infer<typeof zStateWithTarget>;
 // Helper function to generate CSS selector for state targets
 export function generateStateTargetSelector(state: StateWithTarget): string {
   const target = state.target ?? { type: "self" };
-  const stateValue = state.state === "default" ? "" : `:${state.state}`;
+  const statePart = getStateCssSelector(state.state);
 
   if (target.type === "self") {
-    return isViewState(state.state)
-      ? `[data-parent-0-${state.state}="true"]`
-      : stateValue;
+    return statePart;
   } else if (target.type === "parent") {
     // Use CSS custom properties for parent state detection
     return `[data-parent-${target.data.level}-${state.state}="true"]`;
   } else if (target.type === "selector") {
-    // For custom selectors, we'll use the selector directly
-    // The state will be applied to elements matching this selector
-    const statePart = `${isViewState(state.state) ? `[data-parent-0-${state.state}="true"]` : stateValue}`;
     const selectorPart = `${target.data.selector.startsWith("&") ? "" : " "}${target.data.selector.trimEnd()}`;
     return target.data.stateType === "block"
       ? `${statePart}${selectorPart}`
       : `${selectorPart}${statePart}`;
   }
 
-  // Fallback to self state
-  return stateValue;
+  return statePart;
 }
 
 export function isSelfTarget(
