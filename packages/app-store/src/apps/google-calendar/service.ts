@@ -47,6 +47,7 @@ const accessType = "offline";
 const requiredScopes = [
   "https://www.googleapis.com/auth/userinfo.email",
   "https://www.googleapis.com/auth/calendar.events",
+  "https://www.googleapis.com/auth/calendar.calendarlist.readonly",
   "https://www.googleapis.com/auth/meetings.space.created",
 ];
 
