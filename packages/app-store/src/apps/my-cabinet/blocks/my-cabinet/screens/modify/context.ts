@@ -8,11 +8,7 @@ import type {
 } from "@timelish/types";
 import { DateTime as LuxonDateTime } from "luxon";
 import { createContext, FC, ReactNode, useContext } from "react";
-import {
-  CANCEL_STEPS,
-  CabinetModifySteps,
-  RESCHEDULE_STEPS,
-} from "./steps";
+import { CabinetModifySteps, CANCEL_STEPS, RESCHEDULE_STEPS } from "./steps";
 
 export type StepType = "calendar" | "review" | "payment";
 
@@ -34,7 +30,7 @@ export type CabinetModifyContextProps = {
   appId: string;
   type: ModifyAppointmentType;
 
-  contact?: { type: "email"; email: string } | { type: "phone"; phone: string };
+  appointmentEmail?: string;
 
   dateTime?: DateTime;
   setDateTime: (dateTime?: DateTime) => void;
@@ -77,13 +73,13 @@ export type CabinetModifyContextProps = {
   setIsLoading: (isLoading: boolean) => void;
 };
 
-export const CabinetModifyContext =
-  createContext<CabinetModifyContextProps>(null as any);
+export const CabinetModifyContext = createContext<CabinetModifyContextProps>(
+  null as any,
+);
 
 export const useCabinetModifyContext = () => {
   const ctx = useContext(CabinetModifyContext);
-  const steps =
-    ctx.type === "cancel" ? CANCEL_STEPS : RESCHEDULE_STEPS;
+  const steps = ctx.type === "cancel" ? CANCEL_STEPS : RESCHEDULE_STEPS;
   const currentStepIndex = steps.indexOf(ctx.currentStep);
   const step = CabinetModifySteps[ctx.currentStep];
 

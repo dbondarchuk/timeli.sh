@@ -72,13 +72,6 @@ export const CabinetModifyScreen: React.FC<CabinetModifyScreenProps> = ({
     setTimeZone,
   } = useCustomerProfile();
   const onSessionExpired = useOnSessionExpired();
-  const contact = React.useMemo(() => {
-    if (customerProfile?.email)
-      return { type: "email" as const, email: customerProfile.email };
-    if (customerProfile?.phone)
-      return { type: "phone" as const, phone: customerProfile.phone };
-    return undefined;
-  }, [customerProfile]);
 
   const [isInitialLoading, setIsInitialLoading] = React.useState(true);
   const [notAllowedReason, setNotAllowedReason] =
@@ -92,6 +85,10 @@ export const CabinetModifyScreen: React.FC<CabinetModifyScreenProps> = ({
   );
   const [appointment, setAppointment] = React.useState<
     ModifyAppointmentInformation | undefined
+  >(undefined);
+
+  const [appointmentEmail, setAppointmentEmail] = React.useState<
+    string | undefined
   >(undefined);
   const [availability, setAvailability] = React.useState<Availability>([]);
   const [isLoading, setIsLoading] = React.useState(false);
@@ -150,15 +147,11 @@ export const CabinetModifyScreen: React.FC<CabinetModifyScreenProps> = ({
 
         const appt = apptRes.appointment;
 
-        const contactFields = contact
-          ? {
-              type: "email" as const,
-              email: appt.fields.email,
-              dateTime: new Date(appt.dateTime),
-            }
-          : null;
-
-        if (!contactFields) return;
+        const contactFields = {
+          type: "email" as const,
+          email: appt.fields.email,
+          dateTime: new Date(appt.dateTime),
+        };
 
         const modifyInfo = await getModifyInformationAction({
           type: action,
@@ -173,6 +166,7 @@ export const CabinetModifyScreen: React.FC<CabinetModifyScreenProps> = ({
         }
 
         setAppointment(modifyInfo);
+        setAppointmentEmail(appt.fields.email);
 
         if (action === "reschedule") {
           await fetchAvailability(modifyInfo);
@@ -196,7 +190,7 @@ export const CabinetModifyScreen: React.FC<CabinetModifyScreenProps> = ({
     return () => {
       mounted = false;
     };
-  }, [appId, appointmentId, action, contact]);
+  }, [appId, appointmentId, action]);
 
   const applyGiftCards = async (
     codes: string[],
@@ -210,16 +204,14 @@ export const CabinetModifyScreen: React.FC<CabinetModifyScreenProps> = ({
     throw new Error(data.error);
   };
 
-  const getFields = ():
-    | { type: "email"; email: string; dateTime: Date }
-    | { type: "phone"; phone: string; dateTime: Date }
-    | null => {
-    if (!contact || !appointment) return null;
+  const getFields = (): {
+    type: "email";
+    email: string;
+    dateTime: Date;
+  } | null => {
+    if (!appointment || !appointmentEmail) return null;
     const dt = new Date(appointment.dateTime);
-    if (contact.type === "email") {
-      return { type: "email", email: contact.email, dateTime: dt };
-    }
-    return { type: "phone", phone: contact.phone, dateTime: dt };
+    return { type: "email", email: appointmentEmail, dateTime: dt };
   };
 
   const fetchPaymentInformation = async (): Promise<CollectPayment | null> => {
@@ -343,8 +335,8 @@ export const CabinetModifyScreen: React.FC<CabinetModifyScreenProps> = ({
         value={{
           appId,
           type: action,
-          contact,
           appointment,
+          appointmentEmail,
           setAppointment,
           currentStep,
           setCurrentStep,
