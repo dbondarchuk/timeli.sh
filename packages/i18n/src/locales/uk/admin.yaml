@@ -2444,6 +2444,7 @@ communications:
   subject: Тема
   content: Вміст
   send: Надіслати
+  participant: "Учасник: {participant}"
 calendar:
   today: Сьогодні
   selectView: Вибрати вигляд

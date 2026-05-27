@@ -63,11 +63,7 @@ export type CommunicationLogEntity = Prettify<
 
 export type CommunicationLogCreateInput = Pick<
   CommunicationLogEntity,
-  | "direction"
-  | "channel"
-  | "participant"
-  | "participantType"
-  | "handledBy"
+  "direction" | "channel" | "participant" | "participantType" | "handledBy"
 > & {
   subject?: string;
   appointmentId?: string;

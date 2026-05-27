@@ -2461,6 +2461,7 @@ communications:
   subject: Subject
   content: Content
   send: Send
+  participant: "Participant: {participant}"
 calendar:
   today: Today
   selectView: Select view

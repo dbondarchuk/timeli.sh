@@ -111,6 +111,13 @@ const CommunicationEntry: React.FC<{ entry: CommunicationLog }> = ({
               ),
             })}
           </Badge>
+          {entry.participant && (
+            <Badge variant="outline" className="text-xs">
+              {tAdmin("communications.participant", {
+                participant: entry.participant,
+              })}
+            </Badge>
+          )}
           {entry.hasPayloadData && (
             <div className="flex flex-col gap-1">
               <CommunicationLogPayloadDialog
@@ -148,6 +155,7 @@ const CommunicationEntrySkeleton: React.FC<{ length?: number }> = ({
       <div className="p-4 pt-3">
         <Skeleton className="w-full h-10" />
         <div className="flex items-center space-x-2 mt-3 flex-wrap">
+          <Skeleton className="w-14 h-6" />
           <Skeleton className="w-14 h-6" />
           <Skeleton className="w-14 h-6" />
           <Skeleton className="w-14 h-6" />
