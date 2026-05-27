@@ -17,7 +17,7 @@ import {
 } from "@timelish/ui";
 import { Mail, Phone } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { MY_CABINET_OTP_RESEND_COOLDOWN_SECONDS } from "../../../const";
+import { CUSTOMER_OTP_RESEND_COOLDOWN_SECONDS } from "@timelish/types";
 import {
   MyCabinetPublicKeys,
   MyCabinetPublicNamespace,
@@ -31,11 +31,11 @@ import {
 import type { CustomerProfile } from "../types";
 
 type AuthScreenProps = {
-  appId: string;
+  appId?: string;
   onAuthenticated: (profile: CustomerProfile) => void;
 };
 
-export const AuthScreen = ({ appId, onAuthenticated }: AuthScreenProps) => {
+export const AuthScreen = ({ onAuthenticated }: AuthScreenProps) => {
   const t = useI18n<MyCabinetPublicNamespace, MyCabinetPublicKeys>(
     myCabinetPublicNamespace,
   );
@@ -62,10 +62,10 @@ export const AuthScreen = ({ appId, onAuthenticated }: AuthScreenProps) => {
 
   useEffect(() => {
     let mounted = true;
-    getAuthOptionsAction(appId)
+    getAuthOptionsAction()
       .then((res) => {
         if (!mounted) return;
-        setAllowPhoneLogin(res.allowPhoneLogin);
+        setAllowPhoneLogin(res.allowPhoneOtp);
       })
       .finally(() => {
         if (mounted) setIsLoadingOptions(false);
@@ -73,7 +73,7 @@ export const AuthScreen = ({ appId, onAuthenticated }: AuthScreenProps) => {
     return () => {
       mounted = false;
     };
-  }, [appId]);
+  }, []);
 
   useEffect(() => {
     if (!resendAllowedAt) return;
@@ -100,7 +100,6 @@ export const AuthScreen = ({ appId, onAuthenticated }: AuthScreenProps) => {
     setIsRequestOtpLoading(true);
     try {
       const response = await requestOtpAction(
-        appId,
         authType === "phone" ? { phone } : { email },
       );
       setIsOtpSent(true);
@@ -108,7 +107,7 @@ export const AuthScreen = ({ appId, onAuthenticated }: AuthScreenProps) => {
       const resendAfter =
         typeof response.resendAfter === "number"
           ? response.resendAfter
-          : Date.now() + MY_CABINET_OTP_RESEND_COOLDOWN_SECONDS * 1000;
+          : Date.now() + CUSTOMER_OTP_RESEND_COOLDOWN_SECONDS * 1000;
       setResendAllowedAt(resendAfter);
       setCountdownNow(Date.now());
       toast.success(t("block.auth.otpSent"));
@@ -123,7 +122,6 @@ export const AuthScreen = ({ appId, onAuthenticated }: AuthScreenProps) => {
     setIsVerifyOtpLoading(true);
     try {
       const response = await verifyOtpAction(
-        appId,
         authType === "phone" ? { phone, otp } : { email, otp },
       );
       if (!response.success) {

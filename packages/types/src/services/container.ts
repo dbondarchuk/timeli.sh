@@ -8,6 +8,7 @@ import type { IActivityService } from "./activity.service";
 import type { IConfigurationService } from "./configuration.service";
 import type { IConnectedAppsService } from "./connected-apps.service";
 import type { IEventService } from "./event.service";
+import type { ICustomerAuthService } from "./customer-auth.service";
 import type { ICustomersService } from "./customers.service";
 import type { IGiftCardsService } from "./gift-cards.service";
 import type { IJobService } from "./job.service";
@@ -45,5 +46,6 @@ export type IServicesContainer = {
   dashboardNotificationsService: IDashboardNotificationsService;
   giftCardsService: IGiftCardsService;
   billingService: IBillingService;
+  customerAuthService: ICustomerAuthService;
   redisClient: Redis;
 };

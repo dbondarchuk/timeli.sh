@@ -2,18 +2,21 @@ import {
   Calendar,
   CheckCircle2,
   CreditCard,
+  KeyRound,
   RefreshCw,
   User,
 } from "lucide-react";
 import { CalendarCard } from "./calendar-card";
 import { ModifyAppointmentFormContextProps, Step, StepType } from "./context";
 import { FormCard } from "./form-card";
+import { OtpCard } from "./otp-card";
 import { PaymentCard } from "./payment-card";
 import { ReviewCard } from "./review-card";
 import { TypeCard } from "./type-card";
 
 export const CANCELLATIION_STEPS: StepType[] = [
   "type",
+  "otp",
   "form",
   "review",
   "payment",
@@ -21,6 +24,7 @@ export const CANCELLATIION_STEPS: StepType[] = [
 
 export const RESCHEDULE_STEPS: StepType[] = [
   "type",
+  "otp",
   "form",
   "calendar",
   "review",
@@ -52,19 +56,33 @@ export const CancelOrRescheduleSteps: Record<StepType, Step> = {
     next: {
       show: () => true,
       isEnabled: ({ type }) => !!type,
-      action: ({ setCurrentStep: setStep }) => {
-        setStep("form");
+      action: ({ setCurrentStep, isOtpVerified }) => {
+        setCurrentStep(isOtpVerified ? "form" : "otp");
       },
     },
     Content: TypeCard,
     icon: RefreshCw,
   },
+  otp: {
+    prev: {
+      show: () => true,
+      isEnabled: () => true,
+      action: ({ setCurrentStep }) => setCurrentStep("type"),
+    },
+    next: {
+      show: () => false,
+      isEnabled: () => false,
+      action: () => {},
+    },
+    Content: OtpCard,
+    icon: KeyRound,
+  },
   form: {
     prev: {
       show: () => true,
       isEnabled: () => true,
-      action: ({ setCurrentStep: setStep }) => {
-        setStep("type");
+      action: ({ setCurrentStep, isOtpVerified }) => {
+        setCurrentStep(isOtpVerified ? "type" : "otp");
       },
     },
     next: {
@@ -73,7 +91,7 @@ export const CancelOrRescheduleSteps: Record<StepType, Step> = {
       action: async ({
         fetchAppointment,
         setAppointment,
-        setCurrentStep: setStep,
+        setCurrentStep,
         fetchAvailability,
         type,
         setSearchError,
@@ -93,12 +111,12 @@ export const CancelOrRescheduleSteps: Record<StepType, Step> = {
         }
 
         if (type === "cancel") {
-          setStep("review");
+          setCurrentStep("review");
           return;
         }
 
         await fetchAvailability(appointment);
-        setStep("calendar");
+        setCurrentStep("calendar");
       },
     },
     Content: FormCard,
@@ -108,16 +126,16 @@ export const CancelOrRescheduleSteps: Record<StepType, Step> = {
     prev: {
       show: () => true,
       isEnabled: () => true,
-      action: ({ setCurrentStep: setStep, setDateTime, setAppointment }) => {
+      action: ({ setCurrentStep, setDateTime, setAppointment }) => {
         setDateTime(undefined);
         setAppointment(undefined);
-        setStep("form");
+        setCurrentStep("form");
       },
     },
     next: {
       show: () => true,
       isEnabled: ({ dateTime, isEditor }) => !!dateTime && !isEditor,
-      action: ({ setCurrentStep: setStep }) => setStep("review"),
+      action: ({ setCurrentStep }) => setCurrentStep("review"),
     },
     Content: CalendarCard,
     icon: Calendar,
@@ -126,14 +144,13 @@ export const CancelOrRescheduleSteps: Record<StepType, Step> = {
     prev: {
       show: () => true,
       isEnabled: () => true,
-      action: ({ setCurrentStep: setStep, setAppointment, type }) => {
+      action: ({ setCurrentStep, setAppointment, type }) => {
         if (type === "cancel") {
-          setStep("form");
+          setCurrentStep("form");
           setAppointment(undefined);
           return;
         }
-
-        setStep("calendar");
+        setCurrentStep("calendar");
       },
     },
     next: {
@@ -151,7 +168,7 @@ export const CancelOrRescheduleSteps: Record<StepType, Step> = {
     prev: {
       show: () => true,
       isEnabled: () => true,
-      action: ({ setCurrentStep: setStep }) => setStep("review"),
+      action: ({ setCurrentStep }) => setCurrentStep("review"),
     },
     next: {
       show: () => false,

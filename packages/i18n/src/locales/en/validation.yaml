@@ -259,6 +259,11 @@ communication:
     required: Either appointment ID or customer ID is required
     onlyOne: Only one of customerId or appointmentId should be present
 configuration:
+  customerAuth:
+    otpEmailTemplateId:
+      required: OTP email template is required
+    otpTextTemplateId:
+      required: OTP text message template is required when phone OTP is enabled
   apps:
     email:
       required: Email sender APP is required

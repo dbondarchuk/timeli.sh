@@ -63,8 +63,9 @@ export interface IBookingService {
     status: AppointmentStatus[],
   ): Promise<CalendarEvent[]>;
   getAppointment(id: string): Promise<Appointment | null>;
-  findAppointment(
-    fields: ModifyAppointmentInformationRequest["fields"],
+  findAppointmentByCustomerAndDateTime(
+    customerId: string,
+    dateTime: Date,
     status?: AppointmentStatus[],
   ): Promise<Appointment | null>;
   changeAppointmentStatus(

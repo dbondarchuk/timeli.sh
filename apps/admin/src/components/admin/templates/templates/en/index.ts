@@ -8,8 +8,12 @@ import { appointmentCreatedTextMessageTemplate } from "./text-message/appointmen
 import { appointmentDeclinedTextMessageTemplate } from "./text-message/appointment-declined";
 import { appointmentRescheduledTextMessageTemplate } from "./text-message/appointment-rescheduled";
 import { autoReplyTextMessageTemplate } from "./text-message/auto-reply";
+import { customerOtpEmailTemplate } from "./email/customer-otp";
+import { customerOtpTextTemplate } from "./text-message/customer-otp";
 
 export const enTemplates: Record<string, TemplatesTemplate> = {
+  "customer-otp-email": customerOtpEmailTemplate,
+  "customer-otp-text": customerOtpTextTemplate,
   "appointment-created-email": appointmentCreatedEmailTemplate,
   "appointment-declined-email": appointmentDeclinedEmailTemplate,
   "appointment-confirmed-email": appointmentConfirmedEmailTemplate,

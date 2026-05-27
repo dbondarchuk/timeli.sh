@@ -272,6 +272,7 @@ navigation:
   dashboard: Dashboard
   activity: Activity
   appointments: Appointments
+  customerAccess: Customer access
   schedule: Schedule
   defaultSchedule: Default schedule
   services: Services
@@ -2359,6 +2360,21 @@ settings:
       toasts:
         changesSaved: Your changes were saved.
         requestError: There was a problem with your request.
+  customerAccess:
+    title: Customer access
+    description: OTP templates and phone verification for customer-facing flows
+    form:
+      otpEmailTemplateId:
+        label: OTP email template
+      allowPhoneOtp:
+        label: Allow OTP via phone
+      otpTextTemplateId:
+        label: OTP text message template
+      toasts:
+        changesSaved: Your changes were saved.
+        requestError: There was a problem with your request.
+    handlers:
+      otpRequest: OTP request
   schedule:
     title: Default schedule
     description: Set your base schedule

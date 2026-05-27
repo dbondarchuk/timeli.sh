@@ -4,11 +4,11 @@ import { ModifyAppointmentType } from "../../types";
 import { useModifyAppointmentFormContext } from "./context";
 
 export const TypeCard: React.FC = () => {
-  const { setType, setStep } = useModifyAppointmentFormContext();
+  const { setType, setStep, isOtpVerified } = useModifyAppointmentFormContext();
 
   const onClick = (type: ModifyAppointmentType) => {
     setType(type);
-    setStep("form");
+    setStep(isOtpVerified ? "form" : "otp");
   };
 
   return (

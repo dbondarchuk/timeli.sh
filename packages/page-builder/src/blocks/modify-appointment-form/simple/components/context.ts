@@ -12,6 +12,7 @@ import { ModifyAppointmentFields, ModifyAppointmentType } from "../../types";
 export type StepType =
   | "form"
   | "type"
+  | "otp"
   | "calendar"
   | "confirmation"
   | "success"
@@ -83,6 +84,9 @@ export type ModifyAppointmentFormContextProps = {
   className?: string;
 
   isEditor?: boolean;
+
+  isOtpVerified: boolean;
+  setIsOtpVerified: (verified: boolean) => void;
 };
 
 export const ModifyAppointmentFormContext =

@@ -185,10 +185,25 @@ modification:
   description: Cancel or reschedule your existing appointment
   steps:
     type: Action
+    otp: Verify
     form: Find
     calendar: New Time
     review: Summary
     payment: Payment
+  otp:
+    descriptionEmailOnly: Enter your email to receive a verification code
+    descriptionEmailOrPhone: Enter your email or phone to receive a verification code
+    email: Email
+    phone: Phone
+    emailPlaceholder: you@example.com
+    request: Send code
+    verify: Verify code
+    resend: Resend code
+    resendBlocked: Request new code in {minutes, plural, =0 {{seconds} s} other {#:{seconds}}}
+    hint: Enter the 6-digit code we sent you
+    sent: If we found a match, we sent a code
+    invalid: Invalid code
+    requestError: Could not send code. Please try again.
   summary:
     estimates:
       dateTime: Date & Time
@@ -204,7 +219,7 @@ modification:
     description: Choose to cancel or reschedule your appointment
   form:
     title: Find your appointment
-    description: Enter your details to find your booking
+    description: Enter the date and time of your appointment
     typeLabel: Email or phone
     cancelTitle: >-
       Let's find your appointment. Please provide the details of the appointment

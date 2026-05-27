@@ -47,20 +47,10 @@ const timeZones: IComboboxItem[] = getTimeZones().map((zone) => ({
 
 const initialDate = DateTime.now().startOf("day").toJSDate();
 
-const formSchema = z.discriminatedUnion("type", [
-  z.object({
-    type: z.literal("email"),
-    email: z.email(),
-    date: z.date(),
-    time: z.iso.time({ precision: -1 }),
-  }),
-  z.object({
-    type: z.literal("phone"),
-    phone: z.string().min(1),
-    date: z.date(),
-    time: z.iso.time({ precision: -1 }),
-  }),
-]);
+const formSchema = z.object({
+  date: z.date(),
+  time: z.iso.time({ precision: -1 }),
+});
 
 export const FormCard: React.FC = () => {
   const t = useI18n("translation");
@@ -80,23 +70,15 @@ export const FormCard: React.FC = () => {
     resolver: zodResolver(formSchema),
     mode: "all",
     reValidateMode: "onChange",
-    defaultValues: propsFields
-      ? {
-          ...propsFields,
-          date: propsFields.dateTime,
-          time: propsFields.dateTime
-            ? formatTime({
-                hour: propsFields.dateTime.getHours() as HourNumbers,
-                minute: propsFields.dateTime.getMinutes() as MinuteNumbers,
-              })
-            : "09:00",
-        }
-      : {
-          type: "email",
-          email: "",
-          date: initialDate,
-          time: "09:00",
-        },
+    defaultValues: {
+      date: propsFields?.dateTime ?? initialDate,
+      time: propsFields?.dateTime
+        ? formatTime({
+            hour: propsFields.dateTime.getHours() as HourNumbers,
+            minute: propsFields.dateTime.getMinutes() as MinuteNumbers,
+          })
+        : "09:00",
+    },
   });
 
   const uses12HourFormat = use12HourFormat();
@@ -107,13 +89,13 @@ export const FormCard: React.FC = () => {
   const previousTimeZone = usePrevious(timeZone, timeZone);
   React.useEffect(() => {
     if (!deepEqual(values, previousValues) || timeZone !== previousTimeZone) {
-      const { date, time, ...rest } = values;
+      const { date, time } = values;
       const timeObj = parseTime(time);
       const dateTime = DateTime.fromJSDate(date)
         .set({ hour: timeObj.hour, minute: timeObj.minute })
         .setZone(timeZone, { keepLocalTime: true })
         .toJSDate();
-      setFields({ ...rest, dateTime } as ModifyAppointmentFields);
+      setFields({ dateTime });
       setSearchError(undefined);
     }
   }, [values, timeZone, setSearchError]);
@@ -145,75 +127,6 @@ export const FormCard: React.FC = () => {
           onSubmit={() => {}}
           className="flex flex-col gap-4 w-full form-card-form"
         >
-          <FormField
-            control={form.control}
-            name="type"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t("modification.form.type.label")}</FormLabel>
-                <FormControl>
-                  <ToggleGroup
-                    type="single"
-                    separated
-                    size="md"
-                    className="w-full"
-                    variant="outline"
-                    value={field.value}
-                    onValueChange={(value) => {
-                      field.onChange(value);
-                      field.onBlur();
-                    }}
-                  >
-                    <ToggleGroupItem value="email">
-                      <Mail className="size-4" />
-                      {t("modification.form.type.email")}
-                    </ToggleGroupItem>
-                    <ToggleGroupItem value="phone">
-                      <Phone className="size-4" />{" "}
-                      {t("modification.form.type.phone")}
-                    </ToggleGroupItem>
-                  </ToggleGroup>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          {values.type === "email" && (
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("modification.form.email.label")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      placeholder={t("modification.form.email.placeholder")}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          )}
-          {values.type === "phone" && (
-            <FormField
-              control={form.control}
-              name="phone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("modification.form.phone.label")}</FormLabel>
-                  <FormControl>
-                    <PhoneInput
-                      label={t("modification.form.phone.label")}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          )}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
             <FormField
               control={form.control}

@@ -25,6 +25,7 @@ import {
   Settings,
   Store,
   TextCursorInput,
+  UserRound,
 } from "lucide-react";
 
 export const navItems: NavItemGroup[] = [
@@ -194,6 +195,13 @@ export const navItems: NavItemGroup[] = [
             href: "/dashboard/settings/appointments",
             icon: <CalendarClock />,
             label: "admin.navigation.appointments",
+          },
+          {
+            id: "settings-customer-access",
+            title: "admin.navigation.customerAccess",
+            href: "/dashboard/settings/customer-access",
+            icon: <UserRound />,
+            label: "admin.navigation.customerAccess",
           },
         ],
       },

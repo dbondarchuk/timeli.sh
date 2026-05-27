@@ -267,6 +267,11 @@ communication:
     required: "Потрібен або ID запису, або ID клієнта"
     onlyOne: Повинен бути присутній тільки один з customerId або appointmentId
 configuration:
+  customerAuth:
+    otpEmailTemplateId:
+      required: Потрібно обрати шаблон email для OTP
+    otpTextTemplateId:
+      required: Потрібно обрати шаблон SMS для OTP, якщо увімкнено OTP за телефоном
   apps:
     email:
       required: Потрібен додаток відправника email

@@ -1,4 +1,8 @@
 import { getModifyAppointmentInformationRequestResult } from "@/utils/appointments/get-modify-appointment-request";
+import {
+  CustomerSessionRequiredError,
+  requireCustomerSession,
+} from "@/utils/customer-auth/session";
 import { isSubscriptionPastDue } from "@/utils/subscription-access";
 import { getLoggerFactory } from "@timelish/logger";
 import { modifyAppointmentInformationRequestSchema } from "@timelish/types";
@@ -43,13 +47,27 @@ export async function POST(request: NextRequest) {
   logger.debug(
     {
       type: modifyAppointmentInformationRequest.type,
-      fieldsType: modifyAppointmentInformationRequest.fields.type,
+      lookup: modifyAppointmentInformationRequest.lookup,
     },
     "Processing appointment cancel or reschedule information request",
   );
 
+  let session;
+  try {
+    session = await requireCustomerSession();
+  } catch (error) {
+    if (error instanceof CustomerSessionRequiredError) {
+      return NextResponse.json(
+        { success: false, error: "unauthorized" },
+        { status: 401 },
+      );
+    }
+    throw error;
+  }
+
   const eventOrError = await getModifyAppointmentInformationRequestResult(
     modifyAppointmentInformationRequest,
+    session,
   );
 
   if ("error" in eventOrError) {

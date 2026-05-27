@@ -18,7 +18,7 @@ block:
     secondsLeft: "{seconds} seconds"
     minutesLeft: "{time} minutes"
     verifyOtp: Verify code
-    otpHint: Enter the 6-digit code from your email
+    otpHint: Enter the 6-digit code we sent you
     otpSent: If we found a match, we sent a code
     otpInvalid: Invalid code
     emailInvalid: Please enter a valid email address.
@@ -79,4 +79,3 @@ block:
     back: Back to appointments
     backToAppointments: Back to my appointments
     completed: Done
-

@@ -52,14 +52,7 @@ export type AppointmentListResponse = {
 };
 
 export type AuthOptionsResponse = {
-  allowPhoneLogin: boolean;
-};
-
-export type ModifyFields = {
-  type: "email" | "phone";
-  email?: string;
-  phone?: string;
-  dateTime: Date;
+  allowPhoneOtp: boolean;
 };
 
 export type ModifyInformation = ModifyAppointmentInformation;

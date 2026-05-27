@@ -27,6 +27,7 @@ const defaultStyling: StylingConfiguration = {
   colors: [
     { type: "background", value: "0 0% 100%" },
     { type: "foreground", value: "222.2 84% 4.9%" },
+    { type: "border", value: "214.3 31.8% 91.4%" },
     { type: "card", value: "0 0% 100%" },
     { type: "card-foreground", value: "222.2 84% 4.9%" },
     { type: "popover", value: "0 0% 100%" },

@@ -214,6 +214,49 @@ async function ensureTemplateByName(
   return created._id;
 }
 
+async function ensureInstallCustomerOtpTemplates(
+  services: ReturnType<typeof ServicesContainer>,
+  language: (typeof languages)[number],
+): Promise<void> {
+  const logger = getLoggerFactory("InstallActions")(
+    "ensureInstallCustomerOtpTemplates",
+  );
+  const templateSourceLang =
+    language in (BuiltInTemplateTemplates["customer-otp-email"] ?? {})
+      ? language
+      : "en";
+
+  const emailSource =
+    BuiltInTemplateTemplates["customer-otp-email"]?.[templateSourceLang] ??
+    BuiltInTemplateTemplates["customer-otp-email"]?.en;
+  const textSource =
+    BuiltInTemplateTemplates["customer-otp-text"]?.[templateSourceLang] ??
+    BuiltInTemplateTemplates["customer-otp-text"]?.en;
+
+  if (!emailSource || !textSource) {
+    logger.warn("Customer OTP built-in templates not found");
+    return;
+  }
+
+  const otpEmailTemplateId = await ensureTemplateByName(services, emailSource);
+  const otpTextTemplateId = await ensureTemplateByName(services, textSource);
+
+  await services.configurationService.setConfiguration(
+    "customerAuth",
+    {
+      otpEmailTemplateId,
+      otpTextTemplateId,
+      allowPhoneOtp: false,
+    },
+    systemEventSource,
+  );
+
+  logger.info(
+    { otpEmailTemplateId, otpTextTemplateId },
+    "Configured customer auth OTP templates",
+  );
+}
+
 async function ensureInstallCustomerNotificationTemplates(
   services: ReturnType<typeof ServicesContainer>,
   language: (typeof languages)[number],
@@ -792,6 +835,8 @@ export async function runCompleteInstallSetupSteps(args: {
   if (!bookingPaymentResult.ok) {
     return bookingPaymentResult;
   }
+
+  await ensureInstallCustomerOtpTemplates(services, language);
 
   await ensureInstallCustomerNotificationTemplates(
     services,

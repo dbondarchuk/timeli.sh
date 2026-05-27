@@ -16,7 +16,13 @@ import {
   RESCHEDULE_STEPS,
 } from "./steps";
 
-export type StepType = "type" | "form" | "calendar" | "review" | "payment";
+export type StepType =
+  | "type"
+  | "otp"
+  | "form"
+  | "calendar"
+  | "review"
+  | "payment";
 
 export type StepDirectionButton = {
   action: (ctx: ModifyAppointmentFormContextProps) => void | Promise<void>;
@@ -89,6 +95,9 @@ export type ModifyAppointmentFormContextProps = {
 
   searchError?: "notFound" | "notAllowed";
   setSearchError: (searchError?: "notFound" | "notAllowed") => void;
+
+  isOtpVerified: boolean;
+  setIsOtpVerified: (verified: boolean) => void;
 };
 
 export const ModifyAppointmentFormContext =

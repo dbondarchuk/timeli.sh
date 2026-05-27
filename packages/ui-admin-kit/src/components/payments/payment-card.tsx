@@ -482,12 +482,14 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
               <span className="text-xs text-muted-foreground">
                 {t("admin.payment.card.appointment")}
               </span>
-              <Link
-                href={`/dashboard/appointments/${rest.appointmentId}`}
-                variant="underline"
-              >
-                {rest.serviceName}
-              </Link>
+              <span className="text-xs font-medium text-foreground">
+                <Link
+                  href={`/dashboard/appointments/${rest.appointmentId}`}
+                  variant="underline"
+                >
+                  {rest.serviceName}
+                </Link>
+              </span>
             </div>
           )}
           <div className="flex justify-between items-center">

@@ -69,6 +69,7 @@ export const getModifyAppointmentInformation = async (
 
   const response = await fetchClientApi("/booking/modify", {
     method: "POST",
+    credentials: "include",
     body: JSON.stringify(request),
   });
 
@@ -87,6 +88,7 @@ export const modifyAppointment = async (
 
   const response = await fetchClientApi(`/booking/${appointmentId}/modify`, {
     method: "PUT",
+    credentials: "include",
     body: JSON.stringify(request),
   });
 

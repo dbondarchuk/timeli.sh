@@ -16,6 +16,7 @@ export * from "./templates";
 export * from "./users";
 
 export * from "./configuration";
+export * from "./customer-auth";
 
 export * from "./services";
 export * from "./utils";

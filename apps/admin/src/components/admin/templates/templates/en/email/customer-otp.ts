@@ -1,12 +1,12 @@
 import { TemplatesTemplate } from "@timelish/types";
 
-export const myCabinetOtpEmailTemplate: TemplatesTemplate = {
-  name: "OTP лист для Мого кабінету",
-  subject: "Ваш код підтвердження",
+export const customerOtpEmailTemplate: TemplatesTemplate = {
+  name: "Customer OTP Email",
+  subject: "Your verification code",
   type: "email",
   value: {
     type: "EmailLayout",
-    id: "my-cabinet-otp-email-uk-layout",
+    id: "customer-otp-email-en-layout",
     data: {
       backdropColor: "#F5F5F5",
       borderRadius: 0,
@@ -23,7 +23,7 @@ export const myCabinetOtpEmailTemplate: TemplatesTemplate = {
       children: [
         {
           type: "Avatar",
-          id: "my-cabinet-otp-email-uk-logo",
+          id: "customer-otp-email-en-logo",
           data: {
             style: {
               textAlign: "center",
@@ -43,7 +43,7 @@ export const myCabinetOtpEmailTemplate: TemplatesTemplate = {
         },
         {
           type: "Heading",
-          id: "my-cabinet-otp-email-uk-business-name",
+          id: "customer-otp-email-en-business-name",
           data: {
             props: {
               text: "{{config.name}}",
@@ -62,10 +62,10 @@ export const myCabinetOtpEmailTemplate: TemplatesTemplate = {
         },
         {
           type: "Heading",
-          id: "my-cabinet-otp-email-uk-title",
+          id: "customer-otp-email-en-title",
           data: {
             props: {
-              text: "Ваш код підтвердження",
+              text: "Your verification code",
             },
             style: {
               textAlign: "center",
@@ -80,7 +80,7 @@ export const myCabinetOtpEmailTemplate: TemplatesTemplate = {
         },
         {
           type: "Text",
-          id: "my-cabinet-otp-email-uk-body",
+          id: "customer-otp-email-en-body",
           data: {
             style: {
               fontWeight: "normal",
@@ -95,20 +95,20 @@ export const myCabinetOtpEmailTemplate: TemplatesTemplate = {
               value: [
                 {
                   type: "p",
-                  id: "my-cabinet-otp-email-uk-greeting",
+                  id: "customer-otp-email-en-greeting",
                   children: [
                     {
-                      text: "Вітаємо, {{customer.name}}",
+                      text: "Hello, {{customer.name}}",
                       fontSize: "14px",
                     },
                   ],
                 },
                 {
                   type: "p",
-                  id: "my-cabinet-otp-email-uk-intro",
+                  id: "customer-otp-email-en-intro",
                   children: [
                     {
-                      text: "Використайте код нижче для входу до {{config.name}}.",
+                      text: "Use the code below to sign in to {{config.name}}.",
                       fontSize: "14px",
                     },
                   ],
@@ -119,7 +119,7 @@ export const myCabinetOtpEmailTemplate: TemplatesTemplate = {
         },
         {
           type: "Heading",
-          id: "my-cabinet-otp-email-uk-otp-code",
+          id: "customer-otp-email-en-otp-code",
           data: {
             props: {
               text: "{{otp}}",
@@ -137,7 +137,7 @@ export const myCabinetOtpEmailTemplate: TemplatesTemplate = {
         },
         {
           type: "Text",
-          id: "my-cabinet-otp-email-uk-notice",
+          id: "customer-otp-email-en-notice",
           data: {
             style: {
               fontWeight: "normal",
@@ -152,22 +152,22 @@ export const myCabinetOtpEmailTemplate: TemplatesTemplate = {
               value: [
                 {
                   type: "p",
-                  id: "my-cabinet-otp-email-uk-validity",
+                  id: "customer-otp-email-en-validity",
                   align: "center",
                   children: [
                     {
-                      text: "Код дійсний протягом 5 хвилин.",
+                      text: "This code is valid for 5 minutes.",
                       fontSize: "14px",
                     },
                   ],
                 },
                 {
                   type: "p",
-                  id: "my-cabinet-otp-email-uk-security",
+                  id: "customer-otp-email-en-security",
                   align: "center",
                   children: [
                     {
-                      text: "Якщо ви не запитували цей код, проігноруйте цей лист.",
+                      text: "If you did not request this code, please ignore this email.",
                       fontSize: "14px",
                     },
                   ],
@@ -178,24 +178,24 @@ export const myCabinetOtpEmailTemplate: TemplatesTemplate = {
         },
         {
           type: "Text",
-          id: "my-cabinet-otp-email-uk-footer",
+          id: "customer-otp-email-en-footer",
           data: {
             props: {
               value: [
                 {
                   type: "p",
-                  id: "my-cabinet-otp-email-uk-footer-regards",
+                  id: "customer-otp-email-en-footer-regards",
                   align: "start",
                   children: [
                     {
-                      text: "З повагою,",
+                      text: "Best regards,",
                       fontSize: "14px",
                     },
                   ],
                 },
                 {
                   type: "p",
-                  id: "my-cabinet-otp-email-uk-footer-business",
+                  id: "customer-otp-email-en-footer-business",
                   align: "start",
                   children: [
                     {
@@ -219,13 +219,13 @@ export const myCabinetOtpEmailTemplate: TemplatesTemplate = {
         },
         {
           type: "Text",
-          id: "my-cabinet-otp-email-uk-business-info",
+          id: "customer-otp-email-en-business-info",
           data: {
             props: {
               value: [
                 {
                   type: "p",
-                  id: "my-cabinet-otp-email-uk-info-name",
+                  id: "customer-otp-email-en-info-name",
                   align: "center",
                   children: [
                     {
@@ -237,7 +237,7 @@ export const myCabinetOtpEmailTemplate: TemplatesTemplate = {
                 },
                 {
                   type: "p",
-                  id: "my-cabinet-otp-email-uk-info-address",
+                  id: "customer-otp-email-en-info-address",
                   align: "center",
                   children: [
                     {
@@ -249,7 +249,7 @@ export const myCabinetOtpEmailTemplate: TemplatesTemplate = {
                 },
                 {
                   type: "p",
-                  id: "my-cabinet-otp-email-uk-info-phone",
+                  id: "customer-otp-email-en-info-phone",
                   align: "center",
                   children: [
                     {

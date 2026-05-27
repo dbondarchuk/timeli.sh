@@ -18,7 +18,7 @@ block:
     secondsLeft: "{seconds} секунд"
     minutesLeft: "{time} хвилин"
     verifyOtp: Підтвердити код
-    otpHint: Введіть 6-значний код з вашого email
+    otpHint: Введіть 6-значний код, який ми надіслали
     otpSent: Якщо ми знайшли збіг, то надіслали код
     otpInvalid: Невірний код
     emailInvalid: Будь ласка, введіть коректну email-адресу.
@@ -79,4 +79,3 @@ block:
     back: Назад до записів
     backToAppointments: До моїх записів
     completed: Готово
-

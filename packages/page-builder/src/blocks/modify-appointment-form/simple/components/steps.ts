@@ -3,6 +3,7 @@ import { ConfirmationCard } from "./confirmation-card";
 import { ModifyAppointmentFormContextProps, Step, StepType } from "./context";
 import { FormCard } from "./form-card";
 import { NotAllowedCard } from "./not-allowed-card";
+import { OtpCard } from "./otp-card";
 import { PaymentCard } from "./payment-card";
 import { SuccessCard } from "./success-card";
 import { TypeCard } from "./type-card";
@@ -36,6 +37,19 @@ export const CancelOrRescheduleSteps: Record<StepType, Step> = {
     },
     Content: TypeCard,
   },
+  otp: {
+    prev: {
+      show: () => true,
+      isEnabled: () => true,
+      action: ({ setStep }) => setStep("type"),
+    },
+    next: {
+      show: () => false,
+      isEnabled: () => false,
+      action: () => {},
+    },
+    Content: OtpCard,
+  },
   notAllowed: {
     prev: {
       show: () => true,
@@ -55,8 +69,8 @@ export const CancelOrRescheduleSteps: Record<StepType, Step> = {
     prev: {
       show: () => true,
       isEnabled: () => true,
-      action: ({ setStep }) => {
-        setStep("type");
+      action: ({ setStep, isOtpVerified }) => {
+        setStep(isOtpVerified ? "type" : "otp");
       },
     },
     next: {
@@ -70,6 +84,9 @@ export const CancelOrRescheduleSteps: Record<StepType, Step> = {
         type,
       }) => {
         const appointment = await fetchAppointment();
+        if (!appointment) {
+          return;
+        }
         setAppointment(appointment);
 
         if (!appointment.allowed) {

@@ -1145,6 +1145,7 @@ export class GiftCardStudioConnectedApp
         intentId,
         appId: intent.appId,
         appName: intent.appName,
+        externalId: intent.externalId,
       },
       purchaseSource,
     );

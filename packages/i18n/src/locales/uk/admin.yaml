@@ -274,6 +274,7 @@ navigation:
   dashboard: Панель керування
   activity: Активність
   appointments: Записи
+  customerAccess: Доступ клієнтів
   schedule: Розклад
   defaultSchedule: Розклад за замовчуванням
   services: Послуги
@@ -2344,6 +2345,21 @@ settings:
       toasts:
         changesSaved: Ваші зміни були збережені.
         requestError: Виникла проблема з вашим запитом.
+  customerAccess:
+    title: Доступ клієнтів
+    description: Шаблони OTP та підтвердження телефону для клієнтських сценаріїв
+    form:
+      otpEmailTemplateId:
+        label: Шаблон email для OTP
+      allowPhoneOtp:
+        label: Дозволити OTP за телефоном
+      otpTextTemplateId:
+        label: Шаблон SMS для OTP
+      toasts:
+        changesSaved: Ваші зміни були збережені.
+        requestError: Виникла проблема з вашим запитом.
+    handlers:
+      otpRequest: Запит OTP
   schedule:
     title: Розклад за замовчуванням
     description: Встановити ваш базовий розклад

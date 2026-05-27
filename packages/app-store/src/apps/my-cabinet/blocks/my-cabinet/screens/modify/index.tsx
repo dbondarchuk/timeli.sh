@@ -147,15 +147,9 @@ export const CabinetModifyScreen: React.FC<CabinetModifyScreenProps> = ({
 
         const appt = apptRes.appointment;
 
-        const contactFields = {
-          type: "email" as const,
-          email: appt.fields.email,
-          dateTime: new Date(appt.dateTime),
-        };
-
         const modifyInfo = await getModifyInformationAction({
           type: action,
-          fields: contactFields,
+          appointmentId,
         });
 
         if (!mounted) return;
@@ -204,19 +198,8 @@ export const CabinetModifyScreen: React.FC<CabinetModifyScreenProps> = ({
     throw new Error(data.error);
   };
 
-  const getFields = (): {
-    type: "email";
-    email: string;
-    dateTime: Date;
-  } | null => {
-    if (!appointment || !appointmentEmail) return null;
-    const dt = new Date(appointment.dateTime);
-    return { type: "email", email: appointmentEmail, dateTime: dt };
-  };
-
   const fetchPaymentInformation = async (): Promise<CollectPayment | null> => {
-    const fields = getFields();
-    if (!fields) throw new Error("Contact info not available");
+    if (!appointment) throw new Error("Appointment not available");
     const intentId = paymentInformation?.intent?._id;
 
     try {
@@ -226,18 +209,17 @@ export const CabinetModifyScreen: React.FC<CabinetModifyScreenProps> = ({
         request = {
           dateTime: newDateTime.toUTC().toJSDate(),
           type: action,
-          fields,
           giftCards: giftCards?.map((g) => g.code),
         } satisfies ModifyAppointmentRequest;
       } else {
         request = {
           type: action,
-          fields,
           giftCards: giftCards?.map((g) => g.code),
         } satisfies ModifyAppointmentRequest;
       }
 
       const body = {
+        appointmentId: appointment.id,
         request,
         type: action === "reschedule" ? "rescheduleFee" : "cancellationFee",
       } satisfies CreateOrUpdatePaymentIntentRequest;
@@ -260,15 +242,12 @@ export const CabinetModifyScreen: React.FC<CabinetModifyScreenProps> = ({
 
   const onSubmit = async () => {
     if (!appointment || !appointment.allowed) return;
-    const fields = getFields();
-    if (!fields) return;
 
     setIsLoading(true);
     try {
       await clientApi.booking.modifyAppointment(appointment.id, {
         type: action,
         dateTime: newDateTime?.toUTC().toJSDate() as Date,
-        fields,
         paymentIntentId: paymentInformation?.intent?._id,
         giftCards: giftCards?.map((g) => g.code),
       } satisfies ModifyAppointmentRequest);

@@ -1,8 +1,10 @@
 import { getLoggerFactory } from "@timelish/logger";
 import {
   ApplyGiftCardsSuccessResponse,
+  Appointment,
   CANCELLATION_NOT_ALLOWED_BY_POLICY_REASON,
   CANCELLATION_NOT_ALLOWED_REASON,
+  CustomerSession,
   MAX_RESCHEDULES_REACHED_REASON,
   ModifyAppointmentInformation,
   ModifyAppointmentInformationRequest,
@@ -14,6 +16,63 @@ import { formatAmount, getPolicyForRequest } from "@timelish/utils";
 import { DateTime } from "luxon";
 import { applyGiftCards } from "../gift-cards/apply";
 import { getServicesContainer } from "../utils";
+
+async function resolveAppointmentForModify(
+  session: CustomerSession,
+  request: ModifyAppointmentInformationRequest,
+): Promise<Appointment | null> {
+  const servicesContainer = await getServicesContainer();
+  const logger = getLoggerFactory("AppointmentsUtils")(
+    "resolveAppointmentForModify",
+  );
+  logger.debug({ request }, "Resolving appointment for modify");
+  if (request.lookup === "appointmentId") {
+    logger.debug(
+      { appointmentId: request.appointmentId },
+      "Getting appointment by id",
+    );
+    const appointment = await servicesContainer.bookingService.getAppointment(
+      request.appointmentId,
+    );
+
+    if (!appointment) {
+      logger.warn(
+        { appointmentId: request.appointmentId },
+        "Appointment not found",
+      );
+      return null;
+    }
+
+    if (appointment.customerId !== session.customerId) {
+      logger.warn(
+        {
+          appointmentId: request.appointmentId,
+          customerId: session.customerId,
+          appointmentCustomerId: appointment.customerId,
+        },
+        "Appointment does not belong to the customer",
+      );
+      return null;
+    }
+
+    if (appointment.status === "declined") {
+      logger.warn(
+        { appointmentId: request.appointmentId },
+        "Appointment is declined",
+      );
+      return null;
+    }
+
+    logger.debug({ appointmentId: request.appointmentId }, "Appointment found");
+    return appointment;
+  }
+
+  return servicesContainer.bookingService.findAppointmentByCustomerAndDateTime(
+    session.customerId,
+    request.dateTime,
+    ["confirmed", "pending"],
+  );
+}
 
 async function applyGiftCardsToPaymentAmount(
   paymentAmount: number,
@@ -50,6 +109,7 @@ async function applyGiftCardsToPaymentAmount(
 
 export const getModifyAppointmentInformationRequestResult = async (
   request: ModifyAppointmentInformationRequest & { giftCards?: string[] },
+  session: CustomerSession,
 ): Promise<
   | { information: ModifyAppointmentInformation; customerId: string }
   | { error: { code: string; message: string; status: number } }
@@ -61,10 +121,7 @@ export const getModifyAppointmentInformationRequestResult = async (
   logger.debug({ request }, "Finding appointment");
 
   const servicesContainer = await getServicesContainer();
-  const appointment = await servicesContainer.bookingService.findAppointment(
-    request.fields,
-    ["confirmed", "pending"],
-  );
+  const appointment = await resolveAppointmentForModify(session, request);
   if (
     !appointment ||
     appointment.status === "declined" ||

@@ -11,10 +11,15 @@ import { ScheduleConfiguration, scheduleConfigurationSchema } from "./schedule";
 import { ScriptsConfiguration, scriptsConfigurationSchema } from "./scripts";
 import { SocialConfiguration, socialConfigurationSchema } from "./social";
 import { StylingConfiguration, stylingConfigurationSchema } from "./styling";
+import {
+  CustomerAuthConfiguration,
+  customerAuthConfigurationSchema,
+} from "./customer-auth";
 
 export * from "./apps";
 export * from "./booking";
 export * from "./brand";
+export * from "./customer-auth";
 export * from "./general";
 export * from "./resources";
 export * from "./schedule";
@@ -27,6 +32,7 @@ export type Configuration = {
   brand: BrandConfiguration;
   social: SocialConfiguration;
   booking: BookingConfiguration;
+  customerAuth: CustomerAuthConfiguration;
   defaultApps: DefaultAppsConfiguration;
   scripts: ScriptsConfiguration;
   styling: StylingConfiguration;
@@ -51,6 +57,7 @@ export const configurationSchemaMap: Record<
   brand: brandConfigurationSchema,
   social: socialConfigurationSchema,
   booking: bookingConfigurationSchema,
+  customerAuth: customerAuthConfigurationSchema,
   defaultApps: defaultAppsConfigurationSchema,
   scripts: scriptsConfigurationSchema,
   styling: stylingConfigurationSchema,

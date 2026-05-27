@@ -5,6 +5,7 @@ import {
 } from "../configuration/booking/cancellation";
 import {
   zNonEmptyString,
+  zObjectId,
   zOptionalOrMinLengthString,
   zPhone,
   zUniqueArray,
@@ -140,33 +141,27 @@ export type AppointmentRequest = z.infer<typeof appointmentRequestSchema>;
 
 export class AppointmentTimeNotAvaialbleError extends Error {}
 
-export const baseModifyAppointmentRequestSchema = z.object({
-  fields: z.discriminatedUnion("type", [
-    z.object({
-      type: z.literal("email"),
-      email: z.email({ error: "appointments.request.fields.email.required" }),
-      dateTime: z.coerce.date<Date>({
-        error: "appointments.request.dateTime.required",
-      }),
-    }),
-    z.object({
-      type: z.literal("phone"),
-      phone: zNonEmptyString("appointments.request.fields.phone.required"),
-      dateTime: z.coerce.date<Date>({
-        error: "appointments.request.dateTime.required",
-      }),
-    }),
-  ]),
-});
-
 export const modifyAppointmentType = ["cancel", "reschedule"] as const;
 export type ModifyAppointmentType = (typeof modifyAppointmentType)[number];
 export const modifyAppointmentTypeSchema = z.enum(modifyAppointmentType);
 
-export const modifyAppointmentInformationRequestSchema = z.object({
-  ...baseModifyAppointmentRequestSchema.shape,
-  type: modifyAppointmentTypeSchema,
-});
+export const modifyAppointmentInformationRequestSchema = z.discriminatedUnion(
+  "lookup",
+  [
+    z.object({
+      lookup: z.literal("appointmentId"),
+      type: modifyAppointmentTypeSchema,
+      appointmentId: zObjectId("appointments.request.appointmentId.required"),
+    }),
+    z.object({
+      lookup: z.literal("dateTime"),
+      type: modifyAppointmentTypeSchema,
+      dateTime: z.coerce.date<Date>({
+        error: "appointments.request.dateTime.required",
+      }),
+    }),
+  ],
+);
 
 export type ModifyAppointmentInformationRequest = z.infer<
   typeof modifyAppointmentInformationRequestSchema
@@ -193,7 +188,6 @@ export const modifyAppointmentRequestSchema = z.discriminatedUnion("type", [
       "appointments.request.intentId.min",
     ),
     giftCards: modifyAppointmentRequestGiftCardsSchema,
-    ...baseModifyAppointmentRequestSchema.shape,
   }),
   z.object({
     type: modifyAppointmentTypeSchema.extract(["reschedule"]),
@@ -205,7 +199,6 @@ export const modifyAppointmentRequestSchema = z.discriminatedUnion("type", [
       "appointments.request.intentId.min",
     ),
     giftCards: modifyAppointmentRequestGiftCardsSchema,
-    ...baseModifyAppointmentRequestSchema.shape,
   }),
 ]);
 

@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
     config,
     customer: demoAppointment.customer,
     locale: config.brand.language,
-    additionalProperties: {},
+    additionalProperties: { otp: "123456" },
     adminUrl,
     websiteUrl,
   });

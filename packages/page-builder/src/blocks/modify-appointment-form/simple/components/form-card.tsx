@@ -17,13 +17,6 @@ import {
   FormLabel,
   FormMessage,
   IComboboxItem,
-  Input,
-  PhoneInput,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
   use12HourFormat,
   usePrevious,
 } from "@timelish/ui";
@@ -34,25 +27,15 @@ import { deepEqual } from "@timelish/utils";
 import { ModifyAppointmentFields } from "../../types";
 import { useModifyAppointmentFormContext } from "./context";
 
-
 const timeZones: IComboboxItem[] = getTimeZones().map((zone) => ({
   label: `GMT${zone.currentTimeFormat}`,
   shortLabel: zone.alternativeName,
   value: zone.name,
 }));
 
-const formSchema = z.discriminatedUnion("type", [
-  z.object({
-    type: z.literal("email"),
-    email: z.email(),
-    dateTime: z.date(),
-  }),
-  z.object({
-    type: z.literal("phone"),
-    phone: z.string().min(1),
-    dateTime: z.date(),
-  }),
-]);
+const formSchema = z.object({
+  dateTime: z.date(),
+});
 
 export const FormCard: React.FC = () => {
   const i18n = useI18n("translation");
@@ -69,10 +52,8 @@ export const FormCard: React.FC = () => {
     resolver: zodResolver(formSchema),
     mode: "all",
     reValidateMode: "onChange",
-    defaultValues: propsFields || {
-      type: "email",
-      email: "",
-      dateTime: new Date(),
+    defaultValues: {
+      dateTime: propsFields?.dateTime ?? new Date(),
     },
   });
 
@@ -82,80 +63,20 @@ export const FormCard: React.FC = () => {
   const previousValues = usePrevious(values, values);
   React.useEffect(() => {
     if (!deepEqual(values, previousValues)) {
-      setFields(values as ModifyAppointmentFields);
+      setFields({ dateTime: values.dateTime } satisfies ModifyAppointmentFields);
     }
-  }, [values]);
+  }, [values, previousValues, setFields]);
 
   const isFormValid = form.formState.isValid;
   React.useEffect(() => {
     setIsFormValid(isFormValid);
-  }, [isFormValid]);
+  }, [isFormValid, setIsFormValid]);
 
   return (
     <Form {...form}>
       <form onSubmit={() => {}} className="space-y-4">
         <div>{i18n(`modification.form.${modifyType}Title`)}</div>
         <div className="flex flex-col gap-2">
-          <FormField
-            control={form.control}
-            name="type"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{i18n("modification.form.typeLabel")}</FormLabel>
-                <FormControl>
-                  <Select value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger>
-                      <SelectValue
-                        placeholder={i18n("common.labels.formSelectOption")}
-                      />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="email">
-                        {i18n("common.labels.formEmail")}
-                      </SelectItem>
-                      <SelectItem value="phone">
-                        {i18n("common.labels.formPhone")}
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          {values.type === "email" && (
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{i18n("common.labels.formEmail")}</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          )}
-          {values.type === "phone" && (
-            <FormField
-              control={form.control}
-              name="phone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{i18n("common.labels.formPhone")}</FormLabel>
-                  <FormControl>
-                    <PhoneInput
-                      label={i18n("common.labels.formPhone")}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          )}
           <FormField
             control={form.control}
             name="dateTime"

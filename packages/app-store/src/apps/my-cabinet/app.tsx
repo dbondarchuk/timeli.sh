@@ -12,12 +12,8 @@ export const MyCabinetApp: App<MyCabinetAdminNamespace, MyCabinetAdminKeys> = {
   displayName:
     "app_my-cabinet_admin.app.displayName" satisfies MyCabinetAdminAllKeys,
   category: ["apps.categories.appointments"],
-  scope: [
-    "ui-components",
-    "demo-arguments-provider",
-    "communication-templates-provider",
-  ],
-  type: "complex",
+  scope: ["ui-components"],
+  type: "basic",
   Logo: ({ className }) => <UserRound className={className} />,
   isFeatured: false,
   isHidden: false,
@@ -25,5 +21,4 @@ export const MyCabinetApp: App<MyCabinetAdminNamespace, MyCabinetAdminKeys> = {
   description: {
     text: "app_my-cabinet_admin.app.description" satisfies MyCabinetAdminAllKeys,
   },
-  settingsHref: "settings/my-cabinet",
 };

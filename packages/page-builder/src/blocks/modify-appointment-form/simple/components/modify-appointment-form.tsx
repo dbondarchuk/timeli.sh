@@ -79,10 +79,16 @@ export const ModifyAppointmentForm: React.FC<
   const [availability, setAvailability] = React.useState<Availability>([]);
   const [isLoading, setIsLoading] = React.useState(false);
   const [fields, setFields] = React.useState<ModifyAppointmentFields>({
-    type: "email",
-    email: "",
     dateTime: new Date(),
   });
+  const [isOtpVerified, setIsOtpVerified] = React.useState(false);
+
+  React.useEffect(() => {
+    clientApi.customerAuth
+      .checkSession()
+      .then(() => setIsOtpVerified(true))
+      .catch(() => setIsOtpVerified(false));
+  }, []);
 
   const [paymentInformation, setPaymentInformation] =
     React.useState<CollectPayment | null>();
@@ -118,8 +124,9 @@ export const ModifyAppointmentForm: React.FC<
       }
 
       const data = await clientApi.booking.getModifyAppointmentInformation({
+        lookup: "dateTime",
         type,
-        fields,
+        dateTime: fields.dateTime,
       });
 
       setAppointment(data);
@@ -184,18 +191,19 @@ export const ModifyAppointmentForm: React.FC<
         request = {
           dateTime: newDateTime.toUTC().toJSDate(),
           type,
-          fields,
           giftCards: giftCards?.map((g) => g.code),
         } satisfies ModifyAppointmentRequest;
       } else {
         request = {
           type,
-          fields,
           giftCards: giftCards?.map((g) => g.code),
         } satisfies ModifyAppointmentRequest;
       }
 
+      if (!appointment?.id) throw new Error("Appointment is required");
+
       const body = {
+        appointmentId: appointment.id,
         request,
         type: type === "reschedule" ? "rescheduleFee" : "cancellationFee",
       } satisfies CreateOrUpdatePaymentIntentRequest;
@@ -260,7 +268,6 @@ export const ModifyAppointmentForm: React.FC<
       await clientApi.booking.modifyAppointment(appointment.id, {
         type,
         dateTime: newDateTime?.toUTC().toJSDate() as Date,
-        fields,
         paymentIntentId: paymentInformation?.intent?._id,
         giftCards: giftCards?.map((g) => g.code),
       } satisfies ModifyAppointmentRequest);
@@ -329,6 +336,8 @@ export const ModifyAppointmentForm: React.FC<
           applyGiftCards,
           timeZone,
           setTimeZone,
+          isOtpVerified,
+          setIsOtpVerified,
         }}
       >
         <StepCard />

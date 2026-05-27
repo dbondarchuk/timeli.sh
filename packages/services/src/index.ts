@@ -17,6 +17,7 @@ import { getRedisClient } from "./bullmq/redis-client";
 import { CommunicationLogsService } from "./communication-logs.service";
 import { CachedConfigurationService } from "./configuration.service";
 import { CachedConnectedAppsService } from "./connected-apps.service";
+import { CustomerAuthService } from "./customer-auth.service";
 import { CustomersService } from "./customers.service";
 import { BullMQEventService, getBullMQEventConfig } from "./events";
 import { GiftCardsService } from "./gift-cards.service";
@@ -44,6 +45,7 @@ export * from "./booking.service";
 export * from "./communication-logs.service";
 export * from "./configuration.service";
 export * from "./connected-apps.service";
+export * from "./customer-auth.service";
 export * from "./customers.service";
 export * from "./email";
 export * from "./gift-cards.service";
@@ -145,6 +147,7 @@ export const ServicesContainer: (organizationId: string) => IServicesContainer =
       organizationId,
       assetsStorage,
     );
+
     const notificationService = new BullMQNotificationService(
       organizationId,
       getBullMQNotificationConfig(),
@@ -155,6 +158,15 @@ export const ServicesContainer: (organizationId: string) => IServicesContainer =
       paymentsService,
       eventService,
     );
+
+    const customerAuthService = new CustomerAuthService(organizationId, {
+      configurationService,
+      customersService,
+      notificationService,
+      organizationService,
+      redisClient,
+      templatesService,
+    });
 
     const billingService = new PolarBillingService(
       organizationId,
@@ -185,6 +197,7 @@ export const ServicesContainer: (organizationId: string) => IServicesContainer =
       dashboardNotificationsService,
       giftCardsService,
       billingService,
+      customerAuthService,
       redisClient,
     };
 

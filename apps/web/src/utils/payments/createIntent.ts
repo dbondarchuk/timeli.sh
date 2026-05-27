@@ -12,6 +12,10 @@ import {
 import { deepEqual } from "@timelish/utils";
 import { NextRequest, NextResponse } from "next/server";
 import { getModifyAppointmentInformationRequestResult } from "../appointments/get-modify-appointment-request";
+import {
+  CustomerSessionRequiredError,
+  requireCustomerSession,
+} from "../customer-auth/session";
 import { getServicesContainer } from "../utils";
 
 const createOrUpdateAppointmentRequestIntent = async (
@@ -176,6 +180,7 @@ const createOrUpdateAppointmentRequestIntent = async (
 
 const createOrUpdateModifyAppointmentRequestIntent = async (
   modifyAppointmentRequest: ModifyAppointmentRequest,
+  appointmentId: string,
   type: Extract<PaymentType, "rescheduleFee" | "cancellationFee">,
   intentId?: string,
 ) => {
@@ -226,9 +231,17 @@ const createOrUpdateModifyAppointmentRequestIntent = async (
     );
   }
 
+  const session = await requireCustomerSession();
+
   const modifyAppointmentRequestResult =
     await getModifyAppointmentInformationRequestResult(
-      modifyAppointmentRequest,
+      {
+        lookup: "appointmentId",
+        type: modifyAppointmentRequest.type,
+        appointmentId,
+        giftCards: modifyAppointmentRequest.giftCards,
+      },
+      session,
     );
 
   if ("error" in modifyAppointmentRequestResult) {
@@ -393,9 +406,20 @@ export const createOrUpdateIntent = async (
     );
   }
 
-  return createOrUpdateModifyAppointmentRequestIntent(
-    createOrUpdatePaymentIntentRequest.request,
-    createOrUpdatePaymentIntentRequest.type,
-    intentId,
-  );
+  try {
+    return await createOrUpdateModifyAppointmentRequestIntent(
+      createOrUpdatePaymentIntentRequest.request,
+      createOrUpdatePaymentIntentRequest.appointmentId,
+      createOrUpdatePaymentIntentRequest.type,
+      intentId,
+    );
+  } catch (error) {
+    if (error instanceof CustomerSessionRequiredError) {
+      return NextResponse.json(
+        { success: false, error: "unauthorized" },
+        { status: 401 },
+      );
+    }
+    throw error;
+  }
 };

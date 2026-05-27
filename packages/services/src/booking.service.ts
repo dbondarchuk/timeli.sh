@@ -969,26 +969,28 @@ export class BookingService extends BaseService implements IBookingService {
     return result as Appointment | null;
   }
 
-  public async findAppointment(
-    fields: ModifyAppointmentInformationRequest["fields"],
+  public async findAppointmentByCustomerAndDateTime(
+    customerId: string,
+    dateTime: Date,
     status?: AppointmentStatus[],
   ): Promise<Appointment | null> {
-    const logger = this.loggerFactory("findAppointment");
-    logger.debug({ fields }, "Finding appointment");
+    const logger = this.loggerFactory("findAppointmentByCustomerAndDateTime");
+    logger.debug({ customerId, dateTime }, "Finding appointment");
 
     const db = await getDbConnection();
     const appointments = db.collection<AppointmentEntity>(
       APPOINTMENTS_COLLECTION_NAME,
     );
 
-    const dateTime = DateTime.fromJSDate(fields.dateTime);
+    const dateTimeLuxon = DateTime.fromJSDate(dateTime);
 
     const filter: Filter<Appointment>[] = [
       {
         organizationId: this.organizationId,
+        customerId,
         dateTime: {
-          $gte: dateTime.startOf("minute").toJSDate(),
-          $lte: dateTime.endOf("minute").toJSDate(),
+          $gte: dateTimeLuxon.startOf("minute").toJSDate(),
+          $lte: dateTimeLuxon.endOf("minute").toJSDate(),
         },
       },
     ];
@@ -999,12 +1001,6 @@ export class BookingService extends BaseService implements IBookingService {
           $in: status,
         },
       });
-    }
-
-    if (fields.type === "email") {
-      filter.push({ "fields.email": fields.email });
-    } else if (fields.type === "phone") {
-      filter.push({ "fields.phone": fields.phone });
     }
 
     const result = await appointments
@@ -1019,7 +1015,7 @@ export class BookingService extends BaseService implements IBookingService {
       .next();
 
     if (!result) {
-      logger.warn({ fields }, "Appointment not found");
+      logger.warn({ customerId, dateTime }, "Appointment not found");
     } else {
       logger.debug(
         {

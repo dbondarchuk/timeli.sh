@@ -1,4 +1,8 @@
 import { getModifyAppointmentInformationRequestResult } from "@/utils/appointments/get-modify-appointment-request";
+import {
+  CustomerSessionRequiredError,
+  requireCustomerSession,
+} from "@/utils/customer-auth/session";
 import { isSubscriptionPastDue } from "@/utils/subscription-access";
 import { getServicesContainer } from "@/utils/utils";
 import { getLoggerFactory } from "@timelish/logger";
@@ -166,6 +170,7 @@ const processRescheduleRequest = async (
         description: "rescheduleFee",
         method: "online",
         intentId: paymentIntentId,
+        externalId: paymentIntent.externalId,
         appName,
         appId: paymentAppId,
         type: "rescheduleFee",
@@ -449,6 +454,7 @@ const processCancelRequest = async (
         description: "cancellationFee",
         method: "online",
         intentId: paymentIntentId,
+        externalId: paymentIntent.externalId,
         appName,
         appId: paymentAppId,
         type: "cancellationFee",
@@ -563,15 +569,31 @@ export async function PUT(
   }
 
   logger.debug(
-    {
-      type: modifyAppointmentRequest.type,
-      fieldsType: modifyAppointmentRequest.fields.type,
-    },
+    { type: modifyAppointmentRequest.type, appointmentId },
     "Processing appointment cancel or reschedule request",
   );
 
+  let session;
+  try {
+    session = await requireCustomerSession();
+  } catch (error) {
+    if (error instanceof CustomerSessionRequiredError) {
+      return NextResponse.json(
+        { success: false, error: "unauthorized" },
+        { status: 401 },
+      );
+    }
+    throw error;
+  }
+
   const eventOrError = await getModifyAppointmentInformationRequestResult(
-    modifyAppointmentRequest,
+    {
+      lookup: "appointmentId",
+      type: modifyAppointmentRequest.type,
+      appointmentId,
+      giftCards: modifyAppointmentRequest.giftCards,
+    },
+    session,
   );
 
   if ("error" in eventOrError) {

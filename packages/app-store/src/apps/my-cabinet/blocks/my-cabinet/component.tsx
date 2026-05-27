@@ -84,7 +84,7 @@ export const MyCabinetBlockComponent = ({
   useEffect(() => {
     if (!appId) return;
     let mounted = true;
-    checkSessionAction(appId)
+    checkSessionAction()
       .then((res) => {
         if (!mounted) return;
         setIsAuthenticated(true);
