@@ -1136,6 +1136,11 @@ export class MyCabinetConnectedApp
         ? { _id: appointment.option._id, name: appointment.option.name }
         : undefined,
       addons: appointment.addons?.map((a) => ({ _id: a._id, name: a.name })),
+      fields: {
+        name: appointment.fields.name,
+        email: appointment.fields.email,
+        phone: appointment.fields.phone,
+      },
       payments: appointment.payments?.map((p) => ({
         amount: p.amount,
         paidAt: p.paidAt,
