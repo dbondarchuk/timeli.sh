@@ -1,7 +1,7 @@
 title: Text message resender
 app:
   displayName: Text message resender
-  description: Ensure you never miss a customer response. When a customer replies to a text message, their reply is automatically forwarded to your phone number — keeping communication seamless and personal, no matter where you are.
+  description: Ensure you never miss a customer response. When a customer replies to a text message, their reply is automatically forwarded to your phone number - keeping communication seamless and personal, no matter where you are.
 form:
   phone:
     label: Phone number
@@ -17,4 +17,3 @@ handlers:
   processUserReply: Text Message Resender - Process user reply
   resendToUser: Text Message Resender - Resend to user
   processCustomerReply: Text Message Resender - Process customer reply
-

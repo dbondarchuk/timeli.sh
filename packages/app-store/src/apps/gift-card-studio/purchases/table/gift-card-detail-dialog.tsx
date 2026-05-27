@@ -136,7 +136,7 @@ export const GiftCardDetailDialog: React.FC<{
                     </span>
                   </dt>
                   <dd className="font-medium">
-                    <span>{purchase.giftCardCode ?? "—"}</span>
+                    <span>{purchase.giftCardCode ?? "-"}</span>
                   </dd>
                 </div>
                 <div className="grid grid-cols-2 gap-2">

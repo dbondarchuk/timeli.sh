@@ -6,7 +6,7 @@
         </linearGradient>
     </defs>
 
-    <!-- Ghost dots (full 3x3 grid) — visible only during dot phase -->
+    <!-- Ghost dots (full 3x3 grid) - visible only during dot phase -->
     <circle cx="14" cy="14" r="11" fill="#1a1a2e">
         <animate attributeName="opacity" dur="7s" repeatCount="indefinite" keyTimes="0;0.01;0.26;0.34;0.92;1"
             values="0.12;0.12;0.12;0;0;0.12" />

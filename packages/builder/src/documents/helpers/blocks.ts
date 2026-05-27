@@ -2,10 +2,10 @@ import * as z from "zod";
 
 import { resolve } from "@timelish/utils";
 import { TEditorBlock, TEditorConfiguration } from "../editor/core";
-import { isEmbeddedSlot, isSlotLikeObject } from "../embedded-slot";
-import { coerceArray } from "./coerce-array";
+import { isSlotLikeObject } from "../embedded-slot";
 import { BuilderSchema } from "../types";
 import { generateId } from "./block-id";
+import { coerceArray } from "./coerce-array";
 
 const findChildrenProps = (
   obj: any,
@@ -22,16 +22,18 @@ const findChildrenProps = (
         property: [...parentProps, prop].join("."),
       });
     else if (prop === "cells") {
-      coerceArray<unknown>(obj[prop]).forEach((item: unknown, index: number) => {
-        if (isSlotLikeObject(item)) {
-          result.push({
-            children: item.children,
-            property: [...parentProps, prop, String(index), "children"].join(
-              ".",
-            ),
-          });
-        }
-      });
+      coerceArray<unknown>(obj[prop]).forEach(
+        (item: unknown, index: number) => {
+          if (isSlotLikeObject(item)) {
+            result.push({
+              children: item.children,
+              property: [...parentProps, prop, String(index), "children"].join(
+                ".",
+              ),
+            });
+          }
+        },
+      );
     } else if (
       isSlotLikeObject(obj[prop]) &&
       !(prop === "props" && parentProps.length === 0)
@@ -447,7 +449,7 @@ export function getMoveBlockOutTarget(
   const parentInGrandparent = findParentBlock(document, parent.block.id);
   if (!parentInGrandparent?.block.id) return null;
 
-  // Parent is already the document root — nowhere to lift to.
+  // Parent is already the document root - nowhere to lift to.
   if (parent.block.id === document.id) return null;
 
   return {

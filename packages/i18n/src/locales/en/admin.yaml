@@ -87,7 +87,7 @@ platformEvents:
       description: "{customerName}"
     deleted:
       title: Customers removed
-      description: "{count, plural, =1 {# customer} other {# customers}} — {names}"
+      description: "{count, plural, =1 {# customer} other {# customers}} - {names}"
   payment:
     created:
       title: Payment recorded
@@ -232,7 +232,7 @@ platformEvents:
 billing:
   emails:
     subscriptionAlert:
-      subject: Action needed — subscription update
+      subject: Action needed - subscription update
       preview: Your plan status changed
       title: Subscription status update
       body: "Your subscription status is now {newStatus} (previously {oldStatus}) for {product}. Review billing to avoid service interruption."
@@ -572,10 +572,10 @@ appointments:
       description: "{customerName} requested {serviceName}"
     updated:
       title: Appointment updated
-      description: "{customerName} — {serviceName}"
+      description: "{customerName} - {serviceName}"
     rescheduled:
       title: Appointment rescheduled
-      description: "{customerName} — {serviceName}"
+      description: "{customerName} - {serviceName}"
     statusChanged:
       title: Appointment status changed
       description: "{customerName}: {oldStatus} → {newStatus}"
@@ -1881,11 +1881,11 @@ apps:
       action: Open apps
   emails:
     failed:
-      subject: "{appDisplayName} — connection failed"
+      subject: "{appDisplayName} - connection failed"
       preview: "{appDisplayName} could not stay connected"
       title: We could not keep your app connected
       body: |-
-        Hello,
+        Hello {userName},
 
         **{appDisplayName}** reported a connection problem or did not finish setup successfully. Open **Apps** in your dashboard to review credentials and settings, then try connecting again.
 
@@ -2034,7 +2034,7 @@ settings:
           or your subdomain pointing to {ip}.
         connectDialogDnsCname:
           Or create a CNAME or ALIAS record pointing to {host}
-          — the hostname for your Timeli.sh site.
+          - the hostname for your Timeli.sh site.
         domainLabel: Domain
         connectButton: Connect
         copyWebsiteUrlAriaLabel: Copy website URL
@@ -2415,7 +2415,7 @@ table:
     status: Status
 dashboard:
   subscriptionPastDueBanner:
-    message: Subscription payment past due — new bookings and changes are currently blocked.
+    message: Subscription payment past due - new bookings and changes are currently blocked.
     goToSettings: Go to settings →
   subscriptionInactive:
     title: Subscription cancelled

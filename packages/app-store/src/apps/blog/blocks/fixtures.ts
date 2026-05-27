@@ -109,7 +109,7 @@ export const blogPostsListFixtures: BlogPost[] = [
         type: "p",
         children: [
           {
-            text: "Starting your day with a solid routine can set the tone for everything that follows. A good morning routine doesn't have to be complicated—it just needs to work for you.",
+            text: "Starting your day with a solid routine can set the tone for everything that follows. A good morning routine doesn't have to be complicated-it just needs to work for you.",
           },
         ],
       },
@@ -181,7 +181,7 @@ export const blogPostsListFixtures: BlogPost[] = [
         type: "p",
         children: [
           {
-            text: "A well-organized home can reduce stress and make daily life more enjoyable. You don't need a complete overhaul—small, consistent changes can make a big difference.",
+            text: "A well-organized home can reduce stress and make daily life more enjoyable. You don't need a complete overhaul-small, consistent changes can make a big difference.",
           },
         ],
       },
@@ -332,7 +332,7 @@ export const blogPostsListFixtures: BlogPost[] = [
         type: "p",
         children: [
           {
-            text: "Start with books that genuinely interest you. Don't feel pressured to read what others think you should—choose topics and genres that excite you.",
+            text: "Start with books that genuinely interest you. Don't feel pressured to read what others think you should-choose topics and genres that excite you.",
           },
         ],
       },
@@ -633,7 +633,7 @@ export const blogPostsListFixtures: BlogPost[] = [
         type: "p",
         children: [
           {
-            text: "Starting a garden can be a rewarding hobby that brings beauty to your space and fresh produce to your table. You don't need a green thumb to get started—just some basic knowledge and patience.",
+            text: "Starting a garden can be a rewarding hobby that brings beauty to your space and fresh produce to your table. You don't need a green thumb to get started-just some basic knowledge and patience.",
           },
         ],
       },
@@ -669,7 +669,7 @@ export const blogPostsListFixtures: BlogPost[] = [
         type: "p",
         children: [
           {
-            text: "Remember that every gardener learns through experience. Don't be discouraged by setbacks—they're part of the learning process.",
+            text: "Remember that every gardener learns through experience. Don't be discouraged by setbacks-they're part of the learning process.",
           },
         ],
       },

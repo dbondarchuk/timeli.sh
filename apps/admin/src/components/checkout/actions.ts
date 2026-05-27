@@ -17,7 +17,7 @@ const createCheckoutInputSchema = z.object({
 
 /**
  * Polar checkout session (SDK), same pattern as
- * https://dev.to/phumudzosly/polarsh-betterauth-for-organizations-1j1b — metadata.org for webhooks.
+ * https://dev.to/phumudzosly/polarsh-betterauth-for-organizations-1j1b - metadata.org for webhooks.
  */
 export async function createPolarCheckoutSession(
   input: z.infer<typeof createCheckoutInputSchema>,

@@ -1,7 +1,7 @@
 title: Text message notification
 app:
   displayName: Text message appointment notifications
-  description: Keep yourelf updated about appointment activity through SMS. Receive text alerts for new bookings, changes, and cancellations — so you’re always informed, even when you’re on the go
+  description: Keep yourelf updated about appointment activity through SMS. Receive text alerts for new bookings, changes, and cancellations - so you’re always informed, even when you’re on the go
 form:
   phone:
     label: Phone number
@@ -24,4 +24,3 @@ handlers:
   declined: Text Message Notification - Declined
   rescheduled: Text Message Notification - Rescheduled
   autoReply: Text Message Reply - Auto reply
-

@@ -35,7 +35,7 @@ export const ResetPasswordTemplate: EmailTemplate["resetPassword"] = {
 ### Важливі зауваження
 
 - <span style="font-size: 12px;">Цей посилання на зміну пароля **закінчується через 24 години**</span>
-- <span style="font-size: 12px;">Якщо ви **не запитували** зміну пароля, ігноруйте цей email — не потрібно ніякої дії</span>
+- <span style="font-size: 12px;">Якщо ви **не запитували** зміну пароля, ігноруйте цей email - не потрібно ніякої дії</span>
 - <span style="font-size: 12px;">**Ніколи не діліться** цим посиланням з будь-ким для безпеки вашого облікового запису</span>
 ---`,
       },

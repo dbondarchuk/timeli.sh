@@ -6,7 +6,7 @@ import {
 
 export const BASE_ADMIN_API_URL = "/api";
 
-/** Client-only GET cache TTL (server requests are never cached — avoids cross-request leakage). */
+/** Client-only GET cache TTL (server requests are never cached - avoids cross-request leakage). */
 const ADMIN_API_GET_CACHE_TTL_MS = 5_000;
 
 type GetCacheEntry = {

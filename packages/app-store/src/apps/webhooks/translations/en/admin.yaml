@@ -3,7 +3,7 @@ app:
   displayName: Webhooks
   description: |-
     Webhooks lets you connect your account with external systems and automate workflows in real time.
-    Instantly send appointment, customer, or payment events to your own apps or third-party services — enabling powerful integrations and seamless data sync.
+    Instantly send appointment, customer, or payment events to your own apps or third-party services - enabling powerful integrations and seamless data sync.
 form:
   url:
     label: Webhook URL
@@ -138,4 +138,3 @@ validation:
     max: Webhook secret must be at most 256 characters long
   eventTypes:
     required: Please select at least one event type
-

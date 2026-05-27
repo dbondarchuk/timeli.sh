@@ -1,5 +1,5 @@
 /**
- * Timelish brand tokens — matches website (--brand ≈ hsl(216 100% 50%) / #0066ff).
+ * Timelish brand tokens - matches website (--brand ≈ hsl(216 100% 50%) / #0066ff).
  */
 
 :root {
@@ -37,7 +37,7 @@
   --docusaurus-highlighted-code-line-bg: rgb(77 148 255 / 18%);
 }
 
-/* Navbar logo from website SVG (320×80) — keep height consistent with branding */
+/* Navbar logo from website SVG (320×80) - keep height consistent with branding */
 .navbar__logo img {
   height: 2rem;
   width: auto;

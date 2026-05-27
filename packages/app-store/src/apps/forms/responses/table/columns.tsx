@@ -125,7 +125,7 @@ export const columns: ColumnDef<ResponsesTableRow>[] = [
           <CustomerName customer={row.original.customer} />
         </Link>
       ) : (
-        <span className="text-muted-foreground">—</span>
+        <span className="text-muted-foreground">-</span>
       ),
     id: "customerId",
     header: tableSortHeader<FormsAdminNamespace, FormsAdminKeys>(

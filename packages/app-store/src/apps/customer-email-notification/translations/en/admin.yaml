@@ -1,6 +1,6 @@
 app:
   displayName: Customer email notification
-  description: Send personalized emails to customers about their appointments — including confirmations, updates, and cancellations — so they stay informed every step of the way
+  description: Send personalized emails to customers about their appointments - including confirmations, updates, and cancellations - so they stay informed every step of the way
 navigation:
   title: Customer email notification
 new: New customer email notification
@@ -58,4 +58,3 @@ validation:
     templateId:
       required: Email template is required
       min: Email template is required
-

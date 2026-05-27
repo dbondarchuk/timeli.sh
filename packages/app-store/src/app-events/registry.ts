@@ -6,7 +6,7 @@ import { FORMS_APP_NAME } from "../apps/forms/const";
 import { WAITLIST_APP_EVENTS } from "../apps/waitlist/app-events";
 import { WAITLIST_APP_NAME } from "../apps/waitlist/const";
 
-/** Matches {@link BOOKING_TRACKING_APP_ID} in services — built-in subscriber, not a DB row. */
+/** Matches {@link BOOKING_TRACKING_APP_ID} in services - built-in subscriber, not a DB row. */
 export const BOOKING_TRACKING_BUILTIN_APP_ID = "booking-tracking";
 
 export const BUILT_IN_APP_EVENT_IDS = new Set<string>([
@@ -35,7 +35,9 @@ export function getAppNamesSubscribedToEventType(eventType: string): string[] {
       names.push(appName);
     }
   }
-  for (const [id, patterns] of Object.entries(BUILT_IN_APP_EVENT_SUBSCRIPTIONS)) {
+  for (const [id, patterns] of Object.entries(
+    BUILT_IN_APP_EVENT_SUBSCRIPTIONS,
+  )) {
     if (patterns.some((p) => eventPatternMatches(p, eventType))) {
       names.push(id);
     }

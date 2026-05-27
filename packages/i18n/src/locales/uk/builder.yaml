@@ -312,7 +312,7 @@ pageBuilder:
     contentInput:
       helperText: >-
         Для текстових значень беріть їх у лапки ("" для порожнього вмісту, або "
-        " для пробілу). Ключові слова на кшталт none — без лапок.
+        " для пробілу). Ключові слова на кшталт none - без лапок.
     alignContent:
       flex-start: Початок Flex
       flex-end: Кінець Flex
@@ -786,7 +786,7 @@ pageBuilder:
         features: "• Необмежені записи\n• Конструктор сайту\n• SMS-нагадування"
         cta: Почати
     announcementBar:
-      message: "7-денна пробна версія Pro — створіть обліковий запис"
+      message: "7-денна пробна версія Pro - створіть обліковий запис"
     scrollingLogos:
       screenReaderText: "Бігучі логотипи: Приклад, Зразок."
       sampleCardName: Назва бренду
@@ -1378,8 +1378,8 @@ pageBuilder:
       reorderRow: Змінити порядок рядка
       columnNumber: "Колонка {number}"
       mergedCell: Об’єднано з коміркою зверху або зліва
-      resizeFillRemainingWidth: Подвійний клік — заповнити ширину, що лишилась
-      resizeFillRemainingHeight: Подвійний клік — заповнити висоту, що лишилась
+      resizeFillRemainingWidth: Подвійний клік - заповнити ширину, що лишилась
+      resizeFillRemainingHeight: Подвійний клік - заповнити висоту, що лишилась
       spanSettings: Об’єднання комірки
       colspan: Колонки
       rowspan: Рядки
@@ -1746,8 +1746,17 @@ rte:
     size: Розмір
     mixed: Змішано
     inherit: Успадкувати
+    apply: Застосувати
+    clear: Очистити
   colors:
+    recentEmpty: Оберіть власний колір вище, щоб зберегти його тут
     options:
+      white: Білий
+      black: Чорний
+      blue: Синій
+      green: Зелений
+      yellow: Жовтий
+      custom: Нещодавній власний
       background: Фон
       foreground: Текст
       card: Картка

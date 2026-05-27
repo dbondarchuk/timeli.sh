@@ -159,7 +159,7 @@ const DropdownMenuCheckboxItem = React.forwardRef<
   <DropdownMenuPrimitive.CheckboxItem
     ref={ref}
     className={cn(
-      "relative mx-1 flex items-center gap-2 rounded-sm px-2 py-1 text-xs transition-colors outline-none select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50 data-[state=checked]:text-accent-foreground [&_svg]:size-4",
+      "relative mx-1 flex items-center gap-2 rounded-sm px-2 py-1 text-xs transition-colors outline-none select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:size-4",
       "cursor-pointer",
       className,
     )}
@@ -185,7 +185,7 @@ const DropdownMenuRadioItem = React.forwardRef<
   <DropdownMenuPrimitive.RadioItem
     ref={ref}
     className={cn(
-      "relative mx-1 flex cursor-pointer items-center gap-2 rounded-sm px-2 py-1 text-xs transition-colors outline-none select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50 data-[state=checked]:text-accent-foreground [&_svg]:size-4",
+      "relative mx-1 flex cursor-pointer items-center gap-2 rounded-sm px-2 py-1 text-xs transition-colors outline-none select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:size-4",
       className,
     )}
     {...props}

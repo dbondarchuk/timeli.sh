@@ -59,7 +59,7 @@ export function createHeaderTableCell(columnNumber: number): EmbeddedSlotData {
   );
 }
 
-/** @deprecated Use createEmptyTableCell — migrates legacy Container cells. */
+/** @deprecated Use createEmptyTableCell - migrates legacy Container cells. */
 export function createTableCellBlock(): TEditorBlock {
   return {
     type: "Container",

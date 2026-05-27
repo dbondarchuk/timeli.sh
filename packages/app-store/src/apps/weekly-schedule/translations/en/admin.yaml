@@ -3,7 +3,7 @@ app:
   displayName: Weekly schedule
   description: |-
     Weekly Schedule gives you full control over your availability by letting you set your work hours on a week-by-week basis.
-    Easily adjust your schedule for special events, holidays, or changing routines — keeping your bookings accurate and flexible.
+    Easily adjust your schedule for special events, holidays, or changing routines - keeping your bookings accurate and flexible.
 navigation:
   main:
     title: Weekly schedule
@@ -58,4 +58,3 @@ statusText:
   failed_to_load_schedule: Failed to load the schedule
   saved: Saved!
   request_error: There was a problem with your request.
-

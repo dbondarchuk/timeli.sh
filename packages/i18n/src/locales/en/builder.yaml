@@ -774,7 +774,7 @@ pageBuilder:
         features: "• Unlimited bookings\n• Website builder\n• SMS reminders"
         cta: Get started
     announcementBar:
-      message: "7-day free trial on Pro — create your account"
+      message: "7-day free trial on Pro - create your account"
     scrollingLogos:
       screenReaderText: "Scrolling logos include: Example, Sample."
       sampleCardName: Brand name
@@ -1732,8 +1732,17 @@ rte:
     size: Size
     mixed: Mixed
     inherit: Inherit
+    apply: Apply
+    clear: Clear
   colors:
+    recentEmpty: Pick a custom color above to save it here
     options:
+      white: White
+      black: Black
+      blue: Blue
+      green: Green
+      yellow: Yellow
+      custom: Recent custom
       background: Background
       foreground: Text
       card: Card

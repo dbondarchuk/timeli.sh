@@ -35,7 +35,7 @@ export const EmailVerificationTemplate: EmailTemplate["emailVerification"] = {
 ### Важливі зауваження
 
 - <span style="font-size: 12px;">Цей посилання на підтвердження **закінчується через 24 години**</span>
-- <span style="font-size: 12px;">Якщо ви **не створювали** обліковий запис, ігноруйте цей email — не потрібно ніякої дії</span>
+- <span style="font-size: 12px;">Якщо ви **не створювали** обліковий запис, ігноруйте цей email - не потрібно ніякої дії</span>
 - <span style="font-size: 12px;">**Ніколи не діліться** цим посиланням з будь-ким для безпеки вашого облікового запису</span>
 
 ---`,

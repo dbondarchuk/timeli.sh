@@ -134,7 +134,7 @@ export async function createWorkspace(
 
   const brandValue = brandConfigurationSchema.parse({
     title: parsed.businessName,
-    description: `${parsed.businessName} — Book online with Timeli.sh.`,
+    description: `${parsed.businessName} - Book online with Timeli.sh.`,
     keywords: `${parsed.businessName}, booking`,
     language: parsed.language,
   });
@@ -162,7 +162,10 @@ export async function createWorkspace(
     key: "booking",
     organizationId: orgId,
   } as any);
-  if (!existingBooking?.value || Object.keys(existingBooking.value).length === 0) {
+  if (
+    !existingBooking?.value ||
+    Object.keys(existingBooking.value).length === 0
+  ) {
     logger.debug({ orgId }, "No booking config found, applying defaults");
     await configurations.updateOne(
       { key: "booking", organizationId: orgId },

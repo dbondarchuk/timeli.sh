@@ -112,7 +112,7 @@ function isEmptyRootObject(obj) {
 }
 
 /**
- * For one locale directory, one file per namespace — prefer .yaml / .yml over .json.
+ * For one locale directory, one file per namespace - prefer .yaml / .yml over .json.
  * @param {string} dirPath
  * @returns {string[]}
  */

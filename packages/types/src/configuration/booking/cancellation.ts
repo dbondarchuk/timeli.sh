@@ -341,7 +341,7 @@ const baseAppointmentWithDepositCancellationPolicyRowSuperRefineFunction = (
     }
   } else {
     // if provided, ensure it's within range (already validated) but warn if unnecessary?
-    // We'll simply ignore it for other actions — no error.
+    // We'll simply ignore it for other actions - no error.
   }
 };
 

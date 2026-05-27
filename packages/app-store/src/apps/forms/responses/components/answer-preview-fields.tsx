@@ -15,7 +15,7 @@ const formatMultiSelectValue = (
   value: string[] | null | undefined,
   locale: string = "en",
 ): string => {
-  if (!value || !Array.isArray(value) || value.length === 0) return "—";
+  if (!value || !Array.isArray(value) || value.length === 0) return "-";
   try {
     return new Intl.ListFormat(locale, {
       type: "conjunction",
@@ -36,7 +36,7 @@ const TextPreview: FC<AnswerPreviewProps> = ({ answer }) => (
   <span className="text-muted-foreground break-words">
     {answer.value !== null && answer.value !== undefined && answer.value !== ""
       ? String(answer.value)
-      : "—"}
+      : "-"}
   </span>
 );
 
@@ -44,7 +44,7 @@ const MultiLinePreview: FC<AnswerPreviewProps> = ({ answer }) => (
   <pre className="text-muted-foreground whitespace-pre-wrap break-words ">
     {answer.value !== null && answer.value !== undefined && answer.value !== ""
       ? String(answer.value)
-      : "—"}
+      : "-"}
   </pre>
 );
 
@@ -52,7 +52,7 @@ const SelectPreview: FC<AnswerPreviewProps> = ({ answer }) => (
   <span className="text-muted-foreground">
     {answer.value !== null && answer.value !== undefined && answer.value !== ""
       ? String(answer.value)
-      : "—"}
+      : "-"}
   </span>
 );
 
@@ -60,7 +60,7 @@ const RadioPreview: FC<AnswerPreviewProps> = ({ answer }) => (
   <span className="text-muted-foreground">
     {answer.value !== null && answer.value !== undefined && answer.value !== ""
       ? String(answer.value)
-      : "—"}
+      : "-"}
   </span>
 );
 
@@ -76,7 +76,7 @@ const MultiSelectPreview: FC<AnswerPreviewProps> = ({ answer, locale }) => {
 const FilePreview: FC<AnswerPreviewProps> = ({ answer }) => {
   const value = answer.value;
   if (value === null || value === undefined || value === "") {
-    return <span className="text-muted-foreground">—</span>;
+    return <span className="text-muted-foreground">-</span>;
   }
   const filename = String(value).replace(/^\/assets\//, "");
   const mimeType = fileNameToMimeType(filename);

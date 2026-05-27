@@ -184,7 +184,7 @@ export const APP_EVENT_DEFINITIONS: Record<string, EventDefinition> = {
         ? t(appDisplayNameKey)
         : payload.appName;
 
-      const interpolation = { appDisplayName };
+      const interpolation = { appDisplayName, userName: owner.name };
       const layoutArgs = {
         config: organizationLabel ? { name: organizationLabel } : {},
       };

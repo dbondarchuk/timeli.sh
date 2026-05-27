@@ -1,12 +1,12 @@
 # Timeli.sh
 
-**The all-in-one appointment scheduling platform that helps you manage bookings, communicate with clients, and grow your business—all from one beautiful interface.**
+**The all-in-one appointment scheduling platform that helps you manage bookings, communicate with clients, and grow your business-all from one beautiful interface.**
 
 ## ✨ What is Timeli.sh?
 
 Timeli.sh is a powerful appointment scheduling system designed for businesses, service providers, and professionals who want to streamline their booking process. Whether you're a consultant, therapist, fitness coach, or run a service-based business, Timeli.sh helps you:
 
-- **Create your complete booking website** with a powerful drag-and-drop page builder—no coding required
+- **Create your complete booking website** with a powerful drag-and-drop page builder-no coding required
 - **Accept bookings 24/7** through beautiful, fully customizable booking websites
 - **Automate your calendar** by syncing with Google Calendar, Outlook, and other calendar systems
 - **Stay connected** with automated email and SMS notifications
@@ -20,7 +20,7 @@ Timeli.sh is a powerful appointment scheduling system designed for businesses, s
 - **Teams**: Multi-staff businesses that need coordinated scheduling
 - **Agencies**: Organizations managing multiple clients or locations
 - **Calendly Users**: Perfect alternative for anyone looking for a Calendly replacement with automatic video meeting setup (Zoom, Google Meet) and more customization options
-- **Website Builders**: Create your entire booking website without needing a separate website builder—Timeli.sh includes everything you need
+- **Website Builders**: Create your entire booking website without needing a separate website builder-Timeli.sh includes everything you need
 
 ## 🌟 Key Features
 
@@ -61,7 +61,7 @@ Timeli.sh is a powerful appointment scheduling system designed for businesses, s
 **🌐 Complete Website Builder**
 
 - **Build your entire booking website** with Timeli.sh's powerful page builder
-- Drag-and-drop interface—no coding or design skills required
+- Drag-and-drop interface-no coding or design skills required
 - Create multi-page websites with custom content, services, and booking flows
 - Add custom sections: About, Services, Testimonials, FAQ, Contact, and more
 - Full control over your website's look and feel
@@ -202,7 +202,7 @@ Timeli.sh ships with modular apps that can be enabled per organization:
 - Use your own domain for your booking website
 - Automated domain verification
 - Professional branding with your domain
-- Create a complete website—not just a booking page
+- Create a complete website-not just a booking page
 - No need for a separate website builder
 - Everything in one platform
 
@@ -298,7 +298,7 @@ Timeli.sh ships with modular apps that can be enabled per organization:
 **For Business Owners:**
 
 - Clean, intuitive admin dashboard
-- Everything you need in one place—website builder, scheduling, payments, and more
+- Everything you need in one place-website builder, scheduling, payments, and more
 - Build your complete booking website without coding
 - Mobile-friendly management interface
 - Real-time booking updates

@@ -18,7 +18,7 @@
  *   --index-name NAME   Directory mode: index filename (default: index.html)
  *   -h, --help          Show help
  */
-import { readFile, writeFile, stat, readdir } from "node:fs/promises";
+import { readdir, readFile, stat, writeFile } from "node:fs/promises";
 import { basename, dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -227,7 +227,7 @@ function buildDocumentHtml(markdown, titleText) {
 
 function buildIndexHtml(rootDir, entries) {
   const rootName = basename(rootDir);
-  const title = `Diagrams — ${rootName}`;
+  const title = `Diagrams - ${rootName}`;
   const items = entries
     .map((e) => {
       const hrefEsc = escapeHtml(e.href);
@@ -293,11 +293,7 @@ async function processDirectory(rootDir, options) {
     console.warn(`No .md files under ${rootDir}`);
     if (!options.noIndex) {
       const indexPath = join(rootDir, options.indexName);
-      await writeFile(
-        indexPath,
-        buildIndexHtml(rootDir, []),
-        "utf8",
-      );
+      await writeFile(indexPath, buildIndexHtml(rootDir, []), "utf8");
       console.log(`Wrote ${indexPath} (empty)`);
     }
     return;
@@ -307,8 +303,7 @@ async function processDirectory(rootDir, options) {
 
   for (const mdPath of mdFiles) {
     const markdown = await readFile(mdPath, "utf8");
-    const fallbackStem =
-      basename(mdPath).replace(/\.md$/i, "") || "Document";
+    const fallbackStem = basename(mdPath).replace(/\.md$/i, "") || "Document";
     const docTitle = titleFromMarkdown(markdown, fallbackStem);
     const htmlPath = defaultOutputPath(mdPath);
     const html = buildDocumentHtml(markdown, docTitle);

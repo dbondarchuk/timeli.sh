@@ -289,7 +289,7 @@ export default class CarddavConnectedApp
   }
 
   /**
-   * Main entry — old behavior preserved but improved
+   * Main entry - old behavior preserved but improved
    * slug: array of path pieces after /api/apps/{organizationId}/{appId}/
    */
   public async processAppExternalCall(
@@ -372,7 +372,7 @@ export default class CarddavConnectedApp
   }
 
   /**
-   * PROPFIND handler — respects Depth: 0 or 1 and returns properly namespaced XML
+   * PROPFIND handler - respects Depth: 0 or 1 and returns properly namespaced XML
    */
   private async handlePropfind(
     appData: ConnectedAppData,
@@ -570,7 +570,7 @@ ${inner}
   }
 
   /**
-   * GET handler — returns vCard and proper headers (Content-Type & ETag).
+   * GET handler - returns vCard and proper headers (Content-Type & ETag).
    */
   private async handleGet(
     appData: ConnectedAppData,
@@ -611,7 +611,7 @@ ${inner}
   }
 
   /**
-   * REPORT handler — supports addressbook-multiget and addressbook-query (simple mode)
+   * REPORT handler - supports addressbook-multiget and addressbook-query (simple mode)
    */
   private async handleReport(
     appData: ConnectedAppData,

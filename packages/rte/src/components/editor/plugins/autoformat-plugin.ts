@@ -184,7 +184,7 @@ export const autoformatBlocks: AutoformatRule[] = [
     type: TogglePlugin.key,
   },
   {
-    match: ["---", "—-", "___ "],
+    match: ["---", "--", "___ "],
     mode: "block",
     type: HorizontalRulePlugin.key,
     format: (editor) => {

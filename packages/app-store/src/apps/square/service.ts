@@ -144,7 +144,7 @@ class SquareConnectedApp
     }
 
     // Square allows space or "+" between scopes; `URLSearchParams` encodes literal "+" as "%2B",
-    // which Square rejects—use spaces so delimiters become "%20" (or "+" per UA rules for space).
+    // which Square rejects-use spaces so delimiters become "%20" (or "+" per UA rules for space).
     const scope = [
       "MERCHANT_PROFILE_READ",
       "PAYMENTS_READ",

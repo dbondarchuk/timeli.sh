@@ -15,9 +15,9 @@ The Zoom app integration supports:
 
 Primary modules (see also §8 deployable apps):
 
-- `packages/app-store/src/apps/zoom/` — Zoom OAuth, API client, meeting lifecycle, busy times.
-- `packages/services/` — shared services (`ConnectedAppsService`, `BookingService`, event + job queues, notifications).
-- `apps/admin`, `apps/web`, `apps/job-processor`, `apps/notification-sender` — runtime entry points described below.
+- `packages/app-store/src/apps/zoom/` - Zoom OAuth, API client, meeting lifecycle, busy times.
+- `packages/services/` - shared services (`ConnectedAppsService`, `BookingService`, event + job queues, notifications).
+- `apps/admin`, `apps/web`, `apps/job-processor`, `apps/notification-sender` - runtime entry points described below.
 
 ---
 
@@ -237,7 +237,7 @@ sequenceDiagram
 
 ---
 
-## 8) Deployable apps—how each participates (Zoom-specific)
+## 8) Deployable apps-how each participates (Zoom-specific)
 
 Four separate apps share the same `packages/services` codebase but host different workloads. Zoom touches them in distinct ways.
 
@@ -246,9 +246,9 @@ Four separate apps share the same `packages/services` codebase but host differen
 Role for Zoom:
 
 - **Connect / reconnect Zoom**: installs the Zoom connected app (`pending`), opens OAuth popup, polls status until `connected`.
-- **OAuth redirect handling**: `/apps/oauth/zoom/redirect` runs `ConnectedAppsService.processRedirect` — token exchange with Zoom, `encrypt()` on secrets, persist to MongoDB `connected_apps`.
+- **OAuth redirect handling**: `/apps/oauth/zoom/redirect` runs `ConnectedAppsService.processRedirect` - token exchange with Zoom, `encrypt()` on secrets, persist to MongoDB `connected_apps`.
 - **Configuration**: admins choose which installed app acts as **`meetingUrlProviderAppId`** for each online **service option** (this link is what triggers Zoom meeting creation on booking).
-- **Busy times / availability**: Zoom declares the **`calendar-read`** capability and implements **`getBusyTimes`** (scheduled Zoom meetings → busy intervals). In admin, Zoom can be added as a **`calendarSources` entry for user** (per-user calendar sources stored in MongoDB). That wires Zoom into the same busy-collection path `BookingService` uses for **public availability** (`apps/web` — details below).
+- **Busy times / availability**: Zoom declares the **`calendar-read`** capability and implements **`getBusyTimes`** (scheduled Zoom meetings → busy intervals). In admin, Zoom can be added as a **`calendarSources` entry for user** (per-user calendar sources stored in MongoDB). That wires Zoom into the same busy-collection path `BookingService` uses for **public availability** (`apps/web` - details below).
 - **Indirect**: any admin action that emits domain events uses the same event pipeline as `web`; Zoom side effects ultimately still flow through **`job-processor`** (see below), not staying only inside admin.
 
 Zoom **does not** run “inside admin” permanently; admin is primarily **OAuth + wiring + UX**.
@@ -261,7 +261,7 @@ Role for Zoom:
 - **Availability / busy slots**: public **`GET /api/availability`** calls `bookingService.getAvailability()`, which loads busy intervals via **`BookingService.getBusyTimes`**. That merges:
   - existing **appointments** in MongoDB,
   - plus **`getBusyTimes` from each app listed in calendar sources** (IDs resolved from the user’s **`calendarSources`**). When Zoom is one of those sources, **`ZoomConnectedApp.getBusyTimes`** queries Zoom (**paginated `/users/me/meetings`, type scheduled**) so **your Zoom calendar blocks booking slots shown on web**.
-- **Event emission afterwards**: booking uses `EventService.emit` backed by **`BullMQEventService`** — envelopes go to Redis’s **events** queue rather than invoking every subscriber inline in-process for long-running work.
+- **Event emission afterwards**: booking uses `EventService.emit` backed by **`BullMQEventService`** - envelopes go to Redis’s **events** queue rather than invoking every subscriber inline in-process for long-running work.
 
 So **web creates the Zoom meeting** (first touch to Zoom API for a new booking) but **delegates cascade side effects** (other apps, reschedule propagation jobs, etc.) to the async pipeline. **Fetching busy events for availability is synchronous in the web server request** (same process as `BookingService`); it is **not** routed through `job-processor`.
 
@@ -271,12 +271,12 @@ Role for Zoom:
 
 Runs two workers (`BullMQEventWorker`, `BullMQJobWorker`):
 
-1. **Events queue**: `apps-handler` runs here. When an envelope matches installed apps subscribed to `appointment.*` (Zoom subscribes), it **`scheduleJob` with type `event`** — one queued **event-delivery job per Zoom installation** concerned by that envelope.
+1. **Events queue**: `apps-handler` runs here. When an envelope matches installed apps subscribed to `appointment.*` (Zoom subscribes), it **`scheduleJob` with type `event`** - one queued **event-delivery job per Zoom installation** concerned by that envelope.
 2. **Jobs queue**: for each queued event job, **`processEventDeliveryJob`** loads `ZoomConnectedApp` and runs **`onEvent`** with the decrypted-in-memory token path. That executes **PATCH** (reschedule) and **DELETE** (declined) against Zoom REST API as implemented in `packages/app-store/src/apps/zoom/service.ts`.
 
-In short: **admin/web enqueue work**; **`job-processor` is where Zoom reacts to reschedule/cancellation** (and any other Zoom `onEvent` behavior). Without this process running + Redis healthy, queued side effects backlog. **Zoom busy-time reads for availability do not use this worker** — they run when `apps/web` calls `BookingService.getAvailability` / `getBusyTimes`.
+In short: **admin/web enqueue work**; **`job-processor` is where Zoom reacts to reschedule/cancellation** (and any other Zoom `onEvent` behavior). Without this process running + Redis healthy, queued side effects backlog. **Zoom busy-time reads for availability do not use this worker** - they run when `apps/web` calls `BookingService.getAvailability` / `getBusyTimes`.
 
-Also note: **`notification-handler` runs inside the event worker**, so it participates in the _same event job_ — it does not talk to Zoom; it pushes email/SMS work to notification queues.
+Also note: **`notification-handler` runs inside the event worker**, so it participates in the _same event job_ - it does not talk to Zoom; it pushes email/SMS work to notification queues.
 
 ### `apps/notification-sender` (BullMQ notification worker)
 

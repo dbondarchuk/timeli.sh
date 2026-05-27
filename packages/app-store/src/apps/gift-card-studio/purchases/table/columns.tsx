@@ -155,7 +155,7 @@ export const columns: ColumnDef<PurchasedGiftCardListModel>[] = [
   //     giftCardStudioAdminNamespace,
   //   ),
   //   cell: ({ row }) =>
-  //     row.original.amountLeft != null ? `$${row.original.amountLeft}` : "—",
+  //     row.original.amountLeft != null ? `$${row.original.amountLeft}` : "-",
   //   sortingFn: tableSortNoopFunction,
   // },
   {
@@ -239,7 +239,7 @@ export const columns: ColumnDef<PurchasedGiftCardListModel>[] = [
       GiftCardStudioAdminNamespace,
       GiftCardStudioAdminKeys
     >("purchases.table.columns.toName", "string", giftCardStudioAdminNamespace),
-    cell: ({ row }) => row.original.toName ?? "—",
+    cell: ({ row }) => row.original.toName ?? "-",
     sortingFn: tableSortNoopFunction,
   },
   {
@@ -252,7 +252,7 @@ export const columns: ColumnDef<PurchasedGiftCardListModel>[] = [
       "string",
       giftCardStudioAdminNamespace,
     ),
-    cell: ({ row }) => row.original.toEmail ?? "—",
+    cell: ({ row }) => row.original.toEmail ?? "-",
     sortingFn: tableSortNoopFunction,
   },
   {

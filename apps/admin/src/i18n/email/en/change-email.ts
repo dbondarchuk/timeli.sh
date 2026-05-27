@@ -35,7 +35,7 @@ You have requested to change your email address to **{{newEmail}}**. Please clic
 #### Important Notes
 
 - <span style="font-size: 12px;">This email change link **expires in 24 hours**</span>
-- <span style="font-size: 12px;">If you **did not** request an email change, please ignore this email — no action is required</span>
+- <span style="font-size: 12px;">If you **did not** request an email change, please ignore this email - no action is required</span>
 - <span style="font-size: 12px;">**Never share** this link with anyone for your account's security</span>
 ---`,
       },

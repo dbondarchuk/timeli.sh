@@ -88,7 +88,7 @@ platformEvents:
     deleted:
       title: Клієнтів видалено
       description: >-
-        {count, plural, =1 {# клієнт} few {# клієнти} other {# клієнтів}} —
+        {count, plural, =1 {# клієнт} few {# клієнти} other {# клієнтів}} -
         {names}
   payment:
     created:
@@ -234,7 +234,7 @@ platformEvents:
 billing:
   emails:
     subscriptionAlert:
-      subject: Потрібна увага — оновлення підписки
+      subject: Потрібна увага - оновлення підписки
       preview: Статус плану змінився
       title: Оновлення статусу підписки
       body: "Статус підписки тепер {newStatus} (раніше {oldStatus}) для {product}. Перевірте білінг, щоб уникнути переривання сервісу."
@@ -567,10 +567,10 @@ appointments:
       description: "{customerName} створив(ла) запит на {serviceName}"
     updated:
       title: Запис оновлено
-      description: "{customerName} — {serviceName}"
+      description: "{customerName} - {serviceName}"
     rescheduled:
       title: Запис перенесено
-      description: "{customerName} — {serviceName}"
+      description: "{customerName} - {serviceName}"
     statusChanged:
       title: Змінено статус запису
       description: "{customerName}: {oldStatus} → {newStatus}"
@@ -1874,18 +1874,16 @@ apps:
       action: Відкрити застосунки
   emails:
     failed:
-      subject: "{appDisplayName} — не вдалося підключити"
+      subject: "{appDisplayName} - не вдалося підключити"
       preview: "{appDisplayName} не вдалося залишити в підключеному стані"
       title: Не вдалося залишити застосунок підключеним
       body: >-
-        Вітаємо,
+        Вітаємо {userName},
 
-
-        **{appDisplayName}** повідомив про проблему з підключенням або не
+        Додаток **{appDisplayName}** повідомив про проблему з підключенням або не
         завершив налаштування. Відкрийте розділ **Застосунки** у панелі
         керування, перевірте облікові дані та параметри, а потім спробуйте
         підключити знову.
-
 
         Якщо все уже виглядає коректно, цей лист можна ігнорувати.
       button: Відкрити застосунки
@@ -1938,7 +1936,7 @@ settings:
         buyButton: Купити SMS-кредити
         dialogTitle: Купівля SMS-кредитів
         dialogSubtitle: Оберіть пакет, щоб додати SMS-кредити на акаунт.
-        dialogCreditsNote: Кредити не згорають. Разова оплата — користуйтесь коли завгодно.
+        dialogCreditsNote: Кредити не згорають. Разова оплата - користуйтесь коли завгодно.
         bestValueBadge: Вигідно
         securePaymentLabel: Безпечна оплата
         billedOnceNoSubscription: Одноразовий платіж · без підписки
@@ -2031,7 +2029,7 @@ settings:
           У панелі DNS створіть A-запис для @ (кореня) або вашого піддомену зі
           значенням {ip}.
         connectDialogDnsCname: >-
-          Або додайте CNAME або ALIAS на {host} — це ім’я хоста вашого сайту в
+          Або додайте CNAME або ALIAS на {host} - це ім’я хоста вашого сайту в
           Timeli.sh.
         domainLabel: Домен
         connectButton: Підключити
@@ -2400,7 +2398,7 @@ table:
     status: Статус
 dashboard:
   subscriptionPastDueBanner:
-    message: Прострочена оплата підписки — нові записи та зміни тимчасово заблоковані.
+    message: Прострочена оплата підписки - нові записи та зміни тимчасово заблоковані.
     goToSettings: До налаштувань →
   subscriptionInactive:
     title: Підписку скасовано

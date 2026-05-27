@@ -20,8 +20,8 @@ export const ORGANIZATION_EVENT_DEFINITIONS: Record<string, EventDefinition> = {
         description: {
           key: "admin.platformEvents.organization.domainChanged.description" satisfies BaseAllKeys,
           args: {
-            previousDomain: payload.previousDomain ?? "—",
-            newDomain: payload.newDomain ?? "—",
+            previousDomain: payload.previousDomain ?? "-",
+            newDomain: payload.newDomain ?? "-",
           },
         },
         source: envelope.source,

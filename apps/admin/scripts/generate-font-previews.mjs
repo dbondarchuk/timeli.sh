@@ -6,7 +6,7 @@
  *   yarn workspace @timelish/admin generate-font-previews
  * Optional: --max=50
  *
- * Plain Node ESM — no tsx. Keep getWebfontPreviewFilename() in sync with
+ * Plain Node ESM - no tsx. Keep getWebfontPreviewFilename() in sync with
  * packages/utils/src/font-preview-filename.ts.
  */
 

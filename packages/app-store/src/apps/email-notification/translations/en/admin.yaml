@@ -1,6 +1,6 @@
 app:
   displayName: Email notification
-  description: Email Notifications keeps you informed about your appointments with automatic emails for new bookings, updates, and cancellations — each including a calendar event attachment for easy scheduling.
+  description: Email Notifications keeps you informed about your appointments with automatic emails for new bookings, updates, and cancellations - each including a calendar event attachment for easy scheduling.
 navigation:
   title: Email notification
 form:
@@ -23,4 +23,3 @@ handlers:
   confirmed: Email Notification - Confirmed
   declined: Email Notification - Declined
   rescheduled: Email Notification - Rescheduled
-

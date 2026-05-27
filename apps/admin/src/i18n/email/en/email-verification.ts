@@ -35,7 +35,7 @@ Please verify your email address by clicking the button below. This helps us con
 #### Important Notes
 
 - <span style="font-size: 12px;">This verification link **expires in 24 hours**</span>
-- <span style="font-size: 12px;">If you **did not** create an account, please ignore this email — no action is required</span>
+- <span style="font-size: 12px;">If you **did not** create an account, please ignore this email - no action is required</span>
 - <span style="font-size: 12px;">**Never share** this link with anyone for your account's security</span>
 ---`,
       },

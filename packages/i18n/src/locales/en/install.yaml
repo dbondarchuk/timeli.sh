@@ -10,7 +10,7 @@ checkout:
     anytime from your Polar customer portal.
   trialAndCancellation: >-
     Every plan includes a 7-day free trial, then the price shown. You can cancel
-    anytime from your billing portal—no long-term contract, no hidden fees.
+    anytime from your billing portal-no long-term contract, no hidden fees.
   includedLabel: What's included
   pricePerMonth: / month
   pricePerYear: / year
@@ -141,7 +141,7 @@ wizard:
       This duration is the minimum length clients can book. A longer maximum and
       15-minute steps are set automatically (you can change them later in
       Services).
-    priceOptional: Optional — leave empty for free
+    priceOptional: Optional - leave empty for free
     addons: Optional add-ons
     addonsOptional: Skip for now if you prefer
     editLater: "You can add more services, fields, and policies anytime in the dashboard."
@@ -244,7 +244,7 @@ wizard:
     autoConfirmBookingsHint: Automatically confirm new bookings without manual approval.
     cancelPolicy: Allow cancellations and reschedules
     cancelHelp: You can define windows and fees in appointment settings later.
-    flex: All of this can be changed anytime — we are just getting you started.
+    flex: All of this can be changed anytime - we are just getting you started.
   finish:
     taskPage: Creating your booking page
     taskAvailability: Applying availability defaults

@@ -35,7 +35,7 @@ export const ChangeEmailTemplate: EmailTemplate["changeEmail"] = {
 #### Important Notes
 
 - <span style="font-size: 12px;">Цей посилання на зміну електронної адреси **закінчується через 24 години**</span>
-- <span style="font-size: 12px;">Якщо ви **не запитували** зміну електронної адреси, ігноруйте цей email — не потрібно ніякої дії</span>
+- <span style="font-size: 12px;">Якщо ви **не запитували** зміну електронної адреси, ігноруйте цей email - не потрібно ніякої дії</span>
 - <span style="font-size: 12px;">**Ніколи не діліться** цим посиланням з будь-ким для безпеки вашого облікового запису</span>
 ---`,
       },

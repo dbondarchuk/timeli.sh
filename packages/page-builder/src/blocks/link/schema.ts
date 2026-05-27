@@ -92,7 +92,7 @@ export const LinkPropsDefaults = () =>
       ],
       width: [
         {
-          value: "max-content",
+          value: "auto",
         },
       ],
       display: [

@@ -1,5 +1,5 @@
-import { coerceArray } from "@timelish/builder";
 import type { TEditorBlock } from "@timelish/builder";
+import { coerceArray } from "@timelish/builder";
 import type { TableProps } from "./schema";
 
 type TableCellSlot = TableProps["props"]["cells"][number];
@@ -182,7 +182,7 @@ function pxColWidthsToPercent(widths: number[]): number[] {
   return widths.map((w) => (w / sum) * 100);
 }
 
-/** Data columns only — values sum to 100 (%). */
+/** Data columns only - values sum to 100 (%). */
 export function normalizeColWidthsSum100(widths: number[]): number[] {
   if (widths.length === 0) return [];
   let w = [...widths].map((x) => Math.max(0, x));
@@ -201,9 +201,7 @@ export function normalizeColWidthsSum100(widths: number[]): number[] {
 
 export function equalColWidthPercents(colCount: number): number[] {
   const n = Math.max(1, colCount);
-  return normalizeColWidthsSum100(
-    Array.from({ length: n }, () => 100 / n),
-  );
+  return normalizeColWidthsSum100(Array.from({ length: n }, () => 100 / n));
 }
 
 export function normalizedColWidths(
@@ -234,7 +232,9 @@ export function editorDataColTablePercent(dataColPct: number): string {
   return colWidthCssPercent(dataColPct * scale);
 }
 
-export function measureTableDataColumnsWidthPx(tableEl: HTMLTableElement): number {
+export function measureTableDataColumnsWidthPx(
+  tableEl: HTMLTableElement,
+): number {
   const firstRow = tableEl.rows[0];
   const gutter =
     firstRow?.cells[0] instanceof HTMLElement
@@ -276,8 +276,7 @@ export function fillColumnWidthsToRemaining(
   columnIndex: number,
 ): number[] {
   const next = [...widths];
-  const fillIdx =
-    columnIndex + 1 < next.length ? columnIndex + 1 : columnIndex;
+  const fillIdx = columnIndex + 1 < next.length ? columnIndex + 1 : columnIndex;
   const sumOthers = next.reduce((s, x, i) => (i === fillIdx ? s : s + x), 0);
   next[fillIdx] = Math.max(MIN_COL_PCT, roundPct(100 - sumOthers));
   return normalizeColWidthsSum100(next);

@@ -15,7 +15,7 @@ import { EditorHistoryEntry } from "./history";
 
 /**
  * Table cell slots are stored in flat row-major order. Inserts/removes reorder
- * indices, so merging by index corrupts the grid — merge by slot id in source order.
+ * indices, so merging by index corrupts the grid - merge by slot id in source order.
  */
 function mergeEmbeddedSlotCellArrays(
   targetValue: unknown,

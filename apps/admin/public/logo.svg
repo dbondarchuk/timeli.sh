@@ -6,19 +6,19 @@
     </linearGradient>
   </defs>
 
-  <!-- 3x3 grid, step=26, start=14, radius=11 — bigger + tighter -->
+  <!-- 3x3 grid, step=26, start=14, radius=11 - bigger + tighter -->
 
-  <!-- Row 1 — full top bar -->
+  <!-- Row 1 - full top bar -->
   <circle cx="14" cy="14" r="11" fill="url(#g)" />
   <circle cx="40" cy="14" r="11" fill="url(#g)" />
   <circle cx="66" cy="14" r="11" fill="url(#g)" />
 
-  <!-- Row 2 — center only -->
+  <!-- Row 2 - center only -->
   <circle cx="14" cy="40" r="11" fill="#1a1a2e" opacity="0.12" />
   <circle cx="40" cy="40" r="11" fill="url(#g)" />
   <circle cx="66" cy="40" r="11" fill="#1a1a2e" opacity="0.12" />
 
-  <!-- Row 3 — center only -->
+  <!-- Row 3 - center only -->
   <circle cx="14" cy="66" r="11" fill="#1a1a2e" opacity="0.12" />
   <circle cx="40" cy="66" r="11" fill="url(#g)" />
   <circle cx="66" cy="66" r="11" fill="#1a1a2e" opacity="0.12" />

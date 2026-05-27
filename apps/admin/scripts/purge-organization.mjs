@@ -200,7 +200,7 @@ async function purgeOrganization(db, organizationId) {
 async function purgeOrganizationS3Prefix(organizationId) {
   const bucket = process.env.S3_BUCKET?.trim();
   if (!bucket) {
-    console.log("\nS3_BUCKET not set — skipping S3 object deletion.");
+    console.log("\nS3_BUCKET not set - skipping S3 object deletion.");
     return;
   }
 
@@ -208,7 +208,7 @@ async function purgeOrganizationS3Prefix(organizationId) {
   const accessKeyId = process.env.S3_ACCESS_KEY?.trim();
   const secretAccessKey = process.env.S3_SECRET_KEY?.trim();
   if (!region) {
-    console.log("\nS3_REGION not set — skipping S3 object deletion.");
+    console.log("\nS3_REGION not set - skipping S3 object deletion.");
     return;
   }
 

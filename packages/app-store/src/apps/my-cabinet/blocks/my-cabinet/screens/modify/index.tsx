@@ -151,7 +151,11 @@ export const CabinetModifyScreen: React.FC<CabinetModifyScreenProps> = ({
         const appt = apptRes.appointment;
 
         const contactFields = contact
-          ? { ...contact, dateTime: new Date(appt.dateTime) }
+          ? {
+              type: "email" as const,
+              email: appt.fields.email,
+              dateTime: new Date(appt.dateTime),
+            }
           : null;
 
         if (!contactFields) return;

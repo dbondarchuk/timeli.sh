@@ -1531,7 +1531,7 @@ export class GiftCardStudioConnectedApp
       <rect width="400" height="250" fill="#f8fafc"/>
       <text x="20" y="30" font-family="sans-serif" font-size="16" fill="#0f172a">Gift Card Preview</text>
       <text x="20" y="55" font-family="sans-serif" font-size="12" fill="#0f172a">Amount: ${escapeXml(payload.amountFormatted)}</text>
-      <text x="20" y="75" font-family="sans-serif" font-size="12" fill="#0f172a">From: ${escapeXml(name || "—")}</text>
+      <text x="20" y="75" font-family="sans-serif" font-size="12" fill="#0f172a">From: ${escapeXml(name || "-")}</text>
       <text x="20" y="95" font-family="sans-serif" font-size="12" fill="#0f172a">Code: ${escapeXml(code)}</text>
       <text x="20" y="130" font-family="sans-serif" font-size="14" font-weight="bold" fill="#dc2626">PREVIEW - NOT A REAL CARD</text>
     </svg>`;

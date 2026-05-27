@@ -5,7 +5,7 @@ app:
   description: |-
     **Financial Overview** adds a dedicated dashboard tab with clear, easy-to-understand financial metrics, giving you a quick snapshot of your revenue, payments, and overall performance at a glance.
 
-    In addition to your financial totals, it helps you understand how customers move through your booking process — showing how many people complete a booking and where others may drop off before finishing. This makes it easier to spot friction, improve your booking experience, and increase successful appointments.
+    In addition to your financial totals, it helps you understand how customers move through your booking process - showing how many people complete a booking and where others may drop off before finishing. This makes it easier to spot friction, improve your booking experience, and increase successful appointments.
 
     ### What you can see
     - Total revenue and payments over time  
@@ -89,4 +89,3 @@ setup:
   connect: Connect with <app></app>
 statusText:
   successfully_set_up: Successfully set up financial overview
-

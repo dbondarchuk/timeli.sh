@@ -45,7 +45,7 @@ export const ResponsePreviewDialog: React.FC<{
                     <dd className="text-muted-foreground text-xs">
                       {answer.value !== null && answer.value !== undefined
                         ? String(answer.value)
-                        : "—"}
+                        : "-"}
                     </dd>
                   </div>
                 );

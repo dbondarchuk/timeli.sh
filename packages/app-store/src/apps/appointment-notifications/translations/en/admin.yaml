@@ -3,13 +3,13 @@ app:
   displayName: Appointment notifications
   description: |-
     Automate your client communication with smart reminders and follow-ups.
-    The **Appointment Notifications** app lets you automatically send personalized emails or text messages **before or after** appointments — no manual work required.
+    The **Appointment Notifications** app lets you automatically send personalized emails or text messages **before or after** appointments - no manual work required.
     Use it to:
     - Send **appointment reminders** a few hours or days before each booking.
     - Schedule **follow-up messages** after appointments to thank clients, request reviews, or share next steps.
     - Choose from flexible timing options like “2 hours before,” “1 day after,” or “at 7:00 PM the day before.”
     - Customize message templates for email and SMS channels.
-    - Keep your clients informed, reduce no-shows, and build stronger post-appointment relationships — all automatically.
+    - Keep your clients informed, reduce no-shows, and build stronger post-appointment relationships - all automatically.
 navigation:
   main:
     title: Appointment notifications
@@ -170,4 +170,3 @@ validation:
     appointmentCount:
       min: Minimum number of appointments is 1
       type: Appointment count type is required
-

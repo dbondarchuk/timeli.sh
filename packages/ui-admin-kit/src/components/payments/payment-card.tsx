@@ -522,7 +522,7 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
         </div>
       </div>
 
-      {/* Refund details — only shown when refunded */}
+      {/* Refund details - only shown when refunded */}
       {status === "refunded" && (
         <div className="px-5 py-4 border-b border-border bg-red-50">
           <h4 className="font-semibold mb-3 text-destructive">

@@ -35,7 +35,7 @@ Please reset your password by clicking the button below. This helps us confirm t
 #### Important Notes
 
 - <span style="font-size: 12px;">This reset password link **expires in 24 hours**</span>
-- <span style="font-size: 12px;">If you **did not** request a password reset, please ignore this email — no action is required</span>
+- <span style="font-size: 12px;">If you **did not** request a password reset, please ignore this email - no action is required</span>
 - <span style="font-size: 12px;">**Never share** this link with anyone for your account's security</span>
 ---`,
       },

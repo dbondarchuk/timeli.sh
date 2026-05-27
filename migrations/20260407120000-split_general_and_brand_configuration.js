@@ -35,7 +35,7 @@ module.exports = {
         description:
           typeof v.description === "string"
             ? v.description
-            : `${v.name || "Site"} — Book online.`,
+            : `${v.name || "Site"} - Book online.`,
         keywords:
           typeof v.keywords === "string"
             ? v.keywords

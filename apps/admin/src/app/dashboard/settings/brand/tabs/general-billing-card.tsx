@@ -253,7 +253,7 @@ export function GeneralBillingCard({
                           )
                             .setLocale(locale)
                             .toLocaleString(DateTime.DATE_MED)
-                        : "—"}
+                        : "-"}
                     </span>
                   </div>
                 </div>

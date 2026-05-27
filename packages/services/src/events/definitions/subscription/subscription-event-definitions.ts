@@ -12,13 +12,14 @@ import { getAdminUrl } from "@timelish/utils";
 
 import { dashboardUrls } from "../links";
 
-const CONCERNING_SUBSCRIPTION_STATUSES = new Set<OrganizationSubscriptionStatus>([
-  OrganizationSubscriptionStatus.Canceled,
-  OrganizationSubscriptionStatus.PastDue,
-  OrganizationSubscriptionStatus.Unpaid,
-  OrganizationSubscriptionStatus.Incomplete,
-  OrganizationSubscriptionStatus.IncompleteExpired,
-]);
+const CONCERNING_SUBSCRIPTION_STATUSES =
+  new Set<OrganizationSubscriptionStatus>([
+    OrganizationSubscriptionStatus.Canceled,
+    OrganizationSubscriptionStatus.PastDue,
+    OrganizationSubscriptionStatus.Unpaid,
+    OrganizationSubscriptionStatus.Incomplete,
+    OrganizationSubscriptionStatus.IncompleteExpired,
+  ]);
 
 function isConcerningSubscriptionStatus(
   status: OrganizationSubscriptionStatus,
@@ -32,7 +33,7 @@ export const SUBSCRIPTION_EVENT_DEFINITIONS: Record<string, EventDefinition> = {
     recordActivity: (envelope) => {
       const payload = envelope.payload as SubscriptionStatusChangedPayload;
       const { oldStatus, newStatus, productName } = payload;
-      const product = productName?.trim() || "—";
+      const product = productName?.trim() || "-";
       return {
         eventId: envelope.id,
         eventType: envelope.type,
@@ -44,17 +45,19 @@ export const SUBSCRIPTION_EVENT_DEFINITIONS: Record<string, EventDefinition> = {
           args: {
             product,
             newStatus,
-            oldStatus: oldStatus ?? "—",
+            oldStatus: oldStatus ?? "-",
           },
         },
         source: envelope.source,
         link: dashboardUrls.billing,
-        severity: isConcerningSubscriptionStatus(newStatus) ? "warning" : "info",
+        severity: isConcerningSubscriptionStatus(newStatus)
+          ? "warning"
+          : "info",
       };
     },
     dashboardNotification: async (envelope) => {
       const payload = envelope.payload as SubscriptionStatusChangedPayload;
-      const product = payload.productName?.trim() || "—";
+      const product = payload.productName?.trim() || "-";
       const concerning = isConcerningSubscriptionStatus(payload.newStatus);
       return {
         type: "subscription-status-changed",
@@ -68,7 +71,7 @@ export const SUBSCRIPTION_EVENT_DEFINITIONS: Record<string, EventDefinition> = {
             args: {
               product,
               newStatus: payload.newStatus,
-              oldStatus: payload.oldStatus ?? "—",
+              oldStatus: payload.oldStatus ?? "-",
             },
           },
           action: {
@@ -99,11 +102,11 @@ export const SUBSCRIPTION_EVENT_DEFINITIONS: Record<string, EventDefinition> = {
         config: organizationLabel ? { name: organizationLabel } : {},
       };
 
-      const productLabel = payload.productName?.trim() || "—";
+      const productLabel = payload.productName?.trim() || "-";
       const interpolation = {
         product: productLabel,
         newStatus: payload.newStatus,
-        oldStatus: payload.oldStatus ?? "—",
+        oldStatus: payload.oldStatus ?? "-",
       };
 
       const results: EmailNotificationRequest[] = [];
@@ -158,7 +161,8 @@ export const SUBSCRIPTION_EVENT_DEFINITIONS: Record<string, EventDefinition> = {
 
         results.push({
           email: { to: admin.email, subject, body },
-          handledBy: "admin.billing.emails.subscriptionAlert.handledBy" as BaseAllKeys,
+          handledBy:
+            "admin.billing.emails.subscriptionAlert.handledBy" as BaseAllKeys,
           participantType: "user",
         });
       }

@@ -42,7 +42,7 @@ export default function Home(): ReactNode {
                 <a href="https://timelish.com">Timeli.sh</a> is an all-in-one
                 booking platform: accept appointments, automate notifications,
                 process payments, and build a complete website from one admin
-                dashboard. No tech skills needed—if you can use email, you can
+                dashboard. No tech skills needed-if you can use email, you can
                 use <a href="https://timelish.com">Timeli.sh</a>.
               </p>
               <p>
