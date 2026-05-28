@@ -44,6 +44,7 @@ wizard:
     business: Business
     personalization: Brand
     service: Services
+    schedule: Schedule
     integrations: Connect
     payments: Payments
     done: Done
@@ -165,6 +166,19 @@ wizard:
     serviceDescriptionLabel: Description
     serviceDescriptionPlaceholder: What should clients expect? (2+ characters)
     backToProfessions: Different profession
+  schedule:
+    title: Your working hours
+    subtitle: >-
+      Set when clients can book you. We start with Monday–Friday, 9:00 AM–5:00 PM;
+      adjust any day or add shifts as needed.
+    editLater: "You can change hours, breaks, and overrides anytime under Settings → Schedule."
+    weeklyScheduleAppHint: >-
+      Need different hours each week? Install the Weekly schedule app later from
+      Dashboard → Apps to set availability week by week (holidays, events, and
+      changing routines).
+    saved: Working hours saved
+    saveError: Could not save your schedule. Try again.
+    noWorkingHours: Add at least one working shift before continuing.
   integrations:
     title: Connect calendar & apps
     subtitle: >-

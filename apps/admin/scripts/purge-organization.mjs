@@ -2,10 +2,11 @@
  * Irreversibly deletes an organization and related data from MongoDB.
  *
  * Usage (from repo root):
- *   node apps/admin/scripts/purge-organization.mjs <organizationId> [--yes] [--slug=<slug>]
+ *   node apps/admin/scripts/purge-organization.mjs <organizationSlug> [--yes] [--slug=<slug>]
+ *   node apps/admin/scripts/purge-organization.mjs --organization-id=<id> [--yes] [--slug=<slug>]
  *
  * Or from apps/admin:
- *   node scripts/purge-organization.mjs <organizationId> [--yes] [--slug=<slug>]
+ *   node scripts/purge-organization.mjs <organizationSlug> [--yes] [--slug=<slug>]
  *
  * Without --yes / --slug you will be prompted:
  *   1) Type exactly: yes
@@ -17,7 +18,7 @@
  * S3_ACCESS_KEY, S3_SECRET_KEY, plus optional S3_ENDPOINT and S3_FORCE_PATH_STYLE=true.
  * Deletes all objects under prefix `{organizationId}/` after MongoDB purge succeeds.
  *
- * @typedef {{ organizationId: string | null, yes: boolean, slug: string | null }} CliOpts
+ * @typedef {{ organizationId: string | null, organizationSlug: string | null, yes: boolean, slug: string | null }} CliOpts
  */
 
 import {
@@ -51,15 +52,27 @@ loadEnvIfPresent(path.resolve(__dirname, ".."));
 /** @param {string[]} argv */
 function parseArgs(argv) {
   /** @type {CliOpts} */
-  const out = { organizationId: null, yes: false, slug: null };
+  const out = {
+    organizationId: null,
+    organizationSlug: null,
+    yes: false,
+    slug: null,
+  };
   for (let i = 2; i < argv.length; i++) {
     const a = argv[i];
     if (a === "--yes" || a === "-y") {
       out.yes = true;
       continue;
     }
-    if (a.startsWith("--organization-id=")) {
-      out.organizationId = a.slice("--organization-id=".length);
+    if (a.startsWith("--organization-id=") || a.startsWith("--id=")) {
+      const prefix = a.startsWith("--organization-id=")
+        ? "--organization-id="
+        : "--id=";
+      out.organizationId = a.slice(prefix.length);
+      continue;
+    }
+    if (a === "--organization-id" || a === "--id") {
+      out.organizationId = argv[++i] ?? null;
       continue;
     }
     if (a.startsWith("--slug=")) {
@@ -70,8 +83,12 @@ function parseArgs(argv) {
       out.slug = argv[++i] ?? null;
       continue;
     }
-    if (!a.startsWith("-") && !out.organizationId) {
-      out.organizationId = a;
+    if (
+      !a.startsWith("-") &&
+      !out.organizationSlug &&
+      !out.organizationId
+    ) {
+      out.organizationSlug = a;
     }
   }
   return out;
@@ -194,6 +211,78 @@ async function purgeOrganization(db, organizationId) {
 }
 
 /**
+ * Some S3-compatible backends return malformed DeleteObjects XML; deletes still succeed.
+ * @param {unknown} err
+ */
+function isDeleteObjectsDeserializationError(err) {
+  if (!(err instanceof TypeError)) {
+    return false;
+  }
+  const msg = err.message ?? "";
+  return (
+    msg.includes("Expected object, got string") ||
+    msg.includes("Deserialization error")
+  );
+}
+
+/**
+ * @param {S3Client} client
+ * @param {string} bucket
+ * @param {string} prefix
+ * @returns {Promise<string[]>}
+ */
+async function listObjectKeysUnderPrefix(client, bucket, prefix) {
+  /** @type {string[]} */
+  const keys = [];
+  let continuationToken = undefined;
+  do {
+    const list = await client.send(
+      new ListObjectsV2Command({
+        Bucket: bucket,
+        Prefix: prefix,
+        ContinuationToken: continuationToken,
+      }),
+    );
+    for (const o of list.Contents ?? []) {
+      if (o.Key) {
+        keys.push(o.Key);
+      }
+    }
+    continuationToken = list.IsTruncated
+      ? list.NextContinuationToken
+      : undefined;
+  } while (continuationToken);
+  return keys;
+}
+
+/**
+ * @param {S3Client} client
+ * @param {string} bucket
+ * @param {string[]} keys
+ */
+async function deleteObjectsBatch(client, bucket, keys) {
+  try {
+    await client.send(
+      new DeleteObjectsCommand({
+        Bucket: bucket,
+        Delete: {
+          Objects: keys.map((Key) => ({ Key })),
+          Quiet: true,
+        },
+      }),
+    );
+  } catch (err) {
+    if (isDeleteObjectsDeserializationError(err)) {
+      console.warn(
+        "S3 DeleteObjects response could not be parsed (common on S3-compatible storage); verifying deletions...",
+      );
+      return;
+    }
+    throw err;
+  }
+}
+
+/**
  * Remove all S3 assets for the org (keys: `{organizationId}/...` per S3AssetsStorageService).
  * @param {string} organizationId
  */
@@ -238,22 +327,30 @@ async function purgeOrganizationS3Prefix(organizationId) {
       ? list.NextContinuationToken
       : undefined;
 
-    console.log(`Deleting ${keys} objects from S3`);
+    if (keys.length > 0) {
+      console.log(`Deleting ${keys.length} object(s) from S3...`);
+    }
 
     for (let i = 0; i < keys.length; i += 1000) {
       const batch = keys.slice(i, i + 1000);
-      await client.send(
-        new DeleteObjectsCommand({
-          Bucket: bucket,
-          Delete: {
-            Objects: batch.map((Key) => ({ Key })),
-            Quiet: true,
-          },
-        }),
-      );
+      await deleteObjectsBatch(client, bucket, batch);
       totalDeleted += batch.length;
     }
   } while (continuationToken);
+
+  const remaining = await listObjectKeysUnderPrefix(client, bucket, prefix);
+  if (remaining.length > 0) {
+    console.error(
+      `S3 purge incomplete: ${remaining.length} object(s) still under s3://${bucket}/${prefix}*`,
+    );
+    for (const key of remaining.slice(0, 20)) {
+      console.error(`  ${key}`);
+    }
+    if (remaining.length > 20) {
+      console.error(`  ... and ${remaining.length - 20} more`);
+    }
+    throw new Error("S3 purge failed: objects remain under organization prefix");
+  }
 
   console.log(
     `\nS3: deleted ${totalDeleted} object(s) under s3://${bucket}/${prefix}*`,
@@ -263,9 +360,19 @@ async function purgeOrganizationS3Prefix(organizationId) {
 async function main() {
   const opts = parseArgs(process.argv);
   const organizationIdArg = opts.organizationId?.trim();
-  if (!organizationIdArg) {
+  const organizationSlugArg = opts.organizationSlug?.trim();
+  if (!organizationIdArg && !organizationSlugArg) {
     console.error(
-      "Usage: node purge-organization.mjs <organizationId> [--yes] [--slug=<slug>]",
+      "Usage: node purge-organization.mjs <organizationSlug> [--yes] [--slug=<slug>]",
+    );
+    console.error(
+      "   or: node purge-organization.mjs --organization-id=<id> [--yes] [--slug=<slug>]",
+    );
+    process.exit(1);
+  }
+  if (organizationIdArg && organizationSlugArg) {
+    console.error(
+      "Provide either <organizationSlug> or --organization-id=<id>, not both.",
     );
     process.exit(1);
   }
@@ -285,17 +392,31 @@ async function main() {
   const db = client.db(dbName);
 
   try {
-    let orgDoc = await db
-      .collection("organizations")
-      .findOne({ _id: organizationIdArg });
-    if (!orgDoc && ObjectId.isValid(organizationIdArg)) {
+    /** @type {import('mongodb').Document | null} */
+    let orgDoc = null;
+    if (organizationSlugArg) {
       orgDoc = await db
         .collection("organizations")
-        .findOne({ _id: new ObjectId(organizationIdArg) });
-    }
-    if (!orgDoc) {
-      console.error(`No organization with _id matching: ${organizationIdArg}`);
-      process.exit(1);
+        .findOne({ slug: organizationSlugArg });
+      if (!orgDoc) {
+        console.error(
+          `No organization with slug matching: ${organizationSlugArg}`,
+        );
+        process.exit(1);
+      }
+    } else {
+      orgDoc = await db
+        .collection("organizations")
+        .findOne({ _id: organizationIdArg });
+      if (!orgDoc && ObjectId.isValid(organizationIdArg)) {
+        orgDoc = await db
+          .collection("organizations")
+          .findOne({ _id: new ObjectId(organizationIdArg) });
+      }
+      if (!orgDoc) {
+        console.error(`No organization with _id matching: ${organizationIdArg}`);
+        process.exit(1);
+      }
     }
 
     const organizationId =

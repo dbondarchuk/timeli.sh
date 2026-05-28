@@ -158,9 +158,11 @@ async function upsertDefaultHeader(
   services: IServicesContainer,
   isBlogEnabled: boolean,
   isMyCabinetEnabled: boolean,
+  isCancelRescheduleEnabled: boolean,
   bookLabel: string,
   blogLabel: string,
   myCabinetLabel: string,
+  manageAppointmentLabel: string,
 ): Promise<string> {
   const logger = getLoggerFactory("InstallActions")("upsertDefaultHeader");
   logger.debug("Upserting default header");
@@ -201,7 +203,17 @@ async function upsertDefaultHeader(
               size: "default" as const,
             },
           ]
-        : []),
+        : isCancelRescheduleEnabled
+          ? [
+              {
+                type: "button" as const,
+                label: manageAppointmentLabel,
+                url: "/book/modify",
+                variant: "ghost" as const,
+                size: "default" as const,
+              },
+            ]
+          : []),
       {
         type: "button" as const,
         label: bookLabel,
@@ -234,6 +246,10 @@ async function upsertDefaultFooter(
   services: IServicesContainer,
   hasAddress: boolean,
   footerLabels: Record<string, string>,
+  isMyCabinetEnabled: boolean,
+  isCancelRescheduleEnabled: boolean,
+  myCabinetLabel: string,
+  manageAppointmentLabel: string,
 ): Promise<string> {
   const logger = getLoggerFactory("InstallActions")("upsertDefaultFooter");
   logger.debug("Upserting default footer");
@@ -247,7 +263,14 @@ async function upsertDefaultFooter(
     (item) => item.name === DEFAULT_FOOTER_NAME,
   );
 
-  const footerContent = footerDefaultPage(hasAddress, footerLabels);
+  const footerContent = footerDefaultPage(
+    hasAddress,
+    footerLabels,
+    isMyCabinetEnabled,
+    isCancelRescheduleEnabled,
+    myCabinetLabel,
+    manageAppointmentLabel,
+  );
 
   const footerData = {
     name: DEFAULT_FOOTER_NAME,
@@ -281,6 +304,10 @@ async function upsertDefaultHomePage(
     footerId: string;
     homeLabels: Record<string, string>;
     templateServices: TemplateServiceArg[];
+    isMyCabinetEnabled: boolean;
+    isCancelRescheduleEnabled: boolean;
+    myCabinetLabel: string;
+    manageAppointmentLabel: string;
   },
 ): Promise<void> {
   const logger = getLoggerFactory("InstallActions")("upsertDefaultHomePage");
@@ -288,7 +315,14 @@ async function upsertDefaultHomePage(
   const pagesService = services.pagesService;
   const homePage = await pagesService.getPageBySlug("home");
 
-  const homeContent = homeDefaultPage(args.templateServices, args.homeLabels);
+  const homeContent = homeDefaultPage(
+    args.templateServices,
+    args.homeLabels,
+    args.isMyCabinetEnabled,
+    args.isCancelRescheduleEnabled,
+    args.myCabinetLabel,
+    args.manageAppointmentLabel,
+  );
 
   const pageData = {
     title: DEFAULT_HOME_TITLE,
@@ -605,19 +639,27 @@ export async function createInstallDefaultPages(
 
   const labels = await getInstallPageDefaultsLabels(input.language);
   const templateServices = await getTemplateServices(input.services);
+  const myCabinetLabel = labels.headerMyCabinetLabel;
+  const manageAppointmentLabel = labels.bookLabels.manageYourAppointment;
   const headerId = await upsertDefaultHeader(
     input.services,
     input.isBlogEnabled,
     input.isMyCabinetEnabled,
+    input.isCancelRescheduleEnabled,
     labels.headerBookLabel,
     labels.headerBlogLabel,
-    labels.headerMyCabinetLabel,
+    myCabinetLabel,
+    manageAppointmentLabel,
   );
 
   const footerId = await upsertDefaultFooter(
     input.services,
     input.hasAddress,
     labels.footer,
+    input.isMyCabinetEnabled,
+    input.isCancelRescheduleEnabled,
+    myCabinetLabel,
+    manageAppointmentLabel,
   );
 
   await upsertDefaultHomePage(input.services, {
@@ -627,6 +669,10 @@ export async function createInstallDefaultPages(
     footerId,
     homeLabels: labels.homeLabels,
     templateServices,
+    isMyCabinetEnabled: input.isMyCabinetEnabled,
+    isCancelRescheduleEnabled: input.isCancelRescheduleEnabled,
+    myCabinetLabel,
+    manageAppointmentLabel,
   });
 
   await upsertDefaultBookPage(input.services, {

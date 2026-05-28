@@ -27,6 +27,20 @@ export interface SimpleSchedulerProps {
   addShiftLabel?: string;
   shiftsLabel?: AllKeys;
   weekDate?: Date;
+  /** When true, accordion sections for days that already have shifts start expanded. */
+  expandDaysWithShiftsByDefault?: boolean;
+}
+
+function getExpandedDayIds(
+  days: number[],
+  value: AvailablePeriod[],
+): string[] {
+  return days
+    .filter((day) => {
+      const period = value.find((p) => p.weekDay === day);
+      return (period?.shifts.length ?? 0) > 0;
+    })
+    .map((day) => day.toString());
 }
 
 export const SimpleScheduler: React.FC<SimpleSchedulerProps> = ({
@@ -36,10 +50,13 @@ export const SimpleScheduler: React.FC<SimpleSchedulerProps> = ({
   addShiftLabel,
   shiftsLabel,
   weekDate,
+  expandDaysWithShiftsByDefault = false,
 }) => {
   const t = useI18n("ui");
   const tAll = useI18n();
-  const [expandedDays, setExpandedDays] = useState<string[]>([]);
+  const [expandedDays, setExpandedDays] = useState<string[]>(() =>
+    expandDaysWithShiftsByDefault ? getExpandedDayIds(days, value) : [],
+  );
   const [editingShift, setEditingShift] = useState<{
     day: number;
     index: number;
@@ -187,7 +204,7 @@ export const SimpleScheduler: React.FC<SimpleSchedulerProps> = ({
   // Start adding a new shift
   const handleStartAddShift = (day: number) => {
     // Default to first time slot and a 1-hour duration
-    const startTime = "08:00";
+    const startTime = "09:00";
     const endTime = "17:00";
 
     setNewShift({ day, startTime, endTime });

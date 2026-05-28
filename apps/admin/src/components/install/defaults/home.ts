@@ -9,7 +9,21 @@ export type TemplateServiceArg = {
 export const homeDefaultPage = (
   services: TemplateServiceArg[],
   homeLabels: Record<string, string>,
-) => ({
+  isMyCabinetEnabled: boolean,
+  isCancelRescheduleEnabled: boolean,
+  myCabinetLabel: string,
+  manageAppointmentLabel: string,
+) => {
+  const showSecondaryNav =
+    isMyCabinetEnabled || isCancelRescheduleEnabled;
+  const secondaryNavUrl = isMyCabinetEnabled
+    ? "/my-cabinet"
+    : "/book/modify";
+  const secondaryNavLabel = isMyCabinetEnabled
+    ? myCabinetLabel
+    : manageAppointmentLabel;
+
+  return {
   data: {
     fontFamily: "PRIMARY",
     fullWidth: true,
@@ -341,189 +355,158 @@ export const homeDefaultPage = (
                   data: {
                     props: {
                       children: [
-                        {
-                          type: "Button",
-                          data: {
-                            props: {
-                              children: [
-                                {
-                                  type: "InlineContainer",
-                                  id: "block-c13ef416-68c4-4953-9caa-feb2c259f8dd",
-                                  data: {
-                                    style: {
-                                      padding: [
-                                        {
-                                          value: {
-                                            top: {
-                                              value: 0,
-                                              unit: "rem",
-                                            },
-                                            bottom: {
-                                              value: 0,
-                                              unit: "rem",
-                                            },
-                                            left: {
-                                              value: 0,
-                                              unit: "rem",
-                                            },
-                                            right: {
-                                              value: 0,
-                                              unit: "rem",
-                                            },
+                        ...(showSecondaryNav
+                          ? [
+                              {
+                                type: "Button",
+                                data: {
+                                  props: {
+                                    children: [
+                                      {
+                                        type: "InlineContainer",
+                                        id: "block-c13ef416-68c4-4953-9caa-feb2c259f8dd",
+                                        data: {
+                                          style: {
+                                            padding: [
+                                              {
+                                                value: {
+                                                  top: {
+                                                    value: 0,
+                                                    unit: "rem",
+                                                  },
+                                                  bottom: {
+                                                    value: 0,
+                                                    unit: "rem",
+                                                  },
+                                                  left: {
+                                                    value: 0,
+                                                    unit: "rem",
+                                                  },
+                                                  right: {
+                                                    value: 0,
+                                                    unit: "rem",
+                                                  },
+                                                },
+                                              },
+                                            ],
+                                            display: [
+                                              { value: "inline-flex" },
+                                            ],
+                                            flexDirection: [
+                                              { value: "row" },
+                                            ],
+                                            alignItems: [
+                                              { value: "center" },
+                                            ],
+                                            justifyContent: [
+                                              { value: "center" },
+                                            ],
+                                            gap: [
+                                              {
+                                                value: {
+                                                  value: 0.5,
+                                                  unit: "rem",
+                                                },
+                                              },
+                                            ],
+                                          },
+                                          props: {
+                                            children: [
+                                              {
+                                                type: "InlineText",
+                                                id: "block-93ec131d-d25d-499e-aaa6-e40a25e47243",
+                                                data: {
+                                                  props: {
+                                                    text: secondaryNavLabel,
+                                                  },
+                                                },
+                                              },
+                                            ],
                                           },
                                         },
-                                      ],
-                                      display: [
-                                        {
-                                          value: "inline-flex",
-                                        },
-                                      ],
-                                      flexDirection: [
-                                        {
-                                          value: "row",
-                                        },
-                                      ],
-                                      alignItems: [
-                                        {
-                                          value: "center",
-                                        },
-                                      ],
-                                      justifyContent: [
-                                        {
-                                          value: "center",
-                                        },
-                                      ],
-                                      gap: [
-                                        {
-                                          value: {
-                                            value: 0.5,
+                                      },
+                                    ],
+                                    url: secondaryNavUrl,
+                                  },
+                                  style: {
+                                    color: [
+                                      {
+                                        value:
+                                          "var(--value-primary-foreground-color)",
+                                      },
+                                    ],
+                                    padding: [
+                                      {
+                                        value: {
+                                          top: {
+                                            value: 0.75,
+                                            unit: "rem",
+                                          },
+                                          right: {
+                                            value: 1.5,
+                                            unit: "rem",
+                                          },
+                                          bottom: {
+                                            value: 0.75,
+                                            unit: "rem",
+                                          },
+                                          left: {
+                                            value: 1.5,
                                             unit: "rem",
                                           },
                                         },
-                                      ],
-                                    },
-                                    props: {
-                                      children: [
-                                        {
-                                          type: "InlineText",
-                                          id: "block-93ec131d-d25d-499e-aaa6-e40a25e47243",
-                                          data: {
-                                            props: {
-                                              text: homeLabels.cancelOrRescheduleLabel,
-                                            },
+                                      },
+                                    ],
+                                    backgroundColor: [
+                                      {
+                                        value: "var(--value-primary-color)",
+                                      },
+                                    ],
+                                    filter: [
+                                      {
+                                        breakpoint: [],
+                                        state: [
+                                          {
+                                            state: "hover",
+                                            target: { type: "self" },
                                           },
-                                        },
-                                      ],
-                                    },
+                                          {
+                                            state: "focus",
+                                            target: { type: "self" },
+                                          },
+                                          {
+                                            state: "active",
+                                            target: { type: "self" },
+                                          },
+                                        ],
+                                        value: "brightness(0.9)",
+                                      },
+                                    ],
+                                    transition: [
+                                      { value: "all 0.3s ease" },
+                                    ],
+                                    fontSize: [
+                                      {
+                                        value: { value: 1, unit: "rem" },
+                                      },
+                                    ],
+                                    fontWeight: [{ value: "normal" }],
+                                    textAlign: [{ value: "center" }],
+                                    width: [{ value: "max-content" }],
+                                    display: [{ value: "inline-flex" }],
+                                    borderStyle: [
+                                      {
+                                        breakpoint: [],
+                                        state: [],
+                                        value: "none",
+                                      },
+                                    ],
                                   },
                                 },
-                              ],
-                              url: "/book/modify",
-                            },
-                            style: {
-                              color: [
-                                {
-                                  value:
-                                    "var(--value-primary-foreground-color)",
-                                },
-                              ],
-                              padding: [
-                                {
-                                  value: {
-                                    top: {
-                                      value: 0.75,
-                                      unit: "rem",
-                                    },
-                                    right: {
-                                      value: 1.5,
-                                      unit: "rem",
-                                    },
-                                    bottom: {
-                                      value: 0.75,
-                                      unit: "rem",
-                                    },
-                                    left: {
-                                      value: 1.5,
-                                      unit: "rem",
-                                    },
-                                  },
-                                },
-                              ],
-                              backgroundColor: [
-                                {
-                                  value: "var(--value-primary-color)",
-                                },
-                              ],
-                              filter: [
-                                {
-                                  breakpoint: [],
-                                  state: [
-                                    {
-                                      state: "hover",
-                                      target: {
-                                        type: "self",
-                                      },
-                                    },
-                                    {
-                                      state: "focus",
-                                      target: {
-                                        type: "self",
-                                      },
-                                    },
-                                    {
-                                      state: "active",
-                                      target: {
-                                        type: "self",
-                                      },
-                                    },
-                                  ],
-                                  value: "brightness(0.9)",
-                                },
-                              ],
-                              transition: [
-                                {
-                                  value: "all 0.3s ease",
-                                },
-                              ],
-                              fontSize: [
-                                {
-                                  value: {
-                                    value: 1,
-                                    unit: "rem",
-                                  },
-                                },
-                              ],
-                              fontWeight: [
-                                {
-                                  value: "normal",
-                                },
-                              ],
-                              textAlign: [
-                                {
-                                  value: "center",
-                                },
-                              ],
-                              width: [
-                                {
-                                  value: "max-content",
-                                },
-                              ],
-                              display: [
-                                {
-                                  value: "inline-flex",
-                                },
-                              ],
-                              borderStyle: [
-                                {
-                                  breakpoint: [],
-                                  state: [],
-                                  value: "none",
-                                },
-                              ],
-                            },
-                          },
-                          id: "block-d8fb3571-f86d-42b9-987e-9912804727b2",
-                        },
+                                id: "block-d8fb3571-f86d-42b9-987e-9912804727b2",
+                              },
+                            ]
+                          : []),
                         {
                           type: "Button",
                           data: {
@@ -2056,4 +2039,5 @@ export const homeDefaultPage = (
   },
   id: "block-c6b42086-9883-400c-94a0-aa7bdc50da7c",
   type: "PageLayout",
-});
+};
+};

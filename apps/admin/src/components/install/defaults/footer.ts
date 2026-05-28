@@ -1,7 +1,22 @@
 export const footerDefaultPage = (
   hasAddress: boolean,
   footerLabels: Record<string, string>,
-) => ({
+  isMyCabinetEnabled: boolean,
+  isCancelRescheduleEnabled: boolean,
+  myCabinetLabel: string,
+  manageAppointmentLabel: string,
+) => {
+  const showSecondaryNav =
+    isMyCabinetEnabled || isCancelRescheduleEnabled;
+  const secondaryNavUrl = isMyCabinetEnabled
+    ? "/my-cabinet"
+    : "/book/modify";
+  const secondaryNavLabel = isMyCabinetEnabled
+    ? myCabinetLabel
+    : manageAppointmentLabel;
+  const secondaryNavIcon = isMyCabinetEnabled ? "user" : "calendar-sync";
+
+  return {
   data: {
     fontFamily: "PRIMARY",
     fullWidth: true,
@@ -1321,166 +1336,144 @@ export const footerDefaultPage = (
                                 },
                                 id: "block-6a1bae34-fa6c-4ca7-8a87-a97a8618ab47",
                               },
-                              {
-                                type: "Link",
-                                data: {
-                                  props: {
-                                    url: "/book/modify",
-                                    target: "_self",
-                                    children: [
-                                      {
-                                        type: "InlineContainer",
-                                        id: "block-44714013-701e-4847-9730-7de0f5043871",
-                                        data: {
-                                          style: {
-                                            padding: [
-                                              {
-                                                value: {
-                                                  top: {
-                                                    value: 0,
-                                                    unit: "rem",
-                                                  },
-                                                  bottom: {
-                                                    value: 0,
-                                                    unit: "rem",
-                                                  },
-                                                  left: {
-                                                    value: 0,
-                                                    unit: "rem",
-                                                  },
-                                                  right: {
-                                                    value: 0,
-                                                    unit: "rem",
-                                                  },
-                                                },
-                                              },
-                                            ],
-                                            display: [
-                                              {
-                                                value: "inline-flex",
-                                              },
-                                            ],
-                                            flexDirection: [
-                                              {
-                                                value: "row",
-                                              },
-                                            ],
-                                            alignItems: [
-                                              {
-                                                value: "center",
-                                              },
-                                            ],
-                                            justifyContent: [
-                                              {
-                                                value: "center",
-                                              },
-                                            ],
-                                            gap: [
-                                              {
-                                                value: {
-                                                  value: 0.5,
-                                                  unit: "rem",
-                                                },
-                                              },
-                                            ],
-                                            textDecoration: [
-                                              {
-                                                value: "underline",
-                                              },
-                                            ],
-                                          },
-                                          props: {
-                                            children: [
-                                              {
-                                                type: "Icon",
-                                                data: {
-                                                  props: {
-                                                    icon: "calendar-sync",
-                                                  },
-                                                  style: {
-                                                    display: [
-                                                      {
-                                                        value: "inline-block",
-                                                      },
-                                                    ],
-                                                    width: [
-                                                      {
-                                                        value: {
-                                                          value: 1,
+                              ...(showSecondaryNav
+                                ? [
+                                    {
+                                      type: "Link",
+                                      data: {
+                                        props: {
+                                          url: secondaryNavUrl,
+                                          target: "_self",
+                                          children: [
+                                            {
+                                              type: "InlineContainer",
+                                              id: "block-44714013-701e-4847-9730-7de0f5043871",
+                                              data: {
+                                                style: {
+                                                  padding: [
+                                                    {
+                                                      value: {
+                                                        top: {
+                                                          value: 0,
+                                                          unit: "rem",
+                                                        },
+                                                        bottom: {
+                                                          value: 0,
+                                                          unit: "rem",
+                                                        },
+                                                        left: {
+                                                          value: 0,
+                                                          unit: "rem",
+                                                        },
+                                                        right: {
+                                                          value: 0,
                                                           unit: "rem",
                                                         },
                                                       },
-                                                    ],
-                                                    height: [
-                                                      {
-                                                        value: {
-                                                          value: 1,
-                                                          unit: "rem",
+                                                    },
+                                                  ],
+                                                  display: [
+                                                    { value: "inline-flex" },
+                                                  ],
+                                                  flexDirection: [
+                                                    { value: "row" },
+                                                  ],
+                                                  alignItems: [
+                                                    { value: "center" },
+                                                  ],
+                                                  justifyContent: [
+                                                    { value: "center" },
+                                                  ],
+                                                  gap: [
+                                                    {
+                                                      value: {
+                                                        value: 0.5,
+                                                        unit: "rem",
+                                                      },
+                                                    },
+                                                  ],
+                                                  textDecoration: [
+                                                    { value: "underline" },
+                                                  ],
+                                                },
+                                                props: {
+                                                  children: [
+                                                    {
+                                                      type: "Icon",
+                                                      data: {
+                                                        props: {
+                                                          icon: secondaryNavIcon,
+                                                        },
+                                                        style: {
+                                                          display: [
+                                                            {
+                                                              value:
+                                                                "inline-block",
+                                                            },
+                                                          ],
+                                                          width: [
+                                                            {
+                                                              value: {
+                                                                value: 1,
+                                                                unit: "rem",
+                                                              },
+                                                            },
+                                                          ],
+                                                          height: [
+                                                            {
+                                                              value: {
+                                                                value: 1,
+                                                                unit: "rem",
+                                                              },
+                                                            },
+                                                          ],
                                                         },
                                                       },
-                                                    ],
-                                                  },
+                                                      id: "block-d3fcc9af-ef3c-44b7-b9ce-d7f10977bc78",
+                                                    },
+                                                    {
+                                                      type: "InlineText",
+                                                      id: "block-237e1845-30cb-415b-9eb2-5a82bcd72c78",
+                                                      data: {
+                                                        props: {
+                                                          text: secondaryNavLabel,
+                                                        },
+                                                      },
+                                                    },
+                                                  ],
                                                 },
-                                                id: "block-d3fcc9af-ef3c-44b7-b9ce-d7f10977bc78",
                                               },
-                                              {
-                                                type: "InlineText",
-                                                id: "block-237e1845-30cb-415b-9eb2-5a82bcd72c78",
-                                                data: {
-                                                  props: {
-                                                    text: footerLabels.cancelOrRescheduleLabel,
-                                                  },
-                                                },
+                                            },
+                                          ],
+                                        },
+                                        style: {
+                                          color: [
+                                            {
+                                              value:
+                                                "var(--value-primary-color)",
+                                            },
+                                          ],
+                                          fontSize: [
+                                            {
+                                              value: {
+                                                value: 1,
+                                                unit: "rem",
                                               },
-                                            ],
-                                          },
+                                            },
+                                          ],
+                                          fontWeight: [{ value: "normal" }],
+                                          textAlign: [{ value: "left" }],
+                                          width: [{ value: "max-content" }],
+                                          display: [{ value: "inline" }],
+                                          transition: [
+                                            { value: "color 0.2s ease" },
+                                          ],
                                         },
                                       },
-                                    ],
-                                  },
-                                  style: {
-                                    color: [
-                                      {
-                                        value: "var(--value-primary-color)",
-                                      },
-                                    ],
-                                    fontSize: [
-                                      {
-                                        value: {
-                                          value: 1,
-                                          unit: "rem",
-                                        },
-                                      },
-                                    ],
-                                    fontWeight: [
-                                      {
-                                        value: "normal",
-                                      },
-                                    ],
-                                    textAlign: [
-                                      {
-                                        value: "left",
-                                      },
-                                    ],
-                                    width: [
-                                      {
-                                        value: "max-content",
-                                      },
-                                    ],
-                                    display: [
-                                      {
-                                        value: "inline",
-                                      },
-                                    ],
-                                    transition: [
-                                      {
-                                        value: "color 0.2s ease",
-                                      },
-                                    ],
-                                  },
-                                },
-                                id: "block-fac422b8-d62e-44ad-8b80-2fe0421f7515",
-                              },
+                                      id: "block-fac422b8-d62e-44ad-8b80-2fe0421f7515",
+                                    },
+                                  ]
+                                : []),
                             ],
                           },
                         },
@@ -2014,4 +2007,5 @@ export const footerDefaultPage = (
   },
   id: "block-7f5d1479-f2b1-4d51-9de1-aeea631a0e3c",
   type: "PageLayout",
-});
+};
+};

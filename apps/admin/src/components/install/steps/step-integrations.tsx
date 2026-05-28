@@ -204,8 +204,8 @@ export function StepIntegrations() {
       toast.error(t("wizard.integrations.saveError"));
       return;
     }
-    setStep(5);
-    setP((prev) => ({ ...prev, step: 5 }));
+    setStep(6);
+    setP((prev) => ({ ...prev, step: 6 }));
   };
 
   return (
@@ -403,8 +403,8 @@ export function StepIntegrations() {
         <Button
           variant="outline"
           onClick={() => {
-            setStep(3);
-            setP((prev) => ({ ...prev, step: 3 }));
+            setStep(4);
+            setP((prev) => ({ ...prev, step: 4 }));
           }}
         >
           {t("wizard.common.back")}

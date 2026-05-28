@@ -7,6 +7,7 @@ import {
   getInstallCalendarAppsSnapshot,
   getInstallPaymentAppsSnapshot,
   getInstallPreferencesSnapshot,
+  getInstallScheduleSnapshot,
   getInstallServicesSnapshot,
   getInstallWorkspaceSnapshot,
 } from "../../components/install/actions";
@@ -53,12 +54,14 @@ export default async function InstallPage({
     calendarAppsFromServer,
     paymentAppsFromServer,
     preferencesFromServer,
+    scheduleFromServer,
   ] = await Promise.all([
     getInstallWorkspaceSnapshot(),
     getInstallServicesSnapshot(),
     getInstallCalendarAppsSnapshot(),
     getInstallPaymentAppsSnapshot(),
     getInstallPreferencesSnapshot(),
+    getInstallScheduleSnapshot(),
   ]);
 
   return (
@@ -71,6 +74,7 @@ export default async function InstallPage({
       calendarAppsFromServer={calendarAppsFromServer}
       paymentAppsFromServer={paymentAppsFromServer}
       preferencesFromServer={preferencesFromServer}
+      scheduleFromServer={scheduleFromServer}
     />
   );
 }

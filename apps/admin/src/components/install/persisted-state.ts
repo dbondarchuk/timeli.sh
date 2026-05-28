@@ -4,7 +4,8 @@ import {
   ICS_APP_NAME,
   OUTLOOK_APP_NAME,
 } from "@timelish/app-store";
-import { fontsNames, type ConnectedApp } from "@timelish/types";
+import { fontsNames, shiftsSchema, type ConnectedApp, type Schedule } from "@timelish/types";
+import { getDefaultInstallSchedule } from "./default-schedule";
 import {
   getCatalogProfession,
   getDefaultCatalogSeed,
@@ -39,6 +40,12 @@ export function applyInstallCalendarSnapshot(
   merged.caldavCal = isConnected(CALDAV_APP_NAME);
 }
 
+function normalizeInstallSchedule(raw: unknown): Schedule {
+  const parsed = shiftsSchema.safeParse(raw);
+  if (parsed.success) return parsed.data;
+  return getDefaultInstallSchedule();
+}
+
 function normalizeInstallDraft(
   raw: Partial<InstallServiceDraftItem> & { clientId?: string },
 ): InstallServiceDraftItem {
@@ -68,6 +75,7 @@ export function sanitizePersisted(
   serverServices?: InstallServiceServerSnapshot[] | null,
   serverCalendarApps?: ConnectedApp[] | null,
   serverPreferences?: InstallPreferencesServerState | null,
+  serverSchedule?: Schedule | null,
 ): PersistedState {
   const seed = getDefaultCatalogSeed();
   const base = emptyPersisted(seed);
@@ -284,6 +292,16 @@ export function sanitizePersisted(
   }
 
   applyInstallCalendarSnapshot(merged, serverCalendarApps);
+
+  if (serverSchedule) {
+    merged.installSchedule = normalizeInstallSchedule(serverSchedule);
+  } else if (Array.isArray((partialMerged as Partial<PersistedState>).installSchedule)) {
+    merged.installSchedule = normalizeInstallSchedule(
+      (partialMerged as Partial<PersistedState>).installSchedule,
+    );
+  } else {
+    merged.installSchedule = getDefaultInstallSchedule();
+  }
 
   return merged;
 }

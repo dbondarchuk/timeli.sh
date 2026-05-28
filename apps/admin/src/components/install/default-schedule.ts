@@ -1,7 +1,13 @@
 import {
   scheduleConfigurationSchema,
+  type Schedule,
   type ScheduleConfiguration,
 } from "@timelish/types";
+
+/** Mon–Fri 09:00–17:00, weekends closed (Luxon weekdays: 1 = Monday … 7 = Sunday). */
+export function getDefaultInstallSchedule(): Schedule {
+  return getDefaultScheduleConfiguration().schedule;
+}
 
 /** Mon–Fri 09:00–17:00, weekends closed (Luxon weekdays: 1 = Monday … 7 = Sunday). */
 export function getDefaultScheduleConfiguration(): ScheduleConfiguration {

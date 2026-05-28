@@ -17,6 +17,7 @@ import { StepInstallHeader } from "@/components/install/steps/step-install-heade
 import { StepIntegrations } from "@/components/install/steps/step-integrations";
 import { StepPayments } from "@/components/install/steps/step-payments";
 import { StepPersonalization } from "@/components/install/steps/step-personalization";
+import { StepSchedule } from "@/components/install/steps/step-schedule";
 import { StepService } from "@/components/install/steps/step-service";
 import { StepVerify } from "@/components/install/steps/step-verify";
 import type {
@@ -26,7 +27,7 @@ import type {
   PersistedState,
   WizardStep,
 } from "@/components/install/types";
-import type { ConnectedApp } from "@timelish/types";
+import type { ConnectedApp, Schedule } from "@timelish/types";
 import { Spinner } from "@timelish/ui";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -39,6 +40,7 @@ export function InstallWizard({
   calendarAppsFromServer,
   paymentAppsFromServer,
   preferencesFromServer,
+  scheduleFromServer,
 }: {
   email: string;
   emailVerified: boolean;
@@ -48,6 +50,7 @@ export function InstallWizard({
   calendarAppsFromServer: ConnectedApp[];
   paymentAppsFromServer: ConnectedApp[];
   preferencesFromServer: InstallPreferencesServerState | null;
+  scheduleFromServer: Schedule | null;
 }) {
   const { data: session, refetch } = authClient.useSession();
   const topRef = useRef<HTMLDivElement>(null);
@@ -61,6 +64,7 @@ export function InstallWizard({
       servicesFromServer,
       calendarAppsFromServer,
       preferencesFromServer,
+      scheduleFromServer,
     ),
   );
 
@@ -104,14 +108,15 @@ export function InstallWizard({
             servicesFromServer,
             calendarAppsFromServer,
             preferencesFromServer,
+            scheduleFromServer,
           ),
         );
         if (initialVerified) {
           if (parsedStep !== undefined && parsedStep !== "verify") {
             if (typeof parsedStep === "number") {
               let s = parsedStep;
-              if (s > 6) s = 6;
-              setStep(s >= 1 && s <= 6 ? s : 1);
+              if (s > 7) s = 7;
+              setStep(s >= 1 && s <= 7 ? s : 1);
             } else {
               setStep(parsedStep);
             }
@@ -136,6 +141,7 @@ export function InstallWizard({
     servicesFromServer,
     calendarAppsFromServer,
     preferencesFromServer,
+    scheduleFromServer,
   ]);
 
   useEffect(() => {
@@ -162,8 +168,8 @@ export function InstallWizard({
         const parsed = JSON.parse(raw) as { step?: WizardStep };
         if (typeof parsed.step === "number") {
           let s = parsed.step;
-          if (s > 6) s = 6;
-          if (s >= 1 && s <= 6) next = s;
+          if (s > 7) s = 7;
+          if (s >= 1 && s <= 7) next = s;
         }
       }
     } catch {
@@ -241,9 +247,10 @@ export function InstallWizard({
           {step === 1 ? <StepBusiness /> : null}
           {step === 2 ? <StepPersonalization /> : null}
           {step === 3 ? <StepService /> : null}
-          {step === 4 ? <StepIntegrations /> : null}
-          {step === 5 ? <StepPayments /> : null}
-          {step === 6 ? <StepFinish /> : null}
+          {step === 4 ? <StepSchedule /> : null}
+          {step === 5 ? <StepIntegrations /> : null}
+          {step === 6 ? <StepPayments /> : null}
+          {step === 7 ? <StepFinish /> : null}
         </main>
       </div>
     </InstallWizardProvider>

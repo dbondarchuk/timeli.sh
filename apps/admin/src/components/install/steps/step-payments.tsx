@@ -102,8 +102,8 @@ export function StepPayments() {
       toast.error(t("wizard.integrations.saveError"));
       return;
     }
-    setStep(6);
-    setP((prev) => ({ ...prev, step: 6 }));
+    setStep(7);
+    setP((prev) => ({ ...prev, step: 7 }));
   };
 
   const renderPaymentCard = (
@@ -322,8 +322,8 @@ export function StepPayments() {
         <Button
           variant="outline"
           onClick={() => {
-            setStep(4);
-            setP((prev) => ({ ...prev, step: 4 }));
+            setStep(5);
+            setP((prev) => ({ ...prev, step: 5 }));
           }}
         >
           {t("wizard.common.back")}

@@ -1,7 +1,7 @@
 import type { Language } from "@timelish/i18n";
-import type { Country, Currency } from "@timelish/types";
+import type { Country, Currency, Schedule } from "@timelish/types";
 
-export type WizardStep = "verify" | 1 | 2 | 3 | 4 | 5 | 6;
+export type WizardStep = "verify" | 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
 export type InstallServicePriceType = "fixed" | "per_hour";
 
@@ -49,6 +49,8 @@ export type PersistedState = {
   serviceTemplateId: string;
   /** Bookable services (services step); persisted to localStorage and synced to DB on Continue. */
   installServices: InstallServiceDraftItem[];
+  /** Weekly working hours (schedule step); synced to schedule configuration on Continue. */
+  installSchedule: Schedule;
   serviceOptionId?: string;
   /** Catalog template add-on ids the user wants to include (subset of selected service `addons`). */
   serviceSelectedAddonIds: string[];

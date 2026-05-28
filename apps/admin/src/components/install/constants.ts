@@ -1,10 +1,11 @@
+import { getDefaultInstallSchedule } from "./default-schedule";
 import type { PersistedState } from "./types";
 import {
   DEFAULT_WEB_PRIMARY_FONT,
   DEFAULT_WEB_SECONDARY_FONT,
 } from "@timelish/utils";
 
-export const STORAGE_KEY = "timelish-install-v3";
+export const STORAGE_KEY = "timelish-install-v4";
 
 export function newInstallServiceClientId(): string {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
@@ -56,6 +57,7 @@ export function emptyPersisted(
     professionId: seed.professionId,
     serviceTemplateId: seed.serviceTemplateId,
     installServices: [],
+    installSchedule: getDefaultInstallSchedule(),
     serviceOptionId: undefined,
     serviceSelectedAddonIds: [],
     serviceIsCustom: false,
