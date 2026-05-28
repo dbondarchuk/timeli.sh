@@ -50,6 +50,7 @@ export * from "./customers.service";
 export * from "./email";
 export * from "./gift-cards.service";
 export * from "./organization.service";
+export * from "./organization-hostname-cache";
 export * from "./pages.service";
 export * from "./payments.service";
 export * from "./s3-assets-storage";

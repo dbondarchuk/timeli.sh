@@ -7,6 +7,7 @@ import {
 } from "@timelish/types";
 import { ORGANIZATIONS_COLLECTION_NAME } from "./collections";
 import { getDbConnection } from "./database";
+import { invalidateOrganizationHostnameCache } from "./organization-hostname-cache";
 import { BaseService } from "./services/base.service";
 
 const DOMAIN_ALREADY_IN_USE_ERROR = "domain_already_in_use";
@@ -80,9 +81,14 @@ export class OrganizationService
       { $set: { domain: normalized || null } },
     );
 
+    await invalidateOrganizationHostnameCache(
+      previousDomain,
+      normalized ?? null,
+    );
+
     await this.eventService.emit(
       ORGANIZATION_DOMAIN_CHANGED_EVENT_TYPE,
-      { previousDomain, newDomain: null },
+      { previousDomain, newDomain: normalized ?? null },
       source,
     );
   }

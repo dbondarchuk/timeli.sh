@@ -1,6 +1,9 @@
 import { isSubscriptionInactive } from "@/utils/subscription-access";
 import { getBaseLoggerFactory } from "@timelish/logger";
-import { StaticOrganizationService } from "@timelish/services";
+import {
+  resolveOrganizationByHostname,
+  StaticOrganizationService,
+} from "@timelish/services";
 import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
 import { ChainableProxy, MiddlewareProxy } from "./types";
 
@@ -64,7 +67,6 @@ export const withOrganizationId: MiddlewareProxy = (next) => {
     const hostname =
       headers.get("x-forwarded-host") || headers.get("host") || "";
 
-    // const logger = getLoggerFactory("middleware")("withOrganizationId");
     const logger = getBaseLoggerFactory({
       correlationId: request.headers.get("x-correlation-id"),
       sessionId: request.headers.get("x-session-id"),
@@ -78,23 +80,12 @@ export const withOrganizationId: MiddlewareProxy = (next) => {
     let slug: string;
     let organizationId: string;
     let subscriptionStatus = "active";
-    if (hostname.endsWith(process.env.PUBLIC_DOMAIN!)) {
-      slug = hostname.replace(`.${process.env.PUBLIC_DOMAIN!}`, "");
-      const organization =
-        await new StaticOrganizationService().getOrganizationBySlug(slug);
-      if (!organization) {
-        logger.debug({ slug }, "Organization not found by slug");
-        return responseWhenOrganizationNotFound(request, next, event);
-      }
 
-      organizationId = organization._id;
-      subscriptionStatus = organization.polarSubscriptionStatus || "active";
+    const publicDomain = process.env.PUBLIC_DOMAIN;
+    const isPublicDomainHostname =
+      publicDomain && hostname.endsWith(`.${publicDomain}`);
 
-      logger.debug(
-        { organizationId, slug, subscriptionStatus },
-        "Organization found by slug",
-      );
-    } else if (process.env.ORGANIZATION_SLUG) {
+    if (process.env.ORGANIZATION_SLUG && !isPublicDomainHostname) {
       slug = process.env.ORGANIZATION_SLUG;
       const organization =
         await new StaticOrganizationService().getOrganizationBySlug(slug);
@@ -112,21 +103,33 @@ export const withOrganizationId: MiddlewareProxy = (next) => {
         "Organization found by slug: hardcoded",
       );
     } else {
-      const organization =
-        await new StaticOrganizationService().getOrganizationByDomain(hostname);
-      if (!organization) {
-        logger.debug("Organization not found by domain");
+      const resolution = await resolveOrganizationByHostname(hostname);
+      if (!resolution) {
+        logger.debug(
+          { hostname, isPublicDomainHostname },
+          "Organization not found by hostname",
+        );
         return responseWhenOrganizationNotFound(request, next, event);
       }
 
-      organizationId = organization._id;
-      slug = organization.slug;
-      subscriptionStatus = organization.polarSubscriptionStatus || "active";
-      request.headers.set("x-organization-domain", hostname);
+      organizationId = resolution.organizationId;
+      slug = resolution.slug;
+      subscriptionStatus = resolution.subscriptionStatus;
+
+      if (!isPublicDomainHostname) {
+        request.headers.set("x-organization-domain", hostname);
+      }
 
       logger.debug(
-        { organizationId, slug, subscriptionStatus },
-        "Organization found by domain",
+        {
+          organizationId,
+          slug,
+          subscriptionStatus,
+          isPublicDomainHostname,
+        },
+        isPublicDomainHostname
+          ? "Organization found by slug subdomain"
+          : "Organization found by custom domain",
       );
     }
 

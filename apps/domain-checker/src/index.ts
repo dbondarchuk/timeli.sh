@@ -1,5 +1,5 @@
 import { getLoggerFactory } from "@timelish/logger";
-import { StaticOrganizationService } from "@timelish/services";
+import { resolveOrganizationByHostname } from "@timelish/services";
 import dotenv from "dotenv";
 import http from "http";
 import { URL } from "url";
@@ -13,7 +13,7 @@ async function startServer(): Promise<void> {
   logger.info("Starting Domain Checker Server");
 
   // Validate required environment variables
-  const requiredEnvVars = ["MONGODB_URI"];
+  const requiredEnvVars = ["MONGODB_URI", "REDIS_HOST"];
 
   const missingEnvVars = requiredEnvVars.filter(
     (envVar) => !process.env[envVar],
@@ -25,8 +25,6 @@ async function startServer(): Promise<void> {
   }
 
   const port = process.env.PORT || 5555;
-  const organizationService = new StaticOrganizationService();
-
   const server = http.createServer(async (req, res) => {
     // Enable CORS
     res.setHeader("Access-Control-Allow-Origin", "*");
@@ -68,36 +66,8 @@ async function startServer(): Promise<void> {
         }
 
         try {
-          let organization = null;
-          // Check if domain matches {organizationSlug}.{PUBLIC_DOMAIN} pattern
-          const publicDomain = process.env.PUBLIC_DOMAIN;
-          if (publicDomain && domain.endsWith(`.${publicDomain}`)) {
-            logger.debug(
-              { domain, publicDomain },
-              "Checking domain against slug pattern",
-            );
-            const slug = domain.replace(`.${publicDomain}`, "");
-            logger.debug({ slug }, "Slug extracted");
-            organization =
-              await organizationService.getOrganizationBySlug(slug);
-            logger.debug(
-              { organization },
-              `Organization ${organization ? "" : "not "}found by slug`,
-            );
-          }
-
-          // Also check custom domains
-          if (!organization) {
-            logger.debug({ domain }, "Checking domain against custom domains");
-            organization =
-              await organizationService.getOrganizationByDomain(domain);
-            logger.debug(
-              { organization },
-              `Organization ${organization ? "" : "not "}found by domain`,
-            );
-          }
-
-          const isInUse = organization !== null;
+          const resolution = await resolveOrganizationByHostname(domain);
+          const isInUse = resolution !== null;
 
           if (!isInUse) {
             res.writeHead(400, { "Content-Type": "application/json" });

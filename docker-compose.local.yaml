@@ -235,6 +235,11 @@ services:
       - TZ=${TZ:-America/New_York}
       - MONGODB_URI=${MONGODB_URI:-mongodb://mongodb:27017/timelish?retryWrites=true&w=majority}
       - MONGODB_DB=${MONGODB_DB}
+      - REDIS_HOST=${REDIS_HOST:-redis}
+      - REDIS_PORT=${REDIS_PORT:-6379}
+      - REDIS_USERNAME=${REDIS_USERNAME:-}
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-}
+      - REDIS_DB=${REDIS_DB:-0}
       - LOG_LEVEL=${LOG_LEVEL:-debug}
       - PUBLIC_DOMAIN=${PUBLIC_DOMAIN:-localhost:3000}
     restart: unless-stopped

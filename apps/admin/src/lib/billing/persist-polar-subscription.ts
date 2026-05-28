@@ -1,4 +1,5 @@
 import type { Subscription } from "@polar-sh/sdk/models/components/subscription";
+import { invalidateOrganizationHostnameCacheForOrganization } from "@timelish/services";
 import { ORGANIZATIONS_COLLECTION_NAME } from "@timelish/services/collections";
 import { getDbConnection } from "@timelish/services/database";
 import {
@@ -20,7 +21,9 @@ export function organizationIdFromPolarSubscriptionMetadata(
 export async function persistPolarSubscriptionToOrganization(
   subscription: Subscription,
 ): Promise<void> {
-  const orgId = organizationIdFromPolarSubscriptionMetadata(subscription.metadata);
+  const orgId = organizationIdFromPolarSubscriptionMetadata(
+    subscription.metadata,
+  );
   if (!orgId) return;
 
   const newStatus = parseOrganizationSubscriptionStatus(subscription.status);
@@ -42,6 +45,10 @@ export async function persistPolarSubscriptionToOrganization(
   );
 
   if (newStatus && oldStatus !== newStatus) {
+    if (before) {
+      await invalidateOrganizationHostnameCacheForOrganization(before);
+    }
+
     await emitSubscriptionStatusChangedEvent(orgId, {
       oldStatus,
       newStatus,
