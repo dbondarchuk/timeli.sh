@@ -1,6 +1,6 @@
 import type { Redis } from "ioredis";
 
-const HANDLER_TTL_SEC = 60 * 60 * 24 * 7;
+const HANDLER_TTL_SEC = 60 * 60 * 24 * 3;
 
 /** Per-handler idempotency so retries only re-run failed side effects. */
 export async function claimEventHandler(

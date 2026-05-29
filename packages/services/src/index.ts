@@ -22,6 +22,7 @@ import { CustomersService } from "./customers.service";
 import { BullMQEventService, getBullMQEventConfig } from "./events";
 import { GiftCardsService } from "./gift-cards.service";
 import { OrganizationService } from "./organization.service";
+import { CachedPagesService } from "./pages-cached.service";
 import { PagesService } from "./pages.service";
 import { PaymentsService } from "./payments.service";
 import { S3AssetsStorageService } from "./s3-assets-storage";
@@ -52,6 +53,7 @@ export * from "./email";
 export * from "./gift-cards.service";
 export * from "./organization-hostname-cache";
 export * from "./organization.service";
+export * from "./pages-cached.service";
 export * from "./pages.service";
 export * from "./payments.service";
 export * from "./s3-assets-storage";
@@ -143,7 +145,11 @@ export const ServicesContainer: (organizationId: string) => IServicesContainer =
       userService,
     );
 
-    const pagesService = new PagesService(organizationId, eventService);
+    const pagesService = new CachedPagesService(
+      organizationId,
+      eventService,
+      redisClient,
+    );
 
     const templatesService = new TemplatesService(organizationId, eventService);
     const communicationLogsService = new CommunicationLogsService(

@@ -44,6 +44,13 @@ import {
 import { getDbConnection } from "./database";
 import { BaseService } from "./services/base.service";
 
+export type PageRouteEntry = Pick<Page, "_id" | "slug" | "title">;
+
+export type PageRouteMatch = {
+  entry: PageRouteEntry;
+  params: Record<string, string>;
+};
+
 export class PagesService extends BaseService implements IPagesService {
   public constructor(
     organizationId: string,
@@ -81,29 +88,20 @@ export class PagesService extends BaseService implements IPagesService {
     return page;
   }
 
-  public async resolvePage(rawSlug: string): Promise<PageMatchResult | null> {
-    const logger = this.loggerFactory("resolvePage");
-    logger.debug({ rawSlug }, "Resolving page");
+  protected normalizePageSlug(rawSlug: string): string {
+    return rawSlug.replace(/^\/+|\/+$/g, "");
+  }
 
-    const db = await getDbConnection();
-    const pages = db.collection<Page>(PAGES_COLLECTION_NAME);
-
-    const slug = rawSlug.replace(/^\/+|\/+$/g, "");
+  protected matchPageRoute(
+    entries: PageRouteEntry[],
+    rawSlug: string,
+  ): PageRouteMatch | null {
+    const logger = this.loggerFactory("matchPageRoute");
+    const slug = this.normalizePageSlug(rawSlug);
     const slugParts = slug.split("/");
 
-    // Combined query: either exact match OR contains brackets
-    const candidates = await pages
-      .find({
-        $or: [
-          { slug }, // exact match
-          { slug: { $regex: /\[.*?\]/ } }, // dynamic route pattern
-        ],
-        organizationId: this.organizationId,
-      })
-      .toArray();
-
-    // 1. Try exact match first
-    const exact = candidates.find((p) => p.slug === slug);
+    // 1. Try exact match
+    const exact = entries.find((entry) => entry.slug === slug);
     if (exact) {
       logger.debug(
         {
@@ -114,25 +112,25 @@ export class PagesService extends BaseService implements IPagesService {
         },
         "Exact match found",
       );
-      return { page: exact, params: {} };
+      return { entry: exact, params: {} };
     }
 
     // 2. Match dynamic patterns
-    const matches: PageMatchResult[] = [];
+    const matches: PageRouteMatch[] = [];
 
-    for (const page of candidates) {
+    for (const entry of entries) {
       logger.debug(
         {
           rawSlug,
-          pageSlug: page.slug,
-          pageId: page._id,
-          pageTitle: page.title,
+          pageSlug: entry.slug,
+          pageId: entry._id,
+          pageTitle: entry.title,
         },
         "Checking page",
       );
-      if (!page.slug.includes("[")) continue; // skip static pages
+      if (!entry.slug.includes("[")) continue;
 
-      const patternParts = page.slug.split("/");
+      const patternParts = entry.slug.split("/");
       logger.debug({ rawSlug, patternParts }, "Pattern parts");
       if (patternParts.length !== slugParts.length) {
         logger.debug(
@@ -150,8 +148,7 @@ export class PagesService extends BaseService implements IPagesService {
         const slugSegment = slugParts[i];
 
         if (/^\[.+\]$/.test(patternSegment)) {
-          const paramName = patternSegment.slice(1, -1);
-          params[paramName] = slugSegment;
+          params[patternSegment.slice(1, -1)] = slugSegment;
         } else if (patternSegment !== slugSegment) {
           logger.debug(
             { rawSlug, patternSegment, slugSegment },
@@ -169,7 +166,7 @@ export class PagesService extends BaseService implements IPagesService {
 
       if (match) {
         logger.debug({ rawSlug, params }, "Match found");
-        matches.push({ page, params });
+        matches.push({ entry, params });
       }
     }
 
@@ -180,21 +177,62 @@ export class PagesService extends BaseService implements IPagesService {
 
     // 3. Choose the most specific (fewest [param] segments)
     matches.sort((a, b) => {
-      const aDynamic = a.page.slug
-        .split("/")
-        .filter((s) => /^\[.+\]$/.test(s)).length;
-      const bDynamic = b.page.slug
-        .split("/")
-        .filter((s) => /^\[.+\]$/.test(s)).length;
+      const countDynamic = (pageSlug: string) =>
+        pageSlug.split("/").filter((segment) => /^\[.+\]$/.test(segment))
+          .length;
 
-      return aDynamic - bDynamic;
+      return countDynamic(a.entry.slug) - countDynamic(b.entry.slug);
     });
 
     logger.debug(
-      { rawSlug, pageSlug: matches[0]?.page?.slug },
+      { rawSlug, pageSlug: matches[0]?.entry.slug },
       "Page match result",
     );
     return matches[0];
+  }
+
+  protected async fetchPageRouteEntries(): Promise<PageRouteEntry[]> {
+    const logger = this.loggerFactory("fetchPageRouteEntries");
+    logger.debug(
+      { organizationId: this.organizationId },
+      "Fetching page route entries from database",
+    );
+
+    const db = await getDbConnection();
+    const pages = db.collection<Page>(PAGES_COLLECTION_NAME);
+
+    const entries = await pages
+      .find(
+        { organizationId: this.organizationId },
+        { projection: { _id: 1, slug: 1, title: 1 } },
+      )
+      .toArray();
+
+    logger.debug({ count: entries.length }, "Fetched page route entries");
+
+    return entries;
+  }
+
+  public async resolvePage(rawSlug: string): Promise<PageMatchResult | null> {
+    const logger = this.loggerFactory("resolvePage");
+    logger.debug({ rawSlug }, "Resolving page");
+
+    const entries = await this.fetchPageRouteEntries();
+    const match = this.matchPageRoute(entries, rawSlug);
+    if (!match) {
+      return null;
+    }
+
+    const page = await this.getPage(match.entry._id);
+    if (!page) {
+      logger.warn(
+        { rawSlug, pageId: match.entry._id },
+        "Matched page not found in database",
+      );
+      return null;
+    }
+
+    return { page, params: match.params };
   }
 
   public async getPageBySlug(slug: string): Promise<Page | null> {
