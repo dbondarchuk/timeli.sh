@@ -38,8 +38,8 @@ export default function OrganizationNotFoundLayout({
       <style>
         {`@layer base {
   :root {
-    --brand-color: 216 100% 50%;
-    --primary-color: 216 100% 50%;
+    --brand-color: 40 65% 38%;
+    --primary-color: 40 65% 38%;
     --primary-foreground-color: 0 0% 100%;
     --secondary-color: 214 94% 93%;
     --secondary-foreground-color: 224 64% 33%;

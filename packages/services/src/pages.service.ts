@@ -102,7 +102,7 @@ export class PagesService extends BaseService implements IPagesService {
       })
       .toArray();
 
-    // 1️⃣ Try exact match first
+    // 1. Try exact match first
     const exact = candidates.find((p) => p.slug === slug);
     if (exact) {
       logger.debug(
@@ -117,7 +117,7 @@ export class PagesService extends BaseService implements IPagesService {
       return { page: exact, params: {} };
     }
 
-    // 2️⃣ Match dynamic patterns
+    // 2. Match dynamic patterns
     const matches: PageMatchResult[] = [];
 
     for (const page of candidates) {
@@ -178,7 +178,7 @@ export class PagesService extends BaseService implements IPagesService {
       return null;
     }
 
-    // 3️⃣ Choose the most specific (fewest [param] segments)
+    // 3. Choose the most specific (fewest [param] segments)
     matches.sort((a, b) => {
       const aDynamic = a.page.slug
         .split("/")

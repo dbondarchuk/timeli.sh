@@ -8,7 +8,6 @@ import {
   type EventSource,
   type SettingsUpdatedPayload,
 } from "@timelish/types";
-import { cache } from "react";
 import { CONFIGURATION_COLLECTION_NAME } from "./collections";
 import { getDbConnection } from "./database";
 import { BaseService } from "./services/base.service";
@@ -128,29 +127,5 @@ export class ConfigurationService
       { key } satisfies SettingsUpdatedPayload,
       source,
     );
-  }
-}
-
-export class CachedConfigurationService extends ConfigurationService {
-  public constructor(organizationId: string, eventService: IEventService) {
-    super(organizationId, eventService);
-  }
-
-  private cachedGetConfiguration: ConfigurationService["getConfiguration"] =
-    cache(async (option) => await super.getConfiguration(option));
-
-  private cachedGetConfigurations: ConfigurationService["getConfigurations"] =
-    cache(async (...options) => await super.getConfigurations(...options));
-
-  public async getConfiguration<T extends ConfigurationKey>(
-    key: T,
-  ): Promise<ConfigurationOption<T>["value"]> {
-    return await this.cachedGetConfiguration(key);
-  }
-
-  public async getConfigurations<K extends ConfigurationKey>(
-    ...keys: K[]
-  ): Promise<Pick<Configuration, K>> {
-    return await this.cachedGetConfigurations(...keys);
   }
 }

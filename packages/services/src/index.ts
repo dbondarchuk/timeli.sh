@@ -15,7 +15,7 @@ import {
 } from "./bullmq";
 import { getRedisClient } from "./bullmq/redis-client";
 import { CommunicationLogsService } from "./communication-logs.service";
-import { CachedConfigurationService } from "./configuration.service";
+import { CachedConfigurationService } from "./configuration-cached.service";
 import { CachedConnectedAppsService } from "./connected-apps.service";
 import { CustomerAuthService } from "./customer-auth.service";
 import { CustomersService } from "./customers.service";
@@ -43,14 +43,15 @@ export * from "./assets.service";
 export * from "./billing";
 export * from "./booking.service";
 export * from "./communication-logs.service";
+export * from "./configuration-cached.service";
 export * from "./configuration.service";
 export * from "./connected-apps.service";
 export * from "./customer-auth.service";
 export * from "./customers.service";
 export * from "./email";
 export * from "./gift-cards.service";
-export * from "./organization.service";
 export * from "./organization-hostname-cache";
+export * from "./organization.service";
 export * from "./pages.service";
 export * from "./payments.service";
 export * from "./s3-assets-storage";
@@ -79,6 +80,7 @@ export const ServicesContainer: (organizationId: string) => IServicesContainer =
     const configurationService = new CachedConfigurationService(
       organizationId,
       eventService,
+      redisClient,
     );
     const assetsStorage = new S3AssetsStorageService(
       organizationId,

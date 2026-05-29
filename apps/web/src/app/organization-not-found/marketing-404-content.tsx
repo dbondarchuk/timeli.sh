@@ -122,7 +122,10 @@ export function Marketing404Content({
             </Link>
             <span className="text-muted-foreground">or</span>
             <Link size="lg" variant="outline" button href={marketingBaseUrl}>
-              Explore timeli<span className="text-primary">.sh</span>
+              <Sparkles className="size-3.5 text-primary" aria-hidden />
+              <span className="whitespace-nowrap">
+                Explore timeli<span className="text-primary">.sh</span>
+              </span>
             </Link>
           </div>
         </div>

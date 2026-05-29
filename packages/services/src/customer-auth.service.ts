@@ -69,7 +69,10 @@ export class CustomerAuthService
     const config = await this.getCustomerAuthConfig();
     const options = { allowPhoneOtp: config.allowPhoneOtp ?? false };
 
-    logger.debug({ allowPhoneOtp: options.allowPhoneOtp }, "Customer auth options loaded");
+    logger.debug(
+      { allowPhoneOtp: options.allowPhoneOtp },
+      "Customer auth options loaded",
+    );
     return options;
   }
 
@@ -144,14 +147,21 @@ export class CustomerAuthService
     );
 
     logger.debug(
-      { customerId: customer._id, channel, ttlSeconds: CUSTOMER_OTP_TTL_SECONDS },
+      {
+        customerId: customer._id,
+        channel,
+        ttlSeconds: CUSTOMER_OTP_TTL_SECONDS,
+      },
       "OTP stored in Redis",
     );
 
     const organization =
       await this.services.organizationService.getOrganization();
     if (!organization) {
-      logger.error({ customerId: customer._id }, "Organization not found for OTP");
+      logger.error(
+        { customerId: customer._id },
+        "Organization not found for OTP",
+      );
       throw new CustomerAuthError("organization_not_found", 404);
     }
 
@@ -224,7 +234,10 @@ export class CustomerAuthService
     );
 
     if (!rateAllowed) {
-      logger.warn({ channel, ip: payload.ip }, "OTP verify rate limit exceeded");
+      logger.warn(
+        { channel, ip: payload.ip },
+        "OTP verify rate limit exceeded",
+      );
       throw new CustomerAuthError("too_many_requests", 429);
     }
 
@@ -460,7 +473,10 @@ export class CustomerAuthService
       customerId,
     });
 
-    logger.info({ customerId, templateId }, "OTP text message queued for delivery");
+    logger.info(
+      { customerId, templateId },
+      "OTP text message queued for delivery",
+    );
   }
 
   private async consumeRateLimit(
