@@ -8,5 +8,6 @@ export const getS3Configuration = (): S3Configuration => {
     endpoint: process.env.S3_ENDPOINT,
     bucket: process.env.S3_BUCKET,
     forcePathStyle: process.env.S3_FORCE_PATH_STYLE === "true",
+    publicUrlBase: process.env.S3_PUBLIC_URL_BASE,
   };
 };

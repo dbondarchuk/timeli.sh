@@ -15,8 +15,10 @@ import {
   WithTotal,
   type AssetCreatedPayload,
   type AssetDeletedPayload,
+  type AssetDeliveryResult,
   type AssetUpdatedPayload,
   type EventSource,
+  type SupportedFileUrlResult,
 } from "@timelish/types";
 import { buildSearchQuery, escapeRegex } from "@timelish/utils";
 import { createHash } from "crypto";
@@ -266,6 +268,7 @@ export class AssetsService extends BaseService implements IAssetsService {
           filename,
           Readable.fromWeb(file.stream() as any),
           file.size,
+          { contentType: asset.mimeType, publicRead: true },
         );
 
         logger.debug(args, "Saving new asset");
@@ -475,14 +478,7 @@ export class AssetsService extends BaseService implements IAssetsService {
     const logger = this.loggerFactory("streamAsset");
     logger.info({ filename }, "Streaming asset");
 
-    const db = await getDbConnection();
-    const assets = db.collection<AssetEntity>(ASSETS_COLLECTION_NAME);
-
-    const asset = await assets.findOne({
-      filename,
-      organizationId: this.organizationId,
-    });
-
+    const asset = await this.findAssetByFilename(filename);
     if (!asset) {
       logger.warn({ filename }, "Asset not found");
       return null;
@@ -500,6 +496,95 @@ export class AssetsService extends BaseService implements IAssetsService {
     }
 
     return { stream: result.stream, asset };
+  }
+
+  public async getAssetDelivery(
+    filename: string,
+    inline?: boolean,
+  ): Promise<AssetDeliveryResult | null> {
+    const logger = this.loggerFactory("getAssetDelivery");
+    logger.info({ filename }, "Resolving asset delivery");
+
+    const asset = await this.findAssetByFilename(filename);
+    if (!asset) {
+      logger.warn({ filename }, "Asset not found");
+      return null;
+    }
+
+    const urlResult = this.storage.getPublicFileUrl(filename, inline);
+    if (urlResult.supported) {
+      if (!urlResult.url) {
+        logger.warn({ filename }, "Public file URL could not be built");
+        return null;
+      }
+
+      logger.debug(
+        { filename, assetId: asset._id },
+        "Serving asset via public URL redirect",
+      );
+      return { kind: "redirect", url: urlResult.url };
+    }
+
+    logger.debug(
+      { filename, assetId: asset._id },
+      "Public URLs not supported, streaming asset",
+    );
+
+    const result = await this.storage.getFile(filename);
+    if (!result) {
+      logger.warn({ filename }, "File not found");
+      return null;
+    }
+
+    return { kind: "stream", asset, stream: result.stream };
+  }
+
+  public async getAssetUrl(
+    filename: string,
+    inline?: boolean,
+  ): Promise<SupportedFileUrlResult | null> {
+    const logger = this.loggerFactory("getAssetUrl");
+    logger.info({ filename }, "Getting asset URL");
+
+    const asset = await this.findAssetByFilename(filename);
+    if (!asset) {
+      logger.warn({ filename }, "Asset not found");
+      return null;
+    }
+
+    logger.debug(
+      { filename, assetId: asset._id, size: asset.size },
+      "Found asset, getting URL.",
+    );
+
+    return this.storage.getPublicFileUrl(filename, inline);
+  }
+
+  private async findAssetByFilename(
+    filename: string,
+  ): Promise<AssetEntity | null> {
+    const logger = this.loggerFactory("findAssetByFilename");
+    logger.debug({ filename }, "Finding asset by filename");
+
+    const db = await getDbConnection();
+    const assets = db.collection<AssetEntity>(ASSETS_COLLECTION_NAME);
+
+    const asset = await assets.findOne({
+      filename,
+      organizationId: this.organizationId,
+    });
+
+    if (!asset) {
+      logger.warn({ filename }, "Asset not found");
+      return null;
+    }
+
+    logger.debug(
+      { filename, assetId: asset._id, size: asset.size },
+      "Found asset.",
+    );
+
+    return asset;
   }
 
   private get aggregateJoin() {

@@ -38,6 +38,7 @@
     "bullmq": "^5.0.0",
     "ioredis": "^5.3.2",
     "nodemailer": "^6.9.14",
-    "@aws-sdk/client-s3": "^3.782.0"
+    "@aws-sdk/client-s3": "^3.782.0",
+    "@aws-sdk/s3-request-presigner": "^3.782.0"
   }
 }

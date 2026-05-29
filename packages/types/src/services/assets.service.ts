@@ -1,7 +1,12 @@
 import { Readable } from "stream";
+import { SupportedFileUrlResult } from "../apps/assets/assets-storage";
 import { Asset, AssetEntity, AssetUpdate } from "../assets";
 import { Query, WithTotal } from "../database";
 import type { EventSource } from "../events/envelope";
+
+export type AssetDeliveryResult =
+  | { kind: "redirect"; url: string }
+  | { kind: "stream"; asset: AssetEntity; stream: Readable };
 
 export interface IAssetsService {
   getAsset(_id: string): Promise<Asset | null>;
@@ -31,4 +36,12 @@ export interface IAssetsService {
   streamAsset(
     filename: string,
   ): Promise<{ stream: Readable; asset: AssetEntity } | null>;
+  getAssetDelivery(
+    filename: string,
+    inline?: boolean,
+  ): Promise<AssetDeliveryResult | null>;
+  getAssetUrl(
+    filename: string,
+    inline?: boolean,
+  ): Promise<SupportedFileUrlResult | null>;
 }

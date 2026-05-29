@@ -6,6 +6,7 @@
     "dev": "next dev --port 3001 --turbo",
     "generate-font-previews": "node scripts/generate-font-previews.mjs",
     "purge-organization": "node scripts/purge-organization.mjs",
+    "make-assets-public": "node scripts/make-assets-public.mjs",
     "build": "next build --turbo",
     "typegen": "next typegen",
     "start": "next start --port 3001",

@@ -6,9 +6,11 @@ import {
   PutObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
-import { IAssetsStorage } from "@timelish/types";
+import { IAssetsStorage, SaveFileOptions, SupportedFileUrlResult, FileDeliveryResult } from "@timelish/types";
 import { maskify } from "@timelish/utils";
+import { basename } from "path";
 import { Readable } from "stream";
 import { S3Configuration } from "./types";
 
@@ -82,10 +84,110 @@ export class S3AssetsStorageService implements IAssetsStorage {
     }
   }
 
+  public getPublicFileUrl(
+    filename: string,
+    _inline?: boolean,
+  ): SupportedFileUrlResult {
+    const logger = this.loggerFactory("getPublicFileUrl");
+
+    if (!this.s3Configuration.publicUrlBase) {
+      logger.debug({ filename }, "Public file URLs are not configured");
+      return { supported: false };
+    }
+
+    const fileKey = this.getKey(filename);
+
+    try {
+      const url = this.buildPublicUrl(fileKey);
+      logger.debug({ filename, fileKey, url }, "Built public file URL");
+      return { supported: true, url };
+    } catch (error: any) {
+      logger.error(
+        { filename, fileKey, error: error?.message || error?.toString() },
+        "Error building public file URL",
+      );
+      return { supported: true, url: null };
+    }
+  }
+
+  public async getPresignedFileUrl(
+    filename: string,
+    inline?: boolean,
+  ): Promise<SupportedFileUrlResult> {
+    const logger = this.loggerFactory("getPresignedFileUrl");
+    logger.debug(
+      { filename, bucket: this.getBucketName() },
+      "Getting pre-signed file URL from S3",
+    );
+
+    const fileKey = this.getKey(filename);
+    try {
+      const fileName = basename(filename);
+      const client = this.getClient();
+      const command = new GetObjectCommand({
+        Bucket: this.getBucketName(),
+        Key: fileKey,
+        ResponseContentDisposition: inline
+          ? "inline"
+          : `attachment; filename="${fileName}"`,
+      });
+
+      const url = await getSignedUrl(client as any, command as any, {
+        expiresIn: 60 * 10, // 10 minutes
+      });
+
+      logger.debug(
+        { filename, fileKey, url },
+        "Successfully got pre-signed file URL from S3",
+      );
+
+      return { supported: true, url };
+    } catch (error: any) {
+      logger.error(
+        { filename, fileKey, error: error?.message || error?.toString() },
+        "Error getting pre-signed file URL from S3",
+      );
+
+      return { supported: true, url: null };
+    }
+  }
+
+  public async getFileDelivery(
+    filename: string,
+    inline?: boolean,
+  ): Promise<FileDeliveryResult | null> {
+    const logger = this.loggerFactory("getFileDelivery");
+    logger.debug({ filename }, "Resolving file delivery");
+
+    const urlResult = await this.getPresignedFileUrl(filename, inline);
+    if (urlResult.supported) {
+      if (!urlResult.url) {
+        logger.warn({ filename }, "Presigned file URL could not be built");
+        return null;
+      }
+
+      return { kind: "redirect", url: urlResult.url };
+    }
+
+    logger.debug({ filename }, "Presigned URLs not supported, streaming file");
+
+    const result = await this.getFile(filename);
+    if (!result) {
+      return null;
+    }
+
+    return {
+      kind: "stream",
+      stream: result.stream,
+      contentLength: result.contentLength,
+    };
+  }
+
   public async saveFile(
     filename: string,
     file: Readable,
     fileLength: number,
+    options?: SaveFileOptions,
   ): Promise<void> {
     const logger = this.loggerFactory("saveFile");
     logger.debug(
@@ -93,6 +195,8 @@ export class S3AssetsStorageService implements IAssetsStorage {
         filename,
         fileLength,
         bucket: this.getBucketName(),
+        publicRead: options?.publicRead,
+        contentType: options?.contentType,
       },
       "Saving file to S3",
     );
@@ -100,6 +204,7 @@ export class S3AssetsStorageService implements IAssetsStorage {
     const fileKey = this.getKey(filename);
     try {
       const client = this.getClient();
+      const fileName = basename(filename);
 
       await client.send(
         new PutObjectCommand({
@@ -107,6 +212,17 @@ export class S3AssetsStorageService implements IAssetsStorage {
           Key: fileKey,
           Body: file,
           ContentLength: fileLength,
+          ...(options?.contentType ? { ContentType: options.contentType } : {}),
+          ...(options?.publicRead
+            ? {
+                ACL: "public-read",
+                CacheControl: "public, max-age=31536000, immutable",
+                ContentDisposition: this.getUploadContentDisposition(
+                  options.contentType,
+                  fileName,
+                ),
+              }
+            : {}),
         }),
       );
 
@@ -324,5 +440,38 @@ export class S3AssetsStorageService implements IAssetsStorage {
 
   private getKey(filename: string) {
     return `${this.organizationId}/${filename}`;
+  }
+
+  private buildPublicUrl(key: string): string {
+    const publicUrlBase = this.s3Configuration.publicUrlBase;
+    if (!publicUrlBase) {
+      throw new Error("Public URL base is not configured");
+    }
+
+    return `${publicUrlBase.replace(/\/$/, "")}/${key}`;
+  }
+
+  private getUploadContentDisposition(
+    contentType: string | undefined,
+    fileName: string,
+  ): string {
+    if (this.isInlineContentType(contentType)) {
+      return "inline";
+    }
+
+    return `attachment; filename="${fileName}"`;
+  }
+
+  private isInlineContentType(contentType: string | undefined): boolean {
+    if (!contentType) {
+      return false;
+    }
+
+    return (
+      contentType.startsWith("image/") ||
+      contentType.startsWith("video/") ||
+      contentType.startsWith("audio/") ||
+      contentType === "application/pdf"
+    );
   }
 }

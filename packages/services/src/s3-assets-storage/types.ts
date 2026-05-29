@@ -5,4 +5,5 @@ export type S3Configuration = {
   endpoint?: string | undefined;
   bucket?: string | undefined;
   forcePathStyle?: boolean | undefined;
+  publicUrlBase?: string | undefined;
 };

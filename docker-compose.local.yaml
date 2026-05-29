@@ -36,6 +36,7 @@ services:
       - S3_ENDPOINT=${S3_ENDPOINT:-http://s3:8080}
       - S3_BUCKET=${S3_BUCKET:-assets}
       - S3_FORCE_PATH_STYLE=${S3_FORCE_PATH_STYLE:-true}
+      - S3_PUBLIC_URL_BASE=${S3_PUBLIC_URL_BASE:-http://assets.local:8080}
       - TEXTBELT_API_KEY=${TEXTBELT_API_KEY}
     restart: unless-stopped
     ports:
@@ -84,7 +85,8 @@ services:
       - S3_ENDPOINT=${S3_ENDPOINT:-http://s3:8080}
       - S3_BUCKET=${S3_BUCKET:-assets}
       - S3_FORCE_PATH_STYLE=${S3_FORCE_PATH_STYLE:-true}
-      - ORGANIZATION_SLUG=${ORGANIZATION_SLUG:-timelish}
+      - S3_PUBLIC_URL_BASE=${S3_PUBLIC_URL_BASE:-http://assets.local:8080}
+      # - ORGANIZATION_SLUG=${ORGANIZATION_SLUG:-timelish}
     restart: unless-stopped
     ports:
       - "3000:3000"
@@ -138,6 +140,7 @@ services:
       - SMTP_AUTH_USER=${SMTP_AUTH_USER:-timelish@example.com}
       - SMTP_AUTH_PASS=${SMTP_AUTH_PASS:-"secure_password"}
       - TEXTBELT_API_KEY=${TEXTBELT_API_KEY}
+      - S3_PUBLIC_URL_BASE=${S3_PUBLIC_URL_BASE:-http://assets.local:8080}
     restart: unless-stopped
     networks:
       - timelish-network
@@ -177,6 +180,7 @@ services:
       - S3_ENDPOINT=${S3_ENDPOINT:-http://s3:8080}
       - S3_BUCKET=${S3_BUCKET:-assets}
       - S3_FORCE_PATH_STYLE=${S3_FORCE_PATH_STYLE:-true}
+      - S3_PUBLIC_URL_BASE=${S3_PUBLIC_URL_BASE:-http://assets.local:8080}
     restart: unless-stopped
     networks:
       - timelish-network
@@ -216,6 +220,7 @@ services:
       - S3_ENDPOINT=${S3_ENDPOINT:-http://s3:8080}
       - S3_BUCKET=${S3_BUCKET:-assets}
       - S3_FORCE_PATH_STYLE=${S3_FORCE_PATH_STYLE:-true}
+      - S3_PUBLIC_URL_BASE=${S3_PUBLIC_URL_BASE:-http://assets.local:8080}
     restart: unless-stopped
     ports:
       - "5556:5556"
@@ -286,6 +291,8 @@ services:
       - timelish-network
     volumes:
       - s3-data:/data
+    environment:
+      - LOCAL_S3_LOGGING_LEVEL=DEBUG
 
 networks:
   timelish-network:
