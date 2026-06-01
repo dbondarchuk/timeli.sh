@@ -1,12 +1,14 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { adminApi } from "@timelish/api-sdk";
 import { useI18n } from "@timelish/i18n";
 import { PlateEditor } from "@timelish/rte";
 import { DatabaseId } from "@timelish/types";
 import {
   BooleanSelect,
   Breadcrumbs,
+  Combobox,
   DateTimePicker,
   Form,
   FormControl,
@@ -16,6 +18,11 @@ import {
   FormMessage,
   InfoTooltip,
   Input,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
   TagInput,
   toastPromise,
   use12HourFormat,
@@ -31,7 +38,10 @@ import {
   createBlogPost,
   updateBlogPost,
 } from "./actions";
+import type { OrganizationAuthorUser } from "./author-actions";
+import { getOrganizationAuthorUsers } from "./author-actions";
 import {
+  BlogPostAuthor,
   blogPostSchema,
   blogPostTagSchema,
   BlogPostUpdateModel,
@@ -64,6 +74,7 @@ export const BlogPostForm: React.FC<{
 
   const [loading, setLoading] = useState(false);
   const [slugManuallyChanged, setSlugManuallyChanged] = useState(false);
+  const [authorUsers, setAuthorUsers] = useState<OrganizationAuthorUser[]>([]);
   const router = useRouter();
 
   const cachedUniqueSlugCheck = useDebounceCacheFn(
@@ -84,13 +95,64 @@ export const BlogPostForm: React.FC<{
     resolver: zodResolver(formSchema),
     mode: "all",
     reValidateMode: "onChange",
-    defaultValues: initialData || {
+    defaultValues: initialData ?? {
       isPublished: true,
       publicationDate: new Date(),
       tags: [],
       content: [],
+      author: { type: "user", id: "" },
     },
   });
+
+  React.useEffect(() => {
+    let cancelled = false;
+    void getOrganizationAuthorUsers().then((users) => {
+      if (!cancelled) {
+        setAuthorUsers(users);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  React.useEffect(() => {
+    if (initialData?._id) {
+      return;
+    }
+
+    if (initialData?.author) {
+      return;
+    }
+
+    let cancelled = false;
+    void adminApi.users.getMyUser().then((user) => {
+      if (cancelled) {
+        return;
+      }
+      form.setValue(
+        "author",
+        { type: "user", id: user._id.toString() },
+        { shouldValidate: true },
+      );
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [initialData, form]);
+
+  React.useEffect(() => {
+    if (!initialData || initialData._id) {
+      return;
+    }
+
+    if (!initialData.author) {
+      return;
+    }
+
+    form.setValue("author", initialData.author, { shouldValidate: true });
+  }, [initialData, form]);
 
   const slug = form.watch("slug");
   const title = form.watch("title");
@@ -281,6 +343,103 @@ export const BlogPostForm: React.FC<{
                   <FormMessage />
                 </FormItem>
               )}
+            />
+
+            <FormField
+              control={form.control}
+              name="author"
+              render={({ field }) => {
+                const authorValue = field.value as BlogPostAuthor | undefined;
+                const authorSource = authorValue?.type ?? "user";
+
+                return (
+                  <FormItem className="w-full">
+                    <FormLabel>
+                      <span>{t("form.author.label")}</span>{" "}
+                      <InfoTooltip>{t("form.author.tooltip")}</InfoTooltip>
+                    </FormLabel>
+                    <Select
+                      disabled={loading}
+                      value={authorSource}
+                      onValueChange={(value: "user" | "custom") => {
+                        if (value === "user") {
+                          field.onChange({
+                            type: "user",
+                            id:
+                              authorValue?.type === "user"
+                                ? authorValue.id
+                                : "",
+                          });
+                        } else {
+                          field.onChange({
+                            type: "custom",
+                            name:
+                              authorValue?.type === "custom"
+                                ? authorValue.name
+                                : "",
+                          });
+                        }
+                        void form.trigger("author");
+                      }}
+                    >
+                      <FormControl>
+                        <SelectTrigger className="h-8 text-xs">
+                          <SelectValue />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="user">
+                          {t("form.author.source.user")}
+                        </SelectItem>
+                        <SelectItem value="custom">
+                          {t("form.author.source.custom")}
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                    {authorSource === "user" ? (
+                      <Combobox
+                        disabled={loading}
+                        value={
+                          authorValue?.type === "user" ? authorValue.id : ""
+                        }
+                        onItemSelect={(value) => {
+                          field.onChange({ type: "user", id: value });
+                          field.onBlur();
+                          form.trigger("author");
+                        }}
+                        values={authorUsers.map((user) => ({
+                          value: user.id,
+                          label: user.name,
+                        }))}
+                        placeholder={t("form.author.userPlaceholder")}
+                      />
+                    ) : (
+                      <FormControl>
+                        <Input
+                          disabled={loading}
+                          placeholder={t("form.author.customNamePlaceholder")}
+                          value={
+                            authorValue?.type === "custom"
+                              ? authorValue.name
+                              : ""
+                          }
+                          onChange={(e) => {
+                            field.onChange({
+                              type: "custom",
+                              name: e.target.value,
+                            });
+                          }}
+                          onBlur={() => {
+                            field.onBlur();
+                            void form.trigger("author");
+                          }}
+                        />
+                      </FormControl>
+                    )}
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
             />
 
             <FormField

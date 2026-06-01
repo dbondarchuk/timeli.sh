@@ -45,6 +45,16 @@ form:
   publicationDateTooltip: When this post should be published
   tags: Tags
   tagsTooltip: Tags to categorize this post
+  author:
+    label: Author
+    tooltip: Who wrote this blog post
+    source:
+      user: Organization user
+      custom: Custom name
+    user: User
+    userPlaceholder: Select a user
+    customName: Author name
+    customNamePlaceholder: Enter author name
   toasts:
     changesSaved: Blog post saved successfully
     requestError: Error saving blog post
@@ -112,6 +122,16 @@ block:
       customDdMmYyyy: "Custom: dd/MM/yyyy"
       customMmDdYyyy: "Custom: MM/dd/yyyy"
       customYyyyMmDd: "Custom: yyyy-MM-dd"
+  postReadTime:
+    displayName: Blog Post Read Time
+    format:
+      label: Read Time Format
+    wordsPerMinute:
+      label: Words per minute
+  postAuthor:
+    displayName: Blog Post Author
+    format:
+      label: Author Format
   postsContainer:
     displayName: Blog Posts Container
     postsPerPage:
@@ -131,6 +151,8 @@ block:
       displayName: Blog Post Title Header
     postTags:
       displayName: Blog Post Tags
+    postMeta:
+      displayName: Blog Post Meta
     post:
       displayName: Blog Post
     postsList:
@@ -156,4 +178,8 @@ validation:
       unique: Slug should be unique
     publicationDate:
       required: Publish date is required
+    author:
+      required: Author is required
+    authorName:
+      max: Author name should not exceed 256 characters
 

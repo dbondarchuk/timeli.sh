@@ -6,9 +6,11 @@ import {
   TemplatesConfiguration,
 } from "@timelish/builder";
 import { AllKeys } from "@timelish/i18n";
+import { TEXT_SIZE_PRESETS } from "@timelish/page-builder-base";
 import { COLORS } from "@timelish/page-builder-base/style";
 import {
   ArrowLeftRight,
+  CalendarClock,
   FileText,
   Heading,
   ListOrdered,
@@ -18,7 +20,9 @@ import { BlogAdminKeys, BlogAdminNamespace } from "../translations/types";
 import { BlogPostContainerPropsDefaults } from "./post-container/schema";
 import { BlogPostContentPropsDefaults } from "./post-content/schema";
 import { BlogPostNavigationButtonPropsDefaults } from "./post-navigation-button/schema";
+import { BlogPostAuthorPropsDefaults } from "./post-author/schema";
 import { BlogPostPublishDatePropsDefaults } from "./post-publish-date/schema";
+import { BlogPostReadTimePropsDefaults } from "./post-read-time/schema";
 import { BlogPostTagPropsDefaults } from "./post-tag/schema";
 import { BlogPostTitlePropsDefaults } from "./post-title/schema";
 import { BlogPostsContainerPropsDefaults } from "./posts-container/schema";
@@ -216,6 +220,83 @@ const inlineContainerStyle = {
   ],
 };
 
+const smTextPreset = TEXT_SIZE_PRESETS.find((preset) => preset.key === "sm")!;
+
+const postMetaInlineContainerStyle = {
+  ...inlineContainerStyle,
+  fontSize: [{ value: smTextPreset.fontSize }],
+  lineHeight: [{ value: smTextPreset.lineHeight }],
+  justifyContent: [
+    {
+      value: "flex-start",
+    },
+  ],
+};
+
+const createPostMetaSeparator = (id: string) => ({
+  type: "InlineText" as const,
+  id,
+  data: {
+    props: {
+      text: "|",
+    },
+    style: {},
+  },
+});
+
+const createPostMetaInlineContainer = ({
+  containerId,
+  authorId,
+  publishDateSeparatorId,
+  publishDateId,
+  readTimeSeparatorId,
+  readTimeId,
+}: {
+  containerId: string;
+  authorId: string;
+  publishDateSeparatorId: string;
+  publishDateId: string;
+  readTimeSeparatorId: string;
+  readTimeId: string;
+}) => ({
+  type: "InlineContainer" as const,
+  id: containerId,
+  data: {
+    style: postMetaInlineContainerStyle,
+    props: {
+      children: [
+        {
+          type: "BlogPostAuthor" as const,
+          id: authorId,
+          data: BlogPostAuthorPropsDefaults,
+        },
+        createPostMetaSeparator(publishDateSeparatorId),
+        {
+          type: "BlogPostPublishDate" as const,
+          id: publishDateId,
+          data: BlogPostPublishDatePropsDefaults,
+        },
+        createPostMetaSeparator(readTimeSeparatorId),
+        {
+          type: "BlogPostReadTime" as const,
+          id: readTimeId,
+          data: BlogPostReadTimePropsDefaults,
+        },
+      ],
+    },
+  },
+});
+
+const getPostMetaBlock = (): TEditorBlock =>
+  createPostMetaInlineContainer({
+    containerId: generateId(),
+    authorId: generateId(),
+    publishDateSeparatorId: generateId(),
+    publishDateId: generateId(),
+    readTimeSeparatorId: generateId(),
+    readTimeId: generateId(),
+  }) as TEditorBlock;
+
 // Defaults for Heading
 const getHeadingPropsDefaults = (isPostPage?: boolean) => ({
   props: {
@@ -335,6 +416,19 @@ export const BlogTemplates: (
       };
     },
   },
+  PostMeta: {
+    displayName:
+      "app_blog_admin.block.templates.postMeta.displayName" satisfies AllKeys<
+        BlogAdminNamespace,
+        BlogAdminKeys
+      >,
+    icon: <CalendarClock />,
+    category: "app_blog_admin.block.category.blog" satisfies AllKeys<
+      BlogAdminNamespace,
+      BlogAdminKeys
+    >,
+    getBlock: (): TEditorBlock => getPostMetaBlock(),
+  },
   BlogPost: {
     displayName:
       "app_blog_admin.block.templates.post.displayName" satisfies AllKeys<
@@ -350,7 +444,6 @@ export const BlogTemplates: (
       const containerId = generateId();
       const titleHeaderId = generateId();
       const titleId = generateId();
-      const publishDateId = generateId();
       const contentId = generateId();
       const tagsId = generateId();
       const foreachId = generateId();
@@ -384,12 +477,7 @@ export const BlogTemplates: (
                   },
                 },
               },
-              ,
-              {
-                type: "BlogPostPublishDate",
-                id: publishDateId,
-                data: BlogPostPublishDatePropsDefaults,
-              },
+              getPostMetaBlock(),
               {
                 type: "BlogPostContent",
                 id: contentId,
@@ -536,7 +624,6 @@ export const BlogTemplates: (
       const blogPostContainerId = generateId();
       const titleHeaderId = generateId();
       const titleId = generateId();
-      const publishDateId = generateId();
       const contentId = generateId();
       const tagsForeachId = generateId();
       const tagId = generateId();
@@ -602,11 +689,7 @@ export const BlogTemplates: (
                                   },
                                 },
                               },
-                              {
-                                type: "BlogPostPublishDate",
-                                id: publishDateId,
-                                data: BlogPostPublishDatePropsDefaults,
-                              },
+                              getPostMetaBlock(),
                               {
                                 type: "BlogPostContent",
                                 id: contentId,

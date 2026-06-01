@@ -12,6 +12,18 @@ block:
   postContent:
     notFound: Запис блогу не знайдено
     publishedOn: Опубліковано
+  postReadTime:
+    formats:
+      minRead: "{minutes} хв читання"
+      min: "{minutes} хв"
+      minutesRead: "{minutes, plural, =1 {{minutes} хвилина} few {# хвилини} other {{minutes} хвилин}} читання"
+  postAuthor:
+    missingAuthor: Автора не налаштовано
+    formats:
+      name: "{name}"
+      publishedBy: "Опубліковано {name}"
+      by: "Від {name}"
+      author: "Автор: {name}"
   tagList:
     title: Теги
     noTags: Немає доступних тегів
@@ -19,4 +31,3 @@ errors:
   blogAppNotConfigured:
     title: Застосунок блогу не налаштований
     description: Застосунок блогу не налаштований. Будь ласка, налаштуйте застосунок блогу для використання цього блоку.
-

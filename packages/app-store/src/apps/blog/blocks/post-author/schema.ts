@@ -6,7 +6,7 @@ import * as z from "zod";
 export const styles = ALL_STYLES;
 export const zStyles = getStylesSchema(styles);
 
-export const BlogPostPublishDatePropsSchema = z.object({
+export const BlogPostAuthorPropsSchema = z.object({
   props: z
     .object({
       format: z.string().optional().nullable(),
@@ -16,15 +16,15 @@ export const BlogPostPublishDatePropsSchema = z.object({
   style: zStyles,
 });
 
-export type BlogPostPublishDateProps = Prettify<
-  z.infer<typeof BlogPostPublishDatePropsSchema>
+export type BlogPostAuthorProps = Prettify<
+  z.infer<typeof BlogPostAuthorPropsSchema>
 >;
-export type BlogPostPublishDateReaderProps = BaseReaderBlockProps<any> &
-  BlogPostPublishDateProps;
+export type BlogPostAuthorReaderProps = BaseReaderBlockProps<any> &
+  BlogPostAuthorProps;
 
-export const BlogPostPublishDatePropsDefaults = {
+export const BlogPostAuthorPropsDefaults = {
   props: {
-    format: "MMMM d, yyyy",
+    format: "name",
   },
   style: {},
-} as const satisfies BlogPostPublishDateProps;
+} as const satisfies BlogPostAuthorProps;

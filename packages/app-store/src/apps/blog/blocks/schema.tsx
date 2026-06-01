@@ -3,9 +3,11 @@ import { AllKeys } from "@timelish/i18n";
 import {
   ArrowRight,
   Calendar,
+  Clock,
   FileText,
   Heading,
   SquareSquare,
+  User,
 } from "lucide-react";
 import { BlogAdminKeys, BlogAdminNamespace } from "../translations/types";
 import { BlogPostContainerConfiguration } from "./post-container/configuration";
@@ -34,6 +36,18 @@ import {
   BlogPostPublishDatePropsDefaults,
   BlogPostPublishDatePropsSchema,
 } from "./post-publish-date/schema";
+import { BlogPostAuthorConfiguration } from "./post-author/configuration";
+import { BlogPostAuthorEditor } from "./post-author/editor";
+import {
+  BlogPostAuthorPropsDefaults,
+  BlogPostAuthorPropsSchema,
+} from "./post-author/schema";
+import { BlogPostReadTimeConfiguration } from "./post-read-time/configuration";
+import { BlogPostReadTimeEditor } from "./post-read-time/editor";
+import {
+  BlogPostReadTimePropsDefaults,
+  BlogPostReadTimePropsSchema,
+} from "./post-read-time/schema";
 import { BlogPostTagConfiguration } from "./post-tag/configuration";
 import { BlogPostTagEditor } from "./post-tag/editor";
 import {
@@ -60,6 +74,8 @@ export const BlogBlocksSchema = {
   BlogPostContent: BlogPostContentPropsSchema,
   BlogPostTag: BlogPostTagPropsSchema,
   BlogPostPublishDate: BlogPostPublishDatePropsSchema,
+  BlogPostReadTime: BlogPostReadTimePropsSchema,
+  BlogPostAuthor: BlogPostAuthorPropsSchema,
   BlogPostsContainer: BlogPostsContainerPropsSchema,
   BlogPostNavigationButton: BlogPostNavigationButtonPropsSchema,
 };
@@ -70,6 +86,8 @@ export const BlogBlocksAllowedInFooter = {
   BlogPostContent: false,
   BlogPostTag: false,
   BlogPostPublishDate: false,
+  BlogPostReadTime: false,
+  BlogPostAuthor: false,
   BlogPostsContainer: false,
   BlogPostNavigationButton: false,
 };
@@ -163,6 +181,40 @@ export const BlogEditors: EditorDocumentBlocksDictionary<
     >,
     capabilities: ["inline", "blog-post-publish-date"],
     tags: ["blog", "blog-post-publish-date"],
+  },
+  BlogPostReadTime: {
+    displayName:
+      "app_blog_admin.block.postReadTime.displayName" satisfies AllKeys<
+        BlogAdminNamespace,
+        BlogAdminKeys
+      >,
+    icon: <Clock />,
+    Configuration: BlogPostReadTimeConfiguration,
+    Editor: BlogPostReadTimeEditor,
+    defaultValue: BlogPostReadTimePropsDefaults,
+    category: "app_blog_admin.block.category.blog" satisfies AllKeys<
+      BlogAdminNamespace,
+      BlogAdminKeys
+    >,
+    capabilities: ["inline", "blog-post-read-time"],
+    tags: ["blog", "blog-post-read-time"],
+  },
+  BlogPostAuthor: {
+    displayName:
+      "app_blog_admin.block.postAuthor.displayName" satisfies AllKeys<
+        BlogAdminNamespace,
+        BlogAdminKeys
+      >,
+    icon: <User />,
+    Configuration: BlogPostAuthorConfiguration,
+    Editor: BlogPostAuthorEditor,
+    defaultValue: BlogPostAuthorPropsDefaults,
+    category: "app_blog_admin.block.category.blog" satisfies AllKeys<
+      BlogAdminNamespace,
+      BlogAdminKeys
+    >,
+    capabilities: ["inline", "blog-post-author"],
+    tags: ["blog", "blog-post-author"],
   },
   BlogPostsContainer: {
     displayName:

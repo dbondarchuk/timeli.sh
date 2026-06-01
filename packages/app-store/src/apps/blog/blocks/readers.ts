@@ -2,7 +2,9 @@ import { ReaderDocumentBlocksDictionary } from "@timelish/builder";
 import { BlogPostContainerReader } from "./post-container/reader";
 import { BlogPostContentReader } from "./post-content/reader";
 import { BlogPostNavigationButtonReader } from "./post-navigation-button/reader";
+import { BlogPostAuthorReader } from "./post-author/reader";
 import { BlogPostPublishDateReader } from "./post-publish-date/reader";
+import { BlogPostReadTimeReader } from "./post-read-time/reader";
 import { BlogPostTagReader } from "./post-tag/reader";
 import { BlogPostTitleReader } from "./post-title/reader";
 import { BlogPostsContainerReader } from "./posts-container/reader";
@@ -25,6 +27,12 @@ export const BlogReaders: ReaderDocumentBlocksDictionary<
   },
   BlogPostPublishDate: {
     Reader: BlogPostPublishDateReader,
+  },
+  BlogPostReadTime: {
+    Reader: BlogPostReadTimeReader,
+  },
+  BlogPostAuthor: {
+    Reader: BlogPostAuthorReader,
   },
   BlogPostsContainer: {
     Reader: BlogPostsContainerReader,

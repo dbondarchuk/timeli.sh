@@ -12,6 +12,18 @@ block:
   postContent:
     notFound: Blog post not found
     publishedOn: Published on
+  postReadTime:
+    formats:
+      minRead: "{minutes} min read"
+      min: "{minutes} min"
+      minutesRead: "{minutes, plural, =0 {{minutes} minute} one {{minutes} minute} other {{minutes} minutes}} read"
+  postAuthor:
+    missingAuthor: Author not configured
+    formats:
+      name: "{name}"
+      publishedBy: "Published by {name}"
+      by: "By {name}"
+      author: "Author: {name}"
   tagList:
     title: Tags
     noTags: No tags available
@@ -19,4 +31,3 @@ errors:
   blogAppNotConfigured:
     title: Blog app not configured
     description: Blog app not configured. Please configure the blog app to use this block.
-

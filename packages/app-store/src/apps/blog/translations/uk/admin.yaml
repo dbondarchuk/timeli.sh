@@ -45,6 +45,16 @@ form:
   publicationDateTooltip: Коли слід опублікувати запис
   tags: Теги
   tagsTooltip: Теги для категоризації запису
+  author:
+    label: Автор
+    tooltip: Хто написав цей запис блогу
+    source:
+      user: Користувач організації
+      custom: Власне ім'я
+    user: Користувач
+    userPlaceholder: Оберіть користувача
+    customName: Ім'я автора
+    customNamePlaceholder: Введіть ім'я автора
   toasts:
     changesSaved: Запис блогу збережено
     requestError: Помилка збереження запису
@@ -112,6 +122,16 @@ block:
       customDdMmYyyy: "Власний: dd/MM/yyyy"
       customMmDdYyyy: "Власний: MM/dd/yyyy"
       customYyyyMmDd: "Власний: yyyy-MM-dd"
+  postReadTime:
+    displayName: Час читання запису блогу
+    format:
+      label: Формат часу читання
+    wordsPerMinute:
+      label: Слів на хвилину
+  postAuthor:
+    displayName: Автор запису блогу
+    format:
+      label: Формат автора
   postsContainer:
     displayName: Контейнер записів блогу
     postsPerPage:
@@ -131,6 +151,8 @@ block:
       displayName: Заголовок запису блогу
     postTags:
       displayName: Теги запису блогу
+    postMeta:
+      displayName: Мета запису блогу
     post:
       displayName: Запис блогу
     postsList:
@@ -156,4 +178,8 @@ validation:
       unique: Слаг повинен бути унікальним
     publicationDate:
       required: Дата публікації є обов'язковою
+    author:
+      required: Автор є обов'язковим
+    authorName:
+      max: Ім'я автора не повинно перевищувати 256 символів
 
