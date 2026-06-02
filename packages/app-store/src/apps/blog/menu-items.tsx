@@ -1,5 +1,7 @@
 import { AppMenuItem } from "@timelish/types";
-import { FileText } from "lucide-react";
+import { FileText, MessageSquare, Settings } from "lucide-react";
+import { BlogCommentsPage } from "./comments/pages/main";
+import { BlogSettingsPage } from "./settings/pages/main";
 import { BlogEditPage } from "./pages/edit";
 import { BlogPage } from "./pages/main";
 import { BlogNewPage } from "./pages/new";
@@ -31,6 +33,46 @@ export const BlogMenuItems: AppMenuItem<BlogAdminNamespace, BlogAdminKeys>[] = [
     pageTitle: "app_blog_admin.app.pages.main.title" satisfies BlogAdminAllKeys,
     pageDescription:
       "app_blog_admin.app.pages.main.description" satisfies BlogAdminAllKeys,
+  },
+  {
+    href: "blog/settings",
+    parent: "blog",
+    id: "blog-settings",
+    order: 105,
+    notScrollable: true,
+    label: "app_blog_admin.app.pages.settings.label" satisfies BlogAdminAllKeys,
+    icon: <Settings />,
+    Page: (props) => <BlogSettingsPage appId={props.appId} />,
+    pageBreadcrumbs: [
+      blogBreadcrumb,
+      {
+        title: "app_blog_admin.app.pages.settings.label" satisfies BlogAdminAllKeys,
+        link: "/dashboard/blog/settings",
+      },
+    ],
+    pageTitle: "app_blog_admin.app.pages.settings.title" satisfies BlogAdminAllKeys,
+    pageDescription:
+      "app_blog_admin.app.pages.settings.description" satisfies BlogAdminAllKeys,
+  },
+  {
+    href: "blog/comments",
+    parent: "blog",
+    id: "blog-comments",
+    order: 110,
+    notScrollable: true,
+    label: "app_blog_admin.app.pages.comments.label" satisfies BlogAdminAllKeys,
+    icon: <MessageSquare />,
+    Page: (props) => <BlogCommentsPage {...props} />,
+    pageBreadcrumbs: [
+      blogBreadcrumb,
+      {
+        title: "app_blog_admin.app.pages.comments.label" satisfies BlogAdminAllKeys,
+        link: "/dashboard/blog/comments",
+      },
+    ],
+    pageTitle: "app_blog_admin.app.pages.comments.title" satisfies BlogAdminAllKeys,
+    pageDescription:
+      "app_blog_admin.app.pages.comments.description" satisfies BlogAdminAllKeys,
   },
   {
     href: "blog/new",

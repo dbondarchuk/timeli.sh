@@ -42,9 +42,13 @@ export const BlogPostContainerEditorWrapper = ({
   // Inject post and postLink into args for child blocks
   const newArgs = {
     ...args,
-    post: fixturePost,
+    post: { ...fixturePost, commentsCount: 3 },
     postLink,
     blogAppId: appId ?? args?.blogAppId,
+    blogCommentsConfig: {
+      commentsEnabled: true,
+      commentsPremoderation: true,
+    },
   };
 
   return (

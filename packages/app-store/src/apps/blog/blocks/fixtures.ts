@@ -1,4 +1,9 @@
-import { BlogPost } from "../models";
+import { BlogPost, BlogPostAuthor } from "../models";
+
+const blogPostFixtureAuthor: BlogPostAuthor = {
+  type: "custom",
+  name: "Jane Smith",
+};
 
 export const blogPostsListFixtures: BlogPost[] = [
   {
@@ -7,6 +12,7 @@ export const blogPostsListFixtures: BlogPost[] = [
     slug: "blog-post-1",
     isPublished: true,
     publicationDate: new Date("2025-01-12"),
+    author: blogPostFixtureAuthor,
     content: [
       {
         type: "p",
@@ -104,6 +110,7 @@ export const blogPostsListFixtures: BlogPost[] = [
     slug: "blog-post-2",
     isPublished: true,
     publicationDate: new Date("2025-01-11"),
+    author: blogPostFixtureAuthor,
     content: [
       {
         type: "p",
@@ -176,6 +183,7 @@ export const blogPostsListFixtures: BlogPost[] = [
     slug: "blog-post-3",
     isPublished: true,
     publicationDate: new Date("2025-01-10"),
+    author: blogPostFixtureAuthor,
     content: [
       {
         type: "p",
@@ -235,6 +243,7 @@ export const blogPostsListFixtures: BlogPost[] = [
     slug: "blog-post-4",
     isPublished: true,
     publicationDate: new Date("2025-01-09"),
+    author: blogPostFixtureAuthor,
     content: [
       {
         type: "p",
@@ -319,6 +328,7 @@ export const blogPostsListFixtures: BlogPost[] = [
     slug: "blog-post-5",
     isPublished: true,
     publicationDate: new Date("2025-01-08"),
+    author: blogPostFixtureAuthor,
     content: [
       {
         type: "p",
@@ -370,6 +380,7 @@ export const blogPostsListFixtures: BlogPost[] = [
     slug: "blog-post-6",
     isPublished: true,
     publicationDate: new Date("2025-01-07"),
+    author: blogPostFixtureAuthor,
     content: [
       {
         type: "p",
@@ -426,6 +437,7 @@ export const blogPostsListFixtures: BlogPost[] = [
     slug: "blog-post-7",
     isPublished: true,
     publicationDate: new Date("2025-01-06"),
+    author: blogPostFixtureAuthor,
     content: [
       {
         type: "p",
@@ -499,6 +511,7 @@ export const blogPostsListFixtures: BlogPost[] = [
     slug: "blog-post-8",
     isPublished: true,
     publicationDate: new Date("2025-01-05"),
+    author: blogPostFixtureAuthor,
     content: [
       {
         type: "p",
@@ -555,6 +568,7 @@ export const blogPostsListFixtures: BlogPost[] = [
     slug: "blog-post-9",
     isPublished: true,
     publicationDate: new Date("2025-01-04"),
+    author: blogPostFixtureAuthor,
     content: [
       {
         type: "p",
@@ -628,6 +642,7 @@ export const blogPostsListFixtures: BlogPost[] = [
     slug: "blog-post-10",
     isPublished: true,
     publicationDate: new Date("2025-01-03"),
+    author: blogPostFixtureAuthor,
     content: [
       {
         type: "p",
@@ -686,6 +701,7 @@ export const blogPostsListFixtures: BlogPost[] = [
     slug: "blog-post-11",
     isPublished: true,
     publicationDate: new Date("2025-01-02"),
+    author: blogPostFixtureAuthor,
     content: [
       {
         type: "p",
@@ -779,6 +795,7 @@ export const blogPostsListFixtures: BlogPost[] = [
     slug: "blog-post-12",
     isPublished: true,
     publicationDate: new Date("2025-01-01"),
+    author: blogPostFixtureAuthor,
     content: [
       {
         type: "p",

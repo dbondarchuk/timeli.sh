@@ -409,6 +409,13 @@ export class ActivityService extends BaseService implements IActivityService {
                   then: { kind: "system" },
                 },
                 {
+                  case: { $eq: ["$source.actor", "visitor"] },
+                  then: {
+                    kind: "visitor",
+                    name: { $ifNull: ["$source.actorName", ""] },
+                  },
+                },
+                {
                   case: { $eq: ["$source.actor", "user"] },
                   then: {
                     kind: "user",

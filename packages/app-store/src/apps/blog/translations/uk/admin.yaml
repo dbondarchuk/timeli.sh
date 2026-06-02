@@ -6,6 +6,7 @@ table:
     status: Статус
     publicationDate: Дата публікації
     tags: Теги
+    comments: Коментарі
     published: Опубліковано
     draft: Чернетка
   actions:
@@ -45,6 +46,16 @@ form:
   publicationDateTooltip: Коли слід опублікувати запис
   tags: Теги
   tagsTooltip: Теги для категоризації запису
+  author:
+    label: Автор
+    tooltip: Хто написав цей запис блогу
+    source:
+      user: Користувач організації
+      custom: Власне ім'я
+    user: Користувач
+    userPlaceholder: Оберіть користувача
+    customName: Ім'я автора
+    customNamePlaceholder: Введіть ім'я автора
   toasts:
     changesSaved: Запис блогу збережено
     requestError: Помилка збереження запису
@@ -65,8 +76,93 @@ app:
       title: Редагувати запис блогу
       description: Редагувати запис блогу
       notFound: Запис блогу не знайдено
+    comments:
+      label: Коментарі
+      title: Коментарі блогу
+      description: Модеруйте коментарі до записів блогу
+    settings:
+      label: Налаштування
+      title: Налаштування блогу
+      description: Налаштування коментарів та інших параметрів блогу
+settings:
+  toasts:
+    saved: Налаштування збережено
+    error: Помилка збереження налаштувань
 setup:
   update: Оновити <app></app>
+  commentsEnabled:
+    label: Увімкнути коментарі
+    description: Дозволити відвідувачам залишати коментарі до записів блогу
+  commentsPremoderation:
+    label: Модерація коментарів
+    description: Нові коментарі приховані до схвалення
+events:
+  postCreated:
+    title: Створено новий запис блогу
+    description: "Запис «{postTitle}» створено"
+  postUpdated:
+    title: Запис блогу оновлено
+    description: "Запис «{postTitle}» оновлено"
+  postDeleted:
+    title: Запис блогу видалено
+    description: Запис видалено
+  commentCreated:
+    title: Новий коментар
+    description: "{authorName} прокоментував «{postTitle}»"
+  commentDeleted:
+    title: Коментар видалено
+    description: Коментар видалено
+  commentStatusChanged:
+    title: Статус коментаря змінено
+    description: "Коментар від {authorName}: {status}"
+notifications:
+  newComment: Новий коментар у блозі
+  newCommentMessage: Відвідувач залишив коментар у вашому блозі
+  viewComment: Переглянути коментар
+comments:
+  status:
+    pending: Очікує
+    approved: Схвалено
+    rejected: Відхилено
+  table:
+    searchPlaceholder: Пошук за ім'ям, email або текстом…
+    filters:
+      post: Запис блогу
+      status: Статус
+      dateRange: Діапазон дат
+    columns:
+      post: Запис
+      authorName: Ім'я
+      authorEmail: Email
+      body:
+        label: Коментар
+        dialogTitle: Текст коментаря
+      status: Статус
+      createdAt: Надіслано
+    actions:
+      approve: Схвалити
+      reject: Відхилити
+      delete: Видалити
+    delete:
+      title: Видалити коментар?
+      description: Цю дію не можна скасувати.
+      confirm: Видалити
+    approveSelected:
+      label: Схвалити вибрані ({count})
+    rejectSelected:
+      label: Відхилити вибрані ({count})
+    deleteSelected:
+      label: Видалити вибрані ({count})
+      description: Видалити {count, plural, one {вибраний коментар} few {# вибрані коментарі} other {# вибраних коментарів}}? Цю дію не можна скасувати.
+      confirm: Видалити вибрані
+    toast:
+      approved: Коментар схвалено
+      rejected: Коментар відхилено
+      deleted: Коментар видалено
+      commentsApproved: "{count, plural, one {Коментар схвалено} few {# коментарі схвалено} other {# коментарів схвалено}}"
+      commentsRejected: "{count, plural, one {Коментар відхилено} few {# коментарі відхилено} other {# коментарів відхилено}}"
+      commentsDeleted: "{count, plural, one {Коментар видалено} few {# коментарі видалено} other {# коментарів видалено}}"
+      error: Щось пішло не так
 statusText:
   successfully_set_up: Блог успішно налаштовано
   error_processing_configuration: Помилка обробки конфігурації блогу
@@ -112,6 +208,50 @@ block:
       customDdMmYyyy: "Власний: dd/MM/yyyy"
       customMmDdYyyy: "Власний: MM/dd/yyyy"
       customYyyyMmDd: "Власний: yyyy-MM-dd"
+  postReadTime:
+    displayName: Час читання запису блогу
+    format:
+      label: Формат часу читання
+    wordsPerMinute:
+      label: Слів на хвилину
+  postAuthor:
+    displayName: Автор запису блогу
+    format:
+      label: Формат автора
+  postCommentCount:
+    displayName: Кількість коментарів
+    format:
+      label: Формат кількості коментарів
+  commentsContainer:
+    displayName: Контейнер коментарів
+    settings:
+      title: Список коментарів
+    commentsPerPage:
+      label: Коментарів на сторінку
+  commentContainer:
+    displayName: Контейнер коментаря
+  commentAuthor:
+    displayName: Автор коментаря
+  commentDate:
+    displayName: Дата коментаря
+  commentBody:
+    displayName: Текст коментаря
+  commentNavigationButton:
+    displayName: Кнопка навігації коментарів
+    direction:
+      label: Напрямок
+      prev: Попередні
+      next: Наступні
+  postCommentForm:
+    displayName: Форма коментаря
+    nameLabel: Мітка поля імені
+    namePlaceholder: Плейсхолдер імені
+    emailLabel: Мітка поля email
+    emailPlaceholder: Плейсхолдер email
+    bodyLabel: Мітка повідомлення
+    bodyPlaceholder: Плейсхолдер повідомлення
+    submitLabel: Текст кнопки
+    successMessage: Повідомлення про успіх
   postsContainer:
     displayName: Контейнер записів блогу
     postsPerPage:
@@ -131,12 +271,18 @@ block:
       displayName: Заголовок запису блогу
     postTags:
       displayName: Теги запису блогу
+    postMeta:
+      displayName: Мета запису блогу
     post:
       displayName: Запис блогу
     postsList:
       displayName: Список записів блогу
     postsListNavigation:
       displayName: Навігація списку записів блогу
+    commentsList:
+      displayName: Список коментарів блогу
+    commentsListNavigation:
+      displayName: Навігація списку коментарів
   blogAppId:
     label: Застосунок блогу
     helperText: Застосунок блогу для використання в записіх блогу
@@ -156,4 +302,14 @@ validation:
       unique: Слаг повинен бути унікальним
     publicationDate:
       required: Дата публікації є обов'язковою
-
+    author:
+      required: Автор є обов'язковим
+    authorName:
+      max: Ім'я автора не повинно перевищувати 256 символів
+  comment:
+    postId:
+      required: Запис є обов'язковим
+    authorName:
+      required: Ім'я є обов'язковим
+    body:
+      required: Коментар є обов'язковим

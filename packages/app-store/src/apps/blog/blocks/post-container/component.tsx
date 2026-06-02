@@ -5,7 +5,7 @@ import {
   generateClassName,
 } from "@timelish/page-builder-base/reader";
 import { cn } from "@timelish/ui";
-import { BlogPost } from "../../models";
+import { BlogCommentsContext, BlogPost } from "../../models";
 import { BlogPublicAllKeys } from "../../translations/types";
 import { BlogPostContainerReaderProps, styles } from "./schema";
 
@@ -18,7 +18,7 @@ type BlogPostContainerComponentProps = {
   blockBase?: { className?: string; id?: string };
   restProps: any;
   isEditor?: boolean;
-  args?: any;
+  args?: BlogCommentsContext & Record<string, unknown>;
   appId?: string;
 };
 
@@ -43,6 +43,7 @@ export const BlogPostContainerComponent = async ({
     post,
     postLink,
     blogAppId: appId ?? args?.blogAppId,
+    blogCommentsConfig: args?.blogCommentsConfig,
   };
 
   return (

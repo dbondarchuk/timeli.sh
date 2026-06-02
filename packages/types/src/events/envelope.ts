@@ -1,7 +1,15 @@
-export type EventSource = {
-  actor: "system" | "user" | "customer";
-  actorId?: string;
-};
+export type EventSource =
+  | {
+      actor: "user" | "customer";
+      actorId?: string;
+    }
+  | {
+      actor: "visitor";
+      actorName: string;
+    }
+  | {
+      actor: "system";
+    };
 
 /** Emits from jobs, install flows, and integrations without a signed-in user. */
 export const systemEventSource: EventSource = { actor: "system" };
@@ -12,6 +20,10 @@ export function userEventSource(userId: string): EventSource {
 
 export function customerEventSource(customerId: string): EventSource {
   return { actor: "customer", actorId: customerId };
+}
+
+export function visitorEventSource(visitorName: string): EventSource {
+  return { actor: "visitor", actorName: visitorName };
 }
 
 export type EventEnvelope<T = unknown> = {

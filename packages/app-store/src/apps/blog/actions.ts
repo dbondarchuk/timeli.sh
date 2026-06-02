@@ -1,14 +1,24 @@
 import { adminApi } from "@timelish/api-sdk";
 import { WithTotal } from "@timelish/types";
 import {
+  BlogComment,
+  BlogCommentListItem,
   BlogPost,
   BlogPostUpdateModel,
+  ApproveBlogCommentActionType,
+  ApproveSelectedBlogCommentsActionType,
   CheckBlogPostSlugUniqueActionType,
   CreateBlogPostActionType,
+  DeleteBlogCommentActionType,
   DeleteBlogPostActionType,
+  DeleteSelectedBlogCommentsActionType,
   DeleteSelectedBlogPostsActionType,
+  GetBlogCommentsActionType,
+  GetBlogCommentsQuery,
   GetBlogPostActionType,
   GetBlogPostsActionType,
+  RejectBlogCommentActionType,
+  RejectSelectedBlogCommentsActionType,
   UpdateBlogPostActionType,
 } from "./models";
 
@@ -164,6 +174,74 @@ export async function deleteSelectedBlogPosts(appId: string, ids: string[]) {
     );
     throw error;
   }
+}
+
+export async function getBlogComments(appId: string, query: GetBlogCommentsQuery) {
+  const logger = loggerFactory("getBlogComments");
+  logger.debug({ appId, query }, "Getting blog comments");
+
+  try {
+    const result = (await adminApi.apps.processRequest(appId, {
+      type: GetBlogCommentsActionType,
+      query,
+    })) as WithTotal<BlogCommentListItem>;
+
+    logger.info(
+      { appId, resultCount: result?.items?.length || 0 },
+      "Successfully retrieved blog comments",
+    );
+    return result;
+  } catch (error: any) {
+    logger.error(
+      { appId, error: error?.message || error?.toString() },
+      "Error getting blog comments",
+    );
+    throw error;
+  }
+}
+
+export async function approveBlogComment(appId: string, id: string) {
+  const result = (await adminApi.apps.processRequest(appId, {
+    type: ApproveBlogCommentActionType,
+    id,
+  })) as BlogComment;
+  return result;
+}
+
+export async function rejectBlogComment(appId: string, id: string) {
+  const result = (await adminApi.apps.processRequest(appId, {
+    type: RejectBlogCommentActionType,
+    id,
+  })) as BlogComment;
+  return result;
+}
+
+export async function deleteBlogComment(appId: string, id: string) {
+  return adminApi.apps.processRequest(appId, {
+    type: DeleteBlogCommentActionType,
+    id,
+  });
+}
+
+export async function deleteSelectedBlogComments(appId: string, ids: string[]) {
+  return adminApi.apps.processRequest(appId, {
+    type: DeleteSelectedBlogCommentsActionType,
+    ids,
+  });
+}
+
+export async function approveSelectedBlogComments(appId: string, ids: string[]) {
+  return adminApi.apps.processRequest(appId, {
+    type: ApproveSelectedBlogCommentsActionType,
+    ids,
+  });
+}
+
+export async function rejectSelectedBlogComments(appId: string, ids: string[]) {
+  return adminApi.apps.processRequest(appId, {
+    type: RejectSelectedBlogCommentsActionType,
+    ids,
+  });
 }
 
 export async function checkBlogPostSlugUnique(

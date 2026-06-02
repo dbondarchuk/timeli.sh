@@ -6,6 +6,7 @@ table:
     status: Status
     publicationDate: Publication Date
     tags: Tags
+    comments: Comments
     published: Published
     draft: Draft
   actions:
@@ -45,6 +46,16 @@ form:
   publicationDateTooltip: When this post should be published
   tags: Tags
   tagsTooltip: Tags to categorize this post
+  author:
+    label: Author
+    tooltip: Who wrote this blog post
+    source:
+      user: Organization user
+      custom: Custom name
+    user: User
+    userPlaceholder: Select a user
+    customName: Author name
+    customNamePlaceholder: Enter author name
   toasts:
     changesSaved: Blog post saved successfully
     requestError: Error saving blog post
@@ -65,8 +76,93 @@ app:
       title: Edit Blog Post
       description: Edit blog post
       notFound: Blog post not found
+    comments:
+      label: Comments
+      title: Blog Comments
+      description: Moderate comments on your blog posts
+    settings:
+      label: Settings
+      title: Blog Settings
+      description: Configure comments and other blog options
+settings:
+  toasts:
+    saved: Settings saved successfully
+    error: Error saving settings
 setup:
   update: Update <app></app>
+  commentsEnabled:
+    label: Enable comments
+    description: Allow visitors to leave comments on blog posts
+  commentsPremoderation:
+    label: Require comment moderation
+    description: New comments stay hidden until you approve them
+events:
+  postCreated:
+    title: New blog post created
+    description: 'Post "{postTitle}" was created'
+  postUpdated:
+    title: Blog post updated
+    description: 'Post "{postTitle}" was updated'
+  postDeleted:
+    title: Blog post deleted
+    description: Post was deleted
+  commentCreated:
+    title: New blog comment
+    description: '{authorName} commented on "{postTitle}"'
+  commentDeleted:
+    title: Blog comment deleted
+    description: Comment was deleted
+  commentStatusChanged:
+    title: Blog comment status changed
+    description: "Comment by {authorName} was {status}"
+notifications:
+  newComment: New blog comment
+  newCommentMessage: A visitor left a comment on your blog
+  viewComment: View comment
+comments:
+  status:
+    pending: Pending
+    approved: Approved
+    rejected: Rejected
+  table:
+    searchPlaceholder: Search by name, email, or comment…
+    filters:
+      post: Blog post
+      status: Status
+      dateRange: Date range
+    columns:
+      post: Post
+      authorName: Name
+      authorEmail: Email
+      body:
+        label: Comment
+        dialogTitle: Comment body
+      status: Status
+      createdAt: Submitted
+    actions:
+      approve: Approve
+      reject: Reject
+      delete: Delete
+    delete:
+      title: Delete comment?
+      description: This action cannot be undone.
+      confirm: Delete
+    approveSelected:
+      label: Approve selected ({count})
+    rejectSelected:
+      label: Reject selected ({count})
+    deleteSelected:
+      label: Delete selected ({count})
+      description: Delete {count, plural, =1 {selected comment} other {# selected comments}}? This cannot be undone.
+      confirm: Delete selected
+    toast:
+      approved: Comment approved
+      rejected: Comment rejected
+      deleted: Comment deleted
+      commentsApproved: "{count, plural, =1 {Comment approved} other {# comments approved}}"
+      commentsRejected: "{count, plural, =1 {Comment rejected} other {# comments rejected}}"
+      commentsDeleted: "{count, plural, =1 {Comment deleted} other {# comments deleted}}"
+      error: Something went wrong
 statusText:
   successfully_set_up: Successfully set up blog
   error_processing_configuration: Error processing blog configuration
@@ -112,6 +208,50 @@ block:
       customDdMmYyyy: "Custom: dd/MM/yyyy"
       customMmDdYyyy: "Custom: MM/dd/yyyy"
       customYyyyMmDd: "Custom: yyyy-MM-dd"
+  postReadTime:
+    displayName: Blog Post Read Time
+    format:
+      label: Read Time Format
+    wordsPerMinute:
+      label: Words per minute
+  postAuthor:
+    displayName: Blog Post Author
+    format:
+      label: Author Format
+  postCommentCount:
+    displayName: Blog Post Comment Count
+    format:
+      label: Comment Count Format
+  commentsContainer:
+    displayName: Blog Comments Container
+    settings:
+      title: Comments list
+    commentsPerPage:
+      label: Comments per page
+  commentContainer:
+    displayName: Blog Comment Container
+  commentAuthor:
+    displayName: Blog Comment Author
+  commentDate:
+    displayName: Blog Comment Date
+  commentBody:
+    displayName: Blog Comment Body
+  commentNavigationButton:
+    displayName: Blog Comment Navigation Button
+    direction:
+      label: Direction
+      prev: Previous
+      next: Next
+  postCommentForm:
+    displayName: Blog Post Comment Form
+    nameLabel: Name field label
+    namePlaceholder: Name placeholder
+    emailLabel: Email field label
+    emailPlaceholder: Email placeholder
+    bodyLabel: Message field label
+    bodyPlaceholder: Message placeholder
+    submitLabel: Submit button label
+    successMessage: Success message
   postsContainer:
     displayName: Blog Posts Container
     postsPerPage:
@@ -131,12 +271,18 @@ block:
       displayName: Blog Post Title Header
     postTags:
       displayName: Blog Post Tags
+    postMeta:
+      displayName: Blog Post Meta
     post:
       displayName: Blog Post
     postsList:
       displayName: Blog Posts List
     postsListNavigation:
       displayName: Blog Posts List Navigation
+    commentsList:
+      displayName: Blog Comments List
+    commentsListNavigation:
+      displayName: Blog Comments List Navigation
   blogAppId:
     label: Blog App
     helperText: The app that will be used to work with the blog posts
@@ -156,4 +302,14 @@ validation:
       unique: Slug should be unique
     publicationDate:
       required: Publish date is required
-
+    author:
+      required: Author is required
+    authorName:
+      max: Author name should not exceed 256 characters
+  comment:
+    postId:
+      required: Post is required
+    authorName:
+      required: Name is required
+    body:
+      required: Comment is required

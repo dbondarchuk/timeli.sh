@@ -48,6 +48,7 @@ export const BlogPostsContainerComponent = ({
     tag,
     postsPerPage,
     blogAppId: appId ?? args?.blogAppId,
+    blogCommentsConfig: args?.blogCommentsConfig,
   };
 
   return (

@@ -26,14 +26,5 @@ export const BlogPostPublishDatePropsDefaults = {
   props: {
     format: "MMMM d, yyyy",
   },
-  style: {
-    fontSize: [
-      {
-        value: {
-          value: 0.875,
-          unit: "rem",
-        },
-      },
-    ],
-  },
+  style: {},
 } as const satisfies BlogPostPublishDateProps;

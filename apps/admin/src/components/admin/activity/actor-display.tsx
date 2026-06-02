@@ -24,6 +24,12 @@ export const ActivityActorDisplayView: React.FC<{
           {t("activity.actor.user", { name: actor.name })}
         </span>
       );
+    case "visitor":
+      return (
+        <span className={cn("text-xs", className)}>
+          {t("activity.actor.visitor", { name: actor.name })}
+        </span>
+      );
     case "customer":
       return (
         <span

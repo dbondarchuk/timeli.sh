@@ -10,6 +10,7 @@ import {
   BlogAdminNamespace,
   blogAdminNamespace,
 } from "../../translations/types";
+import { blogTextShortcuts } from "../text-shortcuts";
 import {
   BlogPostContentProps,
   BlogPostContentPropsDefaults,
@@ -44,6 +45,7 @@ export const BlogPostContentConfiguration = deepMemo(
         styles={data.style ?? {}}
         onStylesChange={updateStyle}
         availableStyles={styles}
+        shortcuts={blogTextShortcuts}
         base={base}
         onBaseChange={onBaseChange}
       >

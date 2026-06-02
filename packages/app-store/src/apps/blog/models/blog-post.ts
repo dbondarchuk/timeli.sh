@@ -3,6 +3,7 @@ import {
   WithDatabaseId,
   WithOrganizationId,
   zNonEmptyString,
+  zObjectId,
   zUniqueArray,
 } from "@timelish/types";
 import * as z from "zod";
@@ -12,6 +13,30 @@ export const blogPostTagSchema = zNonEmptyString(
   "app_blog_admin.validation.post.tag.min" satisfies BlogAdminAllKeys,
   2,
 ).max(64, "app_blog_admin.validation.post.tag.max" satisfies BlogAdminAllKeys);
+
+export const blogPostAuthorUserSchema = z.object({
+  type: z.literal("user"),
+  id: zObjectId(
+    "app_blog_admin.validation.post.author.required" satisfies BlogAdminAllKeys,
+  ),
+});
+
+export const blogPostAuthorCustomSchema = z.object({
+  type: z.literal("custom"),
+  name: zNonEmptyString(
+    "app_blog_admin.validation.post.author.required" satisfies BlogAdminAllKeys,
+    1,
+    256,
+    "app_blog_admin.validation.post.authorName.max" satisfies BlogAdminAllKeys,
+  ),
+});
+
+export const blogPostAuthorSchema = z.discriminatedUnion("type", [
+  blogPostAuthorUserSchema,
+  blogPostAuthorCustomSchema,
+]);
+
+export type BlogPostAuthor = z.infer<typeof blogPostAuthorSchema>;
 
 export const blogPostSchema = z.object({
   title: zNonEmptyString(
@@ -43,6 +68,7 @@ export const blogPostSchema = z.object({
     (tag) => tag?.toLocaleLowerCase(),
     "app_blog_admin.validation.post.tag.unique" satisfies BlogAdminAllKeys,
   ).optional(),
+  author: blogPostAuthorSchema,
 });
 
 export const getBlogPostSchemaWithUniqueCheck = (
@@ -69,6 +95,10 @@ export type BlogPostEntity = WithOrganizationId<
   appId: string;
   createdAt: Date;
   updatedAt: Date;
+  /** Approved comments count (aggregated on read). */
+  commentsCount?: number;
+  /** All comments count (aggregated on read, admin). */
+  totalCommentsCount?: number;
 };
 
 export type BlogPost = Prettify<BlogPostEntity>;

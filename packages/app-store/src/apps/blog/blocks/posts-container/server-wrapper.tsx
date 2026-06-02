@@ -1,6 +1,7 @@
 import { I18nText } from "@timelish/i18n";
-import { BlogPost } from "../../models";
+import { BlogCommentsContext, BlogPost } from "../../models";
 import { BlogPublicAllKeys } from "../../translations/types";
+import { getBlogConfiguration } from "../get-blog-config";
 import { BlogPostsContainerComponent } from "./component";
 import { BlogPostsContainerReaderProps } from "./schema";
 
@@ -10,7 +11,7 @@ type BlogPostsContainerServerWrapperProps = {
   blockBase?: { className?: string; id?: string };
   restProps: any;
   appId?: string;
-  args?: {
+  args?: BlogCommentsContext & {
     posts?: BlogPost[];
     totalPosts?: number;
     page?: number;
@@ -34,11 +35,36 @@ export const BlogPostsContainerServerWrapper = async ({
     "../../service/repository-service"
   );
 
+  const logger = (await import("@timelish/logger")).getLoggerFactory(
+    "BlogPostsContainerServerWrapper",
+  )("render");
+
   const children = props?.children ?? [];
   const postsPerPage = props?.postsPerPage ?? 10;
+  const headersList = await headers();
+  const organizationId = headersList.get("x-organization-id") as string;
+  const containerArgs = {
+    ...args,
+  };
+
+  logger.info(
+    { page: args?.page, postsPerPage, tag: args?.tag, organizationId, appId },
+    "Rendering blog posts container",
+  );
+
+  if (!args?.blogCommentsConfig) {
+    logger.info({ organizationId, appId }, "Getting blog comments config");
+    const blogCommentsConfig =
+      appId && organizationId
+        ? await getBlogConfiguration(organizationId, appId)
+        : args?.blogCommentsConfig;
+
+    containerArgs.blogCommentsConfig = blogCommentsConfig;
+  }
 
   // If posts already provided in args, use them
   if (args?.posts) {
+    logger.info({ posts: args.posts }, "Posts already provided in args");
     return (
       <BlogPostsContainerComponent
         posts={args.posts}
@@ -52,13 +78,14 @@ export const BlogPostsContainerServerWrapper = async ({
         restProps={restProps}
         isEditor={false}
         appId={appId}
-        args={args}
+        args={containerArgs}
       />
     );
   }
 
   // Fetch from database if appId is provided
   if (!appId) {
+    logger.info({ appId }, "No appId provided");
     return (
       <div className="flex flex-col gap-2">
         <div className="text-red-500">
@@ -84,12 +111,12 @@ export const BlogPostsContainerServerWrapper = async ({
   const page = searchParams.page ? parseInt(String(searchParams.page), 10) : 1;
   const tag = searchParams.tag ? String(searchParams.tag) : undefined;
 
-  // Get services and fetch posts
-  const headersList = await headers();
-  const organizationId = headersList.get("x-organization-id") as string;
+  logger.info({ page, tag }, "Getting page and tag from search params");
 
+  // Get services and fetch posts
   if (!organizationId) {
     // Fallback to empty array if no organizationId
+    logger.info({ organizationId }, "No organizationId provided");
     return (
       <BlogPostsContainerComponent
         posts={[]}
@@ -102,7 +129,7 @@ export const BlogPostsContainerServerWrapper = async ({
         restProps={restProps}
         isEditor={false}
         appId={appId}
-        args={args}
+        args={containerArgs}
       />
     );
   }
@@ -131,6 +158,11 @@ export const BlogPostsContainerServerWrapper = async ({
     isPublished: true,
   });
 
+  logger.info(
+    { total: result.total, items: result.items?.length },
+    "Returning blog posts container",
+  );
+
   return (
     <BlogPostsContainerComponent
       posts={result.items || []}
@@ -144,7 +176,7 @@ export const BlogPostsContainerServerWrapper = async ({
       restProps={restProps}
       isEditor={false}
       appId={appId}
-      args={args}
+      args={containerArgs}
     />
   );
 };

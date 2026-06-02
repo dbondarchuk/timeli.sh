@@ -1,7 +1,24 @@
 import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
-import { IConnectedAppProps, Query, WithTotal, systemEventSource } from "@timelish/types";
+import {
+  IConnectedAppProps,
+  Query,
+  systemEventSource,
+  WithTotal,
+} from "@timelish/types";
 import { escapeRegex } from "@timelish/utils";
-import { ObjectId, type Filter, type Sort } from "mongodb";
+import { ObjectId, type Document, type Filter, type Sort } from "mongodb";
+import {
+  BLOG_COMMENTS_COLLECTION_NAME,
+  BlogComment,
+  BlogCommentEntity,
+  BlogCommentListItem,
+  BlogCommentPublic,
+  BlogCommentStatus,
+  CreateBlogCommentModel,
+  GetBlogCommentsQuery,
+  GetPublicBlogCommentsQuery,
+  toBlogCommentPublic,
+} from "../models/blog-comment";
 import {
   BlogPost,
   BlogPostEntity,
@@ -10,6 +27,7 @@ import {
 import { BLOG_PAGES } from "./pages";
 
 export const BLOG_POSTS_COLLECTION_NAME = "blog-posts";
+export { BLOG_COMMENTS_COLLECTION_NAME };
 
 export class BlogRepositoryService {
   protected readonly loggerFactory: LoggerFactory;
@@ -24,6 +42,53 @@ export class BlogRepositoryService {
       "BlogRepositoryService",
       this.organizationId,
     );
+  }
+
+  private commentCountsAggregationStages(): Document[] {
+    return [
+      {
+        $lookup: {
+          from: BLOG_COMMENTS_COLLECTION_NAME,
+          let: { postId: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $eq: ["$postId", "$$postId"] },
+                organizationId: this.organizationId,
+                appId: this.appId,
+              },
+            },
+            {
+              $group: {
+                _id: null,
+                total: { $sum: 1 },
+                approved: {
+                  $sum: {
+                    $cond: [{ $eq: ["$status", "approved"] }, 1, 0],
+                  },
+                },
+              },
+            },
+          ],
+          as: "_commentStats",
+        },
+      },
+      {
+        $addFields: {
+          commentsCount: {
+            $ifNull: [{ $arrayElemAt: ["$_commentStats.approved", 0] }, 0],
+          },
+          totalCommentsCount: {
+            $ifNull: [{ $arrayElemAt: ["$_commentStats.total", 0] }, 0],
+          },
+        },
+      },
+      {
+        $project: {
+          _commentStats: 0,
+        },
+      },
+    ];
   }
 
   public async createBlogPost(post: BlogPostUpdateModel): Promise<BlogPost> {
@@ -94,6 +159,8 @@ export class BlogRepositoryService {
       return false;
     }
 
+    await this.deleteCommentsByPostIds([id]);
+
     logger.debug({ id }, "Blog post deleted");
     return true;
   }
@@ -120,6 +187,8 @@ export class BlogRepositoryService {
     } else {
       logger.debug({ ids }, "Blog post deleted");
     }
+
+    await this.deleteCommentsByPostIds(ids);
 
     return true;
   }
@@ -180,6 +249,7 @@ export class BlogRepositoryService {
         {
           $sort: sort,
         },
+        ...this.commentCountsAggregationStages(),
         {
           $facet: {
             paginatedResults:
@@ -243,9 +313,14 @@ export class BlogRepositoryService {
       filter.slug = slug;
     }
 
-    const blogPost = await db
+    const [blogPost] = await db
       .collection<BlogPost>(BLOG_POSTS_COLLECTION_NAME)
-      .findOne(filter);
+      .aggregate<BlogPost>([
+        { $match: filter },
+        ...this.commentCountsAggregationStages(),
+        { $limit: 1 },
+      ])
+      .toArray();
 
     if (!blogPost) {
       logger.warn({ id, slug }, "Blog post not found");
@@ -253,7 +328,7 @@ export class BlogRepositoryService {
       logger.debug({ id, slug, title: blogPost.title }, "Blog post found");
     }
 
-    return blogPost as BlogPost | null;
+    return blogPost ?? null;
   }
 
   public async getBlogTags(
@@ -334,6 +409,373 @@ export class BlogRepositoryService {
       "Blog post slug uniqueness check result",
     );
     return result;
+  }
+
+  public async createComment(
+    comment: CreateBlogCommentModel,
+    status: BlogCommentStatus,
+  ): Promise<BlogComment> {
+    const logger = this.loggerFactory("createComment");
+    logger.debug({ comment, status }, "Creating blog comment");
+
+    const db = await this.getDbConnection();
+    const entity = {
+      ...comment,
+      status,
+      _id: new ObjectId().toString(),
+      appId: this.appId,
+      organizationId: this.organizationId,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    } satisfies BlogCommentEntity;
+
+    await db
+      .collection<BlogCommentEntity>(BLOG_COMMENTS_COLLECTION_NAME)
+      .insertOne(entity);
+
+    return entity as BlogComment;
+  }
+
+  public async getApprovedComments(
+    query: GetPublicBlogCommentsQuery,
+  ): Promise<WithTotal<BlogCommentPublic>> {
+    const logger = this.loggerFactory("getApprovedComments");
+    logger.debug({ query }, "Getting approved blog comments");
+
+    const db = await this.getDbConnection();
+    const sortDirection = query.sort === "oldest" ? 1 : -1;
+    const limit = query.limit ?? 10;
+    const page = query.page ?? 1;
+    const offset = (page - 1) * limit;
+
+    const filter: Filter<BlogComment> = {
+      organizationId: this.organizationId,
+      appId: this.appId,
+      postId: query.postId,
+      status: "approved",
+    };
+
+    const [comments, total] = await Promise.all([
+      db
+        .collection<BlogComment>(BLOG_COMMENTS_COLLECTION_NAME)
+        .find(filter)
+        .sort({ createdAt: sortDirection })
+        .skip(offset)
+        .limit(limit)
+        .toArray(),
+      db
+        .collection<BlogComment>(BLOG_COMMENTS_COLLECTION_NAME)
+        .countDocuments(filter),
+    ]);
+
+    return {
+      items: comments.map(toBlogCommentPublic),
+      total,
+    };
+  }
+
+  public async getCommentCount(
+    postId: string,
+    status: BlogCommentStatus = "approved",
+  ): Promise<number> {
+    const db = await this.getDbConnection();
+    return db
+      .collection<BlogComment>(BLOG_COMMENTS_COLLECTION_NAME)
+      .countDocuments({
+        organizationId: this.organizationId,
+        appId: this.appId,
+        postId,
+        status,
+      });
+  }
+
+  public async getBlogComments(
+    query: GetBlogCommentsQuery,
+  ): Promise<WithTotal<BlogCommentListItem>> {
+    const logger = this.loggerFactory("getBlogComments");
+    logger.debug({ query }, "Getting blog comments");
+
+    const db = await this.getDbConnection();
+
+    const sort: Sort = query.sort?.reduce(
+      (prev, curr) => ({
+        ...prev,
+        [curr.id]: curr.desc ? -1 : 1,
+      }),
+      {},
+    ) || { createdAt: -1 };
+
+    const $and: Filter<BlogComment>[] = [
+      {
+        organizationId: this.organizationId,
+        appId: this.appId,
+      },
+    ];
+
+    if (query.postId) {
+      $and.push({
+        postId: {
+          $in: Array.isArray(query.postId) ? query.postId : [query.postId],
+        },
+      });
+    }
+
+    if (query.status) {
+      $and.push({
+        status: {
+          $in: Array.isArray(query.status) ? query.status : [query.status],
+        },
+      });
+    }
+
+    if (query.range?.start || query.range?.end) {
+      const createdAt: Record<string, Date> = {};
+      if (query.range.start) {
+        createdAt.$gte = query.range.start;
+      }
+      if (query.range.end) {
+        createdAt.$lte = query.range.end;
+      }
+      $and.push({ createdAt });
+    }
+
+    if (query.search) {
+      const $regex = new RegExp(escapeRegex(query.search), "i");
+      $and.push({
+        $or: [
+          { authorName: { $regex } },
+          { authorEmail: { $regex } },
+          { body: { $regex } },
+        ],
+      });
+    }
+
+    const filter: Filter<BlogComment> = $and.length > 0 ? { $and } : {};
+
+    const [result] = await db
+      .collection<BlogComment>(BLOG_COMMENTS_COLLECTION_NAME)
+      .aggregate([
+        {
+          $lookup: {
+            from: BLOG_POSTS_COLLECTION_NAME,
+            localField: "postId",
+            foreignField: "_id",
+            as: "posts",
+          },
+        },
+        {
+          $set: {
+            postTitle: { $first: "$posts.title" },
+          },
+        },
+        { $unset: "posts" },
+        { $match: filter },
+        { $sort: sort },
+        {
+          $facet: {
+            paginatedResults:
+              query.limit === 0
+                ? undefined
+                : [
+                    ...(typeof query.offset !== "undefined"
+                      ? [{ $skip: query.offset }]
+                      : []),
+                    ...(typeof query.limit !== "undefined"
+                      ? [{ $limit: query.limit }]
+                      : []),
+                  ],
+            totalCount: [{ $count: "count" }],
+          },
+        },
+      ])
+      .toArray();
+
+    const response = {
+      total: result.totalCount?.[0]?.count || 0,
+      items: (result.paginatedResults || []) as BlogCommentListItem[],
+    };
+
+    logger.info(
+      { total: response.total, count: response.items.length },
+      "Fetched blog comments",
+    );
+
+    return response;
+  }
+
+  public async getBlogCommentsByIds(ids: string[]): Promise<BlogComment[]> {
+    const logger = this.loggerFactory("getBlogCommentsByIds");
+    logger.debug({ ids }, "Getting blog comments by ids");
+
+    if (ids.length === 0) {
+      logger.warn({ ids }, "No ids provided");
+      return [];
+    }
+
+    const db = await this.getDbConnection();
+    const comments = await db
+      .collection<BlogComment>(BLOG_COMMENTS_COLLECTION_NAME)
+      .find({
+        _id: { $in: ids },
+        organizationId: this.organizationId,
+        appId: this.appId,
+      })
+      .toArray();
+
+    logger.debug({ ids, count: comments.length }, "Blog comments found");
+
+    return comments as BlogComment[];
+  }
+
+  public async updateCommentStatus(
+    id: string,
+    status: BlogCommentStatus,
+  ): Promise<BlogComment | null> {
+    const logger = this.loggerFactory("updateCommentStatus");
+    logger.debug({ id, status }, "Updating blog comment status");
+
+    const db = await this.getDbConnection();
+    const { modifiedCount } = await db
+      .collection<BlogCommentEntity>(BLOG_COMMENTS_COLLECTION_NAME)
+      .updateOne(
+        { _id: id, organizationId: this.organizationId, appId: this.appId },
+        { $set: { status, updatedAt: new Date() } },
+      );
+
+    if (modifiedCount === 0) {
+      return null;
+    }
+
+    const updated = await db
+      .collection<BlogComment>(BLOG_COMMENTS_COLLECTION_NAME)
+      .findOne({
+        _id: id,
+        organizationId: this.organizationId,
+        appId: this.appId,
+      });
+    return updated as BlogComment | null;
+  }
+
+  public async updateCommentsStatus(
+    ids: string[],
+    status: BlogCommentStatus,
+  ): Promise<number> {
+    const logger = this.loggerFactory("updateCommentsStatus");
+    logger.debug({ ids, status }, "Updating blog comments status");
+
+    if (ids.length === 0) {
+      return 0;
+    }
+
+    const db = await this.getDbConnection();
+    const { modifiedCount } = await db
+      .collection<BlogCommentEntity>(BLOG_COMMENTS_COLLECTION_NAME)
+      .updateMany(
+        {
+          _id: { $in: ids },
+          organizationId: this.organizationId,
+          appId: this.appId,
+        },
+        { $set: { status, updatedAt: new Date() } },
+      );
+
+    return modifiedCount;
+  }
+
+  public async deleteComment(id: string): Promise<BlogCommentEntity | null> {
+    const logger = this.loggerFactory("deleteComment");
+    logger.debug({ id }, "Deleting blog comment");
+
+    const db = await this.getDbConnection();
+    const result = await db
+      .collection<BlogCommentEntity>(BLOG_COMMENTS_COLLECTION_NAME)
+      .findOneAndDelete({
+        _id: id,
+        organizationId: this.organizationId,
+        appId: this.appId,
+      });
+
+    if (!result) {
+      logger.warn({ id }, "Blog comment not found");
+      return null;
+    }
+
+    logger.debug({ id }, "Blog comment deleted");
+    return result;
+  }
+
+  public async deleteComments(ids: string[]): Promise<boolean> {
+    const logger = this.loggerFactory("deleteComments");
+    logger.debug({ ids }, "Deleting blog comments");
+
+    const db = await this.getDbConnection();
+    const { deletedCount } = await db
+      .collection<BlogCommentEntity>(BLOG_COMMENTS_COLLECTION_NAME)
+      .deleteMany({
+        _id: { $in: ids },
+        organizationId: this.organizationId,
+        appId: this.appId,
+      });
+
+    if (deletedCount !== ids.length) {
+      logger.warn(
+        { expected: ids.length, actual: deletedCount },
+        "Not all blog comments were removed",
+      );
+    } else {
+      logger.debug({ ids }, "Blog comments deleted");
+    }
+
+    return true;
+  }
+
+  public async deleteCommentsByPostIds(postIds: string[]): Promise<void> {
+    if (postIds.length === 0) {
+      return;
+    }
+
+    const db = await this.getDbConnection();
+    await db.collection(BLOG_COMMENTS_COLLECTION_NAME).deleteMany({
+      postId: { $in: postIds },
+      organizationId: this.organizationId,
+      appId: this.appId,
+    });
+  }
+
+  public async installCommentsCollection(): Promise<void> {
+    const logger = this.loggerFactory("installCommentsCollection");
+    const db = await this.getDbConnection();
+
+    const collections = await db
+      .listCollections({ name: BLOG_COMMENTS_COLLECTION_NAME })
+      .toArray();
+    const collection =
+      collections.length > 0
+        ? db.collection(BLOG_COMMENTS_COLLECTION_NAME)
+        : await db.createCollection(BLOG_COMMENTS_COLLECTION_NAME);
+
+    const indexes = {
+      organizationId_appId_postId_createdAt_1: {
+        organizationId: 1,
+        appId: 1,
+        postId: 1,
+        createdAt: -1,
+      },
+      organizationId_appId_status_createdAt_1: {
+        organizationId: 1,
+        appId: 1,
+        status: 1,
+        createdAt: -1,
+      },
+    };
+
+    for (const [name, index] of Object.entries(indexes)) {
+      if (await collection.indexExists(name)) {
+        continue;
+      }
+      await collection.createIndex(index, { name });
+      logger.debug({ name }, "Created blog comments index");
+    }
   }
 
   public async install(): Promise<void> {
@@ -418,6 +860,9 @@ export class BlogRepositoryService {
     }
 
     logger.debug("Blog pages created");
+
+    await this.installCommentsCollection();
+
     logger.debug("Blog app installed");
   }
 }

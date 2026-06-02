@@ -1,8 +1,18 @@
 import { ReaderDocumentBlocksDictionary } from "@timelish/builder";
 import { BlogPostContainerReader } from "./post-container/reader";
 import { BlogPostContentReader } from "./post-content/reader";
+import { BlogPostCommentCountReader } from "./post-comment-count/reader";
+import { BlogPostCommentFormReader } from "./post-comment-form/reader";
+import { BlogCommentsContainerReader } from "./comments-container/reader";
+import { BlogCommentContainerReader } from "./comment-container/reader";
+import { BlogCommentAuthorReader } from "./comment-author/reader";
+import { BlogCommentDateReader } from "./comment-date/reader";
+import { BlogCommentBodyReader } from "./comment-body/reader";
+import { BlogCommentNavigationButtonReader } from "./comment-navigation-button/reader";
 import { BlogPostNavigationButtonReader } from "./post-navigation-button/reader";
+import { BlogPostAuthorReader } from "./post-author/reader";
 import { BlogPostPublishDateReader } from "./post-publish-date/reader";
+import { BlogPostReadTimeReader } from "./post-read-time/reader";
 import { BlogPostTagReader } from "./post-tag/reader";
 import { BlogPostTitleReader } from "./post-title/reader";
 import { BlogPostsContainerReader } from "./posts-container/reader";
@@ -26,10 +36,40 @@ export const BlogReaders: ReaderDocumentBlocksDictionary<
   BlogPostPublishDate: {
     Reader: BlogPostPublishDateReader,
   },
+  BlogPostReadTime: {
+    Reader: BlogPostReadTimeReader,
+  },
+  BlogPostAuthor: {
+    Reader: BlogPostAuthorReader,
+  },
   BlogPostsContainer: {
     Reader: BlogPostsContainerReader,
   },
   BlogPostNavigationButton: {
     Reader: BlogPostNavigationButtonReader,
+  },
+  BlogPostCommentCount: {
+    Reader: BlogPostCommentCountReader,
+  },
+  BlogCommentsContainer: {
+    Reader: BlogCommentsContainerReader,
+  },
+  BlogCommentContainer: {
+    Reader: BlogCommentContainerReader,
+  },
+  BlogCommentAuthor: {
+    Reader: BlogCommentAuthorReader,
+  },
+  BlogCommentDate: {
+    Reader: BlogCommentDateReader,
+  },
+  BlogCommentBody: {
+    Reader: BlogCommentBodyReader,
+  },
+  BlogCommentNavigationButton: {
+    Reader: BlogCommentNavigationButtonReader,
+  },
+  BlogPostCommentForm: {
+    Reader: BlogPostCommentFormReader,
   },
 };

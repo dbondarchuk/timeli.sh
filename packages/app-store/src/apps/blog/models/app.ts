@@ -1,8 +1,12 @@
 import { querySchema, zObjectId, zTaggedUnion } from "@timelish/types";
 import * as z from "zod";
+import { getBlogCommentsQuerySchema } from "./blog-comment";
 import { blogPostSchema } from "./blog-post";
 
-export const blogConfigurationSchema = z.object({});
+export const blogConfigurationSchema = z.object({
+  commentsEnabled: z.coerce.boolean<boolean>().default(false),
+  commentsPremoderation: z.coerce.boolean<boolean>().default(true),
+});
 
 export type BlogConfiguration = z.infer<typeof blogConfigurationSchema>;
 
@@ -105,6 +109,80 @@ export type SetConfigurationAction = z.infer<
 >;
 export const SetConfigurationActionType = "set-configuration" as const;
 
+// Get Blog Comments Action
+
+export const getBlogCommentsActionSchema = z.object({
+  query: getBlogCommentsQuerySchema,
+});
+
+export type GetBlogCommentsAction = z.infer<typeof getBlogCommentsActionSchema>;
+export const GetBlogCommentsActionType = "get-blog-comments" as const;
+
+// Approve Blog Comment Action
+
+export const approveBlogCommentActionSchema = z.object({
+  id: zObjectId(),
+});
+
+export type ApproveBlogCommentAction = z.infer<
+  typeof approveBlogCommentActionSchema
+>;
+export const ApproveBlogCommentActionType = "approve-blog-comment" as const;
+
+// Reject Blog Comment Action
+
+export const rejectBlogCommentActionSchema = z.object({
+  id: zObjectId(),
+});
+
+export type RejectBlogCommentAction = z.infer<typeof rejectBlogCommentActionSchema>;
+export const RejectBlogCommentActionType = "reject-blog-comment" as const;
+
+// Delete Blog Comment Action
+
+export const deleteBlogCommentActionSchema = z.object({
+  id: zObjectId(),
+});
+
+export type DeleteBlogCommentAction = z.infer<typeof deleteBlogCommentActionSchema>;
+export const DeleteBlogCommentActionType = "delete-blog-comment" as const;
+
+// Delete Selected Blog Comments Action
+
+export const deleteSelectedBlogCommentsActionSchema = z.object({
+  ids: z.array(zObjectId()),
+});
+
+export type DeleteSelectedBlogCommentsAction = z.infer<
+  typeof deleteSelectedBlogCommentsActionSchema
+>;
+export const DeleteSelectedBlogCommentsActionType =
+  "delete-blog-comments" as const;
+
+// Approve Selected Blog Comments Action
+
+export const approveSelectedBlogCommentsActionSchema = z.object({
+  ids: z.array(zObjectId()),
+});
+
+export type ApproveSelectedBlogCommentsAction = z.infer<
+  typeof approveSelectedBlogCommentsActionSchema
+>;
+export const ApproveSelectedBlogCommentsActionType =
+  "approve-blog-comments" as const;
+
+// Reject Selected Blog Comments Action
+
+export const rejectSelectedBlogCommentsActionSchema = z.object({
+  ids: z.array(zObjectId()),
+});
+
+export type RejectSelectedBlogCommentsAction = z.infer<
+  typeof rejectSelectedBlogCommentsActionSchema
+>;
+export const RejectSelectedBlogCommentsActionType =
+  "reject-blog-comments" as const;
+
 // Request Action
 // export const requestActionSchema = z
 //   .object({
@@ -176,6 +254,22 @@ export const requestActionSchema = zTaggedUnion([
   },
   { type: GetBlogTagsActionType, data: getBlogTagsActionSchema },
   { type: SetConfigurationActionType, data: setConfigurationActionSchema },
+  { type: GetBlogCommentsActionType, data: getBlogCommentsActionSchema },
+  { type: ApproveBlogCommentActionType, data: approveBlogCommentActionSchema },
+  { type: RejectBlogCommentActionType, data: rejectBlogCommentActionSchema },
+  { type: DeleteBlogCommentActionType, data: deleteBlogCommentActionSchema },
+  {
+    type: DeleteSelectedBlogCommentsActionType,
+    data: deleteSelectedBlogCommentsActionSchema,
+  },
+  {
+    type: ApproveSelectedBlogCommentsActionType,
+    data: approveSelectedBlogCommentsActionSchema,
+  },
+  {
+    type: RejectSelectedBlogCommentsActionType,
+    data: rejectSelectedBlogCommentsActionSchema,
+  },
 ]);
 
 export type RequestAction = z.infer<typeof requestActionSchema>;

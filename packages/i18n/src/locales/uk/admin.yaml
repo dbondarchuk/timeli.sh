@@ -649,6 +649,7 @@ activity:
   actor:
     system: Система
     user: "Користувач: {name}"
+    visitor: "Відвідувач: {name}"
     customer: "Клієнт: <link></link>"
   page:
     description: Хронологія важливих подій організації.
