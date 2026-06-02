@@ -653,6 +653,7 @@ activity:
   actor:
     system: System
     user: "User: {name}"
+    visitor: "Visitor: {name}"
     customer: "Customer: <link></link>"
   page:
     description: Organization-wide timeline of notable events.

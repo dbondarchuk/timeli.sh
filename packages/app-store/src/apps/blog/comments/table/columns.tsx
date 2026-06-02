@@ -2,7 +2,19 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { useI18n } from "@timelish/i18n";
-import { Badge, Checkbox, Link } from "@timelish/ui";
+import {
+  Badge,
+  Button,
+  Checkbox,
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  Link,
+} from "@timelish/ui";
 import { tableSortHeader, tableSortNoopFunction } from "@timelish/ui-admin";
 import { DateTime } from "luxon";
 import { BlogCommentListItem } from "../../models";
@@ -98,15 +110,40 @@ export const columns: ColumnDef<CommentsTableRow>[] = [
     id: "body",
     accessorKey: "body",
     header: tableSortHeader(
-      "comments.table.columns.body" satisfies BlogAdminKeys,
+      "comments.table.columns.body.label" satisfies BlogAdminKeys,
       "string",
       blogAdminNamespace,
     ),
-    cell: ({ row }) => (
-      <span className="text-muted-foreground truncate max-w-[240px] block">
-        {bodyPreview(row.original.body)}
-      </span>
-    ),
+    cell: ({ row }) => {
+      const tUi = useI18n("ui");
+      const tAdmin = useI18n<BlogAdminNamespace, BlogAdminKeys>(
+        blogAdminNamespace,
+      );
+      return (
+        <Dialog>
+          <DialogTrigger>
+            <span className="text-muted-foreground truncate max-w-[240px] block">
+              {bodyPreview(row.original.body)}
+            </span>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[80%] flex flex-col max-h-[100%]">
+            <DialogHeader>
+              <DialogTitle>
+                {tAdmin("comments.table.columns.body.dialogTitle")}
+              </DialogTitle>
+            </DialogHeader>
+            <div className="flex-1 w-full overflow-auto whitespace-pre-wrap">
+              {row.original.body}
+            </div>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button variant="secondary">{tUi("dialog.close")}</Button>
+              </DialogClose>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      );
+    },
     sortingFn: tableSortNoopFunction,
   },
   {

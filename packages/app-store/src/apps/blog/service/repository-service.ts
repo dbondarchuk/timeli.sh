@@ -1,14 +1,19 @@
 import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
-import { IConnectedAppProps, Query, WithTotal, systemEventSource } from "@timelish/types";
+import {
+  IConnectedAppProps,
+  Query,
+  systemEventSource,
+  WithTotal,
+} from "@timelish/types";
 import { escapeRegex } from "@timelish/utils";
 import { ObjectId, type Document, type Filter, type Sort } from "mongodb";
 import {
+  BLOG_COMMENTS_COLLECTION_NAME,
   BlogComment,
   BlogCommentEntity,
   BlogCommentListItem,
   BlogCommentPublic,
   BlogCommentStatus,
-  BLOG_COMMENTS_COLLECTION_NAME,
   CreateBlogCommentModel,
   GetBlogCommentsQuery,
   GetPublicBlogCommentsQuery,
@@ -424,7 +429,9 @@ export class BlogRepositoryService {
       updatedAt: new Date(),
     } satisfies BlogCommentEntity;
 
-    await db.collection<BlogCommentEntity>(BLOG_COMMENTS_COLLECTION_NAME).insertOne(entity);
+    await db
+      .collection<BlogCommentEntity>(BLOG_COMMENTS_COLLECTION_NAME)
+      .insertOne(entity);
 
     return entity as BlogComment;
   }
@@ -472,12 +479,14 @@ export class BlogRepositoryService {
     status: BlogCommentStatus = "approved",
   ): Promise<number> {
     const db = await this.getDbConnection();
-    return db.collection<BlogComment>(BLOG_COMMENTS_COLLECTION_NAME).countDocuments({
-      organizationId: this.organizationId,
-      appId: this.appId,
-      postId,
-      status,
-    });
+    return db
+      .collection<BlogComment>(BLOG_COMMENTS_COLLECTION_NAME)
+      .countDocuments({
+        organizationId: this.organizationId,
+        appId: this.appId,
+        postId,
+        status,
+      });
   }
 
   public async getBlogComments(
@@ -594,6 +603,30 @@ export class BlogRepositoryService {
     return response;
   }
 
+  public async getBlogCommentsByIds(ids: string[]): Promise<BlogComment[]> {
+    const logger = this.loggerFactory("getBlogCommentsByIds");
+    logger.debug({ ids }, "Getting blog comments by ids");
+
+    if (ids.length === 0) {
+      logger.warn({ ids }, "No ids provided");
+      return [];
+    }
+
+    const db = await this.getDbConnection();
+    const comments = await db
+      .collection<BlogComment>(BLOG_COMMENTS_COLLECTION_NAME)
+      .find({
+        _id: { $in: ids },
+        organizationId: this.organizationId,
+        appId: this.appId,
+      })
+      .toArray();
+
+    logger.debug({ ids, count: comments.length }, "Blog comments found");
+
+    return comments as BlogComment[];
+  }
+
   public async updateCommentStatus(
     id: string,
     status: BlogCommentStatus,
@@ -615,7 +648,11 @@ export class BlogRepositoryService {
 
     const updated = await db
       .collection<BlogComment>(BLOG_COMMENTS_COLLECTION_NAME)
-      .findOne({ _id: id, organizationId: this.organizationId, appId: this.appId });
+      .findOne({
+        _id: id,
+        organizationId: this.organizationId,
+        appId: this.appId,
+      });
     return updated as BlogComment | null;
   }
 
@@ -645,16 +682,26 @@ export class BlogRepositoryService {
     return modifiedCount;
   }
 
-  public async deleteComment(id: string): Promise<boolean> {
+  public async deleteComment(id: string): Promise<BlogCommentEntity | null> {
     const logger = this.loggerFactory("deleteComment");
     logger.debug({ id }, "Deleting blog comment");
 
     const db = await this.getDbConnection();
-    const { deletedCount } = await db
+    const result = await db
       .collection<BlogCommentEntity>(BLOG_COMMENTS_COLLECTION_NAME)
-      .deleteOne({ _id: id, organizationId: this.organizationId, appId: this.appId });
+      .findOneAndDelete({
+        _id: id,
+        organizationId: this.organizationId,
+        appId: this.appId,
+      });
 
-    return deletedCount > 0;
+    if (!result) {
+      logger.warn({ id }, "Blog comment not found");
+      return null;
+    }
+
+    logger.debug({ id }, "Blog comment deleted");
+    return result;
   }
 
   public async deleteComments(ids: string[]): Promise<boolean> {
@@ -662,11 +709,22 @@ export class BlogRepositoryService {
     logger.debug({ ids }, "Deleting blog comments");
 
     const db = await this.getDbConnection();
-    await db.collection<BlogCommentEntity>(BLOG_COMMENTS_COLLECTION_NAME).deleteMany({
-      _id: { $in: ids },
-      organizationId: this.organizationId,
-      appId: this.appId,
-    });
+    const { deletedCount } = await db
+      .collection<BlogCommentEntity>(BLOG_COMMENTS_COLLECTION_NAME)
+      .deleteMany({
+        _id: { $in: ids },
+        organizationId: this.organizationId,
+        appId: this.appId,
+      });
+
+    if (deletedCount !== ids.length) {
+      logger.warn(
+        { expected: ids.length, actual: deletedCount },
+        "Not all blog comments were removed",
+      );
+    } else {
+      logger.debug({ ids }, "Blog comments deleted");
+    }
 
     return true;
   }
@@ -688,7 +746,9 @@ export class BlogRepositoryService {
     const logger = this.loggerFactory("installCommentsCollection");
     const db = await this.getDbConnection();
 
-    const collections = await db.listCollections({ name: BLOG_COMMENTS_COLLECTION_NAME }).toArray();
+    const collections = await db
+      .listCollections({ name: BLOG_COMMENTS_COLLECTION_NAME })
+      .toArray();
     const collection =
       collections.length > 0
         ? db.collection(BLOG_COMMENTS_COLLECTION_NAME)

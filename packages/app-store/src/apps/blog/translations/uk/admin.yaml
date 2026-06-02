@@ -96,6 +96,29 @@ setup:
   commentsPremoderation:
     label: Модерація коментарів
     description: Нові коментарі приховані до схвалення
+events:
+  postCreated:
+    title: Створено новий запис блогу
+    description: "Запис «{postTitle}» створено"
+  postUpdated:
+    title: Запис блогу оновлено
+    description: "Запис «{postTitle}» оновлено"
+  postDeleted:
+    title: Запис блогу видалено
+    description: Запис видалено
+  commentCreated:
+    title: Новий коментар
+    description: "{authorName} прокоментував «{postTitle}»"
+  commentDeleted:
+    title: Коментар видалено
+    description: Коментар видалено
+  commentStatusChanged:
+    title: Статус коментаря змінено
+    description: "Коментар від {authorName}: {status}"
+notifications:
+  newComment: Новий коментар у блозі
+  newCommentMessage: Відвідувач залишив коментар у вашому блозі
+  viewComment: Переглянути коментар
 comments:
   status:
     pending: Очікує
@@ -111,7 +134,9 @@ comments:
       post: Запис
       authorName: Ім'я
       authorEmail: Email
-      body: Коментар
+      body:
+        label: Коментар
+        dialogTitle: Текст коментаря
       status: Статус
       createdAt: Надіслано
     actions:
@@ -288,4 +313,3 @@ validation:
       required: Ім'я є обов'язковим
     body:
       required: Коментар є обов'язковим
-

@@ -96,6 +96,29 @@ setup:
   commentsPremoderation:
     label: Require comment moderation
     description: New comments stay hidden until you approve them
+events:
+  postCreated:
+    title: New blog post created
+    description: 'Post "{postTitle}" was created'
+  postUpdated:
+    title: Blog post updated
+    description: 'Post "{postTitle}" was updated'
+  postDeleted:
+    title: Blog post deleted
+    description: Post was deleted
+  commentCreated:
+    title: New blog comment
+    description: '{authorName} commented on "{postTitle}"'
+  commentDeleted:
+    title: Blog comment deleted
+    description: Comment was deleted
+  commentStatusChanged:
+    title: Blog comment status changed
+    description: "Comment by {authorName} was {status}"
+notifications:
+  newComment: New blog comment
+  newCommentMessage: A visitor left a comment on your blog
+  viewComment: View comment
 comments:
   status:
     pending: Pending
@@ -111,7 +134,9 @@ comments:
       post: Post
       authorName: Name
       authorEmail: Email
-      body: Comment
+      body:
+        label: Comment
+        dialogTitle: Comment body
       status: Status
       createdAt: Submitted
     actions:
@@ -288,4 +313,3 @@ validation:
       required: Name is required
     body:
       required: Comment is required
-

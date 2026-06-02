@@ -1,6 +1,8 @@
 import type { AppEventConfig } from "@timelish/types";
 import { eventPatternMatches } from "@timelish/types";
 import { AvailableApps } from "../apps";
+import { BLOG_APP_EVENTS } from "../apps/blog/app-events";
+import { BLOG_APP_NAME } from "../apps/blog/const";
 import { FORMS_APP_EVENTS } from "../apps/forms/app-events";
 import { FORMS_APP_NAME } from "../apps/forms/const";
 import { WAITLIST_APP_EVENTS } from "../apps/waitlist/app-events";
@@ -23,6 +25,7 @@ export const BUILT_IN_APP_EVENT_SUBSCRIPTIONS: Record<string, string[]> = {
  * Subscription routing uses each app’s `subscribeTo` field in {@link AvailableApps}.
  */
 export const APP_EVENT_CONFIGS: Record<string, AppEventConfig> = {
+  [BLOG_APP_NAME]: BLOG_APP_EVENTS,
   [FORMS_APP_NAME]: FORMS_APP_EVENTS,
   [WAITLIST_APP_NAME]: WAITLIST_APP_EVENTS,
 };

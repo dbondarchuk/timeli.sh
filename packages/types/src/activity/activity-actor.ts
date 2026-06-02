@@ -2,4 +2,5 @@
 export type ActivityActorDisplay =
   | { kind: "system" }
   | { kind: "user"; userId: string; name: string }
+  | { kind: "visitor"; name: string }
   | { kind: "customer"; customerId: string; name: string; isDeleted?: boolean };

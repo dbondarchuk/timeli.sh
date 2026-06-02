@@ -6,12 +6,21 @@ import {
   ConnectedAppRequestError,
   ConnectedAppStatusWithText,
   ConnectedAppUninstallResult,
+  EventSource,
   IConnectedApp,
   IConnectedAppProps,
   ISitemapItemsProvider,
   Page,
   SitemapUrlEntry,
 } from "@timelish/types";
+import {
+  BLOG_COMMENT_CREATED_EVENT_TYPE,
+  BLOG_COMMENT_DELETED_EVENT_TYPE,
+  BLOG_COMMENT_STATUS_CHANGED_EVENT_TYPE,
+  BLOG_POST_CREATED_EVENT_TYPE,
+  BLOG_POST_DELETED_EVENT_TYPE,
+  BLOG_POST_UPDATED_EVENT_TYPE,
+} from "../events";
 import {
   ApproveBlogCommentAction,
   ApproveBlogCommentActionType,
@@ -32,7 +41,6 @@ import {
   DeleteSelectedBlogCommentsActionType,
   DeleteSelectedBlogPostsAction,
   DeleteSelectedBlogPostsActionType,
-  getPublicBlogCommentsQuerySchema,
   GetBlogCommentsAction,
   GetBlogCommentsActionType,
   GetBlogPostAction,
@@ -41,6 +49,7 @@ import {
   GetBlogPostsActionType,
   GetBlogTagsAction,
   GetBlogTagsActionType,
+  getPublicBlogCommentsQuerySchema,
   RejectBlogCommentAction,
   RejectBlogCommentActionType,
   RejectSelectedBlogCommentsAction,
@@ -76,6 +85,8 @@ export class BlogConnectedApp implements IConnectedApp, ISitemapItemsProvider {
   public async processRequest(
     appData: ConnectedAppData,
     request: RequestAction,
+    _apiRequest?: ApiRequest,
+    userId?: string,
   ): Promise<any> {
     const logger = this.loggerFactory("processRequest");
     logger.debug({ appId: appData._id }, "Processing blog request");
@@ -96,13 +107,13 @@ export class BlogConnectedApp implements IConnectedApp, ISitemapItemsProvider {
       case GetBlogPostActionType:
         return this.processGetBlogPostRequest(appData, data);
       case CreateBlogPostActionType:
-        return this.processCreateBlogPostRequest(appData, data);
+        return this.processCreateBlogPostRequest(appData, data, userId);
       case UpdateBlogPostActionType:
-        return this.processUpdateBlogPostRequest(appData, data);
+        return this.processUpdateBlogPostRequest(appData, data, userId);
       case DeleteBlogPostActionType:
-        return this.processDeleteBlogPostRequest(appData, data);
+        return this.processDeleteBlogPostRequest(appData, data, userId);
       case DeleteSelectedBlogPostsActionType:
-        return this.processDeleteBlogPostsRequest(appData, data);
+        return this.processDeleteBlogPostsRequest(appData, data, userId);
       case GetBlogTagsActionType:
         return this.processGetBlogTagsRequest(appData, data);
       case CheckBlogPostSlugUniqueActionType:
@@ -110,13 +121,13 @@ export class BlogConnectedApp implements IConnectedApp, ISitemapItemsProvider {
       case GetBlogCommentsActionType:
         return this.processGetBlogCommentsRequest(appData, data);
       case ApproveBlogCommentActionType:
-        return this.processApproveBlogCommentRequest(appData, data);
+        return this.processApproveBlogCommentRequest(appData, data, userId);
       case RejectBlogCommentActionType:
-        return this.processRejectBlogCommentRequest(appData, data);
+        return this.processRejectBlogCommentRequest(appData, data, userId);
       case DeleteBlogCommentActionType:
-        return this.processDeleteBlogCommentRequest(appData, data);
+        return this.processDeleteBlogCommentRequest(appData, data, userId);
       case DeleteSelectedBlogCommentsActionType:
-        return this.processDeleteBlogCommentsRequest(appData, data);
+        return this.processDeleteBlogCommentsRequest(appData, data, userId);
       case ApproveSelectedBlogCommentsActionType:
         return this.processApproveBlogCommentsRequest(appData, data);
       case RejectSelectedBlogCommentsActionType:
@@ -253,7 +264,25 @@ export class BlogConnectedApp implements IConnectedApp, ISitemapItemsProvider {
     }
 
     const status = config.commentsPremoderation ? "pending" : "approved";
-    await repositoryService.createComment(parsed.data, status);
+    const comment = await repositoryService.createComment(parsed.data, status);
+
+    await this.emitBlogEvent(
+      BLOG_COMMENT_CREATED_EVENT_TYPE,
+      {
+        comment: {
+          _id: comment._id,
+          postId: comment.postId,
+          authorName: comment.authorName,
+          body: comment.body,
+        },
+        post: {
+          _id: post._id,
+          title: post.title,
+          slug: post.slug,
+        },
+      },
+      { actor: "visitor", actorName: comment.authorName },
+    );
 
     logger.info({ postId: parsed.data.postId, status }, "Blog comment created");
 
@@ -311,6 +340,32 @@ export class BlogConnectedApp implements IConnectedApp, ISitemapItemsProvider {
     );
   }
 
+  private adminEventSource(userId?: string): EventSource {
+    return userId ? { actor: "user", actorId: userId } : { actor: "user" };
+  }
+
+  private async emitBlogEvent(
+    type: string,
+    payload: unknown,
+    source: EventSource,
+  ) {
+    const logger = this.loggerFactory("emitBlogEvent");
+    try {
+      logger.debug({ type, source }, "Emitting blog event");
+      await this.props.services.eventService.emit(type, payload, source);
+      logger.debug({ type, source }, "Blog event emitted");
+    } catch (error: unknown) {
+      logger.error(
+        {
+          type,
+          source,
+          error: error instanceof Error ? error.message : String(error),
+        },
+        "Failed to emit blog event",
+      );
+    }
+  }
+
   private async processGetBlogPostsRequest(
     appData: ConnectedAppData,
     data: GetBlogPostsAction,
@@ -362,6 +417,7 @@ export class BlogConnectedApp implements IConnectedApp, ISitemapItemsProvider {
   private async processCreateBlogPostRequest(
     appData: ConnectedAppData,
     data: CreateBlogPostAction,
+    userId?: string,
   ) {
     const logger = this.loggerFactory("processCreateBlogPostRequest");
     logger.debug({ appId: appData._id }, "Processing create blog post request");
@@ -386,6 +442,18 @@ export class BlogConnectedApp implements IConnectedApp, ISitemapItemsProvider {
 
       const result = await repositoryService.createBlogPost(data.post);
 
+      await this.emitBlogEvent(
+        BLOG_POST_CREATED_EVENT_TYPE,
+        {
+          post: {
+            _id: result._id,
+            title: result.title,
+            slug: result.slug,
+          },
+        },
+        this.adminEventSource(userId),
+      );
+
       logger.debug({ appId: appData._id }, "Successfully created blog post");
       return result;
     } catch (error: any) {
@@ -397,6 +465,7 @@ export class BlogConnectedApp implements IConnectedApp, ISitemapItemsProvider {
   private async processUpdateBlogPostRequest(
     appData: ConnectedAppData,
     data: UpdateBlogPostAction,
+    userId?: string,
   ) {
     const logger = this.loggerFactory("processUpdateBlogPostRequest");
     logger.debug({ appId: appData._id }, "Processing update blog post request");
@@ -422,6 +491,20 @@ export class BlogConnectedApp implements IConnectedApp, ISitemapItemsProvider {
 
       const result = await repositoryService.updateBlogPost(data.id, data.post);
 
+      if (result) {
+        await this.emitBlogEvent(
+          BLOG_POST_UPDATED_EVENT_TYPE,
+          {
+            post: {
+              _id: result._id,
+              title: result.title,
+              slug: result.slug,
+            },
+          },
+          this.adminEventSource(userId),
+        );
+      }
+
       logger.debug({ appId: appData._id }, "Successfully updated blog post");
       return result;
     } catch (error: any) {
@@ -433,6 +516,7 @@ export class BlogConnectedApp implements IConnectedApp, ISitemapItemsProvider {
   private async processDeleteBlogPostRequest(
     appData: ConnectedAppData,
     data: DeleteBlogPostAction,
+    userId?: string,
   ) {
     const logger = this.loggerFactory("processDeleteBlogPostRequest");
     logger.debug({ appId: appData._id }, "Processing delete blog post request");
@@ -453,6 +537,12 @@ export class BlogConnectedApp implements IConnectedApp, ISitemapItemsProvider {
         );
       }
 
+      await this.emitBlogEvent(
+        BLOG_POST_DELETED_EVENT_TYPE,
+        { postId: data.id },
+        this.adminEventSource(userId),
+      );
+
       logger.debug({ appId: appData._id }, "Successfully deleted blog post");
       return result;
     } catch (error: any) {
@@ -464,6 +554,7 @@ export class BlogConnectedApp implements IConnectedApp, ISitemapItemsProvider {
   private async processDeleteBlogPostsRequest(
     appData: ConnectedAppData,
     data: DeleteSelectedBlogPostsAction,
+    userId?: string,
   ) {
     const logger = this.loggerFactory("processDeleteBlogPostsRequest");
     logger.debug(
@@ -478,6 +569,15 @@ export class BlogConnectedApp implements IConnectedApp, ISitemapItemsProvider {
       );
 
       const result = await repositoryService.deleteBlogPosts(data.ids);
+
+      const source = this.adminEventSource(userId);
+      for (const postId of data.ids) {
+        await this.emitBlogEvent(
+          BLOG_POST_DELETED_EVENT_TYPE,
+          { postId },
+          source,
+        );
+      }
 
       logger.debug({ appId: appData._id }, "Successfully deleted blog posts");
       return result;
@@ -562,12 +662,16 @@ export class BlogConnectedApp implements IConnectedApp, ISitemapItemsProvider {
   private async processApproveBlogCommentRequest(
     appData: ConnectedAppData,
     data: ApproveBlogCommentAction,
+    userId?: string,
   ) {
     const repositoryService = this.getRepositoryService(
       appData._id,
       appData.organizationId,
     );
-    const result = await repositoryService.updateCommentStatus(data.id, "approved");
+    const result = await repositoryService.updateCommentStatus(
+      data.id,
+      "approved",
+    );
     if (!result) {
       throw new ConnectedAppRequestError(
         "blog_comment_not_found",
@@ -576,18 +680,34 @@ export class BlogConnectedApp implements IConnectedApp, ISitemapItemsProvider {
         "Blog comment not found",
       );
     }
+    await this.emitBlogEvent(
+      BLOG_COMMENT_STATUS_CHANGED_EVENT_TYPE,
+      {
+        comment: {
+          _id: result._id,
+          postId: result.postId,
+          authorName: result.authorName,
+        },
+        status: "approved",
+      },
+      this.adminEventSource(userId),
+    );
     return result;
   }
 
   private async processRejectBlogCommentRequest(
     appData: ConnectedAppData,
     data: RejectBlogCommentAction,
+    userId?: string,
   ) {
     const repositoryService = this.getRepositoryService(
       appData._id,
       appData.organizationId,
     );
-    const result = await repositoryService.updateCommentStatus(data.id, "rejected");
+    const result = await repositoryService.updateCommentStatus(
+      data.id,
+      "rejected",
+    );
     if (!result) {
       throw new ConnectedAppRequestError(
         "blog_comment_not_found",
@@ -596,17 +716,33 @@ export class BlogConnectedApp implements IConnectedApp, ISitemapItemsProvider {
         "Blog comment not found",
       );
     }
+
+    await this.emitBlogEvent(
+      BLOG_COMMENT_STATUS_CHANGED_EVENT_TYPE,
+      {
+        comment: {
+          _id: result._id,
+          postId: result.postId,
+          authorName: result.authorName,
+        },
+        status: "rejected",
+      },
+      this.adminEventSource(userId),
+    );
+
     return result;
   }
 
   private async processDeleteBlogCommentRequest(
     appData: ConnectedAppData,
     data: DeleteBlogCommentAction,
+    userId?: string,
   ) {
     const repositoryService = this.getRepositoryService(
       appData._id,
       appData.organizationId,
     );
+
     const result = await repositoryService.deleteComment(data.id);
     if (!result) {
       throw new ConnectedAppRequestError(
@@ -616,18 +752,39 @@ export class BlogConnectedApp implements IConnectedApp, ISitemapItemsProvider {
         "Blog comment not found",
       );
     }
+
+    await this.emitBlogEvent(
+      BLOG_COMMENT_DELETED_EVENT_TYPE,
+      { commentId: result._id, postId: result.postId },
+      this.adminEventSource(userId),
+    );
+
     return result;
   }
 
   private async processDeleteBlogCommentsRequest(
     appData: ConnectedAppData,
     data: DeleteSelectedBlogCommentsAction,
+    userId?: string,
   ) {
     const repositoryService = this.getRepositoryService(
       appData._id,
       appData.organizationId,
     );
-    return repositoryService.deleteComments(data.ids);
+
+    const comments = await repositoryService.getBlogCommentsByIds(data.ids);
+    const result = await repositoryService.deleteComments(data.ids);
+
+    const source = this.adminEventSource(userId);
+    for (const comment of comments) {
+      await this.emitBlogEvent(
+        BLOG_COMMENT_DELETED_EVENT_TYPE,
+        { commentId: comment._id, postId: comment.postId },
+        source,
+      );
+    }
+
+    return result;
   }
 
   private async processApproveBlogCommentsRequest(
