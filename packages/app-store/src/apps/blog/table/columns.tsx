@@ -98,6 +98,26 @@ export const columns: ColumnDef<BlogPost & { appId: string }>[] = [
   },
   {
     cell: ({ row }) => {
+      const count = row.original.totalCommentsCount ?? 0;
+      return (
+        <Link
+          href={`/dashboard/blog/comments?postId=${row.original._id}`}
+          variant="underline"
+        >
+          {count}
+        </Link>
+      );
+    },
+    id: "comments",
+    header: tableSortHeader<BlogAdminNamespace, BlogAdminKeys>(
+      "table.columns.comments",
+      "number",
+      blogAdminNamespace,
+    ),
+    enableSorting: false,
+  },
+  {
+    cell: ({ row }) => {
       if (!row.original.tags || row.original.tags.length === 0) {
         return null;
       }

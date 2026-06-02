@@ -1,5 +1,6 @@
-import { BlogPost } from "../../models";
+import { BlogCommentsContext, BlogPost } from "../../models";
 import { BlogPublicAllKeys } from "../../translations/types";
+import { getBlogConfiguration } from "../get-blog-config";
 import { BlogPostContainerComponent } from "./component";
 import { BlogPostContainerReaderProps } from "./schema";
 
@@ -9,7 +10,7 @@ type BlogPostContainerServerWrapperProps = {
   blockBase?: { className?: string; id?: string };
   restProps: any;
   appId?: string;
-  args?: {
+  args?: BlogCommentsContext & {
     post?: BlogPost;
     _item?: BlogPost;
     slug?: string;
@@ -154,6 +155,19 @@ export const BlogPostContainerServerWrapper = async ({
 
   const postLink = generatePostLink(fetchedPost?.slug);
 
+  const containerArgs = {
+    ...args,
+  };
+
+  if (!args?.blogCommentsConfig) {
+    logger.info({ organizationId, appId }, "Getting blog comments config");
+    const blogCommentsConfig = await getBlogConfiguration(
+      organizationId,
+      appId,
+    );
+    containerArgs.blogCommentsConfig = blogCommentsConfig;
+  }
+
   logger.info(
     {
       postLink,
@@ -166,7 +180,7 @@ export const BlogPostContainerServerWrapper = async ({
 
   return (
     <BlogPostContainerComponent
-      args={args}
+      args={containerArgs}
       post={fetchedPost}
       error={error}
       postLink={postLink}

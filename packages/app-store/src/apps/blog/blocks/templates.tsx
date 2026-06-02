@@ -5,7 +5,7 @@ import {
   TEditorBlock,
   TemplatesConfiguration,
 } from "@timelish/builder";
-import { AllKeys } from "@timelish/i18n";
+import { AllKeys, I18nFn } from "@timelish/i18n";
 import { TEXT_SIZE_PRESETS } from "@timelish/page-builder-base";
 import { COLORS } from "@timelish/page-builder-base/style";
 import {
@@ -16,11 +16,23 @@ import {
   ListOrdered,
   Tag,
 } from "lucide-react";
-import { BlogAdminKeys, BlogAdminNamespace } from "../translations/types";
+import {
+  BlogAdminKeys,
+  BlogAdminNamespace,
+  BlogPublicAllKeys,
+} from "../translations/types";
+import { BlogCommentAuthorPropsDefaults } from "./comment-author/schema";
+import { BlogCommentBodyPropsDefaults } from "./comment-body/schema";
+import { BlogCommentContainerPropsDefaults } from "./comment-container/schema";
+import { BlogCommentDatePropsDefaults } from "./comment-date/schema";
+import { BlogCommentNavigationButtonPropsDefaults } from "./comment-navigation-button/schema";
+import { BlogCommentsContainerPropsDefaults } from "./comments-container/schema";
+import { BlogPostAuthorPropsDefaults } from "./post-author/schema";
+import { BlogPostCommentCountPropsDefaults } from "./post-comment-count/schema";
+import { BlogPostCommentFormPropsDefaults } from "./post-comment-form/schema";
 import { BlogPostContainerPropsDefaults } from "./post-container/schema";
 import { BlogPostContentPropsDefaults } from "./post-content/schema";
 import { BlogPostNavigationButtonPropsDefaults } from "./post-navigation-button/schema";
-import { BlogPostAuthorPropsDefaults } from "./post-author/schema";
 import { BlogPostPublishDatePropsDefaults } from "./post-publish-date/schema";
 import { BlogPostReadTimePropsDefaults } from "./post-read-time/schema";
 import { BlogPostTagPropsDefaults } from "./post-tag/schema";
@@ -251,6 +263,8 @@ const createPostMetaInlineContainer = ({
   publishDateId,
   readTimeSeparatorId,
   readTimeId,
+  commentCountSeparatorId,
+  commentCountId,
 }: {
   containerId: string;
   authorId: string;
@@ -258,6 +272,8 @@ const createPostMetaInlineContainer = ({
   publishDateId: string;
   readTimeSeparatorId: string;
   readTimeId: string;
+  commentCountSeparatorId: string;
+  commentCountId: string;
 }) => ({
   type: "InlineContainer" as const,
   id: containerId,
@@ -282,6 +298,12 @@ const createPostMetaInlineContainer = ({
           id: readTimeId,
           data: BlogPostReadTimePropsDefaults,
         },
+        createPostMetaSeparator(commentCountSeparatorId),
+        {
+          type: "BlogPostCommentCount" as const,
+          id: commentCountId,
+          data: BlogPostCommentCountPropsDefaults,
+        },
       ],
     },
   },
@@ -295,6 +317,8 @@ const getPostMetaBlock = (): TEditorBlock =>
     publishDateId: generateId(),
     readTimeSeparatorId: generateId(),
     readTimeId: generateId(),
+    commentCountSeparatorId: generateId(),
+    commentCountId: generateId(),
   }) as TEditorBlock;
 
 // Defaults for Heading
@@ -332,6 +356,154 @@ const getHeadingPropsDefaults = (isPostPage?: boolean) => ({
     ],
   },
 });
+
+const createSectionHeading = (
+  t: I18nFn<undefined, undefined>,
+  level: "h3" | "h4",
+  textKey: BlogPublicAllKeys,
+): TEditorBlock => ({
+  type: "Heading",
+  id: generateId(),
+  data: {
+    ...getHeadingPropsDefaults(true),
+    props: {
+      level,
+      children: [
+        {
+          type: "InlineContainer",
+          id: generateId(),
+          data: {
+            style: inlineContainerStyle,
+            props: {
+              children: [
+                {
+                  type: "InlineText",
+                  id: generateId(),
+                  data: {
+                    props: { text: t(textKey) },
+                  },
+                },
+              ],
+            },
+          },
+        },
+      ],
+    },
+  },
+});
+
+const buildBlogCommentsContainerBlock = (
+  appName: string,
+  appId: string,
+): TEditorBlock => {
+  const commentsContainerId = generateId();
+  const foreachId = generateId();
+  const commentContainerId = generateId();
+  const authorId = generateId();
+  const dateId = generateId();
+  const bodyId = generateId();
+  const navigationContainerId = generateId();
+  const prevButtonId = generateId();
+  const nextButtonId = generateId();
+
+  return {
+    id: commentsContainerId,
+    type: "BlogCommentsContainer",
+    metadata: {
+      blogAppName: appName,
+      blogAppId: appId,
+    },
+    data: {
+      ...BlogCommentsContainerPropsDefaults,
+      props: {
+        ...BlogCommentsContainerPropsDefaults.props,
+        children: [
+          {
+            id: foreachId,
+            type: "ForeachContainer",
+            data: {
+              ...ForeachContainerPropsDefaults,
+              props: {
+                value: "comments",
+                itemName: "comment",
+                children: [
+                  {
+                    id: commentContainerId,
+                    type: "BlogCommentContainer",
+                    data: {
+                      ...BlogCommentContainerPropsDefaults,
+                      props: {
+                        children: [
+                          {
+                            type: "BlogCommentAuthor",
+                            id: authorId,
+                            data: BlogCommentAuthorPropsDefaults,
+                          },
+                          {
+                            type: "BlogCommentDate",
+                            id: dateId,
+                            data: BlogCommentDatePropsDefaults,
+                          },
+                          {
+                            type: "BlogCommentBody",
+                            id: bodyId,
+                            data: BlogCommentBodyPropsDefaults,
+                          },
+                        ],
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+          },
+          {
+            id: navigationContainerId,
+            type: "Container",
+            data: {
+              style: {
+                display: [{ value: "flex" }],
+                flexDirection: [{ value: "row" }],
+                justifyContent: [{ value: "space-between" }],
+                width: [{ value: { value: 100, unit: "%" } }],
+                padding: [
+                  {
+                    value: {
+                      top: { value: 0.5, unit: "rem" },
+                      bottom: { value: 0, unit: "rem" },
+                      left: { value: 0, unit: "rem" },
+                      right: { value: 0, unit: "rem" },
+                    },
+                  },
+                ],
+              },
+              props: {
+                children: [
+                  {
+                    type: "BlogCommentNavigationButton",
+                    id: prevButtonId,
+                    data: {
+                      ...BlogCommentNavigationButtonPropsDefaults,
+                      props: { direction: "prev" },
+                    },
+                  },
+                  {
+                    type: "BlogCommentNavigationButton",
+                    id: nextButtonId,
+                    data: {
+                      ...BlogCommentNavigationButtonPropsDefaults,
+                      props: { direction: "next" },
+                    },
+                  },
+                ],
+              },
+            },
+          },
+        ],
+      },
+    },
+  };
+};
 
 export const BlogTemplates: (
   appName: string,
@@ -440,12 +612,12 @@ export const BlogTemplates: (
       BlogAdminNamespace,
       BlogAdminKeys
     >,
-    getBlock: (): TEditorBlock => {
+    getBlock: (t): TEditorBlock => {
       const containerId = generateId();
       const titleHeaderId = generateId();
       const titleId = generateId();
       const contentId = generateId();
-      const tagsId = generateId();
+      const commentFormId = generateId();
       const foreachId = generateId();
       const tagId = generateId();
 
@@ -482,6 +654,22 @@ export const BlogTemplates: (
                 type: "BlogPostContent",
                 id: contentId,
                 data: BlogPostContentPropsDefaults,
+              },
+              createSectionHeading(
+                t,
+                "h3",
+                "app_blog_public.block.postCommentsList.heading" satisfies BlogPublicAllKeys,
+              ),
+              buildBlogCommentsContainerBlock(appName, appId),
+              createSectionHeading(
+                t,
+                "h4",
+                "app_blog_public.block.postCommentForm.addText" satisfies BlogPublicAllKeys,
+              ),
+              {
+                type: "BlogPostCommentForm",
+                id: commentFormId,
+                data: BlogPostCommentFormPropsDefaults,
               },
               {
                 id: foreachId,
@@ -525,6 +713,80 @@ export const BlogTemplates: (
         },
       };
     },
+  },
+  CommentsListNavigation: {
+    displayName:
+      "app_blog_admin.block.templates.commentsListNavigation.displayName" satisfies AllKeys<
+        BlogAdminNamespace,
+        BlogAdminKeys
+      >,
+    icon: <ArrowLeftRight />,
+    category: "app_blog_admin.block.category.blog" satisfies AllKeys<
+      BlogAdminNamespace,
+      BlogAdminKeys
+    >,
+    getBlock: (): TEditorBlock => {
+      const containerId = generateId();
+      const prevButtonId = generateId();
+      const nextButtonId = generateId();
+
+      return {
+        id: containerId,
+        type: "Container",
+        data: {
+          style: {
+            display: [{ value: "flex" }],
+            flexDirection: [{ value: "row" }],
+            justifyContent: [{ value: "space-between" }],
+            width: [{ value: { value: 100, unit: "%" } }],
+            padding: [
+              {
+                value: {
+                  top: { value: 1, unit: "rem" },
+                  bottom: { value: 1, unit: "rem" },
+                  left: { value: 0, unit: "rem" },
+                  right: { value: 0, unit: "rem" },
+                },
+              },
+            ],
+          },
+          props: {
+            children: [
+              {
+                type: "BlogCommentNavigationButton",
+                id: prevButtonId,
+                data: {
+                  ...BlogCommentNavigationButtonPropsDefaults,
+                  props: { direction: "prev" },
+                },
+              },
+              {
+                type: "BlogCommentNavigationButton",
+                id: nextButtonId,
+                data: {
+                  ...BlogCommentNavigationButtonPropsDefaults,
+                  props: { direction: "next" },
+                },
+              },
+            ],
+          },
+        },
+      };
+    },
+  },
+  BlogCommentsList: {
+    displayName:
+      "app_blog_admin.block.templates.commentsList.displayName" satisfies AllKeys<
+        BlogAdminNamespace,
+        BlogAdminKeys
+      >,
+    icon: <ListOrdered />,
+    category: "app_blog_admin.block.category.blog" satisfies AllKeys<
+      BlogAdminNamespace,
+      BlogAdminKeys
+    >,
+    getBlock: (): TEditorBlock =>
+      buildBlogCommentsContainerBlock(appName, appId),
   },
   PostsListNavigation: {
     displayName:

@@ -4,6 +4,7 @@ import { ConfigurationProps } from "@timelish/builder";
 import { StylesConfigurationPanel } from "@timelish/page-builder-base";
 import { deepMemo } from "@timelish/ui";
 import { useCallback } from "react";
+import { blogTextShortcuts } from "../text-shortcuts";
 import { BlogPostTitleProps, styles } from "./schema";
 
 export const BlogPostTitleConfiguration = deepMemo(
@@ -24,6 +25,7 @@ export const BlogPostTitleConfiguration = deepMemo(
         styles={data.style ?? {}}
         onStylesChange={updateStyle}
         availableStyles={styles}
+        shortcuts={blogTextShortcuts}
         base={base}
         onBaseChange={onBaseChange}
       />

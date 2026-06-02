@@ -18,6 +18,7 @@ import {
   AuthorFormatKey,
   getFormatPreview,
 } from "./formats";
+import { blogTextShortcuts } from "../text-shortcuts";
 import {
   BlogPostAuthorProps,
   BlogPostAuthorPropsDefaults,
@@ -65,6 +66,7 @@ export const BlogPostAuthorConfiguration = deepMemo(
         styles={data.style ?? {}}
         onStylesChange={updateStyle}
         availableStyles={styles}
+        shortcuts={blogTextShortcuts}
         base={base}
         onBaseChange={onBaseChange}
       >

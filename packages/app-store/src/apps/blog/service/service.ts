@@ -13,22 +13,38 @@ import {
   SitemapUrlEntry,
 } from "@timelish/types";
 import {
+  ApproveBlogCommentAction,
+  ApproveBlogCommentActionType,
+  ApproveSelectedBlogCommentsAction,
+  ApproveSelectedBlogCommentsActionType,
   BlogConfiguration,
   blogConfigurationSchema,
   CheckBlogPostSlugUniqueAction,
   CheckBlogPostSlugUniqueActionType,
+  createBlogCommentSchema,
   CreateBlogPostAction,
   CreateBlogPostActionType,
+  DeleteBlogCommentAction,
+  DeleteBlogCommentActionType,
   DeleteBlogPostAction,
   DeleteBlogPostActionType,
+  DeleteSelectedBlogCommentsAction,
+  DeleteSelectedBlogCommentsActionType,
   DeleteSelectedBlogPostsAction,
   DeleteSelectedBlogPostsActionType,
+  getPublicBlogCommentsQuerySchema,
+  GetBlogCommentsAction,
+  GetBlogCommentsActionType,
   GetBlogPostAction,
   GetBlogPostActionType,
   GetBlogPostsAction,
   GetBlogPostsActionType,
   GetBlogTagsAction,
   GetBlogTagsActionType,
+  RejectBlogCommentAction,
+  RejectBlogCommentActionType,
+  RejectSelectedBlogCommentsAction,
+  RejectSelectedBlogCommentsActionType,
   RequestAction,
   requestActionSchema,
   SetConfigurationActionType,
@@ -42,6 +58,7 @@ import {
 } from "../translations/types";
 import { expandBlogPlaceholderPageSitemapItems } from "./blog-sitemap";
 import {
+  BLOG_COMMENTS_COLLECTION_NAME,
   BLOG_POSTS_COLLECTION_NAME,
   BlogRepositoryService,
 } from "./repository-service";
@@ -90,9 +107,31 @@ export class BlogConnectedApp implements IConnectedApp, ISitemapItemsProvider {
         return this.processGetBlogTagsRequest(appData, data);
       case CheckBlogPostSlugUniqueActionType:
         return this.processCheckBlogPostSlugUniqueRequest(appData, data);
+      case GetBlogCommentsActionType:
+        return this.processGetBlogCommentsRequest(appData, data);
+      case ApproveBlogCommentActionType:
+        return this.processApproveBlogCommentRequest(appData, data);
+      case RejectBlogCommentActionType:
+        return this.processRejectBlogCommentRequest(appData, data);
+      case DeleteBlogCommentActionType:
+        return this.processDeleteBlogCommentRequest(appData, data);
+      case DeleteSelectedBlogCommentsActionType:
+        return this.processDeleteBlogCommentsRequest(appData, data);
+      case ApproveSelectedBlogCommentsActionType:
+        return this.processApproveBlogCommentsRequest(appData, data);
+      case RejectSelectedBlogCommentsActionType:
+        return this.processRejectBlogCommentsRequest(appData, data);
       case SetConfigurationActionType:
-      default:
         return this.processSetConfigurationRequest(appData, data.configuration);
+      default: {
+        const _exhaustive: never = data;
+        throw new ConnectedAppRequestError(
+          "invalid_blog_request",
+          { data: _exhaustive },
+          400,
+          "Unknown blog request type",
+        );
+      }
     }
   }
 
@@ -112,6 +151,13 @@ export class BlogConnectedApp implements IConnectedApp, ISitemapItemsProvider {
       const count = await collection.countDocuments({});
       if (count === 0) {
         await db.dropCollection(BLOG_POSTS_COLLECTION_NAME);
+      }
+
+      const commentsCollection = db.collection(BLOG_COMMENTS_COLLECTION_NAME);
+      await commentsCollection.deleteMany({ appId: appData._id });
+      const commentsCount = await commentsCollection.countDocuments({});
+      if (commentsCount === 0) {
+        await db.dropCollection(BLOG_COMMENTS_COLLECTION_NAME);
       }
 
       logger.info({ appId: appData._id }, "Successfully uninstalled blog app");
@@ -145,14 +191,115 @@ export class BlogConnectedApp implements IConnectedApp, ISitemapItemsProvider {
   }
 
   public async processAppCall(
-    appData: ConnectedAppData,
+    appData: ConnectedAppData<BlogConfiguration>,
     slug: string[],
     request: ApiRequest,
   ): Promise<ApiResponse> {
+    if (slug.length === 1 && slug[0] === "comments") {
+      if (request.method.toUpperCase() === "POST") {
+        return this.processCreateBlogCommentAppCall(appData, request);
+      }
+      if (request.method.toUpperCase() === "GET") {
+        return this.processGetBlogCommentsAppCall(appData, request);
+      }
+    }
+
     return Response.json(
       { success: false, error: "Unknown request" },
       { status: 404 },
     );
+  }
+
+  private getBlogConfiguration(
+    appData: ConnectedAppData<BlogConfiguration>,
+  ): BlogConfiguration {
+    return blogConfigurationSchema.parse(appData.data ?? {});
+  }
+
+  private async processCreateBlogCommentAppCall(
+    appData: ConnectedAppData<BlogConfiguration>,
+    request: ApiRequest,
+  ): Promise<ApiResponse> {
+    const logger = this.loggerFactory("processCreateBlogCommentAppCall");
+    const config = this.getBlogConfiguration(appData);
+
+    if (!config.commentsEnabled) {
+      return Response.json(
+        { success: false, error: "comments_disabled" },
+        { status: 403 },
+      );
+    }
+
+    const body = await request.json();
+    const parsed = createBlogCommentSchema.safeParse(body);
+    if (!parsed.success) {
+      return Response.json(
+        { success: false, error: parsed.error.message },
+        { status: 400 },
+      );
+    }
+
+    const repositoryService = this.getRepositoryService(
+      appData._id,
+      appData.organizationId,
+    );
+
+    const post = await repositoryService.getBlogPost(parsed.data.postId);
+    if (!post?.isPublished) {
+      return Response.json(
+        { success: false, error: "post_not_found" },
+        { status: 404 },
+      );
+    }
+
+    const status = config.commentsPremoderation ? "pending" : "approved";
+    await repositoryService.createComment(parsed.data, status);
+
+    logger.info({ postId: parsed.data.postId, status }, "Blog comment created");
+
+    return Response.json({
+      success: true,
+      pending: status === "pending",
+    });
+  }
+
+  private async processGetBlogCommentsAppCall(
+    appData: ConnectedAppData<BlogConfiguration>,
+    request: ApiRequest,
+  ): Promise<ApiResponse> {
+    const config = this.getBlogConfiguration(appData);
+
+    if (!config.commentsEnabled) {
+      return Response.json({ success: true, items: [], total: 0 });
+    }
+
+    const url = new URL(request.url);
+    const parsed = getPublicBlogCommentsQuerySchema.safeParse({
+      postId: url.searchParams.get("postId"),
+      sort: url.searchParams.get("sort") ?? undefined,
+      page: url.searchParams.get("page") ?? undefined,
+      limit: url.searchParams.get("limit") ?? undefined,
+    });
+
+    if (!parsed.success) {
+      return Response.json(
+        { success: false, error: parsed.error.message },
+        { status: 400 },
+      );
+    }
+
+    const repositoryService = this.getRepositoryService(
+      appData._id,
+      appData.organizationId,
+    );
+
+    const result = await repositoryService.getApprovedComments(parsed.data);
+
+    return Response.json({
+      success: true,
+      items: result.items,
+      total: result.total,
+    });
   }
 
   protected getRepositoryService(appId: string, organizationId: string) {
@@ -399,6 +546,110 @@ export class BlogConnectedApp implements IConnectedApp, ISitemapItemsProvider {
       );
       throw error;
     }
+  }
+
+  private async processGetBlogCommentsRequest(
+    appData: ConnectedAppData,
+    data: GetBlogCommentsAction,
+  ) {
+    const repositoryService = this.getRepositoryService(
+      appData._id,
+      appData.organizationId,
+    );
+    return repositoryService.getBlogComments(data.query);
+  }
+
+  private async processApproveBlogCommentRequest(
+    appData: ConnectedAppData,
+    data: ApproveBlogCommentAction,
+  ) {
+    const repositoryService = this.getRepositoryService(
+      appData._id,
+      appData.organizationId,
+    );
+    const result = await repositoryService.updateCommentStatus(data.id, "approved");
+    if (!result) {
+      throw new ConnectedAppRequestError(
+        "blog_comment_not_found",
+        { id: data.id },
+        404,
+        "Blog comment not found",
+      );
+    }
+    return result;
+  }
+
+  private async processRejectBlogCommentRequest(
+    appData: ConnectedAppData,
+    data: RejectBlogCommentAction,
+  ) {
+    const repositoryService = this.getRepositoryService(
+      appData._id,
+      appData.organizationId,
+    );
+    const result = await repositoryService.updateCommentStatus(data.id, "rejected");
+    if (!result) {
+      throw new ConnectedAppRequestError(
+        "blog_comment_not_found",
+        { id: data.id },
+        404,
+        "Blog comment not found",
+      );
+    }
+    return result;
+  }
+
+  private async processDeleteBlogCommentRequest(
+    appData: ConnectedAppData,
+    data: DeleteBlogCommentAction,
+  ) {
+    const repositoryService = this.getRepositoryService(
+      appData._id,
+      appData.organizationId,
+    );
+    const result = await repositoryService.deleteComment(data.id);
+    if (!result) {
+      throw new ConnectedAppRequestError(
+        "blog_comment_not_found",
+        { id: data.id },
+        404,
+        "Blog comment not found",
+      );
+    }
+    return result;
+  }
+
+  private async processDeleteBlogCommentsRequest(
+    appData: ConnectedAppData,
+    data: DeleteSelectedBlogCommentsAction,
+  ) {
+    const repositoryService = this.getRepositoryService(
+      appData._id,
+      appData.organizationId,
+    );
+    return repositoryService.deleteComments(data.ids);
+  }
+
+  private async processApproveBlogCommentsRequest(
+    appData: ConnectedAppData,
+    data: ApproveSelectedBlogCommentsAction,
+  ) {
+    const repositoryService = this.getRepositoryService(
+      appData._id,
+      appData.organizationId,
+    );
+    return repositoryService.updateCommentsStatus(data.ids, "approved");
+  }
+
+  private async processRejectBlogCommentsRequest(
+    appData: ConnectedAppData,
+    data: RejectSelectedBlogCommentsAction,
+  ) {
+    const repositoryService = this.getRepositoryService(
+      appData._id,
+      appData.organizationId,
+    );
+    return repositoryService.updateCommentsStatus(data.ids, "rejected");
   }
 
   private async processSetConfigurationRequest(

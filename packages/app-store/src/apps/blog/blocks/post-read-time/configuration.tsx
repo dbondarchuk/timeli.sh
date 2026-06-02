@@ -16,6 +16,7 @@ import {
   BlogPublicNamespace,
   blogPublicNamespace,
 } from "../../translations/types";
+import { blogTextShortcuts } from "../text-shortcuts";
 import {
   getFormatPreview,
   READ_TIME_FORMAT_KEYS,
@@ -78,6 +79,7 @@ export const BlogPostReadTimeConfiguration = deepMemo(
         styles={data.style ?? {}}
         onStylesChange={updateStyle}
         availableStyles={styles}
+        shortcuts={blogTextShortcuts}
         base={base}
         onBaseChange={onBaseChange}
       >

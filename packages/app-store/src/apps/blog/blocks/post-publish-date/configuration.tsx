@@ -10,6 +10,7 @@ import {
   BlogAdminNamespace,
   blogAdminNamespace,
 } from "../../translations/types";
+import { blogTextShortcuts } from "../text-shortcuts";
 import { dateFormatOptions, getFormatPreview } from "./formats";
 import {
   BlogPostPublishDateProps,
@@ -63,6 +64,7 @@ export const BlogPostPublishDateConfiguration = deepMemo(
         styles={data.style ?? {}}
         onStylesChange={updateStyle}
         availableStyles={styles}
+        shortcuts={blogTextShortcuts}
         base={base}
         onBaseChange={onBaseChange}
       >

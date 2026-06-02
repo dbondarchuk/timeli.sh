@@ -24,6 +24,44 @@ block:
       publishedBy: "Published by {name}"
       by: "By {name}"
       author: "Author: {name}"
+  postCommentCount:
+    disabled: Comments disabled
+    formats:
+      count: "{count, plural, =0 {No comments} one {1 comment} other {# comments}}"
+      commentsCount: "{count, plural, =0 {No comments} one {1 comment} other {# comments}}"
+  postCommentsList:
+    heading: Comments
+    empty: No comments yet. Be the first to comment.
+    disabled: Comments are disabled for this blog.
+  commentsList:
+    previous: Previous
+    next: Next
+  postCommentForm:
+    addText: Add comment
+    disabled: Comments are disabled for this blog.
+    nameLabel: Name
+    namePlaceholder: Your name
+    emailLabel: Email
+    emailPlaceholder: your@email.com
+    bodyLabel: Comment
+    bodyPlaceholder: Write your comment…
+    submitLabel: Post comment
+    success: Thank you! Your comment has been published.
+    successPending: Thank you! Your comment is awaiting moderation.
+    error: Could not submit your comment. Please try again.
+    validation:
+      postId:
+        required: Invalid post
+      name:
+        required: Name is required
+        max: Name must be at most 256 characters
+      email:
+        required: Email is required
+        invalid: Enter a valid email address
+        max: Email must be at most 256 characters
+      body:
+        required: Comment is required
+        max: Comment must be at most 2048 characters
   tagList:
     title: Tags
     noTags: No tags available

@@ -16,5 +16,5 @@ export const BlogApp: App<"app_blog_admin", BlogAdminKeys> = {
   description: {
     text: "app_blog_admin.app.description",
   },
-  settingsHref: "blog",
+  settingsHref: "blog/settings",
 };

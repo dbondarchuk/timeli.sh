@@ -12,8 +12,10 @@ import {
   ConnectedAppStatusMessage,
 } from "@timelish/ui-admin";
 import React from "react";
+import { ZodType } from "zod";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
 import { BlogApp } from "./app";
+import { BlogConfigurationFormFields } from "./configuration-form-fields";
 import { blogConfigurationSchema, BlogConfiguration } from "./models";
 import {
   BlogAdminKeys,
@@ -30,44 +32,47 @@ export const BlogAppSetup: React.FC<AppSetupProps> = ({
     useConnectedAppSetup<BlogConfiguration>({
       appId: existingAppId,
       appName: BlogApp.name,
-      schema: blogConfigurationSchema,
+      schema: blogConfigurationSchema as ZodType<
+        BlogConfiguration,
+        BlogConfiguration
+      >,
       onSuccess,
       onError,
-      initialData: {},
+      initialData: {
+        commentsEnabled: false,
+        commentsPremoderation: true,
+      },
       processDataForSubmit: (data) => ({
         type: "set-configuration",
         configuration: data,
       }),
     });
 
-  const t = useI18n<BlogAdminNamespace, BlogAdminKeys>(
-    blogAdminNamespace,
-  );
+  const t = useI18n<BlogAdminNamespace, BlogAdminKeys>(blogAdminNamespace);
 
   return (
     <>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
-          <div className="flex flex-col items-center gap-4 w-full">
-            <Button
-              type="submit"
-              variant="default"
-              disabled={isLoading || !isValid}
-              className="inline-flex gap-2 items-center w-full"
-            >
-              {isLoading && <Spinner />}
-              <span className="inline-flex gap-2 items-center">
-                {t.rich("setup.update", {
-                  app: () => (
-                    <ConnectedAppNameAndLogo
-                      appName={BlogApp.name}
-                      logoClassName="w-4 h-4"
-                    />
-                  ),
-                })}
-              </span>
-            </Button>
-          </div>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
+          <BlogConfigurationFormFields form={form} isLoading={isLoading} />
+          <Button
+            type="submit"
+            variant="default"
+            disabled={isLoading || !isValid}
+            className="inline-flex gap-2 items-center w-full"
+          >
+            {isLoading && <Spinner />}
+            <span className="inline-flex gap-2 items-center">
+              {t.rich("setup.update", {
+                app: () => (
+                  <ConnectedAppNameAndLogo
+                    appName={BlogApp.name}
+                    logoClassName="w-4 h-4"
+                  />
+                ),
+              })}
+            </span>
+          </Button>
         </form>
       </Form>
       {appStatus && (
@@ -79,4 +84,3 @@ export const BlogAppSetup: React.FC<AppSetupProps> = ({
     </>
   );
 };
-

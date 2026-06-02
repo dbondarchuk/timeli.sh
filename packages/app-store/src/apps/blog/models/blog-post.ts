@@ -95,6 +95,10 @@ export type BlogPostEntity = WithOrganizationId<
   appId: string;
   createdAt: Date;
   updatedAt: Date;
+  /** Approved comments count (aggregated on read). */
+  commentsCount?: number;
+  /** All comments count (aggregated on read, admin). */
+  totalCommentsCount?: number;
 };
 
 export type BlogPost = Prettify<BlogPostEntity>;
