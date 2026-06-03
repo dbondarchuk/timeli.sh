@@ -73,6 +73,27 @@ export const BlogConfigurationFormFields = ({
           </FormItem>
         )}
       />
+      <FormField
+        control={form.control}
+        name="sendEmailOnNewComment"
+        render={({ field }) => (
+          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+            <div className="space-y-0.5">
+              <FormLabel>{t("setup.sendEmailOnNewComment.label")}</FormLabel>
+              <FormDescription>
+                {t("setup.sendEmailOnNewComment.description")}
+              </FormDescription>
+            </div>
+            <FormControl>
+              <Switch
+                checked={field.value}
+                onCheckedChange={field.onChange}
+                disabled={isLoading || !commentsEnabled}
+              />
+            </FormControl>
+          </FormItem>
+        )}
+      />
     </div>
   );
 };

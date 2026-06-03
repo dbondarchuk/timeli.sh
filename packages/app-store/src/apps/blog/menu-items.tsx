@@ -1,5 +1,7 @@
 import { AppMenuItem } from "@timelish/types";
 import { FileText, MessageSquare, Settings } from "lucide-react";
+import { BlogCommentApprovePage } from "./comments/pages/approve";
+import { BlogCommentRejectPage } from "./comments/pages/reject";
 import { BlogCommentsPage } from "./comments/pages/main";
 import { BlogSettingsPage } from "./settings/pages/main";
 import { BlogEditPage } from "./pages/edit";
@@ -93,6 +95,44 @@ export const BlogMenuItems: AppMenuItem<BlogAdminNamespace, BlogAdminKeys>[] = [
     pageTitle: "app_blog_admin.app.pages.new.title" satisfies BlogAdminAllKeys,
     pageDescription:
       "app_blog_admin.app.pages.new.description" satisfies BlogAdminAllKeys,
+  },
+  {
+    href: "blog/comments/approve",
+    parent: "blog",
+    id: "blog-comment-approve",
+    isHidden: true,
+    label: "app_blog_admin.app.pages.comments.label" satisfies BlogAdminAllKeys,
+    icon: <MessageSquare />,
+    Page: (props) => <BlogCommentApprovePage {...props} />,
+    pageBreadcrumbs: [
+      blogBreadcrumb,
+      {
+        title: "app_blog_admin.app.pages.comments.label" satisfies BlogAdminAllKeys,
+        link: "/dashboard/blog/comments",
+      },
+    ],
+    pageTitle: "app_blog_admin.app.pages.comments.title" satisfies BlogAdminAllKeys,
+    pageDescription:
+      "app_blog_admin.app.pages.comments.description" satisfies BlogAdminAllKeys,
+  },
+  {
+    href: "blog/comments/reject",
+    parent: "blog",
+    id: "blog-comment-reject",
+    isHidden: true,
+    label: "app_blog_admin.app.pages.comments.label" satisfies BlogAdminAllKeys,
+    icon: <MessageSquare />,
+    Page: (props) => <BlogCommentRejectPage {...props} />,
+    pageBreadcrumbs: [
+      blogBreadcrumb,
+      {
+        title: "app_blog_admin.app.pages.comments.label" satisfies BlogAdminAllKeys,
+        link: "/dashboard/blog/comments",
+      },
+    ],
+    pageTitle: "app_blog_admin.app.pages.comments.title" satisfies BlogAdminAllKeys,
+    pageDescription:
+      "app_blog_admin.app.pages.comments.description" satisfies BlogAdminAllKeys,
   },
   {
     href: "blog/edit",

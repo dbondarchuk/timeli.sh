@@ -19,7 +19,15 @@ export type BlogPostUpdatedPayload = {
 export type BlogPostDeletedPayload = { postId: string };
 
 export type BlogCommentCreatedPayload = {
-  comment: { _id: string; postId: string; authorName: string; body: string };
+  appId: string;
+  status: "pending" | "approved";
+  comment: {
+    _id: string;
+    postId: string;
+    authorName: string;
+    authorEmail: string;
+    body: string;
+  };
   post: { _id: string; title: string; slug: string };
 };
 

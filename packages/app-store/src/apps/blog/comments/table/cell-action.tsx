@@ -41,7 +41,8 @@ export const CellAction: React.FC<{
     try {
       setLoading(true);
       await toastPromise(approveBlogComment(appId, comment._id), {
-        success: t("comments.table.toast.approved"),
+        success: (data) =>
+          t("comments.table.toast.approved", { authorName: data.authorName }),
         error: t("comments.table.toast.error"),
       });
       reload();
@@ -54,7 +55,8 @@ export const CellAction: React.FC<{
     try {
       setLoading(true);
       await toastPromise(rejectBlogComment(appId, comment._id), {
-        success: t("comments.table.toast.rejected"),
+        success: (data) =>
+          t("comments.table.toast.rejected", { authorName: data.authorName }),
         error: t("comments.table.toast.error"),
       });
       reload();
@@ -67,7 +69,8 @@ export const CellAction: React.FC<{
     try {
       setLoading(true);
       await toastPromise(deleteBlogComment(appId, comment._id), {
-        success: t("comments.table.toast.deleted"),
+        success: (data) =>
+          t("comments.table.toast.deleted", { authorName: data.authorName }),
         error: t("comments.table.toast.error"),
       });
       setDeleteOpen(false);

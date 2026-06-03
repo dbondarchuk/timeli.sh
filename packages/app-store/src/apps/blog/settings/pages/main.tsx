@@ -28,6 +28,7 @@ export const BlogSettingsPage: React.FC<{ appId: string }> = ({ appId }) => {
       initialData: {
         commentsEnabled: false,
         commentsPremoderation: true,
+        sendEmailOnNewComment: false,
       },
       processDataForSubmit: (data) => ({
         type: "set-configuration",

@@ -1,0 +1,48 @@
+"use client";
+
+import { useI18n } from "@timelish/i18n";
+import { ComplexAppPageProps } from "@timelish/types";
+import { Skeleton, toastPromise } from "@timelish/ui";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
+import { rejectBlogComment } from "../../actions";
+import {
+  BlogAdminKeys,
+  BlogAdminNamespace,
+  blogAdminNamespace,
+} from "../../translations/types";
+
+export const BlogCommentRejectPage: React.FC<ComplexAppPageProps> = ({
+  appId,
+}) => {
+  const searchParams = useSearchParams();
+  const id = searchParams?.get("id");
+  const router = useRouter();
+  const t = useI18n<BlogAdminNamespace, BlogAdminKeys>(blogAdminNamespace);
+
+  useEffect(() => {
+    if (!id) {
+      router.replace("/dashboard/blog/comments");
+      return;
+    }
+
+    const fn = async () => {
+      try {
+        const comment = await toastPromise(rejectBlogComment(appId, id), {
+          success: (data) =>
+            t("comments.table.toast.rejected", { authorName: data.authorName }),
+          error: t("comments.table.toast.error"),
+        });
+
+        router.replace(`/dashboard/blog/comments?postId=${comment?.postId}`);
+      } catch (error: unknown) {
+        console.error(error);
+        router.replace("/dashboard/blog/comments");
+      }
+    };
+
+    fn();
+  }, [appId, id, router]);
+
+  return <Skeleton className="w-full h-[70vh]" />;
+};

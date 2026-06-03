@@ -6,6 +6,7 @@ import { blogPostSchema } from "./blog-post";
 export const blogConfigurationSchema = z.object({
   commentsEnabled: z.coerce.boolean<boolean>().default(false),
   commentsPremoderation: z.coerce.boolean<boolean>().default(true),
+  sendEmailOnNewComment: z.coerce.boolean<boolean>().default(false),
 });
 
 export type BlogConfiguration = z.infer<typeof blogConfigurationSchema>;

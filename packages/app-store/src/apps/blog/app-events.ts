@@ -1,4 +1,6 @@
 import type { AppEventConfig, EventDefinition } from "@timelish/types";
+import { buildNewBlogCommentEmailNotifications } from "./emails/new-comment-email";
+import { blogConfigurationSchema } from "./models";
 import {
   BLOG_COMMENT_CREATED_EVENT_TYPE,
   BLOG_COMMENT_DELETED_EVENT_TYPE,
@@ -97,9 +99,10 @@ export const BLOG_APP_EVENTS: AppEventConfig = {
         };
       },
       dashboardNotification: (envelope) => {
-        if (envelope.source.actor !== "customer") {
+        if (envelope.source.actor !== "visitor") {
           return null;
         }
+
         const { comment, post } = envelope.payload as BlogCommentCreatedPayload;
         return {
           type: "blog-comment-created",
@@ -120,7 +123,41 @@ export const BLOG_APP_EVENTS: AppEventConfig = {
           },
         };
       },
-      emailNotifications: false,
+      emailNotifications: async (envelope, services) => {
+        if (envelope.source.actor !== "visitor") {
+          return null;
+        }
+
+        const payload = envelope.payload as BlogCommentCreatedPayload;
+
+        let config;
+        try {
+          const app = await services.connectedAppsService.getApp(payload.appId);
+          config = blogConfigurationSchema.parse(app.data ?? {});
+        } catch {
+          return null;
+        }
+
+        if (!config.commentsEnabled || !config.sendEmailOnNewComment) {
+          return null;
+        }
+
+        const admins = await services.userService.getOrganizationAdminUsers();
+        if (!admins.length) {
+          return null;
+        }
+
+        const organization =
+          await services.organizationService.getOrganization();
+        const organizationLabel =
+          organization?.name?.trim() || organization?.slug || "";
+
+        return buildNewBlogCommentEmailNotifications(
+          payload,
+          admins,
+          organizationLabel ? { config: { name: organizationLabel } } : {},
+        );
+      },
       smsNotifications: false,
     } as EventDefinition<BlogCommentCreatedPayload>,
     {

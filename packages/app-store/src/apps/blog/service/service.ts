@@ -269,10 +269,13 @@ export class BlogConnectedApp implements IConnectedApp, ISitemapItemsProvider {
     await this.emitBlogEvent(
       BLOG_COMMENT_CREATED_EVENT_TYPE,
       {
+        appId: appData._id,
+        status,
         comment: {
           _id: comment._id,
           postId: comment.postId,
           authorName: comment.authorName,
+          authorEmail: comment.authorEmail,
           body: comment.body,
         },
         post: {

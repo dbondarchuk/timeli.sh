@@ -96,6 +96,24 @@ setup:
   commentsPremoderation:
     label: Модерація коментарів
     description: Нові коментарі приховані до схвалення
+  sendEmailOnNewComment:
+    label: Email про новий коментар
+    description: Надсилати адміністраторам організації email, коли відвідувач залишає коментар
+emails:
+  newComment:
+    subject: "Новий коментар до «{postTitle}»"
+    title: "Новий коментар до «{postTitle}»"
+    body: |
+      Вітаємо, {userName},
+
+      У вашому блозі "{postTitle}", **{authorName}** ({authorEmail}) залишив коментар:
+
+      {commentBody}
+    approve: Схвалити
+    reject: Відхилити
+    view: Переглянути в панелі
+handlers:
+  newCommentEmail: Блог — сповіщення про новий коментар
 events:
   postCreated:
     title: Створено новий запис блогу
@@ -156,9 +174,9 @@ comments:
       description: Видалити {count, plural, one {вибраний коментар} few {# вибрані коментарі} other {# вибраних коментарів}}? Цю дію не можна скасувати.
       confirm: Видалити вибрані
     toast:
-      approved: Коментар схвалено
-      rejected: Коментар відхилено
-      deleted: Коментар видалено
+      approved: Коментар від {authorName} схвалено
+      rejected: Коментар від {authorName} відхилено
+      deleted: Коментар від {authorName} видалено
       commentsApproved: "{count, plural, one {Коментар схвалено} few {# коментарі схвалено} other {# коментарів схвалено}}"
       commentsRejected: "{count, plural, one {Коментар відхилено} few {# коментарі відхилено} other {# коментарів відхилено}}"
       commentsDeleted: "{count, plural, one {Коментар видалено} few {# коментарі видалено} other {# коментарів видалено}}"

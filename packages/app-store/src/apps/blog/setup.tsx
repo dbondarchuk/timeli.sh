@@ -41,6 +41,7 @@ export const BlogAppSetup: React.FC<AppSetupProps> = ({
       initialData: {
         commentsEnabled: false,
         commentsPremoderation: true,
+        sendEmailOnNewComment: false,
       },
       processDataForSubmit: (data) => ({
         type: "set-configuration",

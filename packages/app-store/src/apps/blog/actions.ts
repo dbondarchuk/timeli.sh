@@ -1,12 +1,12 @@
 import { adminApi } from "@timelish/api-sdk";
 import { WithTotal } from "@timelish/types";
 import {
+  ApproveBlogCommentActionType,
+  ApproveSelectedBlogCommentsActionType,
   BlogComment,
   BlogCommentListItem,
   BlogPost,
   BlogPostUpdateModel,
-  ApproveBlogCommentActionType,
-  ApproveSelectedBlogCommentsActionType,
   CheckBlogPostSlugUniqueActionType,
   CreateBlogPostActionType,
   DeleteBlogCommentActionType,
@@ -176,7 +176,10 @@ export async function deleteSelectedBlogPosts(appId: string, ids: string[]) {
   }
 }
 
-export async function getBlogComments(appId: string, query: GetBlogCommentsQuery) {
+export async function getBlogComments(
+  appId: string,
+  query: GetBlogCommentsQuery,
+) {
   const logger = loggerFactory("getBlogComments");
   logger.debug({ appId, query }, "Getting blog comments");
 
@@ -217,10 +220,10 @@ export async function rejectBlogComment(appId: string, id: string) {
 }
 
 export async function deleteBlogComment(appId: string, id: string) {
-  return adminApi.apps.processRequest(appId, {
+  return (await adminApi.apps.processRequest(appId, {
     type: DeleteBlogCommentActionType,
     id,
-  });
+  })) as BlogComment;
 }
 
 export async function deleteSelectedBlogComments(appId: string, ids: string[]) {
@@ -230,7 +233,10 @@ export async function deleteSelectedBlogComments(appId: string, ids: string[]) {
   });
 }
 
-export async function approveSelectedBlogComments(appId: string, ids: string[]) {
+export async function approveSelectedBlogComments(
+  appId: string,
+  ids: string[],
+) {
   return adminApi.apps.processRequest(appId, {
     type: ApproveSelectedBlogCommentsActionType,
     ids,

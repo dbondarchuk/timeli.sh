@@ -2,12 +2,12 @@
 
 import { useI18n } from "@timelish/i18n";
 import { useMemo } from "react";
-import { blogPostsListFixtures } from "../fixtures";
 import {
   BlogPublicKeys,
   BlogPublicNamespace,
   blogPublicNamespace,
 } from "../../translations/types";
+import { blogPostsListFixtures } from "../fixtures";
 import { BlogPostCommentFormComponent } from "./component";
 import { resolveCommentFormDisplay } from "./resolve-display";
 import { BlogPostCommentFormProps } from "./schema";

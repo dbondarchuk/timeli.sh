@@ -1,8 +1,5 @@
 import { BlogConfiguration } from "../../models";
-import {
-  BlogPublicKeys,
-  BlogPublicNamespace,
-} from "../../translations/types";
+import { BlogPublicKeys } from "../../translations/types";
 import {
   BlogPostCommentFormDisplayConfig,
   BlogPostCommentFormProps,
@@ -16,7 +13,7 @@ type TranslateFn = (
 
 export const resolveCommentFormDisplay = (
   props: BlogPostCommentFormProps["props"],
-  config: BlogConfiguration,
+  config: Pick<BlogConfiguration, "commentsEnabled" | "commentsPremoderation">,
   t: TranslateFn,
 ): BlogPostCommentFormDisplayConfig => {
   const merged = { ...BlogPostCommentFormPropsDefaults.props, ...props };

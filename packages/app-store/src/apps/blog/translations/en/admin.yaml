@@ -96,6 +96,24 @@ setup:
   commentsPremoderation:
     label: Require comment moderation
     description: New comments stay hidden until you approve them
+  sendEmailOnNewComment:
+    label: Email on new comment
+    description: Send organization admins an email when a visitor leaves a comment
+emails:
+  newComment:
+    subject: 'New comment on "{postTitle}"'
+    title: 'New comment on "{postTitle}"'
+    body: |
+      Hi {userName},
+
+      A new comment was left on your blog post "{postTitle}" by **{authorName}** ({authorEmail}):
+
+      {commentBody}
+    approve: Approve
+    reject: Reject
+    view: View in dashboard
+handlers:
+  newCommentEmail: Blog - New comment notification
 events:
   postCreated:
     title: New blog post created
@@ -156,9 +174,9 @@ comments:
       description: Delete {count, plural, =1 {selected comment} other {# selected comments}}? This cannot be undone.
       confirm: Delete selected
     toast:
-      approved: Comment approved
-      rejected: Comment rejected
-      deleted: Comment deleted
+      approved: Comment from {authorName} was approved
+      rejected: Comment from {authorName} was rejected
+      deleted: Comment from {authorName} was deleted
       commentsApproved: "{count, plural, =1 {Comment approved} other {# comments approved}}"
       commentsRejected: "{count, plural, =1 {Comment rejected} other {# comments rejected}}"
       commentsDeleted: "{count, plural, =1 {Comment deleted} other {# comments deleted}}"
