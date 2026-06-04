@@ -8,11 +8,8 @@ import { PlateStaticEditor } from "@timelish/rte";
 import { cn } from "@timelish/ui";
 import { useMemo } from "react";
 import { BlogPublicAllKeys } from "../../translations/types";
-import {
-  BlogPostContentPropsDefaults,
-  BlogPostContentReaderProps,
-  styles,
-} from "./schema";
+import { resolveBlogPostDisplayContent } from "./resolve-display-content";
+import { BlogPostContentReaderProps, styles } from "./schema";
 
 export const BlogPostContentReader = ({
   props,
@@ -25,20 +22,14 @@ export const BlogPostContentReader = ({
   const postContent = args?.post?.content;
   const showError = !postContent;
 
-  const showShort =
-    props?.showShort ?? BlogPostContentPropsDefaults.props.showShort;
+  const showShort = props?.showShort ?? false;
 
-  // Check if content is in PlateJS format (array) and get short version
   const displayContent = useMemo(() => {
-    if (!postContent || showError) return postContent;
-
-    if (showShort && Array.isArray(postContent) && postContent.length > 5) {
-      // Return first 5 children for short content
-      return postContent.slice(0, 5);
+    if (!postContent || showError) {
+      return postContent;
     }
-
-    return postContent;
-  }, [postContent, showShort, showError]);
+    return resolveBlogPostDisplayContent(postContent, props);
+  }, [postContent, props, showError]);
 
   const className = generateClassName();
   const base = block.base;

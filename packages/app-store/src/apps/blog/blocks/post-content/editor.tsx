@@ -19,11 +19,8 @@ import {
   BlogPublicNamespace,
   blogPublicNamespace,
 } from "../../translations/types";
-import {
-  BlogPostContentProps,
-  BlogPostContentPropsDefaults,
-  styles,
-} from "./schema";
+import { resolveBlogPostDisplayContent } from "./resolve-display-content";
+import { BlogPostContentProps, BlogPostContentPropsDefaults, styles } from "./schema";
 
 export const BlogPostContentEditor = ({
   props,
@@ -38,21 +35,16 @@ export const BlogPostContentEditor = ({
   const postContent = args?.post?.content;
   const showError = !postContent;
 
+  const blockProps = currentBlock?.data?.props;
   const showShort =
-    currentBlock?.data?.props?.showShort ??
-    BlogPostContentPropsDefaults.props.showShort;
+    blockProps?.showShort ?? BlogPostContentPropsDefaults.props.showShort;
 
-  // Check if content is in PlateJS format (array) and get short version
   const displayContent = useMemo(() => {
-    if (!postContent || showError) return postContent;
-
-    if (showShort && Array.isArray(postContent) && postContent.length > 5) {
-      // Return first 5 children for short content
-      return postContent.slice(0, 5);
+    if (!postContent || showError) {
+      return postContent;
     }
-
-    return postContent;
-  }, [postContent, showShort, showError]);
+    return resolveBlogPostDisplayContent(postContent, blockProps);
+  }, [postContent, blockProps, showError]);
 
   const className = useClassName();
   const base = currentBlock?.base;

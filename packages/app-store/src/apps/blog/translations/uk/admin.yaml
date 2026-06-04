@@ -46,6 +46,10 @@ form:
   publicationDateTooltip: Коли слід опублікувати запис
   tags: Теги
   tagsTooltip: Теги для категоризації запису
+  featuredImage:
+    label: Головне зображення
+    tooltip: Зображення на сторінці запису при використанні блоку «Головне зображення запису»
+    placeholder: Оберіть зображення
   author:
     label: Автор
     tooltip: Хто написав цей запис блогу
@@ -201,6 +205,12 @@ block:
     showShort:
       label: Показати короткий вміст
       description: Чи показувати короткий вміст запису блогу
+    maxParagraphs:
+      label: Макс. абзаців
+      description: Максимальна кількість блоків вмісту в короткій версії
+    showOnlyTextParagraphs:
+      label: Лише текстові абзаци
+      description: Якщо увімкнено, у коротку версію потрапляють лише абзаци (блоки p)
   postTag:
     displayName: Тег запису блогу
     blogListUrl:
@@ -285,6 +295,8 @@ block:
   category:
     blog: Блог
   templates:
+    postFeaturedImage:
+      displayName: Головне зображення запису блогу
     postTitleHeader:
       displayName: Заголовок запису блогу
     postTags:
@@ -331,3 +343,6 @@ validation:
       required: Ім'я є обов'язковим
     body:
       required: Коментар є обов'язковим
+  postContent:
+    maxParagraphs:
+      validation: Максимальна кількість абзаців повинна бути цілим числом від 1 до 10

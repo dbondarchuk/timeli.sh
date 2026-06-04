@@ -43,25 +43,38 @@ export const AssetPreviewSizes = {
 };
 
 export type AssetPreviewProps = {
-  asset: AssetEntity;
   size?: keyof typeof AssetPreviewSizes;
   className?: string;
-};
+} & (
+  | {
+      asset: AssetEntity;
+    }
+  | {
+      src: string;
+      mimeType: string;
+      description?: string;
+    }
+);
 
 export const AssetPreview: React.FC<AssetPreviewProps> = ({
-  asset,
   size = "sm",
   className,
+  ...props
 }) => {
+  const mimeType = "asset" in props ? props.asset.mimeType : props.mimeType;
+  const src = "asset" in props ? `/assets/${props.asset.filename}` : props.src;
+  const description =
+    "asset" in props ? props.asset.description : props.description;
+
   return (
     <>
-      {asset.mimeType.startsWith("image/") ? (
+      {mimeType.startsWith("image/") ? (
         <Dialog>
           <DialogTrigger asChild>
             <div className="w-full flex justify-center">
               <img
-                alt={asset.description || ""}
-                src={`/assets/${asset.filename}`}
+                alt={description || ""}
+                src={src}
                 width={AssetPreviewSizes[size].image.width}
                 height={AssetPreviewSizes[size].image.height}
                 className={cn("cursor-pointer", className)}
@@ -74,14 +87,14 @@ export const AssetPreview: React.FC<AssetPreviewProps> = ({
           >
             <div className="relative h-[calc(100vh-220px)] w-full overflow-clip rounded-md bg-transparent shadow-none">
               <img
-                src={`/assets/${asset.filename}`}
-                alt={asset.description || asset.filename}
+                src={src}
+                alt={description || ""}
                 className="h-full w-full object-contain"
               />
             </div>
           </DialogContent>
         </Dialog>
-      ) : asset.mimeType.startsWith("video/") ? (
+      ) : mimeType.startsWith("video/") ? (
         <Dialog>
           <DialogTrigger asChild>
             <div className="rounded-sm p-2 flex flex-col gap-1 items-center cursor-pointer">
@@ -103,7 +116,7 @@ export const AssetPreview: React.FC<AssetPreviewProps> = ({
             <div className="relative h-[calc(100vh-220px)] w-full overflow-clip rounded-md bg-transparent shadow-none">
               <video
                 controls
-                src={`/assets/${asset.filename}`}
+                src={src}
                 className="cursor-pointer object-cover max-h-full"
               />
             </div>
@@ -115,19 +128,17 @@ export const AssetPreview: React.FC<AssetPreviewProps> = ({
             className={cn("flex self-center", className)}
             variant="ghost"
             target="_blank"
-            href={`/assets/${asset.filename}`}
+            href={src}
           >
             <FileIcon
               size={AssetPreviewSizes[size].file}
-              extension={asset.filename.substring(
-                asset.filename.lastIndexOf(".") + 1,
-              )}
+              extension={src.substring(src.lastIndexOf(".") + 1)}
               {...defaultStyles[
-                mimeTypeToExtension(asset.mimeType) as DefaultExtensionType
+                mimeTypeToExtension(mimeType) as DefaultExtensionType
               ]}
             />
           </Link>
-          <span className="text-muted-foreground">{asset.mimeType}</span>
+          <span className="text-muted-foreground">{mimeType}</span>
         </div>
       )}
     </>

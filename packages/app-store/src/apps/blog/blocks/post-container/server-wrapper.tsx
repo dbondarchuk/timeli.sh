@@ -51,6 +51,11 @@ export const BlogPostContainerServerWrapper = async ({
   let post = args?._item ?? args?.post ?? null;
   let error: BlogPublicAllKeys | null = null;
 
+  const containerArgs = {
+    ...args,
+    post,
+  };
+
   // Generate postLink by replacing [slug] with actual slug
   const generatePostLink = (slug: string | undefined): string | null => {
     if (!slug) return null;
@@ -66,7 +71,7 @@ export const BlogPostContainerServerWrapper = async ({
     );
     return (
       <BlogPostContainerComponent
-        args={args}
+        args={containerArgs}
         post={post}
         error={null}
         postLink={postLink}
@@ -94,7 +99,7 @@ export const BlogPostContainerServerWrapper = async ({
     logger.info({ slug, appId, error }, "Returning error");
     return (
       <BlogPostContainerComponent
-        args={args}
+        args={containerArgs}
         post={null}
         error={error}
         postLink={null}
@@ -117,7 +122,7 @@ export const BlogPostContainerServerWrapper = async ({
     logger.info({ organizationId, error }, "No organizationId provided");
     return (
       <BlogPostContainerComponent
-        args={args}
+        args={containerArgs}
         post={null}
         error={error}
         postLink={null}
@@ -154,10 +159,6 @@ export const BlogPostContainerServerWrapper = async ({
   }
 
   const postLink = generatePostLink(fetchedPost?.slug);
-
-  const containerArgs = {
-    ...args,
-  };
 
   if (!args?.blogCommentsConfig) {
     logger.info({ organizationId, appId }, "Getting blog comments config");

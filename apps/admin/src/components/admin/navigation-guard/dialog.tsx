@@ -9,28 +9,35 @@ import {
   DialogTitle,
 } from "@timelish/ui";
 import { useNavigationGuard } from "next-navigation-guard";
-import { useCallback } from "react";
+import { RefObject, useCallback, useEffect, useRef } from "react";
 import { UseFormReturn, useFormState } from "react-hook-form";
 
 export const useIsDirty = (form: UseFormReturn<any>) => {
-  const { isDirty: isFormDirty } = useFormState({ control: form.control });
+  const { isDirty } = useFormState({ control: form.control });
+
+  const isFormDirty = useRef(isDirty);
+  useEffect(() => {
+    isFormDirty.current = isDirty;
+  }, [isDirty]);
 
   const onFormSubmit = useCallback(() => {
-    form.reset(undefined, {
-      keepDirty: false,
-      keepValues: true,
-    });
+    form.reset(form.getValues());
+    isFormDirty.current = false;
   }, [form]);
 
   return { isFormDirty: isFormDirty, onFormSubmit };
 };
 
-export const NavigationGuardDialog = ({ isDirty }: { isDirty: boolean }) => {
-  const { active, accept, reject } = useNavigationGuard({
-    enabled: isDirty,
-  });
-
+export const NavigationGuardDialog = ({
+  isDirty,
+}: {
+  isDirty: boolean | RefObject<boolean>;
+}) => {
   const t = useI18n("admin");
+
+  const { active, accept, reject } = useNavigationGuard({
+    enabled: () => (typeof isDirty === "boolean" ? isDirty : isDirty.current),
+  });
 
   return (
     <Dialog open={active}>

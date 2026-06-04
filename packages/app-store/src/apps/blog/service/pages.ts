@@ -529,6 +529,8 @@ export const BLOG_PAGES: (
                                             data: {
                                               props: {
                                                 showShort: true,
+                                                maxParagraphs: 5,
+                                                showOnlyTextParagraphs: true,
                                               },
                                               style: {},
                                             },
@@ -1211,6 +1213,8 @@ export const BLOG_PAGES: (
                                             data: {
                                               props: {
                                                 showShort: true,
+                                                maxParagraphs: 5,
+                                                showOnlyTextParagraphs: true,
                                               },
                                               style: {},
                                             },

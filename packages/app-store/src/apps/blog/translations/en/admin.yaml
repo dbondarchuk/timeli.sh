@@ -46,6 +46,10 @@ form:
   publicationDateTooltip: When this post should be published
   tags: Tags
   tagsTooltip: Tags to categorize this post
+  featuredImage:
+    label: Featured image
+    tooltip: Image shown on the post page when using the Blog Post Featured Image block
+    placeholder: Select an image
   author:
     label: Author
     tooltip: Who wrote this blog post
@@ -201,6 +205,12 @@ block:
     showShort:
       label: Show Short Content
       description: Whether to show the short content of the blog post
+    maxParagraphs:
+      label: Max paragraphs
+      description: Maximum number of content blocks to show in the short version
+    showOnlyTextParagraphs:
+      label: Text paragraphs only
+      description: When enabled, only paragraph blocks are included in the short version
   postTag:
     displayName: Blog Post Tag
     blogListUrl:
@@ -285,6 +295,8 @@ block:
   category:
     blog: Blog
   templates:
+    postFeaturedImage:
+      displayName: Blog Post Featured Image
     postTitleHeader:
       displayName: Blog Post Title Header
     postTags:
@@ -331,3 +343,6 @@ validation:
       required: Name is required
     body:
       required: Comment is required
+  postContent:
+    maxParagraphs:
+      validation: Max paragraphs is required and must be an integer between 1 and 10

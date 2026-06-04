@@ -69,6 +69,7 @@ export const blogPostSchema = z.object({
     "app_blog_admin.validation.post.tag.unique" satisfies BlogAdminAllKeys,
   ).optional(),
   author: blogPostAuthorSchema,
+  featuredImage: z.string().optional(),
 });
 
 export const getBlogPostSchemaWithUniqueCheck = (

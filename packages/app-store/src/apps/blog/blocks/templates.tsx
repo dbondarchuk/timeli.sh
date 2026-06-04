@@ -13,6 +13,7 @@ import {
   CalendarClock,
   FileText,
   Heading,
+  Image as ImageIcon,
   ListOrdered,
   Tag,
 } from "lucide-react";
@@ -31,7 +32,10 @@ import { BlogPostAuthorPropsDefaults } from "./post-author/schema";
 import { BlogPostCommentCountPropsDefaults } from "./post-comment-count/schema";
 import { BlogPostCommentFormPropsDefaults } from "./post-comment-form/schema";
 import { BlogPostContainerPropsDefaults } from "./post-container/schema";
-import { BlogPostContentPropsDefaults } from "./post-content/schema";
+import {
+  BlogPostContentPropsDefaults,
+  BlogPostShortContentProps,
+} from "./post-content/schema";
 import { BlogPostNavigationButtonPropsDefaults } from "./post-navigation-button/schema";
 import { BlogPostPublishDatePropsDefaults } from "./post-publish-date/schema";
 import { BlogPostReadTimePropsDefaults } from "./post-read-time/schema";
@@ -84,6 +88,69 @@ const InlineContainerPropsDefaults = {
   props: {
     children: [],
   },
+};
+
+const BlogPostFeaturedImagePropsDefaults = {
+  props: {
+    src: "{{post.featuredImage}}",
+    alt: "{{post.title}}",
+    linkHref: null,
+  },
+  style: {
+    textAlign: [
+      {
+        value: "center",
+      },
+    ],
+    objectFit: [
+      {
+        value: "cover",
+      },
+    ],
+    objectPosition: [
+      {
+        value: { x: 50, y: 50 },
+      },
+    ],
+    maxWidth: [
+      {
+        value: {
+          value: 100,
+          unit: "%",
+        },
+      },
+    ],
+    display: [
+      {
+        value: "block",
+      },
+    ],
+  },
+} as const;
+
+const getBlogPostFeaturedImageBlock = (): TEditorBlock => {
+  const imageId = generateId();
+  return {
+    type: "ConditionalContainer",
+    id: generateId(),
+    data: {
+      props: {
+        condition: "post.featuredImage",
+        then: {
+          children: [
+            {
+              type: "Image",
+              id: imageId,
+              data: BlogPostFeaturedImagePropsDefaults,
+            },
+          ],
+        },
+        otherwise: {
+          children: [],
+        },
+      },
+    },
+  };
 };
 
 const getLinkPropsDefaults = () => ({
@@ -509,6 +576,19 @@ export const BlogTemplates: (
   appName: string,
   appId: string,
 ) => TemplatesConfiguration = (appName: string, appId: string) => ({
+  PostFeaturedImage: {
+    displayName:
+      "app_blog_admin.block.templates.postFeaturedImage.displayName" satisfies AllKeys<
+        BlogAdminNamespace,
+        BlogAdminKeys
+      >,
+    icon: <ImageIcon />,
+    category: "app_blog_admin.block.category.blog" satisfies AllKeys<
+      BlogAdminNamespace,
+      BlogAdminKeys
+    >,
+    getBlock: (): TEditorBlock => getBlogPostFeaturedImageBlock(),
+  },
   PostTitleHeader: {
     displayName:
       "app_blog_admin.block.templates.postTitleHeader.displayName" satisfies AllKeys<
@@ -650,6 +730,7 @@ export const BlogTemplates: (
                 },
               },
               getPostMetaBlock(),
+              getBlogPostFeaturedImageBlock(),
               {
                 type: "BlogPostContent",
                 id: contentId,
@@ -959,7 +1040,7 @@ export const BlogTemplates: (
                                   ...BlogPostContentPropsDefaults,
                                   props: {
                                     ...BlogPostContentPropsDefaults.props,
-                                    showShort: true,
+                                    ...BlogPostShortContentProps,
                                   },
                                 },
                               },

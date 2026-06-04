@@ -99,6 +99,7 @@ export const blogPostsListFixtures: BlogPost[] = [
       },
     ],
     tags: ["Productivity", "Lifestyle"],
+    featuredImage: "/assets/placeholder/400x200.jpg",
     organizationId: "1",
     appId: "1",
     createdAt: new Date("2025-01-12"),
