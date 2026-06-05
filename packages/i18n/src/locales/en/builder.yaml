@@ -1145,11 +1145,17 @@ pageBuilder:
       value: Value
       itemName: Item name
       itemNameHelperText: "Optional. If not provided, the item name will be set to '_item'"
+      skip: Skip
+      skipHelperText: Optional. Number of items to skip from the beginning.
+      take: Take
+      takeHelperText: Optional. Maximum number of items to render.
       errors:
         value: Value is required
         itemName: >-
           Item name must be a valid variable name (e.g. item, item1, item_1,
           _item1, etc.)
+        skip: Skip must be a non-negative integer
+        take: Take must be a non-negative integer
     gridContainer:
       displayName: Grid Container
       fullWidth: Full width
@@ -1554,6 +1560,10 @@ emailBuilder:
       displayName: Loop Container
       forEachItemInValueFormat: "For each <item></item> in {value}"
       value: Value
+      skip: Skip
+      skipHelperText: Optional. Number of items to skip from the beginning.
+      take: Take
+      takeHelperText: Optional. Maximum number of items to render.
     divider:
       displayName: Divider
       color: Color

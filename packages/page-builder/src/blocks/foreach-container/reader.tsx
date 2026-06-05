@@ -6,6 +6,7 @@ import {
 import { cn } from "@timelish/ui";
 import { Fragment } from "react";
 import { ForeachContainerReaderProps, styles } from "./schema";
+import { sliceForeachArray } from "./utils";
 
 export const ForeachContainerReader = ({
   props,
@@ -22,6 +23,8 @@ export const ForeachContainerReader = ({
     return <div className="w-full">NOT ARRAY</div>;
   }
 
+  const items = sliceForeachArray(array, props?.skip, props?.take);
+
   const newCtx = (item: any) => ({
     ...args,
     [props?.itemName ?? "_item"]: item,
@@ -34,7 +37,7 @@ export const ForeachContainerReader = ({
     <>
       <BlockStyle name={className} styleDefinitions={styles} styles={style} />
       <div className={cn(className, base?.className)} id={base?.id}>
-        {array.map((item, index) => (
+        {items.map((item, index) => (
           <Fragment key={index}>
             {children.map((child) => (
               <ReaderBlock

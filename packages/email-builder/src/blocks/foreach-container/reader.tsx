@@ -1,6 +1,7 @@
 import { evaluate, ReaderBlock } from "@timelish/builder";
 import { Fragment } from "react";
 import { ForeachContainerReaderProps } from "./schema";
+import { sliceForeachArray } from "./utils";
 
 export const ForeachContainerReader = ({
   props,
@@ -22,11 +23,12 @@ export const ForeachContainerReader = ({
     return <div className="w-full">NOT ARRAY</div>;
   }
 
+  const items = sliceForeachArray(array, props?.skip, props?.take);
   const newCtx = (item: any) => ({ ...args, _item: item });
 
   return (
     <>
-      {array.map((item, index) => (
+      {items.map((item, index) => (
         <Fragment key={index}>
           {children.map((child) => (
             <ReaderBlock

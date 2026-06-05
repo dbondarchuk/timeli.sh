@@ -210,11 +210,6 @@ export const serviceDefaultPage = (
                 value: "center",
               },
             ],
-            width: [
-              {
-                value: "max-content",
-              },
-            ],
             display: [
               {
                 value: "block",

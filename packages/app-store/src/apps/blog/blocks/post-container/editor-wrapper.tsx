@@ -6,6 +6,7 @@ import {
   generateClassName,
 } from "@timelish/page-builder-base/reader";
 import { cn } from "@timelish/ui";
+import { useMemo } from "react";
 import { blogPostsListFixtures } from "../fixtures";
 import { BlogPostContainerReaderProps, styles } from "./schema";
 
@@ -28,12 +29,13 @@ export const BlogPostContainerEditorWrapper = ({
 }: BlogPostContainerEditorWrapperProps) => {
   const children = props?.children ?? [];
   const postUrl = props?.postUrl ?? "/blog/[slug]";
-  const fixturePost = blogPostsListFixtures[0];
+
+  const post = useMemo(() => {
+    return args?.post ?? blogPostsListFixtures[0];
+  }, []);
 
   // Generate postLink by replacing [slug] with fixture post slug
-  const postLink = fixturePost
-    ? postUrl.replace("[slug]", fixturePost.slug)
-    : null;
+  const postLink = post ? postUrl.replace("[slug]", post.slug) : null;
 
   // Use fixtures in editor mode
   const className = generateClassName();
@@ -42,7 +44,7 @@ export const BlogPostContainerEditorWrapper = ({
   // Inject post and postLink into args for child blocks
   const newArgs = {
     ...args,
-    post: { ...fixturePost, commentsCount: 3 },
+    post,
     postLink,
     blogAppId: appId ?? args?.blogAppId,
     blogCommentsConfig: {

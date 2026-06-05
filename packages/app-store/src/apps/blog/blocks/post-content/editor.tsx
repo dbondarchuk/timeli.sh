@@ -6,11 +6,7 @@ import {
   useEditorArgs,
 } from "@timelish/builder";
 import { useI18n } from "@timelish/i18n";
-import {
-  BlockStyle,
-  ReplaceOriginalColors,
-  useClassName,
-} from "@timelish/page-builder-base";
+import { BlockStyle, useClassName } from "@timelish/page-builder-base";
 import { PlateStaticEditor } from "@timelish/rte";
 import { cn } from "@timelish/ui";
 import { useMemo } from "react";
@@ -20,7 +16,11 @@ import {
   blogPublicNamespace,
 } from "../../translations/types";
 import { resolveBlogPostDisplayContent } from "./resolve-display-content";
-import { BlogPostContentProps, BlogPostContentPropsDefaults, styles } from "./schema";
+import {
+  BlogPostContentProps,
+  BlogPostContentPropsDefaults,
+  styles,
+} from "./schema";
 
 export const BlogPostContentEditor = ({
   props,
@@ -57,28 +57,22 @@ export const BlogPostContentEditor = ({
         styles={style}
         isEditor
       />
-      <div
-        className={cn(className, base?.className)}
-        id={base?.id}
-        {...overlayProps}
-      >
-        <ReplaceOriginalColors />
-        {showError ? (
-          <span>{t("notInBlogContext")}</span>
-        ) : (
-          <>
-            <PlateStaticEditor value={displayContent} />
-            {showShort && (
-              <a
-                href="#"
-                className="mt-2 inline-block text-primary underline read-more"
-              >
-                {t("readMore")}
-              </a>
-            )}
-          </>
-        )}
-      </div>
+      {showError ? (
+        <div
+          className={cn(className, base?.className)}
+          id={base?.id}
+          {...overlayProps}
+        >
+          {t("notInBlogContext")}
+        </div>
+      ) : (
+        <PlateStaticEditor
+          value={displayContent}
+          className={cn(className, base?.className)}
+          id={base?.id}
+          {...overlayProps}
+        />
+      )}
     </>
   );
 };

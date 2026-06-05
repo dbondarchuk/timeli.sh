@@ -206,7 +206,7 @@ export type PlateStaticEditorProps = {
   style?: React.CSSProperties;
   className?: string;
   id?: string;
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
   /**
    * `plate` uses {@link PlateStatic} (full parity). `fast` uses a lightweight DOM walk
    * that mirrors our static element classes (better for very large read-only documents).

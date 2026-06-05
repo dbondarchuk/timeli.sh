@@ -297,6 +297,8 @@ block:
   templates:
     postFeaturedImage:
       displayName: Blog Post Featured Image
+    postReadMore:
+      displayName: Blog Post Read More Link
     postTitleHeader:
       displayName: Blog Post Title Header
     postTags:

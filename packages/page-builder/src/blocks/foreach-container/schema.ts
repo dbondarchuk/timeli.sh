@@ -1,6 +1,6 @@
 import { BaseReaderBlockProps } from "@timelish/builder";
 import { ALL_STYLES, getStylesSchema } from "@timelish/page-builder-base/style";
-import { asOptionalField } from "@timelish/types";
+import { asOptionalField, asOptinalNumberField } from "@timelish/types";
 import * as z from "zod";
 
 export const styles = ALL_STYLES;
@@ -18,6 +18,18 @@ export const ForeachContainerPropsSchema = z.object({
           /^[a-zA-Z_$][a-zA-Z_$0-9]*$/,
           "pageBuilder.blocks.foreachContainer.errors.itemName",
         ),
+    ),
+    skip: asOptinalNumberField(
+      z
+        .number()
+        .int()
+        .min(0, "pageBuilder.blocks.foreachContainer.errors.skip"),
+    ),
+    take: asOptinalNumberField(
+      z
+        .number()
+        .int()
+        .min(0, "pageBuilder.blocks.foreachContainer.errors.take"),
     ),
     children: z.array(z.any()),
   }),

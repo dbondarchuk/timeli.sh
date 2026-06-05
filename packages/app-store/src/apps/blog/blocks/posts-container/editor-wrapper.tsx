@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { blogPostsListFixtures } from "../fixtures";
 import { BlogPostsContainerComponent } from "./component";
 import { BlogPostsContainerReaderProps } from "./schema";
@@ -24,10 +25,14 @@ export const BlogPostsContainerEditorWrapper = ({
   const children = props?.children ?? [];
   const postsPerPage = props?.postsPerPage ?? 10;
 
+  const posts = useMemo(() => {
+    return blogPostsListFixtures.slice(0, postsPerPage);
+  }, [postsPerPage]);
+
   // Use fixtures in editor mode
   return (
     <BlogPostsContainerComponent
-      posts={blogPostsListFixtures}
+      posts={posts}
       totalPosts={blogPostsListFixtures.length}
       page={1}
       postsPerPage={postsPerPage}

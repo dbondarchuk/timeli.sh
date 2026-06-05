@@ -80,11 +80,6 @@ export const BlogCommentNavigationButtonPropsDefaults = {
         value: "center",
       },
     ],
-    width: [
-      {
-        value: "max-content",
-      },
-    ],
     display: [
       {
         value: "inline-flex",

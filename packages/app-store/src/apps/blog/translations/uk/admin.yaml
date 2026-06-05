@@ -297,6 +297,8 @@ block:
   templates:
     postFeaturedImage:
       displayName: Головне зображення запису блогу
+    postReadMore:
+      displayName: Посилання «Читати далі» для запису блогу
     postTitleHeader:
       displayName: Заголовок запису блогу
     postTags:

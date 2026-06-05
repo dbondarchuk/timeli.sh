@@ -13,6 +13,7 @@ export const blogPostsListFixtures: BlogPost[] = [
     isPublished: true,
     publicationDate: new Date("2025-01-12"),
     author: blogPostFixtureAuthor,
+    commentsCount: 3,
     content: [
       {
         type: "p",
@@ -112,6 +113,7 @@ export const blogPostsListFixtures: BlogPost[] = [
     isPublished: true,
     publicationDate: new Date("2025-01-11"),
     author: blogPostFixtureAuthor,
+    commentsCount: 2,
     content: [
       {
         type: "p",
@@ -185,6 +187,7 @@ export const blogPostsListFixtures: BlogPost[] = [
     isPublished: true,
     publicationDate: new Date("2025-01-10"),
     author: blogPostFixtureAuthor,
+    commentsCount: 1,
     content: [
       {
         type: "p",
@@ -245,6 +248,7 @@ export const blogPostsListFixtures: BlogPost[] = [
     isPublished: true,
     publicationDate: new Date("2025-01-09"),
     author: blogPostFixtureAuthor,
+    commentsCount: 0,
     content: [
       {
         type: "p",
@@ -330,6 +334,7 @@ export const blogPostsListFixtures: BlogPost[] = [
     isPublished: true,
     publicationDate: new Date("2025-01-08"),
     author: blogPostFixtureAuthor,
+    commentsCount: 5,
     content: [
       {
         type: "p",
@@ -382,6 +387,7 @@ export const blogPostsListFixtures: BlogPost[] = [
     isPublished: true,
     publicationDate: new Date("2025-01-07"),
     author: blogPostFixtureAuthor,
+    commentsCount: 4,
     content: [
       {
         type: "p",
@@ -439,6 +445,7 @@ export const blogPostsListFixtures: BlogPost[] = [
     isPublished: true,
     publicationDate: new Date("2025-01-06"),
     author: blogPostFixtureAuthor,
+    commentsCount: 3,
     content: [
       {
         type: "p",
@@ -513,6 +520,7 @@ export const blogPostsListFixtures: BlogPost[] = [
     isPublished: true,
     publicationDate: new Date("2025-01-05"),
     author: blogPostFixtureAuthor,
+    commentsCount: 2,
     content: [
       {
         type: "p",
@@ -570,6 +578,7 @@ export const blogPostsListFixtures: BlogPost[] = [
     isPublished: true,
     publicationDate: new Date("2025-01-04"),
     author: blogPostFixtureAuthor,
+    commentsCount: 11,
     content: [
       {
         type: "p",
@@ -644,6 +653,7 @@ export const blogPostsListFixtures: BlogPost[] = [
     isPublished: true,
     publicationDate: new Date("2025-01-03"),
     author: blogPostFixtureAuthor,
+    commentsCount: 10,
     content: [
       {
         type: "p",
@@ -703,6 +713,7 @@ export const blogPostsListFixtures: BlogPost[] = [
     isPublished: true,
     publicationDate: new Date("2025-01-02"),
     author: blogPostFixtureAuthor,
+    commentsCount: 7,
     content: [
       {
         type: "p",
@@ -797,6 +808,7 @@ export const blogPostsListFixtures: BlogPost[] = [
     isPublished: true,
     publicationDate: new Date("2025-01-01"),
     author: blogPostFixtureAuthor,
+    commentsCount: 6,
     content: [
       {
         type: "p",

@@ -14,6 +14,7 @@ import {
   FileText,
   Heading,
   Image as ImageIcon,
+  Link as LinkIcon,
   ListOrdered,
   Tag,
 } from "lucide-react";
@@ -42,6 +43,7 @@ import { BlogPostReadTimePropsDefaults } from "./post-read-time/schema";
 import { BlogPostTagPropsDefaults } from "./post-tag/schema";
 import { BlogPostTitlePropsDefaults } from "./post-title/schema";
 import { BlogPostsContainerPropsDefaults } from "./posts-container/schema";
+import { getBlogPostReadMoreLinkBlock } from "./read-more-link-block";
 
 // Define InlineContainerPropsDefaults inline to avoid import issues
 const InlineContainerPropsDefaults = {
@@ -589,6 +591,22 @@ export const BlogTemplates: (
     >,
     getBlock: (): TEditorBlock => getBlogPostFeaturedImageBlock(),
   },
+  PostReadMore: {
+    displayName:
+      "app_blog_admin.block.templates.postReadMore.displayName" satisfies AllKeys<
+        BlogAdminNamespace,
+        BlogAdminKeys
+      >,
+    icon: <LinkIcon />,
+    category: "app_blog_admin.block.category.blog" satisfies AllKeys<
+      BlogAdminNamespace,
+      BlogAdminKeys
+    >,
+    getBlock: (t): TEditorBlock =>
+      getBlogPostReadMoreLinkBlock(
+        t("app_blog_public.readMore" satisfies BlogPublicAllKeys),
+      ),
+  },
   PostTitleHeader: {
     displayName:
       "app_blog_admin.block.templates.postTitleHeader.displayName" satisfies AllKeys<
@@ -960,7 +978,7 @@ export const BlogTemplates: (
       BlogAdminNamespace,
       BlogAdminKeys
     >,
-    getBlock: (): TEditorBlock => {
+    getBlock: (t): TEditorBlock => {
       const postsContainerId = generateId();
       const foreachId = generateId();
       const blogPostId = generateId();
@@ -968,6 +986,7 @@ export const BlogTemplates: (
       const titleHeaderId = generateId();
       const titleId = generateId();
       const contentId = generateId();
+      const readMoreId = generateId();
       const tagsForeachId = generateId();
       const tagId = generateId();
       const navigationContainerId = generateId();
@@ -1043,6 +1062,14 @@ export const BlogTemplates: (
                                     ...BlogPostShortContentProps,
                                   },
                                 },
+                              },
+                              {
+                                ...getBlogPostReadMoreLinkBlock(
+                                  t(
+                                    "app_blog_public.readMore" satisfies BlogPublicAllKeys,
+                                  ),
+                                ),
+                                id: readMoreId,
                               },
                               {
                                 id: tagsForeachId,

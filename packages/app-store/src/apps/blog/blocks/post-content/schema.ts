@@ -42,7 +42,18 @@ export const BlogPostContentPropsDefaults = {
   props: {
     showShort: false,
   },
-  style: {},
+  style: {
+    display: [
+      {
+        value: "flex",
+      },
+    ],
+    flexDirection: [
+      {
+        value: "column",
+      },
+    ],
+  },
 } as const satisfies BlogPostContentProps;
 
 /** Props for list/card excerpts (used in templates and default pages). */

@@ -2,7 +2,10 @@
 
 import { ConfigurationProps, TextInput } from "@timelish/builder";
 import { useI18n } from "@timelish/i18n";
-import { StylesConfigurationPanel } from "@timelish/page-builder-base";
+import {
+  RawNumberInput,
+  StylesConfigurationPanel,
+} from "@timelish/page-builder-base";
 import { deepMemo } from "@timelish/ui";
 import { useCallback } from "react";
 import { containerShortcuts } from "../container/shortcuts";
@@ -49,6 +52,44 @@ export const ForeachContainerConfiguration = deepMemo(
           defaultValue={data.props?.itemName ?? ""}
           onChange={(itemName) => updateProps({ ...data.props, itemName })}
         />
+        <div className="flex flex-col gap-1">
+          <label className="text-xs font-medium text-muted-foreground">
+            {t("pageBuilder.blocks.foreachContainer.skip")}
+          </label>
+          <p className="text-xs text-muted-foreground">
+            {t("pageBuilder.blocks.foreachContainer.skipHelperText")}
+          </p>
+          <RawNumberInput
+            iconLabel={<></>}
+            value={data.props?.skip ?? null}
+            setValue={(value: number | null) =>
+              updateProps({ ...data.props, skip: value ?? undefined })
+            }
+            step={1}
+            min={0}
+            options={[0, 1, 5, 10]}
+            nullable
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label className="text-xs font-medium text-muted-foreground">
+            {t("pageBuilder.blocks.foreachContainer.take")}
+          </label>
+          <p className="text-xs text-muted-foreground">
+            {t("pageBuilder.blocks.foreachContainer.takeHelperText")}
+          </p>
+          <RawNumberInput
+            iconLabel={<></>}
+            value={data.props?.take ?? null}
+            setValue={(value: number | null) =>
+              updateProps({ ...data.props, take: value ?? undefined })
+            }
+            step={1}
+            min={0}
+            options={[1, 3, 5, 10]}
+            nullable
+          />
+        </div>
       </StylesConfigurationPanel>
     );
   },

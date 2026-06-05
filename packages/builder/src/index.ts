@@ -13,12 +13,13 @@ export * from "./documents/embedded-slot";
 export * from "./documents/editor/block";
 export * from "./documents/editor/context";
 export * from "./documents/editor/core";
+export * from "./documents/editor/editor-reader-block";
 
 export * from "./documents/helpers/block-id";
 export * from "./documents/helpers/blocks";
 export * from "./documents/helpers/coerce-array";
-export * from "./documents/helpers/set-props-at-path";
 export * from "./documents/helpers/evaluate";
+export * from "./documents/helpers/set-props-at-path";
 export * from "./documents/helpers/template-props";
 
 export * from "./documents/reader/block";
