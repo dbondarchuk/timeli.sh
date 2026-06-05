@@ -1,5 +1,6 @@
 "use client";
 
+import { arrayMove } from "@dnd-kit/sortable";
 import { BaseBlockProps as BaseBlockPropsType } from "@timelish/builder";
 import { AllKeys, useI18n } from "@timelish/i18n";
 import React, { useCallback, useMemo, useState } from "react";
@@ -227,6 +228,46 @@ export const StylesConfigurationPanel = <T extends BaseStyleDictionary>({
     [onStylesChange, styles],
   );
 
+  const moveVariant = useCallback(
+    (styleName: keyof T, fromIndex: number, toIndex: number) => {
+      const currentVariants = styles[styleName] || [];
+      if (
+        fromIndex < 0 ||
+        toIndex < 0 ||
+        fromIndex >= currentVariants.length ||
+        toIndex >= currentVariants.length ||
+        fromIndex === toIndex
+      ) {
+        return;
+      }
+
+      const newStyles: StyleValue<T> = {
+        ...styles,
+        [styleName]: arrayMove(currentVariants, fromIndex, toIndex),
+      };
+      onStylesChange(newStyles);
+    },
+    [onStylesChange, styles],
+  );
+
+  const cloneVariant = useCallback(
+    (styleName: keyof T, variantIndex: number) => {
+      const currentVariants = styles[styleName] || [];
+      const variant = currentVariants[variantIndex];
+      if (!variant) return;
+
+      const newVariants = [...currentVariants];
+      newVariants.splice(variantIndex + 1, 0, structuredClone(variant));
+
+      const newStyles: StyleValue<T> = {
+        ...styles,
+        [styleName]: newVariants,
+      };
+      onStylesChange(newStyles);
+    },
+    [onStylesChange, styles],
+  );
+
   return (
     <div className="grid grid-cols-1 gap-4">
       {children}
@@ -277,6 +318,8 @@ export const StylesConfigurationPanel = <T extends BaseStyleDictionary>({
           onUpdateVariant={updateVariant}
           onUpdateStyle={updateStyle}
           onDeleteVariant={deleteVariant}
+          onMoveVariant={moveVariant}
+          onCloneVariant={cloneVariant}
         />
       ))}
 

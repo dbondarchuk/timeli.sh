@@ -96,6 +96,10 @@ pageBuilder:
     cancel: Скасувати
     add: Додати
     base: Базовий
+    moveVariantUp: Перемістити варіант вгору
+    moveVariantDown: Перемістити варіант вниз
+    reorderVariant: Змінити порядок варіантів
+    cloneVariant: Клонувати варіант
     categories:
       typography: Типографіка
       layout: Макет

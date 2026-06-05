@@ -94,6 +94,10 @@ pageBuilder:
     cancel: Cancel
     add: Add
     base: Base
+    moveVariantUp: Move variant up
+    moveVariantDown: Move variant down
+    reorderVariant: Reorder variant
+    cloneVariant: Clone variant
     categories:
       typography: Typography
       layout: Layout

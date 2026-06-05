@@ -13,8 +13,9 @@ export const Image = forwardRef<
   HTMLImageElement | HTMLAnchorElement,
   Pick<ImageReaderProps, "style" | "props" | "block"> & {
     onClick?: (e: React.MouseEvent) => void;
+    isEditor?: boolean;
   }
->(({ style, props, block, onClick }, ref) => {
+>(({ style, props, block, onClick, isEditor }, ref) => {
   const linkHref = props?.linkHref;
 
   const className = generateClassName();
@@ -30,17 +31,18 @@ export const Image = forwardRef<
     />
   );
 
-  const element = !linkHref ? (
-    imageElement
-  ) : (
-    <a
-      href={linkHref}
-      style={{ textDecoration: "none", display: "block" }}
-      ref={ref as any}
-    >
-      {imageElement}
-    </a>
-  );
+  const element =
+    isEditor || !linkHref ? (
+      imageElement
+    ) : (
+      <a
+        href={linkHref}
+        style={{ textDecoration: "none", display: "block" }}
+        ref={ref as any}
+      >
+        {imageElement}
+      </a>
+    );
 
   const defaults = getDefaults({ props, style }, false);
 

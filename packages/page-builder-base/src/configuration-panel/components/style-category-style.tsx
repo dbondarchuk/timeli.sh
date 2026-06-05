@@ -1,5 +1,19 @@
 "use client";
 
+import {
+  closestCenter,
+  DndContext,
+  KeyboardSensor,
+  PointerSensor,
+  type DragEndEvent,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import { useI18n } from "@timelish/i18n";
 import {
   Button,
@@ -9,7 +23,7 @@ import {
   CollapsibleTrigger,
 } from "@timelish/ui";
 import { ChevronRight, Plus } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as z from "zod";
 import {
   BaseStyleDictionary,
@@ -34,6 +48,12 @@ interface StyleCategoryStyleProps<T extends BaseStyleDictionary> {
     value: z.infer<T[keyof T]>,
   ) => void;
   onDeleteVariant: (styleName: keyof T, variantIndex: number) => void;
+  onMoveVariant: (
+    styleName: keyof T,
+    fromIndex: number,
+    toIndex: number,
+  ) => void;
+  onCloneVariant: (styleName: keyof T, variantIndex: number) => void;
 }
 
 export const StyleCategoryStyle = <T extends BaseStyleDictionary>({
@@ -44,10 +64,41 @@ export const StyleCategoryStyle = <T extends BaseStyleDictionary>({
   onUpdateVariant,
   onUpdateStyle,
   onDeleteVariant,
+  onMoveVariant,
+  onCloneVariant,
 }: StyleCategoryStyleProps<T>) => {
   const t = useI18n();
   const [isStyleOpen, setIsStyleOpen] = useState(searchTerm ? true : false);
   const previousVariantsCountRef = useRef(styleVariants.length);
+  const styleName = style.name as keyof T;
+
+  const variantIds = useMemo(
+    () => styleVariants.map((_, variantIndex) => String(variantIndex)),
+    [styleVariants.length],
+  );
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 6 },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+  );
+
+  const handleDragEnd = useCallback(
+    (event: DragEndEvent) => {
+      const { active, over } = event;
+      if (!over || active.id === over.id) return;
+
+      const fromIndex = Number(active.id);
+      const toIndex = Number(over.id);
+      if (Number.isNaN(fromIndex) || Number.isNaN(toIndex)) return;
+
+      onMoveVariant(styleName, fromIndex, toIndex);
+    },
+    [onMoveVariant, styleName],
+  );
 
   // Auto-expand when searching
   useEffect(() => {
@@ -67,6 +118,23 @@ export const StyleCategoryStyle = <T extends BaseStyleDictionary>({
     previousVariantsCountRef.current = styleVariants.length;
   }, [styleVariants.length]);
 
+  const variantList = styleVariants.map((variant, variantIndex) => (
+    <StyleVariantComponent
+      key={variantIndex}
+      variant={variant}
+      variantIndex={variantIndex}
+      variantCount={styleVariants.length}
+      sortableId={String(variantIndex)}
+      style={style}
+      styleName={styleName}
+      onUpdateVariant={onUpdateVariant}
+      onUpdateStyle={onUpdateStyle}
+      onDeleteVariant={onDeleteVariant}
+      onMoveVariant={onMoveVariant}
+      onCloneVariant={onCloneVariant}
+    />
+  ));
+
   return (
     <Collapsible open={isStyleOpen} onOpenChange={setIsStyleOpen}>
       <div className="flex flex-row gap-2 justify-between w-full">
@@ -80,11 +148,6 @@ export const StyleCategoryStyle = <T extends BaseStyleDictionary>({
             />
             <style.icon className="size-4" />
             <span className="text-left">{t(style.label)}</span>
-            {/* {!isStyleOpen && styleVariants.length > 0 && (
-            <span className="text-xs text-muted-foreground">
-              ({formatStyleValue(styleVariants[0].value)})
-            </span>
-          )} */}
           </div>
         </CollapsibleTrigger>
         <div className="flex items-center gap-1">
@@ -93,7 +156,7 @@ export const StyleCategoryStyle = <T extends BaseStyleDictionary>({
             size="xs"
             onClick={(e) => {
               e.stopPropagation();
-              onAddVariant(style.name as keyof T);
+              onAddVariant(styleName);
             }}
           >
             <Plus size={14} />
@@ -102,19 +165,18 @@ export const StyleCategoryStyle = <T extends BaseStyleDictionary>({
       </div>
 
       <CollapsibleContent className="space-y-2 pt-2 pl-2">
-        {/* Style variants */}
-        {styleVariants.map((variant, variantIndex) => (
-          <StyleVariantComponent
-            key={variantIndex}
-            variant={variant}
-            variantIndex={variantIndex}
-            style={style}
-            styleName={style.name as keyof T}
-            onUpdateVariant={onUpdateVariant}
-            onUpdateStyle={onUpdateStyle}
-            onDeleteVariant={onDeleteVariant}
-          />
-        ))}
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext
+            items={variantIds}
+            strategy={verticalListSortingStrategy}
+          >
+            {variantList}
+          </SortableContext>
+        </DndContext>
       </CollapsibleContent>
     </Collapsible>
   );

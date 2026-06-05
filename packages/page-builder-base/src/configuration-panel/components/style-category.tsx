@@ -42,6 +42,12 @@ interface StyleCategoryProps<T extends BaseStyleDictionary> {
     value: z.infer<T[keyof T]>,
   ) => void;
   onDeleteVariant: (styleName: keyof T, variantIndex: number) => void;
+  onMoveVariant: (
+    styleName: keyof T,
+    fromIndex: number,
+    toIndex: number,
+  ) => void;
+  onCloneVariant: (styleName: keyof T, variantIndex: number) => void;
 }
 
 export const StyleCategoryComponent = <T extends BaseStyleDictionary>({
@@ -55,6 +61,8 @@ export const StyleCategoryComponent = <T extends BaseStyleDictionary>({
   onUpdateVariant,
   onUpdateStyle,
   onDeleteVariant,
+  onMoveVariant,
+  onCloneVariant,
 }: StyleCategoryProps<T>) => {
   const t = useI18n("builder");
   const [isOpen, setIsOpen] = useState(false);
@@ -147,6 +155,8 @@ export const StyleCategoryComponent = <T extends BaseStyleDictionary>({
                   onUpdateVariant={onUpdateVariant}
                   onUpdateStyle={onUpdateStyle}
                   onDeleteVariant={onDeleteVariant}
+                  onMoveVariant={onMoveVariant}
+                  onCloneVariant={onCloneVariant}
                 />
               );
             })}

@@ -98,6 +98,7 @@ export const ImageEditor = ({ props, style }: ImageProps) => {
     />
   ) : (
     <Image
+      isEditor
       props={updatedProps}
       style={style}
       block={currentBlock}
