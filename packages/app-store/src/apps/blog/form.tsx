@@ -28,7 +28,12 @@ import {
   use12HourFormat,
   useDebounceCacheFn,
 } from "@timelish/ui";
-import { SaveButton } from "@timelish/ui-admin";
+import {
+  AssetPreview,
+  AssetSelectorInput,
+  SaveButton,
+} from "@timelish/ui-admin";
+import { fileNameToMimeType } from "@timelish/utils";
 import { useRouter } from "next/navigation";
 import React, { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -436,6 +441,49 @@ export const BlogPostForm: React.FC<{
                         />
                       </FormControl>
                     )}
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
+            />
+
+            <FormField
+              control={form.control}
+              name="featuredImage"
+              render={({ field }) => {
+                const mimeType = field.value
+                  ? fileNameToMimeType(field.value)
+                  : undefined;
+
+                return (
+                  <FormItem>
+                    <FormLabel>
+                      <span>{t("form.featuredImage.label")}</span>{" "}
+                      <InfoTooltip>
+                        {t("form.featuredImage.tooltip")}
+                      </InfoTooltip>
+                    </FormLabel>
+                    <FormControl>
+                      <div className="flex flex-col gap-4">
+                        <AssetSelectorInput
+                          value={field.value ?? ""}
+                          onChange={(value) => {
+                            field.onChange(value);
+                            field.onBlur();
+                          }}
+                          disabled={loading}
+                          accept="image/*"
+                          placeholder={t("form.featuredImage.placeholder")}
+                        />
+                        {field.value && mimeType?.startsWith("image/") && (
+                          <AssetPreview
+                            size="md"
+                            src={field.value}
+                            mimeType={mimeType}
+                          />
+                        )}
+                      </div>
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 );
