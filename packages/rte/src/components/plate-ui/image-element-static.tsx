@@ -23,7 +23,10 @@ export function ImageElementStatic({
 
   return (
     <SlateElement
-      className={cn(className, "py-2.5")}
+      className={cn(
+        className,
+        "py-2.5 flex flex-col items-center justify-center",
+      )}
       {...props}
       nodeProps={nodeProps}
     >

@@ -92,45 +92,48 @@ const InlineContainerPropsDefaults = {
   },
 };
 
-const BlogPostFeaturedImagePropsDefaults = {
-  props: {
-    src: "{{post.featuredImage}}",
-    alt: "{{post.title}}",
-    linkHref: null,
-  },
-  style: {
-    textAlign: [
-      {
-        value: "center",
-      },
-    ],
-    objectFit: [
-      {
-        value: "cover",
-      },
-    ],
-    objectPosition: [
-      {
-        value: { x: 50, y: 50 },
-      },
-    ],
-    maxWidth: [
-      {
-        value: {
-          value: 100,
-          unit: "%",
+const BlogPostFeaturedImagePropsDefaults = (withLink: boolean = false) =>
+  ({
+    props: {
+      src: "{{post.featuredImage}}",
+      alt: "{{post.title}}",
+      linkHref: withLink ? "{{postLink}}" : null,
+    },
+    style: {
+      textAlign: [
+        {
+          value: "center",
         },
-      },
-    ],
-    display: [
-      {
-        value: "block",
-      },
-    ],
-  },
-} as const;
+      ],
+      objectFit: [
+        {
+          value: "cover",
+        },
+      ],
+      objectPosition: [
+        {
+          value: { x: 50, y: 50 },
+        },
+      ],
+      maxWidth: [
+        {
+          value: {
+            value: 100,
+            unit: "%",
+          },
+        },
+      ],
+      display: [
+        {
+          value: "block",
+        },
+      ],
+    },
+  }) as const;
 
-const getBlogPostFeaturedImageBlock = (): TEditorBlock => {
+const getBlogPostFeaturedImageBlock = (
+  withLink: boolean = false,
+): TEditorBlock => {
   const imageId = generateId();
   return {
     type: "ConditionalContainer",
@@ -143,7 +146,7 @@ const getBlogPostFeaturedImageBlock = (): TEditorBlock => {
             {
               type: "Image",
               id: imageId,
-              data: BlogPostFeaturedImagePropsDefaults,
+              data: BlogPostFeaturedImagePropsDefaults(withLink),
             },
           ],
         },
@@ -589,7 +592,7 @@ export const BlogTemplates: (
       BlogAdminNamespace,
       BlogAdminKeys
     >,
-    getBlock: (): TEditorBlock => getBlogPostFeaturedImageBlock(),
+    getBlock: (): TEditorBlock => getBlogPostFeaturedImageBlock(true),
   },
   PostReadMore: {
     displayName:
@@ -1052,6 +1055,7 @@ export const BlogTemplates: (
                                 },
                               },
                               getPostMetaBlock(),
+                              getBlogPostFeaturedImageBlock(true),
                               {
                                 type: "BlogPostContent",
                                 id: contentId,
