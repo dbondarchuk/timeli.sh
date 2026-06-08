@@ -60,7 +60,16 @@ Profession catalogues preload names, descriptions, durations, pricing. Select on
 
 ---
 
-## Step 4: Connect calendar & apps
+## Setup 4: Set your schedule
+
+The installation wizard will suggest the default schedule - Monday till Friday, 9am-5pm. You can adjust the schedule to match your working hours by adding shifts to each week day.
+You can adjust the schedule later in your dashboard or install app that will allow you to have more custom schedule (for example, [Weekly Schedule](/apps/weekly-schedule) to set custom schedule on week-by-week basis)
+
+![Schedule](/img/getting-started/schedule.png)
+
+---
+
+## Step 5: Connect calendar & apps
 
 In this step, Timelish asks:
 **"How should we deliver bookings to your calendar?"**
@@ -116,7 +125,7 @@ If you are unsure, choose the calendar you check every day. You can reconnect or
 
 ---
 
-## Step 5: Payments & Policies
+## Step 6: Payments & Policies
 
 During this step you can configure your payment processor, enable deposits and cancellations/reschedules, and turn on auto confirming bookings.
 
@@ -142,7 +151,7 @@ Enable this option to allow customers cancel / reshcedule their appointments the
 
 ---
 
-## Step 6: Finished
+## Step 7: Finished
 
 You are done!. You can now see to your dashboard. Before sharing your booking link publicly, do a quick setup check:
 
@@ -155,4 +164,4 @@ You are done!. You can now see to your dashboard. Before sharing your booking li
 
 1. Open your public booking page in a private/incognito window and check the customer experience.
 2. Create one test booking and confirm calendar sync, reminders, and payment behavior.
-3. Continue with **[First steps](/docs/daily-use/first-steps-after-setup)**, **[Settings](/docs/daily-use/settings)**, and **[Apps](/docs/apps/overview)**.
+3. Continue with **[First steps](/docs/first-steps)**, **[Settings](/docs/daily-use/settings)**, and **[Apps](/docs/apps/overview)**.

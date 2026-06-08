@@ -112,7 +112,7 @@ export async function completeInstallSetup(
     return { ok: false, code: "unauthorized" };
   }
 
-  const services = ServicesContainer(organizationId);
+  const services = ServicesContainer(organizationId, true);
   const general =
     (await services.configurationService.getConfiguration("general")) ?? null;
   const brand =

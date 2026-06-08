@@ -16,6 +16,7 @@ import {
 import { getRedisClient } from "./bullmq/redis-client";
 import { CommunicationLogsService } from "./communication-logs.service";
 import { CachedConfigurationService } from "./configuration-cached.service";
+import { ConfigurationService } from "./configuration.service";
 import { CachedConnectedAppsService } from "./connected-apps.service";
 import { CustomerAuthService } from "./customer-auth.service";
 import { CustomersService } from "./customers.service";
@@ -23,7 +24,6 @@ import { BullMQEventService, getBullMQEventConfig } from "./events";
 import { GiftCardsService } from "./gift-cards.service";
 import { OrganizationService } from "./organization.service";
 import { CachedPagesService } from "./pages-cached.service";
-import { PagesService } from "./pages.service";
 import { PaymentsService } from "./payments.service";
 import { S3AssetsStorageService } from "./s3-assets-storage";
 import { getS3Configuration } from "./s3-assets-storage/utils";
@@ -66,8 +66,11 @@ export * from "./user.service";
  * Each service must be created with a organizationId to ensure proper isolation
  */
 
-export const ServicesContainer: (organizationId: string) => IServicesContainer =
-  cache((organizationId: string) => {
+export const ServicesContainer: (
+  organizationId: string,
+  noCachedServices?: boolean,
+) => IServicesContainer = cache(
+  (organizationId: string, noCachedServices?: boolean) => {
     const redisClient = getRedisClient();
     const jobService = new BullMQJobService(
       organizationId,
@@ -79,15 +82,19 @@ export const ServicesContainer: (organizationId: string) => IServicesContainer =
       getBullMQEventConfig(),
     );
 
-    const configurationService = new CachedConfigurationService(
-      organizationId,
-      eventService,
-      redisClient,
-    );
+    const configurationService = noCachedServices
+      ? new ConfigurationService(organizationId, eventService)
+      : new CachedConfigurationService(
+          organizationId,
+          eventService,
+          redisClient,
+        );
+
     const assetsStorage = new S3AssetsStorageService(
       organizationId,
       getS3Configuration(),
     );
+
     const assetsService = new AssetsService(
       organizationId,
       configurationService,
@@ -101,6 +108,7 @@ export const ServicesContainer: (organizationId: string) => IServicesContainer =
       organizationId,
       eventService,
     );
+
     const userService = new UserService(organizationId);
     const customersService = new CustomersService(organizationId, eventService);
     const activityService = new ActivityService(
@@ -108,6 +116,7 @@ export const ServicesContainer: (organizationId: string) => IServicesContainer =
       dashboardNotificationsService,
       redisClient,
     );
+
     const connectedAppsService = new CachedConnectedAppsService(
       organizationId,
       (orgId) => {
@@ -118,20 +127,24 @@ export const ServicesContainer: (organizationId: string) => IServicesContainer =
         return ServicesContainer(orgId);
       },
     );
+
     const scheduleService = new ScheduleService(
       connectedAppsService,
       configurationService,
     );
+
     const servicesService = new ServicesService(
       organizationId,
       configurationService,
       eventService,
     );
+
     const paymentsService = new PaymentsService(
       organizationId,
       connectedAppsService,
       eventService,
     );
+
     const bookingService = new BookingService(
       organizationId,
       configurationService,
@@ -211,7 +224,8 @@ export const ServicesContainer: (organizationId: string) => IServicesContainer =
     };
 
     return services;
-  });
+  },
+);
 
 export const SystemServicesContainer = cache(() => {
   const notificationService = new BullMQSystemNotificationService(

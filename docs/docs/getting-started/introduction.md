@@ -13,12 +13,13 @@ If you are new, read [What is Timelish?](./what-is-timelish) first, then follow 
 
 ## After setup
 
-Continue with **[Using your workspace](/docs/daily-use/first-steps-after-setup)** for everyday tasks, **[Changing settings](/docs/daily-use/settings)** for preferences, **[Connecting your web address](/docs/daily-use/connect-domain)** when you own a domain name, and **[Apps](/docs/apps/overview)** for calendars, messaging, payments, and extra website tools.
+Continue with **[First steps](/docs/first-steps)** to go live after setup, then **[Changing settings](/docs/daily-use/settings)** for preferences, **[Connecting your web address](/docs/daily-use/connect-domain)** when you own a domain name, and **[Apps](/docs/apps/overview)** for calendars, messaging, payments, and extra website tools.
 
 ## How this site is organized
 
 - **Getting started** - account, plan, first-time setup
-- **Using your workspace** - first checklist, settings, connecting your domain
+- **First Steps** - checklist to go live after setup
+- **Using your workspace** - settings, connecting your domain
 - **Apps** - each optional connection explained in plain language
 
 If you cannot find something, check back later or contact Timelish support the way you usually do.

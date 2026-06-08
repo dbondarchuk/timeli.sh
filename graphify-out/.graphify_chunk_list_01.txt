@@ -1,0 +1,15 @@
+C:\Users\dmytro\projects\timeli.sh\apps\notification-sender\README.md
+C:\Users\dmytro\projects\timeli.sh\diagrams\google-calendar-architecture-sections.html
+C:\Users\dmytro\projects\timeli.sh\diagrams\google-calendar-architecture-sections.md
+C:\Users\dmytro\projects\timeli.sh\diagrams\index.html
+C:\Users\dmytro\projects\timeli.sh\diagrams\outlook-architecture-sections.html
+C:\Users\dmytro\projects\timeli.sh\diagrams\outlook-architecture-sections.md
+C:\Users\dmytro\projects\timeli.sh\diagrams\paypal-architecture-sections.html
+C:\Users\dmytro\projects\timeli.sh\diagrams\paypal-architecture-sections.md
+C:\Users\dmytro\projects\timeli.sh\diagrams\square-architecture-sections.html
+C:\Users\dmytro\projects\timeli.sh\diagrams\square-architecture-sections.md
+C:\Users\dmytro\projects\timeli.sh\diagrams\stripe-architecture-sections.html
+C:\Users\dmytro\projects\timeli.sh\diagrams\stripe-architecture-sections.md
+C:\Users\dmytro\projects\timeli.sh\diagrams\zoom-architecture-sections.html
+C:\Users\dmytro\projects\timeli.sh\diagrams\zoom-architecture-sections.md
+C:\Users\dmytro\projects\timeli.sh\docs\README.md

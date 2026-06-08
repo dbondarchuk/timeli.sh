@@ -24,7 +24,7 @@ export async function getInstallScheduleSnapshot(): Promise<Schedule | null> {
     return null;
   }
 
-  const services = ServicesContainer(organizationId);
+  const services = ServicesContainer(organizationId, true);
   const existing =
     (await services.configurationService.getConfiguration("schedule")) ?? null;
   const hasWorkingHours = existing?.schedule?.some(
@@ -74,7 +74,7 @@ export async function saveInstallSchedule(
   }
 
   const source = await getActor();
-  const services = ServicesContainer(organizationId);
+  const services = ServicesContainer(organizationId, true);
   await services.configurationService.setConfiguration(
     "schedule",
     config.data,

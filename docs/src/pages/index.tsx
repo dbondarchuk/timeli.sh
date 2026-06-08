@@ -72,9 +72,7 @@ export default function Home(): ReactNode {
                   set up your workspace
                 </Link>
                 . After that, explore{" "}
-                <Link to="/docs/daily-use/first-steps-after-setup">
-                  first steps
-                </Link>
+                <Link to="/docs/first-steps">first steps</Link>
                 , <Link to="/docs/daily-use/settings">settings</Link>,{" "}
                 <Link to="/docs/daily-use/connect-domain">your domain</Link>,
                 and <Link to="/docs/apps/overview">Apps</Link>.

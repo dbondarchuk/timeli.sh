@@ -17,6 +17,20 @@ const config: Config = {
     locales: ["en"],
   },
 
+  plugins: [
+    [
+      "@docusaurus/plugin-client-redirects",
+      {
+        redirects: [
+          {
+            from: "/docs/daily-use/first-steps-after-setup",
+            to: "/docs/first-steps",
+          },
+        ],
+      },
+    ],
+  ],
+
   presets: [
     [
       "classic",
@@ -71,8 +85,8 @@ const config: Config = {
               to: "/docs/getting-started/introduction",
             },
             {
-              label: "First steps after setup",
-              to: "/docs/daily-use/first-steps-after-setup",
+              label: "First steps",
+              to: "/docs/first-steps",
             },
             {
               label: "Settings",

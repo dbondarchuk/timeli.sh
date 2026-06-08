@@ -57,7 +57,7 @@ export async function applyInstallPersonalization(
   }
 
   const logo = parsed.data.installLogo?.trim();
-  const services = ServicesContainer(organizationId);
+  const services = ServicesContainer(organizationId, true);
   const eventSource = await getActor();
   const existingStyling =
     (await services.configurationService.getConfiguration("styling")) ?? {};

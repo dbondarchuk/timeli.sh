@@ -1,0 +1,14 @@
+C:\Users\dmytro\projects\timeli.sh\packages\i18n\src\locales\en\admin.yaml
+C:\Users\dmytro\projects\timeli.sh\packages\i18n\src\locales\en\apps.yaml
+C:\Users\dmytro\projects\timeli.sh\packages\i18n\src\locales\en\builder.yaml
+C:\Users\dmytro\projects\timeli.sh\packages\i18n\src\locales\en\install.yaml
+C:\Users\dmytro\projects\timeli.sh\packages\i18n\src\locales\en\translation.yaml
+C:\Users\dmytro\projects\timeli.sh\packages\i18n\src\locales\en\ui.yaml
+C:\Users\dmytro\projects\timeli.sh\packages\i18n\src\locales\en\validation.yaml
+C:\Users\dmytro\projects\timeli.sh\packages\i18n\src\locales\uk\admin.yaml
+C:\Users\dmytro\projects\timeli.sh\packages\i18n\src\locales\uk\apps.yaml
+C:\Users\dmytro\projects\timeli.sh\packages\i18n\src\locales\uk\builder.yaml
+C:\Users\dmytro\projects\timeli.sh\packages\i18n\src\locales\uk\install.yaml
+C:\Users\dmytro\projects\timeli.sh\packages\i18n\src\locales\uk\translation.yaml
+C:\Users\dmytro\projects\timeli.sh\packages\i18n\src\locales\uk\ui.yaml
+C:\Users\dmytro\projects\timeli.sh\packages\i18n\src\locales\uk\validation.yaml

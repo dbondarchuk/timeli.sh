@@ -74,7 +74,7 @@ export async function replaceServices(
 
   const source = await getActor();
 
-  const services = ServicesContainer(organizationId);
+  const services = ServicesContainer(organizationId, true);
   let booking =
     (await services.configurationService.getConfiguration("booking")) ?? null;
   if (!booking || Object.keys(booking).length === 0) {
@@ -150,7 +150,10 @@ export async function replaceServices(
     }
 
     try {
-      const created = await services.servicesService.createOption(option, source);
+      const created = await services.servicesService.createOption(
+        option,
+        source,
+      );
       newIds.push(created._id);
     } catch (e) {
       if (newIds.length)
@@ -211,7 +214,7 @@ export async function createAddons(
     return { ok: false, code: "invalid_input" };
   }
 
-  const services = ServicesContainer(organizationId);
+  const services = ServicesContainer(organizationId, true);
   const ids: string[] = [];
   for (const addon of parsedAddons.data) {
     const created = await services.servicesService.createAddon(addon, source);
@@ -247,7 +250,7 @@ export async function replaceAddonsForOption(
     return { ok: false, code: "invalid_input" };
   }
 
-  const services = ServicesContainer(organizationId);
+  const services = ServicesContainer(organizationId, true);
   const existing = await services.servicesService.getOption(optionId);
   if (!existing) {
     logger.error({ optionId }, "Option not found");
@@ -289,7 +292,7 @@ export async function getInstallServicesSnapshot(): Promise<
     return [];
   }
 
-  const services = ServicesContainer(organizationId);
+  const services = ServicesContainer(organizationId, true);
   const booking =
     (await services.configurationService.getConfiguration("booking")) ?? null;
   const ids = (booking?.options ?? [])
@@ -377,7 +380,7 @@ export async function getInstallServiceOptionSnapshot(
     return { ok: false, code: "unauthorized" };
   }
 
-  const services = ServicesContainer(organizationId);
+  const services = ServicesContainer(organizationId, true);
   const option = await services.servicesService.getOption(optionId);
   if (!option) {
     logger.error({ optionId, organizationId }, "Option not found");

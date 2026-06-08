@@ -85,7 +85,7 @@ export async function getInstallWorkspaceSnapshot(): Promise<InstallWorkspaceSer
     return null;
   }
 
-  const services = ServicesContainer(orgId);
+  const services = ServicesContainer(orgId, true);
   const org = await services.organizationService.getOrganization();
   if (!org) {
     logger.error({ orgId }, "Organization not found");
@@ -164,7 +164,7 @@ export async function getInstallCalendarAppsSnapshot(): Promise<
     return [];
   }
 
-  const services = ServicesContainer(organizationId);
+  const services = ServicesContainer(organizationId, true);
   const apps = await services.connectedAppsService.getApps();
   const filtered = apps.filter((a) => INSTALL_CALENDAR_APP_NAMES.has(a.name));
   logger.debug(
@@ -187,7 +187,7 @@ export async function getInstallPaymentAppsSnapshot(): Promise<ConnectedApp[]> {
     return [];
   }
 
-  const services = ServicesContainer(organizationId);
+  const services = ServicesContainer(organizationId, true);
   const apps = await services.connectedAppsService.getApps();
   const filtered = apps.filter((a) => INSTALL_PAYMENT_APP_NAMES.has(a.name));
   logger.debug(
@@ -210,7 +210,7 @@ export async function getInstallPreferencesSnapshot(): Promise<InstallPreference
     return null;
   }
 
-  const services = ServicesContainer(organizationId);
+  const services = ServicesContainer(organizationId, true);
   const org = await services.organizationService.getOrganization();
   if (!org) {
     logger.error({ organizationId }, "Organization not found");

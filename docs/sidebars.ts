@@ -44,6 +44,18 @@ const siteFeatures = [
 
 const otherApps = ["apps/carddav", "apps/webhooks"];
 
+const firstSteps = [
+  "first-steps/index",
+  "first-steps/complete-your-business-profile",
+  "first-steps/set-up-your-services",
+  "first-steps/set-your-availability",
+  "first-steps/build-your-website",
+  "first-steps/connect-essentials",
+  "first-steps/publish-and-share",
+  "first-steps/test-the-customer-experience",
+  "first-steps/manage-bookings-and-customers",
+];
+
 const sidebars: SidebarsConfig = {
   docsSidebar: [
     {
@@ -65,18 +77,29 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: "category",
+      label: "First Steps",
+      // link: {
+      //   type: "doc",
+      //   id: "first-steps/index",
+      // },
+      link: {
+        type: "generated-index",
+        title: "First Steps",
+        description:
+          "Your checklist and dashboard tour right after setup - about 30 minutes to go live.",
+      },
+      items: firstSteps,
+    },
+    {
+      type: "category",
       label: "Using your workspace",
       link: {
         type: "generated-index",
         title: "Using your workspace",
         description:
-          "After setup: first tasks, where settings live, and connecting your own web address.",
+          "Ongoing reference: where settings live and how to connect your own web address.",
       },
-      items: [
-        "daily-use/first-steps-after-setup",
-        "daily-use/settings",
-        "daily-use/connect-domain",
-      ],
+      items: ["daily-use/settings", "daily-use/connect-domain"],
     },
     {
       type: "category",
