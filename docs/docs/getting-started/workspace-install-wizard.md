@@ -63,7 +63,7 @@ Profession catalogues preload names, descriptions, durations, pricing. Select on
 ## Setup 4: Set your schedule
 
 The installation wizard will suggest the default schedule - Monday till Friday, 9am-5pm. You can adjust the schedule to match your working hours by adding shifts to each week day.
-You can adjust the schedule later in your dashboard or install app that will allow you to have more custom schedule (for example, [Weekly Schedule](/apps/weekly-schedule) to set custom schedule on week-by-week basis)
+You can adjust the schedule later in your dashboard or install app that will allow you to have more custom schedule (for example, [Weekly Schedule](/docs/apps/weekly-schedule) to set custom schedule on week-by-week basis)
 
 ![Schedule](/img/getting-started/schedule.png)
 
