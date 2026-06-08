@@ -20,14 +20,12 @@ This guide is your checklist. Work through the steps below in order. Most owners
 7. **[Test the customer experience](./test-the-customer-experience.md)** - book yourself once to prove everything works.
 8. **[Manage bookings and customers](./manage-bookings-and-customers.md)** - learn where incoming bookings and client info live.
 
-![First steps checklist](/img/placeholders/first-steps-checklist.svg)
-
 ## Two sides of Timelish
 
-| Where | What it is for |
-| ----- | -------------- |
-| **Your dashboard** | You set up services, hours, your website, messages, and billing. |
-| **Your booking website** | Clients see your pages and book time with you. |
+| Where                    | What it is for                                                   |
+| ------------------------ | ---------------------------------------------------------------- |
+| **Your dashboard**       | You set up services, hours, your website, messages, and billing. |
+| **Your booking website** | Clients see your pages and book time with you.                   |
 
 Your booking website address looks like **`https://yourname.timeli.sh`**. You can find and copy it under **Settings** → **Brand**. You can also use your own web address later - see [Connect your own web address](/docs/daily-use/connect-domain).
 
@@ -39,7 +37,7 @@ The side menu groups everyday tasks. Here is what each area is for.
 
 Your starting screen after login. You will see a calendar snapshot, upcoming appointments, and a **Pending appointments** tab when bookings need your approval. Use it as a quick morning check-in.
 
-![Dashboard home](/img/placeholders/first-steps-dashboard-home.svg)
+![Dashboard home](/img/first-steps/dashboard.png)
 
 ### Appointments
 

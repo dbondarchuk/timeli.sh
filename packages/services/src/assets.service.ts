@@ -348,7 +348,10 @@ export class AssetsService extends BaseService implements IAssetsService {
       return await session.withTransaction(async () => {
         const assets = db.collection<Asset>(ASSETS_COLLECTION_NAME);
 
-        const asset = await assets.findOneAndDelete({ _id: assetId });
+        const asset = await assets.findOneAndDelete({
+          _id: assetId,
+          organizationId: this.organizationId,
+        });
         if (!asset) {
           logger.warn({ assetId }, "Asset not found");
           return null;

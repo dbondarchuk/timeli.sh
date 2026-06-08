@@ -12,7 +12,6 @@ import {
   AppointmentEntity,
   AppointmentOption,
   AppointmentOptionUpdateModel,
-  ConfigurationOption,
   DateRange,
   Discount,
   DISCOUNT_CREATED_EVENT_TYPE,
@@ -52,12 +51,11 @@ import { Filter, ObjectId, Sort } from "mongodb";
 import {
   ADDONS_COLLECTION_NAME,
   APPOINTMENTS_COLLECTION_NAME,
-  CONFIGURATION_COLLECTION_NAME,
   DISCOUNTS_COLLECTION_NAME,
   FIELDS_COLLECTION_NAME,
   OPTIONS_COLLECTION_NAME,
 } from "./collections";
-import { getDbClient, getDbConnection } from "./database";
+import { getDbConnection } from "./database";
 import { BaseService } from "./services/base.service";
 
 export class ServicesService extends BaseService implements IServicesService {
@@ -368,146 +366,121 @@ export class ServicesService extends BaseService implements IServicesService {
     const logger = this.loggerFactory("deleteField");
     logger.debug({ id }, "Deleting field");
 
-    const client = await getDbClient();
-    const session = client.startSession();
+    const db = await getDbConnection();
+    const fields = db.collection<ServiceField>(FIELDS_COLLECTION_NAME);
 
-    try {
-      const result = await session.withTransaction(async () => {
-        const db = client.db(undefined, { ignoreUndefined: true });
-        const fields = db.collection<ServiceField>(FIELDS_COLLECTION_NAME);
-
-        const field = await fields.findOneAndDelete({
-          _id: id,
-          organizationId: this.organizationId,
-        });
-        if (!field) {
-          logger.warn({ fieldId: id }, "Field not found");
-          return null;
-        }
-
-        const addons = db.collection<AppointmentAddon>(ADDONS_COLLECTION_NAME);
-        const options = db.collection<AppointmentOption>(
-          OPTIONS_COLLECTION_NAME,
-        );
-        const { modifiedCount: addonsModifiedCount } = await addons.updateMany(
-          {
-            organizationId: this.organizationId,
-          },
-          {
-            $pull: {
-              fields: {
-                id,
-              },
-            },
-          },
-        );
-
-        const { modifiedCount: optionsModifiedCount } =
-          await options.updateMany(
-            {
-              organizationId: this.organizationId,
-            },
-            {
-              $pull: {
-                fields: {
-                  id,
-                },
-              },
-            },
-          );
-
-        logger.debug(
-          { fieldId: id, addonsModifiedCount, optionsModifiedCount },
-          "Field deleted",
-        );
-
-        return field;
-      });
-
-      await this.eventService.emit(
-        FIELD_DELETED_EVENT_TYPE,
-        {
-          fieldIds: [id],
-        } satisfies FieldDeletedPayload,
-        source,
-      );
-
-      return result;
-    } finally {
-      await session.endSession();
+    const field = await fields.findOneAndDelete({
+      _id: id,
+      organizationId: this.organizationId,
+    });
+    if (!field) {
+      logger.warn({ fieldId: id }, "Field not found");
+      return null;
     }
+
+    const addons = db.collection<AppointmentAddon>(ADDONS_COLLECTION_NAME);
+    const options = db.collection<AppointmentOption>(OPTIONS_COLLECTION_NAME);
+    const { modifiedCount: addonsModifiedCount } = await addons.updateMany(
+      {
+        organizationId: this.organizationId,
+      },
+      {
+        $pull: {
+          fields: {
+            id,
+          },
+        },
+      },
+    );
+
+    const { modifiedCount: optionsModifiedCount } = await options.updateMany(
+      {
+        organizationId: this.organizationId,
+      },
+      {
+        $pull: {
+          fields: {
+            id,
+          },
+        },
+      },
+    );
+
+    logger.debug(
+      { fieldId: id, addonsModifiedCount, optionsModifiedCount },
+      "Field deleted",
+    );
+
+    await this.eventService.emit(
+      FIELD_DELETED_EVENT_TYPE,
+      {
+        fieldIds: [id],
+      } satisfies FieldDeletedPayload,
+      source,
+    );
+
+    return field;
   }
 
   public async deleteFields(ids: string[], source: EventSource): Promise<void> {
     const logger = this.loggerFactory("deleteFields");
     logger.debug({ ids }, "Deleting fields");
 
-    const client = await getDbClient();
-    const session = client.startSession();
+    const db = await getDbConnection();
 
-    try {
-      await session.withTransaction(async () => {
-        const db = client.db(undefined, { ignoreUndefined: true });
-        const fields = db.collection<ServiceField>(FIELDS_COLLECTION_NAME);
+    const fields = db.collection<ServiceField>(FIELDS_COLLECTION_NAME);
 
-        const { deletedCount: fieldsDeletedCount } = await fields.deleteMany({
-          _id: {
-            $in: ids,
-          },
-          organizationId: this.organizationId,
-        });
+    const { deletedCount: fieldsDeletedCount } = await fields.deleteMany({
+      _id: {
+        $in: ids,
+      },
+      organizationId: this.organizationId,
+    });
 
-        const addons = db.collection<AppointmentAddon>(ADDONS_COLLECTION_NAME);
-        const options = db.collection<AppointmentOption>(
-          OPTIONS_COLLECTION_NAME,
-        );
-        const { modifiedCount: addonsModifiedCount } = await addons.updateMany(
-          {
-            organizationId: this.organizationId,
-          },
-          {
-            $pull: {
-              fields: {
-                id: {
-                  $in: ids,
-                },
-              },
+    const addons = db.collection<AppointmentAddon>(ADDONS_COLLECTION_NAME);
+    const options = db.collection<AppointmentOption>(OPTIONS_COLLECTION_NAME);
+    const { modifiedCount: addonsModifiedCount } = await addons.updateMany(
+      {
+        organizationId: this.organizationId,
+      },
+      {
+        $pull: {
+          fields: {
+            id: {
+              $in: ids,
             },
           },
-        );
+        },
+      },
+    );
 
-        const { modifiedCount: optionsModifiedCount } =
-          await options.updateMany(
-            {
-              organizationId: this.organizationId,
+    const { modifiedCount: optionsModifiedCount } = await options.updateMany(
+      {
+        organizationId: this.organizationId,
+      },
+      {
+        $pull: {
+          fields: {
+            id: {
+              $in: ids,
             },
-            {
-              $pull: {
-                fields: {
-                  id: {
-                    $in: ids,
-                  },
-                },
-              },
-            },
-          );
+          },
+        },
+      },
+    );
 
-        await this.eventService.emit(
-          FIELD_DELETED_EVENT_TYPE,
-          {
-            fieldIds: ids,
-          } satisfies FieldDeletedPayload,
-          source,
-        );
+    await this.eventService.emit(
+      FIELD_DELETED_EVENT_TYPE,
+      {
+        fieldIds: ids,
+      } satisfies FieldDeletedPayload,
+      source,
+    );
 
-        logger.debug(
-          { fieldsDeletedCount, addonsModifiedCount, optionsModifiedCount },
-          "Fields deleted",
-        );
-      });
-    } finally {
-      await session.endSession();
-    }
+    logger.debug(
+      { fieldsDeletedCount, addonsModifiedCount, optionsModifiedCount },
+      "Fields deleted",
+    );
   }
 
   public async checkFieldUniqueName(
@@ -775,111 +748,87 @@ export class ServicesService extends BaseService implements IServicesService {
   ): Promise<AppointmentAddon | null> {
     const logger = this.loggerFactory("deleteAddon");
     logger.debug({ id }, "Deleting addon");
-    const client = await getDbClient();
-    const session = client.startSession();
+    const db = await getDbConnection();
 
-    try {
-      const result = await session.withTransaction(async () => {
-        const db = client.db(undefined, { ignoreUndefined: true });
-        const addons = db.collection<AppointmentAddon>(ADDONS_COLLECTION_NAME);
+    const addons = db.collection<AppointmentAddon>(ADDONS_COLLECTION_NAME);
 
-        const addon = await addons.findOneAndDelete({
-          _id: id,
-          organizationId: this.organizationId,
-        });
-        if (!addon) {
-          logger.warn({ addonId: id }, "Addon not found");
-          return null;
-        }
+    const addon = await addons.findOneAndDelete({
+      _id: id,
+      organizationId: this.organizationId,
+    });
 
-        const options = db.collection<AppointmentOption>(
-          OPTIONS_COLLECTION_NAME,
-        );
-
-        const { modifiedCount: optionsModifiedCount } =
-          await options.updateMany(
-            {
-              organizationId: this.organizationId,
-            },
-            {
-              $pull: {
-                addons: {
-                  id,
-                },
-              },
-            },
-          );
-
-        logger.debug({ addonId: id, optionsModifiedCount }, "Addon deleted");
-
-        await this.eventService.emit(
-          ADDON_DELETED_EVENT_TYPE,
-          {
-            addonIds: [id],
-          } satisfies AddonDeletedPayload,
-          source,
-        );
-
-        return addon;
-      });
-
-      return result;
-    } finally {
-      await session.endSession();
+    if (!addon) {
+      logger.warn({ addonId: id }, "Addon not found");
+      return null;
     }
+
+    const options = db.collection<AppointmentOption>(OPTIONS_COLLECTION_NAME);
+
+    const { modifiedCount: optionsModifiedCount } = await options.updateMany(
+      {
+        organizationId: this.organizationId,
+      },
+      {
+        $pull: {
+          addons: {
+            id,
+          },
+        },
+      },
+    );
+
+    logger.debug({ addonId: id, optionsModifiedCount }, "Addon deleted");
+
+    await this.eventService.emit(
+      ADDON_DELETED_EVENT_TYPE,
+      {
+        addonIds: [id],
+      } satisfies AddonDeletedPayload,
+      source,
+    );
+
+    return addon;
   }
 
   public async deleteAddons(ids: string[], source: EventSource): Promise<void> {
     const logger = this.loggerFactory("deleteAddons");
     logger.debug({ ids }, "Deleting addons");
-    const client = await getDbClient();
-    const session = client.startSession();
+    const db = await getDbConnection();
+    const addons = db.collection<AppointmentAddon>(ADDONS_COLLECTION_NAME);
 
-    try {
-      await session.withTransaction(async () => {
-        const db = client.db(undefined, { ignoreUndefined: true });
-        const addons = db.collection<AppointmentAddon>(ADDONS_COLLECTION_NAME);
+    const { deletedCount: addonsDeletedCount } = await addons.deleteMany({
+      _id: {
+        $in: ids,
+      },
+      organizationId: this.organizationId,
+    });
 
-        const { deletedCount: addonsDeletedCount } = await addons.deleteMany({
-          _id: {
-            $in: ids,
-          },
-          organizationId: this.organizationId,
-        });
-
-        const options = db.collection<AppointmentOption>(
-          OPTIONS_COLLECTION_NAME,
-        );
-        const { modifiedCount: optionsModifiedCount } =
-          await options.updateMany(
-            { organizationId: this.organizationId },
-            {
-              $pull: {
-                addons: {
-                  id: {
-                    $in: ids,
-                  },
-                },
-              },
+    const options = db.collection<AppointmentOption>(OPTIONS_COLLECTION_NAME);
+    const { modifiedCount: optionsModifiedCount } = await options.updateMany(
+      { organizationId: this.organizationId },
+      {
+        $pull: {
+          addons: {
+            id: {
+              $in: ids,
             },
-          );
+          },
+        },
+      },
+    );
 
-        await this.eventService.emit(
-          ADDON_DELETED_EVENT_TYPE,
-          {
-            addonIds: ids,
-          } satisfies AddonDeletedPayload,
-          source,
-        );
+    await this.eventService.emit(
+      ADDON_DELETED_EVENT_TYPE,
+      {
+        addonIds: ids,
+      } satisfies AddonDeletedPayload,
+      source,
+    );
 
-        logger.debug(
-          { addonsDeletedCount, optionsModifiedCount },
-          "Addons deleted",
-        );
-      });
-    } finally {
-      await session.endSession();
-    }
+    logger.debug(
+      { addonsDeletedCount, optionsModifiedCount },
+      "Addons deleted",
+    );
   }
 
   public async checkAddonUniqueName(
@@ -1151,64 +1100,53 @@ export class ServicesService extends BaseService implements IServicesService {
   ): Promise<AppointmentOption | null> {
     const logger = this.loggerFactory("deleteOption");
     logger.debug({ id }, "Deleting option");
-    const client = await getDbClient();
-    const session = client.startSession();
+    const db = await getDbConnection();
+    const options = db.collection<AppointmentOption>(OPTIONS_COLLECTION_NAME);
 
-    try {
-      const result = await session.withTransaction(async () => {
-        const db = client.db(undefined, { ignoreUndefined: true });
-        const options = db.collection<AppointmentOption>(
-          OPTIONS_COLLECTION_NAME,
-        );
+    const option = await options.findOneAndDelete({
+      _id: id,
+      organizationId: this.organizationId,
+    });
 
-        const option = await options.findOneAndDelete({
-          _id: id,
-          organizationId: this.organizationId,
-        });
-        if (!option) {
-          logger.warn({ optionId: id }, "Option not found");
-          return null;
-        }
-
-        const configurations = db.collection<ConfigurationOption<"booking">>(
-          CONFIGURATION_COLLECTION_NAME,
-        );
-
-        const { modifiedCount: configurationsModifiedCount } =
-          await configurations.updateOne(
-            {
-              key: "booking",
-              organizationId: this.organizationId,
-            },
-            {
-              $pull: {
-                "value.options": {
-                  id,
-                },
-              },
-            },
-          );
-
-        await this.eventService.emit(
-          APPOINTMENT_OPTION_DELETED_EVENT_TYPE,
-          {
-            optionIds: [id],
-          } satisfies AppointmentOptionDeletedPayload,
-          source,
-        );
-
-        logger.debug(
-          { optionId: id, configurationsModifiedCount },
-          "Option deleted",
-        );
-
-        return option;
-      });
-
-      return result;
-    } finally {
-      await session.endSession();
+    if (!option) {
+      logger.warn({ optionId: id }, "Option not found");
+      return null;
     }
+
+    const bookingConfiguration =
+      await this.configurationService.getConfiguration<"booking">("booking");
+    if (
+      bookingConfiguration &&
+      bookingConfiguration.options &&
+      Array.isArray(bookingConfiguration.options) &&
+      bookingConfiguration.options.some((option) => option.id === id)
+    ) {
+      logger.debug({ optionId: id }, "Option found in booking configuration");
+
+      bookingConfiguration.options = bookingConfiguration.options.filter(
+        (option) => option.id !== id,
+      );
+
+      await this.configurationService.setConfiguration(
+        "booking",
+        bookingConfiguration,
+        source,
+      );
+
+      logger.debug({ optionId: id }, "Booking configuration updated");
+    }
+
+    await this.eventService.emit(
+      APPOINTMENT_OPTION_DELETED_EVENT_TYPE,
+      {
+        optionIds: [id],
+      } satisfies AppointmentOptionDeletedPayload,
+      source,
+    );
+
+    logger.debug({ optionId: id }, "Option deleted");
+
+    return option;
   }
 
   public async deleteOptions(
@@ -1217,60 +1155,49 @@ export class ServicesService extends BaseService implements IServicesService {
   ): Promise<void> {
     const logger = this.loggerFactory("deleteOptions");
     logger.debug({ ids }, "Deleting options");
-    const client = await getDbClient();
-    const session = client.startSession();
+    const db = await getDbConnection();
 
-    try {
-      await session.withTransaction(async () => {
-        const db = client.db(undefined, { ignoreUndefined: true });
-        const options = db.collection<AppointmentOption>(
-          OPTIONS_COLLECTION_NAME,
-        );
+    const options = db.collection<AppointmentOption>(OPTIONS_COLLECTION_NAME);
 
-        const { deletedCount: optionsDeletedCount } = await options.deleteMany({
-          _id: {
-            $in: ids,
-          },
-          organizationId: this.organizationId,
-        });
+    const { deletedCount: optionsDeletedCount } = await options.deleteMany({
+      _id: {
+        $in: ids,
+      },
+      organizationId: this.organizationId,
+    });
 
-        const configurations = db.collection<ConfigurationOption<"booking">>(
-          CONFIGURATION_COLLECTION_NAME,
-        );
+    const bookingConfiguration =
+      await this.configurationService.getConfiguration<"booking">("booking");
 
-        const { modifiedCount: configurationsModifiedCount } =
-          await configurations.updateOne(
-            {
-              key: "booking",
-              organizationId: this.organizationId,
-            },
-            {
-              $pull: {
-                "value.options": {
-                  id: {
-                    $in: ids,
-                  },
-                },
-              },
-            },
-          );
+    if (
+      bookingConfiguration &&
+      bookingConfiguration.options &&
+      Array.isArray(bookingConfiguration.options) &&
+      bookingConfiguration.options.some((option) => ids.includes(option.id))
+    ) {
+      logger.debug({ ids }, "Options found in booking configuration");
+      bookingConfiguration.options = bookingConfiguration.options.filter(
+        (option) => !ids.includes(option.id),
+      );
 
-        await this.eventService.emit(
-          APPOINTMENT_OPTION_DELETED_EVENT_TYPE,
-          {
-            optionIds: ids,
-          } satisfies AppointmentOptionDeletedPayload,
-          source,
-        );
+      await this.configurationService.setConfiguration(
+        "booking",
+        bookingConfiguration,
+        source,
+      );
 
-        logger.debug(
-          { optionsDeletedCount, configurationsModifiedCount },
-          "Options deleted",
-        );
-      });
-    } finally {
-      await session.endSession();
+      logger.debug({ ids }, "Booking configuration updated");
     }
+
+    await this.eventService.emit(
+      APPOINTMENT_OPTION_DELETED_EVENT_TYPE,
+      {
+        optionIds: ids,
+      } satisfies AppointmentOptionDeletedPayload,
+      source,
+    );
+
+    logger.debug({ optionsDeletedCount }, "Options deleted");
   }
 
   public async checkOptionUniqueName(

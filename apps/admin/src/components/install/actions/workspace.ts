@@ -129,7 +129,7 @@ export async function createWorkspace(
     country: parsed.country,
     currency: parsed.currency,
     timeZone: parsed.timeZone,
-    useClientTimezone: true,
+    useClientTimezone: false,
   });
 
   const brandValue = brandConfigurationSchema.parse({
