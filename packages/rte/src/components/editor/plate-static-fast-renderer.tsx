@@ -470,7 +470,7 @@ function renderBlock(
         <div key={pathKey} className="cursor-text py-6">
           <hr className="h-0.5 rounded-sm border-none bg-muted bg-clip-content" />
           {ph}
-        </div>  
+        </div>
       );
     case BaseCodeBlockPlugin.key: {
       const lang = (el.lang as string | undefined) ?? "";
@@ -531,7 +531,10 @@ function renderBlock(
         ? stringFromDescendants([caption[0]] as Descendant[])
         : "";
       return (
-        <div key={pathKey} className="py-2.5">
+        <div
+          key={pathKey}
+          className="py-2.5 flex flex-col items-center justify-center"
+        >
           <figure className="group relative m-0 inline-block" style={{ width }}>
             <div
               className="relative max-w-full min-w-[92px]"
@@ -655,11 +658,7 @@ function renderBlock(
     }
     case BaseTogglePlugin.key:
       return (
-        <div
-          key={pathKey}
-          className="relative pl-6"
-          style={blockIndent}
-        >
+        <div key={pathKey} className="relative pl-6" style={blockIndent}>
           <div
             className="absolute top-0 -left-0.5 size-6 cursor-pointer items-center justify-center rounded-md p-px text-muted-foreground transition-colors select-none hover:bg-accent [&_svg]:size-4"
             contentEditable={false}
