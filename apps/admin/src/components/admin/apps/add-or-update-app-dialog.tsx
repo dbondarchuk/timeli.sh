@@ -101,7 +101,9 @@ export const AddOrUpdateAppButton: React.FC<AddOrUpdateAppButtonProps> = ({
         router.refresh();
       } else if (redirect) {
         router.push("/dashboard/apps");
-        router.refresh(); // Force refresh to show the new app
+        setTimeout(() => {
+          router.refresh();
+        }, 300);
       }
     },
     [app, refreshOnClose, router],

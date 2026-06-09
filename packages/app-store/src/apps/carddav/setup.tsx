@@ -169,7 +169,7 @@ export const CarddavAppSetup: React.FC<AppSetupProps> = ({
         },
       });
 
-      onSuccess(newAppId);
+      onSuccess(newAppId, true);
     } catch (e: any) {
       onError?.(e instanceof Error ? e.message : e?.toString());
     } finally {
