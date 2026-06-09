@@ -643,8 +643,8 @@ assets:
     changesSaved: Ваші зміни були збережені.
     assetDeleted: "Ресурс {filename} було успішно видалено."
     copied: Скопійовано
-    relativeUrlCopied: "Відносний url ресурсу '{url}' скопійовано в буфер обміну."
-    absoluteUrlCopied: "Абсолютний url ресурсу '{url}' скопійовано в буфер обміну."
+    relativeUrlCopied: Відносний url ресурсу "{url}" скопійовано в буфер обміну.
+    absoluteUrlCopied: Абсолютний url ресурсу "{url}" скопійовано в буфер обміну.
 activity:
   actor:
     system: Система
@@ -931,9 +931,9 @@ pages:
     changesSaved: Ваші зміни були збережені.
     pageCreated: Сторінку успішно створено.
     pageUpdated: Сторінку успішно оновлено.
-    pageDeleted: "Сторінку '{title}' було видалено."
-    relativeUrlCopied: "Відносний url сторінки '{url}' скопійовано в буфер обміну."
-    absoluteUrlCopied: "Абсолютний url сторінки '{url}' скопійовано в буфер обміну."
+    pageDeleted: Сторінку "{title}" було видалено.
+    relativeUrlCopied: Відносний url сторінки "{url}" скопійовано в буфер обміну.
+    absoluteUrlCopied: Абсолютний url сторінки "{url}" скопійовано в буфер обміну.
   headers:
     title: Заголовки сторінок
     managePageHeaders: Керувати заголовками сторінок
@@ -1013,7 +1013,7 @@ pages:
       static: Статичний
       on-scroll: При прокрутці
     toasts:
-      pageHeaderDeleted: "Заголовок сторінки '{name}' було видалено."
+      pageHeaderDeleted: Заголовок сторінки "{name}" було видалено.
       changesSaved: Ваші зміни були збережені.
     usedOnPages: "Використано у {count, plural, =1 {одній сторінці} other {# сторінках}}"
   footers:
@@ -1031,7 +1031,7 @@ pages:
       nameTooltip: Унікальна назва підвалу
       content: Вміст
     toasts:
-      pageFooterDeleted: "Підвал сторінки '{name}' було видалено."
+      pageFooterDeleted: Підвал сторінки "{name}" було видалено.
       changesSaved: Ваші зміни були збережені.
       requestError: Виникла проблема з вашим запитом.
     table:
@@ -1296,7 +1296,7 @@ services:
         name: Назва
         updatedAt: Оновлено
         cellAction:
-          optionDeleted: "Опцію '{name}' було видалено."
+          optionDeleted: Опцію "{name}" було видалено.
           deleteError: Виникла проблема з вашим запитом.
           actions: Дії
           update: Оновити
@@ -1362,7 +1362,7 @@ services:
         addonsInDialog: "{label} в додатках"
         optionsInDialog: "{label} в опціях"
       cellAction:
-        fieldDeleted: "Поле опції '{label}' було видалено."
+        fieldDeleted: Поле опції "{label}" було видалено.
         deleteError: Виникла проблема з вашим запитом.
         actions: Дії
         update: Оновити
@@ -1620,7 +1620,7 @@ services:
         options: Опції
         optionsInDialog: "{name} в опціях"
       cellAction:
-        addonDeleted: "Додаток '{name}' було видалено."
+        addonDeleted: Додаток "{name}" було видалено.
         deleteError: Виникла проблема з вашим запитом.
         actions: Дії
         update: Оновити
@@ -1687,7 +1687,7 @@ templates:
       name: Назва
       updatedAt: Оновлено
     cellAction:
-      templateDeleted: "Шаблон '{name}' було видалено."
+      templateDeleted: Шаблон "{name}" було видалено.
       deleteError: Виникла проблема з вашим запитом.
       actions: Дії
       update: Оновити

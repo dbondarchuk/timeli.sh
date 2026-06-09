@@ -6,7 +6,7 @@ app:
     Він розширює специфікацію WebDAV та використовує формат iCalendar для даних.
 statusText:
   successfullySetUp: Успішно отримано календар {calendarName}
-  calendarNotFound: Календар '{calendarName}' не знайдено
+  calendarNotFound: Календар "{calendarName}" не знайдено
   calendarNotSet: Назва календаря не встановлена
   failedToFetchCalendars: Не вдалося отримати календарі з {serverUrl}
   successfullyFetchedCalendars: Успішно отримано календарі з сервера {serverUrl}
@@ -39,4 +39,3 @@ validation:
     max: Ім'я користувача не може бути більше 256 символів
   password:
     max: Пароль не може бути більше 256 символів
-

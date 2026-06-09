@@ -647,8 +647,8 @@ assets:
     changesSaved: Your changes were saved.
     assetDeleted: Asset {filename} was successfully deleted.
     copied: Copied
-    relativeUrlCopied: Asset relative url '{url}' was copied to clipboard.
-    absoluteUrlCopied: Asset absolute url '{url}' was copied to clipboard.
+    relativeUrlCopied: Asset relative url "{url}" was copied to clipboard.
+    absoluteUrlCopied: Asset absolute url "{url}" was copied to clipboard.
 activity:
   actor:
     system: System
@@ -937,9 +937,9 @@ pages:
     changesSaved: Your changes were saved.
     pageCreated: Page created successfully.
     pageUpdated: Page updated successfully.
-    pageDeleted: Page '{title}' was deleted.
-    relativeUrlCopied: Page relative url '{url}' was copied to clipboard.
-    absoluteUrlCopied: Page absolute url '{url}' was copied to clipboard.
+    pageDeleted: Page "{title}" was deleted.
+    relativeUrlCopied: Page relative url "{url}" was copied to clipboard.
+    absoluteUrlCopied: Page absolute url "{url}" was copied to clipboard.
   headers:
     title: Page headers
     new: New page header
@@ -1021,7 +1021,7 @@ pages:
         success: Selected page headers have been deleted
         error: There was a problem with your request.
     toasts:
-      pageHeaderDeleted: Page header '{name}' was deleted.
+      pageHeaderDeleted: Page header "{name}" was deleted.
       changesSaved: Your changes were saved.
     usedOnPages: Used on {count, plural, =1 {one page} other {# pages}}
   footers:
@@ -1039,7 +1039,7 @@ pages:
       nameTooltip: Unique page footer name
       content: Content
     toasts:
-      pageFooterDeleted: Page footer '{name}' was deleted.
+      pageFooterDeleted: Page footer "{name}" was deleted.
       changesSaved: Your changes were saved.
       requestError: There was a problem with your request.
     table:
@@ -1314,7 +1314,7 @@ services:
         name: Name
         updatedAt: Updated at
         cellAction:
-          optionDeleted: Option '{name}' was deleted.
+          optionDeleted: Option "{name}" was deleted.
           deleteError: There was a problem with your request.
           actions: Actions
           update: Update
@@ -1378,7 +1378,7 @@ services:
         addonsInDialog: "{label} in add-ons"
         optionsInDialog: "{label} in options"
       cellAction:
-        fieldDeleted: Option field '{label}' was deleted.
+        fieldDeleted: Option field "{label}" was deleted.
         deleteError: There was a problem with your request.
         actions: Actions
         update: Update
@@ -1634,7 +1634,7 @@ services:
         options: Options
         optionsInDialog: "{name} in options"
       cellAction:
-        addonDeleted: Add-on '{name}' was deleted.
+        addonDeleted: Add-on "{name}" was deleted.
         deleteError: There was a problem with your request.
         actions: Actions
         update: Update
@@ -1699,7 +1699,7 @@ templates:
       name: Name
       updatedAt: Updated at
     cellAction:
-      templateDeleted: Template '{name}' was deleted.
+      templateDeleted: Template "{name}" was deleted.
       deleteError: There was a problem with your request.
       actions: Actions
       update: Update

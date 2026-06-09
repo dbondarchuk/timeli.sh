@@ -130,13 +130,13 @@ events:
     description: Post was deleted
   commentCreated:
     title: New blog comment
-    description: '{authorName} commented on "{postTitle}"'
+    description: '"{authorName}" commented on "{postTitle}"'
   commentDeleted:
     title: Blog comment deleted
     description: Comment was deleted
   commentStatusChanged:
     title: Blog comment status changed
-    description: "Comment by {authorName} was {status}"
+    description: Comment by "{authorName}" was {status}
 notifications:
   newComment: New blog comment
   newCommentMessage: A visitor left a comment on your blog

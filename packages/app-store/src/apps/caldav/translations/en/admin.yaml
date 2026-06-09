@@ -6,7 +6,7 @@ app:
     It extends WebDAV specification and uses iCalendar format for the data.
 statusText:
   successfullySetUp: Successfully fetched {calendarName} calendar
-  calendarNotFound: Calendar '{calendarName}' was not found
+  calendarNotFound: Calendar "{calendarName}" was not found
   calendarNotSet: Calendar name was not set
   failedToFetchCalendars: Failed to fetch calendars from {serverUrl}
   successfullyFetchedCalendars: Successfully fetched calendars from server{serverUrl}
@@ -39,4 +39,3 @@ validation:
     max: Username must be no more than 256 characters
   password:
     max: Password must be no more than 256 characters
-

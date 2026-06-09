@@ -158,7 +158,7 @@ export const CarddavAppSetup: React.FC<AppSetupProps> = ({
         reject(new Error("Unknown status"));
       });
 
-      const { appId } = await toastPromise(promise, {
+      const { appId: newAppId } = await toastPromise(promise, {
         success: {
           message: tApps("common.connectedAppSetup.success.title"),
           description: tApps("common.connectedAppSetup.success.description"),
@@ -169,7 +169,7 @@ export const CarddavAppSetup: React.FC<AppSetupProps> = ({
         },
       });
 
-      onSuccess(appId);
+      onSuccess(newAppId);
     } catch (e: any) {
       onError?.(e instanceof Error ? e.message : e?.toString());
     } finally {
