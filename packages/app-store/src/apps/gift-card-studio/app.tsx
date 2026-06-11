@@ -19,6 +19,7 @@ export const GiftCardStudioApp: App<
     "ui-components",
     "demo-arguments-provider",
     "communication-templates-provider",
+    "dashboard-notifier",
   ],
   type: "complex",
   Logo: ({ className }) => <Gift className={className} />,

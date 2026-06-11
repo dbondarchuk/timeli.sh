@@ -131,6 +131,14 @@ export type CheckFormNameUniqueAction = z.infer<
 >;
 export const CheckFormNameUniqueActionType = "forms-check-name-unique" as const;
 
+export const markFormResponsesReadActionSchema = z.object({});
+
+export type MarkFormResponsesReadAction = z.infer<
+  typeof markFormResponsesReadActionSchema
+>;
+export const MarkFormResponsesReadActionType =
+  "forms-mark-responses-read" as const;
+
 export const createFormResponseActionSchema = z.object({
   formId: zObjectId(),
   update: updateFormResponseSchema,
@@ -183,6 +191,10 @@ export const requestActionSchema = zTaggedUnion([
   {
     type: CheckFormNameUniqueActionType,
     data: checkFormNameUniqueActionSchema,
+  },
+  {
+    type: MarkFormResponsesReadActionType,
+    data: markFormResponsesReadActionSchema,
   },
 ]);
 

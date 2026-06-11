@@ -1,5 +1,6 @@
 import type { AllKeys, I18nNamespaces } from "@timelish/i18n";
 import type { ReactElement, ReactNode } from "react";
+import { IServicesContainer } from "../services/container";
 import type { Extandable } from "../utils/helpers";
 
 export type AppScope = Extandable<
@@ -32,6 +33,8 @@ export type AppSetupProps = {
 
 export type ComplexAppPageProps = {
   appId: string;
+  searchParams?: { [key: string]: string | string[] | undefined };
+  services: IServicesContainer;
 };
 
 export type AppLogoProps = {
@@ -72,14 +75,23 @@ export type AppMenuItem<
     link: string;
     title: AllKeys<T, CustomKeys>;
   }[];
+  noAppsBreadcrumb?: boolean;
   notScrollable?: boolean;
   isHidden?: boolean;
   hideHeading?: boolean;
   pageTitle?: AllKeys<T, CustomKeys>;
   pageDescription?: AllKeys<T, CustomKeys>;
+  /** Key matching `DashboardNotificationBadge.key` from the notifications SSE stream. */
+  notificationsCountKey?: string;
 } & (
   | {
-      group: "overview" | "appointments" | "website" | "customers" | "settings";
+      group:
+        | "overview"
+        | "appointments"
+        | "financials"
+        | "website"
+        | "customers"
+        | "settings";
       parent?: undefined;
     }
   | {

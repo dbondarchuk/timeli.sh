@@ -11,6 +11,8 @@ export interface NavItem {
   label?: AllKeys;
   description?: AllKeys;
   removeIfBecameParent?: boolean;
+  /** Key matching `DashboardNotificationBadge.key` from the notifications SSE stream. */
+  notificationsCountKey?: string;
 }
 
 export interface NavItemWithChildren extends NavItem {
@@ -25,6 +27,7 @@ export interface NavItemGroup {
   id:
     | "overview"
     | "appointments"
+    | "financials"
     | "website"
     | "customers"
     | "settings"

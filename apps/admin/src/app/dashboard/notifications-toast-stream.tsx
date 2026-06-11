@@ -7,28 +7,56 @@ import {
 } from "@/notifications/store";
 import { BASE_ADMIN_API_URL } from "@timelish/api-sdk";
 import { useI18n, useLocale } from "@timelish/i18n";
-import { DashboardNotification } from "@timelish/types";
-import { Badge, toast, useTimeZone } from "@timelish/ui";
-import { resolvedI18nText } from "@timelish/ui-admin";
+import {
+  DASHBOARD_BADGE_EVENT,
+  DashboardBadgeUpdate,
+  DashboardNotification,
+} from "@timelish/types";
+import { Badge, cn, toast, useTimeZone } from "@timelish/ui";
+import {
+  applyDashboardBadgeUpdate,
+  resolvedI18nText,
+} from "@timelish/ui-admin";
 import { useRouter } from "next/navigation";
 import React from "react";
 
 export const PendingAppointmentsBadge: React.FC = () => {
   return (
-    <DashboardTabNotificationsBadge notificationsCountKey="pending_appointments" />
+    <DashboardNotificationsBadge notificationsCountKey="pending_appointments" />
   );
 };
 
-export const DashboardTabNotificationsBadge: React.FC<{
+export function useHasDashboardNotifications(
+  keys: Array<string | undefined>,
+): boolean {
+  const { badges } = useNotificationsStore();
+  return keys.some((key) => {
+    if (!key) {
+      return false;
+    }
+    const count = badges[key];
+    return typeof count === "number" && count > 0;
+  });
+}
+
+export const DashboardNotificationsBadge: React.FC<{
   notificationsCountKey: string;
-}> = ({ notificationsCountKey }) => {
+  className?: string;
+}> = ({ notificationsCountKey, className }) => {
   const { badges } = useNotificationsStore();
   const count = badges[notificationsCountKey];
-  return typeof count === "number" ? (
-    <Badge variant="default" className="ml-1 px-2 scale-75 -translate-y-1">
-      {count > 9 ? `9+` : count}
+  if (typeof count !== "number" || count <= 0) {
+    return null;
+  }
+
+  return (
+    <Badge
+      variant="default"
+      className={cn("ml-auto shrink-0 px-1.5 py-0 text-[10px]", className)}
+    >
+      {count > 9 ? "9+" : count}
     </Badge>
-  ) : null;
+  );
 };
 
 export const NotificationsToastStream: React.FC = () => {
@@ -48,6 +76,23 @@ export const NotificationsToastStream: React.FC = () => {
   if (session?.user?.id) {
     userId.current = session.user.id;
   }
+
+  React.useEffect(() => {
+    const onDashboardBadge = (event: Event) => {
+      const detail = (event as CustomEvent<DashboardBadgeUpdate>).detail;
+      if (!detail?.key) {
+        return;
+      }
+
+      setBadges((prev) => applyDashboardBadgeUpdate(prev, detail));
+    };
+
+    window.addEventListener(DASHBOARD_BADGE_EVENT, onDashboardBadge);
+
+    return () => {
+      window.removeEventListener(DASHBOARD_BADGE_EVENT, onDashboardBadge);
+    };
+  }, [setBadges]);
 
   React.useEffect(() => {
     if (!userId.current) {
@@ -78,6 +123,15 @@ export const NotificationsToastStream: React.FC = () => {
             }, prev) || prev
           );
         });
+      }
+
+      if (data.incrementBadgeKey) {
+        setBadges((prev) =>
+          applyDashboardBadgeUpdate(prev, {
+            key: data.incrementBadgeKey!,
+            increment: 1,
+          }),
+        );
       }
 
       if (data.activityFeed?.preview) {

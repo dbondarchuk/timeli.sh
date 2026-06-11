@@ -1,6 +1,23 @@
-import { InStorePaymentUpdateModel, Payment } from "@timelish/types";
+import {
+  InStorePaymentUpdateModel,
+  Payment,
+  PaymentSummary,
+  WithTotal,
+} from "@timelish/types";
+import {
+  PaymentsSearchParams,
+  paymentsSearchParamsSerializer,
+} from "../search-params/payments";
 import { RefundPayments } from "../schemas/payments";
 import { fetchAdminApi } from "./utils";
+
+export type ListPaymentsParams = PaymentsSearchParams;
+
+export const listPayments = async (params: ListPaymentsParams = {}) => {
+  const serializedParams = paymentsSearchParamsSerializer(params);
+  const response = await fetchAdminApi(`/payments${serializedParams}`);
+  return response.json<WithTotal<PaymentSummary>>();
+};
 
 export const getPayment = async (id: string) => {
   console.debug({ paymentId: id }, "Getting payment");

@@ -1,0 +1,988 @@
+import {
+  Appointment,
+  DateRange,
+  HydratedSyncedPayment,
+  IBookingService,
+  IEventService,
+  IngestSyncedPaymentOptions,
+  IPaymentsService,
+  ISyncedPaymentsService,
+  PaymentUpdateModel,
+  Query,
+  SYNCED_PAYMENT_AMOUNTS_UPDATED_EVENT_TYPE,
+  SYNCED_PAYMENT_ASSIGNED_EVENT_TYPE,
+  SYNCED_PAYMENT_CONFIRMED_EVENT_TYPE,
+  SYNCED_PAYMENT_IGNORED_EVENT_TYPE,
+  SYNCED_PAYMENT_INGESTED_EVENT_TYPE,
+  SYNCED_PAYMENT_REJECTED_EVENT_TYPE,
+  SyncedPayment,
+  SyncedPaymentStatus,
+  SyncedPaymentSuggestion,
+  SyncedPaymentTransaction,
+  WithTotal,
+  type EventSource,
+  type SyncedPaymentAmountsUpdatedPayload,
+  type SyncedPaymentAssignedPayload,
+  type SyncedPaymentConfirmedPayload,
+  type SyncedPaymentIgnoredPayload,
+  type SyncedPaymentIngestedPayload,
+  type SyncedPaymentRejectedPayload,
+} from "@timelish/types";
+import { Filter, ObjectId, Sort } from "mongodb";
+import { SYNCED_PAYMENTS_COLLECTION_NAME } from "./collections";
+import { getDbConnection } from "./database";
+import { BaseService } from "./services/base.service";
+
+const DEFAULT_MATCH_WINDOW_MINUTES = 240;
+const MAX_SUGGESTIONS = 5;
+
+/** Rounds a money amount to 2 decimal places. */
+const round2 = (value: number): number => Math.round(value * 100) / 100;
+
+/**
+ * Computes the outstanding service balance of an appointment, using the same
+ * rules as the canonical balance formula in `get-arguments.ts`: total price
+ * minus the net (amount - refunds) of every paid payment that is not a fee or
+ * a tip.
+ */
+const computeRemainingBalance = (appointment: Appointment): number => {
+  if (!appointment.totalPrice) {
+    return 0;
+  }
+
+  const paid = (appointment.payments || [])
+    .filter(
+      (payment) =>
+        payment.status === "paid" &&
+        payment.type !== "rescheduleFee" &&
+        payment.type !== "cancellationFee" &&
+        payment.type !== "tips",
+    )
+    .reduce((sum, payment) => {
+      const refunded = (payment.refunds || []).reduce(
+        (acc, refund) => acc + refund.amount,
+        0,
+      );
+      return sum + (payment.amount - refunded);
+    }, 0);
+
+  return round2(appointment.totalPrice - paid);
+};
+
+export class SyncedPaymentsService
+  extends BaseService
+  implements ISyncedPaymentsService
+{
+  public constructor(
+    organizationId: string,
+    protected readonly bookingService: IBookingService,
+    protected readonly paymentsService: IPaymentsService,
+    protected readonly eventService: IEventService,
+  ) {
+    super("SyncedPaymentsService", organizationId);
+  }
+
+  public async getReviewQueueCount(): Promise<number> {
+    const db = await getDbConnection();
+    const collection = db.collection<SyncedPayment>(
+      SYNCED_PAYMENTS_COLLECTION_NAME,
+    );
+    return collection.countDocuments({
+      organizationId: this.organizationId,
+      status: { $in: ["matched", "unmatched"] satisfies SyncedPaymentStatus[] },
+    });
+  }
+
+  public async ingest(
+    transaction: SyncedPaymentTransaction,
+    source: EventSource,
+    options?: IngestSyncedPaymentOptions,
+  ): Promise<SyncedPayment> {
+    const logger = this.loggerFactory("ingest");
+    const matchWindowMinutes =
+      options?.matchWindowMinutes ?? DEFAULT_MATCH_WINDOW_MINUTES;
+
+    logger.debug(
+      {
+        appId: transaction.appId,
+        appName: transaction.appName,
+        externalId: transaction.externalId,
+        orderId: transaction.orderId,
+        amount: transaction.amount,
+        currency: transaction.currency,
+        transactionTime: transaction.transactionTime,
+        feeCount: transaction.fees?.length ?? 0,
+        matchWindowMinutes,
+        source,
+      },
+      "Ingesting synced payment",
+    );
+
+    // Idempotency: a provider transaction is processed at most once.
+    const existing = await this.getRaw(transaction.externalId);
+    if (existing) {
+      logger.info(
+        {
+          externalId: transaction.externalId,
+          id: existing._id,
+          status: existing.status,
+        },
+        "Synced payment already ingested, skipping",
+      );
+      return existing;
+    }
+
+    const suggestions = await this.findCandidates(
+      transaction,
+      matchWindowMinutes,
+    );
+
+    const best = suggestions[0];
+
+    if (!best) {
+      logger.info(
+        {
+          externalId: transaction.externalId,
+          amount: transaction.amount,
+          transactionTime: transaction.transactionTime,
+          matchWindowMinutes,
+          suggestionCount: 0,
+        },
+        "No candidate appointment found, parking in unmatched queue",
+      );
+      const record = await this.insert({
+        ...transaction,
+        status: "unmatched",
+        suggestions,
+      });
+      logger.debug(
+        { id: record._id, externalId: record.externalId, status: record.status },
+        "Synced payment inserted as unmatched",
+      );
+      await this.eventService.emit(
+        SYNCED_PAYMENT_INGESTED_EVENT_TYPE,
+        { syncedPayment: record } satisfies SyncedPaymentIngestedPayload,
+        source,
+      );
+      return record;
+    }
+
+    logger.info(
+      {
+        externalId: transaction.externalId,
+        appointmentId: best.appointmentId,
+        score: best.score,
+        reason: best.reason,
+        suggestionCount: suggestions.length,
+        topSuggestions: suggestions.slice(0, 3).map((s) => ({
+          appointmentId: s.appointmentId,
+          score: s.score,
+          reason: s.reason,
+        })),
+      },
+      "Auto-attaching synced payment to best candidate",
+    );
+
+    const { paymentIds, customerId, split } =
+      await this.createPaymentsForAppointment(
+        best.appointmentId,
+        transaction,
+        source,
+      );
+
+    const record = await this.insert({
+      ...transaction,
+      status: "matched",
+      appointmentId: best.appointmentId,
+      customerId,
+      paymentIds,
+      paymentAmount: split.paymentAmount,
+      inferredTip: split.tip,
+      originalAmount: split.paymentAmount,
+      originalTip: split.tip,
+      suggestions,
+    });
+
+    logger.info(
+      {
+        id: record._id,
+        externalId: record.externalId,
+        appointmentId: record.appointmentId,
+        paymentIds,
+        paymentAmount: split.paymentAmount,
+        inferredTip: split.tip,
+      },
+      "Synced payment ingested and matched",
+    );
+
+    await this.eventService.emit(
+      SYNCED_PAYMENT_INGESTED_EVENT_TYPE,
+      { syncedPayment: record } satisfies SyncedPaymentIngestedPayload,
+      source,
+    );
+
+    return record;
+  }
+
+  public async list(
+    query: Query & {
+      status?: SyncedPaymentStatus[];
+      range?: DateRange;
+      externalId?: string;
+    },
+  ): Promise<WithTotal<HydratedSyncedPayment>> {
+    const logger = this.loggerFactory("list");
+    logger.debug({ query }, "Listing synced payments");
+
+    const db = await getDbConnection();
+    const collection = db.collection<SyncedPayment>(
+      SYNCED_PAYMENTS_COLLECTION_NAME,
+    );
+
+    const filter: Filter<SyncedPayment> = {
+      organizationId: this.organizationId,
+    };
+    if (query.externalId) {
+      filter.externalId = query.externalId;
+    }
+    if (query.status && query.status.length) {
+      filter.status = { $in: query.status };
+    }
+    if (query.range?.start || query.range?.end) {
+      const transactionTime: Record<string, Date> = {};
+      if (query.range.start) {
+        transactionTime.$gte = query.range.start;
+      }
+      if (query.range.end) {
+        transactionTime.$lte = query.range.end;
+      }
+      (filter as Record<string, unknown>).transactionTime = transactionTime;
+    }
+
+    const sort: Sort = query.sort?.reduce(
+      (prev, curr) => ({ ...prev, [curr.id]: curr.desc ? -1 : 1 }),
+      {},
+    ) || { createdAt: -1 };
+
+    const total = await collection.countDocuments(filter);
+
+    const items = await collection
+      .find(filter)
+      .sort(sort)
+      .skip(query.offset || 0)
+      .limit(query.limit || 50)
+      .toArray();
+
+    const hydrated = await Promise.all(items.map((item) => this.hydrate(item)));
+
+    logger.debug(
+      { total, count: hydrated.length, offset: query.offset, limit: query.limit },
+      "Listed synced payments",
+    );
+
+    return { items: hydrated, total };
+  }
+
+  public async get(id: string): Promise<HydratedSyncedPayment | null> {
+    const logger = this.loggerFactory("get");
+    logger.debug({ id }, "Getting synced payment");
+
+    const db = await getDbConnection();
+    const collection = db.collection<SyncedPayment>(
+      SYNCED_PAYMENTS_COLLECTION_NAME,
+    );
+
+    const item = await collection.findOne({
+      _id: id,
+      organizationId: this.organizationId,
+    });
+
+    if (!item) {
+      logger.warn({ id }, "Synced payment not found");
+      return null;
+    }
+
+    logger.debug(
+      { id, status: item.status, externalId: item.externalId },
+      "Synced payment retrieved",
+    );
+
+    return this.hydrate(item);
+  }
+
+  public async confirm(
+    id: string,
+    source: EventSource,
+  ): Promise<SyncedPayment> {
+    const logger = this.loggerFactory("confirm");
+    logger.debug({ id }, "Confirming synced payment");
+    const existing = await this.getById(id);
+    const originals = this.resolveStoredOriginals(existing);
+    const record = await this.update(id, {
+      status: "confirmed",
+      ...(existing.originalAmount === undefined ||
+      existing.originalTip === undefined
+        ? {
+            originalAmount: originals.originalAmount,
+            originalTip: originals.originalTip,
+          }
+        : {}),
+    });
+    logger.info(
+      { id, externalId: record.externalId, appointmentId: record.appointmentId },
+      "Synced payment confirmed",
+    );
+    await this.eventService.emit(
+      SYNCED_PAYMENT_CONFIRMED_EVENT_TYPE,
+      { syncedPayment: record } satisfies SyncedPaymentConfirmedPayload,
+      source,
+    );
+    return record;
+  }
+
+  public async reject(id: string, source: EventSource): Promise<SyncedPayment> {
+    const logger = this.loggerFactory("reject");
+    logger.debug({ id, source }, "Rejecting synced payment");
+
+    const record = await this.getById(id);
+    await this.removePayments(record, source);
+    const updated = await this.update(id, {
+      status: "rejected",
+      appointmentId: undefined,
+      customerId: undefined,
+      paymentIds: [],
+      inferredTip: 0,
+    });
+
+    logger.info(
+      {
+        id,
+        externalId: updated.externalId,
+        removedPaymentIds: record.paymentIds,
+      },
+      "Synced payment rejected",
+    );
+    await this.eventService.emit(
+      SYNCED_PAYMENT_REJECTED_EVENT_TYPE,
+      { syncedPayment: updated } satisfies SyncedPaymentRejectedPayload,
+      source,
+    );
+    return updated;
+  }
+
+  public async reassign(
+    id: string,
+    appointmentId: string,
+    source: EventSource,
+  ): Promise<SyncedPayment> {
+    const logger = this.loggerFactory("reassign");
+    logger.debug({ id, appointmentId, source }, "Reassigning synced payment");
+
+    const record = await this.getById(id);
+
+    await this.removePayments(record, source);
+
+    const { paymentIds, customerId, split } =
+      await this.createPaymentsForAppointment(appointmentId, record, source);
+
+    const updated = await this.update(id, {
+      status: "confirmed",
+      appointmentId,
+      customerId,
+      paymentIds,
+      paymentAmount: split.paymentAmount,
+      inferredTip: split.tip,
+      originalAmount: split.paymentAmount,
+      originalTip: split.tip,
+    });
+
+    logger.info(
+      {
+        id,
+        externalId: updated.externalId,
+        fromAppointmentId: record.appointmentId,
+        toAppointmentId: appointmentId,
+        paymentIds,
+        paymentAmount: split.paymentAmount,
+        inferredTip: split.tip,
+      },
+      record.appointmentId
+        ? "Synced payment reassigned"
+        : "Synced payment assigned",
+    );
+    await this.eventService.emit(
+      SYNCED_PAYMENT_ASSIGNED_EVENT_TYPE,
+      {
+        syncedPayment: updated,
+        previousAppointmentId: record.appointmentId,
+      } satisfies SyncedPaymentAssignedPayload,
+      source,
+    );
+    return updated;
+  }
+
+  public async assign(
+    id: string,
+    appointmentId: string,
+    source: EventSource,
+  ): Promise<SyncedPayment> {
+    const logger = this.loggerFactory("assign");
+    logger.debug({ id, appointmentId, source }, "Assigning synced payment");
+    return this.reassign(id, appointmentId, source);
+  }
+
+  public async ignore(id: string, source: EventSource): Promise<SyncedPayment> {
+    const logger = this.loggerFactory("ignore");
+    logger.debug({ id, source }, "Ignoring synced payment");
+
+    const record = await this.getById(id);
+    await this.removePayments(record, source);
+    const updated = await this.update(id, {
+      status: "ignored",
+      appointmentId: undefined,
+      customerId: undefined,
+      paymentIds: [],
+      inferredTip: 0,
+    });
+
+    logger.info(
+      {
+        id,
+        externalId: updated.externalId,
+        removedPaymentIds: record.paymentIds,
+      },
+      "Synced payment ignored",
+    );
+    await this.eventService.emit(
+      SYNCED_PAYMENT_IGNORED_EVENT_TYPE,
+      { syncedPayment: updated } satisfies SyncedPaymentIgnoredPayload,
+      source,
+    );
+    return updated;
+  }
+
+  public async updateAmounts(
+    id: string,
+    amounts: { paymentAmount: number; tip: number },
+    source: EventSource,
+  ): Promise<SyncedPayment> {
+    const logger = this.loggerFactory("updateAmounts");
+    logger.debug({ id, amounts, source }, "Updating synced payment amounts");
+
+    const record = await this.getById(id);
+
+    if (!record.appointmentId) {
+      logger.warn(
+        { id, externalId: record.externalId },
+        "Cannot edit amounts without an appointment",
+      );
+      throw new Error(
+        "Cannot edit amounts of a synced payment without an appointment",
+      );
+    }
+
+    const paymentAmount = round2(Math.max(0, amounts.paymentAmount));
+    const tip = round2(Math.max(0, amounts.tip));
+
+    logger.debug(
+      {
+        id,
+        appointmentId: record.appointmentId,
+        previousPaymentAmount: record.paymentAmount,
+        previousTip: record.inferredTip,
+        paymentAmount,
+        tip,
+      },
+      "Recreating linked payments with new amounts",
+    );
+
+    // Recreate the linked payment records so they reflect the new split.
+    await this.removePayments(record, source);
+    const { paymentIds, customerId } = await this.createPaymentsForAppointment(
+      record.appointmentId,
+      record,
+      source,
+      { paymentAmount, tip },
+    );
+
+    const originals = this.resolveStoredOriginals(record);
+
+    const updated = await this.update(id, {
+      paymentIds,
+      customerId,
+      paymentAmount,
+      inferredTip: tip,
+      originalAmount: originals.originalAmount,
+      originalTip: originals.originalTip,
+    });
+
+    logger.info(
+      {
+        id,
+        externalId: updated.externalId,
+        appointmentId: record.appointmentId,
+        paymentAmount,
+        tip,
+        paymentIds,
+        originalAmount: originals.originalAmount,
+        originalTip: originals.originalTip,
+      },
+      "Synced payment amounts updated",
+    );
+    await this.eventService.emit(
+      SYNCED_PAYMENT_AMOUNTS_UPDATED_EVENT_TYPE,
+      {
+        syncedPayment: updated,
+        previousPaymentAmount: record.paymentAmount,
+        previousTip: record.inferredTip,
+      } satisfies SyncedPaymentAmountsUpdatedPayload,
+      source,
+    );
+    return updated;
+  }
+
+  public async revertAmounts(
+    id: string,
+    source: EventSource,
+  ): Promise<SyncedPayment> {
+    const logger = this.loggerFactory("revertAmounts");
+    logger.debug({ id, source }, "Reverting synced payment amounts");
+
+    const record = await this.getById(id);
+
+    if (
+      record.originalAmount === undefined ||
+      record.originalTip === undefined
+    ) {
+      logger.warn(
+        { id, externalId: record.externalId },
+        "Cannot revert synced payment without stored original amounts",
+      );
+      throw new Error(
+        "Cannot revert synced payment amounts: original split was not recorded",
+      );
+    }
+
+    const paymentAmount = record.originalAmount;
+    const tip = record.originalTip;
+
+    logger.debug(
+      {
+        id,
+        externalId: record.externalId,
+        currentPaymentAmount: record.paymentAmount,
+        currentTip: record.inferredTip,
+        revertPaymentAmount: paymentAmount,
+        revertTip: tip,
+      },
+      "Reverting to original amounts",
+    );
+
+    return this.updateAmounts(id, { paymentAmount, tip }, source);
+  }
+
+  /**
+   * Returns the persisted original split, or snapshots the current split when
+   * originals were never stored (legacy records).
+   */
+  private resolveStoredOriginals(record: SyncedPayment): {
+    originalAmount: number;
+    originalTip: number;
+  } {
+    const tip = record.inferredTip ?? 0;
+    const paymentAmount =
+      record.paymentAmount ?? round2(record.amount - tip);
+
+    return {
+      originalAmount: record.originalAmount ?? paymentAmount,
+      originalTip: record.originalTip ?? tip,
+    };
+  }
+
+  private async findCandidates(
+    transaction: SyncedPaymentTransaction,
+    matchWindowMinutes: number,
+  ): Promise<SyncedPaymentSuggestion[]> {
+    const logger = this.loggerFactory("findCandidates");
+    const windowMs = matchWindowMinutes * 60 * 1000;
+    const txTime = transaction.transactionTime.getTime();
+
+    const endRange = {
+      start: new Date(txTime - windowMs),
+      end: new Date(txTime + windowMs),
+    };
+
+    logger.debug(
+      {
+        externalId: transaction.externalId,
+        amount: transaction.amount,
+        transactionTime: transaction.transactionTime,
+        matchWindowMinutes,
+        endRange,
+      },
+      "Searching for appointment match candidates",
+    );
+
+    const { items } = await this.bookingService.getAppointments({
+      endRange,
+      status: ["confirmed", "pending"],
+      limit: 100,
+    });
+
+    logger.debug(
+      { externalId: transaction.externalId, appointmentCount: items.length },
+      "Appointments fetched in match window",
+    );
+
+    const suggestions: SyncedPaymentSuggestion[] = [];
+    let skippedNoBalance = 0;
+    let skippedOutsideWindow = 0;
+
+    for (const appointment of items) {
+      const remaining = computeRemainingBalance(appointment);
+      if (remaining <= 0) {
+        skippedNoBalance++;
+        continue;
+      }
+
+      const endTime =
+        appointment.endAt?.getTime() ??
+        appointment.dateTime.getTime() +
+          (appointment.totalDuration ?? 0) * 60 * 1000;
+      const diffMs = Math.abs(endTime - txTime);
+      if (diffMs > windowMs) {
+        skippedOutsideWindow++;
+        continue;
+      }
+
+      const timeScore = 1 - diffMs / windowMs;
+
+      let amountScore: number;
+      let reason: string;
+      if (Math.abs(transaction.amount - remaining) < 0.01) {
+        amountScore = 1;
+        reason = "exact_balance";
+      } else if (transaction.amount < remaining) {
+        amountScore = 0.6 * (transaction.amount / remaining);
+        reason = "partial_balance";
+      } else {
+        // Overpayment is treated as a tip; modest tips score well.
+        const tipRatio = (transaction.amount - remaining) / remaining;
+        amountScore = tipRatio <= 0.5 ? 0.9 - tipRatio * 0.4 : 0.3;
+        reason = "balance_with_tip";
+      }
+
+      const score = round2(timeScore * 0.5 + amountScore * 0.5);
+      suggestions.push({ appointmentId: appointment._id, score, reason });
+    }
+
+    const ranked = suggestions
+      .sort((a, b) => b.score - a.score)
+      .slice(0, MAX_SUGGESTIONS);
+
+    logger.debug(
+      {
+        externalId: transaction.externalId,
+        skippedNoBalance,
+        skippedOutsideWindow,
+        candidateCount: suggestions.length,
+        topSuggestions: ranked.map((s) => ({
+          appointmentId: s.appointmentId,
+          score: s.score,
+          reason: s.reason,
+        })),
+      },
+      "Match candidates ranked",
+    );
+
+    return ranked;
+  }
+
+  /**
+   * Default split of a transaction: as much as the remaining balance goes to
+   * the service payment; any overpayment becomes a tip.
+   */
+  private computeDefaultSplit(
+    appointment: Appointment,
+    totalAmount: number,
+  ): { paymentAmount: number; tip: number } {
+    const remaining = Math.max(0, computeRemainingBalance(appointment));
+    const paymentAmount = round2(Math.min(totalAmount, remaining));
+    const tip = round2(totalAmount - paymentAmount);
+    return { paymentAmount, tip };
+  }
+
+  private async createPaymentsForAppointment(
+    appointmentId: string,
+    transaction: SyncedPaymentTransaction,
+    source: EventSource,
+    override?: { paymentAmount: number; tip: number },
+  ): Promise<{
+    paymentIds: string[];
+    customerId: string;
+    split: { paymentAmount: number; tip: number };
+  }> {
+    const logger = this.loggerFactory("createPaymentsForAppointment");
+    logger.debug(
+      {
+        appointmentId,
+        externalId: transaction.externalId,
+        amount: transaction.amount,
+        override,
+        source,
+      },
+      "Creating payments for appointment from synced transaction",
+    );
+
+    const appointment = await this.bookingService.getAppointment(appointmentId);
+    if (!appointment) {
+      logger.warn({ appointmentId }, "Appointment not found for synced payment");
+      throw new Error(`Appointment ${appointmentId} not found`);
+    }
+
+    const split =
+      override ?? this.computeDefaultSplit(appointment, transaction.amount);
+    const paymentAmount = round2(Math.max(0, split.paymentAmount));
+    const inferredTip = round2(Math.max(0, split.tip));
+
+    const paymentIds: string[] = [];
+
+    if (paymentAmount > 0) {
+      const payment: PaymentUpdateModel = {
+        amount: paymentAmount,
+        status: "paid",
+        paidAt: transaction.transactionTime,
+        appointmentId,
+        customerId: appointment.customerId,
+        description: "syncedPayment",
+        type: "payment",
+        method: "in-person-card",
+        source: "synced",
+        // Synced payments can only be changed through the synced payment record,
+        // never edited/deleted directly from the appointment payments UI/API.
+        disableUpdate: true,
+        externalId: transaction.externalId,
+        appName: transaction.appName,
+        appId: transaction.appId,
+        fees: transaction.fees,
+      };
+      const created = await this.paymentsService.createPayment(payment, source);
+      paymentIds.push(created._id);
+    }
+
+    if (inferredTip > 0) {
+      const tipPayment: PaymentUpdateModel = {
+        amount: inferredTip,
+        status: "paid",
+        paidAt: transaction.transactionTime,
+        appointmentId,
+        customerId: appointment.customerId,
+        description: "syncedTip",
+        type: "tips",
+        method: "in-person-card",
+        source: "synced",
+        disableUpdate: true,
+        externalId: transaction.externalId,
+        appName: transaction.appName,
+        appId: transaction.appId,
+      };
+      const created = await this.paymentsService.createPayment(
+        tipPayment,
+        source,
+      );
+      paymentIds.push(created._id);
+    }
+
+    logger.debug(
+      {
+        appointmentId,
+        externalId: transaction.externalId,
+        paymentIds,
+        paymentAmount,
+        inferredTip,
+      },
+      "Created linked payments for synced transaction",
+    );
+
+    return {
+      paymentIds,
+      customerId: appointment.customerId,
+      split: { paymentAmount, tip: inferredTip },
+    };
+  }
+
+  private async removePayments(
+    record: SyncedPayment,
+    source: EventSource,
+  ): Promise<void> {
+    const logger = this.loggerFactory("removePayments");
+    const paymentIds = record.paymentIds || [];
+
+    if (!paymentIds.length) {
+      logger.debug(
+        { id: record._id, externalId: record.externalId },
+        "No linked payments to remove",
+      );
+      return;
+    }
+
+    logger.debug(
+      {
+        id: record._id,
+        externalId: record.externalId,
+        paymentIds,
+        source,
+      },
+      "Removing linked payments",
+    );
+
+    for (const paymentId of paymentIds) {
+      await this.paymentsService.deletePayment(paymentId, source);
+    }
+
+    logger.debug(
+      { id: record._id, externalId: record.externalId, count: paymentIds.length },
+      "Linked payments removed",
+    );
+  }
+
+  private async hydrate(record: SyncedPayment): Promise<HydratedSyncedPayment> {
+    const appointment = record.appointmentId
+      ? ((await this.bookingService.getAppointment(record.appointmentId)) ??
+        undefined)
+      : undefined;
+
+    const suggestions = record.suggestions
+      ? await Promise.all(
+          record.suggestions.map(async (suggestion) => ({
+            ...suggestion,
+            appointment:
+              (await this.bookingService.getAppointment(
+                suggestion.appointmentId,
+              )) ?? undefined,
+          })),
+        )
+      : undefined;
+
+    return { ...record, appointment, suggestions };
+  }
+
+  private async getRaw(externalId: string): Promise<SyncedPayment | null> {
+    const db = await getDbConnection();
+    const collection = db.collection<SyncedPayment>(
+      SYNCED_PAYMENTS_COLLECTION_NAME,
+    );
+    return collection.findOne({
+      externalId,
+      organizationId: this.organizationId,
+    });
+  }
+
+  private async getById(id: string): Promise<SyncedPayment> {
+    const logger = this.loggerFactory("getById");
+    const db = await getDbConnection();
+    const collection = db.collection<SyncedPayment>(
+      SYNCED_PAYMENTS_COLLECTION_NAME,
+    );
+    const record = await collection.findOne({
+      _id: id,
+      organizationId: this.organizationId,
+    });
+    if (!record) {
+      logger.warn({ id }, "Synced payment not found");
+      throw new Error(`Synced payment ${id} not found`);
+    }
+    return record;
+  }
+
+  private async insert(
+    model: Omit<
+      SyncedPayment,
+      "_id" | "organizationId" | "createdAt" | "updatedAt"
+    >,
+  ): Promise<SyncedPayment> {
+    const logger = this.loggerFactory("insert");
+    const db = await getDbConnection();
+    const collection = db.collection<SyncedPayment>(
+      SYNCED_PAYMENTS_COLLECTION_NAME,
+    );
+
+    const now = new Date();
+    const record: SyncedPayment = {
+      ...model,
+      organizationId: this.organizationId,
+      _id: new ObjectId().toString(),
+      createdAt: now,
+      updatedAt: now,
+    };
+
+    logger.debug(
+      {
+        externalId: record.externalId,
+        status: record.status,
+        appointmentId: record.appointmentId,
+        amount: record.amount,
+      },
+      "Inserting synced payment",
+    );
+
+    try {
+      await collection.insertOne(record);
+    } catch (error: any) {
+      // Unique index race on (organizationId, externalId): return the winner.
+      if (error?.code === 11000) {
+        logger.info(
+          { externalId: record.externalId },
+          "Duplicate key on insert, returning existing record",
+        );
+        const existing = await this.getRaw(record.externalId);
+        if (existing) {
+          return existing;
+        }
+      }
+      logger.error(
+        { externalId: record.externalId, err: error },
+        "Failed to insert synced payment",
+      );
+      throw error;
+    }
+
+    logger.debug(
+      { id: record._id, externalId: record.externalId, status: record.status },
+      "Synced payment inserted",
+    );
+
+    return record;
+  }
+
+  private async update(
+    id: string,
+    update: Partial<SyncedPayment>,
+  ): Promise<SyncedPayment> {
+    const logger = this.loggerFactory("update");
+    logger.debug({ id, update }, "Updating synced payment");
+
+    const db = await getDbConnection();
+    const collection = db.collection<SyncedPayment>(
+      SYNCED_PAYMENTS_COLLECTION_NAME,
+    );
+
+    const { _id: _, organizationId: __, ...rest } = update as SyncedPayment;
+
+    const result = await collection.updateOne(
+      { _id: id, organizationId: this.organizationId },
+      { $set: { ...rest, updatedAt: new Date() } },
+    );
+
+    if (result.matchedCount === 0) {
+      logger.warn({ id }, "Synced payment not found for update");
+    } else {
+      logger.debug(
+        { id, modifiedCount: result.modifiedCount },
+        "Synced payment updated",
+      );
+    }
+
+    return this.getById(id);
+  }
+}

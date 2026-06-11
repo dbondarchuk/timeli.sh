@@ -4,6 +4,16 @@ import type { ActivityTextField } from "../../activity/activity-record";
 import type { ActivitySeverity } from "../../activity/activity-severity";
 import { ConnectedAppData } from "../connected-app.data";
 
+export const DASHBOARD_BADGE_EVENT = "dashboard-badge";
+
+export type DashboardBadgeUpdate = {
+  key: string;
+  /** Set an absolute badge count. */
+  count?: number;
+  /** Increment the badge count by this amount (default 1 when used with SSE). */
+  increment?: number;
+};
+
 export type DashboardNotificationBadge = {
   key: string;
   count: number;
@@ -23,6 +33,8 @@ export type ActivityFeedPreview = {
 export type DashboardNotification = {
   type: string;
   badges?: DashboardNotificationBadge[];
+  /** Increment a sidebar badge when per-user counts cannot be broadcast via `badges`. */
+  incrementBadgeKey?: string;
   /** When set, clients refresh the activity header preview (e.g. last 3 rows). */
   activityFeed?: {
     preview?: ActivityFeedPreview[];
@@ -51,6 +63,7 @@ export type DashboardNotification = {
 export interface IDashboardNotifierApp {
   getInitialNotifications(
     appData: ConnectedAppData,
+    userId: string,
     date?: Date,
   ): Promise<DashboardNotification[]>;
 }

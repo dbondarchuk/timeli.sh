@@ -9,9 +9,11 @@ import {
   Customer,
   customerEventSource,
   CustomerSearchField,
+  DashboardNotification,
   type EventSource,
   IConnectedApp,
   IConnectedAppProps,
+  IDashboardNotifierApp,
   systemEventSource,
 } from "@timelish/types";
 import {
@@ -51,6 +53,7 @@ import {
   GetFormResponsesActionType,
   GetFormsAction,
   GetFormsActionType,
+  MarkFormResponsesReadActionType,
   ReassignFormResponsesAction,
   ReassignFormResponsesActionType,
   RequestAction,
@@ -67,8 +70,12 @@ import {
 import { getFormResponseSchema } from "../models/utils";
 import { FormsAdminAllKeys } from "../translations/types";
 import { FormsRepositoryService } from "./repository-service";
+import {
+  getFormsUnreadResponsesBadges,
+  markFormResponsesRead,
+} from "./unread-responses-badge";
 
-export class FormsConnectedApp implements IConnectedApp {
+export class FormsConnectedApp implements IConnectedApp, IDashboardNotifierApp {
   protected readonly loggerFactory: LoggerFactory;
 
   public constructor(protected readonly props: IConnectedAppProps) {
@@ -76,6 +83,27 @@ export class FormsConnectedApp implements IConnectedApp {
       "FormsConnectedApp",
       props.organizationId,
     );
+  }
+
+  public async getInitialNotifications(
+    appData: ConnectedAppData,
+    userId: string,
+    _date?: Date,
+  ): Promise<DashboardNotification[]> {
+    const badges = await getFormsUnreadResponsesBadges(
+      appData._id,
+      appData.organizationId,
+      userId,
+      this.props.getDbConnection,
+      this.props.services,
+    );
+
+    return [
+      {
+        type: "form-responses-unread",
+        badges,
+      },
+    ];
   }
 
   public async processRequest(
@@ -143,6 +171,8 @@ export class FormsConnectedApp implements IConnectedApp {
         return this.processCreateFormResponseRequest(appData, data, userId);
       case CheckFormNameUniqueActionType:
         return this.processCheckFormNameUniqueRequest(appData, data);
+      case MarkFormResponsesReadActionType:
+        return this.processMarkFormResponsesReadRequest(appData, userId);
       default:
         logger.warn({ type: (data as any).type }, "Unknown forms request type");
         return null;
@@ -577,6 +607,32 @@ export class FormsConnectedApp implements IConnectedApp {
       { success: true, responseId: response._id },
       { status: 200 },
     );
+  }
+
+  private async processMarkFormResponsesReadRequest(
+    appData: ConnectedAppData,
+    userId?: string,
+  ) {
+    const logger = this.loggerFactory("processMarkFormResponsesReadRequest");
+    logger.debug({ appId: appData._id, userId }, "Marking form responses read");
+
+    if (!userId) {
+      throw new ConnectedAppRequestError(
+        "invalid_forms_request",
+        { appId: appData._id },
+        400,
+        "Missing user context",
+      );
+    }
+
+    await markFormResponsesRead(
+      appData.organizationId,
+      appData._id,
+      userId,
+      this.props.services,
+    );
+
+    return { success: true };
   }
 
   protected getRepositoryService(appId: string, organizationId: string) {

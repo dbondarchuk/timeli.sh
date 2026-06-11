@@ -29,6 +29,7 @@ export const purchasedGiftCardSchemaBase = z.object({
   invoiceGenerationStatus: generationStatusEnum.default("pending"),
   recipientDeliveryStatus: deliveryStatusEnum.default("pending"),
   customerDeliveryStatus: deliveryStatusEnum.default("pending"),
+  purchaseChannel: z.enum(["customer", "admin"]).optional(),
 });
 
 export type PurchasedGiftCardUpdateModel = z.infer<

@@ -1,5 +1,6 @@
 import type { AppEventConfig, EventDefinition } from "@timelish/types";
 import { buildNewBlogCommentEmailNotifications } from "./emails/new-comment-email";
+import { getBlogPendingCommentsBadges } from "./service/pending-comments-badge";
 import { blogConfigurationSchema } from "./models";
 import {
   BLOG_COMMENT_CREATED_EVENT_TYPE,
@@ -98,14 +99,26 @@ export const BLOG_APP_EVENTS: AppEventConfig = {
           source: envelope.source,
         };
       },
-      dashboardNotification: (envelope) => {
+      dashboardNotification: async (envelope, services, getDbConnection) => {
+        const payload = envelope.payload as BlogCommentCreatedPayload;
+        const badges = await getBlogPendingCommentsBadges(
+          payload.appId,
+          envelope.organizationId,
+          getDbConnection,
+          services,
+        );
+
         if (envelope.source.actor !== "visitor") {
-          return null;
+          return {
+            type: "blog-pending-comments",
+            badges,
+          };
         }
 
-        const { comment, post } = envelope.payload as BlogCommentCreatedPayload;
+        const { comment, post } = payload;
         return {
           type: "blog-comment-created",
+          badges,
           toast: {
             type: "info",
             title: {
@@ -174,6 +187,20 @@ export const BLOG_APP_EVENTS: AppEventConfig = {
         link: `/dashboard/blog/comments?postId=${(envelope.payload as BlogCommentDeletedPayload).postId}`,
         source: envelope.source,
       }),
+      dashboardNotification: async (envelope, services, getDbConnection) => {
+        const payload = envelope.payload as BlogCommentDeletedPayload;
+        const badges = await getBlogPendingCommentsBadges(
+          payload.appId,
+          envelope.organizationId,
+          getDbConnection,
+          services,
+        );
+
+        return {
+          type: "blog-pending-comments",
+          badges,
+        };
+      },
       emailNotifications: false,
       smsNotifications: false,
     } as EventDefinition<BlogCommentDeletedPayload>,
@@ -197,6 +224,20 @@ export const BLOG_APP_EVENTS: AppEventConfig = {
           },
           link: `/dashboard/blog/comments?postId=${comment.postId}`,
           source: envelope.source,
+        };
+      },
+      dashboardNotification: async (envelope, services, getDbConnection) => {
+        const payload = envelope.payload as BlogCommentStatusChangedPayload;
+        const badges = await getBlogPendingCommentsBadges(
+          payload.appId,
+          envelope.organizationId,
+          getDbConnection,
+          services,
+        );
+
+        return {
+          type: "blog-pending-comments",
+          badges,
         };
       },
       emailNotifications: false,

@@ -32,11 +32,13 @@ export type BlogCommentCreatedPayload = {
 };
 
 export type BlogCommentDeletedPayload = {
+  appId: string;
   commentId: string;
   postId: string;
 };
 
 export type BlogCommentStatusChangedPayload = {
+  appId: string;
   comment: { _id: string; postId: string; authorName: string };
   status: "approved" | "rejected";
 };

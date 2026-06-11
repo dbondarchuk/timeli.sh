@@ -101,6 +101,28 @@ platformEvents:
     refunded:
       title: Payment refunded
       description: "{refundAmount} of {amount}"
+  syncedPayment:
+    ingested:
+      title: In-store payment synced
+      description: "{amount} from {provider} · {status}"
+    confirmed:
+      title: Synced payment confirmed
+      description: "{amount}"
+    rejected:
+      title: Synced payment rejected
+      description: "{amount}"
+    assigned:
+      title: Synced payment assigned
+      description: "{amount} assigned to appointment"
+    reassigned:
+      title: Synced payment reassigned
+      description: "{amount} moved to another appointment"
+    ignored:
+      title: Synced payment ignored
+      description: "{amount}"
+    amountsUpdated:
+      title: Synced payment amounts updated
+      description: "Payment {paymentAmount}, tip {tip}"
   giftCard:
     created:
       title: Gift card issued
@@ -272,6 +294,9 @@ navigation:
   dashboard: Dashboard
   activity: Activity
   appointments: Appointments
+  financials: Financials
+  payments: Payments
+  paymentsInbox: Payments inbox
   customerAccess: Customer access
   schedule: Schedule
   defaultSchedule: Default schedule
@@ -281,6 +306,7 @@ navigation:
   options: Options
   discounts: Discounts
   giftCards: Gift cards
+  syncedPayments: Synced payments
   customers: Customers
   website: Website
   pages: Pages
@@ -313,6 +339,139 @@ themeToggle:
   light: Light
   dark: Dark
   system: System
+paymentsInbox:
+  title: Payments inbox
+  description: Review in-store card payments synced from connected payment apps and confirm how they map to appointments.
+paymentsList:
+  title: Payments
+  description: Browse all recorded payments across appointments and customers.
+  empty: No payments found.
+  loadError: Failed to load payments.
+  filters:
+    clearAll: Clear filters
+    clearDates: Clear dates
+    clearCustomer: Clear customer
+    clearAppointment: Clear appointment
+  columns:
+    date: Date
+    amount: Amount
+    type: Type
+    method: Method
+    customer: Customer
+    appointment: Appointment
+    status: Status
+  pagination:
+    previous: Previous
+    next: Next
+    summary: "Showing {from}-{to} of {total}"
+  table:
+    filters:
+      searchPlaceholder: Search customers, appointments…
+    cellAction:
+      actions: Actions
+      update: Update
+      delete: Delete
+      viewAppointment: View appointment
+      manageSyncedPayment: Manage synced payment
+      refund: Refund
+appointmentSelector:
+  placeholder: Select appointment…
+syncedPayments:
+  title: Synced payments
+  description: Review in-store card payments synced from connected payment apps and confirm how they map to appointments.
+  empty: No synced payments to review.
+  loadError: Failed to load synced payments.
+  filters:
+    needsReview: Needs review
+    all: All
+    dateFrom: From
+    dateTo: To
+    clearDates: Clear dates
+    singleTransaction: Showing a single synced transaction.
+    viewAll: View all synced payments
+  pagination:
+    previous: Previous
+    next: Next
+    summary: "Showing {from}-{to} of {total}"
+  status:
+    matched: Matched
+    unmatched: Unmatched
+    confirmed: Confirmed
+    rejected: Rejected
+    ignored: Ignored
+  reason:
+    exact_balance: Amount matches the remaining balance
+    partial_balance: Partial payment toward the balance
+    balance_with_tip: Balance plus a tip
+  fields:
+    amount: Amount
+    paymentAmount: Payment
+    tip: Tip
+    fees: Fees
+    transactionTime: Transaction time
+    appointment: Appointment
+    noAppointment: Not assigned
+    suggestions: Suggested appointments
+    provider: Provider
+    matchScore: "Match {score}%"
+    customer: Customer
+  badge:
+    synced: Synced from {provider}
+  subtitle:
+    synced: Synced
+  sections:
+    totalReceived: Total received
+    matchedTo: Matched to
+    suggestions: Suggested appointments
+  actions:
+    confirm: Confirm
+    reject: Reject
+    ignore: Ignore
+    reassign: Reassign here
+    assign: Assign here
+    reassignOther: Reassign
+    assignOther: Assign
+    editAmounts: Edit amounts
+    viewAppointment: View appointment
+  editAmounts:
+    title: Edit amounts
+    description: "Charged total: {charged}. Adjust how it splits between the payment and tip."
+    paymentAmount: Payment amount
+    tip: Tip
+    removeTip: Remove tip
+    total: Total
+    revert: Revert to original
+    save: Save
+    cancel: Cancel
+    notFound: Synced payment not found.
+  manageDialog:
+    title: Synced payment
+    description: Review and manage this synced in-store payment.
+  assignDialog:
+    title: Assign to appointment
+    description: Search for an appointment and select one to assign this payment to.
+    searchPlaceholder: Search by customer, service, or email…
+    empty: No appointments found.
+    confirm: Assign payment
+    cancel: Cancel
+    columns:
+      option: Service
+      customer: Customer
+      dateTime: Date & time
+      price: Price
+  toast:
+    success: Synced payment updated
+    error: Could not update synced payment
+  notifications:
+    ingested:
+      matched:
+        title: In-store payment matched
+        message: "{amount} from {provider} was auto-matched to an appointment at {dt_transactionTime}."
+        action: Review
+      unmatched:
+        title: In-store payment needs review
+        message: "{amount} from {provider} at {dt_transactionTime} could not be matched to an appointment."
+        action: Review
 appointments:
   title: Appointments
   scheduleAppointment: Schedule appointment
@@ -378,6 +537,8 @@ appointments:
     refundPayments: Refund payments
     amount: Amount
     transactionId: Transaction ID
+    syncedPayment: Synced payment
+    manageSyncedPayment: Manage synced payment
     timePaid: Time paid
     fees: Fees
     cancel: Cancel
@@ -2726,6 +2887,8 @@ payment:
     fees: Fees
     netAmount: Net amount
     refundFees: Refund fees
+    syncedPayment: Synced payment
+    manageSyncedPayment: Manage
   addUpdatePayment:
     addPayment: Add payment
     updatePayment: Update payment
@@ -2759,6 +2922,8 @@ payment:
     rescheduleFee: Reschedule fee
     cancellationFee: Cancellation fee
     giftCard: Gift card purchase
+    syncedPayment: Synced payment
+    syncedTip: Synced tip
   types:
     deposit: Deposit
     rescheduleFee: Reschedule fee

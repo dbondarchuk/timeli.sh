@@ -230,51 +230,76 @@ export class PaypalClient {
     }
   }
 
-  // public async createWebhook(): Promise<boolean | string> {
-  //   const body = {
-  //     url: `${this.appUrl}/api/integrations/paypal/webhook`,
-  //     event_types: [
-  //       {
-  //         name: "CHECKOUT.ORDER.APPROVED",
-  //       },
-  //       {
-  //         name: "CHECKOUT.ORDER.COMPLETED",
-  //       },
-  //     ],
-  //   };
+  /**
+   * Registers a PayPal webhook for the given listener URL. Used to sync
+   * in-store card payments. Returns the PayPal-generated webhook id, which is
+   * required later to verify webhook signatures.
+   *
+   * If a webhook already exists for the URL (PayPal rejects duplicates), the
+   * existing webhook id is reused.
+   */
+  public async createWebhook(
+    url: string,
+    eventTypes: string[] = ["PAYMENT.CAPTURE.COMPLETED"],
+  ): Promise<string | undefined> {
+    const logger = this.loggerFactory("createWebhook");
+    const body = {
+      url,
+      event_types: eventTypes.map((name) => ({ name })),
+    };
 
-  //   try {
-  //     const response = await this.fetcher(`/v1/notifications/webhooks`, {
-  //       method: "POST",
-  //       body: JSON.stringify(body),
-  //     });
+    let response: Response | undefined;
+    try {
+      response = await this.fetcher(`/v1/notifications/webhooks`, {
+        method: "POST",
+        body: JSON.stringify(body),
+      });
 
-  //     if (!response.ok) {
-  //       const message = `${response.statusText}: ${JSON.stringify(await response.json())}`;
-  //       throw new Error(message);
-  //     }
+      if (response.ok) {
+        const result = await response.json();
+        return result.id as string;
+      }
 
-  //     const result = await response.json();
-  //     return result.id as string;
-  //   } catch (e) {
-  //     console.error("Error creating webhook", e);
-  //   }
+      // PayPal returns 400 WEBHOOK_URL_ALREADY_EXISTS when the URL is taken;
+      // reuse the existing subscription instead of failing the connection.
+      const existing = await this.findWebhookIdByUrl(url);
+      if (existing) {
+        return existing;
+      }
 
-  //   return false;
-  // }
+      const message = `${response.statusText}: ${JSON.stringify(await response.json())}`;
+      throw new Error(message);
+    } catch (error) {
+      logger.error(
+        { error, statusCode: response?.status },
+        "Error creating PayPal webhook",
+      );
+      return undefined;
+    }
+  }
 
-  async listWebhooks(): Promise<string[]> {
+  /** Returns the id of the webhook whose URL exactly matches, if any. */
+  public async findWebhookIdByUrl(url: string): Promise<string | undefined> {
+    const ids = await this.listWebhooks(url);
+    return ids[0];
+  }
+
+  /**
+   * Lists webhook ids, optionally filtered to those whose URL contains
+   * `urlFilter`.
+   */
+  async listWebhooks(urlFilter?: string): Promise<string[]> {
     try {
       const response = await this.fetcher(`/v1/notifications/webhooks`);
 
       if (response.ok) {
         const { webhooks } = await response.json();
 
-        return webhooks
-          .filter((webhook: { id: string; url: string }) => {
-            return webhook.url.includes("api/integrations/paypal/webhook");
-          })
-          .map((webhook: { id: string }) => webhook.id);
+        return (webhooks as { id: string; url: string }[])
+          .filter((webhook) =>
+            urlFilter ? webhook.url.includes(urlFilter) : true,
+          )
+          .map((webhook) => webhook.id);
       }
     } catch (error) {
       console.error(error);

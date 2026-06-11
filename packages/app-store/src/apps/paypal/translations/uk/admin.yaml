@@ -44,6 +44,13 @@ form:
   applePay:
     label: Увімкнути Apple Pay
     description: Дозвольте клієнтам платити через Apple Pay в PayPal. Спочатку потрібно <link>увімкнути Apple Pay у вашому обліковому записі PayPal</link> та підтвердити домен.
+  inStoreSync:
+    label: Синхронізувати платежі картками в закладі
+    description: Автоматично імпортувати платежі картками PayPal у закладі через вебхук і зіставляти їх із записами.
+  matchWindow:
+    label: Вікно зіставлення (хвилини)
+    placeholder: "240"
+    description: Наскільки час початку запису може відрізнятися від часу платежу, щоб усе ще вважатися збігом.
   selectPlaceholder: Вибрати вигляд
   connectWith: Підключитися з <app></app>
 statusText:

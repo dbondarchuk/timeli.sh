@@ -511,6 +511,17 @@ export class FormsRepositoryService {
     return entity;
   }
 
+  public async getResponsesCountSince(since: Date): Promise<number> {
+    const db = await this.getDbConnection();
+    return db
+      .collection<FormResponseModel>(FORM_RESPONSES_COLLECTION_NAME)
+      .countDocuments({
+        organizationId: this.organizationId,
+        appId: this.appId,
+        createdAt: { $gt: since },
+      });
+  }
+
   public async getFormResponses(
     query: GetFormResponsesQuery,
   ): Promise<WithTotal<FormResponseListModel>> {

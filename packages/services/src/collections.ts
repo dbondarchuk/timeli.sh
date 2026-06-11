@@ -12,6 +12,7 @@ export const PAGE_HEADERS_COLLECTION_NAME = "page-headers";
 export const PAGE_FOOTERS_COLLECTION_NAME = "page-footers";
 export const PAYMENT_INTENTS_COLLECTION_NAME = "payment-intents";
 export const PAYMENTS_COLLECTION_NAME = "payments";
+export const SYNCED_PAYMENTS_COLLECTION_NAME = "synced-payments";
 export const FIELDS_COLLECTION_NAME = "fields";
 export const ADDONS_COLLECTION_NAME = "addons";
 export const OPTIONS_COLLECTION_NAME = "options";

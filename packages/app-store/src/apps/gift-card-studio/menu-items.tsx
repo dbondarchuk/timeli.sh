@@ -1,5 +1,6 @@
 import { AppMenuItem } from "@timelish/types";
 import { Gift, Receipt, Settings } from "lucide-react";
+import { GIFT_CARD_STUDIO_UNREAD_PURCHASES_BADGE_KEY } from "./const";
 import { DesignEditPage } from "./designs/pages/edit";
 import { DesignsMainPage } from "./designs/pages/main";
 import { DesignNewPage } from "./designs/pages/new";
@@ -43,7 +44,7 @@ export const GiftCardStudioMenuItems: AppMenuItem<
     label:
       "app_gift-card-studio_admin.app.displayName" satisfies GiftCardStudioAdminAllKeys,
     icon: <Gift />,
-    Page: (props) => <DesignsMainPage {...props} />,
+    Page: (props) => <DesignsMainPage appId={props.appId} />,
     pageBreadcrumbs: designsBreadcrumbs,
     pageTitle:
       "app_gift-card-studio_admin.app.pages.main.title" satisfies GiftCardStudioAdminAllKeys,
@@ -100,10 +101,11 @@ export const GiftCardStudioMenuItems: AppMenuItem<
     id: "gift-card-studio-purchases",
     isHidden: false,
     hideHeading: false,
+    notificationsCountKey: GIFT_CARD_STUDIO_UNREAD_PURCHASES_BADGE_KEY,
     label:
       "app_gift-card-studio_admin.app.pages.purchases.title" satisfies GiftCardStudioAdminAllKeys,
     icon: <Receipt />,
-    Page: (props) => <PurchasesMainPage {...props} />,
+    Page: (props) => <PurchasesMainPage appId={props.appId} />,
     pageBreadcrumbs: [
       mainBreadcrumb,
       {

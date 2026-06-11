@@ -15,6 +15,7 @@ export type * from "./organization.service";
 export type * from "./pages.service";
 export type * from "./payments.service";
 export type * from "./schedule.service";
+export type * from "./synced-payments.service";
 export type * from "./services.service";
 export type * from "./templates.service";
 export type * from "./user.service";

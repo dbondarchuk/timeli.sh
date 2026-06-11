@@ -453,6 +453,18 @@ export class GiftCardStudioRepositoryService {
     return this.getPurchasedGiftCardById(id);
   }
 
+  public async getCustomerPurchasesCountSince(since: Date): Promise<number> {
+    const db = await this.getDbConnection();
+    return db
+      .collection<PurchasedGiftCardModel>(PURCHASED_GIFT_CARDS_COLLECTION_NAME)
+      .countDocuments({
+        organizationId: this.organizationId,
+        appId: this.appId,
+        purchaseChannel: "customer",
+        createdAt: { $gt: since },
+      });
+  }
+
   public async getPurchasedGiftCards(
     query: GetPurchasedGiftCardsQuery,
   ): Promise<WithTotal<PurchasedGiftCardListModel>> {

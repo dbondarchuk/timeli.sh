@@ -11,15 +11,24 @@ import {
   PAYMENT_UPDATED_EVENT_TYPE,
   PaymentIntent,
   PaymentIntentUpdateModel,
+  PaymentMethod,
+  PaymentSummary,
+  PaymentType,
   PaymentUpdateModel,
+  Query,
+  WithTotal,
   type EventSource,
+  type DateRange,
   type PaymentCreatedPayload,
   type PaymentDeletedPayload,
   type PaymentRefundedPayload,
   type PaymentUpdatedPayload,
 } from "@timelish/types";
-import { ObjectId } from "mongodb";
+import { escapeRegex } from "@timelish/utils";
+import { Document, Filter, ObjectId, Sort } from "mongodb";
 import {
+  APPOINTMENTS_COLLECTION_NAME,
+  CUSTOMERS_COLLECTION_NAME,
   PAYMENT_INTENTS_COLLECTION_NAME,
   PAYMENTS_COLLECTION_NAME,
 } from "./collections";
@@ -254,6 +263,125 @@ export class PaymentsService extends BaseService implements IPaymentsService {
     );
 
     return dbPayment;
+  }
+
+  public async list(
+    query: Query & {
+      range?: DateRange;
+      customerId?: string;
+      appointmentId?: string;
+      type?: PaymentType[];
+      method?: PaymentMethod[];
+    },
+  ): Promise<WithTotal<PaymentSummary>> {
+    const logger = this.loggerFactory("list");
+    logger.debug({ query }, "Listing payments");
+
+    const db = await getDbConnection();
+    const collection = db.collection<Payment>(PAYMENTS_COLLECTION_NAME);
+
+    const match: Filter<Payment> = {
+      organizationId: this.organizationId,
+    };
+
+    if (query.customerId) {
+      match.customerId = query.customerId;
+    }
+    if (query.appointmentId) {
+      match.appointmentId = query.appointmentId;
+    }
+    if (query.type?.length) {
+      match.type = { $in: query.type };
+    }
+    if (query.method?.length) {
+      match.method = { $in: query.method };
+    }
+    if (query.range?.start || query.range?.end) {
+      const paidAt: Record<string, Date> = {};
+      if (query.range.start) {
+        paidAt.$gte = query.range.start;
+      }
+      if (query.range.end) {
+        paidAt.$lte = query.range.end;
+      }
+      match.paidAt = paidAt;
+    }
+
+    const sort: Sort = query.sort?.reduce(
+      (prev, curr) => ({ ...prev, [curr.id]: curr.desc ? -1 : 1 }),
+      {},
+    ) || { paidAt: -1 };
+
+    const pipeline: Document[] = [
+      { $match: match },
+      {
+        $lookup: {
+          from: CUSTOMERS_COLLECTION_NAME,
+          localField: "customerId",
+          foreignField: "_id",
+          as: "customer",
+        },
+      },
+      {
+        $lookup: {
+          from: APPOINTMENTS_COLLECTION_NAME,
+          localField: "appointmentId",
+          foreignField: "_id",
+          as: "appointment",
+        },
+      },
+      {
+        $addFields: {
+          customerName: { $arrayElemAt: ["$customer.name", 0] },
+          serviceName: { $arrayElemAt: ["$appointment.option.name", 0] },
+        },
+      },
+      { $project: { customer: 0, appointment: 0 } },
+    ];
+
+    if (query.search) {
+      const $regex = new RegExp(escapeRegex(query.search), "i");
+      pipeline.push({
+        $match: {
+          $or: [
+            { customerName: $regex },
+            { serviceName: $regex },
+            { description: $regex },
+            { externalId: $regex },
+            { appName: $regex },
+          ],
+        },
+      });
+    }
+
+    const [result] = await collection
+      .aggregate<{
+        items: PaymentSummary[];
+        total: { count: number }[];
+      }>([
+        ...pipeline,
+        {
+          $facet: {
+            items: [
+              { $sort: sort },
+              { $skip: query.offset || 0 },
+              { $limit: query.limit || 50 },
+            ],
+            total: [{ $count: "count" }],
+          },
+        },
+      ])
+      .toArray();
+
+    const items = result?.items ?? [];
+    const total = result?.total?.[0]?.count ?? 0;
+
+    logger.debug(
+      { total, count: items.length, offset: query.offset, limit: query.limit },
+      "Listed payments",
+    );
+
+    return { items, total };
   }
 
   public async getPayment(id: string): Promise<Payment | null> {

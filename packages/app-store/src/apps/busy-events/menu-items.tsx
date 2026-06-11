@@ -29,6 +29,6 @@ export const BusyEventsMenuItems: AppMenuItem<
       },
     ],
     icon: <CalendarX2 />,
-    Page: (props) => <BusyEventsAppSetup {...props} />,
+    Page: (props) => <BusyEventsAppSetup appId={props.appId} />,
   },
 ];

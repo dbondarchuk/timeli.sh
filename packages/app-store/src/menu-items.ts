@@ -9,6 +9,8 @@ import { CUSTOMER_EMAIL_NOTIFICATION_APP_NAME } from "./apps/customer-email-noti
 import { CustomerEmailNotificationMenuItems } from "./apps/customer-email-notification/menu-items";
 import { CUSTOMER_TEXT_MESSAGE_NOTIFICATION_APP_NAME } from "./apps/customer-text-message-notification/const";
 import { CustomerTextMessageNotificationMenuItems } from "./apps/customer-text-message-notification/menu-items";
+import { FINANCIAL_OVERVIEW_APP_NAME } from "./apps/financial-overview/const";
+import { FinancialOverviewMenuItems } from "./apps/financial-overview/menu-items";
 import { FORMS_APP_NAME } from "./apps/forms/const";
 import { FormsMenuItems } from "./apps/forms/menu-items";
 import { GIFT_CARD_STUDIO_APP_NAME } from "./apps/gift-card-studio/const";
@@ -31,5 +33,6 @@ export const AppMenuItems: Record<string, AppMenuItem[]> = {
   [WEEKLY_SCHEDULE_APP_NAME]: WeeklyScheduleMenuItems,
   [APPOINTMENT_NOTIFICATIONS_APP_NAME]: AppointmentNotificationsMenuItems,
   [FORMS_APP_NAME]: FormsMenuItems,
+  [FINANCIAL_OVERVIEW_APP_NAME]: FinancialOverviewMenuItems,
   [GIFT_CARD_STUDIO_APP_NAME]: GiftCardStudioMenuItems,
 };

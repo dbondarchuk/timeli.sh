@@ -418,4 +418,25 @@ validation:
 handlers:
   send-email-to-recipient: Надіслати подарункову карту отримувачу
   send-email-to-customer: Надіслати подарункову карту покупцю
+events:
+  designCreated:
+    title: Створено дизайн подарункової карти
+    description: 'Дизайн "{designName}" створено'
+  designUpdated:
+    title: Оновлено дизайн подарункової карти
+    description: 'Дизайн "{designName}" оновлено'
+  designDeleted:
+    title: Видалено дизайн подарункової карти
+    description: 'Дизайн "{designName}" видалено'
+  purchaseCreated:
+    title: Придбано подарункову карту
+    description: '{customerName} придбав(ла) "{designName}" на суму {amount}'
+  purchaseDeleted:
+    title: Видалено покупку подарункової карти
+    description: Запис про покупку подарункової карти видалено
+notifications:
+  newPurchase:
+    title: Нова покупка подарункової карти
+    message: Клієнт придбав подарункову карту на вашому сайті
+    view: Переглянути покупки
 

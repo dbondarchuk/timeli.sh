@@ -9,10 +9,12 @@ export const FinancialOverviewApp: App<
 > = {
   name: FINANCIAL_OVERVIEW_APP_NAME,
   displayName: "app_financial-overview_admin.app.displayName",
-  scope: ["dashboard-tab"],
+  scope: [],
   category: ["apps.categories.utilities"],
-  type: "basic",
+  type: "complex",
   dontAllowMultiple: true,
+  isHidden: false,
+  settingsHref: "financial-overview",
   Logo: ({ className }) => <ChartArea className={className} />,
   isFeatured: true,
   description: {

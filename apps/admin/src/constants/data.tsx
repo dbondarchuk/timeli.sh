@@ -9,6 +9,7 @@ import {
   CalendarClock,
   CalendarFold,
   CalendarRange,
+  CircleDollarSign,
   Code2,
   Gift,
   Globe,
@@ -26,6 +27,7 @@ import {
   Store,
   TextCursorInput,
   UserRound,
+  Wallet,
 } from "lucide-react";
 
 export const navItems: NavItemGroup[] = [
@@ -52,6 +54,7 @@ export const navItems: NavItemGroup[] = [
         href: "/dashboard/appointments",
         icon: <CalendarFold />,
         label: "admin.navigation.appointments",
+        notificationsCountKey: "pending_appointments",
       },
       {
         id: "schedule",
@@ -108,6 +111,27 @@ export const navItems: NavItemGroup[] = [
             icon: <Gift />,
           },
         ],
+      },
+    ],
+  },
+  {
+    id: "financials",
+    title: "admin.navigation.financials",
+    children: [
+      {
+        id: "payments",
+        title: "admin.navigation.payments",
+        href: "/dashboard/financials/payments",
+        icon: <CircleDollarSign />,
+        label: "admin.navigation.payments",
+      },
+      {
+        id: "payments-inbox",
+        title: "admin.navigation.paymentsInbox",
+        href: "/dashboard/financials/inbox",
+        icon: <Wallet />,
+        label: "admin.navigation.paymentsInbox",
+        notificationsCountKey: "synced_payments_review",
       },
     ],
   },

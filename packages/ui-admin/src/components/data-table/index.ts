@@ -1,3 +1,4 @@
+export * from "./appointments-data-table-async-filter-box";
 export * from "./customer-name";
 export * from "./customers-data-table-async-filter-box";
 export * from "./data-table";

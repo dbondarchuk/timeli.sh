@@ -24,6 +24,6 @@ export const WeeklyScheduleMenuItems: AppMenuItem<
       },
     ],
     icon: <CalendarDays />,
-    Page: (props) => <WeeklyScheduleAppSetup {...props} />,
+    Page: (props) => <WeeklyScheduleAppSetup appId={props.appId} />,
   },
 ];

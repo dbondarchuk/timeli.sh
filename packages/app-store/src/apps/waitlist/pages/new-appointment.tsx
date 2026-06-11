@@ -1,6 +1,5 @@
 "use client";
 
-import { ComplexAppPageProps } from "@timelish/types";
 import { Skeleton } from "@timelish/ui";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createSerializer, parseAsJson } from "nuqs/server";
@@ -12,7 +11,7 @@ export const serialize = createSerializer({
   data: parseAsJson((value) => value),
 });
 
-export const WaitlistNewAppointmentPage: React.FC<ComplexAppPageProps> = ({
+export const WaitlistNewAppointmentPage: React.FC<{ appId: string }> = ({
   appId,
 }) => {
   const searchParams = useSearchParams();

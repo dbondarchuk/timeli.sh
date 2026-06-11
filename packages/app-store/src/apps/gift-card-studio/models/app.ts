@@ -80,6 +80,14 @@ export type CheckDesignNameUniqueAction = z.infer<
 export const CheckDesignNameUniqueActionType =
   "gift-card-studio-check-design-name-unique" as const;
 
+export const markGiftCardStudioPurchasesReadActionSchema = z.object({});
+
+export type MarkGiftCardStudioPurchasesReadAction = z.infer<
+  typeof markGiftCardStudioPurchasesReadActionSchema
+>;
+export const MarkGiftCardStudioPurchasesReadActionType =
+  "gift-card-studio-mark-purchases-read" as const;
+
 export const getPurchasedGiftCardsActionSchema = z.object({
   query: getPurchasedGiftCardsQuerySchema,
 });
@@ -212,6 +220,10 @@ export const requestActionSchema = zTaggedUnion([
   {
     type: ResendEmailActionType,
     data: resendEmailActionSchema,
+  },
+  {
+    type: MarkGiftCardStudioPurchasesReadActionType,
+    data: markGiftCardStudioPurchasesReadActionSchema,
   },
 ]);
 

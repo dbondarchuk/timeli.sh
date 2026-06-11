@@ -1,5 +1,6 @@
 import { AppMenuItem } from "@timelish/types";
 import { Form, RectangleEllipsis } from "lucide-react";
+import { FORMS_UNREAD_RESPONSES_BADGE_KEY } from "./const";
 import { FormsEditPage } from "./forms/pages/edit";
 import { FormsMainPage } from "./forms/pages/main";
 import { FormsNewPage } from "./forms/pages/new";
@@ -32,7 +33,7 @@ export const FormsMenuItems: AppMenuItem<
     notScrollable: true,
     label: "app_forms_admin.app.pages.main.title" satisfies FormsAdminAllKeys,
     icon: <Form />,
-    Page: (props) => <FormsMainPage {...props} />,
+    Page: (props) => <FormsMainPage appId={props.appId} />,
     pageBreadcrumbs: [formsBreadcrumb],
     pageTitle:
       "app_forms_admin.app.pages.main.title" satisfies FormsAdminAllKeys,
@@ -89,6 +90,7 @@ export const FormsMenuItems: AppMenuItem<
     id: "forms-responses",
     isHidden: false,
     hideHeading: false,
+    notificationsCountKey: FORMS_UNREAD_RESPONSES_BADGE_KEY,
     label:
       "app_forms_admin.app.pages.responses.title" satisfies FormsAdminAllKeys,
     icon: <RectangleEllipsis />,

@@ -5,6 +5,7 @@ import { AppSetupProps } from "@timelish/types";
 import {
   Button,
   Checkbox,
+  DurationInput,
   Form,
   FormControl,
   FormDescription,
@@ -59,6 +60,8 @@ export const PaypalAppSetup: React.FC<AppSetupProps> = ({
   const t = useI18n<PaypalAdminNamespace, PaypalAdminKeys>(
     paypalAdminNamespace,
   );
+
+  const isInStoreSyncEnabled = form.watch("enableInStoreSync");
 
   return (
     <>
@@ -306,6 +309,62 @@ export const PaypalAppSetup: React.FC<AppSetupProps> = ({
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="enableInStoreSync"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <div className="flex items-center gap-2">
+                    <FormControl>
+                      <Checkbox
+                        id="enableInStoreSync"
+                        checked={field.value ?? false}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <FormLabel
+                      className="cursor-pointer"
+                      htmlFor="enableInStoreSync"
+                    >
+                      {t("form.inStoreSync.label")}
+                    </FormLabel>
+                  </div>
+                  <FormDescription>
+                    {t("form.inStoreSync.description")}
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {isInStoreSyncEnabled && (
+              <FormField
+                control={form.control}
+                name="matchWindowMinutes"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>{t("form.matchWindow.label")}</FormLabel>
+                    <FormControl>
+                      <DurationInput
+                        type="hours-minutes"
+                        value={field.value ?? 0}
+                        disabled={isLoading}
+                        placeholderHours="2"
+                        placeholderMinutes="0"
+                        onBlur={field.onBlur}
+                        onChange={(val) => {
+                          field.onChange(val ?? 0);
+                          field.onBlur();
+                        }}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      {t("form.matchWindow.description")}
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
             <Button
               disabled={isLoading || !isValid}
               type="submit"

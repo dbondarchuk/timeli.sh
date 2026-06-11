@@ -1,5 +1,6 @@
 import { AppMenuItem } from "@timelish/types";
 import { FileText, MessageSquare, Settings } from "lucide-react";
+import { BLOG_PENDING_COMMENTS_BADGE_KEY } from "./const";
 import { BlogCommentApprovePage } from "./comments/pages/approve";
 import { BlogCommentRejectPage } from "./comments/pages/reject";
 import { BlogCommentsPage } from "./comments/pages/main";
@@ -30,7 +31,7 @@ export const BlogMenuItems: AppMenuItem<BlogAdminNamespace, BlogAdminKeys>[] = [
     notScrollable: true,
     label: "app_blog_admin.app.pages.main.label" satisfies BlogAdminAllKeys,
     icon: <FileText />,
-    Page: (props) => <BlogPage {...props} />,
+    Page: (props) => <BlogPage appId={props.appId} />,
     pageBreadcrumbs: [blogBreadcrumb],
     pageTitle: "app_blog_admin.app.pages.main.title" satisfies BlogAdminAllKeys,
     pageDescription:
@@ -62,9 +63,10 @@ export const BlogMenuItems: AppMenuItem<BlogAdminNamespace, BlogAdminKeys>[] = [
     id: "blog-comments",
     order: 110,
     notScrollable: true,
+    notificationsCountKey: BLOG_PENDING_COMMENTS_BADGE_KEY,
     label: "app_blog_admin.app.pages.comments.label" satisfies BlogAdminAllKeys,
     icon: <MessageSquare />,
-    Page: (props) => <BlogCommentsPage {...props} />,
+    Page: (props) => <BlogCommentsPage appId={props.appId} />,
     pageBreadcrumbs: [
       blogBreadcrumb,
       {
@@ -103,7 +105,7 @@ export const BlogMenuItems: AppMenuItem<BlogAdminNamespace, BlogAdminKeys>[] = [
     isHidden: true,
     label: "app_blog_admin.app.pages.comments.label" satisfies BlogAdminAllKeys,
     icon: <MessageSquare />,
-    Page: (props) => <BlogCommentApprovePage {...props} />,
+    Page: (props) => <BlogCommentApprovePage appId={props.appId} />,
     pageBreadcrumbs: [
       blogBreadcrumb,
       {
@@ -122,7 +124,7 @@ export const BlogMenuItems: AppMenuItem<BlogAdminNamespace, BlogAdminKeys>[] = [
     isHidden: true,
     label: "app_blog_admin.app.pages.comments.label" satisfies BlogAdminAllKeys,
     icon: <MessageSquare />,
-    Page: (props) => <BlogCommentRejectPage {...props} />,
+    Page: (props) => <BlogCommentRejectPage appId={props.appId} />,
     pageBreadcrumbs: [
       blogBreadcrumb,
       {

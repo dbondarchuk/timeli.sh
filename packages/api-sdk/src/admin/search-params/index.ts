@@ -9,6 +9,7 @@ export * from "./customers";
 export * from "./discounts";
 export * from "./gift-cards";
 export * from "./pages";
+export * from "./payments";
 export * from "./schedule";
 export * from "./service-addons";
 export * from "./service-fields";

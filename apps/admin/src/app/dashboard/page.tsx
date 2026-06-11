@@ -21,7 +21,7 @@ import { getServicesContainer } from "../utils";
 import { EventsCalendar } from "./events-calendar";
 import { NextAppointmentsCards } from "./next-appointments-cards";
 import {
-  DashboardTabNotificationsBadge,
+  DashboardNotificationsBadge,
   PendingAppointmentsBadge,
 } from "./notifications-toast-stream";
 import { PendingAppointmentsTab } from "./pending-appointments-tab";
@@ -110,8 +110,9 @@ export default async function Page(params: Params) {
                 <TabsTrigger value={item.href} key={item.href}>
                   {item.label}{" "}
                   {item.notificationsCountKey ? (
-                    <DashboardTabNotificationsBadge
+                    <DashboardNotificationsBadge
                       notificationsCountKey={item.notificationsCountKey}
+                      className="ml-1 scale-75 -translate-y-1"
                     />
                   ) : null}
                 </TabsTrigger>

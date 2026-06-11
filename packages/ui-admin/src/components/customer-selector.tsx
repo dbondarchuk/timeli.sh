@@ -46,9 +46,8 @@ const CustomerShortLabel: React.FC<{
     <div className="flex flex-row items-center gap-2 shrink overflow-hidden text-nowrap min-w-0 max-w-[var(--radix-popover-trigger-width)]">
       <img
         src={customer.avatar ?? "/unknown-person.png"}
-        width={20}
-        height={20}
         alt={customer.name}
+        className="w-5 h-5 object-cover"
       />
       <div className={cn("flex gap-0.5", row ? "items-baseline" : "flex-col")}>
         <CustomerName customer={customer} />

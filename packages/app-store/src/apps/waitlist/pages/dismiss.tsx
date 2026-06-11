@@ -1,14 +1,11 @@
 "use client";
 
-import { ComplexAppPageProps } from "@timelish/types";
 import { Skeleton } from "@timelish/ui";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { dismissWaitlistEntry } from "../views/components/actions";
 
-export const WaitlistDismissPage: React.FC<ComplexAppPageProps> = ({
-  appId,
-}) => {
+export const WaitlistDismissPage: React.FC<{ appId: string }> = ({ appId }) => {
   const searchParams = useSearchParams();
   const id = searchParams?.get("id");
   const router = useRouter();

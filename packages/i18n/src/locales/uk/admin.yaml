@@ -103,6 +103,28 @@ platformEvents:
     refunded:
       title: Повернення платежу
       description: "{refundAmount} з {amount}"
+  syncedPayment:
+    ingested:
+      title: Синхронізовано платіж у закладі
+      description: "{amount} від {provider} · {status}"
+    confirmed:
+      title: Синхронізований платіж підтверджено
+      description: "{amount}"
+    rejected:
+      title: Синхронізований платіж відхилено
+      description: "{amount}"
+    assigned:
+      title: Синхронізований платіж призначено
+      description: "{amount} призначено до запису"
+    reassigned:
+      title: Синхронізований платіж перепризначено
+      description: "{amount} перенесено до іншого запису"
+    ignored:
+      title: Синхронізований платіж проігноровано
+      description: "{amount}"
+    amountsUpdated:
+      title: Суми синхронізованого платежу оновлено
+      description: "Платіж {paymentAmount}, чайові {tip}"
   giftCard:
     created:
       title: Подарункову карту видано
@@ -274,6 +296,9 @@ navigation:
   dashboard: Панель керування
   activity: Активність
   appointments: Записи
+  financials: Фінанси
+  payments: Платежі
+  paymentsInbox: Вхідні платежі
   customerAccess: Доступ клієнтів
   schedule: Розклад
   defaultSchedule: Розклад за замовчуванням
@@ -283,6 +308,7 @@ navigation:
   options: Опції
   discounts: Знижки
   giftCards: Подарункові картки
+  syncedPayments: Синхронізовані платежі
   customers: Клієнти
   website: Веб-сайт
   pages: Сторінки
@@ -315,6 +341,139 @@ themeToggle:
   light: Світла
   dark: Темна
   system: Системна
+paymentsInbox:
+  title: Вхідні платежі
+  description: Переглядайте платежі карткою в закладі, синхронізовані з підключених платіжних додатків, і підтверджуйте їх прив'язку до записів.
+paymentsList:
+  title: Платежі
+  description: Переглядайте всі записані платежі за записами та клієнтами.
+  empty: Платежів не знайдено.
+  loadError: Не вдалося завантажити платежі.
+  filters:
+    clearAll: Очистити фільтри
+    clearDates: Очистити дати
+    clearCustomer: Очистити клієнта
+    clearAppointment: Очистити запис
+  columns:
+    date: Дата
+    amount: Сума
+    type: Тип
+    method: Спосіб
+    customer: Клієнт
+    appointment: Запис
+    status: Статус
+  pagination:
+    previous: Попередня
+    next: Наступна
+    summary: "Показано {from}-{to} з {total}"
+  table:
+    filters:
+      searchPlaceholder: Пошук клієнтів, записів…
+    cellAction:
+      actions: Дії
+      update: Редагувати
+      delete: Видалити
+      viewAppointment: Переглянути запис
+      manageSyncedPayment: Керувати синхронізованим платежем
+      refund: Повернути кошти
+appointmentSelector:
+  placeholder: Оберіть запис…
+syncedPayments:
+  title: Синхронізовані платежі
+  description: Переглядайте платежі картками в закладі, синхронізовані з підключених платіжних застосунків, і підтверджуйте, як вони відповідають записам.
+  empty: Немає синхронізованих платежів для перегляду.
+  loadError: Не вдалося завантажити синхронізовані платежі.
+  filters:
+    needsReview: Потребують перегляду
+    all: Усі
+    dateFrom: Від
+    dateTo: До
+    clearDates: Очистити дати
+    singleTransaction: Показано одну синхронізовану транзакцію.
+    viewAll: Переглянути всі синхронізовані платежі
+  pagination:
+    previous: Назад
+    next: Далі
+    summary: "Показано {from}-{to} з {total}"
+  status:
+    matched: Зіставлено
+    unmatched: Не зіставлено
+    confirmed: Підтверджено
+    rejected: Відхилено
+    ignored: Проігноровано
+  reason:
+    exact_balance: Сума відповідає залишку до сплати
+    partial_balance: Часткова оплата залишку
+    balance_with_tip: Залишок плюс чайові
+  fields:
+    amount: Сума
+    paymentAmount: Платіж
+    tip: Чайові
+    fees: Комісія
+    transactionTime: Час транзакції
+    appointment: Запис
+    noAppointment: Не призначено
+    suggestions: Запропоновані записи
+    provider: Постачальник
+    matchScore: "Збіг {score}%"
+    customer: Клієнт
+  badge:
+    synced: Синхронізовано з {provider}
+  subtitle:
+    synced: Синхронізовано
+  sections:
+    totalReceived: Отримано всього
+    matchedTo: Зіставлено з
+    suggestions: Запропоновані записи
+  actions:
+    confirm: Підтвердити
+    reject: Відхилити
+    ignore: Ігнорувати
+    reassign: Призначити сюди
+    assign: Призначити сюди
+    reassignOther: Перепризначити
+    assignOther: Призначити
+    editAmounts: Редагувати суми
+    viewAppointment: Переглянути запис
+  editAmounts:
+    title: Редагувати суми
+    description: "Списано всього: {charged}. Налаштуйте розподіл між платежем і чайовими."
+    paymentAmount: Сума платежу
+    tip: Чайові
+    removeTip: Прибрати чайові
+    total: Усього
+    revert: Повернути початкові
+    save: Зберегти
+    cancel: Скасувати
+    notFound: Синхронізований платіж не знайдено.
+  manageDialog:
+    title: Синхронізований платіж
+    description: Перегляньте та керуйте цим синхронізованим платежем у закладі.
+  assignDialog:
+    title: Призначити запису
+    description: Знайдіть запис і виберіть один, щоб призначити цей платіж.
+    searchPlaceholder: Пошук за клієнтом, послугою або email…
+    empty: Записів не знайдено.
+    confirm: Призначити платіж
+    cancel: Скасувати
+    columns:
+      option: Послуга
+      customer: Клієнт
+      dateTime: Дата та час
+      price: Ціна
+  toast:
+    success: Синхронізований платіж оновлено
+    error: Не вдалося оновити синхронізований платіж
+  notifications:
+    ingested:
+      matched:
+        title: Платіж у закладі зіставлено
+        message: "{amount} від {provider} автоматично зіставлено з записом о {dt_transactionTime}."
+        action: Переглянути
+      unmatched:
+        title: Платіж у закладі потребує перевірки
+        message: "{amount} від {provider} о {dt_transactionTime} не вдалося зіставити з записом."
+        action: Переглянути
 appointments:
   title: Записи
   scheduleAppointment: Запланувати запис
@@ -378,6 +537,8 @@ appointments:
     refundPayments: Повернути платежі
     amount: Сума
     transactionId: ID транзакції
+    syncedPayment: Синхронізований платіж
+    manageSyncedPayment: Керувати синхронізованим платежем
     timePaid: Час оплати
     fees: Комісії
     cancel: Скасувати
@@ -2713,6 +2874,8 @@ payment:
     fees: Комісії
     netAmount: Чиста сума
     refundFees: Повертати комісії
+    syncedPayment: Синхронізований платіж
+    manageSyncedPayment: Керувати
   addUpdatePayment:
     addPayment: Додати платіж
     updatePayment: Оновити платіж
@@ -2744,6 +2907,8 @@ payment:
     rescheduleFee: Плата за перенесення
     cancellationFee: Плата за відміну
     giftCard: Покупка подарункової картки
+    syncedPayment: Синхронізований платіж
+    syncedTip: Синхронізовані чайові
   types:
     deposit: Депозит
     rescheduleFee: Плата за перенесення

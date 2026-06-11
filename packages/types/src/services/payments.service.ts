@@ -2,9 +2,14 @@ import {
   Payment,
   PaymentIntent,
   PaymentIntentUpdateModel,
+  PaymentMethod,
+  PaymentSummary,
+  PaymentType,
   PaymentUpdateModel,
 } from "../booking";
+import { Query, WithTotal } from "../database";
 import type { EventSource } from "../events/envelope";
+import { DateRange } from "../general";
 
 export interface IPaymentsService {
   createIntent(
@@ -23,6 +28,16 @@ export interface IPaymentsService {
     payment: PaymentUpdateModel,
     source: EventSource,
   ): Promise<Payment>;
+
+  list(
+    query: Query & {
+      range?: DateRange;
+      customerId?: string;
+      appointmentId?: string;
+      type?: PaymentType[];
+      method?: PaymentMethod[];
+    },
+  ): Promise<WithTotal<PaymentSummary>>;
 
   getPayment(id: string): Promise<Payment | null>;
   getPaymentByExternalId(externalId: string): Promise<Payment | null>;

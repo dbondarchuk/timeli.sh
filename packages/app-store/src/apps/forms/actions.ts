@@ -18,6 +18,7 @@ import {
   GetFormResponsesActionType,
   GetFormsAction,
   GetFormsActionType,
+  MarkFormResponsesReadActionType,
   ReassignFormResponsesActionType,
   SetFormArchivedActionType,
   SetFormsArchivedActionType,
@@ -403,6 +404,26 @@ export async function reassignFormResponses(
     logger.error(
       { appId, error: error?.message || error?.toString() },
       "Error reassigning form responses",
+    );
+    throw error;
+  }
+}
+
+export async function markFormResponsesRead(appId: string) {
+  const logger = loggerFactory("markFormResponsesRead");
+  logger.debug({ appId }, "Marking form responses as read");
+
+  try {
+    const result = await adminApi.apps.processRequest(appId, {
+      type: MarkFormResponsesReadActionType,
+    });
+
+    logger.info({ appId }, "Form responses marked as read");
+    return result;
+  } catch (error: any) {
+    logger.error(
+      { appId, error: error?.message || error?.toString() },
+      "Error marking form responses as read",
     );
     throw error;
   }

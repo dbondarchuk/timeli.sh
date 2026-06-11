@@ -6,9 +6,11 @@ import {
   ConnectedAppRequestError,
   ConnectedAppStatusWithText,
   ConnectedAppUninstallResult,
+  DashboardNotification,
   EventSource,
   IConnectedApp,
   IConnectedAppProps,
+  IDashboardNotifierApp,
   ISitemapItemsProvider,
   Page,
   SitemapUrlEntry,
@@ -66,13 +68,16 @@ import {
   BlogAdminNamespace,
 } from "../translations/types";
 import { expandBlogPlaceholderPageSitemapItems } from "./blog-sitemap";
+import { getBlogPendingCommentsBadges } from "./pending-comments-badge";
 import {
   BLOG_COMMENTS_COLLECTION_NAME,
   BLOG_POSTS_COLLECTION_NAME,
   BlogRepositoryService,
 } from "./repository-service";
 
-export class BlogConnectedApp implements IConnectedApp, ISitemapItemsProvider {
+export class BlogConnectedApp
+  implements IConnectedApp, ISitemapItemsProvider, IDashboardNotifierApp
+{
   protected readonly loggerFactory: LoggerFactory;
 
   public constructor(protected readonly props: IConnectedAppProps) {
@@ -80,6 +85,26 @@ export class BlogConnectedApp implements IConnectedApp, ISitemapItemsProvider {
       "BlogConnectedApp",
       props.organizationId,
     );
+  }
+
+  public async getInitialNotifications(
+    appData: ConnectedAppData,
+    _userId: string,
+    _date?: Date,
+  ): Promise<DashboardNotification[]> {
+    const badges = await getBlogPendingCommentsBadges(
+      appData._id,
+      appData.organizationId,
+      this.props.getDbConnection,
+      this.props.services,
+    );
+
+    return [
+      {
+        type: "blog-pending-comments",
+        badges,
+      },
+    ];
   }
 
   public async processRequest(
@@ -686,6 +711,7 @@ export class BlogConnectedApp implements IConnectedApp, ISitemapItemsProvider {
     await this.emitBlogEvent(
       BLOG_COMMENT_STATUS_CHANGED_EVENT_TYPE,
       {
+        appId: appData._id,
         comment: {
           _id: result._id,
           postId: result.postId,
@@ -723,6 +749,7 @@ export class BlogConnectedApp implements IConnectedApp, ISitemapItemsProvider {
     await this.emitBlogEvent(
       BLOG_COMMENT_STATUS_CHANGED_EVENT_TYPE,
       {
+        appId: appData._id,
         comment: {
           _id: result._id,
           postId: result.postId,
@@ -758,7 +785,11 @@ export class BlogConnectedApp implements IConnectedApp, ISitemapItemsProvider {
 
     await this.emitBlogEvent(
       BLOG_COMMENT_DELETED_EVENT_TYPE,
-      { commentId: result._id, postId: result.postId },
+      {
+        appId: appData._id,
+        commentId: result._id,
+        postId: result.postId,
+      },
       this.adminEventSource(userId),
     );
 
@@ -782,7 +813,11 @@ export class BlogConnectedApp implements IConnectedApp, ISitemapItemsProvider {
     for (const comment of comments) {
       await this.emitBlogEvent(
         BLOG_COMMENT_DELETED_EVENT_TYPE,
-        { commentId: comment._id, postId: comment.postId },
+        {
+          appId: appData._id,
+          commentId: comment._id,
+          postId: comment.postId,
+        },
         source,
       );
     }
@@ -798,7 +833,12 @@ export class BlogConnectedApp implements IConnectedApp, ISitemapItemsProvider {
       appData._id,
       appData.organizationId,
     );
-    return repositoryService.updateCommentsStatus(data.ids, "approved");
+    const result = await repositoryService.updateCommentsStatus(
+      data.ids,
+      "approved",
+    );
+    await this.publishPendingCommentsBadge(appData);
+    return result;
   }
 
   private async processRejectBlogCommentsRequest(
@@ -809,7 +849,28 @@ export class BlogConnectedApp implements IConnectedApp, ISitemapItemsProvider {
       appData._id,
       appData.organizationId,
     );
-    return repositoryService.updateCommentsStatus(data.ids, "rejected");
+    const result = await repositoryService.updateCommentsStatus(
+      data.ids,
+      "rejected",
+    );
+    await this.publishPendingCommentsBadge(appData);
+    return result;
+  }
+
+  private async publishPendingCommentsBadge(appData: ConnectedAppData) {
+    const badges = await getBlogPendingCommentsBadges(
+      appData._id,
+      appData.organizationId,
+      this.props.getDbConnection,
+      this.props.services,
+    );
+
+    await this.props.services.dashboardNotificationsService.publishNotification(
+      {
+        type: "blog-pending-comments",
+        badges,
+      },
+    );
   }
 
   private async processSetConfigurationRequest(

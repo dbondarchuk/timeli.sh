@@ -34,29 +34,22 @@ import {
 import { ChevronRight, Menu } from "lucide-react";
 import { usePathname } from "next/navigation";
 import React from "react";
+import { SidebarNavIcon } from "./sidebar-nav-icon";
+import { SidebarNavLabel } from "./sidebar-nav-label";
 import { UserNav } from "./user-nav";
+
+const getItemNotificationKeys = (
+  item: NavItemGroup["children"][number],
+): Array<string | undefined> => [
+  item.notificationsCountKey,
+  ...(item.items?.map((subItem) => subItem.notificationsCountKey) ?? []),
+];
 
 type SidebarProps = {
   className?: string;
   menuItems: NavItemGroup[];
   name: string;
   logo?: string;
-};
-
-export const NavIcon = ({
-  children,
-  className,
-}: {
-  children: React.ReactElement;
-  className?: string;
-}) => {
-  return React.Children.map(children, (child) =>
-    React.cloneElement(child, {
-      ...(child?.props || {}),
-      // @ts-ignore we have classname
-      className,
-    }),
-  );
 };
 
 export const AppSidebar: React.FC<SidebarProps> = ({
@@ -106,11 +99,17 @@ export const AppSidebar: React.FC<SidebarProps> = ({
                           <CollapsibleTrigger asChild>
                             <SidebarMenuButton tooltip={t(item.title)}>
                               {item.icon && (
-                                <NavIcon className={`size-4`}>
-                                  {item.icon}
-                                </NavIcon>
+                                <SidebarNavIcon
+                                  icon={item.icon}
+                                  notificationKeys={getItemNotificationKeys(
+                                    item,
+                                  )}
+                                />
                               )}
-                              <span>{t(item.title)}</span>
+                              <SidebarNavLabel
+                                title={item.title}
+                                notificationsCountKey={item.notificationsCountKey}
+                              />
                               <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90 size-3.5" />
                             </SidebarMenuButton>
                           </CollapsibleTrigger>
@@ -124,11 +123,19 @@ export const AppSidebar: React.FC<SidebarProps> = ({
                                       className="text-xs"
                                     >
                                       {subItem.icon && (
-                                        <NavIcon className={`size-4`}>
-                                          {subItem.icon}
-                                        </NavIcon>
+                                        <SidebarNavIcon
+                                          icon={subItem.icon}
+                                          notificationsCountKey={
+                                            subItem.notificationsCountKey
+                                          }
+                                        />
                                       )}
-                                      <span>{t(subItem.title)}</span>
+                                      <SidebarNavLabel
+                                        title={subItem.title}
+                                        notificationsCountKey={
+                                          subItem.notificationsCountKey
+                                        }
+                                      />
                                     </Link>
                                   </SidebarMenuSubButton>
                                 </SidebarMenuSubItem>
@@ -143,11 +150,17 @@ export const AppSidebar: React.FC<SidebarProps> = ({
                           <DropdownMenuTrigger asChild>
                             <SidebarMenuButton tooltip={t(item.title)}>
                               {item.icon && (
-                                <NavIcon className={`size-4`}>
-                                  {item.icon}
-                                </NavIcon>
+                                <SidebarNavIcon
+                                  icon={item.icon}
+                                  notificationKeys={getItemNotificationKeys(
+                                    item,
+                                  )}
+                                />
                               )}
-                              <span>{t(item.title)}</span>
+                              <SidebarNavLabel
+                                title={item.title}
+                                notificationsCountKey={item.notificationsCountKey}
+                              />
                             </SidebarMenuButton>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent
@@ -165,11 +178,19 @@ export const AppSidebar: React.FC<SidebarProps> = ({
                                   className="inline-flex items-center gap-2 cursor-pointer text-sidebar-foreground hover:text-sidebar-accent-foreground text-xs"
                                 >
                                   {subItem.icon && (
-                                    <NavIcon className={`size-4`}>
-                                      {subItem.icon}
-                                    </NavIcon>
+                                    <SidebarNavIcon
+                                      icon={subItem.icon}
+                                      notificationsCountKey={
+                                        subItem.notificationsCountKey
+                                      }
+                                    />
                                   )}
-                                  <span>{t(subItem.title)}</span>
+                                  <SidebarNavLabel
+                                    title={subItem.title}
+                                    notificationsCountKey={
+                                      subItem.notificationsCountKey
+                                    }
+                                  />
                                 </Link>
                               </DropdownMenuItem>
                             ))}
@@ -186,9 +207,15 @@ export const AppSidebar: React.FC<SidebarProps> = ({
                       >
                         <Link href={item.href || "/"}>
                           {item.icon && (
-                            <NavIcon className={`size-4`}>{item.icon}</NavIcon>
+                            <SidebarNavIcon
+                              icon={item.icon}
+                              notificationsCountKey={item.notificationsCountKey}
+                            />
                           )}
-                          <span>{t(item.title)}</span>
+                          <SidebarNavLabel
+                            title={item.title}
+                            notificationsCountKey={item.notificationsCountKey}
+                          />
                         </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>

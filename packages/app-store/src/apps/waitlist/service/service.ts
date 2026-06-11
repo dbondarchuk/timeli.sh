@@ -11,15 +11,15 @@ import {
   ConnectedAppUninstallResult,
   DashboardNotification,
   DemoArguments,
-  type EventSource,
   EventEnvelope,
   ICommunicationTemplatesProvider,
   IConnectedApp,
   IConnectedAppProps,
-  IEventSubscriber,
   IDashboardNotifierApp,
   IDemoArgumentsProvider,
+  IEventSubscriber,
   TemplateTemplatesList,
+  type EventSource,
 } from "@timelish/types";
 import { dispatchAppointmentEventPayload } from "@timelish/utils";
 import {
@@ -263,6 +263,7 @@ export class WaitlistConnectedApp
 
   public async getInitialNotifications(
     appData: ConnectedAppData,
+    _userId: string,
     date?: Date,
   ): Promise<DashboardNotification[]> {
     const logger = this.loggerFactory("getNotifications");

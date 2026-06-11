@@ -29,6 +29,7 @@ import { S3AssetsStorageService } from "./s3-assets-storage";
 import { getS3Configuration } from "./s3-assets-storage/utils";
 import { ScheduleService } from "./schedule.service";
 import { ServicesService } from "./services.service";
+import { SyncedPaymentsService } from "./synced-payments.service";
 import { TemplatesService } from "./templates.service";
 import { UserService } from "./user.service";
 
@@ -59,6 +60,7 @@ export * from "./payments.service";
 export * from "./s3-assets-storage";
 export * from "./schedule.service";
 export * from "./services.service";
+export * from "./synced-payments.service";
 export * from "./user.service";
 
 /**
@@ -158,6 +160,13 @@ export const ServicesContainer: (
       userService,
     );
 
+    const syncedPaymentsService = new SyncedPaymentsService(
+      organizationId,
+      bookingService,
+      paymentsService,
+      eventService,
+    );
+
     const pagesService = new CachedPagesService(
       organizationId,
       eventService,
@@ -211,6 +220,7 @@ export const ServicesContainer: (
       communicationLogsService,
       connectedAppsService,
       paymentsService,
+      syncedPaymentsService,
       jobService,
       eventService,
       notificationService,

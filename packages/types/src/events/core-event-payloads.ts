@@ -12,6 +12,7 @@ import type {
   GiftCardUpdateModel,
 } from "../booking/gift-card";
 import type { Payment, PaymentUpdateModel } from "../booking/payment";
+import type { SyncedPayment } from "../booking/synced-payment";
 import type { ServiceField, ServiceFieldUpdateModel } from "../booking/field";
 import type { Customer, CustomerUpdateModel } from "../customers/customer";
 import type { Asset, AssetEntity, AssetUpdate } from "../assets";
@@ -56,6 +57,12 @@ import {
   PAYMENT_DELETED_EVENT_TYPE,
   PAYMENT_REFUNDED_EVENT_TYPE,
   PAYMENT_UPDATED_EVENT_TYPE,
+  SYNCED_PAYMENT_AMOUNTS_UPDATED_EVENT_TYPE,
+  SYNCED_PAYMENT_ASSIGNED_EVENT_TYPE,
+  SYNCED_PAYMENT_CONFIRMED_EVENT_TYPE,
+  SYNCED_PAYMENT_IGNORED_EVENT_TYPE,
+  SYNCED_PAYMENT_INGESTED_EVENT_TYPE,
+  SYNCED_PAYMENT_REJECTED_EVENT_TYPE,
   PAGE_CREATED_EVENT_TYPE,
   PAGE_DELETED_EVENT_TYPE,
   PAGE_UPDATED_EVENT_TYPE,
@@ -144,6 +151,25 @@ export type PaymentUpdatedPayload = {
 export type PaymentDeletedPayload = { payment: Payment };
 
 export type PaymentRefundedPayload = { payment: Payment; amount: number };
+
+export type SyncedPaymentIngestedPayload = { syncedPayment: SyncedPayment };
+
+export type SyncedPaymentConfirmedPayload = { syncedPayment: SyncedPayment };
+
+export type SyncedPaymentRejectedPayload = { syncedPayment: SyncedPayment };
+
+export type SyncedPaymentAssignedPayload = {
+  syncedPayment: SyncedPayment;
+  previousAppointmentId?: string;
+};
+
+export type SyncedPaymentIgnoredPayload = { syncedPayment: SyncedPayment };
+
+export type SyncedPaymentAmountsUpdatedPayload = {
+  syncedPayment: SyncedPayment;
+  previousPaymentAmount?: number;
+  previousTip?: number;
+};
 
 export type GiftCardCreatedPayload = { giftCard: GiftCardListModel };
 
@@ -269,6 +295,12 @@ export type CoreEventPayloadByType = {
   [PAYMENT_UPDATED_EVENT_TYPE]: PaymentUpdatedPayload;
   [PAYMENT_DELETED_EVENT_TYPE]: PaymentDeletedPayload;
   [PAYMENT_REFUNDED_EVENT_TYPE]: PaymentRefundedPayload;
+  [SYNCED_PAYMENT_INGESTED_EVENT_TYPE]: SyncedPaymentIngestedPayload;
+  [SYNCED_PAYMENT_CONFIRMED_EVENT_TYPE]: SyncedPaymentConfirmedPayload;
+  [SYNCED_PAYMENT_REJECTED_EVENT_TYPE]: SyncedPaymentRejectedPayload;
+  [SYNCED_PAYMENT_ASSIGNED_EVENT_TYPE]: SyncedPaymentAssignedPayload;
+  [SYNCED_PAYMENT_IGNORED_EVENT_TYPE]: SyncedPaymentIgnoredPayload;
+  [SYNCED_PAYMENT_AMOUNTS_UPDATED_EVENT_TYPE]: SyncedPaymentAmountsUpdatedPayload;
   [GIFT_CARD_CREATED_EVENT_TYPE]: GiftCardCreatedPayload;
   [GIFT_CARD_UPDATED_EVENT_TYPE]: GiftCardUpdatedPayload;
   [GIFT_CARD_STATUS_CHANGED_EVENT_TYPE]: GiftCardStatusChangedPayload;

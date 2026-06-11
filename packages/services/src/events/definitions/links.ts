@@ -8,6 +8,9 @@ export const dashboardUrls = {
     payment.appointmentId
       ? `/dashboard/appointments/${payment.appointmentId}`
       : `/dashboard/customers/${payment.customerId}`,
+  syncedPayment: (record: { externalId: string }) =>
+    `/dashboard/financials/inbox?externalId=${encodeURIComponent(record.externalId)}`,
+  syncedPayments: "/dashboard/financials/inbox",
   giftCard: (id: string) => `/dashboard/services/gift-cards/${id}`,
   giftCards: "/dashboard/services/gift-cards",
   field: (id: string) => `/dashboard/services/fields/${id}`,

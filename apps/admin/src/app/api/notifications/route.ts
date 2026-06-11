@@ -68,6 +68,22 @@ const getPendingAppointmentsNotifications = async (date?: Date) => {
   } satisfies DashboardNotification;
 };
 
+const getSyncedPaymentsReviewNotifications = async () => {
+  const servicesContainer = await getServicesContainer();
+  const count =
+    await servicesContainer.syncedPaymentsService.getReviewQueueCount();
+
+  return {
+    type: "synced-payments-review",
+    badges: [
+      {
+        key: "synced_payments_review",
+        count,
+      },
+    ],
+  } satisfies DashboardNotification;
+};
+
 export async function GET(request: NextRequest) {
   const logger = getLoggerFactory("AdminAPI/notifications")("GET");
   const servicesContainer = await getServicesContainer();
@@ -94,9 +110,14 @@ export async function GET(request: NextRequest) {
   ) => {
     logger.debug("Getting pending appointments notifications");
     const count = await getPendingAppointmentsNotifications(lastDate);
+    const syncedPaymentsReview = await getSyncedPaymentsReviewNotifications();
     const activityFeed = await getActivityFeedNotifications(userId);
 
-    let notifications: DashboardNotification[] = [count, activityFeed];
+    let notifications: DashboardNotification[] = [
+      count,
+      syncedPaymentsReview,
+      activityFeed,
+    ];
 
     logger.debug("Invoking dashboard notifier apps");
     const results =
@@ -106,7 +127,7 @@ export async function GET(request: NextRequest) {
       >(
         "dashboard-notifier",
         async (app, service) => {
-          return await service.getInitialNotifications(app, lastDate);
+          return await service.getInitialNotifications(app, userId, lastDate);
         },
         {
           concurrencyLimit: 10,

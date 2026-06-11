@@ -5,6 +5,8 @@ import { BLOG_APP_EVENTS } from "../apps/blog/app-events";
 import { BLOG_APP_NAME } from "../apps/blog/const";
 import { FORMS_APP_EVENTS } from "../apps/forms/app-events";
 import { FORMS_APP_NAME } from "../apps/forms/const";
+import { GIFT_CARD_STUDIO_APP_EVENTS } from "../apps/gift-card-studio/app-events";
+import { GIFT_CARD_STUDIO_APP_NAME } from "../apps/gift-card-studio/const";
 import { WAITLIST_APP_EVENTS } from "../apps/waitlist/app-events";
 import { WAITLIST_APP_NAME } from "../apps/waitlist/const";
 
@@ -27,6 +29,7 @@ export const BUILT_IN_APP_EVENT_SUBSCRIPTIONS: Record<string, string[]> = {
 export const APP_EVENT_CONFIGS: Record<string, AppEventConfig> = {
   [BLOG_APP_NAME]: BLOG_APP_EVENTS,
   [FORMS_APP_NAME]: FORMS_APP_EVENTS,
+  [GIFT_CARD_STUDIO_APP_NAME]: GIFT_CARD_STUDIO_APP_EVENTS,
   [WAITLIST_APP_NAME]: WAITLIST_APP_EVENTS,
 };
 

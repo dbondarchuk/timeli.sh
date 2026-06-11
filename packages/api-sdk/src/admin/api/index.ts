@@ -16,10 +16,12 @@ import * as pageFooters from "./page-footers";
 import * as pageHeaders from "./page-headers";
 import * as pages from "./pages";
 import * as payments from "./payments";
+export type { ListPaymentsParams } from "./payments";
 import * as schedule from "./schedule";
 import * as serviceAddons from "./service-addons";
 import * as serviceFields from "./service-fields";
 import * as serviceOptions from "./service-options";
+import * as syncedPayments from "./synced-payments";
 import * as templates from "./templates";
 import * as users from "./users";
 
@@ -48,6 +50,7 @@ export const adminApi = {
   organization,
   users,
   booking,
+  syncedPayments,
 };
 
 export * from "./utils";

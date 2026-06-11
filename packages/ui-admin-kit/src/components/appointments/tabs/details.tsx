@@ -8,6 +8,7 @@ import {
   Avatar,
   AvatarFallback,
   AvatarImage,
+  Badge,
   Button,
   Form,
   FormControl,
@@ -71,6 +72,16 @@ export const AppointmentDetails = ({
   const paidPayments = appointment.payments?.filter(
     (payment) => payment.status === "paid",
   );
+
+  const syncedPayment = appointment.payments?.find(
+    (payment) =>
+      payment.method === "in-person-card" && payment.source === "synced",
+  );
+  const syncedProvider =
+    syncedPayment?.method === "in-person-card" && syncedPayment.appName
+      ? syncedPayment.appName.charAt(0).toUpperCase() +
+        syncedPayment.appName.slice(1)
+      : undefined;
 
   const totalPaid =
     appointment.payments?.reduce(
@@ -204,9 +215,16 @@ export const AppointmentDetails = ({
         {/* Payment */}
         {!!appointment.totalPrice && (
           <div className="px-5 py-4 border-b border-border">
-            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-2.5">
-              {t("appointments.view.payment.label")}
-            </p>
+            <div className="flex items-center justify-between gap-2 mb-2.5">
+              <p className="text-xs text-muted-foreground uppercase tracking-wide">
+                {t("appointments.view.payment.label")}
+              </p>
+              {syncedProvider && (
+                <Badge variant="secondary" className="shrink-0">
+                  {t("syncedPayments.badge.synced", { provider: syncedProvider })}
+                </Badge>
+              )}
+            </div>
             <div className="flex flex-row flex-wrap gap-2">
               <div className="bg-background rounded-lg flex-1 p-3 border border-border">
                 <p className="text-xs text-muted-foreground mb-0.5">

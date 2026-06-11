@@ -104,6 +104,9 @@ export type CollectPayment = {
 
 export const inPersonPaymentMethod = ["cash", "in-person-card"] as const;
 
+export const inPersonPaymentSource = ["manual", "synced"] as const;
+export type InPersonPaymentSource = (typeof inPersonPaymentSource)[number];
+
 export type PaymentStatus = "paid" | "refunded";
 export type OnlinePaymentMethod = "online";
 export type InPersonPaymentMethod = (typeof inPersonPaymentMethod)[number];
@@ -115,6 +118,12 @@ export type PaymentMethod =
   | OnlinePaymentMethod
   | InPersonPaymentMethod
   | GiftCardPaymentMethod;
+
+export const paymentMethods = [
+  ...inPersonPaymentMethod,
+  "online",
+  ...giftCardPaymentMethod,
+] as const satisfies readonly PaymentMethod[];
 
 export type PaymentUpdateModel = {
   amount: number;
@@ -133,6 +142,17 @@ export type PaymentUpdateModel = {
   | {
       method: InPersonPaymentMethod;
       disableUpdate?: boolean;
+      /**
+       * Origin of the in-person payment. `manual` is staff-entered (default),
+       * `synced` is ingested from a payment provider (e.g. PayPal in-store).
+       */
+      source?: InPersonPaymentSource;
+      /** Provider transaction/capture id, set for synced payments. */
+      externalId?: string;
+      /** Provider app name, set for synced payments (e.g. "paypal"). */
+      appName?: string;
+      /** Connected app id, set for synced payments. */
+      appId?: string;
     }
   | {
       method: OnlinePaymentMethod;
@@ -198,7 +218,9 @@ export type InStorePaymentUpdateModel = z.infer<
   typeof inStorePaymentUpdateModelSchema
 >;
 
-export type PaymentSummary = Payment & {
-  customerName?: string;
-  serviceName?: string;
-};
+export type PaymentSummary = Prettify<
+  Payment & {
+    customerName?: string;
+    serviceName?: string;
+  }
+>;

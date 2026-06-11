@@ -9,6 +9,19 @@ export const PAYMENT_UPDATED_EVENT_TYPE = "payment.updated" as const;
 export const PAYMENT_DELETED_EVENT_TYPE = "payment.deleted" as const;
 export const PAYMENT_REFUNDED_EVENT_TYPE = "payment.refunded" as const;
 
+export const SYNCED_PAYMENT_INGESTED_EVENT_TYPE =
+  "syncedPayment.ingested" as const;
+export const SYNCED_PAYMENT_CONFIRMED_EVENT_TYPE =
+  "syncedPayment.confirmed" as const;
+export const SYNCED_PAYMENT_REJECTED_EVENT_TYPE =
+  "syncedPayment.rejected" as const;
+export const SYNCED_PAYMENT_ASSIGNED_EVENT_TYPE =
+  "syncedPayment.assigned" as const;
+export const SYNCED_PAYMENT_IGNORED_EVENT_TYPE =
+  "syncedPayment.ignored" as const;
+export const SYNCED_PAYMENT_AMOUNTS_UPDATED_EVENT_TYPE =
+  "syncedPayment.amountsUpdated" as const;
+
 export const GIFT_CARD_CREATED_EVENT_TYPE = "giftCard.created" as const;
 export const GIFT_CARD_UPDATED_EVENT_TYPE = "giftCard.updated" as const;
 export const GIFT_CARD_STATUS_CHANGED_EVENT_TYPE =

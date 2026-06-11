@@ -389,6 +389,11 @@ export class CustomersService extends BaseService implements ICustomersService {
     const logger = this.loggerFactory("findCustomerBySearchFields");
     logger.debug({ searches }, "Finding customer by search fields");
 
+    if (searches.length === 0) {
+      logger.debug({ searches }, "No search fields provided");
+      return null;
+    }
+
     const db = await getDbConnection();
 
     const collection = db.collection<Customer>(CUSTOMERS_COLLECTION_NAME);

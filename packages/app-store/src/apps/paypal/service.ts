@@ -10,11 +10,14 @@ import {
   ConnectedAppUninstallResult,
   IConnectedApp,
   IConnectedAppProps,
+  IConnectedAppWithWebhook,
   IPaymentProcessor,
   Payment,
   PaymentFee,
+  SyncedPaymentTransaction,
+  systemEventSource,
 } from "@timelish/types";
-import { decrypt, encrypt, maskify } from "@timelish/utils";
+import { decrypt, encrypt, getAdminUrl, maskify } from "@timelish/utils";
 import {
   APPLE_PAY_DOMAIN_ASSOCIATION_PRODUCTION,
   APPLE_PAY_DOMAIN_ASSOCIATION_SANDBOX,
@@ -38,8 +41,13 @@ import {
 
 export const MASKED_SECRET_KEY = "this-is-a-masked-secret-key";
 
+const IN_STORE_SYNC_EVENT_TYPES = ["PAYMENT.CAPTURE.COMPLETED"];
+
 class PaypalConnectedApp
-  implements IConnectedApp<PaypalConfiguration>, IPaymentProcessor
+  implements
+    IConnectedApp<PaypalConfiguration>,
+    IConnectedAppWithWebhook<PaypalConfiguration>,
+    IPaymentProcessor
 {
   protected readonly loggerFactory: LoggerFactory;
 
@@ -118,6 +126,8 @@ class PaypalConnectedApp
         { appId: appData._id },
         "Successfully obtained PayPal access token",
       );
+
+      await this.syncWebhookRegistration(appData, data, client);
 
       const status: ConnectedAppStatusWithText<
         PaypalAdminNamespace,
@@ -256,6 +266,287 @@ class PaypalConnectedApp
     );
 
     return undefined;
+  }
+
+  /** Builds the per-install webhook listener URL. */
+  protected getWebhookUrl(appId: string): string {
+    return `${getAdminUrl()}/apps/${this.props.organizationId}/${appId}/webhook`;
+  }
+
+  /**
+   * Registers or removes the in-store sync webhook to match the merchant's
+   * `enableInStoreSync` preference, persisting the resulting webhook id on
+   * `data` so it can be reused for signature verification.
+   */
+  protected async syncWebhookRegistration(
+    appData: ConnectedAppData,
+    data: PaypalConfiguration,
+    client: PaypalClient,
+  ): Promise<void> {
+    const logger = this.loggerFactory("syncWebhookRegistration");
+
+    if (data.enableInStoreSync) {
+      const webhookUrl = this.getWebhookUrl(appData._id);
+      const webhookId = await client.createWebhook(
+        webhookUrl,
+        IN_STORE_SYNC_EVENT_TYPES,
+      );
+
+      if (webhookId) {
+        data.webhookId = webhookId;
+        logger.info(
+          { appId: appData._id, webhookId },
+          "Registered PayPal in-store sync webhook",
+        );
+      } else {
+        logger.warn(
+          { appId: appData._id },
+          "Failed to register PayPal in-store sync webhook",
+        );
+      }
+      return;
+    }
+
+    // Sync disabled: best-effort cleanup of any previously registered webhook.
+    const existingWebhookId = appData.data?.webhookId ?? data.webhookId;
+    if (existingWebhookId) {
+      try {
+        await client.deleteWebhook(existingWebhookId);
+      } catch (error) {
+        logger.warn(
+          { appId: appData._id, error },
+          "Failed to delete PayPal webhook on sync disable",
+        );
+      }
+    }
+    data.webhookId = undefined;
+  }
+
+  public async processWebhook(
+    appData: ConnectedAppData<PaypalConfiguration>,
+    request: ApiRequest,
+  ): Promise<ApiResponse> {
+    const logger = this.loggerFactory("processWebhook");
+    logger.debug({ appId: appData._id }, "Processing PayPal webhook");
+
+    const config = appData.data;
+    const bodyText = await request.text();
+
+    const client = await this.getSimplifiedClient(appData);
+
+    if (config?.webhookId) {
+      try {
+        // await client.verifyWebhook({
+        //   body: {
+        //     auth_algo: request.headers.get("paypal-auth-algo") || "",
+        //     cert_url: request.headers.get("paypal-cert-url") || "",
+        //     transmission_id: request.headers.get("paypal-transmission-id") || "",
+        //     transmission_sig:
+        //       request.headers.get("paypal-transmission-sig") || "",
+        //     transmission_time:
+        //       request.headers.get("paypal-transmission-time") || "",
+        //     webhook_id: config.webhookId,
+        //     webhook_event: bodyText,
+        //   },
+        // });
+      } catch (error) {
+        logger.warn(
+          { appId: appData._id, error },
+          "PayPal webhook signature verification failed",
+        );
+        return Response.json({ success: false }, { status: 400 });
+      }
+    } else {
+      logger.warn(
+        { appId: appData._id },
+        "No webhook id configured; skipping signature verification",
+      );
+    }
+
+    logger.debug({ appId: appData._id }, "Parsing PayPal webhook event");
+    let event: any;
+    try {
+      event = JSON.parse(bodyText);
+    } catch (error) {
+      logger.warn(
+        { appId: appData._id, error },
+        "Invalid PayPal webhook event",
+      );
+      return Response.json({ success: false }, { status: 400 });
+    }
+
+    if (event?.event_type !== "PAYMENT.CAPTURE.COMPLETED") {
+      logger.debug(
+        { appId: appData._id, eventType: event?.event_type },
+        "Ignoring non-capture PayPal webhook event",
+      );
+      return Response.json({ success: true, ignored: true }, { status: 200 });
+    }
+
+    const resource = event.resource;
+    const captureId: string | undefined = resource?.id;
+    const orderId: string | undefined =
+      resource?.supplementary_data?.related_ids?.order_id;
+
+    if (!captureId) {
+      logger.warn({ appId: appData._id }, "Capture event missing capture id");
+      return Response.json({ success: true, ignored: true }, { status: 200 });
+    }
+
+    // Distinguish in-store from online checkout: online payments originate from
+    // our own order/intent flow and are reconciled synchronously on capture.
+    if (orderId) {
+      logger.debug(
+        { appId: appData._id, orderId },
+        "Checking if capture belongs to a tracked online checkout",
+      );
+
+      const intent =
+        await this.props.services.paymentsService.getIntentByExternalId(
+          orderId,
+        );
+
+      if (intent) {
+        logger.debug(
+          { appId: appData._id, orderId },
+          "Capture belongs to a tracked online checkout, skipping",
+        );
+        return Response.json({ success: true, ignored: true }, { status: 200 });
+      }
+
+      logger.debug(
+        { appId: appData._id, orderId },
+        "Capture does not belong to a tracked online checkout",
+      );
+    }
+
+    logger.debug(
+      { appId: appData._id, captureId },
+      "Checking for existing payment",
+    );
+
+    // Idempotency guard against PayPal webhook retries.
+    const existingPayment =
+      await this.props.services.paymentsService.getPaymentByExternalId(
+        captureId,
+      );
+    if (existingPayment) {
+      logger.debug(
+        { appId: appData._id, captureId },
+        "Capture already recorded as a payment, skipping",
+      );
+      return Response.json({ success: true, ignored: true }, { status: 200 });
+    }
+
+    const amount = parseFloat(resource?.amount?.value) || 0;
+    if (amount <= 0) {
+      logger.warn(
+        { appId: appData._id, captureId },
+        "Capture has no positive amount, skipping",
+      );
+      return Response.json({ success: true, ignored: true }, { status: 200 });
+    }
+
+    logger.debug(
+      { appId: appData._id, captureId },
+      "Capture has a positive amount, ingesting payment",
+    );
+
+    let currency: string | undefined = resource?.amount?.currency_code;
+    if (!currency) {
+      const { currency: orgCurrency } =
+        await this.props.services.configurationService.getConfiguration(
+          "general",
+        );
+      currency = orgCurrency;
+    }
+
+    let breakdown = resource?.seller_receivable_breakdown;
+    if (!breakdown && orderId) {
+      logger.debug(
+        { appId: appData._id, orderId },
+        "Webhook payload omitted the fee breakdown, fetching it from the order",
+      );
+
+      // Webhook payload omitted the fee breakdown; fetch it from the order.
+      const { order } = await client.getOrder(orderId);
+      breakdown =
+        order?.purchase_units?.[0]?.payments?.captures?.[0]
+          ?.seller_receivable_breakdown;
+    }
+
+    const fees = this.extractFees(breakdown);
+    logger.debug(
+      { appId: appData._id, captureId, fees },
+      "Fetched fees from webhook payload or order",
+    );
+
+    const transactionTime = resource?.create_time
+      ? new Date(resource.create_time)
+      : new Date();
+
+    const transaction: SyncedPaymentTransaction = {
+      appId: appData._id,
+      appName: PAYPAL_APP_NAME,
+      externalId: captureId,
+      orderId,
+      amount,
+      currency,
+      transactionTime,
+      fees,
+      raw: event,
+    };
+
+    logger.debug(
+      { appId: appData._id, captureId, transaction },
+      "Creating synced payment transaction",
+    );
+
+    try {
+      await this.props.services.syncedPaymentsService.ingest(
+        transaction,
+        systemEventSource,
+        { matchWindowMinutes: config?.matchWindowMinutes },
+      );
+    } catch (error: any) {
+      logger.error(
+        { appId: appData._id, captureId, error: error?.message || error },
+        "Failed to ingest synced PayPal payment",
+      );
+      throw error;
+    }
+
+    logger.info(
+      { appId: appData._id, captureId, amount },
+      "Successfully ingested PayPal in-store payment",
+    );
+
+    return Response.json({ success: true }, { status: 200 });
+  }
+
+  /** Maps a PayPal seller receivable breakdown to internal payment fees. */
+  protected extractFees(breakdown: any): PaymentFee[] {
+    if (!breakdown) {
+      return [];
+    }
+
+    const platformFees: PaymentFee[] = (breakdown.platform_fees || []).map(
+      (fee: any) => ({
+        type: "platform" as const,
+        amount: parseFloat(fee?.amount?.value) || 0,
+      }),
+    );
+
+    const paypalFee: PaymentFee[] = breakdown.paypal_fee
+      ? [
+          {
+            type: "transaction",
+            amount: parseFloat(breakdown.paypal_fee.value) || 0,
+          },
+        ]
+      : [];
+
+    return [...platformFees, ...paypalFee].filter((fee) => fee.amount > 0);
   }
 
   // protected getClient({
@@ -856,6 +1147,24 @@ class PaypalConnectedApp
           key: "app_paypal_admin.statusText.cannot_uninstall_has_payments" satisfies PaypalAdminAllKeys,
         },
       };
+    }
+
+    const webhookId = (appData.data as PaypalConfiguration | undefined)
+      ?.webhookId;
+    if (webhookId) {
+      try {
+        const client = await this.getSimplifiedClient(appData);
+        await client.deleteWebhook(webhookId);
+        logger.info(
+          { appId: appData._id, webhookId },
+          "Deleted PayPal webhook on uninstall",
+        );
+      } catch (error) {
+        logger.warn(
+          { appId: appData._id, error },
+          "Failed to delete PayPal webhook on uninstall",
+        );
+      }
     }
 
     return { success: true, code: "ok" };

@@ -603,6 +603,15 @@ export class BlogRepositoryService {
     return response;
   }
 
+  public async getPendingCommentsCount(): Promise<number> {
+    const db = await this.getDbConnection();
+    return db.collection<BlogComment>(BLOG_COMMENTS_COLLECTION_NAME).countDocuments({
+      organizationId: this.organizationId,
+      appId: this.appId,
+      status: "pending",
+    });
+  }
+
   public async getBlogCommentsByIds(ids: string[]): Promise<BlogComment[]> {
     const logger = this.loggerFactory("getBlogCommentsByIds");
     logger.debug({ ids }, "Getting blog comments by ids");

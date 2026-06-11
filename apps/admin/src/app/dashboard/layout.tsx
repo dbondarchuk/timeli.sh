@@ -129,6 +129,7 @@ export default async function DashboardLayout({
             icon: parent.icon,
             label: parent.label,
             description: parent.description,
+            notificationsCountKey: parent.notificationsCountKey,
           });
         }
       }

@@ -28,6 +28,26 @@ export const paypalConfigurationSchema = z.object({
   ),
   enableGooglePay: z.boolean(),
   enableApplePay: z.boolean(),
+  /**
+   * When enabled, PayPal in-store card payments are synced via webhook and
+   * auto-matched to appointments.
+   */
+  enableInStoreSync: z.boolean().optional(),
+  /**
+   * How loosely (in minutes) an appointment start time may differ from the
+   * transaction time to still be considered a match candidate.
+   */
+  matchWindowMinutes: z.coerce
+    .number<number>()
+    .int()
+    .positive()
+    .max(1440)
+    .optional(),
+  /**
+   * PayPal-generated webhook id. Set server-side when the in-store sync webhook
+   * is registered; required to verify webhook signatures.
+   */
+  webhookId: z.string().optional(),
   buttonStyle: z.object({
     shape: z.enum(paypalButtonsShape, {
       message:

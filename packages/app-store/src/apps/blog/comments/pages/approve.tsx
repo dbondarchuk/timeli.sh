@@ -1,7 +1,6 @@
 "use client";
 
 import { useI18n } from "@timelish/i18n";
-import { ComplexAppPageProps } from "@timelish/types";
 import { Skeleton, toastPromise } from "@timelish/ui";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
@@ -12,7 +11,7 @@ import {
   BlogAdminNamespace,
 } from "../../translations/types";
 
-export const BlogCommentApprovePage: React.FC<ComplexAppPageProps> = ({
+export const BlogCommentApprovePage: React.FC<{ appId: string }> = ({
   appId,
 }) => {
   const searchParams = useSearchParams();

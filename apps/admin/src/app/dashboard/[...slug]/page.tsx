@@ -62,7 +62,9 @@ const getAppPage = cache(async (path: string) => {
 
   const breadcrumbItems = [
     { title: tAdmin("navigation.dashboard"), link: "/dashboard" },
-    { title: tAdmin("navigation.apps"), link: "/dashboard/apps" },
+    ...(!menuItem.noAppsBreadcrumb
+      ? [{ title: tAdmin("navigation.apps"), link: "/dashboard/apps" }]
+      : []),
     ...(menuItem.pageBreadcrumbs?.map((b) => ({
       ...b,
       title: t(b.title, { appName: t(app.app.displayName) }),
@@ -88,6 +90,7 @@ const getAppPage = cache(async (path: string) => {
     appId,
     menuItem,
     app,
+    servicesContainer,
   };
 });
 
@@ -117,8 +120,14 @@ export default async function Page(props: Props) {
     "Processing dashboard page request",
   );
 
-  const { menuItem, breadcrumbItems, appId, title, description } =
-    await getAppPage(path);
+  const {
+    menuItem,
+    breadcrumbItems,
+    appId,
+    title,
+    description,
+    servicesContainer,
+  } = await getAppPage(path);
 
   return (
     <PageContainer scrollable={!menuItem.notScrollable}>
@@ -135,7 +144,11 @@ export default async function Page(props: Props) {
             )}
             <HeaderActionButtonsContainer />
           </div>
-          <menuItem.Page appId={appId} />
+          <menuItem.Page
+            appId={appId}
+            searchParams={searchParams}
+            services={servicesContainer}
+          />
         </div>
       </HeaderActionButtonsProvider>
     </PageContainer>

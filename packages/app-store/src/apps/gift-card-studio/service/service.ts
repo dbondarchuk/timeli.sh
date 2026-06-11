@@ -6,16 +6,20 @@ import {
   ConnectedAppData,
   ConnectedAppRequestError,
   ConnectedAppUninstallResult,
+  DashboardNotification,
   DemoArguments,
+  EventSource,
   ICommunicationTemplatesProvider,
   IConnectedApp,
   IConnectedAppProps,
+  IDashboardNotifierApp,
   IDemoArgumentsProvider,
   IPaymentProcessor,
   IScheduled,
   PaymentIntentUpdateModel,
   systemEventSource,
   TemplateTemplatesList,
+  userEventSource,
 } from "@timelish/types";
 import { formatAmountWithCurrency } from "@timelish/utils";
 import { DateTime } from "luxon";
@@ -48,6 +52,8 @@ import {
   GetPurchasedGiftCardByIdActionType,
   GetPurchasedGiftCardsActionType,
   GetSettingsActionType,
+  MarkGiftCardStudioPurchasesReadActionType,
+  PurchasedGiftCardModel,
   RegenerateGiftCardAssetsActionType,
   RequestAction,
   requestActionSchema,
@@ -67,8 +73,19 @@ import {
 import { GiftCardStudioSettings } from "../models/settings";
 import { GiftCardStudioTemplates } from "../templates";
 import { GiftCardStudioAdminAllKeys } from "../translations/types";
+import {
+  GIFT_CARD_STUDIO_DESIGN_CREATED_EVENT_TYPE,
+  GIFT_CARD_STUDIO_DESIGN_DELETED_EVENT_TYPE,
+  GIFT_CARD_STUDIO_DESIGN_UPDATED_EVENT_TYPE,
+  GIFT_CARD_STUDIO_PURCHASE_CREATED_EVENT_TYPE,
+  GIFT_CARD_STUDIO_PURCHASE_DELETED_EVENT_TYPE,
+} from "../events";
 import { GiftCardStudioJobProcessor } from "./job-processor";
 import { GiftCardStudioRepositoryService } from "./repository-service";
+import {
+  getGiftCardStudioUnreadPurchasesBadges,
+  markGiftCardStudioPurchasesRead,
+} from "./unread-purchases-badge";
 import { getFileName } from "./utils";
 
 const generateGiftCardCode = () => {
@@ -86,7 +103,8 @@ export class GiftCardStudioConnectedApp
     IConnectedApp,
     IScheduled,
     IDemoArgumentsProvider,
-    ICommunicationTemplatesProvider
+    ICommunicationTemplatesProvider,
+    IDashboardNotifierApp
 {
   protected readonly loggerFactory: LoggerFactory;
 
@@ -105,9 +123,32 @@ export class GiftCardStudioConnectedApp
     );
   }
 
+  public async getInitialNotifications(
+    appData: ConnectedAppData,
+    userId: string,
+    _date?: Date,
+  ): Promise<DashboardNotification[]> {
+    const badges = await getGiftCardStudioUnreadPurchasesBadges(
+      appData._id,
+      appData.organizationId,
+      userId,
+      this.props.getDbConnection,
+      this.props.services,
+    );
+
+    return [
+      {
+        type: "gift-card-studio-unread-purchases",
+        badges,
+      },
+    ];
+  }
+
   public async processRequest(
     appData: ConnectedAppData,
     request: RequestAction,
+    _request?: unknown,
+    userId?: string,
   ): Promise<unknown> {
     const logger = this.loggerFactory("processRequest");
     logger.debug(
@@ -132,31 +173,31 @@ export class GiftCardStudioConnectedApp
     switch (data.type) {
       case CreateDesignActionType:
         logger.debug({ designName: data.design?.name }, "Create design");
-        return this.processCreateDesign(appData, data, repo);
+        return this.processCreateDesign(appData, data, repo, userId);
       case UpdateDesignActionType:
         logger.debug(
           { id: data.id, designName: data.design?.name },
           "Update design",
         );
-        return this.processUpdateDesign(appData, data, repo);
+        return this.processUpdateDesign(appData, data, repo, userId);
       case DeleteDesignActionType:
         logger.debug({ id: data.id }, "Delete design");
-        return this.processDeleteDesign(appData, data, repo);
+        return this.processDeleteDesign(appData, data, repo, userId);
       case DeleteDesignsActionType:
         logger.debug({ ids: data.ids }, "Delete designs");
-        return this.processDeleteDesigns(appData, data, repo);
+        return this.processDeleteDesigns(appData, data, repo, userId);
       case SetDesignArchivedActionType:
         logger.debug(
           { id: data.id, isArchived: data.isArchived },
           "Set design public",
         );
-        return this.processSetDesignArchived(appData, data, repo);
+        return this.processSetDesignArchived(appData, data, repo, userId);
       case SetDesignsArchivedActionType:
         logger.debug(
           { ids: data.ids, isArchived: data.isArchived },
           "Set designs archived",
         );
-        return this.processSetDesignsArchived(appData, data, repo);
+        return this.processSetDesignsArchived(appData, data, repo, userId);
       case GetDesignsActionType:
         logger.debug("Get designs");
         return repo.getDesigns(data.query);
@@ -183,7 +224,7 @@ export class GiftCardStudioConnectedApp
           },
           "Create purchased gift card",
         );
-        return this.processCreatePurchasedGiftCard(appData, data, repo);
+        return this.processCreatePurchasedGiftCard(appData, data, repo, userId);
       case RegenerateGiftCardAssetsActionType:
         logger.debug(
           {
@@ -207,7 +248,9 @@ export class GiftCardStudioConnectedApp
         return this.processUpdateSettings(appData, data);
       case DeletePurchasedGiftCardActionType:
         logger.debug({ id: data.id }, "Delete purchased gift card");
-        return this.processDeletePurchasedGiftCard(appData, data, repo);
+        return this.processDeletePurchasedGiftCard(appData, data, repo, userId);
+      case MarkGiftCardStudioPurchasesReadActionType:
+        return this.processMarkPurchasesReadRequest(appData, userId);
       case ResendEmailActionType:
         logger.debug(
           { id: data.id, participantType: data.participantType },
@@ -464,10 +507,80 @@ export class GiftCardStudioConnectedApp
     );
   }
 
+  private adminEventSource(userId?: string): EventSource {
+    return userId ? userEventSource(userId) : { actor: "user" };
+  }
+
+  private async emitGiftCardStudioEvent(
+    type: string,
+    payload: unknown,
+    source: EventSource,
+  ) {
+    const logger = this.loggerFactory("emitGiftCardStudioEvent");
+    try {
+      await this.props.services.eventService.emit(type, payload, source);
+    } catch (error: unknown) {
+      logger.error(
+        {
+          type,
+          error: error instanceof Error ? error.message : String(error),
+        },
+        "Failed to emit gift card studio event",
+      );
+    }
+  }
+
+  private async emitPurchaseCreated(
+    appData: ConnectedAppData,
+    purchased: PurchasedGiftCardModel,
+    designName: string,
+    customerName: string | undefined,
+    source: EventSource,
+  ) {
+    await this.emitGiftCardStudioEvent(
+      GIFT_CARD_STUDIO_PURCHASE_CREATED_EVENT_TYPE,
+      {
+        appId: appData._id,
+        purchase: {
+          _id: purchased._id,
+          designId: purchased.designId,
+          designName,
+          amountPurchased: purchased.amountPurchased,
+          customerName,
+        },
+      },
+      source,
+    );
+  }
+
+  private async processMarkPurchasesReadRequest(
+    appData: ConnectedAppData,
+    userId?: string,
+  ) {
+    if (!userId) {
+      throw new ConnectedAppRequestError(
+        "invalid_gift_card_studio_request",
+        { appId: appData._id },
+        400,
+        "Missing user context",
+      );
+    }
+
+    await markGiftCardStudioPurchasesRead(
+      appData.organizationId,
+      appData._id,
+      userId,
+      this.props.services,
+    );
+
+    return { success: true };
+  }
+
   private async processCreateDesign(
     appData: ConnectedAppData,
     data: { design: any },
     repo: GiftCardStudioRepositoryService,
+    userId?: string,
   ) {
     const logger = this.loggerFactory("processCreateDesign");
     const isUnique = await repo.checkDesignNameUnique(data.design.name);
@@ -485,6 +598,14 @@ export class GiftCardStudioConnectedApp
       { designId: (created as { _id: string })?._id, name: data.design.name },
       "Design created",
     );
+    await this.emitGiftCardStudioEvent(
+      GIFT_CARD_STUDIO_DESIGN_CREATED_EVENT_TYPE,
+      {
+        appId: appData._id,
+        design: { _id: created._id, name: created.name },
+      },
+      this.adminEventSource(userId),
+    );
     return created;
   }
 
@@ -492,6 +613,7 @@ export class GiftCardStudioConnectedApp
     appData: ConnectedAppData,
     data: { id: string; design: any },
     repo: GiftCardStudioRepositoryService,
+    userId?: string,
   ) {
     const logger = this.loggerFactory("processUpdateDesign");
     const isUnique = await repo.checkDesignNameUnique(
@@ -521,6 +643,14 @@ export class GiftCardStudioConnectedApp
       );
     }
     logger.info({ id: data.id, name: data.design.name }, "Design updated");
+    await this.emitGiftCardStudioEvent(
+      GIFT_CARD_STUDIO_DESIGN_UPDATED_EVENT_TYPE,
+      {
+        appId: appData._id,
+        design: { _id: updated._id, name: updated.name },
+      },
+      this.adminEventSource(userId),
+    );
     return updated;
   }
 
@@ -528,8 +658,10 @@ export class GiftCardStudioConnectedApp
     appData: ConnectedAppData,
     data: DeleteDesignAction,
     repo: GiftCardStudioRepositoryService,
+    userId?: string,
   ) {
     const logger = this.loggerFactory("processDeleteDesign");
+    const existing = await repo.getDesignById(data.id);
     const deleted = await repo.deleteDesign(data.id);
     if (!deleted) {
       logger.warn({ id: data.id }, "Design not found or has purchases");
@@ -541,6 +673,15 @@ export class GiftCardStudioConnectedApp
       );
     }
     logger.info({ id: data.id }, "Design deleted");
+    await this.emitGiftCardStudioEvent(
+      GIFT_CARD_STUDIO_DESIGN_DELETED_EVENT_TYPE,
+      {
+        appId: appData._id,
+        designId: data.id,
+        designName: existing?.name,
+      },
+      this.adminEventSource(userId),
+    );
     return deleted;
   }
 
@@ -548,8 +689,12 @@ export class GiftCardStudioConnectedApp
     appData: ConnectedAppData,
     data: DeleteDesignsAction,
     repo: GiftCardStudioRepositoryService,
+    userId?: string,
   ) {
     const logger = this.loggerFactory("processDeleteDesigns");
+    const designs = await Promise.all(
+      data.ids.map((id) => repo.getDesignById(id)),
+    );
     const deleted = await repo.deleteDesigns(data.ids);
     if (!deleted) {
       logger.warn({ ids: data.ids }, "Designs not found or have purchases");
@@ -562,6 +707,19 @@ export class GiftCardStudioConnectedApp
     }
 
     logger.info({ ids: data.ids }, "Designs deleted");
+    const source = this.adminEventSource(userId);
+    for (const design of designs) {
+      if (!design) continue;
+      await this.emitGiftCardStudioEvent(
+        GIFT_CARD_STUDIO_DESIGN_DELETED_EVENT_TYPE,
+        {
+          appId: appData._id,
+          designId: design._id,
+          designName: design.name,
+        },
+        source,
+      );
+    }
     return deleted;
   }
 
@@ -569,6 +727,7 @@ export class GiftCardStudioConnectedApp
     appData: ConnectedAppData,
     data: SetDesignArchivedAction,
     repo: GiftCardStudioRepositoryService,
+    userId?: string,
   ) {
     const logger = this.loggerFactory("processSetDesignArchived");
     const ok = await repo.setDesignArchived(data.id, data.isArchived);
@@ -579,6 +738,17 @@ export class GiftCardStudioConnectedApp
         { id: data.id },
         404,
         "Design not found",
+      );
+    }
+    const updated = await repo.getDesignById(data.id);
+    if (updated) {
+      await this.emitGiftCardStudioEvent(
+        GIFT_CARD_STUDIO_DESIGN_UPDATED_EVENT_TYPE,
+        {
+          appId: appData._id,
+          design: { _id: updated._id, name: updated.name },
+        },
+        this.adminEventSource(userId),
       );
     }
     logger.info(
@@ -592,6 +762,7 @@ export class GiftCardStudioConnectedApp
     appData: ConnectedAppData,
     data: SetDesignsArchivedAction,
     repo: GiftCardStudioRepositoryService,
+    userId?: string,
   ) {
     const logger = this.loggerFactory("processSetDesignsArchived");
     const ok = await repo.setDesignsArchived(data.ids, data.isArchived);
@@ -602,6 +773,19 @@ export class GiftCardStudioConnectedApp
         { ids: data.ids },
         404,
         "Designs not found",
+      );
+    }
+    const source = this.adminEventSource(userId);
+    for (const id of data.ids) {
+      const updated = await repo.getDesignById(id);
+      if (!updated) continue;
+      await this.emitGiftCardStudioEvent(
+        GIFT_CARD_STUDIO_DESIGN_UPDATED_EVENT_TYPE,
+        {
+          appId: appData._id,
+          design: { _id: updated._id, name: updated.name },
+        },
+        source,
       );
     }
     logger.info(
@@ -615,6 +799,7 @@ export class GiftCardStudioConnectedApp
     appData: ConnectedAppData,
     { purchase }: CreatePurchasedGiftCardAction,
     repo: GiftCardStudioRepositoryService,
+    userId?: string,
   ) {
     const logger = this.loggerFactory("processCreatePurchasedGiftCard");
     const settings = (appData.data as GiftCardStudioSettings) ?? {};
@@ -692,6 +877,11 @@ export class GiftCardStudioConnectedApp
       "Gift card created",
     );
 
+    const design = await repo.getDesignById(purchase.designId);
+    const customer = await this.props.services.customersService.getCustomer(
+      purchase.customerId,
+    );
+
     const purchased = await repo.createPurchasedGiftCard({
       designId: purchase.designId,
       giftCardId: giftCard._id,
@@ -704,6 +894,7 @@ export class GiftCardStudioConnectedApp
       invoiceGenerationStatus: "pending",
       recipientDeliveryStatus: "pending",
       customerDeliveryStatus: "pending",
+      purchaseChannel: "admin",
     });
 
     logger.debug(
@@ -752,6 +943,14 @@ export class GiftCardStudioConnectedApp
       "Successfully scheduled generate gift card job",
     );
 
+    await this.emitPurchaseCreated(
+      appData,
+      purchased,
+      design?.name ?? "",
+      customer?.name,
+      this.adminEventSource(userId),
+    );
+
     logger.info(
       {
         purchasedId: purchased._id,
@@ -767,6 +966,7 @@ export class GiftCardStudioConnectedApp
     appData: ConnectedAppData,
     data: DeletePurchasedGiftCardAction,
     repo: GiftCardStudioRepositoryService,
+    userId?: string,
   ) {
     const logger = this.loggerFactory("processDeletePurchasedGiftCard");
     const deleted = await repo.deletePurchasedGiftCard(data.id);
@@ -829,6 +1029,14 @@ export class GiftCardStudioConnectedApp
     }
 
     logger.info({ id: data.id }, "Related assets cleaned up");
+    await this.emitGiftCardStudioEvent(
+      GIFT_CARD_STUDIO_PURCHASE_DELETED_EVENT_TYPE,
+      {
+        appId: appData._id,
+        purchaseId: data.id,
+      },
+      this.adminEventSource(userId),
+    );
     return deleted;
   }
 
@@ -1181,6 +1389,7 @@ export class GiftCardStudioConnectedApp
     );
 
     const repo = this.getRepositoryService(appData._id, appData.organizationId);
+    const design = await repo.getDesignById(designId);
 
     const purchased = await repo.createPurchasedGiftCard({
       designId,
@@ -1194,6 +1403,7 @@ export class GiftCardStudioConnectedApp
       invoiceGenerationStatus: "pending",
       recipientDeliveryStatus: "pending",
       customerDeliveryStatus: "pending",
+      purchaseChannel: "customer",
     });
 
     logger.debug(
@@ -1228,6 +1438,14 @@ export class GiftCardStudioConnectedApp
         },
       } satisfies GiftCardStudioJobPayload,
     });
+
+    await this.emitPurchaseCreated(
+      appData,
+      purchased,
+      design?.name ?? "",
+      customer.name,
+      purchaseSource,
+    );
 
     logger.debug(
       {

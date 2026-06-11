@@ -5,3 +5,4 @@ export { claimEventHandler } from "./claim-event-handler";
 export { EVENT_DEFINITIONS, resolveEventDefinition } from "./event-registry";
 export { getBullMQEventConfig } from "./get-bullmq-event-config";
 export { eventHandlers } from "./handlers";
+export { SYNCED_PAYMENTS_REVIEW_BADGE_KEY } from "./definitions/synced-payment/synced-payment-event-definitions";

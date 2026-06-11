@@ -7,7 +7,7 @@ export const BlogApp: App<"app_blog_admin", BlogAdminKeys> = {
   name: BLOG_APP_NAME,
   displayName: "app_blog_admin.app.displayName",
   category: ["apps.categories.content"],
-  scope: ["ui-components", "sitemap-items-provider"],
+  scope: ["ui-components", "sitemap-items-provider", "dashboard-notifier"],
   type: "complex",
   Logo: ({ className }) => <FileText className={className} />,
   isFeatured: true,

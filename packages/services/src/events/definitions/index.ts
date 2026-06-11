@@ -17,6 +17,7 @@ import { PAGE_HEADER_EVENT_DEFINITIONS } from "./page/page-header-event-definiti
 import { PAYMENT_EVENT_DEFINITIONS } from "./payment/payment-event-definitions";
 import { SETTINGS_EVENT_DEFINITIONS } from "./settings/settings-event-definitions";
 import { SUBSCRIPTION_EVENT_DEFINITIONS } from "./subscription/subscription-event-definitions";
+import { SYNCED_PAYMENT_EVENT_DEFINITIONS } from "./synced-payment/synced-payment-event-definitions";
 import { TEMPLATE_EVENT_DEFINITIONS } from "./template/template-event-definitions";
 
 /** Core platform event definitions, grouped by domain under `definitions/` */
@@ -25,6 +26,7 @@ export const DOMAIN_EVENT_DEFINITIONS: Record<string, EventDefinition> = {
   ...APPOINTMENT_EVENT_DEFINITIONS,
   ...CUSTOMER_EVENT_DEFINITIONS,
   ...PAYMENT_EVENT_DEFINITIONS,
+  ...SYNCED_PAYMENT_EVENT_DEFINITIONS,
   ...GIFT_CARD_EVENT_DEFINITIONS,
   ...ORGANIZATION_EVENT_DEFINITIONS,
   ...FIELD_EVENT_DEFINITIONS,

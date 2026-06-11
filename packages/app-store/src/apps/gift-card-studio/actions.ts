@@ -19,6 +19,7 @@ import {
   GetPurchasedGiftCardsAction,
   GetPurchasedGiftCardsActionType,
   GetSettingsActionType,
+  MarkGiftCardStudioPurchasesReadActionType,
   PurchasedGiftCardListModel,
   RegenerateGiftCardAssetsActionType,
   ResendEmailActionType,
@@ -325,6 +326,26 @@ export async function deletePurchasedGiftCard(appId: string, id: string) {
 
   logger.debug({ appId, id, result }, "Purchased gift card deleted");
   return result;
+}
+
+export async function markGiftCardStudioPurchasesRead(appId: string) {
+  const logger = loggerFactory("markGiftCardStudioPurchasesRead");
+  logger.debug({ appId }, "Marking gift card studio purchases as read");
+
+  try {
+    const result = await adminApi.apps.processRequest(appId, {
+      type: MarkGiftCardStudioPurchasesReadActionType,
+    });
+
+    logger.info({ appId }, "Gift card studio purchases marked as read");
+    return result;
+  } catch (error: any) {
+    logger.error(
+      { appId, error: error?.message || error?.toString() },
+      "Error marking gift card studio purchases as read",
+    );
+    throw error;
+  }
 }
 
 export async function resendEmail(

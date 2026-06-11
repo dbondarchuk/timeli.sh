@@ -1,4 +1,5 @@
 import type { AppEventConfig, EventDefinition } from "@timelish/types";
+import { FORMS_UNREAD_RESPONSES_BADGE_KEY } from "./const";
 import {
   FORM_RESPONSE_CREATED_EVENT_TYPE,
   type FormResponseCreatedPayload,
@@ -36,6 +37,7 @@ export const FORMS_APP_EVENTS: AppEventConfig = {
         const { formResponse } = envelope.payload as FormResponseCreatedPayload;
         return {
           type: "form-response-created",
+          incrementBadgeKey: FORMS_UNREAD_RESPONSES_BADGE_KEY,
           toast: {
             type: "info",
             title: {

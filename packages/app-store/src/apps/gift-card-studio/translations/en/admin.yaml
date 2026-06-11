@@ -418,4 +418,25 @@ validation:
 handlers:
   send-email-to-recipient: Send email to recipient
   send-email-to-customer: Send email to customer
+events:
+  designCreated:
+    title: Gift card design created
+    description: 'Design "{designName}" was created'
+  designUpdated:
+    title: Gift card design updated
+    description: 'Design "{designName}" was updated'
+  designDeleted:
+    title: Gift card design deleted
+    description: 'Design "{designName}" was deleted'
+  purchaseCreated:
+    title: Gift card purchased
+    description: '{customerName} purchased "{designName}" for {amount}'
+  purchaseDeleted:
+    title: Gift card purchase deleted
+    description: A purchased gift card record was deleted
+notifications:
+  newPurchase:
+    title: New gift card purchase
+    message: A customer purchased a gift card on your website
+    view: View purchases
 
