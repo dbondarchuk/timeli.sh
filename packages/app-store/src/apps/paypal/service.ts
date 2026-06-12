@@ -336,19 +336,27 @@ class PaypalConnectedApp
 
     if (config?.webhookId) {
       try {
-        // await client.verifyWebhook({
-        //   body: {
-        //     auth_algo: request.headers.get("paypal-auth-algo") || "",
-        //     cert_url: request.headers.get("paypal-cert-url") || "",
-        //     transmission_id: request.headers.get("paypal-transmission-id") || "",
-        //     transmission_sig:
-        //       request.headers.get("paypal-transmission-sig") || "",
-        //     transmission_time:
-        //       request.headers.get("paypal-transmission-time") || "",
-        //     webhook_id: config.webhookId,
-        //     webhook_event: bodyText,
-        //   },
-        // });
+        if (this.environment === Environment.Sandbox) {
+          logger.debug(
+            { appId: appData._id },
+            "Skipping webhook signature verification in sandbox",
+          );
+        } else {
+          await client.verifyWebhook({
+            body: {
+              auth_algo: request.headers.get("paypal-auth-algo") || "",
+              cert_url: request.headers.get("paypal-cert-url") || "",
+              transmission_id:
+                request.headers.get("paypal-transmission-id") || "",
+              transmission_sig:
+                request.headers.get("paypal-transmission-sig") || "",
+              transmission_time:
+                request.headers.get("paypal-transmission-time") || "",
+              webhook_id: config.webhookId,
+              webhook_event: bodyText,
+            },
+          });
+        }
       } catch (error) {
         logger.warn(
           { appId: appData._id, error },
@@ -359,8 +367,10 @@ class PaypalConnectedApp
     } else {
       logger.warn(
         { appId: appData._id },
-        "No webhook id configured; skipping signature verification",
+        "No webhook id configured; skipping webhook processing",
       );
+
+      return Response.json({ success: false }, { status: 405 });
     }
 
     logger.debug({ appId: appData._id }, "Parsing PayPal webhook event");
@@ -372,6 +382,7 @@ class PaypalConnectedApp
         { appId: appData._id, error },
         "Invalid PayPal webhook event",
       );
+
       return Response.json({ success: false }, { status: 400 });
     }
 

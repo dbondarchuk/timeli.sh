@@ -369,6 +369,7 @@ export class PaypalClient {
       if (!response.ok) {
         throw response;
       }
+
       const data = await response.json();
 
       if (data.verification_status !== "SUCCESS") {

@@ -45,12 +45,12 @@ form:
     label: Enable Apple Pay
     description: Let customers pay with Apple Pay through PayPal. You must first <link>enable Apple Pay in your PayPal account</link> and ensure your domain is verified.
   inStoreSync:
-    label: Sync in-store card payments
-    description: Automatically import in-store PayPal card payments via webhook and match them to appointments.
+    label: Sync in-person card payments
+    description: Automatically import in-person PayPal card payments via webhook and match them to appointments.
   matchWindow:
     label: Match window (minutes)
     placeholder: "240"
-    description: How far an appointment start time may be from the payment time to still be considered a match.
+    description: How far an appointment end time may be from the payment time to still be considered a match.
   selectPlaceholder: Select view
   connectWith: Connect with <app></app>
 statusText:
