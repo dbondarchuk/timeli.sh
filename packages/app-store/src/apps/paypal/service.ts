@@ -332,6 +332,9 @@ class PaypalConnectedApp
     const config = appData.data;
     const bodyText = await request.text();
 
+    // TODO: Remove as it is a temp debug
+    logger.warn({ appId: appData._id, bodyText}, "Received PayPal webhook body");
+
     const client = await this.getSimplifiedClient(appData);
 
     if (config?.webhookId) {
