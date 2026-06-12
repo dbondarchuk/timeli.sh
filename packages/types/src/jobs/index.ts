@@ -10,6 +10,14 @@ export type BaseJobRequest = {
   };
 };
 
+/** Options for a BullMQ job scheduler (interval repeat). */
+export type RepeatableJobOptions = {
+  /** Interval between runs, in milliseconds. */
+  every: number;
+  /** Stable job scheduler id used to upsert or remove this schedule. */
+  id: string;
+};
+
 export type AppJobRequest<T = any> = BaseJobRequest & {
   type: "app";
   appId: string;
@@ -26,6 +34,10 @@ export type EventDeliveryJobRequest = BaseJobRequest & {
 
 export type JobRequest = AppJobRequest | EventDeliveryJobRequest;
 export type OrganizationJobRequest = WithOrganizationId<JobRequest>;
+
+export type ScheduleRepeatableJobRequest =
+  | Omit<AppJobRequest, "executeAt" | "deduplication">
+  | Omit<EventDeliveryJobRequest, "executeAt" | "deduplication">;
 
 export type Job = JobRequest & {
   id: string;

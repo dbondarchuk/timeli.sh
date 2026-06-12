@@ -337,6 +337,93 @@ export class PaypalClient {
     return true;
   }
 
+  /**
+   * Lists balance-affecting successful transactions in a date range via the
+   * Transaction Search API. Paginates a single page; use
+   * {@link listAllTransactions} to fetch every page in the window.
+   */
+  public async listTransactions({
+    startDate,
+    endDate,
+    page = 1,
+    pageSize = 100,
+  }: {
+    startDate: Date;
+    endDate: Date;
+    page?: number;
+    pageSize?: number;
+  }): Promise<ListTransactionsResult> {
+    const logger = this.loggerFactory("listTransactions");
+    const params = new URLSearchParams({
+      start_date: startDate.toISOString(),
+      end_date: endDate.toISOString(),
+      transaction_status: "S",
+      balance_affecting_records_only: "Y",
+      fields: "transaction_info,store_info",
+      page: String(page),
+      page_size: String(Math.min(Math.max(pageSize, 1), 500)),
+    });
+
+    let response: Response | undefined;
+    try {
+      response = await this.fetcher(
+        `/v1/reporting/transactions?${params.toString()}`,
+        { method: "GET" },
+      );
+
+      if (response.ok) {
+        const body = (await response.json()) as ListTransactionsResponse;
+        return {
+          transactionDetails: body.transaction_details ?? [],
+          totalPages: body.total_pages ?? 1,
+          totalItems: body.total_items ?? 0,
+        };
+      }
+
+      throw new Error(`Request failed with status ${response.status}`);
+    } catch (error) {
+      logger.error(
+        { error, statusCode: response?.status },
+        "Failed to list PayPal transactions",
+      );
+      return { error: { statusCode: response?.status } };
+    }
+  }
+
+  /** Fetches every page of transactions in the given date range. */
+  public async listAllTransactions(
+    startDate: Date,
+    endDate: Date,
+  ): Promise<ListTransactionsResult> {
+    const pageSize = 100;
+    let page = 1;
+    let totalPages = 1;
+    const transactionDetails: PaypalTransactionDetail[] = [];
+
+    while (page <= totalPages) {
+      const result = await this.listTransactions({
+        startDate,
+        endDate,
+        page,
+        pageSize,
+      });
+
+      if (result.error) {
+        return result;
+      }
+
+      transactionDetails.push(...result.transactionDetails);
+      totalPages = result.totalPages;
+      page += 1;
+    }
+
+    return {
+      transactionDetails,
+      totalPages: totalPages - 1 || 1,
+      totalItems: transactionDetails.length,
+    };
+  }
+
   async verifyWebhook(options: WebhookEventVerifyRequest): Promise<void> {
     const parseRequest = webhookEventVerifyRequestSchema.safeParse(options);
 
@@ -444,3 +531,48 @@ const webhookEventVerifyRequestSchema = z.object({
 export type WebhookEventVerifyRequest = z.infer<
   typeof webhookEventVerifyRequestSchema
 >;
+
+export type PaypalMoneyAmount = {
+  currency_code?: string;
+  value?: string;
+};
+
+export type PaypalTransactionInfo = {
+  transaction_id?: string;
+  paypal_reference_id?: string;
+  paypal_reference_id_type?: string;
+  transaction_initiation_date?: string;
+  transaction_amount?: PaypalMoneyAmount;
+  fee_amount?: PaypalMoneyAmount;
+  transaction_status?: string;
+};
+
+export type PaypalStoreInfo = {
+  store_id?: string;
+  terminal_id?: string;
+};
+
+export type PaypalTransactionDetail = {
+  transaction_info?: PaypalTransactionInfo;
+  store_info?: PaypalStoreInfo;
+};
+
+type ListTransactionsResponse = {
+  transaction_details?: PaypalTransactionDetail[];
+  total_pages?: number;
+  total_items?: number;
+};
+
+export type ListTransactionsResult =
+  | {
+      transactionDetails: PaypalTransactionDetail[];
+      totalPages: number;
+      totalItems: number;
+      error?: never;
+    }
+  | {
+      transactionDetails?: never;
+      totalPages?: never;
+      totalItems?: never;
+      error: { statusCode?: number };
+    };

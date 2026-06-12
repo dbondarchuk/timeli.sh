@@ -46,7 +46,7 @@ form:
     description: Let customers pay with Apple Pay through PayPal. You must first <link>enable Apple Pay in your PayPal account</link> and ensure your domain is verified.
   inStoreSync:
     label: Sync in-person card payments
-    description: Automatically import in-person PayPal card payments via webhook and match them to appointments.
+    description: Automatically import in-person PayPal card payments via webhook and hourly polling, then match them to appointments.
   matchWindow:
     label: Match window (minutes)
     placeholder: "240"

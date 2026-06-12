@@ -1,5 +1,6 @@
 import { zNonEmptyString } from "@timelish/types";
 import * as z from "zod";
+import { PAYPAL_TRANSACTION_SYNC_JOB_TYPE } from "./const";
 import { PaypalAdminAllKeys } from "./translations/types";
 
 export const paypalButtonsShape = ["rect", "pill", "sharp"] as const;
@@ -30,7 +31,7 @@ export const paypalConfigurationSchema = z.object({
   enableApplePay: z.boolean(),
   /**
    * When enabled, PayPal in-store card payments are synced via webhook and
-   * auto-matched to appointments.
+   * periodic transaction polling, then auto-matched to appointments.
    */
   enableInStoreSync: z.boolean().optional(),
   /**
@@ -92,3 +93,7 @@ export const captureOrderRequestSchema = z.object({
 });
 
 export type CaptureOrderRequest = z.infer<typeof captureOrderRequestSchema>;
+
+export type PaypalJobPayload = {
+  type: typeof PAYPAL_TRANSACTION_SYNC_JOB_TYPE;
+};

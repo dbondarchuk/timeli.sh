@@ -6270,13 +6270,13 @@
     "semantic_hash": ""
   },
   "packages/app-store/src/apps/paypal/client.ts": {
-    "mtime": 1781110000.6539605,
-    "ast_hash": "ac679deb471bda41f440f82d55a00b09",
+    "mtime": 1781290986.935175,
+    "ast_hash": "f8df68e361cfb5a1a5926f0989238027",
     "semantic_hash": ""
   },
   "packages/app-store/src/apps/paypal/const.ts": {
-    "mtime": 1773675371.1584945,
-    "ast_hash": "314598120cc26fbeb083fe2b1e88593e",
+    "mtime": 1781292366.8051114,
+    "ast_hash": "861a494eedc1b58265a03f2016b97ef9",
     "semantic_hash": ""
   },
   "packages/app-store/src/apps/paypal/form.tsx": {
@@ -6295,13 +6295,13 @@
     "semantic_hash": ""
   },
   "packages/app-store/src/apps/paypal/models.ts": {
-    "mtime": 1781110184.1040947,
-    "ast_hash": "813a0d1a3b6ba3eb06aa0a704abd710d",
+    "mtime": 1781291580.6189816,
+    "ast_hash": "e291a477b7d4c2d183e797962c51b958",
     "semantic_hash": ""
   },
   "packages/app-store/src/apps/paypal/service.ts": {
-    "mtime": 1781119795.9849954,
-    "ast_hash": "ea02afad8c8e7b0d0b001bc6c8c86953",
+    "mtime": 1781292368.793876,
+    "ast_hash": "3cf7d568411053e3762a8975732bef65",
     "semantic_hash": ""
   },
   "packages/app-store/src/apps/paypal/setup.tsx": {
@@ -13035,8 +13035,8 @@
     "semantic_hash": ""
   },
   "packages/services/src/bullmq/jobs/bullmq-job-service.ts": {
-    "mtime": 1776733325.5916233,
-    "ast_hash": "95b9053eb73bb821694643ca44ac1ed5",
+    "mtime": 1781292407.127146,
+    "ast_hash": "f1806dfb4ab889a1c585b5fbbd93680b",
     "semantic_hash": ""
   },
   "packages/services/src/bullmq/jobs/bullmq-job-worker.ts": {
@@ -13365,7 +13365,7 @@
     "semantic_hash": ""
   },
   "packages/services/src/payments.service.ts": {
-    "mtime": 1781198268.3310149,
+    "mtime": 1781287320.7155664,
     "ast_hash": "7b58f61ba99b57c63249e79a3341e464",
     "semantic_hash": ""
   },
@@ -13980,17 +13980,17 @@
     "semantic_hash": ""
   },
   "packages/types/src/events/all-core-event-types.ts": {
-    "mtime": 1781127958.7933412,
+    "mtime": 1781287320.717116,
     "ast_hash": "9ae9225093205e589238f4b518a2d497",
     "semantic_hash": ""
   },
   "packages/types/src/events/core-event-payloads.ts": {
-    "mtime": 1781127957.497146,
+    "mtime": 1781287320.7171354,
     "ast_hash": "65bb61961320c537ba3e52d5d7a4b5d7",
     "semantic_hash": ""
   },
   "packages/types/src/events/core-events.ts": {
-    "mtime": 1781127954.917887,
+    "mtime": 1781287320.717669,
     "ast_hash": "cfae95f4edaa100576d852ac4465dec1",
     "semantic_hash": ""
   },
@@ -14045,8 +14045,8 @@
     "semantic_hash": ""
   },
   "packages/types/src/jobs/index.ts": {
-    "mtime": 1776733325.4602942,
-    "ast_hash": "61668d56d74ca2f2fabfb4fb0bdd9b4a",
+    "mtime": 1781292383.7375169,
+    "ast_hash": "296d71f2c6e09dfc8a791c17b90126d2",
     "semantic_hash": ""
   },
   "packages/types/src/organizations/index.ts": {
@@ -14145,8 +14145,8 @@
     "semantic_hash": ""
   },
   "packages/types/src/services/job.service.ts": {
-    "mtime": 1776733325.4594073,
-    "ast_hash": "c06b8983fd1d8ac1bd9fb217002250df",
+    "mtime": 1781292386.3439882,
+    "ast_hash": "6a58006de48c7edc82fe6b95258686a2",
     "semantic_hash": ""
   },
   "packages/types/src/services/notification.service.ts": {
@@ -14165,7 +14165,7 @@
     "semantic_hash": ""
   },
   "packages/types/src/services/payments.service.ts": {
-    "mtime": 1781198266.496574,
+    "mtime": 1781287320.7181952,
     "ast_hash": "130a7cfc4d2cafc4d24f6c6a4257e172",
     "semantic_hash": ""
   },
@@ -16300,8 +16300,8 @@
     "semantic_hash": ""
   },
   "packages/app-store/src/apps/paypal/translations/en/admin.yaml": {
-    "mtime": 1781110673.4291873,
-    "ast_hash": "c685720be09bfb276aefeee8ae465b94",
+    "mtime": 1781291041.0375204,
+    "ast_hash": "30572b84ac71fc7e9978543c2ea11482",
     "semantic_hash": ""
   },
   "packages/app-store/src/apps/paypal/translations/en/public.yaml": {
@@ -16310,8 +16310,8 @@
     "semantic_hash": ""
   },
   "packages/app-store/src/apps/paypal/translations/uk/admin.yaml": {
-    "mtime": 1781110684.240888,
-    "ast_hash": "adf86deac3ab259090a27898f44baebe",
+    "mtime": 1781291042.160525,
+    "ast_hash": "c7c77dee7e8999387748b278edefb7c7",
     "semantic_hash": ""
   },
   "packages/app-store/src/apps/paypal/translations/uk/public.yaml": {
@@ -16535,7 +16535,7 @@
     "semantic_hash": ""
   },
   "packages/i18n/src/locales/en/admin.yaml": {
-    "mtime": 1781198558.7182937,
+    "mtime": 1781287320.7126157,
     "ast_hash": "2886eab7d1c0ae042e707ed69c96dd7d",
     "semantic_hash": ""
   },
@@ -16570,7 +16570,7 @@
     "semantic_hash": ""
   },
   "packages/i18n/src/locales/uk/admin.yaml": {
-    "mtime": 1781198558.9999948,
+    "mtime": 1781287320.7145042,
     "ast_hash": "6f1ea92b22d871441a728052b7217f80",
     "semantic_hash": ""
   },
@@ -27145,17 +27145,17 @@
     "semantic_hash": ""
   },
   "packages/services/src/synced-payments.service.ts": {
-    "mtime": 1781193339.5723777,
+    "mtime": 1781287320.716087,
     "ast_hash": "59222023b37987b256185f0def2fe7b2",
     "semantic_hash": ""
   },
   "packages/types/src/booking/synced-payment.ts": {
-    "mtime": 1781124774.7971487,
+    "mtime": 1781287320.71661,
     "ast_hash": "d250ff100b6d91292975fdb4f22ecf41",
     "semantic_hash": ""
   },
   "packages/types/src/services/synced-payments.service.ts": {
-    "mtime": 1781127959.3757718,
+    "mtime": 1781287320.7181952,
     "ast_hash": "eb286642f586edee1aa20a5b5ada8f31",
     "semantic_hash": ""
   },
@@ -27175,7 +27175,7 @@
     "semantic_hash": ""
   },
   "packages/ui-admin-kit/src/components/payments/synced-payment-card.tsx": {
-    "mtime": 1781192905.373036,
+    "mtime": 1781287320.7192352,
     "ast_hash": "af6d2b1659ae5c34d81d5aad722011c4",
     "semantic_hash": ""
   },
@@ -27290,7 +27290,7 @@
     "semantic_hash": ""
   },
   "packages/services/src/events/definitions/synced-payment/synced-payment-event-definitions.ts": {
-    "mtime": 1781127969.4659345,
+    "mtime": 1781287320.7150452,
     "ast_hash": "ba332c9c441b01134d4966ccc31d4f95",
     "semantic_hash": ""
   },
@@ -27417,6 +27417,11 @@
   "packages/app-store/src/apps/gift-card-studio/service/unread-purchases-badge.ts": {
     "mtime": 1781207816.4013357,
     "ast_hash": "7d5026afc2b07167c78aaa32289d7557",
+    "semantic_hash": ""
+  },
+  "packages/app-store/src/apps/paypal/transaction-sync.ts": {
+    "mtime": 1781291584.1715782,
+    "ast_hash": "e7d15da6abd219a2e1e0aca54255b897",
     "semantic_hash": ""
   }
 }

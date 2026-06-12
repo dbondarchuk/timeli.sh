@@ -3,6 +3,7 @@ import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
 import {
   ApiRequest,
   ApiResponse,
+  AppJobRequest,
   ConnectedAppData,
   ConnectedAppError,
   ConnectedAppRequestError,
@@ -12,6 +13,7 @@ import {
   IConnectedAppProps,
   IConnectedAppWithWebhook,
   IPaymentProcessor,
+  IScheduled,
   Payment,
   PaymentFee,
   SyncedPaymentTransaction,
@@ -23,7 +25,12 @@ import {
   APPLE_PAY_DOMAIN_ASSOCIATION_SANDBOX,
 } from "./apple-pay";
 import { PaypalClient } from "./client";
-import { PAYPAL_APP_NAME } from "./const";
+import {
+  getPaypalTransactionSyncSchedulerId,
+  PAYPAL_APP_NAME,
+  PAYPAL_TRANSACTION_SYNC_INTERVAL_SECONDS,
+  PAYPAL_TRANSACTION_SYNC_JOB_TYPE,
+} from "./const";
 import {
   CaptureOrderRequest,
   captureOrderRequestSchema,
@@ -32,7 +39,13 @@ import {
   PaypalConfiguration,
   paypalConfigurationSchema,
   PaypalFormProps,
+  PaypalJobPayload,
 } from "./models";
+import {
+  InStoreCaptureIngestResult,
+  InStoreCaptureInput,
+  runPaypalTransactionSync,
+} from "./transaction-sync";
 import {
   PaypalAdminAllKeys,
   PaypalAdminKeys,
@@ -47,7 +60,8 @@ class PaypalConnectedApp
   implements
     IConnectedApp<PaypalConfiguration>,
     IConnectedAppWithWebhook<PaypalConfiguration>,
-    IPaymentProcessor
+    IPaymentProcessor,
+    IScheduled
 {
   protected readonly loggerFactory: LoggerFactory;
 
@@ -128,6 +142,12 @@ class PaypalConnectedApp
       );
 
       await this.syncWebhookRegistration(appData, data, client);
+
+      if (data.enableInStoreSync) {
+        await this.ensureTransactionSyncRepeatableJob(appData._id);
+      } else {
+        await this.removeTransactionSyncRepeatableJob(appData._id);
+      }
 
       const status: ConnectedAppStatusWithText<
         PaypalAdminNamespace,
@@ -333,7 +353,10 @@ class PaypalConnectedApp
     const bodyText = await request.text();
 
     // TODO: Remove as it is a temp debug
-    logger.warn({ appId: appData._id, bodyText}, "Received PayPal webhook body");
+    logger.warn(
+      { appId: appData._id, bodyText },
+      "Received PayPal webhook body",
+    );
 
     const client = await this.getSimplifiedClient(appData);
 
@@ -407,66 +430,208 @@ class PaypalConnectedApp
       return Response.json({ success: true, ignored: true }, { status: 200 });
     }
 
-    // Distinguish in-store from online checkout: online payments originate from
-    // our own order/intent flow and are reconciled synchronously on capture.
-    if (orderId) {
+    const amount = parseFloat(resource?.amount?.value) || 0;
+    const currency: string | undefined = resource?.amount?.currency_code;
+    let breakdown = resource?.seller_receivable_breakdown;
+    if (!breakdown && orderId) {
       logger.debug(
         { appId: appData._id, orderId },
-        "Checking if capture belongs to a tracked online checkout",
+        "Webhook payload omitted the fee breakdown, fetching it from the order",
+      );
+      const { order } = await client.getOrder(orderId);
+      breakdown =
+        order?.purchase_units?.[0]?.payments?.captures?.[0]
+          ?.seller_receivable_breakdown;
+    }
+
+    const transactionTime = resource?.create_time
+      ? new Date(resource.create_time)
+      : new Date();
+
+    const result = await this.ingestInStoreCapture(
+      appData,
+      {
+        captureId,
+        orderId,
+        amount,
+        currency: currency ?? "",
+        transactionTime,
+        breakdown,
+        raw: event,
+      },
+      client,
+    );
+
+    if (result === "skipped" || result === "already_exists") {
+      return Response.json({ success: true, ignored: true }, { status: 200 });
+    }
+
+    return Response.json({ success: true }, { status: 200 });
+  }
+
+  public async processJob(
+    appData: ConnectedAppData<PaypalConfiguration>,
+    jobData: AppJobRequest<PaypalJobPayload>,
+  ): Promise<void> {
+    const logger = this.loggerFactory("processJob");
+
+    if (jobData.type !== "app") {
+      return;
+    }
+
+    if (jobData.payload?.type !== PAYPAL_TRANSACTION_SYNC_JOB_TYPE) {
+      logger.debug({ jobData }, "Skipping unknown PayPal job type");
+      return;
+    }
+
+    const config = appData.data;
+    if (!config?.enableInStoreSync) {
+      logger.debug(
+        { appId: appData._id },
+        "In-store sync disabled, skipping transaction poll",
+      );
+      return;
+    }
+
+    logger.debug(
+      { appId: appData._id },
+      "Processing PayPal transaction sync job",
+    );
+
+    try {
+      const client = await this.getSimplifiedClient(appData);
+      await runPaypalTransactionSync({
+        appData,
+        client,
+        ingest: (capture) =>
+          this.ingestInStoreCapture(appData, capture, client),
+        logger: logger,
+      });
+    } catch (error) {
+      logger.error(
+        { appId: appData._id, error },
+        "PayPal transaction sync job failed",
+      );
+    }
+  }
+
+  protected async ensureTransactionSyncRepeatableJob(
+    appId: string,
+  ): Promise<void> {
+    const logger = this.loggerFactory("ensureTransactionSyncRepeatableJob");
+
+    try {
+      const schedulerId = getPaypalTransactionSyncSchedulerId(appId);
+
+      await this.props.services.jobService.scheduleRepeatableJob(
+        {
+          type: "app",
+          appId,
+          payload: {
+            type: PAYPAL_TRANSACTION_SYNC_JOB_TYPE,
+          } satisfies PaypalJobPayload,
+        },
+        {
+          id: schedulerId,
+          every: PAYPAL_TRANSACTION_SYNC_INTERVAL_SECONDS * 1000,
+        },
       );
 
+      logger.debug(
+        { appId, schedulerId },
+        "Ensured PayPal transaction sync job scheduler",
+      );
+    } catch (error) {
+      logger.error(
+        { appId, error },
+        "Failed to ensure PayPal transaction sync repeatable job",
+      );
+    }
+  }
+
+  protected async removeTransactionSyncRepeatableJob(
+    appId: string,
+  ): Promise<void> {
+    const logger = this.loggerFactory("removeTransactionSyncRepeatableJob");
+
+    try {
+      const schedulerId = getPaypalTransactionSyncSchedulerId(appId);
+      await this.props.services.jobService.removeRepeatableJob(schedulerId);
+      logger.debug(
+        { appId, schedulerId },
+        "Removed PayPal transaction sync job scheduler",
+      );
+    } catch (error) {
+      logger.warn(
+        { appId, error },
+        "Failed to remove PayPal transaction sync repeatable job",
+      );
+    }
+  }
+
+  /**
+   * Normalizes an in-store PayPal capture and ingests it into synced payments.
+   * Shared by webhooks and the periodic transaction poll.
+   */
+  protected async ingestInStoreCapture(
+    appData: ConnectedAppData<PaypalConfiguration>,
+    capture: InStoreCaptureInput,
+    client?: PaypalClient,
+  ): Promise<InStoreCaptureIngestResult> {
+    const logger = this.loggerFactory("ingestInStoreCapture");
+    const config = appData.data;
+
+    if (capture.orderId) {
       const intent =
         await this.props.services.paymentsService.getIntentByExternalId(
-          orderId,
+          capture.orderId,
         );
 
       if (intent) {
         logger.debug(
-          { appId: appData._id, orderId },
+          { appId: appData._id, orderId: capture.orderId },
           "Capture belongs to a tracked online checkout, skipping",
         );
-        return Response.json({ success: true, ignored: true }, { status: 200 });
+        return "skipped";
       }
-
-      logger.debug(
-        { appId: appData._id, orderId },
-        "Capture does not belong to a tracked online checkout",
-      );
     }
 
-    logger.debug(
-      { appId: appData._id, captureId },
-      "Checking for existing payment",
-    );
-
-    // Idempotency guard against PayPal webhook retries.
     const existingPayment =
       await this.props.services.paymentsService.getPaymentByExternalId(
-        captureId,
+        capture.captureId,
       );
     if (existingPayment) {
       logger.debug(
-        { appId: appData._id, captureId },
+        { appId: appData._id, captureId: capture.captureId },
         "Capture already recorded as a payment, skipping",
       );
-      return Response.json({ success: true, ignored: true }, { status: 200 });
+      return "already_exists";
     }
 
-    const amount = parseFloat(resource?.amount?.value) || 0;
-    if (amount <= 0) {
-      logger.warn(
-        { appId: appData._id, captureId },
+    const existingSynced = await this.props.services.syncedPaymentsService.list(
+      {
+        externalId: capture.captureId,
+        limit: 1,
+        offset: 0,
+      },
+    );
+    if (existingSynced.total > 0) {
+      logger.debug(
+        { appId: appData._id, captureId: capture.captureId },
+        "Capture already ingested as synced payment, skipping",
+      );
+      return "already_exists";
+    }
+
+    if (capture.amount <= 0) {
+      logger.debug(
+        { appId: appData._id, captureId: capture.captureId },
         "Capture has no positive amount, skipping",
       );
-      return Response.json({ success: true, ignored: true }, { status: 200 });
+      return "skipped";
     }
 
-    logger.debug(
-      { appId: appData._id, captureId },
-      "Capture has a positive amount, ingesting payment",
-    );
-
-    let currency: string | undefined = resource?.amount?.currency_code;
+    let currency = capture.currency;
     if (!currency) {
       const { currency: orgCurrency } =
         await this.props.services.configurationService.getConfiguration(
@@ -475,46 +640,35 @@ class PaypalConnectedApp
       currency = orgCurrency;
     }
 
-    let breakdown = resource?.seller_receivable_breakdown;
-    if (!breakdown && orderId) {
-      logger.debug(
-        { appId: appData._id, orderId },
-        "Webhook payload omitted the fee breakdown, fetching it from the order",
-      );
-
-      // Webhook payload omitted the fee breakdown; fetch it from the order.
-      const { order } = await client.getOrder(orderId);
-      breakdown =
-        order?.purchase_units?.[0]?.payments?.captures?.[0]
-          ?.seller_receivable_breakdown;
+    let fees = capture.fees ?? [];
+    if (fees.length === 0 && capture.breakdown) {
+      fees = this.extractFees(capture.breakdown);
     }
 
-    const fees = this.extractFees(breakdown);
-    logger.debug(
-      { appId: appData._id, captureId, fees },
-      "Fetched fees from webhook payload or order",
-    );
-
-    const transactionTime = resource?.create_time
-      ? new Date(resource.create_time)
-      : new Date();
+    if (
+      fees.length === 0 &&
+      capture.orderId &&
+      client &&
+      capture.breakdown === undefined
+    ) {
+      const { order } = await client.getOrder(capture.orderId);
+      const breakdown =
+        order?.purchase_units?.[0]?.payments?.captures?.[0]
+          ?.seller_receivable_breakdown;
+      fees = this.extractFees(breakdown);
+    }
 
     const transaction: SyncedPaymentTransaction = {
       appId: appData._id,
       appName: PAYPAL_APP_NAME,
-      externalId: captureId,
-      orderId,
-      amount,
+      externalId: capture.captureId,
+      orderId: capture.orderId,
+      amount: capture.amount,
       currency,
-      transactionTime,
+      transactionTime: capture.transactionTime,
       fees,
-      raw: event,
+      raw: capture.raw,
     };
-
-    logger.debug(
-      { appId: appData._id, captureId, transaction },
-      "Creating synced payment transaction",
-    );
 
     try {
       await this.props.services.syncedPaymentsService.ingest(
@@ -524,18 +678,26 @@ class PaypalConnectedApp
       );
     } catch (error: any) {
       logger.error(
-        { appId: appData._id, captureId, error: error?.message || error },
+        {
+          appId: appData._id,
+          captureId: capture.captureId,
+          error: error?.message || error,
+        },
         "Failed to ingest synced PayPal payment",
       );
       throw error;
     }
 
     logger.info(
-      { appId: appData._id, captureId, amount },
+      {
+        appId: appData._id,
+        captureId: capture.captureId,
+        amount: capture.amount,
+      },
       "Successfully ingested PayPal in-store payment",
     );
 
-    return Response.json({ success: true }, { status: 200 });
+    return "ingested";
   }
 
   /** Maps a PayPal seller receivable breakdown to internal payment fees. */
@@ -1162,6 +1324,8 @@ class PaypalConnectedApp
         },
       };
     }
+
+    await this.removeTransactionSyncRepeatableJob(appData._id);
 
     const webhookId = (appData.data as PaypalConfiguration | undefined)
       ?.webhookId;

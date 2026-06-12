@@ -4,6 +4,8 @@ import {
   Job,
   JobRequest,
   OrganizationJobRequest,
+  RepeatableJobOptions,
+  ScheduleRepeatableJobRequest,
 } from "@timelish/types";
 import { BaseBullMQClient } from "../base-bullmq-client";
 import { BullMQJobConfig } from "./types";
@@ -71,6 +73,58 @@ export class BullMQJobService extends BaseBullMQClient implements IJobService {
       };
     } catch (error) {
       logger.error({ error, jobRequest }, "Failed to schedule job");
+      throw error;
+    }
+  }
+
+  public async scheduleRepeatableJob(
+    jobRequest: ScheduleRepeatableJobRequest,
+    repeat: RepeatableJobOptions,
+  ): Promise<void> {
+    const logger = this.loggerFactory("scheduleRepeatableJob");
+
+    try {
+      const queue = this.getQueue(this.config.queues.job.name);
+
+      logger.info({ jobRequest, repeat }, "Upserting job scheduler");
+
+      await queue.upsertJobScheduler(
+        repeat.id,
+        { every: repeat.every },
+        {
+          name: "job",
+          data: serializeJobData({
+            ...jobRequest,
+            executeAt: "now",
+            organizationId: this.organizationId,
+          } satisfies OrganizationJobRequest),
+        },
+      );
+
+      logger.info(
+        { schedulerId: repeat.id, every: repeat.every },
+        "Job scheduler upserted",
+      );
+    } catch (error) {
+      logger.error({ error, jobRequest, repeat }, "Failed to upsert job scheduler");
+      throw error;
+    }
+  }
+
+  public async removeRepeatableJob(id: string): Promise<void> {
+    const logger = this.loggerFactory("removeRepeatableJob");
+
+    try {
+      const queue = this.getQueue(this.config.queues.job.name);
+      const removed = await queue.removeJobScheduler(id);
+
+      if (removed) {
+        logger.info({ schedulerId: id }, "Job scheduler removed");
+      } else {
+        logger.debug({ schedulerId: id }, "Job scheduler not found");
+      }
+    } catch (error) {
+      logger.error({ error, schedulerId: id }, "Failed to remove job scheduler");
       throw error;
     }
   }
