@@ -124,7 +124,7 @@ export const SyncedPaymentCard = ({
     payment.status !== "ignored" && payment.status !== "rejected" && !!onIgnore;
 
   return (
-    <Card className="overflow-hidden shadow-sm">
+    <Card className="overflow-hidden shadow-sm flex flex-col">
       <div className="flex items-start justify-between gap-3 p-4">
         <div className="flex min-w-0 items-start gap-3">
           <div className="flex size-10 shrink-0 items-center justify-center rounded-lg border bg-background">
@@ -151,7 +151,7 @@ export const SyncedPaymentCard = ({
 
       <div className="border-t border-border" />
 
-      <div className="space-y-3 p-4">
+      <div className="space-y-3 p-4 flex-1">
         <div className="flex items-baseline justify-between gap-3">
           <SectionLabel>
             {t("syncedPayments.sections.totalReceived")}
@@ -182,7 +182,7 @@ export const SyncedPaymentCard = ({
       {payment.appointment && (
         <>
           <div className="border-t border-border" />
-          <div className="space-y-2.5 p-4">
+          <div className="space-y-2.5 p-4 flex-1">
             <SectionLabel>
               {t("syncedPayments.sections.matchedTo")}
             </SectionLabel>

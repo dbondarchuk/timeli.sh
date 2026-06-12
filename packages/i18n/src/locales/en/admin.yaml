@@ -466,11 +466,11 @@ syncedPayments:
     ingested:
       matched:
         title: In-store payment matched
-        message: "{amount} from {provider} was auto-matched to an appointment at {dt_transactionTime}."
+        message: "{amount} from {provider} was auto-matched to an appointment at {transactionTime}."
         action: Review
       unmatched:
         title: In-store payment needs review
-        message: "{amount} from {provider} at {dt_transactionTime} could not be matched to an appointment."
+        message: "{amount} from {provider} at {transactionTime} could not be matched to an appointment."
         action: Review
 appointments:
   title: Appointments

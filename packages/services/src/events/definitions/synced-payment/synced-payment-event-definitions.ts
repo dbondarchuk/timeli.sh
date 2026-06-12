@@ -15,6 +15,7 @@ import {
   type SyncedPaymentRejectedPayload,
 } from "@timelish/types";
 
+import { AvailableApps } from "@timelish/app-store";
 import { dashboardUrls } from "../links";
 
 export const SYNCED_PAYMENTS_REVIEW_BADGE_KEY = "synced_payments_review";
@@ -72,13 +73,17 @@ export const SYNCED_PAYMENT_EVENT_DEFINITIONS: Record<string, EventDefinition> =
           toast: {
             type: isMatched ? "info" : "warning",
             title: {
-              key: `${keyPrefix}.title` as BaseAllKeys,
+              key: `${keyPrefix}.title` satisfies BaseAllKeys,
             },
             message: {
-              key: `${keyPrefix}.message` as BaseAllKeys,
+              key: `${keyPrefix}.message` satisfies BaseAllKeys,
               args: {
                 amount: syncedPayment.amount,
-                provider: syncedPayment.appName,
+                provider:
+                  AvailableApps[syncedPayment.appName]?.displayName ??
+                  syncedPayment.appName,
+                t_status:
+                  `admin.syncedPayments.status.${syncedPayment.status}` satisfies BaseAllKeys,
                 dt_transactionTime: {
                   value: syncedPayment.transactionTime.toISOString(),
                   format: "DATETIME_HUGE",
@@ -87,7 +92,7 @@ export const SYNCED_PAYMENT_EVENT_DEFINITIONS: Record<string, EventDefinition> =
             },
             action: {
               label: {
-                key: `${keyPrefix}.action` as BaseAllKeys,
+                key: `${keyPrefix}.action` satisfies BaseAllKeys,
               },
               href: dashboardUrls.syncedPayment(syncedPayment),
             },
@@ -187,7 +192,8 @@ export const SYNCED_PAYMENT_EVENT_DEFINITIONS: Record<string, EventDefinition> =
     [SYNCED_PAYMENT_IGNORED_EVENT_TYPE]: {
       type: SYNCED_PAYMENT_IGNORED_EVENT_TYPE,
       recordActivity: (envelope) => {
-        const { syncedPayment } = envelope.payload as SyncedPaymentIgnoredPayload;
+        const { syncedPayment } =
+          envelope.payload as SyncedPaymentIgnoredPayload;
         return {
           eventId: envelope.id,
           eventType: envelope.type,

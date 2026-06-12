@@ -468,11 +468,11 @@ syncedPayments:
     ingested:
       matched:
         title: Платіж у закладі зіставлено
-        message: "{amount} від {provider} автоматично зіставлено з записом о {dt_transactionTime}."
+        message: "{amount} від {provider} автоматично зіставлено з записом о {transactionTime}."
         action: Переглянути
       unmatched:
         title: Платіж у закладі потребує перевірки
-        message: "{amount} від {provider} о {dt_transactionTime} не вдалося зіставити з записом."
+        message: "{amount} від {provider} о {transactionTime} не вдалося зіставити з записом."
         action: Переглянути
 appointments:
   title: Записи
