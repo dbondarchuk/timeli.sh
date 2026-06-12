@@ -6270,13 +6270,13 @@
     "semantic_hash": ""
   },
   "packages/app-store/src/apps/paypal/client.ts": {
-    "mtime": 1781290986.935175,
-    "ast_hash": "f8df68e361cfb5a1a5926f0989238027",
+    "mtime": 1781300237.4066737,
+    "ast_hash": "459152809acbf53122f042a5ce390f42",
     "semantic_hash": ""
   },
   "packages/app-store/src/apps/paypal/const.ts": {
-    "mtime": 1781292366.8051114,
-    "ast_hash": "861a494eedc1b58265a03f2016b97ef9",
+    "mtime": 1781292707.7609076,
+    "ast_hash": "25ac047d16031c35cc8dbb69c6149c8d",
     "semantic_hash": ""
   },
   "packages/app-store/src/apps/paypal/form.tsx": {
@@ -6300,8 +6300,8 @@
     "semantic_hash": ""
   },
   "packages/app-store/src/apps/paypal/service.ts": {
-    "mtime": 1781292368.793876,
-    "ast_hash": "3cf7d568411053e3762a8975732bef65",
+    "mtime": 1781300241.6973155,
+    "ast_hash": "54722c6fbce4cacb3612e784b11879d3",
     "semantic_hash": ""
   },
   "packages/app-store/src/apps/paypal/setup.tsx": {
@@ -13035,8 +13035,8 @@
     "semantic_hash": ""
   },
   "packages/services/src/bullmq/jobs/bullmq-job-service.ts": {
-    "mtime": 1781292407.127146,
-    "ast_hash": "f1806dfb4ab889a1c585b5fbbd93680b",
+    "mtime": 1781292706.6772854,
+    "ast_hash": "7c6e2220490c37477a6b4ff16cede33f",
     "semantic_hash": ""
   },
   "packages/services/src/bullmq/jobs/bullmq-job-worker.ts": {
@@ -14045,8 +14045,8 @@
     "semantic_hash": ""
   },
   "packages/types/src/jobs/index.ts": {
-    "mtime": 1781292383.7375169,
-    "ast_hash": "296d71f2c6e09dfc8a791c17b90126d2",
+    "mtime": 1781292701.7055793,
+    "ast_hash": "75d74d41e8a1545208d07b808a34215a",
     "semantic_hash": ""
   },
   "packages/types/src/organizations/index.ts": {
@@ -14145,8 +14145,8 @@
     "semantic_hash": ""
   },
   "packages/types/src/services/job.service.ts": {
-    "mtime": 1781292386.3439882,
-    "ast_hash": "6a58006de48c7edc82fe6b95258686a2",
+    "mtime": 1781292702.3292024,
+    "ast_hash": "6817538396910e5182bb7479150f280b",
     "semantic_hash": ""
   },
   "packages/types/src/services/notification.service.ts": {
@@ -16535,8 +16535,8 @@
     "semantic_hash": ""
   },
   "packages/i18n/src/locales/en/admin.yaml": {
-    "mtime": 1781287320.7126157,
-    "ast_hash": "2886eab7d1c0ae042e707ed69c96dd7d",
+    "mtime": 1781299862.4979343,
+    "ast_hash": "d012281a4098fe34e9694918fe267b3e",
     "semantic_hash": ""
   },
   "packages/i18n/src/locales/en/apps.yaml": {
@@ -16570,8 +16570,8 @@
     "semantic_hash": ""
   },
   "packages/i18n/src/locales/uk/admin.yaml": {
-    "mtime": 1781287320.7145042,
-    "ast_hash": "6f1ea92b22d871441a728052b7217f80",
+    "mtime": 1781299865.759679,
+    "ast_hash": "bb97f37e717e1e73f526db31a64635e0",
     "semantic_hash": ""
   },
   "packages/i18n/src/locales/uk/apps.yaml": {
@@ -27075,8 +27075,8 @@
     "semantic_hash": ""
   },
   "apps/admin/src/components/admin/synced-payments/review.tsx": {
-    "mtime": 1781207567.4489753,
-    "ast_hash": "aaf19a2fd50f8d06f4ffd5da62c91c20",
+    "mtime": 1781299855.0421221,
+    "ast_hash": "ea0f6b2076f7ba5a303541ba7e8ef722",
     "semantic_hash": ""
   },
   "docs/.docusaurus/docusaurus-plugin-content-docs/default/p/docs-category-first-steps-b72.json": {
@@ -27140,23 +27140,23 @@
     "semantic_hash": ""
   },
   "packages/api-sdk/src/admin/api/synced-payments.ts": {
-    "mtime": 1781126332.8491528,
-    "ast_hash": "aebb85a859feb18af4b9bcb44b3a1eef",
+    "mtime": 1781299727.5055685,
+    "ast_hash": "8266b6cddd81bf89908fe39c26b221f2",
     "semantic_hash": ""
   },
   "packages/services/src/synced-payments.service.ts": {
-    "mtime": 1781287320.716087,
-    "ast_hash": "59222023b37987b256185f0def2fe7b2",
+    "mtime": 1781300240.9103508,
+    "ast_hash": "558afc4af60dcf404c52a7de7d821063",
     "semantic_hash": ""
   },
   "packages/types/src/booking/synced-payment.ts": {
-    "mtime": 1781287320.71661,
-    "ast_hash": "d250ff100b6d91292975fdb4f22ecf41",
+    "mtime": 1781300236.6190073,
+    "ast_hash": "22f5d56cafe7739e3115012c9aa15da1",
     "semantic_hash": ""
   },
   "packages/types/src/services/synced-payments.service.ts": {
-    "mtime": 1781287320.7181952,
-    "ast_hash": "eb286642f586edee1aa20a5b5ada8f31",
+    "mtime": 1781299587.801288,
+    "ast_hash": "09a3a27f9b30622b36cb15eb7dadbe04",
     "semantic_hash": ""
   },
   "packages/ui-admin-kit/src/components/payments/assign-appointment-dialog.tsx": {
@@ -27175,8 +27175,8 @@
     "semantic_hash": ""
   },
   "packages/ui-admin-kit/src/components/payments/synced-payment-card.tsx": {
-    "mtime": 1781287320.7192352,
-    "ast_hash": "af6d2b1659ae5c34d81d5aad722011c4",
+    "mtime": 1781295126.4381814,
+    "ast_hash": "c6e0ce9d11c4c00cc53f68b76f1db922",
     "semantic_hash": ""
   },
   "docs/docs/first-steps/build-your-website.md": {
@@ -27290,8 +27290,8 @@
     "semantic_hash": ""
   },
   "packages/services/src/events/definitions/synced-payment/synced-payment-event-definitions.ts": {
-    "mtime": 1781287320.7150452,
-    "ast_hash": "ba332c9c441b01134d4966ccc31d4f95",
+    "mtime": 1781295523.6446562,
+    "ast_hash": "b5e178e4e5425715d380f7e02e5c1b4c",
     "semantic_hash": ""
   },
   "apps/admin/src/app/api/payments/route.ts": {
@@ -27420,8 +27420,13 @@
     "semantic_hash": ""
   },
   "packages/app-store/src/apps/paypal/transaction-sync.ts": {
-    "mtime": 1781291584.1715782,
-    "ast_hash": "e7d15da6abd219a2e1e0aca54255b897",
+    "mtime": 1781300240.426121,
+    "ast_hash": "ea16cacd48987aa64dc13463536cd92b",
+    "semantic_hash": ""
+  },
+  "apps/admin/src/app/api/synced-payments/confirm/matched/route.ts": {
+    "mtime": 1781299716.799955,
+    "ast_hash": "ca67089d4d3374ab4c8b4dcdaf28b98f",
     "semantic_hash": ""
   }
 }

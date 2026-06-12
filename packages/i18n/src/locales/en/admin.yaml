@@ -425,6 +425,7 @@ syncedPayments:
     suggestions: Suggested appointments
   actions:
     confirm: Confirm
+    approveAll: Approve all matched payments
     reject: Reject
     ignore: Ignore
     reassign: Reassign here
@@ -447,6 +448,11 @@ syncedPayments:
   manageDialog:
     title: Synced payment
     description: Review and manage this synced in-store payment.
+  approveAllDialog:
+    title: Approve all matched payments?
+    description: This will confirm every auto-matched synced payment in the review queue. Unmatched payments are not affected.
+    confirm: Approve all
+    cancel: Cancel
   assignDialog:
     title: Assign to appointment
     description: Search for an appointment and select one to assign this payment to.
@@ -462,6 +468,8 @@ syncedPayments:
   toast:
     success: Synced payment updated
     error: Could not update synced payment
+    approveAllSuccess: "{count, plural, =1 {Approved # synced payment} other {Approved # synced payments}}"
+    approveAllError: Could not approve synced payments
   notifications:
     ingested:
       matched:

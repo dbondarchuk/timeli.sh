@@ -340,6 +340,50 @@ export class SyncedPaymentsService
     return record;
   }
 
+  public async confirmAllMatched(
+    source: EventSource,
+    query?: { range?: DateRange; externalId?: string },
+  ): Promise<{ count: number }> {
+    const logger = this.loggerFactory("confirmAllMatched");
+    logger.debug({ query }, "Confirming all matched synced payments");
+
+    const db = await getDbConnection();
+    const collection = db.collection<SyncedPayment>(
+      SYNCED_PAYMENTS_COLLECTION_NAME,
+    );
+
+    const filter: Filter<SyncedPayment> = {
+      organizationId: this.organizationId,
+      status: "matched",
+    };
+
+    if (query?.externalId) {
+      filter.externalId = query.externalId;
+    }
+
+    if (query?.range?.start || query?.range?.end) {
+      const transactionTime: Record<string, Date> = {};
+      if (query.range.start) {
+        transactionTime.$gte = query.range.start;
+      }
+      if (query.range.end) {
+        transactionTime.$lte = query.range.end;
+      }
+      (filter as Record<string, unknown>).transactionTime = transactionTime;
+    }
+
+    const items = await collection.find(filter).toArray();
+
+    let count = 0;
+    for (const item of items) {
+      await this.confirm(item._id, source);
+      count += 1;
+    }
+
+    logger.info({ count, query }, "Confirmed all matched synced payments");
+    return { count };
+  }
+
   public async reject(id: string, source: EventSource): Promise<SyncedPayment> {
     const logger = this.loggerFactory("reject");
     logger.debug({ id, source }, "Rejecting synced payment");
@@ -741,7 +785,15 @@ export class SyncedPaymentsService
     }
 
     const split =
-      override ?? this.computeDefaultSplit(appointment, transaction.amount);
+      override ??
+      (transaction.providerSplit
+        ? {
+            paymentAmount: round2(
+              Math.max(0, transaction.providerSplit.paymentAmount),
+            ),
+            tip: round2(Math.max(0, transaction.providerSplit.tip)),
+          }
+        : this.computeDefaultSplit(appointment, transaction.amount));
     const paymentAmount = round2(Math.max(0, split.paymentAmount));
     const inferredTip = round2(Math.max(0, split.tip));
 

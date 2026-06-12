@@ -8,10 +8,19 @@ import {
   SyncedPaymentStatus,
 } from "@timelish/types";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
   Button,
   CalendarDateRangePicker,
   Link,
   Skeleton,
+  Spinner,
   toastPromise,
   useTimeZone,
 } from "@timelish/ui";
@@ -22,6 +31,7 @@ import {
 } from "@timelish/ui-admin-kit";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
+import { Check } from "lucide-react";
 
 const NEEDS_REVIEW: SyncedPaymentStatus[] = ["matched", "unmatched"];
 const PAGE_SIZE = 20;
@@ -45,6 +55,8 @@ export const SyncedPaymentsReview = () => {
   const [editTarget, setEditTarget] = useState<HydratedSyncedPayment | null>(
     null,
   );
+  const [approvingAll, setApprovingAll] = useState(false);
+  const [approveAllOpen, setApproveAllOpen] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -74,6 +86,38 @@ export const SyncedPaymentsReview = () => {
   useEffect(() => {
     setPage(0);
   }, [showAll, range]);
+
+  const approveAll = useCallback(async () => {
+    setApprovingAll(true);
+    try {
+      const result = await toastPromise(
+        adminApi.syncedPayments.confirmAllMatchedSyncedPayments({
+          start: range?.start,
+          end: range?.end,
+          externalId,
+        }),
+        {
+          success: (data) =>
+            t("syncedPayments.toast.approveAllSuccess", {
+              count: data.count,
+            }),
+          error: t("syncedPayments.toast.approveAllError"),
+        },
+      );
+
+      if (result.count > 0) {
+        setTimeout(async () => {
+          await load();
+        }, 300);
+      }
+
+      setApproveAllOpen(false);
+    } catch {
+      // toastPromise already surfaced the error
+    } finally {
+      setApprovingAll(false);
+    }
+  }, [externalId, load, range, t]);
 
   const runAction = useCallback(
     async (id: string, action: () => Promise<unknown>) => {
@@ -131,6 +175,16 @@ export const SyncedPaymentsReview = () => {
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
+          {!showAll && (
+            <Button
+              size="sm"
+              disabled={loading || approvingAll || pendingId !== null}
+              onClick={() => setApproveAllOpen(true)}
+            >
+              <Check />
+              {t("syncedPayments.actions.approveAll")}
+            </Button>
+          )}
           <CalendarDateRangePicker
             range={range}
             onChange={setRange}
@@ -163,7 +217,7 @@ export const SyncedPaymentsReview = () => {
                 <SyncedPaymentCard
                   key={item._id}
                   payment={item}
-                  disabled={pendingId === item._id}
+                  disabled={pendingId === item._id || approvingAll}
                   onConfirm={() =>
                     runAction(item._id, () =>
                       adminApi.syncedPayments.confirmSyncedPayment(item._id),
@@ -257,6 +311,38 @@ export const SyncedPaymentsReview = () => {
           onUpdated={() => load()}
         />
       )}
+
+      <AlertDialog
+        open={approveAllOpen}
+        onOpenChange={(open) => {
+          if (!open && approvingAll) {
+            return;
+          }
+          setApproveAllOpen(open);
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {t("syncedPayments.approveAllDialog.title")}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("syncedPayments.approveAllDialog.description")}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={approvingAll}>
+              {t("syncedPayments.approveAllDialog.cancel")}
+            </AlertDialogCancel>
+            <AlertDialogAction asChild>
+              <Button onClick={approveAll} disabled={approvingAll}>
+                {approvingAll && <Spinner />}
+                {t("syncedPayments.approveAllDialog.confirm")}
+              </Button>
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

@@ -44,6 +44,18 @@ export interface ISyncedPaymentsService {
   /** Marks an auto-matched record as confirmed by staff. */
   confirm(id: string, source: EventSource): Promise<SyncedPayment>;
 
+  /**
+   * Confirms every matched synced payment that has an appointment assigned,
+   * optionally scoped by transaction time range or external id.
+   */
+  confirmAllMatched(
+    source: EventSource,
+    query?: {
+      range?: DateRange;
+      externalId?: string;
+    },
+  ): Promise<{ count: number }>;
+
   /** Rejects a match, removing any payments that were created. */
   reject(id: string, source: EventSource): Promise<SyncedPayment>;
 

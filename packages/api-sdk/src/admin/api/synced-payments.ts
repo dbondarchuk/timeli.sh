@@ -83,5 +83,21 @@ export const updateSyncedPaymentAmounts = (
   amounts: { paymentAmount: number; tip: number },
 ) => action(id, "update", amounts);
 
-export const revertSyncedPaymentAmounts = (id: string) =>
-  action(id, "revert");
+export const revertSyncedPaymentAmounts = (id: string) => action(id, "revert");
+
+export const confirmAllMatchedSyncedPayments = async (params?: {
+  start?: Date;
+  end?: Date;
+  externalId?: string;
+}) => {
+  const response = await fetchAdminApi("/synced-payments/confirm/matched", {
+    method: "POST",
+    body: JSON.stringify({
+      start: params?.start?.toISOString(),
+      end: params?.end?.toISOString(),
+      externalId: params?.externalId,
+    }),
+  });
+
+  return response.json<{ count: number }>();
+};

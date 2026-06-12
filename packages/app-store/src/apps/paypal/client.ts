@@ -359,7 +359,7 @@ export class PaypalClient {
       end_date: endDate.toISOString(),
       transaction_status: "S",
       balance_affecting_records_only: "Y",
-      fields: "transaction_info,store_info",
+      fields: "transaction_info,store_info,cart_info",
       page: String(page),
       page_size: String(Math.min(Math.max(pageSize, 1), 500)),
     });
@@ -552,9 +552,18 @@ export type PaypalStoreInfo = {
   terminal_id?: string;
 };
 
+export type PaypalCartItemDetail = {
+  total_item_amount?: PaypalMoneyAmount;
+};
+
+export type PaypalCartInfo = {
+  item_details?: PaypalCartItemDetail[];
+};
+
 export type PaypalTransactionDetail = {
   transaction_info?: PaypalTransactionInfo;
   store_info?: PaypalStoreInfo;
+  cart_info?: PaypalCartInfo;
 };
 
 type ListTransactionsResponse = {

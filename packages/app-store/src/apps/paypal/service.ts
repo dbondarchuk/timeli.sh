@@ -667,6 +667,7 @@ class PaypalConnectedApp
       currency,
       transactionTime: capture.transactionTime,
       fees,
+      providerSplit: capture.providerSplit,
       raw: capture.raw,
     };
 

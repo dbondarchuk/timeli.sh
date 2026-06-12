@@ -43,6 +43,11 @@ export type SyncedPaymentTransaction = {
   fees?: PaymentFee[];
   /** Raw provider payload, kept for auditing/debugging. */
   raw?: unknown;
+  /**
+   * When the provider separates line items from tips (e.g. PayPal cart_info),
+   * use this split instead of inferring tip from appointment balance alone.
+   */
+  providerSplit?: { paymentAmount: number; tip: number };
 };
 
 export type SyncedPaymentUpdateModel = SyncedPaymentTransaction & {
