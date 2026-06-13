@@ -126,6 +126,17 @@ export interface OrdersCapture {
   update_time?: string;
   /** The breakdown of the seller receivable amount. */
   seller_receivable_breakdown?: SellerReceivableBreakdown;
+  supplementary_data?: {
+    related_ids?: {
+      order_id?: string;
+      authorization_id?: string;
+    };
+  };
+  links?: Array<{
+    href?: string;
+    rel?: string;
+    method?: string;
+  }>;
 }
 
 export interface SellerReceivableBreakdown {

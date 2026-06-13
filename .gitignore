@@ -44,3 +44,5 @@ next-env.d.ts
 *.translation-cache.json
 
 *.generated.ts
+
+**/graphify-out

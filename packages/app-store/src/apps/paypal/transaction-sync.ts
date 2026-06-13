@@ -3,6 +3,7 @@ import { ConnectedAppData, PaymentFee } from "@timelish/types";
 import { PaypalClient, PaypalTransactionDetail } from "./client";
 import { PAYPAL_TRANSACTION_SYNC_LOOKBACK_SECONDS } from "./const";
 import { PaypalConfiguration } from "./models";
+import { OrdersCapture } from "./types";
 
 export type InStoreCaptureInput = {
   captureId: string;
@@ -80,52 +81,69 @@ export function extractCartSplit(
   return { paymentAmount: cartTotal, tip };
 }
 
-export function mapTransactionDetailToCapture(
+export function getTransactionCaptureId(
   detail: PaypalTransactionDetail,
+): string | null {
+  return detail.transaction_info?.transaction_id ?? null;
+}
+
+export function extractOrderIdFromCapture(
+  capture: OrdersCapture,
+): string | undefined {
+  const orderId = capture.supplementary_data?.related_ids?.order_id;
+  if (orderId) {
+    return orderId;
+  }
+
+  const upHref = capture.links?.find((link) => link.rel === "up")?.href;
+  if (!upHref) {
+    return undefined;
+  }
+
+  const match = upHref.match(/\/v2\/checkout\/orders\/([^/?]+)/i);
+  return match?.[1];
+}
+
+/**
+ * Builds ingest input from a verified PayPal capture. The transaction list is
+ * only used to discover capture ids and optional cart_info for tip splitting.
+ */
+export function mapVerifiedCaptureToIngestInput(
+  capture: OrdersCapture,
+  listDetail?: PaypalTransactionDetail,
 ): InStoreCaptureInput | null {
-  const info = detail.transaction_info;
-  const captureId = info?.transaction_id;
+  const captureId = capture.id;
   if (!captureId) {
     return null;
   }
 
-  const amount = parseFloat(info.transaction_amount?.value ?? "") || 0;
-  const currency = info.transaction_amount?.currency_code;
+  const amount = parseFloat(capture.amount?.value ?? "") || 0;
+  const currency = capture.amount?.currency_code;
   if (!currency || amount <= 0) {
     return null;
   }
 
-  const orderId =
-    info.paypal_reference_id_type === "ODR"
-      ? info.paypal_reference_id
-      : undefined;
-
-  const feeValue = parseFloat(info.fee_amount?.value ?? "") || 0;
-  const fees =
-    feeValue !== 0
-      ? [
-          {
-            type: "transaction" as const,
-            amount: Math.abs(feeValue),
-          },
-        ]
-      : undefined;
-
-  const transactionTime = info.transaction_initiation_date
-    ? new Date(info.transaction_initiation_date)
+  const transactionTime = capture.create_time
+    ? new Date(capture.create_time)
     : new Date();
 
-  const providerSplit = extractCartSplit(detail, amount);
+  const providerSplit =
+    listDetail !== undefined
+      ? extractCartSplit(listDetail, amount)
+      : undefined;
 
   return {
     captureId,
-    orderId,
+    orderId: extractOrderIdFromCapture(capture),
     amount,
     currency,
     transactionTime,
-    fees,
+    breakdown: capture.seller_receivable_breakdown,
     providerSplit,
-    raw: detail,
+    raw: {
+      capture,
+      listDetail,
+    },
   };
 }
 
@@ -167,11 +185,11 @@ export async function runPaypalTransactionSync(
       { id: detail.transaction_info?.transaction_id },
       "Processing PayPal transaction",
     );
-    const capture = mapTransactionDetailToCapture(detail);
-    if (!capture) {
+    const captureId = getTransactionCaptureId(detail);
+    if (!captureId) {
       logger.debug(
         { id: detail.transaction_info?.transaction_id },
-        "Skipping PayPal transaction (capture not found)",
+        "Skipping PayPal transaction (missing capture id)",
       );
 
       skipped += 1;
@@ -179,20 +197,31 @@ export async function runPaypalTransactionSync(
     }
 
     const { capture: verifiedCapture, error: captureError } =
-      await client.getCapture(capture.captureId);
+      await client.getCapture(captureId);
 
     if (!verifiedCapture) {
       phantom += 1;
       logger.debug(
         {
           appId: appData._id,
-          captureId: capture.captureId,
+          captureId,
           statusCode: captureError?.statusCode,
         },
         captureError?.statusCode === 404
           ? "Skipping phantom PayPal transaction (capture not found)"
           : "Skipping PayPal transaction (capture lookup failed)",
       );
+      continue;
+    }
+
+    const capture = mapVerifiedCaptureToIngestInput(verifiedCapture, detail);
+    if (!capture) {
+      logger.debug(
+        { captureId },
+        "Skipping PayPal transaction (invalid capture payload)",
+      );
+
+      skipped += 1;
       continue;
     }
 
