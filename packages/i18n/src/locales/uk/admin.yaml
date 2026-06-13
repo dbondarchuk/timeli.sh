@@ -466,6 +466,7 @@ syncedPayments:
       option: Послуга
       customer: Клієнт
       dateTime: Дата та час
+      requestedAt: Затребувано
       price: Ціна
   toast:
     success: Синхронізований платіж оновлено

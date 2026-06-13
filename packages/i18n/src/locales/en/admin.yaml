@@ -464,6 +464,7 @@ syncedPayments:
       option: Service
       customer: Customer
       dateTime: Date & time
+      requestedAt: Requested at
       price: Price
   toast:
     success: Synced payment updated

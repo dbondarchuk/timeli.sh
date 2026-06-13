@@ -2,7 +2,7 @@ import { getLoggerFactory } from "@timelish/logger";
 import { formatAmountString } from "@timelish/utils";
 import { v4 as uuidv4 } from "uuid";
 import * as z from "zod";
-import { PaypalOrder } from "./types";
+import { OrdersCapture, PaypalOrder } from "./types";
 
 export class PaypalClient {
   url: string;
@@ -189,6 +189,36 @@ export class PaypalClient {
       logger.error(
         { response, result, error },
         "Request to get order has failed",
+      );
+
+      return { error: { statusCode: response?.status } };
+    }
+  }
+
+  public async getCapture(
+    captureId: string,
+  ): Promise<
+    | { capture: OrdersCapture; error?: never }
+    | { capture?: never; error: { statusCode?: number } }
+  > {
+    const logger = this.loggerFactory("getCapture");
+    let response: Response | undefined;
+    let result: OrdersCapture | undefined;
+    try {
+      response = await this.fetcher(`/v2/payments/captures/${captureId}`, {
+        method: "GET",
+      });
+
+      if (response.ok) {
+        result = (await response.json()) as OrdersCapture;
+        return { capture: result };
+      }
+
+      throw new Error("Request to get capture has failed");
+    } catch (error) {
+      logger.debug(
+        { captureId, statusCode: response?.status, error },
+        "Request to get capture has failed",
       );
 
       return { error: { statusCode: response?.status } };

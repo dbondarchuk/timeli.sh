@@ -93,12 +93,16 @@ export const AppointmentDetails = ({
     ) || 0;
 
   const totalAmountLeft = appointment.totalPrice
-    ? appointment.totalPrice -
-      (paidPayments
-        ?.filter(
-          (payment) => payment.type === "payment" || payment.type === "deposit",
-        )
-        .reduce((sum, payment) => sum + payment.amount, 0) || 0)
+    ? Math.max(
+        0,
+        appointment.totalPrice -
+          (paidPayments
+            ?.filter(
+              (payment) =>
+                payment.type === "payment" || payment.type === "deposit",
+            )
+            .reduce((sum, payment) => sum + payment.amount, 0) || 0),
+      )
     : 0;
 
   const { name, email, phone, ...restFields } = appointment.fields;
@@ -221,7 +225,9 @@ export const AppointmentDetails = ({
               </p>
               {syncedProvider && (
                 <Badge variant="secondary" className="shrink-0">
-                  {t("syncedPayments.badge.synced", { provider: syncedProvider })}
+                  {t("syncedPayments.badge.synced", {
+                    provider: syncedProvider,
+                  })}
                 </Badge>
               )}
             </div>

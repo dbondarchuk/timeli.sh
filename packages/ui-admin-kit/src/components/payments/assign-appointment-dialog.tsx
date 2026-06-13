@@ -33,7 +33,7 @@ import { DateTime } from "luxon";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 const PAGE_SIZE = 10;
-const DEFAULT_SORT: Sort = [{ id: "dateTime", desc: true }];
+const DEFAULT_SORT: Sort = [{ id: "createdAt", desc: true }];
 
 type AssignAppointmentDialogProps = {
   open: boolean;
@@ -240,6 +240,12 @@ export const AssignAppointmentDialog = ({
                       "syncedPayments.assignDialog.columns.dateTime",
                     )}
                   </TableHead>
+                  <TableHead>
+                    {renderSortHead(
+                      "createdAt",
+                      "syncedPayments.assignDialog.columns.requestedAt",
+                    )}
+                  </TableHead>
                   <TableHead className="text-right">
                     {renderSortHead(
                       "totalPrice",
@@ -251,7 +257,7 @@ export const AssignAppointmentDialog = ({
               <TableBody>
                 {loading ? (
                   <TableRow>
-                    <TableCell colSpan={5}>
+                    <TableCell colSpan={6}>
                       <div className="flex justify-center py-8">
                         <Spinner />
                       </div>
@@ -260,7 +266,7 @@ export const AssignAppointmentDialog = ({
                 ) : items.length === 0 ? (
                   <TableRow>
                     <TableCell
-                      colSpan={5}
+                      colSpan={6}
                       className="py-8 text-center text-sm text-muted-foreground"
                     >
                       {t("syncedPayments.assignDialog.empty")}
@@ -297,6 +303,9 @@ export const AssignAppointmentDialog = ({
                         </TableCell>
                         <TableCell>
                           {formatTime(appointment.dateTime)}
+                        </TableCell>
+                        <TableCell>
+                          {formatTime(appointment.createdAt)}
                         </TableCell>
                         <TableCell className="text-right">
                           {appointment.totalPrice

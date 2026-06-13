@@ -16,7 +16,10 @@ export type InStoreCaptureInput = {
   providerSplit?: { paymentAmount: number; tip: number };
 };
 
-export type InStoreCaptureIngestResult = "ingested" | "skipped" | "already_exists";
+export type InStoreCaptureIngestResult =
+  | "ingested"
+  | "skipped"
+  | "already_exists";
 
 export type PaypalTransactionSyncDeps = {
   appData: ConnectedAppData<PaypalConfiguration>;
@@ -157,20 +160,63 @@ export async function runPaypalTransactionSync(
   let ingested = 0;
   let skipped = 0;
   let alreadyExists = 0;
+  let phantom = 0;
 
   for (const detail of result.transactionDetails) {
+    logger.debug(
+      { id: detail.transaction_info?.transaction_id },
+      "Processing PayPal transaction",
+    );
     const capture = mapTransactionDetailToCapture(detail);
     if (!capture) {
+      logger.debug(
+        { id: detail.transaction_info?.transaction_id },
+        "Skipping PayPal transaction (capture not found)",
+      );
+
       skipped += 1;
+      continue;
+    }
+
+    const { capture: verifiedCapture, error: captureError } =
+      await client.getCapture(capture.captureId);
+
+    if (!verifiedCapture) {
+      phantom += 1;
+      logger.debug(
+        {
+          appId: appData._id,
+          captureId: capture.captureId,
+          statusCode: captureError?.statusCode,
+        },
+        captureError?.statusCode === 404
+          ? "Skipping phantom PayPal transaction (capture not found)"
+          : "Skipping PayPal transaction (capture lookup failed)",
+      );
       continue;
     }
 
     const outcome = await ingest(capture);
     if (outcome === "ingested") {
+      logger.debug(
+        { id: detail.transaction_info?.transaction_id },
+        "Successfully ingested PayPal transaction",
+      );
+
       ingested += 1;
     } else if (outcome === "already_exists") {
+      logger.debug(
+        { id: detail.transaction_info?.transaction_id },
+        "Skipping PayPal transaction (already ingested)",
+      );
+
       alreadyExists += 1;
     } else {
+      logger.debug(
+        { id: detail.transaction_info?.transaction_id },
+        "Skipping PayPal transaction (ingestion failed)",
+      );
+
       skipped += 1;
     }
   }
@@ -181,6 +227,7 @@ export async function runPaypalTransactionSync(
       total: result.transactionDetails.length,
       ingested,
       skipped,
+      phantom,
       alreadyExists,
       start,
       end,

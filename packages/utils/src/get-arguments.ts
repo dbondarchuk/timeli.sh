@@ -177,15 +177,18 @@ export const getArguments = <
   );
 
   const totalAmountLeftToPay = appointment?.totalPrice
-    ? appointment.totalPrice -
-      (payments
-        ?.filter(
-          (payment) =>
-            payment.type !== "rescheduleFee" &&
-            payment.type !== "cancellationFee" &&
-            payment.type !== "tips",
-        )
-        .reduce((sum, payment) => sum + payment.amountLeft, 0) || 0)
+    ? Math.max(
+        0,
+        appointment.totalPrice -
+          (payments
+            ?.filter(
+              (payment) =>
+                payment.type !== "rescheduleFee" &&
+                payment.type !== "cancellationFee" &&
+                payment.type !== "tips",
+            )
+            .reduce((sum, payment) => sum + payment.amountLeft, 0) || 0),
+      )
     : undefined;
 
   const subTotal =
