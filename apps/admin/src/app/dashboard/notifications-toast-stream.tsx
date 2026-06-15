@@ -20,12 +20,6 @@ import {
 import { useRouter } from "next/navigation";
 import React from "react";
 
-export const PendingAppointmentsBadge: React.FC = () => {
-  return (
-    <DashboardNotificationsBadge notificationsCountKey="pending_appointments" />
-  );
-};
-
 export function useHasDashboardNotifications(
   keys: Array<string | undefined>,
 ): boolean {

@@ -20,10 +20,7 @@ import { Suspense } from "react";
 import { getServicesContainer } from "../utils";
 import { EventsCalendar } from "./events-calendar";
 import { NextAppointmentsCards } from "./next-appointments-cards";
-import {
-  DashboardNotificationsBadge,
-  PendingAppointmentsBadge,
-} from "./notifications-toast-stream";
+import { DashboardNotificationsBadge } from "./notifications-toast-stream";
 import { PendingAppointmentsTab } from "./pending-appointments-tab";
 
 type Params = {
@@ -104,7 +101,10 @@ export default async function Page(params: Params) {
               </TabsTrigger>
               <TabsTrigger value="appointments">
                 {tAdmin("dashboard.tabs.pendingAppointments")}{" "}
-                <PendingAppointmentsBadge />
+                <DashboardNotificationsBadge
+                  notificationsCountKey="pending_appointments"
+                  className="ml-1 scale-75 -translate-y-1"
+                />
               </TabsTrigger>
               {dashboardTabAppsMap.map((item) => (
                 <TabsTrigger value={item.href} key={item.href}>
