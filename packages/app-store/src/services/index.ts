@@ -17,8 +17,6 @@ import { CUSTOMER_TEXT_MESSAGE_NOTIFICATION_APP_NAME } from "../apps/customer-te
 import CustomerTextMessageNotificationConnectedApp from "../apps/customer-text-message-notification/service";
 import { EMAIL_NOTIFICATION_APP_NAME } from "../apps/email-notification/const";
 import { EmailNotificationConnectedApp } from "../apps/email-notification/service";
-import { FINANCIAL_OVERVIEW_APP_NAME } from "../apps/financial-overview/const";
-import FinancialOverviewService from "../apps/financial-overview/service";
 import { FORMS_APP_NAME } from "../apps/forms/const";
 import { FormsConnectedApp } from "../apps/forms/service";
 import { GIFT_CARD_STUDIO_APP_NAME } from "../apps/gift-card-studio/const";
@@ -99,7 +97,6 @@ export const AvailableAppServices: Record<
   [WAITLIST_APP_NAME]: (props) => new WaitlistConnectedApp(props),
   [WAITLIST_NOTIFICATIONS_APP_NAME]: (props) =>
     new WaitlistNotificationsConnectedApp(props),
-  [FINANCIAL_OVERVIEW_APP_NAME]: (props) => new FinancialOverviewService(props),
   [WEBHOOKS_APP_NAME]: (props) => new WebhooksConnectedApp(props),
   [SMART_SCHEDULE_APP_NAME]: (props) => new SmartScheduleConnectedApp(props),
   [URL_BUSY_EVENTS_APP_NAME]: (props) => new UrlBusyEventsConnectedApp(props),

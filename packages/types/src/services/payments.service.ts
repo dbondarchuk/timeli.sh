@@ -1,5 +1,6 @@
 import {
   Payment,
+  PaymentExportRow,
   PaymentIntent,
   PaymentIntentUpdateModel,
   PaymentMethod,
@@ -38,6 +39,16 @@ export interface IPaymentsService {
       method?: PaymentMethod[];
     },
   ): Promise<WithTotal<PaymentSummary>>;
+
+  listForExport(
+    query: Omit<Query, "offset" | "limit"> & {
+      range?: DateRange;
+      customerId?: string;
+      appointmentId?: string;
+      type?: PaymentType[];
+      method?: PaymentMethod[];
+    },
+  ): Promise<PaymentExportRow[]>;
 
   getPayment(id: string): Promise<Payment | null>;
   getPaymentByExternalId(externalId: string): Promise<Payment | null>;

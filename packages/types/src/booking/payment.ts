@@ -227,3 +227,16 @@ export type PaymentSummary = Prettify<
     serviceName?: string;
   }
 >;
+
+export type PaymentExportRow = Prettify<
+  PaymentSummary & {
+    customerEmail?: string;
+    customerPhone?: string;
+    appointmentDateTime?: Date;
+    appointmentStatus?: string;
+    appointmentTotalPrice?: number;
+    addonNames?: string[];
+  }
+>;
+
+export const PAYMENTS_EXPORT_MAX_ROWS = 10_000;

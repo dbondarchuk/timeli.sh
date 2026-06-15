@@ -165,7 +165,7 @@ Timeli.sh ships with modular apps that can be enabled per organization:
 
 - **Scheduling & Availability**: `weekly-schedule`, `smart-schedule`, `busy-events`, `url-busy-events`, `url-schedule-provider`, `waitlist`
 - **Calendar Providers**: `google-calendar`, `outlook`, `caldav`, `carddav`, `ics`, `calendar-writer`
-- **Payments & Billing**: `paypal`, `square`, `financial-overview`
+- **Payments & Billing**: `paypal`, `square`, `stripe`
 - **Notifications**: `appointment-notifications`, `email-notification`, `customer-email-notification`, `text-message-notification`, `customer-text-message-notification`, `text-message-auto-reply`, `text-message-resender`, `waitlist-notifications`
 - **Website & Client UX**: `forms`, `blog`, `gift-card-studio`, `my-cabinet`
 - **Infra & Automation**: `smtp`, `text-belt`, `webhooks`

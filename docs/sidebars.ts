@@ -39,7 +39,6 @@ const siteFeatures = [
   "apps/forms",
   "apps/gift-card-studio",
   "apps/my-cabinet",
-  "apps/financial-overview",
 ];
 
 const otherApps = ["apps/carddav", "apps/webhooks"];

@@ -299,6 +299,7 @@ navigation:
   financials: Фінанси
   payments: Платежі
   paymentsInbox: Вхідні платежі
+  financialOverview: Огляд
   customerAccess: Доступ клієнтів
   schedule: Розклад
   defaultSchedule: Розклад за замовчуванням
@@ -344,6 +345,76 @@ themeToggle:
 paymentsInbox:
   title: Вхідні платежі
   description: Переглядайте платежі карткою в закладі, синхронізовані з підключених платіжних додатків, і підтверджуйте їх прив'язку до записів.
+financialOverview:
+  description: Дохід, платежі, показники воронки бронювання та тренди для вашого бізнесу.
+  view:
+    title: Фінансовий огляд
+    estimatedRevenue: Очікуваний дохід
+    totalPayments: Загальні платежі
+    netPayments: Чисті платежі
+    activeAppointments: Активні записи
+    declinedAppointments: Відхилені записи
+    recentPayments: Останні платежі
+    paymentMethods: Способи оплати
+    noPayments: Платежі не знайдено
+    amount: Сума
+    status: Статус
+    date: Дата
+    customer: Клієнт
+    service: Послуга
+    dateRange: Діапазон дат
+    rangeOptions:
+      thisMonth: Цей місяць
+      lastMonth: Минулий місяць
+      thisWeek: Цей тиждень
+      lastWeek: Минулий тиждень
+      thisYear: Цей рік
+      lastYear: Минулий рік
+      allTime: За весь час
+      custom: Довільний діапазон
+    refunded: Повернено
+    refundDate: Дата повернення
+    refundAmount: Сума повернення
+    viewAppointment: Переглянути запис
+    revenueAndPayments: Дохід та платежі
+    appointmentStatusDistribution: Статус записів
+    serviceDistribution: Опції
+    appointmentsCount: "{count, plural, =1 {1 запис} few {# записи} many {# записів} other {# записів}}"
+    estimatedRevenueFormat: "Очікуваний дохід: {revenue}"
+    financialOverview: Фінансовий огляд
+    customerAcquisitionVsRetention: Нові проти постійних клієнтів
+    timeGrouping:
+      label: Групування за часом
+      daily: Щоденно
+      weekly: Щотижня
+      monthly: Щомісяця
+    bookingTracking:
+      title: Відстеження завершення бронювань
+      totalBookings: Всього початих бронювань
+      abandoned: Покинуто
+      abandonmentRate: Відсоток відмови
+      completionVsAbandonment: Завершення проти відмови за часом
+      abandonmentByStep:
+        title: Відмова за етапами
+        count: "{count, plural, =1 {1 покинуто} few {# покинуто} many {# покинуто} other {# покинуто}}"
+        percentage: "{percentage}% від усіх відмов"
+        noData: Немає даних про відмови
+      converted: Конвертовано
+      conversionRate: Відсоток конвертації
+      conversionByType:
+        title: Конвертація за типом
+        count: "{count, plural, =1 {1 конвертовано} few {# конвертовано} many {# конвертовано} other {# конвертовано}}"
+        percentage: "{percentage}% від усіх конвертацій"
+        noData: Немає даних про конвертацію
+      bookingSteps:
+        optionsRequested: Запит опцій
+        availabilityChecked: Перевірка доступності
+        duplicateChecked: Перевірка дублікатів
+        paymentChecked: Перевірка оплати
+        formSubmitted: Форма відправлена
+        bookingConverted: Бронювання конвертовано
+      convertedTo:
+        appointment: Запис
 paymentsList:
   title: Платежі
   description: Переглядайте всі записані платежі за записами та клієнтами.
@@ -376,6 +447,38 @@ paymentsList:
       viewAppointment: Переглянути запис
       manageSyncedPayment: Керувати синхронізованим платежем
       refund: Повернути кошти
+  exportCsv: Експорт до CSV
+  exportCsvLoading: Експорт…
+  exportCsvSuccess: Платежі експортовано
+  exportCsvError: Не вдалося експортувати платежі
+  exportCsvTooMany: Забагато платежів для експорту (макс. {limit})
+  exportCsvColumns:
+    paidAt: Дата оплати
+    paymentId: ID платежу
+    amount: Сума
+    status: Статус
+    type: Тип
+    description: Опис
+    method: Спосіб
+    providerApp: Додаток провайдера
+    transactionId: ID транзакції
+    source: Джерело
+    customerName: Ім'я клієнта
+    customerEmail: Email клієнта
+    customerPhone: Телефон клієнта
+    appointmentId: ID запису
+    appointmentDateTime: Дата запису
+    appointmentStatus: Статус запису
+    optionName: Назва опції
+    addons: Додатки
+    appointmentTotal: Сума запису
+    feesTotal: Сума комісій
+    feesDetail: Деталі комісій
+    totalRefunded: Сума повернень
+    amountAfterRefunds: Сума після повернень
+    netAmount: Чиста сума
+    giftCardCode: Код подарункової картки
+    lastRefundDate: Дата останнього повернення
 appointmentSelector:
   placeholder: Оберіть запис…
 syncedPayments:

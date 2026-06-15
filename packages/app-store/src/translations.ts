@@ -16,8 +16,6 @@ import { CUSTOMER_TEXT_MESSAGE_NOTIFICATION_APP_NAME } from "./apps/customer-tex
 import { CustomerTextMessageNotificationTranslations } from "./apps/customer-text-message-notification/translations";
 import { EMAIL_NOTIFICATION_APP_NAME } from "./apps/email-notification/const";
 import { EmailNotificationTranslations } from "./apps/email-notification/translations";
-import { FINANCIAL_OVERVIEW_APP_NAME } from "./apps/financial-overview/const";
-import { FinancialOverviewTranslations } from "./apps/financial-overview/translations";
 import { FORMS_APP_NAME } from "./apps/forms/const";
 import { FormsTranslations } from "./apps/forms/translations";
 import { GIFT_CARD_STUDIO_APP_NAME } from "./apps/gift-card-studio/const";
@@ -74,7 +72,6 @@ export const AppsTranslations: Record<
   [WAITLIST_APP_NAME]: WaitlistTranslations,
   [WAITLIST_NOTIFICATIONS_APP_NAME]: WaitlistNotificationsTranslations,
   [BLOG_APP_NAME]: BlogTranslations,
-  [FINANCIAL_OVERVIEW_APP_NAME]: FinancialOverviewTranslations,
   [BUSY_EVENTS_APP_NAME]: BusyEventsTranslations,
   [CALDAV_APP_NAME]: CaldavTranslations,
   [CARDDAV_APP_NAME]: CarddavTranslations,

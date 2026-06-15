@@ -12,9 +12,11 @@ import {
   PaymentIntent,
   PaymentIntentUpdateModel,
   PaymentMethod,
+  PaymentExportRow,
   PaymentSummary,
   PaymentType,
   PaymentUpdateModel,
+  PAYMENTS_EXPORT_MAX_ROWS,
   Query,
   WithTotal,
   type EventSource,
@@ -34,6 +36,27 @@ import {
 } from "./collections";
 import { getDbConnection } from "./database";
 import { BaseService } from "./services/base.service";
+
+export class PaymentsExportLimitExceededError extends Error {
+  public readonly name = "PaymentsExportLimitExceededError";
+
+  public constructor(
+    public readonly limit: number,
+    public readonly count: number,
+  ) {
+    super(`Payments export limit exceeded: ${count} rows (max ${limit})`);
+  }
+}
+
+type PaymentsListQuery = {
+  range?: DateRange;
+  customerId?: string;
+  appointmentId?: string;
+  type?: PaymentType[];
+  method?: PaymentMethod[];
+  search?: string;
+  sort?: Query["sort"];
+};
 
 export class PaymentsService extends BaseService implements IPaymentsService {
   public constructor(
@@ -279,7 +302,73 @@ export class PaymentsService extends BaseService implements IPaymentsService {
 
     const db = await getDbConnection();
     const collection = db.collection<Payment>(PAYMENTS_COLLECTION_NAME);
+    const { pipeline, sort } = this.buildPaymentsListPipeline(query, "summary");
 
+    const [result] = await collection
+      .aggregate<{
+        items: PaymentSummary[];
+        total: { count: number }[];
+      }>([
+        ...pipeline,
+        {
+          $facet: {
+            items: [
+              { $sort: sort },
+              { $skip: query.offset || 0 },
+              { $limit: query.limit || 50 },
+            ],
+            total: [{ $count: "count" }],
+          },
+        },
+      ])
+      .toArray();
+
+    const items = result?.items ?? [];
+    const total = result?.total?.[0]?.count ?? 0;
+
+    logger.debug(
+      { total, count: items.length, offset: query.offset, limit: query.limit },
+      "Listed payments",
+    );
+
+    return { items, total };
+  }
+
+  public async listForExport(
+    query: Omit<Query, "offset" | "limit"> & PaymentsListQuery,
+  ): Promise<PaymentExportRow[]> {
+    const logger = this.loggerFactory("listForExport");
+    logger.debug({ query }, "Listing payments for export");
+
+    const db = await getDbConnection();
+    const collection = db.collection<Payment>(PAYMENTS_COLLECTION_NAME);
+    const { pipeline, sort } = this.buildPaymentsListPipeline(query, "export");
+
+    const [countResult] = await collection
+      .aggregate<{ count: number }>([...pipeline, { $count: "count" }])
+      .toArray();
+
+    const count = countResult?.count ?? 0;
+    if (count > PAYMENTS_EXPORT_MAX_ROWS) {
+      throw new PaymentsExportLimitExceededError(
+        PAYMENTS_EXPORT_MAX_ROWS,
+        count,
+      );
+    }
+
+    const items = await collection
+      .aggregate<PaymentExportRow>([...pipeline, { $sort: sort }])
+      .toArray();
+
+    logger.debug({ count: items.length }, "Listed payments for export");
+
+    return items;
+  }
+
+  private buildPaymentsListPipeline(
+    query: PaymentsListQuery,
+    mode: "summary" | "export",
+  ): { pipeline: Document[]; sort: Sort } {
     const match: Filter<Payment> = {
       organizationId: this.organizationId,
     };
@@ -312,6 +401,40 @@ export class PaymentsService extends BaseService implements IPaymentsService {
       {},
     ) || { paidAt: -1 };
 
+    const addFields =
+      mode === "export"
+        ? {
+            customerName: { $arrayElemAt: ["$customer.name", 0] },
+            customerEmail: { $arrayElemAt: ["$customer.email", 0] },
+            customerPhone: { $arrayElemAt: ["$customer.phone", 0] },
+            serviceName: { $arrayElemAt: ["$appointment.option.name", 0] },
+            appointmentDateTime: {
+              $arrayElemAt: ["$appointment.dateTime", 0],
+            },
+            appointmentStatus: { $arrayElemAt: ["$appointment.status", 0] },
+            appointmentTotalPrice: {
+              $arrayElemAt: ["$appointment.totalPrice", 0],
+            },
+            addonNames: {
+              $let: {
+                vars: {
+                  appointmentDoc: { $arrayElemAt: ["$appointment", 0] },
+                },
+                in: {
+                  $map: {
+                    input: { $ifNull: ["$$appointmentDoc.addons", []] },
+                    as: "addon",
+                    in: "$$addon.name",
+                  },
+                },
+              },
+            },
+          }
+        : {
+            customerName: { $arrayElemAt: ["$customer.name", 0] },
+            serviceName: { $arrayElemAt: ["$appointment.option.name", 0] },
+          };
+
     const pipeline: Document[] = [
       { $match: match },
       {
@@ -330,12 +453,7 @@ export class PaymentsService extends BaseService implements IPaymentsService {
           as: "appointment",
         },
       },
-      {
-        $addFields: {
-          customerName: { $arrayElemAt: ["$customer.name", 0] },
-          serviceName: { $arrayElemAt: ["$appointment.option.name", 0] },
-        },
-      },
+      { $addFields: addFields },
       { $project: { customer: 0, appointment: 0 } },
     ];
 
@@ -354,34 +472,7 @@ export class PaymentsService extends BaseService implements IPaymentsService {
       });
     }
 
-    const [result] = await collection
-      .aggregate<{
-        items: PaymentSummary[];
-        total: { count: number }[];
-      }>([
-        ...pipeline,
-        {
-          $facet: {
-            items: [
-              { $sort: sort },
-              { $skip: query.offset || 0 },
-              { $limit: query.limit || 50 },
-            ],
-            total: [{ $count: "count" }],
-          },
-        },
-      ])
-      .toArray();
-
-    const items = result?.items ?? [];
-    const total = result?.total?.[0]?.count ?? 0;
-
-    logger.debug(
-      { total, count: items.length, offset: query.offset, limit: query.limit },
-      "Listed payments",
-    );
-
-    return { items, total };
+    return { pipeline, sort };
   }
 
   public async getPayment(id: string): Promise<Payment | null> {

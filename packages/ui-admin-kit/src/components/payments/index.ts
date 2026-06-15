@@ -5,5 +5,6 @@ export * from "./gift-card-payments-dialog";
 export * from "./manage-synced-payment-dialog";
 export * from "./payment-card";
 export * from "./payment-delete-confirmation-modal";
+export * from "./payment-details-dialog";
 export * from "./payment-refund-dialog";
 export * from "./synced-payment-card";

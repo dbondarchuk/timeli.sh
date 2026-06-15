@@ -28,6 +28,7 @@ import {
   TextCursorInput,
   UserRound,
   Wallet,
+  ChartArea,
 } from "lucide-react";
 
 export const navItems: NavItemGroup[] = [
@@ -118,6 +119,13 @@ export const navItems: NavItemGroup[] = [
     id: "financials",
     title: "admin.navigation.financials",
     children: [
+      {
+        id: "financials-overview",
+        title: "admin.navigation.financialOverview",
+        href: "/dashboard/financials/overview",
+        icon: <ChartArea />,
+        label: "admin.navigation.financialOverview",
+      },
       {
         id: "payments",
         title: "admin.navigation.payments",

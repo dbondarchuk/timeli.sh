@@ -16,7 +16,7 @@ export default async function PaymentsInboxPage() {
 
   const breadcrumbItems = [
     { title: t("navigation.dashboard"), link: "/dashboard" },
-    { title: t("navigation.financials"), link: "/dashboard/financials/payments" },
+    { title: t("navigation.financials"), link: "/dashboard/financials" },
     {
       title: t("navigation.paymentsInbox"),
       link: "/dashboard/financials/inbox",

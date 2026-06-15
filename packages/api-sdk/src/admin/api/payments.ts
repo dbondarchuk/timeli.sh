@@ -9,14 +9,72 @@ import {
   paymentsSearchParamsSerializer,
 } from "../search-params/payments";
 import { RefundPayments } from "../schemas/payments";
-import { fetchAdminApi } from "./utils";
+import { BASE_ADMIN_API_URL, fetchAdminApi } from "./utils";
 
 export type ListPaymentsParams = PaymentsSearchParams;
+
+export class PaymentsExportError extends Error {
+  public constructor(
+    message: string,
+    public readonly status: number,
+    public readonly body?: {
+      code?: string;
+      message?: string;
+      limit?: number;
+      count?: number;
+    },
+  ) {
+    super(message);
+    this.name = "PaymentsExportError";
+  }
+}
+
+function parseContentDispositionFilename(
+  disposition: string | null,
+): string | undefined {
+  if (!disposition) {
+    return undefined;
+  }
+
+  const match = disposition.match(/filename="([^"]+)"/);
+  return match?.[1];
+}
 
 export const listPayments = async (params: ListPaymentsParams = {}) => {
   const serializedParams = paymentsSearchParamsSerializer(params);
   const response = await fetchAdminApi(`/payments${serializedParams}`);
   return response.json<WithTotal<PaymentSummary>>();
+};
+
+export const exportPayments = async (params: ListPaymentsParams = {}) => {
+  const { page: _page, limit: _limit, ...filterParams } = params;
+  const serializedParams = paymentsSearchParamsSerializer(filterParams);
+  const response = await fetch(
+    `${BASE_ADMIN_API_URL}/payments/export${serializedParams}`,
+    { cache: "no-store" },
+  );
+
+  if (!response.ok) {
+    const body = await response.json().catch(() => undefined);
+    throw new PaymentsExportError(
+      body?.message ?? "Failed to export payments",
+      response.status,
+      body,
+    );
+  }
+
+  const blob = await response.blob();
+  const filename =
+    parseContentDispositionFilename(
+      response.headers.get("Content-Disposition"),
+    ) ?? `payments-${new Date().toISOString().slice(0, 10)}.csv`;
+
+  const objectUrl = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = objectUrl;
+  anchor.download = filename;
+  anchor.click();
+  URL.revokeObjectURL(objectUrl);
 };
 
 export const getPayment = async (id: string) => {

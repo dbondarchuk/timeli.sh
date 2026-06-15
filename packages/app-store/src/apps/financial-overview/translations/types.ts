@@ -1,9 +1,0 @@
-import { Leaves } from "@timelish/types";
-import type admin from "./en/admin.generated";
-
-export type FinancialOverviewAdminKeys = Leaves<typeof admin>;
-export const financialOverviewAdminNamespace =
-  "app_financial-overview_admin" as const;
-
-export type FinancialOverviewAdminNamespace =
-  typeof financialOverviewAdminNamespace;

@@ -3,35 +3,40 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { AdminKeys, useI18n, useLocale } from "@timelish/i18n";
 import { PaymentSummary } from "@timelish/types";
-import { Badge, Link, useCurrencyFormat } from "@timelish/ui";
+import { Badge, Button, Link, useCurrencyFormat } from "@timelish/ui";
 import { tableSortHeader, tableSortNoopFunction } from "@timelish/ui-admin";
 import {
   getPaymentDescription,
   getPaymentMethod,
   getPaymentStatusColor,
+  PaymentDetailsDialog,
 } from "@timelish/ui-admin-kit";
 import { DateTime } from "luxon";
 import { CellAction } from "./cell-action";
+
+function PaymentDateCell({ payment }: { payment: PaymentSummary }) {
+  const locale = useLocale();
+  const paidAt = payment.paidAt;
+  const dateTime =
+    typeof paidAt === "string"
+      ? DateTime.fromISO(paidAt)
+      : DateTime.fromJSDate(paidAt);
+
+  return (
+    <PaymentDetailsDialog payment={payment}>
+      <Button variant="link-dashed" className="p-0 h-auto font-medium">
+        {dateTime.toLocaleString(DateTime.DATETIME_MED, { locale })}
+      </Button>
+    </PaymentDetailsDialog>
+  );
+}
 
 export const columns: ColumnDef<PaymentSummary>[] = [
   {
     id: "paidAt",
     header: tableSortHeader("paymentsList.columns.date", "date", "admin"),
     sortingFn: tableSortNoopFunction,
-    cell: ({ row }) => {
-      const locale = useLocale();
-      const paidAt = row.original.paidAt;
-      const dateTime =
-        typeof paidAt === "string"
-          ? DateTime.fromISO(paidAt)
-          : DateTime.fromJSDate(paidAt);
-
-      return (
-        <span className="whitespace-nowrap">
-          {dateTime.toLocaleString(DateTime.DATETIME_MED, { locale })}
-        </span>
-      );
-    },
+    cell: ({ row }) => <PaymentDateCell payment={row.original} />,
   },
   {
     id: "amount",

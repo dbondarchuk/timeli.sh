@@ -297,6 +297,7 @@ navigation:
   financials: Financials
   payments: Payments
   paymentsInbox: Payments inbox
+  financialOverview: Overview
   customerAccess: Customer access
   schedule: Schedule
   defaultSchedule: Default schedule
@@ -342,6 +343,76 @@ themeToggle:
 paymentsInbox:
   title: Payments inbox
   description: Review in-store card payments synced from connected payment apps and confirm how they map to appointments.
+financialOverview:
+  description: Revenue, payments, booking funnel metrics, and trends for your business.
+  view:
+    title: Financial overview
+    estimatedRevenue: Estimated Revenue
+    totalPayments: Total Payments
+    netPayments: Net Payments
+    activeAppointments: Active Appointments
+    declinedAppointments: Declined Appointments
+    recentPayments: Recent Payments
+    paymentMethods: Payment Methods
+    noPayments: No payments found
+    amount: Amount
+    status: Status
+    date: Date
+    customer: Customer
+    service: Service
+    dateRange: Date Range
+    rangeOptions:
+      thisMonth: This Month
+      lastMonth: Last Month
+      thisWeek: This Week
+      lastWeek: Last Week
+      thisYear: This Year
+      lastYear: Last Year
+      allTime: All Time
+      custom: Custom Range
+    refunded: Refunded
+    refundDate: Refund Date
+    refundAmount: Refund Amount
+    viewAppointment: View Appointment
+    revenueAndPayments: Revenue and Payments
+    appointmentStatusDistribution: Appointment Status
+    serviceDistribution: Options
+    appointmentsCount: "{count, plural, =1 {1 appointment} other {# appointments}}"
+    estimatedRevenueFormat: "Estimated revenue: {revenue}"
+    financialOverview: Financial Overview
+    customerAcquisitionVsRetention: New vs Returning Customers
+    timeGrouping:
+      label: Time Grouping
+      daily: Daily
+      weekly: Weekly
+      monthly: Monthly
+    bookingTracking:
+      title: Booking Completion Tracking
+      totalBookings: Total Started Bookings
+      abandoned: Abandoned
+      abandonmentRate: Abandonment Rate
+      completionVsAbandonment: Completion vs Abandonment Over Time
+      abandonmentByStep:
+        title: Abandonment by Step
+        count: "{count, plural, =1 {1 abandoned} other {# abandoned}}"
+        percentage: "{percentage}% of all abandonments"
+        noData: No abandonment data available
+      converted: Converted
+      conversionRate: Conversion Rate
+      conversionByType:
+        title: Conversion by Type
+        count: "{count, plural, =1 {1 converted} other {# converted}}"
+        percentage: "{percentage}% of all conversions"
+        noData: No conversion data available
+      bookingSteps:
+        optionsRequested: Options Requested
+        availabilityChecked: Availability Checked
+        duplicateChecked: Duplicate Checked
+        paymentChecked: Payment Checked
+        formSubmitted: Form Submitted
+        bookingConverted: Booking Converted
+      convertedTo:
+        appointment: Appointment
 paymentsList:
   title: Payments
   description: Browse all recorded payments across appointments and customers.
@@ -374,6 +445,38 @@ paymentsList:
       viewAppointment: View appointment
       manageSyncedPayment: Manage synced payment
       refund: Refund
+  exportCsv: Export to CSV
+  exportCsvLoading: Exporting…
+  exportCsvSuccess: Payments exported
+  exportCsvError: Failed to export payments
+  exportCsvTooMany: Too many payments to export (max {limit})
+  exportCsvColumns:
+    paidAt: Date paid
+    paymentId: Payment ID
+    amount: Amount
+    status: Status
+    type: Type
+    description: Description
+    method: Method
+    providerApp: Provider app
+    transactionId: Transaction ID
+    source: Source
+    customerName: Customer name
+    customerEmail: Customer email
+    customerPhone: Customer phone
+    appointmentId: Appointment ID
+    appointmentDateTime: Appointment date
+    appointmentStatus: Appointment status
+    optionName: Option name
+    addons: Addons
+    appointmentTotal: Appointment total
+    feesTotal: Fees total
+    feesDetail: Fees detail
+    totalRefunded: Total refunded
+    amountAfterRefunds: Amount after refunds
+    netAmount: Net amount
+    giftCardCode: Gift card code
+    lastRefundDate: Last refund date
 appointmentSelector:
   placeholder: Select appointment…
 syncedPayments:

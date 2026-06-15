@@ -19,6 +19,7 @@ import {
 } from "@timelish/ui-admin";
 import { Settings2 } from "lucide-react";
 import React from "react";
+import { ExportPaymentsButton } from "./export-payments-button";
 import { usePaymentsTableFilters } from "./use-table-filters";
 
 export const PaymentsTableAction: React.FC<{
@@ -120,6 +121,9 @@ export const PaymentsTableAction: React.FC<{
           isFilterActive={isAnyFilterActive}
           onReset={resetFilters}
         />
+      </div>
+      <div className="flex flex-wrap items-center gap-4">
+        <ExportPaymentsButton />
       </div>
     </div>
   );

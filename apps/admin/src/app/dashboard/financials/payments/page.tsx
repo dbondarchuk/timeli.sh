@@ -30,7 +30,7 @@ export default async function PaymentsPage(props: Params) {
     { title: t("navigation.dashboard"), link: "/dashboard" },
     {
       title: t("navigation.financials"),
-      link: "/dashboard/financials/payments",
+      link: "/dashboard/financials",
     },
     {
       title: t("navigation.payments"),

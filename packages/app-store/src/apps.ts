@@ -17,8 +17,6 @@ import { CustomerTextMessageNotificationApp } from "./apps/customer-text-message
 import { CUSTOMER_TEXT_MESSAGE_NOTIFICATION_APP_NAME } from "./apps/customer-text-message-notification/const";
 import { EmailNotificationApp } from "./apps/email-notification/app";
 import { EMAIL_NOTIFICATION_APP_NAME } from "./apps/email-notification/const";
-import { FinancialOverviewApp } from "./apps/financial-overview/app";
-import { FINANCIAL_OVERVIEW_APP_NAME } from "./apps/financial-overview/const";
 import { FormsApp } from "./apps/forms/app";
 import { FORMS_APP_NAME } from "./apps/forms/const";
 import { GiftCardStudioApp } from "./apps/gift-card-studio/app";
@@ -92,7 +90,6 @@ export const AvailableApps: Record<string, App> = {
   [WAITLIST_APP_NAME]: WaitlistApp,
   [WAITLIST_NOTIFICATIONS_APP_NAME]: WaitlistNotificationsApp,
   [WEBHOOKS_APP_NAME]: webhooksApp,
-  [FINANCIAL_OVERVIEW_APP_NAME]: FinancialOverviewApp,
   [SMART_SCHEDULE_APP_NAME]: SmartScheduleApp,
   [URL_BUSY_EVENTS_APP_NAME]: UrlBusyEventsApp,
   [URL_SCHEDULE_PROVIDER_APP_NAME]: UrlScheduleProviderApp,
@@ -111,7 +108,6 @@ export { CUSTOMER_EMAIL_NOTIFICATION_APP_NAME } from "./apps/customer-email-noti
 export { CUSTOMER_TEXT_MESSAGE_NOTIFICATION_APP_NAME } from "./apps/customer-text-message-notification/const";
 export { EMAIL_NOTIFICATION_APP_NAME } from "./apps/email-notification/const";
 // export { FILE_SYSTEM_ASSETS_STORAGE_APP_NAME } from "./apps/file-system-assets-storage/const";
-export { FINANCIAL_OVERVIEW_APP_NAME } from "./apps/financial-overview/const";
 export { GOOGLE_CALENDAR_APP_NAME } from "./apps/google-calendar/const";
 export { ICS_APP_NAME } from "./apps/ics/const";
 export { MY_CABINET_APP_NAME } from "./apps/my-cabinet/const";
