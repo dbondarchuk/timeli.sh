@@ -3,10 +3,12 @@ import { ConnectedAppData, PaymentFee } from "@timelish/types";
 import { PaypalClient, PaypalTransactionDetail } from "./client";
 import { PAYPAL_TRANSACTION_SYNC_LOOKBACK_SECONDS } from "./const";
 import { PaypalConfiguration } from "./models";
-import { OrdersCapture } from "./types";
+import { OrdersCapture, CaptureStatus } from "./types";
 
 export type InStoreCaptureInput = {
+  /** PayPal capture id — stored as payment / synced-payment externalId. */
   captureId: string;
+  /** Checkout order id when present; used for legacy dedup and fee lookup only. */
   orderId?: string;
   amount: number;
   currency: string;
@@ -117,6 +119,14 @@ export function mapVerifiedCaptureToIngestInput(
     return null;
   }
 
+  if (
+    capture.status &&
+    capture.status !== CaptureStatus.Completed &&
+    capture.status !== CaptureStatus.PartiallyRefunded
+  ) {
+    return null;
+  }
+
   const amount = parseFloat(capture.amount?.value ?? "") || 0;
   const currency = capture.amount?.currency_code;
   if (!currency || amount <= 0) {
@@ -217,8 +227,8 @@ export async function runPaypalTransactionSync(
     const capture = mapVerifiedCaptureToIngestInput(verifiedCapture, detail);
     if (!capture) {
       logger.debug(
-        { captureId },
-        "Skipping PayPal transaction (invalid capture payload)",
+        { captureId, status: verifiedCapture.status },
+        "Skipping PayPal transaction (invalid or non-completed capture)",
       );
 
       skipped += 1;

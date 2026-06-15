@@ -27,6 +27,13 @@ import { DEFAULT_MAX_AMOUNT, DEFAULT_MIN_AMOUNT } from "../const";
 import { demoPurchasedGiftCard } from "../demo-arguments";
 import { renderGiftCard } from "../designer/lib/render/render";
 import { FieldKeyValues } from "../designer/lib/types";
+import {
+  GIFT_CARD_STUDIO_DESIGN_CREATED_EVENT_TYPE,
+  GIFT_CARD_STUDIO_DESIGN_DELETED_EVENT_TYPE,
+  GIFT_CARD_STUDIO_DESIGN_UPDATED_EVENT_TYPE,
+  GIFT_CARD_STUDIO_PURCHASE_CREATED_EVENT_TYPE,
+  GIFT_CARD_STUDIO_PURCHASE_DELETED_EVENT_TYPE,
+} from "../events";
 import type {
   CreatePurchasedGiftCardAction,
   DeleteDesignAction,
@@ -73,13 +80,6 @@ import {
 import { GiftCardStudioSettings } from "../models/settings";
 import { GiftCardStudioTemplates } from "../templates";
 import { GiftCardStudioAdminAllKeys } from "../translations/types";
-import {
-  GIFT_CARD_STUDIO_DESIGN_CREATED_EVENT_TYPE,
-  GIFT_CARD_STUDIO_DESIGN_DELETED_EVENT_TYPE,
-  GIFT_CARD_STUDIO_DESIGN_UPDATED_EVENT_TYPE,
-  GIFT_CARD_STUDIO_PURCHASE_CREATED_EVENT_TYPE,
-  GIFT_CARD_STUDIO_PURCHASE_DELETED_EVENT_TYPE,
-} from "../events";
 import { GiftCardStudioJobProcessor } from "./job-processor";
 import { GiftCardStudioRepositoryService } from "./repository-service";
 import {
@@ -1354,6 +1354,7 @@ export class GiftCardStudioConnectedApp
         appId: intent.appId,
         appName: intent.appName,
         externalId: intent.externalId,
+        data: intent.data,
       },
       purchaseSource,
     );

@@ -40,6 +40,7 @@ export type PaymentIntentUpdateModel = {
   externalId?: string;
   error?: string;
   fees?: PaymentFee[];
+  data?: Record<string, any>;
 } & (
   | {
       type: Exclude<PaymentType, "rescheduleFee">;
@@ -160,6 +161,8 @@ export type PaymentUpdateModel = {
       externalId?: string;
       appName: string;
       appId: string;
+      /** Provider-specific metadata (PayPal stores checkout order id here). */
+      data?: { orderId?: string };
     }
   | {
       method: GiftCardPaymentMethod;

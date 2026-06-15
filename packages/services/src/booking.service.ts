@@ -23,7 +23,6 @@ import {
   IMeetingUrlProvider,
   IPaymentsService,
   IServicesService,
-  ModifyAppointmentInformationRequest,
   Payment,
   PaymentHistory,
   TimeSlot,
@@ -1842,6 +1841,7 @@ export class BookingService extends BaseService implements IBookingService {
             _id: intentId,
             paidAt,
             externalId,
+            data,
             status,
             fees,
           } = await this.paymentsService.updateIntent(paymentIntentId, {
@@ -1870,6 +1870,7 @@ export class BookingService extends BaseService implements IBookingService {
                 method: "online",
                 type: "deposit",
                 externalId: externalId,
+                data: data,
                 fees,
               },
               eventSource,

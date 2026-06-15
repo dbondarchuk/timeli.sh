@@ -581,31 +581,36 @@ class PaypalConnectedApp
     const logger = this.loggerFactory("ingestInStoreCapture");
     const config = appData.data;
 
-    if (capture.orderId) {
-      const intent =
-        await this.props.services.paymentsService.getIntentByExternalId(
-          capture.orderId,
-        );
-
-      if (intent) {
-        logger.debug(
-          { appId: appData._id, orderId: capture.orderId },
-          "Capture belongs to a tracked online checkout, skipping",
-        );
-        return "skipped";
-      }
-    }
+    const { paymentsService } = this.props.services;
 
     const existingPayment =
-      await this.props.services.paymentsService.getPaymentByExternalId(
-        capture.captureId,
-      );
+      (await paymentsService.getPaymentByExternalId(capture.captureId)) ??
+      (capture.orderId
+        ? await paymentsService.getPaymentByExternalId(capture.orderId)
+        : null);
     if (existingPayment) {
       logger.debug(
         { appId: appData._id, captureId: capture.captureId },
         "Capture already recorded as a payment, skipping",
       );
       return "already_exists";
+    }
+
+    const onlineIntent =
+      (await paymentsService.getIntentByExternalId(capture.captureId)) ??
+      (capture.orderId
+        ? await paymentsService.getIntentByExternalId(capture.orderId)
+        : null);
+    if (onlineIntent) {
+      logger.debug(
+        {
+          appId: appData._id,
+          captureId: capture.captureId,
+          orderId: capture.orderId,
+        },
+        "Capture belongs to a tracked online checkout, skipping",
+      );
+      return "skipped";
     }
 
     const existingSynced = await this.props.services.syncedPaymentsService.list(
@@ -875,7 +880,9 @@ class PaypalConnectedApp
       );
 
       await this.props.services.paymentsService.updateIntent(intent._id, {
-        externalId: order.id,
+        data: {
+          orderId: order.id,
+        },
       });
 
       logger.info(
@@ -916,36 +923,37 @@ class PaypalConnectedApp
     );
 
     try {
-      const intent =
-        await this.props.services.paymentsService.getIntentByExternalId(
-          request.orderId,
-        );
+      const intent = await this.props.services.paymentsService.getIntent(
+        request.paymentIntentId,
+      );
 
       if (!intent) {
         logger.error(
-          { appId: appData._id, orderId: request.orderId },
-          "Payment intent not found by external ID",
+          { appId: appData._id, paymentIntentId: request.paymentIntentId },
+          "Payment intent not found",
         );
         return Response.json({ error: "intent_not_found" }, { status: 400 });
       }
 
-      if (intent._id !== request.paymentIntentId) {
+      if (intent.data?.orderId !== request.orderId) {
         logger.error(
           {
             appId: appData._id,
             orderId: request.orderId,
-            intentId: intent._id,
+            intentOrderId: intent.data?.orderId,
             requestIntentId: request.paymentIntentId,
           },
-          "Payment intent ID mismatch",
+          "Payment intent order ID mismatch",
         );
-        return Response.json({ error: "intent_id_not_match" }, { status: 400 });
+        return Response.json(
+          { error: "intent_order_id_not_match" },
+          { status: 400 },
+        );
       }
 
       logger.debug(
         {
           appId: appData._id,
-          orderId: request.orderId,
           paymentIntentId: request.paymentIntentId,
         },
         "Retrieved payment intent, capturing PayPal order",
@@ -989,6 +997,18 @@ class PaypalConnectedApp
         "Successfully captured PayPal order, updating payment intent status",
       );
 
+      const captureId = order.purchase_units?.[0].payments?.captures?.[0].id;
+      if (!captureId) {
+        logger.error(
+          { appId: appData._id, orderId: request.orderId },
+          "Failed to get capture ID from PayPal order",
+        );
+        return Response.json(
+          { error: "failed_to_get_capture_id" },
+          { status: 400 },
+        );
+      }
+
       const platformFees: PaymentFee[] =
         order.purchase_units?.[0].payments?.captures?.[0]?.seller_receivable_breakdown?.platform_fees?.map(
           (fee) => ({
@@ -1016,12 +1036,14 @@ class PaypalConnectedApp
       await this.props.services.paymentsService.updateIntent(intent._id, {
         status: "paid",
         fees,
+        externalId: captureId,
       });
 
       logger.info(
         {
           appId: appData._id,
           orderId: request.orderId,
+          captureId,
           paymentIntentId: request.paymentIntentId,
         },
         "Successfully captured PayPal order",
@@ -1066,7 +1088,7 @@ class PaypalConnectedApp
     if (
       payment.method !== "online" ||
       (payment as any).appName !== PAYPAL_APP_NAME ||
-      !(payment as any).externalId
+      !payment.externalId
     ) {
       logger.debug(
         { appId: appData._id, paymentId: payment._id },
@@ -1075,52 +1097,15 @@ class PaypalConnectedApp
       return { success: false, error: "not_supported" };
     }
 
-    const externalId = (payment as any).externalId;
+    const captureId = payment.externalId;
 
     try {
-      logger.debug(
-        { appId: appData._id, paymentId: payment._id, externalId },
-        "Retrieving PayPal order for refund",
-      );
-
-      const client = await this.getSimplifiedClient(appData);
-      // const ordersController = new OrdersController(client);
-      // const { result: order, ...httpResponse } =
-      //   await ordersController.getOrder({
-      //     id: externalId,
-      //   });
-
-      const { order, error } = await client.getOrder(externalId);
-
-      if (error) {
-        logger.error(
-          {
-            appId: appData._id,
-            paymentId: payment._id,
-            externalId,
-            statusCode: error.statusCode,
-          },
-          "Failed to retrieve PayPal order for refund",
-        );
-        return {
-          success: false,
-          error: JSON.stringify(error),
-        };
-      }
-
-      const captureId = order?.purchase_units?.[0].payments?.captures?.[0].id;
-      if (!captureId) {
-        logger.error(
-          { appId: appData._id, paymentId: payment._id, externalId },
-          "Failed to get capture ID from PayPal order",
-        );
-        return { success: false, error: "failed_to_get_capture_id" };
-      }
-
       logger.debug(
         { appId: appData._id, paymentId: payment._id, captureId },
         "Processing PayPal refund with capture ID",
       );
+
+      const client = await this.getSimplifiedClient(appData);
 
       const { currency } =
         await this.props.services.configurationService.getConfiguration(
