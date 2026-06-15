@@ -9,7 +9,17 @@ form:
   connect: Connect <app></app>
   reconnect: Reconnect <app></app>
   pendingAuthorization: Waiting for Stripe authorization…
+  inStoreSync:
+    label: Sync in-person card payments
+    description: Automatically import in-person Stripe card payments via the charge.succeeded webhook, then match them to appointments.
+    save: Save sync settings
+    saveSuccess: Stripe in-store sync settings saved
+    saveError: Error saving Stripe in-store sync settings
+  matchWindow:
+    label: Match window (minutes)
+    description: How far an appointment end time may be from the payment time to still be considered a match.
 statusText:
+  sync_settings_saved: Stripe in-store sync settings saved
   redirect_missing_app_id: Authorization response is missing the app id
   redirect_missing_code: Authorization response is missing the authorization code
   access_denied: Stripe access was denied

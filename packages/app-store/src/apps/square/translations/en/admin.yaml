@@ -9,7 +9,17 @@ form:
   connect: Connect <app></app>
   reconnect: Reconnect <app></app>
   pendingAuthorization: Waiting for Square authorization…
+  inStoreSync:
+    label: Sync in-person card payments
+    description: Automatically import in-person Square card payments via the payment.updated webhook, then match them to appointments.
+    save: Save sync settings
+    saveSuccess: Square in-store sync settings saved
+    saveError: Error saving Square in-store sync settings
+  matchWindow:
+    label: Match window (minutes)
+    description: How far an appointment end time may be from the payment time to still be considered a match.
 statusText:
+  sync_settings_saved: Square in-store sync settings saved
   redirect_missing_app_id: Authorization response is missing the app id
   redirect_missing_code: Authorization response is missing the authorization code
   access_denied: Square access was denied

@@ -1,5 +1,6 @@
 import { LoggerFactory } from "@timelish/logger";
 import { ConnectedAppData, PaymentFee } from "@timelish/types";
+import { round2 } from "@timelish/utils";
 import { PaypalClient, PaypalTransactionDetail } from "./client";
 import { PAYPAL_TRANSACTION_SYNC_LOOKBACK_SECONDS } from "./const";
 import { PaypalConfiguration } from "./models";
@@ -38,8 +39,6 @@ export function computeSyncWindow(now: Date): { start: Date; end: Date } {
   );
   return { start, end };
 }
-
-const round2 = (value: number): number => Math.round(value * 100) / 100;
 
 /**
  * Derives payment vs tip from PayPal cart line items when cart_info is present.

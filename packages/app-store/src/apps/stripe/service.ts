@@ -1,10 +1,12 @@
-import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
+﻿import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
 import {
   ApiRequest,
   ApiResponse,
   ConnectedAppData,
   ConnectedAppError,
+  ConnectedAppRequestError,
   ConnectedAppResponse,
+  ConnectedAppStatusWithText,
   ConnectedAppUninstallResult,
   ConnectedOauthAppTokens,
   EventEnvelope,
@@ -18,19 +20,33 @@ import {
   OrganizationDomainChangedPayload,
   Payment,
   PaymentFee,
+  SyncedPaymentTransaction,
+  systemEventSource,
 } from "@timelish/types";
 import { encrypt, getWebsiteDomain } from "@timelish/utils";
 import Stripe from "stripe";
 import { getStripeApplePayDomainAssociation } from "./apple-pay";
 import { STRIPE_APP_NAME } from "./const";
 import {
+  isTimelishCheckoutPaymentIntent,
+  feesFromStripeCharge as mapFeesFromStripeCharge,
+  mapStripeChargeToIngestInput,
+  StripeInStoreChargeInput,
+} from "./map-charge";
+import {
   StripeAccountData,
   stripeAccountDataSchema,
   stripeConfirmPaymentRequestSchema,
   stripeCreatePaymentIntentRequestSchema,
   StripeFormProps,
+  StripeSyncSettingsRequest,
+  stripeSyncSettingsRequestSchema,
 } from "./models";
-import { StripeAdminAllKeys } from "./translations/types";
+import {
+  StripeAdminAllKeys,
+  StripeAdminKeys,
+  StripeAdminNamespace,
+} from "./translations/types";
 import {
   getStripeOAuthRedirectUri,
   stripeConnectAuthorizeBase,
@@ -38,6 +54,11 @@ import {
 } from "./urls";
 
 const CONNECTED_APPS_COLLECTION = "connected-apps";
+
+/** Matches synced-payments ingest default match window. */
+const DEFAULT_IN_STORE_MATCH_WINDOW_MINUTES = 120;
+
+type InStoreChargeIngestResult = "ingested" | "skipped" | "already_exists";
 
 /** Stripe metadata key for our internal payment intent id (current). */
 const METADATA_TIMELISH_INTENT_ID = "timelishIntentId";
@@ -227,9 +248,22 @@ class StripeConnectedApp
         );
       }
 
+      const db = await this.props.getDbConnection();
+      const existing = await db
+        .collection<
+          ConnectedAppData<StripeAccountData>
+        >(CONNECTED_APPS_COLLECTION)
+        .findOne({ _id: appId });
+
       const data: StripeAccountData = {
         accountId: stripeUserId,
         livemode: livemode === true,
+        ...(existing?.data?.enableInStoreSync !== undefined
+          ? { enableInStoreSync: existing.data.enableInStoreSync }
+          : {}),
+        ...(existing?.data?.matchWindowMinutes !== undefined
+          ? { matchWindowMinutes: existing.data.matchWindowMinutes }
+          : {}),
       };
 
       const parsed = stripeAccountDataSchema.safeParse(data);
@@ -276,7 +310,32 @@ class StripeConnectedApp
   ): Promise<void> {
     const logger = this.loggerFactory("afterOAuthConnected");
     logger.debug({ appId: appData._id }, "Stripe after OAuth connected");
+
+    await this.ensureDefaultInStoreSyncSettings(appData);
+
     await this.registerApplePayDomain(appData);
+  }
+
+  protected async ensureDefaultInStoreSyncSettings(
+    appData: ConnectedAppData<StripeAccountData>,
+  ): Promise<void> {
+    const data = appData.data;
+    if (!data) {
+      return;
+    }
+
+    const patch: Partial<StripeAccountData> = {};
+    if (data.enableInStoreSync === undefined) {
+      patch.enableInStoreSync = true;
+    }
+    if (data.matchWindowMinutes === undefined) {
+      patch.matchWindowMinutes = DEFAULT_IN_STORE_MATCH_WINDOW_MINUTES;
+    }
+    if (Object.keys(patch).length === 0) {
+      return;
+    }
+
+    await this.props.update({ data: { ...data, ...patch } });
   }
 
   public async onEvent(
@@ -335,6 +394,58 @@ class StripeConnectedApp
     return {
       publishableKey,
       stripeAccountId: appData.data.accountId,
+    };
+  }
+
+  public async processRequest(
+    appData: ConnectedAppData<StripeAccountData>,
+    request: StripeSyncSettingsRequest,
+  ): Promise<
+    ConnectedAppStatusWithText<StripeAdminNamespace, StripeAdminKeys>
+  > {
+    const logger = this.loggerFactory("processRequest");
+    logger.debug(
+      { appId: appData._id },
+      "Processing Stripe sync settings request",
+    );
+
+    if (!appData.data?.accountId) {
+      throw new ConnectedAppError(
+        "app_stripe_admin.statusText.app_not_configured" satisfies StripeAdminAllKeys,
+      );
+    }
+
+    const { data, success, error } =
+      stripeSyncSettingsRequestSchema.safeParse(request);
+    if (!success) {
+      logger.error({ error }, "Invalid Stripe sync settings request");
+      throw new ConnectedAppRequestError(
+        "invalid_stripe_sync_settings_request",
+        { error },
+        400,
+        error.message,
+      );
+    }
+
+    const merged: StripeAccountData = {
+      ...appData.data,
+      enableInStoreSync: data.enableInStoreSync,
+      matchWindowMinutes: data.matchWindowMinutes,
+    };
+
+    const parsed = stripeAccountDataSchema.safeParse(merged);
+    if (!parsed.success) {
+      throw new ConnectedAppError(
+        "app_stripe_admin.statusText.app_not_configured" satisfies StripeAdminAllKeys,
+      );
+    }
+
+    await this.props.update({ data: parsed.data });
+
+    return {
+      status: "connected",
+      statusText:
+        "app_stripe_admin.statusText.sync_settings_saved" satisfies StripeAdminAllKeys,
     };
   }
 
@@ -748,16 +859,8 @@ class StripeConnectedApp
   }
 
   private feesFromCharge(ch: Stripe.Charge): PaymentFee[] | undefined {
-    const bt = ch.balance_transaction;
-    if (bt == null || typeof bt === "string") {
-      return undefined;
-    }
-    const feeCents = bt.fee;
-    if (feeCents == null || feeCents <= 0) {
-      return undefined;
-    }
-
-    return [{ type: "transaction", amount: feeCents / 100 }];
+    const fees = mapFeesFromStripeCharge(ch);
+    return fees.length ? fees : undefined;
   }
 
   private feesFromPaymentIntent(
@@ -1081,6 +1184,15 @@ class StripeConnectedApp
           : null;
 
     if (!paymentIntentId) {
+      if (stripeEventType === "charge.succeeded" && connectAccount) {
+        return await this.tryIngestInStoreChargeFromWebhook(
+          charge,
+          connectAccount,
+          null,
+          getOrganizationServiceContainer,
+        );
+      }
+
       logger.debug(
         { chargeId: charge.id },
         "Charge has no PaymentIntent, ignoring",
@@ -1124,6 +1236,23 @@ class StripeConnectedApp
     );
 
     if (!orgId || !timelishIntentId) {
+      if (stripeEventType === "charge.succeeded" && connectAccount) {
+        if (isTimelishCheckoutPaymentIntent(paymentIntent.metadata)) {
+          logger.debug(
+            { chargeId: charge.id, piId: paymentIntentId },
+            "Timeli checkout charge, skipping in-store ingest",
+          );
+          return Response.json({ received: true });
+        }
+
+        return await this.tryIngestInStoreChargeFromWebhook(
+          charge,
+          connectAccount,
+          paymentIntent,
+          getOrganizationServiceContainer,
+        );
+      }
+
       logger.debug(
         {
           chargeId: charge.id,
@@ -1196,6 +1325,203 @@ class StripeConnectedApp
         : `No payment row for PI ${paymentIntentId} yet; fees not stored (${stripeEventType})`,
     );
     return Response.json({ received: true });
+  }
+
+  protected async findConnectedAppsByAccountId(
+    accountId: string,
+  ): Promise<ConnectedAppData<StripeAccountData>[]> {
+    const db = await this.props.getDbConnection();
+    return db
+      .collection<ConnectedAppData<StripeAccountData>>(
+        CONNECTED_APPS_COLLECTION,
+      )
+      .find({
+        name: STRIPE_APP_NAME,
+        status: "connected",
+        "data.accountId": accountId,
+      })
+      .toArray();
+  }
+
+  protected async tryIngestInStoreChargeFromWebhook(
+    charge: Stripe.Charge,
+    connectAccount: string,
+    paymentIntent: Stripe.PaymentIntent | null,
+    getOrganizationServiceContainer: (
+      organizationId: string,
+    ) => IConnectedAppProps,
+  ): Promise<ApiResponse> {
+    const logger = this.loggerFactory("tryIngestInStoreChargeFromWebhook");
+
+    if (
+      paymentIntent &&
+      isTimelishCheckoutPaymentIntent(paymentIntent.metadata)
+    ) {
+      return Response.json({ received: true });
+    }
+
+    const appDocs = await this.findConnectedAppsByAccountId(connectAccount);
+    const enabledApps = appDocs.filter((app) => app.data?.enableInStoreSync);
+
+    if (!enabledApps.length) {
+      logger.debug(
+        {
+          stripeAccountId: connectAccount,
+          chargeId: charge.id,
+          connectedAppCount: appDocs.length,
+        },
+        "No connected Stripe apps with in-store sync enabled for account",
+      );
+      return Response.json({ received: true });
+    }
+
+    const accountOpts = { stripeAccount: connectAccount };
+
+    let chargeWithBt: Stripe.Charge;
+    try {
+      chargeWithBt = await this.getStripeClient().charges.retrieve(
+        charge.id,
+        { expand: ["balance_transaction"] },
+        accountOpts,
+      );
+    } catch (e: unknown) {
+      logger.warn(
+        {
+          chargeId: charge.id,
+          error: e instanceof Error ? e.message : String(e),
+        },
+        "Could not retrieve Stripe charge for in-store ingest",
+      );
+      return Response.json({ received: true });
+    }
+
+    const input = mapStripeChargeToIngestInput(chargeWithBt);
+    if (!input) {
+      return Response.json({ received: true });
+    }
+
+    for (const appDoc of enabledApps) {
+      const orgProps = getOrganizationServiceContainer(appDoc.organizationId);
+      const appInstance = new StripeConnectedApp(orgProps);
+      try {
+        await appInstance.ingestInStoreCharge(appDoc, input, paymentIntent);
+      } catch (error) {
+        logger.error(
+          {
+            appId: appDoc._id,
+            organizationId: appDoc.organizationId,
+            chargeId: charge.id,
+            error,
+          },
+          "Failed to ingest Stripe in-store charge for connected app",
+        );
+      }
+    }
+
+    return Response.json({ received: true });
+  }
+
+  /**
+   * Normalizes an in-store Stripe charge and ingests it into synced payments.
+   */
+  protected async ingestInStoreCharge(
+    appData: ConnectedAppData<StripeAccountData>,
+    input: StripeInStoreChargeInput,
+    paymentIntent?: Stripe.PaymentIntent | null,
+  ): Promise<InStoreChargeIngestResult> {
+    const logger = this.loggerFactory("ingestInStoreCharge");
+    const config = appData.data;
+    const { paymentsService, syncedPaymentsService } = this.props.services;
+
+    const piId =
+      typeof paymentIntent?.id === "string" ? paymentIntent.id : undefined;
+
+    const existingPayment =
+      (await paymentsService.getPaymentByExternalId(input.chargeId)) ??
+      (piId ? await paymentsService.getPaymentByExternalId(piId) : null);
+    if (existingPayment) {
+      logger.debug(
+        { appId: appData._id, chargeId: input.chargeId },
+        "Charge already recorded as payment, skipping in-store ingest",
+      );
+      return "already_exists";
+    }
+
+    const onlineIntent =
+      (await paymentsService.getIntentByExternalId(input.chargeId)) ??
+      (piId ? await paymentsService.getIntentByExternalId(piId) : null);
+    if (onlineIntent) {
+      logger.debug(
+        { appId: appData._id, chargeId: input.chargeId, piId },
+        "Charge belongs to tracked online checkout, skipping in-store ingest",
+      );
+      return "skipped";
+    }
+
+    const existingSynced = await syncedPaymentsService.list({
+      externalId: input.chargeId,
+      limit: 1,
+      offset: 0,
+    });
+    if (existingSynced.total > 0) {
+      logger.debug(
+        { appId: appData._id, chargeId: input.chargeId },
+        "Charge already ingested as synced payment, skipping",
+      );
+      return "already_exists";
+    }
+
+    if (input.amount <= 0) {
+      return "skipped";
+    }
+
+    let currency = input.currency;
+    if (!currency) {
+      const { currency: orgCurrency } =
+        await this.props.services.configurationService.getConfiguration(
+          "general",
+        );
+      currency = orgCurrency;
+    }
+
+    const transaction: SyncedPaymentTransaction = {
+      appId: appData._id,
+      appName: STRIPE_APP_NAME,
+      externalId: input.chargeId,
+      amount: input.amount,
+      currency,
+      transactionTime: input.transactionTime,
+      fees: input.fees,
+      providerSplit: input.providerSplit,
+      raw: input.raw,
+    };
+
+    try {
+      await syncedPaymentsService.ingest(transaction, systemEventSource, {
+        matchWindowMinutes: config?.matchWindowMinutes,
+      });
+    } catch (error: unknown) {
+      logger.error(
+        {
+          appId: appData._id,
+          chargeId: input.chargeId,
+          error: error instanceof Error ? error.message : error,
+        },
+        "Failed to ingest synced Stripe payment",
+      );
+      throw error;
+    }
+
+    logger.info(
+      {
+        appId: appData._id,
+        chargeId: input.chargeId,
+        amount: input.amount,
+      },
+      "Successfully ingested Stripe in-store payment",
+    );
+
+    return "ingested";
   }
 
   /**
@@ -1369,35 +1695,43 @@ class StripeConnectedApp
       CONNECTED_APPS_COLLECTION,
     );
 
-    const doc = await col.findOne({
-      name: STRIPE_APP_NAME,
-      "data.accountId": accountId,
-    });
+    const appDocs = await col
+      .find({
+        name: STRIPE_APP_NAME,
+        "data.accountId": accountId,
+      })
+      .toArray();
 
-    if (!doc?._id) {
+    if (!appDocs.length) {
       logger.debug(
         { stripeAccountId: accountId },
-        "No connected Stripe app document for deauthorized account",
+        "No connected Stripe app documents for deauthorized account",
       );
       return Response.json({ received: true });
     }
 
-    const cas = getOrganizationServiceContainer(doc.organizationId).services
-      .connectedAppsService;
-    await cas.updateApp(doc._id, {
-      status: "failed",
-      statusText:
-        "app_stripe_admin.statusText.access_denied" satisfies StripeAdminAllKeys,
-    });
+    for (const doc of appDocs) {
+      if (!doc._id) {
+        continue;
+      }
 
-    logger.debug(
-      {
-        appId: doc._id,
-        organizationId: doc.organizationId,
-        stripeAccountId: accountId,
-      },
-      "Marked Stripe connected app failed after account.application.deauthorized",
-    );
+      const cas = getOrganizationServiceContainer(doc.organizationId).services
+        .connectedAppsService;
+      await cas.updateApp(doc._id, {
+        status: "failed",
+        statusText:
+          "app_stripe_admin.statusText.access_denied" satisfies StripeAdminAllKeys,
+      });
+
+      logger.debug(
+        {
+          appId: doc._id,
+          organizationId: doc.organizationId,
+          stripeAccountId: accountId,
+        },
+        "Marked Stripe connected app failed after account.application.deauthorized",
+      );
+    }
 
     return Response.json({ received: true });
   }

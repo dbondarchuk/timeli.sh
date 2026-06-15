@@ -9,7 +9,17 @@ form:
   connect: Підключити <app></app>
   reconnect: Підключити знову <app></app>
   pendingAuthorization: Очікується авторизація Square…
+  inStoreSync:
+    label: Синхронізувати очні карткові платежі
+    description: Автоматично імпортувати очні платежі Square через вебхук payment.updated і зіставляти їх із записами.
+    save: Зберегти налаштування синхронізації
+    saveSuccess: Налаштування синхронізації Square збережено
+    saveError: Помилка збереження налаштувань синхронізації Square
+  matchWindow:
+    label: Вікно зіставлення (хвилини)
+    description: Наскільки час завершення запису може відрізнятися від часу платежу, щоб запис ще вважався кандидатом.
 statusText:
+  sync_settings_saved: Налаштування синхронізації Square збережено
   redirect_missing_app_id: У відповіді авторизації немає ідентифікатора застосунку
   redirect_missing_code: У відповіді авторизації немає коду
   access_denied: Доступ Square відхилено

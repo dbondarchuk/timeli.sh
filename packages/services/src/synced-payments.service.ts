@@ -28,16 +28,14 @@ import {
   type SyncedPaymentIngestedPayload,
   type SyncedPaymentRejectedPayload,
 } from "@timelish/types";
+import { round2 } from "@timelish/utils";
 import { Filter, ObjectId, Sort } from "mongodb";
 import { SYNCED_PAYMENTS_COLLECTION_NAME } from "./collections";
 import { getDbConnection } from "./database";
 import { BaseService } from "./services/base.service";
 
-const DEFAULT_MATCH_WINDOW_MINUTES = 240;
+const DEFAULT_MATCH_WINDOW_MINUTES = 120;
 const MAX_SUGGESTIONS = 5;
-
-/** Rounds a money amount to 2 decimal places. */
-const round2 = (value: number): number => Math.round(value * 100) / 100;
 
 /**
  * Computes the outstanding service balance of an appointment, using the same
@@ -156,7 +154,11 @@ export class SyncedPaymentsService
         suggestions,
       });
       logger.debug(
-        { id: record._id, externalId: record.externalId, status: record.status },
+        {
+          id: record._id,
+          externalId: record.externalId,
+          status: record.status,
+        },
         "Synced payment inserted as unmatched",
       );
       await this.eventService.emit(
@@ -276,7 +278,12 @@ export class SyncedPaymentsService
     const hydrated = await Promise.all(items.map((item) => this.hydrate(item)));
 
     logger.debug(
-      { total, count: hydrated.length, offset: query.offset, limit: query.limit },
+      {
+        total,
+        count: hydrated.length,
+        offset: query.offset,
+        limit: query.limit,
+      },
       "Listed synced payments",
     );
 
@@ -329,7 +336,11 @@ export class SyncedPaymentsService
         : {}),
     });
     logger.info(
-      { id, externalId: record.externalId, appointmentId: record.appointmentId },
+      {
+        id,
+        externalId: record.externalId,
+        appointmentId: record.appointmentId,
+      },
       "Synced payment confirmed",
     );
     await this.eventService.emit(
@@ -634,8 +645,7 @@ export class SyncedPaymentsService
     originalTip: number;
   } {
     const tip = record.inferredTip ?? 0;
-    const paymentAmount =
-      record.paymentAmount ?? round2(record.amount - tip);
+    const paymentAmount = record.paymentAmount ?? round2(record.amount - tip);
 
     return {
       originalAmount: record.originalAmount ?? paymentAmount,
@@ -780,7 +790,10 @@ export class SyncedPaymentsService
 
     const appointment = await this.bookingService.getAppointment(appointmentId);
     if (!appointment) {
-      logger.warn({ appointmentId }, "Appointment not found for synced payment");
+      logger.warn(
+        { appointmentId },
+        "Appointment not found for synced payment",
+      );
       throw new Error(`Appointment ${appointmentId} not found`);
     }
 
@@ -893,7 +906,11 @@ export class SyncedPaymentsService
     }
 
     logger.debug(
-      { id: record._id, externalId: record.externalId, count: paymentIds.length },
+      {
+        id: record._id,
+        externalId: record.externalId,
+        count: paymentIds.length,
+      },
       "Linked payments removed",
     );
   }

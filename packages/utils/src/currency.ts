@@ -1,6 +1,10 @@
 import { Language } from "@timelish/i18n";
 import { Currency, Discount } from "@timelish/types";
 
+/** Rounds a number to two decimal places (e.g. currency amounts). */
+export const round2 = (value: number): number =>
+  Math.round(value * 100) / 100;
+
 export const formatAmountString = (value: number): string =>
   value.toFixed(2).replace(/\.00$/, "");
 

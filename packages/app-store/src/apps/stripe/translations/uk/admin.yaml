@@ -9,7 +9,17 @@ form:
   connect: Підключити <app></app>
   reconnect: Підключити знову <app></app>
   pendingAuthorization: Очікування авторизації Stripe…
+  inStoreSync:
+    label: Синхронізувати очні карткові платежі
+    description: Автоматично імпортувати очні платежі Stripe через вебхук charge.succeeded і зіставляти їх із записами.
+    save: Зберегти налаштування синхронізації
+    saveSuccess: Налаштування синхронізації Stripe збережено
+    saveError: Помилка збереження налаштувань синхронізації Stripe
+  matchWindow:
+    label: Вікно зіставлення (хвилини)
+    description: Наскільки час завершення запису може відрізнятися від часу платежу, щоб запис ще вважався кандидатом.
 statusText:
+  sync_settings_saved: Налаштування синхронізації Stripe збережено
   redirect_missing_app_id: У відповіді авторизації немає ідентифікатора додатка
   redirect_missing_code: У відповіді авторизації немає коду
   access_denied: Доступ Stripe заборонено

@@ -6,7 +6,9 @@ import {
   ApiResponse,
   ConnectedAppData,
   ConnectedAppError,
+  ConnectedAppRequestError,
   ConnectedAppResponse,
+  ConnectedAppStatusWithText,
   ConnectedAppUninstallResult,
   ConnectedOauthAppTokens,
   EventEnvelope,
@@ -19,6 +21,8 @@ import {
   OrganizationDomainChangedPayload,
   Payment,
   PaymentFee,
+  SyncedPaymentTransaction,
+  systemEventSource,
 } from "@timelish/types";
 import {
   decrypt,
@@ -27,14 +31,27 @@ import {
   getWebsiteDomain,
 } from "@timelish/utils";
 import { getApplePayDomainAssociation } from "./apple-pay";
+import { getSquareOrder, getSquarePayment } from "./client";
 import { SQUARE_APP_NAME } from "./const";
+import {
+  processingFeesFromSquarePayment as mapProcessingFeesFromSquarePayment,
+  mapSquarePaymentToIngestInput,
+  SquareInStorePaymentInput,
+  SquarePaymentForSync,
+} from "./map-payment";
 import {
   SquareFormProps,
   SquareMerchantData,
   squareMerchantDataSchema,
   squarePayRequestSchema,
+  SquareSyncSettingsRequest,
+  squareSyncSettingsRequestSchema,
 } from "./models";
-import { SquareAdminAllKeys } from "./translations/types";
+import {
+  SquareAdminAllKeys,
+  SquareAdminKeys,
+  SquareAdminNamespace,
+} from "./translations/types";
 import {
   isSquareSandbox,
   SQUARE_API_VERSION,
@@ -42,6 +59,13 @@ import {
   squareOAuthAuthorizeUrl,
   squareOAuthTokenUrl,
 } from "./urls";
+
+const CONNECTED_APPS_COLLECTION = "connected-apps";
+
+/** Matches synced-payments ingest default match window. */
+const DEFAULT_IN_STORE_MATCH_WINDOW_MINUTES = 120;
+
+type InStorePaymentIngestResult = "ingested" | "skipped" | "already_exists";
 
 /** Square `Payment.processing_fee` entries use `amount_money` (minor units). */
 type SquarePaymentProcessingFees = {
@@ -86,7 +110,7 @@ function verifySquareWebhookSignature(
 
 function parsePaymentUpdatedWebhook(body: unknown): {
   merchantId?: string;
-  payment?: SquarePaymentProcessingFees & { id?: string; order_id?: string };
+  payment?: SquarePaymentForSync;
 } | null {
   if (!body || typeof body !== "object") {
     return null;
@@ -113,7 +137,7 @@ function parsePaymentUpdatedWebhook(body: unknown): {
   }
   return {
     merchantId,
-    payment: payment as SquarePaymentProcessingFees & { id?: string },
+    payment: payment as SquarePaymentForSync,
   };
 }
 
@@ -257,9 +281,22 @@ class SquareConnectedApp
         );
       }
 
+      const db = await this.props.getDbConnection();
+      const existing = await db
+        .collection<
+          ConnectedAppData<SquareMerchantData>
+        >(CONNECTED_APPS_COLLECTION)
+        .findOne({ _id: appId });
+
       const data: SquareMerchantData = {
         locationId,
         merchantId,
+        ...(existing?.data?.enableInStoreSync !== undefined
+          ? { enableInStoreSync: existing.data.enableInStoreSync }
+          : {}),
+        ...(existing?.data?.matchWindowMinutes !== undefined
+          ? { matchWindowMinutes: existing.data.matchWindowMinutes }
+          : {}),
       };
 
       const parsed = squareMerchantDataSchema.safeParse(data);
@@ -305,11 +342,36 @@ class SquareConnectedApp
   ): Promise<void> {
     const logger = this.loggerFactory("afterOAuthConnected");
     logger.debug({ appId: appData._id }, "Square after OAuth connected");
+
+    await this.ensureDefaultInStoreSyncSettings(appData);
+
     await this.registerApplePayDomain(appData);
     logger.debug(
       { appId: appData._id },
       "Square Apple Pay domain registered successfully",
     );
+  }
+
+  protected async ensureDefaultInStoreSyncSettings(
+    appData: ConnectedAppData<SquareMerchantData>,
+  ): Promise<void> {
+    const data = appData.data;
+    if (!data) {
+      return;
+    }
+
+    const patch: Partial<SquareMerchantData> = {};
+    if (data.enableInStoreSync === undefined) {
+      patch.enableInStoreSync = true;
+    }
+    if (data.matchWindowMinutes === undefined) {
+      patch.matchWindowMinutes = DEFAULT_IN_STORE_MATCH_WINDOW_MINUTES;
+    }
+    if (Object.keys(patch).length === 0) {
+      return;
+    }
+
+    await this.props.update({ data: { ...data, ...patch } });
   }
 
   public async onEvent(
@@ -360,6 +422,58 @@ class SquareConnectedApp
     appData: ConnectedAppData<SquareMerchantData>,
   ): Promise<string | null> {
     return getApplePayDomainAssociation(isSquareSandbox());
+  }
+
+  public async processRequest(
+    appData: ConnectedAppData<SquareMerchantData>,
+    request: SquareSyncSettingsRequest,
+  ): Promise<
+    ConnectedAppStatusWithText<SquareAdminNamespace, SquareAdminKeys>
+  > {
+    const logger = this.loggerFactory("processRequest");
+    logger.debug(
+      { appId: appData._id },
+      "Processing Square sync settings request",
+    );
+
+    if (!appData.data?.merchantId || !appData.data?.locationId) {
+      throw new ConnectedAppError(
+        "app_square_admin.statusText.app_not_configured" satisfies SquareAdminAllKeys,
+      );
+    }
+
+    const { data, success, error } =
+      squareSyncSettingsRequestSchema.safeParse(request);
+    if (!success) {
+      logger.error({ error }, "Invalid Square sync settings request");
+      throw new ConnectedAppRequestError(
+        "invalid_square_sync_settings_request",
+        { error },
+        400,
+        error.message,
+      );
+    }
+
+    const merged: SquareMerchantData = {
+      ...appData.data,
+      enableInStoreSync: data.enableInStoreSync,
+      matchWindowMinutes: data.matchWindowMinutes,
+    };
+
+    const parsed = squareMerchantDataSchema.safeParse(merged);
+    if (!parsed.success) {
+      throw new ConnectedAppError(
+        "app_square_admin.statusText.app_not_configured" satisfies SquareAdminAllKeys,
+      );
+    }
+
+    await this.props.update({ data: parsed.data });
+
+    return {
+      status: "connected",
+      statusText:
+        "app_square_admin.statusText.sync_settings_saved" satisfies SquareAdminAllKeys,
+    };
   }
 
   public async processStaticWebhook(
@@ -447,38 +561,40 @@ class SquareConnectedApp
 
     const squarePaymentId = paymentEvent.payment?.id;
     const squareOrderId = paymentEvent.payment?.order_id;
-    if (!squarePaymentId || !squareOrderId || !paymentEvent.payment) {
+    if (!squarePaymentId || !paymentEvent.payment) {
       logger.warn("Square webhook payment event is not valid");
       return Response.json({ ok: true });
     }
 
     const fees = this.processingFeesFromSquarePayment(paymentEvent.payment);
 
-    if (!fees.length) {
-      logger.debug("Square webhook payment event has no fees");
-      return Response.json({ ok: true });
+    if (fees.length && squareOrderId) {
+      logger.debug({ fees }, "Square webhook fees");
+
+      await this.applyFeeUpdatesFromWebhook(
+        squarePaymentId,
+        squareOrderId,
+        fees,
+        getOrganizationServiceContainer,
+      );
+
+      logger.debug(
+        { squarePaymentId },
+        "Square webhook fees applied successfully",
+      );
     }
 
-    logger.debug(
-      {
-        fees,
-      },
-      "Square webhook fees",
-    );
-
-    await this.applyFeeUpdatesFromWebhook(
-      squarePaymentId,
-      squareOrderId,
-      fees,
-      getOrganizationServiceContainer,
-    );
-
-    logger.debug(
-      {
+    if (
+      paymentEvent.payment.status === "COMPLETED" &&
+      paymentEvent.merchantId
+    ) {
+      await this.tryIngestInStorePaymentFromWebhook(
+        paymentEvent.merchantId,
         squarePaymentId,
-      },
-      "Square webhook fees applied successfully",
-    );
+        paymentEvent.payment,
+        getOrganizationServiceContainer,
+      );
+    }
 
     return Response.json({ ok: true });
   }
@@ -1099,24 +1215,216 @@ class SquareConnectedApp
   protected processingFeesFromSquarePayment(
     payment: SquarePaymentProcessingFees,
   ): PaymentFee[] {
-    if (!payment.processing_fee?.length) {
-      return [];
+    return mapProcessingFeesFromSquarePayment(payment as SquarePaymentForSync);
+  }
+
+  protected async findConnectedAppsByMerchantId(
+    merchantId: string,
+  ): Promise<ConnectedAppData<SquareMerchantData>[]> {
+    const db = await this.props.getDbConnection();
+    return db
+      .collection<ConnectedAppData<SquareMerchantData>>(
+        CONNECTED_APPS_COLLECTION,
+      )
+      .find({
+        name: SQUARE_APP_NAME,
+        status: "connected",
+        "data.merchantId": merchantId,
+      })
+      .toArray();
+  }
+
+  protected async tryIngestInStorePaymentFromWebhook(
+    merchantId: string,
+    squarePaymentId: string,
+    webhookPayment: SquarePaymentForSync,
+    getOrganizationServiceContainer: (
+      organizationId: string,
+    ) => IConnectedAppProps,
+  ): Promise<void> {
+    const logger = this.loggerFactory("tryIngestInStorePaymentFromWebhook");
+
+    const appDocs = await this.findConnectedAppsByMerchantId(merchantId);
+    const enabledApps = appDocs.filter((app) => app.data?.enableInStoreSync);
+
+    if (!enabledApps.length) {
+      logger.debug(
+        { merchantId, squarePaymentId, connectedAppCount: appDocs.length },
+        "No connected Square apps with in-store sync enabled for merchant",
+      );
+      return;
     }
 
-    let totalMinor = 0;
-    for (const fee of payment.processing_fee) {
-      const raw = fee.amount_money?.amount;
-      if (raw == null) continue;
-      const n = typeof raw === "bigint" ? Number(raw) : Number(raw);
-      if (Number.isNaN(n) || n <= 0) continue;
-      totalMinor += n;
+    let payment = webhookPayment;
+    let order = null;
+
+    const enrichApp = enabledApps[0]!;
+    const enrichProps = getOrganizationServiceContainer(
+      enrichApp.organizationId,
+    );
+    const enrichInstance = new SquareConnectedApp(enrichProps);
+
+    try {
+      const accessToken =
+        await enrichInstance.getMerchantAccessToken(enrichApp);
+      const fetched = await getSquarePayment(accessToken, squarePaymentId);
+      if (fetched) {
+        payment = fetched;
+      }
+    } catch (error) {
+      logger.warn(
+        { appId: enrichApp._id, squarePaymentId, error },
+        "Could not refresh Square payment from API; using webhook payload",
+      );
     }
 
-    if (totalMinor <= 0) {
-      return [];
+    if (payment.order_id) {
+      try {
+        const accessToken =
+          await enrichInstance.getMerchantAccessToken(enrichApp);
+        order = await getSquareOrder(accessToken, payment.order_id);
+      } catch (error) {
+        logger.warn(
+          { appId: enrichApp._id, orderId: payment.order_id, error },
+          "Could not fetch Square order for in-store ingest",
+        );
+      }
     }
 
-    return [{ type: "transaction", amount: totalMinor / 100 }];
+    const input = mapSquarePaymentToIngestInput(payment, order);
+    if (!input) {
+      logger.debug(
+        { merchantId, squarePaymentId },
+        "Square payment not eligible for in-store ingest",
+      );
+      return;
+    }
+
+    for (const appDoc of enabledApps) {
+      const orgProps = getOrganizationServiceContainer(appDoc.organizationId);
+      const appInstance = new SquareConnectedApp(orgProps);
+      try {
+        await appInstance.ingestInStorePayment(appDoc, input);
+      } catch (error) {
+        logger.error(
+          {
+            appId: appDoc._id,
+            organizationId: appDoc.organizationId,
+            squarePaymentId,
+            error,
+          },
+          "Failed to ingest Square in-store payment for connected app",
+        );
+      }
+    }
+  }
+
+  /**
+   * Normalizes an in-store Square payment and ingests it into synced payments.
+   */
+  protected async ingestInStorePayment(
+    appData: ConnectedAppData<SquareMerchantData>,
+    input: SquareInStorePaymentInput,
+  ): Promise<InStorePaymentIngestResult> {
+    const logger = this.loggerFactory("ingestInStorePayment");
+    const config = appData.data;
+    const { paymentsService, syncedPaymentsService } = this.props.services;
+
+    const existingPayment =
+      (await paymentsService.getPaymentByExternalId(input.paymentId)) ??
+      (input.orderId
+        ? await paymentsService.getPaymentByExternalId(input.orderId)
+        : null);
+    if (existingPayment) {
+      logger.debug(
+        { appId: appData._id, paymentId: input.paymentId },
+        "Payment already recorded, skipping in-store ingest",
+      );
+      return "already_exists";
+    }
+
+    const onlineIntent =
+      (await paymentsService.getIntentByExternalId(input.paymentId)) ??
+      (input.orderId
+        ? await paymentsService.getIntentByExternalId(input.orderId)
+        : null);
+    if (onlineIntent) {
+      logger.debug(
+        {
+          appId: appData._id,
+          paymentId: input.paymentId,
+          orderId: input.orderId,
+        },
+        "Payment belongs to tracked online checkout, skipping in-store ingest",
+      );
+      return "skipped";
+    }
+
+    const existingSynced = await syncedPaymentsService.list({
+      externalId: input.paymentId,
+      limit: 1,
+      offset: 0,
+    });
+    if (existingSynced.total > 0) {
+      logger.debug(
+        { appId: appData._id, paymentId: input.paymentId },
+        "Payment already ingested as synced payment, skipping",
+      );
+      return "already_exists";
+    }
+
+    if (input.amount <= 0) {
+      return "skipped";
+    }
+
+    let currency = input.currency;
+    if (!currency) {
+      const { currency: orgCurrency } =
+        await this.props.services.configurationService.getConfiguration(
+          "general",
+        );
+      currency = orgCurrency;
+    }
+
+    const transaction: SyncedPaymentTransaction = {
+      appId: appData._id,
+      appName: SQUARE_APP_NAME,
+      externalId: input.paymentId,
+      orderId: input.orderId,
+      amount: input.amount,
+      currency,
+      transactionTime: input.transactionTime,
+      fees: input.fees,
+      providerSplit: input.providerSplit,
+      raw: input.raw,
+    };
+
+    try {
+      await syncedPaymentsService.ingest(transaction, systemEventSource, {
+        matchWindowMinutes: config?.matchWindowMinutes,
+      });
+    } catch (error: unknown) {
+      logger.error(
+        {
+          appId: appData._id,
+          paymentId: input.paymentId,
+          error: error instanceof Error ? error.message : error,
+        },
+        "Failed to ingest synced Square payment",
+      );
+      throw error;
+    }
+
+    logger.info(
+      {
+        appId: appData._id,
+        paymentId: input.paymentId,
+        amount: input.amount,
+      },
+      "Successfully ingested Square in-store payment",
+    );
+
+    return "ingested";
   }
 
   protected async fetchPrimaryLocationId(

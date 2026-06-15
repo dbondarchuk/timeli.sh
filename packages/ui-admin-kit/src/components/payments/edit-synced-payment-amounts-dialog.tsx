@@ -23,10 +23,9 @@ import {
   useCurrencyFormat,
   useCurrencySymbol,
 } from "@timelish/ui";
+import { round2 } from "@timelish/utils";
 import { RotateCcw } from "lucide-react";
 import { useEffect, useState } from "react";
-
-const round2 = (value: number) => Math.round(value * 100) / 100;
 
 const resolveAmounts = (payment: HydratedSyncedPayment) => {
   const tip = payment.inferredTip ?? 0;

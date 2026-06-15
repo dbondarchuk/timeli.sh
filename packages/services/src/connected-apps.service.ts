@@ -18,12 +18,12 @@ import {
   calendarSourceScopes,
   ConnectedApp,
   ConnectedAppData,
+  ConnectedAppUninstallResult,
   ConnectedAppUpdateModel,
   DefaultAppsConfiguration,
   DefaultAppScope,
   defaultAppScopes,
   IConnectedApp,
-  ConnectedAppUninstallResult,
   IConnectedAppProps,
   IConnectedAppsService,
   IConnectedAppWithWebhook,
@@ -443,7 +443,7 @@ export class ConnectedAppsService
       if (connectedApp) {
         const props = this.getServices(
           connectedApp.organizationId,
-        ).connectedAppsService.getAppServiceProps(connectedApp.organizationId);
+        ).connectedAppsService.getAppServiceProps(connectedApp._id);
 
         const postConnectService = AvailableAppServices[connectedApp.name](
           props,
