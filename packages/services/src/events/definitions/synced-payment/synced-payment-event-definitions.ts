@@ -79,7 +79,7 @@ export const SYNCED_PAYMENT_EVENT_DEFINITIONS: Record<string, EventDefinition> =
               key: `${keyPrefix}.message` satisfies BaseAllKeys,
               args: {
                 amount: syncedPayment.amount,
-                provider:
+                t_provider:
                   AvailableApps[syncedPayment.appName]?.displayName ??
                   syncedPayment.appName,
                 t_status:
