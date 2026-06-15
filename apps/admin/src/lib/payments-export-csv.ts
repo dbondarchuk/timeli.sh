@@ -29,13 +29,11 @@ const COLUMN_KEYS = [
   "netAmount",
   "giftCardCode",
   "lastRefundDate",
-] as const satisfies readonly AdminKeys[];
+] as const;
 
 type ColumnKey = (typeof COLUMN_KEYS)[number];
 
-type ColumnKeyPath = `paymentsList.exportCsvColumns.${ColumnKey}`;
-
-const columnKey = (key: ColumnKey): ColumnKeyPath =>
+const columnKey = (key: ColumnKey): AdminKeys =>
   `paymentsList.exportCsvColumns.${key}`;
 
 function formatDate(value?: Date): string {
@@ -80,7 +78,10 @@ function getLastRefundDate(payment: PaymentExportRow): string {
     return "";
   }
 
-  const latest = dates.reduce((max, date) => (date > max ? date : max), dates[0]);
+  const latest = dates.reduce(
+    (max, date) => (date > max ? date : max),
+    dates[0],
+  );
   return latest.toISOString();
 }
 
