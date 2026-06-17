@@ -2,8 +2,10 @@ import { CookiesProvider } from "@/components/cookies-provider";
 import {
   getOrganizationDomain,
   getOrganizationId,
+  getPlanTier,
   getServicesContainer,
   getWebsiteUrl,
+  isFreeTier,
   sessionCanUseFeature,
 } from "@/utils/utils";
 import { getLoggerFactory } from "@timelish/logger";
@@ -102,6 +104,8 @@ export default async function RootLayout({
   const organizationDomain = await getOrganizationDomain();
 
   const canUseScripts = await sessionCanUseFeature("scripts");
+  const planTier = await getPlanTier();
+  const isFreeSubscription = await isFreeTier(planTier);
 
   const fontsCssUrl = buildGoogleFontsUrl(
     primaryFont,
@@ -163,7 +167,21 @@ export default async function RootLayout({
             websiteUrl={websiteUrl}
           >
             <NextIntlClientProvider>
-              <main className="min-h-screen max-w-none">{children}</main>
+              <main className="min-h-screen max-w-none">
+                {children}
+                {isFreeSubscription && (
+                  <div className="text-center text-sm text-gray-500 w-full">
+                    Built with{" "}
+                    <a
+                      href="https://timelish.com"
+                      target="_blank"
+                      className="text-xs text-primary underline"
+                    >
+                      timeli.sh
+                    </a>
+                  </div>
+                )}
+              </main>
               {!!canUseScripts &&
                 scripts?.footer?.map((resource, index) => (
                   <ScriptRenderer resource={resource} id={index} key={index} />
