@@ -51,7 +51,7 @@ export const ClearAllCommunicationLogsButton: React.FC = () => {
       <AlertDialogTrigger asChild>
         <Button variant="default" disabled={isLoading}>
           {isLoading && <Spinner />}
-          <Trash className="mr-2 h-4 w-4" />
+          <Trash />
           <span>{t("communicationLogs.clearAll")}</span>
         </Button>
       </AlertDialogTrigger>

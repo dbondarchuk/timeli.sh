@@ -1,6 +1,7 @@
 import { trackBookingStep } from "@/utils/booking-tracking";
-import { getServicesContainer } from "@/utils/utils";
+import { getPlanTier, getServicesContainer } from "@/utils/utils";
 import { getLoggerFactory } from "@timelish/logger";
+import { BillingPlanTier, FREE_TIER_LIMITS } from "@timelish/types";
 import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
@@ -19,8 +20,28 @@ export async function GET(request: NextRequest) {
   // Track booking started
   await trackBookingStep(request, "OPTIONS_REQUESTED");
 
-  const response =
-    await servicesContainer.bookingService.getAppointmentOptions();
+  let response = await servicesContainer.bookingService.getAppointmentOptions();
+
+  const planTier = await getPlanTier();
+  if (
+    planTier === BillingPlanTier.Free &&
+    response?.options &&
+    response.options.length > FREE_TIER_LIMITS.services
+  ) {
+    logger.debug(
+      {
+        optionsCount: response.options.length,
+        freeTierLimit: FREE_TIER_LIMITS.services,
+      },
+      "Free tier limit reached, slicing options",
+    );
+
+    const options = response.options.slice(0, FREE_TIER_LIMITS.services);
+    response = {
+      ...response,
+      options,
+    };
+  }
 
   logger.debug(
     {

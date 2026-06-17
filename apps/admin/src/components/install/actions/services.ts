@@ -5,8 +5,12 @@ import { getActor } from "@/app/utils";
 import type { InstallServiceServerSnapshot } from "@/components/install/types";
 import { getLoggerFactory } from "@timelish/logger";
 import { ServicesContainer } from "@timelish/services";
+import { resolvePlanTierFromOrganization } from "@timelish/services/billing";
 import {
   appointmentAddonSchema,
+  canCreateMoreServices,
+  FREE_TIER_LIMITS,
+  ServiceLimitReachedError,
   type AppointmentAddonUpdateModel,
   type AppointmentOptionUpdateModel,
 } from "@timelish/types";
@@ -75,6 +79,16 @@ export async function replaceServices(
   const source = await getActor();
 
   const services = ServicesContainer(organizationId, true);
+  const organization = await services.organizationService.getOrganization();
+  const planTier = resolvePlanTierFromOrganization(organization);
+  if (!canCreateMoreServices(planTier, parsed.data.length - 1)) {
+    logger.warn(
+      { planTier, count: parsed.data.length, limit: FREE_TIER_LIMITS.services },
+      "Service limit exceeded during install",
+    );
+    return { ok: false, code: "service_limit_reached" };
+  }
+
   let booking =
     (await services.configurationService.getConfiguration("booking")) ?? null;
   if (!booking || Object.keys(booking).length === 0) {
@@ -158,6 +172,9 @@ export async function replaceServices(
     } catch (e) {
       if (newIds.length)
         await services.servicesService.deleteOptions(newIds, source);
+      if (e instanceof ServiceLimitReachedError) {
+        return { ok: false, code: "service_limit_reached" };
+      }
       const msg = e instanceof Error ? e.message : "";
       if (msg.includes("Name already exists"))
         return { ok: false, code: "duplicate_name" };

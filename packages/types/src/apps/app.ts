@@ -1,5 +1,6 @@
 import type { AllKeys, I18nNamespaces } from "@timelish/i18n";
 import type { ReactElement, ReactNode } from "react";
+import type { BillingPlanTier } from "../billing/subscription-plan";
 import { IServicesContainer } from "../services/container";
 import type { Extandable } from "../utils/helpers";
 
@@ -59,6 +60,8 @@ type BaseApp<
   };
   Logo: (props: AppLogoProps) => ReactNode;
   isFeatured?: boolean;
+  /** Lowest subscription tier required to install and run this app. Defaults to Free. */
+  minimumPlanTier?: BillingPlanTier;
 };
 
 export type AppMenuItem<
@@ -83,6 +86,8 @@ export type AppMenuItem<
   pageDescription?: AllKeys<T, CustomKeys>;
   /** Key matching `DashboardNotificationBadge.key` from the notifications SSE stream. */
   notificationsCountKey?: string;
+  /** Lowest subscription tier required to show this app. Defaults to Free. */
+  minimumPlanTier?: BillingPlanTier;
 } & (
   | {
       group:

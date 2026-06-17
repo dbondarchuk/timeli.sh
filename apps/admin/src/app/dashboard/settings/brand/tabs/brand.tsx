@@ -36,6 +36,7 @@ import {
 } from "@timelish/ui";
 import { AssetSelectorInput } from "@timelish/ui-admin";
 import { Copy, Plug, Unplug } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useForm, UseFormReturn } from "react-hook-form";
@@ -65,6 +66,7 @@ export const BrandTab: React.FC<{
   timeliBaseHost: string;
   timeliBaseUrl: string;
   customDomainARecordIp?: string;
+  canConnectCustomDomain?: boolean;
 }> = ({
   form,
   loading,
@@ -74,6 +76,7 @@ export const BrandTab: React.FC<{
   timeliBaseHost,
   timeliBaseUrl,
   customDomainARecordIp,
+  canConnectCustomDomain = true,
 }) => {
   const t = useI18n("admin");
   const { copyToClipboard } = useClipboard();
@@ -386,7 +389,7 @@ export const BrandTab: React.FC<{
                 {disconnecting ? <Spinner /> : <Unplug />}{" "}
                 {t("settings.brand.form.timeliAddress.disconnectCustomDomain")}
               </Button>
-            ) : (
+            ) : canConnectCustomDomain ? (
               <Dialog open={open} onOpenChange={setOpen}>
                 <DialogTrigger asChild>
                   <Button type="button" variant="outline">
@@ -475,6 +478,16 @@ export const BrandTab: React.FC<{
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                {t("settings.brand.form.timeliAddress.customDomainUpgradeRequired")}{" "}
+                <Link
+                  href="/dashboard/settings/brand?activeTab=general"
+                  className="underline font-medium"
+                >
+                  {t("settings.brand.form.timeliAddress.customDomainUpgradeLink")}
+                </Link>
+              </p>
             )}
           </div>
 

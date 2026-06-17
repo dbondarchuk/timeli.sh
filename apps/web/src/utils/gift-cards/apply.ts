@@ -3,13 +3,22 @@ import {
   ApplyGiftCardsResponse,
   ApplyGiftCardsSuccessResponse,
 } from "@timelish/types";
-import { getServicesContainer } from "../utils";
+import { getServicesContainer, sessionCanUseFeature } from "../utils";
 
 export const applyGiftCards = async (
   codes: string[],
   amount: number,
 ): Promise<ApplyGiftCardsResponse> => {
   const logger = getLoggerFactory("GiftCardsUtils")("getGiftCardsPayments");
+
+  if (!(await sessionCanUseFeature("giftCards"))) {
+    return {
+      success: false,
+      code: "subscription_upgrade_required",
+      error: "Gift cards are not available on this plan.",
+    } satisfies ApplyGiftCardsResponse;
+  }
+
   const servicesContainer = await getServicesContainer();
 
   logger.debug({ codes, amount }, "Getting gift cards payments");

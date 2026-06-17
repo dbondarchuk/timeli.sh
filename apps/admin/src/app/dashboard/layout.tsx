@@ -8,17 +8,24 @@ import {
   isSubscriptionInactive,
   isSubscriptionPastDue,
 } from "@/lib/billing/subscription-access";
+import {
+  filterNavItemsForPlanTier,
+  getAppMinimumPlanTier,
+  getSessionPlanTier,
+  isFreeTier,
+} from "@/lib/billing/subscription-plan-access";
 import { AppMenuItems } from "@timelish/app-store/menu-items";
 import { getI18nAsync } from "@timelish/i18n/server";
 import { NavItemGroup } from "@timelish/types";
 import {
   BreadcrumbsProvider,
+  cn,
   ConfigProvider,
   Link,
   SidebarInset,
   SidebarProvider,
 } from "@timelish/ui";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, Sparkles } from "lucide-react";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
@@ -56,6 +63,9 @@ export default async function DashboardLayout({
   }
 
   const subscriptionStatus = session.user.subscriptionStatus;
+  const planTier = getSessionPlanTier(session);
+  const showFreeTierUpgradeBanner =
+    isFreeTier(planTier) && !isSubscriptionPastDue(subscriptionStatus);
   const t = await getI18nAsync("admin");
 
   const servicesContainer = await getServicesContainer();
@@ -76,23 +86,23 @@ export default async function DashboardLayout({
   const websiteUrl = await getWebsiteUrl();
   const { organizationDomain } = await getOrganizationIdAndSlug();
 
-  const groups: NavItemGroup[] = [
-    ...navItems.map((x) => ({
-      ...x,
-      children: [
-        ...x.children.map((y) => ({
-          ...y,
-          items: y.items ? [...y.items] : [],
-        })),
-      ],
-    })),
-  ];
+  let groups: NavItemGroup[] = navItems.map((x) => ({
+    ...x,
+    children: [
+      ...x.children.map((y) => ({
+        ...y,
+        items: y.items ? [...y.items] : [],
+      })),
+    ],
+  }));
 
   const appsWithMenu = await servicesContainer.connectedAppsService.getApps();
-  const appsMenus = appsWithMenu
-    .map(({ name }) => AppMenuItems[name] || [])
-    .filter((menus) => menus && menus.length > 0)
-    .flatMap((item) => item);
+  const appsMenus = appsWithMenu.flatMap(({ name }) =>
+    (AppMenuItems[name] || []).map((item) => ({
+      ...item,
+      minimumPlanTier: item.minimumPlanTier ?? getAppMinimumPlanTier(name),
+    })),
+  );
 
   appsMenus
     .filter((item) => !item.parent && !item.isHidden)
@@ -130,6 +140,7 @@ export default async function DashboardLayout({
             label: parent.label,
             description: parent.description,
             notificationsCountKey: parent.notificationsCountKey,
+            minimumPlanTier: parent.minimumPlanTier,
           });
         }
       }
@@ -140,6 +151,9 @@ export default async function DashboardLayout({
         title: item.label,
       });
     });
+
+  groups = filterNavItemsForPlanTier(groups, planTier);
+  const isSubscriptionPastDueFlag = isSubscriptionPastDue(subscriptionStatus);
 
   return (
     <div className="flex">
@@ -175,10 +189,17 @@ export default async function DashboardLayout({
                     <AppSidebar menuItems={groups} name={name} logo={logo} />
                     <NotificationsToastStream />
                     <SubscriptionStatusListener />
-                    <SidebarInset>
+                    <SidebarInset
+                      className={cn(
+                        "group/main",
+                        isSubscriptionPastDueFlag || showFreeTierUpgradeBanner
+                          ? "has-banner"
+                          : "",
+                      )}
+                    >
                       {/* <main className="w-full flex-1 overflow-hidden"> */}
                       <Header />
-                      {isSubscriptionPastDue(subscriptionStatus) ? (
+                      {isSubscriptionPastDueFlag ? (
                         <div
                           className="mx-4 mt-4 flex overflow-hidden rounded-lg border border-amber-500/50 bg-amber-950 shadow-sm dark:border-amber-500/40"
                           role="alert"
@@ -207,6 +228,36 @@ export default async function DashboardLayout({
                               {t(
                                 "dashboard.subscriptionPastDueBanner.goToSettings",
                               )}
+                            </Link>
+                          </div>
+                        </div>
+                      ) : null}
+
+                      {showFreeTierUpgradeBanner ? (
+                        <div
+                          className="mx-4 mt-4 flex overflow-hidden rounded-lg border border-primary/35 bg-primary/5 shadow-sm dark:border-primary/30 dark:bg-primary/10"
+                          role="status"
+                        >
+                          <div
+                            className="w-1.5 shrink-0 bg-primary"
+                            aria-hidden
+                          />
+                          <div className="flex flex-1 flex-col items-stretch justify-center gap-3 p-3 pl-3.5 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:pr-4">
+                            <div className="flex min-w-0 items-start gap-3 sm:items-center">
+                              <Sparkles
+                                className="mt-0.5 size-5 shrink-0 text-primary sm:mt-0"
+                                strokeWidth={2}
+                                aria-hidden
+                              />
+                              <p className="text-sm font-medium leading-snug text-foreground">
+                                {t("dashboard.freeTierUpgradeBanner.message")}
+                              </p>
+                            </div>
+                            <Link
+                              href="/dashboard/settings/brand?activeTab=general"
+                              className="inline-flex shrink-0 items-center justify-center self-start rounded-full border-2 border-primary/60 bg-transparent px-4 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 sm:self-auto"
+                            >
+                              {t("dashboard.freeTierUpgradeBanner.upgrade")}
                             </Link>
                           </div>
                         </div>

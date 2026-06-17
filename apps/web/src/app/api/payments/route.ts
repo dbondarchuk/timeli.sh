@@ -1,5 +1,6 @@
 import { trackBookingStepWithCustomer } from "@/utils/booking-tracking";
 import { isSubscriptionPastDue } from "@/utils/subscription-access";
+import { sessionCanUseFeature } from "@/utils/utils";
 import { getLoggerFactory } from "@timelish/logger";
 import {
   CollectPayment,
@@ -26,6 +27,17 @@ export async function POST(request: NextRequest) {
         success: false,
         code: "subscription_past_due",
         message: "Something went wrong, please contact us.",
+      },
+      { status: 402 },
+    );
+  }
+
+  if (!(await sessionCanUseFeature("payments"))) {
+    return Response.json(
+      {
+        success: false,
+        code: "subscription_upgrade_required",
+        message: "Online payments are not available on this plan.",
       },
       { status: 402 },
     );

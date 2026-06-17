@@ -4,6 +4,7 @@ import {
   getOrganizationId,
   getServicesContainer,
   getWebsiteUrl,
+  sessionCanUseFeature,
 } from "@/utils/utils";
 import { getLoggerFactory } from "@timelish/logger";
 import { Resource } from "@timelish/types";
@@ -100,6 +101,8 @@ export default async function RootLayout({
   const tertiaryFont = styling?.fonts?.tertiary;
   const organizationDomain = await getOrganizationDomain();
 
+  const canUseScripts = await sessionCanUseFeature("scripts");
+
   const fontsCssUrl = buildGoogleFontsUrl(
     primaryFont,
     secondaryFont,
@@ -143,9 +146,10 @@ export default async function RootLayout({
               sizes="any"
             />
           )}
-          {scripts?.header?.map((resource, index) => (
-            <ScriptRenderer resource={resource} id={index} key={index} />
-          ))}
+          {!!canUseScripts &&
+            scripts?.header?.map((resource, index) => (
+              <ScriptRenderer resource={resource} id={index} key={index} />
+            ))}
           {styling?.css?.map((resource, index) => (
             <CssRenderer resource={resource} id={index} key={index} />
           ))}
@@ -160,9 +164,10 @@ export default async function RootLayout({
           >
             <NextIntlClientProvider>
               <main className="min-h-screen max-w-none">{children}</main>
-              {scripts?.footer?.map((resource, index) => (
-                <ScriptRenderer resource={resource} id={index} key={index} />
-              ))}
+              {!!canUseScripts &&
+                scripts?.footer?.map((resource, index) => (
+                  <ScriptRenderer resource={resource} id={index} key={index} />
+                ))}
               <Toaster />
               <SonnerToaster />
             </NextIntlClientProvider>

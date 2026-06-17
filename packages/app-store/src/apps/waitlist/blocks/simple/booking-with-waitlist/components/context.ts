@@ -109,6 +109,8 @@ export type ScheduleContextProps = {
 
   className?: string;
 
+  isBookingRestricted?: boolean;
+
   isEditor?: boolean;
 };
 

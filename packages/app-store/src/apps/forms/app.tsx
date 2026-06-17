@@ -1,4 +1,4 @@
-import { App } from "@timelish/types";
+import { App, BillingPlanTier } from "@timelish/types";
 import { Form } from "lucide-react";
 import { FORMS_APP_NAME } from "./const";
 import {
@@ -17,6 +17,7 @@ export const FormsApp: App<FormsAdminNamespace, FormsAdminKeys> = {
   isFeatured: true,
   isHidden: false,
   dontAllowMultiple: true,
+  minimumPlanTier: BillingPlanTier.Pro,
   description: {
     text: "app_forms_admin.app.description" satisfies FormsAdminAllKeys,
   },

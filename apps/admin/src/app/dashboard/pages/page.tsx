@@ -1,15 +1,17 @@
+import { getServicesContainer, getSession } from "@/app/utils";
 import PageContainer from "@/components/admin/layout/page-container";
+import { AddPageButton } from "@/components/admin/pages/add-page-button";
 import { PagesTable } from "@/components/admin/pages/table/table";
 import { PagesTableAction } from "@/components/admin/pages/table/table-action";
+import { sessionCanCreateMorePages } from "@/lib/billing/subscription-plan-access";
 import {
   pagesSearchParamsCache,
   pagesSearchParamsSerializer,
 } from "@timelish/api-sdk";
 import { getI18nAsync } from "@timelish/i18n/server";
 import { getLoggerFactory } from "@timelish/logger";
-import { Breadcrumbs, Heading, Link } from "@timelish/ui";
+import { Breadcrumbs, Heading } from "@timelish/ui";
 import { DataTableSkeleton } from "@timelish/ui-admin";
-import { Plus } from "lucide-react";
 import { Metadata } from "next";
 import { Suspense } from "react";
 
@@ -25,12 +27,22 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function PagesPage(props: Params) {
   const logger = getLoggerFactory("AdminPages")("pages");
   const t = await getI18nAsync("admin");
+  const session = await getSession();
 
   logger.debug("Loading pages page");
   const searchParams = await props.searchParams;
 
   const parsed = pagesSearchParamsCache.parse(searchParams);
   const key = pagesSearchParamsSerializer({ ...parsed });
+
+  const servicesContainer = await getServicesContainer();
+  const { total: pageCount } = await servicesContainer.pagesService.getPages({
+    limit: 0,
+  });
+
+  const canAddMore = session
+    ? sessionCanCreateMorePages(session, pageCount)
+    : false;
 
   const breadcrumbItems = [
     { title: t("assets.dashboard"), link: "/dashboard" },
@@ -48,9 +60,7 @@ export default async function PagesPage(props: Params) {
               description={t("pages.managePages")}
             />
 
-            <Link button href={"/dashboard/pages/new"} variant="default">
-              <Plus className="mr-2 h-4 w-4" /> {t("pages.addNew")}
-            </Link>
+            <AddPageButton canAddMore={canAddMore} />
           </div>
         </div>
         <PagesTableAction />

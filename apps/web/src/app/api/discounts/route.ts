@@ -1,4 +1,4 @@
-import { getServicesContainer } from "@/utils/utils";
+import { getServicesContainer, sessionCanUseFeature } from "@/utils/utils";
 import { getLoggerFactory } from "@timelish/logger";
 import {
   applyDiscountRequestSchema,
@@ -16,6 +16,17 @@ export async function POST(request: NextRequest) {
     },
     "Processing discounts API request",
   );
+
+  if (!(await sessionCanUseFeature("discounts"))) {
+    return NextResponse.json(
+      {
+        success: false,
+        code: "subscription_upgrade_required",
+        message: "Discounts are not available on this plan.",
+      },
+      { status: 402 },
+    );
+  }
 
   const body = await request.json();
 

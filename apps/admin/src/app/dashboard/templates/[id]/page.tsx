@@ -42,7 +42,7 @@ export default async function UpdateTemplatePage(props: Props) {
               href={`/dashboard/templates/${id}/clone`}
               variant="default"
             >
-              <Copy className="mr-2 h-4 w-4" /> {t("templates.editPage.clone")}
+              <Copy /> {t("templates.editPage.clone")}
             </Link>
           </div>
         </div>

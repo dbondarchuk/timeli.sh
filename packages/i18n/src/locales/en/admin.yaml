@@ -1,5 +1,7 @@
-common:
+﻿common:
   usesTemplatedValues: "* Uses templated values"
+  featureUpgradeRequired: This feature requires a Pro subscription.
+  upgradeLink: Upgrade in brand settings
   toasts:
     saved: Saved!
     error: There was a problem with your request.
@@ -276,6 +278,16 @@ billing:
       button: Open billing settings
       purchaseButton: Buy SMS credits
       handledBy: Billing (SMS balance)
+    appointmentLimitReached:
+      subject: Free plan appointment limit reached
+      preview: You have used all appointments for this billing cycle
+      title: Appointment limit reached for this cycle
+      body: >-
+        You have used all {limit} appointments included on the Free plan for
+        this billing cycle. New bookings are blocked until your cycle resets.
+        Upgrade to Pro for unlimited appointments.
+      button: Upgrade to Pro
+      handledBy: Billing (appointment limit)
   notifications:
     smsCreditsLow:
       title: SMS credits are low
@@ -922,6 +934,7 @@ assets:
     copied: Copied
     relativeUrlCopied: Asset relative url "{url}" was copied to clipboard.
     absoluteUrlCopied: Asset absolute url "{url}" was copied to clipboard.
+    assetTotalSizeLimitReached: Max total asset size was reached.
 activity:
   actor:
     system: System
@@ -1124,6 +1137,8 @@ pages:
   addNew: Add New
   addNewPage: Add new page
   managePages: Manage pages
+  upgradeRequired: The Free plan includes up to 10 pages. Upgrade to Pro to add more.
+  upgradeLink: Upgrade to Pro
   viewPage: View page
   form:
     pageContent: Page content
@@ -1378,6 +1393,8 @@ services:
       description: Pick a profession and template to prefill the new option.
       pickServiceLabel: Pick a service template to prefill the new option.
     createFromTemplate: Create
+    upgradeRequired: The Free plan includes one service. Upgrade to Pro to add more.
+    upgradeLink: Upgrade in brand settings
     new: New
     newTitle: New service option
     newDescription: Add new service that you provide
@@ -2191,9 +2208,15 @@ settings:
           label: No subscription required
           hint: This workspace is exempt from Timeli.sh subscription billing.
       openPortal: Open billing portal
+      managePlanInPortal: Manage plan
       choosePlan: Choose a plan
       portalError: Could not open the billing portal. Try again later.
       portalReturnHint: You will return here after managing billing in Polar.
+      portalManageHint: Upgrade, downgrade, or cancel your plan in the Polar customer portal.
+      planTier:
+        free: Free plan
+        pro: Pro plan
+      freeTierHint: Upgrade in the billing portal to unlock Pro features.
       planLabel: Plan
       priceLabel: Price
       nextBillingLabel: Next billing
@@ -2312,6 +2335,8 @@ settings:
           - the hostname for your Timeli.sh site.
         domainLabel: Domain
         connectButton: Connect
+        customDomainUpgradeRequired: Custom domains are available on Pro.
+        customDomainUpgradeLink: Upgrade in brand settings
         copyWebsiteUrlAriaLabel: Copy website URL
         websiteUrlCopied: Website URL copied to clipboard.
         websiteUrlCopyFailed: Could not copy the URL.
@@ -2707,6 +2732,11 @@ dashboard:
   subscriptionPastDueBanner:
     message: Subscription payment past due - new bookings and changes are currently blocked.
     goToSettings: Go to settings →
+  freeTierUpgradeBanner:
+    message: >-
+      You are on the Free plan. Upgrade to Pro for unlimited services and
+      appointments, payment integrations, and more.
+    upgrade: Upgrade to Pro →
   subscriptionInactive:
     title: Subscription cancelled
     description: This workspace subscription is not active. Contact us to restore access.

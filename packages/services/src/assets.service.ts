@@ -1,16 +1,20 @@
 import { getDbClient, getDbConnection } from "./database";
 
 import {
+  Asset,
   ASSET_CREATED_EVENT_TYPE,
   ASSET_DELETED_EVENT_TYPE,
   ASSET_UPDATED_EVENT_TYPE,
-  Asset,
   AssetEntity,
+  AssetTotalSizeLimitReachedError,
   AssetUpdate,
+  BillingPlanTier,
+  FREE_TIER_LIMITS,
   IAssetsService,
   IAssetsStorage,
   IConfigurationService,
   IEventService,
+  IOrganizationService,
   Query,
   WithTotal,
   type AssetCreatedPayload,
@@ -21,8 +25,9 @@ import {
 import { buildSearchQuery, escapeRegex } from "@timelish/utils";
 import { createHash } from "crypto";
 import { DateTime } from "luxon";
-import { Filter, ObjectId, Sort } from "mongodb";
+import { ClientSession, Filter, ObjectId, Sort } from "mongodb";
 import { Readable } from "stream";
+import { resolvePlanTierFromOrganization } from "./billing/subscription-entitlements";
 import { BaseService } from "./services/base.service";
 
 import {
@@ -50,8 +55,57 @@ export class AssetsService extends BaseService implements IAssetsService {
     protected readonly configurationService: IConfigurationService,
     protected readonly storage: IAssetsStorage,
     protected readonly eventService: IEventService,
+    private readonly organizationService: IOrganizationService,
   ) {
     super("AssetsService", organizationId);
+  }
+
+  private async assertFreeTierAssetsTotalLimit(
+    nextFileSizeBytes: number,
+    session?: ClientSession,
+  ): Promise<void> {
+    const logger = this.loggerFactory("assertFreeTierAssetsTotalLimit");
+    logger.debug(
+      { nextFileSizeBytes },
+      "Asserting free tier assets total limit",
+    );
+
+    const organization = await this.organizationService.getOrganization();
+    const planTier = resolvePlanTierFromOrganization(organization);
+    if (planTier !== BillingPlanTier.Free) {
+      logger.debug(
+        "Free tier assets total limit not enforced for non-free plan tier",
+      );
+      return;
+    }
+
+    const db = await getDbConnection();
+    const [res] = await db
+      .collection<AssetEntity>(ASSETS_COLLECTION_NAME)
+      .aggregate(
+        [
+          { $match: { organizationId: this.organizationId } },
+          { $group: { _id: null, total: { $sum: "$size" } } },
+        ],
+        session ? { session } : undefined,
+      )
+      .toArray();
+
+    const totalBytes = (res?.total as number | undefined) ?? 0;
+    if (totalBytes + nextFileSizeBytes > FREE_TIER_LIMITS.assetsTotalSize) {
+      logger.error(
+        { totalBytes, nextFileSizeBytes },
+        "Free tier assets total limit reached",
+      );
+      throw new AssetTotalSizeLimitReachedError(
+        FREE_TIER_LIMITS.assetsTotalSize,
+      );
+    }
+
+    logger.debug(
+      { totalBytes, nextFileSizeBytes },
+      "Free tier assets total limit not reached",
+    );
   }
 
   public async getAsset(id: string): Promise<Asset | null> {
@@ -259,6 +313,8 @@ export class AssetsService extends BaseService implements IAssetsService {
           logger.info(args, "Asset with such hash already exists");
           return existingWithSameHash;
         }
+
+        await this.assertFreeTierAssetsTotalLimit(file.size, session);
 
         logger.debug(args, "Uploading new asset");
 

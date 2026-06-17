@@ -75,7 +75,7 @@ export const AddNewTemplateButton: React.FC = () => {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
         <Button variant="default">
-          <Plus className="mr-2 h-4 w-4" />{" "}
+          <Plus />{" "}
           <span className="md:hidden">{t("templates.addNew.add")}</span>
           <span className="hidden md:inline">
             {t("templates.addNew.addNewTemplate")}

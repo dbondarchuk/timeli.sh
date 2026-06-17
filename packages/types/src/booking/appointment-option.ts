@@ -398,8 +398,24 @@ export type AppointmentChoice = Prettify<
   }
 >;
 
+export const BookingRestrictionCode = {
+  LimitReached: "limit_reached",
+} as const;
+
+export type BookingRestrictionCode =
+  (typeof BookingRestrictionCode)[keyof typeof BookingRestrictionCode];
+
+export type BookingRestriction = {
+  code: BookingRestrictionCode;
+};
+
+export const isBookingLimitRestriction = (
+  restriction?: BookingRestriction,
+): boolean => restriction?.code === BookingRestrictionCode.LimitReached;
+
 export type GetAppointmentOptionsResponse = {
   options: AppointmentChoice[];
   fieldsSchema: Record<string, FieldSchema>;
   showPromoCode: boolean;
+  bookingRestriction?: BookingRestriction;
 };

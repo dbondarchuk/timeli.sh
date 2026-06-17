@@ -118,7 +118,11 @@ export class PolarClientWrapper {
     try {
       await this.polar.customers.getExternal({ externalId });
       return;
-    } catch {
+    } catch (error) {
+      wrapperLogger("ensureTeamCustomerForOrganization").debug(
+        { externalId, error },
+        "Error getting customer, creating...",
+      );
       /* create below */
     }
 

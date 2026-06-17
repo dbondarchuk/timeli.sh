@@ -2,6 +2,7 @@ import { isSubscriptionInactive } from "@/utils/subscription-access";
 import { getBaseLoggerFactory } from "@timelish/logger";
 import {
   resolveOrganizationByHostname,
+  resolvePlanTierFromOrganization,
   StaticOrganizationService,
 } from "@timelish/services";
 import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
@@ -80,6 +81,7 @@ export const withOrganizationId: MiddlewareProxy = (next) => {
     let slug: string;
     let organizationId: string;
     let subscriptionStatus = "active";
+    let subscriptionPlanTier: string | null = null;
 
     const publicDomain = process.env.PUBLIC_DOMAIN;
     const isPublicDomainHostname =
@@ -97,6 +99,8 @@ export const withOrganizationId: MiddlewareProxy = (next) => {
       organizationId = organization._id;
       slug = organization.slug;
       subscriptionStatus = organization.polarSubscriptionStatus || "active";
+      subscriptionPlanTier =
+        resolvePlanTierFromOrganization(organization) ?? null;
 
       logger.debug(
         { organizationId, slug, subscriptionStatus },
@@ -115,6 +119,7 @@ export const withOrganizationId: MiddlewareProxy = (next) => {
       organizationId = resolution.organizationId;
       slug = resolution.slug;
       subscriptionStatus = resolution.subscriptionStatus;
+      subscriptionPlanTier = resolution.subscriptionPlanTier;
 
       if (!isPublicDomainHostname) {
         request.headers.set("x-organization-domain", hostname);
@@ -143,6 +148,10 @@ export const withOrganizationId: MiddlewareProxy = (next) => {
 
     request.headers.set("x-organization-id", organizationId);
     request.headers.set("x-organization-slug", slug);
+    request.headers.set("x-subscription-status", subscriptionStatus);
+    if (subscriptionPlanTier) {
+      request.headers.set("x-subscription-plan-tier", subscriptionPlanTier);
+    }
 
     return next(request, event);
   };

@@ -62,8 +62,6 @@ type InStoreChargeIngestResult = "ingested" | "skipped" | "already_exists";
 
 /** Stripe metadata key for our internal payment intent id (current). */
 const METADATA_TIMELISH_INTENT_ID = "timelishIntentId";
-/** Legacy key from earlier builds; still read in webhooks for in-flight PIs. */
-const METADATA_TIMELI_INTENT_ID_LEGACY = "timeliIntentId";
 
 function getTimelishIntentIdFromStripeMetadata(
   metadata: Stripe.Metadata | null,
@@ -71,11 +69,7 @@ function getTimelishIntentIdFromStripeMetadata(
   if (!metadata) {
     return undefined;
   }
-  return (
-    metadata[METADATA_TIMELISH_INTENT_ID] ??
-    metadata[METADATA_TIMELI_INTENT_ID_LEGACY] ??
-    undefined
-  );
+  return metadata[METADATA_TIMELISH_INTENT_ID] ?? undefined;
 }
 
 class StripeConnectedApp
@@ -1460,9 +1454,9 @@ class StripeConnectedApp
 
     const existingSynced = await syncedPaymentsService.list({
       externalId: input.chargeId,
-      limit: 1,
-      offset: 0,
+      limit: 0,
     });
+
     if (existingSynced.total > 0) {
       logger.debug(
         { appId: appData._id, chargeId: input.chargeId },

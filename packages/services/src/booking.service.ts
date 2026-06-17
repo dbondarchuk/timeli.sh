@@ -1,4 +1,6 @@
 import { getDbClient, getDbConnection } from "./database";
+import { getNonDeclinedAppointmentsCreatedInBillingCycleCount } from "./billing/free-tier-appointment-usage";
+import { resolvePlanTierFromOrganization } from "./billing/subscription-entitlements";
 
 import { AvailableAppServices } from "@timelish/app-store/services";
 
@@ -12,15 +14,22 @@ import {
   AppointmentChoice,
   AppointmentEntity,
   AppointmentHistoryEntry,
+  BookingRestriction,
+  BookingRestrictionCode,
+  AppointmentLimitReachedError,
   AppointmentOnlineMeetingInformation,
   AppointmentTimeNotAvaialbleError,
+  BillingPlanTier,
   Customer,
   DISCOUNT_APPLIED_EVENT_TYPE,
   FieldSchema,
+  FREE_TIER_LIMITS,
   GetAppointmentOptionsResponse,
   IAvailabilityProvider,
+  IBillingService,
   IEventService,
   IMeetingUrlProvider,
+  IOrganizationService,
   IPaymentsService,
   IServicesService,
   Payment,
@@ -108,8 +117,38 @@ export class BookingService extends BaseService implements IBookingService {
     private readonly paymentsService: IPaymentsService,
     private readonly eventService: IEventService,
     private readonly userService: IUserService,
+    private readonly organizationService: IOrganizationService,
+    private readonly billingService: IBillingService,
   ) {
     super("bookingService", organizationId);
+  }
+
+  private async getFreeTierBookingRestriction(): Promise<
+    BookingRestriction | undefined
+  > {
+    const organization = await this.organizationService.getOrganization();
+    const planTier = resolvePlanTierFromOrganization(organization);
+    if (planTier !== BillingPlanTier.Free) {
+      return undefined;
+    }
+
+    const count = await getNonDeclinedAppointmentsCreatedInBillingCycleCount(
+      this.organizationId,
+      this.billingService,
+    );
+
+    if (count >= FREE_TIER_LIMITS.appointments) {
+      return { code: BookingRestrictionCode.LimitReached };
+    }
+
+    return undefined;
+  }
+
+  private async assertFreeTierAppointmentLimit(): Promise<void> {
+    const restriction = await this.getFreeTierBookingRestriction();
+    if (restriction) {
+      throw new AppointmentLimitReachedError(FREE_TIER_LIMITS.appointments);
+    }
   }
 
   public async getAvailability(duration: number): Promise<Availability> {
@@ -226,6 +265,8 @@ export class BookingService extends BaseService implements IBookingService {
       },
       "Creating event",
     );
+
+    await this.assertFreeTierAppointmentLimit();
 
     const { booking: config, general: generalConfig } =
       await this.configurationService.getConfigurations("booking", "general");
@@ -1523,10 +1564,13 @@ export class BookingService extends BaseService implements IBookingService {
       if (hasActiveDiscounts) showPromoCode = true;
     }
 
+    const bookingRestriction = await this.getFreeTierBookingRestriction();
+
     const response: GetAppointmentOptionsResponse = {
       options: choices,
       fieldsSchema: configFields,
       showPromoCode: showPromoCode,
+      bookingRestriction,
     };
 
     return response;

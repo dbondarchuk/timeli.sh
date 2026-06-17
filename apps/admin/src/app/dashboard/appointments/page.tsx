@@ -59,7 +59,7 @@ export default async function AppointmentsPage(props: Params) {
                 href={"/dashboard/appointments/new"}
                 variant="default"
               >
-                <CalendarClock className="mr-2 h-4 w-4" />{" "}
+                <CalendarClock />{" "}
                 <span className="max-md:hidden">
                   {t("appointments.scheduleAppointment")}
                 </span>

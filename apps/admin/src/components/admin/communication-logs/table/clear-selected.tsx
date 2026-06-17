@@ -59,7 +59,7 @@ export const ClearSelectedCommunicationLogsButton: React.FC<{
           disabled={isLoading || !selected || !selected.length}
         >
           {isLoading && <Spinner />}
-          <Trash className="mr-2 h-4 w-4" />
+          <Trash />
           <span>
             {t("communicationLogs.clearSelectedCount", {
               count: selected.length,

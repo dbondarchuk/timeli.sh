@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useI18n } from "@timelish/i18n";
+import { BillingPlanTier } from "@timelish/types";
 import type { OrganizationBillingSubscriptionDetails } from "@timelish/types";
 import {
   Form,
@@ -128,6 +129,9 @@ export const SiteSettingsForm: React.FC<{
                 timeliBaseHost={timeliBaseHost}
                 timeliBaseUrl={timeliBaseUrl}
                 customDomainARecordIp={customDomainARecordIp}
+                canConnectCustomDomain={
+                  billingSubscriptionDetails.planTier !== BillingPlanTier.Free
+                }
               />
             </div>
           </TabsContent>

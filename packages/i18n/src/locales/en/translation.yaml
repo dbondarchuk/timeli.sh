@@ -173,12 +173,21 @@ booking:
     fetchFailedDescription: >-
       Something went wrong while we were getting available times. Please contact
       us
+  restriction:
+    limitReachedTitle: Online booking unavailable
+    limitReachedDescription: >-
+      This business is not accepting new appointments right now. Please try
+      again later or contact them directly.
   submitEvent:
     failedTitle: Uh oh! Something went wrong.
     failedDescription: >-
       Something went wrong while we were trying to book your appointment. Please
       contact us
     timeNotAvailableDescription: Seems like time is not available anymore. Please select another time slot
+    limitReachedTitle: Unable to book appointment
+    limitReachedDescription: >-
+      This business has reached its appointment limit for this period. Please try
+      again later or contact them directly.
 modification:
   title: Manage Your Appointment
   pageTitle: Modify appointment

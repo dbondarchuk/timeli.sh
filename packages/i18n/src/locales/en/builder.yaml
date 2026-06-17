@@ -774,11 +774,11 @@ pageBuilder:
         badge: Pro
         name: Pro plan
         price: $29/month
-        footnote: 7-day free trial
+        footnote: Free tier available
         features: "• Unlimited bookings\n• Website builder\n• SMS reminders"
         cta: Get started
     announcementBar:
-      message: "7-day free trial on Pro - create your account"
+      message: "Free and Pro plans - create your account"
     scrollingLogos:
       screenReaderText: "Scrolling logos include: Example, Sample."
       sampleCardName: Brand name

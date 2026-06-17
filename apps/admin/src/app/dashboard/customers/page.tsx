@@ -57,7 +57,7 @@ export default async function CustomersPage(props: Params) {
             />
 
             <Link button href={"/dashboard/customers/new"} variant="default">
-              <Plus className="mr-2 h-4 w-4" /> {t("customers.addNew")}
+              <Plus /> {t("customers.addNew")}
             </Link>
           </div>
           {/* <Separator /> */}

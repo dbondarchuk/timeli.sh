@@ -1,5 +1,6 @@
 import {
   IEventService,
+  IOrganizationService,
   Page,
   PageUpdateModel,
   type EventSource,
@@ -14,9 +15,10 @@ export class CachedPagesService extends PagesService {
   public constructor(
     organizationId: string,
     eventService: IEventService,
+    organizationService: IOrganizationService,
     protected readonly redisClient: Redis,
   ) {
-    super(organizationId, eventService);
+    super(organizationId, eventService, organizationService);
   }
 
   private getRedisKey(): string {

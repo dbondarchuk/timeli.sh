@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { DateTime } from "luxon";
 import { useEffect, useRef } from "react";
 import { ConfirmationCard } from "./confirmation-card";
+import { BookingRestrictionBanner } from "../../components/booking-restriction-banner";
 import { useScheduleContext } from "./context";
 import { ScheduleSteps } from "./steps";
 
@@ -35,6 +36,7 @@ export const BookingLayout = ({
     step,
     isLoading,
     areAppointmentOptionsLoading,
+    isBookingRestricted,
   } = ctx;
 
   const locale = useLocale();
@@ -105,6 +107,8 @@ export const BookingLayout = ({
         {/* <StepCard /> */}
         {isBookingConfirmed ? (
           <ConfirmationCard />
+        ) : isBookingRestricted ? (
+          <BookingRestrictionBanner className="mb-6" />
         ) : (
           <div className="mb-6 relative step-content-container">
             {isLoading && (
@@ -122,7 +126,9 @@ export const BookingLayout = ({
         )}
 
         {/* Summary & Navigation - Hide when booking is confirmed */}
-        {!isBookingConfirmed && !areAppointmentOptionsLoading && (
+        {!isBookingConfirmed &&
+          !areAppointmentOptionsLoading &&
+          !isBookingRestricted && (
           <div className="flex flex-col lg:flex-row items-center justify-between gap-4 bg-card border rounded-lg p-4 mt-6 summary-container">
             {!!selectedAppointmentOption && (
               <div className="flex flex-col md:flex-row gap-2 w-full">

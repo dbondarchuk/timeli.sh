@@ -1,5 +1,6 @@
 import { getLoggerFactory } from "@timelish/logger";
 import {
+  BillingPlanTier,
   Email,
   EmailNotificationRequest,
   EmailResponse,
@@ -11,16 +12,19 @@ import {
   IMailSender,
   IMailSenderApp,
   INotificationService,
+  IOrganizationService,
   ISystemNotificationService,
   ITextMessageSender,
   ITextMessageSenderApp,
   SmsCreditsExhaustedError,
+  SubscriptionUpgradeRequiredError,
   TextMessage,
   TextMessageNotificationRequest,
   TextMessageResponse,
 } from "@timelish/types";
 import { maskify } from "@timelish/utils";
 import { convert } from "html-to-text";
+import { resolvePlanTierFromOrganization } from "./billing/subscription-entitlements";
 
 export class NotificationService implements INotificationService {
   protected readonly loggerFactory = getLoggerFactory("NotificationService");
@@ -34,6 +38,7 @@ export class NotificationService implements INotificationService {
     private readonly defaultTextMessageSender: ITextMessageSender,
     private readonly billingService: IBillingService,
     private readonly eventService: IEventService,
+    private readonly organizationService: IOrganizationService,
   ) {}
 
   public async sendEmail({
@@ -129,6 +134,9 @@ export class NotificationService implements INotificationService {
       "Sending text message",
     );
 
+    const organization = await this.organizationService.getOrganization();
+    const planTier = resolvePlanTierFromOrganization(organization);
+
     const defaultAppsConfiguration =
       await this.configurationService.getConfiguration("defaultApps");
     const textMessageSenderAppId =
@@ -144,6 +152,14 @@ export class NotificationService implements INotificationService {
         await this.connectedAppService.getAppService<ITextMessageSenderApp>(
           textMessageSenderAppId,
         );
+
+      if (planTier === BillingPlanTier.Free) {
+        logger.warn("TextBelt app is not available on the Free plan");
+        throw new SubscriptionUpgradeRequiredError(
+          "The 3rd party text message sender app requires a Pro subscription.",
+          { feature: "sms", appSlug: app.name },
+        );
+      }
 
       sendTextMessage = async (message: TextMessage) =>
         await service.sendTextMessage(app, message);

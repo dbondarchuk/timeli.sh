@@ -1,4 +1,4 @@
-import { type App, ORGANIZATION_DOMAIN_CHANGED_EVENT_TYPE } from "@timelish/types";
+import { type App, BillingPlanTier, ORGANIZATION_DOMAIN_CHANGED_EVENT_TYPE } from "@timelish/types";
 import { STRIPE_APP_NAME } from "./const";
 import { StripeLogo } from "./logo";
 import { StripeAdminKeys, StripeAdminNamespace } from "./translations/types";
@@ -12,6 +12,7 @@ export const StripeApp: App<StripeAdminNamespace, StripeAdminKeys> = {
   subscribeTo: [ORGANIZATION_DOMAIN_CHANGED_EVENT_TYPE],
   Logo: ({ className }) => <StripeLogo className={className} />,
   isFeatured: true,
+  minimumPlanTier: BillingPlanTier.Pro,
   description: {
     text: "app_stripe_admin.app.description",
   },

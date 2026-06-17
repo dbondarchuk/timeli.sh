@@ -297,7 +297,7 @@ export const WeekSelector: FC<WeekSelectorProps> = ({
             className,
           )}
         >
-          <Calendar className="mr-2 h-4 w-4" />
+          <Calendar />
           <span>{dateRangeText}</span>
         </Button>
       </PopoverTrigger>

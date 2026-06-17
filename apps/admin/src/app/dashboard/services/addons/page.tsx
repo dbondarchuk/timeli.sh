@@ -53,7 +53,7 @@ export default async function AddonsPage(props: Params) {
               href={"/dashboard/services/addons/new"}
               variant="default"
             >
-              <Plus className="mr-2 h-4 w-4" /> {t("services.addons.addNew")}
+              <Plus /> {t("services.addons.addNew")}
             </Link>
           </div>
           {/* <Separator /> */}

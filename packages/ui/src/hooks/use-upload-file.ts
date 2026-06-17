@@ -1,4 +1,8 @@
-import { UploadedFile } from "@timelish/types";
+import {
+  AssetTotalSizeLimitReachedError,
+  FREE_TIER_LIMITS,
+  UploadedFile,
+} from "@timelish/types";
 import React from "react";
 
 import { toast } from "sonner";
@@ -9,7 +13,7 @@ import pLimit from "p-limit";
 export type UseUploadFileProps = {
   onUploadComplete?: (files: UploadedFile[]) => void;
   onFileUploaded?: (file: UploadedFile) => void;
-  onUploadError?: (file: File, error: unknown) => void;
+  onUploadError?: (file: File, error: unknown, errorCode?: string) => void;
 } & ({ bucket?: string } | { appointmentId: string } | { customerId: string });
 
 const uploadFilesWithProgress = ({
@@ -96,6 +100,24 @@ export function useUploadFile({
           });
 
           if (response.status >= 400) {
+            try {
+              const parsed = JSON.parse(response.body) as {
+                code?: string;
+                message?: string;
+                error?: unknown;
+                limitBytes?: number;
+              };
+              if (parsed.code === "asset_total_size_limit_reached") {
+                throw new AssetTotalSizeLimitReachedError(
+                  parsed.limitBytes ?? FREE_TIER_LIMITS.assetsTotalSize,
+                );
+              }
+              if (parsed.message) {
+                throw new Error(parsed.message);
+              }
+            } catch {
+              // Ignore JSON parse errors and fall back to generic message below.
+            }
             throw new Error(`${response.status}: ${response.body}`);
           }
 
@@ -115,7 +137,12 @@ export function useUploadFile({
 
           toast.error(message);
 
-          onUploadError?.(file.file, error);
+          const errorCode =
+            error instanceof AssetTotalSizeLimitReachedError
+              ? error.code
+              : undefined;
+
+          onUploadError?.(file.file, error, errorCode);
         }
       }),
     );

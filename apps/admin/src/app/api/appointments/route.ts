@@ -2,7 +2,7 @@ import { getActor, getServicesContainer } from "@/app/utils";
 import { getSubscriptionBlockingResponseForAppointmentWriteActions } from "@/utils/subscription/subscription-access";
 import { appointmentsSearchParamsLoader } from "@timelish/api-sdk";
 import { getLoggerFactory } from "@timelish/logger";
-import { AppointmentEvent, appointmentEventSchema } from "@timelish/types";
+import { AppointmentEvent, appointmentEventSchema, AppointmentLimitReachedError } from "@timelish/types";
 import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
@@ -215,13 +215,30 @@ export async function POST(request: NextRequest) {
         : undefined,
   };
 
-  const appointment = await servicesContainer.bookingService.createAppointment({
-    event: appointmentEvent,
-    confirmed,
-    force: true,
-    files,
-    eventSource,
-  });
+  let appointment;
+  try {
+    appointment = await servicesContainer.bookingService.createAppointment({
+      event: appointmentEvent,
+      confirmed,
+      force: true,
+      files,
+      eventSource,
+    });
+  } catch (error) {
+    if (error instanceof AppointmentLimitReachedError) {
+      return NextResponse.json(
+        {
+          success: false,
+          code: error.code,
+          message: error.message,
+          limit: error.limit,
+          settingsUrl: "/dashboard/settings/brand?activeTab=general",
+        },
+        { status: 402 },
+      );
+    }
+    throw error;
+  }
 
   logger.debug(
     {

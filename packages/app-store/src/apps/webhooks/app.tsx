@@ -1,4 +1,4 @@
-import { App } from "@timelish/types";
+import { App, BillingPlanTier } from "@timelish/types";
 import { WebhooksLogo } from "./logo";
 import {
   WebhooksAdminKeys,
@@ -18,4 +18,5 @@ export const webhooksApp: App<WebhooksAdminNamespace, WebhooksAdminKeys> = {
   isFeatured: false,
   type: "basic",
   dontAllowMultiple: false,
+  minimumPlanTier: BillingPlanTier.Pro,
 };

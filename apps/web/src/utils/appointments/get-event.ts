@@ -8,6 +8,7 @@ import {
   Customer,
 } from "@timelish/types";
 import { formatAmount, getDiscountAmount } from "@timelish/utils";
+import { canUseFeature, resolvePlanTierFromOrganization } from "@timelish/services/billing";
 import { getServicesContainer } from "../utils";
 
 export const getAppointmentEventFromRequest = async (
@@ -306,6 +307,19 @@ export const getAppointmentEventFromRequest = async (
   }
 
   if (request.promoCode) {
+    const organization =
+      await servicesContainer.organizationService.getOrganization();
+    const planTier = resolvePlanTierFromOrganization(organization);
+    if (!canUseFeature(planTier, "discounts")) {
+      return {
+        error: {
+          code: "subscription_upgrade_required",
+          message: "Discounts are not available on this plan.",
+          status: 402,
+        },
+      };
+    }
+
     logger.debug(
       {
         promoCode: request.promoCode,

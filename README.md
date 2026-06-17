@@ -172,14 +172,14 @@ Timeli.sh ships with modular apps that can be enabled per organization:
 
 ### Subscription & Access Control
 
-- **Current plans**: Pro (live) and Team (coming soon)
-- **Trial**: 7-day free trial on Pro
+- **Plans**: Free and Pro (managed via Polar)
 - **Subscription statuses**:
-  - `active` / `trialing`: full access
+  - `active` / `trialing`: tier-based access (Free or Pro)
   - `past_due`: booking and payment actions are blocked until billing is resolved
   - Other inactive statuses: protected flows return billing-required responses
+- **Free tier limits**: 15 appointments per billing cycle, no payment apps, SMS, financials, discounts, gift cards, or custom domain
 - **Public web behavior**: unknown/inactive organizations are routed to a branded marketing-style fallback page
-- **Admin behavior**: in-app billing state UX with portal-first recovery actions
+- **Admin behavior**: in-app billing state UX with Polar customer portal for plan changes
 
 ## 💼 Business Management
 
@@ -253,7 +253,7 @@ Timeli.sh ships with modular apps that can be enabled per organization:
    - Start accepting bookings 24/7!
 
 7. **Manage Subscription**
-   - Complete checkout (Pro, 7-day free trial)
+   - Complete checkout (Free or Pro)
    - Open the billing portal anytime from the admin app
    - Update payment method if subscription becomes past due
 

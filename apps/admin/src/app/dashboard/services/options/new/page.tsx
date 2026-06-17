@@ -1,6 +1,7 @@
-import { getServicesContainer } from "@/app/utils";
+import { getServicesContainer, getSession } from "@/app/utils";
 import PageContainer from "@/components/admin/layout/page-container";
 import { OptionForm } from "@/components/admin/services/options/form";
+import { ServiceLimitUpgradeHint } from "@/components/admin/services/service-limit-upgrade-hint";
 import {
   catalogServiceDescriptionKey,
   catalogServiceNameKey,
@@ -10,6 +11,7 @@ import {
   defaultDurationFromTemplate,
   defaultPriceFromTemplate,
 } from "@/components/install/constants";
+import { sessionCanCreateMoreServices } from "@/lib/billing/subscription-plan-access";
 import { getI18nAsync } from "@timelish/i18n/server";
 import { getLoggerFactory } from "@timelish/logger";
 import { AppointmentOptionUpdateModel } from "@timelish/types";
@@ -42,6 +44,15 @@ export default async function NewOptionPage(props: Props) {
     "Loading new service option page",
   );
 
+  const session = await getSession();
+  const servicesContainer = await getServicesContainer();
+  const { total: serviceCount } =
+    await servicesContainer.servicesService.getOptions({
+      limit: 0,
+    });
+
+  const canAddMore = sessionCanCreateMoreServices(session, serviceCount);
+
   const breadcrumbItems = [
     { title: t("navigation.dashboard"), link: "/dashboard" },
     { title: t("navigation.services"), link: "/dashboard/services" },
@@ -56,8 +67,7 @@ export default async function NewOptionPage(props: Props) {
   ];
 
   let initialData: AppointmentOptionUpdateModel | undefined = undefined;
-  if (from) {
-    const servicesContainer = await getServicesContainer();
+  if (canAddMore && from) {
     const result = await servicesContainer.servicesService.getOption(from);
     if (!result) {
       logger.warn(
@@ -77,7 +87,7 @@ export default async function NewOptionPage(props: Props) {
       },
       "Using source option as template",
     );
-  } else if (template) {
+  } else if (canAddMore && template) {
     const [categoryId, professionId, serviceId] = template.split(":");
     const profession = getCatalogProfession(categoryId, professionId);
     const serviceTemplate = profession?.services.find(
@@ -150,7 +160,11 @@ export default async function NewOptionPage(props: Props) {
             description={t("services.options.newDescription")}
           />
         </div>
-        <OptionForm initialData={initialData} />
+        {canAddMore ? (
+          <OptionForm initialData={initialData} />
+        ) : (
+          <ServiceLimitUpgradeHint />
+        )}
       </div>
     </PageContainer>
   );

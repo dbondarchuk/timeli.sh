@@ -1,4 +1,4 @@
-import { App } from "@timelish/types";
+import { App, BillingPlanTier } from "@timelish/types";
 import { URL_BUSY_EVENTS_APP_NAME } from "./const";
 import { UrlBusyEventsLogo } from "./logo";
 import {
@@ -19,4 +19,5 @@ export const UrlBusyEventsApp: App<
   description: {
     text: "app_url-busy-events_admin.app.description",
   },
+  minimumPlanTier: BillingPlanTier.Pro,
 };

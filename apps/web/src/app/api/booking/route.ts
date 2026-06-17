@@ -5,6 +5,7 @@ import { getServicesContainer } from "@/utils/utils";
 import { getLoggerFactory } from "@timelish/logger";
 import {
   appointmentRequestSchema,
+  AppointmentLimitReachedError,
   AppointmentTimeNotAvaialbleError,
 } from "@timelish/types";
 import { NextRequest, NextResponse } from "next/server";
@@ -282,12 +283,24 @@ export async function POST(request: NextRequest) {
         { success: false, error: "time_not_available", message: e?.message },
         { status: 400 },
       );
-    } else {
-      logger.error(
-        { error: e?.message || e?.toString() },
-        "Error creating appointment event",
-      );
-      throw e;
     }
+
+    if (e instanceof AppointmentLimitReachedError) {
+      return NextResponse.json(
+        {
+          success: false,
+          code: e.code,
+          message: e.message,
+          limit: e.limit,
+        },
+        { status: 402 },
+      );
+    }
+
+    logger.error(
+      { error: e?.message || e?.toString() },
+      "Error creating appointment event",
+    );
+    throw e;
   }
 }

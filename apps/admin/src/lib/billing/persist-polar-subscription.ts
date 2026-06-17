@@ -1,9 +1,15 @@
 import type { Subscription } from "@polar-sh/sdk/models/components/subscription";
-import { invalidateOrganizationHostnameCacheForOrganization } from "@timelish/services";
+import {
+  invalidateOrganizationHostnameCacheForOrganization,
+  ServicesContainer,
+} from "@timelish/services";
+import { resolvePlanTierFromProductId } from "@timelish/services/billing";
 import { ORGANIZATIONS_COLLECTION_NAME } from "@timelish/services/collections";
 import { getDbConnection } from "@timelish/services/database";
 import {
+  BillingPlanTier,
   parseOrganizationSubscriptionStatus,
+  systemEventSource,
   type Organization,
 } from "@timelish/types";
 
@@ -32,6 +38,13 @@ export async function persistPolarSubscriptionToOrganization(
 
   const before = await col.findOne({ _id: orgId });
   const oldStatus = before?.polarSubscriptionStatus ?? null;
+  const oldTier = resolvePlanTierFromProductId(
+    before?.polarSubscriptionProductId,
+    { feesExempt: before?.feesExempt },
+  );
+  const newTier = resolvePlanTierFromProductId(subscription.productId, {
+    feesExempt: before?.feesExempt,
+  });
 
   await col.updateOne(
     { _id: orgId },
@@ -44,11 +57,24 @@ export async function persistPolarSubscriptionToOrganization(
     },
   );
 
-  if (newStatus && oldStatus !== newStatus) {
-    if (before) {
-      await invalidateOrganizationHostnameCacheForOrganization(before);
-    }
+  if (before) {
+    await invalidateOrganizationHostnameCacheForOrganization(before);
+  }
 
+  if (
+    oldTier === BillingPlanTier.Pro &&
+    newTier === BillingPlanTier.Free &&
+    before?.domain?.trim()
+  ) {
+    const services = ServicesContainer(orgId);
+    await services.organizationService.setDomain(undefined, systemEventSource);
+    const updatedOrg = await col.findOne({ _id: orgId });
+    if (updatedOrg) {
+      await invalidateOrganizationHostnameCacheForOrganization(updatedOrg);
+    }
+  }
+
+  if (newStatus && oldStatus !== newStatus) {
     await emitSubscriptionStatusChangedEvent(orgId, {
       oldStatus,
       newStatus,

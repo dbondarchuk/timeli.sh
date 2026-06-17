@@ -1,6 +1,6 @@
 "use client";
 
-import { clientApi, ClientApiError } from "@timelish/api-sdk";
+import { clientApi, handleBookingSubmitError } from "@timelish/api-sdk";
 import { useI18n } from "@timelish/i18n";
 import type {
   ApplyGiftCardsSuccessResponse,
@@ -17,6 +17,8 @@ import {
   ApplyDiscountResponse,
   Availability,
   CheckDuplicateAppointmentsResponse,
+  BookingRestriction,
+  isBookingLimitRestriction,
 } from "@timelish/types";
 import { toast, useTimeZone } from "@timelish/ui";
 import { DateTime as LuxonDateTime } from "luxon";
@@ -51,6 +53,7 @@ export type ScheduleProps = {
   scrollToTop?: boolean;
   hideTitle?: boolean;
   hideSteps?: boolean;
+  bookingRestriction?: BookingRestriction;
 };
 
 export const Schedule: React.FC<
@@ -69,9 +72,11 @@ export const Schedule: React.FC<
   scrollToTop,
   hideTitle,
   hideSteps,
+  bookingRestriction,
   ...props
 }) => {
   const i18n = useI18n("translation");
+  const isBookingRestricted = isBookingLimitRestriction(bookingRestriction);
   const t = useI18n<WaitlistPublicNamespace, WaitlistPublicKeys>(
     waitlistPublicNamespace,
   );
@@ -92,6 +97,10 @@ export const Schedule: React.FC<
       submitDescription: i18n("booking.submitEvent.failedDescription"),
       timeNotAvailableDescription: i18n(
         "booking.submitEvent.timeNotAvailableDescription",
+      ),
+      limitReachedTitle: i18n("booking.submitEvent.limitReachedTitle"),
+      limitReachedDescription: i18n(
+        "booking.submitEvent.limitReachedDescription",
       ),
       submitWaitlistTitle: t("block.errors.submit.title"),
       submitWaitlistDescription: t("block.errors.submit.description"),
@@ -446,6 +455,12 @@ export const Schedule: React.FC<
 
   const onSubmit = useCallback(async () => {
     if (isEditor) return;
+    if (isBookingRestricted) {
+      toast.error(errors.limitReachedTitle, {
+        description: errors.limitReachedDescription,
+      });
+      return;
+    }
     setIsLoading(true);
 
     try {
@@ -475,21 +490,20 @@ export const Schedule: React.FC<
         setIsBookingConfirmed(true);
       }
     } catch (e: any) {
-      if (e instanceof ClientApiError && e.status === 400) {
-        const error = await e.response.json();
-        if (error.error === "time_not_available") {
-          toast.error(errors.submitTitle, {
-            description: errors.timeNotAvailableDescription,
-          });
-        } else {
-          toast.error(errors.submitTitle, {
-            description: errors.submitDescription,
-          });
-        }
+      const { handled, kind } = await handleBookingSubmitError(
+        e,
+        errors,
+        (title, description) => {
+          toast.error(title, { description });
+        },
+      );
 
-        setDateTime(undefined);
-        setCurrentStep("calendar");
-        await fetchAvailability();
+      if (handled) {
+        if (kind === "time_not_available") {
+          setDateTime(undefined);
+          setCurrentStep("calendar");
+          await fetchAvailability();
+        }
         return;
       }
 
@@ -508,9 +522,15 @@ export const Schedule: React.FC<
     errors.submitTitle,
     errors.submitDescription,
     errors.timeNotAvailableDescription,
+    errors.limitReachedTitle,
+    errors.limitReachedDescription,
     successPage,
     isEditor,
+    isBookingRestricted,
     router,
+    currentStep,
+    fetchAvailability,
+    fields,
   ]);
 
   const contextValue: ScheduleContextProps = useMemo(
@@ -557,6 +577,7 @@ export const Schedule: React.FC<
       isFormValid,
       setIsFormValid,
       isEditor,
+      isBookingRestricted,
       waitlistAppId,
       onWaitlistSubmit,
       waitlistTimes,
@@ -607,6 +628,7 @@ export const Schedule: React.FC<
       isFormValid,
       setIsFormValid,
       isEditor,
+      isBookingRestricted,
       waitlistAppId,
       onWaitlistSubmit,
       waitlistTimes,

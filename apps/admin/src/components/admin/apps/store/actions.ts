@@ -1,6 +1,7 @@
 "use server";
 
 import { getActor, getServicesContainer, getSession } from "@/app/utils";
+import { sessionCanInstallApp } from "@/lib/billing/subscription-plan-access";
 import { BaseAllKeys } from "@timelish/i18n";
 import { getLoggerFactory } from "@timelish/logger";
 import {
@@ -69,6 +70,10 @@ export const installComplexApp = async (name: string) => {
     const session = await getSession();
     if (!session) {
       throw new Error("Unauthorized");
+    }
+
+    if (!sessionCanInstallApp(session, name)) {
+      throw new Error("subscription_upgrade_required");
     }
 
     const appId = await servicesContainer.connectedAppsService.createNewApp(

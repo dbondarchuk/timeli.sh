@@ -1,6 +1,8 @@
 "use client";
+import { authClient } from "@/app/auth-client";
+import { sessionCanInstallApp } from "@/lib/billing/subscription-plan-access";
 import { AvailableApps } from "@timelish/app-store";
-import { useI18n } from "@timelish/i18n";
+import { BaseAllKeys, useI18n } from "@timelish/i18n";
 import { App } from "@timelish/types";
 import {
   Button,
@@ -15,18 +17,41 @@ import {
   Input,
   Link,
   Markdown,
+  TooltipResponsive,
+  TooltipResponsiveContent,
+  TooltipResponsiveTrigger,
 } from "@timelish/ui";
 import { ConnectedAppNameAndLogo } from "@timelish/ui-admin";
+import { Lock } from "lucide-react";
 import React from "react";
 
 export type AppStoreProps = {};
 
 const AppCard: React.FC<{ app: App }> = ({ app }) => {
   const t = useI18n();
+  const { data: session } = authClient.useSession();
+  const canInstall = session?.user
+    ? sessionCanInstallApp(session as any, app.name)
+    : false;
+
   return (
     <Card className="pt-4 h-full">
       <CardContent className="flex flex-col gap-4 h-full">
-        <ConnectedAppNameAndLogo appName={app.name} />
+        <div className="flex flex-row justify-between items-center">
+          <ConnectedAppNameAndLogo appName={app.name} />
+          {!canInstall && (
+            <TooltipResponsive>
+              <TooltipResponsiveTrigger>
+                <Lock className="size-4 text-muted-foreground" />
+              </TooltipResponsiveTrigger>
+              <TooltipResponsiveContent>
+                <span className="text-xs">
+                  {t("apps.common.upgradeRequired" satisfies BaseAllKeys)}
+                </span>
+              </TooltipResponsiveContent>
+            </TooltipResponsive>
+          )}
+        </div>
         <div className="text-default mt-2 flex-grow text-sm line-clamp-3">
           <Markdown markdown={t(app.description.text)} prose="none" />
         </div>

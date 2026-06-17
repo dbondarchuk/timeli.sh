@@ -1,9 +1,14 @@
 "use client";
 
+import { authClient } from "@/app/auth-client";
 import { AddOrUpdateAppButton } from "@/components/admin/apps/add-or-update-app-dialog";
 import { DeleteAppButton } from "@/components/admin/apps/delete-app-button";
 import { saveInstallPreferences } from "@/components/install/actions";
 import { useInstallWizard } from "@/components/install/install-wizard-context";
+import {
+  getSessionPlanTier,
+  sessionCanUseFeature,
+} from "@/lib/billing/subscription-plan-access";
 import {
   PAYPAL_APP_NAME,
   SQUARE_APP_NAME,
@@ -11,12 +16,14 @@ import {
 } from "@timelish/app-store";
 import { useI18n } from "@timelish/i18n";
 import type { ConnectedApp } from "@timelish/types";
+import { BillingPlanTier } from "@timelish/types";
 import {
   Button,
   Card,
   CardContent,
   CardDescription,
   CardHeader,
+  cn,
   Label,
   Slider,
   Switch,
@@ -24,7 +31,7 @@ import {
 } from "@timelish/ui";
 import { ConnectedAppNameAndLogo } from "@timelish/ui-admin";
 import { Unplug } from "lucide-react";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 
 const INSTALL_PAYMENT_APP_NAMES = [
   PAYPAL_APP_NAME,
@@ -53,6 +60,28 @@ export function StepPayments() {
   const t = useI18n("install");
   const tApps = useI18n("apps");
   const { p, setP, setStep, paymentApps } = useInstallWizard();
+  const { data: session } = authClient.useSession();
+  const sessionUser = {
+    user: (session?.user ?? {}) as Parameters<
+      typeof getSessionPlanTier
+    >[0]["user"],
+  };
+  const planTier = getSessionPlanTier(sessionUser);
+  const canAcceptPayments = sessionCanUseFeature(sessionUser, "payments");
+
+  useEffect(() => {
+    if (planTier !== BillingPlanTier.Free) return;
+
+    setP((prev) => {
+      if (!prev.acceptPayments && !prev.depositEnabled) return prev;
+      return {
+        ...prev,
+        acceptPayments: false,
+        depositEnabled: false,
+      };
+    });
+  }, [planTier, setP]);
+
   const paypalApp = useMemo(
     () => pickPaymentApp(paymentApps, PAYPAL_APP_NAME),
     [paymentApps],
@@ -207,7 +236,14 @@ export function StepPayments() {
           {t("wizard.payments.subtitle")}
         </p>
       </div>
-      <label className="flex cursor-pointer items-center justify-between rounded-lg border p-4">
+      <label
+        className={cn(
+          "flex items-center justify-between rounded-lg border p-4",
+          canAcceptPayments
+            ? "cursor-pointer"
+            : "cursor-not-allowed opacity-70",
+        )}
+      >
         <div>
           <span className="font-medium">
             {t("wizard.payments.acceptPayments")}
@@ -215,15 +251,22 @@ export function StepPayments() {
           <p className="text-xs text-muted-foreground">
             {t("wizard.payments.acceptPaymentsHint")}
           </p>
+          {!canAcceptPayments ? (
+            <span className="mt-2 block text-xs">
+              {t("wizard.payments.acceptPaymentsUpgradeHint")}
+            </span>
+          ) : null}
         </div>
         <Switch
           checked={p.acceptPayments}
-          onCheckedChange={(c) =>
-            setP((prev) => ({ ...prev, acceptPayments: Boolean(c) }))
-          }
+          disabled={!canAcceptPayments}
+          onCheckedChange={(c) => {
+            if (!canAcceptPayments) return;
+            setP((prev) => ({ ...prev, acceptPayments: Boolean(c) }));
+          }}
         />
       </label>
-      {p.acceptPayments ? (
+      {p.acceptPayments && canAcceptPayments ? (
         <div className="grid gap-4">
           {renderPaymentCard(
             PAYPAL_APP_NAME,

@@ -54,7 +54,7 @@ export default async function FieldsPage(props: Params) {
               href={"/dashboard/services/fields/new"}
               variant="default"
             >
-              <Plus className="mr-2 h-4 w-4" /> {t("services.fields.addNew")}
+              <Plus /> {t("services.fields.addNew")}
             </Link>
           </div>
           {/* <Separator /> */}

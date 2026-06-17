@@ -1,4 +1,4 @@
-import { NavItemGroup } from "@timelish/types";
+import { BillingPlanTier, NavItemGroup } from "@timelish/types";
 import {
   ArrowDownToLine,
   BadgeDollarSign,
@@ -9,6 +9,7 @@ import {
   CalendarClock,
   CalendarFold,
   CalendarRange,
+  ChartArea,
   CircleDollarSign,
   Code2,
   Gift,
@@ -28,7 +29,6 @@ import {
   TextCursorInput,
   UserRound,
   Wallet,
-  ChartArea,
 } from "lucide-react";
 
 export const navItems: NavItemGroup[] = [
@@ -103,6 +103,7 @@ export const navItems: NavItemGroup[] = [
             href: "/dashboard/services/discounts",
             label: "admin.navigation.discounts",
             icon: <BadgeDollarSign />,
+            minimumPlanTier: BillingPlanTier.Pro,
           },
           {
             id: "gift-cards",
@@ -110,6 +111,7 @@ export const navItems: NavItemGroup[] = [
             href: "/dashboard/services/gift-cards",
             label: "admin.navigation.giftCards",
             icon: <Gift />,
+            minimumPlanTier: BillingPlanTier.Pro,
           },
         ],
       },
@@ -118,6 +120,7 @@ export const navItems: NavItemGroup[] = [
   {
     id: "financials",
     title: "admin.navigation.financials",
+    minimumPlanTier: BillingPlanTier.Pro,
     children: [
       {
         id: "financials-overview",
@@ -186,6 +189,7 @@ export const navItems: NavItemGroup[] = [
             href: "/dashboard/appearence/scripts",
             icon: <Code2 />,
             label: "admin.navigation.scripts",
+            minimumPlanTier: BillingPlanTier.Pro,
           },
           {
             id: "appearance-page-headers",

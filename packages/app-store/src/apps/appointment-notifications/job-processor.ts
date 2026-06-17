@@ -1,6 +1,10 @@
 import { renderToStaticMarkup } from "@timelish/email-builder/static";
 import { getLoggerFactory, LoggerFactory } from "@timelish/logger";
 import {
+  canUseFeature,
+  resolvePlanTierFromOrganization,
+} from "@timelish/services/billing";
+import {
   AppJobRequest,
   Appointment,
   ConnectedAppData,
@@ -288,7 +292,22 @@ export class AppointmentNotificationsJobProcessor {
           );
           return;
 
-        case "text-message":
+        case "text-message": {
+          const organization =
+            await this.props.services.organizationService.getOrganization();
+          const planTier = resolvePlanTierFromOrganization(organization);
+          if (!canUseFeature(planTier, "sms")) {
+            logger.info(
+              {
+                appId: appData._id,
+                appointmentNotificationId: appointmentNotification._id,
+                appointmentId: appointment._id,
+              },
+              "Skipping text message appointment notification for subscription plan tier",
+            );
+            return;
+          }
+
           const phone =
             appointment.fields?.phone ?? appointment.customer?.phone;
 
@@ -341,6 +360,7 @@ export class AppointmentNotificationsJobProcessor {
             "Successfully sent text message appointment notification",
           );
           return;
+        }
 
         default:
           logger.error(

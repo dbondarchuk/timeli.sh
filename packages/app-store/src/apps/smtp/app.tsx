@@ -1,4 +1,4 @@
-import { App } from "@timelish/types";
+import { App, BillingPlanTier } from "@timelish/types";
 import { SMTP_APP_NAME } from "./const";
 import { SmtpLogo } from "./logo";
 import { SmtpAdminKeys, SmtpAdminNamespace } from "./translations/types";
@@ -12,6 +12,7 @@ export const SmtpApp: App<SmtpAdminNamespace, SmtpAdminKeys> = {
   Logo: ({ className }) => <SmtpLogo className={className} />,
   isFeatured: true,
   dontAllowMultiple: true,
+  minimumPlanTier: BillingPlanTier.Pro,
   description: {
     text: "app_smtp_admin.app.description",
   },

@@ -32,7 +32,8 @@ import {
 export const InstallComplexAppButton: React.FC<{
   appName: string;
   installed: number;
-}> = ({ appName, installed }) => {
+  installBlocked?: boolean;
+}> = ({ appName, installed, installBlocked = false }) => {
   const app = React.useMemo(() => AvailableApps[appName], [appName]);
   const router = useRouter();
   const t = useI18n("apps");
@@ -60,6 +61,7 @@ export const InstallComplexAppButton: React.FC<{
   }, [(app as ComplexApp).settingsHref, app.type, router]);
 
   const installComplex = async () => {
+    if (installBlocked) return;
     if (app.type !== "complex" && app.type !== "system") return;
 
     const installFn = async () => {
@@ -111,7 +113,9 @@ export const InstallComplexAppButton: React.FC<{
     <>
       <Button
         variant="default"
-        disabled={app.dontAllowMultiple && installed > 0}
+        disabled={
+          installBlocked || (app.dontAllowMultiple && installed > 0)
+        }
         onClick={installComplex}
       >
         {app.dontAllowMultiple && installed > 0

@@ -54,7 +54,7 @@ export default async function PageFootersPage(props: Params) {
               href={"/dashboard/pages/footers/new"}
               variant="default"
             >
-              <Plus className="mr-2 h-4 w-4" /> {t("pages.footers.addNew")}
+              <Plus /> {t("pages.footers.addNew")}
             </Link>
           </div>
         </div>

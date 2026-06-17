@@ -97,18 +97,19 @@ export const ServicesContainer: (
       getS3Configuration(),
     );
 
-    const assetsService = new AssetsService(
-      organizationId,
-      configurationService,
-      assetsStorage,
-      eventService,
-    );
-
     const dashboardNotificationsService =
       new RedisDashboardNotificationPublisher(organizationId, redisClient);
     const organizationService = new OrganizationService(
       organizationId,
       eventService,
+    );
+
+    const assetsService = new AssetsService(
+      organizationId,
+      configurationService,
+      assetsStorage,
+      eventService,
+      organizationService,
     );
 
     const userService = new UserService(organizationId);
@@ -139,12 +140,20 @@ export const ServicesContainer: (
       organizationId,
       configurationService,
       eventService,
+      organizationService,
     );
 
     const paymentsService = new PaymentsService(
       organizationId,
       connectedAppsService,
       eventService,
+    );
+
+    const billingService = new PolarBillingService(
+      organizationId,
+      organizationService,
+      eventService,
+      getPolarClient(),
     );
 
     const bookingService = new BookingService(
@@ -158,6 +167,8 @@ export const ServicesContainer: (
       paymentsService,
       eventService,
       userService,
+      organizationService,
+      billingService,
     );
 
     const syncedPaymentsService = new SyncedPaymentsService(
@@ -170,6 +181,7 @@ export const ServicesContainer: (
     const pagesService = new CachedPagesService(
       organizationId,
       eventService,
+      organizationService,
       redisClient,
     );
 
@@ -198,13 +210,6 @@ export const ServicesContainer: (
       redisClient,
       templatesService,
     });
-
-    const billingService = new PolarBillingService(
-      organizationId,
-      organizationService,
-      eventService,
-      getPolarClient(),
-    );
 
     const services: IServicesContainer = {
       activityService,

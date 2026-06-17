@@ -43,7 +43,9 @@ export async function POST(request: NextRequest) {
   const result = await applyGiftCards(data.codes, data.amount);
   if (!result.success) {
     logger.warn({ error: result.error }, "Failed to apply gift cards");
-    return NextResponse.json(result, { status: 400 });
+    return NextResponse.json(result, {
+      status: result.code === "subscription_upgrade_required" ? 402 : 400,
+    });
   }
 
   //clear ids from gift cards

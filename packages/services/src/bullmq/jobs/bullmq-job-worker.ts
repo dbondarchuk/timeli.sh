@@ -12,6 +12,8 @@ import {
 import { Job } from "bullmq";
 import { BuiltInApps } from "../../built-in/apps";
 import { getBuiltInAppData } from "../../built-in/utils";
+import { canProcessApp } from "@timelish/app-store";
+import { resolvePlanTierFromOrganization } from "../../billing/subscription-entitlements";
 import { BaseBullMQClient } from "../base-bullmq-client";
 import { BullMQJobConfig } from "./types";
 import { reviveJobData } from "./utils";
@@ -236,6 +238,26 @@ export class BullMQJobWorker extends BaseBullMQClient {
     }
   }
 
+  private async canProcessAppForJob(
+    organizationId: string,
+    appId: string,
+  ): Promise<boolean> {
+    const services = this.getServices(organizationId);
+    const organization = await services.organizationService.getOrganization();
+    const planTier = resolvePlanTierFromOrganization(organization);
+
+    if (BuiltInApps[appId as keyof typeof BuiltInApps]) {
+      return canProcessApp(planTier, appId);
+    }
+
+    try {
+      const { app } = await services.connectedAppsService.getAppService(appId);
+      return canProcessApp(planTier, app.name);
+    } catch {
+      return true;
+    }
+  }
+
   private async processAppJob(
     jobId: string,
     jobData: WithOrganizationId<AppJobRequest>,
@@ -250,6 +272,18 @@ export class BullMQJobWorker extends BaseBullMQClient {
       }
 
       const services = this.getServices(organizationId);
+      const allowed = await this.canProcessAppForJob(
+        organizationId,
+        jobData.appId,
+      );
+      if (!allowed) {
+        logger.info(
+          { jobId, appId: jobData.appId },
+          "Skipping app job for subscription plan tier",
+        );
+        return;
+      }
+
       const builtIn = BuiltInApps[jobData.appId as keyof typeof BuiltInApps];
       if (builtIn?.scheduled) {
         const users = await services.userService.getOrganizationAdminUsers();
@@ -307,6 +341,18 @@ export class BullMQJobWorker extends BaseBullMQClient {
 
       const envelope = reviveJobData(jobData.envelope) as EventEnvelope;
       const services = this.getServices(organizationId);
+
+      const allowed = await this.canProcessAppForJob(
+        organizationId,
+        jobData.appId,
+      );
+      if (!allowed) {
+        logger.info(
+          { jobId, appId: jobData.appId },
+          "Skipping event delivery for subscription plan tier",
+        );
+        return;
+      }
 
       const builtIn = BuiltInApps[jobData.appId];
       if (builtIn) {

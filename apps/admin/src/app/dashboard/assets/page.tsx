@@ -45,7 +45,7 @@ export default async function AssetsPage(props: Params) {
             <Heading title={t("assets.title")} />
 
             <Link button href={"/dashboard/assets/new"} variant="default">
-              <Upload className="mr-2 h-4 w-4" /> {t("assets.addNew")}
+              <Upload /> {t("assets.addNew")}
             </Link>
           </div>
           {/* <Separator /> */}

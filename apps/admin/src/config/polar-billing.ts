@@ -1,36 +1,15 @@
 import { InstallKeys } from "@timelish/i18n";
+import {
+  getPolarBillingPlansFromEnv,
+  resolvePlanTierFromProductId,
+  type PolarBillingPlanDef,
+} from "@timelish/services/billing";
+import type { BillingPlanTier } from "@timelish/types";
 
-export type PolarBillingPlanSlug = "pro";
-export type PolarBillingPlanDef = {
-  slug: PolarBillingPlanSlug;
-  productId: string;
-};
+export type PolarBillingPlanSlug = BillingPlanTier;
+export type { PolarBillingPlanDef };
 
-/**
- * Env: `POLAR_BILLING_PLANS=pro:prod_xxx,starter:prod_yyy`
- * Fallback: `POLAR_PRODUCT_ID` with slug `pro`.
- */
-export function getPolarBillingPlansFromEnv(): PolarBillingPlanDef[] {
-  const raw = process.env.POLAR_BILLING_PLANS?.trim();
-  if (raw) {
-    return raw.split(",").map((part) => {
-      const [slug, productId] = part.split(":").map((s) => s.trim());
-      if (!slug || !productId) {
-        throw new Error(
-          `Invalid POLAR_BILLING_PLANS entry "${part}" (expected slug:productId)`,
-        );
-      }
-      return { slug: slug as PolarBillingPlanSlug, productId };
-    });
-  }
-
-  const legacy = process.env.POLAR_PRODUCT_ID?.trim();
-  if (legacy) {
-    return [{ slug: "pro", productId: legacy }];
-  }
-
-  throw new Error("Set POLAR_BILLING_PLANS or POLAR_PRODUCT_ID for billing");
-}
+export { getPolarBillingPlansFromEnv, resolvePlanTierFromProductId };
 
 /**
  * App-defined benefits per checkout slug (i18n keys under `install` namespace).
@@ -39,8 +18,18 @@ export const POLAR_CHECKOUT_PLAN_BENEFIT_I18N_KEYS: Record<
   PolarBillingPlanSlug,
   InstallKeys[]
 > = {
+  free: [
+    "checkout.plans.free.benefits.bookings",
+    "checkout.plans.free.benefits.services",
+    "checkout.plans.free.benefits.pages",
+    "checkout.plans.free.benefits.branding",
+    "checkout.plans.free.benefits.calendar",
+    "checkout.plans.free.benefits.emailNotifications",
+    "checkout.plans.free.benefits.textNotifications",
+  ],
   pro: [
     "checkout.plans.pro.benefits.bookings",
+    "checkout.plans.pro.benefits.services",
     "checkout.plans.pro.benefits.branding",
     "checkout.plans.pro.benefits.domain",
     "checkout.plans.pro.benefits.calendar",

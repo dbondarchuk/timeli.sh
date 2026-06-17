@@ -1,4 +1,5 @@
 import { getServicesContainer, getWebsiteUrl } from "@/app/utils";
+import { getSubscriptionFeatureBlockedResponse } from "@/lib/billing/subscription-feature-guard";
 import { renderToStaticMarkup } from "@timelish/email-builder/static";
 import { BaseAllKeys } from "@timelish/i18n";
 import { getLoggerFactory } from "@timelish/logger";
@@ -121,6 +122,9 @@ export async function POST(request: NextRequest) {
 
   switch (data.channel) {
     case "text-message": {
+      const blocked = await getSubscriptionFeatureBlockedResponse("sms");
+      if (blocked) return blocked;
+
       const body = template(data.content, args);
       await servicesContainer.notificationService.sendTextMessage({
         body,

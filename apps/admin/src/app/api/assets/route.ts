@@ -1,7 +1,7 @@
 import { getActor, getServicesContainer, getWebsiteUrl } from "@/app/utils";
 import { assetsSearchParamsLoader } from "@timelish/api-sdk";
 import { getLoggerFactory } from "@timelish/logger";
-import { UploadedFile } from "@timelish/types";
+import { AssetTotalSizeLimitReachedError, UploadedFile } from "@timelish/types";
 import {
   fileNameToMimeType,
   getAppointmentBucket,
@@ -147,18 +147,35 @@ export async function POST(request: NextRequest) {
     };
 
     return NextResponse.json(uploadedFile, { status: 201 });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    if (error instanceof AssetTotalSizeLimitReachedError) {
+      logger.warn(
+        { limitBytes: error.limitBytes },
+        "Asset total size limit reached",
+      );
+      return NextResponse.json(
+        {
+          success: false,
+          code: error.code,
+          message: error.message,
+          limitBytes: error.limitBytes,
+        },
+        { status: 402 },
+      );
+    }
+
     logger.error(
       {
         filename: file.name,
-        error: error?.message || error?.toString(),
+        error: error instanceof Error ? error.message : String(error),
       },
       "Failed to upload asset",
     );
     return NextResponse.json(
       {
         success: false,
-        error: error?.message || "Failed to upload asset",
+        error:
+          error instanceof Error ? error.message : "Failed to upload asset",
         code: "upload_asset_failed",
       },
       { status: 500 },

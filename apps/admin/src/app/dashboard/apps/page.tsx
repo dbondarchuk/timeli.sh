@@ -38,10 +38,10 @@ export default async function AppsPage(props: Params) {
 
             <div className="flex flex-col [&>a]:max-md:w-full md:flex-row gap-2 items-center">
               <Link variant="secondary" button href="/dashboard/apps/default">
-                <Boxes className="mr-2 h-4 w-4" /> {t("apps.defaultApps")}
+                <Boxes /> {t("apps.defaultApps")}
               </Link>
               <Link variant="default" button href="/dashboard/apps/store">
-                <Store className="mr-2 h-4 w-4" /> {t("apps.appStore")}
+                <Store /> {t("apps.appStore")}
               </Link>
             </div>
           </div>

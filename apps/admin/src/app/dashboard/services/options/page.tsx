@@ -1,7 +1,9 @@
+import { getServicesContainer, getSession } from "@/app/utils";
 import PageContainer from "@/components/admin/layout/page-container";
 import { AddOptionSplitButton } from "@/components/admin/services/options/add-option-button";
 import { OptionsTable } from "@/components/admin/services/options/table/table";
 import { OptionsTableAction } from "@/components/admin/services/options/table/table-action";
+import { sessionCanCreateMoreServices } from "@/lib/billing/subscription-plan-access";
 import {
   serviceOptionsSearchParamsCache,
   serviceOptionsSearchParamsSerializer,
@@ -32,6 +34,14 @@ export default async function OptionsPage(props: Params) {
 
   const key = serviceOptionsSearchParamsSerializer({ ...parsed });
 
+  const session = await getSession();
+  const servicesContainer = await getServicesContainer();
+  const { total: serviceCount } =
+    await servicesContainer.servicesService.getOptions({
+      limit: 0,
+    });
+  const canAddMore = sessionCanCreateMoreServices(session, serviceCount);
+
   const breadcrumbItems = [
     { title: t("navigation.dashboard"), link: "/dashboard" },
     { title: t("navigation.services"), link: "/dashboard/services" },
@@ -52,7 +62,7 @@ export default async function OptionsPage(props: Params) {
               description={t("services.options.description")}
             />
 
-            <AddOptionSplitButton />
+            <AddOptionSplitButton canAddMore={canAddMore} />
           </div>
           {/* <Separator /> */}
         </div>

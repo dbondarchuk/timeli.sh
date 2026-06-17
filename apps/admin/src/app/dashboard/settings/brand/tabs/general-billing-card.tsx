@@ -4,6 +4,7 @@ import { SmsTopupPurchaseDialog } from "@/app/dashboard/settings/brand/tabs/sms-
 import { adminApi } from "@timelish/api-sdk";
 import { useI18n, useLocale } from "@timelish/i18n";
 import {
+  BillingPlanTier,
   OrganizationBillingSubscriptionDetails,
   OrganizationSubscriptionStatus,
 } from "@timelish/types";
@@ -96,7 +97,11 @@ export function GeneralBillingCard({
   }
 
   const showChoosePlan =
-    !details.feesExempt && !hasActiveLikeSubscription(details.status);
+    !details.feesExempt &&
+    !details.subscriptionId &&
+    !hasActiveLikeSubscription(details.status);
+
+  const isFreeTier = details.planTier === BillingPlanTier.Free;
 
   const showSubscriptionDetails =
     !details.feesExempt &&
@@ -138,6 +143,14 @@ export function GeneralBillingCard({
             {secondary ? (
               <span className="text-sm text-muted-foreground">{secondary}</span>
             ) : null}
+            {!details.feesExempt && details.planTier ? (
+              <span className="text-sm text-muted-foreground">
+                {t(`settings.general.billing.planTier.${details.planTier}`)}
+                {isFreeTier
+                  ? ` · ${t("settings.general.billing.freeTierHint")}`
+                  : null}
+              </span>
+            ) : null}
           </div>
           {details.feesExempt ? null : (
             <div className="flex shrink-0 flex-col gap-2 sm:flex-row sm:items-center">
@@ -153,13 +166,17 @@ export function GeneralBillingCard({
                       {opening ? (
                         <Spinner className="mr-2 h-4 w-4 animate-spin" />
                       ) : (
-                        <ExternalLink className="mr-2 h-4 w-4" />
+                        <ExternalLink />
                       )}
-                      {t("settings.general.billing.openPortal")}
+                      {t(
+                        isFreeTier
+                          ? "settings.general.billing.managePlanInPortal"
+                          : "settings.general.billing.openPortal",
+                      )}
                     </Button>
                   </TooltipResponsiveTrigger>
                   <TooltipResponsiveContent>
-                    {t("settings.general.billing.portalReturnHint")}
+                    {t("settings.general.billing.portalManageHint")}
                   </TooltipResponsiveContent>
                 </TooltipResponsive>
               </div>

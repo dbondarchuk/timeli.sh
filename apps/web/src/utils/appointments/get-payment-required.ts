@@ -9,7 +9,7 @@ import {
 } from "@timelish/types";
 import { formatAmount } from "@timelish/utils";
 import { applyGiftCards } from "../gift-cards/apply";
-import { getServicesContainer } from "../utils";
+import { getServicesContainer, sessionCanUseFeature } from "../utils";
 import { getAppointmentEventFromRequest } from "./get-event";
 
 type GetIsPaymentRequiredReturnType =
@@ -95,6 +95,20 @@ export const getAppointmentEventAndIsPaymentRequired = async (
     logger.debug(
       { optionId: option._id, optionName: option.name },
       "No total price, payment not required",
+    );
+
+    return {
+      event,
+      customer,
+      isPaymentRequired: false,
+    };
+  }
+
+  const canUsePayments = await sessionCanUseFeature("payments");
+  if (!canUsePayments) {
+    logger.debug(
+      { optionId: option._id, optionName: option.name },
+      "Payments are not available on this plan, payment not required",
     );
 
     return {

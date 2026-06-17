@@ -56,7 +56,7 @@ export default async function GiftCardsPage(props: Params) {
               href={"/dashboard/services/gift-cards/new"}
               variant="default"
             >
-              <Plus className="mr-2 h-4 w-4" /> {t("services.giftCards.addNew")}
+              <Plus /> {t("services.giftCards.addNew")}
             </Link>
           </div>
           {/* <Separator /> */}

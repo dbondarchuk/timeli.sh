@@ -28,7 +28,8 @@ import { ReschedulesTab } from "./tabs/reschedules";
 
 export const AppointmentsSettingsForm: React.FC<{
   values: BookingConfiguration;
-}> = ({ values }) => {
+  canUsePayments: boolean;
+}> = ({ values, canUsePayments }) => {
   const t = useI18n("admin");
   const form = useForm<BookingConfiguration>({
     resolver: zodResolver(bookingConfigurationSchema),
@@ -43,8 +44,14 @@ export const AppointmentsSettingsForm: React.FC<{
   const onSubmit = async (data: BookingConfiguration) => {
     try {
       setLoading(true);
+      const payload: BookingConfiguration = canUsePayments
+        ? data
+        : {
+            ...data,
+            payments: { enabled: false },
+          };
       await toastPromise(
-        adminApi.configuration.setConfiguration("booking", data),
+        adminApi.configuration.setConfiguration("booking", payload),
         {
           success: t("settings.appointments.form.toasts.changesSaved"),
           error: t("settings.appointments.form.toasts.requestError"),
@@ -71,6 +78,12 @@ export const AppointmentsSettingsForm: React.FC<{
   }, [form]);
 
   React.useEffect(() => triggerValidation(), [triggerValidation]);
+
+  React.useEffect(() => {
+    if (!canUsePayments && form.getValues("payments.enabled")) {
+      form.setValue("payments", { enabled: false }, { shouldValidate: true });
+    }
+  }, [canUsePayments, form]);
 
   return (
     <Form {...form}>
@@ -139,7 +152,7 @@ export const AppointmentsSettingsForm: React.FC<{
             <OptionsTab form={form} />
           </TabsContent>
           <TabsContent value="payments">
-            <PaymentsTab form={form} />
+            <PaymentsTab form={form} canUsePayments={canUsePayments} />
           </TabsContent>
           <TabsContent value="cancellations">
             <CancellationsTab form={form} />

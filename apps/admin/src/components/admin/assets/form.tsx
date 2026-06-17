@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { adminApi } from "@timelish/api-sdk";
+import { adminApi, AdminApiError } from "@timelish/api-sdk";
 import { useI18n } from "@timelish/i18n";
 import {
   DndFileInput,
@@ -12,7 +12,7 @@ import {
   FormLabel,
   FormMessage,
   Textarea,
-  toastPromise,
+  toast,
 } from "@timelish/ui";
 import { SaveButton } from "@timelish/ui-admin";
 import { useRouter } from "next/navigation";
@@ -57,18 +57,27 @@ export const AssetForm: React.FC = () => {
     try {
       setLoading(true);
 
-      await toastPromise(
-        adminApi.assets.createAsset(data.file, {
-          description: data.description,
-        }),
-        {
-          success: t("assets.toasts.changesSaved"),
-          error: t("common.toasts.error"),
-        },
-      );
+      await adminApi.assets.createAsset(data.file, {
+        description: data.description,
+      });
+
+      toast.success(t("assets.toasts.changesSaved"));
 
       router.push(`/dashboard/assets`);
-    } catch (error: any) {
+    } catch (error: unknown) {
+      if (error instanceof AdminApiError && error.status === 402) {
+        try {
+          const body = await error.response.json();
+          if (body?.code === "asset_total_size_limit_reached") {
+            toast.error(t("assets.toasts.assetTotalSizeLimitReached"));
+            return;
+          }
+        } catch {
+          // ignore
+        }
+      }
+
+      toast.error(t("common.toasts.error"));
       console.error(error);
     } finally {
       setLoading(false);

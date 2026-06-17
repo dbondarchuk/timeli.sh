@@ -1362,9 +1362,9 @@ class SquareConnectedApp
 
     const existingSynced = await syncedPaymentsService.list({
       externalId: input.paymentId,
-      limit: 1,
-      offset: 0,
+      limit: 0,
     });
+
     if (existingSynced.total > 0) {
       logger.debug(
         { appId: appData._id, paymentId: input.paymentId },

@@ -1,3 +1,4 @@
+import { FeatureUpgradeHint } from "@/lib/billing/feature-upgrade-hint";
 import { I18nRichText, useI18n } from "@timelish/i18n";
 import {
   BooleanSelect,
@@ -17,7 +18,9 @@ import {
 } from "@timelish/ui";
 import { TabProps } from "./types";
 
-export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
+export const PaymentsTab: React.FC<
+  TabProps & { canUsePayments?: boolean }
+> = ({ form, disabled, canUsePayments = true }) => {
   const t = useI18n("admin");
   const currencySymbol = useCurrencySymbol();
   const enablePayments = form.watch("payments.enabled");
@@ -40,7 +43,9 @@ export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
             <FormControl>
               <BooleanSelect
                 value={field.value}
+                disabled={!canUsePayments || disabled}
                 onValueChange={(val) => {
+                  if (!canUsePayments) return;
                   field.onChange(val);
                   field.onBlur();
                 }}
@@ -49,11 +54,14 @@ export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
                 falseLabel={t("settings.appointments.form.payments.disable")}
               />
             </FormControl>
+            {!canUsePayments ? (
+              <FeatureUpgradeHint />
+            ) : null}
             <FormMessage />
           </FormItem>
         )}
       />
-      {enablePayments && (
+      {enablePayments && canUsePayments && (
         <>
           {/* <div className="gap-2 flex flex-col md:grid md:grid-cols-2 md:gap-4 w-full"> */}
           <FormField

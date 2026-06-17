@@ -56,7 +56,7 @@ export default async function PageHeadersPage(props: Params) {
               href={"/dashboard/pages/headers/new"}
               variant="default"
             >
-              <Plus className="mr-2 h-4 w-4" /> {t("pages.headers.addNew")}
+              <Plus /> {t("pages.headers.addNew")}
             </Link>
           </div>
         </div>

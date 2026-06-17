@@ -126,7 +126,11 @@ export const CustomerFileUpload: React.FC<{
     onUploadComplete: () => {
       onUpload();
     },
-    onUploadError: () => {
+    onUploadError: (_, error, errorCode) => {
+      if (errorCode === "asset_total_size_limit_reached") {
+        toast.error(t("assets.toasts.assetTotalSizeLimitReached"));
+      }
+
       setDisabled(false);
     },
     customerId,

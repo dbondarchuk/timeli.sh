@@ -1,4 +1,6 @@
 import { getServicesContainer, getSession } from "@/app/utils";
+import { sessionCanInstallApp } from "@/lib/billing/subscription-plan-access";
+import { BRAND_SETTINGS_UPGRADE_URL } from "@timelish/services/billing";
 import { getLoggerFactory } from "@timelish/logger";
 import { NextRequest, NextResponse } from "next/server";
 import * as z from "zod";
@@ -74,6 +76,18 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       { error, success: false, code: "invalid_request_format" },
       { status: 400 },
+    );
+  }
+
+  if (!sessionCanInstallApp(session, data.type)) {
+    return NextResponse.json(
+      {
+        success: false,
+        code: "subscription_upgrade_required",
+        message: "This app requires a Pro subscription.",
+        settingsUrl: BRAND_SETTINGS_UPGRADE_URL,
+      },
+      { status: 402 },
     );
   }
 

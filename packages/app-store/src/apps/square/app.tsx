@@ -1,4 +1,4 @@
-import { App, ORGANIZATION_DOMAIN_CHANGED_EVENT_TYPE } from "@timelish/types";
+import { App, BillingPlanTier, ORGANIZATION_DOMAIN_CHANGED_EVENT_TYPE } from "@timelish/types";
 import { SQUARE_APP_NAME } from "./const";
 import { SquareLogo } from "./logo";
 import { SquareAdminKeys, SquareAdminNamespace } from "./translations/types";
@@ -12,6 +12,7 @@ export const SquareApp: App<SquareAdminNamespace, SquareAdminKeys> = {
   subscribeTo: [ORGANIZATION_DOMAIN_CHANGED_EVENT_TYPE],
   Logo: ({ className }) => <SquareLogo className={className} />,
   isFeatured: true,
+  minimumPlanTier: BillingPlanTier.Pro,
   description: {
     text: "app_square_admin.app.description",
   },

@@ -1,7 +1,7 @@
 import { getActor, getServicesContainer } from "@/app/utils";
 import { serviceOptionsSearchParamsLoader } from "@timelish/api-sdk";
 import { getLoggerFactory } from "@timelish/logger";
-import { appointmentOptionSchema } from "@timelish/types";
+import { appointmentOptionSchema, ServiceLimitReachedError } from "@timelish/types";
 import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
@@ -119,6 +119,18 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(result, { status: 201 });
   } catch (error: any) {
+    if (error instanceof ServiceLimitReachedError) {
+      return NextResponse.json(
+        {
+          success: false,
+          code: error.code,
+          message: error.message,
+          limit: error.limit,
+          settingsUrl: "/dashboard/settings/brand?activeTab=general",
+        },
+        { status: 402 },
+      );
+    }
     logger.error(
       {
         optionName: data.name,

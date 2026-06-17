@@ -21,7 +21,7 @@ export interface IPagesService {
   resolvePage(rawSlug: string): Promise<PageMatchResult | null>;
   getPages(
     query: Query & {
-      publishStatus: boolean[];
+      publishStatus?: boolean[];
       maxPublishDate?: Date;
       tags?: string[];
     },

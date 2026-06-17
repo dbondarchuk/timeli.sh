@@ -24,6 +24,7 @@ import {
   DialogContent,
   DndFileInput,
   Spinner,
+  toast,
   toastPromise,
   useUploadFile,
 } from "@timelish/ui";
@@ -109,6 +110,11 @@ export const AppointmentFiles = ({ appointment }: AppointmentFilesProps) => {
     appointmentId: appointment._id,
     onFileUploaded: (file) => {
       onAssetAdded(file);
+    },
+    onUploadError: (_, error, errorCode) => {
+      if (errorCode === "asset_total_size_limit_reached") {
+        toast.error(t("assets.toasts.assetTotalSizeLimitReached"));
+      }
     },
   });
 

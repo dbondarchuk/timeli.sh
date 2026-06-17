@@ -1,35 +1,34 @@
 ---
 sidebar_position: 4
-description: Compare Timelish plans and complete payment before setup.
+description: Compare Timelish Free and Pro plans and complete checkout before setup.
 ---
 
 # Choose a plan
 
-After you **create your account** and **confirm your email**, you may land on a page where you **compare plans** and finish payment before setup continues.
+After you **create your account** and **confirm your email**, you may land on a page where you **compare plans** and finish checkout before setup continues.
 
 ## Understanding the choices
 
-You usually see one or more **plans** laid out as cards. Each one shows:
+You can choose between **Free** and **Pro**:
 
-- A **short name** and what that plan includes
-- The **price** and how often you pay (monthly or yearly, for example)
-- A few **benefits** in plain language
+- **Free** — get started at no cost with core booking, calendar sync, and email notifications. Includes up to 15 appointments per billing cycle.
+- **Pro** — unlimited appointments, payments, SMS notifications, custom domain, financials, discounts, gift cards, and more.
 
-Pick the option that fits how you work and how you prefer to pay. Read the bullets on each card - they describe what you get better than fine print buried elsewhere.
+Each plan card shows the **price** (Free is $0) and a short list of what is included.
 
 ![Plan selection cards](/img/getting-started/checkout.png)
 
 ## Paying safely
 
-When you pick a plan, Timelish may send you to a **separate, secure payment page**. You enter your card or bank details **on that secure page**. Timelish does not store or process your payment details.
+When you pick a plan, Timelish sends you to a **secure Polar checkout page**. For Pro, you enter payment details there. Timelish does not store your card or bank details.
 
 ![Secure payment screen](/img/getting-started/polar.png)
 
-When payment succeeds, Timelish usually takes you automatically to **[Set up your workspace](./workspace-install-wizard)**.
+When checkout succeeds, Timelish takes you to **[Set up your workspace](./workspace-install-wizard)**.
 
-## Billing after you’re up and running
+## Changing your plan later
 
-Later, you can often **change how you pay** or open **billing help** from the areas inside your dashboard that talk about your subscription. If something looks wrong - for example payment failed or access stopped - support can walk you through it.
+After setup, open **Settings → Brand → General** and use **Manage plan** to open the **Polar customer portal**. There you can upgrade from Free to Pro, downgrade, or update payment details.
 
 ## Next steps
 

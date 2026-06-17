@@ -2,6 +2,7 @@ import type { Product } from "@polar-sh/sdk/models/components/product";
 import type {
   BillingConsumeSmsInput,
   BillingInterval,
+  BillingPeriod,
   BillingRecordSmsUsageInput,
   IBillingService,
   IEventService,
@@ -20,6 +21,7 @@ import { ORGANIZATIONS_COLLECTION_NAME } from "../collections";
 import { getDbConnection } from "../database";
 import { BaseService } from "../services/base.service";
 import type { PolarClientWrapper } from "./polar-client-wrapper";
+import { resolvePlanTierFromProductId } from "./subscription-entitlements";
 import { maybeEmitSmsCreditThresholdEvent } from "./sms-credit-threshold-notify";
 
 function assertNonNegInt(n: number, label: string) {
@@ -279,10 +281,15 @@ export class PolarBillingService
 
     const empty = (): OrganizationBillingSubscriptionDetails => ({
       feesExempt,
+      planTier: resolvePlanTierFromProductId(
+        org?.polarSubscriptionProductId,
+        { feesExempt },
+      ),
       subscriptionId,
       subscriptionName: null,
       status: statusFromDb,
       subscriptionPrice: null,
+      currentPeriodStart: null,
       nextCycleDate: null,
       benefits: { sms: null },
     });
@@ -311,6 +318,7 @@ export class PolarBillingService
       const subscriptionName = subscription.product?.name ?? null;
       const status = parseOrganizationSubscriptionStatus(subscription.status);
       const nextCycleEnd = subscription.currentPeriodEnd ?? null;
+      const currentPeriodStart = subscription.currentPeriodStart ?? null;
       const { included, topup } = await this.getSmsCreditBalance();
 
       const meterId = this.polar.config.smsCreditsMeterId?.trim() ?? "";
@@ -379,10 +387,12 @@ export class PolarBillingService
 
       return {
         feesExempt: false,
+        planTier: resolvePlanTierFromProductId(productId, { feesExempt: false }),
         subscriptionId,
         subscriptionName,
         status,
         subscriptionPrice,
+        currentPeriodStart,
         nextCycleDate: nextCycleEnd,
         benefits: { sms },
       };
@@ -393,6 +403,24 @@ export class PolarBillingService
       );
 
       return empty();
+    }
+  }
+
+  public async getBillingPeriod(): Promise<BillingPeriod | null> {
+    const org = await this.organizationService.getOrganization();
+    if (org?.feesExempt === true) return null;
+
+    const subscriptionId = org?.polarSubscriptionId?.trim();
+    if (!this.polar.client || !subscriptionId) return null;
+
+    try {
+      const subscription = await this.polar.getSubscriptionById(subscriptionId);
+      const start = subscription.currentPeriodStart;
+      const end = subscription.currentPeriodEnd;
+      if (!start || !end) return null;
+      return { start, end };
+    } catch {
+      return null;
     }
   }
 }

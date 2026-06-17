@@ -44,6 +44,26 @@ export const withAuth: MiddlewareProxy = (next) => {
 
     request.headers.set("x-user-id", session?.user?.id || "");
 
+    if (session?.user) {
+      const user = session.user as {
+        subscriptionStatus?: string;
+        subscriptionPlanTier?: string | null;
+        feesExempt?: boolean;
+      };
+      request.headers.set(
+        "x-subscription-status",
+        user.subscriptionStatus || "active",
+      );
+      if (user.feesExempt) {
+        request.headers.set("x-subscription-plan-tier", "pro");
+      } else if (user.subscriptionPlanTier) {
+        request.headers.set(
+          "x-subscription-plan-tier",
+          user.subscriptionPlanTier,
+        );
+      }
+    }
+
     return next(request, event);
   };
 };

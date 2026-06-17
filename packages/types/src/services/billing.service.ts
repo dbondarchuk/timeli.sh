@@ -3,7 +3,10 @@ import {
   BillingRecordSmsUsageInput,
   SmsCreditsState,
 } from "../billing/sms";
-import { OrganizationBillingSubscriptionDetails } from "../billing/subscription-details";
+import {
+  BillingPeriod,
+  OrganizationBillingSubscriptionDetails,
+} from "../billing/subscription-details";
 
 export interface IBillingService {
   getSmsCreditBalance(): Promise<SmsCreditsState>;
@@ -24,4 +27,7 @@ export interface IBillingService {
   recordSmsCreditUsage(input: BillingRecordSmsUsageInput): Promise<void>;
 
   getSubscriptionDetails(): Promise<OrganizationBillingSubscriptionDetails>;
+
+  /** Current Polar subscription billing period, when available. */
+  getBillingPeriod(): Promise<BillingPeriod | null>;
 }

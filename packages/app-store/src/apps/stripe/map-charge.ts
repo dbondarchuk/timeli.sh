@@ -23,8 +23,7 @@ export function isTimelishCheckoutPaymentIntent(
     return false;
   }
   const orgId = metadata.organizationId;
-  const timelishIntentId =
-    metadata.timelishIntentId ?? metadata.timeliIntentId ?? undefined;
+  const timelishIntentId = metadata.timelishIntentId ?? undefined;
   return Boolean(orgId && timelishIntentId);
 }
 

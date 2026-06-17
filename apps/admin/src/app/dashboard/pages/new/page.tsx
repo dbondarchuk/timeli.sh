@@ -1,12 +1,13 @@
-import { getServicesContainer, getWebsiteUrl } from "@/app/utils";
+import { getServicesContainer, getSession, getWebsiteUrl } from "@/app/utils";
 import PageContainer from "@/components/admin/layout/page-container";
 import { PageForm } from "@/components/admin/pages/form";
+import { sessionCanCreateMorePages } from "@/lib/billing/subscription-plan-access";
 import { getI18nAsync } from "@timelish/i18n/server";
 import { getLoggerFactory } from "@timelish/logger";
 import { Styling } from "@timelish/page-builder/reader";
 import { PageUpdateModel } from "@timelish/types";
 import { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 type Props = PageProps<"/dashboard/pages/new">;
 
@@ -31,6 +32,19 @@ export default async function NewPagesPage(props: Props) {
   );
 
   const servicesContainer = await getServicesContainer();
+  const session = await getSession();
+  const { total: pageCount } = await servicesContainer.pagesService.getPages({
+    limit: 0,
+  });
+
+  const canAddMore = session
+    ? sessionCanCreateMorePages(session, pageCount)
+    : false;
+
+  if (!canAddMore) {
+    redirect("/dashboard/pages");
+  }
+
   const websiteUrl = await getWebsiteUrl();
   logger.debug("Loading new page creation page");
 

@@ -37,6 +37,7 @@ import { setDefaultAppByScope } from "./store/actions";
 
 export type AddOrUpdateAppButtonProps = {
   children: React.ReactNode;
+  installBlocked?: boolean;
   /** When true, a new connection only refreshes the page (install wizard); default sends users to /dashboard/apps. */
   refreshOnClose?: boolean;
   dontAskToSetDefault?: boolean;
@@ -51,6 +52,7 @@ export type AddOrUpdateAppButtonProps = {
 
 export const AddOrUpdateAppButton: React.FC<AddOrUpdateAppButtonProps> = ({
   children,
+  installBlocked = false,
   refreshOnClose = false,
   dontAskToSetDefault = false,
   ...props
@@ -170,6 +172,7 @@ export const AddOrUpdateAppButton: React.FC<AddOrUpdateAppButtonProps> = ({
   }, [appType, setupProps]);
 
   const onDialogOpenChange = (open: boolean) => {
+    if (open && installBlocked && !app) return;
     if (open) openDialog();
     else closeDialog();
   };

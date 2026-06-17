@@ -1,5 +1,6 @@
 "use client";
 
+import { ServiceLimitUpgradeHint } from "@/components/admin/services/service-limit-upgrade-hint";
 import {
   catalogProfessionLabelKey,
   catalogServiceDescriptionKey,
@@ -29,10 +30,13 @@ import {
   Label,
   Link,
   Markdown,
+  TooltipResponsive,
+  TooltipResponsiveContent,
+  TooltipResponsiveTrigger,
   useCurrency,
 } from "@timelish/ui";
 import { durationToTime, formatAmountWithCurrency } from "@timelish/utils";
-import { ArrowLeft, ChevronDown, Plus } from "lucide-react";
+import { ArrowLeft, ChevronDown, Lock, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
 
@@ -46,7 +50,7 @@ function serializeTemplateId(template: SelectedTemplate): string {
   return `${template.categoryId}:${template.professionId}:${template.serviceId}`;
 }
 
-export function AddOptionSplitButton() {
+export function AddOptionSplitButton({ canAddMore }: { canAddMore: boolean }) {
   const router = useRouter();
   const t = useI18n("admin");
   const tInstall = useI18n("install");
@@ -104,33 +108,60 @@ export function AddOptionSplitButton() {
 
   return (
     <>
-      <div className="flex items-center">
-        <Link
-          href="/dashboard/services/options/new"
-          button
-          variant="default"
-          className="rounded-r-none border-r"
-        >
-          <Plus />
-          {t("services.options.addNew")}
-        </Link>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              type="button"
+      <div className="flex flex-col items-end gap-2">
+        <div className="flex items-center">
+          {canAddMore ? (
+            <Link
+              href="/dashboard/services/options/new"
+              button
               variant="default"
-              size="icon"
-              className="rounded-l-none"
+              className="rounded-r-none border-r"
             >
-              <ChevronDown className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => setDialogOpen(true)}>
-              {t("services.options.addFromTemplate")}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+              <Plus />
+              {t("services.options.addNew")}
+            </Link>
+          ) : (
+            <TooltipResponsive>
+              <TooltipResponsiveTrigger>
+                <span>
+                  <Button
+                    type="button"
+                    variant="default"
+                    className="rounded-r-none border-r"
+                    disabled
+                  >
+                    <Lock />
+                    {t("services.options.addNew")}
+                  </Button>
+                </span>
+              </TooltipResponsiveTrigger>
+              <TooltipResponsiveContent>
+                <ServiceLimitUpgradeHint />
+              </TooltipResponsiveContent>
+            </TooltipResponsive>
+          )}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                type="button"
+                variant="default"
+                size="icon"
+                className="rounded-l-none"
+                disabled={!canAddMore}
+              >
+                <ChevronDown className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem
+                disabled={!canAddMore}
+                onClick={() => canAddMore && setDialogOpen(true)}
+              >
+                {t("services.options.addFromTemplate")}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
 
       <Dialog

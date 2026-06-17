@@ -1,7 +1,9 @@
-import { getActor, getServicesContainer } from "@/app/utils";
+import { getActor, getServicesContainer, getSession } from "@/app/utils";
+import { sessionCanUseFeature } from "@/lib/billing/subscription-plan-access";
 import { getLoggerFactory } from "@timelish/logger";
 import { getPolarClient } from "@timelish/services";
 import {
+  BookingConfiguration,
   ConfigurationKey,
   configurationSchemaMap,
   type GeneralConfiguration,
@@ -63,18 +65,32 @@ export async function PUT(
     );
   }
 
-  const { data, success, error } = configurationSchema.safeParse(body);
-  if (!success) {
-    logger.warn({ error, configurationKey }, "Invalid configuration");
+  const parseResult = configurationSchema.safeParse(body);
+  if (!parseResult.success) {
+    logger.warn(
+      { error: parseResult.error, configurationKey },
+      "Invalid configuration",
+    );
     return NextResponse.json(
       {
-        error,
+        error: parseResult.error,
         success: false,
         code: "invalid_configuration",
         configurationKey,
       },
       { status: 400 },
     );
+  }
+
+  let data = parseResult.data;
+  if (
+    configurationKey === "booking" &&
+    !(await sessionCanUseFeature(await getSession(), "payments"))
+  ) {
+    data = {
+      ...(data as BookingConfiguration),
+      payments: { enabled: false },
+    };
   }
 
   const actor = await getActor();

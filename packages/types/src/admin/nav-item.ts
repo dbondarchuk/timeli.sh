@@ -1,5 +1,6 @@
 import type { AllKeys } from "@timelish/i18n";
 import type { ReactElement } from "react";
+import type { BillingPlanTier } from "../billing/subscription-plan";
 
 export interface NavItem {
   id: string;
@@ -13,6 +14,8 @@ export interface NavItem {
   removeIfBecameParent?: boolean;
   /** Key matching `DashboardNotificationBadge.key` from the notifications SSE stream. */
   notificationsCountKey?: string;
+  /** Lowest subscription tier required to show this item. Defaults to Free. */
+  minimumPlanTier?: BillingPlanTier;
 }
 
 export interface NavItemWithChildren extends NavItem {
@@ -33,6 +36,8 @@ export interface NavItemGroup {
     | "settings"
     | "other";
   title: AllKeys;
+  /** Lowest subscription tier required to show this group. Defaults to Free. */
+  minimumPlanTier?: BillingPlanTier;
   children: NavItemWithOptionalChildren[];
 }
 

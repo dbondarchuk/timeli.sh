@@ -174,12 +174,21 @@ booking:
   availability:
     fetchFailedTitle: Ой! Щось пішло не так.
     fetchFailedDescription: Щось пішло не так під час отримання доступного часу
+  restriction:
+    limitReachedTitle: Онлайн-запис недоступний
+    limitReachedDescription: >-
+      Цей бізнес зараз не приймає нові записи. Спробуйте пізніше або зв'яжіться
+      з ними безпосередньо.
   submitEvent:
     failedTitle: Ой! Щось пішло не так.
     failedDescription: >-
       Щось пішло не так під час спроби забронювати вашу запис. Будь ласка,
       зателефонуйте нам
     timeNotAvailableDescription: "Схоже, що час більше не доступний. Будь ласка, виберіть інший часовий слот"
+    limitReachedTitle: Неможливо забронювати запис
+    limitReachedDescription: >-
+      Цей бізнес досяг ліміту записів на цей період. Спробуйте пізніше або
+      зв'яжіться з ними безпосередньо.
 modification:
   title: Керуйте вашим записом
   pageTitle: Змінити запис

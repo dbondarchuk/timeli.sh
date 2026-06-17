@@ -19,7 +19,10 @@ import { languages } from "@timelish/i18n";
 import { getI18nAsync } from "@timelish/i18n/server";
 import { getLoggerFactory } from "@timelish/logger";
 import { ServicesContainer } from "@timelish/services";
+import { canInstallApp } from "@timelish/app-store";
+import { resolvePlanTierFromOrganization } from "@timelish/services/billing";
 import type { ApiRequest } from "@timelish/types";
+import { BillingPlanTier } from "@timelish/types";
 import {
   bookingConfigurationSchema,
   systemEventSource,
@@ -55,6 +58,24 @@ type InstallPreferences = {
   optGiftCardStudio: boolean;
   optMyCabinet: boolean;
 };
+
+function sanitizeInstallPreferencesForPlanTier(
+  prefs: InstallPreferences,
+  planTier: BillingPlanTier | null,
+): InstallPreferences {
+  if (planTier !== BillingPlanTier.Free) return prefs;
+  return {
+    ...prefs,
+    acceptPayments: false,
+    depositEnabled: false,
+    optCustomerTextMessageNotifications: false,
+    optWaitlist: false,
+    optWaitlistNotifications: false,
+    optBlog: false,
+    optForms: false,
+    optGiftCardStudio: false,
+  };
+}
 
 function buildInstallPaymentsConfiguration(
   prefs: InstallPreferences,
@@ -689,10 +710,14 @@ export async function runCompleteInstallSetupSteps(args: {
   const logger = getLoggerFactory("InstallActions")(
     "runCompleteInstallSetupSteps",
   );
-  const { services, userId, prefs, language, businessName, hasAddress } = args;
+  const { services, userId, prefs: rawPrefs, language, businessName, hasAddress } = args;
+
+  const org = await services.organizationService.getOrganization();
+  const planTier = resolvePlanTierFromOrganization(org);
+  const prefs = sanitizeInstallPreferencesForPlanTier(rawPrefs, planTier);
 
   logger.debug(
-    { language, businessName },
+    { language, businessName, planTier },
     "Running complete install setup steps",
   );
 
@@ -769,6 +794,10 @@ export async function runCompleteInstallSetupSteps(args: {
 
   for (const name of installSet) {
     if (!AvailableApps[name]) continue;
+    if (!canInstallApp(planTier, name)) {
+      logger.debug({ appName: name, planTier }, "Skipping app install on plan");
+      continue;
+    }
     logger.debug({ appName: name }, "Ensuring app is installed");
     await ensureInstalledApp(services, userId, name);
   }

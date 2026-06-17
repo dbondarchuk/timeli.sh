@@ -1,4 +1,4 @@
-import { App } from "@timelish/types";
+import { App, BillingPlanTier } from "@timelish/types";
 import { IdCard } from "lucide-react";
 import { CARDDAV_APP_NAME } from "./const";
 import {
@@ -20,4 +20,5 @@ export const CarddavApp: App<CarddavAdminNamespace, CarddavAdminKeys> = {
   description: {
     text: "app_carddav_admin.app.description" satisfies CarddavAdminAllKeys,
   },
+  minimumPlanTier: BillingPlanTier.Pro,
 };

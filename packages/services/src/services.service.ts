@@ -12,6 +12,7 @@ import {
   AppointmentEntity,
   AppointmentOption,
   AppointmentOptionUpdateModel,
+  BillingPlanTier,
   DateRange,
   Discount,
   DISCOUNT_CREATED_EVENT_TYPE,
@@ -24,12 +25,15 @@ import {
   FIELD_UPDATED_EVENT_TYPE,
   FieldsType,
   FieldType,
+  FREE_TIER_LIMITS,
   IConfigurationService,
   IEventService,
+  IOrganizationService,
   IServicesService,
   Query,
   ServiceField,
   ServiceFieldUpdateModel,
+  ServiceLimitReachedError,
   WithTotal,
   type AddonCreatedPayload,
   type AddonDeletedPayload,
@@ -56,6 +60,7 @@ import {
   OPTIONS_COLLECTION_NAME,
 } from "./collections";
 import { getDbConnection } from "./database";
+import { resolvePlanTierFromOrganization } from "./billing/subscription-entitlements";
 import { BaseService } from "./services/base.service";
 
 export class ServicesService extends BaseService implements IServicesService {
@@ -63,8 +68,26 @@ export class ServicesService extends BaseService implements IServicesService {
     organizationId: string,
     protected readonly configurationService: IConfigurationService,
     protected readonly eventService: IEventService,
+    private readonly organizationService: IOrganizationService,
   ) {
     super("ServicesService", organizationId);
+  }
+
+  private async assertFreeTierServiceLimit(): Promise<void> {
+    const organization = await this.organizationService.getOrganization();
+    const planTier = resolvePlanTierFromOrganization(organization);
+    if (planTier !== BillingPlanTier.Free) {
+      return;
+    }
+
+    const db = await getDbConnection();
+    const count = await db
+      .collection<AppointmentOption>(OPTIONS_COLLECTION_NAME)
+      .countDocuments({ organizationId: this.organizationId });
+
+    if (count >= FREE_TIER_LIMITS.services) {
+      throw new ServiceLimitReachedError(FREE_TIER_LIMITS.services);
+    }
   }
 
   /** Fields */
@@ -1015,6 +1038,7 @@ export class ServicesService extends BaseService implements IServicesService {
   ): Promise<AppointmentOption> {
     const logger = this.loggerFactory("createOption");
     logger.debug({ addon }, "Creating option");
+    await this.assertFreeTierServiceLimit();
     const dbOption: AppointmentOption = {
       ...addon,
       organizationId: this.organizationId,

@@ -124,6 +124,8 @@ export type ScheduleContextProps = {
 
   isOnlyWaitlist: boolean;
 
+  isBookingRestricted?: boolean;
+
   isEditor?: boolean;
 };
 

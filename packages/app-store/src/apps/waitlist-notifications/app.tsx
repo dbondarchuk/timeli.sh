@@ -1,4 +1,4 @@
-import { App } from "@timelish/types";
+import { App, BillingPlanTier } from "@timelish/types";
 import { WAITLIST_ENTRY_CREATED_EVENT_TYPE } from "../waitlist/models/events";
 import { Bell } from "lucide-react";
 import { WAITLIST_NOTIFICATIONS_APP_NAME } from "./const";
@@ -21,6 +21,7 @@ export const WaitlistNotificationsApp: App<
   isFeatured: false,
   isHidden: false,
   dontAllowMultiple: true,
+  minimumPlanTier: BillingPlanTier.Pro,
   description: {
     text: "app_waitlist-notifications_admin.app.description",
   },

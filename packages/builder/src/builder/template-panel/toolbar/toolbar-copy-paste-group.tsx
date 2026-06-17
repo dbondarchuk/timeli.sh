@@ -46,6 +46,7 @@ export const ToolbarCopyPasteGroup = ({
   disableClone: boolean;
 }) => {
   const t = useI18n("builder");
+  const tAdmin = useI18n("admin");
   const dispatchAction = useDispatchAction();
 
   const isFirefox = useMemo(() => {
@@ -74,7 +75,11 @@ export const ToolbarCopyPasteGroup = ({
 
       handlePasteBlock(imageBlock);
     },
-    onUploadError: (file, error) => {
+    onUploadError: (file, error, errorCode) => {
+      if (errorCode === "asset_total_size_limit_reached") {
+        toast.error(tAdmin("assets.toasts.assetTotalSizeLimitReached"));
+      }
+
       console.error("Failed to upload pasted image:", error);
     },
   });

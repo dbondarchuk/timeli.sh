@@ -1,24 +1,40 @@
 "use client";
 
+import { authClient } from "@/app/auth-client";
 import { AddOrUpdateAppButton } from "@/components/admin/apps/add-or-update-app-dialog";
 import { DeleteAppButton } from "@/components/admin/apps/delete-app-button";
+import { AppInstallUpgradeHint } from "@/components/admin/apps/store/app-install-upgrade-hint";
+import { FeatureUpgradeHint } from "@/lib/billing/feature-upgrade-hint";
 import { saveInstallPreferences } from "@/components/install/actions";
 import { useInstallWizard } from "@/components/install/install-wizard-context";
+import { getSessionPlanTier } from "@/lib/billing/subscription-plan-access";
 import {
+  APPOINTMENT_NOTIFICATIONS_APP_NAME,
   AvailableApps,
+  BLOG_APP_NAME,
   CALDAV_APP_NAME,
+  canInstallApp,
+  CUSTOMER_EMAIL_NOTIFICATION_APP_NAME,
+  CUSTOMER_TEXT_MESSAGE_NOTIFICATION_APP_NAME,
+  FORMS_APP_NAME,
+  GIFT_CARD_STUDIO_APP_NAME,
   GOOGLE_CALENDAR_APP_NAME,
   ICS_APP_NAME,
+  MY_CABINET_APP_NAME,
   OUTLOOK_APP_NAME,
+  WAITLIST_APP_NAME,
+  WAITLIST_NOTIFICATIONS_APP_NAME,
 } from "@timelish/app-store";
 import { useI18n } from "@timelish/i18n";
 import type { ConnectedApp } from "@timelish/types";
+import { BillingPlanTier } from "@timelish/types";
 import {
   Button,
   Card,
   CardContent,
   CardDescription,
   CardHeader,
+  cn,
   Label,
   Select,
   SelectContent,
@@ -30,7 +46,7 @@ import {
 } from "@timelish/ui";
 import { ConnectedAppNameAndLogo } from "@timelish/ui-admin";
 import { Unplug } from "lucide-react";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 
 function pickCalendarAppRow(
   apps: ConnectedApp[],
@@ -50,6 +66,7 @@ type CalendarCardProps = {
   description: string;
   hint: string;
   connected: ConnectedApp | undefined;
+  canConnect: boolean;
 };
 
 function CalendarIntegrationCard({
@@ -57,6 +74,7 @@ function CalendarIntegrationCard({
   description,
   hint,
   connected,
+  canConnect,
 }: CalendarCardProps) {
   const t = useI18n("install");
   const tApps = useI18n("apps");
@@ -64,6 +82,7 @@ function CalendarIntegrationCard({
   const blockNewConnect = Boolean(
     meta && "dontAllowMultiple" in meta && meta.dontAllowMultiple && connected,
   );
+  const connectBlocked = !canConnect || blockNewConnect;
 
   const statusLabel = connected
     ? tApps(`status.${connected.status}`)
@@ -120,15 +139,19 @@ function CalendarIntegrationCard({
               ) : null}
             </div>
           ) : (
-            <AddOrUpdateAppButton
-              appType={appName}
-              refreshOnClose
-              dontAskToSetDefault
-            >
-              <Button size="sm" variant="default" disabled={blockNewConnect}>
-                {t("wizard.integrations.connect")}
-              </Button>
-            </AddOrUpdateAppButton>
+            <div className="space-y-2">
+              <AddOrUpdateAppButton
+                appType={appName}
+                refreshOnClose
+                dontAskToSetDefault
+                installBlocked={connectBlocked}
+              >
+                <Button size="sm" variant="default" disabled={connectBlocked}>
+                  {t("wizard.integrations.connect")}
+                </Button>
+              </AddOrUpdateAppButton>
+              {!canConnect ? <AppInstallUpgradeHint /> : null}
+            </div>
           )}
         </div>
       </CardContent>
@@ -136,9 +159,76 @@ function CalendarIntegrationCard({
   );
 }
 
+const OPTIONAL_INTEGRATIONS = [
+  {
+    key: "optCustomerEmailNotifications" as const,
+    appName: CUSTOMER_EMAIL_NOTIFICATION_APP_NAME,
+  },
+  {
+    key: "optCustomerTextMessageNotifications" as const,
+    appName: CUSTOMER_TEXT_MESSAGE_NOTIFICATION_APP_NAME,
+  },
+  {
+    key: "optAppointmentNotifications" as const,
+    appName: APPOINTMENT_NOTIFICATIONS_APP_NAME,
+  },
+  {
+    key: "optWaitlist" as const,
+    appName: WAITLIST_APP_NAME,
+  },
+  {
+    key: "optBlog" as const,
+    appName: BLOG_APP_NAME,
+  },
+  {
+    key: "optForms" as const,
+    appName: FORMS_APP_NAME,
+  },
+  {
+    key: "optGiftCardStudio" as const,
+    appName: GIFT_CARD_STUDIO_APP_NAME,
+  },
+  {
+    key: "optMyCabinet" as const,
+    appName: MY_CABINET_APP_NAME,
+  },
+];
+
 export function StepIntegrations() {
   const t = useI18n("install");
   const { p, setP, setStep, calendarApps } = useInstallWizard();
+  const { data: session } = authClient.useSession();
+  const planTier = getSessionPlanTier({
+    user: (session?.user ?? {}) as Parameters<
+      typeof getSessionPlanTier
+    >[0]["user"],
+  });
+
+  const canConnectApp = (appName: string) => canInstallApp(planTier, appName);
+
+  useEffect(() => {
+    if (planTier !== BillingPlanTier.Free) return;
+
+    setP((prev) => {
+      const updates: Partial<typeof prev> = {};
+
+      for (const row of OPTIONAL_INTEGRATIONS) {
+        if (prev[row.key] && !canInstallApp(planTier, row.appName)) {
+          updates[row.key] = false;
+        }
+      }
+
+      if (
+        prev.optWaitlistNotifications &&
+        !canInstallApp(planTier, WAITLIST_NOTIFICATIONS_APP_NAME)
+      ) {
+        updates.optWaitlistNotifications = false;
+      }
+
+      if (Object.keys(updates).length === 0) return prev;
+      return { ...prev, ...updates };
+    });
+  }, [planTier, setP]);
 
   const googleApp = useMemo(
     () => pickCalendarAppRow(calendarApps, GOOGLE_CALENDAR_APP_NAME),
@@ -224,24 +314,28 @@ export function StepIntegrations() {
           description={t("wizard.integrations.googleDesc")}
           hint={t("wizard.integrations.googleLimit")}
           connected={googleApp}
+          canConnect={canConnectApp(GOOGLE_CALENDAR_APP_NAME)}
         />
         <CalendarIntegrationCard
           appName={ICS_APP_NAME}
           description={t("wizard.integrations.appleDesc")}
           hint={t("wizard.integrations.appleLimit")}
           connected={icsApp}
+          canConnect={canConnectApp(ICS_APP_NAME)}
         />
         <CalendarIntegrationCard
           appName={OUTLOOK_APP_NAME}
           description={t("wizard.integrations.outlookDesc")}
           hint={t("wizard.integrations.outlookLimit")}
           connected={outlookApp}
+          canConnect={canConnectApp(OUTLOOK_APP_NAME)}
         />
         <CalendarIntegrationCard
           appName={CALDAV_APP_NAME}
           description={t("wizard.integrations.caldavDesc")}
           hint={t("wizard.integrations.caldavLimit")}
           connected={caldavApp}
+          canConnect={canConnectApp(CALDAV_APP_NAME)}
         />
       </div>
       <div className="space-y-2">
@@ -317,73 +411,103 @@ export function StepIntegrations() {
         {[
           {
             key: "optCustomerEmailNotifications" as const,
+            appName: CUSTOMER_EMAIL_NOTIFICATION_APP_NAME,
             label: t("wizard.integrations.customerEmailNotifications"),
             desc: t("wizard.integrations.customerEmailNotificationsDesc"),
           },
           {
             key: "optCustomerTextMessageNotifications" as const,
+            appName: CUSTOMER_TEXT_MESSAGE_NOTIFICATION_APP_NAME,
             label: t("wizard.integrations.customerTextNotifications"),
             desc: t("wizard.integrations.customerTextNotificationsDesc"),
           },
           {
             key: "optAppointmentNotifications" as const,
+            appName: APPOINTMENT_NOTIFICATIONS_APP_NAME,
             label: t("wizard.integrations.appointmentNotifications"),
             desc: t("wizard.integrations.appointmentNotificationsDesc"),
           },
           {
             key: "optWaitlist" as const,
+            appName: WAITLIST_APP_NAME,
             label: t("wizard.integrations.waitlist"),
             desc: t("wizard.integrations.waitlistDesc"),
           },
           {
             key: "optBlog" as const,
+            appName: BLOG_APP_NAME,
             label: t("wizard.integrations.blog"),
             desc: t("wizard.integrations.blogDesc"),
           },
           {
             key: "optForms" as const,
+            appName: FORMS_APP_NAME,
             label: t("wizard.integrations.forms"),
             desc: t("wizard.integrations.formsDesc"),
           },
           {
             key: "optGiftCardStudio" as const,
+            appName: GIFT_CARD_STUDIO_APP_NAME,
             label: t("wizard.integrations.giftCardStudio"),
             desc: t("wizard.integrations.giftCardStudioDesc"),
           },
           {
             key: "optMyCabinet" as const,
+            appName: MY_CABINET_APP_NAME,
             label: t("wizard.integrations.myCabinet"),
             desc: t("wizard.integrations.myCabinetDesc"),
           },
-        ].map((row) => (
+        ].map((row) => {
+          const allowed = canConnectApp(row.appName);
+          return (
+            <label
+              key={row.key}
+              className={cn(
+                "flex items-start gap-3 rounded-lg border p-3",
+                allowed ? "cursor-pointer" : "cursor-not-allowed opacity-70",
+              )}
+            >
+              <Switch
+                checked={p[row.key]}
+                disabled={!allowed}
+                onCheckedChange={(c) => {
+                  if (!allowed) return;
+                  setP((prev) => ({ ...prev, [row.key]: Boolean(c) }));
+                }}
+              />
+              <span>
+                <span className="font-medium">{row.label}</span>
+                <span className="mt-1 block text-xs text-muted-foreground">
+                  {row.desc}
+                </span>
+                {!allowed ? (
+                  <span className="mt-2 block">
+                    <FeatureUpgradeHint showLink={false} />
+                  </span>
+                ) : null}
+              </span>
+            </label>
+          );
+        })}
+        {p.optWaitlist && canConnectApp(WAITLIST_APP_NAME) ? (
           <label
-            key={row.key}
-            className="flex cursor-pointer items-start gap-3 rounded-lg border p-3"
+            className={cn(
+              "flex items-start gap-3 rounded-lg border p-3",
+              canConnectApp(WAITLIST_NOTIFICATIONS_APP_NAME)
+                ? "cursor-pointer"
+                : "cursor-not-allowed opacity-70",
+            )}
           >
             <Switch
-              checked={p[row.key]}
-              onCheckedChange={(c) =>
-                setP((prev) => ({ ...prev, [row.key]: Boolean(c) }))
-              }
-            />
-            <span>
-              <span className="font-medium">{row.label}</span>
-              <span className="mt-1 block text-xs text-muted-foreground">
-                {row.desc}
-              </span>
-            </span>
-          </label>
-        ))}
-        {p.optWaitlist ? (
-          <label className="flex cursor-pointer items-start gap-3 rounded-lg border p-3">
-            <Switch
               checked={p.optWaitlistNotifications}
-              onCheckedChange={(c) =>
+              disabled={!canConnectApp(WAITLIST_NOTIFICATIONS_APP_NAME)}
+              onCheckedChange={(c) => {
+                if (!canConnectApp(WAITLIST_NOTIFICATIONS_APP_NAME)) return;
                 setP((prev) => ({
                   ...prev,
                   optWaitlistNotifications: Boolean(c),
-                }))
-              }
+                }));
+              }}
             />
             <span>
               <span className="font-medium">
@@ -392,6 +516,11 @@ export function StepIntegrations() {
               <span className="mt-1 block text-xs text-muted-foreground">
                 {t("wizard.integrations.waitlistNotificationsDesc")}
               </span>
+              {!canConnectApp(WAITLIST_NOTIFICATIONS_APP_NAME) ? (
+                <span className="mt-2 block">
+                  <FeatureUpgradeHint showLink={false} />
+                </span>
+              ) : null}
             </span>
           </label>
         ) : null}

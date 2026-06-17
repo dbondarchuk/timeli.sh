@@ -6,19 +6,31 @@ checkout:
   pageDescription: Subscribe before finishing workspace setup
   title: Choose your plan
   subtitle: >-
-    Subscriptions are billed securely through Polar. You can manage billing
-    anytime from your Polar customer portal.
-  trialAndCancellation: >-
-    Every plan includes a 7-day free trial, then the price shown. You can cancel
-    anytime from your billing portal-no long-term contract, no hidden fees.
+    Subscriptions are billed securely through Polar. You can change your plan
+    anytime from your billing portal in brand settings.
+  cancellationPolicy: >-
+    You can upgrade, downgrade, or cancel anytime from your Polar customer
+    portal - no long-term contract, no hidden fees.
   includedLabel: What's included
   pricePerMonth: / month
   pricePerYear: / year
   pricePerWeek: / week
   pricePerDay: / day
-  disclaimer: 7-day free trial. Cancel anytime. No hidden fees.
+  disclaimer: Cancel anytime. No hidden fees.
   cta: Continue to checkout
   plans:
+    free:
+      title: Free
+      subtitle: Get started at no cost
+      cta: Start with Free
+      benefits:
+        bookings: Up to 15 appointments per billing cycle
+        services: 1 bookable service
+        pages: Up to 10 pages
+        branding: Custom booking page with your branding
+        calendar: "Calendar sync (Google, Outlook, CalDAV)"
+        emailNotifications: Email notifications
+        textNotifications: Text message notifications (SMS credits purchased separately)
     pro:
       title: Pro subscription
       subtitle: Everything you need to scale
@@ -26,6 +38,7 @@ checkout:
       benefits:
         smsCredits: 100 SMS credits included every month
         bookings: Unlimited bookings & clients
+        services: Unlimited bookable services
         branding: Custom booking page with your branding
         domain: Use your own domain name
         calendar: "Calendar sync (Google, Outlook, CalDAV)"
@@ -259,6 +272,7 @@ wizard:
     cancelPolicy: Allow cancellations and reschedules
     cancelHelp: You can define windows and fees in appointment settings later.
     flex: All of this can be changed anytime - we are just getting you started.
+    acceptPaymentsUpgradeHint: Upgrade to Pro to accept online payments.
   finish:
     taskPage: Creating your booking page
     taskAvailability: Applying availability defaults
@@ -309,6 +323,9 @@ wizard:
     service: We could not save your services. Try again.
     serviceNeedOne: Add at least one service to continue.
     serviceDuplicateName: Each service needs a unique name. Change a name and try again.
+    serviceLimitReached: >-
+      The Free plan includes one service. Upgrade to Pro to add more, or remove
+      an extra service and try again.
 catalog:
   categories:
     beauty: Beauty

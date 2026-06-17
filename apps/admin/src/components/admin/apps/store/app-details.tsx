@@ -1,3 +1,5 @@
+import { getSession } from "@/app/utils";
+import { sessionCanInstallApp } from "@/lib/billing/subscription-plan-access";
 import { AvailableApps } from "@timelish/app-store";
 import { AppImages } from "@timelish/app-store/images";
 import { getI18nAsync } from "@timelish/i18n/server";
@@ -17,8 +19,9 @@ import { ArrowLeft } from "lucide-react";
 // import Image from "next/image";
 import React from "react";
 import { AddOrUpdateAppButton } from "../add-or-update-app-dialog";
-import { AppEventSubscriptionsDialog } from "./app-event-subscriptions-dialog";
 import { getInstalledApps } from "./actions";
+import { AppEventSubscriptionsDialog } from "./app-event-subscriptions-dialog";
+import { AppInstallUpgradeHint } from "./app-install-upgrade-hint";
 import { InstallComplexAppButton } from "./install-complex-app-button";
 
 export type AppDetailsProps = {
@@ -28,6 +31,8 @@ export type AppDetailsProps = {
 export const AppDetails: React.FC<AppDetailsProps> = async ({ appName }) => {
   const app = AvailableApps[appName];
   const installed = await getInstalledApps(appName);
+  const session = await getSession();
+  const canInstall = session ? sessionCanInstallApp(session, appName) : false;
   const t = await getI18nAsync();
   //if (app.isHidden) return null;
 
@@ -78,12 +83,19 @@ export const AppDetails: React.FC<AppDetailsProps> = async ({ appName }) => {
               />
             )}
           </div>
-          <div>
+          <div className="flex flex-col gap-2">
             {app.type !== "complex" && app.type !== "system" ? (
-              <AddOrUpdateAppButton appType={app.name}>
+              <AddOrUpdateAppButton
+                appType={app.name}
+                installBlocked={!canInstall}
+              >
                 <Button
                   variant="default"
-                  disabled={app.dontAllowMultiple && installed.length > 0}
+                  disabled={
+                    !canInstall ||
+                    (app.dontAllowMultiple && installed.length > 0)
+                  }
+                  className="w-fit"
                 >
                   {app.dontAllowMultiple && installed.length > 0
                     ? t("apps.common.alreadyInstalled")
@@ -94,8 +106,10 @@ export const AppDetails: React.FC<AppDetailsProps> = async ({ appName }) => {
               <InstallComplexAppButton
                 appName={appName}
                 installed={installed.length}
+                installBlocked={!canInstall}
               />
             )}
+            {!canInstall ? <AppInstallUpgradeHint /> : null}
           </div>
 
           <Markdown markdown={t(app.description.text)} className="max-w-full" />

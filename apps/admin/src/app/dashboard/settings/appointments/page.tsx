@@ -1,5 +1,6 @@
-import { getServicesContainer } from "@/app/utils";
+import { getServicesContainer, getSession } from "@/app/utils";
 import PageContainer from "@/components/admin/layout/page-container";
+import { sessionCanUseFeature } from "@/lib/billing/subscription-plan-access";
 import { getI18nAsync } from "@timelish/i18n/server";
 import { getLoggerFactory } from "@timelish/logger";
 import { Breadcrumbs, Heading } from "@timelish/ui";
@@ -18,6 +19,8 @@ export default async function Page() {
   const t = await getI18nAsync("admin");
 
   logger.debug("Loading appointments page");
+  const session = await getSession();
+  const canUsePayments = sessionCanUseFeature(session, "payments");
   const servicesContainer = await getServicesContainer();
   const booking =
     await servicesContainer.configurationService.getConfiguration("booking");
@@ -42,7 +45,10 @@ export default async function Page() {
           />
           {/* <Separator /> */}
         </div>
-        <AppointmentsSettingsForm values={booking} />
+        <AppointmentsSettingsForm
+          values={booking}
+          canUsePayments={canUsePayments}
+        />
       </div>
     </PageContainer>
   );

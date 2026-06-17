@@ -1,5 +1,6 @@
 "use client";
 
+import { useCanUseFeature } from "@/lib/billing/use-subscription-plan-access";
 import { useI18n } from "@timelish/i18n";
 import { appointmentStatuses } from "@timelish/types";
 import {
@@ -44,6 +45,8 @@ export const AppointmentsTableAction: React.FC<{
     setDiscountFilter,
   } = useAppointmentsTableFilters();
 
+  const canUseDiscounts = useCanUseFeature("discounts");
+
   const additionalFilters = (
     <>
       <DataTableFilterBox
@@ -68,10 +71,12 @@ export const AppointmentsTableAction: React.FC<{
           setFilterValue={setCustomerFilter}
         />
       )}
-      <DiscountsDataTableAsyncFilterBox
-        filterValue={discountFilter}
-        setFilterValue={setDiscountFilter}
-      />
+      {canUseDiscounts && (
+        <DiscountsDataTableAsyncFilterBox
+          filterValue={discountFilter}
+          setFilterValue={setDiscountFilter}
+        />
+      )}
     </>
   );
 

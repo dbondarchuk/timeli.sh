@@ -1,6 +1,6 @@
 "use client";
 
-import { clientApi, ClientApiError } from "@timelish/api-sdk";
+import { clientApi, handleBookingSubmitError } from "@timelish/api-sdk";
 import { useI18n } from "@timelish/i18n";
 import type {
   ApplyGiftCardsSuccessResponse,
@@ -17,11 +17,14 @@ import {
   ApplyDiscountResponse,
   Availability,
   CheckDuplicateAppointmentsResponse,
+  BookingRestriction,
+  isBookingLimitRestriction,
 } from "@timelish/types";
 import { Spinner, toast, useTimeZone } from "@timelish/ui";
 import { DateTime as LuxonDateTime } from "luxon";
 import { useRouter } from "next/navigation";
 import React from "react";
+import { BookingRestrictionBanner } from "../../components/booking-restriction-banner";
 import { ScheduleContext, StepType } from "./context";
 import { StepCard } from "./step-card";
 
@@ -31,6 +34,7 @@ export type ScheduleProps = {
   successPage?: string;
   fieldsSchema: Record<string, FieldSchema>;
   showPromoCode?: boolean;
+  bookingRestriction?: BookingRestriction;
   className?: string;
   id?: string;
   isEditor?: boolean;
@@ -44,12 +48,14 @@ export const Schedule: React.FC<
   successPage,
   fieldsSchema,
   showPromoCode,
+  bookingRestriction,
   className,
   id,
   isEditor,
   ...props
 }) => {
   const i18n = useI18n("translation");
+  const isBookingRestricted = isBookingLimitRestriction(bookingRestriction);
   const timeZone = useTimeZone();
 
   const errors = React.useMemo(
@@ -66,6 +72,10 @@ export const Schedule: React.FC<
       submitDescription: i18n("booking.submitEvent.failedDescription"),
       timeNotAvailableDescription: i18n(
         "booking.submitEvent.timeNotAvailableDescription",
+      ),
+      limitReachedTitle: i18n("booking.submitEvent.limitReachedTitle"),
+      limitReachedDescription: i18n(
+        "booking.submitEvent.limitReachedDescription",
       ),
     }),
     [i18n],
@@ -308,6 +318,12 @@ export const Schedule: React.FC<
 
   const onSubmit = async () => {
     if (isEditor) return;
+    if (isBookingRestricted) {
+      toast.error(errors.limitReachedTitle, {
+        description: errors.limitReachedDescription,
+      });
+      return;
+    }
     setIsLoading(true);
 
     try {
@@ -337,22 +353,20 @@ export const Schedule: React.FC<
         setStep("confirmation");
       }
     } catch (e: any) {
-      if (e instanceof ClientApiError && e.status === 400) {
-        const error = await e.response.json();
-        if (error.error === "time_not_available") {
-          toast.error(errors.submitTitle, {
-            description: errors.timeNotAvailableDescription,
-          });
-        } else {
-          toast.error(errors.submitTitle, {
-            description: errors.submitDescription,
-          });
+      const { handled, kind } = await handleBookingSubmitError(
+        e,
+        errors,
+        (title, description) => {
+          toast.error(title, { description });
+        },
+      );
+
+      if (handled) {
+        if (kind === "time_not_available") {
+          setDateTime(undefined);
+          setStep("calendar");
+          await fetchAvailability();
         }
-
-        setDateTime(undefined);
-        setStep("calendar");
-
-        await fetchAvailability();
         return;
       }
 
@@ -414,9 +428,14 @@ export const Schedule: React.FC<
           setIsFormValid,
           className,
           isEditor,
+          isBookingRestricted,
         }}
       >
-        <StepCard />
+        {isBookingRestricted ? (
+          <BookingRestrictionBanner className="mb-4" />
+        ) : (
+          <StepCard />
+        )}
       </ScheduleContext.Provider>
 
       {isLoading && (

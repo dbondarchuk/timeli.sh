@@ -103,6 +103,8 @@ export type ScheduleContextProps = {
 
   handleNewBooking: () => void;
 
+  isBookingRestricted?: boolean;
+
   isEditor?: boolean;
 };
 

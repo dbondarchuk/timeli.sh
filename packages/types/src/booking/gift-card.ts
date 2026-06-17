@@ -108,7 +108,8 @@ export type ApplyGiftCardsErrorResponse = {
     | "code_not_found"
     | "gift_card_expired"
     | "gift_card_amount_exhausted"
-    | "gift_card_inactive";
+    | "gift_card_inactive"
+    | "subscription_upgrade_required";
   error: any;
 };
 

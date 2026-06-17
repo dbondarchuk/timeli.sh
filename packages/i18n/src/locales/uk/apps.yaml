@@ -4,6 +4,8 @@ common:
   featured: Рекомендовані
   addApp: Додати додаток
   alreadyInstalled: Вже встановлено
+  upgradeRequired: Цей додаток доступний лише на тарифі Pro.
+  upgradeLink: Оновити тариф у налаштуваннях бренду
   appStore: Магазин додатків
   addNewApps: Додати нові додатки
   search: Пошук

@@ -1,5 +1,7 @@
 "use client";
 
+import { authClient } from "@/app/auth-client";
+import { ServiceLimitUpgradeHint } from "@/components/admin/services/service-limit-upgrade-hint";
 import {
   getInstallServiceOptionSnapshot,
   replaceServices,
@@ -21,9 +23,14 @@ import {
 } from "@/components/install/constants";
 import { useInstallWizard } from "@/components/install/install-wizard-context";
 import type { InstallServiceDraftItem } from "@/components/install/types";
+import { getSessionPlanTier } from "@/lib/billing/subscription-plan-access";
 import { useI18n, type Language } from "@timelish/i18n";
 import { PlateMarkdownEditor } from "@timelish/rte";
-import { CurrencySymbolMap, type Currency } from "@timelish/types";
+import {
+  canCreateMoreServices,
+  CurrencySymbolMap,
+  type Currency,
+} from "@timelish/types";
 import {
   Badge,
   Button,
@@ -301,6 +308,13 @@ function ServiceTemplateDialog({
 export function StepService() {
   const t = useI18n("install");
   const { p, setP, setStep } = useInstallWizard();
+  const { data: session } = authClient.useSession();
+  const planTier = getSessionPlanTier({
+    user: (session?.user ?? {}) as Parameters<
+      typeof getSessionPlanTier
+    >[0]["user"],
+  });
+  const canAddMore = canCreateMoreServices(planTier, p.installServices.length);
   const [serviceSubmitting, setServiceSubmitting] = useState(false);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const hydratedOptionIds = useRef(new Set<string>());
@@ -367,6 +381,7 @@ export function StepService() {
   };
 
   const addCustomRow = () => {
+    if (!canAddMore) return;
     setP((prev) => ({
       ...prev,
       installServices: [
@@ -436,6 +451,8 @@ export function StepService() {
       if (!sr.ok) {
         if (sr.code === "duplicate_name") {
           toast.error(t("wizard.errors.serviceDuplicateName"));
+        } else if (sr.code === "service_limit_reached") {
+          toast.error(t("wizard.errors.serviceLimitReached"));
         } else {
           toast.error(t("wizard.errors.service"));
         }
@@ -478,26 +495,32 @@ export function StepService() {
             {t("wizard.service.subtitle")}
           </p>
         </div>
-        <div className="flex shrink-0 gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={addCustomRow}
-          >
-            {t("wizard.service.addCustom")}
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            size="icon"
-            aria-label={t("wizard.service.addFromTemplate")}
-            onClick={() => setAddDialogOpen(true)}
-          >
-            <Plus className="h-4 w-4" />
-          </Button>
+        <div className="flex shrink-0 flex-col items-end gap-2">
+          <div className="flex shrink-0 gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              disabled={!canAddMore}
+              onClick={addCustomRow}
+            >
+              {t("wizard.service.addCustom")}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              disabled={!canAddMore}
+              aria-label={t("wizard.service.addFromTemplate")}
+              onClick={() => canAddMore && setAddDialogOpen(true)}
+            >
+              <Plus className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       </div>
+
+      {!canAddMore ? <ServiceLimitUpgradeHint showLink={false} /> : null}
 
       <ServiceTemplateDialog
         open={addDialogOpen}
@@ -505,6 +528,7 @@ export function StepService() {
         language={p.language}
         currency={p.currency}
         onPickTemplate={(draft) => {
+          if (!canAddMore) return;
           setP((prev) => ({
             ...prev,
             installServices: [
@@ -522,10 +546,19 @@ export function StepService() {
         <div className="rounded-lg border border-dashed bg-muted/20 px-4 py-10 text-center text-sm text-muted-foreground">
           {t("wizard.service.emptyList")}
           <div className="mt-4 flex flex-wrap justify-center gap-2">
-            <Button type="button" onClick={() => setAddDialogOpen(true)}>
+            <Button
+              type="button"
+              disabled={!canAddMore}
+              onClick={() => canAddMore && setAddDialogOpen(true)}
+            >
               {t("wizard.service.addFromTemplate")}
             </Button>
-            <Button type="button" variant="secondary" onClick={addCustomRow}>
+            <Button
+              type="button"
+              variant="secondary"
+              disabled={!canAddMore}
+              onClick={addCustomRow}
+            >
               {t("wizard.service.addCustom")}
             </Button>
           </div>

@@ -422,7 +422,7 @@ export const PageForm: React.FC<{
                 variant="default"
                 target="_blank"
               >
-                <Globe className="mr-2 h-4 w-4" /> {t("pages.viewPage")}
+                <Globe /> {t("pages.viewPage")}
               </Link>
             )}
           </div>

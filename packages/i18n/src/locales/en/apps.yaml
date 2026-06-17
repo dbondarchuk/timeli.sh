@@ -4,6 +4,8 @@ common:
   featured: Featured
   addApp: Add app
   alreadyInstalled: Already installed
+  upgradeRequired: This app requires a Pro subscription.
+  upgradeLink: Upgrade in brand settings
   appStore: App store
   addNewApps: Add new apps
   search: Search

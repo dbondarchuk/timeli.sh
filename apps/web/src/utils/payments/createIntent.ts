@@ -16,7 +16,7 @@ import {
   CustomerSessionRequiredError,
   requireCustomerSession,
 } from "../customer-auth/session";
-import { getServicesContainer } from "../utils";
+import { getServicesContainer, sessionCanUseFeature } from "../utils";
 
 const createOrUpdateAppointmentRequestIntent = async (
   appointmentRequest: AppointmentRequest,
@@ -295,6 +295,15 @@ const createOrUpdateModifyAppointmentRequestIntent = async (
     { modifyAppointmentRequestResult, intentId },
     "Payment is required.",
   );
+
+  const canUsePayments = await sessionCanUseFeature("payments");
+  if (!canUsePayments) {
+    logger.debug(
+      { modifyAppointmentRequestResult },
+      "Payments are not available on this plan, payment not required",
+    );
+    return NextResponse.json(null);
+  }
 
   const paymentAmount = information.paymentAmount ?? 0;
   const giftCards = information.giftCards;

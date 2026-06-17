@@ -1,4 +1,7 @@
+import { canInstallApp } from "@timelish/app-store";
 import { ServicesContainer } from "@timelish/services";
+import { canUseFeature, isFreeTier } from "@timelish/services/billing";
+import { BillingPlanTier, type SubscriptionFeature } from "@timelish/types";
 import { headers } from "next/headers";
 import { cache } from "react";
 
@@ -25,3 +28,21 @@ export const getWebsiteUrl = cache(async () => {
     ? `https://${organizationDomain}`
     : `https://${organizationSlug}.${process.env.PUBLIC_DOMAIN}`;
 });
+
+export { canInstallApp, canUseFeature, isFreeTier };
+
+export const getPlanTier = cache(async (): Promise<BillingPlanTier | null> => {
+  const headersList = await headers();
+  const raw = headersList.get("x-subscription-plan-tier");
+  if (raw === BillingPlanTier.Free || raw === BillingPlanTier.Pro) {
+    return raw;
+  }
+  return null;
+});
+
+export async function sessionCanUseFeature(
+  feature: SubscriptionFeature,
+): Promise<boolean> {
+  const planTier = await getPlanTier();
+  return canUseFeature(planTier, feature);
+}

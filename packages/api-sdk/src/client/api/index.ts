@@ -17,3 +17,4 @@ export const clientApi = {
 };
 
 export * from "./utils";
+export * from "../booking-submit-error";

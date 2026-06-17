@@ -1,4 +1,4 @@
-import { App } from "@timelish/types";
+import { App, BillingPlanTier } from "@timelish/types";
 import { FileText } from "lucide-react";
 import { BLOG_APP_NAME } from "./const";
 import { BlogAdminKeys } from "./translations/types";
@@ -13,6 +13,7 @@ export const BlogApp: App<"app_blog_admin", BlogAdminKeys> = {
   isFeatured: true,
   isHidden: false,
   dontAllowMultiple: true,
+  minimumPlanTier: BillingPlanTier.Pro,
   description: {
     text: "app_blog_admin.app.description",
   },

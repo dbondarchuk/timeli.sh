@@ -6,6 +6,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  cn,
   Markdown,
   useCurrencyFormat,
 } from "@timelish/ui";
@@ -17,12 +18,13 @@ export type AppointmentsCardProps = {
   options: AppointmentChoice[];
   className?: string;
   id?: string;
+  isBookingRestricted?: boolean;
   onSelectOption: (slug: string) => void;
 };
 
 export const AppointmentsCard: React.FC<
   AppointmentsCardProps & React.HTMLAttributes<HTMLDivElement>
-> = ({ options: meetings, className, id, onSelectOption, ...props }) => {
+> = ({ options: meetings, className, id, isBookingRestricted, onSelectOption, ...props }) => {
   const i18n = useI18n("translation");
   const currencyFormat = useCurrencyFormat();
 
@@ -42,10 +44,23 @@ export const AppointmentsCard: React.FC<
         return (
           <Card
             key={option._id}
-            onClick={() => onSelectOption(option._id)}
-            onKeyDown={(e) => onKeyPress(option._id, e)}
-            className="cursor-pointer flex flex-col justify-between"
-            tabIndex={1}
+            onClick={() => {
+              if (!isBookingRestricted) {
+                onSelectOption(option._id);
+              }
+            }}
+            onKeyDown={(e) => {
+              if (!isBookingRestricted) {
+                onKeyPress(option._id, e);
+              }
+            }}
+            className={cn(
+              "flex flex-col justify-between",
+              isBookingRestricted
+                ? "cursor-not-allowed opacity-60"
+                : "cursor-pointer",
+            )}
+            tabIndex={isBookingRestricted ? -1 : 1}
             aria-describedby={`option-${option._id}`}
             role="button"
           >

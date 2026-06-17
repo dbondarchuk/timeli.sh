@@ -1,6 +1,7 @@
 import { getLoggerFactory } from "@timelish/logger";
-import type { Organization } from "@timelish/types";
+import type { BillingPlanTier, Organization } from "@timelish/types";
 import { getRedisClient } from "./bullmq/redis-client";
+import { resolvePlanTierFromOrganization } from "./billing/subscription-entitlements";
 import { StaticOrganizationService } from "./organization.service";
 
 const loggerFactory = getLoggerFactory("OrganizationHostnameCache");
@@ -13,6 +14,7 @@ export type OrganizationHostnameResolution = {
   organizationId: string;
   slug: string;
   subscriptionStatus: string;
+  subscriptionPlanTier: BillingPlanTier | null;
 };
 
 export function normalizeHostname(hostname: string): string {
@@ -30,6 +32,7 @@ function toResolution(
     organizationId: organization._id,
     slug: organization.slug,
     subscriptionStatus: organization.polarSubscriptionStatus || "active",
+    subscriptionPlanTier: resolvePlanTierFromOrganization(organization),
   };
 }
 

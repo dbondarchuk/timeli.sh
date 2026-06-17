@@ -12,10 +12,7 @@ import {
   giftCardStudioAdminNamespace,
 } from "../../translations/types";
 import { GIFT_CARD_DESIGNER_CLIPBOARD_PREFIX } from "../lib/clipboard";
-import {
-  isEditableClipboardTarget,
-  isTypingInInput,
-} from "../lib/keyboard";
+import { isEditableClipboardTarget, isTypingInInput } from "../lib/keyboard";
 import { elementSchema } from "../lib/schema";
 import { useEditorStore } from "../lib/store";
 import type { Element, GroupElement, ImageElement } from "../lib/types";
@@ -88,6 +85,8 @@ export function CanvasWorkspace({
   const t = useI18n<GiftCardStudioAdminNamespace, GiftCardStudioAdminKeys>(
     giftCardStudioAdminNamespace,
   );
+  const tAdmin = useI18n("admin");
+
   const [isPanning, setIsPanning] = useState(false);
   const panSessionRef = useRef({
     originClient: { x: 0, y: 0 },
@@ -157,6 +156,11 @@ export function CanvasWorkspace({
       store.addElement(element);
       store.selectMultiple([element.id]);
     }, []),
+    onUploadError: (_, error, errorCode) => {
+      if (errorCode === "asset_total_size_limit_reached") {
+        toast.error(tAdmin("assets.toasts.assetTotalSizeLimitReached"));
+      }
+    },
   });
 
   useEffect(() => {
@@ -228,10 +232,7 @@ export function CanvasWorkspace({
         return;
       }
 
-      if (
-        state.clipboardMultiple.length > 0 ||
-        state.clipboard !== null
-      ) {
+      if (state.clipboardMultiple.length > 0 || state.clipboard !== null) {
         e.preventDefault();
         e.stopPropagation();
         if (state.clipboardMultiple.length > 0) {

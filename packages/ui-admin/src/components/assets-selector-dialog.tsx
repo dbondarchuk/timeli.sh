@@ -68,6 +68,7 @@ export const AssetSelectorDialog: React.FC<AssetSelectorProps> = ({
   addTo,
 }) => {
   const t = useI18n("ui");
+  const tAdmin = useI18n("admin");
   const [selected, setSelected] = React.useState<UploadedFile | undefined>(
     undefined,
   );
@@ -171,6 +172,11 @@ export const AssetSelectorDialog: React.FC<AssetSelectorProps> = ({
     onUploadComplete: (files) => {
       setAssets((old) => [...files, ...old]);
       setSelected(files[0]);
+    },
+    onUploadError: (_, error, errorCode) => {
+      if (errorCode === "asset_total_size_limit_reached") {
+        toast.error(tAdmin("assets.toasts.assetTotalSizeLimitReached"));
+      }
     },
     appointmentId: addTo?.appointmentId,
     customerId: addTo?.customerId,

@@ -1,4 +1,4 @@
-import { App } from "@timelish/types";
+import { App, BillingPlanTier } from "@timelish/types";
 import { TEXTBELT_APP_NAME } from "./const";
 import { TextBeltLogo } from "./logo";
 import {
@@ -13,6 +13,7 @@ export const TextBeltApp: App<TextBeltAdminNamespace, TextBeltAdminKeys> = {
   category: ["apps.categories.communications"],
   type: "basic",
   Logo: ({ className }) => <TextBeltLogo className={className} />,
+  minimumPlanTier: BillingPlanTier.Pro,
   description: {
     text: "app_text-belt_admin.app.description",
   },

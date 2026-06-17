@@ -76,7 +76,7 @@
 //             className
 //           )}
 //         >
-//           <CalendarIcon className="mr-2 h-4 w-4" />
+//           <CalendarIcon />
 //           {date ? (
 //             date.toLocaleString(DateTime.DATETIME_FULL_WITH_SECONDS)
 //           ) : (

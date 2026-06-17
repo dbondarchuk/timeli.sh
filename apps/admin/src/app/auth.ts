@@ -4,6 +4,7 @@ import { sendEmail } from "@/utils/email/send-email";
 import { polar, portal, webhooks } from "@polar-sh/better-auth";
 import { languages, type Language } from "@timelish/i18n";
 import { getPolarClient, getRedisClient } from "@timelish/services";
+import { resolvePlanTierFromOrganization } from "@timelish/services/billing";
 import {
   getDbConnection,
   getDbConnectionSync,
@@ -257,6 +258,7 @@ export const auth = betterAuth({
               organizationDomain: "",
               role: (user as any).role || "owner",
               subscriptionStatus: "active",
+              subscriptionPlanTier: null,
               feesExempt: false,
             },
           };
@@ -290,6 +292,7 @@ export const auth = betterAuth({
           language: (user as any).language || "en",
           role: (user as any).role || "owner",
           subscriptionStatus: organization.polarSubscriptionStatus || "active",
+          subscriptionPlanTier: resolvePlanTierFromOrganization(organization),
           feesExempt: !!organization.feesExempt,
         },
       };

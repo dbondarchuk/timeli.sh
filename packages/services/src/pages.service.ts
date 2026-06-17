@@ -1,5 +1,8 @@
 import {
+  BillingPlanTier,
+  FREE_TIER_LIMITS,
   IEventService,
+  IOrganizationService,
   IPagesService,
   PAGE_CREATED_EVENT_TYPE,
   PAGE_DELETED_EVENT_TYPE,
@@ -17,6 +20,7 @@ import {
   PageHeader,
   PageHeaderListModel,
   PageHeaderUpdateModel,
+  PageLimitReachedError,
   PageListModel,
   PageMatchResult,
   PageUpdateModel,
@@ -36,6 +40,7 @@ import {
 import { buildSearchQuery, escapeRegex } from "@timelish/utils";
 import { DateTime } from "luxon";
 import { Filter, ObjectId, Sort } from "mongodb";
+import { resolvePlanTierFromOrganization } from "./billing/subscription-entitlements";
 import {
   PAGES_COLLECTION_NAME,
   PAGE_FOOTERS_COLLECTION_NAME,
@@ -55,8 +60,26 @@ export class PagesService extends BaseService implements IPagesService {
   public constructor(
     organizationId: string,
     protected readonly eventService: IEventService,
+    private readonly organizationService: IOrganizationService,
   ) {
     super("PagesService", organizationId);
+  }
+
+  private async assertFreeTierPageLimit(): Promise<void> {
+    const organization = await this.organizationService.getOrganization();
+    const planTier = resolvePlanTierFromOrganization(organization);
+    if (planTier !== BillingPlanTier.Free) {
+      return;
+    }
+
+    const db = await getDbConnection();
+    const count = await db
+      .collection<Page>(PAGES_COLLECTION_NAME)
+      .countDocuments({ organizationId: this.organizationId });
+
+    if (count >= FREE_TIER_LIMITS.pages) {
+      throw new PageLimitReachedError(FREE_TIER_LIMITS.pages);
+    }
   }
 
   public async getPage(id: string): Promise<Page | null> {
@@ -266,7 +289,7 @@ export class PagesService extends BaseService implements IPagesService {
 
   public async getPages(
     query: Query & {
-      publishStatus: boolean[];
+      publishStatus?: boolean[];
       maxPublishDate?: Date;
       tags?: string[];
     },
@@ -381,6 +404,8 @@ export class PagesService extends BaseService implements IPagesService {
       { page: { slug: page.slug, title: page.title } },
       "Creating new page",
     );
+
+    await this.assertFreeTierPageLimit();
 
     const dbPage: Page = {
       ...page,

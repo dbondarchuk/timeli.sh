@@ -12,6 +12,8 @@ import {
 } from "@timelish/types";
 import { durationToTime } from "@timelish/utils";
 
+import { buildAppointmentLimitReachedEmails } from "./appointment-limit-email";
+
 function pendingAppointmentsBadges(
   count: number,
 ): { key: string; count: number }[] {
@@ -84,7 +86,7 @@ export const APPOINTMENT_EVENT_DEFINITIONS: Record<string, EventDefinition> = {
         },
       };
     },
-    emailNotifications: false,
+    emailNotifications: buildAppointmentLimitReachedEmails,
     smsNotifications: false,
   },
   [APPOINTMENT_RESCHEDULED_EVENT_TYPE]: {

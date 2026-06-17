@@ -616,8 +616,7 @@ class PaypalConnectedApp
     const existingSynced = await this.props.services.syncedPaymentsService.list(
       {
         externalId: capture.captureId,
-        limit: 1,
-        offset: 0,
+        limit: 0,
       },
     );
     if (existingSynced.total > 0) {

@@ -1,7 +1,7 @@
 import { getActor, getServicesContainer } from "@/app/utils";
 import { pagesSearchParamsLoader } from "@timelish/api-sdk";
 import { getLoggerFactory } from "@timelish/logger";
-import { PageListModelWithUrl, pageSchema } from "@timelish/types";
+import { PageLimitReachedError, PageListModelWithUrl, pageSchema } from "@timelish/types";
 import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
@@ -114,19 +114,33 @@ export async function POST(request: NextRequest) {
     );
 
     return NextResponse.json(result, { status: 201 });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    if (error instanceof PageLimitReachedError) {
+      logger.warn({ limit: error.limit }, "Free tier page limit reached");
+      return NextResponse.json(
+        {
+          success: false,
+          code: error.code,
+          message: error.message,
+          limit: error.limit,
+        },
+        { status: 402 },
+      );
+    }
+
     logger.error(
       {
         pageTitle: data.title,
         pageSlug: data.slug,
-        error: error?.message || error?.toString(),
+        error: error instanceof Error ? error.message : String(error),
       },
       "Failed to create page",
     );
     return NextResponse.json(
       {
         success: false,
-        error: error?.message || "Failed to create page",
+        error:
+          error instanceof Error ? error.message : "Failed to create page",
         code: "create_page_failed",
       },
       { status: 500 },

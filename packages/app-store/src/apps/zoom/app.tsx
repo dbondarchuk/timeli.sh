@@ -1,4 +1,4 @@
-import { App } from "@timelish/types";
+import { App, BillingPlanTier } from "@timelish/types";
 import { ZOOM_APP_NAME } from "./const";
 import { ZoomLogo } from "./logo";
 import { ZoomAdminKeys, ZoomAdminNamespace } from "./translations/types";
@@ -15,4 +15,5 @@ export const ZoomApp: App<ZoomAdminNamespace, ZoomAdminKeys> = {
   description: {
     text: "app_zoom_admin.app.description",
   },
+  minimumPlanTier: BillingPlanTier.Pro,
 };
