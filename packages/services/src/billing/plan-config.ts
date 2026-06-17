@@ -7,7 +7,6 @@ export type PolarBillingPlanDef = {
 
 /**
  * Env: `POLAR_BILLING_PLANS=free:prod_xxx,pro:prod_yyy`
- * Fallback: `POLAR_PRODUCT_ID` with slug `pro`.
  */
 export function getPolarBillingPlansFromEnv(): PolarBillingPlanDef[] {
   const raw = process.env.POLAR_BILLING_PLANS?.trim();
@@ -28,12 +27,7 @@ export function getPolarBillingPlansFromEnv(): PolarBillingPlanDef[] {
     });
   }
 
-  const legacy = process.env.POLAR_PRODUCT_ID?.trim();
-  if (legacy) {
-    return [{ slug: "pro", productId: legacy }];
-  }
-
-  throw new Error("Set POLAR_BILLING_PLANS or POLAR_PRODUCT_ID for billing");
+  throw new Error("Set POLAR_BILLING_PLANS for billing");
 }
 
 export function getBillingPlanProductIdMap(): Map<string, BillingPlanTier> {
