@@ -37,6 +37,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { financialOverviewSearchParams } from "./search-params";
 import type {
   BookingConversionStats,
   BookingStats,
@@ -47,7 +48,6 @@ import type {
   RevenueDataPoint,
   ServiceDataPoint,
 } from "./types";
-import { financialOverviewSearchParams } from "./search-params";
 
 const getConvertedToLabelKey = (convertedTo: string): AdminKeys => {
   return `financialOverview.view.bookingTracking.convertedTo.${convertedTo}` as AdminKeys;
@@ -182,12 +182,22 @@ export const FinancialsOverviewClient: React.FC<FinancialsTabProps> = ({
 
   const [start, setStart] = useQueryState(
     "start",
-    financialOverviewSearchParams.start.withOptions({ shallow: false }),
+    financialOverviewSearchParams.start
+      .withOptions({ shallow: false })
+      // Default to current month if no start or end date is provided
+      // This is done here and not in the search-params.ts file because
+      // if deployment was done in last month, server will keep the last month's dates for default
+      .withDefault(DateTime.now().startOf("month").toJSDate()),
   );
 
   const [end, setEnd] = useQueryState(
     "end",
-    financialOverviewSearchParams.end.withOptions({ shallow: false }),
+    financialOverviewSearchParams.end
+      .withOptions({ shallow: false })
+      // Default to current month if no start or end date is provided
+      // This is done here and not in the search-params.ts file because
+      // if deployment was done in last month, server will keep the last month's dates for default
+      .withDefault(DateTime.now().endOf("month").toJSDate()),
   );
 
   const { reload } = useReload();
@@ -239,7 +249,9 @@ export const FinancialsOverviewClient: React.FC<FinancialsTabProps> = ({
                 onValueChange={(value) => setTimeGrouping(value)}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder={t("financialOverview.view.timeGrouping.label")} />
+                  <SelectValue
+                    placeholder={t("financialOverview.view.timeGrouping.label")}
+                  />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="day">
@@ -368,7 +380,9 @@ export const FinancialsOverviewClient: React.FC<FinancialsTabProps> = ({
           {/* Revenue Over Time Line Chart */}
           <Card>
             <CardHeader>
-              <CardTitle>{t("financialOverview.view.revenueAndPayments")}</CardTitle>
+              <CardTitle>
+                {t("financialOverview.view.revenueAndPayments")}
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={400}>
@@ -436,7 +450,9 @@ export const FinancialsOverviewClient: React.FC<FinancialsTabProps> = ({
           {/* Appointment Status Distribution Chart */}
           <Card>
             <CardHeader>
-              <CardTitle>{t("financialOverview.view.appointmentStatusDistribution")}</CardTitle>
+              <CardTitle>
+                {t("financialOverview.view.appointmentStatusDistribution")}
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={400}>
@@ -491,7 +507,9 @@ export const FinancialsOverviewClient: React.FC<FinancialsTabProps> = ({
           {/* Service Distribution Pie Chart */}
           <Card>
             <CardHeader>
-              <CardTitle>{t("financialOverview.view.serviceDistribution")}</CardTitle>
+              <CardTitle>
+                {t("financialOverview.view.serviceDistribution")}
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
@@ -527,9 +545,12 @@ export const FinancialsOverviewClient: React.FC<FinancialsTabProps> = ({
                             })}
                           </span>
                           <span>
-                            {t("financialOverview.view.estimatedRevenueFormat", {
-                              revenue: currencyFormat(props.payload.revenue),
-                            })}
+                            {t(
+                              "financialOverview.view.estimatedRevenueFormat",
+                              {
+                                revenue: currencyFormat(props.payload.revenue),
+                              },
+                            )}
                           </span>
                         </div>
                       )}
@@ -546,7 +567,9 @@ export const FinancialsOverviewClient: React.FC<FinancialsTabProps> = ({
           {/* Customer Acquisition vs Retention Chart */}
           <Card>
             <CardHeader>
-              <CardTitle>{t("financialOverview.view.customerAcquisitionVsRetention")}</CardTitle>
+              <CardTitle>
+                {t("financialOverview.view.customerAcquisitionVsRetention")}
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
@@ -704,7 +727,9 @@ export const FinancialsOverviewClient: React.FC<FinancialsTabProps> = ({
             <Card>
               <CardHeader>
                 <CardTitle>
-                  {t("financialOverview.view.bookingTracking.completionVsAbandonment")}
+                  {t(
+                    "financialOverview.view.bookingTracking.completionVsAbandonment",
+                  )}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -727,11 +752,17 @@ export const FinancialsOverviewClient: React.FC<FinancialsTabProps> = ({
                         formatter={(value, name) => [
                           value,
                           name === "abandoned"
-                            ? t("financialOverview.view.bookingTracking.abandoned")
+                            ? t(
+                                "financialOverview.view.bookingTracking.abandoned",
+                              )
                             : name === "converted"
-                              ? t("financialOverview.view.bookingTracking.converted")
+                              ? t(
+                                  "financialOverview.view.bookingTracking.converted",
+                                )
                               : name === "total"
-                                ? t("financialOverview.view.bookingTracking.totalBookings")
+                                ? t(
+                                    "financialOverview.view.bookingTracking.totalBookings",
+                                  )
                                 : name,
                         ]}
                         labelFormatter={(label) => `Date: ${label}`}
@@ -743,7 +774,9 @@ export const FinancialsOverviewClient: React.FC<FinancialsTabProps> = ({
                         stroke="#ef4444"
                         strokeWidth={2}
                         dot={{ fill: "#ef4444", strokeWidth: 2, r: 4 }}
-                        name={t("financialOverview.view.bookingTracking.abandoned")}
+                        name={t(
+                          "financialOverview.view.bookingTracking.abandoned",
+                        )}
                       />
                       <Line
                         type="monotone"
@@ -751,7 +784,9 @@ export const FinancialsOverviewClient: React.FC<FinancialsTabProps> = ({
                         stroke="#3b82f6"
                         strokeWidth={2}
                         dot={{ fill: "#3b82f6", strokeWidth: 2, r: 4 }}
-                        name={t("financialOverview.view.bookingTracking.converted")}
+                        name={t(
+                          "financialOverview.view.bookingTracking.converted",
+                        )}
                       />
                       <Line
                         type="monotone"
@@ -760,7 +795,9 @@ export const FinancialsOverviewClient: React.FC<FinancialsTabProps> = ({
                         strokeWidth={2}
                         strokeDasharray="5 5"
                         dot={{ fill: "#6366f1", strokeWidth: 2, r: 4 }}
-                        name={t("financialOverview.view.bookingTracking.totalBookings")}
+                        name={t(
+                          "financialOverview.view.bookingTracking.totalBookings",
+                        )}
                       />
                     </LineChart>
                   )}
@@ -772,7 +809,9 @@ export const FinancialsOverviewClient: React.FC<FinancialsTabProps> = ({
             <Card>
               <CardHeader>
                 <CardTitle>
-                  {t("financialOverview.view.bookingTracking.abandonmentByStep.title")}
+                  {t(
+                    "financialOverview.view.bookingTracking.abandonmentByStep.title",
+                  )}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -840,7 +879,9 @@ export const FinancialsOverviewClient: React.FC<FinancialsTabProps> = ({
                     </PieChart>
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                      {t("financialOverview.view.bookingTracking.abandonmentByStep.noData")}
+                      {t(
+                        "financialOverview.view.bookingTracking.abandonmentByStep.noData",
+                      )}
                     </div>
                   )}
                 </ResponsiveContainer>
@@ -851,7 +892,9 @@ export const FinancialsOverviewClient: React.FC<FinancialsTabProps> = ({
             <Card>
               <CardHeader>
                 <CardTitle>
-                  {t("financialOverview.view.bookingTracking.conversionByType.title")}
+                  {t(
+                    "financialOverview.view.bookingTracking.conversionByType.title",
+                  )}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -912,7 +955,9 @@ export const FinancialsOverviewClient: React.FC<FinancialsTabProps> = ({
                     </PieChart>
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                      {t("financialOverview.view.bookingTracking.conversionByType.noData")}
+                      {t(
+                        "financialOverview.view.bookingTracking.conversionByType.noData",
+                      )}
                     </div>
                   )}
                 </ResponsiveContainer>
@@ -941,7 +986,9 @@ export const FinancialsOverviewClient: React.FC<FinancialsTabProps> = ({
             ))
           ) : (
             <div className="w-full p-4 border rounded-md bg-card text-card-foreground flex items-center justify-center">
-              <span className="text-foreground">{t("financialOverview.view.noPayments")}</span>
+              <span className="text-foreground">
+                {t("financialOverview.view.noPayments")}
+              </span>
             </div>
           )}
         </div>

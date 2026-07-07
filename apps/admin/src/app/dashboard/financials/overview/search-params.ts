@@ -1,4 +1,3 @@
-import { DateTime } from "luxon";
 import {
   createSearchParamsCache,
   createSerializer,
@@ -7,10 +6,8 @@ import {
 } from "nuqs/server";
 
 export const financialOverviewSearchParams = {
-  start: parseAsIsoDateTime.withDefault(
-    DateTime.now().startOf("month").toJSDate(),
-  ),
-  end: parseAsIsoDateTime.withDefault(DateTime.now().endOf("month").toJSDate()),
+  start: parseAsIsoDateTime,
+  end: parseAsIsoDateTime,
   timeGrouping: parseAsString.withDefault("day"),
 };
 
