@@ -176,6 +176,7 @@ export const updateSettingsActionSchema = z.object({
   emailTemplateIdToRecipient: z.string().optional(),
   minAmount: z.coerce.number<number>().optional(),
   maxAmount: z.coerce.number<number>().optional(),
+  notifyOwnerOnPurchase: z.coerce.boolean<boolean>().optional(),
 });
 export type UpdateSettingsAction = z.infer<typeof updateSettingsActionSchema>;
 export const UpdateSettingsActionType =
