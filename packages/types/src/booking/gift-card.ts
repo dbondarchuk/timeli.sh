@@ -37,8 +37,12 @@ export const giftCardSchema = z.object({
 export const getGiftCardSchemaWithUniqueCheck = (
   check: (code: string) => Promise<boolean>,
   errorKey: AllKeys,
+  omitPaymentId?: boolean,
 ) => {
-  return giftCardSchema.refine((data) => check(data.code), {
+  const schema = omitPaymentId
+    ? giftCardSchema.omit({ paymentId: true })
+    : giftCardSchema;
+  return schema.refine((data) => check(data.code), {
     message: errorKey,
   });
 };

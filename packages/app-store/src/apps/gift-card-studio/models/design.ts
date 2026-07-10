@@ -25,9 +25,20 @@ export const designSchemaBase = z.object({
 
 export const getDesignSchemaWithUniqueCheck = (
   uniqueNameCheckFn: (name: string) => Promise<boolean>,
-  message: string = "app_gift-card-studio_admin.validation.design.name.unique" satisfies GiftCardStudioAdminAllKeys,
+  options: {
+    message?: string;
+    omitDesign?: boolean;
+  } = {
+    message:
+      "app_gift-card-studio_admin.validation.design.name.unique" satisfies GiftCardStudioAdminAllKeys,
+    omitDesign: false,
+  },
 ) => {
-  return designSchemaBase.superRefine(async (args, ctx) => {
+  const { message, omitDesign } = options;
+  const schema = omitDesign
+    ? designSchemaBase.omit({ design: true })
+    : designSchemaBase;
+  return schema.superRefine(async (args, ctx) => {
     const isUnique = await uniqueNameCheckFn(args.name);
     if (!isUnique) {
       ctx.addIssue({

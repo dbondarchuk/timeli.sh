@@ -359,6 +359,7 @@ export class GiftCardStudioConnectedApp
       );
 
       const nextSettings: GiftCardStudioSettings = {
+        notifyOwnerOnPurchase: currentSettings.notifyOwnerOnPurchase ?? false,
         emailTemplateIdToPurchaser:
           purchaserTemplateId ?? currentSettings.emailTemplateIdToPurchaser,
         emailTemplateIdToRecipient:
@@ -534,7 +535,11 @@ export class GiftCardStudioConnectedApp
     appData: ConnectedAppData,
     purchased: PurchasedGiftCardModel,
     designName: string,
-    customerName: string | undefined,
+    details: {
+      giftCardCode: string;
+      customerName?: string;
+      customerEmail?: string;
+    },
     source: EventSource,
   ) {
     await this.emitGiftCardStudioEvent(
@@ -546,7 +551,11 @@ export class GiftCardStudioConnectedApp
           designId: purchased.designId,
           designName,
           amountPurchased: purchased.amountPurchased,
-          customerName,
+          giftCardCode: details.giftCardCode,
+          customerName: details.customerName,
+          customerEmail: details.customerEmail,
+          recipientName: purchased.toName,
+          recipientEmail: purchased.toEmail,
         },
       },
       source,
@@ -947,7 +956,11 @@ export class GiftCardStudioConnectedApp
       appData,
       purchased,
       design?.name ?? "",
-      customer?.name,
+      {
+        giftCardCode: code,
+        customerName: customer?.name,
+        customerEmail: customer?.email,
+      },
       this.adminEventSource(userId),
     );
 
@@ -1444,7 +1457,11 @@ export class GiftCardStudioConnectedApp
       appData,
       purchased,
       design?.name ?? "",
-      customer.name,
+      {
+        giftCardCode: code,
+        customerName: customer.name,
+        customerEmail: customer.email,
+      },
       purchaseSource,
     );
 

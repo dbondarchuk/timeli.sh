@@ -62,8 +62,12 @@ export const DesignForm: React.FC<{
     () =>
       getDesignSchemaWithUniqueCheck(
         (name) => cachedUniqueCheck(appId, name, initialData?._id),
-        "app_gift-card-studio_admin.validation.design.name.unique" satisfies GiftCardStudioAdminAllKeys,
-      ).omit({ design: true }),
+        {
+          message:
+            "app_gift-card-studio_admin.validation.design.name.unique" satisfies GiftCardStudioAdminAllKeys,
+          omitDesign: true,
+        },
+      ),
     [cachedUniqueCheck, appId, initialData?._id],
   );
 

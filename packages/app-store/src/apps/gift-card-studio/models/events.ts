@@ -35,7 +35,11 @@ export type GiftCardStudioPurchaseCreatedPayload = {
     designId: string;
     designName: string;
     amountPurchased: number;
+    giftCardCode: string;
     customerName?: string;
+    customerEmail?: string;
+    recipientName?: string;
+    recipientEmail?: string;
   };
 };
 

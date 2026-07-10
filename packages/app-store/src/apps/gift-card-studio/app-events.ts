@@ -1,4 +1,6 @@
 import type { AppEventConfig, EventDefinition } from "@timelish/types";
+import { formatAmountWithCurrency } from "@timelish/utils";
+import { buildNewPurchaseEmailNotifications } from "./emails/new-purchase-email";
 import { GIFT_CARD_STUDIO_UNREAD_PURCHASES_BADGE_KEY } from "./const";
 import {
   GIFT_CARD_STUDIO_DESIGN_CREATED_EVENT_TYPE,
@@ -13,6 +15,7 @@ import {
   type GiftCardStudioPurchaseDeletedPayload,
 } from "./models/events";
 import { GiftCardStudioAdminAllKeys } from "./translations/types";
+import type { GiftCardStudioSettings } from "./models/settings";
 
 export const GIFT_CARD_STUDIO_APP_EVENTS: AppEventConfig = {
   events: [
@@ -132,7 +135,55 @@ export const GIFT_CARD_STUDIO_APP_EVENTS: AppEventConfig = {
           },
         };
       },
-      emailNotifications: false,
+      emailNotifications: async (envelope, services) => {
+        if (envelope.source.actor !== "customer") {
+          return null;
+        }
+
+        const payload =
+          envelope.payload as GiftCardStudioPurchaseCreatedPayload;
+
+        let app;
+        try {
+          app = await services.connectedAppsService.getApp(payload.appId);
+        } catch {
+          return null;
+        }
+
+        const settings = (app.data ?? {}) as Partial<GiftCardStudioSettings>;
+        if (!settings.notifyOwnerOnPurchase) {
+          return null;
+        }
+
+        const admins = await services.userService.getOrganizationAdminUsers();
+        if (!admins.length) {
+          return null;
+        }
+
+        const organization =
+          await services.organizationService.getOrganization();
+        const organizationLabel =
+          organization?.name?.trim() || organization?.slug || "";
+
+        const { general, brand } =
+          await services.configurationService.getConfigurations(
+            "general",
+            "brand",
+          );
+
+        const amountFormatted = formatAmountWithCurrency(
+          payload.purchase.amountPurchased,
+          brand.language,
+          general.currency,
+        );
+
+        return buildNewPurchaseEmailNotifications(
+          payload,
+          admins,
+          amountFormatted,
+          organizationLabel ? { config: { name: organizationLabel } } : {},
+        );
+      },
       smsNotifications: false,
     } as EventDefinition<GiftCardStudioPurchaseCreatedPayload>,
     {

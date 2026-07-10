@@ -1,0 +1,102 @@
+import { renderUserEmailTemplate } from "@timelish/email-builder/static";
+import { fallbackLanguage, type Language } from "@timelish/i18n";
+import { getI18nAsync } from "@timelish/i18n/server";
+import type { EmailNotificationRequest } from "@timelish/types";
+import { getAdminUrl } from "@timelish/utils";
+import type { GiftCardStudioPurchaseCreatedPayload } from "../models/events";
+import { GiftCardStudioAdminAllKeys } from "../translations/types";
+
+type AdminRecipient = {
+  email: string;
+  name: string;
+  language?: string | null;
+};
+
+export const buildNewPurchaseEmailNotifications = async (
+  payload: GiftCardStudioPurchaseCreatedPayload,
+  admins: AdminRecipient[],
+  amountFormatted: string,
+  layoutArgs: Record<string, unknown> = {},
+): Promise<EmailNotificationRequest[] | null> => {
+  const { purchase } = payload;
+  const adminUrl = getAdminUrl();
+  const purchaseUrl = `${adminUrl}/dashboard/gift-card-studio/purchases?purchaseId=${purchase._id}`;
+
+  const notifications: EmailNotificationRequest[] = [];
+
+  for (const admin of admins) {
+    if (!admin.email) {
+      continue;
+    }
+
+    const locale: Language =
+      admin.language === "uk" || admin.language === "en"
+        ? admin.language
+        : fallbackLanguage;
+
+    const t = await getI18nAsync({ locale });
+
+    const interpolation = {
+      customerName: purchase.customerName?.trim() || "—",
+      customerEmail: purchase.customerEmail?.trim() || "—",
+      recipientName: purchase.recipientName?.trim() || "—",
+      recipientEmail: purchase.recipientEmail?.trim() || "—",
+      designName: purchase.designName,
+      giftCardCode: purchase.giftCardCode,
+      amount: amountFormatted,
+      userName: admin.name,
+    };
+
+    const subject = t(
+      "app_gift-card-studio_admin.emails.newPurchase.subject" satisfies GiftCardStudioAdminAllKeys,
+      interpolation,
+    );
+
+    const body = await renderUserEmailTemplate(
+      {
+        previewText: subject,
+        content: [
+          {
+            type: "title",
+            text: t(
+              "app_gift-card-studio_admin.emails.newPurchase.title" satisfies GiftCardStudioAdminAllKeys,
+              interpolation,
+            ),
+            level: "h2",
+          },
+          {
+            type: "text",
+            text: t(
+              "app_gift-card-studio_admin.emails.newPurchase.body" satisfies GiftCardStudioAdminAllKeys,
+              interpolation,
+            ),
+          },
+          {
+            type: "button",
+            button: {
+              text: t(
+                "app_gift-card-studio_admin.emails.newPurchase.view" satisfies GiftCardStudioAdminAllKeys,
+              ),
+              url: purchaseUrl,
+              backgroundColor: "#0066ff",
+            },
+          },
+        ],
+      },
+      layoutArgs,
+    );
+
+    notifications.push({
+      email: {
+        to: admin.email,
+        subject,
+        body,
+      },
+      handledBy:
+        "app_gift-card-studio_admin.handlers.newPurchaseEmail" satisfies GiftCardStudioAdminAllKeys,
+      participantType: "user",
+    });
+  }
+
+  return notifications.length ? notifications : null;
+};

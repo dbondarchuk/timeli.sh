@@ -37,8 +37,8 @@ import {
   TooltipResponsiveContent,
   TooltipResponsiveTrigger,
   use12HourFormat,
-  useDebounceCacheFn,
   useCurrencySymbol,
+  useDebounceCacheFn,
 } from "@timelish/ui";
 import { CustomerSelector, SaveButton } from "@timelish/ui-admin";
 import { Copy, Dices } from "lucide-react";
@@ -80,10 +80,11 @@ export const GiftCardForm: React.FC<{
     let schema = getGiftCardSchemaWithUniqueCheck(
       (code) => cachedGiftCardCodeCheck(code, initialData?._id),
       "validation.giftCard.code.unique" satisfies BaseAllKeys,
+      !initialData?._id,
     );
 
     if (!initialData?._id) {
-      return schema.omit({ paymentId: true }).extend({
+      return schema.extend({
         paymentMethod: z.enum(inPersonPaymentMethod, {
           error: "validation.giftCard.paymentMethod.required",
         }),
@@ -93,7 +94,9 @@ export const GiftCardForm: React.FC<{
     return schema;
   }, [cachedGiftCardCodeCheck, initialData?._id]);
 
-  type FormValues = z.infer<typeof formSchema>;
+  type FormValues = z.infer<typeof formSchema> & {
+    paymentMethod?: string;
+  };
 
   const [loading, setLoading] = useState(false);
   const router = useRouter();

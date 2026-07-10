@@ -4,6 +4,7 @@ import { GiftCardStudioAdminAllKeys } from "../translations/types";
 
 export const giftCardStudioSettingsSchema = z
   .object({
+    notifyOwnerOnPurchase: z.coerce.boolean<boolean>().default(false),
     emailTemplateIdToPurchaser: zObjectId(
       "app_gift-card-studio_admin.validation.settings.emailTemplateIdToPurchaser.required" satisfies GiftCardStudioAdminAllKeys,
     ),

@@ -345,6 +345,9 @@ purchases:
       success: Покупка подарункової карти створена успішно
       error: Не вдалося створити покупку подарункової карти
 settings:
+  notifyOwnerOnPurchase:
+    label: Email про нову покупку
+    description: Надсилати адміністраторам організації email, коли клієнт купує подарункову карту на вашому сайті
   emailTemplateToPurchaser: Шаблон email (карта покупцю)
   emailTemplateToRecipient: Шаблон email (карта отримувачу)
   minAmount: Мінімальна сума карти
@@ -418,6 +421,7 @@ validation:
 handlers:
   send-email-to-recipient: Надіслати подарункову карту отримувачу
   send-email-to-customer: Надіслати подарункову карту покупцю
+  newPurchaseEmail: Gift Card Studio - Сповіщення про нову покупку
 events:
   designCreated:
     title: Створено дизайн подарункової карти
@@ -439,4 +443,19 @@ notifications:
     title: Нова покупка подарункової карти
     message: Клієнт придбав подарункову карту на вашому сайті
     view: Переглянути покупки
+emails:
+  newPurchase:
+    subject: 'Нова покупка подарункової карти: {designName}'
+    title: Придбано нову подарункову карту
+    body: |
+      Вітаємо, {userName}!
+
+      Клієнт придбав подарункову карту на вашому сайті.
+
+      **Дизайн:** {designName}
+      **Сума:** {amount}
+      **Код карти:** {giftCardCode}
+      **Клієнт:** {customerName} ({customerEmail})
+      **Отримувач:** {recipientName} ({recipientEmail})
+    view: Переглянути покупку
 

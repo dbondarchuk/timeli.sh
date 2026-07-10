@@ -6,6 +6,7 @@ import {
   AutoSkeleton,
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -16,6 +17,7 @@ import {
   InputGroupAddonClasses,
   InputGroupInput,
   InputGroupInputClasses,
+  Switch,
   toastPromise,
   useCurrencySymbol,
 } from "@timelish/ui";
@@ -47,6 +49,7 @@ export const GiftCardStudioSettingsPage: React.FC<{ appId: string }> = ({
   const form = useForm<GiftCardStudioSettings>({
     resolver: zodResolver(giftCardStudioSettingsSchema) as any,
     defaultValues: {
+      notifyOwnerOnPurchase: false,
       emailTemplateIdToPurchaser: "",
       emailTemplateIdToRecipient: "",
       minAmount: 5,
@@ -59,6 +62,7 @@ export const GiftCardStudioSettingsPage: React.FC<{ appId: string }> = ({
     getSettings(appId)
       .then((s: GiftCardStudioSettings) => {
         form.reset({
+          notifyOwnerOnPurchase: s.notifyOwnerOnPurchase ?? false,
           emailTemplateIdToPurchaser: s.emailTemplateIdToPurchaser ?? "",
           emailTemplateIdToRecipient: s.emailTemplateIdToRecipient ?? "",
           minAmount: s.minAmount ?? 5,
@@ -91,6 +95,29 @@ export const GiftCardStudioSettingsPage: React.FC<{ appId: string }> = ({
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col gap-6 max-w-xl"
         >
+          <FormField
+            control={form.control}
+            name="notifyOwnerOnPurchase"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                <div className="space-y-0.5">
+                  <FormLabel>
+                    {t("settings.notifyOwnerOnPurchase.label")}
+                  </FormLabel>
+                  <FormDescription>
+                    {t("settings.notifyOwnerOnPurchase.description")}
+                  </FormDescription>
+                </div>
+                <FormControl>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                    disabled={loading || initialLoading}
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="emailTemplateIdToPurchaser"

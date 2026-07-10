@@ -32,15 +32,22 @@ import {
 
 export const GiftCardDetailDialog: React.FC<{
   purchase: PurchasedGiftCardListModel;
-  children: React.ReactNode;
-}> = ({ purchase, children }) => {
+  children?: React.ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}> = ({
+  purchase,
+  children,
+  open: propOpen,
+  onOpenChange: propOnOpenChange,
+}) => {
   const t = useI18n<GiftCardStudioAdminNamespace, GiftCardStudioAdminKeys>(
     giftCardStudioAdminNamespace,
   );
   const tAdmin = useI18n("admin");
   const currencyFormat = useCurrencyFormat();
 
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(propOpen ?? false);
   const [isLoading, setIsLoading] = useState(false);
   const [giftCard, setGiftCard] = useState<GiftCardListModel | null>(null);
 
@@ -63,6 +70,8 @@ export const GiftCardDetailDialog: React.FC<{
     if (open && !giftCard && !isLoading) {
       getGiftCard();
     }
+
+    propOnOpenChange?.(open);
   };
 
   const fileUrls = useMemo(() => {
@@ -102,7 +111,7 @@ export const GiftCardDetailDialog: React.FC<{
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild>{children}</DialogTrigger>
+      {!!children && <DialogTrigger asChild>{children}</DialogTrigger>}
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{t("purchases.table.giftCardDetail.title")}</DialogTitle>

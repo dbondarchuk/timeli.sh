@@ -345,6 +345,9 @@ purchases:
       success: Gift card purchase created successfully
       error: Failed to create gift card purchase
 settings:
+  notifyOwnerOnPurchase:
+    label: Email on new purchase
+    description: Send organization admins an email when a customer purchases a gift card on your website
   emailTemplateToPurchaser: Email template (gift card to purchaser)
   emailTemplateToRecipient: Email template (gift card to recipient)
   minAmount: Minimum gift card amount
@@ -418,6 +421,7 @@ validation:
 handlers:
   send-email-to-recipient: Send email to recipient
   send-email-to-customer: Send email to customer
+  newPurchaseEmail: Gift Card Studio - New purchase notification
 events:
   designCreated:
     title: Gift card design created
@@ -439,4 +443,19 @@ notifications:
     title: New gift card purchase
     message: A customer purchased a gift card on your website
     view: View purchases
+emails:
+  newPurchase:
+    subject: 'New gift card purchase: {designName}'
+    title: New gift card purchased
+    body: |
+      Hi {userName},
+
+      A customer purchased a gift card on your website.
+
+      **Design:** {designName}
+      **Amount:** {amount}
+      **Gift card code:** {giftCardCode}
+      **Customer:** {customerName} ({customerEmail})
+      **Recipient:** {recipientName} ({recipientEmail})
+    view: View purchase
 
