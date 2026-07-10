@@ -1,7 +1,19 @@
 import { WithDatabaseId, WithOrganizationId } from "../database";
 import { Prettify } from "../utils/helpers";
 import { Appointment } from "./appointment";
-import { PaymentFee } from "./payment";
+import { PaymentFee, PaymentType } from "./payment";
+
+/** Payment types staff can assign to the non-tip portion of a synced payment. */
+export const syncedPaymentAssignablePaymentTypes = [
+  "deposit",
+  "rescheduleFee",
+  "cancellationFee",
+  "payment",
+  "other",
+] as const satisfies readonly PaymentType[];
+
+export type SyncedPaymentAssignablePaymentType =
+  (typeof syncedPaymentAssignablePaymentTypes)[number];
 
 export const syncedPaymentStatus = [
   /** Auto-attached to the best candidate appointment, awaiting staff review. */
@@ -70,6 +82,10 @@ export type SyncedPaymentUpdateModel = SyncedPaymentTransaction & {
   originalAmount?: number;
   /** Originally computed tip, kept so edits can be reverted. */
   originalTip?: number;
+  /** Type applied to the non-tip linked payment record. */
+  paymentType?: SyncedPaymentAssignablePaymentType;
+  /** Originally applied payment type, kept so edits can be reverted. */
+  originalPaymentType?: SyncedPaymentAssignablePaymentType;
   suggestions?: SyncedPaymentSuggestion[];
 };
 

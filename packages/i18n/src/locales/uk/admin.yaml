@@ -549,6 +549,7 @@ syncedPayments:
   editAmounts:
     title: Редагувати суми
     description: "Списано всього: {charged}. Налаштуйте розподіл між платежем і чайовими."
+    paymentType: Тип платежу
     paymentAmount: Сума платежу
     tip: Чайові
     removeTip: Прибрати чайові
@@ -576,8 +577,19 @@ syncedPayments:
       option: Послуга
       customer: Клієнт
       dateTime: Дата та час
+      paymentOffset: Від платежу
       requestedAt: Затребувано
       price: Ціна
+    paymentOffset:
+      same: У час платежу
+      before:
+        daysHours: "{days, plural, one {# день} few {# дні} other {# днів}}, {hours, plural, one {# година} few {# години} other {# годин}} до"
+        daysOnly: "{days, plural, one {# день} few {# дні} other {# днів}} до"
+        hoursOnly: "{hours, plural, one {# година} few {# години} other {# годин}} до"
+      after:
+        daysHours: "{days, plural, one {# день} few {# дні} other {# днів}}, {hours, plural, one {# година} few {# години} other {# годин}} після"
+        daysOnly: "{days, plural, one {# день} few {# дні} other {# днів}} після"
+        hoursOnly: "{hours, plural, one {# година} few {# години} other {# годин}} після"
   toast:
     success: Синхронізований платіж оновлено
     error: Не вдалося оновити синхронізований платіж
@@ -2767,6 +2779,7 @@ payment:
     giftCardCode: Код подарункової картки
     transactionId: ID транзакції
     customer: Клієнт
+    type: Тип
     timePaid: Час оплати
     timeRefunded: Час повернення
     refund: Повернення

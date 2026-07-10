@@ -1,5 +1,9 @@
 import { getActor, getServicesContainer } from "@/app/utils";
 import { getLoggerFactory } from "@timelish/logger";
+import {
+  syncedPaymentAssignablePaymentTypes,
+  type SyncedPaymentAssignablePaymentType,
+} from "@timelish/types";
 import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
@@ -62,17 +66,25 @@ export async function POST(
   if (typedAction === "update") {
     const paymentAmount = Number(body?.paymentAmount);
     const tip = Number(body?.tip);
+    const paymentType = body?.paymentType as
+      | SyncedPaymentAssignablePaymentType
+      | undefined;
     if (
       !Number.isFinite(paymentAmount) ||
       !Number.isFinite(tip) ||
       paymentAmount < 0 ||
-      tip < 0
+      tip < 0 ||
+      !paymentType ||
+      !(syncedPaymentAssignablePaymentTypes as readonly string[]).includes(
+        paymentType,
+      )
     ) {
       logger.warn({ id, action, body }, "Invalid amounts for update action");
       return NextResponse.json(
         {
           success: false,
-          error: "paymentAmount and tip must be non-negative numbers",
+          error:
+            "paymentAmount and tip must be non-negative numbers and paymentType must be valid",
           code: "invalid_amounts",
         },
         { status: 400 },
@@ -104,7 +116,11 @@ export async function POST(
       case "update":
         result = await service.updateAmounts(
           id,
-          { paymentAmount: Number(body.paymentAmount), tip: Number(body.tip) },
+          {
+            paymentAmount: Number(body.paymentAmount),
+            tip: Number(body.tip),
+            paymentType: body.paymentType as SyncedPaymentAssignablePaymentType,
+          },
           actor,
         );
         break;

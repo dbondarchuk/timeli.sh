@@ -28,6 +28,7 @@ export const appointmentsSearchParams = {
       desc: true,
     },
   ]),
+  referenceDate: parseAsIsoDateTime,
 };
 
 export const appointmentsSearchParamsLoader = createLoader(

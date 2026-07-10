@@ -282,6 +282,7 @@ export const SyncedPaymentsReview = () => {
       <AssignAppointmentDialog
         open={assignTarget !== null}
         onOpenChange={(open) => !open && setAssignTarget(null)}
+        referenceDate={assignTarget?.transactionTime}
         currentAppointmentId={assignTarget?.appointmentId}
         onConfirm={async (appointmentId) => {
           if (!assignTarget) {

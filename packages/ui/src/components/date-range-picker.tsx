@@ -2,6 +2,7 @@
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { useI18n } from "@timelish/i18n";
 import { DateRange } from "@timelish/types";
+import { X } from "lucide-react";
 import { DateTime } from "luxon";
 import React from "react";
 import { cn } from "../utils";
@@ -57,7 +58,9 @@ export const CalendarDateRangePicker: React.FC<
           <Button
             id="date"
             variant={"outline"}
-            className={cn("w-full justify-start text-left font-normal")}
+            className={cn(
+              "w-full justify-start text-left font-normal text-base sm:text-xs",
+            )}
           >
             <CalendarIcon className="mr-2 size-3.5" />
             {date?.start ? (
@@ -70,7 +73,7 @@ export const CalendarDateRangePicker: React.FC<
                 DateTime.fromJSDate(date.start).toFormat("LLL dd, y")
               )
             ) : (
-              <span className="text-xs text-muted-foreground">
+              <span className="text-muted-foreground">
                 {t("dateRangePicker.placeholder")}
               </span>
             )}
@@ -91,31 +94,44 @@ export const CalendarDateRangePicker: React.FC<
               ))}
             </div>
           )}
-          <Calendar
-            autoFocus
-            {...rest}
-            mode="range"
-            defaultMonth={date?.start}
-            selected={{
-              from: date?.start,
-              to: date?.end,
-            }}
-            numberOfMonths={2}
-            onSelect={(range) =>
-              onSelect(
-                range
-                  ? {
-                      start: range.from
-                        ? getDateTime(range.from).startOf("day").toJSDate()
-                        : undefined,
-                      end: range.to
-                        ? getDateTime(range.to).endOf("day").toJSDate()
-                        : undefined,
-                    }
-                  : undefined,
-              )
-            }
-          />
+          <div className="flex flex-col">
+            <Calendar
+              autoFocus
+              {...rest}
+              mode="range"
+              defaultMonth={date?.start}
+              selected={{
+                from: date?.start,
+                to: date?.end,
+              }}
+              numberOfMonths={2}
+              onSelect={(range) =>
+                onSelect(
+                  range
+                    ? {
+                        start: range.from
+                          ? getDateTime(range.from).startOf("day").toJSDate()
+                          : undefined,
+                        end: range.to
+                          ? getDateTime(range.to).endOf("day").toJSDate()
+                          : undefined,
+                      }
+                    : undefined,
+                )
+              }
+            />
+            {(!!date?.start || !!date?.end) && (
+              <div className="px-2 py-1 w-full">
+                <Button
+                  variant="ghost"
+                  onClick={() => onSelect(undefined)}
+                  className="w-full"
+                >
+                  <X /> {t("common.clear")}
+                </Button>
+              </div>
+            )}
+          </div>
         </PopoverContent>
       </Popover>
     </div>

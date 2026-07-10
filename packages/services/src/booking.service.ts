@@ -1,6 +1,6 @@
-import { getDbClient, getDbConnection } from "./database";
 import { getNonDeclinedAppointmentsCreatedInBillingCycleCount } from "./billing/free-tier-appointment-usage";
 import { resolvePlanTierFromOrganization } from "./billing/subscription-entitlements";
+import { getDbClient, getDbConnection } from "./database";
 
 import { AvailableAppServices } from "@timelish/app-store/services";
 
@@ -14,12 +14,13 @@ import {
   AppointmentChoice,
   AppointmentEntity,
   AppointmentHistoryEntry,
-  BookingRestriction,
-  BookingRestrictionCode,
   AppointmentLimitReachedError,
   AppointmentOnlineMeetingInformation,
   AppointmentTimeNotAvaialbleError,
+  AppointmentWithReferenceDateDistance,
   BillingPlanTier,
+  BookingRestriction,
+  BookingRestrictionCode,
   Customer,
   DISCOUNT_APPLIED_EVENT_TYPE,
   FieldSchema,
@@ -45,11 +46,12 @@ import {
   type Availability,
   type BookingConfiguration,
   type CalendarEvent,
-  type DateRange,
   type DaySchedule,
   type DiscountAppliedPayload,
   type EventSource,
   type GeneralConfiguration,
+  type GetAppointmentsQuery,
+  type GetAppointmentsQueryWithReferenceDate,
   type IAssetsService,
   type IBookingService,
   type ICalendarBusyTimeProvider,
@@ -73,7 +75,7 @@ import {
   parseTime,
 } from "@timelish/utils";
 import { DateTime } from "luxon";
-import { Filter, ObjectId, Sort } from "mongodb";
+import { Document, Filter, ObjectId, Sort } from "mongodb";
 import { v4 } from "uuid";
 import {
   APPOINTMENTS_COLLECTION_NAME,
@@ -749,28 +751,30 @@ export class BookingService extends BaseService implements IBookingService {
     return result as Appointment[];
   }
 
+  public getAppointments(
+    query: Query & GetAppointmentsQueryWithReferenceDate,
+  ): Promise<WithTotal<AppointmentWithReferenceDateDistance>>;
+  public getAppointments(
+    query: Query & GetAppointmentsQuery,
+  ): Promise<WithTotal<Appointment>>;
   public async getAppointments(
-    query: Query & {
-      range?: DateRange;
-      endRange?: DateRange;
-      status?: AppointmentStatus[];
-      optionId?: string | string[];
-      customerId?: string | string[];
-      discountId?: string | string[];
-    },
-  ): Promise<WithTotal<Appointment>> {
+    query: Query & GetAppointmentsQuery,
+  ): Promise<WithTotal<Appointment | AppointmentWithReferenceDateDistance>> {
     const logger = this.loggerFactory("getAppointments");
     logger.info({ query }, "Getting appointments");
 
     const db = await getDbConnection();
 
-    const sort: Sort = query.sort?.reduce(
-      (prev, curr) => ({
+    const sort: Sort = query.sort?.reduce((prev, curr) => {
+      if (curr.id === "referenceDateDistanceMs" && !query.referenceDate) {
+        return prev;
+      }
+
+      return {
         ...prev,
         [curr.id]: curr.desc ? -1 : 1,
-      }),
-      {},
-    ) || { dateTime: -1 };
+      };
+    }, {}) || { dateTime: -1 };
 
     const filter: Filter<Appointment> = { organizationId: this.organizationId };
     if (query.range?.start || query.range?.end) {
@@ -839,51 +843,68 @@ export class BookingService extends BaseService implements IBookingService {
       filter.$or = queries;
     }
 
+    const pipeline: Document[] = [
+      {
+        $addFields: {
+          fields: {
+            $objectToArray: "$fields",
+          },
+        },
+      },
+      ...this.aggregateJoin,
+      {
+        $match: filter,
+      },
+    ];
+
+    if (query.referenceDate) {
+      pipeline.push({
+        $addFields: {
+          referenceDateDistanceMs: {
+            $abs: {
+              $subtract: ["$endAt", query.referenceDate],
+            },
+          },
+        },
+      });
+    }
+
+    pipeline.push(
+      {
+        $sort: sort,
+      },
+      {
+        $addFields: {
+          fields: {
+            $arrayToObject: "$fields",
+          },
+        },
+      },
+      {
+        $facet: {
+          paginatedResults:
+            query.limit === 0
+              ? undefined
+              : [
+                  ...(typeof query.offset !== "undefined"
+                    ? [{ $skip: query.offset }]
+                    : []),
+                  ...(typeof query.limit !== "undefined"
+                    ? [{ $limit: query.limit }]
+                    : []),
+                ],
+          totalCount: [
+            {
+              $count: "count",
+            },
+          ],
+        },
+      },
+    );
+
     const [result] = await db
       .collection<AppointmentEntity>(APPOINTMENTS_COLLECTION_NAME)
-      .aggregate([
-        {
-          $addFields: {
-            fields: {
-              $objectToArray: "$fields",
-            },
-          },
-        },
-        ...this.aggregateJoin,
-        {
-          $match: filter,
-        },
-        {
-          $sort: sort,
-        },
-        {
-          $addFields: {
-            fields: {
-              $arrayToObject: "$fields",
-            },
-          },
-        },
-        {
-          $facet: {
-            paginatedResults:
-              query.limit === 0
-                ? undefined
-                : [
-                    ...(typeof query.offset !== "undefined"
-                      ? [{ $skip: query.offset }]
-                      : []),
-                    ...(typeof query.limit !== "undefined"
-                      ? [{ $limit: query.limit }]
-                      : []),
-                  ],
-            totalCount: [
-              {
-                $count: "count",
-              },
-            ],
-          },
-        },
-      ])
+      .aggregate(pipeline)
       .toArray();
 
     const response = {

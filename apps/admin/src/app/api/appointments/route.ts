@@ -29,6 +29,8 @@ export async function GET(request: NextRequest) {
   const status = params.status ?? undefined;
   const start = params.start ?? undefined;
   const end = params.end ?? undefined;
+  const referenceDate = params.referenceDate ?? undefined;
+  const customerIds = params.customer ?? undefined;
 
   const offset = (page - 1) * limit;
 
@@ -41,6 +43,7 @@ export async function GET(request: NextRequest) {
       status,
       start,
       end,
+      referenceDate,
       offset,
     },
     "Fetching appointments with parameters",
@@ -53,6 +56,8 @@ export async function GET(request: NextRequest) {
     sort,
     status,
     range: start || end ? { start, end } : undefined,
+    referenceDate,
+    customerId: customerIds ?? undefined,
   });
 
   logger.debug(

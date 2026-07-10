@@ -1,6 +1,7 @@
 import {
   HydratedSyncedPayment,
   SyncedPayment,
+  SyncedPaymentAssignablePaymentType,
   SyncedPaymentStatus,
   SyncedPaymentTransaction,
 } from "../booking";
@@ -83,7 +84,11 @@ export interface ISyncedPaymentsService {
    */
   updateAmounts(
     id: string,
-    amounts: { paymentAmount: number; tip: number },
+    amounts: {
+      paymentAmount: number;
+      tip: number;
+      paymentType: SyncedPaymentAssignablePaymentType;
+    },
     source: EventSource,
   ): Promise<SyncedPayment>;
 

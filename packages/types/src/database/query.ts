@@ -1,5 +1,5 @@
 import * as z from "zod";
-import { zNonEmptyString } from "../utils";
+import { zNonEmptyString } from "../utils/schema";
 
 export const sortOptionSchema = z.object({
   id: zNonEmptyString("ID is required"),

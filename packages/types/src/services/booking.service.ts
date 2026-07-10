@@ -5,15 +5,17 @@ import {
   AppointmentEvent,
   AppointmentHistoryEntry,
   AppointmentStatus,
+  AppointmentWithReferenceDateDistance,
   Availability,
   CalendarEvent,
   GetAppointmentOptionsResponse,
+  GetAppointmentsQuery,
+  GetAppointmentsQueryWithReferenceDate,
   ModifyAppointmentInformationRequest,
   Period,
 } from "../booking";
 import { Query, WithTotal } from "../database";
 import type { EventSource } from "../events/envelope";
-import { DateRange } from "../general";
 
 export interface IBookingService {
   getAvailability(duration: number): Promise<Availability>;
@@ -48,14 +50,10 @@ export interface IBookingService {
   ): Promise<WithTotal<Appointment>>;
   getNextAppointments(date: Date, limit?: number): Promise<Appointment[]>;
   getAppointments(
-    query: Query & {
-      range?: DateRange;
-      endRange?: DateRange;
-      status?: AppointmentStatus[];
-      optionId?: string | string[];
-      customerId?: string | string[];
-      discountId?: string | string[];
-    },
+    query: Query & GetAppointmentsQueryWithReferenceDate,
+  ): Promise<WithTotal<AppointmentWithReferenceDateDistance>>;
+  getAppointments(
+    query: Query & GetAppointmentsQuery,
   ): Promise<WithTotal<Appointment>>;
   getCalendarEvents(
     start: Date,

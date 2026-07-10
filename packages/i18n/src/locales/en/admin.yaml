@@ -552,6 +552,7 @@ syncedPayments:
   editAmounts:
     title: Edit amounts
     description: "Charged total: {charged}. Adjust how it splits between the payment and tip."
+    paymentType: Payment type
     paymentAmount: Payment amount
     tip: Tip
     removeTip: Remove tip
@@ -579,8 +580,19 @@ syncedPayments:
       option: Service
       customer: Customer
       dateTime: Date & time
+      paymentOffset: From payment
       requestedAt: Requested at
       price: Price
+    paymentOffset:
+      same: At payment time
+      before:
+        daysHours: "{days, plural, one {# day} other {# days}}, {hours, plural, one {# hour} other {# hours}} before"
+        daysOnly: "{days, plural, one {# day} other {# days}} before"
+        hoursOnly: "{hours, plural, one {# hour} other {# hours}} before"
+      after:
+        daysHours: "{days, plural, one {# day} other {# days}}, {hours, plural, one {# hour} other {# hours}} after"
+        daysOnly: "{days, plural, one {# day} other {# days}} after"
+        hoursOnly: "{hours, plural, one {# hour} other {# hours}} after"
   toast:
     success: Synced payment updated
     error: Could not update synced payment
@@ -3002,6 +3014,7 @@ payment:
     giftCardCode: Gift card code
     transactionId: Transaction ID
     customer: Customer
+    type: Type
     timePaid: Time paid
     timeRefunded: Time refunded
     amountLeft: Amount left

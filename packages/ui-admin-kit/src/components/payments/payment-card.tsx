@@ -1,12 +1,7 @@
 "use client";
 
 import { AllKeys, BaseAllKeys, useI18n, useLocale } from "@timelish/i18n";
-import {
-  Payment,
-  PaymentMethod,
-  PaymentStatus,
-  PaymentSummary,
-} from "@timelish/types";
+import { Payment, PaymentStatus, PaymentSummary } from "@timelish/types";
 import {
   Badge,
   Button,
@@ -29,7 +24,10 @@ import {
 } from "./payment-method-display";
 import { canRefundPayment, PaymentRefundDialog } from "./payment-refund-dialog";
 
-export { getPaymentMethod, getPaymentMethodIcon } from "./payment-method-display";
+export {
+  getPaymentMethod,
+  getPaymentMethodIcon,
+} from "./payment-method-display";
 
 export type PaymentCardProps = {
   payment: Payment | PaymentSummary;
@@ -107,6 +105,7 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
     description,
     status,
     method,
+    type,
     refunds,
     fees,
     ...rest
@@ -209,6 +208,14 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
               </span>
             </div>
           )}
+          <div className="flex justify-between items-center">
+            <span className="text-xs text-muted-foreground">
+              {t("admin.payment.card.type")}
+            </span>
+            <span className="text-xs font-medium text-foreground/60">
+              {t(`admin.payment.types.${type}`)}
+            </span>
+          </div>
           {fees && fees.length > 0 && (
             <>
               <div className="flex justify-between items-center">

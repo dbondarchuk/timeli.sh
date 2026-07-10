@@ -1,6 +1,7 @@
 import { AssetEntity } from "../assets/entity";
 import { Customer } from "../customers/customer";
 import { WithDatabaseId, WithOrganizationId } from "../database";
+import { DateRange } from "../general";
 import { Prettify } from "../utils/helpers";
 import {
   AppointmentEvent,
@@ -37,3 +38,27 @@ export type Appointment = Prettify<
     endAt: Date;
   }
 >;
+
+/** Appointment enriched with proximity to a list-query `referenceDate`. */
+export type AppointmentWithReferenceDateDistance = Prettify<
+  Appointment & {
+    referenceDateDistanceMs: number;
+  }
+>;
+
+export type GetAppointmentsQueryBase = {
+  range?: DateRange;
+  endRange?: DateRange;
+  status?: AppointmentStatus[];
+  optionId?: string | string[];
+  customerId?: string | string[];
+  discountId?: string | string[];
+};
+
+export type GetAppointmentsQueryWithReferenceDate = GetAppointmentsQueryBase & {
+  referenceDate: Date;
+};
+
+export type GetAppointmentsQuery = GetAppointmentsQueryBase & {
+  referenceDate?: Date;
+};

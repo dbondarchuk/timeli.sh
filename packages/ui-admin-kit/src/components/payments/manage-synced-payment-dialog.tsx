@@ -211,6 +211,7 @@ export const ManageSyncedPaymentDialog = ({
           <AssignAppointmentDialog
             open={assignOpen}
             onOpenChange={setAssignOpen}
+            referenceDate={record.transactionTime}
             currentAppointmentId={record.appointmentId}
             onConfirm={handleAssign}
           />

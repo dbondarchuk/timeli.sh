@@ -1,6 +1,7 @@
 import {
   HydratedSyncedPayment,
   SyncedPayment,
+  SyncedPaymentAssignablePaymentType,
   SyncedPaymentStatus,
   WithTotal,
 } from "@timelish/types";
@@ -57,7 +58,12 @@ const action = async (
     | "assign"
     | "update"
     | "revert",
-  body?: { appointmentId?: string; paymentAmount?: number; tip?: number },
+  body?: {
+    appointmentId?: string;
+    paymentAmount?: number;
+    tip?: number;
+    paymentType?: string;
+  },
 ) => {
   const response = await fetchAdminApi(`/synced-payments/${id}/${name}`, {
     method: "POST",
@@ -80,7 +86,11 @@ export const assignSyncedPayment = (id: string, appointmentId: string) =>
 
 export const updateSyncedPaymentAmounts = (
   id: string,
-  amounts: { paymentAmount: number; tip: number },
+  amounts: {
+    paymentAmount: number;
+    tip: number;
+    paymentType: SyncedPaymentAssignablePaymentType;
+  },
 ) => action(id, "update", amounts);
 
 export const revertSyncedPaymentAmounts = (id: string) => action(id, "revert");

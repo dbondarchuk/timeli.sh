@@ -2,7 +2,11 @@
 
 import { adminApi } from "@timelish/api-sdk";
 import { useI18n } from "@timelish/i18n";
-import { HydratedSyncedPayment } from "@timelish/types";
+import {
+  HydratedSyncedPayment,
+  syncedPaymentAssignablePaymentTypes,
+  SyncedPaymentAssignablePaymentType,
+} from "@timelish/types";
 import {
   Button,
   Dialog,
@@ -18,6 +22,11 @@ import {
   InputGroupInput,
   InputGroupInputClasses,
   Label,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
   Spinner,
   toastPromise,
   useCurrencyFormat,
@@ -27,17 +36,25 @@ import { round2 } from "@timelish/utils";
 import { RotateCcw } from "lucide-react";
 import { useEffect, useState } from "react";
 
+const DEFAULT_PAYMENT_TYPE: SyncedPaymentAssignablePaymentType = "payment";
+
 const resolveAmounts = (payment: HydratedSyncedPayment) => {
   const tip = payment.inferredTip ?? 0;
   const paymentAmount =
     payment.paymentAmount ?? round2((payment.amount ?? 0) - tip);
+  const paymentType =
+    payment.paymentType ?? payment.originalPaymentType ?? DEFAULT_PAYMENT_TYPE;
+  const originalPaymentType =
+    payment.originalPaymentType ?? payment.paymentType ?? DEFAULT_PAYMENT_TYPE;
   const hasOriginals =
     payment.originalAmount !== undefined && payment.originalTip !== undefined;
   return {
     paymentAmount,
     tip,
+    paymentType,
     originalAmount: payment.originalAmount,
     originalTip: payment.originalTip,
+    originalPaymentType,
     hasOriginals,
   };
 };
@@ -62,6 +79,7 @@ export const EditSyncedPaymentAmountsDialog = ({
   const resolved = resolveAmounts(payment);
   const [paymentAmount, setPaymentAmount] = useState(resolved.paymentAmount);
   const [tip, setTip] = useState(resolved.tip);
+  const [paymentType, setPaymentType] = useState(resolved.paymentType);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -69,6 +87,7 @@ export const EditSyncedPaymentAmountsDialog = ({
       const next = resolveAmounts(payment);
       setPaymentAmount(next.paymentAmount);
       setTip(next.tip);
+      setPaymentType(next.paymentType);
     }
   }, [open, payment]);
 
@@ -79,7 +98,8 @@ export const EditSyncedPaymentAmountsDialog = ({
   const canRevert =
     resolved.hasOriginals &&
     (parsedPayment !== resolved.originalAmount ||
-      parsedTip !== resolved.originalTip);
+      parsedTip !== resolved.originalTip ||
+      paymentType !== resolved.originalPaymentType);
 
   const run = async (promise: Promise<unknown>) => {
     setSubmitting(true);
@@ -111,6 +131,30 @@ export const EditSyncedPaymentAmountsDialog = ({
         </DialogHeader>
 
         <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="synced-payment-type">
+              {t("syncedPayments.editAmounts.paymentType")}
+            </Label>
+            <Select
+              value={paymentType}
+              onValueChange={(value) =>
+                setPaymentType(value as SyncedPaymentAssignablePaymentType)
+              }
+              disabled={submitting}
+            >
+              <SelectTrigger id="synced-payment-type">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {syncedPaymentAssignablePaymentTypes.map((type) => (
+                  <SelectItem value={type} key={type}>
+                    {t(`payment.types.${type}`)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
           <div className="flex flex-col gap-2">
             <Label htmlFor="synced-payment-amount">
               {t("syncedPayments.editAmounts.paymentAmount")}
@@ -214,7 +258,11 @@ export const EditSyncedPaymentAmountsDialog = ({
                 run(
                   adminApi.syncedPayments.updateSyncedPaymentAmounts(
                     payment._id,
-                    { paymentAmount: parsedPayment, tip: parsedTip },
+                    {
+                      paymentAmount: parsedPayment,
+                      tip: parsedTip,
+                      paymentType,
+                    },
                   ),
                 )
               }

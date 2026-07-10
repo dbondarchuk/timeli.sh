@@ -5,6 +5,7 @@ import {
   AppointmentEventRequest,
   AppointmentHistoryEntry,
   AppointmentStatus,
+  AppointmentWithReferenceDateDistance,
   AssetEntity,
   okStatus,
   Payment,
@@ -20,9 +21,15 @@ import {
 } from "../search-params/appointments";
 import { fetchAdminApi } from "./utils";
 
-export const getAppointments = async (
+export function getAppointments(
+  searchParams: AppointmentsSearchParams & { referenceDate: Date },
+): Promise<WithTotal<AppointmentWithReferenceDateDistance>>;
+export function getAppointments(
   searchParams: AppointmentsSearchParams,
-) => {
+): Promise<WithTotal<Appointment>>;
+export async function getAppointments(
+  searchParams: AppointmentsSearchParams,
+): Promise<WithTotal<Appointment | AppointmentWithReferenceDateDistance>> {
   console.debug("Getting appointments", {
     searchParams,
   });
@@ -38,7 +45,9 @@ export const getAppointments = async (
     throw new Error("Failed to get appointments");
   }
 
-  const data = await result.json<WithTotal<Appointment>>();
+  const data = await result.json<
+    WithTotal<Appointment | AppointmentWithReferenceDateDistance>
+  >();
 
   console.debug("Appointments retrieved successfully", {
     total: data.total,
@@ -46,7 +55,7 @@ export const getAppointments = async (
   });
 
   return data;
-};
+}
 
 export const getAppointment = async (id: string) => {
   console.debug("Getting appointment", {

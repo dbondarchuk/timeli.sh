@@ -16,6 +16,7 @@ import {
   SYNCED_PAYMENT_INGESTED_EVENT_TYPE,
   SYNCED_PAYMENT_REJECTED_EVENT_TYPE,
   SyncedPayment,
+  SyncedPaymentAssignablePaymentType,
   SyncedPaymentStatus,
   SyncedPaymentSuggestion,
   SyncedPaymentTransaction,
@@ -34,6 +35,8 @@ import { SYNCED_PAYMENTS_COLLECTION_NAME } from "./collections";
 import { getDbConnection } from "./database";
 import { BaseService } from "./services/base.service";
 
+const DEFAULT_SYNCED_PAYMENT_TYPE: SyncedPaymentAssignablePaymentType =
+  "payment";
 const DEFAULT_MATCH_WINDOW_MINUTES = 120;
 const MAX_SUGGESTIONS = 5;
 
@@ -200,8 +203,10 @@ export class SyncedPaymentsService
       paymentIds,
       paymentAmount: split.paymentAmount,
       inferredTip: split.tip,
+      paymentType: DEFAULT_SYNCED_PAYMENT_TYPE,
       originalAmount: split.paymentAmount,
       originalTip: split.tip,
+      originalPaymentType: DEFAULT_SYNCED_PAYMENT_TYPE,
       suggestions,
     });
 
@@ -332,6 +337,7 @@ export class SyncedPaymentsService
         ? {
             originalAmount: originals.originalAmount,
             originalTip: originals.originalTip,
+            originalPaymentType: originals.originalPaymentType,
           }
         : {}),
     });
@@ -441,7 +447,6 @@ export class SyncedPaymentsService
       await this.createPaymentsForAppointment(appointmentId, record, source);
 
     const updated = await this.update(id, {
-      status: "confirmed",
       appointmentId,
       customerId,
       paymentIds,
@@ -518,7 +523,11 @@ export class SyncedPaymentsService
 
   public async updateAmounts(
     id: string,
-    amounts: { paymentAmount: number; tip: number },
+    amounts: {
+      paymentAmount: number;
+      tip: number;
+      paymentType: SyncedPaymentAssignablePaymentType;
+    },
     source: EventSource,
   ): Promise<SyncedPayment> {
     const logger = this.loggerFactory("updateAmounts");
@@ -538,6 +547,7 @@ export class SyncedPaymentsService
 
     const paymentAmount = round2(Math.max(0, amounts.paymentAmount));
     const tip = round2(Math.max(0, amounts.tip));
+    const paymentType = amounts.paymentType;
 
     logger.debug(
       {
@@ -545,8 +555,10 @@ export class SyncedPaymentsService
         appointmentId: record.appointmentId,
         previousPaymentAmount: record.paymentAmount,
         previousTip: record.inferredTip,
+        previousPaymentType: record.paymentType,
         paymentAmount,
         tip,
+        paymentType,
       },
       "Recreating linked payments with new amounts",
     );
@@ -557,7 +569,7 @@ export class SyncedPaymentsService
       record.appointmentId,
       record,
       source,
-      { paymentAmount, tip },
+      { paymentAmount, tip, paymentType },
     );
 
     const originals = this.resolveStoredOriginals(record);
@@ -567,8 +579,10 @@ export class SyncedPaymentsService
       customerId,
       paymentAmount,
       inferredTip: tip,
+      paymentType,
       originalAmount: originals.originalAmount,
       originalTip: originals.originalTip,
+      originalPaymentType: originals.originalPaymentType,
     });
 
     logger.info(
@@ -578,9 +592,11 @@ export class SyncedPaymentsService
         appointmentId: record.appointmentId,
         paymentAmount,
         tip,
+        paymentType,
         paymentIds,
         originalAmount: originals.originalAmount,
         originalTip: originals.originalTip,
+        originalPaymentType: originals.originalPaymentType,
       },
       "Synced payment amounts updated",
     );
@@ -620,6 +636,10 @@ export class SyncedPaymentsService
 
     const paymentAmount = record.originalAmount;
     const tip = record.originalTip;
+    const paymentType =
+      record.originalPaymentType ??
+      record.paymentType ??
+      DEFAULT_SYNCED_PAYMENT_TYPE;
 
     logger.debug(
       {
@@ -627,13 +647,15 @@ export class SyncedPaymentsService
         externalId: record.externalId,
         currentPaymentAmount: record.paymentAmount,
         currentTip: record.inferredTip,
+        currentPaymentType: record.paymentType,
         revertPaymentAmount: paymentAmount,
         revertTip: tip,
+        revertPaymentType: paymentType,
       },
       "Reverting to original amounts",
     );
 
-    return this.updateAmounts(id, { paymentAmount, tip }, source);
+    return this.updateAmounts(id, { paymentAmount, tip, paymentType }, source);
   }
 
   /**
@@ -643,6 +665,7 @@ export class SyncedPaymentsService
   private resolveStoredOriginals(record: SyncedPayment): {
     originalAmount: number;
     originalTip: number;
+    originalPaymentType: SyncedPaymentAssignablePaymentType;
   } {
     const tip = record.inferredTip ?? 0;
     const paymentAmount = record.paymentAmount ?? round2(record.amount - tip);
@@ -650,6 +673,10 @@ export class SyncedPaymentsService
     return {
       originalAmount: record.originalAmount ?? paymentAmount,
       originalTip: record.originalTip ?? tip,
+      originalPaymentType:
+        record.originalPaymentType ??
+        record.paymentType ??
+        DEFAULT_SYNCED_PAYMENT_TYPE,
     };
   }
 
@@ -768,9 +795,15 @@ export class SyncedPaymentsService
 
   private async createPaymentsForAppointment(
     appointmentId: string,
-    transaction: SyncedPaymentTransaction,
+    transaction: SyncedPaymentTransaction & {
+      paymentType?: SyncedPaymentAssignablePaymentType;
+    },
     source: EventSource,
-    override?: { paymentAmount: number; tip: number },
+    override?: {
+      paymentAmount: number;
+      tip: number;
+      paymentType?: SyncedPaymentAssignablePaymentType;
+    },
   ): Promise<{
     paymentIds: string[];
     customerId: string;
@@ -809,6 +842,10 @@ export class SyncedPaymentsService
         : this.computeDefaultSplit(appointment, transaction.amount));
     const paymentAmount = round2(Math.max(0, split.paymentAmount));
     const inferredTip = round2(Math.max(0, split.tip));
+    const servicePaymentType =
+      override?.paymentType ??
+      transaction.paymentType ??
+      DEFAULT_SYNCED_PAYMENT_TYPE;
 
     const paymentIds: string[] = [];
 
@@ -820,7 +857,7 @@ export class SyncedPaymentsService
         appointmentId,
         customerId: appointment.customerId,
         description: "syncedPayment",
-        type: "payment",
+        type: servicePaymentType,
         method: "in-person-card",
         source: "synced",
         // Synced payments can only be changed through the synced payment record,
