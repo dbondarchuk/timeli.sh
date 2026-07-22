@@ -172,6 +172,7 @@ export const RawNumberInputWithUnit: React.FC<RawNumberInputWithUnitsProps> = ({
         float={unit === "rem"}
         nullable={nullable}
         step={currentStep}
+        disableNegative={!allowNegative}
         id={id}
       />
       <Select value={unit} onValueChange={handleUnitChange}>

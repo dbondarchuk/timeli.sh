@@ -1,4 +1,5 @@
 import * as z from "zod";
+import { zNumberValueWithUnit } from "../../../zod";
 
 // Predefined transform options
 export const transformKeys = [
@@ -72,10 +73,52 @@ export const transformFunctionKeyMap = {
   skew: "skew",
 } as const;
 
-// Transform value schemas
+export type TransformFunctionKey = (typeof transformFunctionKeys)[number];
+
+/** Functions whose values are length/percentage and support selectable units. */
+export const transformFunctionsWithUnits = [
+  "translateX",
+  "translateY",
+  "translate",
+] as const satisfies readonly TransformFunctionKey[];
+
+export const isTransformFunctionWithUnits = (
+  func: string,
+): func is (typeof transformFunctionsWithUnits)[number] =>
+  (transformFunctionsWithUnits as readonly string[]).includes(func);
+
+export const getFunctionValueCount = (func: string) => {
+  switch (func) {
+    case "translate":
+    case "skew":
+      return 2;
+    default:
+      return 1;
+  }
+};
+
+/** Fixed CSS unit suffix for functions that don't use selectable length units. */
+export const getFixedFunctionUnit = (func: string) => {
+  switch (func) {
+    case "rotate":
+    case "skewX":
+    case "skewY":
+    case "skew":
+      return "deg";
+    default:
+      return "";
+  }
+};
+
+// Transform value schemas — numbers (scale/rotate/skew) or number+unit (translate*)
+export const TransformFunctionValueSchema = z.union([
+  z.number(),
+  zNumberValueWithUnit,
+]);
+
 export const TransformValueSchema = z.object({
   function: z.enum(transformFunctionKeys),
-  values: z.array(z.number()),
+  values: z.array(TransformFunctionValueSchema),
 });
 
 // Combined transform schema
@@ -88,3 +131,22 @@ export const TransformSchema = z.union([
 
 export type TransformStyleConfiguration = z.infer<typeof TransformSchema>;
 export type TransformValue = z.infer<typeof TransformValueSchema>;
+export type TransformFunctionValue = z.infer<
+  typeof TransformFunctionValueSchema
+>;
+
+export const getDefaultFunctionValues = (
+  func: string,
+): TransformFunctionValue[] => {
+  const count = getFunctionValueCount(func);
+  if (isTransformFunctionWithUnits(func)) {
+    return Array.from({ length: count }, () => ({
+      value: 0,
+      unit: "px" as const,
+    }));
+  }
+  if (func.includes("scale")) {
+    return Array.from({ length: count }, () => 1);
+  }
+  return Array.from({ length: count }, () => 0);
+};

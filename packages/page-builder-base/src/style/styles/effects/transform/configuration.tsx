@@ -6,15 +6,41 @@ import { Move, Plus, Trash2 } from "lucide-react";
 import { useCallback, useState } from "react";
 import * as z from "zod";
 import { RawNumberInput } from "../../../../style-inputs/base/raw-number-input";
+import { RawNumberInputWithUnit } from "../../../../style-inputs/base/raw-number-input-with-units";
+import type { NumberValueWithUnit, Unit } from "../../../zod";
 import {
   TransformSchema,
   TransformStyleConfiguration,
   TransformValue,
+  getDefaultFunctionValues,
+  getFixedFunctionUnit,
+  getFunctionValueCount,
+  isTransformFunctionWithUnits,
   transformFunctionKeyMap,
   transformFunctionKeys,
   transformKeyMap,
   transformKeys,
 } from "./schema";
+
+const translateOptions: Partial<Record<Unit, number[]>> & {
+  base?: number[];
+} = {
+  base: [-50, -20, -10, 0, 10, 20, 50],
+  px: [-50, -20, -10, 0, 10, 20, 50],
+  rem: [-5, -2, -1, -0.5, 0, 0.5, 1, 2, 5],
+  "%": [-50, -25, -10, 0, 10, 25, 50],
+  vh: [-50, -25, -10, 0, 10, 25, 50],
+  vw: [-50, -25, -10, 0, 10, 25, 50],
+};
+
+const toNumberValueWithUnit = (
+  value: number | NumberValueWithUnit | undefined,
+): NumberValueWithUnit => {
+  if (typeof value === "object" && value !== null) {
+    return value;
+  }
+  return { value: value ?? 0, unit: "px" };
+};
 
 export const TransformConfiguration = ({
   value,
@@ -36,7 +62,7 @@ export const TransformConfiguration = ({
           functions: [
             {
               function: "scale",
-              values: [1],
+              values: getDefaultFunctionValues("scale"),
             },
           ],
         });
@@ -56,7 +82,7 @@ export const TransformConfiguration = ({
           ...value.functions,
           {
             function: "scale",
-            values: [1],
+            values: getDefaultFunctionValues("scale"),
           },
         ],
       });
@@ -94,50 +120,6 @@ export const TransformConfiguration = ({
     },
     [value, onChange],
   );
-
-  const getFunctionValueCount = (func: string) => {
-    switch (func) {
-      case "scale":
-      case "scaleX":
-      case "scaleY":
-        return 1;
-      case "rotate":
-        return 1;
-      case "translateX":
-      case "translateY":
-        return 1;
-      case "translate":
-        return 2;
-      case "skewX":
-      case "skewY":
-        return 1;
-      case "skew":
-        return 2;
-      default:
-        return 1;
-    }
-  };
-
-  const getFunctionUnits = (func: string) => {
-    switch (func) {
-      case "scale":
-      case "scaleX":
-      case "scaleY":
-        return "";
-      case "rotate":
-        return "deg";
-      case "translateX":
-      case "translateY":
-      case "translate":
-        return "px";
-      case "skewX":
-      case "skewY":
-      case "skew":
-        return "deg";
-      default:
-        return "";
-    }
-  };
 
   return (
     <div className="flex flex-col gap-3 w-full">
@@ -203,8 +185,8 @@ export const TransformConfiguration = ({
                     value={func.function}
                     onItemSelect={(newFunc) =>
                       updateTransformFunction(index, {
-                        function: newFunc as any,
-                        values: Array(getFunctionValueCount(newFunc)).fill(0),
+                        function: newFunc as TransformValue["function"],
+                        values: getDefaultFunctionValues(newFunc),
                       })
                     }
                     className="w-full"
@@ -220,35 +202,65 @@ export const TransformConfiguration = ({
                   <div className="flex gap-2">
                     {Array(getFunctionValueCount(func.function))
                       .fill(0)
-                      .map((_, valueIndex) => (
-                        <RawNumberInput
-                          key={valueIndex}
-                          iconLabel={<Move className="w-4 h-4" />}
-                          value={func.values[valueIndex] || 0}
-                          setValue={(newValue) => {
-                            const newValues = [...func.values];
-                            newValues[valueIndex] = newValue;
-                            updateTransformFunction(index, {
-                              ...func,
-                              values: newValues,
-                            });
-                          }}
-                          step={func.function.includes("scale") ? 0.1 : 1}
-                          min={func.function.includes("scale") ? 0 : undefined}
-                          max={func.function.includes("scale") ? 5 : undefined}
-                          options={
-                            func.function.includes("scale")
-                              ? [0.5, 0.75, 1, 1.25, 1.5, 2]
-                              : func.function.includes("rotate") ||
-                                  func.function.includes("skew")
-                                ? [-180, -90, -45, 0, 45, 90, 180]
-                                : [-50, -20, -10, 0, 10, 20, 50]
-                          }
-                          float={func.function.includes("scale")}
-                          nullable={false}
-                          suffix={getFunctionUnits(func.function)}
-                        />
-                      ))}
+                      .map((_, valueIndex) =>
+                        isTransformFunctionWithUnits(func.function) ? (
+                          <RawNumberInputWithUnit
+                            key={valueIndex}
+                            icon={<Move className="w-4 h-4" />}
+                            defaultValue={toNumberValueWithUnit(
+                              func.values[valueIndex],
+                            )}
+                            onChange={(newValue) => {
+                              const newValues = [...func.values];
+                              newValues[valueIndex] = newValue;
+                              updateTransformFunction(index, {
+                                ...func,
+                                values: newValues,
+                              });
+                            }}
+                            allowNegative
+                            noMin
+                            noMax
+                            options={translateOptions}
+                          />
+                        ) : (
+                          <RawNumberInput
+                            key={valueIndex}
+                            iconLabel={<Move className="w-4 h-4" />}
+                            value={
+                              typeof func.values[valueIndex] === "number"
+                                ? func.values[valueIndex]
+                                : 0
+                            }
+                            setValue={(newValue) => {
+                              const newValues = [...func.values];
+                              newValues[valueIndex] = newValue;
+                              updateTransformFunction(index, {
+                                ...func,
+                                values: newValues,
+                              });
+                            }}
+                            step={func.function.includes("scale") ? 0.1 : 1}
+                            min={
+                              func.function.includes("scale") ? 0 : undefined
+                            }
+                            max={
+                              func.function.includes("scale") ? 5 : undefined
+                            }
+                            options={
+                              func.function.includes("scale")
+                                ? [0.5, 0.75, 1, 1.25, 1.5, 2]
+                                : func.function.includes("rotate") ||
+                                    func.function.includes("skew")
+                                  ? [-180, -90, -45, 0, 45, 90, 180]
+                                  : [-50, -20, -10, 0, 10, 20, 50]
+                            }
+                            float={func.function.includes("scale")}
+                            nullable={false}
+                            suffix={getFixedFunctionUnit(func.function)}
+                          />
+                        ),
+                      )}
                   </div>
                 </div>
               </div>

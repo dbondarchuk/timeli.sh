@@ -20,6 +20,7 @@ type RawNumberInputProps = {
   id?: string;
   disabled?: boolean;
   suffix?: React.ReactNode;
+  disableNegative?: boolean;
 } & (
   | {
       nullable?: false;
@@ -32,6 +33,16 @@ type RawNumberInputProps = {
       setValue: (v: number | null) => void;
     }
 );
+
+const isPartialNumber = (val: string, float?: boolean, allowNegative?: boolean) => {
+  if (val === "") return true;
+  if (allowNegative && val === "-") return true;
+  if (float) {
+    if (val === "." || (allowNegative && val === "-.")) return true;
+    return /^-?\d*\.?\d*$/.test(val);
+  }
+  return /^-?\d*$/.test(val);
+};
 
 export const RawNumberInput: React.FC<RawNumberInputProps> = ({
   iconLabel,
@@ -46,27 +57,62 @@ export const RawNumberInput: React.FC<RawNumberInputProps> = ({
   id: propId,
   disabled,
   suffix,
+  disableNegative,
 }) => {
   const [isFocused, setIsFocused] = React.useState(false);
+  const [inputValue, setInputValue] = React.useState(value?.toString() ?? "");
+
+  React.useEffect(() => {
+    // Don't clobber in-progress edits (e.g. typing "-") while focused
+    if (!isFocused) {
+      setInputValue(value?.toString() ?? "");
+    }
+  }, [value, isFocused]);
+
   const handleInputChange = React.useCallback(
-    (value: number | null) => {
-      if (value === null && !nullable) return;
+    (next: number | null) => {
+      if (next === null && !nullable) return;
       if (
-        value !== null &&
-        ((typeof min !== "undefined" && value < min) ||
-          (typeof max !== "undefined" && value > max))
+        next !== null &&
+        ((typeof min !== "undefined" && next < min) ||
+          (typeof max !== "undefined" && next > max))
       ) {
         if (nullable) setValue(null);
         return;
       }
 
-      setValue(value as number);
+      if (disableNegative && next !== null && next < 0) {
+        setValue(0);
+        return;
+      }
+
+      setValue(next as number);
     },
-    [setValue, nullable, min, max],
+    [setValue, nullable, min, max, disableNegative],
   );
 
   const parseFn = (val: string) =>
-    val.length === 0 ? null : float ? parseFloat(val) : parseInt(val);
+    val.length === 0 || val === "-" || val === "." || val === "-."
+      ? null
+      : float
+        ? parseFloat(val)
+        : parseInt(val, 10);
+
+  const commitInputValue = (raw: string) => {
+    const parsed = parseFn(raw);
+    if (parsed === null || Number.isNaN(parsed)) {
+      if (parsed === null && nullable) {
+        handleInputChange(null);
+        setInputValue("");
+        return;
+      }
+      // Incomplete draft ("-", ".") or invalid — restore committed value
+      setInputValue(value?.toString() ?? "");
+      return;
+    }
+    handleInputChange(parsed);
+    setInputValue(parsed.toString());
+  };
 
   const handleDeltaChange = (delta: number) => {
     const newSize = parseFloat(Number((value ?? 0) + delta).toFixed(10));
@@ -88,7 +134,6 @@ export const RawNumberInput: React.FC<RawNumberInputProps> = ({
           variant="ghost"
           size="sm"
           disabled={disabled}
-          // className="w-6 h-6"
         >
           <Minus className="" />
         </Button>
@@ -99,23 +144,53 @@ export const RawNumberInput: React.FC<RawNumberInputProps> = ({
               className={cn(
                 "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none h-8 min-w-10 max-w-12 shrink bg-transparent text-foreground px-1 text-center text-sm hover:bg-muted disabled:text-muted-foreground",
               )}
-              value={value?.toString()}
-              onBlur={() => {
+              value={inputValue}
+              onBlur={(e) => {
                 setIsFocused(false);
+                commitInputValue(e.currentTarget.value);
               }}
-              onChange={(e) => handleInputChange(parseFn(e.target.value))}
+              onChange={(e) => {
+                const next = e.target.value;
+                if (
+                  !isPartialNumber(next, float, !disableNegative)
+                ) {
+                  return;
+                }
+
+                setInputValue(next);
+
+                // Intermediate drafts like "-" / "." / "1." — keep local only
+                if (
+                  next === "" ||
+                  next === "-" ||
+                  next === "." ||
+                  next === "-." ||
+                  (float && next.endsWith("."))
+                ) {
+                  if (next === "" && nullable) {
+                    handleInputChange(null);
+                  }
+                  return;
+                }
+
+                const parsed = parseFn(next);
+                if (parsed !== null && !Number.isNaN(parsed)) {
+                  handleInputChange(parsed);
+                }
+              }}
               onFocus={() => {
                 setIsFocused(true);
               }}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault();
-                  handleInputChange(parseFn(e.currentTarget.value));
+                  commitInputValue(e.currentTarget.value);
                   setIsFocused(false);
                 }
               }}
               data-plate-focus="true"
-              type="number"
+              type="text"
+              inputMode={float ? "decimal" : "numeric"}
               id={inputId}
               disabled={disabled}
             />
@@ -132,6 +207,7 @@ export const RawNumberInput: React.FC<RawNumberInputProps> = ({
                 )}
                 onClick={() => {
                   handleInputChange(option);
+                  setInputValue(option.toString());
                 }}
                 data-highlighted={option.toString() === value?.toString()}
                 type="button"
@@ -147,7 +223,6 @@ export const RawNumberInput: React.FC<RawNumberInputProps> = ({
           variant="ghost"
           size="sm"
           disabled={disabled}
-          // className="w-6 h-6"
         >
           <Plus className="" />
         </Button>

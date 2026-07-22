@@ -1,7 +1,31 @@
 import { Move } from "lucide-react";
 import { StyleDefinition } from "../../../types";
+import { renderRawNumberWithUnitCss } from "../../../utils";
 import { TransformConfiguration } from "./configuration";
-import { TransformSchema } from "./schema";
+import {
+  getFixedFunctionUnit,
+  getFunctionValueCount,
+  isTransformFunctionWithUnits,
+  TransformFunctionValue,
+  TransformSchema,
+} from "./schema";
+
+const renderTransformFunctionValue = (
+  funcName: string,
+  value: TransformFunctionValue | undefined,
+) => {
+  if (typeof value === "object" && value !== null) {
+    return renderRawNumberWithUnitCss(value) ?? "0px";
+  }
+
+  const numberValue = value ?? 0;
+  if (isTransformFunctionWithUnits(funcName)) {
+    // Legacy plain-number translate values default to px
+    return `${numberValue}px`;
+  }
+
+  return `${numberValue}${getFixedFunctionUnit(funcName)}`;
+};
 
 export const transformStyle = {
   name: "transform",
@@ -22,60 +46,12 @@ export const transformStyle = {
 
       const transformString = value.functions
         .map((func) => {
-          const getFunctionValueCount = (funcName: string) => {
-            switch (funcName) {
-              case "scale":
-              case "scaleX":
-              case "scaleY":
-                return 1;
-              case "rotate":
-                return 1;
-              case "translateX":
-              case "translateY":
-                return 1;
-              case "translate":
-                return 2;
-              case "skewX":
-              case "skewY":
-                return 1;
-              case "skew":
-                return 2;
-              default:
-                return 1;
-            }
-          };
-
-          const getFunctionUnits = (funcName: string) => {
-            switch (funcName) {
-              case "scale":
-              case "scaleX":
-              case "scaleY":
-                return "";
-              case "rotate":
-                return "deg";
-              case "translateX":
-              case "translateY":
-              case "translate":
-                return "px";
-              case "skewX":
-              case "skewY":
-              case "skew":
-                return "deg";
-              default:
-                return "";
-            }
-          };
-
           const valueCount = getFunctionValueCount(func.function);
-          const units = getFunctionUnits(func.function);
+          const renderedValues = Array.from({ length: valueCount }, (_, i) =>
+            renderTransformFunctionValue(func.function, func.values[i]),
+          );
 
-          if (valueCount === 1) {
-            return `${func.function}(${func.values[0]}${units})`;
-          } else if (valueCount === 2) {
-            return `${func.function}(${func.values[0]}${units}, ${func.values[1]}${units})`;
-          }
-
-          return `${func.function}(${func.values.join(", ")})`;
+          return `${func.function}(${renderedValues.join(", ")})`;
         })
         .join(" ");
 

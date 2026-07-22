@@ -151,24 +151,31 @@ pageBuilder:
       opacity: Opacity
       backgroundColorOpacity: Background Color Opacity
       cursor: Cursor
+      pointerEvents: Pointer Events
+      userSelect: User Select
       hide: Hide
       gap: Gap
       flexDirection: Flex Direction
       justifyContent: Justify Content
       justifyItems: Justify Items
+      justifySelf: Justify Self
       alignItems: Align Items
+      alignSelf: Align Self
       alignContent: Align Content
+      order: Order
       flexWrap: Flex Wrap
       flexBasis: Flex Basis
       flexGrow: Flex Grow
       flexShrink: Flex Shrink
       gridTemplateColumns: Grid Template Columns
       gridTemplateRows: Grid Template Rows
+      gridAutoFlow: Grid Auto Flow
       gridColumnStart: Grid Column Start
       gridColumnEnd: Grid Column End
       gridRowStart: Grid Row Start
       gridRowEnd: Grid Row End
       transform: Transform
+      transformOrigin: Transform Origin
       transition: Transition
       animation: Animation
       animationName: Animation Name
@@ -183,11 +190,17 @@ pageBuilder:
       transitionTimingFunction: Transition Timing Function
       selectTransitionProperties: Select transition properties...
       filter: Filter
+      backdropFilter: Backdrop Filter
       objectFit: Object Fit
       objectPosition: Object Position
       fill: Fill
       verticalAlign: Vertical Align
       zoom: Zoom
+      whiteSpace: White Space
+      textOverflow: Text Overflow
+      textShadow: Text Shadow
+      wordBreak: Word Break
+      overflowWrap: Overflow Wrap
     shortcuts: Quick Settings
     fontWeight:
       "100": 100 (Thin)
@@ -301,12 +314,31 @@ pageBuilder:
       end: End
       center: Center
       stretch: Stretch
+    justifySelf:
+      auto: Auto
+      start: Start
+      end: End
+      center: Center
+      stretch: Stretch
     alignItems:
       flex-start: Flex Start
       flex-end: Flex End
       center: Center
       baseline: Baseline
       stretch: Stretch
+    alignSelf:
+      auto: Auto
+      flex-start: Flex Start
+      flex-end: Flex End
+      center: Center
+      baseline: Baseline
+      stretch: Stretch
+    gridAutoFlow:
+      row: Row
+      column: Column
+      dense: Dense
+      row_dense: Row Dense
+      column_dense: Column Dense
     contentInput:
       helperText: >-
         For text values, wrap them in quotes (use "" for empty content, or " "
@@ -485,6 +517,53 @@ pageBuilder:
       saturate_0_5: Saturate 50%
       saturate_1_5: Saturate 150%
       sepia_100: Sepia 100%
+      custom: Custom
+      function: "Function {index}"
+      functionType: Function Type
+      values: Values
+      addFunction: Add Function
+      filterFunctions:
+        blur: Blur
+        brightness: Brightness
+        contrast: Contrast
+        grayscale: Grayscale
+        hue_rotate: Hue Rotate
+        invert: Invert
+        opacity: Opacity
+        saturate: Saturate
+        sepia: Sepia
+    backdropFilter:
+      none: None
+      blur_1px: Blur 1px
+      blur_2px: Blur 2px
+      blur_4px: Blur 4px
+      brightness_0_5: Brightness 50%
+      brightness_0_9: Brightness 90%
+      brightness_1_1: Brightness 110%
+      brightness_1_5: Brightness 150%
+      contrast_0_5: Contrast 50%
+      contrast_1_5: Contrast 150%
+      grayscale_100: Grayscale 100%
+      hue_rotate_90deg: Hue Rotate 90°
+      invert_100: Invert 100%
+      saturate_0_5: Saturate 50%
+      saturate_1_5: Saturate 150%
+      sepia_100: Sepia 100%
+      custom: Custom
+      function: "Function {index}"
+      functionType: Function Type
+      values: Values
+      addFunction: Add Function
+      filterFunctions:
+        blur: Blur
+        brightness: Brightness
+        contrast: Contrast
+        grayscale: Grayscale
+        hue_rotate: Hue Rotate
+        invert: Invert
+        opacity: Opacity
+        saturate: Saturate
+        sepia: Sepia
     position:
       static: Static
       relative: Relative
@@ -587,6 +666,48 @@ pageBuilder:
       crosshair: Crosshair
       grab: Grab
       grabbing: Grabbing
+    pointerEvents:
+      auto: Auto
+      none: None
+    userSelect:
+      auto: Auto
+      none: None
+      text: Text
+      all: All
+    transformOrigin:
+      center: Center
+      top: Top
+      top_left: Top Left
+      top_right: Top Right
+      left: Left
+      right: Right
+      bottom: Bottom
+      bottom_left: Bottom Left
+      bottom_right: Bottom Right
+    whiteSpace:
+      normal: Normal
+      nowrap: No Wrap
+      pre: Pre
+      pre_wrap: Pre Wrap
+      pre_line: Pre Line
+      break_spaces: Break Spaces
+    textOverflow:
+      clip: Clip
+      ellipsis: Ellipsis
+    textShadow:
+      xOffset: X Offset
+      yOffset: Y Offset
+      blur: Blur
+      color: Color
+    wordBreak:
+      normal: Normal
+      break_all: Break All
+      keep_all: Keep All
+      break_word: Break Word
+    overflowWrap:
+      normal: Normal
+      break_word: Break Word
+      anywhere: Anywhere
     boxShadow:
       xOffset: X Offset
       yOffset: Y Offset

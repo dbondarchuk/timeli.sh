@@ -153,24 +153,31 @@ pageBuilder:
       opacity: Прозорість
       backgroundColorOpacity: Прозорість кольору фону
       cursor: Курсор
+      pointerEvents: Події вказівника
+      userSelect: Виділення тексту
       hide: Приховати
       gap: Проміжок
       flexDirection: Напрямок Flex
       justifyContent: Вирівнювання по горизонталі
       justifyItems: Вирівнювання елементів
+      justifySelf: Вирівнювання себе по горизонталі
       alignItems: Вирівнювання по вертикалі
+      alignSelf: Вирівнювання себе
       alignContent: Вирівнювання вмісту
+      order: Порядок
       flexWrap: Перенос Flex
       flexBasis: Базова ширина Flex
       flexGrow: Розтягування Flex
       flexShrink: Стиснення Flex
       gridTemplateColumns: Шаблон колонок сітки
       gridTemplateRows: Шаблон рядків сітки
+      gridAutoFlow: Автопотік сітки
       gridColumnStart: Початок колонки сітки
       gridColumnEnd: Кінець колонки сітки
       gridRowStart: Початок рядка сітки
       gridRowEnd: Кінець рядка сітки
       transform: Трансформація
+      transformOrigin: Початок трансформації
       transition: Перехід
       animation: Анімація
       animationName: Назва анімації
@@ -185,11 +192,17 @@ pageBuilder:
       transitionTimingFunction: Функція часу переходу
       selectTransitionProperties: Виберіть властивості переходу...
       filter: Фільтр
+      backdropFilter: Фільтр фону
       objectFit: Заповнення контейнера
       objectPosition: Позиція об'єкта
       fill: Заливка
       verticalAlign: Вертикальне вирівнювання
       zoom: Масштаб
+      whiteSpace: Пробіли
+      textOverflow: Переповнення тексту
+      textShadow: Тінь тексту
+      wordBreak: Розрив слів
+      overflowWrap: Перенос переповнення
     shortcuts: Швидкі налаштування
     fontWeight:
       "100": 100 (Тонкий)
@@ -307,12 +320,31 @@ pageBuilder:
       end: Кінець
       center: По центру
       stretch: Розтягнути
+    justifySelf:
+      auto: Авто
+      start: Початок
+      end: Кінець
+      center: По центру
+      stretch: Розтягнути
     alignItems:
       flex-start: Початок Flex
       flex-end: Кінець Flex
       center: По центру
       baseline: Базова лінія
       stretch: Розтягнути
+    alignSelf:
+      auto: Авто
+      flex-start: Початок Flex
+      flex-end: Кінець Flex
+      center: По центру
+      baseline: Базова лінія
+      stretch: Розтягнути
+    gridAutoFlow:
+      row: Рядок
+      column: Колонка
+      dense: Щільний
+      row_dense: Рядок щільний
+      column_dense: Колонка щільна
     contentInput:
       helperText: >-
         Для текстових значень беріть їх у лапки ("" для порожнього вмісту, або "
@@ -495,6 +527,53 @@ pageBuilder:
       saturate_0_5: Насиченість 50%
       saturate_1_5: Насиченість 150%
       sepia_100: Сепія 100%
+      custom: Користувацький
+      function: "Функція {index}"
+      functionType: Тип функції
+      values: Значення
+      addFunction: Додати функцію
+      filterFunctions:
+        blur: Розмиття
+        brightness: Яскравість
+        contrast: Контраст
+        grayscale: Відтінки сірого
+        hue_rotate: Поворот відтінку
+        invert: Інвертування
+        opacity: Прозорість
+        saturate: Насиченість
+        sepia: Сепія
+    backdropFilter:
+      none: Немає
+      blur_1px: Розмиття 1px
+      blur_2px: Розмиття 2px
+      blur_4px: Розмиття 4px
+      brightness_0_5: Яскравість 50%
+      brightness_0_9: Яскравість 90%
+      brightness_1_1: Яскравість 110%
+      brightness_1_5: Яскравість 150%
+      contrast_0_5: Контраст 50%
+      contrast_1_5: Контраст 150%
+      grayscale_100: Відтінки сірого 100%
+      hue_rotate_90deg: Поворот відтінку 90°
+      invert_100: Інвертування 100%
+      saturate_0_5: Насиченість 50%
+      saturate_1_5: Насиченість 150%
+      sepia_100: Сепія 100%
+      custom: Користувацький
+      function: "Функція {index}"
+      functionType: Тип функції
+      values: Значення
+      addFunction: Додати функцію
+      filterFunctions:
+        blur: Розмиття
+        brightness: Яскравість
+        contrast: Контраст
+        grayscale: Відтінки сірого
+        hue_rotate: Поворот відтінку
+        invert: Інвертування
+        opacity: Прозорість
+        saturate: Насиченість
+        sepia: Сепія
     position:
       static: Статичний
       relative: Відносний
@@ -599,6 +678,48 @@ pageBuilder:
       crosshair: Перехресний
       grab: Захоплення
       grabbing: Захоплює
+    pointerEvents:
+      auto: Авто
+      none: Немає
+    userSelect:
+      auto: Авто
+      none: Немає
+      text: Текст
+      all: Усе
+    transformOrigin:
+      center: Центр
+      top: Зверху
+      top_left: Зверху ліворуч
+      top_right: Зверху праворуч
+      left: Ліворуч
+      right: Праворуч
+      bottom: Знизу
+      bottom_left: Знизу ліворуч
+      bottom_right: Знизу праворуч
+    whiteSpace:
+      normal: Звичайний
+      nowrap: Без переносу
+      pre: Як є
+      pre_wrap: Як є з переносом
+      pre_line: Як є з рядками
+      break_spaces: Розбивати пробіли
+    textOverflow:
+      clip: Обрізати
+      ellipsis: Трикрапка
+    textShadow:
+      xOffset: Зміщення X
+      yOffset: Зміщення Y
+      blur: Розмиття
+      color: Колір
+    wordBreak:
+      normal: Звичайний
+      break_all: Розбивати все
+      keep_all: Зберігати все
+      break_word: Розбивати слова
+    overflowWrap:
+      normal: Звичайний
+      break_word: Розбивати слова
+      anywhere: Будь-де
     boxShadow:
       xOffset: Зміщення X
       yOffset: Зміщення Y
