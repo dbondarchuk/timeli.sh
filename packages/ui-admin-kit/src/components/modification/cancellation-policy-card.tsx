@@ -487,7 +487,7 @@ export const CancellationPolicyCard: React.FC<
         <div className="flex min-w-0 flex-1 flex-col items-start gap-0.5">
           <span
             className={cn(
-              "text-xs font-semibold uppercase tracking-wide text-muted-foreground",
+              "text-sm font-semibold uppercase tracking-wide text-muted-foreground",
               !isValid && "text-destructive",
             )}
           >
@@ -496,7 +496,7 @@ export const CancellationPolicyCard: React.FC<
           {!!minutesToAppointment && (
             <span
               className={cn(
-                "text-xs font-medium leading-snug text-muted-foreground",
+                "text-sm font-medium leading-snug text-muted-foreground",
                 !isValid && "text-destructive",
               )}
             >

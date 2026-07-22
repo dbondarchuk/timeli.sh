@@ -14,26 +14,26 @@ export const ActivityActorDisplayView: React.FC<{
   switch (actor.kind) {
     case "system":
       return (
-        <span className={cn("text-xs", className)}>
+        <span className={cn("text-sm", className)}>
           {t("activity.actor.system")}
         </span>
       );
     case "user":
       return (
-        <span className={cn("text-xs", className)}>
+        <span className={cn("text-sm", className)}>
           {t("activity.actor.user", { name: actor.name })}
         </span>
       );
     case "visitor":
       return (
-        <span className={cn("text-xs", className)}>
+        <span className={cn("text-sm", className)}>
           {t("activity.actor.visitor", { name: actor.name })}
         </span>
       );
     case "customer":
       return (
         <span
-          className={cn("text-xs inline-flex items-center gap-1", className)}
+          className={cn("text-sm inline-flex items-center gap-1", className)}
         >
           {t.rich("activity.actor.customer", {
             link: () => (

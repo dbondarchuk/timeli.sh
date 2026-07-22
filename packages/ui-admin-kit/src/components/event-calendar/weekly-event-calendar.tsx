@@ -54,13 +54,13 @@ const ShiftDisplay: React.FC<{
           )}
           style={style}
         >
-          <div className="text-sm font-medium flex items-center text-accent-foreground">
+          <div className="text-base font-medium flex items-center text-accent-foreground">
             <Clock className="h-4 w-4 mr-2" />
             <span>{t("calendar.workingHours")}</span>
           </div>
           <div className="mt-1 flex flex-col gap-1">
             {schedule.map((hours, idx) => (
-              <div key={idx} className="text-sm text-accent-foreground/80">
+              <div key={idx} className="text-base text-accent-foreground/80">
                 {formatTimeLocale(parseTime(hours.start), locale)} -{" "}
                 {formatTimeLocale(parseTime(hours.end), locale)}
               </div>
@@ -229,7 +229,7 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
       };
 
       const classes = cn(
-        "flex max-h-full flex-col break-words rounded-lg p-[7px_8px_6px] text-[12px] leading-[18px] no-underline transition-[background-color] z-[2] hover:z-[4] hover:h-min hover:max-h-none hover:min-h-full cursor-pointer shadow-sm",
+        "flex max-h-full flex-col break-words rounded-lg p-[7px_8px_6px] text-[14px] leading-[18px] no-underline transition-[background-color] z-[2] hover:z-[4] hover:h-min hover:max-h-none hover:min-h-full cursor-pointer shadow-sm",
         colStartClass,
         event.isMultiDay && colSpanClass,
         rowStartClass,
@@ -278,7 +278,7 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
       };
 
       const classes = cn(
-        "bg-accent/50 dark:bg-accent/10 flex max-h-full flex-col p-[7px_6px_5px] text-[13px] leading-[20px] no-underline transition-[background-color] z-[1]",
+        "bg-accent/50 dark:bg-accent/10 flex max-h-full flex-col p-[7px_6px_5px] text-[15px] leading-[20px] no-underline transition-[background-color] z-[1]",
         colStartClass,
         rowStartClass,
         colSpanClass,
@@ -320,7 +320,7 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
               <Fragment key={`date-${date.toISO()}`}>
                 <div
                   className={cn(
-                    "row-start-1 col-span-1 px-2 py-4 text-center text-xs",
+                    "row-start-1 col-span-1 px-2 py-4 text-center text-sm",
                     colStartClass,
                   )}
                   style={{
@@ -328,12 +328,12 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
                   }}
                 >
                   <div className="flex flex-col items-center gap-1.5">
-                    <span className="text-muted-foreground font-medium tracking-wide uppercase text-[11px]">
+                    <span className="text-muted-foreground font-medium tracking-wide uppercase text-[13px]">
                       {date.toFormat("EEE", { locale })}
                     </span>
                     <span
                       className={cn(
-                        "inline-flex size-8 items-center justify-center rounded-full text-sm font-medium tabular-nums",
+                        "inline-flex size-8 items-center justify-center rounded-full text-base font-medium tabular-nums",
                         isToday &&
                           "bg-primary text-primary-foreground shadow-sm",
                         !isToday && "text-foreground",
@@ -345,7 +345,7 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
                 </div>
                 <div
                   className={cn(
-                    "row-start-1 col-span-1 px-2 py-6 text-center text-[13px] text-xs border-r border-border/60",
+                    "row-start-1 col-span-1 px-2 py-6 text-center text-[15px] text-sm border-r border-border/60",
                     colStartClass,
                   )}
                   style={{
@@ -357,7 +357,7 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
           })}
           <div
             className={cn(
-              "row-start-1 col-span-1 px-2 py-6 text-center text-[13px] text-xs border-r border-border/60",
+              "row-start-1 col-span-1 px-2 py-6 text-center text-[15px] text-sm border-r border-border/60",
               colStartClass,
             )}
             style={{
@@ -411,7 +411,7 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
               <div
                 key={index}
                 className={cn(
-                  "text-darkGray row-start-1 row-span-full translate-y-[var(--translate-y)] col-span-1 py-6 text-center text-[13px] text-xs border-r border-border/60",
+                  "text-darkGray row-start-1 row-span-full translate-y-[var(--translate-y)] col-span-1 py-6 text-center text-[15px] text-sm border-r border-border/60",
                   colStartClass,
                 )}
                 style={{
@@ -428,7 +428,7 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
                 <div
                   className={cn(
                     rowStartClass,
-                    "text-darkGray translate-y-[var(--translate-y)] text-xs leading-[30px] col-span-full border-t scroll-m-16",
+                    "text-darkGray translate-y-[var(--translate-y)] text-sm leading-[30px] col-span-full border-t scroll-m-16",
                     time.endsWith("00")
                       ? "col-start-1 border-border/60"
                       : "col-start-2 border-primary/20",
@@ -447,7 +447,7 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
                 <div
                   className={cn(
                     rowStartClass,
-                    "text-darkGray translate-y-[var(--translate-y)] text-xs leading-[30px] col-start-1",
+                    "text-darkGray translate-y-[var(--translate-y)] text-sm leading-[30px] col-start-1",
                   )}
                   style={{
                     "--calendar-row-start": index + 1,
@@ -509,7 +509,7 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
                   >
                     <div className="min-h-0 overflow-hidden">
                       <div
-                        className="text-[10px] opacity-70 mb-0.5"
+                        className="text-[12px] opacity-70 mb-0.5"
                         suppressHydrationWarning
                       >
                         {event.start.toLocaleString(DateTime.TIME_SIMPLE, {

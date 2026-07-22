@@ -73,9 +73,9 @@ const FontLabel = ({ font }: { font: string }) => {
     <div className="flex flex-col gap-0.5">
       <span className="flex min-w-0 items-center gap-2 py-0.5">
         <FontPreviewThumb family={font} />
-        <span className="truncate text-sm">{font}</span>
+        <span className="truncate text-base">{font}</span>
       </span>
-      <span className="text-xs text-muted-foreground">
+      <span className="text-sm text-muted-foreground">
         {t("appearance.styling.form.fonts.variants.label", {
           variants: formatter.list(
             fontsOptions[font].variants.map((variant) =>
@@ -86,7 +86,7 @@ const FontLabel = ({ font }: { font: string }) => {
           ),
         })}
       </span>
-      <span className="text-xs text-muted-foreground">
+      <span className="text-sm text-muted-foreground">
         {t("appearance.styling.form.fonts.subsets.label", {
           subsets: formatter.list(
             fontsOptions[font].subsets.map((subset) =>
@@ -97,7 +97,7 @@ const FontLabel = ({ font }: { font: string }) => {
           ),
         })}
       </span>
-      <span className="text-xs text-muted-foreground">
+      <span className="text-sm text-muted-foreground">
         {t("appearance.styling.form.fonts.category.label", {
           category: t.has(
             `appearance.styling.form.fonts.category.${fontsOptions[font].category}` as any,
@@ -109,7 +109,7 @@ const FontLabel = ({ font }: { font: string }) => {
         })}
       </span>
       <a
-        className="text-sm text-muted-foreground underline"
+        className="text-base text-muted-foreground underline"
         target="_blank"
         rel="noreferrer"
         href={`https://fonts.google.com/specimen/${font.replace(" ", "+")}`}
@@ -166,7 +166,7 @@ export const StylingTab: React.FC<{
       <div className="flex flex-col gap-4">
         <Card>
           <CardHeader className="border-b">
-            <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            <CardTitle className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
               Fonts
             </CardTitle>
           </CardHeader>
@@ -183,7 +183,7 @@ export const StylingTab: React.FC<{
                         allowClear
                         values={fonts}
                         disabled={loading}
-                        className="flex w-full font-normal text-base"
+                        className="flex w-full font-normal text-lg"
                         searchLabel={t("appearance.styling.form.selectFont")}
                         value={field.value}
                         onItemSelect={(value) => {
@@ -206,7 +206,7 @@ export const StylingTab: React.FC<{
                       <Combobox
                         values={fonts}
                         disabled={loading}
-                        className="flex w-full font-normal text-base"
+                        className="flex w-full font-normal text-lg"
                         searchLabel={t("appearance.styling.form.selectFont")}
                         value={field.value}
                         allowClear
@@ -231,7 +231,7 @@ export const StylingTab: React.FC<{
                         allowClear
                         values={fonts}
                         disabled={loading}
-                        className="flex w-full font-normal text-base"
+                        className="flex w-full font-normal text-lg"
                         searchLabel={t("appearance.styling.form.selectFont")}
                         value={field.value}
                         onItemSelect={(value) => {
@@ -266,7 +266,7 @@ export const StylingTab: React.FC<{
                   <CardHeader className="justify-between relative flex flex-row items-center border-b px-3 py-3 w-full">
                     <div
                       className={cn(
-                        "flex flex-col text-xs font-semibold uppercase tracking-wide text-muted-foreground",
+                        "flex flex-col text-sm font-semibold uppercase tracking-wide text-muted-foreground",
                         (!rowType || hasMultipleTypes) && "text-destructive",
                       )}
                     >
@@ -324,7 +324,7 @@ export const StylingTab: React.FC<{
                           <FormControl>
                             <Combobox
                               disabled={loading}
-                              className="flex w-full font-normal text-base"
+                              className="flex w-full font-normal text-lg"
                               values={colorOverrides.map((c) => ({
                                 value: c,
                                 label: t(`appearance.styling.colors.${c}`),

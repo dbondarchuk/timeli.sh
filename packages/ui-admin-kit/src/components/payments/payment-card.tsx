@@ -164,7 +164,7 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
             "appName" in rest ? rest.appName : undefined,
           )}
           <div>
-            <p className="text-sm font-medium text-foreground">
+            <p className="text-base font-medium text-foreground">
               {t(
                 getPaymentMethod(
                   method,
@@ -172,7 +172,7 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
                 ),
               )}
             </p>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               {t(`admin.common.labels.paymentMethod.${payment.method}`)}
             </p>
           </div>
@@ -185,20 +185,20 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
       {/* Amount + fields */}
       <div className="px-5 py-4 border-b border-border">
         <div className="flex justify-between items-baseline mb-4">
-          <p className="text-xs text-muted-foreground uppercase tracking-wide">
+          <p className="text-sm text-muted-foreground uppercase tracking-wide">
             {t("admin.payment.card.amount")}
           </p>
-          <p className="text-xl font-medium text-foreground">
+          <p className="text-2xl font-medium text-foreground">
             {currencyFormat(amount)}
           </p>
         </div>
         <div className="flex flex-col gap-2.5">
           {"customerName" in rest && !!rest.customerId && (
             <div className="flex justify-between items-center">
-              <span className="text-xs text-muted-foreground">
+              <span className="text-sm text-muted-foreground">
                 {t("admin.payment.card.customer")}
               </span>
-              <span className="text-xs font-medium text-foreground">
+              <span className="text-sm font-medium text-foreground">
                 <Link
                   href={`/dashboard/customers/${rest.customerId}`}
                   variant="underline"
@@ -209,17 +209,17 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
             </div>
           )}
           <div className="flex justify-between items-center">
-            <span className="text-xs text-muted-foreground">
+            <span className="text-sm text-muted-foreground">
               {t("admin.payment.card.type")}
             </span>
-            <span className="text-xs font-medium text-foreground/60">
+            <span className="text-sm font-medium text-foreground/60">
               {t(`admin.payment.types.${type}`)}
             </span>
           </div>
           {fees && fees.length > 0 && (
             <>
               <div className="flex justify-between items-center">
-                <span className="text-xs text-muted-foreground">
+                <span className="text-sm text-muted-foreground">
                   {t("admin.payment.card.fees")}
                 </span>
               </div>
@@ -228,10 +228,10 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
                   className="flex justify-between items-center pl-4"
                   key={fee.type + index + fee.amount}
                 >
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-sm text-muted-foreground">
                     {t(`admin.payment.feeTypes.${fee.type}`)}
                   </span>
-                  <span className="text-xs font-medium text-foreground/60">
+                  <span className="text-sm font-medium text-foreground/60">
                     {currencyFormat(-1 * fee.amount)}
                   </span>
                 </div>
@@ -240,23 +240,23 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
           )}
           {"externalId" in rest && (
             <div className="flex justify-between items-center">
-              <span className="text-xs text-muted-foreground">
+              <span className="text-sm text-muted-foreground">
                 {t("admin.payment.card.transactionId")}
               </span>
-              <code className="text-xs border border-border bg-muted font-mono px-2 py-0.5 rounded-lg">
+              <code className="text-sm border border-border bg-muted font-mono px-2 py-0.5 rounded-lg">
                 {rest.externalId}
               </code>
             </div>
           )}
           {"giftCardCode" in rest && !!rest.giftCardId && (
             <div className="flex justify-between items-center">
-              <span className="text-xs text-muted-foreground">
+              <span className="text-sm text-muted-foreground">
                 {t("admin.payment.card.giftCardCode")}
               </span>
               <Link
                 href={`/dashboard/services/gift-cards/${rest.giftCardId}`}
                 variant="none"
-                className="text-xs font-mono text-blue-600 bg-blue-50 border border-blue-100 px-2 py-0.5 rounded-lg"
+                className="text-sm font-mono text-blue-600 bg-blue-50 border border-blue-100 px-2 py-0.5 rounded-lg"
               >
                 {rest.giftCardCode}
               </Link>
@@ -264,10 +264,10 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
           )}
           {"serviceName" in rest && !!rest.appointmentId && (
             <div className="flex justify-between items-center">
-              <span className="text-xs text-muted-foreground">
+              <span className="text-sm text-muted-foreground">
                 {t("admin.payment.card.appointment")}
               </span>
-              <span className="text-xs font-medium text-foreground">
+              <span className="text-sm font-medium text-foreground">
                 <Link
                   href={`/dashboard/appointments/${rest.appointmentId}`}
                   variant="underline"
@@ -278,12 +278,12 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
             </div>
           )}
           <div className="flex justify-between items-center">
-            <span className="text-xs text-muted-foreground">
+            <span className="text-sm text-muted-foreground">
               {t("admin.payment.card.timePaid")}
             </span>
             <TooltipResponsive>
               <TooltipResponsiveTrigger>
-                <span className="text-xs text-foreground/60 underline decoration-dashed cursor-help">
+                <span className="text-sm text-foreground/60 underline decoration-dashed cursor-help">
                   {dateTime.setLocale(locale).toRelative()}
                 </span>
               </TooltipResponsiveTrigger>
@@ -296,10 +296,10 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
           </div>
           {description && (
             <div className="flex justify-between items-center">
-              <span className="text-xs text-muted-foreground">
+              <span className="text-sm text-muted-foreground">
                 {t("admin.payment.card.description")}
               </span>
-              <span className="text-xs text-foreground/60">
+              <span className="text-sm text-foreground/60">
                 {t.has(getPaymentDescription(description))
                   ? t(getPaymentDescription(description))
                   : description}
@@ -318,12 +318,12 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
           <div className="flex flex-col gap-2">
             {refundedDateTime?.isValid && (
               <div className="flex justify-between items-center">
-                <span className="text-xs text-destructive/80">
+                <span className="text-sm text-destructive/80">
                   {t("admin.payment.card.timeRefunded")}
                 </span>
                 <TooltipResponsive>
                   <TooltipResponsiveTrigger>
-                    <span className="text-xs text-destructive underline decoration-dashed cursor-help">
+                    <span className="text-sm text-destructive underline decoration-dashed cursor-help">
                       {refundedDateTime.setLocale(locale).toRelative()}
                     </span>
                   </TooltipResponsiveTrigger>
@@ -336,12 +336,12 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
               </div>
             )}
             <div className="flex justify-between items-center">
-              <span className="text-xs text-destructive/80">
+              <span className="text-sm text-destructive/80">
                 {t("admin.payment.card.refunded")}
               </span>
               <TooltipResponsive>
                 <TooltipResponsiveTrigger>
-                  <span className="text-xs text-destructive underline decoration-dashed cursor-help">
+                  <span className="text-sm text-destructive underline decoration-dashed cursor-help">
                     {currencyFormat(-1 * totalRefunded)}
                   </span>
                 </TooltipResponsiveTrigger>
@@ -366,10 +366,10 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
               </TooltipResponsive>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-xs text-destructive/80">
+              <span className="text-sm text-destructive/80">
                 {t("admin.payment.card.amountLeft")}
               </span>
-              <span className="text-xs font-medium text-destructive">
+              <span className="text-sm font-medium text-destructive">
                 {currencyFormat(amount - totalRefunded)}
               </span>
             </div>
@@ -381,10 +381,10 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
 
       {/* Net amount */}
       <div className="flex justify-between items-center px-5 py-3.5 bg-muted/30 dark:bg-muted/80 border-b border-border">
-        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+        <p className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
           {t("admin.payment.card.netAmount")}
         </p>
-        <p className="text-base font-medium text-foreground">
+        <p className="text-lg font-medium text-foreground">
           {currencyFormat(
             amount -
               (fees?.reduce((acc, fee) => acc + fee.amount, 0) || 0) -

@@ -120,7 +120,7 @@ export const FieldSelectCard: React.FC<FieldSelectProps> = ({
             </span>
             <GripVertical />
           </Button>
-          <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          <span className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
             {t("services.fieldSelectCard.field")}
           </span>
         </div>
@@ -173,7 +173,7 @@ export const FieldSelectCard: React.FC<FieldSelectProps> = ({
                 <FieldSelector
                   disabled={disabled}
                   excludeIds={excludeIds}
-                  className="flex w-full font-normal text-base"
+                  className="flex w-full font-normal text-lg"
                   value={field.value}
                   onItemSelect={field.onChange}
                 />

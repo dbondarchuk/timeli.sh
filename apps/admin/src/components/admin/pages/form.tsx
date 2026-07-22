@@ -356,7 +356,7 @@ export const PageForm: React.FC<{
                   <FormItem className="w-full">
                     <FormControl>
                       <Input
-                        className="md:text-xl lg:text-2xl font-bold tracking-tight border-0 w-full"
+                        className="md:text-2xl lg:text-2xl font-bold tracking-tight border-0 w-full"
                         autoFocus
                         h={"lg"}
                         disabled={loading}
@@ -384,14 +384,14 @@ export const PageForm: React.FC<{
                             "border-0 pt-2.5",
                           )}
                         >
-                          <span className="text-sm text-muted-foreground">
+                          <span className="text-base text-muted-foreground">
                             /
                           </span>
                         </InputGroupAddon>
                         <InputGroupInput>
                           <Input
                             className={cn(
-                              "text-sm text-muted-foreground",
+                              "text-base text-muted-foreground",
                               InputGroupInputClasses({ variant: "prefix" }),
                               "pl-0.5 border-0",
                             )}

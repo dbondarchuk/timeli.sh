@@ -71,7 +71,7 @@ py-2 px-3 leading-tight text-background shadow focus:outline-none"
                     className="w-full object-contain max-h-[30vh]"
                   />
                 ) : (
-                  <div className="flex flex-col gap-2 text-sm justify-center">
+                  <div className="flex flex-col gap-2 text-base justify-center">
                     <div className="max-w-10 flex self-center">
                       <FileIcon
                         extension={file.name.substring(

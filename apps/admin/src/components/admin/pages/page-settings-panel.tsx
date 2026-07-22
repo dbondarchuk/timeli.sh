@@ -142,7 +142,7 @@ export const PageSettingsPanel = memo(
                   value={field.value}
                   className="w-full"
                   classNames={{
-                    trigger: "h-8 text-xs",
+                    trigger: "h-8 text-sm",
                   }}
                 />
               </FormControl>
@@ -248,7 +248,7 @@ export const PageSettingsPanel = memo(
                   autoResize
                   placeholder={t("pages.form.descriptionPlaceholder")}
                   {...field}
-                  className="text-xs px-2 py-1"
+                  className="text-sm px-2 py-1"
                 />
               </FormControl>
               <FormMessage />
@@ -271,7 +271,7 @@ export const PageSettingsPanel = memo(
                 <InfoTooltip>
                   <p>{t("pages.form.doNotCombineTitleTooltip")}</p>
                   <p>
-                    <code className="text-xs sm:text-sm inline-flex text-left items-center space-x-4 bg-gray-800 text-white rounded-lg p-2">
+                    <code className="text-sm sm:text-base inline-flex text-left items-center space-x-4 bg-gray-800 text-white rounded-lg p-2">
                       {"{page title} | {website title}"}
                     </code>
                   </p>
@@ -296,7 +296,7 @@ export const PageSettingsPanel = memo(
                 <InfoTooltip>
                   <p>{t("pages.form.doNotCombineDescriptionTooltip")}</p>
                   <p>
-                    <code className="text-xs sm:text-sm inline-flex text-left items-center space-x-4 bg-gray-800 text-white rounded-lg p-2">
+                    <code className="text-sm sm:text-base inline-flex text-left items-center space-x-4 bg-gray-800 text-white rounded-lg p-2">
                       {"{website description}"}
                       <br />
                       {"{page description}"}
@@ -323,7 +323,7 @@ export const PageSettingsPanel = memo(
                 <InfoTooltip>
                   <p>{t("pages.form.doNotCombineKeywordsTooltip")}</p>
                   <p>
-                    <code className="text-xs sm:text-sm inline-flex text-left items-center space-x-4 bg-gray-800 text-white rounded-lg p-2">
+                    <code className="text-sm sm:text-base inline-flex text-left items-center space-x-4 bg-gray-800 text-white rounded-lg p-2">
                       {"{website keywords}, {page keywords}"}
                     </code>
                   </p>

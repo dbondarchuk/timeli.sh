@@ -285,7 +285,7 @@ export const MenuItemFields: React.FC<MenuItemFieldsProps> = ({
                   value={field.value ?? ""}
                   onChange={field.onChange}
                   placeholder={t("menuItem.fields.labelPlaceholder")}
-                  className="w-full border border-input rounded-md p-2 text-sm sm:text-xs h-8"
+                  className="w-full border border-input rounded-md p-2 text-base sm:text-sm h-8"
                   disabled={disabled}
                   inline
                 />
@@ -324,7 +324,7 @@ export const MenuItemFields: React.FC<MenuItemFieldsProps> = ({
                     <Combobox
                       allowClear
                       disabled={disabled}
-                      className="flex w-full font-normal text-base"
+                      className="flex w-full font-normal text-lg"
                       values={linkVariantsValues}
                       searchLabel={t("menuItem.fields.selectVariant")}
                       value={field.value}
@@ -347,7 +347,7 @@ export const MenuItemFields: React.FC<MenuItemFieldsProps> = ({
                     <Combobox
                       allowClear
                       disabled={disabled}
-                      className="flex w-full font-normal text-base"
+                      className="flex w-full font-normal text-lg"
                       values={linkSizesValues}
                       searchLabel={t("menuItem.fields.selectSize")}
                       value={field.value}
@@ -374,7 +374,7 @@ export const MenuItemFields: React.FC<MenuItemFieldsProps> = ({
                     <Combobox
                       allowClear
                       disabled={disabled}
-                      className="flex w-full font-normal text-base"
+                      className="flex w-full font-normal text-lg"
                       values={buttonVariantsValues}
                       searchLabel={t("menuItem.fields.selectButtonVariant")}
                       value={field.value}
@@ -397,7 +397,7 @@ export const MenuItemFields: React.FC<MenuItemFieldsProps> = ({
                     <Combobox
                       allowClear
                       disabled={disabled}
-                      className="flex w-full font-normal text-base"
+                      className="flex w-full font-normal text-lg"
                       values={buttonSizesValues}
                       searchLabel={t("menuItem.fields.selectSize")}
                       value={field.value}
@@ -424,7 +424,7 @@ export const MenuItemFields: React.FC<MenuItemFieldsProps> = ({
                     <Combobox
                       allowClear
                       disabled={disabled}
-                      className="flex w-full font-normal text-base"
+                      className="flex w-full font-normal text-lg"
                       values={textFontValues}
                       searchLabel={t("menuItem.fields.selectTextFont")}
                       value={field.value}
@@ -447,7 +447,7 @@ export const MenuItemFields: React.FC<MenuItemFieldsProps> = ({
                     <Combobox
                       allowClear
                       disabled={disabled}
-                      className="flex w-full font-normal text-base"
+                      className="flex w-full font-normal text-lg"
                       values={textSizesValues}
                       searchLabel={t("menuItem.fields.selectTextSize")}
                       value={field.value}
@@ -470,7 +470,7 @@ export const MenuItemFields: React.FC<MenuItemFieldsProps> = ({
                     <Combobox
                       allowClear
                       disabled={disabled}
-                      className="flex w-full font-normal text-base"
+                      className="flex w-full font-normal text-lg"
                       values={textWeightsValues}
                       searchLabel={t("menuItem.fields.selectTextWeight")}
                       value={field.value}

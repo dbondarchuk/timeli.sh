@@ -20,10 +20,10 @@ export type DurationInputProps = Omit<
 };
 
 const sizes: Record<NonNullable<InputProps["h"]>, string> = {
-  lg: "text-base py-2",
-  md: "text-sm py-2",
-  sm: "text-xs py-2",
-  xs: "text-xs py-1",
+  lg: "py-2",
+  md: "py-2",
+  sm: "py-2",
+  xs: "py-1",
 };
 
 export const DurationInput: React.FC<DurationInputProps> = ({

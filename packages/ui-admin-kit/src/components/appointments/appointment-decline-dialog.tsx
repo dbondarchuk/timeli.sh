@@ -140,7 +140,7 @@ const PaymentRefundCard = ({
             "appName" in payment ? payment.appName : undefined,
           )}
           <div>
-            <p className="text-sm font-medium text-foreground">
+            <p className="text-base font-medium text-foreground">
               {t(
                 getPaymentMethod(
                   payment.method,
@@ -148,7 +148,7 @@ const PaymentRefundCard = ({
                 ),
               )}
             </p>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               {t(`admin.common.labels.paymentMethod.${payment.method}`)}
             </p>
           </div>
@@ -160,10 +160,10 @@ const PaymentRefundCard = ({
 
       <div className="px-5 py-4 border-b border-border">
         <div className="flex justify-between items-baseline mb-4">
-          <p className="text-xs text-muted-foreground uppercase tracking-wide">
+          <p className="text-sm text-muted-foreground uppercase tracking-wide">
             {t("admin.appointments.declineDialog.amount")}
           </p>
-          <p className="text-xl font-medium text-foreground">
+          <p className="text-2xl font-medium text-foreground">
             {currencyFormat(payment.amount)}
           </p>
         </div>
@@ -171,7 +171,7 @@ const PaymentRefundCard = ({
           {payment.fees && payment.fees.length > 0 && (
             <>
               <div className="flex justify-between items-center">
-                <span className="text-xs text-muted-foreground">
+                <span className="text-sm text-muted-foreground">
                   {t("admin.appointments.declineDialog.fees")}
                 </span>
               </div>
@@ -180,10 +180,10 @@ const PaymentRefundCard = ({
                   className="flex justify-between items-center pl-4"
                   key={fee.type + index + fee.amount}
                 >
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-sm text-muted-foreground">
                     {t(`admin.payment.feeTypes.${fee.type}`)}
                   </span>
-                  <span className="text-xs font-medium text-foreground/60">
+                  <span className="text-sm font-medium text-foreground/60">
                     {currencyFormat(-1 * fee.amount)}
                   </span>
                 </div>
@@ -192,35 +192,35 @@ const PaymentRefundCard = ({
           )}
           {"externalId" in payment && (
             <div className="flex justify-between items-center">
-              <span className="text-xs text-muted-foreground">
+              <span className="text-sm text-muted-foreground">
                 {t("admin.appointments.declineDialog.transactionId")}
               </span>
-              <code className="text-xs border border-border bg-muted font-mono px-2 py-0.5 rounded-lg">
+              <code className="text-sm border border-border bg-muted font-mono px-2 py-0.5 rounded-lg">
                 {payment.externalId}
               </code>
             </div>
           )}
           {"giftCardCode" in payment && !!payment.giftCardId && (
             <div className="flex justify-between items-center">
-              <span className="text-xs text-muted-foreground">
+              <span className="text-sm text-muted-foreground">
                 {t("admin.appointments.declineDialog.giftCardCode")}
               </span>
               <Link
                 href={`/dashboard/services/gift-cards/${payment.giftCardId}`}
                 variant="none"
-                className="text-xs font-mono text-blue-600 bg-blue-50 border border-blue-100 px-2 py-0.5 rounded-lg"
+                className="text-sm font-mono text-blue-600 bg-blue-50 border border-blue-100 px-2 py-0.5 rounded-lg"
               >
                 {payment.giftCardCode}
               </Link>
             </div>
           )}
           <div className="flex justify-between items-center">
-            <span className="text-xs text-muted-foreground">
+            <span className="text-sm text-muted-foreground">
               {t("admin.appointments.declineDialog.timePaid")}
             </span>
             <TooltipResponsive>
               <TooltipResponsiveTrigger>
-                <span className="text-xs text-foreground/60 underline decoration-dashed cursor-help">
+                <span className="text-sm text-foreground/60 underline decoration-dashed cursor-help">
                   {dateTime.setLocale(locale).toRelative()}
                 </span>
               </TooltipResponsiveTrigger>
@@ -233,10 +233,10 @@ const PaymentRefundCard = ({
           </div>
           {payment.description && (
             <div className="flex justify-between items-center">
-              <span className="text-xs text-muted-foreground">
+              <span className="text-sm text-muted-foreground">
                 {t("admin.appointments.declineDialog.paymentDescription")}
               </span>
-              <span className="text-xs text-foreground/60">
+              <span className="text-sm text-foreground/60">
                 {t.has(getPaymentDescription(payment.description))
                   ? t(getPaymentDescription(payment.description))
                   : payment.description}
@@ -245,7 +245,7 @@ const PaymentRefundCard = ({
           )}
 
           {payment.status === "refunded" && (
-            <div className="flex justify-between items-center text-sm">
+            <div className="flex justify-between items-center text-base">
               <span className="text-foreground/80">
                 {t("admin.appointments.declineDialog.refunded")}
               </span>
@@ -255,7 +255,7 @@ const PaymentRefundCard = ({
             </div>
           )}
           <div
-            className="flex justify-between items-center text-sm"
+            className="flex justify-between items-center text-base"
             onClick={(e) => isSelected && e.stopPropagation()}
           >
             <div className="flex flex-col gap-2">
@@ -428,7 +428,7 @@ export const AppointmentDeclineDialog: React.FC<{
               <h4 className="font-semibold mb-3">
                 {t("admin.appointments.declineDialog.appointmentDetails")}
               </h4>
-              <div className="space-y-2 text-xs text-muted-foreground">
+              <div className="space-y-2 text-sm text-muted-foreground">
                 <div className="flex justify-between">
                   <span className="">
                     {t("admin.appointments.declineDialog.customer")}

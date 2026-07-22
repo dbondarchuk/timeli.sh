@@ -160,7 +160,7 @@ export const AppointmentFiles = ({ appointment }: AppointmentFilesProps) => {
                   </div>
                 ) : (
                   <div
-                    className="flex flex-col gap-2 text-sm justify-center"
+                    className="flex flex-col gap-2 text-base justify-center"
                     key={file.name}
                   >
                     <div className="max-w-10 flex self-center">
@@ -182,7 +182,7 @@ export const AppointmentFiles = ({ appointment }: AppointmentFilesProps) => {
             ))}
             <div className="absolute top-0 bottom-0 right-0 left-0 bg-background/50 flex items-center flex-col gap-2 justify-center">
               <Spinner className="w-5 h-5" />
-              <span className="text-sm">{progress}%</span>
+              <span className="text-base">{progress}%</span>
             </div>
           </div>
         )}
@@ -234,7 +234,7 @@ export const AppointmentFiles = ({ appointment }: AppointmentFilesProps) => {
               </div>
             ) : (
               <a
-                className="flex flex-col gap-2 text-sm justify-center"
+                className="flex flex-col gap-2 text-base justify-center"
                 href={`/assets/${file.filename}`}
                 target="_blank"
               >

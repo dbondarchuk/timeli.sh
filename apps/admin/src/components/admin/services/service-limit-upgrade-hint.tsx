@@ -13,7 +13,7 @@ export function ServiceLimitUpgradeHint({
   const t = useI18n("admin");
 
   return (
-    <div className={cn("text-xs max-w-md flex flex-col gap-2", className)}>
+    <div className={cn("text-sm max-w-md flex flex-col gap-2", className)}>
       <div>{t("services.options.upgradeRequired")}</div>
       {showLink ? (
         <Link

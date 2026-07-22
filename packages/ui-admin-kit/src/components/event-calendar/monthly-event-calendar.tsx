@@ -89,7 +89,7 @@ export const MonthlyEventCalendar: React.FC<MonthlyEventCalendarProps> = ({
           <div className="flex justify-between items-start gap-1">
             <span
               className={cn(
-                "inline-flex size-7 items-center justify-center rounded-full text-sm font-medium tabular-nums",
+                "inline-flex size-7 items-center justify-center rounded-full text-base font-medium tabular-nums",
                 isToday &&
                   "bg-primary text-primary-foreground shadow-sm",
                 !isToday && !outsideMonth && "text-foreground",
@@ -100,7 +100,7 @@ export const MonthlyEventCalendar: React.FC<MonthlyEventCalendarProps> = ({
             {daySchedule?.length > 0 && (
               <TooltipResponsive>
                 <TooltipResponsiveTrigger>
-                  <span className="text-[10px] bg-accent text-accent-foreground px-1.5 py-0.5 rounded-full flex items-center border border-primary/20">
+                  <span className="text-[12px] bg-accent text-accent-foreground px-1.5 py-0.5 rounded-full flex items-center border border-primary/20">
                     <Clock className="h-3 w-3 md:mr-1" strokeWidth={1.5} />
                     <span className="hidden md:inline">
                       {t("calendar.work")}
@@ -109,7 +109,7 @@ export const MonthlyEventCalendar: React.FC<MonthlyEventCalendarProps> = ({
                 </TooltipResponsiveTrigger>
                 <TooltipResponsiveContent className="bg-transparent">
                   <div className="bg-accent text-accent-foreground p-3 rounded-lg border border-primary/15 shadow-sm">
-                    <div className="text-sm font-medium flex items-center">
+                    <div className="text-base font-medium flex items-center">
                       <Clock className="h-4 w-4 mr-2" strokeWidth={1.5} />
                       <span>{t("calendar.workingHours")}</span>
                     </div>
@@ -117,7 +117,7 @@ export const MonthlyEventCalendar: React.FC<MonthlyEventCalendarProps> = ({
                       {daySchedule.map((hours, idx) => (
                         <div
                           key={idx}
-                          className="text-sm text-accent-foreground/80"
+                          className="text-base text-accent-foreground/80"
                         >
                           {formatTimeLocale(parseTime(hours.start), locale)} -{" "}
                           {formatTimeLocale(parseTime(hours.end), locale)}
@@ -136,7 +136,7 @@ export const MonthlyEventCalendar: React.FC<MonthlyEventCalendarProps> = ({
                 <EventPopover key={idx} event={event}>
                   <div
                     className={cn(
-                      "text-[11px] leading-tight p-1.5 rounded-lg cursor-pointer shadow-sm truncate",
+                      "text-[13px] leading-tight p-1.5 rounded-lg cursor-pointer shadow-sm truncate",
                       EventVariantClasses[event.variant || "primary"] ??
                         EventVariantClasses.primary,
                     )}
@@ -146,7 +146,7 @@ export const MonthlyEventCalendar: React.FC<MonthlyEventCalendarProps> = ({
                     }}
                   >
                     <div
-                      className="opacity-70 text-[10px] mb-0.5"
+                      className="opacity-70 text-[12px] mb-0.5"
                       suppressHydrationWarning
                     >
                       {start.toLocaleString(DateTime.TIME_SIMPLE, { locale })}
@@ -188,7 +188,7 @@ export const MonthlyEventCalendar: React.FC<MonthlyEventCalendarProps> = ({
         ].map((weekday) => (
           <div
             key={weekday}
-            className="text-[11px] font-medium tracking-wide uppercase text-muted-foreground text-center py-3"
+            className="text-[13px] font-medium tracking-wide uppercase text-muted-foreground text-center py-3"
           >
             {weekday}
           </div>

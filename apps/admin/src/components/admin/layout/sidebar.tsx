@@ -40,10 +40,14 @@ import { UserNav } from "./user-nav";
 
 const getItemNotificationKeys = (
   item: NavItemGroup["children"][number],
-): Array<string | undefined> => [
-  item.notificationsCountKey,
-  ...(item.items?.map((subItem) => subItem.notificationsCountKey) ?? []),
-];
+): Array<string | undefined> => {
+  const keys = [
+    item.notificationsCountKey,
+    ...(item.items?.map((subItem) => subItem.notificationsCountKey) ?? []),
+  ].filter((key): key is string => Boolean(key));
+
+  return [...new Set(keys)];
+};
 
 const collectHrefs = (menuItems: NavItemGroup[]): string[] => {
   const hrefs: string[] = [];
@@ -110,13 +114,13 @@ export const AppSidebar: React.FC<SidebarProps> = ({
           <div className="flex aspect-square size-9 items-center justify-center">
             <Avatar className="h-9 w-9 rounded-full ring-1 ring-primary/20">
               <AvatarImage src={logo} alt={name} />
-              <AvatarFallback className="rounded-full bg-primary/10 text-primary font-display text-sm">
+              <AvatarFallback className="rounded-full bg-primary/10 text-primary font-display text-base">
                 {name[0]}
               </AvatarFallback>
             </Avatar>
           </div>
           <div className="grid flex-1 text-left leading-tight">
-            <span className="truncate font-display text-lg font-semibold tracking-tight text-sidebar-accent-foreground">
+            <span className="truncate font-display text-xl font-semibold tracking-tight text-sidebar-accent-foreground">
               {name}
             </span>
           </div>
@@ -125,7 +129,7 @@ export const AppSidebar: React.FC<SidebarProps> = ({
       <SidebarContent className="gap-1 px-2">
         {menuItems.map((group, index) => (
           <SidebarGroup key={index} className="py-1">
-            <SidebarGroupLabel className="px-2 text-[11px] font-medium uppercase tracking-[0.12em] text-muted-foreground/70">
+            <SidebarGroupLabel className="px-2 text-[13px] font-medium uppercase tracking-[0.12em] text-muted-foreground/70">
               {t(group.title)}
             </SidebarGroupLabel>
             <SidebarMenu className="gap-1">
@@ -150,7 +154,7 @@ export const AppSidebar: React.FC<SidebarProps> = ({
                                 size="default"
                                 tooltip={t(item.title)}
                                 isActive={itemActive}
-                                className="rounded-lg text-[15px] text-sidebar-foreground data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground"
+                                className="rounded-lg text-[17px] text-sidebar-foreground data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground"
                               >
                                 {item.icon && (
                                   <SidebarNavIcon
@@ -162,9 +166,9 @@ export const AppSidebar: React.FC<SidebarProps> = ({
                                 )}
                                 <SidebarNavLabel
                                   title={item.title}
-                                  notificationsCountKey={
-                                    item.notificationsCountKey
-                                  }
+                                  notificationKeys={getItemNotificationKeys(
+                                    item,
+                                  )}
                                 />
                                 <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90 size-4 opacity-50" />
                               </SidebarMenuButton>
@@ -176,7 +180,7 @@ export const AppSidebar: React.FC<SidebarProps> = ({
                                     <SidebarMenuSubButton
                                       asChild
                                       isActive={isHrefActive(subItem.href)}
-                                      className="rounded-md text-sm data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground"
+                                      className="rounded-md text-base data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground"
                                     >
                                       <Link href={subItem.href || "/"}>
                                         {subItem.icon && (
@@ -209,7 +213,7 @@ export const AppSidebar: React.FC<SidebarProps> = ({
                                 size="default"
                                 tooltip={t(item.title)}
                                 isActive={itemActive}
-                                className="rounded-lg text-[15px] text-sidebar-foreground data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground"
+                                className="rounded-lg text-[17px] text-sidebar-foreground data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground"
                               >
                                 {item.icon && (
                                   <SidebarNavIcon
@@ -221,9 +225,9 @@ export const AppSidebar: React.FC<SidebarProps> = ({
                                 )}
                                 <SidebarNavLabel
                                   title={item.title}
-                                  notificationsCountKey={
-                                    item.notificationsCountKey
-                                  }
+                                  notificationKeys={getItemNotificationKeys(
+                                    item,
+                                  )}
                                 />
                               </SidebarMenuButton>
                             </DropdownMenuTrigger>
@@ -239,7 +243,7 @@ export const AppSidebar: React.FC<SidebarProps> = ({
                                 <DropdownMenuItem asChild key={subItem.title}>
                                   <Link
                                     href={subItem.href || "/"}
-                                    className="inline-flex items-center gap-2 cursor-pointer text-sidebar-foreground hover:text-sidebar-accent-foreground text-sm"
+                                    className="inline-flex items-center gap-2 cursor-pointer text-sidebar-foreground hover:text-sidebar-accent-foreground text-base"
                                   >
                                     {subItem.icon && (
                                       <SidebarNavIcon
@@ -266,7 +270,7 @@ export const AppSidebar: React.FC<SidebarProps> = ({
                       <SidebarMenuItem>
                         <SidebarMenuButton
                           size="default"
-                          className="rounded-lg text-[15px] text-sidebar-foreground data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground"
+                          className="rounded-lg text-[17px] text-sidebar-foreground data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground"
                           asChild
                           isActive={isHrefActive(item.href)}
                           tooltip={t(item.title)}

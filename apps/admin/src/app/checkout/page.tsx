@@ -82,7 +82,7 @@ export default async function CheckoutPage() {
         <header className="border-b bg-card px-4 py-4 md:px-8">
           <div className="mx-auto flex w-full max-w-3xl items-center gap-2">
             <Image src="/logo.png" alt="Timeli.sh" width={28} height={28} />
-            <div className="text-lg font-semibold tracking-tight">
+            <div className="text-xl font-semibold tracking-tight">
               timeli<span className="text-primary">.sh</span>
             </div>
           </div>
@@ -157,11 +157,11 @@ export default async function CheckoutPage() {
         <div className="mx-auto flex w-full max-w-5xl items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <Image src="/logo.png" alt="Timeli.sh" width={28} height={28} />
-            <div className="text-lg font-semibold tracking-tight">
+            <div className="text-xl font-semibold tracking-tight">
               timeli<span className="text-primary">.sh</span>
             </div>
           </div>
-          <div className="hidden text-sm text-muted-foreground sm:block">
+          <div className="hidden text-base text-muted-foreground sm:block">
             {session.user.name}
           </div>
         </div>
@@ -172,7 +172,7 @@ export default async function CheckoutPage() {
             {t("checkout.title")}
           </h1>
           <p className="text-muted-foreground">{t("checkout.subtitle")}</p>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-base text-muted-foreground">
             {t("checkout.cancellationPolicy")}
           </p>
         </div>

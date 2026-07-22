@@ -220,7 +220,7 @@ export const EditSyncedPaymentAmountsDialog = ({
             </InputGroup>
           </div>
 
-          <div className="flex justify-between text-sm border-t border-border pt-3">
+          <div className="flex justify-between text-base border-t border-border pt-3">
             <span className="text-muted-foreground">
               {t("syncedPayments.editAmounts.total")}
             </span>

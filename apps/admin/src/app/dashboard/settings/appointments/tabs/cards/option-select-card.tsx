@@ -118,7 +118,7 @@ export const OptionSelectCard: React.FC<OptionSelectProps> = ({
             </span>
             <GripVertical />
           </Button>
-          <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          <span className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
             {t("settings.appointments.form.cards.optionSelect.option")}
           </span>
         </div>
@@ -174,7 +174,7 @@ export const OptionSelectCard: React.FC<OptionSelectProps> = ({
                 <OptionSelector
                   disabled={disabled}
                   excludeIds={excludeIds}
-                  className="flex w-full font-normal text-base"
+                  className="flex w-full font-normal text-lg"
                   value={field.value}
                   onItemSelect={field.onChange}
                 />

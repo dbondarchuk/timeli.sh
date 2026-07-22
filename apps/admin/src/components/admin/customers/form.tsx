@@ -166,7 +166,7 @@ export const CustomerForm: React.FC<{
         <div className="grid grid-cols-1 gap-4 md:grid-cols-12">
           <Card className="md:col-span-6 md:col-start-1 md:row-start-1">
             <CardHeader className="border-b">
-              <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              <CardTitle className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
                 {t("customers.form.customerPhoto")}
               </CardTitle>
             </CardHeader>
@@ -184,8 +184,8 @@ export const CustomerForm: React.FC<{
                       className="h-28 w-28 rounded-full object-cover"
                     />
                     <div className="text-center">
-                      <p className="text-xl font-semibold">{name}</p>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-2xl font-semibold">{name}</p>
+                      <p className="text-base text-muted-foreground">
                         {form.watch("email")}
                       </p>
                     </div>
@@ -235,7 +235,7 @@ export const CustomerForm: React.FC<{
 
           <Card className="md:col-span-6 md:col-start-7 md:row-start-1 md:row-span-2">
             <CardHeader className="border-b">
-              <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              <CardTitle className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
                 {t("customers.form.personalInformation")}
               </CardTitle>
             </CardHeader>
@@ -418,7 +418,7 @@ export const CustomerForm: React.FC<{
 
           <Card className="md:col-span-6 md:col-start-1 md:row-start-2">
             <CardHeader className="border-b">
-              <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              <CardTitle className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
                 {t("customers.form.notes")}
               </CardTitle>
             </CardHeader>
@@ -448,7 +448,7 @@ export const CustomerForm: React.FC<{
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <Card>
             <CardHeader className="border-b">
-              <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground flex items-center gap-2 justify-between">
+              <CardTitle className="text-sm font-semibold uppercase tracking-wide text-muted-foreground flex items-center gap-2 justify-between">
                 <div>
                   {t("customers.form.knownNames")}{" "}
                   <InfoTooltip>
@@ -504,7 +504,7 @@ export const CustomerForm: React.FC<{
           </Card>
           <Card>
             <CardHeader className="border-b">
-              <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground flex items-center gap-2 justify-between">
+              <CardTitle className="text-sm font-semibold uppercase tracking-wide text-muted-foreground flex items-center gap-2 justify-between">
                 <div>
                   {t("customers.form.knownEmails")}{" "}
                   <InfoTooltip>
@@ -561,7 +561,7 @@ export const CustomerForm: React.FC<{
           </Card>
           <Card>
             <CardHeader className="border-b">
-              <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground flex items-center gap-2 justify-between">
+              <CardTitle className="text-sm font-semibold uppercase tracking-wide text-muted-foreground flex items-center gap-2 justify-between">
                 <div>
                   {t("customers.form.knownPhones")}{" "}
                   <InfoTooltip>

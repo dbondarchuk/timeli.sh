@@ -15,11 +15,11 @@ const linkVariants = {
 
 const linkSizes = {
   none: "",
-  xs: "text-xs",
-  sm: "text-sm",
+  xs: "text-sm",
+  sm: "text-base",
   md: "text-md",
-  lg: "text-lg",
-  xl: "text-xl",
+  lg: "text-xl",
+  xl: "text-2xl",
 };
 
 export const linkClasses = cva(

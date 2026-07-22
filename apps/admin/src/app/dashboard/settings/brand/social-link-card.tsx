@@ -134,7 +134,7 @@ export function SocialLinkCard<
           </Button>
           <div
             className={cn(
-              "w-full text-center flex flex-col text-xs font-semibold uppercase tracking-wide text-muted-foreground",
+              "w-full text-center flex flex-col text-sm font-semibold uppercase tracking-wide text-muted-foreground",
               !type && "text-destructive",
             )}
           >
@@ -189,7 +189,7 @@ export function SocialLinkCard<
               <FormControl>
                 <Combobox
                   disabled={disabled}
-                  className="flex w-full font-normal text-base"
+                  className="flex w-full font-normal text-lg"
                   values={socialTypeValues}
                   searchLabel={t("settings.social.form.card.selectType")}
                   value={field.value as string}

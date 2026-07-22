@@ -62,7 +62,7 @@ export const AppDetails: React.FC<AppDetailsProps> = async ({ appName }) => {
             )}
             {app.scope.map((scope) => (
               <span
-                className="bg-secondary text-secondary-foreground text-emphasis rounded-md p-2 text-xs capitalize"
+                className="bg-secondary text-secondary-foreground text-emphasis rounded-md p-2 text-sm capitalize"
                 key={scope}
               >
                 {t.has(`apps.scopes.${scope}` as any)

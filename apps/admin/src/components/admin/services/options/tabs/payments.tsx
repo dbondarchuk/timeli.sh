@@ -53,7 +53,7 @@ export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
             <FormControl>
               <Combobox
                 disabled={disabled}
-                className="flex w-full font-normal text-base"
+                className="flex w-full font-normal text-lg"
                 values={isRequiredOptionTypes.map((value) => ({
                   value,
                   label: t(

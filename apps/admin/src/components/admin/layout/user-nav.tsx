@@ -65,11 +65,11 @@ export function UserNav() {
                   {session.user?.name?.[0]}
                 </AvatarFallback>
               </Avatar>
-              <div className="grid flex-1 text-left text-sm leading-tight">
+              <div className="grid flex-1 text-left text-base leading-tight">
                 <span className="truncate font-medium">
                   {session.user?.name}
                 </span>
-                <span className="truncate text-xs text-muted-foreground">
+                <span className="truncate text-sm text-muted-foreground">
                   {t(roleKey)}
                 </span>
               </div>
@@ -84,10 +84,10 @@ export function UserNav() {
           >
             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium leading-none">
+                <p className="text-base font-medium leading-none">
                   {session.user?.name}
                 </p>
-                <p className="text-xs leading-none text-muted-foreground">
+                <p className="text-sm leading-none text-muted-foreground">
                   {session.user?.email}
                 </p>
               </div>

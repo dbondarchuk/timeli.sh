@@ -30,7 +30,7 @@ export const ActivityEventTypeAsyncFilterBox: React.FC<{
           (value) =>
             ({
               value,
-              label: <span className="font-mono text-xs">{value}</span>,
+              label: <span className="font-mono text-sm">{value}</span>,
               shortLabel: value,
             }) satisfies AsyncFilterBoxOption,
         ),

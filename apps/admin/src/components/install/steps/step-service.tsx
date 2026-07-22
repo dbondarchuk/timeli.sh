@@ -154,7 +154,7 @@ function ServiceTemplateDialog({
                   <button
                     key={`${prof.categoryId}:${prof.professionId}`}
                     type="button"
-                    className="rounded-lg border p-3 text-left text-sm transition-colors hover:border-muted-foreground/30"
+                    className="rounded-lg border p-3 text-left text-base transition-colors hover:border-muted-foreground/30"
                     onClick={() => {
                       setPickCategory(prof.categoryId);
                       setPickProfession(prof.professionId);
@@ -174,7 +174,7 @@ function ServiceTemplateDialog({
                           <Badge
                             key={tag}
                             variant="outline"
-                            className="text-[10px] font-normal"
+                            className="text-[12px] font-normal"
                           >
                             {tAny(catalogTagLabelKey(tag))}
                           </Badge>
@@ -186,7 +186,7 @@ function ServiceTemplateDialog({
               })}
             </div>
             {query && totalMatches === 0 ? (
-              <p className="text-sm text-muted-foreground">
+              <p className="text-base text-muted-foreground">
                 {t("wizard.service.noProfessionsMatch")}
               </p>
             ) : null}
@@ -207,7 +207,7 @@ function ServiceTemplateDialog({
               >
                 <ArrowLeft />
               </Button>
-              <span className="text-sm text-muted-foreground">
+              <span className="text-base text-muted-foreground">
                 {tAny(catalogProfessionLabelKey(pickCategory, pickProfession))}
               </span>
             </div>
@@ -260,7 +260,7 @@ function ServiceTemplateDialog({
                       ),
                     )}
                   </span>
-                  <div className="prose prose-sm dark:prose-invert max-w-none text-xs text-muted-foreground">
+                  <div className="prose prose-sm dark:prose-invert max-w-none text-sm text-muted-foreground">
                     <Markdown
                       prose="simple"
                       markdown={tAny(
@@ -272,7 +272,7 @@ function ServiceTemplateDialog({
                       )}
                     />
                   </div>
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-sm text-muted-foreground">
                     {tAdmin(
                       "common.timeDuration",
                       durationToTime(svc.durations[0] ?? 60),
@@ -490,8 +490,8 @@ export function StepService() {
     <div className="space-y-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h2 className="text-xl font-semibold">{t("wizard.service.title")}</h2>
-          <p className="text-sm text-muted-foreground">
+          <h2 className="text-2xl font-semibold">{t("wizard.service.title")}</h2>
+          <p className="text-base text-muted-foreground">
             {t("wizard.service.subtitle")}
           </p>
         </div>
@@ -543,7 +543,7 @@ export function StepService() {
       />
 
       {!p.installServices.length ? (
-        <div className="rounded-lg border border-dashed bg-muted/20 px-4 py-10 text-center text-sm text-muted-foreground">
+        <div className="rounded-lg border border-dashed bg-muted/20 px-4 py-10 text-center text-base text-muted-foreground">
           {t("wizard.service.emptyList")}
           <div className="mt-4 flex flex-wrap justify-center gap-2">
             <Button
@@ -577,7 +577,7 @@ export function StepService() {
                       {t("wizard.service.fromCatalogBadge")}
                     </Badge>
                   ) : null}
-                  <span className="text-sm font-medium">{row.name}</span>
+                  <span className="text-base font-medium">{row.name}</span>
                 </div>
                 <Button
                   type="button"
@@ -659,7 +659,7 @@ export function StepService() {
                     }
                   />
                   {row.priceType === "per_hour" ? (
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-sm text-muted-foreground">
                       {t("wizard.service.perHourDurationHint")}
                     </p>
                   ) : null}
@@ -706,7 +706,7 @@ export function StepService() {
         </div>
       )}
 
-      <p className="text-xs text-muted-foreground">
+      <p className="text-sm text-muted-foreground">
         {t("wizard.service.editLater")}
       </p>
 

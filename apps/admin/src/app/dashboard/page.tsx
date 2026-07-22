@@ -1,4 +1,5 @@
 import PageContainer from "@/components/admin/layout/page-container";
+import { sessionCanUseFeature } from "@/lib/billing/subscription-plan-access";
 import { DashboardTabInjectorApps } from "@timelish/app-store/injectors/dashboard-tab";
 import { getI18nAsync } from "@timelish/i18n/server";
 import { getLoggerFactory } from "@timelish/logger";
@@ -12,7 +13,7 @@ import {
 } from "@timelish/ui";
 import { Metadata } from "next";
 import { Suspense } from "react";
-import { getOrganizationId, getServicesContainer } from "../utils";
+import { getOrganizationId, getServicesContainer, getSession } from "../utils";
 import { DashboardGreeting } from "./dashboard-greeting";
 import { DashboardKpiStrip } from "./dashboard-kpi-strip";
 import { getDashboardStats } from "./dashboard-stats";
@@ -35,9 +36,15 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 async function DashboardKpiSection() {
-  const organizationId = await getOrganizationId();
+  const [organizationId, session] = await Promise.all([
+    getOrganizationId(),
+    getSession(),
+  ]);
   const stats = await getDashboardStats(organizationId);
-  return <DashboardKpiStrip stats={stats} />;
+  const showFinancials = sessionCanUseFeature(session, "financials");
+  return (
+    <DashboardKpiStrip stats={stats} showFinancials={showFinancials} />
+  );
 }
 
 export default async function Page(params: Params) {
@@ -48,6 +55,8 @@ export default async function Page(params: Params) {
   const { activeTab = defaultTab, key } = searchParams;
   const tAdmin = await getI18nAsync("admin");
   const t = await getI18nAsync();
+  const session = await getSession();
+  const showFinancialKpis = sessionCanUseFeature(session, "financials");
   const breadcrumbItems = [
     { title: tAdmin("navigation.dashboard"), link: "/dashboard" },
   ];
@@ -132,8 +141,16 @@ export default async function Page(params: Params) {
               >
                 <Suspense
                   fallback={
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                      {Array.from({ length: 4 }).map((_, index) => (
+                    <div
+                      className={
+                        showFinancialKpis
+                          ? "grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4"
+                          : "grid grid-cols-1 gap-3 sm:grid-cols-2"
+                      }
+                    >
+                      {Array.from({
+                        length: showFinancialKpis ? 4 : 2,
+                      }).map((_, index) => (
                         <Skeleton
                           className="h-24 w-full rounded-2xl"
                           key={index}
@@ -149,7 +166,7 @@ export default async function Page(params: Params) {
                     <EventsCalendar />
                   </div>
                   <div className="@6xl:w-80 @6xl:shrink-0 flex flex-col gap-2">
-                    <h2 className="tracking-tight text-base font-medium">
+                    <h2 className="tracking-tight text-lg font-medium">
                       {tAdmin("dashboard.appointments.nextAppointments")}
                     </h2>
                     <Suspense

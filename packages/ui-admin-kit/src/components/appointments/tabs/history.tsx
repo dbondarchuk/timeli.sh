@@ -76,13 +76,13 @@ const HistoryEntry: React.FC<{ entry: AppointmentHistoryEntry }> = ({
             className="size-5 text-muted-foreground flex-shrink-0"
             entry={entry}
           />
-          <p className="font-medium text-sm truncate">
+          <p className="font-medium text-base truncate">
             {t(`admin.common.labels.appointmentHistoryType.${entry.type}`)}
           </p>
         </div>
         <TooltipResponsive>
           <TooltipResponsiveTrigger>
-            <span className="text-xs text-muted-foreground underline decoration-dashed cursor-help">
+            <span className="text-sm text-muted-foreground underline decoration-dashed cursor-help">
               {dateTime.setLocale(locale).toRelative()}
             </span>
           </TooltipResponsiveTrigger>
@@ -98,7 +98,7 @@ const HistoryEntry: React.FC<{ entry: AppointmentHistoryEntry }> = ({
               <Badge
                 variant="default"
                 className={cn(
-                  "text-xs",
+                  "text-sm",
                   entry.data.confirmed && "bg-green-500",
                 )}
               >
@@ -106,13 +106,13 @@ const HistoryEntry: React.FC<{ entry: AppointmentHistoryEntry }> = ({
                   `admin.appointments.status.${entry.data.confirmed ? "confirmed" : "pending"}`,
                 )}
               </Badge>
-              <Badge variant="outline" className="text-xs">
+              <Badge variant="outline" className="text-sm">
                 {entry.data.by === "customer"
                   ? t("admin.appointments.history.byCustomer")
                   : t("admin.appointments.history.byUser")}
               </Badge>
               {!!entry.data.payment?.appName && (
-                <Badge variant="outline" className="text-xs">
+                <Badge variant="outline" className="text-sm">
                   {t("admin.appointments.history.payment", {
                     amount: currencyFormat(entry.data.payment.amount),
                     appName: t(
@@ -128,7 +128,7 @@ const HistoryEntry: React.FC<{ entry: AppointmentHistoryEntry }> = ({
               <Badge
                 variant="outline"
                 className={cn(
-                  "text-xs",
+                  "text-sm",
                   entry.data.oldStatus === "confirmed" && "bg-green-500",
                   entry.data.oldStatus === "declined" && "bg-destructive",
                 )}
@@ -142,7 +142,7 @@ const HistoryEntry: React.FC<{ entry: AppointmentHistoryEntry }> = ({
               <Badge
                 variant="outline"
                 className={cn(
-                  "text-xs",
+                  "text-sm",
                   entry.data.newStatus === "confirmed" && "bg-green-500",
                   entry.data.newStatus === "declined" && "bg-destructive",
                 )}
@@ -153,7 +153,7 @@ const HistoryEntry: React.FC<{ entry: AppointmentHistoryEntry }> = ({
                   ),
                 })}
               </Badge>
-              <Badge variant="secondary" className="text-xs">
+              <Badge variant="secondary" className="text-sm">
                 {entry.data.by === "customer"
                   ? t("admin.appointments.history.byCustomer")
                   : t("admin.appointments.history.byUser")}
@@ -162,21 +162,21 @@ const HistoryEntry: React.FC<{ entry: AppointmentHistoryEntry }> = ({
           )}
           {entry.type === "rescheduled" && (
             <>
-              <Badge variant="outline" className="text-xs">
+              <Badge variant="outline" className="text-sm">
                 {t("admin.appointments.history.oldDateTime", {
                   oldDateTime: DateTime.fromJSDate(entry.data.oldDateTime)
                     .setZone(timeZone)
                     .toLocaleString(DateTime.DATETIME_MED, { locale }),
                 })}
               </Badge>
-              <Badge variant="default" className="text-xs">
+              <Badge variant="default" className="text-sm">
                 {t("admin.appointments.history.newDateTime", {
                   newDateTime: DateTime.fromJSDate(entry.data.newDateTime)
                     .setZone(timeZone)
                     .toLocaleString(DateTime.DATETIME_MED, { locale }),
                 })}
               </Badge>
-              <Badge variant="secondary" className="text-xs">
+              <Badge variant="secondary" className="text-sm">
                 {entry.data.by === "customer"
                   ? t("admin.appointments.history.byCustomer")
                   : t("admin.appointments.history.byUser")}
@@ -185,10 +185,10 @@ const HistoryEntry: React.FC<{ entry: AppointmentHistoryEntry }> = ({
           )}
           {entry.type === "paymentAdded" && (
             <>
-              <Badge variant="default" className="text-xs">
+              <Badge variant="default" className="text-sm">
                 {currencyFormat(entry.data.payment.amount)}
               </Badge>
-              <Badge variant="outline" className="text-xs">
+              <Badge variant="outline" className="text-sm">
                 {t("admin.appointments.history.paymentType", {
                   type: t(`admin.payment.types.${entry.data.payment.type}`),
                   appName: entry.data.payment.appName
@@ -204,17 +204,17 @@ const HistoryEntry: React.FC<{ entry: AppointmentHistoryEntry }> = ({
           )}
           {entry.type === "paymentRefunded" && (
             <>
-              <Badge variant="default" className="text-xs">
+              <Badge variant="default" className="text-sm">
                 {t("admin.appointments.history.refundedAmount", {
                   amount: currencyFormat(entry.data.refundedAmount),
                 })}
               </Badge>
-              <Badge variant="secondary" className="text-xs">
+              <Badge variant="secondary" className="text-sm">
                 {t("admin.appointments.history.totalRefunded", {
                   amount: currencyFormat(entry.data.totalRefunded),
                 })}
               </Badge>
-              <Badge variant="outline" className="text-xs">
+              <Badge variant="outline" className="text-sm">
                 {entry.data.payment.appName
                   ? t(
                       `apps.${AvailableApps[entry.data.payment.appName].displayName}`,
@@ -227,24 +227,24 @@ const HistoryEntry: React.FC<{ entry: AppointmentHistoryEntry }> = ({
           )}
           {entry.type === "updated" && (
             <>
-              <Badge variant="outline" className="text-xs">
+              <Badge variant="outline" className="text-sm">
                 {t("admin.appointments.history.oldOption", {
                   oldOption: entry.data.oldOption.name,
                 })}
               </Badge>
-              <Badge variant="default" className="text-xs">
+              <Badge variant="default" className="text-sm">
                 {t("admin.appointments.history.newOption", {
                   newOption: entry.data.newOption.name,
                 })}
               </Badge>
-              <Badge variant="outline" className="text-xs">
+              <Badge variant="outline" className="text-sm">
                 {t("admin.appointments.history.oldDateTime", {
                   oldDateTime: DateTime.fromJSDate(entry.data.oldDateTime)
                     .setZone(timeZone)
                     .toLocaleString(DateTime.DATETIME_MED, { locale }),
                 })}
               </Badge>
-              <Badge variant="default" className="text-xs">
+              <Badge variant="default" className="text-sm">
                 {t("admin.appointments.history.newDateTime", {
                   newDateTime: DateTime.fromJSDate(entry.data.newDateTime)
                     .setZone(timeZone)
@@ -272,7 +272,7 @@ const HistoryEntrySkeleton: React.FC<{ length?: number }> = ({
         <Skeleton className="w-16 h-4" />
       </div>
       <div className="p-4 pt-3">
-        {/* <div className="flex flex-row gap-1 text-sm mt-1">
+        {/* <div className="flex flex-row gap-1 text-base mt-1">
           <Skeleton className="w-full h-10" />
         </div> */}
         <div className="flex items-center space-x-2 flex-wrap">

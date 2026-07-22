@@ -141,7 +141,7 @@ export function MenuItemCard({
           </Button>
           <span
             className={cn(
-              "text-xs font-semibold uppercase tracking-wide text-muted-foreground",
+              "text-sm font-semibold uppercase tracking-wide text-muted-foreground",
               !itemType ? "text-destructive" : "",
             )}
           >
@@ -173,7 +173,7 @@ export function MenuItemCard({
               <FormControl>
                 <Combobox
                   disabled={disabled}
-                  className="flex w-full font-normal text-base"
+                  className="flex w-full font-normal text-lg"
                   values={menuItemTypes
                     .filter((x) => !!supportsSubmenus || x !== "submenu")
                     .map((x) => ({

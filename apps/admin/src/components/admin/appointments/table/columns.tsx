@@ -369,7 +369,7 @@ function DiscountCell({ appointment }: { appointment: Appointment }) {
           href={`/dashboard/services/discounts/${appointment.discount.id}`}
         >
           {appointment.discount.code}{" "}
-          <span className="text-xs">
+          <span className="text-sm">
             {currencyFormat(-1 * appointment.discount.discountAmount)}
           </span>
         </Link>

@@ -215,7 +215,7 @@ export default async function DashboardLayout({
                                 strokeWidth={2}
                                 aria-hidden
                               />
-                              <p className="text-sm font-medium leading-snug text-amber-100/95">
+                              <p className="text-base font-medium leading-snug text-amber-100/95">
                                 {t(
                                   "dashboard.subscriptionPastDueBanner.message",
                                 )}
@@ -223,7 +223,7 @@ export default async function DashboardLayout({
                             </div>
                             <Link
                               href="/dashboard/settings/brand?activeTab=general"
-                              className="inline-flex shrink-0 items-center justify-center self-start rounded-full border-2 border-amber-400/80 bg-transparent px-4 py-2 text-sm font-medium text-amber-200 hover:text-amber-200/90 transition-colors hover:bg-amber-400/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/60 sm:self-auto"
+                              className="inline-flex shrink-0 items-center justify-center self-start rounded-full border-2 border-amber-400/80 bg-transparent px-4 py-2 text-base font-medium text-amber-200 hover:text-amber-200/90 transition-colors hover:bg-amber-400/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/60 sm:self-auto"
                             >
                               {t(
                                 "dashboard.subscriptionPastDueBanner.goToSettings",
@@ -249,13 +249,13 @@ export default async function DashboardLayout({
                                 strokeWidth={2}
                                 aria-hidden
                               />
-                              <p className="text-sm font-medium leading-snug text-foreground">
+                              <p className="text-base font-medium leading-snug text-foreground">
                                 {t("dashboard.freeTierUpgradeBanner.message")}
                               </p>
                             </div>
                             <Link
                               href="/dashboard/settings/brand?activeTab=general"
-                              className="inline-flex shrink-0 items-center justify-center self-start rounded-full border-2 border-primary/60 bg-transparent px-4 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 sm:self-auto"
+                              className="inline-flex shrink-0 items-center justify-center self-start rounded-full border-2 border-primary/60 bg-transparent px-4 py-2 text-base font-medium text-primary transition-colors hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 sm:self-auto"
                             >
                               {t("dashboard.freeTierUpgradeBanner.upgrade")}
                             </Link>

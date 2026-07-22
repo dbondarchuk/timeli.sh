@@ -157,7 +157,7 @@ export const AgendaEventCalendar: React.FC<AgendaEventCalendarProps> = ({
                 )}
                 <span
                   className={cn(
-                    "inline-flex size-7 items-center justify-center rounded-full text-sm font-medium tabular-nums mr-2",
+                    "inline-flex size-7 items-center justify-center rounded-full text-base font-medium tabular-nums mr-2",
                     isToday &&
                       "bg-primary text-primary-foreground shadow-sm",
                     !isToday && "bg-muted text-foreground",
@@ -169,26 +169,26 @@ export const AgendaEventCalendar: React.FC<AgendaEventCalendarProps> = ({
                   className="h-4 w-4 mr-2 opacity-50"
                   strokeWidth={1.5}
                 />
-                <span className="text-sm">
+                <span className="text-base">
                   {rangeDate.toLocaleString(
                     { weekday: "short", month: "short", day: "numeric" },
                     { locale },
                   )}
                   {isToday && (
-                    <span className="ml-1.5 text-xs text-primary font-medium">
+                    <span className="ml-1.5 text-sm text-primary font-medium">
                       ({t("calendar.today")})
                     </span>
                   )}
                 </span>
                 <div className="ml-auto flex items-center gap-2">
                   {daySchedule?.length > 0 && (
-                    <span className="text-[10px] bg-accent text-accent-foreground px-2 py-0.5 rounded-full flex items-center border border-primary/20">
+                    <span className="text-[12px] bg-accent text-accent-foreground px-2 py-0.5 rounded-full flex items-center border border-primary/20">
                       <Clock className="h-3 w-3 mr-1" strokeWidth={1.5} />
                       <span>{t("calendar.workingDay")}</span>
                     </span>
                   )}
                   {hasEvents && (
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-sm text-muted-foreground">
                       {events.length}{" "}
                       {events.length === 1
                         ? t("calendar.event")
@@ -202,7 +202,7 @@ export const AgendaEventCalendar: React.FC<AgendaEventCalendarProps> = ({
                 <div className="px-3 pb-3 pt-1 space-y-2 bg-background/40">
                   {daySchedule?.length > 0 && (
                     <div className="mb-2 bg-accent/60 p-3 rounded-lg border border-primary/15">
-                      <div className="text-sm font-medium flex items-center text-accent-foreground">
+                      <div className="text-base font-medium flex items-center text-accent-foreground">
                         <Clock className="h-4 w-4 mr-2" strokeWidth={1.5} />
                         {t("calendar.workingHours")}
                       </div>
@@ -210,7 +210,7 @@ export const AgendaEventCalendar: React.FC<AgendaEventCalendarProps> = ({
                         {daySchedule.map((hours, idx) => (
                           <div
                             key={idx}
-                            className="text-sm text-accent-foreground/80"
+                            className="text-base text-accent-foreground/80"
                           >
                             {formatTimeLocale(parseTime(hours.start), locale)} -{" "}
                             {formatTimeLocale(parseTime(hours.end), locale)}
@@ -220,7 +220,7 @@ export const AgendaEventCalendar: React.FC<AgendaEventCalendarProps> = ({
                     </div>
                   )}
                   {events.length === 0 ? (
-                    <div className="text-muted-foreground text-sm py-2 px-1">
+                    <div className="text-muted-foreground text-base py-2 px-1">
                       {t("calendar.noEventsScheduled")}
                     </div>
                   ) : (
@@ -247,7 +247,7 @@ export const AgendaEventCalendar: React.FC<AgendaEventCalendarProps> = ({
                           >
                             <div className="flex-1 min-w-0 flex flex-col gap-1">
                               <div
-                                className="text-[10px] opacity-70"
+                                className="text-[12px] opacity-70"
                                 suppressHydrationWarning
                               >
                                 {eventDate.toLocaleString(DateTime.TIME_SIMPLE, {
@@ -258,7 +258,7 @@ export const AgendaEventCalendar: React.FC<AgendaEventCalendarProps> = ({
                                   locale,
                                 })}
                               </div>
-                              <div className="font-medium text-sm truncate">
+                              <div className="font-medium text-base truncate">
                                 {event.title}
                               </div>
                               {renderEvent && renderEvent(event)}

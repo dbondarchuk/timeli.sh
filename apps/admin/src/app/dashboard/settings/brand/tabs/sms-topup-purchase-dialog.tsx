@@ -197,7 +197,7 @@ export function SmsTopupPurchaseDialog({
               {t("settings.general.billing.smsTopup.dialogTitle")}
             </DialogTitle>
             <DialogDescription asChild>
-              <div className="flex flex-col gap-1 pt-1 text-sm text-muted-foreground">
+              <div className="flex flex-col gap-1 pt-1 text-base text-muted-foreground">
                 <span>
                   {t("settings.general.billing.smsTopup.dialogSubtitle")}
                 </span>
@@ -216,7 +216,7 @@ export function SmsTopupPurchaseDialog({
               ))}
             </div>
           ) : !products || products.length === 0 ? (
-            <p className="text-sm text-muted-foreground">
+            <p className="text-base text-muted-foreground">
               {t("settings.general.billing.smsTopup.empty")}
             </p>
           ) : (
@@ -246,7 +246,7 @@ export function SmsTopupPurchaseDialog({
                           "settings.general.billing.smsTopup.bestValueBadge",
                         )}
                       >
-                        <span className="inline-block whitespace-nowrap rounded-md border border-primary bg-primary px-2 py-0.5 text-[9px] font-bold uppercase leading-tight tracking-wide text-primary-foreground sm:text-[10px]">
+                        <span className="inline-block whitespace-nowrap rounded-md border border-primary bg-primary px-2 py-0.5 text-[11px] font-bold uppercase leading-tight tracking-wide text-primary-foreground sm:text-[12px]">
                           {t(
                             "settings.general.billing.smsTopup.bestValueBadge",
                           )}
@@ -271,12 +271,12 @@ export function SmsTopupPurchaseDialog({
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className="text-sm font-semibold leading-tight text-foreground">
+                          <span className="text-base font-semibold leading-tight text-foreground">
                             {p.name}
                           </span>
                         </div>
                         {subline ? (
-                          <p className="mt-0.5 text-sm text-muted-foreground">
+                          <p className="mt-0.5 text-base text-muted-foreground">
                             {subline}
                           </p>
                         ) : null}
@@ -284,7 +284,7 @@ export function SmsTopupPurchaseDialog({
                       <div className="shrink-0 self-start text-right">
                         <div className="flex min-w-0 flex-col items-end gap-0.5">
                           {savePercent > 0 ? (
-                            <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400">
+                            <span className="text-sm font-medium text-emerald-600 dark:text-emerald-400">
                               {t(
                                 "settings.general.billing.smsTopup.savePercent",
                                 {
@@ -293,7 +293,7 @@ export function SmsTopupPurchaseDialog({
                               )}
                             </span>
                           ) : null}
-                          <span className="text-sm font-semibold tabular-nums text-foreground">
+                          <span className="text-base font-semibold tabular-nums text-foreground">
                             {money(p.priceAmount, p.priceCurrency)}
                           </span>
                         </div>
@@ -306,7 +306,7 @@ export function SmsTopupPurchaseDialog({
           )}
         </div>
         <div className="mt-1 flex flex-col gap-4 border-t p-6 pt-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground sm:max-w-[min(100%,28rem)]">
+          <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted-foreground sm:max-w-[min(100%,28rem)]">
             <span className="inline-flex items-center gap-1.5">
               <Lock className="h-3.5 w-3.5 shrink-0" aria-hidden />
               {t("settings.general.billing.smsTopup.securePaymentLabel")}

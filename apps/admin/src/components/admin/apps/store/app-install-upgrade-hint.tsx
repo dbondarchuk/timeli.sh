@@ -8,7 +8,7 @@ export function AppInstallUpgradeHint({
   showLink?: boolean;
 }) {
   return (
-    <p className="text-xs text-muted-foreground max-w-md">
+    <p className="text-sm text-muted-foreground max-w-md">
       <I18nText text="common.upgradeRequired" namespace="apps" />{" "}
       {showLink ? (
         <Link

@@ -163,7 +163,7 @@ export const UserAuthForm = () => {
 
           {verificationError && (
             <div className="flex flex-col gap-2">
-              <p className="text-sm font-medium text-destructive">
+              <p className="text-base font-medium text-destructive">
                 {t("auth.verification.notVerified")}
               </p>
               <Button
@@ -180,7 +180,7 @@ export const UserAuthForm = () => {
           )}
 
           {error && (
-            <p className="text-sm font-medium text-destructive">
+            <p className="text-base font-medium text-destructive">
               {t("auth.email_or_password_incorrect")}
             </p>
           )}
@@ -197,7 +197,7 @@ export const UserAuthForm = () => {
         </form>
       </Form>
 
-      <div className="text-center w-full text-sm">
+      <div className="text-center w-full text-base">
         <Link
           href="/auth/forgot-password"
           className="ml-auto w-full"
@@ -217,7 +217,7 @@ export const UserAuthForm = () => {
         </Link>
       </div>
 
-      <div className="text-center w-full text-sm">
+      <div className="text-center w-full text-base">
         {t.rich("auth.sign_in_sign_up_link", {
           link: (chunks: any) => (
             <Link

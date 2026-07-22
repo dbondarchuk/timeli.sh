@@ -155,7 +155,7 @@ export function StepPayments() {
         <CardHeader>
           <ConnectedAppNameAndLogo
             appName={appName}
-            nameClassName="text-base font-semibold"
+            nameClassName="text-lg font-semibold"
             logoClassName="size-9 shrink-0"
           />
           <CardDescription className="mt-2">
@@ -164,7 +164,7 @@ export function StepPayments() {
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <span className="text-sm">
+            <span className="text-base">
               {connected
                 ? t("wizard.integrations.connected")
                 : t("wizard.integrations.notConnected")}
@@ -219,7 +219,7 @@ export function StepPayments() {
             )}
           </div>
           {blockConnectOrUpdate ? (
-            <p className="text-xs text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               {t("wizard.payments.onePaymentAppHint")}
             </p>
           ) : null}
@@ -231,8 +231,8 @@ export function StepPayments() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-semibold">{t("wizard.payments.title")}</h2>
-        <p className="text-sm text-muted-foreground">
+        <h2 className="text-2xl font-semibold">{t("wizard.payments.title")}</h2>
+        <p className="text-base text-muted-foreground">
           {t("wizard.payments.subtitle")}
         </p>
       </div>
@@ -248,11 +248,11 @@ export function StepPayments() {
           <span className="font-medium">
             {t("wizard.payments.acceptPayments")}
           </span>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             {t("wizard.payments.acceptPaymentsHint")}
           </p>
           {!canAcceptPayments ? (
-            <span className="mt-2 block text-xs">
+            <span className="mt-2 block text-sm">
               {t("wizard.payments.acceptPaymentsUpgradeHint")}
             </span>
           ) : null}
@@ -315,7 +315,7 @@ export function StepPayments() {
                     }))
                   }
                 ></Slider>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-sm text-muted-foreground">
                   {t("wizard.payments.depositHelp")}
                 </p>
               </div>
@@ -328,7 +328,7 @@ export function StepPayments() {
           <span className="font-medium">
             {t("wizard.payments.autoConfirmBookings")}
           </span>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             {t("wizard.payments.autoConfirmBookingsHint")}
           </p>
         </div>
@@ -344,7 +344,7 @@ export function StepPayments() {
           <span className="font-medium">
             {t("wizard.payments.cancelPolicy")}
           </span>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             {t("wizard.payments.cancelHelp")}
           </p>
         </div>
@@ -358,7 +358,7 @@ export function StepPayments() {
           }
         />
       </label>
-      <p className="text-xs text-muted-foreground">
+      <p className="text-sm text-muted-foreground">
         {t("wizard.payments.flex")}
       </p>
       <div className="flex flex-wrap gap-3">

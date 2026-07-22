@@ -19,7 +19,7 @@ export const VirtualTab: React.FC<TabProps> = ({ form, disabled }) => {
 
   return (
     <div className="flex flex-col gap-4">
-      <h3 className="text-base font-medium">
+      <h3 className="text-lg font-medium">
         {t("services.options.form.onlineSettings.title")}
       </h3>
       <div className="gap-4 grid grid-cols-1 md:grid-cols-2">

@@ -34,19 +34,25 @@ export function useHasDashboardNotifications(
 }
 
 export const DashboardNotificationsBadge: React.FC<{
-  notificationsCountKey: string;
+  notificationsCountKey?: string;
+  notificationKeys?: Array<string | undefined>;
   className?: string;
-}> = ({ notificationsCountKey, className }) => {
+}> = ({ notificationsCountKey, notificationKeys, className }) => {
   const { badges } = useNotificationsStore();
-  const count = badges[notificationsCountKey];
-  if (typeof count !== "number" || count <= 0) {
+  const keys = notificationKeys ?? [notificationsCountKey];
+  const count = keys.reduce((sum, key) => {
+    if (!key) return sum;
+    const value = badges[key];
+    return sum + (typeof value === "number" ? value : 0);
+  }, 0);
+  if (count <= 0) {
     return null;
   }
 
   return (
     <Badge
       variant="default"
-      className={cn("ml-auto shrink-0 px-1.5 py-0 text-[10px]", className)}
+      className={cn("ml-auto shrink-0 px-1.5 py-0 text-[12px]", className)}
     >
       {count > 9 ? "9+" : count}
     </Badge>

@@ -95,7 +95,7 @@ export const UserForgotPasswordForm = () => {
         </form>
       </Form>
 
-      <div className="text-center w-full text-sm">
+      <div className="text-center w-full text-base">
         {t.rich("auth.forgotPassword.rememberPassword", {
           link: (chunks: any) => (
             <Link

@@ -53,7 +53,7 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
             </AvatarFallback>
           </Avatar>
           <div className="min-w-0">
-            <p className="text-xs text-muted-foreground truncate">
+            <p className="text-sm text-muted-foreground truncate">
               {t.rich("appointments.card.by", {
                 name: appointment.customer?.name ?? appointment.fields.name,
                 link: (chunks: any) => (
@@ -66,7 +66,7 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
                 ),
               })}
             </p>
-            <p className="text-sm font-medium text-foreground truncate">
+            <p className="text-base font-medium text-foreground truncate">
               <Link
                 href={`/dashboard/appointments/${appointment._id}`}
                 variant="underline"
@@ -77,7 +77,7 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
           </div>
         </div>
         <span
-          className={`ml-3 shrink-0 text-xs font-medium px-2.5 py-1 rounded-full ${APPOINTMENT_STATUS_STYLES[appointment.status] ?? "bg-muted text-muted-foreground"}`}
+          className={`ml-3 shrink-0 text-sm font-medium px-2.5 py-1 rounded-full ${APPOINTMENT_STATUS_STYLES[appointment.status] ?? "bg-muted text-muted-foreground"}`}
         >
           {t(`appointments.status.${appointment.status}`)}
         </span>
@@ -86,25 +86,25 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
       {/* Date & Time */}
       <div className="px-5 py-4 border-b border-border grid grid-cols-2 gap-4">
         <div>
-          <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
+          <p className="text-sm text-muted-foreground uppercase tracking-wide mb-1">
             {t("appointments.card.date")}
           </p>
-          <p className="text-sm font-medium text-foreground">
+          <p className="text-base font-medium text-foreground">
             {DateTime.fromJSDate(appointment.dateTime, {
               zone: timeZone,
             }).toFormat("EEE, MMM d", { locale })}
           </p>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             {DateTime.fromJSDate(appointment.dateTime, {
               zone: timeZone,
             }).toFormat("yyyy", { locale })}
           </p>
         </div>
         <div>
-          <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
+          <p className="text-sm text-muted-foreground uppercase tracking-wide mb-1">
             {t("appointments.card.time")}
           </p>
-          <p className="text-sm font-medium text-foreground">
+          <p className="text-base font-medium text-foreground">
             {DateTime.fromJSDate(appointment.dateTime, {
               zone: timeZone,
             }).toFormat(uses12HourFormat ? "h:mm" : "HH:mm", { locale })}
@@ -115,7 +115,7 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
               .plus({ minutes: appointment.totalDuration })
               .toLocaleString(DateTime.TIME_SIMPLE, { locale })}
           </p>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             {t(
               "common.timeDuration",
               durationToTime(appointment.totalDuration),
@@ -127,14 +127,14 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
       {/* Add-ons */}
       {appointment.addons && appointment.addons.length > 0 && (
         <div className="px-5 py-4 border-b border-border">
-          <p className="text-xs text-muted-foreground uppercase tracking-wide mb-2.5">
+          <p className="text-sm text-muted-foreground uppercase tracking-wide mb-2.5">
             {t("appointments.card.addons")}
           </p>
           <div className="flex flex-wrap gap-1.5">
             {appointment.addons.map((addon) => (
               <span
                 key={addon._id}
-                className="text-xs px-2.5 py-1 rounded-full bg-blue-50 text-blue-600 border border-blue-100"
+                className="text-sm px-2.5 py-1 rounded-full bg-blue-50 text-blue-600 border border-blue-100"
               >
                 {addon.name}
               </span>
@@ -146,10 +146,10 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
       {/* Note */}
       {appointment.note && (
         <div className="px-5 py-4 border-b border-border">
-          <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1.5">
+          <p className="text-sm text-muted-foreground uppercase tracking-wide mb-1.5">
             {t("appointments.card.note")}
           </p>
-          <p className="text-xs text-foreground leading-relaxed">
+          <p className="text-sm text-foreground leading-relaxed">
             {appointment.note}
           </p>
         </div>
@@ -160,10 +160,10 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
       {/* Price */}
       {!!appointment.totalPrice && (
         <div className="px-5 py-3.5 border-b border-border flex items-center justify-between bg-muted">
-          <p className="text-sm text-muted-foreground">
+          <p className="text-base text-muted-foreground">
             {t("appointments.card.price")}
           </p>
-          <p className="text-base font-medium text-foreground">
+          <p className="text-lg font-medium text-foreground">
             {currencyFormat(appointment.totalPrice)}
           </p>
         </div>

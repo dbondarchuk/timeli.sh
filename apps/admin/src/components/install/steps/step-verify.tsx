@@ -43,10 +43,10 @@ export function StepVerify({
           <h1 className="text-2xl font-semibold tracking-tight">
             {t("wizard.verify.title")}
           </h1>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-base text-muted-foreground">
             {t("wizard.verify.description")}
           </p>
-          <p className="rounded-md border bg-muted/40 px-3 py-2 font-mono text-sm">
+          <p className="rounded-md border bg-muted/40 px-3 py-2 font-mono text-base">
             {email}
           </p>
         </div>
@@ -59,15 +59,15 @@ export function StepVerify({
             {resendLoading ? <Spinner /> : null}
             {t("wizard.verify.resend")}
           </Button>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             {t("wizard.verify.spamHint")}
           </p>
         </div>
-        <p className="text-xs text-muted-foreground">
+        <p className="text-sm text-muted-foreground">
           {t("wizard.verify.polling")}
         </p>
         <Progress value={0} className="h-2" />
-        <p className="text-xs text-muted-foreground">0%</p>
+        <p className="text-sm text-muted-foreground">0%</p>
       </div>
     </div>
   );

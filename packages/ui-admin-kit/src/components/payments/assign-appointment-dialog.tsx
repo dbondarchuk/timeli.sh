@@ -410,7 +410,7 @@ export const AssignAppointmentDialog = ({
                   <TableRow>
                     <TableCell
                       colSpan={columnCount}
-                      className="py-8 text-center text-sm text-muted-foreground"
+                      className="py-8 text-center text-base text-muted-foreground"
                     >
                       {t("syncedPayments.assignDialog.empty")}
                     </TableCell>
@@ -475,7 +475,7 @@ export const AssignAppointmentDialog = ({
         </ScrollArea>
 
         <div className="flex items-center justify-between gap-3">
-          <span className="text-xs text-muted-foreground">
+          <span className="text-sm text-muted-foreground">
             {t("syncedPayments.pagination.summary", { from, to, total })}
           </span>
           <div className="flex items-center gap-2">

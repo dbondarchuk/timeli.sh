@@ -67,7 +67,9 @@ export const BreadcrumbsRender = () => {
                 </BreadcrumbSeparator>
               )}
               {index === items.length - 1 && (
-                <BreadcrumbPage>{item.title}</BreadcrumbPage>
+                <BreadcrumbPage className="grid pr-1">
+                  <span className="truncate">{item.title}</span>
+                </BreadcrumbPage>
               )}
             </Fragment>
           ),

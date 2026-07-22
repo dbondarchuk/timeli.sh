@@ -45,14 +45,14 @@ const AppCard: React.FC<{ app: App }> = ({ app }) => {
                 <Lock className="size-4 text-muted-foreground" />
               </TooltipResponsiveTrigger>
               <TooltipResponsiveContent>
-                <span className="text-xs">
+                <span className="text-sm">
                   {t("apps.common.upgradeRequired" satisfies BaseAllKeys)}
                 </span>
               </TooltipResponsiveContent>
             </TooltipResponsive>
           )}
         </div>
-        <div className="text-default mt-2 flex-grow text-sm line-clamp-3">
+        <div className="text-default mt-2 flex-grow text-base line-clamp-3">
           <Markdown markdown={t(app.description.text)} prose="none" />
         </div>
         <Link
@@ -131,7 +131,7 @@ export const AppStore: React.FC<AppStoreProps> = ({}) => {
         <div className="flex flex-col gap-6 w-full">
           <div className="flex flex-row justify-between items-center">
             <div>
-              <h2 className="text-emphasis mt-0 text-base font-semibold leading-none">
+              <h2 className="text-emphasis mt-0 text-lg font-semibold leading-none">
                 {tApps("common.mostPopular")}
               </h2>
             </div>
@@ -157,7 +157,7 @@ export const AppStore: React.FC<AppStoreProps> = ({}) => {
       <div className="flex flex-col gap-6">
         <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
           <div>
-            <h2 className="text-emphasis mt-0 text-base font-semibold leading-none">
+            <h2 className="text-emphasis mt-0 text-lg font-semibold leading-none">
               {tApps("common.allApps")}
             </h2>
           </div>

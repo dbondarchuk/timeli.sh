@@ -35,7 +35,7 @@ export const ToolbarSeparator = withCn(
 
 export const toolbarButtonVariants = cva(
   cn(
-    "inline-flex cursor-pointer items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap text-foreground transition-colors disabled:pointer-events-none disabled:opacity-50 [&_svg:not([data-icon])]:size-4",
+    "inline-flex cursor-pointer items-center justify-center gap-2 rounded-md text-base font-medium whitespace-nowrap text-foreground transition-colors disabled:pointer-events-none disabled:opacity-50 [&_svg:not([data-icon])]:size-4",
   ),
   {
     defaultVariants: {
@@ -61,7 +61,7 @@ export const toolbarButtonVariants = cva(
 
 const dropdownArrowVariants = cva(
   cn(
-    "inline-flex items-center justify-center rounded-r-md text-sm font-medium text-foreground transition-colors disabled:pointer-events-none disabled:opacity-50",
+    "inline-flex items-center justify-center rounded-r-md text-base font-medium text-foreground transition-colors disabled:pointer-events-none disabled:opacity-50",
   ),
   {
     defaultVariants: {

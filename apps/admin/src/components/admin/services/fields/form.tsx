@@ -247,7 +247,7 @@ export const ServiceFieldForm: React.FC<{
                   <FormControl>
                     <Combobox
                       disabled={loading}
-                      className="flex w-full font-normal text-base"
+                      className="flex w-full font-normal text-lg"
                       values={fieldTypes.map((type) => ({
                         value: type,
                         label: t(`common.labels.fieldType.${type}`),

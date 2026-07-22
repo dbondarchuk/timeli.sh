@@ -70,7 +70,7 @@ const CancellationSection: React.FC<TabProps & { withDeposit: boolean }> = ({
   return (
     <Card>
       <CardHeader className="border-b">
-        <CardTitle className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+        <CardTitle className="text-base font-semibold uppercase tracking-wide text-muted-foreground">
           {t(
             `services.options.form.cancellationPolicy.${withDeposit ? "withDeposit" : "withoutDeposit"}.title`,
           )}
@@ -218,7 +218,7 @@ const CancellationSection: React.FC<TabProps & { withDeposit: boolean }> = ({
 
                 <Card>
                   <CardHeader className="border-b">
-                    <CardTitle className="flex min-w-0 flex-1 flex-col items-start gap-0.5 text-xs text-muted-foreground">
+                    <CardTitle className="flex min-w-0 flex-1 flex-col items-start gap-0.5 text-sm text-muted-foreground">
                       <span className="font-semibold uppercase tracking-wide">
                         {t(
                           "cancellationsAndReschedules.cancellationPolicy.default.title",
@@ -254,7 +254,7 @@ const CancellationSection: React.FC<TabProps & { withDeposit: boolean }> = ({
                       </span>
                       <Badge
                         variant="secondary"
-                        className="text-xs normal-case hidden md:block"
+                        className="text-sm normal-case hidden md:block"
                       >
                         {t(
                           "cancellationsAndReschedules.cancellationPolicy.policies.badge",

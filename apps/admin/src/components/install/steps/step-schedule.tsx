@@ -44,8 +44,8 @@ export function StepSchedule() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-semibold">{t("wizard.schedule.title")}</h2>
-        <p className="text-sm text-muted-foreground">
+        <h2 className="text-2xl font-semibold">{t("wizard.schedule.title")}</h2>
+        <p className="text-base text-muted-foreground">
           {t("wizard.schedule.subtitle")}
         </p>
       </div>
@@ -58,7 +58,7 @@ export function StepSchedule() {
         }
       />
 
-      <div className="space-y-2 text-xs text-muted-foreground">
+      <div className="space-y-2 text-sm text-muted-foreground">
         <p>{t("wizard.schedule.editLater")}</p>
         <p>{t("wizard.schedule.weeklyScheduleAppHint")}</p>
       </div>

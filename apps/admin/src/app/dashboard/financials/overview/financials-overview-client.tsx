@@ -292,7 +292,7 @@ export const FinancialsOverviewClient: React.FC<FinancialsTabProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
+              <CardTitle className="text-base font-medium">
                 {t("financialOverview.view.estimatedRevenue")}
               </CardTitle>
             </CardHeader>
@@ -309,7 +309,7 @@ export const FinancialsOverviewClient: React.FC<FinancialsTabProps> = ({
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
+              <CardTitle className="text-base font-medium">
                 {t("financialOverview.view.totalPayments")}
               </CardTitle>
             </CardHeader>
@@ -326,7 +326,7 @@ export const FinancialsOverviewClient: React.FC<FinancialsTabProps> = ({
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
+              <CardTitle className="text-base font-medium">
                 {t("financialOverview.view.netPayments")}
               </CardTitle>
             </CardHeader>
@@ -343,7 +343,7 @@ export const FinancialsOverviewClient: React.FC<FinancialsTabProps> = ({
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
+              <CardTitle className="text-base font-medium">
                 {t("financialOverview.view.activeAppointments")}
               </CardTitle>
             </CardHeader>
@@ -360,7 +360,7 @@ export const FinancialsOverviewClient: React.FC<FinancialsTabProps> = ({
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
+              <CardTitle className="text-base font-medium">
                 {t("financialOverview.view.declinedAppointments")}
               </CardTitle>
             </CardHeader>
@@ -634,7 +634,7 @@ export const FinancialsOverviewClient: React.FC<FinancialsTabProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
+                <CardTitle className="text-base font-medium">
                   {t("financialOverview.view.bookingTracking.totalBookings")}
                 </CardTitle>
               </CardHeader>
@@ -651,7 +651,7 @@ export const FinancialsOverviewClient: React.FC<FinancialsTabProps> = ({
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
+                <CardTitle className="text-base font-medium">
                   {t("financialOverview.view.bookingTracking.converted")}
                 </CardTitle>
               </CardHeader>
@@ -668,7 +668,7 @@ export const FinancialsOverviewClient: React.FC<FinancialsTabProps> = ({
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
+                <CardTitle className="text-base font-medium">
                   {t("financialOverview.view.bookingTracking.abandoned")}
                 </CardTitle>
               </CardHeader>
@@ -685,7 +685,7 @@ export const FinancialsOverviewClient: React.FC<FinancialsTabProps> = ({
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
+                <CardTitle className="text-base font-medium">
                   {t("financialOverview.view.bookingTracking.conversionRate")}
                 </CardTitle>
               </CardHeader>
@@ -704,7 +704,7 @@ export const FinancialsOverviewClient: React.FC<FinancialsTabProps> = ({
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
+                <CardTitle className="text-base font-medium">
                   {t("financialOverview.view.bookingTracking.abandonmentRate")}
                 </CardTitle>
               </CardHeader>

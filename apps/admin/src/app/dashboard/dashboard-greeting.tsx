@@ -29,7 +29,7 @@ export async function DashboardGreeting({
         <h1 className="font-display text-3xl md:text-4xl font-medium tracking-tight text-foreground">
           {t(key, { name: firstName })}
         </h1>
-        <p className="text-sm text-muted-foreground max-w-xl">{subtitle}</p>
+        <p className="text-base text-muted-foreground max-w-xl">{subtitle}</p>
       </div>
       <Link
         href="/dashboard/appointments/new"

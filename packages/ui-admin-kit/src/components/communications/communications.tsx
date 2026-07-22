@@ -46,7 +46,7 @@ const CommunicationEntry: React.FC<{ entry: CommunicationLog }> = ({
               <MailQuestion className="size-5 text-muted-foreground" />
             )}
           </div>
-          <p className="font-medium text-sm truncate">
+          <p className="font-medium text-base truncate">
             {entry.subject ??
               t(
                 typeof entry.handledBy === "string"
@@ -60,7 +60,7 @@ const CommunicationEntry: React.FC<{ entry: CommunicationLog }> = ({
         </div>
         <TooltipResponsive>
           <TooltipResponsiveTrigger>
-            <span className="text-xs text-muted-foreground underline decoration-dashed cursor-help">
+            <span className="text-sm text-muted-foreground underline decoration-dashed cursor-help">
               {dateTime.setLocale(locale).toRelative()}
             </span>
           </TooltipResponsiveTrigger>
@@ -70,8 +70,8 @@ const CommunicationEntry: React.FC<{ entry: CommunicationLog }> = ({
         </TooltipResponsive>
       </div>
       <div className="p-4 pt-3">
-        <div className="inline-flex gap-1 text-sm flex-wrap w-full">
-          <span className="break-all text-xs">
+        <div className="inline-flex gap-1 text-base flex-wrap w-full">
+          <span className="break-all text-sm">
             {entry.preview.length > 200
               ? entry.preview.substring(0, 200) + "..."
               : entry.preview}
@@ -85,7 +85,7 @@ const CommunicationEntry: React.FC<{ entry: CommunicationLog }> = ({
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-auto px-1 py-0 text-xs text-muted-foreground hover:text-foreground"
+                className="h-auto px-1 py-0 text-sm text-muted-foreground hover:text-foreground"
               >
                 {tAdmin("communications.viewMore")}
               </Button>
@@ -93,13 +93,13 @@ const CommunicationEntry: React.FC<{ entry: CommunicationLog }> = ({
           />
         </div>
         <div className="flex items-center gap-2 mt-3 flex-wrap">
-          <Badge variant="outline" className="text-xs">
+          <Badge variant="outline" className="text-sm">
             {tAdmin(`common.labels.channel.${entry.channel}`)}
           </Badge>
-          <Badge variant="secondary" className="text-xs">
+          <Badge variant="secondary" className="text-sm">
             {tAdmin(`common.labels.direction.${entry.direction}`)}
           </Badge>
-          <Badge variant="outline" className="text-xs">
+          <Badge variant="outline" className="text-sm">
             {tAdmin("communications.handler", {
               handler: t(
                 typeof entry.handledBy === "object"
@@ -112,7 +112,7 @@ const CommunicationEntry: React.FC<{ entry: CommunicationLog }> = ({
             })}
           </Badge>
           {entry.participant && (
-            <Badge variant="outline" className="text-xs">
+            <Badge variant="outline" className="text-sm">
               {tAdmin("communications.participant", {
                 participant: entry.participant,
               })}

@@ -5,11 +5,16 @@ import {
   Button,
   Calendar,
   cn,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@timelish/ui";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
 import { DateTime } from "luxon";
 import React from "react";
 import { AgendaEventCalendar } from "./agenda-event-calendar";
@@ -180,7 +185,7 @@ export const EventCalendar: React.FC<EventCalendarProps> = ({
       {loading && (
         <div className="absolute inset-0 z-50 flex items-center justify-center bg-background/60">
           <div className="flex items-center gap-3">
-            <span className="text-xl">{t("common.labels.loading")}</span>
+            <span className="text-2xl">{t("common.labels.loading")}</span>
             <svg
               className="animate-spin h-7 w-7 text-foreground"
               xmlns="http://www.w3.org/2000/svg"
@@ -209,13 +214,26 @@ export const EventCalendar: React.FC<EventCalendarProps> = ({
         <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
           <div className="justify-self-start">
             {showTimeNav ? (
-              <Button
-                variant="outline"
-                onClick={goToday}
-                className="rounded-full px-4"
-              >
-                {t("calendar.today")}
-              </Button>
+              <>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={goToday}
+                  className="rounded-full md:hidden"
+                  aria-label={t("calendar.today")}
+                >
+                  <span className="text-sm font-semibold tabular-nums leading-none">
+                    {DateTime.now().day}
+                  </span>
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={goToday}
+                  className="hidden rounded-full px-4 md:inline-flex"
+                >
+                  {t("calendar.today")}
+                </Button>
+              </>
             ) : null}
           </div>
 
@@ -235,7 +253,7 @@ export const EventCalendar: React.FC<EventCalendarProps> = ({
                 <PopoverTrigger asChild>
                   <Button
                     variant="ghost"
-                    className="h-auto min-w-0 max-w-[16rem] rounded-full px-3 py-1.5 text-sm font-medium tracking-tight truncate"
+                    className="h-auto min-w-0 max-w-[16rem] rounded-full px-3 py-1.5 text-base font-medium tracking-tight truncate"
                     aria-label={dateLabel}
                   >
                     {dateLabel}
@@ -258,7 +276,7 @@ export const EventCalendar: React.FC<EventCalendarProps> = ({
                 </PopoverContent>
               </Popover>
             ) : (
-              <div className="text-sm font-medium tracking-tight px-2 truncate text-center">
+              <div className="text-base font-medium tracking-tight px-2 truncate text-center">
                 {dateLabel}
               </div>
             )}
@@ -276,23 +294,60 @@ export const EventCalendar: React.FC<EventCalendarProps> = ({
 
           <div className="justify-self-end">
             {showViewSwitch ? (
-              <div className="inline-flex flex-wrap rounded-full border border-border/70 bg-muted/40 p-0.5">
-                {SWITCHABLE_VIEWS.map((item) => (
-                  <button
-                    key={item.value}
-                    type="button"
-                    onClick={() => setView(item.value)}
-                    className={cn(
-                      "rounded-full px-3.5 py-1.5 text-sm transition-colors",
-                      view === item.value
-                        ? "bg-background text-foreground shadow-sm border border-primary/40"
-                        : "text-muted-foreground hover:text-foreground",
-                    )}
-                  >
-                    {t(item.labelKey)}
-                  </button>
-                ))}
-              </div>
+              <>
+                <div className="md:hidden">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="rounded-full"
+                        aria-label={t(
+                          SWITCHABLE_VIEWS.find((item) => item.value === view)
+                            ?.labelKey ?? "calendar.week",
+                        )}
+                      >
+                        <CalendarDays className="size-4" strokeWidth={1.5} />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuRadioGroup
+                        value={view}
+                        onValueChange={(value) =>
+                          setView(value as EventCalendarView)
+                        }
+                      >
+                        {SWITCHABLE_VIEWS.map((item) => (
+                          <DropdownMenuRadioItem
+                            key={item.value}
+                            value={item.value}
+                          >
+                            {t(item.labelKey)}
+                          </DropdownMenuRadioItem>
+                        ))}
+                      </DropdownMenuRadioGroup>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+
+                <div className="hidden md:inline-flex flex-wrap rounded-full border border-border/70 bg-muted/40 p-0.5">
+                  {SWITCHABLE_VIEWS.map((item) => (
+                    <button
+                      key={item.value}
+                      type="button"
+                      onClick={() => setView(item.value)}
+                      className={cn(
+                        "rounded-full px-3.5 py-1.5 text-base transition-colors",
+                        view === item.value
+                          ? "bg-background text-foreground shadow-sm border border-primary/40"
+                          : "text-muted-foreground hover:text-foreground",
+                      )}
+                    >
+                      {t(item.labelKey)}
+                    </button>
+                  ))}
+                </div>
+              </>
             ) : null}
           </div>
         </div>

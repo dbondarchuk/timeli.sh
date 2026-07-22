@@ -79,17 +79,17 @@ export function StepInstallHeader({ stepNum }: { stepNum: number }) {
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <Image src="/logo.png" alt="Timeli.sh" width={28} height={28} />
-            <div className="text-lg font-semibold tracking-tight">
+            <div className="text-xl font-semibold tracking-tight">
               timeli<span className="text-primary">.sh</span>
             </div>
           </div>
-          <div className="hidden text-sm text-muted-foreground sm:block">
+          <div className="hidden text-base text-muted-foreground sm:block">
             {session?.user?.name}
           </div>
         </div>
         <div className="flex items-center justify-between gap-4">
           <div>
-            <p className="text-sm font-medium text-muted-foreground">
+            <p className="text-base font-medium text-muted-foreground">
               {t("wizard.progressLabel")}
             </p>
             <p className="text-2xl font-semibold">{progressPercent}%</p>

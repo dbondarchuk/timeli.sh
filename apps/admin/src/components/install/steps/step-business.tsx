@@ -126,8 +126,8 @@ export function StepBusiness() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h2 className="text-xl font-semibold">{t("wizard.business.title")}</h2>
-        <p className="text-sm text-muted-foreground">
+        <h2 className="text-2xl font-semibold">{t("wizard.business.title")}</h2>
+        <p className="text-base text-muted-foreground">
           {t("wizard.business.subtitle")}
         </p>
       </div>
@@ -174,24 +174,24 @@ export function StepBusiness() {
               .{publicDomain}
             </InputGroupAddon>
           </InputGroup>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             {t("wizard.business.slugHint", { url: preview })}
           </p>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             {t("wizard.business.slugHelp")}
           </p>
           {slugCheck === "checking" ? (
-            <p className="text-xs text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               {t("wizard.business.slugChecking")}
             </p>
           ) : null}
           {slugCheck === "available" ? (
-            <p className="text-xs text-primary">
+            <p className="text-sm text-primary">
               {t("wizard.business.slugAvailable")}
             </p>
           ) : null}
           {slugCheck === "taken" ? (
-            <p className="text-xs text-destructive">
+            <p className="text-sm text-destructive">
               {t("wizard.business.slugTaken")}
             </p>
           ) : null}

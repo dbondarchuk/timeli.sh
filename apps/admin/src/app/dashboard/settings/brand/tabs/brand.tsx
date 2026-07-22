@@ -158,7 +158,7 @@ export const BrandTab: React.FC<{
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
         <Card className="lg:col-span-4">
           <CardHeader className="border-b">
-            <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            <CardTitle className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
               {t("settings.brand.form.visualSectionTitle")}
             </CardTitle>
           </CardHeader>
@@ -173,12 +173,12 @@ export const BrandTab: React.FC<{
                   />
                 ) : (
                   <div className="h-20 w-20 rounded-lg object-contain border bg-muted/40 flex items-center justify-center">
-                    <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    <span className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
                       {t("settings.brand.form.noLogo")}
                     </span>
                   </div>
                 )}
-                <p className="text-center text-base font-semibold">{title}</p>
+                <p className="text-center text-lg font-semibold">{title}</p>
               </div>
               <FormField
                 control={form.control}
@@ -211,7 +211,7 @@ export const BrandTab: React.FC<{
 
         <Card className="lg:col-span-8">
           <CardHeader className="border-b">
-            <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            <CardTitle className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
               {t("settings.brand.form.websiteSectionTitle")}
             </CardTitle>
           </CardHeader>
@@ -293,7 +293,7 @@ export const BrandTab: React.FC<{
 
       <Card className="mt-4">
         <CardHeader className="border-b">
-          <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          <CardTitle className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
             {t("settings.brand.form.seoSectionTitle")}
           </CardTitle>
         </CardHeader>
@@ -353,18 +353,18 @@ export const BrandTab: React.FC<{
 
       <Card className="mt-4">
         <CardHeader className="border-b">
-          <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          <CardTitle className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
             {t("settings.brand.form.timeliAddress.sectionTitle")}
           </CardTitle>
         </CardHeader>
         <CardContent className="pt-6 flex flex-col gap-4">
           <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
             <div className="flex flex-col gap-1 min-w-0 flex-1">
-              <span className="text-xs text-muted-foreground uppercase tracking-wide">
+              <span className="text-sm text-muted-foreground uppercase tracking-wide">
                 {t("settings.brand.form.timeliAddress.websiteUrlLabel")}
               </span>
               <div className="flex items-center gap-1 min-w-0">
-                <span className="text-sm truncate">{websiteUrl}</span>
+                <span className="text-base truncate">{websiteUrl}</span>
                 <Button
                   type="button"
                   variant="ghost"
@@ -410,7 +410,7 @@ export const BrandTab: React.FC<{
                       )}
                     </DialogDescription>
                   </DialogHeader>
-                  <div className="space-y-2 rounded-md border bg-muted/40 px-3 py-3 text-sm text-muted-foreground">
+                  <div className="space-y-2 rounded-md border bg-muted/40 px-3 py-3 text-base text-muted-foreground">
                     <p className="font-medium text-foreground">
                       {t(
                         "settings.brand.form.timeliAddress.connectDialogDnsTitle",
@@ -479,7 +479,7 @@ export const BrandTab: React.FC<{
                 </DialogContent>
               </Dialog>
             ) : (
-              <p className="text-sm text-muted-foreground">
+              <p className="text-base text-muted-foreground">
                 {t("settings.brand.form.timeliAddress.customDomainUpgradeRequired")}{" "}
                 <Link
                   href="/dashboard/settings/brand?activeTab=general"
@@ -493,10 +493,10 @@ export const BrandTab: React.FC<{
 
           <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
             <div className="flex flex-col">
-              <span className="text-xs text-muted-foreground uppercase tracking-wide">
+              <span className="text-sm text-muted-foreground uppercase tracking-wide">
                 {t("settings.brand.form.timeliAddress.organizationSlugLabel")}
               </span>
-              <span className="text-sm">{organizationSlug}</span>
+              <span className="text-base">{organizationSlug}</span>
             </div>
             <Button type="button" variant="outline" disabled>
               {t("settings.brand.form.timeliAddress.updateSlugComingSoon")}

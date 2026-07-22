@@ -30,7 +30,7 @@ export const AuthLayout = ({
           <CardTitle className="text-2xl font-semibold tracking-tight text-balance">
             {title}
           </CardTitle>
-          <CardDescription className="text-xs text-muted-foreground text-balance">
+          <CardDescription className="text-sm text-muted-foreground text-balance">
             {description}
           </CardDescription>
         </CardHeader>

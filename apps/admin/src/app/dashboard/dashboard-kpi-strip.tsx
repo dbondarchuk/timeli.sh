@@ -32,13 +32,13 @@ function KpiTile({
         <Icon className="size-4" strokeWidth={1.5} />
       </div>
       <div className="min-w-0 space-y-0.5">
-        <p className="text-xs text-muted-foreground">{label}</p>
+        <p className="text-sm text-muted-foreground">{label}</p>
         <p className="text-2xl font-semibold tracking-tight tabular-nums">
           {value}
         </p>
         <p
           className={cn(
-            "text-xs",
+            "text-sm",
             detailTone === "positive" && "text-emerald-600 dark:text-emerald-400",
             detailTone === "negative" && "text-destructive",
             detailTone === "primary" && "text-primary",
@@ -67,7 +67,13 @@ function changeDetail(
   };
 }
 
-export function DashboardKpiStrip({ stats }: { stats: DashboardStats }) {
+export function DashboardKpiStrip({
+  stats,
+  showFinancials = true,
+}: {
+  stats: DashboardStats;
+  showFinancials?: boolean;
+}) {
   const t = useI18n("admin");
   const currencyFormat = useCurrencyFormat();
   const vsLastWeek = t("dashboard.kpi.vsLastWeek");
@@ -89,7 +95,12 @@ export function DashboardKpiStrip({ stats }: { stats: DashboardStats }) {
   );
 
   return (
-    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+    <div
+      className={cn(
+        "grid grid-cols-1 gap-3 sm:grid-cols-2",
+        showFinancials && "xl:grid-cols-4",
+      )}
+    >
       <KpiTile
         icon={CalendarDays}
         label={t("dashboard.kpi.todayAppointments")}
@@ -106,20 +117,24 @@ export function DashboardKpiStrip({ stats }: { stats: DashboardStats }) {
         detail={weekChange.text}
         detailTone={weekChange.tone}
       />
-      <KpiTile
-        icon={DollarSign}
-        label={t("dashboard.kpi.thisWeekRevenue")}
-        value={currencyFormat(stats.thisWeekRevenue)}
-        detail={revenueChange.text}
-        detailTone={revenueChange.tone}
-      />
-      <KpiTile
-        icon={Clock3}
-        label={t("dashboard.kpi.avgBookingValue")}
-        value={currencyFormat(stats.avgBookingValue)}
-        detail={avgChange.text}
-        detailTone={avgChange.tone}
-      />
+      {showFinancials ? (
+        <>
+          <KpiTile
+            icon={DollarSign}
+            label={t("dashboard.kpi.thisWeekRevenue")}
+            value={currencyFormat(stats.thisWeekRevenue)}
+            detail={revenueChange.text}
+            detailTone={revenueChange.tone}
+          />
+          <KpiTile
+            icon={Clock3}
+            label={t("dashboard.kpi.avgBookingValue")}
+            value={currencyFormat(stats.avgBookingValue)}
+            detail={avgChange.text}
+            detailTone={avgChange.tone}
+          />
+        </>
+      ) : null}
     </div>
   );
 }
