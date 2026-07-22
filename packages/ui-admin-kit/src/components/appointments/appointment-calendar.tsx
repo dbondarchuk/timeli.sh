@@ -6,18 +6,13 @@ import { Appointment, CalendarEvent, DaySchedule } from "@timelish/types";
 import { cn } from "@timelish/ui";
 import { DateTime, HourNumbers } from "luxon";
 import React from "react";
-import {
-  EventCalendarEvent,
-  WeeklyEventCalendar,
-  WeeklyEventCalendarProps,
-} from "../event-calendar";
+import { EventCalendar, EventCalendarEvent } from "../event-calendar";
 
-export const AppointmentCalendar: React.FC<
-  Pick<WeeklyEventCalendarProps, "className"> & {
-    appointment: Appointment;
-    onEventsLoad?: (events: CalendarEvent[]) => void;
-  }
-> = ({ appointment, onEventsLoad, ...props }) => {
+export const AppointmentCalendar: React.FC<{
+  className?: string;
+  appointment: Appointment;
+  onEventsLoad?: (events: CalendarEvent[]) => void;
+}> = ({ appointment, onEventsLoad, className }) => {
   const t = useI18n("admin");
   const [apiEvents, setApiEvents] = React.useState<CalendarEvent[]>([]);
   const [events, setEvents] = React.useState<CalendarEvent[]>([]);
@@ -40,10 +35,10 @@ export const AppointmentCalendar: React.FC<
       end: end.endOf("day").toJSDate(),
     });
 
-    const apiEvents = result.events || [];
+    const nextApiEvents = result.events || [];
 
     setLoading(false);
-    setApiEvents(apiEvents);
+    setApiEvents(nextApiEvents);
     setSchedule(result.schedule);
   };
 
@@ -82,10 +77,12 @@ export const AppointmentCalendar: React.FC<
               app._id === appointment._id
                 ? app.status === "declined"
                   ? "destructive"
-                  : "primary"
-                : app.status === "confirmed"
-                  ? "tertiary"
-                  : "secondary",
+                  : "current"
+                : app.status === "declined"
+                  ? "destructive"
+                  : app.status === "confirmed"
+                    ? "primary"
+                    : "secondary",
           };
         } else {
           return {
@@ -100,48 +97,23 @@ export const AppointmentCalendar: React.FC<
   );
 
   return (
-    <div className="relative">
-      {loading && (
-        <div className="absolute bg-white/60 z-50 h-full w-full flex items-center justify-center">
-          <div className="flex items-center">
-            <span className="text-3xl mr-4">
-              {t("appointments.calendar.loading")}
-            </span>
-            <svg
-              className="animate-spin h-8 w-8 text-gray-800"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              ></circle>
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              ></path>
-            </svg>
-          </div>
-        </div>
-      )}
-      <WeeklyEventCalendar
-        className={cn("min-w-[200px] h-[60vh] pt-0", props.className)}
-        date={appointment.dateTime}
-        events={calendarEvents}
-        schedule={schedule}
-        variant="days-around"
-        daysAround={1}
-        scrollToHour={
-          Math.max(appointment.dateTime.getHours() - 2, 0) as HourNumbers
-        }
-        disableTimeChange
-      />
-    </div>
+    <EventCalendar
+      className={cn("min-w-[200px] h-[60vh]", className)}
+      date={appointment.dateTime}
+      events={calendarEvents}
+      schedule={schedule}
+      view="days-around"
+      daysAround={1}
+      scrollToHour={
+        Math.max(appointment.dateTime.getHours() - 2, 0) as HourNumbers
+      }
+      showControls
+      allowTimeChange={false}
+      allowViewSwitch={false}
+      loading={loading}
+      onRangeChange={(start, end) => {
+        getData(DateTime.fromJSDate(start), DateTime.fromJSDate(end));
+      }}
+    />
   );
 };

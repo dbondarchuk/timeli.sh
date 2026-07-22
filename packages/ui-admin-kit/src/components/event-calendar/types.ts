@@ -11,7 +11,8 @@ export type CalendarEventVariant =
   | "primary"
   | "secondary"
   | "tertiary"
-  | "destructive";
+  | "destructive"
+  | "current";
 
 export type EventCalendarEvent = {
   id?: string;
@@ -25,7 +26,6 @@ type BaseEventCalendarProps = {
   date?: Date;
   events?: EventCalendarEvent[];
   className?: string;
-  disableTimeChange?: boolean;
   schedule?: Record<string, DaySchedule>;
   onRangeChange?: (start: Date, end: Date) => void;
   onEventClick?: (event: EventCalendarEvent) => void;
@@ -61,21 +61,53 @@ export type AgendaEventCalendarProps = BaseEventCalendarProps & {
   renderEvent?: (event: EventCalendarEvent) => ReactNode;
 };
 
-export type EventCalendarProps =
-  | (WeekOfEventCalendarProps & {
-      type: "weekly";
-    })
-  | (DaysAroundCalendarProps & {
-      type: "days-around";
-    })
-  | (MonthlyEventCalendarProps & {
-      type: "monthly";
-    })
-  | (DailyEventCalendarProps & {
-      type: "daily";
-    })
-  | (AgendaEventCalendarProps & {
-      type: "agenda";
-    });
+export type EventCalendarType =
+  | "weekly"
+  | "days-around"
+  | "monthly"
+  | "daily"
+  | "agenda";
 
-export type EventCalendarType = EventCalendarProps["type"];
+export type EventCalendarView = EventCalendarType;
+
+export type EventCalendarProps = {
+  events?: EventCalendarEvent[];
+  schedule?: Record<string, DaySchedule>;
+  className?: string;
+  loading?: boolean;
+
+  /** Anchor date for the visible range. */
+  date?: Date;
+  onDateChange?: (date: Date) => void;
+
+  /**
+   * Controlled / forced view. When set with `onViewChange`, the calendar is controlled.
+   * When set without allowing view switch, the view is forced.
+   */
+  view?: EventCalendarView;
+  defaultView?: EventCalendarView;
+  onViewChange?: (view: EventCalendarView) => void;
+
+  /** Show the header (today, time nav, mode switch, date label). Default true. */
+  showControls?: boolean;
+  /** Show Today + prev/next. Default true. */
+  allowTimeChange?: boolean;
+  /** Show Day/Week/Month/Agenda switch. Default true. */
+  allowViewSwitch?: boolean;
+
+  daysAround?: number;
+  daysToShow?: number;
+  scrollToHour?: HourNumbers;
+  slotInterval?: 5 | 10 | 15 | 20 | 30;
+
+  onRangeChange?: (start: Date, end: Date) => void;
+  onEventClick?: (event: EventCalendarEvent) => void;
+  onDateClick?: (date: Date) => void;
+  renderEvent?: (event: EventCalendarEvent) => ReactNode;
+};
+
+/** Fetching wrapper around EventCalendar (admin API + appointment dialog). */
+export type EventsCalendarProps = EventCalendarProps & {
+  /** @deprecated Prefer `view`. Kept for backwards compatibility. */
+  type?: EventCalendarView;
+};

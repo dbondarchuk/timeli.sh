@@ -3,22 +3,23 @@ import { SonnerToaster } from "@timelish/ui";
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale } from "next-intl/server";
-import { Inter, Montserrat, Playfair_Display } from "next/font/google";
+import { Cormorant_Garamond, Karla } from "next/font/google";
 import NextTopLoader from "nextjs-toploader";
 import "./globals.css";
 
 export const dynamic = "force-dynamic";
 
-const inter = Inter({ subsets: ["latin"] });
-
-const montserrat = Montserrat({
+/** UI / body — Karla is the sans-serif face. */
+const karla = Karla({
   subsets: ["latin"],
-  variable: "--font-montserrat",
+  variable: "--font-karla",
 });
 
-const playfair = Playfair_Display({
+/** Display headings — Cormorant Garamond is the serif face. */
+const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
-  variable: "--font-playfair",
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-cormorant",
 });
 
 export const metadata: Metadata = {
@@ -41,7 +42,7 @@ export default async function RootLayout({
   return (
     <html lang={locale} suppressHydrationWarning>
       <body
-        className={`${montserrat.variable} ${playfair.variable} ${inter.className} overflow-hidden`}
+        className={`${karla.variable} ${cormorant.variable} font-sans overflow-hidden`}
         suppressHydrationWarning
       >
         <NextIntlClientProvider>

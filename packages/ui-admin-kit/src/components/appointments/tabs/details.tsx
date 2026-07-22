@@ -616,7 +616,7 @@ export const AppointmentDetails = ({
           </div>
         )}
       </div>
-      <div className="w-full border border-border rounded-lg bg-background overflow-hidden p-1 flex flex-col gap-2">
+      <div className="w-full overflow-hidden p-1 flex flex-col gap-2">
         <AppointmentCalendar appointment={appointment} />
       </div>
     </div>

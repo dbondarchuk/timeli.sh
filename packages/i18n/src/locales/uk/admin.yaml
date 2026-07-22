@@ -344,6 +344,11 @@ navigation:
   logout: Вийти
   viewWebsite: Переглянути веб-сайт
   profile: Профіль
+roles:
+  owner: Власник
+  admin: Адмін
+  staff: Персонал
+  member: Учасник
 themeToggle:
   toggleTheme: Переключити тему
   light: Світла
@@ -2518,6 +2523,21 @@ table:
   filters:
     status: Статус
 dashboard:
+  greeting:
+    morning: Доброго ранку, {name}
+    afternoon: Добрий день, {name}
+    evening: Добрий вечір, {name}
+    fallbackName: там
+    subtitleOverview: Ось що відбувається з вашими записами сьогодні.
+    subtitlePending: Перегляньте та відповідайте на очікуючі запити на записи.
+    newAppointment: Новий запис
+  kpi:
+    todayAppointments: Записи на сьогодні
+    upcomingToday: "{count, plural, =0 {Немає майбутніх} =1 {1 майбутній} few {# майбутні} other {# майбутніх}}"
+    thisWeek: Цього тижня
+    thisWeekRevenue: Дохід за тиждень
+    avgBookingValue: Середня вартість запису
+    vsLastWeek: порівняно з минулим тижнем
   subscriptionPastDueBanner:
     message: Платіж за підпискою прострочено — нові бронювання та зміни тимчасово заблоковані.
     goToSettings: Перейти до налаштувань →
@@ -2573,8 +2593,11 @@ calendar:
   monthly: Щомісячно
   weekly: Щотижнево
   daily: Щодня
+  day: День
+  week: Тиждень
+  month: Місяць
   agenda: Порядок денний
-  eventTitle: "{customer} для {service}"
+  eventTitle: "{customer} · {service}"
   appointment: Запис
   status: Статус
   price: Ціна

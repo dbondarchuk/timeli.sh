@@ -85,12 +85,12 @@ export const ActivityFeedHeaderButton: React.FC = () => {
       <DropdownMenuTrigger asChild>
         <Button
           type="button"
-          variant="ghost"
+          variant="outline"
           size="icon"
-          className="relative"
+          className="relative size-9 rounded-full border-border/70"
           aria-label={t("activity.header.openFeed")}
         >
-          <Activity className="size-5" />
+          <Activity className="size-4 stroke-[1.5]" />
           <ActivityUnreadDot />
         </Button>
       </DropdownMenuTrigger>

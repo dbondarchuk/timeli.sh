@@ -4,6 +4,7 @@ import { Link, Separator, SidebarTrigger } from "@timelish/ui";
 import { Globe2 } from "lucide-react";
 import { ActivityFeedHeaderButton } from "./activity-feed-header-button";
 import { BreadcrumbsRender } from "./breadcrumbs";
+import { HeaderHomeAware } from "./header-home-aware";
 import ThemeToggle from "./theme-toggle/theme-toggle";
 
 export default async function Header({}: {}) {
@@ -11,29 +12,31 @@ export default async function Header({}: {}) {
   const websiteUrl = await getWebsiteUrl();
 
   return (
-    <header className="sticky inset-x-0 top-0 w-full">
-      <nav className="flex items-center justify-between px-4 lg:px-8 py-2">
-        {/* <div className={cn("block lg:!hidden")}>
-          <AppSidebarTrigger />
-        </div> */}
-        <div className="flex items-center gap-2">
-          <SidebarTrigger className="-ml-3 h-7 w-7" iconSize={18} />
-          <Separator orientation="vertical" className="mr-2 h-4" />
-          <BreadcrumbsRender />
+    <header className="sticky inset-x-0 top-0 z-10 w-full bg-background/80 backdrop-blur-sm">
+      <nav className="flex items-center justify-between px-4 lg:px-8 py-2.5">
+        <div className="flex items-center gap-2 min-w-0">
+          <SidebarTrigger
+            className="-ml-2 h-8 w-8 rounded-full border border-border/60 bg-background"
+            iconSize={16}
+          />
+          <HeaderHomeAware>
+            <Separator orientation="vertical" className="mr-2 h-4" />
+            <BreadcrumbsRender />
+          </HeaderHomeAware>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           <ActivityFeedHeaderButton />
           <ThemeToggle />
           <Link
             href={websiteUrl}
             target="_blank"
             button
-            variant="brand"
-            className="inline-flex items-center gap-1"
+            variant="outline"
+            className="inline-flex items-center gap-1.5 rounded-full border-border/70 text-muted-foreground hover:text-foreground"
           >
-            <Globe2 size={16} />{" "}
-            <span className="hidden md:inline">
+            <Globe2 size={15} strokeWidth={1.5} />{" "}
+            <span className="hidden md:inline text-sm">
               {t("navigation.viewWebsite")}
             </span>
           </Link>

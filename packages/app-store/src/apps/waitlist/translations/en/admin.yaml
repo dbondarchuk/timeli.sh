@@ -64,6 +64,7 @@ settings:
   description: Configure waitlist notification settings
 tab:
   title: Waitlist
+  subtitle: Review waitlist requests and convert them into appointments.
   noWaitlistEntries: No waitlist entries
   caughtUp: You've caught up on all requests. Good job!
 app:

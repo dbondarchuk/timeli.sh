@@ -4,20 +4,18 @@ import { getI18nAsync } from "@timelish/i18n/server";
 import { getLoggerFactory } from "@timelish/logger";
 import {
   Breadcrumbs,
-  Link,
   ResponsiveTabsList,
   Skeleton,
   TabsContent,
   TabsTrigger,
   TabsViaUrl,
-  TooltipResponsive,
-  TooltipResponsiveContent,
-  TooltipResponsiveTrigger,
 } from "@timelish/ui";
-import { CalendarPlus } from "lucide-react";
 import { Metadata } from "next";
 import { Suspense } from "react";
-import { getServicesContainer } from "../utils";
+import { getOrganizationId, getServicesContainer } from "../utils";
+import { DashboardGreeting } from "./dashboard-greeting";
+import { DashboardKpiStrip } from "./dashboard-kpi-strip";
+import { getDashboardStats } from "./dashboard-stats";
 import { EventsCalendar } from "./events-calendar";
 import { NextAppointmentsCards } from "./next-appointments-cards";
 import { DashboardNotificationsBadge } from "./notifications-toast-stream";
@@ -34,6 +32,12 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: t("navigation.dashboard"),
   };
+}
+
+async function DashboardKpiSection() {
+  const organizationId = await getOrganizationId();
+  const stats = await getDashboardStats(organizationId);
+  return <DashboardKpiStrip stats={stats} />;
 }
 
 export default async function Page(params: Params) {
@@ -71,35 +75,34 @@ export default async function Page(params: Params) {
             app._id,
           ),
           label: t(item.label),
+          subtitle: t(item.subtitleKey),
         })) || [],
     )
-    // Sort by order descending to show the highest order first
     .sort((a, b) => b.order - a.order);
+
+  const activeAppTab = dashboardTabAppsMap.find(
+    (item) => item.href === activeTab,
+  );
+
+  const greetingSubtitle =
+    activeTab === "appointments"
+      ? tAdmin("dashboard.greeting.subtitlePending")
+      : activeAppTab
+        ? activeAppTab.subtitle
+        : tAdmin("dashboard.greeting.subtitleOverview");
 
   return (
     <PageContainer scrollable>
       <Breadcrumbs items={breadcrumbItems} />
-      <div className="space-y-2 flex-1">
-        <div className="flex items-center justify-between space-y-2">
-          <Suspense fallback={<Skeleton className="w-32 h-10" />}>
-            <h2 className="text-2xl font-bold tracking-tight">
-              {
-                (
-                  await servicesContainer.configurationService.getConfiguration(
-                    "general",
-                  )
-                ).name
-              }
-            </h2>
-          </Suspense>
-        </div>
+      <div className="space-y-6 flex-1 pb-8">
+        <DashboardGreeting subtitle={greetingSubtitle} />
         <Suspense>
-          <TabsViaUrl defaultValue={defaultTab} className="space-y-4">
+          <TabsViaUrl defaultValue={defaultTab} className="space-y-5">
             <ResponsiveTabsList className="w-full flex flex-row gap-2">
-              <TabsTrigger value="overview">
+              <TabsTrigger value="overview" className="rounded-full">
                 {tAdmin("dashboard.tabs.overview")}
               </TabsTrigger>
-              <TabsTrigger value="appointments">
+              <TabsTrigger value="appointments" className="rounded-full">
                 {tAdmin("dashboard.tabs.pendingAppointments")}{" "}
                 <DashboardNotificationsBadge
                   notificationsCountKey="pending_appointments"
@@ -107,7 +110,11 @@ export default async function Page(params: Params) {
                 />
               </TabsTrigger>
               {dashboardTabAppsMap.map((item) => (
-                <TabsTrigger value={item.href} key={item.href}>
+                <TabsTrigger
+                  value={item.href}
+                  key={item.href}
+                  className="rounded-full"
+                >
                   {item.label}{" "}
                   {item.notificationsCountKey ? (
                     <DashboardNotificationsBadge
@@ -121,42 +128,36 @@ export default async function Page(params: Params) {
             {activeTab === "overview" && (
               <TabsContent
                 value="overview"
-                className="space-y-4 @container [contain:layout]"
+                className="space-y-5 @container [contain:layout]"
               >
-                <div className="flex flex-col-reverse @6xl:flex-row gap-8">
-                  <div className="flex flex-col @6xl:flex-1 flex-shrink">
+                <Suspense
+                  fallback={
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                      {Array.from({ length: 4 }).map((_, index) => (
+                        <Skeleton
+                          className="h-24 w-full rounded-2xl"
+                          key={index}
+                        />
+                      ))}
+                    </div>
+                  }
+                >
+                  <DashboardKpiSection />
+                </Suspense>
+                <div className="flex flex-col-reverse @6xl:flex-row gap-6">
+                  <div className="flex flex-col @6xl:flex-1 min-w-0">
                     <EventsCalendar />
                   </div>
-                  <div className="@6xl:flex-0 flex flex-col gap-2">
-                    <div className="flex flex-row gap-2">
-                      <h2 className="tracking-tight text-lg font-medium flex-1">
-                        {tAdmin("dashboard.appointments.nextAppointments")}
-                      </h2>
-                      <TooltipResponsive>
-                        <TooltipResponsiveTrigger>
-                          <Link
-                            href="/dashboard/appointments/new"
-                            button
-                            variant="default"
-                            aria-label={tAdmin(
-                              "appointments.scheduleAppointment",
-                            )}
-                            className="flex flex-row gap-2 items-center"
-                          >
-                            <CalendarPlus size={16} />
-                          </Link>
-                        </TooltipResponsiveTrigger>
-                        <TooltipResponsiveContent>
-                          {tAdmin("appointments.scheduleAppointment")}
-                        </TooltipResponsiveContent>
-                      </TooltipResponsive>
-                    </div>
+                  <div className="@6xl:w-80 @6xl:shrink-0 flex flex-col gap-2">
+                    <h2 className="tracking-tight text-base font-medium">
+                      {tAdmin("dashboard.appointments.nextAppointments")}
+                    </h2>
                     <Suspense
                       key={key}
                       fallback={
                         <>
                           {Array.from({ length: 3 }).map((_, index) => (
-                            <Skeleton className="w-full h-72" key={index} />
+                            <Skeleton className="w-full h-40" key={index} />
                           ))}
                         </>
                       }

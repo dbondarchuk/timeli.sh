@@ -1,152 +1,188 @@
 "use client";
 
-import { adminApi } from "@timelish/api-sdk";
-import { useI18n } from "@timelish/i18n";
-import { Appointment, CalendarEvent, DaySchedule } from "@timelish/types";
-import { useTimeZone } from "@timelish/ui";
+import { useI18n, useLocale } from "@timelish/i18n";
 import {
-  CheckCircle,
-  DollarSign,
-  Presentation,
-  StickyNote,
-} from "lucide-react";
+  Button,
+  Calendar,
+  cn,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@timelish/ui";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { DateTime } from "luxon";
 import React from "react";
-import { AppointmentDialog } from "../appointments/appointment-dialog";
 import { AgendaEventCalendar } from "./agenda-event-calendar";
 import { MonthlyEventCalendar } from "./monthly-event-calendar";
-import { EventCalendarEvent, EventCalendarProps } from "./types";
+import type { EventCalendarProps, EventCalendarView } from "./types";
 import { WeeklyEventCalendar } from "./weekly-event-calendar";
 
-export const EventCalendar: React.FC<EventCalendarProps> = (props) => {
+const SWITCHABLE_VIEWS: Array<{
+  value: Exclude<EventCalendarView, "days-around">;
+  labelKey:
+    | "calendar.day"
+    | "calendar.week"
+    | "calendar.month"
+    | "calendar.agenda";
+}> = [
+  { value: "daily", labelKey: "calendar.day" },
+  { value: "weekly", labelKey: "calendar.week" },
+  { value: "monthly", labelKey: "calendar.month" },
+  { value: "agenda", labelKey: "calendar.agenda" },
+];
+
+function shiftDate(
+  date: DateTime,
+  view: EventCalendarView,
+  direction: -1 | 1,
+  daysAround: number,
+  daysToShow: number,
+): DateTime {
+  switch (view) {
+    case "daily":
+      return date.plus({ days: direction });
+    case "weekly":
+      return date.plus({ weeks: direction });
+    case "monthly":
+      return date.plus({ months: direction });
+    case "agenda":
+      return date.plus({ days: direction * daysToShow });
+    case "days-around":
+      return date.plus({ days: direction * (daysAround + 1) });
+    default:
+      return date.plus({ days: direction });
+  }
+}
+
+function formatDateLabel(
+  date: DateTime,
+  view: EventCalendarView,
+  locale: string,
+  daysAround: number,
+  daysToShow: number,
+): string {
+  switch (view) {
+    case "daily": {
+      return date.toLocaleString(DateTime.DATE_MED, { locale });
+    }
+    case "weekly": {
+      const start = date.startOf("week");
+      const end = date.endOf("week");
+      const startLabel = start.toLocaleString(DateTime.DATE_MED, { locale });
+      const endLabel = end.toLocaleString(DateTime.DATE_MED, { locale });
+      return `${startLabel} – ${endLabel}`;
+    }
+    case "monthly": {
+      return date.toLocaleString({ month: "long", year: "numeric" }, { locale });
+    }
+    case "agenda": {
+      const end = date.plus({ days: daysToShow - 1 });
+      return `${date.toLocaleString(DateTime.DATE_MED, { locale })} – ${end.toLocaleString(DateTime.DATE_MED, { locale })}`;
+    }
+    case "days-around": {
+      const start = date.minus({ days: daysAround });
+      const end = date.plus({ days: daysAround });
+      const startLabel = start.toLocaleString(DateTime.DATE_MED, { locale });
+      const endLabel = end.toLocaleString(DateTime.DATE_MED, { locale });
+      return startLabel === endLabel
+        ? startLabel
+        : `${startLabel} – ${endLabel}`;
+    }
+    default:
+      return date.toLocaleString(DateTime.DATE_MED, { locale });
+  }
+}
+
+export const EventCalendar: React.FC<EventCalendarProps> = ({
+  events,
+  schedule,
+  className,
+  loading = false,
+  date: dateProp,
+  onDateChange,
+  view: viewProp,
+  defaultView = "weekly",
+  onViewChange,
+  showControls = true,
+  allowTimeChange = true,
+  allowViewSwitch = true,
+  daysAround = 3,
+  daysToShow = 3,
+  scrollToHour,
+  slotInterval,
+  onRangeChange,
+  onEventClick,
+  onDateClick,
+  renderEvent,
+}) => {
   const t = useI18n("admin");
-  const [events, setEvents] = React.useState<CalendarEvent[]>([]);
-  const [appointment, setAppointment] = React.useState<
-    Appointment | undefined
-  >();
+  const locale = useLocale();
 
-  const [schedule, setSchedule] = React.useState<Record<string, DaySchedule>>(
-    {},
+  const [uncontrolledDate, setUncontrolledDate] = React.useState(
+    () => dateProp ?? new Date(),
   );
+  const [uncontrolledView, setUncontrolledView] =
+    React.useState<EventCalendarView>(viewProp ?? defaultView);
+  const [datePickerOpen, setDatePickerOpen] = React.useState(false);
 
-  const [loading, setLoading] = React.useState(false);
-  const timeZone = useTimeZone();
+  const date = dateProp ?? uncontrolledDate;
+  const view = viewProp ?? uncontrolledView;
 
-  const getEvents = async (start: Date, end: Date) => {
-    setLoading(true);
-    setEvents([]);
-
-    const result = await adminApi.calendar.getCalendar({
-      start: DateTime.fromJSDate(start).startOf("day").toJSDate(),
-      end: DateTime.fromJSDate(end).endOf("day").toJSDate(),
-    });
-
-    setLoading(false);
-
-    setSchedule(result.schedule);
-    setEvents(result.events || []);
-  };
-
-  const calendarEvents: EventCalendarEvent[] = React.useMemo(
-    () =>
-      events.map((app) => {
-        const start = DateTime.fromJSDate(app.dateTime);
-        if ("_id" in app) {
-          return {
-            start: start.toJSDate(),
-            end: start.plus({ minutes: app.totalDuration || 0 }).toJSDate(),
-            id: app._id,
-            title: t("calendar.eventTitle", {
-              customer: app.fields.name,
-              service: app.option.name,
-            }),
-            variant: app.status !== "confirmed" ? "secondary" : "primary",
-          };
-        } else {
-          return {
-            start: start.toJSDate(),
-            end: start.plus({ minutes: app.totalDuration || 0 }).toJSDate(),
-            title: app.title,
-            variant: "tertiary",
-          };
-        }
-      }),
-    [events, t],
-  );
-
-  const onEventClick = ({ id }: EventCalendarEvent) => {
-    if (!id) {
-      return;
+  React.useEffect(() => {
+    if (dateProp) {
+      setUncontrolledDate(dateProp);
     }
+  }, [dateProp]);
 
-    const appointment = events.find(
-      (app) => (app as Appointment)._id == id,
-    ) as Appointment;
-    if (appointment) setAppointment(appointment);
-  };
-
-  const onDialogOpenChange = (open: boolean) => {
-    if (!open) {
-      setAppointment(undefined);
+  React.useEffect(() => {
+    if (viewProp) {
+      setUncontrolledView(viewProp);
     }
+  }, [viewProp]);
+
+  const setDate = (next: Date) => {
+    if (!dateProp) {
+      setUncontrolledDate(next);
+    }
+    onDateChange?.(next);
   };
 
-  const renderEventAgenda = React.useCallback(
-    (event: EventCalendarEvent) => {
-      if (!event.id) {
-        return null;
-      }
+  const setView = (next: EventCalendarView) => {
+    if (!viewProp) {
+      setUncontrolledView(next);
+    }
+    onViewChange?.(next);
+  };
 
-      const appointment = events.find(
-        (app) => (app as Appointment)._id == event.id,
-      ) as Appointment;
-
-      return (
-        <dl className="divide-y">
-          <div className="py-1 flex flex-row gap-2 flex-wrap @sm:py-2 @sm:grid @sm:grid-cols-3 @sm:gap-4">
-            <dt className="flex self-center items-center gap-1">
-              <Presentation size={16} /> {t("calendar.appointment")}:
-            </dt>
-            <dd className="col-span-2">{appointment.option.name}</dd>
-          </div>
-          <div className="py-1 flex flex-row gap-2 flex-wrap @sm:py-2 @sm:grid @sm:grid-cols-3 @sm:gap-4">
-            <dt className="flex self-center items-center gap-1">
-              <CheckCircle size={16} /> {t("calendar.status")}:
-            </dt>
-            <dd className="col-span-2">
-              {t(`appointments.status.${appointment.status}`)}
-            </dd>
-          </div>
-          {appointment.totalPrice && (
-            <div className="py-1 flex flex-row gap-2 flex-wrap @sm:py-2 @sm:grid @sm:grid-cols-3 @sm:gap-4">
-              <dt className="flex self-center items-center gap-1">
-                <DollarSign size={16} /> {t("calendar.price")}:
-              </dt>
-              <dd className="col-span-2">${appointment.totalPrice}</dd>
-            </div>
-          )}
-          {appointment.note && (
-            <div className="py-1 flex flex-row gap-2 flex-wrap @sm:py-2 @sm:grid @sm:grid-cols-3 @sm:gap-4">
-              <dt className="flex self-center items-center gap-1">
-                <StickyNote size={16} /> {t("calendar.note")}:
-              </dt>
-              <dd className="col-span-2">{appointment.note}</dd>
-            </div>
-          )}
-        </dl>
-      );
-    },
-    [events, t],
+  const dateTime = DateTime.fromJSDate(date).startOf("day");
+  const dateLabel = formatDateLabel(
+    dateTime,
+    view,
+    locale,
+    daysAround,
+    daysToShow,
   );
+
+  const goToday = () => setDate(DateTime.now().startOf("day").toJSDate());
+  const goPrevious = () =>
+    setDate(shiftDate(dateTime, view, -1, daysAround, daysToShow).toJSDate());
+  const goNext = () =>
+    setDate(shiftDate(dateTime, view, 1, daysAround, daysToShow).toJSDate());
+
+  const showViewSwitch =
+    showControls && allowViewSwitch && view !== "days-around";
+  const showTimeNav = showControls && allowTimeChange;
+
+  const viewClassName = cn("w-full", className);
 
   return (
-    <div className="relative">
+    <div className="relative w-full flex flex-col gap-3">
       {loading && (
-        <div className="absolute bg-white/60 z-50 h-full w-full flex items-center justify-center">
-          <div className="flex items-center">
-            <span className="text-3xl mr-4">{t("common.labels.loading")}</span>
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-background/60">
+          <div className="flex items-center gap-3">
+            <span className="text-xl">{t("common.labels.loading")}</span>
             <svg
-              className="animate-spin h-8 w-8 text-gray-800"
+              className="animate-spin h-7 w-7 text-foreground"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -158,68 +194,168 @@ export const EventCalendar: React.FC<EventCalendarProps> = (props) => {
                 r="10"
                 stroke="currentColor"
                 strokeWidth="4"
-              ></circle>
+              />
               <path
                 className="opacity-75"
                 fill="currentColor"
                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              ></path>
+              />
             </svg>
           </div>
         </div>
       )}
-      {props.type === "weekly" ? (
+
+      {showControls && (
+        <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
+          <div className="justify-self-start">
+            {showTimeNav ? (
+              <Button
+                variant="outline"
+                onClick={goToday}
+                className="rounded-full px-4"
+              >
+                {t("calendar.today")}
+              </Button>
+            ) : null}
+          </div>
+
+          <div className="justify-self-center flex flex-row items-center gap-1 min-w-0">
+            {showTimeNav && (
+              <Button
+                variant="outline"
+                size="icon"
+                className="rounded-full shrink-0"
+                onClick={goPrevious}
+              >
+                <ChevronLeft className="size-4" strokeWidth={1.5} />
+              </Button>
+            )}
+            {showTimeNav ? (
+              <Popover open={datePickerOpen} onOpenChange={setDatePickerOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className="h-auto min-w-0 max-w-[16rem] rounded-full px-3 py-1.5 text-sm font-medium tracking-tight truncate"
+                    aria-label={dateLabel}
+                  >
+                    {dateLabel}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="center">
+                  <Calendar
+                    mode="single"
+                    selected={dateTime.toJSDate()}
+                    defaultMonth={dateTime.toJSDate()}
+                    onSelect={(selected) => {
+                      if (!selected) return;
+                      setDate(
+                        DateTime.fromJSDate(selected).startOf("day").toJSDate(),
+                      );
+                      setDatePickerOpen(false);
+                    }}
+                    numberOfMonths={1}
+                  />
+                </PopoverContent>
+              </Popover>
+            ) : (
+              <div className="text-sm font-medium tracking-tight px-2 truncate text-center">
+                {dateLabel}
+              </div>
+            )}
+            {showTimeNav && (
+              <Button
+                variant="outline"
+                size="icon"
+                className="rounded-full shrink-0"
+                onClick={goNext}
+              >
+                <ChevronRight className="size-4" strokeWidth={1.5} />
+              </Button>
+            )}
+          </div>
+
+          <div className="justify-self-end">
+            {showViewSwitch ? (
+              <div className="inline-flex flex-wrap rounded-full border border-border/70 bg-muted/40 p-0.5">
+                {SWITCHABLE_VIEWS.map((item) => (
+                  <button
+                    key={item.value}
+                    type="button"
+                    onClick={() => setView(item.value)}
+                    className={cn(
+                      "rounded-full px-3.5 py-1.5 text-sm transition-colors",
+                      view === item.value
+                        ? "bg-background text-foreground shadow-sm border border-primary/40"
+                        : "text-muted-foreground hover:text-foreground",
+                    )}
+                  >
+                    {t(item.labelKey)}
+                  </button>
+                ))}
+              </div>
+            ) : null}
+          </div>
+        </div>
+      )}
+
+      {view === "weekly" ? (
         <WeeklyEventCalendar
-          onRangeChange={getEvents}
-          events={calendarEvents}
-          onEventClick={onEventClick}
-          variant="week-of"
+          date={date}
+          events={events}
           schedule={schedule}
-          {...props}
+          variant="week-of"
+          className={viewClassName}
+          scrollToHour={scrollToHour}
+          slotInterval={slotInterval}
+          onRangeChange={onRangeChange}
+          onEventClick={onEventClick}
         />
-      ) : props.type === "daily" ? (
+      ) : view === "daily" ? (
         <WeeklyEventCalendar
+          date={date}
+          events={events}
+          schedule={schedule}
           variant="days-around"
           daysAround={0}
-          onRangeChange={getEvents}
-          events={calendarEvents}
+          className={viewClassName}
+          scrollToHour={scrollToHour}
+          slotInterval={slotInterval}
+          onRangeChange={onRangeChange}
           onEventClick={onEventClick}
-          schedule={schedule}
-          {...props}
         />
-      ) : props.type === "days-around" ? (
+      ) : view === "days-around" ? (
         <WeeklyEventCalendar
-          onRangeChange={getEvents}
-          events={calendarEvents}
+          date={date}
+          events={events}
+          schedule={schedule}
           variant="days-around"
+          daysAround={daysAround}
+          className={viewClassName}
+          scrollToHour={scrollToHour}
+          slotInterval={slotInterval}
+          onRangeChange={onRangeChange}
           onEventClick={onEventClick}
-          schedule={schedule}
-          {...props}
         />
-      ) : props.type === "agenda" ? (
+      ) : view === "agenda" ? (
         <AgendaEventCalendar
-          onRangeChange={getEvents}
-          events={calendarEvents}
-          onEventClick={onEventClick}
-          renderEvent={renderEventAgenda}
+          date={date}
+          events={events}
           schedule={schedule}
-          {...props}
+          daysToShow={daysToShow}
+          className={viewClassName}
+          onRangeChange={onRangeChange}
+          onEventClick={onEventClick}
+          renderEvent={renderEvent}
         />
       ) : (
         <MonthlyEventCalendar
-          onRangeChange={getEvents}
-          events={calendarEvents}
-          onEventClick={onEventClick}
+          date={date}
+          events={events}
           schedule={schedule}
-          {...props}
-        />
-      )}
-
-      {appointment && (
-        <AppointmentDialog
-          appointment={appointment}
-          open
-          onOpenChange={onDialogOpenChange}
+          className={viewClassName}
+          onRangeChange={onRangeChange}
+          onEventClick={onEventClick}
+          onDateClick={onDateClick}
         />
       )}
     </div>
