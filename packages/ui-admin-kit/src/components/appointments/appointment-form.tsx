@@ -601,7 +601,7 @@ export const AppointmentScheduleForm: React.FC<
                     <FormControl>
                       <Combobox
                         disabled={loading}
-                        className="flex w-full font-normal text-base"
+                        className="flex w-full font-normal text-lg"
                         searchLabel={t("appointments.form.selectOption")}
                         value={field.value}
                         onItemSelect={field.onChange}
@@ -611,7 +611,7 @@ export const AppointmentScheduleForm: React.FC<
                           label: (
                             <div className="flex flex-col gap-1">
                               <div>{x.name}</div>
-                              <div className="text-xs text-muted-foreground inline-flex items-center gap-2">
+                              <div className="text-sm text-muted-foreground inline-flex items-center gap-2">
                                 <div className="inline-flex items-center gap-1">
                                   <Clock className="w-3 h-3" />{" "}
                                   {x.durationType === "fixed"

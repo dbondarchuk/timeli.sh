@@ -97,7 +97,7 @@ export function SubMenuItemCard({
           </Button>
           <span
             className={cn(
-              "text-xs font-semibold uppercase tracking-wide text-muted-foreground",
+              "text-sm font-semibold uppercase tracking-wide text-muted-foreground",
               !label || invalid ? "text-destructive" : "",
             )}
           >

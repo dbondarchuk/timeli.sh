@@ -347,6 +347,11 @@ navigation:
   logout: Log out
   viewWebsite: View website
   profile: Profile
+roles:
+  owner: Owner
+  admin: Admin
+  staff: Staff
+  member: Member
 themeToggle:
   toggleTheme: Toggle theme
   light: Light
@@ -2741,6 +2746,21 @@ table:
   filters:
     status: Status
 dashboard:
+  greeting:
+    morning: Good morning, {name}
+    afternoon: Good afternoon, {name}
+    evening: Good evening, {name}
+    fallbackName: there
+    subtitleOverview: Here's what's happening with your appointments today.
+    subtitlePending: Review and respond to pending appointment requests.
+    newAppointment: New Appointment
+  kpi:
+    todayAppointments: Today's Appointments
+    upcomingToday: "{count, plural, =0 {None upcoming} =1 {1 upcoming} other {# upcoming}}"
+    thisWeek: This Week
+    thisWeekRevenue: This Week Revenue
+    avgBookingValue: Avg. Booking Value
+    vsLastWeek: vs last week
   subscriptionPastDueBanner:
     message: Subscription payment past due - new bookings and changes are currently blocked.
     goToSettings: Go to settings →
@@ -2800,8 +2820,11 @@ calendar:
   monthly: Monthly
   weekly: Weekly
   daily: Daily
+  day: Day
+  week: Week
+  month: Month
   agenda: Agenda
-  eventTitle: "{customer} for {service}"
+  eventTitle: "{customer} · {service}"
   appointment: Appointment
   status: Status
   price: Price

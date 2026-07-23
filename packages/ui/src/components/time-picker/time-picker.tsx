@@ -53,7 +53,7 @@ export function TimePicker({
   return (
     <div className="flex items-end gap-2">
       <div className="grid gap-1 text-center">
-        <Label htmlFor="hours" className="text-xs">
+        <Label htmlFor="hours" className="text-sm">
           {t("common.hours")}
         </Label>
         <TimePickerInput
@@ -66,7 +66,7 @@ export function TimePicker({
         />
       </div>
       <div className="grid gap-1 text-center">
-        <Label htmlFor="minutes" className="text-xs">
+        <Label htmlFor="minutes" className="text-sm">
           {t("common.minutes")}
         </Label>
         <TimePickerInput
@@ -80,7 +80,7 @@ export function TimePicker({
       </div>
       {seconds && (
         <div className="grid gap-1 text-center">
-          <Label htmlFor="seconds" className="text-xs">
+          <Label htmlFor="seconds" className="text-sm">
             {t("timePicker.seconds")}
           </Label>
           <TimePickerInput
@@ -96,7 +96,7 @@ export function TimePicker({
         <Clock className="ml-2 h-4 w-4" />
       </div> */}
       <div className="grid gap-1 text-center">
-        <Label htmlFor="period" className="text-xs"></Label>
+        <Label htmlFor="period" className="text-sm"></Label>
         <Select
           onValueChange={(value: Period) => onPeriodChange(value)}
           value={period}

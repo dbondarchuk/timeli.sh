@@ -110,7 +110,7 @@ export function TooltipResponsiveContent({
         alignOffset={alignOffset}
         sideOffset={sideOffset}
         className={cn(
-          "w-fit max-w-xs bg-foreground text-background text-xs p-2 text-pretty",
+          "w-fit max-w-xs bg-foreground text-background text-sm p-2 text-pretty",
           className,
         )}
         hideWhenDetached={hideWhenDetached}

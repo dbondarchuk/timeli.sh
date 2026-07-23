@@ -42,7 +42,7 @@ export const GeneralTab: React.FC<{
     <>
       <Card>
         <CardHeader className="border-b">
-          <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          <CardTitle className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
             {t("navigation.general")}
           </CardTitle>
         </CardHeader>
@@ -132,7 +132,7 @@ export const GeneralTab: React.FC<{
                   <FormLabel>{t("settings.general.form.timeZone")}</FormLabel>
                   <FormControl>
                     <Combobox
-                      className="flex w-full font-normal text-base"
+                      className="flex w-full font-normal text-lg"
                       values={timeZoneValues}
                       searchLabel={t("settings.general.form.selectTimeZone")}
                       disabled={loading}

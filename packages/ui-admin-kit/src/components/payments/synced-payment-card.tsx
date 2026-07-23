@@ -46,7 +46,7 @@ export type SyncedPaymentCardProps = {
 };
 
 const SectionLabel = ({ children }: { children: ReactNode }) => (
-  <p className="text-xs font-normal uppercase tracking-wider text-muted-foreground">
+  <p className="text-sm font-normal uppercase tracking-wider text-muted-foreground">
     {children}
   </p>
 );
@@ -61,7 +61,7 @@ const DetailRow = ({
   className?: string;
 }) => (
   <div
-    className={cn("flex items-center justify-between gap-3 text-xs", className)}
+    className={cn("flex items-center justify-between gap-3 text-sm", className)}
   >
     <span className="text-muted-foreground">{label}</span>
     <div className="text-right">{children}</div>
@@ -131,8 +131,8 @@ export const SyncedPaymentCard = ({
             <ProviderLogo className="size-5" />
           </div>
           <div className="min-w-0">
-            <p className="truncate font-semibold text-sm">{providerLabel}</p>
-            <p className="mt-0.5 text-xs text-muted-foreground">
+            <p className="truncate font-semibold text-base">{providerLabel}</p>
+            <p className="mt-0.5 text-sm text-muted-foreground">
               {t("syncedPayments.subtitle.synced")}
               {" · "}
               {formatDateTime(payment.transactionTime)}
@@ -141,7 +141,7 @@ export const SyncedPaymentCard = ({
         </div>
         <span
           className={cn(
-            "shrink-0 rounded-full px-2.5 py-0.5 text-xs font-medium",
+            "shrink-0 rounded-full px-2.5 py-0.5 text-sm font-medium",
             STATUS_BADGE_CLASS[payment.status],
           )}
         >
@@ -156,7 +156,7 @@ export const SyncedPaymentCard = ({
           <SectionLabel>
             {t("syncedPayments.sections.totalReceived")}
           </SectionLabel>
-          <span className="text-lg font-bold tabular-nums tracking-tight">
+          <span className="text-xl font-bold tabular-nums tracking-tight">
             {currencyFormat(payment.amount)}
           </span>
         </div>
@@ -219,14 +219,14 @@ export const SyncedPaymentCard = ({
                 className="flex items-center justify-between gap-3"
               >
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-xs">
+                  <p className="truncate text-sm">
                     {suggestion.appointment
                       ? `${suggestion.appointment.option.name} · ${formatAppointmentTime(
                           suggestion.appointment.dateTime,
                         )}`
                       : suggestion.appointmentId}
                   </p>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-sm text-muted-foreground">
                     {t("syncedPayments.fields.matchScore", {
                       score: Math.round(suggestion.score * 100),
                     })}

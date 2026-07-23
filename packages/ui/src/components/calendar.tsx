@@ -72,12 +72,12 @@ function Calendar({
         weeks: cn("w-full border-collapse space-y-", classNames?.weeks),
         weekdays: cn("flex", classNames?.weekdays),
         weekday: cn(
-          "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem] flex-grow",
+          "text-muted-foreground rounded-md w-9 font-normal text-[0.925rem] flex-grow",
           classNames?.weekday,
         ),
         week: cn("flex w-full mt-2", classNames?.week),
         day_button: cn(
-          "h-9 w-9  text-center text-sm p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
+          "h-9 w-9  text-center text-base p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
           classNames?.day_button,
         ),
         day: cn(

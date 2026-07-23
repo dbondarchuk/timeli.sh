@@ -133,7 +133,7 @@ export function CurrencyPercentageInput({
           )}
         </Button>
       </div>
-      <div className="mt-2 flex flex-row gap-2 items-center justify-between text-sm text-muted-foreground">
+      <div className="mt-2 flex flex-row gap-2 items-center justify-between text-base text-muted-foreground">
         {mode === "percentage" && displayAmount && (
           <span>{t("currencyInput.amount", { amount: displayAmount })}</span>
         )}

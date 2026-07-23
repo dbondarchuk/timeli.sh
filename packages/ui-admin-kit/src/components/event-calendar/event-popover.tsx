@@ -43,16 +43,16 @@ export const EventPopover: React.FC<EventPopoverProps> = ({
                 EventVariantClasses.primary,
             )}
           />
-          <div className="font-semibold text-lg">{event.title}</div>
+          <div className="font-semibold text-xl">{event.title}</div>
 
-          <div className="flex items-center text-sm text-muted-foreground">
+          <div className="flex items-center text-base text-muted-foreground">
             <Clock />
             <span>
               {eventDate.toLocaleString(DateTime.DATETIME_FULL, { locale })}
             </span>
           </div>
           {duration.hours < 23 && (
-            <div className="flex items-center text-sm text-muted-foreground">
+            <div className="flex items-center text-base text-muted-foreground">
               <Timer />
               <span>
                 {duration.hours} {t("calendar.hour")} {duration.minutes}{" "}
@@ -60,7 +60,7 @@ export const EventPopover: React.FC<EventPopoverProps> = ({
               </span>
             </div>
           )}
-          <div className="flex items-center text-sm text-muted-foreground">
+          <div className="flex items-center text-base text-muted-foreground">
             <CalendarClock />
             <span>
               {endDate.toLocaleString(DateTime.DATETIME_FULL, { locale })}
@@ -68,14 +68,14 @@ export const EventPopover: React.FC<EventPopoverProps> = ({
           </div>
 
           {/* {event.location && (
-            <div className="flex items-center text-sm text-muted-foreground">
+            <div className="flex items-center text-base text-muted-foreground">
               <MapPin />
               <span>{event.location}</span>
             </div>
           )}
 
           {event.description && (
-            <div className="pt-2 border-t text-sm">{event.description}</div>
+            <div className="pt-2 border-t text-base">{event.description}</div>
           )} */}
         </div>
       </PopoverContent>

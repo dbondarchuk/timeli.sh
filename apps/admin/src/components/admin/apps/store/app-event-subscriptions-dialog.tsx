@@ -47,7 +47,7 @@ export const AppEventSubscriptionsDialog: React.FC<
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
-        <ul className="rounded-md border bg-muted/40 px-4 py-3 font-mono text-sm leading-relaxed">
+        <ul className="rounded-md border bg-muted/40 px-4 py-3 font-mono text-base leading-relaxed">
           {patterns.map((pattern) => (
             <li key={pattern} className="break-all py-1">
               {pattern}

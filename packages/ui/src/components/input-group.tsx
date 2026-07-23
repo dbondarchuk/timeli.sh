@@ -10,7 +10,7 @@ export const InputGroupAddonClasses = cva(
     "border-input",
     "bg-background",
     "py-2",
-    "text-sm",
+    "text-base",
     "text-muted-foreground",
     "ring-offset-background",
     "focus-visible:outline-none",
@@ -29,8 +29,8 @@ export const InputGroupAddonClasses = cva(
       h: {
         lg: "h-10",
         md: "h-9",
-        sm: "h-8 text-xs",
-        xs: "h-7 text-xs",
+        sm: "h-8",
+        xs: "h-7",
       },
     },
     defaultVariants: {

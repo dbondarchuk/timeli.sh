@@ -62,11 +62,11 @@ export function CheckoutPlans({
               <Sparkles className="h-5 w-5" strokeWidth={2} />
             </div>
             <div className="min-w-0 flex-1 pt-0.5">
-              <h2 className="text-lg font-semibold leading-tight text-foreground">
+              <h2 className="text-xl font-semibold leading-tight text-foreground">
                 {plan.cardTitle}
               </h2>
               {plan.cardSubtitle ? (
-                <p className="mt-1 text-sm text-muted-foreground">
+                <p className="mt-1 text-base text-muted-foreground">
                   {plan.cardSubtitle}
                 </p>
               ) : null}
@@ -80,7 +80,7 @@ export function CheckoutPlans({
                   {plan.priceAmount}
                 </span>
                 {plan.pricePeriod ? (
-                  <span className="text-sm font-normal text-muted-foreground">
+                  <span className="text-base font-normal text-muted-foreground">
                     {plan.pricePeriod}
                   </span>
                 ) : null}
@@ -88,14 +88,14 @@ export function CheckoutPlans({
             </div>
           ) : null}
 
-          <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
             {t("checkout.includedLabel")}
           </p>
           <ul className="mb-6 flex flex-1 flex-col gap-2.5">
             {plan.benefits.map((line, i) => (
               <li
                 key={`${plan.productId}-${i}`}
-                className="flex items-center gap-3 rounded-lg border border-neutral-200/90 bg-background px-3 py-2.5 text-sm leading-snug text-foreground"
+                className="flex items-center gap-3 rounded-lg border border-neutral-200/90 bg-background px-3 py-2.5 text-base leading-snug text-foreground"
               >
                 <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent text-accent-foreground">
                   <Check className="h-3 w-3" strokeWidth={3} />
@@ -117,7 +117,7 @@ export function CheckoutPlans({
               ? t(`checkout.plans.${plan.slug}.cta`)
               : t("checkout.cta")}
           </Button>
-          <p className="mt-3 text-center text-xs text-muted-foreground">
+          <p className="mt-3 text-center text-sm text-muted-foreground">
             {t("checkout.disclaimer")}
           </p>
         </div>

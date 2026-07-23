@@ -38,7 +38,7 @@ function EllipsisStep() {
   return (
     <div className="flex flex-col items-center w-20">
       <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
-        <span className="text-xl leading-none text-muted-foreground">
+        <span className="text-2xl leading-none text-muted-foreground">
           <Ellipsis className="w-5 h-5" />
         </span>
       </div>
@@ -113,7 +113,7 @@ export function Stepper({
 
                 <span
                   className={cn(
-                    "text-xs mt-2 font-medium text-center step-label-text",
+                    "text-sm mt-2 font-medium text-center step-label-text",
                     isCurrent ? "text-foreground" : "text-muted-foreground",
                   )}
                 >
@@ -139,7 +139,7 @@ export function Stepper({
 
       {/* Mobile progress */}
       {isMobile && (
-        <div className="mt-3 text-xs text-muted-foreground steps-progress-text">
+        <div className="mt-3 text-sm text-muted-foreground steps-progress-text">
           {i18n("stepper.step_of_total", {
             step: currentIndex + 1,
             total: steps.length,

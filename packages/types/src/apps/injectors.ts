@@ -12,6 +12,8 @@ export type DashboardTabInjectorApp<
       order: number;
       href: string;
       label: AllKeys<T, CustomKeys>;
+      /** Full i18n key path for the dashboard greeting subtitle on this tab. */
+      subtitleKey: AllKeys<T, CustomKeys>;
       notificationsCountKey?: string;
       view: (props: {
         props: IConnectedAppProps;

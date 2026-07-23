@@ -89,12 +89,12 @@ export const InstalledAppsClient: React.FC<InstalledAppsClientProps> = ({
         <ConnectedAppRow app={app} key={app._id} />
       ))}
       {apps.length === 0 && (
-        <div className="rounded-lg border bg-muted/20 p-8 text-center text-sm text-muted-foreground">
+        <div className="rounded-lg border bg-muted/20 p-8 text-center text-base text-muted-foreground">
           {tApps("installedApps.noInstalledApps")}
         </div>
       )}
       {apps.length > 0 && filteredApps.length === 0 && (
-        <div className="rounded-lg border bg-muted/20 p-8 text-center text-sm text-muted-foreground">
+        <div className="rounded-lg border bg-muted/20 p-8 text-center text-base text-muted-foreground">
           {tApps("installedApps.noResults")}
         </div>
       )}

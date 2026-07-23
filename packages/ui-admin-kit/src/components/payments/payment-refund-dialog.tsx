@@ -160,9 +160,9 @@ export const PaymentRefundDialog: React.FC<PaymentRefundDialogProps> = ({
           <h4 className="font-semibold mb-3">
             {t("admin.payment.card.refundDetails")}
           </h4>
-          <div className="space-y-2 text-xs">
+          <div className="space-y-2 text-sm">
             <div className="flex justify-between">
-              <span className="text-xs">
+              <span className="text-sm">
                 {t("admin.payment.card.paymentMethod")}
               </span>
               <span className="font-semibold">

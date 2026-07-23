@@ -43,7 +43,7 @@ export const IconSelect: React.FC<IconSelectProps> = ({
 
   return (
     <Combobox
-      className="flex w-full font-normal text-base"
+      className="flex w-full font-normal text-lg"
       values={iconValues}
       searchLabel={t("menuItem.iconSelect.selectIcon")}
       disabled={disabled}

@@ -18,7 +18,7 @@ const FooterShortLabel: React.FC<{
     >
       <span>{footer.name}</span>
       {!row && (
-        <span className="text-xs italic">
+        <span className="text-sm italic">
           {t("pages.footers.usedOnPages", {
             count: footer.usedCount ?? 0,
           })}
@@ -113,7 +113,7 @@ export const FooterSelector: React.FC<FooterSelectorProps> = ({
       // @ts-ignore Allow clear passthrough
       onChange={onItemSelect}
       disabled={disabled}
-      className={cn("flex font-normal text-base max-w-full", className)}
+      className={cn("flex font-normal text-lg max-w-full", className)}
       placeholder={t("pages.form.footer")}
       value={value}
       allowClear={allowClear}

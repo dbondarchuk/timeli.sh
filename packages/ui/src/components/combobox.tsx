@@ -87,7 +87,7 @@ const ItemComponent = React.memo(
     );
 
     return (
-      <CommandItem style={props.style} onSelect={onSelect} className="text-xs">
+      <CommandItem style={props.style} onSelect={onSelect} className="text-base">
         <Check
           className={cn(
             "mr-2 size-3.5",
@@ -322,10 +322,10 @@ export const Combobox: React.FC<ComboboxProps> = (props) => {
             placeholder={searchLabel}
             value={search}
             onValueChange={setSearch}
-            className="text-base md:text-xs"
+            className="text-base"
           />
           {(!values || values.length) == 0 && (
-            <div className="py-6 text-center text-xs">
+            <div className="py-6 text-center text-sm">
               {props.noResultsLabel || t("common.noResults")}
             </div>
           )}

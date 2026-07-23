@@ -155,7 +155,7 @@ export const AppointmentDetails = ({
               </AvatarFallback>
             </Avatar>
             <div className="min-w-0">
-              <p className="text-xs text-muted-foreground truncate">
+              <p className="text-sm text-muted-foreground truncate">
                 <Link
                   href={`/dashboard/customers/${appointment.customerId}`}
                   variant="underline"
@@ -163,7 +163,7 @@ export const AppointmentDetails = ({
                   <CustomerName customer={appointment.customer} />
                 </Link>
               </p>
-              <p className="text-sm font-medium text-foreground truncate">
+              <p className="text-base font-medium text-foreground truncate">
                 <Link
                   href={`/dashboard/appointments/${appointment._id}`}
                   variant="underline"
@@ -174,7 +174,7 @@ export const AppointmentDetails = ({
             </div>
           </div>
           <span
-            className={`shrink-0 text-xs font-medium px-2.5 py-1 rounded-full capitalize ${APPOINTMENT_STATUS_STYLES[appointment.status] ?? "bg-muted text-muted-foreground"}`}
+            className={`shrink-0 text-sm font-medium px-2.5 py-1 rounded-full capitalize ${APPOINTMENT_STATUS_STYLES[appointment.status] ?? "bg-muted text-muted-foreground"}`}
           >
             {t(`appointments.status.${appointment.status}`)}
           </span>
@@ -183,20 +183,20 @@ export const AppointmentDetails = ({
         {/* Date & Time */}
         <div className="grid grid-cols-2 gap-4 px-5 py-4 border-b border-border">
           <div>
-            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-0.5">
+            <p className="text-sm text-muted-foreground uppercase tracking-wide mb-0.5">
               {t("appointments.view.date")}
             </p>
-            <p className="text-sm font-medium text-foreground">
+            <p className="text-base font-medium text-foreground">
               {DateTime.fromJSDate(appointment.dateTime, {
                 zone: timeZone,
               }).toLocaleString(DateTime.DATE_HUGE, { locale })}
             </p>
           </div>
           <div>
-            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-0.5">
+            <p className="text-sm text-muted-foreground uppercase tracking-wide mb-0.5">
               {t("appointments.view.time")}
             </p>
-            <p className="text-sm font-medium text-foreground">
+            <p className="text-base font-medium text-foreground">
               {DateTime.fromJSDate(appointment.dateTime, {
                 zone: timeZone,
               }).toFormat(uses12HourFormat ? "h:mm" : "HH:mm", { locale })}
@@ -207,7 +207,7 @@ export const AppointmentDetails = ({
                 .plus({ minutes: appointment.totalDuration })
                 .toLocaleString(DateTime.TIME_SIMPLE, { locale })}
             </p>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               {t(
                 "common.timeDuration",
                 durationToTime(appointment.totalDuration),
@@ -220,7 +220,7 @@ export const AppointmentDetails = ({
         {!!appointment.totalPrice && (
           <div className="px-5 py-4 border-b border-border">
             <div className="flex items-center justify-between gap-2 mb-2.5">
-              <p className="text-xs text-muted-foreground uppercase tracking-wide">
+              <p className="text-sm text-muted-foreground uppercase tracking-wide">
                 {t("appointments.view.payment.label")}
               </p>
               {syncedProvider && (
@@ -233,10 +233,10 @@ export const AppointmentDetails = ({
             </div>
             <div className="flex flex-row flex-wrap gap-2">
               <div className="bg-background rounded-lg flex-1 p-3 border border-border">
-                <p className="text-xs text-muted-foreground mb-0.5">
+                <p className="text-sm text-muted-foreground mb-0.5">
                   {t("appointments.view.payment.total")}
                 </p>
-                <p className="text-base font-medium text-foreground">
+                <p className="text-lg font-medium text-foreground">
                   {currencyFormat(
                     appointment.totalPrice +
                       (appointment.discount?.discountAmount || 0),
@@ -245,29 +245,29 @@ export const AppointmentDetails = ({
               </div>
               {appointment.discount && (
                 <div className="bg-background rounded-lg flex-1 p-3 border border-border">
-                  <p className="text-xs text-muted-foreground mb-0.5">
+                  <p className="text-sm text-muted-foreground mb-0.5">
                     {t("appointments.view.payment.discount")}
                   </p>
-                  <p className="text-base font-medium text-foreground">
+                  <p className="text-lg font-medium text-foreground">
                     {currencyFormat(-1 * appointment.discount.discountAmount)}
                   </p>
                 </div>
               )}
               <div className="bg-background rounded-lg flex-1 p-3 border border-border">
-                <p className="text-xs text-muted-foreground mb-0.5">
+                <p className="text-sm text-muted-foreground mb-0.5">
                   {t("appointments.view.payment.paid")}
                 </p>
-                <p className="text-base font-medium text-green-600">
+                <p className="text-lg font-medium text-green-600">
                   {currencyFormat(totalPaid)}
                 </p>
               </div>
               {appointment.status !== "declined" && (
                 <div className="bg-background rounded-lg flex-1 p-3 border border-border">
-                  <p className="text-xs text-muted-foreground mb-0.5">
+                  <p className="text-sm text-muted-foreground mb-0.5">
                     {t("appointments.view.payment.due")}
                   </p>
                   <p
-                    className={`text-base font-medium ${totalAmountLeft > 0 ? "text-destructive" : "text-foreground"}`}
+                    className={`text-lg font-medium ${totalAmountLeft > 0 ? "text-destructive" : "text-foreground"}`}
                   >
                     {currencyFormat(totalAmountLeft)}
                   </p>
@@ -279,18 +279,18 @@ export const AppointmentDetails = ({
 
         {/* Customer */}
         <div className="px-5 py-4 border-b border-border">
-          <p className="text-xs text-muted-foreground uppercase tracking-wide mb-2.5">
+          <p className="text-sm text-muted-foreground uppercase tracking-wide mb-2.5">
             {t("appointments.view.customer")}
           </p>
           <div className="flex flex-col gap-1.5">
             <div className="flex justify-between items-center">
-              <span className="text-xs text-muted-foreground">
+              <span className="text-sm text-muted-foreground">
                 {t("appointments.view.name")}
               </span>
               <Link
                 href={`/dashboard/customers/${appointment.customerId}`}
                 variant="underline"
-                className="truncate text-ellipsis text-xs"
+                className="truncate text-ellipsis text-sm"
               >
                 <CustomerName customer={appointment.customer} />
               </Link>
@@ -298,25 +298,25 @@ export const AppointmentDetails = ({
             {!appointment.customer.isDeleted && (
               <>
                 <div className="flex justify-between items-center">
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-sm text-muted-foreground">
                     {t("appointments.view.email")}
                   </span>
                   <Link
                     href={`mailto:${appointment.customer?.email}`}
                     variant="underline"
-                    className="truncate text-ellipsis text-xs"
+                    className="truncate text-ellipsis text-sm"
                   >
                     {appointment.customer.email}
                   </Link>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-sm text-muted-foreground">
                     {t("appointments.view.phone")}
                   </span>
                   <Link
                     href={`tel:${appointment.customer?.phone}`}
                     variant="underline"
-                    className="truncate text-ellipsis text-xs"
+                    className="truncate text-ellipsis text-sm"
                   >
                     {appointment.customer.phone}
                   </Link>
@@ -328,7 +328,7 @@ export const AppointmentDetails = ({
 
         {/* Service */}
         <div className="px-5 py-4 border-b border-border">
-          <p className="text-xs text-muted-foreground uppercase tracking-wide mb-2.5">
+          <p className="text-sm text-muted-foreground uppercase tracking-wide mb-2.5">
             {t("appointments.view.service")}
           </p>
           <div className="flex justify-between items-start">
@@ -336,11 +336,11 @@ export const AppointmentDetails = ({
               <Link
                 href={`/dashboard/options/${appointment.option._id}`}
                 variant="underline"
-                className="truncate text-ellipsis text-xs"
+                className="truncate text-ellipsis text-sm"
               >
                 {appointment.option.name}
               </Link>
-              <p className="text-xs text-muted-foreground mt-0.5">
+              <p className="text-sm text-muted-foreground mt-0.5">
                 {t(
                   "common.timeDuration",
                   durationToTime(appointment.option.duration),
@@ -348,7 +348,7 @@ export const AppointmentDetails = ({
               </p>
             </div>
             {!!appointment.option.price && (
-              <span className="text-sm font-medium text-foreground shrink-0 ml-3">
+              <span className="text-base font-medium text-foreground shrink-0 ml-3">
                 {currencyFormat(appointment.option.price)}
               </span>
             )}
@@ -358,7 +358,7 @@ export const AppointmentDetails = ({
         {/* Add-ons */}
         {appointment.addons && appointment.addons.length > 0 && (
           <div className="px-5 py-4 border-b border-border">
-            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-2.5">
+            <p className="text-sm text-muted-foreground uppercase tracking-wide mb-2.5">
               {t("appointments.view.addons")}
             </p>
             <div className="flex flex-col gap-2">
@@ -371,11 +371,11 @@ export const AppointmentDetails = ({
                     <Link
                       href={`/dashboard/addons/${addon._id}`}
                       variant="underline"
-                      className="truncate text-ellipsis text-xs"
+                      className="truncate text-ellipsis text-sm"
                     >
                       {addon.name}
                     </Link>
-                    <p className="text-xs text-muted-foreground mt-0.5">
+                    <p className="text-sm text-muted-foreground mt-0.5">
                       {t(
                         "common.timeDuration",
                         durationToTime(addon.duration || 0),
@@ -383,7 +383,7 @@ export const AppointmentDetails = ({
                     </p>
                   </div>
                   {!!addon.price && (
-                    <span className="text-sm font-medium text-foreground shrink-0 ml-3">
+                    <span className="text-base font-medium text-foreground shrink-0 ml-3">
                       {currencyFormat(addon.price)}
                     </span>
                   )}
@@ -396,29 +396,29 @@ export const AppointmentDetails = ({
         {/** Discount */}
         {appointment.discount && (
           <div className="px-5 py-4 border-b border-border">
-            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-2.5">
+            <p className="text-sm text-muted-foreground uppercase tracking-wide mb-2.5">
               {t("appointments.view.discount.label")}
             </p>
-            <div className="flex flex-col gap-2 text-xs text-muted-foreground">
+            <div className="flex flex-col gap-2 text-sm text-muted-foreground">
               <div className="flex justify-between items-center">
                 <span>{t("appointments.view.discount.name")}</span>
                 <Link
                   href={`/dashboard/services/discounts/${appointment.discount.id}`}
                   variant="underline"
-                  className="truncate text-ellipsis text-xs text-right"
+                  className="truncate text-ellipsis text-sm text-right"
                 >
                   {appointment.discount.name}
                 </Link>
               </div>
               <div className="flex justify-between items-center">
                 <span>{t("appointments.view.discount.code")}</span>
-                <span className="text-xs font-medium text-foreground shrink-0 ml-3">
+                <span className="text-sm font-medium text-foreground shrink-0 ml-3">
                   {appointment.discount.code}
                 </span>
               </div>
               <div className="flex justify-between items-center">
                 <span>{t("appointments.view.discount.amount")}</span>
-                <span className="text-sm font-medium text-foreground shrink-0 ml-3">
+                <span className="text-base font-medium text-foreground shrink-0 ml-3">
                   {currencyFormat(-1 * appointment.discount.discountAmount)}
                 </span>
               </div>
@@ -429,10 +429,10 @@ export const AppointmentDetails = ({
         {/** Fields */}
         {appointment.fields && Object.keys(appointment.fields).length > 0 && (
           <div className="px-5 py-4 border-b border-border">
-            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-2.5">
+            <p className="text-sm text-muted-foreground uppercase tracking-wide mb-2.5">
               {t("appointments.view.fields")}
             </p>
-            <div className="flex flex-col gap-2 text-xs text-muted-foreground">
+            <div className="flex flex-col gap-2 text-sm text-muted-foreground">
               <div className="flex justify-between items-center">
                 <span>{t("appointments.view.name")}</span>
                 <span className="text-foreground">
@@ -457,7 +457,7 @@ export const AppointmentDetails = ({
                     {appointment.fieldsLabels?.[key] ? (
                       <>
                         <span>{appointment.fieldsLabels?.[key]}</span>{" "}
-                        <span className="text-xs text-muted-foreground">
+                        <span className="text-sm text-muted-foreground">
                           ({key})
                         </span>
                       </>
@@ -482,16 +482,16 @@ export const AppointmentDetails = ({
         {/** Meeting info */}
         {appointment.meetingInformation && (
           <div className="px-5 py-4 border-b border-border">
-            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-2.5">
+            <p className="text-sm text-muted-foreground uppercase tracking-wide mb-2.5">
               {t("appointments.view.meetingInformation.label")}
             </p>
-            <div className="flex flex-col gap-2 text-xs text-muted-foreground">
+            <div className="flex flex-col gap-2 text-sm text-muted-foreground">
               <div className="flex justify-between items-center">
                 <span>{t("appointments.view.meetingInformation.url")}</span>
                 <Link
                   href={appointment.meetingInformation.url}
                   variant="underline"
-                  className="truncate text-ellipsis text-xs text-right"
+                  className="truncate text-ellipsis text-sm text-right"
                   target="_blank"
                 >
                   {appointment.meetingInformation.url}
@@ -535,7 +535,7 @@ export const AppointmentDetails = ({
             onBlur={noteForm.handleSubmit(onNoteSubmit)}
             className="px-5 py-4 border-b border-border flex flex-col gap-2 flex-1"
           >
-            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1.5">
+            <p className="text-sm text-muted-foreground uppercase tracking-wide mb-1.5">
               {t("appointments.view.note")}
             </p>
             <FormField
@@ -561,7 +561,7 @@ export const AppointmentDetails = ({
 
         {/* Timestamp */}
         <div className="px-5 py-2.5 border-b border-border">
-          <p className="text-xs text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             {t("appointments.view.requestedAtFormat", {
               requestedAt: DateTime.fromJSDate(
                 appointment.createdAt,
@@ -616,7 +616,7 @@ export const AppointmentDetails = ({
           </div>
         )}
       </div>
-      <div className="w-full border border-border rounded-lg bg-background overflow-hidden p-1 flex flex-col gap-2">
+      <div className="w-full overflow-hidden p-1 flex flex-col gap-2">
         <AppointmentCalendar appointment={appointment} />
       </div>
     </div>

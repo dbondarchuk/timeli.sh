@@ -150,7 +150,7 @@ export const ResourceCard = ({
           </Button>
           <span
             className={cn(
-              "text-xs font-semibold uppercase tracking-wide text-muted-foreground",
+              "text-sm font-semibold uppercase tracking-wide text-muted-foreground",
               !resourceSourceTypeLabels[itemSourceType] && "text-destructive",
             )}
           >
@@ -204,7 +204,7 @@ export const ResourceCard = ({
               <FormControl>
                 <Combobox
                   disabled={disabled}
-                  className="flex w-full font-normal text-base"
+                  className="flex w-full font-normal text-lg"
                   values={resourceSourceTypeValues}
                   searchLabel={t("resource.card.selectSourceType")}
                   value={field.value}

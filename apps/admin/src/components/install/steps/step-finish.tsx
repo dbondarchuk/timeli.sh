@@ -90,11 +90,11 @@ export function StepFinish() {
     <div className="flex flex-1 flex-col items-center justify-center space-y-8 py-12">
       {!finishDone ? (
         <>
-          <p className="text-sm text-muted-foreground text-center">
+          <p className="text-base text-muted-foreground text-center">
             {t("wizard.finish.buildingExperience")}
           </p>
           {finalizing && <Spinner className="h-12 w-12 text-primary" />}
-          <ul className="w-full max-w-md space-y-3 text-sm">
+          <ul className="w-full max-w-md space-y-3 text-base">
             {[
               t("wizard.finish.taskPage"),
               t("wizard.finish.taskAvailability"),
@@ -132,7 +132,7 @@ export function StepFinish() {
           <h2 className="text-2xl font-semibold">
             {t("wizard.finish.readyTitle")}
           </h2>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-base text-muted-foreground">
             {t("wizard.finish.readySubtitle")}
           </p>
           <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">

@@ -6,7 +6,7 @@ import { withVariants } from "../cn/with-variants";
 export const inputVariants = cva(
   [
     "flex w-full rounded-md bg-background",
-    "text-base file:border-0 file:bg-background file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground",
+    "text-base file:border-0 file:bg-background file:text-base file:font-medium file:text-foreground placeholder:text-muted-foreground",
     "focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50",
   ],
   {
@@ -17,10 +17,10 @@ export const inputVariants = cva(
     },
     variants: {
       h: {
-        lg: "h-10 px-4 py-2 text-base",
-        md: "h-9 px-3 py-2 text-base md:text-sm",
-        sm: "h-8 px-2 py-1.5 text-base file:text-xs md:text-xs",
-        xs: "h-7 px-1.5 py-1 text-base file:text-xs md:text-xs",
+        lg: "h-10 px-4 py-2",
+        md: "h-9 px-3 py-2",
+        sm: "h-8 px-2 py-1.5",
+        xs: "h-7 px-1.5 py-1",
       },
       variant: {
         default:
@@ -49,7 +49,7 @@ export function FloatingInput({
   return (
     <>
       <label
-        className="absolute top-1/2 block -translate-y-1/2 cursor-text px-1 text-sm text-muted-foreground/70 transition-all group-focus-within:pointer-events-none group-focus-within:top-0 group-focus-within:cursor-default group-focus-within:text-xs group-focus-within:font-medium group-focus-within:text-foreground has-[+input:not(:placeholder-shown)]:pointer-events-none has-[+input:not(:placeholder-shown)]:top-0 has-[+input:not(:placeholder-shown)]:cursor-default has-[+input:not(:placeholder-shown)]:text-xs has-[+input:not(:placeholder-shown)]:font-medium has-[+input:not(:placeholder-shown)]:text-foreground"
+        className="absolute top-1/2 block -translate-y-1/2 cursor-text px-1 text-base text-muted-foreground/70 transition-all group-focus-within:pointer-events-none group-focus-within:top-0 group-focus-within:cursor-default group-focus-within:text-sm group-focus-within:font-medium group-focus-within:text-foreground has-[+input:not(:placeholder-shown)]:pointer-events-none has-[+input:not(:placeholder-shown)]:top-0 has-[+input:not(:placeholder-shown)]:cursor-default has-[+input:not(:placeholder-shown)]:text-sm has-[+input:not(:placeholder-shown)]:font-medium has-[+input:not(:placeholder-shown)]:text-foreground"
         htmlFor={id}
       >
         <span className="inline-flex bg-background px-2">{label}</span>

@@ -22,7 +22,7 @@ export const PendingAppointmentsTab: React.FC = async () => {
     <>
       {pendingAppointments.total === 0 ? (
         <Card>
-          <CardHeader className="flex text-center font-medium text-lg">
+          <CardHeader className="flex text-center font-medium text-xl">
             {t("dashboard.appointments.noPendingAppointments")}
           </CardHeader>
           <CardContent className="flex justify-center py-4">

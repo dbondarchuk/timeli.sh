@@ -14,6 +14,7 @@ export const WaitlistNotificationDashboardTabInjector: DashboardTabInjectorApp<
       order: 100,
       href: "waitlist",
       label: "app_waitlist_admin.tab.title",
+      subtitleKey: "app_waitlist_admin.tab.subtitle",
       notificationsCountKey: "waitlist_entries",
       view: (props) => <WaitlistTab {...props} />,
     },

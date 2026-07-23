@@ -1,5 +1,6 @@
 "use client";
 import { authClient } from "@/app/auth-client";
+import type { AdminKeys } from "@timelish/i18n";
 import { useI18n } from "@timelish/i18n";
 import {
   Avatar,
@@ -21,6 +22,13 @@ import { ChevronsUpDown } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+const roleLabelKey: Record<string, AdminKeys> = {
+  owner: "roles.owner",
+  admin: "roles.admin",
+  staff: "roles.staff",
+  member: "roles.member",
+};
+
 export function UserNav() {
   const { data: session } = authClient.useSession();
 
@@ -35,6 +43,10 @@ export function UserNav() {
   if (!session) {
     return null;
   }
+
+  const role = (session.user as { role?: string })?.role ?? "member";
+  const roleKey: AdminKeys = roleLabelKey[role] ?? "roles.member";
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -42,22 +54,26 @@ export function UserNav() {
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="rounded-xl data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <Avatar className="h-8 w-8 rounded-lg">
+              <Avatar className="h-9 w-9 rounded-full">
                 <AvatarImage
                   src={session.user?.image ?? ""}
                   alt={session.user?.name ?? ""}
                 />
-                <AvatarFallback>{session.user?.name?.[0]}</AvatarFallback>
+                <AvatarFallback className="rounded-full bg-primary/15 text-primary">
+                  {session.user?.name?.[0]}
+                </AvatarFallback>
               </Avatar>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">
+              <div className="grid flex-1 text-left text-base leading-tight">
+                <span className="truncate font-medium">
                   {session.user?.name}
                 </span>
-                <span className="truncate text-xs">{session.user?.email}</span>
+                <span className="truncate text-sm text-muted-foreground">
+                  {t(roleKey)}
+                </span>
               </div>
-              <ChevronsUpDown className="ml-auto" />
+              <ChevronsUpDown className="ml-auto size-4 opacity-50" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -68,10 +84,10 @@ export function UserNav() {
           >
             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium leading-none">
+                <p className="text-base font-medium leading-none">
                   {session.user?.name}
                 </p>
-                <p className="text-xs leading-none text-muted-foreground">
+                <p className="text-sm leading-none text-muted-foreground">
                   {session.user?.email}
                 </p>
               </div>

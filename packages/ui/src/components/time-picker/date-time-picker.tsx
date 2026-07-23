@@ -381,7 +381,7 @@ export function DateTimePicker({
         ) : (
           <div
             className={cn(
-              "flex w-full cursor-pointer items-center h-8 ps-3 pe-1 font-normal border border-input rounded-md text-xs shadow-sm",
+              "flex w-full cursor-pointer items-center h-8 ps-3 pe-1 font-normal border border-input rounded-md text-base shadow-sm",
               !displayValue && "text-muted-foreground",
               (!clearable || !value) && "pe-3",
               disabled && "opacity-50 cursor-not-allowed",
@@ -486,9 +486,9 @@ export function DateTimePicker({
               month_grid: "w-full border-collapse",
               weekdays: "flex justify-between mt-2",
               weekday:
-                "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]",
+                "text-muted-foreground rounded-md w-9 font-normal text-[0.925rem]",
               week: "flex w-full justify-between mt-2",
-              day: "h-9 w-9 text-center text-sm p-0 relative flex items-center justify-center [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20 rounded-1",
+              day: "h-9 w-9 text-center text-base p-0 relative flex items-center justify-center [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20 rounded-1",
               day_button: cn(
                 buttonVariants({ variant: "ghost" }),
                 "size-9 rounded-md p-0 font-normal aria-selected:opacity-100",
@@ -544,7 +544,7 @@ export function DateTimePicker({
               Done
             </Button>
             {/* {timeZone && (
-              <div className="text-sm">
+              <div className="text-base">
                 <span>Timezone:</span>
                 <span className="font-semibold ms-1">{timeZone}</span>
               </div>

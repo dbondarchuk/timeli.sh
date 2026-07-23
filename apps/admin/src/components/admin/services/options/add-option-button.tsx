@@ -214,7 +214,7 @@ export function AddOptionSplitButton({ canAddMore }: { canAddMore: boolean }) {
                     <button
                       key={`${prof.categoryId}:${prof.professionId}`}
                       type="button"
-                      className="rounded-lg border p-3 text-left text-sm transition-colors hover:border-muted-foreground/30"
+                      className="rounded-lg border p-3 text-left text-base transition-colors hover:border-muted-foreground/30"
                       onClick={() => {
                         setPickCategory(prof.categoryId);
                         setPickProfession(prof.professionId);
@@ -234,7 +234,7 @@ export function AddOptionSplitButton({ canAddMore }: { canAddMore: boolean }) {
                             <Badge
                               key={tag}
                               variant="outline"
-                              className="text-[10px] font-normal"
+                              className="text-[12px] font-normal"
                             >
                               {tInstall(catalogTagLabelKey(tag) as any)}
                             </Badge>
@@ -246,7 +246,7 @@ export function AddOptionSplitButton({ canAddMore }: { canAddMore: boolean }) {
                 })}
               </div>
               {query && matchedProfessions.length === 0 ? (
-                <p className="text-sm text-muted-foreground">
+                <p className="text-base text-muted-foreground">
                   {tInstall("wizard.service.noProfessionsMatch")}
                 </p>
               ) : null}
@@ -268,7 +268,7 @@ export function AddOptionSplitButton({ canAddMore }: { canAddMore: boolean }) {
                 >
                   <ArrowLeft />
                 </Button>
-                <span className="text-sm text-muted-foreground">
+                <span className="text-base text-muted-foreground">
                   {tInstall(
                     catalogProfessionLabelKey(
                       pickCategory,
@@ -310,7 +310,7 @@ export function AddOptionSplitButton({ canAddMore }: { canAddMore: boolean }) {
                           ) as any,
                         )}
                       </span>
-                      <div className="prose prose-sm dark:prose-invert max-w-none text-xs text-muted-foreground">
+                      <div className="prose prose-sm dark:prose-invert max-w-none text-sm text-muted-foreground">
                         <Markdown
                           prose="simple"
                           markdown={tInstall(
@@ -322,7 +322,7 @@ export function AddOptionSplitButton({ canAddMore }: { canAddMore: boolean }) {
                           )}
                         />
                       </div>
-                      <span className="text-xs text-muted-foreground">
+                      <span className="text-sm text-muted-foreground">
                         {t(
                           "common.timeDuration",
                           durationToTime(svc.durations[0] ?? 60),

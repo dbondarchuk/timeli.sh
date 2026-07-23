@@ -85,12 +85,12 @@ export const ActivityFeedHeaderButton: React.FC = () => {
       <DropdownMenuTrigger asChild>
         <Button
           type="button"
-          variant="ghost"
+          variant="outline"
           size="icon"
-          className="relative"
+          className="relative size-9 rounded-full border-border/70"
           aria-label={t("activity.header.openFeed")}
         >
-          <Activity className="size-5" />
+          <Activity className="size-4 stroke-[1.5]" />
           <ActivityUnreadDot />
         </Button>
       </DropdownMenuTrigger>
@@ -98,7 +98,7 @@ export const ActivityFeedHeaderButton: React.FC = () => {
         <DropdownMenuLabel>{t("activity.header.recent")}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {previews.length === 0 ? (
-          <div className="px-2 py-3 text-sm text-muted-foreground">
+          <div className="px-2 py-3 text-base text-muted-foreground">
             {t("activity.header.empty")}
           </div>
         ) : (
@@ -136,17 +136,17 @@ const ActivityPreviewRow: React.FC<{
         }
       }}
     >
-      <span className="text-xs text-muted-foreground font-mono">
+      <span className="text-sm text-muted-foreground font-mono">
         {row.eventType}
       </span>
       <ActivityActorDisplayView
         actor={row.actor}
-        className="text-xs text-muted-foreground"
+        className="text-sm text-muted-foreground"
       />
-      <span className="text-xs line-clamp-2">
+      <span className="text-sm line-clamp-2">
         <ResolvedI18nText text={row.title} />
       </span>
-      <span className="text-xs text-muted-foreground">
+      <span className="text-sm text-muted-foreground">
         {DateTime.fromISO(row.createdAt).toLocaleString(
           DateTime.DATETIME_SHORT,
         )}

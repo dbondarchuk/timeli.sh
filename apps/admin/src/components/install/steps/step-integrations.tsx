@@ -102,15 +102,15 @@ function CalendarIntegrationCard({
       <CardHeader className="space-y-2">
         <ConnectedAppNameAndLogo
           appName={appName}
-          nameClassName="text-base font-semibold"
+          nameClassName="text-lg font-semibold"
           logoClassName="size-9 shrink-0"
         />
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">
-        <p className="text-xs text-muted-foreground">{hint}</p>
+        <p className="text-sm text-muted-foreground">{hint}</p>
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <div className="flex items-center gap-2 text-sm">
+          <div className="flex items-center gap-2 text-base">
             <span
               className={`size-2 shrink-0 rounded-full ${statusClass}`}
               aria-hidden
@@ -301,10 +301,10 @@ export function StepIntegrations() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-semibold">
+        <h2 className="text-2xl font-semibold">
           {t("wizard.integrations.title")}
         </h2>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-base text-muted-foreground">
           {t("wizard.integrations.subtitle")}
         </p>
       </div>
@@ -371,7 +371,7 @@ export function StepIntegrations() {
           </SelectContent>
         </Select>
         {calendarWriterDisabled ? (
-          <p className="text-xs text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             {t("wizard.integrations.calendarWriterDisabled")}
           </p>
         ) : null}
@@ -397,7 +397,7 @@ export function StepIntegrations() {
                       <ConnectedAppNameAndLogo
                         appName={app.name}
                         logoClassName="size-3.5"
-                        nameClassName="text-xs leading-[normal]"
+                        nameClassName="text-sm leading-[normal]"
                       />
                     </SelectItem>
                   ))}
@@ -477,7 +477,7 @@ export function StepIntegrations() {
               />
               <span>
                 <span className="font-medium">{row.label}</span>
-                <span className="mt-1 block text-xs text-muted-foreground">
+                <span className="mt-1 block text-sm text-muted-foreground">
                   {row.desc}
                 </span>
                 {!allowed ? (
@@ -513,7 +513,7 @@ export function StepIntegrations() {
               <span className="font-medium">
                 {t("wizard.integrations.waitlistNotifications")}
               </span>
-              <span className="mt-1 block text-xs text-muted-foreground">
+              <span className="mt-1 block text-sm text-muted-foreground">
                 {t("wizard.integrations.waitlistNotificationsDesc")}
               </span>
               {!canConnectApp(WAITLIST_NOTIFICATIONS_APP_NAME) ? (
@@ -525,7 +525,7 @@ export function StepIntegrations() {
           </label>
         ) : null}
       </div>
-      <p className="text-xs text-muted-foreground">
+      <p className="text-sm text-muted-foreground">
         {t("wizard.integrations.skipHint")}
       </p>
       <div className="flex flex-wrap gap-3">

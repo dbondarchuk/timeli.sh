@@ -34,19 +34,19 @@ const buttonVariants = {
 export const buttonSizes = {
   none: "",
   // default: "h-9 px-4 py-2",
-  default: "h-8 rounded-md px-3 text-xs",
-  xs: "h-7 rounded-md px-3 text-xs [&>svg]:size-3",
-  sm: "h-8 rounded-md px-3 text-xs",
+  default: "h-8 rounded-md px-3 text-sm",
+  xs: "h-7 rounded-md px-3 text-sm [&>svg]:size-3",
+  sm: "h-8 rounded-md px-3 text-sm",
   md: "h-9 rounded-md px-5",
   lg: "h-10 rounded-md px-8",
   xl: "h-11 rounded-md px-10",
-  "2xl": "h-12 rounded-md px-12 text-lg [&>svg]:size-5",
+  "2xl": "h-12 rounded-md px-12 text-xl [&>svg]:size-5",
   icon: "h-8 w-8",
 };
 
 const buttonClasses = cva(
   [
-    "inline-flex gap-1 [&>svg]:size-4 items-center justify-center whitespace-nowrap rounded-md text-sm font-normal ring-offset-background transition-colors",
+    "inline-flex gap-1 [&>svg]:size-4 items-center justify-center whitespace-nowrap rounded-md text-base font-normal ring-offset-background transition-colors",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
     "no-underline",
   ],

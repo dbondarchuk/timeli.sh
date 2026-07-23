@@ -80,7 +80,7 @@ const DiscountLimitCard: React.FC<{
     <Card>
       <CardHeader className="justify-between relative flex flex-row border-b px-3 py-3 w-full items-center">
         <div className="flex flex-row items-center gap-2">
-          <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          <span className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
             {t("services.discounts.form.limitTo")}
           </span>
         </div>
@@ -164,7 +164,7 @@ const DiscountLimitCard: React.FC<{
             />
           ))}
           {!options.fields?.length && (
-            <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground text-center">
+            <div className="text-sm font-semibold uppercase tracking-wide text-muted-foreground text-center">
               {t("services.discounts.form.anyOption")}
             </div>
           )}
@@ -176,7 +176,7 @@ const DiscountLimitCard: React.FC<{
             <PlusCircle /> {t("services.discounts.form.addNew")}
           </Button>
         </div>
-        <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground text-center">
+        <Label className="text-sm font-semibold uppercase tracking-wide text-muted-foreground text-center">
           {t("services.discounts.form.withLabel")}
         </Label>
         <div className="flex flex-col gap-4">
@@ -227,7 +227,7 @@ const DiscountLimitCard: React.FC<{
             />
           ))}
           {!addons.fields?.length && (
-            <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground text-center">
+            <div className="text-sm font-semibold uppercase tracking-wide text-muted-foreground text-center">
               {t("services.discounts.form.anyAddon")}
             </div>
           )}
@@ -400,7 +400,7 @@ export const DiscountForm: React.FC<{
                   <FormControl>
                     <Combobox
                       disabled={loading}
-                      className="flex w-full font-normal text-base"
+                      className="flex w-full font-normal text-lg"
                       values={discountTypes.map((type) => ({
                         value: type,
                         label: t(`admin.common.labels.discountType.${type}`),
@@ -733,12 +733,12 @@ export const DiscountForm: React.FC<{
                 />
               ))}
               {!limitTo.fields?.length && (
-                <div className="flex flex-col gap-4 px-2 py-4 border rounded bg-card text-sm">
+                <div className="flex flex-col gap-4 px-2 py-4 border rounded bg-card text-base">
                   {t("admin.services.discounts.form.anyOptionOrAddon")}
                 </div>
               )}
 
-              <div className="text-xs text-muted-foreground">
+              <div className="text-sm text-muted-foreground">
                 {t("admin.services.discounts.form.limitToDescription")}
               </div>
             </div>

@@ -141,7 +141,7 @@ export const InstallComplexAppButton: React.FC<{
             </AlertDialogDescription>
             <div className="flex flex-col gap-2 pt-2">
               {pendingDefaultPrompt?.scopes.map((scope) => (
-                <Label key={scope} className="flex items-center gap-2 text-sm">
+                <Label key={scope} className="flex items-center gap-2 text-base">
                   <Checkbox
                     checked={selectedScopes.includes(scope)}
                     onCheckedChange={(checked) => {

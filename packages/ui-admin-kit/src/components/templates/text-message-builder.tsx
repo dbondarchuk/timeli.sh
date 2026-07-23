@@ -140,7 +140,7 @@ export const TextMessageBuilder: React.FC<{
           {t("templates.textMessageBuilder.preview")}
         </FormLabel>
         <div
-          className="w-full text-xs"
+          className="w-full text-sm"
           dangerouslySetInnerHTML={{
             __html: preview.replaceAll("\n", "<br/>"),
           }}

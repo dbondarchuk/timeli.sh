@@ -16,7 +16,7 @@ export const Heading: React.FC<HeadingProps> = ({
 }) => {
   return (
     <div className={className}>
-      <h2 className="text-xl font-bold tracking-tight">
+      <h2 className="text-2xl font-bold tracking-tight">
         {href ? (
           <Link href={href} variant="underline">
             {title}
@@ -26,7 +26,7 @@ export const Heading: React.FC<HeadingProps> = ({
         )}
       </h2>
       {description && (
-        <p className="text-xs text-muted-foreground">{description}</p>
+        <p className="text-sm text-muted-foreground">{description}</p>
       )}
     </div>
   );

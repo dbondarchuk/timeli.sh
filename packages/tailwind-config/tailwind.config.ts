@@ -18,6 +18,8 @@ const config = {
   prefix: "",
   theme: {
     fontFamily: {
+      sans: ["var(--font-karla)", "ui-sans-serif", "system-ui", "sans-serif"],
+      display: ["var(--font-cormorant)", "ui-serif", "Georgia", "serif"],
       primary: ["var(--font-primary)"],
       secondary: ["var(--font-secondary)"],
       tertiary: ["var(--font-tertiary)"],
@@ -46,6 +48,8 @@ const config = {
     },
     extend: {
       fontFamily: {
+        sans: ["var(--font-karla)", "ui-sans-serif", "system-ui", "sans-serif"],
+        display: ["var(--font-cormorant)", "ui-serif", "Georgia", "serif"],
         primary: ["var(--font-primary)"],
         secondary: ["var(--font-secondary)"],
         tertiary: ["var(--font-tertiary)"],

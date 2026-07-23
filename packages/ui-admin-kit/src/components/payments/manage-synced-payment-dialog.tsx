@@ -166,7 +166,7 @@ export const ManageSyncedPaymentDialog = ({
               <Spinner />
             </div>
           ) : !record ? (
-            <p className="px-6 py-12 text-center text-sm text-muted-foreground">
+            <p className="px-6 py-12 text-center text-base text-muted-foreground">
               {t("syncedPayments.editAmounts.notFound")}
             </p>
           ) : (

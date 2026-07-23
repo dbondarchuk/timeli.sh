@@ -53,7 +53,7 @@ const RescheduleSection: React.FC<TabProps> = ({ form, disabled }) => {
   return (
     <Card>
       <CardHeader className="border-b">
-        <CardTitle className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+        <CardTitle className="text-base font-semibold uppercase tracking-wide text-muted-foreground">
           {t(`cancellationsAndReschedules.reschedulePolicy.title`)}
         </CardTitle>
       </CardHeader>
@@ -121,7 +121,7 @@ const RescheduleSection: React.FC<TabProps> = ({ form, disabled }) => {
             />
             <Card>
               <CardHeader className="border-b">
-                <CardTitle className="flex min-w-0 flex-1 flex-col items-start gap-0.5 text-xs text-muted-foreground">
+                <CardTitle className="flex min-w-0 flex-1 flex-col items-start gap-0.5 text-sm text-muted-foreground">
                   <span className="font-semibold uppercase tracking-wide">
                     {t(
                       "cancellationsAndReschedules.reschedulePolicy.default.title",
@@ -157,7 +157,7 @@ const RescheduleSection: React.FC<TabProps> = ({ form, disabled }) => {
                   </span>
                   <Badge
                     variant="secondary"
-                    className="text-xs normal-case hidden md:block"
+                    className="text-sm normal-case hidden md:block"
                   >
                     {t(
                       "cancellationsAndReschedules.reschedulePolicy.policies.badge",

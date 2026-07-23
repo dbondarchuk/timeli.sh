@@ -127,24 +127,24 @@ export function GeneralBillingCard({
   return (
     <Card className="mt-4">
       <CardHeader className="border-b">
-        <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+        <CardTitle className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
           {t("settings.general.billing.sectionTitle")}
         </CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-4 pt-6">
         <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
           <div className="flex min-w-0 flex-1 flex-col gap-1">
-            <span className="text-xs uppercase tracking-wide text-muted-foreground">
+            <span className="text-sm uppercase tracking-wide text-muted-foreground">
               {t("settings.general.billing.status.label")}
             </span>
-            <span className="text-sm font-medium text-foreground">
+            <span className="text-base font-medium text-foreground">
               {primary}
             </span>
             {secondary ? (
-              <span className="text-sm text-muted-foreground">{secondary}</span>
+              <span className="text-base text-muted-foreground">{secondary}</span>
             ) : null}
             {!details.feesExempt && details.planTier ? (
-              <span className="text-sm text-muted-foreground">
+              <span className="text-base text-muted-foreground">
                 {t(`settings.general.billing.planTier.${details.planTier}`)}
                 {isFreeTier
                   ? ` · ${t("settings.general.billing.freeTierHint")}`
@@ -194,30 +194,30 @@ export function GeneralBillingCard({
           <div className="grid gap-4 border-t pt-4 sm:grid-cols-3">
             {details.subscriptionName ? (
               <div className="flex min-w-0 flex-col gap-1">
-                <span className="text-xs uppercase tracking-wide text-muted-foreground">
+                <span className="text-sm uppercase tracking-wide text-muted-foreground">
                   {t("settings.general.billing.planLabel")}
                 </span>
-                <span className="text-sm font-medium text-foreground">
+                <span className="text-base font-medium text-foreground">
                   {details.subscriptionName}
                 </span>
               </div>
             ) : null}
             {subscriptionPriceLabel ? (
               <div className="flex min-w-0 flex-col gap-1">
-                <span className="text-xs uppercase tracking-wide text-muted-foreground">
+                <span className="text-sm uppercase tracking-wide text-muted-foreground">
                   {t("settings.general.billing.priceLabel")}
                 </span>
-                <span className="text-sm font-medium text-foreground">
+                <span className="text-base font-medium text-foreground">
                   {subscriptionPriceLabel}
                 </span>
               </div>
             ) : null}
             {details.nextCycleDate ? (
               <div className="flex min-w-0 flex-col gap-1">
-                <span className="text-xs uppercase tracking-wide text-muted-foreground">
+                <span className="text-sm uppercase tracking-wide text-muted-foreground">
                   {t("settings.general.billing.nextBillingLabel")}
                 </span>
-                <span className="text-sm font-medium text-foreground">
+                <span className="text-base font-medium text-foreground">
                   {DateTime.fromJSDate(details.nextCycleDate)
                     .setLocale(locale)
                     .toLocaleString(DateTime.DATE_MED)}
@@ -228,31 +228,31 @@ export function GeneralBillingCard({
         ) : null}
         {details.benefits.sms ? (
           <div className="flex flex-col gap-4 border-t pt-4">
-            <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            <span className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
               {t("settings.general.billing.smsCreditsSectionTitle")}
             </span>
             <div className="grid gap-4 md:grid-cols-2">
               <div className="flex flex-col gap-3 rounded-lg border bg-muted/30 p-3">
-                <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                <span className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
                   {t("settings.general.billing.smsIncluded.title")}
                 </span>
                 <div className="grid sm:grid-cols-3 gap-3">
                   <div className="flex min-w-0 flex-col gap-1">
-                    <span className="text-xs uppercase tracking-wide text-muted-foreground">
+                    <span className="text-sm uppercase tracking-wide text-muted-foreground">
                       {t("settings.general.billing.smsIncluded.balanceLabel")}
                     </span>
-                    <span className="text-sm font-medium text-foreground">
+                    <span className="text-base font-medium text-foreground">
                       {numberFormatter.format(details.benefits.sms.included)}
                     </span>
                   </div>
                   {details.benefits.sms.includedPerCycle != null ? (
                     <div className="flex min-w-0 flex-col gap-1">
-                      <span className="text-xs uppercase tracking-wide text-muted-foreground">
+                      <span className="text-sm uppercase tracking-wide text-muted-foreground">
                         {t(
                           "settings.general.billing.smsIncluded.perCycleLabel",
                         )}
                       </span>
-                      <span className="text-sm font-medium text-foreground">
+                      <span className="text-base font-medium text-foreground">
                         {numberFormatter.format(
                           details.benefits.sms.includedPerCycle,
                         )}
@@ -260,10 +260,10 @@ export function GeneralBillingCard({
                     </div>
                   ) : null}
                   <div className="flex min-w-0 flex-col gap-1">
-                    <span className="text-xs uppercase tracking-wide text-muted-foreground">
+                    <span className="text-sm uppercase tracking-wide text-muted-foreground">
                       {t("settings.general.billing.smsIncluded.nextCycleLabel")}
                     </span>
-                    <span className="text-sm font-medium text-foreground">
+                    <span className="text-base font-medium text-foreground">
                       {details.benefits.sms.nextRefreshDate
                         ? DateTime.fromJSDate(
                             details.benefits.sms.nextRefreshDate,
@@ -276,24 +276,24 @@ export function GeneralBillingCard({
                 </div>
               </div>
               <div className="flex flex-col gap-3 rounded-lg border bg-muted/30 p-3">
-                <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                <span className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
                   {t("settings.general.billing.smsTopupPool.title")}
                 </span>
                 <div className="flex min-w-0 flex-col gap-1">
-                  <span className="text-xs uppercase tracking-wide text-muted-foreground">
+                  <span className="text-sm uppercase tracking-wide text-muted-foreground">
                     {t("settings.general.billing.smsTopupPool.balanceLabel")}
                   </span>
-                  <span className="text-sm font-medium text-foreground">
+                  <span className="text-base font-medium text-foreground">
                     {numberFormatter.format(details.benefits.sms.topup)}
                   </span>
                 </div>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-sm text-muted-foreground">
                   {t("settings.general.billing.smsTopupPool.usageHint")}
                 </p>
               </div>
             </div>
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-xs text-muted-foreground sm:max-w-prose">
+              <p className="text-sm text-muted-foreground sm:max-w-prose">
                 {t("settings.general.billing.smsTopupPool.depletionOrderHint")}
               </p>
               <SmsTopupPurchaseDialog canPurchase />

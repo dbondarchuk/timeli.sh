@@ -113,7 +113,7 @@ export const ProfileForm: React.FC<{
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
           <Card className="lg:col-span-4">
             <CardHeader className="border-b">
-              <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              <CardTitle className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
                 {t("users.profile.form.photoSectionTitle")}
               </CardTitle>
             </CardHeader>
@@ -125,8 +125,8 @@ export const ProfileForm: React.FC<{
                   className="h-24 w-24 rounded-full object-cover"
                 />
                 <div className="text-center">
-                  <p className="text-base font-semibold">{name}</p>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-lg font-semibold">{name}</p>
+                  <p className="text-base text-muted-foreground">
                     {values.email}
                   </p>
                 </div>
@@ -186,7 +186,7 @@ export const ProfileForm: React.FC<{
 
           <Card className="lg:col-span-8">
             <CardHeader className="border-b">
-              <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              <CardTitle className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
                 {t("users.profile.form.detailsSectionTitle")}
               </CardTitle>
             </CardHeader>
@@ -260,7 +260,7 @@ export const ProfileForm: React.FC<{
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           <Card>
             <CardHeader className="border-b">
-              <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              <CardTitle className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
                 {t("users.profile.form.bio")}
               </CardTitle>
             </CardHeader>
@@ -324,7 +324,7 @@ export const ProfileForm: React.FC<{
         </div>
         <Card>
           <CardHeader className="border-b">
-            <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            <CardTitle className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
               {t("users.profile.security.title")}
             </CardTitle>
           </CardHeader>
@@ -338,7 +338,7 @@ export const ProfileForm: React.FC<{
                   <p className="font-medium">
                     {t("users.profile.security.email")}
                   </p>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-base text-muted-foreground">
                     {values.email}
                   </p>
                 </div>
@@ -355,7 +355,7 @@ export const ProfileForm: React.FC<{
                   <p className="font-medium">
                     {t("users.profile.security.password")}
                   </p>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-base text-muted-foreground">
                     {t("users.profile.security.passwordDescription")}
                   </p>
                 </div>

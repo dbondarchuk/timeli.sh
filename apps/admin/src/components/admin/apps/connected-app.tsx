@@ -59,7 +59,7 @@ export const ConnectedAppRow: React.FC<ConnectedAppRowProps> = ({ app }) => {
             appName={app.name}
             className="break-all"
             logoClassName="size-4"
-            nameClassName="text-sm"
+            nameClassName="text-base"
           />
         </div>
         <div className="flex items-center gap-1.5 flex-row flex-wrap justify-end">
@@ -92,13 +92,13 @@ export const ConnectedAppRow: React.FC<ConnectedAppRowProps> = ({ app }) => {
       </div>
       <div className="grid gap-2.5 px-3 py-2.5 md:px-4 md:py-3 md:grid-cols-2 flex-1">
         <div className="flex flex-col gap-1">
-          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
             Account
           </p>
           <ConnectedAppAccount account={app.account} className="break-all" />
         </div>
         <div className="flex flex-col gap-1">
-          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
             Status
           </p>
           <ConnectedAppStatusMessage

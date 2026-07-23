@@ -1,83 +1,60 @@
 "use client";
 
-import { useI18n } from "@timelish/i18n";
+import { cn } from "@timelish/ui";
 import {
-  Button,
-  cn,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@timelish/ui";
-import { EventCalendar, EventCalendarType } from "@timelish/ui-admin-kit";
+  EventsCalendar as KitEventsCalendar,
+  EventCalendarView,
+} from "@timelish/ui-admin-kit";
 import { DateTime } from "luxon";
 import React from "react";
 import { useCookies } from "react-cookie";
 
-type EventsCalendarView = Exclude<EventCalendarType, "days-around">;
+type DashboardEventsCalendarView = Exclude<EventCalendarView, "days-around">;
 
 const COOKIE_NAME = "events-calendar-view";
 type CookieValues = {
-  [COOKIE_NAME]?: EventsCalendarView;
+  [COOKIE_NAME]?: DashboardEventsCalendarView;
 };
 
 export const EventsCalendar = ({ className }: { className?: string }) => {
   const [cookies, setCookies] = useCookies<typeof COOKIE_NAME, CookieValues>([
     COOKIE_NAME,
   ]);
-  const t = useI18n("admin");
 
   const [date, setDate] = React.useState(
     DateTime.now().startOf("day") as DateTime,
   );
 
-  const [type, setType] = React.useState<EventsCalendarView>(
+  const [view, setView] = React.useState<DashboardEventsCalendarView>(
     cookies[COOKIE_NAME] ?? "weekly",
   );
 
-  const changeType = (view: EventsCalendarView) => {
-    setType(view);
-    setCookies(COOKIE_NAME, view, {
+  const changeView = (next: EventCalendarView) => {
+    if (next === "days-around") return;
+    setView(next);
+    setCookies(COOKIE_NAME, next, {
       expires: DateTime.now().plus({ years: 1 }).toJSDate(),
     });
   };
 
   return (
-    <div className="grid gap-3 w-full">
-      <div className="flex flex-row gap-2 justify-between">
-        <div className="flex flex-row gap-2">
-          <Button onClick={() => setDate(DateTime.now())}>
-            {t("calendar.today")}
-          </Button>
-        </div>
-        <Select
-          value={type}
-          onValueChange={(value) => changeType(value as typeof type)}
-        >
-          <SelectTrigger className="w-32">
-            <SelectValue placeholder={t("calendar.selectView")} />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="monthly">{t("calendar.monthly")}</SelectItem>
-            <SelectItem value="weekly">{t("calendar.weekly")}</SelectItem>
-            <SelectItem value="daily">{t("calendar.daily")}</SelectItem>
-            <SelectItem value="agenda">{t("calendar.agenda")}</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-      <EventCalendar
-        date={date.toJSDate()}
-        type={type}
-        className={cn(
-          "w-full",
-          type !== "monthly" && type !== "agenda" && "h-[100vh]",
-        )}
-        onDateClick={(date) => {
-          setDate(DateTime.fromJSDate(date));
-          setType("daily");
-        }}
-      />
-    </div>
+    <KitEventsCalendar
+      className={cn(
+        "w-full",
+        view !== "monthly" && view !== "agenda" && "h-[min(100vh,720px)]",
+        className,
+      )}
+      date={date.toJSDate()}
+      onDateChange={(next) => setDate(DateTime.fromJSDate(next).startOf("day"))}
+      view={view}
+      onViewChange={changeView}
+      showControls
+      allowTimeChange
+      allowViewSwitch
+      onDateClick={(clicked) => {
+        setDate(DateTime.fromJSDate(clicked).startOf("day"));
+        changeView("daily");
+      }}
+    />
   );
 };

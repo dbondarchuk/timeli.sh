@@ -265,7 +265,7 @@ export const UserSignupForm = ({ publicDomain }: { publicDomain: string }) => {
           </Button>
         </form>
       </Form>
-      <div className="text-center w-full text-sm">
+      <div className="text-center w-full text-base">
         {t.rich("auth.sign_up_sign_in_link", {
           link: (chunks: any) => (
             <Link

@@ -147,7 +147,7 @@ export const SyncedPaymentsReview = () => {
   return (
     <div className="flex flex-col gap-4">
       {externalId && (
-        <div className="flex items-center justify-between gap-2 rounded-md border border-border bg-muted/40 px-4 py-2 text-sm">
+        <div className="flex items-center justify-between gap-2 rounded-md border border-border bg-muted/40 px-4 py-2 text-base">
           <span className="text-muted-foreground">
             {t("syncedPayments.filters.singleTransaction")}
           </span>
@@ -204,7 +204,7 @@ export const SyncedPaymentsReview = () => {
       </div>
 
       {!loading && items.length === 0 ? (
-        <p className="text-sm text-muted-foreground py-12 text-center">
+        <p className="text-base text-muted-foreground py-12 text-center">
           {t("syncedPayments.empty")}
         </p>
       ) : (
@@ -255,7 +255,7 @@ export const SyncedPaymentsReview = () => {
 
       {!loading && total > 0 && (
         <div className="flex items-center justify-between gap-3 pt-2">
-          <span className="text-xs text-muted-foreground">
+          <span className="text-sm text-muted-foreground">
             {t("syncedPayments.pagination.summary", { from, to, total })}
           </span>
           <div className="flex items-center gap-2">

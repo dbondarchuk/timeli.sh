@@ -18,7 +18,7 @@ const HeaderShortLabel: React.FC<{
     >
       <span>{header.name}</span>
       {!row && (
-        <span className="text-xs italic">
+        <span className="text-sm italic">
           {t("pages.headers.usedOnPages", {
             count: header.usedCount ?? 0,
           })}
@@ -113,7 +113,7 @@ export const HeaderSelector: React.FC<HeaderSelectorProps> = ({
       // @ts-ignore Allow clear passthrough
       onChange={onItemSelect}
       disabled={disabled}
-      className={cn("flex font-normal text-base max-w-full", className)}
+      className={cn("flex font-normal text-lg max-w-full", className)}
       placeholder={t("pages.form.header")}
       value={value}
       allowClear={allowClear}

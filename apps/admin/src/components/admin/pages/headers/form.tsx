@@ -325,7 +325,7 @@ export const PageHeaderForm: React.FC<{
                             value={field.value ?? ""}
                             onChange={field.onChange}
                             className={cn(
-                              "w-full border border-input rounded-md p-2 text-sm sm:text-xs h-8",
+                              "w-full border border-input rounded-md p-2 text-base sm:text-sm h-8",
                               InputGroupInputClasses({ variant: "suffix" }),
                             )}
                             disabled={loading}
@@ -392,7 +392,7 @@ export const PageHeaderForm: React.FC<{
                         allowClear
                         values={headerShadowValues}
                         disabled={loading}
-                        className="flex w-full font-normal text-base"
+                        className="flex w-full font-normal text-lg"
                         searchLabel={t("pages.headers.form.selectShadowType")}
                         value={field.value}
                         onItemSelect={(value) => {

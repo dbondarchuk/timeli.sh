@@ -12,10 +12,10 @@ const fonts = {
 
 const textSizes = {
   default: "",
-  sm: "text-sm",
+  sm: "text-base",
   md: "text-md",
-  lg: "text-lg",
-  xl: "text-xl",
+  lg: "text-xl",
+  xl: "text-2xl",
 };
 
 const textWeights = {

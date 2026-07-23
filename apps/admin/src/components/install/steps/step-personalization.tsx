@@ -53,7 +53,7 @@ const fonts: (value?: string) => IComboboxItem[] = (value?: string) =>
       label: (
         <span className="flex min-w-0 items-center gap-2 py-0.5">
           <FontPreviewThumb family={font} />
-          <span className="truncate text-sm">{font}</span>
+          <span className="truncate text-base">{font}</span>
         </span>
       ),
       shortLabel: font,
@@ -130,10 +130,10 @@ export function StepPersonalization() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-semibold">
+        <h2 className="text-2xl font-semibold">
           {t("wizard.personalization.title")}
         </h2>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-base text-muted-foreground">
           {t("wizard.personalization.subtitle")}
         </p>
       </div>
@@ -227,7 +227,7 @@ export function StepPersonalization() {
         ) : null}
       </div>
 
-      <p className="text-xs text-muted-foreground">
+      <p className="text-sm text-muted-foreground">
         {t("wizard.personalization.editLater")}
       </p>
 
