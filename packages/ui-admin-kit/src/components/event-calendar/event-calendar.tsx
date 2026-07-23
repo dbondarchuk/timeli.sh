@@ -295,7 +295,7 @@ export const EventCalendar: React.FC<EventCalendarProps> = ({
           <div className="justify-self-end">
             {showViewSwitch ? (
               <>
-                <div className="md:hidden">
+                <div className="lg:hidden">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button
@@ -330,14 +330,14 @@ export const EventCalendar: React.FC<EventCalendarProps> = ({
                   </DropdownMenu>
                 </div>
 
-                <div className="hidden md:inline-flex flex-wrap rounded-full border border-border/70 bg-muted/40 p-0.5">
+                <div className="hidden lg:inline-flex shrink-0 flex-nowrap rounded-full border border-border/70 bg-muted/40 p-0.5">
                   {SWITCHABLE_VIEWS.map((item) => (
                     <button
                       key={item.value}
                       type="button"
                       onClick={() => setView(item.value)}
                       className={cn(
-                        "rounded-full px-3.5 py-1.5 text-base transition-colors",
+                        "rounded-full px-3.5 py-1.5 text-base whitespace-nowrap transition-colors",
                         view === item.value
                           ? "bg-background text-foreground shadow-sm border border-primary/40"
                           : "text-muted-foreground hover:text-foreground",
