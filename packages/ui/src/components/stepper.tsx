@@ -96,7 +96,7 @@ export function Stepper({
 
           return (
             <div key={step.id} className="flex items-start step-item-container">
-              <div className="flex flex-col items-center w-20 step-icon-container">
+              <div className="flex flex-col items-center w-24 step-icon-container">
                 <div
                   className={cn(
                     "w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300",
